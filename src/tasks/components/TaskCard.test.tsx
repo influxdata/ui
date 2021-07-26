@@ -27,7 +27,7 @@ const setup = (override = {}) => {
     setCurrentTasksPage: jest.fn(),
     labels: [], // all labels
     isPinned: false,
-    org: {id: 'BUCKSINSIX'},
+    org: {id: 'BUCKSINSIX', name: 'Milwaukee Bucks'},
     me: {id: 'FORTHECULTURE'},
     ...override,
   }

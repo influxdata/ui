@@ -111,8 +111,8 @@ export class TaskCard extends PureComponent<
         <Context.Menu icon={IconFont.CogThick} testID="context-cog-runs">
           <Context.Item label="Export" action={this.handleExport} />
           <Context.Item
-            label="Edit Run"
-            action={this.handleEditRun}
+            label="Edit Task"
+            action={this.handleEditTask}
             testID="context-view-task-runs"
           />
           <Context.Item
@@ -176,7 +176,7 @@ export class TaskCard extends PureComponent<
     }
   }
 
-  private handleEditRun = () => {
+  private handleEditTask = () => {
     const {
       match: {
         params: {orgID},

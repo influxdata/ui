@@ -127,9 +127,9 @@ export class TaskCard extends PureComponent<
     })
   }
 
-  private handleOnDelete = async () => {
+  private handleOnDelete = () => {
     this.props.onDelete(this.props.task)
-    await deletePinnedItemByParam(this.props.task.id)
+    deletePinnedItemByParam(this.props.task.id)
   }
   private get contextMenu(): JSX.Element {
     const {task, onClone, isPinned} = this.props

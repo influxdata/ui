@@ -111,8 +111,8 @@ export class TaskCard extends PureComponent<
         <Context.Menu icon={IconFont.CogThick} testID="context-cog-runs">
           <Context.Item label="Export" action={this.handleExport} />
           <Context.Item
-            label="View Task Runs"
-            action={this.handleViewRuns}
+            label="Edit Run"
+            action={this.handleEditRun}
             testID="context-view-task-runs"
           />
           <Context.Item
@@ -145,15 +145,13 @@ export class TaskCard extends PureComponent<
 
   private handleNameClick = (event: MouseEvent) => {
     const {
+      history,
+      task,
       match: {
         params: {orgID},
       },
-      history,
-      task,
-      setCurrentTasksPage,
     } = this.props
-    const url = `/orgs/${orgID}/tasks/${task.id}/edit`
-    setCurrentTasksPage(TaskPage.TasksPage)
+    const url = `/orgs/${orgID}/tasks/${task.id}/runs`
 
     if (event.metaKey) {
       window.open(url, '_blank')
@@ -178,15 +176,16 @@ export class TaskCard extends PureComponent<
     }
   }
 
-  private handleViewRuns = () => {
+  private handleEditRun = () => {
     const {
-      history,
-      task,
       match: {
         params: {orgID},
       },
+      history,
+      task,
     } = this.props
-    history.push(`/orgs/${orgID}/tasks/${task.id}/runs`)
+
+    history.push(`/orgs/${orgID}/tasks/${task.id}/edit`)
   }
 
   private handleRenameTask = (name: string) => {

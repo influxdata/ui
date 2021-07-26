@@ -12,7 +12,10 @@ export interface ASTIM {
 }
 
 const parseAllVariables = (ast: File): MemberExpression[] => {
-  return findNodes(ast, node => node?.property?.type === 'Identifier' && node?.object?.name === 'v')
+  return findNodes(
+    ast,
+    node => node?.property?.type === 'Identifier' && node?.object?.name === 'v'
+  )
 }
 
 export const parseASTIM = (query: string): ASTIM => {

@@ -47,6 +47,7 @@ interface PassedProps {
   onRunTask: (taskID: string) => void
   onUpdate: (name: string, taskID: string) => void
   onFilterChange: (searchTerm: string) => void
+  isPinned: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -131,7 +132,7 @@ export class TaskCard extends PureComponent<
     await deletePinnedItemByParam(this.props.task.id)
   }
   private get contextMenu(): JSX.Element {
-    const {task, onClone} = this.props
+    const {task, onClone, isPinned} = this.props
 
     return (
       <Context>
@@ -163,6 +164,7 @@ export class TaskCard extends PureComponent<
             label="Pin to Homepage"
             action={async () => await this.handlePinTask()}
             testID="context-delete-task"
+            disabled={isPinned}
           />
         </Context.Menu>
         <Context.Menu

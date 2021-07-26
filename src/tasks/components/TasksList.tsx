@@ -18,6 +18,7 @@ import {getSortedResources} from 'src/shared/utils/sort'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {getPinnedItems} from 'src/shared/contexts/pinneditems'
 
 interface Props {
   tasks: Task[]
@@ -42,6 +43,7 @@ interface Props {
 interface State {
   taskLabelsEdit: Task
   isEditingTaskLabels: boolean
+  pinnedItems: any[]
 }
 
 export default class TasksList extends PureComponent<Props, State> {
@@ -54,11 +56,16 @@ export default class TasksList extends PureComponent<Props, State> {
     this.state = {
       taskLabelsEdit: null,
       isEditingTaskLabels: false,
+      pinnedItems: [],
     }
   }
 
   public componentDidMount() {
     this.props.checkTaskLimits()
+    getPinnedItems()
+      .then(res => res.json())
+      .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
+      .catch(err => console.error(err))
   }
 
   public render() {
@@ -124,6 +131,11 @@ export default class TasksList extends PureComponent<Props, State> {
         onUpdate={onUpdate}
         onRunTask={onRunTask}
         onFilterChange={onFilterChange}
+        isPinned={
+          !!this.state.pinnedItems.find(
+            item => item?.metadata[0].taskID === task.id
+          )
+        }
       />
     ))
   }

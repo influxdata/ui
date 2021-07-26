@@ -27,7 +27,6 @@ const setup = (override = {}) => {
     setCurrentTasksPage: jest.fn(),
     labels: [], // all labels
     ...override,
-    isPinned: false,
   }
 
   const redux = {

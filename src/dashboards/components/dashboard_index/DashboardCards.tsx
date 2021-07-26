@@ -18,6 +18,8 @@ import {LimitStatus} from 'src/cloud/actions/limits'
 
 // Utils
 import {extractDashboardLimits} from 'src/cloud/utils/limits'
+import pinneditems, {getPinnedItems} from 'src/shared/contexts/pinneditems'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface StateProps {
   limitStatus: LimitStatus
@@ -42,13 +44,20 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
   state = {
     pages: 1,
     windowSize: 0,
+    pinnedItems: [],
   }
 
   public componentDidMount() {
     this.setState({
       page: 1,
       windowSize: 15,
+      pinnedItems: [],
     })
+    if (isFlagEnabled('pinnedItems')) {
+      getPinnedItems()
+        .then(res => res.json())
+        .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
+    }
   }
 
   private registerSpinner = elem => {
@@ -103,7 +112,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
       sortType
     )
 
-    const {windowSize, pages} = this.state
+    const {windowSize, pages, pinnedItems} = this.state
 
     return (
       <div style={{height: '100%', display: 'grid'}}>
@@ -120,6 +129,11 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
                 updatedAt={meta.updatedAt}
                 description={description}
                 onFilterChange={onFilterChange}
+                isPinned={
+                  !!pinnedItems.find(
+                    item => item.metadata[0].dashboardID === id
+                  )
+                }
               />
             ))}
           <AssetLimitAlert

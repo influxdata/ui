@@ -44,6 +44,7 @@ interface OwnProps {
   updatedAt: string
   labels: string[]
   onFilterChange: (searchTerm: string) => void
+  isPinned: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -58,6 +59,7 @@ class DashboardCard extends PureComponent<Props> {
       onFilterChange,
       labels,
       updatedAt,
+      isPinned,
     } = this.props
 
     return (
@@ -150,6 +152,7 @@ class DashboardCard extends PureComponent<Props> {
             label="Pin to Homepage"
             action={this.handlePinDashboard}
             testID="context-delete-dashboard"
+            disabled={this.props.isPinned}
           />
         </Context.Menu>
         <Context.Menu

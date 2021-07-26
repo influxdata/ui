@@ -40,6 +40,7 @@ import {getTimeRange} from 'src/dashboards/selectors'
 // Types
 import {AppState, TimeRange, AutoRefreshStatus} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {GlobalQueryContextType} from 'src/query/context'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type RouterProps = RouteComponentProps<{
@@ -48,7 +49,7 @@ type RouterProps = RouteComponentProps<{
   orgID: string
 }>
 interface OwnProps {
-  handleSubmit?: (_: string) => void
+  globalQueryContext?: GlobalQueryContextType
 }
 
 type Props = OwnProps & ReduxProps & RouterProps
@@ -81,7 +82,9 @@ class TimeMachineQueries extends PureComponent<Props> {
               </>
             )}
             {isFlagEnabled('Subir') && (
-              <SubmitQueryButton handleSubmit={this.props.handleSubmit} />
+              <SubmitQueryButton
+                globalQueryContext={this.props.globalQueryContext}
+              />
             )}
             {!isFlagEnabled('Subir') && <SubmitQueryButton />}
           </FlexBox>

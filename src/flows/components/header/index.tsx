@@ -4,6 +4,7 @@ import React, {FC, useContext} from 'react'
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
 import {AppSettingProvider} from 'src/shared/contexts/app'
+import GlobalQueryProvider from 'src/query/context'
 
 // Components
 import {
@@ -52,7 +53,9 @@ const FlowHeader: FC = () => {
       </Page.Header>
       <Page.ControlBar fullWidth={FULL_WIDTH}>
         <Page.ControlBarLeft>
-          <Submit />
+          <GlobalQueryProvider>
+            <Submit />
+          </GlobalQueryProvider>
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <PresentationMode />

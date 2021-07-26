@@ -32,7 +32,7 @@ const TimeMachine: FunctionComponent<StateProps> = ({
   activeTab,
   isViewingVisOptions,
 }) => {
-  const {handleSubmit} = useContext(GlobalQueryContext)
+  const globalQueryContext = useContext(GlobalQueryContext)
 
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
 
@@ -44,7 +44,9 @@ const TimeMachine: FunctionComponent<StateProps> = ({
   if (activeTab === 'alerting') {
     bottomContents = <TimeMachineAlerting />
   } else if (activeTab === 'queries' && isFlagEnabled('Subir')) {
-    bottomContents = <TimeMachineQueries handleSubmit={handleSubmit} />
+    bottomContents = (
+      <TimeMachineQueries globalQueryContext={globalQueryContext} />
+    )
   } else if (activeTab === 'queries') {
     bottomContents = <TimeMachineQueries />
   } else if (activeTab === 'customCheckQuery') {

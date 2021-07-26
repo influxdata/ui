@@ -23,6 +23,7 @@ import {PROJECT_NAME} from 'src/flows'
 
 // Types
 import {AppState, RemoteDataState, Variable} from 'src/types'
+import {GlobalQueryContext} from 'src/query/context'
 
 interface Instance {
   id: string
@@ -86,6 +87,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
+  const {runQuery} = useContext(GlobalQueryContext)
   const [loading, setLoading] = useState({})
 
   const dispatch = useDispatch()
@@ -272,6 +274,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   // Use localstorage to communicate query execution to other tabs
   const queryAll = () => {
     sendEvent(notebookQueryKey)
+    console.log('queriessssss')
     _queryAll()
   }
 
@@ -303,19 +306,25 @@ export const FlowQueryProvider: FC = ({children}) => {
         .map(stage => {
           loading[stage.instance] = RemoteDataState.Loading
           setLoading(loading)
-          return query(stage.text)
-            .then(response => {
-              loading[stage.instance] = RemoteDataState.Done
-              setLoading(loading)
-              forceUpdate(stage.instance, response)
-            })
-            .catch(e => {
-              forceUpdate(stage.instance, {
-                error: e.message,
+          console.log('about to run', stage.text, runQuery)
+          return (
+            runQuery(stage.text)
+              // return query(stage.text)
+              .then(response => {
+                console.log('I am in then')
+                loading[stage.instance] = RemoteDataState.Done
+                setLoading(loading)
+                forceUpdate(stage.instance, response)
               })
-              loading[stage.instance] = RemoteDataState.Error
-              setLoading(loading)
-            })
+              .catch(e => {
+                console.log('I am in error')
+                forceUpdate(stage.instance, {
+                  error: e.message,
+                })
+                loading[stage.instance] = RemoteDataState.Error
+                setLoading(loading)
+              })
+          )
         })
     )
       .then(() => {

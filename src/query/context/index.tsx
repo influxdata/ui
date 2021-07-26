@@ -5,13 +5,7 @@ import {
   RunQueryResult,
   RunQuerySuccessResult,
 } from 'src/shared/apis/query'
-import {
-  AppState,
-  CancelBox,
-  RemoteDataState,
-  TimePeriod,
-  Variable,
-} from 'src/types'
+import {AppState, RemoteDataState, TimePeriod, Variable} from 'src/types'
 
 // Utils
 import {find} from 'src/flows/context/query'
@@ -29,85 +23,104 @@ import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {hashCode} from 'src/shared/apis/queryCache'
 import {getWindowVarsFromVariables} from 'src/variables/utils/getWindowVars'
 import {setQueryResults} from 'src/timeMachine/actions/queries'
+import {reject} from 'lodash'
 
 type Tags = Set<string> | null
 
 interface QueryResult {
-  raw: string
+  csv: string
   timeRange: TimePeriod
 }
 
-class Query {
+const DEFAULT_TTL = 30
+const TEN_MINUTES = 60 * 1000 * 10
+
+interface QuerySignature {
+  destroy: () => void
+  bucket: string
+  query: string
+}
+
+class Query implements QuerySignature {
   private astim: ASTIM
   private orgId: string
-  private vars: Variable[] | null
+  private vars: Variable[]
   private abortController: AbortController
+  private lastRun: number | null
 
-  public id
+  public id: string
   public status: RemoteDataState
   public tags: Tags
   public result: QueryResult
-  public runner: CancelBox<RunQueryResult>
+  public ttl
 
-  constructor(orgId: string, query: string, tags: Tags = null) {
+  constructor(
+    orgId: string,
+    vars: Variable[],
+    query: string,
+    ttl = DEFAULT_TTL,
+    tags: Tags = null
+  ) {
+    this.reset()
     this.id = Query.hash(query)
     if (!tags) {
-      this.tags = tags
-    }
-
-    this.update(query)
-    this.orgId = orgId
-    this.tags = new Set<string>()
-    this.status = RemoteDataState.NotStarted
-    this.abortController = new AbortController()
-  }
-
-  static hash(query: string) {
-    return hashCode(query)
-  }
-
-  async destroy() {
-    await this.cancel()
-    this.tags = null
-    this.astim = null
-    this.status = null
-    this.result = null
-  }
-
-  variables(vars: Variable[] | null = null) {
-    if (!vars) {
-      return this.vars
+      tags = new Set<string>()
     }
 
     this.vars = vars
+    this.ttl = ttl
+    this.tags = tags
+    this.query = query
+    this.orgId = orgId
   }
 
-  bucket(name: string | null) {
-    if (!name) {
-      return this.getBucket()
+  private reset(): void {
+    this.lastRun = null
+    this.tags = new Set<string>()
+    this.status = RemoteDataState.NotStarted
+    this.abortController = new AbortController()
+    this.astim = null
+    this.result = {
+      csv: '',
+      timeRange: {
+        start: -1,
+        end: -1,
+      },
     }
 
-    this.updateBucket(name)
+    this.cancel()
   }
 
-  private getBucket() {
-    const ast = this.astim.getAST()
-    const buckets = find(
-      ast,
-      node =>
-        node?.type === 'CallExpression' &&
-        node?.callee?.type === 'Identifier' &&
-        node?.callee?.name === 'from' &&
-        node.arguments[0]?.properties[0]?.key?.name === 'bucket'
-    ).map(node => node.arguments[0]?.properties[0]?.value.value)
-    if (buckets.length === 0) {
-      return null
+  private setResult(result: string): void {
+    this.lastRun = Date.now()
+    this.result = {
+      csv: result,
+      timeRange: {
+        start: 1,
+        end: 1,
+      },
     }
-
-    return buckets[0]
   }
 
-  private updateBucket(name: string) {
+  private isExpired(): boolean {
+    return !this.lastRun || Date.now() - this.lastRun >= this.ttl * 1000
+  }
+
+  static hash(query: string): string {
+    return hashCode(query)
+  }
+
+  public destroy(): void {
+    this.reset()
+
+    this.lastRun = null
+    this.status = null
+    this.result = null
+    this.abortController = null
+  }
+
+  // Setters / Getters
+  set bucket(name: string | null) {
     const ast = this.astim.getAST()
     find(
       ast,
@@ -120,73 +133,89 @@ class Query {
       node =>
         (node.arguments[0].properties[0].value.location.source = `"${name}"`)
     )
+
+    this.query = format_from_js_file(ast)
   }
 
-  text() {
+  get bucket(): string {
+    const ast = this.astim.getAST()
+    const buckets = find(
+      ast,
+      node =>
+        node?.type === 'CallExpression' &&
+        node?.callee?.type === 'Identifier' &&
+        node?.callee?.name === 'from' &&
+        node.arguments[0]?.properties[0]?.key?.name === 'bucket'
+    ).map(node => node.arguments[0]?.properties[0]?.value.value)
+
+    if (buckets.length === 0) {
+      return null
+    }
+
+    return buckets[0]
+  }
+
+  get query() {
     return format_from_js_file(this.astim.getAST())
   }
 
-  update(query: string) {
+  set query(query: string) {
     const astim = parseASTIM(query)
     this.astim = astim
   }
 
-  run(tags: Tags = null) {
-    if (!this.hasTags(tags)) {
-      return
-    }
+  async run(tags: Tags = null): Promise<string> {
+    console.log('runnninggggg')
+    return new Promise(resolve => {
+      if (!this.hasTags(tags) || !this.isExpired()) {
+        console.log('is expireddd')
+        resolve(this.result.csv)
+        return
+      }
 
-    this.cancel()
-    this.status = RemoteDataState.Loading
+      this.cancel()
+      this.status = RemoteDataState.Loading
 
-    const windowVars = getWindowVarsFromVariables(this.text(), this.variables())
-    const extern = buildUsedVarsOption(
-      this.text(),
-      this.variables(),
-      windowVars
-    )
-    this.runner = runQuery(
-      this.orgId,
-      this.text(),
-      extern,
-      this.abortController
-    )
+      const windowVars = getWindowVarsFromVariables(this.query, this.vars)
+      const extern = buildUsedVarsOption(this.query, this.vars, windowVars)
 
-    // do something with AbortController
-    this.status = RemoteDataState.Done
+      runQuery(this.orgId, this.query, extern, this.abortController)
+        .promise.then((r: RunQueryResult) => {
+          console.log('QUERY: ', this.query)
+          if (r.type === 'UNKNOWN_ERROR') {
+            console.log('Rejecting', {r})
+            reject('Issue with the query or AST')
+            return
+          }
+          const csv = (r as RunQuerySuccessResult).csv
+          this.setResult(csv)
+          this.status = RemoteDataState.Done
+          resolve(csv)
+        })
+        .catch(e => {
+          console.log('rejjjj')
+          reject(e)
+        })
+    })
   }
 
-  // TODO(Subir): Make this async
-  async cancel(tags: Tags = null) {
+  cancel(tags: Tags = null) {
     if (!this.hasTags(tags)) {
       return
     } else if (this.status === RemoteDataState.Loading) {
-      // Abort using AbortController
-      try {
-        await this.abortController.abort()
-      } catch (e) {
-        console.error('Error', e)
-      }
+      this.abortController.abort()
     }
 
     this.status = RemoteDataState.NotStarted
   }
 
-  getTags() {
-    return this.tags
-  }
-
-  addTag(tag: string) {
-    this.tags.add(tag)
-  }
-
-  removeTag(tag: string) {
-    this.tags.has(tag) && this.tags.delete(tag)
-  }
-
   hasTags(tags: Tags = null): boolean {
     // If no tags supplied OR valid tags supplied
     return !tags || Array.from(tags).some(tag => this.tags.has(tag))
+  }
+
+  isWorthDeleting() {
+    return this.lastRun && Date.now() - this.lastRun >= TEN_MINUTES
   }
 }
 
@@ -197,30 +226,26 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-interface GlobalQueryContextType {
+export interface GlobalQueryContextType {
   queries: Query[]
-  runQuery: (query: string) => Query
-  runQueries: (tags: Tags) => void
-  deleteQueries: (tags: Tags) => void
+  refreshQueries: () => void
+  runQuery: (query: string) => Promise<string>
   cancelQueries: (tags?: Tags) => void
-  getQuery: (id: string) => string
   addQuery: (query: string, tags?: Tags, id?: string) => Query
-  updateQuery: (id: string, query: string) => void
-  waitForQueries: (tags?: Tags) => void
-  handleSubmit: (rawQuery: string) => void
+  handleSubmit: (rawQuery: string) => Promise<string>
+  isInitialized: boolean
+  changeExpiration: (ttl: number) => void
 }
 
 export const DEFAULT_GLOBAL_QUERY_CONTEXT: GlobalQueryContextType = {
   queries: [],
+  refreshQueries: () => {},
   runQuery: (_: string) => null,
-  runQueries: (_: Tags) => {},
-  deleteQueries: (_: Tags) => {},
   cancelQueries: (_: Tags) => {},
-  getQuery: (_: string) => '',
   addQuery: (_: string, __?: Tags, ___?: string) => null,
-  updateQuery: (_: string, __: string) => {},
-  waitForQueries: (_?: Tags) => '',
-  handleSubmit: (_: string) => {},
+  handleSubmit: (_: string) => null,
+  isInitialized: false,
+  changeExpiration: (_: number) => {},
 }
 
 export const GlobalQueryContext = createContext<GlobalQueryContextType>(
@@ -230,6 +255,19 @@ export const GlobalQueryContext = createContext<GlobalQueryContextType>(
 const GlobalQueryProvider: FC<Props> = ({children, variables}) => {
   const orgId = useSelector(getOrg).id
   const [queries, setQueries] = useState<Query[]>([])
+  const [ttl, changeTTL] = useState(DEFAULT_TTL)
+
+  const changeExpiration = (seconds: number) => {
+    queries.map(query => {
+      query.ttl = seconds
+    })
+
+    changeTTL(seconds)
+  }
+
+  const refreshQueries = () => {
+    setQueries(queries.filter(query => !query.isWorthDeleting()))
+  }
 
   const findQuery = (query: string): Query => {
     const queryId = Query.hash(query)
@@ -237,36 +275,12 @@ const GlobalQueryProvider: FC<Props> = ({children, variables}) => {
     return queries.find(q => q.id === queryId)
   }
 
-  const waitForQueries = async (tags?: Tags) => {
-    const running = queries
-      .filter(query => query.status === RemoteDataState.Loading)
-      .filter(query => {
-        if (tags) {
-          return query.hasTags(tags)
-        }
+  const runQuery = async (rawQuery: string, tags?: Tags): Promise<string> => {
+    console.log('running local run')
+    const query = addQuery(rawQuery, tags)
 
-        return true
-      })
-
-    return await Promise.all(running.map(q => q.runner?.promise))
-  }
-
-  const runQuery = (rawQuery: string, tags?: Tags): Query => {
-    let query = findQuery(rawQuery)
-    if (query && query.status === RemoteDataState.Done) {
-      return query
-    }
-
-    query = addQuery(rawQuery, tags)
-    query.run()
-
-    return query
-  }
-
-  const getQuery = (id: string) => {
-    const query = queries.find(q => id === q.id)
-
-    return query?.text()
+    console.log('lksdksldklkjakdlsjld')
+    return query.run()
   }
 
   const addQuery = (rawQuery: string, tags: Tags = null): Query => {
@@ -276,9 +290,8 @@ const GlobalQueryProvider: FC<Props> = ({children, variables}) => {
       return query
     }
 
-    query = new Query(orgId, rawQuery, tags)
+    query = new Query(orgId, variables, rawQuery, ttl, tags)
 
-    query.variables(variables)
     queries.push(query)
 
     setQueries(queries)
@@ -286,42 +299,13 @@ const GlobalQueryProvider: FC<Props> = ({children, variables}) => {
     return query
   }
 
-  const updateQuery = (id: string, query: string) => {
-    setQueries(
-      queries.map(q => {
-        if (q.id === id) {
-          q.update(query)
-        }
+  const handleSubmit = async (rawQuery): Promise<string> => {
+    return runQuery(rawQuery)
 
-        return q
-      })
-    )
-  }
-
-  const dispatch = useDispatch()
-
-  const handleSubmit = async rawQuery => {
-    const query = runQuery(rawQuery)
-    const result = (await query.runner.promise) as RunQuerySuccessResult
-
-    dispatch(setQueryResults(RemoteDataState.Done, [result.csv], 0, null, []))
-  }
-
-  const runQueries = (tags: Tags = null) => {
-    queries.forEach(query => query.run(tags))
-  }
-
-  const deleteQueries = (tags: Tags = null) => {
-    const toKeep = queries.filter(query => {
-      if (query.hasTags(tags)) {
-        query.destroy()
-        return false
-      }
-
-      return true
-    })
-
-    setQueries(toKeep)
+    // callback(result)
+    // dispatch(
+    //   setQueryResults(RemoteDataState.Done, [query.result.csv], 0, null, [])
+    // )
   }
 
   const cancelQueries = async (tags: Tags = null) => {
@@ -330,19 +314,19 @@ const GlobalQueryProvider: FC<Props> = ({children, variables}) => {
     setQueries(queries)
   }
 
+  const isInitialized = true
+
   return (
     <GlobalQueryContext.Provider
       value={{
         queries,
         runQuery,
-        runQueries,
-        deleteQueries,
         cancelQueries,
-        getQuery,
         addQuery,
-        updateQuery,
-        waitForQueries,
         handleSubmit,
+        isInitialized,
+        changeExpiration,
+        refreshQueries,
       }}
     >
       {children}

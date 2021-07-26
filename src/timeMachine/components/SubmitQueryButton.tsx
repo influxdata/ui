@@ -12,7 +12,10 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
+import {
+  saveAndExecuteQueries,
+  setQueryResults,
+} from 'src/timeMachine/actions/queries'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
@@ -29,13 +32,15 @@ import {getOrg} from 'src/organizations/selectors'
 // Types
 import {AppState, RemoteDataState} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {GlobalQueryContextType} from 'src/query/context'
 
 interface OwnProps {
   text?: string
   icon?: IconFont
   testID?: string
   className?: string
-  handleSubmit?: (_: string) => void
+  globalQueryContext?: GlobalQueryContextType
+  handleSubmit?: (result) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -87,6 +92,7 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   public render() {
+    // console.log('hjhrerhejre', this.handleClick)
     const {text, queryStatus, icon, testID, className} = this.props
     if (queryStatus === RemoteDataState.Loading && this.state.timer) {
       return (
@@ -131,19 +137,29 @@ class SubmitQueryButton extends PureComponent<Props> {
     return ComponentStatus.Default
   }
 
-  private areFunctionsEqual(f1, f2) {
-    return '' + f1 === '' + f2
-  }
-
   private handleClick = (): void => {
     event('SubmitQueryButton click')
 
+    console.log(
+      this.props.globalQueryContext?.isInitialized,
+      isFlagEnabled('Subir')
+    )
     if (
       isFlagEnabled('Subir') &&
-      !this.areFunctionsEqual(this.props.handleSubmit, (_: string) => {})
+      this.props.globalQueryContext?.isInitialized
     ) {
-      this.props.handleSubmit(this.props.activeQueryText)
+      console.log('aaaaaa', this.props.globalQueryContext.handleSubmit)
+      this.props.globalQueryContext
+        ?.handleSubmit(this.props.activeQueryText)
+        .then(result => {
+          console.log({result})
+          this.props.handleSubmit(result)
+        })
+        .catch(e => {
+          console.log(e)
+        })
     } else {
+      console.log('in ELSE')
       this.props.onSubmit()
     }
   }
@@ -157,6 +173,11 @@ class SubmitQueryButton extends PureComponent<Props> {
 }
 
 export {SubmitQueryButton}
+
+export const handleSubmit = result => dispatch => {
+  // console.log('hand hand,,', {result})
+  dispatch(setQueryResults(RemoteDataState.Done, [result], 0, null, []))
+}
 
 const mstp = (state: AppState) => {
   const queryStatus = getActiveTimeMachine(state).queryResults.status
@@ -172,6 +193,7 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
+  handleSubmit: handleSubmit,
   onSubmit: saveAndExecuteQueries,
   onNotify: notify,
   cancelAllRunningQueries: cancelAllRunningQueries,

@@ -18,6 +18,7 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {GlobalQueryContext} from 'src/query/context'
 
 // Styles
 import 'src/flows/components/header/Submit.scss'
@@ -33,9 +34,11 @@ export const Submit: FC = () => {
   const {generateMap, queryAll, status} = useContext(FlowQueryContext)
 
   const hasQueries = useMemo(() => generateMap().length > 0, [generateMap])
+  const globalQueryContext = useContext(GlobalQueryContext)
 
   const handleSubmit = () => {
     event('Notebook Submit Button Clicked')
+    console.log('Running queryAll')
     queryAll()
   }
 
@@ -43,6 +46,9 @@ export const Submit: FC = () => {
     active: boolean,
     onClick: (e: MouseEvent<HTMLButtonElement>) => void
   ) => {
+    globalQueryContext.isInitialized = false
+    console.log('hisdjskdjs')
+    globalQueryContext.handleSubmit = handleSubmit
     return (
       <ButtonGroup>
         <SubmitQueryButton
@@ -54,8 +60,10 @@ export const Submit: FC = () => {
           onSubmit={handleSubmit}
           onNotify={fakeNotify}
           queryID=""
+          activeQueryText=""
           cancelAllRunningQueries={cancel}
-          activeQueryText=''
+          globalQueryContext={globalQueryContext}
+          handleSubmit={handleSubmit}
         />
         {status !== RemoteDataState.Loading && (
           <SquareButton

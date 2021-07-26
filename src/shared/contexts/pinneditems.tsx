@@ -30,8 +30,6 @@ export enum PinnedItemTypes {
 }
 export const PinnedItemsContext = createContext(null)
 
-const token = ''
-
 // The routes below are placeholders until we get the implementation of the swagger-defined routes through the pipeline
 
 export const getPinnedItems = async () => {

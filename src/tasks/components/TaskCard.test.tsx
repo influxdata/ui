@@ -32,7 +32,10 @@ const setup = (override = {}) => {
     me: {
       id: 'FORTHECULTURE',
       name: 'Bucks',
-      links: {},
+      links: {
+        self: '',
+        log: '',
+      },
       quartzMeStatus: RemoteDataState.NotStarted,
     },
     ...override,

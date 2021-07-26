@@ -31,9 +31,10 @@ import {
 interface Props {
   id: string
   name: string
+  isPinned: boolean
 }
 
-const FlowContextMenu: FC<Props> = ({id, name}) => {
+const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const {remove, clone} = useContext(FlowListContext)
   const {orgID} = useParams<{orgID: string}>()
   const me = useSelector(getMe)
@@ -89,6 +90,7 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
             label="Pin to Homepage"
             action={async () => await handlePinFlow()}
             testID="context-delete-task"
+            disabled={isPinned}
           />
         </Context.Menu>
         <Context.Menu

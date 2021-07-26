@@ -34,32 +34,20 @@ const token = ''
 
 // The routes below are placeholders until we get the implementation of the swagger-defined routes through the pipeline
 
-const getPinnedItems = async () => {
+export const getPinnedItems = async () => {
   return await fetch(``, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-    },
   })
 }
 
 const removePinnedItem = async (id: string) => {
   return await fetch(`/${id}`, {
     method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-    },
   })
 }
 const addPinnedItem = async (item: Partial<PinnedItem>) => {
   const added = await fetch(``, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify(item),
   })
   return await added.json()
@@ -68,10 +56,6 @@ const addPinnedItem = async (item: Partial<PinnedItem>) => {
 const updatePinnedItem = async (_id: string, item: Partial<PinnedItem>) => {
   await fetch(``, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify({updateItemFields: item}),
   })
 

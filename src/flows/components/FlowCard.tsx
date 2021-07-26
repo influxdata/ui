@@ -9,9 +9,10 @@ import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 interface Props {
   id: string
   name: string
+  isPinned: boolean
 }
 
-const FlowCard: FC<Props> = ({id, name}) => {
+const FlowCard: FC<Props> = ({id, name, isPinned}) => {
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
 
@@ -19,7 +20,9 @@ const FlowCard: FC<Props> = ({id, name}) => {
     history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`)
   }
 
-  const contextMenu = <FlowContextMenu id={id} name={name} />
+  const contextMenu = (
+    <FlowContextMenu id={id} name={name} isPinned={isPinned} />
+  )
 
   return (
     <ResourceCard

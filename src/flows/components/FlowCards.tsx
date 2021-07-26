@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 
 import {
   ResourceList,
@@ -12,6 +12,8 @@ import FlowsExplainer from 'src/flows/components/FlowsExplainer'
 import FlowCard from 'src/flows/components/FlowCard'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {FlowList} from 'src/types/flows'
+import {getPinnedItems} from 'src/shared/contexts/pinneditems'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   flows: FlowList
@@ -27,6 +29,16 @@ const NoMatches = () => {
 }
 
 const FlowCards: FC<Props> = ({flows, search}) => {
+  const [pinnedItems, setPinnedItems] = useState([])
+
+  useEffect(() => {
+    if (isFlagEnabled('pinnedItems')) {
+      getPinnedItems()
+        .then(res => res.json())
+        .then(res => setPinnedItems(res))
+    }
+  }, [])
+
   return (
     <Grid>
       <Grid.Row>
@@ -40,7 +52,18 @@ const FlowCards: FC<Props> = ({flows, search}) => {
               emptyState={!!search ? <NoMatches /> : <FlowsIndexEmpty />}
             >
               {Object.entries(flows.flows).map(([id, {name}]) => {
-                return <FlowCard key={id} id={id} name={name} />
+                return (
+                  <FlowCard
+                    key={id}
+                    id={id}
+                    name={name}
+                    isPinned={
+                      !!pinnedItems.find(
+                        item => item?.metadata[0].flowID === id
+                      )
+                    }
+                  />
+                )
               })}
             </ResourceList.Body>
           </ResourceList>

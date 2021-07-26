@@ -57,6 +57,9 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
       getPinnedItems()
         .then(res => res.json())
         .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
+        .catch(err => {
+          console.error(err)
+        })
     }
   }
 
@@ -131,7 +134,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
                 onFilterChange={onFilterChange}
                 isPinned={
                   !!pinnedItems.find(
-                    item => item.metadata[0].dashboardID === id
+                    item => item?.metadata[0].dashboardID === id
                   )
                 }
               />

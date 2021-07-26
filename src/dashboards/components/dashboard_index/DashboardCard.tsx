@@ -59,7 +59,6 @@ class DashboardCard extends PureComponent<Props> {
       onFilterChange,
       labels,
       updatedAt,
-      isPinned,
     } = this.props
 
     return (

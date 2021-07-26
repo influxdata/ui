@@ -30,6 +30,12 @@ export const getFormatter = (
     format,
   }: GetFormatterOptions = {}
 ): null | ((x: any) => string) => {
+  // timeFormat was being returned a empty string, which meant TypeScript will not
+  // replace it with the default, so we need to do it here with a check.
+  if (timeFormat === '') {
+    timeFormat = DEFAULT_TIME_FORMAT
+  }
+
   if (columnType === 'number' && base === '2') {
     return binaryPrefixFormatter({
       prefix,
@@ -64,7 +70,7 @@ export const getFormatter = (
       timeZone: timeZone === 'Local' ? undefined : timeZone,
       format: resolveTimeFormat(timeFormat),
     }
-    if (timeFormat?.includes('HH')) {
+    if (formatOptions.format.includes('HH')) {
       formatOptions['hour12'] = false
     }
     return timeFormatter(formatOptions)

@@ -30,12 +30,6 @@ export const getFormatter = (
     format,
   }: GetFormatterOptions = {}
 ): null | ((x: any) => string) => {
-  // timeFormat was being passed in an empty string, which meant TypeScript will not
-  // replace it with the default, so we need to do it here with a check.
-  if (timeFormat === '') {
-    timeFormat = DEFAULT_TIME_FORMAT
-  }
-
   if (columnType === 'number' && base === '2') {
     return binaryPrefixFormatter({
       prefix,

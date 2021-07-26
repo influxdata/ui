@@ -37,7 +37,8 @@ import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampForm
 
 interface OwnProps {
   auth: Authorization
-  onClickDescription: (authID: string) => void
+  onClickDescription: (authID: string) => void,
+  onClone: (authID: string) => void,
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -168,7 +169,7 @@ class TokenRow extends PureComponent<Props> {
   }
 
   private handleClone = () => {
-      
+      this.props.onClone(this.props.auth.id);
   }
 
   private handleClickDescription = () => {

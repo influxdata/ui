@@ -14,6 +14,9 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
+import {incrementCloneName} from 'src/utils/naming'
+
+import { createAuthorization } from 'src/authorizations/apis';
 
 type SortKey = keyof Authorization
 
@@ -83,9 +86,30 @@ export default class TokenList extends PureComponent<Props, State> {
         key={auth.id}
         auth={auth}
         onClickDescription={this.handleClickDescription}
+        onClone={this.handleClone}
       />
     ))
   }
+
+  //
+  private handleClone = async (id: string) => {
+      const { auths } = this.props;
+
+      const authFound = auths.find((auth) => auth.id === id);
+
+      if (!authFound) return null;
+
+      const authsDescriptions = auths.map((auth) => auth.description);
+
+      const clonedAuth = {
+          ...authFound,
+          description: incrementCloneName(authsDescriptions, authFound.description),
+      };
+
+      console.log('Cloning results', clonedAuth);
+
+      await createAuthorization(clonedAuth);
+  };
 
   private handleDismissOverlay = () => {
     this.setState({isTokenOverlayVisible: false})

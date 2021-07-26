@@ -21,7 +21,7 @@ import {CopyResourceID} from 'src/shared/components/CopyResourceID'
 
 // Actions
 import {addTaskLabel, deleteTaskLabel} from 'src/tasks/actions/thunks'
-import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
+import {setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor} from '@influxdata/clockface'

@@ -18,7 +18,7 @@ import {LimitStatus} from 'src/cloud/actions/limits'
 
 // Utils
 import {extractDashboardLimits} from 'src/cloud/utils/limits'
-import pinneditems, {getPinnedItems} from 'src/shared/contexts/pinneditems'
+import {getPinnedItems} from 'src/shared/contexts/pinneditems'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface StateProps {

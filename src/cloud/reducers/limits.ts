@@ -2,8 +2,9 @@ import {produce} from 'immer'
 
 // Types
 import {Actions, ActionTypes} from 'src/cloud/actions/limits'
-import {Limit, RemoteDataState} from 'src/types'
-import {LimitStatus} from 'src/cloud/actions/limits'
+import {RemoteDataState} from 'src/types'
+import {Limit} from 'src/cloud/actions/limits'
+import {LimitStatus} from 'src/client/cloudPrivRoutes'
 
 interface LimitWithBlocked extends Limit {
   blocked: string[]
@@ -26,7 +27,7 @@ export interface LimitsState {
 
 const defaultLimit: Limit = {
   maxAllowed: Infinity,
-  limitStatus: LimitStatus.OK,
+  limitStatus: 'ok' as LimitStatus['status'],
 }
 
 const defaultLimitWithBlocked: LimitWithBlocked = {...defaultLimit, blocked: []}

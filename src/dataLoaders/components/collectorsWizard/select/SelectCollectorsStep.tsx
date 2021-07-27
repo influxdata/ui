@@ -8,10 +8,6 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import StreamingSelector from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector'
 import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
-// Constants
-import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
-import { TelegrafPlugin} from 'src/writeData/constants/contentTelegrafPlugins'
-
 // Actions
 import {
   addPluginBundleWithPlugins,

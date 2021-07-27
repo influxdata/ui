@@ -55,6 +55,9 @@ interface ScraperTarget {
   name: string
   id?: string
 }
+import {
+  TelegrafPlugin,
+} from 'src/writeData/constants/contentTelegrafPlugins'
 
 export interface DataLoadersState {
   telegrafPlugins: TelegrafPlugin[]
@@ -117,13 +120,13 @@ export type Plugin =
   | TelegrafPluginOutputFile
   | TelegrafPluginOutputInfluxDBV2
 
-export interface TelegrafPlugin {
-  name: TelegrafPluginName
-  configured: ConfigurationState
-  active: boolean
-  plugin?: Plugin
-  templateID?: string
-}
+// export interface TelegrafPlugin {
+//   name: TelegrafPluginName
+//   configured: ConfigurationState
+//   active: boolean
+//   plugin?: Plugin
+//   templateID?: string
+// }
 
 export enum BundleName {
   System = 'System',

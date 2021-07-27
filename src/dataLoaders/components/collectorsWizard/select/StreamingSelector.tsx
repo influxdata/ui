@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent, createElement, Suspense} from 'react'
 import uuid from 'uuid'
-const LazySVG = React.lazy(() => import('src/perf/components/LazySVG'))
 
 // Components
 import {
@@ -9,17 +8,12 @@ import {
   EmptyState,
   FormElement,
   Grid,
-  SelectableCard,
   IconFont,
   SquareGrid,
 } from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 // Constants
-import {
-  PLUGIN_BUNDLE_OPTIONS,
-  BUNDLE_LOGOS,
-} from 'src/dataLoaders/constants/pluginConfigs'
 import BucketDropdown from 'src/dataLoaders/components/BucketsDropdown'
 import {
   WRITE_DATA_TELEGRAF_PLUGINS,
@@ -27,15 +21,14 @@ import {
 } from 'src/writeData/constants/contentTelegrafPlugins'
 
 // Types
-import {Bucket} from 'src/types'
+import {Bucket, BundleName} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
-import {filter} from 'lodash'
 
 export interface Props {
   buckets: Bucket[]
   selectedBucketName: string
-  pluginBundles: TelegrafPlugin[]
+  pluginBundles: BundleName[]
   telegrafPlugins: TelegrafPlugin[]
   onTogglePluginBundle: (telegrafPlugin: string, isSelected: boolean) => void
   onSelectBucket: (bucket: Bucket) => void
@@ -187,7 +180,7 @@ class StreamingSelector extends PureComponent<Props, State> {
   private isCardChecked(bundle): boolean {
     const {pluginBundles} = this.props
 
-    if (pluginBundles.find(b => b.name === bundle)) {
+    if (pluginBundles.find(b => b === bundle)) {
       return true
     }
     return false

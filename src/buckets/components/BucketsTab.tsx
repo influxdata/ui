@@ -32,7 +32,7 @@ import {
 import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/limits'
 
 // Utils
-import {extractBucketLimits} from 'src/cloud/utils/limits'
+import {getBucketLimitStatus} from 'src/cloud/utils/limits'
 import {getAll} from 'src/resources/selectors'
 import {SortTypes} from 'src/shared/utils/sort'
 
@@ -192,7 +192,7 @@ const mstp = (state: AppState) => {
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)
   return {
     buckets,
-    limitStatus: extractBucketLimits(state.cloud.limits),
+    limitStatus: getBucketLimitStatus(state),
   }
 }
 

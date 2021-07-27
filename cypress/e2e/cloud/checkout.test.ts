@@ -28,7 +28,11 @@ describe('Checkout Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags({unityMeApi: true, unityCheckout: true}).then(() => {
+        cy.setFeatureFlags({
+          unityMeApi: true,
+          unityCheckout: true,
+          uiUnificationFlag: true,
+        }).then(() => {
           cy.quartzProvision({
             accountType: 'free',
           }).then(() => {
@@ -182,7 +186,11 @@ describe('Checkout Page should not be accessible for non-free users', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags({unityMeApi: true, unityCheckout: true}).then(() => {
+        cy.setFeatureFlags({
+          unityMeApi: true,
+          unityCheckout: true,
+          uiUnificationFlag: true,
+        }).then(() => {
           cy.quartzProvision({
             accountType: 'pay_as_you_go',
           }).then(() => {

@@ -54,7 +54,10 @@ const UserWidget: FC<Props> = ({
           label="Usage"
           testID="user-nav-item-usage"
           linkElement={className => {
-            if (isFlagEnabled('unityUsage')) {
+            if (
+              isFlagEnabled('unityUsage') ||
+              isFlagEnabled('uiUnificationFlag')
+            ) {
               return <Link className={className} to={`${orgPrefix}/usage`} />
             }
             return (
@@ -70,7 +73,10 @@ const UserWidget: FC<Props> = ({
           label="Billing"
           testID="user-nav-item-billing"
           linkElement={className => {
-            if (isFlagEnabled('unityBilling')) {
+            if (
+              isFlagEnabled('unityBilling') ||
+              isFlagEnabled('uiUnificationFlag')
+            ) {
               return <Link className={className} to={`${orgPrefix}/billing`} />
             }
             return (
@@ -86,7 +92,10 @@ const UserWidget: FC<Props> = ({
           label="Users"
           testID="user-nav-item-users"
           linkElement={className => {
-            if (isFlagEnabled('unityUsers')) {
+            if (
+              isFlagEnabled('unityUsers') ||
+              isFlagEnabled('uiUnificationFlag')
+            ) {
               return <Link className={className} to={`${orgPrefix}/users`} />
             }
             return (

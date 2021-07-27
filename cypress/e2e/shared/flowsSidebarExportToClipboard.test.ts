@@ -6,7 +6,7 @@ const openCopyAs = () => {
     .eq(1)
     .scrollIntoView()
     .click({force: true})
-  cy.getByTestID('Copy As--list-item').click()
+  cy.getByTestID('Export to Client Library--list-item').click()
 }
 
 const addFluxQueryInNotebook = (query: string) => {
@@ -66,7 +66,6 @@ const verifyClientCode = (client: any) => {
     .children()
     .find('code')
     .contains(client.query)
-  cy.getByTestID('button-copy').should('have.length', client.copyButtons)
 
   cy.get('.cf-overlay--dismiss').click()
 }
@@ -84,7 +83,6 @@ const getClients = (
       org: `#define INFLUXDB_ORG "${org}"`,
       bucket: `#define INFLUXDB_BUCKET "${bucket}"`,
       query,
-      copyButtons: 3,
     },
     {
       name: 'csharp',
@@ -92,7 +90,6 @@ const getClients = (
       org: `const string org = "${org}";`,
       bucket: `const string bucket = "${bucket}";`,
       query,
-      copyButtons: 4,
     },
     {
       name: 'go',
@@ -100,7 +97,6 @@ const getClients = (
       org: `const org = "${org}"`,
       bucket: `const bucket = "${bucket}"`,
       query,
-      copyButtons: 1,
     },
     {
       name: 'java',
@@ -108,7 +104,6 @@ const getClients = (
       org: `String org = "${org}";`,
       bucket: `String bucket = "${bucket}";`,
       query,
-      copyButtons: 3,
     },
     {
       name: 'javascript-node',
@@ -116,7 +111,6 @@ const getClients = (
       org: `const org = '${org}'`,
       bucket: `const bucket = '${bucket}'`,
       query,
-      copyButtons: 2,
     },
     {
       name: 'kotlin',
@@ -124,7 +118,6 @@ const getClients = (
       org: `val org = "${org}"`,
       bucket: `val bucket = "${bucket}"`,
       query,
-      copyButtons: 3,
     },
     {
       name: 'php',
@@ -132,7 +125,6 @@ const getClients = (
       org: `$org = '${org}';`,
       bucket: `$bucket = '${bucket}';`,
       query,
-      copyButtons: 2,
     },
     {
       name: 'python',
@@ -140,7 +132,6 @@ const getClients = (
       org: `org = "${org}"`,
       bucket: `bucket = "${bucket}"`,
       query,
-      copyButtons: 2,
     },
     {
       name: 'ruby',
@@ -148,7 +139,6 @@ const getClients = (
       org: `org = '${org}'`,
       bucket: `bucket = '${bucket}'`,
       query,
-      copyButtons: 2,
     },
     {
       name: 'scala',
@@ -156,7 +146,6 @@ const getClients = (
       org: `val org = "${org}"`,
       bucket: `val bucket = "${bucket}"`,
       query,
-      copyButtons: 4,
     },
     {
       name: 'swift',
@@ -164,7 +153,6 @@ const getClients = (
       org: `let org = "${org}"`,
       bucket: `let bucket = "${bucket}"`,
       query,
-      copyButtons: 2,
     },
   ]
 }

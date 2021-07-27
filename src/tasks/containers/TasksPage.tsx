@@ -242,10 +242,7 @@ class TasksPage extends PureComponent<Props, State> {
 }
 
 const mstp = (state: AppState) => {
-  const {
-    resources,
-    cloud: {limits},
-  } = state
+  const {resources} = state
   const {status, searchTerm, showInactive} = resources.tasks
 
   return {
@@ -253,7 +250,7 @@ const mstp = (state: AppState) => {
     status: status,
     searchTerm,
     showInactive,
-    limitStatus: extractTaskLimits(limits),
+    limitStatus: extractTaskLimits(state),
   }
 }
 

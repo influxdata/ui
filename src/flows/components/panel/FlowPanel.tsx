@@ -8,12 +8,7 @@ import React, {
   useEffect,
 } from 'react'
 import classnames from 'classnames'
-import {
-  ComponentColor,
-  Button,
-  IconFont,
-  SquareButton,
-} from '@influxdata/clockface'
+import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
 
 // Components
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
@@ -21,7 +16,7 @@ import Handle from 'src/flows/components/panel/Handle'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
-import Sidebar from 'src/flows/components/Sidebar'
+import {MenuButton} from 'src/flows/components/Sidebar'
 
 // Constants
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -34,9 +29,6 @@ import {PipeContextProps} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-
-// Utils
-import {event} from 'src/cloud/utils/reporting'
 
 import 'src/flows/shared/Resizer.scss'
 
@@ -56,7 +48,7 @@ const FlowPanel: FC<Props> = ({
 }) => {
   const {flow} = useContext(FlowContext)
   const {generateMap} = useContext(FlowQueryContext)
-  const {id: focused, show, hide} = useContext(SidebarContext)
+  const {id: focused} = useContext(SidebarContext)
 
   const isVisible = flow.meta.get(id).visible
 
@@ -64,17 +56,6 @@ const FlowPanel: FC<Props> = ({
     [`flow-panel__${isVisible ? 'visible' : 'hidden'}`]: true,
     'flow-panel__focus': focused === id,
   })
-
-  const toggleSidebar = () => {
-    if (id !== focused) {
-      event('Sidebar Toggle Clicked', {state: 'opening'})
-
-      show(id)
-    } else {
-      event('Sidebar Toggle Clicked', {state: 'hidding'})
-      hide()
-    }
-  }
 
   // This function allows the developer to see the queries
   // that the panels are generating through a notebook. Each
@@ -231,20 +212,7 @@ const FlowPanel: FC<Props> = ({
                     className="flows-config-panel-button"
                   />
                 </FeatureFlag>
-                <FeatureFlag name="flow-sidebar">
-                  <Button
-                    icon={IconFont.CogThick}
-                    onClick={toggleSidebar}
-                    color={
-                      id === focused
-                        ? ComponentColor.Secondary
-                        : ComponentColor.Default
-                    }
-                    className="flows-config-panel-button"
-                    testID="square-button"
-                  />
-                  {id === focused && <Sidebar />}
-                </FeatureFlag>
+                <MenuButton id={id} />
                 <FeatureFlag name="flow-sidebar" equals={false}>
                   <PanelVisibilityToggle id={id} />
                   <RemovePanelButton id={id} />

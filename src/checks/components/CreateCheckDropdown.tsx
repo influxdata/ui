@@ -18,7 +18,7 @@ import {CLOUD} from 'src/shared/constants'
 interface OwnProps {
   onCreateThreshold: () => void
   onCreateDeadman: () => void
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -31,7 +31,7 @@ const CreateCheckDropdown: FunctionComponent<OwnProps & ReduxProps> = ({
   limitStatus,
 }) => {
   const handleItemClick = (type: CheckType): void => {
-    if (CLOUD && limitStatus === LimitStatus.EXCEEDED) {
+    if (CLOUD && limitStatus === 'exceeded') {
       onShowOverlay('asset-limit', {asset: 'Checks'}, onDismissOverlay)
       return
     }

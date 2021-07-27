@@ -1,7 +1,8 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {FC, memo} from 'react'
 
 // Components
+import UsagePanel from 'src/me/components/UsagePanel'
 import Support from 'src/me/components/Support'
 import {
   Panel,
@@ -23,89 +24,111 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import LogoutButton from 'src/me/components/LogoutButton'
 import DashboardsList from 'src/me/components/DashboardsList'
 import GetResources from 'src/resources/components/GetResources'
-import {AppState, ResourceType} from 'src/types'
+import {ResourceType} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
-interface Props {
-  me: AppState['me']
-}
+// Selectors
+import {useSelector} from 'react-redux'
+import {getMe} from 'src/me/selectors'
 
-class ResourceLists extends PureComponent<Props> {
-  public render() {
-    return (
-      <FlexBox
-        direction={FlexDirection.Column}
-        alignItems={AlignItems.Stretch}
-        stretchToFitWidth={true}
-        margin={ComponentSize.Small}
-      >
-        {isFlagEnabled('docSearchWidget') ? (
-          <Panel testID="documentation--panel">
+const ResourceLists: FC = () => {
+  const {quartzMe} = useSelector(getMe)
+  return (
+    <FlexBox
+      direction={FlexDirection.Column}
+      alignItems={AlignItems.Stretch}
+      stretchToFitWidth={true}
+      margin={ComponentSize.Small}
+    >
+      {isFlagEnabled('docSearchWidget') ? (
+        <Panel testID="documentation--panel">
+          <Panel.Header>
+            <Heading
+              element={HeadingElement.H2}
+              weight={FontWeight.Medium}
+              className="cf-heading__h4"
+            >
+              <label htmlFor="documentation">Documentation</label>
+            </Heading>
+          </Panel.Header>
+          <Panel.Body>
+            <DocSearchWidget />
+          </Panel.Body>
+        </Panel>
+      ) : (
+        <>
+          <Panel>
+            <Panel.Header>
+              <Heading
+                element={HeadingElement.H2}
+                weight={FontWeight.Light}
+                className="cf-heading__h4"
+              >
+                Account
+              </Heading>
+              <LogoutButton />
+            </Panel.Header>
+          </Panel>
+          <Panel testID="recent-dashboards--panel">
+            <Panel.Header>
+              <Heading
+                element={HeadingElement.H2}
+                weight={FontWeight.Light}
+                className="cf-heading__h4"
+              >
+                <label htmlFor="filter-dashboards">Recent Dashboards</label>
+              </Heading>
+            </Panel.Header>
+            <Panel.Body>
+              <GetResources resources={[ResourceType.Dashboards]}>
+                <DashboardsList />
+              </GetResources>
+            </Panel.Body>
+          </Panel>
+        </>
+      )}
+      <Panel>
+        {isFlagEnabled('newUsagePanel') && CLOUD ? (
+          <>
             <Panel.Header>
               <Heading
                 element={HeadingElement.H2}
                 weight={FontWeight.Medium}
                 className="cf-heading__h4"
               >
-                <label htmlFor="documentation">Documentation</label>
+                {`Usage Rates (${
+                  !quartzMe || quartzMe?.accountType === 'free'
+                    ? 'Free'
+                    : 'PAYG'
+                })`}
               </Heading>
             </Panel.Header>
             <Panel.Body>
-              <DocSearchWidget />
+              <UsagePanel />
             </Panel.Body>
-          </Panel>
+          </>
         ) : (
           <>
-            <Panel>
-              <Panel.Header>
-                <Heading
-                  element={HeadingElement.H2}
-                  weight={FontWeight.Light}
-                  className="cf-heading__h4"
-                >
-                  Account
-                </Heading>
-                <LogoutButton />
-              </Panel.Header>
-            </Panel>
-            <Panel testID="recent-dashboards--panel">
-              <Panel.Header>
-                <Heading
-                  element={HeadingElement.H2}
-                  weight={FontWeight.Light}
-                  className="cf-heading__h4"
-                >
-                  <label htmlFor="filter-dashboards">Recent Dashboards</label>
-                </Heading>
-              </Panel.Header>
-              <Panel.Body>
-                <GetResources resources={[ResourceType.Dashboards]}>
-                  <DashboardsList />
-                </GetResources>
-              </Panel.Body>
-            </Panel>
+            <Panel.Header>
+              <Heading
+                element={HeadingElement.H2}
+                weight={FontWeight.Light}
+                className="cf-heading__h4"
+              >
+                Useful Links
+              </Heading>
+            </Panel.Header>
+            <Panel.Body>
+              <Support />
+            </Panel.Body>
           </>
         )}
-
-        <Panel>
-          <Panel.Header>
-            <Heading
-              element={HeadingElement.H2}
-              weight={FontWeight.Light}
-              className="cf-heading__h4"
-            >
-              Useful Links
-            </Heading>
-          </Panel.Header>
-          <Panel.Body>
-            <Support />
-          </Panel.Body>
-          <Panel.Footer>
-            <VersionInfo />
-          </Panel.Footer>
-        </Panel>
-      </FlexBox>
-    )
-  }
+        <Panel.Footer>
+          <VersionInfo />
+        </Panel.Footer>
+      </Panel>
+    </FlexBox>
+  )
 }
 
-export default ResourceLists
+export default memo(ResourceLists)

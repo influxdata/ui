@@ -126,13 +126,21 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       .contains('Scheduled to run 0 4 8-14 * *')
 
     cy.getByTestID('task-card')
-      .contains('Cron task test')
-      .click()
+      .first()
+      .trigger('mouseover')
       .then(() => {
-        cy.getByTestID('task-form-schedule-input').should(
-          'have.value',
-          '0 4 8-14 * *'
-        )
+        cy.getByTestID('context-cog-runs')
+          .click()
+          .then(() => {
+            cy.getByTestID('context-edit-task')
+              .click()
+              .then(() => {
+                cy.getByTestID('task-form-schedule-input').should(
+                  'have.value',
+                  '0 4 8-14 * *'
+                )
+              })
+          })
       })
   })
 
@@ -173,7 +181,6 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     cy.getByTestID('task-save-btn').click()
     cy.getByTestID('notification-success').should('exist')
   })
-
   describe('When tasks already exist', () => {
     beforeEach(() => {
       cy.get('@org').then(({id}: Organization) => {
@@ -254,16 +261,19 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     it('can clone a task and activate just the cloned one', () => {
       createTask('task1', 'buckets()')
 
-      cy.getByTestID('task-card').then(() => {
-        cy.get('.context-menu--container')
-          .eq(1)
-          .click()
-          .then(() => {
-            cy.getByTestID('context-menu-item')
-              .contains('Clone')
-              .click()
-          })
-      })
+      cy.getByTestID('task-card')
+        .eq(1)
+        .trigger('mouseover')
+        .then(() => {
+          cy.get('.context-menu--container')
+            .eq(1)
+            .click()
+            .then(() => {
+              cy.getByTestID('context-menu-item')
+                .contains('Clone')
+                .click()
+            })
+        })
 
       cy.getByTestID('task-card--slide-toggle')
         .eq(0)
@@ -308,38 +318,50 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       cy.getByTestID('task-card--name')
         .eq(1)
         .contains('🦄ask (clone 1)')
-        .click()
+
+      cy.getByTestID('task-card')
+        .eq(1)
+        .trigger('mouseover')
         .then(() => {
-          // focused() waits for monoco editor to get input focus
-          cy.focused()
-          cy.getByTestID('flux-editor')
-            .should('be.visible')
-            .contains('option task = {')
+          cy.getByTestID('context-cog-runs')
+            .eq(1)
+            .click()
             .then(() => {
-              cy.getByTestID('task-form-name')
-                .should('have.value', '🦄ask (clone 1)')
+              cy.getByTestID('context-edit-task')
+                .eq(1)
+                .click()
                 .then(() => {
-                  cy.getByTestID('task-form-name')
+                  // focused() waits for monoco editor to get input focus
+                  cy.focused()
+                  cy.getByTestID('flux-editor')
                     .should('be.visible')
-                    .clear()
-                    .type('Copy task test')
+                    .contains('option task = {')
                     .then(() => {
-                      cy.getByTestID('task-form-schedule-input')
-                        .should('have.value', '24h')
-                        .clear()
-                        .type('12h')
-                        .should('have.value', '12h')
-                      cy.getByTestID('task-form-offset-input')
-                        .should('have.value', '20m')
-                        .clear()
-                        .type('10m')
-                        .should('have.value', '10m')
-                      cy.getByTestID('task-save-btn').click()
+                      cy.getByTestID('task-form-name')
+                        .should('have.value', '🦄ask (clone 1)')
+                        .then(() => {
+                          cy.getByTestID('task-form-name')
+                            .should('be.visible')
+                            .clear()
+                            .type('Copy task test')
+                            .then(() => {
+                              cy.getByTestID('task-form-schedule-input')
+                                .should('have.value', '24h')
+                                .clear()
+                                .type('12h')
+                                .should('have.value', '12h')
+                              cy.getByTestID('task-form-offset-input')
+                                .should('have.value', '20m')
+                                .clear()
+                                .type('10m')
+                                .should('have.value', '10m')
+                              cy.getByTestID('task-save-btn').click()
+                            })
+                        })
                     })
                 })
             })
         })
-
       // assert changed task name
       cy.getByTestID('task-card--name').contains('Copy task test')
     })
@@ -472,13 +494,24 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .should('have.length', 1)
         .and('contain', taskName)
 
-      cy.getByTestID('task-card--name')
-        .contains(taskName)
-        .click()
-      // verify that the previously input data exists
-      cy.getByInputValue(taskName)
-      cy.getByInputValue(interval)
-      cy.getByInputValue(offset)
+      cy.getByTestID('task-card--name').contains(taskName)
+
+      cy.getByTestID('task-card')
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-cog-runs')
+            .click()
+            .then(() => {
+              cy.getByTestID('context-edit-task')
+                .click()
+                .then(() => {
+                  // verify that the previously input data exists
+                  cy.getByInputValue(taskName)
+                  cy.getByInputValue(interval)
+                  cy.getByInputValue(offset)
+                })
+            })
+        })
     })
 
     it('can update a task', () => {
@@ -528,6 +561,9 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     // https://github.com/influxdata/influxdb/issues/15552
     const firstTask = 'First_Task'
     const secondTask = 'Second_Task'
+
+    const firstIndex = 0
+    const secondIndex = 1
     beforeEach(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
@@ -546,53 +582,142 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
     it('when navigating using the navbar', () => {
       // click on the second task
-      cy.getByTestID('task-card--name')
-        .contains(secondTask)
-        .click()
-      // verify that it is the correct data
-      cy.getByInputValue(secondTask)
+      cy.getByTestID('task-card--name').contains(secondTask)
+
+      cy.getByTestID('task-card')
+        .eq(secondIndex)
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-cog-runs')
+            .eq(secondIndex)
+            .click()
+            .then(() => {
+              cy.getByTestID('context-edit-task')
+                .eq(secondIndex)
+                .click()
+                .then(() => {
+                  // verify that it is the correct data
+                  cy.getByInputValue(secondTask)
+                })
+            })
+        })
 
       cy.get('.cf-tree-nav--item__active').within(() => {
         // Get the element that has a click handler within the nav item
         cy.get('.cf-tree-nav--item-block').click()
       })
       // navigate back to the first one to verify that the name is correct
-      cy.getByTestID('task-card--name')
-        .contains(firstTask)
-        .click()
-      cy.getByInputValue(firstTask)
+      cy.getByTestID('task-card--name').contains(firstTask)
+
+      cy.getByTestID('task-card')
+        .eq(firstIndex)
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-cog-runs')
+            .eq(firstIndex)
+            .click()
+            .then(() => {
+              cy.getByTestID('context-edit-task')
+                .eq(firstIndex)
+                .click()
+                .then(() => {
+                  // verify that it is the correct data
+                  cy.getByInputValue(firstTask)
+                })
+            })
+        })
     })
 
     it('when navigating using the cancel button', () => {
       // click on the second task
-      cy.getByTestID('task-card--name')
-        .contains(secondTask)
-        .click()
-      // verify that it is the correct data
-      cy.getByInputValue(secondTask)
-      cy.getByTestID('task-cancel-btn').click()
+      cy.getByTestID('task-card--name').contains(secondTask)
+
+      cy.getByTestID('task-card')
+        .eq(secondIndex)
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-cog-runs')
+            .eq(secondIndex)
+            .click()
+            .then(() => {
+              cy.getByTestID('context-edit-task')
+                .eq(secondIndex)
+                .click()
+                .then(() => {
+                  // verify that it is the correct data
+                  cy.getByInputValue(secondTask)
+                  cy.getByTestID('task-cancel-btn').click()
+                })
+            })
+        })
+
       // navigate back to the first task again
-      cy.getByTestID('task-card--name')
-        .contains(firstTask)
-        .click()
-      cy.getByInputValue(firstTask)
-      cy.getByTestID('task-cancel-btn').click()
+      cy.getByTestID('task-card--name').contains(firstTask)
+
+      cy.getByTestID('task-card')
+        .eq(firstIndex)
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-cog-runs')
+            .eq(firstIndex)
+            .click()
+            .then(() => {
+              cy.getByTestID('context-edit-task')
+                .eq(firstIndex)
+                .click()
+                .then(() => {
+                  // verify that it is the correct data
+                  cy.getByInputValue(firstTask)
+                  cy.getByTestID('task-cancel-btn').click()
+                })
+            })
+        })
     })
 
     it('when navigating using the save button', () => {
       // click on the second task
-      cy.getByTestID('task-card--name')
-        .contains(secondTask)
-        .click()
-      // verify that it is the correct data
-      cy.getByInputValue(secondTask)
-      cy.getByTestID('task-save-btn').click()
+      cy.getByTestID('task-card--name').contains(secondTask)
+
+      cy.getByTestID('task-card')
+        .eq(secondIndex)
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-cog-runs')
+            .eq(secondIndex)
+            .click()
+            .then(() => {
+              cy.getByTestID('context-edit-task')
+                .eq(secondIndex)
+                .click()
+                .then(() => {
+                  // verify that it is the correct data
+                  cy.getByInputValue(secondTask)
+                  cy.getByTestID('task-save-btn').click()
+                })
+            })
+        })
+
       // navigate back to the first task again
-      cy.getByTestID('task-card--name')
-        .contains(firstTask)
-        .click()
-      cy.getByInputValue(firstTask)
-      cy.getByTestID('task-save-btn').click()
+      cy.getByTestID('task-card--name').contains(firstTask)
+
+      cy.getByTestID('task-card')
+        .eq(firstIndex)
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-cog-runs')
+            .eq(firstIndex)
+            .click()
+            .then(() => {
+              cy.getByTestID('context-edit-task')
+                .eq(firstIndex)
+                .click()
+                .then(() => {
+                  // verify that it is the correct data
+                  cy.getByInputValue(firstTask)
+                  cy.getByTestID('task-save-btn').click()
+                })
+            })
+        })
     })
   })
 
@@ -649,7 +774,9 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .click()
 
       // Navigate away from current page back to Tasks List page
-      cy.getByTestID('task-cancel-btn').click()
+      cy.get('.bread-crumb-title')
+        .first()
+        .click()
       cy.getByTestID('search-widget').should('have.value', name)
 
       // Validate that the list has correct search results

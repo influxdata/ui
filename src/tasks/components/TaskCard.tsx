@@ -113,7 +113,7 @@ export class TaskCard extends PureComponent<
           <Context.Item
             label="Edit Task"
             action={this.handleEditTask}
-            testID="context-view-task-runs"
+            testID="context-edit-task"
           />
           <Context.Item
             label="Run Task"
@@ -154,7 +154,7 @@ export class TaskCard extends PureComponent<
     const url = `/orgs/${orgID}/tasks/${task.id}/runs`
 
     if (event.metaKey) {
-      window.open(url, '_blank')
+      window.open(url, '_blank', 'noopener')
     } else {
       history.push(url)
     }

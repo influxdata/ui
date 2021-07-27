@@ -872,17 +872,27 @@ describe('DataExplorer', () => {
 
             visitTasks()
 
-            cy.getByTestID('task-card--name')
-              .should('exist')
-              .click()
-            cy.getByTestID('task-form-schedule-input').should(
-              'have.value',
-              time
-            )
-            cy.getByTestID('task-form-offset-input').should(
-              'have.value',
-              withOffset ? offset : ''
-            )
+            cy.getByTestID('task-card')
+              .first()
+              .trigger('mouseover')
+              .then(() => {
+                cy.getByTestID('context-cog-runs')
+                  .click()
+                  .then(() => {
+                    cy.getByTestID('context-edit-task')
+                      .click()
+                      .then(() => {
+                        cy.getByTestID('task-form-schedule-input').should(
+                          'have.value',
+                          time
+                        )
+                        cy.getByTestID('task-form-offset-input').should(
+                          'have.value',
+                          withOffset ? offset : ''
+                        )
+                      })
+                  })
+              })
           })
         })
       )

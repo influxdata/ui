@@ -16,7 +16,10 @@ describe('Secrets', () => {
     })
   })
 
-  it('Can display secrets created via the API and sort said secrets', () => {
+  it('Secrets page base functionality', () => {
+    cy.intercept('PATCH', '**/secrets').as('upsertSecret')
+    cy.intercept('DELETE', '**/secrets/**').as('deleteSecret')
+
     // Empty state exists and displays context appropriate text
     cy.getByTestID('empty-state').should('be.visible')
     cy.getByTestID('empty-state').contains('Secrets')
@@ -84,67 +87,68 @@ describe('Secrets', () => {
                     })
                 })
             })
+
+          // Delete API created secrets via the UI
+          cy.getByTestID('delete-secret-initial--toEverybody')
+            .click({force: true})
+            .then(() => {
+              cy.getByTestID('delete-secret-confirm--toEverybody').should(
+                'exist'
+              )
+              cy.getByTestID('delete-secret-confirm--toEverybody').click({
+                force: true,
+              })
+              cy.wait('@deleteSecret')
+                .its('response.statusCode')
+                .should('eq', 204)
+              // After deletion that secret should no longer exist
+              cy.getByTestID('secret-card--toEverybody').should('not.exist')
+            })
+
+          // Create new secret via UI, then edit it once created
+          const secretName = 'Shhhhh'
+          cy.getByTestID('button-add-secret')
+            .first() // There's a second one in the empty state.
+            .click()
+            .then(() => {
+              cy.getByTestID('variable-form-save').should('be.disabled')
+              cy.getByTestID('input-field')
+                .first()
+                .type(secretName)
+              cy.getByTestID('variable-form-save').should('be.disabled')
+              cy.getByTestID('input-field')
+                .last()
+                .type("I'm a secret!")
+              cy.getByTestID('variable-form-save').should('be.enabled')
+              cy.getByTestID('variable-form-save').click()
+              cy.wait('@upsertSecret')
+                .its('response.statusCode')
+                .should('eq', 204)
+                .then(() => {
+                  cy.getByTestID(`secret-card--${secretName}`).should('exist')
+                  cy.getByTestID(`secret-card--${secretName}`).should(
+                    'be.visible'
+                  )
+                  cy.getByTestID(`secret-card--name-${secretName}`)
+                    .click()
+                    .then(() => {
+                      cy.getByTestID('input-field').should('be.disabled')
+                      cy.getByTestID('input-field').should(
+                        'have.value',
+                        secretName
+                      )
+                      cy.getByTestID('input-field')
+                        .last()
+                        .type("I'm hunting rabbits")
+                      cy.getByTestID('variable-form-save').should('be.enabled')
+                      cy.getByTestID('variable-form-save').click()
+                      cy.wait('@upsertSecret')
+                        .its('response.statusCode')
+                        .should('eq', 204)
+                    })
+                })
+            })
         })
     })
-  })
-
-  it('Can perform basic CRUD via the UI', () => {
-    const secretName = 'Shhhhh'
-    cy.intercept('PATCH', '**/secrets').as('upsertSecret')
-    cy.intercept('DELETE', '**/secrets/**').as('deleteSecret')
-    cy.getByTestID('button-add-secret')
-      .first() // There's a second one in the empty state.
-      .click()
-      .then(() => {
-        cy.getByTestID('variable-form-save').should('be.disabled')
-        cy.getByTestID('input-field')
-          .first()
-          .type(secretName)
-        cy.getByTestID('variable-form-save').should('be.disabled')
-        cy.getByTestID('input-field')
-          .last()
-          .type("I'm a secret!")
-        cy.getByTestID('variable-form-save').should('be.enabled')
-        cy.getByTestID('variable-form-save').click()
-        cy.wait('@upsertSecret')
-          .its('response.statusCode')
-          .should('eq', 204)
-          .then(() => {
-            cy.getByTestID(`secret-card--${secretName}`).should('exist')
-            cy.getByTestID(`secret-card--${secretName}`).should('be.visible')
-            cy.getByTestID(`secret-card--name-${secretName}`)
-              .click()
-              .then(() => {
-                cy.getByTestID('input-field').should('be.disabled')
-                cy.getByTestID('input-field').should('have.value', secretName)
-                cy.getByTestID('input-field')
-                  .last()
-                  .type("I'm hunting rabbits")
-                cy.getByTestID('variable-form-save').should('be.enabled')
-                cy.getByTestID('variable-form-save').click()
-                cy.wait('@upsertSecret')
-                  .its('response.statusCode')
-                  .should('eq', 204)
-                  .then(() => {
-                    cy.getByTestID('delete-secret-initial--Shhhhh')
-                      .click({force: true})
-                      .then(() => {
-                        cy.getByTestID('delete-secret-confirm--Shhhhh').should(
-                          'exist'
-                        )
-                        cy.getByTestID('delete-secret-confirm--Shhhhh').click({
-                          force: true,
-                        })
-                        cy.wait('@deleteSecret')
-                          .its('response.statusCode')
-                          .should('eq', 204)
-                        // After deletion empty state should be visible
-                        cy.getByTestID('empty-state').should('be.visible')
-                        cy.getByTestID('empty-state').contains('Secrets')
-                      })
-                  })
-              })
-          })
-      })
   })
 })

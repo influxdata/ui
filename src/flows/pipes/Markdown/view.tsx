@@ -14,7 +14,6 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PipeProp} from 'src/types/flows'
 
-import {MARKDOWN_PIPE_PLACEHOLDER} from 'src/flows/pipes/Markdown/index'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const MarkdownMonacoEditor = lazy(() =>
@@ -71,13 +70,7 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   )
 
   if (data.mode === 'preview') {
-    const markdownClassname = classnames(
-      'flow-panel--markdown markdown-format',
-      {
-        'flow-panel--markdown__placeholder':
-          data.text === MARKDOWN_PIPE_PLACEHOLDER,
-      }
-    )
+    const markdownClassname = classnames('flow-panel--markdown markdown-format')
     panelContents = (
       <div className={markdownClassname} onClick={handlePreviewClick}>
         <MarkdownRenderer text={data.text} />

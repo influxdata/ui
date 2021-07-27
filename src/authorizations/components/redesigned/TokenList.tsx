@@ -91,24 +91,9 @@ export default class TokenList extends PureComponent<Props, State> {
     ))
   }
 
-  //
+  
   private handleClone = async (id: string) => {
-      const { auths } = this.props;
-
-      const authFound = auths.find((auth) => auth.id === id);
-
-      if (!authFound) return null;
-
-      const authsDescriptions = auths.map((auth) => auth.description);
-
-      const clonedAuth = {
-          ...authFound,
-          description: incrementCloneName(authsDescriptions, authFound.description),
-      };
-
-      console.log('Cloning results', clonedAuth);
-
-      await createAuthorization(clonedAuth);
+      
   };
 
   private handleDismissOverlay = () => {

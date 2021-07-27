@@ -10,7 +10,7 @@ import {
   PipeData,
   PipeMeta,
 } from 'src/types/flows'
-import {getOrg} from 'src/organizations/selectors'
+import {getMe} from 'src/me/selectors'
 import {default as _asResource} from 'src/flows/context/resource.hook'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
@@ -129,7 +129,7 @@ export function hydrate(data) {
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useLocalStorageState('flows', DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
-  const org = useSelector(getOrg)
+  const user = useSelector(getMe)
   const dispatch = useDispatch()
   useEffect(() => {
     migrate()
@@ -158,7 +158,7 @@ export const FlowListProvider: FC = ({children}) => {
     let _flow
     let _flowData
 
-    let {name} = org
+    let {name} = user
 
     if (name.includes('@')) {
       name = name.split('@')[0]

@@ -286,4 +286,18 @@ describe('getGeoCoordinate', () => {
 
     expect(() => getGeoCoordinates(table, 0)).toThrow()
   })
+  it('returns an error when Coordinate column is not anumber', () => {
+    const table = ({
+      getColumn: columnName => {
+        if (columnName === '_field') {
+          return ['lat', 'type', 'lat', 'type']
+        } else if (columnName === '_value') {
+          return [5, "random", 7, "string"]
+        }
+        return null
+      },
+    } as unknown) as Table
+
+    expect(() => getGeoCoordinates(table, 0)).toThrow()
+  })
 })

@@ -15,7 +15,7 @@ interface OwnProps {
   onClose: () => void
 }
 
-const CustomApiTokenOverlay: FC<OwnProps> = props => {
+export const CustomApiTokenOverlay: FC<OwnProps> = props => {
   const handleDismiss = () => {
     props.onClose()
   }
@@ -40,7 +40,7 @@ const CustomApiTokenOverlay: FC<OwnProps> = props => {
           >
             <Form.Element label="Description">
               <Input
-                placeholder="your_token_description"
+                placeholder="Describe this new token"
                 value={description}
                 onChange={handleInputChange}
                 testID="custome-api-token-input"
@@ -53,4 +53,4 @@ const CustomApiTokenOverlay: FC<OwnProps> = props => {
   )
 }
 
-export default CustomApiTokenOverlay
+

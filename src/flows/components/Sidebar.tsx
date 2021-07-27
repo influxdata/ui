@@ -77,11 +77,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
     }
 
     const clickoutside = evt => {
-      if (
-        ref.current &&
-        (ref.current.contains(evt.target) ||
-          evt.target.closest('.flow-sidebar'))
-      ) {
+      if (submenu || (ref.current && ref.current.contains(evt.target))) {
         return
       }
 
@@ -93,7 +89,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
     return () => {
       document.removeEventListener('mousedown', clickoutside)
     }
-  }, [focused])
+  }, [focused, submenu])
 
   if (!isFlagEnabled('flow-sidebar')) {
     return null

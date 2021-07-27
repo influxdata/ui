@@ -4,6 +4,8 @@ import GeoPlot from './view'
 import properties from './properties'
 import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 
+jest.mock('src/client/mapsdRoutes')
+
 const table = {
   getColumn: jest.fn(),
   getColumnType: jest.fn(),

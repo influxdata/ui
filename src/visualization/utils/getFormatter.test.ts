@@ -66,6 +66,36 @@ describe('getFormatter', () => {
     expect(formattedTime).toBe('1983-07-04 20:00:00')
   })
 
+  it("should format correctly for columnType = time, timeFormat = '' (empty string) and timeZone = UTC ", () => {
+    const formatterOptions = {
+      timeZone: 'UTC' as TimeZone,
+      timeFormat: '',
+    }
+
+    const formatter = getFormatter('time', formatterOptions)
+
+    const date = new Date(timestamp)
+
+    const formattedTime = formatter(date)
+
+    expect(formattedTime).toBe('1983-07-04 20:00:00')
+  })
+
+  it('should format correctly for columnType = time, timeFormat = undefined and timeZone = UTC ', () => {
+    const formatterOptions = {
+      timeZone: 'UTC' as TimeZone,
+      timeFormat: undefined,
+    }
+
+    const formatter = getFormatter('time', formatterOptions)
+
+    const date = new Date(timestamp)
+
+    const formattedTime = formatter(date)
+
+    expect(formattedTime).toBe('1983-07-04 20:00:00')
+  })
+
   it('should format correctly for columnType = time , timeFormat = YYYY-MM-DD hh:mm:ss a ZZ and timeZone = UTC', () => {
     const formatterOptions = {
       timeZone: 'UTC' as TimeZone,

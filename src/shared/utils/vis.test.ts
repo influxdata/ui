@@ -292,7 +292,7 @@ describe('getGeoCoordinate', () => {
         if (columnName === '_field') {
           return ['lat', 'type', 'lat', 'type']
         } else if (columnName === '_value') {
-          return [5, "random", 7, "string"]
+          return [5, 'random', 7, 'string']
         }
         return null
       },

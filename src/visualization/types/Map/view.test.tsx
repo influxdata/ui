@@ -3,9 +3,6 @@ import {render} from '@testing-library/react'
 import GeoPlot from './view'
 import properties from './properties'
 import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
-import {CLOUD} from 'src/shared/constants'
-
-jest.mock(CLOUD ? 'src/client/mapsdRoutes' : 'src/client')
 
 const table = {
   getColumn: jest.fn(),
@@ -31,9 +28,11 @@ const setup = () => {
   return render(<GeoPlot {...props} />)
 }
 
-const skipOss = CLOUD ? describe : describe.skip
+jest.mock('src/shared/constants/index', () => ({
+  CLOUD: true,
+}))
 
-skipOss('Map component renders', () => {
+describe('Map component renders', () => {
   it('returns with helpful error message when map service is down', () => {
     jest.mock('src/client/mapsdRoutes', () => {
       throw new Error('Service Unavailable')
@@ -43,7 +42,7 @@ skipOss('Map component renders', () => {
   })
 })
 
-skipOss('Map color layers', () => {
+describe('Map color layers', () => {
   it('has autofilled', () => {
     expect(properties.layers[0].colors).toEqual(DEFAULT_THRESHOLDS_GEO_COLORS)
   })

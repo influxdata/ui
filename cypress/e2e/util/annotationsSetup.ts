@@ -28,25 +28,30 @@ export const setupData = (
               rangeAnnotations: enableRangeAnnotations,
             })
             .then(() => {
-              cy.createBucket(orgID, name, 'schmucket')
+              cy.createBucket(orgID, name, 'devbucket')
               // have to add large amount of data to fill the window so that the random click for annotation works
-              cy.writeData(lines(3000), 'schmucket')
+              cy.writeData(lines(3000), 'devbucket')
 
               // make a dashboard cell
               cy.getByTestID('add-cell--button').click()
-              cy.getByTestID('selector-list schmucket').should('be.visible')
-              cy.getByTestID('selector-list schmucket').click()
-              cy.getByTestID(`selector-list m`).should('be.visible')
-              cy.getByTestID(`selector-list m`).click()
-              cy.getByTestID('selector-list v').should('be.visible')
-              cy.getByTestID(`selector-list v`).click()
+              cy.getByTestID('selector-list devbucket')
+                .should('have.length.of.at.least', 1)
+                .click()
+              cy.getByTestID('selector-list m')
+                .should('have.length.of.at.least', 1)
+                .click()
+              cy.getByTestID('selector-list v')
+                .should('have.length.of.at.least', 1)
+                .click()
 
               if (plotTypeSuffix) {
                 cy.getByTestID('view-type--dropdown').click()
                 cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
               }
 
-              cy.getByTestID(`selector-list tv1`).click()
+              cy.getByTestID(`selector-list tv1`)
+                .should('have.length.of.at.least', 1)
+                .click()
               cy.getByTestID('time-machine-submit-button').click()
               cy.getByTestID('overlay').within(() => {
                 cy.getByTestID('page-title').click()
@@ -88,7 +93,7 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
     // we have 2 line layers by the same id, we only want to click on the first
     cy.get('line')
       .first()
-      .click()
+      .click({force: true})
   })
 }
 

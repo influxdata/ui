@@ -129,6 +129,7 @@ class TimeSeries extends Component<Props, State> {
   private ref: RefObject<HTMLDivElement> = React.createRef()
   private isIntersecting: boolean = false
   private pendingReload: boolean = true
+  private isUnmounting: boolean = false
 
   private pendingResults: Array<CancelBox<RunQueryResult>> = []
   private pendingCheckStatuses: CancelBox<StatusRow[][]> = null
@@ -171,6 +172,9 @@ class TimeSeries extends Component<Props, State> {
   public componentWillUnmount() {
     this.observer && this.observer.disconnect()
     this.pendingResults.forEach(({cancel}) => cancel())
+    if (this.pendingReload) {
+      this.isUnmounting = true
+    }
   }
 
   public render() {
@@ -330,14 +334,17 @@ class TimeSeries extends Component<Props, State> {
 
       this.pendingReload = false
 
-      this.setState({
-        giraffeResult,
-        errorMessage,
-        files,
-        duration,
-        loading: RemoteDataState.Done,
-        statuses,
-      })
+      // this check prevents a memory leak https://github.com/influxdata/ui/issues/2137
+      if (!this.isUnmounting) {
+        this.setState({
+          giraffeResult,
+          errorMessage,
+          files,
+          duration,
+          loading: RemoteDataState.Done,
+          statuses,
+        })
+      }
     } catch (error) {
       if (error.name === 'CancellationError') {
         return

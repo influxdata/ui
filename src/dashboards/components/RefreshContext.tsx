@@ -15,7 +15,7 @@ import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
 // Utils
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
-import {incrementDate} from 'src/utils/datetime/dateTimeUtils'
+import {incrementDate} from 'src/shared/utils/dateTimeUtils'
 
 export const AutoRefreshContext = createContext(null)
 

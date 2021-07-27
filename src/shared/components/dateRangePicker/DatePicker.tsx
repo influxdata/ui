@@ -54,7 +54,7 @@ const getFormat = (d: string): string => {
     return 'YYYY-MM-DD HH:mm:ss'
   }
   if (moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()) {
-    return 'YYYY-MM-DD HH:mm:ss.SSS'
+    return 'YYYY-MM-DD HH:mm:ss.sss'
   }
   return null
 }

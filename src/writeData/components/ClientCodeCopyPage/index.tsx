@@ -17,7 +17,6 @@ import {ResourceType} from 'src/types'
 import 'src/writeData/components/WriteDataDetailsView.scss'
 
 // Utils
-import WriteDataHelper from '../WriteDataHelper'
 import GetResources from 'src/resources/components/GetResources'
 
 const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
@@ -40,7 +39,6 @@ const ClientCodeCopyPage: FC<Props> = ({contentID}) => {
           className="write-data--details-content markdown-format"
           data-testid="load-data-details-content"
         >
-          <WriteDataHelper collapsed={true} />
           {!!def.description && (
             <InstallPackageHelper
               text={def.description}

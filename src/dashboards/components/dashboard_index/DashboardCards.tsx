@@ -20,7 +20,7 @@ import {LimitStatus} from 'src/cloud/actions/limits'
 import {extractDashboardLimits} from 'src/cloud/utils/limits'
 
 interface StateProps {
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 }
 
 interface OwnProps {
@@ -142,12 +142,8 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
 }
 
 const mstp = (state: AppState) => {
-  const {
-    cloud: {limits},
-  } = state
-
   return {
-    limitStatus: extractDashboardLimits(limits),
+    limitStatus: extractDashboardLimits(state),
   }
 }
 

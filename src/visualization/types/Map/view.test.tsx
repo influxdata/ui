@@ -1,10 +1,20 @@
+jest.mock(
+  'src/client/mapsdRoutes',
+  () => {
+    return {
+      getMapToken: () => ({
+        token: 'token',
+      }),
+    }
+  },
+  {virtual: true}
+)
+
 import React from 'react'
 import {render} from '@testing-library/react'
 import GeoPlot from './view'
 import properties from './properties'
 import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
-
-jest.mock('src/client/mapsdRoutes')
 
 const table = {
   getColumn: jest.fn(),
@@ -36,9 +46,13 @@ jest.mock('src/shared/constants/index', () => ({
 
 describe('Map component renders', () => {
   it('returns with helpful error message when map service is down', () => {
-    jest.mock('src/client/mapsdRoutes', () => {
-      throw new Error('Service Unavailable')
-    })
+    jest.mock(
+      'src/client/mapsdRoutes',
+      () => {
+        throw new Error('Service Unavailable')
+      },
+      {virtual: true}
+    )
     const {queryByTestId} = setup()
     expect(queryByTestId('panel-resizer--error')).toEqual(null)
   })

@@ -15,6 +15,7 @@ import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
 // Utils
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {incrementDate} from 'src/utils/datetime/dateTimeUtils'
 
 export const AutoRefreshContext = createContext(null)
 
@@ -31,30 +32,6 @@ export interface AutoRefreshState {
     label: string
   }
   infiniteDuration: boolean
-}
-
-// takes in Date object and adds a duration to it.
-// To add 1 hour, value = 1, unit = 'h'
-// similarly, to add a minute. value = 1, unit = 'm'
-function incrementDate(input: Date, value: number, unit: string): Date {
-  const result = new Date(input)
-  switch (unit) {
-    case 'm': {
-      result.setMinutes(input.getMinutes() + value)
-      return result
-    }
-    case 'h': {
-      result.setHours(input.getHours() + value)
-      return result
-    }
-    case 'd': {
-      result.setDate(input.getDate() + value)
-      return result
-    }
-    default: {
-      return new Date()
-    }
-  }
 }
 
 const jumpAheadTime = () => {

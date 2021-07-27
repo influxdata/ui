@@ -50,8 +50,6 @@ const SecretContextMenu: FC<Props> = ({secret}) => {
     }
   }
 
-  // Note to self: add a class on the context element to push everything left about
-  // 20 pixels because there's no padding on the rightmost button for reasons
   return (
     <Context className="secrets-context-menu">
       <CopyToClipboard text={secret.id} onCopy={handleCopyAttempt}>

@@ -130,7 +130,7 @@ class DragAndDrop extends PureComponent<Props, State> {
       this.setState(
         {
           uploadContent: reader.result as string,
-          fileName: file.name,
+          fileName: file?.name ?? 'csv-upload.csv',
         },
         () => {
           this.props.onSetBody(this.state.uploadContent)

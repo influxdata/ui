@@ -4,7 +4,6 @@ import {
   Cell,
   Dashboard,
   Task,
-  Links,
   ConfigurationState,
   RemoteDataState,
   Label,
@@ -33,40 +32,6 @@ import {
   Permission,
   PermissionResource,
 } from '@influxdata/influx'
-import {SortTypes} from 'src/shared/utils/sort'
-import {Sort} from '@influxdata/clockface'
-import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
-
-export const links: Links = {
-  authorizations: '/api/v2/authorizations',
-  buckets: '/api/v2/buckets',
-  dashboards: '/api/v2/dashboards',
-  external: {
-    statusFeed: 'https://www.influxdata.com/feed/json',
-  },
-  variables: '/api/v2/variables',
-  me: '/api/v2/me',
-  orgs: '/api/v2/orgs',
-  query: {
-    ast: '/api/v2/query/ast',
-    self: '/api/v2/query',
-    suggestions: '/api/v2/query/suggestions',
-  },
-  setup: '/api/v2/setup',
-  signin: '/api/v2/signin',
-  signout: '/api/v2/signout',
-  sources: '/api/v2/sources',
-  system: {
-    debug: '/debug/pprof',
-    health: '/health',
-    metrics: '/metrics',
-  },
-  tasks: '/api/v2/tasks',
-  users: '/api/v2/users',
-  views: '/api/v2/views',
-  write: '/api/v2/write',
-  defaultDashboard: '/v2/dashboards/029d13fda9c5b000',
-}
 
 export const queryConfig = {
   queries: [
@@ -247,6 +212,8 @@ export const tasks: Task[] = [
     cron: '2 0 * * *',
     org: 'default',
     labels: [],
+    createdAt: '2021-06-08T00:25:17.501582756Z',
+    latestCompleted: '2021-06-08T02:25:52.118899855Z',
   },
   {
     id: '02f12c50dba72000',
@@ -258,6 +225,8 @@ export const tasks: Task[] = [
     every: '1m0s',
     org: 'default',
     labels: labelIDs,
+    createdAt: '2021-06-08T00:25:17.501582756Z',
+    latestCompleted: '2021-06-08T02:25:52.118899855Z',
   },
 ]
 
@@ -273,7 +242,6 @@ export const variables: Variable[] = [
 ]
 
 export const defaultOnboardingStepProps: OnboardingStepProps = {
-  links,
   currentStepIndex: 0,
   onSetCurrentStepIndex: jest.fn(),
   onIncrementCurrentStepIndex: jest.fn(),
@@ -455,50 +423,6 @@ export const getTelegrafConfigsResponse = {
 
 export const createTelegrafConfigResponse = {
   data: telegrafConfig,
-}
-
-export const authResponse = {
-  data: {
-    links: {self: '/api/v2/authorizations'},
-    authorizations: [
-      {
-        links: {
-          self: '/api/v2/authorizations/030358b6aa718000',
-          user: '/api/v2/users/030358b695318000',
-        },
-        id: '030358b6aa718000',
-        token,
-        status: 'active',
-        user: 'iris',
-        userID: '030358b695318000',
-        permissions: [
-          {action: 'create', resource: 'user'},
-          {action: 'delete', resource: 'user'},
-          {action: 'write', resource: 'org'},
-          {action: 'write', resource: 'bucket/030358b6aa318000'},
-        ],
-      },
-    ],
-  },
-  status: 200,
-  statusText: 'OK',
-  headers: {
-    date: 'Thu, 29 Nov 2018 18:10:21 GMT',
-    'content-length': '522',
-    'content-type': 'application/json; charset=utf-8',
-  },
-  config: {
-    transformRequest: {},
-    transformResponse: {},
-    timeout: 0,
-    xsrfCookieName: 'XSRF-TOKEN',
-    xsrfHeaderName: 'X-XSRF-TOKEN',
-    maxContentLength: -1,
-    headers: {Accept: 'application/json, text/plain, */*'},
-    method: 'get',
-    url: '/api/v2/authorizations?user=',
-  },
-  request: {},
 }
 
 export const bucket = {

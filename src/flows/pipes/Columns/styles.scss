@@ -1,0 +1,35 @@
+@import '@influxdata/clockface/dist/variables.scss';
+.columns-panel--grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(100px, 1fr));
+  grid-gap: 5px;
+  height: auto;
+  background-color: $g0-obsidian;
+  padding: 5px;
+}
+
+.column-card--content {
+  box-shadow: none;
+  height: 45px;
+}
+.column-card--content > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.column-card--name > span {
+  color: lightgray;
+  font-size: 14px;
+}
+
+.column-card--name {
+  flex: 3;
+}
+
+.column-card--vistoggle {
+  flex: 1;
+}

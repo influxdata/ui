@@ -1,6 +1,5 @@
 // Libraries
 import {get} from 'lodash'
-import moment from 'moment'
 
 // Types
 import {
@@ -19,6 +18,7 @@ import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
 
 // Constants
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
+import {timesNeedConverting} from 'src/shared/utils/dateTimeUtils'
 
 export const getTimeRange = (state: AppState): TimeRange => {
   const contextID = currentContext(state)
@@ -29,12 +29,20 @@ export const getTimeRange = (state: AppState): TimeRange => {
   return state.ranges[contextID] || DEFAULT_TIME_RANGE
 }
 
+/**
+ * if the custom time is already in utc mode, don't convert it
+ * not removing the conversion clause entirely as timezone enabled flux is on the horizon
+ **/
 export const getTimeRangeWithTimezone = (state: AppState): TimeRange => {
   const timeRange = getTimeRange(state)
   const timeZone = getTimeZone(state)
 
   const newTimeRange = {...timeRange}
-  if (timeRange.type === 'custom' && timeZone === 'UTC') {
+  if (
+    timeRange.type === 'custom' &&
+    timesNeedConverting(newTimeRange) &&
+    timeZone === 'UTC'
+  ) {
     // conforms dates to account to UTC with proper offset if needed
     newTimeRange.lower = setTimeToUTC(newTimeRange.lower)
     newTimeRange.upper = setTimeToUTC(newTimeRange.upper)
@@ -64,11 +72,12 @@ export const isCurrentPageDashboard = (state: AppState): boolean =>
 // Example: user selected 10-11:00am and sets the dropdown to UTC
 // Query should run against 10-11:00am UTC rather than querying
 // 10-11:00am local time (offset depending on timezone)
-export const setTimeToUTC = (date: string): string =>
-  moment
-    .utc(date)
-    .subtract(getTimezoneOffset(), 'minutes')
-    .format()
+export const setTimeToUTC = (date: string): string => {
+  const utcTime = new Date(date)
+  utcTime.setUTCMinutes(utcTime.getUTCMinutes() - getTimezoneOffset())
+
+  return `${utcTime.toISOString().split('.')[0]}Z`
+}
 
 export const getTimeZone = (state: AppState): TimeZone => {
   return state.app.persisted.timeZone || 'Local'

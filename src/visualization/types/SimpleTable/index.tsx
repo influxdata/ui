@@ -1,5 +1,6 @@
 import {FluxDataType} from '@influxdata/giraffe'
 
+import options from './options'
 import view from './view'
 import icon from './icon'
 
@@ -32,5 +33,6 @@ export default register => {
     graphic: icon,
     initial: {type: 'simple-table', showAll: false},
     component: view,
+    options,
   })
 }

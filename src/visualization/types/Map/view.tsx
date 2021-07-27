@@ -2,12 +2,11 @@
 import React, {FC, useEffect, useState} from 'react'
 import {Config, Plot} from '@influxdata/giraffe'
 import {RemoteDataState} from '@influxdata/clockface'
-import _ from 'lodash'
+import {isEmpty} from 'lodash'
 
 // Types
 import {GeoViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
-import {DEFAULT_THRESHOLDS_GEO_COLORS} from 'src/shared/constants/thresholds'
 // Utils
 import {
   getDetectCoordinatingFields,
@@ -17,7 +16,7 @@ import {
 } from 'src/shared/utils/vis'
 import {getMapToken} from './api'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
@@ -165,15 +164,11 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     ]
   }
 
-  const tooltipColumns = _.isEmpty(layersOpts[0].tooltipColumns)
+  const tooltipColumns = isEmpty(layersOpts[0].tooltipColumns)
     ? result.fluxGroupKeyUnion
     : layersOpts[0].tooltipColumns
 
-  const colorChoice = _.isEmpty(layersOpts[0].colors)
-    ? DEFAULT_THRESHOLDS_GEO_COLORS
-    : layersOpts[0].colors
-
-  layersOpts[0] = {...layersOpts[0], tooltipColumns, colors: colorChoice}
+  layersOpts[0] = {...layersOpts[0], tooltipColumns}
 
   let zoomOpt = zoom
   if (zoom === 0) {
@@ -222,6 +217,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       ],
     }
   }
+
   return <Plot config={config} />
 }
 

@@ -6,16 +6,18 @@ describe('Billing Page Free Users', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({unityBilling: true, unityCheckout: true}).then(
-          () => {
-            cy.quartzProvision({
-              accountType: 'free',
-            }).then(() => {
-              cy.visit(`/orgs/${id}/billing`)
-              cy.getByTestID('billing-page--header').should('be.visible')
-            })
-          }
-        )
+        cy.setFeatureFlags({
+          unityBilling: true,
+          unityCheckout: true,
+          uiUnificationFlag: true,
+        }).then(() => {
+          cy.quartzProvision({
+            accountType: 'free',
+          }).then(() => {
+            cy.visit(`/orgs/${id}/billing`)
+            cy.getByTestID('billing-page--header').should('be.visible')
+          })
+        })
       })
     })
   })
@@ -60,14 +62,16 @@ describe('Billing Page PAYG Users', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({unityBilling: true}).then(() => {
-          cy.quartzProvision({
-            accountType: 'pay_as_you_go',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/billing`)
-            cy.getByTestID('billing-page--header').should('be.visible')
-          })
-        })
+        cy.setFeatureFlags({unityBilling: true, uiUnificationFlag: true}).then(
+          () => {
+            cy.quartzProvision({
+              accountType: 'pay_as_you_go',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/billing`)
+              cy.getByTestID('billing-page--header').should('be.visible')
+            })
+          }
+        )
       })
     })
   })
@@ -217,7 +221,7 @@ describe('Billing Page PAYG Users', () => {
     // check that the button is disabled
     cy.getByTestID('cancel-service-confirmation--button').should('be.disabled')
     cy.getByTestID('agree-terms--checkbox').should('not.be.checked')
-    // TODO(ariel): fix this so that it checks the box, check() didn't work
+
     cy.getByTestID('agree-terms--input').click()
     cy.getByTestID('agree-terms--checkbox').should('be.checked')
     cy.getByTestID('cancel-service-confirmation--button')

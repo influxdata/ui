@@ -48,26 +48,42 @@ interface Props {
   onSubmit: (Annotation) => void
   onClose: () => void
   eventPrefix: string
+  getNow?: () => number
 }
+export const WRONG_ORDER_MESSAGE = 'Stop Time must be after the start time'
+export const END_TIME_IN_FUTURE_MESSAGE = 'Stop Time cannot be in the future'
+export const TIMES_ARE_SAME_MESSAGE = 'Stop Time must be after the start time'
+export const START_TIME_IN_FUTURE_MESSAGE = 'Start Time cannot be in the future'
 
+/**
+ *  Form for editing and creating annotations.
+ *  It does support multi-line annotations, but the tradeoff is that the user cannot then press 'return' to submit the form.
+ * */
 export const AnnotationForm: FC<Props> = (props: Props) => {
   const [startTime, setStartTime] = useState(props.startTime)
   const [endTime, setEndTime] = useState(props.endTime)
   const [summary, setSummary] = useState(props.summary)
   const [annotationType, setAnnotationType] = useState(props.type)
 
+  // is the time by itself valid? (is the format valid)
+  // since we start with default times via the mouse, the formats are valid at first
+  // (until the user edits it)
+  const [endTimeFormatValid, setEndTimeFormatValid] = useState(true)
+  const [startTimeFormatValid, setStartTimeFormatValid] = useState(true)
+
   const dispatch = useDispatch()
 
   const isValidAnnotationForm = (): boolean => {
-    const isValidPointAnnotation = Boolean(summary?.length && startTime)
+    const isValidPointAnnotation =
+      summary?.length && startTime && startTimeFormatValid && isStartTimeValid()
 
-    // not checking if start <= end right now
-    // initially, the times are numbers, and then if the user manually edits them then
-    // they are strings, so the simple compare is non-trivial.
-    // plus, the backend checks if the startTime is before or equals the endTime
-    // so, letting the backend do that check for now.
     if (annotationType === 'range') {
-      return Boolean(isValidPointAnnotation && endTime)
+      return (
+        isValidPointAnnotation &&
+        endTime &&
+        endTimeFormatValid &&
+        isEndTimeValid()
+      )
     }
     return isValidPointAnnotation
   }
@@ -98,14 +114,16 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   }
 
   const handleKeyboardSubmit = () => {
-    props.onSubmit({
-      summary,
-      startTime,
-      endTime,
-      type: annotationType,
-      id: props.annotationId,
-      stream: props.stream,
-    })
+    if (isValidAnnotationForm()) {
+      props.onSubmit({
+        summary,
+        startTime,
+        endTime,
+        type: annotationType,
+        id: props.annotationId,
+        stream: props.stream,
+      })
+    }
   }
 
   const handleDelete = () => {
@@ -135,6 +153,95 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       `${props.eventPrefix}.dashboards.annotations.${annoMode}_annotation.cancel`
     )
     props.onClose()
+  }
+
+  const isTimeAfter = (time1: Date, time2: Date): boolean => {
+    return time1.getTime() > time2.getTime()
+  }
+
+  /**
+   * timeToCheck is either a string or a number, moment does the conversion for us.
+   * at first; it's a number like:  1626185380000
+   * then, if the user edits it, then it's a string: like:  2021-07-13T15:31:40.000Z
+   * */
+  const isTimeInFuture = (timeToCheck): boolean => {
+    let now = null
+    if (props.getNow) {
+      now = new Date(props.getNow())
+    } else {
+      now = new Date()
+    }
+
+    return isTimeAfter(new Date(timeToCheck), now)
+  }
+
+  interface ValidityInfo {
+    message?: string
+    isValid: boolean
+  }
+
+  const validateStartTime = (): ValidityInfo => {
+    if (isTimeInFuture(startTime)) {
+      return {isValid: false, message: START_TIME_IN_FUTURE_MESSAGE}
+    }
+    return {isValid: true}
+  }
+
+  /**
+   * If there is a problem with the end time (with respect to the start time)
+   * return an error message here, along with the isValid flag
+   *
+   * If no message, then it is valid (just return a true isValid flag)
+   *
+   * since this is only vaild for range annotations, if it is a point annotations just return true
+   * */
+  const validateEndTime = (): ValidityInfo => {
+    if (annotationType === 'point') {
+      return {isValid: true}
+    }
+
+    /**
+     * if point annotation, do nothing
+     *
+     * if range:
+     * making sure they are not the same, and also that 'end' is after 'start'
+     */
+
+    const start = new Date(startTime)
+    const end = new Date(endTime)
+
+    if (end.getTime() === start.getTime()) {
+      return {
+        isValid: false,
+        message: TIMES_ARE_SAME_MESSAGE,
+      }
+    }
+
+    if (!isTimeAfter(end, start)) {
+      return {isValid: false, message: WRONG_ORDER_MESSAGE}
+    }
+
+    if (isTimeInFuture(endTime)) {
+      return {isValid: false, message: END_TIME_IN_FUTURE_MESSAGE}
+    }
+
+    return {isValid: true, message: null}
+  }
+
+  const getEndTimeValidationMessage = (): string => {
+    return validateEndTime().message
+  }
+
+  const isEndTimeValid = (): boolean => {
+    return validateEndTime().isValid
+  }
+
+  const getStartTimeValidationMessage = (): string => {
+    return validateStartTime().message
+  }
+
+  const isStartTimeValid = (): boolean => {
+    return validateStartTime().isValid
   }
 
   const changeToRangeType = () => {
@@ -204,12 +311,16 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               onSubmit={handleKeyboardSubmit}
               time={startTime}
               name="startTime"
+              onValidityCheck={setStartTimeFormatValid}
+              invalidMessage={getStartTimeValidationMessage()}
             />
 
             {annotationType === 'range' && (
               <AnnotationTimeInput
                 onChange={updateEndTime}
                 onSubmit={handleKeyboardSubmit}
+                invalidMessage={getEndTimeValidationMessage()}
+                onValidityCheck={setEndTimeFormatValid}
                 time={endTime}
                 name="endTime"
                 titleText="Stop Time"
@@ -217,11 +328,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
               />
             )}
           </div>
-          <AnnotationMessageInput
-            message={summary}
-            onChange={updateSummary}
-            onSubmit={handleKeyboardSubmit}
-          />
+          <AnnotationMessageInput message={summary} onChange={updateSummary} />
         </Overlay.Body>
         <Overlay.Footer className={footerClasses}>
           {isEditing && (

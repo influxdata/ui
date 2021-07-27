@@ -109,7 +109,7 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .flow-panel__focus {
-  border: 2px solid $c-amethyst;
+  border: 2px solid $c-star;
 }
 
 .flow-panel--persistent-control {
@@ -150,6 +150,67 @@ $cf-radius-lg: $cf-radius + 4px;
   font-weight: $cf-font-weight--medium;
   user-select: none;
   margin-right: $cf-marg-b !important;
+}
+
+.flow-panel .cf-draggable-resizer--handle {
+  height: 48px;
+  margin-left: 32px;
+  margin-bottom: 8px;
+
+  .cf-draggable-resizer--handle-pill1,
+  .cf-draggable-resizer--handle-pill2,
+  .cf-draggable-resizer--handle-gradient1,
+  .cf-draggable-resizer--handle-gradient2 {
+    height: 2px;
+    width: 32px;
+    background-color: rgb(255, 255, 255);
+    transition: all 0.25s linear;
+  }
+  &:hover > .cf-draggable-resizer--handle-pill1,
+  &:hover > .cf-draggable-resizer--handle-pill2 {
+    background: linear-gradient(
+      to right,
+      rgb(206, 88, 235) 0%,
+      rgb(0, 201, 255) 100%
+    );
+    transition: all 0.25s linear;
+  }
+}
+
+.flow-panel
+  .panel-resizer--drag-handle__dragging
+  .cf-draggable-resizer--handle-pill1,
+.flow-panel
+  .panel-resizer--drag-handle__dragging
+  .cf-draggable-resizer--handle-pill2 {
+  background: linear-gradient(
+    to right,
+    rgb(206, 88, 235) 0%,
+    rgb(0, 201, 255) 100%
+  );
+  width: 10%;
+  min-width: 50px;
+  transition: width 0.25s ease-in-out;
+}
+
+.cf-draggable-resizer--dragging {
+  position: relative;
+  z-index: $cf-z--draggable-resizer-mask;
+  user-select: none;
+
+  &:after {
+    content: '';
+    z-index: -1;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .cf-draggable-resizer--panel {
+    pointer-events: none;
+  }
 }
 
 .flow-panel--data-source {
@@ -226,6 +287,10 @@ $cf-radius-lg: $cf-radius + 4px;
   top: -2px;
 }
 
+.flow-panel--body {
+  overflow-x: visible;
+  overflow-y: visible;
+}
 .flow-panel--body,
 .flow-panel--results {
   border-radius: 0 0 $cf-radius $cf-radius;

@@ -118,7 +118,7 @@ class Retention extends PureComponent<Props> {
 }
 
 const mstp = (state: AppState) => ({
-  maxRetentionSeconds: extractBucketMaxRetentionSeconds(state.cloud.limits),
+  maxRetentionSeconds: extractBucketMaxRetentionSeconds(state),
 })
 
 export default connect<StateProps, {}, OwnProps>(mstp)(Retention)

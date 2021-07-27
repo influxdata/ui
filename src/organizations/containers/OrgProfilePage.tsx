@@ -1,55 +1,48 @@
 // Libraries
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
 import {Switch, Route} from 'react-router-dom'
 
 // Components
-import {ErrorHandling} from 'src/shared/decorators/errors'
 import OrgTabbedPage from 'src/organizations/components/OrgTabbedPage'
 import OrgHeader from 'src/organizations/components/OrgHeader'
-import {Grid, Page} from '@influxdata/clockface'
+import {Page} from '@influxdata/clockface'
 import OrgProfileTab from 'src/organizations/components/OrgProfileTab'
 import RenameOrgOverlay from 'src/organizations/components/RenameOrgOverlay'
+import DeleteOrgOverlay from 'src/organizations/components/DeleteOrgOverlay'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {getOrg} from 'src/organizations/selectors'
+import {getQuartzMe} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-// Types
-import {AppState, Organization} from 'src/types'
+// Constants
+import {CLOUD} from 'src/shared/constants'
 
-interface StateProps {
-  org: Organization
+const OrgProfilePage: FC = () => {
+  const quartzMe = useSelector(getQuartzMe)
+
+  return (
+    <>
+      <Page titleTag={pageTitleSuffixer(['About', 'Organization'])}>
+        <OrgHeader testID="about-page--header" />
+        <OrgTabbedPage activeTab="about">
+          <OrgProfileTab />
+        </OrgTabbedPage>
+      </Page>
+      <Switch>
+        <Route path="/orgs/:orgID/about/rename" component={RenameOrgOverlay} />
+        {CLOUD &&
+          isFlagEnabled('selfDeletion') &&
+          quartzMe?.accountType === 'free' && (
+            <Route
+              path="/orgs/:orgID/about/delete"
+              component={DeleteOrgOverlay}
+            />
+          )}
+      </Switch>
+    </>
+  )
 }
 
-@ErrorHandling
-class OrgProfilePage extends Component<StateProps> {
-  public render() {
-    const {org} = this.props
-
-    return (
-      <>
-        <Page titleTag={pageTitleSuffixer(['About', 'Organization'])}>
-          <OrgHeader />
-          <OrgTabbedPage activeTab="about" orgID={org.id}>
-            <Grid>
-              <Grid.Row>
-                <OrgProfileTab />
-              </Grid.Row>
-            </Grid>
-          </OrgTabbedPage>
-        </Page>
-        <Switch>
-          <Route
-            path="/orgs/:orgID/about/rename"
-            component={RenameOrgOverlay}
-          />
-        </Switch>
-      </>
-    )
-  }
-}
-
-const mstp = (state: AppState) => ({org: getOrg(state)})
-
-export default connect<StateProps>(mstp)(OrgProfilePage)
+export default OrgProfilePage

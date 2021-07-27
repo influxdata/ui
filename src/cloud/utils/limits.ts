@@ -1,123 +1,163 @@
-import {get} from 'lodash'
 import {ASSET_LIMIT_ERROR_STATUS} from 'src/cloud/constants/index'
-import {LimitsState} from 'src/cloud/reducers/limits'
 import {LimitStatus} from 'src/cloud/actions/limits'
 import {AppState} from 'src/types'
+import {CLOUD} from 'src/shared/constants'
 
 export const isLimitError = (error): boolean => {
-  return get(error, 'response.status', '') === ASSET_LIMIT_ERROR_STATUS
+  if (!CLOUD) {
+    return false
+  }
+  return error?.response?.status === ASSET_LIMIT_ERROR_STATUS
 }
 
-export const extractBucketLimits = (limits: LimitsState): LimitStatus => {
-  return get(limits, 'buckets.limitStatus')
-}
-
-export const getBucketLimitStatus = (state: AppState): LimitStatus => {
+export const getBucketLimitStatus = (
+  state: AppState
+): LimitStatus['status'] => {
+  if (!CLOUD) {
+    return 'ok'
+  }
   return state.cloud?.limits?.buckets?.limitStatus
 }
 
-export const extractBucketMax = (limits: LimitsState): number => {
-  return get(limits, 'buckets.maxAllowed') || Infinity // if maxAllowed == 0, there are no limits on asset
+export const extractBucketMax = (state: AppState): number => {
+  if (!CLOUD) {
+    return Infinity
+  }
+  return state.cloud?.limits?.buckets?.maxAllowed || Infinity // if maxAllowed == 0, there are no limits on asset
 }
 
-export const extractBucketMaxRetentionSeconds = (
-  limits: LimitsState
-): number => {
-  return get(limits, 'buckets.maxRetentionSeconds', null)
+export const extractBucketMaxRetentionSeconds = (state: AppState): number => {
+  if (!CLOUD) {
+    return null
+  }
+  return state.cloud?.limits?.buckets?.maxRetentionSeconds || null
 }
 
 export const getBucketRetentionLimit = (state: AppState): boolean => {
+  if (!CLOUD) {
+    return false
+  }
   const maxSeconds = state.cloud?.limits?.buckets?.maxRetentionSeconds
   return !!maxSeconds
 }
 
-export const extractDashboardLimits = (limits: LimitsState): LimitStatus => {
-  return get(limits, 'dashboards.limitStatus')
-}
-export const extractDashboardMax = (limits: LimitsState): number => {
-  return get(limits, 'dashboards.maxAllowed') || Infinity
-}
-
-export const extractTaskLimits = (limits: LimitsState): LimitStatus => {
-  return get(limits, 'tasks.limitStatus')
-}
-export const extractTaskMax = (limits: LimitsState): number => {
-  return get(limits, 'tasks.maxAllowed') || Infinity
+export const extractDashboardLimits = (
+  state: AppState
+): LimitStatus['status'] => {
+  if (!CLOUD) {
+    return 'ok'
+  }
+  return state.cloud?.limits?.dashboards?.limitStatus
 }
 
-export const extractChecksLimits = (limits: LimitsState): LimitStatus => {
-  return get(limits, 'checks.limitStatus')
-}
-export const extractChecksMax = (limits: LimitsState): number => {
-  return get(limits, 'checks.maxAllowed') || Infinity
-}
-
-export const extractRulesLimits = (limits: LimitsState): LimitStatus => {
-  return get(limits, 'rules.limitStatus')
-}
-export const extractRulesMax = (limits: LimitsState): number => {
-  return get(limits, 'rules.maxAllowed') || Infinity
-}
-export const extractBlockedRules = (limits: LimitsState): string[] => {
-  return get(limits, 'rules.blocked') || []
+export const extractDashboardMax = (state: AppState): number => {
+  if (!CLOUD) {
+    return Infinity
+  }
+  return state.cloud?.limits?.dashboards?.maxAllowed || Infinity
 }
 
-export const extractEndpointsLimits = (limits: LimitsState): LimitStatus => {
-  return get(limits, 'endpoints.limitStatus')
-}
-export const extractEndpointsMax = (limits: LimitsState): number => {
-  return get(limits, 'endpoints.maxAllowed') || Infinity
-}
-export const extractBlockedEndpoints = (limits: LimitsState): string[] => {
-  return get(limits, 'endpoints.blocked') || []
+export const extractTaskLimits = (state: AppState): LimitStatus['status'] => {
+  if (!CLOUD) {
+    return 'ok'
+  }
+  return state.cloud?.limits?.tasks.limitStatus
 }
 
-export const extractLimitedMonitoringResources = (
-  limits: LimitsState
-): string => {
-  const rateLimitedResources = []
+export const extractTaskMax = (state: AppState): number => {
+  if (!CLOUD) {
+    return Infinity
+  }
+  return state.cloud?.limits?.tasks?.maxAllowed || Infinity
+}
 
-  if (get(limits, 'checks.limitStatus') === LimitStatus.EXCEEDED) {
-    rateLimitedResources.push('checks')
+export const extractChecksLimits = (state: AppState): LimitStatus['status'] => {
+  if (!CLOUD) {
+    return 'ok'
+  }
+  return state.cloud?.limits?.checks?.limitStatus
+}
+
+export const extractChecksMax = (state: AppState): number => {
+  if (!CLOUD) {
+    return Infinity
+  }
+  return state.cloud?.limits?.checks?.maxAllowed || Infinity
+}
+
+export const extractRulesLimits = (state: AppState): LimitStatus['status'] => {
+  if (!CLOUD) {
+    return 'ok'
+  }
+  return state.cloud?.limits?.rules?.limitStatus
+}
+
+export const extractRulesMax = (state: AppState): number => {
+  if (!CLOUD) {
+    return Infinity
+  }
+  return state.cloud?.limits?.rules?.maxAllowed || Infinity
+}
+
+export const extractEndpointsLimits = (
+  state: AppState
+): LimitStatus['status'] => {
+  if (!CLOUD) {
+    'ok'
+  }
+  return state.cloud?.limits?.endpoints?.limitStatus
+}
+
+export const extractEndpointsMax = (state: AppState): number => {
+  if (!CLOUD) {
+    return Infinity
+  }
+  return state.cloud?.limits?.endpoints?.maxAllowed || Infinity
+}
+
+export const extractBlockedEndpoints = (state: AppState): string[] => {
+  if (!CLOUD) {
+    return []
+  }
+  return state.cloud?.limits?.endpoints.blocked || []
+}
+
+export const extractRateLimitStatus = (
+  state: AppState
+): LimitStatus['status'] => {
+  if (!CLOUD) {
+    return 'ok'
   }
 
-  if (get(limits, 'rules.limitStatus') === LimitStatus.EXCEEDED) {
-    rateLimitedResources.push('rules')
-  }
-
-  if (get(limits, 'endpoints.limitStatus') === LimitStatus.EXCEEDED) {
-    rateLimitedResources.push('endpoints')
-  }
-
-  return rateLimitedResources.join(', ')
-}
-
-export const extractRateLimitStatus = (limits: LimitsState): LimitStatus => {
   const statuses = [
-    get(limits, 'rate.writeKBs.limitStatus'),
-    get(limits, 'rate.readKBs.limitStatus'),
-    get(limits, 'rate.cardinality.limitStatus'),
+    state.cloud?.limits?.rate?.writeKBs?.limitStatus,
+    state.cloud?.limits?.rate?.readKBs?.limitStatus,
+    state.cloud?.limits?.rate?.cardinality?.limitStatus,
   ]
 
-  if (statuses.includes(LimitStatus.EXCEEDED)) {
-    return LimitStatus.EXCEEDED
+  if (statuses.includes('exceeded')) {
+    return 'exceeded'
   }
 
-  return LimitStatus.OK
+  return 'ok'
 }
 
-export const extractRateLimitResources = (limits: LimitsState): string[] => {
+export const extractRateLimitResources = (state: AppState): string[] => {
   const rateLimitedResources = []
 
-  if (get(limits, 'rate.readKBs.limitStatus') === LimitStatus.EXCEEDED) {
+  if (!CLOUD) {
+    return rateLimitedResources
+  }
+
+  if (state.cloud?.limits?.rate?.readKBs?.limitStatus === 'exceeded') {
     rateLimitedResources.push('read')
   }
 
-  if (get(limits, 'rate.writeKBs.limitStatus') === LimitStatus.EXCEEDED) {
+  if (state.cloud?.limits?.rate?.writeKBs?.limitStatus === 'exceeded') {
     rateLimitedResources.push('write')
   }
 
-  if (get(limits, 'rate.cardinality.limitStatus') === LimitStatus.EXCEEDED) {
+  if (state.cloud?.limits?.rate?.cardinality?.limitStatus === 'exceeded') {
     rateLimitedResources.push('cardinality')
   }
 

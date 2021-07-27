@@ -49,6 +49,7 @@ export function RunQueryPromiseMutex<T>() {
             })
             .catch((error: Error) => {
               ret.reject(error)
+              reject(error)
             })
         }),
         cancel: ret.cancel,

@@ -25,6 +25,7 @@ import {
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
+import {CLOUD} from 'src/shared/constants'
 
 // Actions
 import {
@@ -54,6 +55,7 @@ import {BUCKET_LIMIT} from 'src/resources/constants'
 
 type Action = BucketAction | NotifyAction
 
+// todo: probably isn't thunk ? (should be moved to utils or something like that)
 export const fetchAllBuckets = async (orgID: string) => {
   const resp = await api.getBuckets({
     query: {orgID, limit: BUCKET_LIMIT},
@@ -63,7 +65,11 @@ export const fetchAllBuckets = async (orgID: string) => {
     throw new Error(resp.data.message)
   }
 
-  const demoDataBuckets = await fetchDemoDataBuckets()
+  let demoDataBuckets = []
+
+  if (CLOUD) {
+    demoDataBuckets = await fetchDemoDataBuckets()
+  }
 
   return normalize<Bucket, BucketEntities, string[]>(
     [...resp.data.buckets, ...demoDataBuckets],

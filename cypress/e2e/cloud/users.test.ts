@@ -6,10 +6,16 @@ describe('Users Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({unityUsers: true}).then(() => {
-          cy.visit(`/orgs/${id}/users`)
-          cy.getByTestID('users-page--header').should('be.visible')
-        })
+        cy.setFeatureFlags({unityUsers: true, uiUnificationFlag: true}).then(
+          () => {
+            cy.quartzProvision({
+              hasUsers: true,
+            }).then(() => {
+              cy.visit(`/orgs/${id}/users`)
+              cy.getByTestID('users-page--header').should('be.visible')
+            })
+          }
+        )
       })
     })
   })
@@ -53,8 +59,8 @@ describe('Users Page', () => {
 
     cy.getByTestID('notification-success--dismiss').click()
 
-    cy.getByTestIDSubStr('invite-list-item').should('have.length', 0)
-    cy.getByTestIDSubStr('user-list-item').should('have.length', 1)
+    cy.getByTestIDSubStr('invite-list-item').should('not.exist')
+    cy.getByTestIDSubStr('user-list-item').should('have.length', 2)
 
     cy.getByTestID(`user-list-item user@influxdata.com`).within(() => {
       cy.getByTestID('delete-user--button').trigger('mouseover')
@@ -68,6 +74,6 @@ describe('Users Page', () => {
 
     cy.getByTestID('notification-success--dismiss').click()
 
-    cy.getByTestIDSubStr('user-list-item').should('have.length', 0)
+    cy.getByTestIDSubStr('user-list-item').should('have.length', 1)
   })
 })

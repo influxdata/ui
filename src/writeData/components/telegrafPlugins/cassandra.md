@@ -1,6 +1,6 @@
 # Cassandra Input Plugin
 
-### **Deprecated in version 1.7**: Please use the [jolokia2](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/jolokia2) plugin with the [cassandra.conf](/plugins/inputs/jolokia2/examples/cassandra.conf) example configuration.
+### **Deprecated in version 1.7**: Please use the [jolokia2](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/jolokia2) plugin with the [cassandra.conf](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/jolokia2/examples/cassandra.conf) example configuration.
 
 #### Plugin arguments:
 - **context** string: Context root used for jolokia url

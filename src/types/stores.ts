@@ -8,9 +8,7 @@ import {NoteEditorState} from 'src/dashboards/reducers/notes'
 import {DataLoadingState} from 'src/dataLoaders/reducers'
 import {OnboardingState} from 'src/onboarding/reducers'
 import {
-  Links,
   Notification,
-  PredicatesState,
   ResourceState,
   TimeRange,
   VariableEditorState,
@@ -47,14 +45,12 @@ export interface AppState {
   currentExplorer: CurrentExplorerState
   dataLoading: DataLoadingState
   flags: FlagState
-  links: Links
   me: MeState
   noteEditor: NoteEditorState
   notifications: Notification[]
   onboarding: OnboardingState
   overlays: OverlayState
   perf: PerfState
-  predicates: PredicatesState
   ranges: RangeState
   resources: ResourceState
   telegrafEditorPlugins: TelegrafEditorPluginState

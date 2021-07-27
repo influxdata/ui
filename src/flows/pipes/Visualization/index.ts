@@ -11,14 +11,17 @@ export default register => {
     component: View,
     button: 'Visualization',
     initial: {
-      panelVisibility: 'visible',
-      panelHeight: 200,
       functions: [{name: 'mean'}],
       period: '',
       properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
     },
     generateFlux: (pipe, _, append) => {
-      if (!pipe.functions.length) {
+      if (pipe.properties.type === 'simple-table') {
+        append('__CURRENT_RESULT__ |> limit(n: 100)')
+        return
+      }
+
+      if (!pipe.functions || !pipe.functions.length) {
         append('__CURRENT_RESULT__')
         return
       }

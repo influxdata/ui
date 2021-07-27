@@ -21,20 +21,20 @@ export interface GaugeTheme {
 
 export const GAUGE_THEME_LIGHT: GaugeTheme = {
   degree: (5 / 4) * Math.PI,
-  lineCount: 5,
-  smallLineCount: 10,
-  lineColor: `${InfluxColors.Platinum}`,
   labelColor: `${InfluxColors.Storm}`,
   labelFontSize: 13,
-  lineStrokeSmall: 1,
+  lineColor: `${InfluxColors.Platinum}`,
+  lineCount: 5,
   lineStrokeLarge: 3,
-  tickSizeSmall: 9,
-  tickSizeLarge: 18,
+  lineStrokeSmall: 1,
   minFontSize: 22,
   minLineWidth: 24,
-  valueColor: `${InfluxColors.Graphite}`,
   needleColor0: `${InfluxColors.Wolf}`,
   needleColor1: `${InfluxColors.Smoke}`,
+  smallLineCount: 10,
+  tickSizeLarge: 18,
+  tickSizeSmall: 9,
+  valueColor: `${InfluxColors.Graphite}`,
 
   // This constant expresses how far past the gauge max the needle should be
   // drawn if the value for the needle is greater than the gauge max. It is
@@ -45,20 +45,20 @@ export const GAUGE_THEME_LIGHT: GaugeTheme = {
 
 export const GAUGE_THEME_DARK: GaugeTheme = {
   degree: (5 / 4) * Math.PI,
-  lineCount: 5,
-  smallLineCount: 10,
-  lineColor: `${InfluxColors.Graphite}`,
   labelColor: `${InfluxColors.Wolf}`,
   labelFontSize: 13,
-  lineStrokeSmall: 1,
+  lineColor: `${InfluxColors.Graphite}`,
+  lineCount: 5,
   lineStrokeLarge: 3,
-  tickSizeSmall: 9,
-  tickSizeLarge: 18,
+  lineStrokeSmall: 1,
   minFontSize: 22,
   minLineWidth: 24,
-  valueColor: `${InfluxColors.White}`,
   needleColor0: `${InfluxColors.Smoke}`,
   needleColor1: `${InfluxColors.White}`,
+  smallLineCount: 10,
+  tickSizeLarge: 18,
+  tickSizeSmall: 9,
+  valueColor: `${InfluxColors.White}`,
 
   // This constant expresses how far past the gauge max the needle should be
   // drawn if the value for the needle is greater than the gauge max. It is
@@ -66,3 +66,6 @@ export const GAUGE_THEME_DARK: GaugeTheme = {
   // draw halfway around the gauge from the max value
   overflowDelta: 0.03,
 }
+
+export const GAUGE_ARC_LENGTH_DEFAULT = 1.5 * Math.PI
+export const GAUGE_VALUE_POSITION_Y_OFFSET_DEFAULT = 1.5

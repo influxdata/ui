@@ -19,12 +19,85 @@ const timeOptions: any = {
   second: 'numeric',
 }
 
+interface Division {
+  ms: number
+  scale: Intl.RelativeTimeFormatUnit
+}
+
+const relativeDivisions: Division[] = [
+  {scale: 'years', ms: 31536000000},
+  {scale: 'months', ms: 2628000000},
+  {scale: 'days', ms: 86400000},
+  {scale: 'hours', ms: 3600000},
+  {scale: 'minutes', ms: 60000},
+  {scale: 'seconds', ms: 1000},
+]
+
+export const createRelativeFormatter = (
+  numeric: Intl.RelativeTimeFormatNumeric = 'always'
+) => {
+  const formatter = new Intl.RelativeTimeFormat('en-us', {
+    numeric,
+  })
+
+  const formatDateRelative = (date: Date) => {
+    const millisecondsAgo = date.getTime() - Date.now()
+
+    for (const {scale, ms} of relativeDivisions) {
+      if (Math.abs(millisecondsAgo) >= ms || scale === 'seconds') {
+        return formatter.format(Math.round(millisecondsAgo / ms), scale)
+      }
+    }
+  }
+
+  return {
+    formatRelative: formatDateRelative,
+  }
+}
+
 export const createDateTimeFormatter = (
   format: string,
   timeZone: TimeZone = 'Local'
 ) => {
   switch (format) {
-    default:
+    default: {
+      if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+        console.warn(
+          'createDateTimeFormatter: the format argument provided is either invalid or not supported at the moment.'
+        )
+      }
+      break
+    }
+
+    case 'YYYY-MM-DD': {
+      const options = {
+        ...dateTimeOptions,
+        hour12: false,
+      }
+
+      if (timeZone === 'UTC') {
+        options.timeZone = 'UTC'
+      }
+      const formatter = Intl.DateTimeFormat('en-us', options)
+
+      const formatDate = date => {
+        const parts = formatter.formatToParts(date)
+        const dateParts: any = {}
+
+        parts
+          .filter(part => part.type !== 'literal')
+          .forEach(part => {
+            dateParts[part.type] = part.value
+          })
+
+        return `${dateParts.year}-${dateParts.month}-${dateParts.day}`
+      }
+
+      return {
+        format: formatDate,
+      }
+    }
+
     case 'YYYY-MM-DD hh:mm:ss a': {
       const options = {
         ...dateTimeOptions,
@@ -105,6 +178,36 @@ export const createDateTimeFormatter = (
           })
 
         return `${dateParts.year}-${dateParts.month}-${dateParts.day} ${dateParts.hour}:${dateParts.minute}:${dateParts.second}`
+      }
+
+      return {
+        format: formatDate,
+      }
+    }
+
+    case 'YYYY-MM-DD HH:mm:ss.sss': {
+      const options = {
+        ...dateTimeOptions,
+        fractionalSecondDigits: 3,
+        hour12: false,
+      }
+
+      if (timeZone === 'UTC') {
+        options.timeZone = 'UTC'
+      }
+      const formatter = Intl.DateTimeFormat('en-us', options)
+
+      const formatDate = date => {
+        const parts = formatter.formatToParts(date)
+        const dateParts: any = {}
+
+        parts
+          .filter(part => part.type !== 'literal')
+          .forEach(part => {
+            dateParts[part.type] = part.value
+          })
+
+        return `${dateParts.year}-${dateParts.month}-${dateParts.day} ${dateParts.hour}:${dateParts.minute}:${dateParts.second}.${dateParts.fractionalSecond}`
       }
 
       return {

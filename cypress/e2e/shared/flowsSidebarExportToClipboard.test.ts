@@ -6,7 +6,7 @@ const openCopyAs = () => {
     .eq(1)
     .scrollIntoView()
     .click({force: true})
-  cy.getByTestID('Copy As--list-item').click()
+  cy.getByTestID('Export to Client Library--list-item').click()
 }
 
 const addFluxQueryInNotebook = (query: string) => {

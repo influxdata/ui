@@ -77,7 +77,11 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
     }
 
     const clickoutside = evt => {
-      if (ref.current && ref.current.contains(evt.target)) {
+      if (
+        ref.current &&
+        (ref.current.contains(evt.target) ||
+          evt.target.closest('.flow-sidebar'))
+      ) {
         return
       }
 

@@ -65,7 +65,7 @@ export const createAPI = async (flow: PostNotebookParams) => {
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
-  return res.data.id
+  return res.data
 }
 
 export const deleteAPI = async (ids: DeleteNotebookParams) => {

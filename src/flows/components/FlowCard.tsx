@@ -5,13 +5,15 @@ import {useParams, useHistory} from 'react-router-dom'
 import {ResourceCard} from '@influxdata/clockface'
 import FlowContextMenu from 'src/flows/components/FlowContextMenu'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {Flow} from 'src/types'
 
 interface Props {
   id: string
-  name: string
+  flow: Flow
 }
 
-const FlowCard: FC<Props> = ({id, name}) => {
+const FlowCard: FC<Props> = ({id, flow}) => {
+  const {name} = flow
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
 
@@ -31,6 +33,10 @@ const FlowCard: FC<Props> = ({id, name}) => {
         name={name || `Name this ${PROJECT_NAME}`}
         onClick={handleClick}
       />
+      <ResourceCard.Meta>
+        <>Created at {flow.createdAt}</>
+        <>Last Modified at {flow.updatedAt}</>
+      </ResourceCard.Meta>
     </ResourceCard>
   )
 }

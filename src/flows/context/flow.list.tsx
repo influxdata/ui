@@ -77,6 +77,8 @@ export function serialize(flow) {
     readOnly: flow.readOnly,
     range: flow.range,
     refresh: flow.refresh,
+    createdAt: flow.createdAt,
+    updatedAt: flow.updatedAt,
     pipes: flow.data.allIDs.map(id => {
       const meta = flow.meta.byID[id]
       // if data changes first, meta will not exist yet
@@ -102,6 +104,8 @@ export function hydrate(data) {
     range: data.range,
     refresh: data.refresh,
     readOnly: data.readOnly,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
   }
   if (!data.pipes) {
     return flow
@@ -173,6 +177,8 @@ export const FlowListProvider: FC = ({children}) => {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,
         refresh: AUTOREFRESH_DEFAULT,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         pipes: [
           {
             title: 'Select a Metric',
@@ -209,6 +215,8 @@ export const FlowListProvider: FC = ({children}) => {
         data: flow.data,
         meta: flow.meta,
         readOnly: flow.readOnly,
+        createdAt: flow.createdAt ?? new Date().toISOString(),
+        updatedAt: flow.updatedAt ?? new Date().toISOString(),
       }
     }
 
@@ -222,7 +230,14 @@ export const FlowListProvider: FC = ({children}) => {
     }
     let id: string = `local_${UUID()}`
     try {
-      id = await createAPI(apiFlow)
+      const flow = await createAPI(apiFlow)
+      id = flow.id
+
+      _flow = {
+        ..._flow,
+        createdAt: flow.createdAt,
+        updatedAt: flow.updatedAt,
+      }
     } catch {
       dispatch(notify(notebookCreateFail()))
     }
@@ -254,6 +269,8 @@ export const FlowListProvider: FC = ({children}) => {
       meta: flow.meta,
       readOnly: flow.readOnly,
       results: null,
+      createdAt: flow.createdAt,
+      updatedAt: flow.updatedAt,
     }
 
     setFlows({
@@ -296,7 +313,14 @@ export const FlowListProvider: FC = ({children}) => {
     const data = await getAllAPI(org.id)
     if (data && data.flows) {
       const _flows = {}
-      data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
+      data.flows.forEach(f => {
+        _flows[f.id] = {
+          ...hydrate(f.spec),
+          createdAt: f.createdAt,
+          updatedAt: f.updatedAt,
+        }
+      })
+      console.log(_flows)
       setFlows(_flows)
     }
   }, [org.id, setFlows])
@@ -337,6 +361,8 @@ export const FlowListProvider: FC = ({children}) => {
     }
 
     acc[curr] = {
+      createdAt: flows[curr].createdAt,
+      updatedAt: flows[curr].updatedAt,
       name: flows[curr].name,
       range: flows[curr].range,
       refresh: flows[curr].refresh,

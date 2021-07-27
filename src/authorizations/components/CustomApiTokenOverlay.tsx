@@ -52,5 +52,3 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
     </Overlay.Container>
   )
 }
-
-

@@ -270,6 +270,10 @@ do
 								fi
 							fi
 							safeName="${name//\//-}"
+							if [[ "${safeName}" == *"remocal"* ]]; then
+								# put all remocal artifacts in the same parent directory
+								safeName="remocal/${safeName}"
+							fi
 							mkdir -p "monitor-ci/test-artifacts/results/${safeName}/${subdirectory}"
 							output="monitor-ci/test-artifacts/results/${safeName}/${subdirectory}/${filename}"
 							curl -L -s --request GET \

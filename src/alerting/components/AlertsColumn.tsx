@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 // Types
 import {AppState, ResourceType, ColumnTypes} from 'src/types'
-import {LimitStatus, MonitoringLimits} from 'src/cloud/actions/limits'
+import {MonitoringLimits} from 'src/cloud/actions/limits'
 
 // Components
 import {
@@ -61,9 +61,7 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
   const resourceName = title.substr(0, title.length - 1)
 
   const isLimitExceeded =
-    CLOUD &&
-    limitStatus[type] === LimitStatus.EXCEEDED &&
-    type !== ResourceType.Checks
+    CLOUD && limitStatus[type] === 'exceeded' && type !== ResourceType.Checks
 
   const assetLimitButton = (
     <AssetLimitButton
@@ -119,12 +117,12 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
   )
 }
 
-const mstp = ({cloud: {limits}}: AppState) => {
+const mstp = (state: AppState) => {
   return {
     limitStatus: {
-      [ResourceType.Checks]: extractChecksLimits(limits),
-      [ResourceType.NotificationRules]: extractRulesLimits(limits),
-      [ResourceType.NotificationEndpoints]: extractEndpointsLimits(limits),
+      [ResourceType.Checks]: extractChecksLimits(state),
+      [ResourceType.NotificationRules]: extractRulesLimits(state),
+      [ResourceType.NotificationEndpoints]: extractEndpointsLimits(state),
     },
   }
 }

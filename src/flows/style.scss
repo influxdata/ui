@@ -155,6 +155,7 @@ $cf-radius-lg: $cf-radius + 4px;
 .flow-panel .cf-draggable-resizer--handle {
   height: 48px;
   margin-left: 32px;
+  margin-bottom: 8px;
 
   .cf-draggable-resizer--handle-pill1,
   .cf-draggable-resizer--handle-pill2,
@@ -187,7 +188,8 @@ $cf-radius-lg: $cf-radius + 4px;
     rgb(206, 88, 235) 0%,
     rgb(0, 201, 255) 100%
   );
-  width: 60px;
+  width: 10%;
+  min-width: 50px;
   transition: width 0.25s ease-in-out;
 }
 

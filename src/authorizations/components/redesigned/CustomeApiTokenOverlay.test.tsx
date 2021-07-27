@@ -1,6 +1,6 @@
 import React from 'react'
 import {render, fireEvent} from '@testing-library/react'
-import CustomApiTokenOverlay from './CustomApiTokenOverlay'
+import CustomApiTokenOverlay from '../CustomApiTokenOverlay'
 
 describe('CustomeApitokenDescription', () => {
   const props = {

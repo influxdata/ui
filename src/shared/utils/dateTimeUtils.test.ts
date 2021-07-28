@@ -1,6 +1,4 @@
 import {addDurationToDate} from './dateTimeUtils'
-import {mocked} from 'ts-jest/utils'
-import {getTimezoneOffset} from '../../dashboards/utils/getTimezoneOffset'
 
 // July 4th, 1983, 20:00:00 UTC ===> 1983-07-04T20:00:00.000Z
 const timestamp = 426196800000
@@ -37,11 +35,3 @@ describe('incrementDate', () => {
   })
 })
 
-describe('setTimeToLocal', ()=> {
-  it('should correct the timezone to GMT-7', function() {
-    // mock the time zone offset for GMT - 7
-    mocked(getTimezoneOffset).mockImplementation(() => 420)
-
-
-  })
-})

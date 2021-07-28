@@ -55,7 +55,6 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     })
     if (isFlagEnabled('pinnedItems')) {
       getPinnedItems()
-        .then(res => res.json())
         .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
         .catch(err => {
           console.error(err)

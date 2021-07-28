@@ -8,6 +8,13 @@ import React, {
   ReactElement,
 } from 'react'
 
+import {
+  getPinned,
+  putPinned,
+  deletePinned,
+  postPinned,
+} from 'src/client/pinnedItemRoutes'
+
 export interface PinnedItem {
   orgID: string
   userID: string
@@ -33,29 +40,28 @@ export const PinnedItemsContext = createContext(null)
 // The routes below are placeholders until we get the implementation of the swagger-defined routes through the pipeline
 
 export const getPinnedItems = async () => {
-  return await fetch(``, {
-    method: 'GET',
-  })
+  const pinnedRes = await getPinned({})
+  if (pinnedRes.status !== 200) {
+    throw new Error('Unable to retrieve pinned items')
+  } else {
+    return pinnedRes.data
+  }
 }
 
 const removePinnedItem = async (id: string) => {
-  return await fetch(`/${id}`, {
-    method: 'DELETE',
-  })
+  await deletePinned({id})
 }
 const addPinnedItem = async (item: Partial<PinnedItem>) => {
-  const added = await fetch(``, {
-    method: 'POST',
-    body: JSON.stringify(item),
-  })
-  return await added.json()
+  const pinnedRes = await postPinned({data: item})
+  if (pinnedRes.status !== 200) {
+    throw new Error('Unable to retrieve pinned items')
+  } else {
+    return
+  }
 }
 
-const updatePinnedItem = async (_id: string, item: Partial<PinnedItem>) => {
-  await fetch(``, {
-    method: 'PUT',
-    body: JSON.stringify({updateItemFields: item}),
-  })
+const updatePinnedItem = async (id: string, item: Partial<PinnedItem>) => {
+  await putPinned({id, data: item})
 
   return
 }
@@ -70,8 +76,7 @@ export const pushPinnedItem = async (newItem: Partial<PinnedItem>) => {
 
 export const deletePinnedItemByParam = async (param: string) => {
   try {
-    const res = await getPinnedItems()
-    const items = await res.json()
+    const items = await getPinnedItems()
     const toDeleteItem = items.find(item =>
       Object.values(item.metadata[0]).includes(param)
     )
@@ -94,9 +99,8 @@ export const deletePinnedItem = async (itemID: string) => {
 
 export const updatePinnedItemByParam = async (id: string, updateParams: {}) => {
   try {
-    const res = await getPinnedItems()
-    const pinnedItems = await res.json()
-    const toUpdateItem = pinnedItems.find(item =>
+    const pinnedItems = await getPinnedItems()
+    const toUpdateItem = pinnedItems?.find(item =>
       Object.values(item.metadata[0]).includes(id)
     )
     if (toUpdateItem) {
@@ -125,9 +129,7 @@ const PinnedItemsProvider: FC<Props> = ({children}) => {
   )
 
   useEffect(() => {
-    getPinnedItems()
-      .then(res => res.json())
-      .then(res => setPinnedItems(res))
+    getPinnedItems().then(data => setPinnedItems(data))
   }, [])
 
   return (

@@ -24,7 +24,7 @@ import {remove} from 'src/flows/context/query'
 import './style.scss'
 
 const Schedule: FC<PipeProp> = ({Context}) => {
-  const {id, data, update, range} = useContext(PipeContext)
+  const {id, data, update} = useContext(PipeContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)
   let intervalError = ''
   let offsetError = ''

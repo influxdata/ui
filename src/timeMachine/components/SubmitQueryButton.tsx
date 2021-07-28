@@ -149,7 +149,7 @@ class SubmitQueryButton extends PureComponent<Props> {
       this.props.globalQueryContext
         ?.handleSubmit(this.props.activeQueryText)
         .then(result => {
-          this.props.handleSubmit(result)
+          this.props.handleSubmit(result.source)
         })
         .catch(e => {
           console.log(e)

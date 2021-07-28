@@ -34,4 +34,3 @@ describe('incrementDate', () => {
     expect(futureDate.toISOString()).toBe('1983-07-03T20:00:00.000Z')
   })
 })
-

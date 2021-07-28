@@ -29,6 +29,7 @@ import {RemoteDataState} from 'src/types'
 const fakeNotify = notify
 
 export const Submit: FC = () => {
+  // TODO(Subir): Change this to use GlobalQueryContext
   const {cancel} = useContext(QueryContext)
   const {runMode, setRunMode} = useContext(RunModeContext)
   const {generateMap, queryAll, status} = useContext(FlowQueryContext)
@@ -38,7 +39,6 @@ export const Submit: FC = () => {
 
   const handleSubmit = () => {
     event('Notebook Submit Button Clicked')
-    console.log('Running queryAll')
     queryAll()
   }
 
@@ -46,9 +46,6 @@ export const Submit: FC = () => {
     active: boolean,
     onClick: (e: MouseEvent<HTMLButtonElement>) => void
   ) => {
-    globalQueryContext.isInitialized = false
-    console.log('hisdjskdjs')
-    globalQueryContext.handleSubmit = handleSubmit
     return (
       <ButtonGroup>
         <SubmitQueryButton

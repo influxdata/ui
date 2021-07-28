@@ -96,6 +96,7 @@ const fromBuilderConfig = (
 
 export const QueryBuilderProvider: FC = ({children}) => {
   const {data, range, update} = useContext(PipeContext)
+  // TODO(Subir): Change this to use GlobalQueryContext
   const {query} = useContext(QueryContext)
 
   const [keyResults, setKeyResults] = useState(Array(data.tags.length).fill([]))

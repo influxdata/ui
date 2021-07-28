@@ -223,6 +223,7 @@ const normalizeSchema = (
 export const SchemaProvider: FC = React.memo(({children}) => {
   const {data, update} = useContext(PipeContext)
   const {flow} = useContext(FlowContext)
+  // TODO(Subir): Change this to use GlobalQueryContext
   const {query} = useContext(QueryContext)
   const [searchTerm, setSearchTerm] = useState('')
   const [lastBucket, setLastBucket] = useState(data?.bucket)

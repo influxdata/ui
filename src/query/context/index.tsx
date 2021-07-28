@@ -601,7 +601,8 @@ export const simplify = (text, vars: VariableMap = {}) => {
 }
 
 export interface GlobalQueryContextType {
-  query: (text: string, vars: VariableMap) => Promise<FluxResult>
+  // basic: (text: string, vars: VariableMap) => {}
+  query: (text: string, vars?: VariableMap) => Promise<FluxResult>
   refreshQueries: () => void
   cancelQueries: (tags?: Tags) => void
   addQuery: (query: string, tags?: Tags, id?: string) => Query
@@ -612,7 +613,8 @@ export interface GlobalQueryContextType {
 
 export const DEFAULT_GLOBAL_QUERY_CONTEXT: GlobalQueryContextType = {
   refreshQueries: () => {},
-  query: (_: string, __: VariableMap) => null,
+  // basic: (_: string, __: VariableMap) => null,
+  query: (_: string, __: VariableMap) => Promise.resolve({} as FluxResult),
   cancelQueries: (_: Tags) => {},
   addQuery: (_: string, __?: Tags, ___?: string) => null,
   handleSubmit: (_: string) => null,
@@ -811,8 +813,10 @@ const GlobalQueryProvider: FC<Props> = ({children, variables}) => {
     }
   }
 
-  const query = (text: string, vars: VariableMap = {}): Promise<FluxResult> => {
+  const query = (text: string, vars: VariableMap): Promise<FluxResult> => {
+    console.log('Global Query: ', {vars})
     const result = basic(text, vars)
+    console.log('Global Query: ', {result})
 
     return result.promise
       .then(raw => {

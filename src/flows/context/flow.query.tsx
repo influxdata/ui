@@ -23,6 +23,8 @@ import {PROJECT_NAME} from 'src/flows'
 
 // Types
 import {AppState, RemoteDataState, Variable} from 'src/types'
+import {GlobalQueryContext} from 'src/query/context'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Instance {
   id: string
@@ -42,7 +44,7 @@ interface PanelQueries {
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   query: (text: string) => Promise<FluxResult>
-  basic: (text: string) => any
+  // basic: (text: string) => any
   simplify: (text: string) => string
   queryAll: () => void
   getPanelQueries: (id: string, withSideEffects?: boolean) => PanelQueries
@@ -53,7 +55,7 @@ export interface FlowQueryContextType {
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   query: (_: string) => Promise.resolve({} as FluxResult),
-  basic: (_: string) => {},
+  // basic: (_: string) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
   getPanelQueries: (_, _a) => ({source: '', visual: ''}),
@@ -85,7 +87,17 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
-  const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
+  let queryAPI = null
+  const {query: globalQueryAPI} = useContext(GlobalQueryContext)
+  const {query: localQueryAPI} = useContext(QueryContext)
+
+  if (isFlagEnabled('Subir')) {
+    console.log('using global query api')
+    queryAPI = globalQueryAPI
+  } else {
+    console.log('NOT using global query api')
+    queryAPI = localQueryAPI
+  }
   const [loading, setLoading] = useState({})
 
   const dispatch = useDispatch()
@@ -245,9 +257,9 @@ export const FlowQueryProvider: FC = ({children}) => {
     return queryAPI(text, vars)
   }
 
-  const basic = (text: string): Promise<FluxResult> => {
-    return basicAPI(text, vars)
-  }
+  // const basic = (text: string): Promise<FluxResult> => {
+  //   return basicAPI(text, vars)
+  // }
 
   const forceUpdate = (id, data) => {
     try {
@@ -352,7 +364,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     <FlowQueryContext.Provider
       value={{
         query,
-        basic,
+        // basic,
         simplify: simple,
         generateMap,
         queryAll,

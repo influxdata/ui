@@ -320,7 +320,6 @@ export const FlowListProvider: FC = ({children}) => {
           updatedAt: f.updatedAt,
         }
       })
-      console.log(_flows)
       setFlows(_flows)
     }
   }, [org.id, setFlows])

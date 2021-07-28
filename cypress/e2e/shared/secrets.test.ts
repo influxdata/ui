@@ -74,80 +74,61 @@ describe('Secrets', () => {
               expect(val.text()).to.equal(aToZ[index])
             })
 
-          cy.getByTestID('resource-sorter')
-            .click()
-            .then(() => {
-              cy.getByTestID('resource-sorter--id-desc')
-                .click()
-                .then(() => {
-                  cy.get('span')
-                    .filter('[data-testid*="secret-card--"]')
-                    .each((val, index) => {
-                      expect(val.text()).to.equal(zToA[index])
-                    })
-                })
+          cy.getByTestID('resource-sorter').click()
+          cy.getByTestID('resource-sorter--id-desc').click()
+          cy.get('span')
+            .filter('[data-testid*="secret-card--"]')
+            .each((val, index) => {
+              expect(val.text()).to.equal(zToA[index])
             })
 
           // Delete API created secrets via the UI
-          cy.getByTestID('delete-secret-initial--toEverybody')
-            .click({force: true})
-            .then(() => {
-              cy.getByTestID('delete-secret-confirm--toEverybody').should(
-                'exist'
-              )
-              cy.getByTestID('delete-secret-confirm--toEverybody').click({
-                force: true,
-              })
-              cy.wait('@deleteSecret')
-                .its('response.statusCode')
-                .should('eq', 204)
-              // After deletion that secret should no longer exist
-              cy.getByTestID('secret-card--toEverybody').should('not.exist')
-            })
+          cy.getByTestID('delete-secret-initial--toEverybody').click({
+            force: true,
+          })
+          cy.getByTestID('delete-secret-confirm--toEverybody').should('exist')
+          cy.getByTestID('delete-secret-confirm--toEverybody').click({
+            force: true,
+          })
+          cy.wait('@deleteSecret')
+            .its('response.statusCode')
+            .should('eq', 204)
+          // After deletion that secret should no longer exist
+          cy.getByTestID('secret-card--toEverybody').should('not.exist')
+        })
 
-          // Create new secret via UI, then edit it once created
-          const secretName = 'Shhhhh'
-          cy.getByTestID('button-add-secret')
-            .first() // There's a second one in the empty state.
-            .click()
-            .then(() => {
-              cy.getByTestID('variable-form-save').should('be.disabled')
-              cy.getByTestID('input-field')
-                .first()
-                .type(secretName)
-              cy.getByTestID('variable-form-save').should('be.disabled')
-              cy.getByTestID('input-field')
-                .last()
-                .type("I'm a secret!")
-              cy.getByTestID('variable-form-save').should('be.enabled')
-              cy.getByTestID('variable-form-save').click()
-              cy.wait('@upsertSecret')
-                .its('response.statusCode')
-                .should('eq', 204)
-                .then(() => {
-                  cy.getByTestID(`secret-card--${secretName}`).should('exist')
-                  cy.getByTestID(`secret-card--${secretName}`).should(
-                    'be.visible'
-                  )
-                  cy.getByTestID(`secret-card--name-${secretName}`)
-                    .click()
-                    .then(() => {
-                      cy.getByTestID('input-field').should('be.disabled')
-                      cy.getByTestID('input-field').should(
-                        'have.value',
-                        secretName
-                      )
-                      cy.getByTestID('input-field')
-                        .last()
-                        .type("I'm hunting rabbits")
-                      cy.getByTestID('variable-form-save').should('be.enabled')
-                      cy.getByTestID('variable-form-save').click()
-                      cy.wait('@upsertSecret')
-                        .its('response.statusCode')
-                        .should('eq', 204)
-                    })
-                })
-            })
+      // Create new secret via UI, then edit it once created
+      const secretName = 'Shhhhh'
+      cy.getByTestID('button-add-secret')
+        .first() // There's a second one in the empty state.
+        .click()
+      cy.getByTestID('variable-form-save').should('be.disabled')
+      cy.getByTestID('input-field')
+        .first()
+        .type(secretName)
+      cy.getByTestID('variable-form-save').should('be.disabled')
+      cy.getByTestID('input-field')
+        .last()
+        .type("I'm a secret!")
+      cy.getByTestID('variable-form-save').should('be.enabled')
+      cy.getByTestID('variable-form-save').click()
+      cy.wait('@upsertSecret')
+        .its('response.statusCode')
+        .should('eq', 204)
+        .then(() => {
+          cy.getByTestID(`secret-card--${secretName}`).should('exist')
+          cy.getByTestID(`secret-card--${secretName}`).should('be.visible')
+          cy.getByTestID(`secret-card--name-${secretName}`).click()
+          cy.getByTestID('input-field').should('be.disabled')
+          cy.getByTestID('input-field').should('have.value', secretName)
+          cy.getByTestID('input-field')
+            .last()
+            .type("I'm hunting rabbits")
+          cy.getByTestID('variable-form-save').should('be.enabled')
+          cy.getByTestID('variable-form-save').click()
+          cy.wait('@upsertSecret')
+            .its('response.statusCode')
+            .should('eq', 204)
         })
     })
   })

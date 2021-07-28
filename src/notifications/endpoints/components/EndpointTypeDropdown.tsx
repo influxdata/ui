@@ -89,9 +89,9 @@ const EndpointTypeDropdown: FC<Props> = ({
   )
 }
 
-const mstp = ({cloud: {limits}}: AppState) => {
+const mstp = (state: AppState) => {
   return {
-    blockedEndpoints: extractBlockedEndpoints(limits),
+    blockedEndpoints: extractBlockedEndpoints(state),
   }
 }
 

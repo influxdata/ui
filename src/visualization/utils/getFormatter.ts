@@ -64,7 +64,7 @@ export const getFormatter = (
       timeZone: timeZone === 'Local' ? undefined : timeZone,
       format: resolveTimeFormat(timeFormat),
     }
-    if (timeFormat?.includes('HH')) {
+    if (formatOptions.format.includes('HH')) {
       formatOptions['hour12'] = false
     }
     return timeFormatter(formatOptions)

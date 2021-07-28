@@ -425,50 +425,6 @@ export const createTelegrafConfigResponse = {
   data: telegrafConfig,
 }
 
-export const authResponse = {
-  data: {
-    links: {self: '/api/v2/authorizations'},
-    authorizations: [
-      {
-        links: {
-          self: '/api/v2/authorizations/030358b6aa718000',
-          user: '/api/v2/users/030358b695318000',
-        },
-        id: '030358b6aa718000',
-        token,
-        status: 'active',
-        user: 'iris',
-        userID: '030358b695318000',
-        permissions: [
-          {action: 'create', resource: 'user'},
-          {action: 'delete', resource: 'user'},
-          {action: 'write', resource: 'org'},
-          {action: 'write', resource: 'bucket/030358b6aa318000'},
-        ],
-      },
-    ],
-  },
-  status: 200,
-  statusText: 'OK',
-  headers: {
-    date: 'Thu, 29 Nov 2018 18:10:21 GMT',
-    'content-length': '522',
-    'content-type': 'application/json; charset=utf-8',
-  },
-  config: {
-    transformRequest: {},
-    transformResponse: {},
-    timeout: 0,
-    xsrfCookieName: 'XSRF-TOKEN',
-    xsrfHeaderName: 'X-XSRF-TOKEN',
-    maxContentLength: -1,
-    headers: {Accept: 'application/json, text/plain, */*'},
-    method: 'get',
-    url: '/api/v2/authorizations?user=',
-  },
-  request: {},
-}
-
 export const bucket = {
   links: {
     labels: '/api/v2/buckets/034a10d6f7a6b000/labels',

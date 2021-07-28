@@ -24,8 +24,8 @@ import {remove} from 'src/flows/context/query'
 import './style.scss'
 
 const Schedule: FC<PipeProp> = ({Context}) => {
-  const {id, data, queryText, update} = useContext(PipeContext)
-  const {simplify} = useContext(FlowQueryContext)
+  const {id, data, update, range} = useContext(PipeContext)
+  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
   let intervalError = ''
   let offsetError = ''
 
@@ -45,6 +45,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
+  const queryText = getPanelQueries(id, true).source
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(

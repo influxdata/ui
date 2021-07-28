@@ -23,7 +23,7 @@ const PAYGConversion: FC = () => {
   const history = useHistory()
 
   const handleClick = () => {
-    if (isFlagEnabled('unityCheckout')) {
+    if (isFlagEnabled('unityCheckout') || isFlagEnabled('uiUnificationFlag')) {
       history.push('/checkout')
     } else {
       window.location.href = `${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`

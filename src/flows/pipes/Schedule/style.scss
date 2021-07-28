@@ -10,3 +10,11 @@
     color: $g11-sidewalk;
   }
 }
+
+.flow-update-task--export-warning {
+  margin: $cf-marg-b 0;
+
+  > .cf-panel--body {
+    padding: $cf-marg-b $cf-marg-c;
+  }
+}

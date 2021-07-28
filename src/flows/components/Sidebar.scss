@@ -1,8 +1,54 @@
-.flows-sidebar--dropdownmenu {
-  max-width: 200px;
-  width: 200px;
+@import '@influxdata/clockface/dist/variables.scss';
+
+.flow-sidebar {
+  flex: 0 0 300px;
+  width: 300px;
+  padding-left: $cf-marg-b;
+
+  .sidebar--item {
+    width: 137px;
+    height: 137px;
+    margin-bottom: $cf-marg-b;
+    margin-right: $cf-marg-b;
+
+    .cf-selectable-card--body {
+      overflow: hidden;
+    }
+
+    .cf-selectable-card--children {
+      width: calc(100% - 48px);
+      height: calc(100% - 48px);
+    }
+  }
+  .sidebar--item-thumb {
+    width: 100%;
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+}
+
+.flow-sidebar--submenu {
+  padding-top: $cf-marg-b;
+  height: 100%;
+}
+
+.flow-sidebar--dropdownmenu {
   position: absolute;
-  top: 40px;
+  top: 38px;
+  right: 0;
   z-index: 2;
   padding: 10px 0px;
+  background: $g5-pepper;
+}
+
+.flow-sidebar--buttons {
+  text-align: right;
+}
+
+.flow-sidebar--client-list {
+  margin-right: -16px;
 }

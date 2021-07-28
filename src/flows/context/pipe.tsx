@@ -8,7 +8,6 @@ import {RemoteDataState, TimeRange} from 'src/types'
 export interface PipeContextType {
   id: string
   data: PipeData
-  queryText: string
   range: TimeRange
   update: (data: PipeData) => void
   loading: RemoteDataState
@@ -19,7 +18,6 @@ export interface PipeContextType {
 export const DEFAULT_CONTEXT: PipeContextType = {
   id: '',
   data: {},
-  queryText: '',
   range: null,
   update: () => {},
   loading: RemoteDataState.NotStarted,
@@ -39,15 +37,7 @@ interface PipeContextProps {
 export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {flow} = useContext(FlowContext)
   const results = useContext(ResultsContext)
-  const {generateMap, getStatus} = useContext(FlowQueryContext)
-
-  const stages = useMemo(() => generateMap(true), [
-    generateMap,
-    flow.data.get(id),
-  ])
-  const queryText =
-    stages.filter(stage => stage.instances.map(i => i.id).includes(id))[0]
-      ?.text || ''
+  const {getStatus} = useContext(FlowQueryContext)
 
   const updater = useCallback(
     (_data: PipeData) => {
@@ -77,7 +67,6 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
         value={{
           id: id,
           data,
-          queryText,
           range: flow.range,
           update: updater,
           results: _result,
@@ -88,5 +77,5 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
         {children}
       </PipeContext.Provider>
     )
-  }, [flow, queryText, id, _result, children, updater])
+  }, [flow, id, _result, children, updater])
 }

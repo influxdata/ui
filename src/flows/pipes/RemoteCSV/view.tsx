@@ -11,11 +11,11 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 
 const SampleCSVs = {
-  Sample_Air_Sensor_Data:
+  'Sample Air Sensor Data':
     'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/air-sensor-data/air-sensor-data-annotated.csv',
-  USGS_Earthquake_Data:
+  'USGS Earthquake Data':
     'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/usgs-earthquake-data/all_week-annotated.csv',
-  'NOAA_National_Buoy_Data_Center_(NDBC)':
+  'NOAA National Buoy Data Center (NDBC)':
     'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/noaa-ndbc-data/latest-observations-annotated.csv',
   Custom: '',
 }
@@ -39,6 +39,7 @@ const RemoteCSV: FC<PipeProp> = ({Context}) => {
         <div className="remote-csv-card">
           <Dropdown
             testID="remote-csv--dropdown"
+            className="remote-csv--dropdown"
             style={{width: '220px'}}
             button={(active, onClick) => (
               <Dropdown.Button

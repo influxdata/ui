@@ -34,10 +34,8 @@ import {PipeProp} from 'src/types/flows'
 import {event} from 'src/cloud/utils/reporting'
 
 const Notification: FC<PipeProp> = ({Context}) => {
-  const {id, data, queryText, update, results, loading} = useContext(
-    PipeContext
-  )
-  const {simplify} = useContext(FlowQueryContext)
+  const {id, data, update, results, loading} = useContext(PipeContext)
+  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
 
   let intervalError = ''
   let offsetError = ''
@@ -58,6 +56,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
+  const queryText = getPanelQueries(id, true).source
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(

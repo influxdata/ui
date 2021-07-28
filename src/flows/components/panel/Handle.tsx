@@ -9,6 +9,8 @@ interface Props {
   dragging: boolean
 }
 
+import 'src/flows/style.scss'
+
 const Handle: FC<Props> = ({
   testID = 'notebook-resize-handle',
   dragging = false,
@@ -35,19 +37,9 @@ const Handle: FC<Props> = ({
       ref={dragRef}
     >
       <div className="cf-draggable-resizer--handle-pill1 cf-draggable-resizer--handle-pill1--horizontal"></div>
-      <div
-        className="cf-draggable-resizer--gradient1 cf-draggable-resizer--gradient1--horizontal"
-        style={{
-          background: `linear-gradient(to right, #ce58eb 0%, #00C9FF 100%)`,
-        }}
-      />
+      <div className="cf-draggable-resizer--gradient1 cf-draggable-resizer--gradient1--horizontal" />
       <div className="cf-draggable-resizer--handle-pill2 cf-draggable-resizer--handle-pill2--horizontal"></div>
-      <div
-        className="cf-draggable-resizer--gradient2 cf-draggable-resizer--gradient2--horizontal"
-        style={{
-          background: `linear-gradient(to right, #ce58eb 0%, #00C9FF 100%)`,
-        }}
-      />
+      <div className="cf-draggable-resizer--gradient2 cf-draggable-resizer--gradient2--horizontal" />
     </div>
   )
 }

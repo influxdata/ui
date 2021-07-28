@@ -32,3 +32,4 @@ src/client/notebooksRoutes.ts
 src/client/annotationdRoutes.ts
 src/client/mapsdRoutes.ts
 src/client/managedFunctionsRoutes.ts
+src/client/pinnedItemRoutes.ts

@@ -48,17 +48,16 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
   }
 
   public componentDidMount() {
-    this.setState({
-      page: 1,
-      windowSize: 15,
-      pinnedItems: [],
-    })
     if (isFlagEnabled('pinnedItems')) {
       getPinnedItems()
-        .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
+        .then(res =>
+          this.setState(prev => ({...prev, pinnedItems: res, windowSize: 15}))
+        )
         .catch(err => {
           console.error(err)
         })
+    } else {
+      this.setState(prev => ({...prev, windowSize: 15}))
     }
   }
 

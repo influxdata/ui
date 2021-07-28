@@ -34,8 +34,8 @@ const FlowCard: FC<Props> = ({id, flow}) => {
         onClick={handleClick}
       />
       <ResourceCard.Meta>
-        <>Created at {flow.createdAt}</>
-        <>Last Modified at {flow.updatedAt}</>
+        {flow?.createdAt ? <>Created at {flow.createdAt}</> : null}
+        {flow?.updatedAt ? <>Last Modified at {flow.updatedAt}</> : null}
       </ResourceCard.Meta>
     </ResourceCard>
   )

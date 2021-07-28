@@ -177,8 +177,6 @@ export const FlowListProvider: FC = ({children}) => {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,
         refresh: AUTOREFRESH_DEFAULT,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
         pipes: [
           {
             title: 'Select a Metric',
@@ -215,8 +213,8 @@ export const FlowListProvider: FC = ({children}) => {
         data: flow.data,
         meta: flow.meta,
         readOnly: flow.readOnly,
-        createdAt: flow.createdAt ?? new Date().toISOString(),
-        updatedAt: flow.updatedAt ?? new Date().toISOString(),
+        createdAt: flow.createdAt,
+        updatedAt: flow.updatedAt,
       }
     }
 

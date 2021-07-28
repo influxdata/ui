@@ -13,6 +13,7 @@ import {
   getStringColumns as getStringColumnsUtil,
   getMainColumnName,
 } from 'src/shared/utils/vis'
+import {setTimeToLocal} from 'src/shared/utils/dateTimeUtils'
 
 import {
   getWindowPeriod,
@@ -25,8 +26,6 @@ import {
   durationToMilliseconds,
   millisecondsToDuration,
 } from 'src/shared/utils/duration'
-
-import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
 
 // Selectors
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
@@ -293,15 +292,6 @@ export const getStartTime = (timeRange: TimeRange) => {
         'unknown timeRange type ${timeRange.type} provided to getStartTime'
       )
   }
-}
-
-// this function takes in a string that represents a date, and swaps the timezone to local.
-// if the date passed was 2021-09-02 12:00:00 UTC the function will return 2021-09-02 12:00:00 <Local TZ>
-const setTimeToLocal = (date?: string): Date => {
-  const localTime = date ? new Date(date) : new Date()
-  localTime.setMinutes(localTime.getMinutes() + getTimezoneOffset())
-
-  return localTime
 }
 
 export const getEndTime = (timeRange: TimeRange): number => {

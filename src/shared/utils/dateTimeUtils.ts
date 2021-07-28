@@ -45,7 +45,6 @@ export function addDurationToDate(
   }
 }
 
-
 // this function takes in a string that represents a date, and swaps the timezone to local.
 // if the date passed was 2021-09-02 12:00:00 UTC the function will return 2021-09-02 12:00:00 <Local TZ>
 export const setTimeToLocal = (date?: string): Date => {

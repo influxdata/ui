@@ -15,7 +15,7 @@ import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
 // Utils
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
-import {incrementDate} from 'src/shared/utils/dateTimeUtils'
+import {addDurationToDate} from 'src/shared/utils/dateTimeUtils'
 
 export const AutoRefreshContext = createContext(null)
 
@@ -35,7 +35,7 @@ export interface AutoRefreshState {
 }
 
 const jumpAheadTime = () => {
-  const newTime = incrementDate(new Date(), DEFAULT_TIME_AHEAD, 'h')
+  const newTime = addDurationToDate(new Date(), DEFAULT_TIME_AHEAD, 'h')
 
   const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
   return formatter.format(newTime)
@@ -45,7 +45,7 @@ const calculateTimeout = (timeout: string, timeoutUnit: string) => {
   const timeoutNumber = parseInt(timeout, 10)
   const startTime = new Date()
   const copyStart = startTime.getTime()
-  const endTime = incrementDate(
+  const endTime = addDurationToDate(
     startTime,
     timeoutNumber,
     timeoutUnit[0].toLowerCase()

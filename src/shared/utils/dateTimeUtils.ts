@@ -20,20 +20,20 @@ export const timesNeedConverting = newTimeRange => {
 // takes in Date object and adds a duration to it.
 // To add 1 hour, value = 1, unit = 'h'
 // similarly, to add a minute. value = 1, unit = 'm'
-export function incrementDate(input: Date, value: number, unit?: string): Date {
+export function addDurationToDate(input: Date, duration: number, unit?: string): Date {
   const result = new Date(input)
 
   switch (unit) {
     case 'm': {
-      result.setMinutes(input.getMinutes() + value)
+      result.setMinutes(input.getMinutes() + duration)
       return result
     }
     case 'd': {
-      result.setDate(input.getDate() + value)
+      result.setDate(input.getDate() + duration)
       return result
     }
     default: {
-      result.setHours(input.getHours() + value)
+      result.setHours(input.getHours() + duration)
       return result
     }
   }

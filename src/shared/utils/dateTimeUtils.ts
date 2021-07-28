@@ -1,4 +1,4 @@
-import {getTimezoneOffset} from '../../dashboards/utils/getTimezoneOffset'
+import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
 
 /**
  *  is the string a valid UTC time without any time zone information?

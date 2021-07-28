@@ -117,12 +117,10 @@ export class TaskCard extends PureComponent<
     await pushPinnedItem({
       orgID: this.props.org.id,
       userID: this.props.me.id,
-      metadata: [
-        {
-          taskID: this.props.task.id,
-          name: this.props.task.name,
-        },
-      ],
+      metadata: {
+        taskID: this.props.task.id,
+        name: this.props.task.name,
+      },
       type: PinnedItemTypes.Task,
     })
   }

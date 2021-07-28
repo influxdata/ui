@@ -44,12 +44,10 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
     await pushPinnedItem({
       orgID: orgID,
       userID: me.id,
-      metadata: [
-        {
-          flowID: id,
-          name,
-        },
-      ],
+      metadata: {
+        flowID: id,
+        name,
+      },
       type: PinnedItemTypes.Notebook,
     })
   }

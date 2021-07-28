@@ -111,13 +111,12 @@ class DashboardCard extends PureComponent<Props> {
     await pushPinnedItem({
       orgID: this.props.org.id,
       userID: this.props.me.id,
-      metadata: [
-        {
-          dashboardID: this.props.id,
-          name: this.props.name,
-          description: this.props.description,
-        },
-      ],
+      metadata: {
+        dashboardID: this.props.id,
+        name: this.props.name,
+        description: this.props.description,
+      },
+
       type: PinnedItemTypes.Dashboard,
     })
   }

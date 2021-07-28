@@ -105,7 +105,7 @@ export const updatePinnedItemByParam = async (id: string, updateParams: {}) => {
     )
     if (toUpdateItem) {
       await updatePinnedItem(toUpdateItem.id, {
-        metadata: [{...toUpdateItem.metadata, ...updateParams}],
+        metadata: {...toUpdateItem.metadata, ...updateParams},
       })
     }
   } catch (err) {

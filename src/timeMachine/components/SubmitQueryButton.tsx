@@ -140,26 +140,21 @@ class SubmitQueryButton extends PureComponent<Props> {
   private handleClick = (): void => {
     event('SubmitQueryButton click')
 
-    console.log(
-      this.props.globalQueryContext?.isInitialized,
-      isFlagEnabled('Subir')
-    )
-    if (
+    if (!this.props.activeQueryText) {
+      this.props.onSubmit()
+    } else if (
       isFlagEnabled('Subir') &&
       this.props.globalQueryContext?.isInitialized
     ) {
-      console.log('aaaaaa', this.props.globalQueryContext.handleSubmit)
       this.props.globalQueryContext
         ?.handleSubmit(this.props.activeQueryText)
         .then(result => {
-          console.log({result})
           this.props.handleSubmit(result)
         })
         .catch(e => {
           console.log(e)
         })
     } else {
-      console.log('in ELSE')
       this.props.onSubmit()
     }
   }
@@ -175,7 +170,6 @@ class SubmitQueryButton extends PureComponent<Props> {
 export {SubmitQueryButton}
 
 export const handleSubmit = result => dispatch => {
-  // console.log('hand hand,,', {result})
   dispatch(setQueryResults(RemoteDataState.Done, [result], 0, null, []))
 }
 

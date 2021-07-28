@@ -20,7 +20,7 @@ import {addDurationToDate} from 'src/shared/utils/dateTimeUtils'
 export const AutoRefreshContext = createContext(null)
 
 // default time increment is 1 hour
-const DEFAULT_TIME_AHEAD = 1
+const oneHourInTheFuture = 1
 
 export interface AutoRefreshState {
   duration: CustomTimeRange
@@ -35,7 +35,7 @@ export interface AutoRefreshState {
 }
 
 const jumpAheadTime = () => {
-  const newTime = addDurationToDate(new Date(), DEFAULT_TIME_AHEAD, 'h')
+  const newTime = addDurationToDate(new Date(), oneHourInTheFuture, 'h')
 
   const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
   return formatter.format(newTime)

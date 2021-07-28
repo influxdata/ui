@@ -5634,6 +5634,30 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/built-in/transformations/selectors/sample/`,
   },
   {
+    name: 'sample.data',
+    args: [
+      {
+        name: 'set',
+        desc: 'InfluxDB sample dataset to download and output.',
+        type: 'String',
+      },
+    ],
+    package: 'influxdata/influxdb/sample',
+    desc: 'Downloads and outputs an InfluxDB sample dataset.',
+    example: 'sample.data(set: "usgs")',
+    category: 'Inputs',
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/influxdb-sample/data/`,
+  },
+  {
+    name: 'sample.list',
+    args: [],
+    package: 'influxdata/influxdb/sample',
+    desc: 'Outputs information about available InfluxDB sample datasets.',
+    example: 'sample.list()',
+    category: 'Inputs',
+    link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/reference/flux/stdlib/influxdb-sample/list/`,
+  },
+  {
     name: 'schema.fieldKeys',
     args: [
       {

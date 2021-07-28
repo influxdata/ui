@@ -132,9 +132,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
                 description={description}
                 onFilterChange={onFilterChange}
                 isPinned={
-                  !!pinnedItems.find(
-                    item => item?.metadata[0].dashboardID === id
-                  )
+                  !!pinnedItems.find(item => item?.metadata.dashboardID === id)
                 }
               />
             ))}

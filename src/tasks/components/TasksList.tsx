@@ -63,7 +63,6 @@ export default class TasksList extends PureComponent<Props, State> {
   public componentDidMount() {
     this.props.checkTaskLimits()
     getPinnedItems()
-      .then(res => res.json())
       .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
       .catch(err => console.error(err))
   }
@@ -133,7 +132,7 @@ export default class TasksList extends PureComponent<Props, State> {
         onFilterChange={onFilterChange}
         isPinned={
           !!this.state.pinnedItems.find(
-            item => item?.metadata[0].taskID === task.id
+            item => item?.metadata.taskID === task.id
           )
         }
       />

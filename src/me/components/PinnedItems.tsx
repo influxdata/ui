@@ -22,13 +22,13 @@ const PinnedItems: FC = () => {
       let routeToFollow = ''
       switch (data.type) {
         case PinnedItemTypes.Dashboard:
-          routeToFollow = `/orgs/${data.orgID}/dashboards/${data.metadata[0].dashboardID}`
+          routeToFollow = `/orgs/${data.orgID}/dashboards/${data.metadata.dashboardID}`
           break
         case PinnedItemTypes.Task:
-          routeToFollow = `/orgs/${data.orgID}/tasks/${data.metadata[0].taskID}/edit`
+          routeToFollow = `/orgs/${data.orgID}/tasks/${data.metadata.taskID}/edit`
           break
         case PinnedItemTypes.Notebook:
-          routeToFollow = `/orgs/${data.orgID}/notebooks/${data.metadata[0].flowID}`
+          routeToFollow = `/orgs/${data.orgID}/notebooks/${data.metadata.flowID}`
           break
         default:
           break
@@ -77,11 +77,11 @@ const PinnedItems: FC = () => {
             >
               <ResourceCard.Name name={capitalize(item.type)} />
               <ResourceCard.Name
-                name={item.metadata[0].name ?? ''}
+                name={item.metadata.name ?? ''}
                 onClick={() => followMetadataToRoute(item)}
               />
               <ResourceCard.Description
-                description={item.metadata[0].description ?? ''}
+                description={item.metadata.description ?? ''}
               />
             </ResourceCard>
           ))}

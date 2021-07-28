@@ -78,7 +78,7 @@ export const deletePinnedItemByParam = async (param: string) => {
   try {
     const items = await getPinnedItems()
     const toDeleteItem = items.find(item =>
-      Object.values(item.metadata[0]).includes(param)
+      Object.values(item.metadata).includes(param)
     )
 
     if (toDeleteItem) {
@@ -101,11 +101,11 @@ export const updatePinnedItemByParam = async (id: string, updateParams: {}) => {
   try {
     const pinnedItems = await getPinnedItems()
     const toUpdateItem = pinnedItems?.find(item =>
-      Object.values(item.metadata[0]).includes(id)
+      Object.values(item.metadata).includes(id)
     )
     if (toUpdateItem) {
       await updatePinnedItem(toUpdateItem.id, {
-        metadata: [{...toUpdateItem.metadata[0], ...updateParams}],
+        metadata: [{...toUpdateItem.metadata, ...updateParams}],
       })
     }
   } catch (err) {

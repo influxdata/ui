@@ -33,9 +33,7 @@ const FlowCards: FC<Props> = ({flows, search}) => {
 
   useEffect(() => {
     if (isFlagEnabled('pinnedItems')) {
-      getPinnedItems()
-        .then(res => res.json())
-        .then(res => setPinnedItems(res))
+      getPinnedItems().then(res => setPinnedItems(res))
     }
   }, [])
 
@@ -58,9 +56,7 @@ const FlowCards: FC<Props> = ({flows, search}) => {
                     id={id}
                     name={name}
                     isPinned={
-                      !!pinnedItems.find(
-                        item => item?.metadata[0].flowID === id
-                      )
+                      !!pinnedItems.find(item => item?.metadata.flowID === id)
                     }
                   />
                 )

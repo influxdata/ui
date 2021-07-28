@@ -19,7 +19,6 @@ import {addDurationToDate} from 'src/shared/utils/dateTimeUtils'
 
 export const AutoRefreshContext = createContext(null)
 
-// default time increment is 1 hour
 const oneHourInTheFuture = 1
 
 export interface AutoRefreshState {

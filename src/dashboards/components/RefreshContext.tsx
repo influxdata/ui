@@ -43,13 +43,12 @@ const jumpAheadTime = () => {
 const calculateTimeout = (timeout: string, timeoutUnit: string) => {
   const timeoutNumber = parseInt(timeout, 10)
   const startTime = new Date()
-  const copyStart = startTime.getTime()
   const endTime = addDurationToDate(
     startTime,
     timeoutNumber,
     timeoutUnit[0].toLowerCase()
   )
-  const cutoff = endTime.getTime() - copyStart
+  const cutoff = endTime.getTime() - startTime.getTime()
 
   return cutoff
 }

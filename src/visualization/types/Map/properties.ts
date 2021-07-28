@@ -35,7 +35,7 @@ export default {
     lon: 0,
   },
   zoom: 0,
-  allowPanAndZoom: false,
+  allowPanAndZoom: true,
   detectCoordinateFields: false,
   mapStyle: '',
   note: '',

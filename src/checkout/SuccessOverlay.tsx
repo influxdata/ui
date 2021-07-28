@@ -22,7 +22,11 @@ const SuccessOverlay: FC = () => {
   const {checkoutStatus} = useContext(CheckoutContext)
   const orgId = useSelector(getOrg)?.id
   const handleClick = () => {
-    if (isFlagEnabled('unityUsers')) {
+    if (isFlagEnabled('uiUnificationFlag')) {
+      history.push(`/orgs/${orgId}/users`)
+      return
+    }
+    if (isFlagEnabled('unityUsers') || isFlagEnabled('uiUnificationFlag')) {
       history.push(`/orgs/${orgId}/users`)
       return
     }

@@ -1,0 +1,14 @@
+data <- data.frame(
+    name = replicate(2, "sensors"),
+    sensor_id = c("LM101", "LM102"),
+    temperature = c(71.4, 67.3),
+    humidity = c(47, 59),
+    time = c(Sys.time(),Sys.time())
+)
+
+client$write(data,bucket = "<%= bucket %>", precision = "ms",
+    measurementCol = "name",
+    tagCols = c("sensor_id"),
+    fieldCols = c("temperature", "humidity"),
+    timeCol = "time")
+

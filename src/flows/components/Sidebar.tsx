@@ -1,6 +1,8 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useEffect, useContext, useRef} from 'react'
 import {
   Button,
+  ComponentColor,
+  IconFont,
   DapperScrollbars,
   DropdownMenu,
   DropdownItem,
@@ -13,18 +15,21 @@ import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 import './Sidebar.scss'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
-  const {id, submenu, hideSub} = useContext(SidebarContext)
-  if (!id || flow.readOnly) {
+  const {submenu, hideSub} = useContext(SidebarContext)
+
+  if (!submenu || flow.readOnly) {
     return null
   }
 
-  if (submenu) {
-    return (
-      <div className="flow-sidebar">
+  return (
+    <div className="flow-sidebar">
+      <div className="flow-sidebar--buttons">
         <Button
-          text="Back"
+          icon={IconFont.Remove}
           onClick={() => {
             event('Closing Submenu')
             hideSub()
@@ -32,26 +37,90 @@ export const SubSideBar: FC = () => {
         >
           Back
         </Button>
-        <div className="flow-sidebar--submenu">
-          <DapperScrollbars
-            noScrollX={true}
-            thumbStopColor="gray"
-            thumbStartColor="gray"
-          >
-            {submenu}
-          </DapperScrollbars>
-        </div>
       </div>
-    )
-  } else {
+      <div className="flow-sidebar--submenu">
+        <DapperScrollbars
+          noScrollX={true}
+          thumbStopColor="gray"
+          thumbStartColor="gray"
+        >
+          {submenu}
+        </DapperScrollbars>
+      </div>
+    </div>
+  )
+}
+
+interface ButtonProps {
+  id: string
+}
+
+export const MenuButton: FC<ButtonProps> = ({id}) => {
+  const {id: focused, show, hide, submenu} = useContext(SidebarContext)
+  const ref = useRef<HTMLDivElement>()
+
+  const toggleSidebar = evt => {
+    evt.preventDefault()
+    if (id !== focused) {
+      event('Sidebar Toggle Clicked', {state: 'opening'})
+
+      show(id)
+    } else {
+      event('Sidebar Toggle Clicked', {state: 'hidding'})
+      hide()
+    }
+  }
+
+  useEffect(() => {
+    if (!focused || id !== focused) {
+      return
+    }
+
+    const clickoutside = evt => {
+      if (submenu || (ref.current && ref.current.contains(evt.target))) {
+        return
+      }
+
+      hide()
+    }
+
+    document.addEventListener('mousedown', clickoutside)
+
+    return () => {
+      document.removeEventListener('mousedown', clickoutside)
+    }
+  }, [focused, submenu])
+
+  if (!isFlagEnabled('flow-sidebar')) {
     return null
   }
+
+  let dropdown
+
+  if (id === focused && !submenu) {
+    dropdown = <Sidebar />
+  }
+
+  return (
+    <div ref={ref} style={{position: 'relative'}}>
+      <Button
+        icon={IconFont.CogThick}
+        onClick={toggleSidebar}
+        color={
+          id === focused ? ComponentColor.Secondary : ComponentColor.Default
+        }
+        className="flow-config-panel-button"
+        testID="square-button"
+      />
+      {dropdown}
+    </div>
+  )
 }
 
 const Sidebar: FC = () => {
   const {flow, add} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
-  const {id, show, hide, menu, showSub} = useContext(SidebarContext)
+  const {id, hide, menu, showSub} = useContext(SidebarContext)
 
   const sections = ([
     {
@@ -62,8 +131,6 @@ const Sidebar: FC = () => {
           action: () => {
             const {type} = flow.data.get(id)
             event('notebook_delete_cell', {notebooksCellType: type})
-
-            hide()
 
             flow.data.remove(id)
             flow.meta.remove(id)
@@ -116,6 +183,10 @@ const Sidebar: FC = () => {
               return true
             }
 
+            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type].family)) {
+              return true
+            }
+
             return false
           },
           action: () => {
@@ -133,16 +204,14 @@ const Sidebar: FC = () => {
             init.title = title
             init.type = 'rawFluxEditor'
 
-            const _id = add(init, flow.data.indexOf(id))
+            add(init, flow.data.indexOf(id))
 
             flow.data.remove(id)
             flow.meta.remove(id)
-
-            show(_id)
           },
         },
         {
-          title: 'Copy As',
+          title: 'Export to Client Library',
           menu: <ClientList />,
         },
       ],
@@ -197,6 +266,7 @@ const Sidebar: FC = () => {
                 event('Notebook Nav: Called Action', {menu: title})
                 // eslint-disable-next-line no-extra-semi
                 ;(action as ControlAction).action()
+                hide()
               }}
               wrapText={false}
               title={title}
@@ -215,7 +285,10 @@ const Sidebar: FC = () => {
     })
 
   return (
-    <DropdownMenu className="flows-sidebar--dropdownmenu">
+    <DropdownMenu
+      className="flow-sidebar--dropdownmenu"
+      style={{width: '200px'}}
+    >
       {sections}
     </DropdownMenu>
   )

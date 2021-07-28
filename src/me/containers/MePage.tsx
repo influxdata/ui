@@ -16,11 +16,10 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 import Resources from 'src/me/components/Resources'
-import Docs from 'src/me/components/Docs'
 import GettingStarted from 'src/me/components/GettingStarted'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import AlertsActivity from 'src/me/components/AlertsActivity'
-
+import Docs from 'src/me/components/Docs'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getOrg} from 'src/organizations/selectors'
@@ -95,8 +94,6 @@ export class MePage extends PureComponent<Props> {
     )
   }
   public render() {
-    const {me} = this.props
-
     return (
       <Page titleTag={pageTitleSuffixer(['Home'])}>
         <Page.Header fullWidth={false}>
@@ -119,12 +116,12 @@ export class MePage extends PureComponent<Props> {
                       <GettingStarted />
                     </Panel.Body>
                   </Panel>
-                  <Docs />
+                  {!isFlagEnabled('docSearchWidget') && <Docs />}
                   {isFlagEnabled('alertsActivity') && <AlertsActivity />}
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
-                <Resources me={me} />
+                <Resources />
               </Grid.Column>
             </Grid.Row>
           </Grid>

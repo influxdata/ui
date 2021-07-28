@@ -17,8 +17,6 @@ import {notify as notifyAction} from 'src/shared/actions/notifications'
 import * as copy from 'src/shared/copy/notifications'
 
 // Types
-import {Links} from 'src/types/links'
-import {AppState} from 'src/types'
 import {
   Columns,
   InputType,
@@ -31,7 +29,6 @@ import {
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 export interface OwnProps {
-  links: Links
   notify: typeof notifyAction
 }
 
@@ -154,14 +151,10 @@ class SigninForm extends PureComponent<Props, State> {
   }
 }
 
-const mstp = ({links}: AppState) => ({
-  links,
-})
-
 const mdtp = {
   notify: notifyAction,
 }
 
-const connector = connect(mstp, mdtp)
+const connector = connect(null, mdtp)
 
 export default connector(withRouter(SigninForm))

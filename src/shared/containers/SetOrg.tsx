@@ -18,6 +18,7 @@ import {
   FlowPage,
   BucketsIndex,
   TokensIndex,
+  RedesignedTokensIndex,
   TelegrafsPage,
   ScrapersIndex,
   WriteDataPage,
@@ -191,10 +192,17 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${TELEGRAFS}`}
             component={TelegrafsPage}
           />
-          <Route
-            path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-            component={TokensIndex}
-          />
+          {isFlagEnabled('tokensUIRedesign') ? (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+              component={RedesignedTokensIndex}
+            />
+          ) : (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+              component={TokensIndex}
+            />
+          )}
           <Route
             path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
             component={BucketsIndex}
@@ -228,19 +236,25 @@ const SetOrg: FC = () => {
           />
 
           {/* Users */}
-          {CLOUD && isFlagEnabled('unityUsers') && (
-            <Route path={`${orgPath}/users`} component={UsersPage} />
-          )}
+          {CLOUD &&
+            (isFlagEnabled('unityUsers') ||
+              isFlagEnabled('uiUnificationFlag')) && (
+              <Route path={`${orgPath}/users`} component={UsersPage} />
+            )}
 
           {/* Billing */}
-          {CLOUD && isFlagEnabled('unityBilling') && (
-            <Route path={`${orgPath}/billing`} component={BillingPage} />
-          )}
+          {CLOUD &&
+            (isFlagEnabled('unityBilling') ||
+              isFlagEnabled('uiUnificationFlag')) && (
+              <Route path={`${orgPath}/billing`} component={BillingPage} />
+            )}
 
           {/* Usage */}
-          {CLOUD && isFlagEnabled('unityUsage') && (
-            <Route path={`${orgPath}/usage`} component={UsagePage} />
-          )}
+          {CLOUD &&
+            (isFlagEnabled('unityUsage') ||
+              isFlagEnabled('uiUnificationFlag')) && (
+              <Route path={`${orgPath}/usage`} component={UsagePage} />
+            )}
 
           {/* Managed Functions */}
           {CLOUD && isFlagEnabled('managed-functions') && (

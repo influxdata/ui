@@ -527,23 +527,33 @@ export const getGeoCoordinatesFlagged = (
       return getCoordinateFromS2(s2Column, table, index)
     case CoordinateType.Tags:
       const latColumn = table.getColumn(latLonColumns?.lat?.column || 'lat')
+      const latParsed = parseCoordinates(latColumn[index])
       const lonColumn = table.getColumn(latLonColumns?.lon?.column || 'lon')
+      const lonParsed = parseCoordinates(lonColumn[index])
+      if (isNaN(latParsed) || isNaN(lonParsed)) {
+        throw new Error('lat_lon_not_provided')
+      }
       return {
-        lat: parseCoordinates(latColumn[index]),
-        lon: parseCoordinates(lonColumn[index]),
+        lat: latParsed,
+        lon: lonParsed,
       }
     case CoordinateType.Fields:
       const latCoordinate = getColumnValue(
         table,
         latLonColumns?.lat?.column || 'lat'
       )
+      const latCoordinateParsed = parseCoordinates(latCoordinate)
       const lonCoordinate = getColumnValue(
         table,
         latLonColumns?.lon?.column || 'lon'
       )
+      const lonCoordinateParsed = parseCoordinates(lonCoordinate)
+      if (isNaN(latCoordinateParsed) || isNaN(lonCoordinateParsed)) {
+        throw new Error('lat_lon_not_provided')
+      }
       return {
-        lat: parseCoordinates(latCoordinate),
-        lon: parseCoordinates(lonCoordinate),
+        lat: latCoordinateParsed,
+        lon: lonCoordinateParsed,
       }
     default:
       throw new Error('lat_lon_not_provided')

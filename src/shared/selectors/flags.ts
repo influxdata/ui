@@ -47,6 +47,7 @@ export const OSS_FLAGS = {
   'managed-functions': false,
   simpleTable: false,
   exploreWithFlows: false,
+  createWithFlows: false,
 }
 
 export const CLOUD_FLAGS = {
@@ -96,6 +97,7 @@ export const CLOUD_FLAGS = {
   'managed-functions': false,
   simpleTable: false,
   exploreWithFlows: false,
+  createWithFlows: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

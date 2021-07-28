@@ -98,7 +98,6 @@ export class MePage extends PureComponent<Props> {
     )
   }
   public render() {
-    const {me} = this.props
     return (
       <Page titleTag={pageTitleSuffixer(['Home'])}>
         <Page.Header fullWidth={false}>
@@ -129,7 +128,7 @@ export class MePage extends PureComponent<Props> {
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
-                <Resources me={me} />
+                <Resources />
               </Grid.Column>
             </Grid.Row>
           </Grid>

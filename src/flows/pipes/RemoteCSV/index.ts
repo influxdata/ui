@@ -9,8 +9,9 @@ export default register => {
     featureFlag: 'flow-panel--remote-csv',
     button: 'Remote CSV',
     initial: {
-      csvType: '',
-      url: '',
+      csvType: 'NOAA National Buoy Data Center (NDBC)',
+      url:
+        'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/noaa-ndbc-data/latest-observations-annotated.csv',
     },
     generateFlux: (pipe, create, append) => {
       if (pipe.url?.length) {

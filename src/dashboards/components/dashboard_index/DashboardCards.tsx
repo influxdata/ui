@@ -22,7 +22,7 @@ import {getPinnedItems} from 'src/shared/contexts/pinneditems'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface StateProps {
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
 }
 
 interface OwnProps {
@@ -159,12 +159,8 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
 }
 
 const mstp = (state: AppState) => {
-  const {
-    cloud: {limits},
-  } = state
-
   return {
-    limitStatus: extractDashboardLimits(limits),
+    limitStatus: extractDashboardLimits(state),
   }
 }
 

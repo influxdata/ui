@@ -101,16 +101,16 @@ export function hydrate(data) {
   const flow = {
     ...JSON.parse(JSON.stringify(EMPTY_NOTEBOOK)),
     name: data.name,
-    range: data.range,
-    refresh: data.refresh,
-    readOnly: data.readOnly,
+    range: data.spec.range,
+    refresh: data.spec.refresh,
+    readOnly: data.spec.readOnly,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
   }
-  if (!data.pipes) {
+  if (!data?.spec?.pipes) {
     return flow
   }
-  data.pipes.forEach(pipe => {
+  data.spec.pipes.forEach(pipe => {
     const id = pipe.id || `local_${UUID()}`
 
     flow.data.allIDs.push(id)
@@ -174,33 +174,35 @@ export const FlowListProvider: FC = ({children}) => {
     if (!flow) {
       _flowData = hydrate({
         name,
-        readOnly: false,
-        range: DEFAULT_TIME_RANGE,
-        refresh: AUTOREFRESH_DEFAULT,
-        pipes: [
-          {
-            title: 'Select a Metric',
-            visible: true,
-            type: 'metricSelector',
-            ...JSON.parse(
-              JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
-            ),
-          },
-          {
-            title: 'Validate the Data',
-            visible: true,
-            type: 'visualization',
-            properties: {type: 'simple-table', showAll: false},
-          },
-          {
-            title: 'Visualize the Result',
-            visible: true,
-            type: 'visualization',
-            ...JSON.parse(
-              JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
-            ),
-          },
-        ],
+        spec: {
+          readOnly: false,
+          range: DEFAULT_TIME_RANGE,
+          refresh: AUTOREFRESH_DEFAULT,
+          pipes: [
+            {
+              title: 'Select a Metric',
+              visible: true,
+              type: 'metricSelector',
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
+              ),
+            },
+            {
+              title: 'Validate the Data',
+              visible: true,
+              type: 'visualization',
+              properties: {type: 'simple-table', showAll: false},
+            },
+            {
+              title: 'Visualize the Result',
+              visible: true,
+              type: 'visualization',
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
+              ),
+            },
+          ],
+        },
       })
       _flow = {
         ..._flowData,
@@ -231,12 +233,7 @@ export const FlowListProvider: FC = ({children}) => {
       const flow = await createAPI(apiFlow)
       id = flow.id
 
-      _flow = hydrate({
-        ...flow,
-        range: _flow.range,
-        readOnly: _flow.readOnly,
-        refresh: _flow.refresh,
-      })
+      _flow = hydrate(flow)
     } catch {
       dispatch(notify(notebookCreateFail()))
     }
@@ -313,11 +310,7 @@ export const FlowListProvider: FC = ({children}) => {
     if (data && data.flows) {
       const _flows = {}
       data.flows.forEach(f => {
-        _flows[f.id] = hydrate({
-          ...f.spec,
-          createdAt: f.createdAt,
-          updatedAt: f.updatedAt,
-        })
+        _flows[f.id] = hydrate(f)
       })
       setFlows(_flows)
     }

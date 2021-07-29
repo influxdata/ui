@@ -1,5 +1,3 @@
-import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
-
 /**
  *  is the string a valid UTC time without any time zone information?
  *  ie:  "2021-07-17T14:00:00.000Z" is valid
@@ -43,13 +41,4 @@ export function addDurationToDate(
       return result
     }
   }
-}
-
-// this function takes in a string that represents a date, and swaps the timezone to local.
-// if the date passed was 2021-09-02 12:00:00 UTC the function will return 2021-09-02 12:00:00 <Local TZ>
-export const setTimeToLocal = (date?: string): Date => {
-  const localTime = date ? new Date(date) : new Date()
-  localTime.setMinutes(localTime.getMinutes() + getTimezoneOffset())
-
-  return localTime
 }

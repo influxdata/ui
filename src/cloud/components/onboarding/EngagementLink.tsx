@@ -46,7 +46,7 @@ const EngagementLink: FC = () => {
           id: org.id, // Organization ID
         },
         ...(isFlagEnabled('newUsageAPI') &&
-          dataStates.length && {usageDataStates: dataStates}),
+          dataStates.length && {UsageDataStates: dataStates}),
       })
     }
   }

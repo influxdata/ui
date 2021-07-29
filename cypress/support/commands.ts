@@ -53,6 +53,7 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
 }
 
 export const loginViaDexUI = (username: string, password: string) => {
+  cy.visit('/')
   cy.get('#login').type(username)
   cy.get('#password').type(password)
   cy.get('#submit-login').click()
@@ -62,6 +63,7 @@ export const loginViaDexUI = (username: string, password: string) => {
 // login via the purple OSS screen by typing in username/password
 // this is only used if you're using monitor-ci + DEV_MODE_CLOUD=0
 export const loginViaOSS = (username: string, password: string) => {
+  cy.visit('/')
   cy.get('#login').type(username)
   cy.get('#password').type(password)
   cy.get('#submit-login').click()

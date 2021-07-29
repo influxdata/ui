@@ -1,0 +1,199 @@
+{
+  "name": "Demo Data Notebook",
+  "readOnly": false,
+  "range": {
+    "lower": "2019-01-01T20:29:33.000Z",
+    "upper": "2020-02-01T21:29:33.000Z",
+    "type": "custom"
+  },
+  "refresh": {
+    "status": "paused",
+    "duration": null,
+    "interval": 0,
+    "infiniteDuration": false,
+    "inactivityTimeout": 0
+  },
+  "pipes": [
+    {
+      "id": "local_9ba203d0-add2-4de3-b545-9c8051dd3cfc",
+      "mode": "preview",
+      "text": "The goal of this example Notebook is to get you working with data in the InfluxDB Cloud developer platform. \n\n#### 5 Ways to Use Notebooks in this Example:\n1. Ingest data using `CSV.from()`\n2. Select metrics as `inputs`\n3. Transform data with an `aggregate.window` (downsample)\n4. Write data to a new Bucket once\n5. Output the workflow to repeat on a schedule as a `Task`",
+      "type": "markdown",
+      "title": "👋  Hello world",
+      "visible": true
+    },
+    {
+      "id": "local_b279edee-7940-490e-9106-a79f79732566",
+      "type": "rawFluxEditor",
+      "queries": [
+        {
+          "text": "//The experimental csv.from() function lets you write CSV from a URL.\nimport \"experimental/csv\"\n\n//You can use a CSV from any public URL\ncsv.from(url: \"https://influx-testdata.s3.amazonaws.com/noaa.csv\")\n  |> to(bucket: \"design+sampledata's Bucket\", org: \"design+sampledata@influxdata.com\")",
+          "editMode": "advanced",
+          "builderConfig": {
+            "tags": [],
+            "buckets": [],
+            "functions": []
+          }
+        }
+      ],
+      "activeQuery": 0,
+      "title": "Step 1 - Ingest from CSV",
+      "visible": true
+    },
+    {
+      "id": "local_12c03253-cdc6-4e82-aec7-290ff6a33b6a",
+      "mode": "preview",
+      "text": "First, Run the notebook to ingest the noaa.csv into your organization bucket. You can select Run under the Preview dropdown.\n\nNow you can see all available metrics and select one to work with. \n\nIn the Input/Metric Selector panel below, select the bucket with the data you ingested in Step 1.\n\nNote, if no data appears, make sure your time range aligns with the NOAA data time stamps which is 2019-08-17T12:10 through 2019-09-18T09:50.",
+      "type": "markdown",
+      "title": "Step 2  - Select Input Metric",
+      "visible": true
+    },
+    {
+      "id": "local_84e54af3-d4d6-41c6-8ccf-278963bc685f",
+      "tags": {
+        "location": [
+          "coyote_creek"
+        ]
+      },
+      "type": "metricSelector",
+      "field": "degrees",
+      "bucket": {
+        "id": "04944ca2401c3558",
+        "name": "design+sampledata's Bucket",
+        "type": "user",
+        "links": {
+          "org": "/api/v2/orgs/e859306b862b3e21",
+          "self": "/api/v2/buckets/04944ca2401c3558",
+          "write": "/api/v2/write?org=e859306b862b3e21&bucket=04944ca2401c3558",
+          "labels": "/api/v2/buckets/04944ca2401c3558/labels",
+          "owners": "/api/v2/buckets/04944ca2401c3558/owners",
+          "members": "/api/v2/buckets/04944ca2401c3558/members"
+        },
+        "orgID": "e859306b862b3e21",
+        "labels": [],
+        "createdAt": "2019-12-17T15:46:51.584984427Z",
+        "updatedAt": "2019-12-17T15:46:51.584984546Z",
+        "retentionRules": [
+          {
+            "type": "expire",
+            "everySeconds": 259200
+          }
+        ],
+        "readableRetention": " 3 days"
+      },
+      "measurement": "average_temperature",
+      "aggregateFunction": {
+        "name": "mean"
+      },
+      "title": "Select Input Metric",
+      "visible": true
+    },
+    {
+      "id": "local_e9e821bc-745e-4ae3-a4be-3c72f3155670",
+      "type": "visualization",
+      "period": "1d2h24m10s",
+      "functions": [
+        {
+          "name": "mean"
+        }
+      ],
+      "properties": {
+        "type": "simple-table",
+        "showAll": false
+      },
+      "panelHeight": 200,
+      "panelVisibility": "visible",
+      "title": "Visualize average_temperature",
+      "visible": true
+    },
+    {
+      "id": "local_bda92ec7-3a42-4b45-8901-452b833c4e1c",
+      "mode": "preview",
+      "text": "One of the most common use cases for InfluxDB is downsampling data to reduce the overall disk usage as data collects over time.\n\nThis is done by aggregating data within windows of time, then storing the aggregate value in a new bucket.",
+      "type": "markdown",
+      "title": "Step 3 - Let's Downsample",
+      "visible": true
+    },
+    {
+      "id": "local_12a7e386-5504-453b-98a2-f773e39632dd",
+      "type": "rawFluxEditor",
+      "queries": [
+        {
+          "text": "// __Previous_Result__ uses data from all the panels above it as an input to the Flux function\n__PREVIOUS_RESULT__\n\n  // This Flux function windows and aggregates the data in to 15m averages\n|> aggregateWindow(fn: mean, every: 1h)",
+          "editMode": "advanced",
+          "builderConfig": {
+            "tags": [],
+            "buckets": [],
+            "functions": []
+          }
+        }
+      ],
+      "activeQuery": 0,
+      "title": "Downsample with Flux",
+      "visible": true
+    },
+    {
+      "id": "local_0d8184c3-5c36-48d2-be0e-58bc06a0b6c5",
+      "mode": "preview",
+      "text": "You might want to keep your downsampled data separate from your raw data with a longer retention policy.\n\nSelect a separate bucket or create a new one from the dropdown in the next output cell.\n\nThis generates:\n\n`|> to(bucket: \"YOUR NEW BUCKET\")`\n\nBonus: You can switch the notebook mode from Preview to Run to write this data to the new bucket manually.\n",
+      "type": "markdown",
+      "title": "Step 4 - Select Output",
+      "visible": true
+    },
+    {
+      "id": "local_fe73a34e-52d8-4a64-86fa-8e846af7d0d9",
+      "type": "toBucket",
+      "bucket": {
+        "id": "c039dd4d8c5f54eb",
+        "name": "_tasks",
+        "type": "system",
+        "links": {
+          "org": "/api/v2/orgs/e859306b862b3e21",
+          "self": "/api/v2/buckets/c039dd4d8c5f54eb",
+          "write": "/api/v2/write?org=e859306b862b3e21&bucket=c039dd4d8c5f54eb",
+          "labels": "/api/v2/buckets/c039dd4d8c5f54eb/labels",
+          "owners": "/api/v2/buckets/c039dd4d8c5f54eb/owners",
+          "members": "/api/v2/buckets/c039dd4d8c5f54eb/members"
+        },
+        "orgID": "e859306b862b3e21",
+        "labels": [],
+        "createdAt": "2019-12-17T15:46:50.33095751Z",
+        "updatedAt": "2019-12-17T15:46:50.330957622Z",
+        "description": "System bucket for task logs",
+        "retentionRules": [
+          {
+            "type": "expire",
+            "everySeconds": 259200
+          }
+        ],
+        "readableRetention": " 3 days"
+      },
+      "title": "Output to New Bucket",
+      "visible": true
+    },
+    {
+      "id": "local_df9de6d3-6d25-4830-a362-044bc9cce039",
+      "mode": "preview",
+      "text": "Run all the steps in this notebook continuously by clicking Export as Task in the schedule cell below\n\nThe Flux code generated by this entire notebook looks like this:\n```\noption task = {name: \"Example Task\", every: 24h, offset: 0h}\noption v = {timeRangeStart: 2019-01-01T20:29:33Z, timeRangeStop: 2020-02-01T21:29:33Z}\n\nfrom(bucket: \"design+sampledata's Bucket\")\n\t|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n\t|> filter(fn: (r) =>\n\t\t(r[\"_measurement\"] == \"average_temperature\"))\n\t|> filter(fn: (r) =>\n\t\t(r[\"_field\"] == \"degrees\"))\n\t|> filter(fn: (r) =>\n\t\t(r[\"location\"] == \"coyote_creek\"))\n\t|> aggregateWindow(fn: mean, every: 1h)\n\t|> to(bucket: \"_tasks\")\n  ```\n\n[Learn More about Tasks](https://docs.influxdata.com/influxdb/cloud/process-data/get-started/)",
+      "type": "markdown",
+      "title": "Step 5 - Repeat as a Task",
+      "visible": true
+    },
+    {
+      "type": "schedule",
+      "interval": "24h",
+      "offset": "0h",
+      "id": "local_7c4f4540-d2e4-4bde-af5b-c8fe655e886d",
+      "title": "Schedule to repeat as a Task",
+      "visible": true
+    },
+    {
+      "id": "local_3f1626d8-5aff-459c-be2d-0d06c8cdbe1d",
+      "mode": "preview",
+      "text": "Invite your team to start collaborating on your data with notebooks 🤝\n\nAdd your team now by going to the /users page\n\nRepeat after me: The team that builds together, stays together\n",
+      "type": "markdown",
+      "title": "🎉   That's it!",
+      "visible": true
+    }
+  ]
+}

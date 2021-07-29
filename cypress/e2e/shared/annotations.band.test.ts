@@ -2,6 +2,7 @@ import {
   addRangeAnnotation,
   checkAnnotationText,
   clearLocalStorage,
+  deleteAnnotation,
   setupData,
   testAddAnnotation,
   testEditAnnotation,
@@ -33,8 +34,8 @@ describe('The Annotations UI functionality on a band plot graph type', () => {
     testEditRangeAnnotation(cy, 'band-chart')
   })
 
-  it.skip('can add and then delete a range annotation for the band plot', () => {
+  it('can add and then delete a range annotation for the band plot', () => {
     addRangeAnnotation(cy, 'band-chart')
-    testDeleteAnnotation(cy)
+    deleteAnnotation(cy)
   })
 })

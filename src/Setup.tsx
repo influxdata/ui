@@ -11,7 +11,6 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import {LoginPage} from 'src/onboarding/containers/LoginPage'
 // lazy loading the signin component causes wasm issues
 import Signin from 'src/Signin'
-import GetLinks from 'src/shared/containers/GetLinks'
 
 const OnboardingWizardPage = lazy(() =>
   import('src/onboarding/containers/OnboardingWizardPage')
@@ -89,30 +88,28 @@ export class Setup extends PureComponent<Props, State> {
     const {loading, allowed} = this.state
 
     return (
-      <GetLinks>
-        <PageSpinner loading={loading}>
-          <Suspense fallback={<PageSpinner />}>
-            {allowed && (
+      <PageSpinner loading={loading}>
+        <Suspense fallback={<PageSpinner />}>
+          {allowed && (
+            <Route
+              path="/onboarding/:stepID"
+              component={OnboardingWizardPage}
+            />
+          )}
+          {!allowed && (
+            <Switch>
               <Route
                 path="/onboarding/:stepID"
                 component={OnboardingWizardPage}
               />
-            )}
-            {!allowed && (
-              <Switch>
-                <Route
-                  path="/onboarding/:stepID"
-                  component={OnboardingWizardPage}
-                />
-                <Route path={LOGIN} component={LoginPage} />
-                <Route path={SIGNIN} component={SigninPage} />
-                <Route path={LOGOUT} component={Logout} />
-                <Route component={Signin} />
-              </Switch>
-            )}
-          </Suspense>
-        </PageSpinner>
-      </GetLinks>
+              <Route path={LOGIN} component={LoginPage} />
+              <Route path={SIGNIN} component={SigninPage} />
+              <Route path={LOGOUT} component={Logout} />
+              <Route component={Signin} />
+            </Switch>
+          )}
+        </Suspense>
+      </PageSpinner>
     )
   }
 }

@@ -12,6 +12,9 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Actions
 import {createBucketAndUpdate} from 'src/buckets/actions/thunks'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Types
 import {
   createBucketReducer,
@@ -19,7 +22,7 @@ import {
   initialBucketState,
   DEFAULT_RULES,
 } from 'src/buckets/reducers/createBucket'
-import {Bucket} from 'src/types'
+import {AppState, Bucket} from 'src/types'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -28,7 +31,12 @@ import {getOverlayParams} from 'src/overlays/selectors'
 
 const CreateBucketOverlay: FC = () => {
   const org = useSelector(getOrg)
-  const isRetentionLimitEnforced = useSelector(getBucketRetentionLimit)
+  const isRetentionLimitEnforced = useSelector((state: AppState): boolean => {
+    if (CLOUD) {
+      return getBucketRetentionLimit(state)
+    }
+    return false
+  })
   const overlayParams = useSelector(getOverlayParams)
   const reduxDispatch = useDispatch()
   const {onClose} = useContext(OverlayContext)

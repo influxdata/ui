@@ -46,7 +46,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     if (metric) {
       metric()
     }
-    if (isFlagEnabled('unityCheckout')) {
+    if (isFlagEnabled('unityCheckout') || isFlagEnabled('uiUnificationFlag')) {
       history.push('/checkout')
     } else {
       window.location.href = `${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`

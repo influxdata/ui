@@ -17,6 +17,7 @@ import TaskImportOverlay from 'src/tasks/components/TaskImportOverlay'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {
@@ -187,7 +188,11 @@ class TasksPage extends PureComponent<Props, State> {
       },
     } = this.props
 
-    history.push(`/orgs/${orgID}/tasks/new`)
+    if (isFlagEnabled('createWithFlows')) {
+      history.push(`/notebook/from/task`)
+    } else {
+      history.push(`/orgs/${orgID}/tasks/new`)
+    }
   }
 
   private summonImportOverlay = (): void => {
@@ -242,10 +247,7 @@ class TasksPage extends PureComponent<Props, State> {
 }
 
 const mstp = (state: AppState) => {
-  const {
-    resources,
-    cloud: {limits},
-  } = state
+  const {resources} = state
   const {status, searchTerm, showInactive} = resources.tasks
 
   return {
@@ -253,7 +255,7 @@ const mstp = (state: AppState) => {
     status: status,
     searchTerm,
     showInactive,
-    limitStatus: extractTaskLimits(limits),
+    limitStatus: extractTaskLimits(state),
   }
 }
 

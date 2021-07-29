@@ -32,42 +32,6 @@ $cf-radius-lg: $cf-radius + 4px;
   padding: 0 $flow-panel--gutter;
 }
 
-.flow-sidebar {
-  flex: 0 0 300px;
-  width: 300px;
-  padding-left: $cf-marg-b;
-
-  .sidebar--item {
-    width: 137px;
-    height: 137px;
-    margin-bottom: $cf-marg-b;
-    margin-right: $cf-marg-b;
-
-    .cf-selectable-card--body {
-      overflow: hidden;
-    }
-
-    .cf-selectable-card--children {
-      width: calc(100% - 48px);
-      height: calc(100% - 48px);
-    }
-  }
-  .sidebar--item-thumb {
-    width: 100%;
-    height: 100%;
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-  }
-}
-
-.flow-sidebar--submenu {
-  padding-top: $cf-marg-b;
-  height: 100%;
-}
-
 .flow-panel {
   position: relative;
   display: flex;
@@ -75,6 +39,7 @@ $cf-radius-lg: $cf-radius + 4px;
   align-items: stretch;
   border-radius: $cf-radius-lg;
   background-color: $flow-panel--bg;
+  border: 2px solid transparent;
 
   // Vertical line on left side of panel
   &::after {
@@ -109,7 +74,7 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .flow-panel__focus {
-  border: 2px solid skyblue;
+  border: 2px solid $c-star;
 }
 
 .flow-panel--persistent-control {
@@ -155,13 +120,61 @@ $cf-radius-lg: $cf-radius + 4px;
 .flow-panel .cf-draggable-resizer--handle {
   height: 48px;
   margin-left: 32px;
+  margin-bottom: 8px;
+
   .cf-draggable-resizer--handle-pill1,
   .cf-draggable-resizer--handle-pill2,
   .cf-draggable-resizer--handle-gradient1,
   .cf-draggable-resizer--handle-gradient2 {
     height: 2px;
     width: 32px;
-    background-color: $g5-pepper;
+    background-color: rgb(255, 255, 255);
+    transition: all 0.25s linear;
+  }
+  &:hover > .cf-draggable-resizer--handle-pill1,
+  &:hover > .cf-draggable-resizer--handle-pill2 {
+    background: linear-gradient(
+      to right,
+      rgb(206, 88, 235) 0%,
+      rgb(0, 201, 255) 100%
+    );
+    transition: all 0.25s linear;
+  }
+}
+
+.flow-panel
+  .panel-resizer--drag-handle__dragging
+  .cf-draggable-resizer--handle-pill1,
+.flow-panel
+  .panel-resizer--drag-handle__dragging
+  .cf-draggable-resizer--handle-pill2 {
+  background: linear-gradient(
+    to right,
+    rgb(206, 88, 235) 0%,
+    rgb(0, 201, 255) 100%
+  );
+  width: 10%;
+  min-width: 50px;
+  transition: width 0.25s ease-in-out;
+}
+
+.cf-draggable-resizer--dragging {
+  position: relative;
+  z-index: $cf-z--draggable-resizer-mask;
+  user-select: none;
+
+  &:after {
+    content: '';
+    z-index: -1;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .cf-draggable-resizer--panel {
+    pointer-events: none;
   }
 }
 
@@ -240,7 +253,8 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .flow-panel--body {
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: visible;
 }
 .flow-panel--body,
 .flow-panel--results {

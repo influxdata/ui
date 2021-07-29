@@ -31,10 +31,10 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import './style.scss'
 
 const Schedule: FC<PipeProp> = ({Context}) => {
-  const {id, data, queryText, update, range} = useContext(PipeContext)
+  const {id, data, update, range} = useContext(PipeContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
-  const {simplify} = useContext(FlowQueryContext)
+  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
   let intervalError = ''
   let offsetError = ''
 
@@ -54,6 +54,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
+  const queryText = getPanelQueries(id, true).source
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(

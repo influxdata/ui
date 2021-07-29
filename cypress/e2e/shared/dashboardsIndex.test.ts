@@ -510,26 +510,6 @@ describe('Dashboards', () => {
         cy.getByTestID('search-widget').should('have.value', dashSearchName)
       })
     })
-
-    it('can list and search dashboards on home page', () => {
-      cy.getByTestID('tree-nav--header').click()
-
-      cy.get('.recent-dashboards--filter')
-        .parent()
-        .within(() => {
-          const dashboardIsVisible = (name: string, isVisible = true) => {
-            cy.contains(name).should(isVisible ? 'be.visible' : 'not.exist')
-          }
-
-          dashboardIsVisible(dashboardName)
-          dashboardIsVisible(dashboardName2)
-
-          cy.get('.recent-dashboards--filter').type(dashSearchName)
-
-          dashboardIsVisible(dashboardName)
-          dashboardIsVisible(dashboardName2, false)
-        })
-    })
   })
 
   it('should redirect to the dashboard list when dashboard not exist', () => {

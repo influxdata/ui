@@ -16,6 +16,9 @@ import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 // Types
 import {LimitStatus} from 'src/cloud/actions/limits'
 import {setSearchTerm as setSearchTermAction} from 'src/tasks/actions/creators'
@@ -28,7 +31,7 @@ interface Props {
   setShowInactive: () => void
   showInactive: boolean
   onImportTask: () => void
-  limitStatus: LimitStatus
+  limitStatus: LimitStatus['status']
   searchTerm: string
   setSearchTerm: typeof setSearchTermAction
   sortKey: TaskSortKey
@@ -56,6 +59,15 @@ export default class TasksHeader extends PureComponent<Props> {
       onSort,
       limitStatus,
     } = this.props
+
+    const creater = () => {
+      event('Task Created From Dropdown', {source: 'header'})
+      onCreateTask()
+    }
+    const importer = () => {
+      event('Task Imported From Dropdown', {source: 'header'})
+      onImportTask()
+    }
 
     return (
       <>
@@ -91,8 +103,8 @@ export default class TasksHeader extends PureComponent<Props> {
               />
             </FlexBox>
             <AddResourceDropdown
-              onSelectNew={onCreateTask}
-              onSelectImport={onImportTask}
+              onSelectNew={creater}
+              onSelectImport={importer}
               resourceName="Task"
               limitStatus={limitStatus}
             />

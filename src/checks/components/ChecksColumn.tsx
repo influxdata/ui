@@ -107,10 +107,6 @@ const ChecksColumn: FunctionComponent<Props> = ({
 }
 
 const mstp = (state: AppState) => {
-  const {
-    cloud: {limits},
-  } = state
-
   const checks = getAll<Check>(state, ResourceType.Checks)
 
   const endpoints = getAll<NotificationEndpoint>(
@@ -127,7 +123,7 @@ const mstp = (state: AppState) => {
     checks: sortChecksByName(checks),
     rules: sortRulesByName(rules),
     endpoints: sortEndpointsByName(endpoints),
-    limitStatus: extractChecksLimits(limits),
+    limitStatus: extractChecksLimits(state),
   }
 }
 

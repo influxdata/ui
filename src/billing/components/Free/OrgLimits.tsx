@@ -4,7 +4,8 @@ import {Grid, Columns} from '@influxdata/clockface'
 import OrgLimitStat from 'src/billing/components/Free/OrgLimitStat'
 
 // Types
-import {AppState, Limit} from 'src/types'
+import {AppState} from 'src/types'
+import {Limit} from 'src/cloud/actions/limits'
 import {LimitsState} from 'src/cloud/reducers/limits'
 
 const limits = (orgLimits: LimitsState | {}) =>

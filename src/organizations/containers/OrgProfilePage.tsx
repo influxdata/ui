@@ -32,14 +32,12 @@ const OrgProfilePage: FC = () => {
       </Page>
       <Switch>
         <Route path="/orgs/:orgID/about/rename" component={RenameOrgOverlay} />
-        {CLOUD &&
-          isFlagEnabled('selfDeletion') &&
-          quartzMe?.accountType === 'free' && (
-            <Route
-              path="/orgs/:orgID/about/delete"
-              component={DeleteOrgOverlay}
-            />
-          )}
+        {CLOUD && quartzMe?.accountType === 'free' && (
+          <Route
+            path="/orgs/:orgID/about/delete"
+            component={DeleteOrgOverlay}
+          />
+        )}
       </Switch>
     </>
   )

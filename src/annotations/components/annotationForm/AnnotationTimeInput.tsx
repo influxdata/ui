@@ -15,6 +15,7 @@ import {ComponentStatus, Form, Input} from '@influxdata/clockface'
 // Context
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {setTimeToUTC} from 'src/dashboards/selectors'
+import {convertAnnotationTime12to24} from '../../../shared/utils/dateTimeUtils'
 
 interface Props {
   onChange: (newTime: string) => void
@@ -95,7 +96,10 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
         return
       }
 
-      props.onChange(new Date(event.target.value).toISOString())
+      // we need to convert the timeformat from 12 to 24 because Firefox's Date implementation does not parse 12 hr formats
+      props.onChange(
+        new Date(convertAnnotationTime12to24(event.target.value)).toISOString()
+      )
     }
   }
 

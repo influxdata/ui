@@ -44,7 +44,6 @@ const CreateSecretForm: FC = () => {
 
   const [newSecret, setNewSecret] = useState<Secret>({
     id: '',
-    key: '',
     value: '',
     status: RemoteDataState.NotStarted,
   })
@@ -53,9 +52,9 @@ const CreateSecretForm: FC = () => {
 
   const isFormValid = (): boolean => {
     return (
-      newSecret?.key?.length > 0 &&
+      newSecret?.id?.length > 0 &&
       newSecret?.value?.length > 0 &&
-      handleKeyValidation(newSecret?.key) === null
+      handleKeyValidation(newSecret?.id) === null
     )
   }
 
@@ -99,14 +98,14 @@ const CreateSecretForm: FC = () => {
             label="Key"
             required={true}
             validationFunc={handleKeyValidation}
-            value={newSecret.key}
+            value={newSecret.id}
           >
             {status => (
               <Input
                 autoFocus={true}
-                name="key"
+                name="id"
                 titleText="This is how you will reference your secret in Flux"
-                value={newSecret.key}
+                value={newSecret.id}
                 status={status}
                 onChange={handleChangeInput}
               />

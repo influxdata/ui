@@ -39,7 +39,7 @@ const SecretsIndex: FC = () => {
         />
         <Route
           exact
-          path={`/orgs/${org.id}/settings/secrets/:secretName/edit`}
+          path={`/orgs/${org.id}/settings/secrets/:secretId/edit`}
           component={EditSecretOverlay}
         />
       </Switch>

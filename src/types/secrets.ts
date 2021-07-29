@@ -4,7 +4,6 @@ import {RemoteDataState} from 'src/types'
 
 export interface Secret extends GSecrets {
   id: string
-  key: string
   status: RemoteDataState
   value?: string
 }

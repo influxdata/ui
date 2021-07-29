@@ -23,20 +23,20 @@ const SecretCard: FC<Props> = ({secret}) => {
   const orgId = useSelector(getOrg)?.id
 
   const editSecret = () => {
-    history.push(`/orgs/${orgId}/settings/secrets/${secret.key}/edit`)
+    history.push(`/orgs/${orgId}/settings/secrets/${secret.id}/edit`)
   }
 
   return (
     <ErrorBoundary>
       <ResourceCard
-        testID={`secret-card--${secret?.key}`}
+        testID={`secret-card--${secret?.id}`}
         contextMenu={<SecretContextMenu secret={secret} />}
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}
       >
         <ResourceCard.Name
-          name={secret?.key}
-          testID={`secret-card--name-${secret?.key}`}
+          name={secret?.id}
+          testID={`secret-card--name-${secret?.id}`}
           onClick={editSecret}
         />
       </ResourceCard>

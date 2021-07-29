@@ -24,7 +24,7 @@ const EditSecretForm: FC = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const orgId = useSelector(getOrg).id
-  const {secretName} = useParams<{secretName: string}>()
+  const {secretId} = useParams<{secretId: string}>()
 
   const [newValue, setNewValue] = useState<string>('')
 
@@ -43,8 +43,7 @@ const EditSecretForm: FC = () => {
     try {
       dispatch(
         upsertSecret({
-          key: secretName,
-          id: secretName,
+          id: secretId,
           value: newValue,
           status: RemoteDataState.NotStarted,
         })
@@ -77,7 +76,7 @@ const EditSecretForm: FC = () => {
           <Input
             name="key"
             titleText="This is how you will reference your secret in Flux"
-            value={secretName}
+            value={secretId}
             status={ComponentStatus.Disabled}
           />
         </Grid.Column>

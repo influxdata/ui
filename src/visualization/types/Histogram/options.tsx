@@ -60,10 +60,7 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
 
     if (domain) {
       const [min, max] = domain
-      bounds = [
-        min === null ? null : min,
-        max === null ? null : max,
-      ]
+      bounds = [min === null ? null : min, max === null ? null : max]
     } else {
       bounds = [null, null]
     }

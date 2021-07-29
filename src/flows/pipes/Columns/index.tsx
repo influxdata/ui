@@ -18,14 +18,12 @@ export default register => {
     initial: {
       mappings: {} as Hash<Mapping>,
     },
-    generateFlux: (pipe, create, append) => {
-      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
-
-      if (!Object.values(pipe.mappings).length) {
-        return
+    source: (data, query) => {
+      if (!Object.values(data.mappings).length) {
+        return query
       }
 
-      const mods = Object.entries(pipe.mappings as Hash<Mapping>).reduce(
+      const mods = Object.entries(data.mappings as Hash<Mapping>).reduce(
         (acc, [k, v]) => {
           if (!v.visible) {
             acc.dropped.push(`"${k}"`)
@@ -41,8 +39,6 @@ export default register => {
         }
       )
 
-      let query = `__PREVIOUS_RESULT__`
-
       if (mods.renamed.length) {
         query += `\n |> rename(columns: {${mods.renamed.join(', ')}})`
       }
@@ -51,7 +47,7 @@ export default register => {
         query += `\n |> drop(columns: [${mods.dropped.join(', ')}])`
       }
 
-      create(query)
+      return query
     },
   })
 }

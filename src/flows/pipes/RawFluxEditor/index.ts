@@ -1,29 +1,9 @@
 import {parse, format_from_js_file} from '@influxdata/flux'
+import {find} from 'src/flows/context/query'
 import View from './view'
 import './style.scss'
 
-// TODO: replaces this with the src/flows/context/query:find export once that's merged
-const _walk = (node, test, acc = []) => {
-  if (!node) {
-    return acc
-  }
-
-  if (test(node)) {
-    acc.push(node)
-  }
-
-  Object.values(node).forEach(val => {
-    if (Array.isArray(val)) {
-      val.forEach(_val => {
-        _walk(_val, test, acc)
-      })
-    } else if (typeof val === 'object') {
-      _walk(val, test, acc)
-    }
-  })
-
-  return acc
-}
+const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
 
 export default register => {
   register({
@@ -48,21 +28,16 @@ export default register => {
         },
       ],
     },
-    generateFlux: (pipe, create, append) => {
-      const ast = parse(pipe.queries[pipe.activeQuery].text)
-      _walk(ast, node => !!Object.keys(node.comments || {}).length).forEach(
+    source: (data, query) => {
+      const ast = parse(
+        data.queries[data.activeQuery].text.replace(PREVIOUS_REGEXP, query)
+      )
+      find(ast, node => !!Object.keys(node.comments || {}).length).forEach(
         node => {
           delete node.comments
         }
       )
-      const text = format_from_js_file(ast)
-
-      if (!text.length) {
-        return
-      }
-
-      create(text)
-      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
+      return format_from_js_file(ast)
     },
   })
 }

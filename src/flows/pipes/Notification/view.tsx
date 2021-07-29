@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo, useEffect} from 'react'
+import React, {FC, useContext, useCallback, useMemo} from 'react'
 import {parse, format_from_js_file} from '@influxdata/flux'
 import {
   ComponentStatus,
@@ -18,9 +18,7 @@ import {
 import {RemoteDataState} from 'src/types'
 
 import {PipeContext} from 'src/flows/context/pipe'
-import {PopupContext} from 'src/flows/context/popup'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {SidebarContext} from 'src/flows/context/sidebar'
 import {remove} from 'src/flows/context/query'
 
 import Threshold, {
@@ -28,19 +26,15 @@ import Threshold, {
 } from 'src/flows/pipes/Notification/Threshold'
 import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
-import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
 
 // Types
 import {PipeProp} from 'src/types/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const Notification: FC<PipeProp> = ({Context}) => {
-  const {id, data, update, range, results, loading} = useContext(PipeContext)
-  const {register} = useContext(SidebarContext)
-  const {launch} = useContext(PopupContext)
+  const {id, data, update, results, loading} = useContext(PipeContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)
 
   let intervalError = ''
@@ -267,39 +261,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.message,
   ])
 
-  useEffect(() => {
-    if (!id) {
-      return
-    }
-
-    register(id, [
-      {
-        title: 'Notification Panel',
-        actions: [
-          {
-            title: 'Export as Task',
-            action: () => {
-              if (intervalError || offsetError) {
-                return
-              }
-
-              event('Export Task Clicked', {scope: 'notification'})
-
-              launch(<ExportTaskOverlay />, {
-                properties: data.properties,
-                range: range,
-                query: generateTask(),
-              })
-            },
-          },
-        ],
-      },
-    ])
-  }, [id, data.properties, range, generateTask])
-
-  const persist = isFlagEnabled('flow-sidebar') ? null : (
-    <ExportTaskButton generate={generateTask} />
-  )
+  const persist = <ExportTaskButton generate={generateTask} />
 
   if (
     loading === RemoteDataState.NotStarted ||

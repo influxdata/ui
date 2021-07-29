@@ -58,7 +58,7 @@ export const setTimeToLocal = (date?: string): Date => {
 // this is needed because of the discrepencies between Date implementation between Chrome and Firefox
 // workaround is to convert the 12 hr time to 24 hr, so that it works in both browser environments.
 export const convertAnnotationTime12to24 = time12h => {
-  const [date, time, modifier] = time12h.split(' ')
+  const [date, time, meridiem] = time12h.split(' ')
 
   let hours = time.split(':')[0]
   const minutes = time.split(':')[1]
@@ -68,7 +68,7 @@ export const convertAnnotationTime12to24 = time12h => {
     hours = '00'
   }
 
-  if (modifier === 'PM') {
+  if (meridiem === 'PM') {
     hours = parseInt(hours, 10) + 12
   }
 

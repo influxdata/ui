@@ -1,8 +1,8 @@
 import React from 'react'
 import {render, fireEvent} from '@testing-library/react'
-import {CustomApiTokenOverlay} from '../CustomApiTokenOverlay'
+import {CustomApiTokenOverlay} from './CustomApiTokenOverlay'
 
-describe('CustomeApitokenDescription', () => {
+describe('CustomApitokenDescription', () => {
   const props = {
     onClose: () => true,
   }
@@ -18,11 +18,11 @@ describe('CustomeApitokenDescription', () => {
     it("should update the component's state", () => {
       const {getByTestId} = render(<CustomApiTokenOverlay {...props} />)
 
-      fireEvent.change(getByTestId('custome-api-token-input'), {
+      fireEvent.change(getByTestId('custom-api-token-input'), {
         target: {value: 'chocolate'},
       })
 
-      const element = getByTestId('custome-api-token-input')
+      const element = getByTestId('custom-api-token-input')
       expect(element['value']).toEqual('chocolate')
     })
   })

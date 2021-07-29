@@ -43,7 +43,7 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
                 placeholder="Describe this new token"
                 value={description}
                 onChange={handleInputChange}
-                testID="custome-api-token-input"
+                testID="custom-api-token-input"
               />
             </Form.Element>
           </FlexBox>

@@ -15,20 +15,13 @@ export default register => {
       period: '',
       properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
     },
-    generateFlux: (pipe, _, append) => {
-      if (pipe.properties.type === 'simple-table') {
-        append('__CURRENT_RESULT__ |> limit(n: 100)')
-        return
+    visual: (data, query) => {
+      if (data.properties.type === 'simple-table') {
+        return `${query} |> limit(n: 100)`
       }
 
-      if (!pipe.functions || !pipe.functions.length) {
-        append('__CURRENT_RESULT__')
-        return
-      }
-
-      if (!pipe.period) {
-        append()
-        return
+      if (!data.functions || !data.functions.length || !data.period) {
+        return query
       }
 
       const _build = (config, fn?) => {
@@ -49,16 +42,12 @@ export default register => {
           return ''
         }
 
-        const flux = fnSpec.flux(pipe.period, false)
+        const flux = fnSpec.flux(data.period, false)
 
-        return `__CURRENT_RESULT__ ${flux} |> yield(name: "${fn.name}")`
+        return `${query} ${flux} |> yield(name: "${fn.name}")`
       }
 
-      const query = _build(pipe)
-
-      if (query) {
-        append(query)
-      }
+      return _build(data)
     },
   })
 }

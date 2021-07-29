@@ -15,13 +15,14 @@ export default register => {
       tags: {},
       aggregateFunction: FUNCTIONS[0],
     },
-    generateFlux: (pipe, create, append) => {
-      const {bucket, field, measurement, tags} = pipe
+    source: data => {
+      const {bucket, field, measurement, tags} = data
+
       if (!bucket) {
-        return
+        return ''
       }
       if (!(field || measurement || Object.values(tags).length)) {
-        return
+        return ''
       }
 
       let text = `from(bucket: "${bucket.name}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
@@ -53,8 +54,7 @@ export default register => {
           })
       }
 
-      create(text)
-      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
+      return text
     },
   })
 }

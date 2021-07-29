@@ -71,27 +71,33 @@ export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
 
-export function serialize(flow) {
+export function serialize(flow: Flow, orgID: string) {
   const apiFlow = {
-    name: flow.name,
-    readOnly: flow.readOnly,
-    range: flow.range,
-    refresh: flow.refresh,
-    createdAt: flow.createdAt,
-    updatedAt: flow.updatedAt,
-    pipes: flow.data.allIDs.map(id => {
-      const meta = flow.meta.byID[id]
-      // if data changes first, meta will not exist yet
-      if (meta) {
-        return {
-          ...flow.data.byID[id],
-          id,
-          title: meta.title,
-          visible: meta.visible,
-        }
-      }
-      return {}
-    }),
+    data: {
+      orgID,
+      name: flow.name,
+      spec: {
+        name: flow.name,
+        readOnly: flow.readOnly,
+        range: flow.range,
+        refresh: flow.refresh,
+        createdAt: flow.createdAt,
+        updatedAt: flow.updatedAt,
+        pipes: flow.data.allIDs.map(id => {
+          const meta = flow.meta.byID[id]
+          // if data changes first, meta will not exist yet
+          if (meta) {
+            return {
+              ...flow.data.byID[id],
+              id,
+              title: meta.title,
+              visible: meta.visible,
+            }
+          }
+          return {}
+        }),
+      },
+    },
   }
 
   return apiFlow
@@ -220,14 +226,8 @@ export const FlowListProvider: FC = ({children}) => {
       }
     }
 
-    const apiFlow = {
-      orgID: org.id,
-      data: {
-        orgID: org.id,
-        name: _flow.name,
-        spec: serialize(_flow),
-      },
-    }
+    const apiFlow = serialize(_flow, org.id)
+
     let id: string = `local_${UUID()}`
     try {
       const flow = await createAPI(apiFlow)
@@ -257,34 +257,14 @@ export const FlowListProvider: FC = ({children}) => {
       throw new Error(`${PROJECT_NAME} not found`)
     }
 
-    const data = {
-      name: flow.name,
-      range: flow.range,
-      refresh: flow.refresh,
-      data: flow.data,
-      meta: flow.meta,
-      readOnly: flow.readOnly,
-      results: null,
-      createdAt: flow.createdAt,
-      updatedAt: flow.updatedAt,
-    }
-
     setFlows({
       ...flows,
-      [id]: data,
+      [id]: flow,
     })
 
-    const apiFlow = {
-      id,
-      orgID: org.id,
-      data: {
-        id,
-        orgID: org.id,
-        name: flow.name,
-        spec: serialize(data),
-      },
-    }
-    pooledUpdateAPI(apiFlow)
+    const apiFlow = serialize(flow, org.id)
+
+    pooledUpdateAPI({id, ...apiFlow})
   }
 
   const remove = async (id: string) => {

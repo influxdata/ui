@@ -94,13 +94,7 @@ export const migrateLocalFlowsToAPI = async (
     await Promise.all(
       localFlows.map(async localID => {
         const flow = flows[localID]
-        const apiFlow: PostNotebookParams = {
-          data: {
-            orgID: orgID,
-            name: flow.name,
-            spec: serialize(flow),
-          },
-        }
+        const apiFlow: PostNotebookParams = serialize(flow, orgID)
         const {id} = await createAPI(apiFlow)
         delete flows[localID]
         flows[id] = flow

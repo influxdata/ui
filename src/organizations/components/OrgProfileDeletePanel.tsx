@@ -22,7 +22,6 @@ import {getDeleteAccountWarningButton} from 'src/shared/components/notifications
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
 import {deleteAccountWarning} from 'src/shared/copy/notifications'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
 // Types

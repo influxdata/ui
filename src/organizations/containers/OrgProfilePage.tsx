@@ -14,7 +14,6 @@ import DeleteOrgOverlay from 'src/organizations/components/DeleteOrgOverlay'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getQuartzMe} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'

@@ -332,18 +332,13 @@ export const FlowListProvider: FC = ({children}) => {
     }
 
     acc[curr] = {
-      createdAt: flows[curr].createdAt,
-      updatedAt: flows[curr].updatedAt,
-      name: flows[curr].name,
-      range: flows[curr].range,
-      refresh: flows[curr].refresh,
+      ...flows[curr],
       data: _asResource(flows[curr].data, data => {
         stateUpdater('data', data)
       }),
       meta: _asResource(flows[curr].meta, data => {
         stateUpdater('meta', data)
       }),
-      readOnly: flows[curr].readOnly,
     } as Flow
 
     return acc

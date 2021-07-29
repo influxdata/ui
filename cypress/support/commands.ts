@@ -24,31 +24,29 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
       .then(() => {
-        cy.visit('/').then(() => {
-          cy.get<string>('@defaultUser').then((defaultUser: string) => {
-            const username = Cypress._.get(
-              response,
-              'body.user.name',
-              defaultUser
-            )
-            cy.wrap(username)
-              .as('defaultUser')
-              .then(() => {
-                cy.get<string>('@defaultPassword').then(
-                  (defaultPassword: string) => {
-                    if (Cypress.env(DEX_URL_VAR) === 'OSS') {
-                      return loginViaOSS(username, defaultPassword)
-                    } else if (Cypress.env(DEX_URL_VAR) === 'CLOUD') {
-                      return loginViaDexUI(username, defaultPassword)
-                    } else {
-                      return loginViaDex(username, defaultPassword)
-                    }
+        cy.get<string>('@defaultUser').then((defaultUser: string) => {
+          const username = Cypress._.get(
+            response,
+            'body.user.name',
+            defaultUser
+          )
+          cy.wrap(username)
+            .as('defaultUser')
+            .then(() => {
+              cy.get<string>('@defaultPassword').then(
+                (defaultPassword: string) => {
+                  if (Cypress.env(DEX_URL_VAR) === 'OSS') {
+                    return loginViaOSS(username, defaultPassword)
+                  } else if (Cypress.env(DEX_URL_VAR) === 'CLOUD') {
+                    return loginViaDexUI(username, defaultPassword)
+                  } else {
+                    return loginViaDex(username, defaultPassword)
                   }
-                )
-              })
-              .then(() => cy.location('pathname').should('not.eq', '/signin'))
-              .then(() => wrapEnvironmentVariablesForCloud())
-          })
+                }
+              )
+            })
+            .then(() => cy.location('pathname').should('not.eq', '/signin'))
+            .then(() => wrapEnvironmentVariablesForCloud())
         })
       })
   })

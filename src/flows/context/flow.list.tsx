@@ -231,11 +231,12 @@ export const FlowListProvider: FC = ({children}) => {
       const flow = await createAPI(apiFlow)
       id = flow.id
 
-      _flow = {
-        ..._flow,
-        createdAt: flow.createdAt,
-        updatedAt: flow.updatedAt,
-      }
+      _flow = hydrate({
+        ...flow,
+        range: _flow.range,
+        readOnly: _flow.readOnly,
+        refresh: _flow.refresh,
+      })
     } catch {
       dispatch(notify(notebookCreateFail()))
     }
@@ -312,11 +313,11 @@ export const FlowListProvider: FC = ({children}) => {
     if (data && data.flows) {
       const _flows = {}
       data.flows.forEach(f => {
-        _flows[f.id] = {
-          ...hydrate(f.spec),
+        _flows[f.id] = hydrate({
+          ...f.spec,
           createdAt: f.createdAt,
           updatedAt: f.updatedAt,
-        }
+        })
       })
       setFlows(_flows)
     }

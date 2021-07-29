@@ -101,7 +101,7 @@ export const migrateLocalFlowsToAPI = async (
             spec: serialize(flow),
           },
         }
-        const id = await createAPI(apiFlow)
+        const {id} = await createAPI(apiFlow)
         delete flows[localID]
         flows[id] = flow
       })

@@ -15,7 +15,9 @@ import {ComponentStatus, Form, Input} from '@influxdata/clockface'
 // Context
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {setTimeToUTC} from 'src/dashboards/selectors'
-import {convertAnnotationTime12to24} from '../../../shared/utils/dateTimeUtils'
+
+// Utils
+import {convertAnnotationTime12to24} from 'src/shared/utils/dateTimeUtils'
 
 interface Props {
   onChange: (newTime: string) => void

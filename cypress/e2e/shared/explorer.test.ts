@@ -863,7 +863,7 @@ describe('DataExplorer', () => {
 
       both.forEach(type =>
         [true, false].forEach(withOffset => {
-          it.only(`can create ${type} task with${
+          it(`can create ${type} task with${
             withOffset ? '' : 'out'
           } offset`, () => {
             const time = type === 'every' ? timeEvery : timeCron

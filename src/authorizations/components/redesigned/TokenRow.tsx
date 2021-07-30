@@ -15,8 +15,6 @@ import {
   FlexBox,
   AlignItems,
   FlexDirection,
-//   InputLabel,
-//   SlideToggle,
   JustifyContent,
   ComponentColor,
   Button,
@@ -37,8 +35,8 @@ import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampForm
 
 interface OwnProps {
   auth: Authorization
-  onClickDescription: (authID: string) => void,
-  onClone: (authID: string) => void,
+  onClickDescription: (authID: string) => void
+  onClone: (authID: string) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -51,7 +49,7 @@ class TokenRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
-    
+
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -66,22 +64,18 @@ class TokenRow extends PureComponent<Props> {
           direction={FlexDirection.Column}
           margin={ComponentSize.Large}
         >
-            <ResourceCard.EditableName
+          <ResourceCard.EditableName
             onUpdate={this.handleUpdateName}
             onClick={this.handleClickDescription}
             name={description}
             noNameString={DEFAULT_TOKEN_DESCRIPTION}
             testID={`token-name ${auth.description}`}
-            />
-            <ResourceCard.Meta>
-           
-                
-                <>Created at: {formatter.format(date)}</>
-                <>Created by: {auth.user}</>
-                <>Last Used: {relativeTimestampFormatter(auth.updatedAt)}</>
-                
-            
-            </ResourceCard.Meta>
+          />
+          <ResourceCard.Meta>
+            <>Created at: {formatter.format(date)}</>
+            <>Created by: {auth.user}</>
+            <>Last Used: {relativeTimestampFormatter(auth.updatedAt)}</>
+          </ResourceCard.Meta>
         </FlexBox>
       </ResourceCard>
     )
@@ -90,25 +84,22 @@ class TokenRow extends PureComponent<Props> {
   private get contextMenu(): JSX.Element {
     return (
       <Context>
-        
-        <FlexBox margin={ComponentSize.Medium}  >
-            <Button
-                icon={IconFont.Duplicate}
-                color={ComponentColor.Secondary}
-                text="Clone"
-                onClick={this.handleClone}
-                testID="clone-token"
-            />
-            <Button
-                icon={IconFont.Trash}
-                color={ComponentColor.Danger}
-                text="Delete"
-                onClick={this.handleDelete}
-                testID="delete-token"
-            />
-            
+        <FlexBox margin={ComponentSize.Medium}>
+          <Button
+            icon={IconFont.Duplicate}
+            color={ComponentColor.Secondary}
+            text="Clone"
+            onClick={this.handleClone}
+            testID="clone-token"
+          />
+          <Button
+            icon={IconFont.Trash}
+            color={ComponentColor.Danger}
+            text="Delete"
+            onClick={this.handleDelete}
+            testID="delete-token"
+          />
         </FlexBox>
-        
       </Context>
     )
   }
@@ -119,7 +110,7 @@ class TokenRow extends PureComponent<Props> {
   }
 
   private handleClone = () => {
-      this.props.onClone(this.props.auth.id);
+    this.props.onClone(this.props.auth.id)
   }
 
   private handleClickDescription = () => {

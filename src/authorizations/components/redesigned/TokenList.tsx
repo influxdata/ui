@@ -88,10 +88,7 @@ export default class TokenList extends PureComponent<Props, State> {
     ))
   }
 
-  
-  private handleClone =  () => {
-      
-  };
+  private handleClone = () => {}
 
   private handleDismissOverlay = () => {
     this.setState({isTokenOverlayVisible: false})

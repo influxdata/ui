@@ -208,7 +208,6 @@ class DatePicker extends PureComponent<Props, State> {
     const value = e.target.value
 
     if (isValidRTC3339(value)) {
-      console.log(value)
       const inputDate = new Date(value)
 
       if (timeZone === 'UTC') {
@@ -221,7 +220,6 @@ class DatePicker extends PureComponent<Props, State> {
         )
       }
 
-      console.log(new Date(inputDate).toISOString())
       onSelectDate(new Date(inputDate).toISOString())
       this.setState({inputValue: value, inputFormat: getFormat(value)})
       return

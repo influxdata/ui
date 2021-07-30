@@ -119,8 +119,6 @@ export interface Flow {
   meta: ResourceManipulator<PipeMeta>
   results: FluxResult
   readOnly?: boolean
-  createdAt?: Date
-  updatedAt?: Date
 }
 
 export interface FlowListState {

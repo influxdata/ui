@@ -65,7 +65,7 @@ export const createAPI = async (flow: PostNotebookParams) => {
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
-  return res.data
+  return res.data.id
 }
 
 export const deleteAPI = async (ids: DeleteNotebookParams) => {
@@ -94,8 +94,14 @@ export const migrateLocalFlowsToAPI = async (
     await Promise.all(
       localFlows.map(async localID => {
         const flow = flows[localID]
-        const apiFlow: PostNotebookParams = serialize(flow, orgID)
-        const {id} = await createAPI(apiFlow)
+        const apiFlow: PostNotebookParams = {
+          data: {
+            orgID: orgID,
+            name: flow.name,
+            spec: serialize(flow),
+          },
+        }
+        const id = await createAPI(apiFlow)
         delete flows[localID]
         flows[id] = flow
       })

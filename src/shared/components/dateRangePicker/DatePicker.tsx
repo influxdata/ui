@@ -122,7 +122,7 @@ class DatePicker extends PureComponent<Props, State> {
     const {dateTime, timeZone} = this.props
     const {inputValue, inputFormat} = this.state
 
-    // console.log('get inputvalue ', dateTime)
+    console.log('get inputvalue ', dateTime)
     if (this.isInputValueInvalid) {
       const {onInvalidInput} = this.props
       onInvalidInput()

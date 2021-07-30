@@ -3,7 +3,7 @@
 import {TimeZone} from 'src/types'
 
 const dateTimeOptions: any = {
-  hour12: true,
+  hourCycle: 'h23',
   day: '2-digit',
   month: '2-digit',
   year: 'numeric',
@@ -101,6 +101,7 @@ export const createDateTimeFormatter = (
     case 'YYYY-MM-DD hh:mm:ss a': {
       const options = {
         ...dateTimeOptions,
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -130,6 +131,7 @@ export const createDateTimeFormatter = (
       const options = {
         ...dateTimeOptions,
         timeZoneName: 'short',
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -159,7 +161,6 @@ export const createDateTimeFormatter = (
     case 'YYYY-MM-DD HH:mm:ss': {
       const options = {
         ...dateTimeOptions,
-        hour12: false,
       }
 
       if (timeZone === 'UTC') {
@@ -278,6 +279,7 @@ export const createDateTimeFormatter = (
       const options = {
         ...dateTimeOptions,
         fractionalSecondDigits: 3,
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -337,6 +339,7 @@ export const createDateTimeFormatter = (
       const options = {
         ...dateTimeOptions,
         fractionalSecondDigits: 3,
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -394,6 +397,7 @@ export const createDateTimeFormatter = (
     case 'YYYY/MM/DD hh:mm:ss a': {
       const options = {
         ...dateTimeOptions,
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -457,6 +461,7 @@ export const createDateTimeFormatter = (
         ...dateTimeOptions,
         month: 'long',
         day: 'numeric',
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -520,6 +525,7 @@ export const createDateTimeFormatter = (
         month: 'long',
         day: 'numeric',
         weekday: 'long',
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -579,6 +585,7 @@ export const createDateTimeFormatter = (
     case 'hh:mm a': {
       const options = {
         ...timeOptions,
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -636,6 +643,7 @@ export const createDateTimeFormatter = (
     case 'hh:mm:ss a': {
       const options = {
         ...timeOptions,
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -695,6 +703,7 @@ export const createDateTimeFormatter = (
       const options = {
         ...timeOptions,
         timeZoneName: 'short',
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {
@@ -754,6 +763,7 @@ export const createDateTimeFormatter = (
       const options = {
         ...timeOptions,
         fractionalSecondDigits: 3,
+        hour12: true,
       }
 
       if (timeZone === 'UTC') {

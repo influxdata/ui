@@ -74,7 +74,7 @@ const HeatmapOptions: FC<Props> = ({properties, results, update}) => {
 
     if (domain) {
       const [min, max] = domain
-      bounds = [min === null ? null : min, max === null ? null : max]
+      bounds = [min, max]
     } else {
       bounds = [null, null]
     }

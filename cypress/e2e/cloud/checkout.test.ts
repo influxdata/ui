@@ -29,8 +29,6 @@ describe('Checkout Page', () => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
         cy.setFeatureFlags({
-          unityMeApi: true,
-          unityCheckout: true,
           uiUnificationFlag: true,
         }).then(() => {
           cy.quartzProvision({
@@ -187,8 +185,6 @@ describe('Checkout Page should not be accessible for non-free users', () => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
         cy.setFeatureFlags({
-          unityMeApi: true,
-          unityCheckout: true,
           uiUnificationFlag: true,
         }).then(() => {
           cy.quartzProvision({

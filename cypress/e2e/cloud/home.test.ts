@@ -10,7 +10,6 @@ describe('Home Page Tests', () => {
         cy.setFeatureFlags({
           alertsActivity: true,
           notebooks: true,
-          loginRedirectBack: true,
         }).then(() => cy.getByTestID('nav-item-flows').should('be.visible'))
       })
     })

@@ -10,15 +10,6 @@ import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Constants
-import {
-  CLOUD_URL,
-  CLOUD_USAGE_PATH,
-  CLOUD_BILLING_PATH,
-  CLOUD_USERS_PATH,
-} from 'src/shared/constants'
 
 // Types
 import {AppState} from 'src/types'
@@ -53,58 +44,25 @@ const UserWidget: FC<Props> = ({
           id="usage"
           label="Usage"
           testID="user-nav-item-usage"
-          linkElement={className => {
-            if (
-              isFlagEnabled('unityUsage') ||
-              isFlagEnabled('uiUnificationFlag')
-            ) {
-              return <Link className={className} to={`${orgPrefix}/usage`} />
-            }
-            return (
-              <a
-                className={className}
-                href={`${CLOUD_URL}${CLOUD_USAGE_PATH}`}
-              />
-            )
-          }}
+          linkElement={className => (
+            <Link className={className} to={`${orgPrefix}/usage`} />
+          )}
         />
         <TreeNav.UserItem
           id="billing"
           label="Billing"
           testID="user-nav-item-billing"
-          linkElement={className => {
-            if (
-              isFlagEnabled('unityBilling') ||
-              isFlagEnabled('uiUnificationFlag')
-            ) {
-              return <Link className={className} to={`${orgPrefix}/billing`} />
-            }
-            return (
-              <a
-                className={className}
-                href={`${CLOUD_URL}${CLOUD_BILLING_PATH}`}
-              />
-            )
-          }}
+          linkElement={className => (
+            <Link className={className} to={`${orgPrefix}/billing`} />
+          )}
         />
         <TreeNav.UserItem
           id="users"
           label="Users"
           testID="user-nav-item-users"
-          linkElement={className => {
-            if (
-              isFlagEnabled('unityUsers') ||
-              isFlagEnabled('uiUnificationFlag')
-            ) {
-              return <Link className={className} to={`${orgPrefix}/users`} />
-            }
-            return (
-              <a
-                className={className}
-                href={`${CLOUD_URL}/organizations/${org.id}${CLOUD_USERS_PATH}`}
-              />
-            )
-          }}
+          linkElement={className => (
+            <Link className={className} to={`${orgPrefix}/users`} />
+          )}
         />
         <TreeNav.UserItem
           id="about"

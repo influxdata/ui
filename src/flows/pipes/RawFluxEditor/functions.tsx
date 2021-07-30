@@ -73,7 +73,7 @@ const Functions: FC<Props> = ({onSelect}) => {
       ))
     }
 
-    const body = isFlagEnabled('flow-sidebar') ? (
+    const body = isFlagEnabled('flowSidebar') ? (
       <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
         {fnComponent}
       </div>

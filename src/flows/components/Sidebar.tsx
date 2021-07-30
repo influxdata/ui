@@ -91,7 +91,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
     }
   }, [focused, submenu])
 
-  if (!isFlagEnabled('flow-sidebar')) {
+  if (!isFlagEnabled('flowSidebar')) {
     return null
   }
 

@@ -231,12 +231,12 @@ do
 				failed_jobs_names=( $(echo ${failed_jobs} | jq -r '.[].name') )
 				for name in "${failed_jobs_names[@]}"; do
 					printf " - ${name}\n"
-				done
 
-				if [[ "${name}" != *"remocal"* ]]; then
-					# ignore remocal failures for now
-					is_failure=1
-				fi
+					if [[ "${name}" != *"remocal"* ]]; then
+						# ignore remocal failures for now
+						is_failure=1
+					fi
+				done
 
 				# get the artifacts for each failed job
 				printf "\nArtifacts from failed jobs:\n"

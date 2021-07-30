@@ -62,16 +62,7 @@ export default class TasksList extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {searchTerm, onCreate, totalCount, onImportTask} = this.props
-
-    const creater = () => {
-      event('Task Created From Dropdown', {source: 'list'})
-      onCreate()
-    }
-    const importer = () => {
-      event('Task Imported From Dropdown', {source: 'list'})
-      onImportTask()
-    }
+    const {searchTerm, totalCount} = this.props
 
     return (
       <>
@@ -80,9 +71,9 @@ export default class TasksList extends PureComponent<Props, State> {
             emptyState={
               <EmptyTasksList
                 searchTerm={searchTerm}
-                onCreate={creater}
+                onCreate={this.onCreate}
                 totalCount={totalCount}
-                onImportTask={importer}
+                onImportTask={this.onImport}
               />
             }
           >
@@ -91,6 +82,16 @@ export default class TasksList extends PureComponent<Props, State> {
         </ResourceList>
       </>
     )
+  }
+
+  private onCreate = () => {
+    event('Task Created From Dropdown', {source: 'list'})
+    this.props.onCreate()
+  }
+
+  private onImport = () => {
+    event('Task Imported From Dropdown', {source: 'list'})
+    this.props.onImportTask()
   }
 
   private get rows(): JSX.Element[] {

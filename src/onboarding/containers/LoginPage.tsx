@@ -12,7 +12,6 @@ import {
 import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
 import {client} from 'src/utils/api'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -33,14 +32,12 @@ export const LoginPage: FC = () => {
   }, [])
 
   useEffect(() => {
-    if (isFlagEnabled('loginRedirectBack')) {
-      getSessionValidity()
-    }
+    getSessionValidity()
   }, [getSessionValidity])
 
   const history = useHistory()
 
-  if (hasValidSession && isFlagEnabled('loginRedirectBack')) {
+  if (hasValidSession) {
     if (history.length <= EMPTY_HISTORY_STACK_LENGTH) {
       // If the user directly navigates to the login page after having a session but no stack
       history.push('/')

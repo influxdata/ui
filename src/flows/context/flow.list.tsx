@@ -71,25 +71,33 @@ export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
 
-export function serialize(flow) {
+export function serialize(flow: Flow, orgID: string) {
   const apiFlow = {
-    name: flow.name,
-    readOnly: flow.readOnly,
-    range: flow.range,
-    refresh: flow.refresh,
-    pipes: flow.data.allIDs.map(id => {
-      const meta = flow.meta.byID[id]
-      // if data changes first, meta will not exist yet
-      if (meta) {
-        return {
-          ...flow.data.byID[id],
-          id,
-          title: meta.title,
-          visible: meta.visible,
-        }
-      }
-      return {}
-    }),
+    data: {
+      orgID,
+      name: flow.name,
+      spec: {
+        name: flow.name,
+        readOnly: flow.readOnly,
+        range: flow.range,
+        refresh: flow.refresh,
+        createdAt: flow.createdAt,
+        updatedAt: flow.updatedAt,
+        pipes: flow.data.allIDs.map(id => {
+          const meta = flow.meta.byID[id]
+          // if data changes first, meta will not exist yet
+          if (meta) {
+            return {
+              ...flow.data.byID[id],
+              id,
+              title: meta.title,
+              visible: meta.visible,
+            }
+          }
+          return {}
+        }),
+      },
+    },
   }
 
   return apiFlow
@@ -99,14 +107,16 @@ export function hydrate(data) {
   const flow = {
     ...JSON.parse(JSON.stringify(EMPTY_NOTEBOOK)),
     name: data.name,
-    range: data.range,
-    refresh: data.refresh,
-    readOnly: data.readOnly,
+    range: data.spec.range,
+    refresh: data.spec.refresh,
+    readOnly: data.spec.readOnly,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
   }
-  if (!data.pipes) {
+  if (!data?.spec?.pipes) {
     return flow
   }
-  data.pipes.forEach(pipe => {
+  data.spec.pipes.forEach(pipe => {
     const id = pipe.id || `local_${UUID()}`
 
     flow.data.allIDs.push(id)
@@ -170,33 +180,35 @@ export const FlowListProvider: FC = ({children}) => {
     if (!flow) {
       _flowData = hydrate({
         name,
-        readOnly: false,
-        range: DEFAULT_TIME_RANGE,
-        refresh: AUTOREFRESH_DEFAULT,
-        pipes: [
-          {
-            title: 'Select a Metric',
-            visible: true,
-            type: 'metricSelector',
-            ...JSON.parse(
-              JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
-            ),
-          },
-          {
-            title: 'Validate the Data',
-            visible: true,
-            type: 'visualization',
-            properties: {type: 'simple-table', showAll: false},
-          },
-          {
-            title: 'Visualize the Result',
-            visible: true,
-            type: 'visualization',
-            ...JSON.parse(
-              JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
-            ),
-          },
-        ],
+        spec: {
+          readOnly: false,
+          range: DEFAULT_TIME_RANGE,
+          refresh: AUTOREFRESH_DEFAULT,
+          pipes: [
+            {
+              title: 'Select a Metric',
+              visible: true,
+              type: 'metricSelector',
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
+              ),
+            },
+            {
+              title: 'Validate the Data',
+              visible: true,
+              type: 'visualization',
+              properties: {type: 'simple-table', showAll: false},
+            },
+            {
+              title: 'Visualize the Result',
+              visible: true,
+              type: 'visualization',
+              ...JSON.parse(
+                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
+              ),
+            },
+          ],
+        },
       })
       _flow = {
         ..._flowData,
@@ -209,20 +221,19 @@ export const FlowListProvider: FC = ({children}) => {
         data: flow.data,
         meta: flow.meta,
         readOnly: flow.readOnly,
+        createdAt: flow.createdAt,
+        updatedAt: flow.updatedAt,
       }
     }
 
-    const apiFlow = {
-      orgID: org.id,
-      data: {
-        orgID: org.id,
-        name: _flow.name,
-        spec: serialize(_flow),
-      },
-    }
+    const apiFlow = serialize(_flow, org.id)
+
     let id: string = `local_${UUID()}`
     try {
-      id = await createAPI(apiFlow)
+      const flow = await createAPI(apiFlow)
+      id = flow.id
+
+      _flow = hydrate(flow)
     } catch {
       dispatch(notify(notebookCreateFail()))
     }
@@ -246,32 +257,14 @@ export const FlowListProvider: FC = ({children}) => {
       throw new Error(`${PROJECT_NAME} not found`)
     }
 
-    const data = {
-      name: flow.name,
-      range: flow.range,
-      refresh: flow.refresh,
-      data: flow.data,
-      meta: flow.meta,
-      readOnly: flow.readOnly,
-      results: null,
-    }
-
     setFlows({
       ...flows,
-      [id]: data,
+      [id]: flow,
     })
 
-    const apiFlow = {
-      id,
-      orgID: org.id,
-      data: {
-        id,
-        orgID: org.id,
-        name: flow.name,
-        spec: serialize(data),
-      },
-    }
-    pooledUpdateAPI(apiFlow)
+    const apiFlow = serialize(flow, org.id)
+
+    pooledUpdateAPI({id, ...apiFlow})
   }
 
   const remove = async (id: string) => {
@@ -296,7 +289,9 @@ export const FlowListProvider: FC = ({children}) => {
     const data = await getAllAPI(org.id)
     if (data && data.flows) {
       const _flows = {}
-      data.flows.forEach(f => (_flows[f.id] = hydrate(f.spec)))
+      data.flows.forEach(f => {
+        _flows[f.id] = hydrate(f)
+      })
       setFlows(_flows)
     }
   }, [org.id, setFlows])
@@ -337,16 +332,13 @@ export const FlowListProvider: FC = ({children}) => {
     }
 
     acc[curr] = {
-      name: flows[curr].name,
-      range: flows[curr].range,
-      refresh: flows[curr].refresh,
+      ...flows[curr],
       data: _asResource(flows[curr].data, data => {
         stateUpdater('data', data)
       }),
       meta: _asResource(flows[curr].meta, data => {
         stateUpdater('meta', data)
       }),
-      readOnly: flows[curr].readOnly,
     } as Flow
 
     return acc

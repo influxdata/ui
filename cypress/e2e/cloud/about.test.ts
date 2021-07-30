@@ -8,8 +8,6 @@ describe.skip('About Page for free users with only 1 user', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.setFeatureFlags({
-          selfDeletion: true,
-          unityUsers: true,
           uiUnificationFlag: true,
         }).then(() => {
           cy.quartzProvision({
@@ -60,8 +58,6 @@ describe('About Page for free users with multiple users', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.setFeatureFlags({
-          unityUsers: true,
-          selfDeletion: true,
           uiUnificationFlag: true,
         }).then(() => {
           cy.quartzProvision({
@@ -100,8 +96,6 @@ describe('About Page for PAYG users', () => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
         cy.setFeatureFlags({
-          unityUsers: true,
-          selfDeletion: true,
           uiUnificationFlag: true,
         }).then(() => {
           cy.quartzProvision({

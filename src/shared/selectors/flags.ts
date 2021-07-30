@@ -92,7 +92,6 @@ export const CLOUD_FLAGS = {
   'client-library--scala': true,
   'client-library--swift': true,
   'notification-endpoint-telegram': false,
-  selfDeletion: false,
   'molly-first': false,
   'managed-functions': false,
   simpleTable: false,

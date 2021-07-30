@@ -172,6 +172,8 @@ export const setTimeRange = (timeRange: TimeRange) => (dispatch, getState) => {
   const contextID = currentContext(state)
   const activeQuery = getActiveQuery(state)
 
+  console.log('set time range', timeRange)
+
   if (!isEqual(timeRange, state.ranges[contextID])) {
     dispatch(setDashboardTimeRange(contextID, timeRange))
     dispatch(saveAndExecuteQueries())

@@ -123,6 +123,7 @@ class DatePicker extends PureComponent<Props, State> {
     const {dateTime, timeZone} = this.props
     const {inputValue, inputFormat} = this.state
 
+    // console.log('get inputvalue ', dateTime)
     if (this.isInputValueInvalid) {
       const {onInvalidInput} = this.props
       onInvalidInput()
@@ -135,6 +136,7 @@ class DatePicker extends PureComponent<Props, State> {
     }
     const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss', timeZone)
 
+    // console.log('returned input value ', formatter.format(new Date(dateTime)))
     return formatter.format(new Date(dateTime))
   }
 
@@ -204,11 +206,23 @@ class DatePicker extends PureComponent<Props, State> {
   }
 
   private handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {
-    const {onSelectDate} = this.props
+    const {onSelectDate, timeZone} = this.props
     const value = e.target.value
 
     if (isValidRTC3339(value)) {
-      onSelectDate(moment(value).toISOString())
+      console.log(value)
+      const inputDate = new Date(value)
+
+      if (timeZone === 'UTC') {
+        // (sahas): the react-datepicker forces the timezone to be the Local timezone.
+        // so when our app in in UTC mode, to make the datepicker respect that timezone,
+        // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
+        // because the time now needs to be back to UTC, we subtract the offset added below in code, in the handleSelectDate
+        inputDate.setMinutes(inputDate.getMinutes() - inputDate.getTimezoneOffset())
+      }
+
+      console.log(new Date(inputDate).toISOString())
+      onSelectDate(new Date(inputDate).toISOString())
       this.setState({inputValue: value, inputFormat: getFormat(value)})
       return
     }

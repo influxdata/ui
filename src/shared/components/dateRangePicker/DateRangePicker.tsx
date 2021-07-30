@@ -122,7 +122,6 @@ class DateRangePicker extends PureComponent<Props, State> {
     const {onSetTimeRange} = this.props
     const {upper, lower} = this.state
 
-    console.log(upper, lower)
     onSetTimeRange({lower, upper, type: 'custom'})
   }
 

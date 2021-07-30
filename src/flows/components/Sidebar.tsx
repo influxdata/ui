@@ -104,7 +104,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
   return (
     <div ref={ref} style={{position: 'relative'}}>
       <Button
-        icon={IconFont.CogThick}
+        icon={IconFont.More}
         onClick={toggleSidebar}
         color={
           id === focused ? ComponentColor.Secondary : ComponentColor.Default

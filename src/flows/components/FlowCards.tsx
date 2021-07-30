@@ -39,9 +39,9 @@ const FlowCards: FC<Props> = ({flows, search}) => {
             <ResourceList.Body
               emptyState={!!search ? <NoMatches /> : <FlowsIndexEmpty />}
             >
-              {Object.entries(flows.flows).map(([id, {name}]) => {
-                return <FlowCard key={id} id={id} name={name} />
-              })}
+              {Object.keys(flows.flows).map(id => (
+                <FlowCard key={id} id={id} />
+              ))}
             </ResourceList.Body>
           </ResourceList>
         </Grid.Column>

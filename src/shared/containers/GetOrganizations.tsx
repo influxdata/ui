@@ -24,9 +24,6 @@ import RouteToOrg from 'src/shared/containers/RouteToOrg'
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 // Types
 import {Me} from 'src/client/unityRoutes'
 
@@ -51,10 +48,7 @@ const GetOrganizations: FunctionComponent = () => {
   }, [dispatch, status])
 
   useEffect(() => {
-    if (
-      isFlagEnabled('uiUnificationFlag') &&
-      quartzMeStatus === RemoteDataState.NotStarted
-    ) {
+    if (CLOUD && quartzMeStatus === RemoteDataState.NotStarted) {
       dispatch(getQuartzMe())
     }
   }, [dispatch, quartzMeStatus])
@@ -63,10 +57,10 @@ const GetOrganizations: FunctionComponent = () => {
     <PageSpinner loading={status}>
       <Suspense fallback={<PageSpinner />}>
         {/*
-          NOTE: We'll need this here until Tools gets Quartz integrated
-          Since the API request will fail in a tools environment.
+          NOTE: The reason we want to conditionally render this route is because
+          both tools and OSS don't have a concept of the quartz API to query against
         */}
-        {isFlagEnabled('uiUnificationFlag') ? (
+        {CLOUD ? (
           <PageSpinner loading={quartzMeStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />

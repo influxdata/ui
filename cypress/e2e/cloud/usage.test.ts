@@ -13,14 +13,12 @@ describe('Usage Page Free User No Data', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
-          cy.quartzProvision({
-            hasData: false,
-            accountType: 'free',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/usage`)
-            cy.getByTestID('usage-page--header').should('be.visible')
-          })
+        cy.quartzProvision({
+          hasData: false,
+          accountType: 'free',
+        }).then(() => {
+          cy.visit(`/orgs/${id}/usage`)
+          cy.getByTestID('usage-page--header').should('be.visible')
         })
       })
     })
@@ -117,14 +115,12 @@ describe('Usage Page PAYG With Data', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
-          cy.quartzProvision({
-            hasData: true,
-            accountType: 'pay_as_you_go',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/usage`)
-            cy.getByTestID('usage-page--header').should('be.visible')
-          })
+        cy.quartzProvision({
+          hasData: true,
+          accountType: 'pay_as_you_go',
+        }).then(() => {
+          cy.visit(`/orgs/${id}/usage`)
+          cy.getByTestID('usage-page--header').should('be.visible')
         })
       })
     })

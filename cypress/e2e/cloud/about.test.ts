@@ -7,16 +7,12 @@ describe.skip('About Page for free users with only 1 user', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({
-          uiUnificationFlag: true,
+        cy.quartzProvision({
+          accountType: 'free',
+          hasUsers: false,
         }).then(() => {
-          cy.quartzProvision({
-            accountType: 'free',
-            hasUsers: false,
-          }).then(() => {
-            cy.visit(`/orgs/${id}/about`)
-            cy.getByTestID('about-page--header').should('be.visible')
-          })
+          cy.visit(`/orgs/${id}/about`)
+          cy.getByTestID('about-page--header').should('be.visible')
         })
       })
     })
@@ -57,16 +53,12 @@ describe('About Page for free users with multiple users', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({
-          uiUnificationFlag: true,
+        cy.quartzProvision({
+          accountType: 'free',
+          hasUsers: true,
         }).then(() => {
-          cy.quartzProvision({
-            accountType: 'free',
-            hasUsers: true,
-          }).then(() => {
-            cy.visit(`/orgs/${id}/about`)
-            cy.getByTestID('about-page--header').should('be.visible')
-          })
+          cy.visit(`/orgs/${id}/about`)
+          cy.getByTestID('about-page--header').should('be.visible')
         })
       })
     })
@@ -95,15 +87,11 @@ describe('About Page for PAYG users', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({
-          uiUnificationFlag: true,
+        cy.quartzProvision({
+          accountType: 'pay_as_you_go',
         }).then(() => {
-          cy.quartzProvision({
-            accountType: 'pay_as_you_go',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/about`)
-            cy.getByTestID('about-page--header').should('be.visible')
-          })
+          cy.visit(`/orgs/${id}/about`)
+          cy.getByTestID('about-page--header').should('be.visible')
         })
       })
     })

@@ -25,7 +25,6 @@ import OrgProfileDeletePanel from 'src/organizations/components/OrgProfileDelete
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {copyToClipboardSuccess} from 'src/shared/copy/notifications'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
 // Types
@@ -89,7 +88,7 @@ const OrgProfileTab: FC = () => {
                   />
                 </FlexBox>
               </Panel.Body>
-              {CLOUD && isFlagEnabled('uiUnificationFlag') && (
+              {CLOUD && (
                 <UsersProvider>
                   <OrgProfileDeletePanel />
                 </UsersProvider>

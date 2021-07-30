@@ -149,7 +149,7 @@ class DashboardCard extends PureComponent<Props> {
           <Context.Item
             label="Pin to Homepage"
             action={this.handlePinDashboard}
-            testID="context-delete-dashboard"
+            testID="context-pin-dashboard"
             disabled={this.props.isPinned}
           />
         </Context.Menu>

@@ -120,9 +120,11 @@ export class MePage extends PureComponent<Props> {
                       <GettingStarted />
                     </Panel.Body>
                   </Panel>
-                  <PinnedItemsProvider>
-                    <PinnedItems />
-                  </PinnedItemsProvider>
+                  {isFlagEnabled('pinnedItems') && (
+                    <PinnedItemsProvider>
+                      <PinnedItems />
+                    </PinnedItemsProvider>
+                  )}
                   {!isFlagEnabled('docSearchWidget') && <Docs />}
                   {isFlagEnabled('alertsActivity') && <AlertsActivity />}
                 </FlexBox>

@@ -48,9 +48,13 @@ const PinnedItems: FC = () => {
   const handleDeletePinnedItem = async (itemId: string) => {
     await deletePinnedItemsHelper(itemId)
   }
-  const emptyState = <h3>Pin Resources Here.</h3>
+  const emptyState = (
+    <h3 data-testid="pinneditems--emptystate">
+      Pin a task, dashboard, or notebook here
+    </h3>
+  )
   return (
-    <>
+    <div data-testid="pinneditems--container">
       <h2 className="pinned-items--header">Pinned Items</h2>
       <ResourceList>
         <ResourceList.Body
@@ -60,16 +64,18 @@ const PinnedItems: FC = () => {
           {pinnedItems?.map(item => (
             <ResourceCard
               key={item.id}
+              testID="pinneditems--card"
               contextMenu={
                 <Context>
                   <Context.Menu
                     icon={IconFont.Trash}
                     color={ComponentColor.Danger}
+                    testID="pinneditems-delete--menu"
                   >
                     <Context.Item
                       label="Unpin"
                       action={async () => await handleDeletePinnedItem(item.id)}
-                      testID="delete-token"
+                      testID="pinneditems-delete--confirm"
                     />
                   </Context.Menu>
                 </Context>
@@ -79,6 +85,7 @@ const PinnedItems: FC = () => {
               <ResourceCard.Name
                 name={item.metadata.name ?? ''}
                 onClick={() => followMetadataToRoute(item)}
+                testID="pinneditems--link"
               />
               <ResourceCard.Description
                 description={item.metadata.description ?? ''}
@@ -87,7 +94,7 @@ const PinnedItems: FC = () => {
           ))}
         </ResourceList.Body>
       </ResourceList>
-    </>
+    </div>
   )
 }
 

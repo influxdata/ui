@@ -64,7 +64,7 @@ $article-text: #d4d7dd;
   .DocSearch-Hit-source {
     color: $article-heading;
     background: none;
-    font-size: 21px;
+    font-size: 17px !important;
     margin: 0px !important;
     font-weight: 400;
     margin-bottom: 4px !important;
@@ -97,6 +97,7 @@ $article-text: #d4d7dd;
 
   .DocSearch-Hit-content-wrapper {
     overflow-x: clip;
+    white-space: normal;
   }
 
   .DocSearch-Hit-Container {
@@ -115,7 +116,7 @@ $article-text: #d4d7dd;
   .DocSearch-Form {
     display: block;
     width: 100% !important;
-    height: 56px;
+    height: auto;
     margin: auto;
     border-radius: 4px !important;
     box-shadow: none !important;
@@ -160,9 +161,11 @@ $article-text: #d4d7dd;
   }
 
   .DocSearch-Input {
-    font-size: 18px !important;
+    font-size: 13px !important;
     width: 100% !important;
     box-shadow: none !important;
+    height: 40px !important;
+    padding: 10px !important;
   }
 
   .DocSearch-Input::placeholder {
@@ -180,9 +183,13 @@ $article-text: #d4d7dd;
   }
 
   .DocSearch-Reset {
-    top: 17px;
+    top: 9px;
     position: absolute;
     right: 10px;
+    border: none !important;
+  }
+  .DocSearch-Reset:hover {
+    border: none !important;
   }
 
   .DocSearch-Dropdown::-webkit-scrollbar-thumb {

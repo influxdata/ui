@@ -45,8 +45,10 @@ export const createRelativeFormatter = (
 
     for (const {scale, ms} of relativeDivisions) {
       if (Math.abs(millisecondsAgo) >= ms || scale === 'seconds') {
+        
         return formatter.format(Math.round(millisecondsAgo / ms), scale)
       }
+      
     }
   }
 

@@ -14,9 +14,6 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
-import {incrementCloneName} from 'src/utils/naming'
-
-import { createAuthorization } from 'src/authorizations/apis';
 
 type SortKey = keyof Authorization
 
@@ -92,7 +89,7 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   
-  private handleClone = async (id: string) => {
+  private handleClone =  () => {
       
   };
 

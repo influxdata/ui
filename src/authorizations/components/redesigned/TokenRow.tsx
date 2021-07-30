@@ -50,10 +50,8 @@ class TokenRow extends PureComponent<Props> {
   public render() {
     const {description} = this.props.auth
     const {auth} = this.props
-    // const labelText = this.isTokenEnabled ? 'Active' : 'Inactive'
     const date = new Date(auth.createdAt)
-
-    // console.log(auth)
+    
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -85,31 +83,6 @@ class TokenRow extends PureComponent<Props> {
             
             </ResourceCard.Meta>
         </FlexBox>
-        {/* <FlexBox margin={ComponentSize.Small}>
-          <SlideToggle
-            active={this.isTokenEnabled}
-            size={ComponentSize.ExtraSmall}
-            onChange={this.changeToggle}
-          />
-          <InputLabel active={this.isTokenEnabled}>{labelText}</InputLabel>
-        </FlexBox> */}
-        {/* <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
-            <Button
-                icon={IconFont.Duplicate}
-                color={ComponentColor.Secondary}
-                text="Clone"
-                onClick={this.handleClone}
-                testID="clone-token"
-            />
-            <Button
-                icon={IconFont.Trash}
-                color={ComponentColor.Danger}
-                text="Delete"
-                onClick={this.handleDelete}
-                testID="delete-token"
-            />
-            
-        </FlexBox> */}
       </ResourceCard>
     )
   }
@@ -117,14 +90,6 @@ class TokenRow extends PureComponent<Props> {
   private get contextMenu(): JSX.Element {
     return (
       <Context>
-        {/* <Context.Menu icon={IconFont.Trash} color={ComponentColor.Danger}>
-          <Context.Item
-            label="Delete"
-            action={this.handleDelete}
-            testID="delete-token"
-          />
-          <Context.Item label="Clone" action={this.handleClone} />
-        </Context.Menu> */}
         
         <FlexBox margin={ComponentSize.Medium}  >
             <Button
@@ -147,21 +112,6 @@ class TokenRow extends PureComponent<Props> {
       </Context>
     )
   }
-
-//   private get isTokenEnabled(): boolean {
-//     const {auth} = this.props
-//     return auth.status === 'active'
-//   }
-
-//   private changeToggle = () => {
-//     const {auth, onUpdate} = this.props
-//     if (auth.status === 'active') {
-//       auth.status = 'inactive'
-//     } else {
-//       auth.status = 'active'
-//     }
-//     onUpdate(auth)
-//   }
 
   private handleDelete = () => {
     const {id, description} = this.props.auth

@@ -136,7 +136,6 @@ class DatePicker extends PureComponent<Props, State> {
     }
     const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss', timeZone)
 
-    // console.log('returned input value ', formatter.format(new Date(dateTime)))
     return formatter.format(new Date(dateTime))
   }
 

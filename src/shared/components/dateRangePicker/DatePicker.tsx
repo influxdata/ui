@@ -118,7 +118,6 @@ class DatePicker extends PureComponent<Props, State> {
     )
   }
 
-
   private get inputValue(): string {
     const {dateTime, timeZone} = this.props
     const {inputValue, inputFormat} = this.state
@@ -217,7 +216,9 @@ class DatePicker extends PureComponent<Props, State> {
         // so when our app in in UTC mode, to make the datepicker respect that timezone,
         // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
         // because the time now needs to be back to UTC, we subtract the offset added below in code, in the handleSelectDate
-        inputDate.setMinutes(inputDate.getMinutes() - inputDate.getTimezoneOffset())
+        inputDate.setMinutes(
+          inputDate.getMinutes() - inputDate.getTimezoneOffset()
+        )
       }
 
       console.log(new Date(inputDate).toISOString())

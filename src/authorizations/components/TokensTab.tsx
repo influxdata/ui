@@ -62,7 +62,7 @@ class TokensTab extends PureComponent<Props, State> {
       <>
         <SearchWidget
           searchTerm={searchTerm}
-          placeholderText="Filter Tokens..."
+          placeholderText="Filter API Tokens..."
           onSearch={this.handleChangeSearchTerm}
           testID="input-field--filter"
         />

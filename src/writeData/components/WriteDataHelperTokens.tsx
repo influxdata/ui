@@ -18,6 +18,7 @@ import {
 
 // Constants
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+import {DEFAULT_TOKEN_DESCRIPTION} from 'src/dashboards/constants'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
@@ -55,7 +56,7 @@ const WriteDataHelperTokens: FC = () => {
           target="_blank"
           rel="noreferrer"
         >
-          Tokens
+          API Tokens
         </a>
       </span>
     </EmptyState>
@@ -88,7 +89,7 @@ const WriteDataHelperTokens: FC = () => {
             wrapText={true}
             gradient={Gradients.GundamPilot}
           >
-            {t.description}
+            {t.description || DEFAULT_TOKEN_DESCRIPTION}
           </List.Item>
         ))}
       </List>

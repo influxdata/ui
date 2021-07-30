@@ -19,8 +19,7 @@ export default register => {
       }
 
       return `import "experimental/csv"
-      csv.from(url: "${data.url}")
-      |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
+      csv.from(url: "${data.url}")`
     },
   })
 }

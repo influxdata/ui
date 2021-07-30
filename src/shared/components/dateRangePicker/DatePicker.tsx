@@ -118,13 +118,6 @@ class DatePicker extends PureComponent<Props, State> {
     )
   }
 
-  // (sahas): the react-datepicker forces the timezone to be the Local timezone.
-  // so when our app in in UTC mode, to make the datepicker respect that timezone,
-  // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
-  // private applyTimeZoneOffset = (date: Date): void => {
-  //   date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
-  // }
-
   private get inputValue(): string {
     const {dateTime, timeZone} = this.props
     const {inputValue, inputFormat} = this.state

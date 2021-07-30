@@ -18,6 +18,9 @@ export default register => {
     initial: {
       mappings: {} as Hash<Mapping>,
     },
+    visual: (_data, query) => {
+      return `${query} |> limit(n: 100)`
+    },
     source: (data, query) => {
       if (!Object.values(data.mappings).length) {
         return query

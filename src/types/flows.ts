@@ -1,6 +1,6 @@
 import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {AutoRefresh, TimeRange} from 'src/types'
+import {AutoRefresh, TimeRange, Variable} from 'src/types'
 
 export interface ControlAction {
   title: string | (() => string)
@@ -133,8 +133,14 @@ export interface FlowList {
   }
 }
 
+export interface VariableMap {
+  [key: string]: Variable
+}
+
+// TODO: type this better. there are required properties, that have types, but
+// we also need this to stay open for panels to register whatever they want
 export interface QueryScope {
-  [props: string]: string | number
+  [props: string]: any
 }
 
 // NOTE: keep this interface as small as possible and

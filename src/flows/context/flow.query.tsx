@@ -50,7 +50,12 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   basic: (_: string) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
-  getPanelQueries: (_, _a) => ({id: '', scope: {}, source: '', visual: ''}),
+  getPanelQueries: (_, _a) => ({
+    id: '',
+    scope: {vars: {}},
+    source: '',
+    visual: '',
+  }),
   status: RemoteDataState.NotStarted,
   getStatus: (_: string) => RemoteDataState.NotStarted,
 }
@@ -142,8 +147,6 @@ export const FlowQueryProvider: FC = ({children}) => {
       const last = acc[acc.length - 1] || {
         scope: {
           withSideEffects: !!withSideEffects,
-          region: window.location.origin,
-          org: org.id,
         },
         source: '',
         visual: '',
@@ -178,7 +181,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       if (typeof PIPE_DEFINITIONS[panel.type].visual === 'function') {
         meta.visual = PIPE_DEFINITIONS[panel.type].visual(
           panel,
-          '' + (meta.source || ''),
+          '' + (acc[acc.length - 1]?.source || ''),
           meta.scope
         )
       }
@@ -225,14 +228,34 @@ export const FlowQueryProvider: FC = ({children}) => {
     /* eslint-enable no-console */
   }
 
-  const query = (text: string): Promise<FluxResult> => {
+  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
     event('runQuery', {context: 'flows'})
 
-    return queryAPI(text, vars)
+    const _override: QueryScope = {
+      region: window.location.origin,
+      org: org.id,
+      ...(override || {}),
+      vars: {
+        ...vars,
+        ...(override?.vars || {}),
+      },
+    }
+
+    return queryAPI(text, _override)
   }
 
-  const basic = (text: string): Promise<FluxResult> => {
-    return basicAPI(text, vars)
+  const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
+    const _override: QueryScope = {
+      region: window.location.origin,
+      org: org.id,
+      ...(override || {}),
+      vars: {
+        ...vars,
+        ...(override?.vars || {}),
+      },
+    }
+
+    return basicAPI(text, _override)
   }
 
   const forceUpdate = (id, data) => {
@@ -280,7 +303,7 @@ export const FlowQueryProvider: FC = ({children}) => {
         .map(stage => {
           loading[stage.id] = RemoteDataState.Loading
           setLoading(loading)
-          return query(stage.visual)
+          return query(stage.visual, stage.scope)
             .then(response => {
               loading[stage.id] = RemoteDataState.Done
               setLoading(loading)

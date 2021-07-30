@@ -61,7 +61,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   const dataExists = !!(results?.parsed?.table || []).length
 
-  const queryText = getPanelQueries(id, true).source
+  const queryText = getPanelQueries(id, true)?.source || ''
   const downloadTitle = queryText
     ? 'Download results as an annotated CSV file'
     : 'Build a query to download your results'

@@ -863,7 +863,7 @@ describe('DataExplorer', () => {
 
       both.forEach(type =>
         [true, false].forEach(withOffset => {
-          it(`can create ${type} task with${
+          it.only(`can create ${type} task with${
             withOffset ? '' : 'out'
           } offset`, () => {
             const time = type === 'every' ? timeEvery : timeCron
@@ -876,23 +876,18 @@ describe('DataExplorer', () => {
               .first()
               .trigger('mouseover')
               .then(() => {
-                cy.getByTestID('context-cog-runs')
-                  .click()
-                  .then(() => {
-                    cy.getByTestID('context-edit-task')
-                      .click()
-                      .then(() => {
-                        cy.getByTestID('task-form-schedule-input').should(
-                          'have.value',
-                          time
-                        )
-                        cy.getByTestID('task-form-offset-input').should(
-                          'have.value',
-                          withOffset ? offset : ''
-                        )
-                      })
-                  })
+                cy.getByTestID('context-cog-runs').click()
+                cy.getByTestID('context-edit-task').click()
               })
+
+            cy.getByTestID('task-form-schedule-input').should(
+              'have.value',
+              time
+            )
+            cy.getByTestID('task-form-offset-input').should(
+              'have.value',
+              withOffset ? offset : ''
+            )
           })
         })
       )

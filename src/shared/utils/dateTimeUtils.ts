@@ -43,15 +43,6 @@ export function addDurationToDate(
   }
 }
 
-// this function takes in a string that represents a date, and swaps the timezone to local.
-// if the date passed was 2021-09-02 12:00:00 UTC the function will return 2021-09-02 12:00:00 <Local TZ>
-export const setTimeToLocal = (date?: string): Date => {
-  const localTime = date ? new Date(date) : new Date()
-  localTime.setMinutes(localTime.getMinutes() + getTimezoneOffset())
-
-  return localTime
-}
-
 // this method converts annotations local time format [YYYY-MM-DD h:mm:ss A] from 12 hour to 24
 // this is needed because of the discrepencies between Date implementation between Chrome and Firefox
 // workaround is to convert the 12 hr time to 24 hr, so that it works in both browser environments.

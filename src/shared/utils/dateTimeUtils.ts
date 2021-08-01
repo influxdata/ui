@@ -1,5 +1,3 @@
-import {getTimezoneOffset} from 'src/dashboards/utils/getTimezoneOffset'
-
 /**
  *  is the string a valid UTC time without any time zone information?
  *  ie:  "2021-07-17T14:00:00.000Z" is valid

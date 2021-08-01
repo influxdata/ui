@@ -6,16 +6,18 @@ export default register =>
     type: 'intro',
     init: () => ({
       name: 'Welcome to Notebooks',
-      readOnly: false,
-      range: DEFAULT_TIME_RANGE,
-      refresh: AUTOREFRESH_DEFAULT,
-      pipes: [
-        {
-          title: 'Welcome',
-          visible: true,
-          type: 'youtube',
-          uri: 'Rs16uhxK0h8',
-        },
-      ],
+      spec: {
+        readOnly: false,
+        range: DEFAULT_TIME_RANGE,
+        refresh: AUTOREFRESH_DEFAULT,
+        pipes: [
+          {
+            title: 'Welcome',
+            visible: true,
+            type: 'youtube',
+            uri: 'Rs16uhxK0h8',
+          },
+        ],
+      },
     }),
   })

@@ -122,7 +122,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     showSub(<Functions onSelect={inject} />)
   }
 
-  const controls = isFlagEnabled('flow-sidebar') ? (
+  const controls = isFlagEnabled('flowSidebar') ? (
     <Button
       text="Functions"
       icon={IconFont.Function}
@@ -162,7 +162,7 @@ const Query: FC<PipeProp> = ({Context}) => {
             wrapLines="on"
           />
         </Suspense>
-        {!isFlagEnabled('flow-sidebar') && showFn && (
+        {!isFlagEnabled('flowSidebar') && showFn && (
           <div className="flow-nonsidebar">
             <Functions onSelect={inject} />
           </div>

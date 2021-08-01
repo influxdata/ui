@@ -6,16 +6,14 @@ describe('Users Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({unityUsers: true, uiUnificationFlag: true}).then(
-          () => {
-            cy.quartzProvision({
-              hasUsers: true,
-            }).then(() => {
-              cy.visit(`/orgs/${id}/users`)
-              cy.getByTestID('users-page--header').should('be.visible')
-            })
-          }
-        )
+        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+          cy.quartzProvision({
+            hasUsers: true,
+          }).then(() => {
+            cy.visit(`/orgs/${id}/users`)
+            cy.getByTestID('users-page--header').should('be.visible')
+          })
+        })
       })
     })
   })

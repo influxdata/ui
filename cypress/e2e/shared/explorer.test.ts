@@ -872,9 +872,14 @@ describe('DataExplorer', () => {
 
             visitTasks()
 
-            cy.getByTestID('task-card--name')
-              .should('exist')
-              .click()
+            cy.getByTestID('task-card')
+              .first()
+              .trigger('mouseover')
+              .then(() => {
+                cy.getByTestID('context-cog-runs').click()
+                cy.getByTestID('context-edit-task').click()
+              })
+
             cy.getByTestID('task-form-schedule-input').should(
               'have.value',
               time

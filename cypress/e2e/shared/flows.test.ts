@@ -201,7 +201,7 @@ describe('Flows', () => {
 
     cy.getByTestID('nav-item-flows').click()
 
-    cy.getByTestID('resource-name').click()
+    cy.getByTestID('resource-editable-name').click()
 
     // Validate that the selections are maintained in the original selection
     cy.getByTestID('label--pill measurement = test').should('exist')
@@ -212,7 +212,7 @@ describe('Flows', () => {
 
     cy.get('.cf-resource-card').should('have.length', 1)
 
-    cy.getByTestID('resource-name').contains(`${flowName}`)
+    cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
     cy.getByTestID(`flow-card--${flowName}`).trigger('mouseover')
     cy.getByTestID(`flow-button--clone`).click({force: true})
@@ -231,7 +231,7 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
 
     cy.get('.cf-resource-card').should('have.length', 2)
-    cy.getByTestID('resource-name')
+    cy.getByTestID('resource-editable-name')
       .last()
       .contains(`${clone}`)
 
@@ -241,7 +241,7 @@ describe('Flows', () => {
     cy.getByTestID(`context-delete-flow ${clone}`).click({force: true})
 
     cy.get('.cf-resource-card').should('have.length', 1)
-    cy.getByTestID('resource-name').contains(`${flowName}`)
+    cy.getByTestID('resource-editable-name').contains(`${flowName}`)
   })
 
   it('should not run Preview when presentation mode is off', () => {
@@ -294,8 +294,8 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
     cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
-    cy.getByTestID('resource-name').should('be.visible')
-    cy.getByTestID('resource-name').click()
+    cy.getByTestID('resource-editable-name').should('be.visible')
+    cy.getByTestID('resource-editable-name').click()
 
     // visualizations should not exist
     cy.getByTestID('simple-table').should('not.exist')
@@ -364,8 +364,8 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
     cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
-    cy.getByTestID('resource-name').should('be.visible')
-    cy.getByTestID('resource-name').click()
+    cy.getByTestID('resource-editable-name').should('be.visible')
+    cy.getByTestID('resource-editable-name').click()
 
     // visualizations should exist
     cy.getByTestID('giraffe-inner-plot').should('be.visible')

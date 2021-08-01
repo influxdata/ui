@@ -1,5 +1,6 @@
 // Libraries
 import memoizeOne from 'memoize-one'
+import moment from 'moment'
 import {get} from 'lodash'
 import {fromFlux, Table} from '@influxdata/giraffe'
 
@@ -13,7 +14,6 @@ import {
   getStringColumns as getStringColumnsUtil,
   getMainColumnName,
 } from 'src/shared/utils/vis'
-import {setTimeToLocal} from 'src/shared/utils/dateTimeUtils'
 
 import {
   getWindowPeriod,
@@ -270,8 +270,7 @@ export const getStartTime = (timeRange: TimeRange) => {
   }
   switch (timeRange.type) {
     case 'custom':
-      const startTime = setTimeToLocal(timeRange.lower)
-      return startTime.valueOf()
+      return moment(timeRange.lower).valueOf()
     case 'selectable-duration': {
       const startTime = new Date()
       startTime.setSeconds(startTime.getSeconds() - timeRange.seconds)
@@ -299,13 +298,9 @@ export const getEndTime = (timeRange: TimeRange): number => {
     return null
   }
   if (timeRange.type === 'custom') {
-    const endTime = setTimeToLocal(timeRange.upper)
-
-    return endTime.valueOf()
+    return moment(timeRange.upper).valueOf()
   }
-  const endTime = setTimeToLocal()
-
-  return endTime.valueOf()
+  return moment().valueOf()
 }
 
 export const getActiveTimeRange = (

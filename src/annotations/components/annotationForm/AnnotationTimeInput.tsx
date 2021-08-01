@@ -14,6 +14,10 @@ import {ComponentStatus, Form, Input} from '@influxdata/clockface'
 
 // Context
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {setTimeToUTC} from 'src/dashboards/selectors'
+
+// Utils
+import {convertAnnotationTime12to24} from 'src/shared/utils/dateTimeUtils'
 
 interface Props {
   onChange: (newTime: string) => void
@@ -48,7 +52,20 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   )
 
   const isValidTimeFormat = (inputValue: string): boolean => {
-    const isValid = moment(inputValue, timeFormat, true).isValid()
+    let isValid = moment(inputValue, timeFormat, true).isValid()
+
+    // momentjs says this format is valid: '2021-07-19 12:01:20 P' whereas the Date library needs the extra M like this: '2021-07-19 12:01:20 PM'
+    // and that throws off the validation logic. temporary solution is to check whether meridian are the correct format
+    if (timeFormat === ANNOTATION_TIME_FORMAT_LOCAL && isValid) {
+      if (
+        !(
+          inputValue.split(' ')[2].toUpperCase() === 'AM' ||
+          inputValue.split(' ')[2].toUpperCase() === 'PM'
+        )
+      ) {
+        isValid = false
+      }
+    }
     props.onValidityCheck(isValid)
     return isValid
   }
@@ -77,19 +94,13 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
 
     if (isValidTimeFormat(event.target.value)) {
       if (timeZone === 'UTC') {
-        props.onChange(
-          moment
-            .utc(event.target.value, timeFormat)
-            .toDate()
-            .toISOString()
-        )
+        props.onChange(setTimeToUTC(event.target.value))
         return
       }
 
+      // we need to convert the timeformat from 12 to 24 because Firefox's Date implementation does not parse 12 hr formats
       props.onChange(
-        moment(event.target.value, timeFormat)
-          .toDate()
-          .toISOString()
+        new Date(convertAnnotationTime12to24(event.target.value)).toISOString()
       )
     }
   }

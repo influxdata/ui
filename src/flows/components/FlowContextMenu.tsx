@@ -27,6 +27,8 @@ import {
   deletePinnedItemByParam,
   PinnedItemTypes,
 } from 'src/shared/contexts/pinneditems'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
 interface Props {
   id: string
@@ -40,8 +42,8 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const me = useSelector(getMe)
   const history = useHistory()
 
-  const handlePinFlow = async () => {
-    await pushPinnedItem({
+  const handlePinFlow = () => {
+    pushPinnedItem({
       orgID: orgID,
       userID: me.id,
       metadata: {
@@ -52,9 +54,9 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
     })
   }
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     event('delete_notebook')
-    await deletePinnedItemByParam(id)
+    deletePinnedItemByParam(id)
     remove(id)
   }
 
@@ -79,18 +81,20 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
           onClick={handleClone}
           className="flow-menu--clone"
         />
-        <Context.Menu
-          icon={IconFont.Star}
-          color={ComponentColor.Success}
-          testID="context-pin-menu"
-        >
-          <Context.Item
-            label="Pin to Homepage"
-            action={async () => await handlePinFlow()}
-            testID="context-pin-flow"
-            disabled={isPinned}
-          />
-        </Context.Menu>
+        {isFlagEnabled('pinnedItems') && CLOUD && (
+          <Context.Menu
+            icon={IconFont.Star}
+            color={ComponentColor.Success}
+            testID="context-pin-menu"
+          >
+            <Context.Item
+              label="Pin to Homepage"
+              action={handlePinFlow}
+              testID="context-pin-flow"
+              disabled={isPinned}
+            />
+          </Context.Menu>
+        )}
         <Context.Menu
           icon={IconFont.Trash}
           color={ComponentColor.Danger}

@@ -7,13 +7,20 @@ import React, {
   useCallback,
   ReactElement,
 } from 'react'
+import {CLOUD} from '../constants'
 
-import {
-  getPinned,
-  putPinned,
-  deletePinned,
-  postPinned,
-} from 'src/client/pinnedItemRoutes'
+let getPinned
+let putPinned
+let deletePinned
+let postPinned
+
+if (CLOUD) {
+  const pinnedItemFunctions = require('src/client/pinnedItemRoutes')
+  getPinned = pinnedItemFunctions.getPinned
+  putPinned = pinnedItemFunctions.putPinned
+  postPinned = pinnedItemFunctions.postPinned
+  deletePinned = pinnedItemFunctions.deletePinned
+}
 
 export interface PinnedItem {
   orgID: string

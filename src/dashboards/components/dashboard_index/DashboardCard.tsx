@@ -36,6 +36,8 @@ import {
 
 import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
 interface OwnProps {
   id: string
@@ -94,11 +96,11 @@ class DashboardCard extends PureComponent<Props> {
     )
   }
 
-  private handleUpdateDashboard = async (name: string) => {
+  private handleUpdateDashboard = (name: string) => {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {name})
-    await updatePinnedItemByParam(id, {name})
+    updatePinnedItemByParam(id, {name})
   }
 
   private handleCloneDashboard = () => {
@@ -107,8 +109,8 @@ class DashboardCard extends PureComponent<Props> {
     onCloneDashboard(id, name)
   }
 
-  private handlePinDashboard = async () => {
-    await pushPinnedItem({
+  private handlePinDashboard = () => {
+    pushPinnedItem({
       orgID: this.props.org.id,
       userID: this.props.me.id,
       metadata: {
@@ -141,18 +143,20 @@ class DashboardCard extends PureComponent<Props> {
             testID="clone-dashboard"
           />
         </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Star}
-          color={ComponentColor.Success}
-          testID="context-pin-menu"
-        >
-          <Context.Item
-            label="Pin to Homepage"
-            action={this.handlePinDashboard}
-            testID="context-pin-dashboard"
-            disabled={this.props.isPinned}
-          />
-        </Context.Menu>
+        {isFlagEnabled('pinnedItems') && CLOUD && (
+          <Context.Menu
+            icon={IconFont.Star}
+            color={ComponentColor.Success}
+            testID="context-pin-menu"
+          >
+            <Context.Item
+              label="Pin to Homepage"
+              action={this.handlePinDashboard}
+              testID="context-pin-dashboard"
+              disabled={this.props.isPinned}
+            />
+          </Context.Menu>
+        )}
         <Context.Menu
           icon={IconFont.Trash}
           color={ComponentColor.Danger}
@@ -168,10 +172,10 @@ class DashboardCard extends PureComponent<Props> {
     )
   }
 
-  private handleDeleteDashboard = async () => {
+  private handleDeleteDashboard = () => {
     const {id, name, onDeleteDashboard} = this.props
     onDeleteDashboard(id, name)
-    await deletePinnedItemByParam(id)
+    deletePinnedItemByParam(id)
   }
 
   private handleClickDashboard = e => {
@@ -193,11 +197,11 @@ class DashboardCard extends PureComponent<Props> {
     onResetViews()
   }
 
-  private handleUpdateDescription = async (description: string) => {
+  private handleUpdateDescription = (description: string) => {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {description})
-    await updatePinnedItemByParam(id, {description})
+    updatePinnedItemByParam(id, {description})
   }
 
   private handleAddLabel = (label: Label) => {

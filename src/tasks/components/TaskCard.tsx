@@ -38,6 +38,8 @@ import {Task, Label, AppState} from 'src/types'
 import {DEFAULT_TASK_NAME} from 'src/dashboards/constants'
 import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
 interface PassedProps {
   task: Task
@@ -125,9 +127,9 @@ export class TaskCard extends PureComponent<
     })
   }
 
-  private handleOnDelete = async () => {
+  private handleOnDelete = () => {
     this.props.onDelete(this.props.task)
-    await deletePinnedItemByParam(this.props.task.id)
+    deletePinnedItemByParam(this.props.task.id)
   }
   private get contextMenu(): JSX.Element {
     const {task, onClone, isPinned} = this.props
@@ -153,18 +155,20 @@ export class TaskCard extends PureComponent<
         >
           <Context.Item label="Clone" action={onClone} value={task} />
         </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Star}
-          color={ComponentColor.Success}
-          testID="context-pin-menu"
-        >
-          <Context.Item
-            label="Pin to Homepage"
-            action={async () => await this.handlePinTask()}
-            testID="context-pin-task"
-            disabled={isPinned}
-          />
-        </Context.Menu>
+        {isFlagEnabled('pinnedItems') && CLOUD && (
+          <Context.Menu
+            icon={IconFont.Star}
+            color={ComponentColor.Success}
+            testID="context-pin-menu"
+          >
+            <Context.Item
+              label="Pin to Homepage"
+              action={async () => await this.handlePinTask()}
+              testID="context-pin-task"
+              disabled={isPinned}
+            />
+          </Context.Menu>
+        )}
         <Context.Menu
           icon={IconFont.Trash}
           color={ComponentColor.Danger}

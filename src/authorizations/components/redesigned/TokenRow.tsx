@@ -33,7 +33,7 @@ import {
 } from 'src/dashboards/constants'
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
-import { incrementCloneName } from 'src/utils/naming'
+import {incrementCloneName} from 'src/utils/naming'
 
 interface OwnProps {
   auth: Authorization
@@ -116,10 +116,10 @@ class TokensRow extends PureComponent<Props> {
     const alltokenNames = Object.values(this.props.authorizations).map(
       auth => auth.description
     )
-    
+
     this.props.onClone({
       ...this.props.auth,
-      description: incrementCloneName(alltokenNames, description)
+      description: incrementCloneName(alltokenNames, description),
     })
   }
 
@@ -135,7 +135,6 @@ class TokensRow extends PureComponent<Props> {
 }
 
 const mstp = (state: AppState) => {
-  
   const authorizations = state.resources.tokens.byID
   return {authorizations}
 }

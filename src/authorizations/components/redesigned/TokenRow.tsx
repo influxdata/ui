@@ -113,13 +113,13 @@ class TokensRow extends PureComponent<Props> {
   private handleClone = () => {
     const {description} = this.props.auth
 
-    const alltokenNames = Object.values(this.props.authorizations).map(
+    const allTokenDescriptions = Object.values(this.props.authorizations).map(
       auth => auth.description
     )
 
     this.props.onClone({
       ...this.props.auth,
-      description: incrementCloneName(alltokenNames, description),
+      description: incrementCloneName(allTokenDescriptions, description),
     })
   }
 

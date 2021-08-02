@@ -13,7 +13,7 @@ import {
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
 import {AccountContext} from 'src/operator/context/account'
-import { OperatorContext } from '../context/operator'
+import {OperatorContext} from 'src/operator/context/operator'
 
 const AccountViewHeader: FC = () => {
   const {account, setVisible, visible} = useContext(AccountContext)

@@ -10,18 +10,22 @@ import {
   AlignItems,
   FlexDirection,
   ComponentSize,
+  Button,
+  ComponentColor,
+  ButtonShape,
 } from '@influxdata/clockface'
 
 import GetResources from 'src/resources/components/GetResources'
 import {ResourceType} from 'src/types'
 import TelegrafAccordion from './TelegrafAccordion'
+import BucketAccordion from './BucketAccordion'
 
 interface OwnProps {
   onClose: () => void
 }
 
 export const CustomApiTokenOverlay: FC<OwnProps> = props => {
-  const resources = ['telegrafs', 'buckets']
+  // const resources = ['telegrafs', 'buckets']
   const handleDismiss = () => {
     props.onClose()
   }
@@ -63,17 +67,30 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
               </Accordion>
               <Accordion>
                 <Accordion.AccordionHeader>Buckets</Accordion.AccordionHeader>
-                <Accordion.AccordionBodyItem>
-                  TELE 1
-                </Accordion.AccordionBodyItem>
-                <Accordion.AccordionBodyItem>
-                  TELE 2
-                </Accordion.AccordionBodyItem>
+                <GetResources resources={[ResourceType.Buckets]}>
+                  <BucketAccordion />
+                </GetResources>
               </Accordion>
             </Form.Element>
           </FlexBox>
         </Form>
       </Overlay.Body>
+      <Overlay.Footer>
+        <Button
+          color={ComponentColor.Primary}
+          shape={ButtonShape.Default}
+          onClick={() => {}}
+          testID="cancel-token-overlay--buton"
+          text="Cancel"
+        />
+        <Button
+          color={ComponentColor.Success}
+          shape={ButtonShape.Default}
+          onClick={() => {}}
+          testID="generate-token-overlay--buton"
+          text="Generate"
+        />
+      </Overlay.Footer>
     </Overlay.Container>
   )
 }

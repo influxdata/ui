@@ -1,6 +1,6 @@
+// Libraries
 import React, {FC, useContext, useEffect} from 'react'
 import {useHistory, useParams} from 'react-router-dom'
-
 import {
   ButtonBase,
   ButtonShape,
@@ -20,12 +20,15 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 
+// Contexts
 import {OverlayContext} from 'src/operator/context/overlay'
+import {OperatorContext} from 'src/operator/context/operator'
+
+// Utils
 import {fromDisplayLimits} from 'src/operator/utils'
-import {useSelector} from 'react-redux'
-import {getQuartzMe} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import LimitsField from './LimitsField'
+
+// Components
+import LimitsField from 'src/operator/LimitsField'
 
 const OrgOverlay: FC = () => {
   const {
@@ -39,6 +42,7 @@ const OrgOverlay: FC = () => {
     setLimits,
     updateLimitStatus,
   } = useContext(OverlayContext)
+  const {operatorHasPermissions} = useContext(OperatorContext)
 
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
@@ -61,15 +65,6 @@ const OrgOverlay: FC = () => {
       // If an error occurs the operator will be notified when the API function fails
       return
     }
-  }
-
-  const quartzMe = useSelector(getQuartzMe)
-
-  const operatorHasPermissions = () => {
-    return (
-      !isFlagEnabled('operatorRole') ||
-      (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
-    )
   }
 
   return (

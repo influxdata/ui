@@ -11,24 +11,17 @@ import {
 // Components
 import ResourcesTableRow from 'src/operator/ResourcesTableRow'
 import RemoveFromAccount from 'src/operator/account/RemoveFromAccount'
-import {AccountContext} from 'src/operator/context/account'
 
 // Constants
 import {acctUserColumnInfo, accountUserHeaderInfo} from 'src/operator/constants'
-import {useSelector} from 'react-redux'
-import {getQuartzMe} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Contexts
+import {AccountContext} from 'src/operator/context/account'
+import {OperatorContext} from 'src/operator/context/operator'
 
 const AssociatedTableUsers: FC = () => {
   const {account, handleRemoveUserFromAccount} = useContext(AccountContext)
-  const quartzMe = useSelector(getQuartzMe)
-
-  const operatorHasPermissions = () => {
-    return (
-      !isFlagEnabled('operatorRole') ||
-      (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
-    )
-  }
+  const {operatorHasPermissions} = useContext(OperatorContext)
 
   return (
     <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Large}>

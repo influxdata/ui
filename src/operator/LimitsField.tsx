@@ -1,11 +1,16 @@
-import React, {FC} from 'react'
+// Libraries
+import React, {FC, useContext} from 'react'
 import {InputType} from '@influxdata/clockface'
+
+// Types
 import {OrgLimits} from 'src/types'
-import {useSelector} from 'react-redux'
-import {getQuartzMe} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import LimitsInput from './LimitsInput'
-import LimitsLabel from './LimitsLabel'
+
+// Components
+import LimitsInput from 'src/operator/LimitsInput'
+import LimitsLabel from 'src/operator/LimitsLabel'
+
+// Contexts
+import {OperatorContext} from 'src/operator/context/operator'
 
 interface Props {
   type: InputType
@@ -15,14 +20,7 @@ interface Props {
 }
 
 const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
-  const quartzMe = useSelector(getQuartzMe)
-
-  const operatorHasPermissions = () => {
-    return (
-      !isFlagEnabled('operatorRole') ||
-      (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
-    )
-  }
+  const {operatorHasPermissions} = useContext(OperatorContext)
 
   if (operatorHasPermissions()) {
     return (

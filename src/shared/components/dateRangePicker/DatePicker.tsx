@@ -18,6 +18,9 @@ import {TimeZone} from 'src/types'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {getTimeZone} from 'src/dashboards/selectors'
 
+// Constants
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+
 interface Props {
   label: string
   dateTime: string
@@ -132,7 +135,7 @@ class DatePicker extends PureComponent<Props, State> {
       const formatter = createDateTimeFormatter(inputFormat, timeZone)
       return formatter.format(new Date(dateTime))
     }
-    const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss', timeZone)
+    const formatter = createDateTimeFormatter(DEFAULT_TIME_FORMAT, timeZone)
 
     return formatter.format(new Date(dateTime))
   }

@@ -83,13 +83,8 @@ export class TokenList extends PureComponent<Props, State> {
         key={auth.id}
         auth={auth}
         onClickDescription={this.handleClickDescription}
-        onClone={this.handleClone}
       />
     ))
-  }
-
-  private handleClone = () => {
-    // clone functionality coming soon!
   }
 
   private handleDismissOverlay = () => {

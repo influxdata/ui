@@ -44,7 +44,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps
 
 const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
-class TokenRow extends PureComponent<Props> {
+class TokenRow_ extends PureComponent<Props> {
   public render() {
     const {description} = this.props.auth
     const {auth} = this.props
@@ -131,4 +131,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export default connector(TokenRow)
+export const TokenRow = connector(TokenRow_)

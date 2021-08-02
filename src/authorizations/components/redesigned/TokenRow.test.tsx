@@ -3,19 +3,10 @@ import {fireEvent, waitFor} from '@testing-library/react'
 import React from 'react'
 
 // Fixtures
-import TokenRow from './TokenRow'
+import {TokenRow} from './TokenRow'
 import {auth} from 'mocks/dummyData'
 import {renderWithRedux} from 'src/mockState'
 
-// Actions
-import {deleteAuthorization} from 'src/client'
-
-jest.mock('src/client', () => ({
-  deleteAuthorization: jest.fn(() => ({
-    headers: {},
-    status: 201,
-  })),
-}))
 
 const setup = (override?) => {
   const authorization = {
@@ -45,13 +36,5 @@ describe('TokenRowResourceCard', () => {
     const {getByTestId} = setup()
 
     expect(getByTestId('delete-token')).toBeVisible()
-  })
-
-  it('executes the delete method', async () => {
-    const {getByTestId} = setup()
-
-    fireEvent.click(getByTestId('delete-token'))
-    await waitFor(() => expect(deleteAuthorization).toBeCalled())
-    expect(deleteAuthorization).toBeCalledTimes(1)
   })
 })

@@ -4,7 +4,7 @@ import memoizeOne from 'memoize-one'
 
 // Components
 import {Overlay, ResourceList} from '@influxdata/clockface'
-import TokenRow from 'src/authorizations/components/redesigned/TokenRow'
+import {TokenRow} from 'src/authorizations/components/redesigned/TokenRow'
 import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
 
 // Types
@@ -32,7 +32,7 @@ interface State {
   authInView: Authorization
 }
 
-export default class TokenList extends PureComponent<Props, State> {
+export class TokenList extends PureComponent<Props, State> {
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
     getSortedResources
   )
@@ -88,14 +88,16 @@ export default class TokenList extends PureComponent<Props, State> {
     ))
   }
 
-  private handleClone = () => {}
+  private handleClone = () => {
+    // clone functionality coming soon!
+  }
 
   private handleDismissOverlay = () => {
     this.setState({isTokenOverlayVisible: false})
   }
 
   private handleClickDescription = (authID: string): void => {
-    const authInView = this.props.auths.find(a => a.id === authID)
+    const authInView = this.props.auths.find(auth => auth.id === authID)
     this.setState({isTokenOverlayVisible: true, authInView})
   }
 }

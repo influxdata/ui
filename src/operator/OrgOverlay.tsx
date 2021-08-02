@@ -228,28 +228,28 @@ const OrgOverlay: FC = () => {
             </Grid>
           </Overlay.Body>
           <Overlay.Footer>
-            {hasWritePermissions() && (
-              <ButtonBase
-                color={ComponentColor.Default}
-                onClick={() => history.goBack()}
-                testID="org-overlay--cancel-button"
-              >
-                Cancel
-              </ButtonBase>
-            )}
-            {hasWritePermissions() && (
-              <ButtonBase
-                color={ComponentColor.Primary}
-                onClick={updateLimits}
-                testID="org-overlay--submit-button"
-                status={
-                  updateLimitStatus === RemoteDataState.Error
-                    ? ComponentStatus.Disabled
-                    : ComponentStatus.Default
-                }
-              >
-                Submit Changes
-              </ButtonBase>
+            {hasWritePermissions && (
+              <>
+                <ButtonBase
+                  color={ComponentColor.Default}
+                  onClick={() => history.goBack()}
+                  testID="org-overlay--cancel-button"
+                >
+                  Cancel
+                </ButtonBase>
+                <ButtonBase
+                  color={ComponentColor.Primary}
+                  onClick={updateLimits}
+                  testID="org-overlay--submit-button"
+                  status={
+                    updateLimitStatus === RemoteDataState.Error
+                      ? ComponentStatus.Disabled
+                      : ComponentStatus.Default
+                  }
+                >
+                  Submit Changes
+                </ButtonBase>
+              </>
             )}
           </Overlay.Footer>
         </SpinnerContainer>

@@ -41,7 +41,7 @@ const AssociatedTableUsers: FC = () => {
                 resource={resource}
                 infos={acctUserColumnInfo}
               >
-                {hasWritePermissions() && (
+                {hasWritePermissions && (
                   <RemoveFromAccount
                     removeUser={async () => {
                       await handleRemoveUserFromAccount(resource.id)

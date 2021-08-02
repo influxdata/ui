@@ -1,13 +1,11 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {InputType} from '@influxdata/clockface'
+import {Input, InputType} from '@influxdata/clockface'
+import {get} from 'lodash'
+import {set} from 'lodash/fp'
 
 // Types
 import {OrgLimits} from 'src/types'
-
-// Components
-import LimitsInput from 'src/operator/LimitsInput'
-import LimitsLabel from 'src/operator/LimitsLabel'
 
 // Contexts
 import {OperatorContext} from 'src/operator/context/operator'
@@ -21,19 +19,28 @@ interface Props {
 
 const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
   const {hasWritePermissions} = useContext(OperatorContext)
+  const value = get(limits, name, '')
 
-  if (hasWritePermissions()) {
-    return (
-      <LimitsInput
-        type={type}
-        name={name}
-        limits={limits}
-        onChangeLimits={onChangeLimits}
-      />
-    )
+  if (!hasWritePermissions) {
+    return <p className="operator-limits-label">{value}</p>
   }
 
-  return <LimitsLabel name={name} limits={limits} />
+  const onChange = e => {
+    const newValue =
+      type === InputType.Number ? parseFloat(e.target.value) : e.target.value
+    const newLimits = set(name, newValue, limits)
+    onChangeLimits(newLimits)
+  }
+
+  return (
+    <Input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      testID={`limits-${name}--input`}
+    />
+  )
 }
 
 export default LimitsField

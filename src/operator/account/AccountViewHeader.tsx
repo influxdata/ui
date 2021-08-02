@@ -33,7 +33,7 @@ const AccountViewHeader: FC = () => {
           Back to Account List
         </Link>
       </FlexBox.Child>
-      {hasWritePermissions() && (
+      {hasWritePermissions && (
         <ButtonBase
           color={ComponentColor.Danger}
           shape={ButtonShape.Default}

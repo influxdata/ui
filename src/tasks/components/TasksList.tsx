@@ -132,6 +132,7 @@ export default class TasksList extends PureComponent<Props, State> {
         onRunTask={onRunTask}
         onFilterChange={onFilterChange}
         isPinned={
+          this.state.pinnedItems?.length &&
           !!this.state.pinnedItems.find(
             item => item?.metadata.taskID === task.id
           )

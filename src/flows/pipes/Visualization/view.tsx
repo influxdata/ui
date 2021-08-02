@@ -119,7 +119,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, data.properties, results.parsed, range])
 
-  const persist = isFlagEnabled('flow-sidebar') ? null : (
+  const persist = isFlagEnabled('flowSidebar') ? null : (
     <>
       <Button
         titleText={downloadTitle}

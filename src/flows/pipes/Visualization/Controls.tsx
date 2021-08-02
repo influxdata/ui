@@ -119,7 +119,7 @@ const Controls: FC<Props> = ({toggle, visible}) => {
     ? 'Configure Visualization'
     : 'No data to visualize yet'
 
-  const toggler = isFlagEnabled('flow-sidebar') ? (
+  const toggler = isFlagEnabled('flowSidebar') ? (
     <Button
       text="Configure"
       icon={IconFont.CogThick}

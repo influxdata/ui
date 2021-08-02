@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -20,12 +21,21 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {PROJECT_NAME} from 'src/flows'
 import {serialize} from 'src/flows/context/flow.list'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
+<<<<<<< HEAD
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
+=======
+import {getOrg} from 'src/organizations/selectors'
+>>>>>>> master
 
 const FULL_WIDTH = true
 
 const FlowHeader: FC = () => {
+<<<<<<< HEAD
   const {update, flow, id} = useContext(FlowContext)
+=======
+  const {update, flow} = useContext(FlowContext)
+  const {id} = useSelector(getOrg)
+>>>>>>> master
 
   const handleRename = async (name: string) => {
     update({name})
@@ -34,7 +44,7 @@ const FlowHeader: FC = () => {
 
   const printJSON = () => {
     /* eslint-disable no-console */
-    console.log(JSON.stringify(serialize(flow), null, 2))
+    console.log(JSON.stringify(serialize(flow, id), null, 2))
     /* eslint-enable no-console */
   }
 

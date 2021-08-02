@@ -49,18 +49,15 @@ const FlowCards: FC<Props> = ({flows, search}) => {
             <ResourceList.Body
               emptyState={!!search ? <NoMatches /> : <FlowsIndexEmpty />}
             >
-              {Object.entries(flows.flows).map(([id, {name}]) => {
-                return (
-                  <FlowCard
-                    key={id}
-                    id={id}
-                    name={name}
-                    isPinned={
-                      !!pinnedItems.find(item => item?.metadata.flowID === id)
-                    }
-                  />
-                )
-              })}
+              {Object.keys(flows.flows).map(id => (
+                <FlowCard
+                  key={id}
+                  id={id}
+                  isPinned={
+                    !!pinnedItems.find(item => item?.metadata.flowID === id)
+                  }
+                />
+              ))}
             </ResourceList.Body>
           </ResourceList>
         </Grid.Column>

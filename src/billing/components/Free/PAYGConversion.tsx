@@ -13,22 +13,13 @@ import {
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Constants
-import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
-
 const PAYGConversion: FC = () => {
   const history = useHistory()
 
   const handleClick = () => {
-    if (isFlagEnabled('unityCheckout') || isFlagEnabled('uiUnificationFlag')) {
-      history.push('/checkout')
-    } else {
-      window.location.href = `${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`
-    }
+    history.push('/checkout')
   }
+
   return (
     <>
       <Heading

@@ -89,13 +89,11 @@ const OrgProfileTab: FC = () => {
                   />
                 </FlexBox>
               </Panel.Body>
-              {CLOUD &&
-                (isFlagEnabled('unityUsers') ||
-                  isFlagEnabled('uiUnificationFlag')) && (
-                  <UsersProvider>
-                    <OrgProfileDeletePanel />
-                  </UsersProvider>
-                )}
+              {CLOUD && isFlagEnabled('uiUnificationFlag') && (
+                <UsersProvider>
+                  <OrgProfileDeletePanel />
+                </UsersProvider>
+              )}
             </Panel>
           </Panel.Body>
         </Panel>

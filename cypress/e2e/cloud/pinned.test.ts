@@ -164,19 +164,166 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('task-save-btn').click()
 
       cy.getByTestID('notification-success--dismiss').click()
-    })
 
-    it('can pin a task to the homepage', () => {
       cy.getByTestID('task-card')
         .first()
         .trigger('mouseover')
         .then(() => {
           cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-task').click()
         })
+    })
+
+    it('can pin a task to the homepage', () => {
       cy.visit('/')
       cy.getByTestID('pinneditems--container').within(() => {
         cy.getByTestID('pinneditems--link').should('contain.text', taskName)
       })
+    })
+
+    it('reflects an update to the task name in the pinned task link', () => {
+      cy.getByTestID('task-card').within(() => {
+        cy.getByTestID('task-card--name')
+          .first()
+          .trigger('mouseover')
+
+        cy.getByTestID('task-card--name-button')
+          .first()
+          .click()
+
+        cy.get('.cf-input-field')
+          .type('Bucks In Six')
+          .type('{enter}')
+      })
+
+      cy.visit('/')
+      cy.getByTestID('pinneditems--container').within(() => {
+        cy.getByTestID('pinneditems--link').should(
+          'contain.text',
+          'Bucks In Six'
+        )
+      })
+    })
+
+    it('unpins when the underlying resource is removed', () => {
+      cy.getByTestID('task-card')
+        .first()
+        .trigger('mouseover')
+        .within(() => {
+          cy.getByTestID('context-delete-menu').click()
+          cy.getByTestID('context-delete-task').click()
+        })
+
+      cy.visit('/')
+      cy.getByTestID('pinneditems--emptystate').should(
+        'contain.text',
+        'Pin a task, dashboard, or notebook here'
+      )
+    })
+  })
+
+  describe('Pin flow tests', () => {
+    beforeEach(() => {
+      cy.setFeatureFlags({
+        notebooks: true,
+        simpleTable: true,
+        pinnedItems: true,
+      }).then(() => {
+        cy.getByTestID('nav-item-flows').should('be.visible')
+        cy.getByTestID('nav-item-flows').click()
+        const now = Date.now()
+        cy.writeData(
+          [
+            `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+            `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+            `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+            `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+          ],
+          'defbuck'
+        )
+        cy.getByTestID('create-flow--button')
+          .first()
+          .click()
+
+        cy.getByTestID('time-machine-submit-button').should('be.visible')
+        cy.getByTestID('page-title').click()
+        cy.getByTestID('renamable-page-title--input')
+          .clear()
+          .type('Flow')
+          .type('{enter}')
+        cy.visit(`/orgs/${orgID}/notebooks`)
+      })
+    })
+
+    it('pins a notebook to the homepage', () => {
+      cy.getByTestID('flow-card--Flow')
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-flow').click()
+        })
+      cy.visit('/')
+      cy.getByTestID('pinneditems--container').within(() => {
+        cy.getByTestID('pinneditems--type').should('contain.text', 'Notebook')
+      })
+    })
+
+    it('updates the name when the notebook name is updated', () => {
+      cy.getByTestID('flow-card--Flow')
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-flow').click()
+        })
+      cy.getByTestID('flow-card--name')
+        .first()
+        .trigger('mouseover')
+
+      cy.getByTestID('flow-card--name-button')
+        .first()
+        .click()
+
+      cy.get('.cf-input-field')
+        .last()
+        .focus()
+        .type('Bucks In Six')
+        .type('{enter}')
+      cy.visit('/')
+      cy.getByTestID('pinneditems--container').within(() => {
+        cy.getByTestID('pinneditems--link').should(
+          'contain.text',
+          'Bucks In Six'
+        )
+      })
+    })
+
+    it('unpins when the resource it is pointing to is deleted', () => {
+      cy.getByTestID('flow-card--name')
+        .first()
+        .trigger('mouseover')
+
+      cy.getByTestID('flow-card--name-button')
+        .first()
+        .click()
+
+      cy.get('.cf-input-field')
+        .last()
+        .focus()
+        .type('Bucks In Six')
+        .type('{enter}')
+      cy.getByTestID('flow-card--Bucks In Six')
+        .trigger('mouseover')
+        .then(() => {
+          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-flow').click()
+          cy.getByTestID('context-delete-menu Bucks In Six').click()
+          cy.getByTestID('context-delete-flow Bucks In Six').click()
+        })
+      cy.visit('/')
+      cy.getByTestID('pinneditems--emptystate').should(
+        'contain.text',
+        'Pin a task, dashboard, or notebook here'
+      )
     })
   })
 })

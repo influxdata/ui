@@ -81,7 +81,10 @@ const PinnedItems: FC = () => {
                 </Context>
               }
             >
-              <ResourceCard.Name name={capitalize(item.type)} />
+              <ResourceCard.Name
+                testID="pinneditems--type"
+                name={capitalize(item.type)}
+              />
               <ResourceCard.Name
                 name={item.metadata.name ?? ''}
                 onClick={() => followMetadataToRoute(item)}

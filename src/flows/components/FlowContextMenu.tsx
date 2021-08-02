@@ -87,7 +87,7 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
           <Context.Item
             label="Pin to Homepage"
             action={async () => await handlePinFlow()}
-            testID="context-delete-task"
+            testID="context-pin-flow"
             disabled={isPinned}
           />
         </Context.Menu>

@@ -226,13 +226,13 @@ export class TaskCard extends PureComponent<
     history.push(`/orgs/${orgID}/tasks/${task.id}/edit`)
   }
 
-  private handleRenameTask = async (name: string) => {
+  private handleRenameTask = (name: string) => {
     const {
       onUpdate,
       task: {id},
     } = this.props
     onUpdate(name, id)
-    await updatePinnedItemByParam(id, {name})
+    updatePinnedItemByParam(id, {name})
   }
 
   private handleExport = () => {

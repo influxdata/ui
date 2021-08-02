@@ -10,6 +10,7 @@ import {FlowListContext} from 'src/flows/context/flow.list'
 
 // Utils
 import {getMe} from 'src/me/selectors'
+import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 interface Props {
   id: string
   isPinned: boolean
@@ -40,6 +41,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
 
   const handleRenameNotebook = (name: string) => {
     update(id, {...flow, name})
+    updatePinnedItemByParam(id, {name})
   }
 
   return (
@@ -52,6 +54,8 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
         name={flow.name || name}
         onClick={handleClick}
         onUpdate={handleRenameNotebook}
+        testID="flow-card--name"
+        buttonTestID="flow-card--name-button"
       />
       <ResourceCard.Meta>
         {flow?.createdAt ? <>Created at {flow.createdAt}</> : null}

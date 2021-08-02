@@ -21,30 +21,23 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {PROJECT_NAME} from 'src/flows'
 import {serialize} from 'src/flows/context/flow.list'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
-<<<<<<< HEAD
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
-=======
 import {getOrg} from 'src/organizations/selectors'
->>>>>>> master
 
 const FULL_WIDTH = true
 
 const FlowHeader: FC = () => {
-<<<<<<< HEAD
   const {update, flow, id} = useContext(FlowContext)
-=======
-  const {update, flow} = useContext(FlowContext)
-  const {id} = useSelector(getOrg)
->>>>>>> master
+  const {id: orgID} = useSelector(getOrg)
 
-  const handleRename = async (name: string) => {
+  const handleRename = (name: string) => {
     update({name})
-    await updatePinnedItemByParam(id, {name})
+    updatePinnedItemByParam(id, {name})
   }
 
   const printJSON = () => {
     /* eslint-disable no-console */
-    console.log(JSON.stringify(serialize(flow, id), null, 2))
+    console.log(JSON.stringify(serialize(flow, orgID), null, 2))
     /* eslint-enable no-console */
   }
 

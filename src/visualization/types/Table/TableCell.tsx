@@ -15,6 +15,7 @@ import {
   TableViewProperties,
 } from 'src/types/dashboards'
 import {PropsMultiGrid} from 'src/visualization/types/Table/MultiGrid'
+import {formatStatValue} from '@influxdata/giraffe'
 
 export interface CellRendererProps {
   columnIndex: number
@@ -272,12 +273,9 @@ class TableCell extends PureComponent<Props> {
       return (this.fieldName || '').toString()
     }
 
-    if (
-      !isNaN(+data) &&
-      decimalPlaces.isEnforced &&
-      decimalPlaces.digits < 100
-    ) {
-      return (+data).toFixed(decimalPlaces.digits)
+    if (!isNaN(+data)) {
+      // method needs the first arg to be a number to work properly
+      return formatStatValue(+data, {decimalPlaces})
     }
 
     return (data || '').toString()

@@ -2,7 +2,7 @@
 import {produce} from 'immer'
 
 // Types
-import {Secret, RemoteDataState, SecretsState, ResourceType} from 'src/types'
+import {Secret, ResourceState, RemoteDataState, ResourceType} from 'src/types'
 import {
   Action,
   REMOVE_SECRET,
@@ -17,8 +17,9 @@ import {
   setResourceAtID,
 } from 'src/resources/reducers/helpers'
 
+type SecretsState = ResourceState['secrets']
+
 export const initialState = (): SecretsState => ({
-  key: '',
   status: RemoteDataState.NotStarted,
   byID: {},
   allIDs: [],

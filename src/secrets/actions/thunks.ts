@@ -5,7 +5,7 @@ import {normalize} from 'normalizr'
 import {
   getOrgsSecrets as apiGetSecrets,
   patchOrgsSecrets as apiUpdateSecret,
-  postOrgsSecretsDelete as apiDeleteSecret,
+  deleteOrgsSecret as apiDeleteSecret,
 } from 'src/client'
 
 // Schemas
@@ -74,7 +74,7 @@ export const getSecrets = () => async (
   }
 }
 
-export const upsertSecret = (secretKey: string, secretValue: string) => async (
+export const upsertSecret = (newSecret: Secret) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ): Promise<void> => {
@@ -83,7 +83,7 @@ export const upsertSecret = (secretKey: string, secretValue: string) => async (
     const resp = await apiUpdateSecret({
       orgID: org.id,
       data: {
-        [secretKey]: secretValue,
+        [newSecret.id]: newSecret.value,
       },
     })
 
@@ -91,19 +91,22 @@ export const upsertSecret = (secretKey: string, secretValue: string) => async (
       throw new Error()
     }
 
+    // Secret values shouldn't be kept around in the store! -JF
+    const strippedSecret = {id: newSecret.id}
+
     const secret = normalize<Secret, SecretEntities, string>(
-      resp.data.secret,
+      strippedSecret,
       secretsSchema
     )
 
-    dispatch(setSecret(resp.data.secret.id, RemoteDataState.Done, secret))
+    dispatch(setSecret(newSecret.id, RemoteDataState.Done, secret))
   } catch (error) {
     console.error(error)
     dispatch(notify(upsertSecretFailed()))
   }
 }
 
-export const deleteSecret = (id: string) => async (
+export const deleteSecret = (secret: Secret) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ) => {
@@ -111,16 +114,14 @@ export const deleteSecret = (id: string) => async (
     const org = getOrg(getState())
     const resp = await apiDeleteSecret({
       orgID: org.id,
-      data: {
-        secrets: [id],
-      },
+      secretID: secret.id,
     })
 
     if (resp.status !== 204) {
       throw new Error(resp.data.message)
     }
 
-    dispatch(removeSecret(id))
+    dispatch(removeSecret(secret.id))
   } catch (error) {
     console.error(error)
     dispatch(notify(deleteSecretsFailed()))

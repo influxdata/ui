@@ -28,26 +28,43 @@ export const setupData = (
               rangeAnnotations: enableRangeAnnotations,
             })
             .then(() => {
-              cy.createBucket(orgID, name, 'schmucket')
+              cy.createBucket(orgID, name, 'devbucket')
               // have to add large amount of data to fill the window so that the random click for annotation works
-              cy.writeData(lines(3000), 'schmucket')
+              cy.writeData(lines(3000), 'devbucket')
 
               // make a dashboard cell
               cy.getByTestID('add-cell--button').click()
-              cy.getByTestID('selector-list schmucket').should('be.visible')
-              cy.getByTestID('selector-list schmucket').click()
-              cy.getByTestID(`selector-list m`).should('be.visible')
-              cy.getByTestID(`selector-list m`).click()
-              cy.getByTestID('selector-list v').should('be.visible')
-              cy.getByTestID(`selector-list v`).click()
+              cy.getByTestID('selector-list devbucket').should(
+                'have.length.of.at.least',
+                1
+              )
+              cy.getByTestID('selector-list devbucket').click()
+
+              cy.getByTestID('selector-list m').should(
+                'have.length.of.at.least',
+                1
+              )
+              cy.getByTestID('selector-list m').clickAttached()
+
+              cy.getByTestID('selector-list v').should(
+                'have.length.of.at.least',
+                1
+              )
+              cy.getByTestID('selector-list v').clickAttached()
 
               if (plotTypeSuffix) {
                 cy.getByTestID('view-type--dropdown').click()
                 cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
               }
 
-              cy.getByTestID(`selector-list tv1`).click()
+              cy.getByTestID(`selector-list tv1`).should(
+                'have.length.of.at.least',
+                1
+              )
+              cy.getByTestID(`selector-list tv1`).clickAttached()
+
               cy.getByTestID('time-machine-submit-button').click()
+
               cy.getByTestID('overlay').within(() => {
                 cy.getByTestID('page-title').click()
                 cy.getByTestID('renamable-page-title--input')
@@ -73,6 +90,7 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
   })
+
   cy.getByTestID('overlay--container').within(() => {
     cy.getByTestID('edit-annotation-message')
       .should('be.visible')
@@ -88,16 +106,15 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
     // we have 2 line layers by the same id, we only want to click on the first
     cy.get('line')
       .first()
-      .click()
+      .click({force: true})
   })
 }
 
 export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
-  cy.getByTestID('edit-annotation-message')
-    .clear()
-    .type('lets edit this annotation...')
+  cy.getByTestID('edit-annotation-message').clear()
+  cy.getByTestID('edit-annotation-message').type('lets edit this annotation...')
 
   cy.getByTestID('annotation-submit-button').click()
 }

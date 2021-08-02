@@ -7,7 +7,7 @@ import {isEmpty} from 'lodash'
 // Components
 import {Sort, ComponentSize, EmptyState} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
-import TokenList from 'src/authorizations/components/TokenList'
+import {TokenList} from 'src/authorizations/components/redesigned/TokenList'
 import FilterList from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import GenerateTokenDropdown from 'src/authorizations/components/redesigned/GenerateTokenDropdown'

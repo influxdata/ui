@@ -17,8 +17,6 @@ import {
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Constants
-import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {shouldShowUpgradeButton} from 'src/me/selectors'
 
 const CloudUpgradeNavBanner: FC = () => {
@@ -40,41 +38,18 @@ const CloudUpgradeNavBanner: FC = () => {
               </Heading>
             </Panel.Header>
             <Panel.Footer size={ComponentSize.ExtraSmall}>
-              {isFlagEnabled('unityCheckout') ||
-              isFlagEnabled('uiUnificationFlag') ? (
-                <Link
-                  className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
-                  to="/checkout"
-                >
-                  Upgrade Now
-                </Link>
-              ) : (
-                <a
-                  className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
-                  href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
-                  target="_self"
-                >
-                  Upgrade Now
-                </a>
-              )}
+              <Link
+                className="cf-button cf-button-md cf-button-primary cf-button-stretch cloud-upgrade-banner--button upgrade-payg--button__nav"
+                to="/checkout"
+              >
+                Upgrade Now
+              </Link>
             </Panel.Footer>
           </Panel>
-          {isFlagEnabled('unityCheckout') ||
-          isFlagEnabled('uiUnificationFlag') ? (
-            <Link className="cloud-upgrade-banner__collapsed" to="/checkout">
-              <Icon glyph={IconFont.CrownSolid} />
-              <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
-            </Link>
-          ) : (
-            <a
-              className="cloud-upgrade-banner__collapsed"
-              href={`${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`}
-              target="_self"
-            >
-              <Icon glyph={IconFont.CrownSolid} />
-              <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
-            </a>
-          )}
+          <Link className="cloud-upgrade-banner__collapsed" to="/checkout">
+            <Icon glyph={IconFont.CrownSolid} />
+            <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
+          </Link>
         </CloudOnly>
       )}
     </>

@@ -224,7 +224,6 @@ const SetOrg: FC = () => {
           />
           {isFlagEnabled('secretsUI') && (
             <Route
-              exact
               path={`${orgPath}/${SETTINGS}/${SECRETS}`}
               component={SecretsIndex}
             />
@@ -236,25 +235,15 @@ const SetOrg: FC = () => {
           />
 
           {/* Users */}
-          {CLOUD &&
-            (isFlagEnabled('unityUsers') ||
-              isFlagEnabled('uiUnificationFlag')) && (
-              <Route path={`${orgPath}/users`} component={UsersPage} />
-            )}
+          {CLOUD && <Route path={`${orgPath}/users`} component={UsersPage} />}
 
           {/* Billing */}
-          {CLOUD &&
-            (isFlagEnabled('unityBilling') ||
-              isFlagEnabled('uiUnificationFlag')) && (
-              <Route path={`${orgPath}/billing`} component={BillingPage} />
-            )}
+          {CLOUD && (
+            <Route path={`${orgPath}/billing`} component={BillingPage} />
+          )}
 
           {/* Usage */}
-          {CLOUD &&
-            (isFlagEnabled('unityUsage') ||
-              isFlagEnabled('uiUnificationFlag')) && (
-              <Route path={`${orgPath}/usage`} component={UsagePage} />
-            )}
+          {CLOUD && <Route path={`${orgPath}/usage`} component={UsagePage} />}
 
           {/* Managed Functions */}
           {CLOUD && isFlagEnabled('managed-functions') && (

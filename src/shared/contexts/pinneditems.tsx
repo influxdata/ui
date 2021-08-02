@@ -28,7 +28,9 @@ export interface PinnedItem {
   id: string
   createdAt: string
   updatedAt: string
-  metadata: {}
+  metadata: {
+    [key: string]: string
+  }
   type: string
 }
 

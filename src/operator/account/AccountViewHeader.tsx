@@ -13,9 +13,20 @@ import {
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
 import {AccountContext} from 'src/operator/context/account'
+import {useSelector} from 'react-redux'
+import {getQuartzMe} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const AccountViewHeader: FC = () => {
   const {account, setVisible, visible} = useContext(AccountContext)
+  const quartzMe = useSelector(getQuartzMe)
+
+  const operatorHasPermissions = () => {
+    return (
+      !isFlagEnabled('operatorRole') ||
+      (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
+    )
+  }
 
   return (
     <FlexBox
@@ -29,19 +40,21 @@ const AccountViewHeader: FC = () => {
           Back to Account List
         </Link>
       </FlexBox.Child>
-      <ButtonBase
-        color={ComponentColor.Danger}
-        shape={ButtonShape.Default}
-        onClick={_e => setVisible(!visible)}
-        status={
-          account?.deletable
-            ? ComponentStatus.Default
-            : ComponentStatus.Disabled
-        }
-        testID="account-delete--button"
-      >
-        Delete Account
-      </ButtonBase>
+      {operatorHasPermissions() && (
+        <ButtonBase
+          color={ComponentColor.Danger}
+          shape={ButtonShape.Default}
+          onClick={_e => setVisible(!visible)}
+          status={
+            account?.deletable
+              ? ComponentStatus.Default
+              : ComponentStatus.Disabled
+          }
+          testID="account-delete--button"
+        >
+          Delete Account
+        </ButtonBase>
+      )}
     </FlexBox>
   )
 }

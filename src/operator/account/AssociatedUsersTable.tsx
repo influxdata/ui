@@ -15,9 +15,21 @@ import {AccountContext} from 'src/operator/context/account'
 
 // Constants
 import {acctUserColumnInfo, accountUserHeaderInfo} from 'src/operator/constants'
+import {useSelector} from 'react-redux'
+import {getQuartzMe} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const AssociatedTableUsers: FC = () => {
   const {account, handleRemoveUserFromAccount} = useContext(AccountContext)
+  const quartzMe = useSelector(getQuartzMe)
+
+  const operatorHasPermissions = () => {
+    return (
+      !isFlagEnabled('operatorRole') ||
+      (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
+    )
+  }
+
   return (
     <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Large}>
       {account?.users?.length ? (
@@ -36,11 +48,13 @@ const AssociatedTableUsers: FC = () => {
                 resource={resource}
                 infos={acctUserColumnInfo}
               >
-                <RemoveFromAccount
-                  removeUser={async () => {
-                    await handleRemoveUserFromAccount(resource.id)
-                  }}
-                />
+                {operatorHasPermissions() && (
+                  <RemoveFromAccount
+                    removeUser={async () => {
+                      await handleRemoveUserFromAccount(resource.id)
+                    }}
+                  />
+                )}
               </ResourcesTableRow>
             ))}
           </Table.Body>

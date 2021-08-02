@@ -71,6 +71,13 @@ describe('the DateTime formatter', () => {
       expect(formatter.format(date)).toBe(`1983-07-04 ${hourUTC24}:00:00`)
     })
 
+    it('formats DateTimes in the default time YYYY-MM-DD HH:mm:ss in UTC, for midnight timestamp', () => {
+      const date = new Date(timestamp)
+      date.setHours(date.getHours() + 4) // 20:00 + 4 hrs = Midnight
+      const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss', 'UTC')
+      expect(formatter.format(date)).toBe(`1983-07-05 00:00:00`)
+    })
+
     it('formats DateTimes in the format, YYYY-MM-DD in UTC', () => {
       const date = new Date(timestamp)
       const formatter = createDateTimeFormatter('YYYY-MM-DD', 'UTC')

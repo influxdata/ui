@@ -7,7 +7,6 @@ import {TokenRow} from './TokenRow'
 import {auth} from 'mocks/dummyData'
 import {renderWithRedux} from 'src/mockState'
 
-
 const setup = (override?) => {
   const authorization = {
     ...auth,

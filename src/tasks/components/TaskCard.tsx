@@ -115,8 +115,8 @@ export class TaskCard extends PureComponent<
     )
   }
 
-  private handlePinTask = async () => {
-    await pushPinnedItem({
+  private handlePinTask = () => {
+    pushPinnedItem({
       orgID: this.props.org.id,
       userID: this.props.me.id,
       metadata: {
@@ -163,7 +163,7 @@ export class TaskCard extends PureComponent<
           >
             <Context.Item
               label="Pin to Homepage"
-              action={async () => await this.handlePinTask()}
+              action={this.handlePinTask}
               testID="context-pin-task"
               disabled={isPinned}
             />

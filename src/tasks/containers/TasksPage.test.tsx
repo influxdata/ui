@@ -42,6 +42,10 @@ const localHistory = createMemoryHistory({initialEntries: ['/']})
 
 withRouterProps.match.params.orgID = orgs[0].id
 
+jest.mock('src/shared/constants/index', () => ({
+  CLOUD: true,
+}))
+
 /*
   N.B. when using react testing library render()
   the mocked values in src/external/parser are ignored.

@@ -29,7 +29,7 @@ export interface OperatorContextType {
   searchTerm: string
   setSearchTerm: (searchTerm?: string) => void
   status: RemoteDataState
-  operatorHasPermissions: () => boolean
+  hasWritePermissions: () => boolean
 }
 
 export const DEFAULT_CONTEXT: OperatorContextType = {
@@ -41,7 +41,7 @@ export const DEFAULT_CONTEXT: OperatorContextType = {
   searchTerm: '',
   setSearchTerm: () => {},
   status: RemoteDataState.NotStarted,
-  operatorHasPermissions: () => true,
+  hasWritePermissions: () => false,
 }
 
 export const OperatorContext = React.createContext<OperatorContextType>(
@@ -128,7 +128,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     status = RemoteDataState.Loading
   }
 
-  const operatorHasPermissions = () => {
+  const hasWritePermissions = () => {
     return (
       !isFlagEnabled('operatorRole') ||
       (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
@@ -146,7 +146,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
         searchTerm,
         setSearchTerm,
         status,
-        operatorHasPermissions,
+        hasWritePermissions,
       }}
     >
       {children}

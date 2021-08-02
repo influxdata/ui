@@ -21,7 +21,7 @@ import {OperatorContext} from 'src/operator/context/operator'
 
 const AssociatedTableUsers: FC = () => {
   const {account, handleRemoveUserFromAccount} = useContext(AccountContext)
-  const {operatorHasPermissions} = useContext(OperatorContext)
+  const {hasWritePermissions} = useContext(OperatorContext)
 
   return (
     <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Large}>
@@ -41,7 +41,7 @@ const AssociatedTableUsers: FC = () => {
                 resource={resource}
                 infos={acctUserColumnInfo}
               >
-                {operatorHasPermissions() && (
+                {hasWritePermissions() && (
                   <RemoveFromAccount
                     removeUser={async () => {
                       await handleRemoveUserFromAccount(resource.id)

@@ -20,9 +20,9 @@ interface Props {
 }
 
 const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
-  const {operatorHasPermissions} = useContext(OperatorContext)
+  const {hasWritePermissions} = useContext(OperatorContext)
 
-  if (operatorHasPermissions()) {
+  if (hasWritePermissions()) {
     return (
       <LimitsInput
         type={type}

@@ -13,20 +13,11 @@ import {
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
 import {AccountContext} from 'src/operator/context/account'
-import {useSelector} from 'react-redux'
-import {getQuartzMe} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import { OperatorContext } from '../context/operator'
 
 const AccountViewHeader: FC = () => {
   const {account, setVisible, visible} = useContext(AccountContext)
-  const quartzMe = useSelector(getQuartzMe)
-
-  const operatorHasPermissions = () => {
-    return (
-      !isFlagEnabled('operatorRole') ||
-      (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
-    )
-  }
+  const {hasWritePermissions} = useContext(OperatorContext)
 
   return (
     <FlexBox
@@ -40,7 +31,7 @@ const AccountViewHeader: FC = () => {
           Back to Account List
         </Link>
       </FlexBox.Child>
-      {operatorHasPermissions() && (
+      {hasWritePermissions() && (
         <ButtonBase
           color={ComponentColor.Danger}
           shape={ButtonShape.Default}

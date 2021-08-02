@@ -42,7 +42,7 @@ const OrgOverlay: FC = () => {
     setLimits,
     updateLimitStatus,
   } = useContext(OverlayContext)
-  const {operatorHasPermissions} = useContext(OperatorContext)
+  const {hasWritePermissions} = useContext(OperatorContext)
 
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
@@ -228,7 +228,7 @@ const OrgOverlay: FC = () => {
             </Grid>
           </Overlay.Body>
           <Overlay.Footer>
-            {operatorHasPermissions() && (
+            {hasWritePermissions() && (
               <ButtonBase
                 color={ComponentColor.Default}
                 onClick={() => history.goBack()}
@@ -237,7 +237,7 @@ const OrgOverlay: FC = () => {
                 Cancel
               </ButtonBase>
             )}
-            {operatorHasPermissions() && (
+            {hasWritePermissions() && (
               <ButtonBase
                 color={ComponentColor.Primary}
                 onClick={updateLimits}

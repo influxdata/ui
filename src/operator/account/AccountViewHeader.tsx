@@ -12,6 +12,8 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
+
+// Contexts
 import {AccountContext} from 'src/operator/context/account'
 import {OperatorContext} from 'src/operator/context/operator'
 

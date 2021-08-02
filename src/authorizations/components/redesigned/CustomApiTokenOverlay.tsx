@@ -2,6 +2,7 @@ import React, {FC, useState} from 'react'
 
 // Components
 import {
+  Accordion,
   Overlay,
   Form,
   Input,
@@ -11,11 +12,16 @@ import {
   ComponentSize,
 } from '@influxdata/clockface'
 
+import GetResources from 'src/resources/components/GetResources'
+import {ResourceType} from 'src/types'
+import TelegrafAccordion from './TelegrafAccordion'
+
 interface OwnProps {
   onClose: () => void
 }
 
 export const CustomApiTokenOverlay: FC<OwnProps> = props => {
+  const resources = ['telegrafs', 'buckets']
   const handleDismiss = () => {
     props.onClose()
   }
@@ -45,6 +51,25 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
                 onChange={handleInputChange}
                 testID="custom-api-token-input"
               />
+            </Form.Element>
+            <Form.Element label="Permissions">
+              <Accordion>
+                <Accordion.AccordionHeader>
+                  TelegrafConfiguration
+                </Accordion.AccordionHeader>
+                <GetResources resources={[ResourceType.Telegrafs]}>
+                  <TelegrafAccordion />
+                </GetResources>
+              </Accordion>
+              <Accordion>
+                <Accordion.AccordionHeader>Buckets</Accordion.AccordionHeader>
+                <Accordion.AccordionBodyItem>
+                  TELE 1
+                </Accordion.AccordionBodyItem>
+                <Accordion.AccordionBodyItem>
+                  TELE 2
+                </Accordion.AccordionBodyItem>
+              </Accordion>
             </Form.Element>
           </FlexBox>
         </Form>

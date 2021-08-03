@@ -49,20 +49,23 @@ export default register => {
       ],
     },
     generateFlux: (pipe, create, append) => {
-      const ast = parse(pipe.queries[pipe.activeQuery].text)
-      _walk(ast, node => !!Object.keys(node.comments || {}).length).forEach(
-        node => {
-          delete node.comments
+      try {
+        const ast = parse(pipe.queries[pipe.activeQuery].text)
+        _walk(ast, node => !!Object.keys(node.comments || {}).length).forEach(
+          node => {
+            delete node.comments
+          }
+        )
+        const text = format_from_js_file(ast)
+        if (!text.length) {
+          return
         }
-      )
-      const text = format_from_js_file(ast)
 
-      if (!text.length) {
+        create(text)
+        append(`__CURRENT_RESULT__ |> limit(n: 100)`)
+      } catch {
         return
       }
-
-      create(text)
-      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
     },
   })
 }

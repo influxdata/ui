@@ -57,7 +57,7 @@ export const convertAnnotationTime12to24 = time12h => {
     hours = '00'
   }
 
-  if (meridiem === 'PM') {
+  if (meridiem.toUpperCase() === 'PM') {
     hours = parseInt(hours, 10) + 12
   }
 

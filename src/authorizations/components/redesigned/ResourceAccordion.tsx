@@ -21,15 +21,14 @@ import {AppState, Telegraf, ResourceType} from 'src/types'
 // Selectors
 import {getAll} from 'src/resources/selectors'
 
-interface StateProps {
-  telegrafs: Telegraf[]
+interface Props {
+  resources: any[]
 }
 
-type Props = StateProps
-
-class TelegrafAccordion extends PureComponent<Props, {}> {
+export class ResourceAccordion extends PureComponent<Props, {}> {
   public render() {
-    const {telegrafs} = this.props
+    const {resources} = this.props
+    console.log(resources)
     const accordionBody = title => (
       <FlexBox
         margin={ComponentSize.Small}
@@ -77,7 +76,7 @@ class TelegrafAccordion extends PureComponent<Props, {}> {
         <Accordion.AccordionBodyItem>
           Individual Telegraf Configurations
         </Accordion.AccordionBodyItem>
-        {telegrafs.map(telegraf => (
+        {resources.map(telegraf => (
           <Accordion.AccordionBodyItem key={telegraf.id}>
             {accordionBody(telegraf.name)}
           </Accordion.AccordionBodyItem>
@@ -86,9 +85,3 @@ class TelegrafAccordion extends PureComponent<Props, {}> {
     )
   }
 }
-
-const mstp = (state: AppState) => ({
-  telegrafs: getAll<Telegraf>(state, ResourceType.Telegrafs),
-})
-
-export default connect<StateProps>(mstp, null)(TelegrafAccordion)

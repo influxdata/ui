@@ -22,11 +22,18 @@ class BucketAccordion extends PureComponent<Props, {}> {
   public render() {
     const {buckets} = this.props
 
-    return buckets.map(bucket => (
-      <Accordion.AccordionBodyItem key={bucket.id}>
-        {bucket.name}
-      </Accordion.AccordionBodyItem>
-    ))
+    return (
+      <>
+        <Accordion.AccordionBodyItem>
+          Individual Buckets
+        </Accordion.AccordionBodyItem>
+        {buckets.map(bucket => (
+          <Accordion.AccordionBodyItem key={bucket.id}>
+            {bucket.name}
+          </Accordion.AccordionBodyItem>
+        ))}
+      </>
+    )
   }
 }
 

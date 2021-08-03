@@ -144,7 +144,7 @@ describe('Usage Page PAYG With Data', () => {
       .each((child, index) => {
         expect(child.text().trim()).to.be.oneOf([
           stats[index],
-          Number(stats[index]),
+          stats[index].replace(',', ''),
         ])
       })
 

@@ -17,13 +17,7 @@ describe('Orgs', () => {
     it('forwards the user to the No Orgs Page', () => {
       cy.url().should('contain', 'no-org')
       cy.contains('Sign In').click()
-      if (Cypress.browser.name === 'firefox') {
-        // firefox doesn't respect the forwarding to another domain in an iframe
-        // so this is as far as it will get
-        cy.location('pathname').should('eq', '/signin')
-      } else {
-        cy.url().should('contain', 'dex')
-      }
+      cy.location('pathname').should('eq', '/signin')
     })
   })
 })

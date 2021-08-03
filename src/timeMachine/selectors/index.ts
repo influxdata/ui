@@ -1,6 +1,5 @@
 // Libraries
 import memoizeOne from 'memoize-one'
-import moment from 'moment'
 import {get} from 'lodash'
 import {fromFlux, Table} from '@influxdata/giraffe'
 

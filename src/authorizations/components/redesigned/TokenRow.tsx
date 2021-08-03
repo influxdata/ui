@@ -7,6 +7,7 @@ import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {
   deleteAuthorization,
   updateAuthorization,
+  createAuthorization,
 } from 'src/authorizations/actions/thunks'
 
 // Components
@@ -25,18 +26,18 @@ import {
 import {Context} from 'src/clockface'
 
 // Types
-import {Authorization} from 'src/types'
+import {Authorization, AppState} from 'src/types'
 import {
   DEFAULT_TOKEN_DESCRIPTION,
   UPDATED_AT_TIME_FORMAT,
 } from 'src/dashboards/constants'
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
+import {incrementCloneName} from 'src/utils/naming'
 
 interface OwnProps {
   auth: Authorization
   onClickDescription: (authID: string) => void
-  onClone: (authID: string) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -110,7 +111,16 @@ class TokensRow extends PureComponent<Props> {
   }
 
   private handleClone = () => {
-    this.props.onClone(this.props.auth.id)
+    const {description} = this.props.auth
+
+    const allTokenDescriptions = Object.values(this.props.authorizations).map(
+      auth => auth.description
+    )
+
+    this.props.onClone({
+      ...this.props.auth,
+      description: incrementCloneName(allTokenDescriptions, description),
+    })
   }
 
   private handleClickDescription = () => {
@@ -124,11 +134,17 @@ class TokensRow extends PureComponent<Props> {
   }
 }
 
+const mstp = (state: AppState) => {
+  const authorizations = state.resources.tokens.byID
+  return {authorizations}
+}
+
 const mdtp = {
   onDelete: deleteAuthorization,
   onUpdate: updateAuthorization,
+  onClone: createAuthorization,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export const TokenRow = connector(TokensRow)

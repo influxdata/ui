@@ -24,8 +24,9 @@ export const AddAnnotationOverlay: FC = () => {
     cellID,
   } = useSelector(getOverlayParams)
 
-  const timeFormat =  useSelector((state: AppState) => getTimeFormatForView(state, cellID))
-
+  const timeFormat = useSelector((state: AppState) =>
+    getTimeFormatForView(state, cellID)
+  )
 
   const handleSubmit = (modifiedAnnotation): void => {
     createAnnotation(modifiedAnnotation)
@@ -43,7 +44,7 @@ export const AddAnnotationOverlay: FC = () => {
       startTime={startTime}
       endTime={endTime}
       eventPrefix={eventPrefix}
-      timeFormat= {timeFormat}
+      timeFormat={timeFormat}
     />
   )
 }

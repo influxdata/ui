@@ -37,11 +37,7 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
         />
       }
     >
-      <MarkdownMonacoEditor
-        script={data.text}
-        onChangeScript={handleChange}
-        autogrow
-      />
+      <MarkdownMonacoEditor script={data.text} onChangeScript={handleChange} />
     </Suspense>
   )
 

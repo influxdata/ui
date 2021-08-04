@@ -254,7 +254,6 @@ export const FlowListProvider: FC = ({children}) => {
 
   const update = useCallback(
     (id: string, flow: Flow) => {
-      console.log('UPDATE')
       if (!flows.hasOwnProperty(id)) {
         throw new Error(`${PROJECT_NAME} not found`)
       }

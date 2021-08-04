@@ -238,7 +238,13 @@ export const getReadWriteCardinalityLimits = () => async (
   try {
     const org = getOrg(getState())
 
-    const limits = await getOrgsLimitsStatus({orgID: org.id})
+    const resp = await getOrgsLimitsStatus({orgID: org.id})
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    const limits = resp.data
 
     if (limits.read.status === 'exceeded') {
       dispatch(notify(readLimitReached()))

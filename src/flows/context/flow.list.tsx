@@ -13,10 +13,10 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
 import {default as _asResource} from 'src/flows/context/resource.hook'
-import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
+import {TEMPLATES} from 'src/flows/templates'
 import {
   pooledUpdateAPI,
   createAPI,
@@ -168,7 +168,6 @@ export const FlowListProvider: FC = ({children}) => {
 
   const add = async (flow?: Flow): Promise<string> => {
     let _flow
-    let _flowData
 
     let {name} = user
 
@@ -178,41 +177,10 @@ export const FlowListProvider: FC = ({children}) => {
     name = `${name}-${PROJECT_NAME.toLowerCase()}-${new Date().toISOString()}`
 
     if (!flow) {
-      _flowData = hydrate({
+      _flow = hydrate({
+        ...TEMPLATES['default'].init(),
         name,
-        spec: {
-          readOnly: false,
-          range: DEFAULT_TIME_RANGE,
-          refresh: AUTOREFRESH_DEFAULT,
-          pipes: [
-            {
-              title: 'Select a Metric',
-              visible: true,
-              type: 'metricSelector',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
-              ),
-            },
-            {
-              title: 'Validate the Data',
-              visible: true,
-              type: 'visualization',
-              properties: {type: 'simple-table', showAll: false},
-            },
-            {
-              title: 'Visualize the Result',
-              visible: true,
-              type: 'visualization',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
-              ),
-            },
-          ],
-        },
       })
-      _flow = {
-        ..._flowData,
-      }
     } else {
       _flow = {
         name: flow.name,

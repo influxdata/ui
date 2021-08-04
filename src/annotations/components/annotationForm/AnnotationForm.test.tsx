@@ -10,6 +10,7 @@ import {
 import {fireEvent} from '@testing-library/react'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {REQUIRED_ERROR} from 'src/annotations/components/annotationForm/AnnotationTimeInput'
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 // setting 'now' as the first of march, 2021 at 11 am.
 // the clocks changed on march 14, btw
@@ -53,7 +54,7 @@ describe(
     const oneHourInFuture = fiveMinutesAgo + 60 * 60 * 1000
     const twoHoursAgo = now - 1000 * 60 * 60 * 2
 
-    const formatter = createDateTimeFormatter('YYYY-MM-DD hh:mm:ss a')
+    const formatter = createDateTimeFormatter(DEFAULT_TIME_FORMAT)
 
     it('should not allow an annotation without a message', () => {
       const {queryByTestId, getByTestId} = setupPoint(fiveMinutesAgo)

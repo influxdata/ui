@@ -103,6 +103,7 @@ const makeAnnotationRangeListener = (
           endTime: end,
           range: true,
           eventPrefix,
+          cellID,
         },
         () => {
           dismissOverlay()
@@ -146,6 +147,7 @@ const makeAnnotationClickHandler = (
               stream: cellID,
               eventPrefix,
             },
+            cellID,
           },
           () => {
             dismissOverlay()

@@ -277,8 +277,13 @@ export const getAssetLimits = () => async (dispatch, getState: GetState) => {
   try {
     const org = getOrg(getState())
 
-    const limits = await getOrgsLimits({orgID: org.id})
-    dispatch(setLimits(limits))
+    const resp = await getOrgsLimits({orgID: org.id})
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    dispatch(setLimits(resp.data))
     dispatch(setLimitsStatus(RemoteDataState.Done))
   } catch (error) {
     console.error(error)

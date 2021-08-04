@@ -157,6 +157,21 @@ const Controls: FC<Props> = ({toggle, visible}) => {
     )
   }
 
+  if (
+    data.properties.type === 'single-stat' ||
+    data.properties.type === 'gauge'
+  ) {
+    return (
+      <>
+        <ViewTypeDropdown
+          viewType={data.properties.type}
+          onUpdateType={updateType as any}
+        />
+        {toggler}
+      </>
+    )
+  }
+
   return (
     <>
       <MultiSelectDropdown

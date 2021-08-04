@@ -258,17 +258,17 @@ export const FlowListProvider: FC = ({children}) => {
         throw new Error(`${PROJECT_NAME} not found`)
       }
 
-      setFlows({
-        ...flows,
+      setFlows(prevFlows => ({
+        ...prevFlows,
         [id]: flow,
-      })
+      }))
 
       const apiFlow = serialize(flow, org.id)
 
       pooledUpdateAPI({id, ...apiFlow})
     },
-    [setFlows, org.id]
-  ) // eslint-disable-line react-hooks/exhaustive-deps
+    [setFlows, org.id] // eslint-disable-line react-hooks/exhaustive-deps
+  )
 
   const remove = async (id: string) => {
     const _flows = {

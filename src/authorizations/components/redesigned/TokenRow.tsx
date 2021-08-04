@@ -2,6 +2,8 @@
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
+
 
 // Actions
 import {
@@ -25,6 +27,7 @@ import {
 
 import {Context} from 'src/clockface'
 
+
 // Types
 import {Authorization, AppState} from 'src/types'
 import {
@@ -42,10 +45,13 @@ interface OwnProps {
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-type Props = ReduxProps & OwnProps
+type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
 
 const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
 class TokensRow extends PureComponent<Props> {
+
+  // org = useSelector(getOrg)
+
   public render() {
     const {description} = this.props.auth
     const {auth} = this.props
@@ -110,17 +116,27 @@ class TokensRow extends PureComponent<Props> {
     this.props.onDelete(id, description)
   }
 
-  private handleClone = () => {
+  private handleClone = async () => {
+    const {
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+    
     const {description} = this.props.auth
 
     const allTokenDescriptions = Object.values(this.props.authorizations).map(
       auth => auth.description
     )
-
-    this.props.onClone({
+      console.log(this.props.auth)
+      const newAuth = await this.props.onClone({
       ...this.props.auth,
       description: incrementCloneName(allTokenDescriptions, description),
     })
+    console.log(newAuth)
+    history.push(`/orgs/${orgID}/load-data/tokens/generate/clone-access`)
+    
   }
 
   private handleClickDescription = () => {
@@ -147,4 +163,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const TokenRow = connector(TokensRow)
+export const TokenRow = connector(withRouter(TokensRow))

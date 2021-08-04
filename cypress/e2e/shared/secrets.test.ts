@@ -16,12 +16,15 @@ describe('Secrets', () => {
     })
   })
 
-  it('Secrets tab setup', () => {
+  it('Secrets page base functionality', () => {
+    cy.intercept('PATCH', '**/secrets').as('upsertSecret')
+    cy.intercept('DELETE', '**/secrets/**').as('deleteSecret')
+
     // Empty state exists and displays context appropriate text
     cy.getByTestID('empty-state').should('be.visible')
     cy.getByTestID('empty-state').contains('Secrets')
 
-    // Create single secret, make sure it's visible
+    // Create secrets via the API, check visibility and sorting
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.upsertSecret(orgID, {toEverybody: 'rupees baby'})
         .then(() => {
@@ -41,7 +44,7 @@ describe('Secrets', () => {
           //     cy.task('getClipboard').should('eq', 'toEverybody')
           //   })
         })
-        // Create a second secret, make sure it's visible and test sorting
+        // Create a second secret via the API, make sure it's visible and test sorting
         .upsertSecret(orgID, {CocaColaRecipe: 'lol'})
         .then(() => {
           cy.reload()
@@ -71,19 +74,61 @@ describe('Secrets', () => {
               expect(val.text()).to.equal(aToZ[index])
             })
 
-          cy.getByTestID('resource-sorter')
-            .click()
-            .then(() => {
-              cy.getByTestID('resource-sorter--id-desc')
-                .click()
-                .then(() => {
-                  cy.get('span')
-                    .filter('[data-testid*="secret-card--"]')
-                    .each((val, index) => {
-                      expect(val.text()).to.equal(zToA[index])
-                    })
-                })
+          cy.getByTestID('resource-sorter').click()
+          cy.getByTestID('resource-sorter--id-desc').click()
+          cy.get('span')
+            .filter('[data-testid*="secret-card--"]')
+            .each((val, index) => {
+              expect(val.text()).to.equal(zToA[index])
             })
+
+          // Delete API created secrets via the UI
+          cy.getByTestID('delete-secret-initial--toEverybody').click({
+            force: true,
+          })
+          cy.getByTestID('delete-secret-confirm--toEverybody').should('exist')
+          cy.getByTestID('delete-secret-confirm--toEverybody').click({
+            force: true,
+          })
+          cy.wait('@deleteSecret')
+            .its('response.statusCode')
+            .should('eq', 204)
+          // After deletion that secret should no longer exist
+          cy.getByTestID('secret-card--toEverybody').should('not.exist')
+        })
+
+      // Create new secret via UI, then edit it once created
+      const secretName = 'Shhhhh'
+      cy.getByTestID('button-add-secret')
+        .first() // There's a second one in the empty state.
+        .click()
+      cy.getByTestID('variable-form-save').should('be.disabled')
+      cy.getByTestID('input-field')
+        .first()
+        .type(secretName)
+      cy.getByTestID('variable-form-save').should('be.disabled')
+      cy.getByTestID('input-field')
+        .last()
+        .type("I'm a secret!")
+      cy.getByTestID('variable-form-save').should('be.enabled')
+      cy.getByTestID('variable-form-save').click()
+      cy.wait('@upsertSecret')
+        .its('response.statusCode')
+        .should('eq', 204)
+        .then(() => {
+          cy.getByTestID(`secret-card--${secretName}`).should('exist')
+          cy.getByTestID(`secret-card--${secretName}`).should('be.visible')
+          cy.getByTestID(`secret-card--name-${secretName}`).click()
+          cy.getByTestID('input-field').should('be.disabled')
+          cy.getByTestID('input-field').should('have.value', secretName)
+          cy.getByTestID('input-field')
+            .last()
+            .type("I'm hunting rabbits")
+          cy.getByTestID('variable-form-save').should('be.enabled')
+          cy.getByTestID('variable-form-save').click()
+          cy.wait('@upsertSecret')
+            .its('response.statusCode')
+            .should('eq', 204)
         })
     })
   })

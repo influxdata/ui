@@ -2,6 +2,7 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import ReactDatePicker from 'react-datepicker'
 import moment from 'moment'
+import {connect} from 'react-redux'
 
 // Components
 import {Input, Grid, Form} from '@influxdata/clockface'
@@ -11,10 +12,19 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 // Types
 import {Columns, ComponentSize, ComponentStatus} from '@influxdata/clockface'
+import {TimeZone} from 'src/types'
+
+// Utils
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {getTimeZone} from 'src/dashboards/selectors'
+
+// Constants
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 interface Props {
   label: string
   dateTime: string
+  timeZone: TimeZone
   maxDate?: string
   minDate?: string
   onSelectDate: (date: string) => void
@@ -47,12 +57,12 @@ const getFormat = (d: string): string => {
     return 'YYYY-MM-DD HH:mm:ss'
   }
   if (moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()) {
-    return 'YYYY-MM-DD HH:mm:ss.SSS'
+    return 'YYYY-MM-DD HH:mm:ss.sss'
   }
   return null
 }
 
-export default class DatePicker extends PureComponent<Props, State> {
+class DatePicker extends PureComponent<Props, State> {
   private inCurrentMonth: boolean = false
   state = {
     inputValue: null,
@@ -60,9 +70,16 @@ export default class DatePicker extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {dateTime, label, maxDate, minDate} = this.props
+    const {dateTime, label, maxDate, minDate, timeZone} = this.props
 
     const date = new Date(dateTime)
+
+    if (timeZone === 'UTC') {
+      // (sahas): the react-datepicker forces the timezone to be the Local timezone.
+      // so when our app in in UTC mode, to make the datepicker respect that timezone,
+      // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
+      date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
+    }
 
     return (
       <div className="range-picker--date-picker">
@@ -105,7 +122,7 @@ export default class DatePicker extends PureComponent<Props, State> {
   }
 
   private get inputValue(): string {
-    const {dateTime} = this.props
+    const {dateTime, timeZone} = this.props
     const {inputValue, inputFormat} = this.state
 
     if (this.isInputValueInvalid) {
@@ -115,10 +132,12 @@ export default class DatePicker extends PureComponent<Props, State> {
     }
 
     if (inputFormat) {
-      return moment(dateTime).format(inputFormat)
+      const formatter = createDateTimeFormatter(inputFormat, timeZone)
+      return formatter.format(new Date(dateTime))
     }
+    const formatter = createDateTimeFormatter(DEFAULT_TIME_FORMAT, timeZone)
 
-    return moment(dateTime).toISOString()
+    return formatter.format(new Date(dateTime))
   }
 
   private get isInputValueInvalid(): boolean {
@@ -132,7 +151,7 @@ export default class DatePicker extends PureComponent<Props, State> {
 
   private get inputErrorMessage(): string | undefined {
     if (this.isInputValueInvalid) {
-      return 'Format must be YYYY-MM-DD [HH:mm:ss.SSS]'
+      return 'Format must be YYYY-MM-DD HH:mm:ss'
     }
 
     return '\u00a0\u00a0'
@@ -172,17 +191,38 @@ export default class DatePicker extends PureComponent<Props, State> {
   }
 
   private handleSelectDate = (date: Date): void => {
-    const {onSelectDate} = this.props
+    const {onSelectDate, timeZone} = this.props
+
+    if (timeZone === 'UTC') {
+      // (sahas): the react-datepicker forces the timezone to be the Local timezone.
+      // so when our app in in UTC mode, to make the datepicker respect that timezone,
+      // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
+      // because the time now needs to be back to UTC, we subtract the offset added below in code, in the handleSelectDate
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+    }
+
     onSelectDate(date.toISOString())
     this.overrideInputState()
   }
 
   private handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {
-    const {onSelectDate} = this.props
+    const {onSelectDate, timeZone} = this.props
     const value = e.target.value
 
     if (isValidRTC3339(value)) {
-      onSelectDate(moment(value).toISOString())
+      const inputDate = new Date(value)
+
+      if (timeZone === 'UTC') {
+        // (sahas): the react-datepicker forces the timezone to be the Local timezone.
+        // so when our app in in UTC mode, to make the datepicker respect that timezone,
+        // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
+        // because the time now needs to be back to UTC, we subtract the offset added below in code, in the handleSelectDate
+        inputDate.setMinutes(
+          inputDate.getMinutes() - inputDate.getTimezoneOffset()
+        )
+      }
+
+      onSelectDate(new Date(inputDate).toISOString())
       this.setState({inputValue: value, inputFormat: getFormat(value)})
       return
     }
@@ -190,3 +230,9 @@ export default class DatePicker extends PureComponent<Props, State> {
     this.setState({inputValue: value, inputFormat: null})
   }
 }
+
+const mapStateToProps = state => ({
+  timeZone: getTimeZone(state),
+})
+
+export default connect(mapStateToProps)(DatePicker)

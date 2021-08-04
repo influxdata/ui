@@ -17,7 +17,7 @@ describe('Orgs', () => {
     it('forwards the user to the No Orgs Page', () => {
       cy.url().should('contain', 'no-org')
       cy.contains('Sign In').click()
-      cy.url().should('contain', 'dex')
+      cy.location('pathname').should('eq', '/signin')
     })
   })
 })

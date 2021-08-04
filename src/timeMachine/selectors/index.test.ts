@@ -35,7 +35,7 @@ describe('TimeMachine.Selectors.Index', () => {
   })
 
   const date = '2019-01-01'
-  const newYears = moment(date).valueOf()
+  const newYears = new Date(date).valueOf()
   it(`getStartTime should return ${newYears} when lower is ${date}`, () => {
     const timeRange = {
       type: custom,
@@ -54,7 +54,7 @@ describe('TimeMachine.Selectors.Index', () => {
     expect(getEndTime(timeRange)).toEqual(newYears)
   })
 
-  const now = moment().valueOf()
+  const now = new Date().valueOf()
   it(`getEndTime should return ${now} when upper is null and lower includes now()`, () => {
     expect(getEndTime(pastThirtyDaysTimeRange)).toBeGreaterThanOrEqual(now)
   })

@@ -113,6 +113,7 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
 export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
+  cy.getByTestID('edit-annotation-message').should('have.length.of.at.least', 1)
   cy.getByTestID('edit-annotation-message').clear()
   cy.getByTestID('edit-annotation-message').type('lets edit this annotation...')
 

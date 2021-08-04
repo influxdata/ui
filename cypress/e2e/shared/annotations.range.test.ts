@@ -137,7 +137,7 @@ describe('Annotations, but in a different test suite', () => {
       )
     })
 
-    it.only('can add an annotation; that is originally a point and then switch to a range', () => {
+    it('can add an annotation; that is originally a point and then switch to a range', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })

@@ -9,8 +9,6 @@ import {
 } from '../util/annotationsSetup'
 import * as moment from 'moment'
 
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
-
 describe('Annotations, but in a different test suite', () => {
   afterEach(clearLocalStorage)
   beforeEach(() => setupData(cy))
@@ -171,9 +169,9 @@ describe('Annotations, but in a different test suite', () => {
               .then(endTimeValue => {
                 expect(endTimeValue).to.equal(startTimeValue)
 
-                const newEndTime = moment(endTimeValue, DEFAULT_TIME_FORMAT)
+                const newEndTime = moment(endTimeValue, 'YYYY-MM-DD HH:mm:ss')
                   .add(10, 'minutes')
-                  .format(DEFAULT_TIME_FORMAT)
+                  .format('YYYY-MM-DD HH:mm:ss')
 
                 cy.getByTestID('endTime-testID')
                   .click()

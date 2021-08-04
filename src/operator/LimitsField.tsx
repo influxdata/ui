@@ -22,7 +22,11 @@ const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
   const value = get(limits, name, '')
 
   if (!hasWritePermissions) {
-    return <p className="operator-limits-label">{value}</p>
+    return (
+      <p data-testid={`limits-${name}--p`} className="operator-limits-label">
+        {value}
+      </p>
+    )
   }
 
   const onChange = e => {

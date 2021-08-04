@@ -6,7 +6,7 @@ describe('Users Page', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({unityUsers: true}).then(() => {
+        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
           cy.quartzProvision({
             hasUsers: true,
           }).then(() => {

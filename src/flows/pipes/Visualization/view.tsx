@@ -38,10 +38,8 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results, queryText} = useContext(
-    PipeContext
-  )
-  const {basic} = useContext(FlowQueryContext)
+  const {id, data, range, update, loading, results} = useContext(PipeContext)
+  const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
   const [optionsVisibility, setOptionsVisibility] = useState(false)
@@ -63,6 +61,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   const dataExists = !!(results?.parsed?.table || []).length
 
+  const queryText = getPanelQueries(id, true).source
   const downloadTitle = queryText
     ? 'Download results as an annotated CSV file'
     : 'Build a query to download your results'
@@ -99,17 +98,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         title: 'Visualization',
         actions: [
           {
-            title: 'Options',
-            disable: !dataExists,
-            menu: (
-              <ViewOptions
-                properties={data.properties}
-                results={results.parsed}
-                update={updateProperties}
-              />
-            ),
-          },
-          {
             title: 'Download as CSV',
             disable: !dataExists,
             action: download,
@@ -131,7 +119,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, data.properties, results.parsed, range])
 
-  const persist = isFlagEnabled('flow-sidebar') ? null : (
+  const persist = isFlagEnabled('flowSidebar') ? null : (
     <>
       <Button
         titleText={downloadTitle}

@@ -1,6 +1,5 @@
 // Libraries
 import memoizeOne from 'memoize-one'
-import moment from 'moment'
 import {get} from 'lodash'
 import {fromFlux, Table} from '@influxdata/giraffe'
 
@@ -270,7 +269,7 @@ export const getStartTime = (timeRange: TimeRange) => {
   }
   switch (timeRange.type) {
     case 'custom':
-      return moment(timeRange.lower).valueOf()
+      return new Date(timeRange.lower).valueOf()
     case 'selectable-duration': {
       const startTime = new Date()
       startTime.setSeconds(startTime.getSeconds() - timeRange.seconds)
@@ -298,9 +297,9 @@ export const getEndTime = (timeRange: TimeRange): number => {
     return null
   }
   if (timeRange.type === 'custom') {
-    return moment(timeRange.upper).valueOf()
+    return new Date(timeRange.upper).valueOf()
   }
-  return moment().valueOf()
+  return new Date().valueOf()
 }
 
 export const getActiveTimeRange = (

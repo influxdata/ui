@@ -8,25 +8,18 @@ import {useHistory, withRouter} from 'react-router'
 import {CheckoutContext} from 'src/checkout/context/checkout'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {RemoteDataState} from 'src/types'
 
-// Constants
-import {CLOUD_USERS_PATH, CLOUD_URL} from 'src/shared/constants'
-
 const SuccessOverlay: FC = () => {
   const history = useHistory()
   const {checkoutStatus} = useContext(CheckoutContext)
   const orgId = useSelector(getOrg)?.id
+
   const handleClick = () => {
-    if (isFlagEnabled('unityUsers')) {
-      history.push(`/orgs/${orgId}/users`)
-      return
-    }
-    window.location.href = `${CLOUD_URL}/organizations/${orgId}${CLOUD_USERS_PATH}`
+    history.push(`/orgs/${orgId}/users`)
   }
 
   return (

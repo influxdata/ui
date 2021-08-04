@@ -1,120 +1,124 @@
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useContext} from 'react'
 import {PipeContext} from 'src/flows/context/pipe'
-import './styles.scss'
 import {PipeProp} from 'src/types/flows'
-import {
-  ResourceCard,
-  SlideToggle,
-  FlexBox,
-  FlexDirection,
-  AlignItems,
-  ComponentSize,
-} from '@influxdata/clockface'
+import {Icon, IconFont, SlideToggle} from '@influxdata/clockface'
+import {RemoteDataState} from 'src/types'
+import {Hash, Mapping} from 'src/flows/pipes/Columns'
 
-export interface TableColumnKey {
-  name: string
-  visible: boolean
-}
+import './styles.scss'
+
 const View: FC<PipeProp> = ({Context}) => {
-  const [tableColumnKeys, setTableColumnKeys] = useState<{
-    [_: string]: TableColumnKey
-  }>({})
+  const {update, data, results, loading} = useContext(PipeContext)
 
-  const {update, data, results} = useContext(PipeContext)
-
-  useEffect(() => {
-    if (results?.parsed?.table) {
-      setTableColumnKeys(
-        results.parsed.table.columnKeys.reduce((a, b) => {
-          if (!data.updatedTableKeys[b]) {
-            a[b] = {name: b, visible: true}
-          } else {
-            a[b] = data.updatedTableKeys[b]
-          }
-          return a
-        }, {})
-      )
-    }
-  }, [results?.parsed?.table])
-
-  useEffect(() => {
-    update({
-      updatedTableKeys: tableColumnKeys,
-    })
-  }, [tableColumnKeys])
-
-  const handleUpdateName = (newName: any, oldName: string) => {
-    if (tableColumnKeys[oldName].name === newName) {
+  const updateColumn = (key, val) => {
+    if (
+      (data.mappings || {})[key] &&
+      val.name === key &&
+      val.visible === true
+    ) {
+      delete data.mappings[key]
+      update({
+        mappings: {...data.mappings},
+      })
       return
     }
-    setTableColumnKeys(prev => ({
-      ...prev,
-      [oldName]: {
-        ...tableColumnKeys[oldName],
-        name: newName,
-      },
-    }))
+
+    if (
+      (data.mappings || {})[key] &&
+      data.mappings[key].name === val.name &&
+      data.mappings[key].visible === val.visible
+    ) {
+      return
+    }
+
+    if (!data.mappings) {
+      data.mappings = {}
+    }
+
+    data.mappings[key] = val
+    update({
+      mappings: {...data.mappings},
+    })
   }
 
-  const handleUpdateVisible = (oldName: string) => {
-    setTableColumnKeys(prev => ({
-      ...prev,
-      [oldName]: {
-        ...tableColumnKeys[oldName],
-        visible: !tableColumnKeys[oldName].visible,
-      },
-    }))
-  }
+  if (!results.parsed || !results.parsed.table) {
+    let msg = 'This cell will display columns from the previous cell'
 
-  if (!Object.values(tableColumnKeys)?.length) {
+    if (loading === RemoteDataState.Loading) {
+      msg = 'Loading'
+    }
+
     return (
       <Context>
-        <div className="columns-panel--grid">
-          <div className="panel-resizer--empty">
-            No Columns To Show. Preview To See Results.
+        <div className="panel-resizer">
+          <div className="panel-resizer--header">
+            <Icon
+              glyph={IconFont.Layers}
+              className="panel-resizer--vis-toggle"
+            />
+          </div>
+          <div className="panel-resizer--body">
+            <div className="panel-resizer--empty">{msg}</div>
           </div>
         </div>
       </Context>
     )
   }
 
+  const columns: Hash<Mapping> = Object.entries(data.mappings || {}).reduce(
+    (acc, [k, v]) => {
+      if (acc[k]) {
+        acc[k] = v
+      }
+
+      return acc
+    },
+    Object.keys(results.parsed.table.columns).reduce((acc, curr) => {
+      acc[curr] = {name: curr, visible: true}
+      return acc
+    }, {})
+  )
+
+  const cards = Object.entries(columns).map(([k, v]) => {
+    const updateVisibility = () => {
+      updateColumn(k, {
+        ...v,
+        visible: !v.visible,
+      })
+    }
+    const updateName = evt => {
+      updateColumn(k, {
+        ...v,
+        name: evt.target.value,
+      })
+    }
+
+    return (
+      <div className="flow-columns--column" key={k}>
+        <SlideToggle
+          className="flow-columns--toggle"
+          onChange={updateVisibility}
+          active={v.visible}
+        />
+        <div className="flow-columns--input">
+          <input
+            type="text"
+            value={v.name}
+            onChange={updateName}
+            placeholder="Column Name"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+          />
+          <Icon glyph={IconFont.Pencil} className="flow-panel--title-icon" />
+        </div>
+      </div>
+    )
+  })
+
   return (
     <Context>
-      <div className="columns-panel--grid">
-        {Object.entries(tableColumnKeys).map(
-          ([k, v]: [string, TableColumnKey]) => (
-            <ResourceCard key={k} className="column-card--content">
-              <ResourceCard.Meta className="column-card--vistoggle">
-                {[
-                  <React.Fragment key={v.name + Math.random()}>
-                    <FlexBox
-                      direction={FlexDirection.Row}
-                      alignItems={AlignItems.Center}
-                      margin={ComponentSize.Medium}
-                      stretchToFitWidth={true}
-                    >
-                      <SlideToggle
-                        onChange={() => handleUpdateVisible(k)}
-                        active={v.visible}
-                      />
-                    </FlexBox>
-                  </React.Fragment>,
-                ]}
-              </ResourceCard.Meta>
-              <ResourceCard.EditableName
-                name={v.name}
-                onClick={() => {}}
-                onUpdate={e => handleUpdateName(e, k)}
-                testID={`column-card--name ${k}`}
-                inputTestID="column-card--input"
-                buttonTestID="column-card--name-button"
-                noNameString="Column name"
-                className="column-card--name"
-              />
-            </ResourceCard>
-          )
-        )}
-      </div>
+      <div className="flow-columns">{cards}</div>
     </Context>
   )
 }

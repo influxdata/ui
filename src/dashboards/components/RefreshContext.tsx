@@ -1,6 +1,5 @@
 import React, {createContext, useReducer, useCallback, FC} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import moment from 'moment'
 
 // Types
 import {CustomTimeRange, AutoRefreshStatus} from 'src/types'
@@ -14,9 +13,13 @@ import {
 } from 'src/shared/actions/autoRefresh'
 import {getCurrentDashboardId} from 'src/dashboards/selectors'
 
+// Utils
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {addDurationToDate} from 'src/shared/utils/dateTimeUtils'
+
 export const AutoRefreshContext = createContext(null)
 
-const DEFAULT_TIME_AHEAD = '01:00'
+const oneHourInTheFuture = 1
 
 export interface AutoRefreshState {
   duration: CustomTimeRange
@@ -31,21 +34,23 @@ export interface AutoRefreshState {
 }
 
 const jumpAheadTime = () => {
-  return moment()
-    .add(moment.duration(DEFAULT_TIME_AHEAD))
-    .format('YYYY-MM-DD HH:mm:ss')
+  const newTime = addDurationToDate(new Date(), oneHourInTheFuture, 'h')
+
+  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
+  return formatter.format(newTime)
 }
 
 const calculateTimeout = (timeout: string, timeoutUnit: string) => {
   const timeoutNumber = parseInt(timeout, 10)
-  const startTime = moment(new Date())
-  const copyStart = startTime.unix()
-  const endTime = startTime.add(
-    timeoutNumber as any,
+  const startTime = new Date()
+  const endTime = addDurationToDate(
+    startTime,
+    timeoutNumber,
     timeoutUnit[0].toLowerCase()
   )
-  const cutoff = endTime.unix() - copyStart
-  return cutoff * 1000
+  const cutoff = endTime.getTime() - startTime.getTime()
+
+  return cutoff
 }
 
 export const createAutoRefreshInitialState = (

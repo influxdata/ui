@@ -5,7 +5,9 @@ describe('Operator Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags({unityMeApi: true, unityOperator: true}).then(() => {
+        cy.setFeatureFlags({
+          uiUnificationFlag: true,
+        }).then(() => {
           cy.quartzProvision({
             isOperator: true,
           }).then(() => {
@@ -250,7 +252,9 @@ describe('Operator Page should not be accessible for non-operator users', () => 
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags({unityMeApi: true, unityOperator: true}).then(() => {
+        cy.setFeatureFlags({
+          uiUnificationFlag: true,
+        }).then(() => {
           cy.quartzProvision({
             isOperator: false,
           }).then(() => {

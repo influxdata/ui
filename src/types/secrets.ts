@@ -1,8 +1,9 @@
 import {Secrets as GSecrets} from 'src/client'
-import {NormalizedState} from 'src/types/resources'
 
-export type Secret = GSecrets
+import {RemoteDataState} from 'src/types'
 
-export interface SecretsState extends NormalizedState<Secret> {
-  key: string
+export interface Secret extends GSecrets {
+  id: string
+  status: RemoteDataState
+  value?: string
 }

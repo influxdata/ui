@@ -215,6 +215,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       })
   }
 
+  // TODO figure out a better way to cache these requests
   const getPanelQueries = (
     id: string,
     withSideEffects?: boolean

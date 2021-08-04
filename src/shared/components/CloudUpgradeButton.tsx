@@ -14,12 +14,8 @@ import {
 } from '@influxdata/clockface'
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
-// Constants
-import {CLOUD_URL, CLOUD_CHECKOUT_PATH} from 'src/shared/constants'
-
 // Utils
 import {shouldShowUpgradeButton} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   className?: string
@@ -46,11 +42,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     if (metric) {
       metric()
     }
-    if (isFlagEnabled('unityCheckout')) {
-      history.push('/checkout')
-    } else {
-      window.location.href = `${CLOUD_URL}${CLOUD_CHECKOUT_PATH}`
-    }
+    history.push('/checkout')
   }
 
   return (

@@ -156,6 +156,13 @@ export const generateNavItems = (): NavItem[] => {
           label: 'Labels',
           link: `${orgPrefix}/settings/labels`,
         },
+        {
+          id: 'secrets',
+          enabled: () => isFlagEnabled('secretsUI'),
+          testID: 'nav-subitem-secrets',
+          label: 'Secrets',
+          link: `${orgPrefix}/settings/secrets`,
+        },
       ],
     },
     {
@@ -172,7 +179,7 @@ export const generateNavItems = (): NavItem[] => {
       enabled: () =>
         CLOUD &&
         quartzMe?.isOperator === true &&
-        isFlagEnabled('unityOperator'),
+        isFlagEnabled('uiUnificationFlag'),
       testID: 'nav-item--operator',
       icon: IconFont.Shield,
       label: 'Operator',

@@ -6,6 +6,7 @@
   width: 100%;
   height: $flow-panel--node-gap + $cf-marg-b + 12;
   opacity: 1;
+  left: 2px;
 
   // Vertical lines
   &:before,

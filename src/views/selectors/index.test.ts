@@ -45,6 +45,21 @@ const MOCK_APP_STATE = ({
           },
           dashboardID: 'mock_dashboard_id',
         },
+        mock_cell_id_with_NO_PROPERTIES: {
+          id: 'mock_cell_id_with_NO_PROPERTIES',
+          name: 'dummy cell',
+          status: 'Done',
+          cellID: 'mock_cell_id_with_NO_PROPERTIES',
+          dashboardID: 'mock_dashboard_id',
+        },
+        mock_cell_id_with_EMPTY_PROPERTIES: {
+          id: 'mock_cell_id_with_EMPTY_PROPERTIES',
+          name: 'dummy cell',
+          status: 'Done',
+          cellID: 'mock_cell_id_with_EMPTY_PROPERTIES',
+          properties: {},
+          dashboardID: 'mock_dashboard_id',
+        },
       },
       allIDs: [
         'mock_cell_id_with_DEFAULT_TIME_FORMAT',
@@ -78,6 +93,22 @@ describe('Views.Selectors', () => {
         'mock_cell_id_with_YYYY-MM-DD HH:mm:ss.sss'
       )
       expect(timeFormat).toBe('YYYY-MM-DD HH:mm:ss.sss')
+    })
+
+    it("should return the default time format for a cell when cell's view.properties is absent", () => {
+      const timeFormat = getTimeFormatForView(
+        MOCK_APP_STATE,
+        'mock_cell_id_with_NO_PROPERTIES'
+      )
+      expect(timeFormat).toBe(DEFAULT_TIME_FORMAT)
+    })
+
+    it("should return the default time format for a cell when cell's view.properties is {} (empty, but not absent)", () => {
+      const timeFormat = getTimeFormatForView(
+        MOCK_APP_STATE,
+        'mock_cell_id_with_EMPTY_PROPERTIES'
+      )
+      expect(timeFormat).toBe(DEFAULT_TIME_FORMAT)
     })
   })
 })

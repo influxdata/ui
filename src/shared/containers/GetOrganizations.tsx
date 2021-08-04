@@ -52,7 +52,7 @@ const GetOrganizations: FunctionComponent = () => {
 
   useEffect(() => {
     if (
-      isFlagEnabled('unityMeApi') &&
+      isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
     ) {
       dispatch(getQuartzMe())
@@ -66,19 +66,17 @@ const GetOrganizations: FunctionComponent = () => {
           NOTE: We'll need this here until Tools gets Quartz integrated
           Since the API request will fail in a tools environment.
         */}
-        {isFlagEnabled('unityMeApi') ? (
+        {isFlagEnabled('uiUnificationFlag') ? (
           <PageSpinner loading={quartzMeStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />
               <Route path="/notebook/from" component={NotebookTemplates} />
               <Route path="/orgs" component={App} />
               <Route exact path="/" component={RouteToOrg} />
-              {CLOUD &&
-                isFlagEnabled('unityCheckout') &&
-                canAccessCheckout(me) && (
-                  <Route path="/checkout" component={CheckoutPage} />
-                )}
-              {CLOUD && isFlagEnabled('unityOperator') && me?.isOperator && (
+              {CLOUD && canAccessCheckout(me) && (
+                <Route path="/checkout" component={CheckoutPage} />
+              )}
+              {CLOUD && me?.isOperator && (
                 <Route path="/operator" component={OperatorPage} />
               )}
               <Route component={NotFound} />

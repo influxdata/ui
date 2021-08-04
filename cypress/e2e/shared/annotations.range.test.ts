@@ -9,7 +9,7 @@ import {
 } from '../util/annotationsSetup'
 import * as moment from 'moment'
 
-import {DEFAULT_TIME_FORMAT} from '../../../src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from '../../../src/utils/datetime/constants'
 
 describe('Annotations, but in a different test suite', () => {
   afterEach(clearLocalStorage)

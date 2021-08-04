@@ -1,5 +1,6 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
+import {DEFAULT_TIME_FORMAT} from '../../../src/shared/constants'
 
 export const clearLocalStorage = () => {
   // clear the local storage after each test.
@@ -245,4 +246,8 @@ export const testDeleteAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
   deleteAnnotation(cy)
+}
+
+export const getDefaultTimeFormat = () => {
+  return DEFAULT_TIME_FORMAT
 }

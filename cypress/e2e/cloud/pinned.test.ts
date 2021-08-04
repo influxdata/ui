@@ -24,7 +24,6 @@ describe('Pinned Items', () => {
   })
 
   it('renders a pinned items modal in the homepage with initial empty state', () => {
-    cy.getByTestID('pinneditems--container').should('be.visible')
     cy.getByTestID('pinneditems--emptystate').should(
       'contain.text',
       'Pin a task, dashboard, or notebook here'
@@ -54,7 +53,9 @@ describe('Pinned Items', () => {
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.visit('/')
-      cy.getByTestID('pinneditems--card').should('be.visible')
+      cy.getByTestID('pinneditems--container').within(() => {
+        cy.getByTestID('pinneditems--card').should('exist')
+      })
     })
 
     it('reflects an edit to the dashboard name on the dashboard card', () => {
@@ -275,7 +276,7 @@ from(bucket: "${name}"{rightarrow}
           cy.getByTestID('context-pin-menu').click()
           cy.getByTestID('context-pin-flow').click()
         })
-      cy.getByTestID('flow-card--name')
+      cy.getByTestID('resource-editable-name')
         .first()
         .trigger('mouseover')
 
@@ -298,7 +299,7 @@ from(bucket: "${name}"{rightarrow}
     })
 
     it('unpins when the resource it is pointing to is deleted', () => {
-      cy.getByTestID('flow-card--name')
+      cy.getByTestID('resource-editable-name')
         .first()
         .trigger('mouseover')
 

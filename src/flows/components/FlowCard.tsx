@@ -54,7 +54,6 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
         name={flow.name || name}
         onClick={handleClick}
         onUpdate={handleRenameNotebook}
-        testID="flow-card--name"
         buttonTestID="flow-card--name-button"
       />
       <ResourceCard.Meta>

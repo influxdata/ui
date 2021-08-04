@@ -9,6 +9,8 @@ import {
 } from '../util/annotationsSetup'
 import * as moment from 'moment'
 
+import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+
 describe('Annotations, but in a different test suite', () => {
   afterEach(clearLocalStorage)
   beforeEach(() => setupData(cy))
@@ -135,7 +137,7 @@ describe('Annotations, but in a different test suite', () => {
       )
     })
 
-    it('can add an annotation; that is originally a point and then switch to a range', () => {
+    it.only('can add an annotation; that is originally a point and then switch to a range', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
@@ -169,9 +171,9 @@ describe('Annotations, but in a different test suite', () => {
               .then(endTimeValue => {
                 expect(endTimeValue).to.equal(startTimeValue)
 
-                const newEndTime = moment(endTimeValue, 'YYYY-MM-DD hh:mm:ss a')
+                const newEndTime = moment(endTimeValue, DEFAULT_TIME_FORMAT)
                   .add(10, 'minutes')
-                  .format('YYYY-MM-DD hh:mm:ss a')
+                  .format(DEFAULT_TIME_FORMAT)
 
                 cy.getByTestID('endTime-testID')
                   .click()

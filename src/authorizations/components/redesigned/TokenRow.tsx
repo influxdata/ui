@@ -47,7 +47,6 @@ type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
 
 const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
 class TokensRow extends PureComponent<Props> {
-
   public render() {
     const {description} = this.props.auth
     const {auth} = this.props

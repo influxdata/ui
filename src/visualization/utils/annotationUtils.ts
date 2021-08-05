@@ -73,6 +73,7 @@ const makeAnnotationClickListener = (
           createAnnotation,
           startTime: plotInteraction?.clampedValueX ?? plotInteraction.valueX,
           eventPrefix,
+          cellID,
         },
         () => {
           dismissOverlay()
@@ -102,6 +103,7 @@ const makeAnnotationRangeListener = (
           endTime: end,
           range: true,
           eventPrefix,
+          cellID,
         },
         () => {
           dismissOverlay()
@@ -145,6 +147,7 @@ const makeAnnotationClickHandler = (
               stream: cellID,
               eventPrefix,
             },
+            cellID,
           },
           () => {
             dismissOverlay()

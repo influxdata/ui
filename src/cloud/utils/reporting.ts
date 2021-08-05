@@ -9,13 +9,14 @@ import {
 } from 'src/cloud/apis/reporting'
 
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {GIT_SHA} from 'src/shared/constants'
+import {CLOUD, GIT_SHA} from 'src/shared/constants'
 export {Point, PointTags, PointFields} from 'src/cloud/apis/reporting'
 
 let reportingTags = {}
 let reportingPoints = []
 let reportDecayTimeout = null
 let reportMaxTimeout = null
+let campaignInfo = {}
 
 const REPORT_DECAY = 500 // number of miliseconds to wait after last event before sending
 const REPORT_MAX_WAIT = 5000 // max number of miliseconds to wait between sends
@@ -86,6 +87,7 @@ const pooledEvent = ({timestamp, measurement, fields, tags}: Point) => {
 
     reportPointsAPI({
       points: reportingPoints.slice(),
+      campaign: campaignInfo,
     })
 
     reportingPoints = []
@@ -107,6 +109,7 @@ const pooledEvent = ({timestamp, measurement, fields, tags}: Point) => {
 
       reportPointsAPI({
         points: reportingPoints.slice(),
+        campaign: campaignInfo,
       })
 
       reportingPoints = []
@@ -116,6 +119,7 @@ const pooledEvent = ({timestamp, measurement, fields, tags}: Point) => {
   reportDecayTimeout = setTimeout(() => {
     reportPointsAPI({
       points: reportingPoints.slice(),
+      campaign: campaignInfo,
     })
 
     reportingPoints = []
@@ -183,4 +187,24 @@ export const useLoadTimeReporting = (measurement: string) => {
       time: loadStartTime,
     })
   }, [measurement, loadStartTime])
+}
+
+export const updateCampaignInfo = (query: string) => {
+  if (CLOUD && isFlagEnabled('rudderstackReporting')) {
+    const allowedUtmKeys = ['campaign', 'term', 'source', 'medium', 'content']
+    const queryParams = new URLSearchParams(query)
+    let info = {}
+    queryParams.forEach(function(value, key) {
+      if (key.startsWith('utm_')) {
+        let param = key.substr(4)
+        if (allowedUtmKeys.includes(param)) {
+          if (param === 'campaign') param = 'name' // see rudder-sdk-js (#2963)
+          info[param] = value
+        }
+      }
+    })
+    if (Object.keys(info).length) {
+      campaignInfo = info
+    }
+  }
 }

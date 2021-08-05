@@ -21,13 +21,18 @@ export interface PointFields {
 export interface PointsBatch {
   points: Array<Point>
   timestamp?: number
+  campaign?: object
 }
 
 export const reportPoints = (batch: PointsBatch) => {
   if (CLOUD && isFlagEnabled('rudderstackReporting')) {
     try {
       batch.points.forEach(point => {
-        track(point.measurement, point.fields, point.tags)
+        track(
+          point.measurement,
+          point.fields,
+          asRudderOptions(point.tags, batch.campaign)
+        )
       })
     } catch (error) {
       reportErrorThroughHoneyBadger(error, {
@@ -50,4 +55,29 @@ export const reportPoints = (batch: PointsBatch) => {
       // don't want reporting errors to effect user experience
     }
   }
+}
+
+const asRudderOptions = (tags: PointTags, campaign: object) => {
+  let options = {}
+  let context = null
+  Object.keys(tags).forEach((key: string) => {
+    const value = tags[key]
+    if (key != 'context') {
+      options[key] = value
+    } else {
+      if (typeof value != 'object') {
+        // context is reserved rudder element key and must be object, see rudder-sdk-js (#20463)
+        options['appContext'] = value
+      } else {
+        context = options['context'] = value
+      }
+    }
+  })
+  if (Object.keys(campaign).length) {
+    if (context == null) {
+      context = options['context'] = {}
+    }
+    context['campaign'] = campaign
+  }
+  return options
 }

@@ -18,7 +18,10 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 
 // Utilities
 import {getRootNode} from 'src/utils/nodes'
-import {updateReportingContext} from 'src/cloud/utils/reporting'
+import {
+  updateReportingContext,
+  updateCampaignInfo,
+} from 'src/cloud/utils/reporting'
 
 // Actions
 import {disablePresentationMode} from 'src/shared/actions/app'
@@ -38,6 +41,8 @@ const cookieSession = document.cookie.match(
 updateReportingContext({
   session: cookieSession ? cookieSession[2].slice(5) : '',
 })
+
+updateCampaignInfo(window.location.search)
 
 const {dispatch} = getStore()
 

@@ -47,23 +47,13 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
     </span>
   )
 
-  // need to create an array here; and add the schemaType if present
-  // if instead schemaType was null and had content if present, then if it is null
-  // the resourcecard.meta makes a 'null' child out of it and creates an extra space.
-  // so putting the type, if present into an array solves that problem.
-  const metaBlocks = [persistentBucketMeta]
+  // if the schema type isn't present just default to implicit
+  const schemaType = bucket?.schemaType || 'implicit'
 
-  // if the schema type isn't present it just doesn't get displayed.
-  // so future/current proof (works fine without it, works well with it)
-  const schemaType = bucket?.schemaType
-
-  if (schemaType) {
-    const schemaLabel = `${capitalize(schemaType)} Schema Type`
-    const schemaBlock = (
-      <span data-testid="bucket-schemaType"> {schemaLabel} </span>
-    )
-    metaBlocks.push(schemaBlock)
-  }
+  const schemaLabel = `${capitalize(schemaType)} Schema Type`
+  const schemaBlock = (
+    <span data-testid="bucket-schemaType"> {schemaLabel} </span>
+  )
 
   if (bucket.type === 'system') {
     return (
@@ -74,14 +64,16 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
         >
           System Bucket
         </span>
-        {metaBlocks}
+        {persistentBucketMeta}
+        {schemaBlock}
       </ResourceCard.Meta>
     )
   }
 
   return (
     <ResourceCard.Meta testID={`resourceCard-buckets-${bucket.id}`}>
-      {metaBlocks}
+      {persistentBucketMeta}
+      {schemaBlock}
       <CopyToClipboard text={bucket.id} onCopy={handleCopyAttempt}>
         <span className="copy-bucket-id" title="Click to Copy to Clipboard">
           ID: {bucket.id}

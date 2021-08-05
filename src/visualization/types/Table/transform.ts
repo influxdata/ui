@@ -2,7 +2,7 @@ import {get, findIndex, replace, indexOf, orderBy, drop, unzip} from 'lodash'
 import {fastMap, fastReduce, fastFilter} from 'src/utils/fast'
 
 import {CELL_HORIZONTAL_PADDING, DEFAULT_TIME_FIELD} from './constants'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 import {
   SortOptions,

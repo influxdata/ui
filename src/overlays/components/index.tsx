@@ -38,7 +38,7 @@ export const CustomApiTokenOverlay = RouteOverlay(
 
 export const DisplayTokenOverlay = RouteOverlay(
   OverlayHandler,
-  'access-cloned-token',
+  'access-token',
   (history, params) => {
     history.push(`/orgs/${params.orgID}/load-data/tokens`)
   }

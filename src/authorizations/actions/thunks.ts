@@ -105,14 +105,11 @@ export const createAuthorization = (auth: Authorization) => async (
       resp,
       authSchema
     )
-
-    const tokensNames = Object.keys(newAuth.entities.tokens)
-
     dispatch(addAuthorization(newAuth))
     dispatch(
       setCurrentAuthorization(
         RemoteDataState.Done,
-        newAuth.entities.tokens[tokensNames[0]]
+        newAuth.entities.tokens[newAuth.result]
       )
     )
     dispatch(notify(authorizationCreateSuccess()))

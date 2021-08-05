@@ -29,7 +29,6 @@ const DisplayTokenOverlay: FC<Props> = props => {
   const handleDismiss = () => {
     props.onClose()
   }
-
   return (
     <Overlay.Container maxWidth={750}>
       <Overlay.Header

@@ -22,9 +22,6 @@ import {
 // AuthEntities defines the result of normalizr's normalization
 // of the "authorizations" resource
 export interface AuthEntities {
-  buckets: {
-    [uuid: string]: Authorization
-  }
   tokens: {
     [uuid: string]: Authorization
   }

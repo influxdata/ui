@@ -4355,7 +4355,13 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
   },
   {
     name: 'max',
-    args: [],
+    args: [
+      {
+        name: 'column',
+        desc: 'The column to use to compute the max. Defaults to `"_value"`.',
+        type: 'String',
+      },
+    ],
     package: '',
     desc: 'Selects record with the highest `_value` from the input table.',
     example: 'max()',
@@ -4381,7 +4387,13 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
   },
   {
     name: 'min',
-    args: [],
+    args: [
+      {
+        name: 'column',
+        desc: 'The column to use to compute the min. Defaults to `"_value"`.',
+        type: 'String',
+      },
+    ],
     package: '',
     desc: 'Selects record with the lowest `_value` from the input table.',
     example: 'min()',

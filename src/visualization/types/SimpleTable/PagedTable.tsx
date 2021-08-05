@@ -278,21 +278,21 @@ const PagedTable: FC<Props> = ({result, properties}) => {
 
   useEffect(() => {
     setSize(size)
-  }, [size])
+  }, [size]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setMaxSize(measurePage(result, 0, height))
-  }, [height, result])
+  }, [height, result]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setPage(1)
-  }, [result])
+  }, [result]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (maxSize) {
       setTotalPages(Math.ceil((result?.table?.length ?? 0) / maxSize))
     }
-  }, [maxSize])
+  }, [maxSize]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const inner =
     !!size &&

@@ -58,7 +58,7 @@ export const reportPoints = (batch: PointsBatch) => {
 }
 
 const asRudderOptions = (tags: PointTags, campaign: object) => {
-  let options = {}
+  const options = {}
   let context = null
   Object.keys(tags).forEach((key: string) => {
     const value = tags[key]

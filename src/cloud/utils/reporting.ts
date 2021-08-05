@@ -193,12 +193,15 @@ export const updateCampaignInfo = (query: string) => {
   if (CLOUD && isFlagEnabled('rudderstackReporting')) {
     const allowedUtmKeys = ['campaign', 'term', 'source', 'medium', 'content']
     const queryParams = new URLSearchParams(query)
-    let info = {}
+    const info = {}
     queryParams.forEach(function(value, key) {
       if (key.startsWith('utm_')) {
         let param = key.substr(4)
         if (allowedUtmKeys.includes(param)) {
-          if (param === 'campaign') param = 'name' // see rudder-sdk-js (#2963)
+          // see rudder-sdk-js (#2963)
+          if (param === 'campaign') {
+            param = 'name'
+          }
           info[param] = value
         }
       }

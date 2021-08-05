@@ -51,11 +51,7 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   }
 
   const controls = <MarkdownModeToggle />
-  return (
-    <Context controls={controls} resizes>
-      {panelContents}
-    </Context>
-  )
+  return <Context controls={controls}>{panelContents}</Context>
 }
 
 export default MarkdownPanel

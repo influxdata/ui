@@ -42,10 +42,7 @@ import {generateThresholdsListHexs} from 'src/shared/constants/colorOperations'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
-import {
-  VIS_THEME,
-  VIS_THEME_LIGHT,
-} from 'src/shared/constants'
+import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'

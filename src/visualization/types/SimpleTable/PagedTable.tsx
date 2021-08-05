@@ -274,27 +274,25 @@ const PagedTable: FC<Props> = ({result, properties}) => {
   }, [result, offset, height])
   const tables = useMemo(() => {
     return subsetResult(result, offset, size, properties.showAll)
-  }, [result, offset, size])
+  }, [result, offset, size]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setSize(size)
-  }, [size])
+  }, [size]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (size > maxSize) {
-      setMaxSize(size)
-    }
-  }, [size])
+    setMaxSize(measurePage(result, 0, height))
+  }, [height, result]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setPage(1)
-  }, [result])
+  }, [result]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (size) {
-      setTotalPages(Math.ceil((result?.table?.length ?? 0) / size))
+    if (maxSize) {
+      setTotalPages(Math.ceil((result?.table?.length ?? 0) / maxSize))
     }
-  }, [height, result])
+  }, [maxSize, result]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const inner =
     !!size &&

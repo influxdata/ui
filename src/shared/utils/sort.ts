@@ -1,10 +1,12 @@
-import {orderBy, get, toLower} from 'lodash'
+import {toLower} from 'lodash'
 
 export enum SortTypes {
   String = 'string',
   Date = 'date',
   Float = 'float',
 }
+
+const collator = new Intl.Collator('en-us', {numeric: true})
 
 function orderByType(data, type) {
   switch (type) {
@@ -26,11 +28,18 @@ export function getSortedResources<T>(
   sortType: string
 ): T[] {
   if (sortKey && sortDirection) {
-    return orderBy<T>(
-      resourceList,
-      r => orderByType(get(r, sortKey), sortType),
-      [sortDirection]
-    )
+    return [...resourceList].sort((item1, item2) => {
+      if (sortDirection === 'desc') {
+        return collator.compare(
+          orderByType(item2[sortKey], sortType),
+          orderByType(item1[sortKey], sortType)
+        )
+      }
+      return collator.compare(
+        orderByType(item1[sortKey], sortType),
+        orderByType(item2[sortKey], sortType)
+      )
+    })
   }
   return resourceList
 }

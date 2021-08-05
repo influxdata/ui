@@ -27,7 +27,7 @@ const mockState = (): ResourceState['tokens'] => ({
     id02: {},
   },
   status: RemoteDataState.Done,
-  currentAuth: {status: RemoteDataState.Done, item: {}}
+  currentAuth: {status: RemoteDataState.Done, item: {}},
 })
 
 describe('the authorizations reducer', () => {

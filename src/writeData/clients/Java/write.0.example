@@ -1,5 +1,5 @@
 String data = "mem,host=host1 used_percent=23.43234543";
-try (WriteApi writeApi = client.getWriteApi()) {
-  writeApi.writeRecord(bucket, org, WritePrecision.NS, data);
-}
+
+WriteApiBlocking writeApi = client.getWriteApiBlocking();
+writeApi.writeRecord(bucket, org, WritePrecision.NS, data);
 

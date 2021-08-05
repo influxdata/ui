@@ -5,12 +5,13 @@ export default register => {
     type: 'region',
     family: 'inputs',
     component: View,
-    button: 'Remote Region',
+    featureFlag: 'flow-panel--remote',
+    button: 'Remote Database',
     description: 'Queries a remote region using a token',
     initial: {
       type: 'static',
       region: '',
-      token: ''
+      token: '',
     },
 
     context: (data, prev) => {
@@ -18,7 +19,8 @@ export default register => {
         ...prev,
         region: data.region,
         token: data.token,
-        org: data.org
+        org: data.org,
       }
-    }
+    },
+  })
 }

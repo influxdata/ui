@@ -1,5 +1,5 @@
 import {getFormatter} from './getFormatter'
-import {DEFAULT_TIME_FORMAT} from '../../shared/constants'
+import {DEFAULT_TIME_FORMAT} from '../../utils/datetime/constants'
 import {Base, TimeZone} from '../../types'
 
 // July 4th, 1983, 20:00:00 UTC

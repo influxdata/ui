@@ -34,7 +34,7 @@ import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
 
 // Style
 import 'src/annotations/components/annotationForm/annotationForm.scss'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 type AnnotationType = 'point' | 'range'
 

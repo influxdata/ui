@@ -10,7 +10,7 @@ import {
 import {fireEvent} from '@testing-library/react'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {REQUIRED_ERROR} from 'src/annotations/components/annotationForm/AnnotationTimeInput'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 // setting 'now' as the first of march, 2021 at 11 am.
 // the clocks changed on march 14, btw

@@ -6,7 +6,7 @@ import {IndexList} from '@influxdata/clockface'
 
 // Types
 import {FunctionRunLog} from 'src/client/managedFunctionsRoutes'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 const FunctionRunLogRow: FC<FunctionRunLog> = ({

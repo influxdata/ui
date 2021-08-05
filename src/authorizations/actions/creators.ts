@@ -15,7 +15,6 @@ export type Action =
   | ReturnType<typeof removeAuthorization>
   | ReturnType<typeof setCurrentAuthorization>
 
-
 export const setAuthorizations = (
   status: RemoteDataState,
   schema?: NormalizedSchema<AuthEntities, string[]>
@@ -51,9 +50,9 @@ export const removeAuthorization = (id: string) =>
 export const setCurrentAuthorization = (
   status: RemoteDataState,
   item?: Authorization
-  ) =>
-    ({
-      type: SET_CURRENT_AUTH,
-      status,
-      item,
-    } as const)
+) =>
+  ({
+    type: SET_CURRENT_AUTH,
+    status,
+    item,
+  } as const)

@@ -12,7 +12,7 @@ import TokensTab from 'src/authorizations/components/redesigned/TokensTab'
 import {
   AllAccessTokenOverlay,
   CustomApiTokenOverlay,
-  DisplayTokenOverlay
+  DisplayTokenOverlay,
 } from 'src/overlays/components'
 
 // Utils
@@ -24,7 +24,6 @@ import {ResourceType} from 'src/types'
 import {ORGS, ORG_ID, TOKENS} from 'src/shared/constants/routes'
 
 const tokensPath = `/${ORGS}/${ORG_ID}/load-data/${TOKENS}/generate`
-
 
 @ErrorHandling
 class TokensIndex extends Component {

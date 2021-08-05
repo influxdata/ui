@@ -24,6 +24,9 @@ import {
 export interface AuthEntities {
   buckets: {
     [uuid: string]: Authorization
+  },
+  tokens: {
+    [uuid: string]: Authorization
   }
 }
 

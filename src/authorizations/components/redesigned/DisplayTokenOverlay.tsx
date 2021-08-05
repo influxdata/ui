@@ -15,67 +15,48 @@ import {
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 // Types
-import {Authorization, AppState} from 'src/types'
+import {AppState} from 'src/types'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-type Props = ReduxProps & OwnProps 
+type Props = ReduxProps & OwnProps
 
 interface OwnProps {
-  
   onClose: () => void
 }
 
-export const DisplayTokenOverlay: FC<Props> = props => {
+
+const DisplayTokenOverlay: FC<Props> = props => {
+
+     
   const handleDismiss = () => {
     props.onClose()
   }
   
-  console.log(props.authorizations) // undefined 
-
   return (
     <Overlay.Container maxWidth={750}>
       <Overlay.Header
         title="You've Successfully cloned an API Token"
         onDismiss={handleDismiss}
+        wrapText={true}
       />
       <Overlay.Body>
         
-          <FlexBox
-            alignItems={AlignItems.Center}
+      <FlexBox
             direction={FlexDirection.Column}
             margin={ComponentSize.Large}
+            alignItems={AlignItems.Stretch}
           >
         <Alert 
             icon={IconFont.AlertTriangle}
             color={ComponentColor.Primary}>
             Make sure to copy your new personal access token now. You won't be able to see it again!
         </Alert>
-        {/* <CodeSnippet
-            text={auth}
-            label={description}
-            type="Token"
-        /> */}
-        {/* <Panel>
-        <Panel.Header />
-            <Panel.Body>
-            <CopyToClipboard text="copy to clipboard" >
-                <Button
-                text="Copy to Clipboard"
-                testID="copy-to-clipboard"
-                color={ComponentColor.Secondary}
-                size={ComponentSize.ExtraSmall}
-                />
-                
-                    
-                </CopyToClipboard>
-                
-            </Panel.Body>
-        </Panel> */}
-          
-          
         
-            
+        <CodeSnippet
+            text={props.auth.token}
+            type="Token"
+        />
           </FlexBox>
         
       </Overlay.Body>
@@ -84,9 +65,10 @@ export const DisplayTokenOverlay: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => {
-    const authorizations = state.resources.tokens.byID
-    return {authorizations}
+    const auth = state.resources.tokens.currentAuth.item 
+    return {auth}
   }
   
   
 const connector = connect(mstp, null)
+export default connector(DisplayTokenOverlay)

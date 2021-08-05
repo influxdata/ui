@@ -116,7 +116,7 @@ class TokensRow extends PureComponent<Props> {
     this.props.onDelete(id, description)
   }
 
-  private handleClone = async () => {
+  private handleClone =  () => {
     const {
       history,
       match: {
@@ -129,12 +129,12 @@ class TokensRow extends PureComponent<Props> {
     const allTokenDescriptions = Object.values(this.props.authorizations).map(
       auth => auth.description
     )
-      console.log(this.props.auth)
-      const newAuth = await this.props.onClone({
+      
+      this.props.onClone({
       ...this.props.auth,
       description: incrementCloneName(allTokenDescriptions, description),
     })
-    console.log(newAuth)
+    
     history.push(`/orgs/${orgID}/load-data/tokens/generate/clone-access`)
     
   }

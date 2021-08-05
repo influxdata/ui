@@ -292,7 +292,7 @@ const PagedTable: FC<Props> = ({result, properties}) => {
     if (maxSize) {
       setTotalPages(Math.ceil((result?.table?.length ?? 0) / maxSize))
     }
-  }, [maxSize]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [maxSize, result]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const inner =
     !!size &&

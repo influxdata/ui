@@ -274,7 +274,7 @@ const PagedTable: FC<Props> = ({result, properties}) => {
   }, [result, offset, height])
   const tables = useMemo(() => {
     return subsetResult(result, offset, size, properties.showAll)
-  }, [result, offset, size])
+  }, [result, offset, size]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setSize(size)

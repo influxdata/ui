@@ -228,6 +228,7 @@ const Source: FC<PipeProp> = ({Context}) => {
                       acc.push(
                         <Dropdown.Item
                           value={curr.value}
+                          key={curr.value}
                           onClick={() => updater(curr)}
                           selected={data.region === curr.value}
                         >
@@ -238,12 +239,15 @@ const Source: FC<PipeProp> = ({Context}) => {
                       return acc
                     }
 
-                    acc.push(<Dropdown.Divider text={curr.label} />)
+                    acc.push(
+                      <Dropdown.Divider key={curr.label} text={curr.label} />
+                    )
 
                     return acc.concat(
                       curr.options.map(_curr => (
                         <Dropdown.Item
                           value={_curr.value}
+                          key={curr.value}
                           onClick={() => updater(_curr)}
                           selected={data.region === _curr.value}
                         >

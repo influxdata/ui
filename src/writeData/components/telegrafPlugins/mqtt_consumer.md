@@ -1,7 +1,7 @@
 # MQTT Consumer Input Plugin
 
-The [MQTT][https://mqtt.org] consumer plugin reads from the specified MQTT topics
-and creates metrics using one of the supported [input data formats][https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md].
+The [MQTT](https://mqtt.org) consumer plugin reads from the specified MQTT topics
+and creates metrics using one of the supported [input data formats](https://github.com/influxdata/telegraf/blob/master/docs/DATA_FORMATS_INPUT.md).
 
 ### Configuration
 

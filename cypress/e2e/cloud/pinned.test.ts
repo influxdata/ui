@@ -96,6 +96,7 @@ describe('Pinned Items', () => {
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--card')
         .first()
         .trigger('mouseover')

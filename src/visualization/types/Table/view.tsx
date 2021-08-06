@@ -30,11 +30,10 @@ import {
 } from './constants'
 import {
   Config,
-  DEFAULT_TABLE_COLORS,
   HoverTimeProvider,
   Plot,
 } from '@influxdata/giraffe'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: TableViewProperties
@@ -97,60 +96,7 @@ const TableGraphs: FC<Props> = ({properties, result}) => {
       layers: [
         {
           type: 'table',
-          properties: {
-            colors: DEFAULT_TABLE_COLORS,
-            tableOptions: {
-              fixFirstColumn: false,
-              verticalTimeAxis: true,
-            },
-            fieldOptions: [
-              {
-                displayName: '_start',
-                internalName: '_start',
-                visible: true,
-              },
-              {
-                displayName: '_stop',
-                internalName: '_stop',
-                visible: true,
-              },
-              {
-                displayName: '_time',
-                internalName: '_time',
-                visible: true,
-              },
-              {
-                displayName: '_value',
-                internalName: '_value',
-                visible: true,
-              },
-              {
-                displayName: '_field',
-                internalName: '_field',
-                visible: true,
-              },
-              {
-                displayName: '_measurement',
-                internalName: '_measurement',
-                visible: true,
-              },
-              {
-                displayName: 'cpu',
-                internalName: 'cpu',
-                visible: true,
-              },
-              {
-                displayName: 'host',
-                internalName: 'host',
-                visible: true,
-              },
-            ],
-            timeFormat: properties.timeFormat,
-            decimalPlaces: {
-              digits: 3,
-              isEnforced: true,
-            },
-          },
+          properties,
           timeZone: 'Local',
           tableTheme: theme,
         },

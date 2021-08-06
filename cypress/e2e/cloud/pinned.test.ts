@@ -7,15 +7,13 @@ describe('Pinned Items', () => {
     cy.flush()
 
     cy.signin().then(() =>
-      cy.fixture('routes').then(({orgs}) => {
+      cy.fixture('routes').then(() => {
         cy.get('@org').then(({id}: any) => {
           orgID = id
           cy.setFeatureFlags({
             pinnedItems: true,
             docSearchWidget: true,
           }).then(() => {
-            cy.wait(1000)
-            cy.visit(`${orgs}/${id}`)
             cy.getByTestID('tree-nav')
           })
         })
@@ -37,10 +35,8 @@ describe('Pinned Items', () => {
           pinnedItems: true,
           docSearchWidget: true,
         }).then(() => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${orgID}/dashboards-list`)
-            cy.getByTestID('tree-nav')
-          })
+          cy.getByTestID('nav-item-dashboards').should('be.visible')
+          cy.getByTestID('nav-item-dashboards').click()
         })
       })
     })
@@ -53,6 +49,7 @@ describe('Pinned Items', () => {
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
         cy.getByTestID('pinneditems--card').should('exist')
       })
@@ -81,6 +78,7 @@ describe('Pinned Items', () => {
       })
 
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
         cy.getByTestID('pinneditems--link').should(
           'contain.text',
@@ -121,6 +119,7 @@ describe('Pinned Items', () => {
         })
 
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--emptystate').should(
         'contain.text',
         'Pin a task, dashboard, or notebook here'
@@ -143,15 +142,11 @@ describe('Pinned Items', () => {
             ])
             .then(({body}) => {
               cy.wrap(body.token).as('token')
+              cy.getByTestID('tree-nav')
+              cy.getByTestID('nav-item-tasks').should('be.visible')
+              cy.getByTestID('nav-item-tasks').click()
             })
         )
-      })
-
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/tasks`)
-          cy.getByTestID('tree-nav')
-        })
       })
 
       taskName = 'Task'
@@ -177,6 +172,7 @@ from(bucket: "${name}"{rightarrow}
 
     it('can pin a task to the homepage', () => {
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
         cy.getByTestID('pinneditems--link').should('contain.text', taskName)
       })
@@ -198,6 +194,7 @@ from(bucket: "${name}"{rightarrow}
       })
 
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
         cy.getByTestID('pinneditems--link').should(
           'contain.text',
@@ -216,6 +213,7 @@ from(bucket: "${name}"{rightarrow}
         })
 
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--emptystate').should(
         'contain.text',
         'Pin a task, dashboard, or notebook here'
@@ -264,6 +262,7 @@ from(bucket: "${name}"{rightarrow}
           cy.getByTestID('context-pin-flow').click()
         })
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
         cy.getByTestID('pinneditems--type').should('contain.text', 'Notebook')
       })
@@ -290,6 +289,7 @@ from(bucket: "${name}"{rightarrow}
         .type('Bucks In Six')
         .type('{enter}')
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
         cy.getByTestID('pinneditems--link').should(
           'contain.text',
@@ -321,6 +321,7 @@ from(bucket: "${name}"{rightarrow}
           cy.getByTestID('context-delete-flow Bucks In Six').click()
         })
       cy.visit('/')
+      cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--emptystate').should(
         'contain.text',
         'Pin a task, dashboard, or notebook here'

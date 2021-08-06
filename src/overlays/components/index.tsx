@@ -36,6 +36,14 @@ export const CustomApiTokenOverlay = RouteOverlay(
   }
 )
 
+export const DisplayTokenOverlay = RouteOverlay(
+  OverlayHandler,
+  'access-token',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/load-data/tokens`)
+  }
+)
+
 export const BucketsTokenOverlay = RouteOverlay(
   OverlayHandler,
   'add-token',

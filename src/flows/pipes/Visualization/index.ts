@@ -25,7 +25,7 @@ export default register => {
         pipe.properties.type === 'single-stat' ||
         pipe.properties.type === 'gauge'
       ) {
-        append('__CURRENT_RESULT__ |> max(column: "_time")')
+        append('__CURRENT_RESULT__ |> last()')
         return
       }
 

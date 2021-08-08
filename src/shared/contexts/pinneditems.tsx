@@ -46,8 +46,6 @@ export enum PinnedItemTypes {
 }
 export const PinnedItemsContext = createContext(null)
 
-// The routes below are placeholders until we get the implementation of the swagger-defined routes through the pipeline
-
 export const getPinnedItems = async () => {
   const pinnedRes = await getPinned({})
   if (pinnedRes.status !== 200) {

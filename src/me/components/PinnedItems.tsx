@@ -74,7 +74,7 @@ const PinnedItems: FC = () => {
                   >
                     <Context.Item
                       label="Unpin"
-                      action={async () => await handleDeletePinnedItem(item.id)}
+                      action={() => handleDeletePinnedItem(item.id)}
                       testID="pinneditems-delete--confirm"
                     />
                   </Context.Menu>

@@ -18,7 +18,13 @@ import {getSortedResources} from 'src/shared/utils/sort'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {getPinnedItems} from 'src/shared/contexts/pinneditems'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+
+let getPinnedItems
+if (CLOUD) {
+  getPinnedItems = require('src/shared/contexts/pinneditems').getPinnedItems
+}
 
 interface Props {
   tasks: Task[]
@@ -62,9 +68,11 @@ export default class TasksList extends PureComponent<Props, State> {
 
   public componentDidMount() {
     this.props.checkTaskLimits()
-    getPinnedItems()
-      .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
-      .catch(err => console.error(err))
+    if (CLOUD && isFlagEnabled('pinnedItems')) {
+      getPinnedItems()
+        .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
+        .catch(err => console.error(err))
+    }
   }
 
   public render() {

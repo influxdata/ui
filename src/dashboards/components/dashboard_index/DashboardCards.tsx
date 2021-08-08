@@ -18,8 +18,13 @@ import {LimitStatus} from 'src/cloud/actions/limits'
 
 // Utils
 import {extractDashboardLimits} from 'src/cloud/utils/limits'
-import {getPinnedItems} from 'src/shared/contexts/pinneditems'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+
+let getPinnedItems
+if (CLOUD) {
+  getPinnedItems = require('src/shared/contexts/pinneditems').getPinnedItems
+}
 
 interface StateProps {
   limitStatus: LimitStatus['status']
@@ -48,7 +53,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
   }
 
   public componentDidMount() {
-    if (isFlagEnabled('pinnedItems')) {
+    if (isFlagEnabled('pinnedItems') && CLOUD) {
       getPinnedItems()
         .then(res =>
           this.setState(prev => ({...prev, pinnedItems: res, windowSize: 15}))

@@ -12,8 +12,13 @@ import FlowsExplainer from 'src/flows/components/FlowsExplainer'
 import FlowCard from 'src/flows/components/FlowCard'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {FlowList} from 'src/types/flows'
-import {getPinnedItems} from 'src/shared/contexts/pinneditems'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+
+let getPinnedItems
+if (CLOUD) {
+  getPinnedItems = require('src/shared/contexts/pinneditems').getPinnedItems
+}
 
 interface Props {
   flows: FlowList
@@ -32,7 +37,7 @@ const FlowCards: FC<Props> = ({flows, search}) => {
   const [pinnedItems, setPinnedItems] = useState([])
 
   useEffect(() => {
-    if (isFlagEnabled('pinnedItems')) {
+    if (isFlagEnabled('pinnedItems') && CLOUD) {
       getPinnedItems().then(res => setPinnedItems(res))
     }
   }, [])

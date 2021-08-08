@@ -1,4 +1,4 @@
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 export const FORMAT_OPTIONS: Array<{text: string}> = [
   {text: DEFAULT_TIME_FORMAT}, // 'YYYY-MM-DD HH:mm:ss'

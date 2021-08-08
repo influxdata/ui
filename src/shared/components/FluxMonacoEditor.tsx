@@ -5,6 +5,7 @@ import classnames from 'classnames'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Utils
 import FLUXLANGID from 'src/external/monaco.flux.syntax'
@@ -117,29 +118,31 @@ const FluxEditorMonaco: FC<Props> = ({
   }
 
   return (
-    <div className={wrapperClassName} data-testid="flux-editor">
-      <MonacoEditor
-        language={FLUXLANGID}
-        theme={THEME_NAME}
-        value={script}
-        onChange={onChange}
-        options={{
-          fontSize: 13,
-          fontFamily: '"IBMPlexMono", monospace',
-          cursorWidth: 2,
-          lineNumbersMinChars: 4,
-          lineDecorationsWidth: 0,
-          minimap: {
-            renderCharacters: false,
-          },
-          overviewRulerBorder: false,
-          automaticLayout: true,
-          readOnly: readOnly || false,
-          wordWrap: wrapLines ?? 'off',
-        }}
-        editorDidMount={editorDidMount}
-      />
-    </div>
+    <ErrorBoundary>
+      <div className={wrapperClassName} data-testid="flux-editor">
+        <MonacoEditor
+          language={FLUXLANGID}
+          theme={THEME_NAME}
+          value={script}
+          onChange={onChange}
+          options={{
+            fontSize: 13,
+            fontFamily: '"IBMPlexMono", monospace',
+            cursorWidth: 2,
+            lineNumbersMinChars: 4,
+            lineDecorationsWidth: 0,
+            minimap: {
+              renderCharacters: false,
+            },
+            overviewRulerBorder: false,
+            automaticLayout: true,
+            readOnly: readOnly || false,
+            wordWrap: wrapLines ?? 'off',
+          }}
+          editorDidMount={editorDidMount}
+        />
+      </div>
+    </ErrorBoundary>
   )
 }
 

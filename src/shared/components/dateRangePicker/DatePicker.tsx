@@ -19,7 +19,7 @@ import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {getTimeZone} from 'src/dashboards/selectors'
 
 // Constants
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 interface Props {
   label: string

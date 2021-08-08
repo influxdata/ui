@@ -4,7 +4,7 @@ import React from 'react'
 // Fixtures
 import {TokenRow} from './TokenRow'
 import {auth} from 'mocks/dummyData'
-import {renderWithRedux} from 'src/mockState'
+import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override?) => {
   const authorization = {
@@ -20,7 +20,7 @@ const setup = (override?) => {
     onClone: jest.fn(),
     ...override,
   }
-  return renderWithRedux(<TokenRow {...props} />)
+  return renderWithReduxAndRouter(<TokenRow {...props} />)
 }
 
 describe('TokenRowResourceCard', () => {

@@ -14,7 +14,7 @@ import {getOverlayParams} from 'src/overlays/selectors'
 import {editAnnotation} from 'src/annotations/actions/thunks'
 
 // Types
-import {EditAnnotation} from 'src/types'
+import {AppState, EditAnnotation} from 'src/types'
 
 // Notifications
 import {
@@ -27,11 +27,16 @@ import {notify} from 'src/shared/actions/notifications'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
+import {getTimeFormatForView} from 'src/views/selectors'
 
 export const EditAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const dispatch = useDispatch()
-  const {clickedAnnotation} = useSelector(getOverlayParams)
+  const {clickedAnnotation, cellID} = useSelector(getOverlayParams)
+
+  const timeFormat = useSelector((state: AppState) =>
+    getTimeFormatForView(state, cellID)
+  )
 
   const handleSubmit = async (
     editedAnnotation: EditAnnotation
@@ -68,6 +73,7 @@ export const EditAnnotationOverlay: FC = () => {
       onClose={onClose}
       title="Edit"
       eventPrefix={clickedAnnotation.eventPrefix}
+      timeFormat={timeFormat}
     />
   )
 }

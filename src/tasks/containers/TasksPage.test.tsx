@@ -71,7 +71,7 @@ jest.mock('src/shared/contexts/pinneditems', () => ({
     })
   ),
   PinnedItemTypes: {Task: 'task'},
-  pushPinnedItem: jest.fn(() => {
+  addPinnedItem: jest.fn(() => {
     return new Promise(resolve => resolve())
   }),
   deletePinnedItemByParam: jest.fn(() => Promise.resolve()),

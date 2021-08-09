@@ -1,6 +1,6 @@
 import React, {FC, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {ResourceCard} from '@influxdata/clockface'
@@ -11,6 +11,13 @@ import {FlowListContext} from 'src/flows/context/flow.list'
 // Utils
 import {getMe} from 'src/me/selectors'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
 interface Props {
   id: string
   isPinned: boolean
@@ -23,6 +30,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
 
   const history = useHistory()
   const user = useSelector(getMe)
+  const dispatch = useDispatch()
 
   const handleClick = () => {
     history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`)
@@ -41,7 +49,12 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
 
   const handleRenameNotebook = (name: string) => {
     update(id, {...flow, name})
-    updatePinnedItemByParam(id, {name})
+    try {
+      updatePinnedItemByParam(id, {name})
+      dispatch(notify(pinnedItemSuccess('notebook', 'updated')))
+    } catch (err) {
+      dispatch(notify(pinnedItemFailure(err.message, 'update')))
+    }
   }
 
   return (

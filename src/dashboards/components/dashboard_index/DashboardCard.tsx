@@ -28,7 +28,13 @@ import {DEFAULT_DASHBOARD_NAME} from 'src/dashboards/constants'
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 
 import {
-  pushPinnedItem,
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
+import {
+  addPinnedItem,
   deletePinnedItemByParam,
   PinnedItemTypes,
   updatePinnedItemByParam,
@@ -100,7 +106,12 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {name})
-    updatePinnedItemByParam(id, {name})
+    try {
+      updatePinnedItemByParam(id, {name})
+      this.props.sendNotification(pinnedItemSuccess('dashboard', 'updated'))
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+    }
   }
 
   private handleCloneDashboard = () => {
@@ -110,17 +121,22 @@ class DashboardCard extends PureComponent<Props> {
   }
 
   private handlePinDashboard = () => {
-    pushPinnedItem({
-      orgID: this.props.org.id,
-      userID: this.props.me.id,
-      metadata: {
-        dashboardID: this.props.id,
-        name: this.props.name,
-        description: this.props.description,
-      },
+    try {
+      addPinnedItem({
+        orgID: this.props.org.id,
+        userID: this.props.me.id,
+        metadata: {
+          dashboardID: this.props.id,
+          name: this.props.name,
+          description: this.props.description,
+        },
 
-      type: PinnedItemTypes.Dashboard,
-    })
+        type: PinnedItemTypes.Dashboard,
+      })
+      this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+    }
   }
 
   private get contextMenu(): JSX.Element {
@@ -236,6 +252,7 @@ const mdtp = {
   onCloneDashboard: cloneDashboard,
   onDeleteDashboard: deleteDashboard,
   onUpdateDashboard: updateDashboard,
+  sendNotification: notify,
 }
 
 const mstp = (state: AppState) => {

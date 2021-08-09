@@ -4,7 +4,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 import {
-  pushPinnedItem,
+  addPinnedItem,
   PinnedItemTypes,
   deletePinnedItemByParam,
   updatePinnedItemByParam,
@@ -40,6 +40,12 @@ import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 interface PassedProps {
   task: Task
@@ -116,15 +122,20 @@ export class TaskCard extends PureComponent<
   }
 
   private handlePinTask = () => {
-    pushPinnedItem({
-      orgID: this.props.org.id,
-      userID: this.props.me.id,
-      metadata: {
-        taskID: this.props.task.id,
-        name: this.props.task.name,
-      },
-      type: PinnedItemTypes.Task,
-    })
+    try {
+      addPinnedItem({
+        orgID: this.props.org.id,
+        userID: this.props.me.id,
+        metadata: {
+          taskID: this.props.task.id,
+          name: this.props.task.name,
+        },
+        type: PinnedItemTypes.Task,
+      })
+      this.props.sendNotification(pinnedItemSuccess('task', 'added'))
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+    }
   }
 
   private handleOnDelete = () => {
@@ -236,7 +247,12 @@ export class TaskCard extends PureComponent<
       task: {id},
     } = this.props
     onUpdate(name, id)
-    updatePinnedItemByParam(id, {name})
+    try {
+      updatePinnedItemByParam(id, {name})
+      this.props.sendNotification(pinnedItemSuccess('task', 'updated'))
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+    }
   }
 
   private handleExport = () => {
@@ -307,6 +323,7 @@ const mdtp = {
   onAddTaskLabel: addTaskLabel,
   onDeleteTaskLabel: deleteTaskLabel,
   setCurrentTasksPage,
+  sendNotification: notify,
 }
 
 const mstp = (state: AppState) => {

@@ -55,18 +55,10 @@ export const getPinnedItems = async () => {
   }
 }
 
-const addPinnedItem = async (item: Partial<PinnedItem>) => {
+export const addPinnedItem = async (item: Partial<PinnedItem>) => {
   const pinnedRes = await postPinned({data: item})
   if (pinnedRes.status !== 200) {
     throw new Error('Unable to retrieve pinned items')
-  }
-}
-
-export const pushPinnedItem = async (newItem: Partial<PinnedItem>) => {
-  try {
-    await addPinnedItem(newItem)
-  } catch (err) {
-    console.error(err)
   }
 }
 
@@ -81,7 +73,7 @@ export const deletePinnedItemByParam = async (param: string) => {
       await deletePinned({id: toDeleteItem.id})
     }
   } catch (err) {
-    console.error(err)
+    throw new Error(err)
   }
 }
 
@@ -89,26 +81,22 @@ export const deletePinnedItem = async (itemID: string) => {
   try {
     await deletePinned({id: itemID})
   } catch (err) {
-    console.error('failed to delete item')
+    throw new Error(err)
   }
 }
 
 export const updatePinnedItemByParam = async (id: string, updateParams: {}) => {
-  try {
-    const pinnedItems = await getPinnedItems()
-    const toUpdateItem = pinnedItems?.find(item =>
-      Object.values(item.metadata).includes(id)
-    )
-    if (toUpdateItem) {
-      await putPinned({
-        id: toUpdateItem.id,
-        data: {
-          metadata: {...toUpdateItem.metadata, ...updateParams},
-        },
-      })
-    }
-  } catch (err) {
-    console.error(err)
+  const pinnedItems = await getPinnedItems()
+  const toUpdateItem = pinnedItems?.find(item =>
+    Object.values(item.metadata).includes(id)
+  )
+  if (toUpdateItem) {
+    await putPinned({
+      id: toUpdateItem.id,
+      data: {
+        metadata: {...toUpdateItem.metadata, ...updateParams},
+      },
+    })
   }
 }
 

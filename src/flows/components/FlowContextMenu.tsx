@@ -5,7 +5,7 @@ import 'src/flows/components/FlowContextMenu.scss'
 
 // Selector
 import {getMe} from 'src/me/selectors'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Components
 import {Context} from 'src/clockface'
@@ -23,12 +23,18 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {event} from 'src/cloud/utils/reporting'
 
 import {
-  pushPinnedItem,
+  addPinnedItem,
   deletePinnedItemByParam,
   PinnedItemTypes,
 } from 'src/shared/contexts/pinneditems'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 interface Props {
   id: string
@@ -41,17 +47,23 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const {orgID} = useParams<{orgID: string}>()
   const me = useSelector(getMe)
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const handlePinFlow = () => {
-    pushPinnedItem({
-      orgID: orgID,
-      userID: me.id,
-      metadata: {
-        flowID: id,
-        name,
-      },
-      type: PinnedItemTypes.Notebook,
-    })
+    try {
+      addPinnedItem({
+        orgID: orgID,
+        userID: me.id,
+        metadata: {
+          flowID: id,
+          name,
+        },
+        type: PinnedItemTypes.Notebook,
+      })
+      dispatch(notify(pinnedItemSuccess('notebook', 'added')))
+    } catch (err) {
+      dispatch(notify(pinnedItemFailure(err.message, 'create')))
+    }
   }
 
   const handleDelete = () => {

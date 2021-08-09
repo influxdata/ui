@@ -15,11 +15,9 @@ import {getFlags} from 'src/shared/thunks/flags'
 
 // Utils
 import {activeFlags} from 'src/shared/selectors/flags'
-import {updateReportingContext} from 'src/cloud/utils/reporting'
 
 const GetFlags: FC = () => {
   const dispatch = useDispatch()
-  const flags = useSelector(activeFlags)
   const status = useSelector(
     (state: AppState) => state.flags.status || RemoteDataState.NotStarted
   )
@@ -28,16 +26,6 @@ const GetFlags: FC = () => {
       dispatch(getFlags())
     }
   }, [dispatch, status])
-
-  useEffect(() => {
-    updateReportingContext(
-      Object.entries(flags).reduce((prev, [key, val]) => {
-        prev[`flag (${key})`] = val
-
-        return prev
-      }, {})
-    )
-  }, [flags])
 
   return (
     <SpinnerContainer loading={status} spinnerComponent={<TechnoSpinner />}>

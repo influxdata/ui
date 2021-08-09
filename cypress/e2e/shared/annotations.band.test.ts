@@ -1,7 +1,6 @@
 import {
   addRangeAnnotation,
   checkAnnotationText,
-  clearLocalStorage,
   deleteAnnotation,
   setupData,
   testAddAnnotation,
@@ -14,7 +13,7 @@ describe('The Annotations UI functionality on a band plot graph type', () => {
   const bandSuffix = 'band'
 
   beforeEach(() => setupData(cy, bandSuffix))
-  afterEach(clearLocalStorage)
+  afterEach(() => cy.clearLocalStorage())
 
   it('can create an annotation on the band plot', () => {
     testAddAnnotation(cy)

@@ -1,7 +1,6 @@
 import {
   addRangeAnnotation,
   checkAnnotationText,
-  clearLocalStorage,
   deleteAnnotation,
   setupData,
   testAddAnnotation,
@@ -12,7 +11,7 @@ import {
 
 describe('The Annotations UI functionality, on a graph (xy line) graph type', () => {
   beforeEach(() => setupData(cy))
-  afterEach(clearLocalStorage)
+  afterEach(() => cy.clearLocalStorage())
 
   it('can create an annotation on the xy line graph', () => {
     testAddAnnotation(cy)

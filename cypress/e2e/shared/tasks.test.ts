@@ -12,7 +12,7 @@ describe('Tasks', () => {
     cy.flush()
 
     cy.signin().then(() => {
-      cy.get('@org').then(({id: orgID}: Organization) =>
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) =>
         cy
           .createToken(orgID, 'test token', 'active', [
             {action: 'write', resource: {type: 'views', orgID}},
@@ -26,7 +26,7 @@ describe('Tasks', () => {
     })
 
     cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.visit(`${orgs}/${id}/tasks`)
         cy.getByTestID('tree-nav')
       })
@@ -183,7 +183,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
   describe('When tasks already exist', () => {
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id)
         })
@@ -420,7 +420,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const taskName = 'beepBoop'
 
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id, taskName).then(({body}) => {
             cy.createAndAddLabel('tasks', id, body.id, newLabelName)
@@ -433,7 +433,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       })
 
       cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/tasks`)
           cy.getByTestID('tree-nav')
         })
@@ -542,7 +542,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const firstIndex = 0
     const secondIndex = 1
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id, firstTask)
           cy.createTask(token, id, secondTask)
@@ -550,7 +550,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       })
 
       cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/tasks`)
           cy.getByTestID('tree-nav')
         })

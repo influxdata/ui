@@ -42,7 +42,7 @@ describe('navigation', () => {
     cy.visit('/')
 
     cy.getByTestID('user-nav').should('exist')
-    cy.get('@org').then(({id}: Organization) => {
+    cy.get<Organization>('@org').then(({id}: Organization) => {
       cy.visit(`/orgs/${id}/not-a-route`)
       cy.getByTestID('not-found').should('exist')
     })

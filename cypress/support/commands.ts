@@ -20,7 +20,7 @@ Cypress.on('uncaught:exception', (err, _) => {
   )
 })
 
-export const signin = (): Cypress.Chainable<Cypress.Response> => {
+export const signin = (): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.setupUser().then((response: any) => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
@@ -83,7 +83,7 @@ export const loginViaDex = (username: string, password: string) => {
     .then(resp =>
       cy
         .request({
-          url: resp.headers.location,
+          url: resp.headers.location as string,
           followRedirect: false,
           method: 'GET',
         })
@@ -98,7 +98,7 @@ export const loginViaDex = (username: string, password: string) => {
             },
             followRedirect: false,
           }).then(thirdResp => {
-            const req = thirdResp.headers.location.split('/approval?req=')[1]
+            const req = (thirdResp.headers.location as string).split('/approval?req=')[1]
             cy.request({
               url: thirdResp.redirectedToUrl,
               followRedirect: true,
@@ -115,7 +115,7 @@ export const loginViaDex = (username: string, password: string) => {
     )
 }
 
-export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Response> => {
+export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Response<any>> => {
   return cy
     .request({
       method: 'GET',
@@ -176,7 +176,7 @@ export const wrapDefaultPassword = (): Cypress.Chainable => {
 export const createDashboard = (
   orgID?: string,
   name: string = 'test dashboard'
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: '/api/v2/dashboards',
@@ -196,7 +196,7 @@ export const createCell = (
     width: 4,
   },
   name?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: `/api/v2/dashboards/${dbID}/cells`,
@@ -213,7 +213,7 @@ export const createCell = (
 export const createView = (
   dbID: string,
   cellID: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.fixture('view').then(view => {
     return cy.request({
       method: 'PATCH',
@@ -225,12 +225,12 @@ export const createView = (
 
 export const createDashWithCell = (
   orgID: string
-): Cypress.Chainable<Cypress.Response> =>
+): Cypress.Chainable<Cypress.Response<any>> =>
   createDashboard(orgID).then(({body: dashboard}) => createCell(dashboard.id))
 
 export const createDashWithViewAndVar = (
   orgID: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   createMapVariable(orgID)
   return createDashboard(orgID).then(({body: dashboard}) =>
     createCell(dashboard.id).then(({body: cell}) =>
@@ -241,7 +241,7 @@ export const createDashWithViewAndVar = (
 
 export const createOrg = (
   name = 'test org'
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: '/api/v2/orgs',
@@ -251,7 +251,7 @@ export const createOrg = (
   })
 }
 
-export const deleteOrg = (id: string): Cypress.Chainable<Cypress.Response> => {
+export const deleteOrg = (id: string): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'DELETE',
     url: `/api/v2/orgs/${id}`,
@@ -262,7 +262,7 @@ export const createBucket = (
   orgID?: string,
   organization?: string,
   bucketName?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: '/api/v2/buckets',
@@ -278,7 +278,7 @@ export const createBucket = (
 export const upsertSecret = (
   orgID: string,
   secret: Secret
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'PATCH',
     url: `/api/v2/orgs/${orgID}/secrets`,
@@ -290,7 +290,7 @@ export const createTask = (
   token: string,
   orgID?: string,
   name: string = '🦄ask'
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   const flux = `import "csv"
 
 option task = {
@@ -316,7 +316,7 @@ export const createQueryVariable = (
   orgID?: string,
   name: string = 'LittleVariable',
   query?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   const argumentsObj = {
     type: 'query',
     values: {
@@ -340,7 +340,7 @@ export const createCSVVariable = (
   orgID?: string,
   name: string = 'CSVVariable',
   csv?: string[]
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   const argumentsObj = {
     type: 'constant',
     values: csv || ['c1', 'c2', 'c3', 'c4'],
@@ -359,7 +359,7 @@ export const createCSVVariable = (
 
 export const createMapVariable = (
   orgID?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   const argumentsObj = {
     type: 'map',
     values: {k1: 'v1', k2: 'v2'},
@@ -383,7 +383,7 @@ export const createLabel = (
     description: `test ${name}`,
     color: '#ff0054',
   }
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: '/api/v2/labels',
@@ -400,7 +400,7 @@ export const createAndAddLabel = (
   orgID: string = '',
   resourceID: string,
   name?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy
     .request({
       method: 'POST',
@@ -423,7 +423,7 @@ export const addResourceLabel = (
   resource: string,
   resourceID: string,
   labelID: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: `/api/v2/${resource}/${resourceID}/labels`,
@@ -433,7 +433,7 @@ export const addResourceLabel = (
 
 export const createSource = (
   orgID?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: '/api/v2/sources',
@@ -452,7 +452,7 @@ export const createScraper = (
   type?: string,
   orgID?: string,
   bucketID?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: '/api/v2/scrapers',
@@ -471,7 +471,7 @@ export const createTelegraf = (
   description?: string,
   orgID?: string,
   bucket?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: '/api/v2/telegrafs',
@@ -501,7 +501,7 @@ export const createRule = (
   orgID: string,
   endpointID: string,
   name = ''
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'POST',
     url: 'api/v2/notificationRules',
@@ -553,7 +553,7 @@ export const createToken = (
   description: string,
   status: string,
   permissions: object[]
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request('POST', 'api/v2/authorizations', {
     orgID: orgId,
     description: description,
@@ -563,7 +563,7 @@ export const createToken = (
 }
 
 // TODO: have to go through setup because we cannot create a user w/ a password via the user API
-export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
+export const setupUser = (): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'GET',
     url: '/debug/provision',
@@ -615,7 +615,7 @@ export type ProvisionData = {
 
 export const quartzProvision = (
   data: ProvisionData
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request('/api/v2/quartz/provision', data).then(response => {
     expect(response.status).to.eq(200)
   })
@@ -644,7 +644,7 @@ export const lines = (numLines = 3) => {
 export const writeData = (
   lines: string[],
   namedBucket?: string
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.get<Organization>('@org').then((org: Organization) => {
     return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
       const bucketToUse = namedBucket ?? bucket.name
@@ -736,7 +736,7 @@ export const fluxEqual = (s1: string, s2: string): Cypress.Chainable => {
 // notification endpoints
 export const createEndpoint = (
   endpoint: NotificationEndpoint
-): Cypress.Chainable<Cypress.Response> => {
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request('POST', 'api/v2/notificationEndpoints', endpoint)
 }
 

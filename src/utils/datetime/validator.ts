@@ -2,6 +2,9 @@ import {isMatch} from 'date-fns'
 
 const formatterToDateFnsMap = {
   'YYYY-MM-DD HH:mm:ss': 'yyyy-MM-dd HH:mm:ss', // DEFAULT_TIME_FORMAT
+  'YYYY-MM-DD': 'yyyy-MM-dd',
+  'YYYY-MM-DD HH:mm': 'yyyy-MM-dd HH:mm',
+  'YYYY-MM-DD HH:mm:ss.sss': 'yyyy-MM-dd HH:mm:ss.SSS',
   'YYYY-MM-DD hh:mm:ss a ZZ': 'yyyy-MM-dd hh:mm:ss a xxxx',
   'DD/MM/YYYY HH:mm:ss.sss': 'dd/MM/yyyy HH:mm:ss.SSS',
   'DD/MM/YYYY hh:mm:ss.sss a': 'dd/MM/yyyy hh:mm:ss.SSS bb',

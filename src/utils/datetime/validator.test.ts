@@ -3,6 +3,12 @@ import {isValid} from './validator'
 describe('the datetime validator', () => {
   it('should return true on valid date formats', function() {
     expect(isValid('1999-02-09 23:00:00', 'YYYY-MM-DD HH:mm:ss')).toBeTruthy()
+    expect(isValid('1999-02-09', 'YYYY-MM-DD')).toBeTruthy()
+    expect(isValid('1999-02-09 23:00', 'YYYY-MM-DD HH:mm')).toBeTruthy()
+    expect(isValid('1999-02-09 23:00:00', 'YYYY-MM-DD HH:mm:ss')).toBeTruthy()
+    expect(
+      isValid('1999-02-09 23:00:00.000', 'YYYY-MM-DD HH:mm:ss.sss')
+    ).toBeTruthy()
     expect(
       isValid('1999-02-09 12:00:00 PM -0700', 'YYYY-MM-DD hh:mm:ss a ZZ')
     ).toBeTruthy()

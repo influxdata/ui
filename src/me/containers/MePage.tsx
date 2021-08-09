@@ -120,7 +120,7 @@ export class MePage extends PureComponent<Props> {
                       <GettingStarted />
                     </Panel.Body>
                   </Panel>
-                  {isFlagEnabled('pinnedItems') && (
+                  {isFlagEnabled('pinnedItems') && CLOUD && (
                     <PinnedItemsProvider>
                       <PinnedItems />
                     </PinnedItemsProvider>

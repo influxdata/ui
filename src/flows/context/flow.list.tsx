@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import useLocalStorageState from 'use-local-storage-state'
 import {v4 as UUID} from 'uuid'
@@ -220,20 +220,23 @@ export const FlowListProvider: FC = ({children}) => {
     })
   }
 
-  const update = (id: string, flow: Flow) => {
-    if (!flows.hasOwnProperty(id)) {
-      throw new Error(`${PROJECT_NAME} not found`)
-    }
+  const update = useCallback(
+    (id: string, flow: Flow) => {
+      if (!flows.hasOwnProperty(id)) {
+        throw new Error(`${PROJECT_NAME} not found`)
+      }
 
-    setFlows({
-      ...flows,
-      [id]: flow,
-    })
+      setFlows(prevFlows => ({
+        ...prevFlows,
+        [id]: flow,
+      }))
 
-    const apiFlow = serialize(flow, org.id)
+      const apiFlow = serialize(flow, org.id)
 
-    pooledUpdateAPI({id, ...apiFlow})
-  }
+      pooledUpdateAPI({id, ...apiFlow})
+    },
+    [setFlows, org.id] // eslint-disable-line react-hooks/exhaustive-deps
+  )
 
   const remove = async (id: string) => {
     const _flows = {
@@ -288,29 +291,33 @@ export const FlowListProvider: FC = ({children}) => {
     }
   }
 
-  const flowList = Object.keys(flows).reduce((acc, curr) => {
-    const stateUpdater = (field, data) => {
-      const _flow = {
-        ...flows[curr],
-      }
+  const flowList = useMemo(
+    () =>
+      Object.keys(flows).reduce((acc, curr) => {
+        const stateUpdater = (field, data) => {
+          const _flow = {
+            ...flows[curr],
+          }
 
-      _flow[field] = data
+          _flow[field] = data
 
-      update(curr, _flow)
-    }
+          update(curr, _flow)
+        }
 
-    acc[curr] = {
-      ...flows[curr],
-      data: _asResource(flows[curr].data, data => {
-        stateUpdater('data', data)
-      }),
-      meta: _asResource(flows[curr].meta, data => {
-        stateUpdater('meta', data)
-      }),
-    } as Flow
+        acc[curr] = {
+          ...flows[curr],
+          data: _asResource(flows[curr].data, data => {
+            stateUpdater('data', data)
+          }),
+          meta: _asResource(flows[curr].meta, data => {
+            stateUpdater('meta', data)
+          }),
+        } as Flow
 
-    return acc
-  }, {})
+        return acc
+      }, {}),
+    [update, flows]
+  )
 
   return (
     <FlowListContext.Provider

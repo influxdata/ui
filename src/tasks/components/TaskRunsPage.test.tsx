@@ -15,7 +15,7 @@ import {mockAppState} from 'src/mockAppState'
 import {RemoteDataState} from 'src/types'
 
 // DateTime
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 const runIDs = [

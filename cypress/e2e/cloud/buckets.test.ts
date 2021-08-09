@@ -27,16 +27,16 @@ describe('Buckets', () => {
         monitoringBucket,
       ]
       const retentionDesc = [
+        defaultBucket,
         monitoringBucket,
         demoDataBucket,
         tasksBucket,
-        defaultBucket,
       ]
       const retentionAsc = [
-        defaultBucket,
         tasksBucket,
         monitoringBucket,
         demoDataBucket,
+        defaultBucket,
       ]
 
       // if demo data bucket doesn't exist, create a bucket with the same name

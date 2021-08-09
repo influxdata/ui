@@ -47,9 +47,17 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
     </span>
   )
 
+  // if the schema type isn't present just default to implicit
+  const schemaType = bucket?.schemaType || 'implicit'
+
+  const schemaLabel = `${capitalize(schemaType)} Schema Type`
+  const schemaBlock = (
+    <span data-testid="bucket-schemaType"> {schemaLabel} </span>
+  )
+
   if (bucket.type === 'system') {
     return (
-      <ResourceCard.Meta>
+      <ResourceCard.Meta testID={`resourceCard-buckets-${bucket.id}`}>
         <span
           className="system-bucket"
           key={`system-bucket-indicator-${bucket.id}`}
@@ -57,13 +65,15 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
           System Bucket
         </span>
         {persistentBucketMeta}
+        {schemaBlock}
       </ResourceCard.Meta>
     )
   }
 
   return (
-    <ResourceCard.Meta>
+    <ResourceCard.Meta testID={`resourceCard-buckets-${bucket.id}`}>
       {persistentBucketMeta}
+      {schemaBlock}
       <CopyToClipboard text={bucket.id} onCopy={handleCopyAttempt}>
         <span className="copy-bucket-id" title="Click to Copy to Clipboard">
           ID: {bucket.id}

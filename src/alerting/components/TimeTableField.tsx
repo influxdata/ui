@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Constants
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 // Types
 import {StatusRow, NotificationRow} from 'src/types'

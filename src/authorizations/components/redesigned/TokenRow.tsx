@@ -2,6 +2,7 @@
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Actions
 import {
@@ -42,7 +43,7 @@ interface OwnProps {
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-type Props = ReduxProps & OwnProps
+type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
 
 const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
 class TokensRow extends PureComponent<Props> {
@@ -111,6 +112,13 @@ class TokensRow extends PureComponent<Props> {
   }
 
   private handleClone = () => {
+    const {
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+
     const {description} = this.props.auth
 
     const allTokenDescriptions = Object.values(this.props.authorizations).map(
@@ -121,6 +129,8 @@ class TokensRow extends PureComponent<Props> {
       ...this.props.auth,
       description: incrementCloneName(allTokenDescriptions, description),
     })
+
+    history.push(`/orgs/${orgID}/load-data/tokens/generate/clone-access`)
   }
 
   private handleClickDescription = () => {
@@ -147,4 +157,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const TokenRow = connector(TokensRow)
+export const TokenRow = connector(withRouter(TokensRow))

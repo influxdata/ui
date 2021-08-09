@@ -37,7 +37,11 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
         />
       }
     >
-      <MarkdownMonacoEditor script={data.text} onChangeScript={handleChange} />
+      <MarkdownMonacoEditor
+        script={data.text}
+        onChangeScript={handleChange}
+        autogrow
+      />
     </Suspense>
   )
 
@@ -51,11 +55,7 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   }
 
   const controls = <MarkdownModeToggle />
-  return (
-    <Context controls={controls} resizes>
-      {panelContents}
-    </Context>
-  )
+  return <Context controls={controls}>{panelContents}</Context>
 }
 
 export default MarkdownPanel

@@ -15,6 +15,7 @@ import {
   addAuthorization,
   setAuthorizations,
   removeAuthorization,
+  setCurrentAuthorization,
 } from 'src/authorizations/actions/creators'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -104,8 +105,13 @@ export const createAuthorization = (auth: Authorization) => async (
       resp,
       authSchema
     )
-
     dispatch(addAuthorization(newAuth))
+    dispatch(
+      setCurrentAuthorization(
+        RemoteDataState.Done,
+        newAuth.entities.tokens[newAuth.result]
+      )
+    )
     dispatch(notify(authorizationCreateSuccess()))
   } catch (error) {
     const message = error.data ? error.data.message : null

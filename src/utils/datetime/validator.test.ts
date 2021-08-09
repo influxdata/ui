@@ -1,7 +1,7 @@
 import {isValid} from './validator'
 
-describe('validation tests', () => {
-  it('should do the thing', function() {
+describe('the datetime validator', () => {
+  it('should return true on valid date formats', function() {
     expect(isValid('1999-02-09 23:00:00', 'YYYY-MM-DD HH:mm:ss')).toBeTruthy()
     expect(
       isValid('1999-02-09 12:00:00 PM -0700', 'YYYY-MM-DD hh:mm:ss a ZZ')

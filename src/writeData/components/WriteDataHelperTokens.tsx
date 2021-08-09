@@ -33,10 +33,10 @@ const WriteDataHelperTokens: FC = () => {
     getAll<Authorization>(state, ResourceType.Authorizations)
   )
   const {token, changeToken} = useContext(WriteDataDetailsContext)
-  tokens.map(t => {
-    t.description.length === 0
-      ? (t.description = DEFAULT_TOKEN_DESCRIPTION)
-      : t.description
+  tokens.map(token => {
+    token.description?.length === 0
+      ? (token.description = DEFAULT_TOKEN_DESCRIPTION)
+      : token.description
   })
 
   let body = (

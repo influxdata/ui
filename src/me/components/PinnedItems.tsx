@@ -14,6 +14,8 @@ import './PinnedItems.scss'
 import {ResourceCard, ResourceList} from '@influxdata/clockface'
 
 import {useHistory} from 'react-router-dom'
+import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const PinnedItems: FC = () => {
   const history = useHistory()
@@ -53,7 +55,7 @@ const PinnedItems: FC = () => {
       Pin a task, dashboard, or notebook here
     </h3>
   )
-  return (
+  return CLOUD && isFlagEnabled('pinnedItems') ? (
     <div data-testid="pinneditems--container">
       <h2 className="pinned-items--header">Pinned Items</h2>
       <ResourceList>
@@ -98,7 +100,7 @@ const PinnedItems: FC = () => {
         </ResourceList.Body>
       </ResourceList>
     </div>
-  )
+  ) : null
 }
 
 export default PinnedItems

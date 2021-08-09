@@ -136,7 +136,9 @@ const PinnedItemsProvider: FC<Props> = ({children}) => {
   )
 
   useEffect(() => {
-    getPinnedItems().then(data => setPinnedItems(data))
+    getPinnedItems()
+      .then(data => setPinnedItems(data))
+      .catch(err => console.error(err))
   }, [])
 
   return (

@@ -24,6 +24,7 @@ const setup = (override = {}) => {
     onUpdate: jest.fn(),
     onAddTaskLabel: jest.fn(),
     onDeleteTaskLabel: jest.fn(),
+    sendNotification: jest.fn(),
     onCreateLabel: jest.fn(),
     setCurrentTasksPage: jest.fn(),
     labels: [], // all labels

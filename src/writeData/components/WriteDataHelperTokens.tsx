@@ -33,10 +33,14 @@ const WriteDataHelperTokens: FC = () => {
     getAll<Authorization>(state, ResourceType.Authorizations)
   )
   const {token, changeToken} = useContext(WriteDataDetailsContext)
-  tokens.map(token => {
-    token.description?.length === 0
-      ? (token.description = DEFAULT_TOKEN_DESCRIPTION)
-      : token.description
+  const tokensWithDescription = tokens.map(token => {
+    return {
+      ...token,
+      description:
+        token?.description?.length === 0
+          ? DEFAULT_TOKEN_DESCRIPTION
+          : token.description,
+    }
   })
 
   let body = (
@@ -65,7 +69,7 @@ const WriteDataHelperTokens: FC = () => {
     return tokenID === token.id
   }
 
-  if (tokens.length) {
+  if (tokensWithDescription.length) {
     body = (
       <List
         backgroundColor={InfluxColors.Obsidian}
@@ -73,7 +77,7 @@ const WriteDataHelperTokens: FC = () => {
         maxHeight="200px"
         testID="write-data-tokens-list"
       >
-        {tokens.map(t => (
+        {tokensWithDescription.map(t => (
           <List.Item
             size={ComponentSize.Small}
             key={t.id}

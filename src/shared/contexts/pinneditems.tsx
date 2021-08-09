@@ -89,7 +89,7 @@ export const deletePinnedItem = async (itemID: string) => {
   try {
     await deletePinned({id: itemID})
   } catch (err) {
-    console.log('failed to delete item')
+    console.error('failed to delete item')
   }
 }
 

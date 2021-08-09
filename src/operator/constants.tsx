@@ -120,7 +120,6 @@ export const accountUserHeaderInfo = [
   'User Email',
   'Quartz ID',
   'IDPE ID',
-  'Onboarding Status',
 ]
 
 export const acctUserColumnInfo: CellInfo[] = [
@@ -147,11 +146,6 @@ export const acctUserColumnInfo: CellInfo[] = [
   {
     path: 'idpeId',
     name: 'user-idpe-id',
-    defaultValue: '',
-  },
-  {
-    path: 'onboardingState',
-    name: 'onboarding-state',
     defaultValue: '',
   },
 ]

@@ -9,6 +9,7 @@ export type OverlayID =
   | 'add-note'
   | 'edit-note'
   | 'add-master-token'
+  | 'access-token'
   | 'add-token'
   | 'telegraf-config'
   | 'telegraf-output'

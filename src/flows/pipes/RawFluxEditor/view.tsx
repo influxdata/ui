@@ -158,7 +158,6 @@ const Query: FC<PipeProp> = ({Context}) => {
             onChangeScript={updateText}
             onSubmitScript={() => {}}
             setEditorInstance={setEditorInstance}
-            autogrow
             wrapLines="on"
           />
         </Suspense>

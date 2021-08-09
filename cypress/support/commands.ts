@@ -15,7 +15,8 @@ Cypress.on('uncaught:exception', (err, _) => {
     err.message.includes('Request failed with status code 401') ||
     err.message.includes('The operation was aborted') ||
     err.message.includes('NetworkError') ||
-    err.message.includes('path not found')
+    err.message.includes('path not found') ||
+    err.message.includes('Request aborted')
   )
 })
 

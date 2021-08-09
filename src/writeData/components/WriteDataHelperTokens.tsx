@@ -24,6 +24,7 @@ import {getAll} from 'src/resources/selectors'
 
 // Types
 import {AppState, ResourceType, Authorization} from 'src/types'
+import {DEFAULT_TOKEN_DESCRIPTION} from 'src/dashboards/constants'
 
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
@@ -32,6 +33,11 @@ const WriteDataHelperTokens: FC = () => {
     getAll<Authorization>(state, ResourceType.Authorizations)
   )
   const {token, changeToken} = useContext(WriteDataDetailsContext)
+  tokens.map(t => {
+    t.description.length === 0
+      ? (t.description = DEFAULT_TOKEN_DESCRIPTION)
+      : t.description
+  })
 
   let body = (
     <EmptyState

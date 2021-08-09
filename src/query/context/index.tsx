@@ -245,6 +245,163 @@ class Query implements QuerySignature {
   isWorthDeleting() {
     return this.lastRun && Date.now() - this.lastRun >= TEN_MINUTES
   }
+
+  private simplify(vars: VariableMap = {}) {
+    // Continue here
+    const ast = this.astim.getAST()
+    const usedVars = _getVars(ast, vars)
+
+    // Grab all global variables and turn them into a hashmap
+    // TODO: move off this variable junk and just use strings
+    const globalDefinedVars = Object.values(usedVars).reduce((acc, v) => {
+      let _val
+
+      if (!v) {
+        return acc
+      }
+
+      if (v.id === WINDOW_PERIOD) {
+        acc[v.id] = (v.arguments?.values || [10000])[0] + 'ms'
+
+        return acc
+      }
+
+      if (v.id === TIME_RANGE_START || v.id === TIME_RANGE_STOP) {
+        const val = v.arguments.values[0]
+
+        if (!isNaN(Date.parse(val))) {
+          acc[v.id] = new Date(val).toISOString()
+          return acc
+        }
+
+        if (typeof val === 'string') {
+          if (val) {
+            acc[v.id] = val
+          }
+
+          return acc
+        }
+
+        _val = '-' + val[0].magnitude + val[0].unit
+
+        if (_val !== '-') {
+          acc[v.id] = _val
+        }
+
+        return acc
+      }
+
+      if (v.arguments.type === 'map') {
+        _val =
+          v.arguments.values[
+            v.selected ? v.selected[0] : Object.keys(v.arguments.values)[0]
+          ]
+
+        if (_val) {
+          acc[v.id] = _val
+        }
+
+        return acc
+      }
+
+      if (v.arguments.type === 'constant') {
+        _val = v.selected ? v.selected[0] : v.arguments.values[0]
+
+        if (_val) {
+          acc[v.id] = _val
+        }
+
+        return acc
+      }
+
+      if (v.arguments.type === 'query') {
+        if (!v.selected || !v.selected[0]) {
+          return
+        }
+
+        acc[v.id] = v.selected[0]
+        return acc
+      }
+
+      return acc
+    }, {})
+
+    // Grab all variables that are defined in the query while removing the old definition from the AST
+    const queryDefinedVars = remove(
+      ast,
+      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
+    ).reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+
+    // Merge the two variable maps, allowing for any user defined variables to override
+    // global system variables
+    const joinedVars = Object.keys(usedVars).reduce((acc, curr) => {
+      if (globalDefinedVars.hasOwnProperty(curr)) {
+        acc[curr] = globalDefinedVars[curr]
+      }
+
+      if (queryDefinedVars.hasOwnProperty(curr)) {
+        acc[curr] = queryDefinedVars[curr]
+      }
+
+      return acc
+    }, {})
+
+    const varVals = Object.entries(joinedVars)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(',\n')
+    const optionAST = parse(`option v = {\n${varVals}\n}\n`)
+
+    if (varVals.length) {
+      ast.body.unshift(optionAST.body[0])
+    }
+
+    // Join together any duplicate task options
+    const taskParams = remove(
+      ast,
+      node =>
+        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+    )
+      .reverse()
+      .reduce((acc, curr) => {
+        // eslint-disable-next-line no-extra-semi
+        ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+          if (_curr.key?.name && _curr.value?.location?.source) {
+            _acc[_curr.key.name] = _curr.value.location.source
+          }
+
+          return _acc
+        }, acc)
+
+        return acc
+      }, {})
+
+    if (Object.keys(taskParams).length) {
+      const taskVals = Object.entries(taskParams)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(',\n')
+      const taskAST = parse(`option task = {\n${taskVals}\n}\n`)
+      ast.body.unshift(taskAST.body[0])
+    }
+
+    // load in windowPeriod at the last second, because it needs to self reference all the things
+    if (usedVars.hasOwnProperty('windowPeriod')) {
+      _addWindowPeriod(ast, optionAST)
+    }
+
+    // turn it back into a query
+    return format_from_js_file(ast)
+  }
 }
 
 interface OwnProps {

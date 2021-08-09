@@ -8,6 +8,7 @@ import React, {
   ReactElement,
 } from 'react'
 import {CLOUD} from '../constants'
+import {isFlagEnabled} from '../utils/featureFlag'
 
 let getPinned
 let putPinned
@@ -63,6 +64,9 @@ export const addPinnedItem = async (item: Partial<PinnedItem>) => {
 }
 
 export const deletePinnedItemByParam = async (param: string) => {
+  if (!CLOUD || !isFlagEnabled('pinnedItems')) {
+    return
+  }
   try {
     const items = await getPinnedItems()
     const toDeleteItem = items.find(item =>
@@ -86,6 +90,9 @@ export const deletePinnedItem = async (itemID: string) => {
 }
 
 export const updatePinnedItemByParam = async (id: string, updateParams: {}) => {
+  if (!CLOUD || !isFlagEnabled('pinnedItems')) {
+    return
+  }
   const pinnedItems = await getPinnedItems()
   const toUpdateItem = pinnedItems?.find(item =>
     Object.values(item.metadata).includes(id)

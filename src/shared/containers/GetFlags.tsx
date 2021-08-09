@@ -13,9 +13,6 @@ import {RemoteDataState, AppState} from 'src/types'
 // Actions
 import {getFlags} from 'src/shared/thunks/flags'
 
-// Utils
-import {activeFlags} from 'src/shared/selectors/flags'
-
 const GetFlags: FC = () => {
   const dispatch = useDispatch()
   const status = useSelector(

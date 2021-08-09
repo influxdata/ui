@@ -73,7 +73,7 @@ export const deletePinnedItemByParam = async (param: string) => {
       await deletePinned({id: toDeleteItem.id})
     }
   } catch (err) {
-    throw new Error(err)
+    throw new Error('Unable to delete item under those parameters')
   }
 }
 
@@ -81,7 +81,7 @@ export const deletePinnedItem = async (itemID: string) => {
   try {
     await deletePinned({id: itemID})
   } catch (err) {
-    throw new Error(err)
+    throw new Error('Unable to delete pinned item')
   }
 }
 
@@ -91,12 +91,16 @@ export const updatePinnedItemByParam = async (id: string, updateParams: {}) => {
     Object.values(item.metadata).includes(id)
   )
   if (toUpdateItem) {
-    await putPinned({
-      id: toUpdateItem.id,
-      data: {
-        metadata: {...toUpdateItem.metadata, ...updateParams},
-      },
-    })
+    try {
+      await putPinned({
+        id: toUpdateItem.id,
+        data: {
+          metadata: {...toUpdateItem.metadata, ...updateParams},
+        },
+      })
+    } catch (err) {
+      throw new Error('Unable to update item with those parameters')
+    }
   }
 }
 

@@ -1,5 +1,4 @@
 import {isMatch} from 'date-fns'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
 
 const formatterToDateFnsMap = {
   'YYYY-MM-DD HH:mm:ss': 'yyyy-MM-dd HH:mm:ss', // DEFAULT_TIME_FORMAT
@@ -27,7 +26,7 @@ const formatterToDateFnsMap = {
 const getDateFnsFormatString = (format: string): string => {
   const dateFnsFormatString = formatterToDateFnsMap[format]
     ? formatterToDateFnsMap[format]
-    : DEFAULT_TIME_FORMAT
+    : 'yyyy-MM-dd HH:mm:ss'
 
   return dateFnsFormatString
 }

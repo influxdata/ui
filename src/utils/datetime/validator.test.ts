@@ -67,9 +67,7 @@ describe('the datetime validator', () => {
       isValid('02/09/1999 11:00:00.000', 'MM/DD/YYYY hh:mm:ss.sss a')
     ).toBeFalsy()
     expect(isValid('1999/02/09 23:00', 'YYYY/MM/DD HH:mm:ss')).toBeFalsy()
-    expect(
-      isValid('1999/02/09 11', 'YYYY/MM/DD hh:mm:ss a')
-    ).toBeFalsy()
+    expect(isValid('1999/02/09 11', 'YYYY/MM/DD hh:mm:ss a')).toBeFalsy()
     expect(isValid('23', 'HH:mm')).toBeFalsy()
     expect(isValid('11:00', 'hh:mm a')).toBeFalsy()
     expect(isValid('23:00', 'HH:mm:ss')).toBeFalsy()
@@ -85,10 +83,7 @@ describe('the datetime validator', () => {
       isValid('February 9, 1999 11:00 PM', 'MMMM D, YYYY hh:mm:ss a')
     ).toBeFalsy()
     expect(
-      isValid(
-        'Tuesday, February 9, 1999 23:00',
-        'dddd, MMMM D, YYYY HH:mm:ss'
-      )
+      isValid('Tuesday, February 9, 1999 23:00', 'dddd, MMMM D, YYYY HH:mm:ss')
     ).toBeFalsy()
     expect(
       isValid(

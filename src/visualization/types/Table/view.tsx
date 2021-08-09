@@ -28,11 +28,7 @@ import {
   DEFAULT_SORT_DIRECTION,
   KEYS_I_HATE,
 } from './constants'
-import {
-  Config,
-  HoverTimeProvider,
-  Plot,
-} from '@influxdata/giraffe'
+import {Config, HoverTimeProvider, Plot} from '@influxdata/giraffe'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {

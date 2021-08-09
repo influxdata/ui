@@ -3,9 +3,7 @@ import {
   AGG_WINDOW_AUTO,
 } from 'src/timeMachine/constants/queryBuilder'
 import {TableViewProperties} from 'src/types'
-import {
-  DEFAULT_TABLE_COLORS,
-} from '@influxdata/giraffe'
+import {DEFAULT_TABLE_COLORS} from '@influxdata/giraffe'
 
 export default {
   type: 'table',

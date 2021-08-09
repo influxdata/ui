@@ -38,7 +38,11 @@ const FlowCards: FC<Props> = ({flows, search}) => {
 
   useEffect(() => {
     if (isFlagEnabled('pinnedItems') && CLOUD) {
-      getPinnedItems().then(res => setPinnedItems(res))
+      getPinnedItems()
+        .then(res => setPinnedItems(res))
+        .catch(err => {
+          console.error(err.message)
+        })
     }
   }, [])
 

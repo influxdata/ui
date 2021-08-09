@@ -106,6 +106,7 @@ interface Props {
 
 const PinnedItemsProvider: FC<Props> = ({children}) => {
   const [pinnedItems, setPinnedItems] = useState([])
+  const [pinnedItemsError, setPinnedItemsError] = useState('')
 
   const deletePinnedItemsHelper = useCallback(
     async (id: string) => {
@@ -118,11 +119,16 @@ const PinnedItemsProvider: FC<Props> = ({children}) => {
   useEffect(() => {
     getPinnedItems()
       .then(data => setPinnedItems(data))
-      .catch(err => console.error(err))
+      .catch(err => {
+        console.error(err.message)
+        setPinnedItemsError('Failed to retrieve pinned items.')
+      })
   }, [])
 
   return (
-    <PinnedItemsContext.Provider value={{pinnedItems, deletePinnedItemsHelper}}>
+    <PinnedItemsContext.Provider
+      value={{pinnedItems, deletePinnedItemsHelper, pinnedItemsError}}
+    >
       {children}
     </PinnedItemsContext.Provider>
   )

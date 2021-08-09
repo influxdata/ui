@@ -9,7 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "paths": {
-      "src/*": ["../src/*"]
+      "@src/*": ["../src/*"]
     }
   },
   "include": ["**/*.ts", "../src/**/*"]

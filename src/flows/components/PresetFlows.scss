@@ -14,14 +14,14 @@ h4 {
   height: 200px;
   border: 1px solid $g5-pepper;
   border-radius: 7px;
-  padding: 5px 30px;
+  padding: 5px 40px;
   margin: 30px 0;
 }
 
 .flows-index--presetList {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 20px;
+  grid-gap: 10%;
 }
 
 .flows-index--presetCard {
@@ -37,17 +37,8 @@ h4 {
   }
 }
 
-.flows-index--presetImg {
-  width: 70%;
-  border: none;
-  background: transparent;
-  height: 100px;
-  border-radius: 4px;
-}
-
 .flows-index--presetButton {
   height: 100px;
-  width: 80%;
 }
 
 .flows-index--presetCard:nth-child(1)

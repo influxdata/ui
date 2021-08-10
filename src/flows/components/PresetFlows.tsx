@@ -25,13 +25,13 @@ const PresetFlows: FC = () => {
                   color={ComponentColor.Primary}
                   icon={IconFont.Plus}
                   className="flows-index--presetButton"
-                  onClick={() => history.replace(PresetMap[p])}
+                  onClick={() => history.push(PresetMap[p])}
                 ></Button>
               ) : (
                 <Button
                   text=" "
                   className="flows-index--presetButton"
-                  onClick={() => history.replace(PresetMap[p])}
+                  onClick={() => history.push(PresetMap[p])}
                 ></Button>
               )}
               <h4 className="flows-index--presetHeader">{p}</h4>

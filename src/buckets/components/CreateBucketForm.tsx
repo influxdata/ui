@@ -18,7 +18,7 @@ import {
   initialBucketState,
   DEFAULT_RULES,
 } from 'src/buckets/reducers/createBucket'
-import {AppState, Bucket} from 'src/types'
+import {AppState, Bucket, RetentionRule} from 'src/types'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -29,7 +29,7 @@ interface CreateBucketFormProps {
   onClose: () => void
 }
 
-const CreateBucketForm: FC<CreateBucketFormProps> = props => {
+export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   const {onClose} = props
   const org = useSelector(getOrg)
   const isRetentionLimitEnforced = useSelector((state: AppState): boolean => {
@@ -45,7 +45,9 @@ const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     initialBucketState(isRetentionLimitEnforced, org.id)
   )
 
-  const retentionRule = state.retentionRules.find(r => r.type === 'expire')
+  const retentionRule = state.retentionRules.find(
+    (rule: RetentionRule) => rule.type === 'expire'
+  )
   const retentionSeconds = retentionRule ? retentionRule.everySeconds : 3600
 
   const handleChangeRuleType = (ruleType: RuleType): void => {
@@ -104,5 +106,3 @@ const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     />
   )
 }
-
-export default CreateBucketForm

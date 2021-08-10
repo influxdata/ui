@@ -3,6 +3,13 @@ import React, {PureComponent, MouseEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
+import {
+  addPinnedItem,
+  PinnedItemTypes,
+  deletePinnedItemByParam,
+  updatePinnedItemByParam,
+} from 'src/shared/contexts/pinneditems'
+
 // Components
 import {
   SlideToggle,
@@ -25,10 +32,20 @@ import {setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor} from '@influxdata/clockface'
-import {Task, Label} from 'src/types'
+import {Task, Label, AppState} from 'src/types'
 
 // Constants
 import {DEFAULT_TASK_NAME} from 'src/dashboards/constants'
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 interface PassedProps {
   task: Task
@@ -38,6 +55,7 @@ interface PassedProps {
   onRunTask: (taskID: string) => void
   onUpdate: (name: string, taskID: string) => void
   onFilterChange: (searchTerm: string) => void
+  isPinned: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -103,8 +121,29 @@ export class TaskCard extends PureComponent<
     )
   }
 
+  private handlePinTask = () => {
+    try {
+      addPinnedItem({
+        orgID: this.props.org.id,
+        userID: this.props.me.id,
+        metadata: {
+          taskID: this.props.task.id,
+          name: this.props.task.name,
+        },
+        type: PinnedItemTypes.Task,
+      })
+      this.props.sendNotification(pinnedItemSuccess('task', 'added'))
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+    }
+  }
+
+  private handleOnDelete = () => {
+    this.props.onDelete(this.props.task)
+    deletePinnedItemByParam(this.props.task.id)
+  }
   private get contextMenu(): JSX.Element {
-    const {task, onClone, onDelete} = this.props
+    const {task, onClone, isPinned} = this.props
 
     return (
       <Context>
@@ -127,6 +166,20 @@ export class TaskCard extends PureComponent<
         >
           <Context.Item label="Clone" action={onClone} value={task} />
         </Context.Menu>
+        {isFlagEnabled('pinnedItems') && CLOUD && (
+          <Context.Menu
+            icon={IconFont.Star}
+            color={ComponentColor.Success}
+            testID="context-pin-menu"
+          >
+            <Context.Item
+              label="Pin to Homepage"
+              action={this.handlePinTask}
+              testID="context-pin-task"
+              disabled={isPinned}
+            />
+          </Context.Menu>
+        )}
         <Context.Menu
           icon={IconFont.Trash}
           color={ComponentColor.Danger}
@@ -134,7 +187,7 @@ export class TaskCard extends PureComponent<
         >
           <Context.Item
             label="Delete"
-            action={onDelete}
+            action={this.handleOnDelete}
             value={task}
             testID="context-delete-task"
           />
@@ -194,6 +247,12 @@ export class TaskCard extends PureComponent<
       task: {id},
     } = this.props
     onUpdate(name, id)
+    try {
+      updatePinnedItemByParam(id, {name})
+      this.props.sendNotification(pinnedItemSuccess('task', 'updated'))
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+    }
   }
 
   private handleExport = () => {
@@ -264,8 +323,18 @@ const mdtp = {
   onAddTaskLabel: addTaskLabel,
   onDeleteTaskLabel: deleteTaskLabel,
   setCurrentTasksPage,
+  sendNotification: notify,
 }
 
-const connector = connect(null, mdtp)
+const mstp = (state: AppState) => {
+  const me = getMe(state)
+  const org = getOrg(state)
+
+  return {
+    org,
+    me,
+  }
+}
+const connector = connect(mstp, mdtp)
 
 export default connector(withRouter(TaskCard))

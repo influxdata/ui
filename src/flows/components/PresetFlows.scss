@@ -1,17 +1,16 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 h3 {
-  margin: 5px;
+  margin: 12px 0px;
   color: white;
 }
 
 h4 {
-  margin: 5px;
+  margin: 12px 0px;
   text-align: left;
 }
 .flows-index--presetcontainer {
   width: 83.333333%;
-  height: 200px;
   border: 1px solid $g5-pepper;
   border-radius: 7px;
   padding: 5px 40px;
@@ -66,4 +65,12 @@ h4 {
 .flows-index--presetCard:nth-child(4) .flows-index--presetButton {
   background-image: url('https://i.imgur.com/Vo6xHTs.png');
   background-size: contain;
+}
+
+@media screen and (max-width: $cf-grid--breakpoint-md) {
+  .flows-index--presetList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10%;
+  }
 }

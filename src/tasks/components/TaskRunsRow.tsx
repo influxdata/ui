@@ -14,7 +14,7 @@ import {getLogs, retryTask, getRuns} from 'src/tasks/actions/thunks'
 // Types
 import {ComponentSize, ComponentColor, Button} from '@influxdata/clockface'
 import {AppState, Run} from 'src/types'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 interface OwnProps {
   taskID: string

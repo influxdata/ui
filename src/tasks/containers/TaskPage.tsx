@@ -26,6 +26,7 @@ import {
   addDestinationToFluxScript,
 } from 'src/utils/taskOptionsToFluxScript'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
@@ -125,6 +126,7 @@ class TaskPage extends PureComponent<Props> {
     // currently we delete that part of the script
     script = script.replace(new RegExp('option\\s+task\\s+=\\s+{(.|\\s)*}'), '')
 
+    event('Valid Task Form Submitted')
     this.props.saveNewScript(script, preamble).then(() => {
       this.props.goToTasks()
     })

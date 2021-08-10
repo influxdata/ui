@@ -215,11 +215,8 @@ do
 			if [ -n "${workflow_id}" ]; then
 				printf "\nSUCCESS: monitor-ci workflow with id ${workflow_id} passed: https://app.circleci.com/pipelines/github/influxdata/monitor-ci/${pipeline_number}/workflows/${workflow_id} \n"
 			else
-				# set job failure
-				is_failure=1
-
-				# get the workflow_id of this failed required workflow
-				workflow_id=$(echo ${workflows} | jq -r --arg name "${required_workflow_name}" '.items | map(select(.name == $name and .status == "failed")) | .[].id')
+				# get the workflow_id of this failed required workflow (if there are multiple, get the most recent one)
+				workflow_id=$(echo ${workflows} | jq -r --arg name "${required_workflow_name}" '.items |= sort_by(.created_at) | .items | map(select(.name == $name and .status == "failed")) | .[-1].id')
 
 				# get the jobs that failed for this workflow
 				jobs=$(curl -s --request GET \
@@ -234,6 +231,11 @@ do
 				failed_jobs_names=( $(echo ${failed_jobs} | jq -r '.[].name') )
 				for name in "${failed_jobs_names[@]}"; do
 					printf " - ${name}\n"
+
+					if [[ "${name}" != *"remocal"* ]]; then
+						# ignore remocal failures for now
+						is_failure=1
+					fi
 				done
 
 				# get the artifacts for each failed job
@@ -269,7 +271,13 @@ do
 									subdirectory="oss"
 								fi
 							fi
-							output="monitor-ci/test-artifacts/results/${name}/${subdirectory}/${filename}"
+							safeName="${name//\//-}"
+							if [[ "${safeName}" == *"remocal"* ]]; then
+								# put all remocal artifacts in the same parent directory
+								safeName="remocal/${safeName}"
+							fi
+							mkdir -p "monitor-ci/test-artifacts/results/${safeName}/${subdirectory}"
+							output="monitor-ci/test-artifacts/results/${safeName}/${subdirectory}/${filename}"
 							curl -L -s --request GET \
 								--output "${output}" \
 								--url "${url}" \

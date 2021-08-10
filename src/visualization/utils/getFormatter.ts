@@ -1,6 +1,7 @@
 import {resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 import {Base, TimeZone} from 'src/types'
-import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {VIS_SIG_DIGITS} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {
   binaryPrefixFormatter,
   timeFormatter,
@@ -64,7 +65,7 @@ export const getFormatter = (
       timeZone: timeZone === 'Local' ? undefined : timeZone,
       format: resolveTimeFormat(timeFormat),
     }
-    if (timeFormat?.includes('HH')) {
+    if (formatOptions.format.includes('HH')) {
       formatOptions['hour12'] = false
     }
     return timeFormatter(formatOptions)

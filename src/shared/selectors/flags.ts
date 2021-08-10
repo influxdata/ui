@@ -23,7 +23,7 @@ export const OSS_FLAGS = {
   'flow-panel--schedule': true,
   'flow-panel--remote-csv': false,
   'flow-debug-queries': false,
-  'flow-sidebar': false,
+  flowSidebar: false,
   collapseotron: false,
   disableDefaultTableSort: false,
   'load-data-client-libraries': true,
@@ -47,6 +47,7 @@ export const OSS_FLAGS = {
   'managed-functions': false,
   simpleTable: false,
   exploreWithFlows: false,
+  createWithFlows: false,
 }
 
 export const CLOUD_FLAGS = {
@@ -71,7 +72,7 @@ export const CLOUD_FLAGS = {
   'flow-panel--remote-csv': false,
   'flow-panel--schedule': true,
   'flow-debug-queries': false,
-  'flow-sidebar': false,
+  flowSidebar: false,
   collapseotron: false,
   disableDefaultTableSort: false,
   'load-data-client-libraries': true,
@@ -91,11 +92,11 @@ export const CLOUD_FLAGS = {
   'client-library--scala': true,
   'client-library--swift': true,
   'notification-endpoint-telegram': false,
-  selfDeletion: false,
   'molly-first': false,
   'managed-functions': false,
   simpleTable: false,
   exploreWithFlows: false,
+  createWithFlows: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

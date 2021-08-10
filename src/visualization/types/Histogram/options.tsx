@@ -56,14 +56,11 @@ const HistogramOptions: FC<Props> = ({properties, results, update}) => {
   }
 
   const setDomain = (axis: string, domain: [number, number]): void => {
-    let bounds: [string | null, string | null]
+    let bounds: [number | null, number | null]
 
     if (domain) {
       const [min, max] = domain
-      bounds = [
-        min === null ? null : String(min),
-        max === null ? null : String(max),
-      ]
+      bounds = [min, max]
     } else {
       bounds = [null, null]
     }

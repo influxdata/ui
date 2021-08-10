@@ -65,6 +65,7 @@ export const SidebarProvider: FC = ({children}) => {
 
   const hideSub = () => {
     setSub(false)
+    setFocused('')
   }
 
   const menu = pipes[focused] || []

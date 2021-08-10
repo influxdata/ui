@@ -15,7 +15,8 @@ Cypress.on('uncaught:exception', (err, _) => {
     err.message.includes('Request failed with status code 401') ||
     err.message.includes('The operation was aborted') ||
     err.message.includes('NetworkError') ||
-    err.message.includes('path not found')
+    err.message.includes('path not found') ||
+    err.message.includes('Request aborted')
   )
 })
 
@@ -24,37 +25,36 @@ export const signin = (): Cypress.Chainable<Cypress.Response> => {
     wrapDefaultUser()
       .then(() => wrapDefaultPassword())
       .then(() => {
-        cy.visit('/').then(() => {
-          cy.get<string>('@defaultUser').then((defaultUser: string) => {
-            const username = Cypress._.get(
-              response,
-              'body.user.name',
-              defaultUser
-            )
-            cy.wrap(username)
-              .as('defaultUser')
-              .then(() => {
-                cy.get<string>('@defaultPassword').then(
-                  (defaultPassword: string) => {
-                    if (Cypress.env(DEX_URL_VAR) === 'OSS') {
-                      return loginViaOSS(username, defaultPassword)
-                    } else if (Cypress.env(DEX_URL_VAR) === 'CLOUD') {
-                      return loginViaDexUI(username, defaultPassword)
-                    } else {
-                      return loginViaDex(username, defaultPassword)
-                    }
+        cy.get<string>('@defaultUser').then((defaultUser: string) => {
+          const username = Cypress._.get(
+            response,
+            'body.user.name',
+            defaultUser
+          )
+          cy.wrap(username)
+            .as('defaultUser')
+            .then(() => {
+              cy.get<string>('@defaultPassword').then(
+                (defaultPassword: string) => {
+                  if (Cypress.env(DEX_URL_VAR) === 'OSS') {
+                    return loginViaOSS(username, defaultPassword)
+                  } else if (Cypress.env(DEX_URL_VAR) === 'CLOUD') {
+                    return loginViaDexUI(username, defaultPassword)
+                  } else {
+                    return loginViaDex(username, defaultPassword)
                   }
-                )
-              })
-              .then(() => cy.location('pathname').should('not.eq', '/signin'))
-              .then(() => wrapEnvironmentVariablesForCloud())
-          })
+                }
+              )
+            })
+            .then(() => cy.location('pathname').should('not.eq', '/signin'))
+            .then(() => wrapEnvironmentVariablesForCloud())
         })
       })
   })
 }
 
 export const loginViaDexUI = (username: string, password: string) => {
+  cy.visit('/')
   cy.get('#login').type(username)
   cy.get('#password').type(password)
   cy.get('#submit-login').click()
@@ -64,6 +64,7 @@ export const loginViaDexUI = (username: string, password: string) => {
 // login via the purple OSS screen by typing in username/password
 // this is only used if you're using monitor-ci + DEV_MODE_CLOUD=0
 export const loginViaOSS = (username: string, password: string) => {
+  cy.visit('/')
   cy.get('#login').type(username)
   cy.get('#password').type(password)
   cy.get('#submit-login').click()

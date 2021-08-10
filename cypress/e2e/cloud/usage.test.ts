@@ -13,17 +13,15 @@ describe('Usage Page Free User No Data', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({unityUsage: true, uiUnificationFlag: true}).then(
-          () => {
-            cy.quartzProvision({
-              hasData: false,
-              accountType: 'free',
-            }).then(() => {
-              cy.visit(`/orgs/${id}/usage`)
-              cy.getByTestID('usage-page--header').should('be.visible')
-            })
-          }
-        )
+        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+          cy.quartzProvision({
+            hasData: false,
+            accountType: 'free',
+          }).then(() => {
+            cy.visit(`/orgs/${id}/usage`)
+            cy.getByTestID('usage-page--header').should('be.visible')
+          })
+        })
       })
     })
   })
@@ -119,17 +117,15 @@ describe('Usage Page PAYG With Data', () => {
 
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({unityUsage: true, uiUnificationFlag: true}).then(
-          () => {
-            cy.quartzProvision({
-              hasData: true,
-              accountType: 'pay_as_you_go',
-            }).then(() => {
-              cy.visit(`/orgs/${id}/usage`)
-              cy.getByTestID('usage-page--header').should('be.visible')
-            })
-          }
-        )
+        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+          cy.quartzProvision({
+            hasData: true,
+            accountType: 'pay_as_you_go',
+          }).then(() => {
+            cy.visit(`/orgs/${id}/usage`)
+            cy.getByTestID('usage-page--header').should('be.visible')
+          })
+        })
       })
     })
   })
@@ -146,7 +142,10 @@ describe('Usage Page PAYG With Data', () => {
     cy.getByTestID('single-stat')
       .should('have.length', 4)
       .each((child, index) => {
-        expect(child.text().trim()).to.equal(stats[index])
+        expect(child.text().trim()).to.be.oneOf([
+          stats[index],
+          stats[index].replace(',', ''),
+        ])
       })
 
     // Check that no data is returned for the existing data set with the current time range for either graph

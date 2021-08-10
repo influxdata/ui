@@ -23,11 +23,10 @@ export const incrementCloneName = (
 
   if (highestNumberedClone) {
     const newCloneNumber = highestNumberedClone + 1
-    return `${cloneName.replace(
-      /\(clone\s(\d)+\)/,
-      ''
-    )} (clone ${newCloneNumber})`
+    return `${cloneName
+      .replace(/\(clone\s(\d)+\)/, '')
+      .trim()} (clone ${newCloneNumber})`
   }
 
-  return `${cloneName} (clone 1)`
+  return `${cloneName.trim()} (clone 1)`
 }

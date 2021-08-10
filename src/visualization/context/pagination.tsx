@@ -59,7 +59,7 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
     } else {
       setOffset(offset + size)
     }
-  }, [offset, size, setOffset])
+  }, [offset, size, setOffset]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const previous = useCallback(() => {
     setOffset(calcPrevPageOffset(offset, size))
@@ -69,7 +69,7 @@ export const PaginationProvider: FC<PaginationProviderProps> = ({
     (page: number) => {
       setOffset(calcOffset(page, maxSize, total))
     },
-    [offset, maxSize, setOffset]
+    [offset, maxSize, setOffset] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   return (

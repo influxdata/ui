@@ -4,16 +4,21 @@ import {
   ComponentColor,
   ComponentStatus,
   IconFont,
-  SquareButton,
+  Button,
 } from '@influxdata/clockface'
 import {millisecondsToDuration} from 'src/shared/utils/duration'
-import {SUPPORTED_VISUALIZATIONS, ViewTypeDropdown} from 'src/visualization'
+import {
+  SUPPORTED_VISUALIZATIONS,
+  ViewTypeDropdown,
+  ViewOptions,
+} from 'src/visualization'
 import {ViewType} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
-import {PipeContext} from 'src/flows/context/pipe'
+import {SidebarContext} from 'src/flows/context/sidebar'
+import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
 
 const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
 
@@ -21,8 +26,34 @@ interface Props {
   toggle: () => void
   visible: boolean
 }
+
+const WrappedViewOptions: FC = () => {
+  const {data, update, results} = useContext(PipeContext)
+
+  const updateProperties = useCallback(
+    properties => {
+      update({
+        properties: {
+          ...data.properties,
+          ...properties,
+        },
+      })
+    },
+    [data.properties, update]
+  )
+
+  return (
+    <ViewOptions
+      properties={data.properties}
+      results={results.parsed}
+      update={updateProperties}
+    />
+  )
+}
+
 const Controls: FC<Props> = ({toggle, visible}) => {
-  const {data, range, update, results} = useContext(PipeContext)
+  const {id, data, range, update, results} = useContext(PipeContext)
+  const {show, showSub} = useContext(SidebarContext)
 
   const updateType = (type: ViewType) => {
     event('notebook_change_visualization_type', {
@@ -32,6 +63,15 @@ const Controls: FC<Props> = ({toggle, visible}) => {
     update({
       properties: SUPPORTED_VISUALIZATIONS[type].initial,
     })
+  }
+
+  const launcher = () => {
+    show(id)
+    showSub(
+      <PipeProvider id={id}>
+        <WrappedViewOptions />
+      </PipeProvider>
+    )
   }
 
   const options = useMemo(() => {
@@ -89,8 +129,19 @@ const Controls: FC<Props> = ({toggle, visible}) => {
     ? 'Configure Visualization'
     : 'No data to visualize yet'
 
-  const toggler = isFlagEnabled('flow-sidebar') ? null : (
-    <SquareButton
+  const toggler = isFlagEnabled('flowSidebar') ? (
+    <Button
+      text="Configure"
+      icon={IconFont.CogThick}
+      onClick={launcher}
+      status={configureButtonStatus}
+      color={ComponentColor.Default}
+      titleText={configureButtonTitleText}
+      className="flows-config-visualization-button"
+    />
+  ) : (
+    <Button
+      text="Configure"
       icon={IconFont.CogThick}
       onClick={toggle}
       status={configureButtonStatus}
@@ -107,6 +158,21 @@ const Controls: FC<Props> = ({toggle, visible}) => {
         <label style={{alignSelf: 'center', marginRight: '12px'}}>
           Limited to most recent 100 results per series
         </label>
+        <ViewTypeDropdown
+          viewType={data.properties.type}
+          onUpdateType={updateType as any}
+        />
+        {toggler}
+      </>
+    )
+  }
+
+  if (
+    data.properties.type === 'single-stat' ||
+    data.properties.type === 'gauge'
+  ) {
+    return (
+      <>
         <ViewTypeDropdown
           viewType={data.properties.type}
           onUpdateType={updateType as any}

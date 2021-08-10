@@ -3,7 +3,6 @@ import React, {
   FC,
   lazy,
   Suspense,
-  useEffect,
   useState,
   useContext,
   useCallback,
@@ -13,7 +12,7 @@ import {
   RemoteDataState,
   SpinnerContainer,
   TechnoSpinner,
-  SquareButton,
+  Button,
   IconFont,
   ComponentColor,
 } from '@influxdata/clockface'
@@ -39,7 +38,7 @@ const FluxMonacoEditor = lazy(() =>
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
   const [showFn, setShowFn] = useState(true)
-  const {register} = useContext(SidebarContext)
+  const {show, showSub} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
@@ -101,7 +100,13 @@ const Query: FC<PipeProp> = ({Context}) => {
         },
       ]
 
-      if (fn.package && !query.text.includes(`import "${fn.package}"`)) {
+      if (
+        fn.package &&
+        !editorInstance
+          .getModel()
+          .getValue()
+          .includes(`import "${fn.package}"`)
+      ) {
         edits.unshift({
           range: new window.monaco.Range(1, 1, 1, 1),
           text: `import "${fn.package}"\n`,
@@ -118,8 +123,23 @@ const Query: FC<PipeProp> = ({Context}) => {
     setShowFn(!showFn)
   }, [setShowFn, showFn])
 
-  const controls = isFlagEnabled('flow-sidebar') ? null : (
-    <SquareButton
+  const launcher = () => {
+    show(id)
+    showSub(<Functions onSelect={inject} />)
+  }
+
+  const controls = isFlagEnabled('flowSidebar') ? (
+    <Button
+      text="Functions"
+      icon={IconFont.Function}
+      onClick={launcher}
+      color={ComponentColor.Default}
+      titleText="Function Reference"
+      className="flows-config-function-button"
+    />
+  ) : (
+    <Button
+      text="Functions"
       icon={IconFont.Function}
       onClick={toggleFn}
       color={showFn ? ComponentColor.Primary : ComponentColor.Default}
@@ -127,24 +147,6 @@ const Query: FC<PipeProp> = ({Context}) => {
       className="flows-config-function-button"
     />
   )
-
-  useEffect(() => {
-    if (!id) {
-      return
-    }
-
-    register(id, [
-      {
-        title: 'Documentation',
-        actions: [
-          {
-            title: 'Functions',
-            menu: <Functions onSelect={inject} />,
-          },
-        ],
-      },
-    ])
-  }, [id, inject])
 
   return useMemo(() => {
     return (
@@ -162,11 +164,10 @@ const Query: FC<PipeProp> = ({Context}) => {
             onChangeScript={updateText}
             onSubmitScript={() => {}}
             setEditorInstance={setEditorInstance}
-            autogrow
             wrapLines="on"
           />
         </Suspense>
-        {!isFlagEnabled('flow-sidebar') && showFn && (
+        {!isFlagEnabled('flowSidebar') && showFn && (
           <div className="flow-nonsidebar">
             <Functions onSelect={inject} />
           </div>

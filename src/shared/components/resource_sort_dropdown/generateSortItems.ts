@@ -241,13 +241,13 @@ export const generateSortItems = (
         {
           label: 'Retention (Ascending)',
           sortKey: 'retentionRules[0].everySeconds',
-          sortType: SortTypes.String,
+          sortType: SortTypes.Float,
           sortDirection: Sort.Ascending,
         },
         {
           label: 'Retention (Descending)',
           sortKey: 'retentionRules[0].everySeconds',
-          sortType: SortTypes.String,
+          sortType: SortTypes.Float,
           sortDirection: Sort.Descending,
         },
       ]
@@ -368,6 +368,18 @@ export const generateSortItems = (
           label: 'Name (Z → A)',
           sortKey: 'name',
           sortType: SortTypes.String,
+          sortDirection: Sort.Descending,
+        },
+        {
+          label: 'Created (Oldest)',
+          sortKey: 'createdAt',
+          sortType: SortTypes.Date,
+          sortDirection: Sort.Ascending,
+        },
+        {
+          label: 'Created (Newest)',
+          sortKey: 'createdAt',
+          sortType: SortTypes.Date,
           sortDirection: Sort.Descending,
         },
       ]

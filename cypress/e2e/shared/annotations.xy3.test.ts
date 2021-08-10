@@ -2,7 +2,6 @@ import {
   clearLocalStorage,
   setupData,
   testDeleteAnnotation,
-  testEditAnnotation,
 } from 'cypress/e2e/util/annotationsSetup'
 
 describe('The Annotations UI functionality, on a graph (xy line) graph type', () => {

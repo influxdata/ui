@@ -1,9 +1,7 @@
 import * as moment from 'moment'
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {
-  addAnnotation,
   checkAnnotationText,
-  reloadAndHandleAnnotationDefaultStatus,
   startEditingAnnotation,
 } from 'cypress/e2e/util/annotationsSetup'
 

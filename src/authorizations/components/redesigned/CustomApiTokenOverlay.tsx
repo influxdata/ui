@@ -14,14 +14,14 @@ import {
   ButtonShape,
 } from '@influxdata/clockface'
 
-import {ResourceAccordionHeader} from './ResourceAccordionHeader'
+import {ResourceAccordion} from './ResourceAccordion'
 
 interface OwnProps {
   onClose: () => void
 }
 
 export const CustomApiTokenOverlay: FC<OwnProps> = props => {
-  const resources = ['telegrafs', 'buckets']
+  const resources = ['telegrafs', 'buckets', 'dashboards']
   const handleDismiss = () => {
     props.onClose()
   }
@@ -53,9 +53,7 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
               />
             </Form.Element>
             <Form.Element label="Resources">
-              {resources.map(resource => (
-                <ResourceAccordionHeader key={resource} resource={resource} />
-              ))}
+              <ResourceAccordion resources={resources} />
             </Form.Element>
           </FlexBox>
         </Form>

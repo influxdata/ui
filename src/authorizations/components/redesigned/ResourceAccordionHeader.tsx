@@ -13,19 +13,13 @@ import {
   InputToggleType,
 } from '@influxdata/clockface'
 
-import GetResources from 'src/resources/components/GetResources'
-import {ResourceType} from 'src/types'
-import TelegrafAccordion from './TelegrafAccordion'
-import BucketAccordion from './BucketAccordion'
-import ResourceAccordion from './ResourceAccordion'
-
 interface OwnProps {
-  resource: string
+  resourceName: string
+  permissions: any
 }
 
 export const ResourceAccordionHeader: FC<OwnProps> = props => {
-  const {resource} = props
-
+  const {resourceName} = props
   const accordionHeader = (title: string) => {
     return (
       <FlexBox
@@ -72,22 +66,10 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
       </FlexBox>
     )
   }
-  const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
-  console.log('resourceName', resourceName)
 
   return (
-    <Accordion key={resource}>
-      <Accordion.AccordionHeader>
-        {accordionHeader(resourceName)}
-      </Accordion.AccordionHeader>
-      <GetResources resources={[ResourceType[resourceName]]}>
-        <ResourceAccordion resource={resource} />
-        {/* {resourceName === 'Telegrafs' ? (
-          <TelegrafAccordion />
-        ) : (
-          <BucketAccordion />
-        )} */}
-      </GetResources>
-    </Accordion>
+    <Accordion.AccordionHeader>
+      {accordionHeader(resourceName)}
+    </Accordion.AccordionHeader>
   )
 }

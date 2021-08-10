@@ -25,7 +25,6 @@ import {getAll} from 'src/resources/selectors'
 
 // Types
 import {AppState, ResourceType, Authorization} from 'src/types'
-import {DEFAULT_TOKEN_DESCRIPTION} from 'src/dashboards/constants'
 
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
@@ -89,7 +88,7 @@ const WriteDataHelperTokens: FC = () => {
             wrapText={true}
             gradient={Gradients.GundamPilot}
           >
-            {t.description || DEFAULT_TOKEN_DESCRIPTION}
+            {t.description}
           </List.Item>
         ))}
       </List>

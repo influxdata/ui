@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
+import {event} from 'src/cloud/utils/reporting'
 
 // Components
 import ImportOverlay from 'src/shared/components/ImportOverlay'
@@ -63,6 +64,8 @@ class TaskImportOverlay extends PureComponent<Props> {
       notify(invalidJSON(error.message))
       return
     }
+
+    event('Valid JSON Task Import Submitted')
 
     createTaskFromTemplate(template)
     this.onDismiss()

@@ -18,7 +18,6 @@ import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {useLoadTimeReporting} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -33,18 +32,14 @@ const DataExplorerPage: FC = () => {
           path="/orgs/:orgID/data-explorer/save"
           component={SaveAsOverlay}
         />
-        {isFlagEnabled('annotations') && (
-          <Route
-            path="/orgs/:orgID/data-explorer/add-annotation"
-            component={AddAnnotationDEOverlay}
-          />
-        )}
-        {isFlagEnabled('annotations') && (
-          <Route
-            path="/orgs/:orgID/data-explorer/edit-annotation"
-            component={EditAnnotationDEOverlay}
-          />
-        )}
+        <Route
+          path="/orgs/:orgID/data-explorer/add-annotation"
+          component={AddAnnotationDEOverlay}
+        />
+        <Route
+          path="/orgs/:orgID/data-explorer/edit-annotation"
+          component={EditAnnotationDEOverlay}
+        />
       </Switch>
       <GetResources resources={[ResourceType.Variables]}>
         <Page.Header fullWidth={true} testID="data-explorer--header">

@@ -73,7 +73,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
       ],
     }
 
-    if (inAnnotationMode && isFlagEnabled('annotations')) {
+    if (inAnnotationMode) {
       config.interactionHandlers = {
         singleClick: () => {
           dispatch(handleUnsupportedGraphType('Single Stat'))

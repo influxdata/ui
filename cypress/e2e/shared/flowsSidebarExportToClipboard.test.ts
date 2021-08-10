@@ -54,10 +54,12 @@ const verifyClientCode = (client: any) => {
     .children()
     .find('code')
     .contains(client.token)
-  cy.getByTestID('code-snippet')
-    .children()
-    .find('code')
-    .contains(client.org)
+  if (client.org) {
+    cy.getByTestID('code-snippet')
+      .children()
+      .find('code')
+      .contains(client.org)
+  }
   cy.getByTestID('code-snippet')
     .children()
     .find('code')
@@ -71,10 +73,10 @@ const verifyClientCode = (client: any) => {
 }
 
 const getClients = (
-  org: string,
   bucket: string,
   token: string,
-  query: string
+  query: string,
+  org?: string
 ) => {
   return [
     {
@@ -87,9 +89,8 @@ const getClients = (
     {
       name: 'csharp',
       token: `const string token = "${token}";`,
-      org: `const string org = "${org}";`,
       bucket: `const string bucket = "${bucket}";`,
-      query,
+      query: query.replace(/"/g, '""'),
     },
     {
       name: 'go',

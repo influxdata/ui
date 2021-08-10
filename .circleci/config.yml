@@ -88,7 +88,7 @@ jobs:
       - run: yarn generate
       - run:
           name: parallel eslint
-          no_output_timeout: 15m
+          no_output_timeout: 20m
           command: |
             set +e
             TESTFILES=$(circleci tests glob "src/**/*.ts*" "cypress/**/*.ts*" | circleci tests split --split-by=filesize)

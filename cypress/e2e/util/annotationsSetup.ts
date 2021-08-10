@@ -76,8 +76,8 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') => {
 }
 
 export const reloadAndHandleAnnotationDefaultStatus = () => {
-  cy.reload()
-  cy.getByTestID('toggle-annotations-controls').click()
+  // cy.reload()
+  // cy.getByTestID('toggle-annotations-controls').click()
 }
 
 export const addAnnotation = (cy: Cypress.Chainable) => {

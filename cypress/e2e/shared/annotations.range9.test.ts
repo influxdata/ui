@@ -1,10 +1,15 @@
 import {
   addAnnotation,
   checkAnnotationText,
+  clearLocalStorage,
   reloadAndHandleAnnotationDefaultStatus,
+  setupData,
 } from 'cypress/e2e/util/annotationsSetup'
 
 describe('range annotations', () => {
+  afterEach(clearLocalStorage)
+  beforeEach(() => setupData(cy))
+
   it('can create an annotation, and then after turning off annotation mode annotations disappear', () => {
     // create an annotation
     addAnnotation(cy)

@@ -1,4 +1,9 @@
+import {clearLocalStorage, setupData} from 'cypress/e2e/util/annotationsSetup'
+
 describe('range annotations', () => {
+  afterEach(clearLocalStorage)
+  beforeEach(() => setupData(cy))
+
   it('shows the range/point annotation type picker when range annotations are on', () => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})

@@ -1,4 +1,9 @@
+import {clearLocalStorage, setupData} from 'cypress/e2e/util/annotationsSetup'
+
 describe('range annotations', () => {
+  afterEach(clearLocalStorage)
+  beforeEach(() => setupData(cy))
+
   it('cannot create an annotation when graph is clicked and the control bar is closed', () => {
     // switch off the control bar
     cy.getByTestID('toggle-annotations-controls').click()

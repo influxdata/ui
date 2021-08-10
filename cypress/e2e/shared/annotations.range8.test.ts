@@ -2,10 +2,15 @@ import * as moment from 'moment'
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {
   checkAnnotationText,
+  clearLocalStorage,
+  setupData,
   startEditingAnnotation,
 } from 'cypress/e2e/util/annotationsSetup'
 
 describe('range annotations', () => {
+  afterEach(clearLocalStorage)
+  beforeEach(() => setupData(cy))
+
   it('can add an annotation; that is originally a point and then switch to a range', () => {
     cy.getByTestID('cell blah').within(() => {
       cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})

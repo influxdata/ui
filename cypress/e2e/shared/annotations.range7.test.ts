@@ -1,10 +1,15 @@
 import {
   addRangeAnnotation,
+  clearLocalStorage,
   reloadAndHandleAnnotationDefaultStatus,
+  setupData,
   startEditingAnnotation,
 } from 'cypress/e2e/util/annotationsSetup'
 
 describe('range annotations', () => {
+  afterEach(clearLocalStorage)
+  beforeEach(() => setupData(cy))
+
   it('can add a range annotation, then edit it and change to a point annotation', () => {
     addRangeAnnotation(cy)
     reloadAndHandleAnnotationDefaultStatus()

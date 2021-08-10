@@ -55,7 +55,7 @@
     "generate": "export SHA=d664eb7773c4230a25d271d31d1a58bde789f58b && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
-    "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn managedFunctions && yarn annotations-oss && yarn pinned",
+    "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn managedFunctions && yarn annotations-oss && yarn pinned && yarn mapsd-oss",
     "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn managedFunctions && yarn annotations && yarn cloudPriv && yarn pinned && yarn mapsd",
     "oss": "oats ${REMOTE}contracts/oss-diff.yml > ./src/client/ossRoutes.ts",
     "cloud": "oats ${REMOTE}contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",
@@ -67,6 +67,7 @@
     "notebooks": "oats ${REMOTE}contracts/priv/notebooksd.yml > ./src/client/notebooksRoutes.ts",
     "annotations": "oats ${REMOTE}contracts/priv/annotationd.yml > ./src/client/annotationdRoutes.ts",
     "annotations-oss": "oats ${REMOTE}contracts/priv/annotationd-oss.yml > ./src/client/annotationdRoutes.ts",
+    "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
     "managedFunctions": "oats ${REMOTE}contracts/managed-functions.yml > ./src/client/managedFunctionsRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts"

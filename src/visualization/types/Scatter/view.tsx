@@ -17,7 +17,6 @@ import {
 import {defaultXColumn, defaultYColumn} from 'src/shared/utils/vis'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -139,7 +138,7 @@ const ScatterPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  if (inAnnotationMode && isFlagEnabled('annotations')) {
+  if (inAnnotationMode) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Scatter Plot'))

@@ -276,7 +276,7 @@ export const TelegrafConfigCreationError: Notification = {
 
 export const TokenCreationError: Notification = {
   ...defaultErrorNotification,
-  message: `Failed to create a new Telegraf Token`,
+  message: `Failed to create a new Telegraf API Token`,
 }
 
 //  Task Notifications

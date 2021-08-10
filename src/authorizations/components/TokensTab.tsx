@@ -138,7 +138,7 @@ class TokensTab extends PureComponent<Props, State> {
       return (
         <EmptyState size={ComponentSize.Large}>
           <EmptyState.Text>
-            Looks like there aren't any <b>Tokens</b>, why not generate one?
+            Looks like there aren't any <b>API Tokens</b>, why not generate one?
           </EmptyState.Text>
           <GenerateTokenDropdown />
         </EmptyState>
@@ -147,7 +147,7 @@ class TokensTab extends PureComponent<Props, State> {
 
     return (
       <EmptyState size={ComponentSize.Large}>
-        <EmptyState.Text>No Tokens match your query</EmptyState.Text>
+        <EmptyState.Text>No API Tokens match your query</EmptyState.Text>
       </EmptyState>
     )
   }

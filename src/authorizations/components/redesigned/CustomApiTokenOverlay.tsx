@@ -170,7 +170,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   return (
     <Overlay.Container maxWidth={800}>
       <Overlay.Header
-        title="Generate a Personal Api Token"
+        title="Generate a Personal API Token"
         onDismiss={onClose}
       />
       <Overlay.Body>

@@ -44,7 +44,7 @@ class Context extends PureComponent<Props, State> {
     return (
       <div className={this.className}>
         {React.Children.map(children, (child: JSX.Element) => {
-          if (child.type === ContextMenu) {
+          if (child?.type === ContextMenu) {
             return (
               <ContextMenu
                 {...child.props}

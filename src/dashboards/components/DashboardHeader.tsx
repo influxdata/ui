@@ -35,7 +35,7 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
+import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
 import {getByID} from 'src/resources/selectors'
@@ -100,6 +100,7 @@ const DashboardHeader: FC<Props> = ({
 
   const handleRenameDashboard = (name: string) => {
     updateDashboard(dashboard.id, {name})
+    updatePinnedItemByParam(dashboard.id, {name})
   }
 
   const handleChooseTimeRange = (timeRange: TimeRange) => {

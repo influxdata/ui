@@ -67,15 +67,7 @@ export const THRESHOLD_TYPES = {
 const Threshold: FC = () => {
   const {data, update, results} = useContext(PipeContext)
 
-  const numericColumns = results.parsed.table.columnKeys.filter(key => {
-    if (key === 'result' || key === 'table') {
-      return false
-    }
-
-    const columnType = results.parsed.table.getColumnType(key)
-
-    return columnType === 'time' || columnType === 'number'
-  })
+  const numericColumns = [...new Set(results.parsed.table.columnKeys)]
 
   const setThresholdType = type => {
     if (!THRESHOLD_TYPES[type]) {

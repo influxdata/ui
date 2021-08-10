@@ -10,7 +10,7 @@ import FlowCards from 'src/flows/components/FlowCards'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import {SortTypes} from 'src/shared/utils/sort'
-
+import PresetFlows from 'src/flows/components/PresetFlows'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
@@ -83,6 +83,7 @@ const FlowsIndex = () => {
         </Page.ControlBarRight>
       </Page.ControlBar>
       <Page.Contents scrollable={true}>
+        <PresetFlows />
         <FlowCards flows={flowList} search={search} />
       </Page.Contents>
     </Page>

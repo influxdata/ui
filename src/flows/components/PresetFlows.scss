@@ -1,0 +1,57 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+h3 {
+  margin: 5px;
+  color: white;
+}
+
+h4 {
+  margin: 5px;
+  text-align: left;
+}
+.flows-index--presetcontainer {
+  width: 83.333333%;
+  height: 200px;
+  border: 1px solid $g5-pepper;
+  border-radius: 7px;
+  padding: 5px 30px;
+  margin: 30px 0;
+}
+
+.flows-index--presetList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
+}
+
+.flows-index--presetCard {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 10px 0px;
+  &:hover {
+    .flows-index--presetHeader {
+      color: white;
+    }
+  }
+}
+
+.flows-index--presetImg {
+  width: 70%;
+  border: none;
+  background: transparent;
+  height: 100px;
+  border-radius: 4px;
+}
+
+.flows-index--presetButton {
+  height: 100px;
+  width: 80%;
+}
+
+.flows-index--presetCard:nth-child(1)
+  .flows-index--presetButton
+  .cf-button-icon {
+  font-size: 23px;
+}

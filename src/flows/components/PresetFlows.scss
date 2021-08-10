@@ -39,10 +39,31 @@ h4 {
 
 .flows-index--presetButton {
   height: 100px;
+  &:after {
+    background: inherit;
+  }
 }
 
-.flows-index--presetCard:nth-child(1)
-  .flows-index--presetButton
+.flows-index--presetCard:first-child .flows-index--presetButton {
+  &:after {
+    @include gradient-diag-up($c-pool, $c-laser);
+  }
   .cf-button-icon {
-  font-size: 23px;
+    font-size: 23px;
+  }
+}
+
+.flows-index--presetCard:nth-child(2) .flows-index--presetButton {
+  background-image: url('https://i.imgur.com/Vo6xHTs.png');
+  background-size: contain;
+}
+
+.flows-index--presetCard:nth-child(3) .flows-index--presetButton {
+  background-image: url('https://i.imgur.com/GwdeP5G.png');
+  background-size: contain;
+}
+
+.flows-index--presetCard:nth-child(4) .flows-index--presetButton {
+  background-image: url('https://i.imgur.com/Vo6xHTs.png');
+  background-size: contain;
 }

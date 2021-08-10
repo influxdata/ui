@@ -142,7 +142,10 @@ describe('Usage Page PAYG With Data', () => {
     cy.getByTestID('single-stat')
       .should('have.length', 4)
       .each((child, index) => {
-        expect(child.text().trim()).to.equal(stats[index])
+        expect(child.text().trim()).to.be.oneOf([
+          stats[index],
+          stats[index].replace(',', ''),
+        ])
       })
 
     // Check that no data is returned for the existing data set with the current time range for either graph

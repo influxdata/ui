@@ -17,7 +17,7 @@ export const DEFAULT_ENDPOINTS = {
 	|> monitor["check"](
 		data: check,
 		messageFn: messageFn,
-		trigger: trigger,
+		crit: trigger,
 	)
 	|> monitor["notify"](
     data: notification,
@@ -63,7 +63,7 @@ export const DEFAULT_ENDPOINTS = {
 	|> monitor["check"](
 		data: check,
 		messageFn: messageFn,
-		trigger: trigger,
+		crit: trigger,
 	)
 	|> monitor["notify"](data: notification, endpoint: http["endpoint"](url: "${data.url}")(mapFn: (r) => {
       body = {r with _version: 1}
@@ -89,7 +89,7 @@ export const DEFAULT_ENDPOINTS = {
 	|> monitor["check"](
 		data: check,
 		messageFn: messageFn,
-		trigger: trigger,
+		crit: trigger,
 	)
 	|> monitor["notify"](data: notification, endpoint: pagerduty["endpoint"]()(mapFn: (r) => ({
         routingKey: "${data.key}",

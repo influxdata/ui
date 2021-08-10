@@ -20,6 +20,13 @@ export default register => {
         return `${query} |> limit(n: 100)`
       }
 
+      if (
+        data.properties.type === 'single-stat' ||
+        data.properties.type === 'gauge'
+      ) {
+        return `${query} |> last()`
+      }
+
       if (!data.functions || !data.functions.length || !data.period) {
         return query
       }

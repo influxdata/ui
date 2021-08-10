@@ -36,7 +36,7 @@ import {ComponentColor, Button} from '@influxdata/clockface'
 import {Task, AppState} from 'src/types'
 
 // DateTime
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 interface PassedProps {
   task: Task

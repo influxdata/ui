@@ -1,5 +1,5 @@
 import {AppState} from 'src/types'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {getTimeFormatForView} from 'src/views/selectors/index'
 
 const MOCK_APP_STATE = ({

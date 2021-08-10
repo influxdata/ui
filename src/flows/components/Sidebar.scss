@@ -3,7 +3,7 @@
 .flow-sidebar {
   flex: 0 0 300px;
   width: 300px;
-  padding-left: $cf-marg-b;
+  padding: 0 $cf-marg-b;
 
   .sidebar--item {
     width: 137px;
@@ -28,6 +28,10 @@
       height: 100%;
       object-fit: contain;
     }
+  }
+
+  .flux-toolbar--search {
+    padding: 0;
   }
 }
 

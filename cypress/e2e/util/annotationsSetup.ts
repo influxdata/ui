@@ -92,8 +92,9 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   })
 
   cy.getByTestID('overlay--container').within(() => {
+    cy.getByTestID('edit-annotation-message').should('be.visible')
+
     cy.getByTestID('edit-annotation-message')
-      .should('be.visible')
       .click()
       .focused()
       .type('im a hippopotamus')
@@ -113,6 +114,7 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
 export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
+  cy.getByTestID('edit-annotation-message').should('have.length.of.at.least', 1)
   cy.getByTestID('edit-annotation-message').clear()
   cy.getByTestID('edit-annotation-message').type('lets edit this annotation...')
 

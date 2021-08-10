@@ -29,15 +29,19 @@ export default register => {
       ],
     },
     source: (data, query) => {
-      const ast = parse(
-        data.queries[data.activeQuery].text.replace(PREVIOUS_REGEXP, query)
-      )
-      find(ast, node => !!Object.keys(node.comments || {}).length).forEach(
-        node => {
-          delete node.comments
-        }
-      )
-      return format_from_js_file(ast)
+      try {
+        const ast = parse(
+          data.queries[data.activeQuery].text.replace(PREVIOUS_REGEXP, query)
+        )
+        find(ast, node => !!Object.keys(node.comments || {}).length).forEach(
+          node => {
+            delete node.comments
+          }
+        )
+        return format_from_js_file(ast)
+      } catch {
+        return
+      }
     },
   })
 }

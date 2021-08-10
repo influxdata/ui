@@ -241,13 +241,13 @@ export const generateSortItems = (
         {
           label: 'Retention (Ascending)',
           sortKey: 'retentionRules[0].everySeconds',
-          sortType: SortTypes.String,
+          sortType: SortTypes.Float,
           sortDirection: Sort.Ascending,
         },
         {
           label: 'Retention (Descending)',
           sortKey: 'retentionRules[0].everySeconds',
-          sortType: SortTypes.String,
+          sortType: SortTypes.Float,
           sortDirection: Sort.Descending,
         },
       ]

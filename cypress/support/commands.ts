@@ -98,7 +98,9 @@ export const loginViaDex = (username: string, password: string) => {
             },
             followRedirect: false,
           }).then(thirdResp => {
-            const req = (thirdResp.headers.location as string).split('/approval?req=')[1]
+            const req = (thirdResp.headers.location as string).split(
+              '/approval?req='
+            )[1]
             cy.request({
               url: thirdResp.redirectedToUrl,
               followRedirect: true,
@@ -115,7 +117,9 @@ export const loginViaDex = (username: string, password: string) => {
     )
 }
 
-export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Response<any>> => {
+export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Response<
+  any
+>> => {
   return cy
     .request({
       method: 'GET',
@@ -251,7 +255,9 @@ export const createOrg = (
   })
 }
 
-export const deleteOrg = (id: string): Cypress.Chainable<Cypress.Response<any>> => {
+export const deleteOrg = (
+  id: string
+): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
     method: 'DELETE',
     url: `/api/v2/orgs/${id}`,

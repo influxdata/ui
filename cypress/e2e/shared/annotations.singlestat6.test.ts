@@ -1,14 +1,9 @@
 import {
   addRangeAnnotation,
-  checkAnnotationText,
   clearLocalStorage,
   deleteAnnotation,
   setupData,
-  testAddAnnotation,
-  testEditAnnotation,
-  testEditRangeAnnotation,
-  testDeleteAnnotation,
-} from '../util/annotationsSetup'
+} from 'cypress/e2e/util/annotationsSetup'
 
 describe('The Annotations UI functionality on a graph + single stat graph type', () => {
   const singleStatSuffix = 'line-plus-single-stat'
@@ -16,7 +11,8 @@ describe('The Annotations UI functionality on a graph + single stat graph type',
   beforeEach(() => setupData(cy, singleStatSuffix))
   afterEach(clearLocalStorage)
 
-  it('can create an annotation on the single stat + line graph', () => {
-    testAddAnnotation(cy)
+  it('can add and then delete a range annotation for the single stat + line graph', () => {
+    addRangeAnnotation(cy)
+    deleteAnnotation(cy)
   })
 })

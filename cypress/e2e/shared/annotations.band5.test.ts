@@ -1,8 +1,8 @@
 import {
   clearLocalStorage,
   setupData,
-  testAddAnnotation,
-} from '../util/annotationsSetup'
+  testEditRangeAnnotation,
+} from 'cypress/e2e/util/annotationsSetup'
 
 describe('The Annotations UI functionality on a band plot graph type', () => {
   const bandSuffix = 'band'
@@ -10,7 +10,7 @@ describe('The Annotations UI functionality on a band plot graph type', () => {
   beforeEach(() => setupData(cy, bandSuffix))
   afterEach(clearLocalStorage)
 
-  it('can create an annotation on the band plot', () => {
-    testAddAnnotation(cy)
+  it('can add and edit a range annotation for the band plot', () => {
+    testEditRangeAnnotation(cy, 'band-chart')
   })
 })

@@ -33,7 +33,7 @@ export default register =>
     execute,
     query,
     querySanitize: (query: string) => {
-      return query.replace(/"/g, "\"\"");
+      return query.replace(/"/g, '""')
     },
-    executeFull: executeFull
+    executeFull: executeFull,
   })

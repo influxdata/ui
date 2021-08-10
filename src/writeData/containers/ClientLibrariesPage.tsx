@@ -90,12 +90,7 @@ const ClientLibrariesPage: FC = () => {
   let dispose
 
   if (def.dispose) {
-    dispose = (
-      <CodeSampleBlock
-        name='Dispose the Client'
-        sample={def.dispose}
-      />
-    )
+    dispose = <CodeSampleBlock name="Dispose the Client" sample={def.dispose} />
   }
 
   return (

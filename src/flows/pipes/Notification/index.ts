@@ -24,7 +24,9 @@ export default register => {
       },
     },
     generateFlux: (_pipe, _create, append) => {
-      append('__CURRENT_RESULT__')
+      append(`import "influxdata/influxdb/schema"
+__CURRENT_RESULT__
+|> schema.fieldsAsCols()`)
     },
   })
 }

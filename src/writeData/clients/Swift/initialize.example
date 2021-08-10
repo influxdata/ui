@@ -8,6 +8,3 @@ let org = "<%= org %>"
 
 let client = InfluxDBClient(url: url, token: token)
 
-// always close client at the end
-client.close()
-

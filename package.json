@@ -43,7 +43,7 @@
     "lint": "yarn tsc && yarn prettier && yarn eslint",
     "lint:fix": "yarn tsc && yarn prettier:fix && yarn eslint:fix",
     "eslint": "eslint '{src,cypress}/**/*.{ts,tsx}'",
-    "eslint:circleci": "eslint",
+    "eslint:circleci": "DEBUG=eslint:cli-engine eslint",
     "eslint:fix": "eslint --fix '{src,cypress}/**/*.{ts,tsx}'",
     "prettier": "pretty-quick --config .prettierrc.json --check '{src,cypress}/**/*.{ts,tsx}'",
     "prettier:fix": "pretty-quick --config .prettierrc.json --write '{src,cypress}/**/*.{ts,tsx}'",

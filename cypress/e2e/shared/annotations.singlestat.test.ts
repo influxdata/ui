@@ -1,13 +1,7 @@
 import {
-  addRangeAnnotation,
-  checkAnnotationText,
   clearLocalStorage,
-  deleteAnnotation,
   setupData,
   testAddAnnotation,
-  testEditAnnotation,
-  testEditRangeAnnotation,
-  testDeleteAnnotation,
 } from '../util/annotationsSetup'
 
 describe('The Annotations UI functionality on a graph + single stat graph type', () => {

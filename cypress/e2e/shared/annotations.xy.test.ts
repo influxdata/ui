@@ -60,12 +60,6 @@ describe('The Annotations UI functionality, on a graph (xy line) graph type', ()
       )
     )
   })
-  afterEach(() => {
-    cy.window().then(window => {
-      window.sessionStorage.clear()
-      window.localStorage.clear()
-    })
-  })
 
   it('can create an annotation on the xy line graph', () => {
     cy.getByTestID('cell blah')

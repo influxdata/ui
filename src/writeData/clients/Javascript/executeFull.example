@@ -1,3 +1,11 @@
+const {InfluxDB} = require('@influxdata/influxdb-client')
+
+// You can generate a Token from the "Tokens Tab" in the UI
+const token = '<%= token %>'
+const org = '<%= org %>'
+
+const client = new InfluxDB({url: '<%= server %>', token: token})
+
 const queryApi = client.getQueryApi(org)
 
 const query = `<%= query %>`
@@ -14,4 +22,3 @@ queryApi.queryRows(query, {
     console.log('Finished SUCCESS')
   },
 })
-

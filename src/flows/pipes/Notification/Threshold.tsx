@@ -21,43 +21,43 @@ enum ThresholdFormat {
 
 export const THRESHOLD_TYPES = {
   greater: {
-    name: 'Greater Than',
+    name: 'greater than',
     format: ThresholdFormat.Value,
     condition: data => `(r) => (r["${data.field}"] > ${data.value})`,
   },
   'greater-equal': {
-    name: 'Greater Than or Equal To',
+    name: 'greater than or equal to',
     format: ThresholdFormat.Value,
     condition: data => `(r) => (r["${data.field}"] >= ${data.value})`,
   },
   less: {
-    name: 'Less Than',
+    name: 'less than',
     format: ThresholdFormat.Value,
     condition: data => `(r) => (r["${data.field}"] < ${data.value})`,
   },
   'less-equal': {
-    name: 'Less Than or Equal To',
+    name: 'less than or equal to',
     format: ThresholdFormat.Value,
     condition: data => `(r) => (r["${data.field}"] <= ${data.value})`,
   },
   equal: {
-    name: 'Equal To',
+    name: 'equal to',
     format: ThresholdFormat.Value,
     condition: data => `(r) => (r["${data.field}"] == ${data.value})`,
   },
   'not-equal': {
-    name: 'Not Equal To',
+    name: 'not equal to',
     format: ThresholdFormat.Value,
     condition: data => `(r) => (r["${data.field}"] != ${data.value})`,
   },
   between: {
-    name: 'Between',
+    name: 'between',
     format: ThresholdFormat.Range,
     condition: data =>
       `(r) => (r["${data.field}"] > ${data.min} and r["${data.field}"] < ${data.max})`,
   },
   'not-between': {
-    name: 'Not Between',
+    name: 'not between',
     format: ThresholdFormat.Range,
     condition: data =>
       `(r) => (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,

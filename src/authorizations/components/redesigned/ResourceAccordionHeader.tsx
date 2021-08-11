@@ -16,10 +16,47 @@ import {
 interface OwnProps {
   resourceName: string
   permissions: any
+  onToggleAll: (name: string, permission: string, value: boolean) => void
 }
 
 export const ResourceAccordionHeader: FC<OwnProps> = props => {
   const {resourceName} = props
+  console.log('header: ', props.permissions)
+  const readToggle = () => {
+    const {permissions} = props
+    let tag = true
+    Object.keys(permissions).map(key => {
+      permissions[key].permissions.read === true
+        ? tag === false
+          ? (tag = false)
+          : (tag = true)
+        : (tag = false)
+    })
+    return tag ? true : false
+  }
+
+  const writeToggle = () => {
+    const {permissions} = props
+    let tag = true
+    Object.keys(permissions).map(key => {
+      permissions[key].permissions.write === true
+        ? tag === false
+          ? (tag = false)
+          : (tag = true)
+        : (tag = false)
+    })
+    return tag ? true : false
+  }
+
+  const handleReadToggle = value => {
+    const {onToggleAll, resourceName} = props
+    onToggleAll(resourceName, 'read', value === 'true')
+  }
+  const handleWriteToggle = value => {
+    const {onToggleAll, resourceName} = props
+    onToggleAll(resourceName, 'write', value === 'true')
+  }
+
   const accordionHeader = (title: string) => {
     return (
       <FlexBox
@@ -37,9 +74,10 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
           <Toggle
             id="1"
             type={InputToggleType.Checkbox}
-            onChange={() => {}}
+            onChange={handleReadToggle}
             size={ComponentSize.ExtraSmall}
-            checked={true}
+            checked={readToggle()}
+            value={readToggle().toString()}
             style={{marginRight: '10px'}}
             tabIndex={0}
             disabled={false}
@@ -52,9 +90,10 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
           <Toggle
             id="2"
             type={InputToggleType.Checkbox}
-            onChange={() => {}}
+            onChange={handleWriteToggle}
             size={ComponentSize.ExtraSmall}
-            checked={true}
+            checked={writeToggle()}
+            value={readToggle().toString()}
             style={{marginRight: '10px'}}
             tabIndex={0}
             disabled={false}

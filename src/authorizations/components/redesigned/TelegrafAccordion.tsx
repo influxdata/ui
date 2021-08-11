@@ -99,6 +99,7 @@ class TelegrafAccordion extends Component<Props, {}> {
   }
 
   handleReadToggle = id => {
+    console.log('inread')
     this.props.onToggle(id, 'read') // TODO: Palak turn into enums
   }
   handleWriteToggle = id => {

@@ -55,6 +55,7 @@ export class ResourceAccordion extends Component<Props, State> {
           <ResourceAccordionHeader
             resourceName={resourceName}
             permissions={permissions[resource]}
+            onToggleAll={this.handleToggleAll}
           />
           <GetResources resources={[ResourceType[resourceName]]}>
             {resourceName === 'Telegrafs' ? (
@@ -71,8 +72,6 @@ export class ResourceAccordion extends Component<Props, State> {
       )
     })
   }
-
-  // TODO: Palak mstp!!
 
   handleTelegrafState = telegrafs => {
     const telegrafPermissions = {}
@@ -91,6 +90,19 @@ export class ResourceAccordion extends Component<Props, State> {
         ...permissions,
         telegrafs: telegrafPermissions,
       },
+    })
+  }
+
+  handleToggleAll = (resourceName, permission, value) => {
+    const {permissions} = this.state
+    const newPerm = {...permissions}
+    const name = resourceName.toLowerCase()
+    Object.keys(newPerm[name]).map(key => {
+      newPerm[name][key].permissions[permission] = !value
+    })
+
+    this.setState({
+      permissions: newPerm,
     })
   }
 

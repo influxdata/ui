@@ -67,7 +67,9 @@ export const THRESHOLD_TYPES = {
 const Threshold: FC = () => {
   const {data, update, results} = useContext(PipeContext)
 
-  const fields = [...new Set(results.parsed.table.columns['_field'].data)]
+  const fields = Array.from(
+    new Set(results.parsed.table.columns['_field'].data as string[])
+  )
 
   const setThresholdType = type => {
     if (!THRESHOLD_TYPES[type]) {

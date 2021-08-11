@@ -1,8 +1,5 @@
 val mem = Mem("host1", 23.43234543, Instant.now())
-
-val writeApi = client.getWriteKotlinApi()
 writeApi.writeMeasurement(mem, WritePrecision.NS)
-
 
 
 @Measurement(name = "mem")

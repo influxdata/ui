@@ -4,5 +4,4 @@ val point = Point
   .addField("used_percent", 23.43234543)
   .time(Instant.now(), WritePrecision.NS);
 
-val writeApi = client.getWriteKotlinApi()
 writeApi.writePoint(point)

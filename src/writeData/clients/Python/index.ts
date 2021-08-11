@@ -6,6 +6,8 @@ import writePoint from 'src/writeData/clients/Python/write.1.example'
 import writeBatch from 'src/writeData/clients/Python/write.2.example'
 import execute from 'src/writeData/clients/Python/execute.example'
 import query from 'src/writeData/clients/Python/query.example'
+import dispose from 'src/writeData/clients/Python/dispose.example'
+import executeFull from 'src/writeData/clients/Python/executeFull.example'
 
 export default register =>
   register({
@@ -31,4 +33,6 @@ export default register =>
     ],
     execute,
     query,
+    dispose,
+    executeFull,
   })

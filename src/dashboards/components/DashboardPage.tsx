@@ -25,7 +25,6 @@ import {
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {fetchAndSetAnnotations} from 'src/annotations/actions/thunks'
@@ -57,9 +56,7 @@ class DashboardPage extends Component<Props> {
 
     this.emitRenderCycleEvent()
 
-    if (isFlagEnabled('annotations')) {
-      this.props.fetchAndSetAnnotations()
-    }
+    this.props.fetchAndSetAnnotations()
   }
 
   public componentWillUnmount() {
@@ -95,12 +92,10 @@ class DashboardPage extends Component<Props> {
               path={`${dashRoute}/notes/:cellID/edit`}
               component={EditNoteOverlay}
             />
-            {isFlagEnabled('annotations') && (
-              <Route
-                path={`${dashRoute}/edit-annotation`}
-                component={EditAnnotationDashboardOverlay}
-              />
-            )}
+            <Route
+              path={`${dashRoute}/edit-annotation`}
+              component={EditAnnotationDashboardOverlay}
+            />
           </Switch>
         </ErrorBoundary>
       </>

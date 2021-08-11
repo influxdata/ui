@@ -5,7 +5,6 @@ import {useDispatch} from 'react-redux'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import classnames from 'classnames'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import {
@@ -308,7 +307,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       />
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
-          {isFlagEnabled('rangeAnnotations') && annoTypePicker}
+          {annoTypePicker}
           <div className="annotation-type-option-line">
             <AnnotationTimeInput
               onChange={updateStartTime}

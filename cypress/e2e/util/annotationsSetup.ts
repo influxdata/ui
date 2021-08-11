@@ -10,11 +10,7 @@ export const clearLocalStorage = () => {
   })
 }
 
-export const setupData = (
-  cy: Cypress.Chainable,
-  plotTypeSuffix = '',
-  enableRangeAnnotations = true
-) => {
+export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') => {
   cy.flush()
   return cy.signin().then(() =>
     cy.get('@org').then(({id: orgID}: Organization) =>
@@ -23,9 +19,7 @@ export const setupData = (
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
           return cy
             .setFeatureFlags({
-              annotations: true,
               useGiraffeGraphs: true,
-              rangeAnnotations: enableRangeAnnotations,
             })
             .then(() => {
               cy.createBucket(orgID, name, 'devbucket')

@@ -1,25 +1,24 @@
 package example
 
-import com.influxdb.annotations.Column
-import com.influxdb.annotations.Measurement
-import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
-import com.influxdb.client.write.Point
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.runBlocking
-import java.time.Instant
 
 fun main() = runBlocking {
 
     // You can generate a Token from the "Tokens Tab" in the UI
     val token = "<%= token %>"
     val org = "<%= org %>"
-    val bucket = "<%= bucket %>"
 
-    val client = InfluxDBClientKotlinFactory.create("<%= server %>", token.toCharArray(), org, bucket)
+    val client = InfluxDBClientKotlinFactory.create("<%= server %>", token.toCharArray(), org)
     client.use {
+        val query = """<%= query %>"""
 
+        val results = client.getQueryKotlinApi().query(query)
+        results
+          .consumeAsFlow()
+          .collect { println("$it") }
     }
 }
 

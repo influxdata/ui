@@ -14,14 +14,15 @@ public class InfluxDB2Example {
     String token = "<%= token %>";
     String org = "<%= org %>";
 
-    InfluxDBClient client = InfluxDBClientFactory.create("<%= server %>", token.toCharArray());
+    try (InfluxDBClient client = InfluxDBClientFactory.create("<%= server %>", token.toCharArray())) {
 
-    String query = <%= query %>;
-    List<FluxTable> tables = client.getQueryApi().query(query, org);
+      String query = <%= query %>;
+      List<FluxTable> tables = client.getQueryApi().query(query, org);
 
-    for (FluxTable table : tables) {
-      for (FluxRecord record : table.getRecords()) {
-        System.out.println(record);
+      for (FluxTable table : tables) {
+        for (FluxRecord record : table.getRecords()) {
+          System.out.println(record);
+        }
       }
     }
   }

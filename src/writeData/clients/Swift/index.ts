@@ -32,5 +32,5 @@ export default register =>
     ],
     execute,
     query,
-    dispose: dispose,
+    dispose,
   })

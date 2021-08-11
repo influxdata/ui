@@ -7,6 +7,7 @@ import writePOJO from 'src/writeData/clients/Java/write.2.example'
 import execute from 'src/writeData/clients/Java/execute.example'
 import query from 'src/writeData/clients/Java/query.example'
 import executeFull from 'src/writeData/clients/Java/executeFull.example'
+import dispose from 'src/writeData/clients/Java/dispose.example'
 
 export default register =>
   register({
@@ -54,4 +55,5 @@ export default register =>
       )
     },
     executeFull,
+    dispose,
   })

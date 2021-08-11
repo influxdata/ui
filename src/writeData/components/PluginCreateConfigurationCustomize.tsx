@@ -43,7 +43,7 @@ import {TELEGRAF_DEFAULT_OUTPUT} from 'src/writeData/constants/contentTelegrafPl
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
-const PluginCreateConfigurationCustomize: FC<Props> = props => {
+const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   const {
     onAddPluginBundle,
     onDecrementCurrentStepIndex,
@@ -164,4 +164,6 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(PluginCreateConfigurationCustomize)
+export const PluginCreateConfigurationCustomize = connector(
+  PluginCreateConfigurationCustomizeComponent
+)

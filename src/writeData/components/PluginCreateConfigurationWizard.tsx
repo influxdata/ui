@@ -16,8 +16,14 @@ import {
   decrementCurrentStepIndex,
   incrementCurrentStepIndex,
   setCurrentStepIndex,
+  setSubstepIndex,
 } from 'src/dataLoaders/actions/steps'
 import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
+
+// Constants
+import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
+
+const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 
 const spinner = <div />
 const PluginCreateConfigurationStepSwitcher = Loadable({
@@ -30,10 +36,14 @@ const PluginCreateConfigurationStepSwitcher = Loadable({
 
 export interface PluginCreateConfigurationStepProps {
   currentStepIndex: number
+  newBucketName: string
   notify: typeof notifyAction
   onDecrementCurrentStepIndex: () => void
   onExit: () => void
   onIncrementCurrentStepIndex: () => void
+  onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
+  setNewBucketName: React.Dispatch<React.SetStateAction<string>>
+  substepIndex: number
 }
 
 interface PluginCreateConfigurationWizardProps {
@@ -55,17 +65,23 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onDecrementCurrentStepIndex,
     onIncrementCurrentStepIndex,
     onSetCurrentStepIndex,
+    onSetSubstepIndex,
+    substepIndex,
   } = props
 
   useEffect(() => {
     onSetCurrentStepIndex(0)
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [])
+    onSetSubstepIndex(0, 0)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDismiss = () => {
     onClearDataLoaders()
     onClearSteps()
-    history.goBack()
+    if (substepIndex === 1) {
+      onSetSubstepIndex(0, 0)
+    } else {
+      history.goBack()
+    }
   }
 
   const stepProps = {
@@ -74,16 +90,26 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onDecrementCurrentStepIndex,
     onExit: handleDismiss,
     onIncrementCurrentStepIndex,
+    onSetSubstepIndex,
+    substepIndex,
   }
 
-  const title =
-    currentStepIndex === 0
-      ? 'Configuration Options'
-      : 'Create a Telegraf Configuration'
+  let title = 'Configuration Options'
+
+  if (currentStepIndex === 0 && substepIndex === 1) {
+    title = 'Create Bucket'
+  } else if (currentStepIndex !== 0) {
+    title = 'Create a Telegraf Configuration'
+  }
+
+  const maxWidth =
+    substepIndex === 1
+      ? BUCKET_OVERLAY_WIDTH
+      : PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH
 
   return (
     <Overlay visible={true}>
-      <Overlay.Container maxWidth={1200}>
+      <Overlay.Container maxWidth={maxWidth}>
         <Overlay.Header title={title} onDismiss={handleDismiss} />
         <Overlay.Body className="data-loading--overlay">
           <PluginCreateConfigurationStepSwitcher stepProps={stepProps} />
@@ -96,12 +122,13 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
 const mstp = (state: AppState) => {
   const {
     dataLoading: {
-      steps: {currentStep},
+      steps: {currentStep, substep = 0},
     },
   } = state
 
   return {
     currentStepIndex: currentStep,
+    substepIndex: typeof substep === 'number' ? substep : 0,
   }
 }
 
@@ -112,6 +139,7 @@ const mdtp = {
   onDecrementCurrentStepIndex: decrementCurrentStepIndex,
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
   onSetCurrentStepIndex: setCurrentStepIndex,
+  onSetSubstepIndex: setSubstepIndex,
 }
 
 const connector = connect(mstp, mdtp)

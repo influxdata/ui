@@ -32,21 +32,26 @@ import {isSystemBucket} from 'src/buckets/constants'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
-const PluginCreateConfigurationOptions: FC<Props> = props => {
+const CREATE_A_BUCKET_ID = 'CREATE A BUCKET'
+
+const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
   const {
     bucket,
     buckets,
+    currentStepIndex,
     onExit,
     onIncrementCurrentStepIndex,
     onSetBucketInfo,
+    onSetSubstepIndex,
     onSetTelegrafConfigName,
     telegrafConfigName,
   } = props
 
+  console.log('~~~ buckets:', buckets)
   let selectedBucket = buckets.find(b => b.name === bucket)
 
   if (!selectedBucket) {
-    selectedBucket = buckets[0]
+    selectedBucket = buckets[buckets.length - 1]
     const {orgID, id, name} = selectedBucket
     onSetBucketInfo(orgID, name, id)
   }
@@ -58,9 +63,14 @@ const PluginCreateConfigurationOptions: FC<Props> = props => {
   }
 
   const handleSelectBucket = (bucket: Bucket) => {
+    console.log('handleSelectBucket: bucket', bucket)
     const {orgID, id, name} = bucket
 
-    onSetBucketInfo(orgID, name, id)
+    if (id === CREATE_A_BUCKET_ID) {
+      onSetSubstepIndex(currentStepIndex, 1)
+    } else {
+      onSetBucketInfo(orgID, name, id)
+    }
   }
 
   return (
@@ -76,10 +86,13 @@ const PluginCreateConfigurationOptions: FC<Props> = props => {
           autoFocus={true}
         />
       </Form.Element>
-      <Form.Element label="Bucket">
+      <Form.Element label="Output Bucket">
         <BucketDropdown
           selectedBucketID={selectedBucketID}
-          buckets={buckets}
+          buckets={[
+            {id: CREATE_A_BUCKET_ID, name: '+ Create A Bucket'} as Bucket,
+            ...buckets,
+          ]}
           onSelectBucket={handleSelectBucket}
         />
       </Form.Element>
@@ -118,6 +131,7 @@ const mstp = (state: AppState) => {
     bucket => !isSystemBucket(bucket.name)
   )
 
+  console.log('~~~ state', state)
   return {
     bucket,
     buckets: nonSystemBuckets,
@@ -132,4 +146,6 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(PluginCreateConfigurationOptions)
+export const PluginCreateConfigurationOptions = connector(
+  PluginCreateConfigurationOptionsComponent
+)

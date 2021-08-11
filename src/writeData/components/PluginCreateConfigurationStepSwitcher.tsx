@@ -6,8 +6,9 @@ import {PluginCreateConfigurationStep} from 'src/types/dataLoaders'
 import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
 
 // Components
-import PluginCreateConfigurationOptions from 'src/writeData/components/PluginCreateConfigurationOptions'
-import PluginCreateConfigurationCustomize from 'src/writeData/components/PluginCreateConfigurationCustomize'
+import {PluginCreateConfigurationOptions} from 'src/writeData/components/PluginCreateConfigurationOptions'
+import {PluginCreateConfigurationAddBucket} from 'src/writeData/components/PluginCreateConfigurationAddBucket'
+import {PluginCreateConfigurationCustomize} from 'src/writeData/components/PluginCreateConfigurationCustomize'
 import VerifyCollectorsStep from 'src/dataLoaders/components/collectorsWizard/verify/VerifyCollectorsStep'
 
 interface Props {
@@ -19,7 +20,11 @@ const StepSwitcher: FC<Props> = props => {
 
   switch (stepProps.currentStepIndex) {
     case PluginCreateConfigurationStep.Configure:
-      return <PluginCreateConfigurationOptions {...stepProps} />
+      if (stepProps.substepIndex === 1) {
+        return <PluginCreateConfigurationAddBucket {...stepProps} />
+      } else {
+        return <PluginCreateConfigurationOptions {...stepProps} />
+      }
     case PluginCreateConfigurationStep.Customize:
       return <PluginCreateConfigurationCustomize {...stepProps} />
     case PluginCreateConfigurationStep.Verify:

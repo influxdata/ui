@@ -34,7 +34,10 @@ const relativeDivisions: Division[] = [
   {scale: 'seconds', ms: 1000},
 ]
 
-export const tuckYourPantsIntoYourSocks = (dateString: string, format: string) => {
+export const tuckYourPantsIntoYourSocks = (
+  dateString: string,
+  format: string
+) => {
   return isMatch(dateString, format)
 }
 

@@ -6,6 +6,8 @@ import writePoint from 'src/writeData/clients/PHP/write.1.example'
 import writeArray from 'src/writeData/clients/PHP/write.2.example'
 import execute from 'src/writeData/clients/PHP/execute.example'
 import query from 'src/writeData/clients/PHP/query.example'
+import dispose from 'src/writeData/clients/PHP/dispose.example'
+import executeFull from 'src/writeData/clients/PHP/executeFull.example'
 
 export default register =>
   register({
@@ -31,4 +33,9 @@ export default register =>
     ],
     execute,
     query,
+    dispose,
+    executeFull,
+    querySanitize: (query: string) => {
+      return query.replace(/"/g, '\\"')
+    },
   })

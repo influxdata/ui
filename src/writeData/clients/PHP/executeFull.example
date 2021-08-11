@@ -1,3 +1,14 @@
+use InfluxDB2\Client;
+
+# You can generate a Token from the "Tokens Tab" in the UI
+$token = '<%= token %>';
+$org = '<%= org %>';
+
+$client = new Client([
+    "url" => "<%= server %>",
+    "token" => $token,
+]);
+
 $query = "<%= query %>";
 $tables = $client->createQueryApi()->query($query, $org);
 
@@ -10,3 +21,5 @@ foreach ($tables as $table) {
         print "$time $measurement: $field=$value\n";
     }
 }
+
+$client->close();

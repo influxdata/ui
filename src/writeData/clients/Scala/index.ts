@@ -17,5 +17,5 @@ export default register =>
     execute,
     query,
     dispose,
-      executeFull,
+    executeFull,
   })

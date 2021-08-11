@@ -21,23 +21,12 @@ import {AppState, Telegraf, ResourceType} from 'src/types'
 // Selectors
 import {getAll} from 'src/resources/selectors'
 
-interface OwnProps {
-  loadTelegrafs: (telegrafs) => void
+interface Props {
   permissions: any
   onToggle: (id, permission) => void
 }
 
-interface StateProps {
-  telegrafs: Telegraf[]
-}
-
-type Props = OwnProps & StateProps
-
-class TelegrafAccordion extends Component<Props, {}> {
-  public componentDidMount() {
-    this.props.loadTelegrafs(this.props.telegrafs)
-  }
-
+export default class TelegrafAccordion extends Component<Props, {}> {
   public render() {
     const {permissions} = this.props
     console.log('permissions', permissions)
@@ -107,8 +96,8 @@ class TelegrafAccordion extends Component<Props, {}> {
   }
 }
 
-const mstp = (state: AppState) => ({
-  telegrafs: getAll<Telegraf>(state, ResourceType.Telegrafs),
-})
+// const mstp = (state: AppState) => ({
+//   telegrafs: getAll<Telegraf>(state, ResourceType.Telegrafs),
+// })
 
-export default connect<StateProps>(mstp, null)(TelegrafAccordion)
+// export default connect<StateProps>(mstp, null)(TelegrafAccordion)

@@ -4,10 +4,15 @@ import React, {Component} from 'react'
 // Clockface
 import {Accordion} from '@influxdata/clockface'
 import {ResourceAccordionHeader} from './ResourceAccordionHeader'
-import {ResourceType} from 'src/types'
 import GetResources from 'src/resources/components/GetResources'
 import TelegrafAccordion from './TelegrafAccordion'
 import BucketAccordion from './BucketAccordion'
+// Types
+import {AppState, Telegraf, ResourceType} from 'src/types'
+
+// Selectors
+import {getAll} from 'src/resources/selectors'
+import {connect} from 'react-redux'
 
 export type ReadWritePermissions = {
   read: boolean
@@ -17,29 +22,38 @@ export type SublevelPermissions = {
   [x: string]: ReadWritePermissions
 }
 
-interface Props {
+interface OwnProps {
   resources: string[] // ["te;egrafas", "buckets"]...
 }
 interface State {
   permissions: any // {buckets: [], telegrafs: { 23424: {ird: orgID: name: permissions: {read: boolean, write: boolean}}}}
 }
+interface StateProps {
+  telegrafPermissions: any
+}
 
-export class ResourceAccordion extends Component<Props, State> {
+type Props = OwnProps & StateProps
+
+class ResourceAccordion extends Component<Props, State> {
   constructor(props) {
     super(props)
-
-    const permission = {}
-
-    props.resources.map(resource => {
-      if (resource === 'telegrafs' || resource === 'buckets') {
-        permission[resource] = []
-      } else {
-        permission[resource] = {}
-      }
-    })
-
     this.state = {
-      permissions: permission,
+      permissions: {
+        telegrafs: props.telegrafPermissions,
+      },
+    }
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (!props.telegrafPermissions) {
+      return null
+    }
+    console.log('derived Stazte: ', props.telegrafPermissions)
+    return {
+      ...state,
+      permissions: {
+        telegrafs: props.telegrafPermissions,
+      },
     }
   }
 
@@ -51,59 +65,37 @@ export class ResourceAccordion extends Component<Props, State> {
     return resources.map(resource => {
       const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
       return (
-        <Accordion key={resource}>
-          <ResourceAccordionHeader
-            resourceName={resourceName}
-            permissions={permissions[resource]}
-            onToggleAll={this.handleToggleAll}
-          />
-          <GetResources resources={[ResourceType[resourceName]]}>
+        <GetResources key={resource} resources={[ResourceType[resourceName]]}>
+          <Accordion>
+            <ResourceAccordionHeader
+              resourceName={resourceName}
+              permissions={permissions[resource]}
+              onToggleAll={this.handleToggleAll}
+            />
             {resourceName === 'Telegrafs' ? (
               <TelegrafAccordion
-                loadTelegrafs={this.handleTelegrafState}
                 permissions={permissions[resource]}
                 onToggle={this.handleTelegrafToggle}
               />
             ) : (
               <BucketAccordion />
             )}
-          </GetResources>
-        </Accordion>
+          </Accordion>
+        </GetResources>
       )
     })
   }
 
-  handleTelegrafState = telegrafs => {
-    const telegrafPermissions = {}
-    telegrafs.forEach(t => {
-      telegrafPermissions[t.id] = {
-        id: t.id,
-        orgID: t.orgID,
-        name: t.name,
-        permissions: {read: false, write: false},
-      }
-    })
-
-    const {permissions} = this.state
-    this.setState({
-      permissions: {
-        ...permissions,
-        telegrafs: telegrafPermissions,
-      },
-    })
-  }
-
   handleToggleAll = (resourceName, permission, value) => {
-    const {permissions} = this.state
-    const newPerm = {...permissions}
-    const name = resourceName.toLowerCase()
-    Object.keys(newPerm[name]).map(key => {
-      newPerm[name][key].permissions[permission] = !value
-    })
-
-    this.setState({
-      permissions: newPerm,
-    })
+    // const {permissions} = this.state
+    // const newPerm = {...permissions}
+    // const name = resourceName.toLowerCase()
+    // Object.keys(newPerm[name]).map(key => {
+    //   newPerm[name][key].permissions[permission] = !value
+    // })
+    // this.setState({
+    //   permissions: newPerm,
+    // })
   }
 
   handleTelegrafToggle = (id, permission) => {
@@ -123,3 +115,21 @@ export class ResourceAccordion extends Component<Props, State> {
     })
   }
 }
+
+const mstp = (state: AppState) => {
+  const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
+  const telegrafPermissions = {}
+  telegrafs.forEach(t => {
+    telegrafPermissions[t.id] = {
+      id: t.id,
+      orgID: t.orgID,
+      name: t.name,
+      permissions: {read: false, write: false},
+    }
+  })
+
+  console.log('telegraf permissions mstp: ', telegrafPermissions)
+  return {telegrafPermissions}
+}
+
+export default connect<StateProps>(mstp, null)(ResourceAccordion)

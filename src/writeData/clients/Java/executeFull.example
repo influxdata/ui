@@ -1,0 +1,29 @@
+package example;
+
+import java.util.List;
+
+import com.influxdb.client.InfluxDBClient;
+import com.influxdb.client.InfluxDBClientFactory;
+import com.influxdb.query.FluxRecord;
+import com.influxdb.query.FluxTable;
+
+public class InfluxDB2Example {
+  public static void main(final String[] args) {
+
+    // You can generate a Token from the "Tokens Tab" in the UI
+    String token = "<%= token %>";
+    String org = "<%= org %>";
+
+    InfluxDBClient client = InfluxDBClientFactory.create("<%= server %>", token.toCharArray());
+
+    String query = <%= query %>;
+    List<FluxTable> tables = client.getQueryApi().query(query, org);
+
+    for (FluxTable table : tables) {
+      for (FluxRecord record : table.getRecords()) {
+        System.out.println(record);
+      }
+    }
+  }
+}
+

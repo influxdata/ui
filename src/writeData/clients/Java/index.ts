@@ -6,6 +6,7 @@ import writePoint from 'src/writeData/clients/Java/write.1.example'
 import writePOJO from 'src/writeData/clients/Java/write.2.example'
 import execute from 'src/writeData/clients/Java/execute.example'
 import query from 'src/writeData/clients/Java/query.example'
+import executeFull from 'src/writeData/clients/Java/executeFull.example'
 
 export default register =>
   register({
@@ -31,4 +32,26 @@ export default register =>
     ],
     execute,
     query,
+    querySanitize: (query: string) => {
+      return (
+        query
+          // escape double quotes
+          .replace(/"/g, '\\"')
+          // split to rows
+          .split('\n')
+          // format to multiline string
+          .map((line, index, origin) => {
+            let endOfLine
+            // last lane doesn't have '\n +'
+            if (origin.length == index + 1) {
+              endOfLine = '"'
+            } else {
+              endOfLine = '\\n" +'
+            }
+            return `"${line}${endOfLine}`
+          })
+          .join('\n')
+      )
+    },
+    executeFull,
   })

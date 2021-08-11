@@ -35,5 +35,5 @@ export default register =>
     querySanitize: (query: string) => {
       return query.replace(/"/g, '""')
     },
-    executeFull: executeFull,
+    executeFull,
   })

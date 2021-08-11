@@ -67,15 +67,7 @@ export const THRESHOLD_TYPES = {
 const Threshold: FC = () => {
   const {data, update, results} = useContext(PipeContext)
 
-  const numericColumns = results.parsed.table.columnKeys.filter(key => {
-    if (key === 'result' || key === 'table') {
-      return false
-    }
-
-    const columnType = results.parsed.table.getColumnType(key)
-
-    return columnType === 'time' || columnType === 'number'
-  })
+  const fields = [...new Set(results.parsed.table.columns['_field'].data)]
 
   const setThresholdType = type => {
     if (!THRESHOLD_TYPES[type]) {
@@ -143,7 +135,7 @@ const Threshold: FC = () => {
   }, [data.threshold?.type])
 
   const columnDropdown = useMemo(() => {
-    const menuItems = numericColumns.map(key => (
+    const menuItems = fields.map(key => (
       <Dropdown.Item
         key={key}
         value={key}
@@ -167,7 +159,7 @@ const Threshold: FC = () => {
       </Dropdown.Button>
     )
     return <Dropdown menu={menu} button={menuButton} />
-  }, [numericColumns, data.threshold?.field])
+  }, [fields, data.threshold?.field])
 
   const updateMin = evt => {
     update({

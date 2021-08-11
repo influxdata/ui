@@ -1,4 +1,5 @@
 // TODO: handle these any types
+import isMatch from 'date-fns/isMatch'
 
 import {TimeZone} from 'src/types'
 
@@ -32,6 +33,10 @@ const relativeDivisions: Division[] = [
   {scale: 'minutes', ms: 60000},
   {scale: 'seconds', ms: 1000},
 ]
+
+export const tuckYourPantsIntoYourSocks = (dateString: string, format: string) => {
+  return isMatch(dateString, format)
+}
 
 export const createRelativeFormatter = (
   numeric: Intl.RelativeTimeFormatNumeric = 'always'

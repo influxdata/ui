@@ -1,4 +1,4 @@
-import {isMatch} from 'date-fns'
+// import {isMatch} from 'date-fns'
 // import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 // const formatterToDateFnsMap = {
@@ -77,28 +77,28 @@ import {isMatch} from 'date-fns'
 //     regex: /[a-zA-Z]+, [a-zA-Z]+ \d{1,2}, \d{4} \d{2}:\d{2}:\d{2} \w{2}/,
 //   },
 // }
-
-const formatterToDateFnsMap = {}
-const getDateFnsFormatString = (format: string): string => {
-  const dateFnsFormatString = formatterToDateFnsMap[format].format
-    ? formatterToDateFnsMap[format].format
-    : 'yyyy-MM-dd HH:mm:ss'
-
-  return dateFnsFormatString
-}
-
-const strictCheck = (dateString: string, format: string): boolean => {
-  return formatterToDateFnsMap[format].regex.test(dateString)
-}
-
-export const isValid = (
-  formattedDateTimeString: string,
-  format: string
-): boolean => {
-  const dateFnsFormatString = getDateFnsFormatString(format)
-
-  return (
-    strictCheck(formattedDateTimeString, format) &&
-    isMatch(formattedDateTimeString, dateFnsFormatString)
-  )
-}
+//
+// const formatterToDateFnsMap = {}
+// const getDateFnsFormatString = (format: string): string => {
+//   const dateFnsFormatString = formatterToDateFnsMap[format].format
+//     ? formatterToDateFnsMap[format].format
+//     : 'yyyy-MM-dd HH:mm:ss'
+//
+//   return dateFnsFormatString
+// }
+//
+// const strictCheck = (dateString: string, format: string): boolean => {
+//   return formatterToDateFnsMap[format].regex.test(dateString)
+// }
+//
+// export const isValid = (
+//   formattedDateTimeString: string,
+//   format: string
+// ): boolean => {
+//   const dateFnsFormatString = getDateFnsFormatString(format)
+//
+//   return (
+//     strictCheck(formattedDateTimeString, format) &&
+//     isMatch(formattedDateTimeString, dateFnsFormatString)
+//   )
+// }

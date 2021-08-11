@@ -2,7 +2,6 @@ import {
   addAnnotation,
   addRangeAnnotation,
   checkAnnotationText,
-  clearLocalStorage,
   reloadAndHandleAnnotationDefaultStatus,
   setupData,
   startEditingAnnotation,
@@ -12,7 +11,6 @@ import * as moment from 'moment'
 import {DEFAULT_TIME_FORMAT} from '../../../src/utils/datetime/constants'
 
 describe('Annotations, but in a different test suite', () => {
-  afterEach(clearLocalStorage)
   beforeEach(() => setupData(cy))
 
   describe('administrative functions like the tests being on and off', () => {

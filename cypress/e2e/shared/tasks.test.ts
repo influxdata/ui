@@ -66,9 +66,9 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
   })
 
   it('can create a cron task', () => {
-    cy.getByTestID('empty-tasks-list').within(() => {
-      cy.getByTestID('create-task--button').click()
-    })
+    cy.getByTestID('create-task--button')
+      .first()
+      .click()
 
     cy.getByTestID('flux-editor').within(() => {
       cy.get('textarea.inputarea')
@@ -110,9 +110,9 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
   })
 
   it('can create a task with an option parameter', () => {
-    cy.getByTestID('empty-tasks-list').within(() => {
-      cy.getByTestID('create-task--button').click()
-    })
+    cy.getByTestID('create-task--button')
+      .first()
+      .click()
 
     cy.focused()
 
@@ -656,7 +656,9 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     ]
 
     tasks.forEach(task => {
-      cy.getByTestID('create-task--button').click()
+      cy.getByTestID('create-task--button')
+        .first()
+        .click()
 
       // Fill Task Form
       // focused() waits for monoco editor to get input focus
@@ -736,7 +738,9 @@ const createTask = (
   every = '3h',
   offset = '20m'
 ) => {
-  cy.getByTestID('create-task--button').click()
+  cy.getByTestID('create-task--button')
+    .first()
+    .click()
 
   cy.getByTestID('flux-editor').within(() => {
     cy.get('textarea.inputarea')
@@ -758,9 +762,9 @@ export function createFirstTask(
   interval: string = '24h',
   offset: string = '20m'
 ) {
-  cy.getByTestID('empty-tasks-list').within(() => {
-    cy.getByTestID('create-task--button').click()
-  })
+  cy.getByTestID('create-task--button')
+    .first()
+    .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').within(() => {

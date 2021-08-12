@@ -4,10 +4,6 @@ import {CustomApiTokenOverlay} from './CustomApiTokenOverlay'
 import {renderWithRedux} from 'src/mockState'
 
 describe('CustomApitokenDescription', () => {
-  const props = {
-    onClose: () => true,
-  }
-
   it('displays description box', () => {
     const {getByText} = renderWithRedux(<CustomApiTokenOverlay {...props} />)
 

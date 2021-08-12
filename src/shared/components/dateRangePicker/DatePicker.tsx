@@ -41,9 +41,9 @@ const isValidRTC3339 = (d: string): boolean => {
   return (
     isValid(d, 'YYYY-MM-DD HH:mm') ||
     isValid(d, 'YYYY-MM-DD HH:mm:ss') ||
-    isValid(d, 'YYYY-MM-DD HH:mm:ss.SSS') ||
+    isValid(d, 'YYYY-MM-DD HH:mm:ss.sss') ||
     isValid(d, 'YYYY-MM-DD') ||
-    new Date(d).toISOString() === d
+    moment(d).toISOString() === d
   )
 }
 
@@ -57,7 +57,7 @@ const getFormat = (d: string): string => {
   if (isValid(d, 'YYYY-MM-DD HH:mm:ss')) {
     return 'YYYY-MM-DD HH:mm:ss'
   }
-  if (isValid(d, 'YYYY-MM-DD HH:mm:ss.SSS')) {
+  if (isValid(d, 'YYYY-MM-DD HH:mm:ss.sss')) {
     return 'YYYY-MM-DD HH:mm:ss.sss'
   }
   return null

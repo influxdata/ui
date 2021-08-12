@@ -113,8 +113,8 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
 
   let overlayBodyClassName = 'data-loading--overlay'
 
-  if (currentStepIndex === 0) {
-    overlayBodyClassName += ' plugin-create-configuration--options'
+  if (currentStepIndex === 0 || currentStepIndex === 1) {
+    overlayBodyClassName += ' plugin-create-configuration'
   }
 
   return (

@@ -23,6 +23,7 @@ import TelegrafConfig from 'src/telegrafs/components/TelegrafConfig'
 import {
   addPluginBundleWithPlugins,
   setTelegrafConfigName,
+  setTelegrafConfigDescription,
   createOrUpdateTelegrafConfigAsync,
 } from 'src/dataLoaders/actions/dataLoaders'
 
@@ -35,7 +36,7 @@ import {PluginCreateConfigurationStepProps} from 'src/writeData/components/Plugi
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
 // Utils
-// import {downloadTextFile} from 'src/shared/utils/download'
+import {downloadTextFile} from 'src/shared/utils/download'
 
 // Constants
 import {TELEGRAF_DEFAULT_OUTPUT} from 'src/writeData/constants/contentTelegrafPlugins'
@@ -50,12 +51,15 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSaveTelegrafConfig,
     onSetTelegrafConfigName,
+    onSetTelegrafConfigDescription,
+    telegrafConfigDescription,
     telegrafConfigName,
   } = props
 
+  const workingConfig = TELEGRAF_DEFAULT_OUTPUT
+
   const handleDownloadConfig = () => {
-    // const {name} = telegraf
-    // downloadTextFile(workingConfig, name || 'telegraf', '.conf')
+    downloadTextFile(workingConfig, telegrafConfigName || 'telegraf', '.conf')
   }
 
   const handleCopy = () => {}
@@ -69,7 +73,9 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     onSetTelegrafConfigName(event.target.value)
   }
 
-  const workingConfig = TELEGRAF_DEFAULT_OUTPUT
+  const handleDescriptionInput = (event: ChangeEvent<HTMLInputElement>) => {
+    onSetTelegrafConfigDescription(event.target.value)
+  }
 
   const handleChangeConfig = () => {}
 
@@ -81,23 +87,25 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   return (
     <>
       <Grid>
-        <Grid.Row>
-          <Grid.Column widthLG={Columns.Eight}>
+        <Grid.Row className="plugin-create-configuration-name-row">
+          <Grid.Column widthSM={Columns.Ten}>
             <Form.Element label="Agent Name">
               <Input
                 type={InputType.Text}
                 value={telegrafConfigName}
                 name="name"
                 onChange={handleNameInput}
+                placeholder="Your configuration name"
                 titleText="Agent Name"
                 size={ComponentSize.Medium}
                 autoFocus={true}
               />
             </Form.Element>
           </Grid.Column>
-          <Grid.Column widthLG={Columns.Two}>
-            <CopyToClipboard text="hello clipboard" onCopy={handleCopy}>
+          <Grid.Column widthSM={Columns.Two}>
+            <CopyToClipboard text={workingConfig} onCopy={handleCopy}>
               <Button
+                className="plugin-create-configuration-copy-to-clipboard--button"
                 color={ComponentColor.Default}
                 onClick={handleClickCopy}
                 shape={ButtonShape.Default}
@@ -108,8 +116,25 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
               />
             </CopyToClipboard>
           </Grid.Column>
-          <Grid.Column widthLG={Columns.Two}>
+        </Grid.Row>
+        <Grid.Row className="plugin-create-configuration-description-row">
+          <Grid.Column widthSM={Columns.Ten}>
+            <Form.Element label="Configuration Description">
+              <Input
+                type={InputType.Text}
+                value={telegrafConfigDescription}
+                name="description"
+                onChange={handleDescriptionInput}
+                placeholder="Your configuration description"
+                titleText="Description (Optional)"
+                size={ComponentSize.Medium}
+                autoFocus={true}
+              />
+            </Form.Element>
+          </Grid.Column>
+          <Grid.Column widthSM={Columns.Two}>
             <Button
+              className="plugin-create-configuration-download--button"
               color={ComponentColor.Secondary}
               icon={IconFont.Download}
               onClick={handleDownloadConfig}
@@ -118,7 +143,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
             />
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row>
+        <Grid.Row className="plugin-creat-configuration--editor">
           <div className="config-overlay">
             <TelegrafConfig
               config={workingConfig}
@@ -148,9 +173,14 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => {
-  const {telegrafConfigName, telegrafConfigID} = getDataLoaders(state)
+  const {
+    telegrafConfigDescription,
+    telegrafConfigName,
+    telegrafConfigID,
+  } = getDataLoaders(state)
 
   return {
+    telegrafConfigDescription,
     telegrafConfigID,
     telegrafConfigName,
   }
@@ -160,6 +190,7 @@ const mdtp = {
   onAddPluginBundle: addPluginBundleWithPlugins,
   onSetTelegrafConfigName: setTelegrafConfigName,
   onSaveTelegrafConfig: createOrUpdateTelegrafConfigAsync,
+  onSetTelegrafConfigDescription: setTelegrafConfigDescription,
 }
 
 const connector = connect(mstp, mdtp)

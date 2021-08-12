@@ -14,6 +14,9 @@ import {
   TELEGRAF_PLUGINS,
 } from 'src/shared/constants/routes'
 
+// Styles
+import 'src/writeData/components/AddPluginToConfiguration.scss'
+
 interface AddPluginToConfigurationCTAProps {
   contentID: string
   history: {

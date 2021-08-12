@@ -46,8 +46,8 @@ export default class EmptyTasksLists extends PureComponent<Props> {
               <Button
                 icon={IconFont.Plus}
                 color={ComponentColor.Primary}
-                text={`Create Task`}
-                titleText={`Click to create a Task`}
+                text="Create Task"
+                titleText="Click to create a Task"
                 onClick={onCreate}
                 testID="create-task--button"
               />
@@ -67,8 +67,8 @@ export default class EmptyTasksLists extends PureComponent<Props> {
                   <Button
                     icon={IconFont.Plus}
                     color={ComponentColor.Primary}
-                    text={`Create Task`}
-                    titleText={`Click to create a Task`}
+                    text="Create Task"
+                    titleText="Click to create a Task"
                     onClick={onCreate}
                     testID="create-task--button"
                   />

@@ -98,8 +98,8 @@ export default class TasksHeader extends PureComponent<Props> {
             <Button
               icon={IconFont.Plus}
               color={ComponentColor.Primary}
-              text={`Create Task`}
-              titleText={`Click to create a Task`}
+              text="Create Task"
+              titleText="Click to create a Task"
               onClick={creater}
               testID="create-task--button"
             />

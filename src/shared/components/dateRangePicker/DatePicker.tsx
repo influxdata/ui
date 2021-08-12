@@ -20,6 +20,7 @@ import {getTimeZone} from 'src/dashboards/selectors'
 
 // Constants
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
+import {isValid} from 'src/utils/datetime/validator'
 
 interface Props {
   label: string
@@ -38,25 +39,25 @@ interface State {
 
 const isValidRTC3339 = (d: string): boolean => {
   return (
-    moment(d, 'YYYY-MM-DD HH:mm', true).isValid() ||
-    moment(d, 'YYYY-MM-DD HH:mm:ss', true).isValid() ||
-    moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid() ||
-    moment(d, 'YYYY-MM-DD', true).isValid() ||
-    moment(d).toISOString() === d
+    isValid(d, 'YYYY-MM-DD HH:mm') ||
+    isValid(d, 'YYYY-MM-DD HH:mm:ss') ||
+    isValid(d, 'YYYY-MM-DD HH:mm:ss.SSS') ||
+    isValid(d, 'YYYY-MM-DD') ||
+    new Date(d).toISOString() === d
   )
 }
 
 const getFormat = (d: string): string => {
-  if (moment(d, 'YYYY-MM-DD', true).isValid()) {
+  if (isValid(d, 'YYYY-MM-DD')) {
     return 'YYYY-MM-DD'
   }
-  if (moment(d, 'YYYY-MM-DD HH:mm', true).isValid()) {
+  if (isValid(d, 'YYYY-MM-DD HH:mm')) {
     return 'YYYY-MM-DD HH:mm'
   }
-  if (moment(d, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+  if (isValid(d, 'YYYY-MM-DD HH:mm:ss')) {
     return 'YYYY-MM-DD HH:mm:ss'
   }
-  if (moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()) {
+  if (isValid(d, 'YYYY-MM-DD HH:mm:ss.SSS')) {
     return 'YYYY-MM-DD HH:mm:ss.sss'
   }
   return null

@@ -81,7 +81,7 @@ const formatterToDateFnsMap = {
 const getDateFnsFormatString = (format: string): string => {
   const dateFnsFormatString = formatterToDateFnsMap[format].format
     ? formatterToDateFnsMap[format].format
-    : 'yyyy-MM-dd HH:mm:ss'
+    : formatterToDateFnsMap[DEFAULT_TIME_FORMAT].format
 
   return dateFnsFormatString
 }

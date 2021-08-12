@@ -47,11 +47,10 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
     telegrafConfigName,
   } = props
 
-  console.log('~~~ buckets:', buckets)
   let selectedBucket = buckets.find(b => b.name === bucket)
 
   if (!selectedBucket) {
-    selectedBucket = buckets[buckets.length - 1]
+    selectedBucket = buckets[0]
     const {orgID, id, name} = selectedBucket
     onSetBucketInfo(orgID, name, id)
   }
@@ -63,7 +62,6 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
   }
 
   const handleSelectBucket = (bucket: Bucket) => {
-    console.log('handleSelectBucket: bucket', bucket)
     const {orgID, id, name} = bucket
 
     if (id === CREATE_A_BUCKET_ID) {
@@ -131,7 +129,6 @@ const mstp = (state: AppState) => {
     bucket => !isSystemBucket(bucket.name)
   )
 
-  console.log('~~~ state', state)
   return {
     bucket,
     buckets: nonSystemBuckets,

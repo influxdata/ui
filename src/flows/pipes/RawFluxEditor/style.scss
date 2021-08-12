@@ -23,5 +23,6 @@
 .flow-panel--body {
   .flux-editor--monaco {
     height: 100%;
+    position: static;
   }
 }

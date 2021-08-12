@@ -5,14 +5,14 @@ import {useHistory} from 'react-router-dom'
 
 const PresetMap = {
   'New Notebook': '/notebook/from/default',
-  Alert: '/notebook/from/notification',
-  Flux: '/notebook/from/flux',
-  'Demo: Task Automation': '/notebook/from/task',
+  'Set an Alert': '/notebook/from/notification',
+  'Schedule a Task': '/notebook/from/task',
+  'Write a Flux Script': '/notebook/from/flux',
+  'Blank Notebook': '/notebook/from/blank',
 }
 
 const PresetFlows: FC = () => {
   const history = useHistory()
-
   return (
     <>
       <div className="flows-index--presetcontainer">

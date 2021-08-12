@@ -19,8 +19,8 @@ h4 {
 
 .flows-index--presetList {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10%;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 5%;
 }
 
 .flows-index--presetCard {
@@ -53,17 +53,22 @@ h4 {
 }
 
 .flows-index--presetCard:nth-child(2) .flows-index--presetButton {
-  background-image: url('https://i.imgur.com/Vo6xHTs.png');
+  background-image: url('../../../assets/images/Alert.png');
   background-size: contain;
 }
 
 .flows-index--presetCard:nth-child(3) .flows-index--presetButton {
-  background-image: url('https://i.imgur.com/GwdeP5G.png');
+  background-image: url('../../../assets/images/Task.png');
   background-size: contain;
 }
 
 .flows-index--presetCard:nth-child(4) .flows-index--presetButton {
-  background-image: url('https://i.imgur.com/Vo6xHTs.png');
+  background-image: url('../../../assets/images/Flux.png');
+  background-size: contain;
+}
+
+.flows-index--presetCard:nth-child(5) .flows-index--presetButton {
+  background-image: url('../../../assets/images/BlankFlow.png');
   background-size: contain;
 }
 

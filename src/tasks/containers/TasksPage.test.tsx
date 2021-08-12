@@ -215,8 +215,8 @@ describe('Tasks.Containers.TasksPage', () => {
   })
 
   describe('create tasks', () => {
-    it('triggers create a new task', async () => {
-      fireEvent.click(screen.getByTestId('create-task-button'))
+    it('triggers create a new task', () => {
+      fireEvent.click(screen.getByTestId('create-task--button'))
 
       expect(localHistory.entries).toEqual(
         expect.arrayContaining([

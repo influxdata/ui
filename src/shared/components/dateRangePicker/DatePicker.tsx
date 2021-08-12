@@ -37,7 +37,7 @@ interface State {
   inputFormat: string
 }
 
-const isValidRTC3339 = (d: string): boolean => {
+const isValidDatepickerFormat = (d: string): boolean => {
   return (
     isValid(d, 'YYYY-MM-DD HH:mm') ||
     isValid(d, 'YYYY-MM-DD HH:mm:ss') ||
@@ -147,12 +147,13 @@ class DatePicker extends PureComponent<Props, State> {
       return false
     }
 
-    return !isValidRTC3339(inputValue)
+    return !isValidDatepickerFormat(inputValue)
   }
 
   private get inputErrorMessage(): string | undefined {
+    const {inputFormat} = this.state
     if (this.isInputValueInvalid) {
-      return 'Format must be YYYY-MM-DD HH:mm:ss'
+      return inputFormat
     }
 
     return '\u00a0\u00a0'
@@ -210,7 +211,7 @@ class DatePicker extends PureComponent<Props, State> {
     const {onSelectDate, timeZone} = this.props
     const value = e.target.value
 
-    if (isValidRTC3339(value)) {
+    if (isValidDatepickerFormat(value)) {
       const inputDate = new Date(value)
 
       if (timeZone === 'UTC') {

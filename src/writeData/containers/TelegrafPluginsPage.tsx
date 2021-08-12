@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 import {Renderer} from 'react-markdown'
-import {connect, ConnectedProps} from 'react-redux'
 import {RouteComponentProps, useParams} from 'react-router-dom'
 
 // Components
@@ -34,13 +33,11 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
   <CodeSnippet text={props.value} label={props.language} />
 )
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{orgID: string}>
 type ParamsType = {
   [param: string]: string
 }
 
-const TelegrafPluginsPage: FC<Props> = props => {
+const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
   const {
     history,
     match: {
@@ -116,5 +113,4 @@ const TelegrafPluginsPage: FC<Props> = props => {
   )
 }
 
-const connector = connect()
 export default TelegrafPluginsPage

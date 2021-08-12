@@ -24,6 +24,7 @@ import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
+const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 800
 
 const spinner = <div />
 const PluginCreateConfigurationStepSwitcher = Loadable({
@@ -95,23 +96,32 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   }
 
   let title = 'Configuration Options'
-
   if (currentStepIndex === 0 && substepIndex === 1) {
     title = 'Create Bucket'
   } else if (currentStepIndex !== 0) {
     title = 'Create a Telegraf Configuration'
   }
 
-  const maxWidth =
-    substepIndex === 1
-      ? BUCKET_OVERLAY_WIDTH
-      : PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH
+  let maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH
+  if (currentStepIndex === 0) {
+    if (substepIndex === 1) {
+      maxWidth = BUCKET_OVERLAY_WIDTH
+    } else {
+      maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH
+    }
+  }
+
+  let overlayBodyClassName = 'data-loading--overlay'
+
+  if (currentStepIndex === 0) {
+    overlayBodyClassName += ' plugin-create-configuration--options'
+  }
 
   return (
     <Overlay visible={true}>
       <Overlay.Container maxWidth={maxWidth}>
         <Overlay.Header title={title} onDismiss={handleDismiss} />
-        <Overlay.Body className="data-loading--overlay">
+        <Overlay.Body className={overlayBodyClassName}>
           <PluginCreateConfigurationStepSwitcher stepProps={stepProps} />
         </Overlay.Body>
       </Overlay.Container>

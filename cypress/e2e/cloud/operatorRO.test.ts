@@ -5,13 +5,15 @@ describe('Operator Page', () => {
     cy.signin().then(() => {
       cy.get('@org').then(() => {
         cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags({
-          operatorRole: true,
-          uiUnificationFlag: true,
+
+        cy.quartzProvision({
+          isOperator: true,
+          operatorRole: 'read-only',
         }).then(() => {
-          cy.quartzProvision({
-            isOperator: true,
-            operatorRole: 'read-only',
+          cy.reload()
+          cy.setFeatureFlags({
+            operatorRole: true,
+            uiUnificationFlag: true,
           }).then(() => {
             cy.getByTestID('nav-item--operator').click()
             cy.getByTestID('operator-page--title').contains('2.0 Resources')

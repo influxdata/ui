@@ -13,7 +13,6 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {Button, IconFont, ComponentColor, Page} from '@influxdata/clockface'
 import {AnnotationsControlBarToggleButton} from 'src/annotations/components/AnnotationsControlBarToggleButton'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {toggleShowVariablesControls as toggleShowVariablesControlsAction} from 'src/userSettings/actions'
@@ -171,9 +170,7 @@ const DashboardHeader: FC<Props> = ({
                 : ComponentColor.Default
             }
           />
-          <FeatureFlag name="annotations">
-            <AnnotationsControlBarToggleButton />
-          </FeatureFlag>
+          <AnnotationsControlBarToggleButton />
           <DashboardLightModeToggle />
           <PresentationModeToggle />
           <GraphTips />

@@ -44,8 +44,8 @@ class TokensIndex extends Component {
           />
           <Route
             path={`${tokensPath}/custom-api`}
-            component={CustomApiTokenOverlay} 
-           /> 
+            component={CustomApiTokenOverlay}
+          />
         </Switch>
       </>
     )

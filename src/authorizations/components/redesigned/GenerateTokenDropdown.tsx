@@ -9,16 +9,15 @@ import {Dropdown} from '@influxdata/clockface'
 // Types
 import {IconFont, ComponentColor} from '@influxdata/clockface'
 
-
-
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 type GenerateTokenProps = RouteComponentProps
 type ReduxProps = ConnectedProps<typeof connector>
 
-const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({onShowOverlay, onDismissOverlay,}) => {
-  
-
+const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
+  onShowOverlay,
+  onDismissOverlay,
+}) => {
   const allAccessOption = 'All Access Token'
 
   const customApiOption = 'Custom API Token'

@@ -22,11 +22,11 @@ import {AppState} from 'src/types'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-type Props = ReduxProps 
+type Props = ReduxProps
 
 const DisplayTokenOverlay: FC<Props> = props => {
   const {onClose} = useContext(OverlayContext)
-  
+
   return (
     <Overlay.Container maxWidth={750}>
       <Overlay.Header

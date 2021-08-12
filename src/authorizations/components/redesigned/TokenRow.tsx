@@ -41,7 +41,6 @@ import {incrementCloneName} from 'src/utils/naming'
 interface OwnProps {
   auth: Authorization
   onClickDescription: (authID: string) => void
-  
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -54,7 +53,6 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
-    
 
     return (
       <ResourceCard
@@ -116,7 +114,6 @@ class TokensRow extends PureComponent<Props> {
   }
 
   private handleClone = () => {
-
     const {description} = this.props.auth
 
     const allTokenDescriptions = Object.values(this.props.authorizations).map(
@@ -127,11 +124,7 @@ class TokensRow extends PureComponent<Props> {
       ...this.props.auth,
       description: incrementCloneName(allTokenDescriptions, description),
     })
-    this.props.showOverlay('access-token', null, ()=>dismissOverlay())
-    
-    
-    
-    
+    this.props.showOverlay('access-token', null, () => dismissOverlay())
   }
 
   private handleClickDescription = () => {
@@ -154,9 +147,8 @@ const mdtp = {
   onDelete: deleteAuthorization,
   onUpdate: updateAuthorization,
   onClone: createAuthorization,
-  showOverlay, 
+  showOverlay,
   dismissOverlay,
-  
 }
 
 const connector = connect(mstp, mdtp)

@@ -1,22 +1,21 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 h3 {
-  margin: 12px 0px;
+  margin: 0px 0px 12px;
   color: white;
 }
 
 h4 {
-  margin: 12px 0px;
+  margin: 12px 0px 0px;
   text-align: left;
 }
-.flows-index--presetcontainer {
-  width: 83.333333%;
+
+.flows-index--presetContainer {
   border: 1px solid $g5-pepper;
   border-radius: 7px;
-  padding: 5px 40px;
-  margin: 30px 0;
+  padding: 30px;
+  margin: 0px 0px 12px;
 }
-
 .flows-index--presetList {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -28,7 +27,7 @@ h4 {
   height: 100%;
   flex-direction: column;
   justify-content: space-evenly;
-  padding: 10px 0px;
+
   &:hover {
     .flows-index--presetHeader {
       color: white;

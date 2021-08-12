@@ -18,6 +18,7 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 // Types
 import {Flow} from 'src/types/flows'
 import {ResourceType} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FlowsIndex = () => {
   const {flows} = useContext(FlowListContext)
@@ -79,11 +80,11 @@ const FlowsIndex = () => {
           />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
-          <FlowCreateButton />
+          {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
         </Page.ControlBarRight>
       </Page.ControlBar>
       <Page.Contents scrollable={true}>
-        <PresetFlows />
+        {isFlagEnabled('presetFlows') && <PresetFlows />}
         <FlowCards flows={flowList} search={search} />
       </Page.Contents>
     </Page>

@@ -152,7 +152,7 @@ class DatePicker extends PureComponent<Props, State> {
 
   private get inputErrorMessage(): string | undefined {
     if (this.isInputValueInvalid) {
-      return `Format must be YYYY-MM-DD HH:mm:ss`
+      return 'Format must be YYYY-MM-DD HH:mm:ss'
     }
 
     return '\u00a0\u00a0'

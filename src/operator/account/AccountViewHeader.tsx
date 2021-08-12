@@ -12,14 +12,10 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
-
-// Contexts
 import {AccountContext} from 'src/operator/context/account'
-import {OperatorContext} from 'src/operator/context/operator'
 
 const AccountViewHeader: FC = () => {
   const {account, setVisible, visible} = useContext(AccountContext)
-  const {hasWritePermissions} = useContext(OperatorContext)
 
   return (
     <FlexBox
@@ -33,21 +29,19 @@ const AccountViewHeader: FC = () => {
           Back to Account List
         </Link>
       </FlexBox.Child>
-      {hasWritePermissions && (
-        <ButtonBase
-          color={ComponentColor.Danger}
-          shape={ButtonShape.Default}
-          onClick={_e => setVisible(!visible)}
-          status={
-            account?.deletable
-              ? ComponentStatus.Default
-              : ComponentStatus.Disabled
-          }
-          testID="account-delete--button"
-        >
-          Delete Account
-        </ButtonBase>
-      )}
+      <ButtonBase
+        color={ComponentColor.Danger}
+        shape={ButtonShape.Default}
+        onClick={_e => setVisible(!visible)}
+        status={
+          account?.deletable
+            ? ComponentStatus.Default
+            : ComponentStatus.Disabled
+        }
+        testID="account-delete--button"
+      >
+        Delete Account
+      </ButtonBase>
     </FlexBox>
   )
 }

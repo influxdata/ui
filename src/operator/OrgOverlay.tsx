@@ -1,6 +1,6 @@
-// Libraries
 import React, {FC, useContext, useEffect} from 'react'
 import {useHistory, useParams} from 'react-router-dom'
+
 import {
   ButtonBase,
   ButtonShape,
@@ -20,15 +20,9 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 
-// Contexts
 import {OverlayContext} from 'src/operator/context/overlay'
-import {OperatorContext} from 'src/operator/context/operator'
-
-// Utils
+import LimitsInput from 'src/operator/LimitsInput'
 import {fromDisplayLimits} from 'src/operator/utils'
-
-// Components
-import LimitsField from 'src/operator/LimitsField'
 
 const OrgOverlay: FC = () => {
   const {
@@ -42,7 +36,6 @@ const OrgOverlay: FC = () => {
     setLimits,
     updateLimitStatus,
   } = useContext(OverlayContext)
-  const {hasWritePermissions} = useContext(OperatorContext)
 
   const {orgID} = useParams<{orgID: string}>()
   const history = useHistory()
@@ -119,7 +112,7 @@ const OrgOverlay: FC = () => {
                   <h4>Limits</h4>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Read (KBs)" testID="read-kbs" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="rate.readKBs"
                       limits={limits}
@@ -128,7 +121,7 @@ const OrgOverlay: FC = () => {
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Write (KBs)" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="rate.writeKBs"
                       limits={limits}
@@ -137,7 +130,7 @@ const OrgOverlay: FC = () => {
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Series Cardinality" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="rate.cardinality"
                       limits={limits}
@@ -148,7 +141,7 @@ const OrgOverlay: FC = () => {
                 <Grid.Row>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Max Buckets" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="bucket.maxBuckets"
                       limits={limits}
@@ -157,7 +150,7 @@ const OrgOverlay: FC = () => {
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Max Retention Duration (hours)" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="bucket.maxRetentionDuration"
                       limits={limits}
@@ -166,7 +159,7 @@ const OrgOverlay: FC = () => {
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Max Notifications" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="notificationRule.maxNotifications"
                       limits={limits}
@@ -177,7 +170,7 @@ const OrgOverlay: FC = () => {
                 <Grid.Row>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Max Dashboards" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="dashboard.maxDashboards"
                       limits={limits}
@@ -186,7 +179,7 @@ const OrgOverlay: FC = () => {
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Max Tasks" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="task.maxTasks"
                       limits={limits}
@@ -195,7 +188,7 @@ const OrgOverlay: FC = () => {
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Max Checks" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Number}
                       name="check.maxChecks"
                       limits={limits}
@@ -207,7 +200,7 @@ const OrgOverlay: FC = () => {
                   <h4>Notification Rules</h4>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Blocked Notification Rules" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Text}
                       name="notificationRule.blockedNotificationRules"
                       limits={limits}
@@ -216,7 +209,7 @@ const OrgOverlay: FC = () => {
                   </Grid.Column>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Blocked Notification Endpoints" />
-                    <LimitsField
+                    <LimitsInput
                       type={InputType.Text}
                       name="notificationEndpoint.blockedNotificationEndpoints"
                       limits={limits}
@@ -228,29 +221,25 @@ const OrgOverlay: FC = () => {
             </Grid>
           </Overlay.Body>
           <Overlay.Footer>
-            {hasWritePermissions && (
-              <>
-                <ButtonBase
-                  color={ComponentColor.Default}
-                  onClick={() => history.goBack()}
-                  testID="org-overlay--cancel-button"
-                >
-                  Cancel
-                </ButtonBase>
-                <ButtonBase
-                  color={ComponentColor.Primary}
-                  onClick={updateLimits}
-                  testID="org-overlay--submit-button"
-                  status={
-                    updateLimitStatus === RemoteDataState.Error
-                      ? ComponentStatus.Disabled
-                      : ComponentStatus.Default
-                  }
-                >
-                  Submit Changes
-                </ButtonBase>
-              </>
-            )}
+            <ButtonBase
+              color={ComponentColor.Default}
+              onClick={() => history.goBack()}
+              testID="org-overlay--cancel-button"
+            >
+              Cancel
+            </ButtonBase>
+            <ButtonBase
+              color={ComponentColor.Primary}
+              onClick={updateLimits}
+              testID="org-overlay--submit-button"
+              status={
+                updateLimitStatus === RemoteDataState.Error
+                  ? ComponentStatus.Disabled
+                  : ComponentStatus.Default
+              }
+            >
+              Submit Changes
+            </ButtonBase>
           </Overlay.Footer>
         </SpinnerContainer>
       </Overlay.Container>

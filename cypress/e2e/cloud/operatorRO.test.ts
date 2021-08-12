@@ -13,7 +13,6 @@ describe('Operator Page', () => {
             isOperator: true,
             operatorRole: 'read-only',
           }).then(() => {
-            // cy.visit(`/operator`)
             cy.getByTestID('nav-item--operator').click()
             cy.getByTestID('operator-page--title').contains('2.0 Resources')
           })

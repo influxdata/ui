@@ -2,8 +2,12 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {EmptyState} from '@influxdata/clockface'
-import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
+import {
+  Button,
+  IconFont,
+  ComponentColor,
+  EmptyState,
+} from '@influxdata/clockface'
 import DatalessEmptyState from 'src/cloud/components/experiments/DatalessEmptyState'
 import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 import GetResources from 'src/resources/components/GetResources'
@@ -16,12 +20,11 @@ interface Props {
   searchTerm: string
   onCreate: () => void
   totalCount: number
-  onImportTask: () => void
 }
 
 export default class EmptyTasksLists extends PureComponent<Props> {
   public render() {
-    const {searchTerm, onCreate, totalCount, onImportTask} = this.props
+    const {searchTerm, onCreate, totalCount} = this.props
 
     if (totalCount && searchTerm === '') {
       return (
@@ -40,10 +43,13 @@ export default class EmptyTasksLists extends PureComponent<Props> {
               <EmptyState.Text>
                 Looks like you don't have any <b>Tasks</b>, why not create one?
               </EmptyState.Text>
-              <AddResourceDropdown
-                onSelectNew={onCreate}
-                onSelectImport={onImportTask}
-                resourceName="Task"
+              <Button
+                icon={IconFont.Plus}
+                color={ComponentColor.Primary}
+                text={`Create Task`}
+                titleText={`Click to create a Task`}
+                onClick={onCreate}
+                testID="create-task--button"
               />
             </EmptyState>
           }
@@ -58,10 +64,13 @@ export default class EmptyTasksLists extends PureComponent<Props> {
                     Looks like you don't have any <b>Tasks</b>, why not create
                     one?
                   </EmptyState.Text>
-                  <AddResourceDropdown
-                    onSelectNew={onCreate}
-                    onSelectImport={onImportTask}
-                    resourceName="Task"
+                  <Button
+                    icon={IconFont.Plus}
+                    color={ComponentColor.Primary}
+                    text={`Create Task`}
+                    titleText={`Click to create a Task`}
+                    onClick={onCreate}
+                    testID="create-task--button"
                   />
                 </EmptyState>
               </DatalessEmptyState>

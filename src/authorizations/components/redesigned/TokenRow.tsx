@@ -11,6 +11,8 @@ import {
   createAuthorization,
 } from 'src/authorizations/actions/thunks'
 
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 // Components
 import {
   ComponentSize,
@@ -39,6 +41,7 @@ import {incrementCloneName} from 'src/utils/naming'
 interface OwnProps {
   auth: Authorization
   onClickDescription: (authID: string) => void
+  
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -51,6 +54,7 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
+    
 
     return (
       <ResourceCard
@@ -112,12 +116,6 @@ class TokensRow extends PureComponent<Props> {
   }
 
   private handleClone = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
 
     const {description} = this.props.auth
 
@@ -129,8 +127,11 @@ class TokensRow extends PureComponent<Props> {
       ...this.props.auth,
       description: incrementCloneName(allTokenDescriptions, description),
     })
-
-    history.push(`/orgs/${orgID}/load-data/tokens/generate/clone-access`)
+    this.props.showOverlay('access-token', null, ()=>dismissOverlay())
+    
+    
+    
+    
   }
 
   private handleClickDescription = () => {
@@ -153,6 +154,9 @@ const mdtp = {
   onDelete: deleteAuthorization,
   onUpdate: updateAuthorization,
   onClone: createAuthorization,
+  showOverlay, 
+  dismissOverlay,
+  
 }
 
 const connector = connect(mstp, mdtp)

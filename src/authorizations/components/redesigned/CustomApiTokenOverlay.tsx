@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useContext} from 'react'
 
 // Components
 import {
@@ -16,6 +16,9 @@ import {
 
 import ResourceAccordion from './ResourceAccordion'
 
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
+
 interface OwnProps {
   onClose: () => void
 }
@@ -25,6 +28,8 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
   const handleDismiss = () => {
     props.onClose()
   }
+
+  const {onClose} = useContext(OverlayContext)
   const [description, setDescription] = useState('')
 
   const handleInputChange = event => {
@@ -35,7 +40,7 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
     <Overlay.Container maxWidth={800}>
       <Overlay.Header
         title="Generate a Personal Api Token"
-        onDismiss={handleDismiss}
+        onDismiss={onClose}
       />
       <Overlay.Body>
         <Form>

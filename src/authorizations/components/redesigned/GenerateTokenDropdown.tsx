@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -9,24 +9,26 @@ import {Dropdown} from '@influxdata/clockface'
 // Types
 import {IconFont, ComponentColor} from '@influxdata/clockface'
 
-// Selectors
-import {getOrg} from 'src/organizations/selectors'
+
+
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 type GenerateTokenProps = RouteComponentProps
+type ReduxProps = ConnectedProps<typeof connector>
 
-const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
-  const org = useSelector(getOrg)
+const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({onShowOverlay, onDismissOverlay,}) => {
+  
 
   const allAccessOption = 'All Access Token'
 
   const customApiOption = 'Custom API Token'
 
   const handleAllAccess = () => {
-    history.push(`/orgs/${org.id}/load-data/tokens/generate/all-access`)
+    onShowOverlay('add-master-token', null, onDismissOverlay)
   }
 
   const handleCustomApi = () => {
-    history.push(`/orgs/${org.id}/load-data/tokens/generate/custom-api`)
+    onShowOverlay('add-custom-token', null, onDismissOverlay)
   }
 
   const handleSelect = (selection: string): void => {
@@ -78,4 +80,11 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   )
 }
 
-export default withRouter(GenerateTokenDropdown)
+const mdtp = {
+  onShowOverlay: showOverlay,
+  onDismissOverlay: dismissOverlay,
+}
+
+const connector = connect(null, mdtp)
+
+export default connector(withRouter(GenerateTokenDropdown))

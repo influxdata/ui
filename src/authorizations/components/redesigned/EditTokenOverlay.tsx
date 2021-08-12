@@ -12,6 +12,8 @@ import {
   ComponentSize,
 } from '@influxdata/clockface'
 
+
+
 // Types
 import {Authorization} from 'src/types'
 
@@ -22,7 +24,7 @@ interface Props {
 
 export const EditTokenOverlay: FC<Props> = props => {
   const [description, setDescription] = useState(props.auth.description)
-
+  
   const handleDismiss = () => {
     props.onDismissOverlay()
   }

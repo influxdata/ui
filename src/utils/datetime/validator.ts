@@ -1,4 +1,3 @@
-/* eslint eqeqeq:0 */
 import {isMatch} from 'date-fns'
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 

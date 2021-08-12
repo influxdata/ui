@@ -12,7 +12,6 @@ import {useVisXDomainSettings} from 'src/visualization/utils/useVisDomainSetting
 import {getFormatter} from 'src/visualization/utils/getFormatter'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -91,7 +90,7 @@ const HistogramPlot: FunctionComponent<Props> = ({result, properties}) => {
     ],
   }
 
-  if (inAnnotationMode && isFlagEnabled('annotations')) {
+  if (inAnnotationMode) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Histogram'))

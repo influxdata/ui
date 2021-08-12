@@ -15,7 +15,6 @@ import {
   useVisYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
 import {handleUnsupportedGraphType} from 'src/visualization/utils/annotationUtils'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -132,7 +131,7 @@ const HeatmapPlot: FunctionComponent<Props> = ({
     ],
   }
 
-  if (inAnnotationMode && isFlagEnabled('annotations')) {
+  if (inAnnotationMode) {
     config.interactionHandlers = {
       singleClick: () => {
         dispatch(handleUnsupportedGraphType('Heatmap'))

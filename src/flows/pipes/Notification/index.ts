@@ -13,7 +13,6 @@ export default register => {
       offset: '0s',
       threshold: {
         type: 'greater',
-        field: '_value',
         value: 0,
       },
       message:

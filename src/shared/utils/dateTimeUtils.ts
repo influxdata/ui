@@ -43,7 +43,6 @@ export function addDurationToDate(
   }
 }
 
-
 // this method converts annotations local time format [YYYY-MM-DD h:mm:ss A] from 12 hour to 24
 // this is needed because of the discrepencies between Date implementation between Chrome and Firefox
 // workaround is to convert the 12 hr time to 24 hr, so that it works in both browser environments.

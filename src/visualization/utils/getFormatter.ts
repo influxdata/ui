@@ -1,6 +1,7 @@
 import {resolveTimeFormat} from 'src/visualization/utils/timeFormat'
 import {Base, TimeZone} from 'src/types'
-import {VIS_SIG_DIGITS, DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {VIS_SIG_DIGITS} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {
   binaryPrefixFormatter,
   timeFormatter,

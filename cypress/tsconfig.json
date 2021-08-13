@@ -9,8 +9,12 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "paths": {
-      "src/*": ["../src/*"]
+      "@src/*": ["../src/*"]
     }
   },
-  "include": ["**/*.ts", "../src/**/*"]
+  "include": [
+    "../node_modules/cypress/**/*",
+    "../node_modules/@types/chai/*",
+    "../*.ts"
+  ]
 }

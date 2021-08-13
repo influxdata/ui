@@ -18,13 +18,37 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {PipeContext} from 'src/flows/context/pipe'
+import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
 
 const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
 
 interface Props {
   toggle: () => void
   visible: boolean
+}
+
+const WrappedViewOptions: FC = () => {
+  const {data, update, results} = useContext(PipeContext)
+
+  const updateProperties = useCallback(
+    properties => {
+      update({
+        properties: {
+          ...data.properties,
+          ...properties,
+        },
+      })
+    },
+    [data.properties, update]
+  )
+
+  return (
+    <ViewOptions
+      properties={data.properties}
+      results={results.parsed}
+      update={updateProperties}
+    />
+  )
 }
 
 const Controls: FC<Props> = ({toggle, visible}) => {
@@ -41,26 +65,12 @@ const Controls: FC<Props> = ({toggle, visible}) => {
     })
   }
 
-  const updateProperties = useCallback(
-    properties => {
-      update({
-        properties: {
-          ...data.properties,
-          ...properties,
-        },
-      })
-    },
-    [data.properties, update]
-  )
-
   const launcher = () => {
     show(id)
     showSub(
-      <ViewOptions
-        properties={data.properties}
-        results={results.parsed}
-        update={updateProperties}
-      />
+      <PipeProvider id={id}>
+        <WrappedViewOptions />
+      </PipeProvider>
     )
   }
 
@@ -148,6 +158,21 @@ const Controls: FC<Props> = ({toggle, visible}) => {
         <label style={{alignSelf: 'center', marginRight: '12px'}}>
           Limited to most recent 100 results per series
         </label>
+        <ViewTypeDropdown
+          viewType={data.properties.type}
+          onUpdateType={updateType as any}
+        />
+        {toggler}
+      </>
+    )
+  }
+
+  if (
+    data.properties.type === 'single-stat' ||
+    data.properties.type === 'gauge'
+  ) {
+    return (
+      <>
         <ViewTypeDropdown
           viewType={data.properties.type}
           onUpdateType={updateType as any}

@@ -24,6 +24,7 @@ import {getAll} from 'src/resources/selectors'
 
 // Types
 import {AppState, ResourceType, Authorization} from 'src/types'
+import {DEFAULT_TOKEN_DESCRIPTION} from 'src/dashboards/constants'
 
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
@@ -32,6 +33,15 @@ const WriteDataHelperTokens: FC = () => {
     getAll<Authorization>(state, ResourceType.Authorizations)
   )
   const {token, changeToken} = useContext(WriteDataDetailsContext)
+  const tokensWithDescription = tokens.map(token => {
+    return {
+      ...token,
+      description:
+        token?.description?.length === 0
+          ? DEFAULT_TOKEN_DESCRIPTION
+          : token.description,
+    }
+  })
 
   let body = (
     <EmptyState
@@ -59,7 +69,7 @@ const WriteDataHelperTokens: FC = () => {
     return tokenID === token.id
   }
 
-  if (tokens.length) {
+  if (tokensWithDescription.length) {
     body = (
       <List
         backgroundColor={InfluxColors.Obsidian}
@@ -67,7 +77,7 @@ const WriteDataHelperTokens: FC = () => {
         maxHeight="200px"
         testID="write-data-tokens-list"
       >
-        {tokens.map(t => (
+        {tokensWithDescription.map(t => (
           <List.Item
             size={ComponentSize.Small}
             key={t.id}

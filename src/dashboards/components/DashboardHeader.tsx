@@ -13,7 +13,6 @@ import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import {Button, IconFont, ComponentColor, Page} from '@influxdata/clockface'
 import {AnnotationsControlBarToggleButton} from 'src/annotations/components/AnnotationsControlBarToggleButton'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {toggleShowVariablesControls as toggleShowVariablesControlsAction} from 'src/userSettings/actions'
@@ -35,7 +34,7 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
+import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
 import {getByID} from 'src/resources/selectors'
@@ -100,6 +99,7 @@ const DashboardHeader: FC<Props> = ({
 
   const handleRenameDashboard = (name: string) => {
     updateDashboard(dashboard.id, {name})
+    updatePinnedItemByParam(dashboard.id, {name})
   }
 
   const handleChooseTimeRange = (timeRange: TimeRange) => {
@@ -170,9 +170,7 @@ const DashboardHeader: FC<Props> = ({
                 : ComponentColor.Default
             }
           />
-          <FeatureFlag name="annotations">
-            <AnnotationsControlBarToggleButton />
-          </FeatureFlag>
+          <AnnotationsControlBarToggleButton />
           <DashboardLightModeToggle />
           <PresentationModeToggle />
           <GraphTips />

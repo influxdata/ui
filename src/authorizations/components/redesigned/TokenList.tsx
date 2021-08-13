@@ -5,7 +5,7 @@ import memoizeOne from 'memoize-one'
 // Components
 import {Overlay, ResourceList} from '@influxdata/clockface'
 import {TokenRow} from 'src/authorizations/components/redesigned/TokenRow'
-import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
+import {EditTokenOverlay} from 'src/authorizations/components/redesigned/EditTokenOverlay'
 
 // Types
 import {Authorization} from 'src/types'
@@ -60,7 +60,7 @@ export class TokenList extends PureComponent<Props, State> {
         </ResourceList>
 
         <Overlay visible={isTokenOverlayVisible}>
-          <ViewTokenOverlay
+          <EditTokenOverlay
             auth={authInView}
             onDismissOverlay={this.handleDismissOverlay}
           />

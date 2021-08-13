@@ -2,15 +2,15 @@ import {
   addAnnotation,
   addRangeAnnotation,
   checkAnnotationText,
-  clearLocalStorage,
   reloadAndHandleAnnotationDefaultStatus,
   setupData,
   startEditingAnnotation,
 } from '../util/annotationsSetup'
 import * as moment from 'moment'
 
+import {DEFAULT_TIME_FORMAT} from '../../../src/utils/datetime/constants'
+
 describe('Annotations, but in a different test suite', () => {
-  afterEach(clearLocalStorage)
   beforeEach(() => setupData(cy))
 
   describe('administrative functions like the tests being on and off', () => {
@@ -169,9 +169,9 @@ describe('Annotations, but in a different test suite', () => {
               .then(endTimeValue => {
                 expect(endTimeValue).to.equal(startTimeValue)
 
-                const newEndTime = moment(endTimeValue, 'YYYY-MM-DD hh:mm:ss a')
+                const newEndTime = moment(endTimeValue, DEFAULT_TIME_FORMAT)
                   .add(10, 'minutes')
-                  .format('YYYY-MM-DD hh:mm:ss a')
+                  .format(DEFAULT_TIME_FORMAT)
 
                 cy.getByTestID('endTime-testID')
                   .click()
@@ -205,8 +205,8 @@ describe('Annotations, but in a different test suite', () => {
 
               // should be 10 minutes between them:
               const duration = moment.duration(
-                moment(endTimeValue, 'YYYY-MM-DD hh:mm:ss a').diff(
-                  moment(startTimeValue, 'YYYY-MM-DD hh:mm:ss a')
+                moment(endTimeValue, DEFAULT_TIME_FORMAT).diff(
+                  moment(startTimeValue, DEFAULT_TIME_FORMAT)
                 )
               )
               const minutes = duration.asMinutes()

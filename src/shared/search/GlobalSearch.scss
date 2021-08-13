@@ -143,6 +143,11 @@ $article-text: #d4d7dd;
     padding-top: 16px !important;
   }
 
+  .DocSearch-StartScreen,
+  .DocSearch-StartScreen > .DocSearch-Help {
+    font-size: 1.3em !important;
+  }
+
   .DocSearch-Hits mark {
     color: $c-pool !important;
   }

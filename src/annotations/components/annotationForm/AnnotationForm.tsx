@@ -5,7 +5,6 @@ import {useDispatch} from 'react-redux'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import classnames from 'classnames'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import {
@@ -34,6 +33,7 @@ import {ANNOTATION_FORM_WIDTH} from 'src/annotations/constants'
 
 // Style
 import 'src/annotations/components/annotationForm/annotationForm.scss'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 type AnnotationType = 'point' | 'range'
 
@@ -49,6 +49,7 @@ interface Props {
   onClose: () => void
   eventPrefix: string
   getNow?: () => number
+  timeFormat?: string
 }
 export const WRONG_ORDER_MESSAGE = 'Stop Time must be after the start time'
 export const END_TIME_IN_FUTURE_MESSAGE = 'Stop Time cannot be in the future'
@@ -64,6 +65,8 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const [endTime, setEndTime] = useState(props.endTime)
   const [summary, setSummary] = useState(props.summary)
   const [annotationType, setAnnotationType] = useState(props.type)
+
+  const timeFormat = props.timeFormat ? props.timeFormat : DEFAULT_TIME_FORMAT
 
   // is the time by itself valid? (is the format valid)
   // since we start with default times via the mouse, the formats are valid at first
@@ -304,12 +307,13 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
       />
       <Form onSubmit={handleSubmit}>
         <Overlay.Body>
-          {isFlagEnabled('rangeAnnotations') && annoTypePicker}
+          {annoTypePicker}
           <div className="annotation-type-option-line">
             <AnnotationTimeInput
               onChange={updateStartTime}
               onSubmit={handleKeyboardSubmit}
               time={startTime}
+              timeFormat={timeFormat}
               name="startTime"
               onValidityCheck={setStartTimeFormatValid}
               invalidMessage={getStartTimeValidationMessage()}
@@ -322,6 +326,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
                 invalidMessage={getEndTimeValidationMessage()}
                 onValidityCheck={setEndTimeFormatValid}
                 time={endTime}
+                timeFormat={timeFormat}
                 name="endTime"
                 titleText="Stop Time"
                 style={{marginLeft: 10}}

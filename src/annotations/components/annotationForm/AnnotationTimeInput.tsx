@@ -19,15 +19,13 @@ interface Props {
   onChange: (newTime: string) => void
   onSubmit: () => void
   time: string | number
+  timeFormat: string
   name: string
   titleText?: string
   style?: CSSProperties
   invalidMessage?: string
   onValidityCheck: (isValid: boolean) => void
 }
-
-const ANNOTATION_TIME_FORMAT_UTC = 'YYYY-MM-DD HH:mm:ss' // 24 hour
-const ANNOTATION_TIME_FORMAT_LOCAL = 'YYYY-MM-DD h:mm:ss A' // 12 hour
 
 /** all of these annotation time input fields are required fields */
 export const REQUIRED_ERROR = 'Required'
@@ -36,11 +34,10 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   const {timeZone} = useContext(AppSettingContext)
 
   const momentDateWithTimezone = moment(props.time)
-  let timeFormat = ANNOTATION_TIME_FORMAT_LOCAL
+  const timeFormat = props.timeFormat
 
   if (timeZone === 'UTC') {
     momentDateWithTimezone.utc()
-    timeFormat = ANNOTATION_TIME_FORMAT_UTC
   }
 
   const [timeValue, setTimeValue] = useState<string>(

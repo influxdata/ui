@@ -45,6 +45,7 @@ export const FlowProvider: FC = ({children}) => {
       `${PIPE_DEFINITIONS[initial.type].button || 'Panel'} ${++GENERATOR_INDEX}`
 
     delete initial.title
+    initial.id = id
 
     flows[currentID].data.add(id, initial)
     const {resource, onChange} = flows[currentID].meta.add(id, {

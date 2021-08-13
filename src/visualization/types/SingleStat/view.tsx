@@ -22,7 +22,7 @@ import {
 
 import './style.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 // Selectors
 import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
@@ -73,7 +73,7 @@ const SingleStat: FC<Props> = ({properties, result}) => {
       ],
     }
 
-    if (inAnnotationMode && isFlagEnabled('annotations')) {
+    if (inAnnotationMode) {
       config.interactionHandlers = {
         singleClick: () => {
           dispatch(handleUnsupportedGraphType('Single Stat'))

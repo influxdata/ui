@@ -6,7 +6,7 @@ import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 import {setTimeZone} from 'src/shared/actions/app'
 
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants/index'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 const timestamp = 426196800000 // july 4th, 1983
 

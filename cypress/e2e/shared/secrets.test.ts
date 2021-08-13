@@ -27,7 +27,8 @@ describe('Secrets', () => {
     // Create secrets via the API, check visibility and sorting
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.upsertSecret(orgID, {toEverybody: 'rupees baby'})
-        .then(() => {
+        .then((resp: Response) => {
+          expect(resp.status).to.eq(204)
           cy.reload()
           cy.getByTestID('secret-card--toEverybody').should('be.visible')
           cy.getByTestID('copy-to-clipboard--toEverybody').should('exist')

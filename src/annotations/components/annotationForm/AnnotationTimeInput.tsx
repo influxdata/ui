@@ -15,6 +15,9 @@ import {ComponentStatus, Form, Input} from '@influxdata/clockface'
 // Context
 import {AppSettingContext} from 'src/shared/contexts/app'
 
+// Utils
+import {isValid} from 'src/utils/datetime/validator'
+
 interface Props {
   onChange: (newTime: string) => void
   onSubmit: () => void
@@ -45,9 +48,9 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   )
 
   const isValidTimeFormat = (inputValue: string): boolean => {
-    const isValid = moment(inputValue, timeFormat, true).isValid()
-    props.onValidityCheck(isValid)
-    return isValid
+    const isValidFormat = isValid(inputValue, timeFormat)
+    props.onValidityCheck(isValidFormat)
+    return isValidFormat
   }
 
   const getInputValidationMessage = (): string => {

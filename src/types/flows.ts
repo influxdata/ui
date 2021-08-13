@@ -1,6 +1,6 @@
 import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {AutoRefresh, TimeRange} from 'src/types'
+import {AutoRefresh, TimeRange, Variable} from 'src/types'
 
 export interface ControlAction {
   title: string | (() => string)
@@ -135,6 +135,16 @@ export interface FlowList {
   }
 }
 
+export interface VariableMap {
+  [key: string]: Variable
+}
+
+// TODO: type this better. there are required properties, that have types, but
+// we also need this to stay open for panels to register whatever they want
+export interface QueryScope {
+  [props: string]: any
+}
+
 // NOTE: keep this interface as small as possible and
 // don't take extending it lightly. this should only
 // define what ALL pipe types require to be included
@@ -154,10 +164,7 @@ export interface TypeRegistration {
   component: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface
   button: string // a human readable string for appending the type
   initial: any // the default state for an add
-  generateFlux?: (
-    pipe: PipeData,
-    create: (text: string, loadPrevious?: boolean) => void,
-    append: () => void,
-    withSideEffects?: boolean
-  ) => void // Generates the flux used to grab data from the backend
+  scope?: (data: PipeData, prev: QueryScope) => QueryScope // if defined, the function is expected to take a query context and return a new one
+  visual?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the flux used for the pipe visualization (depreciate?)
+  source?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the source flux that is passed between panels
 }

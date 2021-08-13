@@ -6,6 +6,7 @@ import {TEMPLATES} from 'src/flows/templates'
 
 import {getOrg} from 'src/organizations/selectors'
 import NotFound from 'src/shared/components/NotFound'
+import {event} from 'src/cloud/utils/reporting'
 import {
   FlowListProvider,
   FlowListContext,
@@ -30,9 +31,11 @@ const Template: FC = () => {
 
     setLoading(true)
 
+    event('Notebook created from template', {type: params[0]})
+
     add(hydrate(TEMPLATES[params[0]].init.apply(this, params.slice(1)))).then(
       id => {
-        history.push(`/orgs/${org.id}/notebooks/${id}`)
+        history.replace(`/orgs/${org.id}/notebooks/${id}`)
       }
     )
   }, [add, history, org.id, loading, setLoading, params])

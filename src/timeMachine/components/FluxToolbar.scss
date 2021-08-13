@@ -1,5 +1,5 @@
 $flux-toolbar--search-height: $cf-form-sm-height + $cf-marg-c;
-$flux-toolbar--item-height: $cf-marg-d;
+$flux-toolbar--item-height: $cf-space-l + $cf-space-2xs;
 $flux-toolbar--gap: $cf-marg-b;
 
 .flux-toolbar {
@@ -94,6 +94,7 @@ $flux-toolbar--gap: $cf-marg-b;
 .flux-toolbar--list-item {
   padding-left: $cf-marg-b;
   padding-right: $cf-marg-b + $cf-marg-a + $cf-border;
+  margin-bottom: $cf-space-3xs;
   height: $flux-toolbar--item-height;
   line-height: $flux-toolbar--item-height;
   font-family: $cf-code-font;
@@ -105,12 +106,12 @@ $flux-toolbar--gap: $cf-marg-b;
   justify-content: space-between;
 
   > code {
+    padding: $cf-space-2xs $cf-space-3xs;
     font-size: $cf-form-sm-font;
     background-color: $g1-raven;
     border-radius: $cf-radius-sm;
     padding: 0 $cf-marg-b;
-    height: $cf-form-xs-height;
-    line-height: $cf-form-xs-height;
+    margin-right: $cf-space-2xs;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

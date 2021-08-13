@@ -6,7 +6,6 @@ import {
   FlexBox,
   FlexDirection,
   ComponentSize,
-  AlignItems,
 } from '@influxdata/clockface'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import FillValues from 'src/timeMachine/components/FillValues'
@@ -25,20 +24,13 @@ const AggregationSelector: FunctionComponent = () => {
         addPadding={false}
         className="aggregation-selector-body"
       >
+        <WindowPeriod />
         <FlexBox
-          direction={FlexDirection.Column}
-          alignItems={AlignItems.Stretch}
+          direction={FlexDirection.Row}
           margin={ComponentSize.ExtraSmall}
-          stretchToFitWidth={true}
+          stretchToFitWidth
         >
-          <WindowPeriod />
-          <FlexBox
-            direction={FlexDirection.Row}
-            margin={ComponentSize.ExtraSmall}
-            stretchToFitWidth
-          >
-            <FillValues />
-          </FlexBox>
+          <FillValues />
         </FlexBox>
       </BuilderCard.Body>
       <FunctionModeSelector />

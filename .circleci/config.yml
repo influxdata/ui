@@ -178,9 +178,4 @@ workflows:
       - lint
       - unit-cloud
       - lint-cloud
-      - monitor-ci-tests:
-          requires:
-            - unit
-            - lint
-            - unit-cloud
-            - lint-cloud
+      - monitor-ci-tests

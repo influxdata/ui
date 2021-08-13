@@ -1,8 +1,6 @@
 import View from './view'
 import './style.scss'
 
-import {BuilderConfig} from 'src/types'
-
 export default register => {
   register({
     type: 'queryBuilder',
@@ -21,61 +19,49 @@ export default register => {
         },
       ],
     },
-    generateFlux: (pipe, create, append) => {
+    source: data => {
       if (
-        !pipe.buckets[0] ||
-        !pipe.tags.reduce((acc, curr) => acc.concat(curr.values), []).length
+        !data.buckets[0] ||
+        !data.tags.reduce((acc, curr) => acc.concat(curr.values), []).length
       ) {
-        return
+        return ''
       }
 
-      const _build = (config: BuilderConfig): string => {
-        const tags = config.tags
-          .map(tag => {
-            if (!tag.key) {
+      const tags = data.tags
+        .map(tag => {
+          if (!tag.key) {
+            return ''
+          }
+
+          if (tag.aggregateFunctionType === 'filter') {
+            if (!tag.values.length) {
               return ''
             }
 
-            if (tag.aggregateFunctionType === 'filter') {
-              if (!tag.values.length) {
-                return ''
-              }
+            const vals = tag.values
+              .map(
+                value => `r["${tag.key}"] == "${value.replace(/\\/g, '\\\\')}"`
+              )
+              .join(' or ')
 
-              const vals = tag.values
-                .map(
-                  value =>
-                    `r["${tag.key}"] == "${value.replace(/\\/g, '\\\\')}"`
-                )
-                .join(' or ')
+            return `\n  |> filter(fn: (r) => ${vals})`
+          }
 
-              return `\n  |> filter(fn: (r) => ${vals})`
+          if (tag.aggregateFunctionType === 'group') {
+            const quotedValues = tag.values.map(value => `"${value}"`) // wrap the value in double quotes
+
+            if (quotedValues.length) {
+              return `\n  |> group(columns: [${quotedValues.join(', ')}])` // join with a comma (e.g. "foo","bar","baz")
             }
 
-            if (tag.aggregateFunctionType === 'group') {
-              const quotedValues = tag.values.map(value => `"${value}"`) // wrap the value in double quotes
+            return '\n  |> group()'
+          }
 
-              if (quotedValues.length) {
-                return `\n  |> group(columns: [${quotedValues.join(', ')}])` // join with a comma (e.g. "foo","bar","baz")
-              }
+          return ''
+        })
+        .join('')
 
-              return '\n  |> group()'
-            }
-
-            return ''
-          })
-          .join('')
-
-        return `from(bucket: "${config.buckets[0]}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}`
-      }
-
-      const query = _build(pipe)
-
-      if (!query) {
-        return
-      }
-
-      create(query)
-      append(`__CURRENT_RESULT__ |> limit(n: 100)`)
+      return `from(bucket: "${data.buckets[0]}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}`
     },
   })
 }

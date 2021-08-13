@@ -13,15 +13,13 @@ export default register => {
       url:
         'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/noaa-ndbc-data/latest-observations-annotated.csv',
     },
-    generateFlux: (pipe, create, append) => {
-      if (pipe.url?.length) {
-        const flux = `import "experimental/csv"
-         csv.from(url: "${pipe.url}")
-         |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-        `
-        create(flux)
-        append(`__CURRENT_RESULT__ |> limit(n: 100)`)
+    source: data => {
+      if (!data.url?.length) {
+        return ''
       }
+
+      return `import "experimental/csv"
+      csv.from(url: "${data.url}")`
     },
   })
 }

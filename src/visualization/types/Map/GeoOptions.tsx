@@ -21,12 +21,13 @@ import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 import {S2ColumnOptions} from './S2ColumnOptions'
 import './GeoOptions.scss'
 import {LatLonColumnOptions} from './LatLonColumnOptions'
+import {CLOUD} from 'src/shared/constants'
 
 interface Props extends VisualizationOptionProps {
   properties: GeoViewProperties
 }
 
-const SHOW_GEO_OPTIONS = isFlagEnabled('mapGeoOptions')
+const SHOW_GEO_OPTIONS = isFlagEnabled('mapGeoOptions') && CLOUD
 // const mapTypeOptions = ['Point', 'Circle', 'Heat', 'Track']
 export enum MapType {
   Point = 'pointMap',

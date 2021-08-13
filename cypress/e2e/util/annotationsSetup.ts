@@ -1,20 +1,7 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
 
-export const clearLocalStorage = () => {
-  // clear the local storage after each test.
-  // See: https://github.com/cypress-io/cypress/issues/2573
-  cy.window().then(window => {
-    window.sessionStorage.clear()
-    window.localStorage.clear()
-  })
-}
-
-export const setupData = (
-  cy: Cypress.Chainable,
-  plotTypeSuffix = '',
-  enableRangeAnnotations = true
-) => {
+export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') => {
   cy.flush()
   return cy.signin().then(() =>
     cy.get('@org').then(({id: orgID}: Organization) =>
@@ -23,9 +10,7 @@ export const setupData = (
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
           return cy
             .setFeatureFlags({
-              annotations: true,
               useGiraffeGraphs: true,
-              rangeAnnotations: enableRangeAnnotations,
             })
             .then(() => {
               cy.createBucket(orgID, name, 'devbucket')
@@ -92,8 +77,9 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   })
 
   cy.getByTestID('overlay--container').within(() => {
+    cy.getByTestID('edit-annotation-message').should('be.visible')
+
     cy.getByTestID('edit-annotation-message')
-      .should('be.visible')
       .click()
       .focused()
       .type('im a hippopotamus')
@@ -113,6 +99,7 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
 export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
+  cy.getByTestID('edit-annotation-message').should('have.length.of.at.least', 1)
   cy.getByTestID('edit-annotation-message').clear()
   cy.getByTestID('edit-annotation-message').type('lets edit this annotation...')
 

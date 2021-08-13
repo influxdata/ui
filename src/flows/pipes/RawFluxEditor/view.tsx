@@ -100,7 +100,13 @@ const Query: FC<PipeProp> = ({Context}) => {
         },
       ]
 
-      if (fn.package && !query.text.includes(`import "${fn.package}"`)) {
+      if (
+        fn.package &&
+        !editorInstance
+          .getModel()
+          .getValue()
+          .includes(`import "${fn.package}"`)
+      ) {
         edits.unshift({
           range: new window.monaco.Range(1, 1, 1, 1),
           text: `import "${fn.package}"\n`,
@@ -158,7 +164,6 @@ const Query: FC<PipeProp> = ({Context}) => {
             onChangeScript={updateText}
             onSubmitScript={() => {}}
             setEditorInstance={setEditorInstance}
-            autogrow
             wrapLines="on"
           />
         </Suspense>

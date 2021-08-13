@@ -3,6 +3,10 @@ import React, {FC, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import 'src/flows/components/FlowContextMenu.scss'
 
+// Selector
+import {getMe} from 'src/me/selectors'
+import {useSelector, useDispatch} from 'react-redux'
+
 // Components
 import {Context} from 'src/clockface'
 import {
@@ -18,18 +22,53 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
+import {
+  addPinnedItem,
+  deletePinnedItemByParam,
+  PinnedItemTypes,
+} from 'src/shared/contexts/pinneditems'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
 interface Props {
   id: string
   name: string
+  isPinned: boolean
 }
 
-const FlowContextMenu: FC<Props> = ({id, name}) => {
+const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const {remove, clone} = useContext(FlowListContext)
   const {orgID} = useParams<{orgID: string}>()
+  const me = useSelector(getMe)
   const history = useHistory()
+  const dispatch = useDispatch()
+
+  const handlePinFlow = () => {
+    try {
+      addPinnedItem({
+        orgID: orgID,
+        userID: me.id,
+        metadata: {
+          flowID: id,
+          name,
+        },
+        type: PinnedItemTypes.Notebook,
+      })
+      dispatch(notify(pinnedItemSuccess('notebook', 'added')))
+    } catch (err) {
+      dispatch(notify(pinnedItemFailure(err.message, 'create')))
+    }
+  }
 
   const handleDelete = () => {
     event('delete_notebook')
+    deletePinnedItemByParam(id)
     remove(id)
   }
 
@@ -54,6 +93,20 @@ const FlowContextMenu: FC<Props> = ({id, name}) => {
           onClick={handleClone}
           className="flow-menu--clone"
         />
+        {isFlagEnabled('pinnedItems') && CLOUD && (
+          <Context.Menu
+            icon={IconFont.Star}
+            color={ComponentColor.Success}
+            testID="context-pin-menu"
+          >
+            <Context.Item
+              label="Pin to Homepage"
+              action={handlePinFlow}
+              testID="context-pin-flow"
+              disabled={isPinned}
+            />
+          </Context.Menu>
+        )}
         <Context.Menu
           icon={IconFont.Trash}
           color={ComponentColor.Danger}

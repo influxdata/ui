@@ -58,6 +58,10 @@ export interface TelegrafsState extends NormalizedState<Telegraf> {
   currentConfig: {status: RemoteDataState; item: string}
 }
 
+export interface AuthState extends NormalizedState<Authorization> {
+  currentAuth: {status: RemoteDataState; item: Authorization}
+}
+
 export interface RulesState extends NormalizedState<NotificationRule> {
   current: {status: RemoteDataState; rule: NotificationRule}
 }
@@ -71,7 +75,7 @@ type CellsState = Omit<NormalizedState<Cell>, 'allIDs'>
 
 // ResourceState defines the types for normalized resources
 export interface ResourceState {
-  [ResourceType.Authorizations]: NormalizedState<Authorization>
+  [ResourceType.Authorizations]: AuthState
   [ResourceType.Buckets]: NormalizedState<Bucket>
   [ResourceType.Cells]: CellsState
   [ResourceType.Checks]: NormalizedState<Check>

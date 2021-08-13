@@ -156,6 +156,13 @@ export const generateNavItems = (): NavItem[] => {
           label: 'Labels',
           link: `${orgPrefix}/settings/labels`,
         },
+        {
+          id: 'secrets',
+          enabled: () => isFlagEnabled('secretsUI'),
+          testID: 'nav-subitem-secrets',
+          label: 'Secrets',
+          link: `${orgPrefix}/settings/secrets`,
+        },
       ],
     },
     {

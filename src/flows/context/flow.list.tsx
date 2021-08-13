@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import useLocalStorageState from 'use-local-storage-state'
 import {v4 as UUID} from 'uuid'
@@ -13,10 +13,10 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
 import {default as _asResource} from 'src/flows/context/resource.hook'
-import {PIPE_DEFINITIONS} from 'src/flows'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
+import {TEMPLATES} from 'src/flows/templates'
 import {
   pooledUpdateAPI,
   createAPI,
@@ -168,7 +168,6 @@ export const FlowListProvider: FC = ({children}) => {
 
   const add = async (flow?: Flow): Promise<string> => {
     let _flow
-    let _flowData
 
     let {name} = user
 
@@ -178,41 +177,10 @@ export const FlowListProvider: FC = ({children}) => {
     name = `${name}-${PROJECT_NAME.toLowerCase()}-${new Date().toISOString()}`
 
     if (!flow) {
-      _flowData = hydrate({
+      _flow = hydrate({
+        ...TEMPLATES['default'].init(),
         name,
-        spec: {
-          readOnly: false,
-          range: DEFAULT_TIME_RANGE,
-          refresh: AUTOREFRESH_DEFAULT,
-          pipes: [
-            {
-              title: 'Select a Metric',
-              visible: true,
-              type: 'metricSelector',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
-              ),
-            },
-            {
-              title: 'Validate the Data',
-              visible: true,
-              type: 'visualization',
-              properties: {type: 'simple-table', showAll: false},
-            },
-            {
-              title: 'Visualize the Result',
-              visible: true,
-              type: 'visualization',
-              ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['visualization'].initial)
-              ),
-            },
-          ],
-        },
       })
-      _flow = {
-        ..._flowData,
-      }
     } else {
       _flow = {
         name: flow.name,
@@ -252,20 +220,23 @@ export const FlowListProvider: FC = ({children}) => {
     })
   }
 
-  const update = (id: string, flow: Flow) => {
-    if (!flows.hasOwnProperty(id)) {
-      throw new Error(`${PROJECT_NAME} not found`)
-    }
+  const update = useCallback(
+    (id: string, flow: Flow) => {
+      if (!flows.hasOwnProperty(id)) {
+        throw new Error(`${PROJECT_NAME} not found`)
+      }
 
-    setFlows({
-      ...flows,
-      [id]: flow,
-    })
+      setFlows(prevFlows => ({
+        ...prevFlows,
+        [id]: flow,
+      }))
 
-    const apiFlow = serialize(flow, org.id)
+      const apiFlow = serialize(flow, org.id)
 
-    pooledUpdateAPI({id, ...apiFlow})
-  }
+      pooledUpdateAPI({id, ...apiFlow})
+    },
+    [setFlows, org.id] // eslint-disable-line react-hooks/exhaustive-deps
+  )
 
   const remove = async (id: string) => {
     const _flows = {
@@ -320,29 +291,33 @@ export const FlowListProvider: FC = ({children}) => {
     }
   }
 
-  const flowList = Object.keys(flows).reduce((acc, curr) => {
-    const stateUpdater = (field, data) => {
-      const _flow = {
-        ...flows[curr],
-      }
+  const flowList = useMemo(
+    () =>
+      Object.keys(flows).reduce((acc, curr) => {
+        const stateUpdater = (field, data) => {
+          const _flow = {
+            ...flows[curr],
+          }
 
-      _flow[field] = data
+          _flow[field] = data
 
-      update(curr, _flow)
-    }
+          update(curr, _flow)
+        }
 
-    acc[curr] = {
-      ...flows[curr],
-      data: _asResource(flows[curr].data, data => {
-        stateUpdater('data', data)
-      }),
-      meta: _asResource(flows[curr].meta, data => {
-        stateUpdater('meta', data)
-      }),
-    } as Flow
+        acc[curr] = {
+          ...flows[curr],
+          data: _asResource(flows[curr].data, data => {
+            stateUpdater('data', data)
+          }),
+          meta: _asResource(flows[curr].meta, data => {
+            stateUpdater('meta', data)
+          }),
+        } as Flow
 
-    return acc
-  }, {})
+        return acc
+      }, {}),
+    [update, flows]
+  )
 
   return (
     <FlowListContext.Provider

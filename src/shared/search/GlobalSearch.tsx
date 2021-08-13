@@ -7,7 +7,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 import {GLOBALSEARCH_API_KEY, GLOBALSEARCH_APP_ID} from 'src/shared/constants'
 
-import DocSearch from 'src/shared/search/DocSearch'
+import DocSearch, {DocSearchType} from 'src/shared/search/DocSearch'
 
 import './GlobalSearch.scss'
 
@@ -15,7 +15,7 @@ const GlobalSearch: FC = () => {
   const [showState, setShowState] = useState(false)
   const location = useLocation()
   const toggleShowSearch = (e: KeyboardEvent) => {
-    if (e.ctrlKey && e.key === 'h') {
+    if (e.ctrlKey && e.key === 'm') {
       setShowState(true)
       event(`Global search opened from url ${location.pathname}`)
     } else if (e.key === 'Escape') {
@@ -32,7 +32,7 @@ const GlobalSearch: FC = () => {
     GLOBALSEARCH_APP_ID?.length ? (
     <ClickOutside onClickOutside={() => setShowState(false)}>
       <div className="GlobalSearch">
-        <DocSearch />
+        <DocSearch type={DocSearchType.Global} />
       </div>
     </ClickOutside>
   ) : null

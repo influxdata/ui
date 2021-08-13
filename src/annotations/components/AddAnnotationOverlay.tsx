@@ -10,6 +10,8 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Selectors
 import {getOverlayParams} from 'src/overlays/selectors'
+import {getTimeFormatForView} from 'src/views/selectors'
+import {AppState} from 'src/types'
 
 export const AddAnnotationOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
@@ -19,7 +21,12 @@ export const AddAnnotationOverlay: FC = () => {
     endTime,
     range,
     eventPrefix,
+    cellID,
   } = useSelector(getOverlayParams)
+
+  const timeFormat = useSelector((state: AppState) =>
+    getTimeFormatForView(state, cellID)
+  )
 
   const handleSubmit = (modifiedAnnotation): void => {
     createAnnotation(modifiedAnnotation)
@@ -37,6 +44,7 @@ export const AddAnnotationOverlay: FC = () => {
       startTime={startTime}
       endTime={endTime}
       eventPrefix={eventPrefix}
+      timeFormat={timeFormat}
     />
   )
 }

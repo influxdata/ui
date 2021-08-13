@@ -180,12 +180,13 @@ class DatePicker extends PureComponent<Props, State> {
   }
 
   private overrideInputState = (): void => {
-    const {dateTime} = this.props
+    const {dateTime, timeZone} = this.props
     const {inputFormat} = this.state
 
-    let value = moment(dateTime).toISOString()
+    let value = new Date(dateTime).toISOString()
     if (inputFormat) {
-      value = moment(dateTime).format(inputFormat)
+      const formatter = createDateTimeFormatter(inputFormat, timeZone)
+      value = formatter.format(dateTime)
     }
 
     this.setState({inputValue: value, inputFormat: getFormat(value)})

@@ -15,6 +15,7 @@ import {AppState} from 'src/types'
 import {setType} from 'src/timeMachine/actions'
 
 // Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 export const TimeMachineViewTypeDropdown: FC<{}> = () => {
@@ -36,11 +37,12 @@ export const TimeMachineViewTypeDropdown: FC<{}> = () => {
     [dispatch]
   )
 
+  // console.log(isFlagEnabled('simpleTable'))
   return (
     <ViewTypeDropdown
       viewType={viewType}
       onUpdateType={updateType as any}
-      filter={['simple-table']}
+      // filter={['simple-table']}
     />
   )
 }

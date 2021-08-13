@@ -8,7 +8,6 @@ import {isEqual} from 'lodash'
 
 // Components
 import {View} from 'src/visualization'
-import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
@@ -27,6 +26,7 @@ import {
   getYSeriesColumns,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
+import {defaultViewQuery} from 'src/views/helpers/index'
 
 // Types
 import {RemoteDataState, AppState, ViewProperties} from 'src/types'
@@ -67,12 +67,16 @@ const TimeMachineVis: FC<Props> = ({
       type === 'mosaic' ? ySeriesColumns : yColumn,
     fillColumns,
     symbolColumns,
-  } as ViewProperties | SimpleTableViewProperties
+  } as ViewProperties
 
   if (isViewingRawData && isFlagEnabled('simpleTable')) {
     resolvedViewProperties = {
       type: 'simple-table',
       showAll: true,
+      queries: [defaultViewQuery()],
+      shape: 'chronograf-v2',
+      note: '',
+      showNoteWhenEmpty: false,
     }
   }
 

@@ -5,7 +5,6 @@ import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
-import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 
 import ViewLoadingSpinner from 'src/visualization/components/internal/ViewLoadingSpinner'
 import {FromFluxResult} from '@influxdata/giraffe'
@@ -17,7 +16,7 @@ import {
 } from 'src/types'
 
 interface Props {
-  properties: ViewProperties | SimpleTableViewProperties
+  properties: ViewProperties
   result?: FromFluxResult
   loading?: RemoteDataState
   error?: string

@@ -1,7 +1,6 @@
 import {FunctionComponent, ComponentClass} from 'react'
 import {AnnotationsList, ViewProperties, TimeRange} from 'src/types'
 import {FluxResult} from 'src/types/flows'
-import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 
 export interface VisualizationOptionProps {
   properties: ViewProperties
@@ -10,7 +9,7 @@ export interface VisualizationOptionProps {
 }
 
 export interface VisualizationProps {
-  properties: ViewProperties | SimpleTableViewProperties
+  properties: ViewProperties
   result: FluxResult['parsed']
   timeRange?: TimeRange
   annotations?: AnnotationsList

@@ -1,4 +1,4 @@
-import {Organization, Bucket} from '../../../src/types'
+import {Organization} from '../../../src/types'
 
 // Chains of actions that involve hovering like below
 // cy.getByTestID('task-card')
@@ -35,7 +35,7 @@ describe('Tasks', () => {
 
   it('can create a task', () => {
     const taskName = 'Task'
-    createFirstTask(taskName, ({name}) => {
+    cy.createTaskFromEmpty(taskName, ({name}) => {
       return `import "influxdata/influxdb/v1{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
 from(bucket: "${name}"{rightarrow}
@@ -60,7 +60,7 @@ from(bucket: "${name}"{rightarrow}
 
   it('can create a task using http.post', () => {
     const taskName = 'Task'
-    createFirstTask(taskName, () => {
+    cy.createTaskFromEmpty(taskName, () => {
       return `import "http"
 http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
@@ -461,7 +461,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const interval = '12h'
     const offset = '30m'
     beforeEach(() => {
-      createFirstTask(
+      cy.createTaskFromEmpty(
         taskName,
         ({name}) => {
           return `import "influxdata/influxdb/v1{rightarrow}
@@ -796,30 +796,4 @@ const createTask = (
   cy.getByTestIDAndSetInputValue('task-form-schedule-input', every)
   cy.getByTestID('task-save-btn').click()
   cy.getByTestID('notification-success--dismiss').click()
-}
-
-export function createFirstTask(
-  name: string,
-  flux: (bucket: Bucket) => string,
-  interval: string = '24h',
-  offset: string = '20m'
-) {
-  cy.getByTestID('empty-tasks-list').within(() => {
-    cy.getByTestID('add-resource-dropdown--button').click()
-  })
-
-  cy.getByTestID('add-resource-dropdown--new').click()
-
-  cy.get<Bucket>('@bucket').then(bucket => {
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
-        .click({force: true})
-        .focused()
-        .type(flux(bucket), {force: true, delay: 2})
-    })
-  })
-
-  cy.getByInputName('name').type(name)
-  cy.getByTestID('task-form-schedule-input').type(interval)
-  cy.getByTestID('task-form-offset-input').type(offset)
 }

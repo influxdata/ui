@@ -2,8 +2,8 @@ import {
   DEFAULT_FILLVALUES,
   AGG_WINDOW_AUTO,
 } from 'src/timeMachine/constants/queryBuilder'
-import {DEFAULT_THRESHOLDS_TABLE_COLORS} from 'src/shared/constants/thresholds'
-import {Color, TableViewProperties} from 'src/types'
+import {TableViewProperties} from 'src/types'
+import {DEFAULT_TABLE_COLORS} from '@influxdata/giraffe'
 
 export default {
   type: 'table',
@@ -35,7 +35,7 @@ export default {
     sortBy: null,
     fixFirstColumn: false,
   },
-  colors: DEFAULT_THRESHOLDS_TABLE_COLORS as Color[],
+  colors: DEFAULT_TABLE_COLORS,
   fieldOptions: [],
   decimalPlaces: {
     isEnforced: false,

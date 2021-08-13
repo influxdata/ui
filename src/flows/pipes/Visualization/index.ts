@@ -21,6 +21,14 @@ export default register => {
         return
       }
 
+      if (
+        pipe.properties.type === 'single-stat' ||
+        pipe.properties.type === 'gauge'
+      ) {
+        append('__CURRENT_RESULT__ |> last()')
+        return
+      }
+
       if (!pipe.functions || !pipe.functions.length) {
         append('__CURRENT_RESULT__')
         return

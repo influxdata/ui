@@ -64,6 +64,19 @@ jest.mock('src/external/parser', () => ({
   }),
 }))
 
+jest.mock('src/shared/contexts/pinneditems', () => ({
+  getPinnedItems: jest.fn(() =>
+    Promise.resolve({
+      json: () => Promise.resolve([]),
+    })
+  ),
+  PinnedItemTypes: {Task: 'task'},
+  addPinnedItem: jest.fn(() => {
+    return new Promise(resolve => resolve())
+  }),
+  deletePinnedItemByParam: jest.fn(() => Promise.resolve()),
+}))
+
 jest.mock('src/client', () => ({
   getTasks: jest.fn(() => {
     return {

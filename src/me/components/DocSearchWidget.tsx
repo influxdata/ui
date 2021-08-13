@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Components
-import DocSearch from 'src/shared/search/DocSearch'
+import DocSearch, {DocSearchType} from 'src/shared/search/DocSearch'
 
 import './DocSearchWidget.scss'
 
@@ -29,7 +29,7 @@ const supportLinks = [
 const DocSearchWidget: FC = () => {
   return (
     <div className="WidgetSearch">
-      <DocSearch />
+      <DocSearch type={DocSearchType.Widget} />
       <p className="WidgetHelperText">Press CTRL + M on any page to search</p>
       <div className="useful-links">
         <h4>Useful Links</h4>

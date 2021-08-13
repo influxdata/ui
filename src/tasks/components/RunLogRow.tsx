@@ -8,7 +8,7 @@ import {IndexList} from '@influxdata/clockface'
 import {LogEvent} from 'src/types'
 
 // DateTime
-import {DEFAULT_TIME_FORMAT} from 'src/shared/constants'
+import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 interface Props {

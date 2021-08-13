@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 
 import {
   ResourceList,
@@ -12,6 +12,13 @@ import FlowsExplainer from 'src/flows/components/FlowsExplainer'
 import FlowCard from 'src/flows/components/FlowCard'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {FlowList} from 'src/types/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+
+let getPinnedItems
+if (CLOUD) {
+  getPinnedItems = require('src/shared/contexts/pinneditems').getPinnedItems
+}
 
 interface Props {
   flows: FlowList
@@ -27,6 +34,18 @@ const NoMatches = () => {
 }
 
 const FlowCards: FC<Props> = ({flows, search}) => {
+  const [pinnedItems, setPinnedItems] = useState([])
+
+  useEffect(() => {
+    if (isFlagEnabled('pinnedItems') && CLOUD) {
+      getPinnedItems()
+        .then(res => setPinnedItems(res))
+        .catch(err => {
+          console.error(err.message)
+        })
+    }
+  }, [])
+
   return (
     <Grid>
       <Grid.Row>
@@ -40,18 +59,26 @@ const FlowCards: FC<Props> = ({flows, search}) => {
               emptyState={!!search ? <NoMatches /> : <FlowsIndexEmpty />}
             >
               {Object.keys(flows.flows).map(id => (
-                <FlowCard key={id} id={id} />
+                <FlowCard
+                  key={id}
+                  id={id}
+                  isPinned={
+                    !!pinnedItems.find(item => item?.metadata.flowID === id)
+                  }
+                />
               ))}
             </ResourceList.Body>
           </ResourceList>
         </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthSM={Columns.Four}
-          widthMD={Columns.Two}
-        >
-          <FlowsExplainer />
-        </Grid.Column>
+        {!isFlagEnabled('presetFlows') && (
+          <Grid.Column
+            widthXS={Columns.Twelve}
+            widthSM={Columns.Four}
+            widthMD={Columns.Two}
+          >
+            <FlowsExplainer />
+          </Grid.Column>
+        )}
       </Grid.Row>
     </Grid>
   )

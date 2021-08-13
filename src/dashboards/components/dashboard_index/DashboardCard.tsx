@@ -19,13 +19,31 @@ import {
 import {resetViews} from 'src/views/actions/creators'
 
 // Types
-import {Label} from 'src/types'
+import {Label, AppState} from 'src/types'
 
 // Constants
 import {DEFAULT_DASHBOARD_NAME} from 'src/dashboards/constants'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
+
+import {
+  addPinnedItem,
+  deletePinnedItemByParam,
+  PinnedItemTypes,
+  updatePinnedItemByParam,
+} from 'src/shared/contexts/pinneditems'
+
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
 interface OwnProps {
   id: string
@@ -34,6 +52,7 @@ interface OwnProps {
   updatedAt: string
   labels: string[]
   onFilterChange: (searchTerm: string) => void
+  isPinned: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -87,12 +106,37 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {name})
+    try {
+      updatePinnedItemByParam(id, {name})
+      this.props.sendNotification(pinnedItemSuccess('dashboard', 'updated'))
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+    }
   }
 
   private handleCloneDashboard = () => {
     const {id, name, onCloneDashboard} = this.props
 
     onCloneDashboard(id, name)
+  }
+
+  private handlePinDashboard = () => {
+    try {
+      addPinnedItem({
+        orgID: this.props.org.id,
+        userID: this.props.me.id,
+        metadata: {
+          dashboardID: this.props.id,
+          name: this.props.name,
+          description: this.props.description,
+        },
+
+        type: PinnedItemTypes.Dashboard,
+      })
+      this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+    }
   }
 
   private get contextMenu(): JSX.Element {
@@ -115,6 +159,20 @@ class DashboardCard extends PureComponent<Props> {
             testID="clone-dashboard"
           />
         </Context.Menu>
+        {isFlagEnabled('pinnedItems') && CLOUD && (
+          <Context.Menu
+            icon={IconFont.Star}
+            color={ComponentColor.Success}
+            testID="context-pin-menu"
+          >
+            <Context.Item
+              label="Pin to Homepage"
+              action={this.handlePinDashboard}
+              testID="context-pin-dashboard"
+              disabled={this.props.isPinned}
+            />
+          </Context.Menu>
+        )}
         <Context.Menu
           icon={IconFont.Trash}
           color={ComponentColor.Danger}
@@ -133,6 +191,7 @@ class DashboardCard extends PureComponent<Props> {
   private handleDeleteDashboard = () => {
     const {id, name, onDeleteDashboard} = this.props
     onDeleteDashboard(id, name)
+    deletePinnedItemByParam(id)
   }
 
   private handleClickDashboard = e => {
@@ -158,6 +217,7 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {description})
+    updatePinnedItemByParam(id, {description})
   }
 
   private handleAddLabel = (label: Label) => {
@@ -192,8 +252,18 @@ const mdtp = {
   onCloneDashboard: cloneDashboard,
   onDeleteDashboard: deleteDashboard,
   onUpdateDashboard: updateDashboard,
+  sendNotification: notify,
 }
 
-const connector = connect(null, mdtp)
+const mstp = (state: AppState) => {
+  const me = getMe(state)
+  const org = getOrg(state)
+
+  return {
+    org,
+    me,
+  }
+}
+const connector = connect(mstp, mdtp)
 
 export default connector(withRouter(DashboardCard))

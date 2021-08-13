@@ -29,7 +29,7 @@ const FriendlyQueryError: FC<Props> = ({error}) => {
     event(`Updating the Aggregate function in the Flow Query Builder`, {
       function: aggregateFunction.name,
     })
-    update({aggregateFunction})
+    update({functions: [{name: aggregateFunction.name}]})
   }
 
   if (!isAggTypeError) {

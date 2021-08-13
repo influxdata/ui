@@ -1,4 +1,4 @@
-import {Organization, Bucket} from '../../../src/types'
+import {Organization} from '../../../src/types'
 
 // Chains of actions that involve hovering like below
 // cy.getByTestID('task-card')

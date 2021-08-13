@@ -32,7 +32,7 @@ const Template: FC = () => {
 
     add(hydrate(TEMPLATES[params[0]].init.apply(this, params.slice(1)))).then(
       id => {
-        history.push(`/orgs/${org.id}/notebooks/${id}`)
+        history.replace(`/orgs/${org.id}/notebooks/${id}`)
       }
     )
   }, [add, history, org.id, loading, setLoading, params])

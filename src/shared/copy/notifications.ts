@@ -1412,3 +1412,21 @@ export const deleteAccountWarning = (buttonElement): Notification => ({
     flexWrap: 'wrap',
   },
 })
+
+export const pinnedItemFailure = (
+  error: string,
+  failureType: string
+): Notification => ({
+  ...defaultErrorNotification,
+  icon: IconFont.Star,
+  message: `Failed to ${failureType} pinned item: ${error}`,
+})
+
+export const pinnedItemSuccess = (
+  pinItemType: string,
+  pinAction: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  icon: IconFont.Star,
+  message: `Successfully ${pinAction} pinned ${pinItemType} to homepage`,
+})

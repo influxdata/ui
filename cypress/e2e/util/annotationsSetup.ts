@@ -1,20 +1,7 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
 
-export const clearLocalStorage = () => {
-  // clear the local storage after each test.
-  // See: https://github.com/cypress-io/cypress/issues/2573
-  cy.window().then(window => {
-    window.sessionStorage.clear()
-    window.localStorage.clear()
-  })
-}
-
-export const setupData = (
-  cy: Cypress.Chainable,
-  plotTypeSuffix = '',
-  enableRangeAnnotations = true
-) => {
+export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') => {
   cy.flush()
   return cy.signin().then(() =>
     cy.get('@org').then(({id: orgID}: Organization) =>
@@ -23,9 +10,7 @@ export const setupData = (
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
           return cy
             .setFeatureFlags({
-              annotations: true,
               useGiraffeGraphs: true,
-              rangeAnnotations: enableRangeAnnotations,
             })
             .then(() => {
               cy.createBucket(orgID, name, 'devbucket')

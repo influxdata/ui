@@ -798,7 +798,7 @@ const createTask = (
   cy.getByTestID('notification-success--dismiss').click()
 }
 
-function createFirstTask(
+export function createFirstTask(
   name: string,
   flux: (bucket: Bucket) => string,
   interval: string = '24h',

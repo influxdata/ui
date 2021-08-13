@@ -21,7 +21,6 @@ import {
   InfluxColors,
   InteractionHandlerArguments,
 } from '@influxdata/giraffe'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const makeCreateMethod = (
   dispatch: Dispatch<any>,
@@ -237,9 +236,6 @@ export const addAnnotationLayer = (
   dispatch: Dispatch<any>,
   eventPrefix = 'xyplot'
 ) => {
-  if (!isFlagEnabled('annotations')) {
-    return
-  }
   if (inAnnotationMode && cellID) {
     config.interactionHandlers = {
       singleShiftClick: makeAnnotationClickListener(
@@ -248,13 +244,11 @@ export const addAnnotationLayer = (
         eventPrefix
       ),
     }
-    if (isFlagEnabled('rangeAnnotations')) {
-      config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
-        dispatch,
-        cellID,
-        eventPrefix
-      )
-    }
+    config.interactionHandlers.onXBrush = makeAnnotationRangeListener(
+      dispatch,
+      cellID,
+      eventPrefix
+    )
   }
 
   const annotationLayer: AnnotationLayerConfig = makeAnnotationLayer(

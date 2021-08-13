@@ -11,13 +11,18 @@ import {
 // Components
 import ResourcesTableRow from 'src/operator/ResourcesTableRow'
 import RemoveFromAccount from 'src/operator/account/RemoveFromAccount'
-import {AccountContext} from 'src/operator/context/account'
 
 // Constants
 import {acctUserColumnInfo, accountUserHeaderInfo} from 'src/operator/constants'
 
+// Contexts
+import {AccountContext} from 'src/operator/context/account'
+import {OperatorContext} from 'src/operator/context/operator'
+
 const AssociatedTableUsers: FC = () => {
   const {account, handleRemoveUserFromAccount} = useContext(AccountContext)
+  const {hasWritePermissions} = useContext(OperatorContext)
+
   return (
     <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Large}>
       {account?.users?.length ? (
@@ -36,11 +41,13 @@ const AssociatedTableUsers: FC = () => {
                 resource={resource}
                 infos={acctUserColumnInfo}
               >
-                <RemoveFromAccount
-                  removeUser={async () => {
-                    await handleRemoveUserFromAccount(resource.id)
-                  }}
-                />
+                {hasWritePermissions && (
+                  <RemoveFromAccount
+                    removeUser={async () => {
+                      await handleRemoveUserFromAccount(resource.id)
+                    }}
+                  />
+                )}
               </ResourcesTableRow>
             ))}
           </Table.Body>

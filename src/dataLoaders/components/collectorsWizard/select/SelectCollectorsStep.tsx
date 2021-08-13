@@ -41,7 +41,7 @@ type Props = OwnProps & ReduxProps
 @ErrorHandling
 export class SelectCollectorsStep extends PureComponent<Props> {
   public render() {
-    const selectedBucketName = this.props.bucket ?? this.props.buckets[0]?.name
+    const selectedBucketName = this.props.bucket || this.props.buckets[0]?.name
     return (
       <Form
         onSubmit={this.props.onIncrementCurrentStepIndex}

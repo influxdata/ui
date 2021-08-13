@@ -1,6 +1,8 @@
 import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
+import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
+import {query, writeLP, InfluxParams} from './Client'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
@@ -561,6 +563,13 @@ export const createToken = (
   })
 }
 
+export const wrapDefaultToken = (): Cypress.Chainable<Cypress.Response> => {
+  return cy.request('GET', 'api/v2/authorizations').then(response => {
+    //cy.log(`DEBUG wrapToken response ${JSON.stringify(response.body.authorizations[0].token)}`)
+    return cy.wrap(response.body.authorizations[0].token).as('defaultToken')
+  })
+}
+
 // TODO: have to go through setup because we cannot create a user w/ a password via the user API
 export const setupUser = (): Cypress.Chainable<Cypress.Response> => {
   return cy.request({
@@ -640,20 +649,102 @@ export const lines = (numLines = 3) => {
   })
 }
 
+export interface writeLPDataConf {
+  lines: string[]
+  offset: string
+  stagger?: boolean | string
+  namedBucket?: string
+}
+
 export const writeData = (
   lines: string[],
+  offset = '-30m',
+  stagger?: boolean | string,
   namedBucket?: string
 ): Cypress.Chainable<Cypress.Response> => {
-  return cy.get<Organization>('@org').then((org: Organization) => {
-    return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-      const bucketToUse = namedBucket ?? bucket.name
-      return cy.request({
-        method: 'POST',
-        url: '/api/v2/write?org=' + org.name + '&bucket=' + bucketToUse,
-        body: lines.join('\n'),
-      })
+  const oe = parseTime(offset)
+  if (oe.measure >= 0) {
+    offset = `-${offset}`
+    oe.measure *= -1
+  }
+
+  let interval = stagger
+  if (stagger && typeof stagger === 'boolean') {
+    interval = `${(oe.measure / lines.length) * -1}${oe.unit}`
+  }
+
+  cy.log(`DEBUG interval ${interval}`)
+  cy.log(`DEBUG offset ${offset}`)
+  wrapDefaultToken()
+
+  const connectVals: {
+    org: Organization | null
+    bucket: Bucket | null
+    token: string | null
+    location: Location | null
+  } = {
+    org: null,
+    bucket: null,
+    token: null,
+    location: null,
+  }
+
+  return cy
+    .get<Organization>('@org')
+    .then(org => {
+      connectVals.org = org
+      return cy.get<Bucket>('@bucket')
     })
-  })
+    .then(bucket => {
+      connectVals.bucket = bucket
+      return cy.get<string>('@defaultToken')
+    })
+    .then(token => {
+      connectVals.token = token
+      return cy.location()
+    })
+    .then(location => {
+      connectVals.location = location
+      cy.log(`DEBUG values ${JSON.stringify(connectVals)}`)
+      const dbParams: InfluxParams = {
+        url: `${connectVals.location.protocol}//${connectVals.location.hostname}/`,
+        token: connectVals.token as string,
+        org: (connectVals.org as Organization).name,
+        bucket: namedBucket ?? (connectVals.bucket as Bucket).name,
+      }
+
+      if (stagger) {
+        return addStaggerTimestampToRecs(
+          lines,
+          offset,
+          interval as string
+        ).then(stampedLines => {
+          cy.log(`DEBUG stampedLines ${stampedLines}`)
+          cy.log(`DEBUG dbParams ${JSON.stringify(dbParams)}`)
+          return writeLP(dbParams, 'ms', stampedLines)
+            .then(() => {
+              return cy.wrap('success')
+            })
+            .catch(e => {
+              return cy.wrap(
+                `failure ${e.message}\nSee console for more information`
+              )
+            })
+        })
+      } else {
+        return addTimestampToRecs(lines, offset).then(stampedLines => {
+          return writeLP(dbParams, 'ms', stampedLines)
+            .then(() => {
+              return cy.wrap('success')
+            })
+            .catch(e => {
+              return cy.wrap(
+                `failure ${e.message}\nSee console for more information`
+              )
+            })
+        })
+      }
+    })
 }
 
 // DOM node getters

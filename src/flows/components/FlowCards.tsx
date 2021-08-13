@@ -70,13 +70,15 @@ const FlowCards: FC<Props> = ({flows, search}) => {
             </ResourceList.Body>
           </ResourceList>
         </Grid.Column>
-        <Grid.Column
-          widthXS={Columns.Twelve}
-          widthSM={Columns.Four}
-          widthMD={Columns.Two}
-        >
-          <FlowsExplainer />
-        </Grid.Column>
+        {!isFlagEnabled('presetFlows') && (
+          <Grid.Column
+            widthXS={Columns.Twelve}
+            widthSM={Columns.Four}
+            widthMD={Columns.Two}
+          >
+            <FlowsExplainer />
+          </Grid.Column>
+        )}
       </Grid.Row>
     </Grid>
   )

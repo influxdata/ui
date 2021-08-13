@@ -1,4 +1,4 @@
-import {Organization, Bucket} from '../../../src/types'
+import {Organization} from '../../../src/types'
 
 // Chains of actions that involve hovering like below
 // cy.getByTestID('task-card')
@@ -12,7 +12,7 @@ describe('Tasks', () => {
     cy.flush()
 
     cy.signin().then(() => {
-      cy.get('@org').then(({id: orgID}: Organization) =>
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) =>
         cy
           .createToken(orgID, 'test token', 'active', [
             {action: 'write', resource: {type: 'views', orgID}},
@@ -26,7 +26,7 @@ describe('Tasks', () => {
     })
 
     cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.visit(`${orgs}/${id}/tasks`)
         cy.getByTestID('tree-nav')
       })
@@ -35,7 +35,7 @@ describe('Tasks', () => {
 
   it('can create a task', () => {
     const taskName = 'Task'
-    createFirstTask(taskName, ({name}) => {
+    cy.createTaskFromEmpty(taskName, ({name}) => {
       return `import "influxdata/influxdb/v1{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
 from(bucket: "${name}"{rightarrow}
@@ -53,7 +53,7 @@ from(bucket: "${name}"{rightarrow}
 
   it('can create a task using http.post', () => {
     const taskName = 'Task'
-    createFirstTask(taskName, () => {
+    cy.createTaskFromEmpty(taskName, () => {
       return `import "http"
 http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
@@ -145,7 +145,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
   describe('When tasks already exist', () => {
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id)
         })
@@ -382,7 +382,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const taskName = 'beepBoop'
 
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id, taskName).then(({body}) => {
             cy.createAndAddLabel('tasks', id, body.id, newLabelName)
@@ -395,7 +395,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       })
 
       cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/tasks`)
           cy.getByTestID('tree-nav')
         })
@@ -423,7 +423,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const interval = '12h'
     const offset = '30m'
     beforeEach(() => {
-      createFirstTask(
+      cy.createTaskFromEmpty(
         taskName,
         ({name}) => {
           return `import "influxdata/influxdb/v1{rightarrow}
@@ -504,7 +504,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const firstIndex = 0
     const secondIndex = 1
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id, firstTask)
           cy.createTask(token, id, secondTask)
@@ -512,7 +512,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       })
 
       cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/tasks`)
           cy.getByTestID('tree-nav')
         })
@@ -754,28 +754,4 @@ const createTask = (
   cy.getByTestIDAndSetInputValue('task-form-schedule-input', every)
   cy.getByTestID('task-save-btn').click()
   cy.getByTestID('notification-success--dismiss').click()
-}
-
-export function createFirstTask(
-  name: string,
-  flux: (bucket: Bucket) => string,
-  interval: string = '24h',
-  offset: string = '20m'
-) {
-  cy.getByTestID('create-task--button')
-    .first()
-    .click()
-
-  cy.get<Bucket>('@bucket').then(bucket => {
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
-        .click({force: true})
-        .focused()
-        .type(flux(bucket), {force: true, delay: 2})
-    })
-  })
-
-  cy.getByInputName('name').type(name)
-  cy.getByTestID('task-form-schedule-input').type(interval)
-  cy.getByTestID('task-form-offset-input').type(offset)
 }

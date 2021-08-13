@@ -1,12 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  useContext,
-  useCallback,
-  useState,
-  useRef,
-  useEffect,
-} from 'react'
+import React, {FC, useContext, useState, useRef, useEffect} from 'react'
 import classnames from 'classnames'
 import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
 
@@ -47,7 +40,7 @@ const FlowPanel: FC<Props> = ({
   children,
 }) => {
   const {flow} = useContext(FlowContext)
-  const {generateMap} = useContext(FlowQueryContext)
+  const {printMap} = useContext(FlowQueryContext)
   const {id: focused} = useContext(SidebarContext)
 
   const isVisible = flow.meta.get(id).visible
@@ -56,57 +49,6 @@ const FlowPanel: FC<Props> = ({
     [`flow-panel__${isVisible ? 'visible' : 'hidden'}`]: true,
     'flow-panel__focus': focused === id,
   })
-
-  // This function allows the developer to see the queries
-  // that the panels are generating through a notebook. Each
-  // panel should have a source query, any panel that needs
-  // to display some data should have a visualization query
-  const printMap = useCallback(() => {
-    // Make a dictionary of all the panels that have queries being generated
-    const stages = generateMap(true).reduce((acc, curr) => {
-      curr.instances.forEach(i => {
-        acc[i.id] = {
-          source: curr.text,
-          visualization: i.modifier,
-        }
-      })
-
-      return acc
-    }, {})
-
-    /* eslint-disable no-console */
-    // Grab all the ids in the order that they're presented
-    flow.data.allIDs.forEach(i => {
-      console.log(
-        `\n\n%cPanel: %c ${i}`,
-        'font-family: sans-serif; font-size: 16px; font-weight: bold; color: #000',
-        i === id
-          ? 'font-weight: bold; font-size: 16px; color: #666'
-          : 'font-weight: normal; font-size: 16px; color: #888'
-      )
-
-      // throw up some red text if a panel isn't passing along the source query
-      if (!stages[i]) {
-        console.log(
-          '%c *** No Queries Registered ***\n',
-          'font-family: sans-serif; font-size: 16px; font-weight: bold; color: #F00'
-        )
-        return
-      }
-
-      console.log(
-        `%c Source Query: \n%c ${stages[i].source}`,
-        'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
-        'font-family: monospace; color: #888'
-      )
-      console.log(
-        `%c Visualization Query: \n%c ${stages[i].visualization}\n`,
-        'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
-        'font-family: monospace; color: #888'
-      )
-    })
-    /* eslint-enable no-console */
-  }, [id])
 
   const [size, updateSize] = useState<number>(
     flow.meta.get(id).height || DEFAULT_RESIZER_HEIGHT
@@ -206,7 +148,7 @@ const FlowPanel: FC<Props> = ({
                 <FeatureFlag name="flow-debug-queries">
                   <SquareButton
                     icon={IconFont.BookCode}
-                    onClick={printMap}
+                    onClick={() => printMap(id, true)}
                     color={ComponentColor.Default}
                     titleText="Debug Notebook Queries"
                     className="flows-config-panel-button"

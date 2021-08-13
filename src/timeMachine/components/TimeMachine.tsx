@@ -18,7 +18,7 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {AppState, TimeMachineTab} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
-const INITIAL_RESIZER_HANDLE = 0.5
+const INITIAL_RESIZER_HANDLE = 0.4
 
 interface StateProps {
   activeTab: TimeMachineTab

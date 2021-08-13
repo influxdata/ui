@@ -828,6 +828,32 @@ export const setFeatureFlags = (flags: FlagMap): Cypress.Chainable => {
   })
 }
 
+export const createTaskFromEmpty = (
+  name: string,
+  flux: (bucket: Bucket) => string,
+  interval: string = '24h',
+  offset: string = '20m'
+) => {
+  cy.getByTestID('empty-tasks-list').within(() => {
+    cy.getByTestID('add-resource-dropdown--button').click()
+  })
+
+  cy.getByTestID('add-resource-dropdown--new').click()
+
+  cy.get<Bucket>('@bucket').then(bucket => {
+    cy.getByTestID('flux-editor').within(() => {
+      cy.get('textarea.inputarea')
+        .click({force: true})
+        .focused()
+        .type(flux(bucket), {force: true, delay: 2})
+    })
+  })
+
+  cy.getByInputName('name').type(name)
+  cy.getByTestID('task-form-schedule-input').type(interval)
+  cy.getByTestID('task-form-offset-input').type(offset)
+}
+
 /* eslint-disable */
 // notification endpoints
 Cypress.Commands.add('createEndpoint', createEndpoint)
@@ -911,4 +937,5 @@ Cypress.Commands.add(
 )
 Cypress.Commands.add('getByTestIDAndSetInputValue', getByTestIDAndSetInputValue)
 Cypress.Commands.add('setFeatureFlags', setFeatureFlags)
+Cypress.Commands.add('createTaskFromEmpty', createTaskFromEmpty)
 /* eslint-enable */

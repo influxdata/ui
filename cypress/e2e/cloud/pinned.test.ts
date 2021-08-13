@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-import {createFirstTask} from '../shared/tasks.test'
 
 describe('Pinned Items', () => {
   let orgID: string
@@ -144,14 +143,14 @@ describe('Pinned Items', () => {
             .then(({body}) => {
               cy.wrap(body.token).as('token')
               cy.getByTestID('tree-nav')
-              cy.getByTestID('nav-item-tasks').should('be.visible')
-              cy.getByTestID('nav-item-tasks').click()
+              cy.visit(`/orgs/${orgID}/tasks`)
+              cy.getByTestID('tree-nav')
             })
         )
       })
 
       taskName = 'Task'
-      createFirstTask(taskName, ({name}) => {
+      cy.createTaskFromEmpty(taskName, ({name}) => {
         return `import "influxdata/influxdb/v1{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
 from(bucket: "${name}"{rightarrow}

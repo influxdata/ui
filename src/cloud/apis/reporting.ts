@@ -58,26 +58,31 @@ export const reportPoints = (batch: PointsBatch) => {
 }
 
 const asRudderOptions = (tags: PointTags, campaign: object) => {
-  const options = {}
-  let context = null
-  Object.keys(tags).forEach((key: string) => {
-    const value = tags[key]
-    if (key != 'context') {
-      options[key] = value
-    } else {
-      if (typeof value != 'object') {
-        // context is reserved rudder element key and must be object, see rudder-sdk-js (#20463)
+  if (Object.keys(campaign).length) {
+    // converts tags to generic object so we can put a campaign object as value later
+    const options = {}
+    for (const key in tags) {
+      const value = tags[key]
+      if (key !== 'context') {
+        options[key] = value
+      } else if (typeof value !== 'object') {
+        // 'context' is reserved options key and its value must be an object
+        // (see processOptionsParam function in rudder-sdk-js/index.js line #20460)
+        // so just put the value under different key ie. 'appContext'
+        // (see event tracking call in eg. src/shared/apis/queryCache.ts#L116)
         options['appContext'] = value
       } else {
-        context = options['context'] = value
+        options[key] = value
       }
     }
-  })
-  if (Object.keys(campaign).length) {
-    if (context == null) {
-      context = options['context'] = {}
+    // campaign info is in context object (which is merged in processOptionsParam function in rudder-sdk-js/index.js)
+    let context = options['context']
+    if (context === null) {
+      context = {}
+      options['context'] = context
     }
     context['campaign'] = campaign
+    return options
   }
-  return options
+  return tags
 }

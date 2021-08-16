@@ -21,30 +21,33 @@ interface OwnProps {
 
 export const ResourceAccordionHeader: FC<OwnProps> = props => {
   const {resourceName} = props
-  console.log('header: ', props.permissions)
   const readToggle = () => {
     const {permissions} = props
     let tag = true
-    Object.keys(permissions).map(key => {
-      permissions[key].permissions.read === true
-        ? tag === false
-          ? (tag = false)
-          : (tag = true)
-        : (tag = false)
-    })
+    if (permissions) {
+      Object.keys(permissions).map(key => {
+        permissions[key].permissions.read === true
+          ? tag === false
+            ? (tag = false)
+            : (tag = true)
+          : (tag = false)
+      })
+    }
     return tag ? true : false
   }
 
   const writeToggle = () => {
     const {permissions} = props
     let tag = true
-    Object.keys(permissions).map(key => {
-      permissions[key].permissions.write === true
-        ? tag === false
-          ? (tag = false)
-          : (tag = true)
-        : (tag = false)
-    })
+    if (permissions) {
+      Object.keys(permissions).map(key => {
+        permissions[key].permissions.write === true
+          ? tag === false
+            ? (tag = false)
+            : (tag = true)
+          : (tag = false)
+      })
+    }
     return tag ? true : false
   }
 
@@ -72,7 +75,7 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
         </FlexBox.Child>
         <FlexBox.Child grow={1}>
           <Toggle
-            id="1"
+            id={resourceName}
             type={InputToggleType.Checkbox}
             onChange={handleReadToggle}
             size={ComponentSize.ExtraSmall}
@@ -88,12 +91,12 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
         </FlexBox.Child>
         <FlexBox.Child grow={1}>
           <Toggle
-            id="2"
+            id={resourceName + 1}
             type={InputToggleType.Checkbox}
             onChange={handleWriteToggle}
             size={ComponentSize.ExtraSmall}
             checked={writeToggle()}
-            value={readToggle().toString()}
+            value={writeToggle().toString()}
             style={{marginRight: '10px'}}
             tabIndex={0}
             disabled={false}

@@ -21,8 +21,7 @@ interface OwnProps {
 }
 
 export const CustomApiTokenOverlay: FC<OwnProps> = props => {
-  // const resources = ['telegrafs', 'buckets', 'dashboards']
-  const resources = ['telegrafs']
+  const resources = ['telegrafs', 'buckets']
   const handleDismiss = () => {
     props.onClose()
   }

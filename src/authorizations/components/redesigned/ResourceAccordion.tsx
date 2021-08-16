@@ -5,14 +5,15 @@ import React, {Component} from 'react'
 import {Accordion} from '@influxdata/clockface'
 import {ResourceAccordionHeader} from './ResourceAccordionHeader'
 import GetResources from 'src/resources/components/GetResources'
-import TelegrafAccordion from './TelegrafAccordion'
-import BucketAccordion from './BucketAccordion'
+import {ResourceAccordionBody} from './TelegrafAccordion'
+
 // Types
 import {AppState, Telegraf, ResourceType} from 'src/types'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
 import {connect} from 'react-redux'
+import {Bucket} from 'src/client'
 
 export type ReadWritePermissions = {
   read: boolean
@@ -30,6 +31,7 @@ interface State {
 }
 interface StateProps {
   telegrafPermissions: any
+  bucketPermissions: any
 }
 
 type Props = OwnProps & StateProps
@@ -40,6 +42,7 @@ class ResourceAccordion extends Component<Props, State> {
     this.state = {
       permissions: {
         telegrafs: props.telegrafPermissions,
+        buckets: props.bucketPermissions,
       },
     }
   }
@@ -48,11 +51,11 @@ class ResourceAccordion extends Component<Props, State> {
     if (!props.telegrafPermissions) {
       return null
     }
-    console.log('derived Stazte: ', props.telegrafPermissions)
     return {
       ...state,
       permissions: {
         telegrafs: props.telegrafPermissions,
+        buckets: props.bucketPermissions,
       },
     }
   }
@@ -60,56 +63,62 @@ class ResourceAccordion extends Component<Props, State> {
   public render() {
     const {resources} = this.props
     const {permissions} = this.state
-    console.log('resource permissions: ', permissions)
 
-    return resources.map(resource => {
-      const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
-      return (
-        <GetResources key={resource} resources={[ResourceType[resourceName]]}>
-          <Accordion>
+    if (resources) {
+      return resources.map(resource => {
+        const resourceName =
+          resource.charAt(0).toUpperCase() + resource.slice(1)
+        return (
+          <Accordion key={resource}>
             <ResourceAccordionHeader
               resourceName={resourceName}
               permissions={permissions[resource]}
               onToggleAll={this.handleToggleAll}
             />
-            {resourceName === 'Telegrafs' ? (
-              <TelegrafAccordion
-                permissions={permissions[resource]}
-                onToggle={this.handleTelegrafToggle}
-              />
-            ) : (
-              <BucketAccordion />
-            )}
+            <GetResources resources={[ResourceType[resourceName]]}>
+              {resourceName === 'Telegrafs' ? (
+                <ResourceAccordionBody
+                  resourceName={resource}
+                  permissions={permissions[resource]}
+                  onToggle={this.handleIndividualToggle}
+                  title="Individual Telegraf Configuration Names"
+                />
+              ) : (
+                <ResourceAccordionBody
+                  resourceName={resource}
+                  permissions={permissions[resource]}
+                  onToggle={this.handleIndividualToggle}
+                  title="Individual Bucket Names"
+                />
+              )}
+            </GetResources>
           </Accordion>
-        </GetResources>
-      )
-    })
+        )
+      })
+    }
+    return null
   }
 
   handleToggleAll = (resourceName, permission, value) => {
-    // const {permissions} = this.state
-    // const newPerm = {...permissions}
-    // const name = resourceName.toLowerCase()
-    // Object.keys(newPerm[name]).map(key => {
-    //   newPerm[name][key].permissions[permission] = !value
-    // })
-    // this.setState({
-    //   permissions: newPerm,
-    // })
+    const {permissions} = this.state
+    const newPerm = {...permissions}
+    const name = resourceName.toLowerCase()
+    Object.keys(newPerm[name]).map(key => {
+      newPerm[name][key].permissions[permission] = !value
+    })
+    this.setState({
+      permissions: newPerm,
+    })
   }
 
-  handleTelegrafToggle = (id, permission) => {
+  handleIndividualToggle = (resourceName, id, permission) => {
     const {permissions} = this.state
-    const {
-      permissions: {telegrafs},
-    } = this.state
 
-    const permValue = telegrafs[id].permissions[permission]
+    const permValue = permissions[resourceName][id].permissions[permission]
 
     const newPerm = {...permissions}
-    newPerm.telegrafs[id].permissions[permission] = !permValue
+    newPerm[resourceName][id].permissions[permission] = !permValue
 
-    console.log(newPerm)
     this.setState({
       permissions: newPerm,
     })
@@ -128,8 +137,18 @@ const mstp = (state: AppState) => {
     }
   })
 
-  console.log('telegraf permissions mstp: ', telegrafPermissions)
-  return {telegrafPermissions}
+  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
+  const bucketPermissions = {}
+  buckets.forEach(b => {
+    bucketPermissions[b.id] = {
+      id: b.id,
+      orgID: b.orgID,
+      name: b.name,
+      permissions: {read: false, write: false},
+    }
+  })
+
+  return {telegrafPermissions, bucketPermissions}
 }
 
 export default connect<StateProps>(mstp, null)(ResourceAccordion)

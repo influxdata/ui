@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
 import ReactDatePicker from 'react-datepicker'
-import moment from 'moment'
 import {connect} from 'react-redux'
 
 // Components
@@ -21,6 +20,7 @@ import {getTimeZone} from 'src/dashboards/selectors'
 // Constants
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {isValid} from 'src/utils/datetime/validator'
+import {isISODate} from 'src/shared/utils/dateTimeUtils'
 
 interface Props {
   label: string
@@ -43,7 +43,7 @@ const isValidDatepickerFormat = (d: string): boolean => {
     isValid(d, 'YYYY-MM-DD HH:mm:ss') ||
     isValid(d, 'YYYY-MM-DD HH:mm:ss.sss') ||
     isValid(d, 'YYYY-MM-DD') ||
-    moment(d).toISOString() === d
+    isISODate(d)
   )
 }
 

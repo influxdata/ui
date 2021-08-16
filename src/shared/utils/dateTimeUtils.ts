@@ -42,3 +42,12 @@ export function addDurationToDate(
     }
   }
 }
+
+// checks whether the passed date is ISO format
+export function isISODate(dateString: string): boolean {
+  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(dateString)) {
+    return false
+  }
+  const date = new Date(dateString)
+  return date.toISOString() === dateString
+}

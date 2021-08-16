@@ -14,7 +14,7 @@ const dateTimeOptions: any = {
 
 const timeOptions: any = {
   hourCycle: 'h23',
-  hour: 'numeric',
+  hour: '2-digit',
   minute: 'numeric',
   second: 'numeric',
 }

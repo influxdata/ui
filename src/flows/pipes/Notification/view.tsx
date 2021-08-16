@@ -12,8 +12,10 @@ import {
   ComponentSize,
   Tabs,
   Orientation,
+  Panel,
   TextArea,
   AlignItems,
+  JustifyContent,
 } from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 
@@ -261,8 +263,6 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.message,
   ])
 
-  const persist = <ExportTaskButton generate={generateTask} />
-
   if (
     loading === RemoteDataState.NotStarted ||
     loading === RemoteDataState.Loading
@@ -303,8 +303,9 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
   }
 
   return (
-    <Context persistentControls={persist}>
+    <Context>
       <div className="notification">
+        <Threshold />
         <FlexBox margin={ComponentSize.Medium}>
           <FlexBox.Child grow={1} shrink={1}>
             <Form.Element
@@ -348,7 +349,6 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
-        <Threshold />
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
           <FlexBox.Child grow={0} shrink={0}>
             <Tabs orientation={Orientation.Vertical}>{avail}</Tabs>
@@ -369,6 +369,9 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
+        <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
+          <ExportTaskButton generate={generateTask} />
+        </Panel.Footer>
       </div>
       {warningMessage}
     </Context>

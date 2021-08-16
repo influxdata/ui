@@ -5,7 +5,7 @@ import React, {Component} from 'react'
 import {Accordion} from '@influxdata/clockface'
 import {ResourceAccordionHeader} from './ResourceAccordionHeader'
 import GetResources from 'src/resources/components/GetResources'
-import {ResourceAccordionBody} from './TelegrafAccordion'
+import {ResourceAccordionBody} from './ResourceAccordionBody'
 
 // Types
 import {AppState, Telegraf, ResourceType} from 'src/types'

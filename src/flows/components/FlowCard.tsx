@@ -5,7 +5,7 @@ import {useDispatch} from 'react-redux'
 // Components
 import {ResourceCard} from '@influxdata/clockface'
 import FlowContextMenu from 'src/flows/components/FlowContextMenu'
-import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import {FlowListContext} from 'src/flows/context/flow.list'
 
 // Utils
@@ -55,7 +55,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
       testID={`flow-card--${flow.name}`}
     >
       <ResourceCard.EditableName
-        name={flow.name || `Untitled ${PROJECT_NAME}`}
+        name={flow.name || DEFAULT_PROJECT_NAME}
         onClick={handleClick}
         onUpdate={handleRenameNotebook}
         buttonTestID="flow-card--name-button"

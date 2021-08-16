@@ -14,7 +14,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {default as _asResource} from 'src/flows/context/resource.hook'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
-import {PROJECT_NAME} from 'src/flows'
+import {DEFAULT_PROJECT_NAME, PROJECT_NAME} from 'src/flows'
 import {TEMPLATES} from 'src/flows/templates'
 import {
   pooledUpdateAPI,
@@ -41,7 +41,7 @@ export interface FlowListContextType extends FlowList {
 }
 
 export const EMPTY_NOTEBOOK: FlowState = {
-  name: `Untitled ${PROJECT_NAME}`,
+  name: DEFAULT_PROJECT_NAME,
   range: DEFAULT_TIME_RANGE,
   refresh: AUTOREFRESH_DEFAULT,
   data: {
@@ -171,7 +171,7 @@ export const FlowListProvider: FC = ({children}) => {
     if (!flow) {
       _flow = hydrate({
         ...TEMPLATES['default'].init(),
-        name: `Untitled ${PROJECT_NAME}`,
+        name: DEFAULT_PROJECT_NAME,
       })
     } else {
       _flow = {

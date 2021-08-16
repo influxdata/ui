@@ -2,7 +2,7 @@ import React, {FC, useContext, useCallback} from 'react'
 import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
-import {PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
+import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {Resource} from 'src/types'
 
 export interface FlowContextType {
@@ -15,7 +15,7 @@ export interface FlowContextType {
 
 export const DEFAULT_CONTEXT: FlowContextType = {
   id: null,
-  name: `Untitled ${PROJECT_NAME}`,
+  name: DEFAULT_PROJECT_NAME,
   flow: null,
   add: () => '',
   update: () => {},

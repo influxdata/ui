@@ -44,7 +44,7 @@ interface PanelQueries {
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   query: (text: string) => Promise<FluxResult>
-  // basic: (text: string) => any
+  basic: (text: string) => any
   simplify: (text: string) => string
   queryAll: () => void
   getPanelQueries: (id: string, withSideEffects?: boolean) => PanelQueries
@@ -55,7 +55,7 @@ export interface FlowQueryContextType {
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   query: (_: string) => Promise.resolve({} as FluxResult),
-  // basic: (_: string) => {},
+  basic: (_: string) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
   getPanelQueries: (_, _a) => ({source: '', visual: ''}),
@@ -87,19 +87,9 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
-  let queryAPI = null
-  const {query: globalQueryAPI} = useContext(GlobalQueryContext)
-  const {query: localQueryAPI} = useContext(QueryContext)
-
-  if (isFlagEnabled('Subir')) {
-    console.log('using global query api')
-    queryAPI = globalQueryAPI
-  } else {
-    console.log('NOT using global query api')
-    queryAPI = localQueryAPI
-  }
+  const {getQuery} = useContext(GlobalQueryContext)
+  const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const [loading, setLoading] = useState({})
-
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
   const variables = useSelector((state: AppState) => getVariables(state))
@@ -254,12 +244,16 @@ export const FlowQueryProvider: FC = ({children}) => {
   const query = (text: string): Promise<FluxResult> => {
     event('runQuery', {context: 'flows'})
 
-    return queryAPI(text, vars)
+    return isFlagEnabled('Subir')
+      ? (getQuery(text).run(vars) as Promise<FluxResult>)
+      : queryAPI(text, vars)
   }
 
-  // const basic = (text: string): Promise<FluxResult> => {
-  //   return basicAPI(text, vars)
-  // }
+  const basic = (text: string): Promise<FluxResult> => {
+    return isFlagEnabled('Subir')
+      ? (getQuery(text).run(vars, true) as Promise<FluxResult>)
+      : basicAPI(text, vars)
+  }
 
   const forceUpdate = (id, data) => {
     try {
@@ -344,7 +338,9 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   const simple = (text: string) => {
-    return simplify(text, vars)
+    return isFlagEnabled('Subir')
+      ? getQuery(text).simplify(vars)
+      : simplify(text, vars)
   }
 
   if (!flow) {
@@ -364,7 +360,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     <FlowQueryContext.Provider
       value={{
         query,
-        // basic,
+        basic,
         simplify: simple,
         generateMap,
         queryAll,

@@ -7,6 +7,7 @@ import React, {
   useContext,
   useState,
 } from 'react'
+import {DateTime} from 'luxon'
 import moment from 'moment'
 
 // Components
@@ -89,8 +90,7 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
       }
 
       props.onChange(
-        moment(event.target.value, timeFormat)
-          .toDate()
+        DateTime.fromFormat(event.target.value, timeFormat)
           .toISOString()
       )
     }

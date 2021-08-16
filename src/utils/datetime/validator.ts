@@ -92,18 +92,25 @@ const strictCheck = (dateString: string, format: string): boolean => {
 
 export const isValid = (
   formattedDateTimeString: string,
-  format: string,
-  strict: boolean = false
+  format: string
 ): boolean => {
   const dateFnsFormatString = getLuxonFormatString(format)
 
-  if (strict) {
-    return (
-      strictCheck(formattedDateTimeString, format) &&
-      DateTime.fromFormat(formattedDateTimeString, dateFnsFormatString).isValid
-    )
-  }
-
   return DateTime.fromFormat(formattedDateTimeString, dateFnsFormatString)
     .isValid
+}
+
+// strict check means it strictly enforces the number of digits in the format.
+// example, without strictness: HH:mm validates 9:00 and 09:00
+// with strictness: HH:mm returns true only for 09:00 and false for 9:00,
+export const isValidStrictly = (
+  formattedDateTimeString: string,
+  format: string
+): boolean => {
+  const dateFnsFormatString = getLuxonFormatString(format)
+
+  return (
+    strictCheck(formattedDateTimeString, format) &&
+    DateTime.fromFormat(formattedDateTimeString, dateFnsFormatString).isValid
+  )
 }

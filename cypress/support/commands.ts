@@ -840,11 +840,9 @@ export const createTaskFromEmpty = (
   interval: string = '24h',
   offset: string = '20m'
 ) => {
-  cy.getByTestID('empty-tasks-list').within(() => {
-    cy.getByTestID('add-resource-dropdown--button').click()
-  })
-
-  cy.getByTestID('add-resource-dropdown--new').click()
+  cy.getByTestID('create-task--button')
+    .first()
+    .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').within(() => {

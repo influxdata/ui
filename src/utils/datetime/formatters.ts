@@ -7,7 +7,7 @@ const dateTimeOptions: any = {
   day: '2-digit',
   month: '2-digit',
   year: 'numeric',
-  hour: 'numeric',
+  hour: '2-digit',
   minute: 'numeric',
   second: 'numeric',
 }

@@ -1,7 +1,7 @@
 import {DateTime} from 'luxon'
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 
-const formatterToDateFnsMap = {
+const formatToLuxonMap = {
   [DEFAULT_TIME_FORMAT]: {
     format: 'yyyy-MM-dd HH:mm:ss',
     regex: /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/,
@@ -78,23 +78,23 @@ const formatterToDateFnsMap = {
   },
 }
 
-const getDateFnsFormatString = (format: string): string => {
-  const dateFnsFormatString = formatterToDateFnsMap[format].format
-    ? formatterToDateFnsMap[format].format
-    : formatterToDateFnsMap[DEFAULT_TIME_FORMAT].format
+export const getLuxonFormatString = (format: string): string => {
+  const luxonFormatString = formatToLuxonMap[format].format
+    ? formatToLuxonMap[format].format
+    : formatToLuxonMap[DEFAULT_TIME_FORMAT].format
 
-  return dateFnsFormatString
+  return luxonFormatString
 }
 
 const strictCheck = (dateString: string, format: string): boolean => {
-  return formatterToDateFnsMap[format].regex.test(dateString)
+  return formatToLuxonMap[format].regex.test(dateString)
 }
 
 export const isValid = (
   formattedDateTimeString: string,
   format: string
 ): boolean => {
-  const dateFnsFormatString = getDateFnsFormatString(format)
+  const dateFnsFormatString = getLuxonFormatString(format)
 
   return (
     strictCheck(formattedDateTimeString, format) &&

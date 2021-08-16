@@ -8,7 +8,6 @@ import React, {
   useState,
 } from 'react'
 import {DateTime} from 'luxon'
-import moment from 'moment'
 
 // Components
 import {ComponentStatus, Form, Input} from '@influxdata/clockface'
@@ -17,7 +16,7 @@ import {ComponentStatus, Form, Input} from '@influxdata/clockface'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Utils
-import {isValid} from 'src/utils/datetime/validator'
+import {getLuxonFormatString, isValid} from 'src/utils/datetime/validator'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 interface Props {
@@ -81,17 +80,20 @@ export const AnnotationTimeInput: FC<Props> = (props: Props) => {
     if (isValidTimeFormat(event.target.value)) {
       if (timeZone === 'UTC') {
         props.onChange(
-          moment
-            .utc(event.target.value, timeFormat)
-            .toDate()
-            .toISOString()
+          DateTime.fromFormat(
+            event.target.value,
+            getLuxonFormatString(timeFormat),
+            {zone: 'UTC'}
+          ).toISO()
         )
         return
       }
 
       props.onChange(
-        DateTime.fromFormat(event.target.value, timeFormat)
-          .toISOString()
+        DateTime.fromFormat(
+          event.target.value,
+          getLuxonFormatString(timeFormat)
+        ).toISO()
       )
     }
   }

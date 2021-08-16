@@ -104,7 +104,6 @@ export const isValid = (
     )
   }
 
-  return (
-    DateTime.fromFormat(formattedDateTimeString, dateFnsFormatString).isValid
-  )
+  return DateTime.fromFormat(formattedDateTimeString, dateFnsFormatString)
+    .isValid
 }

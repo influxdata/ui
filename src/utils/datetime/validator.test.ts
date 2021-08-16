@@ -100,7 +100,9 @@ describe('the datetime validator', () => {
   })
   it('should be strict on date formats', function() {
     const strict = true
-    expect(isValid('1999-02-09 23:00:0', 'YYYY-MM-DD HH:mm:ss', strict)).toBeFalsy()
+    expect(
+      isValid('1999-02-09 23:00:0', 'YYYY-MM-DD HH:mm:ss', strict)
+    ).toBeFalsy()
     expect(
       isValid('1999-02-09 12:00:00 PM -1', 'YYYY-MM-DD hh:mm:ss a ZZ', strict)
     ).toBeFalsy()
@@ -116,8 +118,12 @@ describe('the datetime validator', () => {
     expect(
       isValid('02/09/1999 11:00:00.000 A', 'MM/DD/YYYY hh:mm:ss.sss a', strict)
     ).toBeFalsy()
-    expect(isValid('1999/02/09 23:00:0', 'YYYY/MM/DD HH:mm:ss', strict)).toBeFalsy()
-    expect(isValid('1999/02/09 11:00', 'YYYY/MM/DD hh:mm:ss a', strict)).toBeFalsy()
+    expect(
+      isValid('1999/02/09 23:00:0', 'YYYY/MM/DD HH:mm:ss', strict)
+    ).toBeFalsy()
+    expect(
+      isValid('1999/02/09 11:00', 'YYYY/MM/DD hh:mm:ss a', strict)
+    ).toBeFalsy()
     expect(isValid('23:0', 'HH:mm', strict)).toBeFalsy()
     expect(isValid('11:00 A', 'hh:mm a', strict)).toBeFalsy()
     expect(isValid('23:00:0', 'HH:mm:ss', strict)).toBeFalsy()
@@ -135,13 +141,15 @@ describe('the datetime validator', () => {
     expect(
       isValid(
         'Tuesday, February 9, 1999 23:00:0',
-        'dddd, MMMM D, YYYY HH:mm:ss', strict
+        'dddd, MMMM D, YYYY HH:mm:ss',
+        strict
       )
     ).toBeFalsy()
     expect(
       isValid(
         'Tuesday, February 9, 1999 11:00:00:0',
-        'dddd, MMMM D, YYYY hh:mm:ss a', strict
+        'dddd, MMMM D, YYYY hh:mm:ss a',
+        strict
       )
     ).toBeFalsy()
   })

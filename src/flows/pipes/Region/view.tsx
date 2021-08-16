@@ -95,10 +95,6 @@ const Source: FC<PipeProp> = ({Context}) => {
           return acc
         }
 
-        if (curr.value === window.location.origin) {
-          return acc
-        }
-
         if (curr.value === data.region) {
           acc.selected = curr
         }

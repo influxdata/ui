@@ -27,7 +27,7 @@ const PresetFlows: FC = () => {
           widthSM={Columns.Eight}
           widthMD={Columns.Ten}
         >
-          <div className="flows-index--presetContainer">
+          <div id="presetContainer" className="flows-index--presetContainer">
             <h3>Create a Notebook</h3>
             <div className="flows-index--presetList">
               {Object.keys(PresetMap).map((p: string, idx: number) => (

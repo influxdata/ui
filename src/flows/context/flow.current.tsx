@@ -15,7 +15,7 @@ export interface FlowContextType {
 
 export const DEFAULT_CONTEXT: FlowContextType = {
   id: null,
-  name: `Name this ${PROJECT_NAME}`,
+  name: `Untitled ${PROJECT_NAME}`,
   flow: null,
   add: () => '',
   update: () => {},

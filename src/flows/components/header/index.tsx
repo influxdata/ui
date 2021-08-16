@@ -51,7 +51,7 @@ const FlowHeader: FC = () => {
         <RenamablePageTitle
           onRename={handleRename}
           name={flow.name}
-          placeholder={`Name this ${PROJECT_NAME}`}
+          placeholder={`Untitled ${PROJECT_NAME}`}
           maxLength={50}
         />
       </Page.Header>

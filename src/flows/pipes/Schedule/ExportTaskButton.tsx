@@ -35,7 +35,7 @@ const ExportTaskButton: FC<Props> = ({generate}) => {
 
   return (
     <Button
-      text="Export as Task"
+      text="Export as Alert Task"
       color={ComponentColor.Success}
       type={ButtonType.Submit}
       onClick={onClick}
@@ -43,7 +43,7 @@ const ExportTaskButton: FC<Props> = ({generate}) => {
       testID="task-form-save"
       style={{opacity: 1}}
       icon={IconFont.Export}
-      titleText="Export As Task"
+      titleText="Export As Alert Task"
     />
   )
 }

@@ -198,7 +198,7 @@ export const updateCampaignInfo = (query: string) => {
       if (key.startsWith('utm_')) {
         let param = key.substr(4)
         if (allowedUtmKeys.includes(param)) {
-          // see rudder-sdk-js (#2963)
+          // Rudder element uses 'name' key for campaign name (see rudder-sdk-js/index.js#L2963)
           if (param === 'campaign') {
             param = 'name'
           }

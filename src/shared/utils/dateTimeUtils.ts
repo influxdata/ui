@@ -48,8 +48,7 @@ export function isISODate(dateString: string): boolean {
   try {
     const date = new Date(dateString)
     return date.toISOString() === dateString
-  }
-  catch (error) {
+  } catch (error) {
     return false
   }
 }

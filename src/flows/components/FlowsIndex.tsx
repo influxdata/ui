@@ -20,6 +20,8 @@ import {Flow} from 'src/types/flows'
 import {ResourceType} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
+import 'src/flows/components/controlSearchBar.scss'
+
 const FlowsIndex = () => {
   const {flows} = useContext(FlowListContext)
   const [search, setSearch] = useState('')
@@ -64,27 +66,28 @@ const FlowsIndex = () => {
       <PageHeader fullWidth={false}>
         <Page.Title title={PROJECT_NAME_PLURAL} />
       </PageHeader>
-      <Page.ControlBar fullWidth={false}>
-        <Page.ControlBarLeft>
-          <SearchWidget
-            placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
-            onSearch={setSearch}
-            searchTerm={search}
-          />
-          <ResourceSortDropdown
-            resourceType={ResourceType.Flows}
-            sortDirection={sortOptions.sortDirection}
-            sortKey={sortOptions.sortKey}
-            sortType={sortOptions.sortType}
-            onSelect={setSort}
-          />
-        </Page.ControlBarLeft>
-        <Page.ControlBarRight>
-          {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
-        </Page.ControlBarRight>
-      </Page.ControlBar>
       <Page.Contents scrollable={true}>
         {isFlagEnabled('presetFlows') && <PresetFlows />}
+        <Page.ControlBar fullWidth={false}>
+          <Page.ControlBarLeft>
+            <SearchWidget
+              placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
+              onSearch={setSearch}
+              searchTerm={search}
+            />
+            <ResourceSortDropdown
+              resourceType={ResourceType.Flows}
+              sortDirection={sortOptions.sortDirection}
+              sortKey={sortOptions.sortKey}
+              sortType={sortOptions.sortType}
+              onSelect={setSort}
+            />
+          </Page.ControlBarLeft>
+          <Page.ControlBarRight>
+            {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
+          </Page.ControlBarRight>
+        </Page.ControlBar>
+
         <FlowCards flows={flowList} search={search} />
       </Page.Contents>
     </Page>

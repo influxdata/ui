@@ -55,7 +55,7 @@ const isDST = () => {
 describe('the DateTime formatter', () => {
   let timeZone = 'PST'
   let hour = '12'
-  const hourUTC = '8'
+  const hourUTC = '08'
   let hour24 = '12'
   const hourUTC24 = '20'
   if (isDST()) {

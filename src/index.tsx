@@ -23,6 +23,9 @@ import {
   updateCampaignInfo,
 } from 'src/cloud/utils/reporting'
 
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
 // Actions
 import {disablePresentationMode} from 'src/shared/actions/app'
 
@@ -42,7 +45,9 @@ updateReportingContext({
   session: cookieSession ? cookieSession[2].slice(5) : '',
 })
 
-updateCampaignInfo(window.location.search)
+if (CLOUD) {
+  updateCampaignInfo(window.location.search)
+}
 
 const {dispatch} = getStore()
 

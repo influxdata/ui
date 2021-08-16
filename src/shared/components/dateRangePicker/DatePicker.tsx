@@ -38,26 +38,28 @@ interface State {
 }
 
 const isValidDatepickerFormat = (d: string): boolean => {
+  const strict = true
   return (
-    isValid(d, 'YYYY-MM-DD HH:mm') ||
-    isValid(d, 'YYYY-MM-DD HH:mm:ss') ||
-    isValid(d, 'YYYY-MM-DD HH:mm:ss.sss') ||
-    isValid(d, 'YYYY-MM-DD') ||
+    isValid(d, 'YYYY-MM-DD HH:mm', strict) ||
+    isValid(d, 'YYYY-MM-DD HH:mm:ss', strict) ||
+    isValid(d, 'YYYY-MM-DD HH:mm:ss.sss', strict) ||
+    isValid(d, 'YYYY-MM-DD', strict) ||
     isISODate(d)
   )
 }
 
 const getFormat = (d: string): string => {
-  if (isValid(d, 'YYYY-MM-DD')) {
+  const strict = true
+  if (isValid(d, 'YYYY-MM-DD', strict)) {
     return 'YYYY-MM-DD'
   }
-  if (isValid(d, 'YYYY-MM-DD HH:mm')) {
+  if (isValid(d, 'YYYY-MM-DD HH:mm', strict)) {
     return 'YYYY-MM-DD HH:mm'
   }
-  if (isValid(d, 'YYYY-MM-DD HH:mm:ss')) {
+  if (isValid(d, 'YYYY-MM-DD HH:mm:ss', strict)) {
     return 'YYYY-MM-DD HH:mm:ss'
   }
-  if (isValid(d, 'YYYY-MM-DD HH:mm:ss.sss')) {
+  if (isValid(d, 'YYYY-MM-DD HH:mm:ss.sss', strict)) {
     return 'YYYY-MM-DD HH:mm:ss.sss'
   }
   return null

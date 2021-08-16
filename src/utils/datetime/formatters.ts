@@ -7,14 +7,14 @@ const dateTimeOptions: any = {
   day: '2-digit',
   month: '2-digit',
   year: 'numeric',
-  hour: '2-digit',
+  hour: 'numeric',
   minute: 'numeric',
   second: 'numeric',
 }
 
 const timeOptions: any = {
   hourCycle: 'h23',
-  hour: '2-digit',
+  hour: 'numeric',
   minute: 'numeric',
   second: 'numeric',
 }

@@ -17,6 +17,7 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Utils
 import {isValid} from 'src/utils/datetime/validator'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
 interface Props {
   onChange: (newTime: string) => void
@@ -36,15 +37,16 @@ export const REQUIRED_ERROR = 'Required'
 export const AnnotationTimeInput: FC<Props> = (props: Props) => {
   const {timeZone} = useContext(AppSettingContext)
 
-  const momentDateWithTimezone = moment(props.time)
+  const dateWithTimezone = new Date(props.time)
   const timeFormat = props.timeFormat
 
   if (timeZone === 'UTC') {
-    momentDateWithTimezone.utc()
+    dateWithTimezone.getTime()
   }
 
+  const formatter = createDateTimeFormatter(timeFormat, timeZone)
   const [timeValue, setTimeValue] = useState<string>(
-    momentDateWithTimezone.format(timeFormat)
+    formatter.format(dateWithTimezone)
   )
 
   const isValidTimeFormat = (inputValue: string): boolean => {

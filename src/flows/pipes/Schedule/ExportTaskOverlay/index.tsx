@@ -40,7 +40,7 @@ const ExportTaskOverlay: FC = () => {
     <Overlay visible={true}>
       <Overlay.Container maxWidth={700}>
         <Overlay.Header
-          title="Export As Alert Task"
+          title="Export As Task"
           onDismiss={closer}
           testID="export-as-overlay--header"
         />

@@ -148,7 +148,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
 
-  const persist = <ExportTaskButton generate={generateTask} />
+  const persist = <ExportTaskButton generate={generateTask} alert={false} />
 
   return (
     <Context persistentControls={persist}>

@@ -44,12 +44,12 @@ export function addDurationToDate(
 }
 
 // checks whether the passed date is ISO format
-// see: https://stackoverflow.com/a/52869830
 export function isISODate(dateString: string): boolean {
-  // this regex tests the input string for the ISO format, YYYY-MM-DDTHH:mm:ss.sssZ
-  if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(dateString)) {
+  try {
+    const date = new Date(dateString)
+    return date.toISOString() === dateString
+  }
+  catch (error) {
     return false
   }
-  const date = new Date(dateString)
-  return date.toISOString() === dateString
 }

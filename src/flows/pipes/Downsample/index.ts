@@ -17,46 +17,29 @@ export default register => {
         fillValues: false,
       },
     },
-    generateFlux: (pipe, create, append) => {
-      if (!pipe.aggregateWindow.period || !pipe.functions.length) {
-        append()
-        return
+    source: (data, query) => {
+      if (!data.aggregateWindow.period || !data.functions.length) {
+        return query
       }
 
-      const _build = (config, fn?): string => {
-        if (config.functions) {
-          return config.functions
-            .map(fnc => {
-              const conf = {...config}
-              delete conf.functions
-              return _build(conf, fnc)
-            })
-            .filter(q => q.length)
-            .join('\n\n')
-        }
+      return (
+        query +
+        data.functions
+          .map(fn => {
+            const spec = fn && FUNCTIONS.find(f => f.name === fn.name)
 
-        const fnSpec = fn && FUNCTIONS.find(spec => spec.name === fn.name)
+            if (!spec) {
+              return ''
+            }
 
-        if (!fnSpec) {
-          return ''
-        }
-
-        const period = config.aggregateWindow.period
-        const flux = fnSpec.flux(
-          period === 'auto' || !period ? 'v.windowPeriod' : period,
-          config.aggregateWindow.fillValues
-        )
-
-        return `__PREVIOUS_RESULT__ ${flux} |> yield(name: "${fn.name}")`
-      }
-
-      const query = _build(pipe)
-
-      if (!query) {
-        return
-      }
-
-      create(query)
+            const period = data.aggregateWindow.period
+            return spec.flux(
+              period === 'auto' || !period ? 'v.windowPeriod' : period,
+              data.aggregateWindow.fillValues
+            )
+          })
+          .join('')
+      )
     },
   })
 }

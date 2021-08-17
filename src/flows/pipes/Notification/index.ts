@@ -22,8 +22,8 @@ export default register => {
         url: 'https://hooks.slack.com/services/X/X/X',
       },
     },
-    generateFlux: (_pipe, _create, append) => {
-      append('__CURRENT_RESULT__')
+    visual: (_data, query) => {
+      return query
     },
   })
 }

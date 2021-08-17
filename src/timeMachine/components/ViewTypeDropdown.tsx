@@ -15,7 +15,6 @@ import {AppState} from 'src/types'
 import {setType} from 'src/timeMachine/actions'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 export const TimeMachineViewTypeDropdown: FC<{}> = () => {

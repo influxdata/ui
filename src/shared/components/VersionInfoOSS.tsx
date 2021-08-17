@@ -17,10 +17,8 @@ const VersionInfoOSS: FC = () => {
   const versionInfo = useSelector(getVersionInfo)
 
   useEffect(() => {
-    if (!versionInfo.version || !versionInfo.commit) {
-      dispatch(fetchVersionInfo())
-    }
-  })
+    dispatch(fetchVersionInfo())
+  }, [dispatch])
 
   return (
     <>

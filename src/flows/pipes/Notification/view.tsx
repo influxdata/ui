@@ -370,7 +370,10 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
           </FlexBox.Child>
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
-          <ExportTaskButton generate={generateTask} alert={true} />
+          <ExportTaskButton
+            generate={generateTask}
+            text="Export as Alert Task"
+          />
         </Panel.Footer>
       </div>
       {warningMessage}

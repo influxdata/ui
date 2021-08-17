@@ -5,12 +5,19 @@ export default register =>
   register({
     type: 'task',
     init: () => ({
-      name: 'New Scheduled Query',
       spec: {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,
         refresh: AUTOREFRESH_DEFAULT,
         pipes: [
+          {
+            mode: 'preview',
+            text:
+              "#### Creating tasks\n\nBy adding a `Schedule` panel to your notebook, you can run queries at a regular interval.\n\nUse the `Preview` button above to test your query as you build it and the `Export as Task` button when you are ready to create your task.\n\nWe've started you off with a blank Flux editor. Click on the purple plus button to find more data sources and transformations.",
+            type: 'markdown',
+            title: 'Helpful Tips',
+            visible: true,
+          },
           {
             activeQuery: 0,
             queries: [

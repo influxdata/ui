@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useRef} from 'react'
 import {DapperScrollbars, Sort} from '@influxdata/clockface'
 
 // Components
@@ -23,6 +23,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import 'src/flows/components/controlSearchBar.scss'
 
 const FlowsIndex = () => {
+  const fadingBoxRef = useRef()
   const [showButtonMode, setShowButtonMode] = useState(false)
 
   const fadeOutOnScroll = element => {
@@ -32,18 +33,13 @@ const FlowsIndex = () => {
     }
 
     const distanceToTop =
-      window.pageYOffset + element.getBoundingClientRect().top
+      window.pageYOffset +
+      element.getBoundingClientRect().top +
+      element.getBoundingClientRect().height
+
     const elementHeight = element.offsetHeight
     const scrollTop = document.documentElement.scrollTop
 
-    console.log(
-      'distance:',
-      distanceToTop,
-      'height: ',
-      elementHeight,
-      'scrollTop',
-      scrollTop
-    )
     let opacity = 1
 
     if (scrollTop > distanceToTop) {
@@ -52,24 +48,20 @@ const FlowsIndex = () => {
 
     if (opacity >= 0) {
       element.style.opacity = opacity
-    } else {
-      document
-        .getElementsByClassName('withButtonHeader')[0]
-        .classList.add('marginHeader')
     }
 
-    if (distanceToTop < -45) {
+    if (distanceToTop < header.getBoundingClientRect().height) {
       setShowButtonMode(true)
+      element.style.opacity = 0
     } else {
       if (showButtonMode) {
-        console.log('here')
         setShowButtonMode(false)
       }
     }
   }
 
   function scrollHandler() {
-    const elem = document.getElementById('fadebox')
+    const elem = fadingBoxRef.current
     if (elem) {
       fadeOutOnScroll(elem)
     }
@@ -117,7 +109,7 @@ const FlowsIndex = () => {
     >
       <PageHeader
         fullWidth={false}
-        className={`${showButtonMode && 'withButtonHeader'}`}
+        className={`${showButtonMode && 'withButtonHeader marginHeader'}`}
       >
         <Page.Title title={PROJECT_NAME_PLURAL} />
         {showButtonMode && (
@@ -148,7 +140,7 @@ const FlowsIndex = () => {
         )}
       </PageHeader>
       <DapperScrollbars onScroll={scrollHandler} id="scrollFlows">
-        <Page.Contents fullWidth={false} id="fadebox">
+        <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
           {isFlagEnabled('presetFlows') && <PresetFlows buttonMode={false} />}
           <Page.ControlBar fullWidth={false}>
             <Page.ControlBarLeft>

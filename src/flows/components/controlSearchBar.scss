@@ -8,6 +8,7 @@
   -moz-animation: fadeIn 0.5s;
   -o-animation: fadeIn 0.5s;
   -ms-animation: fadeIn 0.5s;
+  display: block;
 }
 @keyframes fadeIn {
   0% {
@@ -19,13 +20,11 @@
 }
 
 .withButtonHeader {
+  flex: 1;
+  height: auto;
   .cf-page-header--fixed {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
-}
-
-.marginHeader {
-  margin: 40px 0px;
 }

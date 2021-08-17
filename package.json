@@ -163,7 +163,7 @@
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.37",
-    "@influxdata/clockface": "^2.11.0",
+    "@influxdata/clockface": "^2.11.4",
     "@influxdata/flux": "^0.5.1",
     "@influxdata/flux-lsp-browser": "^0.5.53",
     "@influxdata/giraffe": "^2.18.0",

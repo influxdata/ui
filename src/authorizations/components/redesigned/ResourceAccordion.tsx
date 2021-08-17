@@ -24,10 +24,10 @@ export type SublevelPermissions = {
 }
 
 interface OwnProps {
-  resources: string[] // ["te;egrafas", "buckets"]...
+  resources: string[]
 }
 interface State {
-  permissions: any // {buckets: [], telegrafs: { 23424: {ird: orgID: name: permissions: {read: boolean, write: boolean}}}}
+  permissions: any
 }
 interface StateProps {
   telegrafPermissions: any

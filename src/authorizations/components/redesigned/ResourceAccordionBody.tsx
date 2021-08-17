@@ -13,6 +13,7 @@ import {
   Toggle,
   InputToggleType,
 } from '@influxdata/clockface'
+import {PermissionType} from 'src/types/tokens'
 
 interface Props {
   resourceName: string
@@ -25,10 +26,10 @@ export const ResourceAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title} = props
 
   const handleReadToggle = id => {
-    onToggle(resourceName, id, 'read') // TODO: Palak turn into enums
+    onToggle(resourceName, id, PermissionType.Read)
   }
   const handleWriteToggle = id => {
-    onToggle(resourceName, id, 'write')
+    onToggle(resourceName, id, PermissionType.Write)
   }
 
   const accordionBody = telegraf => (

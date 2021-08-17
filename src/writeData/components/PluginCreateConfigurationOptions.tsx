@@ -3,15 +3,7 @@ import React, {ChangeEvent, FC} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {
-  Button,
-  ComponentColor,
-  ComponentSize,
-  Form,
-  Input,
-  InputType,
-  Overlay,
-} from '@influxdata/clockface'
+import {ComponentSize, Form, Input, InputType} from '@influxdata/clockface'
 import BucketDropdown from 'src/dataLoaders/components/BucketsDropdown'
 
 // Actions
@@ -39,8 +31,6 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
     bucket,
     buckets,
     currentStepIndex,
-    onExit,
-    onIncrementCurrentStepIndex,
     onSetBucketInfo,
     onSetSubstepIndex,
     onSetTelegrafConfigName,
@@ -50,7 +40,7 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
   let selectedBucket = buckets.find(b => b.name === bucket)
 
   if (!selectedBucket) {
-    selectedBucket = buckets[0]
+    selectedBucket = (buckets && buckets[0]) ?? ({} as Bucket)
     const {orgID, id, name} = selectedBucket
     onSetBucketInfo(orgID, name, id)
   }
@@ -94,22 +84,6 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
           onSelectBucket={handleSelectBucket}
         />
       </Form.Element>
-      <Overlay.Footer>
-        <Button
-          color={ComponentColor.Default}
-          onClick={onExit}
-          tabIndex={1}
-          testID="plugin-create-configuration-cancel"
-          text="Cancel"
-        />
-        <Button
-          color={ComponentColor.Primary}
-          onClick={onIncrementCurrentStepIndex}
-          tabIndex={0}
-          testID="plugin-create-configuration-continue-configuring"
-          text="Continue Configuring"
-        />
-      </Overlay.Footer>
     </>
   )
 }

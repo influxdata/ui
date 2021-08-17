@@ -15,7 +15,6 @@ import {
   IconFont,
   Input,
   InputType,
-  Overlay,
 } from '@influxdata/clockface'
 import TelegrafConfig from 'src/telegrafs/components/TelegrafConfig'
 
@@ -29,7 +28,6 @@ import {
 
 // Types
 import {AppState} from 'src/types'
-import {BundleName} from 'src/types/dataLoaders'
 import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
 
 // Selectors
@@ -46,10 +44,6 @@ type Props = PluginCreateConfigurationStepProps & ReduxProps
 
 const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   const {
-    onAddPluginBundle,
-    onDecrementCurrentStepIndex,
-    onIncrementCurrentStepIndex,
-    onSaveTelegrafConfig,
     onSetTelegrafConfigName,
     onSetTelegrafConfigDescription,
     telegrafConfigDescription,
@@ -79,11 +73,6 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
 
   const handleChangeConfig = () => {}
 
-  const handleSaveAndTest = () => {
-    onAddPluginBundle(BundleName.System)
-    onSaveTelegrafConfig()
-    onIncrementCurrentStepIndex()
-  }
   return (
     <>
       <Grid>
@@ -152,22 +141,6 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
           </div>
         </Grid.Row>
       </Grid>
-      <Overlay.Footer>
-        <Button
-          color={ComponentColor.Default}
-          onClick={onDecrementCurrentStepIndex}
-          tabIndex={1}
-          testID="plugin-create-configuration-previous"
-          text="Previous"
-        />
-        <Button
-          color={ComponentColor.Primary}
-          onClick={handleSaveAndTest}
-          tabIndex={0}
-          testID="plugin-create-configuration-save-and-test"
-          text="Save and Test"
-        />
-      </Overlay.Footer>
     </>
   )
 }

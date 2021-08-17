@@ -5,6 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
+import {PluginCreateConfigurationFooter} from 'src/writeData/components/PluginCreateConfigurationFooter'
 
 // Types
 import {AppState} from 'src/types'
@@ -37,13 +38,11 @@ const PluginCreateConfigurationStepSwitcher = Loadable({
 
 export interface PluginCreateConfigurationStepProps {
   currentStepIndex: number
-  newBucketName: string
   notify: typeof notifyAction
   onDecrementCurrentStepIndex: () => void
   onExit: () => void
   onIncrementCurrentStepIndex: () => void
   onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
-  setNewBucketName: React.Dispatch<React.SetStateAction<string>>
   substepIndex: number
 }
 
@@ -114,7 +113,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   let overlayBodyClassName = 'data-loading--overlay'
 
   if (currentStepIndex === 0 || currentStepIndex === 1) {
-    overlayBodyClassName += ' plugin-create-configuration'
+    overlayBodyClassName = ''
   }
 
   return (
@@ -124,6 +123,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
         <Overlay.Body className={overlayBodyClassName}>
           <PluginCreateConfigurationStepSwitcher stepProps={stepProps} />
         </Overlay.Body>
+        <PluginCreateConfigurationFooter {...stepProps} />
       </Overlay.Container>
     </Overlay>
   )

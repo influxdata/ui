@@ -501,16 +501,6 @@ export const TelegrafDashboardFailed = (): Notification => ({
   message: `Could not create dashboards for one or more plugins`,
 })
 
-export const importTaskSucceeded = (): Notification => ({
-  ...defaultSuccessNotification,
-  message: `Successfully imported task.`,
-})
-
-export const importTaskFailed = (error: string): Notification => ({
-  ...defaultErrorNotification,
-  message: `Failed to import task: ${error}`,
-})
-
 export const importDashboardSucceeded = (): Notification => ({
   ...defaultSuccessNotification,
   message: `Successfully imported dashboard.`,

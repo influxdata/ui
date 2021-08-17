@@ -19,7 +19,7 @@ import {getTimeZone} from 'src/dashboards/selectors'
 
 // Constants
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
-import {isValid} from 'src/utils/datetime/validator'
+import {isValidStrictly} from 'src/utils/datetime/validator'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
 
 interface Props {
@@ -39,25 +39,25 @@ interface State {
 
 const isValidDatepickerFormat = (d: string): boolean => {
   return (
-    isValid(d, 'YYYY-MM-DD HH:mm') ||
-    isValid(d, 'YYYY-MM-DD HH:mm:ss') ||
-    isValid(d, 'YYYY-MM-DD HH:mm:ss.sss') ||
-    isValid(d, 'YYYY-MM-DD') ||
+    isValidStrictly(d, 'YYYY-MM-DD HH:mm') ||
+    isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss') ||
+    isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss.sss') ||
+    isValidStrictly(d, 'YYYY-MM-DD') ||
     isISODate(d)
   )
 }
 
 const getFormat = (d: string): string => {
-  if (isValid(d, 'YYYY-MM-DD')) {
+  if (isValidStrictly(d, 'YYYY-MM-DD')) {
     return 'YYYY-MM-DD'
   }
-  if (isValid(d, 'YYYY-MM-DD HH:mm')) {
+  if (isValidStrictly(d, 'YYYY-MM-DD HH:mm')) {
     return 'YYYY-MM-DD HH:mm'
   }
-  if (isValid(d, 'YYYY-MM-DD HH:mm:ss')) {
+  if (isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss')) {
     return 'YYYY-MM-DD HH:mm:ss'
   }
-  if (isValid(d, 'YYYY-MM-DD HH:mm:ss.sss')) {
+  if (isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss.sss')) {
     return 'YYYY-MM-DD HH:mm:ss.sss'
   }
   return null

@@ -17,11 +17,11 @@ import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
 import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
-  alert?: boolean
+  text: string
   generate?: () => string
 }
 
-const ExportTaskButton: FC<Props> = ({alert, generate}) => {
+const ExportTaskButton: FC<Props> = ({text, generate}) => {
   const {data, range} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
 
@@ -33,8 +33,6 @@ const ExportTaskButton: FC<Props> = ({alert, generate}) => {
       range,
     })
   }
-
-  const text = `Export as${alert ? ' Alert' : ''} Task`
 
   return (
     <Button

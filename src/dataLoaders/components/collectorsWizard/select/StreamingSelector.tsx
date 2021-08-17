@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent, ChangeEvent, createElement, Suspense} from 'react'
+import React, {PureComponent, ChangeEvent} from 'react'
 import uuid from 'uuid'
 
 // Components
@@ -24,20 +24,20 @@ import {
 import {Bucket, BundleName} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
+import { telegrafPluginsInfo } from 'src/dataLoaders/constants/pluginConfigs'
 
 export interface Props {
   buckets: Bucket[]
   selectedBucketName: string
   pluginBundles: BundleName[]
   telegrafPlugins: TelegrafPlugin[]
-  onTogglePluginBundle: (telegrafPlugin: string, isSelected: boolean) => void
+  onTogglePluginBundle: (bundle: string) => void
   onSelectBucket: (bucket: Bucket) => void
 }
 
 interface State {
   gridSizerUpdateFlag: string
   searchTerm: string
-  recommended: TelegrafPlugin[]
 }
 
 @ErrorHandling
@@ -46,11 +46,9 @@ class StreamingSelector extends PureComponent<Props, State> {
     super(props)
     this.state = {
       gridSizerUpdateFlag: uuid.v4(),
-      searchTerm: '',
-      recommended: [{id: 'system', image: '/51c4fd1ca4.svg', name: 'System'}],
-    }
+      searchTerm: '',    }
   }
-
+  
   public componentDidUpdate(prevProps) {
     const addFirst =
       prevProps.telegrafPlugins.length === 0 &&
@@ -68,7 +66,7 @@ class StreamingSelector extends PureComponent<Props, State> {
 
   public render() {
     const {buckets} = this.props
-    const {searchTerm, recommended} = this.state
+    const {searchTerm} = this.state
 
     return (
       <div className="wizard-step--grid-container">
@@ -96,21 +94,6 @@ class StreamingSelector extends PureComponent<Props, State> {
                 </FormElement>
               </Grid.Column>
             </Grid.Row>
-            <h4 className="wizard-step--sub-title">
-              Recommended for first time users
-            </h4>
-            <SquareGrid cardSize="110px" gutter={ComponentSize.Small}>
-              <WriteDataItem
-                key={recommended[0].id}
-                id={recommended[0].id}
-                name={recommended[0].name}
-                image={recommended[0].image}
-                url={`${recommended[0].id}`}
-                selected={this.isCardChecked(recommended[0].id)}
-                onClick={this.handleToggle}
-                testID={`telegraf-plugins--${recommended[0]}`}
-              />
-            </SquareGrid>
             <h4 className="wizard-step--sub-title">Telegraf Plugin List</h4>
             <SquareGrid cardSize="110px" gutter={ComponentSize.Small}>
               {this.filteredBundles.map(item => (
@@ -144,6 +127,8 @@ class StreamingSelector extends PureComponent<Props, State> {
 
   private get selectedBucketID(): string {
     const {buckets, selectedBucketName} = this.props
+    console.log(buckets)
+    console.log(selectedBucketName)
 
     return buckets.find(b => b.name === selectedBucketName).id
   }
@@ -168,26 +153,23 @@ class StreamingSelector extends PureComponent<Props, State> {
 
   private get filteredBundles(): TelegrafPlugin[] {
     const {searchTerm} = this.state
-    const removeSystem = WRITE_DATA_TELEGRAF_PLUGINS.filter(
-      item => item.name !== 'System'
-    )
 
-    return removeSystem.filter(b =>
+    return WRITE_DATA_TELEGRAF_PLUGINS.filter(b =>
       b.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
   }
 
   private isCardChecked(bundle): boolean {
-    const {pluginBundles} = this.props
+    const {telegrafPlugins} = this.props
 
-    if (pluginBundles.find(b => b === bundle)) {
+    if (telegrafPlugins.find(b => b === bundle)) {
       return true
     }
     return false
   }
 
   private handleToggle = (bundle): void => {
-    this.props.onTogglePluginBundle(bundle.id, this.isCardChecked(bundle.name))
+    this.props.onTogglePluginBundle(bundle)
   }
 
   private handleFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {

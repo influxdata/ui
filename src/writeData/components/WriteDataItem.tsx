@@ -48,7 +48,6 @@ const WriteDataItem: FC<Props> = ({id, name, url, image,selected,onClick, testID
   }
 
   if(onClick){
-    console.log(onClick)
     {return (
       <SquareGrid.Card key={id}>
         <SelectableCard

@@ -69,6 +69,7 @@ export type Action =
   | SetActiveTelegrafPlugin
   | UpdateTelegrafPlugin
   | AddPluginBundle
+  | AddTelegraf2
   | AddTelegrafPlugins
   | RemoveBundlePlugins
   | RemovePluginBundle
@@ -220,9 +221,20 @@ interface AddPluginBundle {
   payload: {bundle: BundleName}
 }
 
+interface AddTelegraf2 {
+  type: 'ADD_TELEGRAF_2'
+  payload: {plugin: string}
+}
+
 export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
   type: 'ADD_PLUGIN_BUNDLE',
   payload: {bundle},
+})
+
+
+export const addTelegraf2 = (plugin: string): AddTelegraf2 => ({
+  type: 'ADD_TELEGRAF_2',
+  payload: {plugin},
 })
 
 interface RemovePluginBundle {
@@ -238,11 +250,22 @@ interface AddTelegrafPlugins {
   type: 'ADD_TELEGRAF_PLUGINS'
   payload: {telegrafPlugins: TelegrafPlugin[]}
 }
+interface AddTelegrafPlugins2 {
+  type: 'ADD_TELEGRAF_PLUGINS2'
+  payload: {telegrafPlugins}
+}
 
 export const addTelegrafPlugins = (
   telegrafPlugins: TelegrafPlugin[]
 ): AddTelegrafPlugins => ({
   type: 'ADD_TELEGRAF_PLUGINS',
+  payload: {telegrafPlugins},
+})
+
+export const addTelegrafPlugins2 = (
+  telegrafPlugins
+): AddTelegrafPlugins2 => ({
+  type: 'ADD_TELEGRAF_PLUGINS2',
   payload: {telegrafPlugins},
 })
 
@@ -310,9 +333,10 @@ export const setToken = (token: string): SetToken => ({
   payload: {token},
 })
 
-export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
+export const addPluginBundleWithPlugins = (bundle) => dispatch => {
   dispatch(addPluginBundle(bundle))
   const plugins = pluginsByBundle[bundle]
+  console.log(bundle, pluginsByBundle)
   dispatch(
     addTelegrafPlugins(
       plugins.map(p => {
@@ -329,6 +353,12 @@ export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
       })
     )
   )
+}
+
+export const addTelegrafPlugin = (plugin: string) => dispatch => {
+  console.log(plugin)
+  dispatch(addTelegraf2(plugin))
+  dispatch(addTelegrafPlugins2(plugin))
 }
 
 export const removePluginBundleWithPlugins = (

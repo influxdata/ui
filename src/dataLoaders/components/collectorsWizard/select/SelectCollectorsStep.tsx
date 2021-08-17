@@ -10,7 +10,7 @@ import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
 // Actions
 import {
-  addPluginBundleWithPlugins,
+  addTelegrafPlugin,
   removePluginBundleWithPlugins,
 } from 'src/dataLoaders/actions/dataLoaders'
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
@@ -98,14 +98,13 @@ export class SelectCollectorsStep extends PureComponent<Props> {
   }
 
   private handleTogglePluginBundle = (
-    bundle: BundleName,
-    isSelected: boolean
+    bundle: string,
   ) => {
-    if (isSelected) {
-      this.props.onRemovePluginBundle(bundle)
+    // if (isSelected) {
+    //   this.props.onRemovePluginBundle(bundle)
 
-      return
-    }
+    //   return
+    // }
 
     this.props.onAddPluginBundle(bundle)
   }
@@ -119,7 +118,7 @@ const mstp = ({
   ...state
 }: AppState) => {
   const buckets = getAll<Bucket>(state as AppState, ResourceType.Buckets)
-
+console.log(buckets)
   const nonSystemBuckets = buckets.filter(
     bucket => !isSystemBucket(bucket.name)
   )
@@ -133,7 +132,7 @@ const mstp = ({
 }
 
 const mdtp = {
-  onAddPluginBundle: addPluginBundleWithPlugins,
+  onAddPluginBundle: addTelegrafPlugin,
   onRemovePluginBundle: removePluginBundleWithPlugins,
   onSetBucketInfo: setBucketInfo,
 }

@@ -17,12 +17,12 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-
 let getMapToken = null
 
 if (CLOUD) {
   getMapToken = require('src/client/mapsdRoutes').getMapToken
 }
+
 interface Props extends VisualizationProps {
   properties: GeoViewProperties
 }

@@ -17,9 +17,43 @@ const PresetMap = {
   'Blank Notebook': '/notebook/from/blank',
 }
 
-const PresetFlows: FC = () => {
+interface Props {
+  buttonMode?: boolean
+}
+const PresetFlows: FC<Props> = ({buttonMode}) => {
   const history = useHistory()
-  return (
+  return buttonMode ? (
+    <Grid>
+      <Grid.Row>
+        <Grid.Column
+          widthXS={Columns.Twelve}
+          widthSM={Columns.Eight}
+          widthMD={Columns.Ten}
+        >
+          <div className="flows-index--presetList">
+            {Object.keys(PresetMap).map((p: string, idx: number) => (
+              <div key={p} className="flows-index--presetButtons">
+                {idx === 0 ? (
+                  <Button
+                    color={ComponentColor.Primary}
+                    icon={IconFont.Plus}
+                    text={p}
+                    onClick={() => history.push(PresetMap[p])}
+                  ></Button>
+                ) : (
+                  <Button
+                    text={p}
+                    color={ComponentColor.Tertiary}
+                    onClick={() => history.push(PresetMap[p])}
+                  ></Button>
+                )}
+              </div>
+            ))}
+          </div>
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
+  ) : (
     <Grid>
       <Grid.Row>
         <Grid.Column

@@ -22,38 +22,59 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import 'src/flows/components/controlSearchBar.scss'
 
-const fadeOutOnScroll = element => {
-  const header = document.getElementsByClassName('cf-page-header')[0]
-  if (!element || !header) {
-    return
-  }
-
-  const distanceToTop =
-    window.pageYOffset +
-    element.getBoundingClientRect().top +
-    header.getBoundingClientRect().top
-  const elementHeight = element.offsetHeight
-  const scrollTop = document.documentElement.scrollTop
-
-  let opacity = 1
-
-  if (scrollTop > distanceToTop) {
-    opacity = 1 - ((scrollTop - distanceToTop) / elementHeight) * 1.8
-  }
-
-  if (opacity >= 0) {
-    element.style.opacity = opacity
-  }
-}
-
-function scrollHandler() {
-  const elem = document.getElementById('presetContainer')
-  if (elem) {
-    fadeOutOnScroll(elem)
-  }
-}
-
 const FlowsIndex = () => {
+  const [showButtonMode, setShowButtonMode] = useState(false)
+
+  const fadeOutOnScroll = element => {
+    const header = document.getElementsByClassName('cf-page-header')[0]
+    if (!header) {
+      return
+    }
+
+    const distanceToTop =
+      window.pageYOffset + element.getBoundingClientRect().top
+    const elementHeight = element.offsetHeight
+    const scrollTop = document.documentElement.scrollTop
+
+    console.log(
+      'distance:',
+      distanceToTop,
+      'height: ',
+      elementHeight,
+      'scrollTop',
+      scrollTop
+    )
+    let opacity = 1
+
+    if (scrollTop > distanceToTop) {
+      opacity = 1 - ((scrollTop - distanceToTop) / elementHeight) * 1.8
+    }
+
+    if (opacity >= 0) {
+      element.style.opacity = opacity
+    } else {
+      document
+        .getElementsByClassName('withButtonHeader')[0]
+        .classList.add('marginHeader')
+    }
+
+    if (distanceToTop < -45) {
+      setShowButtonMode(true)
+    } else {
+      if (showButtonMode) {
+        console.log('here')
+        setShowButtonMode(false)
+      }
+    }
+  }
+
+  function scrollHandler() {
+    const elem = document.getElementById('fadebox')
+    if (elem) {
+      fadeOutOnScroll(elem)
+    }
+  }
+
   const {flows} = useContext(FlowListContext)
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
@@ -94,12 +115,41 @@ const FlowsIndex = () => {
       titleTag={pageTitleSuffixer([PROJECT_NAME_PLURAL])}
       testID="flows-index"
     >
-      <PageHeader fullWidth={false}>
+      <PageHeader
+        fullWidth={false}
+        className={`${showButtonMode && 'withButtonHeader'}`}
+      >
         <Page.Title title={PROJECT_NAME_PLURAL} />
+        {showButtonMode && (
+          <>
+            {isFlagEnabled('presetFlows') && (
+              <PresetFlows buttonMode={showButtonMode} />
+            )}
+            <Page.ControlBar fullWidth={false}>
+              <Page.ControlBarLeft>
+                <SearchWidget
+                  placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
+                  onSearch={setSearch}
+                  searchTerm={search}
+                />
+                <ResourceSortDropdown
+                  resourceType={ResourceType.Flows}
+                  sortDirection={sortOptions.sortDirection}
+                  sortKey={sortOptions.sortKey}
+                  sortType={sortOptions.sortType}
+                  onSelect={setSort}
+                />
+              </Page.ControlBarLeft>
+              <Page.ControlBarRight>
+                {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
+              </Page.ControlBarRight>
+            </Page.ControlBar>
+          </>
+        )}
       </PageHeader>
-      <DapperScrollbars onScroll={scrollHandler}>
-        <Page.Contents fullWidth={false}>
-          {isFlagEnabled('presetFlows') && <PresetFlows />}
+      <DapperScrollbars onScroll={scrollHandler} id="scrollFlows">
+        <Page.Contents fullWidth={false} id="fadebox">
+          {isFlagEnabled('presetFlows') && <PresetFlows buttonMode={false} />}
           <Page.ControlBar fullWidth={false}>
             <Page.ControlBarLeft>
               <SearchWidget
@@ -119,7 +169,9 @@ const FlowsIndex = () => {
               {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
             </Page.ControlBarRight>
           </Page.ControlBar>
+        </Page.Contents>
 
+        <Page.Contents fullWidth={false}>
           <FlowCards flows={flowList} search={search} />
         </Page.Contents>
       </DapperScrollbars>

@@ -24,7 +24,7 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
   const readToggle = () => {
     const {permissions} = props
     let tag = true
-    if (permissions) {
+    if (permissions && Object.keys(permissions).length > 0) {
       Object.keys(permissions).map(key => {
         permissions[key].permissions.read === true
           ? tag === false
@@ -32,6 +32,8 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             : (tag = true)
           : (tag = false)
       })
+    } else {
+      tag = false
     }
     return tag ? true : false
   }
@@ -39,7 +41,7 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
   const writeToggle = () => {
     const {permissions} = props
     let tag = true
-    if (permissions) {
+    if (permissions && Object.keys(permissions).length > 0) {
       Object.keys(permissions).map(key => {
         permissions[key].permissions.write === true
           ? tag === false
@@ -47,6 +49,8 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             : (tag = true)
           : (tag = false)
       })
+    } else {
+      tag = false
     }
     return tag ? true : false
   }

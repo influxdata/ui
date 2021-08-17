@@ -41,6 +41,7 @@ import {
   upsertSecret,
   setFeatureFlags,
   quartzProvision,
+  createTaskFromEmpty,
 } from './support/commands'
 
 declare global {
@@ -90,6 +91,7 @@ declare global {
       setFeatureFlags: typeof setFeatureFlags
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision
+      createTaskFromEmpty: typeof createTaskFromEmpty
     }
   }
 }

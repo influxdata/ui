@@ -1,4 +1,4 @@
-import {addDurationToDate} from './dateTimeUtils'
+import {addDurationToDate, isISODate} from './dateTimeUtils'
 
 // July 4th, 1983, 20:00:00 UTC ===> 1983-07-04T20:00:00.000Z
 const timestamp = 426196800000
@@ -32,5 +32,17 @@ describe('incrementDate', () => {
     const futureDate = addDurationToDate(new Date(timestamp), -1, 'd')
 
     expect(futureDate.toISOString()).toBe('1983-07-03T20:00:00.000Z')
+  })
+})
+
+describe('isISODate', function() {
+  it('should return true for a valid ISO date format', function() {
+    expect(isISODate('1983-07-03T20:00:00.000Z')).toBeTruthy()
+  })
+  it('should return false for an invalid ISO date format', function() {
+    expect(isISODate('1983-07-03A20:00:00.000')).toBeFalsy()
+  })
+  it('should return false for an empty string', function() {
+    expect(isISODate('')).toBeFalsy()
   })
 })

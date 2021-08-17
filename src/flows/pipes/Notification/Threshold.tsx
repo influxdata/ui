@@ -307,6 +307,7 @@ const Threshold: FC = () => {
           <TextBlock
             testID="when-value-text-block"
             text={index === 0 ? 'When' : 'And'}
+            style={{minWidth: 56, textAlign: 'center'}}
           />
           <FlexBox.Child grow={1} testID="component-spacer--flex-child">
             {columnDropdown(threshold, index)}
@@ -340,7 +341,12 @@ const Threshold: FC = () => {
           <TextBlock
             testID="add-value-text-block"
             text="+"
-            style={{fontWeight: 400, fontSize: 25}}
+            style={{
+              fontWeight: 400,
+              fontSize: 25,
+              textAlign: 'center',
+              minWidth: 56,
+            }}
           />
         </div>
       </FlexBox>

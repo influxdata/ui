@@ -56,10 +56,6 @@ export async function query(
   // TODO make result object array
   const result: Dico[] = []
 
-  /*
-    cols.forEach((col) => { result += `${col} `})
-    result += '\n';
-    */
   return new Promise((resolve, reject) => {
     queryApi.queryRows(fluxQuery, {
       next(row, tableMeta) {
@@ -68,17 +64,13 @@ export async function query(
         cols.forEach(col => {
           line[col] = o[col]
         })
-        //                console.log(`DEBUG QRR: ${JSON.stringify(line)}`)
-        // result += `${line}\n`;
         result.push(line)
       },
       error(e) {
         console.error(e)
-        //                console.log('Finished ERROR')
         reject(e)
       },
       complete() {
-        //                console.log('Finished SUCCESS')
         resolve(result)
       },
     })

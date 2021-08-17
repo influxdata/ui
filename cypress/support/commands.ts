@@ -665,10 +665,6 @@ export interface WriteLPDataConf {
 
 export const writeData = (
   args: WriteLPDataConf
-  // lines: string[],
-  // offset = '-30m',
-  // stagger?: boolean | string,
-  // namedBucket?: string
 ): Cypress.Chainable => {
   const oe = parseTime(args.offset)
   if (oe.measure >= 0) {
@@ -682,13 +678,7 @@ export const writeData = (
   } else if (typeof args.stagger === 'string') {
     interval = args.stagger
   }
-  /*
-  if (args.stagger && typeof args.stagger === 'boolean') {
-    interval = `${(oe.measure / lines.length) * -1}${oe.unit}`
-  }*/
 
-  cy.log(`DEBUG interval ${interval}`)
-  cy.log(`DEBUG offset ${args.offset}`)
   wrapDefaultToken()
 
   const connectVals: {
@@ -719,7 +709,6 @@ export const writeData = (
     })
     .then(location => {
       connectVals.location = location
-      cy.log(`DEBUG values ${JSON.stringify(connectVals)}`)
       const dbParams: InfluxParams = {
         url: `${connectVals.location.protocol}//${connectVals.location.hostname}/`,
         token: connectVals.token,
@@ -733,8 +722,6 @@ export const writeData = (
           args.offset,
           interval
         ).then(stampedLines => {
-          cy.log(`DEBUG stampedLines ${stampedLines}`)
-          cy.log(`DEBUG dbParams ${JSON.stringify(dbParams)}`)
           return writeLP(dbParams, 'ms', stampedLines)
             .then(() => {
               return cy.wrap('success')
@@ -786,8 +773,6 @@ export const writeDataFromFile = (
     args.filename = './cypress/fixtures/' + args.filename
   }
   return cy.readFile(args.filename).then(contents => {
-    cy.log(`DEBUG typeof contents ${typeof contents}`)
-    cy.log(`DEBUG contents ${contents.split('\n')}`)
     const data: string[] = contents.split('\n')
     return cy.writeData({
       lines: data,

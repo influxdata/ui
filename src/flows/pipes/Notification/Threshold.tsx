@@ -12,6 +12,7 @@ import {
 } from '@influxdata/clockface'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import 'src/flows/pipes/Notification/Threshold.scss'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'

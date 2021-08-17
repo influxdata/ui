@@ -21,6 +21,14 @@ enum ThresholdFormat {
   Range = 'range',
 }
 
+type Threshold = {
+  value: number
+  type: string
+  field: string
+  max?: number
+  min?: number
+}
+
 export const THRESHOLD_TYPES = {
   greater: {
     name: 'greater than',
@@ -103,20 +111,23 @@ const Threshold: FC = () => {
     [thresholds, update]
   )
 
-  const setColumn = (column: string, index: number) => {
-    event('Changed Notification Threshold Column')
+  const setColumn = useCallback(
+    (column: string, index: number) => {
+      event('Changed Notification Threshold Column')
 
-    const threshold = thresholds.find((_, i) => index === i)
+      const threshold = thresholds.find((_, i) => index === i)
 
-    if (threshold) {
-      threshold.field = column
-    }
+      if (threshold) {
+        threshold.field = column
+      }
 
-    update({thresholds})
-  }
+      update({thresholds})
+    },
+    [thresholds, update]
+  )
 
   const funcDropdown = useCallback(
-    (threshold: unknown, index: number) => {
+    (threshold: Threshold, index: number) => {
       const menuItems = Object.entries(THRESHOLD_TYPES).map(([key, value]) => (
         <Dropdown.Item
           key={key}
@@ -146,7 +157,7 @@ const Threshold: FC = () => {
   )
 
   const columnDropdown = useCallback(
-    (threshold: unknown, index: number) => {
+    (threshold: Threshold, index: number) => {
       const menuItems = fields.map(key => (
         <Dropdown.Item
           key={key}
@@ -226,9 +237,8 @@ const Threshold: FC = () => {
     })
   }
 
-  const thresholdEntry = (threshold: unknown, index: number) => {
-    console.log({threshold})
-    if (THRESHOLD_TYPES[threshold?.type].format === ThresholdFormat.Range) {
+  const thresholdEntry = (threshold: Threshold, index: number) => {
+    if (THRESHOLD_TYPES[threshold?.type]?.format === ThresholdFormat.Range) {
       return (
         <FlexBox
           direction={FlexDirection.Row}
@@ -286,13 +296,13 @@ const Threshold: FC = () => {
       testID="component-spacer"
       style={{padding: '24px 0'}}
     >
-      {thresholds.map((threshold, index) => (
+      {thresholds.map((threshold: Threshold, index: number) => (
         <FlexBox
           direction={FlexDirection.Row}
           margin={ComponentSize.Medium}
           stretchToFitWidth
           testID="component-spacer"
-          key={threshold}
+          key={`${threshold.type}_${threshold.field}_${threshold.value}_${index}`}
         >
           <TextBlock
             testID="when-value-text-block"

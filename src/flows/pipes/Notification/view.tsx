@@ -193,17 +193,10 @@ const Notification: FC<PipeProp> = ({Context}) => {
       return acc
     }, {})
 
-    // TODO(ariel): make threshold into an array
-    const conditions = data.thresholds.map(
-      (threshold, i) =>
-        `${THRESHOLD_TYPES[threshold.type].condition(threshold)}${
-          data.thresholds.length === i - 1 ? '' : '\n'
-        }`
-    )
+    const conditions = data.thresholds
+      .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
+      .join(' and ')
 
-    // const condition = THRESHOLD_TYPES[data.threshold.type].condition(
-    //   data.threshold
-    // )
     const newQuery = `
 import "strings"
 import "regexp"
@@ -269,7 +262,6 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.endpointData,
     data.endpoint,
     data.thresholds,
-    // data.threshold,
     data.message,
   ])
 

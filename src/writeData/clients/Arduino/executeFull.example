@@ -1,0 +1,50 @@
+
+InfluxDBClient client("<%= server %>", "<%= org %>", "<%= bucket %>", "<%= token %>", InfluxDbCloud2CACert);
+
+void loop {
+
+  // Construct a Flux query
+  String query = "<%= query %>";
+
+  // Print composed query
+  Serial.print("Querying with: ");
+  Serial.println(query);
+
+  // Send query to the server and get result
+  FluxQueryResult result = client.query(query);
+
+  // Iterate over rows. Even there is just one row, next() must be called at least once.
+  while (result.next()) {
+    // If there is a new table definition
+    if(result.hasTableChanged()) {
+      // Print table metadata
+      Serial.println();
+      for (String col: result.getColumnsName()) {
+        Serial.printf("%10s ", col.c_str());
+      }
+      Serial.println();
+      for (String typ: result.getColumnsDatatype()) {
+        Serial.printf("%10s ", typ.c_str());
+      }
+      Serial.println();
+    }
+    // Print raw, String, value
+    // converted value is retrieved using function FluxValue::getTYPE,
+    // where, depending on the column type,  TYPE can be Long, UnsignedLong, String, Bool, Double or DateTime,
+    for (FluxValue val: result.getValues()) {
+      Serial.printf("%10s ", val.getRawValue().c_str());
+    }
+    Serial.println();
+  }
+
+  // Check if there was an error
+  if(result.getError() != "") {
+    Serial.print("Query result error: ");
+    Serial.println(result.getError());
+  }
+
+  // Close the result
+  result.close();
+
+  delay(15000);
+}

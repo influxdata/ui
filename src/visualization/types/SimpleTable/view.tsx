@@ -10,10 +10,7 @@ import {VisualizationProps} from 'src/visualization'
 import {parseFromFluxResults} from 'src/timeMachine/utils/rawFluxDataTable'
 import {PaginationProvider} from 'src/visualization/context/pagination'
 
-import {
-  Config,
-  Plot,
-} from '@influxdata/giraffe'
+import {Config, Plot} from '@influxdata/giraffe'
 
 import './style.scss'
 
@@ -46,6 +43,5 @@ const SimpleTable: FC<Props> = ({properties, result}) => {
     </div>
   )*/
 }
-
 
 export default SimpleTable

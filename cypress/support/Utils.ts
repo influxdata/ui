@@ -1,5 +1,3 @@
-import * as fs from 'fs'
-
 const second = 1000
 const minute = second * 60
 const hour = minute * 60
@@ -60,25 +58,6 @@ function calcTimeStamp(unit: string, prec: string, base: number) {
   }
 }
 
-export function addTimestampToRecsFromFile(filePath: string, timeDif: string) {
-  const data = fs.readFileSync(filePath, 'utf-8')
-  const lines = data.split('\n')
-  // const now = new Date().getTime();
-  const timeFrame: TimeExpr = parseTime(timeDif)
-
-  // Todo use calcTime above
-  const timeStamp = calcTimeStamp(timeFrame.unit, 'ms', timeFrame.measure)
-  const result: string[] = []
-
-  lines.forEach(line => {
-    if (line.trim().length > 0) {
-      result.push(line + ' ' + timeStamp)
-    }
-  })
-
-  return result
-}
-
 // noinspection DuplicatedCode
 export function addTimestampToRecs(recs: string[], timeDif: string) {
   const timeFrame: TimeExpr = parseTime(timeDif)
@@ -92,42 +71,6 @@ export function addTimestampToRecs(recs: string[], timeDif: string) {
   })
 
   return Promise.resolve(result)
-}
-
-function _prepTags(tags: {key: string; vals: string[]}[], randomize = false) {
-  let result: string = ''
-  let valIndex = 0
-  for (let i = 0; i < tags.length; i++) {
-    result += tags[i].key
-
-    if (randomize) {
-      result += `=${
-        tags[i].vals[Math.floor(Math.random() * tags[i].vals.length)]
-      }`
-    } else {
-      result += `=${tags[i].vals[valIndex++ % tags[i].vals.length]}`
-    }
-    if (tags[i + 1]) {
-      result += ','
-    }
-  }
-  return result
-}
-
-function _prepFields(fields: {key: string; val: any}[]) {
-  let result: string = ''
-
-  for (let i = 0; i < fields.length; i++) {
-    if (typeof fields[i].val === 'function') {
-      result += `${fields[i].key}=${fields[i].val()}`
-    } else {
-      result += `${fields[i].key}=${fields[i].val}`
-    }
-    if (fields[i + 1]) {
-      result += ','
-    }
-  }
-  return result
 }
 
 export function addStaggerTimestampToRecs(

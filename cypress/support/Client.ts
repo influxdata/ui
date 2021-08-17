@@ -1,10 +1,4 @@
-import {
-  InfluxDB,
-  //    FluxTableMetaData,
-  //    Point,
-  //    HttpError,
-  WritePrecisionType,
-} from '@influxdata/influxdb-client'
+import {InfluxDB, WritePrecisionType} from '@influxdata/influxdb-client'
 
 export interface InfluxParams {
   url: string
@@ -25,7 +19,6 @@ export async function writeLP(
   prec: string,
   recs: string[]
 ) {
-  console.log('*** WRITE RECORDS ***')
   if (typeof connect.bucket === 'undefined') {
     throw 'connect.bucket is undefined.  Cannot write to DB without bucket'
   }
@@ -39,7 +32,7 @@ export async function writeLP(
   await writeApi
     .close()
     .then(() => {
-      console.log('Wrote recs:\n' + recs.join('\n'))
+      cy.log(`Wrote ${recs.length} recs`)
     })
     .catch(e => {
       console.error(e)

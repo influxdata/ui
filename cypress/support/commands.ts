@@ -2,7 +2,7 @@ import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
-import {query, writeLP, InfluxParams} from './Client'
+import {writeLP, InfluxParams} from './Client'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
@@ -570,9 +570,8 @@ export const createToken = (
   })
 }
 
-export const wrapDefaultToken = (): Cypress.Chainable<Cypress.Response> => {
+export const wrapDefaultToken = (): Cypress.Chainable => {
   return cy.request('GET', 'api/v2/authorizations').then(response => {
-    //cy.log(`DEBUG wrapToken response ${JSON.stringify(response.body.authorizations[0].token)}`)
     return cy.wrap(response.body.authorizations[0].token).as('defaultToken')
   })
 }
@@ -657,7 +656,7 @@ export const lines = (numLines = 3) => {
   })
 }
 
-export interface writeLPDataConf {
+export interface WriteLPDataConf {
   lines: string[]
   offset: string
   stagger?: boolean | string
@@ -665,24 +664,31 @@ export interface writeLPDataConf {
 }
 
 export const writeData = (
-  lines: string[],
-  offset = '-30m',
-  stagger?: boolean | string,
-  namedBucket?: string
-): Cypress.Chainable<Cypress.Response> => {
-  const oe = parseTime(offset)
+  args: WriteLPDataConf
+  // lines: string[],
+  // offset = '-30m',
+  // stagger?: boolean | string,
+  // namedBucket?: string
+): Cypress.Chainable => {
+  const oe = parseTime(args.offset)
   if (oe.measure >= 0) {
-    offset = `-${offset}`
+    args.offset = `-${args.offset}`
     oe.measure *= -1
   }
 
-  let interval = stagger
-  if (stagger && typeof stagger === 'boolean') {
-    interval = `${(oe.measure / lines.length) * -1}${oe.unit}`
+  let interval = ''
+  if (typeof args.stagger === 'boolean' && args.stagger) {
+    interval = `${(oe.measure / args.lines.length) * -1}${oe.unit}`
+  } else if (typeof args.stagger === 'string') {
+    interval = args.stagger
   }
+  /*
+  if (args.stagger && typeof args.stagger === 'boolean') {
+    interval = `${(oe.measure / lines.length) * -1}${oe.unit}`
+  }*/
 
   cy.log(`DEBUG interval ${interval}`)
-  cy.log(`DEBUG offset ${offset}`)
+  cy.log(`DEBUG offset ${args.offset}`)
   wrapDefaultToken()
 
   const connectVals: {
@@ -716,16 +722,16 @@ export const writeData = (
       cy.log(`DEBUG values ${JSON.stringify(connectVals)}`)
       const dbParams: InfluxParams = {
         url: `${connectVals.location.protocol}//${connectVals.location.hostname}/`,
-        token: connectVals.token as string,
-        org: (connectVals.org as Organization).name,
-        bucket: namedBucket ?? (connectVals.bucket as Bucket).name,
+        token: connectVals.token,
+        org: connectVals.org.name,
+        bucket: args.namedBucket ?? connectVals.bucket.name,
       }
 
-      if (stagger) {
+      if (args.stagger) {
         return addStaggerTimestampToRecs(
-          lines,
-          offset,
-          interval as string
+          args.lines,
+          args.offset,
+          interval
         ).then(stampedLines => {
           cy.log(`DEBUG stampedLines ${stampedLines}`)
           cy.log(`DEBUG dbParams ${JSON.stringify(dbParams)}`)
@@ -740,19 +746,56 @@ export const writeData = (
             })
         })
       } else {
-        return addTimestampToRecs(lines, offset).then(stampedLines => {
-          return writeLP(dbParams, 'ms', stampedLines)
-            .then(() => {
-              return cy.wrap('success')
-            })
-            .catch(e => {
-              return cy.wrap(
-                `failure ${e.message}\nSee console for more information`
-              )
-            })
-        })
+        return addTimestampToRecs(args.lines, args.offset).then(
+          stampedLines => {
+            return writeLP(dbParams, 'ms', stampedLines)
+              .then(() => {
+                return cy.wrap('success')
+              })
+              .catch(e => {
+                return cy.wrap(
+                  `failure ${e.message}\nSee console for more information`
+                )
+              })
+          }
+        )
       }
     })
+}
+
+export interface WriteLPFileDataConf {
+  filename: string
+  offset: string
+  stagger?: boolean | string
+  namedBucket?: string
+}
+
+/*
+ *  Force datafile to reside in directory cypress/fixtures
+ * */
+export const writeDataFromFile = (
+  args: WriteLPFileDataConf
+): Cypress.Chainable => {
+  // check for file paths starting with relative or absolute chars
+  if (args.filename.match(/.*\.\..*|^\//)) {
+    throw `${args.filename} unhandled path. Filename path must be in or relative to the cypress/fixtures directory`
+  }
+
+  // prepend './cypress/fixtures' if not already in path
+  if (!args.filename.match(/^(.\/)?cypress\/fixtures/)) {
+    args.filename = './cypress/fixtures/' + args.filename
+  }
+  return cy.readFile(args.filename).then(contents => {
+    cy.log(`DEBUG typeof contents ${typeof contents}`)
+    cy.log(`DEBUG contents ${contents.split('\n')}`)
+    const data: string[] = contents.split('\n')
+    return cy.writeData({
+      lines: data,
+      offset: args.offset,
+      stagger: args.stagger,
+      namedBucket: args.namedBucket,
+    })
+  })
 }
 
 // DOM node getters
@@ -999,6 +1042,7 @@ Cypress.Commands.add('upsertSecret', upsertSecret)
 
 // test
 Cypress.Commands.add('writeData', writeData)
+Cypress.Commands.add(`writeDataFromFile`, writeDataFromFile)
 
 // helpers
 Cypress.Commands.add('clickAttached', {prevSubject: 'element'}, clickAttached)

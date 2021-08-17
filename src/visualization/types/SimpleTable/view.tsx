@@ -1,16 +1,14 @@
+// Libraries
 import React, {FC} from 'react'
+import {Config, Plot} from '@influxdata/giraffe'
 
-import PageControl from 'src/visualization/types/SimpleTable/PageControl'
-import PagedTable from 'src/visualization/types/SimpleTable/PagedTable'
-
+// Types
 import {SimpleTableViewProperties} from 'src/types'
 import {FluxResult} from 'src/types/flows'
 import {VisualizationProps} from 'src/visualization'
 
+// Utils
 import {parseFromFluxResults} from 'src/timeMachine/utils/rawFluxDataTable'
-import {PaginationProvider} from 'src/visualization/context/pagination'
-
-import {Config, Plot} from '@influxdata/giraffe'
 
 import './style.scss'
 
@@ -20,7 +18,6 @@ interface Props extends VisualizationProps {
 }
 
 const SimpleTable: FC<Props> = ({properties, result}) => {
-  console.log(properties)
   const parsed = parseFromFluxResults(result)
   const fluxResponse = parsed.tableData.join('\n')
   const config: Config = {

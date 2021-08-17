@@ -114,9 +114,7 @@ const FlowsIndex = () => {
         <Page.Title title={PROJECT_NAME_PLURAL} />
         {showButtonMode && (
           <>
-            {isFlagEnabled('presetFlows') && (
-              <PresetFlows buttonMode={showButtonMode} />
-            )}
+            <PresetFlows buttonMode={showButtonMode} />
             <Page.ControlBar fullWidth={false}>
               <Page.ControlBarLeft>
                 <SearchWidget
@@ -141,7 +139,7 @@ const FlowsIndex = () => {
       </PageHeader>
       <DapperScrollbars onScroll={scrollHandler} id="scrollFlows">
         <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
-          {isFlagEnabled('presetFlows') && <PresetFlows buttonMode={false} />}
+          <PresetFlows buttonMode={false} />
           <Page.ControlBar fullWidth={false}>
             <Page.ControlBarLeft>
               <SearchWidget
@@ -157,9 +155,7 @@ const FlowsIndex = () => {
                 onSelect={setSort}
               />
             </Page.ControlBarLeft>
-            <Page.ControlBarRight>
-              {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
-            </Page.ControlBarRight>
+            <Page.ControlBarRight></Page.ControlBarRight>
           </Page.ControlBar>
         </Page.Contents>
 

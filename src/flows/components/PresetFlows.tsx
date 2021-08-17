@@ -30,7 +30,7 @@ const PresetFlows: FC<Props> = ({buttonMode}) => {
           widthSM={Columns.Eight}
           widthMD={Columns.Ten}
         >
-          <div className="flows-index--presetList">
+          <div className="flows-index--presetList buttonModeList">
             {Object.keys(PresetMap).map((p: string, idx: number) => (
               <div key={p} className="flows-index--presetButtons">
                 {idx === 0 ? (
@@ -39,12 +39,14 @@ const PresetFlows: FC<Props> = ({buttonMode}) => {
                     icon={IconFont.Plus}
                     text={p}
                     onClick={() => history.push(PresetMap[p])}
+                    className="flows-preset--buttonmode"
                   ></Button>
                 ) : (
                   <Button
                     text={p}
                     color={ComponentColor.Tertiary}
                     onClick={() => history.push(PresetMap[p])}
+                    className="flows-preset--buttonmode"
                   ></Button>
                 )}
               </div>

@@ -77,7 +77,7 @@ const asRudderOptions = (tags: PointTags, campaign: object) => {
     }
     // campaign info is in context object (which is merged in processOptionsParam function in rudder-sdk-js/index.js)
     let context = options['context']
-    if (context === null) {
+    if (context === undefined) {
       context = {}
       options['context'] = context
     }

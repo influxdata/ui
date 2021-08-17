@@ -11,11 +11,10 @@ import {
   PipeMeta,
 } from 'src/types/flows'
 import {getOrg} from 'src/organizations/selectors'
-import {getMe} from 'src/me/selectors'
 import {default as _asResource} from 'src/flows/context/resource.hook'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
-import {PROJECT_NAME} from 'src/flows'
+import {DEFAULT_PROJECT_NAME, PROJECT_NAME} from 'src/flows'
 import {TEMPLATES} from 'src/flows/templates'
 import {
   pooledUpdateAPI,
@@ -42,7 +41,7 @@ export interface FlowListContextType extends FlowList {
 }
 
 export const EMPTY_NOTEBOOK: FlowState = {
-  name: `Name this ${PROJECT_NAME}`,
+  name: DEFAULT_PROJECT_NAME,
   range: DEFAULT_TIME_RANGE,
   refresh: AUTOREFRESH_DEFAULT,
   data: {
@@ -141,7 +140,7 @@ export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useLocalStorageState('flows', DEFAULT_CONTEXT.flows)
   const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
   const org = useSelector(getOrg)
-  const user = useSelector(getMe)
+
   const dispatch = useDispatch()
   useEffect(() => {
     migrate()
@@ -169,17 +168,10 @@ export const FlowListProvider: FC = ({children}) => {
   const add = async (flow?: Flow): Promise<string> => {
     let _flow
 
-    let {name} = user
-
-    if (name.includes('@')) {
-      name = name.split('@')[0]
-    }
-    name = `${name}-${PROJECT_NAME.toLowerCase()}-${new Date().toISOString()}`
-
     if (!flow) {
       _flow = hydrate({
         ...TEMPLATES['default'].init(),
-        name,
+        name: DEFAULT_PROJECT_NAME,
       })
     } else {
       _flow = {

@@ -18,7 +18,7 @@ import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
-import {PROJECT_NAME} from 'src/flows'
+import {DEFAULT_PROJECT_NAME} from 'src/flows'
 import {serialize} from 'src/flows/context/flow.list'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
@@ -51,7 +51,7 @@ const FlowHeader: FC = () => {
         <RenamablePageTitle
           onRename={handleRename}
           name={flow.name}
-          placeholder={`Name this ${PROJECT_NAME}`}
+          placeholder={DEFAULT_PROJECT_NAME}
           maxLength={50}
         />
       </Page.Header>

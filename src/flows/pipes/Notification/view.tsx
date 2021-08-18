@@ -192,9 +192,11 @@ const Notification: FC<PipeProp> = ({Context}) => {
 
       return acc
     }, {})
-    const condition = THRESHOLD_TYPES[data.threshold.type].condition(
-      data.threshold
-    )
+
+    const conditions = data.thresholds
+      .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
+      .join(' and ')
+
     const newQuery = `
 import "strings"
 import "regexp"
@@ -218,7 +220,7 @@ notification = {
 }
 
 task_data = ${format_from_js_file(ast)}
-trigger = ${condition}
+trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
 ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
@@ -259,7 +261,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.offset,
     data.endpointData,
     data.endpoint,
-    data.threshold,
+    data.thresholds,
     data.message,
   ])
 

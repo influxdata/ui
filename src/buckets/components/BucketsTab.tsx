@@ -164,8 +164,14 @@ class BucketsTab extends PureComponent<Props, State> {
     this.props.deleteBucket(id, name)
   }
 
-  private handleShowBucketSchema = ({id}: OwnBucket) => {
-    this.props.getBucketSchema(id)
+  private handleShowBucketSchema2 = ({id}: OwnBucket) => {
+    const schema =  this.props.getBucketSchema(id)
+    console.log('got schema in bucketstab!!!!', schema)
+  }
+
+  private handleShowBucketSchema = async ({id}: OwnBucket) => {
+    const schema = await this.props.getBucketSchema(id)
+    console.log('got schema in bucketstab!!!!', schema)
   }
 
   private handleFilterUpdate = (searchTerm: string): void => {

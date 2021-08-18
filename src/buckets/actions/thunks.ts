@@ -11,14 +11,15 @@ import {bucketSchema, arrayOfBuckets} from 'src/schemas'
 // Types
 import {
   AppState,
-  RemoteDataState,
-  GetState,
-  GenBucket,
   Bucket,
   BucketEntities,
+  BucketSchemaMeasurementsResponse,
+  GenBucket,
+  GetState,
   Label,
-  ResourceType,
   OwnBucket,
+  RemoteDataState,
+  ResourceType,
 } from 'src/types'
 
 // Utils
@@ -159,6 +160,8 @@ export const createBucketAndUpdate = (
 export const getBucketSchema = (bucketID: string) => async (
 
 ) => {
+
+
   try {
     ///const state = getState()
     // const org = getOrg(state)
@@ -180,6 +183,11 @@ export const getBucketSchema = (bucketID: string) => async (
 
     console.log("got response from getBucketSchema:", resp)
 
+  return resp.data
+
+
+
+
  // this is for getting a particular measurement, not all of them
     // const resp2 = await api.getBucketsSchemaMeasurement({
     //   bucketID,
@@ -190,7 +198,9 @@ export const getBucketSchema = (bucketID: string) => async (
 
   } catch (error) {
     console.error('error while retrieving schemas', error)
+    return null;
   }
+
 }
 
 export const updateBucket = (bucket: OwnBucket) => async (

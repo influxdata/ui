@@ -25,7 +25,7 @@ export enum WritePrecision {
 }
 
 
-export interface BucketSchemaMeasurementsRespons {
+export interface BucketSchemaMeasurementsResponse {
    links: {self:string},
    measurementSchemas: MeasurementSchema[]
 }

@@ -15,7 +15,6 @@ import {
   AlignItems,
   JustifyContent,
   Dropdown,
-  InfluxColors,
 } from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 

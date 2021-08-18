@@ -2,7 +2,7 @@ import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
-import {writeLP, InfluxParams} from './Client'
+// import {writeLP, InfluxParams} from './Client'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
@@ -570,12 +570,6 @@ export const createToken = (
   })
 }
 
-export const wrapDefaultToken = (): Cypress.Chainable => {
-  return cy.request('GET', 'api/v2/authorizations').then(response => {
-    return cy.wrap(response.body.authorizations[0].token).as('defaultToken')
-  })
-}
-
 // TODO: have to go through setup because we cannot create a user w/ a password via the user API
 export const setupUser = (): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request({
@@ -656,6 +650,24 @@ export const lines = (numLines = 3) => {
   })
 }
 
+
+export const writeData = (
+  lines: string[],
+  namedBucket?: string
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.get<Organization>('@org').then((org: Organization) => {
+    return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+      const bucketToUse = namedBucket ?? bucket.name
+      cy.log(`DEBUG bucketToUse ${bucketToUse}`)
+      return cy.request({
+        method: 'POST',
+        url: '/api/v2/write?org=' + org.name + '&bucket=' + bucketToUse,
+        body: lines.join('\n'),
+      })
+    })
+  })
+}
+
 export interface WriteLPDataConf {
   lines: string[]
   offset: string
@@ -663,7 +675,7 @@ export interface WriteLPDataConf {
   namedBucket?: string
 }
 
-export const writeData = (args: WriteLPDataConf): Cypress.Chainable => {
+export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
   const oe = parseTime(args.offset)
   if (oe.measure >= 0) {
     args.offset = `-${args.offset}`
@@ -677,75 +689,37 @@ export const writeData = (args: WriteLPDataConf): Cypress.Chainable => {
     interval = args.stagger
   }
 
-  wrapDefaultToken()
-
-  const connectVals: {
-    org: Organization | null
-    bucket: Bucket | null
-    token: string | null
-    location: Location | null
-  } = {
-    org: null,
-    bucket: null,
-    token: null,
-    location: null,
-  }
-
-  return cy
-    .get<Organization>('@org')
-    .then(org => {
-      connectVals.org = org
-      return cy.get<Bucket>('@bucket')
-    })
-    .then(bucket => {
-      connectVals.bucket = bucket
-      return cy.get<string>('@defaultToken')
-    })
-    .then(token => {
-      connectVals.token = token
-      return cy.location()
-    })
-    .then(location => {
-      connectVals.location = location
-      const dbParams: InfluxParams = {
-        url: `${connectVals.location.protocol}//${connectVals.location.hostname}/`,
-        token: connectVals.token,
-        org: connectVals.org.name,
-        bucket: args.namedBucket ?? connectVals.bucket.name,
-      }
-
       if (args.stagger) {
         return addStaggerTimestampToRecs(
           args.lines,
           args.offset,
           interval
         ).then(stampedLines => {
-          return writeLP(dbParams, 'ms', stampedLines)
-            .then(() => {
+
+          cy.log(`DEBUG stampedLines ${stampedLines}`)
+
+           return writeData(stampedLines).then(response => {
+             cy.log(`DEBUG status ${response.status}`)
+             cy.log(`DEBUG response ${JSON.stringify(response)}`)
+             if(response.status !== 204){
+               return cy.wrap(`Problem writing data. Status: ${response.status}`)
+             }
               return cy.wrap('success')
-            })
-            .catch(e => {
-              return cy.wrap(
-                `failure ${e.message}\nSee console for more information`
-              )
-            })
+           })
         })
       } else {
         return addTimestampToRecs(args.lines, args.offset).then(
           stampedLines => {
-            return writeLP(dbParams, 'ms', stampedLines)
-              .then(() => {
-                return cy.wrap('success')
-              })
-              .catch(e => {
-                return cy.wrap(
-                  `failure ${e.message}\nSee console for more information`
-                )
-              })
+
+             return writeData(stampedLines).then(response => {
+               if(response.status !== 204){
+                 return cy.wrap(`Problem writing data. Status: ${response.status}`)
+               }
+               return cy.wrap('success')
+             })
           }
         )
       }
-    })
 }
 
 export interface WriteLPFileDataConf {
@@ -758,7 +732,7 @@ export interface WriteLPFileDataConf {
 /*
  *  Force datafile to reside in directory cypress/fixtures
  * */
-export const writeDataFromFile = (
+export const writeLPDataFromFile = (
   args: WriteLPFileDataConf
 ): Cypress.Chainable => {
   // check for file paths starting with relative or absolute chars
@@ -772,7 +746,7 @@ export const writeDataFromFile = (
   }
   return cy.readFile(args.filename).then(contents => {
     const data: string[] = contents.split('\n')
-    return cy.writeData({
+    return cy.writeLPData({
       lines: data,
       offset: args.offset,
       stagger: args.stagger,
@@ -1049,7 +1023,8 @@ Cypress.Commands.add('upsertSecret', upsertSecret)
 
 // test
 Cypress.Commands.add('writeData', writeData)
-Cypress.Commands.add(`writeDataFromFile`, writeDataFromFile)
+Cypress.Commands.add(`writeLPData`, writeLPData)
+Cypress.Commands.add(`writeLPDataFromFile`, writeLPDataFromFile)
 
 // helpers
 Cypress.Commands.add('clickAttached', {prevSubject: 'element'}, clickAttached)

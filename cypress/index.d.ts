@@ -29,7 +29,8 @@ import {
   createToken,
   fillInOSSLoginFormWithDefaults,
   writeData,
-  writeDataFromFile,
+  writeLPData,
+  writeLPDataFromFile,
   wrapEnvironmentVariablesForCloud,
   wrapEnvironmentVariablesForOss,
   getByTestIDSubStr,
@@ -82,7 +83,8 @@ declare global {
       createTelegraf: typeof createTelegraf
       createToken: typeof createToken
       writeData: typeof writeData
-      writeDataFromFile: typeof writeDataFromFile
+      writeLPData: typeof writeLPData
+      writeLPDataFromFile: typeof writeLPDataFromFile
       wrapEnvironmentVariablesForCloud: typeof wrapEnvironmentVariablesForCloud
       wrapEnvironmentVariablesForOss: typeof wrapEnvironmentVariablesForOss
       fillInOSSLoginFormWithDefaults: typeof fillInOSSLoginFormWithDefaults

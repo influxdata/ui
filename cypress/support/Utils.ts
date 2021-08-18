@@ -59,9 +59,9 @@ function calcTimeStamp(unit: string, prec: string, base: number) {
 }
 
 // noinspection DuplicatedCode
-export function addTimestampToRecs(recs: string[], timeDif: string) {
+export function addTimestampToRecs(recs: string[], timeDif: string, precUnit='ns') {
   const timeFrame: TimeExpr = parseTime(timeDif)
-  const timeStamp = calcTimeStamp(timeFrame.unit, 'ms', timeFrame.measure)
+  const timeStamp = calcTimeStamp(timeFrame.unit, precUnit, timeFrame.measure)
   const result: string[] = []
 
   recs.forEach(line => {
@@ -70,13 +70,14 @@ export function addTimestampToRecs(recs: string[], timeDif: string) {
     }
   })
 
-  return Promise.resolve(result)
+  return cy.wrap(result)
 }
 
 export function addStaggerTimestampToRecs(
   recs: string[],
   timeDif: string,
-  stagger: string
+  stagger: string,
+  precUnit: 'ns' | 'ms' ='ns'
 ) {
   const result: string[] = []
 
@@ -89,11 +90,11 @@ export function addStaggerTimestampToRecs(
     if (recs[i].match(/.* .*/)) {
       const timeStamp = calcTimeStamp(
         timeFrame.unit,
-        'ms',
+        precUnit,
         timeFrame.measure + staggerFrame.measure * i
       )
       result.push(recs[i] + ' ' + timeStamp)
     }
   }
-  return Promise.resolve(result)
+  return cy.wrap(result)
 }

@@ -99,27 +99,26 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
 export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
-  cy.getByTestID('edit-annotation-message')
-    .should('have.length.of.at.least', 1)
-    .clear()
+  cy.getByTestID('overlay--container').within(() => {
+    cy.getByTestID('edit-annotation-message')
+      .should('be.visible', 1)
+      .clear()
 
-  cy.getByTestID('edit-annotation-message')
-    .should('have.length.of.at.least', 1)
-    .type('lets edit this annotation...')
+    cy.getByTestID('edit-annotation-message')
+      .should('be.visible', 1)
+      .type('lets edit this annotation...')
 
-  cy.getByTestID('annotation-submit-button')
-    .should('have.length.of.at.least', 1)
-    .click()
+    cy.getByTestID('annotation-submit-button')
+      .should('be.visible', 1)
+      .click()
+  })
 }
 
 export const deleteAnnotation = (cy: Cypress.Chainable) => {
   // should have the annotation created , lets click it to show the modal.
   startEditingAnnotation(cy)
 
-  const delButton = cy.getByTestID('delete-annotation-button')
-
-  console.error('got the delete button???? testing here', delButton)
-  delButton.click()
+  cy.getByTestID('delete-annotation-button').click()
 
   // reload to make sure the annotation was deleted from the backend as well.
   reloadAndHandleAnnotationDefaultStatus()

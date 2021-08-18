@@ -9,7 +9,7 @@ import {
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 import FlowsExplainer from 'src/flows/components/FlowsExplainer'
-const PresetMap = {
+export const PresetMap = {
   'New Notebook': '/notebook/from/default',
   'Set an Alert': '/notebook/from/notification',
   'Schedule a Task': '/notebook/from/task',

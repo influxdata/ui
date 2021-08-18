@@ -24,12 +24,20 @@ interface Props {
   name: string
   url: string
   image?: string
-  selected? : boolean
+  selected?: boolean
   onClick?: any
   testID?: string
 }
 
-const WriteDataItem: FC<Props> = ({id, name, url, image,selected,onClick, testID}) => {
+const WriteDataItem: FC<Props> = ({
+  id,
+  name,
+  url,
+  image,
+  selected,
+  onClick,
+  testID,
+}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
 
@@ -47,41 +55,45 @@ const WriteDataItem: FC<Props> = ({id, name, url, image,selected,onClick, testID
     )
   }
 
-  if(onClick){
-    {return (
+  if (onClick) {
+    {
+      return (
+        <SquareGrid.Card key={id}>
+          <SelectableCard
+            id={id}
+            formName="load-data-cards"
+            label={name}
+            selected={selected}
+            onClick={onClick}
+            testID={testID}
+            fontSize={ComponentSize.ExtraSmall}
+            className="write-data--item"
+          >
+            <div className="write-data--item-thumb">{thumb}</div>
+          </SelectableCard>
+        </SquareGrid.Card>
+      )
+    }
+  }
+
+  {
+    return (
       <SquareGrid.Card key={id}>
         <SelectableCard
           id={id}
           formName="load-data-cards"
           label={name}
-          selected={selected}
-          onClick={onClick}
-          testID={testID}
+          testID={`load-data-item ${id}`}
+          selected={false}
+          onClick={handleClick}
           fontSize={ComponentSize.ExtraSmall}
           className="write-data--item"
         >
           <div className="write-data--item-thumb">{thumb}</div>
         </SelectableCard>
       </SquareGrid.Card>
-    )}
+    )
   }
-
-  {return (
-    <SquareGrid.Card key={id}>
-      <SelectableCard
-        id={id}
-        formName="load-data-cards"
-        label={name}
-        testID={`load-data-item ${id}`}
-        selected={false}
-        onClick={handleClick}
-        fontSize={ComponentSize.ExtraSmall}
-        className="write-data--item"
-      >
-        <div className="write-data--item-thumb">{thumb}</div>
-      </SelectableCard>
-    </SquareGrid.Card>
-  )}
 }
 
 export default WriteDataItem

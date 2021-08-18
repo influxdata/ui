@@ -21,10 +21,10 @@ interface Props {
 class StepSwitcher extends PureComponent<Props> {
   public render() {
     const {stepProps} = this.props
-    let selector;
-    if(isFlagEnabled('telegrafUiRefresh')){
+    let selector
+    if (isFlagEnabled('telegrafUiRefresh')) {
       selector = <SelectCollectorsStep2 {...stepProps} />
-    }else{
+    } else {
       selector = <SelectCollectorsStep {...stepProps} />
     }
 

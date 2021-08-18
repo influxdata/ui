@@ -91,13 +91,13 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
         ),
       }
 
-      case 'ADD_TELEGRAF_PLUGINS2':
-        const telegrafPlugins = [action.payload.telegrafPlugins]
-        return {
-          ...state,
-          telegrafPlugins
-        }
-        
+    case 'ADD_TELEGRAF_PLUGINS2':
+      const telegrafPlugins = [action.payload.telegrafPlugins]
+      return {
+        ...state,
+        telegrafPlugins,
+      }
+
     case 'UPDATE_TELEGRAF_PLUGIN':
       return {
         ...state,

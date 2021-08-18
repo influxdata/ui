@@ -232,7 +232,6 @@ export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
   payload: {bundle},
 })
 
-
 export const addTelegraf2 = (plugin: string): AddTelegraf2 => ({
   type: 'ADD_TELEGRAF_2',
   payload: {plugin},
@@ -263,9 +262,7 @@ export const addTelegrafPlugins = (
   payload: {telegrafPlugins},
 })
 
-export const addTelegrafPlugins2 = (
-  telegrafPlugins
-): AddTelegrafPlugins2 => ({
+export const addTelegrafPlugins2 = (telegrafPlugins): AddTelegrafPlugins2 => ({
   type: 'ADD_TELEGRAF_PLUGINS2',
   payload: {telegrafPlugins},
 })

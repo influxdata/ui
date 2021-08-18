@@ -42,20 +42,17 @@ class BucketsDropdown extends PureComponent<Props> {
       />
     )
   }
- 
 
   private get selectedBucketName(): string {
     const {selectedBucketID, buckets, emptyOriginal} = this.props
 
     if (this.isBucketsEmpty) {
       return 'No buckets found'
-    }else if(emptyOriginal){
+    } else if (emptyOriginal) {
       return 'Choose a bucket'
     }
-  
 
     return buckets.find(bucket => bucket.id === selectedBucketID).name
-    
   }
 
   private get status(): ComponentStatus {

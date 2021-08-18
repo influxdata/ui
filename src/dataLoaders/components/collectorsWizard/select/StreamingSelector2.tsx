@@ -136,7 +136,7 @@ class StreamingSelector2 extends PureComponent<Props, State> {
 
   private handleSelectBucket = (bucket: Bucket) => {
     this.props.onSelectBucket(bucket)
-    this.setState({emptyOriginal:false})
+    this.setState({emptyOriginal: false})
   }
 
   private get emptyState(): JSX.Element {

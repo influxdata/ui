@@ -11,6 +11,8 @@ export const DASHBOARD_ID = ':dashboardID'
 export const ORGS = 'orgs'
 export const ORG_ID = ':orgID'
 
+export const CONTENT_ID = ':contentID'
+
 export const SECRETS = 'secrets'
 
 export const SCRAPERS = 'scrapers'

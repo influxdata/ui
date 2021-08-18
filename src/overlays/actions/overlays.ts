@@ -4,9 +4,10 @@ import {OverlayParams} from 'src/types'
 export enum ActionTypes {
   ShowOverlay = 'SHOW_OVERLAY',
   DismissOverlay = 'DISMISS_OVERLAY',
+  SetOverlayParams = 'SET_OVERLAY_PARAMS',
 }
 
-export type Actions = ShowOverlay | DismissOverlay
+export type Actions = ShowOverlay | DismissOverlay | SetOverlayParams
 
 export interface ShowOverlay {
   type: ActionTypes.ShowOverlay
@@ -35,5 +36,21 @@ export interface DismissOverlay {
 export const dismissOverlay = (): DismissOverlay => {
   return {
     type: ActionTypes.DismissOverlay,
+  }
+}
+
+export interface SetOverlayParams {
+  type: ActionTypes.SetOverlayParams
+  payload: {
+    overlayParams: OverlayParams
+  }
+}
+
+export const setOverlayParams = (
+  overlayParams: OverlayParams
+): SetOverlayParams => {
+  return {
+    type: ActionTypes.SetOverlayParams,
+    payload: {overlayParams},
   }
 }

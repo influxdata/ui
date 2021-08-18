@@ -58,6 +58,11 @@ export const overlaysReducer = (
         draftState.onClose = () => {}
         return
       }
+      case ActionTypes.SetOverlayParams: {
+        const {overlayParams} = action.payload
+        draftState.params = overlayParams
+        return
+      }
     }
   })
 

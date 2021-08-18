@@ -2,11 +2,7 @@
 import React, {FunctionComponent} from 'react'
 
 // Components
-import {
-  FlexBox,
-  FlexDirection,
-  ComponentSize,
-} from '@influxdata/clockface'
+import {FlexBox, FlexDirection, ComponentSize} from '@influxdata/clockface'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import FillValues from 'src/timeMachine/components/FillValues'
 import WindowPeriod from 'src/timeMachine/components/WindowPeriod'

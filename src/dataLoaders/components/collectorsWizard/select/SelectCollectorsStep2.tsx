@@ -3,17 +3,14 @@ import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {Form, DapperScrollbars} from '@influxdata/clockface'
+import {Form, DapperScrollbars, Grid, Columns} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import StreamingSelector from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector'
+import StreamingSelector2 from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
 import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
-
-// Constants
-import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 // Actions
 import {
-  addPluginBundleWithPlugins,
+  addTelegrafPlugin,
   removePluginBundleWithPlugins,
 } from 'src/dataLoaders/actions/dataLoaders'
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
@@ -22,7 +19,6 @@ import {setBucketInfo} from 'src/dataLoaders/actions/steps'
 import {Bucket} from 'src/types'
 import {ComponentStatus} from '@influxdata/clockface'
 import {CollectorsStepProps} from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
-import {BundleName} from 'src/types/dataLoaders'
 import {AppState, ResourceType} from 'src/types'
 
 // Selectors
@@ -41,7 +37,7 @@ type Props = OwnProps & ReduxProps
 @ErrorHandling
 export class SelectCollectorsStep extends PureComponent<Props> {
   public render() {
-    const selectedBucketName = this.props.bucket || this.props.buckets[0]?.name
+    const selectedBucketName = this.props.bucket ?? this.props.buckets[0]?.name
     return (
       <Form
         onSubmit={this.props.onIncrementCurrentStepIndex}
@@ -51,14 +47,18 @@ export class SelectCollectorsStep extends PureComponent<Props> {
           autoHide={false}
           className="data-loading--scroll-content"
         >
-          <div>
-            <h3 className="wizard-step--title">What do you want to monitor?</h3>
+          <div className="wizard-step--grid-container">
+          <Grid.Row>
+              <Grid.Column widthSM={Columns.Ten}>
+            <h3 className="wizard-step--title">Where do you want to collect data from?</h3>
             <h5 className="wizard-step--sub-title">
-              Telegraf is a plugin-based data collection agent which writes
-              metrics to a bucket in InfluxDB
+              Telegraf is an open-source data collection agent for collecting and reporting metrics. Simply choose one of the 
+              plugin libraries to start writing data into influxDB. LINK. 
             </h5>
+            </Grid.Column>
+            </Grid.Row>
           </div>
-          <StreamingSelector
+          <StreamingSelector2
             pluginBundles={this.props.pluginBundles}
             telegrafPlugins={this.props.telegrafPlugins}
             onTogglePluginBundle={this.handleTogglePluginBundle}
@@ -66,24 +66,6 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             selectedBucketName={selectedBucketName}
             onSelectBucket={this.handleSelectBucket}
           />
-          <h5 className="wizard-step--sub-title">
-            Looking for other things to monitor? Check out our 200+ other &nbsp;
-            <a
-              href="https://docs.influxdata.com/telegraf/latest/plugins/#input-plugins"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Telegraf Plugins
-            </a>
-            &nbsp; and how to &nbsp;
-            <a
-              href={`https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/write-data/no-code/use-telegraf/manual-config/`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Configure these Plugins
-            </a>
-          </h5>
         </DapperScrollbars>
         <OnboardingButtons
           autoFocusNext={true}
@@ -115,15 +97,8 @@ export class SelectCollectorsStep extends PureComponent<Props> {
   }
 
   private handleTogglePluginBundle = (
-    bundle: BundleName,
-    isSelected: boolean
+    bundle: string,
   ) => {
-    if (isSelected) {
-      this.props.onRemovePluginBundle(bundle)
-
-      return
-    }
-
     this.props.onAddPluginBundle(bundle)
   }
 }
@@ -136,7 +111,6 @@ const mstp = ({
   ...state
 }: AppState) => {
   const buckets = getAll<Bucket>(state as AppState, ResourceType.Buckets)
-
   const nonSystemBuckets = buckets.filter(
     bucket => !isSystemBucket(bucket.name)
   )
@@ -150,7 +124,7 @@ const mstp = ({
 }
 
 const mdtp = {
-  onAddPluginBundle: addPluginBundleWithPlugins,
+  onAddPluginBundle: addTelegrafPlugin,
   onRemovePluginBundle: removePluginBundleWithPlugins,
   onSetBucketInfo: setBucketInfo,
 }

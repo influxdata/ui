@@ -333,10 +333,9 @@ export const setToken = (token: string): SetToken => ({
   payload: {token},
 })
 
-export const addPluginBundleWithPlugins = (bundle) => dispatch => {
+export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
   dispatch(addPluginBundle(bundle))
   const plugins = pluginsByBundle[bundle]
-  console.log(bundle, pluginsByBundle)
   dispatch(
     addTelegrafPlugins(
       plugins.map(p => {
@@ -356,7 +355,6 @@ export const addPluginBundleWithPlugins = (bundle) => dispatch => {
 }
 
 export const addTelegrafPlugin = (plugin: string) => dispatch => {
-  console.log(plugin)
   dispatch(addTelegraf2(plugin))
   dispatch(addTelegrafPlugins2(plugin))
 }

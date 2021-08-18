@@ -116,7 +116,10 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
   // should have the annotation created , lets click it to show the modal.
   startEditingAnnotation(cy)
 
-  cy.getByTestID('delete-annotation-button').click()
+  const delButton = cy.getByTestID('delete-annotation-button')
+
+  console.error('got the delete button???? testing here', delButton)
+  delButton.click()
 
   // reload to make sure the annotation was deleted from the backend as well.
   reloadAndHandleAnnotationDefaultStatus()

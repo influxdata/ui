@@ -32,7 +32,11 @@ const FlowHeader: FC = () => {
 
   const handleRename = (name: string) => {
     update({name})
-    updatePinnedItemByParam(id, {name})
+    try {
+      updatePinnedItemByParam(id, {name})
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const printJSON = () => {

@@ -63,7 +63,7 @@ const FlowsIndex = () => {
 
   function scrollHandler() {
     const elem = fadingBoxRef.current
-    if (elem) {
+    if (elem && isFlagEnabled('presetFlows')) {
       fadeOutOnScroll(elem)
     }
   }
@@ -113,7 +113,7 @@ const FlowsIndex = () => {
         className={`${showButtonMode && 'withButtonHeader'}`}
       >
         <Page.Title title={PROJECT_NAME_PLURAL} />
-        {showButtonMode && (
+        {showButtonMode && isFlagEnabled('presetFlows') && (
           <>
             <PresetFlowsButtons />
             <Page.ControlBar fullWidth={false}>
@@ -140,7 +140,7 @@ const FlowsIndex = () => {
       </PageHeader>
       <DapperScrollbars onScroll={scrollHandler} id="scrollFlows">
         <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
-          <PresetFlows />
+          {isFlagEnabled('presetFlows') && <PresetFlows />}
           <Page.ControlBar fullWidth={false}>
             <Page.ControlBarLeft>
               <SearchWidget
@@ -156,7 +156,9 @@ const FlowsIndex = () => {
                 onSelect={setSort}
               />
             </Page.ControlBarLeft>
-            <Page.ControlBarRight></Page.ControlBarRight>
+            <Page.ControlBarRight>
+              {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
+            </Page.ControlBarRight>
           </Page.ControlBar>
         </Page.Contents>
 

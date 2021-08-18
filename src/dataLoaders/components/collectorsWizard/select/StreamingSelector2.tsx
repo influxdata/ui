@@ -38,6 +38,7 @@ export interface Props {
 interface State {
   gridSizerUpdateFlag: string
   searchTerm: string
+  emptyOriginal: boolean
 }
 
 @ErrorHandling
@@ -47,6 +48,7 @@ class StreamingSelector2 extends PureComponent<Props, State> {
     this.state = {
       gridSizerUpdateFlag: uuid.v4(),
       searchTerm: '',
+      emptyOriginal: true,
     }
   }
 
@@ -80,6 +82,7 @@ class StreamingSelector2 extends PureComponent<Props, State> {
                     selectedBucketID={this.selectedBucketID}
                     buckets={buckets}
                     onSelectBucket={this.handleSelectBucket}
+                    emptyOriginal={this.state.emptyOriginal}
                   />
                 </FormElement>
               </Grid.Column>
@@ -133,6 +136,7 @@ class StreamingSelector2 extends PureComponent<Props, State> {
 
   private handleSelectBucket = (bucket: Bucket) => {
     this.props.onSelectBucket(bucket)
+    this.setState({emptyOriginal:false})
   }
 
   private get emptyState(): JSX.Element {

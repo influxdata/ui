@@ -70,6 +70,7 @@ export type Action =
   | UpdateTelegrafPlugin
   | AddPluginBundle
   | AddTelegraf2
+  | AddTelegrafPlugins2
   | AddTelegrafPlugins
   | RemoveBundlePlugins
   | RemovePluginBundle

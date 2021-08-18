@@ -663,9 +663,7 @@ export interface WriteLPDataConf {
   namedBucket?: string
 }
 
-export const writeData = (
-  args: WriteLPDataConf
-): Cypress.Chainable => {
+export const writeData = (args: WriteLPDataConf): Cypress.Chainable => {
   const oe = parseTime(args.offset)
   if (oe.measure >= 0) {
     args.offset = `-${args.offset}`

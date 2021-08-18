@@ -53,7 +53,7 @@ const WrappedViewOptions: FC = () => {
 
 const Controls: FC<Props> = ({toggle, visible}) => {
   const {id, data, range, update, results} = useContext(PipeContext)
-  const {show, showSub} = useContext(SidebarContext)
+  const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
 
   const updateType = (type: ViewType) => {
     event('notebook_change_visualization_type', {
@@ -66,12 +66,16 @@ const Controls: FC<Props> = ({toggle, visible}) => {
   }
 
   const launcher = () => {
-    show(id)
-    showSub(
-      <PipeProvider id={id}>
-        <WrappedViewOptions />
-      </PipeProvider>
-    )
+    if (id === showId) {
+      hideSub()
+    } else {
+      show(id)
+      showSub(
+        <PipeProvider id={id}>
+          <WrappedViewOptions />
+        </PipeProvider>
+      )
+    }
   }
 
   const options = useMemo(() => {

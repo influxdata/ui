@@ -12,8 +12,10 @@ import {
   ComponentSize,
   Tabs,
   Orientation,
+  Panel,
   TextArea,
   AlignItems,
+  JustifyContent,
 } from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 
@@ -190,9 +192,11 @@ const Notification: FC<PipeProp> = ({Context}) => {
 
       return acc
     }, {})
-    const condition = THRESHOLD_TYPES[data.threshold.type].condition(
-      data.threshold
-    )
+
+    const conditions = data.thresholds
+      .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
+      .join(' and ')
+
     const newQuery = `
 import "strings"
 import "regexp"
@@ -216,7 +220,7 @@ notification = {
 }
 
 task_data = ${format_from_js_file(ast)}
-trigger = ${condition}
+trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
 ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
@@ -257,11 +261,9 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.offset,
     data.endpointData,
     data.endpoint,
-    data.threshold,
+    data.thresholds,
     data.message,
   ])
-
-  const persist = <ExportTaskButton generate={generateTask} />
 
   if (
     loading === RemoteDataState.NotStarted ||
@@ -303,8 +305,9 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
   }
 
   return (
-    <Context persistentControls={persist}>
+    <Context>
       <div className="notification">
+        <Threshold />
         <FlexBox margin={ComponentSize.Medium}>
           <FlexBox.Child grow={1} shrink={1}>
             <Form.Element
@@ -348,7 +351,6 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
-        <Threshold />
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
           <FlexBox.Child grow={0} shrink={0}>
             <Tabs orientation={Orientation.Vertical}>{avail}</Tabs>
@@ -369,6 +371,12 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
+        <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
+          <ExportTaskButton
+            generate={generateTask}
+            text="Export as Alert Task"
+          />
+        </Panel.Footer>
       </div>
       {warningMessage}
     </Context>

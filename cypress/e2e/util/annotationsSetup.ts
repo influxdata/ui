@@ -99,11 +99,17 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
 export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
-  cy.getByTestID('edit-annotation-message').should('have.length.of.at.least', 1)
-  cy.getByTestID('edit-annotation-message').clear()
-  cy.getByTestID('edit-annotation-message').type('lets edit this annotation...')
+  cy.getByTestID('edit-annotation-message')
+    .should('have.length.of.at.least', 1)
+    .clear()
 
-  cy.getByTestID('annotation-submit-button').click()
+  cy.getByTestID('edit-annotation-message')
+    .should('have.length.of.at.least', 1)
+    .type('lets edit this annotation...')
+
+  cy.getByTestID('annotation-submit-button')
+    .should('have.length.of.at.least', 1)
+    .click()
 }
 
 export const deleteAnnotation = (cy: Cypress.Chainable) => {
@@ -215,7 +221,11 @@ export const testEditRangeAnnotation = (
   startEditingAnnotation(cy)
 
   cy.getByTestID('edit-annotation-message')
+    .should('have.length.of.at.least', 1)
     .clear()
+
+  cy.getByTestID('edit-annotation-message')
+    .should('have.length.of.at.least', 1)
     .type('editing the text here for the range annotation')
 
   ensureRangeAnnotationTimesAreNotEqual(cy)

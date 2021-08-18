@@ -99,17 +99,19 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
 export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
-  cy.getByTestID('edit-annotation-message')
-    .should('have.length.of.at.least', 1)
-    .clear()
+  cy.getByTestID('overlay--container').within(() => {
+    cy.getByTestID('edit-annotation-message')
+      .should('be.visible', 1)
+      .clear()
 
-  cy.getByTestID('edit-annotation-message')
-    .should('have.length.of.at.least', 1)
-    .type('lets edit this annotation...')
+    cy.getByTestID('edit-annotation-message')
+      .should('be.visible', 1)
+      .type('lets edit this annotation...')
 
-  cy.getByTestID('annotation-submit-button')
-    .should('have.length.of.at.least', 1)
-    .click()
+    cy.getByTestID('annotation-submit-button')
+      .should('be.visible', 1)
+      .click()
+  })
 }
 
 export const deleteAnnotation = (cy: Cypress.Chainable) => {

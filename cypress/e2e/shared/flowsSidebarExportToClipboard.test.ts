@@ -70,9 +70,9 @@ const getClients = (org: string, token: string, query: string) => {
   return [
     {
       name: 'arduino',
-      token: `#define INFLUXDB_TOKEN "<INFLUX_TOKEN>"`,
-      org: `#define INFLUXDB_ORG "${org}"`,
-      query,
+      token: `"<INFLUX_TOKEN>"`,
+      org: `"${org}"`,
+      query: query.replace(/"/g, '\\"'),
     },
     {
       name: 'csharp',
@@ -82,8 +82,8 @@ const getClients = (org: string, token: string, query: string) => {
     },
     {
       name: 'go',
-      token: `const token = "${token}"`,
-      org: `const org = "${org}"`,
+      token: `"${token}"`,
+      org: `client.QueryAPI("${org}")`,
       query,
     },
     {

@@ -28,6 +28,7 @@ import {
   createBucket,
   updateBucket,
   deleteBucket,
+    getBucketSchema,
 } from 'src/buckets/actions/thunks'
 import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/limits'
 
@@ -125,6 +126,7 @@ class BucketsTab extends PureComponent<Props, State> {
                     onUpdateBucket={this.props.updateBucket}
                     onDeleteBucket={this.handleDeleteBucket}
                     onFilterChange={this.handleFilterUpdate}
+                    onGetBucketSchema={this.handleShowBucketSchema}
                     sortKey={sortKey}
                     sortDirection={sortDirection}
                     sortType={sortType}
@@ -160,6 +162,10 @@ class BucketsTab extends PureComponent<Props, State> {
 
   private handleDeleteBucket = ({id, name}: OwnBucket) => {
     this.props.deleteBucket(id, name)
+  }
+
+  private handleShowBucketSchema = ({id}: OwnBucket) => {
+    this.props.getBucketSchema(id)
   }
 
   private handleFilterUpdate = (searchTerm: string): void => {
@@ -200,6 +206,7 @@ const mdtp = {
   createBucket,
   updateBucket,
   deleteBucket,
+  getBucketSchema,
   checkBucketLimits: checkBucketLimitsAction,
 }
 

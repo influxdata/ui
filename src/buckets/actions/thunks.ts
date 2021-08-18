@@ -155,6 +155,43 @@ export const createBucketAndUpdate = (
     dispatch(notify(bucketCreateFailed(message)))
   }
 }
+// dispatch: Dispatch<Action>, (eventually will use this arg....)
+export const getBucketSchema = (bucketID: string) => async (
+
+) => {
+  try {
+    ///const state = getState()
+    // const org = getOrg(state)
+    //
+    // const resp = await api.getBucketsSchemaMeasurements({
+    //   bucketID: bucket.id,
+    //   query: {orgID: org.id},
+    // })
+
+    console.log('attempting to retrieve schema, bucket:', bucketID)
+
+    const resp = await api.getBucketsSchemaMeasurements({
+      bucketID,
+    })
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    console.log("got response from getBucketSchema:", resp)
+
+ // this is for getting a particular measurement, not all of them
+    // const resp2 = await api.getBucketsSchemaMeasurement({
+    //   bucketID,
+    // })
+    //
+    // console.log("trying out singular one.....", resp2)
+
+
+  } catch (error) {
+    console.error('error while retrieving schemas', error)
+  }
+}
 
 export const updateBucket = (bucket: OwnBucket) => async (
   dispatch: Dispatch<Action>,

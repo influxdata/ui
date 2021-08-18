@@ -1,6 +1,6 @@
 export {Bucket as GenBucket} from 'src/client'
 
-import {Bucket as GenBucket} from 'src/client'
+import {Bucket as GenBucket, MeasurementSchema} from 'src/client'
 
 export interface OwnBucket extends Omit<GenBucket, 'labels'> {
   labels?: string[]
@@ -22,4 +22,10 @@ export enum WritePrecision {
   S = 's',
   Us = 'us',
   Ns = 'ns',
+}
+
+
+export interface BucketSchemaMeasurementsRespons {
+   links: {self:string},
+   measurementSchemas: MeasurementSchema[]
 }

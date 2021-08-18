@@ -1,15 +1,10 @@
 // Libraries
 import React, {FC} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {
-  Button,
-  FlexBox,
-  FlexDirection,
-  ComponentSize,
-} from '@influxdata/clockface'
+import {Button, ComponentSize, FlexBox, FlexDirection,} from '@influxdata/clockface'
 import BucketAddDataButton from 'src/buckets/components/BucketAddDataButton'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 
@@ -27,6 +22,7 @@ interface OwnProps {
   bucketType: 'user' | 'system'
   orgID: string
   onFilterChange: (searchTerm: string) => void
+  onGetSchema: (b:OwnBucket) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -38,6 +34,7 @@ const BucketCardActions: FC<Props> = ({
   bucketType,
   orgID,
   onFilterChange,
+    onGetSchema,
   onAddBucketLabel,
   onDeleteBucketLabel,
   history,
@@ -58,6 +55,11 @@ const BucketCardActions: FC<Props> = ({
 
   const handleClickSettings = () => {
     history.push(`/orgs/${orgID}/load-data/buckets/${bucket.id}/edit`)
+  }
+
+  const handleShowSchema = () => {
+    console.log('trying to show the schema...bucket???', bucket)
+   onGetSchema(bucket)
   }
 
   const handleAddCollector = () => {
@@ -117,6 +119,12 @@ const BucketCardActions: FC<Props> = ({
         testID="bucket-settings"
         size={ComponentSize.ExtraSmall}
         onClick={handleClickSettings}
+      />
+      <Button
+       text="Show Schema"
+       testID='bucket-showSchema'
+       size={ComponentSize.Small}
+       onClick={handleShowSchema}
       />
     </FlexBox>
   )

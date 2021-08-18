@@ -21,6 +21,7 @@ import {
 } from 'src/writeData/constants/contentTelegrafPlugins'
 
 // Types
+
 import {Bucket, BundleName} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
@@ -45,9 +46,10 @@ class StreamingSelector2 extends PureComponent<Props, State> {
     super(props)
     this.state = {
       gridSizerUpdateFlag: uuid.v4(),
-      searchTerm: '',    }
+      searchTerm: '',
+    }
   }
-  
+
   public componentDidUpdate(prevProps) {
     const addFirst =
       prevProps.telegrafPlugins.length === 0 &&
@@ -68,11 +70,11 @@ class StreamingSelector2 extends PureComponent<Props, State> {
     const {searchTerm} = this.state
 
     return (
-      <div className="wizard-step--grid-container">
+      <div className="wizard-step--grid-container2">
         {buckets.length ? (
           <>
             <Grid.Row>
-              <Grid.Column widthSM={Columns.Five}>
+              <Grid.Column widthSM={Columns.Six}>
                 <FormElement label="Bucket">
                   <BucketDropdown
                     selectedBucketID={this.selectedBucketID}
@@ -80,21 +82,20 @@ class StreamingSelector2 extends PureComponent<Props, State> {
                     onSelectBucket={this.handleSelectBucket}
                   />
                 </FormElement>
-                <FormElement label="">
-                  <Input
-                    className="wizard-step--filter"
-                    size={ComponentSize.Small}
-                    icon={IconFont.Search}
-                    value={searchTerm}
-                    onBlur={this.handleFilterBlur}
-                    onChange={this.handleFilterChange}
-                    placeholder="Filter sources..."
-                  />
-                </FormElement>
               </Grid.Column>
             </Grid.Row>
-            <h4 className="wizard-step--sub-title">Telegraf Plugin List</h4>
-            <SquareGrid cardSize="110px" gutter={ComponentSize.Small}>
+            <FormElement label="">
+              <Input
+                className="wizard-step--filter"
+                size={ComponentSize.Small}
+                icon={IconFont.Search}
+                value={searchTerm}
+                onBlur={this.handleFilterBlur}
+                onChange={this.handleFilterChange}
+                placeholder="Filter sources..."
+              />
+            </FormElement>
+            <SquareGrid cardSize="150px" gutter={ComponentSize.Small}>
               {this.filteredBundles.map(item => (
                 <WriteDataItem
                   key={item.id}

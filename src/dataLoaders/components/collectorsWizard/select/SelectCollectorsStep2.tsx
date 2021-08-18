@@ -47,8 +47,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
           autoHide={false}
           className="data-loading--scroll-content"
         >
-          <div className="wizard-step--grid-container">
-          <Grid.Row>
+          <Grid.Row style={{textAlign: "start"}}>
               <Grid.Column widthSM={Columns.Ten}>
             <h3 className="wizard-step--title">Where do you want to collect data from?</h3>
             <h5 className="wizard-step--sub-title">
@@ -57,7 +56,6 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             </h5>
             </Grid.Column>
             </Grid.Row>
-          </div>
           <StreamingSelector2
             pluginBundles={this.props.pluginBundles}
             telegrafPlugins={this.props.telegrafPlugins}

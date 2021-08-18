@@ -10,12 +10,12 @@ import {
   Icon,
   IconFont,
   ComponentSize,
-  Tabs,
-  Orientation,
   Panel,
   TextArea,
   AlignItems,
   JustifyContent,
+  Dropdown,
+  InfluxColors,
 } from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 
@@ -34,6 +34,9 @@ import {PipeProp} from 'src/types/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+
+// Styles
+import 'src/flows/pipes/Notification/styles.scss'
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const {id, data, update, results, loading} = useContext(PipeContext)
@@ -148,13 +151,14 @@ const Notification: FC<PipeProp> = ({Context}) => {
   }, [hasTaskOption])
 
   const avail = Object.keys(DEFAULT_ENDPOINTS).map(k => (
-    <Tabs.Tab
+    <Dropdown.Item
       key={k}
       id={k}
       onClick={() => updateEndpoint(k)}
-      text={DEFAULT_ENDPOINTS[k].name}
-      active={data.endpoint === k}
-    />
+      selected={data.endpoint === k}
+    >
+      {DEFAULT_ENDPOINTS[k].name}
+    </Dropdown.Item>
   ))
 
   const generateTask = useCallback(() => {
@@ -352,9 +356,9 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
           </FlexBox.Child>
         </FlexBox>
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
-          <FlexBox.Child grow={0} shrink={0}>
-            <Tabs orientation={Orientation.Vertical}>{avail}</Tabs>
-          </FlexBox.Child>
+          <Dropdown.Menu className="flows-endpoints--dropdown">
+            {avail}
+          </Dropdown.Menu>
           <FlexBox.Child grow={1} shrink={1}>
             {React.createElement(DEFAULT_ENDPOINTS[data.endpoint].view)}
           </FlexBox.Child>

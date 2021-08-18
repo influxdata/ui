@@ -1,4 +1,4 @@
 export enum PermissionType {
   Read = 'read',
-  Write = 'write'
+  Write = 'write',
 }

@@ -30,7 +30,7 @@ export interface Props {
   buckets: Bucket[]
   selectedBucketName: string
   pluginBundles: BundleName[]
-  telegrafPlugins: TelegrafPlugin[]
+  telegrafPlugins: any
   onTogglePluginBundle: (bundle: string) => void
   onSelectBucket: (bucket: Bucket) => void
 }

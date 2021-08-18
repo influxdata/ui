@@ -195,6 +195,7 @@ from(bucket: "${name}"{rightarrow}
           .type('{enter}')
       })
       cy.wait('@updatePinned')
+      cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
         cy.getByTestID('pinneditems--link').should(

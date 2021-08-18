@@ -455,22 +455,22 @@ export const QueryProvider: FC = ({children}) => {
       body: JSON.stringify(body),
       signal: controller.signal,
     })
-      .then(response => {
-        if (pending[id]) {
-          delete pending[id]
-          setPending({...pending})
-        }
-        return response
-      })
       .then(
         (response: Response): Promise<RunQueryResult> => {
           if (response.status === 200) {
-            return response.text().then(csv => ({
-              type: 'SUCCESS',
-              csv,
-              bytesRead: csv.length,
-              didTruncate: false,
-            }))
+            return response.text().then(csv => {
+              if (pending[id]) {
+                delete pending[id]
+                setPending({...pending})
+              }
+
+              return {
+                type: 'SUCCESS',
+                csv,
+                bytesRead: csv.length,
+                didTruncate: false,
+              }
+            })
           }
 
           if (response.status === RATE_LIMIT_ERROR_STATUS) {

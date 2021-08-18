@@ -21,6 +21,7 @@ import {ResourceType} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import 'src/flows/components/controlSearchBar.scss'
+import PresetFlowsButtons from './PresetFlowsButtons'
 
 const FlowsIndex = () => {
   const fadingBoxRef = useRef()
@@ -109,12 +110,12 @@ const FlowsIndex = () => {
     >
       <PageHeader
         fullWidth={false}
-        className={`${showButtonMode && 'withButtonHeader marginHeader'}`}
+        className={`${showButtonMode && 'withButtonHeader'}`}
       >
         <Page.Title title={PROJECT_NAME_PLURAL} />
         {showButtonMode && (
           <>
-            <PresetFlows buttonMode={showButtonMode} />
+            <PresetFlowsButtons />
             <Page.ControlBar fullWidth={false}>
               <Page.ControlBarLeft>
                 <SearchWidget
@@ -139,7 +140,7 @@ const FlowsIndex = () => {
       </PageHeader>
       <DapperScrollbars onScroll={scrollHandler} id="scrollFlows">
         <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
-          <PresetFlows buttonMode={false} />
+          <PresetFlows />
           <Page.ControlBar fullWidth={false}>
             <Page.ControlBarLeft>
               <SearchWidget

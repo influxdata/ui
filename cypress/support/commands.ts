@@ -142,7 +142,7 @@ export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Re
             b.name !== '_monitoring'
         )
         cy.wrap(bucket).as('bucket')
-        wrapDefaultBucket()
+        return wrapDefaultBucket()
       })
     })
 }

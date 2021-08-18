@@ -37,11 +37,7 @@ export const TimeMachineViewTypeDropdown: FC<{}> = () => {
   )
 
   return (
-    <ViewTypeDropdown
-      viewType={viewType}
-      onUpdateType={updateType as any}
-      filter={['simple-table']}
-    />
+    <ViewTypeDropdown viewType={viewType} onUpdateType={updateType as any} />
   )
 }
 

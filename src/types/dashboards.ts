@@ -91,6 +91,7 @@ export {
   QueryEditMode,
   RenamableField,
   ScatterViewProperties,
+  SimpleTableViewProperties,
   SingleStatViewProperties,
   StaticLegend,
   TableViewProperties,

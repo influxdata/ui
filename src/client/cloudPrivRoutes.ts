@@ -60,6 +60,8 @@ export interface Limit {
     writeKBs: number
     concurrentWriteRequests: number
     cardinality: number
+    concurrentDeleteRequests?: number
+    deleteRequestsPerSecond?: number
   }
   bucket: {
     maxBuckets: number

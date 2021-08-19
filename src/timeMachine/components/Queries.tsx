@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router'
+import {withRouter, RouteComponentProps, Link} from 'react-router-dom'
 
 // Components
 import TimeMachineFluxEditor from 'src/timeMachine/components/TimeMachineFluxEditor'
@@ -14,6 +14,7 @@ import SubmitQueryButton from 'src/timeMachine/components/SubmitQueryButton'
 import RawDataToggle from 'src/timeMachine/components/RawDataToggle'
 import QueryTabs from 'src/timeMachine/components/QueryTabs'
 import EditorShortcutsToolTip from 'src/timeMachine/components/EditorShortcutsTooltip'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {
   ComponentSize,
   FlexBox,
@@ -56,6 +57,12 @@ class TimeMachineQueries extends PureComponent<Props> {
       <div className="time-machine-queries">
         <div className="time-machine-queries--controls">
           <QueryTabs />
+          <FeatureFlag name="flowsCTA">
+            <div className="time-machine--cta">
+              <span>Need something more?</span>
+              <Link to="/notebook/from/default">Create a Notebook</Link>
+            </div>
+          </FeatureFlag>
           <FlexBox
             direction={FlexDirection.Row}
             justifyContent={JustifyContent.FlexEnd}

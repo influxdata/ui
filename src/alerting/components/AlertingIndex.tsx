@@ -1,6 +1,6 @@
 // Libraries
 import React, {FunctionComponent, useState} from 'react'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
 import {Page, SelectGroup, ButtonShape} from '@influxdata/clockface'
@@ -19,6 +19,7 @@ import {
   ThresholdCheckOverlay,
   DeadmanCheckOverlay as NewDeadmanCheckEO,
 } from 'src/overlays/components'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -45,6 +46,12 @@ const AlertingIndex: FunctionComponent = () => {
       <Page titleTag={pageTitleSuffixer(['Alerts'])}>
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
+          <FeatureFlag name="flowsCTA">
+            <div className="alert-header--cta">
+              <span>Need something more?</span>
+              <Link to="/notebook/from/notification">Create a Notebook</Link>
+            </div>
+          </FeatureFlag>
           <ErrorBoundary>
             <RateLimitAlert />
           </ErrorBoundary>

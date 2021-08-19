@@ -423,51 +423,11 @@ export const getCoordinateColumn = (table: Table): string => {
   }
 }
 
-export const getGeoCoordinates = (
-  table: Table,
-  index: number
-): {lon: number; lat: number} | null => {
-  const coordinateColumn = getCoordinateColumn(table)
-
-  switch (coordinateColumn) {
-    case CoordinateType.S2:
-      return getCoordinateFromS2('s2_cell_id', table, index)
-    case CoordinateType.Tags:
-      const latColumn = table.getColumn('lat')
-      const lonColumn = table.getColumn('lon')
-      return {
-        lat: parseCoordinates(latColumn[index]),
-        lon: parseCoordinates(lonColumn[index]),
-      }
-    case CoordinateType.Fields:
-      const latCoordinate = getColumnValue(table, 'lat')
-      const lonCoordinate = getColumnValue(table, 'lon')
-      return {
-        lat: parseCoordinates(latCoordinate),
-        lon: parseCoordinates(lonCoordinate),
-      }
-    default:
-      throw new Error('lat_lon_not_provided')
-  }
-}
-
-export const getDetectCoordinatingFields = (table: Table) => {
-  const coordinateColumn = getCoordinateColumn(table)
-
-  if (
-    coordinateColumn === CoordinateType.S2 ||
-    coordinateColumn === CoordinateType.Tags
-  ) {
-    return false
-  }
-  return true
-}
-
 const latLonAsTags = latLonColumns => {
   return latLonColumns?.lat?.key === 'tag' && latLonColumns?.lon?.key === 'tag'
 }
 
-const getCoordinateColumnFlagged = (
+const getCoordinateColumn = (
   table: Table,
   useS2CellID: boolean,
   s2Column: string,
@@ -508,14 +468,14 @@ const getCoordinateColumnFlagged = (
   }
 }
 
-export const getGeoCoordinatesFlagged = (
+export const getGeoCoordinates = (
   table: Table,
   index: number,
   useS2CellID: boolean,
   s2Column: string,
   latLonColumns: LatLonColumns
 ): {lon: number; lat: number} | null => {
-  const coordinateColumn = getCoordinateColumnFlagged(
+  const coordinateColumn = getCoordinateColumn(
     table,
     useS2CellID,
     s2Column,
@@ -560,13 +520,13 @@ export const getGeoCoordinatesFlagged = (
   }
 }
 
-export const getDetectCoordinatingFieldsFlagged = (
+export const getDetectCoordinatingFields = (
   table: Table,
   useS2CellID: boolean,
   s2Column: string,
   latLonColumns: LatLonColumns
 ) => {
-  const coordinateColumn = getCoordinateColumnFlagged(
+  const coordinateColumn = getCoordinateColumn(
     table,
     useS2CellID,
     s2Column,

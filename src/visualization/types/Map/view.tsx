@@ -10,12 +10,9 @@ import {VisualizationProps} from 'src/visualization'
 // Utils
 import {
   getDetectCoordinatingFields,
-  getDetectCoordinatingFieldsFlagged,
   getGeoCoordinates,
-  getGeoCoordinatesFlagged,
 } from 'src/shared/utils/vis'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 let getMapToken = null
 
@@ -43,8 +40,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     latLonColumns,
   } = properties
   const {lat, lon} = properties.center
-
-  const isBehindFlag = isFlagEnabled('mapGeoOptions') && CLOUD
 
   const [mapServiceError, setMapServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
@@ -83,17 +78,18 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   }, [])
 
   useEffect(() => {
-    try {
-      setCoordinateError(RemoteDataState.Loading)
-      if (isBehindFlag) {
-        const coordinates = getGeoCoordinatesFlagged(
+    if (CLOUD) {
+      try {
+        setCoordinateError(RemoteDataState.Loading)
+
+        const coordinates = getGeoCoordinates(
           result.table,
           0,
           useS2CellID,
           s2Column,
           latLonColumns
         )
-        const coordinateFlag = getDetectCoordinatingFieldsFlagged(
+        const coordinateFlag = getDetectCoordinatingFields(
           result.table,
           useS2CellID,
           s2Column,
@@ -101,19 +97,19 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
         )
         setCoordinateFlag(coordinateFlag)
         setGeoCoordinates(coordinates)
-      } else {
-        const coordinates = getGeoCoordinates(result.table, 0)
-        const coordinateFlag = getDetectCoordinatingFields(result.table)
-        setCoordinateFlag(coordinateFlag)
-        setGeoCoordinates(coordinates)
+
+        setCoordinateError(RemoteDataState.Done)
+        event('mapplot.get_geo_coordinates.success')
+      } catch (err) {
+        setCoordinateError(RemoteDataState.Error)
+        event('mapplot.get_geo_coordinates.failure')
       }
-      setCoordinateError(RemoteDataState.Done)
-      event('mapplot.get_geo_coordinates.success')
-    } catch (err) {
-      setCoordinateError(RemoteDataState.Error)
-      event('mapplot.get_geo_coordinates.failure')
     }
-  }, [useS2CellID, s2Column, latLonColumns, result.table, isBehindFlag])
+  }, [useS2CellID, s2Column, latLonColumns, result.table])
+
+  if (CLOUD) {
+    return null
+  }
 
   let error = ''
 
@@ -143,13 +139,8 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       </div>
     )
   } else if (coordinateError === RemoteDataState.Error) {
-    if (isBehindFlag) {
-      error =
-        'Map type is not supported with the data provided. Please use customization options to select correct fields to use for lat/lon'
-    } else {
-      error =
-        'Map type is not supported with the data provided. Map type only supports latitude/longitude values (field values must be specified to either lat or lon)'
-    }
+    error =
+      'Map type is not supported with the data provided. Please use customization options to select correct fields to use for lat/lon'
 
     return (
       <div className="panel-resizer--error" data-testid="geoplot-error">
@@ -187,47 +178,25 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     zoomOpt = 6
   }
 
-  let config: Config
-
-  if (isBehindFlag) {
-    config = {
-      table: result.table,
-      showAxes: false,
-      layers: [
-        {
-          type: 'geo',
-          lat: geoCoordinates.lat,
-          lon: geoCoordinates.lon,
-          zoom: zoomOpt,
-          allowPanAndZoom,
-          detectCoordinateFields: true,
-          mapStyle,
-          layers: layersOpts,
-          tileServerConfiguration: tileServerConfiguration,
-          useS2CellID: useS2CellID,
-          s2Column: s2Column,
-          latLonColumns: latLonColumns,
-        },
-      ],
-    }
-  } else {
-    config = {
-      table: result.table,
-      showAxes: false,
-      layers: [
-        {
-          type: 'geo',
-          lat: geoCoordinates.lat,
-          lon: geoCoordinates.lon,
-          zoom: zoomOpt,
-          allowPanAndZoom,
-          detectCoordinateFields: coordinateFieldsFlag,
-          mapStyle,
-          layers: layersOpts,
-          tileServerConfiguration: tileServerConfiguration,
-        },
-      ],
-    }
+  let config: Config = {
+    table: result.table,
+    showAxes: false,
+    layers: [
+      {
+        type: 'geo',
+        lat: geoCoordinates.lat,
+        lon: geoCoordinates.lon,
+        zoom: zoomOpt,
+        allowPanAndZoom,
+        detectCoordinateFields: true,
+        mapStyle,
+        layers: layersOpts,
+        tileServerConfiguration: tileServerConfiguration,
+        useS2CellID: useS2CellID,
+        s2Column: s2Column,
+        latLonColumns: latLonColumns,
+      },
+    ],
   }
 
   return <Plot config={config} />

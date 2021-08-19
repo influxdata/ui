@@ -5,7 +5,6 @@ import {
   getMainColumnName,
   parseYBounds,
   parseCoordinates,
-  CoordinateType,
 } from 'src/shared/utils/vis'
 import {Table} from '@influxdata/giraffe'
 

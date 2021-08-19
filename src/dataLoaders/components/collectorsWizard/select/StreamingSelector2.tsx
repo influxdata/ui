@@ -42,7 +42,7 @@ interface State {
 }
 
 @ErrorHandling
-class StreamingSelector_telegrafUiRefresh extends PureComponent<Props, State> {
+class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -183,4 +183,4 @@ class StreamingSelector_telegrafUiRefresh extends PureComponent<Props, State> {
   }
 }
 
-export default StreamingSelector_telegrafUiRefresh
+export default StreamingSelectorTelegrafUiRefresh

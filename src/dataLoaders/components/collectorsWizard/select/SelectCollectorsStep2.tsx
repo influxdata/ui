@@ -5,7 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import {Form, DapperScrollbars, Grid, Columns} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import StreamingSelector_telegrafUiRefresh from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
+import StreamingSelectorTelegrafUiRefresh from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
 import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
 // Actions
@@ -59,7 +59,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
               </h5>
             </Grid.Column>
           </Grid.Row>
-          <StreamingSelector_telegrafUiRefresh
+          <StreamingSelectorTelegrafUiRefresh
             pluginBundles={this.props.pluginBundles}
             telegrafPlugins={this.props.telegrafPlugins}
             onTogglePluginBundle={this.handleTogglePluginBundle}

@@ -104,17 +104,30 @@ export const editAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('overlay--container')
     .filter(':visible')
     .within(() => {
-      // interacting with the 'edit-annotation-message' box is unstable, causes flaky tests.
-      // to work around the issue, lets update the annotation by intercepting the request body.
-      cy.intercept(
-        'PUT',
-        '**/annotations/*',
-        (req: any) =>
-          (req.body = {
-            ...req.body,
-            summary: 'lets edit this annotation...',
-          })
-      ).as('updateAnnotation')
+      if (Cypress.browser.name === 'firefox') {
+        // interacting with the 'edit-annotation-message' box is unstable in Firefox, causes flaky tests.
+        // to work around the issue, lets update the annotation by intercepting the request body.
+        cy.intercept(
+          'PUT',
+          '**/annotations/*',
+          (req: any) =>
+            (req.body = {
+              ...req.body,
+              summary: 'lets edit this annotation...',
+            })
+        ).as('updateAnnotation')
+      } else {
+        // for Chrome et. al., continue interacting with the UI per usual
+        cy.getByTestID('edit-annotation-message')
+          .should('be.visible')
+          .clear()
+
+        cy.getByTestID('edit-annotation-message')
+          .should('be.visible')
+          .type('lets edit this annotation...')
+
+        cy.intercept('PUT', '**/annotations/*').as('updateAnnotation')
+      }
 
       cy.getByTestID('annotation-submit-button')
         .should('be.visible')

@@ -99,6 +99,7 @@ interface QuerySignature {
 }
 
 class Query implements QuerySignature {
+  private vars: VariableMap
   private astim: ASTIM
   private orgId: string
   private abortController: AbortController
@@ -113,6 +114,7 @@ class Query implements QuerySignature {
   constructor(
     orgId: string,
     query: string,
+    vars: VariableMap,
     ttl = DEFAULT_TTL,
     tags: Tags = null
   ) {
@@ -124,6 +126,7 @@ class Query implements QuerySignature {
     }
 
     this.ttl = ttl
+    this.vars = vars
     this.tags = tags
     this.query = query
     this.orgId = orgId
@@ -282,120 +285,11 @@ class Query implements QuerySignature {
     return this.lastRun && Date.now() - this.lastRun >= TEN_MINUTES
   }
 
-  public simplify(vars: VariableMap = {}) {
-    // Continue here
+  public simplify() {
     const ast = this.astim.getAST()
-    const usedVars = _getVars(ast, vars)
+    const usedVars = _getVars(ast, this.vars)
 
-    // Grab all global variables and turn them into a hashmap
-    // TODO: move off this variable junk and just use strings
-    const globalDefinedVars = Object.values(usedVars).reduce((acc, v) => {
-      let _val
-
-      if (!v) {
-        return acc
-      }
-
-      if (v.id === WINDOW_PERIOD) {
-        acc[v.id] = (v.arguments?.values || [10000])[0] + 'ms'
-
-        return acc
-      }
-
-      if (v.id === TIME_RANGE_START || v.id === TIME_RANGE_STOP) {
-        const val = v.arguments.values[0]
-
-        if (!isNaN(Date.parse(val))) {
-          acc[v.id] = new Date(val).toISOString()
-          return acc
-        }
-
-        if (typeof val === 'string') {
-          if (val) {
-            acc[v.id] = val
-          }
-
-          return acc
-        }
-
-        _val = '-' + val[0].magnitude + val[0].unit
-
-        if (_val !== '-') {
-          acc[v.id] = _val
-        }
-
-        return acc
-      }
-
-      if (v.arguments.type === 'map') {
-        _val =
-          v.arguments.values[
-            v.selected ? v.selected[0] : Object.keys(v.arguments.values)[0]
-          ]
-
-        if (_val) {
-          acc[v.id] = _val
-        }
-
-        return acc
-      }
-
-      if (v.arguments.type === 'constant') {
-        _val = v.selected ? v.selected[0] : v.arguments.values[0]
-
-        if (_val) {
-          acc[v.id] = _val
-        }
-
-        return acc
-      }
-
-      if (v.arguments.type === 'query') {
-        if (!v.selected || !v.selected[0]) {
-          return
-        }
-
-        acc[v.id] = v.selected[0]
-        return acc
-      }
-
-      return acc
-    }, {})
-
-    // Grab all variables that are defined in the query while removing the old definition from the AST
-    const queryDefinedVars = remove(
-      ast,
-      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
-
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-
-    // Merge the two variable maps, allowing for any user defined variables to override
-    // global system variables
-    const joinedVars = Object.keys(usedVars).reduce((acc, curr) => {
-      if (globalDefinedVars.hasOwnProperty(curr)) {
-        acc[curr] = globalDefinedVars[curr]
-      }
-
-      if (queryDefinedVars.hasOwnProperty(curr)) {
-        acc[curr] = queryDefinedVars[curr]
-      }
-
-      return acc
-    }, {})
-
-    const varVals = Object.entries(joinedVars)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join(',\n')
+    const varVals = _getVarVals(usedVars, ast)
     const optionAST = parse(`option v = {\n${varVals}\n}\n`)
 
     if (varVals.length) {
@@ -403,24 +297,7 @@ class Query implements QuerySignature {
     }
 
     // Join together any duplicate task options
-    const taskParams = remove(
-      ast,
-      node =>
-        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
-    )
-      .reverse()
-      .reduce((acc, curr) => {
-        // eslint-disable-next-line no-extra-semi
-        ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-          if (_curr.key?.name && _curr.value?.location?.source) {
-            _acc[_curr.key.name] = _curr.value.location.source
-          }
-
-          return _acc
-        }, acc)
-
-        return acc
-      }, {})
+    const taskParams = _getTaskParams(ast)
 
     if (Object.keys(taskParams).length) {
       const taskVals = Object.entries(taskParams)
@@ -440,7 +317,7 @@ class Query implements QuerySignature {
   }
 
   // Latest
-  public async run(vars: VariableMap, basicOnly = false) {
+  public async run(basicOnly = false) {
     if (!this.isExpired()) {
       return new Promise(resolve => {
         resolve(this.result.flux)
@@ -451,10 +328,10 @@ class Query implements QuerySignature {
     this.status = RemoteDataState.Loading
 
     if (basicOnly) {
-      return this.basic(vars)
+      return this.basic()
     }
 
-    return this.basic(vars)
+    return this.basic()
       .then(raw => {
         if (raw.type !== 'SUCCESS') {
           throw new Error(raw.message)
@@ -480,8 +357,8 @@ class Query implements QuerySignature {
       })
   }
 
-  private async basic(vars: VariableMap = {}) {
-    const query = this.simplify(vars)
+  private async basic() {
+    const query = this.simplify()
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
     const orgID = this.orgId
@@ -558,6 +435,162 @@ class Query implements QuerySignature {
         return Promise.reject(e)
       })
   }
+}
+
+const _getGlobalDefinedVars = (usedVars: VariableMap) => {
+  return Object.values(usedVars).reduce((acc, v) => {
+    let _val
+
+    if (!v) {
+      return acc
+    }
+
+    if (v.id === WINDOW_PERIOD) {
+      acc[v.id] = (v.arguments?.values || [10000])[0] + 'ms'
+
+      return acc
+    }
+
+    if (v.id === TIME_RANGE_START || v.id === TIME_RANGE_STOP) {
+      const val = v.arguments.values[0]
+
+      if (!isNaN(Date.parse(val))) {
+        acc[v.id] = new Date(val).toISOString()
+        return acc
+      }
+
+      if (typeof val === 'string') {
+        if (val) {
+          acc[v.id] = val
+        }
+
+        return acc
+      }
+
+      _val = '-' + val[0].magnitude + val[0].unit
+
+      if (_val !== '-') {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'map') {
+      _val =
+        v.arguments.values[
+          v.selected ? v.selected[0] : Object.keys(v.arguments.values)[0]
+        ]
+
+      if (_val) {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'constant') {
+      _val = v.selected ? v.selected[0] : v.arguments.values[0]
+
+      if (_val) {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'query') {
+      if (!v.selected || !v.selected[0]) {
+        return
+      }
+
+      acc[v.id] = v.selected[0]
+      return acc
+    }
+
+    return acc
+  }, {})
+}
+
+const _getQueryDefinedVars = (ast: File) => {
+  return remove(
+    ast,
+    node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
+  ).reduce((acc, curr) => {
+    // eslint-disable-next-line no-extra-semi
+    ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+      if (_curr.key?.name && _curr.value?.location?.source) {
+        _acc[_curr.key.name] = _curr.value.location.source
+      }
+
+      return _acc
+    }, acc)
+
+    return acc
+  }, {})
+}
+
+const _getJoinedVars = (
+  usedVars: VariableMap,
+  globalDefinedVars,
+  queryDefinedVars
+) => {
+  // Merge the two variable maps, allowing for any user defined variables to override
+  // global system variables
+  return Object.keys(usedVars).reduce((acc, curr) => {
+    if (globalDefinedVars.hasOwnProperty(curr)) {
+      acc[curr] = globalDefinedVars[curr]
+    }
+
+    if (queryDefinedVars.hasOwnProperty(curr)) {
+      acc[curr] = queryDefinedVars[curr]
+    }
+
+    return acc
+  }, {})
+}
+
+const _getTaskParams = (ast: File) => {
+  // Join together any duplicate task options
+  return remove(
+    ast,
+    node =>
+      node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+  )
+    .reverse()
+    .reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+}
+
+const _getVarVals = (usedVars: VariableMap, ast: File) => {
+  // Grab all global variables and turn them into a hashmap
+  // TODO: move off this variable junk and just use strings
+  const globalDefinedVars = _getGlobalDefinedVars(usedVars)
+
+  // Grab all variables that are defined in the query while removing the old definition from the AST
+  const queryDefinedVars = _getQueryDefinedVars(ast)
+
+  // Merge the two variable maps, allowing for any user defined variables to override
+  // global system variables
+  const joinedVars = _getJoinedVars(
+    usedVars,
+    globalDefinedVars,
+    queryDefinedVars
+  )
+
+  return Object.entries(joinedVars)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(',\n')
 }
 
 const _getVars = (
@@ -718,7 +751,12 @@ export interface GlobalQueryContextType {
   // query: (text: string, vars?: VariableMap) => Promise<FluxResult>
   refreshQueries: () => void
   cancelQueries: (tags?: Tags) => void
-  getQuery: (query: string, tags?: Tags, id?: string) => Query
+  getQuery: (
+    query: string,
+    vars: VariableMap,
+    tags?: Tags,
+    id?: string
+  ) => Query
   isInitialized: boolean
   changeExpiration: (ttl: number) => void
 }
@@ -728,7 +766,7 @@ export const DEFAULT_GLOBAL_QUERY_CONTEXT: GlobalQueryContextType = {
   // basic: (_: string, __: VariableMap) => null,
   // query: (_: string, __: VariableMap) => Promise.resolve({} as FluxResult),
   cancelQueries: (_: Tags) => {},
-  getQuery: (_: string, __?: Tags, ___?: string) => null,
+  getQuery: (_: string, __: VariableMap, ___?: Tags, ____?: string) => null,
   isInitialized: false,
   changeExpiration: (_: number) => {},
 }
@@ -761,14 +799,31 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     return queries.find(q => q.id === queryId)
   }
 
-  const getQuery = (rawQuery: string, tags: Tags = null): Query => {
-    let query = findQuery(rawQuery)
+  const buildQueryText = (rawQuery: string, vars: VariableMap) => {
+    const ast = parseASTIM(rawQuery).getAST()
+    const varVals = _getVarVals(vars, ast)
+    const optionAST = parse(`option v = {\n${varVals}\n}\n`)
+
+    if (varVals.length) {
+      ast.body.unshift(optionAST.body[0])
+    }
+
+    return format_from_js_file(ast)
+  }
+
+  const getQuery = (
+    rawQuery: string,
+    vars: VariableMap,
+    tags: Tags = null
+  ): Query => {
+    const text = buildQueryText(rawQuery, vars)
+    let query = findQuery(text)
 
     if (query) {
       return query
     }
 
-    query = new Query(orgId, rawQuery, ttl, tags)
+    query = new Query(orgId, text, vars, ttl, tags)
 
     queries.push(query)
 

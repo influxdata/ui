@@ -245,13 +245,13 @@ export const FlowQueryProvider: FC = ({children}) => {
     event('runQuery', {context: 'flows'})
 
     return isFlagEnabled('Subir')
-      ? (getQuery(text).run(vars) as Promise<FluxResult>)
+      ? (getQuery(text, vars).run() as Promise<FluxResult>)
       : queryAPI(text, vars)
   }
 
   const basic = (text: string): Promise<FluxResult> => {
     return isFlagEnabled('Subir')
-      ? (getQuery(text).run(vars, true) as Promise<FluxResult>)
+      ? (getQuery(text, vars).run(true) as Promise<FluxResult>)
       : basicAPI(text, vars)
   }
 
@@ -339,7 +339,7 @@ export const FlowQueryProvider: FC = ({children}) => {
 
   const simple = (text: string) => {
     return isFlagEnabled('Subir')
-      ? getQuery(text).simplify(vars)
+      ? getQuery(text, vars).simplify(vars)
       : simplify(text, vars)
   }
 

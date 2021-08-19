@@ -919,7 +919,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     image: kinesis_consumerLogo,
   },
   {
-    id: 'knx_listener',
+    id: 'KNXListener',
     name: 'KNX',
     markdown: knx_listenerMarkdown,
     image: knx_listenerLogo,

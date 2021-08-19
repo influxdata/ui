@@ -42,7 +42,7 @@ interface State {
 }
 
 @ErrorHandling
-class StreamingSelector2 extends PureComponent<Props, State> {
+class StreamingSelector_telegrafUiRefresh extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -72,7 +72,7 @@ class StreamingSelector2 extends PureComponent<Props, State> {
     const {searchTerm} = this.state
 
     return (
-      <div className="wizard-step--grid-container2">
+      <div className="wizard-step--grid-container_telegrafUiRefresh">
         {buckets.length ? (
           <>
             <Grid.Row>
@@ -183,4 +183,4 @@ class StreamingSelector2 extends PureComponent<Props, State> {
   }
 }
 
-export default StreamingSelector2
+export default StreamingSelector_telegrafUiRefresh

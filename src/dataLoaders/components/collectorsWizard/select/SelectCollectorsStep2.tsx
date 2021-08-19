@@ -5,12 +5,12 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import {Form, DapperScrollbars, Grid, Columns} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import StreamingSelector2 from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
+import StreamingSelector_telegrafUiRefresh from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
 import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
 // Actions
 import {
-  addTelegrafPlugin,
+  addTelegrafPlugin_telegrafUiRefresh,
   removePluginBundleWithPlugins,
 } from 'src/dataLoaders/actions/dataLoaders'
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
@@ -59,7 +59,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
               </h5>
             </Grid.Column>
           </Grid.Row>
-          <StreamingSelector2
+          <StreamingSelector_telegrafUiRefresh
             pluginBundles={this.props.pluginBundles}
             telegrafPlugins={this.props.telegrafPlugins}
             onTogglePluginBundle={this.handleTogglePluginBundle}
@@ -123,7 +123,7 @@ const mstp = ({
 }
 
 const mdtp = {
-  onAddPluginBundle: addTelegrafPlugin,
+  onAddPluginBundle: addTelegrafPlugin_telegrafUiRefresh,
   onRemovePluginBundle: removePluginBundleWithPlugins,
   onSetBucketInfo: setBucketInfo,
 }

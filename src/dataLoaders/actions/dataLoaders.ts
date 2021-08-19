@@ -69,8 +69,8 @@ export type Action =
   | SetActiveTelegrafPlugin
   | UpdateTelegrafPlugin
   | AddPluginBundle
-  | AddTelegraf2
-  | AddTelegrafPlugins2
+  | AddTelegraf_telegrafUiRefresh
+  | AddTelegrafPlugins_telegrafUiRefresh
   | AddTelegrafPlugins
   | RemoveBundlePlugins
   | RemovePluginBundle
@@ -222,8 +222,8 @@ interface AddPluginBundle {
   payload: {bundle: BundleName}
 }
 
-interface AddTelegraf2 {
-  type: 'ADD_TELEGRAF_2'
+interface AddTelegraf_telegrafUiRefresh {
+  type: 'ADD_TELEGRAF_telegrafUiRefresh'
   payload: {plugin: string}
 }
 
@@ -232,8 +232,10 @@ export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
   payload: {bundle},
 })
 
-export const addTelegraf2 = (plugin: string): AddTelegraf2 => ({
-  type: 'ADD_TELEGRAF_2',
+export const addTelegraf_telegrafUiRefresh = (
+  plugin: string
+): AddTelegraf_telegrafUiRefresh => ({
+  type: 'ADD_TELEGRAF_telegrafUiRefresh',
   payload: {plugin},
 })
 
@@ -250,8 +252,8 @@ interface AddTelegrafPlugins {
   type: 'ADD_TELEGRAF_PLUGINS'
   payload: {telegrafPlugins: TelegrafPlugin[]}
 }
-interface AddTelegrafPlugins2 {
-  type: 'ADD_TELEGRAF_PLUGINS2'
+interface AddTelegrafPlugins_telegrafUiRefresh {
+  type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh'
   payload: {telegrafPlugins}
 }
 
@@ -262,8 +264,10 @@ export const addTelegrafPlugins = (
   payload: {telegrafPlugins},
 })
 
-export const addTelegrafPlugins2 = (telegrafPlugins): AddTelegrafPlugins2 => ({
-  type: 'ADD_TELEGRAF_PLUGINS2',
+export const addTelegrafPlugins_telegrafUiRefresh = (
+  telegrafPlugins
+): AddTelegrafPlugins_telegrafUiRefresh => ({
+  type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh',
   payload: {telegrafPlugins},
 })
 
@@ -352,9 +356,11 @@ export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
   )
 }
 
-export const addTelegrafPlugin = (plugin: string) => dispatch => {
-  dispatch(addTelegraf2(plugin))
-  dispatch(addTelegrafPlugins2(plugin))
+export const addTelegrafPlugin_telegrafUiRefresh = (
+  plugin: string
+) => dispatch => {
+  dispatch(addTelegraf_telegrafUiRefresh(plugin))
+  dispatch(addTelegrafPlugins_telegrafUiRefresh(plugin))
 }
 
 export const removePluginBundleWithPlugins = (

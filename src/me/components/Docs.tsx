@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Panel, Heading, HeadingElement, FontWeight} from '@influxdata/clockface'
+import {Panel, Heading, HeadingElement} from '@influxdata/clockface'
 
 // Constants
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
@@ -31,11 +31,7 @@ export default class SupportLinks extends PureComponent {
     return (
       <Panel>
         <Panel.Header>
-          <Heading
-            element={HeadingElement.H2}
-            weight={FontWeight.Light}
-            className="cf-heading__h4"
-          >
+          <Heading element={HeadingElement.H3}>
             Some Handy Guides and Tutorials
           </Heading>
         </Panel.Header>

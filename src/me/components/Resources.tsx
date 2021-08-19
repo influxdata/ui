@@ -43,11 +43,7 @@ const ResourceLists: FC = () => {
       {isFlagEnabled('docSearchWidget') ? (
         <Panel testID="documentation--panel">
           <Panel.Header>
-            <Heading
-              element={HeadingElement.H2}
-              weight={FontWeight.Medium}
-              className="cf-heading__h4"
-            >
+            <Heading element={HeadingElement.H3} weight={FontWeight.Medium}>
               <label htmlFor="documentation">Documentation</label>
             </Heading>
           </Panel.Header>
@@ -59,23 +55,13 @@ const ResourceLists: FC = () => {
         <>
           <Panel>
             <Panel.Header>
-              <Heading
-                element={HeadingElement.H2}
-                weight={FontWeight.Light}
-                className="cf-heading__h4"
-              >
-                Account
-              </Heading>
+              <Heading element={HeadingElement.H3}>Account</Heading>
               <LogoutButton />
             </Panel.Header>
           </Panel>
           <Panel testID="recent-dashboards--panel">
             <Panel.Header>
-              <Heading
-                element={HeadingElement.H2}
-                weight={FontWeight.Light}
-                className="cf-heading__h4"
-              >
+              <Heading element={HeadingElement.H3}>
                 <label htmlFor="filter-dashboards">Recent Dashboards</label>
               </Heading>
             </Panel.Header>
@@ -91,11 +77,7 @@ const ResourceLists: FC = () => {
         {isFlagEnabled('newUsagePanel') && CLOUD ? (
           <>
             <Panel.Header>
-              <Heading
-                element={HeadingElement.H2}
-                weight={FontWeight.Medium}
-                className="cf-heading__h4"
-              >
+              <Heading element={HeadingElement.H3} weight={FontWeight.Medium}>
                 {`Usage Rates (${
                   !quartzMe || quartzMe?.accountType === 'free'
                     ? 'Free'
@@ -110,13 +92,7 @@ const ResourceLists: FC = () => {
         ) : (
           <>
             <Panel.Header>
-              <Heading
-                element={HeadingElement.H2}
-                weight={FontWeight.Light}
-                className="cf-heading__h4"
-              >
-                Useful Links
-              </Heading>
+              <Heading element={HeadingElement.H3}>Useful Links</Heading>
             </Panel.Header>
             <Panel.Body>
               <Support />

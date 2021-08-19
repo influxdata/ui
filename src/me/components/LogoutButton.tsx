@@ -7,7 +7,7 @@ import {Button, ComponentSize} from '@influxdata/clockface'
 
 const LogoutButton: FC = () => (
   <>
-    <Link to="/logout">
+    <Link to="/logout" style={{textDecoration: 'none'}}>
       <Button
         text="Logout"
         size={ComponentSize.ExtraSmall}

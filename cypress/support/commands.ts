@@ -87,33 +87,37 @@ export const loginViaDex = (username: string, password: string) => {
           followRedirect: false,
           method: 'GET',
         })
-        .then(secondResp => {
-          cy.request({
-            url: Cypress.env(DEX_URL_VAR) + secondResp.headers.location,
-            method: 'POST',
-            form: true,
-            body: {
-              login: username,
-              password: password,
-            },
-            followRedirect: false,
-          }).then(thirdResp => {
-            const req = (thirdResp.headers.location as string).split(
-              '/approval?req='
-            )[1]
-            cy.request({
-              url: thirdResp.redirectedToUrl,
-              followRedirect: true,
-              form: true,
+        .then(secondResp =>
+          cy
+            .request({
+              url: Cypress.env(DEX_URL_VAR) + secondResp.headers.location,
               method: 'POST',
-              body: {req: req, approval: 'approve'},
-            }).then(() => {
-              cy.visit('/')
-              // cy.getCookie('session').should('exist')
-              cy.location('pathname').should('not.eq', '/signin')
+              form: true,
+              body: {
+                login: username,
+                password: password,
+              },
+              followRedirect: false,
             })
-          })
-        })
+            .then(thirdResp => {
+              const req = (thirdResp.headers.location as string).split(
+                '/approval?req='
+              )[1]
+              return cy
+                .request({
+                  url: thirdResp.redirectedToUrl,
+                  followRedirect: true,
+                  form: true,
+                  method: 'POST',
+                  body: {req: req, approval: 'approve'},
+                })
+                .then(() => {
+                  cy.visit('/')
+                  cy.location('pathname').should('not.eq', '/signin')
+                  return cy.getByTestID('tree-nav')
+                })
+            })
+        )
     )
 }
 
@@ -142,7 +146,7 @@ export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Re
             b.name !== '_monitoring'
         )
         cy.wrap(bucket).as('bucket')
-        wrapDefaultBucket()
+        return wrapDefaultBucket()
       })
     })
 }
@@ -840,11 +844,9 @@ export const createTaskFromEmpty = (
   interval: string = '24h',
   offset: string = '20m'
 ) => {
-  cy.getByTestID('empty-tasks-list').within(() => {
-    cy.getByTestID('add-resource-dropdown--button').click()
-  })
-
-  cy.getByTestID('add-resource-dropdown--new').click()
+  cy.getByTestID('create-task--button')
+    .first()
+    .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').within(() => {

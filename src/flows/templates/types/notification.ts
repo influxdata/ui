@@ -6,7 +6,6 @@ export default register =>
   register({
     type: 'notification',
     init: () => ({
-      name: 'New Alert',
       spec: {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,
@@ -37,7 +36,7 @@ export default register =>
           {
             type: 'notification',
             visible: true,
-            title: 'New Notification',
+            title: 'New Alert',
             ...JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['notification'].initial)
             ),

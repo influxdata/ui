@@ -17,10 +17,11 @@ import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
 import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
+  text: string
   generate?: () => string
 }
 
-const ExportTaskButton: FC<Props> = ({generate}) => {
+const ExportTaskButton: FC<Props> = ({text, generate}) => {
   const {data, range} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
 
@@ -35,7 +36,7 @@ const ExportTaskButton: FC<Props> = ({generate}) => {
 
   return (
     <Button
-      text="Export as Task"
+      text={text}
       color={ComponentColor.Success}
       type={ButtonType.Submit}
       onClick={onClick}
@@ -43,7 +44,7 @@ const ExportTaskButton: FC<Props> = ({generate}) => {
       testID="task-form-save"
       style={{opacity: 1}}
       icon={IconFont.Export}
-      titleText="Export As Task"
+      titleText={text}
     />
   )
 }

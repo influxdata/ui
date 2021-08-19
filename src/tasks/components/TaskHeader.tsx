@@ -29,12 +29,12 @@ export default class TaskHeader extends PureComponent<Props> {
           <RateLimitAlert />
         </Page.Header>
         <Page.ControlBar fullWidth={true}>
-          <Page.ControlBarLeft className="task-header--cta">
-            <FeatureFlag name="flowsCTA">
+          <FeatureFlag name="flowsCTA">
+            <Page.ControlBarLeft className="task-header--cta">
               <span>Need something more?</span>
               <Link to="/notebook/from/task">Create a Notebook</Link>
-            </FeatureFlag>
-          </Page.ControlBarLeft>
+            </Page.ControlBarLeft>
+          </FeatureFlag>
           <Page.ControlBarRight>
             <Button
               color={ComponentColor.Default}

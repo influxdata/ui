@@ -217,7 +217,11 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {description})
-    updatePinnedItemByParam(id, {description})
+    try {
+      updatePinnedItemByParam(id, {description})
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+    }
   }
 
   private handleAddLabel = (label: Label) => {

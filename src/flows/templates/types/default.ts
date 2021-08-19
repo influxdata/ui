@@ -6,7 +6,6 @@ export default register =>
   register({
     type: 'default',
     init: () => ({
-      name: 'Welcome to Notebooks',
       spec: {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,

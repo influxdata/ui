@@ -5,7 +5,6 @@ export default register =>
   register({
     type: 'task',
     init: () => ({
-      name: 'New Scheduled Query',
       spec: {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,

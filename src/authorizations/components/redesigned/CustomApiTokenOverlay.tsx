@@ -9,13 +9,19 @@ import {
   AlignItems,
   FlexDirection,
   ComponentSize,
+  Button,
+  ComponentColor,
+  ButtonShape,
 } from '@influxdata/clockface'
+
+import ResourceAccordion from './ResourceAccordion'
 
 interface OwnProps {
   onClose: () => void
 }
 
 export const CustomApiTokenOverlay: FC<OwnProps> = props => {
+  const resources = ['telegrafs', 'buckets']
   const handleDismiss = () => {
     props.onClose()
   }
@@ -26,7 +32,7 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
   }
 
   return (
-    <Overlay.Container maxWidth={500}>
+    <Overlay.Container maxWidth={800}>
       <Overlay.Header
         title="Generate a Personal Api Token"
         onDismiss={handleDismiss}
@@ -46,9 +52,28 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
                 testID="custom-api-token-input"
               />
             </Form.Element>
+            <Form.Element label="Resources">
+              <ResourceAccordion resources={resources} />
+            </Form.Element>
           </FlexBox>
         </Form>
       </Overlay.Body>
+      <Overlay.Footer>
+        <Button
+          color={ComponentColor.Primary}
+          shape={ButtonShape.Default}
+          onClick={handleDismiss}
+          testID="cancel-token-overlay--buton"
+          text="Cancel"
+        />
+        <Button
+          color={ComponentColor.Success}
+          shape={ButtonShape.Default}
+          onClick={() => {}}
+          testID="generate-token-overlay--buton"
+          text="Generate"
+        />
+      </Overlay.Footer>
     </Overlay.Container>
   )
 }

@@ -15,20 +15,14 @@ import {getAll} from 'src/resources/selectors'
 import {connect} from 'react-redux'
 import {Bucket} from 'src/client'
 
-export type ReadWritePermissions = {
-  read: boolean
-  write: boolean
-}
-export type SublevelPermissions = {
-  [x: string]: ReadWritePermissions
-}
-
 interface OwnProps {
   resources: string[]
 }
+
 interface State {
   permissions: any
 }
+
 interface StateProps {
   telegrafPermissions: any
   bucketPermissions: any
@@ -64,39 +58,38 @@ class ResourceAccordion extends Component<Props, State> {
     const {resources} = this.props
     const {permissions} = this.state
 
-    if (resources) {
-      return resources.map(resource => {
-        const resourceName =
-          resource.charAt(0).toUpperCase() + resource.slice(1)
-        return (
-          <Accordion key={resource}>
-            <ResourceAccordionHeader
-              resourceName={resourceName}
-              permissions={permissions[resource]}
-              onToggleAll={this.handleToggleAll}
-            />
-            <GetResources resources={[ResourceType[resourceName]]}>
-              {resourceName === 'Telegrafs' ? (
-                <ResourceAccordionBody
-                  resourceName={resource}
-                  permissions={permissions[resource]}
-                  onToggle={this.handleIndividualToggle}
-                  title="Individual Telegraf Configuration Names"
-                />
-              ) : (
-                <ResourceAccordionBody
-                  resourceName={resource}
-                  permissions={permissions[resource]}
-                  onToggle={this.handleIndividualToggle}
-                  title="Individual Bucket Names"
-                />
-              )}
-            </GetResources>
-          </Accordion>
-        )
-      })
+    if (!resources) {
+      return null
     }
-    return null
+    return resources.map(resource => {
+      const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
+      return (
+        <Accordion key={resource}>
+          <ResourceAccordionHeader
+            resourceName={resourceName}
+            permissions={permissions[resource]}
+            onToggleAll={this.handleToggleAll}
+          />
+          <GetResources resources={[ResourceType[resourceName]]}>
+            {resourceName === 'Telegrafs' ? (
+              <ResourceAccordionBody
+                resourceName={resource}
+                permissions={permissions[resource]}
+                onToggle={this.handleIndividualToggle}
+                title="Individual Telegraf Configuration Names"
+              />
+            ) : (
+              <ResourceAccordionBody
+                resourceName={resource}
+                permissions={permissions[resource]}
+                onToggle={this.handleIndividualToggle}
+                title="Individual Bucket Names"
+              />
+            )}
+          </GetResources>
+        </Accordion>
+      )
+    })
   }
 
   handleToggleAll = (resourceName, permission, value) => {
@@ -128,22 +121,22 @@ class ResourceAccordion extends Component<Props, State> {
 const mstp = (state: AppState) => {
   const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
   const telegrafPermissions = {}
-  telegrafs.forEach(t => {
-    telegrafPermissions[t.id] = {
-      id: t.id,
-      orgID: t.orgID,
-      name: t.name,
+  telegrafs.forEach(telegraf => {
+    telegrafPermissions[telegraf.id] = {
+      id: telegraf.id,
+      orgID: telegraf.orgID,
+      name: telegraf.name,
       permissions: {read: false, write: false},
     }
   })
 
   const buckets = getAll<Bucket>(state, ResourceType.Buckets)
   const bucketPermissions = {}
-  buckets.forEach(b => {
-    bucketPermissions[b.id] = {
-      id: b.id,
-      orgID: b.orgID,
-      name: b.name,
+  buckets.forEach(bucket => {
+    bucketPermissions[bucket.id] = {
+      id: bucket.id,
+      orgID: bucket.orgID,
+      name: bucket.name,
       permissions: {read: false, write: false},
     }
   })

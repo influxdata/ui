@@ -52,7 +52,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     lat,
     lon,
   })
-  const [coordinateFieldsFlag, setCoordinateFlag] = useState<boolean>(false)
 
   useEffect(() => {
     if (CLOUD) {
@@ -95,7 +94,6 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
           s2Column,
           latLonColumns
         )
-        setCoordinateFlag(coordinateFlag)
         setGeoCoordinates(coordinates)
 
         setCoordinateError(RemoteDataState.Done)
@@ -178,7 +176,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     zoomOpt = 6
   }
 
-  let config: Config = {
+  const config: Config = {
     table: result.table,
     showAxes: false,
     layers: [

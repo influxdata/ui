@@ -397,32 +397,6 @@ const getColumnValue = (table: Table, field: string) => {
 export const parseCoordinates = coordinate =>
   parseInt(coordinate.toString(), 10)
 
-export const getCoordinateColumn = (table: Table): string => {
-  try {
-    const column = table.getColumn('s2_cell_id')
-    if (column !== null) {
-      return CoordinateType.S2
-    }
-    const lat = table.getColumn('lat')
-    const lon = table.getColumn('lon')
-
-    if (lat !== null && lon !== null) {
-      return CoordinateType.Tags
-    }
-
-    const latCoordinate = getColumnValue(table, 'lat')
-    const lonCoordinate = getColumnValue(table, 'lon')
-
-    if (latCoordinate && lonCoordinate) {
-      return CoordinateType.Fields
-    }
-
-    return CoordinateType.None
-  } catch {
-    throw new Error('lat_lon_not_found')
-  }
-}
-
 const latLonAsTags = latLonColumns => {
   return latLonColumns?.lat?.key === 'tag' && latLonColumns?.lon?.key === 'tag'
 }

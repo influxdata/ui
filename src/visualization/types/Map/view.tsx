@@ -74,10 +74,9 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   }, [])
 
   useEffect(() => {
-    if (CLOUD) {
-      try {
-        setCoordinateError(RemoteDataState.Loading)
-
+    try {
+      setCoordinateError(RemoteDataState.Loading)
+      if (CLOUD) {
         const coordinates = getGeoCoordinates(
           result.table,
           0,
@@ -85,20 +84,16 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
           s2Column,
           latLonColumns
         )
-
         setGeoCoordinates(coordinates)
-        setCoordinateError(RemoteDataState.Done)
-        event('mapplot.get_geo_coordinates.success')
-      } catch (err) {
-        setCoordinateError(RemoteDataState.Error)
-        event('mapplot.get_geo_coordinates.failure')
       }
+
+      setCoordinateError(RemoteDataState.Done)
+      event('mapplot.get_geo_coordinates.success')
+    } catch (err) {
+      setCoordinateError(RemoteDataState.Error)
+      event('mapplot.get_geo_coordinates.failure')
     }
   }, [useS2CellID, s2Column, latLonColumns, result.table])
-
-  if (CLOUD) {
-    return null
-  }
 
   let error = ''
 
@@ -167,25 +162,29 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
     zoomOpt = 6
   }
 
-  const config: Config = {
-    table: result.table,
-    showAxes: false,
-    layers: [
-      {
-        type: 'geo',
-        lat: geoCoordinates.lat,
-        lon: geoCoordinates.lon,
-        zoom: zoomOpt,
-        allowPanAndZoom,
-        detectCoordinateFields: true,
-        mapStyle,
-        layers: layersOpts,
-        tileServerConfiguration: tileServerConfiguration,
-        useS2CellID: useS2CellID,
-        s2Column: s2Column,
-        latLonColumns: latLonColumns,
-      },
-    ],
+  let config: Config
+
+  if (CLOUD) {
+    config = {
+      table: result.table,
+      showAxes: false,
+      layers: [
+        {
+          type: 'geo',
+          lat: geoCoordinates.lat,
+          lon: geoCoordinates.lon,
+          zoom: zoomOpt,
+          allowPanAndZoom,
+          detectCoordinateFields: true,
+          mapStyle,
+          layers: layersOpts,
+          tileServerConfiguration: tileServerConfiguration,
+          useS2CellID: useS2CellID,
+          s2Column: s2Column,
+          latLonColumns: latLonColumns,
+        },
+      ],
+    }
   }
 
   return <Plot config={config} />

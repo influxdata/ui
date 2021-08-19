@@ -69,8 +69,8 @@ export type Action =
   | SetActiveTelegrafPlugin
   | UpdateTelegrafPlugin
   | AddPluginBundle
-  | AddTelegraf_telegrafUiRefresh
-  | AddTelegrafPlugins_telegrafUiRefresh
+  | AddTelegrafTelegrafUiRefresh
+  | AddTelegrafPluginsTelegrafUiRefresh
   | AddTelegrafPlugins
   | RemoveBundlePlugins
   | RemovePluginBundle
@@ -222,7 +222,7 @@ interface AddPluginBundle {
   payload: {bundle: BundleName}
 }
 
-interface AddTelegraf_telegrafUiRefresh {
+interface AddTelegrafTelegrafUiRefresh {
   type: 'ADD_TELEGRAF_telegrafUiRefresh'
   payload: {plugin: string}
 }
@@ -234,7 +234,7 @@ export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
 
 export const addTelegraf_telegrafUiRefresh = (
   plugin: string
-): AddTelegraf_telegrafUiRefresh => ({
+): AddTelegrafTelegrafUiRefresh => ({
   type: 'ADD_TELEGRAF_telegrafUiRefresh',
   payload: {plugin},
 })
@@ -252,7 +252,7 @@ interface AddTelegrafPlugins {
   type: 'ADD_TELEGRAF_PLUGINS'
   payload: {telegrafPlugins: TelegrafPlugin[]}
 }
-interface AddTelegrafPlugins_telegrafUiRefresh {
+interface AddTelegrafPluginsTelegrafUiRefresh {
   type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh'
   payload: {telegrafPlugins}
 }
@@ -266,7 +266,7 @@ export const addTelegrafPlugins = (
 
 export const addTelegrafPlugins_telegrafUiRefresh = (
   telegrafPlugins
-): AddTelegrafPlugins_telegrafUiRefresh => ({
+): AddTelegrafPluginsTelegrafUiRefresh => ({
   type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh',
   payload: {telegrafPlugins},
 })

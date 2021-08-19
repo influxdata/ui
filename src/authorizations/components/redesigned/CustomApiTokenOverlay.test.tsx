@@ -1,6 +1,7 @@
 import React from 'react'
-import {render, fireEvent} from '@testing-library/react'
+import {fireEvent} from '@testing-library/react'
 import {CustomApiTokenOverlay} from './CustomApiTokenOverlay'
+import {renderWithRedux} from 'src/mockState'
 
 describe('CustomApitokenDescription', () => {
   const props = {
@@ -8,7 +9,7 @@ describe('CustomApitokenDescription', () => {
   }
 
   it('displays description box', () => {
-    const {getByText} = render(<CustomApiTokenOverlay {...props} />)
+    const {getByText} = renderWithRedux(<CustomApiTokenOverlay {...props} />)
 
     expect(getByText('Description')).toBeDefined()
     expect(getByText('Generate a Personal Api Token')).toBeDefined()
@@ -16,7 +17,9 @@ describe('CustomApitokenDescription', () => {
 
   describe('when user inputs something into the description box', () => {
     it("should update the component's state", () => {
-      const {getByTestId} = render(<CustomApiTokenOverlay {...props} />)
+      const {getByTestId} = renderWithRedux(
+        <CustomApiTokenOverlay {...props} />
+      )
 
       fireEvent.change(getByTestId('custom-api-token-input'), {
         target: {value: 'chocolate'},

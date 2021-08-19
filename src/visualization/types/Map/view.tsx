@@ -8,10 +8,7 @@ import {isEmpty} from 'lodash'
 import {GeoViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 // Utils
-import {
-  getDetectCoordinatingFields,
-  getGeoCoordinates,
-} from 'src/shared/utils/vis'
+import {getGeoCoordinates} from 'src/shared/utils/vis'
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 let getMapToken = null
@@ -88,14 +85,8 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
           s2Column,
           latLonColumns
         )
-        const coordinateFlag = getDetectCoordinatingFields(
-          result.table,
-          useS2CellID,
-          s2Column,
-          latLonColumns
-        )
-        setGeoCoordinates(coordinates)
 
+        setGeoCoordinates(coordinates)
         setCoordinateError(RemoteDataState.Done)
         event('mapplot.get_geo_coordinates.success')
       } catch (err) {

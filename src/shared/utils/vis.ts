@@ -519,25 +519,3 @@ export const getGeoCoordinates = (
       throw new Error('lat_lon_not_provided')
   }
 }
-
-export const getDetectCoordinatingFields = (
-  table: Table,
-  useS2CellID: boolean,
-  s2Column: string,
-  latLonColumns: LatLonColumns
-) => {
-  const coordinateColumn = getCoordinateColumn(
-    table,
-    useS2CellID,
-    s2Column,
-    latLonColumns
-  )
-
-  if (
-    coordinateColumn === CoordinateType.S2 ||
-    coordinateColumn === CoordinateType.Tags
-  ) {
-    return false
-  }
-  return true
-}

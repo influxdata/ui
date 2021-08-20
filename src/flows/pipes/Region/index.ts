@@ -12,7 +12,7 @@ export default register => {
       type: 'static',
       region: '',
       token: '',
-      org: ''
+      org: '',
     },
 
     scope: (data, prev) => {

@@ -34,7 +34,7 @@ export interface Stage {
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   printMap: (id?: string, withSideEffects?: boolean) => void
-  query: (text: string) => Promise<FluxResult>
+  query: (text: string, override?: QueryScope) => Promise<FluxResult>
   basic: (text: string) => any
   simplify: (text: string) => string
   queryAll: () => void
@@ -46,7 +46,7 @@ export interface FlowQueryContextType {
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   printMap: () => {},
-  query: (_: string) => Promise.resolve({} as FluxResult),
+  query: (_: string, __: QueryScope) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
@@ -147,6 +147,8 @@ export const FlowQueryProvider: FC = ({children}) => {
       const last = acc[acc.length - 1] || {
         scope: {
           withSideEffects: !!withSideEffects,
+          region: window.location.origin,
+          org: org.id,
         },
         source: '',
         visual: '',

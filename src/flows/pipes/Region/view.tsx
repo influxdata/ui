@@ -66,6 +66,7 @@ const REGIONS = [
     flag: 'local-dev',
     value: 'https://twodotoh.a.influxcloud.dev.local',
   },
+  {label: 'Current Region', value: 'current'},
   {label: 'Self Hosted', value: 'self-hosted'},
 ]
 
@@ -79,6 +80,11 @@ const Source: FC<PipeProp> = ({Context}) => {
       update({
         source: 'custom',
         region: 'https://localhost:8086',
+      })
+    } else if (option.value === 'current') {
+      update({
+        source: 'static',
+        region: window.location.origin,
       })
     } else {
       update({
@@ -141,17 +147,21 @@ const Source: FC<PipeProp> = ({Context}) => {
 
     update({
       source: 'static',
-      region: REGIONS[2].value,
+      region: window.location.origin,
     })
 
     data.source = 'static'
-    data.region = REGIONS[2].value
+    data.region = window.location.origin
 
-    return [options, REGIONS[2]]
+    return [options, REGIONS[9]]
   }, [data.source, data.region, flags])
 
   useEffect(() => {
     if (!data.region || !data.token) {
+      return
+    }
+
+    if (data.region === window.location.origin) {
       return
     }
 
@@ -273,17 +283,19 @@ const Source: FC<PipeProp> = ({Context}) => {
             />
           </Form.Element>
         </FlexBox.Child>
-        <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
-          <Form.Element label="Token" required={true}>
-            <Input
-              placeholder="authorization token"
-              type={InputType.Text}
-              value={data.token}
-              size={ComponentSize.Medium}
-              onChange={evt => update({token: evt.target.value})}
-            />
-          </Form.Element>
-        </FlexBox.Child>
+        {data.region !== window.location.origin && (
+          <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
+            <Form.Element label="Token" required={true}>
+              <Input
+                placeholder="authorization token"
+                type={InputType.Text}
+                value={data.token}
+                size={ComponentSize.Medium}
+                onChange={evt => update({token: evt.target.value})}
+              />
+            </Form.Element>
+          </FlexBox.Child>
+        )}
       </FlexBox>
       {!!error && (
         <div className="region-panel--eror">

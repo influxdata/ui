@@ -10,7 +10,7 @@ import React, {
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
-import {QueryContext} from 'src/flows/context/query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
@@ -96,7 +96,7 @@ const fromBuilderConfig = (
 
 export const QueryBuilderProvider: FC = ({children}) => {
   const {data, range, update} = useContext(PipeContext)
-  const {query} = useContext(QueryContext)
+  const {query, getPanelQueries} = useContext(FlowQueryContext)
 
   const [keyResults, setKeyResults] = useState(Array(data.tags.length).fill([]))
   const [keyLoading, setKeyLoading] = useState(
@@ -169,9 +169,11 @@ export const QueryBuilderProvider: FC = ({children}) => {
         ? `\n  |> filter(fn: (r) => ${previousTagSelections.join(' and ')})`
         : ''
 
+      const {scope} = getPanelQueries(data.id)
       // TODO: Use the `v1.tagKeys` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-      query(`from(bucket: "${buckets[0]}")
+      query(
+        `from(bucket: "${buckets[0]}")
               |> range(${formatTimeRangeArguments(range)})
               |> filter(fn: (r) => ${tagString})
               |> keys()
@@ -179,7 +181,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
               |> distinct()${searchString}${previousTagString}
               |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
               |> sort()
-              |> limit(n: ${DEFAULT_TAG_LIMIT})`)
+              |> limit(n: ${DEFAULT_TAG_LIMIT})`,
+        scope
+      )
         .then(resp => {
           return resp.parsed.table.getColumn('_value', 'string') || []
         })
@@ -242,9 +246,11 @@ export const QueryBuilderProvider: FC = ({children}) => {
         ? `\n  |> filter(fn: (r) => r._value =~ /(?i:${search})/)`
         : ''
 
+      const {scope} = getPanelQueries(data.id)
       // TODO: Use the `v1.tagValues` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-      query(`from(bucket: "${data.buckets[0]}")
+      query(
+        `from(bucket: "${data.buckets[0]}")
               |> range(${formatTimeRangeArguments(range)})
               |> filter(fn: (r) => ${tagString})
               |> keep(columns: ["${cards[idx].keys.selected[0]}"])
@@ -253,7 +259,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
                 cards[idx].keys.selected[0]
               }")${searchString}
               |> limit(n: ${DEFAULT_TAG_LIMIT})
-              |> sort()`)
+              |> sort()`,
+        scope
+      )
         .then(resp => {
           return resp.parsed.table.getColumn('_value', 'string') || []
         })

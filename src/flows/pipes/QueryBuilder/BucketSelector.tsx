@@ -5,7 +5,7 @@ import React, {FC, useState, useContext} from 'react'
 import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
-import {BucketContext} from 'src/flows/context/buckets'
+import {BucketContext} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
 
 const BucketSelector: FC = () => {

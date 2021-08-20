@@ -4,10 +4,7 @@ import {
   defaultYColumn,
   getMainColumnName,
   parseYBounds,
-  getGeoCoordinates,
   parseCoordinates,
-  getCoordinateColumn,
-  CoordinateType,
 } from 'src/shared/utils/vis'
 import {Table} from '@influxdata/giraffe'
 
@@ -146,158 +143,10 @@ describe('getMainColumnName', () => {
   })
 })
 
-describe('getGeoCoordinates - retrieve latitude and longitude values for map geo type', () => {
-  // Investigate implementation in real world
-  it.skip('returns a latitude and longitude value with key names lat and lon if table with proper columns exists', () => {
-    const table = {
-      getColumn: () => [0, 1, 2, '2323'],
-    } as any
-    const geoCoordinates = getGeoCoordinates(table, 0)
-
-    expect(geoCoordinates).toEqual(
-      expect.objectContaining({
-        lon: expect.any(Number),
-        lat: expect.any(Number),
-      })
-    )
-  })
-})
-
 describe('parseCoordinates', () => {
   it('returns the coordinate as an integer', () => {
     const coordinateStr = '23.50'
     const coodinateInt = parseCoordinates(coordinateStr)
     expect(coodinateInt).toEqual(23)
-  })
-})
-
-describe('getCoordinateColumn', () => {
-  it('returns S2 Coordinate Column type', () => {
-    const table = ({
-      getColumn: columnName => {
-        if (columnName === 's2_cell_id') {
-          return [23.5, 53, 36]
-        }
-        return null
-      },
-    } as unknown) as Table
-
-    const coodinateColumn = getCoordinateColumn(table)
-    expect(coodinateColumn).toEqual(CoordinateType.S2)
-  })
-  it('returns Lat/Lon as tags Coordinate Column type', () => {
-    const table = ({
-      getColumn: columnName => {
-        if (columnName === 'lat') {
-          return [5, 6, 7]
-        } else if (columnName === 'lon') {
-          return [5, 6, 7]
-        }
-        return null
-      },
-    } as unknown) as Table
-    const coodinateColumn = getCoordinateColumn(table)
-    expect(coodinateColumn).toEqual(CoordinateType.Tags)
-  })
-
-  it('returns Lat/Lon as fields Coordinate Column type', () => {
-    const table = ({
-      getColumn: columnName => {
-        if (columnName === '_field') {
-          return ['lat', 'lon', 'lat']
-        } else if (columnName === '_value') {
-          return [5, 6, 7]
-        }
-        return null
-      },
-    } as unknown) as Table
-    const coodinateColumn = getCoordinateColumn(table)
-    expect(coodinateColumn).toEqual(CoordinateType.Fields)
-  })
-
-  it('returns an error when Coordinate column not found', () => {
-    const table = ({
-      getColumn: () => {
-        return null
-      },
-    } as unknown) as Table
-
-    expect(() => getCoordinateColumn(table)).toThrow()
-  })
-})
-
-describe('getGeoCoordinate', () => {
-  it('returns S2 Coordinate Column type', () => {
-    const table = ({
-      getColumn: columnName => {
-        if (columnName === 's2_cell_id') {
-          return ['164b35c', '164b3dc', '17b4854', '17b4854']
-        }
-        return null
-      },
-    } as unknown) as Table
-
-    const expectedCoordinates = {lat: 8.342754582399051, lon: 39.00853461594906}
-
-    const coordinates = getGeoCoordinates(table, 0)
-    expect(coordinates).toEqual(expectedCoordinates)
-  })
-  it('returns Lat/Lon as tags Coordinate Column type', () => {
-    const table = ({
-      getColumn: columnName => {
-        if (columnName === 'lat') {
-          return [5, 6, 7]
-        } else if (columnName === 'lon') {
-          return [5, 6, 7]
-        }
-        return null
-      },
-    } as unknown) as Table
-
-    const expectedCoordinates = {lat: 5, lon: 5}
-
-    const coordinates = getGeoCoordinates(table, 0)
-    expect(coordinates).toEqual(expectedCoordinates)
-  })
-
-  it('returns Lat/Lon as fields Coordinate Column type', () => {
-    const table = ({
-      getColumn: columnName => {
-        if (columnName === '_field') {
-          return ['lat', 'lon', 'lat', 'lon']
-        } else if (columnName === '_value') {
-          return [5, 6, 7, 8]
-        }
-        return null
-      },
-    } as unknown) as Table
-
-    const expectedCoordinates = {lat: 5, lon: 6}
-    const coordinates = getGeoCoordinates(table, 0)
-    expect(coordinates).toEqual(expectedCoordinates)
-  })
-
-  it('returns an error when Coordinate column not found', () => {
-    const table = ({
-      getColumn: () => {
-        return null
-      },
-    } as unknown) as Table
-
-    expect(() => getGeoCoordinates(table, 0)).toThrow()
-  })
-  it('returns an error when Coordinate column is not anumber', () => {
-    const table = ({
-      getColumn: columnName => {
-        if (columnName === '_field') {
-          return ['lat', 'type', 'lat', 'type']
-        } else if (columnName === '_value') {
-          return [5, 'random', 7, 'string']
-        }
-        return null
-      },
-    } as unknown) as Table
-
-    expect(() => getGeoCoordinates(table, 0)).toThrow()
   })
 })

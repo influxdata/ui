@@ -10,9 +10,9 @@ export interface TimeExpr {
 
 export function parseTime(timeString: string) {
   const result: TimeExpr = {measure: 0, unit: 's'}
-  const range: RegExpMatchArray | null = timeString.match(/[-]?[0-9]*/)
+  const range: RegExpMatchArray | null = timeString.match(/[-]?[0-9|.]*/)
   if (range) {
-    result.measure = parseInt(range.toString())
+    result.measure = parseFloat(range.toString())
     const match: RegExpMatchArray | null = timeString.match(/[mnus].*/)
     if (!match) {
       throw `failed to match timeString to "${timeString}}" to time unit`
@@ -59,7 +59,11 @@ function calcTimeStamp(unit: string, prec: string, base: number) {
 }
 
 // noinspection DuplicatedCode
-export function addTimestampToRecs(recs: string[], timeDif: string, precUnit='ns') {
+export function addTimestampToRecs(
+  recs: string[],
+  timeDif: string,
+  precUnit = 'ns'
+) {
   const timeFrame: TimeExpr = parseTime(timeDif)
   const timeStamp = calcTimeStamp(timeFrame.unit, precUnit, timeFrame.measure)
   const result: string[] = []
@@ -77,16 +81,17 @@ export function addStaggerTimestampToRecs(
   recs: string[],
   timeDif: string,
   stagger: string,
-  precUnit: 'ns' | 'ms' ='ns'
+  precUnit: 'ns' | 'ms' = 'ns'
 ) {
   const result: string[] = []
 
+  const timeFrame: TimeExpr = parseTime(timeDif)
+  const staggerFrame: TimeExpr = parseTime(stagger)
+  if (timeFrame.unit !== staggerFrame.unit) {
+    throw `Time units do not match: ${timeFrame.unit} !== ${staggerFrame.unit}`
+  }
+
   for (let i = 0; i < recs.length; i++) {
-    const timeFrame: TimeExpr = parseTime(timeDif)
-    const staggerFrame: TimeExpr = parseTime(stagger)
-    if (timeFrame.unit !== staggerFrame.unit) {
-      throw `Time units do not match: ${timeFrame.unit} !== ${staggerFrame.unit}`
-    }
     if (recs[i].match(/.* .*/)) {
       const timeStamp = calcTimeStamp(
         timeFrame.unit,
@@ -97,4 +102,61 @@ export function addStaggerTimestampToRecs(
     }
   }
   return cy.wrap(result)
+}
+
+/*
+The following is for generating richer test data based on trig funcs
+
+examples:
+    cy.writeLPData({lines: genCurve({points:60}), offset: "60m", stagger: "1m"})
+    cy.writeLPData({lines: genCurve({points:60, freq: 5, shift: 5, pname: 'p1'}), offset: "60m", stagger: "1m"})
+    cy.writeLPData({lines: genCurve({points:60, freq: 1, shift: 20, pname: 'p2', amp: 3}), offset: "40m"})
+    cy.writeLPData({lines: genCurve({points:60, type: 'tan', measurement: 'krivka', freq: 0.2, pname: 'b1'}), offset: "40m"})
+ */
+
+type CurveTypes = 'sin' | 'cos' | 'tan'
+
+export interface CurveArgs {
+  points: number
+  pname?: string
+  shift?: number
+  type?: CurveTypes
+  freq?: number
+  amp?: number
+  measurement?: string
+  tags?: {key: string; val: string}[]
+}
+
+const defaultMeasurement = 'curve'
+const defaultTags = [{key: 'loc', val: 'descartes'}]
+
+export function genCurve(args: CurveArgs): string[] {
+  args.pname = args.pname ?? 'p'
+  args.shift = args.shift ?? 0
+  args.type = args.type ?? 'sin'
+  args.freq = args.freq ?? 1
+  args.amp = args.amp ?? 1
+  args.measurement = args.measurement ?? defaultMeasurement
+  args.tags = args.tags ?? defaultTags
+
+  const result = []
+
+  let tags = ''
+  for (let j = 0; j < args.tags.length; j++) {
+    tags += `${args.tags[j].key}=${args.tags[j].val}`
+    if (j < args.tags.length - 1) {
+      tags += ','
+    }
+  }
+
+  for (let i = args.shift; i < args.points + args.shift; i++) {
+    let point = 0
+    point =
+      Math[args.type]((i / args.points) * Math.PI * 2 * args.freq) * args.amp
+    result[
+      i - args.shift
+    ] = `${args.measurement},${tags} ${args.pname}=${point}`
+  }
+
+  return result
 }

@@ -650,7 +650,6 @@ export const lines = (numLines = 3) => {
   })
 }
 
-
 export const writeData = (
   lines: string[],
   namedBucket?: string
@@ -658,7 +657,6 @@ export const writeData = (
   return cy.get<Organization>('@org').then((org: Organization) => {
     return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
       const bucketToUse = namedBucket ?? bucket.name
-      cy.log(`DEBUG bucketToUse ${bucketToUse}`)
       return cy.request({
         method: 'POST',
         url: '/api/v2/write?org=' + org.name + '&bucket=' + bucketToUse,
@@ -676,6 +674,7 @@ export interface WriteLPDataConf {
 }
 
 export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
+  args.stagger = args.stagger ?? true
   const oe = parseTime(args.offset)
   if (oe.measure >= 0) {
     args.offset = `-${args.offset}`
@@ -683,43 +682,33 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
   }
 
   let interval = ''
-  if (typeof args.stagger === 'boolean' && args.stagger) {
+  if (args.stagger && typeof args.stagger === 'boolean') {
     interval = `${(oe.measure / args.lines.length) * -1}${oe.unit}`
   } else if (typeof args.stagger === 'string') {
     interval = args.stagger
   }
 
-      if (args.stagger) {
-        return addStaggerTimestampToRecs(
-          args.lines,
-          args.offset,
-          interval
-        ).then(stampedLines => {
-
-          cy.log(`DEBUG stampedLines ${stampedLines}`)
-
-           return writeData(stampedLines).then(response => {
-             cy.log(`DEBUG status ${response.status}`)
-             cy.log(`DEBUG response ${JSON.stringify(response)}`)
-             if(response.status !== 204){
-               return cy.wrap(`Problem writing data. Status: ${response.status}`)
-             }
-              return cy.wrap('success')
-           })
-        })
-      } else {
-        return addTimestampToRecs(args.lines, args.offset).then(
-          stampedLines => {
-
-             return writeData(stampedLines).then(response => {
-               if(response.status !== 204){
-                 return cy.wrap(`Problem writing data. Status: ${response.status}`)
-               }
-               return cy.wrap('success')
-             })
+  if (args.stagger) {
+    return addStaggerTimestampToRecs(args.lines, args.offset, interval).then(
+      stampedLines => {
+        return writeData(stampedLines).then(response => {
+          if (response.status !== 204) {
+            throw `Problem writing data. Status: ${response.status} ${response.statusText}`
           }
-        )
+          return cy.wrap('success')
+        })
       }
+    )
+  } else {
+    return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
+      return writeData(stampedLines).then(response => {
+        if (response.status !== 204) {
+          throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+        }
+        return cy.wrap('success')
+      })
+    })
+  }
 }
 
 export interface WriteLPFileDataConf {

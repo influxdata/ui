@@ -10,7 +10,8 @@ describe('Orgs', () => {
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => cy.deleteOrg(id))
       })
-
+      // Have to clear local storage to work around this bug: https://github.com/influxdata/ui/issues/2427
+      cy.clearLocalStorage()
       cy.visit('/')
     })
 

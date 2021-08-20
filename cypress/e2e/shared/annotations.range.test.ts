@@ -57,7 +57,7 @@ describe('Annotations, but in a different test suite', () => {
   })
 
   describe('range annotations', () => {
-    it('shows the range/point annotation type picker when range annotations are on', () => {
+    it('shows the range/point annotation type picker', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
@@ -74,7 +74,7 @@ describe('Annotations, but in a different test suite', () => {
       // verify there is an end time:
       cy.getByTestID('endTime-testID').should('be.visible')
 
-      // verify that it is range annotation (the range selector option is selected)
+      // verify that it is a range annotation (the range selector option is selected)
       cy.getByTestID('annotation-form-range-type-option--input').should(
         'be.checked'
       )
@@ -113,7 +113,7 @@ describe('Annotations, but in a different test suite', () => {
       // switch it to a point annotation
       cy.getByTestID('annotation-form-point-type-option').click()
 
-      // verify that it is point  annotation now
+      // verify that it is a point annotation now
       cy.getByTestID('annotation-form-point-type-option--input').should(
         'be.checked'
       )
@@ -237,7 +237,7 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('giraffe-annotation-tooltip').should('not.exist')
     })
 
-    it('cannot create an annotation when graph is clicked and the control bar is closed', () => {
+    it('cannot create an annotation when graph is clicked and annotation mode is off', () => {
       // switch off the control bar
       cy.getByTestID('toggle-annotations-controls').click()
       cy.getByTestID('annotations-control-bar').should('not.exist')

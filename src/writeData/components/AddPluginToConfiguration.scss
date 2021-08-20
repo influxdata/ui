@@ -1,0 +1,16 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.plugin-create-configuration-name-row,
+.plugin-create-configuration-description-row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.plugin-create-configuration-copy-to-clipboard--button,
+.plugin-create-configuration-download--button {
+  margin-bottom: $cf-marg-b;
+}
+
+.plugin-creat-configuration--editor {
+  margin-top: $cf-marg-b;
+}

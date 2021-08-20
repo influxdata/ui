@@ -10,10 +10,11 @@ import {
   Icon,
   IconFont,
   ComponentSize,
-  Tabs,
-  Orientation,
+  Panel,
   TextArea,
   AlignItems,
+  JustifyContent,
+  Dropdown,
 } from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 
@@ -32,6 +33,9 @@ import {PipeProp} from 'src/types/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+
+// Styles
+import 'src/flows/pipes/Notification/styles.scss'
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const {id, data, update, results, loading} = useContext(PipeContext)
@@ -146,13 +150,14 @@ const Notification: FC<PipeProp> = ({Context}) => {
   }, [hasTaskOption])
 
   const avail = Object.keys(DEFAULT_ENDPOINTS).map(k => (
-    <Tabs.Tab
+    <Dropdown.Item
       key={k}
       id={k}
       onClick={() => updateEndpoint(k)}
-      text={DEFAULT_ENDPOINTS[k].name}
-      active={data.endpoint === k}
-    />
+      selected={data.endpoint === k}
+    >
+      {DEFAULT_ENDPOINTS[k].name}
+    </Dropdown.Item>
   ))
 
   const generateTask = useCallback(() => {
@@ -190,9 +195,11 @@ const Notification: FC<PipeProp> = ({Context}) => {
 
       return acc
     }, {})
-    const condition = THRESHOLD_TYPES[data.threshold.type].condition(
-      data.threshold
-    )
+
+    const conditions = data.thresholds
+      .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
+      .join(' and ')
+
     const newQuery = `
 import "strings"
 import "regexp"
@@ -216,7 +223,7 @@ notification = {
 }
 
 task_data = ${format_from_js_file(ast)}
-trigger = ${condition}
+trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
 ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
@@ -257,11 +264,9 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.offset,
     data.endpointData,
     data.endpoint,
-    data.threshold,
+    data.thresholds,
     data.message,
   ])
-
-  const persist = <ExportTaskButton generate={generateTask} />
 
   if (
     loading === RemoteDataState.NotStarted ||
@@ -303,8 +308,9 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
   }
 
   return (
-    <Context persistentControls={persist}>
+    <Context>
       <div className="notification">
+        <Threshold />
         <FlexBox margin={ComponentSize.Medium}>
           <FlexBox.Child grow={1} shrink={1}>
             <Form.Element
@@ -348,11 +354,10 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
-        <Threshold />
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
-          <FlexBox.Child grow={0} shrink={0}>
-            <Tabs orientation={Orientation.Vertical}>{avail}</Tabs>
-          </FlexBox.Child>
+          <Dropdown.Menu className="flows-endpoints--dropdown">
+            {avail}
+          </Dropdown.Menu>
           <FlexBox.Child grow={1} shrink={1}>
             {React.createElement(DEFAULT_ENDPOINTS[data.endpoint].view)}
           </FlexBox.Child>
@@ -369,6 +374,12 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
+        <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
+          <ExportTaskButton
+            generate={generateTask}
+            text="Export as Alert Task"
+          />
+        </Panel.Footer>
       </div>
       {warningMessage}
     </Context>

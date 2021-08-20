@@ -111,6 +111,11 @@
   margin: 0 auto;
 }
 
+.wizard-step--grid-container_telegrafUiRefresh {
+  width: 98%;
+  display: block;
+}
+
 .wizard-step--filter {
   align-self: flex-end;
   margin-top: 18px;
@@ -166,6 +171,7 @@
   font-weight: 300;
   color: $g15-platinum;
   margin-bottom: $ix-marg-b;
+  justify-content: flex-start;
   @include no-user-select();
 }
 

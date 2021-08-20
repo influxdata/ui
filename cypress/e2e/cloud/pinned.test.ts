@@ -71,11 +71,12 @@ describe('Pinned Items', () => {
           .first()
           .click()
 
+        cy.intercept('PUT', '**/pinned/*').as('updatePinned')
         cy.get('.cf-input-field')
           .type('Bucks In Six')
           .type('{enter}')
       })
-
+      cy.wait('@updatePinned')
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -188,11 +189,12 @@ from(bucket: "${name}"{rightarrow}
           .first()
           .click()
 
+        cy.intercept('PUT', '**/pinned/*').as('updatePinned')
         cy.get('.cf-input-field')
           .type('Bucks In Six')
           .type('{enter}')
       })
-
+      cy.wait('@updatePinned')
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -282,12 +284,14 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--name-button')
         .first()
         .click()
+      cy.intercept('PUT', '**/pinned/*').as('updatePinned')
 
       cy.get('.cf-input-field')
         .last()
         .focus()
         .type('Bucks In Six')
         .type('{enter}')
+      cy.wait('@updatePinned')
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {

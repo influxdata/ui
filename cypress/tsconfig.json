@@ -15,6 +15,6 @@
   "include": [
     "../node_modules/cypress/**/*",
     "../node_modules/@types/chai/*",
-    "../*.ts"
+    "../**/*.ts"
   ]
 }

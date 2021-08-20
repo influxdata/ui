@@ -1,20 +1,9 @@
-import icon from './icon'
-import {CLOUD} from 'src/shared/constants'
-
-let properties = null
-let options = null
-let view = null
-
-if (CLOUD) {
-  properties = require('./properties')
-  view = require('./view')
-  options = require('./GeoOptions').GeoOptions
-}
+import icon from 'src/visualization/types/Map/icon'
+import properties from 'src/visualization/types/Map/properties'
+import view from 'src/visualization/types/Map/view'
+import {GeoOptions as options} from 'src/visualization/types/Map/GeoOptions'
 
 export default register => {
-  if (!CLOUD) {
-    return
-  }
   register({
     type: 'geo',
     name: 'Map',

@@ -68,13 +68,7 @@ const DemoDataDropdown: FC<Props> = ({
         onClick={getDemoDataBucketMembership}
         selected={false}
       >
-        <div className="demodata-dropdown--item-contents">
-          <Icon
-            glyph={IconFont.Checkmark}
-            className="demodata-dropdown--item-icon"
-          />
-          {b.name}
-        </div>
+        {b.name}
       </Dropdown.Item>
     )
   })
@@ -82,7 +76,7 @@ const DemoDataDropdown: FC<Props> = ({
   return (
     <Dropdown
       testID="dropdown--demodata"
-      style={{width: '220px'}}
+      style={{width: '240px'}}
       className="demodata-dropdown"
       button={(active, onClick) => (
         <Dropdown.Button

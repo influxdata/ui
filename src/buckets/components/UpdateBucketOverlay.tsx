@@ -134,21 +134,19 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
           spinnerComponent={<TechnoSpinner />}
           loading={loadingStatus}
         >
-          <Overlay.Body>
-            <BucketOverlayForm
-              name={bucketDraft ? bucketDraft.name : ''}
-              buttonText="Save Changes"
-              ruleType={ruleType}
-              onClose={handleClose}
-              onSubmit={handleSubmit}
-              disableRenaming={true}
-              onChangeInput={handleChangeInput}
-              retentionSeconds={retentionSeconds}
-              onChangeRuleType={handleChangeRuleType}
-              onChangeRetentionRule={handleChangeRetentionRule}
-              onClickRename={handleClickRename}
-            />
-          </Overlay.Body>
+          <BucketOverlayForm
+            name={bucketDraft ? bucketDraft.name : ''}
+            buttonText="Save Changes"
+            ruleType={ruleType}
+            onClose={handleClose}
+            onSubmit={handleSubmit}
+            disableRenaming={true}
+            onChangeInput={handleChangeInput}
+            retentionSeconds={retentionSeconds}
+            onChangeRuleType={handleChangeRuleType}
+            onChangeRetentionRule={handleChangeRetentionRule}
+            onClickRename={handleClickRename}
+          />
         </SpinnerContainer>
       </Overlay.Container>
     </Overlay>

@@ -35,29 +35,17 @@ export const SchemaDisplay: FC<Props> = (props: Props) => {
     props.onClose()
   }
 
-
-  const makeColumnDisplay = (columns) => (
-      <div>
-          <div className='header row'> <div className='schemacell'>name</div>
-              <div className='schemacell'>type</div> <div className='schemacell'>datatype</div>
-           </div>
-          {columns.map((col) => (
-              <div className='row'>
-                  <div className='schemacell'> {col.name}</div>
-                  <div className='schemacell'> {col.type}</div>
-                  {col.dataType ? <div className='schemacell'> {col.dataType}</div> : null}
-              </div>
-              ))}
-      </div>
-  )
-
   //TODO: remove me.....
 console.log('arghh!! hope to get here eventually......', props)
 const {schema} = props
+    const rawSchema = JSON.stringify(schema)
 
-    const {columns} = schema
-    console.log('coulmns...', columns)
 
+    const makeRawDataView = () => (
+        <div className='rawtext'>
+          {rawSchema}
+        </div>
+    )
 
   return (
     <Overlay.Container maxWidth="600">
@@ -68,10 +56,7 @@ const {schema} = props
       />
         <Overlay.Body>
      <div>
-         <div>{schema.name}</div>
-         <div> created: {schema.createdAt}</div>
-         <div> updated: {schema.updatedAt}</div>
-         {makeColumnDisplay(columns)}
+         {makeRawDataView()}
      </div>
         </Overlay.Body>
         <Overlay.Footer>

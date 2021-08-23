@@ -9,3 +9,8 @@
 
 .row:nth-child(even) {background: gray}
 .row:nth-child(odd) {background:maroon}
+
+.rawtext {
+    overflow: scroll;
+    max-height: 200px;
+}

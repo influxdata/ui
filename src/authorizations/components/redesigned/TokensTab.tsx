@@ -57,6 +57,7 @@ class TokensTab extends PureComponent<Props, State> {
   public render() {
     const {searchTerm, sortKey, sortDirection, sortType} = this.state
     const {tokens} = this.props
+    console.log('tokens: ', tokens)
 
     const leftHeaderItems = (
       <>

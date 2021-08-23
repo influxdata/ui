@@ -179,7 +179,7 @@ describe('Collectors', () => {
         cy.getByTestID('empty-state').should('exist')
       })
 
-      it.only('can clone a config', () => {
+      it('can clone a config', () => {
         cy.getByTestID('resource-card').should('have.length', 1)
         cy.getByTestID('context-clone-menu').click({force: true})
         cy.getByTestID('resource-card').should('have.length', 2)

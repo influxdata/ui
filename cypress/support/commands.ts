@@ -2,7 +2,6 @@ import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
-// import {writeLP, InfluxParams} from './Client'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'

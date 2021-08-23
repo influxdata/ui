@@ -21,7 +21,7 @@ import 'src/annotations/components/annotationForm/annotationForm.scss'
 
 interface Props {
   onClose: () => void
-  name?: string
+    bucketName: string
     measurementSchemaList?: MeasurementSchemaList
     schema?: MeasurementSchema
 }
@@ -37,20 +37,20 @@ export const SchemaDisplay: FC<Props> = (props: Props) => {
   }
 
   //TODO: remove me.....
-console.log('arghh!! hope to get here eventually......', props)
+console.log('arghh!! hope to get here eventually ACK ACK ACK 45......', props)
 const {schema} = props
-    const rawSchema = JSON.stringify(schema)
+    const rawSchema = JSON.stringify(schema, null, 2)
 
 
     const makeRawDataView = () => (
-        <CodeSnippet text={rawSchema}  label='Schema'/>
-          
+        <CodeSnippet text={rawSchema}/>
+
     )
 
   return (
     <Overlay.Container maxWidth="600">
       <Overlay.Header
-        title="View Explicit Schema"
+        title={`Explicit Schema for: ${props.bucketName}`}
         onDismiss={handleCancel}
         className="edit-annotation-head"
       />

@@ -120,12 +120,12 @@ const BucketCardActions: FC<Props> = ({
         size={ComponentSize.ExtraSmall}
         onClick={handleClickSettings}
       />
-      <Button
+      {bucket?.schemaType === 'explicit' ? <Button
        text="Show Schema"
        testID='bucket-showSchema'
        size={ComponentSize.Small}
        onClick={handleShowSchema}
-      />
+      />: null }
     </FlexBox>
   )
 }

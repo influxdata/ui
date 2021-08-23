@@ -174,13 +174,13 @@ class BucketsTab extends PureComponent<Props, State> {
     console.log('got schema in bucketstab!!!!', schema)
   }
 
-  private handleShowBucketSchema = async ({id}: OwnBucket) => {
+  private handleShowBucketSchema = async ({id, name}: OwnBucket) => {
     const schemaData = await this.props.getBucketSchema(id)
     console.log('got schema in bucketstab!!!! (changed 11a-mon1)', schemaData)
 
     const schema= schemaData?.measurementSchemas
 
-    this.props.showOverlay('bucket-schema-show', {schema}, this.props.dismissOverlay)
+    this.props.showOverlay('bucket-schema-show', {schema, bucketName:name}, this.props.dismissOverlay)
   }
 
   private handleFilterUpdate = (searchTerm: string): void => {

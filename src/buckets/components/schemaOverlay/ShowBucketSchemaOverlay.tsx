@@ -13,7 +13,7 @@ import {getOverlayParams} from 'src/overlays/selectors'
 
 export const ShowBucketSchemaOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  let {schema} = useSelector(getOverlayParams)
+  let {schema, bucketName} = useSelector(getOverlayParams)
 
     //if (!name) { name = 'foobar-test-name'}
 
@@ -22,6 +22,7 @@ export const ShowBucketSchemaOverlay: FC = () => {
     <SchemaDisplay
       onClose={onClose}
      schema={schema}
+      bucketName={bucketName}
     />
   )
 }

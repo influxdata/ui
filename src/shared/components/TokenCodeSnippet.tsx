@@ -71,7 +71,7 @@ const TokenCodeSnippet: FC<Props> = ({
             text="Generate New Token"
             titleText="Generate New Token"
             icon={IconFont.Refresh}
-            color={ComponentColor.Success}
+            color={ComponentColor.Secondary}
             onClick={handleRefreshClick}
             className="new-token--btn"
           />

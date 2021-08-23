@@ -170,7 +170,7 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
         </Overlay.Body>
         <Overlay.Footer>
           <Button
-            color={ComponentColor.Secondary}
+            color={ComponentColor.Primary}
             text="Download Config"
             onClick={this.handleDownloadConfig}
           />

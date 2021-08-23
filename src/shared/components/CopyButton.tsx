@@ -8,6 +8,7 @@ import {
   ComponentColor,
   ComponentSize,
   ButtonShape,
+  IconFont,
 } from '@influxdata/clockface'
 
 interface Props {
@@ -26,6 +27,7 @@ class CopyButton extends PureComponent<Props> {
           shape={ButtonShape.Default}
           size={size || ComponentSize.ExtraSmall}
           color={ComponentColor.Secondary}
+          icon={IconFont.Clipboard_New}
           titleText="Copy to Clipboard"
           text="Copy to Clipboard"
           onClick={this.handleClickCopy}

@@ -174,15 +174,14 @@ describe('Collectors', () => {
 
       it('can delete a config', () => {
         cy.getByTestID('resource-card').should('have.length', 1)
-        cy.getByTestID('telegraf-delete-menu').click({force: true})
-        cy.getByTestID('telegraf-delete-button').click()
+        cy.getByTestID('context-delete-menu--button').click({force: true})
+        cy.getByTestID('context-delete-menu--confirm-button').click()
         cy.getByTestID('empty-state').should('exist')
       })
 
-      it('can clone a config', () => {
+      it.only('can clone a config', () => {
         cy.getByTestID('resource-card').should('have.length', 1)
-        cy.getByTestID('telegraf-clone-menu').click({force: true})
-        cy.getByTestID('telegraf-clone-button').click()
+        cy.getByTestID('context-clone-menu').click({force: true})
         cy.getByTestID('resource-card').should('have.length', 2)
         cy.getByTestID('collector-card--name').then(el => {
           expect(el[1].innerText).to.equal('New Config (clone 1)')

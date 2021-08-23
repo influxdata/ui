@@ -4,8 +4,15 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps, Link} from 'react-router-dom'
 
 // Components
-import {Context} from 'src/clockface'
-import {ResourceCard, IconFont} from '@influxdata/clockface'
+import {
+  ResourceCard,
+  IconFont,
+  FlexBox,
+  ComponentSize,
+  ConfirmationButton,
+  ButtonShape,
+  SquareButton,
+} from '@influxdata/clockface'
 import {ComponentColor} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 
@@ -83,7 +90,7 @@ class CollectorRow extends PureComponent<
 
   private get contextMenu(): JSX.Element {
     return (
-      <Context>
+      /* <Context>
         <Context.Menu
           icon={IconFont.Duplicate}
           color={ComponentColor.Secondary}
@@ -106,7 +113,27 @@ class CollectorRow extends PureComponent<
             action={this.handleDeleteConfig}
           />
         </Context.Menu>
-      </Context>
+      </Context> */
+
+      <FlexBox margin={ComponentSize.ExtraSmall}>
+        <SquareButton
+          size={ComponentSize.ExtraSmall}
+          icon={IconFont.Duplicate_New}
+          color={ComponentColor.Tertiary}
+          onClick={this.cloneTelegraf}
+          testID={`context-clone-menu`}
+        />
+        <ConfirmationButton
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Tertiary}
+          icon={IconFont.Trash_New}
+          confirmationLabel={'Yes, delete this configuration'}
+          onConfirm={this.handleDeleteConfig}
+          confirmationButtonText={'Confirm'}
+          testID={`context-delete-menu`}
+          shape={ButtonShape.Square}
+        ></ConfirmationButton>
+      </FlexBox>
     )
   }
 

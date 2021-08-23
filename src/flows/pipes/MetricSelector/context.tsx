@@ -225,16 +225,10 @@ export const SchemaProvider: FC = React.memo(({children}) => {
   const {flow} = useContext(FlowContext)
   const {query, getPanelQueries} = useContext(FlowQueryContext)
   const [searchTerm, setSearchTerm] = useState('')
-  const [lastBucket, setLastBucket] = useState(data?.bucket)
   const [schema, setSchema] = useState({})
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
-    if (!data?.bucket || data?.bucket?.id === lastBucket?.id) {
-      return
-    }
-
-    setLastBucket(data?.bucket)
     setSearchTerm('')
     setLoading(RemoteDataState.NotStarted)
     update({
@@ -242,12 +236,13 @@ export const SchemaProvider: FC = React.memo(({children}) => {
       tags: {},
       measurement: '',
     })
-  }, [data?.bucket?.id, lastBucket?.id, update]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data?.bucket?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const range = formatTimeRangeArguments(flow?.range)
 
   useEffect(() => {
-    if (!data?.bucket || loading === RemoteDataState.Loading) {
+    console.log('firing', data, loading)
+    if (!data?.bucket) {
       return
     }
 
@@ -261,6 +256,7 @@ export const SchemaProvider: FC = React.memo(({children}) => {
 |> drop(columns: ["_value"])
 |> group()`
 
+    console.log('throwing', text, scope)
     query(text, scope)
       .then((response: FluxResult) => {
         const schemaForBucket = parsedResultToSchema(response.parsed)
@@ -272,13 +268,15 @@ export const SchemaProvider: FC = React.memo(({children}) => {
         setLoading(RemoteDataState.Error)
         setSchema({})
       })
-  }, [data?.bucket?.name, lastBucket?.id, range]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data?.bucket?.name, range]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const normalized = useMemo(() => normalizeSchema(schema, data, searchTerm), [
     data,
     schema,
     searchTerm,
   ])
+
+  console.log('normalized', normalized, loading)
 
   return (
     <SchemaContext.Provider

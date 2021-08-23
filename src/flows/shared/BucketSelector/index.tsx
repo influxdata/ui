@@ -34,6 +34,10 @@ const BucketSelector: FC<Props> = ({
   let buttonText = 'Loading buckets...'
 
   useEffect(() => {
+    if (loading !== RemoteDataState.Done) {
+      return
+    }
+
     if (!selected || buckets.find(bucket => bucket.name === selected.name)) {
       return
     }

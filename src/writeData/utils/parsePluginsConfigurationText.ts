@@ -3,11 +3,14 @@
   Its purpose is to update the configuration text of Telegraf Input Plugins
   which live here:
   Updates are committed and submitted as a pull request periodically.
+
+  Follow the two steps to update. The commit as a pull request.
 */
 import https from 'https'
 import fs from 'fs'
 
 /*
+  STEP 1:
   inputPluginsList is a map of the 'id' for WRITE_DATA_TELEGRAF_PLUGINS
     from src/writeData/constants/contentTelegrafPlugins.ts
     which has import statements not supported by Node.
@@ -213,12 +216,17 @@ const inputPluginsList = [
   'zookeeper',
 ]
 
-const telegrafConfigFilePath =
-  'https://raw.githubusercontent.com/influxdata/telegraf/master/etc/telegraf.conf'
+const telegrafConfigFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${process.argv.slice(
+  2
+)}/etc/telegraf.conf`
 
 const parsedPluginsPath =
   'src/writeData/components/telegrafInputPluginsConfigurationText/'
 
+/*
+  // STEP 2: on the command line, run with the desired release version, for example: v1.19.3
+  yarn telegraf-plugins:update TELEGRAF_RELEASE_VERSION
+ */
 https.get(telegrafConfigFilePath, response => {
   let contents = ''
   response.on('data', chunk => {

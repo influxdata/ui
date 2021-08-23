@@ -4,8 +4,8 @@
   which live here:
   Updates are committed and submitted as a pull request periodically.
 */
-const https = require('https')
-const fs = require('fs')
+import https from 'https'
+import fs from 'fs'
 
 /*
   inputPluginsList is a map of the 'id' for WRITE_DATA_TELEGRAF_PLUGINS

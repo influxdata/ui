@@ -69,7 +69,11 @@
     "annotations-oss": "oats ${REMOTE}contracts/priv/annotationd-oss.yml > ./src/client/annotationdRoutes.ts",
     "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
-    "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts"
+    "managedFunctions": "oats ${REMOTE}contracts/managed-functions.yml > ./src/client/managedFunctionsRoutes.ts",
+    "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
+    "telegraf-plugins:clean": "rm -rf src/writeData/components/telegrafInputPluginsConfigurationText/*",
+    "telegraf-plugins:generate": "node -r esm src/writeData/utils/parsePluginsConfigurationText.ts",
+    "telegraf-plugins:update": "yarn telegraf-plugins:clean && yarn telegraf-plugins:generate"
   },
   "author": "",
   "devDependencies": {
@@ -124,6 +128,7 @@
     "eslint-plugin-jest": "^23.0.2",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^4.0.5",
+    "esm": "^3.2.25",
     "express": "^4.14.0",
     "file-loader": "^4.1.0",
     "fork-ts-checker-webpack-plugin": "^1.4.3",

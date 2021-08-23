@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 //import React, {FC, FormEvent, useState} from 'react'
-//import {useDispatch} from 'react-redux'
+import './SchemaDisplay.css'
 
 import {MeasurementSchemaList, MeasurementSchema} from  'src/client/generatedRoutes'
 // Utils
@@ -38,12 +38,14 @@ export const SchemaDisplay: FC<Props> = (props: Props) => {
 
   const makeColumnDisplay = (columns) => (
       <div>
-          <div> <div>name</div> <div>type</div> <div>datatype</div><div>foobar</div></div>
+          <div className='header row'> <div className='schemacell'>name</div>
+              <div className='schemacell'>type</div> <div className='schemacell'>datatype</div>
+           </div>
           {columns.map((col) => (
-              <div>
-                  <div> {col.name}</div>
-                  <div> {col.type}</div>
-                  {col.dataType ? <div> {col.dataType}</div> : null}
+              <div className='row'>
+                  <div className='schemacell'> {col.name}</div>
+                  <div className='schemacell'> {col.type}</div>
+                  {col.dataType ? <div className='schemacell'> {col.dataType}</div> : null}
               </div>
               ))}
       </div>

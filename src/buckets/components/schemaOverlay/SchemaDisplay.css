@@ -1,0 +1,11 @@
+.schemacell {display:inline-block;
+    width: 110px;}
+
+.header {background: darkslategrey}
+
+.row {
+    padding: 4px;
+}
+
+.row:nth-child(even) {background: gray}
+.row:nth-child(odd) {background:maroon}

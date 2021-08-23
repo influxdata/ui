@@ -2,6 +2,7 @@
 import React, {FC} from 'react'
 //import React, {FC, FormEvent, useState} from 'react'
 import './SchemaDisplay.css'
+import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 import {MeasurementSchemaList, MeasurementSchema} from  'src/client/generatedRoutes'
 // Utils
@@ -42,9 +43,8 @@ const {schema} = props
 
 
     const makeRawDataView = () => (
-        <div className='rawtext'>
-          {rawSchema}
-        </div>
+        <CodeSnippet text={rawSchema}  label='Schema'/>
+          
     )
 
   return (

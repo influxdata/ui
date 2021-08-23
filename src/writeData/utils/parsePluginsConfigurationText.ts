@@ -216,6 +216,9 @@ const inputPluginsList = [
 const telegrafConfigFilePath =
   'https://raw.githubusercontent.com/influxdata/telegraf/master/etc/telegraf.conf'
 
+const parsedPluginsPath =
+  'src/writeData/components/telegrafInputPluginsConfigurationText/'
+
 https.get(telegrafConfigFilePath, response => {
   let contents = ''
   response.on('data', chunk => {
@@ -225,6 +228,10 @@ https.get(telegrafConfigFilePath, response => {
     console.error('ERROR:', error)
   })
   response.on('end', () => {
+    if (!fs.existsSync(parsedPluginsPath)) {
+      fs.mkdirSync(parsedPluginsPath)
+    }
+
     const parsedPluginsText = contents.split('\n' + '\n' + '\n')
 
     const parsedPluginsNames = []
@@ -236,10 +243,7 @@ https.get(telegrafConfigFilePath, response => {
           .replace(/(.*)\[\[inputs./g, '')
           .replace(/\]\](.*)/g, '')
         parsedPluginsNames.push(pluginName)
-        const destinationFilPath =
-          'src/writeData/components/telegrafInputPluginsConfigurationText/' +
-          pluginName +
-          '.conf'
+        const destinationFilPath = parsedPluginsPath + pluginName + '.conf'
         fs.writeFile(destinationFilPath, pluginText, () => {})
       }
     })

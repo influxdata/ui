@@ -296,8 +296,8 @@ export const FlowQueryProvider: FC = ({children}) => {
       return
     }
 
-    map = map.slice(map.indexOf(map.find(m => m.id === startID)))
-    event('Running Notebook QueryAll')
+    map = map.slice(map.findIndex(m => m.id === startID))
+    event('Running Notebook QueryDependents')
 
     Promise.all(
       map

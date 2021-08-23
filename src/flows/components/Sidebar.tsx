@@ -217,7 +217,7 @@ const Sidebar: FC = () => {
         {
           title: 'Preview Subsequent',
           action: () => {
-            event(`Querying panel ${flow.data.get(id).id} and its dependents`)
+            event(`Querying panel dependents`)
             queryDependents(flow.data.get(id).id)
           },
         },

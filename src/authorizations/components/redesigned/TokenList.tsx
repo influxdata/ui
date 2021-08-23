@@ -5,7 +5,7 @@ import memoizeOne from 'memoize-one'
 // Components
 import {Overlay, ResourceList} from '@influxdata/clockface'
 import {TokenRow} from 'src/authorizations/components/redesigned/TokenRow'
-import {EditTokenOverlay} from 'src/authorizations/components/redesigned/EditTokenOverlay'
+import EditTokenOverlay from 'src/authorizations/components/redesigned/EditTokenOverlay'
 
 // Types
 import {Authorization} from 'src/types'
@@ -14,6 +14,7 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
+import auth from '@influxdata/influx/dist/wrappers/auth'
 
 type SortKey = keyof Authorization
 
@@ -62,6 +63,7 @@ export class TokenList extends PureComponent<Props, State> {
           <EditTokenOverlay
             auth={authInView}
             onDismissOverlay={this.handleDismissOverlay}
+          
           />
         </Overlay>
       </>

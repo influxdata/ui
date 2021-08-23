@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useState} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
@@ -9,20 +10,51 @@ import {
   FlexBox,
   AlignItems,
   FlexDirection,
+  InputLabel,
+  SlideToggle,
   ComponentSize,
+  JustifyContent,
 } from '@influxdata/clockface'
 
 // Types
 import {Authorization} from 'src/types'
 
-interface Props {
+// Actions
+import {
+  updateAuthorization,
+} from 'src/authorizations/actions/thunks'
+
+
+interface OwnProps {
   auth: Authorization
   onDismissOverlay: () => void
 }
 
-export const EditTokenOverlay: FC<Props> = props => {
+type ReduxProps = ConnectedProps<typeof connector>
+
+type Props = ReduxProps & OwnProps
+
+const EditTokenOverlay: FC<Props> = props => {
   const [description, setDescription] = useState(props.auth.description)
 
+  let isTokenEnabled = () => {
+    const {auth} = props
+    
+    return auth.status === 'active'
+  }
+  const labelText = isTokenEnabled() ? 'Active' : 'Inactive'
+
+  const changeToggle = () => {
+    const {onUpdate} = props
+    const auth = {...props.auth}
+    auth.status = auth.status === 'active' ? 'inactive' : 'active'
+    onUpdate(auth)
+    console.log(auth.status)
+  }
+
+  
+  
+  
   const handleDismiss = () => {
     props.onDismissOverlay()
   }
@@ -31,11 +63,22 @@ export const EditTokenOverlay: FC<Props> = props => {
     setDescription(event.target.value)
   }
 
+  
+
   return (
     <Overlay.Container maxWidth={830}>
       <Overlay.Header title="API Token Summary" onDismiss={handleDismiss} />
       <Overlay.Body>
+        <FlexBox margin={ComponentSize.Medium}  direction={FlexDirection.Row}>
+          <SlideToggle
+            active={isTokenEnabled()}
+            size={ComponentSize.ExtraSmall}
+            onChange={changeToggle}
+          />
+          <InputLabel active={isTokenEnabled()}>{labelText}</InputLabel>
+        </FlexBox>
         <Form>
+        
           <FlexBox
             alignItems={AlignItems.Center}
             direction={FlexDirection.Column}
@@ -55,3 +98,11 @@ export const EditTokenOverlay: FC<Props> = props => {
     </Overlay.Container>
   )
 }
+
+const mdtp = {
+  onUpdate: updateAuthorization,
+}
+
+const connector = connect(null, mdtp)
+
+export default connector(EditTokenOverlay)

@@ -119,7 +119,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
 
 const Sidebar: FC = () => {
   const {flow, add} = useContext(FlowContext)
-  const {getPanelQueries} = useContext(FlowQueryContext)
+  const {getPanelQueries, queryDependents} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
 
   const sections = ([
@@ -213,6 +213,13 @@ const Sidebar: FC = () => {
         {
           title: 'Export to Client Library',
           menu: <ClientList />,
+        },
+        {
+          title: 'Preview Subsequent',
+          action: () => {
+            event(`Querying panel ${flow.data.get(id).id} and its dependents`)
+            queryDependents(flow.data.get(id).id)
+          },
         },
       ],
     },

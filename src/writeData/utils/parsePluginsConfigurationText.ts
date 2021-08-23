@@ -4,7 +4,7 @@
   which live here:
   Updates are committed and submitted as a pull request periodically.
 
-  Follow the two steps to update. The commit as a pull request.
+  Follow the two steps to update. Then commit the updated files as a pull request.
 */
 import https from 'https'
 import fs from 'fs'

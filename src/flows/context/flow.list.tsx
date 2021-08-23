@@ -105,7 +105,7 @@ export function serialize(flow: Flow, orgID: string) {
 export function hydrate(data) {
   const flow = {
     ...JSON.parse(JSON.stringify(EMPTY_NOTEBOOK)),
-    name: data.name,
+    name: data.name || EMPTY_NOTEBOOK.name,
     range: data.spec.range,
     refresh: data.spec.refresh,
     readOnly: data.spec.readOnly,

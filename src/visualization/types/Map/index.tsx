@@ -8,7 +8,6 @@ export default register => {
     type: 'geo',
     name: 'Map',
     graphic: icon,
-    featureFlag: 'mapGeo',
     initial: properties,
     component: view,
     options,

@@ -76,7 +76,6 @@
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "@influxdata/influxdb-client": "^1.15.0",
     "@influxdata/oats": "0.5.3",
     "@testing-library/dom": "^7.24.2",
     "@testing-library/jest-dom": "^5.11.6",
@@ -163,7 +162,7 @@
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.37",
-    "@influxdata/clockface": "^2.11.0",
+    "@influxdata/clockface": "^2.11.5",
     "@influxdata/flux": "^0.5.1",
     "@influxdata/flux-lsp-browser": "^0.5.53",
     "@influxdata/giraffe": "^2.18.0",

@@ -33,6 +33,7 @@ const FlowsExplainer: FC = () => {
           onClick={handleDocumentationClick}
           color={ComponentColor.Secondary}
           text="Notebooks Docs"
+          style={{margin: '30px 0px 10px 0px'}}
         />
       </Panel.Body>
     </Panel>

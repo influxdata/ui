@@ -848,10 +848,10 @@
     "@docsearch/css" "3.0.0-alpha.37"
     algoliasearch "^4.0.0"
 
-"@influxdata/clockface@^2.11.0":
-  version "2.11.2"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.11.2.tgz#a6688ff2e2fe748fbeb50066918568d3ffaf2d45"
-  integrity sha512-ojdGPNBGNHy3UdUNYEaC6rREDCmlnAcDbR60suJZ5am9p44SLU58w7UmJcd5OfMfOm1N+PnbjI9bGa5nqtf/UA==
+"@influxdata/clockface@^2.11.5":
+  version "2.11.5"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.11.5.tgz#7de207688806d42750726fbdd63f84466c355794"
+  integrity sha512-0Uj9xst/4PfkYDHnW/0Ew22F0Ilo/QqsZnNKlvdey1xYlQ6cXl0CSL9BpaFrEbdoNQ9Yg8E1/l+zeDvwUXkQhg==
 
 "@influxdata/flux-lsp-browser@^0.5.53":
   version "0.5.53"
@@ -876,11 +876,6 @@
   integrity sha512-mmyymYIT/HpWDrdR1/x9+ENJIrZTFyr46EF42adqRwujwLxVyG1MPOC7H6aoH87DZgVxKV4nt+zmRSgOnetdpg==
   dependencies:
     axios "^0.19.0"
-
-"@influxdata/influxdb-client@^1.15.0":
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/influxdb-client/-/influxdb-client-1.15.0.tgz#0f4d0c835a9bad82b9c6f67ef574486f0a273c24"
-  integrity sha512-ESttcXHPkQEkh9SK3kIDdDq3dGjdXiEJy+pgtUyesjSLH4aMw/5My43OQLnqB3vlTfB5YK0ZpGpJHOd3KV8Fzw==
 
 "@influxdata/influxdb-templates@0.9.0":
   version "0.9.0"

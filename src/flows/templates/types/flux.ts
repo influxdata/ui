@@ -5,7 +5,6 @@ export default register =>
   register({
     type: 'flux',
     init: () => ({
-      name: 'New Flux Query',
       spec: {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,

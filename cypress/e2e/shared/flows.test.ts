@@ -295,7 +295,7 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
     cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
-    cy.getByTestID('resource-editable-name').should('be.visible')
+    cy.getByTestID('resource-editable-name').should('exist')
     cy.getByTestID('resource-editable-name').click()
 
     // visualizations should not exist
@@ -365,7 +365,7 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
     cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
-    cy.getByTestID('resource-editable-name').should('be.visible')
+    cy.getByTestID('resource-editable-name').should('exist')
     cy.getByTestID('resource-editable-name').click()
 
     // visualizations should exist

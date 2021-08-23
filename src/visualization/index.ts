@@ -52,8 +52,6 @@ visualizationDefintionContext
     })
   })
 
-console.log(SUPPORTED_VISUALIZATIONS)
-
 export {default as View} from 'src/visualization/components/View'
 export {default as ViewOptions} from 'src/visualization/components/ViewOptions'
 export {default as ViewTypeDropdown} from 'src/visualization/components/ViewTypeDropdown'

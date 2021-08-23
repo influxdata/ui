@@ -6,7 +6,6 @@ import {format_from_js_file} from '@influxdata/flux'
 
 // APIs
 import * as api from 'src/client'
-import {createTaskFromTemplate as createTaskFromTemplateAJAX} from 'src/templates/api'
 
 // Schemas
 import {taskSchema, arrayOfTasks} from 'src/schemas/tasks'
@@ -37,7 +36,6 @@ import {parse} from 'src/external/parser'
 // Types
 import {
   Label,
-  TaskTemplate,
   Task,
   GetState,
   TaskSchedule,
@@ -559,27 +557,6 @@ export const convertToTemplate = (taskID: string) => async (
   } catch (error) {
     dispatch(setExportTemplate(RemoteDataState.Error))
     dispatch(notify(copy.createTemplateFailed(error)))
-  }
-}
-
-export const createTaskFromTemplate = (template: TaskTemplate) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-): Promise<void> => {
-  try {
-    const org = getOrg(getState())
-
-    await createTaskFromTemplateAJAX(template, org.id)
-
-    dispatch(getTasks())
-    dispatch(notify(copy.importTaskSucceeded()))
-    dispatch(checkTaskLimits())
-  } catch (error) {
-    if (isLimitError(error)) {
-      dispatch(notify(copy.resourceLimitReached('tasks')))
-    } else {
-      dispatch(notify(copy.importTaskFailed(error)))
-    }
   }
 }
 

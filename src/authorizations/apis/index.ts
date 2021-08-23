@@ -1,9 +1,7 @@
 import {Authorization} from 'src/types'
-import {getAPIBasepath} from 'src/utils/basepath'
 import {postAuthorization} from 'src/client'
 import {getAuthConnection} from 'src/client/unityRoutes'
 import {getOauthClientConfig} from 'src/client/cloudPrivRoutes'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {OAuthClientConfig} from 'src/client/cloudPrivRoutes'
 
 export const createAuthorization = async (
@@ -29,36 +27,21 @@ export const getAuth0Config = async (
   redirectTo?: string
 ): Promise<OAuthClientConfig> => {
   try {
-    if (isFlagEnabled('useGeneratedAuthCallback')) {
-      // TODO(ariel): need to see if there's a way to conditionally add a query parameter to generate this
-      let resp
-      if (redirectTo) {
-        resp = await getOauthClientConfig({
-          query: {
-            redirectTo,
-          },
-        })
-      } else {
-        resp = await getOauthClientConfig({})
-      }
-
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-
-      return resp.data
-    }
-
-    let url = `${getAPIBasepath()}/api/v2private/oauth/clientConfig`
-
+    let payload = {}
     if (redirectTo) {
-      url = `${url}?redirectTo=${redirectTo}`
+      payload = {
+        query: {
+          redirectTo,
+        },
+      }
+    }
+    const resp = await getOauthClientConfig(payload)
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
     }
 
-    const response = await fetch(url)
-    const data = await response.json()
-
-    return data
+    return resp.data
   } catch (error) {
     console.error(error)
     throw error

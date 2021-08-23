@@ -1,6 +1,7 @@
 import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
+import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
 import 'cypress-file-upload'
 
 const DEX_URL_VAR = 'dexUrl'
@@ -87,33 +88,37 @@ export const loginViaDex = (username: string, password: string) => {
           followRedirect: false,
           method: 'GET',
         })
-        .then(secondResp => {
-          cy.request({
-            url: Cypress.env(DEX_URL_VAR) + secondResp.headers.location,
-            method: 'POST',
-            form: true,
-            body: {
-              login: username,
-              password: password,
-            },
-            followRedirect: false,
-          }).then(thirdResp => {
-            const req = (thirdResp.headers.location as string).split(
-              '/approval?req='
-            )[1]
-            cy.request({
-              url: thirdResp.redirectedToUrl,
-              followRedirect: true,
-              form: true,
+        .then(secondResp =>
+          cy
+            .request({
+              url: Cypress.env(DEX_URL_VAR) + secondResp.headers.location,
               method: 'POST',
-              body: {req: req, approval: 'approve'},
-            }).then(() => {
-              cy.visit('/')
-              // cy.getCookie('session').should('exist')
-              cy.location('pathname').should('not.eq', '/signin')
+              form: true,
+              body: {
+                login: username,
+                password: password,
+              },
+              followRedirect: false,
             })
-          })
-        })
+            .then(thirdResp => {
+              const req = (thirdResp.headers.location as string).split(
+                '/approval?req='
+              )[1]
+              return cy
+                .request({
+                  url: thirdResp.redirectedToUrl,
+                  followRedirect: true,
+                  form: true,
+                  method: 'POST',
+                  body: {req: req, approval: 'approve'},
+                })
+                .then(() => {
+                  cy.visit('/')
+                  cy.location('pathname').should('not.eq', '/signin')
+                  return cy.getByTestID('tree-nav')
+                })
+            })
+        )
     )
 }
 
@@ -142,7 +147,7 @@ export const wrapEnvironmentVariablesForCloud = (): Cypress.Chainable<Cypress.Re
             b.name !== '_monitoring'
         )
         cy.wrap(bucket).as('bucket')
-        wrapDefaultBucket()
+        return wrapDefaultBucket()
       })
     })
 }
@@ -664,6 +669,84 @@ export const writeData = (
   })
 }
 
+export interface WriteLPDataConf {
+  lines: string[]
+  offset: string
+  stagger?: boolean | string
+  namedBucket?: string
+}
+
+export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
+  args.stagger = args.stagger ?? true
+  const oe = parseTime(args.offset)
+  if (oe.measure >= 0) {
+    args.offset = `-${args.offset}`
+    oe.measure *= -1
+  }
+
+  let interval = ''
+  if (args.stagger && typeof args.stagger === 'boolean') {
+    interval = `${(oe.measure / args.lines.length) * -1}${oe.unit}`
+  } else if (typeof args.stagger === 'string') {
+    interval = args.stagger
+  }
+
+  if (args.stagger) {
+    return addStaggerTimestampToRecs(args.lines, args.offset, interval).then(
+      stampedLines => {
+        return writeData(stampedLines).then(response => {
+          if (response.status !== 204) {
+            throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+          }
+          return cy.wrap('success')
+        })
+      }
+    )
+  } else {
+    return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
+      return writeData(stampedLines).then(response => {
+        if (response.status !== 204) {
+          throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+        }
+        return cy.wrap('success')
+      })
+    })
+  }
+}
+
+export interface WriteLPFileDataConf {
+  filename: string
+  offset: string
+  stagger?: boolean | string
+  namedBucket?: string
+}
+
+/*
+ *  Force datafile to reside in directory cypress/fixtures
+ * */
+export const writeLPDataFromFile = (
+  args: WriteLPFileDataConf
+): Cypress.Chainable => {
+  // check for file paths starting with relative or absolute chars
+  if (args.filename.match(/.*\.\..*|^\//)) {
+    throw `${args.filename} unhandled path. Filename path must be in or relative to the cypress/fixtures directory`
+  }
+
+  // prepend './cypress/fixtures' if not already in path
+  if (!args.filename.match(/^(.\/)?cypress\/fixtures/)) {
+    args.filename = './cypress/fixtures/' + args.filename
+  }
+  return cy.readFile(args.filename).then(contents => {
+    const data: string[] = contents.split('\n')
+    return cy.writeLPData({
+      lines: data,
+      offset: args.offset,
+      stagger: args.stagger,
+      namedBucket: args.namedBucket,
+    })
+  })
+}
+
 // DOM node getters
 export const getByTestID = (
   dataTest: string,
@@ -840,11 +923,9 @@ export const createTaskFromEmpty = (
   interval: string = '24h',
   offset: string = '20m'
 ) => {
-  cy.getByTestID('empty-tasks-list').within(() => {
-    cy.getByTestID('add-resource-dropdown--button').click()
-  })
-
-  cy.getByTestID('add-resource-dropdown--new').click()
+  cy.getByTestID('create-task--button')
+    .first()
+    .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').within(() => {
@@ -934,6 +1015,8 @@ Cypress.Commands.add('upsertSecret', upsertSecret)
 
 // test
 Cypress.Commands.add('writeData', writeData)
+Cypress.Commands.add(`writeLPData`, writeLPData)
+Cypress.Commands.add(`writeLPDataFromFile`, writeLPDataFromFile)
 
 // helpers
 Cypress.Commands.add('clickAttached', {prevSubject: 'element'}, clickAttached)

@@ -1,4 +1,4 @@
-import {isValid} from './validator'
+import {isValid, isValidStrictly} from './validator'
 
 describe('the datetime validator', () => {
   it('should return true on valid date formats', function() {
@@ -29,7 +29,7 @@ describe('the datetime validator', () => {
       isValid('1999/02/09 11:00:00 PM', 'YYYY/MM/DD hh:mm:ss a')
     ).toBeTruthy()
     expect(isValid('23:00', 'HH:mm')).toBeTruthy()
-    expect(isValid('11:00 PM', 'hh:mm a')).toBeTruthy()
+    expect(isValid('9:00 PM', 'hh:mm a')).toBeTruthy()
     expect(isValid('23:00:00', 'HH:mm:ss')).toBeTruthy()
     expect(isValid('11:00:00 PM', 'hh:mm:ss a')).toBeTruthy()
     expect(isValid('23:00:00 -0700', 'HH:mm:ss ZZ')).toBeTruthy()
@@ -99,46 +99,52 @@ describe('the datetime validator', () => {
     ).toBeFalsy()
   })
   it('should be strict on date formats', function() {
-    expect(isValid('1999-02-09 23:00:0', 'YYYY-MM-DD HH:mm:ss')).toBeFalsy()
     expect(
-      isValid('1999-02-09 12:00:00 PM -1', 'YYYY-MM-DD hh:mm:ss a ZZ')
+      isValidStrictly('1999-02-09 23:00:0', 'YYYY-MM-DD HH:mm:ss')
     ).toBeFalsy()
     expect(
-      isValid('09/02/1999 23:00:00.0', 'DD/MM/YYYY HH:mm:ss.sss')
+      isValidStrictly('1999-02-09 12:00:00 PM -1', 'YYYY-MM-DD hh:mm:ss a ZZ')
     ).toBeFalsy()
     expect(
-      isValid('09/02/1999 11:00:00.000 A', 'DD/MM/YYYY hh:mm:ss.sss a')
+      isValidStrictly('09/02/1999 23:00:00.0', 'DD/MM/YYYY HH:mm:ss.sss')
     ).toBeFalsy()
     expect(
-      isValid('02/09/1999 23:00:00.00', 'MM/DD/YYYY HH:mm:ss.sss')
+      isValidStrictly('09/02/1999 11:00:00.000 A', 'DD/MM/YYYY hh:mm:ss.sss a')
     ).toBeFalsy()
     expect(
-      isValid('02/09/1999 11:00:00.000 A', 'MM/DD/YYYY hh:mm:ss.sss a')
-    ).toBeFalsy()
-    expect(isValid('1999/02/09 23:00:0', 'YYYY/MM/DD HH:mm:ss')).toBeFalsy()
-    expect(isValid('1999/02/09 11:00', 'YYYY/MM/DD hh:mm:ss a')).toBeFalsy()
-    expect(isValid('23:0', 'HH:mm')).toBeFalsy()
-    expect(isValid('11:00 A', 'hh:mm a')).toBeFalsy()
-    expect(isValid('23:00:0', 'HH:mm:ss')).toBeFalsy()
-    expect(isValid('11:00:0 A', 'hh:mm:ss a')).toBeFalsy()
-    expect(isValid('23:00:00 -1', 'HH:mm:ss ZZ')).toBeFalsy()
-    expect(isValid('11:00:00 A -1', 'hh:mm:ss a ZZ')).toBeFalsy()
-    expect(isValid('23:00:00.0', 'HH:mm:ss.sss')).toBeFalsy()
-    expect(isValid('11:00:00.0 A', 'hh:mm:ss.sss a')).toBeFalsy()
-    expect(
-      isValid('February 9, 1999 23:00:0', 'MMMM D, YYYY HH:mm:ss')
+      isValidStrictly('02/09/1999 23:00:00.00', 'MM/DD/YYYY HH:mm:ss.sss')
     ).toBeFalsy()
     expect(
-      isValid('February 9, 1999 11:00:0 PM', 'MMMM D, YYYY hh:mm:ss a')
+      isValidStrictly('02/09/1999 11:00:00.000 A', 'MM/DD/YYYY hh:mm:ss.sss a')
     ).toBeFalsy()
     expect(
-      isValid(
+      isValidStrictly('1999/02/09 23:00:0', 'YYYY/MM/DD HH:mm:ss')
+    ).toBeFalsy()
+    expect(
+      isValidStrictly('1999/02/09 11:00', 'YYYY/MM/DD hh:mm:ss a')
+    ).toBeFalsy()
+    expect(isValidStrictly('23:0', 'HH:mm')).toBeFalsy()
+    expect(isValidStrictly('11:00 A', 'hh:mm a')).toBeFalsy()
+    expect(isValidStrictly('23:00:0', 'HH:mm:ss')).toBeFalsy()
+    expect(isValidStrictly('11:00:0 A', 'hh:mm:ss a')).toBeFalsy()
+    expect(isValidStrictly('23:00:00 -1', 'HH:mm:ss ZZ')).toBeFalsy()
+    expect(isValidStrictly('11:00:00 A -1', 'hh:mm:ss a ZZ')).toBeFalsy()
+    expect(isValidStrictly('23:00:00.0', 'HH:mm:ss.sss')).toBeFalsy()
+    expect(isValidStrictly('11:00:00.0 A', 'hh:mm:ss.sss a')).toBeFalsy()
+    expect(
+      isValidStrictly('February 9, 1999 23:00:0', 'MMMM D, YYYY HH:mm:ss')
+    ).toBeFalsy()
+    expect(
+      isValidStrictly('February 9, 1999 11:00:0 PM', 'MMMM D, YYYY hh:mm:ss a')
+    ).toBeFalsy()
+    expect(
+      isValidStrictly(
         'Tuesday, February 9, 1999 23:00:0',
         'dddd, MMMM D, YYYY HH:mm:ss'
       )
     ).toBeFalsy()
     expect(
-      isValid(
+      isValidStrictly(
         'Tuesday, February 9, 1999 11:00:00:0',
         'dddd, MMMM D, YYYY hh:mm:ss a'
       )

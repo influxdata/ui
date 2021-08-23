@@ -49,11 +49,13 @@ const WindowPeriod: FunctionComponent<Props> = ({
   let durationDisplay = period
 
   if (!period || isAutoWindowPeriod) {
-    durationDisplay = autoWindowPeriod
-      ? isInCheckOverlay
-        ? `${AGG_WINDOW_AUTO} (${everyWindowPeriod})`
-        : `${AGG_WINDOW_AUTO} (${autoWindowPeriod})`
-      : AGG_WINDOW_AUTO
+    durationDisplay = AGG_WINDOW_AUTO
+    if (autoWindowPeriod) {
+      durationDisplay = `${AGG_WINDOW_AUTO} (${autoWindowPeriod})`
+      if (isInCheckOverlay) {
+        durationDisplay = `${AGG_WINDOW_AUTO} (${everyWindowPeriod})`
+      }
+    }
   }
 
   const durationInputStatus = isAutoWindowPeriod

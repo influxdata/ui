@@ -1,15 +1,14 @@
 import React, {FC, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
-import {useSelector, useDispatch} from 'react-redux'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {ResourceCard} from '@influxdata/clockface'
 import FlowContextMenu from 'src/flows/components/FlowContextMenu'
-import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import {FlowListContext} from 'src/flows/context/flow.list'
 
 // Utils
-import {getMe} from 'src/me/selectors'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 
 import {
@@ -29,7 +28,6 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const {orgID} = useParams<{orgID: string}>()
 
   const history = useHistory()
-  const user = useSelector(getMe)
   const dispatch = useDispatch()
 
   const handleClick = () => {
@@ -39,13 +37,6 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const contextMenu = (
     <FlowContextMenu id={id} name={flow.name} isPinned={isPinned} />
   )
-
-  let name = user.name
-
-  if (name.includes('@')) {
-    name = name.split('@')[0]
-  }
-  name = `${name}-${PROJECT_NAME.toLowerCase()}-${new Date().toISOString()}`
 
   const handleRenameNotebook = (name: string) => {
     update(id, {...flow, name})
@@ -64,7 +55,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
       testID={`flow-card--${flow.name}`}
     >
       <ResourceCard.EditableName
-        name={flow.name || name}
+        name={flow.name || DEFAULT_PROJECT_NAME}
         onClick={handleClick}
         onUpdate={handleRenameNotebook}
         buttonTestID="flow-card--name-button"

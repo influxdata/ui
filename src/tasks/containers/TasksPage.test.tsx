@@ -215,38 +215,13 @@ describe('Tasks.Containers.TasksPage', () => {
   })
 
   describe('create tasks', () => {
-    it('triggers create a new task', async () => {
-      fireEvent.click(screen.getByTestId('add-resource-dropdown--button'))
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId('add-resource-dropdown--import')
-        ).toBeVisible()
-      })
-      fireEvent.click(screen.getByTestId('add-resource-dropdown--new'))
+    it('triggers create a new task', () => {
+      fireEvent.click(screen.getByTestId('create-task--button'))
 
       expect(localHistory.entries).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             pathname: '/orgs/02ee9e2a29d73000/tasks/new',
-          }),
-        ])
-      )
-    })
-
-    it('triggers task import', async () => {
-      fireEvent.click(screen.getByTestId('add-resource-dropdown--button'))
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId('add-resource-dropdown--import')
-        ).toBeVisible()
-      })
-
-      fireEvent.click(screen.getByTestId('add-resource-dropdown--import'))
-
-      expect(localHistory.entries).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            pathname: '/orgs/02ee9e2a29d73000/tasks/import',
           }),
         ])
       )

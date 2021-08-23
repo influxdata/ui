@@ -33,6 +33,7 @@ const CreateBucketButton: FC<ReduxProps> = ({
   }, [dispatch])
 
   const handleItemClick = (): void => {
+    console.log('arghh!!! 44a')
     onShowOverlay('create-bucket', null, onDismissOverlay)
   }
 

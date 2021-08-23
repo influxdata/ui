@@ -30,6 +30,9 @@ import {
   deleteBucket,
     getBucketSchema,
 } from 'src/buckets/actions/thunks'
+
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/limits'
 
 // Utils
@@ -57,6 +60,8 @@ const FilterBuckets = FilterList<Bucket>()
 class BucketsTab extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
+
+    //const dispatch = useDispatch()
 
     this.state = {
       searchTerm: '',
@@ -171,7 +176,9 @@ class BucketsTab extends PureComponent<Props, State> {
 
   private handleShowBucketSchema = async ({id}: OwnBucket) => {
     const schema = await this.props.getBucketSchema(id)
-    console.log('got schema in bucketstab!!!!', schema)
+    console.log('got schema in bucketstab!!!! (changed 11a-mon1)', schema)
+
+    this.props.showOverlay('bucket-schema-show', {name: 'testing-42'}, this.props.dismissOverlay)
   }
 
   private handleFilterUpdate = (searchTerm: string): void => {
@@ -213,6 +220,8 @@ const mdtp = {
   updateBucket,
   deleteBucket,
   getBucketSchema,
+  showOverlay,
+  dismissOverlay,
   checkBucketLimits: checkBucketLimitsAction,
 }
 

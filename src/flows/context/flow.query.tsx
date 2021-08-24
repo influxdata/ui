@@ -248,8 +248,6 @@ export const FlowQueryProvider: FC = ({children}) => {
       },
     }
 
-    console.log('NEAT', _override)
-
     return queryAPI(text, _override)
   }
 

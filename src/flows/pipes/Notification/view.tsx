@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo} from 'react'
+import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
+import {useDispatch} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux'
 import {
   ComponentStatus,
@@ -15,12 +16,13 @@ import {
   AlignItems,
   JustifyContent,
   Dropdown,
+  ComponentColor,
 } from '@influxdata/clockface'
-import {RemoteDataState} from 'src/types'
-
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {remove} from 'src/flows/context/query'
+import {QueryContext} from 'src/flows/context/query'
+import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 
 import Threshold, {
   THRESHOLD_TYPES,
@@ -29,17 +31,29 @@ import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 
 // Types
+import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-
+import {notify} from 'src/shared/actions/notifications'
+import {
+  testNotificationSuccess,
+  testNotificationFailure,
+} from 'src/shared/copy/notifications'
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
+const fakeNotify = notify
+
 const Notification: FC<PipeProp> = ({Context}) => {
+  const dispatch = useDispatch()
+  const {query, cancel} = useContext(QueryContext)
   const {id, data, update, results, loading} = useContext(PipeContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const [status, setStatus] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
+  )
 
   let intervalError = ''
   let offsetError = ''
@@ -268,6 +282,29 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.message,
   ])
 
+  const handleTestEndpoint = async () => {
+    const queryText = `
+import "strings"
+import "regexp"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestImports()}
+
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
+
+    try {
+      setStatus(RemoteDataState.Loading)
+      await query(queryText)
+
+      setStatus(RemoteDataState.Done)
+      dispatch(notify(testNotificationSuccess(data.endpoint)))
+    } catch {
+      setStatus(RemoteDataState.Error)
+      dispatch(notify(testNotificationFailure(data.endpoint)))
+    }
+  }
+
   if (
     loading === RemoteDataState.NotStarted ||
     loading === RemoteDataState.Loading
@@ -375,10 +412,22 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
           </FlexBox.Child>
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
-          <ExportTaskButton
-            generate={generateTask}
-            text="Export as Alert Task"
-          />
+          <FlexBox margin={ComponentSize.Medium}>
+            <SubmitQueryButton
+              text="Test Endpoint"
+              submitButtonDisabled={false}
+              queryStatus={status}
+              onSubmit={handleTestEndpoint}
+              onNotify={fakeNotify}
+              queryID=""
+              cancelAllRunningQueries={cancel}
+              color={ComponentColor.Default}
+            />
+            <ExportTaskButton
+              generate={generateTask}
+              text="Export as Alert Task"
+            />
+          </FlexBox>
         </Panel.Footer>
       </div>
       {warningMessage}

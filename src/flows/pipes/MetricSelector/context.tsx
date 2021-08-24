@@ -241,7 +241,6 @@ export const SchemaProvider: FC = React.memo(({children}) => {
   const range = formatTimeRangeArguments(flow?.range)
 
   useEffect(() => {
-    console.log('firing', data, loading)
     if (!data?.bucket) {
       return
     }
@@ -256,7 +255,6 @@ export const SchemaProvider: FC = React.memo(({children}) => {
 |> drop(columns: ["_value"])
 |> group()`
 
-    console.log('throwing', text, scope)
     query(text, scope)
       .then((response: FluxResult) => {
         const schemaForBucket = parsedResultToSchema(response.parsed)
@@ -275,8 +273,6 @@ export const SchemaProvider: FC = React.memo(({children}) => {
     schema,
     searchTerm,
   ])
-
-  console.log('normalized', normalized, loading)
 
   return (
     <SchemaContext.Provider

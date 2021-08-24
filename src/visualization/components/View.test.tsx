@@ -1,18 +1,7 @@
 import React from 'react'
-import {createStore} from 'redux'
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react'
-import {normalize} from 'normalizr'
-import {mocked} from 'ts-jest/utils'
+import {render} from '@testing-library/react'
+import {AnnotationsList, RemoteDataState} from 'src/types'
 
-import {AnnotationsList, QueryViewProperties, RemoteDataState} from 'src/types'
-
-const supportedVisualizations = {}
 import Band from 'src/visualization/types/Band/index'
 import Check from 'src/visualization/types/Check/index'
 import Gauge from 'src/visualization/types/Gauge/index'
@@ -25,7 +14,9 @@ import Scatter from 'src/visualization/types/Scatter/index'
 import SimpleTable from 'src/visualization/types/SimpleTable/index'
 import SingleStat from 'src/visualization/types/SingleStat/index'
 import SingleStatWithLine from 'src/visualization/types/SingleStatWithLine/index'
-// import Table from 'src/visualization/types/Table/index'
+import Table from 'src/visualization/types/Table/index'
+
+const supportedVisualizations = {}
 
 Band(visualization => {
   supportedVisualizations[visualization.type] = visualization
@@ -63,9 +54,9 @@ SingleStat(visualization => {
 SingleStatWithLine(visualization => {
   supportedVisualizations[visualization.type] = visualization
 })
-// Table((visualization) => {
-//   supportedVisualizations[visualization.type] = visualization
-// })
+Table(visualization => {
+  supportedVisualizations[visualization.type] = visualization
+})
 
 jest.doMock('src/visualization/contextLoader', () => {
   return {

@@ -94,7 +94,7 @@ const setup = properties => {
 
 describe('the view rendering pipeline', () => {
   Object.keys(SUPPORTED_VISUALIZATIONS).forEach(visualizationType => {
-    it('renders the visualization', () => {
+    it('does not fail to render a component', () => {
       const {container} = setup(SUPPORTED_VISUALIZATIONS[visualizationType])
       expect(container).not.toHaveTextContent(
         'An InfluxDB error has occurred. Please report the issue'

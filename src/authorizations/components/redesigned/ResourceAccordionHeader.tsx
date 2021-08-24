@@ -65,14 +65,16 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
         stretchToFitWidth={true}
         alignItems={AlignItems.Center}
         style={{textAlign: 'start'}}
-        onClick={(e: any) => {
-          e.stopPropagation()
-        }}
       >
         <FlexBox.Child basis={40} grow={8}>
           <InputLabel size={ComponentSize.Medium}>{title}</InputLabel>
         </FlexBox.Child>
-        <FlexBox.Child grow={1}>
+        <FlexBox.Child
+          grow={1}
+          onClick={(e: any) => {
+            e.stopPropagation()
+          }}
+        >
           <Toggle
             id={resourceName}
             type={InputToggleType.Checkbox}
@@ -85,7 +87,12 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             disabled={false}
           ></Toggle>
         </FlexBox.Child>
-        <FlexBox.Child grow={1}>
+        <FlexBox.Child
+          grow={1}
+          onClick={(e: any) => {
+            e.stopPropagation()
+          }}
+        >
           <Toggle
             id={resourceName + 1}
             type={InputToggleType.Checkbox}

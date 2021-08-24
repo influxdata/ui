@@ -60,6 +60,18 @@ const Notification: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
+  const loadingText = useMemo(() => {
+    if (loading === RemoteDataState.Loading) {
+      return 'Loading'
+    }
+
+    if (loading === RemoteDataState.NotStarted) {
+      return 'This cell will display results from the previous cell'
+    }
+
+    return 'No Data Returned'
+  }, [loading])
+
   const queryText = getPanelQueries(id, true).source
   const hasTaskOption = useMemo(
     () =>
@@ -279,9 +291,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
             <Icon glyph={IconFont.Bell} className="panel-resizer--vis-toggle" />
           </div>
           <div className="panel-resizer--body">
-            <div className="panel-resizer--empty">
-              This cell requires results from the previous cell
-            </div>
+            <div className="panel-resizer--empty">{loadingText}</div>
           </div>
         </div>
         {warningMessage}

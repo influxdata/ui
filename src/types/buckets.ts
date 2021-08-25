@@ -1,6 +1,8 @@
+import {CLOUD} from '../shared/constants'
+
 export {Bucket as GenBucket} from 'src/client'
 
-import {Bucket as GenBucket, MeasurementSchema} from 'src/client'
+import {Bucket as GenBucket} from 'src/client'
 
 export interface OwnBucket extends Omit<GenBucket, 'labels'> {
   labels?: string[]
@@ -24,7 +26,12 @@ export enum WritePrecision {
   Ns = 'ns',
 }
 
+let MeasurementSchema = null
+if (CLOUD) {
+  MeasurementSchema = require('src/client/generatedRoutes').MeasurementSchema
+}
+
 export interface BucketSchemaMeasurementsResponse {
   links: {self: string}
-  measurementSchemas: MeasurementSchema[]
+  measurementSchemas: typeof MeasurementSchema[]
 }

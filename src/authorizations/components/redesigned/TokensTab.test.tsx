@@ -7,8 +7,9 @@ import {AuthorizationUpdateRequest as AuthApi} from '@influxdata/influx'
 
 import {mocked} from 'ts-jest/utils'
 
-import TokensTab from './TokensTab'
-// import {deleteToken} from 'src/client'
+
+import {deleteAuthorization, postAuthorization} from '../../../../src/client'
+
 import {auth, orgs, withRouterProps} from '../../../../mocks/dummyData'
 import {createMemoryHistory} from 'history'
 import {RemoteDataState} from '@influxdata/clockface'
@@ -16,17 +17,21 @@ import {RemoteDataState} from '@influxdata/clockface'
 const InactiveToken = {
   id: '02f12c50dcb93000',
   orgID: '02ee9e2a29d73000',
-  token: 'Dead-Beetle',
+  token: 'skjflkdsjfkd',
   status: AuthApi.StatusEnum.Inactive,
   org: 'default',
   description: 'XYZ',
 }
 
+const replacementID = '02f12c50dcb9300f'
+const replacementDescription = 'ABC'
 
 const localTokens = [auth, InactiveToken]
 const localHistory = createMemoryHistory({initialEntries: ['/']})
 
-jest.mock('src/client', () => ({
+
+
+jest.mock('../../../../src/client', () => ({
   getTokens: jest.fn(() => {
     return {
       data: {
@@ -39,12 +44,38 @@ jest.mock('src/client', () => ({
       status: 200,
     }
   }),
-  deleteToken: jest.fn(() => ({
+  deleteAuthorization: jest.fn(() => ({
     headers: {},
     status: 204,
   })),
+  postAuthorization: jest.fn(() => {
+    return {
+      headers: {},
+      status: 201, 
+      data: InactiveToken
+    }
+  }),
+  getAuthorization: jest.fn(() => {
+    return {
+      data: InactiveToken,
+      headers: {},
+      status: 200,
+    }
+  }),
+  
+}))
+jest.mock('../../../../src/authorizations/apis', () => ({
+  
+  createAuthorization: jest.fn(() => {
+    return {
+      auth
+    }
+  }),
+  
 }))
 
+import {createAuthorization} from '../../../../src/authorizations/apis'
+import TokensTab from './TokensTab'
 
 const defaultProps: any = {
   ...withRouterProps,
@@ -55,10 +86,6 @@ const defaultProps: any = {
 const setup = (override?: {}) => {
   const props = {
     ...defaultProps,
-    deleteToken: jest.fn(() => ({
-      headers: {},
-      status: 204,
-    })),
     ...override,
   }
   const testState = {
@@ -99,9 +126,11 @@ describe('TokensTab', () => {
   })
 
   describe('manage Tokens', () => {
+
     it('deletes a token', async () => {
+      // console.log(deleteAuthorization);
       const tokenCard = (await screen.findAllByTestId('token-card My token'))[0]
-      console.log('token card' ,tokenCard)
+      // console.log('token card' ,tokenCard)
       expect(
         tokenCard.querySelector("[data-testid='token-name My token']")).toHaveTextContent('My token')
 
@@ -111,21 +140,47 @@ describe('TokensTab', () => {
 
       const tokenID = '03c03a8a64728000'
       // tokenCard
-      //   .querySelector("[class='copy-resource-id']")
+      //   .querySelector("[class='cf-resource-card']")
       //   .textContent.split(':')[1]
       //   .split('C')[0]
       //   .trim()
-
+        
       expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeTruthy()
       expect(ui.store.getState().resources.tokens.allIDs).toContain(tokenID)
 
       fireEvent.click(deleteButton)
 
-      await waitFor(() => expect(ui.props.deleteToken()).toBeCalled())
+      await waitFor(() => expect(deleteAuthorization).toBeCalled())
+      expect(mocked(deleteAuthorization).mock.calls[0][0]['authID']).toEqual(tokenID)
+      expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeFalsy()
+      expect(ui.store.getState().resources.tokens.allIDs).not.toContain(tokenID)
+    })
 
-      // expect(mocked(ui.deleteToken).mock.calls[0][0]['tokenID']).toEqual(tokenID)
-      // expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeFalsy()
-      // expect(ui.store.getState().resources.tokens.allIDs).not.toContain(tokenID)
+    it('clones a token', async () => {
+      const ui = setup()
+      expect(ui.store.getState().resources.tokens.allIDs.length).toEqual(
+        localTokens.length
+      )
+      
+
+      const tokenCard = (await screen.findAllByTestId('token-card My token'))[0]
+      // console.log(tokenCard)
+      const cloneButton = tokenCard.querySelector(
+        '[data-testid=clone-token]'
+      )
+      // const description = tokenCard.querySelector("[data-testid='token-name My token']")
+      console.log(tokenCard)
+      // .textContent
+      // expect(description).toContain(InactiveToken.description)
+      // console.log('token clone button ', cloneButton)
+      fireEvent.click(cloneButton)
+      
+      // await waitFor(() => expect(createAuthorization).toBeCalled())
+      
+      
+
+      // expect(mocked(getAuthorization).mock.calls[0][0].authID).toEqual(InactiveToken.id)
+      // console.log(mocked(getAuthorization).mock.calls[0][0].authID)
     })
   })
   

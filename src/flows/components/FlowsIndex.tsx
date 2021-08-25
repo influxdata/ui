@@ -36,7 +36,7 @@ const FlowsIndex = () => {
     const distanceToTop =
       window.pageYOffset +
       element.getBoundingClientRect().top +
-      element.getBoundingClientRect().height
+      element.getBoundingClientRect().height / 1.25
 
     const elementHeight = element.offsetHeight
     const scrollTop = document.documentElement.scrollTop

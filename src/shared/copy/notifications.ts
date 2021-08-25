@@ -1420,3 +1420,17 @@ export const pinnedItemSuccess = (
   icon: IconFont.Star,
   message: `Successfully ${pinAction} pinned ${pinItemType} to homepage`,
 })
+
+export const testNotificationSuccess = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `A test alert has been sent to ${source}`,
+})
+
+export const testNotificationFailure = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to send the test alert to ${source}. Please try again`,
+})

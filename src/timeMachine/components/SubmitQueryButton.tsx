@@ -30,6 +30,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {AppState, RemoteDataState} from 'src/types'
 
 interface OwnProps {
+  color?: ComponentColor
   text?: string
   icon?: IconFont
   testID?: string
@@ -85,7 +86,7 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   public render() {
-    const {text, queryStatus, icon, testID, className} = this.props
+    const {color, text, queryStatus, icon, testID, className} = this.props
     if (queryStatus === RemoteDataState.Loading && this.state.timer) {
       return (
         <Button
@@ -108,7 +109,7 @@ class SubmitQueryButton extends PureComponent<Props> {
         size={ComponentSize.Small}
         status={this.buttonStatus}
         onClick={this.handleClick}
-        color={ComponentColor.Primary}
+        color={color ?? ComponentColor.Primary}
         testID={testID}
         style={{minWidth: '100px'}}
       />

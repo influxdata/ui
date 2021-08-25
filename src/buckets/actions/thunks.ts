@@ -56,6 +56,13 @@ import {BUCKET_LIMIT} from 'src/resources/constants'
 
 type Action = BucketAction | NotifyAction
 
+let getBucketsSchemaMeasurements = null
+
+if (CLOUD) {
+  getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
+    .getBucketsSchemaMeasurements
+}
+
 // todo: probably isn't thunk ? (should be moved to utils or something like that)
 export const fetchAllBuckets = async (orgID: string) => {
   const resp = await api.getBuckets({
@@ -157,40 +164,23 @@ export const createBucketAndUpdate = (
   }
 }
 
-export const getBucketSchema = (bucketID: string) => async (
-
-) => {
-
-
+// should only be called if in a cloud instance!  not available for OSS!
+// everything that calls this should use the if (CLOUD) as a guard
+export const getBucketSchema = (bucketID: string) => async () => {
   try {
-
-    console.log('attempting to retrieve schema, bucket:', bucketID)
-
-    const resp = await api.getBucketsSchemaMeasurements({
+    const resp = await getBucketsSchemaMeasurements({
       bucketID,
     })
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-
-    console.log("got response from getBucketSchema:", resp)
-
-  return resp.data
-
- // this is for getting a particular measurement, not all of them
-    // const resp2 = await api.getBucketsSchemaMeasurement({
-    //   bucketID,
-    // })
-    //
-    // console.log("trying out singular one.....", resp2)
-
+    return resp.data
 
   } catch (error) {
     console.error('error while retrieving schemas', error)
-    return null;
+    return null
   }
-
 }
 
 export const updateBucket = (bucket: OwnBucket) => async (

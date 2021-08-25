@@ -28,7 +28,7 @@ import {
   createBucket,
   updateBucket,
   deleteBucket,
-    getBucketSchema,
+  getBucketSchema,
 } from 'src/buckets/actions/thunks'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -170,7 +170,7 @@ class BucketsTab extends PureComponent<Props, State> {
   }
 
   private handleShowBucketSchema2 = ({id}: OwnBucket) => {
-    const schema =  this.props.getBucketSchema(id)
+    const schema = this.props.getBucketSchema(id)
     console.log('got schema in bucketstab!!!!', schema)
   }
 
@@ -178,9 +178,13 @@ class BucketsTab extends PureComponent<Props, State> {
     const schemaData = await this.props.getBucketSchema(id)
     console.log('got schema in bucketstab!!!! (changed 11a-mon1)', schemaData)
 
-    const schema= schemaData?.measurementSchemas
+    const schema = schemaData?.measurementSchemas
 
-    this.props.showOverlay('bucket-schema-show', {schema, bucketName:name}, this.props.dismissOverlay)
+    this.props.showOverlay(
+      'bucket-schema-show',
+      {schema, bucketName: name},
+      this.props.dismissOverlay
+    )
   }
 
   private handleFilterUpdate = (searchTerm: string): void => {

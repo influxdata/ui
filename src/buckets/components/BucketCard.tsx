@@ -29,7 +29,7 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
   bucket,
   onDeleteBucket,
   onFilterChange,
-    onGetBucketSchema,
+  onGetBucketSchema,
   history,
   match: {
     params: {orgID},

@@ -116,7 +116,10 @@ const FlowsIndex = () => {
         {showButtonMode && isFlagEnabled('presetFlows') && (
           <>
             <PresetFlowsButtons />
-            <Page.ControlBar fullWidth={false}>
+            <Page.ControlBar
+              className="flows-index--control-bar"
+              fullWidth={false}
+            >
               <Page.ControlBarLeft>
                 <SearchWidget
                   placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
@@ -141,7 +144,10 @@ const FlowsIndex = () => {
       <DapperScrollbars onScroll={scrollHandler} id="scrollFlows">
         <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
           {isFlagEnabled('presetFlows') && <PresetFlows />}
-          <Page.ControlBar fullWidth={false}>
+          <Page.ControlBar
+            className="flows-index--control-bar"
+            fullWidth={false}
+          >
             <Page.ControlBarLeft>
               <SearchWidget
                 placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}

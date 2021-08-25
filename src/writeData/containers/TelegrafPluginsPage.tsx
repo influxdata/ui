@@ -30,10 +30,6 @@ import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 import 'src/writeData/components/WriteDataDetailsView.scss'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
-  <CodeSnippet text={props.value} label={props.language} />
-)
-
 type ParamsType = {
   [param: string]: string
 }

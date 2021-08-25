@@ -10,7 +10,15 @@ $dashboard-grid-gap: $cf-marg-a;
   grid-template-columns: repeat(3, 1fr);
   border-radius: 18px;
   width: 100%;
-  height: 150px;
+  height: auto;
   grid-column-gap: $dashboard-grid-gap;
   grid-row-gap: $dashboard-grid-gap;
+}
+
+.pinneditems--emptystate {
+  min-width: 380px;
+}
+
+.pinned-items--card {
+  background: rgb(49, 49, 61);
 }

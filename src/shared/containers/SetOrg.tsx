@@ -75,7 +75,6 @@ import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
-import FunctionsRouter from 'src/functions/containers/FunctionsRouter'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -244,11 +243,6 @@ const SetOrg: FC = () => {
 
           {/* Usage */}
           {CLOUD && <Route path={`${orgPath}/usage`} component={UsagePage} />}
-
-          {/* Managed Functions */}
-          {CLOUD && isFlagEnabled('managed-functions') && (
-            <Route path={`${orgPath}/functions`} component={FunctionsRouter} />
-          )}
 
           {/* Members */}
           {!CLOUD && (

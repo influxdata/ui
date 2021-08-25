@@ -86,20 +86,4 @@ export const AccountPage = lazy(() =>
 )
 export const OrgOverlay = lazy(() => import('src/operator/OrgOverlayWrapper'))
 
-// Functions
-export const FunctionListPage = lazy(() =>
-  import('src/functions/containers/FunctionListPage')
-)
-export const FunctionNewWrapper = lazy(() =>
-  import('src/functions/containers/FunctionNewWrapper')
-)
-export const FunctionEditWrapper = lazy(() =>
-  import('src/functions/containers/FunctionEditWrapper')
-)
-export const FunctionRunListPage = lazy(() =>
-  import('src/functions/containers/FunctionRunListPage')
-)
-export const FunctionsRouter = lazy(() =>
-  import('src/functions/containers/FunctionsRouter')
-)
 export const CheckoutPage = lazy(() => import('src/checkout/CheckoutPage'))

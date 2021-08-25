@@ -1,5 +1,5 @@
 // Libraries
-import {PureComponent} from 'react'
+import React, {FC, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {RouteComponentProps} from 'react-router-dom'
 
@@ -17,10 +17,8 @@ interface StateProps {
 
 type Props = StateProps & RouteComponentProps
 
-class RouteToOrg extends PureComponent<Props> {
-  public componentDidMount() {
-    const {orgs, history, org} = this.props
-
+const RouteToOrg: FC<Props> = ({orgs, history, org}) => {
+  useEffect(() => {
     if (!orgs || !orgs.length) {
       history.push(`/no-orgs`)
       return
@@ -34,11 +32,9 @@ class RouteToOrg extends PureComponent<Props> {
 
     // else default to first org
     history.push(`/orgs/${orgs[0].id}`)
-  }
+  }, [orgs, org])
 
-  render() {
-    return false
-  }
+  return <></>
 }
 
 const mstp = (state: AppState) => {

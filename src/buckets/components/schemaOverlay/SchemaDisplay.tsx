@@ -21,7 +21,7 @@ interface Props {
  * widget/panel for showing the explicit bucket schema;
  * it does not allow editing but it does allow the user to copy it easily into the clipboard using the
  * CodeSnippet component.
-  * */
+ * */
 export const SchemaDisplay: FC<Props> = (props: Props) => {
   const handleClose = () => {
     props.onClose()
@@ -33,14 +33,12 @@ export const SchemaDisplay: FC<Props> = (props: Props) => {
   const makeRawDataView = () => <CodeSnippet text={rawSchema} />
 
   return (
-    <Overlay.Container maxWidth="600">
+    <Overlay.Container maxWidth={600}>
       <Overlay.Header
         title={`Explicit Schema for: ${props.bucketName}`}
         onDismiss={handleClose}
       />
-      <Overlay.Body>
-        {makeRawDataView()}
-      </Overlay.Body>
+      <Overlay.Body>{makeRawDataView()}</Overlay.Body>
       <Overlay.Footer>
         <div>
           <Button

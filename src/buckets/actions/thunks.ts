@@ -167,7 +167,9 @@ export const createBucketAndUpdate = (
 // should only be called if in a cloud instance!  not available for OSS!
 // everything that calls this should use the if (CLOUD) as a guard
 // this is only valid for buckets with an explicit schema type. (implicit is the default)
-export const getBucketSchema = (bucketID: string) => async () => {
+export const getBucketSchema = (bucketID: string) => async (): Promise<
+  BucketSchemaMeasurementsResponse
+> => {
   try {
     const resp = await getBucketsSchemaMeasurements({
       bucketID,
@@ -177,7 +179,6 @@ export const getBucketSchema = (bucketID: string) => async () => {
       throw new Error(resp.data.message)
     }
     return resp.data
-
   } catch (error) {
     console.error('error while retrieving schemas', error)
     return null

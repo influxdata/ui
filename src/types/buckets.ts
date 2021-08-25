@@ -25,13 +25,3 @@ export enum WritePrecision {
   Us = 'us',
   Ns = 'ns',
 }
-
-let MeasurementSchema = null
-if (CLOUD) {
-  MeasurementSchema = require('src/client/generatedRoutes').MeasurementSchema
-}
-
-export interface BucketSchemaMeasurementsResponse {
-  links: {self: string}
-  measurementSchemas: typeof MeasurementSchema[]
-}

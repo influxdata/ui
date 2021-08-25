@@ -50,7 +50,7 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
   // if the schema type isn't present just default to implicit
   const schemaType = bucket?.schemaType || 'implicit'
 
-  const schemaLabel = `${capitalize(schemaType)} Schema Type`
+  const schemaLabel = `Schema Type: ${capitalize(schemaType)}`
   const schemaBlock = (
     <span data-testid="bucket-schemaType"> {schemaLabel} </span>
   )

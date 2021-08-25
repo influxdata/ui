@@ -24,6 +24,7 @@ export type OverlayID =
   | 'edit-annotation'
   | 'toggle-auto-refresh'
   | 'cell-copy-overlay'
+  | 'bucket-schema-show'
 
 export interface OverlayState {
   id: OverlayID | null

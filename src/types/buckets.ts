@@ -1,5 +1,3 @@
-import {CLOUD} from '../shared/constants'
-
 export {Bucket as GenBucket} from 'src/client'
 
 import {Bucket as GenBucket} from 'src/client'

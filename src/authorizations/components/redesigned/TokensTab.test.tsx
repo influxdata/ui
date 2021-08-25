@@ -8,9 +8,12 @@ import {AuthorizationUpdateRequest as AuthApi} from '@influxdata/influx'
 import {mocked} from 'ts-jest/utils'
 
 
+import {createAuthorization} from 'src/authorizations/apis'
+import TokensTab from './TokensTab'
+
 import {deleteAuthorization, postAuthorization} from '../../../../src/client'
 
-import {auth, orgs, withRouterProps} from '../../../../mocks/dummyData'
+import {auth2, orgs, withRouterProps} from '../../../../mocks/dummyData'
 import {createMemoryHistory} from 'history'
 import {RemoteDataState} from '@influxdata/clockface'
 
@@ -26,7 +29,7 @@ const InactiveToken = {
 const replacementID = '02f12c50dcb9300f'
 const replacementDescription = 'ABC'
 
-const localTokens = [auth, InactiveToken]
+const localTokens = [auth2, InactiveToken]
 const localHistory = createMemoryHistory({initialEntries: ['/']})
 
 
@@ -64,18 +67,12 @@ jest.mock('../../../../src/client', () => ({
   }),
   
 }))
-jest.mock('../../../../src/authorizations/apis', () => ({
-  
-  createAuthorization: jest.fn(() => {
-    return {
-      auth
-    }
+jest.mock('src/authorizations/apis', () => ({
+    createAuthorization: jest.fn(() => {
+    return auth2
   }),
   
 }))
-
-import {createAuthorization} from '../../../../src/authorizations/apis'
-import TokensTab from './TokensTab'
 
 const defaultProps: any = {
   ...withRouterProps,
@@ -169,13 +166,13 @@ describe('TokensTab', () => {
         '[data-testid=clone-token]'
       )
       // const description = tokenCard.querySelector("[data-testid='token-name My token']")
-      console.log(tokenCard)
+      // console.log(tokenCard)
       // .textContent
       // expect(description).toContain(InactiveToken.description)
       // console.log('token clone button ', cloneButton)
       fireEvent.click(cloneButton)
-      
-      // await waitFor(() => expect(createAuthorization).toBeCalled())
+      console.log('API REQUEST HAS HAPPENED')
+      await waitFor(() => expect(createAuthorization).toBeCalled())
       
       
 

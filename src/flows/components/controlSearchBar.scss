@@ -1,5 +1,15 @@
-.cf-page-control-bar--fixed {
-  padding: 0px !important;
+.flows-index--control-bar {
+  .cf-page-control-bar--fixed {
+    padding: 0px;
+  }
+  .cf-dropdown-menu {
+    position: fixed;
+    max-width: 210px;
+  }
+}
+
+.buttonMode {
+  animation: fadeIn 0.5s;
 }
 
 .flows-index--presetButtons {

@@ -1,4 +1,4 @@
-describe('Orgs', () => {
+describe('Orgs ', () => {
   beforeEach(() => {
     cy.flush()
   })

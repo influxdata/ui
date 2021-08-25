@@ -364,13 +364,6 @@ $cf-radius-lg: $cf-radius + 4px;
   }
 }
 
-@media screen and (min-width: 800px) {
-  .cf-page-header {
-    flex: 0 !important;
-    margin-top: 10px !important;
-  }
-}
-
 .flows-index--main {
   margin-top: 10px;
 }

@@ -13,7 +13,7 @@ import {getOverlayParams} from 'src/overlays/selectors'
 
 export const ShowBucketSchemaOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
-  let {schema, bucketName} = useSelector(getOverlayParams)
+  const {schema, bucketName} = useSelector(getOverlayParams)
 
   return (
     <SchemaDisplay onClose={onClose} schema={schema} bucketName={bucketName} />

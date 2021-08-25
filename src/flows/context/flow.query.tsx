@@ -38,6 +38,7 @@ export interface FlowQueryContextType {
   basic: (text: string) => any
   simplify: (text: string) => string
   queryAll: () => void
+  queryDependents: (startID: string) => void
   getPanelQueries: (id: string, withSideEffects?: boolean) => Stage
   status: RemoteDataState
   getStatus: (id: string) => RemoteDataState
@@ -50,6 +51,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   basic: (_: string) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
+  queryDependents: () => {},
   getPanelQueries: (_, _a) => ({
     id: '',
     scope: {vars: {}},
@@ -278,6 +280,58 @@ export const FlowQueryProvider: FC = ({children}) => {
     status = RemoteDataState.Loading
   }
 
+  const queryDependents = (startID: string) => {
+    sendEvent(notebookQueryKey)
+    _queryDependents(startID)
+  }
+
+  const _queryDependents = (startID: string) => {
+    if (status === RemoteDataState.Loading) {
+      return
+    }
+
+    let map = generateMap(runMode === RunMode.Run)
+
+    if (!map.length) {
+      return
+    }
+
+    map = map.slice(map.findIndex(m => m.id === startID))
+    event('Running Notebook QueryDependents')
+
+    Promise.all(
+      map
+        .filter(q => !!q?.visual)
+        .map(stage => {
+          loading[stage.id] = RemoteDataState.Loading
+          setLoading(loading)
+          return query(stage.visual, stage.scope)
+            .then(response => {
+              loading[stage.id] = RemoteDataState.Done
+              setLoading(loading)
+              forceUpdate(stage.id, response)
+            })
+            .catch(e => {
+              forceUpdate(stage.id, {
+                error: e.message,
+              })
+              loading[stage.id] = RemoteDataState.Error
+              setLoading(loading)
+            })
+        })
+    )
+      .then(() => {
+        event('run_notebook_success', {runMode})
+        dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
+      })
+      .catch(e => {
+        event('run_notebook_fail', {runMode})
+        dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
+
+        // NOTE: this shouldn't fire, but lets wrap it for completeness
+        throw e
+      })
+  }
   // Use localstorage to communicate query execution to other tabs
   const queryAll = () => {
     sendEvent(notebookQueryKey)
@@ -357,6 +411,7 @@ export const FlowQueryProvider: FC = ({children}) => {
         generateMap,
         printMap,
         queryAll,
+        queryDependents,
         getPanelQueries,
         status,
         getStatus,

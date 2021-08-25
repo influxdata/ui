@@ -283,7 +283,7 @@ describe('Collectors', () => {
     })
   })
 
-  describe('configuring plugins', () => {
+  describe.only('configuring plugins', () => {
     // fix for https://github.com/influxdata/influxdb/issues/15500
     describe('configuring nginx', () => {
       beforeEach(() => {

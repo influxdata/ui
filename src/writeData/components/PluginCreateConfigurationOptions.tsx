@@ -24,7 +24,7 @@ import {isSystemBucket} from 'src/buckets/constants'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
-const CREATE_A_BUCKET_ID = 'CREATE A BUCKET'
+const CREATE_A_BUCKET_ID = 'create-a-bucket'
 
 const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
   const {
@@ -72,6 +72,7 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
           titleText="Agent Name"
           size={ComponentSize.Medium}
           autoFocus={true}
+          testID="plugin-create-configuration-options-input--name"
         />
       </Form.Element>
       <Form.Element label="Output Bucket">
@@ -82,6 +83,7 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
             ...buckets,
           ]}
           onSelectBucket={handleSelectBucket}
+          testID="plugin-create-configuration-options--select-bucket"
         />
       </Form.Element>
     </>

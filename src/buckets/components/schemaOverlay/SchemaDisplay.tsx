@@ -2,19 +2,24 @@
 import React, {FC} from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 
-import {
-  MeasurementSchemaList,
-  MeasurementSchema,
-} from 'src/client/generatedRoutes'
-
 // Components
 import {Button, Overlay} from '@influxdata/clockface'
+import {CLOUD} from 'src/shared/constants'
+
+let MeasurementSchemaList = null,
+  MeasurementSchema = null
+
+if (CLOUD) {
+  MeasurementSchema = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaList = require('src/client/generatedRoutes')
+    .MeasurementSchemaList
+}
 
 interface Props {
   onClose: () => void
   bucketName: string
-  measurementSchemaList?: MeasurementSchemaList
-  schema?: MeasurementSchema
+  measurementSchemaList?: typeof MeasurementSchemaList
+  schema?: typeof MeasurementSchema
 }
 
 /**

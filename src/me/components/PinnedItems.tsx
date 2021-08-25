@@ -67,6 +67,7 @@ const PinnedItems: FC = () => {
           <ResourceList.Body
             emptyState={emptyState}
             className="pinned-items--container"
+            testID="pinneditems--container"
           >
             {!pinnedItemsError.length ? (
               pinnedItems?.map(item => (

@@ -36,7 +36,7 @@ const FlowsIndex = () => {
     const distanceToTop =
       window.pageYOffset +
       element.getBoundingClientRect().top +
-      element.getBoundingClientRect().height / 1.25
+      element.getBoundingClientRect().height / 1.4
 
     const elementHeight = element.offsetHeight
     const scrollTop = document.documentElement.scrollTop
@@ -107,8 +107,10 @@ const FlowsIndex = () => {
     <Page
       titleTag={pageTitleSuffixer([PROJECT_NAME_PLURAL])}
       testID="flows-index"
+      className="flows-index"
     >
       <PageHeader
+        style={{flex: 0, margin: '16px 0px'}}
         fullWidth={false}
         className={`${showButtonMode && 'withButtonHeader'}`}
       >
@@ -117,7 +119,7 @@ const FlowsIndex = () => {
           <>
             <PresetFlowsButtons />
             <Page.ControlBar
-              className="flows-index--control-bar"
+              className="flows-index--control-bar buttonMode"
               fullWidth={false}
             >
               <Page.ControlBarLeft>
@@ -141,7 +143,7 @@ const FlowsIndex = () => {
           </>
         )}
       </PageHeader>
-      <DapperScrollbars onScroll={scrollHandler} id="scrollFlows">
+      <DapperScrollbars onScroll={scrollHandler} className="flows-index--main">
         <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
           {isFlagEnabled('presetFlows') && <PresetFlows />}
           <Page.ControlBar

@@ -71,9 +71,7 @@
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
     "managedFunctions": "oats ${REMOTE}contracts/managed-functions.yml > ./src/client/managedFunctionsRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
-    "telegraf-plugins:clean": "rm -rf src/writeData/components/telegrafInputPluginsConfigurationText/*",
-    "telegraf-plugins:generate": "node -r esm src/writeData/utils/parsePluginsConfigurationText.ts",
-    "telegraf-plugins:update": "yarn telegraf-plugins:clean && yarn telegraf-plugins:generate"
+    "telegraf-plugins:update": "node -r esm src/writeData/utils/parsePluginsConfigurationText.ts"
   },
   "author": "",
   "devDependencies": {
@@ -140,6 +138,7 @@
     "jest-junit": "^10.0.0",
     "jsdom": "^9.0.0",
     "junit-viewer": "^4.11.1",
+    "log-symbols": "^5.0.0",
     "mini-css-extract-plugin": "^0.8.0",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0",

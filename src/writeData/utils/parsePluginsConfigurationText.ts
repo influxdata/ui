@@ -8,6 +8,7 @@
 */
 import https from 'https'
 import fs from 'fs'
+import logSymbols from 'log-symbols'
 
 /*
   STEP 1:
@@ -216,70 +217,193 @@ const inputPluginsList = [
   'zookeeper',
 ]
 
-const telegrafConfigFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${process.argv.slice(
-  2
-)}/etc/telegraf.conf`
+let version = process.argv.slice(2)
+if (String(version).length === 0) {
+  console.warn(
+    logSymbols.warning + ' \x1b[33m%s\x1b[0m',
+    '*** WARNING ***: No version number provided, using "master"\n'
+  )
+  version = ['master']
+}
+
+const telegrafConfigFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${version}/etc/telegraf.conf`
+
+const telegrafWindowsConfigFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${version}/etc/telegraf_windows.conf`
+
+console.warn(
+  logSymbols.info + ' \x1b[36m%s\x1b[0m',
+  `Parsing Telegraf Plugins at ${telegrafConfigFilePath}\n`
+)
 
 const parsedPluginsPath =
   'src/writeData/components/telegrafInputPluginsConfigurationText/'
+
+const fetch = path => {
+  return new Promise((resolve, reject) => {
+    https.get(path, response => {
+      let contents = ''
+      response.on('data', chunk => {
+        contents += chunk.toString()
+      })
+      response.on('error', error => {
+        reject(error)
+      })
+      response.on('end', () => {
+        if (!fs.existsSync(parsedPluginsPath)) {
+          fs.mkdirSync(parsedPluginsPath)
+        }
+
+        return resolve(contents.split('\n' + '\n' + '\n'))
+      })
+    })
+  })
+}
 
 /*
   // STEP 2: on the command line, run with the desired release version, for example: v1.19.3
   yarn telegraf-plugins:update TELEGRAF_RELEASE_VERSION
  */
-https.get(telegrafConfigFilePath, response => {
-  let contents = ''
-  response.on('data', chunk => {
-    contents += chunk.toString()
-  })
-  response.on('error', error => {
-    console.error('ERROR:', error)
-  })
-  response.on('end', () => {
-    if (!fs.existsSync(parsedPluginsPath)) {
-      fs.mkdirSync(parsedPluginsPath)
-    }
+const noConfigs = []
+const parseTelegrafConf = new Promise((resolve, reject) => {
+  fetch(telegrafConfigFilePath).then(
+    parsedPluginsText => {
+      if (Array.isArray(parsedPluginsText)) {
+        const parsedPluginsNames = []
+        parsedPluginsText.forEach(pluginText => {
+          const pattern = /(.*)\[\[inputs.(.*)\]\]/g
+          const match = pluginText.match(pattern)
+          if (match) {
+            const pluginName = match[0]
+              .replace(/(.*)\[\[inputs./g, '')
+              .replace(/\]\](.*)/g, '')
+            parsedPluginsNames.push(pluginName)
+            const destinationFilPath = parsedPluginsPath + pluginName + '.conf'
+            fs.writeFile(destinationFilPath, pluginText, () => {})
+          }
+        })
+        const noPluginEntry = parsedPluginsNames.filter(
+          pluginName => !inputPluginsList.includes(pluginName)
+        )
 
-    const parsedPluginsText = contents.split('\n' + '\n' + '\n')
+        if (noPluginEntry.length) {
+          console.warn(
+            logSymbols.warning +
+              ' Plugins not listed in the Data > Sources page of the UI:',
+            noPluginEntry,
+            '\n'
+          )
+        } else {
+          console.warn(
+            logSymbols.success + ' \x1b[32m%s\x1b[0m',
+            'Congratulations! All Plugins accounted for and showing in Data > Sources'
+          )
+        }
 
-    const parsedPluginsNames = []
-    parsedPluginsText.forEach(pluginText => {
-      const pattern = /(.*)\[\[inputs.(.*)\]\]/g
-      const match = pluginText.match(pattern)
-      if (match) {
-        const pluginName = match[0]
-          .replace(/(.*)\[\[inputs./g, '')
-          .replace(/\]\](.*)/g, '')
-        parsedPluginsNames.push(pluginName)
-        const destinationFilPath = parsedPluginsPath + pluginName + '.conf'
-        fs.writeFile(destinationFilPath, pluginText, () => {})
+        inputPluginsList.forEach(pluginName => {
+          const pattern = new RegExp(`\\binputs.${pluginName}\\b`, 'gi')
+          const result = parsedPluginsText.find(config => config.match(pattern))
+          if (!result) {
+            noConfigs.push(pluginName)
+          }
+        })
+        console.warn(
+          logSymbols.warning + ' Could not find',
+          noConfigs,
+          'in telegraf.conf\n'
+        )
+        resolve(noConfigs)
+      } else {
+        reject(parsedPluginsText)
       }
-    })
-
-    const noPluginEntry = parsedPluginsNames.filter(
-      pluginName => !inputPluginsList.includes(pluginName)
-    )
-
-    console.warn(
-      'The following are not listed in the Data > Sources page of the UI:',
-      noPluginEntry,
-      '\n'
-    )
-
-    const noConfigs = []
-    inputPluginsList.forEach(pluginName => {
-      const pattern = new RegExp(`\\binputs.${pluginName}\\b`, 'gi')
-      const result = parsedPluginsText.find(config => config.match(pattern))
-      if (!result) {
-        noConfigs.push(pluginName)
-      }
-    })
-    console.warn(
-      'Could not find',
-      noConfigs,
-      'in',
-      telegrafConfigFilePath,
-      '\n'
-    )
-  })
+    },
+    fetchError => reject(fetchError)
+  )
 })
+
+parseTelegrafConf.then(
+  nonWindowsPlugins => {
+    console.warn('Searching elsewhere...')
+    console.warn(
+      logSymbols.info + ' \x1b[36m%s\x1b[0m',
+      ` Parsing Telegraf Windows Plugins at ${telegrafWindowsConfigFilePath}\n`
+    )
+    fetch(telegrafWindowsConfigFilePath).then(
+      parsedPluginsText => {
+        if (Array.isArray(parsedPluginsText)) {
+          const parsedWindowsPluginsNames = []
+          parsedPluginsText.forEach(pluginText => {
+            const pattern = /(.*)\[\[inputs.(.*)\]\]/g
+            const match = pluginText.match(pattern)
+            if (match) {
+              const pluginName = match[0]
+                .replace(/(.*)\[\[inputs./g, '')
+                .replace(/\]\](.*)/g, '')
+
+              if (
+                Array.isArray(nonWindowsPlugins) &&
+                nonWindowsPlugins.includes(pluginName)
+              ) {
+                parsedWindowsPluginsNames.push(pluginName)
+                const destinationFilPath =
+                  parsedPluginsPath + pluginName + '.conf'
+                fs.writeFile(destinationFilPath, pluginText, () => {})
+              }
+            }
+          })
+
+          const noPluginEntry = parsedWindowsPluginsNames.filter(
+            pluginName => !inputPluginsList.includes(pluginName)
+          )
+
+          console.warn(
+            logSymbols.success + ' Found:',
+            parsedWindowsPluginsNames,
+            '\n'
+          )
+
+          const windowsPluginsNotUpdated = noConfigs.filter(
+            pluginName => !parsedWindowsPluginsNames.includes(pluginName)
+          )
+
+          if (windowsPluginsNotUpdated.length) {
+            console.warn(
+              logSymbols.error + ' \x1b[31m%s\x1b[0m',
+              'Unable to update',
+              windowsPluginsNotUpdated,
+              '\n'
+            )
+          }
+
+          if (noPluginEntry.length) {
+            console.warn(
+              logSymbols.warning +
+                ' Windows plugins not in the Data > Sources page of the UI:',
+              noPluginEntry,
+              '\n'
+            )
+          } else {
+            console.warn(
+              logSymbols.success +
+                ` All Windows Plugins are listed${
+                  windowsPluginsNotUpdated.length
+                    ? ' but may not be updated '
+                    : ' '
+                }in the Data > Sources page of the UI\n`
+            )
+          }
+        } else {
+          console.warn(
+            logSymbols.error + ' \x1b[31m%s\x1b[0m',
+            'ERROR: Unexpected result: variable "parsedPluginsText" is not an array'
+          )
+        }
+      },
+      fetchError => {
+        console.error(logSymbols.error, ' ERROR:', fetchError)
+      }
+    )
+  },
+  fetchError => {
+    console.error(logSymbols.error, ' ERROR:', fetchError)
+  }
+)

@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import './SchemaDisplay.css'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 import {
@@ -19,9 +18,10 @@ interface Props {
 }
 
 /**
- *  Form for editing and creating annotations.
- *  It does support multi-line annotations, but the tradeoff is that the user cannot then press 'return' to submit the form.
- * */
+ * widget/panel for showing the explicit bucket schema;
+ * it does not allow editing but it does allow the user to copy it easily into the clipboard using the
+ * CodeSnippet component.
+  * */
 export const SchemaDisplay: FC<Props> = (props: Props) => {
   const handleClose = () => {
     props.onClose()
@@ -39,7 +39,7 @@ export const SchemaDisplay: FC<Props> = (props: Props) => {
         onDismiss={handleClose}
       />
       <Overlay.Body>
-        <div>{makeRawDataView()}</div>
+        {makeRawDataView()}
       </Overlay.Body>
       <Overlay.Footer>
         <div>

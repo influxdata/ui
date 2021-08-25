@@ -105,8 +105,6 @@ const BucketCardActions: FC<Props> = ({
     history.push(`/orgs/${orgID}/load-data/buckets/${bucket.id}/scrapers/new`)
   }
 
-  // add a metric whenever they click the button (in this issue!) (or separataley...up to me)
-  // bucket.list.show.explicit.schema
   const makeSchemaButton = () => {
     if (
       isFlagEnabled('measurementSchema') &&

@@ -45,7 +45,6 @@ export const overlaysReducer = (
   action: Actions
 ): OverlayState =>
   produce(state, draftState => {
-    console.log('is code changing???? 45a jill')
     switch (action.type) {
       case ActionTypes.ShowOverlay: {
         const {overlayID, overlayParams, onClose} = action.payload

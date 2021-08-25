@@ -61,8 +61,6 @@ class BucketsTab extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    //const dispatch = useDispatch()
-
     this.state = {
       searchTerm: '',
       sortKey: 'name',
@@ -169,15 +167,8 @@ class BucketsTab extends PureComponent<Props, State> {
     this.props.deleteBucket(id, name)
   }
 
-  private handleShowBucketSchema2 = ({id}: OwnBucket) => {
-    const schema = this.props.getBucketSchema(id)
-    console.log('got schema in bucketstab!!!!', schema)
-  }
-
   private handleShowBucketSchema = async ({id, name}: OwnBucket) => {
     const schemaData = await this.props.getBucketSchema(id)
-    console.log('got schema in bucketstab!!!! (changed 11a-mon1)', schemaData)
-
     const schema = schemaData?.measurementSchemas
 
     this.props.showOverlay(

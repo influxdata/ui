@@ -16,47 +16,23 @@ import {
 interface OwnProps {
   resourceName: string
   permissions: any
-  onToggleAll: (name: string, permission: string, value: boolean) => void
+  onToggleAll: (name: string, permission: string) => void
 }
 
 export const ResourceAccordionHeader: FC<OwnProps> = props => {
   const {resourceName} = props
-  const readToggle = () => {
-    const {permissions} = props
-    let tag = true
-    if (permissions && Object.keys(permissions).length > 0) {
-      tag = !Object.keys(permissions).some(
-        key => permissions[key].permissions.read === false
-      )
-    } else {
-      return false
-    }
-    return tag
-  }
 
-  const writeToggle = () => {
-    const {permissions} = props
-    let tag = true
-    if (permissions && Object.keys(permissions).length > 0) {
-      tag = !Object.keys(permissions).some(
-        key => permissions[key].permissions.write === false
-      )
-    } else {
-      return false
-    }
-    return tag
-  }
-
-  const handleReadToggle = value => {
+  const handleReadToggle = () => {
     const {onToggleAll, resourceName} = props
-    onToggleAll(resourceName, 'read', value === 'true')
+    onToggleAll(resourceName, 'read')
   }
-  const handleWriteToggle = value => {
+  const handleWriteToggle = () => {
     const {onToggleAll, resourceName} = props
-    onToggleAll(resourceName, 'write', value === 'true')
+    onToggleAll(resourceName, 'write')
   }
 
   const accordionHeader = (title: string) => {
+    const {permissions} = props
     return (
       <FlexBox
         margin={ComponentSize.Small}
@@ -80,8 +56,8 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             type={InputToggleType.Checkbox}
             onChange={handleReadToggle}
             size={ComponentSize.ExtraSmall}
-            checked={readToggle()}
-            value={readToggle().toString()}
+            checked={permissions.read}
+            value={permissions.read.toString()}
             style={{marginRight: '10px'}}
             tabIndex={0}
             disabled={false}
@@ -98,8 +74,8 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             type={InputToggleType.Checkbox}
             onChange={handleWriteToggle}
             size={ComponentSize.ExtraSmall}
-            checked={writeToggle()}
-            value={writeToggle().toString()}
+            checked={permissions.write}
+            value={permissions.write.toString()}
             style={{marginRight: '10px'}}
             tabIndex={0}
             disabled={false}

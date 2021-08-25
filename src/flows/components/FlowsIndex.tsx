@@ -29,6 +29,7 @@ const FlowsIndex = () => {
 
   const fadeOutOnScroll = element => {
     const header = document.getElementsByClassName('cf-page-header')[0]
+
     if (!header) {
       return
     }
@@ -36,7 +37,8 @@ const FlowsIndex = () => {
     const distanceToTop =
       window.pageYOffset +
       element.getBoundingClientRect().top +
-      element.getBoundingClientRect().height / 1.4
+      element.getBoundingClientRect().height -
+      header.getBoundingClientRect().height
 
     const elementHeight = element.offsetHeight
     const scrollTop = document.documentElement.scrollTop

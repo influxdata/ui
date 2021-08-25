@@ -7,7 +7,7 @@ import {
 } from 'src/shared/contexts/pinneditems'
 
 import {Context} from 'src/clockface'
-import {ComponentColor, IconFont} from '@influxdata/clockface'
+import {ComponentColor, IconFont, Panel} from '@influxdata/clockface'
 
 import './PinnedItems.scss'
 
@@ -58,54 +58,60 @@ const PinnedItems: FC = () => {
     </h3>
   )
   return CLOUD && isFlagEnabled('pinnedItems') ? (
-    <div data-testid="pinneditems--container">
-      <h2 className="pinned-items--header">Pinned Items</h2>
-      <ResourceList>
-        <ResourceList.Body
-          emptyState={emptyState}
-          className="pinned-items--container"
-        >
-          {!pinnedItemsError.length ? (
-            pinnedItems?.map(item => (
-              <ResourceCard
-                key={item.id}
-                testID="pinneditems--card"
-                contextMenu={
-                  <Context>
-                    <Context.Menu
-                      icon={IconFont.Trash}
-                      color={ComponentColor.Danger}
-                      testID="pinneditems-delete--menu"
-                    >
-                      <Context.Item
-                        label="Unpin"
-                        action={() => handleDeletePinnedItem(item.id)}
-                        testID="pinneditems-delete--confirm"
-                      />
-                    </Context.Menu>
-                  </Context>
-                }
-              >
-                <ResourceCard.Name
-                  testID="pinneditems--type"
-                  name={capitalize(item.type)}
-                />
-                <ResourceCard.Name
-                  name={item.metadata.name ?? ''}
-                  onClick={() => followMetadataToRoute(item)}
-                  testID="pinneditems--link"
-                />
-                <ResourceCard.Description
-                  description={item.metadata.description ?? ''}
-                />
-              </ResourceCard>
-            ))
-          ) : (
-            <h3>{pinnedItemsError}</h3>
-          )}
-        </ResourceList.Body>
-      </ResourceList>
-    </div>
+    <Panel style={{margin: '4px 0px'}}>
+      <Panel.Header>
+        <h2 className="pinned-items--header">Pinned Items</h2>
+      </Panel.Header>
+      <Panel.Body>
+        <ResourceList>
+          <ResourceList.Body
+            emptyState={emptyState}
+            className="pinned-items--container"
+            testID="pinneditems--container"
+          >
+            {!pinnedItemsError.length ? (
+              pinnedItems?.map(item => (
+                <ResourceCard
+                  key={item.id}
+                  testID="pinneditems--card"
+                  className="pinned-items--card"
+                  contextMenu={
+                    <Context>
+                      <Context.Menu
+                        icon={IconFont.Trash}
+                        color={ComponentColor.Danger}
+                        testID="pinneditems-delete--menu"
+                      >
+                        <Context.Item
+                          label="Unpin"
+                          action={() => handleDeletePinnedItem(item.id)}
+                          testID="pinneditems-delete--confirm"
+                        />
+                      </Context.Menu>
+                    </Context>
+                  }
+                >
+                  <ResourceCard.Name
+                    testID="pinneditems--type"
+                    name={capitalize(item.type)}
+                  />
+                  <ResourceCard.Name
+                    name={item.metadata.name ?? ''}
+                    onClick={() => followMetadataToRoute(item)}
+                    testID="pinneditems--link"
+                  />
+                  <ResourceCard.Description
+                    description={item.metadata.description ?? ''}
+                  />
+                </ResourceCard>
+              ))
+            ) : (
+              <h3>{pinnedItemsError}</h3>
+            )}
+          </ResourceList.Body>
+        </ResourceList>
+      </Panel.Body>
+    </Panel>
   ) : null
 }
 

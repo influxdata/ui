@@ -1,7 +1,7 @@
 /*
   This file is a node utility for local use only.
   Its purpose is to update the configuration text of Telegraf Input Plugins
-  which live here:
+  which live here: src/writeData/components/telegrafInputPluginsConfigurationText/
   Updates are committed and submitted as a pull request periodically.
 
   Follow the two steps to update. Then commit the updated files as a pull request.

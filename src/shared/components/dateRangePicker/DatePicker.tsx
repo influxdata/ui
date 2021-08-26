@@ -64,6 +64,9 @@ const getFormat = (d: string): string => {
   if (isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss.sss')) {
     return 'YYYY-MM-DD HH:mm:ss.sss'
   }
+  if (isISODate(d)) {
+    return 'ISO_FORMAT'
+  }
   return null
 }
 
@@ -134,6 +137,11 @@ class DatePicker extends PureComponent<Props, State> {
       const {onInvalidInput} = this.props
       onInvalidInput()
       return inputValue
+    }
+
+    // just return the ISO format string as is, no need to use our date-time Formatter
+    if (isISODate(dateTime) && inputFormat === 'ISO_FORMAT') {
+      return dateTime
     }
 
     if (inputFormat) {

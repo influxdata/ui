@@ -394,7 +394,7 @@ parseTelegrafConf.then(
         } else {
           console.warn(
             logSymbols.error + ' \x1b[31m%s\x1b[0m',
-            'ERROR: Unexpected result: variable "parsedPluginsText" is not an array'
+            'ERROR: Unexpected result: the fetched file was not parsed into an array'
           )
         }
       },

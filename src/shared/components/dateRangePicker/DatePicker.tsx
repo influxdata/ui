@@ -19,14 +19,15 @@ import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {getTimeZone} from 'src/dashboards/selectors'
 
 // Constants
-import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
+import {
+  DEFAULT_TIME_FORMAT,
+  STRICT_ISO8061_TIME_FORMAT,
+} from 'src/utils/datetime/constants'
 import {
   getLuxonFormatString,
   isValidStrictly,
 } from 'src/utils/datetime/validator'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
-
-const ISO_FORMAT = 'ISO_FORMAT'
 
 interface Props {
   label: string
@@ -67,7 +68,7 @@ const getFormat = (d: string): string => {
     return 'YYYY-MM-DD HH:mm:ss.sss'
   }
   if (isISODate(d)) {
-    return ISO_FORMAT
+    return STRICT_ISO8061_TIME_FORMAT
   }
   return null
 }
@@ -142,7 +143,7 @@ class DatePicker extends PureComponent<Props, State> {
     }
 
     // just return the ISO format string as is, no need to use our date-time Formatter
-    if (isISODate(dateTime) && inputFormat === ISO_FORMAT) {
+    if (isISODate(dateTime) && inputFormat === STRICT_ISO8061_TIME_FORMAT) {
       return dateTime
     }
 

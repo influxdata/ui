@@ -303,7 +303,7 @@ const Threshold: FC = () => {
           margin={ComponentSize.Medium}
           stretchToFitWidth
           testID="component-spacer"
-          key={`${threshold.type}_${threshold.field}_${threshold.value}_${index}`}
+          key={`${threshold.type}_${index}`}
         >
           <TextBlock
             testID="when-value-text-block"

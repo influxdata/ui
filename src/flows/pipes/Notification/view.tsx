@@ -17,12 +17,12 @@ import {
   JustifyContent,
   Dropdown,
   ComponentColor,
+  Button,
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {remove} from 'src/flows/context/query'
 import {QueryContext} from 'src/flows/context/query'
-import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 
 import Threshold, {
   THRESHOLD_TYPES,
@@ -44,11 +44,9 @@ import {
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
-const fakeNotify = notify
-
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
-  const {query, cancel} = useContext(QueryContext)
+  const {query} = useContext(QueryContext)
   const {id, data, update, results, loading} = useContext(PipeContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)
   const [status, setStatus] = useState<RemoteDataState>(
@@ -423,14 +421,14 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
           <FlexBox margin={ComponentSize.Medium}>
-            <SubmitQueryButton
+            <Button
               text="Test Endpoint"
-              submitButtonDisabled={false}
-              queryStatus={status}
-              onSubmit={handleTestEndpoint}
-              onNotify={fakeNotify}
-              queryID=""
-              cancelAllRunningQueries={cancel}
+              status={
+                status === RemoteDataState.Loading
+                  ? ComponentStatus.Loading
+                  : ComponentStatus.Default
+              }
+              onClick={handleTestEndpoint}
               color={ComponentColor.Default}
             />
             <ExportTaskButton

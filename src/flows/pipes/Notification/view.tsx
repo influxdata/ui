@@ -430,7 +430,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
               onSubmit={handleTestEndpoint}
               onNotify={fakeNotify}
               queryID=""
-              cancelAllRunningQueries={cancel}
+              cancelAllRunningQueries={() => {}}
               color={ComponentColor.Default}
             />
             <ExportTaskButton

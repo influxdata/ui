@@ -219,14 +219,13 @@ class DatePicker extends PureComponent<Props, State> {
       let inputDate
       if (isISODate(value)) {
         inputDate = new Date(DateTime.fromISO(value))
-        console.log(inputDate, value)
       } else {
         inputDate = new Date(
           DateTime.fromFormat(value, getLuxonFormatString(getFormat(value)))
         )
       }
 
-      if (timeZone === 'UTC') {
+      if (timeZone === 'UTC' && !isISODate(value)) {
         // (sahas): the react-datepicker forces the timezone to be the Local timezone.
         // so when our app in in UTC mode, to make the datepicker respect that timezone,
         // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker

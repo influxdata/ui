@@ -22,7 +22,6 @@ const CheckActivityTableField: FC<Props> = ({row: {checkName, checkID}}) => {
     return (
       <div
         className="check-name-field"
-        title="This status was generated from a custom alert Task"
       >
         {checkName}
       </div>

@@ -219,8 +219,8 @@ class DatePicker extends PureComponent<Props, State> {
       let inputDate
       if (isISODate(value)) {
         inputDate = new Date(DateTime.fromISO(value))
-      }
-      else {
+        console.log(inputDate, value)
+      } else {
         inputDate = new Date(
           DateTime.fromFormat(value, getLuxonFormatString(getFormat(value)))
         )

@@ -1,4 +1,4 @@
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 
 import {
   Dropdown,
@@ -9,29 +9,62 @@ import {
 } from '@influxdata/clockface'
 import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
+import {QueryContext} from 'src/flows/context/query'
 
 const SampleCSVs = {
-  'Sample Air Sensor Data':
-    'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/air-sensor-data/air-sensor-data-annotated.csv',
-  'USGS Earthquake Data':
-    'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/usgs-earthquake-data/all_week-annotated.csv',
-  'NOAA National Buoy Data Center (NDBC)':
-    'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/noaa-ndbc-data/latest-observations-annotated.csv',
-  Custom: '',
+  airSensor: 'Sample Air Sensor Data',
+  birdMigration: 'Bird Migration',
+  noaa: 'NOAA National Buoy Data Center (NDBC)',
+  usgs: 'USGS Earthquake Data',
 }
 
 const RemoteCSV: FC<PipeProp> = ({Context}) => {
+  const [csvHash, setCSVHash] = useState({})
   const {data, update} = useContext(PipeContext)
+  const {query} = useContext(QueryContext)
 
   const handleChange = (e: any) => {
     update({url: e.target.value})
   }
 
-  const handleSelectFromDropdown = (selected: string) => {
-    update({csvType: selected, url: SampleCSVs[selected] ?? ''})
+  const handleSelectFromDropdown = (
+    selected: string,
+    url: string,
+    name: string
+  ) => {
+    update({csvType: selected, url: url ?? '', sampleName: name})
   }
 
   const {csvType, url} = data
+  useEffect(() => {
+    query(`import "influxdata/influxdb/sample"
+     sample.list()`).then(res => {
+      const columnNames = [
+        ...(res.parsed.table.columns.name.data as string[]),
+        'Custom',
+      ]
+      const columnUrls = res.parsed.table.columns.url.data as string[]
+      setCSVHash(
+        columnNames.reduce((a, b, idx) => {
+          if (SampleCSVs[b]) {
+            a[b] = {
+              url: columnUrls[idx],
+              label: SampleCSVs[b],
+              name: b,
+            }
+          }
+          if (b === 'Custom') {
+            a[b] = {
+              url: '',
+              label: 'Custom',
+              name: 'Custom',
+            }
+          }
+          return a
+        }, {})
+      )
+    })
+  }, [])
 
   return (
     <Context>
@@ -53,18 +86,24 @@ const RemoteCSV: FC<PipeProp> = ({Context}) => {
             )}
             menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {Object.keys(SampleCSVs).map(m => (
-                  <Dropdown.Item
-                    testID={`remote-csv--dropdown-item-${m}`}
-                    id={m}
-                    key={m}
-                    value={m}
-                    onClick={() => handleSelectFromDropdown(m)}
-                    selected={m === csvType}
-                  >
-                    {m}
-                  </Dropdown.Item>
-                ))}
+                {Object.values(csvHash).map(
+                  (m: {url: string; label: string; name: string}) => {
+                    return (
+                      <Dropdown.Item
+                        testID={`remote-csv--dropdown-item-${m.label}`}
+                        id={m.label}
+                        key={m.label}
+                        value={m.label}
+                        onClick={() =>
+                          handleSelectFromDropdown(m.label, m.url, m.name)
+                        }
+                        selected={m.label === csvType}
+                      >
+                        {m.label}
+                      </Dropdown.Item>
+                    )
+                  }
+                )}
               </Dropdown.Menu>
             )}
           />

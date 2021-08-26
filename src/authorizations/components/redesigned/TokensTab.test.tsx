@@ -11,7 +11,7 @@ import {mocked} from 'ts-jest/utils'
 import {createAuthorization} from 'src/authorizations/apis'
 import TokensTab from './TokensTab'
 
-import {deleteAuthorization, postAuthorization} from '../../../../src/client'
+import {deleteAuthorization, getAuthorization, postAuthorization} from '../../../../src/client'
 
 import {auth2, orgs, withRouterProps} from '../../../../mocks/dummyData'
 import {createMemoryHistory} from 'history'
@@ -60,10 +60,11 @@ jest.mock('../../../../src/client', () => ({
   }),
   getAuthorization: jest.fn(() => {
     return {
-      data: InactiveToken,
+      data: auth2,
       headers: {},
       status: 200,
     }
+    
   }),
   
 }))
@@ -103,6 +104,7 @@ const setup = (override?: {}) => {
         },
         allIDs: localTokens.map(t => t.id),
         status: RemoteDataState.Done,
+        currentAuth: {status: RemoteDataState.NotStarted, item: {}}
       },
     },
   }
@@ -171,13 +173,10 @@ describe('TokensTab', () => {
       // expect(description).toContain(InactiveToken.description)
       // console.log('token clone button ', cloneButton)
       fireEvent.click(cloneButton)
-      console.log('API REQUEST HAS HAPPENED')
+      
       await waitFor(() => expect(createAuthorization).toBeCalled())
-      
-      
-
-      // expect(mocked(getAuthorization).mock.calls[0][0].authID).toEqual(InactiveToken.id)
-      // console.log(mocked(getAuthorization).mock.calls[0][0].authID)
+      // expect(mocked(getAuthorization).mock.calls[0][0].id).toEqual(auth2.id)
+      console.log(mocked(getAuthorization).mock)
     })
   })
   

@@ -69,7 +69,8 @@
     "annotations-oss": "oats ${REMOTE}contracts/priv/annotationd-oss.yml > ./src/client/annotationdRoutes.ts",
     "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
-    "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts"
+    "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
+    "telegraf-plugins:update": "node -r esm src/writeData/utils/parsePluginsConfigurationText.ts"
   },
   "author": "",
   "devDependencies": {
@@ -124,6 +125,7 @@
     "eslint-plugin-jest": "^23.0.2",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^4.0.5",
+    "esm": "^3.2.25",
     "express": "^4.14.0",
     "file-loader": "^4.1.0",
     "fork-ts-checker-webpack-plugin": "^1.4.3",
@@ -135,6 +137,7 @@
     "jest-junit": "^10.0.0",
     "jsdom": "^9.0.0",
     "junit-viewer": "^4.11.1",
+    "log-symbols": "^5.0.0",
     "mini-css-extract-plugin": "^0.8.0",
     "mocha": "^5.2.0",
     "mocha-junit-reporter": "^1.18.0",

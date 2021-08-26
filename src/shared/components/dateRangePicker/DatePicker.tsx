@@ -2,6 +2,7 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import ReactDatePicker from 'react-datepicker'
 import {connect} from 'react-redux'
+import {DateTime} from 'luxon'
 
 // Components
 import {Input, Grid, Form} from '@influxdata/clockface'
@@ -18,8 +19,14 @@ import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {getTimeZone} from 'src/dashboards/selectors'
 
 // Constants
-import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
-import {isValidStrictly} from 'src/utils/datetime/validator'
+import {
+  DEFAULT_TIME_FORMAT,
+  STRICT_ISO8061_TIME_FORMAT,
+} from 'src/utils/datetime/constants'
+import {
+  getLuxonFormatString,
+  isValidStrictly,
+} from 'src/utils/datetime/validator'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
 
 interface Props {
@@ -59,6 +66,9 @@ const getFormat = (d: string): string => {
   }
   if (isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss.sss')) {
     return 'YYYY-MM-DD HH:mm:ss.sss'
+  }
+  if (isISODate(d)) {
+    return STRICT_ISO8061_TIME_FORMAT
   }
   return null
 }
@@ -134,6 +144,11 @@ class DatePicker extends PureComponent<Props, State> {
 
     if (this.isInputValueInvalid) {
       return inputValue
+    }
+
+    // just return the ISO format string as is, no need to use our date-time Formatter
+    if (isISODate(dateTime) && inputFormat === STRICT_ISO8061_TIME_FORMAT) {
+      return dateTime
     }
 
     if (inputFormat) {
@@ -216,9 +231,16 @@ class DatePicker extends PureComponent<Props, State> {
     const value = e.target.value
 
     if (isValidDatepickerFormat(value)) {
-      const inputDate = new Date(value)
+      let inputDate
+      if (isISODate(value)) {
+        inputDate = new Date(DateTime.fromISO(value))
+      } else {
+        inputDate = new Date(
+          DateTime.fromFormat(value, getLuxonFormatString(getFormat(value)))
+        )
+      }
 
-      if (timeZone === 'UTC') {
+      if (timeZone === 'UTC' && !isISODate(value)) {
         // (sahas): the react-datepicker forces the timezone to be the Local timezone.
         // so when our app in in UTC mode, to make the datepicker respect that timezone,
         // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
@@ -228,7 +250,7 @@ class DatePicker extends PureComponent<Props, State> {
         )
       }
 
-      onSelectDate(new Date(inputDate).toISOString())
+      onSelectDate(inputDate.toISOString())
       this.setState({inputValue: value, inputFormat: getFormat(value)})
       return
     }

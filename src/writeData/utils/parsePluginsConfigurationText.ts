@@ -14,7 +14,7 @@ import logSymbols from 'log-symbols'
   STEP 1:
   inputPluginsList is a map of the 'id' for WRITE_DATA_TELEGRAF_PLUGINS
     from src/writeData/constants/contentTelegrafPlugins.ts
-    which has import statements (of svg and scss) not supported by Node.
+    which has import statements (of .svg and .md files) not supported by Node.
     Therefore, we need to re-create this array manually by copy/paste-ing,
     deleting the unnecessary properties, and the destructuring the 'id'
 */

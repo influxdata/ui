@@ -70,6 +70,12 @@ class DatePicker extends PureComponent<Props, State> {
     inputFormat: null,
   }
 
+  public componentDidUpdate() {
+    if (this.isInputValueInvalid) {
+      this.props.onInvalidInput()
+    }
+  }
+
   public render() {
     const {dateTime, label, maxDate, minDate, timeZone} = this.props
 
@@ -127,8 +133,6 @@ class DatePicker extends PureComponent<Props, State> {
     const {inputValue, inputFormat} = this.state
 
     if (this.isInputValueInvalid) {
-      const {onInvalidInput} = this.props
-      onInvalidInput()
       return inputValue
     }
 

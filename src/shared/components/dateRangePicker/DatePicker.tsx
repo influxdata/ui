@@ -2,6 +2,7 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import ReactDatePicker from 'react-datepicker'
 import {connect} from 'react-redux'
+import {DateTime} from 'luxon'
 
 // Components
 import {Input, Grid, Form} from '@influxdata/clockface'
@@ -19,7 +20,7 @@ import {getTimeZone} from 'src/dashboards/selectors'
 
 // Constants
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
-import {isValidStrictly} from 'src/utils/datetime/validator'
+import {getLuxonFormatString, isValidStrictly} from 'src/utils/datetime/validator'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
 
 interface Props {
@@ -212,7 +213,7 @@ class DatePicker extends PureComponent<Props, State> {
     const value = e.target.value
 
     if (isValidDatepickerFormat(value)) {
-      const inputDate = new Date(value)
+      const inputDate = new Date(DateTime.fromFormat(value, getLuxonFormatString(getFormat(value))))
 
       if (timeZone === 'UTC') {
         // (sahas): the react-datepicker forces the timezone to be the Local timezone.
@@ -224,7 +225,7 @@ class DatePicker extends PureComponent<Props, State> {
         )
       }
 
-      onSelectDate(new Date(inputDate).toISOString())
+      onSelectDate(inputDate.toISOString())
       this.setState({inputValue: value, inputFormat: getFormat(value)})
       return
     }

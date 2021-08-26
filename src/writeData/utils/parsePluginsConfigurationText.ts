@@ -306,11 +306,14 @@ const parseTelegrafConf = new Promise((resolve, reject) => {
             noConfigs.push(pluginName)
           }
         })
-        console.warn(
-          logSymbols.warning + ' Could not find',
-          noConfigs,
-          'in telegraf.conf\n'
-        )
+
+        if (noConfigs.length) {
+          console.warn(
+            logSymbols.warning + ' Could not find',
+            noConfigs,
+            'in telegraf.conf\n'
+          )
+        }
         resolve(noConfigs)
       } else {
         reject(parsedPluginsText)

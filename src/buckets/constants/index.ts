@@ -4,4 +4,4 @@ export const isSystemBucket = (bucketName: string): boolean => {
   return startsWith(bucketName, '_')
 }
 
-export const BUCKET_OVERLAY_WIDTH = 400
+export const BUCKET_OVERLAY_WIDTH = 450

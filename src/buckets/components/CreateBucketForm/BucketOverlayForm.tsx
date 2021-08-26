@@ -109,10 +109,6 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                 </Accordion.AccordionHeader>
                 <Accordion.AccordionBodyItem>
                   <div>
-                    <div>
-                      content would go here for the advanced section (hi there!
-                      44)
-                    </div>
                     <SchemaToggle
                       onChangeSchemaType={this.onChangeSchemaType}
                     />

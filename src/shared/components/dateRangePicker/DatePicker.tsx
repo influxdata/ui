@@ -20,7 +20,10 @@ import {getTimeZone} from 'src/dashboards/selectors'
 
 // Constants
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
-import {getLuxonFormatString, isValidStrictly} from 'src/utils/datetime/validator'
+import {
+  getLuxonFormatString,
+  isValidStrictly,
+} from 'src/utils/datetime/validator'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
 
 interface Props {
@@ -213,7 +216,9 @@ class DatePicker extends PureComponent<Props, State> {
     const value = e.target.value
 
     if (isValidDatepickerFormat(value)) {
-      const inputDate = new Date(DateTime.fromFormat(value, getLuxonFormatString(getFormat(value))))
+      const inputDate = new Date(
+        DateTime.fromFormat(value, getLuxonFormatString(getFormat(value)))
+      )
 
       if (timeZone === 'UTC') {
         // (sahas): the react-datepicker forces the timezone to be the Local timezone.

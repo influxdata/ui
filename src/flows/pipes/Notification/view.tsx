@@ -44,11 +44,9 @@ import {
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
-const fakeNotify = notify
-
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
-  const {query, cancel} = useContext(QueryContext)
+  const {query} = useContext(QueryContext)
   const {id, data, update, results, loading} = useContext(PipeContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)
   const [status, setStatus] = useState<RemoteDataState>(

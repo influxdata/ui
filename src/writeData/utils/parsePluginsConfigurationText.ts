@@ -316,6 +316,10 @@ const parseTelegrafConf = new Promise((resolve, reject) => {
         }
         resolve(noConfigs)
       } else {
+        console.warn(
+          logSymbols.error + ' \x1b[31m%s\x1b[0m',
+          'ERROR: Unexpected result: the fetched file was not parsed into an array'
+        )
         reject(parsedPluginsText)
       }
     },

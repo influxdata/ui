@@ -20,7 +20,7 @@ import {
   List,
   ListItemRef,
 } from '@influxdata/clockface'
-import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
+import BucketOverlayForm from 'src/buckets/components/CreateBucketForm/BucketOverlayForm'
 
 // Utils
 import {

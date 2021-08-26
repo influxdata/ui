@@ -6,7 +6,7 @@ import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
 
 // Constants
-import {isSystemBucket} from 'src/buckets/constants/index'
+import {isSystemBucket} from 'src/buckets/constants'
 
 // Types
 import {
@@ -15,6 +15,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {RuleType} from 'src/buckets/reducers/createBucket'
+import {SchemaToggle} from "./SchemaToggle";
 
 interface Props {
   name: string
@@ -33,11 +34,24 @@ interface Props {
 
 interface State {
   showAdvanced: boolean
+  schemaType: 'implicit' | 'explicit'
+
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
+  constructor(props) {
+    super(props)
 
-  public state: State = {showAdvanced: false}
+    this.onChangeSchemaType = this.onChangeSchemaType.bind(this)
+
+  }
+
+  public state: State = {showAdvanced: false, schemaType: 'implicit'}
+
+  public onChangeSchemaType = function(newSchemaType){
+    console.log("in on change schema type", newSchemaType)
+    this.setState({schemaType: newSchemaType})
+  }
 
   public render() {
     const {
@@ -55,7 +69,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       testID = 'bucket-form',
     } = this.props
 
-    const {showAdvanced} = this.state
+    const {showAdvanced, schemaType} = this.state
 
     const nameInputStatus = disableRenaming && ComponentStatus.Disabled
 
@@ -98,7 +112,12 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                   <span>Advanced Configuration (Optional)</span>
                 </Accordion.AccordionHeader>
                 <Accordion.AccordionBodyItem>
-                  content would go here for teh advanced section (hi there!)
+                  <div>
+                    <div>
+                    content would go here for the advanced section (hi there! 44)
+                    </div>
+                    <SchemaToggle onChangeSchemaType={this.onChangeSchemaType}/>
+                  </div>
                 </Accordion.AccordionBodyItem>
 
               </Accordion>

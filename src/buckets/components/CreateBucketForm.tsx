@@ -3,7 +3,7 @@ import React, {FC, ChangeEvent, FormEvent, useReducer} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
+import BucketOverlayForm from 'src/buckets/components/CreateBucketForm/BucketOverlayForm'
 
 // Actions
 import {createBucketAndUpdate} from 'src/buckets/actions/thunks'

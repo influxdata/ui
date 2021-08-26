@@ -18,7 +18,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
-import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
+import BucketOverlayForm from 'src/buckets/components/CreateBucketForm/BucketOverlayForm'
 
 // Actions
 import {updateBucket} from 'src/buckets/actions/thunks'

@@ -34,6 +34,7 @@ const PresetFlows: FC = () => {
                 <div key={p} className="flows-index--presetCard">
                   {idx === 0 ? (
                     <Button
+                      titleText={p}
                       color={ComponentColor.Primary}
                       icon={IconFont.Plus}
                       className="flows-index--presetButton"
@@ -41,6 +42,7 @@ const PresetFlows: FC = () => {
                     ></Button>
                   ) : (
                     <Button
+                      titleText={p}
                       text=" "
                       className="flows-index--presetButton"
                       onClick={() => history.push(PresetMap[p])}

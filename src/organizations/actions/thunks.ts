@@ -30,6 +30,8 @@ import {
 
 import {gaEvent} from 'src/cloud/utils/reporting'
 
+import {getOrg} from 'src/organizations/selectors'
+
 // Schemas
 import {orgSchema, arrayOfOrgs} from 'src/schemas'
 
@@ -41,10 +43,12 @@ import {
   Bucket,
   AppThunk,
   OrgEntities,
+  GetState,
 } from 'src/types'
 
 export const getOrganizations = () => async (
-  dispatch: Dispatch<Action>
+  dispatch: Dispatch<Action>,
+  getState: GetState
 ): Promise<Organization[]> => {
   try {
     dispatch(setOrgs(RemoteDataState.Loading))
@@ -73,6 +77,10 @@ export const getOrganizations = () => async (
     return orgs
   } catch (error) {
     console.error(error)
+    if (getOrg(getState())?.id && error.message === 'organization not found') {
+      // if we have an org in state but the API says it's not found, remove it from state
+      dispatch(removeOrg(getOrg(getState()).id))
+    }
     dispatch(setOrgs(RemoteDataState.Error, null))
   }
 }

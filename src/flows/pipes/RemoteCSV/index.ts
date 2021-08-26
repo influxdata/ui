@@ -9,17 +9,21 @@ export default register => {
     featureFlag: 'flow-panel--remote-csv',
     button: 'Remote CSV',
     initial: {
-      csvType: 'NOAA National Buoy Data Center (NDBC)',
-      url:
-        'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/noaa-ndbc-data/latest-observations-annotated.csv',
+      csvType: '',
+      url: '',
+      sampleName: '',
     },
     source: data => {
       if (!data.url?.length) {
         return ''
       }
-
-      return `import "experimental/csv"
+      return data.sampleName === 'Custom'
+        ? `import "experimental/csv"
       csv.from(url: "${data.url}")`
+        : `import "influxdata/influxdb/sample"
+      sample.data(
+        set: "${data.sampleName}"
+      )`
     },
   })
 }

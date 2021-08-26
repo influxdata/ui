@@ -132,6 +132,7 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
 
       setInvites(prevInvites => [resp.data, ...prevInvites])
       dispatch(notify(inviteSent()))
+      setDraftInvite(draft)
     } catch (error) {
       dispatch(notify(inviteFailed()))
       console.error(error)

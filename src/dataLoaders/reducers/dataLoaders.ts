@@ -90,6 +90,14 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
           ['name']
         ),
       }
+
+    case 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh':
+      const telegrafPlugins = [action.payload.telegrafPlugins]
+      return {
+        ...state,
+        telegrafPlugins,
+      }
+
     case 'UPDATE_TELEGRAF_PLUGIN':
       return {
         ...state,

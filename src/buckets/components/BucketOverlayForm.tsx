@@ -2,7 +2,7 @@
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 
 // Components
-import {Form, Input, Button, Grid} from '@influxdata/clockface'
+import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
 
 // Constants
@@ -31,7 +31,14 @@ interface Props {
   testID?: string
 }
 
+interface State {
+  showAdvanced: boolean
+}
+
 export default class BucketOverlayForm extends PureComponent<Props> {
+
+  public state: State = {showAdvanced: false}
+
   public render() {
     const {
       name,
@@ -47,6 +54,8 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       onClickRename,
       testID = 'bucket-form',
     } = this.props
+
+    const {showAdvanced} = this.state
 
     const nameInputStatus = disableRenaming && ComponentStatus.Disabled
 
@@ -82,6 +91,17 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                   onChangeRetentionRule={onChangeRetentionRule}
                 />
               </Form.Element>
+              <Accordion
+                  expanded={showAdvanced}
+              >
+                <Accordion.AccordionHeader>
+                  <span>Advanced Configuration (Optional)</span>
+                </Accordion.AccordionHeader>
+                <Accordion.AccordionBodyItem>
+                  content would go here for teh advanced section (hi there!)
+                </Accordion.AccordionBodyItem>
+
+              </Accordion>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
@@ -109,6 +129,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
               </Form.Footer>
             </Grid.Column>
           </Grid.Row>
+
         </Grid>
       </Form>
     )

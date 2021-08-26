@@ -26,6 +26,8 @@ import {
 } from 'src/utils/datetime/validator'
 import {isISODate} from 'src/shared/utils/dateTimeUtils'
 
+const ISO_FORMAT = 'ISO_FORMAT'
+
 interface Props {
   label: string
   dateTime: string
@@ -65,7 +67,7 @@ const getFormat = (d: string): string => {
     return 'YYYY-MM-DD HH:mm:ss.sss'
   }
   if (isISODate(d)) {
-    return 'ISO_FORMAT'
+    return ISO_FORMAT
   }
   return null
 }
@@ -140,7 +142,7 @@ class DatePicker extends PureComponent<Props, State> {
     }
 
     // just return the ISO format string as is, no need to use our date-time Formatter
-    if (isISODate(dateTime) && inputFormat === 'ISO_FORMAT') {
+    if (isISODate(dateTime) && inputFormat === ISO_FORMAT) {
       return dateTime
     }
 

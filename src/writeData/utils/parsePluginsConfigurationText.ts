@@ -253,7 +253,7 @@ const fetch = path => {
           fs.mkdirSync(parsedPluginsPath)
         }
 
-        return resolve(contents.split('\n' + '\n' + '\n'))
+        resolve(contents.split('\n' + '\n' + '\n'))
       })
     })
   })

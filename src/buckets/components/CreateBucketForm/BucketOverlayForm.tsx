@@ -15,7 +15,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {RuleType} from 'src/buckets/reducers/createBucket'
-import {SchemaToggle} from "./SchemaToggle";
+import {SchemaToggle} from './SchemaToggle'
 
 interface Props {
   name: string
@@ -35,7 +35,6 @@ interface Props {
 interface State {
   showAdvanced: boolean
   schemaType: 'implicit' | 'explicit'
-
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
@@ -43,13 +42,12 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     super(props)
 
     this.onChangeSchemaType = this.onChangeSchemaType.bind(this)
-
   }
 
   public state: State = {showAdvanced: false, schemaType: 'implicit'}
 
-  public onChangeSchemaType = function(newSchemaType){
-    console.log("in on change schema type", newSchemaType)
+  public onChangeSchemaType = function(newSchemaType) {
+    console.log('in on change schema type', newSchemaType)
     this.setState({schemaType: newSchemaType})
   }
 
@@ -105,21 +103,21 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                   onChangeRetentionRule={onChangeRetentionRule}
                 />
               </Form.Element>
-              <Accordion
-                  expanded={showAdvanced}
-              >
+              <Accordion expanded={showAdvanced}>
                 <Accordion.AccordionHeader>
                   <span>Advanced Configuration (Optional)</span>
                 </Accordion.AccordionHeader>
                 <Accordion.AccordionBodyItem>
                   <div>
                     <div>
-                    content would go here for the advanced section (hi there! 44)
+                      content would go here for the advanced section (hi there!
+                      44)
                     </div>
-                    <SchemaToggle onChangeSchemaType={this.onChangeSchemaType}/>
+                    <SchemaToggle
+                      onChangeSchemaType={this.onChangeSchemaType}
+                    />
                   </div>
                 </Accordion.AccordionBodyItem>
-
               </Accordion>
             </Grid.Column>
           </Grid.Row>
@@ -148,7 +146,6 @@ export default class BucketOverlayForm extends PureComponent<Props> {
               </Form.Footer>
             </Grid.Column>
           </Grid.Row>
-
         </Grid>
       </Form>
     )

@@ -77,10 +77,7 @@ describe('simple table interactions', () => {
     cy.getByTestID('pagination-item')
       .first()
       .within(() => {
-        cy.getByTestID('button').should(
-          'have.class',
-          'cf-button cf-button-md cf-button-tertiary cf-button-square active'
-        )
+        cy.getByTestID('button').contains('1')
       })
     // verify correct number of pages
     cy.getByTestID('pagination-item')
@@ -143,10 +140,7 @@ describe('simple table interactions', () => {
     cy.getByTestID('pagination-item')
       .first()
       .within(() => {
-        cy.getByTestID('button').should(
-          'have.class',
-          'cf-button cf-button-md cf-button-tertiary cf-button-square active'
-        )
+        cy.getByTestID('button').contains('1')
       })
     // verify correct number of pages
     cy.getByTestID('pagination-item')

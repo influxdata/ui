@@ -88,41 +88,6 @@ const ResourceLists: FC = () => {
         </>
       )}
       <Panel>
-        {isFlagEnabled('newUsagePanel') && CLOUD ? (
-          <>
-            <Panel.Header>
-              <Heading
-                element={HeadingElement.H2}
-                weight={FontWeight.Medium}
-                className="cf-heading__h4"
-              >
-                {`Usage Rates (${
-                  !quartzMe || quartzMe?.accountType === 'free'
-                    ? 'Free'
-                    : 'PAYG'
-                })`}
-              </Heading>
-            </Panel.Header>
-            <Panel.Body>
-              <UsagePanel />
-            </Panel.Body>
-          </>
-        ) : (
-          <>
-            <Panel.Header>
-              <Heading
-                element={HeadingElement.H2}
-                weight={FontWeight.Light}
-                className="cf-heading__h4"
-              >
-                Useful Links
-              </Heading>
-            </Panel.Header>
-            <Panel.Body>
-              <Support />
-            </Panel.Body>
-          </>
-        )}
         <Panel.Footer>
           <VersionInfo />
         </Panel.Footer>

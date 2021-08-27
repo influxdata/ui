@@ -23,6 +23,7 @@ interface Props {
   emptyState: JSX.Element
   onUpdateBucket: (b: OwnBucket) => void
   onDeleteBucket: (b: OwnBucket) => void
+  onGetBucketSchema: (b: OwnBucket) => void
   onFilterChange: (searchTerm: string) => void
   sortKey: string
   sortDirection: Sort
@@ -55,6 +56,7 @@ class BucketList extends PureComponent<
       onDeleteBucket,
       onFilterChange,
       onUpdateBucket,
+      onGetBucketSchema,
     } = this.props
     const sortedBuckets = this.memGetSortedResources(
       buckets,
@@ -74,6 +76,7 @@ class BucketList extends PureComponent<
           onDeleteBucket={onDeleteBucket}
           onUpdateBucket={onUpdateBucket}
           onFilterChange={onFilterChange}
+          onGetBucketSchema={onGetBucketSchema}
         />
       )
     })

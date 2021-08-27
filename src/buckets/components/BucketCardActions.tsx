@@ -1,32 +1,37 @@
 // Libraries
 import React, {FC} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
   Button,
+  ComponentSize,
   FlexBox,
   FlexDirection,
-  ComponentSize,
 } from '@influxdata/clockface'
 import BucketAddDataButton from 'src/buckets/components/BucketAddDataButton'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {addBucketLabel, deleteBucketLabel} from 'src/buckets/actions/thunks'
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
 import {setDataLoadersType} from 'src/dataLoaders/actions/dataLoaders'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {Label, OwnBucket} from 'src/types'
 import {DataLoaderType} from 'src/types/dataLoaders'
+
+import {CLOUD} from 'src/shared/constants'
 
 interface OwnProps {
   bucket: OwnBucket
   bucketType: 'user' | 'system'
   orgID: string
   onFilterChange: (searchTerm: string) => void
+  onGetSchema: (b: OwnBucket) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -38,6 +43,7 @@ const BucketCardActions: FC<Props> = ({
   bucketType,
   orgID,
   onFilterChange,
+  onGetSchema,
   onAddBucketLabel,
   onDeleteBucketLabel,
   history,
@@ -58,6 +64,12 @@ const BucketCardActions: FC<Props> = ({
 
   const handleClickSettings = () => {
     history.push(`/orgs/${orgID}/load-data/buckets/${bucket.id}/edit`)
+  }
+
+  // to turn on metrics locally: influx.toggle('appMetrics')
+  const handleShowSchema = () => {
+    event('bucket.view.schema.explicit')
+    onGetSchema(bucket)
   }
 
   const handleAddCollector = () => {
@@ -93,6 +105,23 @@ const BucketCardActions: FC<Props> = ({
     history.push(`/orgs/${orgID}/load-data/buckets/${bucket.id}/scrapers/new`)
   }
 
+  const makeSchemaButton = () => {
+    if (
+      isFlagEnabled('measurementSchema') &&
+      CLOUD &&
+      bucket?.schemaType === 'explicit'
+    ) {
+      return (
+        <Button
+          text="Show Schema"
+          testID="bucket-showSchema"
+          size={ComponentSize.ExtraSmall}
+          onClick={handleShowSchema}
+        />
+      )
+    }
+  }
+
   return (
     <FlexBox
       direction={FlexDirection.Row}
@@ -118,6 +147,7 @@ const BucketCardActions: FC<Props> = ({
         size={ComponentSize.ExtraSmall}
         onClick={handleClickSettings}
       />
+      {makeSchemaButton()}
     </FlexBox>
   )
 }

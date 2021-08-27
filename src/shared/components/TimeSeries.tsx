@@ -139,14 +139,14 @@ class TimeSeries extends Component<Props, State> {
     this.observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         const {isIntersecting} = entry
-        const reload =
+        const shouldReload =
           !this.isIntersecting && isIntersecting && this.pendingReload
 
-        if (reload) {
+        if (shouldReload) {
           this.reload()
         }
 
-        if (reload && cellID) {
+        if (shouldReload && cellID) {
           setCellMount(cellID, new Date().getTime())
         }
 
@@ -159,13 +159,21 @@ class TimeSeries extends Component<Props, State> {
 
   public componentDidUpdate(prevProps: Props) {
     const {setCellMount, cellID} = this.props
-    const reload = this.shouldReload(prevProps) && this.isIntersecting
-    if (reload) {
+    const prevPropsIndicateReload = this.shouldReload(prevProps)
+    const shouldReloadNow = prevPropsIndicateReload && this.isIntersecting
+    const shouldReloadWhenVisible =
+      prevPropsIndicateReload && !this.isIntersecting
+
+    if (shouldReloadNow) {
       this.reload()
     }
 
-    if (reload && cellID) {
+    if (shouldReloadNow && cellID) {
       setCellMount(cellID, new Date().getTime())
+    }
+
+    if (shouldReloadWhenVisible) {
+      this.pendingReload = true
     }
   }
 

@@ -29,6 +29,7 @@ const FlowsIndex = () => {
 
   const fadeOutOnScroll = element => {
     const header = document.getElementsByClassName('cf-page-header')[0]
+
     if (!header) {
       return
     }
@@ -36,7 +37,8 @@ const FlowsIndex = () => {
     const distanceToTop =
       window.pageYOffset +
       element.getBoundingClientRect().top +
-      element.getBoundingClientRect().height
+      element.getBoundingClientRect().height -
+      header.getBoundingClientRect().height
 
     const elementHeight = element.offsetHeight
     const scrollTop = document.documentElement.scrollTop
@@ -107,8 +109,10 @@ const FlowsIndex = () => {
     <Page
       titleTag={pageTitleSuffixer([PROJECT_NAME_PLURAL])}
       testID="flows-index"
+      className="flows-index"
     >
       <PageHeader
+        style={{flex: 0, margin: '16px 0px'}}
         fullWidth={false}
         className={`${showButtonMode && 'withButtonHeader'}`}
       >
@@ -116,7 +120,10 @@ const FlowsIndex = () => {
         {showButtonMode && isFlagEnabled('presetFlows') && (
           <>
             <PresetFlowsButtons />
-            <Page.ControlBar fullWidth={false}>
+            <Page.ControlBar
+              className="flows-index--control-bar buttonMode"
+              fullWidth={false}
+            >
               <Page.ControlBarLeft>
                 <SearchWidget
                   placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
@@ -138,10 +145,13 @@ const FlowsIndex = () => {
           </>
         )}
       </PageHeader>
-      <DapperScrollbars onScroll={scrollHandler} id="scrollFlows">
+      <DapperScrollbars onScroll={scrollHandler} className="flows-index--main">
         <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
           {isFlagEnabled('presetFlows') && <PresetFlows />}
-          <Page.ControlBar fullWidth={false}>
+          <Page.ControlBar
+            className="flows-index--control-bar"
+            fullWidth={false}
+          >
             <Page.ControlBarLeft>
               <SearchWidget
                 placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}

@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo} from 'react'
+import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
+import {useDispatch} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux'
 import {
   ComponentStatus,
@@ -15,12 +16,13 @@ import {
   AlignItems,
   JustifyContent,
   Dropdown,
+  ComponentColor,
+  Button,
 } from '@influxdata/clockface'
-import {RemoteDataState} from 'src/types'
-
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {remove} from 'src/flows/context/query'
+import {QueryContext} from 'src/flows/context/query'
 
 import Threshold, {
   THRESHOLD_TYPES,
@@ -29,17 +31,27 @@ import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 
 // Types
+import {RemoteDataState} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-
+import {notify} from 'src/shared/actions/notifications'
+import {
+  testNotificationSuccess,
+  testNotificationFailure,
+} from 'src/shared/copy/notifications'
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
 const Notification: FC<PipeProp> = ({Context}) => {
+  const dispatch = useDispatch()
+  const {query} = useContext(QueryContext)
   const {id, data, update, results, loading} = useContext(PipeContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const [status, setStatus] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
+  )
 
   let intervalError = ''
   let offsetError = ''
@@ -59,6 +71,18 @@ const Notification: FC<PipeProp> = ({Context}) => {
   ) {
     offsetError = 'Invalid Time'
   }
+
+  const loadingText = useMemo(() => {
+    if (loading === RemoteDataState.Loading) {
+      return 'Loading'
+    }
+
+    if (loading === RemoteDataState.NotStarted) {
+      return 'This cell will display results from the previous cell'
+    }
+
+    return 'No Data Returned'
+  }, [loading])
 
   const queryText = getPanelQueries(id, true).source
   const hasTaskOption = useMemo(
@@ -268,6 +292,29 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.message,
   ])
 
+  const handleTestEndpoint = async () => {
+    const queryText = `
+import "strings"
+import "regexp"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestImports()}
+
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
+
+    try {
+      setStatus(RemoteDataState.Loading)
+      await query(queryText)
+
+      setStatus(RemoteDataState.Done)
+      dispatch(notify(testNotificationSuccess(data.endpoint)))
+    } catch {
+      setStatus(RemoteDataState.Error)
+      dispatch(notify(testNotificationFailure(data.endpoint)))
+    }
+  }
+
   if (
     loading === RemoteDataState.NotStarted ||
     loading === RemoteDataState.Loading
@@ -279,9 +326,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
             <Icon glyph={IconFont.Bell} className="panel-resizer--vis-toggle" />
           </div>
           <div className="panel-resizer--body">
-            <div className="panel-resizer--empty">
-              This cell requires results from the previous cell
-            </div>
+            <div className="panel-resizer--empty">{loadingText}</div>
           </div>
         </div>
         {warningMessage}
@@ -375,10 +420,22 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
           </FlexBox.Child>
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
-          <ExportTaskButton
-            generate={generateTask}
-            text="Export as Alert Task"
-          />
+          <FlexBox margin={ComponentSize.Medium}>
+            <Button
+              text="Test Endpoint"
+              status={
+                status === RemoteDataState.Loading
+                  ? ComponentStatus.Loading
+                  : ComponentStatus.Default
+              }
+              onClick={handleTestEndpoint}
+              color={ComponentColor.Default}
+            />
+            <ExportTaskButton
+              generate={generateTask}
+              text="Export as Alert Task"
+            />
+          </FlexBox>
         </Panel.Footer>
       </div>
       {warningMessage}

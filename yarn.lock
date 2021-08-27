@@ -848,10 +848,10 @@
     "@docsearch/css" "3.0.0-alpha.37"
     algoliasearch "^4.0.0"
 
-"@influxdata/clockface@^2.11.5":
-  version "2.11.5"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.11.5.tgz#7de207688806d42750726fbdd63f84466c355794"
-  integrity sha512-0Uj9xst/4PfkYDHnW/0Ew22F0Ilo/QqsZnNKlvdey1xYlQ6cXl0CSL9BpaFrEbdoNQ9Yg8E1/l+zeDvwUXkQhg==
+"@influxdata/clockface@^2.11.7":
+  version "2.11.7"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-2.11.7.tgz#0a204f66a81fff9a2ed2d24113831e4c4c25f832"
+  integrity sha512-aifavOC6fEFdeIZAHIxpf8+ieUSB3SGODj0jNTJYqC//gziPkK9V6WQ9ZcmWPlKouqzb6ZXl5elWb1s1j0wszg==
 
 "@influxdata/flux-lsp-browser@^0.5.53":
   version "0.5.53"
@@ -4424,6 +4424,11 @@ eslint@^6.6.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
+esm@^3.2.25:
+  version "3.2.25"
+  resolved "https://registry.yarnpkg.com/esm/-/esm-3.2.25.tgz#342c18c29d56157688ba5ce31f8431fbb795cc10"
+  integrity sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==
+
 espree@^6.1.2:
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/espree/-/espree-6.1.2.tgz#6c272650932b4f91c3714e5e7b5f5e2ecf47262d"
@@ -6130,6 +6135,11 @@ is-typedarray@~1.0.0:
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
   integrity sha1-5HnICFjfDBsR3dppQPlgEfzaSpo=
 
+is-unicode-supported@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/is-unicode-supported/-/is-unicode-supported-1.1.0.tgz#9127b71f9fa82f52ca5c20e982e7bec0ee31ee1e"
+  integrity sha512-lDcxivp8TJpLG75/DpatAqNzOpDPSpED8XNtrpBHTdQ2InQ1PbW78jhwSxyxhhu+xbVSast2X38bwj8atwoUQA==
+
 is-whitespace-character@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-whitespace-character/-/is-whitespace-character-1.0.2.tgz#ede53b4c6f6fb3874533751ec9280d01928d03ed"
@@ -7060,6 +7070,14 @@ log-symbols@^4.0.0:
   integrity sha512-FN8JBzLx6CzeMrB0tg6pqlGU1wCrXW+ZXGH481kfsBqer0hToTIiHdjH4Mq8xJUbvATujKCvaREGWpGUionraA==
   dependencies:
     chalk "^4.0.0"
+
+log-symbols@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/log-symbols/-/log-symbols-5.0.0.tgz#7720d3c6a56c365e1f658916069ba18d941092ca"
+  integrity sha512-zBsSKauX7sM0kcqrf8VpMRPqcWzU6a/Wi7iEl0QlVSCiIZ4CctaLdfVdiZUn6q2/nenyt392qJqpw9FhNAwqxQ==
+  dependencies:
+    chalk "^4.1.0"
+    is-unicode-supported "^1.0.0"
 
 log-update@^4.0.0:
   version "4.0.0"

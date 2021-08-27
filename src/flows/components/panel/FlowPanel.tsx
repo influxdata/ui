@@ -1,7 +1,12 @@
 // Libraries
 import React, {FC, useContext, useState, useRef, useEffect} from 'react'
 import classnames from 'classnames'
-import {ComponentColor, IconFont, SquareButton} from '@influxdata/clockface'
+import {
+  Button,
+  ComponentColor,
+  IconFont,
+  SquareButton,
+} from '@influxdata/clockface'
 
 // Components
 import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
@@ -40,7 +45,7 @@ const FlowPanel: FC<Props> = ({
   children,
 }) => {
   const {flow} = useContext(FlowContext)
-  const {printMap} = useContext(FlowQueryContext)
+  const {printMap, queryDependents} = useContext(FlowQueryContext)
   const {id: focused} = useContext(SidebarContext)
 
   const isVisible = flow.meta.get(id).visible
@@ -172,13 +177,24 @@ const FlowPanel: FC<Props> = ({
             {children}
           </div>
         )}
-        {isVisible && resizes && (
-          <Handle
-            dragRef={handleRef}
-            onStartDrag={handleMouseDown}
-            dragging={isDragging}
-          />
-        )}
+        <div className="flow-panel--footer">
+          <div></div>
+          {isVisible && resizes && (
+            <Handle
+              dragRef={handleRef}
+              onStartDrag={handleMouseDown}
+              dragging={isDragging}
+            />
+          )}
+          {isVisible && (
+            <Button
+              className="flow-footer--preview"
+              onClick={() => queryDependents(id)}
+              icon={IconFont.Play}
+              text="Preview from here"
+            />
+          )}
+        </div>
       </div>
       {!flow.readOnly && <InsertCellButton id={id} />}
     </>

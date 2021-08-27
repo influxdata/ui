@@ -119,6 +119,7 @@ class Query implements QuerySignature {
     tags: Tags = null
   ) {
     this.reset()
+    this.astim = parseASTIM(query)
     this.id = Query.hash(query)
 
     if (!tags) {
@@ -156,7 +157,7 @@ class Query implements QuerySignature {
     this.lastRun = Date.now()
     this.result = {
       flux: {
-        source: format_from_js_file(this.astim.getAST()),
+        source: this.astim.getQuery(),
         parsed: fromFlux(result),
       },
       timeRange: {
@@ -200,7 +201,7 @@ class Query implements QuerySignature {
         (node.arguments[0].properties[0].value.location.source = `"${name}"`)
     )
 
-    this.query = format_from_js_file(ast)
+    this.astim = parseASTIM(format_from_js_file(ast))
   }
 
   get bucket(): string {
@@ -222,7 +223,7 @@ class Query implements QuerySignature {
   }
 
   get query() {
-    return format_from_js_file(this.astim.getAST())
+    return this.astim.getQuery()
   }
 
   set query(query: string) {
@@ -345,7 +346,7 @@ class Query implements QuerySignature {
             try {
               const parsed = fromFlux(raw.csv)
               resolve({
-                source: format_from_js_file(this.astim.getAST()),
+                source: this.astim.getQuery(),
                 parsed,
                 error: null,
               } as FluxResult)

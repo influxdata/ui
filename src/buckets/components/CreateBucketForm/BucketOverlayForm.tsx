@@ -70,7 +70,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       testID = 'bucket-form',
     } = this.props
 
-    const {showAdvanced, schemaType} = this.state
+    const {showAdvanced} = this.state
 
     const nameInputStatus = disableRenaming && ComponentStatus.Disabled
 

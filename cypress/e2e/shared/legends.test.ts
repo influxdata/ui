@@ -20,7 +20,7 @@ describe('Legends', () => {
 
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
-          // cy.createMapVariable(id)
+          cy.createMapVariable(id)
           cy.fixture('routes').then(({orgs, explorer}) => {
             cy.visit(`${orgs}/${id}${explorer}`)
             cy.getByTestID('tree-nav')

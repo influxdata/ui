@@ -221,7 +221,7 @@ const normalizeSchema = (
 }
 
 export const SchemaProvider: FC = React.memo(({children}) => {
-  const {data, update} = useContext(PipeContext)
+  const {data} = useContext(PipeContext)
   const {flow} = useContext(FlowContext)
   const {query, getPanelQueries} = useContext(FlowQueryContext)
   const [searchTerm, setSearchTerm] = useState('')

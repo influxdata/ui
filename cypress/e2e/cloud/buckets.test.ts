@@ -25,13 +25,14 @@ const setupData = (
     it('can create a bucket with an explicit schema', () => {
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
-        cy.pause()
+        //cy.pause()
         cy.getByInputName('name').type('explicit-bucket-test')
-cy.pause()
+//cy.pause()
         cy.getByTestID('schemaBucketToggle').click()
-cy.pause()
+//cy.pause()
         const explicitBtn = cy.getByTestID('explicit-bucket-schema-choice-ID')
         //expect(explicitBtn).toBeVisible()
+            explicitBtn.should('be.visible')
         explicitBtn.click()
 
         cy.getByTestID('bucket-form-submit').click()

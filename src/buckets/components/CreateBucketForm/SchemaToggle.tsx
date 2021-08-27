@@ -59,6 +59,7 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
         color={ComponentColor.Primary}
+        testID="implicit-bucket-schema-choice-ID"
       >
         <InputLabel
           htmlFor="implicit-bucket-schema-choice"

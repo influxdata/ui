@@ -6,7 +6,6 @@ const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) => {
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs, buckets}) => {
         cy.visit(`${orgs}/${id}${buckets}`)
-        //cy.getByTestID('tree-nav')
         return cy
           .setFeatureFlags({measurementSchema: enableMeasurementSchema})
           .then(() => {
@@ -32,33 +31,46 @@ describe('Explicit Buckets', () => {
       explicitBtn.click()
 
       cy.getByTestID('bucket-form-submit').click()
-      //cy.pause()
-
-      //   .then(() => {
-      // cy.get('[data-testid*="bucket-card"]').each((val, index) => {
-      //   const testID = val.attr('data-testid')
-      //       cy.pause()
-      //       //expect(testID).to.include(retentionDesc[index])
-      //     })
-      //   })
     })
 
     cy.getByTestID('bucket-card explicit-bucket-test').within($card => {
       expect($card.length).to.equal(1)
+
+      // should have an explicit schema tag in the meta card:
       cy.getByTestID('bucket-schemaType').contains('Schema Type: Explicit')
+
+      // should have the show schema button in the actions:
+      cy.getByTestID('bucket-showSchema').contains('Show Schema')
+    })
+  })
+
+  it('can create a (normal) bucket with an implicit schema', () => {
+    cy.getByTestID('Create Bucket').click()
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByInputName('name').type('implicit-bucket-test')
+
+      cy.getByTestID('schemaBucketToggle').click()
+
+      // check that it is there; but don't click on it; leave it as implicit:
+      cy.getByTestID('explicit-bucket-schema-choice-ID').should('be.visible')
+
+      // implicit button should be selected by default:
+      cy.getByTestID('implicit-bucket-schema-choice-ID--input').should(
+        'be.checked'
+      )
+
+      cy.getByTestID('bucket-form-submit').click()
     })
 
-    // cy.getByTestID('resource-list').then($body => {
-    //   const explicitCard = $body.find(`[data-testid="bucket-card explicit-bucket-test"]`)
-    //
-    //   expect(explicitCard.length).to.equal(1)
-    //
-    //   explicitCard.within(() => {
-    //
-    //     cy.getByTestID('bucket-schemaType').contains('Schema Type: Explicit')
-    //   })
-    //
-    // })
+    cy.getByTestID('bucket-card implicit-bucket-test').within($card => {
+      expect($card.length).to.equal(1)
+
+      // should have an implicit schema tag in the meta card:
+      cy.getByTestID('bucket-schemaType').contains('Schema Type: Implicit')
+
+      // should NOT have the show schema button in the actions:
+      cy.getByTestID('bucket-showSchema').should('not.exist')
+    })
   })
 })
 

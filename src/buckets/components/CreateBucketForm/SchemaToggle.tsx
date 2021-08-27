@@ -27,7 +27,8 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
   }
 
   // this is the documentation link for explicit schemas for buckets
-  const link = 'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
+  const link =
+    'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -41,7 +42,10 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
         <div className="subtext">
           By default, buckets have an implicit schema that conforms to your
           data. Use explicit schemas to enforce specific data types and columns.{' '}
-          <a href={link} target="_blank" rel="noopener noreferrer"> Learn more</a>
+          <a href={link} target="_blank" rel="noopener noreferrer">
+            {' '}
+            Learn more
+          </a>
         </div>
       </div>
       <Toggle

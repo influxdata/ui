@@ -71,7 +71,9 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     dispatch({type: 'updateRetentionRules', payload: retentionRules})
   }
 
-  const handleChangeSchemaType = (schemaType: 'implicit' | 'explicit'): void => {
+  const handleChangeSchemaType = (
+    schemaType: 'implicit' | 'explicit'
+  ): void => {
     dispatch({type: 'updateSchema', payload: schemaType})
   }
 

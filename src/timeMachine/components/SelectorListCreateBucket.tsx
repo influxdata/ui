@@ -57,7 +57,6 @@ const SelectorListCreateBucket: FC<Props> = ({
   limitStatus,
 }) => {
   const reduxDispatch = useDispatch()
-  console.log('arghh! here in selector list create bucket 44a-jill')
   const triggerRef = useRef<ListItemRef>(null)
   const [state, dispatch] = useReducer(
     createBucketReducer,
@@ -110,7 +109,9 @@ const SelectorListCreateBucket: FC<Props> = ({
     createBucket(state)
     onHide()
   }
-  const handleChangeSchemaType = (schemaType: 'implicit' | 'explicit'): void => {
+  const handleChangeSchemaType = (
+    schemaType: 'implicit' | 'explicit'
+  ): void => {
     dispatch({type: 'updateSchema', payload: schemaType})
   }
 
@@ -143,7 +144,7 @@ const SelectorListCreateBucket: FC<Props> = ({
         position={PopoverPosition.Above}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
-        style={{maxWidth:BUCKET_OVERLAY_WIDTH}}
+        style={{maxWidth: BUCKET_OVERLAY_WIDTH}}
         testID="create-bucket-popover"
         contents={onHide => (
           <BucketOverlayForm

@@ -16,8 +16,8 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {RuleType} from 'src/buckets/reducers/createBucket'
-import {isFlagEnabled} from "src/shared/utils/featureFlag";
-import {CLOUD} from "src/shared/constants";
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 
 interface Props {
   name: string
@@ -50,7 +50,6 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   public state: State = {showAdvanced: false, schemaType: 'implicit'}
 
   public onChangeSchemaTypeInternal = function(newSchemaType) {
-    console.log('in on change schema type', newSchemaType)
     this.setState({schemaType: newSchemaType})
     this.props.onChangeSchemaType(newSchemaType)
   }
@@ -75,21 +74,22 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     const nameInputStatus = disableRenaming && ComponentStatus.Disabled
 
-
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
-        return <Accordion expanded={showAdvanced}>
-          <Accordion.AccordionHeader>
-            <span>Advanced Configuration (Optional)</span>
-          </Accordion.AccordionHeader>
-          <Accordion.AccordionBodyItem>
-            <div>
-              <SchemaToggle
+        return (
+          <Accordion expanded={showAdvanced}>
+            <Accordion.AccordionHeader>
+              <span>Advanced Configuration (Optional)</span>
+            </Accordion.AccordionHeader>
+            <Accordion.AccordionBodyItem>
+              <div>
+                <SchemaToggle
                   onChangeSchemaType={this.onChangeSchemaTypeInternal}
-              />
-            </div>
-          </Accordion.AccordionBodyItem>
-        </Accordion>
+                />
+              </div>
+            </Accordion.AccordionBodyItem>
+          </Accordion>
+        )
       }
     }
 

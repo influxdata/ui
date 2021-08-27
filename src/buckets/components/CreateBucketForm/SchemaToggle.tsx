@@ -72,6 +72,7 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
         value="explicit"
         id="explicit-bucket-schema-choice"
         name="explicit-bucket-schema-choice"
+        testID='explicit-bucket-schema-choice-ID'
         checked={schemaType === 'explicit'}
         className="option"
         onChange={handleSchemaChange}

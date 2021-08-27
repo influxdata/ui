@@ -21,6 +21,7 @@ import {
   ListItemRef,
 } from '@influxdata/clockface'
 import BucketOverlayForm from 'src/buckets/components/CreateBucketForm/BucketOverlayForm'
+import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 // TODO JILL investigate how this is used!!!!!!
 // Utils
@@ -109,6 +110,9 @@ const SelectorListCreateBucket: FC<Props> = ({
     createBucket(state)
     onHide()
   }
+  const handleChangeSchemaType = (schemaType: 'implicit' | 'explicit'): void => {
+    dispatch({type: 'updateSchema', payload: schemaType})
+  }
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value
@@ -139,7 +143,7 @@ const SelectorListCreateBucket: FC<Props> = ({
         position={PopoverPosition.Above}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
-        style={{maxWidth:450}}
+        style={{maxWidth:BUCKET_OVERLAY_WIDTH}}
         testID="create-bucket-popover"
         contents={onHide => (
           <BucketOverlayForm
@@ -153,6 +157,7 @@ const SelectorListCreateBucket: FC<Props> = ({
             retentionSeconds={retentionSeconds}
             onChangeRuleType={handleChangeRuleType}
             onChangeRetentionRule={handleChangeRetentionRule}
+            onChangeSchemaType={handleChangeSchemaType}
           />
         )}
       />

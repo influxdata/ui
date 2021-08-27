@@ -22,6 +22,7 @@ import {
 } from '@influxdata/clockface'
 import BucketOverlayForm from 'src/buckets/components/CreateBucketForm/BucketOverlayForm'
 
+// TODO JILL investigate how this is used!!!!!!
 // Utils
 import {
   extractBucketMaxRetentionSeconds,
@@ -55,6 +56,7 @@ const SelectorListCreateBucket: FC<Props> = ({
   limitStatus,
 }) => {
   const reduxDispatch = useDispatch()
+  console.log('arghh! here in selector list create bucket 44a-jill')
   const triggerRef = useRef<ListItemRef>(null)
   const [state, dispatch] = useReducer(
     createBucketReducer,
@@ -137,6 +139,7 @@ const SelectorListCreateBucket: FC<Props> = ({
         position={PopoverPosition.Above}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
+        style={{maxWidth:450}}
         testID="create-bucket-popover"
         contents={onHide => (
           <BucketOverlayForm

@@ -4,7 +4,7 @@ import {useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {CreateBucketForm} from 'src/buckets/components/CreateBucketForm'
+import {CreateBucketForm} from 'src/buckets/components/CreateBucketForm/CreateBucketForm'
 
 // Actions
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'

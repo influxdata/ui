@@ -1,9 +1,6 @@
 // Libraries
 import React, {FC, memo} from 'react'
 
-// Components
-import UsagePanel from 'src/me/components/UsagePanel'
-import Support from 'src/me/components/Support'
 import {
   Panel,
   FlexBox,
@@ -25,14 +22,8 @@ import LogoutButton from 'src/me/components/LogoutButton'
 import DashboardsList from 'src/me/components/DashboardsList'
 import GetResources from 'src/resources/components/GetResources'
 import {ResourceType} from 'src/types'
-import {CLOUD} from 'src/shared/constants'
-
-// Selectors
-import {useSelector} from 'react-redux'
-import {getMe} from 'src/me/selectors'
 
 const ResourceLists: FC = () => {
-  const {quartzMe} = useSelector(getMe)
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -88,41 +79,6 @@ const ResourceLists: FC = () => {
         </>
       )}
       <Panel>
-        {isFlagEnabled('newUsagePanel') && CLOUD ? (
-          <>
-            <Panel.Header>
-              <Heading
-                element={HeadingElement.H2}
-                weight={FontWeight.Medium}
-                className="cf-heading__h4"
-              >
-                {`Usage Rates (${
-                  !quartzMe || quartzMe?.accountType === 'free'
-                    ? 'Free'
-                    : 'PAYG'
-                })`}
-              </Heading>
-            </Panel.Header>
-            <Panel.Body>
-              <UsagePanel />
-            </Panel.Body>
-          </>
-        ) : (
-          <>
-            <Panel.Header>
-              <Heading
-                element={HeadingElement.H2}
-                weight={FontWeight.Light}
-                className="cf-heading__h4"
-              >
-                Useful Links
-              </Heading>
-            </Panel.Header>
-            <Panel.Body>
-              <Support />
-            </Panel.Body>
-          </>
-        )}
         <Panel.Footer>
           <VersionInfo />
         </Panel.Footer>

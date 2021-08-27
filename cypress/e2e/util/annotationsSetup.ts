@@ -144,7 +144,7 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('overlay--container')
     .filter(':visible')
     .within(() => {
-      cy.getByTestID('delete-annotation-button').click()
+      cy.getByTestID('delete-annotation-button').click({force: true})
     })
 
   // reload to make sure the annotation was deleted from the backend as well.

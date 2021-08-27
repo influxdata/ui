@@ -2,6 +2,7 @@ describe('The Login Page', () => {
   beforeEach(() => {
     cy.flush()
 
+    console.log('ugh')
     cy.setupUser().then(({body}) => {
       cy.wrap(body.org.id).as('orgID')
     })

@@ -34,34 +34,30 @@ type ReduxProps = ConnectedProps<typeof connector>
 
 type Props = ReduxProps & OwnProps
 
+const labels = {
+  active: 'Active',
+  inactive: 'Inactive'
+};
+
 const EditTokenOverlay: FC<Props> = props => {
   const [description, setDescription] = useState(props.auth.description)
 
-  let isTokenEnabled = () => {
-    const {auth} = props
-    
-    return auth.status === 'active'
-  }
-  const labelText = isTokenEnabled() ? 'Active' : 'Inactive'
+  
 
   const changeToggle = () => {
-    const {onUpdate} = props
-    const auth = {...props.auth}
-    auth.status = auth.status === 'active' ? 'inactive' : 'active'
-    onUpdate(auth)
-    console.log(auth.status)
+    const {onUpdate, auth} = props
+    
+    onUpdate({
+      ...auth,
+      status: auth.status === 'active' ? 'inactive' : 'active'
+    })
+    
+
   }
 
-  
-  
-  
-  const handleDismiss = () => {
-    props.onDismissOverlay()
-  }
+  const handleDismiss = () => props.onDismissOverlay()
 
-  const handleInputChange = event => {
-    setDescription(event.target.value)
-  }
+  const handleInputChange = event => setDescription(event.target.value)
 
   
 
@@ -71,11 +67,11 @@ const EditTokenOverlay: FC<Props> = props => {
       <Overlay.Body>
         <FlexBox margin={ComponentSize.Medium}  direction={FlexDirection.Row}>
           <SlideToggle
-            active={isTokenEnabled()}
+            active={props.auth.status === 'active'}
             size={ComponentSize.ExtraSmall}
             onChange={changeToggle}
           />
-          <InputLabel active={isTokenEnabled()}>{labelText}</InputLabel>
+          <InputLabel active={props.auth.status === 'active'}>{labels[props.auth.status]}</InputLabel>
         </FlexBox>
         <Form>
         

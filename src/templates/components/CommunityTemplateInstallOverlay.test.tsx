@@ -51,7 +51,6 @@ jest.mock('src/templates/api', () => {
 import {installTemplate, updateStackName} from 'src/templates/api'
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 // Mock State
 import {renderWithReduxAndRouter} from 'src/mockState'
@@ -101,7 +100,6 @@ let getByTitle
 describe('the Community Templates Install Overlay', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mocked(reportErrorThroughHoneyBadger).mockClear()
     const renderResult = setup()
     const store = renderResult.store
     getByTitle = renderResult.getByTitle
@@ -158,13 +156,6 @@ describe('the Community Templates Install Overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateRenameFailed())
-
-      const [honeyBadgerCallArguments] = mocked(
-        reportErrorThroughHoneyBadger
-      ).mock.calls
-      expect(honeyBadgerCallArguments[1]).toEqual({
-        name: 'The community template rename failed',
-      })
     })
 
     it('handles failures to install', async () => {
@@ -193,13 +184,6 @@ describe('the Community Templates Install Overlay', () => {
       const [notifyCallArguments] = mocked(notify).mock.calls
       const [notifyMessage] = notifyCallArguments
       expect(notifyMessage).toEqual(communityTemplateInstallFailed())
-
-      const [honeyBadgerCallArguments] = mocked(
-        reportErrorThroughHoneyBadger
-      ).mock.calls
-      expect(honeyBadgerCallArguments[1]).toEqual({
-        name: 'Failed to install community template',
-      })
 
       cleanup()
     })

@@ -25,7 +25,6 @@ import {ComponentStatus} from '@influxdata/clockface'
 // Utils
 import {getByID} from 'src/resources/selectors'
 import {getTemplateNameFromUrl} from 'src/templates/utils'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 import {
   installTemplate,
@@ -103,11 +102,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
       if (
         err.message.includes('mapping values are not allowed in this context')
       ) {
-        event('review_template', {templateUrl})
-      } else {
-        reportErrorThroughHoneyBadger(err, {
-          name: 'The community template fetch for preview failed',
-        })
+        event('review_template.failure', {templateUrl})
       }
     }
   }
@@ -137,9 +132,6 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
         templateUrl,
       })
       this.props.notify(communityTemplateInstallFailed())
-      reportErrorThroughHoneyBadger(err, {
-        name: 'Failed to install community template',
-      })
       return
     }
 
@@ -174,9 +166,6 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
         {templateUrl}
       )
       this.props.notify(communityTemplateRenameFailed())
-      reportErrorThroughHoneyBadger(err, {
-        name: 'The community template rename failed',
-      })
     } finally {
       this.props.fetchAndSetStacks(this.props.org.id)
       this.onDismiss()

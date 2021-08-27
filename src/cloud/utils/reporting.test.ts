@@ -83,7 +83,7 @@ describe('cleaning tags before sending to app-metrics', () => {
 })
 
 describe('normalizeEventName', () => {
-  it('verify', () => {
+  it('normalizes names with spaces and dashes and dots and equals to be underscores', () => {
     const tests = [
       {input: 'To ken', normalized: 'to_ken'},
       {input: 'to.Ken', normalized: 'to_ken'},
@@ -101,5 +101,9 @@ describe('normalizeEventName', () => {
     tests.forEach(test => {
       expect(normalizeEventName(test.input)).toEqual(test.normalized)
     })
+  })
+
+  it('handles falsy values', () => {
+    expect(normalizeEventName(undefined)).toEqual('undefined_event')
   })
 })

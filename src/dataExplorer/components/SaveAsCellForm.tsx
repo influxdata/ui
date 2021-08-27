@@ -209,13 +209,13 @@ class SaveAsCellForm extends PureComponent<Props, State> {
       this.props.setActiveTimeMachine('de', initialStateHelper())
       event(
         `data_explorer.${normalizeEventName(
-          chartTypeName(view.properties.type)
+          chartTypeName(view?.properties?.type)
         )}.save.as_dashboard_cell.success`
       )
     } catch (error) {
       event(
         `data_explorer.${normalizeEventName(
-          chartTypeName(view.properties.type)
+          chartTypeName(view?.properties?.type)
         )}.save.as_dashboard_cell.failure`
       )
       console.error(error)

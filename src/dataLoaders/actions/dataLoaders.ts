@@ -422,7 +422,7 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
     dispatch(setTelegrafConfigID(telegrafConfigID))
     event(
       `telegraf.config.${normalizeEventName(telegrafConfigName)}.edit.success`,
-      {id: telegraf.id}
+      {id: telegraf?.id}
     )
     return
   }

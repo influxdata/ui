@@ -54,11 +54,13 @@ class CellComponent extends Component<Props, State> {
 
   public componentDidMount() {
     const {view} = this.props
-    event(
-      `dashboard.cell.view.${normalizeEventName(
-        chartTypeName(view.properties.type)
-      )}`
-    )
+    if (view) {
+      event(
+        `dashboard.cell.view.${normalizeEventName(
+          chartTypeName(view?.properties?.type)
+        )}`
+      )
+    }
   }
 
   private handleRefreshProcess = (): void => {

@@ -230,8 +230,8 @@ export const createVariable = (
     }
 
     event('variable.create.from_blank.success', {
-      id: resp.data.id,
-      name: variable.name,
+      id: resp?.data?.id,
+      name: variable?.name,
     })
 
     const createdVar = normalize<Variable, VariableEntities, string>(
@@ -242,7 +242,7 @@ export const createVariable = (
     dispatch(setVariable(resp.data.id, RemoteDataState.Done, createdVar))
     dispatch(notify(copy.createVariableSuccess(variable.name)))
   } catch (error) {
-    event('variable.create.from_blank.failure', {name: variable.name})
+    event('variable.create.from_blank.failure', {name: variable?.name})
     console.error(error)
     dispatch(notify(copy.createVariableFailed(error.message)))
   }
@@ -261,13 +261,13 @@ export const createVariableFromTemplate = (
       variableSchema
     )
     event('variable.create.from_template.success', {
-      id: resp.id,
-      name: resp.name,
+      id: resp?.id,
+      name: resp?.name,
     })
     dispatch(setVariable(resp.id, RemoteDataState.Done, createdVar))
     dispatch(notify(copy.createVariableSuccess(resp.name)))
   } catch (error) {
-    event('variable.create.from_template.failure', {template: template.id})
+    event('variable.create.from_template.failure', {template: template?.id})
     console.error(error)
     dispatch(notify(copy.createVariableFailed(error.message)))
   }
@@ -294,7 +294,7 @@ export const updateVariable = (id: string, props: Variable) => async (
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-    event('variable.edit.success', {id, name: resp.data.name})
+    event('variable.edit.success', {id, name: resp?.data?.name})
     const variable = normalize<Variable, VariableEntities, string>(
       resp.data,
       variableSchema
@@ -358,7 +358,7 @@ export const moveVariable = (originalIndex: number, newIndex: number) => async (
         } as GenVariable,
       })
       event('variable.sorted', {
-        id: byDashboardVariables[newIndex].id,
+        id: byDashboardVariables[newIndex]?.id,
         newIndex,
       })
     })

@@ -2,7 +2,6 @@ import React, {useState, FC} from 'react'
 
 import {
   AlignItems,
-  Appearance,
   ComponentColor,
   ComponentSize,
   FlexBox,

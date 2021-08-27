@@ -79,8 +79,7 @@ describe('Buckets', () => {
     setupData(cy)
   })
 
-  // TODO: Skipping this until we can sort out the differences between OSS and Cloud
-  it.skip('can sort by name and retention', () => {
+  it('can sort by name and retention', () => {
     cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
       const demoDataBucket = 'Website Monitoring Bucket'
       const tasksBucket = '_tasks'

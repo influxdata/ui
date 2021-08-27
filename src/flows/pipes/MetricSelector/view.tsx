@@ -24,6 +24,9 @@ const DataSource: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
 
   const updateBucket = (bucket: Bucket) => {
+    if (bucket?.id === data.bucket?.id) {
+      return
+    }
     event('Updated Bucket', {context: 'metric selector'})
     update({
       bucket,

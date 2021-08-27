@@ -431,9 +431,9 @@ export const QueryProvider: FC = ({children}) => {
     const query = simplify(text, override?.vars || {})
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
-    const orgID = override.org || _getOrg(parse(query))
+    const orgID = override?.org || _getOrg(parse(query))
 
-    const url = `${override.region ||
+    const url = `${override?.region ||
       window.location.origin}/api/v2/query?${new URLSearchParams({orgID})}`
 
     const headers = {
@@ -441,7 +441,7 @@ export const QueryProvider: FC = ({children}) => {
       'Accept-Encoding': 'gzip',
     }
 
-    if (override.token) {
+    if (override?.token) {
       headers['Authorization'] = `Token ${override.token}`
     }
 

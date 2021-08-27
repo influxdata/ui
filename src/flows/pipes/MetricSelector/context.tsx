@@ -228,16 +228,6 @@ export const SchemaProvider: FC = React.memo(({children}) => {
   const [schema, setSchema] = useState({})
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
 
-  useEffect(() => {
-    setSearchTerm('')
-    setLoading(RemoteDataState.NotStarted)
-    update({
-      field: '',
-      tags: {},
-      measurement: '',
-    })
-  }, [data?.bucket?.id]) // eslint-disable-line react-hooks/exhaustive-deps
-
   const range = formatTimeRangeArguments(flow?.range)
 
   useEffect(() => {

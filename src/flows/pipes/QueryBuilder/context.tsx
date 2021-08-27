@@ -116,6 +116,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
   )
 
   useEffect(() => {
+    if (data.tags.length) {
+      return
+    }
     const card = getDefaultCard()
     card.keys.selected = ['_measurement']
     update({tags: [card].map(toBuilderConfig)})

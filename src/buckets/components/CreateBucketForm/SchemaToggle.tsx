@@ -26,6 +26,7 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
     setSchemaType(newValue)
   }
 
+  // this is the documentation link for explicit schemas for buckets
   const link = 'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
   return (
     <FlexBox
@@ -54,7 +55,6 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
         color={ComponentColor.Primary}
-        appearance={Appearance.Outline}
       >
         <InputLabel
           htmlFor="implicit-bucket-schema-choice"
@@ -74,7 +74,6 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
         type={InputToggleType.Radio}
         size={ComponentSize.ExtraSmall}
         color={ComponentColor.Primary}
-        appearance={Appearance.Outline}
       >
         <InputLabel
           htmlFor="explicit-bucket-schema-choice"

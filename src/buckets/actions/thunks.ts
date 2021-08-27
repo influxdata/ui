@@ -110,6 +110,8 @@ export const createBucket = (bucket: OwnBucket) => async (
   getState: GetState
 ) => {
   try {
+    console.log('arghh!!!! 43a', bucket)
+
     const org = getOrg(getState())
 
     const resp = await api.postBucket({data: {...bucket, orgID: org.id}})
@@ -118,6 +120,7 @@ export const createBucket = (bucket: OwnBucket) => async (
       throw new Error(resp.data.message)
     }
 
+console.log('aghh! got data back', resp.data)
     const newBucket = normalize<Bucket, BucketEntities, string>(
       resp.data,
       bucketSchema

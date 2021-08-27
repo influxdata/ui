@@ -71,6 +71,10 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     dispatch({type: 'updateRetentionRules', payload: retentionRules})
   }
 
+  const handleChangeSchemaType = (schemaType: 'implicit' | 'explicit'): void => {
+    dispatch({type: 'updateSchema', payload: schemaType})
+  }
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
 
@@ -105,6 +109,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
       onChangeRuleType={handleChangeRuleType}
       onChangeRetentionRule={handleChangeRetentionRule}
       testID={testID}
+      onChangeSchemaType={handleChangeSchemaType}
     />
   )
 }

@@ -26,6 +26,7 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
+  onChangeSchemaType: (schemaType: 'implicit' | 'explicit') => void
   disableRenaming: boolean
   buttonText: string
   onClickRename?: () => void
@@ -41,14 +42,15 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   constructor(props) {
     super(props)
 
-    this.onChangeSchemaType = this.onChangeSchemaType.bind(this)
+    this.onChangeSchemaTypeInternal = this.onChangeSchemaTypeInternal.bind(this)
   }
 
   public state: State = {showAdvanced: false, schemaType: 'implicit'}
 
-  public onChangeSchemaType = function(newSchemaType) {
+  public onChangeSchemaTypeInternal = function(newSchemaType) {
     console.log('in on change schema type', newSchemaType)
     this.setState({schemaType: newSchemaType})
+    this.props.onChangeSchemaType(newSchemaType)
   }
 
   public render() {
@@ -110,7 +112,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                 <Accordion.AccordionBodyItem>
                   <div>
                     <SchemaToggle
-                      onChangeSchemaType={this.onChangeSchemaType}
+                      onChangeSchemaType={this.onChangeSchemaTypeInternal}
                     />
                   </div>
                 </Accordion.AccordionBodyItem>

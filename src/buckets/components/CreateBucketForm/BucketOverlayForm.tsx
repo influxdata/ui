@@ -4,6 +4,7 @@ import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 // Components
 import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
+import {SchemaToggle} from './SchemaToggle'
 
 // Constants
 import {isSystemBucket} from 'src/buckets/constants'
@@ -15,7 +16,8 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {RuleType} from 'src/buckets/reducers/createBucket'
-import {SchemaToggle} from './SchemaToggle'
+import {isFlagEnabled} from "src/shared/utils/featureFlag";
+import {CLOUD} from "src/shared/constants";
 
 interface Props {
   name: string
@@ -73,6 +75,24 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     const nameInputStatus = disableRenaming && ComponentStatus.Disabled
 
+
+    const makeAdvancedSection = () => {
+      if (isFlagEnabled('measurementSchema') && CLOUD) {
+        return <Accordion expanded={showAdvanced}>
+          <Accordion.AccordionHeader>
+            <span>Advanced Configuration (Optional)</span>
+          </Accordion.AccordionHeader>
+          <Accordion.AccordionBodyItem>
+            <div>
+              <SchemaToggle
+                  onChangeSchemaType={this.onChangeSchemaTypeInternal}
+              />
+            </div>
+          </Accordion.AccordionBodyItem>
+        </Accordion>
+      }
+    }
+
     return (
       <Form onSubmit={onSubmit} testID={testID}>
         <Grid>
@@ -105,18 +125,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                   onChangeRetentionRule={onChangeRetentionRule}
                 />
               </Form.Element>
-              <Accordion expanded={showAdvanced}>
-                <Accordion.AccordionHeader>
-                  <span>Advanced Configuration (Optional)</span>
-                </Accordion.AccordionHeader>
-                <Accordion.AccordionBodyItem>
-                  <div>
-                    <SchemaToggle
-                      onChangeSchemaType={this.onChangeSchemaTypeInternal}
-                    />
-                  </div>
-                </Accordion.AccordionBodyItem>
-              </Accordion>
+              {makeAdvancedSection()}
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>

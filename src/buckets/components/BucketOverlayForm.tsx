@@ -28,6 +28,7 @@ interface Props {
   disableRenaming: boolean
   buttonText: string
   onClickRename?: () => void
+  testID?: string
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
@@ -44,12 +45,13 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       onChangeRuleType,
       onChangeRetentionRule,
       onClickRename,
+      testID = 'bucket-form',
     } = this.props
 
     const nameInputStatus = disableRenaming && ComponentStatus.Disabled
 
     return (
-      <Form onSubmit={onSubmit} testID="bucket-form">
+      <Form onSubmit={onSubmit} testID={testID}>
         <Grid>
           <Grid.Row>
             <Grid.Column>

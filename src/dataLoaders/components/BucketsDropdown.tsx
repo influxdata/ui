@@ -16,13 +16,14 @@ interface Props {
   onSelectBucket: (bucket: Bucket) => void
   emptyOriginal?: boolean
   style?: {[key: string]: string}
+  testID?: string
 }
 
 class BucketsDropdown extends PureComponent<Props> {
   public render() {
     return (
       <Dropdown
-        testID="bucket-dropdown"
+        testID={this.props.testID ?? 'bucket-dropdown'}
         button={(active, onClick) => (
           <Dropdown.Button
             testID="bucket-dropdown--button"

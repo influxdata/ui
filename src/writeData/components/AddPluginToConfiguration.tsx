@@ -70,6 +70,7 @@ export const AddPluginToConfigurationCTA: FC<AddPluginToConfigurationCTAProps> =
                       )
                     }}
                     selected={false}
+                    testID="create-new-configuration-from-plugin--dropdown-item"
                   >
                     <span>Create a new configuration</span>
                   </Dropdown.Item>
@@ -84,6 +85,7 @@ export const AddPluginToConfigurationCTA: FC<AddPluginToConfigurationCTAProps> =
                 </Dropdown.Menu>
               )}
               style={{width: 'auto'}}
+              testID="add-plugin-to-configuration--dropdown"
             />
           </Grid.Column>
           <Grid.Column

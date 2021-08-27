@@ -53,6 +53,7 @@ const PluginCreateConfigurationAddBucketComponent: FC<Props> = props => {
         onSetSubstepIndex(currentStepIndex, 0)
         setBucketOverlayParams(nullParams)
       }}
+      testID="plugin-create-configuration-add-bucket--form"
     />
   )
 }

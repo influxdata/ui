@@ -1,12 +1,13 @@
 {
-  "orgs": "/orgs",
-  "dashboards": "/dashboards",
-  "explorer": "/data-explorer",
   "alerting": "/alerting",
-  "checks": "/checks",
-  "endpoints": "/endpoints",
-  "rules": "/rules",
   "buckets": "/load-data/buckets",
-  "telegrafs": "/load-data/telegrafs",
-  "flows": "/flows"
+  "checks": "/checks",
+  "dashboards": "/dashboards",
+  "endpoints": "/endpoints",
+  "explorer": "/data-explorer",
+  "flows": "/flows",
+  "orgs": "/orgs",
+  "rules": "/rules",
+  "sources": "/load-data/sources",
+  "telegrafs": "/load-data/telegrafs"
 }

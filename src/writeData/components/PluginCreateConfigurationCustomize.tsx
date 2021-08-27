@@ -75,7 +75,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
 
   return (
     <>
-      <Grid>
+      <Grid testID="plugin-create-configuration-customize">
         <Grid.Row className="plugin-create-configuration-name-row">
           <Grid.Column widthSM={Columns.Ten}>
             <Form.Element label="Agent Name">
@@ -88,6 +88,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
                 titleText="Agent Name"
                 size={ComponentSize.Medium}
                 autoFocus={true}
+                testID="plugin-create-configuration-customize-input--name"
               />
             </Form.Element>
           </Grid.Column>
@@ -118,6 +119,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
                 titleText="Description (Optional)"
                 size={ComponentSize.Medium}
                 autoFocus={true}
+                testID="plugin-create-configuration-customize-input--description"
               />
             </Form.Element>
           </Grid.Column>

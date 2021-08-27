@@ -77,7 +77,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
         return (
-          <Accordion expanded={showAdvanced} testID='schemaBucketToggle'>
+          <Accordion expanded={showAdvanced} testID="schemaBucketToggle">
             <Accordion.AccordionHeader>
               <span>Advanced Configuration (Optional)</span>
             </Accordion.AccordionHeader>

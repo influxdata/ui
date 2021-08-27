@@ -1,67 +1,71 @@
 import {Organization} from '../../../src/types'
 
-const setupData = (
-    cy: Cypress.Chainable,
-    enableMeasurementSchema = false
-) => {
+const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) => {
   cy.flush()
   return cy.signin().then(() => {
     cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs, buckets}) => {
-          cy.visit(`${orgs}/${id}${buckets}`)
-          //cy.getByTestID('tree-nav')
-          return cy.setFeatureFlags({measurementSchema: enableMeasurementSchema}).then(() => {
+      cy.fixture('routes').then(({orgs, buckets}) => {
+        cy.visit(`${orgs}/${id}${buckets}`)
+        //cy.getByTestID('tree-nav')
+        return cy
+          .setFeatureFlags({measurementSchema: enableMeasurementSchema})
+          .then(() => {
             return cy.getByTestID('tree-nav')
           })
-        })
+      })
     )
   })
 }
-  describe('Explicit Buckets', () => {
-    beforeEach(() => {
-      setupData(cy, true)
-    })
-
-    it('can create a bucket with an explicit schema', () => {
-      cy.getByTestID('Create Bucket').click()
-      cy.getByTestID('overlay--container').within(() => {
-        //cy.pause()
-        cy.getByInputName('name').type('explicit-bucket-test')
-//cy.pause()
-        cy.getByTestID('schemaBucketToggle').click()
-//cy.pause()
-        const explicitBtn = cy.getByTestID('explicit-bucket-schema-choice-ID')
-        //expect(explicitBtn).toBeVisible()
-            explicitBtn.should('be.visible')
-        explicitBtn.click()
-
-        cy.getByTestID('bucket-form-submit').click()
-
-
-
-
-        // cy.getByTestID('retention-intervals--button').click()
-        // cy.getByTestID('duration-selector--button').click()
-        // cy.getByTestID('duration-selector--7d')
-        //     .click()
-        //     .then(() => {
-        //       cy.getByTestID('bucket-form-submit').click()
-        //     })
-      })
-    })
-
-
+describe('Explicit Buckets', () => {
+  beforeEach(() => {
+    setupData(cy, true)
   })
 
+  it('can create a bucket with an explicit schema', () => {
+    cy.getByTestID('Create Bucket').click()
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByInputName('name').type('explicit-bucket-test')
+
+      cy.getByTestID('schemaBucketToggle').click()
+      const explicitBtn = cy.getByTestID('explicit-bucket-schema-choice-ID')
+      explicitBtn.should('be.visible')
+      explicitBtn.click()
+
+      cy.getByTestID('bucket-form-submit').click()
+      //cy.pause()
+
+      //   .then(() => {
+      // cy.get('[data-testid*="bucket-card"]').each((val, index) => {
+      //   const testID = val.attr('data-testid')
+      //       cy.pause()
+      //       //expect(testID).to.include(retentionDesc[index])
+      //     })
+      //   })
+    })
+
+    cy.getByTestID('bucket-card explicit-bucket-test').within($card => {
+      expect($card.length).to.equal(1)
+      cy.getByTestID('bucket-schemaType').contains('Schema Type: Explicit')
+    })
+
+    // cy.getByTestID('resource-list').then($body => {
+    //   const explicitCard = $body.find(`[data-testid="bucket-card explicit-bucket-test"]`)
+    //
+    //   expect(explicitCard.length).to.equal(1)
+    //
+    //   explicitCard.within(() => {
+    //
+    //     cy.getByTestID('bucket-schemaType').contains('Schema Type: Explicit')
+    //   })
+    //
+    // })
+  })
+})
 
 describe('Buckets', () => {
-
   beforeEach(() => {
     setupData(cy)
   })
-
-
-
 
   // TODO: Skipping this until we can sort out the differences between OSS and Cloud
   it.skip('can sort by name and retention', () => {

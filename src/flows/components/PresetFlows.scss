@@ -1,0 +1,88 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+h3 {
+  margin: 0px 0px 12px;
+  color: white;
+}
+
+h4 {
+  margin: 12px 0px 0px;
+  text-align: left;
+}
+
+.flows-index--presetContainer {
+  border: 1px solid $g5-pepper;
+  border-radius: 7px;
+  padding: 30px;
+  margin: 0px 0px 12px;
+}
+.flows-index--presetList {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 5%;
+}
+
+.flows-index--presetCard {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  &:hover {
+    .flows-index--presetHeader {
+      color: white;
+    }
+  }
+}
+
+.flows-index--presetButton {
+  height: 100px;
+  border: 1px solid $g5-pepper;
+  &:after {
+    background: inherit;
+  }
+}
+
+.flows-index--presetCard:first-child .flows-index--presetButton {
+  &:after {
+    @include gradient-diag-up($c-pool, $c-laser);
+  }
+  .cf-button-icon {
+    font-size: 23px;
+  }
+}
+
+.flows-index--presetCard:nth-child(2) .flows-index--presetButton {
+  background-image: url('../../../assets/images/Alert.png');
+  background-size: contain;
+}
+
+.flows-index--presetCard:nth-child(3) .flows-index--presetButton {
+  background-image: url('../../../assets/images/Task.png');
+  background-size: contain;
+}
+
+.flows-index--presetCard:nth-child(4) .flows-index--presetButton {
+  background-image: url('../../../assets/images/Flux.png');
+  background-size: contain;
+}
+
+.flows-index--presetCard:nth-child(5) .flows-index--presetButton {
+  background-image: url('../../../assets/images/BlankFlow.png');
+  background-size: contain;
+}
+
+@media screen and (max-width: $cf-grid--breakpoint-md) {
+  .flows-index--presetList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .flows-index--presetcontainer {
+    padding: 5px 40px 25px;
+  }
+
+  .flows-index--presetCard:nth-child(5) {
+    padding-bottom: 16px;
+  }
+}

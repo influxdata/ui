@@ -27,10 +27,11 @@ import {getOverlayParams} from 'src/overlays/selectors'
 
 interface CreateBucketFormProps {
   onClose: () => void
+  testID?: string
 }
 
 export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
-  const {onClose} = props
+  const {onClose, testID = 'create-bucket-form'} = props
   const org = useSelector(getOrg)
   const isRetentionLimitEnforced = useSelector((state: AppState): boolean => {
     if (CLOUD) {
@@ -103,6 +104,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
       retentionSeconds={retentionSeconds}
       onChangeRuleType={handleChangeRuleType}
       onChangeRetentionRule={handleChangeRetentionRule}
+      testID={testID}
     />
   )
 }

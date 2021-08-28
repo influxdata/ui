@@ -1,4 +1,4 @@
-import {Organization, Bucket} from '../../../src/types'
+import {Organization} from '../../../src/types'
 
 // Chains of actions that involve hovering like below
 // cy.getByTestID('task-card')
@@ -12,7 +12,7 @@ describe('Tasks', () => {
     cy.flush()
 
     cy.signin().then(() => {
-      cy.get('@org').then(({id: orgID}: Organization) =>
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) =>
         cy
           .createToken(orgID, 'test token', 'active', [
             {action: 'write', resource: {type: 'views', orgID}},
@@ -26,7 +26,7 @@ describe('Tasks', () => {
     })
 
     cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.visit(`${orgs}/${id}/tasks`)
         cy.getByTestID('tree-nav')
       })
@@ -35,7 +35,7 @@ describe('Tasks', () => {
 
   it('can create a task', () => {
     const taskName = 'Task'
-    createFirstTask(taskName, ({name}) => {
+    cy.createTaskFromEmpty(taskName, ({name}) => {
       return `import "influxdata/influxdb/v1{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
 from(bucket: "${name}"{rightarrow}
@@ -49,18 +49,11 @@ from(bucket: "${name}"{rightarrow}
     cy.getByTestID('task-card')
       .should('have.length', 1)
       .and('contain', taskName)
-
-    // TODO: extend to create a template from JSON
-    cy.getByTestID('add-resource-dropdown--button').click()
-    cy.getByTestID('add-resource-dropdown--import').click()
-    cy.getByTestID('task-import--overlay').within(() => {
-      cy.get('.cf-overlay--dismiss').click()
-    })
   })
 
   it('can create a task using http.post', () => {
     const taskName = 'Task'
-    createFirstTask(taskName, () => {
+    cy.createTaskFromEmpty(taskName, () => {
       return `import "http"
 http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
@@ -72,37 +65,10 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       .and('contain', taskName)
   })
 
-  it('keeps user input in text area when attempting to import invalid JSON', () => {
-    cy.getByTestID('page-control-bar').within(() => {
-      cy.getByTestID('add-resource-dropdown--button').click()
-    })
-
-    cy.getByTestID('add-resource-dropdown--import').click()
-    cy.contains('Paste').click()
-    cy.getByTestID('import-overlay--textarea')
-      .click()
-      .type('this is invalid JSON')
-    cy.get('button[title*="Import JSON"]').click()
-    cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
-      expect($s).to.contain('this is invalid JSON')
-    )
-    cy.getByTestID('import-overlay--textarea').type(
-      '{backspace}{backspace}{backspace}{backspace}{backspace}'
-    )
-    cy.get('button[title*="Import JSON"]').click()
-    cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
-      expect($s).to.contain('this is invalid')
-    )
-  })
-
   it('can create a cron task', () => {
-    cy.getByTestID('empty-tasks-list').within(() => {
-      cy.getByTestID('add-resource-dropdown--button').click()
-    })
-
-    cy.getByTestID('add-resource-dropdown--new').click()
+    cy.getByTestID('create-task--button')
+      .first()
+      .click()
 
     cy.getByTestID('flux-editor').within(() => {
       cy.get('textarea.inputarea')
@@ -144,13 +110,9 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
   })
 
   it('can create a task with an option parameter', () => {
-    cy.getByTestID('empty-tasks-list').within(() => {
-      cy.getByTestID('add-resource-dropdown--button')
-        .click()
-        .then(() => {
-          cy.getByTestID('add-resource-dropdown--new').click()
-        })
-    })
+    cy.getByTestID('create-task--button')
+      .first()
+      .click()
 
     cy.focused()
 
@@ -183,7 +145,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
   describe('When tasks already exist', () => {
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id)
         })
@@ -420,7 +382,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const taskName = 'beepBoop'
 
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id, taskName).then(({body}) => {
             cy.createAndAddLabel('tasks', id, body.id, newLabelName)
@@ -433,7 +395,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       })
 
       cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/tasks`)
           cy.getByTestID('tree-nav')
         })
@@ -461,7 +423,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const interval = '12h'
     const offset = '30m'
     beforeEach(() => {
-      createFirstTask(
+      cy.createTaskFromEmpty(
         taskName,
         ({name}) => {
           return `import "influxdata/influxdb/v1{rightarrow}
@@ -542,7 +504,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const firstIndex = 0
     const secondIndex = 1
     beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
           cy.createTask(token, id, firstTask)
           cy.createTask(token, id, secondTask)
@@ -550,7 +512,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       })
 
       cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/tasks`)
           cy.getByTestID('tree-nav')
         })
@@ -694,11 +656,9 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     ]
 
     tasks.forEach(task => {
-      cy.getByTestID('add-resource-dropdown')
-        .children()
+      cy.getByTestID('create-task--button')
         .first()
         .click()
-      cy.getByTestID('add-resource-dropdown--new').click()
 
       // Fill Task Form
       // focused() waits for monoco editor to get input focus
@@ -778,11 +738,9 @@ const createTask = (
   every = '3h',
   offset = '20m'
 ) => {
-  cy.getByTestID('add-resource-dropdown--button')
-    .children()
+  cy.getByTestID('create-task--button')
     .first()
     .click()
-  cy.getByTestID('add-resource-dropdown--new').click()
 
   cy.getByTestID('flux-editor').within(() => {
     cy.get('textarea.inputarea')
@@ -796,30 +754,4 @@ const createTask = (
   cy.getByTestIDAndSetInputValue('task-form-schedule-input', every)
   cy.getByTestID('task-save-btn').click()
   cy.getByTestID('notification-success--dismiss').click()
-}
-
-export function createFirstTask(
-  name: string,
-  flux: (bucket: Bucket) => string,
-  interval: string = '24h',
-  offset: string = '20m'
-) {
-  cy.getByTestID('empty-tasks-list').within(() => {
-    cy.getByTestID('add-resource-dropdown--button').click()
-  })
-
-  cy.getByTestID('add-resource-dropdown--new').click()
-
-  cy.get<Bucket>('@bucket').then(bucket => {
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
-        .click({force: true})
-        .focused()
-        .type(flux(bucket), {force: true, delay: 2})
-    })
-  })
-
-  cy.getByInputName('name').type(name)
-  cy.getByTestID('task-form-schedule-input').type(interval)
-  cy.getByTestID('task-form-offset-input').type(offset)
 }

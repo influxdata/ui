@@ -8,7 +8,7 @@ import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
 import {getStatus} from 'src/resources/selectors'
 import {fromFlux} from '@influxdata/giraffe'
-import {FluxResult} from 'src/types/flows'
+import {FluxResult, QueryScope, VariableMap} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
@@ -29,7 +29,6 @@ import {
   AppState,
   ResourceType,
   RemoteDataState,
-  Variable,
   OptionStatement,
   VariableAssignment,
   ObjectExpression,
@@ -42,19 +41,15 @@ interface CancelMap {
   [key: string]: () => void
 }
 
-interface VariableMap {
-  [key: string]: Variable
-}
-
 export interface QueryContextType {
-  basic: (text: string, vars?: VariableMap) => any
-  query: (text: string, vars?: VariableMap) => Promise<FluxResult>
+  basic: (text: string, override?: QueryScope) => any
+  query: (text: string, override?: QueryScope) => Promise<FluxResult>
   cancel: (id?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
-  basic: (_: string, __?: VariableMap) => {},
-  query: (_: string, __?: VariableMap) => Promise.resolve({} as FluxResult),
+  basic: (_: string, __?: QueryScope) => {},
+  query: (_: string, __?: QueryScope) => Promise.resolve({} as FluxResult),
   cancel: (_?: string) => {},
 }
 
@@ -433,8 +428,8 @@ export const QueryProvider: FC = ({children}) => {
     )
   }
 
-  const basic = (text: string, vars: VariableMap = {}) => {
-    const query = simplify(text, vars)
+  const basic = (text: string, override?: QueryScope) => {
+    const query = simplify(text, override?.vars || {})
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
     const orgID = _getOrg(parse(query))
@@ -460,22 +455,22 @@ export const QueryProvider: FC = ({children}) => {
       body: JSON.stringify(body),
       signal: controller.signal,
     })
-      .then(response => {
-        if (pending[id]) {
-          delete pending[id]
-          setPending({...pending})
-        }
-        return response
-      })
       .then(
         (response: Response): Promise<RunQueryResult> => {
           if (response.status === 200) {
-            return response.text().then(csv => ({
-              type: 'SUCCESS',
-              csv,
-              bytesRead: csv.length,
-              didTruncate: false,
-            }))
+            return response.text().then(csv => {
+              if (pending[id]) {
+                delete pending[id]
+                setPending({...pending})
+              }
+
+              return {
+                type: 'SUCCESS',
+                csv,
+                bytesRead: csv.length,
+                didTruncate: false,
+              }
+            })
           }
 
           if (response.status === RATE_LIMIT_ERROR_STATUS) {
@@ -547,8 +542,8 @@ export const QueryProvider: FC = ({children}) => {
     setPending(pending)
   }
 
-  const query = (text: string, vars: VariableMap = {}): Promise<FluxResult> => {
-    const result = basic(text, vars)
+  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
+    const result = basic(text, override)
 
     return result.promise
       .then(raw => {

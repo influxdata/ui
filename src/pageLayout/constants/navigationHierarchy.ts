@@ -166,15 +166,6 @@ export const generateNavItems = (): NavItem[] => {
       ],
     },
     {
-      id: 'functions',
-      enabled: () => isFlagEnabled('managed-functions'),
-      testID: 'nav-item-functions',
-      icon: IconFont.Function,
-      label: 'Function',
-      link: `${orgPrefix}/functions/`,
-      activeKeywords: ['functions'],
-    },
-    {
       id: 'operator',
       enabled: () =>
         CLOUD &&

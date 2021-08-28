@@ -4,7 +4,6 @@ Point point = Point
   .addField("used_percent", 23.43234543)
   .time(Instant.now(), WritePrecision.NS);
 
-try (WriteApi writeApi = client.getWriteApi()) {
-  writeApi.writePoint(bucket, org, point);
-}
+WriteApiBlocking writeApi = client.getWriteApiBlocking();
+writeApi.writePoint(bucket, org, point);
 

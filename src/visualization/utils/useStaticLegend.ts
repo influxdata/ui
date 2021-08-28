@@ -10,7 +10,6 @@ import {StaticLegend as StaticLegendConfig} from '@influxdata/giraffe'
 import {StaticLegend as StaticLegendAPI} from 'src/types'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 
 // Constants
@@ -108,7 +107,6 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
     } = staticLegend
 
     if (
-      isFlagEnabled('staticLegend') &&
       isViewingVisOptions &&
       !show &&
       heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET
@@ -145,7 +143,7 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       ...config,
       colorizeRows,
       heightRatio,
-      hide: isFlagEnabled('staticLegend') ? convertShowToHide(show) : true,
+      hide: convertShowToHide(show),
       opacity,
       orientationThreshold,
       ...STATIC_LEGEND_STYLING,

@@ -33,6 +33,7 @@ const TelegrafPluginSection = () => {
         element={HeadingElement.H2}
         weight={FontWeight.Regular}
         style={{marginTop: '24px', marginBottom: '4px'}}
+        testID="sources-telegraf-plugins"
       >
         Telegraf Plugins
       </Heading>

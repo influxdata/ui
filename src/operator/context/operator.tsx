@@ -1,15 +1,19 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {useLocation} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
 import {getOperatorAccounts, getOperatorOrgs} from 'src/client/unityRoutes'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
+import {getQuartzMe} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {OperatorAccount, OperatorOrg, RemoteDataState} from 'src/types'
+
+// Constants
 import {OperatorRoutes} from 'src/operator/constants'
 
 export type Props = {
@@ -25,6 +29,7 @@ export interface OperatorContextType {
   searchTerm: string
   setSearchTerm: (searchTerm?: string) => void
   status: RemoteDataState
+  hasWritePermissions: boolean
 }
 
 export const DEFAULT_CONTEXT: OperatorContextType = {
@@ -36,6 +41,7 @@ export const DEFAULT_CONTEXT: OperatorContextType = {
   searchTerm: '',
   setSearchTerm: () => {},
   status: RemoteDataState.NotStarted,
+  hasWritePermissions: false,
 }
 
 export const OperatorContext = React.createContext<OperatorContextType>(
@@ -48,6 +54,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
   const dispatch = useDispatch()
+  const quartzMe = useSelector(getQuartzMe)
 
   const [organizations, setOrganizations] = useState<OperatorOrg[]>([])
 
@@ -121,6 +128,10 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     status = RemoteDataState.Loading
   }
 
+  const hasWritePermissions =
+    !isFlagEnabled('operatorRole') ||
+    (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
+
   return (
     <OperatorContext.Provider
       value={{
@@ -132,6 +143,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
         searchTerm,
         setSearchTerm,
         status,
+        hasWritePermissions,
       }}
     >
       {children}

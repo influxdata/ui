@@ -11,14 +11,14 @@ import {bucketSchema, arrayOfBuckets} from 'src/schemas'
 // Types
 import {
   AppState,
-  RemoteDataState,
-  GetState,
-  GenBucket,
   Bucket,
   BucketEntities,
+  GenBucket,
+  GetState,
   Label,
-  ResourceType,
   OwnBucket,
+  RemoteDataState,
+  ResourceType,
 } from 'src/types'
 
 // Utils
@@ -54,6 +54,13 @@ import {
 import {BUCKET_LIMIT} from 'src/resources/constants'
 
 type Action = BucketAction | NotifyAction
+
+let getBucketsSchemaMeasurements = null
+
+if (CLOUD) {
+  getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
+    .getBucketsSchemaMeasurements
+}
 
 // todo: probably isn't thunk ? (should be moved to utils or something like that)
 export const fetchAllBuckets = async (orgID: string) => {
@@ -153,6 +160,25 @@ export const createBucketAndUpdate = (
     console.error(error)
     const message = getErrorMessage(error)
     dispatch(notify(bucketCreateFailed(message)))
+  }
+}
+
+// should only be called if in a cloud instance!  not available for OSS!
+// everything that calls this should use the if (CLOUD) as a guard
+// this is only valid for buckets with an explicit schema type. (implicit is the default)
+export const getBucketSchema = (bucketID: string) => async () => {
+  try {
+    const resp = await getBucketsSchemaMeasurements({
+      bucketID,
+    })
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+    return resp.data
+  } catch (error) {
+    console.error('error while retrieving schemas', error)
+    return null
   }
 }
 

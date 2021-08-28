@@ -19,14 +19,7 @@ const CheckActivityTableField: FC<Props> = ({row: {checkName, checkID}}) => {
   const checkIDs = useContext(CheckIDsContext)
 
   if (!checkIDs[checkID]) {
-    return (
-      <div
-        className="check-name-field"
-        title="The check that created this no longer exists"
-      >
-        {checkName}
-      </div>
-    )
+    return <div className="check-name-field">{checkName}</div>
   }
 
   const href = formatOrgRoute(

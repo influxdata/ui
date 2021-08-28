@@ -38,7 +38,7 @@ const FluxMonacoEditor = lazy(() =>
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
   const [showFn, setShowFn] = useState(true)
-  const {show, showSub} = useContext(SidebarContext)
+  const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
@@ -124,8 +124,12 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [setShowFn, showFn])
 
   const launcher = () => {
-    show(id)
-    showSub(<Functions onSelect={inject} />)
+    if (showId === id) {
+      hideSub()
+    } else {
+      show(id)
+      showSub(<Functions onSelect={inject} />)
+    }
   }
 
   const controls = isFlagEnabled('flowSidebar') ? (
@@ -174,7 +178,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         )}
       </Context>
     )
-  }, [editorInstance, showFn])
+  }, [editorInstance, showFn, showId])
 }
 
 export default Query

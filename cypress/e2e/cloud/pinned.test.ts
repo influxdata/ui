@@ -1,5 +1,4 @@
 import {Organization} from '../../../src/types'
-import {createFirstTask} from '../shared/tasks.test'
 
 describe('Pinned Items', () => {
   let orgID: string
@@ -72,11 +71,12 @@ describe('Pinned Items', () => {
           .first()
           .click()
 
+        cy.intercept('PUT', '**/pinned/*').as('updatePinned')
         cy.get('.cf-input-field')
           .type('Bucks In Six')
           .type('{enter}')
       })
-
+      cy.wait('@updatePinned')
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -144,14 +144,14 @@ describe('Pinned Items', () => {
             .then(({body}) => {
               cy.wrap(body.token).as('token')
               cy.getByTestID('tree-nav')
-              cy.getByTestID('nav-item-tasks').should('be.visible')
-              cy.getByTestID('nav-item-tasks').click()
+              cy.visit(`/orgs/${orgID}/tasks`)
+              cy.getByTestID('tree-nav')
             })
         )
       })
 
       taskName = 'Task'
-      createFirstTask(taskName, ({name}) => {
+      cy.createTaskFromEmpty(taskName, ({name}) => {
         return `import "influxdata/influxdb/v1{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
 from(bucket: "${name}"{rightarrow}
@@ -189,11 +189,12 @@ from(bucket: "${name}"{rightarrow}
           .first()
           .click()
 
+        cy.intercept('PUT', '**/pinned/*').as('updatePinned')
         cy.get('.cf-input-field')
           .type('Bucks In Six')
           .type('{enter}')
       })
-
+      cy.wait('@updatePinned')
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -283,12 +284,14 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--name-button')
         .first()
         .click()
+      cy.intercept('PUT', '**/pinned/*').as('updatePinned')
 
       cy.get('.cf-input-field')
         .last()
         .focus()
         .type('Bucks In Six')
         .type('{enter}')
+      cy.wait('@updatePinned')
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {

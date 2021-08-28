@@ -1,0 +1,46 @@
+.flows-index--control-bar {
+  .cf-page-control-bar--fixed {
+    padding: 0px;
+  }
+  .cf-dropdown-menu {
+    position: fixed;
+    max-width: 210px;
+  }
+}
+
+.buttonMode {
+  animation: fadeIn 0.5s;
+}
+
+.flows-index--presetButtons {
+  animation: fadeIn 0.5s;
+  display: block;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.withButtonHeader {
+  flex: 1;
+  height: auto;
+  .cf-page-header--fixed {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.flows-preset--buttonmode {
+  width: 148px;
+}
+
+.buttonModeList {
+  grid-gap: 0;
+  width: 50%;
+  margin-bottom: 14px;
+}

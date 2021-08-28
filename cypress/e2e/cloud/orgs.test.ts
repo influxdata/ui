@@ -10,7 +10,6 @@ describe('Orgs', () => {
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => cy.deleteOrg(id))
       })
-
       cy.visit('/')
     })
 

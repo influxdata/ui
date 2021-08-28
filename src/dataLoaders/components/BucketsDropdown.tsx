@@ -14,14 +14,16 @@ interface Props {
   selectedBucketID: string
   buckets: Bucket[]
   onSelectBucket: (bucket: Bucket) => void
+  emptyOriginal?: boolean
   style?: {[key: string]: string}
+  testID?: string
 }
 
 class BucketsDropdown extends PureComponent<Props> {
   public render() {
     return (
       <Dropdown
-        testID="bucket-dropdown"
+        testID={this.props.testID ?? 'bucket-dropdown'}
         button={(active, onClick) => (
           <Dropdown.Button
             testID="bucket-dropdown--button"
@@ -43,10 +45,12 @@ class BucketsDropdown extends PureComponent<Props> {
   }
 
   private get selectedBucketName(): string {
-    const {selectedBucketID, buckets} = this.props
+    const {selectedBucketID, buckets, emptyOriginal} = this.props
 
     if (this.isBucketsEmpty) {
       return 'No buckets found'
+    } else if (emptyOriginal) {
+      return 'Choose a bucket'
     }
 
     return buckets.find(bucket => bucket.id === selectedBucketID).name

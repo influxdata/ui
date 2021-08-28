@@ -39,7 +39,6 @@ interface Props {
   onRunTask: any
   onUpdate: (name: string, taskID: string) => void
   filterComponent?: JSX.Element
-  onImportTask: () => void
   sortKey: TaskSortKey
   sortDirection: Sort
   sortType: SortTypes
@@ -87,7 +86,6 @@ export default class TasksList extends PureComponent<Props, State> {
                 searchTerm={searchTerm}
                 onCreate={this.onCreate}
                 totalCount={totalCount}
-                onImportTask={this.onImport}
               />
             }
           >
@@ -101,11 +99,6 @@ export default class TasksList extends PureComponent<Props, State> {
   private onCreate = () => {
     event('Task Created From Dropdown', {source: 'list'})
     this.props.onCreate()
-  }
-
-  private onImport = () => {
-    event('Task Imported From Dropdown', {source: 'list'})
-    this.props.onImportTask()
   }
 
   private get rows(): JSX.Element[] {

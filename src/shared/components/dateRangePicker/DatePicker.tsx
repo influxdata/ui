@@ -1,8 +1,8 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
 import ReactDatePicker from 'react-datepicker'
-import moment from 'moment'
 import {connect} from 'react-redux'
+import {DateTime} from 'luxon'
 
 // Components
 import {Input, Grid, Form} from '@influxdata/clockface'
@@ -19,7 +19,15 @@ import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {getTimeZone} from 'src/dashboards/selectors'
 
 // Constants
-import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
+import {
+  DEFAULT_TIME_FORMAT,
+  STRICT_ISO8061_TIME_FORMAT,
+} from 'src/utils/datetime/constants'
+import {
+  getLuxonFormatString,
+  isValidStrictly,
+} from 'src/utils/datetime/validator'
+import {isISODate} from 'src/shared/utils/dateTimeUtils'
 
 interface Props {
   label: string
@@ -36,28 +44,31 @@ interface State {
   inputFormat: string
 }
 
-const isValidRTC3339 = (d: string): boolean => {
+const isValidDatepickerFormat = (d: string): boolean => {
   return (
-    moment(d, 'YYYY-MM-DD HH:mm', true).isValid() ||
-    moment(d, 'YYYY-MM-DD HH:mm:ss', true).isValid() ||
-    moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid() ||
-    moment(d, 'YYYY-MM-DD', true).isValid() ||
-    moment(d).toISOString() === d
+    isValidStrictly(d, 'YYYY-MM-DD HH:mm') ||
+    isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss') ||
+    isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss.sss') ||
+    isValidStrictly(d, 'YYYY-MM-DD') ||
+    isISODate(d)
   )
 }
 
 const getFormat = (d: string): string => {
-  if (moment(d, 'YYYY-MM-DD', true).isValid()) {
+  if (isValidStrictly(d, 'YYYY-MM-DD')) {
     return 'YYYY-MM-DD'
   }
-  if (moment(d, 'YYYY-MM-DD HH:mm', true).isValid()) {
+  if (isValidStrictly(d, 'YYYY-MM-DD HH:mm')) {
     return 'YYYY-MM-DD HH:mm'
   }
-  if (moment(d, 'YYYY-MM-DD HH:mm:ss', true).isValid()) {
+  if (isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss')) {
     return 'YYYY-MM-DD HH:mm:ss'
   }
-  if (moment(d, 'YYYY-MM-DD HH:mm:ss.SSS', true).isValid()) {
+  if (isValidStrictly(d, 'YYYY-MM-DD HH:mm:ss.sss')) {
     return 'YYYY-MM-DD HH:mm:ss.sss'
+  }
+  if (isISODate(d)) {
+    return STRICT_ISO8061_TIME_FORMAT
   }
   return null
 }
@@ -67,6 +78,12 @@ class DatePicker extends PureComponent<Props, State> {
   state = {
     inputValue: null,
     inputFormat: null,
+  }
+
+  public componentDidUpdate() {
+    if (this.isInputValueInvalid) {
+      this.props.onInvalidInput()
+    }
   }
 
   public render() {
@@ -126,9 +143,12 @@ class DatePicker extends PureComponent<Props, State> {
     const {inputValue, inputFormat} = this.state
 
     if (this.isInputValueInvalid) {
-      const {onInvalidInput} = this.props
-      onInvalidInput()
       return inputValue
+    }
+
+    // just return the ISO format string as is, no need to use our date-time Formatter
+    if (isISODate(dateTime) && inputFormat === STRICT_ISO8061_TIME_FORMAT) {
+      return dateTime
     }
 
     if (inputFormat) {
@@ -146,7 +166,7 @@ class DatePicker extends PureComponent<Props, State> {
       return false
     }
 
-    return !isValidRTC3339(inputValue)
+    return !isValidDatepickerFormat(inputValue)
   }
 
   private get inputErrorMessage(): string | undefined {
@@ -179,12 +199,13 @@ class DatePicker extends PureComponent<Props, State> {
   }
 
   private overrideInputState = (): void => {
-    const {dateTime} = this.props
+    const {dateTime, timeZone} = this.props
     const {inputFormat} = this.state
 
-    let value = moment(dateTime).toISOString()
+    let value = new Date(dateTime).toISOString()
     if (inputFormat) {
-      value = moment(dateTime).format(inputFormat)
+      const formatter = createDateTimeFormatter(inputFormat, timeZone)
+      value = formatter.format(dateTime)
     }
 
     this.setState({inputValue: value, inputFormat: getFormat(value)})
@@ -209,10 +230,17 @@ class DatePicker extends PureComponent<Props, State> {
     const {onSelectDate, timeZone} = this.props
     const value = e.target.value
 
-    if (isValidRTC3339(value)) {
-      const inputDate = new Date(value)
+    if (isValidDatepickerFormat(value)) {
+      let inputDate
+      if (isISODate(value)) {
+        inputDate = new Date(DateTime.fromISO(value))
+      } else {
+        inputDate = new Date(
+          DateTime.fromFormat(value, getLuxonFormatString(getFormat(value)))
+        )
+      }
 
-      if (timeZone === 'UTC') {
+      if (timeZone === 'UTC' && !isISODate(value)) {
         // (sahas): the react-datepicker forces the timezone to be the Local timezone.
         // so when our app in in UTC mode, to make the datepicker respect that timezone,
         // we have to manually manipulate the Local time and add the offset so that it displays the correct UTC time in the picker
@@ -222,7 +250,7 @@ class DatePicker extends PureComponent<Props, State> {
         )
       }
 
-      onSelectDate(new Date(inputDate).toISOString())
+      onSelectDate(inputDate.toISOString())
       this.setState({inputValue: value, inputFormat: getFormat(value)})
       return
     }

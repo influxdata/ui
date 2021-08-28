@@ -35,6 +35,7 @@ import {findDependentVariables} from 'src/variables/utils/exportVariables'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {currentContext} from 'src/shared/selectors/currentContext'
+import {event} from 'src/cloud/utils/reporting'
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
@@ -228,6 +229,11 @@ export const createVariable = (
       throw new Error(resp.data.message)
     }
 
+    event('variable.create.from_blank.success', {
+      id: resp?.data?.id,
+      name: variable?.name,
+    })
+
     const createdVar = normalize<Variable, VariableEntities, string>(
       resp.data,
       variableSchema
@@ -236,6 +242,7 @@ export const createVariable = (
     dispatch(setVariable(resp.data.id, RemoteDataState.Done, createdVar))
     dispatch(notify(copy.createVariableSuccess(variable.name)))
   } catch (error) {
+    event('variable.create.from_blank.failure', {name: variable?.name})
     console.error(error)
     dispatch(notify(copy.createVariableFailed(error.message)))
   }
@@ -253,10 +260,14 @@ export const createVariableFromTemplate = (
       resp,
       variableSchema
     )
-
+    event('variable.create.from_template.success', {
+      id: resp?.id,
+      name: resp?.name,
+    })
     dispatch(setVariable(resp.id, RemoteDataState.Done, createdVar))
     dispatch(notify(copy.createVariableSuccess(resp.name)))
   } catch (error) {
+    event('variable.create.from_template.failure', {template: template?.id})
     console.error(error)
     dispatch(notify(copy.createVariableFailed(error.message)))
   }
@@ -283,7 +294,7 @@ export const updateVariable = (id: string, props: Variable) => async (
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-
+    event('variable.edit.success', {id, name: resp?.data?.name})
     const variable = normalize<Variable, VariableEntities, string>(
       resp.data,
       variableSchema
@@ -292,6 +303,7 @@ export const updateVariable = (id: string, props: Variable) => async (
     dispatch(setVariable(id, RemoteDataState.Done, variable))
     dispatch(notify(copy.updateVariableSuccess(resp.data.name)))
   } catch (error) {
+    event('variable.edit.failure', {id})
     console.error(error)
     dispatch(setVariable(id, RemoteDataState.Error))
     dispatch(notify(copy.updateVariableFailed(error.message)))
@@ -307,9 +319,11 @@ export const deleteVariable = (id: string) => async (
     if (resp.status !== 204) {
       throw new Error(resp.data.message)
     }
+    event('variable.delete.success', {id})
     dispatch(removeVariable(id))
     dispatch(notify(copy.deleteVariableSuccess()))
   } catch (error) {
+    event('variable.delete.failure', {id})
     console.error(error)
     dispatch(setVariable(id, RemoteDataState.Done))
     dispatch(notify(copy.deleteVariableFailed(error.message)))
@@ -342,6 +356,10 @@ export const moveVariable = (originalIndex: number, newIndex: number) => async (
           ...(byDashboardVariables[newIndex] as GenVariable),
           sort_order: originalIndex,
         } as GenVariable,
+      })
+      event('variable.sorted', {
+        id: byDashboardVariables[newIndex]?.id,
+        newIndex,
       })
     })
     .catch(async err => {

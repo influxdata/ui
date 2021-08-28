@@ -28,6 +28,7 @@ interface Props {
   disableRenaming: boolean
   buttonText: string
   onClickRename?: () => void
+  testID: string
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {

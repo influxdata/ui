@@ -35,13 +35,13 @@ export default class BucketContextMenu extends PureComponent<Props> {
         <ConfirmationButton
           color={ComponentColor.Tertiary}
           icon={IconFont.Trash_New}
-          confirmationLabel={'Yes, Delete this bucket'}
+          confirmationLabel="Yes, Delete this bucket"
           onConfirm={() => {
             onDeleteBucket(bucket)
           }}
-          confirmationButtonText={'Confirm'}
+          confirmationButtonText="Confirm"
           testID={`context-delete-menu ${bucket.name}`}
-        ></ConfirmationButton>
+        />
       )
     } else {
       return null

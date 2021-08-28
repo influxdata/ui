@@ -71,14 +71,18 @@ interface Props {
   text: string
   label?: string
   testID?: string
+  onCopy?: () => void
   type?: string
 }
 
-const CodeSnippet: FC<Props> = ({text, label, testID, type}) => {
+const CodeSnippet: FC<Props> = ({text, label, testID, type, onCopy}) => {
   const {transform} = useContext(Context)
   const dispatch = useDispatch()
   const _text = transform(text)
-  const onCopy = () => {
+  const handleCopy = () => {
+    if (typeof onCopy === 'function') {
+      onCopy()
+    }
     dispatch(
       notify(
         copyToClipboardSuccess(
@@ -103,7 +107,7 @@ const CodeSnippet: FC<Props> = ({text, label, testID, type}) => {
         </div>
       </DapperScrollbars>
       <div className="code-snippet--footer">
-        <CopyButton text={_text} onCopy={onCopy} />
+        <CopyButton text={_text} onCopy={handleCopy} />
         {label && <label className="code-snippet--label">{label}</label>}
       </div>
     </div>

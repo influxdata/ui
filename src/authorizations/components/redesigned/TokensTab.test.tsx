@@ -11,7 +11,7 @@ import {mocked} from 'ts-jest/utils'
 import {createAuthorization} from 'src/authorizations/apis'
 import TokensTab from './TokensTab'
 
-import {deleteAuthorization, getAuthorization, postAuthorization} from '../../../../src/client'
+import {deleteAuthorization} from '../../../../src/client'
 
 import {auth2, orgs, withRouterProps} from '../../../../mocks/dummyData'
 import {createMemoryHistory} from 'history'
@@ -26,13 +26,10 @@ const InactiveToken = {
   description: 'XYZ',
 }
 
-const replacementID = '02f12c50dcb9300f'
-const replacementDescription = 'ABC'
 
 const localTokens = [auth2, InactiveToken]
 const localHistory = createMemoryHistory({initialEntries: ['/']})
-
-
+const replacementID = '02f12c50dcb9300f'
 
 jest.mock('../../../../src/client', () => ({
   getTokens: jest.fn(() => {
@@ -70,7 +67,10 @@ jest.mock('../../../../src/client', () => ({
 }))
 jest.mock('src/authorizations/apis', () => ({
     createAuthorization: jest.fn(() => {
-    return auth2
+    return {
+      ...auth2,
+      id: replacementID,
+    }
   }),
   
 }))
@@ -98,8 +98,8 @@ const setup = (override?: {}) => {
           },
           [localTokens[1].id]: {
             ...localTokens[1],
-            createdAt: '2020-08-19T23:13:44.514Z',
-            updatedAt: '2020-08-19T23:13:44.514Z',
+            createdAt: '2020-08-19T23:13:43.514Z',
+            updatedAt: '2020-08-19T23:13:42.514Z',
           },
         },
         allIDs: localTokens.map(t => t.id),
@@ -108,15 +108,13 @@ const setup = (override?: {}) => {
       },
     },
   }
-  // console.log('test tokens: ', testState.resources.tokens)
+  
 
   return renderWithReduxAndRouter(<TokensTab {...props} />, () => testState)
 }
 
 describe('TokensTab', () => {
-  // it('renders', () => {
-  //   const ui = setup()
-  // })
+  
   let ui
 
   beforeEach(() => {
@@ -127,9 +125,9 @@ describe('TokensTab', () => {
   describe('manage Tokens', () => {
 
     it('deletes a token', async () => {
-      // console.log(deleteAuthorization);
+      
       const tokenCard = (await screen.findAllByTestId('token-card My token'))[0]
-      // console.log('token card' ,tokenCard)
+      
       expect(
         tokenCard.querySelector("[data-testid='token-name My token']")).toHaveTextContent('My token')
 
@@ -138,11 +136,7 @@ describe('TokensTab', () => {
       )
 
       const tokenID = '03c03a8a64728000'
-      // tokenCard
-      //   .querySelector("[class='cf-resource-card']")
-      //   .textContent.split(':')[1]
-      //   .split('C')[0]
-      //   .trim()
+      
         
       expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeTruthy()
       expect(ui.store.getState().resources.tokens.allIDs).toContain(tokenID)
@@ -163,21 +157,42 @@ describe('TokensTab', () => {
       
 
       const tokenCard = (await screen.findAllByTestId('token-card My token'))[0]
-      // console.log(tokenCard)
+      
       const cloneButton = tokenCard.querySelector(
         '[data-testid=clone-token]'
       )
-      // const description = tokenCard.querySelector("[data-testid='token-name My token']")
-      // console.log(tokenCard)
-      // .textContent
-      // expect(description).toContain(InactiveToken.description)
-      // console.log('token clone button ', cloneButton)
+      
       fireEvent.click(cloneButton)
       
       await waitFor(() => expect(createAuthorization).toBeCalled())
-      // expect(mocked(getAuthorization).mock.calls[0][0].id).toEqual(auth2.id)
-      console.log(mocked(getAuthorization).mock)
+      
+      
     })
+
+    it('display tokens', async () => {
+      
+
+      const tokenCard1 = (await screen.findAllByTestId('token-card My token'))[0]
+      const tokenCard2 = (await screen.findAllByTestId('token-card XYZ'))[0]
+
+      expect(tokenCard1).toBeDefined();
+      expect(tokenCard2).toBeDefined();
+    });
+
+    it('displays generate token button', async () => {
+      
+
+      const generateTokenButton = (await screen.findAllByTestId('dropdown-button--gen-token'))[0]
+      fireEvent.click(generateTokenButton)
+      
+
+      const allAccessOption = (await screen.findAllByTestId('dropdown-item generate-token--all-access'))[0]
+      fireEvent.click(allAccessOption)
+      
+
+    });
+    
   })
+  
   
 })

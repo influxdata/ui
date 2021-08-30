@@ -1,11 +1,11 @@
 // Libraries
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useState, useContext, useEffect} from 'react'
 
 // Components
 import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
-import {BucketContext} from 'src/flows/context/buckets'
+import {BucketContext} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
 
 const BucketSelector: FC = () => {
@@ -14,17 +14,39 @@ const BucketSelector: FC = () => {
 
   const [search, setSearch] = useState('')
 
-  const selectBucket = (item: string): void => {
-    data.buckets = [item]
-    data.tags = [
-      {
-        key: '',
-        values: [],
-        aggregateFunctionType: 'filter',
-      },
-    ]
+  const selectBucket = (item?: string): void => {
+    if (!item) {
+      data.buckets = []
+    } else {
+      data.buckets = [item]
+    }
+
+    data.tags = []
+
     update(data)
   }
+
+  useEffect(() => {
+    if (loading !== RemoteDataState.Done) {
+      return
+    }
+
+    if (!data.buckets.length) {
+      return
+    }
+
+    const bucks = buckets.reduce((acc, curr) => {
+      acc[curr.name] = true
+      return acc
+    }, {})
+    const filtered = data.buckets.filter(b => bucks.hasOwnProperty(b))
+
+    if (data.buckets.length == filtered.length) {
+      return
+    }
+
+    selectBucket()
+  }, [buckets])
 
   if (loading === RemoteDataState.Done && !buckets.length) {
     return (

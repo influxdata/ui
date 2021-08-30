@@ -34,7 +34,7 @@ export interface Stage {
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   printMap: (id?: string, withSideEffects?: boolean) => void
-  query: (text: string) => Promise<FluxResult>
+  query: (text: string, override?: QueryScope) => Promise<FluxResult>
   basic: (text: string) => any
   simplify: (text: string) => string
   queryAll: () => void
@@ -47,7 +47,7 @@ export interface FlowQueryContextType {
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   printMap: () => {},
-  query: (_: string) => Promise.resolve({} as FluxResult),
+  query: (_: string, __: QueryScope) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
@@ -149,6 +149,8 @@ export const FlowQueryProvider: FC = ({children}) => {
       const last = acc[acc.length - 1] || {
         scope: {
           withSideEffects: !!withSideEffects,
+          region: window.location.origin,
+          org: org.id,
         },
         source: '',
         visual: '',
@@ -209,13 +211,18 @@ export const FlowQueryProvider: FC = ({children}) => {
     // Grab all the ids in the order that they're presented
     generateMap(withSideEffects).forEach(i => {
       console.log(
-        `\n\n%cPanel: %c ${i}`,
+        `\n\n%cPanel: %c ${i.id}`,
         'font-family: sans-serif; font-size: 16px; font-weight: bold; color: #000',
         i.id === id
           ? 'font-weight: bold; font-size: 16px; color: #666'
           : 'font-weight: normal; font-size: 16px; color: #888'
       )
 
+      console.log(
+        `%c Scope: \n%c ${JSON.stringify(i.scope, null, 2)}`,
+        'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
+        'font-family: monospace; color: #888'
+      )
       console.log(
         `%c Source Query: \n%c ${i.source}`,
         'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',

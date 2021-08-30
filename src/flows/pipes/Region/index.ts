@@ -12,9 +12,10 @@ export default register => {
       type: 'static',
       region: '',
       token: '',
+      org: '',
     },
 
-    context: (data, prev) => {
+    scope: (data, prev) => {
       return {
         ...prev,
         region: data.region,

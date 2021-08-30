@@ -1,5 +1,5 @@
 // Libraries
-import React, {CSSProperties, FC, useContext} from 'react'
+import React, {CSSProperties, FC, useContext, useEffect} from 'react'
 
 // Components
 import {
@@ -12,7 +12,7 @@ import {
 import CreateBucketDropdownItem from 'src/flows/shared/BucketSelector/CreateBucketDropdownItem'
 
 // Contexts
-import {BucketContext} from 'src/flows/context/buckets'
+import {BucketContext} from 'src/flows/context/bucket.scoped'
 
 // Types
 import {Bucket} from 'src/types'
@@ -32,6 +32,18 @@ const BucketSelector: FC<Props> = ({
 }) => {
   const {buckets, loading} = useContext(BucketContext)
   let buttonText = 'Loading buckets...'
+
+  useEffect(() => {
+    if (loading !== RemoteDataState.Done) {
+      return
+    }
+
+    if (!selected || buckets.find(bucket => bucket.name === selected.name)) {
+      return
+    }
+
+    onSelect(null)
+  }, [buckets])
 
   let menuItems = (
     <Dropdown.ItemEmpty>

@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Buckets ', () => {
+describe('Buckets', () => {
   beforeEach(() => {
     cy.flush()
 

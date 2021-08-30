@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Billing Page Free Users ', () => {
+describe('Billing Page Free Users', () => {
   beforeEach(() => {
     cy.flush()
 

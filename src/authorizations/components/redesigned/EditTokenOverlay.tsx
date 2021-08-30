@@ -14,6 +14,9 @@ import {
   SlideToggle,
   ComponentSize,
   JustifyContent,
+  Button,
+  ComponentColor,
+  Page,
 } from '@influxdata/clockface'
 
 // Types
@@ -41,8 +44,9 @@ const labels = {
 
 const EditTokenOverlay: FC<Props> = props => {
   const [description, setDescription] = useState(props.auth.description)
-
+  const handleInputChange = event => setDescription(event.target.value)
   
+  const handleDismiss = () => props.onDismissOverlay()
 
   const changeToggle = () => {
     const {onUpdate, auth} = props
@@ -55,16 +59,23 @@ const EditTokenOverlay: FC<Props> = props => {
 
   }
 
-  const handleDismiss = () => props.onDismissOverlay()
+  const onSave = () => {
+    const {onUpdate, auth} = props
 
-  const handleInputChange = event => setDescription(event.target.value)
-
+    onUpdate({
+      ...auth,
+      description: description
+    })
+    handleDismiss()
+  }
   
 
   return (
-    <Overlay.Container maxWidth={830}>
+    <Overlay.Container maxWidth={630}>
       <Overlay.Header title="API Token Summary" onDismiss={handleDismiss} />
       <Overlay.Body>
+      <FlexBox alignItems={AlignItems.FlexStart} margin={ComponentSize.Medium}   direction={FlexDirection.Column} justifyContent={JustifyContent.SpaceBetween}>
+
         <FlexBox margin={ComponentSize.Medium}  direction={FlexDirection.Row}>
           <SlideToggle
             active={props.auth.status === 'active'}
@@ -76,9 +87,9 @@ const EditTokenOverlay: FC<Props> = props => {
         <Form>
         
           <FlexBox
-            alignItems={AlignItems.Center}
-            direction={FlexDirection.Column}
+            direction={FlexDirection.Row}
             margin={ComponentSize.Large}
+            justifyContent={JustifyContent.SpaceBetween}
           >
             <Form.Element label="Description">
               <Input
@@ -88,9 +99,31 @@ const EditTokenOverlay: FC<Props> = props => {
                 testID="custom-api-token-input"
               />
             </Form.Element>
-          </FlexBox>
+            </FlexBox>
+            <Page.ControlBarCenter>
+            <FlexBox
+            
+            margin={ComponentSize.Medium}
+          >
+            <Button
+              color={ComponentColor.Default}
+              text="Cancel"
+              onClick={handleDismiss}
+              testID="token-cancel-btn"
+            />
+            <Button
+              color={ComponentColor.Primary}
+              text="Save"
+              onClick={onSave}
+              testID="token-save-btn"
+            />
+            </FlexBox>
+            </Page.ControlBarCenter>
+          
         </Form>
+        </FlexBox>
       </Overlay.Body>
+      
     </Overlay.Container>
   )
 }

@@ -15,7 +15,6 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
-import auth from '@influxdata/influx/dist/wrappers/auth'
 
 type SortKey = keyof Authorization
 

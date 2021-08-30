@@ -21,7 +21,7 @@ const resetInputs = () => {
     .should('have.value', '')
 }
 
-describe('Checkout Page ', () => {
+describe('Checkout Page', () => {
   beforeEach(() => {
     cy.flush()
 

@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Community Templates ', () => {
+describe('Community Templates', () => {
   beforeEach(() => {
     cy.flush()
 

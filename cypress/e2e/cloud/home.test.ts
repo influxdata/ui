@@ -1,4 +1,4 @@
-describe('Home Page Tests', () => {
+describe('Home Page Tests ', () => {
   beforeEach(() => {
     cy.flush()
 

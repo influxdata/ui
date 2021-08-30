@@ -145,13 +145,11 @@ export const sortVariablesByName = (variables: Variable[]): Variable[] =>
 
 export const getVariable = (state: AppState, variableID: string): Variable => {
   const contextID = currentContext(state)
-  const ctx = get(state, ['resources', 'variables', 'values', contextID])
-  let vari = get(state, ['resources', 'variables', 'byID', variableID])
+  const ctx = state?.resources?.variables?.values?.[contextID]
+  let vari = state?.resources?.variables?.byID?.[variableID]
 
   if (vari) {
-    vari = JSON.parse(
-      JSON.stringify(get(state, ['resources', 'variables', 'byID', variableID]))
-    )
+    vari = JSON.parse(JSON.stringify(vari))
   }
 
   if (ctx && ctx.values && ctx.values.hasOwnProperty(variableID)) {

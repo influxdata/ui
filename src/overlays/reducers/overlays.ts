@@ -24,6 +24,7 @@ export type OverlayID =
   | 'edit-annotation'
   | 'toggle-auto-refresh'
   | 'cell-copy-overlay'
+  | 'bucket-schema-show'
 
 export interface OverlayState {
   id: OverlayID | null
@@ -56,6 +57,11 @@ export const overlaysReducer = (
         draftState.id = null
         draftState.params = nullParams
         draftState.onClose = () => {}
+        return
+      }
+      case ActionTypes.SetOverlayParams: {
+        const {overlayParams} = action.payload
+        draftState.params = overlayParams
         return
       }
     }

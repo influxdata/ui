@@ -44,6 +44,9 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getStatus} from 'src/resources/selectors'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 type GetAuthorizations = (
   dispatch: Dispatch<Action | NotificationAction>,
   getState: GetState
@@ -105,6 +108,8 @@ export const createAuthorization = (auth: Authorization) => async (
       resp,
       authSchema
     )
+
+    event('token.create.success', {id: resp.id})
     dispatch(addAuthorization(newAuth))
     dispatch(
       setCurrentAuthorization(
@@ -114,6 +119,7 @@ export const createAuthorization = (auth: Authorization) => async (
     )
     dispatch(notify(authorizationCreateSuccess()))
   } catch (error) {
+    event('token.create.failure')
     const message = error.data ? error.data.message : null
     console.error(message)
     dispatch(notify(authorizationCreateFailed(message)))
@@ -151,10 +157,11 @@ export const deleteAuthorization = (id: string, name: string = '') => async (
     if (resp.status !== 204) {
       throw new Error(resp.data.message)
     }
-
+    event('token.delete.success', {id, name})
     dispatch(removeAuthorization(id))
     dispatch(notify(authorizationDeleteSuccess()))
   } catch (e) {
+    event('token.delete.failure', {id, name})
     console.error(e)
     dispatch(notify(authorizationDeleteFailed(name)))
   }

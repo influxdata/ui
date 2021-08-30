@@ -16,17 +16,16 @@ import ThresholdsSettings from 'src/visualization/components/internal/Thresholds
 
 import {GeoViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 import {S2ColumnOptions} from './S2ColumnOptions'
 import './GeoOptions.scss'
 import {LatLonColumnOptions} from './LatLonColumnOptions'
+import {CLOUD} from 'src/shared/constants'
 
 interface Props extends VisualizationOptionProps {
   properties: GeoViewProperties
 }
 
-const SHOW_GEO_OPTIONS = isFlagEnabled('mapGeoOptions')
 // const mapTypeOptions = ['Point', 'Circle', 'Heat', 'Track']
 export enum MapType {
   Point = 'pointMap',
@@ -51,7 +50,7 @@ export const GeoOptions: FC<Props> = ({properties, update, results}) => {
     return {color: InfluxColors.Sidewalk}
   }
 
-  return SHOW_GEO_OPTIONS ? (
+  return CLOUD ? (
     <>
       <Grid.Column>
         <Grid.Row>

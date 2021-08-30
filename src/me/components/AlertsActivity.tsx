@@ -38,7 +38,7 @@ const STATUS_ACTIVITY_FIELDS: Fields = [
   },
   {
     rowKey: 'checkName',
-    columnName: 'Check',
+    columnName: 'Check/Task',
     columnWidth: 150,
     component: CheckActivityTableField,
   },

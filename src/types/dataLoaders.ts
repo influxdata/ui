@@ -49,6 +49,12 @@ export enum LineProtocolStep {
   'Verify',
 }
 
+export enum PluginCreateConfigurationStep {
+  'Configure',
+  'Customize',
+  'Verify',
+}
+
 interface ScraperTarget {
   bucket: string
   url: string

@@ -28,7 +28,11 @@ import {
   createBucket,
   updateBucket,
   deleteBucket,
+  getBucketSchema,
 } from 'src/buckets/actions/thunks'
+
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/limits'
 
 // Utils
@@ -125,6 +129,7 @@ class BucketsTab extends PureComponent<Props, State> {
                     onUpdateBucket={this.props.updateBucket}
                     onDeleteBucket={this.handleDeleteBucket}
                     onFilterChange={this.handleFilterUpdate}
+                    onGetBucketSchema={this.handleShowBucketSchema}
                     sortKey={sortKey}
                     sortDirection={sortDirection}
                     sortType={sortType}
@@ -160,6 +165,17 @@ class BucketsTab extends PureComponent<Props, State> {
 
   private handleDeleteBucket = ({id, name}: OwnBucket) => {
     this.props.deleteBucket(id, name)
+  }
+
+  private handleShowBucketSchema = async ({id, name}: OwnBucket) => {
+    const schemaData = await this.props.getBucketSchema(id)
+    const schema = schemaData?.measurementSchemas
+
+    this.props.showOverlay(
+      'bucket-schema-show',
+      {schema, bucketName: name},
+      this.props.dismissOverlay
+    )
   }
 
   private handleFilterUpdate = (searchTerm: string): void => {
@@ -200,6 +216,9 @@ const mdtp = {
   createBucket,
   updateBucket,
   deleteBucket,
+  getBucketSchema,
+  showOverlay,
+  dismissOverlay,
   checkBucketLimits: checkBucketLimitsAction,
 }
 

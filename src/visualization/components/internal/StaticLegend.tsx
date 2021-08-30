@@ -2,7 +2,6 @@
 import React, {ChangeEvent, FC, useState} from 'react'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Components
@@ -87,10 +86,6 @@ const StaticLegend: FC<Props> = ({properties, update}) => {
     show,
   } = staticLegend
   const [showOptions, setShowOptions] = useState<boolean>(show)
-
-  if (!isFlagEnabled('staticLegend')) {
-    return null
-  }
 
   const handleChooseStaticLegend = (value: string) => {
     setShowOptions(value === LegendDisplayStatus.SHOW)

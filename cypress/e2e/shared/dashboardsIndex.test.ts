@@ -237,24 +237,28 @@ describe('Dashboards', () => {
   })
 
   describe('Dashboard List', () => {
-    beforeEach(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.createDashboard(id, dashboardName).then(({body}) => {
-          cy.createAndAddLabel('dashboards', id, body.id, newLabelName)
-        })
-
-        cy.createDashboard(id, dashboardName2).then(({body}) => {
-          cy.createAndAddLabel('dashboards', id, body.id, 'bar')
-        })
-      })
-
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
-        })
-      })
-    })
+    beforeEach(() =>
+      cy.get('@org').then(({id}: Organization) =>
+        cy.createDashboard(id, dashboardName).then(({body}) =>
+          cy
+            .createAndAddLabel('dashboards', id, body.id, newLabelName)
+            .then(() =>
+              cy.createDashboard(id, dashboardName2).then(({body}) =>
+                cy
+                  .createAndAddLabel('dashboards', id, body.id, 'bar')
+                  .then(() =>
+                    cy.fixture('routes').then(({orgs}) =>
+                      cy.get('@org').then(({id}: Organization) => {
+                        cy.visit(`${orgs}/${id}/dashboards-list`)
+                        return cy.getByTestID('tree-nav')
+                      })
+                    )
+                  )
+              )
+            )
+        )
+      )
+    )
 
     it('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 2)

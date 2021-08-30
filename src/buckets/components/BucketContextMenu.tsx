@@ -42,9 +42,9 @@ export default class BucketContextMenu extends PureComponent<Props> {
           onConfirm={() => {
             onDeleteBucket(bucket)
           }}
-          confirmationButtonText={'Confirm'}
+          confirmationButtonText="Confirm"
           testID={`context-delete-menu ${bucket.name}`}
-        ></ConfirmationButton>
+        />
       )
     } else {
       return null

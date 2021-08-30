@@ -7,6 +7,7 @@ describe('Flows', () => {
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}`)
+          cy.getByTestID('version-info')
           cy.setFeatureFlags({notebooks: true, simpleTable: true}).then(() => {
             cy.getByTestID('nav-item-flows').should('be.visible')
             cy.getByTestID('nav-item-flows').click()
@@ -294,7 +295,7 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
     cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
-    cy.getByTestID('resource-editable-name').should('be.visible')
+    cy.getByTestID('resource-editable-name').should('exist')
     cy.getByTestID('resource-editable-name').click()
 
     // visualizations should not exist
@@ -364,7 +365,7 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
     cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
-    cy.getByTestID('resource-editable-name').should('be.visible')
+    cy.getByTestID('resource-editable-name').should('exist')
     cy.getByTestID('resource-editable-name').click()
 
     // visualizations should exist

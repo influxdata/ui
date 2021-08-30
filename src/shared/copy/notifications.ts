@@ -501,16 +501,6 @@ export const TelegrafDashboardFailed = (): Notification => ({
   message: `Could not create dashboards for one or more plugins`,
 })
 
-export const importTaskSucceeded = (): Notification => ({
-  ...defaultSuccessNotification,
-  message: `Successfully imported task.`,
-})
-
-export const importTaskFailed = (error: string): Notification => ({
-  ...defaultErrorNotification,
-  message: `Failed to import task: ${error}`,
-})
-
 export const importDashboardSucceeded = (): Notification => ({
   ...defaultSuccessNotification,
   message: `Successfully imported dashboard.`,
@@ -1429,4 +1419,18 @@ export const pinnedItemSuccess = (
   ...defaultSuccessNotification,
   icon: IconFont.Star,
   message: `Successfully ${pinAction} pinned ${pinItemType} to homepage`,
+})
+
+export const testNotificationSuccess = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `A test alert has been sent to ${source}`,
+})
+
+export const testNotificationFailure = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to send the test alert to ${source}. Please try again`,
 })

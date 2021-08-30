@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Components
-import DocSearch from 'src/shared/search/DocSearch'
+import DocSearch, {DocSearchType} from 'src/shared/search/DocSearch'
 
 import './DocSearchWidget.scss'
 
@@ -24,12 +24,16 @@ const supportLinks = [
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/process-data/get-started/`,
     title: 'Write a Task',
   },
+  {
+    link: 'https://github.com/influxdata/ui/issues/new',
+    title: 'Report a bug',
+  },
 ]
 
 const DocSearchWidget: FC = () => {
   return (
     <div className="WidgetSearch">
-      <DocSearch />
+      <DocSearch type={DocSearchType.Widget} />
       <p className="WidgetHelperText">Press CTRL + M on any page to search</p>
       <div className="useful-links">
         <h4>Useful Links</h4>

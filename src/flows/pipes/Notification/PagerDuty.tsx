@@ -43,7 +43,7 @@ const PagerDuty: FC = () => {
       <Form.Element label="Routing Key">
         <Input
           name="key"
-          type={InputType.Text}
+          type={InputType.Password}
           value={data.endpointData.key}
           onChange={updateKey}
           size={ComponentSize.Medium}

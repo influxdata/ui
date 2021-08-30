@@ -45,7 +45,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
-  const queryText = getPanelQueries(id, true).source
+  const queryText = getPanelQueries(id, true)?.source ?? ''
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(
@@ -148,7 +148,9 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
 
-  const persist = <ExportTaskButton generate={generateTask} />
+  const persist = (
+    <ExportTaskButton generate={generateTask} text="Export as Task" />
+  )
 
   return (
     <Context persistentControls={persist}>

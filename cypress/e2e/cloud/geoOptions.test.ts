@@ -9,7 +9,6 @@ describe.skip('DataExplorer - Geo Map Type Customization Options', () => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
-          cy.setFeatureFlags({mapGeo: true})
         })
       })
     })

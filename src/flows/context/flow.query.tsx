@@ -6,12 +6,13 @@ import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {ResultsContext} from 'src/flows/context/results'
 import {QueryContext, simplify} from 'src/flows/context/query'
 import {event} from 'src/cloud/utils/reporting'
-import {FluxResult} from 'src/types/flows'
-import {PIPE_DEFINITIONS} from 'src/flows'
+import {FluxResult, QueryScope} from 'src/types/flows'
+import {PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
 import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
+import {getOrg} from 'src/organizations/selectors'
 
 // Constants
 import {
@@ -19,44 +20,44 @@ import {
   notebookRunFail,
 } from 'src/shared/copy/notifications'
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
-import {PROJECT_NAME} from 'src/flows'
 
 // Types
 import {AppState, RemoteDataState, Variable} from 'src/types'
 
-interface Instance {
-  id: string
-  modifier?: string
-}
-
 export interface Stage {
-  text: string
-  instances: Instance[]
-}
-
-interface PanelQueries {
-  source: string
-  visual: string
+  id: string
+  scope: QueryScope
+  source?: string
+  visual?: string
 }
 
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
+  printMap: (id?: string, withSideEffects?: boolean) => void
   query: (text: string) => Promise<FluxResult>
   basic: (text: string) => any
   simplify: (text: string) => string
   queryAll: () => void
-  getPanelQueries: (id: string, withSideEffects?: boolean) => PanelQueries
+  queryDependents: (startID: string) => void
+  getPanelQueries: (id: string, withSideEffects?: boolean) => Stage
   status: RemoteDataState
   getStatus: (id: string) => RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
+  printMap: () => {},
   query: (_: string) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
-  getPanelQueries: (_, _a) => ({source: '', visual: ''}),
+  queryDependents: () => {},
+  getPanelQueries: (_, _a) => ({
+    id: '',
+    scope: {vars: {}},
+    source: '',
+    visual: '',
+  }),
   status: RemoteDataState.NotStarted,
   getStatus: (_: string) => RemoteDataState.NotStarted,
 }
@@ -64,9 +65,6 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
 export const FlowQueryContext = React.createContext<FlowQueryContextType>(
   DEFAULT_CONTEXT
 )
-
-const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
-const CURRENT_REGEXP = /__CURRENT_RESULT__/g
 
 const generateTimeVar = (which, value): Variable =>
   ({
@@ -87,6 +85,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {add, update} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const [loading, setLoading] = useState({})
+  const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
@@ -144,110 +143,121 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
-    return flow.data.allIDs
-      .reduce((stages, pipeID) => {
-        const pipe = flow.data.get(pipeID)
+    const stages = flow.data.allIDs.reduce((acc, panelID) => {
+      const panel = flow.data.get(panelID)
 
-        const create = text => {
-          const stage = {
-            text: '',
-            instances: [{id: pipeID}],
-            requirements: {},
-          }
-          if (text && PREVIOUS_REGEXP.test(text) && stages.length) {
-            stage.text = text.replace(
-              PREVIOUS_REGEXP,
-              stages[stages.length - 1].text
-            )
-          } else {
-            stage.text = text
-          }
-
-          stages.push(stage)
-        }
-
-        const append = (modifier?) => {
-          if (!stages.length) {
-            return
-          }
-
-          const text = (modifier || '').replace(
-            CURRENT_REGEXP,
-            stages[stages.length - 1].text
-          )
-
-          stages[stages.length - 1].instances = [
-            ...stages[stages.length - 1].instances.filter(i => i.id !== pipeID),
-            {
-              id: pipeID,
-              modifier: text,
-            },
-          ]
-        }
-
-        if (!PIPE_DEFINITIONS[pipe.type]) {
-          return stages
-        }
-
-        if (PIPE_DEFINITIONS[pipe.type].generateFlux) {
-          PIPE_DEFINITIONS[pipe.type].generateFlux(
-            pipe,
-            create,
-            append,
-            withSideEffects
-          )
-        } else {
-          append()
-        }
-
-        return stages
-      }, [])
-      .map(queryStruct => {
-        const queryText =
-          Object.entries(queryStruct.requirements)
-            .map(([key, value]) => `${key} = (\n${value}\n)\n\n`)
-            .join('') + queryStruct.text
-
-        return {
-          text: queryText,
-          instances: queryStruct.instances,
-        }
-      })
-  }
-
-  // TODO figure out a better way to cache these requests
-  const getPanelQueries = (
-    id: string,
-    withSideEffects?: boolean
-  ): PanelQueries => {
-    return generateMap(withSideEffects).reduce(
-      (acc, curr) => {
-        const instance = curr.instances.find(i => i.id === id)
-
-        if (!instance) {
-          return acc
-        }
-
-        return {
-          source: curr.text,
-          visual: instance.modifier,
-        }
-      },
-      {
+      const last = acc[acc.length - 1] || {
+        scope: {
+          withSideEffects: !!withSideEffects,
+        },
         source: '',
         visual: '',
       }
-    )
+
+      const meta = {
+        ...last,
+        id: panel.id,
+        visual: '',
+      }
+
+      if (!PIPE_DEFINITIONS[panel.type]) {
+        acc.push(meta)
+        return acc
+      }
+
+      if (typeof PIPE_DEFINITIONS[panel.type].scope === 'function') {
+        meta.scope = PIPE_DEFINITIONS[panel.type].scope(
+          panel,
+          acc[acc.length - 1]?.scope || {}
+        )
+      }
+
+      if (typeof PIPE_DEFINITIONS[panel.type].source === 'function') {
+        meta.source = PIPE_DEFINITIONS[panel.type].source(
+          panel,
+          '' + (acc[acc.length - 1]?.source || ''),
+          meta.scope
+        )
+      }
+
+      if (typeof PIPE_DEFINITIONS[panel.type].visual === 'function') {
+        meta.visual = PIPE_DEFINITIONS[panel.type].visual(
+          panel,
+          '' + (acc[acc.length - 1]?.source || ''),
+          meta.scope
+        )
+      }
+
+      acc.push(meta)
+      return acc
+    }, [])
+
+    return stages
   }
 
-  const query = (text: string): Promise<FluxResult> => {
+  // TODO figure out a better way to cache these requests
+  const getPanelQueries = (id: string, withSideEffects?: boolean): Stage => {
+    return generateMap(withSideEffects).find(i => i.id === id)
+  }
+
+  // This function allows the developer to see the queries
+  // that the panels are generating through a notebook. Each
+  // panel should have a source query, any panel that needs
+  // to display some data should have a visualization query
+  const printMap = (id?: string, withSideEffects?: boolean) => {
+    /* eslint-disable no-console */
+    // Grab all the ids in the order that they're presented
+    generateMap(withSideEffects).forEach(i => {
+      console.log(
+        `\n\n%cPanel: %c ${i}`,
+        'font-family: sans-serif; font-size: 16px; font-weight: bold; color: #000',
+        i.id === id
+          ? 'font-weight: bold; font-size: 16px; color: #666'
+          : 'font-weight: normal; font-size: 16px; color: #888'
+      )
+
+      console.log(
+        `%c Source Query: \n%c ${i.source}`,
+        'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
+        'font-family: monospace; color: #888'
+      )
+      console.log(
+        `%c Visualization Query: \n%c ${i.visual}\n`,
+        'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
+        'font-family: monospace; color: #888'
+      )
+    })
+    /* eslint-enable no-console */
+  }
+
+  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
     event('runQuery', {context: 'flows'})
 
-    return queryAPI(text, vars)
+    const _override: QueryScope = {
+      region: window.location.origin,
+      org: org.id,
+      ...(override || {}),
+      vars: {
+        ...vars,
+        ...(override?.vars || {}),
+      },
+    }
+
+    return queryAPI(text, _override)
   }
 
-  const basic = (text: string): Promise<FluxResult> => {
-    return basicAPI(text, vars)
+  const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
+    const _override: QueryScope = {
+      region: window.location.origin,
+      org: org.id,
+      ...(override || {}),
+      vars: {
+        ...vars,
+        ...(override?.vars || {}),
+      },
+    }
+
+    return basicAPI(text, _override)
   }
 
   const forceUpdate = (id, data) => {
@@ -270,6 +280,58 @@ export const FlowQueryProvider: FC = ({children}) => {
     status = RemoteDataState.Loading
   }
 
+  const queryDependents = (startID: string) => {
+    sendEvent(notebookQueryKey)
+    _queryDependents(startID)
+  }
+
+  const _queryDependents = (startID: string) => {
+    if (status === RemoteDataState.Loading) {
+      return
+    }
+
+    let map = generateMap(runMode === RunMode.Run)
+
+    if (!map.length) {
+      return
+    }
+
+    map = map.slice(map.findIndex(m => m.id === startID))
+    event('Running Notebook QueryDependents')
+
+    Promise.all(
+      map
+        .filter(q => !!q?.visual)
+        .map(stage => {
+          loading[stage.id] = RemoteDataState.Loading
+          setLoading(loading)
+          return query(stage.visual, stage.scope)
+            .then(response => {
+              loading[stage.id] = RemoteDataState.Done
+              setLoading(loading)
+              forceUpdate(stage.id, response)
+            })
+            .catch(e => {
+              forceUpdate(stage.id, {
+                error: e.message,
+              })
+              loading[stage.id] = RemoteDataState.Error
+              setLoading(loading)
+            })
+        })
+    )
+      .then(() => {
+        event('run_notebook_success', {runMode})
+        dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
+      })
+      .catch(e => {
+        event('run_notebook_fail', {runMode})
+        dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
+
+        // NOTE: this shouldn't fire, but lets wrap it for completeness
+        throw e
+      })
+  }
   // Use localstorage to communicate query execution to other tabs
   const queryAll = () => {
     sendEvent(notebookQueryKey)
@@ -291,30 +353,21 @@ export const FlowQueryProvider: FC = ({children}) => {
 
     Promise.all(
       map
-        .reduce((acc, curr) => {
-          return acc.concat(
-            curr.instances
-              .filter(i => i.modifier)
-              .map(i => ({
-                text: i.modifier,
-                instance: i.id,
-              }))
-          )
-        }, [])
+        .filter(q => !!q.visual)
         .map(stage => {
-          loading[stage.instance] = RemoteDataState.Loading
+          loading[stage.id] = RemoteDataState.Loading
           setLoading(loading)
-          return query(stage.text)
+          return query(stage.visual, stage.scope)
             .then(response => {
-              loading[stage.instance] = RemoteDataState.Done
+              loading[stage.id] = RemoteDataState.Done
               setLoading(loading)
-              forceUpdate(stage.instance, response)
+              forceUpdate(stage.id, response)
             })
             .catch(e => {
-              forceUpdate(stage.instance, {
+              forceUpdate(stage.id, {
                 error: e.message,
               })
-              loading[stage.instance] = RemoteDataState.Error
+              loading[stage.id] = RemoteDataState.Error
               setLoading(loading)
             })
         })
@@ -356,7 +409,9 @@ export const FlowQueryProvider: FC = ({children}) => {
         basic,
         simplify: simple,
         generateMap,
+        printMap,
         queryAll,
+        queryDependents,
         getPanelQueries,
         status,
         getStatus,

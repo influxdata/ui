@@ -37,7 +37,9 @@
 
 .flow-sidebar--submenu {
   padding-top: $cf-marg-b;
-  height: 100%;
+  height: calc(
+    100% - 30px
+  ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
 }
 
 .flow-sidebar--dropdownmenu {

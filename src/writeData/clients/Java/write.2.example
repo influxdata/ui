@@ -3,9 +3,8 @@ mem.host = "host1";
 mem.used_percent = 23.43234543;
 mem.time = Instant.now();
 
-try (WriteApi writeApi = client.getWriteApi()) {
-  writeApi.writeMeasurement(bucket, org, WritePrecision.NS, mem);
-}
+WriteApiBlocking writeApi = client.getWriteApiBlocking();
+writeApi.writeRecord(bucket, org, WritePrecision.NS, mem);
 
 
 

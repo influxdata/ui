@@ -18,6 +18,15 @@
   border-radius: $cf-radius + ($cf-border / 2);
 }
 
+.time-machine--cta {
+  font-size: 14px;
+  margin-right: 12px;
+
+  span {
+    margin-right: 4px;
+  }
+}
+
 .time-machine-queries--tabs {
   display: inline-flex;
   margin-right: $cf-marg-b;

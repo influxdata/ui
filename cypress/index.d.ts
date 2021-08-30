@@ -29,6 +29,8 @@ import {
   createToken,
   fillInOSSLoginFormWithDefaults,
   writeData,
+  writeLPData,
+  writeLPDataFromFile,
   wrapEnvironmentVariablesForCloud,
   wrapEnvironmentVariablesForOss,
   getByTestIDSubStr,
@@ -40,6 +42,7 @@ import {
   upsertSecret,
   setFeatureFlags,
   quartzProvision,
+  createTaskFromEmpty,
 } from './support/commands'
 
 declare global {
@@ -80,6 +83,8 @@ declare global {
       createTelegraf: typeof createTelegraf
       createToken: typeof createToken
       writeData: typeof writeData
+      writeLPData: typeof writeLPData
+      writeLPDataFromFile: typeof writeLPDataFromFile
       wrapEnvironmentVariablesForCloud: typeof wrapEnvironmentVariablesForCloud
       wrapEnvironmentVariablesForOss: typeof wrapEnvironmentVariablesForOss
       fillInOSSLoginFormWithDefaults: typeof fillInOSSLoginFormWithDefaults
@@ -88,6 +93,7 @@ declare global {
       setFeatureFlags: typeof setFeatureFlags
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision
+      createTaskFromEmpty: typeof createTaskFromEmpty
     }
   }
 }

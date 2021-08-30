@@ -16,6 +16,9 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleNameMapper: {
     '\\.(css|scss)$': 'identity-obj-proxy',
+    'react-dnd$': 'react-dnd/dist/cjs',
+    'react-dnd-html5-backend$': 'react-dnd-html5-backend/dist/cjs',
+    'dnd-core$': 'dnd-core/dist/cjs',
   },
   globals: {
     'ts-jest': {

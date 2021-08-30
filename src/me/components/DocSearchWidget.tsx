@@ -26,7 +26,13 @@ const supportLinks = [
   },
   {
     link: 'https://github.com/influxdata/ui/issues/new',
-    title: 'Report a bug',
+    title: '🐛 Report a bug',
+  },
+  {link: 'https://community.influxdata.com', title: '💭 Community Forum'},
+  {
+    link:
+      'https://github.com/influxdata/influxdb/issues/new?template=feature_request.md',
+    title: '✨ Feature Requests',
   },
 ]
 

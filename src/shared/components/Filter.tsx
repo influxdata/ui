@@ -53,8 +53,8 @@ export default class FilterList<T extends Resource> extends PureComponent<
     return this.filtered.sort((item1, item2) => {
       if (this.props.sortByKey) {
         return this.collator.compare(
-          item1[this.props.sortByKey],
-          item2[this.props.sortByKey]
+          get(item1, this.props.sortByKey),
+          get(item2, this.props.sortByKey)
         )
       }
 

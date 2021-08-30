@@ -1,4 +1,4 @@
-import {toLower} from 'lodash'
+import {get, toLower} from 'lodash'
 
 export enum SortTypes {
   String = 'string',
@@ -31,13 +31,13 @@ export function getSortedResources<T>(
     return [...resourceList].sort((item1, item2) => {
       if (sortDirection === 'desc') {
         return collator.compare(
-          orderByType(item2[sortKey], sortType),
-          orderByType(item1[sortKey], sortType)
+          orderByType(get(item2, sortKey), sortType),
+          orderByType(get(item1, sortKey), sortType)
         )
       }
       return collator.compare(
-        orderByType(item1[sortKey], sortType),
-        orderByType(item2[sortKey], sortType)
+        orderByType(get(item1, sortKey), sortType),
+        orderByType(get(item2, sortKey), sortType)
       )
     })
   }

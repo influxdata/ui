@@ -12,6 +12,8 @@ import {
   Button,
   ComponentColor,
   ButtonShape,
+  InputLabel,
+  JustifyContent,
 } from '@influxdata/clockface'
 
 import ResourceAccordion from './ResourceAccordion'
@@ -57,9 +59,45 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
                 testID="custom-api-token-input"
               />
             </Form.Element>
-            <Form.Element label="Resources">
+            <FlexBox.Child style={{width: '100%'}}>
+              <FlexBox
+                margin={ComponentSize.Large}
+                justifyContent={JustifyContent.SpaceBetween}
+                direction={FlexDirection.Row}
+                stretchToFitWidth={true}
+                alignItems={AlignItems.Center}
+                style={{textAlign: 'start', margin: '5px 0px'}}
+              >
+                <FlexBox.Child basis={40} grow={8}>
+                  <InputLabel size={ComponentSize.ExtraSmall}>
+                    Resources
+                  </InputLabel>
+                </FlexBox.Child>
+                <FlexBox.Child
+                  grow={1}
+                  style={{alignItems: 'left', marginLeft: '20px'}}
+                >
+                  <InputLabel
+                    style={{marginLeft: '20px'}}
+                    size={ComponentSize.ExtraSmall}
+                  >
+                    Read
+                  </InputLabel>
+                </FlexBox.Child>
+                <FlexBox.Child
+                  grow={1}
+                  style={{alignItems: 'left', marginRight: '20px'}}
+                >
+                  <InputLabel
+                    style={{marginRight: '20px'}}
+                    size={ComponentSize.ExtraSmall}
+                  >
+                    Write
+                  </InputLabel>
+                </FlexBox.Child>
+              </FlexBox>
               <ResourceAccordion resources={resources} />
-            </Form.Element>
+            </FlexBox.Child>
           </FlexBox>
         </Form>
       </Overlay.Body>

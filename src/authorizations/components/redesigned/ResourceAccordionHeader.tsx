@@ -76,7 +76,7 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             size={ComponentSize.ExtraSmall}
             checked={permissions.write}
             value={permissions.write.toString()}
-            style={{marginRight: '10px'}}
+            style={{marginRight: '0px'}}
             tabIndex={0}
             disabled={false}
           ></Toggle>

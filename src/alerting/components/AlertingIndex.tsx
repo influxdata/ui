@@ -61,7 +61,7 @@ const AlertingIndex: FunctionComponent = () => {
           scrollable={false}
           className={pageContentsClassName}
         >
-          <GetResources resources={[ResourceType.Labels, ResourceType.Buckets]}>
+          <GetResources resources={[ResourceType.Labels, ResourceType.Buckets, ResourceType.Variables]}>
             <GetAssetLimits>
               <SelectGroup
                 className="alerting-index--selector"

@@ -421,7 +421,6 @@ export const hydrateVars = (
   allVariables: Variable[],
   options: HydrateVarsOptions
 ): EventedCancelBox<Variable[]> => {
-  allVariables = JSON.parse(JSON.stringify(allVariables))
   const graph = findSubgraph(
     createVariableGraph(allVariables),
     variables

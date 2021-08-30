@@ -149,7 +149,9 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
   let vari = get(state, ['resources', 'variables', 'byID', variableID])
 
   if (vari) {
-    vari = JSON.parse(JSON.stringify(get(state, ['resources', 'variables', 'byID', variableID])))
+    vari = JSON.parse(
+      JSON.stringify(get(state, ['resources', 'variables', 'byID', variableID]))
+    )
   }
 
   if (ctx && ctx.values && ctx.values.hasOwnProperty(variableID)) {

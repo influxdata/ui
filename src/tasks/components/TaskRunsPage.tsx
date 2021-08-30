@@ -112,6 +112,9 @@ class TaskRunsPage extends PureComponent<Props, State> {
 
     if (sortKey !== 'status') {
       sortType = SortTypes.Date
+      if (sortKey === 'duration') {
+        sortType = SortTypes.Float
+      }
     }
 
     this.setState({sortKey, sortDirection: nextSort, sortType})

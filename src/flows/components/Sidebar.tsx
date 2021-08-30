@@ -183,7 +183,7 @@ const Sidebar: FC = () => {
               return true
             }
 
-            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type].family)) {
+            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
               return true
             }
 

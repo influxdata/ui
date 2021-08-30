@@ -1,4 +1,4 @@
-describe('Operator Pag', () => {
+describe('Operator Page', () => {
   beforeEach(() => {
     cy.flush()
 

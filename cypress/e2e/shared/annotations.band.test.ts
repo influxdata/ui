@@ -9,7 +9,7 @@ import {
   testDeleteAnnotation,
 } from '../util/annotationsSetup'
 
-describe('The Annotations UI functionality on a band plot graph type', () => {
+describe('The Annotations UI functionality on a band plot graph type ', () => {
   const bandSuffix = 'band'
 
   beforeEach(() => setupData(cy, bandSuffix))

@@ -7,7 +7,7 @@ const statHeaders = [
   'Data Out (GB)',
 ]
 
-describe('Usage Page Free User No Data ', () => {
+describe('Usage Page Free User No Data', () => {
   beforeEach(() => {
     cy.flush()
 

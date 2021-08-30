@@ -15,12 +15,12 @@ import {capitalize} from 'lodash'
 import 'src/buckets/components/createBucketForm/SchemaToggle.scss'
 import {SchemaType} from 'src/client/generatedRoutes'
 
-interface Props {
+export interface SchemaToggleProps {
   onChangeSchemaType?: (selectedSchemaType: 'explicit' | 'implicit') => void
   readOnlySchemaType?: SchemaType
 }
 
-export const SchemaToggle: FC<Props> = ({
+export const SchemaToggle: FC<SchemaToggleProps> = ({
   onChangeSchemaType,
   readOnlySchemaType,
 }) => {

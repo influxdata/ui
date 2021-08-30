@@ -33,7 +33,7 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 
 // Types
 import {OwnBucket} from 'src/types'
-import {SchemaType} from "src/client";
+import {SchemaType} from 'src/client'
 
 interface DispatchProps {
   onUpdateBucket: typeof updateBucket
@@ -94,7 +94,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     setRetentionSelection(everySeconds)
   }
 
-  const handleChangeSchemaType = (schemaType:SchemaType): void => {
+  const handleChangeSchemaType = (schemaType: SchemaType): void => {
     setBucketDraft({
       ...bucketDraft,
       schemaType: schemaType,

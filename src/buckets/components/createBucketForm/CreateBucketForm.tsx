@@ -24,7 +24,7 @@ import {AppState, Bucket, RetentionRule} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
-import {SchemaType} from "../../../client";
+import {SchemaType} from '../../../client'
 
 interface CreateBucketFormProps {
   onClose: () => void
@@ -72,9 +72,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     dispatch({type: 'updateRetentionRules', payload: retentionRules})
   }
 
-  const handleChangeSchemaType = (
-    schemaType: SchemaType
-  ): void => {
+  const handleChangeSchemaType = (schemaType: SchemaType): void => {
     dispatch({type: 'updateSchema', payload: schemaType})
   }
 

@@ -110,6 +110,8 @@ const SelectorListCreateBucket: FC<Props> = ({
   ): void => {
     e.preventDefault()
 
+    console.log('yawn! inside ick.....44a-jill')
+
     createBucket(state)
     onHide()
   }
@@ -127,6 +129,7 @@ const SelectorListCreateBucket: FC<Props> = ({
     }
   }
 
+  console.log('in selector list create bucket!!! 89aa-jill')
   return (
     <>
       <List.Item

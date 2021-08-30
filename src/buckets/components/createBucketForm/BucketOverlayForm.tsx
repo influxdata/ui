@@ -82,15 +82,15 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
-
-        let contents = null;
+        let contents = null
         if (isEditing) {
-          // put styling here ?
-          contents =  <SchemaToggle readOnlySchemaType={this.props.schemaType} />
+          contents = <SchemaToggle readOnlySchemaType={this.props.schemaType} />
         } else {
-          contents =  <SchemaToggle
+          contents = (
+            <SchemaToggle
               onChangeSchemaType={this.onChangeSchemaTypeInternal}
-          />
+            />
+          )
         }
 
         return (
@@ -99,9 +99,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
               <span>Advanced Configuration (Optional)</span>
             </Accordion.AccordionHeader>
             <Accordion.AccordionBodyItem>
-              <div>
-                {contents}
-              </div>
+              <div>{contents}</div>
             </Accordion.AccordionBodyItem>
           </Accordion>
         )

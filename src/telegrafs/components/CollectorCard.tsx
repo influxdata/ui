@@ -119,13 +119,13 @@ class CollectorRow extends PureComponent<
         <SquareButton
           size={ComponentSize.ExtraSmall}
           icon={IconFont.Duplicate_New}
-          color={ComponentColor.Tertiary}
+          color={ComponentColor.Colorless}
           onClick={this.cloneTelegraf}
           testID={`context-clone-menu`}
         />
         <ConfirmationButton
           size={ComponentSize.ExtraSmall}
-          color={ComponentColor.Tertiary}
+          color={ComponentColor.Colorless}
           icon={IconFont.Trash_New}
           confirmationLabel={'Yes, delete this configuration'}
           onConfirm={this.handleDeleteConfig}

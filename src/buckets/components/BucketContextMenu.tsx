@@ -9,6 +9,7 @@ import {
   ConfirmationButton,
   ComponentColor,
   IconFont,
+  ButtonShape,
 } from '@influxdata/clockface'
 
 // Types
@@ -33,8 +34,10 @@ export default class BucketContextMenu extends PureComponent<Props> {
     if (bucket.type === 'user') {
       return (
         <ConfirmationButton
-          color={ComponentColor.Tertiary}
+          color={ComponentColor.Colorless}
           icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
           confirmationLabel={'Yes, Delete this bucket'}
           onConfirm={() => {
             onDeleteBucket(bucket)

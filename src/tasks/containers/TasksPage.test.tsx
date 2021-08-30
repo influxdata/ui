@@ -231,7 +231,6 @@ describe('Tasks.Containers.TasksPage', () => {
   describe('manage tasks', () => {
     it('deletes a task', async () => {
       const taskCard = (await screen.findAllByTestId('task-card'))[0]
-
       expect(
         taskCard.querySelector("[data-testid='task-card--name']").textContent
       ).toContain('Dead Beetle')

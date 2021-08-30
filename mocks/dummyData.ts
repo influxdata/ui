@@ -849,6 +849,242 @@ export const auth: Authorization = {
   },
 }
 
+export const auth2 = {
+  id: '03c03a8a64728000',
+  token:
+    'RcW2uWiD-vfxujKyJCirK8un3lJsWPfiA6ulmWY_SlSITUal7Z180OwExiKKfrO98X8W6qGrd5hSGdag-hEpWw==',
+  status: AuthorizationUpdateRequest.StatusEnum.Active,
+  description: 'My token',
+  orgID: '039edab314789000',
+  org: 'a',
+  createdAt: '2020-08-19T23:13:44.514Z',
+  updatedAt: '2020-08-19T23:13:44.514Z',
+  userID: '039edab303789000',
+  user: 'adminuser',
+  permissions: [
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Orgs,
+        id: '039edab314789000',
+        name: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Authorizations,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Authorizations,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Buckets,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Buckets,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Dashboards,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Dashboards,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Sources,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Sources,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Tasks,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Tasks,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Telegrafs,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Telegrafs,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Users,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Users,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Variables,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Variables,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Scrapers,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Scrapers,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Secrets,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Secrets,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Labels,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Labels,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Views,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Views,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Read,
+      resource: {
+        type: PermissionResource.TypeEnum.Documents,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: Permission.ActionEnum.Write,
+      resource: {
+        type: PermissionResource.TypeEnum.Documents,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+  ],
+  links: {
+    self: '/api/v2/authorizations/03c03a8a64728000',
+    user: '/api/v2/users/039edab303789000',
+  },
+}
+
 export const viewProperties: ViewProperties = {
   shape: 'chronograf-v2',
   queries: [

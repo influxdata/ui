@@ -44,7 +44,6 @@ export class TokenList extends PureComponent<Props, State> {
       authInView: null,
     }
   }
-
   public render() {
     const {isTokenOverlayVisible, authInView} = this.state
 

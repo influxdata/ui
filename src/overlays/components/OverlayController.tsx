@@ -74,7 +74,7 @@ export const OverlayController: FunctionComponent = () => {
         activeOverlay.current = <CustomApiTokenOverlay onClose={onClose} />
         break
       case 'access-token':
-        activeOverlay.current = <DisplayTokenOverlay onClose={onClose} />
+        activeOverlay.current = <DisplayTokenOverlay />
         break
       case 'add-token':
         activeOverlay.current = <BucketsTokenOverlay onClose={onClose} />

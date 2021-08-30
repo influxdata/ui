@@ -20,7 +20,7 @@ import BucketsTokenOverlay from 'src/authorizations/components/BucketsTokenOverl
 import TelegrafConfigOverlay from 'src/telegrafs/components/TelegrafConfigOverlay'
 import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverlay'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
-import CreateBucketOverlay from 'src/buckets/components/CreateBucketForm/CreateBucketOverlay'
+import CreateBucketOverlay from 'src/buckets/components/createBucketForm/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
 import RateLimitOverlay from 'src/cloud/components/RateLimitOverlay'
 import WriteLimitOverlay from 'src/cloud/components/WriteLimitOverlay'

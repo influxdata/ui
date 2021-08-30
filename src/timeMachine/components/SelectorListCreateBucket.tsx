@@ -20,10 +20,9 @@ import {
   List,
   ListItemRef,
 } from '@influxdata/clockface'
-import BucketOverlayForm from 'src/buckets/components/CreateBucketForm/BucketOverlayForm'
+import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
 import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
-// TODO JILL investigate how this is used!!!!!!
 // Utils
 import {
   extractBucketMaxRetentionSeconds,
@@ -50,6 +49,11 @@ interface OwnProps {}
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
+/**
+ * This is the item in the bucket selector list in the query builder
+ * that creates a new bucket (it is at the end of the list of buckets
+ * that can be selected
+ * */
 const SelectorListCreateBucket: FC<Props> = ({
   org,
   createBucket,
@@ -150,7 +154,7 @@ const SelectorListCreateBucket: FC<Props> = ({
           <BucketOverlayForm
             name={state.name}
             buttonText="Create"
-            disableRenaming={false}
+            isEditing={false}
             ruleType={state.ruleType}
             onClose={onHide}
             onSubmit={handleSubmit(onHide)}

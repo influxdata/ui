@@ -4,7 +4,7 @@ import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 // Components
 import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
-import {SchemaToggle} from './SchemaToggle'
+import {SchemaToggle} from 'src/buckets/components/createBucketForm/SchemaToggle'
 
 // Constants
 import {isSystemBucket} from 'src/buckets/constants'
@@ -18,7 +18,12 @@ import {
 import {RuleType} from 'src/buckets/reducers/createBucket'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {SchemaType} from 'src/client/generatedRoutes'
 
+/** for schemas, if (isEditing) is true, then
+ * need the schemaType that is already set;
+ * if !isEditing (it is false)
+ * then need the 'onChangeSchemaType' method*/
 interface Props {
   name: string
   retentionSeconds: number
@@ -28,11 +33,12 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
-  onChangeSchemaType: (schemaType: 'implicit' | 'explicit') => void
-  disableRenaming: boolean
+  isEditing: boolean
   buttonText: string
   onClickRename?: () => void
   testID?: string
+  onChangeSchemaType?: (schemaType: SchemaType) => void
+  schemaType?: SchemaType
 }
 
 interface State {
@@ -61,7 +67,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       ruleType,
       buttonText,
       retentionSeconds,
-      disableRenaming,
+      isEditing,
       onClose,
       onChangeInput,
       onChangeRuleType,
@@ -72,10 +78,21 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     const {showAdvanced} = this.state
 
-    const nameInputStatus = disableRenaming && ComponentStatus.Disabled
+    const nameInputStatus = isEditing && ComponentStatus.Disabled
 
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
+
+        let contents = null;
+        if (isEditing) {
+          // put styling here ?
+          contents =  <SchemaToggle readOnlySchemaType={this.props.schemaType} />
+        } else {
+          contents =  <SchemaToggle
+              onChangeSchemaType={this.onChangeSchemaTypeInternal}
+          />
+        }
+
         return (
           <Accordion expanded={showAdvanced} testID="schemaBucketToggle">
             <Accordion.AccordionHeader>
@@ -83,9 +100,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
             </Accordion.AccordionHeader>
             <Accordion.AccordionBodyItem>
               <div>
-                <SchemaToggle
-                  onChangeSchemaType={this.onChangeSchemaTypeInternal}
-                />
+                {contents}
               </div>
             </Accordion.AccordionBodyItem>
           </Accordion>
@@ -171,7 +186,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   }
 
   private get nameHelpText(): string {
-    if (this.props.disableRenaming) {
+    if (this.props.isEditing) {
       return 'To rename bucket use the RENAME button below'
     }
 

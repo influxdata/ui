@@ -3,7 +3,7 @@ import React, {FC, ChangeEvent, FormEvent, useReducer} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import BucketOverlayForm from 'src/buckets/components/CreateBucketForm/BucketOverlayForm'
+import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
 
 // Actions
 import {createBucketAndUpdate} from 'src/buckets/actions/thunks'
@@ -24,6 +24,7 @@ import {AppState, Bucket, RetentionRule} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
+import {SchemaType} from "../../../client";
 
 interface CreateBucketFormProps {
   onClose: () => void
@@ -72,7 +73,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   }
 
   const handleChangeSchemaType = (
-    schemaType: 'implicit' | 'explicit'
+    schemaType: SchemaType
   ): void => {
     dispatch({type: 'updateSchema', payload: schemaType})
   }
@@ -102,7 +103,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     <BucketOverlayForm
       name={state.name}
       buttonText="Create"
-      disableRenaming={false}
+      isEditing={false}
       ruleType={state.ruleType}
       onClose={onClose}
       onSubmit={handleSubmit}

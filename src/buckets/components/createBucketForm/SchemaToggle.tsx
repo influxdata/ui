@@ -10,14 +10,17 @@ import {
   InputToggleType,
   Toggle,
 } from '@influxdata/clockface'
+import {capitalize} from 'lodash'
 
-import './SchemaToggle.scss'
+import 'src/buckets/components/createBucketForm/SchemaToggle.scss'
+import {SchemaType} from "src/client/generatedRoutes";
 
 interface Props {
-  onChangeSchemaType: (selectedSchemaType: 'explicit' | 'implicit') => void
+  onChangeSchemaType?: (selectedSchemaType: 'explicit' | 'implicit') => void
+  readOnlySchemaType?: SchemaType
 }
 
-export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
+export const SchemaToggle: FC<Props> = ({onChangeSchemaType, readOnlySchemaType}) => {
   const [schemaType, setSchemaType] = useState('implicit')
 
   const handleSchemaChange = newValue => {
@@ -28,6 +31,53 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
   // this is the documentation link for explicit schemas for buckets
   const link =
     'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
+
+  const toggles = <React.Fragment>
+    <Toggle
+        tabIndex={1}
+        value="implicit"
+        id="implicit-bucket-schema-choice"
+        name="implicit-bucket-schema-choice"
+        className="option"
+        checked={schemaType === 'implicit'}
+        onChange={handleSchemaChange}
+        type={InputToggleType.Radio}
+        size={ComponentSize.ExtraSmall}
+        color={ComponentColor.Primary}
+        testID="implicit-bucket-schema-choice-ID"
+    >
+      <InputLabel
+          htmlFor="implicit-bucket-schema-choice"
+          active={schemaType === 'implicit'}
+      >
+        Implicit
+      </InputLabel>
+    </Toggle>
+    <Toggle
+        tabIndex={2}
+        value="explicit"
+        id="explicit-bucket-schema-choice"
+        name="explicit-bucket-schema-choice"
+        testID="explicit-bucket-schema-choice-ID"
+        checked={schemaType === 'explicit'}
+        className="option"
+        onChange={handleSchemaChange}
+        type={InputToggleType.Radio}
+        size={ComponentSize.ExtraSmall}
+        color={ComponentColor.Primary}
+    >
+      <InputLabel
+          htmlFor="explicit-bucket-schema-choice"
+          active={schemaType === 'explicit'}
+      >
+        Explicit
+      </InputLabel>
+    </Toggle>
+  </React.Fragment>
+  const readOnly = <div>{capitalize(readOnlySchemaType)}</div>
+
+  const contents = readOnlySchemaType? readOnly : toggles
+
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -47,46 +97,7 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType}) => {
           </a>
         </div>
       </div>
-      <Toggle
-        tabIndex={1}
-        value="implicit"
-        id="implicit-bucket-schema-choice"
-        name="implicit-bucket-schema-choice"
-        className="option"
-        checked={schemaType === 'implicit'}
-        onChange={handleSchemaChange}
-        type={InputToggleType.Radio}
-        size={ComponentSize.ExtraSmall}
-        color={ComponentColor.Primary}
-        testID="implicit-bucket-schema-choice-ID"
-      >
-        <InputLabel
-          htmlFor="implicit-bucket-schema-choice"
-          active={schemaType === 'implicit'}
-        >
-          Implicit
-        </InputLabel>
-      </Toggle>
-      <Toggle
-        tabIndex={2}
-        value="explicit"
-        id="explicit-bucket-schema-choice"
-        name="explicit-bucket-schema-choice"
-        testID="explicit-bucket-schema-choice-ID"
-        checked={schemaType === 'explicit'}
-        className="option"
-        onChange={handleSchemaChange}
-        type={InputToggleType.Radio}
-        size={ComponentSize.ExtraSmall}
-        color={ComponentColor.Primary}
-      >
-        <InputLabel
-          htmlFor="explicit-bucket-schema-choice"
-          active={schemaType === 'explicit'}
-        >
-          Explicit
-        </InputLabel>
-      </Toggle>
+      {contents}
     </FlexBox>
   )
 }

@@ -7,7 +7,6 @@ import {AuthorizationUpdateRequest as AuthApi} from '@influxdata/influx'
 
 import {mocked} from 'ts-jest/utils'
 
-
 import {createAuthorization} from 'src/authorizations/apis'
 import TokensTab from './TokensTab'
 
@@ -26,7 +25,6 @@ const InactiveToken = {
   description: 'XYZ',
 }
 
-
 const localTokens = [auth2, InactiveToken]
 const localHistory = createMemoryHistory({initialEntries: ['/']})
 const replacementID = '02f12c50dcb9300f'
@@ -38,7 +36,6 @@ jest.mock('../../../../src/client', () => ({
         tokens: localTokens.map(t => {
           t.id, t.orgID, t.token
         }),
-        
       },
       headers: {},
       status: 200,
@@ -51,8 +48,8 @@ jest.mock('../../../../src/client', () => ({
   postAuthorization: jest.fn(() => {
     return {
       headers: {},
-      status: 201, 
-      data: InactiveToken
+      status: 201,
+      data: InactiveToken,
     }
   }),
   getAuthorization: jest.fn(() => {
@@ -61,18 +58,15 @@ jest.mock('../../../../src/client', () => ({
       headers: {},
       status: 200,
     }
-    
   }),
-  
 }))
 jest.mock('src/authorizations/apis', () => ({
-    createAuthorization: jest.fn(() => {
+  createAuthorization: jest.fn(() => {
     return {
       ...auth2,
       id: replacementID,
     }
   }),
-  
 }))
 
 const defaultProps: any = {
@@ -104,17 +98,15 @@ const setup = (override?: {}) => {
         },
         allIDs: localTokens.map(t => t.id),
         status: RemoteDataState.Done,
-        currentAuth: {status: RemoteDataState.NotStarted, item: {}}
+        currentAuth: {status: RemoteDataState.NotStarted, item: {}},
       },
     },
   }
-  
 
   return renderWithReduxAndRouter(<TokensTab {...props} />, () => testState)
 }
 
 describe('TokensTab', () => {
-  
   let ui
 
   beforeEach(() => {
@@ -123,28 +115,28 @@ describe('TokensTab', () => {
   })
 
   describe('manage Tokens', () => {
-
     it('deletes a token', async () => {
-      
       const tokenCard = (await screen.findAllByTestId('token-card My token'))[0]
-      
+
       expect(
-        tokenCard.querySelector("[data-testid='token-name My token']")).toHaveTextContent('My token')
+        tokenCard.querySelector("[data-testid='token-name My token']")
+      ).toHaveTextContent('My token')
 
       const deleteButton = tokenCard.querySelector(
         "[data-testid='delete-token']"
       )
 
       const tokenID = '03c03a8a64728000'
-      
-        
+
       expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeTruthy()
       expect(ui.store.getState().resources.tokens.allIDs).toContain(tokenID)
 
       fireEvent.click(deleteButton)
 
       await waitFor(() => expect(deleteAuthorization).toBeCalled())
-      expect(mocked(deleteAuthorization).mock.calls[0][0]['authID']).toEqual(tokenID)
+      expect(mocked(deleteAuthorization).mock.calls[0][0]['authID']).toEqual(
+        tokenID
+      )
       expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeFalsy()
       expect(ui.store.getState().resources.tokens.allIDs).not.toContain(tokenID)
     })
@@ -154,45 +146,35 @@ describe('TokensTab', () => {
       expect(ui.store.getState().resources.tokens.allIDs.length).toEqual(
         localTokens.length
       )
-      
 
       const tokenCard = (await screen.findAllByTestId('token-card My token'))[0]
-      
-      const cloneButton = tokenCard.querySelector(
-        '[data-testid=clone-token]'
-      )
-      
+
+      const cloneButton = tokenCard.querySelector('[data-testid=clone-token]')
+
       fireEvent.click(cloneButton)
-      
+
       await waitFor(() => expect(createAuthorization).toBeCalled())
-      
-      
     })
 
     it('display tokens', async () => {
-      
-
-      const tokenCard1 = (await screen.findAllByTestId('token-card My token'))[0]
+      const tokenCard1 = (
+        await screen.findAllByTestId('token-card My token')
+      )[0]
       const tokenCard2 = (await screen.findAllByTestId('token-card XYZ'))[0]
 
-      expect(tokenCard1).toBeDefined();
-      expect(tokenCard2).toBeDefined();
-    });
+      expect(tokenCard1).toBeDefined()
+      expect(tokenCard2).toBeDefined()
+    })
 
     it('displays generate token button', async () => {
-      
-
-      const generateTokenButton = (await screen.findAllByTestId('dropdown-button--gen-token'))[0]
+      const generateTokenButton = (
+        await screen.findAllByTestId('dropdown-button--gen-token')
+      )[0]
       fireEvent.click(generateTokenButton)
-      
-
-      const allAccessOption = (await screen.findAllByTestId('dropdown-item generate-token--all-access'))[0]
+      const allAccessOption = (
+        await screen.findAllByTestId('dropdown-item generate-token--all-access')
+      )[0]
       fireEvent.click(allAccessOption)
-      
-
-    });
-    
+    })
   })
-  
-  
 })

@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Pinned Items', () => {
+describe('Pinned Items ', () => {
   let orgID: string
   beforeEach(() => {
     cy.flush()

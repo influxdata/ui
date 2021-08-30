@@ -5,7 +5,7 @@ describe('Orgs', () => {
     cy.flush()
   })
 
-  describe('when there is a user with no orgs', () => {
+  describe('when there is a user with no orgs ', () => {
     beforeEach(() => {
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => cy.deleteOrg(id))

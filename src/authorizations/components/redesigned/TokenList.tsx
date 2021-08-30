@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import memoizeOne from 'memoize-one';
-import isEqual from 'lodash/isEqual';
+import memoizeOne from 'memoize-one'
+import isEqual from 'lodash/isEqual'
 
 // Components
 import {Overlay, ResourceList} from '@influxdata/clockface'
@@ -47,11 +47,13 @@ export class TokenList extends PureComponent<Props, State> {
   }
 
   public componentDidUpdate(prevProps) {
-    const { auths: prevAuths } = prevProps;
-    const { auths: nextAuths } = this.props;
+    const {auths: prevAuths} = prevProps
+    const {auths: nextAuths} = this.props
 
     if (!isEqual(prevAuths, nextAuths)) {
-      const authInView = nextAuths.find(auth => auth.id === this.state.authInView?.id)
+      const authInView = nextAuths.find(
+        auth => auth.id === this.state.authInView?.id
+      )
       this.setState({authInView})
     }
   }
@@ -74,7 +76,6 @@ export class TokenList extends PureComponent<Props, State> {
           <EditTokenOverlay
             auth={authInView}
             onDismissOverlay={this.handleDismissOverlay}
-          
           />
         </Overlay>
       </>

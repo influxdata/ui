@@ -1,4 +1,5 @@
 import React, {FC, useState, useContext} from 'react'
+import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Components
 import {
@@ -59,37 +60,31 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
                 testID="custom-api-token-input"
               />
             </Form.Element>
-            <FlexBox.Child style={{width: '100%'}}>
+            <FlexBox.Child className="main-flexbox-child">
               <FlexBox
                 margin={ComponentSize.Large}
                 justifyContent={JustifyContent.SpaceBetween}
                 direction={FlexDirection.Row}
                 stretchToFitWidth={true}
                 alignItems={AlignItems.Center}
-                style={{textAlign: 'start', margin: '5px 0px'}}
+                className="flex-box-label"
               >
                 <FlexBox.Child basis={40} grow={8}>
                   <InputLabel size={ComponentSize.ExtraSmall}>
                     Resources
                   </InputLabel>
                 </FlexBox.Child>
-                <FlexBox.Child
-                  grow={1}
-                  style={{alignItems: 'left', marginLeft: '20px'}}
-                >
+                <FlexBox.Child grow={1} className="flexbox-child-label-read">
                   <InputLabel
-                    style={{marginLeft: '20px'}}
+                    className="input-label-read"
                     size={ComponentSize.ExtraSmall}
                   >
                     Read
                   </InputLabel>
                 </FlexBox.Child>
-                <FlexBox.Child
-                  grow={1}
-                  style={{alignItems: 'left', marginRight: '20px'}}
-                >
+                <FlexBox.Child grow={1} className="flexbox-child-label-write">
                   <InputLabel
-                    style={{marginRight: '20px'}}
+                    className="input-label-write"
                     size={ComponentSize.ExtraSmall}
                   >
                     Write

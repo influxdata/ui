@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, MouseEvent} from 'react'
 
 // Components
 import {
@@ -31,6 +31,10 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
     onToggleAll(resourceName, 'write')
   }
 
+  const handleFlexboxClick = (event: MouseEvent) => {
+    event.stopPropagation()
+  }
+
   const accordionHeader = (title: string) => {
     const {permissions} = props
     return (
@@ -45,12 +49,7 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
         <FlexBox.Child basis={40} grow={8}>
           <InputLabel size={ComponentSize.Medium}>{title}</InputLabel>
         </FlexBox.Child>
-        <FlexBox.Child
-          grow={1}
-          onClick={(e: any) => {
-            e.stopPropagation()
-          }}
-        >
+        <FlexBox.Child grow={1} onClick={handleFlexboxClick}>
           <Toggle
             id={resourceName}
             type={InputToggleType.Checkbox}
@@ -63,12 +62,7 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             disabled={false}
           ></Toggle>
         </FlexBox.Child>
-        <FlexBox.Child
-          grow={1}
-          onClick={(e: any) => {
-            e.stopPropagation()
-          }}
-        >
+        <FlexBox.Child grow={1} onClick={handleFlexboxClick}>
           <Toggle
             id={resourceName + 1}
             type={InputToggleType.Checkbox}

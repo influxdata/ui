@@ -73,9 +73,8 @@ class ResourceAccordion extends Component<Props, State> {
             onToggleAll={this.handleToggleAll}
           />
           <GetResources resources={[ResourceType[resourceName]]}>
-            {isEmpty(permissions[resource].sublevelPermissions)
-              ? null
-              : this.getAccordionBody(resourceName, resource)}
+            {!isEmpty(permissions[resource].sublevelPermissions) &&
+              this.getAccordionBody(resourceName, resource)}
           </GetResources>
         </Accordion>
       )

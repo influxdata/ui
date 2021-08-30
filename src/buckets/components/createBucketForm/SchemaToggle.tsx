@@ -89,8 +89,9 @@ export const SchemaToggle: FC<Props> = ({onChangeSchemaType, readOnlySchemaType}
       <div className="header">
         <InputLabel>Bucket Schema Type</InputLabel>
         <div className="subtext">
-          By default, buckets have an implicit schema that conforms to your
-          data. Use explicit schemas to enforce specific data types and columns.{' '}
+          By default, buckets have an implicit schema that conforms to your data.
+          Use explicit schemas to enforce specific data types and columns.
+          Bucket Schema type cannot be changed after creation.{' '}
           <a href={link} target="_blank" rel="noopener noreferrer">
             {' '}
             Learn more

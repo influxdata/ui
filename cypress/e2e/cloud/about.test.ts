@@ -51,7 +51,7 @@ describe.skip('About Page for free users with only 1 user', () => {
   })
 })
 
-describe('About Page for free users with multiple users', () => {
+describe('About Page for free users with multiple users ', () => {
   beforeEach(() => {
     cy.flush()
 

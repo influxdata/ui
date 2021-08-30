@@ -1,4 +1,5 @@
 import React, {FC, useState, useContext} from 'react'
+import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Components
 import {
@@ -12,6 +13,8 @@ import {
   Button,
   ComponentColor,
   ButtonShape,
+  InputLabel,
+  JustifyContent,
 } from '@influxdata/clockface'
 
 import ResourceAccordion from './ResourceAccordion'
@@ -57,9 +60,39 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
                 testID="custom-api-token-input"
               />
             </Form.Element>
-            <Form.Element label="Resources">
+            <FlexBox.Child className="main-flexbox-child">
+              <FlexBox
+                margin={ComponentSize.Large}
+                justifyContent={JustifyContent.SpaceBetween}
+                direction={FlexDirection.Row}
+                stretchToFitWidth={true}
+                alignItems={AlignItems.Center}
+                className="flex-box-label"
+              >
+                <FlexBox.Child basis={40} grow={8}>
+                  <InputLabel size={ComponentSize.ExtraSmall}>
+                    Resources
+                  </InputLabel>
+                </FlexBox.Child>
+                <FlexBox.Child grow={1} className="flexbox-child-label-read">
+                  <InputLabel
+                    className="input-label-read"
+                    size={ComponentSize.ExtraSmall}
+                  >
+                    Read
+                  </InputLabel>
+                </FlexBox.Child>
+                <FlexBox.Child grow={1} className="flexbox-child-label-write">
+                  <InputLabel
+                    className="input-label-write"
+                    size={ComponentSize.ExtraSmall}
+                  >
+                    Write
+                  </InputLabel>
+                </FlexBox.Child>
+              </FlexBox>
               <ResourceAccordion resources={resources} />
-            </Form.Element>
+            </FlexBox.Child>
           </FlexBox>
         </Form>
       </Overlay.Body>

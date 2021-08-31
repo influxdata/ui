@@ -62,6 +62,16 @@ const App: FC = () => {
         })
       }
     }
+    if (CLOUD && isFlagEnabled('coveo')) {
+      const script = document.createElement('script')
+      script.src =
+        'https://platform.cloud.coveo.com/rest/organizations/influxdatanonproduction1eh1cn7go/pages/95a20052-218d-4048-9081-16dbcebbdebb/inappwidget/loader'
+      script.async = true
+      document.body.appendChild(script)
+      return () => {
+        document.body.removeChild(script)
+      }
+    }
     setAutoFreeze(false)
   }, [])
 

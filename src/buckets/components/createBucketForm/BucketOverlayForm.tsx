@@ -4,10 +4,7 @@ import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 // Components
 import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
-import {
-  SchemaToggle,
-  SchemaToggleProps,
-} from 'src/buckets/components/createBucketForm/SchemaToggle'
+import {SchemaToggle} from 'src/buckets/components/createBucketForm/SchemaToggle'
 
 // Constants
 import {isSystemBucket} from 'src/buckets/constants'

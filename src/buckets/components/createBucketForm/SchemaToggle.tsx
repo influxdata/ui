@@ -83,7 +83,11 @@ export const SchemaToggle: FC<SchemaToggleProps> = ({
     </React.Fragment>
   )
 
-  const readOnly = <InputLabel>{capitalize(readOnlySchemaType)}</InputLabel>
+  const readOnly = (
+    <InputLabel testID="bucket-readonly-schema-label">
+      {capitalize(readOnlySchemaType)}
+    </InputLabel>
+  )
   const contents = readOnlySchemaType ? readOnly : toggles
 
   return (

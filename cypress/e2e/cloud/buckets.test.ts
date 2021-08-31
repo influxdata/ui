@@ -41,6 +41,16 @@ describe('Explicit Buckets', () => {
 
       // should have the show schema button in the actions:
       cy.getByTestID('bucket-showSchema').contains('Show Schema')
+
+      // click on settings; open up the advanced section, and should see the "explicit" as the bucket schema type:
+      cy.getByTestID('bucket-settings').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('schemaBucketToggle').click()
+      cy.getByTestID('bucket-readonly-schema-label').contains('Explicit')
+
+      // the  radio buttons should NOT be there:
+      cy.getByTestID('explicit-bucket-schema-choice-ID').should('not.exist')
     })
   })
 
@@ -70,6 +80,16 @@ describe('Explicit Buckets', () => {
 
       // should NOT have the show schema button in the actions:
       cy.getByTestID('bucket-showSchema').should('not.exist')
+
+      // click on settings; open up the advanced section, and should see the "implicit" as the bucket schema type:
+      cy.getByTestID('bucket-settings').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('schemaBucketToggle').click()
+      cy.getByTestID('bucket-readonly-schema-label').contains('Implicit')
+
+      // the  radio buttons should NOT be there:
+      cy.getByTestID('explicit-bucket-schema-choice-ID').should('not.exist')
     })
   })
 })

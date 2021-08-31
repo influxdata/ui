@@ -18,7 +18,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
-import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
+import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
 
 // Actions
 import {updateBucket} from 'src/buckets/actions/thunks'
@@ -33,6 +33,7 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 
 // Types
 import {OwnBucket} from 'src/types'
+import {SchemaType} from 'src/client'
 
 interface DispatchProps {
   onUpdateBucket: typeof updateBucket
@@ -54,6 +55,8 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
   const [retentionSelection, setRetentionSelection] = useState(DEFAULT_SECONDS)
 
+  const [schemaType, setSchemaType] = useState('implicit')
+
   const handleClose = useCallback(() => {
     history.push(`/orgs/${orgID}/load-data/buckets`)
   }, [orgID, history])
@@ -68,6 +71,8 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         return
       }
       setBucketDraft(resp.data as OwnBucket)
+
+      setSchemaType(resp.data.schemaType)
 
       const rules = get(resp.data, 'retentionRules', [])
       const rule = rules.find(r => r.type === 'expire')
@@ -86,6 +91,13 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
       retentionRules: [{type: 'expire' as 'expire', everySeconds}],
     })
     setRetentionSelection(everySeconds)
+  }
+
+  const handleChangeSchemaType = (schemaType: SchemaType): void => {
+    setBucketDraft({
+      ...bucketDraft,
+      schemaType: schemaType,
+    })
   }
 
   const handleChangeRuleType = (ruleType: 'expire' | null) => {
@@ -141,12 +153,14 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               ruleType={ruleType}
               onClose={handleClose}
               onSubmit={handleSubmit}
-              disableRenaming={true}
+              isEditing={true}
               onChangeInput={handleChangeInput}
               retentionSeconds={retentionSeconds}
               onChangeRuleType={handleChangeRuleType}
               onChangeRetentionRule={handleChangeRetentionRule}
               onClickRename={handleClickRename}
+              onChangeSchemaType={handleChangeSchemaType}
+              schemaType={schemaType as SchemaType}
             />
           </Overlay.Body>
         </SpinnerContainer>

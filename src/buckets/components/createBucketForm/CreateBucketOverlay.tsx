@@ -3,7 +3,7 @@ import React, {FC, useContext} from 'react'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
-import {CreateBucketForm} from 'src/buckets/components/CreateBucketForm'
+import {CreateBucketForm} from 'src/buckets/components/createBucketForm/CreateBucketForm'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'

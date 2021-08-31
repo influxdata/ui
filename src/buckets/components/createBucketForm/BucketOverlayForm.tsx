@@ -2,11 +2,12 @@
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 
 // Components
-import {Form, Input, Button, Grid} from '@influxdata/clockface'
+import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
+import {SchemaToggle} from 'src/buckets/components/createBucketForm/SchemaToggle'
 
 // Constants
-import {isSystemBucket} from 'src/buckets/constants/index'
+import {isSystemBucket} from 'src/buckets/constants'
 
 // Types
 import {
@@ -15,7 +16,14 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {RuleType} from 'src/buckets/reducers/createBucket'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+import {SchemaType} from 'src/client/generatedRoutes'
 
+/** for schemas, if (isEditing) is true, then
+ * need the schemaType that is already set;
+ * if !isEditing (it is false)
+ * then need the 'onChangeSchemaType' method*/
 interface Props {
   name: string
   retentionSeconds: number
@@ -25,13 +33,33 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
-  disableRenaming: boolean
+  isEditing: boolean
   buttonText: string
   onClickRename?: () => void
   testID?: string
+  onChangeSchemaType?: (schemaType: SchemaType) => void
+  schemaType?: SchemaType
+}
+
+interface State {
+  showAdvanced: boolean
+  schemaType: 'implicit' | 'explicit'
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
+  constructor(props) {
+    super(props)
+
+    this.onChangeSchemaTypeInternal = this.onChangeSchemaTypeInternal.bind(this)
+  }
+
+  public state: State = {showAdvanced: false, schemaType: 'implicit'}
+
+  public onChangeSchemaTypeInternal = function(newSchemaType: SchemaType) {
+    this.setState({schemaType: newSchemaType})
+    this.props.onChangeSchemaType(newSchemaType)
+  }
+
   public render() {
     const {
       name,
@@ -39,16 +67,45 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       ruleType,
       buttonText,
       retentionSeconds,
-      disableRenaming,
+      isEditing,
       onClose,
       onChangeInput,
       onChangeRuleType,
       onChangeRetentionRule,
       onClickRename,
       testID = 'bucket-form',
+      schemaType,
     } = this.props
 
-    const nameInputStatus = disableRenaming && ComponentStatus.Disabled
+    const {showAdvanced} = this.state
+
+    const nameInputStatus = isEditing && ComponentStatus.Disabled
+
+    const makeAdvancedSection = () => {
+      if (isFlagEnabled('measurementSchema') && CLOUD) {
+        let contents = null
+        if (isEditing) {
+          contents = <SchemaToggle readOnlySchemaType={schemaType} />
+        } else {
+          contents = (
+            <SchemaToggle
+              onChangeSchemaType={this.onChangeSchemaTypeInternal}
+            />
+          )
+        }
+
+        return (
+          <Accordion expanded={showAdvanced} testID="schemaBucketToggle">
+            <Accordion.AccordionHeader>
+              <span>Advanced Configuration (Optional)</span>
+            </Accordion.AccordionHeader>
+            <Accordion.AccordionBodyItem>
+              <div>{contents}</div>
+            </Accordion.AccordionBodyItem>
+          </Accordion>
+        )
+      }
+    }
 
     return (
       <Form onSubmit={onSubmit} testID={testID}>
@@ -82,6 +139,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                   onChangeRetentionRule={onChangeRetentionRule}
                 />
               </Form.Element>
+              {makeAdvancedSection()}
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
@@ -127,7 +185,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   }
 
   private get nameHelpText(): string {
-    if (this.props.disableRenaming) {
+    if (this.props.isEditing) {
       return 'To rename bucket use the RENAME button below'
     }
 

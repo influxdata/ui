@@ -5,6 +5,7 @@ import {capitalize} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Constants
+import {CLOUD} from 'src/shared/constants'
 import {
   copyToClipboardSuccess,
   copyToClipboardFailed,
@@ -55,6 +56,10 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
     <span data-testid="bucket-schemaType"> {schemaLabel} </span>
   )
 
+  const bucketInfo = CLOUD
+    ? [schemaBlock, persistentBucketMeta]
+    : [persistentBucketMeta]
+
   if (bucket.type === 'system') {
     return (
       <ResourceCard.Meta testID={`resourceCard-buckets-${bucket.id}`}>
@@ -64,16 +69,14 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
         >
           System Bucket
         </span>
-        {persistentBucketMeta}
-        {schemaBlock}
+        {bucketInfo}
       </ResourceCard.Meta>
     )
   }
 
   return (
     <ResourceCard.Meta testID={`resourceCard-buckets-${bucket.id}`}>
-      {persistentBucketMeta}
-      {schemaBlock}
+      {bucketInfo}
       <CopyToClipboard text={bucket.id} onCopy={handleCopyAttempt}>
         <span className="copy-bucket-id" title="Click to Copy to Clipboard">
           ID: {bucket.id}

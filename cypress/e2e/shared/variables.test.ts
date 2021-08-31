@@ -343,7 +343,9 @@ describe('Variables', () => {
     cy.getByTestID('inline-labels--popover--contents').type(labelName)
     cy.getByTestID('inline-labels--create-new').click()
 
-    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     cy.getByTestID('overlay--children').should('not.exist')
@@ -451,7 +453,9 @@ describe('Variables', () => {
       .clickAttached()
     cy.getByTestID('inline-labels--popover--contents').type(firstLabelName)
     cy.getByTestID('inline-labels--create-new').click()
-    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     const secondLabelName = 'query'
@@ -460,7 +464,9 @@ describe('Variables', () => {
       .clickAttached()
     cy.getByTestID('inline-labels--popover--contents').type(secondLabelName)
     cy.getByTestID('inline-labels--create-new').click()
-    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     const thirdLabelName = 'csv'
@@ -469,7 +475,9 @@ describe('Variables', () => {
       .clickAttached()
     cy.getByTestID('inline-labels--popover--contents').type(thirdLabelName)
     cy.getByTestID('inline-labels--create-new').click()
-    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     // Select ascending order and use filter on variable name

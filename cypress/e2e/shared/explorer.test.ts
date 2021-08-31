@@ -647,7 +647,7 @@ describe('DataExplorer', () => {
       // rename the first tab
       cy.get('.query-tab')
         .first()
-        .trigger('contextmenu')
+        .trigger('contextmenu', {force: true})
       cy.getByTestID('right-click--edit-tab').click()
       cy.getByTestID('edit-query-name').type('NewName{enter}')
       cy.get('.query-tab')

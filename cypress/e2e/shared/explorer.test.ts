@@ -55,7 +55,7 @@ describe('DataExplorer', () => {
       cy.contains(fluxCode)
     })
 
-    it('can navigate to data explorer from buckets list and override state', () => {
+    it.only('can navigate to data explorer from buckets list and override state', () => {
       const fluxCode = 'from(bucket: "_monitoring")'
       cy.getByTestID('switch-to-script-editor').click()
       cy.get('.flux-editor').within(() => {
@@ -66,6 +66,7 @@ describe('DataExplorer', () => {
       cy.get('.cf-tree-nav--toggle').click()
       // Can't use the testID to select this nav item because Clockface is silly and uses the same testID twice
       // Issue: https://github.com/influxdata/clockface/issues/539
+      cy.getByTestID('nav-item-load-data').click()
       cy.get('.cf-tree-nav--sub-item-label')
         .contains('Buckets')
         .click()

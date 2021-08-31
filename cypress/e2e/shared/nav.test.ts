@@ -150,7 +150,7 @@ describe('navigation', () => {
     })
   })
 
-  it.only('can navigate in tabs from maximized left tree nav', () => {
+  it('can navigate in tabs from maximized left tree nav', () => {
     // TODO: check if nav is already maximized
     cy.get('.cf-tree-nav--toggle').click({force: true})
     ;[

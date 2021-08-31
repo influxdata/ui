@@ -44,6 +44,7 @@ import {
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
+import {SchemaType} from 'src/client/generatedRoutes'
 
 interface OwnProps {}
 type ReduxProps = ConnectedProps<typeof connector>
@@ -113,9 +114,7 @@ const SelectorListCreateBucket: FC<Props> = ({
     createBucket(state)
     onHide()
   }
-  const handleChangeSchemaType = (
-    schemaType: 'implicit' | 'explicit'
-  ): void => {
+  const handleChangeSchemaType = (schemaType: SchemaType): void => {
     dispatch({type: 'updateSchema', payload: schemaType})
   }
 

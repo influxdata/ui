@@ -74,6 +74,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       onChangeRetentionRule,
       onClickRename,
       testID = 'bucket-form',
+      schemaType,
     } = this.props
 
     const {showAdvanced} = this.state
@@ -84,7 +85,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
         let contents = null
         if (isEditing) {
-          contents = <SchemaToggle readOnlySchemaType={this.props.schemaType} />
+          contents = <SchemaToggle readOnlySchemaType={schemaType} />
         } else {
           contents = (
             <SchemaToggle

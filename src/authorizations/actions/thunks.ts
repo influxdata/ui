@@ -16,6 +16,7 @@ import {
   setAuthorizations,
   removeAuthorization,
   setCurrentAuthorization,
+  setAllResources,
 } from 'src/authorizations/actions/creators'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -164,5 +165,21 @@ export const deleteAuthorization = (id: string, name: string = '') => async (
     event('token.delete.failure', {id, name})
     console.error(e)
     dispatch(notify(authorizationDeleteFailed(name)))
+  }
+}
+
+export const getResources = () => async (dispatch) => {
+  try {
+    dispatch(setAllResources(RemoteDataState.Loading))
+    const resp = await api.getResources({headers: {}})
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+    const resources = resp.data
+    dispatch(setAllResources(RemoteDataState.Done, resources))
+  }
+  catch (e) {
+    console.error(e)
   }
 }

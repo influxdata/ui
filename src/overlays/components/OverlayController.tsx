@@ -36,7 +36,7 @@ import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 import AutoRefreshOverlay from 'src/dashboards/components/AutoRefreshOverlay'
 import CellCloneOverlay from 'src/shared/components/cells/CellCloneOverlay'
-import {CustomApiTokenOverlay} from 'src/authorizations/components/redesigned/CustomApiTokenOverlay'
+import CustomApiTokenOverlay from 'src/authorizations/components/redesigned/CustomApiTokenOverlay'
 import DisplayTokenOverlay from 'src/authorizations/components/redesigned/DisplayTokenOverlay'
 
 // Actions

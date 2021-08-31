@@ -21,13 +21,20 @@ import ResourceAccordion from './ResourceAccordion'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
+import {connect} from 'react-redux'
+import {AppState} from 'src/types'
 
 interface OwnProps {
   onClose: () => void
 }
 
-export const CustomApiTokenOverlay: FC<OwnProps> = props => {
+interface StateProps {
+  allResources: string[]
+}
+
+const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
   const resources = ['telegrafs', 'buckets']
+
   const handleDismiss = () => {
     props.onClose()
   }
@@ -115,3 +122,11 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
     </Overlay.Container>
   )
 }
+
+const mstp = (state: AppState) => {
+  return {
+    allResources: ['random string'],
+  }
+}
+
+export default connect(mstp)(CustomApiTokenOverlay)

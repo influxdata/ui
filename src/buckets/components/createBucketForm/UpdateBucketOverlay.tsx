@@ -72,7 +72,6 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
       }
       setBucketDraft(resp.data as OwnBucket)
 
-      console.log('editing bucket...got it?? jill77a:', resp.data)
       setSchemaType(resp.data.schemaType)
 
       const rules = get(resp.data, 'retentionRules', [])

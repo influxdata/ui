@@ -19,12 +19,21 @@ const setup = (
     labels: [],
   }
   return renderWithRedux(<BucketCardMeta bucket={bucket} />)
-}
+} 
+
+jest.mock('src/shared/constants/index', () => ({
+  CLOUD: true,
+}))
 
 const EXPLICIT_TEXT = 'Schema Type: Explicit'
 const IMPLICIT_TEXT = 'Schema Type: Implicit'
 
 describe('bucket meta data card, testing that the schema type shows up properly', () => {
+  beforeEach(() => {
+    process.env = { CLOUD_URL: "hello" }
+
+  });
+
   it('should show the explicit schema type', () => {
     const {getByTestId} = setup('explicit', 'user', 'fooabc')
 

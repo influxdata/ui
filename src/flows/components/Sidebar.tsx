@@ -150,7 +150,7 @@ const Sidebar: FC = () => {
         },
         {
           title: () => {
-            if (flow.meta.allIDs.indexOf(id) === -1) {
+            if (!flow.meta.allIDs.includes(id)) {
               return 'Hide'
             }
 
@@ -181,7 +181,7 @@ const Sidebar: FC = () => {
         {
           title: 'Convert to |> Flux',
           disable: () => {
-            if (flow.data.allIDs.indexOf(id) === -1) {
+            if (!flow.data.allIDs.includes(id)) {
               return true
             }
 

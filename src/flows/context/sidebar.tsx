@@ -32,7 +32,7 @@ export const SidebarProvider: FC = ({children}) => {
   const [sub, setSub] = useState(false as Submenu['menu'] | null)
 
   const show = (id: string) => {
-    if (flow.data.allIDs.indexOf(id) === -1) {
+    if (!flow.data.allIDs.includes(id)) {
       return
     }
 

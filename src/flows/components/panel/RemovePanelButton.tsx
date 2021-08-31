@@ -13,13 +13,11 @@ interface Props {
 }
 
 const RemoveButton: FC<Props> = ({id}) => {
-  const {flow} = useContext(FlowContext)
-  const remove = () => {
-    const {type} = flow.data.get(id)
+  const {flow, remove} = useContext(FlowContext)
+  const _remove = () => {
+    const {type} = flow.data.byID[id]
     event('notebook_delete_cell', {notebooksCellType: type})
-
-    flow.data.remove(id)
-    flow.meta.remove(id)
+    remove(id)
   }
 
   return (
@@ -27,7 +25,7 @@ const RemoveButton: FC<Props> = ({id}) => {
       className="flows-delete-cell"
       testID="flows-delete-cell"
       icon={IconFont.Remove}
-      onClick={remove}
+      onClick={_remove}
       titleText="Remove this cell"
     />
   )

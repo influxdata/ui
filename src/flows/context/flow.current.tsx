@@ -3,7 +3,6 @@ import {Flow, PipeData} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
-import {Resource} from 'src/types'
 
 export interface FlowContextType {
   id: string | null
@@ -11,14 +10,16 @@ export interface FlowContextType {
   flow: Flow | null
   add: (data: Partial<PipeData>, index?: number) => string
   update: (flow: Partial<Flow>) => void
+  remove: (id: string) => void
 }
 
 export const DEFAULT_CONTEXT: FlowContextType = {
   id: null,
   name: DEFAULT_PROJECT_NAME,
   flow: null,
-  add: () => '',
-  update: () => {},
+  add: _ => '',
+  update: _ => {},
+  remove: _ => {},
 }
 
 export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
@@ -29,13 +30,10 @@ export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
 
   const updateCurrent = useCallback(
-    (flow: Flow) => {
-      update(currentID, {
-        ...flows[currentID],
-        ...flow,
-      })
+    (flow: Partial<Flow>) => {
+      update(currentID, flow)
     },
-    [currentID, flows[currentID]]
+    [update, currentID]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
@@ -47,18 +45,43 @@ export const FlowProvider: FC = ({children}) => {
     delete initial.title
     initial.id = id
 
-    flows[currentID].data.add(id, initial)
-    const {resource, onChange} = flows[currentID].meta.add(id, {
+    flows[currentID].data.byID[id] = initial
+    flows[currentID].meta.byID[id] = {
       title,
       visible: true,
-    }) as {resource: Resource<any>; onChange: (_: Resource<any>) => {}}
-
-    if (typeof index !== 'undefined') {
-      flows[currentID].data.move(id, index + 1)
     }
 
-    onChange(resource)
+    if (typeof index !== 'undefined') {
+      flows[currentID].data.allIDs.splice(index + 1, 0, id)
+      flows[currentID].meta.allIDs.splice(index + 1, 0, id)
+    } else {
+      flows[currentID].data.allIDs.push(id)
+      flows[currentID].meta.allIDs.push(id)
+    }
+
+    updateCurrent({
+      data: flows[currentID].data,
+      meta: flows[currentID].meta,
+    })
+
     return id
+  }
+
+  const removePipe = (id: string) => {
+    flows[currentID].meta.allIDs = flows[currentID].meta.allIDs.filter(
+      _id => _id !== id
+    )
+    flows[currentID].data.allIDs = flows[currentID].data.allIDs.filter(
+      _id => _id !== id
+    )
+
+    delete flows[currentID].data.byID[id]
+    delete flows[currentID].meta.byID[id]
+
+    updateCurrent({
+      data: flows[currentID].data,
+      meta: flows[currentID].meta,
+    })
   }
 
   if (!flows) {
@@ -73,6 +96,7 @@ export const FlowProvider: FC = ({children}) => {
         flow: flows[currentID],
         add: addPipe,
         update: updateCurrent,
+        remove: removePipe,
       }}
     >
       {children}

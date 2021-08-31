@@ -13,8 +13,8 @@ export interface Props {
 }
 
 const PanelVisibilityToggle: FC<Props> = ({id}) => {
-  const {flow} = useContext(FlowContext)
-  const meta = flow.meta.get(id)
+  const {flow, update} = useContext(FlowContext)
+  const meta = flow.meta.byID[id]
 
   const icon = meta.visible ? IconFont.EyeOpen : IconFont.EyeClosed
   const title = meta.visible ? 'Collapse cell' : 'Expand cell'
@@ -24,8 +24,17 @@ const PanelVisibilityToggle: FC<Props> = ({id}) => {
       state: !meta.visible ? 'true' : 'false',
     })
 
-    flow.meta.update(id, {
-      visible: !meta.visible,
+    update({
+      meta: {
+        ...flow.meta,
+        byID: {
+          ...flow.meta.byID,
+          [id]: {
+            ...flow.meta.byID[id],
+            visible: !meta.visible,
+          },
+        },
+      },
     })
   }
 

@@ -9,31 +9,36 @@ describe('navigation', () => {
 
   it('can navigate to each page from left nav', () => {
     // Load Data Page
-    cy.getByTestID('nav-item-load-data').click()
+    cy.getByTestID('nav-item-load-data').click({force: true})
+    cy.getByTestID('tabs').within(() => {
+      // buckets tab
+      cy.get('[id="buckets"]').click()
+      cy.url().should('contain', 'buckets')
+    })
     cy.getByTestID('load-data--header').should('exist')
 
     // Data Explorer Page
-    cy.getByTestID('nav-item-data-explorer').click()
+    cy.getByTestID('nav-item-data-explorer').click({force: true})
     cy.getByTestID('data-explorer--header').should('exist')
 
     // Dashboard Index Page
-    cy.getByTestID('nav-item-dashboards').click()
+    cy.getByTestID('nav-item-dashboards').click({force: true})
     cy.getByTestID('empty-dashboards-list').should('exist')
 
     // Tasks Index Page
-    cy.getByTestID('nav-item-tasks').click()
+    cy.getByTestID('nav-item-tasks').click({force: true})
     cy.getByTestID('tasks-page--header').should('exist')
 
     // Alerts Page
-    cy.getByTestID('nav-item-alerting').click()
+    cy.getByTestID('nav-item-alerting').click({force: true})
     cy.getByTestID('alerts-page--header').should('exist')
 
     // Settings Page
-    cy.getByTestID('nav-item-settings').click()
+    cy.getByTestID('nav-item-settings').click({force: true})
     cy.getByTestID('settings-page--header').should('exist')
 
     // Home Page
-    cy.getByTestID('tree-nav--header').click()
+    cy.getByTestID('tree-nav--header').click({force: true})
     cy.getByTestID('home-page--header').should('exist')
 
     // 404
@@ -98,7 +103,7 @@ describe('navigation', () => {
   })
 
   it('can navigate in tabs of data page', () => {
-    cy.getByTestID('nav-item-load-data').click()
+    cy.getByTestID('nav-item-load-data').click({force: true})
 
     cy.getByTestID('tabs').within(() => {
       // buckets tab
@@ -133,21 +138,21 @@ describe('navigation', () => {
   }
 
   it('can navigate in tabs of settings page', () => {
-    cy.getByTestID('nav-item-settings').click()
+    cy.getByTestID('nav-item-settings').click({force: true})
     exploreTabs(['templates', 'labels', 'variables'])
   })
 
   it('can navigate in tabs of collapsed alerts page', () => {
-    cy.getByTestID('nav-item-alerting').click()
+    cy.getByTestID('nav-item-alerting').click({force: true})
     ;['checks', 'endpoints', 'rules'].forEach(tab => {
       cy.getByTestID(`alerting-tab--${tab}`).click()
       cy.getByTestID(`alerting-tab--${tab}--input`).should('to.be', 'checked')
     })
   })
 
-  it('can navigate in tabs from maximized left tree nav', () => {
+  it.only('can navigate in tabs from maximized left tree nav', () => {
     // TODO: check if nav is already maximized
-    cy.get('.cf-tree-nav--toggle').click()
+    cy.get('.cf-tree-nav--toggle').click({force: true})
     ;[
       'sources',
       'buckets',
@@ -158,12 +163,20 @@ describe('navigation', () => {
       'templates',
       'labels',
     ].forEach(x => {
+      if (x === 'history') {
+        cy.getByTestID('nav-item-alerting').click({force: true})
+      } else if (x === 'variables' || 'templates' || 'labels') {
+        cy.getByTestID('nav-item-settings').click({force: true})
+      } else {
+        cy.getByTestID('nav-item-load-data').click({force: true})
+      }
+
       cy.getByTestID(`nav-subitem-${x}`)
         .last()
         .click()
       cy.url().should('contain', x)
     })
 
-    cy.get('.cf-tree-nav--toggle').click()
+    cy.get('.cf-tree-nav--toggle').click({force: true})
   })
 })

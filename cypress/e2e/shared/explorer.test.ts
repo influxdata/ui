@@ -55,7 +55,7 @@ describe('DataExplorer', () => {
       cy.contains(fluxCode)
     })
 
-    it.only('can navigate to data explorer from buckets list and override state', () => {
+    it('can navigate to data explorer from buckets list and override state', () => {
       const fluxCode = 'from(bucket: "_monitoring")'
       cy.getByTestID('switch-to-script-editor').click()
       cy.get('.flux-editor').within(() => {

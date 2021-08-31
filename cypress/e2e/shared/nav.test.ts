@@ -164,11 +164,11 @@ describe('navigation', () => {
       'labels',
     ].forEach(x => {
       if (x === 'history') {
-        cy.getByTestID('nav-item-alerting').click({force: true})
-      } else if (x === 'variables' || 'templates' || 'labels') {
-        cy.getByTestID('nav-item-settings').click({force: true})
+        cy.getByTestID('nav-item-alerting').click()
+      } else if (x === 'variables' || x === 'templates' || x === 'labels') {
+        cy.getByTestID('nav-item-settings').click()
       } else {
-        cy.getByTestID('nav-item-load-data').click({force: true})
+        cy.getByTestID('nav-item-load-data').click()
       }
 
       cy.getByTestID(`nav-subitem-${x}`)
@@ -177,6 +177,6 @@ describe('navigation', () => {
       cy.url().should('contain', x)
     })
 
-    cy.get('.cf-tree-nav--toggle').click({force: true})
+    cy.get('.cf-tree-nav--toggle').click()
   })
 })

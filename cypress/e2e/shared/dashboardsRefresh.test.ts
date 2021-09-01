@@ -295,7 +295,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('2s')
-      cy.getByTestID('refresh-form-activate-button').click()
+      cy.getByTestID('refresh-form-activate-button').click({force: true})
       cy.wait('@secondCellQuery')
       cy.wait('@firstCellQuery')
 
@@ -393,7 +393,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('2s')
-      cy.getByTestID('refresh-form-activate-button').click()
+      cy.getByTestID('refresh-form-activate-button').click({force: true})
 
       cy.wait('@secondCellQuery')
       cy.getByTestID('cell blah').within(() => {

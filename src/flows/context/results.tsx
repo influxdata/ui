@@ -33,13 +33,14 @@ export const ResultsProvider: FC = ({children}) => {
   const value = {
     results,
     setResult: (id: string, result: Partial<FluxResult>) => {
+      results[id] = {
+        source: '',
+        parsed: null,
+        ...results[id],
+        ...result,
+      }
       setResults({
         ...results,
-        [id]: {
-          source: '',
-          parsed: null,
-          ...result,
-        },
       })
     },
   }

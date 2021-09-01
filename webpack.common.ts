@@ -70,6 +70,10 @@ module.exports = {
         use: [{loader: 'raw-loader'}],
       },
       {
+        test: /\.conf$/,
+        use: [{loader: 'raw-loader'}],
+      },
+      {
         test: /\.example$/,
         use: [{loader: 'raw-loader'}],
       },

@@ -146,7 +146,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "prettier": "^1.19.1",
     "pretty-quick": "^3.1.0",
-    "raw-loader": "^4.0.1",
+    "raw-loader": "^4.0.2",
     "sass": "^1.22.7",
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",

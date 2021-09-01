@@ -118,7 +118,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
 }
 
 const Sidebar: FC = () => {
-  const {flow, update, add, remove} = useContext(FlowContext)
+  const {flow, updateMeta, add, remove} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
 
@@ -164,17 +164,8 @@ const Sidebar: FC = () => {
               state: !flow.meta.byID[id].visible ? 'true' : 'false',
             })
 
-            update({
-              meta: {
-                ...flow.meta,
-                byID: {
-                  ...flow.meta.byID,
-                  [id]: {
-                    ...flow.meta.byID[id],
-                    visible: !flow.meta.byID[id].visible,
-                  },
-                },
-              },
+            updateMeta(id, {
+              visible: !flow.meta.byID[id].visible,
             })
           },
         },

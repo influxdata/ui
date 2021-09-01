@@ -12,21 +12,12 @@ interface Props {
 }
 
 const FlowPanelTitle: FC<Props> = ({id}) => {
-  const {flow, update} = useContext(FlowContext)
+  const {flow, updateMeta} = useContext(FlowContext)
   const title = flow.meta.byID[id]?.title
 
   const onChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    update({
-      meta: {
-        ...flow.meta,
-        byID: {
-          ...flow.meta.byID,
-          [id]: {
-            ...flow.meta.byID[id],
-            title: e.target.value,
-          },
-        },
-      },
+    updateMeta(id, {
+      title: e.target.value,
     })
   }
 

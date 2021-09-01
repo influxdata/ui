@@ -35,26 +35,15 @@ interface PipeContextProps {
 }
 
 export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
-  const {flow, update} = useContext(FlowContext)
+  const {flow, updateData} = useContext(FlowContext)
   const {results} = useContext(ResultsContext)
   const {getStatus} = useContext(FlowQueryContext)
 
   const updater = useCallback(
-    (_data: Partial<PipeData>) => {
-      update({
-        data: {
-          ...flow.data,
-          byID: {
-            ...flow.data.byID,
-            [id]: {
-              ...flow.data.byID[id],
-              ..._data,
-            },
-          },
-        },
-      })
+    (data: Partial<PipeData>) => {
+      updateData(id, data)
     },
-    [flow, update]
+    [flow, updateData]
   )
 
   return useMemo(() => {

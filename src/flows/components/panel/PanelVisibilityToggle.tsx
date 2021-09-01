@@ -13,7 +13,7 @@ export interface Props {
 }
 
 const PanelVisibilityToggle: FC<Props> = ({id}) => {
-  const {flow, update} = useContext(FlowContext)
+  const {flow, updateMeta} = useContext(FlowContext)
   const meta = flow.meta.byID[id]
 
   const icon = meta.visible ? IconFont.EyeOpen : IconFont.EyeClosed
@@ -24,17 +24,8 @@ const PanelVisibilityToggle: FC<Props> = ({id}) => {
       state: !meta.visible ? 'true' : 'false',
     })
 
-    update({
-      meta: {
-        ...flow.meta,
-        byID: {
-          ...flow.meta.byID,
-          [id]: {
-            ...flow.meta.byID[id],
-            visible: !meta.visible,
-          },
-        },
-      },
+    updateMeta(id, {
+      visible: !meta.visible,
     })
   }
 

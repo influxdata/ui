@@ -44,7 +44,7 @@ const FlowPanel: FC<Props> = ({
   resizes,
   children,
 }) => {
-  const {flow, update} = useContext(FlowContext)
+  const {flow, updateMeta} = useContext(FlowContext)
   const {printMap, queryDependents} = useContext(FlowQueryContext)
   const {id: focused} = useContext(SidebarContext)
 
@@ -75,17 +75,8 @@ const FlowPanel: FC<Props> = ({
         )
 
       if (flow.meta.byID[id].height !== size) {
-        update({
-          meta: {
-            ...flow.meta,
-            byID: {
-              ...flow.meta.byID,
-              [id]: {
-                ...flow.meta.byID[id],
-                height: size,
-              },
-            },
-          },
+        updateMeta(id, {
+          height: size,
         })
       }
     }
@@ -133,17 +124,8 @@ const FlowPanel: FC<Props> = ({
       return
     }
 
-    update({
-      meta: {
-        ...flow.meta,
-        byID: {
-          ...flow.meta.byID,
-          [id]: {
-            ...flow.meta.byID[id],
-            height: size,
-          },
-        },
-      },
+    updateMeta(id, {
+      height: size,
     })
   }, [flow, size])
 

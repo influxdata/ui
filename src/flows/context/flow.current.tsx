@@ -1,5 +1,5 @@
 import React, {FC, useContext, useCallback} from 'react'
-import {Flow, PipeData} from 'src/types/flows'
+import {Flow, PipeData, PipeMeta} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
@@ -9,7 +9,9 @@ export interface FlowContextType {
   name: string
   flow: Flow | null
   add: (data: Partial<PipeData>, index?: number) => string
-  update: (flow: Partial<Flow>) => void
+  updateData: (id: string, data: Partial<PipeMeta>) => void
+  updateMeta: (id: string, meta: Partial<PipeMeta>) => void
+  updateOther: (flow: Partial<Flow>) => void
   remove: (id: string) => void
 }
 
@@ -18,7 +20,9 @@ export const DEFAULT_CONTEXT: FlowContextType = {
   name: DEFAULT_PROJECT_NAME,
   flow: null,
   add: _ => '',
-  update: _ => {},
+  updateData: (_, __) => {},
+  updateMeta: (_, __) => {},
+  updateOther: _ => {},
   remove: _ => {},
 }
 
@@ -29,11 +33,52 @@ let GENERATOR_INDEX = 0
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
 
-  const updateCurrent = useCallback(
-    (flow: Partial<Flow>) => {
-      update(currentID, flow)
+  const updateData = useCallback(
+    (id: string, data: Partial<PipeData>) => {
+      flows[currentID].data.byID[id] = {
+        ...(flows[currentID].data.byID[id] || {}),
+        ...data,
+      }
+
+      update(currentID, {
+        data: {
+          ...flows[currentID].data,
+        },
+      })
     },
-    [update, currentID]
+    [update, flows, currentID]
+  )
+
+  const updateMeta = useCallback(
+    (id: string, meta: Partial<PipeMeta>) => {
+      flows[currentID].meta.byID[id] = {
+        title: '',
+        visible: true,
+        ...(flows[currentID].meta.byID[id] || {}),
+        ...meta,
+      }
+
+      update(currentID, {
+        meta: {
+          ...flows[currentID].meta,
+        },
+      })
+    },
+    [update, flows, currentID]
+  )
+
+  const updateOther = useCallback(
+    (flow: Partial<Flow>) => {
+      flows[currentID] = {
+        ...flows[currentID],
+        ...flow,
+      }
+
+      update(currentID, {
+        ...flows[currentID],
+      })
+    },
+    [update, flows, currentID]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
@@ -59,10 +104,8 @@ export const FlowProvider: FC = ({children}) => {
       flows[currentID].meta.allIDs.push(id)
     }
 
-    updateCurrent({
-      data: flows[currentID].data,
-      meta: flows[currentID].meta,
-    })
+    updateData(id, {})
+    updateMeta(id, {})
 
     return id
   }
@@ -78,10 +121,8 @@ export const FlowProvider: FC = ({children}) => {
     delete flows[currentID].data.byID[id]
     delete flows[currentID].meta.byID[id]
 
-    updateCurrent({
-      data: flows[currentID].data,
-      meta: flows[currentID].meta,
-    })
+    updateData(id, {})
+    updateMeta(id, {})
   }
 
   if (!flows) {
@@ -95,7 +136,9 @@ export const FlowProvider: FC = ({children}) => {
         name,
         flow: flows[currentID],
         add: addPipe,
-        update: updateCurrent,
+        updateData,
+        updateMeta,
+        updateOther,
         remove: removePipe,
       }}
     >

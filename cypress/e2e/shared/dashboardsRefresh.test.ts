@@ -355,7 +355,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -539,7 +539,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
 

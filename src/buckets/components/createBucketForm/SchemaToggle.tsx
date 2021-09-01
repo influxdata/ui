@@ -12,7 +12,7 @@ import {
 } from '@influxdata/clockface'
 import {capitalize} from 'lodash'
 
-import 'src/buckets/components/createBucketForm/SchemaToggle.scss'
+import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
 import {SchemaType} from 'src/client/generatedRoutes'
 
 interface SchemaToggleProps {
@@ -96,7 +96,7 @@ export const SchemaToggle: FC<SchemaToggleProps> = ({
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
       testID="create-bucket-schema-type-toggle-box"
-      className="schema-toggle"
+      className="schema-section"
     >
       <div className="header">
         <InputLabel>Bucket Schema Type</InputLabel>

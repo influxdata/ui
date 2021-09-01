@@ -21,7 +21,7 @@ import {
 import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
 
 // Actions
-import {updateBucket} from 'src/buckets/actions/thunks'
+import {getBucketSchema, updateBucket} from 'src/buckets/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 
 // APIs
@@ -37,6 +37,7 @@ import {SchemaType} from 'src/client'
 
 interface DispatchProps {
   onUpdateBucket: typeof updateBucket
+  getSchema: typeof getBucketSchema
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -44,6 +45,7 @@ type Props = ReduxProps & RouteComponentProps<{bucketID: string; orgID: string}>
 
 const UpdateBucketOverlay: FunctionComponent<Props> = ({
   onUpdateBucket,
+    getSchema,
   match,
   history,
 }) => {
@@ -70,9 +72,17 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         handleClose()
         return
       }
+
       setBucketDraft(resp.data as OwnBucket)
 
       setSchemaType(resp.data.schemaType)
+
+      console.log("changed! 78a -jill", resp.data)
+      if ('explicit' === resp.data.schemaType) {
+        const schema = await getSchema(bucketID)
+
+        console.log('got schema!!!! 78a-jill', schema)
+      }
 
       const rules = get(resp.data, 'retentionRules', [])
       const rule = rules.find(r => r.type === 'expire')
@@ -171,6 +181,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
 const mdtp = {
   onUpdateBucket: updateBucket,
+  getSchema: getBucketSchema,
 }
 
 const connector = connect(null, mdtp)

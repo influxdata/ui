@@ -18,7 +18,7 @@ import {
 import {RuleType} from 'src/buckets/reducers/createBucket'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {SchemaType} from 'src/client/generatedRoutes'
+import {MeasurementSchema, MeasurementSchemaList, SchemaType} from 'src/client/generatedRoutes'
 
 /** for schemas, if (isEditing) is true, then
  * need the schemaType that is already set;
@@ -39,6 +39,7 @@ interface Props {
   testID?: string
   onChangeSchemaType?: (schemaType: SchemaType) => void
   schemaType?: SchemaType
+  measurementSchemas ?: MeasurementSchemaList
 }
 
 interface State {
@@ -75,6 +76,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       onClickRename,
       testID = 'bucket-form',
       schemaType,
+      measurementSchemas,
     } = this.props
 
     const {showAdvanced} = this.state
@@ -85,7 +87,14 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
         let contents = null
         if (isEditing) {
-          contents = <SchemaToggle readOnlySchemaType={schemaType} />
+          let measurementSchemaReadonlyList = null
+          if (measurementSchemas){
+            measurementSchemaReadonlyList = <div> measurement schemas would go here</div>
+          }
+          contents = <>
+            <SchemaToggle readOnlySchemaType={schemaType} />
+            {measurementSchemaReadonlyList}
+          </>
         } else {
           contents = (
             <SchemaToggle

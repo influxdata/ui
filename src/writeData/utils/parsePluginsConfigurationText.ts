@@ -278,7 +278,7 @@ const parseTelegrafConf = new Promise((resolve, reject) => {
               .replace(/\]\](.*)/g, '')
             parsedPluginsNames.push(pluginName)
             const destinationFilPath = parsedPluginsPath + pluginName + '.conf'
-            fs.writeFile(destinationFilPath, pluginText, () => {})
+            fs.writeFile(destinationFilPath, pluginText + '\n', () => {})
           }
         })
         const noPluginEntry = parsedPluginsNames.filter(
@@ -353,7 +353,7 @@ parseTelegrafConf.then(
                 parsedWindowsPluginsNames.push(pluginName)
                 const destinationFilPath =
                   parsedPluginsPath + pluginName + '.conf'
-                fs.writeFile(destinationFilPath, pluginText, () => {})
+                fs.writeFile(destinationFilPath, pluginText + '\n', () => {})
               }
             }
           })

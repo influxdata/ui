@@ -57,7 +57,7 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
   )
 
   const bucketInfo = CLOUD
-    ? [schemaBlock, persistentBucketMeta]
+    ? [persistentBucketMeta, schemaBlock]
     : [persistentBucketMeta]
 
   if (bucket.type === 'system') {

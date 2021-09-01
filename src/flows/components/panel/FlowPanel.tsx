@@ -206,7 +206,7 @@ const FlowPanel: FC<Props> = ({
             <Handle
               dragRef={handleRef}
               onStartDrag={handleMouseDown}
-              dragging={isDragging == 2}
+              dragging={isDragging === 2}
             />
           )}
           {isVisible && (

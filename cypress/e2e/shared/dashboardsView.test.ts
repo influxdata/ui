@@ -66,6 +66,7 @@ describe('Dashboard', () => {
       cy.getByTestID('renamable-page-title--input')
         .clear()
         .type(xyCellName)
+        .type('{enter}')
       cy.getByTestID('save-cell--button').click()
     })
 

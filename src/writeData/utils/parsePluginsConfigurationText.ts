@@ -259,6 +259,15 @@ const fetch = path => {
   })
 }
 
+const formatConfigurationText = configurationText => {
+  return (
+    configurationText
+      .split('\n')
+      .map(text => text.slice(1))
+      .join('\n') + '\n'
+  )
+}
+
 /*
   // STEP 2: on the command line, run with the desired release version, for example: v1.19.3
   yarn telegraf-plugins:update TELEGRAF_RELEASE_VERSION
@@ -278,7 +287,11 @@ const parseTelegrafConf = new Promise((resolve, reject) => {
               .replace(/\]\](.*)/g, '')
             parsedPluginsNames.push(pluginName)
             const destinationFilPath = parsedPluginsPath + pluginName + '.conf'
-            fs.writeFile(destinationFilPath, pluginText + '\n', () => {})
+            fs.writeFile(
+              destinationFilPath,
+              formatConfigurationText(pluginText),
+              () => {}
+            )
           }
         })
         const noPluginEntry = parsedPluginsNames.filter(
@@ -353,7 +366,11 @@ parseTelegrafConf.then(
                 parsedWindowsPluginsNames.push(pluginName)
                 const destinationFilPath =
                   parsedPluginsPath + pluginName + '.conf'
-                fs.writeFile(destinationFilPath, pluginText + '\n', () => {})
+                fs.writeFile(
+                  destinationFilPath,
+                  formatConfigurationText(pluginText),
+                  () => {}
+                )
               }
             }
           })

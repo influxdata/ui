@@ -92,6 +92,11 @@ const DurationInput: FC<Props> = ({
           status={inputStatus}
           onChange={e => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
+          onKeyPress={e => {
+            if (e.key === 'Enter') {
+              setIsFocused(false)
+            }
+          }}
           testID={testID}
         />
       </ClickOutside>

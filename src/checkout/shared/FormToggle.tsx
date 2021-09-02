@@ -17,9 +17,9 @@ const FormToggle: FC<FormToggleProps> = ({label, ...props}) => {
       checked={inputs.shouldNotify}
       onChange={() => handleSetInputs('shouldNotify', !inputs.shouldNotify)}
       testID={`${props.id}--checkbox`}
-      id='shouldNotify--checkbox'
+      id={'shouldNotify--checkbox'}
     >
-      <InputLabel wrapText={true} htmlFor='shouldNotify--checkbox'>
+      <InputLabel wrapText={true} htmlFor={'shouldNotify--checkbox'}>
         {label}
       </InputLabel>
     </Toggle>

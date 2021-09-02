@@ -73,7 +73,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('2s')
-      cy.getByTestID('refresh-form-activate-button').click()
+      cy.getByTestID('refresh-form-activate-button').click({force: true})
       cy.wait('@refreshQuery')
       cy.getByTestID('enable-auto-refresh-button').click()
       // Wait the duration we'd expect on the next query to ensure stopping via the button actually stops the process. The fail means the request didn't run, which is what we want

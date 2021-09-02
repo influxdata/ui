@@ -415,6 +415,8 @@ describe('visualizations', () => {
     })
 
     it('can view table data & scroll to bottom', () => {
+      // to fit all the elements in screen we force a view port size
+      cy.viewport(1200, 1000)
       // build the query to return data from beforeEach
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('selector-list v').click()

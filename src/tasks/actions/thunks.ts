@@ -44,6 +44,8 @@ import {
   ResourceType,
 } from 'src/types'
 
+import {GetTasksParams} from 'src/client'
+
 // Utils
 import {getErrorMessage} from 'src/utils/api'
 import {insertPreambleInScript} from 'src/shared/utils/insertPreambleInScript'
@@ -57,11 +59,16 @@ import {incrementCloneName} from 'src/utils/naming'
 // Types
 import {TASK_LIMIT} from 'src/resources/constants'
 
+type RequestType = 'default' | 'basic'
+
 type Action = TaskAction | ExternalActions | ReturnType<typeof getTasks>
 type ExternalActions = NotifyAction | ReturnType<typeof checkTaskLimits>
 
 // Thunks
-export const getTasks = () => async (
+export const getTasks = (
+  limit: number = TASK_LIMIT,
+  requestType: RequestType = 'default'
+) => async (
   dispatch: Dispatch<TaskAction | NotifyAction>,
   getState: GetState
 ): Promise<void> => {
@@ -73,7 +80,12 @@ export const getTasks = () => async (
 
     const org = getOrg(state)
 
-    const resp = await api.getTasks({query: {orgID: org.id, limit: TASK_LIMIT}})
+    const query = {orgID: org.id, limit} as GetTasksParams['query']
+    if (requestType === 'basic') {
+      query.type = 'basic'
+    }
+
+    const resp = await api.getTasks({query})
 
     if (resp.status !== 200) {
       throw new Error(resp.data.message)

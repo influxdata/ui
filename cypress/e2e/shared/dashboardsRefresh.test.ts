@@ -160,7 +160,7 @@ describe('Dashboard refresh', () => {
         expect(el[0].innerText.toLowerCase()).to.equal('enable auto refresh')
       })
     })
-    it.only('can timeout on a preset inactivity timeout', done => {
+    it('can timeout on a preset inactivity timeout', done => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()

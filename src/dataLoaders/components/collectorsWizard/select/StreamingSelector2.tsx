@@ -108,7 +108,7 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
                   url={`${item.id}`}
                   selected={this.isCardChecked(item.id)}
                   onClick={this.handleToggle}
-                  testID={`telegraf-plugins--${item}`}
+                  testID={`telegraf-plugins--${item.name}`}
                 />
               ))}
             </SquareGrid>

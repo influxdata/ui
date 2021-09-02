@@ -27,7 +27,7 @@ describe('Collectors', () => {
       cy.getByTestID('table-row').should('have.length', 0)
       cy.contains('Create Configuration').click()
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('telegraf-plugins--Aerospike').click()
+        cy.getByTestID('telegraf-plugins--System').click()
         cy.getByTestID('next').click()
         cy.getByInputName('name')
           .clear()
@@ -56,14 +56,14 @@ describe('Collectors', () => {
       })
     })
 
-    it.only('can create a telegraf config in new system', () => {
+    it('can create a telegraf config in new system', () => {
       const newConfig = 'New Config'
       const configDescription = 'This is a new config testing'
       cy.setFeatureFlags({telegrafUiRefresh: true}).then(() => {
         cy.getByTestID('table-row').should('have.length', 0)
         cy.contains('Create Configuration').click()
         cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('telegraf-plugins--System').click()
+          cy.getByTestID('telegraf-plugins--Aerospike').click()
           cy.getByTestID('next').click()
           cy.getByInputName('name')
             .clear()
@@ -83,7 +83,7 @@ describe('Collectors', () => {
             .contains('Finish')
             .click()
         })
-
+  
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
           cy.getByTestID('resource-card')
             .should('have.length', 1)
@@ -91,6 +91,8 @@ describe('Collectors', () => {
             .and('contain', defaultBucket)
         })
       })
+
+      
     })
 
     it('allows the user to view just the output', () => {

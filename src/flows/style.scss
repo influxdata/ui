@@ -58,6 +58,21 @@ $cf-radius-lg: $cf-radius + 4px;
   }
 }
 
+.flow-panel__readonly {
+  &:after {
+    display: none;
+  }
+
+  .flow-panel--title {
+    padding-top: 8px;
+  }
+
+  .flow-panel--body,
+  .flow-panel--results {
+    padding-left: 8px;
+  }
+}
+
 .flow-panel--header,
 .flow-panel--body,
 .flow-panel--results {

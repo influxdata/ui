@@ -17,6 +17,7 @@ const OnboardingWizardPage = lazy(() =>
 )
 const SigninPage = lazy(() => import('src/onboarding/containers/SigninPage'))
 const Logout = lazy(() => import('src/Logout'))
+const ReadOnlyNotebook = lazy(() => import('src/flows/components/ReadOnly'))
 
 // Constants
 import {LOGIN, SIGNIN, LOGOUT} from 'src/shared/constants/routes'
@@ -102,6 +103,7 @@ export class Setup extends PureComponent<Props, State> {
                 path="/onboarding/:stepID"
                 component={OnboardingWizardPage}
               />
+              <Route path="/share/:shareID" component={ReadOnlyNotebook} />
               <Route path={LOGIN} component={LoginPage} />
               <Route path={SIGNIN} component={SigninPage} />
               <Route path={LOGOUT} component={Logout} />

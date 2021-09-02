@@ -1,23 +1,47 @@
 .schema-section {
+  &.measurement {
+    margin-top: 15px;
+  }
+
   .header {
     margin-bottom: 10px;
+
     .subtext {
       margin-top: 6px;
+      font-weight: 300;
     }
+  }
+
+  /**
+  todo: learn how to get the variables.....including
+       them causes a compilation error :(
+       */
+  .title-text {
+    color: #c6cad3; /** $g14-chromium;*/
+    font-weight: 600;
+  }
+
+  .value-text {
+    color: #ffffff; /** $g20-white; */
+    font-weight: 500;
   }
 
   .option {
     margin-bottom: 6px !important;
   }
-}
 
-
-.measurement-schema-panel {
-  width: 80%;
-
-  .schema-row {
-    justify-content: space-between;
+  .measurement-schema-panel-container {
     width: 100%;
-  }
+    padding: 10px;
+    border-radius: 10px;
 
+    .measurement-schema-panel {
+      width: 95%;
+
+      .schema-row {
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+  }
 }

@@ -84,11 +84,12 @@ export const SchemaToggle: FC<SchemaToggleProps> = ({
   )
 
   const readOnly = (
-    <InputLabel testID="bucket-readonly-schema-label">
-      {capitalize(readOnlySchemaType)}
-    </InputLabel>
+    <span className="value-text" data-testID="bucket-readonly-schema-label">
+      : {capitalize(readOnlySchemaType)}
+    </span>
   )
-  const contents = readOnlySchemaType ? readOnly : toggles
+  const contents = readOnlySchemaType ? null : toggles
+  const readOnlyText = readOnlySchemaType ? readOnly : null
 
   return (
     <FlexBox
@@ -99,7 +100,7 @@ export const SchemaToggle: FC<SchemaToggleProps> = ({
       className="schema-section"
     >
       <div className="header">
-        <InputLabel>Bucket Schema Type</InputLabel>
+        <div className="title-text">Bucket Schema Type {readOnlyText}</div>
         <div className="subtext">
           By default, buckets have an implicit schema that conforms to your
           data. Use explicit schemas to enforce specific data types and columns.

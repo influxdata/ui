@@ -174,7 +174,7 @@ export const getBucketSchema = (bucketID: string) => async () => {
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-console.log("got the data!!! 78a-jill", resp.data)
+    console.log('got the data!!! 78a-jill', resp.data)
     return resp.data
   } catch (error) {
     console.error('error while retrieving schemas', error)

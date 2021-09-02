@@ -45,7 +45,7 @@ type Props = ReduxProps & RouteComponentProps<{bucketID: string; orgID: string}>
 
 const UpdateBucketOverlay: FunctionComponent<Props> = ({
   onUpdateBucket,
-    getSchema,
+  getSchema,
   match,
   history,
 }) => {
@@ -82,7 +82,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         const schema = await getSchema(bucketID)
 
         console.log('got schema!!!! 78a-jill', schema)
-       setMeasurementSchemaList(schema)
+        setMeasurementSchemaList(schema)
       }
 
       const rules = get(resp.data, 'retentionRules', [])
@@ -172,7 +172,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               onClickRename={handleClickRename}
               onChangeSchemaType={handleChangeSchemaType}
               schemaType={schemaType as SchemaType}
-              measurementSchemaList = {measurementSchemaList}
+              measurementSchemaList={measurementSchemaList}
             />
           </Overlay.Body>
         </SpinnerContainer>

@@ -83,7 +83,7 @@ describe('Collectors', () => {
             .contains('Finish')
             .click()
         })
-  
+
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
           cy.getByTestID('resource-card')
             .should('have.length', 1)
@@ -91,8 +91,6 @@ describe('Collectors', () => {
             .and('contain', defaultBucket)
         })
       })
-
-      
     })
 
     it('allows the user to view just the output', () => {

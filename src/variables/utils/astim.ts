@@ -8,6 +8,7 @@ import {File, MemberExpression} from 'src/types'
 export interface ASTIM {
   variables: MemberExpression[]
   getAST: () => File
+  getQuery: () => string
   hasVariable: (v: string) => boolean
 }
 
@@ -25,6 +26,8 @@ export const parseASTIM = (query: string): ASTIM => {
   const variableNames = new Set()
   variables.forEach(variable => variableNames.add(variable.property.name))
 
+  const getQuery = () => query
+
   const hasVariable = (v: string): boolean => {
     return variableNames.has(v)
   }
@@ -35,6 +38,7 @@ export const parseASTIM = (query: string): ASTIM => {
 
   return {
     getAST,
+    getQuery,
     variables,
     hasVariable,
   }

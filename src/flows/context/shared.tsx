@@ -1,12 +1,14 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {useParams} from 'react-router'
 import {DEFAULT_PROJECT_NAME} from 'src/flows'
+import PageSpinner from 'src/perf/components/PageSpinner'
 
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {hydrate} from 'src/flows/context/flow.list'
-import {default as _asResource} from 'src/flows/context/resource.hook'
+import {RemoteDataState} from 'src/types'
 
 const EXAMPLE_FLOW = hydrate({
   spec: {
@@ -41,22 +43,40 @@ const EXAMPLE_FLOW = hydrate({
 })
 
 export const FlowProvider: FC = ({children}) => {
-  console.log('dope', EXAMPLE_FLOW)
+  const [flow, setFlow] = useState(EXAMPLE_FLOW)
+  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+  const {accessID} = useParams<{accessID: string}>()
+
+  useEffect(() => {
+    setLoading(RemoteDataState.Loading)
+    fetch(`${window.location.origin}/share/${accessID}`)
+      .then(res => res.json())
+      .then(res => {
+        console.log({res})
+        // setFlow(res.data)
+        setFlow(EXAMPLE_FLOW)
+        setLoading(RemoteDataState.Done)
+      })
+      .catch(error => {
+        console.error({error})
+        setLoading(RemoteDataState.Error)
+      })
+  }, [])
+
   return (
     <FlowContext.Provider
       value={{
         id: 'YOUR MOM',
         name: DEFAULT_PROJECT_NAME,
-        flow: {
-          ...EXAMPLE_FLOW,
-          data: _asResource(EXAMPLE_FLOW.data, _ => {}),
-          meta: _asResource(EXAMPLE_FLOW.meta, _ => {}),
-        },
+        flow,
         add: (_, __) => '',
-        update: _ => {},
+        remove: () => '',
+        updateData: _ => {},
+        updateMeta: _ => {},
+        updateOther: _ => {},
       }}
     >
-      {children}
+      <PageSpinner loading={loading}>{children}</PageSpinner>
     </FlowContext.Provider>
   )
 }

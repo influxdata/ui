@@ -178,14 +178,21 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
       return
     }
 
-    const hash = hashCode(text)
-    pending[hash]()
-    delete pending[hash]
-
-    setPending(pending)
+    removePending(hashCode(text), true)
   }
 
   const isInitialized = true
+
+  const removePending = (queryId, callBeforeDeleting = false) => {
+    if (!pending[queryId]) {
+      return
+    }
+
+    callBeforeDeleting && pending[queryId]()
+
+    delete pending[queryId]
+    setPending({...pending})
+  }
 
   const basic = (queryObj: Query, override?: QueryScope) => {
     const query = simplify(queryObj.text, override?.vars || {})
@@ -222,10 +229,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
         (response: Response): Promise<RunQueryResult> => {
           if (response.status === 200) {
             return response.text().then(csv => {
-              if (pending[queryObj.id]) {
-                delete pending[queryObj.id]
-                setPending({...pending})
-              }
+              removePending(queryObj.id)
 
               const result = {
                 type: 'SUCCESS',
@@ -241,6 +245,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
 
           if (response.status === RATE_LIMIT_ERROR_STATUS) {
             const retryAfter = response.headers.get('Retry-After')
+            removePending(queryObj.id)
 
             return Promise.resolve({
               type: 'RATE_LIMIT_ERROR',
@@ -250,6 +255,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
           }
 
           return response.text().then(text => {
+            removePending(queryObj.id)
             try {
               const json = JSON.parse(text)
               const message = json.message || json.error
@@ -319,6 +325,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
           requestAnimationFrame(() => {
             try {
               const parsed = fromFlux(raw.csv)
+
               const result = {
                 source: queryObj.text,
                 parsed,

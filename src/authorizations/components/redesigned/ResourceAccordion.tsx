@@ -34,11 +34,18 @@ type Props = OwnProps & StateProps
 class ResourceAccordion extends Component<Props, State> {
   constructor(props) {
     super(props)
+    const perms = {}
+    props.resources.map(resource => {
+      if (resource === 'telegrafs') {
+        perms[resource] = props.telegrafPermissions
+      } else if (resource === 'buckets') {
+        perms[resource] = props.bucketPermissions
+      } else {
+        perms[resource] = {read: false, write: false}
+      }
+    })
     this.state = {
-      permissions: {
-        telegrafs: props.telegrafPermissions,
-        buckets: props.bucketPermissions,
-      },
+      permissions: perms,
     }
   }
 
@@ -46,18 +53,26 @@ class ResourceAccordion extends Component<Props, State> {
     if (!props.telegrafPermissions) {
       return null
     }
+    const perms = {}
+    props.resources.map(resource => {
+      if (resource === 'telegrafs') {
+        perms[resource] = props.telegrafPermissions
+      } else if (resource === 'buckets') {
+        perms[resource] = props.bucketPermissions
+      } else {
+        perms[resource] = {read: false, write: false}
+      }
+    })
     return {
       ...state,
-      permissions: {
-        telegrafs: props.telegrafPermissions,
-        buckets: props.bucketPermissions,
-      },
+      permissions: perms,
     }
   }
 
   public render() {
     const {resources} = this.props
     const {permissions} = this.state
+    console.log('permissions, ', permissions)
 
     if (!resources) {
       return null

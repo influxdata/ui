@@ -33,7 +33,7 @@ interface StateProps {
 }
 
 const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
-  const resources = ['telegrafs', 'buckets']
+  const resources = ['telegrafs', 'buckets', 'dashboards']
 
   const handleDismiss = () => {
     props.onClose()
@@ -98,7 +98,7 @@ const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
                   </InputLabel>
                 </FlexBox.Child>
               </FlexBox>
-              <ResourceAccordion resources={resources} />
+              <ResourceAccordion resources={props.allResources} />
             </FlexBox.Child>
           </FlexBox>
         </Form>
@@ -125,7 +125,7 @@ const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
 
 const mstp = (state: AppState) => {
   return {
-    allResources: ['random string'],
+    allResources: state.resources.tokens.allResources.list,
   }
 }
 

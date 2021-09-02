@@ -58,8 +58,8 @@ export const setCurrentAuthorization = (
     type: SET_CURRENT_AUTH,
     status,
     item,
-} as const)
-  
+  } as const)
+
 export const setAllResources = (
   status: RemoteDataState,
   list?: string[] | Error

@@ -168,7 +168,7 @@ export const deleteAuthorization = (id: string, name: string = '') => async (
   }
 }
 
-export const getResources = () => async (dispatch) => {
+export const getResources = () => async dispatch => {
   try {
     dispatch(setAllResources(RemoteDataState.Loading))
     const resp = await api.getResources({headers: {}})
@@ -178,8 +178,7 @@ export const getResources = () => async (dispatch) => {
     }
     const resources = resp.data
     dispatch(setAllResources(RemoteDataState.Done, resources))
-  }
-  catch (e) {
+  } catch (e) {
     console.error(e)
   }
 }

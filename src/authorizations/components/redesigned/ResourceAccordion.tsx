@@ -72,7 +72,6 @@ class ResourceAccordion extends Component<Props, State> {
   public render() {
     const {resources} = this.props
     const {permissions} = this.state
-    console.log('permissions, ', permissions)
 
     if (!resources) {
       return null

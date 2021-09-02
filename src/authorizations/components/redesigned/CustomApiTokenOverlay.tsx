@@ -33,8 +33,6 @@ interface StateProps {
 }
 
 const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
-  const resources = ['telegrafs', 'buckets', 'dashboards']
-
   const handleDismiss = () => {
     props.onClose()
   }

@@ -215,7 +215,7 @@ describe('The Query Builder', () => {
       })
 
       // build query
-      cy.contains('mem').click('topLeft') // users sometimes click in random spots
+      cy.contains('mem').click('topLeft', {force: true}) // users sometimes click in random spots
       cy.contains('cached').click('bottomLeft')
       cy.contains('thrillbo-swaggins').click('left')
       cy.contains('sum').click()

@@ -23,8 +23,8 @@ import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
 // Types
 import {AppState, RemoteDataState, Variable} from 'src/types'
-import { GlobalQueryContext } from 'src/query/context'
-import { isFlagEnabled } from 'src/shared/utils/featureFlag'
+import {GlobalQueryContext} from 'src/query/context'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface Stage {
   id: string
@@ -85,7 +85,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {runMode} = useContext(RunModeContext)
   const {add, update} = useContext(ResultsContext)
-  const {getQuery} = useContext(GlobalQueryContext)
+  const {runQuery, runBasic} = useContext(GlobalQueryContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const [loading, setLoading] = useState({})
   const org = useSelector(getOrg)
@@ -240,7 +240,10 @@ export const FlowQueryProvider: FC = ({children}) => {
     /* eslint-enable no-console */
   }
 
-  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
+  const query = async (
+    text: string,
+    override?: QueryScope
+  ): Promise<FluxResult> => {
     event('runQuery', {context: 'flows'})
 
     const _override: QueryScope = {
@@ -253,7 +256,9 @@ export const FlowQueryProvider: FC = ({children}) => {
       },
     }
 
-    return isFlagEnabled('GlobalQueryContext') ? getQuery(text, _override).run() : queryAPI(text, _override)
+    return isFlagEnabled('GlobalQueryContext')
+      ? runQuery(text, _override)
+      : queryAPI(text, _override)
   }
 
   const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
@@ -267,7 +272,9 @@ export const FlowQueryProvider: FC = ({children}) => {
       },
     }
 
-    return isFlagEnabled('GlobalQueryContext') ? getQuery(text, _override).basic() : basicAPI(text, _override)
+    return isFlagEnabled('GlobalQueryContext')
+      ? runBasic(text, _override)
+      : basicAPI(text, _override)
   }
 
   const forceUpdate = (id, data) => {
@@ -368,11 +375,11 @@ export const FlowQueryProvider: FC = ({children}) => {
           loading[stage.id] = RemoteDataState.Loading
           setLoading(loading)
           return query(stage.visual, stage.scope)
-          .then(response => {
-            loading[stage.id] = RemoteDataState.Done
-            setLoading(loading)
-            forceUpdate(stage.id, response)
-          })
+            .then(response => {
+              loading[stage.id] = RemoteDataState.Done
+              setLoading(loading)
+              forceUpdate(stage.id, response)
+            })
             .catch(e => {
               forceUpdate(stage.id, {
                 error: e.message,
@@ -397,10 +404,12 @@ export const FlowQueryProvider: FC = ({children}) => {
 
   const simple = (text: string) => {
     const override = {
-      vars
+      vars,
     } as QueryScope
 
-    return isFlagEnabled('GlobalQueryContext') ? getQuery(text, override).simplify() : simplify(text, vars)
+    return isFlagEnabled('GlobalQueryContext')
+      ? getQuery(text, override).simplify()
+      : simplify(text, vars)
   }
 
   if (!flow) {

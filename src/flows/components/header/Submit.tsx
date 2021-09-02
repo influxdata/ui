@@ -24,10 +24,13 @@ import 'src/flows/components/header/Submit.scss'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {GlobalQueryContext} from 'src/query/context'
 
 const fakeNotify = notify
 
 export const Submit: FC = () => {
+  const {cancel: cancelQueries} = useContext(GlobalQueryContext)
   const {cancel} = useContext(QueryContext)
   const {runMode, setRunMode} = useContext(RunModeContext)
   const {generateMap, queryAll, status} = useContext(FlowQueryContext)
@@ -54,7 +57,9 @@ export const Submit: FC = () => {
           onSubmit={handleSubmit}
           onNotify={fakeNotify}
           queryID=""
-          cancelAllRunningQueries={cancel}
+          cancelAllRunningQueries={
+            isFlagEnabled('GlobalQueryContext') ? cancelQueries : cancel
+          }
         />
         {status !== RemoteDataState.Loading && (
           <SquareButton

@@ -7,7 +7,6 @@ import {DapperScrollbars} from '@influxdata/clockface'
 // Contexts
 import CurrentFlowProvider from 'src/flows/context/flow.current'
 import {RunModeProvider} from 'src/flows/context/runMode'
-import GlobalQueryProvider from 'src/query/context'
 import QueryProvider from 'src/flows/context/query'
 import {FlowQueryProvider} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
@@ -27,6 +26,7 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 import 'src/flows/style.scss'
 
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import GlobalQueryProvider from 'src/query/context'
 
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()

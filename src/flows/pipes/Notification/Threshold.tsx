@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useCallback, useContext} from 'react'
+import React, {ChangeEvent, FC, useCallback, useContext, useMemo} from 'react'
 import {
   ComponentSize,
   FlexBox,
@@ -10,6 +10,8 @@ import {
   InputType,
   Icon,
 } from '@influxdata/clockface'
+import DurationInput from 'src/shared/components/DurationInput'
+import {CHECK_OFFSET_OPTIONS} from 'src/alerting/constants'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import 'src/flows/pipes/Notification/Threshold.scss'
@@ -20,6 +22,7 @@ import {event} from 'src/cloud/utils/reporting'
 enum ThresholdFormat {
   Value = 'value',
   Range = 'range',
+  Deadman = 'deadman',
 }
 
 type Threshold = {
@@ -28,7 +31,11 @@ type Threshold = {
   field: string
   max?: number
   min?: number
+  deadmanCheckValue?: string
+  deadmanStopValue: string
 }
+
+export const deadmanType = 'missing-for-longer-than'
 
 export const THRESHOLD_TYPES = {
   greater: {
@@ -73,6 +80,11 @@ export const THRESHOLD_TYPES = {
     condition: data =>
       `(r) => (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
   },
+  [deadmanType]: {
+    name: 'missing for longer than',
+    format: ThresholdFormat.Deadman,
+    condition: _ => `(r) => (r["dead"])`,
+  },
 }
 
 const Threshold: FC = () => {
@@ -82,7 +94,7 @@ const Threshold: FC = () => {
     new Set(results.parsed.table.columns['_field'].data as string[])
   )
 
-  const thresholds = data?.thresholds ?? []
+  const thresholds = useMemo(() => data?.thresholds ?? [], [data?.thresholds])
 
   const setThresholdType = useCallback(
     (type, index) => {
@@ -101,13 +113,23 @@ const Threshold: FC = () => {
       threshold.type = type
       threshold.field = threshold.field || '_value'
 
+      let updatedThreshold = thresholds
+
       if (THRESHOLD_TYPES[type].format === ThresholdFormat.Range) {
         threshold.min = 0
         threshold.max = 100
+      } else if (THRESHOLD_TYPES[type].format === ThresholdFormat.Deadman) {
+        updatedThreshold = [
+          {
+            type: deadmanType,
+            deadmanCheckValue: '5s',
+            deadmanStopValue: '90s',
+          },
+        ]
       } else {
         threshold.value = 20
       }
-      update({thresholds})
+      update({thresholds: updatedThreshold})
     },
     [thresholds, update]
   )
@@ -129,17 +151,24 @@ const Threshold: FC = () => {
 
   const funcDropdown = useCallback(
     (threshold: Threshold, index: number) => {
-      const menuItems = Object.entries(THRESHOLD_TYPES).map(([key, value]) => (
-        <Dropdown.Item
-          key={key}
-          value={key}
-          onClick={type => setThresholdType(type, index)}
-          selected={key === threshold?.type}
-          title={value.name}
-        >
-          {value?.name}
-        </Dropdown.Item>
-      ))
+      const menuItems = Object.entries(THRESHOLD_TYPES)
+        .filter(([key]) => {
+          if (index > 0 && key === deadmanType) {
+            return false
+          }
+          return true
+        })
+        .map(([key, value]) => (
+          <Dropdown.Item
+            key={key}
+            value={key}
+            onClick={type => setThresholdType(type, index)}
+            selected={key === threshold?.type}
+            title={value.name}
+          >
+            {value?.name}
+          </Dropdown.Item>
+        ))
       const menu = onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
       )
@@ -207,6 +236,36 @@ const Threshold: FC = () => {
     update({thresholds})
   }
 
+  const updateDeadmanCheckValue = (value: string) => {
+    // we only ever want to present deadman checks in the first instance
+    // so we're only ever concerned with the first value of the threshold
+    // since anything after that is irrelevant
+    update({
+      thresholds: [
+        {
+          ...thresholds[0],
+          deadmanCheckValue: value,
+          type: deadmanType,
+        },
+      ],
+    })
+  }
+
+  const updateDeadmanStopValue = (value: string) => {
+    // we only ever want to present deadman checks in the first instance
+    // so we're only ever concerned with the first value of the threshold
+    // since anything after that is irrelevant
+    update({
+      thresholds: [
+        {
+          ...thresholds[0],
+          deadmanStopValue: value,
+          type: deadmanType,
+        },
+      ],
+    })
+  }
+
   const updateValue = (event: ChangeEvent<HTMLInputElement>, index: number) => {
     const threshold = thresholds.find((_, i) => index === i)
 
@@ -239,6 +298,36 @@ const Threshold: FC = () => {
   }
 
   const thresholdEntry = (threshold: Threshold, index: number) => {
+    if (threshold?.type === deadmanType) {
+      return (
+        <FlexBox
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Small}
+          stretchToFitWidth
+        >
+          <FlexBox.Child testID="component-spacer--flex-child" grow={1}>
+            <DurationInput
+              suggestions={CHECK_OFFSET_OPTIONS}
+              onSubmit={updateDeadmanCheckValue}
+              value={threshold.deadmanCheckValue ?? '5s'}
+              showDivider={false}
+            />
+          </FlexBox.Child>
+          <TextBlock
+            testID="when-value-text-block"
+            text="And stop checking after"
+          />
+          <FlexBox.Child testID="component-spacer--flex-child" grow={1}>
+            <DurationInput
+              suggestions={CHECK_OFFSET_OPTIONS}
+              onSubmit={updateDeadmanStopValue}
+              value={threshold.deadmanStopValue ?? '90s'}
+              showDivider={false}
+            />
+          </FlexBox.Child>
+        </FlexBox>
+      )
+    }
     if (THRESHOLD_TYPES[threshold?.type]?.format === ThresholdFormat.Range) {
       return (
         <FlexBox
@@ -332,25 +421,30 @@ const Threshold: FC = () => {
           </FlexBox.Child>
         </FlexBox>
       ))}
-      <FlexBox
-        direction={FlexDirection.Row}
-        margin={ComponentSize.Small}
-        stretchToFitWidth
-        testID="component-spacer"
-      >
-        <div className="threshold-add-icon--block" onClick={handleAddThreshold}>
-          <TextBlock
-            testID="add-value-text-block"
-            text="+"
-            style={{
-              fontWeight: 400,
-              fontSize: 25,
-              textAlign: 'center',
-              minWidth: 56,
-            }}
-          />
-        </div>
-      </FlexBox>
+      {thresholds[0].type !== deadmanType && (
+        <FlexBox
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Small}
+          stretchToFitWidth
+          testID="component-spacer"
+        >
+          <div
+            className="threshold-add-icon--block"
+            onClick={handleAddThreshold}
+          >
+            <TextBlock
+              testID="add-value-text-block"
+              text="+"
+              style={{
+                fontWeight: 400,
+                fontSize: 25,
+                textAlign: 'center',
+                minWidth: 56,
+              }}
+            />
+          </div>
+        </FlexBox>
+      )}
     </FlexBox>
   )
 }

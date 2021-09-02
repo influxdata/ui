@@ -74,7 +74,7 @@ export const Provider: FC = ({children}) => {
   const script = query
 
   useEffect(() => {
-    const ast = parse(data.query)
+    const ast = parse(data?.query ?? '')
     const params = remove(
       ast,
       node =>

@@ -72,10 +72,12 @@ class ResourceAccordion extends Component<Props, State> {
             permissions={permissions[resource]}
             onToggleAll={this.handleToggleAll}
           />
-          <GetResources resources={[ResourceType[resourceName]]}>
-            {!isEmpty(permissions[resource].sublevelPermissions) &&
-              this.getAccordionBody(resourceName, resource)}
-          </GetResources>
+          {resourceName === 'Telegrafs' || resourceName === 'Buckets' ? (
+            <GetResources resources={[ResourceType[resourceName]]}>
+              {!isEmpty(permissions[resource].sublevelPermissions) &&
+                this.getAccordionBody(resourceName, resource)}
+            </GetResources>
+          ) : null}
         </Accordion>
       )
     })
@@ -83,21 +85,27 @@ class ResourceAccordion extends Component<Props, State> {
 
   getAccordionBody = (resourceName, resource) => {
     const {permissions} = this.state
-    return resourceName === 'Telegrafs' ? (
-      <ResourceAccordionBody
-        resourceName={resource}
-        permissions={permissions[resource].sublevelPermissions}
-        onToggle={this.handleIndividualToggle}
-        title="Individual Telegraf Configuration Names"
-      />
-    ) : (
-      <ResourceAccordionBody
-        resourceName={resource}
-        permissions={permissions[resource].sublevelPermissions}
-        onToggle={this.handleIndividualToggle}
-        title="Individual Bucket Names"
-      />
-    )
+    if (resourceName === 'Telegrafs') {
+      return (
+        <ResourceAccordionBody
+          resourceName={resource}
+          permissions={permissions[resource].sublevelPermissions}
+          onToggle={this.handleIndividualToggle}
+          title="Individual Telegraf Configuration Names"
+        />
+      )
+    } else if (resourceName === 'Buckets') {
+      return (
+        <ResourceAccordionBody
+          resourceName={resource}
+          permissions={permissions[resource].sublevelPermissions}
+          onToggle={this.handleIndividualToggle}
+          title="Individual Bucket Names"
+        />
+      )
+    } else {
+      return null
+    }
   }
 
   handleToggleAll = (resourceName, permission) => {

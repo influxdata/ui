@@ -226,7 +226,7 @@ describe('The Query Builder', () => {
       cy.getByTestID('overlay')
         .contains('Name this Cell')
         .click()
-      cy.get('[placeholder="Name this Cell"]').type('A better name!')
+      cy.get('[placeholder="Name this Cell"]').type('A better name!{enter}')
       cy.get('.veo-contents').click() // click out of inline editor
       cy.getByTestID('save-cell--button').click()
 

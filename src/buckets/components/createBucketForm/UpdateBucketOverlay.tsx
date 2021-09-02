@@ -172,7 +172,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               onClickRename={handleClickRename}
               onChangeSchemaType={handleChangeSchemaType}
               schemaType={schemaType as SchemaType}
-              measurementSchemas = {measurementSchemas}
+              measurementSchemaList = {measurementSchemas}
             />
           </Overlay.Body>
         </SpinnerContainer>

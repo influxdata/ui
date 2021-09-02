@@ -40,7 +40,7 @@ interface Props {
   testID?: string
   onChangeSchemaType?: (schemaType: SchemaType) => void
   schemaType?: SchemaType
-  measurementSchemas ?: MeasurementSchemaList
+  measurementSchemaList ?: MeasurementSchemaList
 }
 
 interface State {
@@ -77,7 +77,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       onClickRename,
       testID = 'bucket-form',
       schemaType,
-      measurementSchemas,
+      measurementSchemaList,
     } = this.props
 
     const {showAdvanced} = this.state
@@ -89,8 +89,8 @@ export default class BucketOverlayForm extends PureComponent<Props> {
         let contents = null
         if (isEditing) {
           let measurementSchemaReadonlyList = null
-          if (measurementSchemas) {
-            measurementSchemaReadonlyList = <MeasurementSchemaSection measurementSchemas={measurementSchemas}/>
+          if (measurementSchemaList) {
+            measurementSchemaReadonlyList = <MeasurementSchemaSection measurementSchemaList ={measurementSchemaList}/>
           }
           contents = <>
             <SchemaToggle readOnlySchemaType={schemaType} />

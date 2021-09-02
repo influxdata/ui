@@ -1,33 +1,72 @@
 import React, {useState, FC} from 'react'
 
 import {
-    AlignItems,
+    AlignItems, Button,
     ComponentColor,
     ComponentSize,
     FlexBox,
-    FlexDirection,
+    FlexDirection, IconFont,
     InputLabel,
-    InputToggleType,
+    InputToggleType, Panel,
     Toggle,
 } from '@influxdata/clockface'
 import {capitalize} from 'lodash'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
 import {MeasurementSchema, MeasurementSchemaList} from 'src/client/generatedRoutes'
+import {downloadTextFile} from "../../../shared/utils/download";
 
 interface Props {
-    measurementSchemas ?: MeasurementSchemaList
+    measurementSchemaList ?: MeasurementSchemaList
     isEditing ?: boolean = false
 }
 
-export const MeasurementSchemaSection: FC<Props> = ({measurementSchemas,
+interface PanelProps {
+    measurementSchema: MeasurementSchema
+    index: number
+}
+
+const ReadOnlyPanel : FC<PanelProps> = ({measurementSchema, index  }) => {
+
+    const handleDownloadSchema = () => {
+        const {name} = measurementSchema
+        const contents = JSON.stringify(measurementSchema.columns)
+        downloadTextFile(contents, name || 'schema', '.json')
+    }
+
+    return (
+        <FlexBox
+            direction={FlexDirection.Column}
+            margin={ComponentSize.Large}
+            alignItems={AlignItems.FlexStart}
+            testID={`measurement-schema-readOnly-panel-${index}`}
+            className="measurement-schema-panel"
+        >
+            <div className="header">
+                <div>Name</div>
+                <div className="schema-line">
+                        <div>{measurementSchema.name}</div>
+                    {/*<Button*/}
+                    {/*    icon={IconFont.Download}*/}
+                    {/*    color={ComponentColor.Secondary}*/}
+                    {/*    text="Download Schema"*/}
+                    {/*    onClick={handleDownloadSchema}*/}
+                    {/*/>*/}
+                </div>
+            </div>
+        </FlexBox>
+    )
+}
+
+export const MeasurementSchemaSection: FC<Props> = ({measurementSchemaList,
                                                     }) => {
 
 // this is the documentation link for explicit schemas for buckets
     const link =
         'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
-console.log('got ', measurementSchemas)
-const contents = <div> measurement schema stuff goes here.....</div>
+console.log('got ', measurementSchemaList)
+
+const contents = "foo bar ack" //measurementSchemaList.measurementSchemas.map((oneSchema, index) => (<ReadOnlyPanel measurementSchema={oneSchema} index={index}) />))
     return (
         <FlexBox
             direction={FlexDirection.Column}

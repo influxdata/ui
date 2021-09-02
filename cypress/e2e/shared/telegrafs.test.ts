@@ -27,7 +27,7 @@ describe('Collectors', () => {
       cy.getByTestID('table-row').should('have.length', 0)
       cy.contains('Create Configuration').click()
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('telegraf-plugins--System').click()
+        cy.getByTestID('telegraf-plugins--Aerospike').click()
         cy.getByTestID('next').click()
         cy.getByInputName('name')
           .clear()
@@ -53,6 +53,43 @@ describe('Collectors', () => {
           .should('have.length', 1)
           .and('contain', newConfig)
           .and('contain', defaultBucket)
+      })
+    })
+
+    it.only('can create a telegraf config in new system', () => {
+      const newConfig = 'New Config'
+      const configDescription = 'This is a new config testing'
+      cy.setFeatureFlags({telegrafUiRefresh: true}).then(() => {
+        cy.getByTestID('table-row').should('have.length', 0)
+        cy.contains('Create Configuration').click()
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('telegraf-plugins--System').click()
+          cy.getByTestID('next').click()
+          cy.getByInputName('name')
+            .clear()
+            .type(newConfig)
+          cy.getByInputName('description')
+            .clear()
+            .type(configDescription)
+          cy.get('.cf-button')
+            .contains('Create and Verify')
+            .click()
+          cy.getByTestID('streaming').within(() => {
+            cy.get('.cf-button')
+              .contains('Listen for Data')
+              .click()
+          })
+          cy.get('.cf-button')
+            .contains('Finish')
+            .click()
+        })
+
+        cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+          cy.getByTestID('resource-card')
+            .should('have.length', 1)
+            .and('contain', newConfig)
+            .and('contain', defaultBucket)
+        })
       })
     })
 

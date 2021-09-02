@@ -53,7 +53,7 @@ export const FlowProvider: FC = ({children}) => {
       .then(res => res.json())
       .then(res => {
         console.log({res})
-        // setFlow(res.data)
+        // setFlow(hydrate(res.data))
         setFlow(EXAMPLE_FLOW)
         setLoading(RemoteDataState.Done)
       })

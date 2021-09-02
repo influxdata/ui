@@ -23,10 +23,12 @@ interface Props {
 
 interface PanelProps {
     measurementSchema: MeasurementSchema
-    index: number
+    index?: number
 }
 
 const ReadOnlyPanel : FC<PanelProps> = ({measurementSchema, index  }) => {
+
+    if (!index) { index = 0}
 
     const handleDownloadSchema = () => {
         const {name} = measurementSchema
@@ -65,8 +67,15 @@ export const MeasurementSchemaSection: FC<Props> = ({measurementSchemaList,
     const link =
         'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
 console.log('got ', measurementSchemaList)
+const schemas  = measurementSchemaList.measurementSchemas
+    let contents = null;
+    if (schemas) {
+       contents = schemas.map((oneSchema, index) => (
+            <div> {oneSchema.name}</div>
+        ))
+    }
 
-const contents = "foo bar ack" //measurementSchemaList.measurementSchemas.map((oneSchema, index) => (<ReadOnlyPanel measurementSchema={oneSchema} index={index}) />))
+
     return (
         <FlexBox
             direction={FlexDirection.Column}

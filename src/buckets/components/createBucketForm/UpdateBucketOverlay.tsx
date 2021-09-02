@@ -58,7 +58,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   const [retentionSelection, setRetentionSelection] = useState(DEFAULT_SECONDS)
 
   const [schemaType, setSchemaType] = useState('implicit')
-  const [measurementSchemas, setMeasurementSchemas] = useState({})
+  const [measurementSchemaList, setMeasurementSchemaList] = useState(null)
 
   const handleClose = useCallback(() => {
     history.push(`/orgs/${orgID}/load-data/buckets`)
@@ -82,7 +82,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         const schema = await getSchema(bucketID)
 
         console.log('got schema!!!! 78a-jill', schema)
-       setMeasurementSchemas(schema.measurementSchemas)
+       setMeasurementSchemaList(schema)
       }
 
       const rules = get(resp.data, 'retentionRules', [])
@@ -172,7 +172,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               onClickRename={handleClickRename}
               onChangeSchemaType={handleChangeSchemaType}
               schemaType={schemaType as SchemaType}
-              measurementSchemaList = {measurementSchemas}
+              measurementSchemaList = {measurementSchemaList}
             />
           </Overlay.Body>
         </SpinnerContainer>

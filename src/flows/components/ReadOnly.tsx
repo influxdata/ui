@@ -1,13 +1,14 @@
 // Libraries
-import React, {FC} from 'react'
-import {AppWrapper, Page} from '@influxdata/clockface'
-import {DapperScrollbars} from '@influxdata/clockface'
+import React, {FC, useContext, useEffect} from 'react'
+import {AppWrapper, DapperScrollbars, Page} from '@influxdata/clockface'
+import {useParams} from 'react-router'
 
 // Contexts
 import {FlowProvider} from 'src/flows/context/shared'
+import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryProvider} from 'src/flows/context/flow.query'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
-import {ResultsProvider} from 'src/flows/context/results'
+import {ResultsContext, ResultsProvider} from 'src/flows/context/results'
 import {SidebarProvider} from 'src/flows/context/sidebar'
 
 // Components
@@ -19,10 +20,29 @@ import 'src/flows/style.scss'
 import 'src/flows/shared/Resizer.scss'
 import '@influxdata/clockface/dist/index.css'
 
+const RunPipeResults: FC = () => {
+  const {flow} = useContext(FlowContext)
+  const {setResult} = useContext(ResultsContext)
+  const {accessID} = useParams<{accessID}>()
+
+  useEffect(() => {
+    flow.data.allIDs.map(id =>
+      fetch(`${window.location.origin}/share/${accessID}/query/${id}`)
+        .then(res => res.json())
+        .then(resp => {
+          setResult(id, resp.data)
+        })
+    )
+  }, [accessID, flow, setResult])
+
+  return null
+}
+
 const FlowContainer: FC = () => (
   <AppWrapper>
     <FlowProvider>
       <ResultsProvider>
+        <RunPipeResults />
         <FlowQueryProvider>
           <SidebarProvider>
             <Page>

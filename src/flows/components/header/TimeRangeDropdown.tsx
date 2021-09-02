@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState, useCallback, useContext} from 'react'
+import React, {FC, useEffect, useCallback, useContext} from 'react'
 import {default as StatelessTimeRangeDropdown} from 'src/shared/components/TimeRangeDropdown'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -7,8 +7,7 @@ import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {event} from 'src/cloud/utils/reporting'
 
 const TimeRangeDropdown: FC = () => {
-  const {update, flow} = useContext(FlowContext)
-  const [range, setRange] = useState(null)
+  const {flow, updateOther} = useContext(FlowContext)
   const {queryAll} = useContext(FlowQueryContext)
 
   const updateRange = useCallback(
@@ -20,18 +19,17 @@ const TimeRangeDropdown: FC = () => {
         },
         {upper: range.upper, lower: range.lower}
       )
-      update({range})
-      setRange(`${range.lower} to ${range.upper || 'now'}`)
+      updateOther({range})
     },
-    [update]
+    [updateOther]
   )
 
   useEffect(() => {
-    if (!range) {
+    if (!flow.range) {
       return
     }
     queryAll()
-  }, [range])
+  }, [flow.range])
 
   return (
     <StatelessTimeRangeDropdown

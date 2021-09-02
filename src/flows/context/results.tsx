@@ -1,61 +1,47 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
-import {FluxResult, Resource, ResourceManipulator} from 'src/types/flows'
-import useResource from 'src/flows/context/resource.hook'
+import {FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
-import {PIPE_DEFINITIONS} from 'src/flows'
 
-export type ResultsContextType = ResourceManipulator<FluxResult>
+interface Hash<T> {
+  [key: string]: T
+}
 
-const EMPTY_STATE = {
-  byID: {},
-  allIDs: [],
-} as Resource<FluxResult>
+const EMPTY_STATE = {} as Hash<FluxResult>
+
+interface ResultsContextType {
+  results: Hash<FluxResult>
+  setResult: (id: string, result: Partial<FluxResult>) => void
+}
 
 const DEFAULT_CONTEXT: ResultsContextType = {
-  get: _id => null as FluxResult,
-  add: (_id, _data) => {},
-  update: (_id, _data) => {},
-  remove: _id => {},
-  indexOf: _id => -1,
-  move: _id => {},
-  serialize: () => ({...EMPTY_STATE}),
-  byID: null,
-  allIDs: [],
-  all: [],
-} as ResultsContextType
+  results: EMPTY_STATE,
+  setResult: (_: string, __: Partial<FluxResult>) => {},
+}
 
 export const ResultsContext = React.createContext<ResultsContextType>(
   DEFAULT_CONTEXT
 )
 
 export const ResultsProvider: FC = ({children}) => {
-  const {id, flow} = useContext(FlowContext)
-
+  const {id} = useContext(FlowContext)
   const [results, setResults] = useState({...EMPTY_STATE})
 
   useEffect(() => {
     setResults({...EMPTY_STATE})
   }, [id])
 
-  const manipulator = useResource<FluxResult>(results, setResults)
-
   const value = {
-    ...manipulator,
-    add: (id: string, result?: FluxResult): void => {
-      try {
-        if (result) {
-          manipulator.add(id, result)
-          return
-        }
-        if (PIPE_DEFINITIONS[flow.data.get(id).type].family === 'inputs') {
-          return
-        }
-        const ref = flow.data.allIDs
-        const index = flow.data.indexOf(id)
-        manipulator.add(id, manipulator.get(ref[index - 1]))
-      } catch (_e) {
-        // swallow that
+    results,
+    setResult: (id: string, result: Partial<FluxResult>) => {
+      results[id] = {
+        source: '',
+        parsed: null,
+        ...results[id],
+        ...result,
       }
+      setResults({
+        ...results,
+      })
     },
   }
 

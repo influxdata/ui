@@ -1,24 +1,29 @@
 import React, {FC, useContext, useCallback} from 'react'
-import {Flow, PipeData} from 'src/types/flows'
+import {Flow, PipeData, PipeMeta} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
-import {Resource} from 'src/types'
 
 export interface FlowContextType {
   id: string | null
   name: string
   flow: Flow | null
   add: (data: Partial<PipeData>, index?: number) => string
-  update: (flow: Partial<Flow>) => void
+  updateData: (id: string, data: Partial<PipeMeta>) => void
+  updateMeta: (id: string, meta: Partial<PipeMeta>) => void
+  updateOther: (flow: Partial<Flow>) => void
+  remove: (id: string) => void
 }
 
 export const DEFAULT_CONTEXT: FlowContextType = {
   id: null,
   name: DEFAULT_PROJECT_NAME,
   flow: null,
-  add: () => '',
-  update: () => {},
+  add: _ => '',
+  updateData: (_, __) => {},
+  updateMeta: (_, __) => {},
+  updateOther: _ => {},
+  remove: _ => {},
 }
 
 export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
@@ -28,14 +33,52 @@ let GENERATOR_INDEX = 0
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
 
-  const updateCurrent = useCallback(
-    (flow: Flow) => {
+  const updateData = useCallback(
+    (id: string, data: Partial<PipeData>) => {
+      flows[currentID].data.byID[id] = {
+        ...(flows[currentID].data.byID[id] || {}),
+        ...data,
+      }
+
       update(currentID, {
-        ...flows[currentID],
-        ...flow,
+        data: {
+          ...flows[currentID].data,
+        },
       })
     },
-    [currentID, flows[currentID]]
+    [update, flows, currentID]
+  )
+
+  const updateMeta = useCallback(
+    (id: string, meta: Partial<PipeMeta>) => {
+      flows[currentID].meta.byID[id] = {
+        title: '',
+        visible: true,
+        ...(flows[currentID].meta.byID[id] || {}),
+        ...meta,
+      }
+
+      update(currentID, {
+        meta: {
+          ...flows[currentID].meta,
+        },
+      })
+    },
+    [update, flows, currentID]
+  )
+
+  const updateOther = useCallback(
+    (flow: Partial<Flow>) => {
+      flows[currentID] = {
+        ...flows[currentID],
+        ...flow,
+      }
+
+      update(currentID, {
+        ...flows[currentID],
+      })
+    },
+    [update, flows, currentID]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
@@ -47,18 +90,39 @@ export const FlowProvider: FC = ({children}) => {
     delete initial.title
     initial.id = id
 
-    flows[currentID].data.add(id, initial)
-    const {resource, onChange} = flows[currentID].meta.add(id, {
+    flows[currentID].data.byID[id] = initial
+    flows[currentID].meta.byID[id] = {
       title,
       visible: true,
-    }) as {resource: Resource<any>; onChange: (_: Resource<any>) => {}}
-
-    if (typeof index !== 'undefined') {
-      flows[currentID].data.move(id, index + 1)
     }
 
-    onChange(resource)
+    if (typeof index !== 'undefined') {
+      flows[currentID].data.allIDs.splice(index + 1, 0, id)
+      flows[currentID].meta.allIDs.splice(index + 1, 0, id)
+    } else {
+      flows[currentID].data.allIDs.push(id)
+      flows[currentID].meta.allIDs.push(id)
+    }
+
+    updateData(id, {})
+    updateMeta(id, {})
+
     return id
+  }
+
+  const removePipe = (id: string) => {
+    flows[currentID].meta.allIDs = flows[currentID].meta.allIDs.filter(
+      _id => _id !== id
+    )
+    flows[currentID].data.allIDs = flows[currentID].data.allIDs.filter(
+      _id => _id !== id
+    )
+
+    delete flows[currentID].data.byID[id]
+    delete flows[currentID].meta.byID[id]
+
+    updateData(id, {})
+    updateMeta(id, {})
   }
 
   if (!flows) {
@@ -72,7 +136,10 @@ export const FlowProvider: FC = ({children}) => {
         name,
         flow: flows[currentID],
         add: addPipe,
-        update: updateCurrent,
+        updateData,
+        updateMeta,
+        updateOther,
+        remove: removePipe,
       }}
     >
       {children}

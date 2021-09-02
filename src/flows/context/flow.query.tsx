@@ -82,7 +82,7 @@ const generateTimeVar = (which, value): Variable =>
 export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {runMode} = useContext(RunModeContext)
-  const {add, update} = useContext(ResultsContext)
+  const {setResult} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const [loading, setLoading] = useState({})
   const org = useSelector(getOrg)
@@ -144,7 +144,11 @@ export const FlowQueryProvider: FC = ({children}) => {
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
     const stages = flow.data.allIDs.reduce((acc, panelID) => {
-      const panel = flow.data.get(panelID)
+      const panel = flow.data.byID[panelID]
+
+      if (!panel) {
+        return acc
+      }
 
       const last = acc[acc.length - 1] || {
         scope: {
@@ -267,14 +271,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     return basicAPI(text, _override)
   }
 
-  const forceUpdate = (id, data) => {
-    try {
-      update(id, data)
-    } catch (_e) {
-      add(id, data)
-    }
-  }
-
   const statuses = Object.values(loading)
 
   let status = RemoteDataState.Done
@@ -316,10 +312,10 @@ export const FlowQueryProvider: FC = ({children}) => {
             .then(response => {
               loading[stage.id] = RemoteDataState.Done
               setLoading(loading)
-              forceUpdate(stage.id, response)
+              setResult(stage.id, response)
             })
             .catch(e => {
-              forceUpdate(stage.id, {
+              setResult(stage.id, {
                 error: e.message,
               })
               loading[stage.id] = RemoteDataState.Error
@@ -368,10 +364,10 @@ export const FlowQueryProvider: FC = ({children}) => {
             .then(response => {
               loading[stage.id] = RemoteDataState.Done
               setLoading(loading)
-              forceUpdate(stage.id, response)
+              setResult(stage.id, response)
             })
             .catch(e => {
-              forceUpdate(stage.id, {
+              setResult(stage.id, {
                 error: e.message,
               })
               loading[stage.id] = RemoteDataState.Error

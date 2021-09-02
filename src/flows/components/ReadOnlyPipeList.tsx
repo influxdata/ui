@@ -21,7 +21,7 @@ const FlowPanel: FC<Props> = ({id, children}) => {
   const {flow} = useContext(FlowContext)
   const {id: focused} = useContext(SidebarContext)
 
-  const isVisible = flow.meta.get(id).visible
+  const isVisible = flow.meta.byID(id).visible
 
   const panelClassName = classnames('flow-panel', {
     'flow-panel__readonly': true,
@@ -31,7 +31,7 @@ const FlowPanel: FC<Props> = ({id, children}) => {
 
   if (
     flow.readOnly &&
-    !/^(visualization|markdown)$/.test(flow.data.get(id).type)
+    !/^(visualization|markdown)$/.test(flow.data.byID(id).type)
   ) {
     return null
   }
@@ -39,7 +39,7 @@ const FlowPanel: FC<Props> = ({id, children}) => {
   return (
     <div className={panelClassName} style={{marginBottom: '16px'}}>
       <div className="flow-panel--header">
-        <div className="flow-panel--title">{flow.meta.get(id).title}</div>
+        <div className="flow-panel--title">{flow.meta.byID(id).title}</div>
         {!flow.readOnly && (
           <div className="flow-panel--persistent-control">
             <MenuButton id={id} />

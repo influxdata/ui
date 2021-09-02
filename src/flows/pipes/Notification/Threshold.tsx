@@ -124,7 +124,7 @@ const Threshold: FC = () => {
             type: deadmanType,
             deadmanCheckValue: '5s',
             deadmanStopValue: '90s',
-            field: threshold.field || '_field',
+            field: threshold.field || '_value',
           },
         ]
       } else {

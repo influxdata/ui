@@ -9,7 +9,7 @@ import {
   testDeleteAnnotation,
 } from '../util/annotationsSetup'
 
-describe('The Annotations UI functionality, on a graph (xy line) graph type ', () => {
+describe('The Annotations UI functionality, on a graph (xy line) graph type', () => {
   beforeEach(() => setupData(cy))
 
   it('can create an annotation on the xy line graph', () => {

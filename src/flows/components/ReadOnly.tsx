@@ -28,14 +28,14 @@ const RunPipeResults: FC = () => {
 
   useEffect(() => {
     flow.data.allIDs.map(id =>
-      fetch(`${window.location.origin}/share/${accessID}/query/${id}`)
-        .then(res => res.json())
+      fetch(`/api/share/${accessID}/query/${id}`)
+        .then(res => res.text())
         .then(resp => {
-          const csv = fromFlux(resp.csv)
+          const csv = fromFlux(resp)
           setResult(id, {parsed: csv, source: ''})
         })
     )
-  }, [accessID, flow, setResult])
+  }, [flow])
 
   return null
 }

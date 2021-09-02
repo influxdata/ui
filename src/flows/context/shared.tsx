@@ -49,12 +49,12 @@ export const FlowProvider: FC = ({children}) => {
 
   useEffect(() => {
     setLoading(RemoteDataState.Loading)
-    fetch(`${window.location.origin}/share/${accessID}`)
+    fetch(`${window.location.origin}/api/share/${accessID}`)
       .then(res => res.json())
       .then(res => {
         console.log({res})
-        // setFlow(hydrate(res.data))
-        setFlow(EXAMPLE_FLOW)
+        setFlow(hydrate(res))
+        // setFlow(EXAMPLE_FLOW)
         setLoading(RemoteDataState.Done)
       })
       .catch(error => {

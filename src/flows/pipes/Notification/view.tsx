@@ -18,17 +18,19 @@ import {
   Dropdown,
   ComponentColor,
   Button,
+  InfluxColors,
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {remove} from 'src/shared/contexts/query'
-
+import Expressions from 'src/flows/pipes/Notification/Expressions'
 import Threshold, {
   deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Notification/Threshold'
 import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
+import {SidebarContext} from 'src/flows/context/sidebar'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -41,6 +43,8 @@ import {
   testNotificationSuccess,
   testNotificationFailure,
 } from 'src/shared/copy/notifications'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
@@ -48,9 +52,11 @@ const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
   const {id, data, update, results, loading} = useContext(PipeContext)
   const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
+  const [showExp, setShowExp] = useState(true)
 
   let intervalError = ''
   let offsetError = ''
@@ -123,6 +129,13 @@ const Notification: FC<PipeProp> = ({Context}) => {
   const updateMessage = evt => {
     update({
       message: evt.target.value,
+      cursorPosition: evt.target.selectionStart,
+    })
+  }
+
+  const updateCursor = evt => {
+    update({
+      cursorPosition: evt.target.selectionStart,
     })
   }
 
@@ -432,6 +445,19 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
     }
   }
 
+  const toggleExp = useCallback(() => {
+    setShowExp(!showExp)
+  }, [setShowExp, showExp])
+
+  const launcher = () => {
+    if (showId === id) {
+      hideSub()
+    } else {
+      show(id)
+      showSub(<Expressions id={id} parsed={results?.parsed} />)
+    }
+  }
+
   if (
     loading === RemoteDataState.NotStarted ||
     loading === RemoteDataState.Loading
@@ -473,7 +499,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
     <Context>
       <div className="notification">
         <Threshold />
-        <FlexBox margin={ComponentSize.Medium}>
+        <FlexBox margin={ComponentSize.Medium} style={{padding: '24px 0'}}>
           <FlexBox.Child grow={1} shrink={1}>
             <Form.Element
               label="Check Every"
@@ -518,47 +544,83 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
           </FlexBox.Child>
         </FlexBox>
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
-          <Form.Element
-            required={true}
-            label="Endpoint"
-            className="endpoint-dropdown--element"
-          >
-            <Dropdown.Menu className="flows-endpoints--dropdown">
-              {avail}
-            </Dropdown.Menu>
-          </Form.Element>
-
-          <FlexBox.Child grow={1} shrink={1}>
-            <Form.Element label="Details" className="endpoint-details--element">
-              {React.createElement(DEFAULT_ENDPOINTS[data.endpoint].view)}
-            </Form.Element>
-          </FlexBox.Child>
-
-          <FlexBox.Child grow={2} shrink={1} style={{display: 'flex'}}>
-            <Form.Element label="Message Format" required={true}>
-              <TextArea
-                name="message"
-                rows={10}
-                value={data.message}
-                onChange={updateMessage}
-                size={ComponentSize.Medium}
-                style={{height: '100%'}}
-              />
+          <FlexBox.Child>
+            <Form.Element label="Notification" required={true}>
+              <Panel backgroundColor={InfluxColors.Onyx}>
+                <Panel.Body>
+                  <FlexBox
+                    justifyContent={JustifyContent.FlexEnd}
+                    alignItems={AlignItems.FlexEnd}
+                    margin={ComponentSize.Medium}
+                  >
+                    {isFlagEnabled('notebooksExp') && (
+                      <FlexBox.Child grow={0} shrink={0}>
+                        <Button
+                          text="${exp}"
+                          onClick={
+                            isFlagEnabled('flowSidebar') ? launcher : toggleExp
+                          }
+                          color={ComponentColor.Secondary}
+                        />
+                      </FlexBox.Child>
+                    )}
+                    <FlexBox.Child grow={0} shrink={0}>
+                      <Button
+                        text="Test Alert"
+                        status={
+                          status === RemoteDataState.Loading
+                            ? ComponentStatus.Loading
+                            : ComponentStatus.Default
+                        }
+                        onClick={handleTestEndpoint}
+                        color={ComponentColor.Primary}
+                      />
+                    </FlexBox.Child>
+                  </FlexBox>
+                  <FlexBox
+                    alignItems={AlignItems.Stretch}
+                    margin={ComponentSize.Medium}
+                  >
+                    <Form.Element
+                      required={true}
+                      label="Endpoint"
+                      className="endpoint-dropdown--element"
+                    >
+                      <Dropdown.Menu className="flows-endpoints--dropdown">
+                        {avail}
+                      </Dropdown.Menu>
+                    </Form.Element>
+                    <FlexBox.Child grow={1} shrink={1}>
+                      <Form.Element
+                        label="Details"
+                        className="endpoint-details--element"
+                      >
+                        {React.createElement(
+                          DEFAULT_ENDPOINTS[data.endpoint].view
+                        )}
+                      </Form.Element>
+                    </FlexBox.Child>
+                    <FlexBox.Child grow={1} shrink={1}>
+                      <Form.Element label="Message Format" required={true}>
+                        <TextArea
+                          name="message"
+                          rows={10}
+                          value={data.message}
+                          onChange={updateMessage}
+                          onFocus={updateCursor}
+                          size={ComponentSize.Medium}
+                          style={{height: '100%'}}
+                        />
+                      </Form.Element>
+                    </FlexBox.Child>
+                  </FlexBox>
+                </Panel.Body>
+              </Panel>
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
           <FlexBox margin={ComponentSize.Medium}>
-            <Button
-              text="Test Endpoint"
-              status={
-                status === RemoteDataState.Loading
-                  ? ComponentStatus.Loading
-                  : ComponentStatus.Default
-              }
-              onClick={handleTestEndpoint}
-              color={ComponentColor.Default}
-            />
             <ExportTaskButton
               generate={generateTask}
               text="Export Alert Task"

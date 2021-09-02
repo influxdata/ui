@@ -19,6 +19,7 @@ export default register => {
       ],
       message:
         '${strings.title(v: r._type)} for ${r._source_measurement} triggered at ${time(v: r._source_timestamp)}!',
+      cursorPosition: 0,
       endpoint: 'slack',
       endpointData: {
         url: 'https://hooks.slack.com/services/X/X/X',

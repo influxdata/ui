@@ -590,12 +590,13 @@ export const setupUser = (): Cypress.Chainable<Cypress.Response<any>> => {
 
 export const flush = () => {
   const defaultUser = Cypress.env('defaultUser')
-  const userParam = defaultUser ? `?user=${defaultUser}` : ''
-  return cy
-    .request({method: 'POST', url: `/debug/flush${userParam}`})
-    .then(response => {
-      expect(response.status).to.eq(200)
-    })
+  if (defaultUser) {
+    return cy
+      .request({method: 'POST', url: `/debug/flush?user=${defaultUser}`})
+      .then(response => {
+        expect(response.status).to.eq(200)
+      })
+  }
 }
 
 export type ProvisionData = {

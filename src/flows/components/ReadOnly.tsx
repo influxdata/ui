@@ -19,6 +19,7 @@ import ReadOnlyHeader from 'src/flows/components/ReadOnlyHeader'
 import 'src/flows/style.scss'
 import 'src/flows/shared/Resizer.scss'
 import '@influxdata/clockface/dist/index.css'
+import fromFlux from 'src/shared/utils/fromFlux'
 
 const RunPipeResults: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -30,7 +31,8 @@ const RunPipeResults: FC = () => {
       fetch(`${window.location.origin}/share/${accessID}/query/${id}`)
         .then(res => res.json())
         .then(resp => {
-          setResult(id, resp.data)
+          const csv = fromFlux(resp.csv)
+          setResult(id, {parsed: csv, source: ''})
         })
     )
   }, [accessID, flow, setResult])

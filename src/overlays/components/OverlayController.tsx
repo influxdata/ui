@@ -20,7 +20,7 @@ import BucketsTokenOverlay from 'src/authorizations/components/BucketsTokenOverl
 import TelegrafConfigOverlay from 'src/telegrafs/components/TelegrafConfigOverlay'
 import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverlay'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
-import CreateBucketOverlay from 'src/buckets/components/CreateBucketOverlay'
+import CreateBucketOverlay from 'src/buckets/components/createBucketForm/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
 import RateLimitOverlay from 'src/cloud/components/RateLimitOverlay'
 import WriteLimitOverlay from 'src/cloud/components/WriteLimitOverlay'
@@ -74,7 +74,7 @@ export const OverlayController: FunctionComponent = () => {
         activeOverlay.current = <CustomApiTokenOverlay onClose={onClose} />
         break
       case 'access-token':
-        activeOverlay.current = <DisplayTokenOverlay onClose={onClose} />
+        activeOverlay.current = <DisplayTokenOverlay />
         break
       case 'add-token':
         activeOverlay.current = <BucketsTokenOverlay onClose={onClose} />

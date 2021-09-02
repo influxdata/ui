@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -14,26 +14,24 @@ import {
 } from '@influxdata/clockface'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
+
 // Types
 import {AppState} from 'src/types'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-type Props = ReduxProps & OwnProps
-
-interface OwnProps {
-  onClose: () => void
-}
+type Props = ReduxProps
 
 const DisplayTokenOverlay: FC<Props> = props => {
-  const handleDismiss = () => {
-    props.onClose()
-  }
+  const {onClose} = useContext(OverlayContext)
+
   return (
     <Overlay.Container maxWidth={750}>
       <Overlay.Header
         title="You've Successfully cloned an API Token"
-        onDismiss={handleDismiss}
+        onDismiss={onClose}
         wrapText={true}
       />
       <Overlay.Body>

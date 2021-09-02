@@ -117,7 +117,6 @@ export const createBucket = (bucket: OwnBucket) => async (
     if (resp.status !== 201) {
       throw new Error(resp.data.message)
     }
-
     const newBucket = normalize<Bucket, BucketEntities, string>(
       resp.data,
       bucketSchema

@@ -1,20 +1,104 @@
 import {Organization} from '../../../src/types'
 
-describe('Buckets', () => {
+const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) => {
+  cy.flush()
+  return cy.signin().then(() => {
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs, buckets}) => {
+        cy.visit(`${orgs}/${id}${buckets}`)
+        return cy
+          .setFeatureFlags({measurementSchema: enableMeasurementSchema})
+          .then(() => {
+            return cy.getByTestID('tree-nav')
+          })
+      })
+    )
+  })
+}
+describe('Explicit Buckets', () => {
   beforeEach(() => {
-    cy.flush()
+    setupData(cy, true)
+  })
 
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs, buckets}) => {
-          cy.visit(`${orgs}/${id}${buckets}`)
-          cy.getByTestID('tree-nav')
-        })
-      )
+  it('can create a bucket with an explicit schema', () => {
+    cy.getByTestID('Create Bucket').click()
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByInputName('name').type('explicit-bucket-test')
+
+      cy.getByTestID('schemaBucketToggle').click()
+      const explicitBtn = cy.getByTestID('explicit-bucket-schema-choice-ID')
+      explicitBtn.should('be.visible')
+      explicitBtn.click()
+
+      cy.getByTestID('bucket-form-submit').click()
+    })
+
+    cy.getByTestID('bucket-card explicit-bucket-test').within($card => {
+      expect($card.length).to.equal(1)
+
+      // should have an explicit schema tag in the meta card:
+      cy.getByTestID('bucket-schemaType').contains('Schema Type: Explicit')
+
+      // should have the show schema button in the actions:
+      cy.getByTestID('bucket-showSchema').contains('Show Schema')
+
+      // click on settings; open up the advanced section, and should see the "explicit" as the bucket schema type:
+      cy.getByTestID('bucket-settings').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('schemaBucketToggle').click()
+      cy.getByTestID('bucket-readonly-schema-label').contains('Explicit')
+
+      // the  radio buttons should NOT be there:
+      cy.getByTestID('explicit-bucket-schema-choice-ID').should('not.exist')
     })
   })
 
-  // TODO: Skipping this until we can sort out the differences between OSS and Cloud
+  it('can create a (normal) bucket with an implicit schema', () => {
+    cy.getByTestID('Create Bucket').click()
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByInputName('name').type('implicit-bucket-test')
+
+      cy.getByTestID('schemaBucketToggle').click()
+
+      // check that it is there; but don't click on it; leave it as implicit:
+      cy.getByTestID('explicit-bucket-schema-choice-ID').should('be.visible')
+
+      // implicit button should be selected by default:
+      cy.getByTestID('implicit-bucket-schema-choice-ID--input').should(
+        'be.checked'
+      )
+
+      cy.getByTestID('bucket-form-submit').click()
+    })
+
+    cy.getByTestID('bucket-card implicit-bucket-test').within($card => {
+      expect($card.length).to.equal(1)
+
+      // should have an implicit schema tag in the meta card:
+      cy.getByTestID('bucket-schemaType').contains('Schema Type: Implicit')
+
+      // should NOT have the show schema button in the actions:
+      cy.getByTestID('bucket-showSchema').should('not.exist')
+
+      // click on settings; open up the advanced section, and should see the "implicit" as the bucket schema type:
+      cy.getByTestID('bucket-settings').click()
+    })
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('schemaBucketToggle').click()
+      cy.getByTestID('bucket-readonly-schema-label').contains('Implicit')
+
+      // the  radio buttons should NOT be there:
+      cy.getByTestID('explicit-bucket-schema-choice-ID').should('not.exist')
+    })
+  })
+})
+
+describe('Buckets', () => {
+  beforeEach(() => {
+    setupData(cy)
+  })
+
   it('can sort by name and retention', () => {
     cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
       const demoDataBucket = 'Website Monitoring Bucket'

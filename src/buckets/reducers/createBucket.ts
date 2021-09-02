@@ -24,6 +24,7 @@ export type ReducerActionType =
   | 'updateRuleType'
   | 'updateRetentionRules'
   | 'updateReadableRetention'
+  | 'updateSchema'
 
 export interface Action {
   type: ReducerActionType
@@ -58,5 +59,7 @@ export const createBucketReducer = (state: ReducerState, action: Action) => {
       return {...state, retentionRules: action.payload}
     case 'updateReadableRetention':
       return {...state, readableRetention: action.payload}
+    case 'updateSchema':
+      return {...state, schemaType: action.payload}
   }
 }

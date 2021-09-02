@@ -20,7 +20,8 @@ import {
   List,
   ListItemRef,
 } from '@influxdata/clockface'
-import BucketOverlayForm from 'src/buckets/components/BucketOverlayForm'
+import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
+import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 // Utils
 import {
@@ -43,11 +44,17 @@ import {
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
+import {SchemaType} from 'src/client/generatedRoutes'
 
 interface OwnProps {}
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
+/**
+ * This is the item in the bucket selector list in the query builder
+ * that creates a new bucket (it is at the end of the list of buckets
+ * that can be selected
+ * */
 const SelectorListCreateBucket: FC<Props> = ({
   org,
   createBucket,
@@ -107,6 +114,9 @@ const SelectorListCreateBucket: FC<Props> = ({
     createBucket(state)
     onHide()
   }
+  const handleChangeSchemaType = (schemaType: SchemaType): void => {
+    dispatch({type: 'updateSchema', payload: schemaType})
+  }
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value
@@ -137,12 +147,13 @@ const SelectorListCreateBucket: FC<Props> = ({
         position={PopoverPosition.Above}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
+        style={{maxWidth: BUCKET_OVERLAY_WIDTH}}
         testID="create-bucket-popover"
         contents={onHide => (
           <BucketOverlayForm
             name={state.name}
             buttonText="Create"
-            disableRenaming={false}
+            isEditing={false}
             ruleType={state.ruleType}
             onClose={onHide}
             onSubmit={handleSubmit(onHide)}
@@ -150,6 +161,7 @@ const SelectorListCreateBucket: FC<Props> = ({
             retentionSeconds={retentionSeconds}
             onChangeRuleType={handleChangeRuleType}
             onChangeRetentionRule={handleChangeRetentionRule}
+            onChangeSchemaType={handleChangeSchemaType}
           />
         )}
       />

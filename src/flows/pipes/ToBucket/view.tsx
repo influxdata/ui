@@ -6,7 +6,7 @@ import {PipeProp} from 'src/types/flows'
 import {Bucket} from 'src/types'
 
 // Contexts
-import BucketProvider from 'src/flows/context/buckets'
+import {BucketProvider} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
 
 // Components
@@ -25,7 +25,7 @@ const ToBucket: FC<PipeProp> = ({Context}) => {
   }
 
   return (
-    <BucketProvider>
+    <BucketProvider panel={data.id}>
       <Context>
         <div className="data-source--controls">
           <BucketSelector

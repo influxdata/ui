@@ -34,7 +34,7 @@ const schemas  = measurementSchemaList.measurementSchemas
     let contents = null;
     if (schemas) {
        contents = schemas.map((oneSchema, index) => (
-           <ReadOnlyMeasurementSchemaPanel measurementSchema={oneSchema} index={index} />
+           <ReadOnlyMeasurementSchemaPanel key={`msp-${index}`} measurementSchema={oneSchema} index={index} />
         ))
     }
 

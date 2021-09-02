@@ -14,51 +14,14 @@ import {capitalize} from 'lodash'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
 import {MeasurementSchema, MeasurementSchemaList} from 'src/client/generatedRoutes'
-import {downloadTextFile} from "../../../shared/utils/download";
+import {ReadOnlyMeasurementSchemaPanel} from "./ReadOnlyMeasurementSchemaPanel";
+
 
 interface Props {
     measurementSchemaList ?: MeasurementSchemaList
     isEditing ?: boolean = false
 }
 
-interface PanelProps {
-    measurementSchema: MeasurementSchema
-    index?: number
-}
-
-const ReadOnlyPanel : FC<PanelProps> = ({measurementSchema, index  }) => {
-
-    if (!index) { index = 0}
-
-    const handleDownloadSchema = () => {
-        const {name} = measurementSchema
-        const contents = JSON.stringify(measurementSchema.columns)
-        downloadTextFile(contents, name || 'schema', '.json')
-    }
-
-    return (
-        <FlexBox
-            direction={FlexDirection.Column}
-            margin={ComponentSize.Large}
-            alignItems={AlignItems.FlexStart}
-            testID={`measurement-schema-readOnly-panel-${index}`}
-            className="measurement-schema-panel"
-        >
-            <div className="header">
-                <div>Name</div>
-                <div className="schema-line">
-                        <div>{measurementSchema.name}</div>
-                    {/*<Button*/}
-                    {/*    icon={IconFont.Download}*/}
-                    {/*    color={ComponentColor.Secondary}*/}
-                    {/*    text="Download Schema"*/}
-                    {/*    onClick={handleDownloadSchema}*/}
-                    {/*/>*/}
-                </div>
-            </div>
-        </FlexBox>
-    )
-}
 
 export const MeasurementSchemaSection: FC<Props> = ({measurementSchemaList,
                                                     }) => {
@@ -71,7 +34,7 @@ const schemas  = measurementSchemaList.measurementSchemas
     let contents = null;
     if (schemas) {
        contents = schemas.map((oneSchema, index) => (
-            <div> {oneSchema.name}</div>
+           <ReadOnlyMeasurementSchemaPanel measurementSchema={oneSchema} index={index} />
         ))
     }
 

@@ -14,7 +14,7 @@ const VIS_TYPES = [
   'line-plus-single-stat',
   'table',
 ]
-describe('visualizations', () => {
+describe('visualizations ', () => {
   beforeEach(() => {
     cy.flush()
 

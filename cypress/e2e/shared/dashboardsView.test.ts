@@ -1,7 +1,7 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {lines} from '../../support/commands'
 
-describe('Dashboard ', () => {
+describe('Dashboard', () => {
   beforeEach(() => {
     cy.flush()
     cy.signin().then(() =>

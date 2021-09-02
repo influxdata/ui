@@ -157,7 +157,7 @@ const getClients = (
   ]
 }
 
-describe('Flows', () => {
+describe('Flows ', () => {
   beforeEach(() => {
     cy.flush()
   })

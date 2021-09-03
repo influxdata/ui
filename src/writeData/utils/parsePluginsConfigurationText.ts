@@ -261,7 +261,9 @@ const fetch = path => {
 
 const formatConfigurationText = configurationText => {
   const configurationLines = configurationText.split('\n')
-  const isCommented = configurationLines.every(line => line[0] === '#')
+  const isCommented = configurationLines.every(
+    line => line[0] === '#' || line === ''
+  )
 
   if (isCommented) {
     return (

@@ -1,7 +1,7 @@
 import {Organization} from '../../../src/types'
 
 // resolve flakey behavior for the feature flag setting
-describe.skip('About Page for free users with only 1 user', () => {
+describe.skip('About Page for free users with only 1 user ', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {

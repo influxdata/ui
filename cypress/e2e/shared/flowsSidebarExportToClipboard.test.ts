@@ -158,9 +158,7 @@ const getClients = (
 }
 
 describe('Flows', () => {
-  beforeEach(() => {
-    cy.flush()
-  })
+  beforeEach(() => cy.flush())
 
   describe('Flows Copy To Clipboard', () => {
     beforeEach(() => {

@@ -7,28 +7,28 @@ describe('NotificationRules', () => {
   const name3 = 'Slack 3'
 
   beforeEach(() => {
-    cy.flush()
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          // create the notification endpoints
+          cy.fixture('endpoints').then(({slack}) => {
+            cy.createEndpoint({...slack, name: name1, orgID: id})
+            cy.createEndpoint({...slack, name: name2, orgID: id}).then(
+              ({body}) => {
+                cy.wrap(body).as('selectedEndpoint')
+              }
+            )
+            cy.createEndpoint({...slack, name: name3, orgID: id})
+          })
 
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        // create the notification endpoints
-        cy.fixture('endpoints').then(({slack}) => {
-          cy.createEndpoint({...slack, name: name1, orgID: id})
-          cy.createEndpoint({...slack, name: name2, orgID: id}).then(
-            ({body}) => {
-              cy.wrap(body).as('selectedEndpoint')
-            }
-          )
-          cy.createEndpoint({...slack, name: name3, orgID: id})
-        })
-
-        // visit the alerting index
-        cy.fixture('routes').then(({orgs, alerting}) => {
-          cy.visit(`${orgs}/${id}${alerting}`)
-          cy.getByTestID('tree-nav')
+          // visit the alerting index
+          cy.fixture('routes').then(({orgs, alerting}) => {
+            cy.visit(`${orgs}/${id}${alerting}`)
+            cy.getByTestID('tree-nav')
+          })
         })
       })
-    })
+    )
   })
 
   describe('When a rule does not exist', () => {

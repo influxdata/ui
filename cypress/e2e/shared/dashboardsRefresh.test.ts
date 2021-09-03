@@ -2,17 +2,18 @@ import {Organization} from '../../../src/types'
 import * as moment from 'moment'
 
 describe('Dashboard refresh', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.signin().then(() =>
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id: orgID}: Organization) => {
-          cy.visit(`${orgs}/${orgID}/dashboards-list`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.get('@org').then(({id: orgID}: Organization) => {
+            cy.visit(`${orgs}/${orgID}/dashboards-list`)
+            cy.getByTestID('tree-nav')
+          })
         })
-      })
+      )
     )
-  })
+  )
   describe('Dashboard auto refresh', () => {
     let routeToReturnTo = ''
     const jumpAheadTime = (timeAhead = '00:00:00') => {

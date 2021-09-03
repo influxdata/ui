@@ -3,20 +3,20 @@ import {Organization} from '../../../src/types'
 describe('Pinned Items', () => {
   let orgID: string
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() =>
-      cy.fixture('routes').then(() => {
-        cy.get('@org').then(({id}: any) => {
-          orgID = id
-          cy.setFeatureFlags({
-            pinnedItems: true,
-            docSearchWidget: true,
-          }).then(() => {
-            cy.getByTestID('tree-nav')
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy.fixture('routes').then(() => {
+          cy.get('@org').then(({id}: any) => {
+            orgID = id
+            cy.setFeatureFlags({
+              pinnedItems: true,
+              docSearchWidget: true,
+            }).then(() => {
+              cy.getByTestID('tree-nav')
+            })
           })
         })
-      })
+      )
     )
   })
 
@@ -131,24 +131,24 @@ describe('Pinned Items', () => {
   describe('Pin task tests', () => {
     let taskName: string
     beforeEach(() => {
-      cy.flush()
-
-      cy.signin().then(() => {
-        cy.get('@org').then(({id: orgID}: Organization) =>
-          cy
-            .createToken(orgID, 'test token', 'active', [
-              {action: 'write', resource: {type: 'views', orgID}},
-              {action: 'write', resource: {type: 'documents', orgID}},
-              {action: 'write', resource: {type: 'tasks', orgID}},
-            ])
-            .then(({body}) => {
-              cy.wrap(body.token).as('token')
-              cy.getByTestID('tree-nav')
-              cy.visit(`/orgs/${orgID}/tasks`)
-              cy.getByTestID('tree-nav')
-            })
-        )
-      })
+      cy.flush().then(() =>
+        cy.signin().then(() => {
+          cy.get('@org').then(({id: orgID}: Organization) =>
+            cy
+              .createToken(orgID, 'test token', 'active', [
+                {action: 'write', resource: {type: 'views', orgID}},
+                {action: 'write', resource: {type: 'documents', orgID}},
+                {action: 'write', resource: {type: 'tasks', orgID}},
+              ])
+              .then(({body}) => {
+                cy.wrap(body.token).as('token')
+                cy.getByTestID('tree-nav')
+                cy.visit(`/orgs/${orgID}/tasks`)
+                cy.getByTestID('tree-nav')
+              })
+          )
+        })
+      )
 
       taskName = 'Task'
       cy.createTaskFromEmpty(taskName, ({name}) => {

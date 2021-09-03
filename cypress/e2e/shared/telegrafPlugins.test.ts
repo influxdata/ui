@@ -2,16 +2,16 @@ import {Organization} from '../../../src/types'
 
 describe('Sources > Telegraf Plugins', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs, sources}) => {
-          cy.visit(`${orgs}/${id}${sources}`)
-          cy.getByTestID('tree-nav')
-        })
-      )
-    })
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs, sources}) => {
+            cy.visit(`${orgs}/${id}${sources}`)
+            cy.getByTestID('tree-nav')
+          })
+        )
+      })
+    )
   })
 
   it('can select a plugin and see details without an option to add to a configuration when feature is off', () => {

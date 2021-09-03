@@ -1,7 +1,5 @@
 describe('Orgs', () => {
-  beforeEach(() => {
-    cy.flush()
-  })
+  beforeEach(() => cy.flush())
 
   describe('updating and switching orgs', () => {
     beforeEach(() => {

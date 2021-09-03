@@ -118,7 +118,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
 }
 
 const Sidebar: FC = () => {
-  const {flow, add} = useContext(FlowContext)
+  const {flow, updateMeta, add, remove} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
 
@@ -129,55 +129,54 @@ const Sidebar: FC = () => {
         {
           title: 'Delete',
           action: () => {
-            const {type} = flow.data.get(id)
+            const {type} = flow.data.byID[id]
             event('notebook_delete_cell', {notebooksCellType: type})
 
-            flow.data.remove(id)
-            flow.meta.remove(id)
+            remove(id)
           },
         },
         {
           title: 'Duplicate',
           action: () => {
-            const data = flow.data.get(id)
-            const meta = flow.meta.get(id)
+            const data = flow.data.byID[id]
+            const meta = flow.meta.byID[id]
 
             data.title = meta.title
 
             event('Notebook Panel Cloned', {notebooksCellType: data.type})
 
-            add(data, flow.data.indexOf(id))
+            add(data, flow.data.allIDs.indexOf(id))
           },
         },
         {
           title: () => {
-            if (flow.meta.indexOf(id) === -1) {
+            if (!flow.meta.allIDs.includes(id)) {
               return 'Hide'
             }
 
-            if (flow.meta.get(id).visible) {
+            if (flow.meta.byID[id].visible) {
               return 'Hide'
             }
             return 'Visible'
           },
           action: () => {
             event('Panel Visibility Toggled', {
-              state: !flow.meta.get(id).visible ? 'true' : 'false',
+              state: !flow.meta.byID[id].visible ? 'true' : 'false',
             })
 
-            flow.meta.update(id, {
-              visible: !flow.meta.get(id).visible,
+            updateMeta(id, {
+              visible: !flow.meta.byID[id].visible,
             })
           },
         },
         {
           title: 'Convert to |> Flux',
           disable: () => {
-            if (flow.data.indexOf(id) === -1) {
+            if (!flow.data.allIDs.includes(id)) {
               return true
             }
 
-            const {type} = flow.data.get(id)
+            const {type} = flow.data.byID[id]
 
             if (type === 'rawFluxEditor') {
               return true
@@ -190,8 +189,8 @@ const Sidebar: FC = () => {
             return false
           },
           action: () => {
-            const {type} = flow.data.get(id)
-            const {title} = flow.meta.get(id)
+            const {type} = flow.data.byID[id]
+            const {title} = flow.meta.byID[id]
 
             event('Convert Cell To Flux', {from: type})
 
@@ -204,10 +203,8 @@ const Sidebar: FC = () => {
             init.title = title
             init.type = 'rawFluxEditor'
 
-            add(init, flow.data.indexOf(id))
-
-            flow.data.remove(id)
-            flow.meta.remove(id)
+            add(init, flow.data.allIDs.indexOf(id))
+            remove(id)
           },
         },
         {

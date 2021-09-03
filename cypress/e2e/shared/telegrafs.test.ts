@@ -5,18 +5,19 @@ const PAGE_LOAD_SLA = 80000
 
 describe('Collectors', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs, telegrafs}) => {
-          cy.visit(`${orgs}/${id}${telegrafs}`)
-          cy.getByTestID('tree-nav')
-        })
-      )
-    })
-
-    cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs, telegrafs}) => {
+            cy.visit(`${orgs}/${id}${telegrafs}`)
+            cy.getByTestID('tree-nav')
+            cy.get('[data-testid="resource-list--body"]', {
+              timeout: PAGE_LOAD_SLA,
+            })
+          })
+        )
+      })
+    )
   })
 
   describe('from the org view', () => {
@@ -53,6 +54,16 @@ describe('Collectors', () => {
           .should('have.length', 1)
           .and('contain', newConfig)
           .and('contain', defaultBucket)
+      })
+    })
+
+    it('can create a telegraf config in new system', () => {
+      cy.setFeatureFlags({telegrafUiRefresh: true}).then(() => {
+        cy.getByTestID('table-row').should('have.length', 0)
+        cy.contains('Create Configuration').click()
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('telegraf-plugins--Aerospike').click()
+        })
       })
     })
 

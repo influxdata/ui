@@ -1,24 +1,24 @@
 import {Organization} from '../../../src/types'
 
 describe('Billing Page Free Users', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({
-          uiUnificationFlag: true,
-        }).then(() => {
-          cy.quartzProvision({
-            accountType: 'free',
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.setFeatureFlags({
+            uiUnificationFlag: true,
           }).then(() => {
-            cy.visit(`/orgs/${id}/billing`)
-            cy.getByTestID('billing-page--header').should('be.visible')
+            cy.quartzProvision({
+              accountType: 'free',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/billing`)
+              cy.getByTestID('billing-page--header').should('be.visible')
+            })
           })
         })
       })
-    })
-  })
+    )
+  )
 
   it('should display the free billing page for free users', () => {
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
@@ -55,22 +55,22 @@ describe('Billing Page Free Users', () => {
 })
 
 describe('Billing Page PAYG Users', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
-          cy.quartzProvision({
-            accountType: 'pay_as_you_go',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/billing`)
-            cy.getByTestID('billing-page--header').should('be.visible')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+            cy.quartzProvision({
+              accountType: 'pay_as_you_go',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/billing`)
+              cy.getByTestID('billing-page--header').should('be.visible')
+            })
           })
         })
       })
-    })
-  })
+    )
+  )
 
   it('should display the free billing page for free users', () => {
     // The implication here is that there is no Upgrade Now button

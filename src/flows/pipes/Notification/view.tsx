@@ -25,6 +25,7 @@ import {remove} from 'src/flows/context/query'
 import {QueryContext} from 'src/flows/context/query'
 
 import Threshold, {
+  deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Notification/Threshold'
 import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
@@ -84,7 +85,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     return 'No Data Returned'
   }, [loading])
 
-  const queryText = getPanelQueries(id, true).source
+  const queryText = getPanelQueries(id, true)?.source
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(
@@ -184,7 +185,125 @@ const Notification: FC<PipeProp> = ({Context}) => {
     </Dropdown.Item>
   ))
 
+  const generateDeadmanTask = useCallback(() => {
+    // simplify takes care of all the variable nonsense in the query
+    const ast = parse(simplify(queryText))
+
+    const [deadman] = data.thresholds
+
+    const vars = remove(
+      ast,
+      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
+    ).reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+
+    vars.timeRangeStart = `-${deadman?.deadmanStopValue}`
+
+    const params = remove(
+      ast,
+      node =>
+        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+    ).reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+
+    const conditions = THRESHOLD_TYPES[deadmanType].condition(deadman)
+
+    const newQuery = `
+import "strings"
+import "regexp"
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateImports()}
+
+check = {
+	_check_id: "${id}",
+	_check_name: "Notebook Generated Deadman Check",
+	_type: "deadman",
+	tags: {},
+}
+
+notification = {
+	_notification_rule_id: "${id}",
+	_notification_rule_name: "Notebook Generated Rule",
+	_notification_endpoint_id: "${id}",
+	_notification_endpoint_name: "Notebook Generated Endpoint",
+}
+
+task_data = ${format_from_js_file(ast)}
+trigger = ${conditions}
+messageFn = (r) => ("${data.message}")
+
+${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}
+|> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
+      deadman.deadmanCheckValue
+    }))`
+
+    const newAST = parse(newQuery)
+
+    if (!params.name) {
+      params.name = `"Notebook Deadman Task for ${id}"`
+    }
+
+    if (data.interval) {
+      params.every = data.interval
+    }
+
+    if (data.offset) {
+      params.offset = data.offset
+    }
+
+    if (Object.keys(vars).length) {
+      const varString = Object.entries(vars)
+        .map(([key, val]) => `${key}: ${val}`)
+        .join(',\n')
+      const varHeader = parse(`option v = {${varString}}\n`)
+      newAST.body.unshift(varHeader.body[0])
+    }
+
+    const paramString = Object.entries(params)
+      .map(([key, val]) => `${key}: ${val}`)
+      .join(',\n')
+    const taskHeader = parse(`option task = {${paramString}}\n`)
+    newAST.body.unshift(taskHeader.body[0])
+
+    return format_from_js_file(newAST)
+  }, [
+    id,
+    queryText,
+    data.every,
+    data.offset,
+    data.endpointData,
+    data.endpoint,
+    data.thresholds,
+    data.message,
+  ])
+
   const generateTask = useCallback(() => {
+    if (data.thresholds[0].type === deadmanType) {
+      return generateDeadmanTask()
+    }
     // simplify takes care of all the variable nonsense in the query
     const ast = parse(simplify(queryText))
 
@@ -433,7 +552,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
             />
             <ExportTaskButton
               generate={generateTask}
-              text="Export as Alert Task"
+              text="Export Alert Task"
             />
           </FlexBox>
         </Panel.Footer>

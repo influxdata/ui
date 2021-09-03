@@ -247,11 +247,13 @@ export class TaskCard extends PureComponent<
       task: {id},
     } = this.props
     onUpdate(name, id)
-    try {
-      updatePinnedItemByParam(id, {name})
-      this.props.sendNotification(pinnedItemSuccess('task', 'updated'))
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+    if (isFlagEnabled('pinnedItems') && CLOUD) {
+      try {
+        updatePinnedItemByParam(id, {name})
+        this.props.sendNotification(pinnedItemSuccess('task', 'updated'))
+      } catch (err) {
+        this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+      }
     }
   }
 

@@ -1,20 +1,20 @@
 import {Organization} from '../../../src/types'
 
-const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) => {
-  cy.flush()
-  return cy.signin().then(() => {
-    cy.get('@org').then(({id}: Organization) =>
-      cy.fixture('routes').then(({orgs, buckets}) => {
-        cy.visit(`${orgs}/${id}${buckets}`)
-        return cy
-          .setFeatureFlags({measurementSchema: enableMeasurementSchema})
-          .then(() => {
-            return cy.getByTestID('tree-nav')
-          })
-      })
+const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) =>
+  cy.flush().then(() =>
+    cy.signin().then(() =>
+      cy.get('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, buckets}) => {
+          cy.visit(`${orgs}/${id}${buckets}`)
+          return cy
+            .setFeatureFlags({measurementSchema: enableMeasurementSchema})
+            .then(() => {
+              return cy.getByTestID('tree-nav')
+            })
+        })
+      )
     )
-  })
-}
+  )
 describe('Explicit Buckets', () => {
   beforeEach(() => {
     setupData(cy, true)

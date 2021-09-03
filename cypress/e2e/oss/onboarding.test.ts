@@ -182,8 +182,9 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next')
       .should('be.disabled')
-      .children('.cf-button--label')
-      .contains('Continue')
+      .then(el => {
+        expect(el[0].innerText.toLowerCase()).to.equal('continue')
+      })
 
     cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
       cy.getByTestID('input-field--password').type(defaultPassword)
@@ -191,8 +192,9 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next')
       .should('be.disabled')
-      .children('.cf-button--label')
-      .contains('Continue')
+      .then(el => {
+        expect(el[0].innerText.toLowerCase()).to.equal('continue')
+      })
 
     cy.getByTestID('input-field--password-chk').type('drowssap')
 
@@ -215,8 +217,9 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next')
       .should('be.disabled')
-      .children('.cf-button--label')
-      .contains('Continue')
+      .then(el => {
+        expect(el[0].innerText.toLowerCase()).to.equal('continue')
+      })
 
     cy.get<string>('@defaultOrg').then((defaultOrg: string) => {
       cy.getByTestID('input-field--orgname').type(defaultOrg)
@@ -226,8 +229,9 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
         cy.getByTestID('input-field--password')
@@ -242,16 +246,18 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.enabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       // check cleared username
       cy.getByTestID('input-field--username').clear()
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       cy.get<string>('@defaultUser').then((defaultUser: string) => {
         cy.getByTestID('input-field--username').type(defaultUser)
@@ -259,8 +265,9 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.enabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       // check cleared password
       cy.getByTestID('input-field--password').clear()
@@ -272,8 +279,9 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
         cy.getByTestID('input-field--password')
@@ -287,16 +295,18 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.enabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       // check cleared org name
       cy.getByTestID('input-field--orgname').clear()
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       cy.get<string>('@defaultOrg').then((defaultOrg: string) => {
         cy.getByTestID('input-field--orgname').type(defaultOrg)
@@ -304,23 +314,26 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.enabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       // check cleared bucket name
       cy.getByTestID('input-field--bucketname').clear()
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .then(el => {
+          expect(el[0].innerText.toLowerCase()).to.equal('continue')
+        })
 
       cy.getByTestID('input-field--bucketname').type(defaultBucket)
     })
 
     cy.getByTestID('next')
       .should('be.enabled')
-      .children('.cf-button--label')
-      .contains('Continue')
+      .then(el => {
+        expect(el[0].innerText.toLowerCase()).to.equal('continue')
+      })
   })
 })

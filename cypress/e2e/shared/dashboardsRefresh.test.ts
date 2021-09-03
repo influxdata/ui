@@ -156,11 +156,15 @@ describe('Dashboard refresh', () => {
       cy.visit(routeToReturnTo)
       cy.wait('@refreshQuery')
       cy.wait(5000)
-      cy.getByTestID('enable-auto-refresh-button').then(el => {
-        expect(el[0].innerText.toLowerCase()).to.equal('enable auto refresh')
-      })
+      cy.getByTestID(
+        'enable-auto-refresh-button'
+      ).contains('ENABLE AUTO REFRESH', {matchCase: false})
     })
     it('can timeout on a preset inactivity timeout', done => {
+      cy.getByTestID(
+        'enable-auto-refresh-button'
+      ).contains('ENABLE AUTO REFRESH', {matchCase: false})
+
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
@@ -190,9 +194,9 @@ describe('Dashboard refresh', () => {
         })
 
       cy.wait(3100)
-      cy.getByTestID('enable-auto-refresh-button').then(el => {
-        expect(el[0].innerText.toLowerCase()).to.equal('enable auto refresh')
-      })
+      cy.getByTestID(
+        'enable-auto-refresh-button'
+      ).contains('ENABLE AUTO REFRESH', {matchCase: false})
       cy.getByTestID('notification-success--children')
         .children()
         .should(

@@ -7,7 +7,7 @@ import {AutoRefreshStatus} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
 const AutoRefreshDropdown: FC = () => {
-  const {update, flow} = useContext(FlowContext)
+  const {flow, updateOther} = useContext(FlowContext)
 
   const updateRefresh = useCallback(
     (interval: number) => {
@@ -18,7 +18,7 @@ const AutoRefreshDropdown: FC = () => {
         interval: '' + interval,
       })
 
-      update({
+      updateOther({
         refresh: {
           status,
           interval,
@@ -26,7 +26,7 @@ const AutoRefreshDropdown: FC = () => {
         },
       })
     },
-    [update]
+    [updateOther]
   )
 
   return useMemo(() => {

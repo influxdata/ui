@@ -27,11 +27,11 @@ import {getOrg} from 'src/organizations/selectors'
 const FULL_WIDTH = true
 
 const FlowHeader: FC = () => {
-  const {update, flow, id} = useContext(FlowContext)
+  const {flow, updateOther, id} = useContext(FlowContext)
   const {id: orgID} = useSelector(getOrg)
 
   const handleRename = (name: string) => {
-    update({name})
+    updateOther({name})
     try {
       updatePinnedItemByParam(id, {name})
     } catch (err) {

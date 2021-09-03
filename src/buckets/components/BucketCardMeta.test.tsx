@@ -21,6 +21,10 @@ const setup = (
   return renderWithRedux(<BucketCardMeta bucket={bucket} />)
 }
 
+jest.mock('src/shared/constants/index', () => ({
+  CLOUD: true,
+}))
+
 const EXPLICIT_TEXT = 'Schema Type: Explicit'
 const IMPLICIT_TEXT = 'Schema Type: Implicit'
 

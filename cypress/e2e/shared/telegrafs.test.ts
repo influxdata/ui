@@ -56,6 +56,16 @@ describe('Collectors', () => {
       })
     })
 
+    it('can create a telegraf config in new system', () => {
+      cy.setFeatureFlags({telegrafUiRefresh: true}).then(() => {
+        cy.getByTestID('table-row').should('have.length', 0)
+        cy.contains('Create Configuration').click()
+        cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('telegraf-plugins--Aerospike').click()
+        })
+      })
+    })
+
     it('allows the user to view just the output', () => {
       const bucketz = ['MO_buckets', 'EZ_buckets', 'Bucky']
       const [firstBucket, secondBucket, thirdBucket] = bucketz

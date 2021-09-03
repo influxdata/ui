@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import useLocalStorageState from 'use-local-storage-state'
 import {v4 as UUID} from 'uuid'
@@ -11,7 +11,6 @@ import {
   PipeMeta,
 } from 'src/types/flows'
 import {getOrg} from 'src/organizations/selectors'
-import {default as _asResource} from 'src/flows/context/resource.hook'
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {DEFAULT_PROJECT_NAME, PROJECT_NAME} from 'src/flows'
@@ -33,7 +32,7 @@ import {incrementCloneName} from 'src/utils/naming'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string>
   clone: (id: string) => void
-  update: (id: string, flow: Flow) => void
+  update: (id: string, flow: Partial<Flow>) => void
   remove: (id: string) => void
   currentID: string | null
   change: (id: string) => void
@@ -59,7 +58,7 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   flows: {},
   add: (_flow?: Flow) => {},
   clone: (_id: string) => {},
-  update: (_id: string, _flow: Flow) => {},
+  update: (_id: string, _flow: Partial<Flow>) => {},
   remove: (_id: string) => {},
   change: (_id: string) => {},
   getAll: () => {},
@@ -213,21 +212,30 @@ export const FlowListProvider: FC = ({children}) => {
   }
 
   const update = useCallback(
-    (id: string, flow: Flow) => {
+    (id: string, flow: Partial<Flow>) => {
       if (!flows.hasOwnProperty(id)) {
         throw new Error(`${PROJECT_NAME} not found`)
       }
 
       setFlows(prevFlows => ({
         ...prevFlows,
-        [id]: flow,
+        [id]: {
+          ...prevFlows[id],
+          ...flow,
+        },
       }))
 
-      const apiFlow = serialize(flow, org.id)
+      const apiFlow = serialize(
+        {
+          ...flows[id],
+          ...flow,
+        },
+        org.id
+      )
 
       pooledUpdateAPI({id, ...apiFlow})
     },
-    [setFlows, org.id] // eslint-disable-line react-hooks/exhaustive-deps
+    [setFlows, org.id, flows] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const remove = async (id: string) => {
@@ -283,38 +291,10 @@ export const FlowListProvider: FC = ({children}) => {
     }
   }
 
-  const flowList = useMemo(
-    () =>
-      Object.keys(flows).reduce((acc, curr) => {
-        const stateUpdater = (field, data) => {
-          const _flow = {
-            ...flows[curr],
-          }
-
-          _flow[field] = data
-
-          update(curr, _flow)
-        }
-
-        acc[curr] = {
-          ...flows[curr],
-          data: _asResource(flows[curr].data, data => {
-            stateUpdater('data', data)
-          }),
-          meta: _asResource(flows[curr].meta, data => {
-            stateUpdater('meta', data)
-          }),
-        } as Flow
-
-        return acc
-      }, {}),
-    [update, flows]
-  )
-
   return (
     <FlowListContext.Provider
       value={{
-        flows: flowList,
+        flows,
         add,
         clone,
         update,

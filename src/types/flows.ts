@@ -82,26 +82,6 @@ export interface Resource<T> {
   allIDs: string[]
 }
 
-export type ResourceGenerator<T> = () => T | T
-export type ResourceUpdater<T> = (resource: Resource<T>) => void
-
-export interface ResourceManipulator<T> {
-  get: (id: string) => T
-  add: (
-    id: string,
-    data?: T
-  ) => {resource: Resource<T>; onChange: (_) => void} | void
-  update: (id: string, data: Partial<T>) => void
-  remove: (id: string) => void
-  indexOf: (id: string) => number
-  move: (id: string, index: number) => void
-  byID: DataLookup<T>
-  serialize: () => Resource<T>
-
-  allIDs: string[]
-  all: T[]
-}
-
 export interface FlowState {
   name: string
   range: TimeRange
@@ -115,8 +95,8 @@ export interface Flow {
   name: string
   range: TimeRange
   refresh: AutoRefresh
-  data: ResourceManipulator<PipeData>
-  meta: ResourceManipulator<PipeMeta>
+  data: Resource<PipeData>
+  meta: Resource<PipeMeta>
   results: FluxResult
   readOnly?: boolean
   createdAt?: Date

@@ -109,18 +109,21 @@ const Controls: FC<Props> = ({toggle, visible}) => {
   )
 
   useEffect(() => {
+    let period
     if (range.type === 'custom') {
-      update({
-        period: millisecondsToDuration(
-          Math.round((Date.parse(range.upper) - Date.parse(range.lower)) / 360)
-        ),
-      })
+      period = millisecondsToDuration(
+        Math.round((Date.parse(range.upper) - Date.parse(range.lower)) / 360)
+      )
     } else if (range.type === 'selectable-duration') {
+      period = millisecondsToDuration(range.windowPeriod)
+    }
+
+    if (period && period !== data.period) {
       update({
-        period: millisecondsToDuration(range.windowPeriod),
+        period,
       })
     }
-  }, [range, options])
+  }, [range, update, data.period])
 
   // TODO remove this after the sidebar stabilizes
   const dataExists = results.parsed && Object.entries(results.parsed).length

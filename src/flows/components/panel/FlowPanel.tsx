@@ -44,11 +44,11 @@ const FlowPanel: FC<Props> = ({
   resizes,
   children,
 }) => {
-  const {flow} = useContext(FlowContext)
+  const {flow, updateMeta} = useContext(FlowContext)
   const {printMap, queryDependents} = useContext(FlowQueryContext)
   const {id: focused} = useContext(SidebarContext)
 
-  const isVisible = flow.meta.get(id).visible
+  const isVisible = flow.meta.byID[id]?.visible
 
   const panelClassName = classnames('flow-panel', {
     [`flow-panel__${isVisible ? 'visible' : 'hidden'}`]: true,
@@ -56,26 +56,31 @@ const FlowPanel: FC<Props> = ({
   })
 
   const [size, updateSize] = useState<number>(
-    flow.meta.get(id).height || DEFAULT_RESIZER_HEIGHT
+    flow.meta.byID[id]?.height || DEFAULT_RESIZER_HEIGHT
   )
-  const [isDragging, setIsDragging] = useState(false)
+  const [isDragging, setIsDragging] = useState(0)
   const bodyRef = useRef<HTMLDivElement>(null)
   const handleRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (isDragging === true) {
+    if (isDragging === 2) {
       handleRef.current &&
         handleRef.current.classList.add('panel-resizer--drag-handle__dragging')
     }
 
-    if (isDragging === false) {
+    if (isDragging === 1) {
       handleRef.current &&
         handleRef.current.classList.remove(
           'panel-resizer--drag-handle__dragging'
         )
-      flow.meta.update(id, {height: size})
+
+      if (flow.meta.byID[id].height !== size) {
+        updateMeta(id, {
+          height: size,
+        })
+      }
     }
-  }, [isDragging]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isDragging, id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleMouseMove = (e: MouseEvent): void => {
     if (!bodyRef.current) {
@@ -93,7 +98,7 @@ const FlowPanel: FC<Props> = ({
   }
 
   const handleMouseDown = (): void => {
-    setIsDragging(true)
+    setIsDragging(2)
     const body = document.getElementsByTagName('body')[0]
     body && body.classList.add('panel-resizer-dragging')
 
@@ -102,7 +107,7 @@ const FlowPanel: FC<Props> = ({
   }
 
   const handleMouseUp = (): void => {
-    setIsDragging(false)
+    setIsDragging(1)
     const body = document.getElementsByTagName('body')[0]
     body && body.classList.remove('panel-resizer-dragging')
 
@@ -111,7 +116,7 @@ const FlowPanel: FC<Props> = ({
   }
 
   useEffect(() => {
-    if (size === flow.meta.get(id).height) {
+    if (size === flow.meta.byID[id]?.height) {
       return
     }
 
@@ -119,12 +124,12 @@ const FlowPanel: FC<Props> = ({
       return
     }
 
-    flow.meta.update(id, {
+    updateMeta(id, {
       height: size,
     })
   }, [flow, size])
 
-  const title = PIPE_DEFINITIONS[flow.data.get(id).type] ? (
+  const title = PIPE_DEFINITIONS[flow.data.byID[id]?.type] ? (
     <FlowPanelTitle id={id} />
   ) : (
     <div className="flow-panel--editable-title">Error</div>
@@ -132,7 +137,7 @@ const FlowPanel: FC<Props> = ({
 
   if (
     flow.readOnly &&
-    !/^(visualization|markdown)$/.test(flow.data.get(id).type)
+    !/^(visualization|markdown)$/.test(flow.data.byID[id]?.type)
   ) {
     return null
   }
@@ -183,7 +188,7 @@ const FlowPanel: FC<Props> = ({
             <Handle
               dragRef={handleRef}
               onStartDrag={handleMouseDown}
-              dragging={isDragging}
+              dragging={isDragging === 2}
             />
           )}
           {isVisible && (

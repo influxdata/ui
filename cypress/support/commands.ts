@@ -297,6 +297,10 @@ export const upsertSecret = (
   })
 }
 
+export const clickNavBarItem = (testID: string): Cypress.Chainable => {
+  return cy.getByTestID(testID).click({force: true})
+}
+
 export const createTask = (
   token: string,
   orgID?: string,
@@ -970,6 +974,9 @@ Cypress.Commands.add(
   'wrapEnvironmentVariablesForOss',
   wrapEnvironmentVariablesForOss
 )
+
+// navigation bar
+Cypress.Commands.add('clickNavBarItem', clickNavBarItem)
 
 // dashboards
 Cypress.Commands.add('createDashboard', createDashboard)

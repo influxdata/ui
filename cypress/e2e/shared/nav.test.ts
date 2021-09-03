@@ -18,27 +18,27 @@ describe('navigation', () => {
     cy.getByTestID('load-data--header').should('exist')
 
     // Data Explorer Page
-    cy.getByTestID('nav-item-data-explorer').click({force: true})
+    cy.clickNavBarItem('nav-item-data-explorer')
     cy.getByTestID('data-explorer--header').should('exist')
 
     // Dashboard Index Page
-    cy.getByTestID('nav-item-dashboards').click({force: true})
+    cy.clickNavBarItem('nav-item-dashboards')
     cy.getByTestID('empty-dashboards-list').should('exist')
 
     // Tasks Index Page
-    cy.getByTestID('nav-item-tasks').click({force: true})
+    cy.clickNavBarItem('nav-item-tasks')
     cy.getByTestID('tasks-page--header').should('exist')
 
     // Alerts Page
-    cy.getByTestID('nav-item-alerting').click({force: true})
+    cy.clickNavBarItem('nav-item-alerting')
     cy.getByTestID('alerts-page--header').should('exist')
 
     // Settings Page
-    cy.getByTestID('nav-item-settings').click({force: true})
+    cy.clickNavBarItem('nav-item-settings')
     cy.getByTestID('settings-page--header').should('exist')
 
     // Home Page
-    cy.getByTestID('tree-nav--header').click({force: true})
+    cy.clickNavBarItem('tree-nav--header')
     cy.getByTestID('home-page--header').should('exist')
 
     // 404
@@ -103,7 +103,7 @@ describe('navigation', () => {
   })
 
   it('can navigate in tabs of data page', () => {
-    cy.getByTestID('nav-item-load-data').click({force: true})
+    cy.clickNavBarItem('nav-item-load-data')
 
     cy.getByTestID('tabs').within(() => {
       // buckets tab
@@ -138,12 +138,12 @@ describe('navigation', () => {
   }
 
   it('can navigate in tabs of settings page', () => {
-    cy.getByTestID('nav-item-settings').click({force: true})
+    cy.clickNavBarItem('nav-item-settings')
     exploreTabs(['templates', 'labels', 'variables'])
   })
 
   it('can navigate in tabs of collapsed alerts page', () => {
-    cy.getByTestID('nav-item-alerting').click({force: true})
+    cy.clickNavBarItem('nav-item-alerting')
     ;['checks', 'endpoints', 'rules'].forEach(tab => {
       cy.getByTestID(`alerting-tab--${tab}`).click()
       cy.getByTestID(`alerting-tab--${tab}--input`).should('to.be', 'checked')
@@ -164,15 +164,15 @@ describe('navigation', () => {
       'labels',
     ].forEach(navItem => {
       if (navItem === 'history') {
-        cy.getByTestID('nav-item-alerting').click()
+        cy.clickNavBarItem('nav-item-alerting')
       } else if (
         navItem === 'variables' ||
         navItem === 'templates' ||
         navItem === 'labels'
       ) {
-        cy.getByTestID('nav-item-settings').click()
+        cy.clickNavBarItem('nav-item-settings')
       } else {
-        cy.getByTestID('nav-item-load-data').click()
+        cy.clickNavBarItem('nav-item-load-data')
       }
 
       cy.getByTestID(`nav-subitem-${navItem}`)

@@ -78,9 +78,7 @@ describe('Onboarding', () => {
     // Input fields
     cy.fillInOSSLoginFormWithDefaults()
 
-    cy.getByTestID('next').then(el => {
-      expect(el[0].innerText.toLowerCase()).to.equal('continue')
-    })
+    cy.contains('CONTINUE')
 
     cy.getByTestID('next')
       .should('be.enabled')
@@ -180,21 +178,17 @@ describe('Onboarding', () => {
       cy.getByTestID('input-field--username').type(defaultUser)
     })
 
-    cy.getByTestID('next')
-      .should('be.disabled')
-      .then(el => {
-        expect(el[0].innerText.toLowerCase()).to.equal('continue')
-      })
+    cy.getByTestID('next').should('be.disabled')
+
+    cy.contains('CONTINUE')
 
     cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
       cy.getByTestID('input-field--password').type(defaultPassword)
     })
 
-    cy.getByTestID('next')
-      .should('be.disabled')
-      .then(el => {
-        expect(el[0].innerText.toLowerCase()).to.equal('continue')
-      })
+    cy.getByTestID('next').should('be.disabled')
+
+    cy.contains('CONTINUE')
 
     cy.getByTestID('input-field--password-chk').type('drowssap')
 
@@ -215,11 +209,9 @@ describe('Onboarding', () => {
     // check password too short
     cy.getByTestID('form--element-error').should('contain.text', '8')
 
-    cy.getByTestID('next')
-      .should('be.disabled')
-      .then(el => {
-        expect(el[0].innerText.toLowerCase()).to.equal('continue')
-      })
+    cy.getByTestID('next').should('be.disabled')
+
+    cy.contains('CONTINUE')
 
     cy.get<string>('@defaultOrg').then((defaultOrg: string) => {
       cy.getByTestID('input-field--orgname').type(defaultOrg)
@@ -244,30 +236,24 @@ describe('Onboarding', () => {
 
       cy.getByTestID('input-error').should('not.exist')
 
-      cy.getByTestID('next')
-        .should('be.enabled')
-        .then(el => {
-          expect(el[0].innerText.toLowerCase()).to.equal('continue')
-        })
+      cy.getByTestID('next').should('be.enabled')
+
+      cy.contains('CONTINUE')
 
       // check cleared username
       cy.getByTestID('input-field--username').clear()
 
-      cy.getByTestID('next')
-        .should('be.disabled')
-        .then(el => {
-          expect(el[0].innerText.toLowerCase()).to.equal('continue')
-        })
+      cy.getByTestID('next').should('be.disabled')
+
+      cy.contains('CONTINUE')
 
       cy.get<string>('@defaultUser').then((defaultUser: string) => {
         cy.getByTestID('input-field--username').type(defaultUser)
       })
 
-      cy.getByTestID('next')
-        .should('be.enabled')
-        .then(el => {
-          expect(el[0].innerText.toLowerCase()).to.equal('continue')
-        })
+      cy.getByTestID('next').should('be.enabled')
+
+      cy.contains('CONTINUE')
 
       // check cleared password
       cy.getByTestID('input-field--password').clear()
@@ -277,11 +263,9 @@ describe('Onboarding', () => {
         'Passwords do not match'
       )
 
-      cy.getByTestID('next')
-        .should('be.disabled')
-        .then(el => {
-          expect(el[0].innerText.toLowerCase()).to.equal('continue')
-        })
+      cy.getByTestID('next').should('be.disabled')
+
+      cy.contains('CONTINUE')
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
         cy.getByTestID('input-field--password')
@@ -293,20 +277,16 @@ describe('Onboarding', () => {
           .type(defaultPassword)
       })
 
-      cy.getByTestID('next')
-        .should('be.enabled')
-        .then(el => {
-          expect(el[0].innerText.toLowerCase()).to.equal('continue')
-        })
+      cy.getByTestID('next').should('be.enabled')
+
+      cy.contains('CONTINUE')
 
       // check cleared org name
       cy.getByTestID('input-field--orgname').clear()
 
-      cy.getByTestID('next')
-        .should('be.disabled')
-        .then(el => {
-          expect(el[0].innerText.toLowerCase()).to.equal('continue')
-        })
+      cy.getByTestID('next').should('be.disabled')
+
+      cy.contains('CONTINUE')
 
       cy.get<string>('@defaultOrg').then((defaultOrg: string) => {
         cy.getByTestID('input-field--orgname').type(defaultOrg)
@@ -321,19 +301,15 @@ describe('Onboarding', () => {
       // check cleared bucket name
       cy.getByTestID('input-field--bucketname').clear()
 
-      cy.getByTestID('next')
-        .should('be.disabled')
-        .then(el => {
-          expect(el[0].innerText.toLowerCase()).to.equal('continue')
-        })
+      cy.getByTestID('next').should('be.disabled')
+
+      cy.contains('CONTINUE')
 
       cy.getByTestID('input-field--bucketname').type(defaultBucket)
     })
 
-    cy.getByTestID('next')
-      .should('be.enabled')
-      .then(el => {
-        expect(el[0].innerText.toLowerCase()).to.equal('continue')
-      })
+    cy.getByTestID('next').should('be.enabled')
+
+    cy.contains('CONTINUE')
   })
 })

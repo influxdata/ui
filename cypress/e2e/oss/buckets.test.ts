@@ -1,18 +1,18 @@
 import {Organization} from '../../../src/types'
 
 describe('Buckets', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs, buckets}) => {
-          cy.visit(`${orgs}/${id}${buckets}`)
-          cy.getByTestID('tree-nav')
-        })
-      )
-    })
-  })
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs, buckets}) => {
+            cy.visit(`${orgs}/${id}${buckets}`)
+            cy.getByTestID('tree-nav')
+          })
+        )
+      })
+    )
+  )
 
   // TODO: Skipping this until we can sort out the differences between OSS and Cloud
   it('can sort by name and retention', () => {

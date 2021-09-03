@@ -1,18 +1,18 @@
 import {Organization} from '../../../src/types'
 
 describe('Community Templates', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${id}/settings/templates`)
-          cy.getByTestID('tree-nav')
-        })
-      )
-    })
-  })
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${id}/settings/templates`)
+            cy.getByTestID('tree-nav')
+          })
+        )
+      })
+    )
+  )
 
   it('launches github when the browse community template button is clicked', () => {
     cy.window().then(win => {

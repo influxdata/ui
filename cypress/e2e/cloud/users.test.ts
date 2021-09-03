@@ -2,20 +2,20 @@ import {Organization} from '../../../src/types'
 
 describe('Users Page', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
-          cy.quartzProvision({
-            hasUsers: true,
-          }).then(() => {
-            cy.visit(`/orgs/${id}/users`)
-            cy.getByTestID('users-page--header').should('be.visible')
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+            cy.quartzProvision({
+              hasUsers: true,
+            }).then(() => {
+              cy.visit(`/orgs/${id}/users`)
+              cy.getByTestID('users-page--header').should('be.visible')
+            })
           })
         })
       })
-    })
+    )
   })
 
   it('can CRUD Invites and Users', () => {

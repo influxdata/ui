@@ -27,7 +27,7 @@ const ExportTaskButton: FC<Props> = ({text, generate}) => {
 
   const onClick = () => {
     event('Export Task Clicked', {from: 'schedule'})
-    launch(<ExportTaskOverlay />, {
+    launch(<ExportTaskOverlay text={text} />, {
       bucket: data.bucket,
       query: generate ? generate() : data.query,
       range,

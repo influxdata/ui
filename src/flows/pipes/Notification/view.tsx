@@ -552,7 +552,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
             />
             <ExportTaskButton
               generate={generateTask}
-              text="Export as Alert Task"
+              text="Export Alert Task"
             />
           </FlexBox>
         </Panel.Footer>

@@ -93,7 +93,8 @@ export default class BucketOverlayForm extends PureComponent<Props> {
         let contents = null
         if (isEditing) {
           let measurementSchemaReadonlyList = null
-          if (measurementSchemaList) {
+
+          if (measurementSchemaList?.measurementSchemas) {
             measurementSchemaReadonlyList = (
               <MeasurementSchemaSection
                 measurementSchemaList={measurementSchemaList}

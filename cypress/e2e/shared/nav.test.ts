@@ -162,19 +162,23 @@ describe('navigation', () => {
       'variables',
       'templates',
       'labels',
-    ].forEach(x => {
-      if (x === 'history') {
+    ].forEach(navItem => {
+      if (navItem === 'history') {
         cy.getByTestID('nav-item-alerting').click()
-      } else if (x === 'variables' || x === 'templates' || x === 'labels') {
+      } else if (
+        navItem === 'variables' ||
+        navItem === 'templates' ||
+        navItem === 'labels'
+      ) {
         cy.getByTestID('nav-item-settings').click()
       } else {
         cy.getByTestID('nav-item-load-data').click()
       }
 
-      cy.getByTestID(`nav-subitem-${x}`)
+      cy.getByTestID(`nav-subitem-${navItem}`)
         .last()
         .click()
-      cy.url().should('contain', x)
+      cy.url().should('contain', navItem)
     })
 
     cy.get('.cf-tree-nav--toggle').click()

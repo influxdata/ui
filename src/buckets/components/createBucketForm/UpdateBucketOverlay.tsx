@@ -80,8 +80,6 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
       if ('explicit' === resp.data.schemaType) {
         const schema = await getSchema(bucketID)
-
-        console.log('got schema!!!! 78a-jill', schema)
         setMeasurementSchemaList(schema)
       }
 

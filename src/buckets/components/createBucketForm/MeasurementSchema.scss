@@ -1,3 +1,5 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
 .schema-section {
   &.measurement {
     margin-top: 15px;
@@ -12,17 +14,13 @@
     }
   }
 
-  /**
-  todo: learn how to get the variables.....including
-       them causes a compilation error :(
-       */
   .title-text {
-    color: #c6cad3; /** $g14-chromium;*/
+    color: $g14-chromium;
     font-weight: 600;
   }
 
   .value-text {
-    color: #ffffff; /** $g20-white; */
+    color: $g20-white;
     font-weight: 500;
   }
 

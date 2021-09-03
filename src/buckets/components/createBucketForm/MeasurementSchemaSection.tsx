@@ -1,4 +1,4 @@
-import React, {useState, FC} from 'react'
+import React, {FC} from 'react'
 
 import {
   AlignItems,
@@ -8,19 +8,15 @@ import {
   FlexBox,
   FlexDirection,
   IconFont,
-  InputLabel,
-  InputToggleType,
   Panel,
-  Toggle,
 } from '@influxdata/clockface'
-import {capitalize} from 'lodash'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
 import {
   MeasurementSchema,
   MeasurementSchemaList,
 } from 'src/client/generatedRoutes'
-import {ReadOnlyMeasurementSchemaPanel} from './ReadOnlyMeasurementSchemaPanel'
+
 import {downloadTextFile} from 'src/shared/utils/download'
 
 interface Props {

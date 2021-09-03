@@ -63,6 +63,7 @@ const BucketCardActions: FC<Props> = ({
   }
 
   const handleClickSettings = () => {
+    event('bucket.view.settings')
     history.push(`/orgs/${orgID}/load-data/buckets/${bucket.id}/edit`)
   }
 

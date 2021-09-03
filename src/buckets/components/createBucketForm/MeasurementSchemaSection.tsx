@@ -1,5 +1,7 @@
 import React, {FC} from 'react'
 
+import {event} from 'src/cloud/utils/reporting'
+
 import {
   AlignItems,
   Button,
@@ -38,6 +40,7 @@ export const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
   const handleDownloadSchema = () => {
     const {name} = measurementSchema
     const contents = JSON.stringify(measurementSchema.columns)
+    event('bucket.download.schema.explicit')
     downloadTextFile(contents, name || 'schema', '.json')
   }
 

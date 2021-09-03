@@ -17,10 +17,11 @@ import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
+import ShareButton from 'src/flows/components/header/ShareButton'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {DEFAULT_PROJECT_NAME} from 'src/flows'
 import {serialize} from 'src/flows/context/flow.list'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
 
@@ -64,6 +65,7 @@ const FlowHeader: FC = () => {
           <Submit />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
+          {isFlagEnabled('shareNotebook') ? <ShareButton /> : null}
           <PresentationMode />
           <TimeZoneDropdown />
           <TimeRangeDropdown />

@@ -77,7 +77,11 @@ export const MeasurementSchemaSection: FC<Props> = ({
   let contents = null
   if (schemas) {
     contents = schemas.map((oneSchema, index) => (
-      <EditingPanel measurementSchema={oneSchema} index={index} />
+      <EditingPanel
+        key={`mss-ep-${index}`}
+        measurementSchema={oneSchema}
+        index={index}
+      />
     ))
   }
 

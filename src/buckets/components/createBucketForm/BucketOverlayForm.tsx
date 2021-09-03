@@ -110,7 +110,10 @@ export default class BucketOverlayForm extends PureComponent<Props> {
           }
           contents = (
             <>
-              <SchemaToggle readOnlySchemaType={schemaType} />
+              <SchemaToggle
+                key="schemaToggleSection"
+                readOnlySchemaType={schemaType}
+              />
               {measurementSchemaReadonlyList}
             </>
           )

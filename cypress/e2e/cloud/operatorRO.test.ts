@@ -1,27 +1,27 @@
 describe('Operator Page', () => {
-  beforeEach(() => {
-    cy.flush()
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(() => {
+          cy.getByTestID('home-page--header').should('be.visible')
 
-    cy.signin().then(() => {
-      cy.get('@org').then(() => {
-        cy.getByTestID('home-page--header').should('be.visible')
-
-        cy.quartzProvision({
-          isOperator: true,
-          operatorRole: 'read-only',
-        }).then(() => {
-          cy.reload()
-          cy.setFeatureFlags({
-            operatorRole: true,
-            uiUnificationFlag: true,
+          cy.quartzProvision({
+            isOperator: true,
+            operatorRole: 'read-only',
           }).then(() => {
-            cy.getByTestID('nav-item--operator').click()
-            cy.getByTestID('operator-page--title').contains('2.0 Resources')
+            cy.reload()
+            cy.setFeatureFlags({
+              operatorRole: true,
+              uiUnificationFlag: true,
+            }).then(() => {
+              cy.getByTestID('nav-item--operator').click()
+              cy.getByTestID('operator-page--title').contains('2.0 Resources')
+            })
           })
         })
       })
-    })
-  })
+    )
+  )
 
   it('should render the Operator page and allow for RUD operations', () => {
     // Validates that the default behavior is to open to the account tab

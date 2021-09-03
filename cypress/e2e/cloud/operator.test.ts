@@ -1,23 +1,23 @@
 describe('Operator Page', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(() => {
-        cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags({
-          uiUnificationFlag: true,
-        }).then(() => {
-          cy.quartzProvision({
-            isOperator: true,
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(() => {
+          cy.getByTestID('home-page--header').should('be.visible')
+          cy.setFeatureFlags({
+            uiUnificationFlag: true,
           }).then(() => {
-            cy.visit(`/operator`)
-            cy.getByTestID('operator-page--title').contains('2.0 Resources')
+            cy.quartzProvision({
+              isOperator: true,
+            }).then(() => {
+              cy.visit(`/operator`)
+              cy.getByTestID('operator-page--title').contains('2.0 Resources')
+            })
           })
         })
       })
-    })
-  })
+    )
+  )
 
   it('should render the Operator page and allow for RUD operations', () => {
     // Validates that the default behavior is to open to the account tab
@@ -246,24 +246,24 @@ describe('Operator Page', () => {
 })
 
 describe('Operator Page should not be accessible for non-operator users', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(() => {
-        cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags({
-          uiUnificationFlag: true,
-        }).then(() => {
-          cy.quartzProvision({
-            isOperator: false,
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(() => {
+          cy.getByTestID('home-page--header').should('be.visible')
+          cy.setFeatureFlags({
+            uiUnificationFlag: true,
           }).then(() => {
-            cy.visit(`/operator`)
+            cy.quartzProvision({
+              isOperator: false,
+            }).then(() => {
+              cy.visit(`/operator`)
+            })
           })
         })
       })
-    })
-  })
+    )
+  )
 
   it('should render a 404', () => {
     cy.getByTestID('not-found').should('exist')

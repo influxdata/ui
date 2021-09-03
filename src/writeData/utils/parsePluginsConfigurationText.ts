@@ -279,7 +279,7 @@ const formatConfigurationText = configurationText => {
         .join('\n') + '\n'
     )
   }
-  return configurationText
+  return configurationText + '\n'
 }
 
 /*

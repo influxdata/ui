@@ -71,16 +71,16 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next').should('be.disabled')
 
-    cy.getByTestID('next')
-      .children('.cf-button--label')
-      .contains('Continue')
+    cy.getByTestID('next').then(el => {
+      expect(el[0].innerText.toLowerCase()).to.equal('continue')
+    })
 
     // Input fields
     cy.fillInOSSLoginFormWithDefaults()
 
-    cy.getByTestID('next')
-      .children('.cf-button--label')
-      .contains('Continue')
+    cy.getByTestID('next').then(el => {
+      expect(el[0].innerText.toLowerCase()).to.equal('continue')
+    })
 
     cy.getByTestID('next')
       .should('be.enabled')

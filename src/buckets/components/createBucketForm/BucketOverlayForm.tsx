@@ -18,13 +18,17 @@ import {
 import {RuleType} from 'src/buckets/reducers/createBucket'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {
-  MeasurementSchema,
-  MeasurementSchemaList,
-  SchemaType,
-} from 'src/client/generatedRoutes'
+
 import {MeasurementSchemaSection} from './MeasurementSchemaSection'
 
+let MeasurementSchemaList = null,
+  SchemaType = null
+
+if (CLOUD) {
+  SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaList = require('src/client/generatedRoutes')
+    .MeasurementSchemaList
+}
 /** for schemas, if (isEditing) is true, then
  * need the schemaType that is already set;
  * if !isEditing (it is false)
@@ -42,9 +46,9 @@ interface Props {
   buttonText: string
   onClickRename?: () => void
   testID?: string
-  onChangeSchemaType?: (schemaType: SchemaType) => void
-  schemaType?: SchemaType
-  measurementSchemaList?: MeasurementSchemaList
+  onChangeSchemaType?: (schemaType: typeof SchemaType) => void
+  schemaType?: typeof SchemaType
+  measurementSchemaList?: typeof MeasurementSchemaList
 }
 
 interface State {
@@ -61,7 +65,9 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
   public state: State = {showAdvanced: false, schemaType: 'implicit'}
 
-  public onChangeSchemaTypeInternal = function(newSchemaType: SchemaType) {
+  public onChangeSchemaTypeInternal = function(
+    newSchemaType: typeof SchemaType
+  ) {
     this.setState({schemaType: newSchemaType})
     this.props.onChangeSchemaType(newSchemaType)
   }

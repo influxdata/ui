@@ -13,11 +13,17 @@ import {
 import {capitalize} from 'lodash'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
-import {SchemaType} from 'src/client/generatedRoutes'
+import {CLOUD} from 'src/shared/constants'
+
+let SchemaType = null
+
+if (CLOUD) {
+  SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+}
 
 interface SchemaToggleProps {
   onChangeSchemaType?: (selectedSchemaType: 'explicit' | 'implicit') => void
-  readOnlySchemaType?: SchemaType
+  readOnlySchemaType?: typeof SchemaType
 }
 
 export const SchemaToggle: FC<SchemaToggleProps> = ({

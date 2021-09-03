@@ -33,7 +33,13 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 
 // Types
 import {OwnBucket} from 'src/types'
-import {SchemaType} from 'src/client'
+import {CLOUD} from 'src/shared/constants'
+
+let SchemaType = null
+
+if (CLOUD) {
+  SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+}
 
 interface DispatchProps {
   onUpdateBucket: typeof updateBucket
@@ -102,7 +108,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     setRetentionSelection(everySeconds)
   }
 
-  const handleChangeSchemaType = (schemaType: SchemaType): void => {
+  const handleChangeSchemaType = (schemaType: typeof SchemaType): void => {
     setBucketDraft({
       ...bucketDraft,
       schemaType: schemaType,
@@ -169,7 +175,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               onChangeRetentionRule={handleChangeRetentionRule}
               onClickRename={handleClickRename}
               onChangeSchemaType={handleChangeSchemaType}
-              schemaType={schemaType as SchemaType}
+              schemaType={schemaType as typeof SchemaType}
               measurementSchemaList={measurementSchemaList}
             />
           </Overlay.Body>

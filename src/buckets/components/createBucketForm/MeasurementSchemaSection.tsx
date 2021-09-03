@@ -12,19 +12,25 @@ import {
 } from '@influxdata/clockface'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
-import {
-  MeasurementSchema,
-  MeasurementSchemaList,
-} from 'src/client/generatedRoutes'
+import {CLOUD} from 'src/shared/constants'
+
+let MeasurementSchemaList = null,
+  MeasurementSchema = null
+
+if (CLOUD) {
+  MeasurementSchema = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaList = require('src/client/generatedRoutes')
+    .MeasurementSchemaList
+}
 
 import {downloadTextFile} from 'src/shared/utils/download'
 
 interface Props {
-  measurementSchemaList?: MeasurementSchemaList
+  measurementSchemaList?: typeof MeasurementSchemaList
   isEditing?: boolean
 }
 interface PanelProps {
-  measurementSchema: MeasurementSchema
+  measurementSchema: typeof MeasurementSchema
   index?: number
 }
 

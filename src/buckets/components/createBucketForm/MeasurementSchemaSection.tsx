@@ -21,7 +21,7 @@ import {downloadTextFile} from 'src/shared/utils/download'
 
 interface Props {
   measurementSchemaList?: MeasurementSchemaList
-  isEditing?: boolean = false
+  isEditing?: boolean
 }
 interface PanelProps {
   measurementSchema: MeasurementSchema

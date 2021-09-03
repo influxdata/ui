@@ -1,16 +1,16 @@
 describe('Dashboard', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() =>
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id: orgID}: any) => {
-          cy.visit(`${orgs}/${orgID}/dashboards-list`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.get('@org').then(({id: orgID}: any) => {
+            cy.visit(`${orgs}/${orgID}/dashboards-list`)
+            cy.getByTestID('tree-nav')
+          })
         })
-      })
+      )
     )
-  })
+  )
 
   it('does not render image tags in markdown preview', () => {
     cy.get('@org').then(({id: orgID}: any) => {

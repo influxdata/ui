@@ -6,23 +6,24 @@ describe('simple table interactions', () => {
   const simpleLarge = 'simple-large'
   const simpleOverflow = 'simple-overflow'
   beforeEach(() => {
-    cy.flush()
-    cy.signin().then(() => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.fixture('routes').then(({orgs, explorer}) => {
-          cy.visit(`${orgs}/${orgID}${explorer}`)
-          cy.getByTestID('tree-nav')
-          cy.createBucket(orgID, name, simpleLarge)
-          cy.writeData(lines(300), simpleLarge)
-          cy.createBucket(orgID, name, simpleSmall)
-          cy.writeData(lines(30), simpleSmall)
-          cy.createBucket(orgID, name, simpleOverflow)
-          cy.writeData(lines(31), simpleOverflow)
-          cy.reload()
-          cy.setFeatureFlags({simpleTable: true})
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id: orgID}: Organization) => {
+          cy.fixture('routes').then(({orgs, explorer}) => {
+            cy.visit(`${orgs}/${orgID}${explorer}`)
+            cy.getByTestID('tree-nav')
+            cy.createBucket(orgID, name, simpleLarge)
+            cy.writeData(lines(300), simpleLarge)
+            cy.createBucket(orgID, name, simpleSmall)
+            cy.writeData(lines(30), simpleSmall)
+            cy.createBucket(orgID, name, simpleOverflow)
+            cy.writeData(lines(31), simpleOverflow)
+            cy.reload()
+            cy.setFeatureFlags({simpleTable: true})
+          })
         })
       })
-    })
+    )
   })
 
   it('should render correctly after switching from a dataset with more pages to one with fewer', () => {

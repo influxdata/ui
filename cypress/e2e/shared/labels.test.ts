@@ -1,18 +1,18 @@
 import {Organization} from '../../../src/types'
 
 describe('labels', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${id}/settings/labels`)
-          cy.getByTestID('tree-nav')
-        })
-      )
-    })
-  })
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${id}/settings/labels`)
+            cy.getByTestID('tree-nav')
+          })
+        )
+      })
+    )
+  )
 
   function hex2BgColor(hex: string): string {
     hex = hex.replace('#', '')

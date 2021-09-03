@@ -9,21 +9,21 @@ const statHeaders = [
 
 describe('Usage Page Free User No Data', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
-          cy.quartzProvision({
-            hasData: false,
-            accountType: 'free',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/usage`)
-            cy.getByTestID('usage-page--header').should('be.visible')
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+            cy.quartzProvision({
+              hasData: false,
+              accountType: 'free',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/usage`)
+              cy.getByTestID('usage-page--header').should('be.visible')
+            })
           })
         })
       })
-    })
+    )
   })
 
   it('should display the usage page common features', () => {
@@ -113,21 +113,21 @@ describe('Usage Page Free User No Data', () => {
 
 describe('Usage Page PAYG With Data', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
-          cy.quartzProvision({
-            hasData: true,
-            accountType: 'pay_as_you_go',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/usage`)
-            cy.getByTestID('usage-page--header').should('be.visible')
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+            cy.quartzProvision({
+              hasData: true,
+              accountType: 'pay_as_you_go',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/usage`)
+              cy.getByTestID('usage-page--header').should('be.visible')
+            })
           })
         })
       })
-    })
+    )
   })
 
   it('should display the usage page with data for a PAYG user', () => {

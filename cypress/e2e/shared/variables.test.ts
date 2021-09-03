@@ -2,17 +2,16 @@ import {Organization} from '../../../src/types'
 
 describe('Variables', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.createQueryVariable(id)
-        cy.visit(`orgs/${id}/settings/variables`)
-        cy.getByTestID('tree-nav')
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.createQueryVariable(id)
+          cy.visit(`orgs/${id}/settings/variables`)
+          cy.getByTestID('tree-nav')
+        })
+        cy.location('pathname').should('match', /\/variables$/)
       })
-    })
-
-    cy.location('pathname').should('match', /\/variables$/)
+    )
   })
 
   it('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {

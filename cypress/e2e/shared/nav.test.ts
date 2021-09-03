@@ -165,7 +165,11 @@ describe('navigation', () => {
     ].forEach(navItem => {
       if (navItem === 'history') {
         cy.getByTestID('nav-item-alerting').click()
-      } else if (navItem === 'variables' || navItem === 'templates' || navItem === 'labels') {
+      } else if (
+        navItem === 'variables' ||
+        navItem === 'templates' ||
+        navItem === 'labels'
+      ) {
         cy.getByTestID('nav-item-settings').click()
       } else {
         cy.getByTestID('nav-item-load-data').click()

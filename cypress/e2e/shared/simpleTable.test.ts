@@ -6,8 +6,6 @@ describe('simple table interactions', () => {
   const simpleLarge = 'simple-large'
   const simpleOverflow = 'simple-overflow'
   beforeEach(() => {
-    // to fit all the elements in screen we force a view port size
-    cy.viewport(1200, 1000)
     cy.flush()
     cy.signin().then(() => {
       cy.get('@org').then(({id: orgID}: Organization) => {

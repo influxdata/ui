@@ -369,6 +369,8 @@ describe('Flows', () => {
     cy.getByTestID('resource-editable-name').click()
 
     // visualizations should exist
-    cy.getByTestID('giraffe-inner-plot').scrollIntoView().should('be.visible')
+    cy.getByTestID('giraffe-inner-plot')
+      .scrollIntoView()
+      .should('be.visible')
   })
 })

@@ -177,6 +177,10 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       return 'Only system bucket names can begin with _'
     }
 
+    if (name.trim().length === 0) {
+      return 'Bucket name cannot be only whitespaces'
+    }
+
     if (!name) {
       return 'This bucket needs a name'
     }

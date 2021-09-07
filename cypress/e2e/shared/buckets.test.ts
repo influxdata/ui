@@ -1,18 +1,18 @@
 import {Bucket, Organization} from '../../../src/types'
 
 describe('Buckets', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs, buckets}) => {
-          cy.visit(`${orgs}/${id}${buckets}`)
-          cy.getByTestID('tree-nav')
-        })
-      )
-    })
-  })
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs, buckets}) => {
+            cy.visit(`${orgs}/${id}${buckets}`)
+            cy.getByTestID('tree-nav')
+          })
+        )
+      })
+    )
+  )
 
   describe('from the buckets index page', () => {
     it('can create a bucket', () => {

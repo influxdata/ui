@@ -5,17 +5,19 @@ const PAGE_LOAD_SLA = 10000
 
 describe('Scrapers', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${id}/load-data/scrapers`)
-          cy.getByTestID('tree-nav')
-        })
-      )
-    })
-    cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${id}/load-data/scrapers`)
+            cy.getByTestID('tree-nav')
+            cy.get('[data-testid="resource-list--body"]', {
+              timeout: PAGE_LOAD_SLA,
+            })
+          })
+        )
+      })
+    )
   })
 
   describe('from the org settings', () => {

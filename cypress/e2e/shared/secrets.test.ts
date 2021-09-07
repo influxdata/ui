@@ -2,17 +2,18 @@ import {Organization} from '../../src/types'
 
 describe('Secrets', () => {
   beforeEach(() => {
-    cy.flush()
-    return cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${id}/settings/`)
-          cy.getByTestID('tree-nav')
-          return cy.setFeatureFlags({secretsUI: true}).then(() => {
-            return cy.getByTestID('secrets--tab').click()
+    cy.flush().then(() => {
+      return cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${id}/settings/`)
+            cy.getByTestID('tree-nav')
+            return cy.setFeatureFlags({secretsUI: true}).then(() => {
+              return cy.getByTestID('secrets--tab').click()
+            })
           })
-        })
-      )
+        )
+      })
     })
   })
 

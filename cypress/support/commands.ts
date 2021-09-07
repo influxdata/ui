@@ -578,18 +578,32 @@ export const createToken = (
   })
 }
 
-// TODO: have to go through setup because we cannot create a user w/ a password via the user API
 export const setupUser = (): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.request({
-    method: 'GET',
-    url: '/debug/provision',
-  })
+  const defaultUser = Cypress.env('defaultUser')
+  const userParam = defaultUser ? `?user=${defaultUser}` : ''
+  return cy
+    .request({
+      method: 'GET',
+      url: `/debug/provision${userParam}`,
+    })
+    .then(response => {
+      expect(response.status).to.eq(200)
+      Cypress.env('defaultUser', response.body.user.name)
+      return response
+    })
 }
 
 export const flush = () => {
-  cy.request('/debug/flush').then(response => {
-    expect(response.status).to.eq(200)
-  })
+  const defaultUser = Cypress.env('defaultUser')
+  if (defaultUser) {
+    return cy
+      .request({method: 'POST', url: `/debug/flush?user=${defaultUser}`})
+      .then(response => expect(response.status).to.eq(200))
+  }
+  // this isn't really needed - just need to return a chainable cypress obj
+  return cy
+    .request({method: 'GET', url: '/debug/flush'})
+    .then(response => expect(response.status).to.eq(200))
 }
 
 export type ProvisionData = {

@@ -7,7 +7,10 @@ import Retention from 'src/buckets/components/Retention'
 import {SchemaToggle} from 'src/buckets/components/createBucketForm/SchemaToggle'
 
 // Constants
-import {isSystemBucket} from 'src/buckets/constants'
+import {
+  isSystemBucket,
+  BUCKET_NAME_MINIMUM_CHARACTERS,
+} from 'src/buckets/constants'
 
 // Types
 import {
@@ -181,8 +184,11 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       return 'This bucket needs a name'
     }
 
-    if (name.trim().length === 0) {
-      return 'Bucket name cannot be only whitespaces'
+    if (
+      name.trim().length === 0 ||
+      name.length < BUCKET_NAME_MINIMUM_CHARACTERS
+    ) {
+      return `Please enter a name with at least ${BUCKET_NAME_MINIMUM_CHARACTERS} letters or numbers`
     }
 
     return null

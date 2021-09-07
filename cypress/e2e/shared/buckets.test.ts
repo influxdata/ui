@@ -100,9 +100,11 @@ describe('Buckets', () => {
       })
       cy.reload()
       cy.getByTestID(`bucket-card ${bucket1}`).trigger('mouseover')
-      cy.getByTestID(`context-delete-menu ${bucket1}`).click()
+      cy.getByTestID(`context-delete-menu ${bucket1}--button`).click()
       cy.intercept('DELETE', '/api/v2/buckets/*').as('deleteBucket')
-      cy.getByTestID(`context-delete-bucket ${bucket1}`).click({force: true})
+      cy.getByTestID(`context-delete-menu ${bucket1}--confirm-button`).click({
+        force: true,
+      })
       cy.wait('@deleteBucket')
       cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
     })

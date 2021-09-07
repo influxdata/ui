@@ -146,23 +146,21 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
           spinnerComponent={<TechnoSpinner />}
           loading={loadingStatus}
         >
-          <Overlay.Body>
-            <BucketOverlayForm
-              name={bucketDraft ? bucketDraft.name : ''}
-              buttonText="Save Changes"
-              ruleType={ruleType}
-              onClose={handleClose}
-              onSubmit={handleSubmit}
-              isEditing={true}
-              onChangeInput={handleChangeInput}
-              retentionSeconds={retentionSeconds}
-              onChangeRuleType={handleChangeRuleType}
-              onChangeRetentionRule={handleChangeRetentionRule}
-              onClickRename={handleClickRename}
-              onChangeSchemaType={handleChangeSchemaType}
-              schemaType={schemaType as SchemaType}
-            />
-          </Overlay.Body>
+          <BucketOverlayForm
+            name={bucketDraft ? bucketDraft.name : ''}
+            buttonText="Save Changes"
+            ruleType={ruleType}
+            onClose={handleClose}
+            onSubmit={handleSubmit}
+            isEditing={true}
+            onChangeInput={handleChangeInput}
+            retentionSeconds={retentionSeconds}
+            onChangeRuleType={handleChangeRuleType}
+            onChangeRetentionRule={handleChangeRetentionRule}
+            onClickRename={handleClickRename}
+            onChangeSchemaType={handleChangeSchemaType}
+            schemaType={schemaType as SchemaType}
+          />
         </SpinnerContainer>
       </Overlay.Container>
     </Overlay>

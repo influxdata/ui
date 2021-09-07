@@ -1,17 +1,17 @@
 describe('Home Page Tests', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(() => {
-        cy.getByTestID('home-page--header').should('be.visible')
-        cy.setFeatureFlags({
-          alertsActivity: true,
-          notebooks: true,
-        }).then(() => cy.getByTestID('nav-item-flows').should('be.visible'))
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(() => {
+          cy.getByTestID('home-page--header').should('be.visible')
+          cy.setFeatureFlags({
+            alertsActivity: true,
+            notebooks: true,
+          }).then(() => cy.getByTestID('nav-item-flows').should('be.visible'))
+        })
       })
-    })
-  })
+    )
+  )
 
   // this test isn't compatible with remocal because dex is hosted at a different domain and Cypress complains.
   // skipping for now until we can find an alternative way to test this functionality (or change where dex is hosted)

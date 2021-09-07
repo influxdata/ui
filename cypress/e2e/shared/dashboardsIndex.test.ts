@@ -6,18 +6,18 @@ const dashboardName2 = 'test dashboard'
 const dashSearchName = 'bEE'
 
 describe('Dashboards', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() =>
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.get<Organization>('@org').then(({id}: Organization) => {
+            cy.visit(`${orgs}/${id}/dashboards-list`)
+            cy.getByTestID('tree-nav')
+          })
         })
-      })
+      )
     )
-  })
+  )
 
   it('empty state should have a header with text and a button to create a dashboard', () => {
     cy.getByTestID('page-contents').within(() => {

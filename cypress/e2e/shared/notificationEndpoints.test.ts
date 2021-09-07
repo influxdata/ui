@@ -17,22 +17,22 @@ describe('Notification Endpoints', () => {
   }
 
   beforeEach(() => {
-    cy.flush()
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs, alerting}) => {
+            cy.createEndpoint({...endpoint, orgID: id}).then(({body}) => {
+              cy.wrap(body).as('endpoint')
+            })
+            cy.visit(`${orgs}/${id}${alerting}`)
+            cy.getByTestID('tree-nav')
 
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs, alerting}) => {
-          cy.createEndpoint({...endpoint, orgID: id}).then(({body}) => {
-            cy.wrap(body).as('endpoint')
+            // User can only see all panels at once on large screens
+            cy.getByTestID('alerting-tab--endpoints').click({force: true})
           })
-          cy.visit(`${orgs}/${id}${alerting}`)
-          cy.getByTestID('tree-nav')
-
-          // User can only see all panels at once on large screens
-          cy.getByTestID('alerting-tab--endpoints').click({force: true})
-        })
-      )
-    })
+        )
+      })
+    )
   })
 
   it('can create a notification endpoint', () => {

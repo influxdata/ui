@@ -848,10 +848,10 @@
     "@docsearch/css" "3.0.0-alpha.37"
     algoliasearch "^4.0.0"
 
-"@influxdata/clockface@^3.0.0-beta.6":
-  version "3.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.0.0-beta.6.tgz#92bbb8e1da93bc1a8d5c7abb069a299237ccf034"
-  integrity sha512-bCcCkTzUXPIn27ZX21Am0Ja8zlYVpw6bSQt1dwC+oYg+dA0ewi/d2we0+L9Xx7OC3+UxhqGNhz0xJnEkQ04lBQ==
+"@influxdata/clockface@^3.0.0-beta.7":
+  version "3.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.0.0-beta.7.tgz#6638e1fa5d6a18faf66fbaeaccb5c5fb8eab0c9c"
+  integrity sha512-UhIewGaJoWTJG57AgfBE++U1Wctzjhf2jBmnf7RI0gF6nc5RwJ9AxS+SAXkCnmRf3gHT5DGqUoEPXkRxyd+OaQ==
 
 "@influxdata/flux-lsp-browser@^0.5.53":
   version "0.5.53"
@@ -5670,10 +5670,10 @@ ignore@^5.1.4:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.8.tgz#f150a8b50a34289b33e22f5889abd4d8016f0e57"
   integrity sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw==
 
-immer@^9.0.3:
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.3.tgz#146e2ba8b84d4b1b15378143c2345559915097f4"
-  integrity sha512-mONgeNSMuyjIe0lkQPa9YhdmTv8P19IeHV0biYhcXhbd5dhdB9HSK93zBpyKjp6wersSUgT5QyU0skmejUVP2A==
+immer@^9.0.6:
+  version "9.0.6"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.6.tgz#7a96bf2674d06c8143e327cbf73539388ddf1a73"
+  integrity sha512-G95ivKpy+EvVAnAab4fVa4YGYn24J1SpEktnJX7JJ45Bd7xqME/SCplFzYFmTbrkwZbQ4xJK1xMTUYBkN6pWsQ==
 
 immutable@^3.8.1:
   version "3.8.2"

@@ -15,19 +15,19 @@ const VIS_TYPES = [
   'table',
 ]
 describe('visualizations', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.createMapVariable(id)
-        cy.fixture('routes').then(({orgs, explorer}) => {
-          cy.visit(`${orgs}/${id}${explorer}`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.createMapVariable(id)
+          cy.fixture('routes').then(({orgs, explorer}) => {
+            cy.visit(`${orgs}/${id}${explorer}`)
+            cy.getByTestID('tree-nav')
+          })
         })
       })
-    })
-  })
+    )
+  )
   describe('empty states', () => {
     it('shows a message if no queries have been created', () => {
       cy.getByTestID('empty-graph--no-queries').should('exist')

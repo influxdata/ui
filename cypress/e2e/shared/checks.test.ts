@@ -7,27 +7,28 @@ const measurement = 'my_meas'
 const field = 'my_field'
 const stringField = 'string_field'
 describe('Checks', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      // visit the alerting index
-      cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.writeData([
-          `${measurement} ${field}=0,${stringField}="string1"`,
-          `${measurement} ${field}=1,${stringField}="string2"`,
-        ])
-        cy.fixture('routes').then(({orgs, alerting}) => {
-          cy.visit(`${orgs}/${orgID}${alerting}`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        // visit the alerting index
+        cy.get('@org').then(({id: orgID}: Organization) => {
+          cy.writeData([
+            `${measurement} ${field}=0,${stringField}="string1"`,
+            `${measurement} ${field}=1,${stringField}="string2"`,
+          ])
+          cy.fixture('routes').then(({orgs, alerting}) => {
+            cy.visit(`${orgs}/${orgID}${alerting}`)
+            cy.getByTestID('tree-nav')
+            cy.get('[data-testid="resource-list--body"]', {
+              timeout: PAGE_LOAD_SLA,
+            })
+            // User can only see all panels at once on large screens
+            cy.getByTestID('alerting-tab--checks').click({force: true})
+          })
         })
       })
-    })
-    cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
-
-    // User can only see all panels at once on large screens
-    cy.getByTestID('alerting-tab--checks').click({force: true})
-  })
+    )
+  )
 
   it('can validate a threshold check', () => {
     cy.log('Create threshold check')

@@ -10,7 +10,8 @@ import {FlowListContext} from 'src/flows/context/flow.list'
 
 // Utils
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
-
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 import {
   pinnedItemFailure,
   pinnedItemSuccess,
@@ -40,11 +41,13 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
 
   const handleRenameNotebook = (name: string) => {
     update(id, {...flow, name})
-    try {
-      updatePinnedItemByParam(id, {name})
-      dispatch(notify(pinnedItemSuccess('notebook', 'updated')))
-    } catch (err) {
-      dispatch(notify(pinnedItemFailure(err.message, 'update')))
+    if (isFlagEnabled('pinnedItems') && CLOUD) {
+      try {
+        updatePinnedItemByParam(id, {name})
+        dispatch(notify(pinnedItemSuccess('notebook', 'updated')))
+      } catch (err) {
+        dispatch(notify(pinnedItemFailure(err.message, 'update')))
+      }
     }
   }
 

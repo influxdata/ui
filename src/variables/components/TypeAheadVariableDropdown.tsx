@@ -284,7 +284,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         testID={this.props.testID || `variable-dropdown--${name}`}
         onClickAway={this.onClickAwayHere}
         menuOpen={menuOpen}
-        customFocus
+        disableAutoFocus
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}

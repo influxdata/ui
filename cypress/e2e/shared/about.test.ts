@@ -1,16 +1,16 @@
 import {Organization} from '../../../src/types'
 
 describe('About Page', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.visit(`/orgs/${id}/about`)
-        cy.getByTestID('about-page--header').should('be.visible')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.visit(`/orgs/${id}/about`)
+          cy.getByTestID('about-page--header').should('be.visible')
+        })
       })
-    })
-  })
+    )
+  )
 
   it('should display everything correctly', () => {
     cy.getByTestID('common-ids--panel').within(() => {

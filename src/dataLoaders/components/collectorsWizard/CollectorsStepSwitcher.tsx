@@ -12,13 +12,12 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Types
 import {CollectorsStep} from 'src/types/dataLoaders'
-import {CollectorsStepProps} from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
+import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
 
 interface Props {
-  stepProps: CollectorsStepProps
+  // stepProps: CollectorsStepProps
+  stepProps: PluginCreateConfigurationStepProps
 }
-
-
 
 @ErrorHandling
 class StepSwitcher extends PureComponent<Props> {
@@ -33,9 +32,9 @@ class StepSwitcher extends PureComponent<Props> {
     }
 
     if (isFlagEnabled('telegrafUiRefresh')) {
-      configure =<PluginCreateConfigurationCustomize {...stepProps} />
+      configure = <PluginCreateConfigurationCustomize {...stepProps} />
     } else {
-      configure =<PluginConfigSwitcher/>
+      configure = <PluginConfigSwitcher />
     }
 
     switch (stepProps.currentStepIndex) {

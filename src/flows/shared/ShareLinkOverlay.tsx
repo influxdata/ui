@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useContext} from 'react'
 
 // Components
 import {
@@ -16,6 +16,7 @@ import {
   ComponentStatus,
   Overlay,
 } from '@influxdata/clockface'
+import {PopupContext} from 'src/flows/context/popup'
 import {event} from 'src/cloud/utils/reporting'
 
 export const ShareLinkOverlay: FC = () => {

@@ -39,7 +39,7 @@ export interface FlowQueryContextType {
   simplify: (text: string) => string
   queryAll: () => void
   queryDependents: (startID: string) => void
-  getPanelQueries: (id: string, withSideEffects?: boolean) => Stage
+  getPanelQueries: (id: string, withSideEffects?: boolean) => Stage | null
   status: RemoteDataState
   getStatus: (id: string) => RemoteDataState
 }
@@ -162,7 +162,7 @@ export const FlowQueryProvider: FC = ({children}) => {
 
       const meta = {
         ...last,
-        id: panel.id,
+        id: panelID,
         visual: '',
       }
 
@@ -198,11 +198,20 @@ export const FlowQueryProvider: FC = ({children}) => {
       return acc
     }, [])
 
+    debugger
+
     return stages
   }
 
   // TODO figure out a better way to cache these requests
-  const getPanelQueries = (id: string, withSideEffects?: boolean): Stage => {
+  const getPanelQueries = (
+    id: string,
+    withSideEffects?: boolean
+  ): Stage | null => {
+    if (!id) {
+      return null
+    }
+
     return generateMap(withSideEffects).find(i => i.id === id)
   }
 

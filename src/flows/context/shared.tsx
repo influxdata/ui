@@ -17,12 +17,51 @@ const EXAMPLE_FLOW = hydrate({
     refresh: AUTOREFRESH_DEFAULT,
     pipes: [
       {
+        type: 'rawFluxEditor',
+        queries: [
+          {
+            text:
+              '// Uncomment the following line to continue building from the previous cell\n// __PREVIOUS_RESULT__\n\nbuckets()',
+            editMode: 'advanced',
+            builderConfig: {
+              tags: [],
+              buckets: [],
+              functions: [],
+            },
+          },
+        ],
+        activeQuery: 0,
+        title: 'Flux Script 1',
+        visible: true,
+      },
+      {
+        type: 'region',
+        region: 'https://twodotoh.a.influxcloud.dev.local',
+        token: '',
+        org: 'a15a024c8d891f39',
+        source: 'self',
+        title: 'Remote Database 1',
+        visible: true,
+      },
+      {
         title: 'Select a Metric',
         visible: true,
         type: 'metricSelector',
-        ...JSON.parse(
-          JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
-        ),
+        tags: {},
+        field: '',
+        measurement: 'go_info',
+        bucket: {
+          id: 'fe45a1673f1ad4ef',
+          orgID: 'a15a024c8d891f39',
+          type: 'user',
+          name: 'devbucket',
+        },
+      },
+      {
+        mappings: {},
+        type: 'columnEditor',
+        title: 'Column Editor 1',
+        visible: true,
       },
       {
         title: 'Validate the Data',

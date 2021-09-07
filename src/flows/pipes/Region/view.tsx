@@ -9,12 +9,12 @@ import {getOrg} from 'src/organizations/selectors'
 import {
   Dropdown,
   ComponentColor,
+  ComponentStatus,
   ComponentSize,
   Form,
   FlexBox,
   Input,
   InputType,
-  ComponentStatus,
 } from '@influxdata/clockface'
 
 import './style.scss'
@@ -71,7 +71,7 @@ const REGIONS = [
   {label: 'Self Hosted', value: 'self-hosted'},
 ]
 
-const Source: FC<PipeProp> = ({Context}) => {
+const Source: FC<PipeProp> = ({Context, readOnly}) => {
   const {data, update} = useContext(PipeContext)
   const org = useSelector(getOrg)
   const [error, setError] = useState<boolean>(false)
@@ -230,6 +230,11 @@ const Source: FC<PipeProp> = ({Context}) => {
               button={(active, onClick) => (
                 <Dropdown.Button
                   active={active}
+                  status={
+                    readOnly
+                      ? ComponentStatus.Disabled
+                      : ComponentStatus.Default
+                  }
                   onClick={onClick}
                   color={ComponentColor.Primary}
                   testID="region-panel--dropdown-button"
@@ -299,7 +304,7 @@ const Source: FC<PipeProp> = ({Context}) => {
               onChange={evt => update({region: evt.target.value})}
               size={ComponentSize.Medium}
               status={
-                data.source !== 'custom'
+                data.source !== 'custom' || readOnly
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }
@@ -314,6 +319,9 @@ const Source: FC<PipeProp> = ({Context}) => {
                 type={InputType.Text}
                 value={data.token}
                 size={ComponentSize.Medium}
+                status={
+                  readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+                }
                 onChange={evt => update({token: evt.target.value})}
               />
             </Form.Element>

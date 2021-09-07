@@ -66,21 +66,24 @@ export interface FluxResult {
   error?: string // any error that might have happend while fetching
 }
 
-export interface GlobalQueryContextType2 {
+export interface GlobalQueryContextType {
   cancel: (query?: string) => void
   runQuery: (query: string, override?: QueryScope) => Promise<FluxResult>
   runBasic: (query: string, override?: QueryScope) => Promise<RunQueryResult>
   isInitialized: boolean
 }
 
-export const DEFAULT_GLOBAL_QUERY_CONTEXT: GlobalQueryContextType2 = {
+export const DEFAULT_GLOBAL_QUERY_CONTEXT: GlobalQueryContextType = {
   cancel: (_?: string) => null,
   runQuery: (_: string, __?: QueryScope) => null,
   runBasic: (_: string, __?: QueryScope) => null,
   isInitialized: false,
 }
 
-export const GlobalQueryContext = createContext<GlobalQueryContextType2>(
+// 30 Seconds
+const DEFAULT_TTL = 30000
+
+export const GlobalQueryContext = createContext<GlobalQueryContextType>(
   DEFAULT_GLOBAL_QUERY_CONTEXT
 )
 interface Query {
@@ -295,7 +298,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     setTimeout(() => {
       delete basicResponses[queryId]
       setBasicResponses(basicResponses)
-    }, 20000)
+    }, DEFAULT_TTL)
   }
 
   const updateQueryResponses = (queryId: string, response: FluxResult) => {
@@ -303,7 +306,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     setTimeout(() => {
       delete queryResponses[queryId]
       setQueryResponses(queryResponses)
-    }, 20000)
+    }, DEFAULT_TTL)
   }
 
   const query = (

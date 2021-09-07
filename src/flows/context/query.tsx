@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {v4 as UUID} from 'uuid'
 import {parse, format_from_js_file} from '@influxdata/flux'
@@ -10,6 +10,7 @@ import {getStatus} from 'src/resources/selectors'
 import {fromFlux} from '@influxdata/giraffe'
 import {FluxResult, QueryScope, VariableMap} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {SELECTABLE_TIME_RANGES} from 'src/shared/constants/timeRanges'
@@ -35,6 +36,8 @@ import {
   File,
 } from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
+import {GlobalQueryContext} from 'src/query/context'
+import {simplify as simplifyQuery} from 'src/query/context/utils'
 
 interface CancelMap {
   [key: string]: () => void
@@ -233,6 +236,14 @@ const _addWindowPeriod = (ast, optionAST): void => {
 }
 
 export const simplify = (text, vars: VariableMap = {}) => {
+  console.log("Running Simplify. Is context intialized?: Doesn't matter..")
+  console.log(
+    'Is GQC Enabled?: ',
+    isFlagEnabled('GlobalQueryContext') ? 'true' : 'false'
+  )
+  if (isFlagEnabled('GlobalQueryContext')) {
+    return simplifyQuery(text, vars)
+  }
   const ast = parse(text)
   const usedVars = _getVars(ast, vars)
 
@@ -387,7 +398,13 @@ export const simplify = (text, vars: VariableMap = {}) => {
   // turn it back into a query
   return format_from_js_file(ast)
 }
-
+interface BasicQueryResult {
+  id: string
+  promise: Promise<RunQueryResult>
+  cancel: () => {
+    cancel: (_: string) => {}
+  }
+}
 export const QueryProvider: FC = ({children}) => {
   const buckets = useSelector((state: AppState) => getSortedBuckets(state))
   const bucketsLoadingState = useSelector((state: AppState) =>
@@ -395,6 +412,9 @@ export const QueryProvider: FC = ({children}) => {
   )
   const [pending, setPending] = useState({} as CancelMap)
   const org = useSelector(getOrg)
+  const {runQuery, runBasic, cancel: cancelQueries, isInitialized} = useContext(
+    GlobalQueryContext
+  )
 
   const dispatch = useDispatch()
 
@@ -428,6 +448,18 @@ export const QueryProvider: FC = ({children}) => {
   }
 
   const basic = (text: string, override?: QueryScope) => {
+    console.log(
+      'Running Basic. Is context intialized?: ',
+      isInitialized ? 'true' : 'false'
+    )
+    console.log(
+      'Is GQC Enabled?: ',
+      isFlagEnabled('GlobalQueryContext') ? 'true' : 'false'
+    )
+    if (isFlagEnabled('GlobalQueryContext')) {
+      return runBasic(text, override)
+    }
+
     const query = simplify(text, override?.vars || {})
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
@@ -525,10 +557,22 @@ export const QueryProvider: FC = ({children}) => {
       cancel: () => {
         cancel(id)
       },
-    }
+    } as BasicQueryResult
   }
 
   const cancel = (queryID?: string) => {
+    console.log(
+      'Running Cancel. Is context intialized?: ',
+      isInitialized ? 'true' : 'false'
+    )
+    console.log(
+      'Is GQC Enabled?: ',
+      isFlagEnabled('GlobalQueryContext') ? 'true' : 'false'
+    )
+    if (isFlagEnabled('GlobalQueryContext')) {
+      return cancelQueries(queryID)
+    }
+
     if (!queryID) {
       Object.values(pending).forEach(c => c())
       setPending({})
@@ -547,7 +591,19 @@ export const QueryProvider: FC = ({children}) => {
   }
 
   const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
-    const result = basic(text, override)
+    console.log(
+      'Running Query. Is context intialized?: ',
+      isInitialized ? 'true' : 'false'
+    )
+    console.log(
+      'Is GQC Enabled?: ',
+      isFlagEnabled('GlobalQueryContext') ? 'true' : 'false'
+    )
+    if (isFlagEnabled('GlobalQueryContext')) {
+      return runQuery(text, override)
+    }
+
+    const result = basic(text, override) as BasicQueryResult
 
     return result.promise
       .then(raw => {

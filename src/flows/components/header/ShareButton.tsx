@@ -5,7 +5,6 @@ import {
   ComponentSize,
   IconFont,
 } from '@influxdata/clockface'
-import {FlowContext} from 'src/flows/context/flow.current'
 import {PopupContext} from 'src/flows/context/popup'
 import {ShareLinkOverlay} from 'src/flows/shared/ShareLinkOverlay'
 
@@ -15,7 +14,6 @@ import {PROJECT_NAME} from 'src/flows'
 
 const ShareButton: FC = () => {
   const {launch} = useContext(PopupContext)
-  const {flow, updateOther} = useContext(FlowContext)
 
   const handleShare = () => {
     event('Share Button Toggled')

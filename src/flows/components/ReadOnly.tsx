@@ -15,6 +15,7 @@ import {SidebarProvider} from 'src/flows/context/sidebar'
 import ReadOnlyPipeList from 'src/flows/components/ReadOnlyPipeList'
 import {SubSideBar} from 'src/flows/components/Sidebar'
 import ReadOnlyHeader from 'src/flows/components/ReadOnlyHeader'
+import {InternalFromFluxResult} from 'src/types/flows'
 
 import 'src/flows/style.scss'
 import 'src/flows/shared/Resizer.scss'
@@ -31,7 +32,7 @@ const RunPipeResults: FC = () => {
       fetch(`/api/share/${accessID}/query/${id}`)
         .then(res => res.text())
         .then(resp => {
-          const csv = fromFlux(resp)
+          const csv = (fromFlux(resp) as unknown) as InternalFromFluxResult
           setResult(id, {parsed: csv, source: ''})
         })
     )

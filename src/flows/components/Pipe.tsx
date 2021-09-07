@@ -11,6 +11,10 @@ const Pipe: FC<PipeProp> = props => {
     return createElement(PIPE_DEFINITIONS['missing'].component, props)
   }
 
+  if (props.readOnly && PIPE_DEFINITIONS[data.type].readOnlyComponent) {
+    return createElement(PIPE_DEFINITIONS[data.type].readOnlyComponent, props)
+  }
+
   return createElement(PIPE_DEFINITIONS[data.type].component, props)
 }
 

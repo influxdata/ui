@@ -61,7 +61,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
     })
@@ -74,7 +74,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('2s')
-      cy.getByTestID('refresh-form-activate-button').click()
+      cy.getByTestID('refresh-form-activate-button').click({force: true})
       cy.wait('@refreshQuery')
       cy.getByTestID('enable-auto-refresh-button').click()
       // Wait the duration we'd expect on the next query to ensure stopping via the button actually stops the process. The fail means the request didn't run, which is what we want
@@ -92,6 +92,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('4s')
+        .type('{enter}')
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
@@ -120,6 +121,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('2s')
+        .type('{enter}')
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
@@ -155,15 +157,20 @@ describe('Dashboard refresh', () => {
       cy.visit(routeToReturnTo)
       cy.wait('@refreshQuery')
       cy.wait(5000)
-      cy.getByTestID('enable-auto-refresh-button').then(el => {
-        expect(el[0].innerText).to.equal('Enable Auto Refresh')
-      })
+      cy.getByTestID(
+        'enable-auto-refresh-button'
+      ).contains('ENABLE AUTO REFRESH', {matchCase: false})
     })
     it('can timeout on a preset inactivity timeout', done => {
+      cy.getByTestID(
+        'enable-auto-refresh-button'
+      ).contains('ENABLE AUTO REFRESH', {matchCase: false})
+
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('3s')
+        .type('{enter}')
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
@@ -188,9 +195,9 @@ describe('Dashboard refresh', () => {
         })
 
       cy.wait(3100)
-      cy.getByTestID('enable-auto-refresh-button').then(el => {
-        expect(el[0].innerText).to.equal('Enable Auto Refresh')
-      })
+      cy.getByTestID(
+        'enable-auto-refresh-button'
+      ).contains('ENABLE AUTO REFRESH', {matchCase: false})
       cy.getByTestID('notification-success--children')
         .children()
         .should(
@@ -257,7 +264,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -296,7 +303,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('2s')
-      cy.getByTestID('refresh-form-activate-button').click()
+      cy.getByTestID('refresh-form-activate-button').click({force: true})
       cy.wait('@secondCellQuery')
       cy.wait('@firstCellQuery')
 
@@ -356,7 +363,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -394,7 +401,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('auto-refresh-input')
         .clear()
         .type('2s')
-      cy.getByTestID('refresh-form-activate-button').click()
+      cy.getByTestID('refresh-form-activate-button').click({force: true})
 
       cy.wait('@secondCellQuery')
       cy.getByTestID('cell blah').within(() => {
@@ -454,7 +461,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -540,7 +547,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
 

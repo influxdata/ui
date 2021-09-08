@@ -73,16 +73,12 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next').should('be.disabled')
 
-    cy.getByTestID('next')
-      .children('.cf-button--label')
-      .contains('Continue')
+    cy.getByTestID('next').contains('CONTINUE', {matchCase: false})
 
     // Input fields
     cy.fillInOSSLoginFormWithDefaults()
 
-    cy.getByTestID('next')
-      .children('.cf-button--label')
-      .contains('Continue')
+    cy.getByTestID('next').contains('CONTINUE', {matchCase: false})
 
     cy.getByTestID('next')
       .should('be.enabled')
@@ -184,8 +180,7 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next')
       .should('be.disabled')
-      .children('.cf-button--label')
-      .contains('Continue')
+      .contains('CONTINUE', {matchCase: false})
 
     cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
       cy.getByTestID('input-field--password').type(defaultPassword)
@@ -193,8 +188,7 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next')
       .should('be.disabled')
-      .children('.cf-button--label')
-      .contains('Continue')
+      .contains('CONTINUE', {matchCase: false})
 
     cy.getByTestID('input-field--password-chk').type('drowssap')
 
@@ -217,8 +211,7 @@ describe('Onboarding', () => {
 
     cy.getByTestID('next')
       .should('be.disabled')
-      .children('.cf-button--label')
-      .contains('Continue')
+      .contains('CONTINUE', {matchCase: false})
 
     cy.get<string>('@defaultOrg').then((defaultOrg: string) => {
       cy.getByTestID('input-field--orgname').type(defaultOrg)
@@ -228,8 +221,7 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
         cy.getByTestID('input-field--password')
@@ -244,16 +236,14 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.enabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       // check cleared username
       cy.getByTestID('input-field--username').clear()
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       cy.get<string>('@defaultUser').then((defaultUser: string) => {
         cy.getByTestID('input-field--username').type(defaultUser)
@@ -261,8 +251,7 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.enabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       // check cleared password
       cy.getByTestID('input-field--password').clear()
@@ -274,8 +263,7 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       cy.get<string>('@defaultPassword').then((defaultPassword: string) => {
         cy.getByTestID('input-field--password')
@@ -289,16 +277,14 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.enabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       // check cleared org name
       cy.getByTestID('input-field--orgname').clear()
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       cy.get<string>('@defaultOrg').then((defaultOrg: string) => {
         cy.getByTestID('input-field--orgname').type(defaultOrg)
@@ -306,23 +292,20 @@ describe('Onboarding', () => {
 
       cy.getByTestID('next')
         .should('be.enabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       // check cleared bucket name
       cy.getByTestID('input-field--bucketname').clear()
 
       cy.getByTestID('next')
         .should('be.disabled')
-        .children('.cf-button--label')
-        .contains('Continue')
+        .contains('CONTINUE', {matchCase: false})
 
       cy.getByTestID('input-field--bucketname').type(defaultBucket)
     })
 
     cy.getByTestID('next')
       .should('be.enabled')
-      .children('.cf-button--label')
-      .contains('Continue')
+      .contains('CONTINUE', {matchCase: false})
   })
 })

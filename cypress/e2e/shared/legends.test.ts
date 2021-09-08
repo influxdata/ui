@@ -478,7 +478,7 @@ describe('Legends', () => {
           cy.getByTestID('overlay').within(() => {
             cy.getByTestID('page-header')
               .click()
-              .type(cellName)
+              .type(cellName + '{enter}')
           })
 
           // Without submitting the query, save it to a dashboard

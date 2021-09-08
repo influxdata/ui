@@ -67,6 +67,7 @@ describe('Dashboard', () => {
       cy.getByTestID('renamable-page-title--input')
         .clear()
         .type(xyCellName)
+        .type('{enter}')
       cy.getByTestID('save-cell--button').click()
     })
 
@@ -1284,7 +1285,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
       cy.getByTestID('cell-context--toggle')

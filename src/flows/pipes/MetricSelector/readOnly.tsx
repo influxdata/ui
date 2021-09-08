@@ -17,7 +17,7 @@ const DataSource: FC<PipeProp> = ({Context}) => {
 
   return (
     <SchemaProvider>
-      <Context resizes>
+      <Context>
         <div className="data-source">
           <div className="data-source--controls">
             <div className="data-source--bucket">

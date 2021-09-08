@@ -321,12 +321,12 @@ describe('Dashboards', () => {
 
       // visit another page
       cy.getByTestID('tree-nav').then(() => {
-        cy.contains('Settings').click()
+        cy.contains('Settings').click({force: true})
         cy.contains(
           "Looks like there aren't any Variables, why not create one?"
         )
         // return to dashboards page
-        cy.contains('Boards').click()
+        cy.contains('Dashboards').click()
       })
 
       // assert dashboard order remains the same

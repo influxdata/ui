@@ -152,7 +152,6 @@ describe('Dashboards', () => {
     cy.getByTestID('empty-dashboards-list').should('exist')
   })
 
-  // TODO - fix failing test (fails only in circleci - cloud-e2e-firefox)
   it('can import as JSON or file', () => {
     const checkImportedDashboard = () => {
       // wait for importing done

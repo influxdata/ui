@@ -59,16 +59,11 @@ import {incrementCloneName} from 'src/utils/naming'
 // Types
 import {TASK_LIMIT} from 'src/resources/constants'
 
-type RequestType = 'default' | 'basic'
-
 type Action = TaskAction | ExternalActions | ReturnType<typeof getTasks>
 type ExternalActions = NotifyAction | ReturnType<typeof checkTaskLimits>
 
 // Thunks
-export const getTasks = (
-  limit: number = TASK_LIMIT,
-  requestType: RequestType = 'default'
-) => async (
+export const getTasks = (limit: number = TASK_LIMIT) => async (
   dispatch: Dispatch<TaskAction | NotifyAction>,
   getState: GetState
 ): Promise<void> => {
@@ -81,9 +76,6 @@ export const getTasks = (
     const org = getOrg(state)
 
     const query: GetTasksParams['query'] = {orgID: org.id, limit}
-    if (requestType === 'basic') {
-      query.type = 'basic'
-    }
 
     const resp = await api.getTasks({query})
 

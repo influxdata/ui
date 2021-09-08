@@ -2,8 +2,13 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Context} from 'src/clockface'
-import {IconFont, ComponentColor} from '@influxdata/clockface'
+import {ButtonShape, Context} from 'src/clockface'
+import {
+  IconFont,
+  ComponentColor,
+  ConfirmationButton,
+  ComponentSize,
+} from '@influxdata/clockface'
 
 // Types
 import {Variable} from 'src/types'
@@ -21,7 +26,7 @@ export default class VariableContextMenu extends PureComponent<Props> {
 
     return (
       <Context>
-        <Context.Menu icon={IconFont.CogThick}>
+        <Context.Menu icon={IconFont.CogSolid_New}>
           <Context.Item label="Export" action={onExport} />
           <Context.Item
             label="Rename"
@@ -29,18 +34,18 @@ export default class VariableContextMenu extends PureComponent<Props> {
             testID="context-rename-variable"
           />
         </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-          testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={onDelete}
-            value={variable}
-            testID={`context-delete-variable ${variable.name}`}
-          />
-        </Context.Menu>
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, Delete this Variable"
+          onConfirm={() => {
+            onDelete(variable)
+          }}
+          confirmationButtonText="Confirm"
+          testID={`context-delete-menu ${variable.name}`}
+        />
       </Context>
     )
   }

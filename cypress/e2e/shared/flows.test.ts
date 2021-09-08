@@ -382,6 +382,7 @@ describe('Flows', () => {
     cy.getByTestID('giraffe-inner-plot')
       .scrollIntoView()
       .should('be.visible')
+<<<<<<< HEAD
   })
 
   describe('alert panel', () => {
@@ -447,5 +448,7 @@ describe('Flows', () => {
         'r.dopeness'
       )
     })
+=======
+>>>>>>> chore: install clockface beta and fix e2e tests (#2502)
   })
 })

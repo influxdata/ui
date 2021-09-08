@@ -80,7 +80,7 @@ export const getTasks = (
 
     const org = getOrg(state)
 
-    const query = {orgID: org.id, limit} as GetTasksParams['query']
+    const query: GetTasksParams['query'] = {orgID: org.id, limit}
     if (requestType === 'basic') {
       query.type = 'basic'
     }

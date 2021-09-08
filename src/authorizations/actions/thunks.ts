@@ -168,17 +168,12 @@ export const deleteAuthorization = (id: string, name: string = '') => async (
   }
 }
 
-export const getResources = () => async dispatch => {
-  try {
-    dispatch(setAllResources(RemoteDataState.Loading))
-    const resp = await api.getResources({headers: {}})
+export const getAllResources = () => async dispatch => {
+  const resp = await api.getResources({headers: {}})
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-    const resources = resp.data
-    dispatch(setAllResources(RemoteDataState.Done, resources))
-  } catch (e) {
-    console.error(e)
+  if (resp.status !== 200) {
+    throw new Error(resp.data.message)
   }
+  const resources = resp.data
+  dispatch(setAllResources(resources))
 }

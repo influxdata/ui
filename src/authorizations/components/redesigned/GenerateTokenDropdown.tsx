@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -10,7 +10,9 @@ import {Dropdown} from '@influxdata/clockface'
 import {IconFont, ComponentColor} from '@influxdata/clockface'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-import {getResources} from 'src/authorizations/actions/thunks'
+import {getAllResources} from 'src/authorizations/actions/thunks'
+import {notify} from 'src/shared/actions/notifications'
+import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 
 type GenerateTokenProps = RouteComponentProps
 type ReduxProps = ConnectedProps<typeof connector>
@@ -18,8 +20,9 @@ type ReduxProps = ConnectedProps<typeof connector>
 const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
   onShowOverlay,
   onDismissOverlay,
-  getResources,
+  getAllResources,
 }) => {
+  const dispatch = useDispatch()
   const allAccessOption = 'All Access Token'
 
   const customApiOption = 'Custom API Token'
@@ -28,9 +31,13 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
     onShowOverlay('add-master-token', null, onDismissOverlay)
   }
 
-  const handleCustomApi = () => {
-    getResources()
-    onShowOverlay('add-custom-token', null, onDismissOverlay)
+  const handleCustomApi = async () => {
+    try {
+      await getAllResources()
+      onShowOverlay('add-custom-token', null, onDismissOverlay)
+    } catch (e) {
+      dispatch(notify(getResourcesTokensFailure()))
+    }
   }
 
   const handleSelect = (selection: string): void => {
@@ -85,7 +92,7 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
 const mdtp = {
   onShowOverlay: showOverlay,
   onDismissOverlay: dismissOverlay,
-  getResources: getResources,
+  getAllResources: getAllResources,
 }
 
 const connector = connect(null, mdtp)

@@ -34,7 +34,7 @@ const initialState = (): AuthsState => ({
   byID: {},
   allIDs: [],
   currentAuth: {status: RemoteDataState.NotStarted, item: {}},
-  allResources: {status: RemoteDataState.NotStarted, list: []},
+  allResources: [],
 })
 
 export const authsReducer = (
@@ -81,14 +81,8 @@ export const authsReducer = (
       }
 
       case SET_ALL_RESOURCES: {
-        const {status, list} = action
-        draftState.allResources.status = status
-
-        if (list) {
-          draftState.allResources.list = list
-        } else {
-          draftState.allResources.list = []
-        }
+        const {list} = action
+        draftState.allResources = list
 
         return
       }

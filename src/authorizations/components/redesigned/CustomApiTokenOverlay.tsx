@@ -123,7 +123,7 @@ const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
 
 const mstp = (state: AppState) => {
   return {
-    allResources: state.resources.tokens.allResources.list,
+    allResources: state.resources.tokens.allResources,
   }
 }
 

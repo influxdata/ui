@@ -86,12 +86,13 @@ class ResourceAccordion extends Component<Props, State> {
             permissions={permissions[resource]}
             onToggleAll={this.handleToggleAll}
           />
-          {resourceName === 'Telegrafs' || resourceName === 'Buckets' ? (
-            <GetResources resources={[ResourceType[resourceName]]}>
-              {!isEmpty(permissions[resource].sublevelPermissions) &&
-                this.getAccordionBody(resourceName, resource)}
-            </GetResources>
-          ) : null}
+          {resourceName === 'Telegrafs' ||
+            (resourceName === 'Buckets' && (
+              <GetResources resources={[ResourceType[resourceName]]}>
+                {!isEmpty(permissions[resource].sublevelPermissions) &&
+                  this.getAccordionBody(resourceName, resource)}
+              </GetResources>
+            ))}
         </Accordion>
       )
     })
@@ -117,8 +118,6 @@ class ResourceAccordion extends Component<Props, State> {
           title="Individual Bucket Names"
         />
       )
-    } else {
-      return null
     }
   }
 

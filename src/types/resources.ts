@@ -61,7 +61,7 @@ export interface TelegrafsState extends NormalizedState<Telegraf> {
 
 export interface AuthState extends NormalizedState<Authorization> {
   currentAuth: {status: RemoteDataState; item: Authorization}
-  allResources: {status: RemoteDataState; list: string[] | Error}
+  allResources: string[] | Error
 }
 
 export interface RulesState extends NormalizedState<NotificationRule> {

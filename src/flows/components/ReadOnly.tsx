@@ -9,6 +9,7 @@ import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsContext, ResultsProvider} from 'src/flows/context/results'
 import {SidebarProvider} from 'src/flows/context/sidebar'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 // Components
 import ReadOnlyPipeList from 'src/flows/components/ReadOnlyPipeList'
@@ -25,13 +26,14 @@ import {RemoteDataState} from 'src/types'
 const RunPipeResults: FC = () => {
   const {generateMap} = useContext(FlowQueryContext)
   const {setResult, setStatuses} = useContext(ResultsContext)
+  const {flow} = useContext(FlowContext)
   const {accessID} = useParams<{accessID}>()
 
-  const map = generateMap()
-    .filter(s => !!s?.visual)
-    .map(s => s.id)
-
   useEffect(() => {
+    const map = generateMap()
+      .filter(s => !!s?.visual)
+      .map(s => s.id)
+
     setStatuses(
       map.reduce((a, c) => {
         a[c] = RemoteDataState.Loading
@@ -47,7 +49,7 @@ const RunPipeResults: FC = () => {
           setStatuses({[id]: RemoteDataState.Done})
         })
     })
-  }, [accessID])
+  }, [flow])
 
   return null
 }

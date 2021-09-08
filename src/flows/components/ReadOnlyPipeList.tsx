@@ -19,7 +19,10 @@ import Pipe from 'src/flows/components/Pipe'
 import EmptyPipeList from 'src/flows/components/EmptyPipeList'
 import ClientList from 'src/flows/components/ClientList'
 
-import {Props} from 'src/flows/components/panel/FlowPanel'
+import {
+  Props,
+  DEFAULT_RESIZER_HEIGHT,
+} from 'src/flows/components/panel/FlowPanel'
 import {FlowPipeProps} from 'src/flows/components/FlowPipe'
 import {PipeContextProps} from 'src/types/flows'
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -94,7 +97,7 @@ const ExportButton: FC<ButtonProps> = ({id}) => {
   )
 }
 
-const FlowPanel: FC<Props> = ({id, children}) => {
+const FlowPanel: FC<Props> = ({id, children, resizes}) => {
   const {flow} = useContext(FlowContext)
   const {id: focused} = useContext(SidebarContext)
 
@@ -127,7 +130,18 @@ const FlowPanel: FC<Props> = ({id, children}) => {
           </div>
         )}
       </div>
-      {isVisible && <div className="flow-panel--body">{children}</div>}
+      {isVisible && (
+        <div
+          className="flow-panel--body"
+          style={
+            resizes
+              ? {height: flow.meta.byID[id]?.height ?? DEFAULT_RESIZER_HEIGHT}
+              : {}
+          }
+        >
+          {children}
+        </div>
+      )}
       <div className="flow-panel--footer">
         <div></div>
       </div>

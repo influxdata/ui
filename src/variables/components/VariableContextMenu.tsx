@@ -2,8 +2,13 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Context} from 'src/clockface'
-import {IconFont, ComponentColor} from '@influxdata/clockface'
+import {ButtonShape, Context} from 'src/clockface'
+import {
+  IconFont,
+  ComponentColor,
+  ConfirmationButton,
+  ComponentSize,
+} from '@influxdata/clockface'
 
 // Types
 import {Variable} from 'src/types'
@@ -29,18 +34,18 @@ export default class VariableContextMenu extends PureComponent<Props> {
             testID="context-rename-variable"
           />
         </Context.Menu>
-        <Context.Menu
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
           icon={IconFont.Trash_New}
-          color={ComponentColor.Danger}
-          testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={onDelete}
-            value={variable}
-            testID={`context-delete-variable ${variable.name}`}
-          />
-        </Context.Menu>
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, Delete this Variable"
+          onConfirm={() => {
+            onDelete(variable)
+          }}
+          confirmationButtonText="Confirm"
+          testID={`context-delete-menu ${variable.name}`}
+        />
       </Context>
     )
   }

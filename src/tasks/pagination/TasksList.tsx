@@ -57,15 +57,23 @@ interface State {
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 
-export default class TasksList extends PureComponent<Props, State> {
+interface Pageable {
+  currentPage: number
+  rowsPerPage: number
+  totalPages: number
+  paginate: (newPage: number) => void
+}
+
+export default class TasksList extends PureComponent<Props, State>
+  implements Pageable {
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
     getSortedResources
   )
 
   private paginationRef: RefObject<HTMLDivElement>
-  private currentPage: number = 1
-  private rowsPerPage: number = 10
-  private totalPages: number
+  public currentPage: number = 1
+  public rowsPerPage: number = 10
+  public totalPages: number
 
   constructor(props) {
     super(props)
@@ -123,7 +131,7 @@ export default class TasksList extends PureComponent<Props, State> {
     )
   }
 
-  private paginate = page => {
+  public paginate = page => {
     this.currentPage = page
     this.forceUpdate()
   }

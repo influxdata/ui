@@ -21,7 +21,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {PipeProp} from 'src/types/flows'
 
 const Downsample: FC<PipeProp> = ({Context}) => {
-  const {data, update} = useContext(PipeContext)
+  const {data} = useContext(PipeContext)
 
   return (
     <Context>
@@ -65,7 +65,6 @@ const Downsample: FC<PipeProp> = ({Context}) => {
               checked={data.aggregateWindow.fillValues}
               onChange={() => {}}
               color={ComponentColor.Primary}
-              status={ComponentStatus.Disabled}
               size={ComponentSize.ExtraSmall}
             />
             <FlexBox.Child grow={1}>

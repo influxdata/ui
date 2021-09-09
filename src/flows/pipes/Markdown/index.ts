@@ -9,7 +9,7 @@ export default register => {
     type: 'markdown',
     family: 'passThrough',
     component: MarkdownPanel,
-    readOnly: ReadOnly,
+    readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--markdown',
     button: 'Markdown',
     initial: () => ({

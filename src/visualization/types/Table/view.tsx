@@ -84,6 +84,7 @@ const TableGraphs: FC<Props> = ({properties, result}) => {
   })
   const filteredTables = tables.filter(t => t.name.includes(search))
 
+  const {timeZone} = useContext(AppSettingContext)
   if (isFlagEnabled('useGiraffeGraphs')) {
     const parsed = parseFromFluxResults(result)
     const fluxResponse = parsed.tableData.join('\n')
@@ -93,7 +94,7 @@ const TableGraphs: FC<Props> = ({properties, result}) => {
         {
           type: 'table',
           properties,
-          timeZone: 'Local',
+          timeZone: timeZone,
           tableTheme: theme,
         },
       ],

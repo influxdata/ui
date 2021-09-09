@@ -24,6 +24,12 @@ const EXAMPLE_FLOW = hydrate({
         visible: true,
       },
       {
+        type: 'schedule',
+        interval: '12h',
+        title: 'Schedule 1',
+        visible: true,
+      },
+      {
         type: 'rawFluxEditor',
         queries: [
           {

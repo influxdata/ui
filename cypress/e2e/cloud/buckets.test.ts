@@ -15,7 +15,7 @@ const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) =>
       )
     )
   )
-describe('Explicit Buckets', () => {
+describe('Explicit Buckets ', () => {
   beforeEach(() => {
     setupData(cy, true)
   })

@@ -99,7 +99,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     cy.getByTestID('task-card')
       .trigger('mouseover')
       .then(() => {
-        cy.getByTestID('context-cog-runs').click()
+        cy.getByTestID('context-menu-task').click()
         cy.getByTestID('context-edit-task').click()
       })
 
@@ -145,9 +145,10 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
   describe('When tasks already exist', () => {
     beforeEach(() => {
+      const TaskName = '🦄ask'
       cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.get<string>('@token').then(token => {
-          cy.createTask(token, id)
+          cy.createTask(token, id, TaskName)
         })
       })
       cy.reload()
@@ -204,14 +205,16 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     })
 
     it('can delete a task', () => {
+      const TaskName = '🦄ask'
+
       cy.getByTestID('task-card')
         .first()
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-delete-menu')
+          cy.getByTestID(`context-delete-menu ${TaskName}--button`)
             .click()
             .then(() => {
-              cy.getByTestID('context-delete-task')
+              cy.getByTestID(`context-delete-menu ${TaskName}--confirm-button`)
                 .click()
                 .then(() => {
                   cy.getByTestID('empty-tasks-list').should('exist')
@@ -230,9 +233,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
           cy.get('.context-menu--container')
             .eq(1)
             .click()
-          cy.getByTestID('context-menu-item')
-            .contains('Clone')
-            .click()
+          cy.getByTestID('context-clone-task').click()
         })
 
       cy.getByTestID('task-card--slide-toggle')
@@ -254,12 +255,10 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       cy.getByTestID('task-card')
         .trigger('mouseover')
         .then(() => {
-          cy.get('.context-menu--container')
+          cy.getByTestID('context-menu-task')
             .eq(1)
             .click()
-          cy.getByTestID('context-menu-item')
-            .contains('Clone')
-            .click()
+          cy.getByTestID('context-clone-task').click()
         })
 
       cy.getByTestID('task-card').should('have.length', 2)
@@ -273,7 +272,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .eq(1)
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-cog-runs')
+          cy.getByTestID('context-menu-task')
             .eq(1)
             .click()
           cy.getByTestID('context-edit-task')
@@ -444,7 +443,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       cy.getByTestID('task-card')
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-cog-runs').click()
+          cy.getByTestID('context-menu-task').click()
           cy.getByTestID('context-edit-task').click()
         })
       // verify that the previously input data exists
@@ -527,7 +526,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .eq(secondIndex)
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-cog-runs')
+          cy.getByTestID('context-menu-task')
             .eq(secondIndex)
             .click()
           cy.getByTestID('context-edit-task')
@@ -548,7 +547,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .eq(firstIndex)
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-cog-runs')
+          cy.getByTestID('context-menu-task')
             .eq(firstIndex)
             .click()
           cy.getByTestID('context-edit-task')
@@ -567,7 +566,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .eq(secondIndex)
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-cog-runs')
+          cy.getByTestID('context-menu-task')
             .eq(secondIndex)
             .click()
           cy.getByTestID('context-edit-task')
@@ -586,7 +585,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .eq(firstIndex)
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-cog-runs')
+          cy.getByTestID('context-menu-task')
             .eq(firstIndex)
             .click()
           cy.getByTestID('context-edit-task')
@@ -606,7 +605,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .eq(secondIndex)
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-cog-runs')
+          cy.getByTestID('context-menu-task')
             .eq(secondIndex)
             .click()
           cy.getByTestID('context-edit-task')
@@ -624,7 +623,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
         .eq(firstIndex)
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-cog-runs')
+          cy.getByTestID('context-menu-task')
             .eq(firstIndex)
             .click()
           cy.getByTestID('context-edit-task')

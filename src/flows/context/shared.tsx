@@ -17,6 +17,20 @@ const EXAMPLE_FLOW = hydrate({
     refresh: AUTOREFRESH_DEFAULT,
     pipes: [
       {
+        functions: [
+          {
+            name: 'mean',
+          },
+        ],
+        aggregateWindow: {
+          period: '12h',
+          fillValues: true,
+        },
+        type: 'downsample',
+        title: 'Downsample 1',
+        visible: true,
+      },
+      {
         type: 'toBucket',
         bucket: {
           type: 'user',

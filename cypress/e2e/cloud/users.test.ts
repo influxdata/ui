@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Users Page ', () => {
+describe('Users Page', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {

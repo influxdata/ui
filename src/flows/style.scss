@@ -369,6 +369,35 @@ $cf-radius-lg: $cf-radius + 4px;
   padding: $cf-marg-c;
 }
 
+.share-token--option {
+  h1 {
+    font-weight: $cf-font-weight--medium;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  h3 {
+    font-size: 12px;
+    margin: 2px 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.share-token--steps {
+  width: 220px;
+  margin: 0 12px 0 0;
+  font-size: 14px;
+  line-height: 1em;
+}
+
+.share-token--link {
+  margin: 0 12px 0 0;
+  font-size: 14px;
+  line-height: 1em;
+}
+
 .flow-header--buttons {
   display: inline-flex;
   flex: 0 0 auto;

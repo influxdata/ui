@@ -56,8 +56,8 @@ const FlowContainer: FC = () => (
   <AppWrapper>
     <FlowProvider>
       <ResultsProvider>
-        <RunPipeResults />
         <FlowQueryProvider>
+          <RunPipeResults />
           <SidebarProvider>
             <Page>
               <ReadOnlyHeader />

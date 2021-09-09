@@ -111,7 +111,7 @@ describe('Usage Page Free User No Data', () => {
   })
 })
 
-describe('Usage Page PAYG With Data', () => {
+describe('Usage Page PAYG With Data ', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {

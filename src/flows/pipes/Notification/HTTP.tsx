@@ -6,6 +6,8 @@ import {
   InputType,
   ComponentSize,
   SelectGroup,
+  FlexDirection,
+  AlignItems,
 } from '@influxdata/clockface'
 
 import {PipeContext} from 'src/flows/context/pipe'
@@ -83,7 +85,12 @@ const HTTP: FC = () => {
 
   return (
     <>
-      <FlexBox margin={ComponentSize.Medium}>
+      <FlexBox
+        margin={ComponentSize.Medium}
+        className="http-endpoint--flex"
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.Stretch}
+      >
         <FlexBox.Child grow={1} shrink={1}>
           <Form.Element label="Endpoint URL">
             <Input
@@ -97,7 +104,10 @@ const HTTP: FC = () => {
           </Form.Element>
         </FlexBox.Child>
         <FlexBox.Child grow={0} shrink={0}>
-          <Form.Element label="Authorization">
+          <Form.Element
+            label="Authorization"
+            className="form-element--authorization"
+          >
             <SelectGroup>
               <SelectGroup.Option
                 id="none"

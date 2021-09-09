@@ -1,4 +1,56 @@
 .flows-endpoints--dropdown {
-  max-width: 13%;
   background: #181820;
+}
+
+.cf-color-picker--swatches {
+  display: none !important;
+}
+
+.cf-color-picker--form > button {
+  display: none !important;
+}
+
+.cf-color-picker--form .cf-status-indicator {
+  display: none;
+}
+
+.cf-color-picker--input {
+  margin-right: 0px !important;
+}
+
+.cf-color-picker--selected {
+  top: 19px;
+}
+
+.cf-color-picker--form .cf-input-field {
+  height: 38px;
+  font-size: 14px;
+}
+
+.slack-endpoint-details--flex {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.form-element--authorization {
+  max-width: 41%;
+}
+
+.endpoint-details--element {
+  height: 100%;
+  .cf-form--label {
+    margin-bottom: 8px;
+  }
+}
+
+.http-endpoint--flex {
+  padding: 8px;
+}
+
+.endpoint-dropdown--element {
+  flex: 1;
+  max-width: 14%;
 }

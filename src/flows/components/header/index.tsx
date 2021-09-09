@@ -80,10 +80,28 @@ const FlowHeader: FC = () => {
 
   const generateLink = () => {
     setLinkLoading(RemoteDataState.Loading)
-    setTimeout(() => {
-      setLinkLoading(RemoteDataState.Done)
-      setLink(`${window.location.origin}/share/${'link'}`)
-    }, 500)
+    // TODO: once we have a generated func from swagger, use that
+    fetch(`/api/v2private/notebooks/share`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        notebookID: id,
+        orgID,
+        token: token.token,
+        region: window.location.hostname,
+        // ** use these for local dev **
+        // orgID: '[your org from prod]',
+        // token: '[your token form prod]',
+        // region: 'https://us-west-2-1.aws.cloud2.influxdata.com/'
+      }),
+    }).then(res =>
+      res.json().then(data => {
+        setLinkLoading(RemoteDataState.Done)
+        setLink(`${window.location.origin}/share/${data.accessID}`)
+      })
+    )
   }
 
   const printJSON = () => {

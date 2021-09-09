@@ -158,11 +158,11 @@ export class TaskCard extends PureComponent<
           icon={IconFont.Trash_New}
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
-          confirmationLabel={'Yes, Delete this task'}
+          confirmationLabel="Yes, Delete this task"
           onConfirm={() => {
             this.handleOnDelete(task)
           }}
-          confirmationButtonText={'Confirm'}
+          confirmationButtonText="Confirm"
           testID={`context-delete-menu ${task.name}`}
         />
         <SquareButton
@@ -170,7 +170,7 @@ export class TaskCard extends PureComponent<
           size={ComponentSize.ExtraSmall}
           icon={IconFont.CogSolid_New}
           color={ComponentColor.Colorless}
-          testID={'context-menu-task'}
+          testID="context-menu-task"
         />
         <Popover
           appearance={Appearance.Outline}
@@ -182,35 +182,35 @@ export class TaskCard extends PureComponent<
                 onClick={this.handleExport}
                 size={ComponentSize.Small}
                 style={{fontWeight: '500'}}
-                testID={'context-export-task'}
+                testID="context-export-task"
               >
-                {'Export'}
+                Export
               </List.Item>
               <List.Item
                 onClick={this.handleEditTask}
                 size={ComponentSize.Small}
                 style={{fontWeight: '500'}}
-                testID={'context-edit-task'}
+                testID="context-edit-task"
               >
-                {'Edit'}
+                Edit
               </List.Item>
               <List.Item
                 value={task.id}
                 onClick={this.handleRunTask}
                 size={ComponentSize.Small}
                 style={{fontWeight: '500'}}
-                testID={'context-run-task'}
+                testID="context-run-task"
               >
-                {'Run'}
+                Run
               </List.Item>
               <List.Item
                 value={task}
                 onClick={onClone}
                 size={ComponentSize.Small}
                 style={{fontWeight: '500'}}
-                testID={'context-clone-task'}
+                testID="context-clone-task"
               >
-                {'Clone'}
+                Clone
               </List.Item>
               {isFlagEnabled('pinnedItems') && CLOUD && (
                 <List.Item
@@ -218,9 +218,9 @@ export class TaskCard extends PureComponent<
                   disabled={isPinned}
                   size={ComponentSize.Small}
                   style={{fontWeight: '500'}}
-                  testID={'context-pin-task'}
+                  testID="context-pin-task"
                 >
-                  {'Pin'}
+                  Pin
                 </List.Item>
               )}
             </List>

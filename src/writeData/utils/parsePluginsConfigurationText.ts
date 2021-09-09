@@ -260,12 +260,28 @@ const fetch = path => {
 }
 
 const formatConfigurationText = configurationText => {
-  return (
-    configurationText
-      .split('\n')
-      .map(text => text.slice(1))
-      .join('\n') + '\n'
+  const configurationLines = configurationText.split('\n')
+  const isCommented = configurationLines.every(
+    line => line[0] === '#' || line === ''
   )
+
+  if (isCommented) {
+    return (
+      configurationLines
+        .map(text => {
+          let sliceCounter = 0
+          if (text[0] === '#') {
+            sliceCounter += 1
+          }
+          if (text[1] === ' ') {
+            sliceCounter += 1
+          }
+          return text.slice(sliceCounter)
+        })
+        .join('\n') + '\n'
+    )
+  }
+  return configurationText + '\n'
 }
 
 /*

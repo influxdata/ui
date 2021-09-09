@@ -85,9 +85,7 @@ export const queryUsage = async (orgID: string, range?: string) => {
       },
     })
     if (usage?.status === 200) {
-      console.warn(`Usage: ${usage}`)
       csvToParse = usage.data?.trim().replace(/\r\n/g, '\n')
-      console.warn(`CSVTOPARSE: ${csvToParse}`)
     } else {
       csvToParse = usageStatsCsv
     }

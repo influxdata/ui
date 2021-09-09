@@ -155,7 +155,11 @@ describe('Dashboards', () => {
   it('can import as JSON or file', () => {
     const checkImportedDashboard = () => {
       // wait for importing done
-      cy.wait(400)
+      cy.intercept('POST', '/api/v2/dashboards/*/cells').as('createCells')
+      // create cell 1
+      cy.wait('@createCells')
+      // create cell 2
+      cy.wait('@createCells')
       cy.getByTestID('dashboard-card--name')
         .should('contain', 'IMPORT dashboard')
         .click()

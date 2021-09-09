@@ -5,3 +5,5 @@ export const isSystemBucket = (bucketName: string): boolean => {
 }
 
 export const BUCKET_OVERLAY_WIDTH = 450
+
+export const BUCKET_NAME_MINIMUM_CHARACTERS = 1

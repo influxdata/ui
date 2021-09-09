@@ -30,7 +30,7 @@ describe('Checks', () => {
     )
   )
 
-  it('can validate a threshold check', () => {
+  it('can validate a threshold check ', () => {
     cy.log('Create threshold check')
     cy.getByTestID('create-check').click()
     cy.getByTestID('create-threshold-check').click()

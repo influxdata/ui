@@ -37,7 +37,12 @@
 }
 
 .form-element--authorization {
-  max-width: 41%;
+  width: 100%;
+  .cf-select-group {
+    display: flex;
+    justify-content: space-around;
+    width: 50%;
+  }
 }
 
 .endpoint-details--element {

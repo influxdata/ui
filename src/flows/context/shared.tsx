@@ -17,6 +17,13 @@ const EXAMPLE_FLOW = hydrate({
     refresh: AUTOREFRESH_DEFAULT,
     pipes: [
       {
+        text: '### beans',
+        mode: 'preview',
+        type: 'markdown',
+        title: 'Markdown 1',
+        visible: true,
+      },
+      {
         type: 'rawFluxEditor',
         queries: [
           {

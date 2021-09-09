@@ -10,7 +10,7 @@ import * as moment from 'moment'
 
 import {DEFAULT_TIME_FORMAT} from '../../../src/utils/datetime/constants'
 
-describe('Annotations, but in a different test suite ', () => {
+describe('Annotations, but in a different test suite', () => {
   beforeEach(() => setupData(cy))
 
   describe('administrative functions like the tests being on and off', () => {

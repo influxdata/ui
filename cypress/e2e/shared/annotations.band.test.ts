@@ -14,7 +14,7 @@ describe('The Annotations UI functionality on a band plot graph type', () => {
 
   beforeEach(() => setupData(cy, bandSuffix))
 
-  it('can create an annotation on the band plot ', () => {
+  it('can create an annotation on the band plot', () => {
     testAddAnnotation(cy)
   })
   it('can edit an annotation for the band plot', () => {

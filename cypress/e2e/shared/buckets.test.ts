@@ -14,7 +14,7 @@ describe('Buckets', () => {
     )
   )
 
-  describe('from the buckets index page', () => {
+  describe('from the buckets index page ', () => {
     it('can create a bucket', () => {
       const newBucket = '🅱️ucket'
       cy.getByTestID(`bucket--card--name ${newBucket}`).should('not.exist')

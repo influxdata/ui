@@ -9,6 +9,7 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import {
   MePage,
   TasksPage,
+  TasksPagePaginated,
   TaskPage,
   TaskRunsPage,
   TaskEditPage,
@@ -125,7 +126,11 @@ const SetOrg: FC = () => {
           <Route path={`${orgPath}/tasks/:id/runs`} component={TaskRunsPage} />
           <Route path={`${orgPath}/tasks/:id/edit`} component={TaskEditPage} />
           <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
-          <Route path={`${orgPath}/tasks`} component={TasksPage} />
+          {isFlagEnabled('paginatedTasks') ? (
+            <Route path={`${orgPath}/tasks`} component={TasksPagePaginated} />
+          ) : (
+            <Route path={`${orgPath}/tasks`} component={TasksPage} />
+          )}
 
           {/* Data Explorer */}
           <Route

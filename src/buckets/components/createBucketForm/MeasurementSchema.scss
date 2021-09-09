@@ -1,0 +1,45 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.schema-section {
+  &.measurement {
+    margin-top: 15px;
+  }
+
+  .header {
+    margin-bottom: 10px;
+
+    .subtext {
+      margin-top: 6px;
+      font-weight: 300;
+    }
+  }
+
+  .title-text {
+    color: $g14-chromium;
+    font-weight: 500;
+  }
+
+  .value-text {
+    color: $g20-white;
+    font-weight: 500;
+  }
+
+  .option {
+    margin-bottom: 6px !important;
+  }
+
+  .measurement-schema-panel-container {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+
+    .measurement-schema-panel {
+      width: 90%;
+
+      .schema-row {
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+  }
+}

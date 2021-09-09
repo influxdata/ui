@@ -17,6 +17,15 @@ const EXAMPLE_FLOW = hydrate({
     refresh: AUTOREFRESH_DEFAULT,
     pipes: [
       {
+        type: 'toBucket',
+        bucket: {
+          type: 'user',
+          name: 'frontendservices',
+        },
+        title: 'Output to Bucket 1',
+        visible: true,
+      },
+      {
         text: '### beans',
         mode: 'preview',
         type: 'markdown',

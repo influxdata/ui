@@ -1,4 +1,4 @@
-describe('Operator Page', () => {
+describe('Operator Page ', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {

@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Orgs', () => {
+describe('Orgs ', () => {
   beforeEach(() => cy.flush())
 
   describe('when there is a user with no orgs', () => {

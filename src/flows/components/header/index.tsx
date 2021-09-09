@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useState} from 'react'
+import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Contexts
@@ -12,24 +13,36 @@ import {
   SquareButton,
   IconFont,
   ComponentColor,
+  ComponentStatus,
+  Dropdown,
 } from '@influxdata/clockface'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
-import ShareButton from 'src/flows/components/header/ShareButton'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {DEFAULT_PROJECT_NAME} from 'src/flows'
 import {serialize} from 'src/flows/context/flow.list'
-import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
+import {getAuthorizations} from 'src/client/generatedRoutes'
+import {RemoteDataState} from 'src/types'
 
-const FULL_WIDTH = true
+interface Token {
+  token: string
+  description: string
+}
 
 const FlowHeader: FC = () => {
   const {flow, updateOther, id} = useContext(FlowContext)
   const {id: orgID} = useSelector(getOrg)
+  const [sharing, setSharing] = useState(false)
+  const [token, setToken] = useState<Token>()
+  const [loadingToken, setLoadingToken] = useState(RemoteDataState.NotStarted)
+  const [tokens, setTokens] = useState<Token[]>([])
+  const [link, setLink] = useState<string>()
+  const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
   const handleRename = (name: string) => {
     updateOther({name})
@@ -38,6 +51,39 @@ const FlowHeader: FC = () => {
     } catch (err) {
       console.error(err)
     }
+  }
+
+  const showShare = () => {
+    setSharing(true)
+    setLoadingToken(RemoteDataState.Loading)
+    getAuthorizations({query: {orgID}}).then(resp => {
+      if (resp.status !== 200) {
+        return
+      }
+
+      setLoadingToken(RemoteDataState.Done)
+      const _tokens = resp.data.authorizations.map(a => ({
+        token: a.token,
+        description: a.description || 'Describe this token',
+      }))
+
+      setTokens(_tokens)
+    })
+  }
+
+  const hideShare = () => {
+    setSharing(false)
+    setToken(null)
+    setLink('')
+    setLoadingToken(RemoteDataState.NotStarted)
+  }
+
+  const generateLink = () => {
+    setLinkLoading(RemoteDataState.Loading)
+    setTimeout(() => {
+      setLinkLoading(RemoteDataState.Done)
+      setLink(`${window.location.origin}/share/${'link'}`)
+    }, 500)
   }
 
   const printJSON = () => {
@@ -50,9 +96,40 @@ const FlowHeader: FC = () => {
     return null
   }
 
+  let tokenDropdownStatus = ComponentStatus.Disabled
+
+  if (loadingToken === RemoteDataState.Loading) {
+    tokenDropdownStatus = ComponentStatus.Loading
+  }
+  if (loadingToken === RemoteDataState.Done && tokens.length) {
+    tokenDropdownStatus = ComponentStatus.Default
+  }
+
+  let linkGenerationStatus = ComponentStatus.Disabled
+
+  if (linkLoading === RemoteDataState.Loading) {
+    linkGenerationStatus = ComponentStatus.Loading
+  } else if (!!token) {
+    linkGenerationStatus = ComponentStatus.Default
+  }
+
+  const tokenOptions = tokens.map(t => (
+    <Dropdown.Item
+      key={t.token}
+      value={t.token}
+      selected={t.token === token?.token}
+      title={t.description}
+      className="share-token--option"
+      onClick={() => setToken(t)}
+    >
+      <h1>{t.description}</h1>
+      <h3>{t.token}</h3>
+    </Dropdown.Item>
+  ))
+
   return (
     <>
-      <Page.Header fullWidth={FULL_WIDTH}>
+      <Page.Header fullWidth>
         <RenamablePageTitle
           onRename={handleRename}
           name={flow.name}
@@ -60,25 +137,93 @@ const FlowHeader: FC = () => {
           maxLength={50}
         />
       </Page.Header>
-      <Page.ControlBar fullWidth={FULL_WIDTH}>
-        <Page.ControlBarLeft>
-          <Submit />
-        </Page.ControlBarLeft>
-        <Page.ControlBarRight>
-          {isFlagEnabled('shareNotebook') ? <ShareButton /> : null}
-          <PresentationMode />
-          <TimeZoneDropdown />
-          <TimeRangeDropdown />
-          <FeatureFlag name="flow-snapshot">
-            <SquareButton
-              icon={IconFont.Export}
-              onClick={printJSON}
-              color={ComponentColor.Default}
-              titleText="Export Notebook"
+      {!sharing && (
+        <Page.ControlBar fullWidth>
+          <Page.ControlBarLeft>
+            <Submit />
+          </Page.ControlBarLeft>
+          <Page.ControlBarRight>
+            <PresentationMode />
+            <TimeZoneDropdown />
+            <TimeRangeDropdown />
+            <FeatureFlag name="shareNotebook">
+              <SquareButton
+                icon={IconFont.Share}
+                onClick={showShare}
+                color={ComponentColor.Default}
+                titleText="Share Notebook"
+              />
+            </FeatureFlag>
+            <FeatureFlag name="flow-snapshot">
+              <SquareButton
+                icon={IconFont.Export}
+                onClick={printJSON}
+                color={ComponentColor.Default}
+                titleText="Export Notebook"
+              />
+            </FeatureFlag>
+          </Page.ControlBarRight>
+        </Page.ControlBar>
+      )}
+      {!!sharing && !link && (
+        <Page.ControlBar fullWidth>
+          <Page.ControlBarRight>
+            <p className="share-token--steps">
+              Choose an{' '}
+              <Link to={`/orgs/${orgID}/load-data/tokens`}>API Token</Link>{' '}
+              scoped to the resources you want to share
+            </p>
+            <Dropdown
+              button={(active, onClick) => (
+                <Dropdown.Button
+                  onClick={onClick}
+                  active={active}
+                  status={tokenDropdownStatus}
+                >
+                  {token ? token.description : 'Select an API Token'}
+                </Dropdown.Button>
+              )}
+              menu={onCollapse => (
+                <Dropdown.Menu onCollapse={onCollapse}>
+                  {tokenOptions}
+                </Dropdown.Menu>
+              )}
+              style={{width: '250px', flex: '0 0 250px'}}
             />
-          </FeatureFlag>
-        </Page.ControlBarRight>
-      </Page.ControlBar>
+            <SquareButton
+              icon={IconFont.Checkmark}
+              onClick={generateLink}
+              color={ComponentColor.Success}
+              status={linkGenerationStatus}
+              titleText="Set Token"
+            />
+            <SquareButton
+              icon={IconFont.Remove}
+              onClick={hideShare}
+              color={ComponentColor.Danger}
+              titleText="Cancel"
+            />
+          </Page.ControlBarRight>
+        </Page.ControlBar>
+      )}
+      {!!sharing && !!link && (
+        <Page.ControlBar fullWidth>
+          <Page.ControlBarRight>
+            <p className="share-token--link">
+              Share with{' '}
+              <a href={link} target="_blank">
+                {link}
+              </a>
+            </p>
+            <SquareButton
+              icon={IconFont.Remove}
+              onClick={hideShare}
+              color={ComponentColor.Danger}
+              titleText="Cancel"
+            />
+          </Page.ControlBarRight>
+        </Page.ControlBar>
+      )}
     </>
   )
 }

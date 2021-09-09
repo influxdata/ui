@@ -187,8 +187,6 @@ export const FlowQueryProvider: FC = ({children}) => {
       return acc
     }, [])
 
-    debugger
-
     return stages
   }
 

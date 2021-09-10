@@ -304,7 +304,7 @@ export const FlowQueryProvider: FC = ({children}) => {
 
     Promise.all(
       map
-        .filter(q => !!q?.visual)
+        .filter(q => !!q?.visual && !!q?.source)
         .map(stage => {
           loading[stage.id] = RemoteDataState.Loading
           setLoading(loading)
@@ -356,7 +356,7 @@ export const FlowQueryProvider: FC = ({children}) => {
 
     Promise.all(
       map
-        .filter(q => !!q.visual)
+        .filter(q => !!q.visual && !!q.source)
         .map(stage => {
           loading[stage.id] = RemoteDataState.Loading
           setLoading(loading)

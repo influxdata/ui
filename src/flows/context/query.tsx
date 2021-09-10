@@ -457,6 +457,11 @@ export const QueryProvider: FC = ({children}) => {
     const controller = new AbortController()
 
     const id = UUID()
+
+    if (query === '') {
+      return {promise: Promise.resolve({type: 'SUCCESS', message: '', code: ''})}
+    }
+
     const promise = fetch(url, {
       method: 'POST',
       headers,

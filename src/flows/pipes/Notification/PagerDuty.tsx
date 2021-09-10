@@ -1,6 +1,13 @@
 import React, {FC, useContext} from 'react'
 import {useSelector} from 'react-redux'
-import {Form, Input, InputType, ComponentSize} from '@influxdata/clockface'
+import {
+  Form,
+  Input,
+  InputType,
+  ComponentSize,
+  FlexBox,
+  FlexDirection,
+} from '@influxdata/clockface'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {getOrg} from 'src/organizations/selectors'
@@ -29,7 +36,7 @@ const PagerDuty: FC = () => {
   const defaultEndpoint = `${window.location.origin}/org/${org.id}/alert-history`
 
   return (
-    <>
+    <FlexBox className="http-endpoint--flex" direction={FlexDirection.Column}>
       <Form.Element label="Client URL">
         <Input
           name="url"
@@ -49,7 +56,7 @@ const PagerDuty: FC = () => {
           size={ComponentSize.Medium}
         />
       </Form.Element>
-    </>
+    </FlexBox>
   )
 }
 

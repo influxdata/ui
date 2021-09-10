@@ -481,6 +481,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
               label="Check Every"
               required={true}
               errorMessage={intervalError}
+              style={{paddingBottom: '4px'}}
             >
               <Input
                 name="interval"
@@ -519,12 +520,22 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
           </FlexBox.Child>
         </FlexBox>
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
-          <Dropdown.Menu className="flows-endpoints--dropdown">
-            {avail}
-          </Dropdown.Menu>
+          <Form.Element
+            required={true}
+            label="Endpoint"
+            className="endpoint-dropdown--element"
+          >
+            <Dropdown.Menu className="flows-endpoints--dropdown">
+              {avail}
+            </Dropdown.Menu>
+          </Form.Element>
+
           <FlexBox.Child grow={1} shrink={1}>
-            {React.createElement(DEFAULT_ENDPOINTS[data.endpoint].view)}
+            <Form.Element label="Details" className="endpoint-details--element">
+              {React.createElement(DEFAULT_ENDPOINTS[data.endpoint].view)}
+            </Form.Element>
           </FlexBox.Child>
+
           <FlexBox.Child grow={2} shrink={1} style={{display: 'flex'}}>
             <Form.Element label="Message Format" required={true}>
               <TextArea

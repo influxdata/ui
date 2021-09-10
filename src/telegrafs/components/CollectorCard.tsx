@@ -116,7 +116,7 @@ class CollectorRow extends PureComponent<
         <Popover
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
-          style={{minWidth: '112px'}}
+          style={{minWidth: '80px'}}
           contents={() => (
             <List>
               <List.Item

@@ -138,6 +138,7 @@ const FluxEditorMonaco: FC<Props> = ({
             automaticLayout: true,
             readOnly: readOnly || false,
             wordWrap: wrapLines ?? 'off',
+            scrollBeyondLastLine: false,
           }}
           editorDidMount={editorDidMount}
         />

@@ -152,11 +152,14 @@ describe('Dashboards', () => {
     cy.getByTestID('empty-dashboards-list').should('exist')
   })
 
-  // TODO - fix failing test (fails only in circleci - cloud-e2e-firefox)
-  it.skip('can import as JSON or file', () => {
+  it('can import as JSON or file', () => {
     const checkImportedDashboard = () => {
       // wait for importing done
-      cy.wait(200)
+      cy.intercept('POST', '/api/v2/dashboards/*/cells').as('createCells')
+      // create cell 1
+      cy.wait('@createCells')
+      // create cell 2
+      cy.wait('@createCells')
       cy.getByTestID('dashboard-card--name')
         .should('contain', 'IMPORT dashboard')
         .click()
@@ -208,7 +211,7 @@ describe('Dashboards', () => {
       .click()
     cy.getByTestID('add-resource-dropdown--import').click()
 
-    cy.getByTestID('select-group--option')
+    cy.getByTestID('select-group')
       .contains('Paste')
       .click()
 

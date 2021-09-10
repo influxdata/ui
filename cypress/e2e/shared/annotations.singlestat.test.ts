@@ -14,7 +14,7 @@ describe('The Annotations UI functionality on a graph + single stat graph type',
 
   beforeEach(() => setupData(cy, singleStatSuffix))
 
-  it('can create an annotation on the single stat + line graph', () => {
+  it('can create an annotation on the single stat + line graph ', () => {
     testAddAnnotation(cy)
   })
   it('can edit an annotation for the single stat + line graph', () => {

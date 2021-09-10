@@ -104,7 +104,7 @@ class CollectorRow extends PureComponent<
           confirmationLabel="Yes, Delete this configuration"
           onConfirm={this.handleDeleteConfig}
           confirmationButtonText="Confirm"
-          testID={`context-delete-menu`}
+          testID="context-delete-menu"
         ></ConfirmationButton>
         <SquareButton
           ref={settingsRef}

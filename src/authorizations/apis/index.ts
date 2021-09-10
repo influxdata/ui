@@ -4,7 +4,6 @@ import {getAuthConnection} from 'src/client/unityRoutes'
 import {getOauthClientConfig} from 'src/client/cloudPrivRoutes'
 import {OAuthClientConfig} from 'src/client/cloudPrivRoutes'
 
-
 export const getAuth0Config = async (
   redirectTo?: string
 ): Promise<OAuthClientConfig> => {

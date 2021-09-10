@@ -7,7 +7,6 @@ import {getAPIBasepath} from 'src/utils/basepath'
 import {Authorization} from 'src/types'
 import {postAuthorization} from 'src/client'
 
-
 export const createAuthorization = async (
   authorization
 ): Promise<Authorization> => {
@@ -19,7 +18,7 @@ export const createAuthorization = async (
     if (resp.status !== 201) {
       throw new Error(resp.data.message)
     }
-    
+
     return resp.data
   } catch (error) {
     console.error(error)
@@ -45,7 +44,5 @@ setResponseHandler((status, headers, data) => {
 
   return {status, headers, data}
 })
-
-
 
 export * from './generatedRoutes'

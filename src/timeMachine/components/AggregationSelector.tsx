@@ -28,14 +28,13 @@ const AggregationSelector: FunctionComponent = () => {
         <FlexBox
           direction={FlexDirection.Column}
           alignItems={AlignItems.Stretch}
-          margin={ComponentSize.ExtraSmall}
           stretchToFitWidth={true}
         >
           <WindowPeriod />
           <FlexBox
             direction={FlexDirection.Row}
-            margin={ComponentSize.ExtraSmall}
             stretchToFitWidth
+            margin={ComponentSize.Small}
           >
             <FillValues />
           </FlexBox>

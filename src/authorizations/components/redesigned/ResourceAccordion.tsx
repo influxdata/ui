@@ -50,19 +50,21 @@ class ResourceAccordion extends Component<Props, State> {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (!props.telegrafPermissions) {
+    if (!props.telegrafPermissions || !props.bucketPermissions) {
       return null
     }
-    const perms = {}
+
+    const {permissions} = state
+    const perms = {...permissions}
+
     props.resources.map(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
       } else if (resource === 'buckets') {
         perms[resource] = props.bucketPermissions
-      } else {
-        perms[resource] = {read: false, write: false}
       }
     })
+
     return {
       ...state,
       permissions: perms,
@@ -123,16 +125,20 @@ class ResourceAccordion extends Component<Props, State> {
 
   handleToggleAll = (resourceName, permission) => {
     const {permissions} = this.state
+
     const newPerm = {...permissions}
+
     const name = resourceName.toLowerCase()
+    const newPermValue = !newPerm[name][permission]
+
     if (newPerm[name].sublevelPermissions) {
       Object.keys(newPerm[name].sublevelPermissions).map(key => {
         newPerm[name].sublevelPermissions[key].permissions[
           permission
-        ] = !newPerm[name][permission]
+        ] = newPermValue
       })
     }
-    newPerm[name][permission] = !newPerm[name][permission]
+    newPerm[name][permission] = newPermValue
 
     this.setState({
       permissions: newPerm,
@@ -142,10 +148,13 @@ class ResourceAccordion extends Component<Props, State> {
   handleIndividualToggle = (resourceName, id, permission) => {
     const {permissions} = this.state
 
-    const permValue = permissions[resourceName][id].permissions[permission]
+    const permValue =
+      permissions[resourceName].sublevelPermissions[id].permissions[permission]
 
     const newPerm = {...permissions}
-    newPerm[resourceName][id].permissions[permission] = !permValue
+    newPerm[resourceName].sublevelPermissions[id].permissions[
+      permission
+    ] = !permValue
 
     this.setState({
       permissions: newPerm,

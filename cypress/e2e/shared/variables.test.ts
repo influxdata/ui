@@ -14,7 +14,7 @@ describe('Variables', () => {
     )
   })
 
-  it('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {
+  it.only('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {
     // Navigate away from and back to variables index using the nav bar
     cy.clickNavBarItem('nav-item-dashboards')
     cy.clickNavBarItem('nav-item-settings')
@@ -118,12 +118,12 @@ describe('Variables', () => {
       .contains(variableName)
 
     // Delete a variable
-    cy.getByTestID('context-delete-menu')
+    cy.getByTestID(`context-delete-variable ${variableName}--button`)
       .first()
-      .click({force: true})
-    cy.getByTestID(`context-delete-variable ${variableName}`)
+      .click()
+    cy.getByTestID(`context-delete-variable ${variableName}--confirm-button`)
       .first()
-      .click({force: true})
+      .click()
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()

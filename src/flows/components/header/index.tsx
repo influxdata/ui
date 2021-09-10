@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC, useContext, useState, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -44,6 +44,17 @@ const FlowHeader: FC = () => {
   const [link, setLink] = useState<string>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
+  useEffect(() => {
+    fetch(`/api/v2private/notebooks/share?notebookID=${id}`).then(res =>
+      res.json().then(data => {
+        if (data) {
+          // TODO: handle there being multiple links
+          setLink(`${window.location.origin}/share/${data[0].accessID}`)
+        }
+      })
+    )
+  }, [id])
+
   const handleRename = (name: string) => {
     updateOther({name})
     try {
@@ -74,7 +85,6 @@ const FlowHeader: FC = () => {
   const hideShare = () => {
     setSharing(false)
     setToken(null)
-    setLink('')
     setLoadingToken(RemoteDataState.NotStarted)
   }
 

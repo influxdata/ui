@@ -3,7 +3,9 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
+  Alignment,
   Appearance,
+  ButtonShape,
   ComponentColor,
   ComponentSize,
   ComponentStatus,
@@ -11,8 +13,6 @@ import {
   IconFont,
   Table,
   VerticalAlignment,
-  ButtonShape,
-  Alignment,
 } from '@influxdata/clockface'
 import {CommunityTemplatesResourceSummary} from 'src/templates/components/CommunityTemplatesResourceSummary'
 import {CommunityTemplateReadMeOverlay} from 'src/templates/components/CommunityTemplateReadMeOverlay'
@@ -20,8 +20,8 @@ import {CommunityTemplateReadMeOverlay} from 'src/templates/components/Community
 // Redux
 import {notify} from 'src/shared/actions/notifications'
 import {
-  communityTemplateDeleteSucceeded,
   communityTemplateDeleteFailed,
+  communityTemplateDeleteSucceeded,
   communityTemplateFetchStackFailed,
 } from 'src/shared/copy/notifications'
 
@@ -184,7 +184,6 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
                         stack.name
                       )}
                       icon={IconFont.Trash_New}
-                      color={ComponentColor.Danger}
                       size={ComponentSize.Small}
                       status={ComponentStatus.Default}
                       shape={ButtonShape.Square}

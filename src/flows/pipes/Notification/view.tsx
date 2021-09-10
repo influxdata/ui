@@ -481,6 +481,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
               label="Check Every"
               required={true}
               errorMessage={intervalError}
+              style={{paddingBottom: '4px'}}
             >
               <Input
                 name="interval"

@@ -235,8 +235,15 @@ describe('Tasks.Containers.TasksPage', () => {
         taskCard.querySelector("[data-testid='task-card--name']").textContent
       ).toContain('Dead Beetle')
 
-      const deleteButton = taskCard.querySelector(
-        "[data-testid='context-delete-task']"
+      const cardName = taskCard.querySelector("[data-testid='task-card--name']")
+        .textContent
+      const deleteMenu = taskCard.querySelector(
+        `[data-testid='context-delete-menu ${cardName}--button']`
+      )
+      fireEvent.click(deleteMenu)
+
+      const deleteConfirmButton = taskCard.querySelector(
+        `[data-testid='context-delete-menu ${cardName}--confirm-button']`
       )
 
       const taskID = taskCard
@@ -248,7 +255,7 @@ describe('Tasks.Containers.TasksPage', () => {
       expect(ui.store.getState().resources.tasks.byID[taskID]).toBeTruthy()
       expect(ui.store.getState().resources.tasks.allIDs).toContain(taskID)
 
-      fireEvent.click(deleteButton)
+      fireEvent.click(deleteConfirmButton)
 
       await waitFor(() => expect(deleteTask).toBeCalled())
 
@@ -263,9 +270,15 @@ describe('Tasks.Containers.TasksPage', () => {
       )
 
       const taskCard = (await screen.findAllByTestId('task-card'))[0]
-      const cloneButton = taskCard.querySelector(
-        '[data-testid=context-menu] + div [data-testid=context-menu-item]'
+      const menuButton = taskCard.querySelector(
+        '[data-testid=context-menu-task]'
       )
+      fireEvent.click(menuButton)
+
+      const cloneButton = taskCard.querySelector(
+        '[data-testid=context-clone-task]'
+      )
+
       const name = taskCard.querySelector("[data-testid='task-card--name']")
         .textContent
       expect(name).toContain(InactiveTask.name)

@@ -207,6 +207,7 @@ export class TaskCard extends PureComponent<
                 value={task}
                 onClick={onClone}
                 size={ComponentSize.Small}
+                style={{fontWeight: 500}}
                 testID="context-clone-task"
               >
                 Clone

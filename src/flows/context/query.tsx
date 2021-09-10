@@ -459,7 +459,9 @@ export const QueryProvider: FC = ({children}) => {
     const id = UUID()
 
     if (query === '') {
-      return {promise: Promise.resolve({type: 'SUCCESS', message: '', code: ''})}
+      return {
+        promise: Promise.resolve({type: 'SUCCESS', message: '', code: ''}),
+      }
     }
 
     const promise = fetch(url, {

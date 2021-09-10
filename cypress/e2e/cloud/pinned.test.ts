@@ -166,7 +166,11 @@ from(bucket: "${name}"{rightarrow}
         .first()
         .trigger('mouseover')
         .then(() => {
+<<<<<<< HEAD
           cy.getByTestID('context-pin-menu').click({force: true})
+=======
+          cy.getByTestID('context-menu-task').click()
+>>>>>>> chore: Task clockface beta context menu (#2573)
           cy.getByTestID('context-pin-task').click()
         })
     })
@@ -208,10 +212,14 @@ from(bucket: "${name}"{rightarrow}
     it('unpins when the underlying resource is removed', () => {
       cy.getByTestID('task-card')
         .first()
-        .trigger('mouseover')
-        .within(() => {
-          cy.getByTestID('context-delete-menu').click()
-          cy.getByTestID('context-delete-task').click()
+        .then(() => {
+          cy.getByTestID(`context-delete-menu ${taskName}--button`)
+            .click()
+            .then(() => {
+              cy.getByTestID(
+                `context-delete-menu ${taskName}--confirm-button`
+              ).click()
+            })
         })
 
       cy.visit('/')

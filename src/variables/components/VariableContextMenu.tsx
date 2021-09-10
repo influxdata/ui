@@ -1,13 +1,18 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {createRef, PureComponent, RefObject} from 'react'
 
 // Components
-import {ButtonShape, Context} from 'src/clockface'
+import {ButtonShape} from 'src/clockface'
 import {
   IconFont,
   ComponentColor,
   ConfirmationButton,
   ComponentSize,
+  FlexBox,
+  SquareButton,
+  Popover,
+  Appearance,
+  List,
 } from '@influxdata/clockface'
 
 // Types
@@ -24,16 +29,9 @@ export default class VariableContextMenu extends PureComponent<Props> {
   public render() {
     const {variable, onExport, onRename, onDelete} = this.props
 
+    const settingsRef: RefObject<HTMLButtonElement> = createRef()
     return (
-      <Context>
-        <Context.Menu icon={IconFont.CogSolid_New}>
-          <Context.Item label="Export" action={onExport} />
-          <Context.Item
-            label="Rename"
-            action={onRename}
-            testID="context-rename-variable"
-          />
-        </Context.Menu>
+      <FlexBox margin={ComponentSize.ExtraSmall}>
         <ConfirmationButton
           color={ComponentColor.Colorless}
           icon={IconFont.Trash_New}
@@ -46,7 +44,40 @@ export default class VariableContextMenu extends PureComponent<Props> {
           confirmationButtonText="Confirm"
           testID={`context-delete-menu ${variable.name}`}
         />
-      </Context>
+        <SquareButton
+          ref={settingsRef}
+          size={ComponentSize.ExtraSmall}
+          icon={IconFont.CogSolid_New}
+          color={ComponentColor.Colorless}
+          testID="context-menu-variable"
+        />
+        <Popover
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          style={{minWidth: '112px'}}
+          contents={() => (
+            <List>
+              <List.Item
+                onClick={onExport}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-export-variable"
+              >
+                Export
+              </List.Item>
+              <List.Item
+                onClick={onRename}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-rename-variable"
+              >
+                Rename
+              </List.Item>
+            </List>
+          )}
+          triggerRef={settingsRef}
+        />
+      </FlexBox>
     )
   }
 }

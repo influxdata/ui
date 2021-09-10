@@ -184,9 +184,11 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
                         stack.name
                       )}
                       icon={IconFont.Trash_New}
-                      size={ComponentSize.Small}
+                      size={ComponentSize.Medium}
                       status={ComponentStatus.Default}
                       shape={ButtonShape.Square}
+                      color={ComponentColor.Colorless}
+                      style={{height: '40px'}}
                     />
                   </Table.Cell>
                 </Table.Row>

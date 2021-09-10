@@ -60,7 +60,7 @@ jest.mock('../../../../src/client', () => ({
     }
   }),
 }))
-jest.mock('src/authorizations/apis', () => ({
+jest.mock('src/client', () => ({
   createAuthorization: jest.fn(() => {
     return {
       ...auth2,

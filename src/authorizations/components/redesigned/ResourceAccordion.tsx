@@ -128,7 +128,7 @@ class ResourceAccordion extends Component<Props, State> {
 
     const newPerm = {...permissions}
 
-    const name = resourceName.toLowerCase()
+    const name = resourceName.charAt(0).toLowerCase() + resourceName.slice(1)
     const newPermValue = !newPerm[name][permission]
 
     if (newPerm[name].sublevelPermissions) {

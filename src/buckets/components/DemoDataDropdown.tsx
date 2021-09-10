@@ -91,6 +91,7 @@ const DemoDataDropdown: FC<Props> = ({
           icon={IconFont.Plus_New}
           color={ComponentColor.Secondary}
           testID="dropdown-button--demodata"
+          style={{textTransform: 'uppercase', letterSpacing: '0.07em'}}
         >
           Add Demo Data
         </Dropdown.Button>

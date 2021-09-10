@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Context, Alignment, ComponentSize} from 'src/clockface'
+import {ComponentSize} from 'src/clockface'
 
 import {
   ButtonShape,
@@ -24,9 +24,7 @@ export default class BucketContextMenu extends PureComponent<Props> {
   public render() {
     return (
       <>
-        <Context align={Alignment.Center}>
-          <FlexBox margin={ComponentSize.Small}>{this.deleteButton}</FlexBox>
-        </Context>
+        <FlexBox margin={ComponentSize.Small}>{this.deleteButton}</FlexBox>
       </>
     )
   }

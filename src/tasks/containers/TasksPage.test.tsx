@@ -242,10 +242,6 @@ describe('Tasks.Containers.TasksPage', () => {
       )
       fireEvent.click(deleteMenu)
 
-      const deleteConfirmButton = taskCard.querySelector(
-        `[data-testid='context-delete-menu ${cardName}--confirm-button']`
-      )
-
       const taskID = taskCard
         .querySelector("[class='copy-resource-id']")
         .textContent.split(':')[1]
@@ -255,7 +251,7 @@ describe('Tasks.Containers.TasksPage', () => {
       expect(ui.store.getState().resources.tasks.byID[taskID]).toBeTruthy()
       expect(ui.store.getState().resources.tasks.allIDs).toContain(taskID)
 
-      fireEvent.click(deleteConfirmButton)
+      fireEvent.click(screen.getByText('Confirm'))
 
       await waitFor(() => expect(deleteTask).toBeCalled())
 
@@ -274,16 +270,11 @@ describe('Tasks.Containers.TasksPage', () => {
         '[data-testid=context-menu-task]'
       )
       fireEvent.click(menuButton)
-
-      const cloneButton = taskCard.querySelector(
-        '[data-testid=context-clone-task]'
-      )
+      fireEvent.click(screen.getByText('Clone'))
 
       const name = taskCard.querySelector("[data-testid='task-card--name']")
         .textContent
       expect(name).toContain(InactiveTask.name)
-
-      fireEvent.click(cloneButton)
 
       await waitFor(() => expect(postTask).toBeCalled())
 

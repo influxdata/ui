@@ -6,7 +6,8 @@ import SelectCollectorsStep from 'src/dataLoaders/components/collectorsWizard/se
 import SelectCollectorsStep2 from 'src/dataLoaders/components/collectorsWizard/select/SelectCollectorsStep2'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import PluginConfigSwitcher from 'src/dataLoaders/components/collectorsWizard/configure/PluginConfigSwitcher'
-import {PluginCreateConfigurationCustomize} from 'src/writeData/components/PluginCreateConfigurationCustomize'
+import PluginCreateConfigurationWizard from 'src/dataLoaders/components/collectorsWizard/verify/PluginConfigSwitcher'
+
 import VerifyCollectorsStep from 'src/dataLoaders/components/collectorsWizard/verify/VerifyCollectorsStep'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
@@ -32,7 +33,7 @@ class StepSwitcher extends PureComponent<Props> {
     }
 
     if (isFlagEnabled('telegrafUiRefresh')) {
-      configure = <PluginCreateConfigurationCustomize {...stepProps} />
+      configure = <PluginCreateConfigurationWizard />
     } else {
       configure = <PluginConfigSwitcher />
     }

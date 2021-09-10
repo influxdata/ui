@@ -1,5 +1,5 @@
 $builder-card--margin: $ix-marg-b;
-$builder-card--header-height: 30px;
+$builder-card--header-height: $cf-space-l;
 $builder-card--header-margin: $ix-marg-b + $ix-border;
 
 .builder-card--list {
@@ -39,10 +39,6 @@ $builder-card--header-margin: $ix-marg-b + $ix-border;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  &.aggregation-selector-header {
-    flex: 0 0 25px;
-  }
 }
 
 .builder-card--title {
@@ -148,7 +144,7 @@ $builder-card--header-margin: $ix-marg-b + $ix-border;
   border-bottom: $ix-border solid $g5-pepper;
   padding: $ix-marg-b;
   &.aggregation-selector-menu {
-    padding: 2px;
+    padding: $cf-space-xs $cf-space-2xs;
   }
 }
 
@@ -157,7 +153,7 @@ $builder-card--header-margin: $ix-marg-b + $ix-border;
   overflow: hidden;
   &.aggregation-selector-body {
     flex: unset;
-    padding: 2px;
+    padding: $cf-space-xs $cf-space-2xs $cf-space-m $cf-space-2xs;
     overflow: visible;
   }
 }
@@ -195,6 +191,7 @@ $builder-card--header-margin: $ix-marg-b + $ix-border;
 .duration-input {
   position: relative;
   width: 100%;
+  margin-bottom: $cf-space-xs;
 }
 
 .duration-input--menu {

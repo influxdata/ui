@@ -91,7 +91,7 @@ const Threshold: FC = () => {
   const {data, update, results} = useContext(PipeContext)
 
   const fields = Array.from(
-    new Set(results.parsed.table.columns['_field'].data as string[])
+    new Set(results.parsed.table.columns['_field']?.data as string[])
   )
 
   const thresholds = useMemo(() => data?.thresholds ?? [], [data?.thresholds])

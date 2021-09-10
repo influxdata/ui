@@ -176,6 +176,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     )
   }
 
+  console.log(results.parsed)
   return (
     <Context
       controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}

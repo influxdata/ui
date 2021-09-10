@@ -15,6 +15,7 @@ import {
   EDIT_AUTH,
   REMOVE_AUTH,
   SET_CURRENT_AUTH,
+  SET_ALL_RESOURCES,
 } from 'src/authorizations/actions/creators'
 
 // Utils
@@ -33,6 +34,7 @@ const initialState = (): AuthsState => ({
   byID: {},
   allIDs: [],
   currentAuth: {status: RemoteDataState.NotStarted, item: {}},
+  allResources: [],
 })
 
 export const authsReducer = (
@@ -74,6 +76,13 @@ export const authsReducer = (
         } else {
           draftState.currentAuth.item = {}
         }
+
+        return
+      }
+
+      case SET_ALL_RESOURCES: {
+        const {list} = action
+        draftState.allResources = list
 
         return
       }

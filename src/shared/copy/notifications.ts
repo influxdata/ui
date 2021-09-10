@@ -1434,3 +1434,8 @@ export const testNotificationFailure = (
   ...defaultErrorNotification,
   message: `Failed to send the test alert to ${source}. Please try again`,
 })
+
+export const getResourcesTokensFailure = (): Notification => ({
+  ...defaultErrorNotification,
+  message: 'Failed to fetch all resources for creating custom api token',
+})

@@ -7,7 +7,7 @@ import {AuthorizationUpdateRequest as AuthApi} from '@influxdata/influx'
 
 import {mocked} from 'ts-jest/utils'
 
-import {createAuthorization} from 'src/authorizations/apis'
+import {createAuthorization} from 'src/client'
 import TokensTab from './TokensTab'
 
 import {deleteAuthorization} from '../../../../src/client'

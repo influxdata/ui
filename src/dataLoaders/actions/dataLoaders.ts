@@ -5,7 +5,7 @@ import {normalize} from 'normalizr'
 // APIs
 import {client} from 'src/utils/api'
 import {ScraperTargetRequest, PermissionResource} from '@influxdata/influx'
-import {createAuthorization} from 'src/authorizations/apis'
+import {createAuthorization} from 'src/client'
 
 // Schemas
 import {authSchema} from 'src/schemas'

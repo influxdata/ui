@@ -3,7 +3,6 @@ import {normalize} from 'normalizr'
 import {Dispatch} from 'react'
 
 // API
-import * as authAPI from 'src/authorizations/apis'
 import * as api from 'src/client'
 
 // Schemas
@@ -102,7 +101,7 @@ export const createAuthorization = (auth: Authorization) => async (
   dispatch: Dispatch<Action | NotificationAction>
 ) => {
   try {
-    const resp = await authAPI.createAuthorization(auth)
+    const resp = await api.createAuthorization(auth)
 
     const newAuth = normalize<Authorization, AuthEntities, string>(
       resp,

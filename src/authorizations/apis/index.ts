@@ -1,27 +1,9 @@
-import {Authorization} from 'src/types'
-import {postAuthorization} from 'src/client'
+// import {Authorization} from 'src/types'
+// import {postAuthorization} from 'src/client'
 import {getAuthConnection} from 'src/client/unityRoutes'
 import {getOauthClientConfig} from 'src/client/cloudPrivRoutes'
 import {OAuthClientConfig} from 'src/client/cloudPrivRoutes'
 
-export const createAuthorization = async (
-  authorization
-): Promise<Authorization> => {
-  try {
-    const resp = await postAuthorization({
-      data: authorization,
-    })
-
-    if (resp.status !== 201) {
-      throw new Error(resp.data.message)
-    }
-
-    return resp.data
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-}
 
 export const getAuth0Config = async (
   redirectTo?: string

@@ -9,8 +9,7 @@ import {
   ComponentColor,
   IconFont,
   FlexBox,
-  AlignItems,
-  FlexDirection,
+  ConfirmationButton,
 } from '@influxdata/clockface'
 
 // Types
@@ -26,13 +25,7 @@ export default class BucketContextMenu extends PureComponent<Props> {
     return (
       <>
         <Context align={Alignment.Center}>
-          <FlexBox
-            alignItems={AlignItems.Center}
-            direction={FlexDirection.Row}
-            margin={ComponentSize.Small}
-          >
-            {this.deleteButton}
-          </FlexBox>
+          <FlexBox margin={ComponentSize.Small}>{this.deleteButton}</FlexBox>
         </Context>
       </>
     )
@@ -42,20 +35,18 @@ export default class BucketContextMenu extends PureComponent<Props> {
     const {bucket, onDeleteBucket} = this.props
     if (bucket.type === 'user') {
       return (
-        <Context.Menu
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-          shape={ButtonShape.Default}
-          text="Delete Bucket"
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, Delete this bucket"
+          onConfirm={() => {
+            onDeleteBucket(bucket)
+          }}
+          confirmationButtonText="Confirm"
           testID={`context-delete-menu ${bucket.name}`}
-        >
-          <Context.Item
-            label="Confirm"
-            action={onDeleteBucket}
-            value={bucket}
-            testID={`context-delete-bucket ${bucket.name}`}
-          />
-        </Context.Menu>
+        ></ConfirmationButton>
       )
     } else {
       return null

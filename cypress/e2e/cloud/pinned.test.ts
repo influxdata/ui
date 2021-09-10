@@ -208,10 +208,14 @@ from(bucket: "${name}"{rightarrow}
     it('unpins when the underlying resource is removed', () => {
       cy.getByTestID('task-card')
         .first()
-        .trigger('mouseover')
-        .within(() => {
-          cy.getByTestID('context-delete-menu').click()
-          cy.getByTestID('context-delete-task').click()
+        .then(() => {
+          cy.getByTestID(`context-delete-menu ${taskName}--button`)
+            .click()
+            .then(() => {
+              cy.getByTestID(
+                `context-delete-menu ${taskName}--confirm-button`
+              ).click()
+            })
         })
 
       cy.visit('/')

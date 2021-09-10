@@ -42,7 +42,7 @@ export default class VariableContextMenu extends PureComponent<Props> {
             onDelete(variable)
           }}
           confirmationButtonText="Confirm"
-          testID={`context-delete-menu ${variable.name}`}
+          testID={`context-delete-variable ${variable.name}`}
         />
         <SquareButton
           ref={settingsRef}

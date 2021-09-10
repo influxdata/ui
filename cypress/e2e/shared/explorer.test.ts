@@ -877,7 +877,7 @@ describe('DataExplorer', () => {
               .first()
               .trigger('mouseover')
               .then(() => {
-                cy.getByTestID('context-cog-runs').click()
+                cy.getByTestID('context-menu-task').click()
                 cy.getByTestID('context-edit-task').click()
               })
 

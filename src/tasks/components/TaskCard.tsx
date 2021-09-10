@@ -181,7 +181,7 @@ export class TaskCard extends PureComponent<
               <List.Item
                 onClick={this.handleExport}
                 size={ComponentSize.Small}
-                style={{fontWeight: '500'}}
+                style={{fontWeight: 500}}
                 testID="context-export-task"
               >
                 Export
@@ -189,7 +189,7 @@ export class TaskCard extends PureComponent<
               <List.Item
                 onClick={this.handleEditTask}
                 size={ComponentSize.Small}
-                style={{fontWeight: '500'}}
+                style={{fontWeight: 500}}
                 testID="context-edit-task"
               >
                 Edit
@@ -198,7 +198,7 @@ export class TaskCard extends PureComponent<
                 value={task.id}
                 onClick={this.handleRunTask}
                 size={ComponentSize.Small}
-                style={{fontWeight: '500'}}
+                style={{fontWeight: 500}}
                 testID="context-run-task"
               >
                 Run
@@ -207,7 +207,6 @@ export class TaskCard extends PureComponent<
                 value={task}
                 onClick={onClone}
                 size={ComponentSize.Small}
-                style={{fontWeight: '500'}}
                 testID="context-clone-task"
               >
                 Clone
@@ -217,7 +216,7 @@ export class TaskCard extends PureComponent<
                   onClick={this.handlePinTask}
                   disabled={isPinned}
                   size={ComponentSize.Small}
-                  style={{fontWeight: '500'}}
+                  style={{fontWeight: 500}}
                   testID="context-pin-task"
                 >
                   Pin

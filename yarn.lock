@@ -848,10 +848,12 @@
     "@docsearch/css" "3.0.0-alpha.37"
     algoliasearch "^4.0.0"
 
+
 "@influxdata/clockface@^3.0.0-beta.7":
   version "3.0.0-beta.7"
   resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.0.0-beta.7.tgz#6638e1fa5d6a18faf66fbaeaccb5c5fb8eab0c9c"
   integrity sha512-UhIewGaJoWTJG57AgfBE++U1Wctzjhf2jBmnf7RI0gF6nc5RwJ9AxS+SAXkCnmRf3gHT5DGqUoEPXkRxyd+OaQ==
+
 
 "@influxdata/flux-lsp-browser@^0.5.53":
   version "0.5.53"
@@ -863,10 +865,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.18.0":
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.18.0.tgz#8331263e8df5e85398fb07efbc440abe95bd6c4e"
-  integrity sha512-Myoufl+zleN5gzR6y5tiDzfo88rq5xjzI43zUX3Eq+wfJR55HJnBBW5hm3rd1i7JI3Xsk4rFozutVSgvXz/tGQ==
+"@influxdata/giraffe@^2.18.3":
+  version "2.18.3"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.18.3.tgz#3c272806c2dec061acfc49879de009214aab744a"
+  integrity sha512-ru1ITSK317HVAhX2OnzDAePOfB2Uz+16T0YxX5y+mX4BjPfk5xiaGJFAUW+TabnRNIE+K9XQchwv+9yFPSa9XQ==
   dependencies:
     merge-images "^2.0.0"
 

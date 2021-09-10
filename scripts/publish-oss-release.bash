@@ -14,7 +14,7 @@
 yarn install && yarn build
 mkdir -p release
 tar -czvf release/build.tar.gz ./build
-cd release && shasum -a 256 build.tar.gz >> sha256.txt && cd ../
+cd release && shasum -a 256 build.tar.gz > sha256.txt && cd ../
 ghr \
   -t ${GITHUB_TOKEN} \
   -u influxdata \

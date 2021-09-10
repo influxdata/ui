@@ -412,7 +412,9 @@ describe('the variables ui functionality', () => {
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
-        const confirmButton = getByTestId('context-delete-variable values--confirm-button')
+        const confirmButton = getByTestId(
+          'context-delete-variable values--confirm-button'
+        )
         fireEvent.click(confirmButton)
       })
 
@@ -427,7 +429,9 @@ describe('the variables ui functionality', () => {
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
-        const confirmButton = getByTestId('context-delete-variable csv_test_variable--confirm-button')
+        const confirmButton = getByTestId(
+          'context-delete-variable csv_test_variable--confirm-button'
+        )
         fireEvent.click(confirmButton)
       })
 
@@ -436,11 +440,15 @@ describe('the variables ui functionality', () => {
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
     it('can delete a Query variable', async () => {
-      const deleteButton = getByTestId('context-delete-variable base_query--button')
+      const deleteButton = getByTestId(
+        'context-delete-variable base_query--button'
+      )
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
-        const confirmButton = getByTestId('context-delete-variable base_query--confirm-button')
+        const confirmButton = getByTestId(
+          'context-delete-variable base_query--confirm-button'
+        )
         fireEvent.click(confirmButton)
       })
 

@@ -166,7 +166,7 @@ from(bucket: "${name}"{rightarrow}
         .first()
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-menu-task').click()
           cy.getByTestID('context-pin-task').click()
         })
     })

@@ -34,6 +34,11 @@ interface Token {
   description: string
 }
 
+interface Share {
+  id: string
+  accessID: string
+}
+
 const FlowHeader: FC = () => {
   const {flow, updateOther, id} = useContext(FlowContext)
   const {id: orgID} = useSelector(getOrg)
@@ -41,15 +46,15 @@ const FlowHeader: FC = () => {
   const [token, setToken] = useState<Token>()
   const [loadingToken, setLoadingToken] = useState(RemoteDataState.NotStarted)
   const [tokens, setTokens] = useState<Token[]>([])
-  const [link, setLink] = useState<string>()
+  const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
     fetch(`/api/v2private/notebooks/share?notebookID=${id}`).then(res =>
       res.json().then(data => {
         if (data) {
-          // TODO: handle there being multiple links
-          setLink(`${window.location.origin}/share/${data[0].accessID}`)
+          // TODO: handle there being multiple links?
+          setShare({id: data[0].id, accessID: data[0].accessID})
         }
       })
     )
@@ -88,6 +93,13 @@ const FlowHeader: FC = () => {
     setLoadingToken(RemoteDataState.NotStarted)
   }
 
+  const deleteShare = () => {
+    hideShare()
+    fetch(`/api/v2private/notebooks/share/${share.id}`, {
+      method: 'DELETE',
+    }).catch(() => console.error('failed to delete share')) // TODO send a notification
+  }
+
   const generateLink = () => {
     setLinkLoading(RemoteDataState.Loading)
     // TODO: once we have a generated func from swagger, use that
@@ -109,7 +121,7 @@ const FlowHeader: FC = () => {
     }).then(res =>
       res.json().then(data => {
         setLinkLoading(RemoteDataState.Done)
-        setLink(`${window.location.origin}/share/${data.accessID}`)
+        setShare({id: data.id, accessID: data.accessID})
       })
     )
   }
@@ -193,7 +205,7 @@ const FlowHeader: FC = () => {
           </Page.ControlBarRight>
         </Page.ControlBar>
       )}
-      {!!sharing && !link && (
+      {!!sharing && !share && (
         <Page.ControlBar fullWidth>
           <Page.ControlBarRight>
             <p className="share-token--steps">
@@ -234,19 +246,28 @@ const FlowHeader: FC = () => {
           </Page.ControlBarRight>
         </Page.ControlBar>
       )}
-      {!!sharing && !!link && (
+      {!!sharing && !!share && (
         <Page.ControlBar fullWidth>
           <Page.ControlBarRight>
             <p className="share-token--link">
               Share with{' '}
-              <a href={link} target="_blank">
-                {link}
+              <a
+                href={`${window.location.origin}/share/${share.accessID}`}
+                target="_blank"
+              >
+                {`${window.location.origin}/share/${share.accessID}`}
               </a>
             </p>
             <SquareButton
+              icon={IconFont.Trash}
+              onClick={deleteShare}
+              color={ComponentColor.Danger}
+              titleText="Delete"
+            />
+            <SquareButton
               icon={IconFont.Remove}
               onClick={hideShare}
-              color={ComponentColor.Danger}
+              color={ComponentColor.Default}
               titleText="Cancel"
             />
           </Page.ControlBarRight>

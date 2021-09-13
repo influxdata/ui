@@ -182,7 +182,10 @@ const Sidebar: FC = () => {
               return true
             }
 
-            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
+            if (
+              !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family) &&
+              flow.data.byID[id].type !== 'visualization'
+            ) {
               return true
             }
 

@@ -28,6 +28,9 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 import 'src/flows/shared/Resizer.scss'
 
 export interface Props extends PipeContextProps {
@@ -191,7 +194,7 @@ const FlowPanel: FC<Props> = ({
               dragging={isDragging === 2}
             />
           )}
-          {isVisible && (
+          {isVisible && isFlagEnabled('notebooksPreviewFromHere') && (
             <Button
               className="flow-footer--preview"
               onClick={() => queryDependents(id)}

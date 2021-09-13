@@ -184,7 +184,7 @@ const Sidebar: FC = () => {
 
             if (
               !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family) &&
-              flow.data.byID[id].type !== 'visualization'
+              type !== 'visualization'
             ) {
               return true
             }
@@ -197,12 +197,12 @@ const Sidebar: FC = () => {
 
             event('Convert Cell To Flux', {from: type})
 
-            const {source} = getPanelQueries(id, true)
+            const {source, visual} = getPanelQueries(id, true)
 
             const init = JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
             )
-            init.queries[0].text = source
+            init.queries[0].text = type === 'visualization' ? visual : source
             init.title = title
             init.type = 'rawFluxEditor'
 

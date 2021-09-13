@@ -42,15 +42,26 @@ export default register => {
         }
       )
 
-      if (mods.renamed.length) {
-        query += `\n |> rename(columns: {${mods.renamed.join(', ')}})`
-      }
+      const splitQuery = query.split('|>')
 
-      if (mods.dropped.length) {
-        query += `\n |> drop(columns: [${mods.dropped.join(', ')}])`
-      }
+      let queryString = splitQuery[0]
 
-      return query
+      splitQuery.slice(1).map(q => {
+        if (q.indexOf('yield') === -1) {
+          queryString += `|>${q}`
+        } else {
+          if (mods.renamed.length) {
+            queryString += `|> rename(columns: {${mods.renamed.join(', ')}})\n`
+          }
+
+          if (mods.dropped.length) {
+            queryString += `|> drop(columns: [${mods.dropped.join(', ')}])\n`
+          }
+          queryString += `|> ${q}`
+        }
+      })
+
+      return queryString
     },
   })
 }

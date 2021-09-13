@@ -2,6 +2,9 @@
 import React, {PureComponent, RefObject, createRef} from 'react'
 import memoizeOne from 'memoize-one'
 
+// Styles
+import 'src/tasks/pagination/tasksPagination.scss'
+
 // Components
 import {ResourceList} from '@influxdata/clockface'
 import TaskCard from 'src/tasks/components/TaskCard'

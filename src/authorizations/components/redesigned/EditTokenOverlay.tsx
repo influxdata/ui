@@ -72,27 +72,79 @@ const EditTokenOverlay: FC<Props> = props => {
 
     const newPerms = {}
     permissions.map(perm => {
-      const p = {
-        read: perm.action === 'read',
-        write: perm.action === 'write',
-        // todo: add only for telegrafs and buckets
-        subLevelPermissions: {},
-      }
 
-      if (perm.resource.id) {
-        p.subLevelPermissions[perm.resource.id] = {
-          id: perm.resource.id,
-          orgID: perm.resource.orgID,
-          name: perm.resource.name,
-          permissions: {
-            read: perm.action === 'read',
-            write: perm.action === 'write',
-          },
+      let p 
+      if(perm.resource.type === 'buckets') {
+        if((newPerms.hasOwnProperty(perm.resource.type))){
+          p = {...newPerms[perm.resource.type]}
+          if(perm.resource.id) {
+            if(p.subLevelPermissions.hasOwnProperty(perm.resource.id)) {
+              p.subLevelPermissions[perm.resource.id].permissions[perm.action] = true
+            }
+            else {
+            p.subLevelPermissions[perm.resource.id] = {
+              id: perm.resource.id,
+              orgID: perm.resource.orgID,
+              name: perm.resource.name,
+              permissions: {
+                read: perm.action === 'read',
+                write: perm.action === 'write',
+              },
+            }
+          }
+          }
         }
+        else {
+          if(perm.resource.id){
+            p = {
+              read: false,
+              write: false,
+              subLevelPermissions: {
+                [perm.resource.id]: {
+                  id: perm.resource.id,
+                  orgID: perm.resource.orgID,
+                  name: perm.resource.name,
+                  permissions: {
+                    read: perm.action === 'read',
+                    write: perm.action === 'write',
+                  },
+                }
+              }
+            }
+          }
+          else {
+            p = {
+              read: perm.action === "read",
+              write: perm.action === "write"
+            }
+          }
       }
 
       newPerms[perm.resource.type] = p
     })
+
+    Object.keys(newPerms).map(resource => {
+      const p = {...newPerms[resource]}
+
+      p.read = !Object.keys(
+        p.subLevelPermissions
+      ).some(
+        key =>
+          p.subLevelPermissions[key].permissions.read ===
+          false
+      )
+
+      p.write = !Object.keys(
+        p.subLevelPermissions
+      ).some(
+        key =>
+          p.subLevelPermissions[key].permissions.write ===
+          false
+      )
+
+      newPerms[resource] = p
+    })
+
     console.log('NEw PERMISSIONS: ', newPerms)
   }
 

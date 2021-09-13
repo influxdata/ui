@@ -122,6 +122,7 @@ export default class TasksList extends PureComponent<Props, State>
         </ResourceList>
         <PaginationNav.PaginationNav
           ref={this.paginationRef}
+          style={{width: this.props.pageWidth}}
           totalPages={this.totalPages}
           currentPage={this.currentPage}
           pageRangeOffset={1}

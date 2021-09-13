@@ -97,7 +97,7 @@ $panel-resizer--drag-handle: 30px;
 .panel-resizer--error,
 .panel-resizer--empty {
   color: $g15-platinum;
-  user-select: none;
+  user-select: text;
   padding: $cf-marg-b 0;
   font-weight: $cf-font-weight--medium;
   height: 30px;

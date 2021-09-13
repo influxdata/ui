@@ -64,6 +64,41 @@ const EditTokenOverlay: FC<Props> = props => {
     handleDismiss()
   }
   console.log(props.auth)
+
+  const formatPermissionsObj = () => {
+    const {
+      auth: {permissions},
+    } = props
+
+    const newPerms = {}
+    permissions.map(perm => {
+      const p = {
+        read: perm.action === 'read',
+        write: perm.action === 'write',
+        // todo: add only for telegrafs and buckets
+        subLevelPermissions: {},
+      }
+
+      if (perm.resource.id) {
+        p.subLevelPermissions[perm.resource.id] = {
+          id: perm.resource.id,
+          orgID: perm.resource.orgID,
+          name: perm.resource.name,
+          permissions: {
+            read: perm.action === 'read',
+            write: perm.action === 'write',
+          },
+        }
+      }
+
+      newPerms[perm.resource.type] = p
+    })
+    console.log('NEw PERMISSIONS: ', newPerms)
+  }
+
+  formatPermissionsObj()
+
+  // manipulate to match the accordion permissions
   return (
     <Overlay.Container maxWidth={630}>
       <Overlay.Header title="API Token Summary" onDismiss={handleDismiss} />

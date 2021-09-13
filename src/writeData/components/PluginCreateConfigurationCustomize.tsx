@@ -1,7 +1,8 @@
 // Libraries
-import React, {ChangeEvent, FC, MouseEvent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {ChangeEvent, FC, MouseEvent, useEffect} from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import {connect, ConnectedProps} from 'react-redux'
+import {useParams} from 'react-router'
 
 // Components
 import {
@@ -20,14 +21,13 @@ import TelegrafConfig from 'src/telegrafs/components/TelegrafConfig'
 
 // Actions
 import {
-  addPluginBundleWithPlugins,
+  addTelegrafPlugins,
   setTelegrafConfigName,
   setTelegrafConfigDescription,
-  createOrUpdateTelegrafConfigAsync,
 } from 'src/dataLoaders/actions/dataLoaders'
 
 // Types
-import {AppState} from 'src/types'
+import {AppState, ConfigurationState} from 'src/types'
 import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
 
 // Selectors
@@ -37,20 +37,49 @@ import {getDataLoaders} from 'src/dataLoaders/selectors'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 // Constants
-import {TELEGRAF_DEFAULT_OUTPUT} from 'src/writeData/constants/contentTelegrafPlugins'
+// import {TELEGRAF_DEFAULT_OUTPUT} from 'src/writeData/constants/contentTelegrafPlugins'
+
+type ParamsType = {
+  [param: string]: string
+}
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
 const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   const {
+    onAddTelegrafPlugins,
     onSetTelegrafConfigName,
     onSetTelegrafConfigDescription,
     telegrafConfigDescription,
     telegrafConfigName,
+    pluginConfig,
+    setPluginConfig,
   } = props
 
-  const workingConfig = TELEGRAF_DEFAULT_OUTPUT
+  const {contentID} = useParams<ParamsType>()
+
+  const workingConfig = pluginConfig
+  useEffect(() => {
+    import(
+      `src/writeData/components/telegrafInputPluginsConfigurationText/${contentID}.conf`
+    ).then(module => {
+      const pluginText = module.default ?? ''
+      setPluginConfig(pluginText)
+      onAddTelegrafPlugins([
+        {
+          name: contentID,
+          configured: ConfigurationState.Configured,
+          active: false,
+          plugin: {
+            name: contentID,
+            type: 'input',
+          },
+        },
+      ])
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentID])
 
   const handleDownloadConfig = () => {
     downloadTextFile(workingConfig, telegrafConfigName || 'telegraf', '.conf')
@@ -70,8 +99,6 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   const handleDescriptionInput = (event: ChangeEvent<HTMLInputElement>) => {
     onSetTelegrafConfigDescription(event.target.value)
   }
-
-  const handleChangeConfig = () => {}
 
   return (
     <>
@@ -138,7 +165,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
           <div className="config-overlay">
             <TelegrafConfig
               config={workingConfig}
-              onChangeConfig={handleChangeConfig}
+              onChangeConfig={setPluginConfig}
             />
           </div>
         </Grid.Row>
@@ -162,9 +189,8 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  onAddPluginBundle: addPluginBundleWithPlugins,
+  onAddTelegrafPlugins: addTelegrafPlugins,
   onSetTelegrafConfigName: setTelegrafConfigName,
-  onSaveTelegrafConfig: createOrUpdateTelegrafConfigAsync,
   onSetTelegrafConfigDescription: setTelegrafConfigDescription,
 }
 

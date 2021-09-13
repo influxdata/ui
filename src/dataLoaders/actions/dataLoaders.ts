@@ -398,7 +398,7 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   const plugins = telegrafPlugins.reduce(
     (acc, tp) => {
       if (tp.configured === ConfigurationState.Configured) {
-        return [...acc, tp.plugin || createNewPlugin(tp.name)]
+        return [...acc, tp.plugin || createNewPlugin(tp)]
       }
 
       return acc

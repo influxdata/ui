@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import Loadable from 'react-loadable'
 import {connect, ConnectedProps} from 'react-redux'
 
@@ -26,6 +26,7 @@ import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
+const PREVENT_OVERLAY_FLICKER_STEP = -1
 
 const spinner = <div />
 const PluginCreateConfigurationStepSwitcher = Loadable({
@@ -44,6 +45,8 @@ export interface PluginCreateConfigurationStepProps {
   onIncrementCurrentStepIndex: () => void
   onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
   substepIndex: number
+  pluginConfig: string
+  setPluginConfig: (config: string) => void
 }
 
 interface PluginCreateConfigurationWizardProps {
@@ -60,8 +63,8 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     currentStepIndex,
     history,
     notify,
-    onClearSteps,
     onClearDataLoaders,
+    onClearSteps,
     onDecrementCurrentStepIndex,
     onIncrementCurrentStepIndex,
     onSetCurrentStepIndex,
@@ -74,12 +77,15 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onSetSubstepIndex(0, 0)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const [pluginConfig, setPluginConfig] = useState<string>('')
+
   const handleDismiss = () => {
     onClearDataLoaders()
     onClearSteps()
     if (substepIndex === 1) {
       onSetSubstepIndex(0, 0)
     } else {
+      onSetCurrentStepIndex(PREVENT_OVERLAY_FLICKER_STEP)
       history.goBack()
     }
   }
@@ -92,6 +98,8 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
     substepIndex,
+    pluginConfig,
+    setPluginConfig,
   }
 
   let title = 'Configuration Options'
@@ -144,8 +152,8 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   notify: notifyAction,
-  onClearSteps: clearSteps,
   onClearDataLoaders: clearDataLoaders,
+  onClearSteps: clearSteps,
   onDecrementCurrentStepIndex: decrementCurrentStepIndex,
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
   onSetCurrentStepIndex: setCurrentStepIndex,

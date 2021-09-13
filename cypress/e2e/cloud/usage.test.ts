@@ -26,7 +26,7 @@ describe('Usage Page Free User No Data', () => {
     )
   })
 
-  it('should display the usage page common features', () => {
+  it('should  display the usage page common features', () => {
     // Display the upgrade button when the user is a free user
     cy.get('.cf-page-header--fixed')
       .children()

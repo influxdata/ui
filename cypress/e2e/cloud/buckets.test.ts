@@ -20,7 +20,7 @@ describe('Explicit Buckets', () => {
     setupData(cy, true)
   })
 
-  it('can create a bucket with an explicit schema', () => {
+  it('can  create a bucket with an explicit schema', () => {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('overlay--container').within(() => {
       cy.getByInputName('name').type('explicit-bucket-test')

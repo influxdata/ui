@@ -22,7 +22,7 @@ describe.skip('About Page for free users with only 1 user', () => {
     )
   )
 
-  it('should allow the delete account functionality', () => {
+  it('should  allow the delete account functionality', () => {
     cy.getByTestID('delete-org--button')
       .should('exist')
       .click()

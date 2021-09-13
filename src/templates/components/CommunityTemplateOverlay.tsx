@@ -67,7 +67,11 @@ class CommunityTemplateOverlayUnconnected extends PureComponent<Props, State> {
             onDismiss={this.onDismiss}
           />
           <Overlay.Body>
-            <FlexBox direction={FlexDirection.Column} margin={ComponentSize.Large} alignItems={AlignItems.Stretch}>
+            <FlexBox
+              direction={FlexDirection.Column}
+              margin={ComponentSize.Large}
+              alignItems={AlignItems.Stretch}
+            >
               <CommunityTemplateInstallInstructions
                 templateName={templateName}
                 resourceCount={resourceCount}

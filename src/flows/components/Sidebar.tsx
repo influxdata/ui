@@ -202,7 +202,8 @@ const Sidebar: FC = () => {
             const init = JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
             )
-            init.queries[0].text = type === 'visualization' ? visual : source
+            init.queries[0].text =
+              type === 'visualization' && visual ? visual : source
             init.title = title
             init.type = 'rawFluxEditor'
 

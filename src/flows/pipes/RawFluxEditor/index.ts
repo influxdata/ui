@@ -33,6 +33,9 @@ export default register => {
         const ast = parse(
           data.queries[data.activeQuery].text.replace(PREVIOUS_REGEXP, query)
         )
+        if (!ast.body.length) {
+          return ''
+        }
         find(ast, node => !!Object.keys(node.comments || {}).length).forEach(
           node => {
             delete node.comments

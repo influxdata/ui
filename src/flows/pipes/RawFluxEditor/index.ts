@@ -1,5 +1,4 @@
 import {parse, format_from_js_file} from '@influxdata/flux'
-import {find} from 'src/flows/context/query'
 import View from './view'
 import './style.scss'
 
@@ -33,11 +32,9 @@ export default register => {
         const ast = parse(
           data.queries[data.activeQuery].text.replace(PREVIOUS_REGEXP, query)
         )
-        find(ast, node => !!Object.keys(node.comments || {}).length).forEach(
-          node => {
-            delete node.comments
-          }
-        )
+        if (!ast.body.length) {
+          return ''
+        }
         return format_from_js_file(ast)
       } catch {
         return

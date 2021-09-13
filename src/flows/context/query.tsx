@@ -457,70 +457,63 @@ export const QueryProvider: FC = ({children}) => {
     const controller = new AbortController()
 
     const id = UUID()
+    const promise = fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    })
+      .then(
+        (response: Response): Promise<RunQueryResult> => {
+          if (response.status === 200) {
+            return response.text().then(csv => {
+              if (pending[id]) {
+                delete pending[id]
+                setPending({...pending})
+              }
 
-    let promise
-
-    if (query === '') {
-      promise = Promise.resolve({type: 'SUCCESS', message: '', code: ''})
-    } else {
-      promise = fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body),
-        signal: controller.signal,
-      })
-        .then(
-          (response: Response): Promise<RunQueryResult> => {
-            if (response.status === 200) {
-              return response.text().then(csv => {
-                if (pending[id]) {
-                  delete pending[id]
-                  setPending({...pending})
-                }
-
-                return {
-                  type: 'SUCCESS',
-                  csv,
-                  bytesRead: csv.length,
-                  didTruncate: false,
-                }
-              })
-            }
-
-            if (response.status === RATE_LIMIT_ERROR_STATUS) {
-              const retryAfter = response.headers.get('Retry-After')
-
-              return Promise.resolve({
-                type: 'RATE_LIMIT_ERROR',
-                retryAfter: retryAfter ? parseInt(retryAfter) : null,
-                message: RATE_LIMIT_ERROR_TEXT,
-              })
-            }
-
-            return response.text().then(text => {
-              try {
-                const json = JSON.parse(text)
-                const message = json.message || json.error
-                const code = json.code
-
-                return {type: 'UNKNOWN_ERROR', message, code}
-              } catch {
-                return {
-                  type: 'UNKNOWN_ERROR',
-                  message: 'Failed to execute Flux query',
-                }
+              return {
+                type: 'SUCCESS',
+                csv,
+                bytesRead: csv.length,
+                didTruncate: false,
               }
             })
           }
-        )
-        .catch(e => {
-          if (e.name === 'AbortError') {
-            return Promise.reject(new CancellationError())
+
+          if (response.status === RATE_LIMIT_ERROR_STATUS) {
+            const retryAfter = response.headers.get('Retry-After')
+
+            return Promise.resolve({
+              type: 'RATE_LIMIT_ERROR',
+              retryAfter: retryAfter ? parseInt(retryAfter) : null,
+              message: RATE_LIMIT_ERROR_TEXT,
+            })
           }
 
-          return Promise.reject(e)
-        })
-    }
+          return response.text().then(text => {
+            try {
+              const json = JSON.parse(text)
+              const message = json.message || json.error
+              const code = json.code
+
+              return {type: 'UNKNOWN_ERROR', message, code}
+            } catch {
+              return {
+                type: 'UNKNOWN_ERROR',
+                message: 'Failed to execute Flux query',
+              }
+            }
+          })
+        }
+      )
+      .catch(e => {
+        if (e.name === 'AbortError') {
+          return Promise.reject(new CancellationError())
+        }
+
+        return Promise.reject(e)
+      })
 
     pending[id] = () => {
       controller.abort()

@@ -1,4 +1,5 @@
 import {parse, format_from_js_file} from '@influxdata/flux'
+import {find} from 'src/flows/context/query'
 import View from './view'
 import './style.scss'
 
@@ -35,6 +36,11 @@ export default register => {
         if (!ast.body.length) {
           return ''
         }
+        find(ast, node => !!Object.keys(node.comments || {}).length).forEach(
+          node => {
+            delete node.comments
+          }
+        )
         return format_from_js_file(ast)
       } catch {
         return

@@ -14,16 +14,14 @@ import {
 import {
   ResourceCard,
   Label,
-  Alignment,
-  AlignItems,
   ComponentSize,
   ComponentColor,
   ButtonShape,
   FlexDirection,
   FlexBox,
   IconFont,
+  ConfirmationButton,
 } from '@influxdata/clockface'
-import {Context} from 'src/clockface'
 
 // Actions
 import {deleteDemoDataBucketMembership} from 'src/cloud/actions/thunks'
@@ -77,28 +75,20 @@ const DemoDataBucketCard: FC<Props> = ({
     <ResourceCard
       testID={`bucket-card ${bucket.name}`}
       contextMenu={
-        <Context align={Alignment.Center}>
-          <FlexBox
-            alignItems={AlignItems.Center}
-            direction={FlexDirection.Row}
-            margin={ComponentSize.Small}
-          >
-            <Context.Menu
-              icon={IconFont.Trash}
-              color={ComponentColor.Danger}
-              shape={ButtonShape.Default}
-              text="Delete Bucket"
-              testID={`context-delete-menu ${bucket.name}`}
-            >
-              <Context.Item
-                label="Confirm"
-                action={removeBucket}
-                value={bucket}
-                testID={`context-delete-bucket ${bucket.name}`}
-              />
-            </Context.Menu>
-          </FlexBox>
-        </Context>
+        <FlexBox margin={ComponentSize.Small}>
+          <ConfirmationButton
+            color={ComponentColor.Colorless}
+            icon={IconFont.Trash_New}
+            shape={ButtonShape.Square}
+            size={ComponentSize.ExtraSmall}
+            confirmationLabel="Yes, Delete this bucket"
+            onConfirm={() => {
+              removeBucket(bucket)
+            }}
+            confirmationButtonText="Confirm"
+            testID={`context-delete-menu ${bucket.name}`}
+          ></ConfirmationButton>
+        </FlexBox>
       }
     >
       <ResourceCard.Name

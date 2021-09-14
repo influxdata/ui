@@ -68,8 +68,6 @@ const EditTokenOverlay: FC<Props> = props => {
     handleDismiss()
   }
 
-  
-
   return (
     <Overlay.Container maxWidth={630}>
       <Overlay.Header title="API Token Summary" onDismiss={handleDismiss} />
@@ -136,7 +134,9 @@ const EditTokenOverlay: FC<Props> = props => {
                   </InputLabel>
                 </FlexBox.Child>
               </FlexBox>
-              <EditResourceAccordion permissions={formatPermissionsObj(props.auth.permissions)} />
+              <EditResourceAccordion
+                permissions={formatPermissionsObj(props.auth.permissions)}
+              />
             </FlexBox.Child>
             <Page.ControlBarCenter>
               <FlexBox margin={ComponentSize.Medium}>

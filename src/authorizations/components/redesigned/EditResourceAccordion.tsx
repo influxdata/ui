@@ -30,7 +30,7 @@ export class EditResourceAccordion extends Component<Props, {}> {
           {resourceName === 'Telegrafs' ||
             (resourceName === 'Buckets' &&
               !isEmpty(permissions[key].sublevelPermissions) &&
-                this.getAccordionBody(resourceName, key))}
+              this.getAccordionBody(resourceName, key))}
         </Accordion>
       )
     })

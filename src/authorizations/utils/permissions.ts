@@ -136,8 +136,7 @@ export enum BucketTab {
   Scoped = 'Scoped',
 }
 
-export const formatPermissionsObj = (permissions) => {
-
+export const formatPermissionsObj = permissions => {
   const newPerms = permissions.reduce((acc, {action, resource}) => {
     const {type, id, orgID, name} = resource
     let p

@@ -20,6 +20,92 @@ interface SchemaExpressions {
   [key: string]: Array<string>
 }
 
+const parsedResultToSchema = (
+  parsed: FromFluxResult,
+  search: string
+): SchemaExpressions => {
+  const filtered = [
+    /^_start$/,
+    /^_stop$/,
+    /^_time$/,
+    /^_value/,
+    /^_measurement$/,
+    /^_field$/,
+    /^table$/,
+    /^result$/,
+  ]
+  if (!parsed) {
+    return
+  }
+
+  const out = parsed.table as any
+  const measurements = out.columns._measurement?.data
+  const fields = out.columns._field?.data
+  const columns = out.columnKeys.filter(key => {
+    return filtered.reduce((acc, curr) => {
+      return acc && !curr.test(key)
+    }, true)
+  })
+  const columnsToInclude = ['_start', '_stop', '_measurement']
+  const systemVars = [
+    '_check_id',
+    '_check_name',
+    '_level',
+    '_source_measurement',
+    '_type',
+  ]
+  const schema = {
+    measurements: new Set<string>(
+      measurements.filter(m => m.toLowerCase().includes(search.toLowerCase()))
+    ),
+    fields: new Set<string>(
+      fields.filter(f => f.toLowerCase().includes(search.toLowerCase()))
+    ),
+    tags: new Set<string>(
+      columns.filter(
+        c =>
+          out.columns[c].data.filter(d => d) &&
+          c.toLowerCase().includes(search.toLowerCase())
+      )
+    ),
+    columns: out.columnKeys.filter(
+      c =>
+        columnsToInclude.includes(c) &&
+        c.toLowerCase().includes(search.toLowerCase())
+    ),
+    system: systemVars.filter(s =>
+      s.toLowerCase().includes(search.toLowerCase())
+    ),
+  }
+
+  const ret = {}
+  Object.keys(schema).forEach(k => {
+    if (schema[k].length || schema[k].size) {
+      ret[k] = Array.from(schema[k])
+    }
+  })
+  return ret
+}
+
+const capitalizeFirstLetter = (s: string) => {
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+const categoriesCompare = (a: string, b: string) => {
+  const order = ['measurements', 'fields', 'tags', 'columns', 'system']
+  return order.indexOf(a) - order.indexOf(b)
+}
+
+const isExpressionsEmpty = (schemaExpressions: SchemaExpressions) => {
+  let isEmptySchemas = 0
+  Object.keys(schemaExpressions).forEach(k => {
+    if (!schemaExpressions[k].length) {
+      isEmptySchemas += 1
+    }
+  })
+  return Object.keys(schemaExpressions).length === isEmptySchemas
+}
+
 const Expressions: FC<Props> = ({id, parsed}) => {
   const [search, setSearch] = useState('')
   const {flow, updateData} = useContext(FlowContext)
@@ -29,100 +115,6 @@ const Expressions: FC<Props> = ({id, parsed}) => {
     },
     [search, setSearch]
   )
-
-  const parsedResultToSchema = (parsed: FromFluxResult): SchemaExpressions => {
-    let ni
-    const filtered = [
-      /^_start$/,
-      /^_stop$/,
-      /^_time$/,
-      /^_value/,
-      /^_measurement$/,
-      /^_field$/,
-      /^table$/,
-      /^result$/,
-    ]
-    if (!parsed) {
-      return
-    }
-
-    const out = parsed.table as any
-    const len = out.length
-    const measurements = out.columns._measurement?.data
-    const fields = out.columns._field?.data
-    const columns = out.columnKeys.filter(key => {
-      return filtered.reduce((acc, curr) => {
-        return acc && !curr.test(key)
-      }, true)
-    })
-    const schema = {
-      measurements: new Set<string>(),
-      fields: new Set<string>(),
-      tags: new Set<string>(),
-      columns: [],
-      system: [],
-    }
-
-    for (ni = 0; ni < len; ni++) {
-      if (measurements[ni].toLowerCase().includes(search.toLowerCase())) {
-        schema.measurements.add(measurements[ni])
-      }
-
-      if (fields[ni].toLowerCase().includes(search.toLowerCase())) {
-        schema.fields.add(fields[ni])
-      }
-
-      columns
-        .filter(
-          c =>
-            !!out.columns[c].data[ni] &&
-            c.toLowerCase().includes(search.toLowerCase())
-        )
-        .forEach(schema?.tags.add, schema.tags)
-    }
-
-    const otherColumns = ['_start', '_stop', '_measurement']
-    schema.columns = out.columnKeys.filter(
-      c =>
-        otherColumns.includes(c) &&
-        c.toLowerCase().includes(search.toLowerCase())
-    )
-
-    schema.system = [
-      '_check_id',
-      '_check_name',
-      '_level',
-      '_source_measurement',
-      '_type',
-    ].filter(s => s.toLowerCase().includes(search.toLowerCase()))
-
-    const ret = {}
-    Object.keys(schema).forEach(k => {
-      if (schema[k].length || schema[k].size) {
-        ret[k] = Array.from(schema[k])
-      }
-    })
-    return ret
-  }
-
-  const capitalizeFirstLetter = (s: string) => {
-    return s.charAt(0).toUpperCase() + s.slice(1)
-  }
-
-  const categoriesCompare = (a: string, b: string) => {
-    const order = ['measurements', 'fields', 'tags', 'columns', 'system']
-    return order.indexOf(a) - order.indexOf(b)
-  }
-
-  const isExpressionsEmpty = (schemaExpressions: SchemaExpressions) => {
-    let isEmptySchemas = 0
-    Object.keys(schemaExpressions).forEach(k => {
-      if (!schemaExpressions[k].length) {
-        isEmptySchemas += 1
-      }
-    })
-    return Object.keys(schemaExpressions).length === isEmptySchemas
-  }
 
   const inject = (exp: string): void => {
     const data = flow.data.byID[id]
@@ -136,10 +128,10 @@ const Expressions: FC<Props> = ({id, parsed}) => {
     })
   }
 
-  const schemaExpressions = useMemo(() => parsedResultToSchema(parsed), [
-    parsed,
-    search,
-  ])
+  const schemaExpressions = useMemo(
+    () => parsedResultToSchema(parsed, search),
+    [parsed, search]
+  )
 
   let expComponent
 

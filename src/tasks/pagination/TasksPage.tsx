@@ -86,7 +86,7 @@ class TasksPage extends PureComponent<Props, State> {
     this.props.getTasks(-1) // -1 means fetch all tasks with no limit
     this.props.getLabels()
 
-    let sortType = this.state.sortType
+    let sortType: SortTypes = this.state.sortType
     const params = new URLSearchParams(window.location.search)
 
     let sortKey: TaskSortKey = 'name'
@@ -100,7 +100,7 @@ class TasksPage extends PureComponent<Props, State> {
       sortType = SortTypes.String
     }
 
-    let sortDirection = this.state.sortDirection
+    let sortDirection: Sort = this.state.sortDirection
     if (params.get('sortDirection') === Sort.Ascending) {
       sortDirection = Sort.Ascending
     } else if (params.get('sortDirection') === Sort.Descending) {

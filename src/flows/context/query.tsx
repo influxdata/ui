@@ -37,7 +37,7 @@ import {
 } from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 import {GlobalQueryContext} from 'src/query/context'
-import {simplify as simplifyQuery} from 'src/query/context/utils'
+import {simplify as simplifyGlobalQuery} from 'src/query/context/utils'
 
 interface CancelMap {
   [key: string]: () => void
@@ -242,7 +242,7 @@ export const simplify = (text, vars: VariableMap = {}) => {
     isFlagEnabled('GlobalQueryContext') ? 'true' : 'false'
   )
   if (isFlagEnabled('GlobalQueryContext')) {
-    return simplifyQuery(text, vars)
+    return simplifyGlobalQuery(text, vars)
   }
   const ast = parse(text)
   const usedVars = _getVars(ast, vars)
@@ -412,9 +412,12 @@ export const QueryProvider: FC = ({children}) => {
   )
   const [pending, setPending] = useState({} as CancelMap)
   const org = useSelector(getOrg)
-  const {runQuery, runBasic, cancel: cancelQueries, isInitialized} = useContext(
-    GlobalQueryContext
-  )
+  const {
+    runGlobalQuery,
+    runGlobalBasic,
+    cancel: cancelGlobalQueries,
+    isInitialized,
+  } = useContext(GlobalQueryContext)
 
   const dispatch = useDispatch()
 
@@ -457,7 +460,7 @@ export const QueryProvider: FC = ({children}) => {
       isFlagEnabled('GlobalQueryContext') ? 'true' : 'false'
     )
     if (isFlagEnabled('GlobalQueryContext')) {
-      return runBasic(text, override)
+      return runGlobalBasic(text, override)
     }
 
     const query = simplify(text, override?.vars || {})
@@ -570,7 +573,7 @@ export const QueryProvider: FC = ({children}) => {
       isFlagEnabled('GlobalQueryContext') ? 'true' : 'false'
     )
     if (isFlagEnabled('GlobalQueryContext')) {
-      return cancelQueries(queryID)
+      return cancelGlobalQueries(queryID)
     }
 
     if (!queryID) {
@@ -600,7 +603,7 @@ export const QueryProvider: FC = ({children}) => {
       isFlagEnabled('GlobalQueryContext') ? 'true' : 'false'
     )
     if (isFlagEnabled('GlobalQueryContext')) {
-      return runQuery(text, override)
+      return runGlobalQuery(text, override)
     }
 
     const result = basic(text, override) as BasicQueryResult

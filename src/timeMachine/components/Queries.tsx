@@ -40,6 +40,7 @@ import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
 import {AppState, TimeRange, AutoRefreshStatus} from 'src/types'
+import {GlobalQueryContextType} from 'src/query/context'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type RouterProps = RouteComponentProps<{
@@ -47,11 +48,20 @@ type RouterProps = RouteComponentProps<{
   dashboardID: string
   orgID: string
 }>
-type Props = ReduxProps & RouterProps
+type OwnProps = {
+  globalQueryContext?: GlobalQueryContextType
+}
+
+type Props = ReduxProps & RouterProps & OwnProps
 
 class TimeMachineQueries extends PureComponent<Props> {
   public render() {
-    const {timeRange, isInCheckOverlay, activeQuery} = this.props
+    const {
+      timeRange,
+      isInCheckOverlay,
+      activeQuery,
+      globalQueryContext,
+    } = this.props
 
     return (
       <div className="time-machine-queries">
@@ -82,7 +92,7 @@ class TimeMachineQueries extends PureComponent<Props> {
                 <TimeMachineQueriesSwitcher />
               </>
             )}
-            <SubmitQueryButton />
+            <SubmitQueryButton globalQueryContext={globalQueryContext} />
           </FlexBox>
         </div>
         <div className="time-machine-queries--body">{this.queryEditor}</div>

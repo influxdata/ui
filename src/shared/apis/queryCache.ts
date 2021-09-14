@@ -33,6 +33,7 @@ import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
 // Constants
 import {WINDOW_PERIOD} from 'src/variables/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {GlobalQueryContextType} from 'src/query/context'
 
 export const TIME_INVALIDATION = 1000 * 60 * 10 // 10 minutes
 
@@ -221,8 +222,25 @@ const hasWindowVars = (variables: VariableAssignment[]): boolean =>
 export const getCachedResultsOrRunQuery = (
   orgID: string,
   query: string,
-  allVars: Variable[]
+  allVars: Variable[],
+  queryContext?: GlobalQueryContextType
 ): CancelBox<RunQueryResult> => {
+  console.log('Getting cached results or RunQuery1')
+  if (isFlagEnabled('GlobalQueryContext')) {
+    console.log('Getting cached results or RunQuery2')
+    if (queryContext.isCached(query, {vars: allVars}, true)) {
+      return {
+        id: queryContext.getQueryHash(query, {vars: allVars}),
+        promise: queryContext.runGlobalBasic(query, {vars: allVars}),
+        cancel: queryContext.cancel,
+      }
+    }
+
+    return {
+      promise: new Promise(resolve => resolve(cacheResults)),
+      cancel: () => {},
+    }
+  }
   const {queryID, variables, hashedVariables} = calculateHashedVariables(
     allVars,
     query

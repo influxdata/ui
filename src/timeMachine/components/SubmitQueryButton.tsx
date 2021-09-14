@@ -28,6 +28,8 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {GlobalQueryContextType} from 'src/query/context'
 
 interface OwnProps {
   color?: ComponentColor
@@ -35,6 +37,7 @@ interface OwnProps {
   icon?: IconFont
   testID?: string
   className?: string
+  globalQueryContext?: GlobalQueryContextType
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -133,14 +136,19 @@ class SubmitQueryButton extends PureComponent<Props> {
   private handleClick = (): void => {
     event('SubmitQueryButton click')
 
-    this.props.onSubmit()
+    this.props.onSubmit(null, this.props.globalQueryContext)
   }
 
   private handleCancelClick = (): void => {
     if (this.props.onNotify) {
       this.props.onNotify(queryCancelRequest())
     }
-    this.props.cancelAllRunningQueries()
+
+    if (isFlagEnabled('GlobalQueryContext')) {
+      this.props.globalQueryContext.cancel(this.props.activeQueryText)
+    } else {
+      this.props.cancelAllRunningQueries()
+    }
   }
 }
 
@@ -156,7 +164,7 @@ const mstp = (state: AppState) => {
 
   const queryID = generateHashedQueryID(activeQueryText, allVars, orgID)
 
-  return {queryID, submitButtonDisabled, queryStatus}
+  return {queryID, submitButtonDisabled, queryStatus, activeQueryText, allVars}
 }
 
 const mdtp = {

@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState, FunctionComponent} from 'react'
+import React, {useState, FunctionComponent, useContext} from 'react'
 import {connect} from 'react-redux'
 import classnames from 'classnames'
 
@@ -17,6 +17,7 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 // Types
 import {AppState, TimeMachineTab} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {GlobalQueryContext, GlobalQueryContextType} from 'src/query/context'
 
 const INITIAL_RESIZER_HANDLE = 0.5
 
@@ -30,6 +31,9 @@ const TimeMachine: FunctionComponent<StateProps> = ({
   isViewingVisOptions,
 }) => {
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
+  const globalQueryContext = useContext<GlobalQueryContextType>(
+    GlobalQueryContext
+  )
 
   const containerClassName = classnames('time-machine', {
     'time-machine--split': isViewingVisOptions,
@@ -39,7 +43,9 @@ const TimeMachine: FunctionComponent<StateProps> = ({
   if (activeTab === 'alerting') {
     bottomContents = <TimeMachineAlerting />
   } else if (activeTab === 'queries') {
-    bottomContents = <TimeMachineQueries />
+    bottomContents = (
+      <TimeMachineQueries globalQueryContext={globalQueryContext} />
+    )
   } else if (activeTab === 'customCheckQuery') {
     bottomContents = <TimeMachineCheckQuery />
   }

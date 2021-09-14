@@ -3,7 +3,11 @@ import {parse} from 'src/external/parser'
 import {get, sortBy} from 'lodash'
 
 // API
-import {runQuery, RunQuerySuccessResult} from 'src/shared/apis/query'
+import {
+  runQuery,
+  RunQueryResult,
+  RunQuerySuccessResult,
+} from 'src/shared/apis/query'
 import {
   getCachedResultsOrRunQuery,
   resetQueryCacheByQuery,
@@ -56,6 +60,7 @@ import {
   BuilderTagsType,
   Variable,
   NotificationButtonElement,
+  QueryScope,
 } from 'src/types'
 
 // Selectors
@@ -64,6 +69,8 @@ import {getAll} from 'src/resources/selectors/index'
 import {isCurrentPageDashboard} from 'src/dashboards/selectors'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
+import {useContext} from 'react'
+import {GlobalQueryContext, GlobalQueryContextType} from 'src/query/context'
 
 export type Action = SaveDraftQueriesAction | SetQueryResults
 
@@ -262,10 +269,10 @@ export const setQueryByHashID = (queryID: string, result: any): void => {
     })
 }
 
-export const executeQueries = (abortController?: AbortController) => async (
-  dispatch,
-  getState: GetState
-) => {
+export const executeQueries = (
+  abortController?: AbortController,
+  queryContext?: GlobalQueryContextType
+) => async (dispatch, getState: GetState) => {
   const executeQueriesStartTime = Date.now()
 
   const state = getState()
@@ -276,6 +283,8 @@ export const executeQueries = (abortController?: AbortController) => async (
   const queries = activeTimeMachine.view.properties.queries.filter(
     ({text}) => !!text.trim()
   )
+  // const {runGlobalBasic, cancel: cancelGlobalQueries, getQueryHash} = useContext(GlobalQueryContext)
+  // console.log('I AM HERE')
 
   if (!queries.length) {
     dispatch(setQueryResults(RemoteDataState.Done, [], null))
@@ -283,6 +292,11 @@ export const executeQueries = (abortController?: AbortController) => async (
 
   try {
     // Cancel pending queries before issuing new ones
+    // if (isFlagEnabled('GlobalQueryContext')) {
+    //   cancelGlobalQueries()
+    // } else {
+    //   cancelAllRunningQueries()
+    // }
     cancelAllRunningQueries()
 
     dispatch(setQueryResults(RemoteDataState.Loading, [], null))
@@ -324,15 +338,41 @@ export const executeQueries = (abortController?: AbortController) => async (
         const result = getCachedResultsOrRunQuery(
           orgID,
           text,
-          getAllVariables(state)
+          getAllVariables(state),
+          queryContext
         )
         setQueryByHashID(queryID, result)
 
         return result
       }
-      const result = runQuery(orgID, text, extern, abortController)
-      setQueryByHashID(queryID, result)
-      return result
+      if (isFlagEnabled('GlobalQueryContext')) {
+        console.log(
+          'Continue Here: need to build variables override with window vars'
+        )
+        const _override: QueryScope = {
+          region: window.location.origin,
+          vars: {
+            ...allVariables,
+          },
+        }
+
+        const res = queryContext.runGlobalBasic(text, _override)
+
+        return {
+          id: queryContext.getQueryHash(text, {vars: allVariables}),
+          promise: res,
+          cancel: queryContext.cancel,
+        } as CancelBox<RunQueryResult>
+      } else {
+        const result = runQuery(orgID, text, extern, abortController)
+        setQueryByHashID(queryID, result)
+
+        return result
+      }
+      // const result = runQuery(orgID, text, extern, abortController)
+      // setQueryByHashID(queryID, result)
+
+      // return result
     })
     const results = await Promise.all(pendingResults.map(r => r.promise))
 
@@ -355,6 +395,7 @@ export const executeQueries = (abortController?: AbortController) => async (
     }
 
     for (const result of results) {
+      console.log('I AMM HEREre', result)
       if (result.type === 'UNKNOWN_ERROR') {
         if (isDemoDataAvailabilityError(result.code, result.message)) {
           const message = demoDataErrorMessage()
@@ -427,11 +468,12 @@ const saveDraftQueries = (): SaveDraftQueriesAction => ({
 })
 
 export const saveAndExecuteQueries = (
-  abortController?: AbortController
+  abortController?: AbortController,
+  queryContext?: GlobalQueryContextType
 ) => dispatch => {
   dispatch(saveDraftQueries())
   dispatch(setQueryResults(RemoteDataState.Loading, [], null))
-  dispatch(executeQueries(abortController))
+  dispatch(executeQueries(abortController, queryContext))
 }
 
 export const executeCheckQuery = () => async (dispatch, getState: GetState) => {

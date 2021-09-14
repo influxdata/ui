@@ -68,15 +68,22 @@ export interface FluxResult {
 
 export interface GlobalQueryContextType {
   cancel: (query?: string) => void
-  runQuery: (query: string, override?: QueryScope) => Promise<FluxResult>
-  runBasic: (query: string, override?: QueryScope) => Promise<RunQueryResult>
+  isCached: (query: string, override: QueryScope, basiOnly?: boolean) => boolean
+  getQueryHash: (query: string, override: QueryScope) => string
+  runGlobalQuery: (query: string, override?: QueryScope) => Promise<FluxResult>
+  runGlobalBasic: (
+    query: string,
+    override?: QueryScope
+  ) => Promise<RunQueryResult>
   isInitialized: boolean
 }
 
 export const DEFAULT_GLOBAL_QUERY_CONTEXT: GlobalQueryContextType = {
   cancel: (_?: string) => null,
-  runQuery: (_: string, __?: QueryScope) => null,
-  runBasic: (_: string, __?: QueryScope) => null,
+  getQueryHash: (_: string, __: QueryScope) => '',
+  isCached: (_: string, __: QueryScope, ___?: boolean) => false,
+  runGlobalQuery: (_: string, __?: QueryScope) => null,
+  runGlobalBasic: (_: string, __?: QueryScope) => null,
   isInitialized: false,
 }
 
@@ -140,7 +147,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     return queryObj
   }
 
-  const runBasic = (
+  const runGlobalBasic = (
     rawQuery: string,
     override: QueryScope
   ): Promise<RunQueryResult> => {
@@ -157,7 +164,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     return basic(queryObj, override)
   }
 
-  const runQuery = (
+  const runGlobalQuery = (
     rawQuery: string,
     override: QueryScope
   ): Promise<FluxResult> => {
@@ -198,6 +205,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
   }
 
   const basic = (queryObj: Query, override?: QueryScope) => {
+    console.log({queryObj, override})
     const query = simplify(queryObj.text, override?.vars || {})
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
@@ -345,12 +353,27 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
       })
   }
 
+  const isCached = (query: string, override: QueryMap, basicOnly = false) => {
+    const text = buildQueryText(query, override)
+    const hash = hashCode(text)
+
+    return basicOnly ? !!basicResponses[hash] : !!queryResponses[hash]
+  }
+
+  const getQueryHash = (query: string, override: QueryScope) => {
+    const text = buildQueryText(query, override)
+
+    return hashCode(text)
+  }
+
   return (
     <GlobalQueryContext.Provider
       value={{
         cancel,
-        runBasic,
-        runQuery,
+        isCached,
+        getQueryHash,
+        runGlobalBasic,
+        runGlobalQuery,
         isInitialized,
       }}
     >

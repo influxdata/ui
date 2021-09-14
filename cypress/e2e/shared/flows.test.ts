@@ -42,9 +42,10 @@ describe('Flows', () => {
 
     cy.getByTestID('add-flow-btn--visualization').click()
 
-    cy.getByTestID('flows-delete-cell')
-      .eq(1)
+    cy.getByTestID('square-button')
+      .eq(2)
       .click()
+    cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('flow-bucket-selector').click()
     cy.getByTestID('flow-bucket-selector--defbuck').click()

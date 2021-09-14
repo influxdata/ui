@@ -17,10 +17,11 @@ interface OwnProps {
   resourceName: string
   permissions: any
   onToggleAll: (name: string, permission: string) => void
+  disabled: boolean
 }
 
 export const ResourceAccordionHeader: FC<OwnProps> = props => {
-  const {resourceName} = props
+  const {resourceName, disabled} = props
 
   const handleReadToggle = () => {
     const {onToggleAll, resourceName} = props
@@ -59,7 +60,7 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             value={permissions.read.toString()}
             style={{marginRight: '10px'}}
             tabIndex={0}
-            disabled={false}
+            disabled={disabled}
           ></Toggle>
         </FlexBox.Child>
         <FlexBox.Child grow={1} onClick={handleFlexboxClick}>
@@ -72,7 +73,7 @@ export const ResourceAccordionHeader: FC<OwnProps> = props => {
             value={permissions.write.toString()}
             style={{marginRight: '0px'}}
             tabIndex={0}
-            disabled={false}
+            disabled={disabled}
           ></Toggle>
         </FlexBox.Child>
       </FlexBox>

@@ -88,6 +88,7 @@ class ResourceAccordion extends Component<Props, State> {
             resourceName={resourceName} // Buckets
             permissions={permissions[resource]} // props.bucketPermissions
             onToggleAll={this.handleToggleAll}
+            disabled={false}
           />
           {resourceName === 'Telegrafs' ||
             (resourceName === 'Buckets' && (
@@ -110,6 +111,7 @@ class ResourceAccordion extends Component<Props, State> {
           permissions={permissions[resource].sublevelPermissions}
           onToggle={this.handleIndividualToggle}
           title="Individual Telegraf Configuration Names"
+          disabled={false}
         />
       )
     } else if (resourceName === 'Buckets') {
@@ -119,6 +121,7 @@ class ResourceAccordion extends Component<Props, State> {
           permissions={permissions[resource].sublevelPermissions}
           onToggle={this.handleIndividualToggle}
           title="Individual Bucket Names"
+          disabled={false}
         />
       )
     }

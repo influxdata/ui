@@ -5,7 +5,6 @@ import {isEmpty} from 'lodash'
 import {Accordion} from '@influxdata/clockface'
 
 import {ResourceAccordionHeader} from './ResourceAccordionHeader'
-import GetResources from 'src/resources/components/GetResources'
 import {ResourceAccordionBody} from './ResourceAccordionBody'
 
 interface Props {
@@ -19,12 +18,6 @@ export class EditResourceAccordion extends Component<Props, {}> {
       return null
     }
 
-    return <>{this.getAccordionHeader()}</>
-  }
-
-  getAccordionHeader = () => {
-    const {permissions} = this.props
-
     return Object.keys(permissions).map(key => {
       const resourceName = key.charAt(0).toUpperCase() + key.slice(1)
       console.log('resourceName: ', resourceName)
@@ -32,38 +25,41 @@ export class EditResourceAccordion extends Component<Props, {}> {
         <Accordion key={key}>
           <ResourceAccordionHeader
             resourceName={resourceName}
-            permissions={permissions[key]} // props.bucketPermissions
+            permissions={permissions[key]}
             onToggleAll={(random, blah) => console.log('ahhh')}
+            disabled={true}
           />
-          {/* {resourceName === 'Telegrafs' ||
-              (resourceName === 'Buckets' && (
-                  !isEmpty(permissions[key].sublevelPermissions) &&
-                    this.getAccordionBody(resourceName, key)
-              ))} */}
+          {resourceName === 'Telegrafs' ||
+            (resourceName === 'Buckets' &&
+              !isEmpty(permissions[key].sublevelPermissions) &&
+                this.getAccordionBody(resourceName, key))}
         </Accordion>
       )
     })
   }
-}
 
-// getAccordionBody = (resourceName, resource) => {
-//   const {permissions} = this.props
-//   if (resourceName === 'Telegrafs') {
-//     return (
-//       <ResourceAccordionBody
-//         resourceName={resource}
-//         permissions={permissions[resource].sublevelPermissions}
-//         onToggle={this.handleIndividualToggle}
-//         title="Individual Telegraf Configuration Names"
-//       />
-//     )
-//   } else if (resourceName === 'Buckets') {
-//     return (
-//       <ResourceAccordionBody
-//         resourceName={resource}
-//         permissions={permissions[resource].sublevelPermissions}
-//         onToggle={this.handleIndividualToggle}
-//         title="Individual Bucket Names"
-//       />
-//     )
-//   }
+  getAccordionBody = (resourceName, resource) => {
+    const {permissions} = this.props
+    if (resourceName === 'Telegrafs') {
+      return (
+        <ResourceAccordionBody
+          resourceName={resource}
+          permissions={permissions[resource].sublevelPermissions}
+          onToggle={(random, blah) => console.log('ahhh')}
+          title="Individual Telegraf Configuration Names"
+          disabled={true}
+        />
+      )
+    } else if (resourceName === 'Buckets') {
+      return (
+        <ResourceAccordionBody
+          resourceName={resource}
+          permissions={permissions[resource].sublevelPermissions}
+          onToggle={(random, blah) => console.log('ahhh')}
+          title="Individual Bucket Names"
+          disabled={true}
+        />
+      )
+    }
+  }
+}

@@ -20,10 +20,11 @@ interface Props {
   permissions: any
   onToggle: (name, id, permission) => void
   title: string
+  disabled: boolean
 }
 
 export const ResourceAccordionBody: FC<Props> = props => {
-  const {resourceName, permissions, onToggle, title} = props
+  const {resourceName, permissions, onToggle, title, disabled} = props
 
   const handleReadToggle = id => {
     onToggle(resourceName, id, PermissionType.Read)
@@ -51,10 +52,10 @@ export const ResourceAccordionBody: FC<Props> = props => {
           type={InputToggleType.Checkbox}
           onChange={handleReadToggle}
           size={ComponentSize.ExtraSmall}
-          checked={telegraf.permissions.read} // sublevelPermissions.permissions.read = true or false 
+          checked={telegraf.permissions.read} // sublevelPermissions.permissions.read = true or false
           style={{marginRight: '10px'}}
           tabIndex={0}
-          disabled={false}
+          disabled={disabled}
         ></Toggle>
       </FlexBox.Child>
       <FlexBox.Child grow={1}>
@@ -67,7 +68,7 @@ export const ResourceAccordionBody: FC<Props> = props => {
           checked={telegraf.permissions.write}
           style={{marginRight: '10px'}}
           tabIndex={0}
-          disabled={false}
+          disabled={disabled}
         ></Toggle>
       </FlexBox.Child>
     </FlexBox>

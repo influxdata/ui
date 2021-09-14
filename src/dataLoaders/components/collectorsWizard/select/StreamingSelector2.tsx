@@ -131,7 +131,8 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
   private get selectedBucketID(): string {
     const {buckets, selectedBucketName} = this.props
 
-    return buckets.find(b => b.name === selectedBucketName).id
+    const bucket = buckets.find(b => b.name === selectedBucketName)
+    return bucket?.id || this.props.buckets[0]?.id
   }
 
   private handleSelectBucket = (bucket: Bucket) => {

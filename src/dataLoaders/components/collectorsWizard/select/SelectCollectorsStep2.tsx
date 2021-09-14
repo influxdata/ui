@@ -36,18 +36,11 @@ interface State {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & State
-
-
+type Props = OwnProps & ReduxProps
 
 @ErrorHandling
-export class SelectCollectorsStep extends PureComponent<Props> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      selectedBucketName: this.props.bucket || this.props.buckets[0]?.name
-    }
-  }
+export class SelectCollectorsStep extends PureComponent<Props, State> {
+  state = {selectedBucketName: ''}
   public render() {
     return (
       <Form
@@ -75,7 +68,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             telegrafPlugins={this.props.telegrafPlugins}
             onTogglePluginBundle={this.handleTogglePluginBundle}
             buckets={this.props.buckets ?? []}
-            selectedBucketName={this.state.selectedBucketName}
+            selectedBucketName={this.props.bucket}
             onSelectBucket={this.handleSelectBucket}
           />
         </DapperScrollbars>
@@ -89,8 +82,9 @@ export class SelectCollectorsStep extends PureComponent<Props> {
   }
 
   private get nextButtonStatus(): ComponentStatus {
-    const {telegrafPlugins, buckets, selectedBucketName} = this.props
-    console.log(selectedBucketName)
+    const {telegrafPlugins, buckets} = this.props
+    const {selectedBucketName} = this.state
+    console.log('Bucket name', selectedBucketName)
     if (!buckets || !buckets.length) {
       return ComponentStatus.Disabled
     }
@@ -99,7 +93,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
       return ComponentStatus.Disabled
     }
 
-    if(!selectedBucketName){
+    if (!selectedBucketName) {
       return ComponentStatus.Disabled
     }
 
@@ -108,7 +102,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
 
   private handleSelectBucket = (bucket: Bucket) => {
     const {orgID, id, name} = bucket
-
+    this.setState({selectedBucketName: name})
     this.props.onSetBucketInfo(orgID, name, id)
   }
 

@@ -25,6 +25,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {deleteAccountWarning} from 'src/shared/copy/notifications'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {getQuartzMe} from 'src/me/selectors'
@@ -38,12 +39,15 @@ const OrgProfileTab: FC = () => {
   const dispatch = useDispatch()
 
   const handleShowDeleteOverlay = () => {
+    const payload = {
+      org: org.id,
+      tier: quartzMe?.accountType,
+      email: quartzMe?.email,
+    }
+
     if (isFlagEnabled('trackCancellations')) {
-      track('DeleteOrgInitiation', {
-        org: org.id,
-        tier: quartzMe?.accountType,
-        email: quartzMe?.email,
-      })
+      event('Delete Organization Initiated', payload)
+      track('DeleteOrgInitiation', payload)
     }
 
     history.push(`/orgs/${org.id}/about/delete`)

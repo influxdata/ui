@@ -24,6 +24,7 @@ import {Authorization} from 'src/types'
 
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
+import { ActionTypes } from 'src/shared/actions/app'
 
 interface OwnProps {
   auth: Authorization
@@ -63,7 +64,6 @@ const EditTokenOverlay: FC<Props> = props => {
     })
     handleDismiss()
   }
-  console.log(props.auth)
 
   const formatPermissionsObj = () => {
     const {
@@ -74,15 +74,14 @@ const EditTokenOverlay: FC<Props> = props => {
     permissions.map(perm => {
 
       let p 
-      if(perm.resource.type === 'buckets') {
         if((newPerms.hasOwnProperty(perm.resource.type))){
           p = {...newPerms[perm.resource.type]}
-          if(perm.resource.id) {
-            if(p.subLevelPermissions.hasOwnProperty(perm.resource.id)) {
-              p.subLevelPermissions[perm.resource.id].permissions[perm.action] = true
+          if(perm.resource.id && (perm.resource.type === 'buckets' || perm.resource.type === 'telegrafs')) {
+            if(p.sublevelPermissions.hasOwnProperty(perm.resource.id)) {
+              p.sublevelPermissions[perm.resource.id].permissions[perm.action] = true
             }
             else {
-            p.subLevelPermissions[perm.resource.id] = {
+            p.sublevelPermissions[perm.resource.id] = {
               id: perm.resource.id,
               orgID: perm.resource.orgID,
               name: perm.resource.name,
@@ -93,13 +92,16 @@ const EditTokenOverlay: FC<Props> = props => {
             }
           }
           }
+          else {
+            p[perm.action] = true
+          }
         }
         else {
-          if(perm.resource.id){
+          if(perm.resource.id && (perm.resource.type === 'buckets' || perm.resource.type === 'telegrafs')){
             p = {
               read: false,
               write: false,
-              subLevelPermissions: {
+              sublevelPermissions: {
                 [perm.resource.id]: {
                   id: perm.resource.id,
                   orgID: perm.resource.orgID,
@@ -125,32 +127,31 @@ const EditTokenOverlay: FC<Props> = props => {
 
     Object.keys(newPerms).map(resource => {
       const p = {...newPerms[resource]}
-
-      p.read = !Object.keys(
-        p.subLevelPermissions
-      ).some(
-        key =>
-          p.subLevelPermissions[key].permissions.read ===
-          false
-      )
-
-      p.write = !Object.keys(
-        p.subLevelPermissions
-      ).some(
-        key =>
-          p.subLevelPermissions[key].permissions.write ===
-          false
-      )
-
-      newPerms[resource] = p
+      if (p.sublevelPermissions) {
+        console.log("inside if statment")
+        p.read = !Object.keys(
+          p.sublevelPermissions
+        ).some(
+          key =>
+            p.sublevelPermissions[key].permissions.read ===
+            false
+        )
+  
+        p.write = !Object.keys(
+          p.sublevelPermissions
+        ).some(
+          key =>
+            p.sublevelPermissions[key].permissions.write ===
+            false
+        )
+  
+        newPerms[resource] = p
+      }
     })
-
-    console.log('NEw PERMISSIONS: ', newPerms)
   }
 
   formatPermissionsObj()
 
-  // manipulate to match the accordion permissions
   return (
     <Overlay.Container maxWidth={630}>
       <Overlay.Header title="API Token Summary" onDismiss={handleDismiss} />

@@ -2,6 +2,7 @@
 import React, {FC, useContext} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {useHistory} from 'react-router-dom'
+import {track} from 'rudder-sdk-js'
 
 // Components
 import {
@@ -23,12 +24,11 @@ import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
 import {deleteAccountWarning} from 'src/shared/copy/notifications'
 import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {getQuartzMe} from 'src/me/selectors'
 import {NotificationButtonElement} from 'src/types'
-import {track} from 'rudder-sdk-js'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const OrgProfileTab: FC = () => {
   const quartzMe = useSelector(getQuartzMe)

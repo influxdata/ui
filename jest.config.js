@@ -11,6 +11,7 @@ module.exports = {
   moduleDirectories: ['src'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
+    "^.+\\.(md|mdx)$": "jest-transformer-mdx",
   },
   testRegex: '(/__tests__/.*|(\\.|/)(test))\\.(ts?|tsx?)$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],

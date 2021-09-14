@@ -3,7 +3,12 @@ import React, {FC, useEffect, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {Button, ComponentColor, Overlay} from '@influxdata/clockface'
+import {
+  Button,
+  ComponentColor,
+  ComponentStatus,
+  Overlay,
+} from '@influxdata/clockface'
 
 // Actions
 import {createOrUpdateTelegrafConfigAsync} from 'src/dataLoaders/actions/dataLoaders'
@@ -23,6 +28,7 @@ type Props = PluginCreateConfigurationStepProps & ReduxProps
 const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
   const {
     currentStepIndex,
+    isValidConfiguration,
     onDecrementCurrentStepIndex,
     onExit,
     onIncrementCurrentStepIndex,
@@ -34,16 +40,13 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
   } = props
 
   const shouldTelegrafUpdate = useMemo(() => {
-    if (telegrafConfig) {
-      return true
-    }
-    return false
+    return Boolean(telegrafConfig)
   }, [telegrafConfig])
 
   useEffect(() => {
     if (telegrafConfig) {
       const {config} = telegrafConfig
-      onUpdateTelegraf({...telegrafConfig, config: config + pluginConfig})
+      onUpdateTelegraf({...telegrafConfig, config: `${config}${pluginConfig}`})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldTelegrafUpdate])
@@ -89,6 +92,11 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
       <Button
         color={ComponentColor.Primary}
         onClick={handleSaveAndTest}
+        status={
+          isValidConfiguration
+            ? ComponentStatus.Valid
+            : ComponentStatus.Disabled
+        }
         tabIndex={0}
         testID="plugin-create-configuration-save-and-test"
         text="Save and Test"

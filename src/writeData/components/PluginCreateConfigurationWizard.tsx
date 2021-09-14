@@ -47,6 +47,8 @@ export interface PluginCreateConfigurationStepProps {
   substepIndex: number
   pluginConfig: string
   setPluginConfig: (config: string) => void
+  isValidConfiguration: boolean
+  setIsValidConfiguration: (isValid: boolean) => void
 }
 
 interface PluginCreateConfigurationWizardProps {
@@ -78,6 +80,9 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [pluginConfig, setPluginConfig] = useState<string>('')
+  const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
+    false
+  )
 
   const handleDismiss = () => {
     onClearDataLoaders()
@@ -92,21 +97,23 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
 
   const stepProps = {
     currentStepIndex,
+    isValidConfiguration,
     notify,
     onDecrementCurrentStepIndex,
     onExit: handleDismiss,
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
-    substepIndex,
     pluginConfig,
+    setIsValidConfiguration,
     setPluginConfig,
+    substepIndex,
   }
 
   let title = 'Configuration Options'
   if (currentStepIndex === 0 && substepIndex === 1) {
     title = 'Create Bucket'
   } else if (currentStepIndex !== 0) {
-    title = 'Create a Telegraf Configuration'
+    title = 'Add Plugin to a new Telegraf Configuration'
   }
 
   let maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH

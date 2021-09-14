@@ -1,19 +1,13 @@
 // Libraries
-import React, {ChangeEvent, FC, MouseEvent, useEffect} from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
+import React, {ChangeEvent, FC, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {useParams} from 'react-router'
 
 // Components
 import {
-  Button,
-  ButtonShape,
-  Columns,
-  ComponentColor,
   ComponentSize,
   Form,
   Grid,
-  IconFont,
   Input,
   InputType,
 } from '@influxdata/clockface'
@@ -33,12 +27,6 @@ import {PluginCreateConfigurationStepProps} from 'src/writeData/components/Plugi
 // Selectors
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
-// Utils
-import {downloadTextFile} from 'src/shared/utils/download'
-
-// Constants
-// import {TELEGRAF_DEFAULT_OUTPUT} from 'src/writeData/constants/contentTelegrafPlugins'
-
 type ParamsType = {
   [param: string]: string
 }
@@ -54,43 +42,50 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     telegrafConfigDescription,
     telegrafConfigName,
     pluginConfig,
+    setIsValidConfiguration,
     setPluginConfig,
   } = props
 
   const {contentID} = useParams<ParamsType>()
 
   const workingConfig = pluginConfig
+
+  const handleError = error => {
+    setIsValidConfiguration(false)
+    setPluginConfig(`${error}`)
+    console.error(error)
+  }
+
   useEffect(() => {
-    import(
-      `src/writeData/components/telegrafInputPluginsConfigurationText/${contentID}.conf`
-    ).then(module => {
-      const pluginText = module.default ?? ''
-      setPluginConfig(pluginText)
-      onAddTelegrafPlugins([
-        {
-          name: contentID,
-          configured: ConfigurationState.Configured,
-          active: false,
-          plugin: {
-            name: contentID,
-            type: 'input',
-          },
+    try {
+      import(
+        `src/writeData/components/telegrafInputPluginsConfigurationText/${contentID}.conf`
+      ).then(
+        module => {
+          setIsValidConfiguration(true)
+          const pluginText = module.default ?? ''
+          setPluginConfig(pluginText)
+          onAddTelegrafPlugins([
+            {
+              name: contentID,
+              configured: ConfigurationState.Configured,
+              active: false,
+              plugin: {
+                name: contentID,
+                type: 'input',
+              },
+            },
+          ])
         },
-      ])
-    })
+        error => handleError(error)
+      )
+    } catch (error) {
+      handleError(error)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentID])
 
-  const handleDownloadConfig = () => {
-    downloadTextFile(workingConfig, telegrafConfigName || 'telegraf', '.conf')
-  }
-
-  const handleCopy = () => {}
-
-  const handleClickCopy = (e: MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    e.preventDefault()
-  }
+  const handleChangeConfig = config => setPluginConfig(config)
 
   const handleNameInput = (event: ChangeEvent<HTMLInputElement>) => {
     onSetTelegrafConfigName(event.target.value)
@@ -104,70 +99,48 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     <>
       <Grid testID="plugin-create-configuration-customize">
         <Grid.Row className="plugin-create-configuration-name-row">
-          <Grid.Column widthSM={Columns.Ten}>
-            <Form.Element label="Agent Name">
-              <Input
-                type={InputType.Text}
-                value={telegrafConfigName}
-                name="name"
-                onChange={handleNameInput}
-                placeholder="Your configuration name"
-                titleText="Agent Name"
-                size={ComponentSize.Medium}
-                autoFocus={true}
-                testID="plugin-create-configuration-customize-input--name"
-              />
-            </Form.Element>
-          </Grid.Column>
-          <Grid.Column widthSM={Columns.Two}>
-            <CopyToClipboard text={workingConfig} onCopy={handleCopy}>
-              <Button
-                className="plugin-create-configuration-copy-to-clipboard--button"
-                color={ComponentColor.Default}
-                onClick={handleClickCopy}
-                shape={ButtonShape.Default}
-                size={ComponentSize.Medium}
-                testID="plugin-create-configuration-copy-to-clipboard"
-                text="Copy to Clipboard"
-                titleText="Copy to Clipboard"
-              />
-            </CopyToClipboard>
-          </Grid.Column>
+          <Form.Element label="Configuration Name">
+            <Input
+              type={InputType.Text}
+              value={telegrafConfigName}
+              name="name"
+              onChange={handleNameInput}
+              placeholder="Your configuration name"
+              titleText="Configuration Name"
+              size={ComponentSize.Medium}
+              autoFocus={true}
+              testID="plugin-create-configuration-customize-input--name"
+            />
+          </Form.Element>
         </Grid.Row>
         <Grid.Row className="plugin-create-configuration-description-row">
-          <Grid.Column widthSM={Columns.Ten}>
-            <Form.Element label="Configuration Description">
-              <Input
-                type={InputType.Text}
-                value={telegrafConfigDescription}
-                name="description"
-                onChange={handleDescriptionInput}
-                placeholder="Your configuration description"
-                titleText="Description (Optional)"
-                size={ComponentSize.Medium}
-                autoFocus={true}
-                testID="plugin-create-configuration-customize-input--description"
-              />
-            </Form.Element>
-          </Grid.Column>
-          <Grid.Column widthSM={Columns.Two}>
-            <Button
-              className="plugin-create-configuration-download--button"
-              color={ComponentColor.Secondary}
-              icon={IconFont.Download}
-              onClick={handleDownloadConfig}
+          <Form.Element label="Configuration Description">
+            <Input
+              type={InputType.Text}
+              value={telegrafConfigDescription}
+              name="description"
+              onChange={handleDescriptionInput}
+              placeholder="Your configuration description"
+              titleText="Description (Optional)"
               size={ComponentSize.Medium}
-              text="Download Config"
+              autoFocus={true}
+              testID="plugin-create-configuration-customize-input--description"
             />
-          </Grid.Column>
+          </Form.Element>
         </Grid.Row>
-        <Grid.Row className="plugin-creat-configuration--editor">
+        <Grid.Row className="plugin-create-configuration--editor">
           <div className="config-overlay">
             <TelegrafConfig
               config={workingConfig}
-              onChangeConfig={setPluginConfig}
+              onChangeConfig={handleChangeConfig}
             />
           </div>
+        </Grid.Row>
+        <Grid.Row>
+          <span className="plugin-create-configuration--notify-agent-output">
+            Input configuration will be appended to a default agent and output
+            upon saving
+          </span>
         </Grid.Row>
       </Grid>
     </>

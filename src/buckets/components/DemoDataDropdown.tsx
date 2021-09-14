@@ -82,15 +82,16 @@ const DemoDataDropdown: FC<Props> = ({
   return (
     <Dropdown
       testID="dropdown--demodata"
-      style={{width: '220px'}}
+      style={{width: '240px'}}
       className="demodata-dropdown"
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}
           onClick={onClick}
-          icon={IconFont.Plus}
+          icon={IconFont.Plus_New}
           color={ComponentColor.Secondary}
           testID="dropdown-button--demodata"
+          style={{textTransform: 'uppercase', letterSpacing: '0.07em'}}
         >
           Add Demo Data
         </Dropdown.Button>

@@ -171,8 +171,6 @@ describe('Flows', () => {
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('tree-nav')
             cy.setFeatureFlags({
-              notebooks: true,
-              flowSidebar: true,
               simpleTable: true,
             })
 

@@ -15,7 +15,6 @@ import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 import './Sidebar.scss'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -90,10 +89,6 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
       document.removeEventListener('mousedown', clickoutside)
     }
   }, [focused, submenu])
-
-  if (!isFlagEnabled('flowSidebar')) {
-    return null
-  }
 
   let dropdown
 

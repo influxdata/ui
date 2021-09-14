@@ -8,12 +8,10 @@ describe('Flows', () => {
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('version-info')
-            cy.setFeatureFlags({notebooks: true, simpleTable: true}).then(
-              () => {
-                cy.getByTestID('nav-item-flows').should('be.visible')
-                cy.getByTestID('nav-item-flows').click()
-              }
-            )
+            cy.setFeatureFlags({simpleTable: true}).then(() => {
+              cy.getByTestID('nav-item-flows').should('be.visible')
+              cy.getByTestID('nav-item-flows').click()
+            })
           })
         )
       })
@@ -44,9 +42,10 @@ describe('Flows', () => {
 
     cy.getByTestID('add-flow-btn--visualization').click()
 
-    cy.getByTestID('flows-delete-cell')
-      .eq(1)
+    cy.getByTestID('square-button')
+      .eq(2)
       .click()
+    cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('flow-bucket-selector').click()
     cy.getByTestID('flow-bucket-selector--defbuck').click()

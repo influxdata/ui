@@ -4,13 +4,11 @@ import {
   Input,
   InputType,
   IconFont,
-  DapperScrollbars,
   EmptyState,
   ComponentSize,
 } from '@influxdata/clockface'
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import Fn from './function'
 
 interface Props {
@@ -73,18 +71,6 @@ const Functions: FC<Props> = ({onSelect}) => {
       ))
     }
 
-    const body = isFlagEnabled('flowSidebar') ? (
-      <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-        {fnComponent}
-      </div>
-    ) : (
-      <DapperScrollbars className="flux-toolbar--scroll-area">
-        <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-          {fnComponent}
-        </div>
-      </DapperScrollbars>
-    )
-
     return (
       <div className="flux-toolbar">
         <div className="flux-toolbar--search">
@@ -97,7 +83,9 @@ const Functions: FC<Props> = ({onSelect}) => {
             testID="flux-toolbar-search--input"
           />
         </div>
-        {body}
+        <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
+          {fnComponent}
+        </div>
       </div>
     )
   }, [search, onSelect])

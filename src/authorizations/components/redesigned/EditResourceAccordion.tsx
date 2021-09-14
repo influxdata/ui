@@ -1,77 +1,69 @@
 // Libraries
-import {Component} from 'react'
+import React, {Component} from 'react'
+import {isEmpty} from 'lodash'
+
+import {Accordion} from '@influxdata/clockface'
+
+import {ResourceAccordionHeader} from './ResourceAccordionHeader'
+import GetResources from 'src/resources/components/GetResources'
+import {ResourceAccordionBody} from './ResourceAccordionBody'
 
 interface Props {
   permissions: any
 }
 
-export class ResourceAccordion extends Component<Props, {}> {
+export class EditResourceAccordion extends Component<Props, {}> {
   public render() {
-    // const {resources} = this.props // []
     const {permissions} = this.props
-    /* {
-      "telegrafs": {
-      id: ""
-      orgID:
-      subLevelPermissions: {
-        id: {
-          id: ""
-          permissions: {read: false, write: false}
-        }
-      }
-      },
-      annotations: {read: false, write: false}
-    }
-    */
-
-    console.log(Object.keys(permissions))
-
     if (!permissions) {
       return null
     }
-    // return resources.map(resource => {
-    //   const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
-    //   // console.log("resource", resource) resorce = buckets or telegrafs
-    //   console.log(permissions[resource])
-    //   return (
-    //     <Accordion key={resource}>
-    //       <ResourceAccordionHeader
-    //         resourceName={resourceName} // Buckets
-    //         permissions={permissions[resource]} // props.bucketPermissions
-    //         onToggleAll={this.handleToggleAll}
-    //       />
-    //       {resourceName === 'Telegrafs' ||
-    //         (resourceName === 'Buckets' && (
-    //           <GetResources resources={[ResourceType[resourceName]]}>
-    //             {!isEmpty(permissions[resource].sublevelPermissions) &&
-    //               this.getAccordionBody(resourceName, resource)}
-    //           </GetResources>
-    //         ))}
-    //     </Accordion>
-    //   )
-    // })
+
+    return <>{this.getAccordionHeader()}</>
   }
 
-  // getAccordionBody = (resourceName, resource) => {
-  //   const {permissions} = this.props
-  //   if (resourceName === 'Telegrafs') {
-  //     return (
-  //       <ResourceAccordionBody
-  //         resourceName={resource}
-  //         permissions={permissions[resource].sublevelPermissions}
-  //         onToggle={this.handleIndividualToggle}
-  //         title="Individual Telegraf Configuration Names"
-  //       />
-  //     )
-  //   } else if (resourceName === 'Buckets') {
-  //     return (
-  //       <ResourceAccordionBody
-  //         resourceName={resource}
-  //         permissions={permissions[resource].sublevelPermissions}
-  //         onToggle={this.handleIndividualToggle}
-  //         title="Individual Bucket Names"
-  //       />
-  //     )
-  //   }
+  getAccordionHeader = () => {
+    const {permissions} = this.props
+
+    return Object.keys(permissions).map(key => {
+      const resourceName = key.charAt(0).toUpperCase() + key.slice(1)
+      console.log('resourceName: ', resourceName)
+      return (
+        <Accordion key={key}>
+          <ResourceAccordionHeader
+            resourceName={resourceName}
+            permissions={permissions[key]} // props.bucketPermissions
+            onToggleAll={(random, blah) => console.log('ahhh')}
+          />
+          {/* {resourceName === 'Telegrafs' ||
+              (resourceName === 'Buckets' && (
+                  !isEmpty(permissions[key].sublevelPermissions) &&
+                    this.getAccordionBody(resourceName, key)
+              ))} */}
+        </Accordion>
+      )
+    })
   }
 }
+
+// getAccordionBody = (resourceName, resource) => {
+//   const {permissions} = this.props
+//   if (resourceName === 'Telegrafs') {
+//     return (
+//       <ResourceAccordionBody
+//         resourceName={resource}
+//         permissions={permissions[resource].sublevelPermissions}
+//         onToggle={this.handleIndividualToggle}
+//         title="Individual Telegraf Configuration Names"
+//       />
+//     )
+//   } else if (resourceName === 'Buckets') {
+//     return (
+//       <ResourceAccordionBody
+//         resourceName={resource}
+//         permissions={permissions[resource].sublevelPermissions}
+//         onToggle={this.handleIndividualToggle}
+//         title="Individual Bucket Names"
+//       />
+//     )
+//   }

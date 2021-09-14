@@ -18,6 +18,7 @@ import {
   ComponentColor,
   Page,
 } from '@influxdata/clockface'
+import {EditResourceAccordion} from './EditResourceAccordion'
 
 // Types
 import {Authorization} from 'src/types'
@@ -74,6 +75,7 @@ const EditTokenOverlay: FC<Props> = props => {
     const newPerms = permissions.reduce((acc, {action, resource}) => {
       const {type, id, orgID, name} = resource
       let p
+
       if (acc.hasOwnProperty(type)) {
         p = {...acc[type]}
         if (id && (type === 'buckets' || type === 'telegrafs')) {
@@ -136,9 +138,8 @@ const EditTokenOverlay: FC<Props> = props => {
       }
     })
     console.log('updated PERMS: ', newPerms)
+    return newPerms
   }
-
-  formatPermissionsObj()
 
   return (
     <Overlay.Container maxWidth={630}>
@@ -206,7 +207,7 @@ const EditTokenOverlay: FC<Props> = props => {
                   </InputLabel>
                 </FlexBox.Child>
               </FlexBox>
-              {/* <ResourceAccordion resources={resources} /> */}
+              <EditResourceAccordion permissions={formatPermissionsObj()} />
             </FlexBox.Child>
             <Page.ControlBarCenter>
               <FlexBox margin={ComponentSize.Medium}>

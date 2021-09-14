@@ -108,7 +108,7 @@ export default class BucketAddDataButton extends PureComponent<Props> {
           ref={this.triggerRef}
           text="Add Data"
           testID="add-data--button"
-          icon={IconFont.Plus}
+          icon={IconFont.Plus_New}
           size={ComponentSize.ExtraSmall}
           color={ComponentColor.Secondary}
         />

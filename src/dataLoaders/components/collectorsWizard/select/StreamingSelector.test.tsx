@@ -3,7 +3,7 @@ import React from 'react'
 import {screen, fireEvent} from '@testing-library/react'
 
 // Components
-import StreamingSelector from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector'
+import StreamingSelector from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
 
 // Constants
 import {PLUGIN_BUNDLE_OPTIONS} from 'src/dataLoaders/constants/pluginConfigs'

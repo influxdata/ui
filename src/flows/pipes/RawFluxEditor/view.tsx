@@ -26,7 +26,6 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import Functions from 'src/flows/pipes/RawFluxEditor/functions'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -118,10 +117,6 @@ const Query: FC<PipeProp> = ({Context}) => {
     },
     [editorInstance, query.text]
   )
-
-  const toggleFn = useCallback(() => {
-    setShowFn(!showFn)
-  }, [setShowFn, showFn])
 
   const launcher = () => {
     if (showId === id) {

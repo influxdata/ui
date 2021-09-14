@@ -14,18 +14,12 @@ import {
 } from 'src/visualization'
 import {ViewType} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
 
 const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
-
-interface Props {
-  toggle: () => void
-  visible: boolean
-}
 
 const WrappedViewOptions: FC = () => {
   const {data, update, results} = useContext(PipeContext)
@@ -51,7 +45,7 @@ const WrappedViewOptions: FC = () => {
   )
 }
 
-const Controls: FC<Props> = ({toggle, visible}) => {
+const Controls: FC = () => {
   const {id, data, range, update, results} = useContext(PipeContext)
   const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
 

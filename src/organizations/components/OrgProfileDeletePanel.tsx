@@ -27,6 +27,8 @@ import {CLOUD} from 'src/shared/constants'
 // Types
 import {getQuartzMe} from 'src/me/selectors'
 import {NotificationButtonElement} from 'src/types'
+import {track} from 'rudder-sdk-js'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const OrgProfileTab: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
@@ -36,6 +38,14 @@ const OrgProfileTab: FC = () => {
   const dispatch = useDispatch()
 
   const handleShowDeleteOverlay = () => {
+    if (isFlagEnabled('TrackCancellations')) {
+      track('DeleteOrgInitiation', {
+        org: org.id,
+        tier: quartzMe?.accountType,
+        email: quartzMe?.email,
+      })
+    }
+
     history.push(`/orgs/${org.id}/about/delete`)
   }
 

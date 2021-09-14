@@ -4,22 +4,16 @@ import {
   Input,
   InputType,
   IconFont,
-  DapperScrollbars,
   EmptyState,
   ComponentSize,
 } from '@influxdata/clockface'
 import {FromFluxResult} from '@influxdata/giraffe'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import Expression from 'src/flows/pipes/Notification/Expression'
 import {FlowContext} from 'src/flows/context/flow.current'
 
 interface Props {
   parsed: FromFluxResult
   id: string
-}
-
-interface Schemas {
-  [key: string]: SchemaExpressions
 }
 
 interface SchemaExpressions {
@@ -36,7 +30,7 @@ const Expressions: FC<Props> = ({id, parsed}) => {
     [search, setSearch]
   )
 
-  const parsedResultToSchema = (parsed: FromFluxResult): Schemas => {
+  const parsedResultToSchema = (parsed: FromFluxResult): SchemaExpressions => {
     let ni
     const filtered = [
       /^_start$/,
@@ -61,60 +55,54 @@ const Expressions: FC<Props> = ({id, parsed}) => {
         return acc && !curr.test(key)
       }, true)
     })
-    const schema = {} as any
-
-    for (ni = 0; ni < len; ni++) {
-      if (!schema.hasOwnProperty(measurements[ni])) {
-        schema[measurements[ni]] = {}
-      }
-
-      // TODO: is there always only one field?
-      const filteredFields = [fields[ni]].filter(f =>
-        f.toLowerCase().includes(search.toLowerCase())
-      )
-      if (filteredFields.length) {
-        schema[measurements[ni]].fields = filteredFields
-      }
-
-      const filteredMeasurements = [
-        ...new Set<string>(measurements),
-      ].filter(m => m.toLowerCase().includes(search.toLowerCase()))
-      if (filteredMeasurements.length) {
-        schema[measurements[ni]].measurements = filteredMeasurements
-      }
-
-      const filteredSystems = [
-        '_check_id',
-        '_check_name',
-        '_level',
-        '_source_measurement',
-        '_type',
-      ].filter(s => s.toLowerCase().includes(search.toLowerCase()))
-      if (filteredSystems.length) {
-        schema[measurements[ni]].system = filteredSystems
-      }
-
-      const filteredTags = columns.filter(
-        c =>
-          !!out.columns[c].data[ni] &&
-          c.toLowerCase().includes(search.toLowerCase())
-      )
-      if (filteredTags.length) {
-        schema[measurements[ni]].tags = filteredTags
-      }
-
-      const otherColumns = ['_start', '_stop', '_measurement']
-      const filteredOtherColumns = out.columnKeys.filter(
-        c =>
-          otherColumns.includes(c) &&
-          c.toLowerCase().includes(search.toLowerCase())
-      )
-      if (filteredOtherColumns.length) {
-        schema[measurements[ni]].columns = filteredOtherColumns
-      }
+    const schema = {
+      measurements: new Set<string>(),
+      fields: new Set<string>(),
+      tags: new Set<string>(),
+      columns: [],
+      system: [],
     }
 
-    return schema
+    for (ni = 0; ni < len; ni++) {
+      if (measurements[ni].toLowerCase().includes(search.toLowerCase())) {
+        schema.measurements.add(measurements[ni])
+      }
+
+      if (fields[ni].toLowerCase().includes(search.toLowerCase())) {
+        schema.fields.add(fields[ni])
+      }
+
+      columns
+        .filter(
+          c =>
+            !!out.columns[c].data[ni] &&
+            c.toLowerCase().includes(search.toLowerCase())
+        )
+        .forEach(schema?.tags.add, schema.tags)
+    }
+
+    const otherColumns = ['_start', '_stop', '_measurement']
+    schema.columns = out.columnKeys.filter(
+      c =>
+        otherColumns.includes(c) &&
+        c.toLowerCase().includes(search.toLowerCase())
+    )
+
+    schema.system = [
+      '_check_id',
+      '_check_name',
+      '_level',
+      '_source_measurement',
+      '_type',
+    ].filter(s => s.toLowerCase().includes(search.toLowerCase()))
+
+    const ret = {}
+    Object.keys(schema).forEach(k => {
+      if (schema[k].length || schema[k].size) {
+        ret[k] = Array.from(schema[k])
+      }
+    })
+    return ret
   }
 
   const capitalizeFirstLetter = (s: string) => {
@@ -126,13 +114,10 @@ const Expressions: FC<Props> = ({id, parsed}) => {
     return order.indexOf(a) - order.indexOf(b)
   }
 
-  const isExpressionsEmpty = (schemaExpressions: Schemas) => {
-    if (!Object.keys(schemaExpressions).length) {
-      return true
-    }
+  const isExpressionsEmpty = (schemaExpressions: SchemaExpressions) => {
     let isEmptySchemas = 0
-    Object.values(schemaExpressions).forEach(s => {
-      if (!Object.keys(s).length) {
+    Object.keys(schemaExpressions).forEach(k => {
+      if (!schemaExpressions[k].length) {
         isEmptySchemas += 1
       }
     })
@@ -145,7 +130,7 @@ const Expressions: FC<Props> = ({id, parsed}) => {
       ...data,
       message: [
         data.message.slice(0, data.cursorPosition),
-        ` r.${exp}`,
+        ` r.${exp} `,
         data.message.slice(data.cursorPosition),
       ].join(''),
     })
@@ -165,40 +150,28 @@ const Expressions: FC<Props> = ({id, parsed}) => {
       </EmptyState>
     )
   } else {
-    expComponent = Object.entries(schemaExpressions).map(([table, schema]) => (
-      <div key={`table-${table}`}>
-        {Object.keys(schema)
+    expComponent = (
+      <>
+        {Object.keys(schemaExpressions)
           .sort((a, b) => categoriesCompare(a, b))
           .map(category => (
-            <dl className="flux-toolbar--category" key={`${table}-${category}`}>
+            <dl className="flux-toolbar--category" key={category}>
               <dt className="flux-toolbar--heading">
                 {capitalizeFirstLetter(category)}
               </dt>
-              {schema[category].map(exp => (
+              {schemaExpressions[category].map(exp => (
                 <Expression
                   onClickFunction={inject}
-                  key={`${table}-${category}-${exp}`}
-                  testID={`${table}-${category}-${exp}`}
+                  key={`${category}-${exp}`}
+                  testID={`${category}-${exp}`}
                   expression={exp}
                 />
               ))}
             </dl>
           ))}
-      </div>
-    ))
+      </>
+    )
   }
-
-  const body = isFlagEnabled('flowSidebar') ? (
-    <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-      {expComponent}
-    </div>
-  ) : (
-    <DapperScrollbars className="flux-toolbar--scroll-area">
-      <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-        {expComponent}
-      </div>
-    </DapperScrollbars>
-  )
 
   return (
     <div className="flux-toolbar">
@@ -212,7 +185,9 @@ const Expressions: FC<Props> = ({id, parsed}) => {
           testID="flux-toolbar-search--input"
         />
       </div>
-      {body}
+      <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
+        {expComponent}
+      </div>
     </div>
   )
 }

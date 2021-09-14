@@ -56,8 +56,6 @@ const Notification: FC<PipeProp> = ({Context}) => {
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
-  const [showExp, setShowExp] = useState(true)
-
   let intervalError = ''
   let offsetError = ''
 
@@ -445,10 +443,6 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
     }
   }
 
-  const toggleExp = useCallback(() => {
-    setShowExp(!showExp)
-  }, [setShowExp, showExp])
-
   const launcher = () => {
     if (showId === id) {
       hideSub()
@@ -557,9 +551,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                       <FlexBox.Child grow={0} shrink={0}>
                         <Button
                           text="${exp}"
-                          onClick={
-                            isFlagEnabled('flowSidebar') ? launcher : toggleExp
-                          }
+                          onClick={launcher}
                           color={ComponentColor.Secondary}
                           testID="notification-exp-button"
                         />

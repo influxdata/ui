@@ -436,17 +436,17 @@ describe('Flows', () => {
       cy.getByTestID('flux-toolbar--list').should('be.visible')
 
       // check that all expressions are listed
-      cy.getByTestID('test-measurements-test').should('be.visible')
-      cy.getByTestID('test-fields-dopeness').should('be.visible')
-      cy.getByTestID('test-tags-container_name').should('be.visible')
-      cy.getByTestID('test-columns-_start').should('be.visible')
-      cy.getByTestID('test-system-_source_measurement')
+      cy.getByTestID('measurements-test').should('be.visible')
+      cy.getByTestID('fields-dopeness').should('be.visible')
+      cy.getByTestID('tags-container_name').should('be.visible')
+      cy.getByTestID('columns-_start').should('be.visible')
+      cy.getByTestID('system-_source_measurement')
         .scrollIntoView()
         .should('be.visible')
 
       // filter for dopeness
       cy.getByTestID('flux-toolbar-search--input').type('dopeness')
-      cy.getByTestID('flux--test-fields-dopeness--inject').click({force: true})
+      cy.getByTestID('flux--fields-dopeness--inject').click({force: true})
 
       // make sure message contains injected expression
       cy.getByTestID('notification-message--textarea').contains('r.dopeness')

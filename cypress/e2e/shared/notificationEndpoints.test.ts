@@ -1,11 +1,12 @@
 import {
   NotificationEndpoint,
+  GenEndpoint,
   SlackNotificationEndpoint,
   Organization,
 } from '../../../src/types'
 
 describe('Notification Endpoints', () => {
-  const endpoint: NotificationEndpoint = {
+  const endpoint: GenEndpoint = {
     orgID: '',
     name: 'Pre-Created Endpoint',
     userID: '',
@@ -19,9 +20,9 @@ describe('Notification Endpoints', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) =>
+        cy.get<Organization>('@org').then(({id}: Organization) =>
           cy.fixture('routes').then(({orgs, alerting}) => {
-            cy.createEndpoint({...endpoint, orgID: id}).then(({body}) => {
+            cy.createEndpoint({...endpoint as NotificationEndpoint, orgID: id}).then(({body}) => {
               cy.wrap(body).as('endpoint')
             })
             cy.visit(`${orgs}/${id}${alerting}`)
@@ -250,12 +251,18 @@ describe('Notification Endpoints', () => {
     })
   })
 
+  describe('When managing the list', () => {
+    it('can filter endpoints', () => {
+      cy.log('STARTING filter endpoints')
+    })
+  })
+
   describe('When a endpoint does not exist', () => {
     it('should route the user to the alerting index page', () => {
       const nonexistentID = '0495f0d1247ab600'
 
       // visitng the endpoint edit overlay
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, endpoints}) => {
           cy.visit(`${orgs}/${id}${alerting}${endpoints}/${nonexistentID}/edit`)
           cy.url().should('include', `${orgs}/${id}${alerting}`)

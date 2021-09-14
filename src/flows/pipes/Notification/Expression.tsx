@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, createRef} from 'react'
+import React, {FC} from 'react'
 
 // Component
 import {Button, ComponentSize, ComponentColor} from '@influxdata/clockface'

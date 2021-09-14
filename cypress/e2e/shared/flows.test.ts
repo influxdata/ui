@@ -404,33 +404,20 @@ describe('Flows', () => {
       cy.getByTestID('page-title').click()
       cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
-      // select our bucket
+      // select our bucket, measurement, field and tag
       cy.getByTestID('flow-bucket-selector').click()
-
       cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
-
-      // select measurement and field
       cy.getByTestID('measurement-selector test').click()
       cy.getByTestID('field-selector dopeness').click()
-
-      // select beans tag and click preview
       cy.getByTestID('tag-selector beans').click()
-      cy.getByTestID('time-machine-submit-button').click()
-
-      // we should only see beans in the table
-      cy.getByTestID('simple-table').should('be.visible')
-      cy.getByTestID('table-cell beans')
-        .first()
-        .should('be.visible')
-      cy.getByTestID('table-cell cool').should('not.exist')
 
       // add an alert cell
       cy.getByTestID('panel-add-btn-2').click()
       cy.getByTestID('add-flow-btn--notification').click()
       cy.getByTestID('time-machine-submit-button').click()
+      cy.getByTestID('notification-exp-button').scrollIntoView()
 
       // open exp sidebar panel
-      cy.getByTestID('notification-exp-button').scrollIntoView()
       cy.getByTestID('notification-exp-button').should('be.visible')
       cy.getByTestID('notification-exp-button').click()
       cy.getByTestID('flux-toolbar--list').should('be.visible')
@@ -449,7 +436,9 @@ describe('Flows', () => {
       cy.getByTestID('flux--fields-dopeness--inject').click({force: true})
 
       // make sure message contains injected expression
-      cy.getByTestID('notification-message--textarea').contains('r.dopeness')
+      cy.getByTestID('notification-message--monaco-editor').contains(
+        'r.dopeness'
+      )
     })
   })
 })

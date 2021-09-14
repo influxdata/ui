@@ -1,4 +1,4 @@
-import React, {FC, useState, useMemo, useCallback, useContext} from 'react'
+import React, {FC, useState, useMemo, useCallback} from 'react'
 
 import {
   Input,
@@ -9,11 +9,10 @@ import {
 } from '@influxdata/clockface'
 import {FromFluxResult} from '@influxdata/giraffe'
 import Expression from 'src/flows/pipes/Notification/Expression'
-import {FlowContext} from 'src/flows/context/flow.current'
 
 interface Props {
   parsed: FromFluxResult
-  id: string
+  onSelect: (exp: string) => void
 }
 
 interface SchemaExpressions {
@@ -106,27 +105,14 @@ const isExpressionsEmpty = (schemaExpressions: SchemaExpressions) => {
   return Object.keys(schemaExpressions).length === isEmptySchemas
 }
 
-const Expressions: FC<Props> = ({id, parsed}) => {
+const Expressions: FC<Props> = ({parsed, onSelect}) => {
   const [search, setSearch] = useState('')
-  const {flow, updateData} = useContext(FlowContext)
   const updateSearch = useCallback(
     e => {
       setSearch(e.target.value)
     },
     [search, setSearch]
   )
-
-  const inject = (exp: string): void => {
-    const data = flow.data.byID[id]
-    updateData(id, {
-      ...data,
-      message: [
-        data.message.slice(0, data.cursorPosition),
-        ` r.${exp} `,
-        data.message.slice(data.cursorPosition),
-      ].join(''),
-    })
-  }
 
   const schemaExpressions = useMemo(
     () => parsedResultToSchema(parsed, search),
@@ -153,7 +139,7 @@ const Expressions: FC<Props> = ({id, parsed}) => {
               </dt>
               {schemaExpressions[category].map(exp => (
                 <Expression
-                  onClickFunction={inject}
+                  onClickFunction={onSelect}
                   key={`${category}-${exp}`}
                   testID={`${category}-${exp}`}
                   expression={exp}

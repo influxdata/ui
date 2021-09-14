@@ -39,13 +39,13 @@ const OrgProfileTab: FC = () => {
   const dispatch = useDispatch()
 
   const handleShowDeleteOverlay = () => {
-    const payload = {
-      org: org.id,
-      tier: quartzMe?.accountType,
-      email: quartzMe?.email,
-    }
-
     if (isFlagEnabled('trackCancellations')) {
+      const payload = {
+        org: org.id,
+        tier: quartzMe?.accountType,
+        email: quartzMe?.email,
+      }
+
       event('Delete Organization Initiated', payload)
       track('DeleteOrgInitiation', payload)
     }

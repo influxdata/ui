@@ -149,7 +149,11 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   }, [queryText, data.interval, data.offset])
 
   const persist = (
-    <ExportTaskButton generate={generateTask} text="Export as Task" />
+    <ExportTaskButton
+      generate={generateTask}
+      text="Export as Task"
+      type="task"
+    />
   )
 
   return (

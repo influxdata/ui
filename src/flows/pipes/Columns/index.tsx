@@ -1,4 +1,5 @@
 import View from './view'
+import ReadOnly from './readOnly'
 
 export interface Hash<T> {
   [column: string]: T
@@ -18,6 +19,7 @@ export default register => {
     initial: {
       mappings: {} as Hash<Mapping>,
     },
+    readOnlyComponent: ReadOnly,
     visual: (_data, query) => {
       return `${query} |> limit(n: 100)`
     },

@@ -31,13 +31,24 @@ export interface OwnProps extends CollectorsStepProps {
   buckets: Bucket[]
 }
 
+interface State {
+  selectedBucketName: string
+}
+
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps
+type Props = OwnProps & ReduxProps & State
+
+
 
 @ErrorHandling
 export class SelectCollectorsStep extends PureComponent<Props> {
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      selectedBucketName: this.props.bucket || this.props.buckets[0]?.name
+    }
+  }
   public render() {
-    const selectedBucketName = this.props.bucket ?? this.props.buckets[0]?.name
     return (
       <Form
         onSubmit={this.props.onIncrementCurrentStepIndex}
@@ -64,7 +75,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             telegrafPlugins={this.props.telegrafPlugins}
             onTogglePluginBundle={this.handleTogglePluginBundle}
             buckets={this.props.buckets ?? []}
-            selectedBucketName={selectedBucketName}
+            selectedBucketName={this.state.selectedBucketName}
             onSelectBucket={this.handleSelectBucket}
           />
         </DapperScrollbars>
@@ -78,13 +89,17 @@ export class SelectCollectorsStep extends PureComponent<Props> {
   }
 
   private get nextButtonStatus(): ComponentStatus {
-    const {telegrafPlugins, buckets} = this.props
-
+    const {telegrafPlugins, buckets, selectedBucketName} = this.props
+    console.log(selectedBucketName)
     if (!buckets || !buckets.length) {
       return ComponentStatus.Disabled
     }
 
     if (!telegrafPlugins.length) {
+      return ComponentStatus.Disabled
+    }
+
+    if(!selectedBucketName){
       return ComponentStatus.Disabled
     }
 

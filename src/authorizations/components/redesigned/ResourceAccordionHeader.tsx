@@ -16,7 +16,7 @@ import {
 interface OwnProps {
   resourceName: string
   permissions: any
-  onToggleAll: (name: string, permission: string) => void
+  onToggleAll?: (name: string, permission: string) => void
   disabled: boolean
 }
 

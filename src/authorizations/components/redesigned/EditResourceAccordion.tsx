@@ -22,11 +22,10 @@ export class EditResourceAccordion extends Component<Props, {}> {
       const resourceName = key.charAt(0).toUpperCase() + key.slice(1)
       console.log('resourceName: ', resourceName)
       return (
-        <Accordion key={key}>
+        <Accordion key={key} expanded={true}>
           <ResourceAccordionHeader
             resourceName={resourceName}
             permissions={permissions[key]}
-            onToggleAll={(random, blah) => console.log('ahhh')}
             disabled={true}
           />
           {resourceName === 'Telegrafs' ||
@@ -45,7 +44,6 @@ export class EditResourceAccordion extends Component<Props, {}> {
         <ResourceAccordionBody
           resourceName={resource}
           permissions={permissions[resource].sublevelPermissions}
-          onToggle={(random, blah) => console.log('ahhh')}
           title="Individual Telegraf Configuration Names"
           disabled={true}
         />
@@ -55,7 +53,6 @@ export class EditResourceAccordion extends Component<Props, {}> {
         <ResourceAccordionBody
           resourceName={resource}
           permissions={permissions[resource].sublevelPermissions}
-          onToggle={(random, blah) => console.log('ahhh')}
           title="Individual Bucket Names"
           disabled={true}
         />

@@ -18,7 +18,7 @@ import {PermissionType} from 'src/types/tokens'
 interface Props {
   resourceName: string
   permissions: any
-  onToggle: (name, id, permission) => void
+  onToggle?: (name, id, permission) => void
   title: string
   disabled: boolean
 }

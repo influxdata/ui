@@ -54,8 +54,7 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
   const schemaLabel = `Schema Type: ${capitalize(schemaType)}`
   const schemaBlock = (
     <span data-testid="bucket-schemaType" key="bucket-schemaType">
-      {' '}
-      {schemaLabel}{' '}
+      {schemaLabel}
     </span>
   )
 

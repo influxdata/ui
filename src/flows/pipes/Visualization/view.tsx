@@ -119,26 +119,12 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, data.properties, results.parsed, range])
 
-  const persist = isFlagEnabled('flowSidebar') ? null : (
-    <>
-      <Button
-        titleText={downloadTitle}
-        text="CSV"
-        icon={IconFont.Download}
-        onClick={download}
-        status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
-      />
-      <ExportButton />
-    </>
-  )
-
   if (results.error) {
     return (
       <Context
         controls={
           <Controls toggle={toggleOptions} visible={optionsVisibility} />
         }
-        persistentControls={persist}
       >
         <div className="panel-resizer panel-resizer__visible panel-resizer--error-state">
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
@@ -159,7 +145,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         controls={
           <Controls toggle={toggleOptions} visible={optionsVisibility} />
         }
-        persistentControls={persist}
       >
         <div className="panel-resizer panel-resizer__visible">
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
@@ -179,7 +164,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   return (
     <Context
       controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
-      persistentControls={persist}
       resizes
     >
       <div className="flow-visualization">

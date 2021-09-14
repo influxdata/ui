@@ -226,7 +226,6 @@ from(bucket: "${name}"{rightarrow}
   describe('Pin flow tests', () => {
     beforeEach(() => {
       cy.setFeatureFlags({
-        notebooks: true,
         simpleTable: true,
         pinnedItems: true,
       }).then(() => {

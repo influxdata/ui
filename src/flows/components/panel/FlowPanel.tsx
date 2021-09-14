@@ -168,10 +168,6 @@ const FlowPanel: FC<Props> = ({
                   />
                 </FeatureFlag>
                 <MenuButton id={id} />
-                <FeatureFlag name="flowSidebar" equals={false}>
-                  <PanelVisibilityToggle id={id} />
-                  <RemovePanelButton id={id} />
-                </FeatureFlag>
               </div>
             </>
           )}

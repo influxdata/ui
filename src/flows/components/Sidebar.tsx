@@ -91,10 +91,6 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
     }
   }, [focused, submenu])
 
-  if (!isFlagEnabled('flowSidebar')) {
-    return null
-  }
-
   let dropdown
 
   if (id === focused && !submenu) {

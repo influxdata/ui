@@ -8,12 +8,10 @@ describe('Flows', () => {
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('version-info')
-            cy.setFeatureFlags({notebooks: true, simpleTable: true}).then(
-              () => {
-                cy.getByTestID('nav-item-flows').should('be.visible')
-                cy.getByTestID('nav-item-flows').click()
-              }
-            )
+            cy.setFeatureFlags({simpleTable: true}).then(() => {
+              cy.getByTestID('nav-item-flows').should('be.visible')
+              cy.getByTestID('nav-item-flows').click()
+            })
           })
         )
       })

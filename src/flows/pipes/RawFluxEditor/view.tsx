@@ -132,21 +132,12 @@ const Query: FC<PipeProp> = ({Context}) => {
     }
   }
 
-  const controls = isFlagEnabled('flowSidebar') ? (
+  const controls = (
     <Button
       text="Functions"
       icon={IconFont.Function}
       onClick={launcher}
       color={ComponentColor.Default}
-      titleText="Function Reference"
-      className="flows-config-function-button"
-    />
-  ) : (
-    <Button
-      text="Functions"
-      icon={IconFont.Function}
-      onClick={toggleFn}
-      color={showFn ? ComponentColor.Primary : ComponentColor.Default}
       titleText="Function Reference"
       className="flows-config-function-button"
     />
@@ -171,11 +162,6 @@ const Query: FC<PipeProp> = ({Context}) => {
             wrapLines="on"
           />
         </Suspense>
-        {!isFlagEnabled('flowSidebar') && showFn && (
-          <div className="flow-nonsidebar">
-            <Functions onSelect={inject} />
-          </div>
-        )}
       </Context>
     )
   }, [editorInstance, showFn, showId])

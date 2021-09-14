@@ -24,7 +24,7 @@ import {Authorization} from 'src/types'
 
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
-import { ActionTypes } from 'src/shared/actions/app'
+import {ActionTypes} from 'src/shared/actions/app'
 
 interface OwnProps {
   auth: Authorization
@@ -72,15 +72,19 @@ const EditTokenOverlay: FC<Props> = props => {
 
     const newPerms = {}
     permissions.map(perm => {
-
-      let p 
-        if((newPerms.hasOwnProperty(perm.resource.type))){
-          p = {...newPerms[perm.resource.type]}
-          if(perm.resource.id && (perm.resource.type === 'buckets' || perm.resource.type === 'telegrafs')) {
-            if(p.sublevelPermissions.hasOwnProperty(perm.resource.id)) {
-              p.sublevelPermissions[perm.resource.id].permissions[perm.action] = true
-            }
-            else {
+      let p
+      if (newPerms.hasOwnProperty(perm.resource.type)) {
+        p = {...newPerms[perm.resource.type]}
+        if (
+          perm.resource.id &&
+          (perm.resource.type === 'buckets' ||
+            perm.resource.type === 'telegrafs')
+        ) {
+          if (p.sublevelPermissions.hasOwnProperty(perm.resource.id)) {
+            p.sublevelPermissions[perm.resource.id].permissions[
+              perm.action
+            ] = true
+          } else {
             p.sublevelPermissions[perm.resource.id] = {
               id: perm.resource.id,
               orgID: perm.resource.orgID,
@@ -91,35 +95,36 @@ const EditTokenOverlay: FC<Props> = props => {
               },
             }
           }
+        } else {
+          p[perm.action] = true
+        }
+      } else {
+        if (
+          perm.resource.id &&
+          (perm.resource.type === 'buckets' ||
+            perm.resource.type === 'telegrafs')
+        ) {
+          p = {
+            read: false,
+            write: false,
+            sublevelPermissions: {
+              [perm.resource.id]: {
+                id: perm.resource.id,
+                orgID: perm.resource.orgID,
+                name: perm.resource.name,
+                permissions: {
+                  read: perm.action === 'read',
+                  write: perm.action === 'write',
+                },
+              },
+            },
           }
-          else {
-            p[perm.action] = true
+        } else {
+          p = {
+            read: perm.action === 'read',
+            write: perm.action === 'write',
           }
         }
-        else {
-          if(perm.resource.id && (perm.resource.type === 'buckets' || perm.resource.type === 'telegrafs')){
-            p = {
-              read: false,
-              write: false,
-              sublevelPermissions: {
-                [perm.resource.id]: {
-                  id: perm.resource.id,
-                  orgID: perm.resource.orgID,
-                  name: perm.resource.name,
-                  permissions: {
-                    read: perm.action === 'read',
-                    write: perm.action === 'write',
-                  },
-                }
-              }
-            }
-          }
-          else {
-            p = {
-              read: perm.action === "read",
-              write: perm.action === "write"
-            }
-          }
       }
 
       newPerms[perm.resource.type] = p
@@ -128,23 +133,14 @@ const EditTokenOverlay: FC<Props> = props => {
     Object.keys(newPerms).map(resource => {
       const p = {...newPerms[resource]}
       if (p.sublevelPermissions) {
-        console.log("inside if statment")
-        p.read = !Object.keys(
-          p.sublevelPermissions
-        ).some(
-          key =>
-            p.sublevelPermissions[key].permissions.read ===
-            false
+        p.read = !Object.keys(p.sublevelPermissions).some(
+          key => p.sublevelPermissions[key].permissions.read === false
         )
-  
-        p.write = !Object.keys(
-          p.sublevelPermissions
-        ).some(
-          key =>
-            p.sublevelPermissions[key].permissions.write ===
-            false
+
+        p.write = !Object.keys(p.sublevelPermissions).some(
+          key => p.sublevelPermissions[key].permissions.write === false
         )
-  
+
         newPerms[resource] = p
       }
     })

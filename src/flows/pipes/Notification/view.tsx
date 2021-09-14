@@ -561,6 +561,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                             isFlagEnabled('flowSidebar') ? launcher : toggleExp
                           }
                           color={ComponentColor.Secondary}
+                          testID="notification-exp-button"
                         />
                       </FlexBox.Child>
                     )}
@@ -610,6 +611,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                           onFocus={updateCursor}
                           size={ComponentSize.Medium}
                           style={{height: '100%'}}
+                          testID="notification-message--textarea"
                         />
                       </Form.Element>
                     </FlexBox.Child>

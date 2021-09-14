@@ -16,9 +16,7 @@ const CreateBucketOverlay: FC = () => {
   return (
     <Overlay.Container maxWidth={BUCKET_OVERLAY_WIDTH}>
       <Overlay.Header title="Create Bucket" onDismiss={onClose} />
-      <Overlay.Body>
-        <CreateBucketForm onClose={onClose} />
-      </Overlay.Body>
+      <CreateBucketForm onClose={onClose} />
     </Overlay.Container>
   )
 }

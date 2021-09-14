@@ -9,7 +9,7 @@
 
 .demodata-dropdown--item-icon {
   margin-right: $cf-marg-b;
-  opacity: 0;
+  display: none;
 }
 
 .demodata-dropdown--item,
@@ -21,7 +21,7 @@
 .demodata-dropdown--item__added,
 .demodata-dropdown--item__added:hover {
   .demodata-dropdown--item-icon {
-    opacity: 1;
+    display: block;
   }
 
   cursor: default;

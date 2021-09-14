@@ -1,28 +1,14 @@
 // Libraries
-import React, {
-  FC,
-  useContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, {FC, useContext, useEffect, useMemo} from 'react'
 
 // Components
-import {
-  Icon,
-  IconFont,
-  DapperScrollbars,
-  Button,
-  ComponentStatus,
-} from '@influxdata/clockface'
+import {Icon, IconFont} from '@influxdata/clockface'
 import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
-import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
 import Controls from 'src/flows/pipes/Visualization/Controls'
 import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
 // Utilities
-import {View, ViewOptions} from 'src/visualization'
+import {View} from 'src/visualization'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -34,37 +20,17 @@ import {SidebarContext} from 'src/flows/context/sidebar'
 import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results} = useContext(PipeContext)
+  const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
   const {launch} = useContext(PopupContext)
-  const [optionsVisibility, setOptionsVisibility] = useState(false)
-  const toggleOptions = useCallback(() => {
-    setOptionsVisibility(!optionsVisibility)
-  }, [optionsVisibility, setOptionsVisibility])
-
-  const updateProperties = useCallback(
-    properties => {
-      update({
-        properties: {
-          ...data.properties,
-          ...properties,
-        },
-      })
-    },
-    [data.properties, update]
-  )
 
   const dataExists = !!(results?.parsed?.table || []).length
 
   const queryText = getPanelQueries(id, true)?.source || ''
-  const downloadTitle = queryText
-    ? 'Download results as an annotated CSV file'
-    : 'Build a query to download your results'
   const download = () => {
     event('CSV Download Initiated')
     basic(queryText).promise.then(response => {
@@ -121,11 +87,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   if (results.error) {
     return (
-      <Context
-        controls={
-          <Controls toggle={toggleOptions} visible={optionsVisibility} />
-        }
-      >
+      <Context controls={<Controls />}>
         <div className="panel-resizer panel-resizer__visible panel-resizer--error-state">
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
@@ -141,11 +103,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   if (!dataExists) {
     return (
-      <Context
-        controls={
-          <Controls toggle={toggleOptions} visible={optionsVisibility} />
-        }
-      >
+      <Context controls={<Controls />}>
         <div className="panel-resizer panel-resizer__visible">
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
@@ -162,10 +120,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   }
 
   return (
-    <Context
-      controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
-      resizes
-    >
+    <Context controls={<Controls />} resizes>
       <div className="flow-visualization">
         <div className="flow-visualization--view">
           <View
@@ -175,15 +130,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             timeRange={range}
           />
         </div>
-        {optionsVisibility && dataExists && (
-          <DapperScrollbars style={{width: '400px'}}>
-            <ViewOptions
-              properties={data.properties}
-              results={results.parsed}
-              update={updateProperties}
-            />
-          </DapperScrollbars>
-        )}
       </div>
     </Context>
   )

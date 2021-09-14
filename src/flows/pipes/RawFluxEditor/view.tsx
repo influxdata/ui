@@ -36,7 +36,7 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
-  const [showFn, setShowFn] = useState(true)
+  const [showFn] = useState(true)
   const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data

@@ -4,13 +4,11 @@ import {
   Input,
   InputType,
   IconFont,
-  DapperScrollbars,
   EmptyState,
   ComponentSize,
 } from '@influxdata/clockface'
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import Fn from './function'
 
 interface Props {

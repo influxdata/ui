@@ -24,7 +24,6 @@ import {Authorization} from 'src/types'
 
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
-import {ActionTypes} from 'src/shared/actions/app'
 
 interface OwnProps {
   auth: Authorization
@@ -65,70 +64,62 @@ const EditTokenOverlay: FC<Props> = props => {
     handleDismiss()
   }
 
+  console.log('props.auth: ', props.auth)
+
   const formatPermissionsObj = () => {
     const {
       auth: {permissions},
     } = props
 
-    const newPerms = {}
-    permissions.map(perm => {
+    const newPerms = permissions.reduce((acc, {action, resource}) => {
+      const {type, id, orgID, name} = resource
       let p
-      if (newPerms.hasOwnProperty(perm.resource.type)) {
-        p = {...newPerms[perm.resource.type]}
-        if (
-          perm.resource.id &&
-          (perm.resource.type === 'buckets' ||
-            perm.resource.type === 'telegrafs')
-        ) {
-          if (p.sublevelPermissions.hasOwnProperty(perm.resource.id)) {
-            p.sublevelPermissions[perm.resource.id].permissions[
-              perm.action
-            ] = true
+      if (acc.hasOwnProperty(type)) {
+        p = {...acc[type]}
+        if (id && (type === 'buckets' || type === 'telegrafs')) {
+          if (p.sublevelPermissions.hasOwnProperty(id)) {
+            p.sublevelPermissions[id].permissions[action] = true
           } else {
-            p.sublevelPermissions[perm.resource.id] = {
-              id: perm.resource.id,
-              orgID: perm.resource.orgID,
-              name: perm.resource.name,
+            p.sublevelPermissions[id] = {
+              id: id,
+              orgID: orgID,
+              name: name,
               permissions: {
-                read: perm.action === 'read',
-                write: perm.action === 'write',
+                read: action === 'read',
+                write: action === 'write',
               },
             }
           }
         } else {
-          p[perm.action] = true
+          p[action] = true
         }
       } else {
-        if (
-          perm.resource.id &&
-          (perm.resource.type === 'buckets' ||
-            perm.resource.type === 'telegrafs')
-        ) {
+        if (id && (type === 'buckets' || type === 'telegrafs')) {
           p = {
             read: false,
             write: false,
             sublevelPermissions: {
-              [perm.resource.id]: {
-                id: perm.resource.id,
-                orgID: perm.resource.orgID,
-                name: perm.resource.name,
+              [id]: {
+                id: id,
+                orgID: orgID,
+                name: name,
                 permissions: {
-                  read: perm.action === 'read',
-                  write: perm.action === 'write',
+                  read: action === 'read',
+                  write: action === 'write',
                 },
               },
             },
           }
         } else {
           p = {
-            read: perm.action === 'read',
-            write: perm.action === 'write',
+            read: action === 'read',
+            write: action === 'write',
           }
         }
       }
 
-      newPerms[perm.resource.type] = p
-    })
+      return {...acc, [type]: p}
+    }, {})
 
     Object.keys(newPerms).map(resource => {
       const p = {...newPerms[resource]}
@@ -144,6 +135,7 @@ const EditTokenOverlay: FC<Props> = props => {
         newPerms[resource] = p
       }
     })
+    console.log('updated PERMS: ', newPerms)
   }
 
   formatPermissionsObj()

@@ -80,13 +80,12 @@ class ResourceAccordion extends Component<Props, State> {
     }
     return resources.map(resource => {
       const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
-      // console.log("resource", resource) resorce = buckets or telegrafs
-      console.log(permissions[resource])
+  
       return (
         <Accordion key={resource}>
           <ResourceAccordionHeader
-            resourceName={resourceName} // Buckets
-            permissions={permissions[resource]} // props.bucketPermissions
+            resourceName={resourceName} 
+            permissions={permissions[resource]} 
             onToggleAll={this.handleToggleAll}
             disabled={false}
           />
@@ -128,7 +127,6 @@ class ResourceAccordion extends Component<Props, State> {
   }
 
   handleToggleAll = (resourceName, permission) => {
-    // resourceName = Buckets || Telegrafs & permission = read || write
     const {permissions} = this.state
 
     const newPerm = {...permissions}

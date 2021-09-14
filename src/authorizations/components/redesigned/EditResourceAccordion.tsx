@@ -20,7 +20,6 @@ export class EditResourceAccordion extends Component<Props, {}> {
 
     return Object.keys(permissions).map(key => {
       const resourceName = key.charAt(0).toUpperCase() + key.slice(1)
-      console.log('resourceName: ', resourceName)
       return (
         <Accordion key={key} expanded={true}>
           <ResourceAccordionHeader

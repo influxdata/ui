@@ -26,6 +26,9 @@ import {Authorization} from 'src/types'
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
 
+// Utills
+import {formatPermissionsObj} from './../../utils/permissions'
+
 interface OwnProps {
   auth: Authorization
   onDismissOverlay: () => void
@@ -65,81 +68,7 @@ const EditTokenOverlay: FC<Props> = props => {
     handleDismiss()
   }
 
-  console.log('props.auth: ', props.auth)
-
-  const formatPermissionsObj = () => {
-    const {
-      auth: {permissions},
-    } = props
-
-    const newPerms = permissions.reduce((acc, {action, resource}) => {
-      const {type, id, orgID, name} = resource
-      let p
-
-      if (acc.hasOwnProperty(type)) {
-        p = {...acc[type]}
-        if (id && (type === 'buckets' || type === 'telegrafs')) {
-          if (p.sublevelPermissions.hasOwnProperty(id)) {
-            p.sublevelPermissions[id].permissions[action] = true
-          } else {
-            p.sublevelPermissions[id] = {
-              id: id,
-              orgID: orgID,
-              name: name,
-              permissions: {
-                read: action === 'read',
-                write: action === 'write',
-              },
-            }
-          }
-        } else {
-          p[action] = true
-        }
-      } else {
-        if (id && (type === 'buckets' || type === 'telegrafs')) {
-          p = {
-            read: false,
-            write: false,
-            sublevelPermissions: {
-              [id]: {
-                id: id,
-                orgID: orgID,
-                name: name,
-                permissions: {
-                  read: action === 'read',
-                  write: action === 'write',
-                },
-              },
-            },
-          }
-        } else {
-          p = {
-            read: action === 'read',
-            write: action === 'write',
-          }
-        }
-      }
-
-      return {...acc, [type]: p}
-    }, {})
-
-    Object.keys(newPerms).map(resource => {
-      const p = {...newPerms[resource]}
-      if (p.sublevelPermissions) {
-        p.read = !Object.keys(p.sublevelPermissions).some(
-          key => p.sublevelPermissions[key].permissions.read === false
-        )
-
-        p.write = !Object.keys(p.sublevelPermissions).some(
-          key => p.sublevelPermissions[key].permissions.write === false
-        )
-
-        newPerms[resource] = p
-      }
-    })
-    console.log('updated PERMS: ', newPerms)
-    return newPerms
-  }
+  
 
   return (
     <Overlay.Container maxWidth={630}>
@@ -207,7 +136,7 @@ const EditTokenOverlay: FC<Props> = props => {
                   </InputLabel>
                 </FlexBox.Child>
               </FlexBox>
-              <EditResourceAccordion permissions={formatPermissionsObj()} />
+              <EditResourceAccordion permissions={formatPermissionsObj(props.auth.permissions)} />
             </FlexBox.Child>
             <Page.ControlBarCenter>
               <FlexBox margin={ComponentSize.Medium}>

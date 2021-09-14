@@ -48,8 +48,6 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
 
   const {contentID} = useParams<ParamsType>()
 
-  const workingConfig = pluginConfig
-
   const handleError = error => {
     setIsValidConfiguration(false)
     setPluginConfig(`${error}`)
@@ -131,7 +129,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
         <Grid.Row className="plugin-create-configuration--editor">
           <div className="config-overlay">
             <TelegrafConfig
-              config={workingConfig}
+              config={pluginConfig}
               onChangeConfig={handleChangeConfig}
             />
           </div>

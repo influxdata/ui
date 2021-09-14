@@ -1,0 +1,31 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.header-cta {
+  border-radius: $cf-radius;
+  background: $c-sapphire;
+  padding: 8px 20px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: $c-neutrino;
+  font-weight: $cf-font-weight--medium;
+  display: flex;
+
+  .header-cta--left {
+    flex: 1;
+
+    .cf-icon {
+      font-size: 24px;
+      color: $g20-white;
+      margin-right: 8px;
+    }
+  }
+
+  .header-cta--right {
+    flex: 0;
+    white-space: nowrap;
+
+    .cf-button {
+      margin-left: 8px;
+    }
+  }
+}

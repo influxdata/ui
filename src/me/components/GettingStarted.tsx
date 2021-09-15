@@ -7,7 +7,6 @@ import {connect, ConnectedProps} from 'react-redux'
 import {
   Panel,
   Button,
-  Gradients,
   InfluxColors,
   ComponentColor,
   ComponentSize,
@@ -64,8 +63,8 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
   return (
     <div className="getting-started">
       <Panel
-        className="getting-started--card highlighted"
-        gradient={Gradients.PolarExpress}
+        className="getting-started--card"
+        backgroundColor={InfluxColors.Pepper}
       >
         <div className="getting-started--card-digit">1</div>
         <Panel.Body>
@@ -85,7 +84,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
       </Panel>
       <Panel
         className="getting-started--card"
-        backgroundColor={InfluxColors.Onyx}
+        backgroundColor={InfluxColors.Pepper}
       >
         <div className="getting-started--card-digit">2</div>
         <Panel.Body>
@@ -105,7 +104,8 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
       </Panel>
       <Panel
         className="getting-started--card"
-        backgroundColor={InfluxColors.Onyx}
+        backgroundColor={InfluxColors.Pepper}
+        style={{backgroundColor: '#333346'}}
       >
         <div className="getting-started--card-digit">3</div>
         <Panel.Body>

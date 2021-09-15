@@ -5,16 +5,16 @@ import {withRouter, RouteComponentProps, Link} from 'react-router-dom'
 
 // Components
 import {
-  ResourceCard,
-  IconFont,
-  FlexBox,
-  ConfirmationButton,
+  Appearance,
   ButtonShape,
   ComponentSize,
-  SquareButton,
-  Popover,
-  Appearance,
+  ConfirmationButton,
+  FlexBox,
+  IconFont,
   List,
+  Popover,
+  SquareButton,
+  ResourceCard,
 } from '@influxdata/clockface'
 import {ComponentColor} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
@@ -105,7 +105,7 @@ class CollectorRow extends PureComponent<
           onConfirm={this.handleDeleteConfig}
           confirmationButtonText="Confirm"
           testID="context-delete-menu"
-        ></ConfirmationButton>
+        />
         <SquareButton
           ref={settingsRef}
           size={ComponentSize.ExtraSmall}

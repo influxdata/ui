@@ -39,7 +39,10 @@ const OrgProfileTab: FC = () => {
   const dispatch = useDispatch()
 
   const handleShowDeleteOverlay = () => {
-    if (isFlagEnabled('trackCancellations')) {
+    if (
+      isFlagEnabled('trackCancellations') &&
+      isFlagEnabled('rudderStackReporting')
+    ) {
       const payload = {
         org: org.id,
         tier: quartzMe?.accountType,

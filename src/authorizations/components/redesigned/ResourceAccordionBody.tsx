@@ -52,7 +52,7 @@ export const ResourceAccordionBody: FC<Props> = props => {
           type={InputToggleType.Checkbox}
           onChange={handleReadToggle}
           size={ComponentSize.ExtraSmall}
-          checked={telegraf.permissions.read} // sublevelPermissions.permissions.read = true or false
+          checked={telegraf.permissions.read} 
           style={{marginRight: '10px'}}
           tabIndex={0}
           disabled={disabled}

@@ -26,7 +26,7 @@ import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
-import {remove} from 'src/flows/context/query'
+import {remove} from 'src/shared/contexts/query'
 
 // Contexts
 import {PopupContext} from 'src/flows/context/popup'

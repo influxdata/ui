@@ -21,8 +21,7 @@ import {
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {remove} from 'src/flows/context/query'
-import {QueryContext} from 'src/flows/context/query'
+import {remove} from 'src/shared/contexts/query'
 
 import Threshold, {
   deadmanType,
@@ -47,9 +46,8 @@ import 'src/flows/pipes/Notification/styles.scss'
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
-  const {query} = useContext(QueryContext)
   const {id, data, update, results, loading} = useContext(PipeContext)
-  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )

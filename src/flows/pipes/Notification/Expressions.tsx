@@ -95,16 +95,6 @@ const categoriesCompare = (a: string, b: string) => {
   return order.indexOf(a) - order.indexOf(b)
 }
 
-const isExpressionsEmpty = (schemaExpressions: SchemaExpressions) => {
-  let isEmptySchemas = 0
-  Object.keys(schemaExpressions).forEach(k => {
-    if (!schemaExpressions[k].length) {
-      isEmptySchemas += 1
-    }
-  })
-  return Object.keys(schemaExpressions).length === isEmptySchemas
-}
-
 const Expressions: FC<Props> = ({parsed, onSelect}) => {
   const [search, setSearch] = useState('')
   const updateSearch = useCallback(
@@ -121,7 +111,7 @@ const Expressions: FC<Props> = ({parsed, onSelect}) => {
 
   let expComponent
 
-  if (isExpressionsEmpty(schemaExpressions)) {
+  if (!Object.keys(schemaExpressions).length) {
     expComponent = (
       <EmptyState size={ComponentSize.ExtraSmall}>
         <EmptyState.Text>No expressions match your search</EmptyState.Text>

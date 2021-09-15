@@ -1,6 +1,6 @@
 import View from './view'
 import './style.scss'
-import {parse} from '@influxdata/flux'
+import {parse} from '@influxdata/flux-lsp-browser'
 import {parseQuery} from 'src/shared/contexts/query'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 

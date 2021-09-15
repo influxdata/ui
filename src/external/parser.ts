@@ -7,7 +7,7 @@ import {File} from 'src/types/ast'
 */
 export const parse = (script): File => {
   if (window) {
-    return require('@influxdata/flux').parse(script)
+    return require('@influxdata/flux-lsp-node').parse(script)
   } else {
     return {
       type: 'File',

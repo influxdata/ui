@@ -46,7 +46,6 @@ const TreeSidebar: FC = () => {
         headerElement={<NavHeader link={`/orgs/${org.id}`} />}
         userElement={<UserWidget />}
         onToggleClick={handleToggleNavExpansion}
-        bannerElement={<CloudUpgradeNavBanner />}
       >
         {generateNavItems().map((item: NavItem) => {
           const linkElement = (className: string): JSX.Element => (

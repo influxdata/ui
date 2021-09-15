@@ -7,7 +7,7 @@ import {DapperScrollbars} from '@influxdata/clockface'
 // Contexts
 import CurrentFlowProvider from 'src/flows/context/flow.current'
 import {RunModeProvider} from 'src/flows/context/runMode'
-import QueryProvider from 'src/flows/context/query'
+import QueryProvider from 'src/query/context/query'
 import {FlowQueryProvider} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'

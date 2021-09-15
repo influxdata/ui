@@ -9,7 +9,7 @@ import {
 } from '@influxdata/clockface'
 import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
-import {QueryContext} from 'src/flows/context/query'
+import {QueryContext} from 'src/query/context/query'
 
 const SampleCSVs = {
   airSensor: 'Sample Air Sensor Data',

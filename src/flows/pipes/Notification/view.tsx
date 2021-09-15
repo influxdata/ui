@@ -21,8 +21,7 @@ import {
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {remove} from 'src/flows/context/query'
-import {QueryContext} from 'src/flows/context/query'
+import {remove, QueryContext} from 'src/query/context/query'
 
 import Threshold, {
   deadmanType,

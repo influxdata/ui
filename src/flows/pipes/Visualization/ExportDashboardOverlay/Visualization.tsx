@@ -2,7 +2,7 @@
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 
 // Components
-import QueryProvider from 'src/flows/context/query'
+import QueryProvider from 'src/query/context/query'
 import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
 import {PopupContext} from 'src/flows/context/popup'
 import {View} from 'src/visualization'

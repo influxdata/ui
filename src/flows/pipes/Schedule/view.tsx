@@ -19,7 +19,7 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 
-import {remove} from 'src/flows/context/query'
+import {remove} from 'src/query/context/query'
 
 import './style.scss'
 

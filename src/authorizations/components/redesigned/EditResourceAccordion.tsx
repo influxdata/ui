@@ -7,7 +7,6 @@ import {Accordion} from '@influxdata/clockface'
 import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
 import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
 
-
 interface Props {
   permissions: any
 }
@@ -19,7 +18,7 @@ export class EditResourceAccordion extends Component<Props> {
       return null
     }
 
-    return Object.keys(permissions).map(key => { 
+    return Object.keys(permissions).map(key => {
       const resourceName = capitalize(key)
       return (
         <Accordion key={key} expanded={true}>

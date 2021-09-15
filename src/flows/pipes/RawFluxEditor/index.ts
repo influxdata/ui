@@ -1,5 +1,5 @@
 import {parse, format_from_js_file} from '@influxdata/flux'
-import {find} from 'src/flows/context/query'
+import {find} from 'src/shared/contexts/query'
 import View from './view'
 import './style.scss'
 

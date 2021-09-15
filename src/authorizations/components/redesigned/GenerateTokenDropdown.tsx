@@ -56,7 +56,7 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
         <Dropdown.Button
           active={active}
           onClick={onClick}
-          icon={IconFont.Plus}
+          icon={IconFont.Plus_New}
           color={ComponentColor.Primary}
           testID="dropdown-button--gen-token"
         >

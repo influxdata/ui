@@ -83,8 +83,31 @@ class TasksPage extends PureComponent<Props, State> {
   }
 
   public componentDidMount() {
-    this.props.getTasks(-1) // -1 means fetch all tasks with no limit, basic means don't include query text
+    this.props.getTasks(-1) // -1 means fetch all tasks with no limit
     this.props.getLabels()
+
+    let sortType: SortTypes = this.state.sortType
+    const params = new URLSearchParams(window.location.search)
+
+    let sortKey: TaskSortKey = 'name'
+    if (params.get('sortKey') === 'status') {
+      sortKey = 'status'
+    } else if (params.get('sortKey') === 'latestCompleted') {
+      sortKey = 'latestCompleted'
+      sortType = SortTypes.Date
+    } else if (params.get('sortKey') === 'every') {
+      sortKey = 'every'
+      sortType = SortTypes.String
+    }
+
+    let sortDirection: Sort = this.state.sortDirection
+    if (params.get('sortDirection') === Sort.Ascending) {
+      sortDirection = Sort.Ascending
+    } else if (params.get('sortDirection') === Sort.Descending) {
+      sortDirection = Sort.Descending
+    }
+
+    this.setState({sortKey, sortDirection, sortType})
   }
 
   public render(): JSX.Element {
@@ -177,6 +200,11 @@ class TasksPage extends PureComponent<Props, State> {
     sortDirection: Sort,
     sortType: SortTypes
   ) => {
+    const url = new URL(location.href)
+    url.searchParams.set('sortKey', sortKey)
+    url.searchParams.set('sortDirection', sortDirection)
+    history.replaceState(null, '', url.toString())
+
     this.setState({sortKey, sortDirection, sortType})
   }
 

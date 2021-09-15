@@ -19,7 +19,7 @@ import {
 
 import './style.scss'
 
-const REGIONS = [
+export const REGIONS = [
   {
     label: 'US West (Oregon)',
     group: 'Amazon Web Services',

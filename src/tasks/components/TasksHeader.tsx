@@ -1,11 +1,11 @@
 // Libraries
 import React, {PureComponent} from 'react'
+import {Link} from 'react-router-dom'
 
 // Components
 import {
   Button,
   ComponentColor,
-  IconFont,
   InputLabel,
   SlideToggle,
   ComponentSize,
@@ -13,6 +13,8 @@ import {
   Sort,
   FlexBox,
   FlexDirection,
+  Icon,
+  IconFont,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
@@ -20,6 +22,7 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
 import {setSearchTerm as setSearchTermAction} from 'src/tasks/actions/creators'
@@ -68,6 +71,16 @@ export default class TasksHeader extends PureComponent<Props> {
           <Page.Title title="Tasks" />
           <RateLimitAlert />
         </Page.Header>
+        <FeatureFlag name="flowsCTA">
+          <div className="header-cta--tasks">
+            <div className="header-cta">
+              <Icon glyph={IconFont.BookPencil} />
+              Now you can use Notebooks to explore your data while building a
+              task
+              <Link to="/notebook/from/task">Create a Task</Link>
+            </div>
+          </div>
+        </FeatureFlag>
         <Page.ControlBar fullWidth={false}>
           <Page.ControlBarLeft>
             <SearchWidget

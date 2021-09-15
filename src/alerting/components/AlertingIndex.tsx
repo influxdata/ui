@@ -3,7 +3,13 @@ import React, {FunctionComponent, useState} from 'react'
 import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
-import {Page, SelectGroup, ButtonShape, Icon, IconFont, Button, ComponentColor} from '@influxdata/clockface'
+import {
+  Page,
+  SelectGroup,
+  ButtonShape,
+  Icon,
+  IconFont,
+} from '@influxdata/clockface'
 import ChecksColumn from 'src/checks/components/ChecksColumn'
 import RulesColumn from 'src/notifications/rules/components/RulesColumn'
 import EndpointsColumn from 'src/notifications/endpoints/components/EndpointsColumn'
@@ -27,7 +33,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 // Types
 import {ResourceType} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import "src/shared/components/cta.scss"
+import 'src/shared/components/cta.scss'
 
 const alertsPath = '/orgs/:orgID/alerting'
 
@@ -40,10 +46,6 @@ const AlertingIndex: FunctionComponent = () => {
 
   const handleTabClick = (selectGroupOptionID: ActiveColumn): void => {
     setActiveColumn(selectGroupOptionID)
-  }
-
-  const gotoNotebooks = () => {
-    history.replace('/notebook/from/notification')
   }
 
   return (
@@ -62,17 +64,10 @@ const AlertingIndex: FunctionComponent = () => {
         >
           <FeatureFlag name="flowsCTA">
             <div className="header-cta">
-              <div className="header-cta--left">
-                <Icon glyph={IconFont.BookPencil} />
-                Now you can use Notebooks to explore your data while building an alert
-              </div>
-              <div className="header-cta--right">
-                Try it out
-                <Button
-                  onClick={gotoNotebooks}
-                  color={ComponentColor.Primary}
-                text="Create an Alert Notebook" />
-              </div>
+              <Icon glyph={IconFont.BookPencil} />
+              Now you can use Notebooks to explore your data while building an
+              alert
+              <Link to="/notebook/from/notification">Create an Alert</Link>
             </div>
           </FeatureFlag>
           <GetResources

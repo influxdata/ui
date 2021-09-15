@@ -2,30 +2,34 @@
 
 .header-cta {
   border-radius: $cf-radius;
-  background: $c-sapphire;
+  background: rgb(74 144 226 / 30%);
   padding: 8px 20px;
   font-size: 14px;
-  margin-bottom: 20px;
-  color: $c-neutrino;
+  margin-bottom: 14px;
+  color: $g15-platinum;
   font-weight: $cf-font-weight--medium;
-  display: flex;
 
-  .header-cta--left {
-    flex: 1;
-
-    .cf-icon {
-      font-size: 24px;
-      color: $g20-white;
-      margin-right: 8px;
-    }
+  a {
+    color: $c-pool;
+    margin-left: 8px;
   }
-
-  .header-cta--right {
-    flex: 0;
-    white-space: nowrap;
-
-    .cf-button {
-      margin-left: 8px;
-    }
+  .cf-icon {
+    margin-right: 14px;
+    font-size: 18px;
   }
+}
+
+.header-cta--tasks {
+  max-width: 1608px;
+  width: 100%;
+  margin: 0 auto;
+
+  .header-cta {
+    margin: 0 32px 14px;
+  }
+}
+
+.header-cta--de {
+  width: 100%;
+  padding: 0 32px;
 }

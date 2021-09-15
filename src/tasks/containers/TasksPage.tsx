@@ -6,7 +6,7 @@ import {Switch, Route} from 'react-router-dom'
 // Components
 import TasksHeader from 'src/tasks/components/TasksHeader'
 import TasksList from 'src/tasks/components/TasksList'
-import {Page, SelectGroup, ButtonShape, Icon, IconFont, Button, ComponentColor} from '@influxdata/clockface'
+import {Page} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import FilterList from 'src/shared/components/FilterList'
 import GetResources from 'src/resources/components/GetResources'
@@ -45,7 +45,7 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
-import "src/shared/components/cta.scss"
+import 'src/shared/components/cta.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
@@ -159,10 +159,6 @@ class TasksPage extends PureComponent<Props, State> {
     sortType: SortTypes
   ) => {
     this.setState({sortKey, sortDirection, sortType})
-  }
-
-  private gotoNotebooks = () => {
-    this.props.history.replace('/notebook/from/task')
   }
 
   private handleActivate = (task: Task) => {

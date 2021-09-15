@@ -84,7 +84,6 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
   private get nextButtonStatus(): ComponentStatus {
     const {telegrafPlugins, buckets} = this.props
     const {selectedBucketName} = this.state
-    console.log('Bucket name', selectedBucketName)
     if (!buckets || !buckets.length) {
       return ComponentStatus.Disabled
     }

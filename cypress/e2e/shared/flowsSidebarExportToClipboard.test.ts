@@ -61,97 +61,77 @@ const verifyClientCode = (client: any) => {
   cy.getByTestID('code-snippet')
     .children()
     .find('code')
-    .contains(client.bucket)
-  cy.getByTestID('code-snippet')
-    .children()
-    .find('code')
     .contains(client.query)
 
   cy.get('.cf-overlay--dismiss').click()
 }
 
-const getClients = (
-  org: string,
-  bucket: string,
-  token: string,
-  query: string
-) => {
+const getClients = (org: string, token: string, query: string) => {
   return [
     {
       name: 'arduino',
-      token: `#define INFLUXDB_TOKEN "<INFLUX_TOKEN>"`,
-      org: `#define INFLUXDB_ORG "${org}"`,
-      bucket: `#define INFLUXDB_BUCKET "${bucket}"`,
-      query,
+      token: `"<INFLUX_TOKEN>"`,
+      org: `"${org}"`,
+      query: query.replace(/"/g, '\\"'),
     },
     {
       name: 'csharp',
       token: `const string token = "${token}";`,
       org: `const string org = "${org}";`,
-      bucket: `const string bucket = "${bucket}";`,
-      query,
+      query: query.replace(/"/g, '""'),
     },
     {
       name: 'go',
-      token: `const token = "${token}"`,
-      org: `const org = "${org}"`,
-      bucket: `const bucket = "${bucket}"`,
+      token: `"${token}"`,
+      org: `client.QueryAPI("${org}")`,
       query,
     },
     {
       name: 'java',
       token: `String token = "${token}";`,
       org: `String org = "${org}";`,
-      bucket: `String bucket = "${bucket}";`,
-      query,
+      query: query.replace(/"/g, '\\"'),
     },
     {
       name: 'javascript-node',
       token: `const token = '${token}'`,
       org: `const org = '${org}'`,
-      bucket: `const bucket = '${bucket}'`,
       query,
     },
     {
       name: 'kotlin',
       token: `val token = "${token}"`,
       org: `val org = "${org}"`,
-      bucket: `val bucket = "${bucket}"`,
       query,
     },
     {
       name: 'php',
       token: `$token = '${token}';`,
       org: `$org = '${org}';`,
-      bucket: `$bucket = '${bucket}';`,
-      query,
+      query: query.replace(/"/g, '\\"'),
     },
     {
       name: 'python',
       token: `token = "${token}"`,
       org: `org = "${org}"`,
-      bucket: `bucket = "${bucket}"`,
       query,
     },
     {
       name: 'ruby',
       token: `token = '${token}'`,
       org: `org = '${org}'`,
-      bucket: `bucket = '${bucket}'`,
       query,
     },
     {
       name: 'scala',
       token: `val token = "${token}"`,
       org: `val org = "${org}"`,
-      bucket: `val bucket = "${bucket}"`,
       query,
     },
     {
       name: 'swift',
       token: `let token = "${token}"`,
       org: `let org = "${org}"`,
-      bucket: `let bucket = "${bucket}"`,
       query,
     },
   ]
@@ -181,7 +161,6 @@ describe('Flows', () => {
     })
 
     it('Export to Clipboard as Code', () => {
-      const bucket = 'defbuck'
       const query = 'buckets()'
 
       createEmptyNotebook()
@@ -190,7 +169,7 @@ describe('Flows', () => {
 
       cy.get('@org').then(({name}: Organization) => {
         cy.get<Authorization[]>('@tokens').then(tokens => {
-          getClients(name, bucket, tokens[0].token, query).forEach(client => {
+          getClients(name, tokens[0].token, query).forEach(client => {
             verifyClientCode(client)
           })
         })
@@ -207,7 +186,7 @@ describe('Flows', () => {
 
       cy.get('@org').then(({name}: Organization) => {
         cy.get<Authorization[]>('@tokens').then(tokens => {
-          getClients(name, bucket, tokens[0].token, query).forEach(client => {
+          getClients(name, tokens[0].token, query).forEach(client => {
             verifyClientCode(client)
           })
         })

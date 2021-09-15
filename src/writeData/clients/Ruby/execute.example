@@ -1,3 +1,8 @@
 query = "<%= query %>"
-tables = client.create_query_api.query(query: query, org: org)
 
+tables = client.create_query_api.query(query: query, org: org)
+tables.each do |_, table|
+  table.records.each do |record|
+    puts "#{record.time} #{record.measurement}: #{record.field}=#{record.value}"
+  end
+end

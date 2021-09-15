@@ -1,2 +1,3 @@
 tables <- client$query('<%= query %>')
+tables
 

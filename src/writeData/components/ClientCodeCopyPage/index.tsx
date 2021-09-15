@@ -30,6 +30,10 @@ interface Props {
 const ClientCodeCopyPage: FC<Props> = ({contentID}) => {
   const def = CLIENT_DEFINITIONS[contentID]
 
+  let sampleCode = `${def.initialize}${def.execute}`
+  if (def.executeFull) {
+    sampleCode = `${def.executeFull}`
+  }
   return (
     <GetResources
       resources={[ResourceType.Authorizations, ResourceType.Buckets]}
@@ -47,7 +51,7 @@ const ClientCodeCopyPage: FC<Props> = ({contentID}) => {
           )}
           <CodeSampleBlock
             name="Initialize and Execute Flux"
-            sample={`${def.initialize}${def.execute}`}
+            sample={sampleCode}
           />
         </div>
       </div>

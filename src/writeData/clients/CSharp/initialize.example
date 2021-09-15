@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
@@ -16,7 +17,7 @@ namespace Examples
       const string bucket = "<%= bucket %>";
       const string org = "<%= org %>";
 
-      var client = InfluxDBClientFactory.Create("<%= server %>", token.ToCharArray());
+      using var client = InfluxDBClientFactory.Create("<%= server %>", token);
     }
   }
 }

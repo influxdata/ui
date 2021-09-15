@@ -8,5 +8,4 @@ token = "<%= token %>"
 org = "<%= org %>"
 bucket = "<%= bucket %>"
 
-client = InfluxDBClient(url="<%= server %>", token=token)
-
+with InfluxDBClient(url="<%= server %>", token=token, org=org) as client:

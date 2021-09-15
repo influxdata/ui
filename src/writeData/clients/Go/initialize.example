@@ -3,17 +3,15 @@ package main
 import (
   "context"
   "fmt"
-  "github.com/influxdata/influxdb-client-go/v2"
   "time"
+
+   "github.com/influxdata/influxdb-client-go/v2"
 )
 
 func main() {
+  // Create a client
   // You can generate a Token from the "Tokens Tab" in the UI
-  const token = "<%= token %>"
-  const bucket = "<%= bucket %>"
-  const org = "<%= org %>"
-
-  client := influxdb2.NewClient("<%= server %>", token)
+  client := influxdb2.NewClient("<%= server %>", "<%= token %>")
   // always close client at the end
   defer client.Close()
 }

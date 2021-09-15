@@ -2,9 +2,9 @@ const {Point} = require('@influxdata/influxdb-client')
 const writeApi = client.getWriteApi(org, bucket)
 writeApi.useDefaultTags({host: 'host1'})
 
-const point = new Point('mem')
-  .floatField('used_percent', 23.43234543)
+const point = new Point('mem').floatField('used_percent', 23.43234543)
 writeApi.writePoint(point)
+
 writeApi
     .close()
     .then(() => {
@@ -14,4 +14,3 @@ writeApi
         console.error(e)
         console.log('Finished ERROR')
     })
-

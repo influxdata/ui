@@ -87,6 +87,12 @@ const ClientLibrariesPage: FC = () => {
     )
   }
 
+  let dispose
+
+  if (def.dispose) {
+    dispose = <CodeSampleBlock name="Dispose the Client" sample={def.dispose} />
+  }
+
   return (
     <GetResources
       resources={[ResourceType.Authorizations, ResourceType.Buckets]}
@@ -122,6 +128,7 @@ const ClientLibrariesPage: FC = () => {
                     name="Execute a Flux query"
                     sample={def.execute}
                   />
+                  {dispose}
                 </div>
               </div>
             </Page.Contents>

@@ -18,7 +18,7 @@ import {
   ComponentColor,
   Page,
 } from '@influxdata/clockface'
-import {EditResourceAccordion} from './EditResourceAccordion'
+import {EditResourceAccordion} from 'src/authorizations/components/redesigned/EditResourceAccordion'
 
 // Types
 import {Authorization} from 'src/types'
@@ -27,7 +27,7 @@ import {Authorization} from 'src/types'
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
 
 // Utills
-import {formatPermissionsObj} from './../../utils/permissions'
+import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
 
 interface OwnProps {
   auth: Authorization

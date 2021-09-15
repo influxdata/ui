@@ -1,25 +1,26 @@
 // Libraries
 import React, {Component} from 'react'
-import {isEmpty} from 'lodash'
+import {isEmpty, capitalize} from 'lodash'
 
 import {Accordion} from '@influxdata/clockface'
 
-import {ResourceAccordionHeader} from './ResourceAccordionHeader'
-import {ResourceAccordionBody} from './ResourceAccordionBody'
+import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
+import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
+
 
 interface Props {
   permissions: any
 }
 
-export class EditResourceAccordion extends Component<Props, {}> {
+export class EditResourceAccordion extends Component<Props> {
   public render() {
     const {permissions} = this.props
     if (!permissions) {
       return null
     }
 
-    return Object.keys(permissions).map(key => {
-      const resourceName = key.charAt(0).toUpperCase() + key.slice(1)
+    return Object.keys(permissions).map(key => { 
+      const resourceName = capitalize(key)
       return (
         <Accordion key={key} expanded={true}>
           <ResourceAccordionHeader

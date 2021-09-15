@@ -139,15 +139,15 @@ export enum BucketTab {
 export const formatPermissionsObj = permissions => {
   const newPerms = permissions.reduce((acc, {action, resource}) => {
     const {type, id, orgID, name} = resource
-    let p
+    let accordionPermission
 
     if (acc.hasOwnProperty(type)) {
-      p = {...acc[type]}
+      accordionPermission = {...acc[type]}
       if (id && (type === 'buckets' || type === 'telegrafs')) {
-        if (p.sublevelPermissions.hasOwnProperty(id)) {
-          p.sublevelPermissions[id].permissions[action] = true
+        if (accordionPermission.sublevelPermissions.hasOwnProperty(id)) {
+          accordionPermission.sublevelPermissions[id].permissions[action] = true
         } else {
-          p.sublevelPermissions[id] = {
+          accordionPermission.sublevelPermissions[id] = {
             id: id,
             orgID: orgID,
             name: name,
@@ -158,11 +158,11 @@ export const formatPermissionsObj = permissions => {
           }
         }
       } else {
-        p[action] = true
+        accordionPermission[action] = true
       }
     } else {
       if (id && (type === 'buckets' || type === 'telegrafs')) {
-        p = {
+        accordionPermission = {
           read: false,
           write: false,
           sublevelPermissions: {
@@ -178,28 +178,28 @@ export const formatPermissionsObj = permissions => {
           },
         }
       } else {
-        p = {
+        accordionPermission = {
           read: action === 'read',
           write: action === 'write',
         }
       }
     }
 
-    return {...acc, [type]: p}
+    return {...acc, [type]: accordionPermission}
   }, {})
 
-  Object.keys(newPerms).map(resource => {
-    const p = {...newPerms[resource]}
-    if (p.sublevelPermissions) {
-      p.read = !Object.keys(p.sublevelPermissions).some(
-        key => p.sublevelPermissions[key].permissions.read === false
+  Object.keys(newPerms).forEach(resource => {
+    const accordionPermission = {...newPerms[resource]}
+    if (accordionPermission.sublevelPermissions) {
+      accordionPermission.read = !Object.keys(accordionPermission.sublevelPermissions).some(
+        key => accordionPermission.sublevelPermissions[key].permissions.read === false
       )
 
-      p.write = !Object.keys(p.sublevelPermissions).some(
-        key => p.sublevelPermissions[key].permissions.write === false
+      accordionPermission.write = !Object.keys(accordionPermission.sublevelPermissions).some(
+        key => accordionPermission.sublevelPermissions[key].permissions.write === false
       )
 
-      newPerms[resource] = p
+      newPerms[resource] = accordionPermission
     }
   })
   return newPerms

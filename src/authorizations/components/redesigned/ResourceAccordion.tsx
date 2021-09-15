@@ -4,9 +4,9 @@ import {isEmpty} from 'lodash'
 
 // Clockface
 import {Accordion} from '@influxdata/clockface'
-import {ResourceAccordionHeader} from './ResourceAccordionHeader'
+import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
 import GetResources from 'src/resources/components/GetResources'
-import {ResourceAccordionBody} from './ResourceAccordionBody'
+import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
 
 // Types
 import {AppState, Telegraf, ResourceType} from 'src/types'

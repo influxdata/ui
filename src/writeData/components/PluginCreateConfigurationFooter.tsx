@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {useParams} from 'react-router'
 
 // Components
 import {
@@ -21,6 +22,10 @@ import {PluginCreateConfigurationStepProps} from 'src/writeData/components/Plugi
 // Selectors
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 import {getAll} from 'src/resources/selectors'
+
+type ParamsType = {
+  [param: string]: string
+}
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
@@ -43,10 +48,24 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
     return Boolean(telegrafConfig)
   }, [telegrafConfig])
 
+  const {contentID} = useParams<ParamsType>()
+
   useEffect(() => {
     if (telegrafConfig) {
       const {config} = telegrafConfig
-      onUpdateTelegraf({...telegrafConfig, config: `${config}${pluginConfig}`})
+      const position =
+        typeof config === 'string'
+          ? config.indexOf(`[[inputs.${contentID}]]`)
+          : -1
+      const updatedConfig =
+        position === -1
+          ? `${config}${pluginConfig}`
+          : `${config.substring(0, position)}${pluginConfig}`
+
+      onUpdateTelegraf({
+        ...telegrafConfig,
+        config: updatedConfig,
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldTelegrafUpdate])

@@ -24,7 +24,10 @@ const CancellationPanel: FC = () => {
   const org = useSelector(getOrg)
 
   const handleCancelService = () => {
-    if (isFlagEnabled('trackCancellations')) {
+    if (
+      isFlagEnabled('trackCancellations') &&
+      isFlagEnabled('rudderStackReporting')
+    ) {
       const payload = {
         org: org.id,
         tier: quartzMe?.accountType,

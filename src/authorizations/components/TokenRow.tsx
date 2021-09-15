@@ -18,6 +18,8 @@ import {
   ComponentColor,
   ResourceCard,
   IconFont,
+  ConfirmationButton,
+  ButtonShape,
 } from '@influxdata/clockface'
 
 import {Context} from 'src/clockface'
@@ -78,7 +80,7 @@ class TokenRow extends PureComponent<Props> {
 
   private get contextMenu(): JSX.Element {
     return (
-      <Context>
+      /*  <Context>
         <Context.Menu icon={IconFont.Trash} color={ComponentColor.Danger}>
           <Context.Item
             label="Delete"
@@ -86,7 +88,19 @@ class TokenRow extends PureComponent<Props> {
             testID="delete-token"
           />
         </Context.Menu>
-      </Context>
+      </Context> */
+      <FlexBox margin={ComponentSize.ExtraSmall}>
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, Delete this token"
+          onConfirm={this.handleDelete}
+          confirmationButtonText="Confirm"
+          testID={`context-delete-menu`}
+        />
+      </FlexBox>
     )
   }
 

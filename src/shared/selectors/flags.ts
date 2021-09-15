@@ -47,6 +47,7 @@ export const OSS_FLAGS = {
   simpleTable: false,
   exploreWithFlows: false,
   createWithFlows: false,
+  notebooksExp: false,
 }
 
 export const CLOUD_FLAGS = {
@@ -95,6 +96,7 @@ export const CLOUD_FLAGS = {
   simpleTable: false,
   exploreWithFlows: false,
   createWithFlows: false,
+  notebooksExp: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

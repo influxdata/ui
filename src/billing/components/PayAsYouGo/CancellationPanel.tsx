@@ -6,12 +6,37 @@ import {
   ComponentColor,
   Button,
 } from '@influxdata/clockface'
+import {track} from 'rudder-sdk-js'
 
 // Components
 import CancellationOverlay from 'src/billing/components/PayAsYouGo/CancellationOverlay'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {useSelector} from 'react-redux'
+import {getQuartzMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
+
 const CancellationPanel: FC = () => {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
+  const quartzMe = useSelector(getQuartzMe)
+  const org = useSelector(getOrg)
+
+  const handleCancelService = () => {
+    if (isFlagEnabled('trackCancellations')) {
+      const payload = {
+        org: org.id,
+        tier: quartzMe?.accountType,
+        email: quartzMe?.email,
+      }
+
+      event('Cancel Service Initiated', payload)
+      track('CancelServiceInitiation', payload)
+    }
+
+    setIsOverlayVisible(true)
+  }
 
   return (
     <>
@@ -23,7 +48,7 @@ const CancellationPanel: FC = () => {
           <h4>Cancel Service</h4>
           <Button
             color={ComponentColor.Default}
-            onClick={() => setIsOverlayVisible(true)}
+            onClick={handleCancelService}
             text="Cancel Service"
             size={ComponentSize.Small}
             testID="cancel-service--button"

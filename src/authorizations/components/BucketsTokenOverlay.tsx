@@ -5,10 +5,6 @@ import {connect, ConnectedProps} from 'react-redux'
 import {
   IconFont,
   ComponentColor,
-  FlexBox,
-  AlignItems,
-  FlexDirection,
-  ComponentSize,
   Button,
   ButtonType,
   Grid,

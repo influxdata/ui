@@ -150,7 +150,7 @@ describe('tokens', () => {
     })
   })
 
-  it.only('can delete a token', () => {
+  it('can delete a token', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
 
     cy.intercept('**/authorizations/*').as('deleteToken')
@@ -342,7 +342,7 @@ describe('tokens', () => {
     cy.getByTestID('token-card renamed-description').should('be.visible')
   })
 
-  it.only('can do sorting', () => {
+  it('can do sorting', () => {
     cy.get<string>('@defaultUser').then((defaultUser: string) => {
       cy.getByTestID(`token-card ${defaultUser}'s Token`).within(() => {
         cy.getByTestID('context-delete-menu--button').click()

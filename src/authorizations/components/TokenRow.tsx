@@ -22,8 +22,6 @@ import {
   ButtonShape,
 } from '@influxdata/clockface'
 
-import {Context} from 'src/clockface'
-
 // Types
 import {Authorization} from 'src/types'
 import {
@@ -98,7 +96,7 @@ class TokenRow extends PureComponent<Props> {
           confirmationLabel="Yes, Delete this token"
           onConfirm={this.handleDelete}
           confirmationButtonText="Confirm"
-          testID={`context-delete-menu`}
+          testID="context-delete-menu"
         />
       </FlexBox>
     )

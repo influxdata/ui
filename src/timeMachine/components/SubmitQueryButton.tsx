@@ -12,7 +12,7 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
+import {executeQueries, saveAndExecuteQueries, saveDraftQueries, setQueryResults} from 'src/timeMachine/actions/queries'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
@@ -30,6 +30,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {AppState, RemoteDataState} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {GlobalQueryContextType} from 'src/query/context'
+import { RunQuerySuccessResult } from 'src/shared/apis/query'
 
 interface OwnProps {
   color?: ComponentColor
@@ -136,7 +137,24 @@ class SubmitQueryButton extends PureComponent<Props> {
   private handleClick = (): void => {
     event('SubmitQueryButton click')
 
+    if (isFlagEnabled('GlobalQueryContext')) {
+      this.blahSubmit()
+      return
+    }
     this.props.onSubmit(null, this.props.globalQueryContext)
+  }
+
+  private blahSubmit = () => {
+    this.props.saveDraftQueries()
+    this.props.setQueryResults(RemoteDataState.Loading, [], null)
+    // dispatch(executeQueries(abortController, queryContext))
+
+    Promise.all(this.props.queries.map(q => {
+      return this.props.globalQueryContext?.runGlobalBasic(q.text, {vars: this.props.allVars})
+    })).then(results => {
+      const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
+      setQueryResults(RemoteDataState.Done, files, 0, 'NOT EERROR', [])
+    })
   }
 
   private handleCancelClick = (): void => {
@@ -144,11 +162,7 @@ class SubmitQueryButton extends PureComponent<Props> {
       this.props.onNotify(queryCancelRequest())
     }
 
-    if (isFlagEnabled('GlobalQueryContext')) {
-      this.props.globalQueryContext.cancel(this.props.activeQueryText)
-    } else {
-      this.props.cancelAllRunningQueries()
-    }
+    this.props.cancelAllRunningQueries()
   }
 }
 
@@ -156,6 +170,7 @@ export {SubmitQueryButton}
 
 const mstp = (state: AppState) => {
   const queryStatus = getActiveTimeMachine(state).queryResults.status
+  const queries = getActiveTimeMachine(state).view.properties.queries
 
   const activeQueryText = getActiveQuery(state).text
   const submitButtonDisabled = activeQueryText === ''
@@ -164,10 +179,12 @@ const mstp = (state: AppState) => {
 
   const queryID = generateHashedQueryID(activeQueryText, allVars, orgID)
 
-  return {queryID, submitButtonDisabled, queryStatus, activeQueryText, allVars}
+  return {queryID, submitButtonDisabled, queryStatus, queries, allVars}
 }
 
 const mdtp = {
+  saveDraftQueries,
+  setQueryResults,
   onSubmit: saveAndExecuteQueries,
   onNotify: notify,
   cancelAllRunningQueries: cancelAllRunningQueries,

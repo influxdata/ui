@@ -283,20 +283,12 @@ export const executeQueries = (
   const queries = activeTimeMachine.view.properties.queries.filter(
     ({text}) => !!text.trim()
   )
-  // const {runGlobalBasic, cancel: cancelGlobalQueries, getQueryHash} = useContext(GlobalQueryContext)
-  // console.log('I AM HERE')
 
   if (!queries.length) {
     dispatch(setQueryResults(RemoteDataState.Done, [], null))
   }
 
   try {
-    // Cancel pending queries before issuing new ones
-    // if (isFlagEnabled('GlobalQueryContext')) {
-    //   cancelGlobalQueries()
-    // } else {
-    //   cancelAllRunningQueries()
-    // }
     cancelAllRunningQueries()
 
     dispatch(setQueryResults(RemoteDataState.Loading, [], null))
@@ -315,6 +307,15 @@ export const executeQueries = (
     const pendingResults = queries.map(({text}) => {
       event('executeQueries query', {}, {query: text})
       const orgID = getOrgIDFromBuckets(text, allBuckets) || getOrg(state).id
+      if (isFlagEnabled('GlobalQueryContext')) {
+        const res = queryContext.runGlobalBasic(text, {vars: allVariables})
+
+        return {
+          id: queryContext.getQueryHash(text, {vars: allVariables}),
+          promise: res,
+          cancel: queryContext.cancel,
+        } as CancelBox<RunQueryResult>
+      }
 
       if (getOrg(state).id === orgID) {
         event('orgData_queried')
@@ -345,34 +346,11 @@ export const executeQueries = (
 
         return result
       }
-      if (isFlagEnabled('GlobalQueryContext')) {
-        console.log(
-          'Continue Here: need to build variables override with window vars'
-        )
-        const _override: QueryScope = {
-          region: window.location.origin,
-          vars: {
-            ...allVariables,
-          },
-        }
 
-        const res = queryContext.runGlobalBasic(text, _override)
+      const result = runQuery(orgID, text, extern, abortController)
+      setQueryByHashID(queryID, result)
 
-        return {
-          id: queryContext.getQueryHash(text, {vars: allVariables}),
-          promise: res,
-          cancel: queryContext.cancel,
-        } as CancelBox<RunQueryResult>
-      } else {
-        const result = runQuery(orgID, text, extern, abortController)
-        setQueryByHashID(queryID, result)
-
-        return result
-      }
-      // const result = runQuery(orgID, text, extern, abortController)
-      // setQueryByHashID(queryID, result)
-
-      // return result
+      return result
     })
     const results = await Promise.all(pendingResults.map(r => r.promise))
 
@@ -463,7 +441,7 @@ interface SaveDraftQueriesAction {
   type: 'SAVE_DRAFT_QUERIES'
 }
 
-const saveDraftQueries = (): SaveDraftQueriesAction => ({
+export const saveDraftQueries = (): SaveDraftQueriesAction => ({
   type: 'SAVE_DRAFT_QUERIES',
 })
 

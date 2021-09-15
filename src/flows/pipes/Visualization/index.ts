@@ -1,6 +1,6 @@
 import View from './view'
 import './style.scss'
-import {parse} from '@influxdata/flux'
+import {parse} from '@influxdata/flux-lsp-node'
 
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'

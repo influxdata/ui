@@ -160,7 +160,7 @@
     "@docsearch/react": "^3.0.0-alpha.37",
     "@influxdata/clockface": "^2.11.9",
     "@influxdata/flux": "^0.5.1",
-    "@influxdata/flux-lsp-browser": "^0.5.53",
+    "@influxdata/flux-lsp-browser": "/Users/gene/repos/flux-lsp/pkg-browser",
     "@influxdata/giraffe": "^2.18.6",
     "@influxdata/influx": "0.5.5",
     "@influxdata/influxdb-templates": "0.9.0",

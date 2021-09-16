@@ -584,6 +584,11 @@ export const setupUser = (): Cypress.Chainable<any> => {
     .then(response => {
       if (response.status === 200) {
         Cypress.env('defaultUser', response.body.user.name)
+        if (defaultUser) {
+          cy.log(`re-provsioned user ${defaultUser} successfully`)
+        } else {
+          cy.log(`provisioned new user ${response.body.user.name} successfully`)
+        }
         return response
       } else {
         // if for some reason the user wasn't flushed, do it now
@@ -599,6 +604,7 @@ export const flush = (): Cypress.Chainable<Cypress.Response<any>> => {
       .request({method: 'POST', url: `/debug/flush?user=${defaultUser}`})
       .then(response => {
         expect(response.status).to.eq(200)
+        cy.log(`flushed user ${defaultUser} successfully`)
         return response
       })
   }

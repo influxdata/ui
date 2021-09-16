@@ -1,5 +1,9 @@
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useState, useContext, useEffect} from 'react'
 import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
+
+// Actions 
+import {getBuckets} from 'src/buckets/actions/thunks'
+import {getTelegrafs} from 'src/telegrafs/actions/thunks'
 
 // Components
 import {
@@ -15,6 +19,7 @@ import {
   ButtonShape,
   InputLabel,
   JustifyContent,
+  RemoteDataState,
 } from '@influxdata/clockface'
 
 import ResourceAccordion from './ResourceAccordion'
@@ -22,7 +27,10 @@ import ResourceAccordion from './ResourceAccordion'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {connect} from 'react-redux'
-import {AppState} from 'src/types'
+import {AppState, ResourceType} from 'src/types'
+import { getResourcesStatus } from 'src/resources/selectors/getResourcesStatus'
+import { getAll } from 'src/resources/selectors'
+import { Bucket, Telegraf } from 'src/client'
 
 interface OwnProps {
   onClose: () => void
@@ -30,15 +38,49 @@ interface OwnProps {
 
 interface StateProps {
   allResources: string[]
+  telegrafPermissions: any 
+  bucketPermissions: any
+  remoteDataState: RemoteDataState
 }
 
-const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
+interface DispatchProps {
+  getBuckets: () => void 
+  getTelegrafs: () => void
+}
+
+type Props = OwnProps & StateProps & DispatchProps
+
+const CustomApiTokenOverlay: FC<Props> = props => {
+
+  const {onClose} = useContext(OverlayContext)
+
+  const [description, setDescription] = useState('')
+  const [permissions, setPermissions] = useState({})
+
+  useEffect(() => {
+    props.getBuckets()
+    props.getTelegrafs()
+    console.log("telegraf and bucket perm: ", props.telegrafPermissions, props.bucketPermissions)
+    const perms = {}
+      props.allResources.map(resource => {
+        if (resource === 'telegrafs') {
+          perms[resource] = props.telegrafPermissions
+        } else if (resource === 'buckets') {
+          perms[resource] = props.bucketPermissions
+        } else {
+          perms[resource] = {read: false, write: false}
+        }
+      })
+      setPermissions(perms)
+      console.log("perms: ", perms)
+  
+  },[])
+
+
   const handleDismiss = () => {
     props.onClose()
   }
-
-  const {onClose} = useContext(OverlayContext)
-  const [description, setDescription] = useState('')
+  console.log("state permissions: ", permissions)
 
   const handleInputChange = event => {
     setDescription(event.target.value)
@@ -132,10 +174,54 @@ const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
   )
 }
 
+
 const mstp = (state: AppState) => {
+  const remoteDataState = getResourcesStatus(state, [
+    ResourceType.Buckets,
+    ResourceType.Telegrafs
+  ])
+
+  const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
+  const telegrafPermissions = {
+    read: false,
+    write: false,
+    sublevelPermissions: {},
+  }
+  telegrafs.forEach(telegraf => {
+    telegrafPermissions.sublevelPermissions[telegraf.id] = {
+      id: telegraf.id,
+      orgID: telegraf.orgID,
+      name: telegraf.name,
+      permissions: {read: false, write: false},
+    }
+  })
+
+  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
+  const bucketPermissions = {
+    read: false,
+    write: false,
+    sublevelPermissions: {},
+  }
+  buckets.forEach(bucket => {
+    bucketPermissions.sublevelPermissions[bucket.id] = {
+      id: bucket.id,
+      orgID: bucket.orgID,
+      name: bucket.name,
+      permissions: {read: false, write: false},
+    }
+  })
+
   return {
     allResources: state.resources.tokens.allResources,
+    telegrafPermissions,
+    bucketPermissions,
+    remoteDataState
   }
 }
 
-export default connect(mstp)(CustomApiTokenOverlay)
+const mdtp = {
+  getBuckets, 
+  getTelegrafs,
+}
+
+export default connect(mstp, mdtp)(CustomApiTokenOverlay)

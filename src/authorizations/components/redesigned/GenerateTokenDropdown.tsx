@@ -51,12 +51,12 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
   return (
     <Dropdown
       testID="dropdown--gen-token"
-      style={{width: '160px'}}
+      style={{width: '176px'}}
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}
           onClick={onClick}
-          icon={IconFont.Plus}
+          icon={IconFont.Plus_New}
           color={ComponentColor.Primary}
           testID="dropdown-button--gen-token"
         >

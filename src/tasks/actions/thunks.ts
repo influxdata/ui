@@ -2,7 +2,7 @@
 import {push, goBack, RouterAction} from 'connected-react-router'
 import {Dispatch} from 'react'
 import {normalize} from 'normalizr'
-import {format_from_js_file} from '@influxdata/flux-lsp-node'
+import {format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 // APIs
 import * as api from 'src/client'

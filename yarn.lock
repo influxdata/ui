@@ -863,12 +863,6 @@
 "@influxdata/flux-lsp-browser@file:../flux-lsp/pkg-browser":
   version "0.6.2"
 
-"@influxdata/flux-lsp-node@/Users/gene/repos/flux-lsp/pkg-node":
-  version "0.6.2"
-
-"@influxdata/flux-lsp-node@file:../flux-lsp/pkg-node":
-  version "0.6.2"
-
 "@influxdata/giraffe@^2.18.11":
   version "2.18.11"
   resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.18.11.tgz#5fd6ebd84dc20251f29333b6c6543e924a847bc0"

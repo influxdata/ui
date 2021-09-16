@@ -418,6 +418,7 @@ describe('Flows', () => {
       cy.getByTestID('add-flow-btn--notification').click()
       cy.getByTestID('time-machine-submit-button').click()
       cy.getByTestID('notification-exp-button').scrollIntoView()
+      cy.getByTestID('text-editor').should('be.visible')
 
       // open exp sidebar panel
       cy.getByTestID('notification-exp-button').should('be.visible')

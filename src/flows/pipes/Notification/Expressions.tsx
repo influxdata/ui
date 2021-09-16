@@ -55,19 +55,19 @@ const parsedResultToSchema = (
   ]
   const schema = {
     measurements: new Set<string>(
-      measurements.filter(m => m.toLowerCase().includes(search.toLowerCase()))
+      measurements?.filter(m => m.toLowerCase().includes(search.toLowerCase()))
     ),
     fields: new Set<string>(
-      fields.filter(f => f.toLowerCase().includes(search.toLowerCase()))
+      fields?.filter(f => f.toLowerCase().includes(search.toLowerCase()))
     ),
     tags: new Set<string>(
-      columns.filter(
+      columns?.filter(
         c =>
           out.columns[c].data.filter(d => d) &&
           c.toLowerCase().includes(search.toLowerCase())
       )
     ),
-    columns: out.columnKeys.filter(
+    columns: out.columnKeys?.filter(
       c =>
         columnsToInclude.includes(c) &&
         c.toLowerCase().includes(search.toLowerCase())

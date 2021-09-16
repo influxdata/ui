@@ -29,6 +29,7 @@ const NotificationMonacoEditor: FC<Props> = ({
     if (setEditorInstance) {
       setEditorInstance(editor)
     }
+    editor.focus()
   }
 
   return (

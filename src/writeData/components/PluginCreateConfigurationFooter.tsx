@@ -58,9 +58,9 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
           ? config.indexOf(`[[inputs.${contentID}]]`)
           : -1
       const updatedConfig =
-        position === -1
-          ? `${config}${pluginConfig}`
-          : `${config.substring(0, position)}${pluginConfig}`
+        position >= 0
+          ? `${config.substring(0, position)}${pluginConfig}`
+          : `${config}${pluginConfig}`
 
       onUpdateTelegraf({
         ...telegrafConfig,

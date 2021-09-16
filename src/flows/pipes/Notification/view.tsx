@@ -12,27 +12,28 @@ import {
   IconFont,
   ComponentSize,
   Panel,
-  TextArea,
   AlignItems,
   JustifyContent,
   Dropdown,
   ComponentColor,
   Button,
+  InfluxColors,
 } from '@influxdata/clockface'
+import MonacoEditor from 'react-monaco-editor'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {remove} from 'src/flows/context/query'
-import {QueryContext} from 'src/flows/context/query'
-
+import {remove} from 'src/shared/contexts/query'
+import Expressions from 'src/flows/pipes/Notification/Expressions'
 import Threshold, {
   deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Notification/Threshold'
 import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
+import {SidebarContext} from 'src/flows/context/sidebar'
 
 // Types
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, EditorType} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 // Utils
@@ -42,18 +43,22 @@ import {
   testNotificationSuccess,
   testNotificationFailure,
 } from 'src/shared/copy/notifications'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import LANGID from 'src/external/monaco.markdown.syntax'
+import THEME_NAME from 'src/external/monaco.flux.theme'
+
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
-  const {query} = useContext(QueryContext)
   const {id, data, update, results, loading} = useContext(PipeContext)
-  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
-
+  const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   let intervalError = ''
   let offsetError = ''
 
@@ -122,9 +127,9 @@ const Notification: FC<PipeProp> = ({Context}) => {
     }
   )
 
-  const updateMessage = evt => {
+  const updateMessage = text => {
     update({
-      message: evt.target.value,
+      message: text,
     })
   }
 
@@ -148,6 +153,34 @@ const Notification: FC<PipeProp> = ({Context}) => {
       endpointData: DEFAULT_ENDPOINTS[which].data,
     })
   }
+
+  const editorDidMount = (editor: EditorType) => {
+    setEditorInstance(editor)
+  }
+
+  const inject = useCallback(
+    (exp: string): void => {
+      if (!editorInstance) {
+        return
+      }
+      const p = editorInstance.getPosition()
+      const edits = [
+        {
+          range: new window.monaco.Range(
+            p.lineNumber,
+            p.column,
+            p.lineNumber,
+            p.column
+          ),
+          text: ` r.${exp} `,
+        },
+      ]
+
+      editorInstance.executeEdits('', edits)
+      updateMessage(editorInstance.getValue())
+    },
+    [editorInstance]
+  )
 
   const warningMessage = useMemo(() => {
     if (!hasTaskOption) {
@@ -434,6 +467,15 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
     }
   }
 
+  const launcher = () => {
+    if (showId === id) {
+      hideSub()
+    } else {
+      show(id)
+      showSub(<Expressions parsed={results?.parsed} onSelect={inject} />)
+    }
+  }
+
   if (
     loading === RemoteDataState.NotStarted ||
     loading === RemoteDataState.Loading
@@ -475,7 +517,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
     <Context>
       <div className="notification">
         <Threshold />
-        <FlexBox margin={ComponentSize.Medium}>
+        <FlexBox margin={ComponentSize.Medium} style={{padding: '24px 0'}}>
           <FlexBox.Child grow={1} shrink={1}>
             <Form.Element
               label="Check Every"
@@ -520,50 +562,106 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
           </FlexBox.Child>
         </FlexBox>
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
-          <Form.Element
-            required={true}
-            label="Endpoint"
-            className="endpoint-dropdown--element"
-          >
-            <Dropdown.Menu className="flows-endpoints--dropdown">
-              {avail}
-            </Dropdown.Menu>
-          </Form.Element>
-
-          <FlexBox.Child grow={1} shrink={1}>
-            <Form.Element label="Details" className="endpoint-details--element">
-              {React.createElement(DEFAULT_ENDPOINTS[data.endpoint].view)}
-            </Form.Element>
-          </FlexBox.Child>
-
-          <FlexBox.Child grow={2} shrink={1} style={{display: 'flex'}}>
-            <Form.Element label="Message Format" required={true}>
-              <TextArea
-                name="message"
-                rows={10}
-                value={data.message}
-                onChange={updateMessage}
-                size={ComponentSize.Medium}
-                style={{height: '100%'}}
-              />
+          <FlexBox.Child>
+            <Form.Element label="Notification" required={true}>
+              <Panel backgroundColor={InfluxColors.Onyx}>
+                <Panel.Body>
+                  <FlexBox
+                    justifyContent={JustifyContent.FlexEnd}
+                    alignItems={AlignItems.FlexEnd}
+                    margin={ComponentSize.Medium}
+                  >
+                    {isFlagEnabled('notebooksExp') && (
+                      <FlexBox.Child grow={0} shrink={0}>
+                        <Button
+                          text="${exp}"
+                          onClick={launcher}
+                          color={ComponentColor.Secondary}
+                          testID="notification-exp-button"
+                        />
+                      </FlexBox.Child>
+                    )}
+                    <FlexBox.Child grow={0} shrink={0}>
+                      <Button
+                        text="Test Alert"
+                        status={
+                          status === RemoteDataState.Loading
+                            ? ComponentStatus.Loading
+                            : ComponentStatus.Default
+                        }
+                        onClick={handleTestEndpoint}
+                        color={ComponentColor.Primary}
+                      />
+                    </FlexBox.Child>
+                  </FlexBox>
+                  <FlexBox
+                    alignItems={AlignItems.Stretch}
+                    margin={ComponentSize.Medium}
+                  >
+                    <Form.Element
+                      required={true}
+                      label="Endpoint"
+                      className="endpoint-dropdown--element"
+                    >
+                      <Dropdown.Menu className="flows-endpoints--dropdown">
+                        {avail}
+                      </Dropdown.Menu>
+                    </Form.Element>
+                    <FlexBox.Child grow={1} shrink={1}>
+                      <Form.Element
+                        label="Details"
+                        className="endpoint-details--element"
+                      >
+                        {React.createElement(
+                          DEFAULT_ENDPOINTS[data.endpoint].view
+                        )}
+                      </Form.Element>
+                    </FlexBox.Child>
+                    <FlexBox.Child grow={1} shrink={1}>
+                      <Form.Element label="Message Format" required={true}>
+                        <div
+                          className="markdown-editor--monaco"
+                          data-testid="notification-message--monaco-editor"
+                        >
+                          <MonacoEditor
+                            language={LANGID}
+                            theme={THEME_NAME}
+                            value={data.message}
+                            onChange={updateMessage}
+                            height="300px"
+                            options={{
+                              fontSize: 13,
+                              fontFamily: '"IBMPlexMono", monospace',
+                              cursorWidth: 2,
+                              lineNumbersMinChars: 4,
+                              lineDecorationsWidth: 0,
+                              minimap: {
+                                enabled: false,
+                              },
+                              contextmenu: false,
+                              overviewRulerBorder: false,
+                              automaticLayout: true,
+                              wordWrap: 'on',
+                              lineNumbers: 'off',
+                              scrollBeyondLastLine: false,
+                            }}
+                            editorDidMount={editorDidMount}
+                          />
+                        </div>
+                      </Form.Element>
+                    </FlexBox.Child>
+                  </FlexBox>
+                </Panel.Body>
+              </Panel>
             </Form.Element>
           </FlexBox.Child>
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
           <FlexBox margin={ComponentSize.Medium}>
-            <Button
-              text="Test Endpoint"
-              status={
-                status === RemoteDataState.Loading
-                  ? ComponentStatus.Loading
-                  : ComponentStatus.Default
-              }
-              onClick={handleTestEndpoint}
-              color={ComponentColor.Default}
-            />
             <ExportTaskButton
               generate={generateTask}
               text="Export Alert Task"
+              type="alert"
             />
           </FlexBox>
         </Panel.Footer>

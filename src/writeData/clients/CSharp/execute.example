@@ -1,2 +1,7 @@
-var query = $"<%= query %>";
-var tables = await client.GetQueryApi().QueryAsync(query, org)
+var query = "<%= query %>";
+var tables = await client.GetQueryApi().QueryAsync(query, org);
+
+foreach (var record in tables.SelectMany(table => table.Records))
+{
+    Console.WriteLine($"{record}");
+}

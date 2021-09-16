@@ -1,18 +1,16 @@
-let query = "<%= query %>"
+let query = """
+            <%= query %>"""
 
-print("\nQuery to execute:\n\n\(query)")
-
-client.getQueryAPI().query(query: query) { response, error in
-  // For handle error
+client.queryAPI.query(query: query, org: org) { response, error in
+  // Error response
   if let error = error {
     print("Error:\n\n\(error)")
   }
 
-  // For Success response
+  // Success response
   if let response = response {
 
     print("\nSuccess response...\n")
-    print("CPU usage:")
     do {
       try response.forEach { record in
         print("\t\(record.values["_field"]!): \(record.values["_value"]!)")

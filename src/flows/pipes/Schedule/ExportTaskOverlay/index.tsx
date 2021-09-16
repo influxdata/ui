@@ -28,6 +28,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   text?: string
+  type: string
 }
 const ExportTaskOverlay: FC<Props> = ({text}) => {
   const {activeTab, handleSetActiveTab} = useContext(Context)
@@ -88,8 +89,8 @@ const ExportTaskOverlay: FC<Props> = ({text}) => {
   )
 }
 
-export default ({text}: Props) => (
-  <Provider>
-    <ExportTaskOverlay text={text} />
+export default ({text, type}: Props) => (
+  <Provider type={type}>
+    <ExportTaskOverlay text={text} type={type} />
   </Provider>
 )

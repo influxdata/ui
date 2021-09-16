@@ -1,3 +1,2 @@
-from(bucket: \"<%= bucket %>\")
+from(bucket: "<%= bucket %>")
     |> range(start: -1d)
-    |> filter(fn: (r) => (r[\"_measurement\"] == \"cpu\" and r[\"_field\"] == \"usage_system\"))

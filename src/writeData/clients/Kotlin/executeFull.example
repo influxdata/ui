@@ -1,0 +1,24 @@
+package example
+
+import com.influxdb.client.kotlin.InfluxDBClientKotlinFactory
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.runBlocking
+
+fun main() = runBlocking {
+
+    // You can generate a Token from the "Tokens Tab" in the UI
+    val token = "<%= token %>"
+    val org = "<%= org %>"
+
+    val client = InfluxDBClientKotlinFactory.create("<%= server %>", token.toCharArray(), org)
+    client.use {
+        val query = """<%= query %>"""
+
+        val results = client.getQueryKotlinApi().query(query)
+        results
+          .consumeAsFlow()
+          .collect { println("$it") }
+    }
+}
+

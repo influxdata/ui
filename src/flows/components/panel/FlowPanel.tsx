@@ -9,10 +9,8 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
 import Handle from 'src/flows/components/panel/Handle'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
-import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import {MenuButton} from 'src/flows/components/Sidebar'
 
@@ -168,10 +166,6 @@ const FlowPanel: FC<Props> = ({
                   />
                 </FeatureFlag>
                 <MenuButton id={id} />
-                <FeatureFlag name="flowSidebar" equals={false}>
-                  <PanelVisibilityToggle id={id} />
-                  <RemovePanelButton id={id} />
-                </FeatureFlag>
               </div>
             </>
           )}

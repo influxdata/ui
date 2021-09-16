@@ -14,18 +14,12 @@ import {
 } from 'src/visualization'
 import {ViewType} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
 
 const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
-
-interface Props {
-  toggle: () => void
-  visible: boolean
-}
 
 const WrappedViewOptions: FC = () => {
   const {data, update, results} = useContext(PipeContext)
@@ -51,7 +45,7 @@ const WrappedViewOptions: FC = () => {
   )
 }
 
-const Controls: FC<Props> = ({toggle, visible}) => {
+const Controls: FC = () => {
   const {id, data, range, update, results} = useContext(PipeContext)
   const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
 
@@ -125,39 +119,21 @@ const Controls: FC<Props> = ({toggle, visible}) => {
     }
   }, [range, update, data.period])
 
-  // TODO remove this after the sidebar stabilizes
   const dataExists = results.parsed && Object.entries(results.parsed).length
 
-  const configureButtonStatus = dataExists
-    ? ComponentStatus.Default
-    : ComponentStatus.Disabled
-
-  const configureButtonTitleText = dataExists
-    ? 'Configure Visualization'
-    : 'No data to visualize yet'
-
-  const toggler = isFlagEnabled('flowSidebar') ? (
+  const toggler = (
     <Button
       text="Configure"
       icon={IconFont.CogThick}
       onClick={launcher}
-      status={configureButtonStatus}
+      status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
       color={ComponentColor.Default}
-      titleText={configureButtonTitleText}
-      className="flows-config-visualization-button"
-    />
-  ) : (
-    <Button
-      text="Configure"
-      icon={IconFont.CogThick}
-      onClick={toggle}
-      status={configureButtonStatus}
-      color={visible ? ComponentColor.Primary : ComponentColor.Default}
-      titleText={configureButtonTitleText}
+      titleText={
+        dataExists ? 'Configure Visualization' : 'No data to visualize yet'
+      }
       className="flows-config-visualization-button"
     />
   )
-  // end TODO
 
   if (data.properties.type === 'simple-table') {
     return (

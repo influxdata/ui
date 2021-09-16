@@ -6,7 +6,6 @@ using (var writeApi = client.GetWriteApi())
 }
 
 
-// Public class
 [Measurement("mem")]
 private class Mem
 {

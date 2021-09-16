@@ -7,6 +7,8 @@ import writeHash from 'src/writeData/clients/Ruby/write.2.example'
 import writeBatch from 'src/writeData/clients/Ruby/write.3.example'
 import execute from 'src/writeData/clients/Ruby/execute.example'
 import query from 'src/writeData/clients/Ruby/query.example'
+import dispose from 'src/writeData/clients/Ruby/dispose.example'
+import executeFull from 'src/writeData/clients/Ruby/executeFull.example'
 
 export default register =>
   register({
@@ -36,4 +38,6 @@ export default register =>
     ],
     execute,
     query,
+    dispose,
+    executeFull,
   })

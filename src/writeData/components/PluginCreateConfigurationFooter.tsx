@@ -1,19 +1,26 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useEffect, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {Button, ComponentColor, Overlay} from '@influxdata/clockface'
+import {
+  Button,
+  ComponentColor,
+  ComponentStatus,
+  Overlay,
+} from '@influxdata/clockface'
 
 // Actions
-import {
-  addPluginBundleWithPlugins,
-  createOrUpdateTelegrafConfigAsync,
-} from 'src/dataLoaders/actions/dataLoaders'
+import {createOrUpdateTelegrafConfigAsync} from 'src/dataLoaders/actions/dataLoaders'
+import {updateTelegraf} from 'src/telegrafs/actions/thunks'
 
 // Types
-import {BundleName} from 'src/types/dataLoaders'
+import {AppState, ResourceType, Telegraf} from 'src/types'
 import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+
+// Selectors
+import {getDataLoaders} from 'src/dataLoaders/selectors'
+import {getAll} from 'src/resources/selectors'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
@@ -21,16 +28,30 @@ type Props = PluginCreateConfigurationStepProps & ReduxProps
 const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
   const {
     currentStepIndex,
-    onAddPluginBundle,
+    isValidConfiguration,
     onDecrementCurrentStepIndex,
     onExit,
     onIncrementCurrentStepIndex,
     onSaveTelegrafConfig,
+    onUpdateTelegraf,
     substepIndex,
+    telegrafConfig,
+    pluginConfig,
   } = props
 
+  const shouldTelegrafUpdate = useMemo(() => {
+    return Boolean(telegrafConfig)
+  }, [telegrafConfig])
+
+  useEffect(() => {
+    if (telegrafConfig) {
+      const {config} = telegrafConfig
+      onUpdateTelegraf({...telegrafConfig, config: `${config}${pluginConfig}`})
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldTelegrafUpdate])
+
   const handleSaveAndTest = () => {
-    onAddPluginBundle(BundleName.System)
     onSaveTelegrafConfig()
     onIncrementCurrentStepIndex()
   }
@@ -71,6 +92,11 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
       <Button
         color={ComponentColor.Primary}
         onClick={handleSaveAndTest}
+        status={
+          isValidConfiguration
+            ? ComponentStatus.Valid
+            : ComponentStatus.Disabled
+        }
         tabIndex={0}
         testID="plugin-create-configuration-save-and-test"
         text="Save and Test"
@@ -79,12 +105,25 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
   )
 }
 
-const mdtp = {
-  onAddPluginBundle: addPluginBundleWithPlugins,
-  onSaveTelegrafConfig: createOrUpdateTelegrafConfigAsync,
+const mstp = (state: AppState) => {
+  const {telegrafConfigID} = getDataLoaders(state)
+
+  let telegrafConfig = null
+  if (telegrafConfigID) {
+    const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
+    telegrafConfig = telegrafs.find(
+      telegraf => telegraf.id === telegrafConfigID
+    )
+  }
+  return {telegrafConfig}
 }
 
-const connector = connect(null, mdtp)
+const mdtp = {
+  onSaveTelegrafConfig: createOrUpdateTelegrafConfigAsync,
+  onUpdateTelegraf: updateTelegraf,
+}
+
+const connector = connect(mstp, mdtp)
 
 export const PluginCreateConfigurationFooter = connector(
   PluginCreateConfigurationFooterComponent

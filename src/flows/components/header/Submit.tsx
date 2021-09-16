@@ -11,7 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
-import {QueryContext} from 'src/flows/context/query'
+import {QueryContext} from 'src/shared/contexts/query'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {notify} from 'src/shared/actions/notifications'

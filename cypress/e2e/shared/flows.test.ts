@@ -220,8 +220,10 @@ describe('Flows', () => {
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
-    cy.getByTestID(`flow-card--${flowName}`).trigger('mouseover')
-    cy.getByTestID(`flow-button--clone`).click({force: true})
+    cy.getByTestID(`flow-card--${flowName}`).within(() => {
+      cy.getByTestID(`context-menu-flow`).click()
+    })
+    cy.getByTestID(`context-clone-flow`)
 
     const clone = `${flowName} (clone 1)`
 
@@ -242,9 +244,10 @@ describe('Flows', () => {
       .contains(`${clone}`)
 
     // Delete the cloned flow
-    cy.getByTestID(`flow-card--${clone}`).trigger('mouseover')
-    cy.getByTestID(`context-delete-menu ${clone}`).click({force: true})
-    cy.getByTestID(`context-delete-flow ${clone}`).click({force: true})
+    cy.getByTestID(`flow-card--${clone}`).within(() => {
+      cy.getByTestID(`context-delete-menu--button`).click()
+    })
+    cy.getByTestID(`context-delete-menu--confirm-button`).click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)

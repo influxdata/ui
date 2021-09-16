@@ -23,7 +23,7 @@ const FlowCreateButton = () => {
 
   return (
     <Button
-      icon={IconFont.Plus}
+      icon={IconFont.Plus_New}
       color={ComponentColor.Primary}
       text={`Create ${PROJECT_NAME}`}
       titleText={`Click to create a ${PROJECT_NAME}`}

@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {parse, format_from_js_file} from '@influxdata/flux'
 import {v4 as UUID} from 'uuid'
+import {parse, format_from_js_file} from '@influxdata/flux'
 
 import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
@@ -477,7 +477,7 @@ export const QueryProvider: FC = ({children}) => {
                 csv,
                 bytesRead: csv.length,
                 didTruncate: false,
-              } as RunQueryResult
+              }
             })
           }
 

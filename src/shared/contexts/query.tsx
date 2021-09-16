@@ -35,7 +35,6 @@ import {
   File,
 } from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
-import { getVarVals } from './utils'
 
 interface CancelMap {
   [key: string]: () => void
@@ -82,6 +81,140 @@ export const find = (node: File, test, acc = []) => {
   })
 
   return acc
+}
+
+const _getGlobalDefinedVars = (usedVars: VariableMap) => {
+  return Object.values(usedVars).reduce((acc, v) => {
+    let _val
+
+    if (!v) {
+      return acc
+    }
+
+    if (v.id === WINDOW_PERIOD) {
+      acc[v.id] = (v.arguments?.values || [10000])[0] + 'ms'
+
+      return acc
+    }
+
+    if (v.id === TIME_RANGE_START || v.id === TIME_RANGE_STOP) {
+      const val = v.arguments.values[0]
+
+      if (!isNaN(Date.parse(val))) {
+        acc[v.id] = new Date(val).toISOString()
+        return acc
+      }
+
+      if (typeof val === 'string') {
+        if (val) {
+          acc[v.id] = val
+        }
+
+        return acc
+      }
+
+      _val = '-' + val[0].magnitude + val[0].unit
+
+      if (_val !== '-') {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'map') {
+      _val =
+        v.arguments.values[
+          v.selected ? v.selected[0] : Object.keys(v.arguments.values)[0]
+        ]
+
+      if (_val) {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'constant') {
+      _val = v.selected ? v.selected[0] : v.arguments.values[0]
+
+      if (_val) {
+        acc[v.id] = _val
+      }
+
+      return acc
+    }
+
+    if (v.arguments.type === 'query') {
+      if (!v.selected || !v.selected[0]) {
+        return
+      }
+
+      acc[v.id] = v.selected[0]
+      return acc
+    }
+
+    return acc
+  }, {})
+}
+
+const _getQueryDefinedVars = (ast: File) => {
+  return remove(
+    ast,
+    node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
+  ).reduce((acc, curr) => {
+    // eslint-disable-next-line no-extra-semi
+    ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+      if (_curr.key?.name && _curr.value?.location?.source) {
+        _acc[_curr.key.name] = _curr.value.location.source
+      }
+
+      return _acc
+    }, acc)
+
+    return acc
+  }, {})
+}
+
+const _getJoinedVars = (
+  usedVars: VariableMap,
+  globalDefinedVars,
+  queryDefinedVars
+) => {
+  // Merge the two variable maps, allowing for any user defined variables to override
+  // global system variables
+  return Object.keys(usedVars).reduce((acc, curr) => {
+    if (globalDefinedVars.hasOwnProperty(curr)) {
+      acc[curr] = globalDefinedVars[curr]
+    }
+
+    if (queryDefinedVars.hasOwnProperty(curr)) {
+      acc[curr] = queryDefinedVars[curr]
+    }
+
+    return acc
+  }, {})
+}
+
+export const getVarVals = (usedVars: VariableMap, ast: File) => {
+  // Grab all global variables and turn them into a hashmap
+  // TODO: move off this variable junk and just use strings
+  const globalDefinedVars = _getGlobalDefinedVars(usedVars)
+
+  // Grab all variables that are defined in the query while removing the old definition from the AST
+  const queryDefinedVars = _getQueryDefinedVars(ast)
+
+  // Merge the two variable maps, allowing for any user defined variables to override
+  // global system variables
+  const joinedVars = _getJoinedVars(
+    usedVars,
+    globalDefinedVars,
+    queryDefinedVars
+  )
+
+  return Object.entries(joinedVars)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(',\n')
 }
 
 // Removes all instances of nodes that match with the test function

@@ -163,8 +163,9 @@ class ResourceAccordion extends Component<Props, State> {
       newPerm[resourceName].sublevelPermissions
     ).some(
       key =>
-        newPerm[resourceName].sublevelPermissions[key].permissions.read ===
-        false
+        newPerm[resourceName].sublevelPermissions[key].permissions[
+          permission
+        ] === false
     )
 
     newPerm[resourceName][permission] = headerPermValue

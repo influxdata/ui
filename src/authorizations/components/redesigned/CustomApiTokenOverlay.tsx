@@ -44,6 +44,17 @@ const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
     setDescription(event.target.value)
   }
 
+  const formatAllResources = () => {
+    let resources = props.allResources
+    resources.sort()
+    resources = resources.filter(
+      item => item !== 'buckets' && item !== 'telegrafs'
+    )
+    resources.unshift('telegrafs')
+    resources.unshift('buckets')
+    return resources
+  }
+
   return (
     <Overlay.Container maxWidth={800}>
       <Overlay.Header
@@ -96,7 +107,7 @@ const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
                   </InputLabel>
                 </FlexBox.Child>
               </FlexBox>
-              <ResourceAccordion resources={props.allResources} />
+              <ResourceAccordion resources={formatAllResources()} />
             </FlexBox.Child>
           </FlexBox>
         </Form>

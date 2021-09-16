@@ -101,7 +101,7 @@ export class Collectors extends PureComponent<Props, State> {
       <>
         <Button
           text="InfluxDB Output Plugin"
-          icon={IconFont.Eye}
+          icon={IconFont.Eye_New}
           color={ComponentColor.Secondary}
           onClick={this.handleJustTheOutput}
           titleText="Output section of telegraf.conf for V2"
@@ -185,7 +185,7 @@ export class Collectors extends PureComponent<Props, State> {
     return (
       <Button
         text="Create Configuration"
-        icon={IconFont.Plus}
+        icon={IconFont.Plus_New}
         color={ComponentColor.Primary}
         onClick={this.handleAddCollector}
         status={status}

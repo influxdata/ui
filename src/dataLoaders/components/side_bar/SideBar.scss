@@ -12,7 +12,8 @@ $sidebar-width-md: 240px;
   transform: translate3d(0, 0, 0);
   flex: 0 1 auto;
   border-radius: $radius 0 0 $radius;
-  background-color: $g2-kevlar;
+  background-color: $cf-grey-5;
+  border: $cf-border solid $cf-grey-15;
   max-width: 250px;
 
   &.show {
@@ -66,12 +67,12 @@ $sidebar-width-md: 240px;
   &:hover {
     color: $g15-platinum;
     cursor: pointer;
-    background-color: rgba($g3-castle, 0.6);
+    background-color: rgba($cf-grey-25, 0.6);
   }
 
   &.active {
     color: $g15-platinum;
-    background-color: $g3-castle;
+    background-color: $cf-grey-25;
   }
 }
 

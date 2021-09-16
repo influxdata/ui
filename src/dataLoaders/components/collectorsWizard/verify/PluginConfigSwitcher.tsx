@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 import Loadable from 'react-loadable'
 import {connect, ConnectedProps} from 'react-redux'
 
@@ -55,13 +55,22 @@ export const PluginConfigSwitcher: FC<Props> = props => {
     onClearSteps()
   }
 
+  const [pluginConfig, setPluginConfig] = useState<string>('')
+  const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
+    false
+  )
+
   const stepProps = {
     currentStepIndex,
+    isValidConfiguration,
     notify,
     onDecrementCurrentStepIndex,
     onExit: handleDismiss,
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
+    pluginConfig,
+    setIsValidConfiguration,
+    setPluginConfig,
     substepIndex,
   }
 

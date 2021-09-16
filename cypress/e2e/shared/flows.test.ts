@@ -223,7 +223,7 @@ describe('Flows', () => {
     cy.getByTestID(`flow-card--${flowName}`).within(() => {
       cy.getByTestID(`context-menu-flow`).click()
     })
-    cy.getByTestID(`context-clone-flow`)
+    cy.getByTestID(`context-clone-flow`).click()
 
     const clone = `${flowName} (clone 1)`
 

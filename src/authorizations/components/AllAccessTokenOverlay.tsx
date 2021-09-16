@@ -55,8 +55,8 @@ class AllAccessTokenOverlay extends PureComponent<Props, State> {
           title="Generate All Access Token"
           onDismiss={this.handleDismiss}
         />
-        <Overlay.Body>
-          <Form onSubmit={this.handleSave}>
+        <Form onSubmit={this.handleSave}>
+          <Overlay.Body>
             <FlexBox
               alignItems={AlignItems.Center}
               direction={FlexDirection.Column}
@@ -77,25 +77,27 @@ class AllAccessTokenOverlay extends PureComponent<Props, State> {
                   testID="all-access-token-input"
                 />
               </Form.Element>
-
-              <Form.Footer>
-                <Button
-                  text="Cancel"
-                  icon={IconFont.Remove}
-                  onClick={this.handleDismiss}
-                />
-
-                <Button
-                  text="Save"
-                  testID="button--save"
-                  icon={IconFont.Checkmark}
-                  color={ComponentColor.Success}
-                  type={ButtonType.Submit}
-                />
-              </Form.Footer>
             </FlexBox>
-          </Form>
-        </Overlay.Body>
+          </Overlay.Body>
+
+          <Form.Footer>
+            <Overlay.Footer>
+              <Button
+                text="Cancel"
+                icon={IconFont.Remove}
+                onClick={this.handleDismiss}
+              />
+
+              <Button
+                text="Save"
+                testID="button--save"
+                icon={IconFont.Checkmark}
+                color={ComponentColor.Success}
+                type={ButtonType.Submit}
+              />
+            </Overlay.Footer>
+          </Form.Footer>
+        </Form>
       </Overlay.Container>
     )
   }

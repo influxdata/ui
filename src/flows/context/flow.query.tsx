@@ -13,6 +13,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
 import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 import {getOrg} from 'src/organizations/selectors'
+import {v4 as UUID} from 'uuid'
 
 // Constants
 import {
@@ -254,7 +255,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       },
     }
 
-    return queryAPI(text, _override)
+    return queryAPI(UUID(), text, _override)
   }
 
   const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
@@ -268,7 +269,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       },
     }
 
-    return basicAPI(text, _override)
+    return basicAPI(UUID(), text, _override)
   }
 
   const statuses = Object.values(loading)

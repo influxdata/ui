@@ -58,7 +58,7 @@ export interface WASMServer extends Server {
   register_tag_keys_callback: (TagKeysCallback) => void
 }
 
-import {format_from_js_file} from '@influxdata/flux-lsp-node'
+import {format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 // NOTE: parses table then select measurements from the _value column
 const parseQueryResponse = response => {

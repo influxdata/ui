@@ -156,12 +156,9 @@ describe('tokens', () => {
     cy.intercept('**/authorizations/*').as('deleteToken')
 
     cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('context-menu').click({force: true})
+      cy.getByTestID('context-delete-menu--button').click()
     })
-
-    cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('delete-token').click({force: true})
-    })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.wait('@deleteToken')
 
@@ -173,40 +170,25 @@ describe('tokens', () => {
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click({force: true})
+        cy.getByTestID('context-delete-menu--button').click()
       })
-
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('delete-token').click({force: true})
-      })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.wait('@deleteToken')
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click({force: true})
+        cy.getByTestID('context-delete-menu--button').click()
       })
-
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('delete-token').click({force: true})
-      })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.wait('@deleteToken')
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click({force: true})
+        cy.getByTestID('context-delete-menu--button').click()
       })
-
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('delete-token').click({force: true})
-      })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     // Assert empty state
     cy.getByTestID('empty-state').within(() => {
@@ -363,12 +345,9 @@ describe('tokens', () => {
   it('can do sorting', () => {
     cy.get<string>('@defaultUser').then((defaultUser: string) => {
       cy.getByTestID(`token-card ${defaultUser}'s Token`).within(() => {
-        cy.getByTestID('context-menu').click()
-
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+        cy.getByTestID('context-delete-menu--button').click()
       })
+      cy.getByTestID('context-delete-menu--confirm-button').click()
     })
 
     cy.log('sort by Description (Asc)')

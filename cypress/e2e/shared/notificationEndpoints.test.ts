@@ -22,7 +22,10 @@ describe('Notification Endpoints', () => {
       cy.signin().then(() => {
         cy.get<Organization>('@org').then(({id}: Organization) =>
           cy.fixture('routes').then(({orgs, alerting}) => {
-            cy.createEndpoint({...endpoint as NotificationEndpoint, orgID: id}).then(({body}) => {
+            cy.createEndpoint({
+              ...(endpoint as NotificationEndpoint),
+              orgID: id,
+            }).then(({body}) => {
               cy.wrap(body).as('endpoint')
             })
             cy.visit(`${orgs}/${id}${alerting}`)
@@ -252,8 +255,121 @@ describe('Notification Endpoints', () => {
   })
 
   describe('When managing the list', () => {
+    // Generate some more endpoints
+    const endpoints: GenEndpoint[] = [
+      {
+        orgID: '',
+        name: 'пораже́ние це́ли',
+        userID: '',
+        description:
+          'В литературе, как, впрочем, и других областях искусства, есть статисты, классики и бунтари.',
+        status: 'active',
+        type: 'slack',
+        url: 'insert.slack.url.here',
+        token: 'plerps',
+      },
+      {
+        orgID: '',
+        name: 'Quasiomodo',
+        userID: '',
+        description:
+          'Quasimodo resta à genoux, baissa la tête et joignit les mains.',
+        status: 'active',
+        type: 'http',
+        url: 'http://www.notredamedeparis.fr',
+        authMethod: 'none',
+        method: 'GET',
+      },
+      {
+        orgID: '',
+        name: 'Paquet',
+        userID: '',
+        description: 'une unité de données',
+        status: 'active',
+        type: 'pagerduty',
+        clientURL: 'http://www.notredamedeparis.fr',
+        routingKey: 'TEST_ROUTING_KEY',
+      },
+      {
+        orgID: '',
+        name: '@!#$%^&*()_=+"quoth"\\\'cite\'<tag/>',
+        userID: '',
+        description: 'Special chars',
+        status: 'active',
+        type: 'http',
+        url: 'https://www.google.com',
+        authMethod: 'basic',
+        username: 'mlok',
+        password: 'secret',
+        method: 'POST',
+      },
+    ]
+    beforeEach(() => {
+      cy.get<Organization>('@org').then(({id}: Organization) =>
+        cy.fixture('routes').then(({orgs, alerting}) => {
+          endpoints.forEach(endpoint => {
+            cy.createEndpoint({
+              ...(endpoint as NotificationEndpoint),
+              orgID: id,
+            })
+          })
+          endpoints.push(endpoint)
+          cy.visit(`${orgs}/${id}${alerting}`)
+          cy.getByTestID('tree-nav')
+
+          // User can only see all panels at once on large screens
+          cy.getByTestID('alerting-tab--endpoints').click({force: true})
+        })
+      )
+    })
+
     it('can filter endpoints', () => {
-      cy.log('STARTING filter endpoints')
+      const names = endpoints.map(endp => endp.name).sort()
+      // Baseline check
+      cy.get('[data-testid^="endpoint-card--name "]').should(cardNames => {
+        const cnsText = cardNames.toArray().map(cn => cn.innerText)
+        expect(cnsText).to.deep.eq(names)
+      })
+      cy.getByTestID('empty-state--text').should('not.be.visible')
+      // Filter standard ASCII ABCD
+      const ascFilter = names.filter(name => name.match(/.*[q|Q].*/))
+      cy.getByTestID('filter--input endpoints').type('q')
+      cy.get('[data-testid^="endpoint-card--name "]').should(cardNames => {
+        const cnsText = cardNames.toArray().map(cn => cn.innerText)
+        expect(cnsText).to.deep.eq(ascFilter)
+      })
+      // Check clear
+      cy.getByTestID('filter--input endpoints').clear()
+      cy.get('[data-testid^="endpoint-card--name "]').should(cardNames => {
+        const cnsText = cardNames.toArray().map(cn => cn.innerText)
+        expect(cnsText).to.deep.eq(names)
+      })
+      // Filter UNICODE non-latin
+      const azbFilter = names.filter(name => name.match(/.*це́л.*/))
+      cy.getByTestID('filter--input endpoints').type('це́л')
+      cy.get('[data-testid^="endpoint-card--name "]').should(cardNames => {
+        const cnsText = cardNames.toArray().map(cn => cn.innerText)
+        expect(cnsText).to.deep.eq(azbFilter)
+      })
+      // Filter Special Chars
+      const specFilter = names.filter(name => name.match(/.*@.*/))
+      cy.getByTestID('filter--input endpoints')
+        .clear()
+        .type('@!#$%^&*()_=+"quoth"\\\'cite\'<tag/>')
+      cy.get('[data-testid^="endpoint-card--name "]').should(cardNames => {
+        const cnsText = cardNames.toArray().map(cn => cn.innerText)
+        expect(cnsText).to.deep.eq(specFilter)
+      })
+      // Filter no match
+      const nmFilter = names.filter(name => name.match(/.*zzz.*/))
+      cy.getByTestID('filter--input endpoints')
+        .clear()
+        .type('zzz')
+      cy.get('[data-testid^="endpoint-card--name "]').should(cardNames => {
+        const cnsText = cardNames.toArray().map(cn => cn.innerText)
+        expect(cnsText).to.deep.eq(nmFilter)
+      })
+      cy.getByTestID('empty-state--text').should('be.visible')
     })
   })
 

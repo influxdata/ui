@@ -31,17 +31,13 @@ const NotificationMonacoEditor: FC<Props> = ({
     }
   }
 
-  const onChange = (text: string) => {
-    onChangeText(text)
-  }
-
   return (
     <div className="markdown-editor--monaco" data-testid="text-editor">
       <MonacoEditor
         language={LANGID}
         theme={THEME_NAME}
         value={text}
-        onChange={onChange}
+        onChange={onChangeText}
         height="300px"
         options={{
           fontSize: 13,

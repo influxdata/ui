@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo, useState} from 'react'
+import React, {
+  FC,
+  useContext,
+  useCallback,
+  useMemo,
+  useState,
+  lazy,
+} from 'react'
 import {useDispatch} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux'
 import {
@@ -19,7 +26,6 @@ import {
   Button,
   InfluxColors,
 } from '@influxdata/clockface'
-import MonacoEditor from 'react-monaco-editor'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {remove} from 'src/shared/contexts/query'
@@ -31,6 +37,9 @@ import Threshold, {
 import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 import {SidebarContext} from 'src/flows/context/sidebar'
+const NotificationMonacoEditor = lazy(() =>
+  import('src/flows/pipes/Notification/NotificationMonacoEditor')
+)
 
 // Types
 import {RemoteDataState, EditorType} from 'src/types'
@@ -44,9 +53,6 @@ import {
   testNotificationFailure,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import LANGID from 'src/external/monaco.markdown.syntax'
-import THEME_NAME from 'src/external/monaco.flux.theme'
-
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
@@ -154,10 +160,6 @@ const Notification: FC<PipeProp> = ({Context}) => {
     })
   }
 
-  const editorDidMount = (editor: EditorType) => {
-    setEditorInstance(editor)
-  }
-
   const inject = useCallback(
     (exp: string): void => {
       if (!editorInstance) {
@@ -172,7 +174,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
             p.lineNumber,
             p.column
           ),
-          text: ` r.${exp} `,
+          text: ` \$\{r.${exp}\} `,
         },
       ]
 
@@ -623,29 +625,10 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                           className="markdown-editor--monaco"
                           data-testid="notification-message--monaco-editor"
                         >
-                          <MonacoEditor
-                            language={LANGID}
-                            theme={THEME_NAME}
-                            value={data.message}
-                            onChange={updateMessage}
-                            height="300px"
-                            options={{
-                              fontSize: 13,
-                              fontFamily: '"IBMPlexMono", monospace',
-                              cursorWidth: 2,
-                              lineNumbersMinChars: 4,
-                              lineDecorationsWidth: 0,
-                              minimap: {
-                                enabled: false,
-                              },
-                              contextmenu: false,
-                              overviewRulerBorder: false,
-                              automaticLayout: true,
-                              wordWrap: 'on',
-                              lineNumbers: 'off',
-                              scrollBeyondLastLine: false,
-                            }}
-                            editorDidMount={editorDidMount}
+                          <NotificationMonacoEditor
+                            text={data.message}
+                            onChangeText={updateMessage}
+                            setEditorInstance={setEditorInstance}
                           />
                         </div>
                       </Form.Element>

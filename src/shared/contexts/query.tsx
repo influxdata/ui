@@ -41,22 +41,14 @@ interface CancelMap {
 }
 
 export interface QueryContextType {
-  basic: (
-    text: string,
-    override?: QueryScope,
-    responseCallback?: (response: RunQueryResult) => void
-  ) => any
+  basic: (text: string, override?: QueryScope) => any
   query: (text: string, override?: QueryScope) => Promise<FluxResult>
   cancel: (id?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
-  basic: (
-    __: string,
-    ___?: QueryScope,
-    ____?: (_: RunQueryResult) => void
-  ) => {},
-  query: (__: string, ___?: QueryScope) => Promise.resolve({} as FluxResult),
+  basic: (_: string, __?: QueryScope) => {},
+  query: (_: string, __?: QueryScope) => Promise.resolve({} as FluxResult),
   cancel: (_?: string) => {},
 }
 
@@ -462,9 +454,9 @@ export const QueryProvider: FC = ({children}) => {
       dialect: {annotations: ['group', 'datatype', 'default']},
     }
 
-    const id = UUID()
     const controller = new AbortController()
 
+    const id = UUID()
     const promise = fetch(url, {
       method: 'POST',
       headers,
@@ -480,14 +472,12 @@ export const QueryProvider: FC = ({children}) => {
                 setPending({...pending})
               }
 
-              const result = {
+              return {
                 type: 'SUCCESS',
                 csv,
                 bytesRead: csv.length,
                 didTruncate: false,
               } as RunQueryResult
-
-              return result
             })
           }
 
@@ -576,7 +566,6 @@ export const QueryProvider: FC = ({children}) => {
           requestAnimationFrame(() => {
             try {
               const parsed = fromFlux(raw.csv)
-
               resolve({
                 source: text,
                 parsed,

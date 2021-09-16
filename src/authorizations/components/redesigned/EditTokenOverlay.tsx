@@ -18,12 +18,16 @@ import {
   ComponentColor,
   Page,
 } from '@influxdata/clockface'
+import {EditResourceAccordion} from 'src/authorizations/components/redesigned/EditResourceAccordion'
 
 // Types
 import {Authorization} from 'src/types'
 
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
+
+// Utills
+import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
 
 interface OwnProps {
   auth: Authorization
@@ -99,6 +103,41 @@ const EditTokenOverlay: FC<Props> = props => {
                 />
               </Form.Element>
             </FlexBox>
+            <FlexBox.Child className="main-flexbox-child">
+              <FlexBox
+                margin={ComponentSize.Large}
+                justifyContent={JustifyContent.SpaceBetween}
+                direction={FlexDirection.Row}
+                stretchToFitWidth={true}
+                alignItems={AlignItems.Center}
+                className="flex-box-label"
+              >
+                <FlexBox.Child basis={40} grow={8}>
+                  <InputLabel size={ComponentSize.ExtraSmall}>
+                    Resources
+                  </InputLabel>
+                </FlexBox.Child>
+                <FlexBox.Child grow={1} className="flexbox-child-label-read">
+                  <InputLabel
+                    className="input-label-read"
+                    size={ComponentSize.ExtraSmall}
+                  >
+                    Read
+                  </InputLabel>
+                </FlexBox.Child>
+                <FlexBox.Child grow={1} className="flexbox-child-label-write">
+                  <InputLabel
+                    className="input-label-write"
+                    size={ComponentSize.ExtraSmall}
+                  >
+                    Write
+                  </InputLabel>
+                </FlexBox.Child>
+              </FlexBox>
+              <EditResourceAccordion
+                permissions={formatPermissionsObj(props.auth.permissions)}
+              />
+            </FlexBox.Child>
             <Page.ControlBarCenter>
               <FlexBox margin={ComponentSize.Medium}>
                 <Button

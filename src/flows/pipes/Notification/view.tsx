@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
   lazy,
+  Suspense,
 } from 'react'
 import {useDispatch} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux'
@@ -25,6 +26,8 @@ import {
   ComponentColor,
   Button,
   InfluxColors,
+  TechnoSpinner,
+  SpinnerContainer,
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -625,11 +628,20 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                           className="markdown-editor--monaco"
                           data-testid="notification-message--monaco-editor"
                         >
-                          <NotificationMonacoEditor
-                            text={data.message}
-                            onChangeText={updateMessage}
-                            setEditorInstance={setEditorInstance}
-                          />
+                          <Suspense
+                            fallback={
+                              <SpinnerContainer
+                                loading={RemoteDataState.Loading}
+                                spinnerComponent={<TechnoSpinner />}
+                              />
+                            }
+                          >
+                            <NotificationMonacoEditor
+                              text={data.message}
+                              onChangeText={updateMessage}
+                              setEditorInstance={setEditorInstance}
+                            />
+                          </Suspense>
                         </div>
                       </Form.Element>
                     </FlexBox.Child>

@@ -1,6 +1,7 @@
 import React, {FC, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux'
+import {v4 as UUID} from 'uuid'
 
 import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
@@ -41,28 +42,21 @@ interface CancelMap {
 
 export interface QueryContextType {
   basic: (
-    id: string,
     text: string,
     override?: QueryScope,
-    responseCallback?: (queryId: string, response: RunQueryResult) => void
+    responseCallback?: (response: RunQueryResult) => void
   ) => any
-  query: (
-    id: string,
-    text: string,
-    override?: QueryScope
-  ) => Promise<FluxResult>
+  query: (text: string, override?: QueryScope) => Promise<FluxResult>
   cancel: (id?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
   basic: (
-    _: string,
     __: string,
     ___?: QueryScope,
-    ____?: (_: string, __: RunQueryResult) => void
+    ____?: (_: RunQueryResult) => void
   ) => {},
-  query: (_: string, __: string, ___?: QueryScope) =>
-    Promise.resolve({} as FluxResult),
+  query: (__: string, ___?: QueryScope) => Promise.resolve({} as FluxResult),
   cancel: (_?: string) => {},
 }
 
@@ -445,12 +439,7 @@ export const QueryProvider: FC = ({children}) => {
     )
   }
 
-  const basic = (
-    id: string,
-    text: string,
-    override?: QueryScope,
-    responseCallback?
-  ) => {
+  const basic = (text: string, override?: QueryScope) => {
     const query = simplify(text, override?.vars || {})
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
@@ -473,6 +462,7 @@ export const QueryProvider: FC = ({children}) => {
       dialect: {annotations: ['group', 'datatype', 'default']},
     }
 
+    const id = UUID()
     const controller = new AbortController()
 
     const promise = fetch(url, {
@@ -496,10 +486,6 @@ export const QueryProvider: FC = ({children}) => {
                 bytesRead: csv.length,
                 didTruncate: false,
               } as RunQueryResult
-
-              if (responseCallback) {
-                responseCallback(id, result)
-              }
 
               return result
             })
@@ -553,7 +539,6 @@ export const QueryProvider: FC = ({children}) => {
       cancel: () => {
         cancel(id)
       },
-      abortController: controller,
     }
   }
 
@@ -575,12 +560,8 @@ export const QueryProvider: FC = ({children}) => {
     setPending(pending)
   }
 
-  const query = (
-    id: string,
-    text: string,
-    override?: QueryScope
-  ): Promise<FluxResult> => {
-    const result = basic(id, text, override)
+  const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
+    const result = basic(text, override)
 
     return result.promise
       .then(raw => {

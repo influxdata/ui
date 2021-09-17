@@ -42,14 +42,10 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     telegrafConfigDescription,
     telegrafConfigName,
     pluginConfig,
-    telegrafPlugins,
     setIsValidConfiguration,
     setPluginConfig,
   } = props
-  console.log(telegrafPlugins.0) 
-  let {contentID} = useParams<ParamsType>()
-  if(!contentID){ contentID = telegrafPlugins}
-
+  const {contentID} = useParams<ParamsType>()
 
   const handleError = error => {
     setIsValidConfiguration(false)
@@ -154,14 +150,12 @@ const mstp = (state: AppState) => {
     telegrafConfigDescription,
     telegrafConfigName,
     telegrafConfigID,
-    telegrafPlugins
   } = getDataLoaders(state)
 
   return {
     telegrafConfigDescription,
     telegrafConfigID,
     telegrafConfigName,
-    telegrafPlugins
   }
 }
 

@@ -78,7 +78,7 @@ export const PluginConfigSwitcher: FC<Props> = props => {
   if (currentStepIndex === 0 && substepIndex === 1) {
     title = 'Create Bucket'
   } else if (currentStepIndex !== 0) {
-    title = 'Create a Telegraf Configuration'
+    title = 'Add Plugin to a new Telegraf Configuration'
   }
 
   let maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH

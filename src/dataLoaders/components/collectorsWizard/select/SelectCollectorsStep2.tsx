@@ -1,22 +1,12 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {Route, Switch} from 'react-router-dom'
 
 // Components
 import {Form, DapperScrollbars, Grid, Columns} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import StreamingSelectorTelegrafUiRefresh from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
 import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
-import PluginCreateConfigurationWizard from 'src/writeData/components/PluginCreateConfigurationWizard'
-
-// Constants
-import {
-  CONTENT_ID,
-  ORGS,
-  ORG_ID,
-  TELEGRAF_PLUGINS,
-} from 'src/shared/constants/routes'
 
 // Actions
 import {
@@ -36,6 +26,7 @@ import {getAll} from 'src/resources/selectors'
 
 // Utils
 import {isSystemBucket} from 'src/buckets/constants'
+import { TelegrafPlugin } from 'src/types/dataLoaders'
 
 export interface OwnProps extends CollectorsStepProps {
   buckets: Bucket[]
@@ -89,12 +80,6 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
             className="data-loading--button-container"
           />
         </Form>
-        <Switch>
-          <Route
-            path={`/${ORGS}/${ORG_ID}/load-data/telegrafs/:contentID/new`}
-            component={PluginCreateConfigurationWizard}
-          />
-        </Switch>
       </>
     )
   }
@@ -102,21 +87,12 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
   private get nextButtonStatus(): ComponentStatus {
     const {telegrafPlugins, buckets} = this.props
     const {selectedBucketName} = this.state
-    const orgID = "56d04e61c0473a71" // we need to get this
-    const contentID = telegrafPlugins
-
-    console.log(telegrafPlugins)
-
     if (!buckets || !buckets.length) {
       return ComponentStatus.Disabled
     }
 
     if (!telegrafPlugins.length) {
       return ComponentStatus.Disabled
-    }
-
-    if (telegrafPlugins.length >= 1) {
-      window.history.push("object or string", "Title",`/${ORGS}/${orgID}/load-data/telegrafs/${contentID}/new`);
     }
 
     if (!selectedBucketName) {
@@ -132,8 +108,8 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
     this.props.onSetBucketInfo(orgID, name, id)
   }
 
-  private handleTogglePluginBundle = (bundle: string) => {
-    this.props.onAddPluginBundle(bundle)
+  private handleTogglePluginBundle = (plugin: TelegrafPlugin) => {
+    this.props.onAddPluginBundle(plugin)
   }
 }
 

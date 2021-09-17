@@ -48,6 +48,7 @@ export const PluginConfigSwitcher: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
     substepIndex,
+    telegrafPlugins,
   } = props
 
   const handleDismiss = () => {
@@ -59,6 +60,8 @@ export const PluginConfigSwitcher: FC<Props> = props => {
   const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
     false
   )
+
+  const pluginConfigName = telegrafPlugins[0].name
 
   const stepProps = {
     currentStepIndex,
@@ -72,7 +75,9 @@ export const PluginConfigSwitcher: FC<Props> = props => {
     setIsValidConfiguration,
     setPluginConfig,
     substepIndex,
+    pluginConfigName
   }
+
 
   let title = 'Configuration Options'
   if (currentStepIndex === 0 && substepIndex === 1) {
@@ -112,11 +117,13 @@ export const PluginConfigSwitcher: FC<Props> = props => {
 const mstp = (state: AppState) => {
   const {
     dataLoading: {
-      steps: {currentStep, substep = 0},
+      dataLoaders: {telegrafPlugins},
+      steps: { currentStep, substep = 0},
     },
   } = state
 
   return {
+    telegrafPlugins,
     currentStepIndex: currentStep,
     substepIndex: typeof substep === 'number' ? substep : 0,
   }

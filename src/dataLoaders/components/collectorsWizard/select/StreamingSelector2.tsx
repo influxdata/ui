@@ -17,12 +17,13 @@ import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 import BucketDropdown from 'src/dataLoaders/components/BucketsDropdown'
 import {
   WRITE_DATA_TELEGRAF_PLUGINS,
-  TelegrafPlugin,
+  TelegrafPlugin
 } from 'src/writeData/constants/contentTelegrafPlugins'
 
 // Types
+import { TelegrafPlugin as TelegrafPlugin2 } from 'src/types/dataLoaders'
 
-import {Bucket, BundleName} from 'src/types'
+import {Bucket, BundleName, ConfigurationState} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
 
@@ -31,7 +32,7 @@ export interface Props {
   selectedBucketName: string
   pluginBundles: BundleName[]
   telegrafPlugins: any
-  onTogglePluginBundle: (bundle: string) => void
+  onTogglePluginBundle: (plugin: TelegrafPlugin2) => void
   onSelectBucket: (bucket: Bucket) => void
 }
 
@@ -171,8 +172,14 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
     return false
   }
 
-  private handleToggle = (bundle): void => {
-    this.props.onTogglePluginBundle(bundle)
+  private handleToggle = (plugin:string): void => {
+    console.log("plugin", plugin)
+    const pluginBuild = {
+      name: plugin,
+      active: false,
+      configured: ConfigurationState.Configured,
+    }
+    this.props.onTogglePluginBundle(pluginBuild)
   }
 
   private handleFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {

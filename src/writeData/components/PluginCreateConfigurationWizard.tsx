@@ -2,6 +2,7 @@
 import React, {FC, useEffect, useState} from 'react'
 import Loadable from 'react-loadable'
 import {connect, ConnectedProps} from 'react-redux'
+import {useParams} from 'react-router'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -49,12 +50,17 @@ export interface PluginCreateConfigurationStepProps {
   setPluginConfig: (config: string) => void
   isValidConfiguration: boolean
   setIsValidConfiguration: (isValid: boolean) => void
+  pluginConfigName: string
 }
 
 interface PluginCreateConfigurationWizardProps {
   history: {
     goBack: () => void
   }
+}
+
+type ParamsType = {
+  [param: string]: string
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -73,6 +79,8 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onSetSubstepIndex,
     substepIndex,
   } = props
+
+  const {contentID} = useParams<ParamsType>()
 
   useEffect(() => {
     onSetCurrentStepIndex(0)
@@ -107,6 +115,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     setIsValidConfiguration,
     setPluginConfig,
     substepIndex,
+    pluginConfigName:contentID
   }
 
   let title = 'Configuration Options'

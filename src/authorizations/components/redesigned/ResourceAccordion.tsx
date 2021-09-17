@@ -132,16 +132,16 @@ class ResourceAccordion extends Component<Props, State> {
     const newPerm = {...permissions}
 
     const name = resourceName.charAt(0).toLowerCase() + resourceName.slice(1)
-    const newPermValue = !newPerm[name][permission]
+    const newPermValue = newPerm[name][permission]
 
     if (newPerm[name].sublevelPermissions) {
       Object.keys(newPerm[name].sublevelPermissions).map(key => {
         newPerm[name].sublevelPermissions[key].permissions[
           permission
-        ] = newPermValue
+        ] = !newPermValue
       })
     }
-    newPerm[name][permission] = newPermValue
+    newPerm[name][permission] = !newPermValue
 
     this.setState({
       permissions: newPerm,
@@ -158,6 +158,17 @@ class ResourceAccordion extends Component<Props, State> {
     newPerm[resourceName].sublevelPermissions[id].permissions[
       permission
     ] = !permValue
+
+    const headerPermValue = !Object.keys(
+      newPerm[resourceName].sublevelPermissions
+    ).some(
+      key =>
+        newPerm[resourceName].sublevelPermissions[key].permissions[
+          permission
+        ] === false
+    )
+
+    newPerm[resourceName][permission] = headerPermValue
 
     this.setState({
       permissions: newPerm,

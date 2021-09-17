@@ -9,6 +9,7 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {PIPE_DEFINITIONS} from 'src/flows'
 import {hydrate} from 'src/flows/context/flow.list'
 import {RemoteDataState} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const EXAMPLE_FLOW = hydrate({
   spec: {
@@ -118,7 +119,7 @@ const EXAMPLE_FLOW = hydrate({
 })
 
 export const FlowProvider: FC = ({children}) => {
-  const [flow, setFlow] = useState(EXAMPLE_FLOW)
+  const [flow, setFlow] = useState(null)
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const {accessID} = useParams<{accessID: string}>()
 
@@ -127,8 +128,11 @@ export const FlowProvider: FC = ({children}) => {
     fetch(`${window.location.origin}/api/share/${accessID}`)
       .then(res => res.json())
       .then(res => {
-        setFlow(hydrate(res))
-        // setFlow(EXAMPLE_FLOW)
+        if (isFlagEnabled('exampleFlow')) {
+          setFlow(EXAMPLE_FLOW)
+        } else {
+          setFlow(hydrate(res))
+        }
         setLoading(RemoteDataState.Done)
       })
       .catch(error => {

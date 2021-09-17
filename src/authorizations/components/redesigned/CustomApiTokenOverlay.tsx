@@ -46,10 +46,10 @@ const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
 
   const formatAllResources = () => {
     let resources = props.allResources
-    resources.sort()
     resources = resources.filter(
       item => item !== 'buckets' && item !== 'telegrafs'
     )
+    resources.sort()
     resources.unshift('telegrafs')
     resources.unshift('buckets')
     return resources

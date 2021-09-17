@@ -15,7 +15,7 @@ export default register => {
       token: '',
       org: '',
     },
-    readOnly: ReadOnly,
+    readOnlyComponent: ReadOnly,
 
     scope: (data, prev) => {
       return {

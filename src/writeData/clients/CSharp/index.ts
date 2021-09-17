@@ -6,6 +6,7 @@ import writePoint from 'src/writeData/clients/CSharp/write.1.example'
 import writePOCO from 'src/writeData/clients/CSharp/write.2.example'
 import execute from 'src/writeData/clients/CSharp/execute.example'
 import query from 'src/writeData/clients/CSharp/query.example'
+import executeFull from 'src/writeData/clients/CSharp/executeFull.example'
 
 export default register =>
   register({
@@ -31,4 +32,8 @@ export default register =>
     ],
     execute,
     query,
+    querySanitize: (query: string) => {
+      return query.replace(/"/g, '""')
+    },
+    executeFull,
   })

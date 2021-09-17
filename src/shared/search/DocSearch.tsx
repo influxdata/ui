@@ -40,7 +40,7 @@ const DocSearch: FC<DocSearchProps> = ({type}) => {
 
   const facetFilters = useMemo(
     () => ({
-      facetFilters: [['project: influxdb', 'flux:true'], 'version: cloud'],
+      facetFilters: [['searchTag: influxdb-cloud', 'flux:true']],
     }),
     []
   )

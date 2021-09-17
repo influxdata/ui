@@ -3,6 +3,7 @@ import React, {PureComponent} from 'react'
 
 // Decorator
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 export enum LoadingState {
   NotStarted = 'NotStarted',
@@ -56,7 +57,17 @@ class ConnectionInformation extends PureComponent<Props> {
     }
   }
 
-  private get additionalText(): string {
+  private get additionalText(): any {
+    const docs = (
+      <a
+        href={`https://docs.influxdata.com/telegraf/${DOCS_URL_VERSION}/administration/troubleshooting/`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {' '}
+        Telegraf Troubleshooting{' '}
+      </a>
+    )
     switch (this.props.loading) {
       case LoadingState.Loading:
         return `Timeout in ${this.props.countDownSeconds} seconds`
@@ -64,7 +75,7 @@ class ConnectionInformation extends PureComponent<Props> {
         return `${this.props.bucket} is receiving data loud and clear!`
       case LoadingState.NotFound:
       case LoadingState.Error:
-        return 'Check config and try again'
+        return docs
     }
   }
 }

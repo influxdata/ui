@@ -4,9 +4,7 @@ const query = `<%= query %>`
 queryApi.queryRows(query, {
   next(row, tableMeta) {
     const o = tableMeta.toObject(row)
-    console.log(
-      `${o._time} ${o._measurement} in '${o.location}' (${o.example}): ${o._field}=${o._value}`
-    )
+    console.log(`${o._time} ${o._measurement}: ${o._field}=${o._value}`)
   },
   error(error) {
     console.error(error)
@@ -14,6 +12,6 @@ queryApi.queryRows(query, {
   },
   complete() {
     console.log('Finished SUCCESS')
-  }
+  },
 })
 

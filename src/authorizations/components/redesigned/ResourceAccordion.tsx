@@ -4,9 +4,9 @@ import {isEmpty} from 'lodash'
 
 // Clockface
 import {Accordion} from '@influxdata/clockface'
-import {ResourceAccordionHeader} from './ResourceAccordionHeader'
+import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
 import GetResources from 'src/resources/components/GetResources'
-import {ResourceAccordionBody} from './ResourceAccordionBody'
+import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
 
 // Types
 import {AppState, Telegraf, ResourceType} from 'src/types'
@@ -87,6 +87,7 @@ class ResourceAccordion extends Component<Props, State> {
             resourceName={resourceName}
             permissions={permissions[resource]}
             onToggleAll={this.handleToggleAll}
+            disabled={false}
           />
           {resourceName === 'Telegrafs' ||
             (resourceName === 'Buckets' && (
@@ -109,6 +110,7 @@ class ResourceAccordion extends Component<Props, State> {
           permissions={permissions[resource].sublevelPermissions}
           onToggle={this.handleIndividualToggle}
           title="Individual Telegraf Configuration Names"
+          disabled={false}
         />
       )
     } else if (resourceName === 'Buckets') {
@@ -118,6 +120,7 @@ class ResourceAccordion extends Component<Props, State> {
           permissions={permissions[resource].sublevelPermissions}
           onToggle={this.handleIndividualToggle}
           title="Individual Bucket Names"
+          disabled={false}
         />
       )
     }

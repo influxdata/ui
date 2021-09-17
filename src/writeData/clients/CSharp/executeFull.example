@@ -1,0 +1,31 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using InfluxDB.Client;
+
+namespace Examples
+{
+  public class Examples
+  {
+    public static async Task Main(string[] args)
+    {
+      // You can generate a Token from the "Tokens Tab" in the UI
+      const string token = "<%= token %>";
+      const string org = "<%= org %>";
+
+      using var client = InfluxDBClientFactory.Create("<%= server %>", token);
+
+      const string query = @"
+      <%= query %>
+      ";
+
+      var tables = await client.GetQueryApi().QueryAsync(query, org);
+
+      foreach (var record in tables.SelectMany(table => table.Records))
+      {
+        Console.WriteLine($"{record}");
+      }
+    }
+  }
+}
+

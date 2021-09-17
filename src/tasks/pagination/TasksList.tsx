@@ -2,6 +2,9 @@
 import React, {PureComponent, RefObject, createRef} from 'react'
 import memoizeOne from 'memoize-one'
 
+// Styles
+import 'src/tasks/pagination/tasksPagination.scss'
+
 // Components
 import {ResourceList} from '@influxdata/clockface'
 import TaskCard from 'src/tasks/components/TaskCard'
@@ -87,6 +90,15 @@ export default class TasksList extends PureComponent<Props, State>
   }
 
   public componentDidMount() {
+    const params = new URLSearchParams(window.location.search)
+    const urlPageNumber = parseInt(params.get('page'), 10)
+
+    const passedInPageIsValid =
+      urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber >= 0
+    if (passedInPageIsValid) {
+      this.currentPage = urlPageNumber
+    }
+
     this.props.checkTaskLimits()
     if (CLOUD && isFlagEnabled('pinnedItems')) {
       getPinnedItems()
@@ -134,6 +146,9 @@ export default class TasksList extends PureComponent<Props, State>
 
   public paginate = page => {
     this.currentPage = page
+    const url = new URL(location.href)
+    url.searchParams.set('page', page)
+    history.replaceState(null, '', url.toString())
     this.forceUpdate()
   }
 

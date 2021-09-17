@@ -1,3 +1,6 @@
+// get non-blocking write client
+writeAPI := client.WriteAPI("<%= org %>", "<%= bucket %>")
+
 p := influxdb2.NewPoint("stat",
   map[string]string{"unit": "temperature"},
   map[string]interface{}{"avg": 24.5, "max": 45},

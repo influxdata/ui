@@ -8,10 +8,11 @@ import {
 
 // Types
 import {
-  TelegrafPluginName,
+  BundleName,
   ConfigFields,
   Plugin,
-  BundleName,
+  TelegrafPlugin,
+  TelegrafPluginName,
 } from 'src/types/dataLoaders'
 
 export const getConfigFields = (
@@ -32,8 +33,19 @@ export const updateConfigFields = <T extends Plugin>(
   })
 }
 
-export const createNewPlugin = (name: TelegrafPluginName): Plugin => {
-  return telegrafPluginsInfo[name].defaults
+export const createNewPlugin = (plugin: TelegrafPlugin): Plugin => {
+  if (telegrafPluginsInfo[plugin?.name]) {
+    return telegrafPluginsInfo[plugin.name].defaults
+  }
+  const {
+    plugin: {type: pluginType} = {
+      type: 'input',
+    },
+  } = plugin
+  return {
+    name: plugin.name ? plugin.name : 'plugin-input',
+    type: pluginType,
+  }
 }
 
 export const isPluginUniqueToBundle = (

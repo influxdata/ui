@@ -1,13 +1,16 @@
 import Foundation
 import InfluxDBSwift
 
-let url = "<%= server %>"
-let token = "<%= token %>"
-let bucket = "<%= bucket %>"
-let org = "<%= org %>"
+@main
+class Example {
+    static func main() {
 
-let client = InfluxDBClient(url: url, token: token)
+        let url = "<%= server %>"
+        let token = "<%= token %>"
+        let bucket = "<%= bucket %>"
+        let org = "<%= org %>"
 
-// always close client at the end
-client.close()
+        let client = InfluxDBClient(url: url, token: token)
 
+    }
+}

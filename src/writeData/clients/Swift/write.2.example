@@ -1,7 +1,7 @@
 let recordTuple: InfluxDBClient.Point.Tuple
         = (measurement: "demo", tags: ["type": "tuple"], fields: ["value": .int(3)], time: nil)
 
-client.makeWriteAPI().write(tuple: recordTuple) { result, error in
+client.makeWriteAPI().write(bucket: bucket, org: org, tuple: recordTuple) { result, error in
     // For handle error
     if let error = error {
         print("Error:\n\n\(error)")

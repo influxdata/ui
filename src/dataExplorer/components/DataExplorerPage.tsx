@@ -1,10 +1,10 @@
 // Libraries
 import React, {FC} from 'react'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
-import {Page} from '@influxdata/clockface'
+import {Page, Icon, IconFont} from '@influxdata/clockface'
 import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import GetResources from 'src/resources/components/GetResources'
@@ -18,9 +18,12 @@ import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {useLoadTimeReporting} from 'src/cloud/utils/reporting'
+import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
 import {ResourceType} from 'src/types'
+
+import 'src/shared/components/cta.scss'
 
 const DataExplorerPage: FC = () => {
   useLoadTimeReporting('DataExplorerPage load start')
@@ -46,6 +49,15 @@ const DataExplorerPage: FC = () => {
           <Page.Title title="Data Explorer" />
           <RateLimitAlert />
         </Page.Header>
+        <FeatureFlag name="flowsCTA">
+          <div className="header-cta--de">
+            <div className="header-cta">
+              <Icon glyph={IconFont.BookPencil} />
+              Now you can use Notebooks to explore and take action on your data
+              <Link to="/notebook/from/default">Create a Notebook</Link>
+            </div>
+          </div>
+        </FeatureFlag>
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarLeft>
             <ViewTypeDropdown />

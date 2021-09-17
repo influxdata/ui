@@ -573,7 +573,7 @@ export const createToken = (
   })
 }
 
-export const setupUser = (): Cypress.Chainable<Cypress.Response<any>> => {
+export const setupUser = (): Cypress.Chainable<any> => {
   const defaultUser = Cypress.env('defaultUser')
   const userParam = defaultUser ? `?user=${defaultUser}` : ''
   return cy
@@ -582,23 +582,44 @@ export const setupUser = (): Cypress.Chainable<Cypress.Response<any>> => {
       url: `/debug/provision${userParam}`,
     })
     .then(response => {
-      expect(response.status).to.eq(200)
-      Cypress.env('defaultUser', response.body.user.name)
-      return response
+      if (response.status === 200) {
+        Cypress.env('defaultUser', response.body.user.name)
+        if (defaultUser) {
+          return cy
+            .log(`re-provsioned user ${defaultUser} successfully`)
+            .then(() => response)
+        } else {
+          return cy
+            .log(`provisioned new user ${response.body.user.name} successfully`)
+            .then(() => response)
+        }
+      } else {
+        // if for some reason the user wasn't flushed, do it now
+        return cy
+          .log('retrying the /flush because /provision failed')
+          .then(() => cy.flush().then(_ => cy.setupUser().then(res => res)))
+      }
     })
 }
 
-export const flush = () => {
+export const flush = (): Cypress.Chainable<Cypress.Response<any>> => {
   const defaultUser = Cypress.env('defaultUser')
   if (defaultUser) {
     return cy
       .request({method: 'POST', url: `/debug/flush?user=${defaultUser}`})
-      .then(response => expect(response.status).to.eq(200))
+      .then(response => {
+        expect(response.status).to.eq(200)
+        return cy
+          .log(`flushed user ${defaultUser} successfully`)
+          .then(() => response)
+      })
+  } else {
+    // this isn't really needed - just need to return a chainable cypress obj
+    return cy.request({method: 'GET', url: '/debug/flush'}).then(response => {
+      expect(response.status).to.eq(200)
+      return response
+    })
   }
-  // this isn't really needed - just need to return a chainable cypress obj
-  return cy
-    .request({method: 'GET', url: '/debug/flush'})
-    .then(response => expect(response.status).to.eq(200))
 }
 
 export type ProvisionData = {

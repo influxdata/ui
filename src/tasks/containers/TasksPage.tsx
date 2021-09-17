@@ -45,6 +45,7 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import 'src/shared/components/cta.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>

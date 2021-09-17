@@ -4,7 +4,7 @@ import {format_from_js_file} from '@influxdata/flux'
 
 // Utils
 import {parse} from 'src/external/parser'
-import {find} from 'src/flows/context/query'
+import {find} from 'src/shared/contexts/query'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 // Constants
@@ -57,7 +57,11 @@ const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
       changeBucket({name: queryBucket} as Bucket)
     }
     updateBucketInAST(ast, '<%= bucket %>')
-    changeQuery(format_from_js_file(ast))
+    let query = format_from_js_file(ast)
+    if (def.querySanitize) {
+      query = def.querySanitize(query)
+    }
+    changeQuery(query)
   }, [clientQuery, def.query, changeBucket, changeQuery])
 
   return null

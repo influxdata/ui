@@ -146,15 +146,10 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => {
-  const {
-    telegrafConfigDescription,
-    telegrafConfigName,
-    telegrafConfigID,
-  } = getDataLoaders(state)
+  const {telegrafConfigDescription, telegrafConfigName} = getDataLoaders(state)
 
   return {
     telegrafConfigDescription,
-    telegrafConfigID,
     telegrafConfigName,
   }
 }

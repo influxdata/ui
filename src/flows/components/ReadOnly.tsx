@@ -16,6 +16,7 @@ import ReadOnlyPipeList from 'src/flows/components/ReadOnlyPipeList'
 import {SubSideBar} from 'src/flows/components/Sidebar'
 import ReadOnlyHeader from 'src/flows/components/ReadOnlyHeader'
 import {InternalFromFluxResult} from 'src/types/flows'
+import NotFound from 'src/shared/components/NotFound'
 
 import 'src/flows/style.scss'
 import 'src/flows/shared/Resizer.scss'
@@ -54,36 +55,51 @@ const RunPipeResults: FC = () => {
   return null
 }
 
+const ReadOnly: FC = ({children}) => {
+  const {flow} = useContext(FlowContext)
+  const params = useParams<{accessID: string}>()
+  if (!params.accessID || params.accessID.length !== 16 || !flow) {
+    return (
+      <div style={{width: '100%'}}>
+        <NotFound />
+      </div>
+    )
+  }
+  return <>{children}</>
+}
+
 const FlowContainer: FC = () => (
   <AppWrapper>
     <FlowProvider>
-      <ResultsProvider>
-        <FlowQueryProvider>
-          <RunPipeResults />
-          <SidebarProvider>
-            <Page>
-              <ReadOnlyHeader />
-              <Page.Contents
-                fullWidth={true}
-                scrollable={false}
-                className="flow-page"
-              >
-                <PopupProvider>
-                  <DapperScrollbars
-                    noScrollX
-                    thumbStartColor="gray"
-                    thumbStopColor="gray"
-                  >
-                    <ReadOnlyPipeList />
-                  </DapperScrollbars>
-                  <SubSideBar />
-                  <PopupDrawer />
-                </PopupProvider>
-              </Page.Contents>
-            </Page>
-          </SidebarProvider>
-        </FlowQueryProvider>
-      </ResultsProvider>
+      <ReadOnly>
+        <ResultsProvider>
+          <FlowQueryProvider>
+            <RunPipeResults />
+            <SidebarProvider>
+              <Page>
+                <ReadOnlyHeader />
+                <Page.Contents
+                  fullWidth={true}
+                  scrollable={false}
+                  className="flow-page"
+                >
+                  <PopupProvider>
+                    <DapperScrollbars
+                      noScrollX
+                      thumbStartColor="gray"
+                      thumbStopColor="gray"
+                    >
+                      <ReadOnlyPipeList />
+                    </DapperScrollbars>
+                    <SubSideBar />
+                    <PopupDrawer />
+                  </PopupProvider>
+                </Page.Contents>
+              </Page>
+            </SidebarProvider>
+          </FlowQueryProvider>
+        </ResultsProvider>
+      </ReadOnly>
     </FlowProvider>
   </AppWrapper>
 )

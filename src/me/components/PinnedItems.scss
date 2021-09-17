@@ -22,3 +22,9 @@ $dashboard-grid-gap: $cf-marg-a;
 .pinned-items--card {
   background: rgb(49, 49, 61);
 }
+
+@media screen and (max-width: $cf-grid--breakpoint-md) {
+  .pinned-items--container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

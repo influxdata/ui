@@ -41,7 +41,7 @@ const createRequest = (id: number, method: string, params: object = {}) => {
 }
 
 export const initialize = (id: number) => {
-  return createRequest(id, 'initialize')
+  return createRequest(id, 'initialize', {capabilities: {}})
 }
 
 export const didOpen = (
@@ -163,6 +163,9 @@ export const parseResponse = (response: ServerResponse): LSPResponse => {
   const message = response.get_message()
   const error = response.get_error()
 
+  console.log({message})
+  console.log({error})
+
   if (error) {
     throw new Error(error)
   }
@@ -172,7 +175,7 @@ export const parseResponse = (response: ServerResponse): LSPResponse => {
   try {
     return JSON.parse(split.slice(2).join('\n'))
   } catch (e) {
-    throw new Error('failed to parse LSP response')
+    throw new Error('failed to parse LSP response', e)
   }
 }
 

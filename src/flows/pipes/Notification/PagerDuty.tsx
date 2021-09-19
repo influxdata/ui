@@ -5,6 +5,7 @@ import {
   Input,
   InputType,
   ComponentSize,
+  ComponentStatus,
   FlexBox,
   FlexDirection,
 } from '@influxdata/clockface'
@@ -12,7 +13,11 @@ import {
 import {PipeContext} from 'src/flows/context/pipe'
 import {getOrg} from 'src/organizations/selectors'
 
-const PagerDuty: FC = () => {
+interface Props {
+  readOnly?: boolean
+}
+
+const PagerDuty: FC<Props> = ({readOnly}) => {
   const {data, update} = useContext(PipeContext)
   const org = useSelector(getOrg)
 
@@ -45,6 +50,9 @@ const PagerDuty: FC = () => {
           value={data.endpointData.url}
           onChange={updateUrl}
           size={ComponentSize.Medium}
+          status={
+            !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+          }
         />
       </Form.Element>
       <Form.Element label="Routing Key">
@@ -54,6 +62,9 @@ const PagerDuty: FC = () => {
           value={data.endpointData.key}
           onChange={updateKey}
           size={ComponentSize.Medium}
+          status={
+            !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+          }
         />
       </Form.Element>
     </FlexBox>

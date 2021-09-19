@@ -18,12 +18,14 @@ interface Props {
   setEditorInstance?: (editor: EditorType) => void
   text: string
   onChangeText: OnChangeScript
+  readOnly?: boolean
 }
 
 const NotificationMonacoEditor: FC<Props> = ({
   text,
   onChangeText,
   setEditorInstance,
+  readOnly,
 }) => {
   const editorDidMount = (editor: EditorType) => {
     if (setEditorInstance) {
@@ -55,6 +57,7 @@ const NotificationMonacoEditor: FC<Props> = ({
           wordWrap: 'on',
           lineNumbers: 'off',
           scrollBeyondLastLine: false,
+          readOnly: !!readOnly,
         }}
         editorDidMount={editorDidMount}
       />

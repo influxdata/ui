@@ -5,11 +5,16 @@ import {
   Input,
   InputType,
   ComponentSize,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const Slack: FC = () => {
+interface Props {
+  readOnly?: boolean
+}
+
+const Slack: FC<Props> = ({readOnly}) => {
   const {data, update} = useContext(PipeContext)
 
   const updateUrl = evt => {
@@ -49,6 +54,9 @@ const Slack: FC = () => {
           value={data.endpointData.url}
           onChange={updateUrl}
           size={ComponentSize.Medium}
+          status={
+            !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+          }
         />
       </Form.Element>
       <Form.Element label="Slack Channel" required={true}>
@@ -58,10 +66,23 @@ const Slack: FC = () => {
           value={data.endpointData.channel}
           onChange={updateChannel}
           size={ComponentSize.Medium}
+          status={
+            !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+          }
         />
       </Form.Element>
       <Form.Element label="Message Color">
-        <ColorPicker color={data.endpointData.color} onChange={updateColor} />
+        {readOnly ? (
+          <Input
+            name="color"
+            type={InputType.Text}
+            value={data.endpointData.color}
+            size={ComponentSize.Medium}
+            status={ComponentStatus.Disabled}
+          />
+        ) : (
+          <ColorPicker color={data.endpointData.color} onChange={updateColor} />
+        )}
       </Form.Element>
     </div>
   )

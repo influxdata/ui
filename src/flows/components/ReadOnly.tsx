@@ -2,6 +2,7 @@
 import React, {FC, useContext, useEffect} from 'react'
 import {AppWrapper, DapperScrollbars, Page} from '@influxdata/clockface'
 import {useParams} from 'react-router'
+import {fromFlux} from '@influxdata/giraffe'
 
 // Contexts
 import {FlowProvider} from 'src/flows/context/shared'
@@ -15,13 +16,11 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import ReadOnlyPipeList from 'src/flows/components/ReadOnlyPipeList'
 import {SubSideBar} from 'src/flows/components/Sidebar'
 import ReadOnlyHeader from 'src/flows/components/ReadOnlyHeader'
-import {InternalFromFluxResult} from 'src/types/flows'
 import NotFound from 'src/shared/components/NotFound'
 
 import 'src/flows/style.scss'
 import 'src/flows/shared/Resizer.scss'
 import '@influxdata/clockface/dist/index.css'
-import fromFlux from 'src/shared/utils/fromFlux'
 import {RemoteDataState} from 'src/types'
 
 const RunPipeResults: FC = () => {
@@ -45,7 +44,7 @@ const RunPipeResults: FC = () => {
       fetch(`/api/share/${accessID}/query/${id}`)
         .then(res => res.text())
         .then(resp => {
-          const csv = (fromFlux(resp) as unknown) as InternalFromFluxResult
+          const csv = fromFlux(resp)
           setResult(id, {parsed: csv, source: ''})
           setStatuses({[id]: RemoteDataState.Done})
         })

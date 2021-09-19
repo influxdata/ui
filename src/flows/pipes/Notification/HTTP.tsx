@@ -5,6 +5,7 @@ import {
   Input,
   InputType,
   ComponentSize,
+  ComponentStatus,
   SelectGroup,
   FlexDirection,
   AlignItems,
@@ -12,7 +13,11 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const HTTP: FC = () => {
+interface Props {
+  readOnly?: boolean
+}
+
+const HTTP: FC<Props> = ({readOnly}) => {
   const {data, update} = useContext(PipeContext)
 
   const updater = (field, value) => {
@@ -56,6 +61,9 @@ const HTTP: FC = () => {
             value={data.endpointData.username}
             onChange={updateUsername}
             size={ComponentSize.Medium}
+            status={
+              !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+            }
           />
         </Form.Element>
         <Form.Element label="Password">
@@ -65,6 +73,9 @@ const HTTP: FC = () => {
             value={data.endpointData.password}
             onChange={updatePassword}
             size={ComponentSize.Medium}
+            status={
+              !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+            }
           />
         </Form.Element>
       </>
@@ -78,6 +89,9 @@ const HTTP: FC = () => {
           value={data.endpointData.token}
           onChange={updateToken}
           size={ComponentSize.Medium}
+          status={
+            !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+          }
         />
       </Form.Element>
     )
@@ -100,6 +114,9 @@ const HTTP: FC = () => {
               value={data.endpointData.url}
               onChange={updateUrl}
               size={ComponentSize.Medium}
+              status={
+                !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+              }
             />
           </Form.Element>
         </FlexBox.Child>
@@ -115,6 +132,7 @@ const HTTP: FC = () => {
                 value="none"
                 active={data.endpointData.auth === 'none'}
                 onClick={updateAuth}
+                disabled={!!readOnly}
               >
                 None
               </SelectGroup.Option>
@@ -124,6 +142,7 @@ const HTTP: FC = () => {
                 value="basic"
                 active={data.endpointData.auth === 'basic'}
                 onClick={updateAuth}
+                disabled={!!readOnly}
               >
                 Basic
               </SelectGroup.Option>
@@ -133,6 +152,7 @@ const HTTP: FC = () => {
                 value="bearer"
                 active={data.endpointData.auth === 'bearer'}
                 onClick={updateAuth}
+                disabled={!!readOnly}
               >
                 Bearer
               </SelectGroup.Option>

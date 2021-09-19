@@ -36,7 +36,7 @@ const UserInviteSubmit: FC = () => {
 
   return (
     <Button
-      icon={IconFont.Plus}
+      icon={IconFont.Plus_New}
       text="Add &amp; Invite"
       color={ComponentColor.Primary}
       type={ButtonType.Submit}

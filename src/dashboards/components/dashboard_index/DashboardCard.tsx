@@ -164,9 +164,7 @@ class DashboardCard extends PureComponent<Props> {
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
           confirmationLabel="Yes, Delete this bucket"
-          onConfirm={() => {
-            this.handleDeleteDashboard
-          }}
+          onConfirm={this.handleDeleteDashboard}
           confirmationButtonText="Confirm"
           testID="context-delete-menu"
         />

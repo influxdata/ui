@@ -1,43 +1,16 @@
 import React, {FC, useContext} from 'react'
 import {
-  ColorPicker,
   Form,
   Input,
   InputType,
   ComponentSize,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
 const Slack: FC = () => {
-  const {data, update} = useContext(PipeContext)
-
-  const updateUrl = evt => {
-    update({
-      endpointData: {
-        ...data.endpointData,
-        url: evt.target.value,
-      },
-    })
-  }
-
-  const updateChannel = evt => {
-    update({
-      endpointData: {
-        ...data.endpointData,
-        channel: evt.target.value,
-      },
-    })
-  }
-
-  const updateColor = hex => {
-    update({
-      endpointData: {
-        ...data.endpointData,
-        color: hex,
-      },
-    })
-  }
+  const {data} = useContext(PipeContext)
 
   return (
     <div className="slack-endpoint-details--flex">
@@ -47,8 +20,8 @@ const Slack: FC = () => {
           type={InputType.Text}
           placeholder="ex: https://hooks.slack.com/services/X/X/X"
           value={data.endpointData.url}
-          onChange={updateUrl}
           size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
         />
       </Form.Element>
       <Form.Element label="Slack Channel" required={true}>
@@ -56,12 +29,20 @@ const Slack: FC = () => {
           name="channel"
           type={InputType.Text}
           value={data.endpointData.channel}
-          onChange={updateChannel}
           size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
         />
       </Form.Element>
       <Form.Element label="Message Color">
-        <ColorPicker color={data.endpointData.color} onChange={updateColor} />
+        (
+        <Input
+          name="color"
+          type={InputType.Text}
+          value={data.endpointData.color}
+          size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
+        />
+        )}
       </Form.Element>
     </div>
   )

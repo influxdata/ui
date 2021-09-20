@@ -5,6 +5,7 @@ import {
   Input,
   InputType,
   ComponentSize,
+  ComponentStatus,
   SelectGroup,
   FlexDirection,
   AlignItems,
@@ -13,36 +14,7 @@ import {
 import {PipeContext} from 'src/flows/context/pipe'
 
 const HTTP: FC = () => {
-  const {data, update} = useContext(PipeContext)
-
-  const updater = (field, value) => {
-    update({
-      endpointData: {
-        ...data.endpointData,
-        [field]: value,
-      },
-    })
-  }
-
-  const updateUrl = evt => {
-    updater('url', evt.target.value)
-  }
-
-  const updateAuth = (auth: string) => {
-    updater('auth', auth)
-  }
-
-  const updateUsername = evt => {
-    updater('username', evt.target.value)
-  }
-
-  const updatePassword = evt => {
-    updater('password', evt.target.value)
-  }
-
-  const updateToken = evt => {
-    updater('token', evt.target.value)
-  }
+  const {data} = useContext(PipeContext)
 
   let submenu
 
@@ -54,8 +26,8 @@ const HTTP: FC = () => {
             name="username"
             type={InputType.Text}
             value={data.endpointData.username}
-            onChange={updateUsername}
             size={ComponentSize.Medium}
+            status={ComponentStatus.Disabled}
           />
         </Form.Element>
         <Form.Element label="Password">
@@ -63,8 +35,8 @@ const HTTP: FC = () => {
             name="password"
             type={InputType.Text}
             value={data.endpointData.password}
-            onChange={updatePassword}
             size={ComponentSize.Medium}
+            status={ComponentStatus.Disabled}
           />
         </Form.Element>
       </>
@@ -76,8 +48,8 @@ const HTTP: FC = () => {
           name="token"
           type={InputType.Text}
           value={data.endpointData.token}
-          onChange={updateToken}
           size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
         />
       </Form.Element>
     )
@@ -98,8 +70,8 @@ const HTTP: FC = () => {
               type={InputType.Text}
               placeholder="ex: https://www.example.com/endpoint"
               value={data.endpointData.url}
-              onChange={updateUrl}
               size={ComponentSize.Medium}
+              status={ComponentStatus.Disabled}
             />
           </Form.Element>
         </FlexBox.Child>
@@ -113,8 +85,9 @@ const HTTP: FC = () => {
                 id="none"
                 name="auth"
                 value="none"
+                onClick={() => {}}
                 active={data.endpointData.auth === 'none'}
-                onClick={updateAuth}
+                disabled
               >
                 None
               </SelectGroup.Option>
@@ -122,8 +95,9 @@ const HTTP: FC = () => {
                 id="none"
                 name="auth"
                 value="basic"
+                onClick={() => {}}
                 active={data.endpointData.auth === 'basic'}
-                onClick={updateAuth}
+                disabled
               >
                 Basic
               </SelectGroup.Option>
@@ -131,8 +105,9 @@ const HTTP: FC = () => {
                 id="bearer"
                 name="auth"
                 value="bearer"
+                onClick={() => {}}
                 active={data.endpointData.auth === 'bearer'}
-                onClick={updateAuth}
+                disabled
               >
                 Bearer
               </SelectGroup.Option>

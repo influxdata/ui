@@ -9,7 +9,13 @@ import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 import {setAnnotationsMode} from 'src/annotations/actions/creators'
 
 // Components
-import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
+import {
+  Appearance,
+  ComponentColor,
+  InputLabel,
+  InputToggleType,
+  Toggle,
+} from '@influxdata/clockface'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -21,10 +27,6 @@ import {event} from 'src/cloud/utils/reporting'
 export const AnnotationsControlBarToggleButton: FC = () => {
   const dispatch = useDispatch()
   const inAnnotationsMode = useSelector(isAnnotationsModeEnabled)
-
-  const buttonColor = inAnnotationsMode
-    ? ComponentColor.Secondary
-    : ComponentColor.Default
 
   const titleText = inAnnotationsMode
     ? 'Shift + Click on a graph to annotate a point, Shift + Drag on a graph to annotate a range'
@@ -38,13 +40,22 @@ export const AnnotationsControlBarToggleButton: FC = () => {
   }
 
   return (
-    <Button
-      text="Annotations"
-      icon={IconFont.Annotate}
-      color={buttonColor}
+    <Toggle
+      id="toggle-annotations-controls"
+      type={InputToggleType.Checkbox}
+      fill={Appearance.Solid}
       titleText={titleText}
+      checked={inAnnotationsMode}
       testID="toggle-annotations-controls"
-      onClick={handleClick}
-    />
+      onChange={handleClick}
+    >
+      <InputLabel
+        htmlFor="toggle-annotations-controls"
+        active={inAnnotationsMode}
+        style={{fontWeight: 500}}
+      >
+        Enable Annotations
+      </InputLabel>
+    </Toggle>
   )
 }

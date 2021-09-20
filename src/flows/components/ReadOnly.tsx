@@ -71,26 +71,22 @@ const ReadOnlyFlowPage: FC = () => {
   const {flow} = useContext(FlowContext)
 
   return (
-  <Page titleTag={flow.name + " (Shared) | InfluxDB Cloud"}>
-    <ReadOnlyHeader />
-    <Page.Contents
-        fullWidth={true}
-        scrollable={false}
-        className="flow-page"
-    >
-      <PopupProvider>
-        <DapperScrollbars
+    <Page titleTag={flow.name + ' (Shared) | InfluxDB Cloud'}>
+      <ReadOnlyHeader />
+      <Page.Contents fullWidth={true} scrollable={false} className="flow-page">
+        <PopupProvider>
+          <DapperScrollbars
             noScrollX
             thumbStartColor="gray"
             thumbStopColor="gray"
-        >
-          <ReadOnlyPipeList />
-        </DapperScrollbars>
-        <SubSideBar />
-        <PopupDrawer />
-      </PopupProvider>
-    </Page.Contents>
-  </Page>
+          >
+            <ReadOnlyPipeList />
+          </DapperScrollbars>
+          <SubSideBar />
+          <PopupDrawer />
+        </PopupProvider>
+      </Page.Contents>
+    </Page>
   )
 }
 
@@ -102,7 +98,7 @@ const FlowContainer: FC = () => (
           <FlowQueryProvider>
             <RunPipeResults />
             <SidebarProvider>
-            <ReadOnlyFlowPage />
+              <ReadOnlyFlowPage />
             </SidebarProvider>
           </FlowQueryProvider>
         </ResultsProvider>

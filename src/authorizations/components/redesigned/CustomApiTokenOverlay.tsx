@@ -102,20 +102,19 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     return resources
   }
   const handleToggleAll = (resourceName, permission) => {
-
     const newPerm = {...permissions}
 
-    const name = resourceName.charAt(0).toLowerCase() + resourceName.slice(1)
-    const newPermValue = !newPerm[name][permission]
-
-    if (newPerm[name].sublevelPermissions) {
-      Object.keys(newPerm[name].sublevelPermissions).map(key => {
-        newPerm[name].sublevelPermissions[key].permissions[
-          permission
-        ] = newPermValue
-      })
-    }
-    newPerm[name][permission] = newPermValue
+      const name = resourceName.charAt(0).toLowerCase() + resourceName.slice(1)
+      const newPermValue = newPerm[name][permission]
+  
+      if (newPerm[name].sublevelPermissions) {
+        Object.keys(newPerm[name].sublevelPermissions).map(key => {
+          newPerm[name].sublevelPermissions[key].permissions[
+            permission
+          ] = !newPermValue
+        })
+      }
+      newPerm[name][permission] = !newPermValue
 
     setPermissions(newPerm)
   }
@@ -129,6 +128,17 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     newPerm[resourceName].sublevelPermissions[id].permissions[
       permission
     ] = !permValue
+
+    const headerPermValue = !Object.keys(
+      newPerm[resourceName].sublevelPermissions
+    ).some(
+      key =>
+        newPerm[resourceName].sublevelPermissions[key].permissions[
+          permission
+        ] === false
+    )
+
+    newPerm[resourceName][permission] = headerPermValue
 
     setPermissions(newPerm)
   }

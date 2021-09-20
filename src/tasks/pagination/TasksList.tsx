@@ -119,14 +119,19 @@ export default class TasksList extends PureComponent<Props, State>
   }
 
   public render() {
-    const {searchTerm, totalCount} = this.props
-
     const heightWithPagination =
       this.paginationRef?.current?.clientHeight ||
       DEFAULT_PAGINATION_CONTROL_HEIGHT
     const height = this.props.pageHeight - heightWithPagination
 
-    this.totalPages = Math.ceil(this.props.totalCount / this.rowsPerPage)
+    this.totalPages = Math.ceil(this.props.tasks.length / this.rowsPerPage)
+
+    // if the user filters the list while on a page that is
+    // outside the new filtered list put them on the last page of the new list
+    if (this.currentPage > this.totalPages) {
+      this.paginate(this.totalPages)
+    }
+
     return (
       <>
         <ResourceList style={{width: this.props.pageWidth}}>
@@ -134,9 +139,9 @@ export default class TasksList extends PureComponent<Props, State>
             style={{maxHeight: height, minHeight: height, overflow: 'scroll'}}
             emptyState={
               <EmptyTasksList
-                searchTerm={searchTerm}
+                searchTerm={this.props.searchTerm}
                 onCreate={this.onCreate}
-                totalCount={totalCount}
+                totalCount={this.props.totalCount}
               />
             }
           >

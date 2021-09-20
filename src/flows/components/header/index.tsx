@@ -50,6 +50,7 @@ const FlowHeader: FC = () => {
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
+    // TODO: once we have a generated func from swagger, use that
     fetch(`/api/v2private/notebooks/share?notebookID=${id}`).then(res =>
       res.json().then(data => {
         if (data) {
@@ -95,9 +96,15 @@ const FlowHeader: FC = () => {
 
   const deleteShare = () => {
     hideShare()
+    // TODO: once we have a generated func from swagger, use that
     fetch(`/api/v2private/notebooks/share/${share.id}`, {
       method: 'DELETE',
-    }).catch(() => console.error('failed to delete share')) // TODO send a notification
+    })
+      .then(() => {
+        hideShare()
+        setShare(null)
+      })
+      .catch(() => console.error('failed to delete share')) // TODO send a notification
   }
 
   const generateLink = () => {
@@ -113,10 +120,6 @@ const FlowHeader: FC = () => {
         orgID,
         token: token.token,
         region: window.location.hostname,
-        // ** use these for local dev **
-        // orgID: '[your org from prod]',
-        // token: '[your token form prod]',
-        // region: 'https://us-west-2-1.aws.cloud2.influxdata.com/'
       }),
     }).then(res =>
       res.json().then(data => {

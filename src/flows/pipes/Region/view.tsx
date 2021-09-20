@@ -71,7 +71,7 @@ export const REGIONS = [
   {label: 'Self Hosted', value: 'self-hosted'},
 ]
 
-const Source: FC<PipeProp> = ({Context, readOnly}) => {
+const Source: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
   const org = useSelector(getOrg)
   const [error, setError] = useState<boolean>(false)
@@ -230,11 +230,6 @@ const Source: FC<PipeProp> = ({Context, readOnly}) => {
               button={(active, onClick) => (
                 <Dropdown.Button
                   active={active}
-                  status={
-                    readOnly
-                      ? ComponentStatus.Disabled
-                      : ComponentStatus.Default
-                  }
                   onClick={onClick}
                   color={ComponentColor.Primary}
                   testID="region-panel--dropdown-button"
@@ -304,7 +299,7 @@ const Source: FC<PipeProp> = ({Context, readOnly}) => {
               onChange={evt => update({region: evt.target.value})}
               size={ComponentSize.Medium}
               status={
-                data.source !== 'custom' || readOnly
+                data.source !== 'custom'
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }
@@ -319,9 +314,6 @@ const Source: FC<PipeProp> = ({Context, readOnly}) => {
                 type={InputType.Text}
                 value={data.token}
                 size={ComponentSize.Medium}
-                status={
-                  readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
-                }
                 onChange={evt => update({token: evt.target.value})}
               />
             </Form.Element>

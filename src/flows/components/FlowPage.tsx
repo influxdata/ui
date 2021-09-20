@@ -52,28 +52,26 @@ const FlowContainer: FC = () => (
           <FlowQueryProvider>
             <FlowKeyboardPreview />
             <SidebarProvider>
-              <PopupProvider>
-                <>
-                  <Page>
-                    <FlowHeader />
-                    <Page.Contents
-                      fullWidth={true}
-                      scrollable={false}
-                      className="flow-page"
+              <Page>
+                <FlowHeader />
+                <Page.Contents
+                  fullWidth={true}
+                  scrollable={false}
+                  className="flow-page"
+                >
+                  <PopupProvider>
+                    <DapperScrollbars
+                      noScrollX
+                      thumbStartColor="gray"
+                      thumbStopColor="gray"
                     >
-                      <DapperScrollbars
-                        noScrollX
-                        thumbStartColor="gray"
-                        thumbStopColor="gray"
-                      >
-                        <PipeList />
-                      </DapperScrollbars>
-                      <SubSideBar />
-                      <PopupDrawer />
-                    </Page.Contents>
-                  </Page>
-                </>
-              </PopupProvider>
+                      <PipeList />
+                    </DapperScrollbars>
+                    <SubSideBar />
+                    <PopupDrawer />
+                  </PopupProvider>
+                </Page.Contents>
+              </Page>
             </SidebarProvider>
           </FlowQueryProvider>
         </ResultsProvider>

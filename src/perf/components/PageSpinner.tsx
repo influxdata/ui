@@ -7,7 +7,7 @@ import {
 
 interface Props {
   loading?: RemoteDataState
-  children?: any
+  children?: React.ReactChild
 }
 
 const PageSpinner: FC<Props> = ({loading, children}) => {

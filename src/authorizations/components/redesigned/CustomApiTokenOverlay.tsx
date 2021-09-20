@@ -60,7 +60,13 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   useEffect(() => {
     props.getBuckets()
     props.getTelegrafs()
-    console.log("telegraf and bucket perm: ", props.telegrafPermissions, props.bucketPermissions)
+  
+  },[])
+  // console.log("line 65: ", props.telegrafPermissions, props.bucketPermissions)
+  useEffect(() => {
+    // props.getBuckets()
+    // props.getTelegrafs()
+    // console.log("line 69: ", props.telegrafPermissions, props.bucketPermissions)
     const perms = {}
       props.allResources.map(resource => {
         if (resource === 'telegrafs') {
@@ -74,8 +80,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       setPermissions(perms)
       console.log("perms: ", perms)
   
-  },[])
-
+  },[props.telegrafPermissions, props.bucketPermissions])
 
   const handleDismiss = () => {
     props.onClose()
@@ -95,6 +100,37 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     resources.unshift('telegrafs')
     resources.unshift('buckets')
     return resources
+  }
+  const handleToggleAll = (resourceName, permission) => {
+
+    const newPerm = {...permissions}
+
+    const name = resourceName.charAt(0).toLowerCase() + resourceName.slice(1)
+    const newPermValue = !newPerm[name][permission]
+
+    if (newPerm[name].sublevelPermissions) {
+      Object.keys(newPerm[name].sublevelPermissions).map(key => {
+        newPerm[name].sublevelPermissions[key].permissions[
+          permission
+        ] = newPermValue
+      })
+    }
+    newPerm[name][permission] = newPermValue
+
+    setPermissions(newPerm)
+  }
+
+  const handleIndividualToggle = (resourceName, id, permission) => {
+
+    const permValue =
+      permissions[resourceName].sublevelPermissions[id].permissions[permission]
+
+    const newPerm = {...permissions}
+    newPerm[resourceName].sublevelPermissions[id].permissions[
+      permission
+    ] = !permValue
+
+    setPermissions(newPerm)
   }
 
   return (
@@ -149,7 +185,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                   </InputLabel>
                 </FlexBox.Child>
               </FlexBox>
-              <ResourceAccordion resources={formatAllResources()} />
+              <ResourceAccordion resources={formatAllResources()} permissions={permissions} onToggleAll={handleToggleAll} onIndividualToggle={handleIndividualToggle}/>
             </FlexBox.Child>
           </FlexBox>
         </Form>

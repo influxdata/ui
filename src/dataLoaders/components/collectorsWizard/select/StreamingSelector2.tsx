@@ -21,7 +21,7 @@ import {
 } from 'src/writeData/constants/contentTelegrafPlugins'
 
 // Types
-import {TelegrafPlugin as TelegrafPlugin2} from 'src/types/dataLoaders'
+import {TelegrafPlugin as DataLoaderTelegrafPlugin} from 'src/types/dataLoaders'
 
 import {Bucket, BundleName, ConfigurationState} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
@@ -32,7 +32,7 @@ export interface Props {
   selectedBucketName: string
   pluginBundles: BundleName[]
   telegrafPlugins: any
-  onTogglePluginBundle: (plugin: TelegrafPlugin2) => void
+  onTogglePluginBundle: (plugin: DataLoaderTelegrafPlugin) => void
   onSelectBucket: (bucket: Bucket) => void
 }
 

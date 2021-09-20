@@ -72,10 +72,10 @@ export const PluginConfigSwitcher: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
     pluginConfig,
+    pluginConfigName,
     setIsValidConfiguration,
     setPluginConfig,
     substepIndex,
-    pluginConfigName,
   }
 
   let title = 'Configuration Options'

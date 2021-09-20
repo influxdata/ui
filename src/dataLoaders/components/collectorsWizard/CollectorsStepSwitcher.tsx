@@ -28,13 +28,9 @@ class StepSwitcher extends PureComponent<Props> {
     let configure
     if (isFlagEnabled('telegrafUiRefresh')) {
       selector = <SelectCollectorsStep2 {...stepProps} />
-    } else {
-      selector = <SelectCollectorsStep {...stepProps} />
-    }
-
-    if (isFlagEnabled('telegrafUiRefresh')) {
       configure = <PluginCreateConfigurationWizard />
     } else {
+      selector = <SelectCollectorsStep {...stepProps} />
       configure = <PluginConfigSwitcher />
     }
 

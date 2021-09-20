@@ -27,19 +27,21 @@ export const FlowProvider: FC = ({children}) => {
   }, [])
 
   return (
-    <FlowContext.Provider
-      value={{
-        id: '',
-        name: DEFAULT_PROJECT_NAME,
-        flow,
-        add: (_, __) => '',
-        remove: () => '',
-        updateData: _ => {},
-        updateMeta: _ => {},
-        updateOther: _ => {},
-      }}
-    >
-      <PageSpinner loading={loading}>{children}</PageSpinner>
-    </FlowContext.Provider>
+    <PageSpinner loading={loading}>
+      <FlowContext.Provider
+        value={{
+          id: '',
+          name: DEFAULT_PROJECT_NAME,
+          flow,
+          add: (_, __) => '',
+          remove: () => '',
+          updateData: _ => {},
+          updateMeta: _ => {},
+          updateOther: _ => {},
+        }}
+      >
+        {children}
+      </FlowContext.Provider>
+    </PageSpinner>
   )
 }

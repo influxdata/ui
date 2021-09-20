@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext, useMemo, lazy, Suspense} from 'react'
-import {parse} from '@influxdata/flux'
 import {
   ComponentStatus,
   Form,
@@ -20,8 +19,6 @@ import {
 import Threshold from 'src/flows/pipes/Notification/Threshold'
 
 import {PipeContext} from 'src/flows/context/pipe'
-import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {remove} from 'src/shared/contexts/query'
 import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
 const NotificationMonacoEditor = lazy(() =>
   import('src/flows/pipes/Notification/NotificationMonacoEditor')
@@ -35,26 +32,7 @@ import {PipeProp} from 'src/types/flows'
 import 'src/flows/pipes/Notification/styles.scss'
 
 const ReadOnly: FC<PipeProp> = ({Context}) => {
-  const {id, data, results, loading} = useContext(PipeContext)
-  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
-  let intervalError = ''
-  let offsetError = ''
-
-  if (!data.interval) {
-    intervalError = 'Required'
-  } else if (
-    data.interval !==
-    data.interval.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
-  ) {
-    intervalError = 'Invalid Time'
-  }
-
-  if (
-    data.offset &&
-    data.offset !== data.offset.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
-  ) {
-    offsetError = 'Invalid Time'
-  }
+  const {data, results, loading} = useContext(PipeContext)
 
   const loadingText = useMemo(() => {
     if (loading === RemoteDataState.Loading) {
@@ -68,31 +46,6 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
     return 'No Data Returned'
   }, [loading])
 
-  const queryText = getPanelQueries(id, true)?.source
-  const hasTaskOption = useMemo(
-    () =>
-      !!Object.keys(
-        remove(
-          parse(simplify(queryText)),
-          node =>
-            node.type === 'OptionStatement' &&
-            node.assignment.id.name === 'task'
-        ).reduce((acc, curr) => {
-          // eslint-disable-next-line no-extra-semi
-          ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-            if (_curr.key?.name && _curr.value?.location?.source) {
-              _acc[_curr.key.name] = _curr.value.location.source
-            }
-
-            return _acc
-          }, acc)
-
-          return acc
-        }, {})
-      ).length,
-    [queryText]
-  )
-
   const numericColumns = (results?.parsed?.table?.columnKeys || []).filter(
     key => {
       if (key === 'result' || key === 'table') {
@@ -104,31 +57,6 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
       return columnType === 'time' || columnType === 'number'
     }
   )
-
-  const warningMessage = useMemo(() => {
-    if (!hasTaskOption) {
-      return
-    }
-
-    return (
-      <div className="flow-error">
-        <div className="flow-error--header">
-          <Icon
-            glyph={IconFont.AlertTriangle}
-            className="flow-error--vis-toggle"
-          />
-        </div>
-        <div className="flow-error--body">
-          <h1>The task option is reserved</h1>
-          <p>
-            This panel will take precedence over any task configuration and
-            overwrite the option. Remove it from your source query to remove
-            this message
-          </p>
-        </div>
-      </div>
-    )
-  }, [hasTaskOption])
 
   if (
     loading === RemoteDataState.NotStarted ||
@@ -144,7 +72,6 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
             <div className="panel-resizer--empty">{loadingText}</div>
           </div>
         </div>
-        {warningMessage}
       </Context>
     )
   }
@@ -162,7 +89,6 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
             </div>
           </div>
         </div>
-        {warningMessage}
       </Context>
     )
   }
@@ -176,7 +102,6 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
             <Form.Element
               label="Check Every"
               required={true}
-              errorMessage={intervalError}
               style={{paddingBottom: '4px'}}
             >
               <Input
@@ -191,11 +116,7 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
           </FlexBox.Child>
 
           <FlexBox.Child grow={1} shrink={1}>
-            <Form.Element
-              label="Query Offset"
-              required={true}
-              errorMessage={offsetError}
-            >
+            <Form.Element label="Query Offset" required={true}>
               <Input
                 name="interval"
                 type={InputType.Text}
@@ -268,7 +189,6 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
           </FlexBox.Child>
         </FlexBox>
       </div>
-      {warningMessage}
     </Context>
   )
 }

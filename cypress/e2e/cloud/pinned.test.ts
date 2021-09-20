@@ -42,11 +42,11 @@ describe('Pinned Items', () => {
     it('pins a dashboard to the homepage for easy access as a pinned item', () => {
       cy.getByTestID('dashboard-card')
         .first()
-        .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-dashboard').click()
+          cy.getByTestID('context-menu-dashboard').click()
         })
+      cy.getByTestID('context-pin-dashboard').click()
+
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -57,11 +57,11 @@ describe('Pinned Items', () => {
     it('reflects an edit to the dashboard name on the dashboard card', () => {
       cy.getByTestID('dashboard-card')
         .first()
-        .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-dashboard').click()
+          cy.getByTestID('context-menu-dashboard').click()
         })
+      cy.getByTestID('context-pin-dashboard').click()
+
       cy.getByTestID('dashboard-card').within(() => {
         cy.getByTestID('dashboard-card--name')
           .first()
@@ -90,11 +90,11 @@ describe('Pinned Items', () => {
     it('unpins a card which removes it from the pinned list', () => {
       cy.getByTestID('dashboard-card')
         .first()
-        .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-dashboard').click()
+          cy.getByTestID('context-menu-dashboard').click()
         })
+      cy.getByTestID('context-pin-dashboard').click()
+
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--card')

@@ -12,7 +12,7 @@ const ReadOnlyHeader: FC = () => {
 
   return (
     <Page.Header fullWidth>
-      <h1>{flow.name || DEFAULT_PROJECT_NAME}</h1>
+      <Page.Title title={flow.name || DEFAULT_PROJECT_NAME} />
     </Page.Header>
   )
 }

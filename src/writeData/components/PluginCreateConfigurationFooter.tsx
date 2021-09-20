@@ -40,7 +40,6 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
   } = props
 
   const shouldTelegrafUpdate = useMemo(() => {
-    console.log('update or no?', telegrafConfig)
     return Boolean(telegrafConfig)
   }, [telegrafConfig])
 
@@ -108,7 +107,6 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
 
 const mstp = (state: AppState) => {
   const {telegrafConfigID} = getDataLoaders(state)
-  console.log(telegrafConfigID)
   let telegrafConfig = null
   if (telegrafConfigID) {
     const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)

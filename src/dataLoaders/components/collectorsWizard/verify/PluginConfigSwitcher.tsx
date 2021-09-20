@@ -1,8 +1,7 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useState} from 'react'
 import Loadable from 'react-loadable'
 import {connect, ConnectedProps} from 'react-redux'
-import {useParams} from 'react-router'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -10,7 +9,6 @@ import {PluginCreateConfigurationFooter} from 'src/writeData/components/PluginCr
 
 // Types
 import {AppState} from 'src/types'
-
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'
 import {
@@ -27,9 +25,8 @@ import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
-const PREVENT_OVERLAY_FLICKER_STEP = -1
-
 const spinner = <div />
+
 const PluginCreateConfigurationStepSwitcher = Loadable({
   loader: () =>
     import('src/writeData/components/PluginCreateConfigurationStepSwitcher'),
@@ -38,70 +35,33 @@ const PluginCreateConfigurationStepSwitcher = Loadable({
   },
 })
 
-export interface PluginCreateConfigurationStepProps {
-  currentStepIndex: number
-  notify: typeof notifyAction
-  onDecrementCurrentStepIndex: () => void
-  onExit: () => void
-  onIncrementCurrentStepIndex: () => void
-  onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
-  substepIndex: number
-  pluginConfig: string
-  setPluginConfig: (config: string) => void
-  isValidConfiguration: boolean
-  setIsValidConfiguration: (isValid: boolean) => void
-  pluginConfigName: string
-}
-
-interface PluginCreateConfigurationWizardProps {
-  history: {
-    goBack: () => void
-  }
-}
-
-type ParamsType = {
-  [param: string]: string
-}
-
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & PluginCreateConfigurationWizardProps
+type Props = ReduxProps
 
-const PluginCreateConfigurationWizard: FC<Props> = props => {
+export const PluginConfigSwitcher: FC<Props> = props => {
   const {
     currentStepIndex,
-    history,
     notify,
-    onClearDataLoaders,
     onClearSteps,
+    onClearDataLoaders,
     onDecrementCurrentStepIndex,
     onIncrementCurrentStepIndex,
-    onSetCurrentStepIndex,
     onSetSubstepIndex,
     substepIndex,
+    telegrafPlugins,
   } = props
 
-  const {contentID} = useParams<ParamsType>()
-
-  useEffect(() => {
-    onSetCurrentStepIndex(0)
-    onSetSubstepIndex(0, 0)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const handleDismiss = () => {
+    onClearDataLoaders()
+    onClearSteps()
+  }
 
   const [pluginConfig, setPluginConfig] = useState<string>('')
   const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
     false
   )
 
-  const handleDismiss = () => {
-    onClearDataLoaders()
-    onClearSteps()
-    if (substepIndex === 1) {
-      onSetSubstepIndex(0, 0)
-    } else {
-      onSetCurrentStepIndex(PREVENT_OVERLAY_FLICKER_STEP)
-      history.goBack()
-    }
-  }
+  const pluginConfigName = telegrafPlugins[0].name
 
   const stepProps = {
     currentStepIndex,
@@ -112,10 +72,10 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
     pluginConfig,
+    pluginConfigName,
     setIsValidConfiguration,
     setPluginConfig,
     substepIndex,
-    pluginConfigName: contentID,
   }
 
   let title = 'Configuration Options'
@@ -156,11 +116,13 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
 const mstp = (state: AppState) => {
   const {
     dataLoading: {
+      dataLoaders: {telegrafPlugins},
       steps: {currentStep, substep = 0},
     },
   } = state
 
   return {
+    telegrafPlugins,
     currentStepIndex: currentStep,
     substepIndex: typeof substep === 'number' ? substep : 0,
   }
@@ -168,8 +130,8 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   notify: notifyAction,
-  onClearDataLoaders: clearDataLoaders,
   onClearSteps: clearSteps,
+  onClearDataLoaders: clearDataLoaders,
   onDecrementCurrentStepIndex: decrementCurrentStepIndex,
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
   onSetCurrentStepIndex: setCurrentStepIndex,
@@ -178,4 +140,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(PluginCreateConfigurationWizard)
+export default connector(PluginConfigSwitcher)

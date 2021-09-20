@@ -21,8 +21,9 @@ import {
 } from 'src/writeData/constants/contentTelegrafPlugins'
 
 // Types
+import {TelegrafPlugin as DataLoaderTelegrafPlugin} from 'src/types/dataLoaders'
 
-import {Bucket, BundleName} from 'src/types'
+import {Bucket, BundleName, ConfigurationState} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
 
@@ -31,7 +32,7 @@ export interface Props {
   selectedBucketName: string
   pluginBundles: BundleName[]
   telegrafPlugins: any
-  onTogglePluginBundle: (bundle: string) => void
+  onTogglePluginBundle: (plugin: DataLoaderTelegrafPlugin) => void
   onSelectBucket: (bucket: Bucket) => void
 }
 
@@ -131,7 +132,8 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
   private get selectedBucketID(): string {
     const {buckets, selectedBucketName} = this.props
 
-    return buckets.find(b => b.name === selectedBucketName).id
+    const bucket = buckets.find(b => b.name === selectedBucketName)
+    return bucket?.id || this.props.buckets[0]?.id
   }
 
   private handleSelectBucket = (bucket: Bucket) => {
@@ -164,14 +166,19 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
   private isCardChecked(bundle): boolean {
     const {telegrafPlugins} = this.props
 
-    if (telegrafPlugins.find(b => b === bundle)) {
+    if (telegrafPlugins.find(b => b.name === bundle)) {
       return true
     }
     return false
   }
 
-  private handleToggle = (bundle): void => {
-    this.props.onTogglePluginBundle(bundle)
+  private handleToggle = (plugin: string): void => {
+    const pluginBuild = {
+      name: plugin,
+      active: false,
+      configured: ConfigurationState.Configured,
+    }
+    this.props.onTogglePluginBundle(pluginBuild)
   }
 
   private handleFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {

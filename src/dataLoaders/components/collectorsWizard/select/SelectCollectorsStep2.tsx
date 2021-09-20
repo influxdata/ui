@@ -26,18 +26,23 @@ import {getAll} from 'src/resources/selectors'
 
 // Utils
 import {isSystemBucket} from 'src/buckets/constants'
+import {TelegrafPlugin} from 'src/types/dataLoaders'
 
 export interface OwnProps extends CollectorsStepProps {
   buckets: Bucket[]
+}
+
+interface State {
+  selectedBucketName: string
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
 @ErrorHandling
-export class SelectCollectorsStep extends PureComponent<Props> {
+export class SelectCollectorsStep extends PureComponent<Props, State> {
+  state = {selectedBucketName: ''}
   public render() {
-    const selectedBucketName = this.props.bucket ?? this.props.buckets[0]?.name
     return (
       <Form
         onSubmit={this.props.onIncrementCurrentStepIndex}
@@ -64,7 +69,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
             telegrafPlugins={this.props.telegrafPlugins}
             onTogglePluginBundle={this.handleTogglePluginBundle}
             buckets={this.props.buckets ?? []}
-            selectedBucketName={selectedBucketName}
+            selectedBucketName={this.props.bucket}
             onSelectBucket={this.handleSelectBucket}
           />
         </DapperScrollbars>
@@ -79,7 +84,7 @@ export class SelectCollectorsStep extends PureComponent<Props> {
 
   private get nextButtonStatus(): ComponentStatus {
     const {telegrafPlugins, buckets} = this.props
-
+    const {selectedBucketName} = this.state
     if (!buckets || !buckets.length) {
       return ComponentStatus.Disabled
     }
@@ -88,17 +93,21 @@ export class SelectCollectorsStep extends PureComponent<Props> {
       return ComponentStatus.Disabled
     }
 
+    if (!selectedBucketName) {
+      return ComponentStatus.Disabled
+    }
+
     return ComponentStatus.Default
   }
 
   private handleSelectBucket = (bucket: Bucket) => {
     const {orgID, id, name} = bucket
-
+    this.setState({selectedBucketName: name})
     this.props.onSetBucketInfo(orgID, name, id)
   }
 
-  private handleTogglePluginBundle = (bundle: string) => {
-    this.props.onAddPluginBundle(bundle)
+  private handleTogglePluginBundle = (plugin: TelegrafPlugin) => {
+    this.props.onAddPluginBundle(plugin)
   }
 }
 

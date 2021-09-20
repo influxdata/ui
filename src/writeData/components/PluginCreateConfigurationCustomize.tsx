@@ -1,7 +1,6 @@
 // Libraries
 import React, {ChangeEvent, FC, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {useParams} from 'react-router'
 
 // Components
 import {
@@ -27,10 +26,6 @@ import {PluginCreateConfigurationStepProps} from 'src/writeData/components/Plugi
 // Selectors
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
-type ParamsType = {
-  [param: string]: string
-}
-
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
@@ -44,9 +39,8 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     pluginConfig,
     setIsValidConfiguration,
     setPluginConfig,
+    pluginConfigName,
   } = props
-
-  const {contentID} = useParams<ParamsType>()
 
   const handleError = error => {
     setIsValidConfiguration(false)
@@ -57,19 +51,20 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   useEffect(() => {
     try {
       import(
-        `src/writeData/components/telegrafInputPluginsConfigurationText/${contentID}.conf`
+        `src/writeData/components/telegrafInputPluginsConfigurationText/${pluginConfigName}.conf`
       ).then(
         module => {
           setIsValidConfiguration(true)
           const pluginText = module.default ?? ''
+
           setPluginConfig(pluginText)
           onAddTelegrafPlugins([
             {
-              name: contentID,
+              name: pluginConfigName,
               configured: ConfigurationState.Configured,
               active: false,
               plugin: {
-                name: contentID,
+                name: pluginConfigName,
                 type: 'input',
               },
             },
@@ -81,7 +76,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
       handleError(error)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contentID])
+  }, [pluginConfigName])
 
   const handleChangeConfig = config => setPluginConfig(config)
 

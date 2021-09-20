@@ -126,7 +126,6 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
 
 const mstp = (state: AppState) => {
   const {telegrafConfigID} = getDataLoaders(state)
-
   let telegrafConfig = null
   if (telegrafConfigID) {
     const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)

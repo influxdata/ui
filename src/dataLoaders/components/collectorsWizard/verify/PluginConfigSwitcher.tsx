@@ -75,9 +75,8 @@ export const PluginConfigSwitcher: FC<Props> = props => {
     setIsValidConfiguration,
     setPluginConfig,
     substepIndex,
-    pluginConfigName
+    pluginConfigName,
   }
-
 
   let title = 'Configuration Options'
   if (currentStepIndex === 0 && substepIndex === 1) {
@@ -118,7 +117,7 @@ const mstp = (state: AppState) => {
   const {
     dataLoading: {
       dataLoaders: {telegrafPlugins},
-      steps: { currentStep, substep = 0},
+      steps: {currentStep, substep = 0},
     },
   } = state
 

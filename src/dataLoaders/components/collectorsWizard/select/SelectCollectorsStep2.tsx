@@ -26,7 +26,7 @@ import {getAll} from 'src/resources/selectors'
 
 // Utils
 import {isSystemBucket} from 'src/buckets/constants'
-import { TelegrafPlugin } from 'src/types/dataLoaders'
+import {TelegrafPlugin} from 'src/types/dataLoaders'
 
 export interface OwnProps extends CollectorsStepProps {
   buckets: Bucket[]

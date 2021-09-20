@@ -26,8 +26,6 @@ import {PluginCreateConfigurationStepProps} from 'src/writeData/components/Plugi
 // Selectors
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
-
-
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
@@ -41,11 +39,8 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     pluginConfig,
     setIsValidConfiguration,
     setPluginConfig,
-    pluginConfigName
+    pluginConfigName,
   } = props
-
-  console.log("i should be a string", typeof pluginConfigName)
-
 
   const handleError = error => {
     setIsValidConfiguration(false)
@@ -54,7 +49,6 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   }
 
   useEffect(() => {
-    console.log("hi", pluginConfigName)
     try {
       import(
         `src/writeData/components/telegrafInputPluginsConfigurationText/${pluginConfigName}.conf`
@@ -62,6 +56,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
         module => {
           setIsValidConfiguration(true)
           const pluginText = module.default ?? ''
+
           setPluginConfig(pluginText)
           onAddTelegrafPlugins([
             {

@@ -115,7 +115,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     setIsValidConfiguration,
     setPluginConfig,
     substepIndex,
-    pluginConfigName:contentID
+    pluginConfigName: contentID,
   }
 
   let title = 'Configuration Options'

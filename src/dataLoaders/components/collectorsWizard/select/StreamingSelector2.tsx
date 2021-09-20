@@ -17,11 +17,11 @@ import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 import BucketDropdown from 'src/dataLoaders/components/BucketsDropdown'
 import {
   WRITE_DATA_TELEGRAF_PLUGINS,
-  TelegrafPlugin
+  TelegrafPlugin,
 } from 'src/writeData/constants/contentTelegrafPlugins'
 
 // Types
-import { TelegrafPlugin as TelegrafPlugin2 } from 'src/types/dataLoaders'
+import {TelegrafPlugin as TelegrafPlugin2} from 'src/types/dataLoaders'
 
 import {Bucket, BundleName, ConfigurationState} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
@@ -166,14 +166,13 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
   private isCardChecked(bundle): boolean {
     const {telegrafPlugins} = this.props
 
-    if (telegrafPlugins.find(b => b === bundle)) {
+    if (telegrafPlugins.find(b => b.name === bundle)) {
       return true
     }
     return false
   }
 
-  private handleToggle = (plugin:string): void => {
-    console.log("plugin", plugin)
+  private handleToggle = (plugin: string): void => {
     const pluginBuild = {
       name: plugin,
       active: false,

@@ -73,7 +73,9 @@ export default class TasksList extends PureComponent<Props, State>
     getSortedResources
   )
 
+  private isComponentMounted: boolean
   private paginationRef: RefObject<HTMLDivElement>
+
   public currentPage: number = 1
   public rowsPerPage: number = 10
   public totalPages: number
@@ -90,6 +92,7 @@ export default class TasksList extends PureComponent<Props, State>
   }
 
   public componentDidMount() {
+    this.isComponentMounted = true
     const params = new URLSearchParams(window.location.search)
     const urlPageNumber = parseInt(params.get('page'), 10)
 
@@ -102,9 +105,17 @@ export default class TasksList extends PureComponent<Props, State>
     this.props.checkTaskLimits()
     if (CLOUD && isFlagEnabled('pinnedItems')) {
       getPinnedItems()
-        .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
+        .then(res => {
+          if (this.isComponentMounted) {
+            this.setState(prev => ({...prev, pinnedItems: res}))
+          }
+        })
         .catch(err => console.error(err))
     }
+  }
+
+  public componentWillUnmount() {
+    this.isComponentMounted = false
   }
 
   public render() {

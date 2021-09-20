@@ -11,7 +11,6 @@ import {setAnnotationsMode} from 'src/annotations/actions/creators'
 // Components
 import {
   Appearance,
-  ComponentColor,
   InputLabel,
   InputToggleType,
   Toggle,

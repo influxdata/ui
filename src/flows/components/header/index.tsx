@@ -28,6 +28,7 @@ import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
 import {getAuthorizations} from 'src/client/generatedRoutes'
 import {RemoteDataState} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Token {
   token: string
@@ -51,14 +52,16 @@ const FlowHeader: FC = () => {
 
   useEffect(() => {
     // TODO: once we have a generated func from swagger, use that
-    fetch(`/api/v2private/notebooks/share?notebookID=${id}`).then(res =>
-      res.json().then(data => {
-        if (data) {
-          // TODO: handle there being multiple links?
-          setShare({id: data[0].id, accessID: data[0].accessID})
-        }
-      })
-    )
+    if (isFlagEnabled('notebookShare')) {
+      fetch(`/api/v2private/notebooks/share?notebookID=${id}`).then(res =>
+        res.json().then(data => {
+          if (data) {
+            // TODO: handle there being multiple links?
+            setShare({id: data[0].id, accessID: data[0].accessID})
+          }
+        })
+      )
+    }
   }, [id])
 
   const handleRename = (name: string) => {

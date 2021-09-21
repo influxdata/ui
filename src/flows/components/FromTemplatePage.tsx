@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux'
 import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 
 import {TEMPLATES} from 'src/flows/templates'
+import {RemoteDataState} from 'src/types'
 
 import {getOrg} from 'src/organizations/selectors'
 import NotFound from 'src/shared/components/NotFound'
@@ -39,7 +40,7 @@ const Template: FC = () => {
       .then(id => {
         history.replace(`/orgs/${org.id}/notebooks/${id}`)
       })
-      .catch(e => {
+      .catch(() => {
         setLoading(RemoteDataState.Error)
       })
   }, [add, history, org.id, loading, setLoading, params])

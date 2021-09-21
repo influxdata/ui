@@ -12,6 +12,8 @@ import {
   postAnnotation,
   putAnnotation,
   AnnotationEvent,
+  Error as ResponseError,
+  AnnotationList,
 } from 'src/client/annotationdRoutes'
 
 // Utils
@@ -63,10 +65,10 @@ export const getAnnotations = async (
   }
   const res = await getAnnotationsApi(params)
   if (res.status >= 300) {
-    throw new Error(res.data?.message)
+    throw new Error((res.data as ResponseError).message)
   }
 
-  return res.data.map((retrievedAnnotation: AnnotationResponse) => ({
+  return (res.data as AnnotationList).map((retrievedAnnotation: any) => ({
     stream: retrievedAnnotation.stream,
     annotations: retrievedAnnotation.annotations,
   }))

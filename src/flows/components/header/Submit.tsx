@@ -47,7 +47,6 @@ export const Submit: FC = () => {
       <ButtonGroup>
         <SubmitQueryButton
           text={runMode}
-          className="flows--submit-button"
           icon={IconFont.Play}
           submitButtonDisabled={hasQueries === false}
           queryStatus={status}
@@ -60,7 +59,7 @@ export const Submit: FC = () => {
           <SquareButton
             active={active}
             onClick={onClick}
-            icon={IconFont.CaretDown}
+            icon={IconFont.CaretDown_New}
             color={ComponentColor.Primary}
           />
         )}

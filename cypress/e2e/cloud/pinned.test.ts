@@ -260,12 +260,11 @@ from(bucket: "${name}"{rightarrow}
     })
 
     it('pins a notebook to the homepage', () => {
-      cy.getByTestID('flow-card--Flow')
-        .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
-        })
+      cy.getByTestID('flow-card--Flow').within(() => {
+        cy.getByTestID('context-menu-flow').click()
+      })
+      cy.getByTestID('context-pin-flow').click()
+
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -274,12 +273,11 @@ from(bucket: "${name}"{rightarrow}
     })
 
     it('updates the name when the notebook name is updated', () => {
-      cy.getByTestID('flow-card--Flow')
-        .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
-        })
+      cy.getByTestID('flow-card--Flow').within(() => {
+        cy.getByTestID('context-menu-flow').click()
+      })
+      cy.getByTestID('context-pin-flow').click()
+
       cy.getByTestID('resource-editable-name')
         .first()
         .trigger('mouseover')
@@ -319,14 +317,14 @@ from(bucket: "${name}"{rightarrow}
         .focus()
         .type('Bucks In Six')
         .type('{enter}')
-      cy.getByTestID('flow-card--Bucks In Six')
-        .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
-          cy.getByTestID('context-delete-menu Bucks In Six').click()
-          cy.getByTestID('context-delete-flow Bucks In Six').click()
-        })
+      cy.getByTestID('flow-card--Bucks In Six').within(() => {
+        cy.getByTestID('context-menu-flow').click()
+      })
+      cy.getByTestID('context-pin-flow').click()
+      cy.getByTestID('flow-card--Bucks In Six').within(() => {
+        cy.getByTestID(`context-delete-menu--button`).click()
+      })
+      cy.getByTestID(`context-delete-menu--confirm-button`).click()
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--emptystate').should(

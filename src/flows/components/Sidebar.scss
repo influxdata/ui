@@ -48,7 +48,10 @@
   right: 0;
   z-index: 9999;
   padding: 10px 0px;
-  background: $g5-pepper;
+}
+.flow-sidebar--dropdownmenu-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .flow-sidebar--buttons {

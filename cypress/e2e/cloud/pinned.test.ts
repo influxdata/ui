@@ -116,8 +116,8 @@ describe('Pinned Items', () => {
         .trigger('mouseover')
         .within(() => {
           cy.getByTestID('context-delete-menu--button').click()
-          cy.getByTestID('context-delete-menu--confirm-button').click()
         })
+      cy.getByTestID('context-delete-menu--confirm-button').click()
 
       cy.visit('/')
       cy.getByTestID('tree-nav')

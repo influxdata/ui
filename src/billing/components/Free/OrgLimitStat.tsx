@@ -44,7 +44,7 @@ const getStat = (name: string, value: any) => {
 }
 
 const OrgLimitStat: FC<Props> = ({name, value}) => (
-  <Panel backgroundColor={InfluxColors.Onyx} className="org-limit">
+  <Panel backgroundColor={InfluxColors.Pepper} className="org-limit">
     <Panel.Header size={ComponentSize.ExtraSmall}>
       <h5 data-testid="title-header--name">{getName(name)}</h5>
     </Panel.Header>

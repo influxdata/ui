@@ -49,7 +49,7 @@
   left: $flow-panel--node-gap / 2;
   transform: translate(-50%, -50%);
   cursor: pointer;
-
+  background: linear-gradient(45deg, #5c10a0 0%, #8e1fc3 100%);
   &:after {
     border-radius: 50%;
   }

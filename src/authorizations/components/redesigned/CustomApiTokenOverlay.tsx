@@ -32,14 +32,13 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 import {AppState, ResourceType, Authorization} from 'src/types'
 import {Bucket, Telegraf} from 'src/client'
 
-// Seletors 
+// Seletors
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 
 // Utils
 import {formatApiPermissions} from 'src/authorizations/utils/permissions'
-
 
 interface OwnProps {
   onClose: () => void

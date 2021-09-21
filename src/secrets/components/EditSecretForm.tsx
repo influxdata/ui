@@ -19,6 +19,7 @@ import {
 import {upsertSecret} from 'src/secrets/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 const EditSecretForm: FC = () => {
   const dispatch = useDispatch()
@@ -41,6 +42,7 @@ const EditSecretForm: FC = () => {
 
   const handleSubmit = () => {
     try {
+      event("Secret Edited")
       dispatch(
         upsertSecret({
           id: secretId,

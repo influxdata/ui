@@ -4,8 +4,7 @@ import {
   ComponentColor,
   IconFont,
   DapperScrollbars,
-  DropdownMenu,
-  DropdownItem,
+  Dropdown,
 } from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -229,7 +228,7 @@ const Sidebar: FC = () => {
 
           if (action.hasOwnProperty('menu')) {
             return (
-              <DropdownItem
+              <Dropdown.Item
                 onClick={() => {
                   const title =
                     typeof action.title === 'function'
@@ -245,12 +244,12 @@ const Sidebar: FC = () => {
                 testID={`${title}--list-item`}
               >
                 {title}
-              </DropdownItem>
+              </Dropdown.Item>
             )
           }
 
           return (
-            <DropdownItem
+            <Dropdown.Item
               onClick={() => {
                 const title =
                   typeof action.title === 'function'
@@ -269,22 +268,29 @@ const Sidebar: FC = () => {
               testID={`${title}--list-item`}
             >
               {title}
-            </DropdownItem>
+            </Dropdown.Item>
           )
         })
 
       const sectionTitle =
         typeof section.title === 'function' ? section.title() : section.title
-      return <div key={sectionTitle}>{links}</div>
+      return (
+        <div
+          key={sectionTitle}
+          className="flow-sidebar--dropdownmenu-container"
+        >
+          {links}
+        </div>
+      )
     })
 
   return (
-    <DropdownMenu
+    <Dropdown.Menu
       className="flow-sidebar--dropdownmenu"
       style={{width: '200px'}}
     >
       {sections}
-    </DropdownMenu>
+    </Dropdown.Menu>
   )
 }
 

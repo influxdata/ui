@@ -215,24 +215,23 @@ export const formatPermissionsObj = permissions => {
 
 export const formatApiPermissions = (permissions, orgID) => {
   const apiPerms = []
-  Object.keys(permissions).forEach((key) => {
-    if(permissions[key].read) {
-        apiPerms.push({
-          action: 'read',
-          resource: {
-            orgID: orgID,
-            type: key
-          }
-        })
-      
+  Object.keys(permissions).forEach(key => {
+    if (permissions[key].read) {
+      apiPerms.push({
+        action: 'read',
+        resource: {
+          orgID: orgID,
+          type: key,
+        },
+      })
     }
-    if(permissions[key].write) {
+    if (permissions[key].write) {
       apiPerms.push({
         action: 'write',
         resource: {
           orgID: orgID,
-          type: key
-        }
+          type: key,
+        },
       })
     }
     if (permissions[key].sublevelPermissions) {
@@ -246,27 +245,27 @@ export const formatApiPermissions = (permissions, orgID) => {
             resource: {
               orgID: permissions[key].sublevelPermissions[id].orgID,
               type: key,
-              id: id, 
-              name: permissions[key].sublevelPermissions[id].name
-            }
+              id: id,
+              name: permissions[key].sublevelPermissions[id].name,
+            },
           })
         }
-        if (permissions[key].sublevelPermissions[id].permissions.write 
-          && !permissions[key].write) {
+        if (
+          permissions[key].sublevelPermissions[id].permissions.write &&
+          !permissions[key].write
+        ) {
           apiPerms.push({
             action: 'write',
             resource: {
               orgID: permissions[key].sublevelPermissions[id].orgID,
               type: key,
-              id: id, 
-              name: permissions[key].sublevelPermissions[id].name
-            }
+              id: id,
+              name: permissions[key].sublevelPermissions[id].name,
+            },
           })
         }
       })
     }
   })
   return apiPerms
-
-
 }

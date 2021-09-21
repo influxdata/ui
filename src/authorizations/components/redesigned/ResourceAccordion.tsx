@@ -37,12 +37,9 @@ class ResourceAccordion extends Component<OwnProps> {
             onToggleAll={onToggleAll}
             disabled={false}
           />
-          
-            
-              {!isEmpty(permissions[resource].sublevelPermissions) &&
-                this.getAccordionBody(resourceName, resource)}
-            
-          
+
+          {!isEmpty(permissions[resource].sublevelPermissions) &&
+            this.getAccordionBody(resourceName, resource)}
         </Accordion>
       )
     })

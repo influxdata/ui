@@ -58,7 +58,6 @@ interface DispatchProps {
   onCreateAuthorization: (auth) => void
 }
 
-
 type Props = OwnProps & StateProps & DispatchProps
 
 const CustomApiTokenOverlay: FC<Props> = props => {
@@ -85,11 +84,11 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     })
     setPermissions(perms)
   }, [props.telegrafPermissions, props.bucketPermissions])
-  
+
   const handleDismiss = () => {
     props.onClose()
   }
-  
+
   const handleInputChange = event => {
     setDescription(event.target.value)
   }
@@ -146,8 +145,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const generateToken = () => {
-    
-    
     const token: Authorization = {
       orgID: props.orgID,
       description: description,
@@ -155,8 +152,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     }
 
     props.onCreateAuthorization(token)
-
-
   }
 
   return (
@@ -240,7 +235,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     </Overlay.Container>
   )
 }
-
 
 const mstp = (state: AppState) => {
   const remoteDataState = getResourcesStatus(state, [

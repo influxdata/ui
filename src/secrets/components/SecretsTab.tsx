@@ -30,6 +30,9 @@ import {SecretSortKey} from 'src/shared/components/resource_sort_dropdown/genera
 // Actions
 import {getOrg} from 'src/organizations/selectors'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const SecretsTab: FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<Sort>(Sort.Ascending)
@@ -57,6 +60,7 @@ const SecretsTab: FC = () => {
   }
 
   const handleCreateSecret = () => {
+    event('Create Secret Modal Opened')
     history.push(`/orgs/${orgId}/settings/secrets/new`)
   }
 

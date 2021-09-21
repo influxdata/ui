@@ -15,7 +15,7 @@ import {
 
 const Template: FC = () => {
   const {add} = useContext(FlowListContext)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const org = useSelector(getOrg)
   const history = useHistory()
   const params = useParams()[0].split('/')
@@ -25,18 +25,28 @@ const Template: FC = () => {
       return
     }
 
-    if (loading) {
+    if (loading !== RemoteDataState.NotStarted) {
       return
     }
 
-    setLoading(true)
+    setLoading(RemoteDataState.Loading)
 
     event('Notebook created from template', {type: params[0]})
 
-    TEMPLATES[params[0]].init.apply(this, params.slice(1))
+    TEMPLATES[params[0]].init
+      .apply(this, params.slice(1))
       .then(data => add(hydrate(data)))
-      .then( id => { history.replace(`/orgs/${org.id}/notebooks/${id}`) })
+      .then(id => {
+        history.replace(`/orgs/${org.id}/notebooks/${id}`)
+      })
+      .catch(e => {
+        setLoading(RemoteDataState.Error)
+      })
   }, [add, history, org.id, loading, setLoading, params])
+
+  if (loading === RemoteDataState.Error) {
+    return <NotFound />
+  }
 
   return <div />
 }

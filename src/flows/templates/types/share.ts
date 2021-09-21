@@ -1,6 +1,5 @@
 export default register =>
   register({
     type: 'share',
-    init: () => new Promise((resolve, reject) => {
-    })
+    init: accessID => fetch(`/api/share/${accessID}`).then(res => res.json()),
   })

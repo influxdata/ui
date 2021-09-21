@@ -42,7 +42,7 @@ const EditSecretForm: FC = () => {
 
   const handleSubmit = () => {
     try {
-      event("Secret Edited")
+      event('Secret Edited')
       dispatch(
         upsertSecret({
           id: secretId,

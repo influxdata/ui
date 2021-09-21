@@ -71,7 +71,7 @@ const CreateSecretForm: FC = () => {
 
   const handleSubmit = () => {
     try {
-      event("New Secret Created")
+      event('New Secret Created')
       dispatch(upsertSecret(newSecret))
     } finally {
       handleDismiss()

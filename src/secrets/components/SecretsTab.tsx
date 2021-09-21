@@ -60,7 +60,7 @@ const SecretsTab: FC = () => {
   }
 
   const handleCreateSecret = () => {
-    event("Create Secret Modal Opened")
+    event('Create Secret Modal Opened')
     history.push(`/orgs/${orgId}/settings/secrets/new`)
   }
 

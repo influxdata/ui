@@ -29,6 +29,11 @@ import {getOrg} from 'src/organizations/selectors'
 import {getAuthorizations} from 'src/client/generatedRoutes'
 import {RemoteDataState} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {
+  getNotebooksShare,
+  deleteNotebooksShare,
+  postNotebooksShare,
+} from 'src/client/notebooksRoutes'
 
 interface Token {
   token: string
@@ -51,16 +56,15 @@ const FlowHeader: FC = () => {
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
-    // TODO: once we have a generated func from swagger, use that
     if (isFlagEnabled('notebookShare')) {
-      fetch(`/api/v2private/notebooks/share?notebookID=${id}`).then(res =>
-        res.json().then(data => {
-          if (data) {
+      getNotebooksShare({query: {orgID: '', notebookID: id}})
+        .then(res => {
+          if (res.data) {
             // TODO: handle there being multiple links?
-            setShare({id: data[0].id, accessID: data[0].accessID})
+            setShare({id: res.data[0].id, accessID: res.data[0].accessID})
           }
         })
-      )
+        .catch(err => console.error('failed to get notebook share', err))
     }
   }, [id])
 
@@ -98,38 +102,35 @@ const FlowHeader: FC = () => {
   }
 
   const deleteShare = () => {
-    hideShare()
-    // TODO: once we have a generated func from swagger, use that
-    fetch(`/api/v2private/notebooks/share/${share.id}`, {
-      method: 'DELETE',
-    })
+    deleteNotebooksShare({id: share.id})
       .then(() => {
         hideShare()
         setShare(null)
       })
-      .catch(() => console.error('failed to delete share')) // TODO send a notification
+      .catch(err => console.error('failed to delete share', err))
   }
 
   const generateLink = () => {
     setLinkLoading(RemoteDataState.Loading)
-    // TODO: once we have a generated func from swagger, use that
-    fetch(`/api/v2private/notebooks/share`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({
+    postNotebooksShare({
+      data: {
         notebookID: id,
         orgID,
         token: token.token,
         region: window.location.hostname,
-      }),
-    }).then(res =>
-      res.json().then(data => {
+      },
+    })
+      .then(res => {
         setLinkLoading(RemoteDataState.Done)
-        setShare({id: data.id, accessID: data.accessID})
+        setShare({
+          id: (res.data as Share).id,
+          accessID: (res.data as Share).accessID,
+        })
       })
-    )
+      .catch(err => {
+        console.error('failed to create share', err)
+        setLinkLoading(RemoteDataState.Error)
+      })
   }
 
   const printJSON = () => {

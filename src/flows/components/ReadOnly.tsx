@@ -48,6 +48,10 @@ const RunPipeResults: FC = () => {
           setResult(id, {parsed: csv, source: ''})
           setStatuses({[id]: RemoteDataState.Done})
         })
+        .catch(err => {
+          console.error('failed to execute query', err)
+          setStatuses({[id]: RemoteDataState.Error})
+        })
     })
   }, [flow])
 

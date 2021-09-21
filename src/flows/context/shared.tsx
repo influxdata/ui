@@ -14,14 +14,14 @@ export const FlowProvider: FC = ({children}) => {
 
   useEffect(() => {
     setLoading(RemoteDataState.Loading)
-    fetch(`${window.location.origin}/api/share/${accessID}`)
+    fetch(`/api/share/${accessID}`)
       .then(res => res.json())
       .then(res => {
         setFlow(hydrate(res))
         setLoading(RemoteDataState.Done)
       })
       .catch(error => {
-        console.error({error})
+        console.error('failed to get notebook', error)
         setLoading(RemoteDataState.Error)
       })
   }, [])

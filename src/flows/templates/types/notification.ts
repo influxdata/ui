@@ -5,7 +5,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 export default register =>
   register({
     type: 'notification',
-    init: () => ({
+    init: () => Promise.resolve({
       spec: {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,

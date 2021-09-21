@@ -1,7 +1,7 @@
 export default register =>
   register({
     type: 'downsample',
-    init: () => ({
+    init: () => Promise.resolve({
       name: 'Example: Demo Data Notebook',
       spec: {
         readOnly: false,

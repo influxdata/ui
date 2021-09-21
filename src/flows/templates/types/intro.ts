@@ -4,7 +4,7 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 export default register =>
   register({
     type: 'intro',
-    init: () => ({
+    init: () => Promise.resolve({
       name: 'Welcome to Notebooks',
       spec: {
         readOnly: false,

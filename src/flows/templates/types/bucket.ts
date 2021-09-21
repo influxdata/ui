@@ -4,7 +4,7 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 export default register =>
   register({
     type: 'bucket',
-    init: name => ({
+    init: name => Promise.resolve({
       name: `Explore the ${name} bucket`,
       spec: {
         readOnly: false,

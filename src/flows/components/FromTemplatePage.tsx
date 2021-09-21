@@ -33,11 +33,9 @@ const Template: FC = () => {
 
     event('Notebook created from template', {type: params[0]})
 
-    add(hydrate(TEMPLATES[params[0]].init.apply(this, params.slice(1)))).then(
-      id => {
-        history.replace(`/orgs/${org.id}/notebooks/${id}`)
-      }
-    )
+    TEMPLATES[params[0]].init.apply(this, params.slice(1))
+      .then(data => add(hydrate(data)))
+      .then( id => { history.replace(`/orgs/${org.id}/notebooks/${id}`) })
   }, [add, history, org.id, loading, setLoading, params])
 
   return <div />

@@ -4,7 +4,7 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 export default register =>
   register({
     type: 'flux',
-    init: () => ({
+    init: () => Promise.resolve({
       spec: {
         readOnly: false,
         range: DEFAULT_TIME_RANGE,

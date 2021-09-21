@@ -1,18 +1,16 @@
 import React from 'react'
 import {ComponentSize, EmptyState} from '@influxdata/clockface'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
-import FlowCreateButton from 'src/flows/components/FlowCreateButton'
 import 'src/flows/components/EmptyPipeList.scss'
 
 const FlowsIndexEmpty = () => {
   return (
-    <EmptyState size={ComponentSize.Large}>
+    <EmptyState size={ComponentSize.ExtraSmall}>
       <div className="flow-empty">
         <div className="flow-empty--graphic" />
-        <EmptyState.Text>
+        <EmptyState.Text style={{marginBottom: '0px'}}>
           You haven't created any {PROJECT_NAME_PLURAL} yet
         </EmptyState.Text>
-        <FlowCreateButton />
       </div>
     </EmptyState>
   )

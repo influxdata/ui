@@ -24,7 +24,7 @@ export default class BucketContextMenu extends PureComponent<Props> {
   public render() {
     return (
       <>
-        <FlexBox margin={ComponentSize.Small}>{this.deleteButton}</FlexBox>
+        <FlexBox margin={ComponentSize.ExtraSmall}>{this.deleteButton}</FlexBox>
       </>
     )
   }
@@ -44,7 +44,7 @@ export default class BucketContextMenu extends PureComponent<Props> {
           }}
           confirmationButtonText="Confirm"
           testID={`context-delete-menu ${bucket.name}`}
-        ></ConfirmationButton>
+        />
       )
     } else {
       return null

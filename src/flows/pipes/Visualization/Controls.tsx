@@ -138,7 +138,9 @@ const Controls: FC = () => {
   if (data.properties.type === 'simple-table') {
     return (
       <>
-        <label style={{alignSelf: 'center', marginRight: '12px'}}>
+        <label
+          style={{alignSelf: 'center', marginRight: '12px', minWidth: '150px'}}
+        >
           Limited to most recent 100 results per series
         </label>
         <ViewTypeDropdown

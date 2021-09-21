@@ -37,7 +37,10 @@ const InstallPackageHelper: FC<Props> = ({text, codeRenderer}) => {
   return (
     <div className="install-package--container">
       <Panel backgroundColor={InfluxColors.Castle}>
-        <Panel.Header size={ComponentSize.ExtraSmall}>
+        <Panel.Header
+          size={ComponentSize.ExtraSmall}
+          style={{paddingBottom: '16px'}}
+        >
           <div
             className={`install-package-helper--heading install-package-helper--heading__${mode}`}
             onClick={handleToggleClick}
@@ -47,8 +50,8 @@ const InstallPackageHelper: FC<Props> = ({text, codeRenderer}) => {
               className="install-package-helper--caret"
             />
             <Heading
-              element={HeadingElement.H5}
-              weight={FontWeight.Regular}
+              element={HeadingElement.H3}
+              weight={FontWeight.Medium}
               selectable={true}
             >
               Installation Instructions

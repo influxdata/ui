@@ -1,5 +1,5 @@
 $flux-toolbar--search-height: $cf-form-sm-height + $cf-marg-c;
-$flux-toolbar--item-height: $cf-marg-d;
+$flux-toolbar--item-height: $cf-form-xs-height;
 $flux-toolbar--gap: $cf-marg-b;
 
 .flux-toolbar {
@@ -92,8 +92,7 @@ $flux-toolbar--gap: $cf-marg-b;
 }
 
 .flux-toolbar--list-item {
-  padding-left: $cf-marg-b;
-  padding-right: $cf-marg-b + $cf-marg-a + $cf-border;
+  padding: $cf-space-m $cf-space-xs;
   height: $flux-toolbar--item-height;
   line-height: $flux-toolbar--item-height;
   font-family: $cf-code-font;

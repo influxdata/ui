@@ -1,4 +1,5 @@
 import React, {FC, useState, useContext, useEffect} from 'react'
+import {connect} from 'react-redux'
 import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Actions
@@ -22,19 +23,23 @@ import {
   JustifyContent,
   RemoteDataState,
 } from '@influxdata/clockface'
-
-import ResourceAccordion from './ResourceAccordion'
+import ResourceAccordion from 'src/authorizations/components/redesigned/ResourceAccordion'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
-import {connect} from 'react-redux'
+
+// Types
 import {AppState, ResourceType, Authorization} from 'src/types'
-import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
-import {getAll} from 'src/resources/selectors'
 import {Bucket, Telegraf} from 'src/client'
 
-import {formatApiPermissions} from 'src/authorizations/utils/permissions'
+// Seletors 
 import {getOrg} from 'src/organizations/selectors'
+import {getAll} from 'src/resources/selectors'
+import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
+
+// Utils
+import {formatApiPermissions} from 'src/authorizations/utils/permissions'
+
 
 interface OwnProps {
   onClose: () => void

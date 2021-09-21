@@ -139,7 +139,7 @@ export class ScraperTarget extends PureComponent<Props> {
       _.startsWith(url, 'http://') || _.startsWith(url, 'https://')
 
     if (!isURLValid) {
-      return 'Target URL must begin with "http://"'
+      return 'Target URL must begin with "http://" or "https://"'
     }
 
     return null

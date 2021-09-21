@@ -234,12 +234,13 @@ export const formatApiPermissions = (permissions, orgID) => {
           type: key
         }
       })
-    
     }
-    else if (permissions[key].sublevelPermissions) {
-      Object.keys(permissions[key].sublevelPermissions).forEach((id) => {
-        if(permissions[key].sublevelPermissions[id].permissions.read 
-          && !permissions[key].read) {
+    if (permissions[key].sublevelPermissions) {
+      Object.keys(permissions[key].sublevelPermissions).forEach(id => {
+        if (
+          permissions[key].sublevelPermissions[id].permissions.read &&
+          !permissions[key].read
+        ) {
           apiPerms.push({
             action: 'read',
             resource: {
@@ -265,7 +266,6 @@ export const formatApiPermissions = (permissions, orgID) => {
       })
     }
   })
-
   return apiPerms
 
 

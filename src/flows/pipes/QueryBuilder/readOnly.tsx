@@ -21,7 +21,7 @@ const QueryBuilder: FC<PipeProp> = ({Context}) => {
   const {data} = useContext(PipeContext)
 
   return (
-    <Context>
+    <Context resizes>
       <div className="query-builder" data-testid="query-builder">
         <div className="query-builder--cards">
           <DapperScrollbars noScrollY={true}>

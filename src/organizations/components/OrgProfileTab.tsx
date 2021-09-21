@@ -99,7 +99,10 @@ const OrgProfileTab: FC = () => {
         </Panel>
       </Grid.Column>
       <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
-        <Panel testID="common-ids--panel">
+        <Panel
+          testID="common-ids--panel"
+          backgroundColor={InfluxColors.Obsidian}
+        >
           <Panel.Header
             size={ComponentSize.ExtraSmall}
             testID="common-ids--header"

@@ -1,4 +1,4 @@
-const MIN_HEIGHT = 300
+const MIN_HEIGHT = 18
 
 export const registerAutogrow = editor => {
   let prevHeight = 0

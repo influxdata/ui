@@ -1,4 +1,5 @@
 import View from './view'
+import ReadOnly from './readOnly'
 
 export default register => {
   register({
@@ -14,6 +15,7 @@ export default register => {
       token: '',
       org: '',
     },
+    readOnlyComponent: ReadOnly,
 
     scope: (data, prev) => {
       return {

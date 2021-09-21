@@ -2,7 +2,6 @@ import React, {FC, useContext, useMemo, useCallback} from 'react'
 import {PipeData, FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
-import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RemoteDataState, TimeRange} from 'src/types'
 
 export interface PipeContextType {
@@ -36,8 +35,7 @@ interface PipeContextProps {
 
 export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {flow, updateData} = useContext(FlowContext)
-  const {results} = useContext(ResultsContext)
-  const {getStatus} = useContext(FlowQueryContext)
+  const {results, statuses} = useContext(ResultsContext)
 
   const updater = useCallback(
     (data: Partial<PipeData>) => {
@@ -47,8 +45,6 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   )
 
   return useMemo(() => {
-    const loading = getStatus(id)
-
     return (
       <PipeContext.Provider
         value={{
@@ -57,12 +53,12 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
           range: flow.range,
           update: updater,
           results: results[id] || {...DEFAULT_CONTEXT.results},
-          loading,
+          loading: statuses[id] || RemoteDataState.NotStarted,
           readOnly: flow.readOnly,
         }}
       >
         {children}
       </PipeContext.Provider>
     )
-  }, [flow, id, results, children, updater])
+  }, [flow, id, results, statuses, children, updater])
 }

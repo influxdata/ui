@@ -41,6 +41,7 @@ export interface PipeProp {
   Context:
     | FunctionComponent<PipeContextProps>
     | ComponentClass<PipeContextProps>
+  readOnly?: boolean
 }
 
 export type Column =
@@ -142,6 +143,7 @@ export interface TypeRegistration {
   disabled?: boolean // if you should show it or not
   featureFlag?: string // designates a flag that should enable the panel type
   component: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface
+  readOnlyComponent?: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface in read only mode
   button: string // a human readable string for appending the type
   initial: any // the default state for an add
   scope?: (data: PipeData, prev: QueryScope) => QueryScope // if defined, the function is expected to take a query context and return a new one

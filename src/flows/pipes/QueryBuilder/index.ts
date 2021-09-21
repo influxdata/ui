@@ -1,4 +1,5 @@
 import View from './view'
+import ReadOnly from './readOnly'
 import './style.scss'
 
 export default register => {
@@ -19,6 +20,7 @@ export default register => {
         },
       ],
     },
+    readOnlyComponent: ReadOnly,
     source: data => {
       if (
         !data.buckets[0] ||

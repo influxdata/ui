@@ -1,6 +1,7 @@
 import {parse, format_from_js_file} from '@influxdata/flux'
 import {find} from 'src/shared/contexts/query'
 import View from './view'
+import ReadOnly from './readOnly'
 import './style.scss'
 
 const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
@@ -11,6 +12,7 @@ export default register => {
     family: 'transform',
     priority: 1,
     component: View,
+    readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--raw-flux',
     button: 'Flux Script',
     initial: {

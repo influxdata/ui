@@ -58,6 +58,7 @@ interface DispatchProps {
   onCreateAuthorization: (auth) => void
 }
 
+
 type Props = OwnProps & StateProps & DispatchProps
 
 const CustomApiTokenOverlay: FC<Props> = props => {
@@ -235,7 +236,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     </Overlay.Container>
   )
 }
-
 
 const mstp = (state: AppState) => {
   const remoteDataState = getResourcesStatus(state, [

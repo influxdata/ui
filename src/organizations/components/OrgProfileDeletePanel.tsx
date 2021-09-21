@@ -91,7 +91,7 @@ const OrgProfileTab: FC = () => {
               <Button
                 testID="delete-org--button"
                 text="Delete"
-                icon={IconFont.Trash}
+                icon={IconFont.Trash_New}
                 onClick={handleDeleteClick}
               />
             </FlexBox>

@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 $flux-toolbar--search-height: $cf-form-sm-height + $cf-space-s;
 $flux-toolbar--item-height: $cf-form-xs-height;
 $flux-toolbar--gap: $cf-space-2xs;
+=======
+$flux-toolbar--search-height: $cf-form-sm-height + $cf-marg-c;
+$flux-toolbar--item-height: $cf-form-xs-height;
+$flux-toolbar--gap: $cf-marg-b;
+>>>>>>> fix: Notebooks cosmetic changes in clockface beta (#2630)
 
 .flux-toolbar {
   display: flex;

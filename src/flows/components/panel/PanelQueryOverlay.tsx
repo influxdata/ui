@@ -26,7 +26,7 @@ const PanelQueryOverlay: FC = () => {
   const query = simplify(getPanelQueries(panelID, true).source)
 
   const reportCopyClick = () => {
-    event('Copy to Clipboard Clicked in Export to Client Library (Notebooks)')
+    event('Export to Client Library (Notebooks) - Copy to Clipboard Clicked')
   }
 
   return (

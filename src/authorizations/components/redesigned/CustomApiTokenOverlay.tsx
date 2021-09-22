@@ -40,6 +40,8 @@ import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 // Utils
 import {formatApiPermissions} from 'src/authorizations/utils/permissions'
 
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 interface OwnProps {
   onClose: () => void
 }
@@ -56,8 +58,8 @@ interface DispatchProps {
   getBuckets: () => void
   getTelegrafs: () => void
   onCreateAuthorization: (auth) => void
+  showOverlay: (arg1: string, arg2: any, any) => {}
 }
-
 
 type Props = OwnProps & StateProps & DispatchProps
 
@@ -146,13 +148,16 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const generateToken = () => {
+    const {onCreateAuthorization, orgID, showOverlay} = props
+
     const token: Authorization = {
-      orgID: props.orgID,
+      orgID: orgID,
       description: description,
       permissions: formatApiPermissions(permissions, props.orgID),
     }
 
-    props.onCreateAuthorization(token)
+    onCreateAuthorization(token)
+    showOverlay('access-token', null, () => dismissOverlay())
   }
 
   return (
@@ -237,7 +242,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   )
 }
 
-
 const mstp = (state: AppState) => {
   const remoteDataState = getResourcesStatus(state, [
     ResourceType.Buckets,
@@ -287,6 +291,8 @@ const mdtp = {
   getBuckets,
   getTelegrafs,
   onCreateAuthorization: createAuthorization,
+  showOverlay,
+  dismissOverlay,
 }
 
 export default connect(mstp, mdtp)(CustomApiTokenOverlay)

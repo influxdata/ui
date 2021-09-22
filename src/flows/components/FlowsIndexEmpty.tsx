@@ -8,7 +8,7 @@ const FlowsIndexEmpty = () => {
     <EmptyState size={ComponentSize.ExtraSmall}>
       <div className="flow-empty">
         <div className="flow-empty--graphic" />
-        <EmptyState.Text style={{marginBottom: '0px'}}>
+        <EmptyState.Text className="margin-bottom-zero">
           You haven't created any {PROJECT_NAME_PLURAL} yet
         </EmptyState.Text>
       </div>

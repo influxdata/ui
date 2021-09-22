@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Thank you for reporting a bug in InfluxData UI.
+<!-- Thank you for reporting a bug in InfluxData UI.
 
 - Please ask usage questions on the Influx Community site.
   - https://community.influxdata.com/
@@ -17,6 +17,10 @@ Thank you for reporting a bug in InfluxData UI.
 - The fastest way to fix a bug is to open a Pull Request.
   - https://github.com/influxdata/ui/pulls
 
+-->
+
+## About the bug
+
 **Steps to reproduce:**
 List the minimal actions needed to reproduce the behavior.
 
@@ -25,24 +29,33 @@ List the minimal actions needed to reproduce the behavior.
 3. ...
 
 **Expected behavior:**
-Describe what you expected to happen.
+<!-- Describe what you expected to happen. -->
 
 **Actual behavior:**
-Describe What actually happened.
+<!-- Describe What actually happened. -->
+
+**Visual Proof:**
+<!-- (please attach screenshots, videos, as applicable) -->
+
+
+## About your environment
 
 **Environment info:**
 
+<!--
 - System info: Run `uname -srm` and copy the output here
 - InfluxDB version: Run `influxd version` and copy the output here
 - Other relevant environment details: Container runtime, disk info, etc
 
+-->
+
 **Config:**
-Copy any non-default config values here or attach the full config as a gist or file.
+<!-- Copy any non-default config values here or attach the full config as a gist or file. -->
 
 <!-- The following sections are only required if relevant. -->
 
 **Logs:**
-Include snippet of errors in log.
+<!--- Include snippet of errors in log. -->
 
 **Performance:**
 Generate profiles with the following commands for bugs related to performance, locking, out of memory (OOM), etc.

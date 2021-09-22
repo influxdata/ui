@@ -56,7 +56,7 @@ class AddResourceDropdown extends PureComponent<Props> {
             onClick={onClick}
             color={ComponentColor.Primary}
             size={ComponentSize.Small}
-            icon={IconFont.Plus}
+            icon={IconFont.Plus_New}
             status={status}
           >
             {titleText || `Create ${this.props.resourceName}`}

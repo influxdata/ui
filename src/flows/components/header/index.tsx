@@ -56,7 +56,7 @@ const FlowHeader: FC = () => {
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
-    if (isFlagEnabled('notebookShare')) {
+    if (isFlagEnabled('shareNotebook')) {
       getNotebooksShare({query: {orgID: '', notebookID: id}})
         .then(res => {
           if (res.data) {

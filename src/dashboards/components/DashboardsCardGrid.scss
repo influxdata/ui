@@ -18,37 +18,6 @@ $dashboard-grid-gap: $cf-marg-a;
 }
 
 .dashboards-card-grid {
-  padding-bottom: $cf-marg-d;
-  display: grid;
-  grid-template-columns: minmax(100%, 1fr);
-  grid-auto-rows: 152px;
-  grid-column-gap: $dashboard-grid-gap;
-  grid-row-gap: $dashboard-grid-gap;
-  height: 100%;
-
-  .cf-resource-card {
-    margin-bottom: 0;
-  }
-
-  .cf-resource-card--contents {
-    position: relative;
-  }
-
-  .cf-resource-editable-name {
-    position: absolute;
-    max-width: 65%;
-
-    .cf-resource-name--text {
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-  }
-
-  .cf-resource-description {
-    flex: 1 0 30px;
-    margin-top: 22px;
-    overflow: hidden;
-  }
 }
 
 $dashboard-card-half: calc(50% - #{$dashboard-grid-gap});

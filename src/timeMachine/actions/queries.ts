@@ -332,10 +332,11 @@ export const executeQueries = (abortController?: AbortController) => async (
       }
       const result = runQuery(orgID, text, extern, abortController)
       setQueryByHashID(queryID, result)
+
       return result
     })
-    const results = await Promise.all(pendingResults.map(r => r.promise))
 
+    const results = await Promise.all(pendingResults.map(r => r.promise))
     const duration = window.performance.now() - startTime
 
     event('executeQueries querying', {time: startDate}, {duration})
@@ -422,7 +423,7 @@ interface SaveDraftQueriesAction {
   type: 'SAVE_DRAFT_QUERIES'
 }
 
-const saveDraftQueries = (): SaveDraftQueriesAction => ({
+export const saveDraftQueries = (): SaveDraftQueriesAction => ({
   type: 'SAVE_DRAFT_QUERIES',
 })
 

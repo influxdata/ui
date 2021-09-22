@@ -15,6 +15,8 @@ import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
 import {readQueryParams} from 'src/shared/utils/queryParams'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import GlobalQueryProvider from 'src/shared/contexts/global'
+import QueryProvider from 'src/shared/contexts/query'
 
 const DataExplorer: FC = () => {
   const dispatch = useDispatch()
@@ -31,7 +33,11 @@ const DataExplorer: FC = () => {
       <LimitChecker>
         <div className="data-explorer">
           <HoverTimeProvider>
-            <TimeMachine />
+            <QueryProvider>
+              <GlobalQueryProvider>
+                <TimeMachine />
+              </GlobalQueryProvider>
+            </QueryProvider>
           </HoverTimeProvider>
         </div>
       </LimitChecker>

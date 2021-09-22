@@ -33,21 +33,24 @@ import {
   ObjectExpression,
   CancellationError,
   File,
+  Property,
 } from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
+import {CancelBox} from 'src/types/promises'
+import {Identifier} from '@influxdata/influx'
 
 interface CancelMap {
   [key: string]: () => void
 }
 
 export interface QueryContextType {
-  basic: (text: string, override?: QueryScope) => any
+  basic: (text: string, override?: QueryScope) => CancelBox<RunQueryResult>
   query: (text: string, override?: QueryScope) => Promise<FluxResult>
   cancel: (id?: string) => void
 }
 
 export const DEFAULT_CONTEXT: QueryContextType = {
-  basic: (_: string, __?: QueryScope) => {},
+  basic: (_: string, __?: QueryScope) => null,
   query: (_: string, __?: QueryScope) => Promise.resolve({} as FluxResult),
   cancel: (_?: string) => {},
 }
@@ -276,6 +279,22 @@ const _getVars = (
       return tot
     }, acc)
 
+const _addUniqueAssignmentProperty = (ast, property: Property): void => {
+  const properties = (((ast.body[0] as OptionStatement)
+    .assignment as VariableAssignment).init as ObjectExpression).properties
+
+  const found = properties
+    .filter(p => p.key.type === 'Identifier')
+    .find(
+      (prop: Property) =>
+        (prop.key as Identifier).name === (property.key as Identifier).name
+    )
+
+  if (!found) {
+    properties.push(property)
+  }
+}
+
 const _addWindowPeriod = (ast, optionAST): void => {
   const queryRanges = find(
     ast,
@@ -302,8 +321,7 @@ const _addWindowPeriod = (ast, optionAST): void => {
   )
 
   if (!queryRanges.length) {
-    ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-      .init as ObjectExpression).properties.push({
+    _addUniqueAssignmentProperty(optionAST, {
       type: 'Property',
       key: {
         type: 'Identifier',
@@ -313,7 +331,7 @@ const _addWindowPeriod = (ast, optionAST): void => {
         type: 'DurationLiteral',
         values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
       },
-    })
+    } as Property)
 
     return
   }
@@ -332,8 +350,7 @@ const _addWindowPeriod = (ast, optionAST): void => {
   )
 
   if (foundDuration) {
-    ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-      .init as ObjectExpression).properties.push({
+    _addUniqueAssignmentProperty(optionAST, {
       type: 'Property',
       key: {
         type: 'Identifier',
@@ -343,12 +360,12 @@ const _addWindowPeriod = (ast, optionAST): void => {
         type: 'DurationLiteral',
         values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
       },
-    })
+    } as Property)
 
     return
   }
-  ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-    .init as ObjectExpression).properties.push({
+
+  _addUniqueAssignmentProperty(optionAST, {
     type: 'Property',
     key: {
       type: 'Identifier',
@@ -363,7 +380,7 @@ const _addWindowPeriod = (ast, optionAST): void => {
         },
       ],
     },
-  })
+  } as Property)
 }
 
 export const simplify = (text, vars: VariableMap = {}) => {
@@ -405,7 +422,6 @@ export const simplify = (text, vars: VariableMap = {}) => {
       const taskAST = parse(`option task = {\n${taskVals}\n}\n`)
       ast.body.unshift(taskAST.body[0])
     }
-
     // load in windowPeriod at the last second, because it needs to self reference all the things
     if (usedVars.hasOwnProperty('windowPeriod')) {
       _addWindowPeriod(ast, optionAST)
@@ -413,7 +429,7 @@ export const simplify = (text, vars: VariableMap = {}) => {
 
     // turn it back into a query
     return format_from_js_file(ast)
-  } catch {
+  } catch (e) {
     return ''
   }
 }
@@ -457,7 +473,10 @@ export const QueryProvider: FC = ({children}) => {
     )
   }
 
-  const basic = (text: string, override?: QueryScope) => {
+  const basic = (
+    text: string,
+    override?: QueryScope
+  ): CancelBox<RunQueryResult> => {
     const query = simplify(text, override?.vars || {})
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket

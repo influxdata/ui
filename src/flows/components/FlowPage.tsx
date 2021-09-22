@@ -26,6 +26,7 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 import 'src/flows/style.scss'
 
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import GlobalQueryProvider from 'src/shared/contexts/global'
 
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()
@@ -45,38 +46,40 @@ const FlowFromRoute = () => {
 
 const FlowContainer: FC = () => (
   <QueryProvider>
-    <CurrentFlowProvider>
-      <RunModeProvider>
-        <FlowFromRoute />
-        <ResultsProvider>
-          <FlowQueryProvider>
-            <FlowKeyboardPreview />
-            <SidebarProvider>
-              <Page>
-                <FlowHeader />
-                <Page.Contents
-                  fullWidth={true}
-                  scrollable={false}
-                  className="flow-page"
-                >
-                  <PopupProvider>
-                    <DapperScrollbars
-                      noScrollX
-                      thumbStartColor="gray"
-                      thumbStopColor="gray"
-                    >
-                      <PipeList />
-                    </DapperScrollbars>
-                    <SubSideBar />
-                    <PopupDrawer />
-                  </PopupProvider>
-                </Page.Contents>
-              </Page>
-            </SidebarProvider>
-          </FlowQueryProvider>
-        </ResultsProvider>
-      </RunModeProvider>
-    </CurrentFlowProvider>
+    <GlobalQueryProvider>
+      <CurrentFlowProvider>
+        <RunModeProvider>
+          <FlowFromRoute />
+          <ResultsProvider>
+            <FlowQueryProvider>
+              <FlowKeyboardPreview />
+              <SidebarProvider>
+                <Page>
+                  <FlowHeader />
+                  <Page.Contents
+                    fullWidth={true}
+                    scrollable={false}
+                    className="flow-page"
+                  >
+                    <PopupProvider>
+                      <DapperScrollbars
+                        noScrollX
+                        thumbStartColor="gray"
+                        thumbStopColor="gray"
+                      >
+                        <PipeList />
+                      </DapperScrollbars>
+                      <SubSideBar />
+                      <PopupDrawer />
+                    </PopupProvider>
+                  </Page.Contents>
+                </Page>
+              </SidebarProvider>
+            </FlowQueryProvider>
+          </ResultsProvider>
+        </RunModeProvider>
+      </CurrentFlowProvider>
+    </GlobalQueryProvider>
   </QueryProvider>
 )
 

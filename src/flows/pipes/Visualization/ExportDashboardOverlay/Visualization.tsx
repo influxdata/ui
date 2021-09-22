@@ -10,6 +10,7 @@ import {View} from 'src/visualization'
 // Types
 import {RemoteDataState} from 'src/types'
 import {FluxResult} from 'src/types/flows'
+import GlobalQueryProvider from 'src/shared/contexts/global'
 
 const Visualization: FC = () => {
   const [results, setResults] = useState<FluxResult>(null)
@@ -48,8 +49,10 @@ const Visualization: FC = () => {
 
 export default () => (
   <QueryProvider>
-    <FlowQueryProvider>
-      <Visualization />
-    </FlowQueryProvider>
+    <GlobalQueryProvider>
+      <FlowQueryProvider>
+        <Visualization />
+      </FlowQueryProvider>
+    </GlobalQueryProvider>
   </QueryProvider>
 )

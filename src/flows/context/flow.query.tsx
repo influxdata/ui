@@ -22,7 +22,10 @@ import {
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
 // Types
-import {AppState, RemoteDataState, Variable} from 'src/types'
+import {AppState, CancelBox, RemoteDataState, Variable} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {GlobalQueryContext} from 'src/shared/contexts/global'
+import {RunQueryResult} from 'src/shared/apis/query'
 
 export interface Stage {
   id: string
@@ -84,6 +87,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {runMode} = useContext(RunModeContext)
   const {setResult} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
+  const {runGlobalBasic, runGlobalQuery} = useContext(GlobalQueryContext)
   const [loading, setLoading] = useState({})
   const org = useSelector(getOrg)
 
@@ -254,10 +258,17 @@ export const FlowQueryProvider: FC = ({children}) => {
       },
     }
 
+    if (isFlagEnabled('GlobalQueryContext')) {
+      return runGlobalQuery(text, override)
+    }
+
     return queryAPI(text, _override)
   }
 
-  const basic = (text: string, override?: QueryScope): Promise<FluxResult> => {
+  const basic = (
+    text: string,
+    override?: QueryScope
+  ): CancelBox<RunQueryResult> => {
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,
@@ -266,6 +277,10 @@ export const FlowQueryProvider: FC = ({children}) => {
         ...vars,
         ...(override?.vars || {}),
       },
+    }
+
+    if (isFlagEnabled('GlobalQueryContext')) {
+      return runGlobalBasic(text, override)
     }
 
     return basicAPI(text, _override)

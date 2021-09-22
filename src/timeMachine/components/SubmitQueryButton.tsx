@@ -12,7 +12,11 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
+import {
+  saveAndExecuteQueries,
+  saveDraftQueries,
+  setQueryResults,
+} from 'src/timeMachine/actions/queries'
 import {notify} from 'src/shared/actions/notifications'
 
 // Utils
@@ -28,6 +32,9 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
+import {RunQuerySuccessResult} from 'src/shared/apis/query'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {GlobalQueryContextType} from 'src/shared/contexts/global'
 
 interface OwnProps {
   color?: ComponentColor
@@ -35,6 +42,7 @@ interface OwnProps {
   icon?: IconFont
   testID?: string
   className?: string
+  globalQueryContext?: GlobalQueryContextType
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -133,7 +141,44 @@ class SubmitQueryButton extends PureComponent<Props> {
   private handleClick = (): void => {
     event('SubmitQueryButton click')
 
+    if (isFlagEnabled('GlobalQueryContext')) {
+      this.globalQueryContextSubmit()
+      return
+    }
+
     this.props.onSubmit()
+  }
+
+  private globalQueryContextSubmit = async (): Promise<void> => {
+    await this.props.saveDraftQueries()
+    this.props.setQueryResults(RemoteDataState.Loading, [], null)
+
+    const queries = this.props.queries.filter(({text}) => {
+      return !!text.trim()
+    })
+
+    if (!queries.length) {
+      this.props.setQueryResults(RemoteDataState.Done, [], 0, null, [])
+
+      return
+    }
+
+    const promises = queries.map(({text}) => {
+      return this.props.globalQueryContext?.runGlobalBasic(text, {
+        orgID: this.props.orgID,
+        vars: this.props.allVars.reduce((acc, cur) => {
+          acc[cur.id] = cur
+          return acc
+        }, {}),
+      }).promise
+    })
+
+    Promise.all(promises).then(results => {
+      const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
+      this.props.setQueryResults(RemoteDataState.Done, files, 0, null, [])
+    })
+
+    return
   }
 
   private handleCancelClick = (): void => {
@@ -148,6 +193,7 @@ export {SubmitQueryButton}
 
 const mstp = (state: AppState) => {
   const queryStatus = getActiveTimeMachine(state).queryResults.status
+  const queries = getActiveTimeMachine(state).view.properties.queries
 
   const activeQueryText = getActiveQuery(state).text
   const submitButtonDisabled = activeQueryText === ''
@@ -156,10 +202,20 @@ const mstp = (state: AppState) => {
 
   const queryID = generateHashedQueryID(activeQueryText, allVars, orgID)
 
-  return {queryID, submitButtonDisabled, queryStatus}
+  return {
+    queryID,
+    submitButtonDisabled,
+    queryStatus,
+    orgID,
+    queries,
+    allVars,
+    activeQueryText,
+  }
 }
 
 const mdtp = {
+  saveDraftQueries,
+  setQueryResults,
   onSubmit: saveAndExecuteQueries,
   onNotify: notify,
   cancelAllRunningQueries: cancelAllRunningQueries,

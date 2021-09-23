@@ -81,12 +81,14 @@ const FromTemplatePage: FC = () => {
         <EngagementLink />
         <TreeNav />
         <QueryProvider>
-          <FlowProvider>
-            <Switch>
-              <Route path="/notebook/from/*" component={Template} />
-              <Route component={NotFound} />
-            </Switch>
-          </FlowProvider>
+          <FlowListProvider>
+            <FlowProvider>
+              <Switch>
+                <Route path="/notebook/from/*" component={Template} />
+                <Route component={NotFound} />
+              </Switch>
+            </FlowProvider>
+          </FlowListProvider>
         </QueryProvider>
       </AppWrapper>
     )

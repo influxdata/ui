@@ -16,7 +16,7 @@ import BucketSelector from 'src/flows/pipes/QueryBuilder/BucketSelector'
 import CardList from 'src/flows/pipes/QueryBuilder/CardList'
 
 const QueryBuilder: FC<PipeProp> = ({Context}) => {
-  const {id, data} = useContext(PipeContext)
+  const {id} = useContext(PipeContext)
 
   return (
     <BucketProvider panel={id}>

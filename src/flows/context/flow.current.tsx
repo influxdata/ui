@@ -44,7 +44,7 @@ export const FlowProvider: FC = ({children}) => {
     if (currentID) {
       setCurrentFlow(flows[currentID])
     }
-  }, [currentID])
+  }, [flows, currentID])
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {

@@ -19,6 +19,7 @@ import {
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
+import SaveState from 'src/flows/components/header/SaveState'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {DEFAULT_PROJECT_NAME} from 'src/flows'
@@ -188,6 +189,7 @@ const FlowHeader: FC = () => {
         <Page.ControlBar fullWidth>
           <Page.ControlBarLeft>
             <Submit />
+            <SaveState />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <PresentationMode />

@@ -206,7 +206,6 @@ export const FlowListProvider: FC = ({children}) => {
       dispatch(notify(notebookCreateFail()))
     }
 
-    console.log('k')
     return new Promise(resolve => {
       setTimeout(() => {
         setFlows({

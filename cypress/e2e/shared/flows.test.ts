@@ -3,20 +3,23 @@ import {Organization} from '../../src/types'
 describe('Flows', () => {
   beforeEach(() =>
     cy.flush().then(() =>
-      cy.signin().then(() => {
+      cy.signin().then(() =>
         cy.get('@org').then(({id}: Organization) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('version-info')
-            cy.setFeatureFlags({notebooks: true, simpleTable: true}).then(
-              () => {
+            return cy
+              .setFeatureFlags({
+                simpleTable: true,
+                notebooksExp: true,
+              })
+              .then(() => {
                 cy.getByTestID('nav-item-flows').should('be.visible')
-                cy.getByTestID('nav-item-flows').click()
-              }
-            )
+                return cy.getByTestID('nav-item-flows').click()
+              })
           })
         )
-      })
+      )
     )
   )
 
@@ -44,9 +47,10 @@ describe('Flows', () => {
 
     cy.getByTestID('add-flow-btn--visualization').click()
 
-    cy.getByTestID('flows-delete-cell')
-      .eq(1)
+    cy.getByTestID('square-button')
+      .eq(2)
       .click()
+    cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('flow-bucket-selector').click()
     cy.getByTestID('flow-bucket-selector--defbuck').click()
@@ -218,8 +222,10 @@ describe('Flows', () => {
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
-    cy.getByTestID(`flow-card--${flowName}`).trigger('mouseover')
-    cy.getByTestID(`flow-button--clone`).click({force: true})
+    cy.getByTestID(`flow-card--${flowName}`).within(() => {
+      cy.getByTestID(`context-menu-flow`).click()
+    })
+    cy.getByTestID(`context-clone-flow`).click()
 
     const clone = `${flowName} (clone 1)`
 
@@ -240,9 +246,10 @@ describe('Flows', () => {
       .contains(`${clone}`)
 
     // Delete the cloned flow
-    cy.getByTestID(`flow-card--${clone}`).trigger('mouseover')
-    cy.getByTestID(`context-delete-menu ${clone}`).click({force: true})
-    cy.getByTestID(`context-delete-flow ${clone}`).click({force: true})
+    cy.getByTestID(`flow-card--${clone}`).within(() => {
+      cy.getByTestID(`context-delete-menu--button`).click()
+    })
+    cy.getByTestID(`context-delete-menu--confirm-button`).click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
@@ -375,5 +382,71 @@ describe('Flows', () => {
     cy.getByTestID('giraffe-inner-plot')
       .scrollIntoView()
       .should('be.visible')
+  })
+
+  describe('alert panel', () => {
+    it('should build expressions list and allow for injection', () => {
+      const newBucketName = 'shmucket'
+      const now = Date.now()
+      cy.get<Organization>('@org').then(({id, name}: Organization) => {
+        cy.createBucket(id, name, newBucketName)
+      })
+      cy.writeData(
+        [
+          `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+          `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+          `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+          `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+        ],
+        newBucketName
+      )
+
+      const flowName = 'Flowbooks'
+
+      cy.getByTestID('create-flow--button')
+        .first()
+        .click()
+      cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
+
+      // select our bucket, measurement, field and tag
+      cy.getByTestID('flow-bucket-selector').click()
+      cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+      cy.getByTestID('measurement-selector test').click()
+      cy.getByTestID('field-selector dopeness').click()
+      cy.getByTestID('tag-selector beans').click()
+
+      // add an alert cell
+      cy.getByTestID('panel-add-btn-2').click()
+      cy.getByTestID('add-flow-btn--notification').click()
+      cy.getByTestID('time-machine-submit-button').click()
+      cy.getByTestID('notification-exp-button').scrollIntoView()
+      cy.getByTestID('text-editor').should('be.visible')
+
+      // open exp sidebar panel
+      cy.getByTestID('notification-exp-button').should('be.visible')
+      cy.getByTestID('notification-exp-button').click()
+      cy.getByTestID('flux-toolbar--list').should('be.visible')
+
+      // check that all expressions are listed
+      cy.getByTestID('measurements-test').should('be.visible')
+      cy.getByTestID('fields-dopeness').should('be.visible')
+      cy.getByTestID('tags-container_name').should('be.visible')
+      cy.getByTestID('columns-_start').should('be.visible')
+      cy.getByTestID('system-_source_measurement')
+        .scrollIntoView()
+        .should('be.visible')
+
+      // filter for dopeness
+      cy.getByTestID('flux-toolbar-search--input').type('dopeness')
+      cy.getByTestID('flux--fields-dopeness--inject').click({force: true})
+
+      // make sure message contains injected expression
+      cy.getByTestID('notification-message--monaco-editor').contains(
+        'r.dopeness'
+      )
+    })
   })
 })

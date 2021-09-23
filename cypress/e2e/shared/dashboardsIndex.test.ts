@@ -77,7 +77,8 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').should('contain', newName)
 
     // Open Export overlay
-    cy.getByTestID('context-menu-item-export').click({force: true})
+    cy.getByTestID('context-menu-dashboard').click()
+    cy.getByTestID('context-export-dashboard').click()
     cy.getByTestID('export-overlay--text-area').should('exist')
     cy.get('.cf-overlay--dismiss').click()
 
@@ -137,26 +138,29 @@ describe('Dashboards', () => {
       .first()
       .trigger('mouseover')
       .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
+        cy.getByTestID('context-delete-menu--button').click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.getByTestID('dashboard-card')
       .first()
       .trigger('mouseover')
       .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
+        cy.getByTestID('context-delete-menu--button').click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.getByTestID('empty-dashboards-list').should('exist')
   })
 
-  // TODO - fix failing test (fails only in circleci - cloud-e2e-firefox)
-  it.skip('can import as JSON or file', () => {
+  it('can import as JSON or file', () => {
     const checkImportedDashboard = () => {
       // wait for importing done
-      cy.wait(200)
+      cy.intercept('POST', '/api/v2/dashboards/*/cells').as('createCells')
+      // create cell 1
+      cy.wait('@createCells')
+      // create cell 2
+      cy.wait('@createCells')
       cy.getByTestID('dashboard-card--name')
         .should('contain', 'IMPORT dashboard')
         .click()
@@ -195,9 +199,9 @@ describe('Dashboards', () => {
       .first()
       .trigger('mouseover')
       .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
+        cy.getByTestID('context-delete-menu--button').click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     // dashboard no longer exists
     cy.getByTestID('dashboard-card').should('not.exist')
@@ -208,7 +212,7 @@ describe('Dashboards', () => {
       .click()
     cy.getByTestID('add-resource-dropdown--import').click()
 
-    cy.getByTestID('select-group--option')
+    cy.getByTestID('select-group')
       .contains('Paste')
       .click()
 
@@ -277,10 +281,13 @@ describe('Dashboards', () => {
     it('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 2)
 
-      cy.getByTestID('clone-dashboard')
+      cy.getByTestID('dashboard-card')
         .first()
-        .click({force: true})
-        .wait(100)
+        .within(() => {
+          cy.getByTestID('context-menu-dashboard').click()
+        })
+
+      cy.getByTestID('context-clone-dashboard').click()
 
       cy.fixture('routes').then(({orgs}) => {
         cy.get<Organization>('@org').then(({id}: Organization) => {

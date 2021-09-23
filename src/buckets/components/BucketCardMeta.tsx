@@ -43,7 +43,7 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
   }
 
   const persistentBucketMeta = (
-    <span data-testid="bucket-retention">
+    <span data-testid="bucket-retention" key="bucket-retention">
       Retention: {capitalize(bucket.readableRetention)}
     </span>
   )
@@ -53,7 +53,9 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
 
   const schemaLabel = `Schema Type: ${capitalize(schemaType)}`
   const schemaBlock = (
-    <span data-testid="bucket-schemaType"> {schemaLabel} </span>
+    <span data-testid="bucket-schemaType" key="bucket-schemaType">
+      {schemaLabel}
+    </span>
   )
 
   const bucketInfo = CLOUD

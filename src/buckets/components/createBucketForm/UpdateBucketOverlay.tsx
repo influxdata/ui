@@ -21,7 +21,7 @@ import {
 import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
 
 // Actions
-import {updateBucket} from 'src/buckets/actions/thunks'
+import {getBucketSchema, updateBucket} from 'src/buckets/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 
 // APIs
@@ -33,10 +33,17 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 
 // Types
 import {OwnBucket} from 'src/types'
-import {SchemaType} from 'src/client'
+import {CLOUD} from 'src/shared/constants'
+
+let SchemaType = null
+
+if (CLOUD) {
+  SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+}
 
 interface DispatchProps {
   onUpdateBucket: typeof updateBucket
+  getSchema: typeof getBucketSchema
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -44,6 +51,7 @@ type Props = ReduxProps & RouteComponentProps<{bucketID: string; orgID: string}>
 
 const UpdateBucketOverlay: FunctionComponent<Props> = ({
   onUpdateBucket,
+  getSchema,
   match,
   history,
 }) => {
@@ -56,6 +64,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   const [retentionSelection, setRetentionSelection] = useState(DEFAULT_SECONDS)
 
   const [schemaType, setSchemaType] = useState('implicit')
+  const [measurementSchemaList, setMeasurementSchemaList] = useState(null)
 
   const handleClose = useCallback(() => {
     history.push(`/orgs/${orgID}/load-data/buckets`)
@@ -70,9 +79,15 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         handleClose()
         return
       }
+
       setBucketDraft(resp.data as OwnBucket)
 
       setSchemaType(resp.data.schemaType)
+
+      if ('explicit' === resp.data.schemaType) {
+        const schema = await getSchema(bucketID)
+        setMeasurementSchemaList(schema)
+      }
 
       const rules = get(resp.data, 'retentionRules', [])
       const rule = rules.find(r => r.type === 'expire')
@@ -93,7 +108,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     setRetentionSelection(everySeconds)
   }
 
-  const handleChangeSchemaType = (schemaType: SchemaType): void => {
+  const handleChangeSchemaType = (schemaType: typeof SchemaType): void => {
     setBucketDraft({
       ...bucketDraft,
       schemaType: schemaType,
@@ -146,23 +161,22 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
           spinnerComponent={<TechnoSpinner />}
           loading={loadingStatus}
         >
-          <Overlay.Body>
-            <BucketOverlayForm
-              name={bucketDraft ? bucketDraft.name : ''}
-              buttonText="Save Changes"
-              ruleType={ruleType}
-              onClose={handleClose}
-              onSubmit={handleSubmit}
-              isEditing={true}
-              onChangeInput={handleChangeInput}
-              retentionSeconds={retentionSeconds}
-              onChangeRuleType={handleChangeRuleType}
-              onChangeRetentionRule={handleChangeRetentionRule}
-              onClickRename={handleClickRename}
-              onChangeSchemaType={handleChangeSchemaType}
-              schemaType={schemaType as SchemaType}
-            />
-          </Overlay.Body>
+          <BucketOverlayForm
+            name={bucketDraft ? bucketDraft.name : ''}
+            buttonText="Save Changes"
+            ruleType={ruleType}
+            onClose={handleClose}
+            onSubmit={handleSubmit}
+            isEditing={true}
+            onChangeInput={handleChangeInput}
+            retentionSeconds={retentionSeconds}
+            onChangeRuleType={handleChangeRuleType}
+            onChangeRetentionRule={handleChangeRetentionRule}
+            onClickRename={handleClickRename}
+            onChangeSchemaType={handleChangeSchemaType}
+            schemaType={schemaType as typeof SchemaType}
+            measurementSchemaList={measurementSchemaList}
+          />
         </SpinnerContainer>
       </Overlay.Container>
     </Overlay>
@@ -171,6 +185,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
 const mdtp = {
   onUpdateBucket: updateBucket,
+  getSchema: getBucketSchema,
 }
 
 const connector = connect(null, mdtp)

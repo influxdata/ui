@@ -11,6 +11,10 @@
   margin-bottom: $cf-marg-b;
 }
 
-.plugin-creat-configuration--editor {
+.plugin-create-configuration--editor {
   margin-top: $cf-marg-b;
+}
+
+.plugin-create-configuration--notify-agent-output {
+  font-style: italic;
 }

@@ -27,6 +27,7 @@ import {Context} from 'src/clockface'
 
 // Utils
 import {deleteSecret} from 'src/secrets/actions/thunks'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   secret: Secret
@@ -36,6 +37,7 @@ const SecretContextMenu: FC<Props> = ({secret}) => {
   const dispatch = useDispatch()
 
   const handleDelete = () => {
+    event('Secret Deleted')
     dispatch(deleteSecret(secret))
   }
 
@@ -43,6 +45,7 @@ const SecretContextMenu: FC<Props> = ({secret}) => {
     copiedText: string,
     isSuccessful: boolean
   ): void => {
+    event('Copy Secret To Clipboard Clicked')
     if (isSuccessful) {
       dispatch(notify(copyToClipboardSuccess(copiedText, 'Secret ID')))
     } else {

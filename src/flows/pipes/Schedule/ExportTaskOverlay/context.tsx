@@ -26,7 +26,7 @@ import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
-import {remove} from 'src/flows/context/query'
+import {remove} from 'src/shared/contexts/query'
 
 // Contexts
 import {PopupContext} from 'src/flows/context/popup'
@@ -60,7 +60,10 @@ const DEFAULT_CONTEXT: ContextType = {
 
 export const Context = React.createContext<ContextType>(DEFAULT_CONTEXT)
 
-export const Provider: FC = ({children}) => {
+interface Props {
+  type: string
+}
+export const Provider: FC<Props> = ({type, children}) => {
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
   const [activeTab, setActiveTab] = useState(ExportAsTask.Create)
@@ -146,7 +149,7 @@ export const Provider: FC = ({children}) => {
     }
 
     if (activeTab === ExportAsTask.Create) {
-      event('Export Task Completed', {exportType: 'create'})
+      event('Export Task Completed', {exportType: 'create', from: type})
 
       try {
         const resp = await postTask({data: {orgID: org.id, flux: script}})
@@ -165,7 +168,7 @@ export const Provider: FC = ({children}) => {
         }
       }
     } else {
-      event('Export Task Completed', {exportType: 'update'})
+      event('Export Task Completed', {exportType: 'update', from: type})
 
       // TODO: get these values from the query and not the data store
       try {

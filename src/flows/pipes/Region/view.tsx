@@ -9,17 +9,17 @@ import {getOrg} from 'src/organizations/selectors'
 import {
   Dropdown,
   ComponentColor,
+  ComponentStatus,
   ComponentSize,
   Form,
   FlexBox,
   Input,
   InputType,
-  ComponentStatus,
 } from '@influxdata/clockface'
 
 import './style.scss'
 
-const REGIONS = [
+export const REGIONS = [
   {
     label: 'US West (Oregon)',
     group: 'Amazon Web Services',

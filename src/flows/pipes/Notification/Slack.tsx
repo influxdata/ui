@@ -40,7 +40,7 @@ const Slack: FC = () => {
   }
 
   return (
-    <>
+    <div className="slack-endpoint-details--flex">
       <Form.Element label="Incoming Webhook URL" required={true}>
         <Input
           name="url"
@@ -60,10 +60,10 @@ const Slack: FC = () => {
           size={ComponentSize.Medium}
         />
       </Form.Element>
-      <Form.Element label="Color">
+      <Form.Element label="Message Color">
         <ColorPicker color={data.endpointData.color} onChange={updateColor} />
       </Form.Element>
-    </>
+    </div>
   )
 }
 

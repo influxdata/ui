@@ -2,7 +2,7 @@
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 
 // Components
-import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
+import {Form, Input, Button, Accordion, Overlay} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
 import {SchemaToggle} from 'src/buckets/components/createBucketForm/SchemaToggle'
 
@@ -21,8 +21,17 @@ import {
 import {RuleType} from 'src/buckets/reducers/createBucket'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
-import {SchemaType} from 'src/client/generatedRoutes'
 
+import {MeasurementSchemaSection} from './MeasurementSchemaSection'
+
+let MeasurementSchemaList = null,
+  SchemaType = null
+
+if (CLOUD) {
+  SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaList = require('src/client/generatedRoutes')
+    .MeasurementSchemaList
+}
 /** for schemas, if (isEditing) is true, then
  * need the schemaType that is already set;
  * if !isEditing (it is false)
@@ -40,8 +49,9 @@ interface Props {
   buttonText: string
   onClickRename?: () => void
   testID?: string
-  onChangeSchemaType?: (schemaType: SchemaType) => void
-  schemaType?: SchemaType
+  onChangeSchemaType?: (schemaType: typeof SchemaType) => void
+  schemaType?: typeof SchemaType
+  measurementSchemaList?: typeof MeasurementSchemaList
 }
 
 interface State {
@@ -58,7 +68,9 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
   public state: State = {showAdvanced: false, schemaType: 'implicit'}
 
-  public onChangeSchemaTypeInternal = function(newSchemaType: SchemaType) {
+  public onChangeSchemaTypeInternal = function(
+    newSchemaType: typeof SchemaType
+  ) {
     this.setState({schemaType: newSchemaType})
     this.props.onChangeSchemaType(newSchemaType)
   }
@@ -78,6 +90,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       onClickRename,
       testID = 'bucket-form',
       schemaType,
+      measurementSchemaList,
     } = this.props
 
     const {showAdvanced} = this.state
@@ -88,7 +101,25 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
         let contents = null
         if (isEditing) {
-          contents = <SchemaToggle readOnlySchemaType={schemaType} />
+          let measurementSchemaReadonlyList = null
+
+          if (measurementSchemaList?.measurementSchemas) {
+            measurementSchemaReadonlyList = (
+              <MeasurementSchemaSection
+                measurementSchemaList={measurementSchemaList}
+                key="measurementSchemaSection"
+              />
+            )
+          }
+          contents = (
+            <>
+              <SchemaToggle
+                key="schemaToggleSection"
+                readOnlySchemaType={schemaType}
+              />
+              {measurementSchemaReadonlyList}
+            </>
+          )
         } else {
           contents = (
             <SchemaToggle
@@ -112,65 +143,53 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     return (
       <Form onSubmit={onSubmit} testID={testID}>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column>
-              <Form.ValidationElement
+        <Overlay.Body>
+          <Form.ValidationElement
+            value={name}
+            label="Name"
+            helpText={this.nameHelpText}
+            validationFunc={this.handleNameValidation}
+            required={true}
+          >
+            {status => (
+              <Input
+                status={nameInputStatus || status}
+                placeholder="Give your bucket a name"
+                name="name"
+                autoFocus={true}
                 value={name}
-                label="Name"
-                helpText={this.nameHelpText}
-                validationFunc={this.handleNameValidation}
-                required={true}
-              >
-                {status => (
-                  <Input
-                    status={nameInputStatus || status}
-                    placeholder="Give your bucket a name"
-                    name="name"
-                    autoFocus={true}
-                    value={name}
-                    onChange={onChangeInput}
-                    testID="bucket-form-name"
-                  />
-                )}
-              </Form.ValidationElement>
-              <Form.Element label="Delete Data">
-                <Retention
-                  type={ruleType}
-                  retentionSeconds={retentionSeconds}
-                  onChangeRuleType={onChangeRuleType}
-                  onChangeRetentionRule={onChangeRetentionRule}
-                />
-              </Form.Element>
-              {makeAdvancedSection()}
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
-              <Form.Footer>
-                <Button
-                  text="Cancel"
-                  onClick={onClose}
-                  type={ButtonType.Button}
-                />
-                {buttonText === 'Save Changes' && (
-                  <Button
-                    text="Rename"
-                    color={ComponentColor.Danger}
-                    onClick={onClickRename}
-                  />
-                )}
-                <Button
-                  text={buttonText}
-                  testID="bucket-form-submit"
-                  color={this.submitButtonColor}
-                  status={this.submitButtonStatus}
-                  type={ButtonType.Submit}
-                />
-              </Form.Footer>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+                onChange={onChangeInput}
+                testID="bucket-form-name"
+              />
+            )}
+          </Form.ValidationElement>
+          <Form.Element label="Delete Data">
+            <Retention
+              type={ruleType}
+              retentionSeconds={retentionSeconds}
+              onChangeRuleType={onChangeRuleType}
+              onChangeRetentionRule={onChangeRetentionRule}
+            />
+          </Form.Element>
+          {makeAdvancedSection()}
+        </Overlay.Body>
+        <Overlay.Footer>
+          <Button text="Cancel" onClick={onClose} type={ButtonType.Button} />
+          {buttonText === 'Save Changes' && (
+            <Button
+              text="Rename"
+              color={ComponentColor.Danger}
+              onClick={onClickRename}
+            />
+          )}
+          <Button
+            text={buttonText}
+            testID="bucket-form-submit"
+            color={this.submitButtonColor}
+            status={this.submitButtonStatus}
+            type={ButtonType.Submit}
+          />
+        </Overlay.Footer>
       </Form>
     )
   }

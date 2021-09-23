@@ -27,7 +27,7 @@ export const BucketProvider: FC<Props> = ({panel, children}) => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [buckets, setBuckets] = useState<Bucket[]>([])
   const {getPanelQueries} = useContext(FlowQueryContext)
-  const {scope} = getPanelQueries(panel)
+  const scope = getPanelQueries(panel)?.scope ?? {}
 
   useEffect(() => {
     if (!scope.region || !scope.org) {

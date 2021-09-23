@@ -9,6 +9,7 @@ import {
   Input,
   InputType,
   Icon,
+  ComponentStatus,
 } from '@influxdata/clockface'
 import DurationInput from 'src/shared/components/DurationInput'
 import {CHECK_OFFSET_OPTIONS} from 'src/alerting/constants'
@@ -87,11 +88,15 @@ export const THRESHOLD_TYPES = {
   },
 }
 
-const Threshold: FC = () => {
+interface Props {
+  readOnly?: boolean
+}
+
+const Threshold: FC<Props> = ({readOnly}) => {
   const {data, update, results} = useContext(PipeContext)
 
   const fields = Array.from(
-    new Set(results.parsed.table.columns['_field'].data as string[])
+    new Set(results.parsed.table.columns['_field']?.data as string[])
   )
 
   const thresholds = useMemo(() => data?.thresholds ?? [], [data?.thresholds])
@@ -166,6 +171,7 @@ const Threshold: FC = () => {
             onClick={type => setThresholdType(type, index)}
             selected={key === threshold?.type}
             title={value.name}
+            disabled={!!readOnly}
           >
             {value?.name}
           </Dropdown.Item>
@@ -178,6 +184,9 @@ const Threshold: FC = () => {
           onClick={onClick}
           active={active}
           size={ComponentSize.Medium}
+          status={
+            !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+          }
         >
           {THRESHOLD_TYPES[threshold?.type]?.name || 'Select a function'}
         </Dropdown.Button>
@@ -196,6 +205,7 @@ const Threshold: FC = () => {
           onClick={field => setColumn(field, index)}
           selected={key === threshold?.field}
           title={key}
+          disabled={!!readOnly}
         >
           {key}
         </Dropdown.Item>
@@ -208,6 +218,9 @@ const Threshold: FC = () => {
           onClick={onClick}
           active={active}
           size={ComponentSize.Medium}
+          status={
+            !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+          }
         >
           {threshold?.field || 'Select a numeric column'}
         </Dropdown.Button>
@@ -344,6 +357,9 @@ const Threshold: FC = () => {
               value={threshold.min}
               onChange={event => updateMin(event, index)}
               size={ComponentSize.Medium}
+              status={
+                !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+              }
             />
           </FlexBox.Child>
           <TextBlock testID="is-value-text-block" text="to" />
@@ -355,6 +371,9 @@ const Threshold: FC = () => {
               value={threshold.max}
               onChange={event => updateMax(event, index)}
               size={ComponentSize.Medium}
+              status={
+                !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+              }
             />
           </FlexBox.Child>
         </FlexBox>
@@ -374,6 +393,9 @@ const Threshold: FC = () => {
             value={threshold.value}
             onChange={event => updateValue(event, index)}
             size={ComponentSize.Medium}
+            status={
+              !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
+            }
           />
         </FlexBox.Child>
       </FlexBox>
@@ -411,7 +433,7 @@ const Threshold: FC = () => {
             {thresholdEntry(threshold, index)}
           </FlexBox.Child>
           <FlexBox.Child grow={4} testID="component-spacer--flex-child">
-            {index !== 0 ? (
+            {index !== 0 && !readOnly ? (
               <div
                 className="threshold-trash-icon--block"
                 onClick={() => handleRemoveThreshold(index)}
@@ -422,7 +444,7 @@ const Threshold: FC = () => {
           </FlexBox.Child>
         </FlexBox>
       ))}
-      {thresholds[0].type !== deadmanType && (
+      {thresholds[0].type !== deadmanType && !readOnly && (
         <FlexBox
           direction={FlexDirection.Row}
           margin={ComponentSize.Small}

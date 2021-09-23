@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {Link} from 'react-router-dom'
 
 // Components
 import {
@@ -10,7 +9,6 @@ import {
   Page,
 } from '@influxdata/clockface'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 interface Props {
   title: string
@@ -29,12 +27,6 @@ export default class TaskHeader extends PureComponent<Props> {
           <RateLimitAlert />
         </Page.Header>
         <Page.ControlBar fullWidth={true}>
-          <FeatureFlag name="flowsCTA">
-            <Page.ControlBarLeft className="task-header--cta">
-              <span>Need something more?</span>
-              <Link to="/notebook/from/task">Create a Notebook</Link>
-            </Page.ControlBarLeft>
-          </FeatureFlag>
           <Page.ControlBarRight>
             <Button
               color={ComponentColor.Default}

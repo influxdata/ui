@@ -9,10 +9,8 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
 import Handle from 'src/flows/components/panel/Handle'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
-import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import {MenuButton} from 'src/flows/components/Sidebar'
 
@@ -27,6 +25,9 @@ import {PipeContextProps} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import 'src/flows/shared/Resizer.scss'
 
@@ -165,10 +166,6 @@ const FlowPanel: FC<Props> = ({
                   />
                 </FeatureFlag>
                 <MenuButton id={id} />
-                <FeatureFlag name="flowSidebar" equals={false}>
-                  <PanelVisibilityToggle id={id} />
-                  <RemovePanelButton id={id} />
-                </FeatureFlag>
               </div>
             </>
           )}
@@ -191,7 +188,7 @@ const FlowPanel: FC<Props> = ({
               dragging={isDragging === 2}
             />
           )}
-          {isVisible && (
+          {isVisible && isFlagEnabled('notebooksPreviewFromHere') && (
             <Button
               className="flow-footer--preview"
               onClick={() => queryDependents(id)}

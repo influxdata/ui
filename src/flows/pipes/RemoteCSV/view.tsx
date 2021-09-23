@@ -9,7 +9,7 @@ import {
 } from '@influxdata/clockface'
 import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
-import {QueryContext} from 'src/flows/context/query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 const SampleCSVs = {
   airSensor: 'Sample Air Sensor Data',
@@ -21,7 +21,7 @@ const SampleCSVs = {
 const RemoteCSV: FC<PipeProp> = ({Context}) => {
   const [csvHash, setCSVHash] = useState({})
   const {data, update} = useContext(PipeContext)
-  const {query} = useContext(QueryContext)
+  const {query} = useContext(FlowQueryContext)
 
   const handleChange = (e: any) => {
     update({url: e.target.value})

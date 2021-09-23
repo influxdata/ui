@@ -1320,4 +1320,35 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('empty-state--text').should('be.visible')
     })
   })
+  describe('light/dark Mode Toggle', () => {
+    it('creates a dashboard to test light/dark mode toggle', () => {
+      // dashboard creation
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.createDashboard(orgID).then(({body}) => {
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+            cy.getByTestID('tree-nav')
+          })
+        })
+      })
+      cy.getByTestID('select-group--option')
+        .last()
+        .click() // light mode
+      cy.getByTestID('app-wrapper')
+        .invoke('css', 'background-color')
+        .should('equal', 'rgb(241, 241, 243)')
+      cy.getByTestID('app-wrapper')
+        .invoke('css', 'color')
+        .should('equal', 'rgb(104, 104, 123)')
+      cy.getByTestID('select-group--option')
+        .first()
+        .click() // dark mode
+      cy.getByTestID('app-wrapper')
+        .invoke('css', 'background-color')
+        .should('equal', 'rgb(7, 7, 14)')
+      cy.getByTestID('app-wrapper')
+        .invoke('css', 'color')
+        .should('equal', 'rgb(241, 241, 243)')
+    })
+  })
 })

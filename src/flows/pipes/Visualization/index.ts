@@ -1,5 +1,6 @@
 import View from './view'
 import './style.scss'
+import {parse} from '@influxdata/flux'
 
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
@@ -16,6 +17,19 @@ export default register => {
       properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
     },
     visual: (data, query) => {
+      if (!query) {
+        return ''
+      }
+
+      try {
+        const ast = parse(query)
+        if (!ast.body.length) {
+          return ''
+        }
+      } catch {
+        return ''
+      }
+
       if (data.properties.type === 'simple-table') {
         return `${query} |> limit(n: 100)`
       }

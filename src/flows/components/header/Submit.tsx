@@ -11,7 +11,7 @@ import {
 } from '@influxdata/clockface'
 
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
-import {QueryContext} from 'src/flows/context/query'
+import {QueryContext} from 'src/shared/contexts/query'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {notify} from 'src/shared/actions/notifications'
@@ -47,7 +47,6 @@ export const Submit: FC = () => {
       <ButtonGroup>
         <SubmitQueryButton
           text={runMode}
-          className="flows--submit-button"
           icon={IconFont.Play}
           submitButtonDisabled={hasQueries === false}
           queryStatus={status}
@@ -60,7 +59,7 @@ export const Submit: FC = () => {
           <SquareButton
             active={active}
             onClick={onClick}
-            icon={IconFont.CaretDown}
+            icon={IconFont.CaretDown_New}
             color={ComponentColor.Primary}
           />
         )}

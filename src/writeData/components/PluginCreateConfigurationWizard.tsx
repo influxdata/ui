@@ -1,7 +1,8 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import Loadable from 'react-loadable'
 import {connect, ConnectedProps} from 'react-redux'
+import {useParams} from 'react-router'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -26,6 +27,7 @@ import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
+const PREVENT_OVERLAY_FLICKER_STEP = -1
 
 const spinner = <div />
 const PluginCreateConfigurationStepSwitcher = Loadable({
@@ -44,12 +46,21 @@ export interface PluginCreateConfigurationStepProps {
   onIncrementCurrentStepIndex: () => void
   onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
   substepIndex: number
+  pluginConfig: string
+  setPluginConfig: (config: string) => void
+  isValidConfiguration: boolean
+  setIsValidConfiguration: (isValid: boolean) => void
+  pluginConfigName: string
 }
 
 interface PluginCreateConfigurationWizardProps {
   history: {
     goBack: () => void
   }
+}
+
+type ParamsType = {
+  [param: string]: string
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -60,8 +71,8 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     currentStepIndex,
     history,
     notify,
-    onClearSteps,
     onClearDataLoaders,
+    onClearSteps,
     onDecrementCurrentStepIndex,
     onIncrementCurrentStepIndex,
     onSetCurrentStepIndex,
@@ -69,10 +80,17 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     substepIndex,
   } = props
 
+  const {contentID} = useParams<ParamsType>()
+
   useEffect(() => {
     onSetCurrentStepIndex(0)
     onSetSubstepIndex(0, 0)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [pluginConfig, setPluginConfig] = useState<string>('')
+  const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
+    false
+  )
 
   const handleDismiss = () => {
     onClearDataLoaders()
@@ -80,25 +98,31 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     if (substepIndex === 1) {
       onSetSubstepIndex(0, 0)
     } else {
+      onSetCurrentStepIndex(PREVENT_OVERLAY_FLICKER_STEP)
       history.goBack()
     }
   }
 
   const stepProps = {
     currentStepIndex,
+    isValidConfiguration,
     notify,
     onDecrementCurrentStepIndex,
     onExit: handleDismiss,
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
+    pluginConfig,
+    setIsValidConfiguration,
+    setPluginConfig,
     substepIndex,
+    pluginConfigName: contentID,
   }
 
   let title = 'Configuration Options'
   if (currentStepIndex === 0 && substepIndex === 1) {
     title = 'Create Bucket'
   } else if (currentStepIndex !== 0) {
-    title = 'Create a Telegraf Configuration'
+    title = 'Add Plugin to a new Telegraf Configuration'
   }
 
   let maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH
@@ -144,8 +168,8 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   notify: notifyAction,
-  onClearSteps: clearSteps,
   onClearDataLoaders: clearDataLoaders,
+  onClearSteps: clearSteps,
   onDecrementCurrentStepIndex: decrementCurrentStepIndex,
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
   onSetCurrentStepIndex: setCurrentStepIndex,

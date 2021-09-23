@@ -26,7 +26,6 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import Functions from 'src/flows/pipes/RawFluxEditor/functions'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -37,7 +36,7 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
-  const [showFn, setShowFn] = useState(true)
+  const [showFn] = useState(true)
   const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
@@ -119,10 +118,6 @@ const Query: FC<PipeProp> = ({Context}) => {
     [editorInstance, query.text]
   )
 
-  const toggleFn = useCallback(() => {
-    setShowFn(!showFn)
-  }, [setShowFn, showFn])
-
   const launcher = () => {
     if (showId === id) {
       hideSub()
@@ -132,21 +127,12 @@ const Query: FC<PipeProp> = ({Context}) => {
     }
   }
 
-  const controls = isFlagEnabled('flowSidebar') ? (
+  const controls = (
     <Button
       text="Functions"
       icon={IconFont.Function}
       onClick={launcher}
       color={ComponentColor.Default}
-      titleText="Function Reference"
-      className="flows-config-function-button"
-    />
-  ) : (
-    <Button
-      text="Functions"
-      icon={IconFont.Function}
-      onClick={toggleFn}
-      color={showFn ? ComponentColor.Primary : ComponentColor.Default}
       titleText="Function Reference"
       className="flows-config-function-button"
     />
@@ -171,11 +157,6 @@ const Query: FC<PipeProp> = ({Context}) => {
             wrapLines="on"
           />
         </Suspense>
-        {!isFlagEnabled('flowSidebar') && showFn && (
-          <div className="flow-nonsidebar">
-            <Functions onSelect={inject} />
-          </div>
-        )}
       </Context>
     )
   }, [editorInstance, showFn, showId])

@@ -17,7 +17,6 @@ object InfluxDB2ScalaExample {
     // You can generate a Token from the "Tokens Tab" in the UI
     val token = "<%= token %>"
     val org = "<%= org %>"
-    val bucket = "<%= bucket %>"
 
     val client = InfluxDBClientScalaFactory.create("<%= server %>", token.toCharArray, org)
   }

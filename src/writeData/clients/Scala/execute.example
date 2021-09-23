@@ -1,16 +1,11 @@
-val query = (s"<%= query %>")
+val query = """<%= query %>"""
 
 // Result is returned as a stream
 val results = client.getQueryScalaApi().query(query)
 
-// Example of additional result stream processing on client side
 val sink = results
-  // filter on client side using \`filter\` built-in operator
-  .filter(it => "cpu0" == it.getValueByKey("cpu"))
-  // take first 20 records
-  .take(20)
   // print results
-  .runWith(Sink.foreach[FluxRecord](it => println(s"Measurement: ${it.getMeasurement}, value: ${it.getValue}")
+  .runWith(Sink.foreach[FluxRecord](it => println(s"$it")
   ))
 
 // wait to finish

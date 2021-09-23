@@ -56,6 +56,8 @@ export default class TasksList extends PureComponent<Props, State> {
     getSortedResources
   )
 
+  private _isMounted = true
+
   constructor(props) {
     super(props)
     this.state = {
@@ -69,9 +71,17 @@ export default class TasksList extends PureComponent<Props, State> {
     this.props.checkTaskLimits()
     if (CLOUD && isFlagEnabled('pinnedItems')) {
       getPinnedItems()
-        .then(res => this.setState(prev => ({...prev, pinnedItems: res})))
+        .then(res => {
+          if (this._isMounted) {
+            this.setState(prev => ({...prev, pinnedItems: res}))
+          }
+        })
         .catch(err => console.error(err))
     }
+  }
+
+  public componentWillUnmount() {
+    this._isMounted = false
   }
 
   public render() {

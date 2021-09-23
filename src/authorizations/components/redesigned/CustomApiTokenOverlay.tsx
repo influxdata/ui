@@ -21,13 +21,18 @@ import ResourceAccordion from './ResourceAccordion'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
+import {connect} from 'react-redux'
+import {AppState} from 'src/types'
 
 interface OwnProps {
   onClose: () => void
 }
 
-export const CustomApiTokenOverlay: FC<OwnProps> = props => {
-  const resources = ['telegrafs', 'buckets']
+interface StateProps {
+  allResources: string[]
+}
+
+const CustomApiTokenOverlay: FC<OwnProps & StateProps> = props => {
   const handleDismiss = () => {
     props.onClose()
   }
@@ -37,6 +42,17 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
 
   const handleInputChange = event => {
     setDescription(event.target.value)
+  }
+
+  const formatAllResources = () => {
+    let resources = props.allResources
+    resources = resources.filter(
+      item => item !== 'buckets' && item !== 'telegrafs'
+    )
+    resources.sort()
+    resources.unshift('telegrafs')
+    resources.unshift('buckets')
+    return resources
   }
 
   return (
@@ -91,7 +107,7 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
                   </InputLabel>
                 </FlexBox.Child>
               </FlexBox>
-              <ResourceAccordion resources={resources} />
+              <ResourceAccordion resources={formatAllResources()} />
             </FlexBox.Child>
           </FlexBox>
         </Form>
@@ -115,3 +131,11 @@ export const CustomApiTokenOverlay: FC<OwnProps> = props => {
     </Overlay.Container>
   )
 }
+
+const mstp = (state: AppState) => {
+  return {
+    allResources: state.resources.tokens.allResources,
+  }
+}
+
+export default connect(mstp)(CustomApiTokenOverlay)

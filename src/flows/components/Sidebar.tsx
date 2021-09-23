@@ -4,8 +4,7 @@ import {
   ComponentColor,
   IconFont,
   DapperScrollbars,
-  DropdownMenu,
-  DropdownItem,
+  Dropdown,
 } from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -15,7 +14,6 @@ import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 import './Sidebar.scss'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -90,10 +88,6 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
       document.removeEventListener('mousedown', clickoutside)
     }
   }, [focused, submenu])
-
-  if (!isFlagEnabled('flowSidebar')) {
-    return null
-  }
 
   let dropdown
 
@@ -182,7 +176,10 @@ const Sidebar: FC = () => {
               return true
             }
 
-            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
+            if (
+              !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family) &&
+              type !== 'visualization'
+            ) {
               return true
             }
 
@@ -194,12 +191,13 @@ const Sidebar: FC = () => {
 
             event('Convert Cell To Flux', {from: type})
 
-            const {source} = getPanelQueries(id, true)
+            const {source, visual} = getPanelQueries(id, true)
 
             const init = JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
             )
-            init.queries[0].text = source
+            init.queries[0].text =
+              type === 'visualization' && visual ? visual : source
             init.title = title
             init.type = 'rawFluxEditor'
 
@@ -233,7 +231,7 @@ const Sidebar: FC = () => {
 
           if (action.hasOwnProperty('menu')) {
             return (
-              <DropdownItem
+              <Dropdown.Item
                 onClick={() => {
                   const title =
                     typeof action.title === 'function'
@@ -249,12 +247,12 @@ const Sidebar: FC = () => {
                 testID={`${title}--list-item`}
               >
                 {title}
-              </DropdownItem>
+              </Dropdown.Item>
             )
           }
 
           return (
-            <DropdownItem
+            <Dropdown.Item
               onClick={() => {
                 const title =
                   typeof action.title === 'function'
@@ -272,22 +270,29 @@ const Sidebar: FC = () => {
               testID={`${title}--list-item`}
             >
               {title}
-            </DropdownItem>
+            </Dropdown.Item>
           )
         })
 
       const sectionTitle =
         typeof section.title === 'function' ? section.title() : section.title
-      return <div key={sectionTitle}>{links}</div>
+      return (
+        <div
+          key={sectionTitle}
+          className="flow-sidebar--dropdownmenu-container"
+        >
+          {links}
+        </div>
+      )
     })
 
   return (
-    <DropdownMenu
+    <Dropdown.Menu
       className="flow-sidebar--dropdownmenu"
       style={{width: '200px'}}
     >
       {sections}
-    </DropdownMenu>
+    </Dropdown.Menu>
   )
 }
 

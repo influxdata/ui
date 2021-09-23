@@ -225,7 +225,7 @@ interface AddPluginBundle {
 
 interface AddTelegrafTelegrafUiRefresh {
   type: 'ADD_TELEGRAF_telegrafUiRefresh'
-  payload: {plugin: string}
+  payload: {plugin: TelegrafPlugin}
 }
 
 export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
@@ -234,7 +234,7 @@ export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
 })
 
 export const addTelegraf_telegrafUiRefresh = (
-  plugin: string
+  plugin: TelegrafPlugin
 ): AddTelegrafTelegrafUiRefresh => ({
   type: 'ADD_TELEGRAF_telegrafUiRefresh',
   payload: {plugin},
@@ -255,7 +255,7 @@ interface AddTelegrafPlugins {
 }
 interface AddTelegrafPluginsTelegrafUiRefresh {
   type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh'
-  payload: {telegrafPlugins}
+  payload: {telegrafPlugins: TelegrafPlugin}
 }
 
 export const addTelegrafPlugins = (
@@ -266,7 +266,7 @@ export const addTelegrafPlugins = (
 })
 
 export const addTelegrafPlugins_telegrafUiRefresh = (
-  telegrafPlugins
+  telegrafPlugins: TelegrafPlugin
 ): AddTelegrafPluginsTelegrafUiRefresh => ({
   type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh',
   payload: {telegrafPlugins},
@@ -358,7 +358,7 @@ export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
 }
 
 export const addTelegrafPlugin_telegrafUiRefresh = (
-  plugin: string
+  plugin: TelegrafPlugin
 ) => dispatch => {
   dispatch(addTelegraf_telegrafUiRefresh(plugin))
   dispatch(addTelegrafPlugins_telegrafUiRefresh(plugin))
@@ -398,7 +398,7 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   const plugins = telegrafPlugins.reduce(
     (acc, tp) => {
       if (tp.configured === ConfigurationState.Configured) {
-        return [...acc, tp.plugin || createNewPlugin(tp.name)]
+        return [...acc, tp.plugin || createNewPlugin(tp)]
       }
 
       return acc

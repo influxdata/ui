@@ -1,0 +1,35 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.header-cta {
+  border-radius: $cf-radius;
+  background: rgb(74 144 226 / 30%);
+  padding: 8px 20px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  color: $g15-platinum;
+  font-weight: $cf-font-weight--medium;
+
+  a {
+    color: $c-pool;
+    margin-left: 8px;
+  }
+  .cf-icon {
+    margin-right: 14px;
+    font-size: 18px;
+  }
+}
+
+.header-cta--tasks {
+  max-width: 1608px;
+  width: 100%;
+  margin: 0 auto;
+
+  .header-cta {
+    margin: 0 32px 14px;
+  }
+}
+
+.header-cta--de {
+  width: 100%;
+  padding: 0 32px;
+}

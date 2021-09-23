@@ -3,15 +3,12 @@ void loop() {
   // Query will find the worst RSSI for last hour for each connected WiFi network with this device
   String query = "<%= query %>";
 
-  // Print ouput header
-  Serial.print("==== ");
-  Serial.print(selectorFunction);
-  Serial.println(" ====");
-
   // Print composed query
   Serial.print("Querying with: ");
   Serial.println(query);
 
+  // Print ouput header
+  Serial.print("==========");
   // Send query to the server and get result
   FluxQueryResult result = client.query(query);
 
@@ -48,5 +45,8 @@ void loop() {
 
   // Close the result
   result.close();
+
+  Serial.println("Wait 10s");
+  delay(10000);
 }
 

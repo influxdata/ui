@@ -2,6 +2,7 @@
 import activemqMarkdown from 'src/writeData/components/telegrafPlugins/activemq.md'
 import aerospikeMarkdown from 'src/writeData/components/telegrafPlugins/aerospike.md'
 import aliyuncmsMarkdown from 'src/writeData/components/telegrafPlugins/aliyuncms.md'
+import amd_rocm_smiMardown from 'src/writeData/components/telegrafPlugins/amd_rocm_smi.md'
 import amqp_consumerMarkdown from 'src/writeData/components/telegrafPlugins/amqp_consumer.md'
 import apacheMarkdown from 'src/writeData/components/telegrafPlugins/apache.md'
 import apcupsdMarkdown from 'src/writeData/components/telegrafPlugins/apcupsd.md'
@@ -40,6 +41,7 @@ import dockerMarkdown from 'src/writeData/components/telegrafPlugins/docker.md'
 import dovecotMarkdown from 'src/writeData/components/telegrafPlugins/dovecot.md'
 import dpdkMarkdown from 'src/writeData/components/telegrafPlugins/dpdk.md'
 import ecsMarkdown from 'src/writeData/components/telegrafPlugins/ecs.md'
+import elasticsearch_queryMarkdown from 'src/writeData/components/telegrafPlugins/elasticsearch_query.md'
 import elasticsearchMarkdown from 'src/writeData/components/telegrafPlugins/elasticsearch.md'
 import ethtoolMarkdown from 'src/writeData/components/telegrafPlugins/ethtool.md'
 import eventhub_consumerMarkdown from 'src/writeData/components/telegrafPlugins/eventhub_consumer.md'
@@ -69,6 +71,7 @@ import intel_powerstatMarkdown from 'src/writeData/components/telegrafPlugins/in
 import intel_rdtMarkdown from 'src/writeData/components/telegrafPlugins/intel_rdt.md'
 import influxdbMarkdown from 'src/writeData/components/telegrafPlugins/influxdb.md'
 import internalMarkdown from 'src/writeData/components/telegrafPlugins/internal.md'
+import internet_speedMarkdown from 'src/writeData/components/telegrafPlugins/internet_speed.md'
 import interruptsMarkdown from 'src/writeData/components/telegrafPlugins/interrupts.md'
 import ipmi_sensorMarkdown from 'src/writeData/components/telegrafPlugins/ipmi_sensor.md'
 import ipsetMarkdown from 'src/writeData/components/telegrafPlugins/ipset.md'
@@ -97,6 +100,7 @@ import lustre2Markdown from 'src/writeData/components/telegrafPlugins/lustre2.md
 import mailchimpMarkdown from 'src/writeData/components/telegrafPlugins/mailchimp.md'
 import marklogicMarkdown from 'src/writeData/components/telegrafPlugins/marklogic.md'
 import mcrouterMarkdown from 'src/writeData/components/telegrafPlugins/mcrouter.md'
+import mdstatMarkdown from 'src/writeData/components/telegrafPlugins/mdstat.md'
 import memcachedMarkdown from 'src/writeData/components/telegrafPlugins/memcached.md'
 import memMarkdown from 'src/writeData/components/telegrafPlugins/mem.md'
 import mesosMarkdown from 'src/writeData/components/telegrafPlugins/mesos.md'
@@ -111,6 +115,8 @@ import nats_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nats
 import natsMarkdown from 'src/writeData/components/telegrafPlugins/nats.md'
 import neptune_apexMarkdown from 'src/writeData/components/telegrafPlugins/neptune_apex.md'
 import net_responseMarkdown from 'src/writeData/components/telegrafPlugins/net_response.md'
+import net_statMarkdown from 'src/writeData/components/telegrafPlugins/net_stat.md'
+import netMarkdown from 'src/writeData/components/telegrafPlugins/net.md'
 import nfsclientMarkdown from 'src/writeData/components/telegrafPlugins/nfsclient.md'
 import nginx_plus_apiMarkdown from 'src/writeData/components/telegrafPlugins/nginx_plus_api.md'
 import nginx_plusMarkdown from 'src/writeData/components/telegrafPlugins/nginx_plus.md'
@@ -200,6 +206,7 @@ import zookeeperMarkdown from 'src/writeData/components/telegrafPlugins/zookeepe
 import activemqLogo from 'src/writeData/graphics/activemq.svg'
 import aerospikeLogo from 'src/writeData/graphics/aerospike.svg'
 import aliyuncmsLogo from 'src/writeData/graphics/aliyuncms.svg'
+import amd_rocm_smiLogo from 'src/writeData/graphics/amd_rocm_smi.svg'
 import amqp_consumerLogo from 'src/writeData/graphics/amqp_consumer.svg'
 import apacheLogo from 'src/writeData/graphics/apache.svg'
 import apcupsdLogo from 'src/writeData/graphics/apcupsd.svg'
@@ -419,6 +426,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     name: 'Alibaba (Aliyun) CloudMonitor Service Statistics',
     markdown: aliyuncmsMarkdown,
     image: aliyuncmsLogo,
+  },
+  {
+    id: 'amd_rocm_smi',
+    name: 'ROCm System Management Interface',
+    markdown: amd_rocm_smiMardown,
+    image: amd_rocm_smiLogo,
   },
   {
     id: 'amqp_consumer',
@@ -655,6 +668,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     image: elasticsearchLogo,
   },
   {
+    id: 'elasticsearch_query',
+    name: 'Elasticsearch Query',
+    markdown: elasticsearch_queryMarkdown,
+    image: elasticsearchLogo,
+  },
+  {
     id: 'ethtool',
     name: 'Ethtool',
     markdown: ethtoolMarkdown,
@@ -821,6 +840,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     name: 'Telegraf Internal',
     markdown: internalMarkdown,
     image: internalLogo,
+  },
+  {
+    id: 'internet_speed',
+    name: 'Internet Speed',
+    markdown: internet_speedMarkdown,
+    image: wirelessLogo,
   },
   {
     id: 'interrupts',
@@ -991,6 +1016,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     image: mcrouterLogo,
   },
   {
+    id: 'mdstat',
+    name: 'Mdstat',
+    markdown: mdstatMarkdown,
+    image: linux_sysctl_fsLogo,
+  },
+  {
     id: 'mem',
     name: 'Memory',
     markdown: memMarkdown,
@@ -1072,6 +1103,18 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     id: 'net_response',
     name: 'Network Response',
     markdown: net_responseMarkdown,
+    image: net_responseLogo,
+  },
+  {
+    id: 'net_stat',
+    name: 'Net Stat',
+    markdown: net_statMarkdown,
+    image: net_responseLogo,
+  },
+  {
+    id: 'net',
+    name: 'Net',
+    markdown: netMarkdown,
     image: net_responseLogo,
   },
   {

@@ -34,6 +34,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {ResourceType} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import 'src/shared/components/cta.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 const alertsPath = '/orgs/:orgID/alerting'
 
@@ -46,6 +47,10 @@ const AlertingIndex: FunctionComponent = () => {
 
   const handleTabClick = (selectGroupOptionID: ActiveColumn): void => {
     setActiveColumn(selectGroupOptionID)
+  }
+
+  const recordClick = () => {
+    event('Alerts Index Page - Clicked Notebooks CTA')
   }
 
   return (
@@ -67,7 +72,7 @@ const AlertingIndex: FunctionComponent = () => {
               <Icon glyph={IconFont.BookPencil} />
               Now you can use Notebooks to explore your data while building an
               alert
-              <Link to="/notebook/from/notification">Create an Alert</Link>
+              <Link to="/notebook/from/notification" onClick={recordClick}>Create an Alert</Link>
             </div>
           </FeatureFlag>
           <GetResources

@@ -17,7 +17,7 @@ import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {useLoadTimeReporting} from 'src/cloud/utils/reporting'
+import {event, useLoadTimeReporting} from 'src/cloud/utils/reporting'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
@@ -27,6 +27,10 @@ import 'src/shared/components/cta.scss'
 
 const DataExplorerPage: FC = () => {
   useLoadTimeReporting('DataExplorerPage load start')
+
+  const recordClick = () => {
+    event('Data Explorer Page - Clicked Notebooks CTA')
+  }
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>
@@ -54,7 +58,7 @@ const DataExplorerPage: FC = () => {
             <div className="header-cta">
               <Icon glyph={IconFont.BookPencil} />
               Now you can use Notebooks to explore and take action on your data
-              <Link to="/notebook/from/default">Create a Notebook</Link>
+              <Link to="/notebook/from/default" onClick={recordClick}>Create a Notebook</Link>
             </div>
           </div>
         </FeatureFlag>

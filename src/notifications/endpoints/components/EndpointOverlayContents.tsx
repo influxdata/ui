@@ -23,6 +23,9 @@ import {useEndpointReducer} from './EndpointOverlayProvider'
 // Types
 import {NotificationEndpointType, NotificationEndpoint} from 'src/types'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface Props {
   onSave: (endpoint: NotificationEndpoint) => void
   onCancel: () => void
@@ -41,6 +44,7 @@ const EndpointOverlayContents: FC<Props> = ({
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const {name, value} = e.target
+    event("Alert Panel (Notebooks) - Updated Endpoint")
     dispatch({
       type: 'UPDATE_ENDPOINT',
       endpoint: {...endpoint, [name]: value},

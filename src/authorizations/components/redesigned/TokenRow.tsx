@@ -3,6 +3,7 @@ import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {capitalize} from 'lodash'
 
 // Actions
 import {
@@ -53,7 +54,7 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
-
+    console.log("from token row : ", auth)
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -72,7 +73,7 @@ class TokensRow extends PureComponent<Props> {
             onUpdate={this.handleUpdateName}
             onClick={this.handleClickDescription}
             name={description}
-            noNameString={DEFAULT_TOKEN_DESCRIPTION}
+            noNameString={this.noNameToken()}
             testID={`token-name ${auth.description}`}
           />
           <ResourceCard.Meta>
@@ -106,6 +107,22 @@ class TokensRow extends PureComponent<Props> {
         </FlexBox>
       </Context>
     )
+  }
+
+  private noNameToken = () => {
+    const { permissions } = this.props.auth
+    let tokenDescription = ""
+
+    permissions.forEach((perm) => {
+      if(perm.resource.name) {
+        tokenDescription += ` ${capitalize(perm.action)} ${perm.resource.type} ${perm.resource.name}`
+
+      } else {
+        tokenDescription += ` ${capitalize(perm.action)} ${perm.resource.type}`
+      }
+    })
+
+    return tokenDescription
   }
 
   private handleDelete = () => {

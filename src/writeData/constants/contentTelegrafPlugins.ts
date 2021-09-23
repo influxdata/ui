@@ -186,6 +186,8 @@ import teamspeakMarkdown from 'src/writeData/components/telegrafPlugins/teamspea
 import tempMarkdown from 'src/writeData/components/telegrafPlugins/temp.md'
 import tengineMarkdown from 'src/writeData/components/telegrafPlugins/tengine.md'
 import tomcatMarkdown from 'src/writeData/components/telegrafPlugins/tomcat.md'
+import trigMarkdown from 'src/writeData/components/telegrafPlugins/trig.md'
+import twemproxyMarkdown from 'src/writeData/components/telegrafPlugins/twemproxy.md'
 import udp_listenerMarkdown from 'src/writeData/components/telegrafPlugins/udp_listener.md'
 import unboundMarkdown from 'src/writeData/components/telegrafPlugins/unbound.md'
 import uwsgiMarkdown from 'src/writeData/components/telegrafPlugins/uwsgi.md'
@@ -385,6 +387,7 @@ import teamspeakLogo from 'src/writeData/graphics/teamspeak.svg'
 import tempLogo from 'src/writeData/graphics/temp.svg'
 import tengineLogo from 'src/writeData/graphics/tengine.svg'
 import tomcatLogo from 'src/writeData/graphics/tomcat.svg'
+import twemproxyLogo from 'src/writeData/graphics/twemproxy.svg'
 import udp_listenerLogo from 'src/writeData/graphics/udp_listener.svg'
 import unboundLogo from 'src/writeData/graphics/unbound.svg'
 import uwsgiLogo from 'src/writeData/graphics/uwsgi.svg'
@@ -1530,6 +1533,18 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
     name: 'Tomcat',
     markdown: tomcatMarkdown,
     image: tomcatLogo,
+  },
+  {
+    id: 'trig',
+    name: 'Trig',
+    markdown: trigMarkdown,
+    image: memLogo,
+  },
+  {
+    id: 'twemproxy',
+    name: 'Twemproxy',
+    markdown: twemproxyMarkdown,
+    image: twemproxyLogo,
   },
   {
     id: 'udp_listener',

@@ -115,10 +115,10 @@ class TokensRow extends PureComponent<Props> {
 
     permissions.forEach((perm) => {
       if(perm.resource.name) {
-        tokenDescription += ` ${capitalize(perm.action)} ${perm.resource.type} ${perm.resource.name}`
+        tokenDescription += ` ${capitalize(perm.action)} ${perm.resource.type} ${perm.resource.name} / `
 
       } else {
-        tokenDescription += ` ${capitalize(perm.action)} ${perm.resource.type}`
+        tokenDescription += ` ${capitalize(perm.action)} ${perm.resource.type} / `
       }
     })
 

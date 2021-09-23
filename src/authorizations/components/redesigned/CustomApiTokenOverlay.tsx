@@ -73,7 +73,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   useEffect(() => {
     const perms = {}
-    props.allResources.map(resource => {
+    props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
       } else if (resource === 'buckets') {
@@ -110,7 +110,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     const newPermValue = newPerm[name][permission]
 
     if (newPerm[name].sublevelPermissions) {
-      Object.keys(newPerm[name].sublevelPermissions).map(key => {
+      Object.keys(newPerm[name].sublevelPermissions).forEach(key => {
         newPerm[name].sublevelPermissions[key].permissions[
           permission
         ] = !newPermValue

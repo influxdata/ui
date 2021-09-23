@@ -13,6 +13,7 @@ import {Secret} from 'src/types'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   secret: Secret
@@ -23,6 +24,7 @@ const SecretCard: FC<Props> = ({secret}) => {
   const orgId = useSelector(getOrg)?.id
 
   const editSecret = () => {
+    event('Edit Secret Modal Opened')
     history.push(`/orgs/${orgId}/settings/secrets/${secret.id}/edit`)
   }
 

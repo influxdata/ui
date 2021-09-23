@@ -47,6 +47,11 @@ interface OwnProps {
   testID?: string
   className?: string
   globalQueryContext?: GlobalQueryContextType
+  isSubmitButtonDisabled?: boolean
+  submitQueryStatus?: RemoteDataState
+  onHandleSubmit?: any
+  onHandleNotify?: any
+  cancelQueries?: any
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -66,10 +71,35 @@ class SubmitQueryButton extends PureComponent<Props> {
 
   private timer
 
+  private getQueryStatus(props) {
+    return props.submitQueryStatus ?? props.queryStatus
+  }
+
+  private getIsSubmitButtonDisabled() {
+    return this.props.isSubmitButtonDisabled ?? this.props.submitButtonDisabled
+  }
+
+  private getOnSubmit() {
+    return (
+      this.props.onHandleSubmit ??
+      (isFlagEnabled('GlobalQueryContext')
+        ? this.globalQueryContextSubmit
+        : this.props.onSubmit)
+    )
+  }
+
+  private getNotifier() {
+    return this.props.onHandleNotify ?? this.props.onNotify
+  }
+
+  private getCanceller() {
+    return this.props.cancelQueries ?? this.props.cancelAllRunningQueries
+  }
+
   public componentDidUpdate(prevProps) {
     if (
-      this.props.queryStatus !== prevProps.queryStatus &&
-      this.props.queryStatus === RemoteDataState.Loading
+      this.getQueryStatus(this.props) !== this.getQueryStatus(prevProps) &&
+      this.getQueryStatus(this.props) === RemoteDataState.Loading
     ) {
       this.timer = setTimeout(() => {
         this.setState({timer: true})
@@ -77,8 +107,8 @@ class SubmitQueryButton extends PureComponent<Props> {
       }, DELAYTIME)
     }
     if (
-      this.props.queryStatus !== prevProps.queryStatus &&
-      prevProps.queryStatus === RemoteDataState.Loading
+      this.getQueryStatus(this.props) !== this.getQueryStatus(prevProps) &&
+      this.getQueryStatus(prevProps) === RemoteDataState.Loading
     ) {
       if (this.timer) {
         clearTimeout(this.timer)
@@ -94,12 +124,16 @@ class SubmitQueryButton extends PureComponent<Props> {
     clearTimeout(this.timer)
     delete this.timer
 
-    this.props.cancelAllRunningQueries()
+    const canceller = this.getCanceller()
+    canceller()
   }
 
   public render() {
-    const {color, text, queryStatus, icon, testID, className} = this.props
-    if (queryStatus === RemoteDataState.Loading && this.state.timer) {
+    const {color, text, icon, testID, className} = this.props
+    if (
+      this.getQueryStatus(this.props) === RemoteDataState.Loading &&
+      this.state.timer
+    ) {
       return (
         <Button
           text="Cancel"
@@ -129,13 +163,11 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   private get buttonStatus(): ComponentStatus {
-    const {queryStatus, submitButtonDisabled} = this.props
-
-    if (submitButtonDisabled) {
+    if (this.getIsSubmitButtonDisabled()) {
       return ComponentStatus.Disabled
     }
 
-    if (queryStatus === RemoteDataState.Loading) {
+    if (this.getQueryStatus(this.props) === RemoteDataState.Loading) {
       return ComponentStatus.Loading
     }
 
@@ -145,12 +177,14 @@ class SubmitQueryButton extends PureComponent<Props> {
   private handleClick = (): void => {
     event('SubmitQueryButton click')
 
-    if (isFlagEnabled('GlobalQueryContext')) {
-      this.globalQueryContextSubmit()
-      return
-    }
+    // if (isFlagEnabled('GlobalQueryContext')) {
+    //   console.log('hshs')
+    //   this.globalQueryContextSubmit()
+    //   return
+    // }
 
-    this.props.onSubmit()
+    const onSubmit = this.getOnSubmit()
+    onSubmit()
   }
 
   private globalQueryContextSubmit = async (): Promise<void> => {
@@ -176,6 +210,7 @@ class SubmitQueryButton extends PureComponent<Props> {
         return acc
       }, {}),
     }
+
     const promises = queries.map(({text}) => {
       return this.props.globalQueryContext?.runGlobalBasic(text, override)
         .promise
@@ -205,10 +240,13 @@ class SubmitQueryButton extends PureComponent<Props> {
   }
 
   private handleCancelClick = (): void => {
-    if (this.props.onNotify) {
-      this.props.onNotify(queryCancelRequest())
+    const notifier = this.getNotifier()
+    if (notifier) {
+      notifier(queryCancelRequest())
     }
-    this.props.cancelAllRunningQueries()
+
+    const canceller = this.getCanceller()
+    canceller()
   }
 }
 

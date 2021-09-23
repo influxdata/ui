@@ -10,7 +10,7 @@ import {
   ButtonGroup,
 } from '@influxdata/clockface'
 
-import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
+import SubmitQueryButton from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/shared/contexts/query'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
@@ -24,11 +24,13 @@ import 'src/flows/components/header/Submit.scss'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {GlobalQueryContext} from 'src/shared/contexts/global'
 
 const fakeNotify = notify
 
 export const Submit: FC = () => {
   const {cancel} = useContext(QueryContext)
+  const globalQueryContext = useContext(GlobalQueryContext)
   const {runMode, setRunMode} = useContext(RunModeContext)
   const {generateMap, queryAll, status} = useContext(FlowQueryContext)
 
@@ -49,12 +51,12 @@ export const Submit: FC = () => {
           text={runMode}
           className="flows--submit-button"
           icon={IconFont.Play}
-          submitButtonDisabled={hasQueries === false}
-          queryStatus={status}
-          onSubmit={handleSubmit}
-          onNotify={fakeNotify}
-          queryID=""
-          cancelAllRunningQueries={cancel}
+          isSubmitButtonDisabled={hasQueries === false}
+          submitQueryStatus={status}
+          onHandleSubmit={handleSubmit}
+          onHandleNotify={fakeNotify}
+          cancelQueries={cancel}
+          globalQueryContext={globalQueryContext}
         />
         {status !== RemoteDataState.Loading && (
           <SquareButton

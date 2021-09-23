@@ -259,7 +259,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
 
     if (isFlagEnabled('GlobalQueryContext')) {
-      return runGlobalQuery(text, override)
+      return runGlobalQuery(text, _override)
     }
 
     return queryAPI(text, _override)
@@ -280,7 +280,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
 
     if (isFlagEnabled('GlobalQueryContext')) {
-      return runGlobalBasic(text, override)
+      return runGlobalBasic(text, _override)
     }
 
     return basicAPI(text, _override)

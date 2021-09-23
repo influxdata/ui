@@ -244,6 +244,8 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     stateCallback({...responses})
 
     setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log(`clearing resultset for ${queryId}`)
       delete responses[queryId]
       stateCallback({...responses})
     }, DEFAULT_TTL)

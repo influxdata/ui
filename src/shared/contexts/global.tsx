@@ -122,12 +122,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     queryId: string,
     response: RunQueryResult
   ): void => {
-    cancelPending(queryId)
-    setBasicResponses({...basicResponses, [queryId]: response})
-    setTimeout(() => {
-      delete basicResponses[queryId]
-      setBasicResponses(basicResponses)
-    }, DEFAULT_TTL)
+    updateResponses(queryId, response, basicResponses, setBasicResponses)
   }
 
   const getQuery = (text: string): Query => {
@@ -150,6 +145,8 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     override: QueryScope,
     prebuilt?: boolean
   ): CancelBox<RunQueryResult> => {
+    // eslint-disable-next-line no-console
+    console.log('Running Global Basic')
     let text = rawQuery
     if (!prebuilt) {
       text = buildQueryText(rawQuery, override)
@@ -171,6 +168,7 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     setPending({...pending, [queryObj.id]: result.cancel})
 
     result.promise.then(res => {
+      // console.log({id: queryObj.id, res})
       updateBasicResponses(queryObj.id, res)
 
       return res
@@ -189,6 +187,8 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     rawQuery: string,
     override: QueryScope
   ): Promise<FluxResult> => {
+    // eslint-disable-next-line no-console
+    console.log('Running Global Query')
     const text = buildQueryText(rawQuery, override)
     const queryObj = getQuery(text)
     const response = queryResponses[queryObj.id]
@@ -230,12 +230,27 @@ const GlobalQueryProvider: FC<Props> = ({children}) => {
     setPending({...pending})
   }
 
-  const updateQueryResponses = (queryId: string, response: FluxResult) => {
-    setQueryResponses({...queryResponses, [queryId]: response})
+  const updateResponses = (
+    queryId: string,
+    response: RunQueryResult | FluxResult,
+    responses: QueryResponseMap | BasicResponseMap,
+    stateCallback: any
+  ): void => {
+    cancelPending(queryId)
+    // NOTE: Mutating directly so that the state gets updated immediately
+    // instead of waiting for useState to update the state
+
+    responses[queryId] = response
+    stateCallback({...responses})
+
     setTimeout(() => {
-      delete queryResponses[queryId]
-      setQueryResponses(queryResponses)
+      delete responses[queryId]
+      stateCallback({...responses})
     }, DEFAULT_TTL)
+  }
+
+  const updateQueryResponses = (queryId: string, response: FluxResult) => {
+    updateResponses(queryId, response, queryResponses, setQueryResponses)
   }
 
   const isCached = (query: string, override: QueryMap, basicOnly = false) => {

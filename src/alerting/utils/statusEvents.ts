@@ -11,12 +11,8 @@ import {CancelBox, StatusRow, File} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 import {Row} from 'src/types'
 
-export const runStatusesQuery = (
-  orgID: string,
-  checkID: string,
-  extern: File
-): CancelBox<StatusRow[][]> => {
-  const query = `
+export const getStatusesQuery = (checkID: string): string => {
+  return `
 from(bucket: "${MONITORING_BUCKET}")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
   |> filter(fn: (r) => r._measurement == "statuses" and r._field == "_message")
@@ -31,6 +27,14 @@ from(bucket: "${MONITORING_BUCKET}")
                       "_check_name": "checkName",
                       "_level": "level"})
 `
+}
+
+export const runStatusesQuery = (
+  orgID: string,
+  checkID: string,
+  extern: File
+): CancelBox<StatusRow[][]> => {
+  const query = getStatusesQuery(checkID)
 
   event('runQuery', {context: 'checkStatuses'})
   return processStatusesResponse(runQuery(orgID, query, extern)) as CancelBox<

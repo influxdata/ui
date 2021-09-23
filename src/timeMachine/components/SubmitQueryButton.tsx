@@ -31,10 +31,14 @@ import {getAllVariables} from 'src/variables/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {AppState, RemoteDataState} from 'src/types'
+import {AppState, RemoteDataState, StatusRow} from 'src/types'
 import {RunQuerySuccessResult} from 'src/shared/apis/query'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {GlobalQueryContextType} from 'src/shared/contexts/global'
+import {
+  getStatusesQuery,
+  processStatusesResponse,
+} from 'src/alerting/utils/statusEvents'
 
 interface OwnProps {
   color?: ComponentColor
@@ -151,6 +155,8 @@ class SubmitQueryButton extends PureComponent<Props> {
 
   private globalQueryContextSubmit = async (): Promise<void> => {
     await this.props.saveDraftQueries()
+
+    const startTime = window.performance.now()
     this.props.setQueryResults(RemoteDataState.Loading, [], null)
 
     const queries = this.props.queries.filter(({text}) => {
@@ -163,19 +169,36 @@ class SubmitQueryButton extends PureComponent<Props> {
       return
     }
 
+    const override = {
+      orgID: this.props.orgID,
+      vars: this.props.allVars.reduce((acc, cur) => {
+        acc[cur.id] = cur
+        return acc
+      }, {}),
+    }
     const promises = queries.map(({text}) => {
-      return this.props.globalQueryContext?.runGlobalBasic(text, {
-        orgID: this.props.orgID,
-        vars: this.props.allVars.reduce((acc, cur) => {
-          acc[cur.id] = cur
-          return acc
-        }, {}),
-      }).promise
+      return this.props.globalQueryContext?.runGlobalBasic(text, override)
+        .promise
     })
+    const statusesPromise = processStatusesResponse(
+      this.props.globalQueryContext?.runGlobalBasic(
+        getStatusesQuery(this.props.checkID),
+        override
+      )
+    ).promise
 
-    Promise.all(promises).then(results => {
+    Promise.all(promises).then(async results => {
+      const statuses = (await statusesPromise) as StatusRow[][]
       const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
-      this.props.setQueryResults(RemoteDataState.Done, files, 0, null, [])
+      const duration = window.performance.now() - startTime
+
+      this.props.setQueryResults(
+        RemoteDataState.Done,
+        files,
+        duration,
+        null,
+        statuses
+      )
     })
 
     return
@@ -199,6 +222,7 @@ const mstp = (state: AppState) => {
   const submitButtonDisabled = activeQueryText === ''
   const allVars = getAllVariables(state)
   const orgID = getOrg(state).id
+  const checkID = state.alertBuilder.id
 
   const queryID = generateHashedQueryID(activeQueryText, allVars, orgID)
 
@@ -210,6 +234,7 @@ const mstp = (state: AppState) => {
     queries,
     allVars,
     activeQueryText,
+    checkID,
   }
 }
 

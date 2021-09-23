@@ -14,7 +14,7 @@ describe('Variables', () => {
     )
   })
 
-  it('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {
+  it.only('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {
     // Navigate away from and back to variables index using the nav bar
     cy.clickNavBarItem('nav-item-dashboards')
     cy.clickNavBarItem('nav-item-settings')
@@ -135,8 +135,8 @@ describe('Variables', () => {
       .contains('LittleVariable')
 
     // Rename the variable
-    cy.getByTestID('context-menu')
-      .first()
+    cy.getByTestID('context-menu-variable')
+      .last()
       .click({force: true})
 
     cy.getByTestID('context-rename-variable').click({force: true})

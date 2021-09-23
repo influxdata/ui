@@ -1,6 +1,6 @@
 import {Organization} from '../../src/types'
 
-describe('Secrets', () => {
+describe('Secrets ', () => {
   beforeEach(() => {
     cy.flush().then(() => {
       return cy.signin().then(() => {

@@ -16,10 +16,10 @@ import BucketSelector from 'src/flows/pipes/QueryBuilder/BucketSelector'
 import CardList from 'src/flows/pipes/QueryBuilder/CardList'
 
 const QueryBuilder: FC<PipeProp> = ({Context}) => {
-  const {data} = useContext(PipeContext)
+  const {id, data} = useContext(PipeContext)
 
   return (
-    <BucketProvider panel={data.id}>
+    <BucketProvider panel={id}>
       <QueryBuilderProvider>
         <Context resizes>
           <div className="query-builder" data-testid="query-builder">

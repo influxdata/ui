@@ -105,7 +105,7 @@ export const FlowProvider: FC = ({children}) => {
   const updateOther = useCallback(
     (flow: Partial<Flow>) => {
       if (isFlagEnabled('ephemeral') && !currentFlow.id) {
-        for (let ni in flow) {
+        for (const ni in flow) {
           currentFlow[ni] = flow[ni]
         }
 

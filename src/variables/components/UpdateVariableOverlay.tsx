@@ -147,7 +147,7 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
                     ? ComponentStatus.Default
                     : ComponentStatus.Disabled
                 }
-                onClick={(e) => {
+                onClick={e => {
                   this.handleSubmit(e)
                   onClose()
                 }}

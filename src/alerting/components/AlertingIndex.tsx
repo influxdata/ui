@@ -72,7 +72,9 @@ const AlertingIndex: FunctionComponent = () => {
               <Icon glyph={IconFont.BookPencil} />
               Now you can use Notebooks to explore your data while building an
               alert
-              <Link to="/notebook/from/notification" onClick={recordClick}>Create an Alert</Link>
+              <Link to="/notebook/from/notification" onClick={recordClick}>
+                Create an Alert
+              </Link>
             </div>
           </FeatureFlag>
           <GetResources

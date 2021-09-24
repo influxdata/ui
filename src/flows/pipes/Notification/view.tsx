@@ -450,7 +450,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
   ])
 
   const handleTestEndpoint = async () => {
-    event("Alert Panel (Notebooks) - Test Alert Clicked")
+    event('Alert Panel (Notebooks) - Test Alert Clicked')
     const queryText = `
 import "strings"
 import "regexp"

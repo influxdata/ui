@@ -81,7 +81,9 @@ export default class TasksHeader extends PureComponent<Props> {
               <Icon glyph={IconFont.BookPencil} />
               Now you can use Notebooks to explore your data while building a
               task
-              <Link to="/notebook/from/task" onClick={recordClick}>Create a Task</Link>
+              <Link to="/notebook/from/task" onClick={recordClick}>
+                Create a Task
+              </Link>
             </div>
           </div>
         </FeatureFlag>

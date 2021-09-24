@@ -44,7 +44,7 @@ const EndpointOverlayContents: FC<Props> = ({
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const {name, value} = e.target
-    event("Alert Panel (Notebooks) - Updated Endpoint")
+    event('Alert Panel (Notebooks) - Updated Endpoint')
     dispatch({
       type: 'UPDATE_ENDPOINT',
       endpoint: {...endpoint, [name]: value},

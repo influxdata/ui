@@ -280,8 +280,11 @@ const Threshold: FC<Props> = ({readOnly}) => {
     })
   }
 
-  const updateValue = (changeEvent: ChangeEvent<HTMLInputElement>, index: number) => {
-    event("Alert Panel (Notebooks) - Threshold Value Entered")
+  const updateValue = (
+    changeEvent: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    event('Alert Panel (Notebooks) - Threshold Value Entered')
     const threshold = thresholds.find((_, i) => index === i)
 
     if (threshold) {
@@ -292,7 +295,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
   }
 
   const handleAddThreshold = () => {
-    event("Alert Panel (Notebooks) - New Threshold Added")
+    event('Alert Panel (Notebooks) - New Threshold Added')
     update({
       thresholds: [
         ...thresholds,

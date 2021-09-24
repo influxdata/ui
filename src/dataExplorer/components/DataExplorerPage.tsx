@@ -58,7 +58,9 @@ const DataExplorerPage: FC = () => {
             <div className="header-cta">
               <Icon glyph={IconFont.BookPencil} />
               Now you can use Notebooks to explore and take action on your data
-              <Link to="/notebook/from/default" onClick={recordClick}>Create a Notebook</Link>
+              <Link to="/notebook/from/default" onClick={recordClick}>
+                Create a Notebook
+              </Link>
             </div>
           </div>
         </FeatureFlag>

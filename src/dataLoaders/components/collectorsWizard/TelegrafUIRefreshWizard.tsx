@@ -7,16 +7,16 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {Overlay} from '@influxdata/clockface'
+import PageSpinner from 'src/perf/components/PageSpinner'
 import {PluginCreateConfigurationFooter} from 'src/writeData/components/PluginCreateConfigurationFooter'
 
-const spinner = <div />
 const TelegrafUIRefreshStepSwitcher = Loadable({
   loader: () =>
     import(
       'src/dataLoaders/components/collectorsWizard/TelegrafUIRefreshStepSwitcher'
     ),
   loading() {
-    return spinner
+    return <PageSpinner />
   },
 })
 
@@ -49,11 +49,15 @@ type Props = ReduxProps & RouteComponentProps<{orgID: string}>
 
 @ErrorHandling
 class TelegrafUIRefreshWizard extends PureComponent<Props> {
-  public state = {pluginConfig: '', isValidConfiguration: false}
+  public state = {
+    pluginConfig: '',
+    isValidConfiguration: false,
+    isVisible: true,
+  }
 
   public componentDidMount() {
     const {bucket, buckets} = this.props
-    if (!bucket && buckets && buckets.length) {
+    if (!bucket && Array.isArray(buckets) && buckets.length) {
       const {orgID, name, id} = buckets[0]
       this.props.onSetBucketInfo(orgID, name, id)
     }
@@ -69,7 +73,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
     }
 
     return (
-      <Overlay visible={true}>
+      <Overlay visible={this.state.isVisible}>
         <Overlay.Container maxWidth={1200}>
           <Overlay.Header
             title="Create a Telegraf Configuration"
@@ -89,6 +93,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
     const {onClearDataLoaders, onClearSteps} = this.props
     onClearDataLoaders()
     onClearSteps()
+    this.setState({isVisible: false})
     history.push(`/orgs/${org.id}/load-data/telegrafs`)
   }
 

@@ -84,6 +84,7 @@ export interface Resource<T> {
 }
 
 export interface FlowState {
+  id?: string
   name: string
   range: TimeRange
   refresh: AutoRefresh
@@ -93,6 +94,7 @@ export interface FlowState {
 }
 
 export interface Flow {
+  id?: string
   name: string
   range: TimeRange
   refresh: AutoRefresh

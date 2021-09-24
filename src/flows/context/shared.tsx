@@ -30,7 +30,6 @@ export const FlowProvider: FC = ({children}) => {
     <PageSpinner loading={loading}>
       <FlowContext.Provider
         value={{
-          id: '',
           name: DEFAULT_PROJECT_NAME,
           flow,
           add: (_, __) => '',
@@ -38,6 +37,7 @@ export const FlowProvider: FC = ({children}) => {
           updateData: _ => {},
           updateMeta: _ => {},
           updateOther: _ => {},
+          populate: _ => {},
         }}
       >
         {children}

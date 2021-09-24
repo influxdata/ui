@@ -398,6 +398,10 @@ $cf-radius-lg: $cf-radius + 4px;
   line-height: 1em;
 }
 
+.flow-header--saving {
+  margin-left: 12px;
+}
+
 .flow-header--buttons {
   display: inline-flex;
   flex: 0 0 auto;

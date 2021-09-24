@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent, useState} from 'react'
+import React, {PureComponent} from 'react'
 import {Link} from 'react-router-dom'
 
 // Components
@@ -44,6 +44,10 @@ interface Props {
     sortDirection: Sort,
     sortType: SortTypes
   ) => void
+}
+
+interface State {
+  dismissFlowsCTA: boolean
 }
 
 export default class TasksHeader extends PureComponent<Props, State> {

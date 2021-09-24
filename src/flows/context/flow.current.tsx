@@ -35,8 +35,8 @@ export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
 
-  // NOTE this is a pretty aweful mecahnism, as it duplicates the source of
-  // thruth for the definition of the current flow, but i can't see a good
+  // NOTE this is a pretty awful mechanism, as it duplicates the source of
+  // truth for the definition of the current flow, but i can't see a good
   // way around it. We need to ensure that we're still updating the values
   // and references to the flows object directly to get around the async
   // update issues.

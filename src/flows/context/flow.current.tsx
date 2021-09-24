@@ -48,7 +48,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
-      if (isFlagEnabled('ephemeral') && !currentFlow.id) {
+      if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         currentFlow.data.byID[id] = {
           ...(currentFlow.data.byID[id] || {}),
           ...data,
@@ -74,7 +74,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateMeta = useCallback(
     (id: string, meta: Partial<PipeMeta>) => {
-      if (isFlagEnabled('ephemeral') && !currentFlow.id) {
+      if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         currentFlow.meta.byID[id] = {
           title: '',
           visible: true,
@@ -104,7 +104,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateOther = useCallback(
     (flow: Partial<Flow>) => {
-      if (isFlagEnabled('ephemeral') && !currentFlow.id) {
+      if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         for (const ni in flow) {
           currentFlow[ni] = flow[ni]
         }
@@ -134,7 +134,7 @@ export const FlowProvider: FC = ({children}) => {
     delete initial.title
     initial.id = id
 
-    if (isFlagEnabled('ephemeral') && !currentFlow.id) {
+    if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
       currentFlow.data.byID[id] = initial
       currentFlow.meta.byID[id] = {
         title,
@@ -172,7 +172,7 @@ export const FlowProvider: FC = ({children}) => {
   }
 
   const removePipe = (id: string) => {
-    if (isFlagEnabled('ephemeral') && !currentFlow.id) {
+    if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
       currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
         _id => _id !== id
       )

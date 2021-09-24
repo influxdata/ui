@@ -51,7 +51,7 @@ const Template: FC = () => {
 
     const data = hydrate(TEMPLATES[params[0]].init.apply(this, params.slice(1)))
 
-    if (isFlagEnabled('ephemeral')) {
+    if (isFlagEnabled('ephemeralNotebook')) {
       populate(data)
     } else {
       add(data).then(id => {
@@ -69,7 +69,7 @@ const Template: FC = () => {
 }
 
 const FromTemplatePage: FC = () => {
-  if (isFlagEnabled('ephemeral')) {
+  if (isFlagEnabled('ephemeralNotebook')) {
     return (
       <AppWrapper>
         <Notifications />

@@ -26,7 +26,7 @@ const SaveState: FC = () => {
     })
   }
 
-  if (!isFlagEnabled('ephemeral')) {
+  if (!isFlagEnabled('ephemeralNotebook')) {
     return null
   }
 

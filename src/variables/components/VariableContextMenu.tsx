@@ -27,7 +27,7 @@ interface Props {
 
 export default class VariableContextMenu extends PureComponent<Props> {
   public render() {
-    const {variable, onExport, onRename, onDelete} = this.props
+    const {variable} = this.props
 
     const settingsRef: RefObject<HTMLButtonElement> = createRef()
     return (
@@ -38,9 +38,7 @@ export default class VariableContextMenu extends PureComponent<Props> {
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
           confirmationLabel="Yes, Delete this Variable"
-          onConfirm={() => {
-            onDelete(variable)
-          }}
+          onConfirm={this.deleteVariable}
           confirmationButtonText="Confirm"
           testID={`context-delete-variable ${variable.name}`}
         />
@@ -55,29 +53,38 @@ export default class VariableContextMenu extends PureComponent<Props> {
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
           style={{minWidth: '112px'}}
-          contents={() => (
-            <List>
-              <List.Item
-                onClick={onExport}
-                size={ComponentSize.Small}
-                style={{fontWeight: 500}}
-                testID="context-export-variable"
-              >
-                Export
-              </List.Item>
-              <List.Item
-                onClick={onRename}
-                size={ComponentSize.Small}
-                style={{fontWeight: 500}}
-                testID="context-rename-variable"
-              >
-                Rename
-              </List.Item>
-            </List>
-          )}
+          contents={this.getPopoverMenuItems}
           triggerRef={settingsRef}
         />
       </FlexBox>
     )
+  }
+
+  private getPopoverMenuItems = () => {
+    const {onExport, onRename} = this.props
+    return (
+      <List>
+        <List.Item
+          onClick={onExport}
+          size={ComponentSize.Small}
+          style={{fontWeight: 500}}
+          testID="context-export-variable"
+        >
+          Export
+        </List.Item>
+        <List.Item
+          onClick={onRename}
+          size={ComponentSize.Small}
+          style={{fontWeight: 500}}
+          testID="context-rename-variable"
+        >
+          Rename
+        </List.Item>
+      </List>
+    )
+  }
+  private deleteVariable = () => {
+    const {onDelete, variable} = this.props
+    onDelete(variable)
   }
 }

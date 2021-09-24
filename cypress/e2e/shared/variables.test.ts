@@ -76,8 +76,7 @@ describe('Variables', () => {
             force: true,
           })
       })
-
-      cy.get('form')
+      cy.getByTestID('variable-update-submit--button')
         .contains('Submit')
         .click()
     })
@@ -100,7 +99,7 @@ describe('Variables', () => {
       cy.getByTestID('map-variable-dropdown--button').click()
       cy.contains(lastMapItem).click()
 
-      cy.get('form')
+      cy.getByTestID('variable-update-submit--button')
         .contains('Submit')
         .click()
     })

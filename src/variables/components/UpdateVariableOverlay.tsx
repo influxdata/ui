@@ -151,6 +151,7 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
                   this.handleSubmit(e)
                   onClose()
                 }}
+                testID="variable-update-submit--button"
               />
             </Overlay.Footer>
           </Overlay.Container>

@@ -28,8 +28,6 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const flow = flows[id]
   const {orgID} = useParams<{orgID: string}>()
 
-  console.log({flow})
-
   const history = useHistory()
   const dispatch = useDispatch()
 

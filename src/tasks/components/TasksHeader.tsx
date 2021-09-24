@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, useState} from 'react'
 import {Link} from 'react-router-dom'
 
 // Components
@@ -46,7 +46,18 @@ interface Props {
   ) => void
 }
 
-export default class TasksHeader extends PureComponent<Props> {
+export default class TasksHeader extends PureComponent<Props, State> {
+  constructor(props) {
+    super(props)
+    this.state = {
+      dismissFlowsCTA: false,
+    }
+  }
+
+  private hideFlowsCTA = () => {
+    this.setState({dismissFlowsCTA: true})
+  }
+
   public render() {
     const {
       onCreateTask,
@@ -71,16 +82,24 @@ export default class TasksHeader extends PureComponent<Props> {
           <Page.Title title="Tasks" />
           <RateLimitAlert />
         </Page.Header>
-        <FeatureFlag name="flowsCTA">
-          <div className="header-cta--tasks">
-            <div className="header-cta">
-              <Icon glyph={IconFont.BookPencil} />
-              Now you can use Notebooks to explore your data while building a
-              task
-              <Link to="/notebook/from/task">Create a Task</Link>
+        {!this.state.dismissFlowsCTA && (
+          <FeatureFlag name="flowsCTA">
+            <div className="header-cta--tasks">
+              <div className="header-cta">
+                <Icon glyph={IconFont.BookPencil} />
+                Now you can use Notebooks to explore your data while building a
+                task
+                <Link to="/notebook/from/task">Create a Task</Link>
+                <span
+                  className="header-cta--close-icon"
+                  onClick={this.hideFlowsCTA}
+                >
+                  <Icon glyph={IconFont.Remove} />
+                </span>
+              </div>
             </div>
-          </div>
-        </FeatureFlag>
+          </FeatureFlag>
+        )}
         <Page.ControlBar fullWidth={false}>
           <Page.ControlBarLeft>
             <SearchWidget

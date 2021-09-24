@@ -31,8 +31,13 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  const handleClick = () => {
-    history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`)
+  const handleClick = event => {
+    const url = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
+    if (event.metaKey) {
+      window.open(url, '_blank', 'noopener')
+    } else {
+      history.push(url)
+    }
   }
 
   const contextMenu = (

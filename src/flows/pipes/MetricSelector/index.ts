@@ -1,4 +1,5 @@
 import View from './view'
+import ReadOnly from './readOnly'
 import './style.scss'
 import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
@@ -8,6 +9,7 @@ export default register => {
     family: 'inputs',
     priority: 1,
     component: View,
+    readOnlyComponent: ReadOnly,
     button: 'Metric Selector',
     initial: {
       field: '',

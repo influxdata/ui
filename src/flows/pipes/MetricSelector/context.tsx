@@ -237,7 +237,7 @@ export const SchemaProvider: FC = React.memo(({children}) => {
 
     setLoading(RemoteDataState.Loading)
 
-    const {scope} = getPanelQueries(data.id)
+    const scope = getPanelQueries(data.id)?.scope ?? {}
 
     const text = `from(bucket: "${data.bucket.name}")
 |> range(${range})

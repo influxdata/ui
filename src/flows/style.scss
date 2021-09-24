@@ -58,6 +58,21 @@ $cf-radius-lg: $cf-radius + 4px;
   }
 }
 
+.flow-panel__readonly {
+  &:after {
+    display: none;
+  }
+
+  .flow-panel--title {
+    padding-top: 8px;
+  }
+
+  .flow-panel--body,
+  .flow-panel--results {
+    padding-left: 8px;
+  }
+}
+
 .flow-panel--header,
 .flow-panel--body,
 .flow-panel--results {
@@ -352,6 +367,39 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 .flow-panel--body .view-options {
   padding: $cf-marg-c;
+}
+
+.share-token--option {
+  h1 {
+    font-weight: $cf-font-weight--medium;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  h3 {
+    font-size: 12px;
+    margin: 2px 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.share-token--steps {
+  width: 220px;
+  margin: 0 12px 0 0;
+  font-size: 14px;
+  line-height: 1em;
+}
+
+.share-token--link {
+  margin: 0 12px 0 0;
+  font-size: 14px;
+  line-height: 1em;
+}
+
+.flow-header--saving {
+  margin-left: 12px;
 }
 
 .flow-header--buttons {

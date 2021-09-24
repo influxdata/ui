@@ -212,3 +212,60 @@ export const formatPermissionsObj = permissions => {
   })
   return newPerms
 }
+
+export const formatApiPermissions = (permissions, orgID) => {
+  const apiPerms = []
+  Object.keys(permissions).forEach(key => {
+    if (permissions[key].read) {
+      apiPerms.push({
+        action: 'read',
+        resource: {
+          orgID: orgID,
+          type: key,
+        },
+      })
+    }
+    if (permissions[key].write) {
+      apiPerms.push({
+        action: 'write',
+        resource: {
+          orgID: orgID,
+          type: key,
+        },
+      })
+    }
+    if (permissions[key].sublevelPermissions) {
+      Object.keys(permissions[key].sublevelPermissions).forEach(id => {
+        if (
+          permissions[key].sublevelPermissions[id].permissions.read &&
+          !permissions[key].read
+        ) {
+          apiPerms.push({
+            action: 'read',
+            resource: {
+              orgID: permissions[key].sublevelPermissions[id].orgID,
+              type: key,
+              id: id,
+              name: permissions[key].sublevelPermissions[id].name,
+            },
+          })
+        }
+        if (
+          permissions[key].sublevelPermissions[id].permissions.write &&
+          !permissions[key].write
+        ) {
+          apiPerms.push({
+            action: 'write',
+            resource: {
+              orgID: permissions[key].sublevelPermissions[id].orgID,
+              type: key,
+              id: id,
+              name: permissions[key].sublevelPermissions[id].name,
+            },
+          })
+        }
+      })
+    }
+  })
+  return apiPerms
+}

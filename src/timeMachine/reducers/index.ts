@@ -694,7 +694,10 @@ export const timeMachineReducer = (
     }
 
     case 'SET_BACKGROUND_THRESHOLD_COLORING': {
-      const viewColors = state.view.properties.colors as Color[]
+      let viewColors = []
+      if ('colors' in state.view.properties) {
+        viewColors = state.view.properties.colors as Color[]
+      }
 
       const colors = viewColors.map(color => {
         if (color.type !== 'scale') {
@@ -711,7 +714,10 @@ export const timeMachineReducer = (
     }
 
     case 'SET_TEXT_THRESHOLD_COLORING': {
-      const viewColors = state.view.properties.colors as Color[]
+      let viewColors = []
+      if ('colors' in state.view.properties) {
+        viewColors = state.view.properties.colors as Color[]
+      }
 
       const colors = viewColors.map(color => {
         if (color.type !== 'scale') {

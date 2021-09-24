@@ -1,9 +1,13 @@
 import Slack from 'src/flows/pipes/Notification/Slack'
+import SlackReadOnly from 'src/flows/pipes/Notification/SlackReadOnly'
 import PagerDuty from 'src/flows/pipes/Notification/PagerDuty'
+import PagerDutyReadOnly from 'src/flows/pipes/Notification/PagerDutyReadOnly'
 import HTTP from 'src/flows/pipes/Notification/HTTP'
+import HTTPReadOnly from 'src/flows/pipes/Notification/HTTPReadOnly'
 
 const TEST_NOTIFICATION = 'This is a test notification'
 
+// TODO decouple these from a giant object, into self registration
 export const DEFAULT_ENDPOINTS = {
   slack: {
     name: 'Slack',
@@ -13,6 +17,7 @@ export const DEFAULT_ENDPOINTS = {
       color: '#34BB55',
     },
     view: Slack,
+    readOnly: SlackReadOnly,
     generateImports: () => ['slack'].map(i => `import "${i}"`).join('\n'),
     generateTestImports: () =>
       ['array', 'slack'].map(i => `import "${i}"`).join('\n'),
@@ -49,6 +54,7 @@ export const DEFAULT_ENDPOINTS = {
       url: 'https://www.example.com/endpoint',
     },
     view: HTTP,
+    readOnly: HTTPReadOnly,
     generateImports: () =>
       ['http', 'json'].map(i => `import "${i}"`).join('\n'),
     generateTestImports: () =>
@@ -124,6 +130,7 @@ export const DEFAULT_ENDPOINTS = {
       level: 'warning',
     },
     view: PagerDuty,
+    readOnly: PagerDutyReadOnly,
     generateTestImports: () =>
       ['array', 'pagerduty', 'influxdata/influxdb/secrets']
         .map(i => `import "${i}"`)

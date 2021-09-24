@@ -40,17 +40,17 @@ const PluginCreateConfigurationStepSwitcher = Loadable({
 
 export interface PluginCreateConfigurationStepProps {
   currentStepIndex: number
+  isValidConfiguration: boolean
   notify: typeof notifyAction
   onDecrementCurrentStepIndex: () => void
   onExit: () => void
   onIncrementCurrentStepIndex: () => void
   onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
-  substepIndex: number
   pluginConfig: string
-  setPluginConfig: (config: string) => void
-  isValidConfiguration: boolean
-  setIsValidConfiguration: (isValid: boolean) => void
   pluginConfigName: string
+  setIsValidConfiguration: (isValid: boolean) => void
+  setPluginConfig: (config: string) => void
+  substepIndex: number
 }
 
 interface PluginCreateConfigurationWizardProps {

@@ -28,6 +28,8 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const flow = flows[id]
   const {orgID} = useParams<{orgID: string}>()
 
+  console.log({flow})
+
   const history = useHistory()
   const dispatch = useDispatch()
 
@@ -56,6 +58,20 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
     }
   }
 
+  const meta = []
+
+  if (!!flow?.createdBy) {
+    meta.push(<>Created by {flow.createdBy}</>)
+  }
+
+  if (flow?.createdAt) {
+    meta.push(<>Created at {flow.createdAt}</>)
+  }
+
+  if (flow?.updatedAt) {
+    meta.push(<>Last Modified at {flow.updatedAt}</>)
+  }
+
   return (
     <ResourceCard
       key={`flow-card--${id}`}
@@ -68,10 +84,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
         onUpdate={handleRenameNotebook}
         buttonTestID="flow-card--name-button"
       />
-      <ResourceCard.Meta>
-        {flow?.createdAt ? <>Created at {flow.createdAt}</> : null}
-        {flow?.updatedAt ? <>Last Modified at {flow.updatedAt}</> : null}
-      </ResourceCard.Meta>
+      <ResourceCard.Meta>{meta}</ResourceCard.Meta>
     </ResourceCard>
   )
 }

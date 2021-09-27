@@ -159,6 +159,7 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
     const {searchTerm} = this.state
 
     return WRITE_DATA_TELEGRAF_PLUGINS.sort((plugin1, plugin2) => {
+      // sort the plugins array alphabetically
       if (plugin1.name.toLowerCase() < plugin2.name.toLowerCase()) {
         return -1
       }

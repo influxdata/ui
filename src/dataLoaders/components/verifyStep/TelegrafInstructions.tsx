@@ -8,6 +8,9 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import TokenCodeSnippet from 'src/shared/components/TokenCodeSnippet'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 export interface Props {
   token: string
   configID: string
@@ -15,6 +18,10 @@ export interface Props {
 
 @ErrorHandling
 class TelegrafInstructions extends PureComponent<Props> {
+  public componentDidMount() {
+    event('load_data.telegraf_instructions.viewed')
+  }
+
   public render() {
     const {token, configID} = this.props
     const configScript = `telegraf --config ${
@@ -48,9 +55,17 @@ class TelegrafInstructions extends PureComponent<Props> {
           Finally, you can run the following command to start the Telegraf agent
           running on your machine.
         </p>
-        <CodeSnippet text={configScript} label="CLI" />
+        <CodeSnippet
+          text={configScript}
+          label="CLI"
+          onCopyEventHandler={this.onCopyEventHandler}
+        />
       </div>
     )
+  }
+
+  private onCopyEventHandler = () => {
+    event('load_data.telegraf_instructions.config_copied')
   }
 
   private get origin(): string {

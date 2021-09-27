@@ -72,10 +72,18 @@ interface Props {
   label?: string
   testID?: string
   onCopy?: () => void
+  onCopyEventHandler?: () => void
   type?: string
 }
 
-const CodeSnippet: FC<Props> = ({text, label, testID, type, onCopy}) => {
+const CodeSnippet: FC<Props> = ({
+  text,
+  label,
+  testID,
+  type,
+  onCopy,
+  onCopyEventHandler,
+}) => {
   const {transform} = useContext(Context)
   const dispatch = useDispatch()
   const _text = transform(text)
@@ -91,6 +99,7 @@ const CodeSnippet: FC<Props> = ({text, label, testID, type, onCopy}) => {
         )
       )
     )
+    onCopyEventHandler()
   }
 
   return (

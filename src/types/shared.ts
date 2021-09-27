@@ -34,3 +34,10 @@ export interface FluxToolbarFunction {
 }
 
 export type ErrorMessageComponent = ComponentType<{error: Error}>
+
+export interface Pageable {
+  currentPage: number
+  rowsPerPage: number
+  totalPages: number
+  paginate: (newPage: number) => void
+}

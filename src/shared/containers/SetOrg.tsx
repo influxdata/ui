@@ -18,6 +18,7 @@ import {
   DashboardContainer,
   FlowPage,
   BucketsIndex,
+  BucketsIndexPaginated,
   TokensIndex,
   RedesignedTokensIndex,
   TelegrafsPage,
@@ -207,10 +208,17 @@ const SetOrg: FC = () => {
               component={TokensIndex}
             />
           )}
-          <Route
-            path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
-            component={BucketsIndex}
-          />
+          {isFlagEnabled('fetchAllBuckets') ? (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
+              component={BucketsIndexPaginated}
+            />
+          ) : (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
+              component={BucketsIndex}
+            />
+          )}
 
           {/* Settings */}
           <Route

@@ -149,10 +149,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     setPermissions(newPerm)
   }
 
-  const generateToken = () => {
-    const {onCreateAuthorization, orgID, showOverlay} = props
+  const generateDescription = (apiPermissions) => {
 
-    const apiPermissions = formatApiPermissions(permissions, orgID);
     let generatedDescription = ""
     
     if(apiPermissions.length > 2) {
@@ -160,8 +158,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       apiPermissions.forEach((perm) => {
          actions.push(perm.action)
       })
-      const isRead = actions.some(action => action === 'read') // true
-      const isWrite = actions.some(action => action === 'write') // true
+      const isRead = actions.some(action => action === 'read') 
+      const isWrite = actions.some(action => action === 'write') 
 
       if(isRead && isWrite) {
         generatedDescription += `Read Multiple / Write Multiple`
@@ -184,11 +182,18 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         }
       })
     }
-    
 
+    return generatedDescription
+  }
+
+  const generateToken = () => {
+    const {onCreateAuthorization, orgID, showOverlay} = props
+
+    const apiPermissions = formatApiPermissions(permissions, orgID)
+    
     const token: Authorization = {
       orgID: orgID,
-      description: description ? description : generatedDescription,
+      description: description ? description : generateDescription(apiPermissions),
       permissions: apiPermissions,
     }
 

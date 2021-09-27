@@ -160,14 +160,14 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
 
     return WRITE_DATA_TELEGRAF_PLUGINS.sort((plugin1, plugin2) => {
       // sort the plugins array alphabetically
-      if (plugin1.name.toLowerCase() < plugin2.name.toLowerCase()) {
+      if (plugin1.name.toLocaleLowerCase() < plugin2.name.toLocaleLowerCase()) {
         return -1
       }
-      if (plugin1.name.toLowerCase() > plugin2.name.toLowerCase()) {
+      if (plugin1.name.toLocaleLowerCase() > plugin2.name.toLocaleLowerCase()) {
         return 1
       }
       return 0
-    }).filter(b => b.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    }).filter(plugin => plugin.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
   }
 
   private isCardChecked(bundle): boolean {

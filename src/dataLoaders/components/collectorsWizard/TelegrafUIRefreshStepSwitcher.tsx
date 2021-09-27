@@ -2,18 +2,18 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import SelectCollectorsStep from 'src/dataLoaders/components/collectorsWizard/select/SelectCollectorsStep'
-import PluginConfigSwitcher from 'src/dataLoaders/components/collectorsWizard/configure/PluginConfigSwitcher'
+import SelectCollectorsStep2 from 'src/dataLoaders/components/collectorsWizard/select/SelectCollectorsStep2'
+import {PluginCreateConfigurationCustomize} from 'src/writeData/components/PluginCreateConfigurationCustomize'
 
 import VerifyCollectorsStep from 'src/dataLoaders/components/collectorsWizard/verify/VerifyCollectorsStep'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Types
 import {CollectorsStep} from 'src/types/dataLoaders'
-import {CollectorsStepProps} from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
+import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
 
 interface Props {
-  stepProps: CollectorsStepProps
+  stepProps: PluginCreateConfigurationStepProps
 }
 
 @ErrorHandling
@@ -23,9 +23,9 @@ class StepSwitcher extends PureComponent<Props> {
 
     switch (stepProps.currentStepIndex) {
       case CollectorsStep.Select:
-        return <SelectCollectorsStep {...stepProps} />
+        return <SelectCollectorsStep2 {...stepProps} />
       case CollectorsStep.Configure:
-        return <PluginConfigSwitcher />
+        return <PluginCreateConfigurationCustomize {...stepProps} />
       case CollectorsStep.Verify:
         return <VerifyCollectorsStep {...stepProps} />
       default:

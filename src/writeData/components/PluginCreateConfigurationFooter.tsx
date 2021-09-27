@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {useParams} from 'react-router'
 
 // Components
 import {
@@ -23,10 +22,6 @@ import {PluginCreateConfigurationStepProps} from 'src/writeData/components/Plugi
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 import {getAll} from 'src/resources/selectors'
 
-type ParamsType = {
-  [param: string]: string
-}
-
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
@@ -40,22 +35,22 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
     onSaveTelegrafConfig,
     onUpdateTelegraf,
     substepIndex,
+    setIsValidConfiguration,
     telegrafConfig,
     pluginConfig,
+    pluginConfigName,
   } = props
 
   const shouldTelegrafUpdate = useMemo(() => {
     return Boolean(telegrafConfig)
   }, [telegrafConfig])
 
-  const {contentID} = useParams<ParamsType>()
-
   useEffect(() => {
     if (telegrafConfig) {
       const {config} = telegrafConfig
       const position =
         typeof config === 'string'
-          ? config.indexOf(`[[inputs.${contentID}]]`)
+          ? config.indexOf(`[[inputs.${pluginConfigName}]]`)
           : -1
       const updatedConfig =
         position >= 0
@@ -75,6 +70,11 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
     onIncrementCurrentStepIndex()
   }
 
+  const handleContinueFromStepZero = () => {
+    setIsValidConfiguration(false)
+    onIncrementCurrentStepIndex()
+  }
+
   if (substepIndex === 1 || currentStepIndex === 2) {
     return null
   }
@@ -91,7 +91,12 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
         />
         <Button
           color={ComponentColor.Primary}
-          onClick={onIncrementCurrentStepIndex}
+          onClick={handleContinueFromStepZero}
+          status={
+            isValidConfiguration
+              ? ComponentStatus.Valid
+              : ComponentStatus.Disabled
+          }
           tabIndex={0}
           testID="plugin-create-configuration-continue-configuring"
           text="Continue Configuring"

@@ -293,6 +293,7 @@ export class LSPServer {
 
   private parseDiagnostics(response: NotificationMessage): Diagnostic[] {
     if (
+      response &&
       response.method === 'textDocument/publishDiagnostics' &&
       response.params
     ) {

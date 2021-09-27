@@ -96,11 +96,6 @@ class TokenRow extends PureComponent<Props> {
     return auth.status === 'active'
   }
 
-  // private noNameTokens = () => {
-  // const {auth} = this.props
-
-  // }
-
   private changeToggle = () => {
     const {auth, onUpdate} = this.props
     if (auth.status === 'active') {

@@ -41,13 +41,13 @@
 }
 
 .customizable-field--label {
-  color: $g14-chromium;
-  background-color: $g5-pepper;
+  color: $cf-grey-75;
+  background-color: $cf-grey-25;
 }
 
 .customizable-field--label__hidden {
-  background-color: $g4-onyx;
-  color: $g7-graphite;
+  background-color: $cf-grey-15;
+  color: $cf-grey-35;
   font-style: italic;
 }
 
@@ -96,7 +96,7 @@
 .customizable-field--drag .hamburger {
   width: 10px;
   height: 2px;
-  background-color: $g11-sidewalk;
+  background-color: $cf-grey-65;
   transition: background-color 0.25s ease;
   border-radius: 1px;
 
@@ -107,7 +107,7 @@
     content: '';
     width: 100%;
     height: 100%;
-    background-color: $g11-sidewalk;
+    background-color: $cf-grey-65;
     transition: background-color 0.25s ease;
     border-radius: 1px;
     left: 0;
@@ -124,6 +124,6 @@
   &,
   &:before,
   &:after {
-    background-color: $g7-graphite;
+    background-color: $cf-grey-35;
   }
 }

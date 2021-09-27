@@ -18,7 +18,7 @@
   left: $ix-marg-b;
   width: $ix-marg-c + $ix-marg-b;
   height: $ix-marg-c + $ix-marg-b;
-  background-color: $g2-kevlar;
+  background-color: $cf-grey-5;
   color: $c-honeydew;
   border-radius: 50%;
   font-size: 12px;
@@ -31,7 +31,7 @@
 .getting-started--card {
   width: 100%;
   height: 100%;
-  border: $ix-border solid $g4-onyx;
+  border: $ix-border solid $cf-grey-15;
 
   .cf-panel--body,
   .cf-panel--footer {
@@ -58,7 +58,7 @@
     border-color: $c-sapphire;
 
     .getting-started--card-digit {
-      background-color: rgba($g0-obsidian, 0.5);
+      background-color: rgba($cf-grey-5, 0.5);
     }
   }
 }

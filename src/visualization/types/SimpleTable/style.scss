@@ -10,15 +10,15 @@
   user-select: text;
 
   .cf-dapper-scrollbars {
-    border-bottom: $cf-border solid $g2-kevlar;
+    border-bottom: $cf-border solid $cf-grey-5;
   }
 
   .cf-dapper-scrollbars--track-x {
-    background-color: rgba($g3-castle, 0.5) !important;
+    background-color: rgba($cf-grey-15, 0.5) !important;
   }
 
   .cf-table {
-    border: 2px solid $g6-smoke;
+    border: 2px solid $cf-grey-25;
     margin-bottom: 10px;
     width: 100%;
   }
@@ -33,7 +33,7 @@
     display: block;
     font-size: 10px;
     text-transform: uppercase;
-    color: $g9-mountain;
+    color: $cf-grey-45;
     font-weight: 500;
 
     &:first-of-type {
@@ -57,8 +57,8 @@
 
 .visualization--simple-table--paging-label {
   display: inline-block;
-  margin-right: $cf-marg-b;
-  color: $g13-mist;
+  margin-right: $cf-space-2xs;
+  color: $cf-grey-75;
   font-weight: $cf-font-weight--medium;
   width: 189px;
 }

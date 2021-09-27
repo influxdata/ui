@@ -7,8 +7,8 @@
 
 .flux-function-docs--heading {
   font-weight: $cf-font-weight--bold;
-  margin-top: $cf-marg-b;
-  margin-bottom: $cf-marg-b;
+  margin-top: $cf-space-2xs;
+  margin-bottom: $cf-space-2xs;
   display: inline-block;
   width: 100%;
 
@@ -18,10 +18,10 @@
 }
 
 .flux-function-docs--snippet {
-  background-color: $g1-raven;
+  background-color: $cf-grey-5;
   border-radius: $cf-radius;
-  margin: $cf-marg-a 0;
-  padding: $cf-marg-b;
+  margin: $cf-space-3xs 0;
+  padding: $cf-space-2xs;
   font-family: $cf-code-font;
 }
 
@@ -29,7 +29,7 @@
   span:first-child {
     font-weight: $cf-font-weight--bold;
     color: $c-pool;
-    margin-right: $cf-marg-a;
+    margin-right: $cf-space-3xs;
   }
 
   span:nth-child(2) {
@@ -39,6 +39,6 @@
   }
 
   div {
-    margin: $cf-marg-a 0 $cf-marg-c 0;
+    margin: $cf-space-3xs 0 $cf-space-s 0;
   }
 }

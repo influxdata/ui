@@ -5,8 +5,8 @@
 */
 
 .cm-s-influxql {
-  background-color: $g1-raven;
-  color: $g11-sidewalk;
+  background-color: $cf-grey-5;
+  color: $cf-grey-65;
 
   .cm-clause {
     color: $c-pool;
@@ -15,10 +15,10 @@
     color: $c-honeydew;
   }
   .cm-string {
-    color: $g15-platinum;
+    color: $cf-grey-85;
   }
   .cm-comment {
-    color: $g8-storm;
+    color: $cf-grey-45;
   }
   .cm-number {
     color: $c-pineapple;
@@ -36,7 +36,7 @@
     color: $c-pineapple;
   }
   .cm-null {
-    color: $g8-storm;
+    color: $cf-grey-45;
     font-style: italic;
   }
 }

@@ -40,7 +40,7 @@ $event-table--field-margin: $ix-marg-b;
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   margin: 0 $event-table--field-margin;
 }
 
@@ -59,7 +59,7 @@ $event-table--field-margin: $ix-marg-b;
 
 .event-row,
 .event-loading-row {
-  background: $g3-castle;
+  background: $cf-grey-15;
 }
 
 .event-footer-row,
@@ -70,7 +70,7 @@ $event-table--field-margin: $ix-marg-b;
 }
 
 .event-footer-row {
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 }
 
 .event-error-row {
@@ -97,7 +97,7 @@ $event-table--field-margin: $ix-marg-b;
 }
 
 .event-loading-row--placeholder {
-  background-color: $g6-smoke;
+  background-color: $cf-grey-25;
   border-radius: $radius-small;
   animation-name: glow;
   animation-duration: 1s;

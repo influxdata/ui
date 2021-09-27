@@ -3,7 +3,7 @@
 .flow-panel--markdown {
   font-size: 14px;
   line-height: 16px;
-  padding: $cf-marg-b;
+  padding: $cf-space-2xs;
   border-radius: $cf-radius - 1px;
   transition: border-color 0.25s ease;
 }
@@ -17,6 +17,6 @@
 }
 
 .flow-panel--markdown__placeholder.markdown-format {
-  color: $g8-storm;
+  color: $cf-grey-45;
   font-style: italic;
 }

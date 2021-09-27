@@ -42,6 +42,7 @@ type ActiveColumn = 'checks' | 'endpoints' | 'rules'
 
 const AlertingIndex: FunctionComponent = () => {
   const [activeColumn, setActiveColumn] = useState<ActiveColumn>('checks')
+  const [dismissFlowsCTA, setDismissFlowsCTA] = useState(false)
 
   const pageContentsClassName = `alerting-index alerting-index__${activeColumn}`
 
@@ -51,6 +52,10 @@ const AlertingIndex: FunctionComponent = () => {
 
   const recordClick = () => {
     event('Alerts Index Page - Clicked Notebooks CTA')
+  }
+
+  const hideFlowsCTA = () => {
+    setDismissFlowsCTA(true)
   }
 
   return (
@@ -67,16 +72,19 @@ const AlertingIndex: FunctionComponent = () => {
           scrollable={false}
           className={pageContentsClassName}
         >
-          <FeatureFlag name="flowsCTA">
-            <div className="header-cta">
-              <Icon glyph={IconFont.BookPencil} />
-              Now you can use Notebooks to explore your data while building an
-              alert
-              <Link to="/notebook/from/notification" onClick={recordClick}>
-                Create an Alert
-              </Link>
-            </div>
-          </FeatureFlag>
+          {!dismissFlowsCTA && (
+            <FeatureFlag name="flowsCTA">
+              <div className="header-cta">
+                <Icon glyph={IconFont.BookPencil} />
+                Now you can use Notebooks to explore your data while building an
+                alert
+                <Link to="/notebook/from/notification" onClick={recordClick}>Create an Alert</Link>
+                <span className="header-cta--close-icon" onClick={hideFlowsCTA}>
+                  <Icon glyph={IconFont.Remove} />
+                </span>
+              </div>
+            </FeatureFlag>
+          )}
           <GetResources
             resources={[
               ResourceType.Labels,

@@ -12,6 +12,7 @@ import MarkdownModeToggle from './MarkdownModeToggle'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {PipeContext} from 'src/flows/context/pipe'
 import {PipeProp} from 'src/types/flows'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 const MarkdownMonacoEditor = lazy(() =>
   import('src/shared/components/MarkdownMonacoEditor')
@@ -19,10 +20,7 @@ const MarkdownMonacoEditor = lazy(() =>
 
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
-
-  const handlePreviewClick = (): void => {
-    update({mode: 'edit'})
-  }
+  const {flow} = useContext(FlowContext)
 
   const handleChange = (text: string): void => {
     update({text})
@@ -45,10 +43,10 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
     </Suspense>
   )
 
-  if (data.mode === 'preview') {
+  if (flow.readOnly || data.mode === 'preview') {
     const markdownClassname = classnames('flow-panel--markdown markdown-format')
     panelContents = (
-      <div className={markdownClassname} onClick={handlePreviewClick}>
+      <div className={markdownClassname}>
         <MarkdownRenderer text={data.text} />
       </div>
     )

@@ -82,7 +82,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {runMode} = useContext(RunModeContext)
   const {setResult, setStatuses, statuses} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
-  const org = useSelector(getOrg)
+  const org = useSelector(getOrg) ?? {id: ''}
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`

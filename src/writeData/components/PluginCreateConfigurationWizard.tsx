@@ -6,6 +6,7 @@ import {useParams} from 'react-router'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
+import PageSpinner from 'src/perf/components/PageSpinner'
 import {PluginCreateConfigurationFooter} from 'src/writeData/components/PluginCreateConfigurationFooter'
 
 // Types
@@ -27,30 +28,28 @@ import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
-const PREVENT_OVERLAY_FLICKER_STEP = -1
 
-const spinner = <div />
 const PluginCreateConfigurationStepSwitcher = Loadable({
   loader: () =>
     import('src/writeData/components/PluginCreateConfigurationStepSwitcher'),
   loading() {
-    return spinner
+    return <PageSpinner />
   },
 })
 
 export interface PluginCreateConfigurationStepProps {
   currentStepIndex: number
+  isValidConfiguration: boolean
   notify: typeof notifyAction
   onDecrementCurrentStepIndex: () => void
   onExit: () => void
   onIncrementCurrentStepIndex: () => void
   onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
-  substepIndex: number
   pluginConfig: string
-  setPluginConfig: (config: string) => void
-  isValidConfiguration: boolean
-  setIsValidConfiguration: (isValid: boolean) => void
   pluginConfigName: string
+  setIsValidConfiguration: (isValid: boolean) => void
+  setPluginConfig: (config: string) => void
+  substepIndex: number
 }
 
 interface PluginCreateConfigurationWizardProps {
@@ -91,6 +90,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
     false
   )
+  const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const handleDismiss = () => {
     onClearDataLoaders()
@@ -98,7 +98,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     if (substepIndex === 1) {
       onSetSubstepIndex(0, 0)
     } else {
-      onSetCurrentStepIndex(PREVENT_OVERLAY_FLICKER_STEP)
+      setIsVisible(false)
       history.goBack()
     }
   }
@@ -141,7 +141,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   }
 
   return (
-    <Overlay visible={true}>
+    <Overlay visible={isVisible}>
       <Overlay.Container maxWidth={maxWidth}>
         <Overlay.Header title={title} onDismiss={handleDismiss} />
         <Overlay.Body className={overlayBodyClassName}>

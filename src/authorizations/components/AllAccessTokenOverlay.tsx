@@ -108,7 +108,6 @@ class AllAccessTokenOverlay extends PureComponent<Props, State> {
       description: this.state.description,
       permissions: allAccessPermissions(orgID, meID),
     }
-
     onCreateAuthorization(token)
 
     this.handleDismiss()

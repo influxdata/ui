@@ -28,13 +28,13 @@ export const ResultsContext = React.createContext<ResultsContextType>(
 )
 
 export const ResultsProvider: FC = ({children}) => {
-  const {id} = useContext(FlowContext)
+  const {flow} = useContext(FlowContext)
   const [statuses, setStatuses] = useState<Hash<RemoteDataState>>({})
   const [results, setResults] = useState({...EMPTY_STATE})
 
   useEffect(() => {
     setResults({...EMPTY_STATE})
-  }, [id])
+  }, [flow?.id])
 
   const value = {
     results,

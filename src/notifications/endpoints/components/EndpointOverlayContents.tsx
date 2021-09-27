@@ -23,9 +23,6 @@ import {useEndpointReducer} from './EndpointOverlayProvider'
 // Types
 import {NotificationEndpointType, NotificationEndpoint} from 'src/types'
 
-// Utils
-import {event} from 'src/cloud/utils/reporting'
-
 interface Props {
   onSave: (endpoint: NotificationEndpoint) => void
   onCancel: () => void

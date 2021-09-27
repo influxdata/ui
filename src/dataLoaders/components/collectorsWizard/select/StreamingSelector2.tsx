@@ -158,9 +158,15 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
   private get filteredBundles(): TelegrafPlugin[] {
     const {searchTerm} = this.state
 
-    return WRITE_DATA_TELEGRAF_PLUGINS.filter(b =>
-      b.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    return WRITE_DATA_TELEGRAF_PLUGINS.sort((plugin1, plugin2) => {
+      if (plugin1.name.toLowerCase() < plugin2.name.toLowerCase()) {
+        return -1
+      }
+      if (plugin1.name.toLowerCase() > plugin2.name.toLowerCase()) {
+        return 1
+      }
+      return 0
+    }).filter(b => b.name.toLowerCase().includes(searchTerm.toLowerCase()))
   }
 
   private isCardChecked(bundle): boolean {

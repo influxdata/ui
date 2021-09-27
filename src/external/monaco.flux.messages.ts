@@ -176,7 +176,6 @@ export const parseResponse = (response: ServerResponse): LSPResponse => {
       throw new Error('failed to parse LSP response')
     }
   }
-  return undefined
 }
 
 export async function sendMessage(message: LSPMessage, server) {

@@ -24,6 +24,7 @@ import {
   Button,
   ResourceCard,
   IconFont,
+  ButtonShape,
 } from '@influxdata/clockface'
 
 import {Context} from 'src/clockface'
@@ -49,11 +50,13 @@ type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
 
 const formatter = createDateTimeFormatter(UPDATED_AT_TIME_FORMAT)
 class TokensRow extends PureComponent<Props> {
+
+  
   public render() {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
-
+    
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -89,28 +92,38 @@ class TokensRow extends PureComponent<Props> {
     return (
       <Context>
         <FlexBox margin={ComponentSize.Medium}>
-          <Button
+            <Button 
             icon={IconFont.Duplicate}
             color={ComponentColor.Secondary}
             text="Clone"
             onClick={this.handleClone}
             testID="clone-token"
-          />
-          <Button
+            size={ComponentSize.ExtraSmall}
+            />
+      
+          <Context.Menu
             icon={IconFont.Trash}
             color={ComponentColor.Danger}
             text="Delete"
-            onClick={this.handleDelete}
+            shape={ButtonShape.StretchToFit}
             testID="delete-token"
-          />
+          >
+            <Context.Item 
+            label="Confirm"
+            action={this.handleDelete}
+            />
+          </Context.Menu>
+          
         </FlexBox>
       </Context>
     )
   }
 
   private handleDelete = () => {
+    
     const {id, description} = this.props.auth
     this.props.onDelete(id, description)
+
   }
 
   private handleClone = () => {

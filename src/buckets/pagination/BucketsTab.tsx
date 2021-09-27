@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {createRef, PureComponent, RefObject} from 'react'
 import {isEmpty} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
@@ -55,10 +55,15 @@ interface State {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
+const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
+const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
+
 const FilterBuckets = FilterList<Bucket>()
 
 @ErrorHandling
 class BucketsTab extends PureComponent<Props, State> {
+  private paginationRef: RefObject<HTMLDivElement>
+
   constructor(props: Props) {
     super(props)
 
@@ -68,6 +73,8 @@ class BucketsTab extends PureComponent<Props, State> {
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
     }
+
+    this.paginationRef = createRef<HTMLDivElement>()
   }
 
   public componentDidMount() {
@@ -108,6 +115,12 @@ class BucketsTab extends PureComponent<Props, State> {
     return (
       <AutoSizer>
         {({width, height}) => {
+          const heightWithPagination =
+            this.paginationRef?.current?.clientHeight +
+              DEFAULT_TAB_NAVIGATION_HEIGHT ||
+            DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT
+
+          const adjustedHeight = height - heightWithPagination
           return (
             <>
               <TabbedPageHeader
@@ -116,7 +129,7 @@ class BucketsTab extends PureComponent<Props, State> {
                 width={width}
               />
 
-              <Grid style={{height, width}}>
+              <Grid style={{height: adjustedHeight, width}}>
                 <Grid.Row>
                   <Grid.Column
                     widthXS={Columns.Twelve}
@@ -141,11 +154,12 @@ class BucketsTab extends PureComponent<Props, State> {
                           onDeleteBucket={this.handleDeleteBucket}
                           onFilterChange={this.handleFilterUpdate}
                           onGetBucketSchema={this.handleShowBucketSchema}
-                          pageHeight={height}
+                          pageHeight={adjustedHeight}
                           pageWidth={width}
                           sortKey={sortKey}
                           sortDirection={sortDirection}
                           sortType={sortType}
+                          paginationRef={this.paginationRef}
                         />
                       )}
                     </FilterBuckets>

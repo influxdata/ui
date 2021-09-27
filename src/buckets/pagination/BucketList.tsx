@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent, RefObject, createRef} from 'react'
+import React, {PureComponent, RefObject} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import memoizeOne from 'memoize-one'
 
@@ -28,12 +28,11 @@ interface Props {
   onFilterChange: (searchTerm: string) => void
   pageHeight: number
   pageWidth: number
+  paginationRef: RefObject<HTMLDivElement>
   sortKey: string
   sortDirection: Sort
   sortType: SortTypes
 }
-
-const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 
 class BucketList
   extends PureComponent<Props & RouteComponentProps<{orgID: string}>>
@@ -42,23 +41,11 @@ class BucketList
     getSortedResources
   )
 
-  private paginationRef: RefObject<HTMLDivElement>
   public currentPage: number = 1
   public rowsPerPage: number = 10
   public totalPages: number
 
-  constructor(props) {
-    super(props)
-
-    this.paginationRef = createRef<HTMLDivElement>()
-  }
-
   public render() {
-    const heightWithPagination =
-      this.paginationRef?.current?.clientHeight ||
-      DEFAULT_PAGINATION_CONTROL_HEIGHT
-    const height = this.props.pageHeight - heightWithPagination
-
     this.totalPages = Math.ceil(this.props.bucketCount / this.rowsPerPage)
 
     return (
@@ -66,13 +53,17 @@ class BucketList
         <ResourceList>
           <ResourceList.Body
             emptyState={this.props.emptyState}
-            style={{maxHeight: height, minHeight: height, overflow: 'scroll'}}
+            style={{
+              maxHeight: this.props.pageHeight,
+              minHeight: this.props.pageHeight,
+              overflow: 'scroll',
+            }}
           >
             {this.listBuckets}
           </ResourceList.Body>
         </ResourceList>
         <PaginationNav.PaginationNav
-          ref={this.paginationRef}
+          ref={this.props.paginationRef}
           style={{width: this.props.pageWidth}}
           totalPages={this.totalPages}
           currentPage={this.currentPage}

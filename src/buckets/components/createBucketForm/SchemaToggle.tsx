@@ -90,7 +90,7 @@ export const SchemaToggle: FC<SchemaToggleProps> = ({
   )
 
   const readOnly = (
-    <span className="value-text" data-testID="bucket-readonly-schema-label">
+    <span className="value-text" data-testid="bucket-readonly-schema-label">
       : {capitalize(readOnlySchemaType)}
     </span>
   )

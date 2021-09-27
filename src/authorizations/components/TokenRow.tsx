@@ -46,8 +46,6 @@ class TokenRow extends PureComponent<Props> {
     const labelText = this.isTokenEnabled ? 'Active' : 'Inactive'
     const date = new Date(auth.createdAt)
 
-    console.log("auth from tokenRow: ", auth)
-
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -99,7 +97,7 @@ class TokenRow extends PureComponent<Props> {
   }
 
   // private noNameTokens = () => {
-    // const {auth} = this.props
+  // const {auth} = this.props
 
   // }
 

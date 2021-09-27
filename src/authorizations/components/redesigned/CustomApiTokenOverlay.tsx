@@ -43,7 +43,6 @@ import {formatApiPermissions} from 'src/authorizations/utils/permissions'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 import {capitalize} from 'lodash'
 
-
 interface OwnProps {
   onClose: () => void
 }
@@ -149,36 +148,34 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     setPermissions(newPerm)
   }
 
-  const generateDescription = (apiPermissions) => {
+  const generateDescription = apiPermissions => {
+    let generatedDescription = ''
 
-    let generatedDescription = ""
-    
-    if(apiPermissions.length > 2) {
+    if (apiPermissions.length > 2) {
       const actions = []
-      apiPermissions.forEach((perm) => {
-         actions.push(perm.action)
+      apiPermissions.forEach(perm => {
+        actions.push(perm.action)
       })
-      const isRead = actions.some(action => action === 'read') 
-      const isWrite = actions.some(action => action === 'write') 
+      const isRead = actions.some(action => action === 'read')
+      const isWrite = actions.some(action => action === 'write')
 
-      if(isRead && isWrite) {
-        generatedDescription += `Read Multiple / Write Multiple`
-
+      if (isRead && isWrite) {
+        generatedDescription += `Read Multiple Write Multiple`
       } else if (isRead) {
         generatedDescription += `Read Multiple`
-
       } else if (isWrite) {
         generatedDescription += `Write Multiple`
       }
-
     } else {
-      apiPermissions.forEach((perm) => {
-      
-        if(perm.resource.name) {
-          generatedDescription += ` ${capitalize(perm.action)} ${perm.resource.type} ${perm.resource.name} `
-  
+      apiPermissions.forEach(perm => {
+        if (perm.resource.name) {
+          generatedDescription += ` ${capitalize(perm.action)} ${
+            perm.resource.type
+          } ${perm.resource.name} `
         } else {
-          generatedDescription += ` ${capitalize(perm.action)} ${perm.resource.type} `
+          generatedDescription += ` ${capitalize(perm.action)} ${
+            perm.resource.type
+          } `
         }
       })
     }
@@ -190,10 +187,12 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     const {onCreateAuthorization, orgID, showOverlay} = props
 
     const apiPermissions = formatApiPermissions(permissions, orgID)
-    
+
     const token: Authorization = {
       orgID: orgID,
-      description: description ? description : generateDescription(apiPermissions),
+      description: description
+        ? description
+        : generateDescription(apiPermissions),
       permissions: apiPermissions,
     }
 

@@ -30,9 +30,7 @@ import {Context} from 'src/clockface'
 
 // Types
 import {Authorization, AppState} from 'src/types'
-import {
-  UPDATED_AT_TIME_FORMAT,
-} from 'src/dashboards/constants'
+import {UPDATED_AT_TIME_FORMAT} from 'src/dashboards/constants'
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {incrementCloneName} from 'src/utils/naming'

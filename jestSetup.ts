@@ -25,6 +25,29 @@ window.flushAllPromises = async () => {
 fetchMock.enableMocks()
 jest.mock('src/shared/utils/errors')
 
+/*
+  N.B. when using react testing library render()
+  the mocked values in src/external/parser are ignored.
+  So, need to mock here as well
+*/
+jest.mock('src/external/parser', () => ({
+  parse: jest.fn(() => {
+    return {
+      type: 'File',
+      package: {
+        name: {
+          name: 'fake',
+          type: 'Identifier',
+        },
+        type: 'PackageClause',
+      },
+      imports: [],
+      body: [],
+    }
+  }),
+  format_from_js_file: jest.fn(),
+}))
+
 // cleans up state between @testing-library/react tests
 afterEach(() => {
   window.localStorage.clear()

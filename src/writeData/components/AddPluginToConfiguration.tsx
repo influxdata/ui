@@ -71,7 +71,9 @@ export const AddPluginToConfigurationCTA: FC<AddPluginToConfigurationCTAProps> =
                       history.push(
                         `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/new`
                       )
-                      event('load_data.telegraf_plugins.create_new_configuration')
+                      event(
+                        'load_data.telegraf_plugins.create_new_configuration'
+                      )
                     }}
                     selected={false}
                     testID="create-new-configuration-from-plugin--dropdown-item"
@@ -82,7 +84,9 @@ export const AddPluginToConfigurationCTA: FC<AddPluginToConfigurationCTAProps> =
                     key="Add-to-existing-configuration-telegraf-plugin"
                     value="Add to an existing configuration"
                     onClick={() => {
-                      event('load_data.telegraf_plugins.add_to_existing_configuration')
+                      event(
+                        'load_data.telegraf_plugins.add_to_existing_configuration'
+                      )
                     }}
                     selected={false}
                   >

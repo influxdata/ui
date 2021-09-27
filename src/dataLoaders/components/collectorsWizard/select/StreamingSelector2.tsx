@@ -167,7 +167,9 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
         return 1
       }
       return 0
-    }).filter(plugin => plugin.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase()))
+    }).filter(plugin =>
+      plugin.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+    )
   }
 
   private isCardChecked(bundle): boolean {

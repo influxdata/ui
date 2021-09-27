@@ -163,20 +163,20 @@ export const parseResponse = (response: ServerResponse): LSPResponse => {
   const message = response.get_message()
   const error = response.get_error()
 
-  console.log({message})
-  console.log({error})
-
   if (error) {
     throw new Error(error)
   }
 
-  const split = (message || '').split('\r\n')
+  if (message) {
+    const split = (message || '').split('\r\n')
 
-  try {
-    return JSON.parse(split.slice(2).join('\n'))
-  } catch (e) {
-    throw new Error('failed to parse LSP response', e)
+    try {
+      return JSON.parse(split.slice(2).join('\n'))
+    } catch (e) {
+      throw new Error('failed to parse LSP response', e)
+    }
   }
+  return undefined
 }
 
 export async function sendMessage(message: LSPMessage, server) {

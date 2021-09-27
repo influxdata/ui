@@ -173,7 +173,7 @@ export const parseResponse = (response: ServerResponse): LSPResponse => {
     try {
       return JSON.parse(split.slice(2).join('\n'))
     } catch (e) {
-      throw new Error('failed to parse LSP response', e)
+      throw new Error('failed to parse LSP response')
     }
   }
   return undefined

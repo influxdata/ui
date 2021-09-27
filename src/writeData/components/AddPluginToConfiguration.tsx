@@ -17,6 +17,9 @@ import {
 // Styles
 import 'src/writeData/components/AddPluginToConfiguration.scss'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface AddPluginToConfigurationCTAProps {
   contentID: string
   history: {
@@ -68,6 +71,7 @@ export const AddPluginToConfigurationCTA: FC<AddPluginToConfigurationCTAProps> =
                       history.push(
                         `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/new`
                       )
+                      event('load_data.telegraf_plugins.create_new_configuration')
                     }}
                     selected={false}
                     testID="create-new-configuration-from-plugin--dropdown-item"
@@ -77,7 +81,9 @@ export const AddPluginToConfigurationCTA: FC<AddPluginToConfigurationCTAProps> =
                   <Dropdown.Item
                     key="Add-to-existing-configuration-telegraf-plugin"
                     value="Add to an existing configuration"
-                    onClick={() => {}}
+                    onClick={() => {
+                      event('load_data.telegraf_plugins.add_to_existing_configuration')
+                    }}
                     selected={false}
                   >
                     <span>Add to an existing configuration</span>

@@ -106,12 +106,12 @@ class TokensRow extends PureComponent<Props> {
             color={ComponentColor.Danger}
             text="Delete"
             shape={ButtonShape.StretchToFit}
-            testID="delete-token"
             size={ComponentSize.ExtraSmall}
           >
             <Context.Item 
             label="Confirm"
             action={this.handleDelete}
+            testID="delete-token"
             />
           </Context.Menu>
           

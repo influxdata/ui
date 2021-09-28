@@ -25,7 +25,7 @@ const LastRunTaskStatus: FC<PassedProps> = ({lastRunError, lastRunStatus}) => {
   const [highlight, setHighlight] = useState<boolean>(false)
 
   let color = ComponentColor.Success
-  let icon = IconFont.Checkmark
+  let icon = IconFont.Checkmark_New
   let text = 'Task ran successfully!'
 
   if (lastRunStatus === 'failed' || lastRunError !== undefined) {

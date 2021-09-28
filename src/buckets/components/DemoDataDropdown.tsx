@@ -49,7 +49,7 @@ const DemoDataDropdown: FC<Props> = ({
         >
           <div className="demodata-dropdown--item-contents">
             <Icon
-              glyph={IconFont.Checkmark}
+              glyph={IconFont.Checkmark_New}
               className="demodata-dropdown--item-icon"
             />
             {b.name}
@@ -70,7 +70,7 @@ const DemoDataDropdown: FC<Props> = ({
       >
         <div className="demodata-dropdown--item-contents">
           <Icon
-            glyph={IconFont.Checkmark}
+            glyph={IconFont.Checkmark_New}
             className="demodata-dropdown--item-icon"
           />
           {b.name}

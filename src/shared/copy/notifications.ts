@@ -49,7 +49,7 @@ const defaultWarningNotification: NotificationExcludingMessage = {
 const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
-  icon: IconFont.Checkmark,
+  icon: IconFont.Checkmark_New,
   duration: FIVE_SECONDS,
 }
 
@@ -1307,7 +1307,7 @@ export const deleteAnnotationFailed = (error: string): Notification => ({
 
 export const editAnnotationSuccess = (): Notification => ({
   ...defaultSuccessNotification,
-  icon: IconFont.Checkmark,
+  icon: IconFont.Checkmark_New,
   message: 'Annotation updated successfully',
 })
 

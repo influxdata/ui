@@ -240,7 +240,7 @@ const FlowHeader: FC = () => {
               style={{width: '250px', flex: '0 0 250px'}}
             />
             <SquareButton
-              icon={IconFont.Checkmark}
+              icon={IconFont.Checkmark_New}
               onClick={generateLink}
               color={ComponentColor.Success}
               status={linkGenerationStatus}

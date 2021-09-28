@@ -56,7 +56,7 @@ class VEOHeader extends PureComponent<Props> {
             />
             <SquareButton
               className={saveButtonClass}
-              icon={IconFont.Checkmark}
+              icon={IconFont.Checkmark_New}
               color={ComponentColor.Success}
               size={ComponentSize.Small}
               onClick={onSave}

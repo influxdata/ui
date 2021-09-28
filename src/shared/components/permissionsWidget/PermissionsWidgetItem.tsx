@@ -43,7 +43,7 @@ class PermissionsWidgetItem extends Component<Props> {
     if (mode === PermissionsWidgetMode.Write) {
       return (
         <div className="permissions-widget--checkbox">
-          <span className={`icon ${IconFont.Checkmark}`} />
+          <span className={`icon ${IconFont.Checkmark_New}`} />
         </div>
       )
     }
@@ -51,7 +51,7 @@ class PermissionsWidgetItem extends Component<Props> {
     if (selected === PermissionsWidgetSelection.Selected) {
       return (
         <div className="permissions-widget--icon">
-          <span className={`icon ${IconFont.Checkmark}`} />
+          <span className={`icon ${IconFont.Checkmark_New}`} />
         </div>
       )
     }

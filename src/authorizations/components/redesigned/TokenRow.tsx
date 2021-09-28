@@ -24,6 +24,7 @@ import {
   Button,
   ResourceCard,
   IconFont,
+  ButtonShape,
 } from '@influxdata/clockface'
 
 import {Context} from 'src/clockface'
@@ -95,14 +96,22 @@ class TokensRow extends PureComponent<Props> {
             text="Clone"
             onClick={this.handleClone}
             testID="clone-token"
+            size={ComponentSize.ExtraSmall}
           />
-          <Button
+
+          <Context.Menu
             icon={IconFont.Trash}
             color={ComponentColor.Danger}
             text="Delete"
-            onClick={this.handleDelete}
-            testID="delete-token"
-          />
+            shape={ButtonShape.StretchToFit}
+            size={ComponentSize.ExtraSmall}
+          >
+            <Context.Item
+              label="Confirm"
+              action={this.handleDelete}
+              testID="delete-token"
+            />
+          </Context.Menu>
         </FlexBox>
       </Context>
     )

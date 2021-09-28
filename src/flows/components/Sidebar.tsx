@@ -43,7 +43,7 @@ export const SubSideBar: FC = () => {
           thumbStopColor="gray"
           thumbStartColor="gray"
         >
-          {submenu}
+          <div className="flow-sidebar--submenu-wrapper">{submenu}</div>
         </DapperScrollbars>
       </div>
     </div>

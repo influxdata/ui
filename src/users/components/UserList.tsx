@@ -28,7 +28,7 @@ const UserList: FC = () => {
       <Grid.Row>
         <Grid.Column widthMD={Columns.Ten} widthLG={Columns.Six}>
           <Input
-            icon={IconFont.Search}
+            icon={IconFont.Search_New}
             placeholder="Filter members..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}

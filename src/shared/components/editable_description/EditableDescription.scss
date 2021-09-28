@@ -32,7 +32,7 @@ $rename-dash-title-padding: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   @include no-user-select();
-  color: $g13-mist;
+  color: $cf-grey-75;
   transition: color 0.25s ease, background-color 0.25s ease,
     border-color 0.25s ease;
   border: $ix-border solid transparent;
@@ -46,7 +46,7 @@ $rename-dash-title-padding: 5px;
     margin-left: $ix-marg-b;
     opacity: 0;
     transition: opacity 0.25s ease;
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
 
   &:hover .cf-icon {
@@ -54,13 +54,13 @@ $rename-dash-title-padding: 5px;
   }
 
   &.untitled {
-    color: $g9-mountain;
+    color: $cf-grey-45;
     font-style: italic;
   }
 
   &:hover {
     cursor: text;
-    color: $g20-white;
+    color: $cf-white;
   }
 }
 

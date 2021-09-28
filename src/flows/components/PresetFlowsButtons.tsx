@@ -27,7 +27,7 @@ const PresetFlowsButtons: FC = () => {
                 {idx === 0 ? (
                   <Button
                     color={ComponentColor.Primary}
-                    icon={IconFont.Plus}
+                    icon={IconFont.Plus_New}
                     text={p}
                     onClick={() => history.push(PresetMap[p])}
                     className="flows-preset--buttonmode"

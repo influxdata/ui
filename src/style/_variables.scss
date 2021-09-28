@@ -61,14 +61,14 @@ $ix-link-info-hover: $c-comet;
 $ix-link-danger: $c-curacao;
 $ix-link-danger-hover: $c-dreamsicle;
 
-$ix-text-default: $g13-mist;
-$ix-text-light: $g13-mist;
-$ix-text-lighter: $g13-mist;
-$ix-text-lightest: $g15-platinum;
+$ix-text-default: $cf-grey-75;
+$ix-text-light: $cf-grey-75;
+$ix-text-lighter: $cf-grey-75;
+$ix-text-lightest: $cf-grey-85;
 
 $ix-text-font: 'Rubik', Helvetica, Arial, Tahoma, Verdana, sans-serif;
 $ix-text-selection-bg: $c-pool;
-$ix-text-selection-color: $g20-white;
+$ix-text-selection-color: $cf-white;
 $ix-text-scale: 1.19;
 
 $ix-text-tiny: 11px;
@@ -110,8 +110,8 @@ $form-lg-padding: 15px;
 $form-lg-font: 17px;
 
 /* Empty State */
-$empty-state-text: $g9-mountain;
-$empty-state-highlight: $g13-mist;
+$empty-state-text: $cf-grey-45;
+$empty-state-highlight: $cf-grey-75;
 
 /* Event Markers */
 $event-marker-height: 20px;

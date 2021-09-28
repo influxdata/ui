@@ -35,7 +35,7 @@ class FluxToolbarSearch extends PureComponent<Props, State> {
       <div className="flux-toolbar--search">
         <Input
           type={InputType.Text}
-          icon={IconFont.Search}
+          icon={IconFont.Search_New}
           placeholder={`Filter ${this.props.resourceName}...`}
           onChange={this.handleChange}
           value={this.state.searchTerm}

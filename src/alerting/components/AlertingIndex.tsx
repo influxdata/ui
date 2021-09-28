@@ -82,7 +82,7 @@ const AlertingIndex: FunctionComponent = () => {
                   Create an Alert
                 </Link>
                 <span className="header-cta--close-icon" onClick={hideFlowsCTA}>
-                  <Icon glyph={IconFont.Remove} />
+                  <Icon glyph={IconFont.Remove_New} />
                 </span>
               </div>
             </FeatureFlag>

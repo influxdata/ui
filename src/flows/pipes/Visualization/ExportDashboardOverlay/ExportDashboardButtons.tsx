@@ -39,7 +39,7 @@ const ExportConfirmationNotification = (
   return {
     message: `Visualization added to ${dashboardName}`,
     style: NotificationStyle.Success,
-    icon: IconFont.Checkmark,
+    icon: IconFont.Checkmark_New,
     duration: 6666,
   }
 }

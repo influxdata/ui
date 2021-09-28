@@ -29,7 +29,7 @@ const UsageTimeRangeDropdown: FC = () => {
           <Dropdown.Button
             active={active}
             onClick={onClick}
-            icon={IconFont.Clock}
+            icon={IconFont.Clock_New}
             color={ComponentColor.Primary}
             testID="usage-timerange--selected"
           >

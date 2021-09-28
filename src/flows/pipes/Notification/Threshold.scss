@@ -1,7 +1,7 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .threshold-trash-icon--block {
-  margin-left: $cf-marg-b;
+  margin-left: $cf-space-2xs;
   :hover {
     cursor: pointer;
   }

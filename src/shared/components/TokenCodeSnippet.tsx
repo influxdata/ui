@@ -70,7 +70,7 @@ const TokenCodeSnippet: FC<Props> = ({
             }
             text="Generate New API Token"
             titleText="Generate New API Token"
-            icon={IconFont.Refresh}
+            icon={IconFont.Refresh_New}
             color={ComponentColor.Success}
             onClick={handleRefreshClick}
             className="new-token--btn"

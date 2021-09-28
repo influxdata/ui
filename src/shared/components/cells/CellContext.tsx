@@ -97,14 +97,14 @@ const CellContext: FC<Props> = ({
           <CellContextItem
             label="Edit Note"
             onClick={handleEditNote}
-            icon={IconFont.TextBlock}
+            icon={IconFont.Text_New}
             onHide={onHide}
             testID="cell-context--note"
           />
           <CellContextItem
             label="Clone"
             onClick={handleCloneCell}
-            icon={IconFont.Duplicate}
+            icon={IconFont.Duplicate_New}
             onHide={onHide}
             testID="cell-context--clone"
           />
@@ -121,7 +121,7 @@ const CellContext: FC<Props> = ({
                   onDismissOverlay
                 )
               }
-              icon={IconFont.Export}
+              icon={IconFont.Export_New}
               onHide={onHide}
               testID="cell-context--copy"
             />
@@ -129,7 +129,7 @@ const CellContext: FC<Props> = ({
           <CellContextDangerItem
             label="Delete"
             onClick={handleDeleteCell}
-            icon={IconFont.Trash}
+            icon={IconFont.Trash_New}
             onHide={onHide}
             testID="cell-context--delete"
           />
@@ -149,7 +149,7 @@ const CellContext: FC<Props> = ({
         <CellContextItem
           label={editNoteText}
           onClick={handleEditNote}
-          icon={IconFont.TextBlock}
+          icon={IconFont.Text_New}
           onHide={onHide}
           testID="cell-context--note"
         />
@@ -164,7 +164,7 @@ const CellContext: FC<Props> = ({
           <CellContextItem
             label="Download CSV"
             onClick={onCSVDownload}
-            icon={IconFont.Download}
+            icon={IconFont.Download_New}
             onHide={onHide}
             testID="cell-context--download"
           />
@@ -172,7 +172,7 @@ const CellContext: FC<Props> = ({
         <CellContextDangerItem
           label="Delete"
           onClick={handleDeleteCell}
-          icon={IconFont.Trash}
+          icon={IconFont.Trash_New}
           onHide={onHide}
           testID="cell-context--delete"
         />
@@ -180,7 +180,7 @@ const CellContext: FC<Props> = ({
           <CellContextItem
             label="Refresh"
             onClick={onRefresh}
-            icon={IconFont.Refresh}
+            icon={IconFont.Refresh_New}
             onHide={onHide}
             testID="cell-context--refresh"
           />
@@ -207,7 +207,7 @@ const CellContext: FC<Props> = ({
                 onDismissOverlay
               )
             }
-            icon={IconFont.Export}
+            icon={IconFont.Export_New}
             onHide={onHide}
             testID="cell-context--copy"
           />
@@ -232,7 +232,7 @@ const CellContext: FC<Props> = ({
         ref={triggerRef}
         data-testid="cell-context--toggle"
       >
-        <Icon glyph={IconFont.CogThick} />
+        <Icon glyph={IconFont.CogSolid_New} />
       </button>
       <Popover
         appearance={Appearance.Outline}

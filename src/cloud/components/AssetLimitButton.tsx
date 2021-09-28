@@ -28,7 +28,7 @@ const AssetLimitButton: FC<OwnProps & ReduxProps> = ({
   }
   return (
     <Button
-      icon={IconFont.Plus}
+      icon={IconFont.Plus_New}
       text={buttonText || `Create ${resourceName}`}
       color={color}
       titleText={`Click to create ${resourceName}`}

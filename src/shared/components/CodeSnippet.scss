@@ -8,7 +8,7 @@
   overflow: hidden;
   border: $cf-border solid $cf-grey-15;
   background-color: $cf-grey-15;
-  margin-bottom: $cf-marg-b;
+  margin-bottom: $cf-space-2xs;
 }
 
 .code-snippet--scroll {
@@ -29,7 +29,7 @@
   pre {
     display: inline-block;
     white-space: pre-wrap;
-    padding: $cf-marg-b $cf-marg-c;
+    padding: $cf-space-2xs $cf-space-s;
   }
 
   pre,
@@ -40,19 +40,19 @@
 }
 
 .new-token--btn {
-  margin: $cf-marg-a $cf-marg-c;
+  margin: $cf-space-3xs $cf-space-s;
 }
 
 .code-snippet--footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $cf-marg-b $cf-marg-c;
+  padding: $cf-space-2xs $cf-space-s;
   border-top: $cf-border solid $cf-grey-15;
 }
 
 .code-snippet--label {
   font-size: $cf-text-base;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   margin: 0;
 }

@@ -4,14 +4,14 @@
 */
 
 $permissions-widget--header-height: 54px;
-$permissions-widget--border: $g5-pepper;
+$permissions-widget--border: $cf-grey-25;
 $permissions-widget--item-height: 28px;
 
 .permissions-widget {
   width: 100%;
   border: $ix-border solid $permissions-widget--border;
   border-radius: $ix-radius;
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -21,8 +21,8 @@ $permissions-widget--item-height: 28px;
 .permissions-widget--header {
   @include no-user-select();
   flex: 0 0 $permissions-widget--header-height;
-  background-color: $g4-onyx;
-  color: $g13-mist;
+  background-color: $cf-grey-15;
+  color: $cf-grey-75;
   font-weight: 500;
   font-size: 16px;
   line-height: $permissions-widget--header-height;
@@ -60,7 +60,7 @@ $permissions-widget--item-height: 28px;
 .permissions-widget--section-title {
   margin: 0;
   margin-right: $ix-marg-b;
-  color: $g13-mist;
+  color: $cf-grey-75;
   font-weight: 600;
   font-size: 13px;
   line-height: 13px;
@@ -97,16 +97,16 @@ $permissions-widget--item-height: 28px;
 
   .selected & {
     font-weight: 600;
-    color: $g13-mist;
+    color: $cf-grey-75;
   }
 
   .unselected & {
     font-weight: 500;
-    color: $g8-storm;
+    color: $cf-grey-45;
   }
 
   .selectable:hover & {
-    color: $g15-platinum;
+    color: $cf-grey-85;
   }
 }
 
@@ -120,7 +120,7 @@ $permissions-widget--item-height: 28px;
   }
 
   .unselected & {
-    color: $g8-storm;
+    color: $cf-grey-45;
   }
 }
 
@@ -128,8 +128,8 @@ $permissions-widget--item-height: 28px;
   width: 18px;
   height: 18px;
   border-radius: 3px;
-  background-color: $g2-kevlar;
-  border: $ix-border solid $g5-pepper;
+  background-color: $cf-grey-5;
+  border: $ix-border solid $cf-grey-25;
   position: relative;
   margin-right: $ix-marg-b;
   transition: border-color 0.25s ease;
@@ -151,7 +151,7 @@ $permissions-widget--item-height: 28px;
   }
 
   .selectable:hover & {
-    border-color: $g7-graphite;
+    border-color: $cf-grey-35;
   }
 }
 

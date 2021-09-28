@@ -183,7 +183,7 @@ class CommunityTemplatesInstalledListUnconnected extends PureComponent<Props> {
                         stack.id,
                         stack.name
                       )}
-                      icon={IconFont.Trash}
+                      icon={IconFont.Trash_New}
                       color={ComponentColor.Danger}
                       size={ComponentSize.Small}
                       status={ComponentStatus.Default}

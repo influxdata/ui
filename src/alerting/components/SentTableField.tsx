@@ -15,7 +15,7 @@ const SentTableField: FC<Props> = ({row: {sent}}) => {
   return (
     <div className={`sent-table-field sent-table-field--${modifier}`}>
       {sent === 'true' ? (
-        <Icon glyph={IconFont.Checkmark} />
+        <Icon glyph={IconFont.Checkmark_New} />
       ) : (
         <Icon glyph={IconFont.AlertTriangle} />
       )}

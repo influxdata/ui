@@ -13,10 +13,10 @@
 
 .submit-btn--item-name {
   width: 100%;
-  margin-top: $cf-marg-a;
+  margin-top: $cf-space-3xs;
 
   &:only-child {
-    margin-bottom: $cf-marg-a;
+    margin-bottom: $cf-space-3xs;
   }
 }
 
@@ -24,7 +24,7 @@
   margin-top: $cf-border;
   width: 100%;
   opacity: 0.666;
-  margin-bottom: $cf-marg-a;
+  margin-bottom: $cf-space-3xs;
   font-weight: $cf-font-weight--regular;
 }
 

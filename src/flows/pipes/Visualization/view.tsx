@@ -110,7 +110,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         <div className="panel-resizer panel-resizer__visible">
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
-              glyph={IconFont.BarChart}
+              glyph={IconFont.BarChart_New}
               className="panel-resizer--vis-toggle"
             />
           </div>

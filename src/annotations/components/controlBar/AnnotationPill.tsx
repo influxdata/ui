@@ -23,7 +23,7 @@ export const AnnotationPill: FC<Props> = ({id, name, description, color}) => {
         className="annotation-pill--button"
         data-testid={`annotation-pill ${id}`}
       >
-        <Icon glyph={IconFont.Remove} />
+        <Icon glyph={IconFont.Remove_New} />
       </button>
     </div>
   )

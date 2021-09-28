@@ -61,7 +61,7 @@ const EndpointsColumn: FC<Props> = ({history, match, endpoints, tabIndex}) => {
       text="Create"
       onClick={handleOpenOverlay}
       testID="create-endpoint"
-      icon={IconFont.Plus}
+      icon={IconFont.Plus_New}
     />
   )
 

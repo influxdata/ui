@@ -59,7 +59,7 @@ const SearchBar: FC<Props> = ({
     <div className="status-search-bar">
       <ClickOutside onClickOutside={handleClickOutside}>
         <Input
-          icon={IconFont.Search}
+          icon={IconFont.Search_New}
           placeholder={placeholder}
           style={{width: '100%'}}
           value={state.searchInput}
@@ -74,7 +74,7 @@ const SearchBar: FC<Props> = ({
           className="status-search-bar--clear"
           onClick={() => search(state, dispatch, loadRows, '', true)}
         >
-          <Icon glyph={IconFont.Remove} />
+          <Icon glyph={IconFont.Remove_New} />
         </div>
       )}
       {isFocused && (

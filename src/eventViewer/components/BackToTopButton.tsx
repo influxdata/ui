@@ -17,7 +17,7 @@ const BackToTopButton: FC<EventViewerChildProps> = ({
     return (
       <Button
         className="back-to-top-button"
-        icon={IconFont.Refresh}
+        icon={IconFont.Refresh_New}
         text="Refresh"
         onClick={() => refresh(state, dispatch, loadRows)}
       />

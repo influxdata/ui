@@ -6,11 +6,11 @@
 $explore-graphic-anim-time: 0.5s;
 
 .explore-graphic--bg {
-  fill: $g2-kevlar;
+  fill: $cf-grey-5;
 }
 
 .explore-graphic--hex {
-  fill: $g4-onyx;
+  fill: $cf-grey-15;
   transition: fill 0.25s ease;
 }
 
@@ -60,10 +60,10 @@ $explore-graphic-anim-time: 0.5s;
 /* Hover State */
 .getting-started--image__animating {
   .explore-graphic--hex {
-    fill: $g5-pepper;
+    fill: $cf-grey-25;
   }
   .explore-graphic--text {
-    stroke: $g13-mist;
+    stroke: $cf-grey-75;
   }
   .hex-a,
   .diagnostic-a {

@@ -97,7 +97,7 @@ class TokensRow extends PureComponent<Props> {
             testID="clone-token"
           />
           <Button
-            icon={IconFont.Trash}
+            icon={IconFont.Trash_New}
             color={ComponentColor.Danger}
             text="Delete"
             onClick={this.handleDelete}

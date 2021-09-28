@@ -34,7 +34,7 @@
 
 .import-template-overlay--heading {
   margin-top: 0;
-  border-bottom: $ix-border solid $g5-pepper;
+  border-bottom: $ix-border solid $cf-grey-25;
   padding-bottom: $ix-marg-b;
 }
 
@@ -46,11 +46,11 @@
 .import-template-overlay--included.missing,
 .import-template-overlay--description.missing {
   font-style: italic;
-  color: $g9-mountain;
+  color: $cf-grey-45;
 }
 
 .import-template-overlay--empty {
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   border-radius: $ix-radius;
   align-content: center;
   align-items: center;
@@ -61,10 +61,10 @@
   user-select: none;
   border-radius: $ix-radius;
   padding: $ix-marg-b;
-  background-color: $g1-raven;
+  background-color: $cf-grey-5;
   margin-bottom: $ix-border;
-  border: $ix-border solid $g1-raven;
-  color: $g11-sidewalk;
+  border: $ix-border solid $cf-grey-5;
+  color: $cf-grey-65;
   display: flex;
   flex-wrap: none;
   align-items: center;
@@ -72,16 +72,16 @@
     border-color 0.25s ease;
 
   &:hover {
-    border-color: $g5-pepper;
-    background-color: $g5-pepper;
-    color: $g18-cloud;
+    border-color: $cf-grey-25;
+    background-color: $cf-grey-25;
+    color: $cf-grey-95;
     cursor: pointer;
   }
 
   &.active {
     border-color: $c-rainforest;
-    color: $g18-cloud;
-    background-color: $g5-pepper;
+    color: $cf-grey-95;
+    background-color: $cf-grey-25;
   }
 }
 

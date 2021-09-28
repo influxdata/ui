@@ -28,7 +28,7 @@ $date-picker-z: 1000;
   padding: 8px;
   align-items: center;
   border-radius: 0 $radius $radius 0;
-  background: $g5-pepper;
+  background: $cf-grey-25;
 }
 .custom-time--dates {
   display: flex;
@@ -54,7 +54,7 @@ $date-picker-z: 1000;
   top: 30px;
   left: 0;
   opacity: 0.5;
-  background-color: $g5-pepper;
+  background-color: $cf-grey-25;
   z-index: 2;
 }
 .custom-time--now {
@@ -65,26 +65,26 @@ $date-picker-z: 1000;
 .custom-time--shortcuts {
   @include no-user-select();
   align-items: stretch;
-  background-color: $g6-smoke;
+  background-color: $cf-grey-25;
   border-radius: $radius 0 0 $radius;
 }
 .custom-time--shortcuts-header {
   white-space: nowrap;
   padding: 16px;
-  color: $g15-platinum;
+  color: $cf-grey-85;
   font-weight: 700;
 }
 .custom-time--shortcut {
   white-space: nowrap;
   padding: 6px 16px;
   transition: color 0.25s ease, background-color 0.25s ease;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   font-weight: 500;
 
   &:hover {
     cursor: pointer;
-    background-color: $g7-graphite;
-    color: $g17-whisper;
+    background-color: $cf-grey-35;
+    color: $cf-grey-95;
   }
 }
 
@@ -114,7 +114,7 @@ $rd-cell-size: 30px;
   border: 0;
   background-color: transparent;
   border-radius: 50%;
-  color: $g15-platinum;
+  color: $cf-grey-85;
   transition: background-color 0.25s ease, color 0.25s ease;
 
   &:after {
@@ -130,8 +130,8 @@ $rd-cell-size: 30px;
   }
   &:hover {
     cursor: pointer;
-    background-color: $g6-smoke;
-    color: $g20-white;
+    background-color: $cf-grey-25;
+    color: $cf-white;
   }
 }
 .rd-back {
@@ -150,7 +150,7 @@ $rd-cell-size: 30px;
 }
 .rd-month-label {
   font-weight: 600;
-  color: $g15-platinum;
+  color: $cf-grey-85;
   left: $custom-time-arrow;
   text-align: center;
   @include no-user-select();
@@ -182,22 +182,22 @@ $rd-cell-size: 30px;
     border: 0 !important;
   }
   thead.rd-days-head th.rd-day-head {
-    color: $g15-platinum !important;
-    background-color: $g5-pepper !important;
+    color: $cf-grey-85 !important;
+    background-color: $cf-grey-25 !important;
   }
   tbody.rd-days-body td.rd-day-body {
     @include no-user-select();
     letter-spacing: -1px;
     font-family: $cf-code-font;
     transition: background-color 0.25s ease, color 0.25s ease;
-    color: $g13-mist !important;
-    background-color: $g3-castle;
+    color: $cf-grey-75 !important;
+    background-color: $cf-grey-15;
     border-radius: $radius;
 
     &:hover {
       cursor: pointer;
-      color: $g20-white !important;
-      background-color: $g6-smoke;
+      color: $cf-white !important;
+      background-color: $cf-grey-25;
     }
     &.rd-day-next-month,
     &.rd-day-prev-month {
@@ -206,11 +206,11 @@ $rd-cell-size: 30px;
     }
     &.rd-day-selected {
       background-color: $c-pool !important;
-      color: $g20-white !important;
+      color: $cf-white !important;
     }
     &.rd-day-disabled {
-      color: $g8-storm !important;
-      background-color: $g5-pepper !important;
+      color: $cf-grey-45 !important;
+      background-color: $cf-grey-25 !important;
       cursor: default;
     }
   }
@@ -229,19 +229,19 @@ $rd-cell-size: 30px;
   @include no-user-select();
   height: 28px;
   line-height: 28px;
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   border-radius: $radius-small;
   width: 100%;
   letter-spacing: -1px;
   font-family: $cf-code-font;
-  color: $g13-mist;
+  color: $cf-grey-75;
   display: inline-block;
   transition: color 0.25s ease, background-color 0.25s ease;
   text-align: center;
 
   &:hover {
-    color: $g20-white;
-    background-color: $g6-smoke;
+    color: $cf-white;
+    background-color: $cf-grey-25;
     cursor: pointer;
   }
 }
@@ -276,7 +276,7 @@ $rd-cell-size: 30px;
   &:hover,
   &:active,
   &:focus {
-    color: $g20-white;
+    color: $cf-white;
     cursor: pointer;
     outline: none;
     @include gradient-h($c-laser, $c-pool);
@@ -294,8 +294,8 @@ $rd-cell-size: 30px;
     display: flex;
   }
   .custom-time-range--btn {
-    color: $g20-white !important;
-    background-color: $g6-smoke;
+    color: $cf-white !important;
+    background-color: $cf-grey-25;
   }
 }
 /* Custom positioning for dashboard use */

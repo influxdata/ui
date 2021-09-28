@@ -99,7 +99,7 @@ export enum IconFont {
   CircleThick = 'circle-thick',
   Clock = 'clock',
   CogOutline = 'cog-outline',
-  CogThick = 'cog-thick',
+  CogSolid_New = 'cog-thick',
   Collapse = 'collapse',
   CrownOutline = 'crown-outline',
   CrownSolid = 'crown2',

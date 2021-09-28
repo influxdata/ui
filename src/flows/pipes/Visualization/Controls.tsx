@@ -124,7 +124,7 @@ const Controls: FC = () => {
   const toggler = (
     <Button
       text="Configure"
-      icon={IconFont.CogThick}
+      icon={IconFont.CogSolid_New}
       onClick={launcher}
       status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
       color={ComponentColor.Default}
@@ -176,7 +176,7 @@ const Controls: FC = () => {
         selectedOptions={options}
         onSelect={selectFn}
         buttonColor={ComponentColor.Secondary}
-        buttonIcon={IconFont.BarChart}
+        buttonIcon={IconFont.BarChart_New}
       />
       <ViewTypeDropdown
         viewType={data.properties.type}

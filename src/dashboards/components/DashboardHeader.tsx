@@ -156,14 +156,14 @@ const DashboardHeader: FC<Props> = ({
       <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
           <Button
-            icon={IconFont.AddCell}
+            icon={IconFont.AddCell_New}
             color={ComponentColor.Primary}
             onClick={handleAddCell}
             text="Add Cell"
             titleText="Add cell to dashboard"
           />
           <Button
-            icon={IconFont.TextBlock}
+            icon={IconFont.Text_New}
             text="Add Note"
             onClick={handleAddNote}
             testID="add-note--button"

@@ -44,7 +44,7 @@ const ExportDashboardButton: FC = () => {
       testID="flow-export--dashboard"
       style={{opacity: 1}}
       titleText="Export to Dashboard"
-      icon={IconFont.Export}
+      icon={IconFont.Export_New}
     />
   )
 }

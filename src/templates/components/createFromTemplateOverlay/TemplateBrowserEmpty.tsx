@@ -35,7 +35,7 @@ class TemplateBrowserEmpty extends PureComponent<Props> {
           <Button
             size={ComponentSize.Medium}
             text="Go to Templates Settings"
-            icon={IconFont.CogThick}
+            icon={IconFont.CogSolid_New}
             onClick={this.handleButtonClick}
           />
         </EmptyState>

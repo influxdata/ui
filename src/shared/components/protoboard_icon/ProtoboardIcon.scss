@@ -21,7 +21,7 @@
   }
 
   .protoboard-icon--text {
-    fill: $g1-raven;
+    fill: $cf-grey-5;
     font-family: $ix-text-font;
     font-weight: 900;
     font-size: 42px;
@@ -31,6 +31,6 @@
 .card-select--active:hover,
 .card-select--active.card-select--checked {
   .protoboard-icon--text {
-    fill: $g5-pepper;
+    fill: $cf-grey-25;
   }
 }

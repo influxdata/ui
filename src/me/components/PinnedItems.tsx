@@ -77,7 +77,7 @@ const PinnedItems: FC = () => {
                 contextMenu={
                   <Context>
                     <Context.Menu
-                      icon={IconFont.Trash}
+                      icon={IconFont.Trash_New}
                       color={ComponentColor.Danger}
                       testID="pinneditems-delete--menu"
                     >

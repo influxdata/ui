@@ -5,7 +5,7 @@
 
 .alert-builder {
   height: 100%;
-  padding-top: $cf-marg-b;
+  padding-top: $cf-space-2xs;
   display: flex;
 }
 
@@ -76,7 +76,7 @@
   }
 
   code {
-    background-color: $g2-kevlar;
+    background-color: $cf-grey-5;
     color: $c-potassium;
     padding: 2px 4px;
     border-radius: 3px;

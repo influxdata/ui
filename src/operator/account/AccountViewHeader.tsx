@@ -29,7 +29,7 @@ const AccountViewHeader: FC = () => {
     >
       <FlexBox.Child>
         <Link to="/operator" data-testid="account-view--back-button">
-          <Icon glyph={IconFont.CaretLeft} />
+          <Icon glyph={IconFont.CaretLeft_New} />
           Back to Account List
         </Link>
       </FlexBox.Child>

@@ -1,5 +1,5 @@
 $event-marker-tooltip-gutter: 10px;
-$event-marker-tooltip-bg: $g1-raven;
+$event-marker-tooltip-bg: $cf-grey-5;
 
 .event-marker-tooltip {
   background-color: $event-marker-tooltip-bg;
@@ -45,14 +45,14 @@ $event-marker-tooltip-bg: $g1-raven;
 }
 
 .event-marker-tooltip--cell {
-  color: $g15-platinum;
+  color: $cf-grey-85;
   line-height: 10px;
   font-size: 10px;
   font-family: $cf-code-font;
 }
 
 .event-marker-tooltip--header {
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   font-size: 11px;
   line-height: 11px;
   font-weight: 500;

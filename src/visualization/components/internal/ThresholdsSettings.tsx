@@ -147,7 +147,7 @@ const ThresholdsSettings: FunctionComponent<Props> = ({
     >
       <Button
         shape={ButtonShape.StretchToFit}
-        icon={IconFont.Plus}
+        icon={IconFont.Plus_New}
         text="Add a Threshold"
         onClick={() => dispatch({type: 'THRESHOLD_ADDED'})}
       />

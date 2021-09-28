@@ -10,7 +10,7 @@ class SaveAsButton extends PureComponent<RouteComponentProps, {}> {
     return (
       <>
         <Button
-          icon={IconFont.Export}
+          icon={IconFont.Export_New}
           text="Save As"
           onClick={this.handleShowOverlay}
           color={ComponentColor.Primary}

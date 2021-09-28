@@ -2,8 +2,8 @@
 import React, {FC} from 'react'
 
 // Components
-import {Context, IconFont} from 'src/clockface'
-import {ComponentColor} from '@influxdata/clockface'
+import {Context} from 'src/clockface'
+import {ComponentColor, IconFont} from '@influxdata/clockface'
 
 interface Props {
   onDelete: () => void
@@ -22,7 +22,7 @@ const EndpointCardContext: FC<Props> = ({onDelete, onView}) => {
         />
       </Context.Menu>
       <Context.Menu
-        icon={IconFont.Trash}
+        icon={IconFont.Trash_New}
         color={ComponentColor.Danger}
         testID="context-delete-menu"
       >

@@ -91,7 +91,7 @@ const TelegrafConfigOverlayForm: FC = () => {
           >
             <Heading element={HeadingElement.H5}>{telegraf.name}</Heading>
             <Button
-              icon={IconFont.Download}
+              icon={IconFont.Download_New}
               color={ComponentColor.Secondary}
               text="Download Config"
               onClick={handleDownloadConfig}

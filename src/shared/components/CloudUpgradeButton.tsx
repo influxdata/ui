@@ -48,7 +48,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     <CloudOnly>
       {showUpgradeButton && (
         <Button
-          icon={IconFont.CrownSolid}
+          icon={IconFont.CrownSolid_New}
           className={cloudUpgradeButtonClass}
           size={size}
           shape={ButtonShape.Default}

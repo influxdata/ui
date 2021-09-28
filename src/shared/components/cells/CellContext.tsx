@@ -180,7 +180,7 @@ const CellContext: FC<Props> = ({
           <CellContextItem
             label="Refresh"
             onClick={onRefresh}
-            icon={IconFont.Refresh}
+            icon={IconFont.Refresh_New}
             onHide={onHide}
             testID="cell-context--refresh"
           />

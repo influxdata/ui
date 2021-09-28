@@ -176,7 +176,7 @@ const Controls: FC = () => {
         selectedOptions={options}
         onSelect={selectFn}
         buttonColor={ComponentColor.Secondary}
-        buttonIcon={IconFont.BarChart}
+        buttonIcon={IconFont.BarChart_New}
       />
       <ViewTypeDropdown
         viewType={data.properties.type}

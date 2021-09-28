@@ -66,7 +66,7 @@ function InviteListContextMenu({invite}: Props) {
       <FlexBox margin={ComponentSize.Small}>
         <SquareButton
           titleText="Resend Invitation"
-          icon={IconFont.Refresh}
+          icon={IconFont.Refresh_New}
           color={ComponentColor.Secondary}
           onClick={handleResend}
           testID="resend-invite"

@@ -341,7 +341,7 @@ describe('Collectors', () => {
               cy.contains('Done')
                 .click()
                 .then(() => {
-                  cy.get('.cf-icon.checkmark').should('exist')
+                  cy.get('.cf-icon.checkmark-new').should('exist')
                 })
             })
         })
@@ -357,7 +357,7 @@ describe('Collectors', () => {
         cy.getByTestID('input-field').type('youre mom')
         cy.contains('Add').click()
         cy.contains('Done').click()
-        cy.get('.cf-icon.remove').should('exist')
+        cy.get('.cf-icon.remove-new').should('exist')
       })
     })
 
@@ -400,7 +400,7 @@ describe('Collectors', () => {
               cy.contains('alan bean').should('not.exist')
 
               cy.contains('Done').click()
-              cy.get('.cf-icon.checkmark').should('exist')
+              cy.get('.cf-icon.checkmark-new').should('exist')
             })
         })
       })

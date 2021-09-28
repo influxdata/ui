@@ -245,7 +245,7 @@ const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
             {measurementSchema.name}
           </div>
           <Button
-            icon={IconFont.Download}
+            icon={IconFont.Download_New}
             color={ComponentColor.Secondary}
             text="Download Schema"
             onClick={handleDownloadSchema}

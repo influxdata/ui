@@ -7,14 +7,14 @@
 
   p {
     margin-top: 0;
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
 }
 
 .flow-update-task--export-warning {
-  margin: $cf-marg-b 0;
+  margin: $cf-space-2xs 0;
 
   > .cf-panel--body {
-    padding: $cf-marg-b $cf-marg-c;
+    padding: $cf-space-2xs $cf-space-s;
   }
 }

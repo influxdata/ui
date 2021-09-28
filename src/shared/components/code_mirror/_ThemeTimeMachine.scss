@@ -5,8 +5,8 @@
 */
 
 .cm-s-time-machine {
-  background-color: $g2-kevlar;
-  color: $g11-sidewalk;
+  background-color: $cf-grey-5;
+  color: $cf-grey-65;
   padding-right: 16px;
 
   .cm-variable {
@@ -24,10 +24,10 @@
     color: #ff4d96;
   }
   .cm-operator {
-    color: $g15-platinum;
+    color: $cf-grey-85;
   }
   .cm-argument {
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
   .cm-string-single,
   .cm-string-double {
@@ -46,7 +46,7 @@
     color: $c-hydrogen;
   }
   .cm-comment {
-    color: $g8-storm;
+    color: $cf-grey-45;
   }
 
   .CodeMirror-scrollbar-filler {
@@ -55,6 +55,6 @@
 
   .CodeMirror-vscrollbar,
   .CodeMirror-hscrollbar {
-    @include custom-scrollbar-round($g1-raven, $g6-smoke);
+    @include custom-scrollbar-round($cf-grey-5, $cf-grey-25);
   }
 }

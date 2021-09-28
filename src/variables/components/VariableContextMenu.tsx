@@ -21,7 +21,7 @@ export default class VariableContextMenu extends PureComponent<Props> {
 
     return (
       <Context>
-        <Context.Menu icon={IconFont.CogThick}>
+        <Context.Menu icon={IconFont.CogSolid_New}>
           <Context.Item label="Export" action={onExport} />
           <Context.Item
             label="Rename"
@@ -30,7 +30,7 @@ export default class VariableContextMenu extends PureComponent<Props> {
           />
         </Context.Menu>
         <Context.Menu
-          icon={IconFont.Trash}
+          icon={IconFont.Trash_New}
           color={ComponentColor.Danger}
           testID="context-delete-menu"
         >

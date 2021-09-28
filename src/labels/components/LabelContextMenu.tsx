@@ -20,7 +20,7 @@ export default class LabelContextMenu extends PureComponent<Props> {
     return (
       <Context>
         <Context.Menu
-          icon={IconFont.Trash}
+          icon={IconFont.Trash_New}
           color={ComponentColor.Danger}
           testID="context-delete-menu"
         >

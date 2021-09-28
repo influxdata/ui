@@ -29,7 +29,7 @@ const FlowsExplainer: FC = () => {
           tutorials:
         </p>
         <Button
-          icon={IconFont.TextBlock}
+          icon={IconFont.Text_New}
           onClick={handleDocumentationClick}
           color={ComponentColor.Secondary}
           text="Notebooks Docs"

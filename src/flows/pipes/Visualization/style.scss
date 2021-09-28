@@ -1,7 +1,7 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .flow-visualization {
-  background-color: $g2-kevlar;
+  background-color: $cf-grey-5;
   border-radius: $cf-radius;
   display: flex;
   align-items: stretch;
@@ -11,8 +11,8 @@
 .flow-visualization--view {
   width: 100%;
   border-radius: $cf-radius-sm;
-  background-color: $g0-obsidian;
-  padding: $cf-marg-b + $cf-marg-a;
+  background-color: $cf-grey-5;
+  padding: $cf-space-2xs + $cf-space-3xs;
 
   .empty-graph-error {
     height: 200px;
@@ -25,9 +25,9 @@
 }
 
 .flow-visualization--export-warning {
-  margin: $cf-marg-b 0;
+  margin: $cf-space-2xs 0;
 
   > .cf-panel--body {
-    padding: $cf-marg-b $cf-marg-c;
+    padding: $cf-space-2xs $cf-space-s;
   }
 }

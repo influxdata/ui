@@ -27,7 +27,7 @@ export const SubSideBar: FC = () => {
     <div className="flow-sidebar">
       <div className="flow-sidebar--buttons">
         <Button
-          icon={IconFont.Remove}
+          icon={IconFont.Remove_New}
           onClick={() => {
             event('Closing Submenu')
             hideSub()

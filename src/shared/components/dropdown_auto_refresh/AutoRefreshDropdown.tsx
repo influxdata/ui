@@ -141,7 +141,7 @@ export default class AutoRefreshDropdown extends Component<Props> {
       return IconFont.Pause
     }
 
-    return IconFont.Refresh
+    return IconFont.Refresh_New
   }
 
   private get dropdownWidthPixels(): number {
@@ -180,7 +180,7 @@ export default class AutoRefreshDropdown extends Component<Props> {
 
     return (
       <SquareButton
-        icon={IconFont.Refresh}
+        icon={IconFont.Refresh_New}
         onClick={onManualRefresh}
         className={`autorefresh-dropdown--pause ${this.props.customClass}`}
         testID="autorefresh-dropdown-refresh"

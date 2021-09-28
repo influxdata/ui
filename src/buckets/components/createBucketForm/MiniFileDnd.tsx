@@ -17,28 +17,42 @@ export const setGrammar = (fileTypes: string[]) => {
     return fileTypes[0]
   }
 
-  const addOrToLastOne = fileTypes.map((ft, index) => {
-    if (index === numTypes - 1) {
-      return `or ${ft}`
-    } else {
-      return ft
-    }
-  })
-
-  if (numTypes === 2) {
-    return addOrToLastOne.join(' ')
+  const addOrToLastOne = () => {
+    const lastOne = fileTypes.length -1
+    const lastItem = fileTypes[lastOne];
+    fileTypes[lastOne] = `or ${lastItem}`
+    return fileTypes
   }
 
-  return addOrToLastOne.join(', ')
+  if (numTypes === 2) {
+    return addOrToLastOne().join(' ')
+  }
+
+  return addOrToLastOne().join(', ')
 }
 
 /**
  *  This is a small File Drag-and-Drop Input
- *  It just has some text, with an outline.  there is no icon.
+ *  It just has some text, with an outline.  There is no icon.
  *
  *  The user can click on it to select a file or drag and drop a file on top of it.
+ *  After the file is clicked/selected or dragged (and the filetype matches the allowed types),
+ *  then the filename is displayed in the display area.
+ *
+ *  If there is an error (if the filetype doesn't match the allowed types), then
+ *  the outline turns red, and the error message is pushed up to the parent for display.
+ *
+ *  If a legal file is dropped, and then an illegal file is dropped, the component errors but
+ *  keeps the filename and contents of the previous file.
+ *
+ *  This is only meant for text-based files, like .json, .csv, .xml, and such.
+ *
+ *  for re-rendering, can  pre-set the filename to display.
  *
  *  There can be multiple of these per page.
+ *  (The existing drag and drop components, there can
+ *  only be one per page, and there needs to be multiple of these per page
+ *  for the parent component's needs)
  *
  *  The style changes when a file is hovering over this component,
  *  to show that it is active

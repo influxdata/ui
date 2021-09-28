@@ -22,7 +22,7 @@ import {
 } from '@influxdata/clockface'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
-import {areColumnsKosher} from "./MeasurementSchemaUtils";
+import {areColumnsKosher} from './MeasurementSchemaUtils'
 
 import {CLOUD} from 'src/shared/constants'
 
@@ -81,12 +81,12 @@ const AddingPanel: FC<AddingProps> = ({
     let columns = null
     if (contents) {
       // parse them; if kosher; great!  if not, set errors and do not proceed
-       columns = JSON.parse(contents)
-       if (!areColumnsKosher(columns)){
-         //set errors
+      columns = JSON.parse(contents)
+      if (!areColumnsKosher(columns)) {
+        //set errors
         setErrorState(true, 'columns are not kosher! oink oink')
-         return;
-       }
+        return
+      }
     }
 
     onAddContents(contents, fileName, index)
@@ -287,7 +287,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
   }
 
   const onAddContents = (columns, filename, index) => {
-
     // are contents kosher?
     // right now (v1): only accepting json data.  if it gets to here, it already is json
     // (json is guaranteed by the mini file dnd component)

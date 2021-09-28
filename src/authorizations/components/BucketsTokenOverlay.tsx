@@ -3,7 +3,6 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
-  IconFont,
   ComponentColor,
   Button,
   ButtonType,
@@ -129,14 +128,12 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
             <Overlay.Footer>
               <Button
                 text="Cancel"
-                icon={IconFont.Remove}
                 onClick={this.handleDismiss}
                 testID="button--cancel"
               />
 
               <Button
                 text="Save"
-                icon={IconFont.Checkmark}
                 color={ComponentColor.Success}
                 type={ButtonType.Submit}
                 testID="button--save"

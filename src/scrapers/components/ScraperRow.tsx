@@ -38,7 +38,7 @@ export default class ScraperRow extends PureComponent<Props> {
   private get contextMenu(): JSX.Element {
     return (
       <Context>
-        <Context.Menu icon={IconFont.Trash} color={ComponentColor.Danger}>
+        <Context.Menu icon={IconFont.Trash_New} color={ComponentColor.Danger}>
           <Context.Item
             label="Delete"
             action={this.handleDeleteScraper}

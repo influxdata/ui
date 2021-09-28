@@ -8,8 +8,8 @@ $panel-resizer--drag-handle: 30px;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  border: $cf-border solid $g0-obsidian;
-  background-color: $g0-obsidian;
+  border: $cf-border solid $cf-grey-5;
+  background-color: $cf-grey-5;
   border-radius: $cf-radius 0 0 $cf-radius;
   position: relative;
   height: 100%;
@@ -22,14 +22,14 @@ $panel-resizer--drag-handle: 30px;
 }
 
 .panel-resizer--header {
-  color: $g15-platinum;
+  color: $cf-grey-85;
   width: $panel-resizer--header;
   flex: 0 0 $panel-resizer--header;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding: $cf-marg-b 0;
+  padding: $cf-space-2xs 0;
 }
 
 .panel-resizer--header__multiple-controls {
@@ -71,10 +71,10 @@ $panel-resizer--drag-handle: 30px;
 }
 
 .panel-resizer--header__hidden .panel-resizer--vis-toggle {
-  color: $g8-storm;
+  color: $cf-grey-45;
 
   &:hover {
-    color: $g13-mist;
+    color: $cf-grey-75;
   }
 }
 
@@ -96,9 +96,9 @@ $panel-resizer--drag-handle: 30px;
 
 .panel-resizer--error,
 .panel-resizer--empty {
-  color: $g15-platinum;
+  color: $cf-grey-85;
   user-select: text;
-  padding: $cf-marg-b 0;
+  padding: $cf-space-2xs 0;
   font-weight: $cf-font-weight--medium;
   height: 30px;
 }
@@ -109,7 +109,7 @@ $panel-resizer--drag-handle: 30px;
 }
 
 .panel-resizer--error-button {
-  margin-left: $cf-marg-b;
+  margin-left: $cf-space-2xs;
 }
 
 .panel-resizer--drag-handle {
@@ -164,7 +164,7 @@ body.panel-resizer-dragging:hover {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba($g0-obsidian, 0.75);
+  background-color: rgba($cf-grey-5, 0.75);
   z-index: 2;
   align-items: center;
   justify-content: center;

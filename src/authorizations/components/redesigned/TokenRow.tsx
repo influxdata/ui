@@ -99,7 +99,7 @@ class TokensRow extends PureComponent<Props> {
           />
 
           <Context.Menu
-            icon={IconFont.Trash}
+            icon={IconFont.Trash_New}
             color={ComponentColor.Danger}
             text="Delete"
             shape={ButtonShape.StretchToFit}

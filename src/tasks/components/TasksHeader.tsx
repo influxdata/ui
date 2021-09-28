@@ -91,7 +91,7 @@ const TasksHeader: FC<Props> = ({
                 Create a Task
               </Link>
               <span className="header-cta--close-icon" onClick={hideFlowsCTA}>
-                <Icon glyph={IconFont.Remove} />
+                <Icon glyph={IconFont.Remove_New} />
               </span>
             </div>
           </div>
@@ -122,7 +122,7 @@ const TasksHeader: FC<Props> = ({
             />
           </FlexBox>
           <Button
-            icon={IconFont.Plus}
+            icon={IconFont.Plus_New}
             color={ComponentColor.Primary}
             text="Create Task"
             titleText="Click to create a Task"

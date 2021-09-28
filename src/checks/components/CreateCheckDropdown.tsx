@@ -50,7 +50,7 @@ const CreateCheckDropdown: FunctionComponent<OwnProps & ReduxProps> = ({
     onClick: (e: MouseEvent<HTMLButtonElement>) => void
   ) => (
     <Dropdown.Button
-      icon={IconFont.Plus}
+      icon={IconFont.Plus_New}
       color={ComponentColor.Primary}
       active={active}
       onClick={onClick}

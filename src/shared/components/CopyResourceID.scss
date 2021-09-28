@@ -8,11 +8,11 @@
 }
 
 .copy-resource-id--click-target {
-  color: $g13-mist;
+  color: $cf-grey-75;
   transition: opacity 0.25s ease;
   opacity: 0;
   display: inline-block;
-  margin-left: $cf-marg-b;
+  margin-left: $cf-space-2xs;
 }
 
 .copy-resource-id:hover .copy-resource-id--click-target {

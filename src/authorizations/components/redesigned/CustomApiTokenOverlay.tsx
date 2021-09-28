@@ -38,10 +38,12 @@ import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 
 // Utils
-import {formatApiPermissions} from 'src/authorizations/utils/permissions'
+import {
+  formatApiPermissions,
+  generateDescription,
+} from 'src/authorizations/utils/permissions'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-import {capitalize} from 'lodash'
 
 interface OwnProps {
   onClose: () => void
@@ -146,41 +148,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     newPerm[resourceName][permission] = headerPermValue
 
     setPermissions(newPerm)
-  }
-
-  const generateDescription = apiPermissions => {
-    let generatedDescription = ''
-
-    if (apiPermissions.length > 2) {
-      const actions = []
-      apiPermissions.forEach(perm => {
-        actions.push(perm.action)
-      })
-      const isRead = actions.some(action => action === 'read')
-      const isWrite = actions.some(action => action === 'write')
-
-      if (isRead && isWrite) {
-        generatedDescription += `Read Multiple Write Multiple`
-      } else if (isRead) {
-        generatedDescription += `Read Multiple`
-      } else if (isWrite) {
-        generatedDescription += `Write Multiple`
-      }
-    } else {
-      apiPermissions.forEach(perm => {
-        if (perm.resource.name) {
-          generatedDescription += ` ${capitalize(perm.action)} ${
-            perm.resource.type
-          } ${perm.resource.name} `
-        } else {
-          generatedDescription += ` ${capitalize(perm.action)} ${
-            perm.resource.type
-          } `
-        }
-      })
-    }
-
-    return generatedDescription
   }
 
   const generateToken = () => {

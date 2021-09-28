@@ -30,7 +30,10 @@ import {Context} from 'src/clockface'
 
 // Types
 import {Authorization, AppState} from 'src/types'
-import {UPDATED_AT_TIME_FORMAT} from 'src/dashboards/constants'
+import {
+  UPDATED_AT_TIME_FORMAT,
+  DEFAULT_TOKEN_DESCRIPTION,
+} from 'src/dashboards/constants'
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {incrementCloneName} from 'src/utils/naming'
@@ -68,6 +71,7 @@ class TokensRow extends PureComponent<Props> {
             onUpdate={this.handleUpdateName}
             onClick={this.handleClickDescription}
             name={description}
+            noNameString={DEFAULT_TOKEN_DESCRIPTION}
             testID={`token-name ${auth.description}`}
           />
           <ResourceCard.Meta>

@@ -35,6 +35,7 @@ if (CLOUD) {
 }
 
 import {downloadTextFile} from 'src/shared/utils/download'
+//todo: make import absolute (relativ now)
 import {MiniFileDnd} from './MiniFileDnd'
 
 // note:  once you can add schemas in the create mode,
@@ -67,21 +68,15 @@ const AddingPanel: FC<AddingProps> = ({
   filename,
   showSchemaValidation,
 }) => {
-  const [schemaContents, setSchemaContents] = useState(null)
   const [schemaName, setSchemaName] = useState(name)
   const [fileError, setFileError] = useState(false)
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
 
-  const handleUploadCsv = (csv: string, fileName: string) => {
+  const handleUploadFile = (contents: string, fileName: string) => {
     event('bucket.schema.explicit.uploadSchema')
-    console.log('got file???', csv, fileName)
-    setSchemaContents(csv)
-    onAddContents(csv, fileName, index)
+    console.log('got file???', contents, fileName)
+    onAddContents(contents, fileName, index)
   }
-
-  const dndClasses = classnames('add-schema-uploader', {
-    [`has-file`]: schemaContents || filename,
-  })
 
   // jill note: http://localhost:9001/?path=/story/components-buttons-composed--dismissbutton
   const dismissBtn = (
@@ -150,7 +145,7 @@ const AddingPanel: FC<AddingProps> = ({
       key={`mini-dnd-${index}`}
       allowedExtensions={allowedExtensions}
       allowedTypes={allowedTypes}
-      handleFileUpload={handleUploadCsv}
+      handleFileUpload={handleUploadFile}
       setErrorState={setErrorState}
       alreadySetFileName={filename}
     />

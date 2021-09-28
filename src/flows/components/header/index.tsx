@@ -60,7 +60,7 @@ const FlowHeader: FC = () => {
     if (isFlagEnabled('shareNotebook')) {
       getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
         .then(res => {
-          if (res.data) {
+          if (!!res?.data?.length) {
             // TODO: handle there being multiple links?
             setShare({id: res.data[0].id, accessID: res.data[0].accessID})
           }

@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useContext, useState, useRef, useEffect} from 'react'
+import React, {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import classnames from 'classnames'
 import {
   Button,
@@ -37,6 +44,12 @@ export interface Props extends PipeContextProps {
 
 export const DEFAULT_RESIZER_HEIGHT = 360
 export const MINIMUM_RESIZER_HEIGHT = 220
+
+const PANEL_PREVIEW_TYPES = new Set([
+  'visualization',
+  'columnEditor',
+  'notification',
+])
 
 const FlowPanel: FC<Props> = ({
   id,
@@ -136,6 +149,11 @@ const FlowPanel: FC<Props> = ({
     <div className="flow-panel--editable-title">Error</div>
   )
 
+  const showPreviewButton = useMemo(
+    () => PANEL_PREVIEW_TYPES.has(flow.data.byID[id].type),
+    [flow, id]
+  )
+
   if (
     flow.readOnly &&
     !/^(visualization|markdown)$/.test(flow.data.byID[id]?.type)
@@ -165,6 +183,15 @@ const FlowPanel: FC<Props> = ({
                     className="flows-config-panel-button"
                   />
                 </FeatureFlag>
+                {isVisible &&
+                  isFlagEnabled('notebooksPreviewFromHere') &&
+                  showPreviewButton && (
+                    <Button
+                      onClick={() => queryDependents(id)}
+                      icon={IconFont.Play}
+                      text="Preview"
+                    />
+                  )}
                 <MenuButton id={id} />
               </div>
             </>
@@ -186,14 +213,6 @@ const FlowPanel: FC<Props> = ({
               dragRef={handleRef}
               onStartDrag={handleMouseDown}
               dragging={isDragging === 2}
-            />
-          )}
-          {isVisible && isFlagEnabled('notebooksPreviewFromHere') && (
-            <Button
-              className="flow-footer--preview"
-              onClick={() => queryDependents(id)}
-              icon={IconFont.Play}
-              text="Preview from here"
             />
           )}
         </div>

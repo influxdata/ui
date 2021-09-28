@@ -59,15 +59,27 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const meta = []
 
   if (!!flow?.createdBy) {
-    meta.push(<>Created by {flow.createdBy}</>)
+    meta.push(
+      <React.Fragment key={`${flow.id}--created-by`}>
+        Created by {flow.createdBy}
+      </React.Fragment>
+    )
   }
 
   if (flow?.createdAt) {
-    meta.push(<>Created at {flow.createdAt}</>)
+    meta.push(
+      <React.Fragment key={`${flow.id}--created-at`}>
+        Created at {flow.createdAt}
+      </React.Fragment>
+    )
   }
 
   if (flow?.updatedAt) {
-    meta.push(<>Last Modified at {flow.updatedAt}</>)
+    meta.push(
+      <React.Fragment key={`${flow.id}--updated-at`}>
+        Last Modified at {flow.updatedAt}
+      </React.Fragment>
+    )
   }
 
   return (

@@ -31,6 +31,9 @@ import {PipeProp} from 'src/types/flows'
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
+// Constants
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows/constants'
+
 const ReadOnly: FC<PipeProp> = ({Context}) => {
   const {data, results, loading} = useContext(PipeContext)
 
@@ -40,7 +43,7 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
     }
 
     if (loading === RemoteDataState.NotStarted) {
-      return 'This cell will display results from the previous cell'
+      return UNPROCESSED_PANEL_TEXT
     }
 
     return 'No Data Returned'

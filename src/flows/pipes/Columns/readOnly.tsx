@@ -10,6 +10,9 @@ import {Hash, Mapping} from 'src/flows/pipes/Columns'
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
 
+// Constants
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows/constants'
+
 // Styles
 import './styles.scss'
 
@@ -17,7 +20,7 @@ const Columns: FC<PipeProp> = ({Context}) => {
   const {data, loading, results} = useContext(PipeContext)
 
   if (!results.parsed || !results.parsed.table) {
-    let msg = 'This cell will display columns from the previous cell'
+    let msg = UNPROCESSED_PANEL_TEXT
 
     if (loading === RemoteDataState.Loading) {
       msg = 'Loading'

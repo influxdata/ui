@@ -18,8 +18,8 @@ export const setGrammar = (fileTypes: string[]) => {
   }
 
   const addOrToLastOne = () => {
-    const lastOne = fileTypes.length -1
-    const lastItem = fileTypes[lastOne];
+    const lastOne = fileTypes.length - 1
+    const lastItem = fileTypes[lastOne]
     fileTypes[lastOne] = `or ${lastItem}`
     return fileTypes
   }

@@ -40,7 +40,7 @@ $article-text: #d4d7dd;
     padding-left: 0px !important;
     border-radius: 0px !important;
     margin-left: 6px !important;
-    border-left: 2px solid $g9-mountain;
+    border-left: 2px solid $cf-grey-45;
     margin-bottom: 8px !important;
     &:hover {
       border-left: 2px solid $c-pool !important;
@@ -58,7 +58,7 @@ $article-text: #d4d7dd;
   }
 
   .DocSearch-Hit-title {
-    color: $g13-mist;
+    color: $cf-grey-75;
     font-size: 15px;
     font-weight: 400;
   }
@@ -67,10 +67,10 @@ $article-text: #d4d7dd;
     font-weight: bold !important;
     font-size: 13px;
     margin-top: 4px !important;
-    color: $g9-mountain;
+    color: $cf-grey-45;
 
     &:hover {
-      color: $g13-mist;
+      color: $cf-grey-75;
     }
   }
 

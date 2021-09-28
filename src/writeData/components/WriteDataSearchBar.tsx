@@ -18,7 +18,7 @@ const WriteDataSearchBar: FC = () => {
       placeholder="Search data writing methods..."
       value={searchTerm}
       size={ComponentSize.Large}
-      icon={IconFont.Search}
+      icon={IconFont.Search_New}
       onChange={handleInputChange}
       autoFocus={true}
       testID="write-data--search"

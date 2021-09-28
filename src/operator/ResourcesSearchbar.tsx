@@ -22,7 +22,7 @@ const ResourcesSearchbar: FC = () => {
 
   return (
     <Input
-      icon={IconFont.Search}
+      icon={IconFont.Search_New}
       placeholder={`Filter ${isOrgsTab} by ${
         isOrgsTab === 'organizations' ? 'id' : 'email'
       } ...`}

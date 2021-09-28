@@ -63,7 +63,7 @@ class AllAccessTokenOverlay extends PureComponent<Props, State> {
               margin={ComponentSize.Large}
             >
               <Alert
-                icon={IconFont.AlertTriangle}
+                icon={IconFont.AlertTriangle_New}
                 color={ComponentColor.Warning}
               >
                 This token will be able to create, update, delete, read, and
@@ -82,16 +82,10 @@ class AllAccessTokenOverlay extends PureComponent<Props, State> {
 
           <Form.Footer>
             <Overlay.Footer>
-              <Button
-                text="Cancel"
-                icon={IconFont.Remove}
-                onClick={this.handleDismiss}
-              />
-
+              <Button text="Cancel" onClick={this.handleDismiss} />
               <Button
                 text="Save"
                 testID="button--save"
-                icon={IconFont.Checkmark}
                 color={ComponentColor.Success}
                 type={ButtonType.Submit}
               />

@@ -8,7 +8,7 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: $g3-castle;
+  background: $cf-grey-15;
   z-index: 100;
 }
 
@@ -24,12 +24,12 @@
   width: 16px;
   height: 16px;
   font-size: 10px;
-  color: $g12-forge;
+  color: $cf-grey-65;
   border-radius: 2px;
-  background: $g4-onyx;
+  background: $cf-grey-15;
   cursor: pointer;
 
   &:hover {
-    background: $g6-smoke;
+    background: $cf-grey-25;
   }
 }

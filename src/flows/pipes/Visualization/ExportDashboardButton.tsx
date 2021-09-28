@@ -11,43 +11,42 @@ import {
 import {Button} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {PopupContext} from 'src/flows/context/popup'
-import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
+import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-interface Props {
-  text: string
-  type: string
-  generate?: () => string
-}
-
-const ExportTaskButton: FC<Props> = ({text, type, generate}) => {
-  const {data, range} = useContext(PipeContext)
+const ExportDashboardButton: FC = () => {
+  const {id, data, range, results} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
-
   const onClick = () => {
-    event('Export Task Clicked', {from: type})
-    launch(<ExportTaskOverlay text={text} type={type} />, {
-      bucket: data.bucket,
-      query: generate ? generate() : data.query,
-      range,
+    event('Export to Dashboard Clicked')
+
+    launch(<ExportDashboardOverlay />, {
+      properties: data.properties,
+      range: range,
+      panel: id,
     })
   }
 
+  const status =
+    results.source && results.parsed?.table?.length
+      ? ComponentStatus.Default
+      : ComponentStatus.Disabled
+
   return (
     <Button
-      text={text}
+      text="Export to Dashboard"
       color={ComponentColor.Success}
       type={ButtonType.Submit}
       onClick={onClick}
-      status={ComponentStatus.Default}
-      testID="task-form-save"
+      status={status}
+      testID="flow-export--dashboard"
       style={{opacity: 1}}
+      titleText="Export to Dashboard"
       icon={IconFont.Export_New}
-      titleText={text}
     />
   )
 }
 
-export default ExportTaskButton
+export default ExportDashboardButton

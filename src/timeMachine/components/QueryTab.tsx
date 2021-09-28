@@ -137,7 +137,7 @@ class TimeMachineQueryTab extends PureComponent<Props, State> {
 
     return (
       <div className="query-tab--close" onClick={this.handleRemove}>
-        <Icon glyph={IconFont.Remove} />
+        <Icon glyph={IconFont.Remove_New} />
       </div>
     )
   }

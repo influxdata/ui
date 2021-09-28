@@ -35,10 +35,13 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 import {OwnBucket} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 
-let SchemaType = null
+let SchemaType = null,
+  MeasurementSchemaCreateRequest = null
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
 }
 
 interface DispatchProps {
@@ -65,6 +68,11 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
   const [schemaType, setSchemaType] = useState('implicit')
   const [measurementSchemaList, setMeasurementSchemaList] = useState(null)
+  const [
+    newMeasurementSchemaRequests,
+    setNewMeasurementSchemaRequests,
+  ] = useState(null)
+  const [showSchemaValidation, setShowSchemaValidation] = useState(false)
 
   const handleClose = useCallback(() => {
     history.push(`/orgs/${orgID}/load-data/buckets`)
@@ -115,6 +123,12 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     })
   }
 
+  const handleNewMeasurementSchemas = (
+    schemas: typeof MeasurementSchemaCreateRequest[]
+  ): void => {
+    setNewMeasurementSchemaRequests(schemas)
+  }
+
   const handleChangeRuleType = (ruleType: 'expire' | null) => {
     if (ruleType) {
       setBucketDraft({
@@ -131,10 +145,51 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     }
   }
 
+  const isValid = () => {
+    // are there measurement schemas?
+    const haveSchemas =
+      !!newMeasurementSchemaRequests && !!newMeasurementSchemaRequests.length
+
+    if (!haveSchemas) {
+      // no schemas, nothing to validate, so everything is fine
+      return true
+    }
+    // if so, are they all valid?
+    const reducer = (previousValue, currentValue) =>
+      previousValue && currentValue.valid
+
+    const alltrue = newMeasurementSchemaRequests.reduce(reducer, true)
+
+    if (alltrue) {
+      console.log('all true!')
+      return true
+    }
+
+    console.log('not all true :(')
+    // not all true :(
+
+    // if not valid, decorate them to show they are not valid!
+    // TODO!  do the decoration!
+    setShowSchemaValidation(true)
+    return false
+  }
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
-    onUpdateBucket(bucketDraft)
-    handleClose()
+
+    if (isValid()) {
+      onUpdateBucket(bucketDraft)
+
+      // TODO:  put an event here!
+      // like: 'bucket.editing.add.measurementSchema'
+      console.log(
+        'would handle the new schema requests here (would create the ' +
+          'measurement schemas one by one here! TODO: ',
+        newMeasurementSchemaRequests
+      )
+
+      handleClose()
+    }
   }
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -177,6 +232,8 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               onChangeSchemaType={handleChangeSchemaType}
               schemaType={schemaType as typeof SchemaType}
               measurementSchemaList={measurementSchemaList}
+              onUpdateNewMeasurementSchemas={handleNewMeasurementSchemas}
+              showSchemaValidation={showSchemaValidation}
             />
           </Overlay.Body>
         </SpinnerContainer>

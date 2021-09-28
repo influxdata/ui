@@ -305,6 +305,11 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
   }
 }
 
+// export const addSchemaToBucket(bucketID: string, schemaName: string, schemaContents: string) {
+//   //first; change the contents to the object:
+//
+// }
+
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {
   const labels = getLabels(state, bucket.labels)
   return {

@@ -158,6 +158,8 @@ export const MiniFileDnd: FC<Props> = ({
     inputEl.current.click()
   }
 
+  //const titleText = 'Drag and Drop a file or click to select a file'
+
   const displayText = fileName ?? 'Add schema file'
 
   const dropZoneClasses = classnames('dnd', {

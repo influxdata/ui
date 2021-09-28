@@ -25,10 +25,13 @@ import {CLOUD} from 'src/shared/constants'
 import {MeasurementSchemaSection} from './MeasurementSchemaSection'
 
 let MeasurementSchemaList = null,
+  MeasurementSchemaCreateRequest = null,
   SchemaType = null
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
   MeasurementSchemaList = require('src/client/generatedRoutes')
     .MeasurementSchemaList
 }
@@ -45,6 +48,7 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
+  onUpdateNewMeasurementSchemas?: (schemas: any[]) => void
   isEditing: boolean
   buttonText: string
   onClickRename?: () => void
@@ -52,11 +56,13 @@ interface Props {
   onChangeSchemaType?: (schemaType: typeof SchemaType) => void
   schemaType?: typeof SchemaType
   measurementSchemaList?: typeof MeasurementSchemaList
+  showSchemaValidation?: boolean
 }
 
 interface State {
   showAdvanced: boolean
   schemaType: 'implicit' | 'explicit'
+  newMeasurementSchemas: typeof MeasurementSchemaCreateRequest[]
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
@@ -64,15 +70,35 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     super(props)
 
     this.onChangeSchemaTypeInternal = this.onChangeSchemaTypeInternal.bind(this)
+    this.onUpdateSchemasInternal = this.onUpdateSchemasInternal.bind(this)
   }
 
   public state: State = {showAdvanced: false, schemaType: 'implicit'}
 
-  public onChangeSchemaTypeInternal = function(
-    newSchemaType: typeof SchemaType
-  ) {
+  onChangeSchemaTypeInternal = function(newSchemaType: typeof SchemaType) {
     this.setState({schemaType: newSchemaType})
     this.props.onChangeSchemaType(newSchemaType)
+  }
+
+  onUpdateSchemasInternal = function(schemas) {
+    const parsed = schemas.map(schema => {
+      // if parse something null get an error; so parse conditionally:
+      const columns = schema?.contents ? JSON.parse(schema.contents) : null
+
+      return {
+        columns,
+        name: schema?.name,
+        valid: schema.valid,
+      }
+    })
+    console.log(
+      'got schema stuff!!! ack!!!  in bucket overlay form',
+      parsed,
+      schemas
+    )
+
+    this.props.onUpdateNewMeasurementSchemas(parsed)
+    this.setState({newMeasurementSchemas: parsed})
   }
 
   public render() {
@@ -101,23 +127,18 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
         let contents = null
         if (isEditing) {
-          let measurementSchemaReadonlyList = null
-
-          if (measurementSchemaList?.measurementSchemas) {
-            measurementSchemaReadonlyList = (
-              <MeasurementSchemaSection
-                measurementSchemaList={measurementSchemaList}
-                key="measurementSchemaSection"
-              />
-            )
-          }
           contents = (
             <>
               <SchemaToggle
                 key="schemaToggleSection"
                 readOnlySchemaType={schemaType}
               />
-              {measurementSchemaReadonlyList}
+              <MeasurementSchemaSection
+                measurementSchemaList={measurementSchemaList}
+                key="measurementSchemaSection"
+                onUpdateSchemas={this.onUpdateSchemasInternal}
+                showSchemaValidation={this.props.showSchemaValidation}
+              />
             </>
           )
         } else {

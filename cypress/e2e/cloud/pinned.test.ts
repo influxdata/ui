@@ -260,7 +260,7 @@ from(bucket: "${name}"{rightarrow}
         .trigger('mouseover')
         .then(() => {
           cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-flow').click()
+          cy.getByTestID('context-pin-flow').click({force: true})
         })
       cy.visit('/')
       cy.getByTestID('tree-nav')
@@ -274,7 +274,7 @@ from(bucket: "${name}"{rightarrow}
         .trigger('mouseover')
         .then(() => {
           cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-flow').click()
+          cy.getByTestID('context-pin-flow').click({force: true})
         })
       cy.getByTestID('resource-editable-name')
         .first()
@@ -319,7 +319,7 @@ from(bucket: "${name}"{rightarrow}
         .trigger('mouseover')
         .then(() => {
           cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-flow').click()
+          cy.getByTestID('context-pin-flow').click({force: true})
           cy.getByTestID('context-delete-menu Bucks In Six').click()
           cy.getByTestID('context-delete-flow Bucks In Six').click()
         })

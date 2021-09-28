@@ -1,13 +1,3 @@
-// import {CLOUD} from 'src/shared/constants'
-//
-// let ColumnSemanticType = null
-//
-// if (CLOUD){
-//     ColumnSemanticType =   require('src/client/generatedRoutes').ColumnSemanticType
-// }
-
-//import {ColumnSemanticType} from "../../../client";
-
 const typeStrings = ['timestamp', 'tag', 'field']
 const dataTypeStrings = ['integer', 'float', 'boolean', 'string', 'unsigned']
 
@@ -18,7 +8,6 @@ const dataTypeStrings = ['integer', 'float', 'boolean', 'string', 'unsigned']
  * for literal union type creation is out of scope.
  * https://newbedev.com/checking-validity-of-string-literal-union-type-at-runtime
  *
- *
  * right now, just checking true/false; is it valid?  later on, may add a message saying which part(s) are invalid
  * */
 export const areColumnsKosher = columns => {
@@ -28,13 +17,18 @@ export const areColumnsKosher = columns => {
       const hasName = 'name' in item && typeof item.name === 'string'
       const hasType = 'type' in item && typeStrings.includes(item.type)
 
-      // optional part: if it isn't there; it is fine; but if it is check it!
+      // the semi-optional part: if it isn't there; it is fine; but if it is check it!
+      // BUT, if the type is 'field' it is required!
       let dataTypePartIsValid = true
 
       if ('dataType' in item) {
         dataTypePartIsValid = dataTypeStrings.includes(item.dataType)
+      } else {
+        // not there:
+        if (item.type === 'field') {
+          dataTypePartIsValid = false
+        }
       }
-
       return hasName && hasType && dataTypePartIsValid
     })
 

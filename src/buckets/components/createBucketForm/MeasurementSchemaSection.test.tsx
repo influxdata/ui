@@ -34,12 +34,21 @@ const columns1 = [
 ]
 
 const columns2 = [
-    {name: 'time', type: 'timestamp'},
-    {name: 'host', type: 'tag'},
-    {name: 'service', type: 'tag'},
-    {name: 'fsRead', type: 'field', dataType: 'double'},
-    {name: 'fsWrite', type: 'field', dataType: 'float'},
-    {name: 'timeSignature', type: 'tag'},
+  {name: 'time', type: 'timestamp'},
+  {name: 'host', type: 'tag'},
+  {name: 'service', type: 'tag'},
+  {name: 'fsRead', type: 'field', dataType: 'double'},
+  {name: 'fsWrite', type: 'field', dataType: 'float'},
+  {name: 'timeSignature', type: 'tag'},
+]
+
+const columns3 = [
+  {name: 'time', type: 'timestamp'},
+  {name: 'host', type: 'tag'},
+  {name: 'service', type: 'tag'},
+  {name: 'fsRead', type: 'field'},
+  {name: 'fsWrite', type: 'field', dataType: 'float'},
+  {name: 'timeSignature', type: 'tag'},
 ]
 
 describe('test data validity function', () => {
@@ -60,7 +69,10 @@ describe('test data validity function', () => {
     doTest(columns1, false)
   })
 
-    it('should not be kosher, the dataType is wrong', () => {
-        doTest(columns2, false)
-    })
+  it('should not be kosher, the dataType is wrong', () => {
+    doTest(columns2, false)
+  })
+  it('should not be kosher, the type is a field and it does not have a datatype', () => {
+    doTest(columns3, false)
+  })
 })

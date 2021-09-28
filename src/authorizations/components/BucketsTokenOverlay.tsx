@@ -3,7 +3,6 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
-  IconFont,
   ComponentColor,
   Button,
   ButtonType,

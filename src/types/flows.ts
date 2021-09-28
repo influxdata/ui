@@ -104,6 +104,7 @@ export interface Flow {
   readOnly?: boolean
   createdAt?: Date
   updatedAt?: Date
+  createdBy?: string
 }
 
 export interface FlowListState {

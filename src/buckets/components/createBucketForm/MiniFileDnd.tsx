@@ -110,9 +110,6 @@ export const MiniFileDnd: FC<Props> = ({
       return
     }
 
-    event.preventDefault()
-    event.stopPropagation()
-
     // don't need to see if the file type is valid; the input filters it already for us
     processFile(file)
   }

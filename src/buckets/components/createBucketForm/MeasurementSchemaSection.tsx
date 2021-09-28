@@ -3,7 +3,6 @@ import React, {useState, FC, useMemo} from 'react'
 import {debounce, trim} from 'lodash'
 
 import {event} from 'src/cloud/utils/reporting'
-import classnames from 'classnames'
 
 import {
   AlignItems,
@@ -35,7 +34,7 @@ if (CLOUD) {
 }
 
 import {downloadTextFile} from 'src/shared/utils/download'
-//todo: make import absolute (relativ now)
+//todo: make import absolute (relative now)
 import {MiniFileDnd} from './MiniFileDnd'
 
 // note:  once you can add schemas in the create mode,
@@ -59,6 +58,16 @@ interface AddingProps {
   showSchemaValidation?: boolean
 }
 
+const areColumnsKosher = (columns) => {
+
+    if (Array.isArray(columns){
+      return true;
+    }
+    return false;
+  }
+
+
+
 const AddingPanel: FC<AddingProps> = ({
   index,
   name,
@@ -75,6 +84,19 @@ const AddingPanel: FC<AddingProps> = ({
   const handleUploadFile = (contents: string, fileName: string) => {
     event('bucket.schema.explicit.uploadSchema')
     console.log('got file???', contents, fileName)
+
+    //do parsing here?  to check in the correct format.....
+    let columns = null
+    if (contents) {
+      // parse them; if kosher; great!  if not, set errors and do not proceed
+       columns = JSON.parse(contents)
+       if (!areColumnsKosher(columns)){
+         //set errors
+        setErrorState('columns are not kosher! oink oink')
+         return;
+       }
+    }
+
     onAddContents(contents, fileName, index)
   }
 
@@ -272,9 +294,33 @@ export const MeasurementSchemaSection: FC<Props> = ({
     setSchemasWithUpdates(newSchemas)
   }
 
-  const onAddContents = (contents, filename, index) => {
+  const onAddContents = (columns, filename, index) => {
+
+    // are contents kosher?
+    // right now (v1): only accepting json data.  if it gets to here, it already is json
+    // (json is guaranteed by the mini file dnd component)
+
+    /**1. parse it
+    //2.  check if it conforms to the MeasurementSchemaColumn interface
+    //  unfortunately, have to do this manually, as typescript can't do typeof for interfaces.
+    //  (but the column data type and column semantic type can be done via typeof, at least)
+
+    //3.  if it conforms; then great!  set that column data to the lineItem.columns property and keep going through the code
+          if it does not:
+            a. set the mini file dnd component to error status (so it shows as with a red outline)
+            b. set the error with setErrorState method in this component; and do not proceed any further with the code in this method
+     */
+    // let columns = null
+    // if (contents) {
+    //    columns = JSON.parse(contents)
+    //    if (!areColumsKosher(columns)){
+    //      //set errors
+    //     setErrorState('columns are not kosher! oink oink')
+    //      return;
+    //    }
+    // }
     const lineItem = newSchemas[index]
-    lineItem.contents = contents
+    lineItem.columns = columns
     lineItem.filename = filename
     if (lineItem.contents && lineItem.name) {
       lineItem.valid = true

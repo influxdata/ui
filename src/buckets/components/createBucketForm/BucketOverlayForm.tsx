@@ -81,24 +81,14 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   }
 
   onUpdateSchemasInternal = function(schemas) {
-    const parsed = schemas.map(schema => {
-      // if parse something null get an error; so parse conditionally:
-      const columns = schema?.contents ? JSON.parse(schema.contents) : null
 
-      return {
-        columns,
-        name: schema?.name,
-        valid: schema.valid,
-      }
-    })
     console.log(
       'got schema stuff!!! ack!!!  in bucket overlay form',
-      parsed,
       schemas
     )
 
-    this.props.onUpdateNewMeasurementSchemas(parsed)
-    this.setState({newMeasurementSchemas: parsed})
+    this.props.onUpdateNewMeasurementSchemas(schemas)
+    this.setState({newMeasurementSchemas: schemas})
   }
 
   public render() {

@@ -124,7 +124,7 @@ const Controls: FC = () => {
   const toggler = (
     <Button
       text="Configure"
-      icon={IconFont.CogThick}
+      icon={IconFont.CogSolid_New}
       onClick={launcher}
       status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
       color={ComponentColor.Default}

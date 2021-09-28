@@ -16,7 +16,7 @@ export default class AddCardButton extends PureComponent<Props> {
       <SquareButton
         className="query-builder--add-card-button"
         onClick={onClick}
-        icon={IconFont.Plus}
+        icon={IconFont.Plus_New}
       />
     )
   }

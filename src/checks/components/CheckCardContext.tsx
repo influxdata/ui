@@ -20,7 +20,7 @@ const CheckCardContext: FunctionComponent<Props> = ({
 }) => {
   return (
     <Context>
-      <Context.Menu icon={IconFont.CogThick} testID="context-history-menu">
+      <Context.Menu icon={IconFont.CogSolid_New} testID="context-history-menu">
         <Context.Item
           label="View History"
           action={onView}
@@ -36,7 +36,7 @@ const CheckCardContext: FunctionComponent<Props> = ({
         <Context.Item label="Clone" action={onClone} />
       </Context.Menu>
       <Context.Menu
-        icon={IconFont.Trash}
+        icon={IconFont.Trash_New}
         color={ComponentColor.Danger}
         testID="context-delete-menu"
       >

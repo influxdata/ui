@@ -35,7 +35,7 @@ const defaultButtonElement = () => null
 const defaultErrorNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Error,
-  icon: IconFont.AlertTriangle,
+  icon: IconFont.AlertTriangle_New,
   duration: TEN_SECONDS,
 }
 
@@ -56,7 +56,7 @@ const defaultSuccessNotification: NotificationExcludingMessage = {
 const defaultDeletionNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Primary,
-  icon: IconFont.Trash,
+  icon: IconFont.Trash_New,
   duration: FIVE_SECONDS,
 }
 
@@ -1336,7 +1336,7 @@ export const dashboardAutoRefreshTimeoutSuccess = (
 ): Notification => ({
   ...defaultSuccessNotification,
   duration: INDEFINITE,
-  icon: IconFont.Clock,
+  icon: IconFont.Clock_New,
   message: `Your dashboard auto refresh settings have been reset due to inactivity ${
     time ? 'over the last' + time : ''
   }`,

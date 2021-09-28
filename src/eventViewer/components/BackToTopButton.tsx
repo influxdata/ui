@@ -27,7 +27,7 @@ const BackToTopButton: FC<EventViewerChildProps> = ({
   return (
     <Button
       className="back-to-top-button"
-      icon={IconFont.CaretUp}
+      icon={IconFont.CaretUp_New}
       text="Back to Top"
       onClick={() => dispatch({type: 'CLICKED_BACK_TO_TOP'})}
     />

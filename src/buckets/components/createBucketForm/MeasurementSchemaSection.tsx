@@ -58,7 +58,7 @@ export const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
         <FlexBox direction={FlexDirection.Row} className="schema-row">
           <div className="value-text">{measurementSchema.name}</div>
           <Button
-            icon={IconFont.Download}
+            icon={IconFont.Download_New}
             color={ComponentColor.Secondary}
             text="Download Schema"
             onClick={handleDownloadSchema}

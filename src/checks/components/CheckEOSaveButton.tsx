@@ -98,7 +98,7 @@ const QueryChecklistItem: FunctionComponent<ChecklistItemProps> = ({
   const className = selected
     ? 'query-checklist--item valid'
     : 'query-checklist--item error'
-  const icon = selected ? IconFont.Checkmark : IconFont.Remove
+  const icon = selected ? IconFont.Checkmark : IconFont.Remove_New
 
   return (
     <li className={className}>

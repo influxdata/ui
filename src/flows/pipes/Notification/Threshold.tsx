@@ -438,7 +438,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
                 className="threshold-trash-icon--block"
                 onClick={() => handleRemoveThreshold(index)}
               >
-                <Icon glyph={IconFont.Trash} />
+                <Icon glyph={IconFont.Trash_New} />
               </div>
             ) : null}
           </FlexBox.Child>

@@ -98,7 +98,7 @@ export default class TasksHeader extends PureComponent<Props, State> {
                   className="header-cta--close-icon"
                   onClick={this.hideFlowsCTA}
                 >
-                  <Icon glyph={IconFont.Remove} />
+                  <Icon glyph={IconFont.Remove_New} />
                 </span>
               </div>
             </div>
@@ -132,7 +132,7 @@ export default class TasksHeader extends PureComponent<Props, State> {
               />
             </FlexBox>
             <Button
-              icon={IconFont.Plus}
+              icon={IconFont.Plus_New}
               color={ComponentColor.Primary}
               text="Create Task"
               titleText="Click to create a Task"

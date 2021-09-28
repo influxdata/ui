@@ -43,7 +43,7 @@ const mockNotify = () => {
         notification: {
           message: 'MOCKED NOTIFICATION',
           style: NotificationStyle.Error,
-          icon: IconFont.Trash,
+          icon: IconFont.Trash_New,
         },
       },
     }

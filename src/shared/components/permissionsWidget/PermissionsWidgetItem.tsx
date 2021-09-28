@@ -58,7 +58,7 @@ class PermissionsWidgetItem extends Component<Props> {
 
     return (
       <div className="permissions-widget--icon">
-        <span className={`icon ${IconFont.Remove}`} />
+        <span className={`icon ${IconFont.Remove_New}`} />
       </div>
     )
   }

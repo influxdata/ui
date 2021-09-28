@@ -112,7 +112,7 @@ const TableGraphs: FC<Props> = ({properties, result}) => {
             {!!_selectedTable?.data?.length && (
               <div className="time-machine-sidebar--heading">
                 <Input
-                  icon={IconFont.Search}
+                  icon={IconFont.Search_New}
                   onChange={e => {
                     setSearch(e.target.value)
                   }}

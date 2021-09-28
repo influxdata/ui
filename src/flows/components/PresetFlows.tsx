@@ -36,7 +36,7 @@ const PresetFlows: FC = () => {
                     <Button
                       titleText={p}
                       color={ComponentColor.Primary}
-                      icon={IconFont.Plus}
+                      icon={IconFont.Plus_New}
                       className="flows-index--presetButton"
                       onClick={() => history.push(PresetMap[p])}
                     ></Button>

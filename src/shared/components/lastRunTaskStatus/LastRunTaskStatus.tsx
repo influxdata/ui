@@ -36,7 +36,7 @@ const LastRunTaskStatus: FC<PassedProps> = ({lastRunError, lastRunStatus}) => {
 
   if (lastRunStatus === 'cancel') {
     color = ComponentColor.Warning
-    icon = IconFont.Remove
+    icon = IconFont.Remove_New
     text = 'Task Cancelled'
   }
 

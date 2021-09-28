@@ -72,7 +72,7 @@ function InviteListContextMenu({invite}: Props) {
           testID="resend-invite"
         />
         <ConfirmationButton
-          icon={IconFont.Trash}
+          icon={IconFont.Trash_New}
           onShow={() => setHover(false)}
           onHide={() => setHover(true)}
           confirmationLabel="This action will invalidate the invitation link sent to this user"

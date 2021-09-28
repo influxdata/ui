@@ -103,29 +103,30 @@ export const MiniFileDnd: FC<Props> = ({
     }
   }
 
-  const handleFileClick = (e: any): void => {
-    const file: File = e.currentTarget.files[0]
+  const handleFileClick = (event: any): void => {
+    const file: File = event.currentTarget.files[0]
 
     if (!file) {
       return
     }
 
-    e.preventDefault()
-    e.stopPropagation()
+    event.preventDefault()
+    event.stopPropagation()
 
     // don't need to see if the file type is valid; the input filters it already for us
     processFile(file)
   }
 
-  const dropHandler = (e: any): void => {
-    const file = e.dataTransfer.files[0]
-    const fileType = file.type
+  const dropHandler = (event: any): void => {
+    const file = event.dataTransfer.files[0]
 
     if (!file) {
       return
     }
-    e.preventDefault()
-    e.stopPropagation()
+    event.preventDefault()
+    event.stopPropagation()
+
+    const fileType = file.type
 
     if (allowedTypes.includes(fileType)) {
       processFile(file)

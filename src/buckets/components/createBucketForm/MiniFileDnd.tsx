@@ -32,7 +32,18 @@ export const setGrammar = (fileTypes: string[]) => {
   return addOrToLastOne.join(', ')
 }
 
-/** read here:
+/**
+ *  This is a small File Drag-and-Drop Input
+ *  It just has some text, with an outline.  there is no icon.
+ *
+ *  The user can click on it to select a file or drag and drop a file on top of it.
+ *
+ *  There can be multiple of these per page.
+ *
+ *  The style changes when a file is hovering over this component,
+ *  to show that it is active
+ *
+ * read here for drag and drop file api:
  * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
  * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
  * */
@@ -130,6 +141,7 @@ export const MiniFileDnd: FC<Props> = ({
     />
   )
 
+  // it gets clicked programmatically since the input itself has display='none'
   const handleFileOpen = (): void => {
     inputEl.current.click()
   }

@@ -76,7 +76,7 @@ const Functions: FC<Props> = ({onSelect}) => {
         <div className="flux-toolbar--search">
           <Input
             type={InputType.Text}
-            icon={IconFont.Search}
+            icon={IconFont.Search_New}
             placeholder="Filter Functions..."
             onChange={updateSearch}
             value={search}

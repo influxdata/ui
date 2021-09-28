@@ -11,7 +11,7 @@ $dapper-scrollbars--size: 6px;
 .dapper-scrollbars--track-y {
   border-radius: $dapper-scrollbars--size !important;
   position: absolute !important;
-  background-color: rgba($g0-obsidian, 0.4) !important;
+  background-color: rgba($cf-grey-5, 0.4) !important;
   user-select: none !important;
   overflow: hidden !important;
   transition: opacity 0.25s ease !important;

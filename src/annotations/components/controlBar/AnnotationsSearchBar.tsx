@@ -90,7 +90,7 @@ export const AnnotationsSearchBar: FC = () => {
         <Input
           ref={inputRef}
           placeholder="Search to enable annotation streams.."
-          icon={IconFont.Search}
+          icon={IconFont.Search_New}
           value={searchTerm}
           onChange={handleInputChange}
           onFocus={handleStartSuggesting}

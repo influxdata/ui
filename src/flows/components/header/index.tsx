@@ -205,7 +205,7 @@ const FlowHeader: FC = () => {
             </FeatureFlag>
             <FeatureFlag name="flow-snapshot">
               <SquareButton
-                icon={IconFont.Export}
+                icon={IconFont.Export_New}
                 onClick={printJSON}
                 color={ComponentColor.Default}
                 titleText="Export Notebook"
@@ -240,14 +240,14 @@ const FlowHeader: FC = () => {
               style={{width: '250px', flex: '0 0 250px'}}
             />
             <SquareButton
-              icon={IconFont.Checkmark}
+              icon={IconFont.Checkmark_New}
               onClick={generateLink}
               color={ComponentColor.Success}
               status={linkGenerationStatus}
               titleText="Set Token"
             />
             <SquareButton
-              icon={IconFont.Remove}
+              icon={IconFont.Remove_New}
               onClick={hideShare}
               color={ComponentColor.Danger}
               titleText="Cancel"
@@ -268,13 +268,13 @@ const FlowHeader: FC = () => {
               </a>
             </p>
             <SquareButton
-              icon={IconFont.Trash}
+              icon={IconFont.Trash_New}
               onClick={deleteShare}
               color={ComponentColor.Danger}
               titleText="Delete"
             />
             <SquareButton
-              icon={IconFont.Remove}
+              icon={IconFont.Remove_New}
               onClick={hideShare}
               color={ComponentColor.Default}
               titleText="Cancel"

@@ -2,16 +2,16 @@
 
 .static-legend-options {
   .latest-axis-label {
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
 }
 
 .latest-y-axis {
-  margin-top: $cf-marg-c;
-  margin-bottom: $cf-marg-b;
+  margin-top: $cf-space-s;
+  margin-bottom: $cf-space-2xs;
 }
 
 .latest-x-axis,
 .static-legend-height-slider {
-  margin-bottom: $cf-marg-c;
+  margin-bottom: $cf-space-s;
 }

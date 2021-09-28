@@ -5,7 +5,7 @@
 .github-logo {
   width: $icon-size-md;
   height: $icon-size-md;
-  fill: $g20-white;
+  fill: $cf-white;
 }
 
 .google-logo {
@@ -58,7 +58,7 @@
 }
 
 .cf-heading.sign-up--form-separator {
-  color: $g8-storm;
+  color: $cf-grey-45;
   margin: $ix-marg-c 0;
 }
 
@@ -67,7 +67,7 @@
     max-width: 100%;
   }
   .cf-heading.sign-up--form-separator {
-    margin: $cf-marg-d 0 $cf-marg-c 0;
+    margin: $cf-space-l 0 $cf-space-s 0;
   }
 }
 

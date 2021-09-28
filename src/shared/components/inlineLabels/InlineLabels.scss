@@ -68,7 +68,7 @@ $label-edit-button-diameter: 18px; // Should be the same as the height of labels
     left: 50%;
     height: $cf-border;
     width: floor($label-edit-button-diameter * 0.5);
-    background-color: $g20-white;
+    background-color: $cf-white;
     border-radius: $cf-border / 2;
     transition: width 0.25s ease;
   }

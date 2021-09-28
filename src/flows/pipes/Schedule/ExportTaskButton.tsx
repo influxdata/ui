@@ -44,7 +44,7 @@ const ExportTaskButton: FC<Props> = ({text, type, generate}) => {
       status={ComponentStatus.Default}
       testID="task-form-save"
       style={{opacity: 1}}
-      icon={IconFont.Export}
+      icon={IconFont.Export_New}
       titleText={text}
     />
   )

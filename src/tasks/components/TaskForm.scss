@@ -7,7 +7,7 @@
   height: calc(100% - #{$ix-marg-d});
   display: flex;
   align-items: stretch;
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   border-radius: $radius;
 }
 
@@ -28,7 +28,7 @@
   line-height: 30px;
   font-size: 13px;
   font-weight: 600;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   flex: 1 0 60px;
   padding-left: 11px;
 }

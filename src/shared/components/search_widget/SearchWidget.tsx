@@ -56,7 +56,7 @@ class SearchWidget extends Component<Props, State> {
     return (
       <ErrorBoundary>
         <Input
-          icon={IconFont.Search}
+          icon={IconFont.Search_New}
           placeholder={placeholderText}
           value={searchTerm}
           onChange={this.handleChange}

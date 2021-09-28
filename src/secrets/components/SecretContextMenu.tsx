@@ -69,7 +69,7 @@ const SecretContextMenu: FC<Props> = ({secret}) => {
         testID={`delete-secret-initial--${secret.id}`}
         size={ComponentSize.Small}
         color={ComponentColor.Danger}
-        icon={IconFont.Trash}
+        icon={IconFont.Trash_New}
         text="Delete"
         shape={ButtonShape.StretchToFit}
         style={{margin: '4px 0 0 10px'}}

@@ -30,6 +30,8 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 import {SortTypes} from 'src/shared/utils/sort'
 import {ResourceType} from 'src/types'
 
+import 'src/shared/components/cta.scss'
+
 interface Props {
   onCreateTask: () => void
   setShowInactive: () => void

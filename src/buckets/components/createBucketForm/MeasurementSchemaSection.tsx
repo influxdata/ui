@@ -22,6 +22,8 @@ import {
 } from '@influxdata/clockface'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
+import {areColumnsKosher} from "./MeasurementSchemaUtils";
+
 import {CLOUD} from 'src/shared/constants'
 
 let MeasurementSchemaList = null,
@@ -58,16 +60,6 @@ interface AddingProps {
   showSchemaValidation?: boolean
 }
 
-const areColumnsKosher = (columns) => {
-
-    if (Array.isArray(columns){
-      return true;
-    }
-    return false;
-  }
-
-
-
 const AddingPanel: FC<AddingProps> = ({
   index,
   name,
@@ -92,7 +84,7 @@ const AddingPanel: FC<AddingProps> = ({
        columns = JSON.parse(contents)
        if (!areColumnsKosher(columns)){
          //set errors
-        setErrorState('columns are not kosher! oink oink')
+        setErrorState(true, 'columns are not kosher! oink oink')
          return;
        }
     }

@@ -15,7 +15,7 @@ import {renderWithReduxAndRouter} from '../../mockState'
 import {buckets, labels, orgs, tasks, withRouterProps} from 'mocks/dummyData'
 import {mockAppState} from 'src/mockAppState'
 import {NotificationStyle, RemoteDataState} from '../../types'
-import {IconFont} from '../../clockface'
+import {IconFont} from '@influxdata/clockface'
 
 jest.mock('src/shared/components/FluxMonacoEditor', () => () => (
   <div>Monaco Here</div>

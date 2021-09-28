@@ -7,7 +7,7 @@ import {
   PermissionsWidgetMode,
   PermissionsWidgetSelection,
 } from 'src/shared/components/permissionsWidget/PermissionsWidget'
-import {IconFont} from 'src/clockface'
+import {IconFont} from '@influxdata/clockface'
 
 interface Props {
   mode?: PermissionsWidgetMode

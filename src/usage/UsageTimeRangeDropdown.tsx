@@ -2,7 +2,7 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import {ComponentColor, Dropdown, Form, IconFont} from '@influxdata/clockface'
+import {Dropdown, Form, IconFont} from '@influxdata/clockface'
 import {UsageContext} from 'src/usage/context/usage'
 
 // Utils

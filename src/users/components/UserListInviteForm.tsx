@@ -10,7 +10,6 @@ import {
   ComponentSize,
   FontWeight,
   Form,
-  Gradients,
   Grid,
   Heading,
   HeadingElement,

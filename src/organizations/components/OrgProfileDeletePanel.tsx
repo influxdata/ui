@@ -5,17 +5,7 @@ import {useHistory} from 'react-router-dom'
 import {track} from 'rudder-sdk-js'
 
 // Components
-import {
-  Button,
-  ComponentSize,
-  Panel,
-  IconFont,
-  FlexBox,
-  AlignItems,
-  FlexDirection,
-  JustifyContent,
-  ComponentColor,
-} from '@influxdata/clockface'
+import {Button, IconFont, FlexBox, ComponentColor} from '@influxdata/clockface'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {UsersContext} from 'src/users/context/users'
 import {getDeleteAccountWarningButton} from 'src/shared/components/notifications/NotificationButtons'

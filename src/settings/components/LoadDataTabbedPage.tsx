@@ -12,6 +12,7 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {AppState} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface ComponentProps {
   activeTab: string
@@ -24,7 +25,10 @@ type Props = ComponentProps & StateProps
 
 const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
   return (
-    <Page.Contents fullWidth={false} scrollable={false}>
+    <Page.Contents
+      fullWidth={false}
+      scrollable={shouldPageBeScrollable(activeTab)}
+    >
       <Tabs.Container
         orientation={Orientation.Horizontal}
         stretchToFitHeight={true}
@@ -36,6 +40,11 @@ const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
       </Tabs.Container>
     </Page.Contents>
   )
+}
+
+// this function returns whether the page should be allowed to scroll or not.
+const shouldPageBeScrollable = (activeTab: string) : boolean => {
+  return activeTab !== 'buckets' || isFlagEnabled('fetchAllBuckets')
 }
 
 const mstp = (state: AppState) => {

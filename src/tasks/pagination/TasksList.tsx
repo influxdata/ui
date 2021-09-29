@@ -11,7 +11,7 @@ import TaskCard from 'src/tasks/components/TaskCard'
 
 // Types
 import EmptyTasksList from 'src/tasks/components/EmptyTasksList'
-import {Task} from 'src/types'
+import {Pageable, Task} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {Sort} from '@influxdata/clockface'
 import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
@@ -59,13 +59,6 @@ interface State {
 }
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
-
-interface Pageable {
-  currentPage: number
-  rowsPerPage: number
-  totalPages: number
-  paginate: (newPage: number) => void
-}
 
 export default class TasksList extends PureComponent<Props, State>
   implements Pageable {

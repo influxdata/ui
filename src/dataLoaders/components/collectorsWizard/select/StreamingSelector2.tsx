@@ -158,8 +158,17 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
   private get filteredBundles(): TelegrafPlugin[] {
     const {searchTerm} = this.state
 
-    return WRITE_DATA_TELEGRAF_PLUGINS.filter(b =>
-      b.name.toLowerCase().includes(searchTerm.toLowerCase())
+    return WRITE_DATA_TELEGRAF_PLUGINS.sort((plugin1, plugin2) => {
+      // sort the plugins array alphabetically
+      if (plugin1.name.toLocaleLowerCase() < plugin2.name.toLocaleLowerCase()) {
+        return -1
+      }
+      if (plugin1.name.toLocaleLowerCase() > plugin2.name.toLocaleLowerCase()) {
+        return 1
+      }
+      return 0
+    }).filter(plugin =>
+      plugin.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
     )
   }
 

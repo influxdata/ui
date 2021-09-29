@@ -16,7 +16,7 @@ import BucketSelector from 'src/flows/shared/BucketSelector'
 import {event} from 'src/cloud/utils/reporting'
 
 const ToBucket: FC<PipeProp> = ({Context}) => {
-  const {data, update} = useContext(PipeContext)
+  const {id, data, update} = useContext(PipeContext)
   const updateBucket = (bucket: Bucket) => {
     event('Updated Bucket', {context: 'to bucket'})
     update({
@@ -25,7 +25,7 @@ const ToBucket: FC<PipeProp> = ({Context}) => {
   }
 
   return (
-    <BucketProvider panel={data.id}>
+    <BucketProvider panel={id}>
       <Context>
         <div className="data-source--controls">
           <BucketSelector

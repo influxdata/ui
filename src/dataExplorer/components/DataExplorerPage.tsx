@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
@@ -17,7 +17,7 @@ import {EditAnnotationDEOverlay} from 'src/overlays/components/index'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {useLoadTimeReporting} from 'src/cloud/utils/reporting'
+import {event, useLoadTimeReporting} from 'src/cloud/utils/reporting'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Types
@@ -26,7 +26,16 @@ import {ResourceType} from 'src/types'
 import 'src/shared/components/cta.scss'
 
 const DataExplorerPage: FC = () => {
+  const [dismissFlowsCTA, setDismissFlowsCTA] = useState(false)
   useLoadTimeReporting('DataExplorerPage load start')
+
+  const hideFlowsCTA = () => {
+    setDismissFlowsCTA(true)
+  }
+
+  const recordClick = () => {
+    event('Data Explorer Page - Clicked Notebooks CTA')
+  }
 
   return (
     <Page titleTag={pageTitleSuffixer(['Data Explorer'])}>
@@ -49,15 +58,23 @@ const DataExplorerPage: FC = () => {
           <Page.Title title="Data Explorer" />
           <RateLimitAlert />
         </Page.Header>
-        <FeatureFlag name="flowsCTA">
-          <div className="header-cta--de">
-            <div className="header-cta">
-              <Icon glyph={IconFont.BookPencil} />
-              Now you can use Notebooks to explore and take action on your data
-              <Link to="/notebook/from/default">Create a Notebook</Link>
+        {!dismissFlowsCTA && (
+          <FeatureFlag name="flowsCTA">
+            <div className="header-cta--de">
+              <div className="header-cta">
+                <Icon glyph={IconFont.BookPencil} />
+                Now you can use Notebooks to explore and take action on your
+                data
+                <Link to="/notebook/from/default" onClick={recordClick}>
+                  Create a Notebook
+                </Link>
+                <span className="header-cta--close-icon" onClick={hideFlowsCTA}>
+                  <Icon glyph={IconFont.Remove} />
+                </span>
+              </div>
             </div>
-          </div>
-        </FeatureFlag>
+          </FeatureFlag>
+        )}
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarLeft>
             <ViewTypeDropdown />

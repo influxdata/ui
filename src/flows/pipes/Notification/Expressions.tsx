@@ -38,7 +38,6 @@ const parsedResultToSchema = (
   }
 
   const out = parsed.table as any
-  const measurements = out.columns._measurement?.data
   const fields = out.columns._field?.data
   const columns = out.columnKeys.filter(key => {
     return filtered.reduce((acc, curr) => {
@@ -54,9 +53,6 @@ const parsedResultToSchema = (
     '_type',
   ]
   const schema = {
-    measurements: new Set<string>(
-      measurements?.filter(m => m.toLowerCase().includes(search.toLowerCase()))
-    ),
     fields: new Set<string>(
       fields?.filter(f => f.toLowerCase().includes(search.toLowerCase()))
     ),

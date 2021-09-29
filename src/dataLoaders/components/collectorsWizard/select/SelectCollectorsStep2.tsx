@@ -6,7 +6,6 @@ import {connect, ConnectedProps} from 'react-redux'
 import {Form, DapperScrollbars, Grid, Columns} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import StreamingSelectorTelegrafUiRefresh from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
-import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
 // Actions
 import {
@@ -17,8 +16,7 @@ import {setBucketInfo} from 'src/dataLoaders/actions/steps'
 
 // Types
 import {Bucket} from 'src/types'
-import {ComponentStatus} from '@influxdata/clockface'
-import {CollectorsStepProps} from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
+import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
 import {AppState, ResourceType} from 'src/types'
 
 // Selectors
@@ -28,7 +26,7 @@ import {getAll} from 'src/resources/selectors'
 import {isSystemBucket} from 'src/buckets/constants'
 import {TelegrafPlugin} from 'src/types/dataLoaders'
 
-export interface OwnProps extends CollectorsStepProps {
+export interface OwnProps extends PluginCreateConfigurationStepProps {
   buckets: Bucket[]
 }
 
@@ -42,6 +40,14 @@ type Props = OwnProps & ReduxProps
 @ErrorHandling
 export class SelectCollectorsStep extends PureComponent<Props, State> {
   state = {selectedBucketName: ''}
+
+  public componentDidUpdate() {
+    const {setIsValidConfiguration} = this.props
+    if (this.state.selectedBucketName && this.props.telegrafPlugins?.length) {
+      setIsValidConfiguration(true)
+    }
+  }
+
   public render() {
     return (
       <Form
@@ -73,31 +79,8 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
             onSelectBucket={this.handleSelectBucket}
           />
         </DapperScrollbars>
-        <OnboardingButtons
-          autoFocusNext={true}
-          nextButtonStatus={this.nextButtonStatus}
-          className="data-loading--button-container"
-        />
       </Form>
     )
-  }
-
-  private get nextButtonStatus(): ComponentStatus {
-    const {telegrafPlugins, buckets} = this.props
-    const {selectedBucketName} = this.state
-    if (!buckets || !buckets.length) {
-      return ComponentStatus.Disabled
-    }
-
-    if (!telegrafPlugins.length) {
-      return ComponentStatus.Disabled
-    }
-
-    if (!selectedBucketName) {
-      return ComponentStatus.Disabled
-    }
-
-    return ComponentStatus.Default
   }
 
   private handleSelectBucket = (bucket: Bucket) => {

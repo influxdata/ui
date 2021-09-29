@@ -19,6 +19,7 @@ import {
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
+import SaveState from 'src/flows/components/header/SaveState'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {DEFAULT_PROJECT_NAME} from 'src/flows'
@@ -46,7 +47,7 @@ interface Share {
 }
 
 const FlowHeader: FC = () => {
-  const {flow, updateOther, id} = useContext(FlowContext)
+  const {flow, updateOther} = useContext(FlowContext)
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
   const [token, setToken] = useState<Token>()
@@ -56,8 +57,8 @@ const FlowHeader: FC = () => {
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
-    if (isFlagEnabled('notebookShare')) {
-      getNotebooksShare({query: {orgID: '', notebookID: id}})
+    if (isFlagEnabled('shareNotebook')) {
+      getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
         .then(res => {
           if (res.data) {
             // TODO: handle there being multiple links?
@@ -66,12 +67,12 @@ const FlowHeader: FC = () => {
         })
         .catch(err => console.error('failed to get notebook share', err))
     }
-  }, [id])
+  }, [flow.id])
 
   const handleRename = (name: string) => {
     updateOther({name})
     try {
-      updatePinnedItemByParam(id, {name})
+      updatePinnedItemByParam(flow.id, {name})
     } catch (err) {
       console.error(err)
     }
@@ -114,7 +115,7 @@ const FlowHeader: FC = () => {
     setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
       data: {
-        notebookID: id,
+        notebookID: flow.id,
         orgID,
         token: token.token,
         region: window.location.hostname,
@@ -188,6 +189,7 @@ const FlowHeader: FC = () => {
         <Page.ControlBar fullWidth>
           <Page.ControlBarLeft>
             <Submit />
+            <SaveState />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <PresentationMode />

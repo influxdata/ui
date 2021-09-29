@@ -280,17 +280,22 @@ const Threshold: FC<Props> = ({readOnly}) => {
     })
   }
 
-  const updateValue = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+  const updateValue = (
+    changeEvent: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    event('Alert Panel (Notebooks) - Threshold Value Entered')
     const threshold = thresholds.find((_, i) => index === i)
 
     if (threshold) {
-      threshold.value = event.target.value
+      threshold.value = changeEvent.target.value
     }
 
     update({thresholds})
   }
 
   const handleAddThreshold = () => {
+    event('Alert Panel (Notebooks) - New Threshold Added')
     update({
       thresholds: [
         ...thresholds,
@@ -422,7 +427,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
             text={index === 0 ? 'When' : 'And'}
             style={{minWidth: 56, textAlign: 'center'}}
           />
-          <FlexBox.Child grow={1} testID="component-spacer--flex-child">
+          <FlexBox.Child grow={2} testID="component-spacer--flex-child">
             {columnDropdown(threshold, index)}
           </FlexBox.Child>
           <TextBlock testID="is-value-text-block" text="is" />

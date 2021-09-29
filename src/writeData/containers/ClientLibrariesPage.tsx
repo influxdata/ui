@@ -36,9 +36,10 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
 interface SampleProps {
   name: string
   sample: string | CodeSampleOption[]
+  onCopy?: () => void
 }
 
-export const CodeSampleBlock: FC<SampleProps> = ({name, sample}) => {
+export const CodeSampleBlock: FC<SampleProps> = ({name, sample, onCopy}) => {
   if (!sample) {
     return null
   }
@@ -50,7 +51,7 @@ export const CodeSampleBlock: FC<SampleProps> = ({name, sample}) => {
         {sample.map((option, idx) => (
           <div key={idx}>
             <h6>{`Option ${idx + 1}: ${option.title}`}</h6>
-            <CodeSnippet text={option.code} />
+            <CodeSnippet text={option.code} onCopy={onCopy} />
           </div>
         ))}
       </>
@@ -60,7 +61,7 @@ export const CodeSampleBlock: FC<SampleProps> = ({name, sample}) => {
   return (
     <>
       <h4>{name}</h4>
-      <CodeSnippet text={sample} />
+      <CodeSnippet text={sample} onCopy={onCopy} />
     </>
   )
 }

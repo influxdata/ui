@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import useLocalStorageState from 'use-local-storage-state'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
 import {v4 as UUID} from 'uuid'
 import {
   FlowList,
@@ -65,6 +65,11 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   currentID: null,
 } as FlowListContextType
 
+const useLocalStorageState = createLocalStorageStateHook(
+  'flows',
+  DEFAULT_CONTEXT.flows
+)
+
 export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
@@ -110,7 +115,12 @@ export function hydrate(data) {
     readOnly: data.spec.readOnly,
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
+    createdBy: data.createdBy,
   }
+  if (data.id) {
+    flow.id = data.id
+  }
+
   if (!data?.spec?.pipes) {
     return flow
   }
@@ -136,7 +146,7 @@ export function hydrate(data) {
 }
 
 export const FlowListProvider: FC = ({children}) => {
-  const [flows, setFlows] = useLocalStorageState('flows', DEFAULT_CONTEXT.flows)
+  const [flows, setFlows] = useLocalStorageState()
   const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
   const org = useSelector(getOrg)
 

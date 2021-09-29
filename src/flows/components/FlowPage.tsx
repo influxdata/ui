@@ -43,41 +43,43 @@ const FlowFromRoute = () => {
   return null
 }
 
-const FlowContainer: FC = () => (
+export const FlowPage: FC = () => (
+  <RunModeProvider>
+    <ResultsProvider>
+      <FlowQueryProvider>
+        <FlowKeyboardPreview />
+        <SidebarProvider>
+          <Page>
+            <FlowHeader />
+            <Page.Contents
+              fullWidth={true}
+              scrollable={false}
+              className="flow-page"
+            >
+              <PopupProvider>
+                <DapperScrollbars
+                  noScrollX
+                  thumbStartColor="gray"
+                  thumbStopColor="gray"
+                >
+                  <PipeList />
+                </DapperScrollbars>
+                <SubSideBar />
+                <PopupDrawer />
+              </PopupProvider>
+            </Page.Contents>
+          </Page>
+        </SidebarProvider>
+      </FlowQueryProvider>
+    </ResultsProvider>
+  </RunModeProvider>
+)
+
+export default () => (
   <QueryProvider>
     <CurrentFlowProvider>
-      <RunModeProvider>
-        <FlowFromRoute />
-        <ResultsProvider>
-          <FlowQueryProvider>
-            <FlowKeyboardPreview />
-            <SidebarProvider>
-              <Page>
-                <FlowHeader />
-                <Page.Contents
-                  fullWidth={true}
-                  scrollable={false}
-                  className="flow-page"
-                >
-                  <PopupProvider>
-                    <DapperScrollbars
-                      noScrollX
-                      thumbStartColor="gray"
-                      thumbStopColor="gray"
-                    >
-                      <PipeList />
-                    </DapperScrollbars>
-                    <SubSideBar />
-                    <PopupDrawer />
-                  </PopupProvider>
-                </Page.Contents>
-              </Page>
-            </SidebarProvider>
-          </FlowQueryProvider>
-        </ResultsProvider>
-      </RunModeProvider>
+      <FlowFromRoute />
+      <FlowPage />
     </CurrentFlowProvider>
   </QueryProvider>
 )
-
-export default FlowContainer

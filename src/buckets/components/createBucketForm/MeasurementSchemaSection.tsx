@@ -83,11 +83,15 @@ const AddingPanel: FC<AddingProps> = ({
     setFileErrorMessage(message)
   }
 
+  // propagating errors up (or throwing new ones),
+  // since the mini file dnd component calls this method,
+  // then calls setError(false).  so; if we call setError(true) then it gets immediately
+  // overridden.  with the propagation, the error state only gets called once properly.
   const handleUploadFile = (contents: string, fileName: string) => {
     event('bucket.schema.explicit.uploadSchema')
     console.log('got file???', contents, fileName)
 
-    //do parsing here?  to check in the correct format.....
+    //do parsing here;  to check in the correct format:
     let columns = null
     if (contents) {
       // parse them; if kosher; great!  if not, set errors and do not proceed
@@ -95,14 +99,14 @@ const AddingPanel: FC<AddingProps> = ({
       try {
         columns = JSON.parse(contents)
       } catch (error) {
-        console.log('got error:', error)
+        // rethrow for the mini file uploader to show the error
         throw error
       }
 
       if (!areColumnsKosher(columns)) {
-        //set errors
+        // set errors
+        // todo:  make *real* error message
         throw {message: 'columns are not kosher! oink oink'}
-        //return
       }
     }
 

@@ -438,8 +438,13 @@ describe('labels', () => {
       cy.getByTestID('label-card').should('have.length', 1)
       cy.getByTestID('empty-state').should('not.exist')
 
-      cy.getByTestID('context-delete-menu').click({force: true})
-      cy.getByTestID('context-delete-label').click({force: true})
+      // Delete a label
+      cy.getByTestID(`context-delete-label ${labelName}--button`)
+        .first()
+        .click()
+      cy.getByTestID(`context-delete-label ${labelName}--confirm-button`)
+        .first()
+        .click()
 
       cy.getByTestID('empty-state').should('exist')
     })

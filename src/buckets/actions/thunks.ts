@@ -6,7 +6,7 @@ import {Dispatch} from 'react'
 import * as api from 'src/client'
 
 // Schemas
-import {bucketSchema, arrayOfBuckets} from 'src/schemas'
+import {bucketSchema} from 'src/schemas'
 
 // Types
 import {
@@ -21,11 +21,14 @@ import {
   ResourceType,
 } from 'src/types'
 
+import {fetchAllBuckets} from 'src/buckets/api'
+
 // Utils
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {
@@ -37,7 +40,6 @@ import {
 } from 'src/buckets/actions/creators'
 import {notify, Action as NotifyAction} from 'src/shared/actions/notifications'
 import {checkBucketLimits} from 'src/cloud/actions/limits'
-import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
 
 // Constants
 import {
@@ -51,7 +53,6 @@ import {
   addBucketLabelFailed,
   removeBucketLabelFailed,
 } from 'src/shared/copy/notifications'
-import {BUCKET_LIMIT} from 'src/resources/constants'
 
 type Action = BucketAction | NotifyAction
 
@@ -60,28 +61,6 @@ let getBucketsSchemaMeasurements = null
 if (CLOUD) {
   getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
     .getBucketsSchemaMeasurements
-}
-
-// todo: probably isn't thunk ? (should be moved to utils or something like that)
-export const fetchAllBuckets = async (orgID: string) => {
-  const resp = await api.getBuckets({
-    query: {orgID, limit: BUCKET_LIMIT},
-  })
-
-  if (resp.status !== 200) {
-    throw new Error(resp.data.message)
-  }
-
-  let demoDataBuckets = []
-
-  if (CLOUD) {
-    demoDataBuckets = await fetchDemoDataBuckets()
-  }
-
-  return normalize<Bucket, BucketEntities, string[]>(
-    [...resp.data.buckets, ...demoDataBuckets],
-    arrayOfBuckets
-  )
 }
 
 export const getBuckets = () => async (
@@ -95,8 +74,13 @@ export const getBuckets = () => async (
     }
     const org = getOrg(state)
 
-    const buckets = await fetchAllBuckets(org.id)
-
+    let buckets
+    if (isFlagEnabled('fetchAllBuckets')) {
+      // a limit of -1 means fetch all buckets for this org
+      buckets = await fetchAllBuckets(org.id, -1)
+    } else {
+      buckets = await fetchAllBuckets(org.id)
+    }
     dispatch(setBuckets(RemoteDataState.Done, buckets))
   } catch (error) {
     console.error(error)

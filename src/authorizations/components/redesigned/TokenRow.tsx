@@ -32,8 +32,8 @@ import {Context} from 'src/clockface'
 // Types
 import {Authorization, AppState} from 'src/types'
 import {
-  DEFAULT_TOKEN_DESCRIPTION,
   UPDATED_AT_TIME_FORMAT,
+  DEFAULT_TOKEN_DESCRIPTION,
 } from 'src/dashboards/constants'
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
@@ -54,7 +54,6 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
-
     return (
       <ResourceCard
         contextMenu={this.contextMenu}

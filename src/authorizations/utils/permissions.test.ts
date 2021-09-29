@@ -1,5 +1,6 @@
 import {allAccessPermissions, toggleSelectedBucket} from './permissions'
 import {CLOUD} from 'src/shared/constants'
+import {generateDescription} from 'src/authorizations/utils/permissions'
 
 // TODO remove all of this when we move to server side authority
 const ossHvhs = [
@@ -511,6 +512,142 @@ const cloudHvhs = [
   },
 ]
 
+const apiPermission1 = [
+  {
+    action: 'read',
+    resource: {
+      id: '34234532',
+      name: '_monitoring',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      id: '34233432',
+      name: '_monitoring',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      id: '34234532',
+      name: 'devbucket',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      id: '34234532',
+      name: 'devbucket',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+]
+
+const apiPermission2 = [
+  {
+    action: 'read',
+    resource: {
+      orgID: 'd34323',
+      type: 'telegraf',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'd34323',
+      type: 'telegraf',
+    },
+  },
+]
+
+const apiPermission3 = [
+  {
+    action: 'read',
+    resource: {
+      id: '34234532',
+      name: '_monitoring',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      id: '34233432',
+      name: '_monitoring',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      id: '34234532',
+      name: 'devbucket',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+]
+
+const apiPermission4 = [
+  {
+    action: 'write',
+    resource: {
+      id: '34234532',
+      name: '_monitoring',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      id: '34233432',
+      name: '_monitoring',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      id: '34234532',
+      name: 'devbucket',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+]
+
+const apiPermission5 = [
+  {
+    action: 'read',
+    resource: {
+      id: '34234532',
+      name: '_monitoring',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      id: '34233432',
+      name: '_monitoring',
+      orgID: 'd34323',
+      type: 'buckets',
+    },
+  },
+]
 test('all-access tokens/authorizations production test', () => {
   if (CLOUD) {
     expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(cloudHvhs)
@@ -531,4 +668,32 @@ test('toggleSelectedBucket test', () => {
     'bucket1',
     'bucket3',
   ])
+})
+
+describe('generateDescription method', () => {
+  test('creates a description for token with mutiple permissions', () => {
+    expect(generateDescription(apiPermission1)).toBe(
+      'Read Multiple Write Multiple'
+    )
+  })
+
+  test('creates a read multiple description for token with mutiple read only permissions', () => {
+    expect(generateDescription(apiPermission3)).toBe('Read Multiple')
+  })
+
+  test('creates a write multiple description for token with mutiple write only permissions', () => {
+    expect(generateDescription(apiPermission4)).toBe('Write Multiple')
+  })
+
+  test('creates a description for token with less than 2 permissions', () => {
+    expect(generateDescription(apiPermission2)).toBe(
+      'Read telegraf Write telegraf'
+    )
+  })
+
+  test('creates a description for token with less than 2 permissions', () => {
+    expect(generateDescription(apiPermission5)).toBe(
+      'Read buckets _monitoring Write buckets _monitoring'
+    )
+  })
 })

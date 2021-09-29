@@ -38,7 +38,10 @@ import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 
 // Utils
-import {formatApiPermissions} from 'src/authorizations/utils/permissions'
+import {
+  formatApiPermissions,
+  generateDescription,
+} from 'src/authorizations/utils/permissions'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
@@ -150,10 +153,14 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   const generateToken = () => {
     const {onCreateAuthorization, orgID, showOverlay} = props
 
+    const apiPermissions = formatApiPermissions(permissions, orgID)
+
     const token: Authorization = {
       orgID: orgID,
-      description: description,
-      permissions: formatApiPermissions(permissions, props.orgID),
+      description: description
+        ? description
+        : generateDescription(apiPermissions),
+      permissions: apiPermissions,
     }
 
     onCreateAuthorization(token)

@@ -44,7 +44,10 @@ const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
 
 // this function returns whether the page should be allowed to scroll or not based on the featureFlag enabled and the current tab the user is on.
 const shouldPageBeScrollable = (activeTab: string): boolean => {
-  return activeTab !== 'buckets' || isFlagEnabled('fetchAllBuckets')
+  if (activeTab === 'buckets' && isFlagEnabled('fetchAllBuckets')) {
+    return false
+  }
+  return true
 }
 
 const mstp = (state: AppState) => {

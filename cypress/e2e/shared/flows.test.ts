@@ -10,7 +10,6 @@ describe('Flows', () => {
             cy.getByTestID('version-info')
             return cy
               .setFeatureFlags({
-                simpleTable: true,
                 notebooksExp: true,
               })
               .then(() => {

@@ -183,7 +183,7 @@ describe('Sources > Telegraf Plugins', () => {
     })
   })
 
-  it('can add the two different plugins to the same configuration', () => {
+  it('can add two different plugins to the same configuration', () => {
     const plugin1 = 'aerospike'
     const plugin2 = 'activemq'
     const configurationName = `configuration with ${plugin1} and ${plugin2}`

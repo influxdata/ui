@@ -45,6 +45,17 @@ class BucketList
   public rowsPerPage: number = 10
   public totalPages: number
 
+  public componentDidMount() {
+    const params = new URLSearchParams(window.location.search)
+    const urlPageNumber = parseInt(params.get('page'), 10)
+
+    const passedInPageIsValid = urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber >= 0
+
+    if (passedInPageIsValid) {
+      this.currentPage = urlPageNumber
+    }
+  }
+
   public render() {
     this.totalPages = Math.ceil(this.props.bucketCount / this.rowsPerPage)
 
@@ -76,6 +87,9 @@ class BucketList
 
   public paginate = page => {
     this.currentPage = page
+    const url = new URL(location.href)
+    url.searchParams.set('page', page)
+    history.replaceState(null, '', url.toString())
     this.forceUpdate()
   }
 

@@ -7,7 +7,7 @@ import {useParams} from 'react-router'
 // Components
 import {Overlay} from '@influxdata/clockface'
 import PageSpinner from 'src/perf/components/PageSpinner'
-import {PluginCreateConfigurationFooter} from 'src/writeData/components/PluginCreateConfigurationFooter'
+import {Footer} from 'src/writeData/components/PluginAddToExistingConfiguration/Footer'
 
 // Types
 import {AppState} from 'src/types'
@@ -23,21 +23,21 @@ import {
 } from 'src/dataLoaders/actions/steps'
 import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
-// Constants
-import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
-
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
+const PREVENT_OVERLAY_FLICKER_STEP = -1
 
-const PluginCreateConfigurationStepSwitcher = Loadable({
+const StepSwitcher = Loadable({
   loader: () =>
-    import('src/writeData/components/PluginCreateConfigurationStepSwitcher'),
+    import(
+      'src/writeData/components/PluginAddToExistingConfiguration/StepSwitcher'
+    ),
   loading() {
     return <PageSpinner />
   },
 })
 
-export interface PluginCreateConfigurationStepProps {
+export interface PluginConfigurationStepProps {
   currentStepIndex: number
   isValidConfiguration: boolean
   notify: typeof notifyAction
@@ -52,7 +52,7 @@ export interface PluginCreateConfigurationStepProps {
   substepIndex?: number
 }
 
-interface PluginCreateConfigurationWizardProps {
+interface WizardProps {
   history: {
     goBack: () => void
   }
@@ -63,9 +63,9 @@ type ParamsType = {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & PluginCreateConfigurationWizardProps
+type Props = ReduxProps & WizardProps
 
-const PluginCreateConfigurationWizard: FC<Props> = props => {
+const Wizard: FC<Props> = props => {
   const {
     currentStepIndex,
     history,
@@ -76,7 +76,6 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetCurrentStepIndex,
     onSetSubstepIndex,
-    substepIndex,
   } = props
 
   const {contentID} = useParams<ParamsType>()
@@ -95,12 +94,9 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   const handleDismiss = () => {
     onClearDataLoaders()
     onClearSteps()
-    if (substepIndex === 1) {
-      onSetSubstepIndex(0, 0)
-    } else {
-      setIsVisible(false)
-      history.goBack()
-    }
+    onSetCurrentStepIndex(PREVENT_OVERLAY_FLICKER_STEP)
+    history.goBack()
+    setIsVisible(false)
   }
 
   const stepProps = {
@@ -112,26 +108,19 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
     pluginConfig,
+    pluginConfigName: contentID,
     setIsValidConfiguration,
     setPluginConfig,
-    substepIndex,
-    pluginConfigName: contentID,
   }
 
   let title = 'Configuration Options'
-  if (currentStepIndex === 0 && substepIndex === 1) {
-    title = 'Create Bucket'
-  } else if (currentStepIndex !== 0) {
-    title = 'Add Plugin to a new Telegraf Configuration'
+  if (currentStepIndex !== 0) {
+    title = 'Edit this Telegraf Configuration'
   }
 
   let maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH
   if (currentStepIndex === 0) {
-    if (substepIndex === 1) {
-      maxWidth = BUCKET_OVERLAY_WIDTH
-    } else {
-      maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH
-    }
+    maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH
   }
 
   let overlayBodyClassName = 'data-loading--overlay'
@@ -145,9 +134,9 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
       <Overlay.Container maxWidth={maxWidth}>
         <Overlay.Header title={title} onDismiss={handleDismiss} />
         <Overlay.Body className={overlayBodyClassName}>
-          <PluginCreateConfigurationStepSwitcher stepProps={stepProps} />
+          <StepSwitcher stepProps={stepProps} />
         </Overlay.Body>
-        <PluginCreateConfigurationFooter {...stepProps} />
+        <Footer {...stepProps} />
       </Overlay.Container>
     </Overlay>
   )
@@ -156,13 +145,12 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
 const mstp = (state: AppState) => {
   const {
     dataLoading: {
-      steps: {currentStep, substep = 0},
+      steps: {currentStep},
     },
   } = state
 
   return {
     currentStepIndex: currentStep,
-    substepIndex: typeof substep === 'number' ? substep : 0,
   }
 }
 
@@ -178,4 +166,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(PluginCreateConfigurationWizard)
+export default connector(Wizard)

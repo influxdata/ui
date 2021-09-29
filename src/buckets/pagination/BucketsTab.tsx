@@ -6,7 +6,13 @@ import {AutoSizer} from 'react-virtualized'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {Columns, ComponentSize, EmptyState, Grid, Sort} from '@influxdata/clockface'
+import {
+  Columns,
+  ComponentSize,
+  EmptyState,
+  Grid,
+  Sort,
+} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import FilterList from 'src/shared/components/FilterList'
@@ -19,7 +25,12 @@ import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/R
 import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 
 // Actions
-import {createBucket, deleteBucket, getBucketSchema, updateBucket} from 'src/buckets/actions/thunks'
+import {
+  createBucket,
+  deleteBucket,
+  getBucketSchema,
+  updateBucket,
+} from 'src/buckets/actions/thunks'
 
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
@@ -79,16 +90,14 @@ class BucketsTab extends PureComponent<Props, State> {
     }
 
     let sortDirection: Sort = this.state.sortDirection
-    if (params.get('sortDirection') === Sort.Ascending){
+    if (params.get('sortDirection') === Sort.Ascending) {
       sortDirection = Sort.Ascending
-    }
-    else if (params.get('sortDirection') === Sort.Descending){
+    } else if (params.get('sortDirection') === Sort.Descending) {
       sortDirection = Sort.Descending
     }
 
     this.setState({sortKey, sortDirection, sortType})
   }
-
 
   public render() {
     const {buckets, limitStatus} = this.props

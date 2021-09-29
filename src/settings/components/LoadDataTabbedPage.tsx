@@ -24,7 +24,7 @@ type Props = ComponentProps & StateProps
 
 const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
   return (
-    <Page.Contents fullWidth={false} scrollable={false}>
+    <Page.Contents fullWidth={false} scrollable={true}>
       <Tabs.Container
         orientation={Orientation.Horizontal}
         stretchToFitHeight={true}

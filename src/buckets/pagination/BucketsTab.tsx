@@ -6,13 +6,7 @@ import {AutoSizer} from 'react-virtualized'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {
-  Grid,
-  ComponentSize,
-  Sort,
-  EmptyState,
-  Columns,
-} from '@influxdata/clockface'
+import {Columns, ComponentSize, EmptyState, Grid, Sort} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import FilterList from 'src/shared/components/FilterList'
@@ -25,14 +19,9 @@ import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/R
 import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 
 // Actions
-import {
-  createBucket,
-  updateBucket,
-  deleteBucket,
-  getBucketSchema,
-} from 'src/buckets/actions/thunks'
+import {createBucket, deleteBucket, getBucketSchema, updateBucket} from 'src/buckets/actions/thunks'
 
-import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/limits'
 
@@ -42,7 +31,7 @@ import {getAll} from 'src/resources/selectors'
 import {SortTypes} from 'src/shared/utils/sort'
 
 // Types
-import {AppState, Bucket, ResourceType, OwnBucket} from 'src/types'
+import {AppState, Bucket, OwnBucket, ResourceType} from 'src/types'
 import {BucketSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 interface State {
@@ -79,7 +68,27 @@ class BucketsTab extends PureComponent<Props, State> {
 
   public componentDidMount() {
     this.props.checkBucketLimits()
+
+    let sortType: SortTypes = this.state.sortType
+    const params = new URLSearchParams(window.location.search)
+
+    let sortKey: BucketSortKey = 'name'
+    if (params.get('sortKey') === 'readableRetention') {
+      sortKey = 'readableRetention'
+      sortType = SortTypes.Date
+    }
+
+    let sortDirection: Sort = this.state.sortDirection
+    if (params.get('sortDirection') === Sort.Ascending){
+      sortDirection = Sort.Ascending
+    }
+    else if (params.get('sortDirection') === Sort.Descending){
+      sortDirection = Sort.Descending
+    }
+
+    this.setState({sortKey, sortDirection, sortType})
   }
+
 
   public render() {
     const {buckets, limitStatus} = this.props
@@ -190,6 +199,11 @@ class BucketsTab extends PureComponent<Props, State> {
     sortDirection: Sort,
     sortType: SortTypes
   ): void => {
+    const url = new URL(location.href)
+    url.searchParams.set('sortKey', sortKey)
+    url.searchParams.set('sortDirection', sortDirection)
+    history.replaceState(null, '', url.toString())
+
     this.setState({sortKey, sortDirection, sortType})
   }
 

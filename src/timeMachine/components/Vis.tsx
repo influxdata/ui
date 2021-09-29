@@ -12,7 +12,6 @@ import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {

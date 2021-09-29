@@ -54,11 +54,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
   return (
     <div className="flow-divider" ref={dividerRef}>
       <SquareButton
-<<<<<<< HEAD
         icon={IconFont.Plus_New}
-=======
-        icon={IconFont.Plus}
->>>>>>> fix: Notebooks cosmetic changes in clockface beta (#2630)
         size={ComponentSize.ExtraSmall}
         ref={buttonRef}
         testID={`panel-add-btn-${index}`}

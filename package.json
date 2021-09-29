@@ -164,11 +164,7 @@
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.37",
-<<<<<<< HEAD
     "@influxdata/clockface": "^3.0.0-beta.8",
-=======
-    "@influxdata/clockface": "^3.0.0-beta.7",
->>>>>>> chore: install clockface beta and fix e2e tests (#2502)
     "@influxdata/flux": "^0.5.1",
     "@influxdata/flux-lsp-browser": "^0.5.53",
     "@influxdata/giraffe": "^2.18.4",

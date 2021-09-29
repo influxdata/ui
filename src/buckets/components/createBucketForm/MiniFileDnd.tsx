@@ -96,10 +96,14 @@ export const MiniFileDnd: FC<Props> = ({
     reader.readAsText(file)
     reader.onload = () => {
       const fileName = file.name
-      handleFileUpload(reader.result as string, fileName)
+      try {
+        handleFileUpload(reader.result as string, fileName)
 
-      setFileName(fileName)
-      setError(false)
+        setFileName(fileName)
+        setError(false)
+      } catch (error) {
+        setError(true, error.message)
+      }
     }
   }
 

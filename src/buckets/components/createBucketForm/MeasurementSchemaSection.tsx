@@ -53,7 +53,7 @@ interface PanelProps {
 interface AddingProps {
   index: number
   onAddName: (name: string, index: number) => void
-  onAddContents: (contents: string, filename: string, index: number) => void
+  onAddContents: (columns: string, filename: string, index: number) => void
   onDelete: (index: number) => void
   filename?: string
   name?: string
@@ -73,6 +73,16 @@ const AddingPanel: FC<AddingProps> = ({
   const [fileError, setFileError] = useState(false)
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
 
+  const setErrorState = (hasError, message) => {
+    setFileError(hasError)
+
+    if (!hasError) {
+      message = null
+    }
+
+    setFileErrorMessage(message)
+  }
+
   const handleUploadFile = (contents: string, fileName: string) => {
     event('bucket.schema.explicit.uploadSchema')
     console.log('got file???', contents, fileName)
@@ -81,15 +91,23 @@ const AddingPanel: FC<AddingProps> = ({
     let columns = null
     if (contents) {
       // parse them; if kosher; great!  if not, set errors and do not proceed
-      columns = JSON.parse(contents)
+
+      try {
+        columns = JSON.parse(contents)
+      } catch (error) {
+        console.log('got error:', error)
+        throw error
+      }
+
       if (!areColumnsKosher(columns)) {
         //set errors
-        setErrorState(true, 'columns are not kosher! oink oink')
-        return
+        throw {message: 'columns are not kosher! oink oink'}
+        //return
       }
     }
 
-    onAddContents(contents, fileName, index)
+    console.log('it is kosher; moo moo squawk squawk')
+    onAddContents(columns, fileName, index)
   }
 
   // jill note: http://localhost:9001/?path=/story/components-buttons-composed--dismissbutton
@@ -144,16 +162,6 @@ const AddingPanel: FC<AddingProps> = ({
   const allowedTypes = ['application/json']
   const allowedExtensions = '.json'
 
-  const setErrorState = (hasError, message) => {
-    setFileError(hasError)
-
-    if (!hasError) {
-      message = null
-    }
-
-    setFileErrorMessage(message)
-  }
-
   const newDndElement = (
     <MiniFileDnd
       key={`mini-dnd-${index}`}
@@ -167,7 +175,7 @@ const AddingPanel: FC<AddingProps> = ({
 
   const errorElement = fileError ? (
     <FormElementError
-      style={{'word-break': 'break-word'}}
+      style={{wordBreak: 'break-word'}}
       message={fileErrorMessage}
     />
   ) : null
@@ -313,7 +321,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     const lineItem = newSchemas[index]
     lineItem.columns = columns
     lineItem.filename = filename
-    if (lineItem.contents && lineItem.name) {
+    if (lineItem.columns && lineItem.name) {
       lineItem.valid = true
     }
     // not worrying about when contents has been 'un-set' since we don't allow that.

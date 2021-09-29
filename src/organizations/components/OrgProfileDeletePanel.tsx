@@ -14,6 +14,7 @@ import {
   AlignItems,
   FlexDirection,
   JustifyContent,
+  ComponentColor,
 } from '@influxdata/clockface'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {UsersContext} from 'src/users/context/users'
@@ -72,30 +73,24 @@ const OrgProfileTab: FC = () => {
     <PageSpinner loading={status}>
       <>
         {CLOUD && quartzMe?.accountType === 'free' && (
-          <Panel.Body size={ComponentSize.ExtraSmall}>
-            <FlexBox
-              stretchToFitWidth={true}
-              alignItems={AlignItems.Center}
-              direction={FlexDirection.Row}
-              justifyContent={JustifyContent.SpaceBetween}
-            >
-              <div>
-                <h5 style={{marginBottom: '0'}}>
-                  Delete Organization {org.name}
-                </h5>
-                <p style={{marginTop: '2px'}}>
-                  Delete your Free InfluxDB Cloud account and remove any data
-                  that you have loaded.
-                </p>
-              </div>
+          <>
+            <FlexBox.Child>
+              <h4 style={{marginBottom: '4px'}}>Delete Organization</h4>
+              <p style={{margin: '0px'}}>
+                Delete your Free InfluxDB Cloud account and remove any data that
+                you have loaded.
+              </p>
+            </FlexBox.Child>
+            <FlexBox.Child>
               <Button
                 testID="delete-org--button"
                 text="Delete"
                 icon={IconFont.Trash_New}
                 onClick={handleDeleteClick}
+                color={ComponentColor.Danger}
               />
-            </FlexBox>
-          </Panel.Body>
+            </FlexBox.Child>
+          </>
         )}
       </>
     </PageSpinner>

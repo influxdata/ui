@@ -24,14 +24,21 @@ import {getDataLoaders} from 'src/dataLoaders/selectors'
 import {getAll} from 'src/resources/selectors'
 
 interface FooterProps {
-  onCancel: () => void
-  onConfirm: () => void
   hasDuplicatePlugin?: boolean
   isValidConfiguration: boolean
+  onCancel: () => void
+  onConfirm: () => void
+  pluginConfigName?: string
 }
 
 const FooterConfigure: FC<FooterProps> = props => {
-  const {onCancel, onConfirm, hasDuplicatePlugin, isValidConfiguration} = props
+  const {
+    hasDuplicatePlugin,
+    isValidConfiguration,
+    onCancel,
+    onConfirm,
+    pluginConfigName,
+  } = props
 
   return (
     <>
@@ -49,7 +56,7 @@ const FooterConfigure: FC<FooterProps> = props => {
           onConfirm={onConfirm}
           confirmationButtonText="Yes"
           confirmationButtonColor={ComponentColor.Primary}
-          confirmationLabel="This configuration already contains this plugin. Are you sure you want to add another?"
+          confirmationLabel={`This configuration already contains ${pluginConfigName} Input Plugin. Are you sure you want to add another?`}
           status={ComponentStatus.Valid}
           tabIndex={0}
           testID="plugin-add-to-existing-configuration"
@@ -125,6 +132,8 @@ const FooterComponent: FC<Props> = props => {
     pluginConfigName,
     setIsValidConfiguration,
     telegrafConfig,
+    telegrafConfigDescription,
+    telegrafConfigName,
   } = props
 
   const handleContinueFromConfigure = () => {
@@ -136,6 +145,8 @@ const FooterComponent: FC<Props> = props => {
     onUpdateTelegraf({
       ...telegrafConfig,
       config: pluginConfig,
+      description: telegrafConfigDescription,
+      name: telegrafConfigName,
     })
     onIncrementCurrentStepIndex()
   }
@@ -147,10 +158,11 @@ const FooterComponent: FC<Props> = props => {
   if (currentStepIndex === PluginConfigurationStep.Configure) {
     FooterButtons = (
       <FooterConfigure
-        onCancel={onExit}
-        onConfirm={handleContinueFromConfigure}
         hasDuplicatePlugin={telegrafConfig?.config?.includes(pattern) ?? false}
         isValidConfiguration={isValidConfiguration}
+        onCancel={onExit}
+        onConfirm={handleContinueFromConfigure}
+        pluginConfigName={pluginConfigName}
       />
     )
   }
@@ -158,9 +170,9 @@ const FooterComponent: FC<Props> = props => {
   if (currentStepIndex === PluginConfigurationStep.Customize) {
     FooterButtons = (
       <FooterCustomize
+        isValidConfiguration={isValidConfiguration}
         onCancel={onDecrementCurrentStepIndex}
         onConfirm={handleSaveAndTest}
-        isValidConfiguration={isValidConfiguration}
       />
     )
   }
@@ -169,7 +181,12 @@ const FooterComponent: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => {
-  const {telegrafConfigID} = getDataLoaders(state)
+  const {
+    telegrafConfigDescription,
+    telegrafConfigID,
+    telegrafConfigName,
+  } = getDataLoaders(state)
+
   let telegrafConfig = null
   if (telegrafConfigID) {
     const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
@@ -177,7 +194,8 @@ const mstp = (state: AppState) => {
       telegraf => telegraf.id === telegrafConfigID
     )
   }
-  return {telegrafConfig}
+
+  return {telegrafConfig, telegrafConfigDescription, telegrafConfigName}
 }
 
 const mdtp = {

@@ -46,7 +46,7 @@ const FooterConfigure: FC<FooterProps> = props => {
         color={ComponentColor.Default}
         onClick={onCancel}
         tabIndex={1}
-        testID="plugin-add-to-existing-configuration-cancel"
+        testID="plugin-add-to-configuration-cancel"
         text="Cancel"
       />
       {isValidConfiguration && hasDuplicatePlugin ? (
@@ -59,7 +59,7 @@ const FooterConfigure: FC<FooterProps> = props => {
           confirmationLabel={`This configuration already contains ${pluginConfigName} Input Plugin. Are you sure you want to add another?`}
           status={ComponentStatus.Valid}
           tabIndex={0}
-          testID="plugin-add-to-existing-configuration"
+          testID="plugin-add-to-configuration"
         />
       ) : (
         <Button
@@ -72,7 +72,7 @@ const FooterConfigure: FC<FooterProps> = props => {
               : ComponentStatus.Disabled
           }
           tabIndex={0}
-          testID="plugin-add-to-existing-configuration"
+          testID="plugin-add-to-configuration--button"
         />
       )}
     </>
@@ -110,7 +110,7 @@ const FooterCustomize: FC<FooterProps> = props => {
           onClick={onConfirm}
           status={ComponentStatus.Disabled}
           tabIndex={0}
-          testID="plugin-add-to-configuration-save-and-test"
+          testID="plugin-add-to-configuration-save-and-test--button"
         />
       )}
     </>

@@ -107,6 +107,7 @@ const AddPluginToConfigurationCTAComponent: FC<Props> = props => {
                           )
                         }}
                         selected={false}
+                        testID="add-to-existing-configuration-from-plugin--dropdown-item"
                       >
                         <span>Add to an existing configuration</span>
                       </Dropdown.Item>

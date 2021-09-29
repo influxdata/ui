@@ -90,12 +90,14 @@ const ConfigureComponent: FC<Props> = props => {
                   selectedTelegraf && telegraf.id === selectedTelegraf.id
                 }
                 value={telegraf}
+                testID={`telegraf-configuration--${telegraf.name}`}
               >
                 {telegraf.name}
               </Dropdown.Item>
             ))}
           </Dropdown.Menu>
         )}
+        testID="plugin-add-to-configuration--select-telegraf"
       />
     </>
   )

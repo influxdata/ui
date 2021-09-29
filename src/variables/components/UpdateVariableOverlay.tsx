@@ -129,30 +129,31 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
                       />
                     </Grid.Column>
                   </Grid.Row>
-                  <Grid.Row>
-                    <Grid.Column>
-                      <Form.Footer>
-                        <Button
-                          text="Cancel"
-                          color={ComponentColor.Danger}
-                          onClick={onClose}
-                        />
-                        <Button
-                          text="Submit"
-                          type={ButtonType.Submit}
-                          color={ComponentColor.Primary}
-                          status={
-                            hasValidArgs
-                              ? ComponentStatus.Default
-                              : ComponentStatus.Disabled
-                          }
-                        />
-                      </Form.Footer>
-                    </Grid.Column>
-                  </Grid.Row>
                 </Grid>
               </Form>
             </Overlay.Body>
+            <Overlay.Footer>
+              <Button
+                text="Cancel"
+                color={ComponentColor.Secondary}
+                onClick={onClose}
+              />
+              <Button
+                text="Submit"
+                type={ButtonType.Submit}
+                color={ComponentColor.Primary}
+                status={
+                  hasValidArgs
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Disabled
+                }
+                onClick={e => {
+                  this.handleSubmit(e)
+                  onClose()
+                }}
+                testID="variable-update-submit--button"
+              />
+            </Overlay.Footer>
           </Overlay.Container>
         )}
       </OverlayContext.Consumer>

@@ -76,8 +76,7 @@ describe('Variables', () => {
             force: true,
           })
       })
-
-      cy.get('form')
+      cy.getByTestID('variable-update-submit--button')
         .contains('Submit')
         .click()
     })
@@ -100,7 +99,7 @@ describe('Variables', () => {
       cy.getByTestID('map-variable-dropdown--button').click()
       cy.contains(lastMapItem).click()
 
-      cy.get('form')
+      cy.getByTestID('variable-update-submit--button')
         .contains('Submit')
         .click()
     })
@@ -118,12 +117,12 @@ describe('Variables', () => {
       .contains(variableName)
 
     // Delete a variable
-    cy.getByTestID('context-delete-menu')
+    cy.getByTestID(`context-delete-variable ${variableName}--button`)
       .first()
-      .click({force: true})
-    cy.getByTestID(`context-delete-variable ${variableName}`)
+      .click()
+    cy.getByTestID(`context-delete-variable ${variableName}--confirm-button`)
       .first()
-      .click({force: true})
+      .click()
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
@@ -135,8 +134,8 @@ describe('Variables', () => {
       .contains('LittleVariable')
 
     // Rename the variable
-    cy.getByTestID('context-menu')
-      .first()
+    cy.getByTestID('context-menu-variable')
+      .last()
       .click({force: true})
 
     cy.getByTestID('context-rename-variable').click({force: true})

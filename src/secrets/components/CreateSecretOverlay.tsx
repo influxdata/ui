@@ -25,13 +25,11 @@ const CreateSecretOverlay: FC = () => {
           onDismiss={() => history.push(`/orgs/${orgId}/settings/secrets`)}
           testID="modify-secret-overlay-header"
         />
-        <Overlay.Body>
-          <GetResources resources={[ResourceType.Secrets]}>
-            <ErrorBoundary>
-              <CreateSecretForm />
-            </ErrorBoundary>
-          </GetResources>
-        </Overlay.Body>
+        <GetResources resources={[ResourceType.Secrets]}>
+          <ErrorBoundary>
+            <CreateSecretForm />
+          </ErrorBoundary>
+        </GetResources>
       </Overlay.Container>
     </Overlay>
   )

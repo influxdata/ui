@@ -3,7 +3,7 @@
 .flow-sidebar {
   flex: 0 0 300px;
   width: 300px;
-  padding: 0 $cf-marg-b;
+  padding: 0 0 0 $cf-marg-b;
 
   .sidebar--item {
     width: 137px;
@@ -40,6 +40,10 @@
   height: calc(
     100% - 30px
   ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
+}
+
+.flow-sidebar--submenu-wrapper {
+  width: calc(100% - 16px);
 }
 
 .flow-sidebar--dropdownmenu {

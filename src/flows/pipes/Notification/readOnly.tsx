@@ -32,7 +32,7 @@ import {PipeProp} from 'src/types/flows'
 import 'src/flows/pipes/Notification/styles.scss'
 
 // Constants
-import {UNPROCESSED_PANEL_TEXT} from 'src/flows/constants'
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
 const ReadOnly: FC<PipeProp> = ({Context}) => {
   const {data, results, loading} = useContext(PipeContext)

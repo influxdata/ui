@@ -11,7 +11,7 @@ import {Hash, Mapping} from 'src/flows/pipes/Columns'
 import {PipeContext} from 'src/flows/context/pipe'
 
 // Constants
-import {UNPROCESSED_PANEL_TEXT} from 'src/flows/constants'
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
 // Styles
 import './styles.scss'

@@ -45,12 +45,6 @@ export interface Props extends PipeContextProps {
 export const DEFAULT_RESIZER_HEIGHT = 360
 export const MINIMUM_RESIZER_HEIGHT = 220
 
-const PANEL_PREVIEW_TYPES = new Set([
-  'visualization',
-  'columnEditor',
-  'notification',
-])
-
 const FlowPanel: FC<Props> = ({
   id,
   controls,
@@ -59,7 +53,9 @@ const FlowPanel: FC<Props> = ({
   children,
 }) => {
   const {flow, updateMeta} = useContext(FlowContext)
-  const {printMap, queryDependents} = useContext(FlowQueryContext)
+  const {printMap, queryDependents, getPanelQueries} = useContext(
+    FlowQueryContext
+  )
   const {id: focused} = useContext(SidebarContext)
 
   const isVisible = flow.meta.byID[id]?.visible
@@ -149,10 +145,10 @@ const FlowPanel: FC<Props> = ({
     <div className="flow-panel--editable-title">Error</div>
   )
 
-  const showPreviewButton = useMemo(
-    () => PANEL_PREVIEW_TYPES.has(flow.data.byID[id].type),
-    [flow, id]
-  )
+  const showPreviewButton = useMemo(() => !!getPanelQueries(id)?.visual, [
+    getPanelQueries,
+    id,
+  ])
 
   if (
     flow.readOnly &&

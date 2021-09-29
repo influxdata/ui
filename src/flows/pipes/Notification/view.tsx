@@ -61,7 +61,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import 'src/flows/pipes/Notification/styles.scss'
 
 // Constants
-import {UNPROCESSED_PANEL_TEXT} from 'src/flows/constants'
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()

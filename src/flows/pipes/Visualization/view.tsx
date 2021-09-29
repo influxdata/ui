@@ -23,7 +23,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {downloadTextFile} from 'src/shared/utils/download'
 
 // Constants
-import {UNPROCESSED_PANEL_TEXT} from 'src/flows/constants'
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {id, data, range, loading, results} = useContext(PipeContext)

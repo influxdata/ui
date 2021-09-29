@@ -8,7 +8,7 @@ import {Hash, Mapping} from 'src/flows/pipes/Columns'
 import './styles.scss'
 
 // Constants
-import {UNPROCESSED_PANEL_TEXT} from 'src/flows/constants'
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
 const View: FC<PipeProp> = ({Context}) => {
   const {update, data, results, loading} = useContext(PipeContext)

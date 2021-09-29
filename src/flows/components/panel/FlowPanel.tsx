@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useContext, useState, useRef, useEffect} from 'react'
+import React, {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import classnames from 'classnames'
 import {
   Button,
@@ -46,7 +53,9 @@ const FlowPanel: FC<Props> = ({
   children,
 }) => {
   const {flow, updateMeta} = useContext(FlowContext)
-  const {printMap, queryDependents} = useContext(FlowQueryContext)
+  const {printMap, queryDependents, getPanelQueries} = useContext(
+    FlowQueryContext
+  )
   const {id: focused} = useContext(SidebarContext)
 
   const isVisible = flow.meta.byID[id]?.visible
@@ -136,6 +145,11 @@ const FlowPanel: FC<Props> = ({
     <div className="flow-panel--editable-title">Error</div>
   )
 
+  const showPreviewButton = useMemo(() => !!getPanelQueries(id)?.visual, [
+    getPanelQueries,
+    id,
+  ])
+
   if (
     flow.readOnly &&
     !/^(visualization|markdown)$/.test(flow.data.byID[id]?.type)
@@ -165,6 +179,15 @@ const FlowPanel: FC<Props> = ({
                     className="flows-config-panel-button"
                   />
                 </FeatureFlag>
+                {isVisible &&
+                  isFlagEnabled('notebooksPreviewFromHere') &&
+                  showPreviewButton && (
+                    <Button
+                      onClick={() => queryDependents(id)}
+                      icon={IconFont.Play}
+                      text="Preview"
+                    />
+                  )}
                 <MenuButton id={id} />
               </div>
             </>
@@ -186,14 +209,6 @@ const FlowPanel: FC<Props> = ({
               dragRef={handleRef}
               onStartDrag={handleMouseDown}
               dragging={isDragging === 2}
-            />
-          )}
-          {isVisible && isFlagEnabled('notebooksPreviewFromHere') && (
-            <Button
-              className="flow-footer--preview"
-              onClick={() => queryDependents(id)}
-              icon={IconFont.Play}
-              text="Preview from here"
             />
           )}
         </div>

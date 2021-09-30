@@ -70,8 +70,13 @@ const AddingPanel: FC<AddingProps> = ({
   showSchemaValidation,
 }) => {
   const [schemaName, setSchemaName] = useState(name)
-  const [fileError, setFileError] = useState(false)
-  const [fileErrorMessage, setFileErrorMessage] = useState(null)
+  const hasFileError = showSchemaValidation && !filename;
+  const [fileError, setFileError] = useState(hasFileError)
+  let fileEMessage = null;
+  if (hasFileError) {
+    fileEMessage = "You must upload a file"
+  }
+  const [fileErrorMessage, setFileErrorMessage] = useState(fileEMessage)
 
   const setErrorState = (hasError, message) => {
     setFileError(hasError)
@@ -88,8 +93,10 @@ const AddingPanel: FC<AddingProps> = ({
   // then calls setError(false).  so; if we call setError(true) then it gets immediately
   // overridden.  with the propagation, the error state only gets called once properly.
   const handleUploadFile = (contents: string, fileName: string) => {
+    // todo: move event to where the schema is actually uploaded, they could
+    // keep swappingt out th efile, cancel out of the dialog, x out the adding line....etc
+
     event('bucket.schema.explicit.uploadSchema')
-    console.log('got file???', contents, fileName)
 
     //do parsing here;  to check in the correct format:
     let columns = null
@@ -105,12 +112,11 @@ const AddingPanel: FC<AddingProps> = ({
 
       if (!areColumnsKosher(columns)) {
         // set errors
-        // todo:  make *real* error message
-        throw {message: 'columns are not kosher! oink oink'}
+        throw {message: 'column file is not formatted correctly'}
       }
     }
 
-    console.log('it is kosher; moo moo squawk squawk')
+    //console.log('it is kosher; moo moo squawk squawk')
     onAddContents(columns, fileName, index)
   }
 

@@ -57,19 +57,16 @@ import {
 type Action = BucketAction | NotifyAction
 
 let getBucketsSchemaMeasurements = null,
-  MeasurementSchemaCreateRequest = null
-// PostBucketsSchemaMeasurementParams = null,
-// postBucketsSchemaMeasurement = null
+  MeasurementSchemaCreateRequest = null,
+  postBucketsSchemaMeasurement = null
 
 if (CLOUD) {
   getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
     .getBucketsSchemaMeasurements
   MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
     .MeasurementSchemaCreateRequest
-  // PostBucketsSchemaMeasurementParams = require('src/client/generatedRoutes')
-  //   .PostBucketsSchemaMeasurementParams
-  // postBucketsSchemaMeasurement = require('src/client/generatedRoutes')
-  //   .postBucketsSchemaMeasurement
+  postBucketsSchemaMeasurement = require('src/client/generatedRoutes')
+    .postBucketsSchemaMeasurement
 }
 
 export const getBuckets = () => async (
@@ -314,9 +311,10 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
   }
 }
 
-export const addSchemasToBucket = (
+export const addSchemasToBucket = async (
   bucketID: string,
   orgID: string,
+  bucketName: string,
   schema: typeof MeasurementSchemaCreateRequest
 ) => {
   //first; change the contents to the object:
@@ -326,6 +324,22 @@ export const addSchemasToBucket = (
   //postBucketsSchemaMeasurement
 
   console.log(`got here....with bucket: ${bucketID}, org: ${orgID}`, schema)
+
+  const params = {
+    bucketID,
+    data: schema,
+    query: {orgID},
+  }
+
+  const resp = await postBucketsSchemaMeasurement(params)
+  if (resp.status !== 201) {
+    const msg = resp?.data?.message
+    console.log('error adding measurement schema:', resp)
+    throw new Error(msg)
+  }
+  console.log('success???', resp)
+
+  //todo: show notification??
 }
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {

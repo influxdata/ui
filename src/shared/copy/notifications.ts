@@ -853,6 +853,14 @@ export const predicateDeleteSucceeded = (): Notification => ({
   message: 'Successfully deleted data with predicate!',
 })
 
+export const measurementSchemaAdditionSuccessful = (
+  bucketName: string,
+  schemaName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `MeasurementSchema ${schemaName}  has been successfully added to bucket ${bucketName}`,
+})
+
 export const bucketUpdateFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to update bucket: "${error}"`,

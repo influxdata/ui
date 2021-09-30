@@ -204,7 +204,12 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         )
 
         mSchemas.forEach(createRequest => {
-          addSchemasToBucket(bucketDraft.id, bucketDraft.orgID, createRequest)
+          addSchemasToBucket(
+            bucketDraft.id,
+            bucketDraft.orgID,
+            bucketDraft.name,
+            createRequest
+          )
         })
       } else {
         console.log('no measurement schemas to set')

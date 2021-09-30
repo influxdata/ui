@@ -20,10 +20,10 @@ import {
 } from 'src/shared/constants/routes'
 
 // Types
-import {AppState, ResourceType, Telegraf} from 'src/types'
+import {AppState} from 'src/types'
 
 // Selectors
-import {getAll} from 'src/resources/selectors'
+import {getAllTelegrafs} from 'src/resources/selectors'
 
 // Styles
 import 'src/writeData/components/AddPluginToConfiguration.scss'
@@ -152,7 +152,7 @@ const AddPluginToConfigurationCTAComponent: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => ({
-  telegrafs: getAll<Telegraf>(state, ResourceType.Telegrafs),
+  telegrafs: getAllTelegrafs(state),
 })
 
 const mdtp = {

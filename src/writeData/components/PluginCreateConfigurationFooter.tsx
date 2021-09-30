@@ -34,11 +34,11 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSaveTelegrafConfig,
     onUpdateTelegraf,
-    substepIndex,
-    setIsValidConfiguration,
-    telegrafConfig,
     pluginConfig,
     pluginConfigName,
+    setIsValidConfiguration,
+    substepIndex,
+    telegrafConfig,
   } = props
 
   const shouldTelegrafUpdate = useMemo(() => {

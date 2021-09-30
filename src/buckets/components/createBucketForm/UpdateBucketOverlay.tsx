@@ -195,6 +195,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
           columns: item.columns,
           name: item.name,
         }))
+        console.log('bucket info??', bucketDraft)
 
         console.log(
           'would handle the new schema requests here (would create the ' +
@@ -203,7 +204,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         )
 
         mSchemas.forEach(createRequest => {
-          addSchemasToBucket('random', 'ida know', createRequest)
+          addSchemasToBucket(bucketDraft.id, bucketDraft.orgID, createRequest)
         })
       } else {
         console.log('no measurement schemas to set')

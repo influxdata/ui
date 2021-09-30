@@ -16,6 +16,7 @@ coverage
 node_modules
 vendor
 release
+cypress/downloads
 
 # files
 cypress.env.json

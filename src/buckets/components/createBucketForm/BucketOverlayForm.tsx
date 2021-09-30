@@ -76,7 +76,11 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     this.onUpdateSchemasInternal = this.onUpdateSchemasInternal.bind(this)
   }
 
-  public state: State = {showAdvanced: false, schemaType: 'implicit'}
+  public state: State = {
+    showAdvanced: false,
+    schemaType: 'implicit',
+    newMeasurementSchemas: [],
+  }
 
   onChangeSchemaTypeInternal = function(newSchemaType: typeof SchemaType) {
     this.setState({schemaType: newSchemaType})

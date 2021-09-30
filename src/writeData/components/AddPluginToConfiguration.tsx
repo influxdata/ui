@@ -59,6 +59,18 @@ const AddPluginToConfigurationCTAComponent: FC<Props> = props => {
     fetchTelegrafs()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const autoWidth = {width: 'auto'}
+  const fullWidth = {width: '100%'}
+  const createNewConfiguration = () => {
+    history.push(
+      `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/new`
+    )
+  }
+  const addToConfiguration = () => {
+    history.push(
+      `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/add`
+    )
+  }
   return (
     <>
       <div className="write-data--details">
@@ -75,7 +87,7 @@ const AddPluginToConfigurationCTAComponent: FC<Props> = props => {
                   <Dropdown.Button
                     active={active}
                     color={ComponentColor.Primary}
-                    style={{width: '100%'}}
+                    style={fullWidth}
                     onClick={onClick}
                   >
                     Use this plugin
@@ -87,34 +99,26 @@ const AddPluginToConfigurationCTAComponent: FC<Props> = props => {
                     <Dropdown.Item
                       key="Create-new-configuration-telegraf-plugin"
                       value="Create a new configuration"
-                      onClick={() => {
-                        history.push(
-                          `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/new`
-                        )
-                      }}
+                      onClick={createNewConfiguration}
                       selected={false}
                       testID="create-new-configuration-from-plugin--dropdown-item"
                     >
                       <span>Create a new configuration</span>
                     </Dropdown.Item>
-                    {telegrafs?.length ? (
+                    {telegrafs?.length && (
                       <Dropdown.Item
                         key="Add-to-existing-configuration-telegraf-plugin"
                         value="Add to an existing configuration"
-                        onClick={() => {
-                          history.push(
-                            `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/add`
-                          )
-                        }}
+                        onClick={addToConfiguration}
                         selected={false}
                         testID="add-to-existing-configuration-from-plugin--dropdown-item"
                       >
                         <span>Add to an existing configuration</span>
                       </Dropdown.Item>
-                    ) : null}
+                    )}
                   </Dropdown.Menu>
                 )}
-                style={{width: 'auto'}}
+                style={autoWidth}
                 testID="add-plugin-to-configuration--dropdown"
               />
             </Grid.Column>

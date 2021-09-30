@@ -47,7 +47,6 @@ const CustomizeComponent: FC<Props> = props => {
   const handleError = error => {
     setIsValidConfiguration(false)
     setPluginConfig(`${error}`)
-    console.error(error)
   }
 
   useEffect(() => {

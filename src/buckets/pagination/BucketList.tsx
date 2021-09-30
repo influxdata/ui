@@ -46,7 +46,7 @@ class BucketList
   public totalPages: number
 
   public render() {
-    this.totalPages = Math.ceil(this.props.bucketCount / this.rowsPerPage)
+    this.totalPages = Math.ceil(this.props.buckets.length / this.rowsPerPage)
 
     return (
       <>

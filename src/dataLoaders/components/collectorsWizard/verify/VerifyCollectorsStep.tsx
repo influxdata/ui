@@ -9,7 +9,7 @@ import {
   Button,
   ComponentColor,
   ButtonType,
-  Overlay,
+  FlexBox,
 } from '@influxdata/clockface'
 import DataStreaming from 'src/dataLoaders/components/verifyStep/DataStreaming'
 
@@ -57,14 +57,14 @@ export class VerifyCollectorStep extends PureComponent<Props> {
           />
         </DapperScrollbars>
 
-        <Overlay.Footer className="data-loading--button-container">
+        <FlexBox className="data-loading--button-container">
           <Button
             color={ComponentColor.Primary}
             text="Finish"
             type={ButtonType.Submit}
             testID="next"
           />
-        </Overlay.Footer>
+        </FlexBox>
       </Form>
     )
   }

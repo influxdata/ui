@@ -546,46 +546,46 @@ describe('Dashboards', () => {
   })
 
   before('Clear downloads folder', () => {
-    cy.exec('rm cypress/downloads/*', { log: true, failOnNonZeroExit: false }) 
-  }) 
-    it('creates a dashboard and downloads JSON', () => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.createDashboard(orgID).then(({body}) => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-                cy.getByTestID('tree-nav')
-                    cy.getByTestID('nav-item-dashboards').click()
-                      cy.getByTestID('dashboard-card').invoke('hover')
-                        cy.getByTestID('context-export-menu').click()
-                        cy.getByTestID('context-menu-item-export').click()
-                          cy.getByTestID('button').click()
-                            cy.wait(1000)
-                              cy.readFile('cypress/downloads/test_dashboard.json')
-                              .should('exist')
-                              
-          })
-          })
+    cy.exec('rm cypress/downloads/*', {log: true, failOnNonZeroExit: false})
+  })
+  it('creates a dashboard and downloads JSON', () => {
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+          cy.getByTestID('nav-item-dashboards').click()
+          cy.getByTestID('dashboard-card').invoke('hover')
+          cy.getByTestID('context-export-menu').click()
+          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('button').click()
+          cy.wait(1000)
+          cy.readFile('cypress/downloads/test_dashboard.json').should('exist')
         })
+      })
     })
+  })
 
   it('copies to clipboard', () => {
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-              cy.getByTestID('tree-nav')
-              cy.window().then(win => {
-                cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT')   //disable pop-up prompt 
-              })         
-                  cy.getByTestID('nav-item-dashboards').click()
-                    cy.getByTestID('dashboard-card').invoke('hover')
-                      cy.getByTestID('context-export-menu').click()
-                      cy.getByTestID('context-menu-item-export').click()
-                        cy.getByTestID('button-copy').click().then(()=>{
-                          cy.task('getClipboard').should('not.be.empty')                         
-          })                
+          cy.getByTestID('tree-nav')
+          cy.window().then(win => {
+            cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
+          })
+          cy.getByTestID('nav-item-dashboards').click()
+          cy.getByTestID('dashboard-card').invoke('hover')
+          cy.getByTestID('context-export-menu').click()
+          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('button-copy')
+            .click()
+            .then(() => {
+              cy.task('getClipboard').should('not.be.empty')
+            })
         })
       })
-    })        
-  }) 
+    })
+  })
 })

@@ -77,7 +77,6 @@ const OrgProfileTab: FC = () => {
                 text="Delete"
                 icon={IconFont.Trash_New}
                 onClick={handleDeleteClick}
-                color={ComponentColor.Danger}
               />
             </FlexBox.Child>
           </>

@@ -40,7 +40,7 @@ const TelegrafPluginSection = () => {
       <Heading
         element={HeadingElement.H5}
         weight={FontWeight.Regular}
-        style={{marginBottom: '12px'}}
+        style={{marginBottom: '24px'}}
       >
         An open-source agent for collecting data and reporting metrics via a
         vast library of plugins

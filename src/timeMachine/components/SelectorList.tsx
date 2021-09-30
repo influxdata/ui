@@ -47,7 +47,6 @@ const SelectorList: SFC<Props> = props => {
             title={item}
             selected={selected}
             size={ComponentSize.ExtraSmall}
-            gradient={Gradients.GundamPilot}
             wrapText={wrapText}
           >
             {indicator}

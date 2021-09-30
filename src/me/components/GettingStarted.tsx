@@ -64,7 +64,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
     <div className="getting-started">
       <Panel
         className="getting-started--card"
-        backgroundColor={InfluxColors.Pepper}
+        backgroundColor={InfluxColors.Grey25}
       >
         <div className="getting-started--card-digit">1</div>
         <Panel.Body>
@@ -84,7 +84,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
       </Panel>
       <Panel
         className="getting-started--card"
-        backgroundColor={InfluxColors.Pepper}
+        backgroundColor={InfluxColors.Grey25}
       >
         <div className="getting-started--card-digit">2</div>
         <Panel.Body>
@@ -104,7 +104,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
       </Panel>
       <Panel
         className="getting-started--card"
-        backgroundColor={InfluxColors.Pepper}
+        backgroundColor={InfluxColors.Grey25}
         style={{backgroundColor: '#333346'}}
       >
         <div className="getting-started--card-digit">3</div>

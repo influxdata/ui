@@ -35,7 +35,7 @@ const WriteDataHelper: FC<Props> = ({collapsed}) => {
   }
 
   return (
-    <Panel backgroundColor={InfluxColors.Castle}>
+    <Panel backgroundColor={InfluxColors.Grey15}>
       <Panel.Header size={ComponentSize.ExtraSmall}>
         <div
           className={`write-data-helper--heading write-data-helper--heading__${mode}`}

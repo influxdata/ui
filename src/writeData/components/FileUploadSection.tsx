@@ -39,7 +39,7 @@ const FileUploadSection = () => {
       <Heading
         element={HeadingElement.H5}
         weight={FontWeight.Regular}
-        style={{marginBottom: '12px'}}
+        style={{marginBottom: '24px'}}
       >
         Upload line protocol or Annotated CSVs with the click of a button
       </Heading>

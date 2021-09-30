@@ -266,7 +266,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       } else {
         return (
           <Input
-            style={widthStyle}
             placeholder={placeHolderText}
             onChange={this.filterVals}
             value={typedValue}
@@ -279,7 +278,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     return (
       <Dropdown
-        style={{width: '140px'}}
+        style={{width: '192px'}}
         className="variable-dropdown--dropdown"
         testID={this.props.testID || `variable-dropdown--${name}`}
         onClickAway={this.onClickAwayHere}
@@ -336,7 +335,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       }, '').length * 10
     )
 
-    const widthLength = Math.max(140, longestItemWidth)
+    const widthLength = Math.max(192, longestItemWidth)
     const widthStyle = {width: `${widthLength}px`}
     return widthStyle
   }

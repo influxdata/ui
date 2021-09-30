@@ -10,7 +10,6 @@ import {
   FlexBox,
   AlignItems,
   FlexDirection,
-  ComponentColor,
   ComponentSize,
   Input,
   Heading,
@@ -52,25 +51,26 @@ const OrgProfileTab: FC = () => {
         testID="organization-profile--panel"
         margin={ComponentSize.Large}
       >
-        <FlexBox.Child>
-          <h4>Organization Profile</h4>
-          <Heading
-            element={HeadingElement.H4}
-            data-testid="danger-zone--org-name"
-            weight={FontWeight.Regular}
-            style={{marginBottom: '4px'}}
-          >
-            Name
-          </Heading>
+        <h4>Organization Profile</h4>
+
+        <Heading
+          element={HeadingElement.H4}
+          data-testid="danger-zone--org-name"
+          weight={FontWeight.Regular}
+          style={{marginBottom: '4px'}}
+        >
+          Name
+        </Heading>
+        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
           <Input value={org.name}></Input>
-        </FlexBox.Child>
-        <Button
-          testID="rename-org--button"
-          text="Rename"
-          icon={IconFont.Pencil}
-          color={ComponentColor.Danger}
-          onClick={handleShowEditOverlay}
-        />
+          <Button
+            testID="rename-org--button"
+            text="Rename"
+            icon={IconFont.Pencil}
+            onClick={handleShowEditOverlay}
+          />
+        </FlexBox>
+
         <FlexBox.Child testID="common-ids--panel">
           <h4>Common IDs</h4>
 

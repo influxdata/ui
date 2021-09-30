@@ -36,38 +36,29 @@ const InstallPackageHelper: FC<Props> = ({text, codeRenderer}) => {
 
   return (
     <div className="install-package--container">
-      <Panel backgroundColor={InfluxColors.Castle}>
-        <Panel.Header
-          size={ComponentSize.ExtraSmall}
-          style={{paddingBottom: '16px'}}
+      <div
+        className={`install-package-helper--heading install-package-helper--heading__${mode}`}
+        onClick={handleToggleClick}
+      >
+        <Icon
+          glyph={IconFont.CaretRight}
+          className="install-package-helper--caret"
+        />
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Medium}
+          selectable={true}
         >
-          <div
-            className={`install-package-helper--heading install-package-helper--heading__${mode}`}
-            onClick={handleToggleClick}
-          >
-            <Icon
-              glyph={IconFont.CaretRight}
-              className="install-package-helper--caret"
-            />
-            <Heading
-              element={HeadingElement.H3}
-              weight={FontWeight.Medium}
-              selectable={true}
-            >
-              Installation Instructions
-            </Heading>
-          </div>
-        </Panel.Header>
-        {mode === 'expanded' && (
-          <Panel.Body size={ComponentSize.ExtraSmall}>
-            <MarkdownRenderer
-              text={text}
-              cloudRenderers={{code: codeRenderer}}
-              escapeHtml={false}
-            />
-          </Panel.Body>
-        )}
-      </Panel>
+          Installation Instructions
+        </Heading>
+      </div>
+      {mode === 'expanded' && (
+        <MarkdownRenderer
+          text={text}
+          cloudRenderers={{code: codeRenderer}}
+          escapeHtml={false}
+        />
+      )}
     </div>
   )
 }

@@ -5,7 +5,7 @@ $toolbar-padding-md: $cf-space-l;
 
 .toolbar {
   padding: 0 $toolbar-padding-sm;
-  margin-bottom: $cf-space-3xs;
+  margin-bottom: $cf-space-s;
 
   &:last-of-type,
   &:only-of-type {
@@ -34,7 +34,7 @@ $toolbar-padding-md: $cf-space-l;
 }
 
 .toolbar--contents {
-  background-color: $cf-grey-5;
+  background-color: rgba(26, 26, 42, 0.5);
   padding: $cf-space-2xs;
   border-radius: $cf-radius;
 }

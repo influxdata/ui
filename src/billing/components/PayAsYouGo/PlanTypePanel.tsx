@@ -19,7 +19,7 @@ const PlanTypePanel: FC = () => {
       </Panel.Header>
       <Panel.Body alignItems={AlignItems.Stretch}>
         <Panel
-          backgroundColor={InfluxColors.Onyx}
+          backgroundColor={InfluxColors.Grey15}
           className="plan-type-panel--detail"
         >
           <Panel.Header
@@ -36,7 +36,7 @@ const PlanTypePanel: FC = () => {
           </Panel.Body>
         </Panel>
         <Panel
-          backgroundColor={InfluxColors.Onyx}
+          backgroundColor={InfluxColors.Grey15}
           className="plan-type-panel--detail"
         >
           <Panel.Header
@@ -55,7 +55,7 @@ const PlanTypePanel: FC = () => {
           </Panel.Body>
         </Panel>
         <Panel
-          backgroundColor={InfluxColors.Onyx}
+          backgroundColor={InfluxColors.Grey15}
           className="plan-type-panel--detail"
         >
           <Panel.Header

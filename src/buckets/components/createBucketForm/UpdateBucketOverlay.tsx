@@ -21,7 +21,11 @@ import {
 import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
 
 // Actions
-import {getBucketSchema, updateBucket} from 'src/buckets/actions/thunks'
+import {
+  getBucketSchema,
+  updateBucket,
+  addSchemasToBucket,
+} from 'src/buckets/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 
 // APIs
@@ -186,11 +190,24 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
       // TODO:  put an event here!
       // like: 'bucket.editing.add.measurementSchema'
-      console.log(
-        'would handle the new schema requests here (would create the ' +
-          'measurement schemas one by one here! TODO: ',
-        newMeasurementSchemaRequests
-      )
+      if (newMeasurementSchemaRequests?.length) {
+        const mSchemas = newMeasurementSchemaRequests.map(item => ({
+          columns: item.columns,
+          name: item.name,
+        }))
+
+        console.log(
+          'would handle the new schema requests here (would create the ' +
+            'measurement schemas one by one here! TODO: ',
+          mSchemas
+        )
+
+        mSchemas.forEach(createRequest => {
+          addSchemasToBucket('random', 'ida know', createRequest)
+        })
+      } else {
+        console.log('no measurement schemas to set')
+      }
 
       handleClose()
     }

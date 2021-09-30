@@ -56,11 +56,20 @@ import {
 
 type Action = BucketAction | NotifyAction
 
-let getBucketsSchemaMeasurements = null
+let getBucketsSchemaMeasurements = null,
+  MeasurementSchemaCreateRequest = null
+// PostBucketsSchemaMeasurementParams = null,
+// postBucketsSchemaMeasurement = null
 
 if (CLOUD) {
   getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
     .getBucketsSchemaMeasurements
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
+  // PostBucketsSchemaMeasurementParams = require('src/client/generatedRoutes')
+  //   .PostBucketsSchemaMeasurementParams
+  // postBucketsSchemaMeasurement = require('src/client/generatedRoutes')
+  //   .postBucketsSchemaMeasurement
 }
 
 export const getBuckets = () => async (
@@ -305,10 +314,19 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
   }
 }
 
-// export const addSchemaToBucket(bucketID: string, schemaName: string, schemaContents: string) {
-//   //first; change the contents to the object:
-//
-// }
+export const addSchemasToBucket = (
+  bucketID: string,
+  orgID: string,
+  schema: typeof MeasurementSchemaCreateRequest
+) => {
+  //first; change the contents to the object:
+
+  //MeasurementSchemaCreateRequest
+  //PostBucketsSchemaMeasurementParams
+  //postBucketsSchemaMeasurement
+
+  console.log(`got here....with bucket: ${bucketID}, org: ${orgID}`, schema)
+}
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {
   const labels = getLabels(state, bucket.labels)

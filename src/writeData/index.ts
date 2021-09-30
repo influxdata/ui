@@ -1,11 +1,3 @@
-export interface TelegrafPlugin {
-  id: string
-  name: string
-  url: string
-  image?: string
-  markdown?: string
-}
-
 export interface CodeSampleOption {
   title: string // text to describe the option
   code: string // the code

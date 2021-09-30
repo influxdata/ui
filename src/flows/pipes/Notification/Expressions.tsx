@@ -51,6 +51,7 @@ const parsedResultToSchema = (
     '_level',
     '_source_measurement',
     '_type',
+    '_notebook_link',
   ]
   const schema = {
     fields: new Set<string>(

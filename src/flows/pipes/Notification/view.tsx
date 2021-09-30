@@ -291,6 +291,7 @@ notification = {
 	_notification_rule_name: "Notebook Generated Rule",
 	_notification_endpoint_id: "${id}",
 	_notification_endpoint_name: "Notebook Generated Endpoint",
+  _notebook_link: "${window.location.href}",
 }
 
 task_data = ${format_from_js_file(ast)}
@@ -405,6 +406,7 @@ notification = {
 	_notification_rule_name: "Notebook Generated Rule",
 	_notification_endpoint_id: "${id}",
 	_notification_endpoint_name: "Notebook Generated Endpoint",
+  _notebook_link: "${window.location.href}",
 }
 
 task_data = ${format_from_js_file(ast)}
@@ -588,6 +590,11 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                           onClick={launcher}
                           color={ComponentColor.Secondary}
                           testID="notification-exp-button"
+                          status={
+                            editorInstance
+                              ? ComponentStatus.Default
+                              : ComponentStatus.Loading
+                          }
                         />
                       </FlexBox.Child>
                     )}

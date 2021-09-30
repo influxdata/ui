@@ -866,6 +866,15 @@ export const bucketUpdateFailed = (error: string): Notification => ({
   message: `Failed to update bucket: "${error}"`,
 })
 
+export const measurementSchemaAdditionFailed = (
+  bucketName: string,
+  schemaName: string,
+  errorMsg: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `MeasurementSchema ${schemaName}  has *not* been successfully added to bucket ${bucketName}, error: ${errorMsg}`,
+})
+
 export const bucketRenameSuccess = (bucketName: string): Notification => ({
   ...defaultSuccessNotification,
   message: `Bucket was successfully renamed "${bucketName}"`,

@@ -51,6 +51,7 @@ if (CLOUD) {
 interface DispatchProps {
   onUpdateBucket: typeof updateBucket
   getSchema: typeof getBucketSchema
+  onAddMeasurementSchemaToBucket: typeof addSchemasToBucket
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -59,6 +60,7 @@ type Props = ReduxProps & RouteComponentProps<{bucketID: string; orgID: string}>
 const UpdateBucketOverlay: FunctionComponent<Props> = ({
   onUpdateBucket,
   getSchema,
+  onAddMeasurementSchemaToBucket,
   match,
   history,
 }) => {
@@ -204,7 +206,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         )
 
         mSchemas.forEach(createRequest => {
-          addSchemasToBucket(
+          onAddMeasurementSchemaToBucket(
             bucketDraft.id,
             bucketDraft.orgID,
             bucketDraft.name,
@@ -272,6 +274,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 const mdtp = {
   onUpdateBucket: updateBucket,
   getSchema: getBucketSchema,
+  onAddMeasurementSchemaToBucket: addSchemasToBucket,
 }
 
 const connector = connect(null, mdtp)

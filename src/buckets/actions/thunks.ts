@@ -52,6 +52,8 @@ import {
   bucketRenameFailed,
   addBucketLabelFailed,
   removeBucketLabelFailed,
+  measurementSchemaAdditionSuccessful,
+  measurementSchemaAdditionFailed,
 } from 'src/shared/copy/notifications'
 
 type Action = BucketAction | NotifyAction
@@ -311,18 +313,12 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
   }
 }
 
-export const addSchemasToBucket = async (
+export const addSchemasToBucket = (
   bucketID: string,
   orgID: string,
   bucketName: string,
   schema: typeof MeasurementSchemaCreateRequest
-) => {
-  //first; change the contents to the object:
-
-  //MeasurementSchemaCreateRequest
-  //PostBucketsSchemaMeasurementParams
-  //postBucketsSchemaMeasurement
-
+) => async (dispatch: Dispatch<Action>) => {
   console.log(`got here....with bucket: ${bucketID}, org: ${orgID}`, schema)
 
   const params = {
@@ -330,16 +326,24 @@ export const addSchemasToBucket = async (
     data: schema,
     query: {orgID},
   }
-
-  const resp = await postBucketsSchemaMeasurement(params)
-  if (resp.status !== 201) {
-    const msg = resp?.data?.message
-    console.log('error adding measurement schema:', resp)
-    throw new Error(msg)
+  try {
+    const resp = await postBucketsSchemaMeasurement(params)
+    if (resp.status !== 201) {
+      const msg = resp?.data?.message
+      console.log('error adding measurement schema:', resp)
+      throw new Error(msg)
+    }
+    console.log('success???', resp)
+    dispatch(
+      notify(measurementSchemaAdditionSuccessful(bucketName, schema.name))
+    )
+  } catch (error) {
+    console.error(error)
+    const message = getErrorMessage(error)
+    dispatch(
+      notify(measurementSchemaAdditionFailed(bucketName, schema.name, message))
+    )
   }
-  console.log('success???', resp)
-
-  //todo: show notification??
 }
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {

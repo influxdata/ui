@@ -50,7 +50,7 @@ class BucketList
     const urlPageNumber = parseInt(params.get('page'), 10)
 
     const passedInPageIsValid =
-      urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber >= 0
+      urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber > 0
 
     if (passedInPageIsValid) {
       this.currentPage = urlPageNumber

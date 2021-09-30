@@ -1,6 +1,6 @@
 // Libraries
 import React, {Component} from 'react'
-import {isEmpty, capitalize} from 'lodash'
+import {isEmpty} from 'lodash'
 
 // Clockface
 import {Accordion} from '@influxdata/clockface'
@@ -27,7 +27,7 @@ class ResourceAccordion extends Component<OwnProps> {
     }
 
     return resources.map(resource => {
-      const resourceName = capitalize(resource)
+      const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
 
       return (
         <Accordion key={resource}>
@@ -37,7 +37,6 @@ class ResourceAccordion extends Component<OwnProps> {
             onToggleAll={onToggleAll}
             disabled={false}
           />
-
           {!isEmpty(permissions[resource].sublevelPermissions) &&
             this.getAccordionBody(resourceName, resource)}
         </Accordion>

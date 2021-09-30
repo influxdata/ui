@@ -48,6 +48,8 @@ describe('EventMarkers', () => {
 
     const xDomain = [1, 2]
 
+    const xScale = jest.fn()
+
     const xFormatter = x => {
       return String(x)
     }

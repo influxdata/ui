@@ -124,9 +124,13 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   }
 
   const handleNewMeasurementSchemas = (
-    schemas: typeof MeasurementSchemaCreateRequest[]
+    schemas: typeof MeasurementSchemaCreateRequest[],
+    resetValidation?: boolean
   ): void => {
     setNewMeasurementSchemaRequests(schemas)
+    if (resetValidation) {
+      setShowSchemaValidation(false)
+    }
   }
 
   const handleChangeRuleType = (ruleType: 'expire' | null) => {

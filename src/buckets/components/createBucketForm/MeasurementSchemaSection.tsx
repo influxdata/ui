@@ -43,7 +43,7 @@ import {MiniFileDnd} from './MiniFileDnd'
 // make the second arg required
 interface Props {
   measurementSchemaList?: typeof MeasurementSchemaList
-  onUpdateSchemas?: (schemas: any) => void
+  onUpdateSchemas?: (schemas: any, b?: boolean) => void
   showSchemaValidation?: boolean
 }
 interface PanelProps {
@@ -70,11 +70,11 @@ const AddingPanel: FC<AddingProps> = ({
   showSchemaValidation,
 }) => {
   const [schemaName, setSchemaName] = useState(name)
-  const hasFileError = showSchemaValidation && !filename;
+  const hasFileError = showSchemaValidation && !filename
   const [fileError, setFileError] = useState(hasFileError)
-  let fileEMessage = null;
+  let fileEMessage = null
   if (hasFileError) {
-    fileEMessage = "You must upload a file"
+    fileEMessage = 'You must upload a file'
   }
   const [fileErrorMessage, setFileErrorMessage] = useState(fileEMessage)
 
@@ -272,7 +272,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   }
 
   const debouncedOnUpdateSchemas = debounce(
-    () => onUpdateSchemas(newSchemas),
+    () => onUpdateSchemas(newSchemas, false),
     300
   )
 
@@ -283,7 +283,12 @@ export const MeasurementSchemaSection: FC<Props> = ({
 
   const addSchemaLine = () => {
     const newSchema = {valid: false}
-    setSchemasWithUpdates([...newSchemas, newSchema])
+
+    // don't need to debounce; because adding empty line without user input
+    // plus then easier to send the second argument
+    const newArray = [...newSchemas, newSchema]
+    setNewSchemas(newArray)
+    onUpdateSchemas(newArray, true)
   }
 
   const addSchemaButton = (
@@ -292,13 +297,16 @@ export const MeasurementSchemaSection: FC<Props> = ({
 
   const onAddName = (name, index) => {
     const lineItem = newSchemas[index]
+    console.log('in on add name', lineItem)
 
     // using lodash trim as it is null-safe
     const trimmedName = trim(name)
     lineItem.name = trimmedName
-    if (lineItem.contents && lineItem.name) {
+    if (lineItem.columns && lineItem.name) {
+      console.log('setting it to valid')
       lineItem.valid = true
     } else {
+      console.log('setting it to not valid :(')
       lineItem.valid = false
     }
     setSchemasWithUpdates(newSchemas)

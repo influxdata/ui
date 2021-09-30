@@ -48,7 +48,10 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
-  onUpdateNewMeasurementSchemas?: (schemas: any[]) => void
+  onUpdateNewMeasurementSchemas?: (
+    schemas: any[],
+    resetValidation?: boolean
+  ) => void
   isEditing: boolean
   buttonText: string
   onClickRename?: () => void
@@ -80,13 +83,13 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     this.props.onChangeSchemaType(newSchemaType)
   }
 
-  onUpdateSchemasInternal = function(schemas) {
+  onUpdateSchemasInternal = function(schemas, resetValidation) {
     console.log(
       'got schema stuff!!! ack-44!!!  in bucket overlay form',
       schemas
     )
 
-    this.props.onUpdateNewMeasurementSchemas(schemas)
+    this.props.onUpdateNewMeasurementSchemas(schemas, resetValidation)
     this.setState({newMeasurementSchemas: schemas})
   }
 

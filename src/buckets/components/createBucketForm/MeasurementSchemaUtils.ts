@@ -36,5 +36,3 @@ export const areColumnsKosher = columns => {
   }
   return false
 }
-
-

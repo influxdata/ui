@@ -18,13 +18,16 @@ import {
   formatting,
 } from 'src/external/monaco.flux.messages'
 import {registerCompletion} from 'src/external/monaco.flux.lsp'
+
 import {AppState, LocalStorage} from 'src/types'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
 import {runQuery} from 'src/shared/apis/query'
 import {getOrg} from 'src/organizations/selectors'
-import {fetchAllBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
+
+import {fetchAllBuckets} from 'src/buckets/api'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {getStore} from 'src/store/configureStore'
 
@@ -42,6 +45,8 @@ import {
   TextEdit,
 } from 'monaco-languageclient/lib/services'
 import {Server} from '@influxdata/flux-lsp-browser'
+
+import {BUCKET_LIMIT} from 'src/resources/constants'
 
 type BucketCallback = () => Promise<string[]>
 type MeasurementsCallback = (bucket: string) => Promise<string[]>
@@ -152,8 +157,14 @@ export class LSPServer {
   getBuckets = async () => {
     try {
       const org = getOrg(this.store.getState())
-      const buckets = await fetchAllBuckets(org.id)
 
+      let limit = BUCKET_LIMIT
+      if (isFlagEnabled('fetchAllBuckets')) {
+        // a limit of -1 means fetch all buckets for this org
+        limit = -1
+      }
+
+      const buckets = await fetchAllBuckets(org.id, limit)
       return Object.values(buckets.entities.buckets).map(b => b.name)
     } catch (e) {
       console.error(e)

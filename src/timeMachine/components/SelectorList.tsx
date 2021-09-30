@@ -2,7 +2,7 @@
 import React, {SFC} from 'react'
 
 // Components
-import {List, ComponentSize, Gradients} from '@influxdata/clockface'
+import {List, ComponentSize} from '@influxdata/clockface'
 
 interface Props {
   items: string[]

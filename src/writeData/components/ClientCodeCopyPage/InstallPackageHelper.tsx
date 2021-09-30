@@ -3,14 +3,11 @@ import React, {FC, useState} from 'react'
 
 // Components
 import {
-  Panel,
-  InfluxColors,
   Heading,
   HeadingElement,
   FontWeight,
   Icon,
   IconFont,
-  ComponentSize,
 } from '@influxdata/clockface'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {Renderer} from 'react-markdown'

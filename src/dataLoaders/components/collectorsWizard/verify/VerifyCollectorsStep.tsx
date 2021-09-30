@@ -3,9 +3,15 @@ import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
 
 // Components
-import {Form, DapperScrollbars} from '@influxdata/clockface'
+import {
+  Form,
+  DapperScrollbars,
+  Button,
+  ComponentColor,
+  ButtonType,
+  Overlay,
+} from '@influxdata/clockface'
 import DataStreaming from 'src/dataLoaders/components/verifyStep/DataStreaming'
-import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
 // Types
 import {CollectorsStepProps} from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
@@ -29,14 +35,7 @@ export type Props = StateProps & OwnProps
 @ErrorHandling
 export class VerifyCollectorStep extends PureComponent<Props> {
   public render() {
-    const {
-      telegrafConfigID,
-      bucket,
-      org,
-      onDecrementCurrentStepIndex,
-      onExit,
-      token,
-    } = this.props
+    const {telegrafConfigID, bucket, org, onExit, token} = this.props
 
     return (
       <Form onSubmit={onExit} className="data-loading--form">
@@ -57,11 +56,15 @@ export class VerifyCollectorStep extends PureComponent<Props> {
             configID={telegrafConfigID}
           />
         </DapperScrollbars>
-        <OnboardingButtons
-          onClickBack={onDecrementCurrentStepIndex}
-          nextButtonText="Finish"
-          className="data-loading--button-container"
-        />
+
+        <Overlay.Footer className="data-loading--button-container">
+          <Button
+            color={ComponentColor.Primary}
+            text="Finish"
+            type={ButtonType.Submit}
+            testID="next"
+          />
+        </Overlay.Footer>
       </Form>
     )
   }

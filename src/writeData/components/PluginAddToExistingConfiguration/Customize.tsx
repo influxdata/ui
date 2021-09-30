@@ -32,13 +32,13 @@ type Props = PluginConfigurationStepProps & ReduxProps
 
 const CustomizeComponent: FC<Props> = props => {
   const {
-    onAddTelegrafPlugins,
-    onSetTelegrafConfigDescription,
-    onSetTelegrafConfigName,
+    addTelegrafPlugins,
     pluginConfig,
     pluginConfigName,
     setIsValidConfiguration,
     setPluginConfig,
+    setTelegrafConfigDescription,
+    setTelegrafConfigName,
     telegrafConfig,
     telegrafConfigDescription,
     telegrafConfigName,
@@ -59,7 +59,7 @@ const CustomizeComponent: FC<Props> = props => {
             setIsValidConfiguration(true)
             const pluginText = module.default ?? ''
             setPluginConfig(`${telegrafConfig}${pluginText}`)
-            onAddTelegrafPlugins([
+            addTelegrafPlugins([
               {
                 name: pluginConfigName,
                 configured: ConfigurationState.Configured,
@@ -84,11 +84,11 @@ const CustomizeComponent: FC<Props> = props => {
   const handleChangeConfig = config => setPluginConfig(config)
 
   const handleNameInput = (event: ChangeEvent<HTMLInputElement>) => {
-    onSetTelegrafConfigName(event.target.value)
+    setTelegrafConfigName(event.target.value)
   }
 
   const handleDescriptionInput = (event: ChangeEvent<HTMLInputElement>) => {
-    onSetTelegrafConfigDescription(event.target.value)
+    setTelegrafConfigDescription(event.target.value)
   }
 
   return (
@@ -156,9 +156,9 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  onAddTelegrafPlugins: addTelegrafPlugins,
-  onSetTelegrafConfigName: setTelegrafConfigName,
-  onSetTelegrafConfigDescription: setTelegrafConfigDescription,
+  addTelegrafPlugins,
+  setTelegrafConfigName,
+  setTelegrafConfigDescription,
 }
 
 const connector = connect(mstp, mdtp)

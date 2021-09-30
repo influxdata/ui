@@ -1,16 +1,16 @@
 // Libraries
-import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, useEffect, useState} from 'react'
+import {connect, ConnectedProps, useSelector} from 'react-redux'
 
 // Components
 import {ComponentStatus, Dropdown} from '@influxdata/clockface'
 
 // Types
-import {AppState, Bucket, ResourceType, Telegraf} from 'src/types'
+import {AppState, Telegraf} from 'src/types'
 import {PluginConfigurationStepProps} from 'src/writeData/components/PluginAddToExistingConfiguration/Wizard'
 
 // Selectors
-import {getAll} from 'src/resources/selectors'
+import {getAllBuckets, getAllTelegrafs} from 'src/resources/selectors'
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
 // Actions
@@ -25,19 +25,40 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginConfigurationStepProps & ReduxProps
 
 const ConfigureComponent: FC<Props> = props => {
+  const telegrafs = useSelector(getAllTelegrafs)
+  const [sortedTelegrafs, setSortedTelegrafs] = useState<Telegraf[]>(telegrafs)
+  useEffect(() => {
+    setSortedTelegrafs(
+      telegrafs.sort((firstConfig, secondConfig) => {
+        if (
+          firstConfig?.name.toLocaleLowerCase() >
+          secondConfig?.name.toLocaleLowerCase()
+        ) {
+          return 1
+        }
+        if (
+          firstConfig?.name.toLocaleLowerCase() <
+          secondConfig?.name.toLocaleLowerCase()
+        ) {
+          return -1
+        }
+        return 0
+      })
+    )
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const {
     buckets,
-    onSetBucketInfo,
-    onSetTelegrafConfigDescription,
-    onSetTelegrafConfigID,
-    onSetTelegrafConfigName,
+    setBucketInfo,
     setIsValidConfiguration,
     setPluginConfig,
+    setTelegrafConfigDescription,
+    setTelegrafConfigID,
+    setTelegrafConfigName,
     telegrafConfigID,
-    telegrafs,
   } = props
 
-  const selectedTelegraf = telegrafs?.find(
+  const selectedTelegraf = sortedTelegrafs?.find(
     telegraf => telegraf.id === telegrafConfigID
   )
 
@@ -58,11 +79,11 @@ const ConfigureComponent: FC<Props> = props => {
     )
     if (selectedBucket) {
       const {orgID, name, id} = selectedBucket
-      onSetBucketInfo(orgID, name, id)
+      setBucketInfo(orgID, name, id)
     }
-    onSetTelegrafConfigDescription(telegraf.description)
-    onSetTelegrafConfigID(telegraf.id)
-    onSetTelegrafConfigName(telegraf.name)
+    setTelegrafConfigDescription(telegraf.description)
+    setTelegrafConfigID(telegraf.id)
+    setTelegrafConfigName(telegraf.name)
     setPluginConfig('')
     setIsValidConfiguration(true)
   }
@@ -82,7 +103,7 @@ const ConfigureComponent: FC<Props> = props => {
         )}
         menu={onCollapse => (
           <Dropdown.Menu onCollapse={onCollapse}>
-            {telegrafs.map(telegraf => (
+            {sortedTelegrafs.map(telegraf => (
               <Dropdown.Item
                 key={telegraf.id}
                 onClick={handleSelectTelegrafConfiguration}
@@ -104,38 +125,20 @@ const ConfigureComponent: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => {
-  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
+  const buckets = getAllBuckets(state)
   const {telegrafConfigID} = getDataLoaders(state)
-  const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)?.sort(
-    (firstConfig, secondConfig) => {
-      if (
-        firstConfig?.name.toLocaleLowerCase() >
-        secondConfig?.name.toLocaleLowerCase()
-      ) {
-        return 1
-      }
-      if (
-        firstConfig?.name.toLocaleLowerCase() <
-        secondConfig?.name.toLocaleLowerCase()
-      ) {
-        return -1
-      }
-      return 0
-    }
-  )
 
   return {
     buckets,
     telegrafConfigID,
-    telegrafs,
   }
 }
 
 const mdtp = {
-  onSetBucketInfo: setBucketInfo,
-  onSetTelegrafConfigDescription: setTelegrafConfigDescription,
-  onSetTelegrafConfigID: setTelegrafConfigID,
-  onSetTelegrafConfigName: setTelegrafConfigName,
+  setBucketInfo,
+  setTelegrafConfigDescription,
+  setTelegrafConfigID,
+  setTelegrafConfigName,
 }
 
 const connector = connect(mstp, mdtp)

@@ -127,13 +127,13 @@ const FooterComponent: FC<Props> = props => {
     onDecrementCurrentStepIndex,
     onExit,
     onIncrementCurrentStepIndex,
-    onUpdateTelegraf,
     pluginConfig,
     pluginConfigName,
     setIsValidConfiguration,
     telegrafConfig,
     telegrafConfigDescription,
     telegrafConfigName,
+    updateTelegraf,
   } = props
 
   const handleContinueFromConfigure = () => {
@@ -142,7 +142,7 @@ const FooterComponent: FC<Props> = props => {
   }
 
   const handleSaveAndTest = () => {
-    onUpdateTelegraf({
+    updateTelegraf({
       ...telegrafConfig,
       config: pluginConfig,
       description: telegrafConfigDescription,
@@ -198,9 +198,7 @@ const mstp = (state: AppState) => {
   return {telegrafConfig, telegrafConfigDescription, telegrafConfigName}
 }
 
-const mdtp = {
-  onUpdateTelegraf: updateTelegraf,
-}
+const mdtp = {updateTelegraf}
 
 const connector = connect(mstp, mdtp)
 

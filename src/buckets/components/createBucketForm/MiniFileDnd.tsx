@@ -162,7 +162,7 @@ export const MiniFileDnd: FC<Props> = ({
     inputEl.current.click()
   }
 
-  //const titleText = 'Drag and Drop a file or click to select a file'
+  // maybe add a title or popover to the left....talk to david kim
 
   const displayText = fileName ?? 'Add schema file'
 

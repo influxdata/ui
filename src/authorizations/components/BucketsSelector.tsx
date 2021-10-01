@@ -16,6 +16,7 @@ import {
   Button,
   EmptyState,
   ComponentSize,
+  JustifyContent,
 } from '@influxdata/clockface'
 
 interface Props {
@@ -93,12 +94,13 @@ class BucketsSelector extends PureComponent<Props> {
       case BucketTab.Scoped:
         return (
           <SelectorList className="bucket-selectors">
-            <SelectorList.Header title="Buckets">
+            <SelectorList.Header title="">
               <div className="bucket-selectors--buttons">
                 <FlexBox
                   alignItems={AlignItems.Center}
                   direction={FlexDirection.Row}
                   margin={ComponentSize.Small}
+                  justifyContent={JustifyContent.FlexStart}
                 >
                   <Button
                     text="Select All"

@@ -35,16 +35,13 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
 }
 
 .selector-list--header {
-  flex: 0 0 $selector-list--header-height;
   background-color: $cf-grey-25;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .selector-list--title {
   display: inline-block;
-  margin: 0 $selector-list--header-margin;
   font-weight: 900;
   font-size: 13px;
   text-transform: uppercase;

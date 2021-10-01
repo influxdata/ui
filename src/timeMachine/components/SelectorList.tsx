@@ -2,7 +2,7 @@
 import React, {SFC} from 'react'
 
 // Components
-import {List, ComponentSize, Gradients} from '@influxdata/clockface'
+import {List, ComponentSize} from '@influxdata/clockface'
 
 interface Props {
   items: string[]
@@ -47,7 +47,6 @@ const SelectorList: SFC<Props> = props => {
             title={item}
             selected={selected}
             size={ComponentSize.ExtraSmall}
-            gradient={Gradients.GundamPilot}
             wrapText={wrapText}
           >
             {indicator}

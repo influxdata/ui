@@ -3,13 +3,13 @@
   ------------------------------------------------------------------------------
 */
 
-$cell--header-size: 26px;
-$cell--header-button-color: $cf-grey-25;
-$cell--header-button-hover-color: $cf-grey-75;
+$cell--header-size: $cf-space-l;
+$cell--header-button-color: $cf-grey-45;
+$cell--header-button-hover-color: $cf-grey-85;
 $cell--header-button-active-color: $c-pool;
 
 .cell {
-  background-color: $cf-grey-5;
+  background-color: rgba(26, 26, 42, 0.5);
   border-radius: $radius;
   display: flex;
   flex-direction: column;

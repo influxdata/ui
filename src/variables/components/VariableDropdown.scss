@@ -1,11 +1,10 @@
 .variable-dropdown {
   display: flex;
   flex-direction: row;
-  height: $form-sm-height + ($cf-border * 2);
+  align-items: center;
   border-radius: $cf-radius;
-  background-color: $cf-grey-15;
+  background-color: $cf-grey-25;
   margin-right: $cf-border;
-  border: $cf-border solid $cf-grey-15;
 }
 
 .variable-dropdown__dragging {

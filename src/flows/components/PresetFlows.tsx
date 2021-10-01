@@ -48,7 +48,7 @@ const PresetFlows: FC = () => {
                       onClick={() => history.push(PresetMap[p])}
                     ></Button>
                   )}
-                  <h4 className="flows-index--presetHeader">{p}</h4>
+                  <h5 className="flows-index--presetHeader">{p}</h5>
                 </div>
               ))}
             </div>

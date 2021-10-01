@@ -574,7 +574,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
           <FlexBox.Child>
             <Form.Element label="Notification" required={true}>
-              <Panel backgroundColor={InfluxColors.Onyx}>
+              <Panel backgroundColor={InfluxColors.Grey15}>
                 <Panel.Body>
                   <FlexBox
                     justifyContent={JustifyContent.FlexEnd}

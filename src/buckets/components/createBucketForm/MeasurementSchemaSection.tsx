@@ -74,7 +74,7 @@ const AddingPanel: FC<AddingProps> = ({
   // innocent until proven guilty.
   // this way, when the input first shows up, it doesn't error out immediately,
   // and once the user puts something in then it gets the real value set.
-  let initialValidity = {valid: true}
+  let initialValidity = {valid: true, message: null}
   if (name) {
     initialValidity = isNameValid(name)
   }

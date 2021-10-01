@@ -71,5 +71,5 @@ export const isNameValid = name => {
   if (name.length > 128) {
     return {valid: false, message: TOO_LONG_ERROR}
   }
-  return {valid: true}
+  return {valid: true, message: null}
 }

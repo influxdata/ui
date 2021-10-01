@@ -42,21 +42,25 @@ export const areColumnsKosher = columns => {
 export const START_ERROR = "cannot start with '_' or a number"
 export const TOO_LONG_ERROR = 'too long, max length is 128 characters'
 
-export const isNameValid = (name) => {
+/**
+ *  is the name valid?
+ *
+ *  this does NOT check if the name has content/ if it is empty.
+ *
+ *  this is about validating the name *after* the user has entered data
+ *
+ * */
+export const isNameValid = name => {
   name = trim(name)
-
-  if (!name) {
-    return {valid:false}
-  }
 
   // ok; it has contents:
   const illegalStartRegex = /^[0-9]/
 
-  if (name.startsWith("_") || illegalStartRegex.test(name)){
-    return {valid:false, message: START_ERROR}
+  if (name.startsWith('_') || illegalStartRegex.test(name)) {
+    return {valid: false, message: START_ERROR}
   }
   if (name.length > 128) {
-    return {valid:false, message:TOO_LONG_ERROR}
+    return {valid: false, message: TOO_LONG_ERROR}
   }
-  return {valid:true}
+  return {valid: true}
 }

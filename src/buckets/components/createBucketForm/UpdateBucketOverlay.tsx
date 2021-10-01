@@ -38,6 +38,7 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 // Types
 import {OwnBucket} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
+import {event} from '../../../cloud/utils/reporting'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -206,6 +207,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         )
 
         mSchemas.forEach(createRequest => {
+          event('bucket.schema.explicit.editing.uploadSchema')
           onAddMeasurementSchemaToBucket(
             bucketDraft.id,
             bucketDraft.orgID,

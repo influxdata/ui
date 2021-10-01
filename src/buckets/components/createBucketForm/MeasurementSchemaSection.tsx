@@ -22,7 +22,7 @@ import {
 } from '@influxdata/clockface'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
-import {areColumnsKosher} from './MeasurementSchemaUtils'
+import {areColumnsKosher, isNameValid} from './MeasurementSchemaUtils'
 
 import {CLOUD} from 'src/shared/constants'
 
@@ -52,7 +52,7 @@ interface PanelProps {
 }
 interface AddingProps {
   index: number
-  onAddName: (name: string, index: number) => void
+  onAddName: (name: string, isValid: boolean, index: number) => void
   onAddContents: (columns: string, filename: string, index: number) => void
   onDelete: (index: number) => void
   filename?: string
@@ -70,6 +70,14 @@ const AddingPanel: FC<AddingProps> = ({
   showSchemaValidation,
 }) => {
   const [schemaName, setSchemaName] = useState(name)
+  // innocent until proven guilty.
+  // this way, when the input first shows up, it doesn't error out immediately,
+  // and once the user puts something in then it gets the real value set.
+  let initialValidity = {valid: true}
+  if (name) {
+    initialValidity = isNameValid(name)
+  }
+  const [schemaNameValidity, setSchemaNameValidity] = useState(initialValidity)
   const hasFileError = showSchemaValidation && !filename
   const [fileError, setFileError] = useState(hasFileError)
   let fileEMessage = null
@@ -93,12 +101,9 @@ const AddingPanel: FC<AddingProps> = ({
   // then calls setError(false).  so; if we call setError(true) then it gets immediately
   // overridden.  with the propagation, the error state only gets called once properly.
   const handleUploadFile = (contents: string, fileName: string) => {
-    // todo: move event to where the schema is actually uploaded, they could
-    // keep swappingt out th efile, cancel out of the dialog, x out the adding line....etc
+    // keep swapping out the file, cancel out of the dialog, x out the adding line....etc
 
-    event('bucket.schema.explicit.uploadSchema')
-
-    //do parsing here;  to check in the correct format:
+    // do parsing here;  to check in the correct format:
     let columns = null
     if (contents) {
       // parse them; if kosher; great!  if not, set errors and do not proceed
@@ -119,7 +124,6 @@ const AddingPanel: FC<AddingProps> = ({
     onAddContents(columns, fileName, index)
   }
 
-  // jill note: http://localhost:9001/?path=/story/components-buttons-composed--dismissbutton
   const dismissBtn = (
     <DismissButton
       onClick={() => onDelete(index)}
@@ -130,8 +134,12 @@ const AddingPanel: FC<AddingProps> = ({
 
   const updateName = evt => {
     const newVal = evt.target.value
+    // is the name inherently valid? (does it start with an illegal char, or is too long?)
+    const nameValidity = isNameValid(newVal)
+
+    setSchemaNameValidity(nameValidity)
     setSchemaName(newVal)
-    onAddName(newVal, index)
+    onAddName(newVal, nameValidity.valid, index)
   }
 
   const inputProps: InputProps = {
@@ -149,15 +157,18 @@ const AddingPanel: FC<AddingProps> = ({
   // and here we want it to show immediately after a 'submit' if it is invalid
   const makeNameInput = () => {
     let status = ComponentStatus.Default
-    const needsValidation = showSchemaValidation && !schemaName
-    if (needsValidation) {
+
+    const showInValidStatus =
+      !schemaNameValidity?.valid || (showSchemaValidation && !schemaName)
+    if (showInValidStatus) {
       status = ComponentStatus.Error
     }
     inputProps.status = status
 
     let errorElement = null
-    if (needsValidation) {
-      errorElement = <FormElementError message={'You must enter a name'} />
+    if (showInValidStatus) {
+      const message = schemaNameValidity?.message ?? 'You must enter a name'
+      errorElement = <FormElementError message={message} />
     }
 
     return (
@@ -279,7 +290,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     debouncedOnUpdateSchemas()
   }
 
-  //todo: maku debaunced version take the flag.....
+  //todo: make debaunced version take the flag.....
   const addSchemaLine = () => {
     const newSchema = {valid: false}
 
@@ -294,13 +305,13 @@ export const MeasurementSchemaSection: FC<Props> = ({
     <Button onClick={addSchemaLine} text="Add New Measurement Schema" />
   )
 
-  const onAddName = (name, index) => {
+  const onAddName = (name, isValid, index) => {
     const lineItem = newSchemas[index]
 
     // using lodash trim as it is null-safe
     const trimmedName = trim(name)
     lineItem.name = trimmedName
-    if (lineItem.columns && lineItem.name) {
+    if (lineItem.columns && lineItem.name && isValid) {
       lineItem.valid = true
     } else {
       lineItem.valid = false

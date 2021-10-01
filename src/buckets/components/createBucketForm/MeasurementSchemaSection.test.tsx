@@ -1,4 +1,9 @@
-import {areColumnsKosher,  START_ERROR, isNameValid, TOO_LONG_ERROR} from './MeasurementSchemaUtils'
+import {
+  areColumnsKosher,
+  START_ERROR,
+  isNameValid,
+  TOO_LONG_ERROR,
+} from './MeasurementSchemaUtils'
 
 const oneColumns = [
   {name: 'time', type: 'timestamp'},
@@ -82,7 +87,7 @@ describe('test name validity function', () => {
     const actual = isNameValid(data)
     expect(actual.valid).toBe(expected)
 
-    if(message) {
+    if (message) {
       expect(actual.message).toEqual(message)
     }
   }
@@ -104,8 +109,8 @@ describe('test name validity function', () => {
   })
   it('should not be valid, is too long', () => {
     // following is 135 chars long:
-    const testMe = 'supercalifgragahatahaeuhtsueasupercalifgragahatahaeuhtsueatuaetsnheuahtnsaeuhtnseuahtnseuahtnseuhtneuahtneuhtnseuhtnseuhtnseuhtnseuhnst'
+    const testMe =
+      'supercalifgragahatahaeuhtsueasupercalifgragahatahaeuhtsueatuaetsnheuahtnsaeuhtnseuahtnseuahtnseuhtneuahtneuhtnseuhtnseuhtnseuhtnseuhnst'
     doTest(testMe, false, TOO_LONG_ERROR)
   })
-
 })

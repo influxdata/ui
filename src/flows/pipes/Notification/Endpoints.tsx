@@ -23,6 +23,7 @@ export const DEFAULT_ENDPOINTS = {
       ['array', 'slack'].map(i => `import "${i}"`).join('\n'),
     generateQuery: data => `task_data
 	|> schema["fieldsAsCols"]()
+  |> set(key: "_notebook_link", value: "${window.location.href}")
 	|> monitor["check"](
 		data: check,
 		messageFn: messageFn,
@@ -82,6 +83,7 @@ export const DEFAULT_ENDPOINTS = {
 
       const out = `task_data
 	|> schema["fieldsAsCols"]()
+  |> set(key: "_notebook_link", value: "${window.location.href}")
 	|> monitor["check"](
 		data: check,
 		messageFn: messageFn,
@@ -141,6 +143,7 @@ export const DEFAULT_ENDPOINTS = {
         .join('\n'),
     generateQuery: data => `task_data
 	|> schema["fieldsAsCols"]()
+  |> set(key: "_notebook_link", value: "${window.location.href}")  
   |> monitor["check"](
 		data: check,
 		messageFn: messageFn,

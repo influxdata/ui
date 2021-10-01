@@ -172,15 +172,11 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     const alltrue = newMeasurementSchemaRequests.reduce(reducer, true)
 
     if (alltrue) {
-      console.log('all true!')
       return true
     }
-
-    console.log('not all true :(')
     // not all true :(
 
     // if not valid, decorate them to show they are not valid!
-    // TODO!  do the decoration!
     setShowSchemaValidation(true)
     return false
   }
@@ -198,13 +194,8 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
           columns: item.columns,
           name: item.name,
         }))
-        console.log('bucket info??', bucketDraft)
 
-        console.log(
-          'would handle the new schema requests here (would create the ' +
-            'measurement schemas one by one here! TODO: ',
-          mSchemas
-        )
+        // create the measurement schemas one by one here!
 
         mSchemas.forEach(createRequest => {
           event('bucket.schema.explicit.editing.uploadSchema')
@@ -215,8 +206,6 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
             createRequest
           )
         })
-      } else {
-        console.log('no measurement schemas to set')
       }
 
       handleClose()

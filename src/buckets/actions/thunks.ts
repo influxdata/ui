@@ -319,8 +319,6 @@ export const addSchemasToBucket = (
   bucketName: string,
   schema: typeof MeasurementSchemaCreateRequest
 ) => async (dispatch: Dispatch<Action>) => {
-  console.log(`got here....with bucket: ${bucketID}, org: ${orgID}`, schema)
-
   const params = {
     bucketID,
     data: schema,
@@ -330,10 +328,10 @@ export const addSchemasToBucket = (
     const resp = await postBucketsSchemaMeasurement(params)
     if (resp.status !== 201) {
       const msg = resp?.data?.message
-      console.log('error adding measurement schema:', resp)
+      console.error('error adding measurement schema:', resp)
       throw new Error(msg)
     }
-    console.log('success???', resp)
+
     dispatch(
       notify(measurementSchemaAdditionSuccessful(bucketName, schema.name))
     )

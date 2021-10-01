@@ -85,13 +85,10 @@ const CheckoutForm: FC = () => {
                 </a>
                 .
               </p>
-              <Panel
-                gradient={Gradients.HotelBreakfast}
-                className="checkout-form--banner"
-              >
+              <div className="checkout-form--banner">
                 <strong className="checkout-banner--credit">$250</strong>
                 <p>credit applied</p>
-              </Panel>
+              </div>
             </Panel.Body>
           </Panel>
           <Panel>

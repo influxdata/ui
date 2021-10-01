@@ -22,15 +22,23 @@
 }
 
 .checkout-form--banner {
-  top: -100px;
-  rotate: 45deg;
-  width: 210px;
+  background: linear-gradient(
+    45deg,
+    rgb(52, 187, 85) 0%,
+    rgb(0, 163, 255) 100%
+  );
+  box-sizing: border-box;
+  position: absolute;
+  top: 20px;
+  right: 55px;
+  width: 270px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: black;
-  left: 88%;
+  transform: translate(50%) rotate(45deg);
+  transform-origin: center;
 
   p {
     margin: 8px 0px;
@@ -59,7 +67,8 @@
     left: 0;
     flex-direction: row;
     width: 100%;
-
+    transform: translate(0%) rotate(0deg);
+    border-radius: 8px;
     .checkout-banner--credit {
       margin-top: 0px;
       padding-right: 8px;

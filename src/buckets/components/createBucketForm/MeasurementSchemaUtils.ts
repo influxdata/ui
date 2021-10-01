@@ -1,3 +1,5 @@
+import {trim} from 'lodash'
+
 const typeStrings = ['timestamp', 'tag', 'field']
 const dataTypeStrings = ['integer', 'float', 'boolean', 'string', 'unsigned']
 
@@ -35,4 +37,26 @@ export const areColumnsKosher = columns => {
     return validArray.reduce((prevVal, curVal) => prevVal && curVal, true)
   }
   return false
+}
+
+export const START_ERROR = "cannot start with '_' or a number"
+export const TOO_LONG_ERROR = 'too long, max length is 128 characters'
+
+export const isNameValid = (name) => {
+  name = trim(name)
+
+  if (!name) {
+    return {valid:false}
+  }
+
+  // ok; it has contents:
+  const illegalStartRegex = /^[0-9]/
+
+  if (name.startsWith("_") || illegalStartRegex.test(name)){
+    return {valid:false, message: START_ERROR}
+  }
+  if (name.length > 128) {
+    return {valid:false, message:TOO_LONG_ERROR}
+  }
+  return {valid:true}
 }

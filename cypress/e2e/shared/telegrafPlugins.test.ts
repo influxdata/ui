@@ -84,9 +84,8 @@ describe('Sources > Telegraf Plugins', () => {
         'contain',
         'Your configurations have been saved'
       )
-      cy.getByTestID('overlay--footer').within(() => {
-        cy.getByTestID('next').click()
-      })
+
+      cy.getByTestID('next').click()
       cy.getByTestID('overlay--mask').should('not.exist')
     })
   })
@@ -131,9 +130,7 @@ describe('Sources > Telegraf Plugins', () => {
         'contain',
         'Your configurations have been saved'
       )
-      cy.getByTestID('overlay--footer').within(() => {
-        cy.getByTestID('next').click()
-      })
+      cy.getByTestID('next').click()
       cy.getByTestID('overlay--mask').should('not.exist')
 
       // Add to the existing config with the same plugin
@@ -224,9 +221,7 @@ describe('Sources > Telegraf Plugins', () => {
         'contain',
         'Your configurations have been saved'
       )
-      cy.getByTestID('overlay--footer').within(() => {
-        cy.getByTestID('next').click()
-      })
+      cy.getByTestID('next').click()
       cy.getByTestID('overlay--mask').should('not.exist')
 
       // Navigate back to Data > Sources to select another plugin

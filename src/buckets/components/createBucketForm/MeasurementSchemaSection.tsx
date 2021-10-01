@@ -108,13 +108,8 @@ const AddingPanel: FC<AddingProps> = ({
     let columns = null
     if (contents) {
       // parse them; if kosher; great!  if not, set errors and do not proceed
-
-      try {
-        columns = JSON.parse(contents)
-      } catch (error) {
-        // rethrow for the mini file uploader to show the error
-        throw error
-      }
+      // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
+      columns = JSON.parse(contents)
 
       if (!areColumnsKosher(columns)) {
         // set errors
@@ -348,7 +343,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
   }
 
   const makeAddPanels = () => {
-    console.log('making new add panels, show sv?', showSchemaValidation)
     return newSchemas.map((schema, index) => (
       <AddingPanel
         key={`${schema.name}-${index}`}

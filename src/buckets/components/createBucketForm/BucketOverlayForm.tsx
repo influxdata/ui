@@ -88,11 +88,6 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   }
 
   onUpdateSchemasInternal = function(schemas, resetValidation) {
-    console.log(
-      'got schema stuff!!! ack-44!!!  in bucket overlay form',
-      schemas
-    )
-
     this.props.onUpdateNewMeasurementSchemas(schemas, resetValidation)
     this.setState({newMeasurementSchemas: schemas})
   }

@@ -69,7 +69,7 @@ const CheckoutForm: FC = () => {
           </h1>
           <Panel
             gradient={Gradients.BeijingEclipse}
-            style={{overflow: 'hidden'}}
+            className="checkout--panel"
           >
             <Panel.Body size={ComponentSize.Medium}>
               <p className="checkout-summary">

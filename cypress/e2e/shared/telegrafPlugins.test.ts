@@ -170,7 +170,9 @@ describe('Sources > Telegraf Plugins', () => {
       ).should('be.visible')
       cy.getByTestID(
         'plugin-add-to-configuration-save-and-test--confirm-button'
-      ).should('be.visible').click()
+      )
+        .should('be.visible')
+        .click()
       cy.getByTestID('next').click()
       cy.getByTestID('overlay--mask').should('not.exist')
     })

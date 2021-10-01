@@ -10,7 +10,6 @@ import {
   ComponentSize,
   FontWeight,
   Form,
-  Gradients,
   Grid,
   Heading,
   HeadingElement,
@@ -48,10 +47,7 @@ const UserListInviteForm: FC = () => {
     <Grid>
       <Grid.Row>
         <Grid.Column widthMD={Columns.Ten} widthLG={Columns.Six}>
-          <Panel
-            gradient={Gradients.PolarExpress}
-            className="user-list-invite--form-panel"
-          >
+          <Panel className="user-list-invite--form-panel">
             <Panel.Header>
               <Heading
                 weight={FontWeight.Light}

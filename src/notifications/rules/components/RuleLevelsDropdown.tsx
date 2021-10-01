@@ -33,7 +33,7 @@ const RuleLevelsDropdown: FC<Props> = ({
     {display: 'INFO', hex: InfluxColors.Ocean, value: 'INFO'},
     {display: 'WARN', hex: InfluxColors.Thunder, value: 'WARN'},
     {display: 'OK', hex: InfluxColors.Viridian, value: 'OK'},
-    {display: 'ANY', hex: InfluxColors.Sidewalk, value: 'ANY'},
+    {display: 'ANY', hex: InfluxColors.Grey65, value: 'ANY'},
   ]
   if (otherLevel && otherLevel !== 'ANY') {
     levels = levels.filter(l => l.value !== otherLevel)

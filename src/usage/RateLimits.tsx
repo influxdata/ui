@@ -16,8 +16,11 @@ const RateLimits: FC = () => {
 
   return (
     <Panel className="usage--panel">
-      <Panel.Header>
-        <h4 data-testid="rate-limits-header--timerange">{`Rate Limits ${timeRange.label}`}</h4>
+      <Panel.Header className="rate-limits-header--timerange">
+        <h4
+          data-testid="rate-limits-header--timerange"
+          style={{lineHeight: '40px'}}
+        >{`Rate Limits ${timeRange.label}`}</h4>
       </Panel.Header>
       <Panel.Body
         direction={FlexDirection.Column}

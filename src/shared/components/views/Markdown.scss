@@ -23,15 +23,29 @@
   color: $cf-grey-75;
 
   p {
-    font-size: 1em;
-    line-height: 1.25em;
-    font-weight: $cf-font-weight--medium;
+    font-size: $cf-text-base;
+    line-height: 1.55em;
+    font-weight: $cf-font-weight--regular;
   }
 
-  h3:not(.cf-heading),
-  h4:not(.cf-heading) {
+  h3:not(.cf-heading) {
+    font-size: $cf-text-base-3;
+    font-weight: $cf-font-weight--medium;
+    line-height: 1.25em;
     border-bottom: $cf-border solid $cf-grey-15;
     padding-bottom: 0.25em;
+  }
+  h4:not(.cf-heading) {
+    font-size: $cf-text-base-2;
+    font-weight: $cf-font-weight--medium;
+    line-height: 1.25em;
+    border-bottom: $cf-border solid $cf-grey-15;
+    padding-bottom: 0.25em;
+  }
+  h5:not(.cf-heading) {
+    font-size: $cf-text-base-1;
+    font-weight: $cf-font-weight--medium;
+    line-height: 1.25em;
   }
 
   strong {

@@ -72,7 +72,7 @@ const TagRule: FC<Props> = ({tagRule}) => {
           <TextBlock
             text="AND"
             textColor={InfluxColors.Honeydew}
-            backgroundColor={InfluxColors.Pepper}
+            backgroundColor={InfluxColors.Grey25}
           />
           <TextBlock text="When" />
           <FlexBox.Child grow={1}>

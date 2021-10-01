@@ -291,12 +291,15 @@ export const MeasurementSchemaSection: FC<Props> = ({
     debouncedOnUpdateSchemas()
   }
 
-  // todo: make debaunced version take the flag.....
+  // NOT making debounced version take the flag;
+  // because if the flag is true, then the new panel that just got made
+  // doesn't get the flag set properly (it gets set *after* the panel is created)
   const addSchemaLine = () => {
     const newSchema = {valid: false}
 
     // don't need to debounce; because adding empty line without user input
-    // plus then easier to send the second argument
+    // plus if debounce the flag gets set *after* the panel is made,
+    // which is not what we want.
     const newArray = [...newSchemas, newSchema]
     setNewSchemas(newArray)
     onUpdateSchemas(newArray, true)

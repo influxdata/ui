@@ -22,7 +22,7 @@ import {RuleType} from 'src/buckets/reducers/createBucket'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
-import {MeasurementSchemaSection} from './MeasurementSchemaSection'
+import {MeasurementSchemaSection} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
 
 let MeasurementSchemaList = null,
   MeasurementSchemaCreateRequest = null,
@@ -119,6 +119,18 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     const nameInputStatus = isEditing && ComponentStatus.Disabled
 
+    const measurementSchemaComponent = (
+      <MeasurementSchemaSection
+        measurementSchemaList={measurementSchemaList}
+        key="measurementSchemaSection"
+        onUpdateSchemas={this.onUpdateSchemasInternal}
+        showSchemaValidation={this.props.showSchemaValidation}
+      />
+    )
+
+    const measurementSchemaSection =
+      schemaType === 'explicit' ? measurementSchemaComponent : null
+
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
         let contents = null
@@ -129,12 +141,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
                 key="schemaToggleSection"
                 readOnlySchemaType={schemaType}
               />
-              <MeasurementSchemaSection
-                measurementSchemaList={measurementSchemaList}
-                key="measurementSchemaSection"
-                onUpdateSchemas={this.onUpdateSchemasInternal}
-                showSchemaValidation={this.props.showSchemaValidation}
-              />
+              {measurementSchemaSection}
             </>
           )
         } else {

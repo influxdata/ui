@@ -47,3 +47,27 @@
     width: 100%;
   }
 }
+
+@media screen and (max-width: $cf-grid--breakpoint-md) {
+  .checkout-form--banner {
+    position: relative;
+    height: auto;
+    display: flex;
+    rotate: 0deg;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    flex-direction: row;
+    width: 100%;
+
+    .checkout-banner--credit {
+      margin-top: 0px;
+      padding-right: 8px;
+    }
+  }
+
+  .checkout--panel {
+    height: auto;
+    max-height: none;
+  }
+}

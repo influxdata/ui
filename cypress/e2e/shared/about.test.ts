@@ -12,7 +12,7 @@ describe('About Page', () => {
     )
   )
 
-  it('should display everything correctly', () => {
+  it.only('should display everything correctly', () => {
     cy.getByTestID('common-ids--panel').within(() => {
       cy.getByTestID('code-snippet--userid').should('exist')
       cy.getByTestID('copy-btn--userid').should('not.be.disabled')
@@ -51,6 +51,6 @@ describe('About Page', () => {
       .contains(newOrgName)
 
     cy.getByTestID('org-profile--name').contains(newOrgName)
-    cy.getByTestID('danger-zone--org-name').contains(newOrgName)
+    cy.getByTestID('danger-zone--org-name').should('have.value', newOrgName)
   })
 })

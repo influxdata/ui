@@ -61,7 +61,7 @@ const OrgProfileTab: FC = () => {
           Name
         </Heading>
         <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
-          <Input value={org.name} data-testid="danger-zone--org-name"></Input>
+          <Input value={org.name} testID="danger-zone--org-name"></Input>
           <Button
             testID="rename-org--button"
             text="Rename"

@@ -230,9 +230,8 @@ describe('Sources > Telegraf Plugins', () => {
       cy.getByTestID('overlay--mask').should('not.exist')
 
       // Navigate back to Data > Sources to select another plugin
-      cy.getByTestID('nav-item-load-data')
-        .should('be.visible')
-        .click()
+      cy.clickNavBarItem('nav-item-load-data')
+
       cy.getByTestID(`load-data-item ${plugin2}`)
         .should('exist')
         .click()

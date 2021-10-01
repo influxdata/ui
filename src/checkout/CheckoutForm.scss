@@ -1,3 +1,5 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
 .cf-funnel-page--footer .cf-cta-button {
   margin: $cf-marg-c 0;
 }
@@ -14,6 +16,26 @@
   min-height: 226px;
 }
 
+.checkout-form--banner {
+  position: absolute !important;
+  right: -90px;
+  top: 19px;
+  rotate: 45deg;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: black;
+
+  p {
+    margin: 8px 0px;
+  }
+  .checkout-banner--credit {
+    margin-top: 8px;
+    color: black;
+  }
+}
 /* Zuora Payment Widget */
 #zuora_payment {
   & > iframe {

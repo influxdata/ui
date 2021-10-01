@@ -65,7 +65,10 @@ const CheckoutForm: FC = () => {
           >
             Upgrade to Usage-Based Account
           </h1>
-          <Panel gradient={Gradients.BeijingEclipse}>
+          <Panel
+            gradient={Gradients.BeijingEclipse}
+            style={{overflow: 'hidden'}}
+          >
             <Panel.Body size={ComponentSize.Medium}>
               <p className="checkout-summary">
                 No upfront commitment, pay only for what you use, and you can
@@ -80,6 +83,13 @@ const CheckoutForm: FC = () => {
                 </a>
                 .
               </p>
+              <Panel
+                gradient={Gradients.HotelBreakfast}
+                className="checkout-form--banner"
+              >
+                <strong className="checkout-banner--credit">$250</strong>
+                <p>credit applied</p>
+              </Panel>
             </Panel.Body>
           </Panel>
           <Panel>

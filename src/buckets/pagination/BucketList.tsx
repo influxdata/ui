@@ -57,14 +57,16 @@ class BucketList
     }
   }
 
-  public render() {
-    this.totalPages = Math.ceil(this.props.buckets.length / this.rowsPerPage)
-
+  public componentDidUpdate() {
     // if the user filters the list while on a page that is
     // outside the new filtered list put them on the last page of the new list
     if (this.currentPage > this.totalPages) {
       this.paginate(this.totalPages)
     }
+  }
+
+  public render() {
+    this.totalPages = Math.ceil(this.props.buckets.length / this.rowsPerPage)
 
     return (
       <>

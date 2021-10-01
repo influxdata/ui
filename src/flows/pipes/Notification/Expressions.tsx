@@ -49,9 +49,9 @@ const parsedResultToSchema = (
     '_check_id',
     '_check_name',
     '_level',
+    '_notebook_link',
     '_source_measurement',
     '_type',
-    '_notebook_link',
   ]
   const schema = {
     fields: new Set<string>(

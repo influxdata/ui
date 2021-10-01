@@ -187,8 +187,6 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     if (isValid()) {
       onUpdateBucket(bucketDraft)
 
-      // TODO:  put an event here!
-      // like: 'bucket.editing.add.measurementSchema'
       if (newMeasurementSchemaRequests?.length) {
         const mSchemas = newMeasurementSchemaRequests.map(item => ({
           columns: item.columns,

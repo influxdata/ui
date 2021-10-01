@@ -23,6 +23,9 @@ import {getDataLoaders} from 'src/dataLoaders/selectors'
 import {getAll} from 'src/resources/selectors'
 import {getQuartzMe} from 'src/me/selectors'
 
+// Utils
+import {CLOUD} from 'src/shared/constants'
+
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
@@ -58,7 +61,7 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
   useEffect(() => {
     if (telegrafConfig) {
       let {config} = telegrafConfig
-      if (accountType === 'free') {
+      if (CLOUD && accountType === 'free') {
         config = config.replace(
           agentSettingPatternDefault,
           agentSettingPatternFreeTier
@@ -147,7 +150,7 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
 
 const mstp = (state: AppState) => {
   const {telegrafConfigID} = getDataLoaders(state)
-  const {accountType} = getQuartzMe(state)
+  const accountType = getQuartzMe(state)?.accountType ?? 'free'
   let telegrafConfig = null
   if (telegrafConfigID) {
     const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)

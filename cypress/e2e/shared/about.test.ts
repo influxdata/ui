@@ -12,7 +12,7 @@ describe('About Page', () => {
     )
   )
 
-  it.only('should display everything correctly', () => {
+  it('should display everything correctly', () => {
     cy.getByTestID('common-ids--panel').within(() => {
       cy.getByTestID('code-snippet--userid').should('exist')
       cy.getByTestID('copy-btn--userid').should('not.be.disabled')

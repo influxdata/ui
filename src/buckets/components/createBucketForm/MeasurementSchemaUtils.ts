@@ -11,6 +11,16 @@ const dataTypeStrings = ['integer', 'float', 'boolean', 'string', 'unsigned']
  * https://newbedev.com/checking-validity-of-string-literal-union-type-at-runtime
  *
  * right now, just checking true/false; is it valid?  later on, may add a message saying which part(s) are invalid
+ *
+ * The backend checks for uniqueness among the schema names and among the column names within each schema.
+ * it gives us a relevant error message if the uniqueness fails.
+ *
+ * The backend also checks if the columns themselves are proper, there must be at least two columns:
+ *   1) a time field of time 'timestamp'
+ *   2) a field with type 'field'
+ *
+ *   not checking for those at this time on the frontend, letting the backend do the checking;
+ *   the code propagates up the error messages to show the user.
  * */
 export const areColumnsKosher = columns => {
   if (Array.isArray(columns)) {
@@ -48,7 +58,6 @@ export const TOO_LONG_ERROR = 'too long, max length is 128 characters'
  *  this does NOT check if the name has content/ if it is empty.
  *
  *  this is about validating the name *after* the user has entered data
- *
  * */
 export const isNameValid = name => {
   name = trim(name)

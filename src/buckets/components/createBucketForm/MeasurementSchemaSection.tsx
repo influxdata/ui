@@ -22,7 +22,12 @@ import {
 } from '@influxdata/clockface'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
-import {areColumnsKosher, isNameValid} from './MeasurementSchemaUtils'
+import {
+  areColumnsKosher,
+  isNameValid,
+} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
+import {downloadTextFile} from 'src/shared/utils/download'
+import {MiniFileDnd} from 'src/buckets/components/createBucketForm/MiniFileDnd'
 
 import {CLOUD} from 'src/shared/constants'
 
@@ -34,10 +39,6 @@ if (CLOUD) {
   MeasurementSchemaList = require('src/client/generatedRoutes')
     .MeasurementSchemaList
 }
-
-import {downloadTextFile} from 'src/shared/utils/download'
-//todo: make import absolute (relative now)
-import {MiniFileDnd} from './MiniFileDnd'
 
 // note:  once you can add schemas in the create mode,
 // make the second arg required
@@ -290,7 +291,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     debouncedOnUpdateSchemas()
   }
 
-  //todo: make debaunced version take the flag.....
+  // todo: make debaunced version take the flag.....
   const addSchemaLine = () => {
     const newSchema = {valid: false}
 
@@ -359,7 +360,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     ))
   }
 
-  //console.log('show schema validation??? jill-742am-', showSchemaValidation)
   // only re-making them when the length changes; else when they are being edited;
   // after the debounced function executes that sends the data to the parent, the text field (the name)
   // loses focus which is disorienting and wonky (it loses focus b/c the panels are re-made).
@@ -368,7 +368,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     newSchemas.length,
     showSchemaValidation,
   ])
-  //const addPanels = makeAddPanels()
 
   return (
     <FlexBox

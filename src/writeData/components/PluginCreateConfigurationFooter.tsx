@@ -21,12 +21,22 @@ import {PluginCreateConfigurationStepProps} from 'src/writeData/components/Plugi
 // Selectors
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 import {getAll} from 'src/resources/selectors'
+import {getQuartzMe} from 'src/me/selectors'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
+const agentSettingPatternDefault = `[agent]
+  ## Default data collection interval for all inputs
+  interval = "10s"`
+
+const agentSettingPatternFreeTier = `[agent]
+  ## Default data collection interval for all inputs
+  interval = "20s"`
+
 const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
   const {
+    accountType,
     currentStepIndex,
     isValidConfiguration,
     onDecrementCurrentStepIndex,
@@ -47,7 +57,13 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
 
   useEffect(() => {
     if (telegrafConfig) {
-      const {config} = telegrafConfig
+      let {config} = telegrafConfig
+      if (accountType === 'free') {
+        config = config.replace(
+          agentSettingPatternDefault,
+          agentSettingPatternFreeTier
+        )
+      }
       const position =
         typeof config === 'string'
           ? config.indexOf(`[[inputs.${pluginConfigName}]]`)
@@ -131,6 +147,7 @@ const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
 
 const mstp = (state: AppState) => {
   const {telegrafConfigID} = getDataLoaders(state)
+  const {accountType} = getQuartzMe(state)
   let telegrafConfig = null
   if (telegrafConfigID) {
     const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
@@ -138,7 +155,7 @@ const mstp = (state: AppState) => {
       telegraf => telegraf.id === telegrafConfigID
     )
   }
-  return {telegrafConfig}
+  return {accountType, telegrafConfig}
 }
 
 const mdtp = {

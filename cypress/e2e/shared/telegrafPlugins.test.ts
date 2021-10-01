@@ -91,7 +91,7 @@ describe('Sources > Telegraf Plugins', () => {
     })
   })
 
-  it('can add the same plugin again to the same configuration', () => {
+  it.only('can add the same plugin again to the same configuration', () => {
     const examplePlugin = 'aerospike'
     const configurationName = `configuration with two ${examplePlugin}`
     const configurationDescription =
@@ -103,6 +103,7 @@ describe('Sources > Telegraf Plugins', () => {
       cy.getByTestID('sources-telegraf-plugins').should('exist')
       cy.getByTestID(`load-data-item ${examplePlugin}`).click()
       cy.getByTestID('add-plugin-to-configuration--dropdown')
+        .scrollIntoView()
         .should('be.visible')
         .click()
       cy.getByTestID('create-new-configuration-from-plugin--dropdown-item')
@@ -138,6 +139,7 @@ describe('Sources > Telegraf Plugins', () => {
 
       // Add to the existing config with the same plugin
       cy.getByTestID('add-plugin-to-configuration--dropdown')
+        .scrollIntoView()
         .should('be.visible')
         .click()
       cy.getByTestID('add-to-existing-configuration-from-plugin--dropdown-item')

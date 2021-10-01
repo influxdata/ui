@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 
 // Types
-import {PluginCreateConfigurationStep} from 'src/types/dataLoaders'
+import {PluginConfigurationStep} from 'src/types/dataLoaders'
 import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
 
 // Components
@@ -19,15 +19,15 @@ const StepSwitcher: FC<Props> = props => {
   const {stepProps} = props
 
   switch (stepProps.currentStepIndex) {
-    case PluginCreateConfigurationStep.Configure:
+    case PluginConfigurationStep.Configure:
       if (stepProps.substepIndex === 1) {
         return <PluginCreateConfigurationAddBucket {...stepProps} />
       } else {
         return <PluginCreateConfigurationOptions {...stepProps} />
       }
-    case PluginCreateConfigurationStep.Customize:
+    case PluginConfigurationStep.Customize:
       return <PluginCreateConfigurationCustomize {...stepProps} />
-    case PluginCreateConfigurationStep.Verify:
+    case PluginConfigurationStep.Verify:
       return <VerifyCollectorsStep {...stepProps} />
     default:
       return <div />

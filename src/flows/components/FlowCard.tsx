@@ -56,6 +56,32 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
     }
   }
 
+  const meta = []
+
+  if (!!flow?.createdBy) {
+    meta.push(
+      <React.Fragment key={`${flow.id}--created-by`}>
+        Created by {flow.createdBy}
+      </React.Fragment>
+    )
+  }
+
+  if (flow?.createdAt) {
+    meta.push(
+      <React.Fragment key={`${flow.id}--created-at`}>
+        Created at {flow.createdAt}
+      </React.Fragment>
+    )
+  }
+
+  if (flow?.updatedAt) {
+    meta.push(
+      <React.Fragment key={`${flow.id}--updated-at`}>
+        Last Modified at {flow.updatedAt}
+      </React.Fragment>
+    )
+  }
+
   return (
     <ResourceCard
       key={`flow-card--${id}`}
@@ -68,10 +94,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
         onUpdate={handleRenameNotebook}
         buttonTestID="flow-card--name-button"
       />
-      <ResourceCard.Meta>
-        {flow?.createdAt ? <>Created at {flow.createdAt}</> : null}
-        {flow?.updatedAt ? <>Last Modified at {flow.updatedAt}</> : null}
-      </ResourceCard.Meta>
+      <ResourceCard.Meta>{meta}</ResourceCard.Meta>
     </ResourceCard>
   )
 }

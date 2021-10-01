@@ -56,8 +56,12 @@ import {
   testNotificationFailure,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
+
+// Constants
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
@@ -93,7 +97,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     }
 
     if (loading === RemoteDataState.NotStarted) {
-      return 'This cell will display results from the previous cell'
+      return UNPROCESSED_PANEL_TEXT
     }
 
     return 'No Data Returned'
@@ -450,6 +454,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
   ])
 
   const handleTestEndpoint = async () => {
+    event('Alert Panel (Notebooks) - Test Alert Clicked')
     const queryText = `
 import "strings"
 import "regexp"

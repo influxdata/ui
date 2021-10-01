@@ -426,7 +426,6 @@ describe('Flows', () => {
       cy.getByTestID('flux-toolbar--list').should('be.visible')
 
       // check that all expressions are listed
-      cy.getByTestID('measurements-test').should('be.visible')
       cy.getByTestID('fields-dopeness').should('be.visible')
       cy.getByTestID('tags-container_name').should('be.visible')
       cy.getByTestID('columns-_start').should('be.visible')

@@ -1,4 +1,5 @@
-import {fetchAllBuckets, getBuckets} from './thunks'
+import {getBuckets} from 'src/buckets/actions/thunks'
+import {fetchAllBuckets} from 'src/buckets/api'
 import * as api from 'src/client'
 import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
 import {getMockAppState} from 'src/mockAppState'

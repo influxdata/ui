@@ -1,5 +1,6 @@
 import {Bucket, Permission} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
+import {capitalize} from 'lodash'
 
 type PermissionTypes = Permission['resource']['type']
 
@@ -211,4 +212,96 @@ export const formatPermissionsObj = permissions => {
     }
   })
   return newPerms
+}
+
+export const formatApiPermissions = (permissions, orgID) => {
+  const apiPerms = []
+  Object.keys(permissions).forEach(key => {
+    if (permissions[key].read) {
+      apiPerms.push({
+        action: 'read',
+        resource: {
+          orgID: orgID,
+          type: key,
+        },
+      })
+    }
+    if (permissions[key].write) {
+      apiPerms.push({
+        action: 'write',
+        resource: {
+          orgID: orgID,
+          type: key,
+        },
+      })
+    }
+    if (permissions[key].sublevelPermissions) {
+      Object.keys(permissions[key].sublevelPermissions).forEach(id => {
+        if (
+          permissions[key].sublevelPermissions[id].permissions.read &&
+          !permissions[key].read
+        ) {
+          apiPerms.push({
+            action: 'read',
+            resource: {
+              orgID: permissions[key].sublevelPermissions[id].orgID,
+              type: key,
+              id: id,
+              name: permissions[key].sublevelPermissions[id].name,
+            },
+          })
+        }
+        if (
+          permissions[key].sublevelPermissions[id].permissions.write &&
+          !permissions[key].write
+        ) {
+          apiPerms.push({
+            action: 'write',
+            resource: {
+              orgID: permissions[key].sublevelPermissions[id].orgID,
+              type: key,
+              id: id,
+              name: permissions[key].sublevelPermissions[id].name,
+            },
+          })
+        }
+      })
+    }
+  })
+  return apiPerms
+}
+
+export const generateDescription = apiPermissions => {
+  let generatedDescription = ''
+
+  if (apiPermissions.length > 2) {
+    const actions = []
+    apiPermissions.forEach(perm => {
+      actions.push(perm.action)
+    })
+    const isRead = actions.some(action => action === 'read')
+    const isWrite = actions.some(action => action === 'write')
+
+    if (isRead && isWrite) {
+      generatedDescription += `Read Multiple Write Multiple`
+    } else if (isRead) {
+      generatedDescription += `Read Multiple`
+    } else if (isWrite) {
+      generatedDescription += `Write Multiple`
+    }
+  } else {
+    apiPermissions.forEach(perm => {
+      if (perm.resource.name) {
+        generatedDescription += `${capitalize(perm.action)} ${
+          perm.resource.type
+        } ${perm.resource.name} `
+      } else {
+        generatedDescription += `${capitalize(perm.action)} ${
+          perm.resource.type
+        } `
+      }
+    })
+  }
+
+  return generatedDescription.trim()
 }

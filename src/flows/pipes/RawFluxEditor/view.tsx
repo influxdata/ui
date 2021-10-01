@@ -30,6 +30,9 @@ import Functions from 'src/flows/pipes/RawFluxEditor/functions'
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
 )
@@ -120,8 +123,10 @@ const Query: FC<PipeProp> = ({Context}) => {
 
   const launcher = () => {
     if (showId === id) {
+      event('Flux Panel (Notebooks) - Toggle Functions - Off')
       hideSub()
     } else {
+      event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
       showSub(<Functions onSelect={inject} />)
     }

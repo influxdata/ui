@@ -1,5 +1,8 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 import {
   Dropdown,
   ComponentColor,
@@ -32,6 +35,7 @@ const RemoteCSV: FC<PipeProp> = ({Context}) => {
     url: string,
     name: string
   ) => {
+    event('Remote CSV Panel (Notebooks)- Selected Option: ' + name)
     update({csvType: selected, url: url ?? '', sampleName: name})
   }
 

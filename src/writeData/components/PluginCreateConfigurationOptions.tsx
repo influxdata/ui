@@ -35,7 +35,10 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
     onSetSubstepIndex,
     onSetTelegrafConfigName,
     telegrafConfigName,
+    setIsValidConfiguration,
   } = props
+
+  setIsValidConfiguration(true) // always true for this component
 
   let selectedBucket = buckets.find(b => b.name === bucket)
 
@@ -52,7 +55,7 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
   }
 
   const handleSelectBucket = (bucket: Bucket) => {
-    const {orgID, id, name} = bucket
+    const {orgID, name, id} = bucket
 
     if (id === CREATE_A_BUCKET_ID) {
       onSetSubstepIndex(currentStepIndex, 1)

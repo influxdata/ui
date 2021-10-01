@@ -29,7 +29,8 @@ import CreditCardForm from 'src/shared/components/CreditCardForm'
 // Context
 import {CheckoutContext} from 'src/checkout/context/checkout'
 
-// Types
+// Events
+import {event} from 'src/cloud/utils/reporting'
 
 const CheckoutForm: FC = () => {
   const {
@@ -45,6 +46,7 @@ const CheckoutForm: FC = () => {
     }
 
     try {
+      event('User Upgrade Payment Plan')
       Z.submit()
     } catch (error) {
       // Ingest the error since the Zuora Form will return an error form based on the error returned

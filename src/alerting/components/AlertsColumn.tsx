@@ -73,7 +73,7 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
 
   return (
     <Panel
-      backgroundColor={InfluxColors.Kevlar}
+      backgroundColor={InfluxColors.Grey5}
       className={panelClassName}
       testID={`${type}--column`}
     >

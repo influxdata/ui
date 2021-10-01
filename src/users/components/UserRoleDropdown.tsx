@@ -23,7 +23,7 @@ const UserRoleDropdown: FC = () => {
       className="user-role--dropdown--button"
       active={active}
       onClick={onClick}
-      color={ComponentColor.Primary}
+      color={ComponentColor.Secondary}
     >
       {draftInvite.role}
     </Dropdown.Button>

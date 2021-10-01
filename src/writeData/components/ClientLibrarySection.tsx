@@ -39,7 +39,7 @@ const ClientLibrarySection = () => {
       <Heading
         element={HeadingElement.H5}
         weight={FontWeight.Regular}
-        style={{marginBottom: '12px'}}
+        style={{marginBottom: '24px'}}
       >
         Back-end, front-end, and mobile applications
       </Heading>

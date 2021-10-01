@@ -5,11 +5,6 @@ h3 {
   color: white;
 }
 
-h4 {
-  margin: 12px 0px 0px;
-  text-align: left;
-}
-
 .flows-index--presetContainer {
   border: 1px solid $cf-grey-25;
   border-radius: 7px;
@@ -33,6 +28,11 @@ h4 {
       color: white;
     }
   }
+}
+
+.flows-index--presetHeader {
+  margin: 12px 0px 0px;
+  text-align: left;
 }
 
 .flows-index--presetButton {

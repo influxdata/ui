@@ -38,7 +38,7 @@ const DeadmanConditions: FC<Props> = ({
   onSetLevel,
 }) => {
   return (
-    <Panel backgroundColor={InfluxColors.Castle} testID="panel">
+    <Panel backgroundColor={InfluxColors.Grey15} testID="panel">
       <PanelBody testID="panel--body">
         <FlexBox
           direction={FlexDirection.Column}

@@ -90,7 +90,7 @@ describe('Sources > Telegraf Plugins', () => {
     })
   })
 
-  it.only('can add the same plugin again to the same configuration', () => {
+  it('can add the same plugin again to the same configuration', () => {
     const examplePlugin = 'aerospike'
     const configurationName = `configuration with two ${examplePlugin}`
     const configurationDescription =

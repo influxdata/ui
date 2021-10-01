@@ -19,6 +19,7 @@ import {AppState} from 'src/types'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 type OwnProps = CollectorsStepProps
 
@@ -30,12 +31,21 @@ interface StateProps {
   token: string
 }
 
-export type Props = StateProps & OwnProps
+export type Props = StateProps & OwnProps & RouteComponentProps<{orgID: string}>
 
 @ErrorHandling
 export class VerifyCollectorStep extends PureComponent<Props> {
   public render() {
-    const {telegrafConfigID, bucket, org, onExit, token} = this.props
+    const {
+      telegrafConfigID,
+      bucket,
+      org,
+      onExit,
+      token,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
 
     return (
       <Form onSubmit={onExit} className="data-loading--form">
@@ -63,6 +73,9 @@ export class VerifyCollectorStep extends PureComponent<Props> {
             text="Finish"
             type={ButtonType.Submit}
             testID="next"
+            onClick={() => {
+              this.props.history.push(`/orgs/${orgID}/load-data/telegrafs`)
+            }}
           />
         </FlexBox>
       </Form>
@@ -84,4 +97,6 @@ const mstp = ({
   token,
 })
 
-export default connect<StateProps, {}, OwnProps>(mstp)(VerifyCollectorStep)
+const connector = connect<StateProps, {}, OwnProps>(mstp)
+
+export default connector(withRouter(VerifyCollectorStep))

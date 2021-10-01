@@ -90,7 +90,7 @@ describe('Sources > Telegraf Plugins', () => {
     })
   })
 
-  it('can add the same plugin again to the same configuration', () => {
+  it.only('can add the same plugin again to the same configuration', () => {
     const examplePlugin = 'aerospike'
     const configurationName = `configuration with two ${examplePlugin}`
     const configurationDescription =
@@ -170,7 +170,7 @@ describe('Sources > Telegraf Plugins', () => {
       ).should('be.visible')
       cy.getByTestID(
         'plugin-add-to-configuration-save-and-test--confirm-button'
-      ).should('be.visible')
+      ).should('be.visible').click()
       cy.getByTestID('next').click()
       cy.getByTestID('overlay--mask').should('not.exist')
     })

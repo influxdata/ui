@@ -22,7 +22,11 @@ class TelegrafInstructions extends PureComponent<Props> {
     }/api/v2/telegrafs/${configID || ''}`
     const exportToken = `export INFLUX_TOKEN=${token || '<INFLUX_TOKEN>'}`
     return (
-      <div data-testid="setup-instructions" className="telegraf-instructions" style={{textAlign:'left'}}>
+      <div
+        data-testid="setup-instructions"
+        className="telegraf-instructions"
+        style={{textAlign: 'left'}}
+      >
         <h5>1. Install the Latest Telegraf</h5>
         <p>
           You can install the latest Telegraf by visiting the{' '}

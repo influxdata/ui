@@ -44,12 +44,12 @@ $ sudo service telegraf start
 
 ### Available webhooks
 
-- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/filestack" target="_blank">Filestack</a>
-- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/github" target="_blank">Github</a>
-- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/mandrill" target="_blank">Mandrill</a>
-- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/rollbar" target="_blank">Rollbar</a>
-- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/papertrail" target="_blank">Papertrail</a>
-- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/particle" target="_blank">Particle</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/filestack/README.md" target="_blank">Filestack</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/github/README.md" target="_blank">Github</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/mandrill/README.md" target="_blank">Mandrill</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/rollbar/README.md" target="_blank">Rollbar</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/papertrail/README.md" target="_blank">Papertrail</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/particle/README.md" target="_blank">Particle</a>
 
 
 ### Adding new webhooks plugin
@@ -58,4 +58,4 @@ $ sudo service telegraf start
 1. Your plugin must implement the `Webhook` interface
 1. Import your plugin in the `webhooks.go` file and add it to the `Webhooks` struct
 
-Both <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/github" target="_blank">Github</a> and <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/rollbar" target="_blank">Rollbar</a> are good examples to follow.
+Both <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/github/README.md" target="_blank">Github</a> and <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/rollbar/README.md" target="_blank">Rollbar</a> are good examples to follow.

@@ -57,7 +57,7 @@ class ResourceAccordion extends Component<OwnProps> {
     const {permissions, onIndividualToggle} = this.props
     const permissionNames = []
     if (resourceName === 'Telegrafs') {
-      for (const [key, value] of Object.entries(
+      for (const [, value] of Object.entries(
         permissions[resource].sublevelPermissions
       )) {
         permissionNames.push(value)
@@ -80,7 +80,7 @@ class ResourceAccordion extends Component<OwnProps> {
         </Filter>
       )
     } else if (resourceName === 'Buckets') {
-      for (const [key, value] of Object.entries(
+      for (const [, value] of Object.entries(
         permissions[resource].sublevelPermissions
       )) {
         permissionNames.push(value)

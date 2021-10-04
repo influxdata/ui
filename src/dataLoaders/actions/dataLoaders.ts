@@ -445,7 +445,7 @@ export const generateTelegrafToken = (configID: string) => async (
 
     if (bucketName === '') {
       throw new Error(
-        'A token cannot be generated without a corresponding bucket; no buckets are assigned'
+        'An API token cannot be generated without a corresponding bucket; no buckets are assigned'
       )
     }
 

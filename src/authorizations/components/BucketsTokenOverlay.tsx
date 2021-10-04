@@ -85,7 +85,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
     return (
       <Overlay.Container maxWidth={700}>
         <Overlay.Header
-          title="Generate Read/Write Token"
+          title="Generate Read/Write API Token"
           onDismiss={this.handleDismiss}
         />
         <Overlay.Body>
@@ -97,7 +97,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
             >
               <Form.Element label="Description">
                 <Input
-                  placeholder="Describe this new token"
+                  placeholder="Describe this new API token"
                   value={description}
                   onChange={this.handleInputChange}
                   testID="input-field--descr"

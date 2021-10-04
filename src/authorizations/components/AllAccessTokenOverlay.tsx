@@ -52,7 +52,7 @@ class AllAccessTokenOverlay extends PureComponent<Props, State> {
     return (
       <Overlay.Container maxWidth={500}>
         <Overlay.Header
-          title="Generate All Access Token"
+          title="Generate All Access API Token"
           onDismiss={this.handleDismiss}
         />
         <Overlay.Body>
@@ -71,7 +71,7 @@ class AllAccessTokenOverlay extends PureComponent<Props, State> {
               </Alert>
               <Form.Element label="Description">
                 <Input
-                  placeholder="Describe this new token"
+                  placeholder="Describe this new API token"
                   value={description}
                   onChange={this.handleInputChange}
                   testID="all-access-token-input"

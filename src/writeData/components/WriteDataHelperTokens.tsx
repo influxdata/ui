@@ -18,13 +18,13 @@ import {
 
 // Constants
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
+import {DEFAULT_TOKEN_DESCRIPTION} from 'src/dashboards/constants'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
 
 // Types
 import {AppState, ResourceType, Authorization} from 'src/types'
-import {DEFAULT_TOKEN_DESCRIPTION} from 'src/dashboards/constants'
 
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
@@ -55,7 +55,7 @@ const WriteDataHelperTokens: FC = () => {
           target="_blank"
           rel="noreferrer"
         >
-          Tokens
+          API Tokens
         </a>
       </span>
     </EmptyState>

@@ -14,7 +14,7 @@ object InfluxDB2ScalaExample {
 
   def main(args: Array[String]): Unit = {
 
-    // You can generate a Token from the "Tokens Tab" in the UI
+    // You can generate an API token from the "API Tokens Tab" in the UI
     val token = "<%= token %>"
     val org = "<%= org %>"
 

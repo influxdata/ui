@@ -44,7 +44,7 @@ class TelegrafInstructions extends PureComponent<Props> {
         <p>
           Your API token is required for pushing data into InfluxDB. You can
           copy the following command to your terminal window to set an
-          environment variable with your token.
+          environment variable with your API token.
         </p>
         <TokenCodeSnippet token={exportToken} configID={configID} label="CLI" />
         <h5>3. Start Telegraf</h5>

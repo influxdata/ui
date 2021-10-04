@@ -17,9 +17,9 @@ type GenerateTokenProps = RouteComponentProps
 const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   const org = useSelector(getOrg)
 
-  const bucketReadWriteOption = 'Read/Write Token'
+  const bucketReadWriteOption = 'Read/Write API Token'
 
-  const allAccessOption = 'All Access Token'
+  const allAccessOption = 'All Access API Token'
 
   const handleAllAccess = () => {
     history.push(`/orgs/${org.id}/load-data/tokens/generate/all-access`)
@@ -39,7 +39,7 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   return (
     <Dropdown
       testID="dropdown--gen-token"
-      style={{width: '160px'}}
+      style={{width: '180px'}}
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}
@@ -48,7 +48,7 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
           color={ComponentColor.Primary}
           testID="dropdown-button--gen-token"
         >
-          Generate Token
+          Generate API Token
         </Dropdown.Button>
       )}
       menu={onCollapse => (

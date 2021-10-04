@@ -139,13 +139,18 @@ export const createBucketAndUpdate = (
       throw new Error(resp.data.message)
     }
 
+    console.log('just created bucket! (b4 normalization)', resp.data)
     const newBucket = normalize<Bucket, BucketEntities, string>(
       resp.data,
       bucketSchema
     )
 
+    console.log('just created bucket! jill42-a-non', newBucket)
+
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
+
+    // think....only call update after measurement schemas added (if there are schemas to add???)
     update(newBucket.entities.buckets[resp.data.id])
   } catch (error) {
     console.error(error)
@@ -313,12 +318,13 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
   }
 }
 
-export const addSchemasToBucket = (
+async function addMeasurementSchemaToBucketInternal(
   bucketID: string,
+  schema: typeof MeasurementSchemaCreateRequest,
   orgID: string,
   bucketName: string,
-  schema: typeof MeasurementSchemaCreateRequest
-) => async (dispatch: Dispatch<Action>) => {
+  dispatch: Dispatch<Action>
+) {
   const params = {
     bucketID,
     data: schema,
@@ -342,6 +348,15 @@ export const addSchemasToBucket = (
       notify(measurementSchemaAdditionFailed(bucketName, schema.name, message))
     )
   }
+}
+
+export const addSchemasToBucket = (
+  bucketID: string,
+  orgID: string,
+  bucketName: string,
+  schema: typeof MeasurementSchemaCreateRequest
+) => async (dispatch: Dispatch<Action>) => {
+  await addMeasurementSchemaToBucketInternal(bucketID, schema, orgID, bucketName, dispatch)
 }
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {

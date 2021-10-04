@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC, useContext, useMemo, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {
@@ -24,13 +24,13 @@ import {track} from 'rudder-sdk-js'
 import {deleteAccount} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
-import CancellationReasonsDropdown from './CancellationReasonsForm'
+import DeleteOrgReasonsForm from 'src/organizations/components/DeleteOrgReasonsForm'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 // Selectors
+import {DeleteOrgContext} from 'src/organizations/components/DeleteOrgContext'
 import {getQuartzMe} from 'src/me/selectors'
-import {DeleteOrgContext} from './DeleteOrgContext'
 import {getOrg} from 'src/organizations/selectors'
 
 const DeleteOrgOverlay: FC = () => {
@@ -48,7 +48,7 @@ const DeleteOrgOverlay: FC = () => {
     history.goBack()
   }
 
-  const isFormValid = () => {
+  const isFormValid = useMemo(() => {
     if (!isFlagEnabled('trackCancellations')) {
       return true
     }
@@ -68,7 +68,7 @@ const DeleteOrgOverlay: FC = () => {
     setFormErrors(errors)
 
     return !hasErrors
-  }
+  }, [isShortSuggestionEnabled, shortSuggestion, suggestions])
 
   const sendDetailsToRudderstack = () => {
     const payload = {
@@ -84,7 +84,7 @@ const DeleteOrgOverlay: FC = () => {
   }
 
   const handleDeleteAccount = async () => {
-    if (!isFormValid()) {
+    if (!isFormValid) {
       return
     }
 
@@ -120,7 +120,7 @@ const DeleteOrgOverlay: FC = () => {
               justifyContent={JustifyContent.FlexStart}
               margin={ComponentSize.Medium}
             >
-              <CancellationReasonsDropdown errors={formErrors} />
+              <DeleteOrgReasonsForm errors={formErrors} />
             </FlexBox>
           )}
           <ul>

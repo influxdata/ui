@@ -12,7 +12,7 @@ import {
 } from '@influxdata/clockface'
 
 // Utilities
-import {DeleteOrgContext} from './DeleteOrgContext'
+import {DeleteOrgContext} from 'src/organizations/components/DeleteOrgContext'
 
 // Types
 
@@ -23,27 +23,33 @@ interface ComponentProps {
   errors?: Errors
 }
 
-export const variableItems = {
-  USE_CASE_DIFFERENT: "It doesn't work for my use case",
-  SWITCHING_ORGANIZATION: 'I want to join my account to another organization',
-  ALTERNATIVE_PRODUCT: 'I found an alternative product',
-  RE_SIGNUP: 'I want to sign up for a new account using a marketplace option',
-  OTHER_REASON: 'Other reason',
+enum VariableItems {
+  USE_CASE_DIFFERENT = "It doesn't work for my use case",
+  SWITCHING_ORGANIZATION = 'I want to join my account to another organization',
+  ALTERNATIVE_PRODUCT = 'I found an alternative product',
+  RE_SIGNUP = 'I want to sign up for a new account using a marketplace option',
+  OTHER_REASON = 'Other reason',
 }
 
-function CancellationReasonsForm({errors = {}}: ComponentProps) {
+function DeleteOrgReasonsForm({errors = {}}: ComponentProps) {
   const [workingVariable, setWorkingVariable] = useState('')
   const {
     shortSuggestion,
     isShortSuggestionEnabled,
     suggestions,
-    changeShortSuggestionFlag,
-    changeShortSuggestion,
-    changeSuggestions,
+    setShortSuggestionFlag,
+    setShortSuggestion,
+    setSuggestions,
   } = useContext(DeleteOrgContext)
 
-  const onChange = selected => {
-    changeShortSuggestionFlag(selected === 'ALTERNATIVE_PRODUCT')
+  const onChange = (selected: string) => {
+    const isAlternateProductSelected =
+      VariableItems[selected] === VariableItems.ALTERNATIVE_PRODUCT
+    if (!isAlternateProductSelected) {
+      setShortSuggestion('')
+    }
+
+    setShortSuggestionFlag(isAlternateProductSelected)
     setWorkingVariable(selected)
   }
 
@@ -60,12 +66,12 @@ function CancellationReasonsForm({errors = {}}: ComponentProps) {
               onClick={onClick}
               testID="variable-type-dropdown--button"
             >
-              {variableItems[workingVariable]}
+              {VariableItems[workingVariable]}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
-              {Object.keys(variableItems).map(key => (
+              {Object.keys(VariableItems).map(key => (
                 <Dropdown.Item
                   key={key}
                   id={key}
@@ -73,7 +79,7 @@ function CancellationReasonsForm({errors = {}}: ComponentProps) {
                   onClick={onChange}
                   testID={`variable-type-dropdown-${key}`}
                 >
-                  {variableItems[key]}
+                  {VariableItems[key]}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -89,7 +95,7 @@ function CancellationReasonsForm({errors = {}}: ComponentProps) {
           <Input
             type={InputType.Text}
             titleText="What is the alternative?"
-            onChange={e => changeShortSuggestion(e.target.value)}
+            onChange={e => setShortSuggestion(e.target.value)}
             value={shortSuggestion}
           />
         </Form.Element>
@@ -101,7 +107,7 @@ function CancellationReasonsForm({errors = {}}: ComponentProps) {
       >
         <TextArea
           className="improvement-suggestions-input"
-          onChange={e => changeSuggestions(e.target.value)}
+          onChange={e => setSuggestions(e.target.value)}
           size={ComponentSize.Medium}
           testID="improvement-suggestions-input"
           value={suggestions}
@@ -112,4 +118,4 @@ function CancellationReasonsForm({errors = {}}: ComponentProps) {
   )
 }
 
-export default CancellationReasonsForm
+export default DeleteOrgReasonsForm

@@ -12,19 +12,19 @@ interface Props {
 export interface DeleteOrgContextType {
   shortSuggestion: string
   isShortSuggestionEnabled: boolean
-  changeShortSuggestionFlag: (_: boolean) => void
-  changeShortSuggestion: (_: string) => void
+  setShortSuggestionFlag: (_: boolean) => void
+  setShortSuggestion: (_: string) => void
   suggestions: string
-  changeSuggestions: (_: string) => void
+  setSuggestions: (_: string) => void
 }
 
 export const DEFAULT_DELETE_ORG_CONTEXT: DeleteOrgContextType = {
   shortSuggestion: '',
   isShortSuggestionEnabled: false,
-  changeShortSuggestionFlag: (_: boolean) => null,
-  changeShortSuggestion: (_: string) => null,
+  setShortSuggestionFlag: (_: boolean) => null,
+  setShortSuggestion: (_: string) => null,
   suggestions: '',
-  changeSuggestions: (_: string) => null,
+  setSuggestions: (_: string) => null,
 }
 
 export const DeleteOrgContext = createContext<DeleteOrgContextType>(
@@ -33,30 +33,18 @@ export const DeleteOrgContext = createContext<DeleteOrgContextType>(
 
 const DeleteOrgProvider: FC<Props> = ({children}) => {
   const [shortSuggestion, setShortSuggestion] = useState('')
-  const [isShortSuggestionEnabled, setEnableShortSuggestion] = useState(false)
+  const [isShortSuggestionEnabled, setShortSuggestionFlag] = useState(false)
   const [suggestions, setSuggestions] = useState('')
-
-  const changeShortSuggestion = suggestion => {
-    setShortSuggestion(suggestion)
-  }
-
-  const changeShortSuggestionFlag = (flag: boolean) => {
-    setEnableShortSuggestion(flag)
-  }
-
-  const changeSuggestions = newSuggestions => {
-    setSuggestions(newSuggestions)
-  }
 
   return (
     <DeleteOrgContext.Provider
       value={{
         shortSuggestion,
         isShortSuggestionEnabled,
-        changeShortSuggestionFlag,
-        changeShortSuggestion,
+        setShortSuggestionFlag,
+        setShortSuggestion,
         suggestions,
-        changeSuggestions,
+        setSuggestions,
       }}
     >
       {children}

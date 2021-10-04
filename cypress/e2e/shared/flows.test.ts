@@ -83,6 +83,8 @@ describe('Flows', () => {
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector')
       .click()
       .then(() => {
@@ -126,6 +128,8 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     // select our bucket
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
     cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
@@ -184,6 +188,8 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
     cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
@@ -279,6 +285,8 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
     cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
@@ -337,6 +345,8 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
     cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
@@ -407,6 +417,8 @@ describe('Flows', () => {
       cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
       // select our bucket, measurement, field and tag
+      cy.getByTestID('panel-add-btn--1').click()
+      cy.getByTestID('add-flow-btn--metricSelector').click()
       cy.getByTestID('flow-bucket-selector').click()
       cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
       cy.getByTestID('measurement-selector test').click()

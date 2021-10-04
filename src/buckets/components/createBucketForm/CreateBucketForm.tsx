@@ -118,7 +118,17 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
     if (isValid()) {
-      reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket))
+      //const setBucketDispatch =
+
+      let mSchemas = null
+      if(newMeasurementSchemaRequests){
+        mSchemas = newMeasurementSchemaRequests.map(item => ({
+          columns: item.columns,
+          name: item.name,
+        }))
+      }
+
+      reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket, mSchemas))
       onClose()
 
     } else {
@@ -145,6 +155,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
       resetValidation?: boolean
   ): void => {
     setNewMeasurementSchemaRequests(schemas)
+
     if (resetValidation) {
       setShowSchemaValidation(false)
     }

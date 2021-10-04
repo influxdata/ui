@@ -125,13 +125,16 @@ export const createBucket = (bucket: OwnBucket) => async (
 
 export const createBucketAndUpdate = (
   bucket: OwnBucket,
-  update: (bucket: Bucket) => void
+  update: (bucket: Bucket) => void,
+  schemas:  typeof MeasurementSchemaCreateRequest[]
 ) => async (
   dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
   getState: GetState
 ) => {
   try {
     const org = getOrg(getState())
+    //console.log('state??? in create bucket and update:', getState())
+    //console.log('bucket??? before calling anything...', bucket)
 
     const resp = await api.postBucket({data: {...bucket, orgID: org.id}})
 
@@ -149,6 +152,16 @@ export const createBucketAndUpdate = (
 
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
+
+
+    schemas.forEach(mschemaCreateRequest => {
+      addMeasurementSchemaToBucketInternal(resp.data.id,
+          mschemaCreateRequest,
+          org.id,
+          resp.data.name,
+          dispatch)
+    })
+
 
     // think....only call update after measurement schemas added (if there are schemas to add???)
     update(newBucket.entities.buckets[resp.data.id])

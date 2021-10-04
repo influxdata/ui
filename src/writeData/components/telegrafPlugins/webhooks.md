@@ -44,12 +44,12 @@ $ sudo service telegraf start
 
 ### Available webhooks
 
-- [Filestack](filestack/)
-- [Github](github/)
-- [Mandrill](mandrill/)
-- [Rollbar](rollbar/)
-- [Papertrail](papertrail/)
-- [Particle](particle/)
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/filestack/README.md" target="_blank" rel="noopener noreferrer">Filestack</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/github/README.md" target="_blank" rel="noopener noreferrer">Github</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/mandrill/README.md" target="_blank" rel="noopener noreferrer">Mandrill</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/rollbar/README.md" target="_blank" rel="noopener noreferrer">Rollbar</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/papertrail/README.md" target="_blank" rel="noopener noreferrer">Papertrail</a>
+- <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/particle/README.md" target="_blank" rel="noopener noreferrer">Particle</a>
 
 
 ### Adding new webhooks plugin
@@ -58,4 +58,4 @@ $ sudo service telegraf start
 1. Your plugin must implement the `Webhook` interface
 1. Import your plugin in the `webhooks.go` file and add it to the `Webhooks` struct
 
-Both [Github](github/) and [Rollbar](rollbar/) are good example to follow.
+Both <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/github/README.md" target="_blank" rel="noopener noreferrer">Github</a> and <a href="https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks/rollbar/README.md" target="_blank" rel="noopener noreferrer">Rollbar</a> are good examples to follow.

@@ -588,6 +588,11 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                           onClick={launcher}
                           color={ComponentColor.Secondary}
                           testID="notification-exp-button"
+                          status={
+                            editorInstance
+                              ? ComponentStatus.Default
+                              : ComponentStatus.Loading
+                          }
                         />
                       </FlexBox.Child>
                     )}

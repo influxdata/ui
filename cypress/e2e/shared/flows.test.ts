@@ -436,11 +436,31 @@ describe('Flows', () => {
       // filter for dopeness
       cy.getByTestID('flux-toolbar-search--input').type('dopeness')
       cy.getByTestID('flux--fields-dopeness--inject').click({force: true})
+      cy.getByTestID('flux-toolbar-search--input').clear()
+      // filter for notebook
+      cy.getByTestID('flux-toolbar-search--input').type('notebook')
+      cy.getByTestID('flux--system-_notebook_link--inject').click({force: true})
 
-      // make sure message contains injected expression
+      // make sure message contains injected expressions
       cy.getByTestID('notification-message--monaco-editor').contains(
         'r.dopeness'
       )
+      cy.getByTestID('notification-message--monaco-editor').contains(
+        'r._notebook_link'
+      )
+
+      // make sure task export contains notebook link
+      cy.getByTestID('task-form-save').click()
+      cy.getByTestID('overlay--body').should('be.visible')
+      cy.getByTestID('flux-editor').should('exist')
+      cy.getByTestID('form--footer').scrollIntoView()
+      cy.getByTestID('overlay--body').within(() => {
+        cy.url().then(url => {
+          cy.getByTestID('flux-editor').contains(
+            `|> set(key: "_notebook_link", value: "${url}")`
+          )
+        })
+      })
     })
   })
 })

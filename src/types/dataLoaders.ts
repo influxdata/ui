@@ -49,7 +49,7 @@ export enum LineProtocolStep {
   'Verify',
 }
 
-export enum PluginCreateConfigurationStep {
+export enum PluginConfigurationStep {
   'Configure',
   'Customize',
   'Verify',

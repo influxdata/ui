@@ -24,6 +24,7 @@ import {
   Button,
   ResourceCard,
   IconFont,
+  ButtonShape,
 } from '@influxdata/clockface'
 
 import {Context} from 'src/clockface'
@@ -31,8 +32,8 @@ import {Context} from 'src/clockface'
 // Types
 import {Authorization, AppState} from 'src/types'
 import {
-  DEFAULT_TOKEN_DESCRIPTION,
   UPDATED_AT_TIME_FORMAT,
+  DEFAULT_TOKEN_DESCRIPTION,
 } from 'src/dashboards/constants'
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
@@ -53,7 +54,6 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
-
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -95,14 +95,22 @@ class TokensRow extends PureComponent<Props> {
             text="Clone"
             onClick={this.handleClone}
             testID="clone-token"
+            size={ComponentSize.ExtraSmall}
           />
-          <Button
+
+          <Context.Menu
             icon={IconFont.Trash}
             color={ComponentColor.Danger}
             text="Delete"
-            onClick={this.handleDelete}
-            testID="delete-token"
-          />
+            shape={ButtonShape.StretchToFit}
+            size={ComponentSize.ExtraSmall}
+          >
+            <Context.Item
+              label="Confirm"
+              action={this.handleDelete}
+              testID="delete-token"
+            />
+          </Context.Menu>
         </FlexBox>
       </Context>
     )

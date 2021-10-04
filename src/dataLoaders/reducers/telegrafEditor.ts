@@ -1,5 +1,5 @@
 import {Bucket, RemoteDataState} from 'src/types'
-import {TelegrafPlugin} from 'src/client'
+import {TelegrafPlugin as TelegrafPluginAPI} from 'src/client'
 import {
   PluginResourceAction,
   ActivePluginAction,
@@ -15,7 +15,7 @@ export type TelegrafEditorPluginType =
   | 'display'
 type TelegrafEditorPluginName = string
 
-export type TelegrafEditorBasicPlugin = TelegrafPlugin & {
+export type TelegrafEditorBasicPlugin = TelegrafPluginAPI & {
   type: TelegrafEditorPluginType
 }
 export interface TelegrafEditorBundlePlugin {

@@ -30,6 +30,8 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 import {SortTypes} from 'src/shared/utils/sort'
 import {ResourceType} from 'src/types'
 
+import 'src/shared/components/cta.scss'
+
 interface Props {
   onCreateTask: () => void
   setShowInactive: () => void
@@ -80,6 +82,10 @@ export default class TasksHeader extends PureComponent<Props, State> {
       onCreateTask()
     }
 
+    const recordClick = () => {
+      event('Tasks List Page - Clicked Notebooks CTA')
+    }
+
     return (
       <>
         <Page.Header fullWidth={false} testID="tasks-page--header">
@@ -93,7 +99,9 @@ export default class TasksHeader extends PureComponent<Props, State> {
                 <Icon glyph={IconFont.BookPencil} />
                 Now you can use Notebooks to explore your data while building a
                 task
-                <Link to="/notebook/from/task">Create a Task</Link>
+                <Link to="/notebook/from/task" onClick={recordClick}>
+                  Create a Task
+                </Link>
                 <span
                   className="header-cta--close-icon"
                   onClick={this.hideFlowsCTA}

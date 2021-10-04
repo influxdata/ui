@@ -49,7 +49,7 @@ export interface PluginCreateConfigurationStepProps {
   pluginConfigName: string
   setIsValidConfiguration: (isValid: boolean) => void
   setPluginConfig: (config: string) => void
-  substepIndex: number
+  substepIndex?: number
 }
 
 interface PluginCreateConfigurationWizardProps {

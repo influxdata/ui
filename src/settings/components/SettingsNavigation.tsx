@@ -10,7 +10,6 @@ import {TabbedPageTab} from 'src/shared/tabbedPage/TabbedPageTabs'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   activeTab: string
@@ -41,14 +40,11 @@ class SettingsNavigation extends PureComponent<Props> {
         text: 'Labels',
         id: 'labels',
       },
-    ]
-
-    if (isFlagEnabled('secretsUI')) {
-      tabs.push({
+      {
         text: 'Secrets',
         id: 'secrets',
-      })
-    }
+      },
+    ]
 
     return (
       <TabbedPageTabs

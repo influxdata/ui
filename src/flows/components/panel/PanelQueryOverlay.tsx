@@ -14,6 +14,7 @@ import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsC
 import {Provider as TemplateProvider} from 'src/shared/components/CodeSnippet'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {PopupContext} from 'src/flows/context/popup'
+import {event} from 'src/cloud/utils/reporting'
 
 const PanelQueryOverlay: FC = () => {
   const {
@@ -24,6 +25,10 @@ const PanelQueryOverlay: FC = () => {
 
   const query = simplify(getPanelQueries(panelID, true).source)
 
+  const reportCopyClick = () => {
+    event('Export to Client Library (Notebooks) - Copy to Clipboard Clicked')
+  }
+
   return (
     <Overlay visible={true}>
       <Overlay.Container>
@@ -33,7 +38,7 @@ const PanelQueryOverlay: FC = () => {
         />
         <Overlay.Body>
           <ClientCodeQueryHelper contentID={contentID} clientQuery={query} />
-          <ClientCodeCopyPage contentID={contentID} />
+          <ClientCodeCopyPage contentID={contentID} onCopy={reportCopyClick} />
         </Overlay.Body>
       </Overlay.Container>
     </Overlay>

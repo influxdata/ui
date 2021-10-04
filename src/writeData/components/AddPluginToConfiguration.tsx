@@ -68,17 +68,13 @@ const AddPluginToConfigurationCTAComponent: FC<Props> = props => {
     history.push(
       `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/new`
     )
-    event(
-      'load_data.telegraf_plugins.create_new_configuration'
-    )
+    event('load_data.telegraf_plugins.create_new_configuration')
   }
   const addToConfiguration = () => {
     history.push(
       `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/add`
     )
-    event(
-      'load_data.telegraf_plugins.add_to_existing_configuration'
-    )
+    event('load_data.telegraf_plugins.add_to_existing_configuration')
   }
   return (
     <>

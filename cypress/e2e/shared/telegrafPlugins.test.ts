@@ -133,6 +133,13 @@ describe('Sources > Telegraf Plugins', () => {
       cy.getByTestID('next').click()
       cy.getByTestID('overlay--mask').should('not.exist')
 
+      // go back to the sources page
+      cy.getByTestID('tree-nav').within(() => {
+        cy.getByTestID('nav-item-load-data').click()
+      })
+      cy.getByTestID('sources-telegraf-plugins').should('exist')
+      cy.getByTestID(`load-data-item ${examplePlugin}`).click()
+
       // Add to the existing config with the same plugin
       cy.getByTestID('add-plugin-to-configuration--dropdown')
         .should('be.visible')

@@ -26,6 +26,7 @@ import {TelegrafPlugin} from 'src/types/dataLoaders'
 import {Bucket, BundleName, ConfigurationState} from 'src/types'
 import {Columns, ComponentSize} from '@influxdata/clockface'
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
+import {event} from 'src/cloud/utils/reporting'
 
 export interface Props {
   buckets: Bucket[]
@@ -188,6 +189,7 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
       configured: ConfigurationState.Configured,
     }
     this.props.onTogglePluginBundle(pluginBuild)
+    event(`telegraf_page.create_new_config.${plugin}_plugin_selected`)
   }
 
   private handleFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {

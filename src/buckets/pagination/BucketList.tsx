@@ -45,8 +45,28 @@ class BucketList
   public rowsPerPage: number = 10
   public totalPages: number
 
+  public componentDidMount() {
+    const params = new URLSearchParams(window.location.search)
+    const urlPageNumber = parseInt(params.get('page'), 10)
+
+    const passedInPageIsValid =
+      urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber > 0
+
+    if (passedInPageIsValid) {
+      this.currentPage = urlPageNumber
+    }
+  }
+
+  public componentDidUpdate() {
+    // if the user filters the list while on a page that is
+    // outside the new filtered list put them on the last page of the new list
+    if (this.currentPage > this.totalPages) {
+      this.paginate(this.totalPages)
+    }
+  }
+
   public render() {
-    this.totalPages = Math.ceil(this.props.bucketCount / this.rowsPerPage)
+    this.totalPages = Math.ceil(this.props.buckets.length / this.rowsPerPage)
 
     return (
       <>
@@ -76,6 +96,9 @@ class BucketList
 
   public paginate = page => {
     this.currentPage = page
+    const url = new URL(location.href)
+    url.searchParams.set('page', page)
+    history.replaceState(null, '', url.toString())
     this.forceUpdate()
   }
 

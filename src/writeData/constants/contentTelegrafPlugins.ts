@@ -404,14 +404,14 @@ import zfsLogo from 'src/writeData/graphics/zfs.svg'
 import zipkinLogo from 'src/writeData/graphics/zipkin.svg'
 import zookeeperLogo from 'src/writeData/graphics/zookeeper.svg'
 
-export interface TelegrafPlugin {
+export interface TelegrafPluginAssets {
   id: string
   name: string
   image?: string
   markdown?: string
 }
 
-export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
+export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
   {
     id: 'activemq',
     name: 'ActiveMQ',
@@ -1638,7 +1638,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPlugin[] = [
   },
 ]
 
-export const search = (term: string): TelegrafPlugin[] =>
+export const search = (term: string): TelegrafPluginAssets[] =>
   WRITE_DATA_TELEGRAF_PLUGINS.filter(item =>
     item.name.toLowerCase().includes(term.toLowerCase())
   ).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))

@@ -90,7 +90,7 @@ export default class TasksList extends PureComponent<Props, State>
     const urlPageNumber = parseInt(params.get('page'), 10)
 
     const passedInPageIsValid =
-      urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber >= 0
+      urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber > 0
     if (passedInPageIsValid) {
       this.currentPage = urlPageNumber
     }
@@ -107,6 +107,14 @@ export default class TasksList extends PureComponent<Props, State>
     }
   }
 
+  public componentDidUpdate() {
+    // if the user filters the list while on a page that is
+    // outside the new filtered list put them on the last page of the new list
+    if (this.currentPage > this.totalPages) {
+      this.paginate(this.totalPages)
+    }
+  }
+
   public componentWillUnmount() {
     this.isComponentMounted = false
   }
@@ -118,12 +126,6 @@ export default class TasksList extends PureComponent<Props, State>
     const height = this.props.pageHeight - heightWithPagination
 
     this.totalPages = Math.ceil(this.props.tasks.length / this.rowsPerPage)
-
-    // if the user filters the list while on a page that is
-    // outside the new filtered list put them on the last page of the new list
-    if (this.currentPage > this.totalPages) {
-      this.paginate(this.totalPages)
-    }
 
     return (
       <>

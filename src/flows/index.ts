@@ -7,6 +7,9 @@ export interface TypeLookup {
   [key: string]: TypeRegistration
 }
 
+export const UNPROCESSED_PANEL_TEXT =
+  'This cell will display results from the previous cell after selecting Preview.'
+
 export const PIPE_DEFINITIONS: TypeLookup = {}
 export const PROJECT_NAME: string = 'Notebook'
 export const DEFAULT_PROJECT_NAME: string = `Untitled ${PROJECT_NAME}`

@@ -22,6 +22,9 @@ import {PopupContext} from 'src/flows/context/popup'
 import {event} from 'src/cloud/utils/reporting'
 import {downloadTextFile} from 'src/shared/utils/download'
 
+// Constants
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
+
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
@@ -48,7 +51,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     }
 
     if (loading === RemoteDataState.NotStarted) {
-      return 'This cell will display results from the previous cell'
+      return UNPROCESSED_PANEL_TEXT
     }
 
     return 'No Data Returned'

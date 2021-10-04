@@ -1,7 +1,7 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 import {useHistory} from 'react-router-dom'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   Alert,
   AlignItems,
@@ -18,22 +18,81 @@ import {
   JustifyContent,
   Overlay,
 } from '@influxdata/clockface'
+import {track} from 'rudder-sdk-js'
 
 // Utils
 import {deleteAccount} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
+import CancellationReasonsDropdown from './CancellationReasonsForm'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
+
+// Selectors
+import {getQuartzMe} from 'src/me/selectors'
+import {DeleteOrgContext} from './DeleteOrgContext'
+import {getOrg} from 'src/organizations/selectors'
+
 
 const DeleteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const dispatch = useDispatch()
+  const [formErrors, setFormErrors] = useState({})
+  const {shortSuggestion, isShortSuggestionEnabled, suggestions} = useContext(
+    DeleteOrgContext
+  )
+  const quartzMe = useSelector(getQuartzMe)
+  const org = useSelector(getOrg)
 
   const handleClose = () => {
     history.goBack()
   }
 
+  const isFormValid = () => {
+    if (!isFlagEnabled('trackCancellations')) {
+      return true
+    }
+
+    const errors = {}
+    let hasErrors = false
+    if (isShortSuggestionEnabled && !shortSuggestion) {
+      errors['shortSuggestion'] = 'Please enter a suggestion'
+      hasErrors = true
+    }
+
+    if (!suggestions) {
+      errors['suggestions'] = 'Please enter suggestions'
+      hasErrors = true
+    }
+
+    setFormErrors(errors)
+
+    return !hasErrors
+  }
+
+  const sendDetailsToRudderstack = () => {
+    const payload = {
+      org: org.id,
+      tier: quartzMe?.accountType,
+      email: quartzMe?.email,
+      alternativeProduct: shortSuggestion,
+      suggestions,
+    }
+
+    event('Cancel Org Executed', payload)
+    track('CancelOrgExecuted', payload)
+  }
+
   const handleDeleteAccount = async () => {
+    if (!isFormValid()) {
+      return
+    }
+
+    if (isFlagEnabled('rudderStackReporting')) {
+      sendDetailsToRudderstack()
+    }
+
     try {
       const resp = await deleteAccount({})
 
@@ -55,6 +114,16 @@ const DeleteOrgOverlay: FC = () => {
           <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>
             This action cannot be undone
           </Alert>
+          {isFlagEnabled('trackCancellations') && (
+            <FlexBox
+              alignItems={AlignItems.Center}
+              direction={FlexDirection.Row}
+              justifyContent={JustifyContent.FlexStart}
+              margin={ComponentSize.Medium}
+            >
+              <CancellationReasonsDropdown errors={formErrors} />
+            </FlexBox>
+          )}
           <ul>
             <li>
               The account for this Organization will be deleted immediately.

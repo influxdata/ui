@@ -199,7 +199,9 @@ const FlowHeader: FC = () => {
               <SquareButton
                 icon={IconFont.Share}
                 onClick={showShare}
-                color={ComponentColor.Default}
+                color={
+                  !share ? ComponentColor.Default : ComponentColor.Secondary
+                }
                 titleText="Share Notebook"
               />
             </FeatureFlag>

@@ -11,6 +11,7 @@ import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsContext, ResultsProvider} from 'src/flows/context/results'
 import {SidebarProvider} from 'src/flows/context/sidebar'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Components
 import ReadOnlyPipeList from 'src/flows/components/ReadOnlyPipeList'
@@ -96,18 +97,20 @@ const ReadOnlyFlowPage: FC = () => {
 
 const FlowContainer: FC = () => (
   <AppWrapper>
-    <FlowProvider>
-      <ReadOnly>
-        <ResultsProvider>
-          <FlowQueryProvider>
-            <RunPipeResults />
-            <SidebarProvider>
-              <ReadOnlyFlowPage />
-            </SidebarProvider>
-          </FlowQueryProvider>
-        </ResultsProvider>
-      </ReadOnly>
-    </FlowProvider>
+    <AppSettingProvider>
+      <FlowProvider>
+        <ReadOnly>
+          <ResultsProvider>
+            <FlowQueryProvider>
+              <RunPipeResults />
+              <SidebarProvider>
+                <ReadOnlyFlowPage />
+              </SidebarProvider>
+            </FlowQueryProvider>
+          </ResultsProvider>
+        </ReadOnly>
+      </FlowProvider>
+    </AppSettingProvider>
   </AppWrapper>
 )
 

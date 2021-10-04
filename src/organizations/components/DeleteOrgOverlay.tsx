@@ -33,7 +33,6 @@ import {getQuartzMe} from 'src/me/selectors'
 import {DeleteOrgContext} from './DeleteOrgContext'
 import {getOrg} from 'src/organizations/selectors'
 
-
 const DeleteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)

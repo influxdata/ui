@@ -16,7 +16,6 @@ import {DeleteOrgContext} from './DeleteOrgContext'
 
 // Types
 
-
 interface Errors {
   [_: string]: string
 }

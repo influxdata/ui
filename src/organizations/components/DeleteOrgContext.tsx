@@ -5,7 +5,6 @@ import React, {FC, createContext, useState, ReactChild} from 'react'
 
 // Utils
 
-
 interface Props {
   children: ReactChild
 }

@@ -313,7 +313,7 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
   }
 }
 
-export const addSchemasToBucket = (
+export const addSchemaToBucket = (
   bucketID: string,
   orgID: string,
   bucketName: string,

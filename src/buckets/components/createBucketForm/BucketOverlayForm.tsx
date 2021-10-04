@@ -69,25 +69,18 @@ interface State {
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
-  constructor(props) {
-    super(props)
-
-    this.onChangeSchemaTypeInternal = this.onChangeSchemaTypeInternal.bind(this)
-    this.onUpdateSchemasInternal = this.onUpdateSchemasInternal.bind(this)
-  }
-
   public state: State = {
     showAdvanced: false,
     schemaType: 'implicit',
     newMeasurementSchemas: [],
   }
 
-  onChangeSchemaTypeInternal = function(newSchemaType: typeof SchemaType) {
+  onChangeSchemaTypeInternal = (newSchemaType: typeof SchemaType) => {
     this.setState({schemaType: newSchemaType})
     this.props.onChangeSchemaType(newSchemaType)
   }
 
-  onUpdateSchemasInternal = function(schemas, resetValidation) {
+  onUpdateSchemasInternal = (schemas, resetValidation) => {
     this.props.onUpdateNewMeasurementSchemas(schemas, resetValidation)
     this.setState({newMeasurementSchemas: schemas})
   }
@@ -108,6 +101,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       testID = 'bucket-form',
       schemaType,
       measurementSchemaList,
+      showSchemaValidation,
     } = this.props
 
     const {showAdvanced} = this.state
@@ -119,7 +113,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
         measurementSchemaList={measurementSchemaList}
         key="measurementSchemaSection"
         onUpdateSchemas={this.onUpdateSchemasInternal}
-        showSchemaValidation={this.props.showSchemaValidation}
+        showSchemaValidation={showSchemaValidation}
       />
     )
 

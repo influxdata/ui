@@ -9,6 +9,8 @@ const dataTypeStrings = ['integer', 'float', 'boolean', 'string', 'unsigned']
  * our types are generated, and changing it so there is an exported array that is *then* used
  * for literal union type creation is out of scope.
  * https://newbedev.com/checking-validity-of-string-literal-union-type-at-runtime
+ * (in order to reuse the string arrays, the literal union types need to be generated differently.
+ * so just retyping the string arrays)
  *
  * right now, just checking true/false; is it valid?  later on, may add a message saying which part(s) are invalid
  *
@@ -22,29 +24,36 @@ const dataTypeStrings = ['integer', 'float', 'boolean', 'string', 'unsigned']
  *   not checking for those at this time on the frontend, letting the backend do the checking;
  *   the code propagates up the error messages to show the user.
  * */
-export const areColumnsKosher = columns => {
+export const areColumnsProper = columns => {
   if (Array.isArray(columns)) {
-    const validArray = columns.map(item => {
+    return columns.every(item => {
       // for each item, does it have the necessary stuff?
       const hasName = 'name' in item && typeof item.name === 'string'
+
+      if (!hasName) {
+        return false
+      }
+
       const hasType = 'type' in item && typeStrings.includes(item.type)
+      if (!hasType) {
+        return false
+      }
 
       // the semi-optional part: if it isn't there; it is fine; but if it is check it!
       // BUT, if the type is 'field' it is required!
-      let dataTypePartIsValid = true
 
       if ('dataType' in item) {
-        dataTypePartIsValid = dataTypeStrings.includes(item.dataType)
+        return dataTypeStrings.includes(item.dataType)
       } else {
         // not there:
         if (item.type === 'field') {
-          dataTypePartIsValid = false
+          return false
         }
       }
-      return hasName && hasType && dataTypePartIsValid
-    })
 
-    return validArray.reduce((prevVal, curVal) => prevVal && curVal, true)
+      // got to here, nothing was triggered or returned false; so return true:
+      return true
+    })
   }
   return false
 }

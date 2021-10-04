@@ -24,7 +24,7 @@ import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOve
 import {
   getBucketSchema,
   updateBucket,
-  addSchemasToBucket,
+  addSchemaToBucket,
 } from 'src/buckets/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -52,7 +52,7 @@ if (CLOUD) {
 interface DispatchProps {
   onUpdateBucket: typeof updateBucket
   getSchema: typeof getBucketSchema
-  onAddMeasurementSchemaToBucket: typeof addSchemasToBucket
+  onAddMeasurementSchemaToBucket: typeof addSchemaToBucket
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -159,17 +159,16 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   const isValid = () => {
     // are there measurement schemas?
     const haveSchemas =
-      !!newMeasurementSchemaRequests && !!newMeasurementSchemaRequests.length
+      Array.isArray(newMeasurementSchemaRequests) &&
+      newMeasurementSchemaRequests.length
 
     if (!haveSchemas) {
       // no schemas, nothing to validate, so everything is fine
       return true
     }
     // if so, are they all valid?
-    const reducer = (previousValue, currentValue) =>
-      previousValue && currentValue.valid
 
-    const alltrue = newMeasurementSchemaRequests.reduce(reducer, true)
+    const alltrue = newMeasurementSchemaRequests.every(schema => schema.valid)
 
     if (alltrue) {
       return true
@@ -188,14 +187,12 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
       onUpdateBucket(bucketDraft)
 
       if (newMeasurementSchemaRequests?.length) {
-        const mSchemas = newMeasurementSchemaRequests.map(item => ({
-          columns: item.columns,
-          name: item.name,
-        }))
+        newMeasurementSchemaRequests.map(item => {
+          const createRequest = {
+            columns: item.columns,
+            name: item.name,
+          }
 
-        // create the measurement schemas one by one here!
-
-        mSchemas.forEach(createRequest => {
           event('bucket.schema.explicit.editing.uploadSchema')
           onAddMeasurementSchemaToBucket(
             bucketDraft.id,
@@ -263,7 +260,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 const mdtp = {
   onUpdateBucket: updateBucket,
   getSchema: getBucketSchema,
-  onAddMeasurementSchemaToBucket: addSchemasToBucket,
+  onAddMeasurementSchemaToBucket: addSchemaToBucket,
 }
 
 const connector = connect(null, mdtp)

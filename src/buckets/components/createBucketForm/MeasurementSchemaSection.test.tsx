@@ -1,5 +1,5 @@
 import {
-  areColumnsKosher,
+  areColumnsProper,
   START_ERROR,
   isNameValid,
   TOO_LONG_ERROR,
@@ -17,7 +17,7 @@ const oneColumns = [
   {name: 'one', type: 'field', dataType: 'string'},
 ]
 
-const unkosher1 = [
+const unproper1 = [
   {name: 'time', type: 'timestamp'},
   {name: 23, type: 'tag'},
   {name: 'service', type: 'tag'},
@@ -58,26 +58,26 @@ const columns3 = [
 
 describe('test data validity function', () => {
   const doTest = (data, expected) => {
-    const actual = areColumnsKosher(data)
+    const actual = areColumnsProper(data)
     expect(actual).toBe(expected)
   }
 
-  it('should be kosher', () => {
+  it('should be proper', () => {
     doTest(oneColumns, true)
   })
 
-  it('should not be kosher, the name is not as string', () => {
-    doTest(unkosher1, false)
+  it('should not be proper, the name is not as string', () => {
+    doTest(unproper1, false)
   })
 
-  it('should not be kosher, the type is wrong', () => {
+  it('should not be proper, the type is wrong', () => {
     doTest(columns1, false)
   })
 
-  it('should not be kosher, the dataType is wrong', () => {
+  it('should not be proper, the dataType is wrong', () => {
     doTest(columns2, false)
   })
-  it('should not be kosher, the type is a field and it does not have a datatype', () => {
+  it('should not be proper, the type is a field and it does not have a datatype', () => {
     doTest(columns3, false)
   })
 })

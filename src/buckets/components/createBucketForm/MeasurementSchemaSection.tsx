@@ -23,7 +23,7 @@ import {
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
 import {
-  areColumnsKosher,
+  areColumnsProper,
   isNameValid,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 import {downloadTextFile} from 'src/shared/utils/download'
@@ -111,7 +111,7 @@ const AddingPanel: FC<AddingProps> = ({
       // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
       columns = JSON.parse(contents)
 
-      if (!areColumnsKosher(columns)) {
+      if (!areColumnsProper(columns)) {
         // set errors
         throw {message: 'column file is not formatted correctly'}
       }
@@ -154,15 +154,15 @@ const AddingPanel: FC<AddingProps> = ({
   const makeNameInput = () => {
     let status = ComponentStatus.Default
 
-    const showInValidStatus =
+    const showInvalidStatus =
       !schemaNameValidity?.valid || (showSchemaValidation && !schemaName)
-    if (showInValidStatus) {
+    if (showInvalidStatus) {
       status = ComponentStatus.Error
     }
     inputProps.status = status
 
     let errorElement = null
-    if (showInValidStatus) {
+    if (showInvalidStatus) {
       const message = schemaNameValidity?.message ?? 'You must enter a name'
       errorElement = <FormElementError message={message} />
     }

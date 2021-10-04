@@ -8,9 +8,6 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import TokenCodeSnippet from 'src/shared/components/TokenCodeSnippet'
 
-// Utils
-import {event} from 'src/cloud/utils/reporting'
-
 export interface Props {
   token: string
   configID: string
@@ -18,10 +15,6 @@ export interface Props {
 
 @ErrorHandling
 class TelegrafInstructions extends PureComponent<Props> {
-  public componentDidMount() {
-    event('load_data.telegraf_instructions.viewed')
-  }
-
   public render() {
     const {token, configID} = this.props
     const configScript = `telegraf --config ${

@@ -81,6 +81,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   useEffect(() => {
     const perms = {}
+
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
@@ -199,7 +200,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                 searchTerm={searchTerm}
                 placeholderText="Filter Access Permissions..."
                 onSearch={handleChangeSearchTerm}
-                testID="input-field--filter"
               />
               <FlexBox
                 margin={ComponentSize.Large}
@@ -236,6 +236,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                 permissions={permissions}
                 onToggleAll={handleToggleAll}
                 onIndividualToggle={handleIndividualToggle}
+                searchTerm={searchTerm}
               />
             </FlexBox.Child>
           </FlexBox>

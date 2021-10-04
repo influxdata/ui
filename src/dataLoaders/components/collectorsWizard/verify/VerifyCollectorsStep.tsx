@@ -95,6 +95,6 @@ const mstp = ({
   token,
 })
 
-const connector = connect<StateProps, {}, OwnProps>(mstp)
+const connector = connect<StateProps>(mstp)
 
 export default connector(withRouter(VerifyCollectorStep))

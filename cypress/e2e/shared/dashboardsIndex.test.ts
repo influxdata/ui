@@ -1,4 +1,4 @@
-import { Organization } from '../../../src/types'
+import {Organization} from '../../../src/types'
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
@@ -9,8 +9,8 @@ describe('Dashboards', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() =>
-        cy.fixture('routes').then(({ orgs }) => {
-          cy.get<Organization>('@org').then(({ id }: Organization) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.get<Organization>('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/dashboards-list`)
             cy.getByTestID('tree-nav')
             cy.exec('rm cypress/downloads/*', {
@@ -50,8 +50,8 @@ describe('Dashboards', () => {
     cy.getByTestID('add-resource-dropdown--new')
       .click()
       .then(() => {
-        cy.fixture('routes').then(({ orgs }) => {
-          cy.get<Organization>('@org').then(({ id }: Organization) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.get<Organization>('@org').then(({id}: Organization) => {
             cy.on('uncaught:exception', () => {
               // workaround for when ChunkLoadError is thrown at cy.visit in ffox
               return false
@@ -81,7 +81,7 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').should('contain', newName)
 
     // Open Export overlay
-    cy.getByTestID('context-menu-item-export').click({ force: true })
+    cy.getByTestID('context-menu-item-export').click({force: true})
     cy.getByTestID('export-overlay--text-area').should('exist')
     cy.get('.cf-overlay--dismiss').click()
 
@@ -89,8 +89,8 @@ describe('Dashboards', () => {
     cy.getByTestID('add-resource-dropdown--button').click()
     cy.getByTestID('add-resource-dropdown--new').click()
 
-    cy.fixture('routes').then(({ orgs }) => {
-      cy.get<Organization>('@org').then(({ id }: Organization) => {
+    cy.fixture('routes').then(({orgs}) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.on('uncaught:exception', () => {
           // workaround for when ChunkLoadError is thrown at cy.visit in ffox
           return false
@@ -110,7 +110,7 @@ describe('Dashboards', () => {
     )
       .first()
       .trigger('mouseover')
-      .click('topLeft', { force: true })
+      .click('topLeft', {force: true})
     cy.get('[placeholder="Describe Name this Dashboard"]')
       .first()
       .type(dashboardDescription)
@@ -126,7 +126,7 @@ describe('Dashboards', () => {
     )
       .first()
       .trigger('mouseover')
-      .click('topLeft', { force: true })
+      .click('topLeft', {force: true})
     cy.get('[placeholder="Describe Name this Dashboard"]')
       .first()
       .clear()
@@ -176,8 +176,8 @@ describe('Dashboards', () => {
       cy.getByTestID('cell cellll').should('exist')
 
       // return to previous page
-      cy.fixture('routes').then(({ orgs }) => {
-        cy.get<Organization>('@org').then(({ id }: Organization) => {
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
           cy.getByTestID('tree-nav')
         })
@@ -223,7 +223,7 @@ describe('Dashboards', () => {
       cy.getByTestID('import-overlay--textarea')
         .should('be.visible')
         .click()
-        .type(JSON.stringify(json), { parseSpecialCharSequences: false })
+        .type(JSON.stringify(json), {parseSpecialCharSequences: false})
     })
 
     cy.getByTestID('submit-button Dashboard').click()
@@ -257,19 +257,19 @@ describe('Dashboards', () => {
 
   describe('Dashboard List', () => {
     beforeEach(() =>
-      cy.get<Organization>('@org').then(({ id }: Organization) =>
-        cy.createDashboard(id, dashboardName).then(({ body }) =>
+      cy.get<Organization>('@org').then(({id}: Organization) =>
+        cy.createDashboard(id, dashboardName).then(({body}) =>
           cy
             .createAndAddLabel('dashboards', id, body.id, newLabelName)
             .then(() =>
-              cy.createDashboard(id, dashboardName2).then(({ body }) =>
+              cy.createDashboard(id, dashboardName2).then(({body}) =>
                 cy
                   .createAndAddLabel('dashboards', id, body.id, 'bar')
                   .then(() =>
-                    cy.fixture('routes').then(({ orgs }) =>
+                    cy.fixture('routes').then(({orgs}) =>
                       cy
                         .get<Organization>('@org')
-                        .then(({ id }: Organization) => {
+                        .then(({id}: Organization) => {
                           cy.visit(`${orgs}/${id}/dashboards-list`)
                           return cy.getByTestID('tree-nav')
                         })
@@ -286,11 +286,11 @@ describe('Dashboards', () => {
 
       cy.getByTestID('clone-dashboard')
         .first()
-        .click({ force: true })
+        .click({force: true})
         .wait(100)
 
-      cy.fixture('routes').then(({ orgs }) => {
-        cy.get<Organization>('@org').then(({ id }: Organization) => {
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
           cy.getByTestID('tree-nav')
         })
@@ -366,7 +366,7 @@ describe('Dashboards', () => {
       it('clicking a list item adds a label and leaves open the popover with the next item highlighted', () => {
         const labelName = 'clicky'
 
-        cy.get<Organization>('@org').then(({ id }: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
             cy.reload()
             cy.getByTestID(`inline-labels--add`)
@@ -383,7 +383,7 @@ describe('Dashboards', () => {
       it('can add an existing label to a dashboard', () => {
         const labelName = 'swogglez'
 
-        cy.get<Organization>('@org').then(({ id }: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
             cy.reload()
             cy.getByTestID(`inline-labels--add`)
@@ -404,7 +404,7 @@ describe('Dashboards', () => {
       it('typing in the input updates the list', () => {
         const labelName = 'banana'
 
-        cy.get<Organization>('@org').then(({ id }: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
             cy.reload()
             cy.getByTestID(`inline-labels--add`)
@@ -541,8 +541,8 @@ describe('Dashboards', () => {
     const nonexistentID = '0499992503cd3700'
 
     // visiting the dashboard edit page
-    cy.get<Organization>('@org').then(({ id }: Organization) => {
-      cy.fixture('routes').then(({ orgs, dashboards }) => {
+    cy.get<Organization>('@org').then(({id}: Organization) => {
+      cy.fixture('routes').then(({orgs, dashboards}) => {
         cy.visit(`${orgs}/${id}${dashboards}/${nonexistentID}`)
         cy.url().should('include', `${orgs}/${id}/dashboards-list`)
       })
@@ -550,9 +550,9 @@ describe('Dashboards', () => {
   })
 
   it('creates a dashboard and downloads JSON', () => {
-    cy.get('@org').then(({ id: orgID }: Organization) => {
-      cy.createDashboard(orgID).then(({ body }) => {
-        cy.fixture('routes').then(({ orgs }) => {
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
           cy.getByTestID('tree-nav')
           cy.getByTestID('nav-item-dashboards').click()
@@ -571,9 +571,9 @@ describe('Dashboards', () => {
   })
 
   it('copies to clipboard', () => {
-    cy.get('@org').then(({ id: orgID }: Organization) => {
-      cy.createDashboard(orgID).then(({ body }) => {
-        cy.fixture('routes').then(({ orgs }) => {
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
           cy.getByTestID('tree-nav')
           cy.window().then(win => {

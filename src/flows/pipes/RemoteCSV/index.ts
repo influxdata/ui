@@ -17,13 +17,20 @@ export default register => {
       if (!data.url?.length) {
         return ''
       }
-      return data.sampleName === 'Custom'
-        ? `import "experimental/csv"
-      csv.from(url: "${data.url}")`
-        : `import "influxdata/influxdb/sample"
-      sample.data(
+      const dataQuery =
+        data.sampleName === 'Custom'
+          ? `import "experimental/csv"
+      data = csv.from(url: "${data.url}")`
+          : `import "influxdata/influxdb/sample"
+      data = sample.data(
         set: "${data.sampleName}"
       )`
+      return `${dataQuery}
+      min = data |> keep(columns: ["_time"]) |> group() |> min(column: "_time") |> tableFind(fn: (key) => true) |> getRecord(idx: 0)
+      max = data |> keep(columns: ["_time"]) |> group() |> max(column: "_time") |> tableFind(fn: (key) => true) |> getRecord(idx: 0)
+
+      data
+        |> range(start: min._time, stop: max._time)`
     },
   })
 }

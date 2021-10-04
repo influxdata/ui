@@ -264,7 +264,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const link =
     'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
 
-  const schemas = measurementSchemaList.measurementSchemas
+  const schemas = measurementSchemaList?.measurementSchemas
   let readPanels = null
   if (schemas) {
     readPanels = schemas.map((oneSchema, index) => (

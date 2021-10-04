@@ -18,7 +18,9 @@ const TimeRangeLabel: FC<Props> = ({timeZone}) => {
   }, [flow.range])
 
   return (
-    <h4 style={{padding: '10px'}}>{getTimeRangeLabel(flow.range, timeZone)}</h4>
+    <h4 style={{paddingRight: '10px', margin: '0'}}>
+      {getTimeRangeLabel(flow.range, timeZone)}
+    </h4>
   )
 }
 

@@ -23,6 +23,7 @@ import 'src/flows/style.scss'
 import 'src/flows/shared/Resizer.scss'
 import '@influxdata/clockface/dist/index.css'
 import {RemoteDataState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 const RunPipeResults: FC = () => {
   const {generateMap} = useContext(FlowQueryContext)
@@ -54,6 +55,7 @@ const RunPipeResults: FC = () => {
           setStatuses({[id]: RemoteDataState.Error})
         })
     })
+    event('Visited Shared Notebook', {accessID: accessID})
   }, [flow])
 
   return null

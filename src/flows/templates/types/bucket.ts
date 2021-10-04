@@ -1,5 +1,6 @@
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 export default register =>
   register({
@@ -12,18 +13,12 @@ export default register =>
         refresh: AUTOREFRESH_DEFAULT,
         pipes: [
           {
-            tags: {},
-            type: 'metricSelector',
-            field: '',
-            measurement: '',
-            aggregateFunction: {
-              name: 'mean',
-            },
-            bucket: {
-              name: name,
-            },
-            title: 'Select a Metric',
+            type: 'queryBuilder',
+            title: 'Build a Query',
             visible: true,
+            ...JSON.parse(
+              JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
+            ),
           },
           {
             type: 'visualization',

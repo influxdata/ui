@@ -59,17 +59,9 @@ class TelegrafInstructions extends PureComponent<Props> {
           Finally, you can run the following command to start the Telegraf agent
           running on your machine.
         </p>
-        <CodeSnippet
-          text={configScript}
-          label="CLI"
-          onCopyEventHandler={this.onCopyEventHandler}
-        />
+        <CodeSnippet text={configScript} label="CLI" />
       </div>
     )
-  }
-
-  private onCopyEventHandler = () => {
-    event('load_data.telegraf_instructions.config_copied')
   }
 
   private get origin(): string {

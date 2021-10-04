@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext, useMemo, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -87,6 +87,12 @@ export const FlowQueryProvider: FC = ({children}) => {
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
   const variables = useSelector((state: AppState) => getVariables(state))
+
+  useEffect(() => {
+    if (flow) {
+      queryAll()
+    }
+  }, [flow?.range?.lower])
 
   // Share querying event across tabs
   const handleStorageEvent = e => {

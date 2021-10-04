@@ -36,16 +36,7 @@ export type Props = StateProps & OwnProps & RouteComponentProps<{orgID: string}>
 @ErrorHandling
 export class VerifyCollectorStep extends PureComponent<Props> {
   public render() {
-    const {
-      telegrafConfigID,
-      bucket,
-      org,
-      onExit,
-      token,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
+    const {telegrafConfigID, bucket, org, onExit, token} = this.props
 
     return (
       <Form onSubmit={onExit} className="data-loading--form">
@@ -73,13 +64,20 @@ export class VerifyCollectorStep extends PureComponent<Props> {
             text="Finish"
             type={ButtonType.Submit}
             testID="next"
-            onClick={() => {
-              this.props.history.push(`/orgs/${orgID}/load-data/telegrafs`)
-            }}
+            onClick={this.goToTelegrafPage}
           />
         </FlexBox>
       </Form>
     )
+  }
+
+  private goToTelegrafPage = () => {
+    const {
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+    this.props.history.push(`/orgs/${orgID}/load-data/telegrafs`)
   }
 }
 

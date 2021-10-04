@@ -1,9 +1,8 @@
 // Libraries
-import React, {FC, useContext, useEffect} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 // Components
 import FlowPipe from 'src/flows/components/FlowPipe'
@@ -12,13 +11,6 @@ import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 
 const PipeList: FC = () => {
   const {flow} = useContext(FlowContext)
-  const {queryAll} = useContext(FlowQueryContext)
-
-  useEffect(() => {
-    if (flow.readOnly) {
-      queryAll()
-    }
-  }, [])
 
   if (!flow.data || !flow.data.allIDs.length) {
     return <EmptyPipeList />

@@ -98,8 +98,9 @@ const UploadDataDetailsView: FC = () => {
                       (isLP ? <LineProtocolTabs /> : <CsvMethod />)}
                   </div>
                   <div className="write-data--uploader-wrapper">
-                    {!isNonannotatedCSV &&
-                      isLP && <LineProtocolFooterButtons />}
+                    {!isNonannotatedCSV && isLP && (
+                      <LineProtocolFooterButtons />
+                    )}
                   </div>
                   {pageContent}
                 </div>

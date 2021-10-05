@@ -189,14 +189,15 @@ const Sidebar: FC = () => {
             return false
           },
           action: () => {
-            const canvas = document.getElementsByClassName(
-              'flow-panel__focus'
-            )[0]
-            setTimeout(() => {
-              html2canvas(canvas as HTMLDivElement).then(result => {
-                downloadImage(result.toDataURL(), 'visualization.png')
-              })
-            }, 0)
+            const canvas = document.getElementById(pipeID)
+
+            if (canvas) {
+              setTimeout(() => {
+                html2canvas(canvas as HTMLDivElement).then(result => {
+                  downloadImage(result.toDataURL(), 'visualization.png')
+                })
+              }, 0)
+            }
           },
         },
         {

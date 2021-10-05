@@ -105,7 +105,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
           id === focused ? ComponentColor.Secondary : ComponentColor.Default
         }
         className="flow-config-panel-button"
-        testID="square-button"
+        testID="sidebar-button"
       />
       {dropdown}
     </div>

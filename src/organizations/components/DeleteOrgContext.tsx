@@ -9,6 +9,13 @@ interface Props {
   children: ReactChild
 }
 
+export enum VariableItems {
+  USE_CASE_DIFFERENT = "It doesn't work for my use case",
+  SWITCHING_ORGANIZATION = 'I want to join my account to another organization',
+  ALTERNATIVE_PRODUCT = 'I found an alternative product',
+  RE_SIGNUP = 'I want to sign up for a new account using a marketplace option',
+  OTHER_REASON = 'Other reason',
+}
 export interface DeleteOrgContextType {
   shortSuggestion: string
   isShortSuggestionEnabled: boolean
@@ -27,7 +34,7 @@ export const DEFAULT_DELETE_ORG_CONTEXT: DeleteOrgContextType = {
   setShortSuggestion: (_: string) => null,
   suggestions: '',
   setSuggestions: (_: string) => null,
-  reason: '',
+  reason: 'USE_CASE_DIFFERENT',
   setReason: (_: string) => null,
 }
 
@@ -39,7 +46,7 @@ const DeleteOrgProvider: FC<Props> = ({children}) => {
   const [shortSuggestion, setShortSuggestion] = useState('')
   const [isShortSuggestionEnabled, setShortSuggestionFlag] = useState(false)
   const [suggestions, setSuggestions] = useState('')
-  const [reason, setReason] = useState('')
+  const [reason, setReason] = useState(DEFAULT_DELETE_ORG_CONTEXT.reason)
 
   return (
     <DeleteOrgContext.Provider

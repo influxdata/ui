@@ -4,5 +4,8 @@
 
   > .cf-form--element {
     padding: 5px 0;
+    > .improvement-suggestions-input {
+      height: 120px;
+    }
   }
 }

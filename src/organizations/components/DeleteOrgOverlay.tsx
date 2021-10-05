@@ -29,7 +29,10 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 // Selectors
-import {DeleteOrgContext} from 'src/organizations/components/DeleteOrgContext'
+import {
+  DeleteOrgContext,
+  VariableItems,
+} from 'src/organizations/components/DeleteOrgContext'
 import {getQuartzMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
@@ -52,7 +55,7 @@ const DeleteOrgOverlay: FC = () => {
       email: quartzMe?.email,
       alternativeProduct: shortSuggestion,
       suggestions,
-      reason,
+      reason: VariableItems[reason],
     }
 
     event('Cancel Org Executed', payload)

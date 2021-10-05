@@ -1,24 +1,18 @@
 // Libraries
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext} from 'react'
 
 // Components
 import {Dropdown, Form, Input, InputType, TextArea} from '@influxdata/clockface'
 
 // Utilities
-import {DeleteOrgContext} from 'src/organizations/components/DeleteOrgContext'
+import {
+  DeleteOrgContext,
+  VariableItems,
+} from 'src/organizations/components/DeleteOrgContext'
 
 // Types
 
-enum VariableItems {
-  USE_CASE_DIFFERENT = "It doesn't work for my use case",
-  SWITCHING_ORGANIZATION = 'I want to join my account to another organization',
-  ALTERNATIVE_PRODUCT = 'I found an alternative product',
-  RE_SIGNUP = 'I want to sign up for a new account using a marketplace option',
-  OTHER_REASON = 'Other reason',
-}
-
 function DeleteOrgReasonsForm() {
-  const [workingVariable, setWorkingVariable] = useState('USE_CASE_DIFFERENT')
   const {
     shortSuggestion,
     isShortSuggestionEnabled,
@@ -30,12 +24,6 @@ function DeleteOrgReasonsForm() {
     setReason,
   } = useContext(DeleteOrgContext)
 
-  useEffect(() => {
-    if (reason !== VariableItems[workingVariable]) {
-      setReason(VariableItems[workingVariable])
-    }
-  }, [reason, workingVariable])
-
   const onChange = (selected: string) => {
     const isAlternateProductSelected =
       VariableItems[selected] === VariableItems.ALTERNATIVE_PRODUCT
@@ -44,8 +32,7 @@ function DeleteOrgReasonsForm() {
     }
 
     setShortSuggestionFlag(isAlternateProductSelected)
-    setReason(VariableItems[selected])
-    setWorkingVariable(selected)
+    setReason(selected)
   }
 
   return (
@@ -61,7 +48,7 @@ function DeleteOrgReasonsForm() {
               onClick={onClick}
               testID="variable-type-dropdown--button"
             >
-              {VariableItems[workingVariable]}
+              {VariableItems[reason]}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
@@ -104,7 +91,6 @@ function DeleteOrgReasonsForm() {
           testID="improvement-suggestions-input"
           value={suggestions}
           placeholder="How can we improve?"
-          style={{height: '120px'}}
         />
       </Form.Element>
     </div>

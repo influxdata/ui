@@ -54,21 +54,29 @@ import {
   removeBucketLabelFailed,
   measurementSchemaAdditionSuccessful,
   measurementSchemaAdditionFailed,
+  measurementSchemaUpdateFailed,
+  measurementSchemaUpdateSuccessful,
 } from 'src/shared/copy/notifications'
 
 type Action = BucketAction | NotifyAction
 
 let getBucketsSchemaMeasurements = null,
   MeasurementSchemaCreateRequest = null,
-  postBucketsSchemaMeasurement = null
+  MeasurementSchemaUpdateRequest = null,
+  postBucketsSchemaMeasurement = null,
+  patchBucketsSchemaMeasurement = null
 
 if (CLOUD) {
   getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
     .getBucketsSchemaMeasurements
   MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
     .MeasurementSchemaCreateRequest
+  MeasurementSchemaUpdateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaUpdateRequest
   postBucketsSchemaMeasurement = require('src/client/generatedRoutes')
     .postBucketsSchemaMeasurement
+  patchBucketsSchemaMeasurement = require('src/client/generatedRoutes')
+    .patchBucketsSchemaMeasurement
 }
 
 export const getBuckets = () => async (
@@ -373,6 +381,34 @@ export const addSchemaToBucket = (
     bucketName,
     dispatch
   )
+}
+
+export const updateMeasurementSchema = (
+  bucketID: string,
+  measurementID: string,
+  measurementName: string,
+  schema: typeof MeasurementSchemaUpdateRequest,
+  orgID: string
+) => async (dispatch: Dispatch<Action>) => {
+  const params = {
+    bucketID,
+    measurementID,
+    data: schema,
+    query: {orgID},
+  }
+  try {
+    const resp = await patchBucketsSchemaMeasurement(params)
+    if (resp.status !== 200) {
+      const msg = resp?.data?.message
+      console.error('error updating measurement schema:', resp)
+      throw new Error(msg)
+    }
+    dispatch(notify(measurementSchemaUpdateSuccessful(measurementName)))
+  } catch (error) {
+    console.error(error)
+    const message = getErrorMessage(error)
+    dispatch(notify(measurementSchemaUpdateFailed(measurementName, message)))
+  }
 }
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {

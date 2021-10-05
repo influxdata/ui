@@ -1,4 +1,8 @@
 .cancellation-reasons-form {
   margin: 10px 0;
   width: 100%;
+
+  > .cf-form--element {
+    padding: 5px 0;
+  }
 }

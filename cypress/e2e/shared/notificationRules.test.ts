@@ -307,7 +307,7 @@ describe('NotificationRules', () => {
       orgID: '',
       name: 'Test HTTP Endpoint',
       userID: '',
-      description: 'Special chars',
+      description: 'A Dummy Endpoint in AWS Land',
       status: 'active',
       type: 'http',
       url: 'http://13.57.248.121:3000',
@@ -441,13 +441,13 @@ describe('NotificationRules', () => {
         cy.get<NotificationEndpoint>('@endp').then( endp => {
           cy.get<GenRule>('@rule').then( rule => {
 
-            const now = new Date().getTime();
+            // const now = new Date().getTime();
 
-            cy.log(`DEBUG now ${now}`)
-            const sourceTS1 = now - (1000 * 60 * 10)
-            cy.log(`DEBUG sourceTS1 ${new Date(sourceTS1)}`)
-            const tsResult = calcNanoTimestamp('10m')
-            cy.log(`DEBUG tsResult ${tsResult}`)
+            // cy.log(`DEBUG now ${now}`)
+            // const sourceTS1 = now - (1000 * 60 * 10)
+            // cy.log(`DEBUG sourceTS1 ${new Date(sourceTS1)}`)
+            // const tsResult = calcNanoTimestamp('10m')
+            // cy.log(`DEBUG tsResult ${tsResult}`)
 
             writeMonitoringRecord( {
                 check: check,
@@ -526,14 +526,146 @@ describe('NotificationRules', () => {
           expect(stamps[i-1]).to.be.above(stamps[i])
         }
       })
-      //verify first row
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within((row) => {
+      // verify first row
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
          cy.get('.level-table-field--ok').should('be.visible')
          cy.get('.sent-table-field--sent').should('be.visible')
          cy.get('.event-row--field:nth-of-type(3)').should('have.text', check.name)
          cy.get('.event-row--field:nth-of-type(4)').should('have.text', rule.name)
          cy.get('.event-row--field:nth-of-type(5)').should('have.text', endp.name)
       })
+      // verify second row
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(2)').within(() => {
+        cy.get('.level-table-field--info').should('be.visible')
+        cy.get('.sent-table-field--not-sent').should('be.visible')
+      })
+      // verify third row
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(3)').within(() => {
+        cy.get('.level-table-field--crit').should('be.visible')
+        cy.get('.sent-table-field--sent').should('be.visible')
+      })
+      // verify fourth row
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(4)').within(() => {
+        cy.get('.level-table-field--warn').should('be.visible')
+      })
+      // check links...
+      //    ...To Check
+      cy.getByTestID('overlay').should('not.exist')
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(3) > a')
+        .click()
+      cy.getByTestID('overlay')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('page-title').should('have.text', check.name)
+          cy.getByTestID('giraffe-inner-plot').should('be.visible')
+          cy.getByTestID('query-builder').should('be.visible')
+        })
+      cy.go('back')
+      //    ...To Rule
+      cy.getByTestID('overlay').should('not.exist')
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(4) > a')
+        .click()
+      cy.getByTestID('overlay')
+        .should('be.visible')
+        .within(() => {
+            cy.getByTestID('rule-name--input').should('have.value', rule.name)
+            cy.getByTestID('levels--dropdown--button currentLevel')
+              .should('have.text', rule.statusRules[0].currentLevel)
+            cy.getByTestID('endpoint--dropdown--button').should('have.text', endp.name)
+        })
+      cy.go('back')
+      //    ...To Endpoint
+      cy.getByTestID('overlay').should('not.exist')
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(3) .event-row--field:nth-of-type(5) > a')
+        .click()
+      cy.getByTestID('overlay')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('endpoint--dropdown--button').should('have.text', 'HTTP')
+          cy.getByTestID('endpoint-name--input').should('have.value', endp.name)
+          cy.getByTestID('endpoint-description--textarea').should('have.value', endp.description)
+          cy.getByTestID('http-method--dropdown--button').should('have.text', 'POST')
+          cy.getByTestID('http-authMethod--dropdown--button').should('have.text', 'none')
+          cy.getByTestID('http-url').should('have.value', endp.url)
+        })
+      cy.go('back')
+      cy.getByTestID('overlay').should('not.exist')
+      // TODO click and check examples
+      cy.getByTestID('check-status-dropdown').should('not.exist')
+      cy.getByTestID('check-status-input').click()
+      cy.getByTestID('check-status-dropdown').should('be.visible')
+      // Filter level == crit
+      cy.getByTestID('check-status-input')
+        .clear()
+        .type('"level" == "crit"')
+      cy.get('.event-row').should('have.length', 1)
+      //    ...verify row
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
+        cy.get('.level-table-field--crit').should('be.visible')
+        cy.get('.sent-table-field--sent').should('be.visible')
+      })
+      // Filter level != info
+      cy.getByTestID('check-status-input')
+        .clear()
+        .type('"level" != "info"')
+      cy.get('.event-row').should('have.length', 3).then(rows => {
+          const levels = rows.find('.event-row--field:nth-of-type(2)').toArray().map(r => r.innerText)
+          cy.log(`DEBUG levels ${levels}`)
+          expect(levels).to.deep.eq(['ok','crit','warn'])
+      })
+      // Filter notificationRuleName == rule.name
+      cy.getByTestID('check-status-input')
+        .clear()
+        .type(`"notificationRuleName" == "${rule.name}"`)
+      cy.get('.event-row').should('have.length', 4).then(rows => {
+        const levels = rows.find('.event-row--field:nth-of-type(2)').toArray().map(r => r.innerText)
+        cy.log(`DEBUG levels ${levels}`)
+        expect(levels).to.deep.eq(['ok','info','crit','warn'])
+      })
+      cy.getByTitle('Refresh').click()
+      cy.getByTestID('check-status-dropdown').should('not.exist')
+    })
+
+    it('refreshes the history', () => {
+      cy.getByTestID('alerting-tab--rules').click()
+      cy.getByTestID(`rule-card ${rule.name}`).within(card => {
+        card.trigger('mouseover')
+        cy.getByTestID('context-history-menu').click()
+        cy.getByTestID('context-history-task').click()
+      })
+      cy.get('.event-row').should('have.length', 4)
+      cy.get<GenCheck>('@check').then(check => {
+        cy.get<NotificationEndpoint>('@endp').then(endp => {
+          cy.get<GenRule>('@rule').then(rule => {
+            writeMonitoringRecord( {
+                check: check,
+                endp: endp,
+                rule: rule,
+                level: 'info',
+                source: 'wumpus',
+                sent: 'false',
+                valField: {key: 'foo', val: 'bar'},
+                sourceTimestamp: calcNanoTimestamp('4m'),
+                statusTimestamp: calcNanoTimestamp('3m'),
+                message: 'This is a fake info message'},
+              '2m'
+            )
+          })
+        })
+      })
+      cy.getByTitle('Refresh').click()
+      cy.get('.event-row').should('have.length', 5).then(rows => {
+        const levels = rows.find('.event-row--field:nth-of-type(2)').toArray().map(r => r.innerText)
+        cy.log(`DEBUG levels ${levels}`)
+        expect(levels).to.deep.eq(['info','ok','info','crit','warn'])
+      })
+    })
+
+    it.only('Switches between local and UTC time', () => {
+      // N.B. if local === utc then skip
+      cy.log(`DEBUG timezone ${JSON.stringify(Intl.DateTimeFormat().resolvedOptions())}`)
+      cy.log(`DEBUG DateTimeFormat ${JSON.stringify(Intl.DateTimeFormat())}`)
+      cy.log('DEBUG time switches')
     })
   })
 })

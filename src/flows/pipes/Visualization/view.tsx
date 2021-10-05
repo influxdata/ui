@@ -25,6 +25,43 @@ import {downloadTextFile} from 'src/shared/utils/download'
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
+import {downloadImage} from 'src/flows/shared/utils'
+
+const downloadAsImage = (pipeID: string) => {
+  const canvas = document.getElementById(pipeID)
+  import('html2canvas').then((module: any) =>
+    module.default(canvas as HTMLDivElement).then(result => {
+      downloadImage(result.toDataURL(), 'visualization.png')
+    })
+  )
+}
+
+const downloadAsPDF = (pipeID: string) => {
+  const canvas = document.getElementById(pipeID)
+  setTimeout(() => {
+    import('html2canvas').then((module: any) =>
+      module.default(canvas as HTMLDivElement).then(result => {
+        import('jspdf').then((jsPDF: any) => {
+          const doc = new jsPDF.default({
+            orientation: 'l',
+            unit: 'pt',
+            format: [result.width, result.height],
+          })
+          doc.addImage(
+            result.toDataURL('image/png'),
+            'PNG',
+            0,
+            0,
+            result.width,
+            result.height
+          )
+          doc.save('sample-file.pdf')
+        })
+      })
+    )
+  }, 0)
+}
+
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
@@ -82,6 +119,14 @@ const Visualization: FC<PipeProp> = ({Context}) => {
                 panel: id,
               })
             },
+          },
+          {
+            title: 'Download As Image',
+            action: () => downloadAsImage(id),
+          },
+          {
+            title: 'Download As PDF',
+            action: () => downloadAsPDF(id),
           },
         ],
       },

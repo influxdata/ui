@@ -86,8 +86,8 @@ const TimeMachineVis: FC<Props> = ({
   const viewRawData =
     isViewingRawData &&
     type === 'check' &&
-      giraffeResult.table.getColumnType('_value') !== 'number' &&
-      !!giraffeResult.table.length
+    giraffeResult.table.getColumnType('_value') !== 'number' &&
+    !!giraffeResult.table.length
 
   if (viewRawData && files && files.length) {
     const [parsedResults] = files.flatMap(fromFlux)

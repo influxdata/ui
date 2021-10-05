@@ -79,7 +79,7 @@ class BucketList
             style={{
               maxHeight: this.props.pageHeight,
               minHeight: this.props.pageHeight,
-              overflow: 'scroll',
+              overflow: 'auto',
             }}
           >
             {this.listBuckets}

@@ -125,7 +125,10 @@ export default class TasksList extends PureComponent<Props, State>
       DEFAULT_PAGINATION_CONTROL_HEIGHT
     const height = this.props.pageHeight - heightWithPagination
 
-    this.totalPages = Math.ceil(this.props.tasks.length / this.rowsPerPage)
+    this.totalPages = Math.max(
+      Math.ceil(this.props.tasks.length / this.rowsPerPage),
+      1
+    )
 
     return (
       <>

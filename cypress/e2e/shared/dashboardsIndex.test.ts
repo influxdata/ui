@@ -585,9 +585,7 @@ describe('Dashboards', () => {
           cy.getByTestID('context-menu-item-export').click()
           cy.getByTestID('button-copy')
             .click()
-            .then(() => {
-              cy.task('getClipboard').should('not.be.null')
-            })
+          cy.getByTestID('notification-success--children').should('be.visible')
         })
       })
     })

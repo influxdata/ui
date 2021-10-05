@@ -162,8 +162,6 @@ export const MiniFileDnd: FC<Props> = ({
     inputEl.current.click()
   }
 
-  // maybe add a title or popover to the left....talk to david kim
-
   const displayText = fileName ?? 'Add schema file'
 
   const dropZoneClasses = classnames('dnd', {

@@ -96,7 +96,12 @@ class BucketsTab extends PureComponent<Props, State> {
       sortDirection = Sort.Descending
     }
 
-    this.setState({sortKey, sortDirection, sortType})
+    let searchTerm: string = ''
+    if (params.get('searchTerm') !== null) {
+      searchTerm = params.get('searchTerm')
+    }
+
+    this.setState({sortKey, sortDirection, sortType, searchTerm})
   }
 
   public render() {
@@ -232,6 +237,9 @@ class BucketsTab extends PureComponent<Props, State> {
   }
 
   private handleFilterUpdate = (searchTerm: string): void => {
+    const url = new URL(location.href)
+    url.searchParams.set('searchTerm', searchTerm)
+    history.replaceState(null, '', url.toString())
     this.setState({searchTerm})
   }
 

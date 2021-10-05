@@ -557,14 +557,14 @@ describe('Dashboards', () => {
           cy.getByTestID('tree-nav')
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card--name').click()
-          cy.getByTestID('page-title').type('dshboard') // dashboard name added to prevent failure due to downloading JSON with a different name
+          cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card').invoke('hover')
           cy.getByTestID('context-export-menu').click()
           cy.getByTestID('context-menu-item-export').click()
           cy.getByTestID('button').click()
           // readFile has a 4s timeout before the test fails
-          cy.readFile('cypress/downloads/dshboard.json').should('exist')
+          cy.readFile('cypress/downloads/dashboard.json').should('exist')
         })
       })
     })

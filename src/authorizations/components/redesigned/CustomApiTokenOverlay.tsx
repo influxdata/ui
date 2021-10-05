@@ -75,9 +75,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   useEffect(() => {
     props.getBuckets()
     props.getTelegrafs()
-    
   }, [])
-
 
   useEffect(() => {
     const perms = {}
@@ -164,7 +162,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       permissions: apiPermissions,
     }
     onCreateAuthorization(token)
-    if(token.permissions.length > 0) {
+    if (token.permissions.length > 0) {
       showOverlay('access-token', null, () => dismissOverlay())
     }
   }

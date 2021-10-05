@@ -134,7 +134,7 @@ export default class TasksList extends PureComponent<Props, State>
       <>
         <ResourceList style={{width: this.props.pageWidth}}>
           <ResourceList.Body
-            style={{maxHeight: height, minHeight: height, overflow: 'scroll'}}
+            style={{maxHeight: height, minHeight: height, overflow: 'auto'}}
             emptyState={
               <EmptyTasksList
                 searchTerm={this.props.searchTerm}

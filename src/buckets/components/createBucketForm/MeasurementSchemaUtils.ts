@@ -82,3 +82,22 @@ export const isNameValid = name => {
   }
   return {valid: true, message: null}
 }
+
+export const areNewSchemasValid = newMeasurementSchemaRequests => {
+  const haveSchemas =
+    Array.isArray(newMeasurementSchemaRequests) &&
+    newMeasurementSchemaRequests.length
+
+  if (!haveSchemas) {
+    // no schemas, nothing to validate, so everything is fine
+    // even if it is in explicit mode, can add schemas later
+    return true
+  }
+  // if so, are they all valid?
+  const alltrue = newMeasurementSchemaRequests.every(schema => schema.valid)
+
+  if (alltrue) {
+    return true
+  }
+  return false
+}

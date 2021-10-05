@@ -146,15 +146,12 @@ export const createBucketAndUpdate = (
     )
 
     // just created the bucket, now add any schemas that might be there:
-
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
 
     if (resp.data.schemaType === 'explicit' && schemas && schemas.length) {
       // in case they choose explicit, add schemas, then change their mind back and
-      // change it to implicit
-
-      console.log('about to add schemas....', schemas)
+      // change it to implicit; or if explicit and choose not to add schemas at this time.
 
       schemas.forEach(mschemaCreateRequest => {
         addMeasurementSchemaToBucketInternal(
@@ -165,13 +162,8 @@ export const createBucketAndUpdate = (
           dispatch
         )
       })
-    } else {
-      console.log(
-        ' implicit (or no schemas present), not adding any schemas....'
-      )
     }
 
-    // think....only call update after measurement schemas added (if there are schemas to add???)
     update(newBucket.entities.buckets[resp.data.id])
   } catch (error) {
     console.error(error)

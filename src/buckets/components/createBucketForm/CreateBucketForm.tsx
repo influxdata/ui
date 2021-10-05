@@ -24,6 +24,7 @@ import {AppState, Bucket, RetentionRule} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
 import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
+import {areNewSchemasValid} from './MeasurementSchemaUtils'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -99,22 +100,12 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     }
 
     // ok; we are in explicit mode:  keep going!
-    // are there measurement schemas?
-    const haveSchemas =
-      Array.isArray(newMeasurementSchemaRequests) &&
-      newMeasurementSchemaRequests.length
+    const result = areNewSchemasValid(newMeasurementSchemaRequests)
 
-    if (!haveSchemas) {
-      // no schemas, nothing to validate, so everything is fine
-      // even if it is in explicit mode, can add schemas later
-      return true
+    if (result) {
+      return result
     }
-    // if so, are they all valid?
-    const alltrue = newMeasurementSchemaRequests.every(schema => schema.valid)
 
-    if (alltrue) {
-      return true
-    }
     // not all true :(
 
     // if not valid, decorate them to show they are not valid!

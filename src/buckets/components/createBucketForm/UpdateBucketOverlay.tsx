@@ -39,6 +39,7 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 import {OwnBucket} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 import {event} from '../../../cloud/utils/reporting'
+import {areNewSchemasValid} from './MeasurementSchemaUtils'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -158,20 +159,10 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
   const isValid = () => {
     // are there measurement schemas?
-    const haveSchemas =
-      Array.isArray(newMeasurementSchemaRequests) &&
-      newMeasurementSchemaRequests.length
+    const result = areNewSchemasValid(newMeasurementSchemaRequests)
 
-    if (!haveSchemas) {
-      // no schemas, nothing to validate, so everything is fine
-      return true
-    }
-    // if so, are they all valid?
-
-    const alltrue = newMeasurementSchemaRequests.every(schema => schema.valid)
-
-    if (alltrue) {
-      return true
+    if (result) {
+      return result
     }
     // not all true :(
 

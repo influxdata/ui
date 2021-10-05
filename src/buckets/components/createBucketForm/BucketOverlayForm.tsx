@@ -127,7 +127,6 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
-        //let contents = null
         let schemaToggle = (
           <SchemaToggle onChangeSchemaType={this.onChangeSchemaTypeInternal} />
         )

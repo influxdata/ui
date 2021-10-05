@@ -139,19 +139,22 @@ describe('test schema validity function', () => {
     const actual = areNewSchemasValid(data)
     expect(actual).toBe(expected)
   }
-  it('should be invalid (false)', () => {
+  it('should be invalid (false); array contains a false', () => {
     doTest(schemaRequestList1, false)
   })
-  it('should be valid (true)', () => {
+  it('should be valid (true), array is all true', () => {
     doTest(schemaRequestList2, true)
   })
-  it('should be valid (true)', () => {
+  it('should be valid (true), array of one true item', () => {
     doTest(schemaRequestList3, true)
   })
-  it('should be invalid (false)', () => {
+  it('should be invalid (false), array of one false item', () => {
     doTest(schemaRequestList4, false)
   })
   it('should be valid, it is empty', () => {
     doTest([], true)
+  })
+  it('should be valid, it is null', () => {
+    doTest(null, true)
   })
 })

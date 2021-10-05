@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, ChangeEvent, FormEvent, useReducer} from 'react'
+import React, {FC, ChangeEvent, FormEvent, useReducer, useState} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
@@ -25,10 +25,13 @@ import {getOrg} from 'src/organizations/selectors'
 import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
 
-let SchemaType = null
+let SchemaType = null,
+  MeasurementSchemaCreateRequest = null
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
 }
 
 interface CreateBucketFormProps {
@@ -51,6 +54,12 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     createBucketReducer,
     initialBucketState(isRetentionLimitEnforced, org.id)
   )
+
+  const [
+    newMeasurementSchemaRequests,
+    setNewMeasurementSchemaRequests,
+  ] = useState(null)
+  const [showSchemaValidation, setShowSchemaValidation] = useState(false)
 
   const retentionRule = state.retentionRules.find(
     (rule: RetentionRule) => rule.type === 'expire'
@@ -81,11 +90,52 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     dispatch({type: 'updateSchema', payload: schemaType})
   }
 
+  const isValid = () => {
+    // are we in explicit schema mode?  the user could choose explicit, add some stuff, then change their mind
+    //  if they are in implicit, nothing to check; just return true:
+
+    if (state.schemaType === 'implicit') {
+      return true
+    }
+
+    // ok; we are in explicit mode:  keep going!
+    // are there measurement schemas?
+    const haveSchemas =
+      Array.isArray(newMeasurementSchemaRequests) &&
+      newMeasurementSchemaRequests.length
+
+    if (!haveSchemas) {
+      // no schemas, nothing to validate, so everything is fine
+      // even if it is in explicit mode, can add schemas later
+      return true
+    }
+    // if so, are they all valid?
+    const alltrue = newMeasurementSchemaRequests.every(schema => schema.valid)
+
+    if (alltrue) {
+      return true
+    }
+    // not all true :(
+
+    // if not valid, decorate them to show they are not valid!
+    setShowSchemaValidation(true)
+    return false
+  }
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
+    if (isValid()) {
+      let mSchemas = null
+      if (newMeasurementSchemaRequests) {
+        mSchemas = newMeasurementSchemaRequests.map(item => ({
+          columns: item.columns,
+          name: item.name,
+        }))
+      }
 
-    reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket))
-    onClose()
+      reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket, mSchemas))
+      onClose()
+    }
   }
 
   const handleUpdateBucket = (bucket: Bucket): void => {
@@ -99,6 +149,17 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
 
     if (event.target.name === 'name') {
       dispatch({type: 'updateName', payload: value})
+    }
+  }
+
+  const handleNewMeasurementSchemas = (
+    schemas: typeof MeasurementSchemaCreateRequest[],
+    resetValidation?: boolean
+  ): void => {
+    setNewMeasurementSchemaRequests(schemas)
+
+    if (resetValidation) {
+      setShowSchemaValidation(false)
     }
   }
 
@@ -116,6 +177,8 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
       onChangeRetentionRule={handleChangeRetentionRule}
       testID={testID}
       onChangeSchemaType={handleChangeSchemaType}
+      onUpdateNewMeasurementSchemas={handleNewMeasurementSchemas}
+      showSchemaValidation={showSchemaValidation}
     />
   )
 }

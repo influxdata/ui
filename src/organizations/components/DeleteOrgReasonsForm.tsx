@@ -1,27 +1,13 @@
 // Libraries
-import React, {useContext, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 
 // Components
-import {
-  ComponentSize,
-  Dropdown,
-  Form,
-  Input,
-  InputType,
-  TextArea,
-} from '@influxdata/clockface'
+import {Dropdown, Form, Input, InputType, TextArea} from '@influxdata/clockface'
 
 // Utilities
 import {DeleteOrgContext} from 'src/organizations/components/DeleteOrgContext'
 
 // Types
-
-interface Errors {
-  [_: string]: string
-}
-interface ComponentProps {
-  errors?: Errors
-}
 
 enum VariableItems {
   USE_CASE_DIFFERENT = "It doesn't work for my use case",
@@ -31,8 +17,8 @@ enum VariableItems {
   OTHER_REASON = 'Other reason',
 }
 
-function DeleteOrgReasonsForm({errors = {}}: ComponentProps) {
-  const [workingVariable, setWorkingVariable] = useState('')
+function DeleteOrgReasonsForm() {
+  const [workingVariable, setWorkingVariable] = useState('USE_CASE_DIFFERENT')
   const {
     shortSuggestion,
     isShortSuggestionEnabled,
@@ -40,7 +26,15 @@ function DeleteOrgReasonsForm({errors = {}}: ComponentProps) {
     setShortSuggestionFlag,
     setShortSuggestion,
     setSuggestions,
+    reason,
+    setReason,
   } = useContext(DeleteOrgContext)
+
+  useEffect(() => {
+    if (reason !== VariableItems[workingVariable]) {
+      setReason(VariableItems[workingVariable])
+    }
+  }, [reason, workingVariable])
 
   const onChange = (selected: string) => {
     const isAlternateProductSelected =
@@ -50,6 +44,7 @@ function DeleteOrgReasonsForm({errors = {}}: ComponentProps) {
     }
 
     setShortSuggestionFlag(isAlternateProductSelected)
+    setReason(VariableItems[selected])
     setWorkingVariable(selected)
   }
 
@@ -90,7 +85,6 @@ function DeleteOrgReasonsForm({errors = {}}: ComponentProps) {
         <Form.Element
           label="What is the alternative?"
           className="element alternate-product--input"
-          errorMessage={errors?.shortSuggestion ?? ''}
         >
           <Input
             type={InputType.Text}
@@ -102,16 +96,15 @@ function DeleteOrgReasonsForm({errors = {}}: ComponentProps) {
       )}
       <Form.Element
         label="How can we improve?"
-        errorMessage={errors?.suggestions ?? ''}
         className="element improvement-suggestion--input"
       >
         <TextArea
           className="improvement-suggestions-input"
           onChange={e => setSuggestions(e.target.value)}
-          size={ComponentSize.Medium}
           testID="improvement-suggestions-input"
           value={suggestions}
           placeholder="How can we improve?"
+          style={{height: '120px'}}
         />
       </Form.Element>
     </div>

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useMemo, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {
@@ -37,38 +37,13 @@ const DeleteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const dispatch = useDispatch()
-  const [formErrors, setFormErrors] = useState({})
-  const {shortSuggestion, isShortSuggestionEnabled, suggestions} = useContext(
-    DeleteOrgContext
-  )
+  const {reason, shortSuggestion, suggestions} = useContext(DeleteOrgContext)
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
 
   const handleClose = () => {
     history.goBack()
   }
-
-  const isFormValid = useMemo(() => {
-    if (!isFlagEnabled('trackCancellations')) {
-      return true
-    }
-
-    const errors = {}
-    let hasErrors = false
-    if (isShortSuggestionEnabled && !shortSuggestion) {
-      errors['shortSuggestion'] = 'Please enter a suggestion'
-      hasErrors = true
-    }
-
-    if (!suggestions) {
-      errors['suggestions'] = 'Please enter suggestions'
-      hasErrors = true
-    }
-
-    setFormErrors(errors)
-
-    return !hasErrors
-  }, [isShortSuggestionEnabled, shortSuggestion, suggestions])
 
   const sendDetailsToRudderstack = () => {
     const payload = {
@@ -77,6 +52,7 @@ const DeleteOrgOverlay: FC = () => {
       email: quartzMe?.email,
       alternativeProduct: shortSuggestion,
       suggestions,
+      reason,
     }
 
     event('Cancel Org Executed', payload)
@@ -84,10 +60,6 @@ const DeleteOrgOverlay: FC = () => {
   }
 
   const handleDeleteAccount = async () => {
-    if (!isFormValid) {
-      return
-    }
-
     if (isFlagEnabled('rudderStackReporting')) {
       sendDetailsToRudderstack()
     }
@@ -120,7 +92,7 @@ const DeleteOrgOverlay: FC = () => {
               justifyContent={JustifyContent.FlexStart}
               margin={ComponentSize.Medium}
             >
-              <DeleteOrgReasonsForm errors={formErrors} />
+              <DeleteOrgReasonsForm />
             </FlexBox>
           )}
           <ul>

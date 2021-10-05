@@ -16,6 +16,8 @@ export interface DeleteOrgContextType {
   setShortSuggestion: (_: string) => void
   suggestions: string
   setSuggestions: (_: string) => void
+  reason: string
+  setReason: (_: string) => void
 }
 
 export const DEFAULT_DELETE_ORG_CONTEXT: DeleteOrgContextType = {
@@ -25,6 +27,8 @@ export const DEFAULT_DELETE_ORG_CONTEXT: DeleteOrgContextType = {
   setShortSuggestion: (_: string) => null,
   suggestions: '',
   setSuggestions: (_: string) => null,
+  reason: '',
+  setReason: (_: string) => null,
 }
 
 export const DeleteOrgContext = createContext<DeleteOrgContextType>(
@@ -35,6 +39,7 @@ const DeleteOrgProvider: FC<Props> = ({children}) => {
   const [shortSuggestion, setShortSuggestion] = useState('')
   const [isShortSuggestionEnabled, setShortSuggestionFlag] = useState(false)
   const [suggestions, setSuggestions] = useState('')
+  const [reason, setReason] = useState('')
 
   return (
     <DeleteOrgContext.Provider
@@ -45,6 +50,8 @@ const DeleteOrgProvider: FC<Props> = ({children}) => {
         setShortSuggestion,
         suggestions,
         setSuggestions,
+        reason,
+        setReason,
       }}
     >
       {children}

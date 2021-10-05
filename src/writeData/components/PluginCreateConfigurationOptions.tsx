@@ -55,7 +55,7 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
   }
 
   const handleSelectBucket = (bucket: Bucket) => {
-    const {orgID, id, name} = bucket
+    const {orgID, name, id} = bucket
 
     if (id === CREATE_A_BUCKET_ID) {
       onSetSubstepIndex(currentStepIndex, 1)

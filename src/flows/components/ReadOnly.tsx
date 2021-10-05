@@ -11,6 +11,7 @@ import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsContext, ResultsProvider} from 'src/flows/context/results'
 import {SidebarProvider} from 'src/flows/context/sidebar'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 
 // Components
 import ReadOnlyPipeList from 'src/flows/components/ReadOnlyPipeList'
@@ -22,6 +23,7 @@ import 'src/flows/style.scss'
 import 'src/flows/shared/Resizer.scss'
 import '@influxdata/clockface/dist/index.css'
 import {RemoteDataState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 const RunPipeResults: FC = () => {
   const {generateMap} = useContext(FlowQueryContext)
@@ -53,6 +55,7 @@ const RunPipeResults: FC = () => {
           setStatuses({[id]: RemoteDataState.Error})
         })
     })
+    event('Visited Shared Notebook', {accessID: accessID})
   }, [flow])
 
   return null
@@ -96,18 +99,20 @@ const ReadOnlyFlowPage: FC = () => {
 
 const FlowContainer: FC = () => (
   <AppWrapper>
-    <FlowProvider>
-      <ReadOnly>
-        <ResultsProvider>
-          <FlowQueryProvider>
-            <RunPipeResults />
-            <SidebarProvider>
-              <ReadOnlyFlowPage />
-            </SidebarProvider>
-          </FlowQueryProvider>
-        </ResultsProvider>
-      </ReadOnly>
-    </FlowProvider>
+    <AppSettingProvider>
+      <FlowProvider>
+        <ReadOnly>
+          <ResultsProvider>
+            <FlowQueryProvider>
+              <RunPipeResults />
+              <SidebarProvider>
+                <ReadOnlyFlowPage />
+              </SidebarProvider>
+            </FlowQueryProvider>
+          </ResultsProvider>
+        </ReadOnly>
+      </FlowProvider>
+    </AppSettingProvider>
   </AppWrapper>
 )
 

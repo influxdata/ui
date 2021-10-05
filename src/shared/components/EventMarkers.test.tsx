@@ -2,8 +2,6 @@ import * as React from 'react'
 import {render, fireEvent, waitFor} from '@testing-library/react'
 import {LowercaseCheckStatusLevel} from 'src/types'
 
-import {scaleLinear} from 'd3-scale'
-
 describe('EventMarkers', () => {
   test('Visibility Toggles', async () => {
     const levels: LowercaseCheckStatusLevel[] = ['ok', 'ok', 'ok']
@@ -50,9 +48,7 @@ describe('EventMarkers', () => {
 
     const xDomain = [1, 2]
 
-    const xScale = scaleLinear()
-      .domain(xDomain)
-      .range([1, 5])
+    const xScale = jest.fn()
 
     const xFormatter = x => {
       return String(x)

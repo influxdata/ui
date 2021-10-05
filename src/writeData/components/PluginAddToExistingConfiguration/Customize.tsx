@@ -20,26 +20,28 @@ import {
 } from 'src/dataLoaders/actions/dataLoaders'
 
 // Types
-import {AppState, ConfigurationState} from 'src/types'
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+import {AppState, ConfigurationState, ResourceType, Telegraf} from 'src/types'
+import {PluginConfigurationStepProps} from 'src/writeData/components/PluginAddToExistingConfiguration/Wizard'
 
 // Selectors
+import {getAll} from 'src/resources/selectors'
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = PluginCreateConfigurationStepProps & ReduxProps
+type Props = PluginConfigurationStepProps & ReduxProps
 
-const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
+const CustomizeComponent: FC<Props> = props => {
   const {
-    onAddTelegrafPlugins,
-    onSetTelegrafConfigName,
-    onSetTelegrafConfigDescription,
-    telegrafConfigDescription,
-    telegrafConfigName,
+    addTelegrafPlugins,
     pluginConfig,
+    pluginConfigName,
     setIsValidConfiguration,
     setPluginConfig,
-    pluginConfigName,
+    setTelegrafConfigDescription,
+    setTelegrafConfigName,
+    telegrafConfig,
+    telegrafConfigDescription,
+    telegrafConfigName,
   } = props
 
   const handleError = error => {
@@ -48,49 +50,51 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   }
 
   useEffect(() => {
-    try {
-      import(
-        `src/writeData/components/telegrafInputPluginsConfigurationText/${pluginConfigName}.conf`
-      ).then(
-        module => {
-          setIsValidConfiguration(true)
-          const pluginText = module.default ?? ''
-
-          setPluginConfig(pluginText)
-          onAddTelegrafPlugins([
-            {
-              name: pluginConfigName,
-              configured: ConfigurationState.Configured,
-              active: false,
-              plugin: {
+    if (!pluginConfig) {
+      try {
+        import(
+          `src/writeData/components/telegrafInputPluginsConfigurationText/${pluginConfigName}.conf`
+        ).then(
+          module => {
+            setIsValidConfiguration(true)
+            const pluginText = module.default ?? ''
+            setPluginConfig(`${telegrafConfig}${pluginText}`)
+            addTelegrafPlugins([
+              {
                 name: pluginConfigName,
-                type: 'input',
+                configured: ConfigurationState.Configured,
+                active: false,
+                plugin: {
+                  name: pluginConfigName,
+                  type: 'input',
+                },
               },
-            },
-          ])
-        },
-        error => handleError(error)
-      )
-    } catch (error) {
-      handleError(error)
+            ])
+          },
+          error => handleError(error)
+        )
+      } catch (error) {
+        handleError(error)
+      }
+    } else {
+      setIsValidConfiguration(true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pluginConfigName])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChangeConfig = config => setPluginConfig(config)
 
   const handleNameInput = (event: ChangeEvent<HTMLInputElement>) => {
-    onSetTelegrafConfigName(event.target.value)
+    setTelegrafConfigName(event.target.value)
   }
 
   const handleDescriptionInput = (event: ChangeEvent<HTMLInputElement>) => {
-    onSetTelegrafConfigDescription(event.target.value)
+    setTelegrafConfigDescription(event.target.value)
   }
 
   return (
     <>
-      <Grid testID="plugin-create-configuration-customize">
-        <Grid.Row className="plugin-create-configuration-name-row">
+      <Grid testID="plugin-edit-configuration-customize">
+        <Grid.Row className="plugin-edit-configuration-name-row">
           <Form.Element label="Configuration Name">
             <Input
               type={InputType.Text}
@@ -101,11 +105,11 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
               titleText="Configuration Name"
               size={ComponentSize.Medium}
               autoFocus={true}
-              testID="plugin-create-configuration-customize-input--name"
+              testID="plugin-edit-configuration-customize-input--name"
             />
           </Form.Element>
         </Grid.Row>
-        <Grid.Row className="plugin-create-configuration-description-row">
+        <Grid.Row className="plugin-edit-configuration-description-row">
           <Form.Element label="Configuration Description">
             <Input
               type={InputType.Text}
@@ -116,11 +120,11 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
               titleText="Description (Optional)"
               size={ComponentSize.Medium}
               autoFocus={true}
-              testID="plugin-create-configuration-customize-input--description"
+              testID="plugin-edit-configuration-customize-input--description"
             />
           </Form.Element>
         </Grid.Row>
-        <Grid.Row className="plugin-create-configuration--editor">
+        <Grid.Row className="plugin-edit-configuration--editor">
           <div className="config-overlay">
             <TelegrafConfig
               config={pluginConfig}
@@ -128,34 +132,35 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
             />
           </div>
         </Grid.Row>
-        <Grid.Row>
-          <span className="plugin-create-configuration--notify-agent-output">
-            Input configuration will be appended to a default agent and output
-            upon saving
-          </span>
-        </Grid.Row>
       </Grid>
     </>
   )
 }
 
 const mstp = (state: AppState) => {
-  const {telegrafConfigDescription, telegrafConfigName} = getDataLoaders(state)
+  const {
+    telegrafConfigDescription,
+    telegrafConfigID,
+    telegrafConfigName,
+  } = getDataLoaders(state)
+  const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
 
+  const selectedTelegraf = telegrafs?.find(
+    telegraf => telegraf.id === telegrafConfigID
+  )
   return {
+    telegrafConfig: selectedTelegraf?.config ?? '',
     telegrafConfigDescription,
     telegrafConfigName,
   }
 }
 
 const mdtp = {
-  onAddTelegrafPlugins: addTelegrafPlugins,
-  onSetTelegrafConfigName: setTelegrafConfigName,
-  onSetTelegrafConfigDescription: setTelegrafConfigDescription,
+  addTelegrafPlugins,
+  setTelegrafConfigName,
+  setTelegrafConfigDescription,
 }
 
 const connector = connect(mstp, mdtp)
 
-export const PluginCreateConfigurationCustomize = connector(
-  PluginCreateConfigurationCustomizeComponent
-)
+export const Customize = connector(CustomizeComponent)

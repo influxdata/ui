@@ -85,9 +85,9 @@ const TimeMachineVis: FC<Props> = ({
   // Handles deadman check edge case to allow non-numeric values
   const viewRawData =
     isViewingRawData &&
-    (type === 'check' &&
+    type === 'check' &&
       giraffeResult.table.getColumnType('_value') !== 'number' &&
-      !!giraffeResult.table.length)
+      !!giraffeResult.table.length
 
   if (viewRawData && files && files.length) {
     const [parsedResults] = files.flatMap(fromFlux)

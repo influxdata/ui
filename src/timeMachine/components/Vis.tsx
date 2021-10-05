@@ -1,12 +1,18 @@
 // Libraries
 import React, {FC, memo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
+import {fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // Components
 import {View} from 'src/visualization'
 import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
+import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Utils
 import {
@@ -37,6 +43,7 @@ const TimeMachineVis: FC<Props> = ({
   timeRange,
   isInitialFetch,
   isViewingRawData,
+  files,
   viewProperties,
   giraffeResult,
   xColumn,
@@ -74,6 +81,42 @@ const TimeMachineVis: FC<Props> = ({
   const timeMachineViewClassName = classnames('time-machine--view', {
     'time-machine--view__empty': noQueries,
   })
+
+  // Handles deadman check edge case to allow non-numeric values
+  const viewRawData =
+    isViewingRawData &&
+    (type === 'check' &&
+      giraffeResult.table.getColumnType('_value') !== 'number' &&
+      !!giraffeResult.table.length)
+
+  if (viewRawData && files && files.length) {
+    const [parsedResults] = files.flatMap(fromFlux)
+    return (
+      <div className={timeMachineViewClassName}>
+        <ErrorBoundary>
+          <EmptyQueryView
+            loading={loading}
+            errorMessage={errorMessage}
+            errorFormat={ErrorFormat.Scroll}
+            hasResults={!!parsedResults?.table?.length}
+            isInitialFetch={isInitialFetch}
+          >
+            <AutoSizer>
+              {({width, height}) => {
+                return (
+                  <RawFluxDataTable
+                    parsedResults={parsedResults}
+                    width={width}
+                    height={height}
+                  />
+                )
+              }}
+            </AutoSizer>
+          </EmptyQueryView>
+        </ErrorBoundary>
+      </div>
+    )
+  }
 
   return (
     <div className={timeMachineViewClassName}>

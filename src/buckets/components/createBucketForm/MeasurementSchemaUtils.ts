@@ -94,10 +94,5 @@ export const areNewSchemasValid = newMeasurementSchemaRequests => {
     return true
   }
   // if so, are they all valid?
-  const alltrue = newMeasurementSchemaRequests.every(schema => schema.valid)
-
-  if (alltrue) {
-    return true
-  }
-  return false
+  return newMeasurementSchemaRequests.every(schema => schema.valid)
 }

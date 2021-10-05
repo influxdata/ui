@@ -126,15 +126,13 @@ export const createBucket = (bucket: OwnBucket) => async (
 export const createBucketAndUpdate = (
   bucket: OwnBucket,
   update: (bucket: Bucket) => void,
-  schemas:  typeof MeasurementSchemaCreateRequest[]
+  schemas: typeof MeasurementSchemaCreateRequest[]
 ) => async (
   dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
   getState: GetState
 ) => {
   try {
     const org = getOrg(getState())
-    //console.log('state??? in create bucket and update:', getState())
-    //console.log('bucket??? before calling anything...', bucket)
 
     const resp = await api.postBucket({data: {...bucket, orgID: org.id}})
 
@@ -142,26 +140,34 @@ export const createBucketAndUpdate = (
       throw new Error(resp.data.message)
     }
 
-    console.log('just created bucket! (b4 normalization)', resp.data)
     const newBucket = normalize<Bucket, BucketEntities, string>(
       resp.data,
       bucketSchema
     )
 
-    console.log('just created bucket! jill42-a-non', newBucket)
+    // just created the bucket, now add any schemas that might be there:
 
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
 
+    if (resp.data.schemaType === 'explicit') {
+      // in case they choose explicit, add schemas, then change their mind back and
+      // change it to implicit
 
-    schemas.forEach(mschemaCreateRequest => {
-      addMeasurementSchemaToBucketInternal(resp.data.id,
+      console.log('about to add schemas....', schemas)
+
+      schemas.forEach(mschemaCreateRequest => {
+        addMeasurementSchemaToBucketInternal(
+          resp.data.id,
           mschemaCreateRequest,
           org.id,
           resp.data.name,
-          dispatch)
-    })
-
+          dispatch
+        )
+      })
+    } else {
+      console.log(' implicit, not adding any schemas....')
+    }
 
     // think....only call update after measurement schemas added (if there are schemas to add???)
     update(newBucket.entities.buckets[resp.data.id])
@@ -363,13 +369,19 @@ async function addMeasurementSchemaToBucketInternal(
   }
 }
 
-export const addSchemasToBucket = (
+export const addSchemaToBucket = (
   bucketID: string,
   orgID: string,
   bucketName: string,
   schema: typeof MeasurementSchemaCreateRequest
 ) => async (dispatch: Dispatch<Action>) => {
-  await addMeasurementSchemaToBucketInternal(bucketID, schema, orgID, bucketName, dispatch)
+  await addMeasurementSchemaToBucketInternal(
+    bucketID,
+    schema,
+    orgID,
+    bucketName,
+    dispatch
+  )
 }
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {

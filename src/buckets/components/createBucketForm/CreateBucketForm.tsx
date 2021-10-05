@@ -26,12 +26,12 @@ import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
 
 let SchemaType = null,
-    MeasurementSchemaCreateRequest = null
+  MeasurementSchemaCreateRequest = null
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
   MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
-      .MeasurementSchemaCreateRequest
+    .MeasurementSchemaCreateRequest
 }
 
 interface CreateBucketFormProps {
@@ -91,19 +91,26 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   }
 
   const isValid = () => {
+    // are we in explicit schema mode?  the user could choose explicit, add some stuff, then change their mind
+    //  if they are in implicit, nothing to check; just return true:
+
+    if (state.schemaType === 'implicit') {
+      return true
+    }
+
+    // ok; we are in explicit mode:  keep going!
     // are there measurement schemas?
     const haveSchemas =
-        !!newMeasurementSchemaRequests && !!newMeasurementSchemaRequests.length
+      Array.isArray(newMeasurementSchemaRequests) &&
+      newMeasurementSchemaRequests.length
 
     if (!haveSchemas) {
       // no schemas, nothing to validate, so everything is fine
+      // even if it is in explicit mode, can add schemas later
       return true
     }
     // if so, are they all valid?
-    const reducer = (previousValue, currentValue) =>
-        previousValue && currentValue.valid
-
-    const alltrue = newMeasurementSchemaRequests.reduce(reducer, true)
+    const alltrue = newMeasurementSchemaRequests.every(schema => schema.valid)
 
     if (alltrue) {
       return true
@@ -118,10 +125,8 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
     if (isValid()) {
-      //const setBucketDispatch =
-
       let mSchemas = null
-      if(newMeasurementSchemaRequests){
+      if (newMeasurementSchemaRequests) {
         mSchemas = newMeasurementSchemaRequests.map(item => ({
           columns: item.columns,
           name: item.name,
@@ -130,9 +135,6 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
 
       reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket, mSchemas))
       onClose()
-
-    } else {
-      console.log("not valid :( sad face :(")
     }
   }
 
@@ -151,8 +153,8 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   }
 
   const handleNewMeasurementSchemas = (
-      schemas: typeof MeasurementSchemaCreateRequest[],
-      resetValidation?: boolean
+    schemas: typeof MeasurementSchemaCreateRequest[],
+    resetValidation?: boolean
   ): void => {
     setNewMeasurementSchemaRequests(schemas)
 

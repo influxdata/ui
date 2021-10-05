@@ -69,25 +69,18 @@ interface State {
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
-  constructor(props) {
-    super(props)
-
-    this.onChangeSchemaTypeInternal = this.onChangeSchemaTypeInternal.bind(this)
-    this.onUpdateSchemasInternal = this.onUpdateSchemasInternal.bind(this)
-  }
-
   public state: State = {
     showAdvanced: false,
     schemaType: 'implicit',
     newMeasurementSchemas: [],
   }
 
-  onChangeSchemaTypeInternal = function(newSchemaType: typeof SchemaType) {
+  onChangeSchemaTypeInternal = (newSchemaType: typeof SchemaType) => {
     this.setState({schemaType: newSchemaType})
     this.props.onChangeSchemaType(newSchemaType)
   }
 
-  onUpdateSchemasInternal = function(schemas, resetValidation) {
+  onUpdateSchemasInternal = (schemas, resetValidation) => {
     this.props.onUpdateNewMeasurementSchemas(schemas, resetValidation)
     this.setState({newMeasurementSchemas: schemas})
   }
@@ -106,8 +99,9 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       onChangeRetentionRule,
       onClickRename,
       testID = 'bucket-form',
-      schemaType:readOnlySchemaType,
+      schemaType: readOnlySchemaType,
       measurementSchemaList,
+      showSchemaValidation,
     } = this.props
 
     const {showAdvanced, schemaType} = this.state
@@ -119,33 +113,40 @@ export default class BucketOverlayForm extends PureComponent<Props> {
         measurementSchemaList={measurementSchemaList}
         key="measurementSchemaSection"
         onUpdateSchemas={this.onUpdateSchemasInternal}
-        showSchemaValidation={this.props.showSchemaValidation}
+        showSchemaValidation={showSchemaValidation}
       />
     )
 
-    const showMeasurementSchemaSection = (isEditing && readOnlySchemaType === 'explicit') || schemaType === 'explicit'
+    const showMeasurementSchemaSection =
+      (isEditing && readOnlySchemaType === 'explicit') ||
+      schemaType === 'explicit'
 
-    const measurementSchemaSection =
-      showMeasurementSchemaSection ? measurementSchemaComponent : null
+    const measurementSchemaSection = showMeasurementSchemaSection
+      ? measurementSchemaComponent
+      : null
 
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
         //let contents = null
-        let schemaToggle = <SchemaToggle onChangeSchemaType={this.onChangeSchemaTypeInternal} />
+        let schemaToggle = (
+          <SchemaToggle onChangeSchemaType={this.onChangeSchemaTypeInternal} />
+        )
 
         if (isEditing) {
-          schemaToggle = <SchemaToggle
+          schemaToggle = (
+            <SchemaToggle
               key="schemaToggleSection"
               readOnlySchemaType={readOnlySchemaType}
-          />
+            />
+          )
         }
 
-          const contents = (
-            <>
-              {schemaToggle}
-              {measurementSchemaSection}
-            </>
-          )
+        const contents = (
+          <>
+            {schemaToggle}
+            {measurementSchemaSection}
+          </>
+        )
 
         return (
           <Accordion expanded={showAdvanced} testID="schemaBucketToggle">

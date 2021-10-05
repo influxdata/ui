@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useContext, useRef} from 'react'
+import React, {FC, useEffect, useContext, useRef, useState} from 'react'
 import {
   Button,
   ComponentColor,
@@ -8,6 +8,7 @@ import {
   DropdownItem,
 } from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -15,6 +16,9 @@ import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 import './Sidebar.scss'
 import {event} from 'src/cloud/utils/reporting'
+import {downloadImage} from 'src/flows/shared/utils'
+import html2canvas from 'html2canvas'
+const DownloadAsPDF = React.lazy(() => import('src/flows/shared/DownloadAs'))
 
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -116,6 +120,8 @@ const Sidebar: FC = () => {
   const {flow, updateMeta, add, remove} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
+  const [showDownload, setShowDownload] = useState(false)
+  const {id: pipeID} = useContext(PipeContext)
 
   const sections = ([
     {
@@ -163,6 +169,55 @@ const Sidebar: FC = () => {
               visible: !flow.meta.byID[id].visible,
             })
           },
+        },
+        {
+          title: 'Download As Image',
+          disable: () => {
+            if (!flow.data.allIDs.includes(id)) {
+              return true
+            }
+
+            const {type} = flow.data.byID[id]
+
+            if (
+              !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family) &&
+              type !== 'visualization'
+            ) {
+              return true
+            }
+
+            return false
+          },
+          action: () => {
+            const canvas = document.getElementsByClassName(
+              'flow-panel__focus'
+            )[0]
+            setTimeout(() => {
+              html2canvas(canvas as HTMLDivElement).then(result => {
+                downloadImage(result.toDataURL(), 'visualization.png')
+              })
+            }, 0)
+          },
+        },
+        {
+          title: 'Download As PDF',
+          disable: () => {
+            if (!flow.data.allIDs.includes(id)) {
+              return true
+            }
+
+            const {type} = flow.data.byID[id]
+
+            if (
+              !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family) &&
+              type !== 'visualization'
+            ) {
+              return true
+            }
+
+            return false
+          },
+          action: () => setShowDownload(true),
         },
         {
           title: 'Convert to |> Flux',
@@ -262,7 +317,9 @@ const Sidebar: FC = () => {
                 event('Notebook Nav: Called Action', {menu: title})
                 // eslint-disable-next-line no-extra-semi
                 ;(action as ControlAction).action()
-                hide()
+                if (action.title !== 'Download As PDF') {
+                  hide()
+                }
               }}
               wrapText={false}
               title={title}
@@ -285,6 +342,7 @@ const Sidebar: FC = () => {
       className="flow-sidebar--dropdownmenu"
       style={{width: '200px'}}
     >
+      {showDownload && <DownloadAsPDF pipeID={pipeID} />}
       {sections}
     </DropdownMenu>
   )

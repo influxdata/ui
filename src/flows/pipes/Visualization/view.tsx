@@ -107,7 +107,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   if (!dataExists) {
     return (
       <Context controls={<Controls />}>
-        <div className="panel-resizer panel-resizer__visible">
+        <div className="panel-resizer panel-resizer__visible" id={id}>
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
               glyph={IconFont.BarChart}
@@ -124,7 +124,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   return (
     <Context controls={<Controls />} resizes>
-      <div className="flow-visualization">
+      <div className="flow-visualization" id={id}>
         <div className="flow-visualization--view">
           <View
             loading={loading}

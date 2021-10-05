@@ -196,8 +196,7 @@ export const formatPermissionsObj = permissions => {
         accordionPermission.sublevelPermissions
       ).every(
         key =>
-          accordionPermission.sublevelPermissions[key].permissions.read ===
-          true
+          accordionPermission.sublevelPermissions[key].permissions.read === true
       )
 
       accordionPermission.write = Object.keys(

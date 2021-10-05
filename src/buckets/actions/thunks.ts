@@ -150,7 +150,7 @@ export const createBucketAndUpdate = (
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
 
-    if (resp.data.schemaType === 'explicit') {
+    if (resp.data.schemaType === 'explicit' && schemas && schemas.length) {
       // in case they choose explicit, add schemas, then change their mind back and
       // change it to implicit
 
@@ -166,7 +166,9 @@ export const createBucketAndUpdate = (
         )
       })
     } else {
-      console.log(' implicit, not adding any schemas....')
+      console.log(
+        ' implicit (or no schemas present), not adding any schemas....'
+      )
     }
 
     // think....only call update after measurement schemas added (if there are schemas to add???)

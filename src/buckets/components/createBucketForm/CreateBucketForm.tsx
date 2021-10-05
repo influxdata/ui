@@ -19,6 +19,7 @@ import {
   DEFAULT_RULES,
 } from 'src/buckets/reducers/createBucket'
 import {AppState, Bucket, RetentionRule} from 'src/types'
+import {event as influxEvent} from '../../../cloud/utils/reporting'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -116,12 +117,18 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
     if (isValid()) {
-      let mSchemas = null
+      let mSchemas = []
       if (newMeasurementSchemaRequests) {
         mSchemas = newMeasurementSchemaRequests.map(item => ({
           columns: item.columns,
           name: item.name,
         }))
+      }
+
+      influxEvent('bucket.creation')
+
+      for (let i = 0; i < mSchemas.length; i++) {
+        influxEvent('bucket.schema.explicit.creation.uploadSchema')
       }
 
       reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket, mSchemas))

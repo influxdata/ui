@@ -4738,6 +4738,11 @@ findup-sync@3.0.0:
     micromatch "^3.0.4"
     resolve-dir "^1.0.1"
 
+fix-date@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/fix-date/-/fix-date-1.1.6.tgz#3c89ef9ee49a70834901ab5fc871ac55aff36c48"
+  integrity sha1-PInvnuSacINJAatfyHGsVa/zbEg=
+
 flat-cache@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-2.0.1.tgz#5d296d6f04bda44a4630a301413bdbc2ec085ec0"

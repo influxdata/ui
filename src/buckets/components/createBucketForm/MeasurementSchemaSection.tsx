@@ -48,6 +48,7 @@ interface Props {
 interface PanelProps {
   measurementSchema: typeof MeasurementSchema
   index?: number
+  onAddUpdate: (columns: string, filename: string, index: number) => void
 }
 interface AddingProps {
   index: number
@@ -58,6 +59,26 @@ interface AddingProps {
   name?: string
   showSchemaValidation?: boolean
 }
+
+const getColumnsFromFile = (contents: string) => {
+  // do parsing here;  to check in the correct format:
+  let columns = null
+  if (contents) {
+    // parse them; if kosher; great!  if not, set errors and do not proceed
+    // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
+    columns = JSON.parse(contents)
+
+    if (!areColumnsProper(columns)) {
+      // set errors
+      throw {message: 'column file is not formatted correctly'}
+    }
+  }
+  return columns
+}
+
+// the first is for dnd; the second is for the file input
+const allowedTypes = ['application/json']
+const allowedExtensions = '.json'
 
 const AddingPanel: FC<AddingProps> = ({
   index,
@@ -102,19 +123,7 @@ const AddingPanel: FC<AddingProps> = ({
   const handleUploadFile = (contents: string, fileName: string) => {
     // keep swapping out the file, cancel out of the dialog, x out the adding line....etc
 
-    // do parsing here;  to check in the correct format:
-    let columns = null
-    if (contents) {
-      // parse them; if kosher; great!  if not, set errors and do not proceed
-      // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
-      columns = JSON.parse(contents)
-
-      if (!areColumnsProper(columns)) {
-        // set errors
-        throw {message: 'column file is not formatted correctly'}
-      }
-    }
-
+    const columns = getColumnsFromFile(contents)
     onAddContents(columns, fileName, index)
   }
 
@@ -171,9 +180,6 @@ const AddingPanel: FC<AddingProps> = ({
       </span>
     )
   }
-  // the first is for dnd; the second is for the file input
-  const allowedTypes = ['application/json']
-  const allowedExtensions = '.json'
 
   const newDndElement = (
     <MiniFileDnd
@@ -218,12 +224,26 @@ const AddingPanel: FC<AddingProps> = ({
   )
 }
 
-const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
+const EditingPanel: FC<PanelProps> = ({
+  index,
+  measurementSchema,
+  onAddUpdate,
+}) => {
   const handleDownloadSchema = () => {
-    const {name} = measurementSchema
+    const {name, id} = measurementSchema
     const contents = JSON.stringify(measurementSchema.columns)
     event('bucket.download.schema.explicit')
     downloadTextFile(contents, name || 'schema', '.json')
+  }
+
+  const handleUploadFile = (contents: string, fileName: string) => {
+    const columns = getColumnsFromFile(contents)
+
+    onAddUpdate(columns, fileName, index)
+  }
+
+  const setErrorState = (hasError, message) => {
+    console.log(`in setErrorState... ${hasError}, ${message}`)
   }
 
   return (
@@ -245,6 +265,14 @@ const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
             text="Download Schema"
             onClick={handleDownloadSchema}
           />
+          <MiniFileDnd
+            key={`update-mini-dnd-${index}`}
+            allowedExtensions={allowedExtensions}
+            allowedTypes={allowedTypes}
+            handleFileUpload={handleUploadFile}
+            setErrorState={setErrorState}
+            defaultText={'Update schema file'}
+          />
         </FlexBox>
       </FlexBox>
     </Panel>
@@ -257,6 +285,18 @@ export const MeasurementSchemaSection: FC<Props> = ({
   showSchemaValidation,
 }) => {
   const [newSchemas, setNewSchemas] = useState([])
+  const [schemaUpdates, setSchemaUpdates] = useState({})
+
+  const onAddUpdate = (columns, fileName, index) => {
+    console.log('in onaddupdate', columns)
+
+    let entry = schemaUpdates[index] || {}
+    entry.columns = columns
+    entry.fileName = fileName
+
+    schemaUpdates[index] = entry
+    setSchemaUpdates(schemaUpdates)
+  }
 
   // this is the documentation link for explicit schemas for buckets
   const link =
@@ -270,6 +310,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
         key={`mss-ep-${index}`}
         measurementSchema={oneSchema}
         index={index}
+        onAddUpdate={onAddUpdate}
       />
     ))
   }

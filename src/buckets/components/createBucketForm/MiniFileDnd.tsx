@@ -8,6 +8,7 @@ interface Props {
   handleFileUpload: (contents: string, fileName: string) => void
   setErrorState: (hasError: boolean, message?: string) => void
   alreadySetFileName?: string
+  defaultText?: string
 }
 
 export const setGrammar = (fileTypes: string[]) => {
@@ -67,6 +68,7 @@ export const MiniFileDnd: FC<Props> = ({
   handleFileUpload,
   setErrorState,
   alreadySetFileName,
+  defaultText,
 }) => {
   const [fileName, setFileName] = useState(alreadySetFileName)
   const [dropAreaActive, setDropAreaActive] = useState(false)
@@ -162,7 +164,9 @@ export const MiniFileDnd: FC<Props> = ({
     inputEl.current.click()
   }
 
-  const displayText = fileName ?? 'Add schema file'
+  const textWithNoFile = defaultText ?? 'Add schema file'
+
+  const displayText = fileName ?? textWithNoFile
 
   const dropZoneClasses = classnames('dnd', {
     active: dropAreaActive,

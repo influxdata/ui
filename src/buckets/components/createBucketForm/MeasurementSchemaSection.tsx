@@ -231,8 +231,11 @@ const EditingPanel: FC<PanelProps> = ({
   onAddUpdate,
   showSchemaValidation,
 }) => {
+  const [fileErrorMessage, setFileErrorMessage] = useState(null)
+  const [fileError, setFileError] = useState(hasFileError)
+
   const handleDownloadSchema = () => {
-    const {name, id} = measurementSchema
+    const {name} = measurementSchema
     const contents = JSON.stringify(measurementSchema.columns)
     event('bucket.download.schema.explicit')
     downloadTextFile(contents, name || 'schema', '.json')
@@ -240,13 +243,26 @@ const EditingPanel: FC<PanelProps> = ({
 
   const handleUploadFile = (contents: string, fileName: string) => {
     const columns = getColumnsFromFile(contents)
-
     onAddUpdate(columns, fileName, index)
   }
 
   const setErrorState = (hasError, message) => {
     console.log(`in setErrorState... ${hasError}, ${message}`)
+    setFileError(hasError)
+
+    if (!hasError) {
+      message = null
+    }
+
+    setFileErrorMessage(message)
   }
+
+  const errorElement = fileError ? (
+    <FormElementError
+      style={{wordBreak: 'break-word'}}
+      message={fileErrorMessage}
+    />
+  ) : null
 
   return (
     <Panel className="measurement-schema-panel-container">
@@ -277,6 +293,7 @@ const EditingPanel: FC<PanelProps> = ({
             defaultText={'Update schema file'}
           />
         </FlexBox>
+        {errorElement}
       </FlexBox>
     </Panel>
   )

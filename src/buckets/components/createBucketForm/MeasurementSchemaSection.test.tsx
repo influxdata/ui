@@ -3,6 +3,7 @@ import {
   START_ERROR,
   isNameValid,
   TOO_LONG_ERROR,
+  areNewSchemasValid,
 } from './MeasurementSchemaUtils'
 
 const oneColumns = [
@@ -55,6 +56,24 @@ const columns3 = [
   {name: 'fsWrite', type: 'field', dataType: 'float'},
   {name: 'timeSignature', type: 'tag'},
 ]
+
+const schemaRequestList1 = [
+  {valid: true},
+  {valid: true},
+  {valid: false},
+  {valid: true},
+]
+
+const schemaRequestList2 = [
+  {valid: true},
+  {valid: true},
+  {valid: true},
+  {valid: true},
+]
+
+const schemaRequestList3 = [{valid: true}]
+
+const schemaRequestList4 = [{valid: false}]
 
 describe('test data validity function', () => {
   const doTest = (data, expected) => {
@@ -112,5 +131,30 @@ describe('test name validity function', () => {
     const testMe =
       'supercalifgragahatahaeuhtsueasupercalifgragahatahaeuhtsueatuaetsnheuahtnsaeuhtnseuahtnseuahtnseuhtneuahtneuhtnseuhtnseuhtnseuhtnseuhnst'
     doTest(testMe, false, TOO_LONG_ERROR)
+  })
+})
+
+describe('test schema validity function', () => {
+  const doTest = (data, expected) => {
+    const actual = areNewSchemasValid(data)
+    expect(actual).toBe(expected)
+  }
+  it('should be invalid (false); array contains a false', () => {
+    doTest(schemaRequestList1, false)
+  })
+  it('should be valid (true), array is all true', () => {
+    doTest(schemaRequestList2, true)
+  })
+  it('should be valid (true), array of one true item', () => {
+    doTest(schemaRequestList3, true)
+  })
+  it('should be invalid (false), array of one false item', () => {
+    doTest(schemaRequestList4, false)
+  })
+  it('should be valid, it is empty', () => {
+    doTest([], true)
+  })
+  it('should be valid, it is null', () => {
+    doTest(null, true)
   })
 })

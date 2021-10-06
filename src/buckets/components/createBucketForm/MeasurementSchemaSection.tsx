@@ -40,12 +40,10 @@ if (CLOUD) {
     .MeasurementSchemaList
 }
 
-// note:  once you can add schemas in the create mode,
-// make the second arg required
 interface Props {
   measurementSchemaList?: typeof MeasurementSchemaList
-  onUpdateSchemas?: (schemas: any, b?: boolean) => void
-  showSchemaValidation?: boolean
+  onUpdateSchemas: (schemas: any, b?: boolean) => void
+  showSchemaValidation: boolean
 }
 interface PanelProps {
   measurementSchema: typeof MeasurementSchema
@@ -264,7 +262,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const link =
     'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
 
-  const schemas = measurementSchemaList.measurementSchemas
+  const schemas = measurementSchemaList?.measurementSchemas
   let readPanels = null
   if (schemas) {
     readPanels = schemas.map((oneSchema, index) => (

@@ -125,7 +125,8 @@ export const createBucket = (bucket: OwnBucket) => async (
 
 export const createBucketAndUpdate = (
   bucket: OwnBucket,
-  update: (bucket: Bucket) => void
+  update: (bucket: Bucket) => void,
+  schemas: typeof MeasurementSchemaCreateRequest[]
 ) => async (
   dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
   getState: GetState
@@ -144,8 +145,22 @@ export const createBucketAndUpdate = (
       bucketSchema
     )
 
+    // just created the bucket, now add any schemas that might be there:
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
+
+    if (schemas && schemas.length) {
+      schemas.forEach(mschemaCreateRequest => {
+        addMeasurementSchemaToBucketInternal(
+          resp.data.id,
+          mschemaCreateRequest,
+          org.id,
+          resp.data.name,
+          dispatch
+        )
+      })
+    }
+
     update(newBucket.entities.buckets[resp.data.id])
   } catch (error) {
     console.error(error)
@@ -313,12 +328,13 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
   }
 }
 
-export const addSchemaToBucket = (
+async function addMeasurementSchemaToBucketInternal(
   bucketID: string,
+  schema: typeof MeasurementSchemaCreateRequest,
   orgID: string,
   bucketName: string,
-  schema: typeof MeasurementSchemaCreateRequest
-) => async (dispatch: Dispatch<Action>) => {
+  dispatch: Dispatch<Action>
+) {
   const params = {
     bucketID,
     data: schema,
@@ -342,6 +358,21 @@ export const addSchemaToBucket = (
       notify(measurementSchemaAdditionFailed(bucketName, schema.name, message))
     )
   }
+}
+
+export const addSchemaToBucket = (
+  bucketID: string,
+  orgID: string,
+  bucketName: string,
+  schema: typeof MeasurementSchemaCreateRequest
+) => (dispatch: Dispatch<Action>) => {
+  addMeasurementSchemaToBucketInternal(
+    bucketID,
+    schema,
+    orgID,
+    bucketName,
+    dispatch
+  )
 }
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {

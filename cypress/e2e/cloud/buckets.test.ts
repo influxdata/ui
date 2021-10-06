@@ -26,13 +26,18 @@ describe('Explicit Buckets', () => {
       cy.getByInputName('name').type('explicit-bucket-test')
 
       cy.getByTestID('schemaBucketToggle').click()
+
+      // measurement schema section should NOT be showing at this time
+      // (b/c in 'implicit' mode by default)
+      cy.getByTestID('measurement-schema-section-parent').should('not.exist')
+
       const explicitBtn = cy.getByTestID('explicit-bucket-schema-choice-ID')
       explicitBtn.should('be.visible')
       explicitBtn.click()
 
-      // measurement schema section should NOT be showing at this time
-      // (b/c capability to add new measurement schemas at creation not added yet)
-      cy.getByTestID('measurement-schema-section-parent').should('not.exist')
+      // measurement schema section should BE showing at this time
+      // (b/c just changed mode to explicit)
+      cy.getByTestID('measurement-schema-section-parent').should('exist')
 
       cy.getByTestID('bucket-form-submit').click()
     })

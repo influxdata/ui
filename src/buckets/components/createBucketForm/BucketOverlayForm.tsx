@@ -99,12 +99,12 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       onChangeRetentionRule,
       onClickRename,
       testID = 'bucket-form',
-      schemaType,
+      schemaType: readOnlySchemaType,
       measurementSchemaList,
       showSchemaValidation,
     } = this.props
 
-    const {showAdvanced} = this.state
+    const {showAdvanced, schemaType} = this.state
 
     const nameInputStatus = isEditing && ComponentStatus.Disabled
 
@@ -117,29 +117,35 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       />
     )
 
-    const measurementSchemaSection =
-      schemaType === 'explicit' ? measurementSchemaComponent : null
+    const showMeasurementSchemaSection =
+      (isEditing && readOnlySchemaType === 'explicit') ||
+      schemaType === 'explicit'
+
+    const measurementSchemaSection = showMeasurementSchemaSection
+      ? measurementSchemaComponent
+      : null
 
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
-        let contents = null
+        let schemaToggle = (
+          <SchemaToggle onChangeSchemaType={this.onChangeSchemaTypeInternal} />
+        )
+
         if (isEditing) {
-          contents = (
-            <>
-              <SchemaToggle
-                key="schemaToggleSection"
-                readOnlySchemaType={schemaType}
-              />
-              {measurementSchemaSection}
-            </>
-          )
-        } else {
-          contents = (
+          schemaToggle = (
             <SchemaToggle
-              onChangeSchemaType={this.onChangeSchemaTypeInternal}
+              key="schemaToggleSection"
+              readOnlySchemaType={readOnlySchemaType}
             />
           )
         }
+
+        const contents = (
+          <>
+            {schemaToggle}
+            {measurementSchemaSection}
+          </>
+        )
 
         return (
           <Accordion expanded={showAdvanced} testID="schemaBucketToggle">

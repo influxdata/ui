@@ -163,7 +163,7 @@ describe('visualizations', () => {
 
           // view raw data table
           cy.getByTestID('raw-data--toggle').click()
-          cy.getByTestID('raw-data-table').should('exist')
+          cy.getByTestID('simple-table').should('exist')
           cy.getByTestID('raw-data--toggle').click()
           cy.getByTestID('giraffe-axes').should('exist')
         }

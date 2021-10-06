@@ -110,9 +110,9 @@ class TasksPage extends PureComponent<Props, State> {
     let searchTerm: string = ''
     if (params.get('searchTerm') !== null) {
       searchTerm = params.get('searchTerm')
+      this.props.setSearchTerm(searchTerm)
     }
 
-    this.props.setSearchTerm(searchTerm)
     this.setState({sortKey, sortDirection, sortType})
   }
 

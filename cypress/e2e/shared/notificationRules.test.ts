@@ -4,7 +4,8 @@ import {
   GenEndpoint,
   GenRule,
   GenCheck,
-  NotificationEndpoint, NotificationRule,
+  NotificationEndpoint,
+  NotificationRule,
 } from '../../../src/types'
 import {Bucket} from '../../../src/client'
 import {calcNanoTimestamp} from '../../support/Utils'
@@ -18,7 +19,7 @@ describe('NotificationRules', () => {
   beforeEach(() => {
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           // create the notification endpoints
           cy.fixture('endpoints').then(({slack}) => {
             cy.createEndpoint({...slack, name: name1, orgID: id})
@@ -45,7 +46,7 @@ describe('NotificationRules', () => {
       const nonexistentID = '04984be058066088'
 
       // visitng the rules edit overlay
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, rules}) => {
           cy.visit(`${orgs}/${id}${alerting}${rules}/${nonexistentID}/edit`)
           cy.url().should('include', `${orgs}/${id}${alerting}`)
@@ -302,20 +303,22 @@ describe('NotificationRules', () => {
     cy.getByTestID('rule-card--name').should('have.length', 0)
   })
 
-  describe.only('notification history', () => {
-    const endp: GenEndpoint= {
+  // TODO add click through to history page after #2592 is fixed
+  //   - currently all history tests start with direct route to page
+  describe('notification history', () => {
+    const endp: GenEndpoint = {
       orgID: '',
       name: 'Test HTTP Endpoint',
       userID: '',
       description: 'A Dummy Endpoint in AWS Land',
       status: 'active',
       type: 'http',
-      url: 'http://13.57.248.121:3000',
+      url: 'http://endpoint.devnull.io:3000',
       authMethod: 'none',
       method: 'POST',
     }
 
-    const rule: GenRule & { activeStatus: string } = {
+    const rule: GenRule & {activeStatus: string} = {
       type: 'http',
       every: '1m',
       offset: '0m',
@@ -324,17 +327,15 @@ describe('NotificationRules', () => {
       name: 'Test Rule',
       activeStatus: 'active',
       status: 'active',
-      endpointID: "",
+      endpointID: '',
       tagRules: [],
       labels: [],
-      statusRules: [
-        {currentLevel: 'CRIT', period: '1h', count: 1},
-      ],
+      statusRules: [{currentLevel: 'CRIT', period: '1h', count: 1}],
       description: '',
     }
 
     const check: GenCheck = {
-      type: "deadman",
+      type: 'deadman',
       name: 'Ghost Check',
       status: 'active',
       orgID: '',
@@ -345,13 +346,17 @@ describe('NotificationRules', () => {
         builderConfig: {
           buckets: [],
           tags: [
-            {key: '_measurement', values: ['wumpus'], aggregateFunctionType: 'filter'},
+            {
+              key: '_measurement',
+              values: ['wumpus'],
+              aggregateFunctionType: 'filter',
+            },
             {key: '_field', values: ['mag'], aggregateFunctionType: 'filter'},
-            {key: 'foo', values: [], aggregateFunctionType: 'filter'}
+            {key: 'foo', values: [], aggregateFunctionType: 'filter'},
           ],
-          functions: []
+          functions: [],
         },
-//        hidden: false
+        //        hidden: false
       },
       labels: [],
       every: '1m',
@@ -361,7 +366,7 @@ describe('NotificationRules', () => {
       staleTime: '10m',
       statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }',
       tags: [],
-      timeSince: '90s'
+      timeSince: '90s',
     }
 
     interface MonitoringRec {
@@ -371,22 +376,32 @@ describe('NotificationRules', () => {
       level: string
       source: string
       sent: string
-      valField: {key: string, val: string}
+      valField: {key: string; val: string}
       sourceTimestamp: number
       statusTimestamp: number
       message: string
     }
 
     const writeMonitoringRecord = (rec: MonitoringRec, offset: string) => {
-      const lp = `notifications,_level=${rec.level},_notification_endpoint_id=${rec.endp.id},` +
-        `_notification_endpoint_name=${rec.endp.name.replace(/ /g, "\\ ")},_notification_rule_id=${rec.rule.id},` +
-        `_notification_rule_name=${rec.rule.name.replace(/ /g, "\\ ")},` +
-        `_check_id=${rec.check.id},_check_name=${rec.check.name.replace(/ /g, "\\ ")},` +
-        `_sent=${rec.sent},_source_measurement=${rec.source},_type=deadman,${rec.valField.key}=${rec.valField.val.replace(/ /g, "\\ ")} ` + // end tags start fields
-        `_source_timestamp=${rec.sourceTimestamp},_status_timestamp=${rec.statusTimestamp},_message="${rec.message.replace(/ /g, "\ ")}",dead="true"`
+      const lp =
+        `notifications,_level=${rec.level},_notification_endpoint_id=${rec.endp.id},` +
+        `_notification_endpoint_name=${rec.endp.name.replace(
+          / /g,
+          '\\ '
+        )},_notification_rule_id=${rec.rule.id},` +
+        `_notification_rule_name=${rec.rule.name.replace(/ /g, '\\ ')},` +
+        `_check_id=${rec.check.id},_check_name=${rec.check.name.replace(
+          / /g,
+          '\\ '
+        )},` +
+        `_sent=${rec.sent},_source_measurement=${rec.source},_type=deadman,${
+          rec.valField.key
+        }=${rec.valField.val.replace(/ /g, '\\ ')} ` + // end tags start fields
+        `_source_timestamp=${rec.sourceTimestamp},_status_timestamp=${
+          rec.statusTimestamp
+        },_message="${rec.message.replace(/ /g, ' ')}",dead="true"`
 
       cy.writeLPData({lines: [lp], offset: offset, namedBucket: '_monitoring'})
-
     }
 
     beforeEach('Generate alert records', () => {
@@ -394,11 +409,9 @@ describe('NotificationRules', () => {
         filename: 'data/wumpus01.lp',
         offset: '20m',
         stagger: '1m',
-      }).then(r => {
-        cy.log(`TSHOOT write data from file result ${JSON.stringify(r)}`)
       })
 
-      cy.get<Organization>('@org').then( (org: Organization) => {
+      cy.get<Organization>('@org').then((org: Organization) => {
         cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
           // get default org and bucket
           // 2. create check
@@ -411,8 +424,8 @@ describe('NotificationRules', () => {
               text: queryText,
               builderConfig: {
                 ...check.query.builderConfig,
-                buckets: [bucket.id]
-              }
+                buckets: [bucket.id],
+              },
             },
           }).then(resp => {
             cy.wrap(resp.body).as('check')
@@ -420,36 +433,27 @@ describe('NotificationRules', () => {
 
           cy.createEndpoint({
             ...(endp as NotificationEndpoint),
-            orgID: org.id
+            orgID: org.id,
           }).then(resp => {
             cy.wrap(resp.body).as('endp')
           })
 
-          cy.get<NotificationEndpoint>('@endp').then( endp => {
+          cy.get<NotificationEndpoint>('@endp').then(endp => {
             cy.createRule({
               ...(rule as NotificationRule),
               orgID: org.id,
-              endpointID: endp.id
-            }).then( resp => {
+              endpointID: endp.id,
+            }).then(resp => {
               cy.wrap(resp.body).as('rule')
             })
-
           })
         })
       })
       cy.get<GenCheck>('@check').then(check => {
-        cy.get<NotificationEndpoint>('@endp').then( endp => {
-          cy.get<GenRule>('@rule').then( rule => {
-
-            // const now = new Date().getTime();
-
-            // cy.log(`DEBUG now ${now}`)
-            // const sourceTS1 = now - (1000 * 60 * 10)
-            // cy.log(`DEBUG sourceTS1 ${new Date(sourceTS1)}`)
-            // const tsResult = calcNanoTimestamp('10m')
-            // cy.log(`DEBUG tsResult ${tsResult}`)
-
-            writeMonitoringRecord( {
+        cy.get<NotificationEndpoint>('@endp').then(endp => {
+          cy.get<GenRule>('@rule').then(rule => {
+            writeMonitoringRecord(
+              {
                 check: check,
                 endp: endp,
                 rule: rule,
@@ -459,11 +463,13 @@ describe('NotificationRules', () => {
                 valField: {key: 'foo', val: 'bar'},
                 sourceTimestamp: calcNanoTimestamp('17m'),
                 statusTimestamp: calcNanoTimestamp('16m'),
-                message: 'This is a fake critical message'},
+                message: 'This is a fake critical message',
+              },
               '15m'
             )
 
-            writeMonitoringRecord( {
+            writeMonitoringRecord(
+              {
                 check: check,
                 endp: endp,
                 rule: rule,
@@ -473,10 +479,12 @@ describe('NotificationRules', () => {
                 valField: {key: 'foo', val: 'bar'},
                 sourceTimestamp: calcNanoTimestamp('12m'),
                 statusTimestamp: calcNanoTimestamp('11m'),
-                message: 'This is a fake info message'},
+                message: 'This is a fake info message',
+              },
               '10m'
             )
-            writeMonitoringRecord( {
+            writeMonitoringRecord(
+              {
                 check: check,
                 endp: endp,
                 rule: rule,
@@ -486,10 +494,12 @@ describe('NotificationRules', () => {
                 valField: {key: 'foo', val: 'bar'},
                 sourceTimestamp: calcNanoTimestamp('22m'),
                 statusTimestamp: calcNanoTimestamp('21m'),
-                message: 'This is a fake warning message'},
+                message: 'This is a fake warning message',
+              },
               '20m'
             )
-            writeMonitoringRecord( {
+            writeMonitoringRecord(
+              {
                 check: check,
                 endp: endp,
                 rule: rule,
@@ -499,40 +509,54 @@ describe('NotificationRules', () => {
                 valField: {key: 'foo', val: 'bar'},
                 sourceTimestamp: calcNanoTimestamp('7m'),
                 statusTimestamp: calcNanoTimestamp('6m'),
-                message: 'This is a fake OK message'},
+                message: 'This is a fake OK message',
+              },
               '5m'
             )
+          })
+        })
+      })
+
+      // use direct route to page
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.get<NotificationRule>('@rule').then(rule => {
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(
+              `${orgs}/${id}/alert-history?type=notifications&filter="notificationRuleID%20%3D%3D%20%22${rule.id}"`
+            )
+            cy.url().should('include', `${orgs}/${id}/alert-history`)
           })
         })
       })
     })
 
     it('shows and filters history', () => {
-      cy.log('shows history')
-      cy.getByTestID('alerting-tab--rules').click()
-      cy.getByTestID(`rule-card ${rule.name}`).within(card => {
-        card.trigger('mouseover')
-        cy.getByTestID('context-history-menu').click()
-        cy.getByTestID('context-history-task').click()
-      })
       cy.get('.event-row').should('have.length', 4)
       cy.get('.event-row--field:nth-of-type(1)').then(timestamps => {
-        const stamps = timestamps.toArray().map((n) => new Date(n.innerText).getTime())
-        cy.log(`DEBUG stamps length ${stamps.length} content ${stamps} tupeof ${typeof stamps[0]}`)
-        cy.log(`DEBUG timestamps ${timestamps.text()} typeof ${typeof timestamps.text()}`)
+        const stamps = timestamps
+          .toArray()
+          .map(n => new Date(n.innerText).getTime())
         // assert sort desc by date
-        for(let i = 1; i < stamps.length; i++){
-          cy.log(stamps[i-1] + ' ' + stamps[i])
-          expect(stamps[i-1]).to.be.above(stamps[i])
+        for (let i = 1; i < stamps.length; i++) {
+          expect(stamps[i - 1]).to.be.above(stamps[i])
         }
       })
       // verify first row
       cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
-         cy.get('.level-table-field--ok').should('be.visible')
-         cy.get('.sent-table-field--sent').should('be.visible')
-         cy.get('.event-row--field:nth-of-type(3)').should('have.text', check.name)
-         cy.get('.event-row--field:nth-of-type(4)').should('have.text', rule.name)
-         cy.get('.event-row--field:nth-of-type(5)').should('have.text', endp.name)
+        cy.get('.level-table-field--ok').should('be.visible')
+        cy.get('.sent-table-field--sent').should('be.visible')
+        cy.get('.event-row--field:nth-of-type(3)').should(
+          'have.text',
+          check.name
+        )
+        cy.get('.event-row--field:nth-of-type(4)').should(
+          'have.text',
+          rule.name
+        )
+        cy.get('.event-row--field:nth-of-type(5)').should(
+          'have.text',
+          endp.name
+        )
       })
       // verify second row
       cy.get('[class$=ScrollContainer] > div:nth-of-type(2)').within(() => {
@@ -551,8 +575,9 @@ describe('NotificationRules', () => {
       // check links...
       //    ...To Check
       cy.getByTestID('overlay').should('not.exist')
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(3) > a')
-        .click()
+      cy.get(
+        '[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(3) > a'
+      ).click()
       cy.getByTestID('overlay')
         .should('be.visible')
         .within(() => {
@@ -563,37 +588,57 @@ describe('NotificationRules', () => {
       cy.go('back')
       //    ...To Rule
       cy.getByTestID('overlay').should('not.exist')
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(4) > a')
-        .click()
+      cy.get(
+        '[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(4) > a'
+      ).click()
       cy.getByTestID('overlay')
         .should('be.visible')
         .within(() => {
-            cy.getByTestID('rule-name--input').should('have.value', rule.name)
-            cy.getByTestID('levels--dropdown--button currentLevel')
-              .should('have.text', rule.statusRules[0].currentLevel)
-            cy.getByTestID('endpoint--dropdown--button').should('have.text', endp.name)
+          cy.getByTestID('rule-name--input').should('have.value', rule.name)
+          cy.getByTestID('levels--dropdown--button currentLevel').should(
+            'have.text',
+            rule.statusRules[0].currentLevel
+          )
+          cy.getByTestID('endpoint--dropdown--button').should(
+            'have.text',
+            endp.name
+          )
         })
       cy.go('back')
       //    ...To Endpoint
       cy.getByTestID('overlay').should('not.exist')
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(3) .event-row--field:nth-of-type(5) > a')
-        .click()
+      cy.get(
+        '[class$=ScrollContainer] > div:nth-of-type(3) .event-row--field:nth-of-type(5) > a'
+      ).click()
       cy.getByTestID('overlay')
         .should('be.visible')
         .within(() => {
-          cy.getByTestID('endpoint--dropdown--button').should('have.text', 'HTTP')
+          cy.getByTestID('endpoint--dropdown--button').should(
+            'have.text',
+            'HTTP'
+          )
           cy.getByTestID('endpoint-name--input').should('have.value', endp.name)
-          cy.getByTestID('endpoint-description--textarea').should('have.value', endp.description)
-          cy.getByTestID('http-method--dropdown--button').should('have.text', 'POST')
-          cy.getByTestID('http-authMethod--dropdown--button').should('have.text', 'none')
+          cy.getByTestID('endpoint-description--textarea').should(
+            'have.value',
+            endp.description
+          )
+          cy.getByTestID('http-method--dropdown--button').should(
+            'have.text',
+            'POST'
+          )
+          cy.getByTestID('http-authMethod--dropdown--button').should(
+            'have.text',
+            'none'
+          )
           cy.getByTestID('http-url').should('have.value', endp.url)
         })
       cy.go('back')
       cy.getByTestID('overlay').should('not.exist')
-      // TODO click and check examples
+
       cy.getByTestID('check-status-dropdown').should('not.exist')
       cy.getByTestID('check-status-input').click()
       cy.getByTestID('check-status-dropdown').should('be.visible')
+
       // Filter level == crit
       cy.getByTestID('check-status-input')
         .clear()
@@ -608,36 +653,39 @@ describe('NotificationRules', () => {
       cy.getByTestID('check-status-input')
         .clear()
         .type('"level" != "info"')
-      cy.get('.event-row').should('have.length', 3).then(rows => {
-          const levels = rows.find('.event-row--field:nth-of-type(2)').toArray().map(r => r.innerText)
-          cy.log(`DEBUG levels ${levels}`)
-          expect(levels).to.deep.eq(['ok','crit','warn'])
-      })
+      cy.get('.event-row')
+        .should('have.length', 3)
+        .then(rows => {
+          const levels = rows
+            .find('.event-row--field:nth-of-type(2)')
+            .toArray()
+            .map(r => r.innerText)
+          expect(levels).to.deep.eq(['ok', 'crit', 'warn'])
+        })
       // Filter notificationRuleName == rule.name
       cy.getByTestID('check-status-input')
         .clear()
         .type(`"notificationRuleName" == "${rule.name}"`)
-      cy.get('.event-row').should('have.length', 4).then(rows => {
-        const levels = rows.find('.event-row--field:nth-of-type(2)').toArray().map(r => r.innerText)
-        cy.log(`DEBUG levels ${levels}`)
-        expect(levels).to.deep.eq(['ok','info','crit','warn'])
-      })
+      cy.get('.event-row')
+        .should('have.length', 4)
+        .then(rows => {
+          const levels = rows
+            .find('.event-row--field:nth-of-type(2)')
+            .toArray()
+            .map(r => r.innerText)
+          expect(levels).to.deep.eq(['ok', 'info', 'crit', 'warn'])
+        })
       cy.getByTitle('Refresh').click()
       cy.getByTestID('check-status-dropdown').should('not.exist')
     })
 
     it('refreshes the history', () => {
-      cy.getByTestID('alerting-tab--rules').click()
-      cy.getByTestID(`rule-card ${rule.name}`).within(card => {
-        card.trigger('mouseover')
-        cy.getByTestID('context-history-menu').click()
-        cy.getByTestID('context-history-task').click()
-      })
       cy.get('.event-row').should('have.length', 4)
       cy.get<GenCheck>('@check').then(check => {
         cy.get<NotificationEndpoint>('@endp').then(endp => {
           cy.get<GenRule>('@rule').then(rule => {
-            writeMonitoringRecord( {
+            writeMonitoringRecord(
+              {
                 check: check,
                 endp: endp,
                 rule: rule,
@@ -647,25 +695,64 @@ describe('NotificationRules', () => {
                 valField: {key: 'foo', val: 'bar'},
                 sourceTimestamp: calcNanoTimestamp('4m'),
                 statusTimestamp: calcNanoTimestamp('3m'),
-                message: 'This is a fake info message'},
+                message: 'This is a fake info message',
+              },
               '2m'
             )
           })
         })
       })
       cy.getByTitle('Refresh').click()
-      cy.get('.event-row').should('have.length', 5).then(rows => {
-        const levels = rows.find('.event-row--field:nth-of-type(2)').toArray().map(r => r.innerText)
-        cy.log(`DEBUG levels ${levels}`)
-        expect(levels).to.deep.eq(['info','ok','info','crit','warn'])
-      })
+      cy.get('.event-row')
+        .should('have.length', 5)
+        .then(rows => {
+          const levels = rows
+            .find('.event-row--field:nth-of-type(2)')
+            .toArray()
+            .map(r => r.innerText)
+          expect(levels).to.deep.eq(['info', 'ok', 'info', 'crit', 'warn'])
+        })
     })
 
-    it.only('Switches between local and UTC time', () => {
-      // N.B. if local === utc then skip
-      cy.log(`DEBUG timezone ${JSON.stringify(Intl.DateTimeFormat().resolvedOptions())}`)
-      cy.log(`DEBUG DateTimeFormat ${JSON.stringify(Intl.DateTimeFormat())}`)
-      cy.log('DEBUG time switches')
-    })
+    // N.B. if local === utc then skip
+    if (new Date().getTimezoneOffset() !== 0) {
+      it('Switches between local and UTC time', () => {
+        let hours: number[] = []
+        cy.get('.event-row--field:nth-of-type(1) ').then(timestamps => {
+          hours = timestamps
+            .toArray()
+            .map(n => new Date(n.innerText).getHours())
+        })
+
+        // Switch to UTC
+        cy.getByTestID('dropdown--button')
+          .should('have.text', 'Local')
+          .click()
+        cy.getByTitle('UTC').click()
+        cy.getByTestID('dropdown--button').should('have.text', 'UTC')
+
+        // compare UTC values
+        cy.get('.event-row--field:nth-of-type(1) ').then(timestamps => {
+          const UTCHours = timestamps
+            .toArray()
+            .map(n => new Date(n.innerText).getHours())
+          expect(UTCHours).to.not.deep.eq(hours)
+        })
+
+        // Switch back to Local
+        cy.getByTestID('dropdown--button').click()
+        cy.getByTitle('Local').click()
+        cy.getByTestID('dropdown--button').should('have.text', 'Local')
+
+        cy.get('.event-row--field:nth-of-type(1) ').then(timestamps => {
+          const CurrHours = timestamps
+            .toArray()
+            .map(n => new Date(n.innerText).getHours())
+          expect(CurrHours).to.deep.eq(hours)
+        })
+      })
+    } else {
+      it.skip('Switches between local and UTC time - skipped because same', () => {})
+    }
   })
 })

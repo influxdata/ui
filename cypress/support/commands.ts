@@ -1,4 +1,10 @@
-import {AccountType, NotificationEndpoint, GenCheck, NotificationRule, Secret} from '../../src/types'
+import {
+  AccountType,
+  NotificationEndpoint,
+  GenCheck,
+  NotificationRule,
+  Secret,
+} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
@@ -508,6 +514,9 @@ export const createTelegraf = (
   })
 }
 /*
+// Did not find where this is used
+// Replaced with more general command below
+
 export const createRule = (
   orgID: string,
   endpointID: string,
@@ -729,14 +738,14 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
   if (args.stagger) {
     return addStaggerTimestampToRecs(args.lines, args.offset, interval).then(
       stampedLines => {
-        if(args.namedBucket){
+        if (args.namedBucket) {
           return writeData(stampedLines, args.namedBucket).then(response => {
             if (response.status !== 204) {
               throw `Problem writing data. Status: ${response.status} ${response.statusText}`
             }
             return cy.wrap('success')
           })
-        }else {
+        } else {
           return writeData(stampedLines).then(response => {
             if (response.status !== 204) {
               throw `Problem writing data. Status: ${response.status} ${response.statusText}`
@@ -748,14 +757,14 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
     )
   } else {
     return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
-      if(args.namedBucket){
+      if (args.namedBucket) {
         return writeData(stampedLines, args.namedBucket).then(response => {
           if (response.status !== 204) {
             throw `Problem writing data. Status: ${response.status} ${response.statusText}`
           }
           return cy.wrap('success')
         })
-      }else {
+      } else {
         return writeData(stampedLines).then(response => {
           if (response.status !== 204) {
             throw `Problem writing data. Status: ${response.status} ${response.statusText}`
@@ -1014,7 +1023,7 @@ Cypress.Commands.add('createEndpoint', createEndpoint)
 // notification rules
 Cypress.Commands.add('createRule', createRule)
 // checks
-Cypress.Commands.add( 'createCheck', createCheck)
+Cypress.Commands.add('createCheck', createCheck)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)

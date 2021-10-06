@@ -77,7 +77,7 @@ export function addTimestampToRecs(
   return cy.wrap(result)
 }
 
-export function calcNanoTimestamp(timeDif: string){
+export function calcNanoTimestamp(timeDif: string) {
   const timeFrame: TimeExpr = parseTime(timeDif)
   return calcTimeStamp(timeFrame.unit, 'ns', timeFrame.measure)
 }

@@ -48,6 +48,7 @@ interface Props {
 interface PanelProps {
   measurementSchema: typeof MeasurementSchema
   index?: number
+  showSchemaValidation: boolean
   onAddUpdate: (columns: string, filename: string, index: number) => void
 }
 interface AddingProps {
@@ -228,6 +229,7 @@ const EditingPanel: FC<PanelProps> = ({
   index,
   measurementSchema,
   onAddUpdate,
+  showSchemaValidation,
 }) => {
   const handleDownloadSchema = () => {
     const {name, id} = measurementSchema
@@ -264,6 +266,7 @@ const EditingPanel: FC<PanelProps> = ({
             color={ComponentColor.Secondary}
             text="Download Schema"
             onClick={handleDownloadSchema}
+            className="download-button"
           />
           <MiniFileDnd
             key={`update-mini-dnd-${index}`}

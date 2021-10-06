@@ -40,6 +40,7 @@ import {OwnBucket} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 import {event} from 'src/cloud/utils/reporting'
 import {areNewSchemasValid} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
+import {BUCKET_OVERLAY_WIDTH} from '../../constants'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -216,7 +217,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
   return (
     <Overlay visible={true}>
-      <Overlay.Container maxWidth={500}>
+      <Overlay.Container maxWidth={BUCKET_OVERLAY_WIDTH}>
         <Overlay.Header title="Edit Bucket" onDismiss={handleClose} />
         <SpinnerContainer
           spinnerComponent={<TechnoSpinner />}

@@ -18,6 +18,7 @@ import {
   clearSteps,
   decrementCurrentStepIndex,
   incrementCurrentStepIndex,
+  setBucketInfo,
   setCurrentStepIndex,
   setSubstepIndex,
 } from 'src/dataLoaders/actions/steps'
@@ -76,6 +77,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetCurrentStepIndex,
     onSetSubstepIndex,
+    setBucketInfo,
     substepIndex,
   } = props
 
@@ -85,6 +87,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     clearDataLoaders()
     onSetCurrentStepIndex(0)
     onSetSubstepIndex(0, 0)
+    setBucketInfo('', '', '')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [pluginConfig, setPluginConfig] = useState<string>('')
@@ -175,6 +178,7 @@ const mdtp = {
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
   onSetCurrentStepIndex: setCurrentStepIndex,
   onSetSubstepIndex: setSubstepIndex,
+  setBucketInfo,
 }
 
 const connector = connect(mstp, mdtp)

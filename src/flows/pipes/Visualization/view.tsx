@@ -25,7 +25,7 @@ import {downloadTextFile} from 'src/shared/utils/download'
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
-import {downloadImage} from 'src/flows/shared/utils'
+import {downloadImage} from 'src/shared/utils/download'
 
 const downloadAsImage = (pipeID: string) => {
   const canvas = document.getElementById(pipeID)
@@ -55,7 +55,7 @@ const downloadAsPDF = (pipeID: string) => {
             result.width,
             result.height
           )
-          doc.save('sample-file.pdf')
+          doc.save('visualization.pdf')
         })
       })
     )

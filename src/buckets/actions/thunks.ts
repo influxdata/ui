@@ -149,10 +149,7 @@ export const createBucketAndUpdate = (
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
 
-    if (resp.data.schemaType === 'explicit' && schemas && schemas.length) {
-      // in case they choose explicit, add schemas, then change their mind back and
-      // change it to implicit; or if explicit and choose not to add schemas at this time.
-
+    if (schemas && schemas.length) {
       schemas.forEach(mschemaCreateRequest => {
         addMeasurementSchemaToBucketInternal(
           resp.data.id,
@@ -369,7 +366,7 @@ export const addSchemaToBucket = (
   bucketName: string,
   schema: typeof MeasurementSchemaCreateRequest
 ) => async (dispatch: Dispatch<Action>) => {
-  await addMeasurementSchemaToBucketInternal(
+  addMeasurementSchemaToBucketInternal(
     bucketID,
     schema,
     orgID,

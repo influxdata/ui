@@ -19,13 +19,13 @@ import {
   DEFAULT_RULES,
 } from 'src/buckets/reducers/createBucket'
 import {AppState, Bucket, RetentionRule} from 'src/types'
-import {event as influxEvent} from '../../../cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
-import {areNewSchemasValid} from './MeasurementSchemaUtils'
+import {areNewSchemasValid} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -114,21 +114,21 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
     return false
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault()
+  const handleSubmit = (evt: FormEvent<HTMLFormElement>): void => {
+    evt.preventDefault()
     if (isValid()) {
       let mSchemas = []
-      if (newMeasurementSchemaRequests) {
+      if (state.schemaType === 'explicit' && newMeasurementSchemaRequests) {
         mSchemas = newMeasurementSchemaRequests.map(item => ({
           columns: item.columns,
           name: item.name,
         }))
       }
 
-      influxEvent('bucket.creation')
+      event('bucket.creation')
 
       for (let i = 0; i < mSchemas.length; i++) {
-        influxEvent('bucket.schema.explicit.creation.uploadSchema')
+        event('bucket.schema.explicit.creation.uploadSchema')
       }
 
       reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket, mSchemas))

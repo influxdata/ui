@@ -38,8 +38,8 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 // Types
 import {OwnBucket} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
-import {event} from '../../../cloud/utils/reporting'
-import {areNewSchemasValid} from './MeasurementSchemaUtils'
+import {event} from 'src/cloud/utils/reporting'
+import {areNewSchemasValid} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null

@@ -159,7 +159,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const generateToken = () => {
     const {onCreateAuthorization, orgID, showOverlay} = props
-
     const apiPermissions = formatApiPermissions(permissions, orgID)
 
     const token: Authorization = {
@@ -169,9 +168,10 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         : generateDescription(apiPermissions),
       permissions: apiPermissions,
     }
-
     onCreateAuthorization(token)
-    showOverlay('access-token', null, () => dismissOverlay())
+    if (token.permissions.length > 0) {
+      showOverlay('access-token', null, () => dismissOverlay())
+    }
   }
 
   return (

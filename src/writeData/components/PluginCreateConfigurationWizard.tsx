@@ -70,7 +70,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     currentStepIndex,
     history,
     notify,
-    onClearDataLoaders,
+    clearDataLoaders,
     onClearSteps,
     onDecrementCurrentStepIndex,
     onIncrementCurrentStepIndex,
@@ -82,6 +82,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   const {contentID} = useParams<ParamsType>()
 
   useEffect(() => {
+    clearDataLoaders()
     onSetCurrentStepIndex(0)
     onSetSubstepIndex(0, 0)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -93,7 +94,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const handleDismiss = () => {
-    onClearDataLoaders()
+    clearDataLoaders()
     onClearSteps()
     if (substepIndex === 1) {
       onSetSubstepIndex(0, 0)
@@ -168,7 +169,7 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   notify: notifyAction,
-  onClearDataLoaders: clearDataLoaders,
+  clearDataLoaders,
   onClearSteps: clearSteps,
   onDecrementCurrentStepIndex: decrementCurrentStepIndex,
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,

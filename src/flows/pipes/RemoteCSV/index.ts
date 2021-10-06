@@ -27,16 +27,16 @@ export default register => {
       )`
       return `${dataQuery}
       csvRange = data
-      |> keep(columns: ["_time"])
-      |> group()
-      |> reduce(
-          fn: (r, accumulator) => ({
-              min: if r._time < accumulator.min then r._time else accumulator.min,
-              max: if r._time > accumulator.max then r._time else accumulator.max,
-          }),
-          identity: {min: now(), max: time(v: 0)},
-      )
-      |> findRecord(fn: (key) => true, idx: 0)
+          |> keep(columns: ["_time"])
+          |> group()
+          |> reduce(
+              fn: (r, accumulator) => ({
+                  min: if r._time < accumulator.min then r._time else accumulator.min,
+                  max: if r._time > accumulator.max then r._time else accumulator.max,
+              }),
+              identity: {min: now(), max: time(v: 0)},
+          )
+          |> findRecord(fn: (key) => true, idx: 0)
 
       data
           |> range(start: csvRange.min, stop: csvRange.max)`

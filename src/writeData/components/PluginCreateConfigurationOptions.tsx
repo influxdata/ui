@@ -22,17 +22,14 @@ import {getAllBuckets} from 'src/resources/selectors'
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
 // Utils
-import {isSystemBucket} from 'src/buckets/constants'
+import {
+  CREATE_A_BUCKET_ID,
+  createBucketOption,
+  isSystemBucket,
+} from 'src/buckets/constants'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
-
-const CREATE_A_BUCKET_ID = 'create-a-bucket'
-
-const createBucketOption = {
-  id: CREATE_A_BUCKET_ID,
-  name: '+ Create A Bucket',
-}
 
 const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
   const {

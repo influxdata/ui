@@ -26,6 +26,7 @@ import {downloadTextFile} from 'src/shared/utils/download'
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
 import {downloadImage} from 'src/shared/utils/download'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const downloadAsImage = (pipeID: string) => {
   const canvas = document.getElementById(pipeID)
@@ -38,28 +39,26 @@ const downloadAsImage = (pipeID: string) => {
 
 const downloadAsPDF = (pipeID: string) => {
   const canvas = document.getElementById(pipeID)
-  setTimeout(() => {
-    import('html2canvas').then((module: any) =>
-      module.default(canvas as HTMLDivElement).then(result => {
-        import('jspdf').then((jsPDF: any) => {
-          const doc = new jsPDF.default({
-            orientation: 'l',
-            unit: 'pt',
-            format: [result.width, result.height],
-          })
-          doc.addImage(
-            result.toDataURL('image/png'),
-            'PNG',
-            0,
-            0,
-            result.width,
-            result.height
-          )
-          doc.save('visualization.pdf')
+  import('html2canvas').then((module: any) =>
+    module.default(canvas as HTMLDivElement).then(result => {
+      import('jspdf').then((jsPDF: any) => {
+        const doc = new jsPDF.default({
+          orientation: 'l',
+          unit: 'pt',
+          format: [result.width, result.height],
         })
+        doc.addImage(
+          result.toDataURL('image/png'),
+          'PNG',
+          0,
+          0,
+          result.width,
+          result.height
+        )
+        doc.save('visualization.pdf')
       })
-    )
-  }, 0)
+    })
+  )
 }
 
 const Visualization: FC<PipeProp> = ({Context}) => {
@@ -123,10 +122,12 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           {
             title: 'Download As Image',
             action: () => downloadAsImage(id),
+            disable: !isFlagEnabled('pdfImageDownload'),
           },
           {
             title: 'Download As PDF',
             action: () => downloadAsPDF(id),
+            disable: !isFlagEnabled('pdfImageDownload'),
           },
         ],
       },

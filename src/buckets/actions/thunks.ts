@@ -365,7 +365,7 @@ export const addSchemaToBucket = (
   orgID: string,
   bucketName: string,
   schema: typeof MeasurementSchemaCreateRequest
-) => async (dispatch: Dispatch<Action>) => {
+) => (dispatch: Dispatch<Action>) => {
   addMeasurementSchemaToBucketInternal(
     bucketID,
     schema,

@@ -44,6 +44,9 @@ import {TelegrafSortKey} from 'src/shared/components/resource_sort_dropdown/gene
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
 
@@ -201,6 +204,7 @@ export class Collectors extends PureComponent<Props, State> {
     } = this.props
 
     history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
+    event('load_data.telegrafs.create_new_configuration.clicked')
   }
 
   private handleJustTheOutput = () => {
@@ -212,6 +216,7 @@ export class Collectors extends PureComponent<Props, State> {
     } = this.props
 
     history.push(`/orgs/${orgID}/load-data/telegrafs/output`)
+    event('load_data.telegrafs.influxdb_output_plugin_button.clicked')
   }
 
   private get emptyState(): JSX.Element {

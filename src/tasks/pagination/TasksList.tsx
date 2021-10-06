@@ -125,13 +125,16 @@ export default class TasksList extends PureComponent<Props, State>
       DEFAULT_PAGINATION_CONTROL_HEIGHT
     const height = this.props.pageHeight - heightWithPagination
 
-    this.totalPages = Math.ceil(this.props.tasks.length / this.rowsPerPage)
+    this.totalPages = Math.max(
+      Math.ceil(this.props.tasks.length / this.rowsPerPage),
+      1
+    )
 
     return (
       <>
         <ResourceList style={{width: this.props.pageWidth}}>
           <ResourceList.Body
-            style={{maxHeight: height, minHeight: height, overflow: 'scroll'}}
+            style={{maxHeight: height, minHeight: height, overflow: 'auto'}}
             emptyState={
               <EmptyTasksList
                 searchTerm={this.props.searchTerm}

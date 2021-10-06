@@ -21,7 +21,11 @@ import {
 import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
 
 // Actions
-import {getBucketSchema, updateBucket} from 'src/buckets/actions/thunks'
+import {
+  getBucketSchema,
+  updateBucket,
+  addSchemaToBucket,
+} from 'src/buckets/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 
 // APIs
@@ -34,16 +38,21 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 // Types
 import {OwnBucket} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
+import {event} from '../../../cloud/utils/reporting'
 
-let SchemaType = null
+let SchemaType = null,
+  MeasurementSchemaCreateRequest = null
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
 }
 
 interface DispatchProps {
   onUpdateBucket: typeof updateBucket
   getSchema: typeof getBucketSchema
+  onAddMeasurementSchemaToBucket: typeof addSchemaToBucket
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -52,6 +61,7 @@ type Props = ReduxProps & RouteComponentProps<{bucketID: string; orgID: string}>
 const UpdateBucketOverlay: FunctionComponent<Props> = ({
   onUpdateBucket,
   getSchema,
+  onAddMeasurementSchemaToBucket,
   match,
   history,
 }) => {
@@ -65,6 +75,11 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
   const [schemaType, setSchemaType] = useState('implicit')
   const [measurementSchemaList, setMeasurementSchemaList] = useState(null)
+  const [
+    newMeasurementSchemaRequests,
+    setNewMeasurementSchemaRequests,
+  ] = useState(null)
+  const [showSchemaValidation, setShowSchemaValidation] = useState(false)
 
   const handleClose = useCallback(() => {
     history.push(`/orgs/${orgID}/load-data/buckets`)
@@ -115,6 +130,16 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     })
   }
 
+  const handleNewMeasurementSchemas = (
+    schemas: typeof MeasurementSchemaCreateRequest[],
+    resetValidation?: boolean
+  ): void => {
+    setNewMeasurementSchemaRequests(schemas)
+    if (resetValidation) {
+      setShowSchemaValidation(false)
+    }
+  }
+
   const handleChangeRuleType = (ruleType: 'expire' | null) => {
     if (ruleType) {
       setBucketDraft({
@@ -131,10 +156,55 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     }
   }
 
+  const isValid = () => {
+    // are there measurement schemas?
+    const haveSchemas =
+      Array.isArray(newMeasurementSchemaRequests) &&
+      newMeasurementSchemaRequests.length
+
+    if (!haveSchemas) {
+      // no schemas, nothing to validate, so everything is fine
+      return true
+    }
+    // if so, are they all valid?
+
+    const alltrue = newMeasurementSchemaRequests.every(schema => schema.valid)
+
+    if (alltrue) {
+      return true
+    }
+    // not all true :(
+
+    // if not valid, decorate them to show they are not valid!
+    setShowSchemaValidation(true)
+    return false
+  }
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
-    onUpdateBucket(bucketDraft)
-    handleClose()
+
+    if (isValid()) {
+      onUpdateBucket(bucketDraft)
+
+      if (newMeasurementSchemaRequests?.length) {
+        newMeasurementSchemaRequests.map(item => {
+          const createRequest = {
+            columns: item.columns,
+            name: item.name,
+          }
+
+          event('bucket.schema.explicit.editing.uploadSchema')
+          onAddMeasurementSchemaToBucket(
+            bucketDraft.id,
+            bucketDraft.orgID,
+            bucketDraft.name,
+            createRequest
+          )
+        })
+      }
+
+      handleClose()
+    }
   }
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -177,6 +247,8 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               onChangeSchemaType={handleChangeSchemaType}
               schemaType={schemaType as typeof SchemaType}
               measurementSchemaList={measurementSchemaList}
+              onUpdateNewMeasurementSchemas={handleNewMeasurementSchemas}
+              showSchemaValidation={showSchemaValidation}
             />
           </Overlay.Body>
         </SpinnerContainer>
@@ -188,6 +260,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 const mdtp = {
   onUpdateBucket: updateBucket,
   getSchema: getBucketSchema,
+  onAddMeasurementSchemaToBucket: addSchemaToBucket,
 }
 
 const connector = connect(null, mdtp)

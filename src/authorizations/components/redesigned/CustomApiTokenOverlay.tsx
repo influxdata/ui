@@ -24,6 +24,7 @@ import {
   RemoteDataState,
 } from '@influxdata/clockface'
 import ResourceAccordion from 'src/authorizations/components/redesigned/ResourceAccordion'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
@@ -71,6 +72,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const [description, setDescription] = useState('')
   const [permissions, setPermissions] = useState({})
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     props.getBuckets()
@@ -79,6 +81,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   useEffect(() => {
     const perms = {}
+
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
@@ -93,6 +96,10 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const handleDismiss = () => {
     props.onClose()
+  }
+
+  const handleChangeSearchTerm = (searchTerm: string): void => {
+    setSearchTerm(searchTerm)
   }
 
   const handleInputChange = event => {
@@ -170,7 +177,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   return (
     <Overlay.Container maxWidth={800}>
       <Overlay.Header
-        title="Generate a Personal Api Token"
+        title="Generate a Personal API Token"
         onDismiss={onClose}
       />
       <Overlay.Body>
@@ -189,6 +196,11 @@ const CustomApiTokenOverlay: FC<Props> = props => {
               />
             </Form.Element>
             <FlexBox.Child className="main-flexbox-child">
+              <SearchWidget
+                searchTerm={searchTerm}
+                placeholderText="Filter Access Permissions..."
+                onSearch={handleChangeSearchTerm}
+              />
               <FlexBox
                 margin={ComponentSize.Large}
                 justifyContent={JustifyContent.SpaceBetween}
@@ -224,6 +236,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                 permissions={permissions}
                 onToggleAll={handleToggleAll}
                 onIndividualToggle={handleIndividualToggle}
+                searchTerm={searchTerm}
               />
             </FlexBox.Child>
           </FlexBox>

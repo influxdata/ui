@@ -23,7 +23,7 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
   getAllResources,
 }) => {
   const dispatch = useDispatch()
-  const allAccessOption = 'All Access Token'
+  const allAccessOption = 'All Access API Token'
 
   const customApiOption = 'Custom API Token'
 
@@ -60,7 +60,7 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
           color={ComponentColor.Primary}
           testID="dropdown-button--gen-token"
         >
-          Generate Token
+          Generate API Token
         </Dropdown.Button>
       )}
       menu={onCollapse => (

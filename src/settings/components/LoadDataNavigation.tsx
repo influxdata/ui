@@ -52,7 +52,7 @@ class LoadDataNavigation extends PureComponent<Props> {
         featureFlag: null,
       },
       {
-        text: 'Tokens',
+        text: 'API Tokens',
         id: 'tokens',
         cloudExclude: false,
         featureFlag: null,

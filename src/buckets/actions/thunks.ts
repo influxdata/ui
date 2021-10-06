@@ -52,15 +52,23 @@ import {
   bucketRenameFailed,
   addBucketLabelFailed,
   removeBucketLabelFailed,
+  measurementSchemaAdditionSuccessful,
+  measurementSchemaAdditionFailed,
 } from 'src/shared/copy/notifications'
 
 type Action = BucketAction | NotifyAction
 
-let getBucketsSchemaMeasurements = null
+let getBucketsSchemaMeasurements = null,
+  MeasurementSchemaCreateRequest = null,
+  postBucketsSchemaMeasurement = null
 
 if (CLOUD) {
   getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
     .getBucketsSchemaMeasurements
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
+  postBucketsSchemaMeasurement = require('src/client/generatedRoutes')
+    .postBucketsSchemaMeasurement
 }
 
 export const getBuckets = () => async (
@@ -302,6 +310,37 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
   } catch (error) {
     console.error(error)
     dispatch(notify(removeBucketLabelFailed()))
+  }
+}
+
+export const addSchemaToBucket = (
+  bucketID: string,
+  orgID: string,
+  bucketName: string,
+  schema: typeof MeasurementSchemaCreateRequest
+) => async (dispatch: Dispatch<Action>) => {
+  const params = {
+    bucketID,
+    data: schema,
+    query: {orgID},
+  }
+  try {
+    const resp = await postBucketsSchemaMeasurement(params)
+    if (resp.status !== 201) {
+      const msg = resp?.data?.message
+      console.error('error adding measurement schema:', resp)
+      throw new Error(msg)
+    }
+
+    dispatch(
+      notify(measurementSchemaAdditionSuccessful(bucketName, schema.name))
+    )
+  } catch (error) {
+    console.error(error)
+    const message = getErrorMessage(error)
+    dispatch(
+      notify(measurementSchemaAdditionFailed(bucketName, schema.name, message))
+    )
   }
 }
 

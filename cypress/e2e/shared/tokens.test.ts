@@ -495,7 +495,7 @@ describe('tokens', () => {
       .click()
       .then(() => {
         cy.getByTestID('notification-success--children').contains(
-          'Token was created successfully'
+          'API token was created successfully'
         )
       })
 
@@ -535,7 +535,7 @@ describe('tokens', () => {
       .click()
       .then(() => {
         cy.getByTestID('notification-success--children').contains(
-          'Token was created successfully'
+          'API token was created successfully'
         )
       })
 
@@ -595,7 +595,7 @@ describe('tokens', () => {
       .click()
       .then(() => {
         cy.getByTestID('notification-success--children').contains(
-          'Token was created successfully'
+          'API token was created successfully'
         )
       })
 
@@ -661,7 +661,7 @@ describe('tokens', () => {
       .click()
       .then(() => {
         cy.getByTestID('notification-success--children').contains(
-          'Token was created successfully'
+          'API token was created successfully'
         )
       })
 

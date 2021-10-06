@@ -22,13 +22,16 @@ import {RuleType} from 'src/buckets/reducers/createBucket'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
-import {MeasurementSchemaSection} from './MeasurementSchemaSection'
+import {MeasurementSchemaSection} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
 
 let MeasurementSchemaList = null,
+  MeasurementSchemaCreateRequest = null,
   SchemaType = null
 
 if (CLOUD) {
   SchemaType = require('src/client/generatedRoutes').MeasurementSchema
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
   MeasurementSchemaList = require('src/client/generatedRoutes')
     .MeasurementSchemaList
 }
@@ -45,6 +48,10 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
+  onUpdateNewMeasurementSchemas?: (
+    schemas: any[],
+    resetValidation?: boolean
+  ) => void
   isEditing: boolean
   buttonText: string
   onClickRename?: () => void
@@ -52,27 +59,30 @@ interface Props {
   onChangeSchemaType?: (schemaType: typeof SchemaType) => void
   schemaType?: typeof SchemaType
   measurementSchemaList?: typeof MeasurementSchemaList
+  showSchemaValidation?: boolean
 }
 
 interface State {
   showAdvanced: boolean
   schemaType: 'implicit' | 'explicit'
+  newMeasurementSchemas: typeof MeasurementSchemaCreateRequest[]
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
-  constructor(props) {
-    super(props)
-
-    this.onChangeSchemaTypeInternal = this.onChangeSchemaTypeInternal.bind(this)
+  public state: State = {
+    showAdvanced: false,
+    schemaType: 'implicit',
+    newMeasurementSchemas: [],
   }
 
-  public state: State = {showAdvanced: false, schemaType: 'implicit'}
-
-  public onChangeSchemaTypeInternal = function(
-    newSchemaType: typeof SchemaType
-  ) {
+  onChangeSchemaTypeInternal = (newSchemaType: typeof SchemaType) => {
     this.setState({schemaType: newSchemaType})
     this.props.onChangeSchemaType(newSchemaType)
+  }
+
+  onUpdateSchemasInternal = (schemas, resetValidation) => {
+    this.props.onUpdateNewMeasurementSchemas(schemas, resetValidation)
+    this.setState({newMeasurementSchemas: schemas})
   }
 
   public render() {
@@ -91,33 +101,36 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       testID = 'bucket-form',
       schemaType,
       measurementSchemaList,
+      showSchemaValidation,
     } = this.props
 
     const {showAdvanced} = this.state
 
     const nameInputStatus = isEditing && ComponentStatus.Disabled
 
+    const measurementSchemaComponent = (
+      <MeasurementSchemaSection
+        measurementSchemaList={measurementSchemaList}
+        key="measurementSchemaSection"
+        onUpdateSchemas={this.onUpdateSchemasInternal}
+        showSchemaValidation={showSchemaValidation}
+      />
+    )
+
+    const measurementSchemaSection =
+      schemaType === 'explicit' ? measurementSchemaComponent : null
+
     const makeAdvancedSection = () => {
       if (isFlagEnabled('measurementSchema') && CLOUD) {
         let contents = null
         if (isEditing) {
-          let measurementSchemaReadonlyList = null
-
-          if (measurementSchemaList?.measurementSchemas) {
-            measurementSchemaReadonlyList = (
-              <MeasurementSchemaSection
-                measurementSchemaList={measurementSchemaList}
-                key="measurementSchemaSection"
-              />
-            )
-          }
           contents = (
             <>
               <SchemaToggle
                 key="schemaToggleSection"
                 readOnlySchemaType={schemaType}
               />
-              {measurementSchemaReadonlyList}
+              {measurementSchemaSection}
             </>
           )
         } else {

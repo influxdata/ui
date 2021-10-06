@@ -74,7 +74,7 @@ export const generateNavItems = (): NavItem[] => {
         {
           id: 'tokens',
           testID: 'nav-subitem-tokens',
-          label: 'Tokens',
+          label: 'API Tokens',
           link: `${orgPrefix}/load-data/tokens`,
         },
       ],

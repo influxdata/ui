@@ -29,7 +29,8 @@ import CreditCardForm from 'src/shared/components/CreditCardForm'
 // Context
 import {CheckoutContext} from 'src/checkout/context/checkout'
 
-// Types
+// Events
+import {event} from 'src/cloud/utils/reporting'
 
 const CheckoutForm: FC = () => {
   const {
@@ -45,6 +46,7 @@ const CheckoutForm: FC = () => {
     }
 
     try {
+      event('User Upgrade Payment Plan')
       Z.submit()
     } catch (error) {
       // Ingest the error since the Zuora Form will return an error form based on the error returned
@@ -65,7 +67,10 @@ const CheckoutForm: FC = () => {
           >
             Upgrade to Usage-Based Account
           </h1>
-          <Panel gradient={Gradients.BeijingEclipse}>
+          <Panel
+            gradient={Gradients.BeijingEclipse}
+            className="checkout--panel"
+          >
             <Panel.Body size={ComponentSize.Medium}>
               <p className="checkout-summary">
                 No upfront commitment, pay only for what you use, and you can
@@ -80,6 +85,10 @@ const CheckoutForm: FC = () => {
                 </a>
                 .
               </p>
+              <div className="checkout-form--banner">
+                <strong className="checkout-banner--credit">$250</strong>
+                <p>credit applied</p>
+              </div>
             </Panel.Body>
           </Panel>
           <Panel>

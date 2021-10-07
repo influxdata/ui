@@ -35,7 +35,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
   const index = flow.data.allIDs.indexOf(id)
 
   const handlePopoverShow = () => {
-    event('Insert Cell Clicked')
+    event('Insert Cell Clicked', {isFirst: index === -1, isLast: index === flow.data.allIDs.length - 1})
     popoverVisible.current = true
     dividerRef.current &&
       dividerRef.current.classList.add('flow-divider__popped')

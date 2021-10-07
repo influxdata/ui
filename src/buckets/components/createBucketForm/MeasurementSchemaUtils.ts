@@ -106,6 +106,6 @@ export const areSchemaUpdatesValid = schemaInfo => {
   }
   return schemaInfo.every(
     schemaInfo =>
-      !schemaInfo.hasUpdate || (schemaInfo.hasUpdate && schemaInfo.isValid)
+      !schemaInfo.hasUpdate || (schemaInfo.hasUpdate && schemaInfo.valid)
   )
 }

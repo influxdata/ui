@@ -80,9 +80,9 @@ class BucketsTab extends PureComponent<Props, State> {
   public componentDidMount() {
     this.props.checkBucketLimits()
 
-    let sortType: SortTypes = this.state.sortType
     const params = new URLSearchParams(window.location.search)
 
+    let sortType: SortTypes = this.state.sortType
     let sortKey: BucketSortKey = 'name'
     if (params.get('sortKey') === 'readableRetention') {
       sortKey = 'readableRetention'

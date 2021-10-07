@@ -1,24 +1,30 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {createRef, PureComponent, RefObject} from 'react'
 import {connect} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {isEmpty} from 'lodash'
+import {AutoSizer} from 'react-virtualized'
 
 // Components
 import {Sort, ComponentSize, EmptyState} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
-import TokenList from 'src/authorizations/components/TokenList'
+import TokenList from 'src/authorizations/pagination/TokenList'
 import FilterList from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
+import GenerateTokenDropdownRedesigned from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 
 // Types
 import {AppState, Authorization, ResourceType} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
+import {AuthorizationSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -37,6 +43,9 @@ interface StateProps {
   tokens: Authorization[]
 }
 
+const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
+const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
+
 type SortKey = keyof Authorization
 
 type Props = StateProps & RouteComponentProps<{orgID: string}>
@@ -44,6 +53,8 @@ type Props = StateProps & RouteComponentProps<{orgID: string}>
 const FilterAuthorizations = FilterList<Authorization>()
 
 class TokensTab extends PureComponent<Props, State> {
+  private paginationRef: RefObject<HTMLDivElement>
+
   constructor(props) {
     super(props)
     this.state = {
@@ -52,6 +63,35 @@ class TokensTab extends PureComponent<Props, State> {
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
     }
+    this.paginationRef = createRef<HTMLDivElement>()
+  }
+
+  public componentDidMount() {
+    const params = new URLSearchParams(window.location.search)
+
+    let sortType: SortTypes = this.state.sortType
+    let sortKey: AuthorizationSortKey = 'description'
+    if (params.get('sortKey') === 'status') {
+      sortKey = 'status'
+      sortType = SortTypes.String
+    } else if (params.get('sortKey') === 'createdAt') {
+      sortKey = 'createdAt'
+      sortType = SortTypes.String
+    }
+
+    let sortDirection: Sort = this.state.sortDirection
+    if (params.get('sortDirection') === Sort.Ascending) {
+      sortDirection = Sort.Ascending
+    } else if (params.get('sortDirection') === Sort.Descending) {
+      sortDirection = Sort.Descending
+    }
+
+    let searchTerm: string = ''
+    if (params.get('searchTerm') !== null) {
+      searchTerm = params.get('searchTerm')
+    }
+
+    this.setState({sortKey, sortDirection, sortType, searchTerm})
   }
 
   public render() {
@@ -62,8 +102,8 @@ class TokensTab extends PureComponent<Props, State> {
       <>
         <SearchWidget
           searchTerm={searchTerm}
-          placeholderText="Filter API Tokens..."
-          onSearch={this.handleChangeSearchTerm}
+          placeholderText="Filter Tokens..."
+          onSearch={this.handleFilterUpdate}
           testID="input-field--filter"
         />
         <ResourceSortDropdown
@@ -77,32 +117,51 @@ class TokensTab extends PureComponent<Props, State> {
       </>
     )
 
-    const rightHeaderItems = <GenerateTokenDropdown />
+    let rightHeaderItems = <GenerateTokenDropdown />
+    if (isFlagEnabled('tokensUIRedesign')) {
+      rightHeaderItems = <GenerateTokenDropdownRedesigned />
+    }
 
     return (
-      <>
-        <TabbedPageHeader
-          childrenLeft={leftHeaderItems}
-          childrenRight={rightHeaderItems}
-        />
-        <FilterAuthorizations
-          list={tokens}
-          searchTerm={searchTerm}
-          searchKeys={this.searchKeys}
-        >
-          {filteredAuths => (
-            <TokenList
-              auths={filteredAuths}
-              emptyState={this.emptyState}
-              searchTerm={searchTerm}
-              sortKey={sortKey}
-              sortDirection={sortDirection}
-              sortType={sortType}
-              onClickColumn={this.handleClickColumn}
-            />
-          )}
-        </FilterAuthorizations>
-      </>
+      <AutoSizer>
+        {({width, height}) => {
+          const heightWithPagination =
+            this.paginationRef?.current?.clientHeight +
+              DEFAULT_TAB_NAVIGATION_HEIGHT ||
+            DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT
+
+          const adjustedHeight = height - heightWithPagination
+          return (
+            <>
+              <TabbedPageHeader
+                childrenLeft={leftHeaderItems}
+                childrenRight={rightHeaderItems}
+                width={width}
+              />
+              <FilterAuthorizations
+                list={tokens}
+                searchTerm={searchTerm}
+                searchKeys={this.searchKeys}
+              >
+                {filteredAuths => (
+                  <TokenList
+                    tokenCount={tokens.length}
+                    auths={filteredAuths}
+                    emptyState={this.emptyState}
+                    pageWidth={width}
+                    pageHeight={adjustedHeight}
+                    searchTerm={searchTerm}
+                    sortKey={sortKey}
+                    sortDirection={sortDirection}
+                    sortType={sortType}
+                    onClickColumn={this.handleClickColumn}
+                  />
+                )}
+              </FilterAuthorizations>
+            </>
+          )
+        }}
+      </AutoSizer>
     )
   }
 
@@ -111,6 +170,11 @@ class TokensTab extends PureComponent<Props, State> {
     sortDirection: Sort,
     sortType: SortTypes
   ): void => {
+    const url = new URL(location.href)
+    url.searchParams.set('sortKey', sortKey)
+    url.searchParams.set('sortDirection', sortDirection)
+    history.replaceState(null, '', url.toString())
+
     this.setState({sortKey, sortDirection, sortType})
   }
 
@@ -119,7 +183,10 @@ class TokensTab extends PureComponent<Props, State> {
     this.setState({sortKey, sortDirection: nextSort, sortType})
   }
 
-  private handleChangeSearchTerm = (searchTerm: string): void => {
+  private handleFilterUpdate = (searchTerm: string): void => {
+    const url = new URL(location.href)
+    url.searchParams.set('searchTerm', searchTerm)
+    history.replaceState(null, '', url.toString())
     this.setState({searchTerm})
   }
 
@@ -138,7 +205,7 @@ class TokensTab extends PureComponent<Props, State> {
       return (
         <EmptyState size={ComponentSize.Large}>
           <EmptyState.Text>
-            Looks like there aren't any <b>API Tokens</b>, why not generate one?
+            Looks like there aren't any <b>Tokens</b>, why not generate one?
           </EmptyState.Text>
           <GenerateTokenDropdown />
         </EmptyState>
@@ -147,7 +214,7 @@ class TokensTab extends PureComponent<Props, State> {
 
     return (
       <EmptyState size={ComponentSize.Large}>
-        <EmptyState.Text>No API Tokens match your query</EmptyState.Text>
+        <EmptyState.Text>No Tokens match your query</EmptyState.Text>
       </EmptyState>
     )
   }

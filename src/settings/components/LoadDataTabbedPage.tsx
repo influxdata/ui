@@ -47,6 +47,10 @@ const shouldPageBeScrollable = (activeTab: string): boolean => {
   if (activeTab === 'buckets' && isFlagEnabled('fetchAllBuckets')) {
     return false
   }
+  if (activeTab === 'tokens' && isFlagEnabled('fetchAllBuckets')) {
+    return false
+  }
+
   return true
 }
 

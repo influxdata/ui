@@ -21,7 +21,6 @@ import {CancelServiceContext, VariableItems} from './CancelServiceContext'
 
 // Types
 
-
 function CancelServiceReasonsForm() {
   const {
     shortSuggestion,

@@ -6,7 +6,7 @@ export default register => {
     family: 'inputs',
     priority: 1,
     component: View,
-    featureFlag: 'flow-panel--remote-csv',
+    featureFlag: 'flowPanelRemoteCsv',
     button: 'Remote CSV',
     initial: {
       csvType: '',

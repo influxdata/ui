@@ -1,10 +1,6 @@
 // Libraries
 import React, {FC, createContext, useState, ReactChild} from 'react'
 
-// Types
-
-// Utils
-
 interface Props {
   children: ReactChild
 }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC, useContext, useMemo, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {
@@ -47,6 +47,17 @@ const DeleteOrgOverlay: FC = () => {
   const handleClose = () => {
     history.goBack()
   }
+
+  const isFormValid = useMemo(() => {
+    if (!isFlagEnabled('trackCancellations')) {
+      return hasAgreedToTerms
+    }
+
+    // Has Agreed to Terms & Conditions
+    // as well as
+    // Selected an option from the Reasons Dropdown
+    return hasAgreedToTerms && VariableItems[reason] !== VariableItems.NO_OPTION
+  }, [hasAgreedToTerms, reason])
 
   const sendDetailsToRudderstack = () => {
     const payload = {
@@ -140,9 +151,7 @@ const DeleteOrgOverlay: FC = () => {
             text="Delete Organization"
             testID="delete-organization--button"
             status={
-              hasAgreedToTerms
-                ? ComponentStatus.Default
-                : ComponentStatus.Disabled
+              isFormValid ? ComponentStatus.Default : ComponentStatus.Disabled
             }
             onClick={handleDeleteAccount}
           />

@@ -331,7 +331,7 @@ describe('Checks', () => {
         cy.getByTestID('context-history-task').click({force: true})
 
         // make sure table is present
-        cy.getByTestID('raw-data-table').should('exist')
+        // cy.getByTestID('raw-data-table').should('exist')
       }
     )
   })

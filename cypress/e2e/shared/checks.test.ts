@@ -287,7 +287,7 @@ describe('Checks', () => {
       (defaultBucketListSelector: string) => {
         cy.intercept('POST', '/api/v2/query?*', req => {
           req.continue(res => {
-            cy.log('Response for query is is: ', res)
+            console.log('Response for query is is: ', res)
           })
         }).as('query')
         // create deadman check

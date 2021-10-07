@@ -48,7 +48,7 @@ interface Props {
 interface PanelProps {
   measurementSchema: typeof MeasurementSchema
   index?: number
-  onAddUpdate: (columns: string, filename: string, index: number) => void
+  onAddUpdate: (columns: string, index: number) => void
 }
 interface AddingProps {
   index: number
@@ -230,7 +230,12 @@ const EditingPanel: FC<PanelProps> = ({
   onAddUpdate,
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
-  const [fileError, setFileError] = useState(null)
+  const [fileError, setFileError] = useState(false)
+  const [isBeingUpdated, setIsBeingUpdated] = useState(false)
+
+  const setUserWantsUpdate = () => {
+   setIsBeingUpdated(true)
+  }
 
   const handleDownloadSchema = () => {
     const {name} = measurementSchema
@@ -241,7 +246,7 @@ const EditingPanel: FC<PanelProps> = ({
 
   const handleUploadFile = (contents: string, fileName: string) => {
     const columns = getColumnsFromFile(contents)
-    onAddUpdate(columns, fileName, index)
+    onAddUpdate(columns, index)
   }
 
   const setErrorState = (hasError, message) => {
@@ -289,6 +294,7 @@ const EditingPanel: FC<PanelProps> = ({
             handleFileUpload={handleUploadFile}
             setErrorState={setErrorState}
             defaultText={'Update schema file'}
+            preFileUpload={setUserWantsUpdate}
           />
         </FlexBox>
         {errorElement}
@@ -312,16 +318,12 @@ export const MeasurementSchemaSection: FC<Props> = ({
   console.log('makinhg section.....msl??', measurementSchemaList)
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
-  const onAddUpdate = (columns, fileName, index) => {
+  const onAddUpdate = (columns, index) => {
     console.log('in onaddupdate', columns)
 
     let entry = schemaUpdates[index] || {}
     entry.columns = columns
     entry.hasUpdate = true
-
-    //don't think we need to keep this around; we don't regenerate the data...
-    // todo determine this
-    entry.fileName = fileName
 
     //next:  see how the error is set....and validity is done on add panel.
     // want to copy that.  want each of these lines to say 'valid' or not.

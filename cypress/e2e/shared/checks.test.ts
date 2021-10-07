@@ -285,7 +285,13 @@ describe('Checks', () => {
   it.only('deadman checks should render a table for non-numeric fields', () => {
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
-        cy.intercept('POST', '/api/v2/query?*').as('query')
+        cy.intercept('POST', '/api/v2/query?*', req => {
+          req.continue(res => {
+            if (res.body.statusCode >= 400) {
+              cy.log('Error in query, response is: ', res)
+            }
+          })
+        }).as('query')
         // create deadman check
         cy.getByTestID('create-check').click()
         cy.getByTestID('create-deadman-check').click()
@@ -306,7 +312,9 @@ describe('Checks', () => {
         cy.getByTestID('empty-graph--no-queries')
         cy.getByTestID('time-machine-submit-button').click()
 
-        cy.wait('@query').its('response.statusCode').should('eq',200)
+        cy.wait('@query')
+          .its('response.statusCode')
+          .should('eq', 200)
         // check for table
         cy.getByTestID('raw-data-table').should('exist')
         cy.getByTestID('raw-data--toggle').should('not.exist')

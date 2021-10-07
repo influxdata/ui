@@ -56,12 +56,10 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
   }
 
   public componentDidMount() {
-    const {bucket, buckets} = this.props
-    if (!bucket && Array.isArray(buckets) && buckets.length) {
-      const {orgID, name, id} = buckets[0]
-      this.props.onSetBucketInfo(orgID, name, id)
-    }
+    this.props.clearDataLoaders()
     this.props.onSetCurrentStepIndex(0)
+    this.props.onSetSubstepIndex(0, 0)
+    this.props.setBucketInfo('', '', '')
   }
 
   public render() {
@@ -90,8 +88,8 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
 
   private handleDismiss = () => {
     const {history, org} = this.props
-    const {onClearDataLoaders, onClearSteps} = this.props
-    onClearDataLoaders()
+    const {clearDataLoaders, onClearSteps} = this.props
+    clearDataLoaders()
     onClearSteps()
     this.setState({isVisible: false})
     history.push(`/orgs/${org.id}/load-data/telegrafs`)
@@ -169,13 +167,13 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   notify: notifyAction,
-  onClearDataLoaders: clearDataLoaders,
+  clearDataLoaders,
   onClearSteps: clearSteps,
   onDecrementCurrentStepIndex: decrementCurrentStepIndex,
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
-  onSetBucketInfo: setBucketInfo,
   onSetCurrentStepIndex: setCurrentStepIndex,
   onSetSubstepIndex: setSubstepIndex,
+  setBucketInfo,
 }
 
 const connector = connect(mstp, mdtp)

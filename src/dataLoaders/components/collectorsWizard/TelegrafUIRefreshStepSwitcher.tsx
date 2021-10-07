@@ -2,7 +2,8 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import SelectCollectorsStep2 from 'src/dataLoaders/components/collectorsWizard/select/SelectCollectorsStep2'
+import TelegrafUIRefreshCollectors from 'src/dataLoaders/components/collectorsWizard/select/TelegrafUIRefreshCollectorsStep'
+import {PluginCreateConfigurationAddBucket} from 'src/writeData/components/PluginCreateConfigurationAddBucket'
 import {PluginCreateConfigurationCustomize} from 'src/writeData/components/PluginCreateConfigurationCustomize'
 
 import VerifyCollectorsStep from 'src/dataLoaders/components/collectorsWizard/verify/VerifyCollectorsStep'
@@ -23,7 +24,10 @@ class StepSwitcher extends PureComponent<Props> {
 
     switch (stepProps.currentStepIndex) {
       case CollectorsStep.Select:
-        return <SelectCollectorsStep2 {...stepProps} />
+        if (stepProps.substepIndex === 1) {
+          return <PluginCreateConfigurationAddBucket {...stepProps} />
+        }
+        return <TelegrafUIRefreshCollectors {...stepProps} />
       case CollectorsStep.Configure:
         return <PluginCreateConfigurationCustomize {...stepProps} />
       case CollectorsStep.Verify:

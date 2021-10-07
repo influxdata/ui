@@ -305,9 +305,10 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const [newSchemas, setNewSchemas] = useState([])
   // each object (todo):  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
 
-  const updateInit = measurementSchemaList?.measurementSchemas.map(schema => (
-     {currentSchema: schema, hasUpdate:false}
-  ))
+  const updateInit = measurementSchemaList?.measurementSchemas.map(schema => ({
+    currentSchema: schema,
+    hasUpdate: false,
+  }))
   console.log('makinhg section.....msl??', measurementSchemaList)
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
@@ -322,9 +323,15 @@ export const MeasurementSchemaSection: FC<Props> = ({
     // todo determine this
     entry.fileName = fileName
 
+    //next:  see how the error is set....and validity is done on add panel.
+    // want to copy that.  want each of these lines to say 'valid' or not.
+
+    //also: add cancel button to undo the add.  because need a way to zero it out
+    // (can always re-upload anotherfile if maake a mistake, but want an easy out)
+
     schemaUpdates[index] = entry
 
-    console.log('about to set schema updates: ', schemaUpdates )
+    console.log('about to set schema updates: ', schemaUpdates)
     setSchemaUpdates(schemaUpdates)
   }
 

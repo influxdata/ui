@@ -267,6 +267,8 @@ const EditingPanel: FC<PanelProps> = ({
   const cancelUpdate = () => {
     setIsBeingUpdated(false)
     toggleUpdate(false, index)
+    setFileError(false)
+    setFileErrorMessage(null)
   }
 
   const handleDownloadSchema = () => {
@@ -327,7 +329,7 @@ const EditingPanel: FC<PanelProps> = ({
             setErrorState={setErrorState}
             defaultText={'Update schema file'}
             preFileUpload={setUserWantsUpdate}
-            allowCancelling={true}
+            onCancel={cancelUpdate}
           />
         </FlexBox>
         {errorElement}

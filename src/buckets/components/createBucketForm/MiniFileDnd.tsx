@@ -17,7 +17,7 @@ interface Props {
   alreadySetFileName?: string
   defaultText?: string
   preFileUpload?: () => void
-  allowCancelling?: boolean
+  onCancel?: () => void
 }
 
 export const setGrammar = (fileTypes: string[]) => {
@@ -67,6 +67,10 @@ export const setGrammar = (fileTypes: string[]) => {
  *  The style changes when a file is hovering over this component,
  *  to show that it is active
  *
+ *  onCancel: optional.  if this method is present, show a 'cancel' button (a red x) to the right of the dropzone
+ *  when there is a file present.  when the cancel button is pressed, besides zero-ing out any local state,
+ *  the method is called
+ *
  * read here for drag and drop file api:
  * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
  * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
@@ -79,12 +83,12 @@ export const MiniFileDnd: FC<Props> = ({
   alreadySetFileName,
   defaultText,
   preFileUpload,
-  allowCancelling,
+  onCancel,
 }) => {
   const [fileName, setFileName] = useState(alreadySetFileName)
   const [dropAreaActive, setDropAreaActive] = useState(false)
   const [hasError, setHasError] = useState(null)
-  const [dirty, setDirty] = useState(false)
+  const [isDirty, setDirty] = useState(false)
 
   function dragOverHandler(ev) {
     setDropAreaActive(true)
@@ -193,15 +197,19 @@ export const MiniFileDnd: FC<Props> = ({
     active: dropAreaActive,
   })
 
+  // this is only called if onCancel is present, so don't need to check if it is there
   const doCancel = () => {
     console.log('would cancel here TODO')
+    setFileName(null)
+    setHasError(false)
+    //todo: call onCancel; to zero out any error messages on the parent
+    // and do anything the parent needs on the cancel......
     setDirty(false)
+    onCancel()
   }
 
   const cancelButton =
-    dirty && allowCancelling ? (
-      <Button text="cancel" onClick={doCancel} />
-    ) : null
+    isDirty && onCancel ? <Button text="cancel" onClick={doCancel} /> : null
 
   return (
     <FlexBox direction={FlexDirection.Column} alignItems={AlignItems.Center}>

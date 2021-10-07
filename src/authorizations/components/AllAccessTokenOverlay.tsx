@@ -39,18 +39,14 @@ interface OwnProps {
   onClose: () => void
 }
 
-
 const AllAccessTokenOverlay: FC<OwnProps> = props => {
-  
   const {onClose} = useContext(OverlayContext)
   const dispatch = useDispatch()
   const [description, setDescription] = useState('')
   const {id: orgID} = useSelector(getOrg)
   const {id: meID} = useSelector(getMe)
-  
-  
-  const handleSave = () => {
 
+  const handleSave = () => {
     const token: Authorization = {
       orgID,
       description: description,
@@ -61,7 +57,7 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
     dispatch(showOverlay('access-token', null, () => dismissOverlay()))
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const {value} = e.target
     setDescription(value)
   }
@@ -70,56 +66,52 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
     props.onClose()
   }
 
-    return (
-      <Overlay.Container maxWidth={500}>
-        <Overlay.Header
-          title="Generate All Access API Token"
-          onDismiss={onClose}
-        />
-        <Overlay.Body>
-          <Form onSubmit={handleSave}>
-            <FlexBox
-              alignItems={AlignItems.Center}
-              direction={FlexDirection.Column}
-              margin={ComponentSize.Large}
-            >
-              <Alert
-                icon={IconFont.AlertTriangle}
-                color={ComponentColor.Warning}
-              >
-                This token will be able to create, update, delete, read, and
-                write to anything in this organization
-              </Alert>
-              <Form.Element label="Description">
-                <Input
-                  placeholder="Describe this new API token"
-                  value={description}
-                  onChange={handleInputChange}
-                  testID="all-access-token-input"
-                />
-              </Form.Element>
+  return (
+    <Overlay.Container maxWidth={500}>
+      <Overlay.Header
+        title="Generate All Access API Token"
+        onDismiss={onClose}
+      />
+      <Overlay.Body>
+        <Form onSubmit={handleSave}>
+          <FlexBox
+            alignItems={AlignItems.Center}
+            direction={FlexDirection.Column}
+            margin={ComponentSize.Large}
+          >
+            <Alert icon={IconFont.AlertTriangle} color={ComponentColor.Warning}>
+              This token will be able to create, update, delete, read, and write
+              to anything in this organization
+            </Alert>
+            <Form.Element label="Description">
+              <Input
+                placeholder="Describe this new API token"
+                value={description}
+                onChange={handleInputChange}
+                testID="all-access-token-input"
+              />
+            </Form.Element>
 
-              <Form.Footer>
-                <Button
-                  text="Cancel"
-                  icon={IconFont.Remove}
-                  onClick={handleDismiss}
-                />
+            <Form.Footer>
+              <Button
+                text="Cancel"
+                icon={IconFont.Remove}
+                onClick={handleDismiss}
+              />
 
-                <Button
-                  text="Save"
-                  testID="button--save"
-                  icon={IconFont.Checkmark}
-                  color={ComponentColor.Success}
-                  type={ButtonType.Submit}
-                />
-              </Form.Footer>
-            </FlexBox>
-          </Form>
-        </Overlay.Body>
-      </Overlay.Container>
-    )
+              <Button
+                text="Save"
+                testID="button--save"
+                icon={IconFont.Checkmark}
+                color={ComponentColor.Success}
+                type={ButtonType.Submit}
+              />
+            </Form.Footer>
+          </FlexBox>
+        </Form>
+      </Overlay.Body>
+    </Overlay.Container>
+  )
 }
-
 
 export default AllAccessTokenOverlay

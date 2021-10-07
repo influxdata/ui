@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC, useContext, useMemo, useState} from 'react'
 import {
   Overlay,
   Alert,
@@ -14,6 +14,13 @@ import {
 import TermsCancellationOverlay from 'src/billing/components/PayAsYouGo/TermsCancellationOverlay'
 import ConfirmCancellationOverlay from 'src/billing/components/PayAsYouGo/ConfirmCancellationOverlay'
 import {BillingContext} from 'src/billing/context/billing'
+import {CancelServiceContext, VariableItems} from './CancelServiceContext'
+import {track} from 'rudder-sdk-js'
+import {event} from 'src/cloud/utils/reporting'
+import {useSelector} from 'react-redux'
+import {getQuartzMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   onHideOverlay: () => void
@@ -23,11 +30,39 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   const {handleCancelAccount} = useContext(BillingContext)
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const [hasClickedCancel, setHasClickedCancel] = useState(false)
+  const {
+    reason,
+    canContactForFeedback,
+    suggestions,
+    shortSuggestion,
+  } = useContext(CancelServiceContext)
+  const quartzMe = useSelector(getQuartzMe)
+  const org = useSelector(getOrg)
+
+  const sendDetailsToRudderstack = () => {
+    if (!isFlagEnabled('rudderStackReporting') || !isFlagEnabled('trackCancellations')) {
+      return
+    }
+
+    const payload = {
+      org: org.id,
+      tier: quartzMe?.accountType,
+      email: quartzMe?.email,
+      alternativeProduct: shortSuggestion,
+      suggestions,
+      reason: VariableItems[reason],
+      canContactForFeedback: canContactForFeedback ? 'true' : 'false',
+    }
+
+    event('Cancel Org Executed', payload)
+    track('CancelOrgExecuted', payload)
+  }
 
   const handleCancelService = () => {
     if (!hasClickedCancel) {
       setHasClickedCancel(true)
     } else {
+      sendDetailsToRudderstack()
       handleCancelAccount()
     }
   }
@@ -36,6 +71,16 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     setHasClickedCancel(false)
     onHideOverlay()
   }
+
+  const isFormValid = useMemo(() => {
+    if (!isFlagEnabled('trackCancellations')) {
+      return hasAgreedToTerms
+    }
+    // Has Agreed to Terms & Conditions
+    // as well as
+    // Selected an option from the Reasons Dropdown
+    return hasAgreedToTerms && VariableItems[reason] !== VariableItems.NO_OPTION
+  }, [hasAgreedToTerms, reason])
 
   return (
     <Overlay visible={true} className="cancellation-overlay">
@@ -69,9 +114,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
             }
             size={ComponentSize.Small}
             status={
-              hasAgreedToTerms
-                ? ComponentStatus.Default
-                : ComponentStatus.Disabled
+              isFormValid ? ComponentStatus.Default : ComponentStatus.Disabled
             }
             testID="cancel-service-confirmation--button"
           />

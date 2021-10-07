@@ -5,7 +5,8 @@ import {isEmpty, capitalize} from 'lodash'
 import {Accordion} from '@influxdata/clockface'
 
 import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
-import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
+import {IndividualAccordionBody} from 'src/authorizations/components/redesigned/IndividualAccordionBody'
+import {AllAccordionBody} from './AllAccordionBody'
 
 interface Props {
   permissions: any
@@ -22,10 +23,11 @@ export class EditResourceAccordion extends Component<Props> {
       const resourceName = capitalize(key)
       return (
         <Accordion key={key} expanded={true}>
-          <ResourceAccordionHeader
+          <ResourceAccordionHeader resourceName={resourceName} />
+          <AllAccordionBody
             resourceName={resourceName}
             permissions={permissions[key]}
-            disabled={true}
+            disabled={false}
           />
           {resourceName === 'Telegrafs' ||
             (resourceName === 'Buckets' &&
@@ -40,7 +42,7 @@ export class EditResourceAccordion extends Component<Props> {
     const {permissions} = this.props
     if (resourceName === 'Telegrafs') {
       return (
-        <ResourceAccordionBody
+        <IndividualAccordionBody
           resourceName={resource}
           permissions={permissions[resource].sublevelPermissions}
           title="Individual Telegraf Configuration Names"
@@ -49,7 +51,7 @@ export class EditResourceAccordion extends Component<Props> {
       )
     } else if (resourceName === 'Buckets') {
       return (
-        <ResourceAccordionBody
+        <IndividualAccordionBody
           resourceName={resource}
           permissions={permissions[resource].sublevelPermissions}
           title="Individual Bucket Names"

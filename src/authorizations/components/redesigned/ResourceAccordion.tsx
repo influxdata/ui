@@ -8,7 +8,7 @@ import {Accordion} from '@influxdata/clockface'
 // Components
 import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
 import {AllAccordionBody} from 'src/authorizations/components/redesigned/AllAccordionBody'
-import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
+import {IndividualAccordionBody} from 'src/authorizations/components/redesigned/IndividualAccordionBody'
 import FilterList from 'src/shared/components/FilterList'
 
 // Types
@@ -71,7 +71,7 @@ class ResourceAccordion extends Component<OwnProps> {
           searchKeys={['name']}
         >
           {filteredNames => (
-            <ResourceAccordionBody
+            <IndividualAccordionBody
               resourceName={resource}
               permissions={filteredNames}
               onToggle={onIndividualToggle}
@@ -94,7 +94,7 @@ class ResourceAccordion extends Component<OwnProps> {
           searchKeys={['name']}
         >
           {filteredNames => (
-            <ResourceAccordionBody
+            <IndividualAccordionBody
               resourceName={resource}
               permissions={filteredNames}
               onToggle={onIndividualToggle}

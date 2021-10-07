@@ -23,7 +23,7 @@ interface Props {
   disabled: boolean
 }
 
-export const ResourceAccordionBody: FC<Props> = props => {
+export const IndividualAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title, disabled} = props
 
   const handleReadToggle = id => {

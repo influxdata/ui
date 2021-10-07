@@ -264,6 +264,11 @@ const EditingPanel: FC<PanelProps> = ({
     console.log('isbeing updated??', isBeingUpdated)
   }
 
+  const cancelUpdate = () => {
+    setIsBeingUpdated(false)
+    toggleUpdate(false, index)
+  }
+
   const handleDownloadSchema = () => {
     const {name} = measurementSchema
     const contents = JSON.stringify(measurementSchema.columns)
@@ -292,6 +297,10 @@ const EditingPanel: FC<PanelProps> = ({
       style={{wordBreak: 'break-word'}}
       message={fileErrorMessage}
     />
+  ) : null
+
+  const cancelUpdateButton = isBeingUpdated ? (
+    <Button text="Cancel Update" onClick={cancelUpdate} />
   ) : null
 
   return (
@@ -325,6 +334,7 @@ const EditingPanel: FC<PanelProps> = ({
           />
         </FlexBox>
         {errorElement}
+        {cancelUpdateButton}
       </FlexBox>
     </Panel>
   )
@@ -351,6 +361,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     let entry = schemaUpdates[index] || {}
     entry.columns = columns
     entry.hasUpdate = true
+    entry.valid = true
 
     //next:  see how the error is set....and validity is done on add panel.
     // want to copy that.  want each of these lines to say 'valid' or not.

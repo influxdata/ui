@@ -44,6 +44,10 @@ import {getOrg} from 'src/organizations/selectors'
 // Utils
 import {isSystemBucket} from 'src/buckets/constants'
 
+// Constants
+import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
+const TELEGRAF_UI_REFRESH_OVERLAY_DEFAULT_WIDTH = 1200
+
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
 
@@ -63,16 +67,24 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
   }
 
   public render() {
-    const {currentStepIndex} = this.props
+    const {currentStepIndex, substepIndex} = this.props
     let overlayBodyClassName = 'data-loading--overlay'
 
-    if (currentStepIndex === 1) {
+    let maxWidth = TELEGRAF_UI_REFRESH_OVERLAY_DEFAULT_WIDTH
+    if (currentStepIndex === 0 && substepIndex === 1) {
+      maxWidth = BUCKET_OVERLAY_WIDTH
+    }
+
+    if (
+      (currentStepIndex === 0 && substepIndex === 1) ||
+      currentStepIndex === 1
+    ) {
       overlayBodyClassName = ''
     }
 
     return (
       <Overlay visible={this.state.isVisible}>
-        <Overlay.Container maxWidth={1200}>
+        <Overlay.Container maxWidth={maxWidth}>
           <Overlay.Header
             title="Create a Telegraf Configuration"
             onDismiss={this.handleDismiss}
@@ -110,7 +122,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
       onDecrementCurrentStepIndex,
       onIncrementCurrentStepIndex,
       onSetSubstepIndex,
-      substep,
+      substepIndex,
       telegrafPlugins,
     } = this.props
 
@@ -130,7 +142,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
       pluginConfigName: selectedPluginName,
       setIsValidConfiguration: this.handleSetIsValidConfiguration,
       setPluginConfig: this.handleSetPluginConfig,
-      substepIndex: typeof substep === 'number' ? substep : 0,
+      substepIndex,
     }
   }
 }
@@ -157,7 +169,7 @@ const mstp = (state: AppState) => {
     telegrafPlugins,
     text: telegrafEditor.text,
     currentStepIndex: currentStep,
-    substep,
+    substepIndex: typeof substep === 'number' ? substep : 0,
     username: name,
     bucket,
     buckets: nonSystemBuckets,

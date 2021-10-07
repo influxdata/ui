@@ -234,7 +234,7 @@ const EditingPanel: FC<PanelProps> = ({
   const [isBeingUpdated, setIsBeingUpdated] = useState(false)
 
   const setUserWantsUpdate = () => {
-   setIsBeingUpdated(true)
+    setIsBeingUpdated(true)
   }
 
   const handleDownloadSchema = () => {

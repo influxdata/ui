@@ -9,7 +9,7 @@ interface Props {
   setErrorState: (hasError: boolean, message?: string) => void
   alreadySetFileName?: string
   defaultText?: string
-  preFileUpload?:()=>void
+  preFileUpload?: () => void
 }
 
 export const setGrammar = (fileTypes: string[]) => {
@@ -70,7 +70,7 @@ export const MiniFileDnd: FC<Props> = ({
   setErrorState,
   alreadySetFileName,
   defaultText,
-    preFileUpload,
+  preFileUpload,
 }) => {
   const [fileName, setFileName] = useState(alreadySetFileName)
   const [dropAreaActive, setDropAreaActive] = useState(false)
@@ -100,7 +100,7 @@ export const MiniFileDnd: FC<Props> = ({
     reader.readAsText(file)
     reader.onload = () => {
       const fileName = file.name
-      if (preFileUpload){
+      if (preFileUpload) {
         preFileUpload()
       }
       try {

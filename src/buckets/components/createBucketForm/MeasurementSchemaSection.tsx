@@ -299,7 +299,6 @@ const EditingPanel: FC<PanelProps> = ({
     />
   ) : null
 
-
   return (
     <Panel className="measurement-schema-panel-container">
       <FlexBox
@@ -332,7 +331,6 @@ const EditingPanel: FC<PanelProps> = ({
           />
         </FlexBox>
         {errorElement}
-
       </FlexBox>
     </Panel>
   )

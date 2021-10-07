@@ -3,7 +3,11 @@ import React, {useState, FC, useRef} from 'react'
 import classnames from 'classnames'
 
 import {
-    Button,
+  AlignItems,
+  Button,
+  ComponentSize,
+  FlexBox,
+  FlexDirection,
 } from '@influxdata/clockface'
 interface Props {
   allowedExtensions: string
@@ -14,7 +18,6 @@ interface Props {
   defaultText?: string
   preFileUpload?: () => void
   allowCancelling?: boolean
-
 }
 
 export const setGrammar = (fileTypes: string[]) => {
@@ -76,11 +79,12 @@ export const MiniFileDnd: FC<Props> = ({
   alreadySetFileName,
   defaultText,
   preFileUpload,
-    allowCancelling,
+  allowCancelling,
 }) => {
   const [fileName, setFileName] = useState(alreadySetFileName)
   const [dropAreaActive, setDropAreaActive] = useState(false)
   const [hasError, setHasError] = useState(null)
+  const [dirty, setDirty] = useState(false)
 
   function dragOverHandler(ev) {
     setDropAreaActive(true)
@@ -106,6 +110,7 @@ export const MiniFileDnd: FC<Props> = ({
     reader.readAsText(file)
     reader.onload = () => {
       const fileName = file.name
+      setDirty(true)
       if (preFileUpload) {
         preFileUpload()
       }
@@ -190,30 +195,31 @@ export const MiniFileDnd: FC<Props> = ({
 
   const doCancel = () => {
     console.log('would cancel here TODO')
+    setDirty(false)
   }
 
-  const cancelButton = allowCancelling ? (
-      <Button text='cancel'
-              onClick={doCancel}/>
-  ) : null
+  const cancelButton =
+    dirty && allowCancelling ? (
+      <Button text="cancel" onClick={doCancel} />
+    ) : null
 
   return (
-      <>
-    <div
-      id="drop_zone"
-      className={dropZoneClasses}
-      onDrop={dropHandler}
-      onDragOver={dragOverHandler}
-      onDragLeave={dragLeaveHandler}
-      onClick={handleFileOpen}
-      data-testid="dndContainer"
-    >
-      <div data-testid="displayArea" className={displayAreaClasses}>
-        {displayText}
+    <FlexBox direction={FlexDirection.Column} alignItems={AlignItems.Center}>
+      <div
+        id="drop_zone"
+        className={dropZoneClasses}
+        onDrop={dropHandler}
+        onDragOver={dragOverHandler}
+        onDragLeave={dragLeaveHandler}
+        onClick={handleFileOpen}
+        data-testid="dndContainer"
+      >
+        <div data-testid="displayArea" className={displayAreaClasses}>
+          {displayText}
+        </div>
+        {inputElement}
       </div>
-      {inputElement}
-    </div>
-        {cancelButton}
-        </>
+      {cancelButton}
+    </FlexBox>
   )
 }

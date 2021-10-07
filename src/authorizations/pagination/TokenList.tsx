@@ -6,6 +6,7 @@ import isEqual from 'lodash/isEqual'
 // Components
 import {Overlay, PaginationNav, ResourceList} from '@influxdata/clockface'
 import TokenRow from 'src/authorizations/components/TokenRow'
+import {TokenRow as TokenRowRedesigned} from 'src/authorizations/components/redesigned/TokenRow'
 import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
 import EditTokenOverlay from 'src/authorizations/components/redesigned/EditTokenOverlay'
 
@@ -153,6 +154,11 @@ export default class TokenList extends PureComponent<Props, State> {
       sortType
     )
 
+    let TokenRowComponent = TokenRow
+    if (isFlagEnabled('tokensUIRedesign')) {
+      TokenRowComponent = TokenRowRedesigned
+    }
+
     const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
     const endIndex = Math.min(
       startIndex + this.rowsPerPage,
@@ -165,7 +171,7 @@ export default class TokenList extends PureComponent<Props, State> {
 
       if (auth) {
         paginatedAuths.push(
-          <TokenRow
+          <TokenRowComponent
             key={auth.id}
             auth={auth}
             onClickDescription={this.handleClickDescription}

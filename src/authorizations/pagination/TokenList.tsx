@@ -120,11 +120,13 @@ export default class TokenList extends PureComponent<Props, State> {
           onChange={this.paginate}
         />
 
-        {isTokenOverlayVisible && isFlagEnabled('tokensUIRedesign') ? (
-          <EditTokenOverlay
-            auth={authInView}
-            onDismissOverlay={this.handleDismissOverlay}
-          />
+        {isFlagEnabled('tokensUIRedesign') ? (
+          <Overlay visible={isTokenOverlayVisible}>
+            <EditTokenOverlay
+              auth={authInView}
+              onDismissOverlay={this.handleDismissOverlay}
+            />
+          </Overlay>
         ) : (
           <Overlay visible={isTokenOverlayVisible}>
             <ViewTokenOverlay
@@ -154,11 +156,6 @@ export default class TokenList extends PureComponent<Props, State> {
       sortType
     )
 
-    let TokenRowComponent = TokenRow
-    if (isFlagEnabled('tokensUIRedesign')) {
-      TokenRowComponent = TokenRowRedesigned
-    }
-
     const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
     const endIndex = Math.min(
       startIndex + this.rowsPerPage,
@@ -170,13 +167,23 @@ export default class TokenList extends PureComponent<Props, State> {
       const auth = sortedAuths[i]
 
       if (auth) {
-        paginatedAuths.push(
-          <TokenRowComponent
-            key={auth.id}
-            auth={auth}
-            onClickDescription={this.handleClickDescription}
-          />
-        )
+        if (isFlagEnabled('tokensUIRedesign')) {
+          paginatedAuths.push(
+            <TokenRowRedesigned
+              key={auth.id}
+              auth={auth}
+              onClickDescription={this.handleClickDescription}
+            />
+          )
+        } else {
+          paginatedAuths.push(
+            <TokenRow
+              key={auth.id}
+              auth={auth}
+              onClickDescription={this.handleClickDescription}
+            />
+          )
+        }
       }
     }
 

@@ -39,7 +39,7 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 import {OwnBucket} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 import {event} from 'src/cloud/utils/reporting'
-import {areNewSchemasValid} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
+import {areNewSchemasValid, areSchemaUpdatesValid} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 import {BUCKET_OVERLAY_WIDTH} from '../../constants'
 
 let SchemaType = null,
@@ -81,6 +81,9 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     newMeasurementSchemaRequests,
     setNewMeasurementSchemaRequests,
   ] = useState(null)
+
+  const [measurementSchemaUpdates, setMeasurementSchemaUpdates] = useState(null)
+
   const [showSchemaValidation, setShowSchemaValidation] = useState(false)
 
   const handleClose = useCallback(() => {
@@ -142,6 +145,10 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     }
   }
 
+  const handleMeasurementSchemaUpdates = (schemas: any[]) => {
+    setMeasurementSchemaUpdates(schemas)
+  }
+
   const handleChangeRuleType = (ruleType: 'expire' | null) => {
     if (ruleType) {
       setBucketDraft({
@@ -160,10 +167,11 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
   const isValid = () => {
     // are there measurement schemas?
-    const result = areNewSchemasValid(newMeasurementSchemaRequests)
+    const newSchemasValid = areNewSchemasValid(newMeasurementSchemaRequests)
 
-    if (result) {
-      return result
+
+    if (newSchemasValid && areSchemaUpdatesValid(measurementSchemaUpdates)) {
+      return true
     }
     // not all true :(
 
@@ -240,6 +248,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               schemaType={schemaType as typeof SchemaType}
               measurementSchemaList={measurementSchemaList}
               onAddNewMeasurementSchemas={handleNewMeasurementSchemas}
+              onUpdateMeasurementSchemas={handleMeasurementSchemaUpdates}
               showSchemaValidation={showSchemaValidation}
             />
           </Overlay.Body>

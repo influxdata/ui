@@ -348,7 +348,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     currentSchema: schema,
     hasUpdate: false,
   }))
-  console.log('makinhg section.....msl??', measurementSchemaList)
+  console.log('making section.....msl??', measurementSchemaList)
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
   const onAddUpdate = (columns, index) => {

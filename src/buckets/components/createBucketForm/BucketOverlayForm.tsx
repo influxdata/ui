@@ -63,10 +63,12 @@ interface Props {
   showSchemaValidation?: boolean
 }
 
+//todo: change the measurementSchemaUpdates to the real type!
 interface State {
   showAdvanced: boolean
   schemaType: 'implicit' | 'explicit'
   newMeasurementSchemas: typeof MeasurementSchemaCreateRequest[]
+  measurementSchemaUpdates: any[]
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
@@ -74,6 +76,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     showAdvanced: false,
     schemaType: 'implicit',
     newMeasurementSchemas: [],
+    measurementSchemaUpdates: [],
   }
 
   onChangeSchemaTypeInternal = (newSchemaType: typeof SchemaType) => {
@@ -84,6 +87,11 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   onAddSchemasInternal = (schemas, resetValidation) => {
     this.props.onAddNewMeasurementSchemas(schemas, resetValidation)
     this.setState({newMeasurementSchemas: schemas})
+  }
+
+  onUpdateSchemasInternal = schemas => {
+    this.props.onUpdateMeasurementSchemas(schemas)
+    this.setState({measurementSchemaUpdates: schemas})
   }
 
   public render() {
@@ -115,6 +123,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
         key="measurementSchemaSection"
         onAddSchemas={this.onAddSchemasInternal}
         showSchemaValidation={showSchemaValidation}
+        onUpdateSchemas={this.onUpdateSchemasInternal}
       />
     )
 

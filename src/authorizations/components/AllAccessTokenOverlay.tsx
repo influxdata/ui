@@ -1,6 +1,5 @@
-// Libraries
-import React, {FC, useState, useContext} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import React, {PureComponent, ChangeEvent} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
@@ -20,98 +19,122 @@ import {
 
 // Actions
 import {createAuthorization} from 'src/authorizations/actions/thunks'
-import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-
-// Contexts
-import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
-
-// Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
 
+// Decorators
+import {ErrorHandling} from 'src/shared/decorators/errors'
+
 // Types
-import {Authorization} from 'src/types'
+import {AppState, Authorization} from 'src/types'
 
 interface OwnProps {
   onClose: () => void
 }
 
-const AllAccessTokenOverlay: FC<OwnProps> = props => {
-  const {onClose} = useContext(OverlayContext)
-  const dispatch = useDispatch()
-  const [description, setDescription] = useState('')
-  const {id: orgID} = useSelector(getOrg)
-  const {id: meID} = useSelector(getMe)
-
-  const handleSave = () => {
-    const token: Authorization = {
-      orgID,
-      description: description,
-      permissions: allAccessPermissions(orgID, meID),
-    }
-    dispatch(createAuthorization(token))
-    handleDismiss()
-    dispatch(showOverlay('access-token', null, () => dismissOverlay()))
-  }
-
-  const handleInputChange = e => {
-    const {value} = e.target
-    setDescription(value)
-  }
-
-  const handleDismiss = () => {
-    props.onClose()
-  }
-
-  return (
-    <Overlay.Container maxWidth={500}>
-      <Overlay.Header
-        title="Generate All Access API Token"
-        onDismiss={onClose}
-      />
-      <Overlay.Body>
-        <Form onSubmit={handleSave}>
-          <FlexBox
-            alignItems={AlignItems.Center}
-            direction={FlexDirection.Column}
-            margin={ComponentSize.Large}
-          >
-            <Alert icon={IconFont.AlertTriangle} color={ComponentColor.Warning}>
-              This token will be able to create, update, delete, read, and write
-              to anything in this organization
-            </Alert>
-            <Form.Element label="Description">
-              <Input
-                placeholder="Describe this new API token"
-                value={description}
-                onChange={handleInputChange}
-                testID="all-access-token-input"
-              />
-            </Form.Element>
-
-            <Form.Footer>
-              <Button
-                text="Cancel"
-                icon={IconFont.Remove}
-                onClick={handleDismiss}
-              />
-
-              <Button
-                text="Save"
-                testID="button--save"
-                icon={IconFont.Checkmark}
-                color={ComponentColor.Success}
-                type={ButtonType.Submit}
-              />
-            </Form.Footer>
-          </FlexBox>
-        </Form>
-      </Overlay.Body>
-    </Overlay.Container>
-  )
+interface State {
+  description: string
 }
 
-export default AllAccessTokenOverlay
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = OwnProps & ReduxProps
+
+@ErrorHandling
+class AllAccessTokenOverlay extends PureComponent<Props, State> {
+  public state = {description: ''}
+
+  render() {
+    const {description} = this.state
+
+    return (
+      <Overlay.Container maxWidth={500}>
+        <Overlay.Header
+          title="Generate All Access API Token"
+          onDismiss={this.handleDismiss}
+        />
+        <Overlay.Body>
+          <Form onSubmit={this.handleSave}>
+            <FlexBox
+              alignItems={AlignItems.Center}
+              direction={FlexDirection.Column}
+              margin={ComponentSize.Large}
+            >
+              <Alert
+                icon={IconFont.AlertTriangle}
+                color={ComponentColor.Warning}
+              >
+                This token will be able to create, update, delete, read, and
+                write to anything in this organization
+              </Alert>
+              <Form.Element label="Description">
+                <Input
+                  placeholder="Describe this new API token"
+                  value={description}
+                  onChange={this.handleInputChange}
+                  testID="all-access-token-input"
+                />
+              </Form.Element>
+
+              <Form.Footer>
+                <Button
+                  text="Cancel"
+                  icon={IconFont.Remove}
+                  onClick={this.handleDismiss}
+                />
+
+                <Button
+                  text="Save"
+                  testID="button--save"
+                  icon={IconFont.Checkmark}
+                  color={ComponentColor.Success}
+                  type={ButtonType.Submit}
+                />
+              </Form.Footer>
+            </FlexBox>
+          </Form>
+        </Overlay.Body>
+      </Overlay.Container>
+    )
+  }
+
+  private handleSave = () => {
+    const {orgID, meID, onCreateAuthorization} = this.props
+
+    const token: Authorization = {
+      orgID,
+      description: this.state.description,
+      permissions: allAccessPermissions(orgID, meID),
+    }
+    onCreateAuthorization(token)
+
+    this.handleDismiss()
+  }
+
+  private handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const {value} = e.target
+
+    this.setState({description: value})
+  }
+
+  private handleDismiss = () => {
+    this.props.onClose()
+  }
+}
+
+const mstp = (state: AppState) => {
+  return {
+    orgID: getOrg(state).id,
+    meID: getMe(state).id,
+  }
+}
+
+const mdtp = {
+  onCreateAuthorization: createAuthorization,
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(AllAccessTokenOverlay)

@@ -39,7 +39,10 @@ import {getBucketFailed} from 'src/shared/copy/notifications'
 import {OwnBucket} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 import {event} from 'src/cloud/utils/reporting'
-import {areNewSchemasValid, areSchemaUpdatesValid} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
+import {
+  areNewSchemasValid,
+  areSchemaUpdatesValid,
+} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 import {BUCKET_OVERLAY_WIDTH} from '../../constants'
 
 let SchemaType = null,
@@ -168,7 +171,6 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   const isValid = () => {
     // are there measurement schemas?
     const newSchemasValid = areNewSchemasValid(newMeasurementSchemaRequests)
-
 
     if (newSchemasValid && areSchemaUpdatesValid(measurementSchemaUpdates)) {
       return true

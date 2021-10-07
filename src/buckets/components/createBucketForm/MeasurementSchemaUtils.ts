@@ -98,18 +98,14 @@ export const areNewSchemasValid = newMeasurementSchemaRequests => {
 }
 
 export const areSchemaUpdatesValid = schemaInfo => {
-
-  const haveUpdates =
-      Array.isArray(schemaInfo) &&
-      schemaInfo.length
+  const haveUpdates = Array.isArray(schemaInfo) && schemaInfo.length
 
   if (!haveUpdates) {
     // no updates, nothing to validate, everything is fine
     return true
   }
-  return schemaInfo.every(schemaInfo => !schemaInfo.hasUpdate || (schemaInfo.hasUpdate && schemaInfo.isValid))
-}
-
-
-
+  return schemaInfo.every(
+    schemaInfo =>
+      !schemaInfo.hasUpdate || (schemaInfo.hasUpdate && schemaInfo.isValid)
+  )
 }

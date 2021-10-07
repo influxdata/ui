@@ -111,7 +111,7 @@ const schemaUpdate2 = [
   {
     valid: true,
     hasUpdate: true,
-  }
+  },
 ]
 
 const schemaUpdate3 = [
@@ -133,7 +133,7 @@ const schemaUpdate4 = [
   {
     valid: true,
     hasUpdate: true,
-  }
+  },
 ]
 
 const schemaUpdate5 = [

@@ -49,7 +49,7 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
   const handleSave = () => {
     const token: Authorization = {
       orgID,
-      description: description,
+      description,
       permissions: allAccessPermissions(orgID, meID),
     }
     dispatch(createAuthorization(token))

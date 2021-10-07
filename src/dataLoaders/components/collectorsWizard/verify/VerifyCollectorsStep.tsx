@@ -3,9 +3,15 @@ import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
 
 // Components
-import {Form, DapperScrollbars} from '@influxdata/clockface'
+import {
+  Form,
+  DapperScrollbars,
+  Button,
+  ComponentColor,
+  ButtonType,
+  FlexBox,
+} from '@influxdata/clockface'
 import DataStreaming from 'src/dataLoaders/components/verifyStep/DataStreaming'
-import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 
 // Types
 import {CollectorsStepProps} from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
@@ -13,6 +19,7 @@ import {AppState} from 'src/types'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 type OwnProps = CollectorsStepProps
 
@@ -24,19 +31,12 @@ interface StateProps {
   token: string
 }
 
-export type Props = StateProps & OwnProps
+export type Props = StateProps & OwnProps & RouteComponentProps<{orgID: string}>
 
 @ErrorHandling
 export class VerifyCollectorStep extends PureComponent<Props> {
   public render() {
-    const {
-      telegrafConfigID,
-      bucket,
-      org,
-      onDecrementCurrentStepIndex,
-      onExit,
-      token,
-    } = this.props
+    const {telegrafConfigID, bucket, org, onExit, token} = this.props
 
     return (
       <Form onSubmit={onExit} className="data-loading--form">
@@ -57,13 +57,27 @@ export class VerifyCollectorStep extends PureComponent<Props> {
             configID={telegrafConfigID}
           />
         </DapperScrollbars>
-        <OnboardingButtons
-          onClickBack={onDecrementCurrentStepIndex}
-          nextButtonText="Finish"
-          className="data-loading--button-container"
-        />
+
+        <FlexBox className="data-loading--button-container">
+          <Button
+            color={ComponentColor.Primary}
+            text="Finish"
+            type={ButtonType.Submit}
+            testID="next"
+            onClick={this.goToTelegrafPage}
+          />
+        </FlexBox>
       </Form>
     )
+  }
+
+  private goToTelegrafPage = () => {
+    const {
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+    this.props.history.push(`/orgs/${orgID}/load-data/telegrafs`)
   }
 }
 
@@ -81,4 +95,6 @@ const mstp = ({
   token,
 })
 
-export default connect<StateProps, {}, OwnProps>(mstp)(VerifyCollectorStep)
+const connector = connect<StateProps>(mstp)
+
+export default connector(withRouter(VerifyCollectorStep))

@@ -25,9 +25,10 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
 
 interface Props {
   contentID: string
+  onCopy?: () => void
 }
 
-const ClientCodeCopyPage: FC<Props> = ({contentID}) => {
+const ClientCodeCopyPage: FC<Props> = ({contentID, onCopy}) => {
   const def = CLIENT_DEFINITIONS[contentID]
 
   let sampleCode = `${def.initialize}${def.execute}`
@@ -52,6 +53,7 @@ const ClientCodeCopyPage: FC<Props> = ({contentID}) => {
           <CodeSampleBlock
             name="Initialize and Execute Flux"
             sample={sampleCode}
+            onCopy={onCopy}
           />
         </div>
       </div>

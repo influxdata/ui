@@ -1,11 +1,17 @@
 // Libraries
 import React, {Component} from 'react'
-import {isEmpty, capitalize} from 'lodash'
+import {isEmpty} from 'lodash'
 
 // Clockface
 import {Accordion} from '@influxdata/clockface'
+
+// Components
 import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
 import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
+import FilterList from 'src/shared/components/FilterList'
+
+// Types
+import {Resource} from 'src/client'
 
 interface OwnProps {
   resources: string[]
@@ -16,7 +22,10 @@ interface OwnProps {
     id: number,
     permission: string
   ) => void
+  searchTerm: string
 }
+
+const Filter = FilterList<Resource>()
 
 class ResourceAccordion extends Component<OwnProps> {
   public render() {
@@ -27,7 +36,7 @@ class ResourceAccordion extends Component<OwnProps> {
     }
 
     return resources.map(resource => {
-      const resourceName = capitalize(resource)
+      const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
 
       return (
         <Accordion key={resource}>
@@ -37,7 +46,6 @@ class ResourceAccordion extends Component<OwnProps> {
             onToggleAll={onToggleAll}
             disabled={false}
           />
-
           {!isEmpty(permissions[resource].sublevelPermissions) &&
             this.getAccordionBody(resourceName, resource)}
         </Accordion>
@@ -47,25 +55,52 @@ class ResourceAccordion extends Component<OwnProps> {
 
   getAccordionBody = (resourceName, resource) => {
     const {permissions, onIndividualToggle} = this.props
+    const permissionNames = []
     if (resourceName === 'Telegrafs') {
+      for (const [, value] of Object.entries(
+        permissions[resource].sublevelPermissions
+      )) {
+        permissionNames.push(value)
+      }
       return (
-        <ResourceAccordionBody
-          resourceName={resource}
-          permissions={permissions[resource].sublevelPermissions}
-          onToggle={onIndividualToggle}
-          title="Individual Telegraf Configuration Names"
-          disabled={false}
-        />
+        <Filter
+          list={permissionNames}
+          searchTerm={this.props.searchTerm}
+          searchKeys={['name']}
+        >
+          {filteredNames => (
+            <ResourceAccordionBody
+              resourceName={resource}
+              permissions={filteredNames}
+              onToggle={onIndividualToggle}
+              title="Individual Telegraf Configuration Names"
+              disabled={false}
+            />
+          )}
+        </Filter>
       )
     } else if (resourceName === 'Buckets') {
+      for (const [, value] of Object.entries(
+        permissions[resource].sublevelPermissions
+      )) {
+        permissionNames.push(value)
+      }
       return (
-        <ResourceAccordionBody
-          resourceName={resource}
-          permissions={permissions[resource].sublevelPermissions}
-          onToggle={onIndividualToggle}
-          title="Individual Bucket Names"
-          disabled={false}
-        />
+        <Filter
+          list={permissionNames}
+          searchTerm={this.props.searchTerm}
+          searchKeys={['name']}
+        >
+          {filteredNames => (
+            <ResourceAccordionBody
+              resourceName={resource}
+              permissions={filteredNames}
+              onToggle={onIndividualToggle}
+              title="Individual Bucket Names"
+              disabled={false}
+            />
+          )}
+        </Filter>
       )
     }
   }

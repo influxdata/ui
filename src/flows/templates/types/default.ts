@@ -13,11 +13,11 @@ export default register =>
           refresh: AUTOREFRESH_DEFAULT,
           pipes: [
             {
-              title: 'Select a Metric',
+              title: 'Build a Query',
               visible: true,
-              type: 'metricSelector',
+              type: 'queryBuilder',
               ...JSON.parse(
-                JSON.stringify(PIPE_DEFINITIONS['metricSelector'].initial)
+                JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
               ),
             },
             {

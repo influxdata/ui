@@ -1,7 +1,7 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useContext, useState} from 'react'
 import {useHistory} from 'react-router-dom'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   Alert,
   AlignItems,
@@ -18,22 +18,55 @@ import {
   JustifyContent,
   Overlay,
 } from '@influxdata/clockface'
+import {track} from 'rudder-sdk-js'
 
 // Utils
 import {deleteAccount} from 'src/client/unityRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
+import DeleteOrgReasonsForm from 'src/organizations/components/DeleteOrgReasonsForm'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
+
+// Selectors
+import {
+  DeleteOrgContext,
+  VariableItems,
+} from 'src/organizations/components/DeleteOrgContext'
+import {getQuartzMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 const DeleteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const dispatch = useDispatch()
+  const {reason, shortSuggestion, suggestions} = useContext(DeleteOrgContext)
+  const quartzMe = useSelector(getQuartzMe)
+  const org = useSelector(getOrg)
 
   const handleClose = () => {
     history.goBack()
   }
 
+  const sendDetailsToRudderstack = () => {
+    const payload = {
+      org: org.id,
+      tier: quartzMe?.accountType,
+      email: quartzMe?.email,
+      alternativeProduct: shortSuggestion,
+      suggestions,
+      reason: VariableItems[reason],
+    }
+
+    event('Cancel Org Executed', payload)
+    track('CancelOrgExecuted', payload)
+  }
+
   const handleDeleteAccount = async () => {
+    if (isFlagEnabled('rudderStackReporting')) {
+      sendDetailsToRudderstack()
+    }
+
     try {
       const resp = await deleteAccount({})
 
@@ -55,6 +88,16 @@ const DeleteOrgOverlay: FC = () => {
           <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>
             This action cannot be undone
           </Alert>
+          {isFlagEnabled('trackCancellations') && (
+            <FlexBox
+              alignItems={AlignItems.Center}
+              direction={FlexDirection.Row}
+              justifyContent={JustifyContent.FlexStart}
+              margin={ComponentSize.Medium}
+            >
+              <DeleteOrgReasonsForm />
+            </FlexBox>
+          )}
           <ul>
             <li>
               The account for this Organization will be deleted immediately.

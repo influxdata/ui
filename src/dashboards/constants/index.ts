@@ -60,7 +60,7 @@ export const DEFAULT_BUCKET_NAME = 'Name this Bucket'
 export const DEFAULT_COLLECTOR_NAME = 'Name this Collector'
 export const DEFAULT_TASK_NAME = 'Name this Task'
 export const DEFAULT_SCRAPER_NAME = 'Name this Scraper'
-export const DEFAULT_TOKEN_DESCRIPTION = 'Describe this Token'
+export const DEFAULT_TOKEN_DESCRIPTION = 'Describe this API Token'
 
 export const NEW_DASHBOARD: NewDefaultDashboard = {
   name: DEFAULT_DASHBOARD_NAME,

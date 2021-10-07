@@ -44,7 +44,7 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.visit('/')
@@ -59,7 +59,7 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.getByTestID('dashboard-card').within(() => {
@@ -92,7 +92,7 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.visit('/')
@@ -166,7 +166,7 @@ from(bucket: "${name}"{rightarrow}
         .first()
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
           cy.getByTestID('context-pin-task').click()
         })
     })
@@ -259,8 +259,8 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--Flow')
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
+          cy.getByTestID('context-pin-flow').click({force: true})
         })
       cy.visit('/')
       cy.getByTestID('tree-nav')
@@ -273,8 +273,8 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--Flow')
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
+          cy.getByTestID('context-pin-flow').click({force: true})
         })
       cy.getByTestID('resource-editable-name')
         .first()
@@ -318,10 +318,14 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--Bucks In Six')
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
-          cy.getByTestID('context-delete-menu Bucks In Six').click()
-          cy.getByTestID('context-delete-flow Bucks In Six').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
+          cy.getByTestID('context-pin-flow').click({force: true})
+          cy.getByTestID('context-delete-menu Bucks In Six').click({
+            force: true,
+          })
+          cy.getByTestID('context-delete-flow Bucks In Six').click({
+            force: true,
+          })
         })
       cy.visit('/')
       cy.getByTestID('tree-nav')

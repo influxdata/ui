@@ -43,7 +43,7 @@ export const SubSideBar: FC = () => {
           thumbStopColor="gray"
           thumbStartColor="gray"
         >
-          {submenu}
+          <div className="flow-sidebar--submenu-wrapper">{submenu}</div>
         </DapperScrollbars>
       </div>
     </div>
@@ -105,7 +105,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
           id === focused ? ComponentColor.Secondary : ComponentColor.Default
         }
         className="flow-config-panel-button"
-        testID="square-button"
+        testID="sidebar-button"
       />
       {dropdown}
     </div>
@@ -262,6 +262,7 @@ const Sidebar: FC = () => {
                 event('Notebook Nav: Called Action', {menu: title})
                 // eslint-disable-next-line no-extra-semi
                 ;(action as ControlAction).action()
+
                 hide()
               }}
               wrapText={false}

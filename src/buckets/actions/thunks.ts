@@ -6,7 +6,7 @@ import {Dispatch} from 'react'
 import * as api from 'src/client'
 
 // Schemas
-import {bucketSchema, arrayOfBuckets} from 'src/schemas'
+import {bucketSchema} from 'src/schemas'
 
 // Types
 import {
@@ -21,11 +21,14 @@ import {
   ResourceType,
 } from 'src/types'
 
+import {fetchAllBuckets} from 'src/buckets/api'
+
 // Utils
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {
@@ -37,7 +40,6 @@ import {
 } from 'src/buckets/actions/creators'
 import {notify, Action as NotifyAction} from 'src/shared/actions/notifications'
 import {checkBucketLimits} from 'src/cloud/actions/limits'
-import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
 
 // Constants
 import {
@@ -50,38 +52,23 @@ import {
   bucketRenameFailed,
   addBucketLabelFailed,
   removeBucketLabelFailed,
+  measurementSchemaAdditionSuccessful,
+  measurementSchemaAdditionFailed,
 } from 'src/shared/copy/notifications'
-import {BUCKET_LIMIT} from 'src/resources/constants'
 
 type Action = BucketAction | NotifyAction
 
-let getBucketsSchemaMeasurements = null
+let getBucketsSchemaMeasurements = null,
+  MeasurementSchemaCreateRequest = null,
+  postBucketsSchemaMeasurement = null
 
 if (CLOUD) {
   getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
     .getBucketsSchemaMeasurements
-}
-
-// todo: probably isn't thunk ? (should be moved to utils or something like that)
-export const fetchAllBuckets = async (orgID: string) => {
-  const resp = await api.getBuckets({
-    query: {orgID, limit: BUCKET_LIMIT},
-  })
-
-  if (resp.status !== 200) {
-    throw new Error(resp.data.message)
-  }
-
-  let demoDataBuckets = []
-
-  if (CLOUD) {
-    demoDataBuckets = await fetchDemoDataBuckets()
-  }
-
-  return normalize<Bucket, BucketEntities, string[]>(
-    [...resp.data.buckets, ...demoDataBuckets],
-    arrayOfBuckets
-  )
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
+  postBucketsSchemaMeasurement = require('src/client/generatedRoutes')
+    .postBucketsSchemaMeasurement
 }
 
 export const getBuckets = () => async (
@@ -95,8 +82,13 @@ export const getBuckets = () => async (
     }
     const org = getOrg(state)
 
-    const buckets = await fetchAllBuckets(org.id)
-
+    let buckets
+    if (isFlagEnabled('fetchAllBuckets')) {
+      // a limit of -1 means fetch all buckets for this org
+      buckets = await fetchAllBuckets(org.id, -1)
+    } else {
+      buckets = await fetchAllBuckets(org.id)
+    }
     dispatch(setBuckets(RemoteDataState.Done, buckets))
   } catch (error) {
     console.error(error)
@@ -133,7 +125,8 @@ export const createBucket = (bucket: OwnBucket) => async (
 
 export const createBucketAndUpdate = (
   bucket: OwnBucket,
-  update: (bucket: Bucket) => void
+  update: (bucket: Bucket) => void,
+  schemas: typeof MeasurementSchemaCreateRequest[]
 ) => async (
   dispatch: Dispatch<Action | ReturnType<typeof checkBucketLimits>>,
   getState: GetState
@@ -152,8 +145,22 @@ export const createBucketAndUpdate = (
       bucketSchema
     )
 
+    // just created the bucket, now add any schemas that might be there:
     dispatch(addBucket(newBucket))
     dispatch(checkBucketLimits())
+
+    if (schemas && schemas.length) {
+      schemas.forEach(mschemaCreateRequest => {
+        addMeasurementSchemaToBucketInternal(
+          resp.data.id,
+          mschemaCreateRequest,
+          org.id,
+          resp.data.name,
+          dispatch
+        )
+      })
+    }
+
     update(newBucket.entities.buckets[resp.data.id])
   } catch (error) {
     console.error(error)
@@ -319,6 +326,53 @@ export const deleteBucketLabel = (bucketID: string, label: Label) => async (
     console.error(error)
     dispatch(notify(removeBucketLabelFailed()))
   }
+}
+
+async function addMeasurementSchemaToBucketInternal(
+  bucketID: string,
+  schema: typeof MeasurementSchemaCreateRequest,
+  orgID: string,
+  bucketName: string,
+  dispatch: Dispatch<Action>
+) {
+  const params = {
+    bucketID,
+    data: schema,
+    query: {orgID},
+  }
+  try {
+    const resp = await postBucketsSchemaMeasurement(params)
+    if (resp.status !== 201) {
+      const msg = resp?.data?.message
+      console.error('error adding measurement schema:', resp)
+      throw new Error(msg)
+    }
+
+    dispatch(
+      notify(measurementSchemaAdditionSuccessful(bucketName, schema.name))
+    )
+  } catch (error) {
+    console.error(error)
+    const message = getErrorMessage(error)
+    dispatch(
+      notify(measurementSchemaAdditionFailed(bucketName, schema.name, message))
+    )
+  }
+}
+
+export const addSchemaToBucket = (
+  bucketID: string,
+  orgID: string,
+  bucketName: string,
+  schema: typeof MeasurementSchemaCreateRequest
+) => (dispatch: Dispatch<Action>) => {
+  addMeasurementSchemaToBucketInternal(
+    bucketID,
+    schema,
+    orgID,
+    bucketName,
+    dispatch
+  )
 }
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {

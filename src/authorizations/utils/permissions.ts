@@ -1,5 +1,6 @@
 import {Bucket, Permission} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
+import {capitalize} from 'lodash'
 
 type PermissionTypes = Permission['resource']['type']
 
@@ -191,20 +192,19 @@ export const formatPermissionsObj = permissions => {
   Object.keys(newPerms).forEach(resource => {
     const accordionPermission = {...newPerms[resource]}
     if (accordionPermission.sublevelPermissions) {
-      accordionPermission.read = !Object.keys(
+      accordionPermission.read = Object.keys(
         accordionPermission.sublevelPermissions
-      ).some(
+      ).every(
         key =>
-          accordionPermission.sublevelPermissions[key].permissions.read ===
-          false
+          accordionPermission.sublevelPermissions[key].permissions.read === true
       )
 
-      accordionPermission.write = !Object.keys(
+      accordionPermission.write = Object.keys(
         accordionPermission.sublevelPermissions
-      ).some(
+      ).every(
         key =>
           accordionPermission.sublevelPermissions[key].permissions.write ===
-          false
+          true
       )
 
       newPerms[resource] = accordionPermission
@@ -268,4 +268,39 @@ export const formatApiPermissions = (permissions, orgID) => {
     }
   })
   return apiPerms
+}
+
+export const generateDescription = apiPermissions => {
+  let generatedDescription = ''
+
+  if (apiPermissions.length > 2) {
+    const actions = []
+    apiPermissions.forEach(perm => {
+      actions.push(perm.action)
+    })
+    const isRead = actions.some(action => action === 'read')
+    const isWrite = actions.some(action => action === 'write')
+
+    if (isRead && isWrite) {
+      generatedDescription += `Read Multiple Write Multiple`
+    } else if (isRead) {
+      generatedDescription += `Read Multiple`
+    } else if (isWrite) {
+      generatedDescription += `Write Multiple`
+    }
+  } else {
+    apiPermissions.forEach(perm => {
+      if (perm.resource.name) {
+        generatedDescription += `${capitalize(perm.action)} ${
+          perm.resource.type
+        } ${perm.resource.name} `
+      } else {
+        generatedDescription += `${capitalize(perm.action)} ${
+          perm.resource.type
+        } `
+      }
+    })
+  }
+
+  return generatedDescription.trim()
 }

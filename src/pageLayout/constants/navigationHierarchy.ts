@@ -74,7 +74,7 @@ export const generateNavItems = (): NavItem[] => {
         {
           id: 'tokens',
           testID: 'nav-subitem-tokens',
-          label: 'Tokens',
+          label: 'API Tokens',
           link: `${orgPrefix}/load-data/tokens`,
         },
       ],
@@ -158,7 +158,6 @@ export const generateNavItems = (): NavItem[] => {
         },
         {
           id: 'secrets',
-          enabled: () => isFlagEnabled('secretsUI'),
           testID: 'nav-subitem-secrets',
           label: 'Secrets',
           link: `${orgPrefix}/settings/secrets`,

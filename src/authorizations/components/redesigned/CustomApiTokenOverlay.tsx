@@ -24,6 +24,7 @@ import {
   RemoteDataState,
 } from '@influxdata/clockface'
 import ResourceAccordion from 'src/authorizations/components/redesigned/ResourceAccordion'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
@@ -38,7 +39,10 @@ import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 
 // Utils
-import {formatApiPermissions} from 'src/authorizations/utils/permissions'
+import {
+  formatApiPermissions,
+  generateDescription,
+} from 'src/authorizations/utils/permissions'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
@@ -68,6 +72,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const [description, setDescription] = useState('')
   const [permissions, setPermissions] = useState({})
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     props.getBuckets()
@@ -76,6 +81,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   useEffect(() => {
     const perms = {}
+
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
@@ -90,6 +96,10 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const handleDismiss = () => {
     props.onClose()
+  }
+
+  const handleChangeSearchTerm = (searchTerm: string): void => {
+    setSearchTerm(searchTerm)
   }
 
   const handleInputChange = event => {
@@ -149,21 +159,25 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const generateToken = () => {
     const {onCreateAuthorization, orgID, showOverlay} = props
+    const apiPermissions = formatApiPermissions(permissions, orgID)
 
     const token: Authorization = {
       orgID: orgID,
-      description: description,
-      permissions: formatApiPermissions(permissions, props.orgID),
+      description: description
+        ? description
+        : generateDescription(apiPermissions),
+      permissions: apiPermissions,
     }
-
     onCreateAuthorization(token)
-    showOverlay('access-token', null, () => dismissOverlay())
+    if (token.permissions.length > 0) {
+      showOverlay('access-token', null, () => dismissOverlay())
+    }
   }
 
   return (
     <Overlay.Container maxWidth={800}>
       <Overlay.Header
-        title="Generate a Personal Api Token"
+        title="Generate a Personal API Token"
         onDismiss={onClose}
       />
       <Overlay.Body>
@@ -182,6 +196,11 @@ const CustomApiTokenOverlay: FC<Props> = props => {
               />
             </Form.Element>
             <FlexBox.Child className="main-flexbox-child">
+              <SearchWidget
+                searchTerm={searchTerm}
+                placeholderText="Filter Access Permissions..."
+                onSearch={handleChangeSearchTerm}
+              />
               <FlexBox
                 margin={ComponentSize.Large}
                 justifyContent={JustifyContent.SpaceBetween}
@@ -217,6 +236,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                 permissions={permissions}
                 onToggleAll={handleToggleAll}
                 onIndividualToggle={handleIndividualToggle}
+                searchTerm={searchTerm}
               />
             </FlexBox.Child>
           </FlexBox>

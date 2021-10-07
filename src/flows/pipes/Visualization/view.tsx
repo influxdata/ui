@@ -22,6 +22,45 @@ import {PopupContext} from 'src/flows/context/popup'
 import {event} from 'src/cloud/utils/reporting'
 import {downloadTextFile} from 'src/shared/utils/download'
 
+// Constants
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
+
+import {downloadImage} from 'src/shared/utils/download'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+const downloadAsImage = (pipeID: string) => {
+  const canvas = document.getElementById(pipeID)
+  import('html2canvas').then((module: any) =>
+    module.default(canvas as HTMLDivElement).then(result => {
+      downloadImage(result.toDataURL(), 'visualization.png')
+    })
+  )
+}
+
+const downloadAsPDF = (pipeID: string) => {
+  const canvas = document.getElementById(pipeID)
+  import('html2canvas').then((module: any) =>
+    module.default(canvas as HTMLDivElement).then(result => {
+      import('jspdf').then((jsPDF: any) => {
+        const doc = new jsPDF.default({
+          orientation: 'l',
+          unit: 'pt',
+          format: [result.width, result.height],
+        })
+        doc.addImage(
+          result.toDataURL('image/png'),
+          'PNG',
+          0,
+          0,
+          result.width,
+          result.height
+        )
+        doc.save('visualization.pdf')
+      })
+    })
+  )
+}
+
 const Visualization: FC<PipeProp> = ({Context}) => {
   const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
@@ -48,7 +87,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     }
 
     if (loading === RemoteDataState.NotStarted) {
-      return 'This cell will display results from the previous cell'
+      return UNPROCESSED_PANEL_TEXT
     }
 
     return 'No Data Returned'
@@ -80,6 +119,16 @@ const Visualization: FC<PipeProp> = ({Context}) => {
               })
             },
           },
+          {
+            title: 'Download As Image',
+            action: () => downloadAsImage(id),
+            disable: !isFlagEnabled('pdfImageDownload'),
+          },
+          {
+            title: 'Download As PDF',
+            action: () => downloadAsPDF(id),
+            disable: !isFlagEnabled('pdfImageDownload'),
+          },
         ],
       },
     ])
@@ -104,7 +153,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   if (!dataExists) {
     return (
       <Context controls={<Controls />}>
-        <div className="panel-resizer panel-resizer__visible">
+        <div className="panel-resizer panel-resizer__visible" id={id}>
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
               glyph={IconFont.BarChart}
@@ -121,7 +170,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   return (
     <Context controls={<Controls />} resizes>
-      <div className="flow-visualization">
+      <div className="flow-visualization" id={id}>
         <div className="flow-visualization--view">
           <View
             loading={loading}

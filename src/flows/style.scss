@@ -134,7 +134,6 @@ $cf-radius-lg: $cf-radius + 4px;
 
 .flow-panel .cf-draggable-resizer--handle {
   flex: 3;
-  margin-left: 180px;
   margin-bottom: 8px;
 
   .cf-draggable-resizer--handle-pill1,
@@ -277,10 +276,6 @@ $cf-radius-lg: $cf-radius + 4px;
   align-items: center;
   justify-content: space-between;
   padding: 0px 8px;
-}
-
-.flow-footer--preview {
-  bottom: 3px;
 }
 
 .flow-panel--body,

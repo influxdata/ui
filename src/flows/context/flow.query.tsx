@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext, useMemo, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -83,10 +83,22 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {setResult, setStatuses, statuses} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const org = useSelector(getOrg) ?? {id: ''}
+  const [prevLower, setPrevLower] = useState<string>(flow?.range?.lower)
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
   const variables = useSelector((state: AppState) => getVariables(state))
+
+  useEffect(() => {
+    if (flow?.range?.lower !== prevLower) {
+      // only run the query if a previously set value has been changed.
+      // unless we're in presentation mode, then we should run the query on load.
+      if (prevLower || flow.readOnly) {
+        queryAll()
+      }
+      setPrevLower(flow?.range?.lower)
+    }
+  }, [flow])
 
   // Share querying event across tabs
   const handleStorageEvent = e => {

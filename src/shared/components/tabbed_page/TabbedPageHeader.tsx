@@ -1,12 +1,13 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
 
 interface Props {
   childrenLeft?: JSX.Element[] | JSX.Element
   childrenRight?: JSX.Element[] | JSX.Element
+  width?: number
 }
 
-const TabbedPageHeader: SFC<Props> = ({childrenLeft, childrenRight}) => {
+const TabbedPageHeader: FC<Props> = ({childrenLeft, childrenRight, width}) => {
   let leftHeader = <></>
   let rightHeader = <></>
 
@@ -17,6 +18,19 @@ const TabbedPageHeader: SFC<Props> = ({childrenLeft, childrenRight}) => {
   if (childrenRight) {
     rightHeader = (
       <div className="tabbed-page--header-right">{childrenRight}</div>
+    )
+  }
+
+  if (width) {
+    return (
+      <div
+        className="tabbed-page--header"
+        data-testid="tabbed-page--header"
+        style={{width}}
+      >
+        {leftHeader}
+        {rightHeader}
+      </div>
     )
   }
 

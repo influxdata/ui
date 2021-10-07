@@ -64,7 +64,7 @@ const CancelServiceProvider: FC<Props> = ({children}) => {
   )
 
   const toggleCanContactForFeedback = () => {
-    setCanContactForFeedback(!canContactForFeedback)
+    setCanContactForFeedback(prev => !prev)
   }
 
   return (

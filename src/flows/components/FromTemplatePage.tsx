@@ -32,7 +32,7 @@ import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
 const Template: FC = () => {
   const {add} = useContext(FlowListContext)
   const {flow, populate} = useContext(FlowContext)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const org = useSelector(getOrg)
   const history = useHistory()
   const params = useParams()[0].split('/')

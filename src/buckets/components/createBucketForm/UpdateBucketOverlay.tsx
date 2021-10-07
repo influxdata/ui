@@ -239,7 +239,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
               onChangeSchemaType={handleChangeSchemaType}
               schemaType={schemaType as typeof SchemaType}
               measurementSchemaList={measurementSchemaList}
-              onUpdateNewMeasurementSchemas={handleNewMeasurementSchemas}
+              onAddNewMeasurementSchemas={handleNewMeasurementSchemas}
               showSchemaValidation={showSchemaValidation}
             />
           </Overlay.Body>

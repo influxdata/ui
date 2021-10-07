@@ -256,15 +256,12 @@ const EditingPanel: FC<PanelProps> = ({
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
   const [fileError, setFileError] = useState(false)
-  const [isBeingUpdated, setIsBeingUpdated] = useState(false)
 
   const setUserWantsUpdate = () => {
-    setIsBeingUpdated(true)
     toggleUpdate(true, index)
   }
 
   const cancelUpdate = () => {
-    setIsBeingUpdated(false)
     toggleUpdate(false, index)
     setFileError(false)
     setFileErrorMessage(null)

@@ -204,11 +204,8 @@ export const MiniFileDnd: FC<Props> = ({
 
   // this is only called if onCancel is present, so don't need to check if it is there
   const doCancel = () => {
-    console.log('would cancel here TODO')
     setFileName(null)
     setHasError(false)
-    //todo: call onCancel; to zero out any error messages on the parent
-    // and do anything the parent needs on the cancel......
     setDirty(false)
     onCancel()
   }

@@ -48,7 +48,7 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
-  onUpdateNewMeasurementSchemas?: (
+  onAddNewMeasurementSchemas?: (
     schemas: any[],
     resetValidation?: boolean
   ) => void
@@ -80,8 +80,8 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     this.props.onChangeSchemaType(newSchemaType)
   }
 
-  onUpdateSchemasInternal = (schemas, resetValidation) => {
-    this.props.onUpdateNewMeasurementSchemas(schemas, resetValidation)
+  onAddSchemasInternal = (schemas, resetValidation) => {
+    this.props.onAddNewMeasurementSchemas(schemas, resetValidation)
     this.setState({newMeasurementSchemas: schemas})
   }
 
@@ -112,7 +112,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       <MeasurementSchemaSection
         measurementSchemaList={measurementSchemaList}
         key="measurementSchemaSection"
-        onUpdateSchemas={this.onUpdateSchemasInternal}
+        onUpdateSchemas={this.onAddSchemasInternal}
         showSchemaValidation={showSchemaValidation}
       />
     )

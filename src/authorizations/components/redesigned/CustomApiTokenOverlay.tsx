@@ -114,8 +114,12 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     resources.sort()
     resources.unshift('telegrafs')
     resources.unshift('buckets')
-    return resources
+    const indexToSplit = resources.indexOf('telegrafs')
+    const first = resources.slice(0, indexToSplit + 1)
+    const second = resources.slice(indexToSplit + 1)
+    return [first, second]
   }
+
   const handleToggleAll = (resourceName, permission) => {
     const newPerm = {...permissions}
 

@@ -15,7 +15,7 @@ import FilterList from 'src/shared/components/FilterList'
 import {Resource} from 'src/client'
 
 interface OwnProps {
-  resources: string[]
+  resources: string[][]
   permissions: any
   onToggleAll: (resourceName: string, permission: string) => void
   onIndividualToggle: (
@@ -36,25 +36,49 @@ class ResourceAccordion extends Component<OwnProps> {
       return null
     }
 
-    return resources.map(resource => {
-      const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
+    return (
+      <>
+        {resources[0].map(resource => {
+          const resourceName =
+            resource.charAt(0).toUpperCase() + resource.slice(1)
 
-      return (
-        <Accordion key={resource}>
-          <ResourceAccordionHeader resourceName={resourceName} />
-          <AllAccordionBody
-            resourceName={resourceName}
-            permissions={permissions[resource]}
-            onToggleAll={onToggleAll}
-            disabled={false}
-          />
-          {!permissions[resource].read && !permissions[resource].write
-            ? !isEmpty(permissions[resource].sublevelPermissions) &&
-              this.getAccordionBody(resourceName, resource)
-            : null}
+          return (
+            <Accordion key={resource}>
+              <ResourceAccordionHeader resourceName={resourceName} />
+              <AllAccordionBody
+                resourceName={resourceName}
+                permissions={permissions[resource]}
+                onToggleAll={onToggleAll}
+                disabled={false}
+              />
+              {!permissions[resource].read && !permissions[resource].write
+                ? !isEmpty(permissions[resource].sublevelPermissions) &&
+                  this.getAccordionBody(resourceName, resource)
+                : null}
+            </Accordion>
+          )
+        })}
+        <Accordion key="Other Resources">
+          <ResourceAccordionHeader resourceName="Other Resources" />
+          {resources[1].map(resource => {
+            console.log('Resource', resource)
+            const resourceName =
+              resource.charAt(0).toUpperCase() + resource.slice(1)
+
+            return (
+              <>
+                <AllAccordionBody
+                  resourceName={resourceName}
+                  permissions={permissions[resource]}
+                  onToggleAll={onToggleAll}
+                  disabled={false}
+                />
+              </>
+            )
+          })}
         </Accordion>
-      )
-    })
+      </>
+    )
   }
 
   getAccordionBody = (resourceName, resource) => {

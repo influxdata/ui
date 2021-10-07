@@ -45,10 +45,34 @@ interface Props {
   onUpdateSchemas: (schemas: any, b?: boolean) => void
   showSchemaValidation: boolean
 }
+
+/**
+ * toggleUpdate:  is this line being updated?
+ * need to have this passed up, because the erroring on the
+ * file dnd element  is triggered separately from onAddUpdate(either
+ * onAddUpdate is triggered, or an error is sent; not both)
+ *
+ * when creating a new schema, an object is created with a false valid value,
+ * and then as things are added it the value gets turned to true
+ *
+ * since we already have something showing, need to know when it needs
+ * validation
+ *
+ * and we can also cancel out of updating.
+ *
+ * so:  if toggleUpdate is set to true, then that measurement schema is getting
+ * an update, and the validation is set to false, and if there is a valid columns
+ * file then it gets set to true.
+ *
+ * if toggleUpdate gets set to false, then no validation is needed
+ * as nothing is being updated on that measurement schema
+ * (that happens when the user cancels out of the update)
+ * */
 interface PanelProps {
   measurementSchema: typeof MeasurementSchema
   index?: number
   onAddUpdate: (columns: string, index: number) => void
+  toggleUpdate: (doingUpdate: boolean, index: number) => void
 }
 interface AddingProps {
   index: number

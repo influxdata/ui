@@ -42,7 +42,8 @@ if (CLOUD) {
 
 interface Props {
   measurementSchemaList?: typeof MeasurementSchemaList
-  onUpdateSchemas: (schemas: any, b?: boolean) => void
+  onUpdateSchemas?: (schemas: any) => void
+  onAddSchemas: (schemas: any, b?: boolean) => void
   showSchemaValidation: boolean
 }
 
@@ -337,6 +338,7 @@ const EditingPanel: FC<PanelProps> = ({
 export const MeasurementSchemaSection: FC<Props> = ({
   measurementSchemaList,
   onUpdateSchemas,
+  onAddSchemas,
   showSchemaValidation,
 }) => {
   const [newSchemas, setNewSchemas] = useState([])
@@ -405,14 +407,14 @@ export const MeasurementSchemaSection: FC<Props> = ({
     ))
   }
 
-  const debouncedOnUpdateSchemas = debounce(
-    () => onUpdateSchemas(newSchemas, false),
+  const debouncedOnAddSchemas = debounce(
+    () => onAddSchemas(newSchemas, false),
     300
   )
 
-  const setSchemasWithUpdates = schemaArray => {
+  const setNewSchemasWithUpdates = schemaArray => {
     setNewSchemas(schemaArray)
-    debouncedOnUpdateSchemas()
+    debouncedOnAddSchemas()
   }
 
   // NOT making debounced version take the flag;
@@ -426,7 +428,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     // which is not what we want.
     const newArray = [...newSchemas, newSchema]
     setNewSchemas(newArray)
-    onUpdateSchemas(newArray, true)
+    onAddSchemas(newArray, true)
   }
 
   const addSchemaButton = (
@@ -444,7 +446,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     } else {
       lineItem.valid = false
     }
-    setSchemasWithUpdates(newSchemas)
+    setNewSchemasWithUpdates(newSchemas)
   }
 
   // not worrying about valid columns, the handleUploadFile method that is called by the
@@ -461,14 +463,14 @@ export const MeasurementSchemaSection: FC<Props> = ({
     // not worrying about when contents has been 'un-set' since we don't allow that.
     // they could upload another file if they made a mistake (to replace it);
     // but can't change it to nothing from something
-    setSchemasWithUpdates(newSchemas)
+    setNewSchemasWithUpdates(newSchemas)
   }
 
   const onDelete = index => {
     newSchemas.splice(index, 1)
     // using spread operator so that the reference changes;
     // without the ref change the panels do not re-render
-    setSchemasWithUpdates([...newSchemas])
+    setNewSchemasWithUpdates([...newSchemas])
   }
 
   const makeAddPanels = () => {

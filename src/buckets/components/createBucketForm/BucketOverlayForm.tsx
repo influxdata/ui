@@ -52,6 +52,7 @@ interface Props {
     schemas: any[],
     resetValidation?: boolean
   ) => void
+  onUpdateMeasurementSchemas?: (schemaInfo: any[]) => void
   isEditing: boolean
   buttonText: string
   onClickRename?: () => void
@@ -112,7 +113,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       <MeasurementSchemaSection
         measurementSchemaList={measurementSchemaList}
         key="measurementSchemaSection"
-        onUpdateSchemas={this.onAddSchemasInternal}
+        onAddSchemas={this.onAddSchemasInternal}
         showSchemaValidation={showSchemaValidation}
       />
     )

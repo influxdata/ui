@@ -16,10 +16,6 @@ interface Props {
 }
 
 class RunLogRow extends PureComponent<Props> {
-  constructor(props: Props) {
-    super(props)
-  }
-
   public render() {
     const {log} = this.props
 
@@ -31,7 +27,9 @@ class RunLogRow extends PureComponent<Props> {
           </span>
         </IndexList.Cell>
         <IndexList.Cell>
-          <span className="run-logs--list-message">{log.message}</span>
+          <span className="run-logs--list-message">
+            <pre>{log.message}</pre>
+          </span>
         </IndexList.Cell>
       </IndexList.Row>
     )

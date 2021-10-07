@@ -7,6 +7,7 @@ import {Accordion} from '@influxdata/clockface'
 
 // Components
 import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
+import {AllAccordionBody} from 'src/authorizations/components/redesigned/AllAccordionBody'
 import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
 import FilterList from 'src/shared/components/FilterList'
 
@@ -40,7 +41,8 @@ class ResourceAccordion extends Component<OwnProps> {
 
       return (
         <Accordion key={resource}>
-          <ResourceAccordionHeader
+          <ResourceAccordionHeader resourceName={resourceName} />
+          <AllAccordionBody
             resourceName={resourceName}
             permissions={permissions[resource]}
             onToggleAll={onToggleAll}

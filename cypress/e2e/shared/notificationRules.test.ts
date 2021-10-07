@@ -382,7 +382,10 @@ describe('NotificationRules', () => {
       message: string
     }
 
-    const writeMonitoringRecord = (rec: MonitoringRec, offset: string) => {
+    const writeMonitoringRecord = (
+      rec: MonitoringRec,
+      offset: string
+    ): Cypress.Chainable<any> => {
       const lp =
         `notifications,_level=${rec.level},_notification_endpoint_id=${rec.endp.id},` +
         `_notification_endpoint_name=${rec.endp.name.replace(
@@ -401,322 +404,350 @@ describe('NotificationRules', () => {
           rec.statusTimestamp
         },_message="${rec.message.replace(/ /g, ' ')}",dead="true"`
 
-      cy.writeLPData({lines: [lp], offset: offset, namedBucket: '_monitoring'})
+      return cy.writeLPData({
+        lines: [lp],
+        offset: offset,
+        namedBucket: '_monitoring',
+      })
     }
 
-    beforeEach('Generate alert records', () => {
-      cy.writeLPDataFromFile({
-        filename: 'data/wumpus01.lp',
-        offset: '20m',
-        stagger: '1m',
-      })
+    // Ensure all Async data prep is completed in correct order before starting tests
+    // Replaces beforeEach()
+    const localInit = (): Cypress.Chainable<any> => {
+      return cy
+        .writeLPDataFromFile({
+          filename: 'data/wumpus01.lp',
+          offset: '20m',
+          stagger: '1m',
+        })
+        .then(() => {
+          return cy
+            .get<Organization>('@org')
+            .then((org: Organization) => {
+              cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+                // get default org and bucket
+                // 2. create check
+                const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
+                cy.createCheck({
+                  ...check,
+                  orgID: org.id,
+                  query: {
+                    ...check.query,
+                    text: queryText,
+                    builderConfig: {
+                      ...check.query.builderConfig,
+                      buckets: [bucket.id],
+                    },
+                  },
+                }).then(resp => {
+                  cy.wrap(resp.body).as('check')
+                })
 
-      cy.get<Organization>('@org').then((org: Organization) => {
-        cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-          // get default org and bucket
-          // 2. create check
-          const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
-          cy.createCheck({
-            ...check,
-            orgID: org.id,
-            query: {
-              ...check.query,
-              text: queryText,
-              builderConfig: {
-                ...check.query.builderConfig,
-                buckets: [bucket.id],
-              },
-            },
-          }).then(resp => {
-            cy.wrap(resp.body).as('check')
-          })
+                cy.createEndpoint({
+                  ...(endp as NotificationEndpoint),
+                  orgID: org.id,
+                }).then(resp => {
+                  cy.wrap(resp.body).as('endp')
+                })
 
-          cy.createEndpoint({
-            ...(endp as NotificationEndpoint),
-            orgID: org.id,
-          }).then(resp => {
-            cy.wrap(resp.body).as('endp')
-          })
-
-          cy.get<NotificationEndpoint>('@endp').then(endp => {
-            cy.createRule({
-              ...(rule as NotificationRule),
-              orgID: org.id,
-              endpointID: endp.id,
-            }).then(resp => {
-              cy.wrap(resp.body).as('rule')
+                cy.get<NotificationEndpoint>('@endp').then(endp => {
+                  cy.createRule({
+                    ...(rule as NotificationRule),
+                    orgID: org.id,
+                    endpointID: endp.id,
+                  }).then(resp => {
+                    cy.wrap(resp.body).as('rule')
+                  })
+                })
+              })
             })
-          })
+            .then(() => {
+              return cy
+                .get<GenCheck>('@check')
+                .then(check => {
+                  cy.get<NotificationEndpoint>('@endp').then(endp => {
+                    cy.get<GenRule>('@rule').then(rule => {
+                      writeMonitoringRecord(
+                        {
+                          check: check,
+                          endp: endp,
+                          rule: rule,
+                          level: 'crit',
+                          source: 'wumpus',
+                          sent: 'true',
+                          valField: {key: 'foo', val: 'bar'},
+                          sourceTimestamp: calcNanoTimestamp('17m'),
+                          statusTimestamp: calcNanoTimestamp('16m'),
+                          message: 'This is a fake critical message',
+                        },
+                        '15m'
+                      ).then(() => {
+                        writeMonitoringRecord(
+                          {
+                            check: check,
+                            endp: endp,
+                            rule: rule,
+                            level: 'info',
+                            source: 'wumpus',
+                            sent: 'false',
+                            valField: {key: 'foo', val: 'bar'},
+                            sourceTimestamp: calcNanoTimestamp('12m'),
+                            statusTimestamp: calcNanoTimestamp('11m'),
+                            message: 'This is a fake info message',
+                          },
+                          '10m'
+                        ).then(() => {
+                          writeMonitoringRecord(
+                            {
+                              check: check,
+                              endp: endp,
+                              rule: rule,
+                              level: 'warn',
+                              source: 'wumpus',
+                              sent: 'true',
+                              valField: {key: 'foo', val: 'bar'},
+                              sourceTimestamp: calcNanoTimestamp('22m'),
+                              statusTimestamp: calcNanoTimestamp('21m'),
+                              message: 'This is a fake warning message',
+                            },
+                            '20m'
+                          ).then(() => {
+                            return writeMonitoringRecord(
+                              {
+                                check: check,
+                                endp: endp,
+                                rule: rule,
+                                level: 'ok',
+                                source: 'wumpus',
+                                sent: 'true',
+                                valField: {key: 'foo', val: 'bar'},
+                                sourceTimestamp: calcNanoTimestamp('7m'),
+                                statusTimestamp: calcNanoTimestamp('6m'),
+                                message: 'This is a fake OK message',
+                              },
+                              '5m'
+                            )
+                          })
+                        })
+                      })
+                    })
+                  })
+                })
+                .then(() => {
+                  // use direct route to page
+                  return cy
+                    .get<Organization>('@org')
+                    .then(({id}: Organization) => {
+                      cy.get<NotificationRule>('@rule').then(rule => {
+                        cy.fixture('routes').then(({orgs}) => {
+                          cy.visit(
+                            `${orgs}/${id}/alert-history?type=notifications&filter="notificationRuleID%20%3D%3D%20%22${rule.id}"`
+                          )
+                          cy.url().should(
+                            'include',
+                            `${orgs}/${id}/alert-history`
+                          )
+                        })
+                      })
+                    })
+                })
+            })
         })
-      })
-      cy.get<GenCheck>('@check').then(check => {
-        cy.get<NotificationEndpoint>('@endp').then(endp => {
-          cy.get<GenRule>('@rule').then(rule => {
-            writeMonitoringRecord(
-              {
-                check: check,
-                endp: endp,
-                rule: rule,
-                level: 'crit',
-                source: 'wumpus',
-                sent: 'true',
-                valField: {key: 'foo', val: 'bar'},
-                sourceTimestamp: calcNanoTimestamp('17m'),
-                statusTimestamp: calcNanoTimestamp('16m'),
-                message: 'This is a fake critical message',
-              },
-              '15m'
-            )
-
-            writeMonitoringRecord(
-              {
-                check: check,
-                endp: endp,
-                rule: rule,
-                level: 'info',
-                source: 'wumpus',
-                sent: 'false',
-                valField: {key: 'foo', val: 'bar'},
-                sourceTimestamp: calcNanoTimestamp('12m'),
-                statusTimestamp: calcNanoTimestamp('11m'),
-                message: 'This is a fake info message',
-              },
-              '10m'
-            )
-            writeMonitoringRecord(
-              {
-                check: check,
-                endp: endp,
-                rule: rule,
-                level: 'warn',
-                source: 'wumpus',
-                sent: 'true',
-                valField: {key: 'foo', val: 'bar'},
-                sourceTimestamp: calcNanoTimestamp('22m'),
-                statusTimestamp: calcNanoTimestamp('21m'),
-                message: 'This is a fake warning message',
-              },
-              '20m'
-            )
-            writeMonitoringRecord(
-              {
-                check: check,
-                endp: endp,
-                rule: rule,
-                level: 'ok',
-                source: 'wumpus',
-                sent: 'true',
-                valField: {key: 'foo', val: 'bar'},
-                sourceTimestamp: calcNanoTimestamp('7m'),
-                statusTimestamp: calcNanoTimestamp('6m'),
-                message: 'This is a fake OK message',
-              },
-              '5m'
-            )
-          })
-        })
-      })
-
-      // use direct route to page
-      cy.get<Organization>('@org').then(({id}: Organization) => {
-        cy.get<NotificationRule>('@rule').then(rule => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(
-              `${orgs}/${id}/alert-history?type=notifications&filter="notificationRuleID%20%3D%3D%20%22${rule.id}"`
-            )
-            cy.url().should('include', `${orgs}/${id}/alert-history`)
-          })
-        })
-      })
-    })
+    }
 
     it('shows and filters history', () => {
-      cy.get('.event-row').should('have.length', 4)
-      cy.get('.event-row--field:nth-of-type(1)').then(timestamps => {
-        const stamps = timestamps
-          .toArray()
-          .map(n => new Date(n.innerText).getTime())
-        // assert sort desc by date
-        for (let i = 1; i < stamps.length; i++) {
-          expect(stamps[i - 1]).to.be.above(stamps[i])
-        }
-      })
-      // verify first row
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
-        cy.get('.level-table-field--ok').should('be.visible')
-        cy.get('.sent-table-field--sent').should('be.visible')
-        cy.get('.event-row--field:nth-of-type(3)').should(
-          'have.text',
-          check.name
-        )
-        cy.get('.event-row--field:nth-of-type(4)').should(
-          'have.text',
-          rule.name
-        )
-        cy.get('.event-row--field:nth-of-type(5)').should(
-          'have.text',
-          endp.name
-        )
-      })
-      // verify second row
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(2)').within(() => {
-        cy.get('.level-table-field--info').should('be.visible')
-        cy.get('.sent-table-field--not-sent').should('be.visible')
-      })
-      // verify third row
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(3)').within(() => {
-        cy.get('.level-table-field--crit').should('be.visible')
-        cy.get('.sent-table-field--sent').should('be.visible')
-      })
-      // verify fourth row
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(4)').within(() => {
-        cy.get('.level-table-field--warn').should('be.visible')
-      })
-      // check links...
-      //    ...To Check
-      cy.getByTestID('overlay').should('not.exist')
-      cy.get(
-        '[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(3) > a'
-      ).click()
-      cy.getByTestID('overlay')
-        .should('be.visible')
-        .within(() => {
-          cy.getByTestID('page-title').should('have.text', check.name)
-          cy.getByTestID('giraffe-inner-plot').should('be.visible')
-          cy.getByTestID('query-builder').should('be.visible')
+      localInit().then(() => {
+        cy.get('.event-row').should('have.length', 4)
+        cy.get('.event-row--field:nth-of-type(1)').then(timestamps => {
+          const stamps = timestamps
+            .toArray()
+            .map(n => new Date(n.innerText).getTime())
+          // assert sort desc by date
+          for (let i = 1; i < stamps.length; i++) {
+            expect(stamps[i - 1]).to.be.above(stamps[i])
+          }
         })
-      cy.go('back')
-      //    ...To Rule
-      cy.getByTestID('overlay').should('not.exist')
-      cy.get(
-        '[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(4) > a'
-      ).click()
-      cy.getByTestID('overlay')
-        .should('be.visible')
-        .within(() => {
-          cy.getByTestID('rule-name--input').should('have.value', rule.name)
-          cy.getByTestID('levels--dropdown--button currentLevel').should(
+        // verify first row
+        cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
+          cy.get('.level-table-field--ok').should('be.visible')
+          cy.get('.sent-table-field--sent').should('be.visible')
+          cy.get('.event-row--field:nth-of-type(3)').should(
             'have.text',
-            rule.statusRules[0].currentLevel
+            check.name
           )
-          cy.getByTestID('endpoint--dropdown--button').should(
+          cy.get('.event-row--field:nth-of-type(4)').should(
+            'have.text',
+            rule.name
+          )
+          cy.get('.event-row--field:nth-of-type(5)').should(
             'have.text',
             endp.name
           )
         })
-      cy.go('back')
-      //    ...To Endpoint
-      cy.getByTestID('overlay').should('not.exist')
-      cy.get(
-        '[class$=ScrollContainer] > div:nth-of-type(3) .event-row--field:nth-of-type(5) > a'
-      ).click()
-      cy.getByTestID('overlay')
-        .should('be.visible')
-        .within(() => {
-          cy.getByTestID('endpoint--dropdown--button').should(
-            'have.text',
-            'HTTP'
-          )
-          cy.getByTestID('endpoint-name--input').should('have.value', endp.name)
-          cy.getByTestID('endpoint-description--textarea').should(
-            'have.value',
-            endp.description
-          )
-          cy.getByTestID('http-method--dropdown--button').should(
-            'have.text',
-            'POST'
-          )
-          cy.getByTestID('http-authMethod--dropdown--button').should(
-            'have.text',
-            'none'
-          )
-          cy.getByTestID('http-url').should('have.value', endp.url)
+        // verify second row
+        cy.get('[class$=ScrollContainer] > div:nth-of-type(2)').within(() => {
+          cy.get('.level-table-field--info').should('be.visible')
+          cy.get('.sent-table-field--not-sent').should('be.visible')
         })
-      cy.go('back')
-      cy.getByTestID('overlay').should('not.exist')
+        // verify third row
+        cy.get('[class$=ScrollContainer] > div:nth-of-type(3)').within(() => {
+          cy.get('.level-table-field--crit').should('be.visible')
+          cy.get('.sent-table-field--sent').should('be.visible')
+        })
+        // verify fourth row
+        cy.get('[class$=ScrollContainer] > div:nth-of-type(4)').within(() => {
+          cy.get('.level-table-field--warn').should('be.visible')
+        })
+        // check links...
+        //    ...To Check
+        cy.getByTestID('overlay').should('not.exist')
+        cy.get(
+          '[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(3) > a'
+        ).click()
+        cy.getByTestID('overlay')
+          .should('be.visible')
+          .within(() => {
+            cy.getByTestID('page-title').should('have.text', check.name)
+            cy.getByTestID('giraffe-inner-plot').should('be.visible')
+            cy.getByTestID('query-builder').should('be.visible')
+          })
+        cy.go('back')
+        //    ...To Rule
+        cy.getByTestID('overlay').should('not.exist')
+        cy.get(
+          '[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(4) > a'
+        ).click()
+        cy.getByTestID('overlay')
+          .should('be.visible')
+          .within(() => {
+            cy.getByTestID('rule-name--input').should('have.value', rule.name)
+            cy.getByTestID('levels--dropdown--button currentLevel').should(
+              'have.text',
+              rule.statusRules[0].currentLevel
+            )
+            cy.getByTestID('endpoint--dropdown--button').should(
+              'have.text',
+              endp.name
+            )
+          })
+        cy.go('back')
+        //    ...To Endpoint
+        cy.getByTestID('overlay').should('not.exist')
+        cy.get(
+          '[class$=ScrollContainer] > div:nth-of-type(3) .event-row--field:nth-of-type(5) > a'
+        ).click()
+        cy.getByTestID('overlay')
+          .should('be.visible')
+          .within(() => {
+            cy.getByTestID('endpoint--dropdown--button').should(
+              'have.text',
+              'HTTP'
+            )
+            cy.getByTestID('endpoint-name--input').should(
+              'have.value',
+              endp.name
+            )
+            cy.getByTestID('endpoint-description--textarea').should(
+              'have.value',
+              endp.description
+            )
+            cy.getByTestID('http-method--dropdown--button').should(
+              'have.text',
+              'POST'
+            )
+            cy.getByTestID('http-authMethod--dropdown--button').should(
+              'have.text',
+              'none'
+            )
+            cy.getByTestID('http-url').should('have.value', endp.url)
+          })
+        cy.go('back')
+        cy.getByTestID('overlay').should('not.exist')
 
-      cy.getByTestID('check-status-dropdown').should('not.exist')
-      cy.getByTestID('check-status-input').click()
-      cy.getByTestID('check-status-dropdown').should('be.visible')
+        cy.getByTestID('check-status-dropdown').should('not.exist')
+        cy.getByTestID('check-status-input').click()
+        cy.getByTestID('check-status-dropdown').should('be.visible')
 
-      // Filter level == crit
-      cy.getByTestID('check-status-input')
-        .clear()
-        .type('"level" == "crit"')
-      cy.get('.event-row').should('have.length', 1)
-      //    ...verify row
-      cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
-        cy.get('.level-table-field--crit').should('be.visible')
-        cy.get('.sent-table-field--sent').should('be.visible')
+        // Filter level == crit
+        cy.getByTestID('check-status-input')
+          .clear()
+          .type('"level" == "crit"')
+        cy.get('.event-row').should('have.length', 1)
+        //    ...verify row
+        cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
+          cy.get('.level-table-field--crit').should('be.visible')
+          cy.get('.sent-table-field--sent').should('be.visible')
+        })
+        // Filter level != info
+        cy.getByTestID('check-status-input')
+          .clear()
+          .type('"level" != "info"')
+        cy.get('.event-row')
+          .should('have.length', 3)
+          .then(rows => {
+            const levels = rows
+              .find('.event-row--field:nth-of-type(2)')
+              .toArray()
+              .map(r => r.innerText)
+            expect(levels).to.deep.eq(['ok', 'crit', 'warn'])
+          })
+        // Filter notificationRuleName == rule.name
+        cy.getByTestID('check-status-input')
+          .clear()
+          .type(`"notificationRuleName" == "${rule.name}"`)
+        cy.get('.event-row')
+          .should('have.length', 4)
+          .then(rows => {
+            const levels = rows
+              .find('.event-row--field:nth-of-type(2)')
+              .toArray()
+              .map(r => r.innerText)
+            expect(levels).to.deep.eq(['ok', 'info', 'crit', 'warn'])
+          })
+        cy.getByTitle('Refresh').click()
+        cy.getByTestID('check-status-dropdown').should('not.exist')
       })
-      // Filter level != info
-      cy.getByTestID('check-status-input')
-        .clear()
-        .type('"level" != "info"')
-      cy.get('.event-row')
-        .should('have.length', 3)
-        .then(rows => {
-          const levels = rows
-            .find('.event-row--field:nth-of-type(2)')
-            .toArray()
-            .map(r => r.innerText)
-          expect(levels).to.deep.eq(['ok', 'crit', 'warn'])
-        })
-      // Filter notificationRuleName == rule.name
-      cy.getByTestID('check-status-input')
-        .clear()
-        .type(`"notificationRuleName" == "${rule.name}"`)
-      cy.get('.event-row')
-        .should('have.length', 4)
-        .then(rows => {
-          const levels = rows
-            .find('.event-row--field:nth-of-type(2)')
-            .toArray()
-            .map(r => r.innerText)
-          expect(levels).to.deep.eq(['ok', 'info', 'crit', 'warn'])
-        })
-      cy.getByTitle('Refresh').click()
-      cy.getByTestID('check-status-dropdown').should('not.exist')
     })
 
     it('refreshes the history', () => {
-      cy.get('.event-row').should('have.length', 4)
-      cy.get<GenCheck>('@check').then(check => {
-        cy.get<NotificationEndpoint>('@endp').then(endp => {
-          cy.get<GenRule>('@rule').then(rule => {
-            writeMonitoringRecord(
-              {
-                check: check,
-                endp: endp,
-                rule: rule,
-                level: 'info',
-                source: 'wumpus',
-                sent: 'false',
-                valField: {key: 'foo', val: 'bar'},
-                sourceTimestamp: calcNanoTimestamp('4m'),
-                statusTimestamp: calcNanoTimestamp('3m'),
-                message: 'This is a fake info message',
-              },
-              '2m'
-            )
+      localInit().then(() => {
+        cy.get('.event-row').should('have.length', 4)
+        cy.get<GenCheck>('@check').then(check => {
+          cy.get<NotificationEndpoint>('@endp').then(endp => {
+            cy.get<GenRule>('@rule').then(rule => {
+              writeMonitoringRecord(
+                {
+                  check: check,
+                  endp: endp,
+                  rule: rule,
+                  level: 'info',
+                  source: 'wumpus',
+                  sent: 'false',
+                  valField: {key: 'foo', val: 'bar'},
+                  sourceTimestamp: calcNanoTimestamp('4m'),
+                  statusTimestamp: calcNanoTimestamp('3m'),
+                  message: 'This is a fake info message',
+                },
+                '2m'
+              )
+            })
           })
         })
+        cy.getByTitle('Refresh').click()
+        cy.get('.event-row')
+          .should('have.length', 5)
+          .then(rows => {
+            const levels = rows
+              .find('.event-row--field:nth-of-type(2)')
+              .toArray()
+              .map(r => r.innerText)
+            expect(levels).to.deep.eq(['info', 'ok', 'info', 'crit', 'warn'])
+          })
       })
-      cy.getByTitle('Refresh').click()
-      cy.get('.event-row')
-        .should('have.length', 5)
-        .then(rows => {
-          const levels = rows
-            .find('.event-row--field:nth-of-type(2)')
-            .toArray()
-            .map(r => r.innerText)
-          expect(levels).to.deep.eq(['info', 'ok', 'info', 'crit', 'warn'])
-        })
     })
 
-    // N.B. if local === utc then skip
-    if (new Date().getTimezoneOffset() !== 0) {
-      it('Switches between local and UTC time', () => {
+    it('Switches between local and UTC time', () => {
+      localInit().then(() => {
         let hours: number[] = []
         cy.get('.event-row--field:nth-of-type(1) ').then(timestamps => {
           hours = timestamps
@@ -751,8 +782,6 @@ describe('NotificationRules', () => {
           expect(CurrHours).to.deep.eq(hours)
         })
       })
-    } else {
-      it.skip('Switches between local and UTC time - skipped because same', () => {})
-    }
+    })
   })
 })

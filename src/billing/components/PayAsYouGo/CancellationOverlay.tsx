@@ -39,11 +39,9 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
 
-  const sendDetailsToRudderstack = () => {
-    if (
-      !isFlagEnabled('rudderStackReporting') ||
-      !isFlagEnabled('trackCancellations')
-    ) {
+  const handleCancelService = () => {
+    if (!hasClickedCancel) {
+      setHasClickedCancel(true)
       return
     }
 
@@ -57,17 +55,16 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
       canContactForFeedback: canContactForFeedback ? 'true' : 'false',
     }
 
-    event('Cancel Org Executed', payload)
-    track('CancelOrgExecuted', payload)
-  }
-
-  const handleCancelService = () => {
-    if (!hasClickedCancel) {
-      setHasClickedCancel(true)
-    } else {
-      sendDetailsToRudderstack()
-      handleCancelAccount()
+    if (
+      isFlagEnabled('rudderStackReporting') &&
+      isFlagEnabled('trackCancellations')
+    ) {
+      // Send to Rudderstack
+      track('CancelServiceExecuted', payload)
     }
+
+    handleCancelAccount()
+    event('Cancel Service Executed', payload)
   }
 
   const handleDismiss = () => {
@@ -79,6 +76,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     if (!isFlagEnabled('trackCancellations')) {
       return hasAgreedToTerms
     }
+
     // Has Agreed to Terms & Conditions
     // as well as
     // Selected an option from the Reasons Dropdown

@@ -252,6 +252,7 @@ const EditingPanel: FC<PanelProps> = ({
   index,
   measurementSchema,
   onAddUpdate,
+  toggleUpdate,
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
   const [fileError, setFileError] = useState(false)
@@ -259,6 +260,8 @@ const EditingPanel: FC<PanelProps> = ({
 
   const setUserWantsUpdate = () => {
     setIsBeingUpdated(true)
+    toggleUpdate(true, index)
+    console.log('isbeing updated??', isBeingUpdated)
   }
 
   const handleDownloadSchema = () => {
@@ -361,6 +364,24 @@ export const MeasurementSchemaSection: FC<Props> = ({
     setSchemaUpdates(schemaUpdates)
   }
 
+  const toggleUpdate = (doingUpdate, index) => {
+    let entry = schemaUpdates[index] || {}
+
+    if (doingUpdate) {
+      entry.hasUpdate = true
+      entry.valid = false
+    } else {
+      // cancelling
+      entry.hasUpdate = false
+      //delete entry.columns
+      //delete entry.valid
+    }
+
+    schemaUpdates[index] = entry
+    console.log('toggling updates....', schemaUpdates)
+    setSchemaUpdates(schemaUpdates)
+  }
+
   // this is the documentation link for explicit schemas for buckets
   const link =
     'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
@@ -374,6 +395,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
         measurementSchema={oneSchema}
         index={index}
         onAddUpdate={onAddUpdate}
+        toggleUpdate={toggleUpdate}
       />
     ))
   }

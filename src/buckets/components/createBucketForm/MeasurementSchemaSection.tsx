@@ -299,9 +299,6 @@ const EditingPanel: FC<PanelProps> = ({
     />
   ) : null
 
-  const cancelUpdateButton = isBeingUpdated ? (
-    <Button text="Cancel Update" onClick={cancelUpdate} />
-  ) : null
 
   return (
     <Panel className="measurement-schema-panel-container">
@@ -331,10 +328,11 @@ const EditingPanel: FC<PanelProps> = ({
             setErrorState={setErrorState}
             defaultText={'Update schema file'}
             preFileUpload={setUserWantsUpdate}
+            allowCancelling={true}
           />
         </FlexBox>
         {errorElement}
-        {cancelUpdateButton}
+
       </FlexBox>
     </Panel>
   )

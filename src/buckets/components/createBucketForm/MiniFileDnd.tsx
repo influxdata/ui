@@ -2,6 +2,9 @@ import React, {useState, FC, useRef} from 'react'
 
 import classnames from 'classnames'
 
+import {
+    Button,
+} from '@influxdata/clockface'
 interface Props {
   allowedExtensions: string
   allowedTypes: string[]
@@ -10,6 +13,8 @@ interface Props {
   alreadySetFileName?: string
   defaultText?: string
   preFileUpload?: () => void
+  allowCancelling?: boolean
+
 }
 
 export const setGrammar = (fileTypes: string[]) => {
@@ -71,6 +76,7 @@ export const MiniFileDnd: FC<Props> = ({
   alreadySetFileName,
   defaultText,
   preFileUpload,
+    allowCancelling,
 }) => {
   const [fileName, setFileName] = useState(alreadySetFileName)
   const [dropAreaActive, setDropAreaActive] = useState(false)
@@ -182,7 +188,17 @@ export const MiniFileDnd: FC<Props> = ({
     active: dropAreaActive,
   })
 
+  const doCancel = () => {
+    console.log('would cancel here TODO')
+  }
+
+  const cancelButton = allowCancelling ? (
+      <Button text='cancel'
+              onClick={doCancel}/>
+  ) : null
+
   return (
+      <>
     <div
       id="drop_zone"
       className={dropZoneClasses}
@@ -197,5 +213,7 @@ export const MiniFileDnd: FC<Props> = ({
       </div>
       {inputElement}
     </div>
+        {cancelButton}
+        </>
   )
 }

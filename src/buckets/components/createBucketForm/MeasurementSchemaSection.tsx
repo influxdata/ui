@@ -261,7 +261,6 @@ const EditingPanel: FC<PanelProps> = ({
   const setUserWantsUpdate = () => {
     setIsBeingUpdated(true)
     toggleUpdate(true, index)
-    console.log('isbeing updated??', isBeingUpdated)
   }
 
   const cancelUpdate = () => {
@@ -278,7 +277,7 @@ const EditingPanel: FC<PanelProps> = ({
     downloadTextFile(contents, name || 'schema', '.json')
   }
 
-  const handleUploadFile = (contents: string, fileName: string) => {
+  const handleFileUpload = (contents: string) => {
     const columns = getColumnsFromFile(contents)
     onAddUpdate(columns, index)
   }
@@ -325,7 +324,7 @@ const EditingPanel: FC<PanelProps> = ({
             key={`update-mini-dnd-${index}`}
             allowedExtensions={allowedExtensions}
             allowedTypes={allowedTypes}
-            handleFileUpload={handleUploadFile}
+            handleFileUpload={handleFileUpload}
             setErrorState={setErrorState}
             defaultText={'Update schema file'}
             preFileUpload={setUserWantsUpdate}

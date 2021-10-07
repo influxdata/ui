@@ -1,18 +1,23 @@
-import React, {useState, FC, useRef} from 'react'
+import React, {FC, useRef, useState} from 'react'
 
 import classnames from 'classnames'
 
 import {
   AlignItems,
   Button,
+  ComponentColor,
   ComponentSize,
+  ComponentStatus,
   FlexBox,
   FlexDirection,
+  IconFont,
+  SquareButton,
 } from '@influxdata/clockface'
+
 interface Props {
   allowedExtensions: string
   allowedTypes: string[]
-  handleFileUpload: (contents: string, fileName: string) => void
+  handleFileUpload: (contents: string, fileName?: string) => void
   setErrorState: (hasError: boolean, message?: string) => void
   alreadySetFileName?: string
   defaultText?: string
@@ -208,11 +213,20 @@ export const MiniFileDnd: FC<Props> = ({
     onCancel()
   }
 
-  const cancelButton =
-    isDirty && onCancel ? <Button text="cancel" onClick={doCancel} /> : null
+  const cancelComponent = (
+    <SquareButton
+      icon={IconFont.Undo}
+      onClick={doCancel}
+      titleText="cancel update"
+      color={ComponentColor.Secondary}
+      size={ComponentSize.ExtraSmall}
+    />
+  )
+
+  const cancelButton = isDirty && onCancel ? cancelComponent : null
 
   return (
-    <FlexBox direction={FlexDirection.Column} alignItems={AlignItems.Center}>
+    <>
       <div
         id="drop_zone"
         className={dropZoneClasses}
@@ -228,6 +242,6 @@ export const MiniFileDnd: FC<Props> = ({
         {inputElement}
       </div>
       {cancelButton}
-    </FlexBox>
+    </>
   )
 }

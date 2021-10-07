@@ -37,7 +37,7 @@ import Threshold, {
   deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Notification/Threshold'
-import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
+import {ENDPOINT_DEFINITIONS} from 'src/flows/pipes/Notification/endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 import {SidebarContext} from 'src/flows/context/sidebar'
 const NotificationMonacoEditor = lazy(() =>
@@ -163,7 +163,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
 
     update({
       endpoint: which,
-      endpointData: DEFAULT_ENDPOINTS[which].data,
+      endpointData: ENDPOINT_DEFINITIONS[which].data,
     })
   }
 
@@ -216,14 +216,14 @@ const Notification: FC<PipeProp> = ({Context}) => {
     )
   }, [hasTaskOption])
 
-  const avail = Object.keys(DEFAULT_ENDPOINTS).map(k => (
+  const avail = Object.keys(ENDPOINT_DEFINITIONS).map(k => (
     <Dropdown.Item
       key={k}
       id={k}
       onClick={() => updateEndpoint(k)}
       selected={data.endpoint === k}
     >
-      {DEFAULT_ENDPOINTS[k].name}
+      {ENDPOINT_DEFINITIONS[k].name}
     </Dropdown.Item>
   ))
 
@@ -277,7 +277,7 @@ import "influxdata/influxdb/monitor"
 import "influxdata/influxdb/schema"
 import "influxdata/influxdb/secrets"
 import "experimental"
-${DEFAULT_ENDPOINTS[data.endpoint]?.generateImports()}
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
 
 check = {
 	_check_id: "${id}",
@@ -297,7 +297,7 @@ task_data = ${format_from_js_file(ast)}
 trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
-${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
 |> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
       deadman.deadmanCheckValue
     }))`
@@ -392,7 +392,7 @@ import "influxdata/influxdb/monitor"
 import "influxdata/influxdb/schema"
 import "influxdata/influxdb/secrets"
 import "experimental"
-${DEFAULT_ENDPOINTS[data.endpoint]?.generateImports()}
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
 
 check = {
 	_check_id: "${id}",
@@ -411,7 +411,7 @@ task_data = ${format_from_js_file(ast)}
 trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
-${DEFAULT_ENDPOINTS[data.endpoint]?.generateQuery(data.endpointData)}`
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
 
     const newAST = parse(newQuery)
 
@@ -461,9 +461,9 @@ import "regexp"
 import "influxdata/influxdb/schema"
 import "influxdata/influxdb/secrets"
 import "experimental"
-${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestImports()}
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestImports()}
 
-${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
 
     try {
       setStatus(RemoteDataState.Loading)
@@ -628,7 +628,7 @@ ${DEFAULT_ENDPOINTS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                         className="endpoint-details--element"
                       >
                         {React.createElement(
-                          DEFAULT_ENDPOINTS[data.endpoint].view
+                          ENDPOINT_DEFINITIONS[data.endpoint].component
                         )}
                       </Form.Element>
                     </FlexBox.Child>

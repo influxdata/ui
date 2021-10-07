@@ -153,3 +153,15 @@ export interface TypeRegistration {
   visual?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the flux used for the pipe visualization (depreciate?)
   source?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the source flux that is passed between panels
 }
+
+export interface EndpointTypeRegistration {
+  type: string // a unique string that identifies an endpoint
+  name: string
+  data: any
+  component: FunctionComponent | ComponentClass
+  readOnlyComponent: FunctionComponent | ComponentClass
+  generateImports: Function
+  generateTestImports: Function
+  generateQuery: Function
+  generateTestQuery: Function
+}

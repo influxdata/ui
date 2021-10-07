@@ -9,7 +9,7 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const Slack: FC = () => {
+const SlackReadOnly: FC = () => {
   const {data} = useContext(PipeContext)
 
   return (
@@ -42,10 +42,10 @@ const Slack: FC = () => {
           size={ComponentSize.Medium}
           status={ComponentStatus.Disabled}
         />
-        )}
+        )
       </Form.Element>
     </div>
   )
 }
 
-export default Slack
+export default SlackReadOnly

@@ -80,7 +80,9 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }, [])
 
   useEffect(() => {
-    const perms = {}
+    const perms = {
+      otherResources: {read: false, write: false},
+    }
 
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {

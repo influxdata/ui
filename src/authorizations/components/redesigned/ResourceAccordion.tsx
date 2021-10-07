@@ -60,22 +60,29 @@ class ResourceAccordion extends Component<OwnProps> {
         })}
         <Accordion key="Other Resources">
           <ResourceAccordionHeader resourceName="Other Resources" />
-          {resources[1].map(resource => {
-            console.log('Resource', resource)
-            const resourceName =
-              resource.charAt(0).toUpperCase() + resource.slice(1)
+          <AllAccordionBody
+            resourceName="Other Resources"
+            permissions={permissions.otherResources}
+            onToggleAll={onToggleAll}
+            disabled={false}
+          />
+          {!permissions.otherResources.read && !permissions.otherResources.write
+            ? resources[1].map(resource => {
+                const resourceName =
+                  resource.charAt(0).toUpperCase() + resource.slice(1)
 
-            return (
-              <>
-                <AllAccordionBody
-                  resourceName={resourceName}
-                  permissions={permissions[resource]}
-                  onToggleAll={onToggleAll}
-                  disabled={false}
-                />
-              </>
-            )
-          })}
+                return (
+                  <>
+                    <AllAccordionBody
+                      resourceName={resourceName}
+                      permissions={permissions[resource]}
+                      onToggleAll={onToggleAll}
+                      disabled={false}
+                    />
+                  </>
+                )
+              })
+            : null}
         </Accordion>
       </>
     )

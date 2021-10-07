@@ -34,7 +34,7 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
 interface AgentOutputNotificationProps {
-  triggerRef: React.RefObject<HTMLDListElement>
+  triggerRef: React.RefObject<HTMLElement>
 }
 
 const AgentOutputNotification: FC<AgentOutputNotificationProps> = props => (
@@ -132,7 +132,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     onSetTelegrafConfigDescription(event.target.value)
   }
 
-  const notificationRef = createRef<HTMLDListElement>()
+  const notificationRef = createRef<HTMLElement>()
 
   return (
     <>

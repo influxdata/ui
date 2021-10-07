@@ -62,10 +62,10 @@ interface AddingProps {
 }
 
 const getColumnsFromFile = (contents: string) => {
-  // do parsing here;  to check in the correct format:
+  // do parsing here;  to check if in the correct format:
   let columns = null
   if (contents) {
-    // parse them; if kosher; great!  if not, set errors and do not proceed
+    // parse them; if proper/valid; great!  if not, set errors and do not proceed
     // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
     columns = JSON.parse(contents)
 
@@ -232,7 +232,7 @@ const EditingPanel: FC<PanelProps> = ({
   showSchemaValidation,
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
-  const [fileError, setFileError] = useState(hasFileError)
+  const [fileError, setFileError] = useState(null)
 
   const handleDownloadSchema = () => {
     const {name} = measurementSchema

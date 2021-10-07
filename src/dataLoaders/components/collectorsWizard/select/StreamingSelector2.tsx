@@ -189,7 +189,7 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
       configured: ConfigurationState.Configured,
     }
     this.props.onTogglePluginBundle(pluginBuild)
-    event(`telegraf_page.create_new_config.${plugin}_plugin_selected`)
+    event(`telegraf_page.create_new_config.plugin_selected`, {plugin})
   }
 
   private handleFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {

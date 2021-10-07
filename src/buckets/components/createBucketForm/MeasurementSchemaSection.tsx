@@ -48,7 +48,6 @@ interface Props {
 interface PanelProps {
   measurementSchema: typeof MeasurementSchema
   index?: number
-  showSchemaValidation: boolean
   onAddUpdate: (columns: string, filename: string, index: number) => void
 }
 interface AddingProps {
@@ -229,7 +228,6 @@ const EditingPanel: FC<PanelProps> = ({
   index,
   measurementSchema,
   onAddUpdate,
-  showSchemaValidation,
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
   const [fileError, setFileError] = useState(null)
@@ -305,16 +303,28 @@ export const MeasurementSchemaSection: FC<Props> = ({
   showSchemaValidation,
 }) => {
   const [newSchemas, setNewSchemas] = useState([])
-  const [schemaUpdates, setSchemaUpdates] = useState({})
+  // each object (todo):  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
+
+  const updateInit = measurementSchemaList?.measurementSchemas.map(schema => (
+     {currentSchema: schema, hasUpdate:false}
+  ))
+  console.log('makinhg section.....msl??', measurementSchemaList)
+  const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
   const onAddUpdate = (columns, fileName, index) => {
     console.log('in onaddupdate', columns)
 
     let entry = schemaUpdates[index] || {}
     entry.columns = columns
+    entry.hasUpdate = true
+
+    //don't think we need to keep this around; we don't regenerate the data...
+    // todo determine this
     entry.fileName = fileName
 
     schemaUpdates[index] = entry
+
+    console.log('about to set schema updates: ', schemaUpdates )
     setSchemaUpdates(schemaUpdates)
   }
 

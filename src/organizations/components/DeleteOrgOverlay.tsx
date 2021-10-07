@@ -59,7 +59,7 @@ const DeleteOrgOverlay: FC = () => {
     return hasAgreedToTerms && VariableItems[reason] !== VariableItems.NO_OPTION
   }, [hasAgreedToTerms, reason])
 
-  const sendDetailsToRudderstack = () => {
+  const handleDeleteAccount = async () => {
     const payload = {
       org: org.id,
       tier: quartzMe?.accountType,
@@ -69,17 +69,16 @@ const DeleteOrgOverlay: FC = () => {
       reason: VariableItems[reason],
     }
 
-    event('Cancel Org Executed', payload)
-    track('CancelOrgExecuted', payload)
-  }
-
-  const handleDeleteAccount = async () => {
-    if (isFlagEnabled('rudderStackReporting')) {
-      sendDetailsToRudderstack()
+    if (
+      isFlagEnabled('rudderStackReporting') &&
+      isFlagEnabled('trackCancellations')
+    ) {
+      track('DeleteOrgExecuted', payload)
     }
 
     try {
       const resp = await deleteAccount({})
+      event('Delete Org Executed', payload)
 
       if (resp.status !== 204) {
         throw new Error(resp.data.message)

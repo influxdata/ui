@@ -320,6 +320,7 @@ const EditingPanel: FC<PanelProps> = ({
             color={ComponentColor.Secondary}
             text="Download Schema"
             onClick={handleDownloadSchema}
+            testID="measurement-schema-download-button"
             className="download-button"
           />
           <MiniFileDnd

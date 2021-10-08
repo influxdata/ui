@@ -151,8 +151,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     }
   }
 
-  const handleMeasurementSchemaUpdates = (schemas: any[]) => {
-    console.log('setting msu.s.......', schemas)
+  const handleMeasurementSchemaUpdates = schemas => {
     setMeasurementSchemaUpdates(schemas)
   }
 
@@ -213,7 +212,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         measurementSchemaUpdates
           .filter(msu => msu.hasUpdate)
           .forEach(item => {
-            console.log('would do schema update here for: ', item)
+            console.log('do schema update here for: ', item)
             const {currentSchema, columns} = item
             const {bucketID, id, name, orgID} = currentSchema
             const updateRequest = {columns}

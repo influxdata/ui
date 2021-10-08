@@ -281,7 +281,6 @@ const EditingPanel: FC<PanelProps> = ({
   }
 
   const setErrorState = (hasError, message) => {
-    console.log(`in setErrorState... ${hasError}, ${message}`)
     setFileError(hasError)
 
     if (!hasError) {

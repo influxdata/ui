@@ -118,7 +118,59 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()
     cy.getByTestID('explicit-bucket-schema-choice-ID').click()
-    cy.getByTitle('Add New Measurement Schema').click()
+    cy.getByTestID('measurement-schema-add-file-button').click()
+    cy.getByTestID('input-field').type('first schema file')
+
+    const bigFile = 'valid.json'
+    const type = 'application/json'
+    const testFile = new File(
+      [
+        `[{"name":"time","type":"timestamp"},
+        {"name":"fsWrite","type":"field","dataType":"float"} ]`,
+      ],
+      bigFile,
+      {type}
+    )
+
+    const event = {dataTransfer: {files: [testFile]}, force: true}
+    cy.getByTestID('dndContainer')
+      .trigger('dragover', event)
+      .trigger('drop', event)
+
+    cy.getByTestID('bucket-form-submit').click()
+
+    cy.getByTestID(`bucket-card explicit_bucket`)
+      .should('exist')
+      .within(() => {
+        cy.getByTestID('bucket-settings').click()
+      })
+    cy.getByTestID('accordion-header').click()
+
+    cy.getByTestID('measurement-schema-readOnly-panel-0')
+      .should('exist')
+      .within(() => {
+        cy.getByTestID('measurement-schema-name-0')
+          .contains('first schema file')
+          .should('exist')
+      })
+  })
+
+  it('should be able to create an explicit bucket and add schema file during editing', function() {
+    cy.getByTestID('Create Bucket').click()
+    cy.getByTestID('bucket-form-name').type('explicit_bucket')
+    cy.getByTestID('accordion-header').click()
+    cy.getByTestID('explicit-bucket-schema-choice-ID').click()
+
+    cy.getByTestID('bucket-form-submit').click()
+
+    cy.getByTestID(`bucket-card explicit_bucket`)
+      .should('exist')
+      .within(() => {
+        cy.getByTestID('bucket-settings').click()
+      })
+    cy.getByTestID('accordion-header').click()
+
+    cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('input-field').type('first schema file')
 
     const bigFile = 'valid.json'

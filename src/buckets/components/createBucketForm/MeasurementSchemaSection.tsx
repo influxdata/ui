@@ -304,7 +304,11 @@ export const MeasurementSchemaSection: FC<Props> = ({
   }
 
   const addSchemaButton = (
-    <Button onClick={addSchemaLine} text="Add New Measurement Schema" />
+    <Button
+      onClick={addSchemaLine}
+      testID="measurement-schema-add-file-button"
+      text="Add New Measurement Schema"
+    />
   )
 
   const onAddName = (name, isValid, index) => {

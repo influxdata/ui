@@ -37,7 +37,6 @@ const TimeMachineVis: FC<Props> = ({
   timeRange,
   isInitialFetch,
   isViewingRawData,
-  files,
   viewProperties,
   giraffeResult,
   xColumn,

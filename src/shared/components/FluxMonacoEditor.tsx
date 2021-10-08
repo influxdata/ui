@@ -13,7 +13,6 @@ import THEME_NAME from 'src/external/monaco.flux.theme'
 import loadServer, {LSPServer} from 'src/external/monaco.flux.server'
 import {comments, submit} from 'src/external/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/external/monaco.autogrow'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -22,6 +21,9 @@ import {editor as monacoEditor} from 'monaco-editor'
 
 import './FluxMonacoEditor.scss'
 import {Diagnostic} from 'monaco-languageclient/lib/services'
+// import {WebsocketProvider} from 'y-websocket'
+// import {MonacoBinding} from 'y-monaco'
+// import * as Y from 'yjs'
 
 const p2m = new ProtocolToMonacoConverter()
 
@@ -67,6 +69,22 @@ const FluxEditorMonaco: FC<Props> = ({
       setEditorInstance(editor)
     }
 
+    // const ydoc = new Y.Doc()
+    // const provider = new WebsocketProvider(
+    //   'wss://demos.yjs.dev',
+    //   'monaco-demo',
+    //   ydoc
+    // )
+    // provider.connect()
+    // const ytext = ydoc.getText('monaco')
+
+    // const monacoBinding = new MonacoBinding(
+    //   ytext,
+    //   /** @type {monaco.editor.ITextModel} */ editor.getModel(),
+    //   new Set([editor]),
+    //   provider.awareness
+    // )
+
     seteditorInst(editor)
 
     const uri = editor.getModel().uri.toString()
@@ -90,17 +108,8 @@ const FluxEditorMonaco: FC<Props> = ({
       updateDiagnostics(diagnostics)
       monacoEditor.remeasureFonts()
 
-      if (isFlagEnabled('cursorAtEOF')) {
-        const lines = (script || '').split('\n')
-        editor.setPosition({
-          lineNumber: lines.length,
-          column: lines[lines.length - 1].length + 1,
-        })
+      if (!readOnly) {
         editor.focus()
-      } else {
-        if (!readOnly) {
-          editor.focus()
-        }
       }
     } catch (e) {
       // TODO: notify user that lsp failed

@@ -368,6 +368,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     schemaUpdates[index] = entry
 
     console.log('about to set schema updates: ', schemaUpdates)
+    onUpdateSchemas(schemaUpdates)
     setSchemaUpdates(schemaUpdates)
   }
 

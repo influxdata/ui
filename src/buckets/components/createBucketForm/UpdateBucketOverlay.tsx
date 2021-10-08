@@ -84,7 +84,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     newMeasurementSchemaRequests,
     setNewMeasurementSchemaRequests,
   ] = useState(null)
-
+  console.log('in constructor..... ack! ubo')
   const [measurementSchemaUpdates, setMeasurementSchemaUpdates] = useState(null)
 
   const [showSchemaValidation, setShowSchemaValidation] = useState(false)
@@ -149,6 +149,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   }
 
   const handleMeasurementSchemaUpdates = (schemas: any[]) => {
+    console.log('setting msu.s.......', schemas)
     setMeasurementSchemaUpdates(schemas)
   }
 
@@ -189,7 +190,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
       onUpdateBucket(bucketDraft)
 
       if (newMeasurementSchemaRequests?.length) {
-        newMeasurementSchemaRequests.map(item => {
+        newMeasurementSchemaRequests.forEach(item => {
           const createRequest = {
             columns: item.columns,
             name: item.name,
@@ -203,6 +204,14 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
             createRequest
           )
         })
+      }
+
+      if (measurementSchemaUpdates?.length) {
+        measurementSchemaUpdates
+          .filter(msu => msu.hasUpdate)
+          .forEach(item => {
+            console.log('would do schema update here for: ', item)
+          })
       }
 
       handleClose()

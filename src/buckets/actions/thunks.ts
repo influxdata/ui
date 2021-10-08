@@ -396,6 +396,7 @@ export const updateMeasurementSchema = (
     data: schema,
     query: {orgID},
   }
+  console.log('in update measurement schema.....params:', params)
   try {
     const resp = await patchBucketsSchemaMeasurement(params)
     if (resp.status !== 200) {

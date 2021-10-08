@@ -25,6 +25,7 @@ import {
   getBucketSchema,
   updateBucket,
   addSchemaToBucket,
+  updateMeasurementSchema,
 } from 'src/buckets/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -58,6 +59,7 @@ interface DispatchProps {
   onUpdateBucket: typeof updateBucket
   getSchema: typeof getBucketSchema
   onAddMeasurementSchemaToBucket: typeof addSchemaToBucket
+  updateSchema: typeof updateMeasurementSchema
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -67,6 +69,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   onUpdateBucket,
   getSchema,
   onAddMeasurementSchemaToBucket,
+  updateSchema,
   match,
   history,
 }) => {
@@ -84,7 +87,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     newMeasurementSchemaRequests,
     setNewMeasurementSchemaRequests,
   ] = useState(null)
-  console.log('in constructor..... ack! ubo')
+
   const [measurementSchemaUpdates, setMeasurementSchemaUpdates] = useState(null)
 
   const [showSchemaValidation, setShowSchemaValidation] = useState(false)
@@ -211,6 +214,11 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
           .filter(msu => msu.hasUpdate)
           .forEach(item => {
             console.log('would do schema update here for: ', item)
+            const {currentSchema, columns} = item
+            const {bucketID, id, name, orgID} = currentSchema
+            const updateRequest = {columns}
+            event('bucket.schema.explicit.editing.updateSchema')
+            updateSchema(bucketID, id, name, updateRequest, orgID)
           })
       }
 
@@ -273,6 +281,7 @@ const mdtp = {
   onUpdateBucket: updateBucket,
   getSchema: getBucketSchema,
   onAddMeasurementSchemaToBucket: addSchemaToBucket,
+  updateSchema: updateMeasurementSchema,
 }
 
 const connector = connect(null, mdtp)

@@ -354,12 +354,9 @@ export const MeasurementSchemaSection: FC<Props> = ({
     currentSchema: schema,
     hasUpdate: false,
   }))
-  console.log('making section.....msl??', measurementSchemaList)
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
   const onAddUpdate = (columns, index) => {
-    console.log('in onaddupdate', columns)
-
     let entry = schemaUpdates[index] || {}
     entry.columns = columns
     entry.hasUpdate = true
@@ -372,8 +369,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     // (can always re-upload anotherfile if maake a mistake, but want an easy out)
 
     schemaUpdates[index] = entry
-
-    console.log('about to set schema updates: ', schemaUpdates)
     onUpdateSchemas(schemaUpdates)
     setSchemaUpdates(schemaUpdates)
   }
@@ -392,7 +387,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     }
 
     schemaUpdates[index] = entry
-    console.log('toggling updates....', schemaUpdates)
     setSchemaUpdates(schemaUpdates)
   }
 

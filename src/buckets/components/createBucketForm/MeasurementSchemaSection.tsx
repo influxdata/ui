@@ -309,7 +309,12 @@ const EditingPanel: FC<PanelProps> = ({
       >
         <div> name</div>
         <FlexBox direction={FlexDirection.Row} className="schema-row">
-          <div className="value-text">{measurementSchema.name}</div>
+          <div
+            className="value-text"
+            data-testid={`measurement-schema-name-${index}`}
+          >
+            {measurementSchema.name}
+          </div>
           <Button
             icon={IconFont.Download}
             color={ComponentColor.Secondary}

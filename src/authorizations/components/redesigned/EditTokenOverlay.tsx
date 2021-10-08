@@ -65,7 +65,7 @@ const EditTokenOverlay: FC<Props> = props => {
 
   const onSave = () => {
     const {onUpdate, auth} = props
-    
+
     onUpdate({
       ...auth,
       description: description,

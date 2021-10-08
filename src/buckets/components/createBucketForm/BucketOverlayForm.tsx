@@ -48,10 +48,11 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
-  onUpdateNewMeasurementSchemas?: (
+  onAddNewMeasurementSchemas?: (
     schemas: any[],
     resetValidation?: boolean
   ) => void
+  onUpdateMeasurementSchemas?: (schemaInfo: any[]) => void
   isEditing: boolean
   buttonText: string
   onClickRename?: () => void
@@ -61,11 +62,14 @@ interface Props {
   measurementSchemaList?: typeof MeasurementSchemaList
   showSchemaValidation?: boolean
 }
-
+// todo: determine exact real type of updates?  or don't bother
+// bc the specified return type is not exactly what we get back
+// (also get back bucketID and orgID, both of which I am using)
 interface State {
   showAdvanced: boolean
   schemaType: 'implicit' | 'explicit'
   newMeasurementSchemas: typeof MeasurementSchemaCreateRequest[]
+  measurementSchemaUpdates: any[]
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
@@ -73,6 +77,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     showAdvanced: false,
     schemaType: 'implicit',
     newMeasurementSchemas: [],
+    measurementSchemaUpdates: [],
   }
 
   onChangeSchemaTypeInternal = (newSchemaType: typeof SchemaType) => {
@@ -80,9 +85,14 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     this.props.onChangeSchemaType(newSchemaType)
   }
 
-  onUpdateSchemasInternal = (schemas, resetValidation) => {
-    this.props.onUpdateNewMeasurementSchemas(schemas, resetValidation)
+  onAddSchemasInternal = (schemas, resetValidation) => {
+    this.props.onAddNewMeasurementSchemas(schemas, resetValidation)
     this.setState({newMeasurementSchemas: schemas})
+  }
+
+  onUpdateSchemasInternal = schemas => {
+    this.props.onUpdateMeasurementSchemas(schemas)
+    this.setState({measurementSchemaUpdates: schemas})
   }
 
   public render() {
@@ -112,8 +122,9 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       <MeasurementSchemaSection
         measurementSchemaList={measurementSchemaList}
         key="measurementSchemaSection"
-        onUpdateSchemas={this.onUpdateSchemasInternal}
+        onAddSchemas={this.onAddSchemasInternal}
         showSchemaValidation={showSchemaValidation}
+        onUpdateSchemas={this.onUpdateSchemasInternal}
       />
     )
 

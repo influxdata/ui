@@ -42,12 +42,38 @@ if (CLOUD) {
 
 interface Props {
   measurementSchemaList?: typeof MeasurementSchemaList
-  onUpdateSchemas: (schemas: any, b?: boolean) => void
+  onUpdateSchemas?: (schemas: any) => void
+  onAddSchemas: (schemas: any, b?: boolean) => void
   showSchemaValidation: boolean
 }
+
+/**
+ * toggleUpdate:  is this line being updated?
+ * need to have this passed up, because the erroring on the
+ * file dnd element  is triggered separately from onAddUpdate(either
+ * onAddUpdate is triggered, or an error is sent; not both)
+ *
+ * when creating a new schema, an object is created with a false valid value,
+ * and then as things are added it the value gets turned to true
+ *
+ * since we already have something showing, need to know when it needs
+ * validation
+ *
+ * and we can also cancel out of updating.
+ *
+ * so:  if toggleUpdate is set to true, then that measurement schema is getting
+ * an update, and the validation is set to false, and if there is a valid columns
+ * file then it gets set to true.
+ *
+ * if toggleUpdate gets set to false, then no validation is needed
+ * as nothing is being updated on that measurement schema
+ * (that happens when the user cancels out of the update)
+ * */
 interface PanelProps {
   measurementSchema: typeof MeasurementSchema
   index?: number
+  onAddUpdate: (columns: string, index: number) => void
+  toggleUpdate: (doingUpdate: boolean, index: number) => void
 }
 interface AddingProps {
   index: number
@@ -58,6 +84,26 @@ interface AddingProps {
   name?: string
   showSchemaValidation?: boolean
 }
+
+const getColumnsFromFile = (contents: string) => {
+  // do parsing here;  to check if in the correct format:
+  let columns = null
+  if (contents) {
+    // parse them; if proper/valid; great!  if not, set errors and do not proceed
+    // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
+    columns = JSON.parse(contents)
+
+    if (!areColumnsProper(columns)) {
+      // set errors
+      throw {message: 'column file is not formatted correctly'}
+    }
+  }
+  return columns
+}
+
+// the first is for dnd; the second is for the file input
+const allowedTypes = ['application/json']
+const allowedExtensions = '.json'
 
 const AddingPanel: FC<AddingProps> = ({
   index,
@@ -102,19 +148,7 @@ const AddingPanel: FC<AddingProps> = ({
   const handleUploadFile = (contents: string, fileName: string) => {
     // keep swapping out the file, cancel out of the dialog, x out the adding line....etc
 
-    // do parsing here;  to check in the correct format:
-    let columns = null
-    if (contents) {
-      // parse them; if kosher; great!  if not, set errors and do not proceed
-      // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
-      columns = JSON.parse(contents)
-
-      if (!areColumnsProper(columns)) {
-        // set errors
-        throw {message: 'column file is not formatted correctly'}
-      }
-    }
-
+    const columns = getColumnsFromFile(contents)
     onAddContents(columns, fileName, index)
   }
 
@@ -171,9 +205,6 @@ const AddingPanel: FC<AddingProps> = ({
       </span>
     )
   }
-  // the first is for dnd; the second is for the file input
-  const allowedTypes = ['application/json']
-  const allowedExtensions = '.json'
 
   const newDndElement = (
     <MiniFileDnd
@@ -218,13 +249,53 @@ const AddingPanel: FC<AddingProps> = ({
   )
 }
 
-const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
+const EditingPanel: FC<PanelProps> = ({
+  index,
+  measurementSchema,
+  onAddUpdate,
+  toggleUpdate,
+}) => {
+  const [fileErrorMessage, setFileErrorMessage] = useState(null)
+  const [fileError, setFileError] = useState(false)
+
+  const setUserWantsUpdate = () => {
+    toggleUpdate(true, index)
+  }
+
+  const cancelUpdate = () => {
+    toggleUpdate(false, index)
+    setFileError(false)
+    setFileErrorMessage(null)
+  }
+
   const handleDownloadSchema = () => {
     const {name} = measurementSchema
     const contents = JSON.stringify(measurementSchema.columns)
     event('bucket.download.schema.explicit')
     downloadTextFile(contents, name || 'schema', '.json')
   }
+
+  const handleFileUpload = (contents: string) => {
+    const columns = getColumnsFromFile(contents)
+    onAddUpdate(columns, index)
+  }
+
+  const setErrorState = (hasError, message) => {
+    setFileError(hasError)
+
+    if (!hasError) {
+      message = null
+    }
+
+    setFileErrorMessage(message)
+  }
+
+  const errorElement = fileError ? (
+    <FormElementError
+      style={{wordBreak: 'break-word'}}
+      message={fileErrorMessage}
+    />
+  ) : null
 
   return (
     <Panel className="measurement-schema-panel-container">
@@ -244,8 +315,20 @@ const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
             color={ComponentColor.Secondary}
             text="Download Schema"
             onClick={handleDownloadSchema}
+            className="download-button"
+          />
+          <MiniFileDnd
+            key={`update-mini-dnd-${index}`}
+            allowedExtensions={allowedExtensions}
+            allowedTypes={allowedTypes}
+            handleFileUpload={handleFileUpload}
+            setErrorState={setErrorState}
+            defaultText={'Update schema file'}
+            preFileUpload={setUserWantsUpdate}
+            onCancel={cancelUpdate}
           />
         </FlexBox>
+        {errorElement}
       </FlexBox>
     </Panel>
   )
@@ -254,9 +337,58 @@ const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
 export const MeasurementSchemaSection: FC<Props> = ({
   measurementSchemaList,
   onUpdateSchemas,
+  onAddSchemas,
   showSchemaValidation,
 }) => {
   const [newSchemas, setNewSchemas] = useState([])
+
+  // todo: turn into actual typescript interface after discussing things with stuart
+  // each object:  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
+  const updateInit = measurementSchemaList?.measurementSchemas.map(schema => ({
+    currentSchema: schema,
+    hasUpdate: false,
+  }))
+  console.log('making section.....msl??', measurementSchemaList)
+  const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
+
+  const onAddUpdate = (columns, index) => {
+    console.log('in onaddupdate', columns)
+
+    let entry = schemaUpdates[index] || {}
+    entry.columns = columns
+    entry.hasUpdate = true
+    entry.valid = true
+
+    //next:  see how the error is set....and validity is done on add panel.
+    // want to copy that.  want each of these lines to say 'valid' or not.
+
+    //also: add cancel button to undo the add.  because need a way to zero it out
+    // (can always re-upload anotherfile if maake a mistake, but want an easy out)
+
+    schemaUpdates[index] = entry
+
+    console.log('about to set schema updates: ', schemaUpdates)
+    onUpdateSchemas(schemaUpdates)
+    setSchemaUpdates(schemaUpdates)
+  }
+
+  const toggleUpdate = (doingUpdate, index) => {
+    let entry = schemaUpdates[index] || {}
+
+    if (doingUpdate) {
+      entry.hasUpdate = true
+      entry.valid = false
+    } else {
+      // cancelling
+      entry.hasUpdate = false
+      //delete entry.columns
+      //delete entry.valid
+    }
+
+    schemaUpdates[index] = entry
+    console.log('toggling updates....', schemaUpdates)
+    setSchemaUpdates(schemaUpdates)
+  }
 
   // this is the documentation link for explicit schemas for buckets
   const link =
@@ -270,18 +402,20 @@ export const MeasurementSchemaSection: FC<Props> = ({
         key={`mss-ep-${index}`}
         measurementSchema={oneSchema}
         index={index}
+        onAddUpdate={onAddUpdate}
+        toggleUpdate={toggleUpdate}
       />
     ))
   }
 
-  const debouncedOnUpdateSchemas = debounce(
-    () => onUpdateSchemas(newSchemas, false),
+  const debouncedOnAddSchemas = debounce(
+    () => onAddSchemas(newSchemas, false),
     300
   )
 
-  const setSchemasWithUpdates = schemaArray => {
+  const setNewSchemasWithUpdates = schemaArray => {
     setNewSchemas(schemaArray)
-    debouncedOnUpdateSchemas()
+    debouncedOnAddSchemas()
   }
 
   // NOT making debounced version take the flag;
@@ -295,7 +429,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     // which is not what we want.
     const newArray = [...newSchemas, newSchema]
     setNewSchemas(newArray)
-    onUpdateSchemas(newArray, true)
+    onAddSchemas(newArray, true)
   }
 
   const addSchemaButton = (
@@ -313,7 +447,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     } else {
       lineItem.valid = false
     }
-    setSchemasWithUpdates(newSchemas)
+    setNewSchemasWithUpdates(newSchemas)
   }
 
   // not worrying about valid columns, the handleUploadFile method that is called by the
@@ -330,14 +464,14 @@ export const MeasurementSchemaSection: FC<Props> = ({
     // not worrying about when contents has been 'un-set' since we don't allow that.
     // they could upload another file if they made a mistake (to replace it);
     // but can't change it to nothing from something
-    setSchemasWithUpdates(newSchemas)
+    setNewSchemasWithUpdates(newSchemas)
   }
 
   const onDelete = index => {
     newSchemas.splice(index, 1)
     // using spread operator so that the reference changes;
     // without the ref change the panels do not re-render
-    setSchemasWithUpdates([...newSchemas])
+    setNewSchemasWithUpdates([...newSchemas])
   }
 
   const makeAddPanels = () => {

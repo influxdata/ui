@@ -16,6 +16,7 @@ import {
   JustifyContent,
   Button,
   ComponentColor,
+  ComponentStatus,
   Page,
 } from '@influxdata/clockface'
 import {EditResourceAccordion} from 'src/authorizations/components/redesigned/EditResourceAccordion'
@@ -28,7 +29,6 @@ import {updateAuthorization} from 'src/authorizations/actions/thunks'
 
 // Utills
 import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
-
 interface OwnProps {
   auth: Authorization
   onDismissOverlay: () => void
@@ -45,7 +45,12 @@ const labels = {
 
 const EditTokenOverlay: FC<Props> = props => {
   const [description, setDescription] = useState(props.auth.description)
-  const handleInputChange = event => setDescription(event.target.value)
+  const [status, setStatus] = useState(ComponentStatus.Disabled)
+
+  const handleInputChange = event => {
+    setDescription(event.target.value)
+    setStatus(ComponentStatus.Default)
+  }
 
   const handleDismiss = () => props.onDismissOverlay()
 
@@ -60,7 +65,7 @@ const EditTokenOverlay: FC<Props> = props => {
 
   const onSave = () => {
     const {onUpdate, auth} = props
-
+    
     onUpdate({
       ...auth,
       description: description,
@@ -151,6 +156,8 @@ const EditTokenOverlay: FC<Props> = props => {
                   text="Save"
                   onClick={onSave}
                   testID="token-save-btn"
+                  status={status}
+                  id="save"
                 />
               </FlexBox>
             </Page.ControlBarCenter>

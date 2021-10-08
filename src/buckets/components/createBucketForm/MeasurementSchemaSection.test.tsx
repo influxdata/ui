@@ -4,6 +4,7 @@ import {
   isNameValid,
   TOO_LONG_ERROR,
   areNewSchemasValid,
+  areSchemaUpdatesValid,
 } from './MeasurementSchemaUtils'
 
 const oneColumns = [
@@ -74,6 +75,79 @@ const schemaRequestList2 = [
 const schemaRequestList3 = [{valid: true}]
 
 const schemaRequestList4 = [{valid: false}]
+
+const schemaUpdate1 = [
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+]
+
+const schemaUpdate2 = [
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+  {
+    valid: false,
+    hasUpdate: false,
+  },
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+]
+
+const schemaUpdate3 = [
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+  {
+    valid: false,
+    hasUpdate: true,
+  },
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+]
+
+const schemaUpdate4 = [
+  {
+    valid: true,
+    hasUpdate: true,
+  },
+]
+
+const schemaUpdate5 = [
+  {
+    valid: false,
+    hasUpdate: false,
+  },
+]
+const schemaUpdate6 = [
+  {
+    valid: false,
+    hasUpdate: true,
+  },
+]
 
 describe('test data validity function', () => {
   const doTest = (data, expected) => {
@@ -150,6 +224,38 @@ describe('test schema validity function', () => {
   })
   it('should be invalid (false), array of one false item', () => {
     doTest(schemaRequestList4, false)
+  })
+  it('should be valid, it is empty', () => {
+    doTest([], true)
+  })
+  it('should be valid, it is null', () => {
+    doTest(null, true)
+  })
+})
+
+describe('test schema  update validity function', () => {
+  const doTest = (data, expected) => {
+    const actual = areSchemaUpdatesValid(data)
+    expect(actual).toBe(expected)
+  }
+  it('should be valid (true); they are all true', () => {
+    doTest(schemaUpdate1, true)
+  })
+
+  it('should be valid (true); they are all true or without an update', () => {
+    doTest(schemaUpdate2, true)
+  })
+  it('should be invalid (false); one has an update and is invalid', () => {
+    doTest(schemaUpdate3, false)
+  })
+  it('should be valid (true),has one item that is true', () => {
+    doTest(schemaUpdate4, true)
+  })
+  it('should be valid (true), array of one item without an update', () => {
+    doTest(schemaUpdate5, true)
+  })
+  it('should be invalid (false), array of one item that has an update and is invalid', () => {
+    doTest(schemaUpdate6, false)
   })
   it('should be valid, it is empty', () => {
     doTest([], true)

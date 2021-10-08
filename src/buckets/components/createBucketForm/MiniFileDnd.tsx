@@ -2,12 +2,22 @@ import React, {useState, FC, useRef} from 'react'
 
 import classnames from 'classnames'
 
+import {
+  ComponentColor,
+  ComponentSize,
+  IconFont,
+  SquareButton,
+} from '@influxdata/clockface'
+
 interface Props {
   allowedExtensions: string
   allowedTypes: string[]
-  handleFileUpload: (contents: string, fileName: string) => void
+  handleFileUpload: (contents: string, fileName?: string) => void
   setErrorState: (hasError: boolean, message?: string) => void
   alreadySetFileName?: string
+  defaultText?: string
+  preFileUpload?: () => void
+  onCancel?: () => void
 }
 
 export const setGrammar = (fileTypes: string[]) => {
@@ -57,6 +67,10 @@ export const setGrammar = (fileTypes: string[]) => {
  *  The style changes when a file is hovering over this component,
  *  to show that it is active
  *
+ *  onCancel: optional.  if this method is present, show a 'cancel' button (a red x) to the right of the dropzone
+ *  when there is a file present.  When the cancel button is pressed, besides zero-ing out any local state,
+ *  the method is called
+ *
  * read here for drag and drop file api:
  * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
  * https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
@@ -67,10 +81,16 @@ export const MiniFileDnd: FC<Props> = ({
   handleFileUpload,
   setErrorState,
   alreadySetFileName,
+  defaultText,
+  preFileUpload,
+  onCancel,
 }) => {
   const [fileName, setFileName] = useState(alreadySetFileName)
   const [dropAreaActive, setDropAreaActive] = useState(false)
   const [hasError, setHasError] = useState(null)
+
+  // has this component been used?
+  const [isDirty, setDirty] = useState(false)
 
   function dragOverHandler(ev) {
     setDropAreaActive(true)
@@ -96,6 +116,10 @@ export const MiniFileDnd: FC<Props> = ({
     reader.readAsText(file)
     reader.onload = () => {
       const fileName = file.name
+      setDirty(true)
+      if (preFileUpload) {
+        preFileUpload()
+      }
       try {
         handleFileUpload(reader.result as string, fileName)
 
@@ -162,7 +186,9 @@ export const MiniFileDnd: FC<Props> = ({
     inputEl.current.click()
   }
 
-  const displayText = fileName ?? 'Add schema file'
+  const textWithNoFile = defaultText ?? 'Add schema file'
+
+  const displayText = fileName ?? textWithNoFile
 
   const dropZoneClasses = classnames('dnd', {
     active: dropAreaActive,
@@ -173,20 +199,43 @@ export const MiniFileDnd: FC<Props> = ({
     active: dropAreaActive,
   })
 
+  // this is only called if onCancel is present, so don't need to check if it is there
+  const doCancel = () => {
+    setFileName(null)
+    setHasError(false)
+    setDirty(false)
+    onCancel()
+  }
+
+  const cancelComponent = (
+    <SquareButton
+      icon={IconFont.Undo}
+      onClick={doCancel}
+      titleText="cancel update"
+      color={ComponentColor.Secondary}
+      size={ComponentSize.ExtraSmall}
+    />
+  )
+
+  const cancelButton = isDirty && onCancel ? cancelComponent : null
+
   return (
-    <div
-      id="drop_zone"
-      className={dropZoneClasses}
-      onDrop={dropHandler}
-      onDragOver={dragOverHandler}
-      onDragLeave={dragLeaveHandler}
-      onClick={handleFileOpen}
-      data-testid="dndContainer"
-    >
-      <div data-testid="displayArea" className={displayAreaClasses}>
-        {displayText}
+    <>
+      <div
+        id="drop_zone"
+        className={dropZoneClasses}
+        onDrop={dropHandler}
+        onDragOver={dragOverHandler}
+        onDragLeave={dragLeaveHandler}
+        onClick={handleFileOpen}
+        data-testid="dndContainer"
+      >
+        <div data-testid="displayArea" className={displayAreaClasses}>
+          {displayText}
+        </div>
+        {inputElement}
       </div>
-      {inputElement}
-    </div>
+      {cancelButton}
+    </>
   )
 }

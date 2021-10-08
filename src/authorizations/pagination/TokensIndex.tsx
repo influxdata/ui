@@ -31,7 +31,7 @@ class TokensIndex extends Component {
   public render() {
     return (
       <>
-        <Page titleTag={pageTitleSuffixer(['Tokens', 'Load Data'])}>
+        <Page titleTag={pageTitleSuffixer(['API Tokens', 'Load Data'])}>
           <LoadDataHeader />
           <LoadDataTabbedPage activeTab="tokens">
             <GetResources resources={[ResourceType.Authorizations]}>

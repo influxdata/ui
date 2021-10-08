@@ -44,8 +44,8 @@ import {
   areNewSchemasValid,
   areSchemaUpdatesValid,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
-// todo: make absolute
-import {BUCKET_OVERLAY_WIDTH} from '../../constants'
+
+import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -173,7 +173,6 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   }
 
   const isValid = () => {
-    console.log('arghh')
     if (
       areNewSchemasValid(newMeasurementSchemaRequests) &&
       areSchemaUpdatesValid(measurementSchemaUpdates)

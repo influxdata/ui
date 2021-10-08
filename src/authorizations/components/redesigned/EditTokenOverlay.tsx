@@ -157,7 +157,6 @@ const EditTokenOverlay: FC<Props> = props => {
                   onClick={onSave}
                   testID="token-save-btn"
                   status={status}
-                  id="save"
                 />
               </FlexBox>
             </Page.ControlBarCenter>

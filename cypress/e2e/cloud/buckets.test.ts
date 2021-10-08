@@ -113,7 +113,7 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('measurement-schema-section-parent').should('not.exist')
     })
   })
-  it('should be able to create an explicit bucket using one schema file', function() {
+  it.only('should be able to create an explicit bucket using one schema file', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()
@@ -121,14 +121,14 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('input-field').type('first schema file')
 
-    const bigFile = 'valid.json'
+    const schemaFile = 'valid.json'
     const type = 'application/json'
     const testFile = new File(
       [
         `[{"name":"time","type":"timestamp"},
         {"name":"fsWrite","type":"field","dataType":"float"} ]`,
       ],
-      bigFile,
+      schemaFile,
       {type}
     )
 
@@ -152,6 +152,17 @@ describe('Explicit Buckets', () => {
         cy.getByTestID('measurement-schema-name-0')
           .contains('first schema file')
           .should('exist')
+        cy.getByTestID('measurement-schema-download-button').click()
+        cy.readFile(`cypress/downloads/first_schema_file.json`)
+          .should('exist')
+          .then(fileContent => {
+            expect(fileContent[0].name).to.be.equal('time')
+            expect(fileContent[0].type).to.be.equal('timestamp')
+
+            expect(fileContent[1].name).to.be.equal('fsWrite')
+            expect(fileContent[1].type).to.be.equal('field')
+            expect(fileContent[1].dataType).to.be.equal('float')
+          })
       })
   })
 
@@ -173,14 +184,14 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('input-field').type('first schema file')
 
-    const bigFile = 'valid.json'
+    const schemaFile = 'valid.json'
     const type = 'application/json'
     const testFile = new File(
       [
         `[{"name":"time","type":"timestamp"},
         {"name":"fsWrite","type":"field","dataType":"float"} ]`,
       ],
-      bigFile,
+      schemaFile,
       {type}
     )
 

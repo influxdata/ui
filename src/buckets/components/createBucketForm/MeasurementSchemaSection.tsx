@@ -249,6 +249,7 @@ const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
             color={ComponentColor.Secondary}
             text="Download Schema"
             onClick={handleDownloadSchema}
+            testID="measurement-schema-download-button"
           />
         </FlexBox>
       </FlexBox>

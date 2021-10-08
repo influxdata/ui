@@ -124,8 +124,8 @@ const CustomizeComponent: FC<Props> = props => {
             />
           </Form.Element>
         </Grid.Row>
-        <Grid.Row className="plugin-edit-configuration--editor">
-          <div className="config-overlay">
+        <Grid.Row>
+          <div className="plugin-edit-configuration--editor">
             <TelegrafConfig
               config={pluginConfig}
               onChangeConfig={handleChangeConfig}

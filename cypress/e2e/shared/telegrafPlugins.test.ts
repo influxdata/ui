@@ -175,9 +175,9 @@ describe('Sources > Telegraf Plugins', () => {
       cy.getByTestID('plugin-edit-configuration-customize-input--description')
         .invoke('val')
         .should('equal', configurationDescription)
-      cy.getByTestID('plugin-add-to-configuration-save-and-test--button')
-        .should('be.visible')
-        .click()
+      cy.getByTestID(
+        'plugin-add-to-configuration-save-and-test--button'
+      ).click()
       cy.getByTestID(
         'plugin-add-to-configuration-save-and-test--popover--contents'
       ).should('be.visible')

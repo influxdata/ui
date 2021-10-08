@@ -285,11 +285,8 @@ describe('Checks', () => {
   it.only('deadman checks should render a table for non-numeric fields', () => {
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
-        cy.intercept('POST', '/api/v2/query?*', req => {
-          req.continue(res => {
-            console.error('Response for query is is: ', res)
-          })
-        }).as('query')
+        cy.intercept('POST', '/api/v2/query?*').as('query')
+
         // create deadman check
         cy.getByTestID('create-check').click()
         cy.getByTestID('create-deadman-check').click()

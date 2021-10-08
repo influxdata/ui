@@ -10,6 +10,7 @@ interface Props {
 }
 
 export enum VariableItems {
+  NO_OPTION = '----',
   USE_CASE_DIFFERENT = "It doesn't work for my use case",
   SWITCHING_ORGANIZATION = 'I want to join my account to another organization',
   ALTERNATIVE_PRODUCT = 'I found an alternative product',
@@ -34,7 +35,7 @@ export const DEFAULT_DELETE_ORG_CONTEXT: DeleteOrgContextType = {
   setShortSuggestion: (_: string) => null,
   suggestions: '',
   setSuggestions: (_: string) => null,
-  reason: 'USE_CASE_DIFFERENT',
+  reason: 'NO_OPTION',
   setReason: (_: string) => null,
 }
 
@@ -43,9 +44,15 @@ export const DeleteOrgContext = createContext<DeleteOrgContextType>(
 )
 
 const DeleteOrgProvider: FC<Props> = ({children}) => {
-  const [shortSuggestion, setShortSuggestion] = useState('')
-  const [isShortSuggestionEnabled, setShortSuggestionFlag] = useState(false)
-  const [suggestions, setSuggestions] = useState('')
+  const [shortSuggestion, setShortSuggestion] = useState(
+    DEFAULT_DELETE_ORG_CONTEXT.shortSuggestion
+  )
+  const [isShortSuggestionEnabled, setShortSuggestionFlag] = useState(
+    DEFAULT_DELETE_ORG_CONTEXT.isShortSuggestionEnabled
+  )
+  const [suggestions, setSuggestions] = useState(
+    DEFAULT_DELETE_ORG_CONTEXT.suggestions
+  )
   const [reason, setReason] = useState(DEFAULT_DELETE_ORG_CONTEXT.reason)
 
   return (

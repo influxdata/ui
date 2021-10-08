@@ -4,56 +4,80 @@ import uuid from 'uuid'
 
 // Components
 import {
-  Input,
+  Columns,
+  ComponentSize,
   EmptyState,
   FormElement,
   Grid,
   IconFont,
+  Input,
   SquareGrid,
 } from '@influxdata/clockface'
-import {ErrorHandling} from 'src/shared/decorators/errors'
-import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
-// Constants
 import BucketDropdown from 'src/dataLoaders/components/BucketsDropdown'
+import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
+import {ErrorHandling} from 'src/shared/decorators/errors'
+import WriteDataItem from 'src/writeData/components/WriteDataItem'
+
+// Constants
+import {
+  CREATE_A_BUCKET_ID,
+  createBucketOption,
+  isSystemBucket,
+} from 'src/buckets/constants'
 import {
   WRITE_DATA_TELEGRAF_PLUGINS,
   TelegrafPluginAssets,
 } from 'src/writeData/constants/contentTelegrafPlugins'
 
 // Types
+import {Bucket, BundleName, ConfigurationState} from 'src/types'
 import {TelegrafPlugin} from 'src/types/dataLoaders'
 
-import {Bucket, BundleName, ConfigurationState} from 'src/types'
-import {Columns, ComponentSize} from '@influxdata/clockface'
-import WriteDataItem from 'src/writeData/components/WriteDataItem'
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 export interface Props {
   buckets: Bucket[]
-  selectedBucketName: string
-  pluginBundles: BundleName[]
-  telegrafPlugins: any
-  onTogglePluginBundle: (plugin: TelegrafPlugin) => void
+  currentStepIndex: number
   onSelectBucket: (bucket: Bucket) => void
+  onTogglePluginBundle: (plugin: TelegrafPlugin) => void
+  pluginBundles: BundleName[]
+  selectedBucketID: string
+  setSubstepIndex: (currentStepIndex: number, substepIndex: number) => void
+  telegrafPlugins: any
 }
 
 interface State {
   gridSizerUpdateFlag: string
+  isExistingBucket: boolean
   searchTerm: string
-  emptyOriginal: boolean
+  selectedBucket: Bucket
+  sortedBuckets: Array<Bucket>
 }
 
 @ErrorHandling
-class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
+class TelegrafUIRefreshSelector extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
       gridSizerUpdateFlag: uuid.v4(),
+      isExistingBucket: true,
       searchTerm: '',
-      emptyOriginal: true,
+      selectedBucket: null,
+      sortedBuckets: [createBucketOption as Bucket, ...props.buckets],
     }
   }
 
-  public componentDidUpdate(prevProps) {
+  public componentDidMount() {
+    this.setState({
+      isExistingBucket: false,
+      selectedBucket: this.props.buckets.find(
+        bucket => bucket.id === this.props.selectedBucketID
+      ),
+    })
+  }
+
+  public componentDidUpdate(prevProps: Props) {
     const addFirst =
       prevProps.telegrafPlugins.length === 0 &&
       this.props.telegrafPlugins.length > 0
@@ -66,24 +90,64 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
       const gridSizerUpdateFlag = uuid.v4()
       this.setState({gridSizerUpdateFlag})
     }
+
+    if (prevProps.selectedBucketID !== this.props.selectedBucketID) {
+      /* Sort only when:
+       * - not on the first render because buckets start as sorted on mount
+       * - not an existing bucket selected by the user
+       * - a new bucket is successfully created by an API call
+       */
+      if (this.state.isExistingBucket === false) {
+        const nonSystemBuckets =
+          this.props.buckets?.filter(bucket => !isSystemBucket(bucket.name)) ||
+          []
+        this.setState({
+          sortedBuckets: [
+            createBucketOption as Bucket,
+            ...nonSystemBuckets.sort((firstBucket, secondBucket) => {
+              if (
+                firstBucket.name.toLocaleLowerCase() >
+                secondBucket.name.toLocaleLowerCase()
+              ) {
+                return 1
+              }
+              if (
+                firstBucket.name.toLocaleLowerCase() <
+                secondBucket.name.toLocaleLowerCase()
+              ) {
+                return -1
+              }
+              return 0
+            }),
+          ],
+        })
+      }
+      const selectedBucket = this.props.buckets.find(
+        bucket => bucket.id === this.props.selectedBucketID
+      )
+      this.props.onSelectBucket(selectedBucket)
+      this.setState({
+        isExistingBucket: false, // get ready for an API call
+        selectedBucket,
+      })
+    }
   }
 
   public render() {
-    const {buckets} = this.props
-    const {searchTerm} = this.state
+    const {searchTerm, selectedBucket, sortedBuckets} = this.state
 
     return (
       <div className="wizard-step--grid-container_telegrafUiRefresh">
-        {buckets.length ? (
+        {sortedBuckets.length ? (
           <>
             <Grid.Row>
               <Grid.Column widthSM={Columns.Six}>
                 <FormElement label="Bucket">
                   <BucketDropdown
-                    selectedBucketID={this.selectedBucketID}
-                    buckets={buckets}
+                    selectedBucketID={selectedBucket?.id}
+                    buckets={sortedBuckets}
+                    emptyOriginal={!selectedBucket}
                     onSelectBucket={this.handleSelectBucket}
-                    emptyOriginal={this.state.emptyOriginal}
                   />
                 </FormElement>
               </Grid.Column>
@@ -129,16 +193,17 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
     )
   }
 
-  private get selectedBucketID(): string {
-    const {buckets, selectedBucketName} = this.props
-
-    const bucket = buckets.find(b => b.name === selectedBucketName)
-    return bucket?.id || this.props.buckets[0]?.id
-  }
-
   private handleSelectBucket = (bucket: Bucket) => {
-    this.props.onSelectBucket(bucket)
-    this.setState({emptyOriginal: false})
+    const {id} = bucket
+    if (id === CREATE_A_BUCKET_ID) {
+      this.props.setSubstepIndex(this.props.currentStepIndex, 1)
+    } else {
+      this.props.onSelectBucket(bucket)
+      this.setState({
+        isExistingBucket: true, // user selected an existing bucket, so prevent sorting
+        selectedBucket: bucket,
+      })
+    }
   }
 
   private get emptyState(): JSX.Element {
@@ -188,6 +253,7 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
       configured: ConfigurationState.Configured,
     }
     this.props.onTogglePluginBundle(pluginBuild)
+    event(`telegraf_page.create_new_config.plugin_selected`, {plugin})
   }
 
   private handleFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -199,4 +265,4 @@ class StreamingSelectorTelegrafUiRefresh extends PureComponent<Props, State> {
   }
 }
 
-export default StreamingSelectorTelegrafUiRefresh
+export default TelegrafUIRefreshSelector

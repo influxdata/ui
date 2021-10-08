@@ -35,6 +35,7 @@ import {
   deleteNotebooksShare,
   postNotebooksShare,
 } from 'src/client/notebooksRoutes'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Token {
   token: string
@@ -94,6 +95,7 @@ const FlowHeader: FC = () => {
 
       setTokens(_tokens)
     })
+    event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
   }
 
   const hideShare = () => {
@@ -107,6 +109,7 @@ const FlowHeader: FC = () => {
       .then(() => {
         hideShare()
         setShare(null)
+        event('Delete Share Link')
       })
       .catch(err => console.error('failed to delete share', err))
   }
@@ -132,6 +135,7 @@ const FlowHeader: FC = () => {
         console.error('failed to create share', err)
         setLinkLoading(RemoteDataState.Error)
       })
+    event('Notebook Share Link Created')
   }
 
   const printJSON = () => {
@@ -199,7 +203,9 @@ const FlowHeader: FC = () => {
               <SquareButton
                 icon={IconFont.Share}
                 onClick={showShare}
-                color={ComponentColor.Default}
+                color={
+                  !share ? ComponentColor.Default : ComponentColor.Secondary
+                }
                 titleText="Share Notebook"
               />
             </FeatureFlag>

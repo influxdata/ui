@@ -18,6 +18,7 @@ import {
   clearSteps,
   decrementCurrentStepIndex,
   incrementCurrentStepIndex,
+  setBucketInfo,
   setCurrentStepIndex,
   setSubstepIndex,
 } from 'src/dataLoaders/actions/steps'
@@ -25,7 +26,6 @@ import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
 // Constants
 import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
-
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
 
@@ -70,20 +70,23 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
     currentStepIndex,
     history,
     notify,
-    onClearDataLoaders,
+    clearDataLoaders,
     onClearSteps,
     onDecrementCurrentStepIndex,
     onIncrementCurrentStepIndex,
     onSetCurrentStepIndex,
     onSetSubstepIndex,
+    setBucketInfo,
     substepIndex,
   } = props
 
   const {contentID} = useParams<ParamsType>()
 
   useEffect(() => {
+    clearDataLoaders()
     onSetCurrentStepIndex(0)
     onSetSubstepIndex(0, 0)
+    setBucketInfo('', '', '')
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [pluginConfig, setPluginConfig] = useState<string>('')
@@ -93,7 +96,7 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
   const [isVisible, setIsVisible] = useState<boolean>(true)
 
   const handleDismiss = () => {
-    onClearDataLoaders()
+    clearDataLoaders()
     onClearSteps()
     if (substepIndex === 1) {
       onSetSubstepIndex(0, 0)
@@ -168,12 +171,13 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   notify: notifyAction,
-  onClearDataLoaders: clearDataLoaders,
+  clearDataLoaders,
   onClearSteps: clearSteps,
   onDecrementCurrentStepIndex: decrementCurrentStepIndex,
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
   onSetCurrentStepIndex: setCurrentStepIndex,
   onSetSubstepIndex: setSubstepIndex,
+  setBucketInfo,
 }
 
 const connector = connect(mstp, mdtp)

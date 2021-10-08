@@ -8,6 +8,9 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import TokenCodeSnippet from 'src/shared/components/TokenCodeSnippet'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 export interface Props {
   token: string
   configID: string
@@ -15,6 +18,10 @@ export interface Props {
 
 @ErrorHandling
 class TelegrafInstructions extends PureComponent<Props> {
+  componentDidMount() {
+    event('telegrafs_page.telegraf_instructions.page_viewed')
+  }
+
   public render() {
     const {token, configID} = this.props
     const configScript = `telegraf --config ${
@@ -44,7 +51,7 @@ class TelegrafInstructions extends PureComponent<Props> {
         <p>
           Your API token is required for pushing data into InfluxDB. You can
           copy the following command to your terminal window to set an
-          environment variable with your token.
+          environment variable with your API token.
         </p>
         <TokenCodeSnippet token={exportToken} configID={configID} label="CLI" />
         <h5>3. Start Telegraf</h5>

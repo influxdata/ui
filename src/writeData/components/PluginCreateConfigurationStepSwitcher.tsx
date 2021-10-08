@@ -22,9 +22,8 @@ const StepSwitcher: FC<Props> = props => {
     case PluginConfigurationStep.Configure:
       if (stepProps.substepIndex === 1) {
         return <PluginCreateConfigurationAddBucket {...stepProps} />
-      } else {
-        return <PluginCreateConfigurationOptions {...stepProps} />
       }
+      return <PluginCreateConfigurationOptions {...stepProps} />
     case PluginConfigurationStep.Customize:
       return <PluginCreateConfigurationCustomize {...stepProps} />
     case PluginConfigurationStep.Verify:

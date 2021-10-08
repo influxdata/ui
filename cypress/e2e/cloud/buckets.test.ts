@@ -26,13 +26,18 @@ describe('Explicit Buckets', () => {
       cy.getByInputName('name').type('explicit-bucket-test')
 
       cy.getByTestID('schemaBucketToggle').click()
+
+      // measurement schema section should NOT be showing at this time
+      // (b/c in 'implicit' mode by default)
+      cy.getByTestID('measurement-schema-section-parent').should('not.exist')
+
       const explicitBtn = cy.getByTestID('explicit-bucket-schema-choice-ID')
       explicitBtn.should('be.visible')
       explicitBtn.click()
 
-      // measurement schema section should NOT be showing at this time
-      // (b/c capability to add new measurement schemas not added yet)
-      cy.getByTestID('measurement-schema-section-parent').should('not.exist')
+      // measurement schema section should BE showing at this time
+      // (b/c just changed mode to explicit)
+      cy.getByTestID('measurement-schema-section-parent').should('exist')
 
       cy.getByTestID('bucket-form-submit').click()
     })
@@ -56,9 +61,9 @@ describe('Explicit Buckets', () => {
       // the  radio buttons should NOT be there:
       cy.getByTestID('explicit-bucket-schema-choice-ID').should('not.exist')
 
-      // measurement schema section should NOT be showing at this time
-      // (b/c only showing if there is a measurement schema, which is not set)
-      cy.getByTestID('measurement-schema-section-parent').should('not.exist')
+      // measurement schema section should BE showing at this time
+      // (b/c just added capability to add schemas)
+      cy.getByTestID('measurement-schema-section-parent').should('exist')
     })
   })
 

@@ -47,12 +47,14 @@ const PluginCreateConfigurationAddBucketComponent: FC<Props> = props => {
     return null
   }
 
+  const handleClose = () => {
+    onSetSubstepIndex(currentStepIndex, 0)
+    setBucketOverlayParams(nullParams)
+  }
+
   return (
     <CreateBucketForm
-      onClose={() => {
-        onSetSubstepIndex(currentStepIndex, 0)
-        setBucketOverlayParams(nullParams)
-      }}
+      onClose={handleClose}
       testID="plugin-create-configuration-add-bucket--form"
     />
   )

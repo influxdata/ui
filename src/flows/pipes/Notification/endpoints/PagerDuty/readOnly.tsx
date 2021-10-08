@@ -11,7 +11,7 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const PagerDuty: FC = () => {
+const PagerDutyReadOnly: FC = () => {
   const {data} = useContext(PipeContext)
 
   return (
@@ -38,4 +38,4 @@ const PagerDuty: FC = () => {
   )
 }
 
-export default PagerDuty
+export default PagerDutyReadOnly

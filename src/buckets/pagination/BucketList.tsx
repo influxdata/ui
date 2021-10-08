@@ -66,7 +66,10 @@ class BucketList
   }
 
   public render() {
-    this.totalPages = Math.ceil(this.props.buckets.length / this.rowsPerPage)
+    this.totalPages = Math.max(
+      Math.ceil(this.props.buckets.length / this.rowsPerPage),
+      1
+    )
 
     return (
       <>
@@ -76,7 +79,7 @@ class BucketList
             style={{
               maxHeight: this.props.pageHeight,
               minHeight: this.props.pageHeight,
-              overflow: 'scroll',
+              overflow: 'auto',
             }}
           >
             {this.listBuckets}

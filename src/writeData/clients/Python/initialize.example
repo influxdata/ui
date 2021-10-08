@@ -3,7 +3,7 @@ from datetime import datetime
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
-# You can generate a Token from the "Tokens Tab" in the UI
+# You can generate an API token from the "API Tokens Tab" in the UI
 token = "<%= token %>"
 org = "<%= org %>"
 bucket = "<%= bucket %>"

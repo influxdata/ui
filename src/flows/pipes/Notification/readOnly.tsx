@@ -19,7 +19,7 @@ import {
 import Threshold from 'src/flows/pipes/Notification/Threshold'
 
 import {PipeContext} from 'src/flows/context/pipe'
-import {DEFAULT_ENDPOINTS} from 'src/flows/pipes/Notification/Endpoints'
+import {ENDPOINT_DEFINITIONS} from 'src/flows/pipes/Notification/endpoints'
 const NotificationMonacoEditor = lazy(() =>
   import('src/flows/pipes/Notification/NotificationMonacoEditor')
 )
@@ -147,7 +147,7 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
                     >
                       <Dropdown.Menu className="flows-endpoints--dropdown">
                         <Dropdown.Item selected={true}>
-                          {DEFAULT_ENDPOINTS[data.endpoint].name}
+                          {ENDPOINT_DEFINITIONS[data.endpoint].name}
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Form.Element>
@@ -157,8 +157,7 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
                         className="endpoint-details--element"
                       >
                         {React.createElement(
-                          DEFAULT_ENDPOINTS[data.endpoint].view,
-                          {readOnly: true}
+                          ENDPOINT_DEFINITIONS[data.endpoint].readOnlyComponent
                         )}
                       </Form.Element>
                     </FlexBox.Child>

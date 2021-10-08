@@ -1,5 +1,5 @@
 // Libraries
-import React, {ChangeEvent, FC} from 'react'
+import React, {ChangeEvent, FC, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
@@ -8,59 +8,103 @@ import BucketDropdown from 'src/dataLoaders/components/BucketsDropdown'
 
 // Actions
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
-import {setTelegrafConfigName} from 'src/dataLoaders/actions/dataLoaders'
+import {
+  setTelegrafConfigDescription,
+  setTelegrafConfigName,
+} from 'src/dataLoaders/actions/dataLoaders'
 
 // Types
-import {AppState, Bucket, ResourceType} from 'src/types'
+import {AppState, Bucket} from 'src/types'
 import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
 
 // Selectors
-import {getAll} from 'src/resources/selectors'
+import {getAllBuckets} from 'src/resources/selectors'
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
 // Utils
-import {isSystemBucket} from 'src/buckets/constants'
+import {
+  CREATE_A_BUCKET_ID,
+  createBucketOption,
+  isSystemBucket,
+} from 'src/buckets/constants'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
 
-const CREATE_A_BUCKET_ID = 'create-a-bucket'
-
 const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
   const {
-    bucket,
+    bucketID,
     buckets,
     currentStepIndex,
-    onSetBucketInfo,
     onSetSubstepIndex,
-    onSetTelegrafConfigName,
-    telegrafConfigName,
+    setBucketInfo,
     setIsValidConfiguration,
+    setTelegrafConfigName,
+    telegrafConfigName,
   } = props
+  const [isExistingBucket, setIsExistingBucket] = useState<boolean>(true)
+  const [sortedBuckets, setSortedBuckets] = useState<Array<Bucket>>([
+    createBucketOption as Bucket,
+    ...buckets,
+  ])
+  const [selectedBucket, setSelectedBucket] = useState<Bucket>(null)
 
-  setIsValidConfiguration(true) // always true for this component
+  useEffect(() => {
+    /* Sort only when:
+     * - not on the first render because buckets start as sorted on mount
+     * - not an existing bucket selected by the user
+     * - a new bucket is successfully created by an API call
+     */
+    if (isExistingBucket === false) {
+      const nonSystemBuckets = buckets.filter(
+        bucket => !isSystemBucket(bucket.name)
+      )
+      setSortedBuckets([
+        createBucketOption as Bucket,
+        ...nonSystemBuckets.sort((firstBucket, secondBucket) => {
+          if (
+            firstBucket.name.toLocaleLowerCase() >
+            secondBucket.name.toLocaleLowerCase()
+          ) {
+            return 1
+          }
+          if (
+            firstBucket.name.toLocaleLowerCase() <
+            secondBucket.name.toLocaleLowerCase()
+          ) {
+            return -1
+          }
+          return 0
+        }),
+      ])
+    }
+    setIsExistingBucket(false) // get ready for an API call
 
-  let selectedBucket = buckets.find(b => b.name === bucket)
+    // Always set the selected bucket whenever the bucketID changes
+    setSelectedBucket(buckets.find(bucket => bucket.id === bucketID))
+  }, [bucketID]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!selectedBucket) {
-    selectedBucket = (buckets && buckets[0]) ?? ({} as Bucket)
-    const {orgID, id, name} = selectedBucket
-    onSetBucketInfo(orgID, name, id)
-  }
-
-  const selectedBucketID = selectedBucket.id
+  useEffect(() => {
+    if (!selectedBucket) {
+      setIsValidConfiguration(false)
+    } else {
+      setIsValidConfiguration(true)
+    }
+  })
 
   const handleNameInput = (event: ChangeEvent<HTMLInputElement>) => {
-    onSetTelegrafConfigName(event.target.value)
+    setTelegrafConfigName(event.target.value)
   }
 
   const handleSelectBucket = (bucket: Bucket) => {
     const {orgID, name, id} = bucket
 
+    setIsValidConfiguration(true)
     if (id === CREATE_A_BUCKET_ID) {
       onSetSubstepIndex(currentStepIndex, 1)
     } else {
-      onSetBucketInfo(orgID, name, id)
+      setBucketInfo(orgID, name, id)
+      setIsExistingBucket(true) // user selected an existing bucket, so prevent sorting
     }
   }
 
@@ -80,11 +124,9 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
       </Form.Element>
       <Form.Element label="Output Bucket">
         <BucketDropdown
-          selectedBucketID={selectedBucketID}
-          buckets={[
-            {id: CREATE_A_BUCKET_ID, name: '+ Create A Bucket'} as Bucket,
-            ...buckets,
-          ]}
+          selectedBucketID={selectedBucket?.id}
+          buckets={sortedBuckets}
+          emptyOriginal={!selectedBucket}
           onSelectBucket={handleSelectBucket}
           testID="plugin-create-configuration-options--select-bucket"
         />
@@ -96,28 +138,25 @@ const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
 const mstp = (state: AppState) => {
   const {
     dataLoading: {
-      steps: {bucket},
+      steps: {bucketID},
     },
   } = state
 
   const {telegrafConfigName} = getDataLoaders(state)
 
-  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
-
-  const nonSystemBuckets = buckets.filter(
-    bucket => !isSystemBucket(bucket.name)
-  )
+  const buckets = getAllBuckets(state)
 
   return {
-    bucket,
-    buckets: nonSystemBuckets,
+    bucketID,
+    buckets,
     telegrafConfigName,
   }
 }
 
 const mdtp = {
-  onSetBucketInfo: setBucketInfo,
-  onSetTelegrafConfigName: setTelegrafConfigName,
+  setBucketInfo,
+  setTelegrafConfigDescription,
+  setTelegrafConfigName,
 }
 
 const connector = connect(mstp, mdtp)

@@ -42,22 +42,20 @@ describe('Flows', () => {
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
-    cy.getByTestID('panel-add-btn-0').click()
-
-    cy.getByTestID('add-flow-btn--visualization').click()
-
-    cy.getByTestID('square-button')
-      .eq(2)
+    cy.getByTestID('sidebar-button')
+      .first()
       .click()
     cy.getByTestID('Delete--list-item').click()
 
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
     cy.getByTestID('flow-bucket-selector--defbuck').click()
     cy.getByTestID('measurement-selector test').click()
 
     cy.getByTestID('time-machine-submit-button').click()
 
-    cy.getByTestID('panel-add-btn-0').click()
+    cy.getByTestID('panel-add-btn-1').click()
 
     cy.getByTestID('add-flow-btn--visualization').click()
 
@@ -82,6 +80,13 @@ describe('Flows', () => {
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
+    cy.getByTestID('sidebar-button')
+      .first()
+      .click()
+    cy.getByTestID('Delete--list-item').click()
+
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector')
       .click()
       .then(() => {
@@ -125,6 +130,13 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     // select our bucket
+    cy.getByTestID('sidebar-button')
+      .first()
+      .click()
+    cy.getByTestID('Delete--list-item').click()
+
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
     cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
@@ -183,6 +195,13 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket
+    cy.getByTestID('sidebar-button')
+      .first()
+      .click()
+    cy.getByTestID('Delete--list-item').click()
+
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
     cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
@@ -278,6 +297,13 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket
+    cy.getByTestID('sidebar-button')
+      .first()
+      .click()
+    cy.getByTestID('Delete--list-item').click()
+
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
     cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
@@ -336,6 +362,13 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket
+    cy.getByTestID('sidebar-button')
+      .first()
+      .click()
+    cy.getByTestID('Delete--list-item').click()
+
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
     cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
@@ -406,6 +439,13 @@ describe('Flows', () => {
       cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
       // select our bucket, measurement, field and tag
+      cy.getByTestID('sidebar-button')
+        .first()
+        .click()
+      cy.getByTestID('Delete--list-item').click()
+
+      cy.getByTestID('panel-add-btn--1').click()
+      cy.getByTestID('add-flow-btn--metricSelector').click()
       cy.getByTestID('flow-bucket-selector').click()
       cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
       cy.getByTestID('measurement-selector test').click()

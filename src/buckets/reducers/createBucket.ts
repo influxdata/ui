@@ -17,6 +17,7 @@ export interface ReducerState {
   readableRetention: string
   orgID: string
   type: 'user'
+  schemaType: 'implicit' | 'explicit'
 }
 
 export type ReducerActionType =
@@ -47,6 +48,7 @@ export const initialBucketState = (
     : 'forever',
   orgID,
   type: 'user' as 'user',
+  schemaType: 'implicit',
 })
 
 export const createBucketReducer = (state: ReducerState, action: Action) => {

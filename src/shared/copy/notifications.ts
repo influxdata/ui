@@ -276,7 +276,7 @@ export const TelegrafConfigCreationError: Notification = {
 
 export const TokenCreationError: Notification = {
   ...defaultErrorNotification,
-  message: `Failed to create a new Telegraf Token`,
+  message: `Failed to create a new Telegraf API Token`,
 }
 
 //  Task Notifications
@@ -853,9 +853,26 @@ export const predicateDeleteSucceeded = (): Notification => ({
   message: 'Successfully deleted data with predicate!',
 })
 
+export const measurementSchemaAdditionSuccessful = (
+  bucketName: string,
+  schemaName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `MeasurementSchema ${schemaName}  has been successfully added to bucket ${bucketName}`,
+})
+
 export const bucketUpdateFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to update bucket: "${error}"`,
+})
+
+export const measurementSchemaAdditionFailed = (
+  bucketName: string,
+  schemaName: string,
+  errorMsg: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `MeasurementSchema ${schemaName}  has *not* been successfully added to bucket ${bucketName}, error: ${errorMsg}`,
 })
 
 export const bucketRenameSuccess = (bucketName: string): Notification => ({
@@ -965,12 +982,12 @@ export const removeTelegrafLabelFailed = (): Notification => ({
 
 export const authorizationsGetFailed = (): Notification => ({
   ...defaultErrorNotification,
-  message: 'Failed to get tokens',
+  message: 'Failed to get API tokens',
 })
 
 export const authorizationCreateSuccess = (): Notification => ({
   ...defaultSuccessNotification,
-  message: 'Token was created successfully',
+  message: 'API token was created successfully',
 })
 
 export const passwordResetSuccessfully = (message: string): Notification => ({
@@ -982,7 +999,7 @@ export const passwordResetSuccessfully = (message: string): Notification => ({
 export const authorizationCreateFailed = (
   errorMessage?: string
 ): Notification => {
-  const defaultMsg = 'Failed to create tokens'
+  const defaultMsg = 'Failed to create API tokens'
   const message = errorMessage ? `${defaultMsg}: ${errorMessage}` : defaultMsg
   return {
     ...defaultErrorNotification,
@@ -992,32 +1009,32 @@ export const authorizationCreateFailed = (
 
 export const authorizationUpdateSuccess = (): Notification => ({
   ...defaultSuccessNotification,
-  message: 'Token was updated successfully',
+  message: 'API token was updated successfully',
 })
 
 export const authorizationUpdateFailed = (desc: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to update token: "${desc}"`,
+  message: `Failed to update API token: "${desc}"`,
 })
 
 export const authorizationDeleteSuccess = (): Notification => ({
   ...defaultSuccessNotification,
-  message: 'Token was deleted successfully',
+  message: 'API token was deleted successfully',
 })
 
 export const authorizationDeleteFailed = (desc: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to delete token: "${desc}"`,
+  message: `Failed to delete API token: "${desc}"`,
 })
 
 export const authorizationCopySuccess = (): Notification => ({
   ...defaultSuccessNotification,
-  message: 'Token has been copied to clipboard',
+  message: 'API token has been copied to clipboard',
 })
 
 export const authorizationCopyFailed = (): Notification => ({
   ...defaultErrorNotification,
-  message: 'Failed to copy token to clipboard',
+  message: 'Failed to copy API token to clipboard',
 })
 
 export const telegrafDeleteSuccess = (telegrafName: string): Notification => ({

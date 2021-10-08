@@ -89,7 +89,7 @@ const BucketCardActions: FC<Props> = ({
   const handleCSVUploader = () => {
     onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
 
-    history.push(`/orgs/${orgID}/load-data/file-upload/csv`)
+    history.push(`/orgs/${orgID}/load-data/file-upload/annotated_csv`)
   }
 
   const handleAddClientLibrary = (): void => {

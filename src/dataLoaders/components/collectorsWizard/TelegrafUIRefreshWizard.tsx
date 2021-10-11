@@ -44,6 +44,9 @@ import {getOrg} from 'src/organizations/selectors'
 // Utils
 import {isSystemBucket} from 'src/buckets/constants'
 
+// Styles
+import 'src/writeData/components/AddPluginToConfiguration.scss'
+
 // Constants
 import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 const TELEGRAF_UI_REFRESH_OVERLAY_DEFAULT_WIDTH = 1200

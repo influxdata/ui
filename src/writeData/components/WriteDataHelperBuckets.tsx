@@ -58,15 +58,9 @@ const WriteDataHelperBuckets: FC = () => {
   if (buckets.length) {
     body = (
       <List
-<<<<<<< HEAD
-        backgroundColor={InfluxColors.Obsidian}
+        backgroundColor={InfluxColors.Grey5}
         style={{height: '200px'}}
         maxHeight="200px"
-=======
-        backgroundColor={InfluxColors.Grey5}
-        style={{height: '118px'}}
-        maxHeight="118px"
->>>>>>> fix: Round up UI fix for clockface 3.0 (#2734)
       >
         {buckets.map(b => (
           <List.Item

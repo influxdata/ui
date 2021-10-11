@@ -39,11 +39,7 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   return (
     <Dropdown
       testID="dropdown--gen-token"
-<<<<<<< HEAD
-      style={{width: '180px'}}
-=======
       style={{width: '208px'}}
->>>>>>> fix: Round up UI fix for clockface 3.0 (#2734)
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}

@@ -164,12 +164,13 @@ export interface TypeRegistration {
 
 export interface EndpointTypeRegistration {
   type: string // a unique string that identifies an endpoint
-  name: string
-  data: any
-  component: FunctionComponent | ComponentClass
-  readOnlyComponent: FunctionComponent | ComponentClass
-  generateImports: Function
-  generateTestImports: Function
-  generateQuery: Function
-  generateTestQuery: Function
+  name: string // the user friendly name of this endpoint type
+  data: any // any metadata required for this endpoint
+  featureFlag?: string // designates a flag that should enable the panel type
+  component: FunctionComponent | ComponentClass // the view component for rendering the interface
+  readOnlyComponent: FunctionComponent | ComponentClass // the view component for rendering the interface in read only mode
+  generateImports: Function // generates required import statement(s)
+  generateTestImports: Function // generates required import statements for testing the endpoint
+  generateQuery: Function // generates the query for the endpoint
+  generateTestQuery: Function // generates teh query to test the endpoint
 }

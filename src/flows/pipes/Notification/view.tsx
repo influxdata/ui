@@ -216,16 +216,23 @@ const Notification: FC<PipeProp> = ({Context}) => {
     )
   }, [hasTaskOption])
 
-  const avail = Object.keys(ENDPOINT_DEFINITIONS).map(k => (
-    <Dropdown.Item
-      key={k}
-      id={k}
-      onClick={() => updateEndpoint(k)}
-      selected={data.endpoint === k}
-    >
-      {ENDPOINT_DEFINITIONS[k].name}
-    </Dropdown.Item>
-  ))
+  const avail = Object.keys(ENDPOINT_DEFINITIONS)
+    .filter(
+      k =>
+        // show endpoints without feature flags or that have their flags enabled
+        !ENDPOINT_DEFINITIONS[k].featureFlag ||
+        isFlagEnabled(ENDPOINT_DEFINITIONS[k].featureFlag)
+    )
+    .map(k => (
+      <Dropdown.Item
+        key={k}
+        id={k}
+        onClick={() => updateEndpoint(k)}
+        selected={data.endpoint === k}
+      >
+        {ENDPOINT_DEFINITIONS[k].name}
+      </Dropdown.Item>
+    ))
 
   const generateDeadmanTask = useCallback(() => {
     // simplify takes care of all the variable nonsense in the query

@@ -11,6 +11,7 @@ export default register => {
       apiKey: '',
       email: '',
     },
+    featureFlag: 'notebooksEmail',
     component: Mailgun,
     readOnlyComponent: MailgunReadOnly,
     generateImports: () => ['http'].map(i => `import "${i}"`).join('\n'),

@@ -46,11 +46,11 @@ const labels = {
 const EditTokenOverlay: FC<Props> = props => {
   const [description, setDescription] = useState(props.auth.description)
   const [status, setStatus] = useState(ComponentStatus.Disabled)
-  const [togglestatus, setToggleStatus] = useState(props.auth.status === 'active')
+  const [togglestatus, setToggleStatus] = useState(
+    props.auth.status === 'active'
+  )
   const [label, setlabel] = useState(props.auth.status)
 
-  
-  
   const handleInputChange = event => {
     setDescription(event.target.value)
     setStatus(ComponentStatus.Default)
@@ -60,15 +60,14 @@ const EditTokenOverlay: FC<Props> = props => {
 
   const changeToggle = () => {
     setStatus(ComponentStatus.Default)
-    
-    if(togglestatus) {
-      setToggleStatus(false) 
+
+    if (togglestatus) {
+      setToggleStatus(false)
       setlabel('inactive')
-    }else {
-      setToggleStatus(true) 
+    } else {
+      setToggleStatus(true)
       setlabel('active')
     }
-    
   }
 
   const onSave = () => {
@@ -77,7 +76,7 @@ const EditTokenOverlay: FC<Props> = props => {
     onUpdate({
       ...auth,
       description: description,
-      status: togglestatus ? 'active' : 'inactive'
+      status: togglestatus ? 'active' : 'inactive',
     })
     handleDismiss()
   }
@@ -98,9 +97,7 @@ const EditTokenOverlay: FC<Props> = props => {
               size={ComponentSize.ExtraSmall}
               onChange={changeToggle}
             />
-            <InputLabel active={togglestatus}>
-              {labels[label]}
-            </InputLabel>
+            <InputLabel active={togglestatus}>{labels[label]}</InputLabel>
           </FlexBox>
           <Form>
             <FlexBox

@@ -32,6 +32,7 @@ import {
 // Constants
 import * as copy from 'src/shared/copy/notifications'
 import {parse} from 'src/external/parser'
+import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {
@@ -78,7 +79,10 @@ export const getTasks = (
 
     const org = getOrg(state)
 
-    const query: GetTasksParams['query'] = {orgID: org.id, limit, type}
+    const query: GetTasksParams['query'] = {orgID: org.id, limit}
+    if (CLOUD) {
+      query.type = type
+    }
 
     const resp = await api.getTasks({query})
 

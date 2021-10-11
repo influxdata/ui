@@ -63,7 +63,10 @@ type Action = TaskAction | ExternalActions | ReturnType<typeof getTasks>
 type ExternalActions = NotifyAction | ReturnType<typeof checkTaskLimits>
 
 // Thunks
-export const getTasks = (limit: number = TASK_LIMIT) => async (
+export const getTasks = (
+  limit: number = TASK_LIMIT,
+  type = 'default'
+) => async (
   dispatch: Dispatch<TaskAction | NotifyAction>,
   getState: GetState
 ): Promise<void> => {
@@ -75,7 +78,7 @@ export const getTasks = (limit: number = TASK_LIMIT) => async (
 
     const org = getOrg(state)
 
-    const query: GetTasksParams['query'] = {orgID: org.id, limit}
+    const query: GetTasksParams['query'] = {orgID: org.id, limit, type}
 
     const resp = await api.getTasks({query})
 

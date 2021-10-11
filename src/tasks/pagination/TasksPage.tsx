@@ -83,7 +83,7 @@ class TasksPage extends PureComponent<Props, State> {
   }
 
   public componentDidMount() {
-    this.props.getTasks(-1) // -1 means fetch all tasks with no limit
+    this.props.getTasks(-1, 'basic') // -1 means fetch all tasks with no limit
     this.props.getLabels()
 
     let sortType: SortTypes = this.state.sortType

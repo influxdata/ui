@@ -8,11 +8,7 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
         cy.createDashboard(orgID).then(({body}) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-            return cy
-              .setFeatureFlags({
-                useGiraffeGraphs: true,
-              })
-              .then(() => {
+            return cy.then(() => {
                 cy.createBucket(orgID, name, 'devbucket')
                 // have to add large amount of data to fill the window so that the random click for annotation works
                 cy.writeData(lines(3000), 'devbucket')

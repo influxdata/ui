@@ -350,7 +350,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
 
   // todo: turn into actual typescript interface after discussing things with stuart
   // each object:  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
-  const updateInit = measurementSchemaList?.measurementSchemas.map(schema => ({
+  const updateInit = measurementSchemaList?.measurementSchemas?.map(schema => ({
     currentSchema: schema,
     hasUpdate: false,
   }))

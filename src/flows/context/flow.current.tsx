@@ -1,9 +1,21 @@
-import React, {FC, useContext, useCallback, useState, useEffect} from 'react'
+import React, {
+  FC,
+  useContext,
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+} from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
+import {v4} from 'uuid'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import * as Y from 'yjs'
+import {WebrtcProvider} from 'y-webrtc'
+import {WebsocketProvider} from 'y-websocket'
+import {IndexeddbPersistence} from 'y-indexeddb'
 
 export interface FlowContextType {
   name: string
@@ -31,9 +43,33 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 
 let GENERATOR_INDEX = 0
 
+// const ydoc = new Y.Doc()
+
+// // this allows you to instantly get the (cached) documents data
+// const indexeddbProvider = new IndexeddbPersistence('count-demo', ydoc)
+// indexeddbProvider.whenSynced.then(() => {
+//   console.log('loaded data from indexed db')
+// })
+
+// // Sync clients with the y-webrtc provider.
+// const webrtcProvider = new WebrtcProvider('count-demo', ydoc)
+
+// // Sync clients with the y-websocket provider
+// const websocketProvider = new WebsocketProvider(
+//   'wss://demos.yjs.dev',
+//   'count-demo',
+//   ydoc
+// )
+
+// const uuid = v4()
+
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
+
+  // create a yDoc here
+  const yDoc = useRef(new Y.Doc())
+  const provider = useRef<WebrtcProvider>()
 
   // NOTE this is a pretty awful mechanism, as it duplicates the source of
   // truth for the definition of the current flow, but i can't see a good
@@ -46,8 +82,33 @@ export const FlowProvider: FC = ({children}) => {
     }
   }, [flows, currentID])
 
+  useEffect(() => {
+    if (isFlagEnabled('copresence')) {
+      provider.current = new WebrtcProvider('current-flow', yDoc.current)
+      const localState = provider.current.awareness.getLocalState()
+      if (!localState) {
+        provider.current.awareness.setLocalStateField(
+          'experiment',
+          DEFAULT_CONTEXT
+        )
+      }
+      provider.current.awareness.on('change', () => {
+        console.log('this is happening')
+        const state = provider.current.awareness.getLocalState()
+        setCurrentFlow(state['experiment'])
+      })
+    }
+  }, [])
+
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
+      if (isFlagEnabled('copresence')) {
+        provider.current.awareness.setLocalStateField('experiment', {
+          ...(currentFlow.data.byID[id] || {}),
+          ...data,
+        })
+        return
+      }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         currentFlow.data.byID[id] = {
           ...(currentFlow.data.byID[id] || {}),
@@ -74,6 +135,15 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateMeta = useCallback(
     (id: string, meta: Partial<PipeMeta>) => {
+      if (isFlagEnabled('copresence')) {
+        provider.current.awareness.setLocalStateField('experiment', {
+          title: '',
+          visible: true,
+          ...(currentFlow.meta.byID[id] || {}),
+          ...meta,
+        })
+        return
+      }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         currentFlow.meta.byID[id] = {
           title: '',
@@ -104,6 +174,16 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateOther = useCallback(
     (flow: Partial<Flow>) => {
+      if (isFlagEnabled('copresence')) {
+        for (const ni in flow) {
+          currentFlow[ni] = flow[ni]
+        }
+        provider.current.awareness.setLocalStateField('experiment', {
+          ...currentFlow,
+        })
+
+        return
+      }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         for (const ni in flow) {
           currentFlow[ni] = flow[ni]

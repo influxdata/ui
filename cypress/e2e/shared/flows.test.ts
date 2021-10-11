@@ -59,16 +59,6 @@ describe('Flows', () => {
     cy.getByTestID('panel-add-btn-1').click()
 
     cy.getByTestID('add-flow-btn--visualization').click()
-
-    cy.getByTestID('slide-toggle').click()
-
-    cy.get('.flow-panel--header')
-      .eq(0)
-      .click()
-
-    // test for presentation mode state
-
-    cy.getByTestID('slide-toggle').click()
   })
 
   it('can create a bucket from the metric selector and verify it is selected', () => {

@@ -45,6 +45,7 @@ import {
 } from 'src/authorizations/utils/permissions'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {CommunityTemplateInstallOverlay} from 'src/templates/components/CommunityTemplateInstallOverlay'
 
 interface OwnProps {
   onClose: () => void
@@ -136,6 +137,18 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         ] = !newPermValue
       })
     }
+    if (name === 'otherResources') {
+      Object.keys(newPerm).forEach(key => {
+        if (
+          key !== 'buckets' &&
+          key !== 'telegrafs' &&
+          key !== 'otherResources'
+        ) {
+          newPerm[key][permission] = !newPerm[key][permission]
+        }
+      })
+    }
+
     newPerm[name][permission] = !newPermValue
 
     setPermissions(newPerm)
@@ -149,17 +162,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     newPerm[resourceName].sublevelPermissions[id].permissions[
       permission
     ] = !permValue
-
-    const headerPermValue = !Object.keys(
-      newPerm[resourceName].sublevelPermissions
-    ).some(
-      key =>
-        newPerm[resourceName].sublevelPermissions[key].permissions[
-          permission
-        ] === false
-    )
-
-    newPerm[resourceName][permission] = headerPermValue
 
     setPermissions(newPerm)
   }

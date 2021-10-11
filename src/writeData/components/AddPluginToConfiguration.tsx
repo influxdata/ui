@@ -25,9 +25,6 @@ import {AppState} from 'src/types'
 // Selectors
 import {getAllTelegrafs} from 'src/resources/selectors'
 
-// Styles
-import 'src/writeData/components/AddPluginToConfiguration.scss'
-
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 

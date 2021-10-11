@@ -19,6 +19,7 @@ export default register =>
             ...JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
             ),
+            buckets: [name],
           },
           {
             type: 'visualization',

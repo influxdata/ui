@@ -23,11 +23,47 @@ const ReadOnly: FC = () => {
           status={ComponentStatus.Disabled}
         />
       </Form.Element>
-      <Form.Element label="API Key" required={true}>
+      <Form.Element label="Authorization Access Key" required={true}>
         <Input
-          name="apiKey"
+          name="accessKey"
           type={InputType.Password}
-          value={data.endpointData.apiKey}
+          value={data.endpointData.accessKey}
+          size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
+        />
+      </Form.Element>
+      <Form.Element label="Authorization Algorithm" required={true}>
+        <Input
+          name="authAlgo"
+          type={InputType.Password}
+          value={data.endpointData.authAlgo}
+          size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
+        />
+      </Form.Element>
+      <Form.Element label="Authorization Credential Scope" required={true}>
+        <Input
+          name="credScope"
+          type={InputType.Password}
+          value={data.endpointData.credScope}
+          size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
+        />
+      </Form.Element>
+      <Form.Element label="Authorization Signed Headers" required={true}>
+        <Input
+          name="signedHeaders"
+          type={InputType.Password}
+          value={data.endpointData.signedHeaders}
+          size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
+        />
+      </Form.Element>
+      <Form.Element label="Authorization Calculated Signature" required={true}>
+        <Input
+          name="calcSignature"
+          type={InputType.Password}
+          value={data.endpointData.calcSignature}
           size={ComponentSize.Medium}
           status={ComponentStatus.Disabled}
         />

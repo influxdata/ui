@@ -37,6 +37,7 @@ const ReadOnly: FC = () => {
           name="fromEmail"
           type={InputType.Email}
           value={data.endpointData.fromEmail}
+          placeholder="alerts@influxdata.com"
           size={ComponentSize.Medium}
           status={ComponentStatus.Disabled}
         />

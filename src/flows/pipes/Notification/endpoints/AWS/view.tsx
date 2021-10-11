@@ -15,11 +15,47 @@ const View: FC = () => {
     })
   }
 
-  const updateAPIKey = evt => {
+  const updateAccessKey = evt => {
     update({
       endpointData: {
         ...data.endpointData,
-        apiKey: evt.target.value,
+        accessKey: evt.target.value,
+      },
+    })
+  }
+
+  const updateAuthAlgo = evt => {
+    update({
+      endpointData: {
+        ...data.endpointData,
+        authAlgo: evt.target.value,
+      },
+    })
+  }
+
+  const updateCredScope = evt => {
+    update({
+      endpointData: {
+        ...data.endpointData,
+        credScope: evt.target.value,
+      },
+    })
+  }
+
+  const updateSignedHeaders = evt => {
+    update({
+      endpointData: {
+        ...data.endpointData,
+        signedHeaders: evt.target.value,
+      },
+    })
+  }
+
+  const updateCalcSignature = evt => {
+    update({
+      endpointData: {
+        ...data.endpointData,
+        calcSignature: evt.target.value,
       },
     })
   }
@@ -45,12 +81,48 @@ const View: FC = () => {
           size={ComponentSize.Medium}
         />
       </Form.Element>
-      <Form.Element label="API Key" required={true}>
+      <Form.Element label="Authorization Access Key" required={true}>
         <Input
-          name="apiKey"
+          name="accessKey"
           type={InputType.Password}
-          value={data.endpointData.apiKey}
-          onChange={updateAPIKey}
+          value={data.endpointData.accessKey}
+          onChange={updateAccessKey}
+          size={ComponentSize.Medium}
+        />
+      </Form.Element>
+      <Form.Element label="Authorization Algorithm" required={true}>
+        <Input
+          name="authAlgo"
+          type={InputType.Password}
+          value={data.endpointData.authAlgo}
+          onChange={updateAuthAlgo}
+          size={ComponentSize.Medium}
+        />
+      </Form.Element>
+      <Form.Element label="Authorization Credential Scope" required={true}>
+        <Input
+          name="credScope"
+          type={InputType.Password}
+          value={data.endpointData.credScope}
+          onChange={updateCredScope}
+          size={ComponentSize.Medium}
+        />
+      </Form.Element>
+      <Form.Element label="Authorization Signed Headers" required={true}>
+        <Input
+          name="signedHeaders"
+          type={InputType.Password}
+          value={data.endpointData.signedHeaders}
+          onChange={updateSignedHeaders}
+          size={ComponentSize.Medium}
+        />
+      </Form.Element>
+      <Form.Element label="Authorization Calculated Signature" required={true}>
+        <Input
+          name="calcSignature"
+          type={InputType.Password}
+          value={data.endpointData.calcSignature}
+          onChange={updateCalcSignature}
           size={ComponentSize.Medium}
         />
       </Form.Element>

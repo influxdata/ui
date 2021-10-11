@@ -8,7 +8,11 @@ export default register => {
     name: 'AWS SES Email',
     data: {
       url: '',
-      apiKey: '',
+      authAlgo: '',
+      accessKey: '',
+      credScope: '',
+      signedHeaders: '',
+      calcSignature: '',
       email: '',
     },
     featureFlag: 'notebooksEmail',
@@ -32,7 +36,7 @@ export default register => {
             url: "${data.url}",
             headers: {
               "Content-type": "application/json",
-              "Authorization": "Bearer ${data.apiKey}"
+              "Authorization": "${data.authAlgo} Credential=${data.accessKey}/${data.credScope},SignedHeaders=${data.signedHeaders},Signature=${data.calcSignature}"
             },
             data: bytes(v: "{
               \\"Content\\": {
@@ -62,7 +66,7 @@ export default register => {
       url: "${data.url}",
       headers: {
         "Content-type": "application/json",
-        "Authorization": "Bearer ${data.apiKey}"
+        "Authorization": "${data.authAlgo} Credential=${data.accessKey}/${data.credScope},SignedHeaders=${data.signedHeaders},Signature=${data.calcSignature}"
       },
       data: bytes(v: "{
         \\"Content\\": {

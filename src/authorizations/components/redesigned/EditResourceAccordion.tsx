@@ -27,7 +27,7 @@ export class EditResourceAccordion extends Component<Props> {
           <AllAccordionBody
             resourceName={resourceName}
             permissions={permissions[key]}
-            disabled={false}
+            disabled={true}
           />
           {resourceName === 'Telegrafs' ||
             (resourceName === 'Buckets' &&

@@ -213,19 +213,37 @@ export const formatPermissionsObj = permissions => {
   return newPerms
 }
 
-export const formatApiPermissions = (permissions, orgID) => {
+export const formatApiPermissions = (permissions, orgID, orgName) => {
   const apiPerms = []
   Object.keys(permissions).forEach(key => {
+    if (key === "otherResources") {
+      return
+    }
     if (permissions[key].read) {
-      apiPerms.push({
-        action: 'read',
-        resource: {
-          orgID: orgID,
-          type: key,
-        },
-      })
+      if (key === "orgs") {
+        apiPerms.push({
+          action: 'read',
+          resource: {
+            id: orgID,
+            name: orgName,
+            type: key,
+          },
+        })
+      }
+      else {
+        apiPerms.push({
+          action: 'read',
+          resource: {
+            orgID: orgID,
+            type: key,
+          },
+        })
+      }
     }
     if (permissions[key].write) {
+      if (key === "orgs") {
+        return
+      }
       apiPerms.push({
         action: 'write',
         resource: {

@@ -45,7 +45,6 @@ import {
 } from 'src/authorizations/utils/permissions'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
-import {CommunityTemplateInstallOverlay} from 'src/templates/components/CommunityTemplateInstallOverlay'
 
 interface OwnProps {
   onClose: () => void
@@ -57,6 +56,7 @@ interface StateProps {
   bucketPermissions: any
   remoteDataState: RemoteDataState
   orgID: string
+  orgName: string
 }
 
 interface DispatchProps {
@@ -167,8 +167,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const generateToken = () => {
-    const {onCreateAuthorization, orgID, showOverlay} = props
-    const apiPermissions = formatApiPermissions(permissions, orgID)
+    const {onCreateAuthorization, orgID, showOverlay, orgName} = props
+    const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
 
     const token: Authorization = {
       orgID: orgID,
@@ -313,6 +313,7 @@ const mstp = (state: AppState) => {
     bucketPermissions,
     remoteDataState,
     orgID: getOrg(state).id,
+    orgName: getOrg(state).name,
   }
 }
 

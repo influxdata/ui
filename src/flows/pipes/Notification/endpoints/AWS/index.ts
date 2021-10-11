@@ -16,7 +16,7 @@ export default register => {
       calcSignature: '',
       email: '',
     },
-    featureFlag: 'notebooksEmail',
+    featureFlag: 'notebooksNewEndpoints',
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () => ['http'].map(i => `import "${i}"`).join('\n'),

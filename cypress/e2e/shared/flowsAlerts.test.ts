@@ -12,7 +12,7 @@ describe('flows alert panel', () => {
               .setFeatureFlags({
                 simpleTable: true,
                 notebooksExp: true,
-                notebooksEmail: true,
+                notebooksNewEndpoints: true,
               })
               .then(() => {
                 cy.getByTestID('nav-item-flows').should('be.visible')

@@ -12,7 +12,7 @@ export default register => {
       token: '',
       parseMode: 'MarkdownV2',
     },
-    featureFlag: 'notebooksEmail',
+    featureFlag: 'notebooksNewEndpoints',
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () =>

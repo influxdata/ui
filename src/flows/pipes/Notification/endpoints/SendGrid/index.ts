@@ -12,7 +12,7 @@ export default register => {
       email: '',
       fromEmail: 'alerts@influxdata.com',
     },
-    featureFlag: 'notebooksEmail',
+    featureFlag: 'notebooksNewEndpoints',
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () => ['http'].map(i => `import "${i}"`).join('\n'),

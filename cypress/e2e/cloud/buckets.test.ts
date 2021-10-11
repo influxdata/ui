@@ -113,7 +113,7 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('measurement-schema-section-parent').should('not.exist')
     })
   })
-  it.only('should be able to create an explicit bucket using one schema file', function() {
+  it('should be able to create an explicit bucket using one schema file', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()

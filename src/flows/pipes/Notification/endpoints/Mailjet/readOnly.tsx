@@ -14,15 +14,6 @@ const ReadOnly: FC = () => {
 
   return (
     <div className="slack-endpoint-details--flex">
-      <Form.Element label="URL" required={true}>
-        <Input
-          name="url"
-          type={InputType.Text}
-          value={data.endpointData.url}
-          size={ComponentSize.Medium}
-          status={ComponentStatus.Disabled}
-        />
-      </Form.Element>
       <Form.Element label="API Key" required={true}>
         <Input
           name="apiKey"
@@ -32,11 +23,29 @@ const ReadOnly: FC = () => {
           status={ComponentStatus.Disabled}
         />
       </Form.Element>
-      <Form.Element label="Email" required={true}>
+      <Form.Element label="API Secret" required={true}>
+        <Input
+          name="apiSecret"
+          type={InputType.Password}
+          value={data.endpointData.apiSecret}
+          size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
+        />
+      </Form.Element>
+      <Form.Element label="To Email" required={true}>
         <Input
           name="email"
           type={InputType.Email}
           value={data.endpointData.email}
+          size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
+        />
+      </Form.Element>
+      <Form.Element label="From Email">
+        <Input
+          name="fromEmail"
+          type={InputType.Text}
+          value={data.endpointData.fromEmail}
           size={ComponentSize.Medium}
           status={ComponentStatus.Disabled}
         />

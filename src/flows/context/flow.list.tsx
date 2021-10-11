@@ -89,15 +89,22 @@ export function serialize(flow: Flow, orgID: string) {
         pipes: flow.data.allIDs.map(id => {
           const meta = flow.meta.byID[id]
           // if data changes first, meta will not exist yet
+          let out = {} as PipeMeta
+
           if (meta) {
-            return {
+            out = {
               ...flow.data.byID[id],
               id,
               title: meta.title,
               visible: meta.visible,
             }
+
+            if (meta.layout) {
+              out.layout = meta.layout
+            }
           }
-          return {}
+
+          return out
         }),
       },
     },
@@ -133,6 +140,11 @@ export function hydrate(data) {
     const meta = {
       title: pipe.title,
       visible: pipe.visible,
+    } as PipeMeta
+
+    if (pipe.layout) {
+      meta.layout = pipe.layout
+      delete pipe.layout
     }
 
     delete pipe.title

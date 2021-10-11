@@ -9,7 +9,7 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const Slack: FC = () => {
+const View: FC = () => {
   const {data, update} = useContext(PipeContext)
 
   const updateUrl = evt => {
@@ -67,4 +67,4 @@ const Slack: FC = () => {
   )
 }
 
-export default Slack
+export default View

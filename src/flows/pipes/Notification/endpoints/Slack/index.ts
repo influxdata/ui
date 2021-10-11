@@ -1,6 +1,6 @@
 import {TEST_NOTIFICATION} from 'src/flows/pipes/Notification/endpoints'
-import Slack from './view'
-import SlackReadOnly from './readOnly'
+import View from './view'
+import ReadOnly from './readOnly'
 
 export default register => {
   register({
@@ -11,8 +11,8 @@ export default register => {
       channel: '',
       color: '#34BB55',
     },
-    component: Slack,
-    readOnlyComponent: SlackReadOnly,
+    component: View,
+    readOnlyComponent: ReadOnly,
     generateImports: () => ['slack'].map(i => `import "${i}"`).join('\n'),
     generateTestImports: () =>
       ['array', 'slack'].map(i => `import "${i}"`).join('\n'),

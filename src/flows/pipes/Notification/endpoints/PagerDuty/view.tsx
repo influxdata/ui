@@ -12,7 +12,7 @@ import {
 import {PipeContext} from 'src/flows/context/pipe'
 import {getOrg} from 'src/organizations/selectors'
 
-const PagerDuty: FC = () => {
+const View: FC = () => {
   const {data, update} = useContext(PipeContext)
   const org = useSelector(getOrg)
 
@@ -60,4 +60,4 @@ const PagerDuty: FC = () => {
   )
 }
 
-export default PagerDuty
+export default View

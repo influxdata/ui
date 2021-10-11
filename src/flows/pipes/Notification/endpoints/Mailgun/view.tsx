@@ -37,7 +37,7 @@ const Mailgun: FC = () => {
     <div className="slack-endpoint-details--flex">
       <Form.Element label="Domain" required={true}>
         <Input
-          name="url"
+          name="domain"
           type={InputType.Text}
           value={data.endpointData.domain}
           onChange={updateDomain}

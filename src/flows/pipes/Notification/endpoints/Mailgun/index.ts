@@ -1,6 +1,6 @@
 import {TEST_NOTIFICATION} from 'src/flows/pipes/Notification/endpoints'
-import Mailgun from './view'
-import MailgunReadOnly from './readOnly'
+import View from './view'
+import ReadOnly from './readOnly'
 
 export default register => {
   register({
@@ -12,8 +12,8 @@ export default register => {
       email: '',
     },
     featureFlag: 'notebooksEmail',
-    component: Mailgun,
-    readOnlyComponent: MailgunReadOnly,
+    component: View,
+    readOnlyComponent: ReadOnly,
     generateImports: () => ['http'].map(i => `import "${i}"`).join('\n'),
     generateTestImports: () =>
       ['array', 'http'].map(i => `import "${i}"`).join('\n'),
@@ -37,7 +37,7 @@ export default register => {
             data: bytes(v: "{
               \\"from\\": \\"Username mailgun@${data.domain}\\",
               \\"to\\": \\"${data.email}\\",
-              \\"subject\\": \\"InfluxDB critical alert\\",
+              \\"subject\\": \\"InfluxDB Alert\\",
               \\"text\\": \\"\${ r._message }\\"
             }"))
     })
@@ -52,7 +52,7 @@ export default register => {
         data: bytes(v: "{
           \"from\": \"Username mailgun@${data.domain}\",
           \"to\": \"${data.email}\",
-          \"subject\": \"InfluxDB critical alert\",
+          \"subject\": \"InfluxDB Alert\",
           \"text\": \"${TEST_NOTIFICATION}\"
         }"))
 

@@ -12,7 +12,7 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const HTTP: FC = () => {
+const View: FC = () => {
   const {data, update} = useContext(PipeContext)
 
   const updater = (field, value) => {
@@ -145,4 +145,4 @@ const HTTP: FC = () => {
   )
 }
 
-export default HTTP
+export default View

@@ -9,7 +9,7 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const SlackReadOnly: FC = () => {
+const ReadOnly: FC = () => {
   const {data} = useContext(PipeContext)
 
   return (
@@ -48,4 +48,4 @@ const SlackReadOnly: FC = () => {
   )
 }
 
-export default SlackReadOnly
+export default ReadOnly

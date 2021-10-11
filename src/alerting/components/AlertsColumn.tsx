@@ -18,6 +18,7 @@ import {
   ComponentSize,
   QuestionMarkTooltip,
   ComponentColor,
+  JustifyContent,
 } from '@influxdata/clockface'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import AssetLimitButton from 'src/cloud/components/AssetLimitButton'
@@ -77,8 +78,8 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
       className={panelClassName}
       testID={`${type}--column`}
     >
-      <Panel.Header>
-        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Small}>
+        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Small} justifyContent={JustifyContent.SpaceBetween}>
+          <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Small}>
           <h4 style={{width: 'auto', marginRight: '6px'}}>{title}</h4>
           <QuestionMarkTooltip
             diameter={18}
@@ -86,9 +87,9 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
             testID={`${title}--question-mark`}
             tooltipContents={questionMarkTooltipContents}
           />
-        </FlexBox>
+          </FlexBox>
         {isLimitExceeded ? assetLimitButton : createButton}
-      </Panel.Header>
+        </FlexBox>
       <div className="alerting-index--search">
         <Input
           icon={IconFont.Search_New}

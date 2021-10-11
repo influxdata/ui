@@ -125,7 +125,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   const handleToggleAll = (resourceName, permission) => {
     const newPerm = {...permissions}
 
-    const name = resourceName.charAt(0).toLowerCase() + resourceName.slice(1)
+    let name = resourceName.replaceAll(/\s/g, '')
+    name = name.charAt(0).toLowerCase() + name.slice(1)
     const newPermValue = newPerm[name][permission]
 
     if (newPerm[name].sublevelPermissions) {

@@ -38,6 +38,7 @@ const Mailgun: FC = () => {
       <Form.Element label="Domain" required={true}>
         <Input
           name="domain"
+          testID="input--domain"
           type={InputType.Text}
           value={data.endpointData.domain}
           onChange={updateDomain}
@@ -47,6 +48,7 @@ const Mailgun: FC = () => {
       <Form.Element label="API Key" required={true}>
         <Input
           name="apiKey"
+          testID="input--apiKey"
           type={InputType.Password}
           value={data.endpointData.apiKey}
           onChange={updateAPIKey}
@@ -56,6 +58,7 @@ const Mailgun: FC = () => {
       <Form.Element label="Email" required={true}>
         <Input
           name="email"
+          testID="input--email"
           type={InputType.Email}
           value={data.endpointData.email}
           onChange={updateEmail}

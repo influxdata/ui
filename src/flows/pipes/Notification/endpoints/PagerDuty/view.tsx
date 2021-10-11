@@ -40,6 +40,7 @@ const View: FC = () => {
       <Form.Element label="Client URL">
         <Input
           name="url"
+          testID="input--url"
           type={InputType.Text}
           placeholder={defaultEndpoint}
           value={data.endpointData.url}
@@ -50,6 +51,7 @@ const View: FC = () => {
       <Form.Element label="Routing Key">
         <Input
           name="key"
+          testID="input--key"
           type={InputType.Password}
           value={data.endpointData.key}
           onChange={updateKey}

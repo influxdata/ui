@@ -74,7 +74,7 @@ const View: FC = () => {
       <Form.Element label="URL" required={true}>
         <Input
           name="url"
-          placeholder="https://email.your-aws-region.amazonaws.com/sendemail/v2/email/outbound-emails"
+          testID="input--url"
           type={InputType.Text}
           value={data.endpointData.url}
           onChange={updateURL}
@@ -84,6 +84,7 @@ const View: FC = () => {
       <Form.Element label="Authorization Access Key" required={true}>
         <Input
           name="accessKey"
+          testID="input--accessKey"
           type={InputType.Password}
           value={data.endpointData.accessKey}
           onChange={updateAccessKey}
@@ -93,6 +94,7 @@ const View: FC = () => {
       <Form.Element label="Authorization Algorithm" required={true}>
         <Input
           name="authAlgo"
+          testID="input--authAlgo"
           type={InputType.Password}
           value={data.endpointData.authAlgo}
           onChange={updateAuthAlgo}
@@ -102,6 +104,7 @@ const View: FC = () => {
       <Form.Element label="Authorization Credential Scope" required={true}>
         <Input
           name="credScope"
+          testID="input--credScope"
           type={InputType.Password}
           value={data.endpointData.credScope}
           onChange={updateCredScope}
@@ -111,6 +114,7 @@ const View: FC = () => {
       <Form.Element label="Authorization Signed Headers" required={true}>
         <Input
           name="signedHeaders"
+          testID="input--signedHeaders"
           type={InputType.Password}
           value={data.endpointData.signedHeaders}
           onChange={updateSignedHeaders}
@@ -120,6 +124,7 @@ const View: FC = () => {
       <Form.Element label="Authorization Calculated Signature" required={true}>
         <Input
           name="calcSignature"
+          testID="input--calcSignature"
           type={InputType.Password}
           value={data.endpointData.calcSignature}
           onChange={updateCalcSignature}
@@ -129,6 +134,7 @@ const View: FC = () => {
       <Form.Element label="Email" required={true}>
         <Input
           name="email"
+          testID="input--email"
           type={InputType.Email}
           value={data.endpointData.email}
           onChange={updateEmail}

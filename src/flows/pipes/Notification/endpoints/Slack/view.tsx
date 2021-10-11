@@ -44,6 +44,7 @@ const View: FC = () => {
       <Form.Element label="Incoming Webhook URL" required={true}>
         <Input
           name="url"
+          testID="input--url"
           type={InputType.Text}
           placeholder="ex: https://hooks.slack.com/services/X/X/X"
           value={data.endpointData.url}
@@ -54,6 +55,7 @@ const View: FC = () => {
       <Form.Element label="Slack Channel" required={true}>
         <Input
           name="channel"
+          testID="input--channel"
           type={InputType.Text}
           value={data.endpointData.channel}
           onChange={updateChannel}

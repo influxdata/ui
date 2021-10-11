@@ -227,6 +227,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
       <Dropdown.Item
         key={k}
         id={k}
+        testID={`dropdown-item--${k}`}
         onClick={() => updateEndpoint(k)}
         selected={data.endpoint === k}
       >

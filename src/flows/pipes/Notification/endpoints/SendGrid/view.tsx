@@ -35,6 +35,7 @@ const View: FC = () => {
       <Form.Element label="API Key" required={true}>
         <Input
           name="apiKey"
+          testID="input--apiKey"
           type={InputType.Password}
           value={data.endpointData.apiKey}
           onChange={updateAPIKey}
@@ -44,6 +45,7 @@ const View: FC = () => {
       <Form.Element label="To Email" required={true}>
         <Input
           name="email"
+          testID="input--email"
           type={InputType.Email}
           value={data.endpointData.email}
           onChange={updateEmail}
@@ -53,6 +55,7 @@ const View: FC = () => {
       <Form.Element label="From Email">
         <Input
           name="fromEmail"
+          testID="input--fromEmail"
           type={InputType.Text}
           value={data.endpointData.fromEmail}
           size={ComponentSize.Medium}

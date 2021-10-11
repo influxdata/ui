@@ -52,6 +52,7 @@ const View: FC = () => {
         <Form.Element label="Username">
           <Input
             name="username"
+            testID="input--username"
             type={InputType.Text}
             value={data.endpointData.username}
             onChange={updateUsername}
@@ -61,6 +62,7 @@ const View: FC = () => {
         <Form.Element label="Password">
           <Input
             name="password"
+            testID="input--password"
             type={InputType.Text}
             value={data.endpointData.password}
             onChange={updatePassword}
@@ -74,6 +76,7 @@ const View: FC = () => {
       <Form.Element label="Token">
         <Input
           name="token"
+          testID="input--token"
           type={InputType.Text}
           value={data.endpointData.token}
           onChange={updateToken}
@@ -95,6 +98,7 @@ const View: FC = () => {
           <Form.Element label="Endpoint URL">
             <Input
               name="url"
+              testID="input--url"
               type={InputType.Text}
               placeholder="ex: https://www.example.com/endpoint"
               value={data.endpointData.url}
@@ -112,6 +116,7 @@ const View: FC = () => {
               <SelectGroup.Option
                 id="none"
                 name="auth"
+                testID="option--none"
                 value="none"
                 active={data.endpointData.auth === 'none'}
                 onClick={updateAuth}
@@ -121,6 +126,7 @@ const View: FC = () => {
               <SelectGroup.Option
                 id="none"
                 name="auth"
+                testID="option--basic"
                 value="basic"
                 active={data.endpointData.auth === 'basic'}
                 onClick={updateAuth}
@@ -130,6 +136,7 @@ const View: FC = () => {
               <SelectGroup.Option
                 id="bearer"
                 name="auth"
+                testID="option--bearer"
                 value="bearer"
                 active={data.endpointData.auth === 'bearer'}
                 onClick={updateAuth}

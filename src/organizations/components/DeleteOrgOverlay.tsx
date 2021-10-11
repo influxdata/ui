@@ -98,7 +98,6 @@ const DeleteOrgOverlay: FC = () => {
           <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>
             This action cannot be undone
           </Alert>
-<<<<<<< HEAD
           {isFlagEnabled('trackCancellations') && (
             <FlexBox
               alignItems={AlignItems.Center}
@@ -109,10 +108,7 @@ const DeleteOrgOverlay: FC = () => {
               <DeleteOrgReasonsForm />
             </FlexBox>
           )}
-          <ul>
-=======
           <ul style={{margin: '32px 0'}}>
->>>>>>> fix: Round up UI fix for clockface 3.0 (#2734)
             <li>
               The account for this Organization will be deleted immediately.
               This is irreversible and cannot be undone.

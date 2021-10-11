@@ -10,6 +10,8 @@ import {
   InputLabel,
   AlignItems,
 } from '@influxdata/clockface'
+import CancelServiceReasonsForm from './CancelServiceReasonsForm'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   hasAgreedToTerms: boolean
@@ -66,6 +68,16 @@ const TermsCancellationOverlay: FC<Props> = ({
         </InputLabel>
       </FlexBox>
     </span>
+    {isFlagEnabled('trackCancellations') && (
+      <FlexBox
+        alignItems={AlignItems.Center}
+        direction={FlexDirection.Column}
+        justifyContent={JustifyContent.Center}
+        margin={ComponentSize.Large}
+      >
+        <CancelServiceReasonsForm />
+      </FlexBox>
+    )}
   </div>
 )
 

@@ -8,14 +8,16 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import LoadDataTabbedPage from 'src/settings/components/LoadDataTabbedPage'
 import LoadDataHeader from 'src/settings/components/LoadDataHeader'
 import GetResources from 'src/resources/components/GetResources'
-import TokensTab from 'src/authorizations/components/TokensTab'
+import TokensTab from 'src/authorizations/pagination/TokensTab'
 import {
   AllAccessTokenOverlay,
   BucketsTokenOverlay,
+  CustomApiTokenOverlay,
 } from 'src/overlays/components'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -42,10 +44,17 @@ class TokensIndex extends Component {
             path={`${tokensPath}/all-access`}
             component={AllAccessTokenOverlay}
           />
-          <Route
-            path={`${tokensPath}/buckets`}
-            component={BucketsTokenOverlay}
-          />
+          {isFlagEnabled('tokensUIRedesign') ? (
+            <Route
+              path={`${tokensPath}/custom-api`}
+              component={CustomApiTokenOverlay}
+            />
+          ) : (
+            <Route
+              path={`${tokensPath}/buckets`}
+              component={BucketsTokenOverlay}
+            />
+          )}
         </Switch>
       </>
     )

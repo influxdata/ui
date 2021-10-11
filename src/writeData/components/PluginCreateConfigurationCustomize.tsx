@@ -1,14 +1,18 @@
 // Libraries
-import React, {ChangeEvent, FC, useEffect} from 'react'
+import React, {ChangeEvent, createRef, FC, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
+  Appearance,
   ComponentSize,
   Form,
   Grid,
   Input,
   InputType,
+  Popover,
+  PopoverInteraction,
+  PopoverPosition,
 } from '@influxdata/clockface'
 import TelegrafConfig from 'src/telegrafs/components/TelegrafConfig'
 
@@ -28,6 +32,47 @@ import {getDataLoaders} from 'src/dataLoaders/selectors'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = PluginCreateConfigurationStepProps & ReduxProps
+
+interface AgentOutputNotificationProps {
+  triggerRef: React.RefObject<HTMLElement>
+}
+
+const AgentOutputNotification: FC<AgentOutputNotificationProps> = props => (
+  <>
+    <Popover
+      appearance={Appearance.Outline}
+      contents={() => (
+        <span className="plugin-create-configuration--popover-contents">
+          The agent settings configures Telegraf across all plugins. Read{' '}
+          <a
+            href="https://docs.influxdata.com/telegraf/latest/administration/configuration/#agent-configuration"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>{' '}
+          for more information about these settings.
+        </span>
+      )}
+      distanceFromTrigger={8}
+      hideEvent={PopoverInteraction.Hover}
+      position={PopoverPosition.Above}
+      showEvent={PopoverInteraction.Hover}
+      triggerRef={props.triggerRef}
+    />
+    <span>
+      Input plugin configuration will be appended to default
+      <code
+        className="plugin-create-configuration--agent-notification"
+        ref={props.triggerRef}
+      >
+        {' '}
+        agent{' '}
+      </code>
+      settings and InfluxDB output upon saving
+    </span>
+  </>
+)
 
 const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
   const {
@@ -87,6 +132,8 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
     onSetTelegrafConfigDescription(event.target.value)
   }
 
+  const notificationRef = createRef<HTMLElement>()
+
   return (
     <>
       <Grid testID="plugin-create-configuration-customize">
@@ -120,8 +167,8 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
             />
           </Form.Element>
         </Grid.Row>
-        <Grid.Row className="plugin-create-configuration--editor">
-          <div className="config-overlay">
+        <Grid.Row>
+          <div className="plugin-create-configuration-customize-editor">
             <TelegrafConfig
               config={pluginConfig}
               onChangeConfig={handleChangeConfig}
@@ -129,10 +176,7 @@ const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
           </div>
         </Grid.Row>
         <Grid.Row>
-          <span className="plugin-create-configuration--notify-agent-output">
-            Input configuration will be appended to a default agent and output
-            upon saving
-          </span>
+          <AgentOutputNotification triggerRef={notificationRef} />
         </Grid.Row>
       </Grid>
     </>

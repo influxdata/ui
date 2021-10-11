@@ -11,10 +11,22 @@
   margin-bottom: $cf-marg-b;
 }
 
-.plugin-create-configuration--editor {
+.plugin-create-configuration-customize-editor,
+.plugin-edit-configuration--editor {
   margin-top: $cf-marg-b;
+  height: 55vh;
+  width: 100%;
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
 }
 
-.plugin-create-configuration--notify-agent-output {
-  font-style: italic;
+.plugin-create-configuration--agent-notification {
+  font-weight: 900;
+  font-size: $cf-text-base-2;
+  color: #ff4d96;
+}
+
+.plugin-create-configuration--popover-contents {
+  font-size: $cf-text-tiny;
 }

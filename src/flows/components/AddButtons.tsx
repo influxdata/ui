@@ -100,14 +100,16 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
 
             onInsert && onInsert()
 
+            let evtPos = 'between'
+
+            if (index === -1) {
+              evtPos = 'first'
+            } else if (index === flow.data.allIDs.length - 1) {
+              evtPos = 'last'
+            }
             event('insert_notebook_cell', {
               notebooksCellType: def.type,
-              position:
-                index === -1
-                  ? 'first'
-                  : index === flow.data.allIDs.length - 1
-                  ? 'last'
-                  : 'between',
+              position: evtPos,
             })
             add(
               {

@@ -311,13 +311,13 @@ describe('flows alert panel', () => {
     cy.get('.cf-overlay--dismiss').click()
 
     // === SLACK ===
-    const slackChannel = 'fake-channel'
+    const fakeChannel = 'fake-channel'
     const slackColor = '#34BB55'
 
     // complete fields
     cy.getByTestID('dropdown-item--slack').click()
     cy.getByTestID('input--url').type(fakeUrl)
-    cy.getByTestID('input--channel').type(slackChannel)
+    cy.getByTestID('input--channel').type(fakeChannel)
 
     // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
@@ -326,8 +326,32 @@ describe('flows alert panel', () => {
     cy.getByTestID('form--footer').scrollIntoView()
     cy.getByTestID('overlay--body').within(() => {
       cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(slackChannel)
+      cy.getByTestID('flux-editor').contains(fakeChannel)
       cy.getByTestID('flux-editor').contains(slackColor)
+    })
+
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
+
+    // === TELEGRAM ===
+    const parseMode = 'MarkdownV2'
+    const telegramURL = 'https://api.telegram.org/bot'
+
+    // complete fields
+    cy.getByTestID('dropdown-item--telegram').click()
+    cy.getByTestID('input--channel').type(fakeChannel)
+    cy.getByTestID('input--token').type(token)
+
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(telegramURL)
+      cy.getByTestID('flux-editor').contains(fakeChannel)
+      cy.getByTestID('flux-editor').contains(token)
+      cy.getByTestID('flux-editor').contains(parseMode)
     })
   })
 })

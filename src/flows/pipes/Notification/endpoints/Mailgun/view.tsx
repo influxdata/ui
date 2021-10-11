@@ -3,7 +3,7 @@ import {Form, Input, InputType, ComponentSize} from '@influxdata/clockface'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
-const Mailgun: FC = () => {
+const View: FC = () => {
   const {data, update} = useContext(PipeContext)
 
   const updateDomain = evt => {
@@ -69,4 +69,4 @@ const Mailgun: FC = () => {
   )
 }
 
-export default Mailgun
+export default View

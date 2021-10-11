@@ -205,7 +205,6 @@ describe('DataExplorer', () => {
     const prefix = 'speed: '
     const suffix = ' mph'
     it('can add prefix and suffix labels when using Giraffe gauge', () => {
-      cy.setFeatureFlags({useGiraffeGraphs: true})
       cy.writeData(lines(10))
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
@@ -271,7 +270,6 @@ describe('DataExplorer', () => {
     })
 
     it('can add prefix and suffix labels when using original built-in gauge', () => {
-      cy.setFeatureFlags({useGiraffeGraphs: false})
       cy.writeData(lines(10))
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {

@@ -9,13 +9,6 @@ import {
   valuesVariable,
   brokerHostVariable,
 } from 'src/shared/utils/mocks/data'
-import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
-
-jest.mock('src/external/parser', () => {
-  return {
-    parse: jest.fn(getMockedParse()),
-  }
-})
 
 import {
   getCachedResultsOrRunQuery,

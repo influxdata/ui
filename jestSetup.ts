@@ -3,6 +3,7 @@ import 'intersection-observer'
 import MutationObserver from 'mutation-observer'
 import fetchMock from 'jest-fetch-mock'
 import '@testing-library/jest-dom'
+import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
 
 // global vars
 process.env.API_PREFIX = 'http://example.com/'
@@ -31,20 +32,7 @@ jest.mock('src/shared/utils/errors')
   So, need to mock here as well
 */
 jest.mock('src/external/parser', () => ({
-  parse: jest.fn(() => {
-    return {
-      type: 'File',
-      package: {
-        name: {
-          name: 'fake',
-          type: 'Identifier',
-        },
-        type: 'PackageClause',
-      },
-      imports: [],
-      body: [],
-    }
-  }),
+  parse: jest.fn(getMockedParse()),
   format_from_js_file: jest.fn(),
 }))
 

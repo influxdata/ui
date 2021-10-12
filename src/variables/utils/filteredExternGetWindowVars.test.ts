@@ -1,12 +1,5 @@
 // Mocks
 import {defaultVariableAssignments} from 'src/variables/mocks'
-import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
-
-jest.mock('src/external/parser', () => {
-  return {
-    parse: jest.fn(getMockedParse()),
-  }
-})
 import {getWindowPeriodVariable} from 'src/variables/utils/getWindowVars'
 
 // TODO: As part of #1708, move the contents of this file to getWindowVars.test.ts and remove this file.
@@ -62,25 +55,6 @@ describe('getWindowPeriodVariable', () => {
   })
 
   test('should return a dynamic windowPeriod depending on the timeRange that is input', () => {
-    jest.mock('src/external/parser', () => {
-      return {
-        parse: jest.fn(() => ({
-          type: 'File',
-          package: null,
-          imports: [],
-          body: [
-            {
-              type: 'ExpressionStatement',
-              expression: {
-                type: 'PipeExpression',
-                argument: {type: 'PipeExpression', argument: {}, call: {}},
-                call: {type: 'CallExpression', callee: {}, arguments: [{}]},
-              },
-            },
-          ],
-        })),
-      }
-    })
     jest.mock('src/shared/utils/getMinDurationFromAST', () => {
       return {
         getMinDurationFromAST: jest.fn(() => 86400000),

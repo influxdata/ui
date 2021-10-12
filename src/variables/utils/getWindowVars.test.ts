@@ -45,25 +45,6 @@ describe('getWindowPeriodVariable', () => {
   })
 
   test('should return a dynamic windowPeriod depending on the timeRange that is input', () => {
-    jest.mock('src/external/parser', () => {
-      return {
-        parse: jest.fn(() => ({
-          type: 'File',
-          package: null,
-          imports: [],
-          body: [
-            {
-              type: 'ExpressionStatement',
-              expression: {
-                type: 'PipeExpression',
-                argument: {type: 'PipeExpression', argument: {}, call: {}},
-                call: {type: 'CallExpression', callee: {}, arguments: [{}]},
-              },
-            },
-          ],
-        })),
-      }
-    })
     jest.mock('src/shared/utils/getMinDurationFromAST', () => {
       return {
         getMinDurationFromAST: jest.fn(() => 86400000),

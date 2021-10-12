@@ -1,16 +1,9 @@
-import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
 import {
   bucketVariable,
   deploymentVariable,
   buildVariable,
   variables,
 } from 'src/shared/utils/mocks/data'
-
-jest.mock('src/external/parser', () => {
-  return {
-    parse: jest.fn(getMockedParse()),
-  }
-})
 
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 

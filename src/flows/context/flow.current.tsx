@@ -13,9 +13,7 @@ import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import * as Y from 'yjs'
-import {WebrtcProvider} from 'y-webrtc'
 import {WebsocketProvider} from 'y-websocket'
-import {IndexeddbPersistence} from 'y-indexeddb'
 
 export interface FlowContextType {
   name: string
@@ -43,33 +41,14 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 
 let GENERATOR_INDEX = 0
 
-// const ydoc = new Y.Doc()
-
-// // this allows you to instantly get the (cached) documents data
-// const indexeddbProvider = new IndexeddbPersistence('count-demo', ydoc)
-// indexeddbProvider.whenSynced.then(() => {
-//   console.log('loaded data from indexed db')
-// })
-
-// // Sync clients with the y-webrtc provider.
-// const webrtcProvider = new WebrtcProvider('count-demo', ydoc)
-
-// // Sync clients with the y-websocket provider
-// const websocketProvider = new WebsocketProvider(
-//   'wss://demos.yjs.dev',
-//   'count-demo',
-//   ydoc
-// )
-
-// const uuid = v4()
+const uuid = v4()
 
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
 
-  // create a yDoc here
   const yDoc = useRef(new Y.Doc())
-  const provider = useRef<WebrtcProvider>()
+  const provider = useRef<WebsocketProvider>()
 
   // NOTE this is a pretty awful mechanism, as it duplicates the source of
   // truth for the definition of the current flow, but i can't see a good
@@ -83,30 +62,45 @@ export const FlowProvider: FC = ({children}) => {
   }, [flows, currentID])
 
   useEffect(() => {
-    if (isFlagEnabled('copresence')) {
-      provider.current = new WebrtcProvider('current-flow', yDoc.current)
+    if (isFlagEnabled('copresence') || true) {
+      provider.current = new WebsocketProvider(
+        'wss://demos.yjs.dev',
+        'experiment',
+        yDoc.current
+      )
       const localState = provider.current.awareness.getLocalState()
-      if (!localState) {
-        provider.current.awareness.setLocalStateField(
-          'experiment',
-          DEFAULT_CONTEXT
-        )
+      if (!localState?.id) {
+        provider.current.awareness.setLocalState(DEFAULT_CONTEXT)
       }
-      provider.current.awareness.on('change', () => {
-        console.log('this is happening')
-        const state = provider.current.awareness.getLocalState()
-        setCurrentFlow(state['experiment'])
+
+      yDoc.current.on('update', () => {
+        console.log('should trigger in both browsers')
+        const {localState} = yDoc.current.getMap('localState').toJSON()
+        setCurrentFlow(prev => {
+          if (prev === localState) {
+            return
+          }
+          return localState
+        })
       })
+    }
+
+    return () => {
+      provider.current.disconnect()
     }
   }, [])
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
-      if (isFlagEnabled('copresence')) {
-        provider.current.awareness.setLocalStateField('experiment', {
-          ...(currentFlow.data.byID[id] || {}),
-          ...data,
-        })
+      if (isFlagEnabled('copresence') || true) {
+        if (currentFlow?.data?.byID[id]) {
+          const update = {
+            ...currentFlow,
+            ...(currentFlow.data.byID[id] || {}),
+            ...data,
+          }
+          yDoc.current.getMap('localState').set('localState', update)
+        }
         return
       }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
@@ -135,13 +129,17 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateMeta = useCallback(
     (id: string, meta: Partial<PipeMeta>) => {
-      if (isFlagEnabled('copresence')) {
-        provider.current.awareness.setLocalStateField('experiment', {
-          title: '',
-          visible: true,
-          ...(currentFlow.meta.byID[id] || {}),
-          ...meta,
-        })
+      if (isFlagEnabled('copresence') || true) {
+        if (currentFlow?.meta?.byID[id]) {
+          const update = {
+            ...currentFlow,
+            title: '',
+            visible: true,
+            ...(currentFlow.meta.byID[id] || {}),
+            ...meta,
+          }
+          yDoc.current.getMap('localState').set('localState', update)
+        }
         return
       }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
@@ -174,14 +172,16 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateOther = useCallback(
     (flow: Partial<Flow>) => {
-      if (isFlagEnabled('copresence')) {
-        for (const ni in flow) {
-          currentFlow[ni] = flow[ni]
+      if (isFlagEnabled('copresence') || true) {
+        console.log('updateOther')
+        if (currentFlow) {
+          for (const ni in flow) {
+            currentFlow[ni] = flow[ni]
+          }
+          yDoc.current.getMap('localState').set('localState', {
+            ...currentFlow,
+          })
         }
-        provider.current.awareness.setLocalStateField('experiment', {
-          ...currentFlow,
-        })
-
         return
       }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
@@ -214,6 +214,24 @@ export const FlowProvider: FC = ({children}) => {
     delete initial.title
     initial.id = id
 
+    if (isFlagEnabled('copresence') || true) {
+      currentFlow.data.byID[id] = initial
+      currentFlow.meta.byID[id] = {
+        title,
+        visible: true,
+      }
+      if (typeof index !== 'undefined') {
+        currentFlow.data.allIDs.splice(index + 1, 0, id)
+        currentFlow.meta.allIDs.splice(index + 1, 0, id)
+      } else {
+        currentFlow.data.allIDs.push(id)
+        currentFlow.meta.allIDs.push(id)
+      }
+      yDoc.current.getMap('localState').set('localState', {
+        ...currentFlow,
+      })
+      return
+    }
     if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
       currentFlow.data.byID[id] = initial
       currentFlow.meta.byID[id] = {
@@ -252,6 +270,21 @@ export const FlowProvider: FC = ({children}) => {
   }
 
   const removePipe = (id: string) => {
+    if (isFlagEnabled('copresence') || true) {
+      currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
+        _id => _id !== id
+      )
+      currentFlow.data.allIDs = currentFlow.data.allIDs.filter(
+        _id => _id !== id
+      )
+
+      delete currentFlow.data.byID[id]
+      delete currentFlow.meta.byID[id]
+      yDoc.current.getMap('localState').set('localState', {
+        ...currentFlow,
+      })
+      return
+    }
     if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
       currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
         _id => _id !== id

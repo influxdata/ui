@@ -111,12 +111,12 @@ const Controls: FC = () => {
     } else if (range.type === 'selectable-duration') {
       period = millisecondsToDuration(range.windowPeriod)
     }
-
-    if (period && period !== data.period) {
-      update({
-        period,
-      })
-    }
+    // todo(ariel): figure out why this breaks everything
+    // if (period && period !== data.period) {
+    //   update({
+    //     period,
+    //   })
+    // }
   }, [range, update, data.period])
 
   const dataExists = results.parsed && Object.entries(results.parsed).length

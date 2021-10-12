@@ -30,6 +30,7 @@ import {downloadTextFile} from 'src/shared/utils/download'
 import {MiniFileDnd} from 'src/buckets/components/createBucketForm/MiniFileDnd'
 
 import {CLOUD} from 'src/shared/constants'
+import classnames from "classnames";
 
 let MeasurementSchemaList = null,
   MeasurementSchema = null
@@ -257,15 +258,18 @@ const EditingPanel: FC<PanelProps> = ({
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
   const [fileError, setFileError] = useState(false)
+  const [updateInProgress, setUpdateInProgress] = useState(false)
 
   const setUserWantsUpdate = () => {
     toggleUpdate(true, index)
+    setUpdateInProgress(true)
   }
 
   const cancelUpdate = () => {
     toggleUpdate(false, index)
     setFileError(false)
     setFileErrorMessage(null)
+    setUpdateInProgress(false)
   }
 
   const handleDownloadSchema = () => {
@@ -297,6 +301,8 @@ const EditingPanel: FC<PanelProps> = ({
     />
   ) : null
 
+  const schemaRowClasses = classnames('schema-row', {hasCancelBtn: updateInProgress})
+
   return (
     <Panel className="measurement-schema-panel-container">
       <FlexBox
@@ -308,11 +314,9 @@ const EditingPanel: FC<PanelProps> = ({
         key={`romsp-${index}`}
       >
         <div> name</div>
-        <FlexBox direction={FlexDirection.Row} className="schema-row">
-          <div
-            className="value-text"
-            data-testid={`measurement-schema-name-${index}`}
-          >
+        <FlexBox direction={FlexDirection.Row} className={schemaRowClasses}>
+          <div className="value-text"
+               data-testid={`measurement-schema-name-${index}`}>
             {measurementSchema.name}
           </div>
           <Button
@@ -350,7 +354,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
 
   // todo: turn into actual typescript interface after discussing things with stuart
   // each object:  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
-  const updateInit = measurementSchemaList?.measurementSchemas.map(schema => ({
+  const updateInit = measurementSchemaList?.measurementSchemas?.map(schema => ({
     currentSchema: schema,
     hasUpdate: false,
   }))
@@ -362,11 +366,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     entry.hasUpdate = true
     entry.valid = true
 
-    //next:  see how the error is set....and validity is done on add panel.
-    // want to copy that.  want each of these lines to say 'valid' or not.
-
-    //also: add cancel button to undo the add.  because need a way to zero it out
-    // (can always re-upload anotherfile if maake a mistake, but want an easy out)
 
     schemaUpdates[index] = entry
     onUpdateSchemas(schemaUpdates)
@@ -382,8 +381,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     } else {
       // cancelling
       entry.hasUpdate = false
-      //delete entry.columns
-      //delete entry.valid
     }
 
     schemaUpdates[index] = entry

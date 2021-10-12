@@ -293,9 +293,8 @@ export class LSPServer {
 
   private parseDiagnostics(response: NotificationMessage): Diagnostic[] {
     if (
-      response &&
-      response.method === 'textDocument/publishDiagnostics' &&
-      response.params
+      response?.method === 'textDocument/publishDiagnostics' &&
+      response?.params
     ) {
       const {diagnostics} = response.params as {diagnostics: Diagnostic[]}
 

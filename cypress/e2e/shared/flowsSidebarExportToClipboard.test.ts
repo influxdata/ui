@@ -26,7 +26,6 @@ const createEmptyNotebook = () => {
   cy.getByTestID('preset-new')
     .first()
     .click()
-  cy.focused()
   cy.wait('@NotebooksPatchRequest')
   cy.getByTestID('sidebar-button')
     .first()

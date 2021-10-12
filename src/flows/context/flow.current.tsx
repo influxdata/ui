@@ -77,8 +77,8 @@ export const FlowProvider: FC = ({children}) => {
         console.log('should trigger in both browsers')
         const {localState} = yDoc.current.getMap('localState').toJSON()
         setCurrentFlow(prev => {
-          if (prev === localState) {
-            return
+          if (btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState))) {
+            return prev
           }
           return localState
         })
@@ -92,6 +92,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
+      console.log('updateData')
       if (isFlagEnabled('copresence') || true) {
         if (currentFlow?.data?.byID[id]) {
           const update = {
@@ -99,6 +100,8 @@ export const FlowProvider: FC = ({children}) => {
             ...(currentFlow.data.byID[id] || {}),
             ...data,
           }
+
+          const {localState} = yDoc.current.getMap('localState').toJSON()
           yDoc.current.getMap('localState').set('localState', update)
         }
         return
@@ -129,6 +132,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateMeta = useCallback(
     (id: string, meta: Partial<PipeMeta>) => {
+      console.log('updateMeta')
       if (isFlagEnabled('copresence') || true) {
         if (currentFlow?.meta?.byID[id]) {
           const update = {
@@ -172,8 +176,8 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateOther = useCallback(
     (flow: Partial<Flow>) => {
+      console.log('updateOther')
       if (isFlagEnabled('copresence') || true) {
-        console.log('updateOther')
         if (currentFlow) {
           for (const ni in flow) {
             currentFlow[ni] = flow[ni]

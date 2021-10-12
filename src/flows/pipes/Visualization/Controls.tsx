@@ -112,11 +112,11 @@ const Controls: FC = () => {
       period = millisecondsToDuration(range.windowPeriod)
     }
     // todo(ariel): figure out why this breaks everything
-    // if (period && period !== data.period) {
-    //   update({
-    //     period,
-    //   })
-    // }
+    if (period && period !== data.period) {
+      update({
+        period,
+      })
+    }
   }, [range, update, data.period])
 
   const dataExists = results.parsed && Object.entries(results.parsed).length

@@ -30,7 +30,7 @@ import {downloadTextFile} from 'src/shared/utils/download'
 import {MiniFileDnd} from 'src/buckets/components/createBucketForm/MiniFileDnd'
 
 import {CLOUD} from 'src/shared/constants'
-import classnames from "classnames";
+import classnames from 'classnames'
 
 let MeasurementSchemaList = null,
   MeasurementSchema = null
@@ -301,7 +301,9 @@ const EditingPanel: FC<PanelProps> = ({
     />
   ) : null
 
-  const schemaRowClasses = classnames('schema-row', {hasCancelBtn: updateInProgress})
+  const schemaRowClasses = classnames('schema-row', {
+    hasCancelBtn: updateInProgress,
+  })
 
   return (
     <Panel className="measurement-schema-panel-container">
@@ -367,7 +369,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     entry.columns = columns
     entry.hasUpdate = true
     entry.valid = true
-
 
     schemaUpdates[index] = entry
     onUpdateSchemas(schemaUpdates)

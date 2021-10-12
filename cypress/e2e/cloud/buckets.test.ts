@@ -315,7 +315,10 @@ describe('Explicit Buckets', () => {
         )
 
         // use the invalid file first to test the error handling
-        const invalidFileEvent = {dataTransfer: {files: [invalidTestFile]}, force: true}
+        const invalidFileEvent = {
+          dataTransfer: {files: [invalidTestFile]},
+          force: true,
+        }
         cy.getByTestID('dndContainer')
           .trigger('dragover', invalidFileEvent)
           .trigger('drop', invalidFileEvent)
@@ -324,14 +327,16 @@ describe('Explicit Buckets', () => {
         cy.getByTestID('form--element-error').should('exist')
 
         // cancel it
-        cy.getByTestID("dndContainer-cancel-update").click()
+        cy.getByTestID('dndContainer-cancel-update').click()
 
         // add the right one
-        const validFileEvent = {dataTransfer: {files: [validTestFile]}, force: true}
+        const validFileEvent = {
+          dataTransfer: {files: [validTestFile]},
+          force: true,
+        }
         cy.getByTestID('dndContainer')
           .trigger('dragover', validFileEvent)
           .trigger('drop', validFileEvent)
-
       })
     cy.getByTestID('bucket-form-submit').click()
 

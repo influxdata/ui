@@ -226,10 +226,10 @@ describe('Explicit Buckets', () => {
             expect(fileContent[1].name).to.be.equal('fsWrite')
             expect(fileContent[1].type).to.be.equal('field')
             expect(fileContent[1].dataType).to.be.equal('float')
+          })
       })
   })
 })
-
 describe('Buckets', () => {
   beforeEach(() => {
     setupData(cy)

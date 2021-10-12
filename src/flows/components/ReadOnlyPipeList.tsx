@@ -8,6 +8,7 @@ import React, {
   createElement,
 } from 'react'
 import {Button, ComponentColor} from '@influxdata/clockface'
+import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -17,6 +18,7 @@ import Pipe from 'src/flows/components/Pipe'
 
 // Components
 import EmptyPipeList from 'src/flows/components/EmptyPipeList'
+import PresentationPipe from 'src/flows/components/PresentationPipe'
 import ClientList from 'src/flows/components/ClientList'
 
 import {
@@ -26,6 +28,8 @@ import {
 import {FlowPipeProps} from 'src/flows/components/FlowPipe'
 import {PipeContextProps} from 'src/types/flows'
 import {PIPE_DEFINITIONS} from 'src/flows'
+import {LAYOUT_MARGIN, DASHBOARD_LAYOUT_ROW_HEIGHT} from 'src/shared/constants'
+const Grid = WidthProvider(ReactGridLayout)
 
 interface ButtonProps {
   id: string
@@ -113,22 +117,13 @@ const FlowPanel: FC<Props> = ({id, children, resizes}) => {
     .map(c => c[0])
     .join(' ')
 
-  if (
-    flow.readOnly &&
-    !/^(visualization|markdown)$/.test(flow.data.byID[id].type)
-  ) {
-    return null
-  }
-
   return (
     <div className={panelClassName} style={{marginBottom: '16px'}}>
       <div className="flow-panel--header">
         <div className="flow-panel--title">{flow.meta.byID[id].title}</div>
-        {!flow.readOnly && (
-          <div className="flow-panel--persistent-control">
-            <ExportButton id={id} />
-          </div>
-        )}
+        <div className="flow-panel--persistent-control">
+          <ExportButton id={id} />
+        </div>
       </div>
       {isVisible && (
         <div
@@ -176,6 +171,53 @@ const ReadOnlyPipeList: FC = () => {
     return <EmptyPipeList />
   }
 
+  if (flow.readOnly) {
+    const layout = flow.data.allIDs
+      .filter(
+        id =>
+          /^(visualization|markdown)$/.test(flow.data.byID[id]?.type) &&
+          flow.meta.byID[id].visible
+      )
+      .map(
+        id =>
+          ({
+            i: id,
+            ...(flow.meta.byID[id].layout || {
+              y: 0,
+              x: 0,
+              w: 12,
+              h: 3,
+            }),
+          } as Layout)
+      )
+
+    return (
+      <Grid
+        cols={12}
+        layout={layout}
+        rowHeight={DASHBOARD_LAYOUT_ROW_HEIGHT}
+        useCSSTransforms={false}
+        containerPadding={[0, 0]}
+        margin={[LAYOUT_MARGIN, LAYOUT_MARGIN]}
+      >
+        {flow.data.allIDs
+          .filter(
+            id =>
+              /^(visualization|markdown)$/.test(flow.data.byID[id]?.type) &&
+              flow.meta.byID[id].visible
+          )
+          .map(id => (
+            <div
+              key={id}
+              className="cell"
+              data-testid={`cell ${flow.meta.byID[id].title}`}
+            >
+              <PresentationPipe id={id} />
+            </div>
+          ))}
+      </Grid>
+    )
+  }
   const _pipes = flow.data.allIDs.map(id => {
     return <FlowPipe key={`pipe-${id}`} id={id} />
   })

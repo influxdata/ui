@@ -16,7 +16,7 @@ import {updateTelegraf} from 'src/telegrafs/actions/thunks'
 
 // Types
 import {AppState, ResourceType, Telegraf} from 'src/types'
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getDataLoaders} from 'src/dataLoaders/selectors'
@@ -27,7 +27,7 @@ import {getQuartzMe} from 'src/me/selectors'
 import {CLOUD} from 'src/shared/constants'
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = PluginCreateConfigurationStepProps & ReduxProps
+type Props = PluginConfigurationStepProps & ReduxProps
 
 const agentSettingPatternDefault = `[agent]
   ## Default data collection interval for all inputs
@@ -37,7 +37,7 @@ const agentSettingPatternFreeTier = `[agent]
   ## Default data collection interval for all inputs
   interval = "20s"`
 
-const PluginCreateConfigurationFooterComponent: FC<Props> = props => {
+const FooterComponent: FC<Props> = props => {
   const {
     accountType,
     currentStepIndex,
@@ -168,6 +168,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const PluginCreateConfigurationFooter = connector(
-  PluginCreateConfigurationFooterComponent
-)
+export const Footer = connector(FooterComponent)

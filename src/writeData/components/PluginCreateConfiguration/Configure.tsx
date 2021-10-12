@@ -15,7 +15,7 @@ import {
 
 // Types
 import {AppState, Bucket} from 'src/types'
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getAllBuckets} from 'src/resources/selectors'
@@ -29,9 +29,9 @@ import {
 } from 'src/buckets/constants'
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = PluginCreateConfigurationStepProps & ReduxProps
+type Props = PluginConfigurationStepProps & ReduxProps
 
-const PluginCreateConfigurationOptionsComponent: FC<Props> = props => {
+const ConfigureComponent: FC<Props> = props => {
   const {
     bucketID,
     buckets,
@@ -161,6 +161,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const PluginCreateConfigurationOptions = connector(
-  PluginCreateConfigurationOptionsComponent
-)
+export const Configure = connector(ConfigureComponent)

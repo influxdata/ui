@@ -34,7 +34,7 @@ describe('Flows', () => {
       ],
       'defbuck'
     )
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
 
@@ -63,7 +63,7 @@ describe('Flows', () => {
 
   it('can create a bucket from the metric selector and verify it is selected', () => {
     const newBucketName = 'IDontGiveABuck'
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
 
@@ -112,7 +112,7 @@ describe('Flows', () => {
       newBucketName
     )
 
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -177,7 +177,7 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -279,7 +279,7 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -344,7 +344,7 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -421,7 +421,7 @@ describe('Flows', () => {
 
       const flowName = 'Flowbooks'
 
-      cy.getByTestID('create-flow--button')
+      cy.getByTestID('preset-new')
         .first()
         .click()
       cy.getByTestID('time-machine-submit-button').should('be.visible')

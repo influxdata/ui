@@ -15,7 +15,7 @@ import {
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
 
 // Types
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 import {AppState, Bucket} from 'src/types'
 
 // Selectors
@@ -24,7 +24,7 @@ import {getAllBuckets} from 'src/resources/selectors'
 // Utils
 import {TelegrafPlugin} from 'src/types/dataLoaders'
 
-export interface OwnProps extends PluginCreateConfigurationStepProps {
+export interface OwnProps extends PluginConfigurationStepProps {
   buckets: Bucket[]
 }
 

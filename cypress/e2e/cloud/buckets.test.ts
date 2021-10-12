@@ -215,6 +215,17 @@ describe('Explicit Buckets', () => {
         cy.getByTestID('measurement-schema-name-0')
           .contains('first schema file')
           .should('exist')
+
+        cy.getByTestID('measurement-schema-download-button').click()
+        cy.readFile(`cypress/downloads/first_schema_file.json`)
+          .should('exist')
+          .then(fileContent => {
+            expect(fileContent[0].name).to.be.equal('time')
+            expect(fileContent[0].type).to.be.equal('timestamp')
+
+            expect(fileContent[1].name).to.be.equal('fsWrite')
+            expect(fileContent[1].type).to.be.equal('field')
+            expect(fileContent[1].dataType).to.be.equal('float')
       })
   })
 })

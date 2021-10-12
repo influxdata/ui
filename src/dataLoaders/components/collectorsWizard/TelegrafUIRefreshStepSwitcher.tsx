@@ -2,18 +2,19 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import SelectCollectorsStep2 from 'src/dataLoaders/components/collectorsWizard/select/SelectCollectorsStep2'
-import {PluginCreateConfigurationCustomize} from 'src/writeData/components/PluginCreateConfigurationCustomize'
+import TelegrafUIRefreshCollectors from 'src/dataLoaders/components/collectorsWizard/select/TelegrafUIRefreshCollectorsStep'
+import {CreateBucket} from 'src/writeData/components/PluginCreateConfiguration/CreateBucket'
+import {Customize} from 'src/writeData/components/PluginCreateConfiguration/Customize'
 
 import VerifyCollectorsStep from 'src/dataLoaders/components/collectorsWizard/verify/VerifyCollectorsStep'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Types
 import {CollectorsStep} from 'src/types/dataLoaders'
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 interface Props {
-  stepProps: PluginCreateConfigurationStepProps
+  stepProps: PluginConfigurationStepProps
 }
 
 @ErrorHandling
@@ -23,9 +24,12 @@ class StepSwitcher extends PureComponent<Props> {
 
     switch (stepProps.currentStepIndex) {
       case CollectorsStep.Select:
-        return <SelectCollectorsStep2 {...stepProps} />
+        if (stepProps.substepIndex === 1) {
+          return <CreateBucket {...stepProps} />
+        }
+        return <TelegrafUIRefreshCollectors {...stepProps} />
       case CollectorsStep.Configure:
-        return <PluginCreateConfigurationCustomize {...stepProps} />
+        return <Customize {...stepProps} />
       case CollectorsStep.Verify:
         return <VerifyCollectorsStep {...stepProps} />
       default:

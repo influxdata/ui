@@ -5,7 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import {Form, DapperScrollbars, Grid, Columns} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import StreamingSelectorTelegrafUiRefresh from 'src/dataLoaders/components/collectorsWizard/select/StreamingSelector2'
+import TelegrafUIRefreshSelector from 'src/dataLoaders/components/collectorsWizard/select/TelegrafUIRefreshSelector'
 
 // Actions
 import {
@@ -15,18 +15,16 @@ import {
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
 
 // Types
-import {Bucket} from 'src/types'
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
-import {AppState, ResourceType} from 'src/types'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
+import {AppState, Bucket} from 'src/types'
 
 // Selectors
-import {getAll} from 'src/resources/selectors'
+import {getAllBuckets} from 'src/resources/selectors'
 
 // Utils
-import {isSystemBucket} from 'src/buckets/constants'
 import {TelegrafPlugin} from 'src/types/dataLoaders'
 
-export interface OwnProps extends PluginCreateConfigurationStepProps {
+export interface OwnProps extends PluginConfigurationStepProps {
   buckets: Bucket[]
 }
 
@@ -70,13 +68,15 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
               </h5>
             </Grid.Column>
           </Grid.Row>
-          <StreamingSelectorTelegrafUiRefresh
-            pluginBundles={this.props.pluginBundles}
-            telegrafPlugins={this.props.telegrafPlugins}
-            onTogglePluginBundle={this.handleTogglePluginBundle}
-            buckets={this.props.buckets ?? []}
-            selectedBucketName={this.props.bucket}
+          <TelegrafUIRefreshSelector
+            buckets={this.props.buckets}
+            currentStepIndex={this.props.currentStepIndex}
             onSelectBucket={this.handleSelectBucket}
+            onTogglePluginBundle={this.handleTogglePluginBundle}
+            pluginBundles={this.props.pluginBundles}
+            selectedBucketID={this.props.bucketID}
+            setSubstepIndex={this.props.onSetSubstepIndex}
+            telegrafPlugins={this.props.telegrafPlugins}
           />
         </DapperScrollbars>
       </Form>
@@ -86,7 +86,7 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
   private handleSelectBucket = (bucket: Bucket) => {
     const {orgID, id, name} = bucket
     this.setState({selectedBucketName: name})
-    this.props.onSetBucketInfo(orgID, name, id)
+    this.props.setBucketInfo(orgID, name, id)
   }
 
   private handleTogglePluginBundle = (plugin: TelegrafPlugin) => {
@@ -94,30 +94,27 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
   }
 }
 
-const mstp = ({
-  dataLoading: {
-    dataLoaders: {telegrafPlugins, pluginBundles},
-    steps: {bucket},
-  },
-  ...state
-}: AppState) => {
-  const buckets = getAll<Bucket>(state as AppState, ResourceType.Buckets)
-  const nonSystemBuckets = buckets.filter(
-    bucket => !isSystemBucket(bucket.name)
-  )
+const mstp = (state: AppState) => {
+  const {
+    dataLoading: {
+      dataLoaders: {telegrafPlugins, pluginBundles},
+      steps: {bucketID},
+    },
+  } = state
+  const buckets = getAllBuckets(state)
 
   return {
-    telegrafPlugins,
-    bucket,
+    bucketID,
+    buckets,
     pluginBundles,
-    buckets: nonSystemBuckets,
+    telegrafPlugins,
   }
 }
 
 const mdtp = {
   onAddPluginBundle: addTelegrafPlugin_telegrafUiRefresh,
   onRemovePluginBundle: removePluginBundleWithPlugins,
-  onSetBucketInfo: setBucketInfo,
+  setBucketInfo,
 }
 
 const connector = connect(mstp, mdtp)

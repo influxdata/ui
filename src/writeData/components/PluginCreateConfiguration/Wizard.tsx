@@ -1,20 +1,24 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import Loadable from 'react-loadable'
 import {connect, ConnectedProps} from 'react-redux'
+import {useParams} from 'react-router'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
-import {PluginCreateConfigurationFooter} from 'src/writeData/components/PluginCreateConfigurationFooter'
+import PageSpinner from 'src/perf/components/PageSpinner'
+import {Footer} from 'src/writeData/components/PluginCreateConfiguration/Footer'
 
 // Types
 import {AppState} from 'src/types'
+
 // Actions
 import {notify as notifyAction} from 'src/shared/actions/notifications'
 import {
   clearSteps,
   decrementCurrentStepIndex,
   incrementCurrentStepIndex,
+  setBucketInfo,
   setCurrentStepIndex,
   setSubstepIndex,
 } from 'src/dataLoaders/actions/steps'
@@ -22,46 +26,70 @@ import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
 // Constants
 import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
-
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
-const spinner = <div />
 
-const PluginCreateConfigurationStepSwitcher = Loadable({
+const StepSwitcher = Loadable({
   loader: () =>
-    import('src/writeData/components/PluginCreateConfigurationStepSwitcher'),
+    import('src/writeData/components/PluginCreateConfiguration/StepSwitcher'),
   loading() {
-    return spinner
+    return <PageSpinner />
   },
 })
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
+interface WizardProps {
+  history: {
+    goBack: () => void
+  }
+}
 
-export const PluginConfigSwitcher: FC<Props> = props => {
+type ParamsType = {
+  [param: string]: string
+}
+
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = ReduxProps & WizardProps
+
+const Wizard: FC<Props> = props => {
   const {
     currentStepIndex,
+    history,
     notify,
+    clearDataLoaders,
     onClearSteps,
-    onClearDataLoaders,
     onDecrementCurrentStepIndex,
     onIncrementCurrentStepIndex,
+    onSetCurrentStepIndex,
     onSetSubstepIndex,
+    setBucketInfo,
     substepIndex,
-    telegrafPlugins,
   } = props
 
-  const handleDismiss = () => {
-    onClearDataLoaders()
-    onClearSteps()
-  }
+  const {contentID} = useParams<ParamsType>()
+
+  useEffect(() => {
+    clearDataLoaders()
+    onSetCurrentStepIndex(0)
+    onSetSubstepIndex(0, 0)
+    setBucketInfo('', '', '')
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [pluginConfig, setPluginConfig] = useState<string>('')
   const [isValidConfiguration, setIsValidConfiguration] = useState<boolean>(
     false
   )
+  const [isVisible, setIsVisible] = useState<boolean>(true)
 
-  const pluginConfigName = telegrafPlugins[0].name
+  const handleDismiss = () => {
+    clearDataLoaders()
+    onClearSteps()
+    if (substepIndex === 1) {
+      onSetSubstepIndex(0, 0)
+    } else {
+      setIsVisible(false)
+      history.goBack()
+    }
+  }
 
   const stepProps = {
     currentStepIndex,
@@ -72,10 +100,10 @@ export const PluginConfigSwitcher: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetSubstepIndex,
     pluginConfig,
-    pluginConfigName,
     setIsValidConfiguration,
     setPluginConfig,
     substepIndex,
+    pluginConfigName: contentID,
   }
 
   let title = 'Configuration Options'
@@ -101,13 +129,13 @@ export const PluginConfigSwitcher: FC<Props> = props => {
   }
 
   return (
-    <Overlay visible={true}>
+    <Overlay visible={isVisible}>
       <Overlay.Container maxWidth={maxWidth}>
         <Overlay.Header title={title} onDismiss={handleDismiss} />
         <Overlay.Body className={overlayBodyClassName}>
-          <PluginCreateConfigurationStepSwitcher stepProps={stepProps} />
+          <StepSwitcher stepProps={stepProps} />
         </Overlay.Body>
-        <PluginCreateConfigurationFooter {...stepProps} />
+        <Footer {...stepProps} />
       </Overlay.Container>
     </Overlay>
   )
@@ -116,13 +144,11 @@ export const PluginConfigSwitcher: FC<Props> = props => {
 const mstp = (state: AppState) => {
   const {
     dataLoading: {
-      dataLoaders: {telegrafPlugins},
       steps: {currentStep, substep = 0},
     },
   } = state
 
   return {
-    telegrafPlugins,
     currentStepIndex: currentStep,
     substepIndex: typeof substep === 'number' ? substep : 0,
   }
@@ -130,14 +156,15 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   notify: notifyAction,
+  clearDataLoaders,
   onClearSteps: clearSteps,
-  onClearDataLoaders: clearDataLoaders,
   onDecrementCurrentStepIndex: decrementCurrentStepIndex,
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
   onSetCurrentStepIndex: setCurrentStepIndex,
   onSetSubstepIndex: setSubstepIndex,
+  setBucketInfo,
 }
 
 const connector = connect(mstp, mdtp)
 
-export default connector(PluginConfigSwitcher)
+export default connector(Wizard)

@@ -20,12 +20,15 @@ export default register =>
               ...JSON.parse(
                 JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
               ),
+              buckets: [name],
             },
             {
-              title: 'Validate the Data',
-              visible: true,
               type: 'visualization',
-              properties: {type: 'simple-table', showAll: false},
+              properties: {
+                type: 'simple-table',
+                showAll: false,
+                title: 'Validate the Data',
+              },
             },
             {
               title: 'Visualize the Result',

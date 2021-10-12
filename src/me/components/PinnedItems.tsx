@@ -11,7 +11,7 @@ import {ComponentColor, IconFont, Panel} from '@influxdata/clockface'
 
 import './PinnedItems.scss'
 
-import {ResourceCard, ResourceList} from '@influxdata/clockface'
+import {ResourceCard} from '@influxdata/clockface'
 
 import {useHistory} from 'react-router-dom'
 import {CLOUD} from 'src/shared/constants'
@@ -52,7 +52,7 @@ const PinnedItems: FC = () => {
   const handleDeletePinnedItem = async (itemId: string) => {
     await deletePinnedItemsHelper(itemId)
   }
-  const emptyState = (
+  const EmptyState = () => (
     <h3 data-testid="pinneditems--emptystate">
       Pin a task, dashboard, or notebook here
     </h3>
@@ -62,14 +62,10 @@ const PinnedItems: FC = () => {
       <Panel.Header>
         <h2 className="pinned-items--header">Pinned Items</h2>
       </Panel.Header>
-      <Panel.Body>
-        <ResourceList.Body
-          emptyState={emptyState}
-          className="pinned-items--container"
-          testID="pinneditems--container"
-        >
-          {!pinnedItemsError.length ? (
-            pinnedItems?.map(item => (
+      <Panel.Body className="pinned-items--container">
+        {!pinnedItemsError.length ? (
+          pinnedItems?.length ? (
+            pinnedItems.map(item => (
               <ResourceCard
                 key={item.id}
                 testID="pinneditems--card"
@@ -105,9 +101,11 @@ const PinnedItems: FC = () => {
               </ResourceCard>
             ))
           ) : (
-            <h3>{pinnedItemsError}</h3>
-          )}
-        </ResourceList.Body>
+            <EmptyState />
+          )
+        ) : (
+          <h3>{pinnedItemsError}</h3>
+        )}
       </Panel.Body>
     </Panel>
   ) : null

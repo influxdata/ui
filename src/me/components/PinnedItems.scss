@@ -7,7 +7,7 @@ $dashboard-grid-gap: $cf-marg-a;
 
 .pinned-items--container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0px, 1fr));
   border-radius: 18px;
   width: 100%;
   height: auto;
@@ -21,10 +21,14 @@ $dashboard-grid-gap: $cf-marg-a;
 
 .pinned-items--card {
   background: rgb(49, 49, 61);
+  .cf-resource-name--text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 @media screen and (max-width: $cf-grid--breakpoint-md) {
   .pinned-items--container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: minmax(0px, 1fr);
   }
 }

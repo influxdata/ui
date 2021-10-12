@@ -220,7 +220,7 @@ export const MiniFileDnd: FC<Props> = ({
   const cancelButton = isDirty && onCancel ? cancelComponent : null
 
   return (
-    <div className='dnd-container'>
+    <div className="dnd-container">
       <div
         id="drop_zone"
         className={dropZoneClasses}

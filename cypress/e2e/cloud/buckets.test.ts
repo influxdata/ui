@@ -277,6 +277,7 @@ describe('Explicit Buckets', () => {
       .should('exist')
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
+          .should('exist')
           .contains('first schema file')
           .should('exist')
 
@@ -357,6 +358,7 @@ describe('Explicit Buckets', () => {
       .should('exist')
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
+          .should('exist')
           .contains('first schema file')
           .should('exist')
 

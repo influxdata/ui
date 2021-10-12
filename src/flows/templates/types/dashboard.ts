@@ -46,7 +46,7 @@ export default register =>
                 readOnly: true,
                 range: DEFAULT_TIME_RANGE,
                 refresh: AUTOREFRESH_DEFAULT,
-                pipes: pipes.reduce((acc, curr) => {
+                pipes: pipes.reduce((acc: any[], curr: any[]) => {
                   return acc.concat(curr)
                 }, []),
               },

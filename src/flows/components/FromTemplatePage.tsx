@@ -60,7 +60,6 @@ const Template: FC = () => {
           add(data).then(id => {
             history.replace(`/orgs/${org.id}/notebooks/${id}`)
           })
-          return
         }
       })
       .catch(() => {

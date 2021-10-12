@@ -314,6 +314,9 @@ describe('Explicit Buckets', () => {
           {type}
         )
 
+        // cancel button should not be showing yet
+        cy.getByTestID('dndContainer-cancel-update').should('not.exist')
+
         // use the invalid file first to test the error handling
         const invalidFileEvent = {
           dataTransfer: {files: [invalidTestFile]},
@@ -328,6 +331,9 @@ describe('Explicit Buckets', () => {
 
         // cancel it
         cy.getByTestID('dndContainer-cancel-update').click()
+
+        // error should be gone
+        cy.getByTestID('form--element-error').should('not.exist')
 
         // add the right one
         const validFileEvent = {

@@ -63,49 +63,46 @@ const PinnedItems: FC = () => {
         <h2 className="pinned-items--header">Pinned Items</h2>
       </Panel.Header>
       <Panel.Body className="pinned-items--container">
-        {!pinnedItemsError.length ? (
-          pinnedItems?.length ? (
-            pinnedItems.map(item => (
-              <ResourceCard
-                key={item.id}
-                testID="pinneditems--card"
-                className="pinned-items--card"
-                contextMenu={
-                  <Context>
-                    <Context.Menu
-                      icon={IconFont.Trash}
-                      color={ComponentColor.Danger}
-                      testID="pinneditems-delete--menu"
-                    >
-                      <Context.Item
-                        label="Unpin"
-                        action={() => handleDeletePinnedItem(item.id)}
-                        testID="pinneditems-delete--confirm"
-                      />
-                    </Context.Menu>
-                  </Context>
-                }
-              >
-                <ResourceCard.Name
-                  testID="pinneditems--type"
-                  name={capitalize(item.type)}
-                />
-                <ResourceCard.Name
-                  name={item.metadata.name ?? ''}
-                  onClick={() => followMetadataToRoute(item)}
-                  testID="pinneditems--link"
-                />
-                <ResourceCard.Description
-                  description={item.metadata.description ?? ''}
-                />
-              </ResourceCard>
-            ))
-          ) : (
-            <EmptyState />
-          )
+        {pinnedItems?.length ? (
+          pinnedItems.map(item => (
+            <ResourceCard
+              key={item.id}
+              testID="pinneditems--card"
+              className="pinned-items--card"
+              contextMenu={
+                <Context>
+                  <Context.Menu
+                    icon={IconFont.Trash}
+                    color={ComponentColor.Danger}
+                    testID="pinneditems-delete--menu"
+                  >
+                    <Context.Item
+                      label="Unpin"
+                      action={() => handleDeletePinnedItem(item.id)}
+                      testID="pinneditems-delete--confirm"
+                    />
+                  </Context.Menu>
+                </Context>
+              }
+            >
+              <ResourceCard.Name
+                testID="pinneditems--type"
+                name={capitalize(item.type)}
+              />
+              <ResourceCard.Name
+                name={item.metadata.name ?? ''}
+                onClick={() => followMetadataToRoute(item)}
+                testID="pinneditems--link"
+              />
+              <ResourceCard.Description
+                description={item.metadata.description ?? ''}
+              />
+            </ResourceCard>
+          ))
         ) : (
-          <h3>{pinnedItemsError}</h3>
+          <EmptyState />
         )}
+        {pinnedItemsError.length ? <h3>{pinnedItemsError}</h3> : null}
       </Panel.Body>
     </Panel>
   ) : null

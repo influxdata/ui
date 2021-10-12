@@ -59,7 +59,7 @@ module.exports = {
     'no-empty': 'off',
     'no-extra-boolean-cast': 'off',
     'no-fallthrough': 'off',
-    'no-nested-ternary': 'off',
+    'no-nested-ternary': 'error',
     'no-prototype-builtins': 'off',
     'no-undef': 'off',
     'no-useless-escape': 'off',

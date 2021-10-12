@@ -13,6 +13,24 @@ export default register =>
               return fetch(c.links.view)
                 .then(res => res.json())
                 .then(res => {
+                  if (res.properties.type === 'markdown') {
+                    return [
+                      {
+                        title: 'Note',
+                        visible: true,
+                        type: 'markdown',
+                        text: res.properties.note,
+                        mode: 'preview',
+                        layout: {
+                          x: c.x,
+                          y: c.y,
+                          w: c.w,
+                          h: c.h,
+                        },
+                      },
+                    ]
+                  }
+
                   const queries = res.properties.queries
                   delete res.properties.queries
 

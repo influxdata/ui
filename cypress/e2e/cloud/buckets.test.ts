@@ -235,7 +235,7 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()
     cy.getByTestID('explicit-bucket-schema-choice-ID').click()
-    
+
     cy.getByTestID('bucket-form-submit').click()
 
     cy.getByTestID(`bucket-card explicit_bucket`)

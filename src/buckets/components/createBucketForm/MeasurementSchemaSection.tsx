@@ -337,7 +337,7 @@ const EditingPanel: FC<PanelProps> = ({
             allowedTypes={allowedTypes}
             handleFileUpload={handleFileUpload}
             setErrorState={setErrorState}
-            defaultText={'Update schema file'}
+            defaultText="Update schema file"
             preFileUpload={setUserWantsUpdate}
             onCancel={cancelUpdate}
           />
@@ -365,7 +365,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
   const onAddUpdate = (columns, index) => {
-    let entry = schemaUpdates[index] || {}
+    const entry = schemaUpdates[index] || {}
     entry.columns = columns
     entry.hasUpdate = true
     entry.valid = true
@@ -376,7 +376,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   }
 
   const toggleUpdate = (doingUpdate, index) => {
-    let entry = schemaUpdates[index] || {}
+    const entry = schemaUpdates[index] || {}
 
     if (doingUpdate) {
       entry.hasUpdate = true

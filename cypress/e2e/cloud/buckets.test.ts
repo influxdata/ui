@@ -230,7 +230,7 @@ describe('Explicit Buckets', () => {
       })
   })
 
-  it.only('should be able to create an explicit bucket and update the existing schema file during editing', function() {
+  it('should be able to create an explicit bucket and update the existing schema file during editing', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()

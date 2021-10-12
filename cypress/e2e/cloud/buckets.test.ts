@@ -269,7 +269,7 @@ describe('Explicit Buckets', () => {
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click()
+        cy.getByTestID('bucket-settings').click({force: true})
       })
     cy.getByTestID('accordion-header').click()
 
@@ -343,7 +343,7 @@ describe('Explicit Buckets', () => {
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click()
+        cy.getByTestID('bucket-settings').click({force: true})
       })
     cy.getByTestID('accordion-header').click()
 

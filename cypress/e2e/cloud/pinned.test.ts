@@ -241,7 +241,7 @@ from(bucket: "${name}"{rightarrow}
           ],
           'defbuck'
         )
-        cy.getByTestID('create-flow--button')
+        cy.getByTestID('preset-new')
           .first()
           .click()
 

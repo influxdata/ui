@@ -1,6 +1,6 @@
 import React, {FC} from 'react'
 import 'src/flows/components/PresetFlows.scss'
-import {PresetMap} from 'src/flows/components/PresetFlows'
+import {PRESET_MAP} from 'src/flows/components/PresetFlows'
 import {
   Button,
   ComponentColor,
@@ -22,21 +22,23 @@ const PresetFlowsButtons: FC = () => {
           widthMD={Columns.Ten}
         >
           <div className="flows-index--presetList buttonModeList">
-            {Object.keys(PresetMap).map((p: string, idx: number) => (
-              <div key={p} className="flows-index--presetButtons">
+            {PRESET_MAP.map((p, idx: number) => (
+              <div key={p.title} className="flows-index--presetButtons">
                 {idx === 0 ? (
                   <Button
                     color={ComponentColor.Primary}
                     icon={IconFont.Plus}
-                    text={p}
-                    onClick={() => history.push(PresetMap[p])}
+                    text={p.title}
+                    testID={`preset-${p.testID}`}
+                    onClick={() => history.push(p.href)}
                     className="flows-preset--buttonmode"
                   ></Button>
                 ) : (
                   <Button
-                    text={p}
+                    text={p.title}
                     color={ComponentColor.Tertiary}
-                    onClick={() => history.push(PresetMap[p])}
+                    onClick={() => history.push(p.href)}
+                    testID={`preset-${p.testID}`}
                     className="flows-preset--buttonmode"
                   ></Button>
                 )}

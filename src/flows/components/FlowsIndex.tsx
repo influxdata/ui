@@ -4,7 +4,6 @@ import {DapperScrollbars, Sort} from '@influxdata/clockface'
 
 // Components
 import {Page, PageHeader} from '@influxdata/clockface'
-import FlowCreateButton from 'src/flows/components/FlowCreateButton'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import FlowCards from 'src/flows/components/FlowCards'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
@@ -18,7 +17,6 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 // Types
 import {Flow} from 'src/types/flows'
 import {ResourceType} from 'src/types'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import 'src/flows/components/controlSearchBar.scss'
 import PresetFlowsButtons from './PresetFlowsButtons'
@@ -65,7 +63,7 @@ const FlowsIndex = () => {
 
   function scrollHandler() {
     const elem = fadingBoxRef.current
-    if (elem && isFlagEnabled('presetFlows')) {
+    if (elem) {
       fadeOutOnScroll(elem)
     }
   }
@@ -117,7 +115,7 @@ const FlowsIndex = () => {
         className={`${showButtonMode && 'withButtonHeader'}`}
       >
         <Page.Title title={PROJECT_NAME_PLURAL} />
-        {showButtonMode && isFlagEnabled('presetFlows') && (
+        {showButtonMode && (
           <>
             <PresetFlowsButtons />
             <Page.ControlBar
@@ -138,16 +136,13 @@ const FlowsIndex = () => {
                   onSelect={setSort}
                 />
               </Page.ControlBarLeft>
-              <Page.ControlBarRight>
-                {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
-              </Page.ControlBarRight>
             </Page.ControlBar>
           </>
         )}
       </PageHeader>
       <DapperScrollbars onScroll={scrollHandler} className="flows-index--main">
         <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
-          {isFlagEnabled('presetFlows') && <PresetFlows />}
+          <PresetFlows />
           <Page.ControlBar
             className="flows-index--control-bar"
             fullWidth={false}
@@ -166,9 +161,6 @@ const FlowsIndex = () => {
                 onSelect={setSort}
               />
             </Page.ControlBarLeft>
-            <Page.ControlBarRight>
-              {!isFlagEnabled('presetFlows') && <FlowCreateButton />}
-            </Page.ControlBarRight>
           </Page.ControlBar>
         </Page.Contents>
 

@@ -19,7 +19,6 @@
 @import 'src/shared/components/code_mirror/CodeMirrorTheme.scss';
 @import 'src/dashboards/components/dashboard_empty/DashboardEmpty.scss';
 @import 'src/shared/components/views/Markdown.scss';
-@import 'src/shared/components/custom_singular_time/CustomSingularTime.scss';
 @import 'src/onboarding/OnboardingWizard.scss';
 @import 'src/shared/components/protoboard_icon/ProtoboardIcon.scss';
 @import 'src/shared/components/ImportOverlay.scss';
@@ -145,6 +144,7 @@
 @import 'src/writeData/components/fileUploads/FileUploads.scss';
 @import 'src/secrets/components/secrets.scss';
 @import 'src/buckets/components/createBucketForm/MeasurementSchema.scss';
+@import 'src/writeData/components/AddPluginToConfiguration.scss';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

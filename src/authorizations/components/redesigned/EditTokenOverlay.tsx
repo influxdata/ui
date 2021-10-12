@@ -16,6 +16,7 @@ import {
   JustifyContent,
   Button,
   ComponentColor,
+  ComponentStatus,
   Page,
 } from '@influxdata/clockface'
 import {EditResourceAccordion} from 'src/authorizations/components/redesigned/EditResourceAccordion'
@@ -28,7 +29,6 @@ import {updateAuthorization} from 'src/authorizations/actions/thunks'
 
 // Utills
 import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
-
 interface OwnProps {
   auth: Authorization
   onDismissOverlay: () => void
@@ -45,17 +45,29 @@ const labels = {
 
 const EditTokenOverlay: FC<Props> = props => {
   const [description, setDescription] = useState(props.auth.description)
-  const handleInputChange = event => setDescription(event.target.value)
+  const [status, setStatus] = useState(ComponentStatus.Disabled)
+  const [togglestatus, setToggleStatus] = useState(
+    props.auth.status === 'active'
+  )
+  const [label, setlabel] = useState(props.auth.status)
+
+  const handleInputChange = event => {
+    setDescription(event.target.value)
+    setStatus(ComponentStatus.Default)
+  }
 
   const handleDismiss = () => props.onDismissOverlay()
 
   const changeToggle = () => {
-    const {onUpdate, auth} = props
+    setStatus(ComponentStatus.Default)
 
-    onUpdate({
-      ...auth,
-      status: auth.status === 'active' ? 'inactive' : 'active',
-    })
+    if (togglestatus) {
+      setToggleStatus(false)
+      setlabel('inactive')
+    } else {
+      setToggleStatus(true)
+      setlabel('active')
+    }
   }
 
   const onSave = () => {
@@ -64,6 +76,7 @@ const EditTokenOverlay: FC<Props> = props => {
     onUpdate({
       ...auth,
       description: description,
+      status: togglestatus ? 'active' : 'inactive',
     })
     handleDismiss()
   }
@@ -80,13 +93,11 @@ const EditTokenOverlay: FC<Props> = props => {
         >
           <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
             <SlideToggle
-              active={props.auth.status === 'active'}
+              active={togglestatus}
               size={ComponentSize.ExtraSmall}
               onChange={changeToggle}
             />
-            <InputLabel active={props.auth.status === 'active'}>
-              {labels[props.auth.status]}
-            </InputLabel>
+            <InputLabel active={togglestatus}>{labels[label]}</InputLabel>
           </FlexBox>
           <Form>
             <FlexBox
@@ -151,6 +162,7 @@ const EditTokenOverlay: FC<Props> = props => {
                   text="Save"
                   onClick={onSave}
                   testID="token-save-btn"
+                  status={status}
                 />
               </FlexBox>
             </Page.ControlBarCenter>

@@ -3,7 +3,6 @@ import React, {FC, useContext, useEffect, useMemo} from 'react'
 
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
-import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
 import Controls from 'src/flows/pipes/Visualization/Controls'
 import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
@@ -106,18 +105,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             title: 'Download as CSV',
             disable: !dataExists,
             action: download,
-          },
-          {
-            title: 'Export to Dashboard',
-            action: () => {
-              event('Export to Dashboard Clicked')
-
-              launch(<ExportDashboardOverlay />, {
-                properties: data.properties,
-                range: range,
-                panel: id,
-              })
-            },
           },
           {
             title: 'Download As Image',

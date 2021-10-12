@@ -51,7 +51,7 @@ const SUPPORTED_FAMILIES = [
 ]
 
 const AddButtons: FC<Props> = ({index, onInsert}) => {
-  const {add} = useContext(FlowContext)
+  const {flow, add} = useContext(FlowContext)
 
   const pipeFamilies = Object.entries(
     Object.values(PIPE_DEFINITIONS)
@@ -100,7 +100,17 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
 
             onInsert && onInsert()
 
-            event('insert_notebook_cell', {notebooksCellType: def.type})
+            let evtPos = 'between'
+
+            if (index === -1) {
+              evtPos = 'first'
+            } else if (index === flow.data.allIDs.length - 1) {
+              evtPos = 'last'
+            }
+            event('insert_notebook_cell', {
+              notebooksCellType: def.type,
+              position: evtPos,
+            })
             add(
               {
                 ...data,

@@ -13,10 +13,6 @@ describe('Dashboards', () => {
           cy.get<Organization>('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/dashboards-list`)
             cy.getByTestID('tree-nav')
-            cy.exec('rm cypress/downloads/*', {
-              log: true,
-              failOnNonZeroExit: false,
-            })
           })
         })
       )
@@ -548,6 +544,13 @@ describe('Dashboards', () => {
       })
     })
   })
+
+  before(() =>
+    cy.exec('rm cypress/downloads/*', {
+      log: true,
+      failOnNonZeroExit: false,
+    })
+  )
 
   it('creates a dashboard and downloads JSON', () => {
     cy.get('@org').then(({id: orgID}: Organization) => {

@@ -87,7 +87,7 @@ export const addAnnotation = (cy: Cypress.Chainable, message?: string) => {
       cy.getByTestID('edit-annotation-message')
         .click()
         .focused()
-        .type(message')
+        .type(message)
       cy.getByTestID('annotation-submit-button').click()
     })
 }

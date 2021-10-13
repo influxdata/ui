@@ -448,6 +448,8 @@ export const MeasurementSchemaSection: FC<Props> = ({
     ))
   }
 
+  // need debouncing to prevent re-renders every time the user
+  // types one character in the name field.  this way, it gets the name when the user is done typing
   const debouncedOnAddSchemas = debounce(
     () => onAddSchemas(newSchemas, false),
     300

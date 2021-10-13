@@ -282,7 +282,7 @@ describe('Checks', () => {
     )
   })
 
-  it.only('deadman checks should render a table for non-numeric fields', () => {
+  it('deadman checks should render a table for non-numeric fields', () => {
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
         cy.intercept('POST', '/api/v2/query?*').as('query')
@@ -311,7 +311,7 @@ describe('Checks', () => {
           .its('response.statusCode')
           .should('eq', 200)
         // check for table
-        cy.getByTestID('raw-data-table').should('exist')
+        cy.getByTestID('simple-table').should('exist')
         cy.getByTestID('raw-data--toggle').should('not.exist')
 
         // change field to numeric value

@@ -2,11 +2,14 @@
 import React, {FC, memo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import classnames from 'classnames'
+import {fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // Components
 import {View} from 'src/visualization'
 import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 
 // Utils
 import {
@@ -27,6 +30,7 @@ import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
+import SimpleTable from 'src/visualization/types/SimpleTable/view'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -37,6 +41,7 @@ const TimeMachineVis: FC<Props> = ({
   timeRange,
   isInitialFetch,
   isViewingRawData,
+  files,
   viewProperties,
   giraffeResult,
   xColumn,
@@ -62,18 +67,51 @@ const TimeMachineVis: FC<Props> = ({
     symbolColumns,
   } as ViewProperties | SimpleTableViewProperties
 
+  const simpleTableProperties = {
+    type: 'simple-table',
+    showAll: true,
+  } as SimpleTableViewProperties
+
   if (isViewingRawData) {
     resolvedViewProperties = {
       type: 'simple-table',
       showAll: true,
     }
   }
-
   const noQueries =
     loading === RemoteDataState.NotStarted || !viewProperties.queries.length
   const timeMachineViewClassName = classnames('time-machine--view', {
     'time-machine--view__empty': noQueries,
   })
+
+  const viewRawData =
+    isViewingRawData ||
+    (type === 'check' &&
+      giraffeResult.table.getColumnType('_value') !== 'number' &&
+      !!giraffeResult.table.length)
+
+  // Handles deadman check edge case to allow non-numeric values
+  if (viewRawData && files && files?.length) {
+    const [parsedResults] = files.flatMap(fromFlux)
+    return (
+      <div className={timeMachineViewClassName}>
+        <ErrorBoundary>
+          <EmptyQueryView
+            loading={loading}
+            errorMessage={errorMessage}
+            errorFormat={ErrorFormat.Scroll}
+            hasResults={!!parsedResults?.table?.length}
+            isInitialFetch={isInitialFetch}
+          >
+            <SimpleTable
+              result={parsedResults}
+              properties={simpleTableProperties}
+            />
+          </EmptyQueryView>
+        </ErrorBoundary>
+      </div>
+    )
+  }
 
   return (
     <div className={timeMachineViewClassName}>

@@ -41,6 +41,27 @@ if (CLOUD) {
     .MeasurementSchemaList
 }
 
+/**
+ * Errors:
+ *
+ * don't show any 'empty' errors first (empty fields); want to give the user a chance to enter data
+ * if the fields are empty and the user presses submit, and there is missing data, then the form will not be valid, the submit
+ * will not go through, and showSchemaValidation will be set to true
+ *
+ * for adding panel:
+ * if schemaValidation is on:  will show lack of name or file if one of them is entered
+ *      if neither is entered, then no-op, as if that panel isn't there
+ *
+ *      the name is validated too (must not start with a _ or a number)
+ *
+ *  for both editing & adding panel:
+ *           Mini File Dnd Component:
+ *                  catches errors in handleFileUpload
+ *                             it turns component to error state, and styles are applied
+ *                             passes error state and message up to parent (the panel)
+ *                                for display
+ * */
+
 interface Props {
   measurementSchemaList?: typeof MeasurementSchemaList
   onUpdateSchemas?: (schemas: any) => void

@@ -11,8 +11,9 @@ import {
 } from '@influxdata/clockface'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {EndpointProps} from 'src/types'
 
-const View: FC = () => {
+const View: FC<EndpointProps> = () => {
   const {data, update} = useContext(PipeContext)
 
   const updater = (field, value) => {

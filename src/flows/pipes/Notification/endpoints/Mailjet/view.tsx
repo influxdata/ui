@@ -1,21 +1,19 @@
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 import {
   Form,
   Input,
   InputType,
   ComponentSize,
-  ComponentStatus,
   ComponentColor,
   IconFont,
+  Icon,
   Dropdown,
 } from '@influxdata/clockface'
-import {getAllSecrets} from 'src/resources/selectors'
 import {PipeContext} from 'src/flows/context/pipe'
+import {EndpointProps} from 'src/types'
 
-const View: FC = () => {
+const View: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
-  const secrets = useSelector(getAllSecrets)
 
   const updateAPIKey = val => {
     update({
@@ -44,6 +42,15 @@ const View: FC = () => {
     })
   }
 
+  const updateFromEmail = evt => {
+    update({
+      endpointData: {
+        ...data.endpointData,
+        fromEmail: evt.target.value,
+      },
+    })
+  }
+
   return (
     <div className="slack-endpoint-details--flex">
       <Form.Element label="API Key" required={true}>
@@ -60,11 +67,21 @@ const View: FC = () => {
             >
               {data.endpointData.apiKey !== ''
                 ? data.endpointData.apiKey
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateAPIKey)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}
@@ -94,11 +111,21 @@ const View: FC = () => {
             >
               {data.endpointData.apiSecret !== ''
                 ? data.endpointData.apiSecret
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateAPISecret)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}
@@ -131,6 +158,7 @@ const View: FC = () => {
           type={InputType.Text}
           value={data.endpointData.fromEmail}
           size={ComponentSize.Medium}
+          onChange={updateFromEmail}
         />
       </Form.Element>
     </div>

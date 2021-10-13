@@ -1,5 +1,4 @@
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 import {
   Form,
   Input,
@@ -8,14 +7,13 @@ import {
   ComponentColor,
   IconFont,
   Dropdown,
+  Icon,
 } from '@influxdata/clockface'
-import {getAllSecrets} from 'src/resources/selectors'
-
+import {EndpointProps} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
 
-const View: FC = () => {
+const View: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
-  const secrets = useSelector(getAllSecrets)
 
   const updateURL = evt => {
     update({
@@ -89,20 +87,30 @@ const View: FC = () => {
             >
               {data.endpointData.token !== ''
                 ? data.endpointData.token
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateToken)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
-                  testID={`dropdown-item--${s.key}`}
+                  testID={`dropdown-item--${s.id}`}
                   id={s.id}
-                  key={s.key}
-                  value={s.key}
+                  key={s.id}
+                  value={s.id}
                   onClick={updateToken}
                 >
-                  {s.key}
+                  {s.id}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>

@@ -11,8 +11,9 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {getOrg} from 'src/organizations/selectors'
+import {EndpointProps} from 'src/types'
 
-const View: FC = () => {
+const View: FC<EndpointProps> = () => {
   const {data, update} = useContext(PipeContext)
   const org = useSelector(getOrg)
 

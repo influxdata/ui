@@ -162,6 +162,7 @@ describe('flows alert panel', () => {
     const fakeEmail = 'super@fake.com'
     const fakeUrl = 'super-fake.com'
     const fakeSecretFlux = 'secrets.get(key: "mySecret")'
+    const fakeChannel = 'fake-channel'
 
     // === AWS SES ===
 
@@ -307,7 +308,6 @@ describe('flows alert panel', () => {
     cy.get('.cf-overlay--dismiss').click()
 
     // === SLACK ===
-    const fakeChannel = 'fake-channel'
     const slackColor = '#34BB55'
 
     // complete fields
@@ -336,8 +336,14 @@ describe('flows alert panel', () => {
     // complete fields
     cy.getByTestID('dropdown-item--telegram').click()
     cy.getByTestID('input--channel').type(fakeChannel)
+
+    // test create secret sidebar
     cy.getByTestID('dropdown--token').click()
-    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown-item--create-secret').click()
+    cy.getByTestID('input--secret-name').type('an apple a day')
+    cy.getByTestID('input--secret-value').type('keeps the doctor away')
+    cy.getByTestID('variable-form-save').click()
+    cy.getByTestID('dropdown-button--token').contains('an apple a day')
 
     // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
@@ -347,7 +353,9 @@ describe('flows alert panel', () => {
     cy.getByTestID('overlay--body').within(() => {
       cy.getByTestID('flux-editor').contains(telegramURL)
       cy.getByTestID('flux-editor').contains(fakeChannel)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
+      cy.getByTestID('flux-editor').contains(
+        'secrets.get(key: "an apple a day")'
+      )
       cy.getByTestID('flux-editor').contains(parseMode)
     })
 

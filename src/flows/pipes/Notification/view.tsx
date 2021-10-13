@@ -9,7 +9,7 @@ import React, {
   Suspense,
   useEffect,
 } from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, connect} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 import {
   ComponentStatus,
@@ -46,7 +46,7 @@ const NotificationMonacoEditor = lazy(() =>
 )
 
 // Types
-import {RemoteDataState, EditorType} from 'src/types'
+import {RemoteDataState, EditorType, Secret} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 // Utils
@@ -58,14 +58,19 @@ import {
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getSecrets} from 'src/secrets/actions/thunks'
+import {getAllSecrets} from 'src/resources/selectors'
 
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
+import CreateSecretForm from 'src/secrets/components/CreateSecretForm'
 
-const Notification: FC<PipeProp> = ({Context}) => {
+type OwnProps = {
+  secrets: Secret[]
+}
+const Notification: FC<PipeProp & OwnProps> = ({Context, secrets}) => {
   const dispatch = useDispatch()
   const {id, data, update, results, loading} = useContext(PipeContext)
   const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
@@ -74,12 +79,20 @@ const Notification: FC<PipeProp> = ({Context}) => {
     RemoteDataState.NotStarted
   )
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
+
   let intervalError = ''
   let offsetError = ''
 
   useEffect(() => {
     dispatch(getSecrets())
   }, [])
+
+  const createSecret = (callback: (id: string) => void) => {
+    if (showId !== id) {
+      show(id)
+      showSub(<CreateSecretForm onDismiss={hideSub} onSubmit={callback} />)
+    }
+  }
 
   if (!data.interval) {
     intervalError = 'Required'
@@ -642,7 +655,13 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                         className="endpoint-details--element"
                       >
                         {React.createElement(
-                          ENDPOINT_DEFINITIONS[data.endpoint].component
+                          ENDPOINT_DEFINITIONS[data.endpoint].component,
+                          {
+                            createSecret,
+                            secrets: secrets.sort((a, b) =>
+                              a.id.localeCompare(b.id)
+                            ),
+                          }
                         )}
                       </Form.Element>
                     </FlexBox.Child>
@@ -690,4 +709,10 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
   )
 }
 
-export default Notification
+const mapStateToProps = state => {
+  return {
+    secrets: getAllSecrets(state),
+  }
+}
+
+export default connect(mapStateToProps, null)(Notification)

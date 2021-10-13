@@ -1,5 +1,4 @@
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 import {
   Form,
   Input,
@@ -7,14 +6,14 @@ import {
   ComponentSize,
   Dropdown,
   IconFont,
+  Icon,
   ComponentColor,
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
-import {getAllSecrets} from 'src/resources/selectors'
+import {EndpointProps} from 'src/types'
 
-const View: FC = () => {
+const View: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
-  const secrets = useSelector(getAllSecrets)
 
   const updateURL = evt => {
     update({
@@ -105,11 +104,21 @@ const View: FC = () => {
             >
               {data.endpointData.accessKey !== ''
                 ? data.endpointData.accessKey
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateAccessKey)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}
@@ -139,11 +148,21 @@ const View: FC = () => {
             >
               {data.endpointData.authAlgo !== ''
                 ? data.endpointData.authAlgo
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateAuthAlgo)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}
@@ -173,11 +192,21 @@ const View: FC = () => {
             >
               {data.endpointData.credScope !== ''
                 ? data.endpointData.credScope
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateCredScope)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}
@@ -207,11 +236,21 @@ const View: FC = () => {
             >
               {data.endpointData.signedHeaders !== ''
                 ? data.endpointData.signedHeaders
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateSignedHeaders)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}
@@ -241,11 +280,21 @@ const View: FC = () => {
             >
               {data.endpointData.calcSignature !== ''
                 ? data.endpointData.calcSignature
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateCalcSignature)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}

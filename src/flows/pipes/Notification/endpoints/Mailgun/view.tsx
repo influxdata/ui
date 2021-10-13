@@ -1,5 +1,4 @@
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 import {
   Form,
   Input,
@@ -7,15 +6,15 @@ import {
   ComponentSize,
   Dropdown,
   IconFont,
+  Icon,
   ComponentColor,
 } from '@influxdata/clockface'
-import {getAllSecrets} from 'src/resources/selectors'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {EndpointProps} from 'src/types'
 
-const View: FC = () => {
+const View: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
-  const secrets = useSelector(getAllSecrets)
 
   const updateDomain = evt => {
     update({
@@ -70,11 +69,21 @@ const View: FC = () => {
             >
               {data.endpointData.apiKey !== ''
                 ? data.endpointData.apiKey
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateAPIKey)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}

@@ -1,22 +1,20 @@
 import React, {FC, useContext} from 'react'
-import {useSelector} from 'react-redux'
 import {
   Form,
   Input,
   InputType,
   ComponentSize,
-  ComponentStatus,
   ComponentColor,
   Dropdown,
   IconFont,
+  Icon,
 } from '@influxdata/clockface'
-import {getAllSecrets} from 'src/resources/selectors'
 
 import {PipeContext} from 'src/flows/context/pipe'
+import {EndpointProps} from 'src/types'
 
-const View: FC = () => {
+const View: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
-  const secrets = useSelector(getAllSecrets)
 
   const updateAPIKey = val => {
     update({
@@ -32,6 +30,15 @@ const View: FC = () => {
       endpointData: {
         ...data.endpointData,
         email: evt.target.value,
+      },
+    })
+  }
+
+  const updateFromEmail = evt => {
+    update({
+      endpointData: {
+        ...data.endpointData,
+        fromEmail: evt.target.value,
       },
     })
   }
@@ -52,11 +59,21 @@ const View: FC = () => {
             >
               {data.endpointData.apiKey !== ''
                 ? data.endpointData.apiKey
-                : 'Select a Secret'}
+                : 'Choose a secret'}
             </Dropdown.Button>
           )}
           menu={onCollapse => (
             <Dropdown.Menu onCollapse={onCollapse}>
+              <Dropdown.Item
+                testID="dropdown-item--create-secret"
+                id="create"
+                key="create"
+                value="create"
+                onClick={() => createSecret(updateAPIKey)}
+              >
+                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
+                Create Secret
+              </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
                   testID={`dropdown-item--${s.key}`}
@@ -89,6 +106,7 @@ const View: FC = () => {
           type={InputType.Text}
           value={data.endpointData.fromEmail}
           size={ComponentSize.Medium}
+          onChange={updateFromEmail}
         />
       </Form.Element>
     </div>

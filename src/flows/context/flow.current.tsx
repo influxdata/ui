@@ -7,7 +7,6 @@ import React, {
   useEffect,
 } from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
-import {v4} from 'uuid'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
@@ -41,8 +40,6 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 
 let GENERATOR_INDEX = 0
 
-const uuid = v4()
-
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
@@ -70,6 +67,7 @@ export const FlowProvider: FC = ({children}) => {
       )
       const localState = provider.current.awareness.getLocalState()
       if (!localState?.id) {
+        console.log('in the if here')
         provider.current.awareness.setLocalState(DEFAULT_CONTEXT)
       }
 
@@ -77,6 +75,11 @@ export const FlowProvider: FC = ({children}) => {
         console.log('should trigger in both browsers')
         const {localState} = yDoc.current.getMap('localState').toJSON()
         setCurrentFlow(prev => {
+          console.log({
+            prev,
+            localState,
+            eq: btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState)),
+          })
           if (btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState))) {
             return prev
           }
@@ -95,13 +98,15 @@ export const FlowProvider: FC = ({children}) => {
       console.log('updateData')
       if (isFlagEnabled('copresence') || true) {
         if (currentFlow?.data?.byID[id]) {
-          const update = {
-            ...currentFlow,
+          currentFlow.data.byID[id] = {
             ...(currentFlow.data.byID[id] || {}),
             ...data,
           }
-
-          const {localState} = yDoc.current.getMap('localState').toJSON()
+          const update = {
+            ...currentFlow,
+            ...currentFlow.data.byID[id],
+          }
+          console.log({data, update})
           yDoc.current.getMap('localState').set('localState', update)
         }
         return
@@ -135,12 +140,16 @@ export const FlowProvider: FC = ({children}) => {
       console.log('updateMeta')
       if (isFlagEnabled('copresence') || true) {
         if (currentFlow?.meta?.byID[id]) {
-          const update = {
-            ...currentFlow,
+          currentFlow.meta.byID[id] = {
             title: '',
             visible: true,
             ...(currentFlow.meta.byID[id] || {}),
             ...meta,
+          }
+
+          const update = {
+            ...currentFlow,
+            ...currentFlow.meta.byID[id],
           }
           yDoc.current.getMap('localState').set('localState', update)
         }
@@ -209,113 +218,119 @@ export const FlowProvider: FC = ({children}) => {
     [update, flows, currentID, currentFlow]
   )
 
-  const addPipe = (initial: PipeData, index?: number) => {
-    const id = `local_${UUID()}`
-    const title =
-      initial.title ||
-      `${PIPE_DEFINITIONS[initial.type].button || 'Panel'} ${++GENERATOR_INDEX}`
+  const addPipe = useCallback(
+    (initial: PipeData, index?: number) => {
+      const id = `local_${UUID()}`
+      const title =
+        initial.title ||
+        `${PIPE_DEFINITIONS[initial.type].button ||
+          'Panel'} ${++GENERATOR_INDEX}`
 
-    delete initial.title
-    initial.id = id
+      delete initial.title
+      initial.id = id
 
-    if (isFlagEnabled('copresence') || true) {
-      currentFlow.data.byID[id] = initial
-      currentFlow.meta.byID[id] = {
+      if (isFlagEnabled('copresence') || true) {
+        const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+        flowCopy.data.byID[id] = initial
+        flowCopy.meta.byID[id] = {
+          title,
+          visible: true,
+        }
+        if (typeof index !== 'undefined') {
+          flowCopy.data.allIDs.splice(index + 1, 0, id)
+          flowCopy.meta.allIDs.splice(index + 1, 0, id)
+        } else {
+          flowCopy.data.allIDs.push(id)
+          flowCopy.meta.allIDs.push(id)
+        }
+        yDoc.current.getMap('localState').set('localState', {
+          ...flowCopy,
+        })
+        return
+      }
+      if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
+        currentFlow.data.byID[id] = initial
+        currentFlow.meta.byID[id] = {
+          title,
+          visible: true,
+        }
+        if (typeof index !== 'undefined') {
+          currentFlow.data.allIDs.splice(index + 1, 0, id)
+          currentFlow.meta.allIDs.splice(index + 1, 0, id)
+        } else {
+          currentFlow.data.allIDs.push(id)
+          currentFlow.meta.allIDs.push(id)
+        }
+        setCurrentFlow({...currentFlow})
+        return
+      }
+
+      flows[currentID].data.byID[id] = initial
+      flows[currentID].meta.byID[id] = {
         title,
         visible: true,
       }
+
       if (typeof index !== 'undefined') {
-        currentFlow.data.allIDs.splice(index + 1, 0, id)
-        currentFlow.meta.allIDs.splice(index + 1, 0, id)
+        flows[currentID].data.allIDs.splice(index + 1, 0, id)
+        flows[currentID].meta.allIDs.splice(index + 1, 0, id)
       } else {
-        currentFlow.data.allIDs.push(id)
-        currentFlow.meta.allIDs.push(id)
+        flows[currentID].data.allIDs.push(id)
+        flows[currentID].meta.allIDs.push(id)
       }
-      yDoc.current.getMap('localState').set('localState', {
-        ...currentFlow,
-      })
-      return
-    }
-    if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
-      currentFlow.data.byID[id] = initial
-      currentFlow.meta.byID[id] = {
-        title,
-        visible: true,
+
+      updateData(id, {})
+      updateMeta(id, {})
+
+      return id
+    },
+    [currentFlow]
+  )
+
+  const removePipe = useCallback(
+    (id: string) => {
+      if (isFlagEnabled('copresence') || true) {
+        const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+
+        flowCopy.meta.allIDs = flowCopy.meta.allIDs.filter(_id => _id !== id)
+        flowCopy.data.allIDs = flowCopy.data.allIDs.filter(_id => _id !== id)
+
+        delete flowCopy.data.byID[id]
+        delete flowCopy.meta.byID[id]
+        yDoc.current.getMap('localState').set('localState', {
+          ...flowCopy,
+        })
+        return
       }
-      if (typeof index !== 'undefined') {
-        currentFlow.data.allIDs.splice(index + 1, 0, id)
-        currentFlow.meta.allIDs.splice(index + 1, 0, id)
-      } else {
-        currentFlow.data.allIDs.push(id)
-        currentFlow.meta.allIDs.push(id)
+      if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
+        currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
+          _id => _id !== id
+        )
+        currentFlow.data.allIDs = currentFlow.data.allIDs.filter(
+          _id => _id !== id
+        )
+
+        delete currentFlow.data.byID[id]
+        delete currentFlow.meta.byID[id]
+        setCurrentFlow({...currentFlow})
+        return
       }
-      setCurrentFlow({...currentFlow})
-      return
-    }
 
-    flows[currentID].data.byID[id] = initial
-    flows[currentID].meta.byID[id] = {
-      title,
-      visible: true,
-    }
-
-    if (typeof index !== 'undefined') {
-      flows[currentID].data.allIDs.splice(index + 1, 0, id)
-      flows[currentID].meta.allIDs.splice(index + 1, 0, id)
-    } else {
-      flows[currentID].data.allIDs.push(id)
-      flows[currentID].meta.allIDs.push(id)
-    }
-
-    updateData(id, {})
-    updateMeta(id, {})
-
-    return id
-  }
-
-  const removePipe = (id: string) => {
-    if (isFlagEnabled('copresence') || true) {
-      currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
+      flows[currentID].meta.allIDs = flows[currentID].meta.allIDs.filter(
         _id => _id !== id
       )
-      currentFlow.data.allIDs = currentFlow.data.allIDs.filter(
+      flows[currentID].data.allIDs = flows[currentID].data.allIDs.filter(
         _id => _id !== id
       )
 
-      delete currentFlow.data.byID[id]
-      delete currentFlow.meta.byID[id]
-      yDoc.current.getMap('localState').set('localState', {
-        ...currentFlow,
-      })
-      return
-    }
-    if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
-      currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
-        _id => _id !== id
-      )
-      currentFlow.data.allIDs = currentFlow.data.allIDs.filter(
-        _id => _id !== id
-      )
+      delete flows[currentID].data.byID[id]
+      delete flows[currentID].meta.byID[id]
 
-      delete currentFlow.data.byID[id]
-      delete currentFlow.meta.byID[id]
-      setCurrentFlow({...currentFlow})
-      return
-    }
-
-    flows[currentID].meta.allIDs = flows[currentID].meta.allIDs.filter(
-      _id => _id !== id
-    )
-    flows[currentID].data.allIDs = flows[currentID].data.allIDs.filter(
-      _id => _id !== id
-    )
-
-    delete flows[currentID].data.byID[id]
-    delete flows[currentID].meta.byID[id]
-
-    updateData(id, {})
-    updateMeta(id, {})
-  }
+      updateData(id, {})
+      updateMeta(id, {})
+    },
+    [currentFlow]
+  )
 
   return (
     <FlowContext.Provider

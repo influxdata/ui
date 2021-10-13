@@ -24,10 +24,11 @@ export default register =>
             },
             {
               type: 'visualization',
+              title: 'Validate the Data',
+              visible: true,
               properties: {
                 type: 'simple-table',
                 showAll: false,
-                title: 'Validate the Data',
               },
             },
             {

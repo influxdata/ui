@@ -7,6 +7,7 @@ import {Accordion} from '@influxdata/clockface'
 import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
 import {IndividualAccordionBody} from 'src/authorizations/components/redesigned/IndividualAccordionBody'
 import {AllAccordionBody} from './AllAccordionBody'
+import {formatResources} from 'src/authorizations/utils/permissions'
 
 interface Props {
   permissions: any
@@ -18,24 +19,53 @@ export class EditResourceAccordion extends Component<Props> {
     if (!permissions) {
       return null
     }
+    const allResourceNames = formatResources(Object.keys(permissions))
 
-    return Object.keys(permissions).map(key => {
-      const resourceName = capitalize(key)
-      return (
-        <Accordion key={key} expanded={true}>
-          <ResourceAccordionHeader resourceName={resourceName} />
-          <AllAccordionBody
-            resourceName={resourceName}
-            permissions={permissions[key]}
-            disabled={true}
-          />
-          {resourceName === 'Telegrafs' ||
-            (resourceName === 'Buckets' &&
-              !isEmpty(permissions[key].sublevelPermissions) &&
-              this.getAccordionBody(resourceName, key))}
-        </Accordion>
-      )
-    })
+    return (
+      <>
+        {allResourceNames[0].map(resource => {
+          if (!permissions[resource]) {
+            return
+          }
+          const resourceName = capitalize(resource)
+          if (resourceName === 'Telegrafs' || resourceName === 'Buckets') {
+            return (
+              <Accordion key={resource} expanded={true}>
+                <ResourceAccordionHeader resourceName={resourceName} />
+                {isEmpty(permissions[resource].sublevelPermissions) ? (
+                  <AllAccordionBody
+                    resourceName={resourceName}
+                    permissions={permissions[resource]}
+                    disabled={true}
+                  />
+                ) : (
+                  this.getAccordionBody(resourceName, resource)
+                )}
+              </Accordion>
+            )
+          }
+        })}
+        {!isEmpty(allResourceNames[1]) && (
+          <Accordion key="Other Resources" expanded={true}>
+            <ResourceAccordionHeader resourceName="Other Resources" />
+            {allResourceNames[1].map(resource => {
+              const resourceName =
+                resource.charAt(0).toUpperCase() + resource.slice(1)
+
+              return (
+                <>
+                  <AllAccordionBody
+                    resourceName={resourceName}
+                    permissions={permissions[resource]}
+                    disabled={true}
+                  />
+                </>
+              )
+            })}
+          </Accordion>
+        )}
+      </>
+    )
   }
 
   getAccordionBody = (resourceName, resource) => {

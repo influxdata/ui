@@ -41,6 +41,7 @@ import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 // Utils
 import {
   formatApiPermissions,
+  formatResources,
   generateDescription,
 } from 'src/authorizations/utils/permissions'
 
@@ -107,20 +108,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const handleInputChange = event => {
     setDescription(event.target.value)
-  }
-
-  const formatAllResources = () => {
-    let resources = props.allResources
-    resources = resources.filter(
-      item => item !== 'buckets' && item !== 'telegrafs'
-    )
-    resources.sort()
-    resources.unshift('telegrafs')
-    resources.unshift('buckets')
-    const indexToSplit = resources.indexOf('telegrafs')
-    const first = resources.slice(0, indexToSplit + 1)
-    const second = resources.slice(indexToSplit + 1)
-    return [first, second]
   }
 
   const handleToggleAll = (resourceName, permission) => {
@@ -241,7 +228,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                 </FlexBox.Child>
               </FlexBox>
               <ResourceAccordion
-                resources={formatAllResources()}
+                resources={formatResources(props.allResources)}
                 permissions={permissions}
                 onToggleAll={handleToggleAll}
                 onIndividualToggle={handleIndividualToggle}

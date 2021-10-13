@@ -137,6 +137,19 @@ export enum BucketTab {
   Scoped = 'Scoped',
 }
 
+export const formatResources = (resourceNames) => {
+ const resources = resourceNames.filter(
+    item => item !== 'buckets' && item !== 'telegrafs'
+  )
+  resources.sort()
+  resources.unshift('telegrafs')
+  resources.unshift('buckets')
+  const indexToSplit = resources.indexOf('telegrafs')
+  const first = resources.slice(0, indexToSplit + 1)
+  const second = resources.slice(indexToSplit + 1)
+return [first, second]
+}
+
 export const formatPermissionsObj = permissions => {
   const newPerms = permissions.reduce((acc, {action, resource}) => {
     const {type, id, orgID, name} = resource

@@ -25,6 +25,7 @@ interface Props {
 
 export const IndividualAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title, disabled} = props
+  console.log('resourceName; ', resourceName, permissions)
 
   const handleReadToggle = id => {
     onToggle(resourceName, id, PermissionType.Read)

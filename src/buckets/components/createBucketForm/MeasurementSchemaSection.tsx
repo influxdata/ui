@@ -69,13 +69,28 @@ interface Props {
  * if toggleUpdate gets set to false, then no validation is needed
  * as nothing is being updated on that measurement schema
  * (that happens when the user cancels out of the update)
+ *
+ * measurementSchema:  the measurement schema that is being displayed in this editing panel
+ * index: used by the parent for updates and key generation
+ *
+ * onAddUpdate: called when the measurement schema in this panel is being updated, tells the parent the new
+ * column information
  * */
 interface PanelProps {
   measurementSchema: typeof MeasurementSchema
-  index?: number
+  index: number
   onAddUpdate: (columns: string, index: number) => void
   toggleUpdate: (doingUpdate: boolean, index: number) => void
 }
+/**
+ * onAddName: called when the name of the schema has been added
+ * onAddContents: called when the contents (the columns) have been added
+ * filename:  used for re-drawing the panel after a deletion of another panel
+ * name: used for re-drawing the panel after a deletion of another panel
+ * showSchemaValidation: false initially, if true: show validation errors;
+ *  do not want to show them when the user initially adds data; since one of the errors is missing data.
+ *  want to give them a chance to enter new data; this is turned on to true after the user presses 'submit' on the form
+ */
 interface AddingProps {
   index: number
   onAddName: (name: string, isValid: boolean, index: number) => void
@@ -86,6 +101,8 @@ interface AddingProps {
   showSchemaValidation?: boolean
 }
 
+// the MiniFileDnd component will catch any errors thrown here
+// and display them to the user
 const getColumnsFromFile = (contents: string) => {
   // do parsing here;  to check if in the correct format:
   let columns = null

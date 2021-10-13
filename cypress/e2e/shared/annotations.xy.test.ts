@@ -13,7 +13,6 @@ describe('The Annotations UI functionality, on a graph (xy line) graph type', ()
   beforeEach(() => setupData(cy))
 
   it('can create an annotation on the xy line graph', () => {
-
     testAddAnnotation(cy, 'hello there')
   })
   it('can edit an annotation  for the xy line graph', () => {

@@ -124,16 +124,16 @@ const AddingPanel: FC<AddingProps> = ({
     initialValidity = isNameValid(name)
   }
   const [schemaNameValidity, setSchemaNameValidity] = useState(initialValidity)
-  const hasFileError = showSchemaValidation && !filename
-  const [fileError, setFileError] = useState(hasFileError)
+  const fileErrorInit = showSchemaValidation && !filename
+  const [hasFileError, setHasFileError] = useState(fileErrorInit)
   let fileEMessage = null
-  if (hasFileError) {
+  if (fileErrorInit) {
     fileEMessage = 'You must upload a file'
   }
   const [fileErrorMessage, setFileErrorMessage] = useState(fileEMessage)
 
   const setErrorState = (hasError, message) => {
-    setFileError(hasError)
+    setHasFileError(hasError)
 
     if (!hasError) {
       message = null
@@ -218,7 +218,7 @@ const AddingPanel: FC<AddingProps> = ({
     />
   )
 
-  const errorElement = fileError ? (
+  const errorElement = hasFileError ? (
     <FormElementError
       style={{wordBreak: 'break-word'}}
       message={fileErrorMessage}
@@ -258,7 +258,7 @@ const EditingPanel: FC<PanelProps> = ({
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
   const [fileError, setFileError] = useState(false)
-  const [updateInProgress, setUpdateInProgress] = useState(false)
+  const [isUpdateInProgress, setUpdateInProgress] = useState(false)
 
   const setUserWantsUpdate = () => {
     toggleUpdate(true, index)
@@ -302,7 +302,7 @@ const EditingPanel: FC<PanelProps> = ({
   ) : null
 
   const schemaRowClasses = classnames('schema-row', {
-    hasCancelBtn: updateInProgress,
+    hasCancelBtn: isUpdateInProgress,
   })
 
   return (
@@ -337,7 +337,7 @@ const EditingPanel: FC<PanelProps> = ({
             allowedTypes={allowedTypes}
             handleFileUpload={handleFileUpload}
             setErrorState={setErrorState}
-            defaultText={'Update schema file'}
+            defaultText="Update schema file"
             preFileUpload={setUserWantsUpdate}
             onCancel={cancelUpdate}
           />
@@ -357,6 +357,8 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const [newSchemas, setNewSchemas] = useState([])
 
   // todo: turn into actual typescript interface after discussing things with stuart
+  // update:  stuart is putting in the correction, after it gets merged will update
+  // look for 'any' and reset those (onUpdateSchemas  , onAddSchemas)
   // each object:  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
   const updateInit = measurementSchemaList?.measurementSchemas?.map(schema => ({
     currentSchema: schema,
@@ -365,7 +367,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
   const onAddUpdate = (columns, index) => {
-    let entry = schemaUpdates[index] || {}
+    const entry = schemaUpdates[index] || {}
     entry.columns = columns
     entry.hasUpdate = true
     entry.valid = true
@@ -376,7 +378,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
   }
 
   const toggleUpdate = (doingUpdate, index) => {
-    let entry = schemaUpdates[index] || {}
+    const entry = schemaUpdates[index] || {}
 
     if (doingUpdate) {
       entry.hasUpdate = true

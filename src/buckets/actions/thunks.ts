@@ -401,12 +401,10 @@ export const updateMeasurementSchema = (
     const resp = await patchBucketsSchemaMeasurement(params)
     if (resp.status !== 200) {
       const msg = resp?.data?.message
-      console.error('error updating measurement schema:', resp)
       throw new Error(msg)
     }
     dispatch(notify(measurementSchemaUpdateSuccessful(measurementName)))
   } catch (error) {
-    console.error(error)
     const message = getErrorMessage(error)
     dispatch(notify(measurementSchemaUpdateFailed(measurementName, message)))
   }

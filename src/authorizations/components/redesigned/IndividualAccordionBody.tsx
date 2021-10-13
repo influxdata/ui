@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
+import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Clockface
 import {
@@ -25,7 +26,6 @@ interface Props {
 
 export const IndividualAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title, disabled} = props
-  console.log('resourceName; ', resourceName, permissions)
 
   const handleReadToggle = id => {
     onToggle(resourceName, id, PermissionType.Read)
@@ -44,7 +44,7 @@ export const IndividualAccordionBody: FC<Props> = props => {
       style={{textAlign: 'start'}}
     >
       <FlexBox.Child basis={40} grow={8}>
-        <InputLabel size={ComponentSize.Medium}>{telegraf.name}</InputLabel>
+        <InputLabel size={ComponentSize.Small}>{telegraf.name}</InputLabel>
       </FlexBox.Child>
       <FlexBox.Child grow={1}>
         <Toggle
@@ -77,11 +77,16 @@ export const IndividualAccordionBody: FC<Props> = props => {
 
   return (
     <>
-      <Accordion.AccordionBodyItem>{title}</Accordion.AccordionBodyItem>
+      <Accordion.AccordionBodyItem className="resource-accordion-body">
+        {title}
+      </Accordion.AccordionBodyItem>
       {permissions
         ? Object.keys(permissions).map(key => {
             return (
-              <Accordion.AccordionBodyItem key={permissions[key].id}>
+              <Accordion.AccordionBodyItem
+                key={permissions[key].id}
+                className="resource-accordion-body"
+              >
                 {accordionBody(permissions[key])}
               </Accordion.AccordionBodyItem>
             )

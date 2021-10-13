@@ -43,7 +43,7 @@ class ResourceAccordion extends Component<OwnProps> {
             resource.charAt(0).toUpperCase() + resource.slice(1)
 
           return (
-            <Accordion key={resource} expanded={true}>
+            <Accordion key={resource}>
               <ResourceAccordionHeader resourceName={resourceName} />
               <AllAccordionBody
                 resourceName={resourceName}
@@ -58,7 +58,7 @@ class ResourceAccordion extends Component<OwnProps> {
             </Accordion>
           )
         })}
-        <Accordion key="Other Resources" expanded={true}>
+        <Accordion key="Other Resources">
           <ResourceAccordionHeader resourceName="Other Resources" />
           <AllAccordionBody
             resourceName="Other Resources"

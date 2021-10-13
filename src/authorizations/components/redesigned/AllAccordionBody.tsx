@@ -1,4 +1,5 @@
 import React, {FC, MouseEvent} from 'react'
+import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Components
 import {
@@ -38,7 +39,7 @@ export const AllAccordionBody: FC<OwnProps> = props => {
 
   return (
     <>
-      <Accordion.AccordionBodyItem>
+      <Accordion.AccordionBodyItem className="resource-accordion-body">
         <FlexBox
           margin={ComponentSize.Small}
           justifyContent={JustifyContent.SpaceBetween}
@@ -49,7 +50,7 @@ export const AllAccordionBody: FC<OwnProps> = props => {
         >
           <FlexBox.Child basis={40} grow={8}>
             <InputLabel
-              size={ComponentSize.Medium}
+              size={ComponentSize.Small}
             >{`All ${resourceName}`}</InputLabel>
           </FlexBox.Child>
           <FlexBox.Child grow={1} onClick={handleFlexboxClick}>

@@ -160,7 +160,11 @@ export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
   })
-  cy.getByTestID('giraffe-annotation-tooltip').contains(text)
+
+  cy.getByTestID('giraffe-annotation-tooltip')
+    .should('exist')
+    .contains(text)
+  //cy.getByTestID('giraffe-annotation-tooltip').contains(text)
 }
 
 const ensureRangeAnnotationTimesAreNotEqual = (cy: Cypress.Chainable) => {

@@ -18,6 +18,12 @@ const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) =>
 describe('Explicit Buckets', () => {
   beforeEach(() => {
     setupData(cy, true)
+
+    // remove the downloaded files
+    cy.exec('rm cypress/downloads/*', {
+      log: true,
+      failOnNonZeroExit: false,
+    })
   })
 
   it('can create a bucket with an explicit schema', () => {

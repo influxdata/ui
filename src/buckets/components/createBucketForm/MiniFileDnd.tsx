@@ -267,6 +267,7 @@ export const MiniFileDnd: FC<Props> = ({
       titleText="cancel update"
       color={ComponentColor.Secondary}
       size={ComponentSize.ExtraSmall}
+      testID="dndContainer-cancel-update"
     />
   )
 

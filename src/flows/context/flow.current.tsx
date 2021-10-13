@@ -97,14 +97,15 @@ export const FlowProvider: FC = ({children}) => {
     (id: string, data: Partial<PipeData>) => {
       console.log('updateData')
       if (isFlagEnabled('copresence') || true) {
-        if (currentFlow?.data?.byID[id]) {
-          currentFlow.data.byID[id] = {
-            ...(currentFlow.data.byID[id] || {}),
+        const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+        if (flowCopy?.data?.byID[id]) {
+          flowCopy.data.byID[id] = {
+            ...(flowCopy.data.byID[id] || {}),
             ...data,
           }
           const update = {
-            ...currentFlow,
-            ...currentFlow.data.byID[id],
+            ...flowCopy,
+            ...flowCopy.data.byID[id],
           }
           console.log({data, update})
           yDoc.current.getMap('localState').set('localState', update)
@@ -140,16 +141,17 @@ export const FlowProvider: FC = ({children}) => {
       console.log('updateMeta')
       if (isFlagEnabled('copresence') || true) {
         if (currentFlow?.meta?.byID[id]) {
-          currentFlow.meta.byID[id] = {
+          const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+          flowCopy.meta.byID[id] = {
             title: '',
             visible: true,
-            ...(currentFlow.meta.byID[id] || {}),
+            ...(flowCopy.meta.byID[id] || {}),
             ...meta,
           }
 
           const update = {
-            ...currentFlow,
-            ...currentFlow.meta.byID[id],
+            ...flowCopy,
+            ...flowCopy.meta.byID[id],
           }
           yDoc.current.getMap('localState').set('localState', update)
         }
@@ -188,11 +190,12 @@ export const FlowProvider: FC = ({children}) => {
       console.log('updateOther')
       if (isFlagEnabled('copresence') || true) {
         if (currentFlow) {
+          const flowCopy = JSON.parse(JSON.stringify(currentFlow))
           for (const ni in flow) {
-            currentFlow[ni] = flow[ni]
+            flowCopy[ni] = flow[ni]
           }
           yDoc.current.getMap('localState').set('localState', {
-            ...currentFlow,
+            ...flowCopy,
           })
         }
         return

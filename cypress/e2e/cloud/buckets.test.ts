@@ -368,6 +368,12 @@ describe('Explicit Buckets', () => {
           .contains('first schema file')
           .should('exist')
 
+        // remove the downloaded files
+        cy.exec('rm cypress/downloads/*', {
+          log: true,
+          failOnNonZeroExit: false,
+        })
+
         cy.getByTestID('measurement-schema-download-button').click()
         cy.readFile(`cypress/downloads/first_schema_file.json`)
           .should('exist')

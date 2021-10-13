@@ -242,15 +242,24 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
     }
     if (permissions[key].write) {
       if (key === "orgs") {
-        return
+        apiPerms.push({
+          action: 'write',
+          resource: {
+            id: orgID,
+            name: orgName,
+            type: key,
+          },
+        })
       }
-      apiPerms.push({
-        action: 'write',
-        resource: {
-          orgID: orgID,
-          type: key,
-        },
-      })
+      else {
+        apiPerms.push({
+          action: 'write',
+          resource: {
+            orgID: orgID,
+            type: key,
+          },
+        })
+      }
     }
     if (permissions[key].sublevelPermissions) {
       Object.keys(permissions[key].sublevelPermissions).forEach(id => {

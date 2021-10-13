@@ -1,6 +1,8 @@
 import {Organization} from '../../../src/types'
 import {lines} from '../../support/commands'
 
+const DEFAULT_TEXT = 'im a hippopotamus'
+
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
     cy.signin().then(() =>
@@ -73,7 +75,7 @@ export const reloadAndHandleAnnotationDefaultStatus = () => {
 
 export const addAnnotation = (cy: Cypress.Chainable, message?: string) => {
   if (!message) {
-    message = 'im a hippopotamus'
+    message = DEFAULT_TEXT
   }
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
@@ -223,13 +225,16 @@ export const addRangeAnnotation = (
 }
 
 export const testAddAnnotation = (cy: Cypress.Chainable, message?: string) => {
+  if (!message) {
+    message = DEFAULT_TEXT
+  }
   addAnnotation(cy, message)
 
   // reload to make sure the annotation was added in the backend as well.
   reloadAndHandleAnnotationDefaultStatus()
 
   // we need to see if the annotations got created and that the tooltip says "I'm a hippopotamus"
-  checkAnnotationText(cy, 'im a hippopotamus')
+  checkAnnotationText(cy, message)
 }
 
 export const testEditAnnotation = (cy: Cypress.Chainable) => {

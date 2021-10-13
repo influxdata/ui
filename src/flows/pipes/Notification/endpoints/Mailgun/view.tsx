@@ -1,10 +1,21 @@
 import React, {FC, useContext} from 'react'
-import {Form, Input, InputType, ComponentSize} from '@influxdata/clockface'
+import {useSelector} from 'react-redux'
+import {
+  Form,
+  Input,
+  InputType,
+  ComponentSize,
+  Dropdown,
+  IconFont,
+  ComponentColor,
+} from '@influxdata/clockface'
+import {getAllSecrets} from 'src/resources/selectors'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
 const View: FC = () => {
   const {data, update} = useContext(PipeContext)
+  const secrets = useSelector(getAllSecrets)
 
   const updateDomain = evt => {
     update({
@@ -15,11 +26,11 @@ const View: FC = () => {
     })
   }
 
-  const updateAPIKey = evt => {
+  const updateAPIKey = val => {
     update({
       endpointData: {
         ...data.endpointData,
-        apiKey: evt.target.value,
+        apiKey: val,
       },
     })
   }
@@ -46,13 +57,37 @@ const View: FC = () => {
         />
       </Form.Element>
       <Form.Element label="API Key" required={true}>
-        <Input
-          name="apiKey"
-          testID="input--apiKey"
-          type={InputType.Password}
-          value={data.endpointData.apiKey}
-          onChange={updateAPIKey}
-          size={ComponentSize.Medium}
+        <Dropdown
+          testID="dropdown--apiKey"
+          style={{width: '180px'}}
+          button={(active, onClick) => (
+            <Dropdown.Button
+              active={active}
+              onClick={onClick}
+              icon={IconFont.Lock}
+              color={ComponentColor.Default}
+              testID="dropdown-button--apiKey"
+            >
+              {data.endpointData.apiKey !== ''
+                ? data.endpointData.apiKey
+                : 'Select a Secret'}
+            </Dropdown.Button>
+          )}
+          menu={onCollapse => (
+            <Dropdown.Menu onCollapse={onCollapse}>
+              {secrets.map(s => (
+                <Dropdown.Item
+                  testID={`dropdown-item--${s.key}`}
+                  id={s.id}
+                  key={s.key}
+                  value={s.key}
+                  onClick={updateAPIKey}
+                >
+                  {s.key}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          )}
         />
       </Form.Element>
       <Form.Element label="Email" required={true}>

@@ -16,9 +16,14 @@ export default register => {
     featureFlag: 'notebooksNewEndpoints',
     component: View,
     readOnlyComponent: ReadOnly,
-    generateImports: () => ['http'].map(i => `import "${i}"`).join('\n'),
+    generateImports: () =>
+      ['http', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateTestImports: () =>
-      ['array', 'http'].map(i => `import "${i}"`).join('\n'),
+      ['array', 'http', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateQuery: data => `task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
@@ -30,11 +35,13 @@ export default register => {
 	|> monitor["notify"](
     data: notification,
     endpoint: ((r) => {
+        apiKey = secrets.get(key: "${data.apiKey}")
+        apiSecret = secrets.get(key: "${data.apiSecret}")
         http.post(
             url: "${data.url}",
             headers: {
               "Content-type": "application/json",
-              "Authorization": "Basic ${data.apiKey}:${data.apiSecret}"
+              "Authorization": "Basic \${apiKey}:\${apiSecret}"
             },
             data: bytes(v: "{
               \\"Messages\\": [{
@@ -51,11 +58,13 @@ export default register => {
     })
   )`,
     generateTestQuery: data => `
+    apiKey = secrets.get(key: "${data.apiKey}")
+    apiSecrets = secrets.get(key: "${data.apiSecret}")
     http.post(
       url: "${data.url}",
       headers: {
         "Content-type": "application/json",
-        "Authorization": "Basic ${data.apiKey}:${data.apiSecret}"
+        "Authorization": "Basic \${apiKey}:\${apiSecret}"
       },
       data: bytes(v: "{
         \\"Messages\\": [{

@@ -7,6 +7,7 @@ import React, {
   useState,
   lazy,
   Suspense,
+  useEffect,
 } from 'react'
 import {useDispatch} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
@@ -56,6 +57,7 @@ import {
   testNotificationFailure,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getSecrets} from 'src/secrets/actions/thunks'
 
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
@@ -74,6 +76,10 @@ const Notification: FC<PipeProp> = ({Context}) => {
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   let intervalError = ''
   let offsetError = ''
+
+  useEffect(() => {
+    dispatch(getSecrets())
+  }, [])
 
   if (!data.interval) {
     intervalError = 'Required'

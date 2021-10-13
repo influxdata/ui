@@ -19,9 +19,14 @@ export default register => {
     featureFlag: 'notebooksNewEndpoints',
     component: View,
     readOnlyComponent: ReadOnly,
-    generateImports: () => ['http'].map(i => `import "${i}"`).join('\n'),
+    generateImports: () =>
+      ['http', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateTestImports: () =>
-      ['array', 'http'].map(i => `import "${i}"`).join('\n'),
+      ['array', 'http', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateQuery: data => `task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
@@ -33,11 +38,16 @@ export default register => {
 	|> monitor["notify"](
     data: notification,
     endpoint: ((r) => {
+        authAlgo = secrets.get(key: "${data.authAlgo}")
+        accessKey = secrets.get(key: "${data.accessKey}")
+        credScope = secrets.get(key: "${data.credScope}")
+        signedHeaders = secrets.get(key: "${data.signedHeaders}")
+        calcSignature = secrets.get(key: "${data.calcSignature}")
         http.post(
             url: "${data.url}",
             headers: {
               "Content-type": "application/json",
-              "Authorization": "${data.authAlgo} Credential=${data.accessKey}/${data.credScope},SignedHeaders=${data.signedHeaders},Signature=${data.calcSignature}"
+              "Authorization": "\${authAlgo} Credential=\${accessKey}/\${credScope},SignedHeaders=\${signedHeaders},Signature=\${calcSignature}"
             },
             data: bytes(v: "{
               \\"Content\\": {
@@ -63,11 +73,16 @@ export default register => {
     })
   )`,
     generateTestQuery: data => `
+    authAlgo = secrets.get(key: "${data.authAlgo}")
+    accessKey = secrets.get(key: "${data.accessKey}")
+    credScope = secrets.get(key: "${data.credScope}")
+    signedHeaders = secrets.get(key: "${data.signedHeaders}")
+    calcSignature = secrets.get(key: "${data.calcSignature}")
     http.post(
       url: "${data.url}",
       headers: {
         "Content-type": "application/json",
-        "Authorization": "${data.authAlgo} Credential=${data.accessKey}/${data.credScope},SignedHeaders=${data.signedHeaders},Signature=${data.calcSignature}"
+        "Authorization": "\${authAlgo} Credential=\${accessKey}/\${credScope},SignedHeaders=\${signedHeaders},Signature=\${calcSignature}"
       },
       data: bytes(v: "{
         \\"Content\\": {

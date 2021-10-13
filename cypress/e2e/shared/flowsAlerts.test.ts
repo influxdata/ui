@@ -116,6 +116,7 @@ describe('flows alert panel', () => {
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
       cy.createBucket(id, name, newBucketName)
+      cy.upsertSecret(id, {mySecret: 'shhh'})
     })
     cy.writeData(
       [
@@ -160,23 +161,24 @@ describe('flows alert panel', () => {
 
     const fakeEmail = 'super@fake.com'
     const fakeUrl = 'super-fake.com'
+    const fakeSecretFlux = 'secrets.get(key: "mySecret")'
 
     // === AWS SES ===
-    const awsAccessKey = 'fake-key'
-    const awsAuthAlgo = 'fake-algo'
-    const awsCredScoe = 'fake-cred-scope'
-    const awsSignedHeaders = 'fake-headers'
-    const awsCalcSig = 'fake-signature'
 
     // complete fields
     cy.getByTestID('dropdown-item--aws').click()
     cy.getByTestID('input--url').clear()
     cy.getByTestID('input--url').type(fakeUrl)
-    cy.getByTestID('input--accessKey').type(awsAccessKey)
-    cy.getByTestID('input--authAlgo').type(awsAuthAlgo)
-    cy.getByTestID('input--credScope').type(awsCredScoe)
-    cy.getByTestID('input--signedHeaders').type(awsSignedHeaders)
-    cy.getByTestID('input--calcSignature').type(awsCalcSig)
+    cy.getByTestID('dropdown--accessKey').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--authAlgo').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--credScope').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--signedHeaders').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--calcSignature').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
     cy.getByTestID('input--email').type(fakeEmail)
 
     // make sure task export contains the fields
@@ -186,11 +188,7 @@ describe('flows alert panel', () => {
     cy.getByTestID('form--footer').scrollIntoView()
     cy.getByTestID('overlay--body').within(() => {
       cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(awsAccessKey)
-      cy.getByTestID('flux-editor').contains(awsAuthAlgo)
-      cy.getByTestID('flux-editor').contains(awsCredScoe)
-      cy.getByTestID('flux-editor').contains(awsSignedHeaders)
-      cy.getByTestID('flux-editor').contains(awsCalcSig)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
       cy.getByTestID('flux-editor').contains(fakeEmail)
     })
 
@@ -198,14 +196,13 @@ describe('flows alert panel', () => {
     cy.get('.cf-overlay--dismiss').click()
 
     // === HTTP ===
-    const token = 'fake-token'
 
     // complete fields
     cy.getByTestID('dropdown-item--http').click()
     cy.getByTestID('option--bearer').click()
     cy.getByTestID('input--url').clear()
     cy.getByTestID('input--url').type(fakeUrl)
-    cy.getByTestID('input--token').type(token)
+    cy.getByTestID('input--token').type('fake-token')
 
     // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
@@ -214,7 +211,7 @@ describe('flows alert panel', () => {
     cy.getByTestID('form--footer').scrollIntoView()
     cy.getByTestID('overlay--body').within(() => {
       cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(token)
+      cy.getByTestID('flux-editor').contains('fake-token')
     })
 
     // close popup
@@ -222,12 +219,12 @@ describe('flows alert panel', () => {
 
     // === MAILGUN ===
     const mailgunDomain = 'fake.com'
-    const mailgunApiKey = 'fake-key'
 
     // complete fields
     cy.getByTestID('dropdown-item--mailgun').click()
     cy.getByTestID('input--domain').type(mailgunDomain)
-    cy.getByTestID('input--apiKey').type(mailgunApiKey)
+    cy.getByTestID('dropdown--apiKey').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
     cy.getByTestID('input--email').type(fakeEmail)
 
     // make sure task export contains the fields
@@ -237,7 +234,7 @@ describe('flows alert panel', () => {
     cy.getByTestID('form--footer').scrollIntoView()
     cy.getByTestID('overlay--body').within(() => {
       cy.getByTestID('flux-editor').contains(mailgunDomain)
-      cy.getByTestID('flux-editor').contains(mailgunApiKey)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
       cy.getByTestID('flux-editor').contains(fakeEmail)
     })
 
@@ -245,13 +242,13 @@ describe('flows alert panel', () => {
     cy.get('.cf-overlay--dismiss').click()
 
     // === MAILJET ===
-    const mailjetApiKey = 'fake-key'
-    const mailjetApiSecret = 'fake-secret'
 
     // complete fields
     cy.getByTestID('dropdown-item--mailjet').click()
-    cy.getByTestID('input--apiKey').type(mailjetApiKey)
-    cy.getByTestID('input--apiSecret').type(mailjetApiSecret)
+    cy.getByTestID('dropdown--apiKey').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--apiSecret').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
     cy.getByTestID('input--email').type(fakeEmail)
 
     // make sure task export contains the fields
@@ -260,9 +257,8 @@ describe('flows alert panel', () => {
     cy.getByTestID('flux-editor').should('exist')
     cy.getByTestID('form--footer').scrollIntoView()
     cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(mailjetApiKey)
-      cy.getByTestID('flux-editor').contains(mailjetApiSecret)
       cy.getByTestID('flux-editor').contains(fakeEmail)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
     })
 
     // close popup
@@ -290,12 +286,12 @@ describe('flows alert panel', () => {
     cy.get('.cf-overlay--dismiss').click()
 
     // === SENDGRID ===
-    const sendgridApiKey = 'fake-key'
 
     // complete fields
     cy.getByTestID('dropdown-item--sendgrid').click()
     cy.getByTestID('input--email').type(fakeEmail)
-    cy.getByTestID('input--apiKey').type(sendgridApiKey)
+    cy.getByTestID('dropdown--apiKey').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
 
     // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
@@ -304,7 +300,7 @@ describe('flows alert panel', () => {
     cy.getByTestID('form--footer').scrollIntoView()
     cy.getByTestID('overlay--body').within(() => {
       cy.getByTestID('flux-editor').contains(fakeEmail)
-      cy.getByTestID('flux-editor').contains(sendgridApiKey)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
     })
 
     // close popup
@@ -340,7 +336,8 @@ describe('flows alert panel', () => {
     // complete fields
     cy.getByTestID('dropdown-item--telegram').click()
     cy.getByTestID('input--channel').type(fakeChannel)
-    cy.getByTestID('input--token').type(token)
+    cy.getByTestID('dropdown--token').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
 
     // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
@@ -350,8 +347,11 @@ describe('flows alert panel', () => {
     cy.getByTestID('overlay--body').within(() => {
       cy.getByTestID('flux-editor').contains(telegramURL)
       cy.getByTestID('flux-editor').contains(fakeChannel)
-      cy.getByTestID('flux-editor').contains(token)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
       cy.getByTestID('flux-editor').contains(parseMode)
     })
+
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
   })
 })

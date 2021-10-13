@@ -16,9 +16,13 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () =>
-      ['contrib/sranka/telegram'].map(i => `import "${i}"`).join('\n'),
+      ['contrib/sranka/telegram', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateTestImports: () =>
-      ['array', 'contrib/sranka/telegram'].map(i => `import "${i}"`).join('\n'),
+      ['array', 'contrib/sranka/telegram', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateQuery: data => `task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
@@ -31,7 +35,7 @@ export default register => {
     data: notification,
     endpoint: telegram["endpoint"](
       url: "${data.url}",
-      token: "${data.token}",
+      token: secrets.get(key: "${data.token}"),
       parseMode: "${data.parseMode}"
       )(
         mapFn: (r) => ({
@@ -42,7 +46,7 @@ export default register => {
     generateTestQuery: data => `
     telegram.endpoint(
       url: "${data.url}",
-      token: "${data.token}",
+      token: secrets.get(key: "${data.token}"),
       parseMode: "${data.parseMode}",
       channel: "${data.channel}",
       text: "${TEST_NOTIFICATION}"

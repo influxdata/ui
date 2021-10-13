@@ -41,7 +41,7 @@ const ReadOnly: FC = () => {
           status={ComponentStatus.Disabled}
         />
       </Form.Element>
-      <Form.Element label="From Email">
+      <Form.Element label="From Email" required={true}>
         <Input
           name="fromEmail"
           type={InputType.Text}

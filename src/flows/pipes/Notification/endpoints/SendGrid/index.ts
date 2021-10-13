@@ -15,9 +15,14 @@ export default register => {
     featureFlag: 'notebooksNewEndpoints',
     component: View,
     readOnlyComponent: ReadOnly,
-    generateImports: () => ['http'].map(i => `import "${i}"`).join('\n'),
+    generateImports: () =>
+      ['http', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateTestImports: () =>
-      ['array', 'http'].map(i => `import "${i}"`).join('\n'),
+      ['array', 'http', 'influxdata/influxdb/secrets']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateQuery: data => `task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
@@ -29,11 +34,12 @@ export default register => {
 	|> monitor["notify"](
     data: notification,
     endpoint: ((r) => {
+        apiKey = secrets.get(key: "${data.apiKey}")
         http.post(
             url: "${data.url}",
             headers: {
               "Content-type": "application/json",
-              "Authorization": "Bearer ${data.apiKey}"
+              "Authorization": "Bearer \${apiKey}"
             },
             data: bytes(v: "{
               \\"personalizations\\": [
@@ -59,11 +65,12 @@ export default register => {
     })
   )`,
     generateTestQuery: data => `
+    apiKey = secrets.get(key: "${data.apiKey}")
     http.post(
       url: "${data.url}",
       headers: {
         "Content-type": "application/json",
-        "Authorization": "Bearer ${data.apiKey}"
+        "Authorization": "Bearer \${apiKey}"
       },
       data: bytes(v: "{
         \\"personalizations\\": [

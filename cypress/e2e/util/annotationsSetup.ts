@@ -71,7 +71,10 @@ export const reloadAndHandleAnnotationDefaultStatus = () => {
   cy.getByTestID('toggle-annotations-controls').click()
 }
 
-export const addAnnotation = (cy: Cypress.Chainable) => {
+export const addAnnotation = (cy: Cypress.Chainable, message?: string) => {
+    if (!message){
+        message = 'im a hippopotamus'
+    }
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
   })
@@ -84,7 +87,7 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
       cy.getByTestID('edit-annotation-message')
         .click()
         .focused()
-        .type('im a hippopotamus')
+        .type(message')
       cy.getByTestID('annotation-submit-button').click()
     })
 }
@@ -219,8 +222,8 @@ export const addRangeAnnotation = (
     })
 }
 
-export const testAddAnnotation = (cy: Cypress.Chainable) => {
-  addAnnotation(cy)
+export const testAddAnnotation = (cy: Cypress.Chainable, message?: string) => {
+  addAnnotation(cy, message)
 
   // reload to make sure the annotation was added in the backend as well.
   reloadAndHandleAnnotationDefaultStatus()

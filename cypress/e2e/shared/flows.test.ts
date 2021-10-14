@@ -258,6 +258,7 @@ describe('Flows', () => {
 
     cy.getByTestID(`flow-card--${flowName}`).trigger('mouseover')
     cy.getByTestID(`flow-button--clone`).click({force: true})
+    cy.getByTestID('time-machine-submit-button').should('exist')
 
     const clone = `${flowName} (clone 1)`
 

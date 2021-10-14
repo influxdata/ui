@@ -49,10 +49,13 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector').click()
-    cy.getByTestID('flow-bucket-selector--defbuck').click()
-    cy.getByTestID('measurement-selector test').click()
+    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.getByTestID('selector-list devbucket')
+      .first()
+      .click()
+    cy.getByTestID('selector-list test')
+      .first()
+      .click()
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -61,7 +64,8 @@ describe('Flows', () => {
     cy.getByTestID('add-flow-btn--visualization').click()
   })
 
-  it('can create a bucket from the metric selector and verify it is selected', () => {
+  // NOTE: we are hiding the metric selector from users for now
+  it.skip('can create a bucket from the metric selector and verify it is selected', () => {
     const newBucketName = 'IDontGiveABuck'
     cy.getByTestID('preset-new')
       .first()
@@ -127,17 +131,34 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector').click()
 
-    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+    /////////////////////////////////////////////////////////
+    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.getByTestID('builder-card')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID(`selector-list ${newBucketName}`).click()
+      })
 
     // select measurement and field
-    cy.getByTestID('measurement-selector test').click()
-    cy.getByTestID('field-selector dopeness').click()
-
+    cy.getByTestID('builder-card')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID(`selector-list test`).click()
+      })
+    cy.getByTestID('builder-card')
+      .eq(2)
+      .within(() => {
+        cy.getByTestID(`selector-list dopeness`).click()
+      })
     // select beans tag and click preview
-    cy.getByTestID('tag-selector beans').click()
+    cy.getByTestID('builder-card')
+      .eq(3)
+      .within(() => {
+        cy.getByTestID(`selector-list beans`).click()
+      })
+    /////////////////////////////////////////////////////////
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -192,6 +213,8 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
+
+    /////////////////////////////////////////////////////////
     cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
@@ -203,6 +226,8 @@ describe('Flows', () => {
 
     // select beans tag and click preview
     cy.getByTestID('tag-selector beans').click()
+    /////////////////////////////////////////////////////////
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -294,6 +319,8 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
+
+    /////////////////////////////////////////////////////////
     cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
@@ -305,6 +332,8 @@ describe('Flows', () => {
 
     // select beans tag and click preview
     cy.getByTestID('tag-selector beans').click()
+    /////////////////////////////////////////////////////////
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -358,6 +387,7 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('Delete--list-item').click()
 
+    /////////////////////////////////////////////////////////
     cy.getByTestID('panel-add-btn--1').click()
     cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
@@ -370,6 +400,8 @@ describe('Flows', () => {
 
     // select beans tag and click preview
     cy.getByTestID('tag-selector beans').click()
+    /////////////////////////////////////////////////////////
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -436,12 +468,14 @@ describe('Flows', () => {
       cy.getByTestID('Delete--list-item').click()
 
       cy.getByTestID('panel-add-btn--1').click()
+      /////////////////////////////////////////////////////////
       cy.getByTestID('add-flow-btn--metricSelector').click()
       cy.getByTestID('flow-bucket-selector').click()
       cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
       cy.getByTestID('measurement-selector test').click()
       cy.getByTestID('field-selector dopeness').click()
       cy.getByTestID('tag-selector beans').click()
+      /////////////////////////////////////////////////////////
 
       // add an alert cell
       cy.getByTestID('panel-add-btn-2').click()

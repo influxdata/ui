@@ -19,7 +19,6 @@ describe('simple table interactions', () => {
             cy.createBucket(orgID, name, simpleOverflow)
             cy.writeData(lines(31), simpleOverflow)
             cy.reload()
-            cy.setFeatureFlags({simpleTable: true})
           })
         })
       })

@@ -23,6 +23,7 @@ describe('Shared.Reducers.appReducer', () => {
       timeZone: 'Local' as TimeZone,
       theme: 'dark',
       versionInfo: {version: '', commit: ''},
+      flowsCTA: {explorer: true, tasks: true, alerts: true},
     },
   }
 

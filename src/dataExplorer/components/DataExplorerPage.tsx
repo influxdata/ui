@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useContext} from 'react'
 import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
@@ -24,13 +24,14 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {ResourceType} from 'src/types'
 
 import 'src/shared/components/cta.scss'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 const DataExplorerPage: FC = () => {
-  const [dismissFlowsCTA, setDismissFlowsCTA] = useState(false)
+  const {flowsCTA, setFlowsCTA} = useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
 
   const hideFlowsCTA = () => {
-    setDismissFlowsCTA(true)
+    setFlowsCTA({explorer: false})
   }
 
   const recordClick = () => {
@@ -58,7 +59,7 @@ const DataExplorerPage: FC = () => {
           <Page.Title title="Data Explorer" />
           <RateLimitAlert />
         </Page.Header>
-        {!dismissFlowsCTA && (
+        {flowsCTA.explorer && (
           <FeatureFlag name="flowsCTA">
             <div className="header-cta--de">
               <div className="header-cta">

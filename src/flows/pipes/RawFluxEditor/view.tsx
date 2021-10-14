@@ -157,6 +157,14 @@ const Query: FC<PipeProp> = ({Context}) => {
           onSubmitScript={() => {}}
           setEditorInstance={setEditorInstance}
           wrapLines="on"
+          autogrow
+        />
+        <FluxMonacoEditor
+          script={query.text}
+          onChangeScript={updateText}
+          onSubmitScript={() => {}}
+          setEditorInstance={setEditorInstance}
+          wrapLines="on"
         />
       </Suspense>
     </Context>

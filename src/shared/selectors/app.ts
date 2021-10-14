@@ -1,4 +1,11 @@
-import {AppState, TimeZone, Theme, NavBarState, VersionInfo} from 'src/types'
+import {
+  AppState,
+  TimeZone,
+  Theme,
+  NavBarState,
+  VersionInfo,
+  FlowsCTA,
+} from 'src/types'
 
 export const timeZone = (state: AppState): TimeZone =>
   state.app.persisted.timeZone || ('Local' as TimeZone)
@@ -17,3 +24,7 @@ export const hasUpdatedTimeRangeInVEO = (state: AppState): boolean =>
 
 export const getPresentationMode = (state: AppState): boolean =>
   state.app.ephemeral.inPresentationMode || false
+
+export const getFlowsCTA = (state: AppState): FlowsCTA =>
+  state.app.persisted.flowsCTA ||
+  ({explorer: true, tasks: true, alerts: true} as FlowsCTA)

@@ -6,3 +6,7 @@ export interface VersionInfo {
   version: string
   commit: string
 }
+
+export interface FlowsCTA {
+  [key: string]: boolean
+}

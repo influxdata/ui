@@ -149,9 +149,6 @@ describe('Flows', () => {
             })
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('tree-nav')
-            cy.setFeatureFlags({
-              simpleTable: true,
-            })
 
             cy.getByTestID('nav-item-flows').click()
           })

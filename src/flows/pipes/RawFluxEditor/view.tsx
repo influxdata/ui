@@ -145,7 +145,7 @@ const Query: FC<PipeProp> = ({Context}) => {
 
   return useMemo(() => {
     return (
-      <Context controls={controls} resizes>
+      <Context controls={controls}>
         <Suspense
           fallback={
             <SpinnerContainer
@@ -160,6 +160,7 @@ const Query: FC<PipeProp> = ({Context}) => {
             onSubmitScript={() => {}}
             setEditorInstance={setEditorInstance}
             wrapLines="on"
+            autogrow
           />
         </Suspense>
       </Context>

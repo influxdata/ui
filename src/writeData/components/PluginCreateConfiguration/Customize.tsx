@@ -25,13 +25,13 @@ import {
 
 // Types
 import {AppState, ConfigurationState} from 'src/types'
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getDataLoaders} from 'src/dataLoaders/selectors'
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = PluginCreateConfigurationStepProps & ReduxProps
+type Props = PluginConfigurationStepProps & ReduxProps
 
 interface AgentOutputNotificationProps {
   triggerRef: React.RefObject<HTMLElement>
@@ -74,7 +74,7 @@ const AgentOutputNotification: FC<AgentOutputNotificationProps> = props => (
   </>
 )
 
-const PluginCreateConfigurationCustomizeComponent: FC<Props> = props => {
+const CustomizeComponent: FC<Props> = props => {
   const {
     onAddTelegrafPlugins,
     onSetTelegrafConfigName,
@@ -200,6 +200,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const PluginCreateConfigurationCustomize = connector(
-  PluginCreateConfigurationCustomizeComponent
-)
+export const Customize = connector(CustomizeComponent)

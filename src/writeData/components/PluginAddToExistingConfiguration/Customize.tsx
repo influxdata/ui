@@ -21,7 +21,7 @@ import {
 
 // Types
 import {AppState, ConfigurationState, ResourceType, Telegraf} from 'src/types'
-import {PluginConfigurationStepProps} from 'src/writeData/components/PluginAddToExistingConfiguration/Wizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'

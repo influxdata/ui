@@ -12,17 +12,17 @@ import {setOverlayParams} from 'src/overlays/actions/overlays'
 
 // Types
 import {AppState, Bucket} from 'src/types'
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getOverlayParams} from 'src/overlays/selectors'
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & PluginCreateConfigurationStepProps
+type Props = ReduxProps & PluginConfigurationStepProps
 
 const nullParams = {}
 
-const PluginCreateConfigurationAddBucketComponent: FC<Props> = props => {
+const CreateBucketComponent: FC<Props> = props => {
   const {
     currentStepIndex,
     onSetBucketInfo,
@@ -74,6 +74,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export const PluginCreateConfigurationAddBucket = connector(
-  PluginCreateConfigurationAddBucketComponent
-)
+export const CreateBucket = connector(CreateBucketComponent)

@@ -23,10 +23,9 @@ const createEmptyNotebook = () => {
     req.alias = 'NotebooksPatchRequest'
   })
 
-  cy.getByTestID('create-flow--button')
+  cy.getByTestID('preset-new')
     .first()
     .click()
-  cy.focused()
   cy.wait('@NotebooksPatchRequest')
   cy.getByTestID('sidebar-button')
     .first()

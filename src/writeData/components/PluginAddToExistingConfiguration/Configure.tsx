@@ -7,7 +7,7 @@ import {ComponentStatus, Dropdown} from '@influxdata/clockface'
 
 // Types
 import {AppState, Telegraf} from 'src/types'
-import {PluginConfigurationStepProps} from 'src/writeData/components/PluginAddToExistingConfiguration/Wizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getAllBuckets, getAllTelegrafs} from 'src/resources/selectors'

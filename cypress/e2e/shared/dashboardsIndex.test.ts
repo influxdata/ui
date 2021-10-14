@@ -549,7 +549,8 @@ describe('Dashboards', () => {
     })
   })
 
-  it('creates a dashboard and downloads JSON', () => {
+  // Skipping until https://github.com/influxdata/ui/issues/2864 is resolved by Bonitoo
+  it.skip('creates a dashboard and downloads JSON', () => {
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {

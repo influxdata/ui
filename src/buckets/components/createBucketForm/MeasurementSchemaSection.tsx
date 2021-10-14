@@ -238,12 +238,18 @@ const EditingPanel: FC<PanelProps> = ({measurementSchema, index}) => {
       >
         <div> name</div>
         <FlexBox direction={FlexDirection.Row} className="schema-row">
-          <div className="value-text">{measurementSchema.name}</div>
+          <div
+            className="value-text"
+            data-testid={`measurement-schema-name-${index}`}
+          >
+            {measurementSchema.name}
+          </div>
           <Button
             icon={IconFont.Download}
             color={ComponentColor.Secondary}
             text="Download Schema"
             onClick={handleDownloadSchema}
+            testID="measurement-schema-download-button"
           />
         </FlexBox>
       </FlexBox>
@@ -299,7 +305,11 @@ export const MeasurementSchemaSection: FC<Props> = ({
   }
 
   const addSchemaButton = (
-    <Button onClick={addSchemaLine} text="Add New Measurement Schema" />
+    <Button
+      onClick={addSchemaLine}
+      testID="measurement-schema-add-file-button"
+      text="Add New Measurement Schema"
+    />
   )
 
   const onAddName = (name, isValid, index) => {

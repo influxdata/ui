@@ -8,7 +8,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {Overlay} from '@influxdata/clockface'
 import PageSpinner from 'src/perf/components/PageSpinner'
-import {PluginCreateConfigurationFooter} from 'src/writeData/components/PluginCreateConfigurationFooter'
+import {Footer} from 'src/writeData/components/PluginCreateConfiguration/Footer'
 
 const TelegrafUIRefreshStepSwitcher = Loadable({
   loader: () =>
@@ -35,7 +35,7 @@ import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
 // Types
 import {AppState, Bucket, ResourceType} from 'src/types'
-import {PluginCreateConfigurationStepProps} from 'src/writeData/components/PluginCreateConfigurationWizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
@@ -92,7 +92,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
           <Overlay.Body className={overlayBodyClassName}>
             <TelegrafUIRefreshStepSwitcher stepProps={this.stepProps} />
           </Overlay.Body>
-          <PluginCreateConfigurationFooter {...this.stepProps} />
+          <Footer {...this.stepProps} />
         </Overlay.Container>
       </Overlay>
     )
@@ -115,7 +115,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
     this.setState({pluginConfig: config})
   }
 
-  private get stepProps(): PluginCreateConfigurationStepProps {
+  private get stepProps(): PluginConfigurationStepProps {
     const {
       currentStepIndex,
       notify,

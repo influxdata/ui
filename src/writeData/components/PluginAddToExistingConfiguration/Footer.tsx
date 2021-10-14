@@ -17,7 +17,7 @@ import {updateTelegraf} from 'src/telegrafs/actions/thunks'
 // Types
 import {AppState, ResourceType, Telegraf} from 'src/types'
 import {PluginConfigurationStep} from 'src/types/dataLoaders'
-import {PluginConfigurationStepProps} from 'src/writeData/components/PluginAddToExistingConfiguration/Wizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getDataLoaders} from 'src/dataLoaders/selectors'

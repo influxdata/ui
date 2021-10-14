@@ -21,10 +21,6 @@ $dashboard-grid-gap: $cf-marg-a;
 
 .pinned-items--card {
   background: rgb(49, 49, 61);
-  .cf-resource-name--text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 }
 
 @media screen and (max-width: $cf-grid--breakpoint-md) {

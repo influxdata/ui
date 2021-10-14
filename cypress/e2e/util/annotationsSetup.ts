@@ -158,7 +158,10 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
 
 export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('cell blah').within(() => {
-    cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    cy.get('.giraffe-annotation-line')
+      .should('exist')
+      .first()
+      .trigger('mouseover')
   })
   cy.getByTestID('giraffe-annotation-tooltip').contains(text)
 }
@@ -236,7 +239,10 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
 
   // annotation tooltip should say the new name
   cy.getByTestID('cell blah').within(() => {
-    cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+    cy.get('.giraffe-annotation-line')
+      .should('exist')
+      .first()
+      .trigger('mouseover')
   })
   cy.getByTestID('giraffe-annotation-tooltip').contains(
     'lets edit this annotation...'

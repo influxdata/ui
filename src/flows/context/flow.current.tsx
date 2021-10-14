@@ -7,6 +7,7 @@ import React, {
   useEffect,
 } from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
+import {useParams} from 'react-router'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
@@ -47,6 +48,8 @@ export const FlowProvider: FC = ({children}) => {
   const yDoc = useRef(new Y.Doc())
   const provider = useRef<WebsocketProvider>()
 
+  const {id: flowId} = useParams<{id: string}>()
+
   // NOTE this is a pretty awful mechanism, as it duplicates the source of
   // truth for the definition of the current flow, but i can't see a good
   // way around it. We need to ensure that we're still updating the values
@@ -65,10 +68,10 @@ export const FlowProvider: FC = ({children}) => {
   }, [flows, currentID])
 
   useEffect(() => {
-    if (isFlagEnabled('copresence') || true) {
+    if (isFlagEnabled('sharedFlowEditing')) {
       provider.current = new WebsocketProvider(
-        'wss://demos.yjs.dev',
-        'experiment',
+        'wss://demos.yjs.dev', // todo(ariel): replace this with an actual API that we setup
+        flowId,
         yDoc.current
       )
       const localState = provider.current.awareness.getLocalState()
@@ -79,10 +82,6 @@ export const FlowProvider: FC = ({children}) => {
       yDoc.current.on('update', () => {
         const {localState} = yDoc.current.getMap('localState').toJSON()
         setCurrentFlow(prev => {
-          console.log({
-            eq: btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState)),
-            localState,
-          })
           if (btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState))) {
             return prev
           }
@@ -92,23 +91,21 @@ export const FlowProvider: FC = ({children}) => {
     }
 
     return () => {
-      if (isFlagEnabled('copresence') || true) {
+      if (isFlagEnabled('sharedFlowEditing')) {
         disconnectProvider()
       }
     }
-  }, [])
+  }, [flowId])
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
-      if (isFlagEnabled('copresence') || true) {
-        console.log('updateData')
+      if (isFlagEnabled('sharedFlowEditing')) {
         const flowCopy = JSON.parse(JSON.stringify(currentFlow))
         if (flowCopy?.data?.byID[id]) {
           flowCopy.data.byID[id] = {
             ...(flowCopy.data.byID[id] || {}),
             ...data,
           }
-          console.log({data})
           const update = {
             ...flowCopy,
             ...flowCopy.data.byID[id],
@@ -143,8 +140,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateMeta = useCallback(
     (id: string, meta: Partial<PipeMeta>) => {
-      if (isFlagEnabled('copresence') || true) {
-        console.log('updateMeta')
+      if (isFlagEnabled('sharedFlowEditing')) {
         if (currentFlow?.meta?.byID[id]) {
           const flowCopy = JSON.parse(JSON.stringify(currentFlow))
           flowCopy.meta.byID[id] = {
@@ -192,7 +188,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateOther = useCallback(
     (flow: Partial<Flow>) => {
-      if (isFlagEnabled('copresence') || true) {
+      if (isFlagEnabled('sharedFlowEditing')) {
         if (currentFlow) {
           const flowCopy = JSON.parse(JSON.stringify(currentFlow))
           for (const ni in flow) {
@@ -236,7 +232,7 @@ export const FlowProvider: FC = ({children}) => {
       delete initial.title
       initial.id = id
 
-      if (isFlagEnabled('copresence') || true) {
+      if (isFlagEnabled('sharedFlowEditing')) {
         const flowCopy = JSON.parse(JSON.stringify(currentFlow))
         flowCopy.data.byID[id] = initial
         flowCopy.meta.byID[id] = {
@@ -296,7 +292,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const removePipe = useCallback(
     (id: string) => {
-      if (isFlagEnabled('copresence') || true) {
+      if (isFlagEnabled('sharedFlowEditing')) {
         const flowCopy = JSON.parse(JSON.stringify(currentFlow))
 
         flowCopy.meta.allIDs = flowCopy.meta.allIDs.filter(_id => _id !== id)

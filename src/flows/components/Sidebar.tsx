@@ -177,10 +177,7 @@ const Sidebar: FC = () => {
               return true
             }
 
-            if (
-              !/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family) &&
-              type !== 'visualization'
-            ) {
+            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
               return true
             }
 

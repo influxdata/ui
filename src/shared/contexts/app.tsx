@@ -7,12 +7,14 @@ import {
   setNavBarState as setNavbarModeAction,
   enablePresentationMode,
   disablePresentationMode,
+  setFlowsCTA as setFlowsCTAAction,
 } from 'src/shared/actions/app'
 import {
   timeZone as timeZoneFromState,
   theme as themeFromState,
   getPresentationMode as presentationModeFromState,
   navbarMode as navbarModeFromState,
+  getFlowsCTA,
 } from 'src/shared/selectors/app'
 import {notify} from 'src/shared/actions/notifications'
 import {PRESENTATION_MODE_ANIMATION_DELAY} from 'src/shared/constants'
@@ -25,11 +27,13 @@ interface AppSettingContextType {
   theme: Theme
   presentationMode: boolean
   navbarMode: NavBarState
+  flowsCTA: boolean
 
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
   setPresentationMode: (active: boolean) => void
   setNavbarMode: (mode: NavBarState) => void
+  setFlowsCTA: (shouldShow: boolean) => void
 }
 
 const DEFAULT_CONTEXT: AppSettingContextType = {
@@ -37,11 +41,13 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   theme: 'dark' as Theme,
   presentationMode: false,
   navbarMode: 'collapsed' as NavBarState,
+  flowsCTA: true,
 
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
   setPresentationMode: (_active: boolean) => {},
   setNavbarMode: (_mode: NavBarState) => {},
+  setFlowsCTA: (_shouldShow: boolean) => {},
 }
 
 export const AppSettingContext = React.createContext<AppSettingContextType>(
@@ -49,12 +55,13 @@ export const AppSettingContext = React.createContext<AppSettingContextType>(
 )
 
 export const AppSettingProvider: FC = ({children}) => {
-  const {timeZone, theme, presentationMode, navbarMode} = useSelector(
+  const {timeZone, theme, presentationMode, navbarMode, flowsCTA} = useSelector(
     (state: AppState) => ({
       timeZone: timeZoneFromState(state),
       theme: themeFromState(state),
       presentationMode: presentationModeFromState(state),
       navbarMode: navbarModeFromState(state),
+      flowsCTA: getFlowsCTA(state),
     })
   )
   const dispatch = useDispatch()
@@ -90,6 +97,12 @@ export const AppSettingProvider: FC = ({children}) => {
     },
     [dispatch]
   )
+  const setFlowsCTA = useCallback(
+    (_shouldShow: boolean) => {
+      dispatch(setFlowsCTAAction(_shouldShow))
+    },
+    [dispatch]
+  )
 
   return (
     <AppSettingContext.Provider
@@ -98,11 +111,13 @@ export const AppSettingProvider: FC = ({children}) => {
         theme,
         presentationMode,
         navbarMode,
+        flowsCTA,
 
         setTimeZone,
         setTheme,
         setPresentationMode,
         setNavbarMode,
+        setFlowsCTA,
       }}
     >
       {children}

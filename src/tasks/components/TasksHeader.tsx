@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {FC, useContext} from 'react'
 import {Link} from 'react-router-dom'
 
 // Components
@@ -30,6 +30,8 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 import {SortTypes} from 'src/shared/utils/sort'
 import {ResourceType} from 'src/types'
 
+import {AppSettingContext} from 'src/shared/contexts/app'
+
 import 'src/shared/components/cta.scss'
 
 interface Props {
@@ -48,108 +50,89 @@ interface Props {
   ) => void
 }
 
-interface State {
-  dismissFlowsCTA: boolean
-}
-
-export default class TasksHeader extends PureComponent<Props, State> {
-  constructor(props) {
-    super(props)
-    this.state = {
-      dismissFlowsCTA: false,
-    }
+const TasksHeader: FC<Props> = ({
+  onCreateTask,
+  setShowInactive,
+  showInactive,
+  setSearchTerm,
+  searchTerm,
+  sortKey,
+  sortType,
+  sortDirection,
+  onSort,
+}) => {
+  const {flowsCTA, setFlowsCTA} = useContext(AppSettingContext)
+  const creater = () => {
+    event('Task Created From Dropdown', {source: 'header'})
+    onCreateTask()
   }
 
-  private hideFlowsCTA = () => {
-    this.setState({dismissFlowsCTA: true})
+  const recordClick = () => {
+    event('Tasks List Page - Clicked Notebooks CTA')
   }
 
-  public render() {
-    const {
-      onCreateTask,
-      setShowInactive,
-      showInactive,
-      setSearchTerm,
-      searchTerm,
-      sortKey,
-      sortType,
-      sortDirection,
-      onSort,
-    } = this.props
-
-    const creater = () => {
-      event('Task Created From Dropdown', {source: 'header'})
-      onCreateTask()
-    }
-
-    const recordClick = () => {
-      event('Tasks List Page - Clicked Notebooks CTA')
-    }
-
-    return (
-      <>
-        <Page.Header fullWidth={false} testID="tasks-page--header">
-          <Page.Title title="Tasks" />
-          <RateLimitAlert />
-        </Page.Header>
-        {!this.state.dismissFlowsCTA && (
-          <FeatureFlag name="flowsCTA">
-            <div className="header-cta--tasks">
-              <div className="header-cta">
-                <Icon glyph={IconFont.BookPencil} />
-                Now you can use Notebooks to explore your data while building a
-                task
-                <Link to="/notebook/from/task" onClick={recordClick}>
-                  Create a Task
-                </Link>
-                <span
-                  className="header-cta--close-icon"
-                  onClick={this.hideFlowsCTA}
-                >
-                  <Icon glyph={IconFont.Remove} />
-                </span>
-              </div>
+  const hideFlowsCTA = () => {
+    setFlowsCTA(false)
+  }
+  return (
+    <>
+      <Page.Header fullWidth={false} testID="tasks-page--header">
+        <Page.Title title="Tasks" />
+        <RateLimitAlert />
+      </Page.Header>
+      {flowsCTA && (
+        <FeatureFlag name="flowsCTA">
+          <div className="header-cta--tasks">
+            <div className="header-cta">
+              <Icon glyph={IconFont.BookPencil} />
+              Now you can use Notebooks to explore your data while building a
+              task
+              <Link to="/notebook/from/task" onClick={recordClick}>
+                Create a Task
+              </Link>
+              <span className="header-cta--close-icon" onClick={hideFlowsCTA}>
+                <Icon glyph={IconFont.Remove} />
+              </span>
             </div>
-          </FeatureFlag>
-        )}
-        <Page.ControlBar fullWidth={false}>
-          <Page.ControlBarLeft>
-            <SearchWidget
-              placeholderText="Filter tasks..."
-              onSearch={setSearchTerm}
-              searchTerm={searchTerm}
+          </div>
+        </FeatureFlag>
+      )}
+      <Page.ControlBar fullWidth={false}>
+        <Page.ControlBarLeft>
+          <SearchWidget
+            placeholderText="Filter tasks..."
+            onSearch={setSearchTerm}
+            searchTerm={searchTerm}
+          />
+          <ResourceSortDropdown
+            resourceType={ResourceType.Tasks}
+            sortKey={sortKey}
+            sortType={sortType}
+            sortDirection={sortDirection}
+            onSelect={onSort}
+          />
+        </Page.ControlBarLeft>
+        <Page.ControlBarRight>
+          <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
+            <InputLabel>Show Inactive</InputLabel>
+            <SlideToggle
+              active={showInactive}
+              size={ComponentSize.ExtraSmall}
+              onChange={setShowInactive}
             />
-            <ResourceSortDropdown
-              resourceType={ResourceType.Tasks}
-              sortKey={sortKey}
-              sortType={sortType}
-              sortDirection={sortDirection}
-              onSelect={onSort}
-            />
-          </Page.ControlBarLeft>
-          <Page.ControlBarRight>
-            <FlexBox
-              direction={FlexDirection.Row}
-              margin={ComponentSize.Medium}
-            >
-              <InputLabel>Show Inactive</InputLabel>
-              <SlideToggle
-                active={showInactive}
-                size={ComponentSize.ExtraSmall}
-                onChange={setShowInactive}
-              />
-            </FlexBox>
-            <Button
-              icon={IconFont.Plus}
-              color={ComponentColor.Primary}
-              text="Create Task"
-              titleText="Click to create a Task"
-              onClick={creater}
-              testID="create-task--button"
-            />
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-      </>
-    )
-  }
+          </FlexBox>
+          <Button
+            icon={IconFont.Plus}
+            color={ComponentColor.Primary}
+            text="Create Task"
+            titleText="Click to create a Task"
+            onClick={creater}
+            testID="create-task--button"
+          />
+        </Page.ControlBarRight>
+      </Page.ControlBar>
+    </>
+  )
 }
+
+export default TasksHeader

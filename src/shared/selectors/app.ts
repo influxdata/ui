@@ -17,3 +17,6 @@ export const hasUpdatedTimeRangeInVEO = (state: AppState): boolean =>
 
 export const getPresentationMode = (state: AppState): boolean =>
   state.app.ephemeral.inPresentationMode || false
+
+export const getFlowsCTA = (state: AppState): boolean =>
+  state.app.persisted.flowsCTA

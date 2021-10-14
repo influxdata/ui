@@ -17,6 +17,7 @@ export interface AppState {
     navBarState: NavBarState
     theme: Theme
     versionInfo: VersionInfo
+    flowsCTA: boolean
   }
 }
 
@@ -32,6 +33,7 @@ const initialState: AppState = {
     timeZone: 'Local',
     navBarState: 'collapsed',
     versionInfo: {version: '', commit: ''},
+    flowsCTA: true,
   },
 }
 
@@ -112,6 +114,13 @@ const appPersistedReducer = (
       return {
         ...state,
         navBarState,
+      }
+    }
+
+    case ActionTypes.SetFlowsCTA: {
+      return {
+        ...state,
+        flowsCTA: action.payload.flowsCTA,
       }
     }
 

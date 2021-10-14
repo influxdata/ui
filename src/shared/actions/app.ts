@@ -10,6 +10,7 @@ export enum ActionTypes {
   SetTimeZone = 'SET_APP_TIME_ZONE',
   SetVersionInfo = 'SET_VERSION_INFO',
   TemplateControlBarVisibilityToggled = 'TemplateControlBarVisibilityToggledAction',
+  SetFlowsCTA = 'SET_FLOWS_CTA',
   Noop = 'NOOP',
 }
 
@@ -23,6 +24,7 @@ export type Action =
   | ReturnType<typeof setTimeZone>
   | ReturnType<typeof setTheme>
   | ReturnType<typeof setVersionInfo>
+  | ReturnType<typeof setFlowsCTA>
 
 // ephemeral state action creators
 
@@ -74,4 +76,10 @@ export const setVersionInfo = (versionInfo: VersionInfo) =>
   ({
     type: ActionTypes.SetVersionInfo,
     payload: {versionInfo},
+  } as const)
+
+export const setFlowsCTA = (flowsCTA: boolean) =>
+  ({
+    type: ActionTypes.SetFlowsCTA,
+    payload: {flowsCTA},
   } as const)

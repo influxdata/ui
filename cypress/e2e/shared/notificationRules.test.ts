@@ -568,42 +568,48 @@ describe('NotificationRules', () => {
           }
         })
         // verify first row
-        cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
-          cy.get('.level-table-field--ok').should('be.visible')
-          cy.get('.sent-table-field--sent').should('be.visible')
-          cy.get('.event-row--field:nth-of-type(3)').should(
+        cy.getByTestID('event-row 0').within(() => {
+          cy.getByTestID('event-row--field level').should('have.text', 'ok')
+          cy.getByTestID('event-row--field sent').within(() => {
+              cy.getByTestID('sent-table-field sent').should('be.visible')
+          })
+          cy.getByTestID('event-row--field checkID').should(
             'have.text',
             check.name
           )
-          cy.get('.event-row--field:nth-of-type(4)').should(
+          cy.getByTestID('event-row--field notificationRuleID').should(
             'have.text',
             rule.name
           )
-          cy.get('.event-row--field:nth-of-type(5)').should(
+          cy.getByTestID('event-row--field notificationEndpointID').should(
             'have.text',
             endp.name
           )
         })
         // verify second row
-        cy.get('[class$=ScrollContainer] > div:nth-of-type(2)').within(() => {
-          cy.get('.level-table-field--info').should('be.visible')
-          cy.get('.sent-table-field--not-sent').should('be.visible')
+        cy.getByTestID('event-row 1').within(() => {
+          cy.getByTestID('event-row--field level').should('have.text', 'info')
+          cy.getByTestID('event-row--field sent').within(() => {
+             cy.getByTestID('sent-table-field not-sent').should('be.visible')
+          })
         })
         // verify third row
-        cy.get('[class$=ScrollContainer] > div:nth-of-type(3)').within(() => {
-          cy.get('.level-table-field--crit').should('be.visible')
-          cy.get('.sent-table-field--sent').should('be.visible')
+        cy.getByTestID('event-row 2').within(() => {
+          cy.getByTestID('event-row--field level').should('have.text', 'crit')
+          cy.getByTestID('event-row--field sent').within(() => {
+            cy.getByTestID('sent-table-field sent').should('be.visible')
+          })
         })
         // verify fourth row
-        cy.get('[class$=ScrollContainer] > div:nth-of-type(4)').within(() => {
-          cy.get('.level-table-field--warn').should('be.visible')
+        cy.getByTestID('event-row 3').within(() => {
+          cy.getByTestID('event-row--field level').should('have.text', 'warn')
         })
         // check links...
         //    ...To Check
         cy.getByTestID('overlay').should('not.exist')
-        cy.get(
-          '[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(3) > a'
-        ).click()
+        cy.getByTestID('event-row--field checkID').eq(3).within(() => {
+          cy.get('a').click()
+        })
         cy.getByTestID('overlay')
           .should('be.visible')
           .within(() => {
@@ -614,9 +620,9 @@ describe('NotificationRules', () => {
         cy.go('back')
         //    ...To Rule
         cy.getByTestID('overlay').should('not.exist')
-        cy.get(
-          '[class$=ScrollContainer] > div:nth-of-type(4) .event-row--field:nth-of-type(4) > a'
-        ).click()
+        cy.getByTestID('event-row--field notificationRuleID').eq(2).within(() => {
+          cy.get('a').click()
+        })
         cy.getByTestID('overlay')
           .should('be.visible')
           .within(() => {
@@ -633,9 +639,9 @@ describe('NotificationRules', () => {
         cy.go('back')
         //    ...To Endpoint
         cy.getByTestID('overlay').should('not.exist')
-        cy.get(
-          '[class$=ScrollContainer] > div:nth-of-type(3) .event-row--field:nth-of-type(5) > a'
-        ).click()
+        cy.getByTestID('event-row--field notificationEndpointID').eq(1).within(() => {
+          cy.get('a').click()
+        })
         cy.getByTestID('overlay')
           .should('be.visible')
           .within(() => {
@@ -682,7 +688,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('check-status-input')
           .clear()
           .type('"level" != "info"')
-        cy.get('.event-row')
+        cy.get('[data-testid^="event-row "]')
           .should('have.length', 3)
           .then(rows => {
             const levels = rows
@@ -695,7 +701,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('check-status-input')
           .clear()
           .type(`"notificationRuleName" == "${rule.name}"`)
-        cy.get('.event-row')
+        cy.get('[data-testid^="event-row "]')
           .should('have.length', 4)
           .then(rows => {
             const levels = rows
@@ -763,10 +769,10 @@ describe('NotificationRules', () => {
         cy.getByTestID('dropdown--button').should('have.text', 'UTC')
 
         // compare UTC values
-        cy.get('.event-row--field:nth-of-type(1) ').then(timestamps => {
+        cy.getByTestID('event-row--field time').then(timestamps => {
           const UTCHours = timestamps
             .toArray()
-            .map(n => new Date(n.innerText).getHours())
+            .map((n: any )=> new Date(n.innerText).getHours())
           expect(UTCHours).to.not.deep.eq(hours)
         })
 
@@ -775,7 +781,7 @@ describe('NotificationRules', () => {
         cy.getByTitle('Local').click()
         cy.getByTestID('dropdown--button').should('have.text', 'Local')
 
-        cy.get('.event-row--field:nth-of-type(1) ').then(timestamps => {
+        cy.getByTestID('event-row--field time').then(timestamps => {
           const CurrHours = timestamps
             .toArray()
             .map(n => new Date(n.innerText).getHours())

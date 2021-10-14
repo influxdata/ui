@@ -9,6 +9,6 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--schedule',
-    button: 'Schedule',
+    button: 'Task',
   })
 }

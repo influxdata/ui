@@ -83,6 +83,7 @@ export const BucketProvider: FC<Props> = ({panel, children}) => {
         setLoading(RemoteDataState.Done)
         setBuckets([...bucks.user, ...bucks.system])
       })
+      .catch(() => {})
   }, [scope.region, scope.org])
 
   return (

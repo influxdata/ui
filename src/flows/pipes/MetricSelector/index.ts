@@ -11,6 +11,7 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     button: 'Metric Selector',
+    disabled: true,
     initial: {
       field: '',
       measurement: '',

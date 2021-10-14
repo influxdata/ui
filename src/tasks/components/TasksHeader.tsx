@@ -62,7 +62,7 @@ const TasksHeader: FC<Props> = ({
   onSort,
 }) => {
   const {flowsCTA, setFlowsCTA} = useContext(AppSettingContext)
-  const creater = () => {
+  const creator = () => {
     event('Task Created From Dropdown', {source: 'header'})
     onCreateTask()
   }
@@ -126,7 +126,7 @@ const TasksHeader: FC<Props> = ({
             color={ComponentColor.Primary}
             text="Create Task"
             titleText="Click to create a Task"
-            onClick={creater}
+            onClick={creator}
             testID="create-task--button"
           />
         </Page.ControlBarRight>

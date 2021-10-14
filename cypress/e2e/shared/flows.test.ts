@@ -132,7 +132,7 @@ describe('Flows', () => {
 
     cy.getByTestID('panel-add-btn--1').click()
 
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
     cy.getByTestID('add-flow-btn--queryBuilder').click()
     cy.getByTestID('builder-card')
       .eq(0)
@@ -157,7 +157,7 @@ describe('Flows', () => {
       .within(() => {
         cy.getByTestID(`selector-list beans`).click()
       })
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -214,7 +214,7 @@ describe('Flows', () => {
 
     cy.getByTestID('panel-add-btn--1').click()
 
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
     cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
@@ -226,7 +226,7 @@ describe('Flows', () => {
 
     // select beans tag and click preview
     cy.getByTestID('tag-selector beans').click()
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -320,7 +320,7 @@ describe('Flows', () => {
 
     cy.getByTestID('panel-add-btn--1').click()
 
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
     cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
 
@@ -332,7 +332,7 @@ describe('Flows', () => {
 
     // select beans tag and click preview
     cy.getByTestID('tag-selector beans').click()
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -387,7 +387,7 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
     cy.getByTestID('panel-add-btn--1').click()
     cy.getByTestID('add-flow-btn--metricSelector').click()
     cy.getByTestID('flow-bucket-selector').click()
@@ -400,7 +400,7 @@ describe('Flows', () => {
 
     // select beans tag and click preview
     cy.getByTestID('tag-selector beans').click()
-    /////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -468,14 +468,14 @@ describe('Flows', () => {
       cy.getByTestID('Delete--list-item').click()
 
       cy.getByTestID('panel-add-btn--1').click()
-      /////////////////////////////////////////////////////////
+      // ///////////////////////////////////////////////////////
       cy.getByTestID('add-flow-btn--metricSelector').click()
       cy.getByTestID('flow-bucket-selector').click()
       cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
       cy.getByTestID('measurement-selector test').click()
       cy.getByTestID('field-selector dopeness').click()
       cy.getByTestID('tag-selector beans').click()
-      /////////////////////////////////////////////////////////
+      // ///////////////////////////////////////////////////////
 
       // add an alert cell
       cy.getByTestID('panel-add-btn-2').click()

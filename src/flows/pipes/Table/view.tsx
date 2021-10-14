@@ -106,7 +106,7 @@ const Table: FC<PipeProp> = ({Context}) => {
     )
   }
 
-  let caveat = (
+  const caveat = (
     <label style={{alignSelf: 'center', marginRight: '12px'}}>
       Limited to most recent 100 results per series
     </label>

@@ -34,9 +34,10 @@ const CheckHistoryVisualization: FC = () => {
           giraffeResult.table.getColumnType('_value') !== 'number'
         ) {
           return (
-              <SimpleTable
-                result={giraffeResult}
-                properties={simpleTableProperties} />
+            <SimpleTable
+              result={giraffeResult}
+              properties={simpleTableProperties}
+            />
           )
         }
 

@@ -253,11 +253,6 @@ describe('Flows', () => {
 
     cy.getByTestID('resource-editable-name').click()
 
-    // Validate that the selections are maintained in the original selection
-    cy.getByTestID('label--pill measurement = test').should('exist')
-    cy.getByTestID('label--pill--delete field = dopeness').should('exist')
-    cy.getByTestID('label--pill--delete container_name = beans').should('exist')
-
     cy.getByTestID('nav-item-flows').click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
@@ -268,11 +263,6 @@ describe('Flows', () => {
     cy.getByTestID(`flow-button--clone`).click({force: true})
 
     const clone = `${flowName} (clone 1)`
-
-    // Validate that the selections are maintained in the original selection
-    cy.getByTestID('label--pill measurement = test').should('exist')
-    cy.getByTestID('label--pill--delete field = dopeness').should('exist')
-    cy.getByTestID('label--pill--delete container_name = beans').should('exist')
 
     // Should redirect the user to the newly cloned flow
     // Validates that the selected clone is the clone

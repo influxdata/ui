@@ -30,14 +30,9 @@ export default register =>
               visible: true,
             },
             {
-              type: 'visualization',
-              properties: {
-                type: 'simple-table',
-                showAll: false,
-              },
-              period: '10s',
               title: 'Validate the Data',
               visible: true,
+              type: 'table',
             },
           ],
         },

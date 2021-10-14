@@ -10,7 +10,7 @@ export default register => {
     type: 'visualization',
     family: 'passThrough',
     component: View,
-    button: 'Visualization',
+    button: 'Graph',
     initial: {
       functions: [{name: 'mean'}],
       period: '',

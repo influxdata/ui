@@ -1,19 +1,22 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {AutoSizer} from 'react-virtualized'
 
 // Components
 import TimeSeries from 'src/shared/components/TimeSeries'
 import {View, SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {CheckContext} from 'src/checks/utils/context'
-import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
+import SimpleTable from 'src/visualization/types/SimpleTable/view'
+import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 
 const CheckHistoryVisualization: FC = () => {
-  const properties = SUPPORTED_VISUALIZATIONS['check'].initial
-
   // NOTE: this is lazy, but i'm hoping we get rid of checks pretty soon
   // in favor of the new alerts interface (alex)
   const {id, type, query, updateStatuses} = useContext(CheckContext)
+  const properties = SUPPORTED_VISUALIZATIONS['check'].initial
+  const simpleTableProperties = {
+    type: 'simple-table',
+    showAll: true,
+  } as SimpleTableViewProperties
 
   if (type === 'custom') {
     return
@@ -31,17 +34,9 @@ const CheckHistoryVisualization: FC = () => {
           giraffeResult.table.getColumnType('_value') !== 'number'
         ) {
           return (
-            <AutoSizer>
-              {({width, height}) => {
-                return (
-                  <RawFluxDataTable
-                    parsedResults={giraffeResult}
-                    width={width}
-                    height={height}
-                  />
-                )
-              }}
-            </AutoSizer>
+              <SimpleTable
+                result={giraffeResult}
+                properties={simpleTableProperties} />
           )
         }
 

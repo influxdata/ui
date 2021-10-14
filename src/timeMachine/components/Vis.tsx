@@ -10,6 +10,7 @@ import {View} from 'src/visualization'
 import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
+import SimpleTable from 'src/visualization/types/SimpleTable/view'
 
 // Utils
 import {
@@ -30,7 +31,6 @@ import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
-import SimpleTable from 'src/visualization/types/SimpleTable/view'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -76,7 +76,7 @@ const TimeMachineVis: FC<Props> = ({
     resolvedViewProperties = {
       type: 'simple-table',
       showAll: true,
-    }
+    } as SimpleTableViewProperties
   }
   const noQueries =
     loading === RemoteDataState.NotStarted || !viewProperties.queries.length

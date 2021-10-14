@@ -3,7 +3,6 @@ import React, {FC, useContext, useEffect, useMemo} from 'react'
 
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
-import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
 import Controls from 'src/flows/pipes/Visualization/Controls'
 import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
@@ -17,7 +16,6 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
 import {downloadTextFile} from 'src/shared/utils/download'
@@ -65,7 +63,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
-  const {launch} = useContext(PopupContext)
 
   const dataExists = !!(results?.parsed?.table || []).length
 
@@ -106,18 +103,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             title: 'Download as CSV',
             disable: !dataExists,
             action: download,
-          },
-          {
-            title: 'Export to Dashboard',
-            action: () => {
-              event('Export to Dashboard Clicked')
-
-              launch(<ExportDashboardOverlay />, {
-                properties: data.properties,
-                range: range,
-                panel: id,
-              })
-            },
           },
           {
             title: 'Download As Image',

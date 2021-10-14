@@ -50,16 +50,17 @@ export const FlowProvider: FC = ({children}) => {
 
   const {id: flowId} = useParams<{id: string}>()
 
-  // NOTE this is a pretty awful mechanism, as it duplicates the source of
-  // truth for the definition of the current flow, but i can't see a good
-  // way around it. We need to ensure that we're still updating the values
-  // and references to the flows object directly to get around the async
-  // update issues.
   function disconnectProvider() {
     if (provider.current?.wsconnected) {
       provider.current.disconnect()
     }
   }
+
+  // NOTE this is a pretty awful mechanism, as it duplicates the source of
+  // truth for the definition of the current flow, but i can't see a good
+  // way around it. We need to ensure that we're still updating the values
+  // and references to the flows object directly to get around the async
+  // update issues.
 
   useEffect(() => {
     if (currentID) {

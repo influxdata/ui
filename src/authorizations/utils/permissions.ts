@@ -137,8 +137,8 @@ export enum BucketTab {
   Scoped = 'Scoped',
 }
 
-export const formatResources = (resourceNames) => {
- const resources = resourceNames.filter(
+export const formatResources = resourceNames => {
+  const resources = resourceNames.filter(
     item => item !== 'buckets' && item !== 'telegrafs'
   )
   resources.sort()
@@ -147,7 +147,7 @@ export const formatResources = (resourceNames) => {
   const indexToSplit = resources.indexOf('telegrafs')
   const first = resources.slice(0, indexToSplit + 1)
   const second = resources.slice(indexToSplit + 1)
-return [first, second]
+  return [first, second]
 }
 
 export const formatPermissionsObj = permissions => {
@@ -229,11 +229,11 @@ export const formatPermissionsObj = permissions => {
 export const formatApiPermissions = (permissions, orgID, orgName) => {
   const apiPerms = []
   Object.keys(permissions).forEach(key => {
-    if (key === "otherResources") {
+    if (key === 'otherResources') {
       return
     }
     if (permissions[key].read) {
-      if (key === "orgs") {
+      if (key === 'orgs') {
         apiPerms.push({
           action: 'read',
           resource: {
@@ -242,8 +242,7 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
             type: key,
           },
         })
-      }
-      else {
+      } else {
         apiPerms.push({
           action: 'read',
           resource: {
@@ -254,7 +253,7 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
       }
     }
     if (permissions[key].write) {
-      if (key === "orgs") {
+      if (key === 'orgs') {
         apiPerms.push({
           action: 'write',
           resource: {
@@ -263,8 +262,7 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
             type: key,
           },
         })
-      }
-      else {
+      } else {
         apiPerms.push({
           action: 'write',
           resource: {

@@ -7,6 +7,7 @@ import CellFamily from 'src/flows/components/CellFamily'
 
 // Constants
 import {FlowContext} from 'src/flows/context/flow.current'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Utils
@@ -52,6 +53,7 @@ const SUPPORTED_FAMILIES = [
 
 const AddButtons: FC<Props> = ({index, onInsert}) => {
   const {flow, add} = useContext(FlowContext)
+  const {queryDependents} = useContext(FlowQueryContext)
 
   const pipeFamilies = Object.entries(
     Object.values(PIPE_DEFINITIONS)
@@ -111,12 +113,14 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
               notebooksCellType: def.type,
               position: evtPos,
             })
-            add(
-              {
-                ...data,
-                type: def.type,
-              },
-              index
+            queryDependents(
+              add(
+                {
+                  ...data,
+                  type: def.type,
+                },
+                index
+              )
             )
           }}
           color={ComponentColor.Secondary}

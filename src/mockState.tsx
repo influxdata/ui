@@ -34,7 +34,7 @@ export const localState: LocalStorage = {
         version: '',
         commit: '',
       },
-      flowsCTA: true,
+      flowsCTA: {alerts: true, explorer: true, tasks: true},
     },
   },
   flags: {

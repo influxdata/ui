@@ -3,7 +3,7 @@ import {combineReducers} from 'redux'
 // Types
 import {ActionTypes, Action} from 'src/shared/actions/app'
 import {AUTOREFRESH_DEFAULT_INTERVAL} from 'src/shared/constants'
-import {TimeZone, NavBarState, Theme, VersionInfo} from 'src/types'
+import {TimeZone, NavBarState, Theme, VersionInfo, FlowsCTA} from 'src/types'
 
 export interface AppState {
   ephemeral: {
@@ -17,7 +17,7 @@ export interface AppState {
     navBarState: NavBarState
     theme: Theme
     versionInfo: VersionInfo
-    flowsCTA: boolean
+    flowsCTA: FlowsCTA
   }
 }
 
@@ -33,7 +33,7 @@ const initialState: AppState = {
     timeZone: 'Local',
     navBarState: 'collapsed',
     versionInfo: {version: '', commit: ''},
-    flowsCTA: true,
+    flowsCTA: {explorer: true, tasks: true, alerts: true},
   },
 }
 
@@ -120,7 +120,10 @@ const appPersistedReducer = (
     case ActionTypes.SetFlowsCTA: {
       return {
         ...state,
-        flowsCTA: action.payload.flowsCTA,
+        flowsCTA: {
+          ...state.flowsCTA,
+          ...action.payload.flowsCTA,
+        },
       }
     }
 

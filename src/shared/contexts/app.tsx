@@ -20,20 +20,20 @@ import {notify} from 'src/shared/actions/notifications'
 import {PRESENTATION_MODE_ANIMATION_DELAY} from 'src/shared/constants'
 import {presentationMode as presentationModeCopy} from 'src/shared/copy/notifications'
 
-import {AppState, TimeZone, Theme, NavBarState} from 'src/types'
+import {AppState, TimeZone, Theme, NavBarState, FlowsCTA} from 'src/types'
 
 interface AppSettingContextType {
   timeZone: TimeZone
   theme: Theme
   presentationMode: boolean
   navbarMode: NavBarState
-  flowsCTA: boolean
+  flowsCTA: FlowsCTA
 
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
   setPresentationMode: (active: boolean) => void
   setNavbarMode: (mode: NavBarState) => void
-  setFlowsCTA: (shouldShow: boolean) => void
+  setFlowsCTA: (flowsCTA: FlowsCTA) => void
 }
 
 const DEFAULT_CONTEXT: AppSettingContextType = {
@@ -41,13 +41,13 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   theme: 'dark' as Theme,
   presentationMode: false,
   navbarMode: 'collapsed' as NavBarState,
-  flowsCTA: true,
+  flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
 
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
   setPresentationMode: (_active: boolean) => {},
   setNavbarMode: (_mode: NavBarState) => {},
-  setFlowsCTA: (_shouldShow: boolean) => {},
+  setFlowsCTA: (_flowsCTA: FlowsCTA) => {},
 }
 
 export const AppSettingContext = React.createContext<AppSettingContextType>(
@@ -98,8 +98,8 @@ export const AppSettingProvider: FC = ({children}) => {
     [dispatch]
   )
   const setFlowsCTA = useCallback(
-    (_shouldShow: boolean) => {
-      dispatch(setFlowsCTAAction(_shouldShow))
+    (_flowsCTA: FlowsCTA) => {
+      dispatch(setFlowsCTAAction(_flowsCTA))
     },
     [dispatch]
   )

@@ -31,7 +31,7 @@ const DataExplorerPage: FC = () => {
   useLoadTimeReporting('DataExplorerPage load start')
 
   const hideFlowsCTA = () => {
-    setFlowsCTA(false)
+    setFlowsCTA({explorer: false})
   }
 
   const recordClick = () => {
@@ -59,7 +59,7 @@ const DataExplorerPage: FC = () => {
           <Page.Title title="Data Explorer" />
           <RateLimitAlert />
         </Page.Header>
-        {flowsCTA && (
+        {flowsCTA.explorer && (
           <FeatureFlag name="flowsCTA">
             <div className="header-cta--de">
               <div className="header-cta">

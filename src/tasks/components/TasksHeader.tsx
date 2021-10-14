@@ -72,7 +72,7 @@ const TasksHeader: FC<Props> = ({
   }
 
   const hideFlowsCTA = () => {
-    setFlowsCTA(false)
+    setFlowsCTA({tasks: false})
   }
   return (
     <>
@@ -80,7 +80,7 @@ const TasksHeader: FC<Props> = ({
         <Page.Title title="Tasks" />
         <RateLimitAlert />
       </Page.Header>
-      {flowsCTA && (
+      {flowsCTA.tasks && (
         <FeatureFlag name="flowsCTA">
           <div className="header-cta--tasks">
             <div className="header-cta">

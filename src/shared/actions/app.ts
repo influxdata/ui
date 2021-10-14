@@ -1,4 +1,4 @@
-import {TimeZone, Theme, NavBarState, VersionInfo} from 'src/types'
+import {TimeZone, Theme, NavBarState, VersionInfo, FlowsCTA} from 'src/types'
 
 export enum ActionTypes {
   EnablePresentationMode = 'ENABLE_PRESENTATION_MODE',
@@ -78,7 +78,7 @@ export const setVersionInfo = (versionInfo: VersionInfo) =>
     payload: {versionInfo},
   } as const)
 
-export const setFlowsCTA = (flowsCTA: boolean) =>
+export const setFlowsCTA = (flowsCTA: FlowsCTA) =>
   ({
     type: ActionTypes.SetFlowsCTA,
     payload: {flowsCTA},

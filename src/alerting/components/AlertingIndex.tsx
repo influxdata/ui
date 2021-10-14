@@ -56,7 +56,7 @@ const AlertingIndex: FunctionComponent = () => {
   }
 
   const hideFlowsCTA = () => {
-    setFlowsCTA(false)
+    setFlowsCTA({alerts: false})
   }
 
   return (
@@ -73,7 +73,7 @@ const AlertingIndex: FunctionComponent = () => {
           scrollable={false}
           className={pageContentsClassName}
         >
-          {flowsCTA && (
+          {flowsCTA.alerts && (
             <FeatureFlag name="flowsCTA">
               <div className="header-cta">
                 <Icon glyph={IconFont.BookPencil} />

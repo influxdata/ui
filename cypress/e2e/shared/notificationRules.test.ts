@@ -571,7 +571,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('event-row 0').within(() => {
           cy.getByTestID('event-row--field level').should('have.text', 'ok')
           cy.getByTestID('event-row--field sent').within(() => {
-              cy.getByTestID('sent-table-field sent').should('be.visible')
+            cy.getByTestID('sent-table-field sent').should('be.visible')
           })
           cy.getByTestID('event-row--field checkID').should(
             'have.text',
@@ -590,7 +590,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('event-row 1').within(() => {
           cy.getByTestID('event-row--field level').should('have.text', 'info')
           cy.getByTestID('event-row--field sent').within(() => {
-             cy.getByTestID('sent-table-field not-sent').should('be.visible')
+            cy.getByTestID('sent-table-field not-sent').should('be.visible')
           })
         })
         // verify third row
@@ -607,9 +607,11 @@ describe('NotificationRules', () => {
         // check links...
         //    ...To Check
         cy.getByTestID('overlay').should('not.exist')
-        cy.getByTestID('event-row--field checkID').eq(3).within(() => {
-          cy.get('a').click()
-        })
+        cy.getByTestID('event-row--field checkID')
+          .eq(3)
+          .within(() => {
+            cy.get('a').click()
+          })
         cy.getByTestID('overlay')
           .should('be.visible')
           .within(() => {
@@ -620,9 +622,11 @@ describe('NotificationRules', () => {
         cy.go('back')
         //    ...To Rule
         cy.getByTestID('overlay').should('not.exist')
-        cy.getByTestID('event-row--field notificationRuleID').eq(2).within(() => {
-          cy.get('a').click()
-        })
+        cy.getByTestID('event-row--field notificationRuleID')
+          .eq(2)
+          .within(() => {
+            cy.get('a').click()
+          })
         cy.getByTestID('overlay')
           .should('be.visible')
           .within(() => {
@@ -639,9 +643,11 @@ describe('NotificationRules', () => {
         cy.go('back')
         //    ...To Endpoint
         cy.getByTestID('overlay').should('not.exist')
-        cy.getByTestID('event-row--field notificationEndpointID').eq(1).within(() => {
-          cy.get('a').click()
-        })
+        cy.getByTestID('event-row--field notificationEndpointID')
+          .eq(1)
+          .within(() => {
+            cy.get('a').click()
+          })
         cy.getByTestID('overlay')
           .should('be.visible')
           .within(() => {
@@ -772,7 +778,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('event-row--field time').then(timestamps => {
           const UTCHours = timestamps
             .toArray()
-            .map((n: any )=> new Date(n.innerText).getHours())
+            .map((n: any) => new Date(n.innerText).getHours())
           expect(UTCHours).to.not.deep.eq(hours)
         })
 

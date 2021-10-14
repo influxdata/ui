@@ -28,7 +28,12 @@ const TableRow: FC<Props> = ({row, style, fields, index}) => {
           }
 
           return (
-            <div key={rowKey} className="event-row--field" style={style} data-testid={`event-row--field ${rowKey}`}>
+            <div
+              key={rowKey}
+              className="event-row--field"
+              style={style}
+              data-testid={`event-row--field ${rowKey}`}
+            >
               {content}
             </div>
           )

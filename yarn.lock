@@ -7022,7 +7022,7 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lib0@^0.2.31, lib0@^0.2.35, lib0@^0.2.41, lib0@^0.2.42:
+lib0@^0.2.31, lib0@^0.2.41, lib0@^0.2.42:
   version "0.2.42"
   resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.42.tgz#6d8bf1fb8205dec37a953c521c5ee403fd8769b0"
   integrity sha512-8BNM4MiokEKzMvSxTOC3gnCBisJH+jL67CnSnqzHv3jli3pUvGC8wz+0DQ2YvGr4wVQdb2R2uNNPw9LEpVvJ4Q==
@@ -11839,13 +11839,6 @@ y-leveldb@^0.1.0:
   dependencies:
     level "^6.0.1"
     lib0 "^0.2.31"
-
-y-monaco@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/y-monaco/-/y-monaco-0.1.2.tgz#aa71e7acddcd1ab37e5e570aca1529a379f69ef6"
-  integrity sha512-8VkmPsSbj4JZlLW8/su1O4ULZEGeS22VAvAXawpHlh2BoyeNy5AIwSl5eam+soEuyWHpktQSmxYOBOvQuu6mpQ==
-  dependencies:
-    lib0 "^0.2.35"
 
 y-protocols@^1.0.5:
   version "1.0.5"

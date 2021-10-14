@@ -13,7 +13,7 @@ export default register => {
     initial: {
       properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
     },
-    visual: (data, query) => {
+    visual: (_data, query) => {
       if (!query) {
         return ''
       }

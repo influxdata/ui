@@ -15,7 +15,6 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
 import {downloadTextFile} from 'src/shared/utils/download'
@@ -23,13 +22,10 @@ import {downloadTextFile} from 'src/shared/utils/download'
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 const Table: FC<PipeProp> = ({Context}) => {
   const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
-  const {launch} = useContext(PopupContext)
 
   const dataExists = !!(results?.parsed?.table || []).length
 

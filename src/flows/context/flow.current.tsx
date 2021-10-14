@@ -52,6 +52,12 @@ export const FlowProvider: FC = ({children}) => {
   // way around it. We need to ensure that we're still updating the values
   // and references to the flows object directly to get around the async
   // update issues.
+  function disconnectProvider() {
+    if (provider.current?.wsconnected) {
+      provider.current.disconnect()
+    }
+  }
+
   useEffect(() => {
     if (currentID) {
       setCurrentFlow(flows[currentID])
@@ -67,18 +73,15 @@ export const FlowProvider: FC = ({children}) => {
       )
       const localState = provider.current.awareness.getLocalState()
       if (!localState?.id) {
-        console.log('in the if here')
         provider.current.awareness.setLocalState(DEFAULT_CONTEXT)
       }
 
       yDoc.current.on('update', () => {
-        console.log('should trigger in both browsers')
         const {localState} = yDoc.current.getMap('localState').toJSON()
         setCurrentFlow(prev => {
           console.log({
-            prev,
-            localState,
             eq: btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState)),
+            localState,
           })
           if (btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState))) {
             return prev
@@ -89,25 +92,27 @@ export const FlowProvider: FC = ({children}) => {
     }
 
     return () => {
-      provider.current.disconnect()
+      if (isFlagEnabled('copresence') || true) {
+        disconnectProvider()
+      }
     }
   }, [])
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
-      console.log('updateData')
       if (isFlagEnabled('copresence') || true) {
+        console.log('updateData')
         const flowCopy = JSON.parse(JSON.stringify(currentFlow))
         if (flowCopy?.data?.byID[id]) {
           flowCopy.data.byID[id] = {
             ...(flowCopy.data.byID[id] || {}),
             ...data,
           }
+          console.log({data})
           const update = {
             ...flowCopy,
             ...flowCopy.data.byID[id],
           }
-          console.log({data, update})
           yDoc.current.getMap('localState').set('localState', update)
         }
         return
@@ -138,8 +143,8 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateMeta = useCallback(
     (id: string, meta: Partial<PipeMeta>) => {
-      console.log('updateMeta')
       if (isFlagEnabled('copresence') || true) {
+        console.log('updateMeta')
         if (currentFlow?.meta?.byID[id]) {
           const flowCopy = JSON.parse(JSON.stringify(currentFlow))
           flowCopy.meta.byID[id] = {
@@ -187,7 +192,6 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateOther = useCallback(
     (flow: Partial<Flow>) => {
-      console.log('updateOther')
       if (isFlagEnabled('copresence') || true) {
         if (currentFlow) {
           const flowCopy = JSON.parse(JSON.stringify(currentFlow))

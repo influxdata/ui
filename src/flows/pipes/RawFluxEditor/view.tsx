@@ -44,6 +44,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
+  console.log({data, queries, query})
 
   const updateText = useCallback(
     text => {

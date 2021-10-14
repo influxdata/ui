@@ -62,7 +62,10 @@ const PinnedItems: FC = () => {
       <Panel.Header>
         <h2 className="pinned-items--header">Pinned Items</h2>
       </Panel.Header>
-      <Panel.Body className="pinneditems--container">
+      <Panel.Body
+        className="pinneditems--container"
+        testID="pinneditems--container"
+      >
         {pinnedItems?.length ? (
           pinnedItems.map(item => (
             <ResourceCard

@@ -98,9 +98,11 @@ describe('Scrapers', () => {
       it('can delete a scraper', () => {
         cy.getByTestID('resource-card').should('have.length', 2)
 
-        cy.getByTestID('confirmation-button')
+        cy.getByTestID('context-delete-menu--button')
           .last()
           .click({force: true})
+
+        cy.getByTestID('context-delete-menu--confirm-button').click()
 
         cy.getByTestID('resource-card').should('have.length', 1)
       })

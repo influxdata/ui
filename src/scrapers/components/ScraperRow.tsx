@@ -2,8 +2,12 @@
 import React, {PureComponent} from 'react'
 
 // Components
-import {Context} from 'src/clockface'
-import {ResourceCard} from '@influxdata/clockface'
+import {
+  ButtonShape,
+  ComponentSize,
+  ConfirmationButton,
+  ResourceCard,
+} from '@influxdata/clockface'
 import {Scraper} from 'src/types'
 
 // Constants
@@ -37,15 +41,16 @@ export default class ScraperRow extends PureComponent<Props> {
 
   private get contextMenu(): JSX.Element {
     return (
-      <Context>
-        <Context.Menu icon={IconFont.Trash_New} color={ComponentColor.Danger}>
-          <Context.Item
-            label="Delete"
-            action={this.handleDeleteScraper}
-            testID="confirmation-button"
-          />
-        </Context.Menu>
-      </Context>
+      <ConfirmationButton
+        color={ComponentColor.Colorless}
+        icon={IconFont.Trash_New}
+        shape={ButtonShape.Square}
+        size={ComponentSize.ExtraSmall}
+        confirmationLabel="Yes, delete this scraper"
+        onConfirm={this.handleDeleteScraper}
+        confirmationButtonText="Confirm"
+        testID="context-delete-menu"
+      />
     )
   }
 

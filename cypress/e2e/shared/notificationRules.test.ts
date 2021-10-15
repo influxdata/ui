@@ -413,7 +413,7 @@ describe('NotificationRules', () => {
 
     // Ensure all Async data prep is completed in correct order before starting tests
     // Replaces beforeEach()
-    const localInit = (): Cypress.Chainable<any> => {
+    beforeEach(() => {
       return cy
         .writeLPDataFromFile({
           filename: 'data/wumpus01.lp',
@@ -553,246 +553,235 @@ describe('NotificationRules', () => {
                 })
             })
         })
-    }
+    })
 
     it('shows and filters history', () => {
-      localInit().then(() => {
-        cy.get('.event-row').should('have.length', 4)
-        cy.get('.event-row--field:nth-of-type(1)').then(timestamps => {
-          const stamps = timestamps
-            .toArray()
-            .map(n => new Date(n.innerText).getTime())
-          // assert sort desc by date
-          for (let i = 1; i < stamps.length; i++) {
-            expect(stamps[i - 1]).to.be.above(stamps[i])
-          }
+      cy.get('.event-row').should('have.length', 4)
+      cy.get('.event-row--field:nth-of-type(1)').then(timestamps => {
+        const stamps = timestamps
+          .toArray()
+          .map(n => new Date(n.innerText).getTime())
+        // assert sort desc by date
+        for (let i = 1; i < stamps.length; i++) {
+          expect(stamps[i - 1]).to.be.above(stamps[i])
+        }
+      })
+      // verify first row
+      cy.getByTestID('event-row 0').within(() => {
+        cy.getByTestID('event-row--field level').should('have.text', 'ok')
+        cy.getByTestID('event-row--field sent').within(() => {
+          cy.getByTestID('sent-table-field sent').should('be.visible')
         })
-        // verify first row
-        cy.getByTestID('event-row 0').within(() => {
-          cy.getByTestID('event-row--field level').should('have.text', 'ok')
-          cy.getByTestID('event-row--field sent').within(() => {
-            cy.getByTestID('sent-table-field sent').should('be.visible')
-          })
-          cy.getByTestID('event-row--field checkID').should(
+        cy.getByTestID('event-row--field checkID').should(
+          'have.text',
+          check.name
+        )
+        cy.getByTestID('event-row--field notificationRuleID').should(
+          'have.text',
+          rule.name
+        )
+        cy.getByTestID('event-row--field notificationEndpointID').should(
+          'have.text',
+          endp.name
+        )
+      })
+      // verify second row
+      cy.getByTestID('event-row 1').within(() => {
+        cy.getByTestID('event-row--field level').should('have.text', 'info')
+        cy.getByTestID('event-row--field sent').within(() => {
+          cy.getByTestID('sent-table-field not-sent').should('be.visible')
+        })
+      })
+      // verify third row
+      cy.getByTestID('event-row 2').within(() => {
+        cy.getByTestID('event-row--field level').should('have.text', 'crit')
+        cy.getByTestID('event-row--field sent').within(() => {
+          cy.getByTestID('sent-table-field sent').should('be.visible')
+        })
+      })
+      // verify fourth row
+      cy.getByTestID('event-row 3').within(() => {
+        cy.getByTestID('event-row--field level').should('have.text', 'warn')
+      })
+      // check links...
+      //    ...To Check
+      cy.getByTestID('overlay').should('not.exist')
+      cy.getByTestID('event-row--field checkID')
+        .eq(3)
+        .within(() => {
+          cy.get('a').click()
+        })
+      cy.getByTestID('overlay')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('page-title').should('have.text', check.name)
+          cy.getByTestID('giraffe-inner-plot').should('be.visible')
+          cy.getByTestID('query-builder').should('be.visible')
+        })
+      cy.go('back')
+      //    ...To Rule
+      cy.getByTestID('overlay').should('not.exist')
+      cy.getByTestID('event-row--field notificationRuleID')
+        .eq(2)
+        .within(() => {
+          cy.get('a').click()
+        })
+      cy.getByTestID('overlay')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('rule-name--input').should('have.value', rule.name)
+          cy.getByTestID('levels--dropdown--button currentLevel').should(
             'have.text',
-            check.name
+            rule.statusRules[0].currentLevel
           )
-          cy.getByTestID('event-row--field notificationRuleID').should(
-            'have.text',
-            rule.name
-          )
-          cy.getByTestID('event-row--field notificationEndpointID').should(
+          cy.getByTestID('endpoint--dropdown--button').should(
             'have.text',
             endp.name
           )
         })
-        // verify second row
-        cy.getByTestID('event-row 1').within(() => {
-          cy.getByTestID('event-row--field level').should('have.text', 'info')
-          cy.getByTestID('event-row--field sent').within(() => {
-            cy.getByTestID('sent-table-field not-sent').should('be.visible')
-          })
+      cy.go('back')
+      //    ...To Endpoint
+      cy.getByTestID('overlay').should('not.exist')
+      cy.getByTestID('event-row--field notificationEndpointID')
+        .eq(1)
+        .within(() => {
+          cy.get('a').click()
         })
-        // verify third row
-        cy.getByTestID('event-row 2').within(() => {
-          cy.getByTestID('event-row--field level').should('have.text', 'crit')
-          cy.getByTestID('event-row--field sent').within(() => {
-            cy.getByTestID('sent-table-field sent').should('be.visible')
-          })
+      cy.getByTestID('overlay')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('endpoint--dropdown--button').should(
+            'have.text',
+            'HTTP'
+          )
+          cy.getByTestID('endpoint-name--input').should('have.value', endp.name)
+          cy.getByTestID('endpoint-description--textarea').should(
+            'have.value',
+            endp.description
+          )
+          cy.getByTestID('http-method--dropdown--button').should(
+            'have.text',
+            'POST'
+          )
+          cy.getByTestID('http-authMethod--dropdown--button').should(
+            'have.text',
+            'none'
+          )
+          cy.getByTestID('http-url').should('have.value', endp.url)
         })
-        // verify fourth row
-        cy.getByTestID('event-row 3').within(() => {
-          cy.getByTestID('event-row--field level').should('have.text', 'warn')
-        })
-        // check links...
-        //    ...To Check
-        cy.getByTestID('overlay').should('not.exist')
-        cy.getByTestID('event-row--field checkID')
-          .eq(3)
-          .within(() => {
-            cy.get('a').click()
-          })
-        cy.getByTestID('overlay')
-          .should('be.visible')
-          .within(() => {
-            cy.getByTestID('page-title').should('have.text', check.name)
-            cy.getByTestID('giraffe-inner-plot').should('be.visible')
-            cy.getByTestID('query-builder').should('be.visible')
-          })
-        cy.go('back')
-        //    ...To Rule
-        cy.getByTestID('overlay').should('not.exist')
-        cy.getByTestID('event-row--field notificationRuleID')
-          .eq(2)
-          .within(() => {
-            cy.get('a').click()
-          })
-        cy.getByTestID('overlay')
-          .should('be.visible')
-          .within(() => {
-            cy.getByTestID('rule-name--input').should('have.value', rule.name)
-            cy.getByTestID('levels--dropdown--button currentLevel').should(
-              'have.text',
-              rule.statusRules[0].currentLevel
-            )
-            cy.getByTestID('endpoint--dropdown--button').should(
-              'have.text',
-              endp.name
-            )
-          })
-        cy.go('back')
-        //    ...To Endpoint
-        cy.getByTestID('overlay').should('not.exist')
-        cy.getByTestID('event-row--field notificationEndpointID')
-          .eq(1)
-          .within(() => {
-            cy.get('a').click()
-          })
-        cy.getByTestID('overlay')
-          .should('be.visible')
-          .within(() => {
-            cy.getByTestID('endpoint--dropdown--button').should(
-              'have.text',
-              'HTTP'
-            )
-            cy.getByTestID('endpoint-name--input').should(
-              'have.value',
-              endp.name
-            )
-            cy.getByTestID('endpoint-description--textarea').should(
-              'have.value',
-              endp.description
-            )
-            cy.getByTestID('http-method--dropdown--button').should(
-              'have.text',
-              'POST'
-            )
-            cy.getByTestID('http-authMethod--dropdown--button').should(
-              'have.text',
-              'none'
-            )
-            cy.getByTestID('http-url').should('have.value', endp.url)
-          })
-        cy.go('back')
-        cy.getByTestID('overlay').should('not.exist')
+      cy.go('back')
+      cy.getByTestID('overlay').should('not.exist')
 
-        cy.getByTestID('check-status-dropdown').should('not.exist')
-        cy.getByTestID('check-status-input').click()
-        cy.getByTestID('check-status-dropdown').should('be.visible')
+      cy.getByTestID('check-status-dropdown').should('not.exist')
+      cy.getByTestID('check-status-input').click()
+      cy.getByTestID('check-status-dropdown').should('be.visible')
 
-        // Filter level == crit
-        cy.getByTestID('check-status-input')
-          .clear()
-          .type('"level" == "crit"')
-        cy.get('.event-row').should('have.length', 1)
-        //    ...verify row
-        cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
-          cy.get('.level-table-field--crit').should('be.visible')
-          cy.get('.sent-table-field--sent').should('be.visible')
-        })
-        // Filter level != info
-        cy.getByTestID('check-status-input')
-          .clear()
-          .type('"level" != "info"')
-        cy.get('[data-testid^="event-row "]')
-          .should('have.length', 3)
-          .then(rows => {
-            const levels = rows
-              .find('.event-row--field:nth-of-type(2)')
-              .toArray()
-              .map(r => r.innerText)
-            expect(levels).to.deep.eq(['ok', 'crit', 'warn'])
-          })
-        // Filter notificationRuleName == rule.name
-        cy.getByTestID('check-status-input')
-          .clear()
-          .type(`"notificationRuleName" == "${rule.name}"`)
-        cy.get('[data-testid^="event-row "]')
-          .should('have.length', 4)
-          .then(rows => {
-            const levels = rows
-              .find('.event-row--field:nth-of-type(2)')
-              .toArray()
-              .map(r => r.innerText)
-            expect(levels).to.deep.eq(['ok', 'info', 'crit', 'warn'])
-          })
-        cy.getByTitle('Refresh').click()
-        cy.getByTestID('check-status-dropdown').should('not.exist')
+      // Filter level == crit
+      cy.getByTestID('check-status-input')
+        .clear()
+        .type('"level" == "crit"')
+      cy.get('.event-row').should('have.length', 1)
+      //    ...verify row
+      cy.get('[class$=ScrollContainer] > div:nth-of-type(1)').within(() => {
+        cy.get('.level-table-field--crit').should('be.visible')
+        cy.get('.sent-table-field--sent').should('be.visible')
       })
+      // Filter level != info
+      cy.getByTestID('check-status-input')
+        .clear()
+        .type('"level" != "info"')
+      cy.get('[data-testid^="event-row "]')
+        .should('have.length', 3)
+        .then(rows => {
+          const levels = rows
+            .find('.event-row--field:nth-of-type(2)')
+            .toArray()
+            .map(r => r.innerText)
+          expect(levels).to.deep.eq(['ok', 'crit', 'warn'])
+        })
+      // Filter notificationRuleName == rule.name
+      cy.getByTestID('check-status-input')
+        .clear()
+        .type(`"notificationRuleName" == "${rule.name}"`)
+      cy.get('[data-testid^="event-row "]')
+        .should('have.length', 4)
+        .then(rows => {
+          const levels = rows
+            .find('.event-row--field:nth-of-type(2)')
+            .toArray()
+            .map(r => r.innerText)
+          expect(levels).to.deep.eq(['ok', 'info', 'crit', 'warn'])
+        })
+      cy.getByTitle('Refresh').click()
+      cy.getByTestID('check-status-dropdown').should('not.exist')
     })
 
     it('refreshes the history', () => {
-      localInit().then(() => {
-        cy.get('.event-row').should('have.length', 4)
-        cy.get<GenCheck>('@check').then(check => {
-          cy.get<NotificationEndpoint>('@endp').then(endp => {
-            cy.get<GenRule>('@rule').then(rule => {
-              writeMonitoringRecord(
-                {
-                  check: check,
-                  endp: endp,
-                  rule: rule,
-                  level: 'info',
-                  source: 'wumpus',
-                  sent: 'false',
-                  valField: {key: 'foo', val: 'bar'},
-                  sourceTimestamp: calcNanoTimestamp('4m'),
-                  statusTimestamp: calcNanoTimestamp('3m'),
-                  message: 'This is a fake info message',
-                },
-                '2m'
-              )
-            })
+      cy.get('.event-row').should('have.length', 4)
+      cy.get<GenCheck>('@check').then(check => {
+        cy.get<NotificationEndpoint>('@endp').then(endp => {
+          cy.get<GenRule>('@rule').then(rule => {
+            writeMonitoringRecord(
+              {
+                check: check,
+                endp: endp,
+                rule: rule,
+                level: 'info',
+                source: 'wumpus',
+                sent: 'false',
+                valField: {key: 'foo', val: 'bar'},
+                sourceTimestamp: calcNanoTimestamp('4m'),
+                statusTimestamp: calcNanoTimestamp('3m'),
+                message: 'This is a fake info message',
+              },
+              '2m'
+            )
           })
         })
-        cy.getByTitle('Refresh').click()
-        cy.get('.event-row')
-          .should('have.length', 5)
-          .then(rows => {
-            const levels = rows
-              .find('.event-row--field:nth-of-type(2)')
-              .toArray()
-              .map(r => r.innerText)
-            expect(levels).to.deep.eq(['info', 'ok', 'info', 'crit', 'warn'])
-          })
       })
+      cy.getByTitle('Refresh').click()
+      cy.get('.event-row')
+        .should('have.length', 5)
+        .then(rows => {
+          const levels = rows
+            .find('.event-row--field:nth-of-type(2)')
+            .toArray()
+            .map(r => r.innerText)
+          expect(levels).to.deep.eq(['info', 'ok', 'info', 'crit', 'warn'])
+        })
     })
 
     it('Switches between local and UTC time', () => {
-      localInit().then(() => {
-        let hours: number[] = []
-        cy.get('.event-row--field:nth-of-type(1) ').then(timestamps => {
-          hours = timestamps
-            .toArray()
-            .map(n => new Date(n.innerText).getHours())
-        })
+      let hours: number[] = []
+      cy.get('.event-row--field:nth-of-type(1) ').then(timestamps => {
+        hours = timestamps.toArray().map(n => new Date(n.innerText).getHours())
+      })
 
-        // Switch to UTC
-        cy.getByTestID('dropdown--button')
-          .should('have.text', 'Local')
-          .click()
-        cy.getByTitle('UTC').click()
-        cy.getByTestID('dropdown--button').should('have.text', 'UTC')
+      // Switch to UTC
+      cy.getByTestID('dropdown--button')
+        .should('have.text', 'Local')
+        .click()
+      cy.getByTitle('UTC').click()
+      cy.getByTestID('dropdown--button').should('have.text', 'UTC')
 
-        // compare UTC values
-        cy.getByTestID('event-row--field time').then(timestamps => {
-          const UTCHours = timestamps
-            .toArray()
-            .map((n: any) => new Date(n.innerText).getHours())
-          expect(UTCHours).to.not.deep.eq(hours)
-        })
+      // compare UTC values
+      cy.getByTestID('event-row--field time').then(timestamps => {
+        const UTCHours = timestamps
+          .toArray()
+          .map((n: any) => new Date(n.innerText).getHours())
+        expect(UTCHours).to.not.deep.eq(hours)
+      })
 
-        // Switch back to Local
-        cy.getByTestID('dropdown--button').click()
-        cy.getByTitle('Local').click()
-        cy.getByTestID('dropdown--button').should('have.text', 'Local')
+      // Switch back to Local
+      cy.getByTestID('dropdown--button').click()
+      cy.getByTitle('Local').click()
+      cy.getByTestID('dropdown--button').should('have.text', 'Local')
 
-        cy.getByTestID('event-row--field time').then(timestamps => {
-          const CurrHours = timestamps
-            .toArray()
-            .map(n => new Date(n.innerText).getHours())
-          expect(CurrHours).to.deep.eq(hours)
-        })
+      cy.getByTestID('event-row--field time').then(timestamps => {
+        const CurrHours = timestamps
+          .toArray()
+          .map(n => new Date(n.innerText).getHours())
+        expect(CurrHours).to.deep.eq(hours)
       })
     })
   })

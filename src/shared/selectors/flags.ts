@@ -44,6 +44,7 @@ export const OSS_FLAGS = {
   'notification-endpoint-telegram': false,
   'molly-first': false,
   exploreWithFlows: false,
+  boardWithFlows: false,
   createWithFlows: false,
   notebooksExp: false,
 }
@@ -91,6 +92,7 @@ export const CLOUD_FLAGS = {
   'notification-endpoint-telegram': false,
   'molly-first': false,
   exploreWithFlows: false,
+  boardWithFlows: false,
   createWithFlows: false,
   notebooksExp: false,
 }

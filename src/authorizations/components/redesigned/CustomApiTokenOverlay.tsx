@@ -22,6 +22,7 @@ import {
   InputLabel,
   JustifyContent,
   RemoteDataState,
+  ComponentStatus,
 } from '@influxdata/clockface'
 import ResourceAccordion from 'src/authorizations/components/redesigned/ResourceAccordion'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
@@ -75,6 +76,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   const [description, setDescription] = useState('')
   const [permissions, setPermissions] = useState({})
   const [searchTerm, setSearchTerm] = useState('')
+  const [status, setStatus] = useState(ComponentStatus.Disabled)
 
   useEffect(() => {
     props.getBuckets()
@@ -111,12 +113,13 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const handleToggleAll = (resourceName, permission) => {
+
+    setStatus(ComponentStatus.Default)
     const newPerm = {...permissions}
 
     let name = resourceName.replaceAll(/\s/g, '')
     name = name.charAt(0).toLowerCase() + name.slice(1)
     const newPermValue = newPerm[name][permission]
-
     if (newPerm[name].sublevelPermissions) {
       Object.keys(newPerm[name].sublevelPermissions).forEach(key => {
         newPerm[name].sublevelPermissions[key].permissions[
@@ -137,11 +140,16 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     }
 
     newPerm[name][permission] = !newPermValue
-
+    
     setPermissions(newPerm)
+    isPermSelected(newPerm)
+    
   }
 
+
+
   const handleIndividualToggle = (resourceName, id, permission) => {
+    setStatus(ComponentStatus.Default)
     const permValue =
       permissions[resourceName].sublevelPermissions[id].permissions[permission]
 
@@ -151,9 +159,79 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     ] = !permValue
 
     setPermissions(newPerm)
+    isSubPermSelected(newPerm)
+    
+    
   }
 
-  const generateToken = () => {
+  const isPermSelected = (perm) => {
+    
+    const noReadPerm = Object.keys(perm).every(key => perm[key].read === false)  
+    const noWritePerm = Object.keys(perm).every(key => perm[key].write === false) 
+    
+    if(noReadPerm && noWritePerm) {
+      setStatus(ComponentStatus.Disabled)
+    }
+    
+  }
+
+  const isSubPermSelected = (newPerm) => {
+
+    let noBucketReadPermSelected
+    let noTelegrafReadPermSelected
+    let noBucketWritePermSelected
+    let noTelegrafWritePermSelected
+    
+    const bucketsTelegrafs = Object.keys(permissions).filter(resource => resource === 'buckets' || resource === 'telegrafs')
+
+    bucketsTelegrafs.forEach(resource => {
+      if(resource === 'buckets') {
+        noBucketReadPermSelected = Object.keys( 
+          newPerm[resource].sublevelPermissions
+        ).every(
+          key =>
+            newPerm[resource].sublevelPermissions[key].permissions[
+              'read'
+            ] === false
+        )
+        
+        noBucketWritePermSelected = Object.keys( 
+          newPerm[resource].sublevelPermissions
+        ).every(
+          key =>
+            newPerm[resource].sublevelPermissions[key].permissions[
+              'write'
+            ] === false
+        )
+      }else {
+        noTelegrafReadPermSelected = Object.keys( 
+          newPerm[resource].sublevelPermissions
+        ).every(
+          key =>
+            newPerm[resource].sublevelPermissions[key].permissions[
+              'read'
+            ] === false
+        )
+
+        noTelegrafWritePermSelected = Object.keys( 
+          newPerm[resource].sublevelPermissions
+        ).every(
+          key =>
+            newPerm[resource].sublevelPermissions[key].permissions[
+              'write'
+            ] === false
+        )
+      }
+      
+    }) 
+    
+    if(noBucketWritePermSelected && noTelegrafWritePermSelected 
+      && noBucketReadPermSelected && noTelegrafReadPermSelected) {
+      setStatus(ComponentStatus.Disabled)
+    }
+  }
+
+  const generateToken = async () => {
     const {onCreateAuthorization, orgID, showOverlay, orgName} = props
     const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
 
@@ -164,10 +242,16 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         : generateDescription(apiPermissions),
       permissions: apiPermissions,
     }
-    onCreateAuthorization(token)
-    if (token.permissions.length > 0) {
+    
+    try {
+      await onCreateAuthorization(token)
       showOverlay('access-token', null, () => dismissOverlay())
+      
+    } catch(error) {
+      throw error
     }
+    
+   
   }
 
   return (
@@ -250,6 +334,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
           color={ComponentColor.Success}
           shape={ButtonShape.Default}
           onClick={generateToken}
+          status={status}
           testID="generate-token-overlay--buton"
           text="Generate"
         />

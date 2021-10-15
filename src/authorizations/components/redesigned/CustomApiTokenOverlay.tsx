@@ -113,7 +113,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const handleToggleAll = (resourceName, permission) => {
-
     setStatus(ComponentStatus.Default)
     const newPerm = {...permissions}
 
@@ -140,13 +139,10 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     }
 
     newPerm[name][permission] = !newPermValue
-    
+
     setPermissions(newPerm)
     isPermSelected(newPerm)
-    
   }
-
-
 
   const handleIndividualToggle = (resourceName, id, permission) => {
     setStatus(ComponentStatus.Default)
@@ -160,78 +156,77 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
     setPermissions(newPerm)
     isSubPermSelected(newPerm)
-    
-    
   }
 
-  const isPermSelected = (perm) => {
-    
-    const noReadPerm = Object.keys(perm).every(key => perm[key].read === false)  
-    const noWritePerm = Object.keys(perm).every(key => perm[key].write === false) 
-    
-    if(noReadPerm && noWritePerm) {
+  const isPermSelected = perm => {
+    const noReadPerm = Object.keys(perm).every(key => perm[key].read === false)
+    const noWritePerm = Object.keys(perm).every(
+      key => perm[key].write === false
+    )
+
+    if (noReadPerm && noWritePerm) {
       setStatus(ComponentStatus.Disabled)
     }
-    
   }
 
-  const isSubPermSelected = (newPerm) => {
-
+  const isSubPermSelected = newPerm => {
     let noBucketReadPermSelected
     let noTelegrafReadPermSelected
     let noBucketWritePermSelected
     let noTelegrafWritePermSelected
-    
-    const bucketsTelegrafs = Object.keys(permissions).filter(resource => resource === 'buckets' || resource === 'telegrafs')
+
+    const bucketsTelegrafs = Object.keys(permissions).filter(
+      resource => resource === 'buckets' || resource === 'telegrafs'
+    )
 
     bucketsTelegrafs.forEach(resource => {
-      if(resource === 'buckets') {
-        noBucketReadPermSelected = Object.keys( 
+      if (resource === 'buckets') {
+        noBucketReadPermSelected = Object.keys(
           newPerm[resource].sublevelPermissions
         ).every(
           key =>
-            newPerm[resource].sublevelPermissions[key].permissions[
-              'read'
-            ] === false
-        )
-        
-        noBucketWritePermSelected = Object.keys( 
-          newPerm[resource].sublevelPermissions
-        ).every(
-          key =>
-            newPerm[resource].sublevelPermissions[key].permissions[
-              'write'
-            ] === false
-        )
-      }else {
-        noTelegrafReadPermSelected = Object.keys( 
-          newPerm[resource].sublevelPermissions
-        ).every(
-          key =>
-            newPerm[resource].sublevelPermissions[key].permissions[
-              'read'
-            ] === false
+            newPerm[resource].sublevelPermissions[key].permissions['read'] ===
+            false
         )
 
-        noTelegrafWritePermSelected = Object.keys( 
+        noBucketWritePermSelected = Object.keys(
           newPerm[resource].sublevelPermissions
         ).every(
           key =>
-            newPerm[resource].sublevelPermissions[key].permissions[
-              'write'
-            ] === false
+            newPerm[resource].sublevelPermissions[key].permissions['write'] ===
+            false
+        )
+      } else {
+        noTelegrafReadPermSelected = Object.keys(
+          newPerm[resource].sublevelPermissions
+        ).every(
+          key =>
+            newPerm[resource].sublevelPermissions[key].permissions['read'] ===
+            false
+        )
+
+        noTelegrafWritePermSelected = Object.keys(
+          newPerm[resource].sublevelPermissions
+        ).every(
+          key =>
+            newPerm[resource].sublevelPermissions[key].permissions['write'] ===
+            false
         )
       }
-      
-    }) 
-    
-    if(noBucketWritePermSelected && noTelegrafWritePermSelected 
-      && noBucketReadPermSelected && noTelegrafReadPermSelected) {
+    })
+
+    if (
+      noBucketWritePermSelected &&
+      noTelegrafWritePermSelected &&
+      noBucketReadPermSelected &&
+      noTelegrafReadPermSelected
+    ) {
       setStatus(ComponentStatus.Disabled)
     }
   }
 
   const generateToken = async () => {
+    setStatus(ComponentStatus.Disabled)
     const {onCreateAuthorization, orgID, showOverlay, orgName} = props
     const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
 
@@ -242,16 +237,13 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         : generateDescription(apiPermissions),
       permissions: apiPermissions,
     }
-    
+
     try {
       await onCreateAuthorization(token)
       showOverlay('access-token', null, () => dismissOverlay())
-      
-    } catch(error) {
+    } catch (error) {
       throw error
     }
-    
-   
   }
 
   return (

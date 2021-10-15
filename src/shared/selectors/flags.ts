@@ -45,6 +45,7 @@ export const OSS_FLAGS = {
   'molly-first': false,
   exploreWithFlows: false,
   createWithFlows: false,
+  leadWithFlows: false,
   notebooksExp: false,
 }
 
@@ -92,6 +93,7 @@ export const CLOUD_FLAGS = {
   'molly-first': false,
   exploreWithFlows: false,
   createWithFlows: false,
+  leadWithFlows: false,
   notebooksExp: false,
 }
 

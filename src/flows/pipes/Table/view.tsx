@@ -81,7 +81,6 @@ const Table: FC<PipeProp> = ({Context}) => {
               className="panel-resizer--vis-toggle"
             />
           </div>
-          <FriendlyQueryError error={results.error} />
         </div>
       </Context>
     )

@@ -14,8 +14,8 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
               })
               .then(() => {
                 cy.createBucket(orgID, name, 'devbucket')
-                // have to add large amount of data to fill the window so that the random click for annotation works
-                cy.writeData(lines(3000), 'devbucket')
+                // do not put too many lines in the graph; rely on accurately triggering the tooltip rather than a flooded graph
+                cy.writeData(lines(3), 'devbucket')
 
                 // make a dashboard cell
                 cy.getByTestID('add-cell--button').click()

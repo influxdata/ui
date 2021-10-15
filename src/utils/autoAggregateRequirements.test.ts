@@ -1,11 +1,12 @@
 import applyAutoAggregateRequirements from 'src/utils/autoAggregateRequirements'
 import {hasQueryBeenEdited} from 'src/timeMachine/utils/queryBuilder'
 
-import {cloneDeep} from 'lodash'
 import {
   AGG_WINDOW_AUTO,
   DEFAULT_FILLVALUES,
 } from 'src/timeMachine/constants/queryBuilder'
+
+const cloneDeep = object => JSON.parse(JSON.parse(object))
 
 const autoAggregateableBuilderConfig = {
   properties: {

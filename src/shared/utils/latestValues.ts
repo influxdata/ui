@@ -1,4 +1,4 @@
-import {range, flatMap, isFinite} from 'lodash'
+import {range, flatMap} from 'lodash'
 import {Table, NumericColumnData} from '@influxdata/giraffe'
 
 /*

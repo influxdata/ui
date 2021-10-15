@@ -1,5 +1,5 @@
 // Libraries
-import {cloneDeep, get, map} from 'lodash'
+import {get} from 'lodash'
 import {produce} from 'immer'
 
 // Utils
@@ -181,7 +181,9 @@ export const timeMachinesReducer = (
     const activeTimeMachine = state.timeMachines[activeTimeMachineID]
     const view = initialState.view || activeTimeMachine.view
 
-    const draftQueries = map(cloneDeep(view.properties.queries), q => ({
+    const draftQueries = JSON.parse(
+      JSON.stringify(view.properties.queries)
+    ).map(q => ({
       ...q,
       hidden: false,
     }))

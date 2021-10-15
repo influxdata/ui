@@ -41,6 +41,7 @@ import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 // Utils
 import {
   formatApiPermissions,
+  formatResources,
   generateDescription,
 } from 'src/authorizations/utils/permissions'
 
@@ -56,6 +57,7 @@ interface StateProps {
   bucketPermissions: any
   remoteDataState: RemoteDataState
   orgID: string
+  orgName: string
 }
 
 interface DispatchProps {
@@ -80,7 +82,9 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }, [])
 
   useEffect(() => {
-    const perms = {}
+    const perms = {
+      otherResources: {read: false, write: false},
+    }
 
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
@@ -106,20 +110,11 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     setDescription(event.target.value)
   }
 
-  const formatAllResources = () => {
-    let resources = props.allResources
-    resources = resources.filter(
-      item => item !== 'buckets' && item !== 'telegrafs'
-    )
-    resources.sort()
-    resources.unshift('telegrafs')
-    resources.unshift('buckets')
-    return resources
-  }
   const handleToggleAll = (resourceName, permission) => {
     const newPerm = {...permissions}
 
-    const name = resourceName.charAt(0).toLowerCase() + resourceName.slice(1)
+    let name = resourceName.replaceAll(/\s/g, '')
+    name = name.charAt(0).toLowerCase() + name.slice(1)
     const newPermValue = newPerm[name][permission]
 
     if (newPerm[name].sublevelPermissions) {
@@ -129,6 +124,18 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         ] = !newPermValue
       })
     }
+    if (name === 'otherResources') {
+      Object.keys(newPerm).forEach(key => {
+        if (
+          key !== 'buckets' &&
+          key !== 'telegrafs' &&
+          key !== 'otherResources'
+        ) {
+          newPerm[key][permission] = !newPerm[key][permission]
+        }
+      })
+    }
+
     newPerm[name][permission] = !newPermValue
 
     setPermissions(newPerm)
@@ -143,23 +150,12 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       permission
     ] = !permValue
 
-    const headerPermValue = !Object.keys(
-      newPerm[resourceName].sublevelPermissions
-    ).some(
-      key =>
-        newPerm[resourceName].sublevelPermissions[key].permissions[
-          permission
-        ] === false
-    )
-
-    newPerm[resourceName][permission] = headerPermValue
-
     setPermissions(newPerm)
   }
 
   const generateToken = () => {
-    const {onCreateAuthorization, orgID, showOverlay} = props
-    const apiPermissions = formatApiPermissions(permissions, orgID)
+    const {onCreateAuthorization, orgID, showOverlay, orgName} = props
+    const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
 
     const token: Authorization = {
       orgID: orgID,
@@ -232,7 +228,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
                 </FlexBox.Child>
               </FlexBox>
               <ResourceAccordion
-                resources={formatAllResources()}
+                resources={formatResources(props.allResources)}
                 permissions={permissions}
                 onToggleAll={handleToggleAll}
                 onIndividualToggle={handleIndividualToggle}
@@ -304,6 +300,7 @@ const mstp = (state: AppState) => {
     bucketPermissions,
     remoteDataState,
     orgID: getOrg(state).id,
+    orgName: getOrg(state).name,
   }
 }
 

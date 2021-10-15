@@ -144,7 +144,6 @@ export const FlowQueryProvider: FC = ({children}) => {
   }, [variables, flow?.range])
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
-    // try {
     const stages = (flow?.data?.allIDs ?? []).reduce((acc, panelID) => {
       const panel = flow.data.byID[panelID]
 
@@ -201,10 +200,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     }, [])
 
     return stages
-    // } catch (error) {
-    //   console.error({error})
-    //   return []
-    // }
   }
 
   // TODO figure out a better way to cache these requests

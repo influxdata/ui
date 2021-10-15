@@ -111,6 +111,7 @@ const Controls: FC = () => {
     } else if (range.type === 'selectable-duration') {
       period = millisecondsToDuration(range.windowPeriod)
     }
+
     if (period && period !== data.period) {
       update({
         period,

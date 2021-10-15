@@ -118,16 +118,12 @@ describe('Annotations, but in a different test suite', () => {
 
       // switch it to a point annotation
       cy.getByTestID('annotation-form-point-type-option').click()
-
-      // verify that it is a point annotation now
       cy.getByTestID('annotation-form-point-type-option--input').should(
         'be.checked'
       )
 
-      // the endTime input should disappear
       cy.getByTestID('endTime-testID').should('not.exist')
 
-      // save it
       cy.getByTestID('annotation-submit-button').click()
 
       // reload to make sure it gets to the backend

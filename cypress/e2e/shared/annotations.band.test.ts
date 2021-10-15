@@ -17,9 +17,11 @@ describe('The Annotations UI functionality on a band plot graph type', () => {
   it('can create an annotation on the band plot', () => {
     testAddAnnotation(cy)
   })
+
   it('can edit an annotation for the band plot', () => {
     testEditAnnotation(cy)
   })
+
   it('can delete an annotation for the band plot ', () => {
     testDeleteAnnotation(cy)
   })
@@ -28,6 +30,7 @@ describe('The Annotations UI functionality on a band plot graph type', () => {
     addRangeAnnotation(cy, 'band-chart')
     checkAnnotationText(cy, 'range annotation here!')
   })
+
   it('can add and edit a range annotation for the band plot', () => {
     testEditRangeAnnotation(cy, 'band-chart')
   })

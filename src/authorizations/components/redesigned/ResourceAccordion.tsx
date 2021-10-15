@@ -72,14 +72,12 @@ class ResourceAccordion extends Component<OwnProps> {
                   resource.charAt(0).toUpperCase() + resource.slice(1)
 
                 return (
-                  <>
-                    <AllAccordionBody
+                    <AllAccordionBody key={resource}
                       resourceName={resourceName}
                       permissions={permissions[resource]}
                       onToggleAll={onToggleAll}
                       disabled={false}
                     />
-                  </>
                 )
               })
             : null}

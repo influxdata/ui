@@ -87,7 +87,7 @@ export const generateNavItems = (): NavItem[] => {
       shortLabel: 'Explore',
       link: `${orgPrefix}/data-explorer`,
       activeKeywords: ['data-explorer'],
-      enabled: () => !isFlagEnabled('leadWithFlows')
+      enabled: () => !isFlagEnabled('leadWithFlows'),
     },
     {
       id: 'notebook-explorer',
@@ -95,9 +95,9 @@ export const generateNavItems = (): NavItem[] => {
       icon: IconFont.GraphLine,
       label: 'Data Explorer',
       shortLabel: 'Explore',
-      link: `notebook/from/default`,
+      link: `/notebook/from/default`,
       activeKeywords: ['data-explorer'],
-      enabled: () => isFlagEnabled('leadWithFlows')
+      enabled: () => isFlagEnabled('leadWithFlows'),
     },
     {
       id: 'flows',

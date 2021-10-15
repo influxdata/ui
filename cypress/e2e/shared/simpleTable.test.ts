@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {points} from '../../support/commands'
 
 describe('simple table interactions', () => {
   const simpleSmall = 'simple-small'
@@ -13,11 +13,11 @@ describe('simple table interactions', () => {
             cy.visit(`${orgs}/${orgID}${explorer}`)
             cy.getByTestID('tree-nav')
             cy.createBucket(orgID, name, simpleLarge)
-            cy.writeData(lines(300), simpleLarge)
+            cy.writeData(points(300), simpleLarge)
             cy.createBucket(orgID, name, simpleSmall)
-            cy.writeData(lines(30), simpleSmall)
+            cy.writeData(points(30), simpleSmall)
             cy.createBucket(orgID, name, simpleOverflow)
-            cy.writeData(lines(31), simpleOverflow)
+            cy.writeData(points(31), simpleOverflow)
             cy.reload()
           })
         })

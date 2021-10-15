@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {points} from '../../support/commands'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
@@ -15,7 +15,7 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
               .then(() => {
                 cy.createBucket(orgID, name, 'devbucket')
                 // have to add large amount of data to fill the window so that the random click for annotation works
-                cy.writeData(lines(3000), 'devbucket')
+                cy.writeData(points(3000), 'devbucket')
 
                 // make a dashboard cell
                 cy.getByTestID('add-cell--button').click()

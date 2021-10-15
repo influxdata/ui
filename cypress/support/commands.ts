@@ -668,13 +668,13 @@ export const quartzProvision = (
   })
 }
 
-export const lines = (numLines = 3) => {
-  // each line is 10 seconds before the previous line
-  const offset_ms = 10_000
+export const points = (numPoints = 3) => {
+  // each point is 20 minutes (1,200s / 1,200,000ms) before the previous point
+  const offset_ms = 1_200_000
   const now = Date.now()
   const nanos_per_ms = '000000'
 
-  const decendingValues = Array(numLines)
+  const decendingValues = Array(numPoints)
     .fill(0)
     .map((_, i) => i)
     .reverse()

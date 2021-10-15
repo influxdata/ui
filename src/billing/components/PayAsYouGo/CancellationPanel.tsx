@@ -17,6 +17,7 @@ import {useSelector} from 'react-redux'
 import {getQuartzMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
+import CancelServiceProvider from './CancelServiceContext'
 
 const CancellationPanel: FC = () => {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
@@ -65,7 +66,11 @@ const CancellationPanel: FC = () => {
         </Panel.Body>
       </Panel>
       {isOverlayVisible && (
-        <CancellationOverlay onHideOverlay={() => setIsOverlayVisible(false)} />
+        <CancelServiceProvider>
+          <CancellationOverlay
+            onHideOverlay={() => setIsOverlayVisible(false)}
+          />
+        </CancelServiceProvider>
       )}
     </>
   )

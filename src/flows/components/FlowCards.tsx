@@ -8,7 +8,6 @@ import {
   EmptyState,
 } from '@influxdata/clockface'
 import FlowsIndexEmpty from 'src/flows/components/FlowsIndexEmpty'
-import FlowsExplainer from 'src/flows/components/FlowsExplainer'
 import FlowCard from 'src/flows/components/FlowCard'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 import {FlowList} from 'src/types/flows'
@@ -70,15 +69,6 @@ const FlowCards: FC<Props> = ({flows, search}) => {
             </ResourceList.Body>
           </ResourceList>
         </Grid.Column>
-        {!isFlagEnabled('presetFlows') && (
-          <Grid.Column
-            widthXS={Columns.Twelve}
-            widthSM={Columns.Four}
-            widthMD={Columns.Two}
-          >
-            <FlowsExplainer />
-          </Grid.Column>
-        )}
       </Grid.Row>
     </Grid>
   )

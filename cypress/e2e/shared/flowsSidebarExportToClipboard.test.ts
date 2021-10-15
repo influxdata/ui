@@ -2,8 +2,8 @@ import {Authorization} from 'src/client'
 import {Organization} from 'src/types'
 
 const openCopyAs = () => {
-  cy.getByTestID('square-button')
-    .eq(1)
+  cy.getByTestID('sidebar-button')
+    .first()
     .scrollIntoView()
     .click({force: true})
   cy.getByTestID('Export to Client Library--list-item').click()
@@ -23,23 +23,22 @@ const createEmptyNotebook = () => {
     req.alias = 'NotebooksPatchRequest'
   })
 
-  cy.getByTestID('create-flow--button')
+  cy.getByTestID('preset-new')
     .first()
     .click()
-  cy.focused()
   cy.wait('@NotebooksPatchRequest')
-  cy.getByTestID('square-button')
-    .eq(1)
+  cy.getByTestID('sidebar-button')
+    .first()
     .scrollIntoView()
     .click({force: true})
   cy.getByTestID('Delete--list-item').click()
-  cy.getByTestID('square-button')
-    .eq(1)
+  cy.getByTestID('sidebar-button')
+    .first()
     .scrollIntoView()
     .click({force: true})
   cy.getByTestID('Delete--list-item').click()
-  cy.getByTestID('square-button')
-    .eq(1)
+  cy.getByTestID('sidebar-button')
+    .first()
     .scrollIntoView()
     .click({force: true})
   cy.getByTestID('Delete--list-item').click()
@@ -150,9 +149,6 @@ describe('Flows', () => {
             })
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('tree-nav')
-            cy.setFeatureFlags({
-              simpleTable: true,
-            })
 
             cy.getByTestID('nav-item-flows').click()
           })

@@ -24,7 +24,7 @@ import {event} from 'src/cloud/utils/reporting'
 import 'src/flows/components/panel/InsertCellButton.scss'
 
 interface Props {
-  id: string
+  id?: string
 }
 
 const InsertCellButton: FC<Props> = ({id}) => {

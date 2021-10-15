@@ -5,7 +5,7 @@ export default register => {
   register({
     type: 'toBucket',
     family: 'output',
-    priority: 1,
+    priority: 0,
     component: View,
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--to-bucket',

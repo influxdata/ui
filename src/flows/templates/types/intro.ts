@@ -4,20 +4,21 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 export default register =>
   register({
     type: 'intro',
-    init: () => ({
-      name: 'Welcome to Notebooks',
-      spec: {
-        readOnly: false,
-        range: DEFAULT_TIME_RANGE,
-        refresh: AUTOREFRESH_DEFAULT,
-        pipes: [
-          {
-            title: 'Welcome',
-            visible: true,
-            type: 'youtube',
-            uri: 'Rs16uhxK0h8',
-          },
-        ],
-      },
-    }),
+    init: () =>
+      Promise.resolve({
+        name: 'Welcome to Notebooks',
+        spec: {
+          readOnly: false,
+          range: DEFAULT_TIME_RANGE,
+          refresh: AUTOREFRESH_DEFAULT,
+          pipes: [
+            {
+              title: 'Welcome',
+              visible: true,
+              type: 'youtube',
+              uri: 'Rs16uhxK0h8',
+            },
+          ],
+        },
+      }),
   })

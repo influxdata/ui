@@ -13,6 +13,10 @@ describe('Dashboards', () => {
           cy.get<Organization>('@org').then(({id}: Organization) => {
             cy.visit(`${orgs}/${id}/dashboards-list`)
             cy.getByTestID('tree-nav')
+            cy.exec('rm cypress/downloads/*', {
+              log: true,
+              failOnNonZeroExit: false,
+            })
           })
         })
       )
@@ -541,6 +545,48 @@ describe('Dashboards', () => {
       cy.fixture('routes').then(({orgs, dashboards}) => {
         cy.visit(`${orgs}/${id}${dashboards}/${nonexistentID}`)
         cy.url().should('include', `${orgs}/${id}/dashboards-list`)
+      })
+    })
+  })
+
+  // Skipping until https://github.com/influxdata/ui/issues/2864 is resolved by Bonitoo
+  it.skip('creates a dashboard and downloads JSON', () => {
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+          cy.getByTestID('nav-item-dashboards').click()
+          cy.getByTestID('dashboard-card--name').click()
+          cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name
+          cy.getByTestID('nav-item-dashboards').click()
+          cy.getByTestID('dashboard-card').invoke('hover')
+          cy.getByTestID('context-export-menu').click()
+          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('button').click()
+          // readFile has a 4s timeout before the test fails
+          cy.readFile('cypress/downloads/dashboard.json').should('exist')
+        })
+      })
+    })
+  })
+
+  it('copies to clipboard', () => {
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+          cy.window().then(win => {
+            cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
+          })
+          cy.getByTestID('nav-item-dashboards').click()
+          cy.getByTestID('dashboard-card').invoke('hover')
+          cy.getByTestID('context-export-menu').click()
+          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('button-copy').click()
+          cy.getByTestID('notification-success--children').should('be.visible')
+        })
       })
     })
   })

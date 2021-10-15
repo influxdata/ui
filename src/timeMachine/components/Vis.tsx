@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, memo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {AutoSizer} from 'react-virtualized'
 import classnames from 'classnames'
 import {fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
@@ -9,10 +8,9 @@ import {isEqual} from 'lodash'
 // Components
 import {View} from 'src/visualization'
 import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
-import RawFluxDataTable from 'src/timeMachine/components/RawFluxDataTable'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import SimpleTable from 'src/visualization/types/SimpleTable/view'
 
 // Utils
 import {
@@ -69,27 +67,31 @@ const TimeMachineVis: FC<Props> = ({
     symbolColumns,
   } as ViewProperties | SimpleTableViewProperties
 
-  if (isViewingRawData && isFlagEnabled('simpleTable')) {
+  const simpleTableProperties = {
+    type: 'simple-table',
+    showAll: true,
+  } as SimpleTableViewProperties
+
+  if (isViewingRawData) {
     resolvedViewProperties = {
       type: 'simple-table',
       showAll: true,
-    }
+    } as SimpleTableViewProperties
   }
-
   const noQueries =
     loading === RemoteDataState.NotStarted || !viewProperties.queries.length
   const timeMachineViewClassName = classnames('time-machine--view', {
     'time-machine--view__empty': noQueries,
   })
 
-  // Handles deadman check edge case to allow non-numeric values
   const viewRawData =
     isViewingRawData ||
     (type === 'check' &&
       giraffeResult.table.getColumnType('_value') !== 'number' &&
       !!giraffeResult.table.length)
 
-  if (viewRawData && files && files.length && !isFlagEnabled('simpleTable')) {
+  // Handles deadman check edge case to allow non-numeric values
+  if (viewRawData && files && files?.length) {
     const [parsedResults] = files.flatMap(fromFlux)
     return (
       <div className={timeMachineViewClassName}>
@@ -101,17 +103,10 @@ const TimeMachineVis: FC<Props> = ({
             hasResults={!!parsedResults?.table?.length}
             isInitialFetch={isInitialFetch}
           >
-            <AutoSizer>
-              {({width, height}) => {
-                return (
-                  <RawFluxDataTable
-                    parsedResults={parsedResults}
-                    width={width}
-                    height={height}
-                  />
-                )
-              }}
-            </AutoSizer>
+            <SimpleTable
+              result={parsedResults}
+              properties={simpleTableProperties}
+            />
           </EmptyQueryView>
         </ErrorBoundary>
       </div>

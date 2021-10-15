@@ -5,11 +5,12 @@ import {Route, Switch} from 'react-router-dom'
 
 // Components
 import {Columns, ComponentColor, Dropdown, Grid} from '@influxdata/clockface'
-import PluginCreateConfiguration from 'src/writeData/components/PluginCreateConfigurationWizard'
+import PluginCreateConfiguration from 'src/writeData/components/PluginCreateConfiguration/Wizard'
 import PluginAddToExistingConfiguration from 'src/writeData/components/PluginAddToExistingConfiguration/Wizard'
 
 // Actions
 import {getTelegrafs} from 'src/telegrafs/actions/thunks'
+import {notify as notifyAction} from 'src/shared/actions/notifications'
 
 // Constants
 import {
@@ -25,8 +26,23 @@ import {AppState} from 'src/types'
 // Selectors
 import {getAllTelegrafs} from 'src/resources/selectors'
 
-// Styles
-import 'src/writeData/components/AddPluginToConfiguration.scss'
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
+export interface PluginConfigurationStepProps {
+  currentStepIndex: number
+  isValidConfiguration: boolean
+  notify: typeof notifyAction
+  onDecrementCurrentStepIndex: () => void
+  onExit: () => void
+  onIncrementCurrentStepIndex: () => void
+  onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
+  pluginConfig: string
+  pluginConfigName: string
+  setIsValidConfiguration: (isValid: boolean) => void
+  setPluginConfig: (config: string) => void
+  substepIndex?: number
+}
 
 interface AddPluginToConfigurationCTAProps {
   contentID: string
@@ -65,11 +81,13 @@ const AddPluginToConfigurationCTAComponent: FC<Props> = props => {
     history.push(
       `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/new`
     )
+    event('load_data.telegraf_plugins.create_new_configuration')
   }
   const addToConfiguration = () => {
     history.push(
       `/${ORGS}/${orgID}/load-data/${TELEGRAF_PLUGINS}/${contentID}/add`
     )
+    event('load_data.telegraf_plugins.add_to_existing_configuration')
   }
   return (
     <>

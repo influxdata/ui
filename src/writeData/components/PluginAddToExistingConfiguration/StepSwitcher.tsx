@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 
 // Types
 import {PluginConfigurationStep} from 'src/types/dataLoaders'
-import {PluginConfigurationStepProps} from 'src/writeData/components/PluginAddToExistingConfiguration/Wizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Components
 import {Configure} from 'src/writeData/components/PluginAddToExistingConfiguration/Configure'

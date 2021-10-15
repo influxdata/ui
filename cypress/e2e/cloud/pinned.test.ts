@@ -226,7 +226,6 @@ from(bucket: "${name}"{rightarrow}
   describe('Pin flow tests', () => {
     beforeEach(() => {
       cy.setFeatureFlags({
-        simpleTable: true,
         pinnedItems: true,
       }).then(() => {
         cy.getByTestID('nav-item-flows').should('be.visible')
@@ -241,7 +240,7 @@ from(bucket: "${name}"{rightarrow}
           ],
           'defbuck'
         )
-        cy.getByTestID('create-flow--button')
+        cy.getByTestID('preset-new')
           .first()
           .click()
 

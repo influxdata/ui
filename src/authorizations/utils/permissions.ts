@@ -192,20 +192,19 @@ export const formatPermissionsObj = permissions => {
   Object.keys(newPerms).forEach(resource => {
     const accordionPermission = {...newPerms[resource]}
     if (accordionPermission.sublevelPermissions) {
-      accordionPermission.read = !Object.keys(
+      accordionPermission.read = Object.keys(
         accordionPermission.sublevelPermissions
-      ).some(
+      ).every(
         key =>
-          accordionPermission.sublevelPermissions[key].permissions.read ===
-          false
+          accordionPermission.sublevelPermissions[key].permissions.read === true
       )
 
-      accordionPermission.write = !Object.keys(
+      accordionPermission.write = Object.keys(
         accordionPermission.sublevelPermissions
-      ).some(
+      ).every(
         key =>
           accordionPermission.sublevelPermissions[key].permissions.write ===
-          false
+          true
       )
 
       newPerms[resource] = accordionPermission

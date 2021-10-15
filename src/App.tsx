@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import {Switch, Route} from 'react-router-dom'
 import {setAutoFreeze} from 'immer'
 import {AppSettingContext, AppSettingProvider} from 'src/shared/contexts/app'
-
+import 'fix-date'
 import {
   RUDDERSTACK_DATA_PLANE_URL,
   RUDDERSTACK_WRITE_KEY,

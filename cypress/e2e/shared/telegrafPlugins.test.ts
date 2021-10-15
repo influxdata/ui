@@ -112,6 +112,12 @@ describe('Sources > Telegraf Plugins', () => {
         .click()
         .clear()
         .type(configurationName)
+      cy.getByTestID('plugin-create-configuration-options--select-bucket')
+        .should('be.visible')
+        .click()
+      cy.getByTestID('dropdown-item')
+        .eq(1) // "+ Create a Bucket" is 0 then existing buckets start at 1
+        .click()
 
       cy.getByTestID('plugin-create-configuration-continue-configuring').click()
       cy.getByTestID('plugin-create-configuration-customize').should(
@@ -169,9 +175,9 @@ describe('Sources > Telegraf Plugins', () => {
       cy.getByTestID('plugin-edit-configuration-customize-input--description')
         .invoke('val')
         .should('equal', configurationDescription)
-      cy.getByTestID('plugin-add-to-configuration-save-and-test--button')
-        .should('be.visible')
-        .click()
+      cy.getByTestID(
+        'plugin-add-to-configuration-save-and-test--button'
+      ).click()
       cy.getByTestID(
         'plugin-add-to-configuration-save-and-test--popover--contents'
       ).should('be.visible')
@@ -208,6 +214,12 @@ describe('Sources > Telegraf Plugins', () => {
         .click()
         .clear()
         .type(configurationName)
+      cy.getByTestID('plugin-create-configuration-options--select-bucket')
+        .should('be.visible')
+        .click()
+      cy.getByTestID('dropdown-item')
+        .eq(1) // "+ Create a Bucket" is 0 then existing buckets start at 1
+        .click()
 
       cy.getByTestID('plugin-create-configuration-continue-configuring').click()
       cy.getByTestID('plugin-create-configuration-customize').should(

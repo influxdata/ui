@@ -30,11 +30,19 @@ export type PipeData = any
 
 export type Visibility = 'visible' | 'hidden'
 
+interface Layout {
+  x: number
+  y: number
+  h: number
+  w: number
+}
+
 export interface PipeMeta {
   title: string
   height?: number
   visible: boolean
   error?: string
+  layout?: Layout
 }
 
 export interface PipeProp {
@@ -152,4 +160,16 @@ export interface TypeRegistration {
   scope?: (data: PipeData, prev: QueryScope) => QueryScope // if defined, the function is expected to take a query context and return a new one
   visual?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the flux used for the pipe visualization (depreciate?)
   source?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the source flux that is passed between panels
+}
+
+export interface EndpointTypeRegistration {
+  type: string // a unique string that identifies an endpoint
+  name: string
+  data: any
+  component: FunctionComponent | ComponentClass
+  readOnlyComponent: FunctionComponent | ComponentClass
+  generateImports: Function
+  generateTestImports: Function
+  generateQuery: Function
+  generateTestQuery: Function
 }

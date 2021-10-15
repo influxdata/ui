@@ -33,6 +33,34 @@
     margin-top: 15px;
   }
 
+  .schema-name-input {
+    margin-right: 10px;
+    width: 205px !important;
+  }
+
+  .file-name-read-only {
+    width: 100%;
+    height: 40px;
+    font-size: small;
+    padding-top: 12px;
+  }
+
+  .add-schema-uploader.drag-and-drop {
+    height: 40px;
+    border-color: lightgray;
+    width: 155px;
+
+    &.has-file {
+      border: none;
+    }
+
+    .drag-and-drop--header {
+      font-size: small;
+      padding-top: 12px;
+      color: lightgray;
+    }
+  }
+
   .header {
     margin-bottom: 10px;
 
@@ -58,15 +86,16 @@
 
   .measurement-schema-panel-container {
     width: 100%;
-    padding: 10px;
+    padding-left: 8px;
     border-radius: 10px;
 
     .measurement-schema-panel {
-      width: 90%;
+      width: 93%;
 
       .schema-row {
         justify-content: space-between;
         width: 100%;
+        margin-bottom: 8px;
       }
     }
   }

@@ -11,7 +11,7 @@ export default register => {
     component: MarkdownPanel,
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--markdown',
-    button: 'Markdown',
+    button: 'Note',
     initial: () => ({
       text: '',
       mode: 'edit',

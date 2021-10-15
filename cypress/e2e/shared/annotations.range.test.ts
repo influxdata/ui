@@ -31,7 +31,10 @@ describe('Annotations, but in a different test suite', () => {
       addAnnotation(cy)
 
       cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+        cy.get('.giraffe-annotation-line')
+          .should('exist')
+          .first()
+          .trigger('mouseover')
       })
       cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
     })
@@ -50,7 +53,10 @@ describe('Annotations, but in a different test suite', () => {
 
       // annotation tooltip should say the old name
       cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+        cy.get('.giraffe-annotation-line')
+          .should('exist')
+          .first()
+          .trigger('mouseover')
       })
       cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
     })
@@ -231,7 +237,7 @@ describe('Annotations, but in a different test suite', () => {
 
       // verify the annotation does NOT show up
       cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').trigger('mouseover')
+        cy.get('.giraffe-annotation-line').should('not.exist')
       })
 
       cy.getByTestID('giraffe-annotation-tooltip').should('not.exist')

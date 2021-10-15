@@ -21,7 +21,7 @@ import {
 
 // Types
 import {AppState, ConfigurationState, ResourceType, Telegraf} from 'src/types'
-import {PluginConfigurationStepProps} from 'src/writeData/components/PluginAddToExistingConfiguration/Wizard'
+import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
@@ -124,8 +124,8 @@ const CustomizeComponent: FC<Props> = props => {
             />
           </Form.Element>
         </Grid.Row>
-        <Grid.Row className="plugin-edit-configuration--editor">
-          <div className="config-overlay">
+        <Grid.Row>
+          <div className="plugin-edit-configuration--editor">
             <TelegrafConfig
               config={pluginConfig}
               onChangeConfig={handleChangeConfig}

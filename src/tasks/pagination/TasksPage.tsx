@@ -107,6 +107,12 @@ class TasksPage extends PureComponent<Props, State> {
       sortDirection = Sort.Descending
     }
 
+    let searchTerm: string = ''
+    if (params.get('searchTerm') !== null) {
+      searchTerm = params.get('searchTerm')
+      this.props.setSearchTerm(searchTerm)
+    }
+
     this.setState({sortKey, sortDirection, sortType})
   }
 
@@ -136,7 +142,7 @@ class TasksPage extends PureComponent<Props, State> {
             setShowInactive={setShowInactive}
             showInactive={showInactive}
             searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
+            setSearchTerm={this.onSetSearchTerm}
             sortKey={sortKey}
             sortDirection={sortDirection}
             sortType={sortType}
@@ -195,6 +201,15 @@ class TasksPage extends PureComponent<Props, State> {
     )
   }
 
+  private onSetSearchTerm = (searchTerm: string) => {
+    const {setSearchTerm} = this.props
+
+    const url = new URL(location.href)
+    url.searchParams.set('searchTerm', searchTerm)
+    history.replaceState(null, '', url.toString())
+
+    return setSearchTerm(searchTerm)
+  }
   private handleSort = (
     sortKey: TaskSortKey,
     sortDirection: Sort,

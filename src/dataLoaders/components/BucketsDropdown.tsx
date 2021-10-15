@@ -53,7 +53,7 @@ class BucketsDropdown extends PureComponent<Props> {
       return 'Choose a bucket'
     }
 
-    return buckets.find(bucket => bucket.id === selectedBucketID).name
+    return buckets.find(bucket => bucket.id === selectedBucketID)?.name ?? ''
   }
 
   private get status(): ComponentStatus {

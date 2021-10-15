@@ -73,6 +73,20 @@ $cf-radius-lg: $cf-radius + 4px;
   }
 }
 
+.presentation-panel {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+
+  .cell--header {
+    flex: 0 0;
+  }
+
+  .cell--body {
+    flex: 1 1;
+  }
+}
+
 .flow-panel--header,
 .flow-panel--body,
 .flow-panel--results {

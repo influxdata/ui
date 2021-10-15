@@ -103,7 +103,7 @@ const fromBuilderConfig = (
 }
 
 export const QueryBuilderProvider: FC = ({children}) => {
-  const {data, range, update} = useContext(PipeContext)
+  const {id, data, range, update} = useContext(PipeContext)
   const {query, getPanelQueries} = useContext(FlowQueryContext)
 
   const [cardMeta, setCardMeta] = useState<QueryBuilderMeta[]>(
@@ -202,7 +202,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
         ? `\n  |> filter(fn: (r) => ${previousTagSelections.join(' and ')})`
         : ''
 
-      const {scope} = getPanelQueries(data.id)
+      const {scope} = getPanelQueries(id)
       // TODO: Use the `v1.tagKeys` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
       query(
@@ -241,6 +241,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
           })
           setCardMeta([...cardMeta])
         })
+        .catch(() => {})
     },
     [data.buckets, cards]
   )
@@ -280,7 +281,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
         ? `\n  |> filter(fn: (r) => r._value =~ /(?i:${search})/)`
         : ''
 
-      const {scope} = getPanelQueries(data.id)
+      const {scope} = getPanelQueries(id)
       // TODO: Use the `v1.tagValues` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
       query(
@@ -307,6 +308,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
           })
           setCardMeta([...cardMeta])
         })
+        .catch(() => {})
     },
     [data.buckets, cards]
   )

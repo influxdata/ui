@@ -7,8 +7,8 @@ import './style.scss'
 export default register => {
   register({
     type: 'rawFluxEditor',
-    family: 'transform',
-    priority: 1,
+    family: 'inputs',
+    priority: 0,
     component: View,
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--raw-flux',

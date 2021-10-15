@@ -226,7 +226,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const generateToken = async () => {
-    
     const {onCreateAuthorization, orgID, showOverlay, orgName} = props
     const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
 
@@ -241,7 +240,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     try {
       await onCreateAuthorization(token)
       showOverlay('access-token', null, () => dismissOverlay())
-    } catch (e){
+    } catch (e) {
       setStatus(ComponentStatus.Disabled)
       throw e
     }

@@ -457,7 +457,10 @@ export const MeasurementSchemaSection: FC<Props> = ({
   // need debouncing to prevent re-renders every time the user
   // types one character in the name field.  this way, it gets the name when the user is done typing
   const debouncedOnAddSchemas = debounce(
-    () => onAddSchemas(newSchemas, false),
+    () =>
+    {
+      console.log("in debounced...new schemas???", newSchemas)
+      onAddSchemas(newSchemas, false)},
     300
   )
 
@@ -498,6 +501,9 @@ export const MeasurementSchemaSection: FC<Props> = ({
     } else {
       lineItem.valid = false
     }
+    // save the name validity, so when columns are added don't need to run it again:
+    lineItem.validName = isValid
+
     setNewSchemasWithUpdates(newSchemas)
   }
 
@@ -509,7 +515,9 @@ export const MeasurementSchemaSection: FC<Props> = ({
     const lineItem = newSchemas[index]
     lineItem.columns = columns
     lineItem.filename = filename
-    if (lineItem.columns && lineItem.name) {
+
+
+    if (lineItem.columns && lineItem.name && lineItem.validName) {
       lineItem.valid = true
     }
     // not worrying about when contents has been 'un-set' since we don't allow that.

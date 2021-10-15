@@ -404,6 +404,13 @@ export const MeasurementSchemaSection: FC<Props> = ({
   }))
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
+  // every time we update the local schema, should also send up the schema to the parent
+  // so putting them together here
+  const doSchemaUpdate = schemaUpdates => {
+    onUpdateSchemas(schemaUpdates)
+    setSchemaUpdates(schemaUpdates)
+  }
+
   const onAddUpdate = (columns, index) => {
     const entry = schemaUpdates[index] || {}
     entry.columns = columns
@@ -411,8 +418,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     entry.valid = true
 
     schemaUpdates[index] = entry
-    onUpdateSchemas(schemaUpdates)
-    setSchemaUpdates(schemaUpdates)
+    doSchemaUpdate(schemaUpdates)
   }
 
   const toggleUpdate = (doingUpdate, index) => {
@@ -427,7 +433,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
     }
 
     schemaUpdates[index] = entry
-    setSchemaUpdates(schemaUpdates)
+    doSchemaUpdate(schemaUpdates)
   }
 
   // this is the documentation link for explicit schemas for buckets

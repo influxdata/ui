@@ -137,6 +137,19 @@ export enum BucketTab {
   Scoped = 'Scoped',
 }
 
+export const formatResources = resourceNames => {
+  const resources = resourceNames.filter(
+    item => item !== 'buckets' && item !== 'telegrafs'
+  )
+  resources.sort()
+  resources.unshift('telegrafs')
+  resources.unshift('buckets')
+  const indexToSplit = resources.indexOf('telegrafs')
+  const first = resources.slice(0, indexToSplit + 1)
+  const second = resources.slice(indexToSplit + 1)
+  return [first, second]
+}
+
 export const formatPermissionsObj = permissions => {
   const newPerms = permissions.reduce((acc, {action, resource}) => {
     const {type, id, orgID, name} = resource
@@ -213,26 +226,51 @@ export const formatPermissionsObj = permissions => {
   return newPerms
 }
 
-export const formatApiPermissions = (permissions, orgID) => {
+export const formatApiPermissions = (permissions, orgID, orgName) => {
   const apiPerms = []
   Object.keys(permissions).forEach(key => {
+    if (key === 'otherResources') {
+      return
+    }
     if (permissions[key].read) {
-      apiPerms.push({
-        action: 'read',
-        resource: {
-          orgID: orgID,
-          type: key,
-        },
-      })
+      if (key === 'orgs') {
+        apiPerms.push({
+          action: 'read',
+          resource: {
+            id: orgID,
+            name: orgName,
+            type: key,
+          },
+        })
+      } else {
+        apiPerms.push({
+          action: 'read',
+          resource: {
+            orgID: orgID,
+            type: key,
+          },
+        })
+      }
     }
     if (permissions[key].write) {
-      apiPerms.push({
-        action: 'write',
-        resource: {
-          orgID: orgID,
-          type: key,
-        },
-      })
+      if (key === 'orgs') {
+        apiPerms.push({
+          action: 'write',
+          resource: {
+            id: orgID,
+            name: orgName,
+            type: key,
+          },
+        })
+      } else {
+        apiPerms.push({
+          action: 'write',
+          resource: {
+            orgID: orgID,
+            type: key,
+          },
+        })
+      }
     }
     if (permissions[key].sublevelPermissions) {
       Object.keys(permissions[key].sublevelPermissions).forEach(id => {

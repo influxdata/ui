@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
+import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Components
 import {

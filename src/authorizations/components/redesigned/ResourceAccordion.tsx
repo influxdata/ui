@@ -7,14 +7,15 @@ import {Accordion} from '@influxdata/clockface'
 
 // Components
 import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
-import {ResourceAccordionBody} from 'src/authorizations/components/redesigned/ResourceAccordionBody'
+import {AllAccordionBody} from 'src/authorizations/components/redesigned/AllAccordionBody'
+import {IndividualAccordionBody} from 'src/authorizations/components/redesigned/IndividualAccordionBody'
 import FilterList from 'src/shared/components/FilterList'
 
 // Types
 import {Resource} from 'src/client'
 
 interface OwnProps {
-  resources: string[]
+  resources: string[][]
   permissions: any
   onToggleAll: (resourceName: string, permission: string) => void
   onIndividualToggle: (
@@ -35,22 +36,56 @@ class ResourceAccordion extends Component<OwnProps> {
       return null
     }
 
-    return resources.map(resource => {
-      const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
+    return (
+      <>
+        {resources[0].map(resource => {
+          const resourceName =
+            resource.charAt(0).toUpperCase() + resource.slice(1)
 
-      return (
-        <Accordion key={resource}>
-          <ResourceAccordionHeader
-            resourceName={resourceName}
-            permissions={permissions[resource]}
+          return (
+            <Accordion key={resource}>
+              <ResourceAccordionHeader resourceName={resourceName} />
+              <AllAccordionBody
+                resourceName={resourceName}
+                permissions={permissions[resource]}
+                onToggleAll={onToggleAll}
+                disabled={false}
+              />
+              {!permissions[resource].read && !permissions[resource].write
+                ? !isEmpty(permissions[resource].sublevelPermissions) &&
+                  this.getAccordionBody(resourceName, resource)
+                : null}
+            </Accordion>
+          )
+        })}
+        <Accordion key="Other Resources">
+          <ResourceAccordionHeader resourceName="Other Resources" />
+          <AllAccordionBody
+            resourceName="Other Resources"
+            permissions={permissions.otherResources}
             onToggleAll={onToggleAll}
             disabled={false}
           />
-          {!isEmpty(permissions[resource].sublevelPermissions) &&
-            this.getAccordionBody(resourceName, resource)}
+          {!permissions.otherResources.read && !permissions.otherResources.write
+            ? resources[1].map(resource => {
+                const resourceName =
+                  resource.charAt(0).toUpperCase() + resource.slice(1)
+
+                return (
+                  <>
+                    <AllAccordionBody
+                      resourceName={resourceName}
+                      permissions={permissions[resource]}
+                      onToggleAll={onToggleAll}
+                      disabled={false}
+                    />
+                  </>
+                )
+              })
+            : null}
         </Accordion>
-      )
-    })
+      </>
+    )
   }
 
   getAccordionBody = (resourceName, resource) => {
@@ -69,7 +104,7 @@ class ResourceAccordion extends Component<OwnProps> {
           searchKeys={['name']}
         >
           {filteredNames => (
-            <ResourceAccordionBody
+            <IndividualAccordionBody
               resourceName={resource}
               permissions={filteredNames}
               onToggle={onIndividualToggle}
@@ -92,7 +127,7 @@ class ResourceAccordion extends Component<OwnProps> {
           searchKeys={['name']}
         >
           {filteredNames => (
-            <ResourceAccordionBody
+            <IndividualAccordionBody
               resourceName={resource}
               permissions={filteredNames}
               onToggle={onIndividualToggle}

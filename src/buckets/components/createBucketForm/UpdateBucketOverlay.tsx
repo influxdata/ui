@@ -173,7 +173,6 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   }
 
   const isValid = () => {
-    console.log('checking validity.....new ones:', newMeasurementSchemaRequests)
     if (
       areNewSchemasValid(newMeasurementSchemaRequests) &&
       areSchemaUpdatesValid(measurementSchemaUpdates)

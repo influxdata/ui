@@ -454,19 +454,9 @@ export const MeasurementSchemaSection: FC<Props> = ({
     ))
   }
 
-  // need debouncing to prevent re-renders every time the user
-  // types one character in the name field.  this way, it gets the name when the user is done typing
-  const debouncedOnAddSchemas = debounce(
-    () =>
-    {
-      console.log("in debounced...new schemas???", newSchemas)
-      onAddSchemas(newSchemas, false)},
-    300
-  )
-
   const setNewSchemasWithUpdates = schemaArray => {
     setNewSchemas(schemaArray)
-    debouncedOnAddSchemas()
+    onAddSchemas(schemaArray, false)
   }
 
   // NOT making debounced version take the flag;
@@ -516,7 +506,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     lineItem.columns = columns
     lineItem.filename = filename
 
-
     if (lineItem.columns && lineItem.name && lineItem.validName) {
       lineItem.valid = true
     }
@@ -552,6 +541,8 @@ export const MeasurementSchemaSection: FC<Props> = ({
   // after the debounced function executes that sends the data to the parent, the text field (the name)
   // loses focus which is disorienting and wonky (it loses focus b/c the panels are re-made).
   // this fixes that by only remaking panels when one is deleted or added.
+  // only re-making them when one is added or removed removes the need for debouncing the update
+  // (it was debounced to prevent re-renderings with each keystroke when the name was being entered)
   const addPanels = useMemo(() => makeAddPanels(), [
     newSchemas.length,
     showSchemaValidation,

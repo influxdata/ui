@@ -196,200 +196,200 @@ describe('flows alert panel', () => {
     const fakeSecretFlux = 'secrets.get(key: "mySecret")'
     const fakeChannel = 'fake-channel'
 
-    // // === AWS SES ===
+    // === AWS SES ===
 
-    // // complete fields
-    // cy.getByTestID('dropdown-item--aws').click()
-    // cy.getByTestID('input--url').clear()
-    // cy.getByTestID('input--url').type(fakeUrl)
-    // cy.getByTestID('dropdown--accessKey').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
-    // cy.getByTestID('dropdown--authAlgo').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
-    // cy.getByTestID('dropdown--credScope').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
-    // cy.getByTestID('dropdown--signedHeaders').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
-    // cy.getByTestID('dropdown--calcSignature').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
-    // cy.getByTestID('input--email').type(fakeEmail)
+    // complete fields
+    cy.getByTestID('dropdown-item--aws').click()
+    cy.getByTestID('input--url').clear()
+    cy.getByTestID('input--url').type(fakeUrl)
+    cy.getByTestID('dropdown--accessKey').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--authAlgo').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--credScope').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--signedHeaders').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--calcSignature').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('input--email').type(fakeEmail)
 
-    // // make sure task export contains the fields
-    // cy.getByTestID('task-form-save').click()
-    // cy.getByTestID('export-as-overlay--header').should('be.visible')
-    // cy.getByTestID('flux-editor').should('exist')
-    // cy.getByTestID('form--footer').scrollIntoView()
-    // cy.getByTestID('overlay--body').within(() => {
-    //   cy.getByTestID('flux-editor').contains(fakeUrl)
-    //   cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-    //   cy.getByTestID('flux-editor').contains(fakeEmail)
-    // })
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(fakeUrl)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
+      cy.getByTestID('flux-editor').contains(fakeEmail)
+    })
 
-    // // close popup
-    // cy.get('.cf-overlay--dismiss').click()
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
 
-    // // === HTTP ===
+    // === HTTP ===
 
-    // // complete fields
-    // cy.getByTestID('dropdown-item--http').click()
-    // cy.getByTestID('option--bearer').click()
-    // cy.getByTestID('input--url').clear()
-    // cy.getByTestID('input--url').type(fakeUrl)
-    // cy.getByTestID('input--token').type('fake-token')
+    // complete fields
+    cy.getByTestID('dropdown-item--http').click()
+    cy.getByTestID('option--bearer').click()
+    cy.getByTestID('input--url').clear()
+    cy.getByTestID('input--url').type(fakeUrl)
+    cy.getByTestID('input--token').type('fake-token')
 
-    // // make sure task export contains the fields
-    // cy.getByTestID('task-form-save').click()
-    // cy.getByTestID('export-as-overlay--header').should('be.visible')
-    // cy.getByTestID('flux-editor').should('exist')
-    // cy.getByTestID('form--footer').scrollIntoView()
-    // cy.getByTestID('overlay--body').within(() => {
-    //   cy.getByTestID('flux-editor').contains(fakeUrl)
-    //   cy.getByTestID('flux-editor').contains('fake-token')
-    // })
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(fakeUrl)
+      cy.getByTestID('flux-editor').contains('fake-token')
+    })
 
-    // // close popup
-    // cy.get('.cf-overlay--dismiss').click()
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
 
-    // // === MAILGUN ===
-    // const mailgunDomain = 'fake.com'
+    // === MAILGUN ===
+    const mailgunDomain = 'fake.com'
 
-    // // complete fields
-    // cy.getByTestID('dropdown-item--mailgun').click()
-    // cy.getByTestID('input--domain').type(mailgunDomain)
-    // cy.getByTestID('dropdown--apiKey').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
-    // cy.getByTestID('input--email').type(fakeEmail)
+    // complete fields
+    cy.getByTestID('dropdown-item--mailgun').click()
+    cy.getByTestID('input--domain').type(mailgunDomain)
+    cy.getByTestID('dropdown--apiKey').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('input--email').type(fakeEmail)
 
-    // // make sure task export contains the fields
-    // cy.getByTestID('task-form-save').click()
-    // cy.getByTestID('export-as-overlay--header').should('be.visible')
-    // cy.getByTestID('flux-editor').should('exist')
-    // cy.getByTestID('form--footer').scrollIntoView()
-    // cy.getByTestID('overlay--body').within(() => {
-    //   cy.getByTestID('flux-editor').contains(mailgunDomain)
-    //   cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-    //   cy.getByTestID('flux-editor').contains(fakeEmail)
-    // })
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(mailgunDomain)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
+      cy.getByTestID('flux-editor').contains(fakeEmail)
+    })
 
-    // // close popup
-    // cy.get('.cf-overlay--dismiss').click()
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
 
-    // // === MAILJET ===
+    // === MAILJET ===
 
-    // // complete fields
-    // cy.getByTestID('dropdown-item--mailjet').click()
-    // cy.getByTestID('dropdown--apiKey').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
-    // cy.getByTestID('dropdown--apiSecret').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
-    // cy.getByTestID('input--email').type(fakeEmail)
+    // complete fields
+    cy.getByTestID('dropdown-item--mailjet').click()
+    cy.getByTestID('dropdown--apiKey').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('dropdown--apiSecret').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
+    cy.getByTestID('input--email').type(fakeEmail)
 
-    // // make sure task export contains the fields
-    // cy.getByTestID('task-form-save').click()
-    // cy.getByTestID('export-as-overlay--header').should('be.visible')
-    // cy.getByTestID('flux-editor').should('exist')
-    // cy.getByTestID('form--footer').scrollIntoView()
-    // cy.getByTestID('overlay--body').within(() => {
-    //   cy.getByTestID('flux-editor').contains(fakeEmail)
-    //   cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-    // })
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(fakeEmail)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
+    })
 
-    // // close popup
-    // cy.get('.cf-overlay--dismiss').click()
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
 
-    // // === PAGERDUTY ===
-    // const pagerDutyRoutingKey = 'fake-key'
+    // === PAGERDUTY ===
+    const pagerDutyRoutingKey = 'fake-key'
 
-    // // complete fields
-    // cy.getByTestID('dropdown-item--pagerduty').click()
-    // cy.getByTestID('input--url').type(fakeUrl)
-    // cy.getByTestID('input--key').type(pagerDutyRoutingKey)
+    // complete fields
+    cy.getByTestID('dropdown-item--pagerduty').click()
+    cy.getByTestID('input--url').type(fakeUrl)
+    cy.getByTestID('input--key').type(pagerDutyRoutingKey)
 
-    // // make sure task export contains the fields
-    // cy.getByTestID('task-form-save').click()
-    // cy.getByTestID('export-as-overlay--header').should('be.visible')
-    // cy.getByTestID('flux-editor').should('exist')
-    // cy.getByTestID('form--footer').scrollIntoView()
-    // cy.getByTestID('overlay--body').within(() => {
-    //   cy.getByTestID('flux-editor').contains(fakeUrl)
-    //   cy.getByTestID('flux-editor').contains(pagerDutyRoutingKey)
-    // })
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(fakeUrl)
+      cy.getByTestID('flux-editor').contains(pagerDutyRoutingKey)
+    })
 
-    // // close popup
-    // cy.get('.cf-overlay--dismiss').click()
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
 
-    // // === SENDGRID ===
+    // === SENDGRID ===
 
-    // // complete fields
-    // cy.getByTestID('dropdown-item--sendgrid').click()
-    // cy.getByTestID('input--email').type(fakeEmail)
-    // cy.getByTestID('dropdown--apiKey').click()
-    // cy.getByTestID('dropdown-item--mySecret').click()
+    // complete fields
+    cy.getByTestID('dropdown-item--sendgrid').click()
+    cy.getByTestID('input--email').type(fakeEmail)
+    cy.getByTestID('dropdown--apiKey').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
 
-    // // make sure task export contains the fields
-    // cy.getByTestID('task-form-save').click()
-    // cy.getByTestID('export-as-overlay--header').should('be.visible')
-    // cy.getByTestID('flux-editor').should('exist')
-    // cy.getByTestID('form--footer').scrollIntoView()
-    // cy.getByTestID('overlay--body').within(() => {
-    //   cy.getByTestID('flux-editor').contains(fakeEmail)
-    //   cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-    // })
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(fakeEmail)
+      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
+    })
 
-    // // close popup
-    // cy.get('.cf-overlay--dismiss').click()
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
 
-    // // === SLACK ===
-    // const slackColor = '#34BB55'
+    // === SLACK ===
+    const slackColor = '#34BB55'
 
-    // // complete fields
-    // cy.getByTestID('dropdown-item--slack').click()
-    // cy.getByTestID('input--url').type(fakeUrl)
-    // cy.getByTestID('input--channel').type(fakeChannel)
+    // complete fields
+    cy.getByTestID('dropdown-item--slack').click()
+    cy.getByTestID('input--url').type(fakeUrl)
+    cy.getByTestID('input--channel').type(fakeChannel)
 
-    // // make sure task export contains the fields
-    // cy.getByTestID('task-form-save').click()
-    // cy.getByTestID('export-as-overlay--header').should('be.visible')
-    // cy.getByTestID('flux-editor').should('exist')
-    // cy.getByTestID('form--footer').scrollIntoView()
-    // cy.getByTestID('overlay--body').within(() => {
-    //   cy.getByTestID('flux-editor').contains(fakeUrl)
-    //   cy.getByTestID('flux-editor').contains(fakeChannel)
-    //   cy.getByTestID('flux-editor').contains(slackColor)
-    // })
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(fakeUrl)
+      cy.getByTestID('flux-editor').contains(fakeChannel)
+      cy.getByTestID('flux-editor').contains(slackColor)
+    })
 
-    // // close popup
-    // cy.get('.cf-overlay--dismiss').click()
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
 
-    // // === TELEGRAM ===
-    // const parseMode = 'MarkdownV2'
-    // const telegramURL = 'https://api.telegram.org/bot'
+    // === TELEGRAM ===
+    const parseMode = 'MarkdownV2'
+    const telegramURL = 'https://api.telegram.org/bot'
 
-    // // complete fields
-    // cy.getByTestID('dropdown-item--telegram').click()
-    // cy.getByTestID('input--channel').type(fakeChannel)
+    // complete fields
+    cy.getByTestID('dropdown-item--telegram').click()
+    cy.getByTestID('input--channel').type(fakeChannel)
 
-    // // test create secret sidebar
-    // cy.getByTestID('dropdown--token').click()
-    // cy.getByTestID('dropdown-item--create-secret').click()
-    // cy.getByTestID('input--secret-name').type('an apple a day')
-    // cy.getByTestID('input--secret-value').type('keeps the doctor away')
-    // cy.getByTestID('variable-form-save').click()
-    // cy.getByTestID('dropdown-button--token').contains('an apple a day')
+    // test create secret sidebar
+    cy.getByTestID('dropdown--token').click()
+    cy.getByTestID('dropdown-item--create-secret').click()
+    cy.getByTestID('input--secret-name').type('an apple a day')
+    cy.getByTestID('input--secret-value').type('keeps the doctor away')
+    cy.getByTestID('variable-form-save').click()
+    cy.getByTestID('dropdown-button--token').contains('an apple a day')
 
-    // // make sure task export contains the fields
-    // cy.getByTestID('task-form-save').click()
-    // cy.getByTestID('export-as-overlay--header').should('be.visible')
-    // cy.getByTestID('flux-editor').should('exist')
-    // cy.getByTestID('form--footer').scrollIntoView()
-    // cy.getByTestID('overlay--body').within(() => {
-    //   cy.getByTestID('flux-editor').contains(telegramURL)
-    //   cy.getByTestID('flux-editor').contains(fakeChannel)
-    //   cy.getByTestID('flux-editor').contains(
-    //     'secrets.get(key: "an apple a day")'
-    //   )
-    //   cy.getByTestID('flux-editor').contains(parseMode)
-    // })
+    // make sure task export contains the fields
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('export-as-overlay--header').should('be.visible')
+    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('form--footer').scrollIntoView()
+    cy.getByTestID('overlay--body').within(() => {
+      cy.getByTestID('flux-editor').contains(telegramURL)
+      cy.getByTestID('flux-editor').contains(fakeChannel)
+      cy.getByTestID('flux-editor').contains(
+        'secrets.get(key: "an apple a day")'
+      )
+      cy.getByTestID('flux-editor').contains(parseMode)
+    })
 
     // === ZENOSS ===
     const zenossAction = 'my-action'

@@ -23,8 +23,7 @@ export default register =>
             {
               title: 'Validate the Data',
               visible: true,
-              type: 'visualization',
-              properties: {type: 'simple-table', showAll: false},
+              type: 'table',
             },
             {
               title: 'Visualize the Result',

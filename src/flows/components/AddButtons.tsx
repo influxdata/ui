@@ -26,15 +26,11 @@ interface Props {
 
 const SUPPORTED_FAMILIES = [
   {
-    name: 'Input',
+    name: 'Data Source',
     family: 'inputs',
   },
   {
-    name: 'Transform',
-    family: 'transform',
-  },
-  {
-    name: 'Pass-through',
+    name: 'Visualization',
     family: 'passThrough',
   },
   {
@@ -42,12 +38,8 @@ const SUPPORTED_FAMILIES = [
     family: 'test',
   },
   {
-    name: 'Output',
+    name: 'Action',
     family: 'output',
-  },
-  {
-    name: 'Side Effects',
-    family: 'sideEffects',
   },
 ]
 

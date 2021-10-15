@@ -241,6 +241,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
           })
           setCardMeta([...cardMeta])
         })
+        .catch(() => {})
     },
     [data.buckets, cards]
   )
@@ -307,6 +308,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
           })
           setCardMeta([...cardMeta])
         })
+        .catch(() => {})
     },
     [data.buckets, cards]
   )

@@ -142,7 +142,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   )
 
   return (
-    <Context controls={controls} resizes>
+    <Context controls={controls}>
       <Suspense
         fallback={
           <SpinnerContainer
@@ -158,13 +158,6 @@ const Query: FC<PipeProp> = ({Context}) => {
           setEditorInstance={setEditorInstance}
           wrapLines="on"
           autogrow
-        />
-        <FluxMonacoEditor
-          script={query.text}
-          onChangeScript={updateText}
-          onSubmitScript={() => {}}
-          setEditorInstance={setEditorInstance}
-          wrapLines="on"
         />
       </Suspense>
     </Context>

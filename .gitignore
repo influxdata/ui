@@ -24,8 +24,6 @@ junit.xml
 npm-error.log
 yarn-error.log
 
-dbdir/
-
 # oats generated routes
 src/client/generatedRoutes.ts
 src/client/cloudPrivRoutes.ts

@@ -14,7 +14,6 @@ export const PRESET_MAP = [
   {title: 'Set an Alert', href: '/notebook/from/notification', testID: 'alert'},
   {title: 'Schedule a Task', href: '/notebook/from/task', testID: 'task'},
   {title: 'Write a Flux Script', href: '/notebook/from/flux', testID: 'script'},
-  {title: 'Blank Notebook', href: '/notebook/from/blank', testID: 'blank'},
 ]
 
 const PresetFlows: FC = () => {

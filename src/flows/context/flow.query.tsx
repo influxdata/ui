@@ -144,67 +144,67 @@ export const FlowQueryProvider: FC = ({children}) => {
   }, [variables, flow?.range])
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
-    try {
-      const stages = flow.data.allIDs.reduce((acc, panelID) => {
-        const panel = flow.data.byID[panelID]
+    // try {
+    const stages = (flow?.data?.allIDs ?? []).reduce((acc, panelID) => {
+      const panel = flow.data.byID[panelID]
 
-        if (!panel) {
-          return acc
-        }
+      if (!panel) {
+        return acc
+      }
 
-        const last = acc[acc.length - 1] || {
-          scope: {
-            withSideEffects: !!withSideEffects,
-            region: window.location.origin,
-            org: org.id,
-          },
-          source: '',
-          visual: '',
-        }
+      const last = acc[acc.length - 1] || {
+        scope: {
+          withSideEffects: !!withSideEffects,
+          region: window.location.origin,
+          org: org.id,
+        },
+        source: '',
+        visual: '',
+      }
 
-        const meta = {
-          ...last,
-          id: panelID,
-          visual: '',
-        }
+      const meta = {
+        ...last,
+        id: panelID,
+        visual: '',
+      }
 
-        if (!PIPE_DEFINITIONS[panel.type]) {
-          acc.push(meta)
-          return acc
-        }
-
-        if (typeof PIPE_DEFINITIONS[panel.type].scope === 'function') {
-          meta.scope = PIPE_DEFINITIONS[panel.type].scope(
-            panel,
-            acc[acc.length - 1]?.scope || {}
-          )
-        }
-
-        if (typeof PIPE_DEFINITIONS[panel.type].source === 'function') {
-          meta.source = PIPE_DEFINITIONS[panel.type].source(
-            panel,
-            '' + (acc[acc.length - 1]?.source || ''),
-            meta.scope
-          )
-        }
-
-        if (typeof PIPE_DEFINITIONS[panel.type].visual === 'function') {
-          meta.visual = PIPE_DEFINITIONS[panel.type].visual(
-            panel,
-            '' + (acc[acc.length - 1]?.source || ''),
-            meta.scope
-          )
-        }
-
+      if (!PIPE_DEFINITIONS[panel.type]) {
         acc.push(meta)
         return acc
-      }, [])
+      }
 
-      return stages
-    } catch (error) {
-      console.error({error})
-      return []
-    }
+      if (typeof PIPE_DEFINITIONS[panel.type].scope === 'function') {
+        meta.scope = PIPE_DEFINITIONS[panel.type].scope(
+          panel,
+          acc[acc.length - 1]?.scope || {}
+        )
+      }
+
+      if (typeof PIPE_DEFINITIONS[panel.type].source === 'function') {
+        meta.source = PIPE_DEFINITIONS[panel.type].source(
+          panel,
+          '' + (acc[acc.length - 1]?.source || ''),
+          meta.scope
+        )
+      }
+
+      if (typeof PIPE_DEFINITIONS[panel.type].visual === 'function') {
+        meta.visual = PIPE_DEFINITIONS[panel.type].visual(
+          panel,
+          '' + (acc[acc.length - 1]?.source || ''),
+          meta.scope
+        )
+      }
+
+      acc.push(meta)
+      return acc
+    }, [])
+
+    return stages
+    // } catch (error) {
+    //   console.error({error})
+    //   return []
+    // }
   }
 
   // TODO figure out a better way to cache these requests

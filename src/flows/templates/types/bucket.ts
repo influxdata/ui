@@ -23,13 +23,9 @@ export default register =>
               buckets: [name],
             },
             {
-              type: 'visualization',
               title: 'Validate the Data',
               visible: true,
-              properties: {
-                type: 'simple-table',
-                showAll: false,
-              },
+              type: 'table',
             },
             {
               title: 'Visualize the Result',

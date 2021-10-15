@@ -5,9 +5,9 @@ $dashboard-grid-gap: $cf-marg-a;
   font-weight: 400;
 }
 
-.pinned-items--container {
+.pinneditems--container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0px, 1fr));
   border-radius: 18px;
   width: 100%;
   height: auto;
@@ -24,7 +24,7 @@ $dashboard-grid-gap: $cf-marg-a;
 }
 
 @media screen and (max-width: $cf-grid--breakpoint-md) {
-  .pinned-items--container {
-    grid-template-columns: repeat(2, 1fr);
+  .pinneditems--container {
+    grid-template-columns: minmax(0px, 1fr);
   }
 }

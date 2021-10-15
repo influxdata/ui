@@ -39,8 +39,8 @@ $dashboard-grid-gap: $cf-marg-a;
     max-width: 65%;
 
     .cf-resource-name--text {
-      overflow: hidden;
       text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
 

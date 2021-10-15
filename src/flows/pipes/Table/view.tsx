@@ -3,7 +3,6 @@ import React, {FC, useContext, useEffect, useMemo} from 'react'
 
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
-import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
 // Utilities
 import {View} from 'src/visualization'
@@ -82,7 +81,6 @@ const Table: FC<PipeProp> = ({Context}) => {
               className="panel-resizer--vis-toggle"
             />
           </div>
-          <FriendlyQueryError error={results.error} />
         </div>
       </Context>
     )

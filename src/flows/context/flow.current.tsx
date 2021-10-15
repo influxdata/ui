@@ -1,9 +1,19 @@
-import React, {FC, useContext, useCallback, useState, useEffect} from 'react'
+import React, {
+  FC,
+  useContext,
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+} from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
+import {useParams} from 'react-router'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import * as Y from 'yjs'
+import {WebsocketProvider} from 'y-websocket'
 
 export interface FlowContextType {
   name: string
@@ -35,19 +45,76 @@ export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
 
+  const yDoc = useRef(new Y.Doc())
+  const provider = useRef<WebsocketProvider>()
+
+  const {id: flowId} = useParams<{id: string}>()
+
+  function disconnectProvider() {
+    if (provider.current?.wsconnected) {
+      provider.current.disconnect()
+    }
+  }
+
   // NOTE this is a pretty awful mechanism, as it duplicates the source of
   // truth for the definition of the current flow, but i can't see a good
   // way around it. We need to ensure that we're still updating the values
   // and references to the flows object directly to get around the async
   // update issues.
+
   useEffect(() => {
     if (currentID) {
       setCurrentFlow(flows[currentID])
     }
   }, [flows, currentID])
 
+  useEffect(() => {
+    if (isFlagEnabled('sharedFlowEditing')) {
+      provider.current = new WebsocketProvider(
+        'wss://demos.yjs.dev', // todo(ariel): replace this with an actual API that we setup
+        flowId,
+        yDoc.current
+      )
+      const localState = provider.current.awareness.getLocalState()
+      if (!localState?.id) {
+        provider.current.awareness.setLocalState(DEFAULT_CONTEXT)
+      }
+
+      yDoc.current.on('update', () => {
+        const {localState} = yDoc.current.getMap('localState').toJSON()
+        setCurrentFlow(prev => {
+          if (btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState))) {
+            return prev
+          }
+          return localState
+        })
+      })
+    }
+
+    return () => {
+      if (isFlagEnabled('sharedFlowEditing')) {
+        disconnectProvider()
+      }
+    }
+  }, [flowId])
+
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
+      if (isFlagEnabled('sharedFlowEditing')) {
+        const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+        if (flowCopy?.data?.byID[id]) {
+          flowCopy.data.byID[id] = {
+            ...(flowCopy.data.byID[id] || {}),
+            ...data,
+          }
+          const update = {
+            ...flowCopy,
+            ...flowCopy.data.byID[id],
+          }
+          yDoc.current.getMap('localState').set('localState', update)
+        }
+        return
+      }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         currentFlow.data.byID[id] = {
           ...(currentFlow.data.byID[id] || {}),
@@ -74,6 +141,24 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateMeta = useCallback(
     (id: string, meta: Partial<PipeMeta>) => {
+      if (isFlagEnabled('sharedFlowEditing')) {
+        if (currentFlow?.meta?.byID[id]) {
+          const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+          flowCopy.meta.byID[id] = {
+            title: '',
+            visible: true,
+            ...(flowCopy.meta.byID[id] || {}),
+            ...meta,
+          }
+
+          const update = {
+            ...flowCopy,
+            ...flowCopy.meta.byID[id],
+          }
+          yDoc.current.getMap('localState').set('localState', update)
+        }
+        return
+      }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         currentFlow.meta.byID[id] = {
           title: '',
@@ -104,6 +189,18 @@ export const FlowProvider: FC = ({children}) => {
 
   const updateOther = useCallback(
     (flow: Partial<Flow>) => {
+      if (isFlagEnabled('sharedFlowEditing')) {
+        if (currentFlow) {
+          const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+          for (const ni in flow) {
+            flowCopy[ni] = flow[ni]
+          }
+          yDoc.current.getMap('localState').set('localState', {
+            ...flowCopy,
+          })
+        }
+        return
+      }
       if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         for (const ni in flow) {
           currentFlow[ni] = flow[ni]
@@ -134,6 +231,25 @@ export const FlowProvider: FC = ({children}) => {
     delete initial.title
     initial.id = id
 
+    if (isFlagEnabled('sharedFlowEditing')) {
+      const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+      flowCopy.data.byID[id] = initial
+      flowCopy.meta.byID[id] = {
+        title,
+        visible: true,
+      }
+      if (typeof index !== 'undefined') {
+        flowCopy.data.allIDs.splice(index + 1, 0, id)
+        flowCopy.meta.allIDs.splice(index + 1, 0, id)
+      } else {
+        flowCopy.data.allIDs.push(id)
+        flowCopy.meta.allIDs.push(id)
+      }
+      yDoc.current.getMap('localState').set('localState', {
+        ...flowCopy,
+      })
+      return
+    }
     if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
       currentFlow.data.byID[id] = initial
       currentFlow.meta.byID[id] = {
@@ -172,6 +288,19 @@ export const FlowProvider: FC = ({children}) => {
   }
 
   const removePipe = (id: string) => {
+    if (isFlagEnabled('sharedFlowEditing')) {
+      const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+
+      flowCopy.meta.allIDs = flowCopy.meta.allIDs.filter(_id => _id !== id)
+      flowCopy.data.allIDs = flowCopy.data.allIDs.filter(_id => _id !== id)
+
+      delete flowCopy.data.byID[id]
+      delete flowCopy.meta.byID[id]
+      yDoc.current.getMap('localState').set('localState', {
+        ...flowCopy,
+      })
+      return
+    }
     if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
       currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
         _id => _id !== id

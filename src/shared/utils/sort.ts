@@ -11,7 +11,7 @@ const collator = new Intl.Collator('en-us', {numeric: true})
 function orderByType(data, type) {
   switch (type) {
     case SortTypes.String:
-      return data.toLowerCase()
+      return data?.toLowerCase() ?? ''
     case SortTypes.Date:
       return Date.parse(data)
     case SortTypes.Float:

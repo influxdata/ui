@@ -6,7 +6,7 @@ import {
   DEFAULT_FILLVALUES,
 } from 'src/timeMachine/constants/queryBuilder'
 
-const cloneDeep = object => JSON.parse(JSON.parse(object))
+const cloneDeep = object => JSON.parse(JSON.stringify(object))
 
 const autoAggregateableBuilderConfig = {
   properties: {

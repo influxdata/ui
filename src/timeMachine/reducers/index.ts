@@ -1181,7 +1181,9 @@ const convertView = (
   outType: ViewType
 ): View<QueryViewProperties> => {
   const newView: any = createView(outType)
-  newView.properties.queries = cloneDeep(view.properties.queries)
+  newView.properties.queries = JSON.parse(
+    JSON.stringify(view.properties.queries)
+  )
   if (outType === 'table' && files) {
     newView.properties = getTableProperties(newView, files)
   }

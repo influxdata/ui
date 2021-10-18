@@ -1,5 +1,3 @@
-import {get} from 'lodash'
-
 // Types
 import {AlertBuilderState} from 'src/alerting/reducers/alertBuilder'
 import {BuilderConfig} from 'src/types'
@@ -108,7 +106,7 @@ export function createCheckQueryFromAlertBuilder(
 
     const thresholdExpressions = thresholds.map(t => {
       const fieldTag = builderConfig.tags.find(t => t.key === '_field')
-      const fieldSelection = get(fieldTag, 'values[0]')
+      const fieldSelection = fieldTag?.values?.[0]
 
       const beginning = `${t.level.toLowerCase()} = (r) =>(r.${fieldSelection}`
 

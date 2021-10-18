@@ -1,6 +1,5 @@
 // Libraries
 import {produce} from 'immer'
-import {get} from 'lodash'
 
 // Actions
 import {
@@ -36,7 +35,7 @@ export const cellsReducer = (
 
         draftState.status = status
 
-        if (get(schema, ['entities', 'cells'])) {
+        if (schema?.entities?.cells) {
           draftState.byID = schema.entities.cells
         }
 
@@ -48,7 +47,7 @@ export const cellsReducer = (
 
         draftState.status = status
 
-        if (get(schema, ['entities', 'cells'])) {
+        if (schema?.entities?.cells) {
           draftState.byID = schema.entities['cells']
         }
 
@@ -61,7 +60,7 @@ export const cellsReducer = (
         cellsArray.forEach(cellSchema => {
           draftState.status = status
 
-          if (get(cellSchema, ['entities', 'cells'])) {
+          if (cellSchema?.entities?.cells) {
             draftState.byID = cellSchema.entities['cells']
           }
         })
@@ -72,7 +71,7 @@ export const cellsReducer = (
       case SET_CELL: {
         const {id, schema, status} = action
 
-        const cell: Cell = get(schema, ['entities', 'cells', id])
+        const cell: Cell = schema?.entities?.cells?.[id]
         const cellExists = !!draftState.byID[id]
 
         if (cell || !cellExists) {

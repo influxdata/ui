@@ -2,7 +2,7 @@
 import qs from 'qs'
 import {replace, RouterAction} from 'connected-react-router'
 import {Dispatch} from 'redux'
-import {get, pickBy} from 'lodash'
+import {pickBy} from 'lodash'
 
 // Actions
 import {notify, Action as NotifyAction} from 'src/shared/actions/notifications'
@@ -113,8 +113,8 @@ export const updateTimeRangeFromQueryParams = (dashboardID: string) => (
   })
 
   const validatedTimeRangeFromQuery = validateAndTypeRange({
-    lower: get(queryParams, 'lower', null),
-    upper: get(queryParams, 'upper', null),
+    lower: queryParams?.lower ?? null,
+    upper: queryParams?.upper ?? null,
   })
 
   const validatedTimeRange =

@@ -1,4 +1,4 @@
-import {get, replace, orderBy, unzip} from 'lodash'
+import {replace, orderBy, unzip} from 'lodash'
 import {fastMap, fastReduce, fastFilter} from 'src/utils/fast'
 
 import {CELL_HORIZONTAL_PADDING, DEFAULT_TIME_FIELD} from './constants'
@@ -94,7 +94,7 @@ const updateMaxWidths = (
         : calculateSize(colValue.toString().trim()) + CELL_HORIZONTAL_PADDING
 
       const {widths: Widths} = maxColumnWidths
-      const maxWidth = get(Widths, `${columnLabel}`, 0)
+      const maxWidth = Widths[columnLabel] ?? 0
 
       if (isTopRow || currentWidth > maxWidth) {
         acc.widths[columnLabel] = currentWidth
@@ -350,5 +350,5 @@ export const getUnixISODiff = (unixMs: number, isoTime: string | number) => {
 export const findTableNameHeaders = (tables: FluxTable[], name: string) => {
   const foundTable = tables.find(t => t.name === name)
 
-  return get(foundTable, 'data.0', [])
+  return foundTable?.data?.[0] ?? []
 }

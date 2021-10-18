@@ -9,7 +9,6 @@ import React, {
 } from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import {
@@ -105,7 +104,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
         setMeasurementSchemaList(schema)
       }
 
-      const rules = get(resp.data, 'retentionRules', [])
+      const rules = resp?.data?.retentionRules ?? []
       const rule = rules.find(r => r.type === 'expire')
       if (rule) {
         setRetentionSelection(rule.everySeconds)
@@ -208,7 +207,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     history.push(`/orgs/${orgID}/load-data/buckets/${bucketID}/rename`)
   }
 
-  const rules = get(bucketDraft, 'retentionRules', [])
+  const rules = bucketDraft?.retentionRules ?? []
   const rule = rules.find(r => r.type === 'expire')
 
   const retentionSeconds = rule ? rule.everySeconds : retentionSelection

@@ -1,5 +1,5 @@
 import Papa from 'papaparse'
-import {get, groupBy, isEmpty} from 'lodash'
+import {groupBy, isEmpty} from 'lodash'
 import uuid from 'uuid'
 
 import {FluxTable} from 'src/types'
@@ -97,13 +97,13 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
   }, [])
 
   const tables = tablesData.map(tableData => {
-    const dataRow = get(tableData, '0', defaultsRow)
+    const dataRow = tableData?.[0] ?? defaultsRow
 
     const result: string =
-      get(dataRow, resultColIndex, '') || get(defaultsRow, resultColIndex, '')
+      dataRow?.[resultColIndex] ?? defaultsRow?.[resultColIndex] ?? ''
 
     const groupKey = groupKeyIndices.reduce((acc, i) => {
-      return {...acc, [headerRow[i]]: get(dataRow, i, '')}
+      return {...acc, [headerRow[i]]: dataRow?.[i] ?? ''}
     }, {})
 
     const name = Object.entries(groupKey)

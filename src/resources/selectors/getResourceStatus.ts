@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Types
 import {AppState, RemoteDataState} from 'src/types'
 import {Resource} from 'src/resources/components/GetResource'
@@ -27,5 +24,5 @@ export const getResourceStatus = (
 }
 
 const getStatus = ({resources}: AppState, {type, id}: Resource) => {
-  return get(resources, [type, 'byID', id, 'status'], RemoteDataState.Loading)
+  return resources?.[type]?.byID?.[id]?.status ?? RemoteDataState.Loading
 }

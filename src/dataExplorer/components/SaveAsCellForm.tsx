@@ -2,7 +2,7 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
-import {get, isEmpty} from 'lodash'
+import {isEmpty} from 'lodash'
 
 // Selectors
 import {getActiveTimeMachine, getSaveableView} from 'src/timeMachine/selectors'
@@ -263,7 +263,7 @@ const mstp = (state: AppState) => {
   return {
     dashboards: sortDashboardByName(dashboards),
     view,
-    orgID: get(org, 'id', ''),
+    orgID: org?.id ?? '',
     timeRange,
   }
 }

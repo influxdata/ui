@@ -1,5 +1,4 @@
 import {ColumnData, Table} from '@influxdata/giraffe'
-import _ from 'lodash'
 
 export const findTags = (table: Table, latLon: boolean = false) => {
   return table.columnKeys.reduce((acc, k) => {

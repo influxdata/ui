@@ -1,5 +1,4 @@
 import React, {PureComponent, ChangeEvent} from 'react'
-import {get} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Component
@@ -108,9 +107,9 @@ class MapVariableBuilder extends PureComponent<Props, State> {
   private get defaultID(): string {
     const {selected} = this.props
     const {entries} = this
-    const firstEntry = get(entries, '0.key', 'Enter values above')
+    const firstEntry = entries?.[0]?.key ?? 'Enter values above'
 
-    return get(selected, '0', firstEntry)
+    return selected?.[0] ?? firstEntry
   }
 
   private get entries(): {key: string; value: string}[] {

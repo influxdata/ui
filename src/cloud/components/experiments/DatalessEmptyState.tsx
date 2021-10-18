@@ -2,7 +2,6 @@
 import React, {FC, useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import {
@@ -73,7 +72,10 @@ const DatalessEmptyState: FC<Props> = ({orgID, buckets, children}) => {
 
     return runQuery(orgID, cardinalityQuery)
       .promise.then(res => {
-        const table = get(res, 'csv', '1')
+        let table = '1'
+        if (res.type === 'SUCCESS') {
+          table = res?.csv ?? '1'
+        }
         const cardinality = Number(table.substr(table.lastIndexOf(',') + 1))
         return cardinality
       })

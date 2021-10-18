@@ -1,5 +1,3 @@
-import {toString} from 'lodash'
-
 // filter any *primitive* T[K] value
 export const filter = <T, K extends keyof T>(
   items: T[],
@@ -7,7 +5,9 @@ export const filter = <T, K extends keyof T>(
   searchTerm: string
 ) => {
   const matches = (item: T) =>
-    keys.some(key => toString(item[key]).includes(searchTerm))
+    keys.some(key =>
+      (!!item[key] ? item[key].toString() : '').includes(searchTerm)
+    )
 
   return items.filter(matches)
 }

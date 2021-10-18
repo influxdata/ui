@@ -2,7 +2,6 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import {Form, Input, Button, Grid} from '@influxdata/clockface'
@@ -118,8 +117,8 @@ class SigninForm extends PureComponent<Props, State> {
 
       this.handleRedirect()
     } catch (error) {
-      const message = get(error, 'response.data.msg', '')
-      const status = get(error, 'response.status', '')
+      const message = error?.response?.data?.msg ?? ''
+      const status = error?.response?.status ?? ''
 
       if (status === 401) {
         notify({

@@ -2,7 +2,6 @@
 import {normalize} from 'normalizr'
 import {Dispatch} from 'react'
 import {push} from 'connected-react-router'
-import {get} from 'lodash'
 
 // APIs
 import * as dashAPI from 'src/dashboards/apis'
@@ -77,6 +76,7 @@ import {
   LabelEntities,
   NoteEditorMode,
   MarkdownViewProperties,
+  NewView,
 } from 'src/types'
 import {CellsWithViewProperties} from 'src/client'
 import {arrayOfVariables} from 'src/schemas/variables'
@@ -600,12 +600,15 @@ export const loadNote = (id: string) => (
 
   const view = currentViewState
 
-  const note: string = get(view, 'properties.note', '')
-  const showNoteWhenEmpty: boolean = get(
-    view,
-    'properties.showNoteWhenEmpty',
-    false
-  )
+  let note = ''
+  let showNoteWhenEmpty = false
+  if (view.properties.type !== 'check') {
+    note = view?.properties?.note ?? ''
+  }
+
+  if (view.properties.type !== 'check' && view.properties.type !== 'markdown') {
+    showNoteWhenEmpty = view?.properties?.showNoteWhenEmpty ?? false
+  }
 
   const initialState = {
     viewID: view.id,
@@ -654,9 +657,11 @@ export const createNoteCell = (dashboardID: string) => (
   }
 
   const {note} = getState().noteEditor
-  const view = createView<MarkdownViewProperties>('markdown')
+  const view: NewView = createView<MarkdownViewProperties>('markdown')
 
-  view.properties.note = note
+  if (view.properties.type !== 'check') {
+    view.properties.note = note
+  }
 
   return dispatch(createCellWithView(dashboard.id, view))
 }

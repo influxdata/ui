@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Types
 import {ResourceType, NormalizedState, RemoteDataState} from 'src/types'
 
@@ -11,8 +8,8 @@ export const setResourceAtID = <R extends {status: RemoteDataState}>(
 ) => {
   const {schema, status, id} = action
 
-  const prevResource = get(draftState, ['byID', id], {})
-  const currentResource = get(schema, ['entities', resource, id], {})
+  const prevResource = draftState?.byID?.[id] ?? {}
+  const currentResource = schema?.entities?.[resource]?.[id] ?? {}
 
   if (!draftState.allIDs.includes(id)) {
     draftState.allIDs.push(id)
@@ -28,7 +25,7 @@ export const setResource = <R>(
 ) => {
   const {status, schema} = action
   draftState.status = status
-  if (get(schema, ['entities', resource])) {
+  if (schema?.entities?.[resource]) {
     draftState.byID = schema.entities[resource]
     draftState.allIDs = schema.result
   }

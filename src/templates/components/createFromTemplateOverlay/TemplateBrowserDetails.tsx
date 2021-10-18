@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {get} from 'lodash'
 
 // Components
 import {
@@ -115,7 +114,7 @@ class TemplateBrowserDetails extends PureComponent<Props> {
 
   private get templateDescription(): JSX.Element {
     const {selectedTemplateSummary} = this.props
-    const description = get(selectedTemplateSummary, 'meta.description')
+    const description = selectedTemplateSummary?.meta?.description
 
     if (description) {
       return (
@@ -132,7 +131,7 @@ class TemplateBrowserDetails extends PureComponent<Props> {
 
   private get templateName(): JSX.Element {
     const {selectedTemplateSummary} = this.props
-    const name = get(selectedTemplateSummary, 'meta.name')
+    const name = selectedTemplateSummary?.meta?.name
 
     const templateName = name || 'Untitled'
     const className = name

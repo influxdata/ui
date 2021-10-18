@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Constants
 import {StepStatus} from 'src/clockface/constants/wizard'
 import {SetupSuccess, SetupError} from 'src/shared/copy/notifications'
@@ -94,7 +91,7 @@ export const setupAdmin = (
     return true
   } catch (err) {
     console.error(err)
-    const message = get(err, 'response.data.message', '')
+    const message = err?.response?.data?.message ?? ''
     dispatch(notify(SetupError(message)))
     dispatch(setStepStatus(1, StepStatus.Error))
   }

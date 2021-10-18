@@ -1,5 +1,4 @@
 // Libraries
-import {get} from 'lodash'
 import {produce} from 'immer'
 
 // Utils
@@ -1147,8 +1146,8 @@ export const setViewProperties = (
 const setYAxis = (state: TimeMachineState, update: {[key: string]: any}) => {
   const view: any = state.view
   const properties = view.properties
-  const axes = get(properties, 'axes', {})
-  const yAxis = get(axes, 'y', {})
+  const axes = properties?.axes ?? {}
+  const yAxis = axes?.y ?? {}
 
   return {
     ...state,
@@ -1169,7 +1168,7 @@ const updateCorrectColors = (
   const view: any = state.view
   const colors = view.properties.colors
 
-  if (get(update, '0.type', '') === 'scale') {
+  if (update?.[0]?.type === 'scale') {
     return [...colors.filter(c => c.type !== 'scale'), ...update]
   }
   return [...colors.filter(c => c.type === 'scale'), ...update]

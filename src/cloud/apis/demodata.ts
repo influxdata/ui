@@ -1,5 +1,4 @@
 // Libraries
-import {get} from 'lodash'
 import {getBuckets, getBucket} from 'src/client'
 
 // Utils
@@ -38,7 +37,7 @@ export const getDemoDataBuckets = async (): Promise<Bucket[]> => {
   }
   // if sampledata endpoints are not available in a cluster
   // gateway responds with a list of links where 'buckets' field is a string
-  const buckets = get(resp.data, 'buckets', null)
+  const buckets = resp?.data?.buckets ?? null
   if (!Array.isArray(buckets)) {
     throw new Error('Could not reach demodata endpoint')
   }
@@ -99,7 +98,7 @@ export const fetchDemoDataBuckets = async (): Promise<Bucket[]> => {
     // so UI needs to make getBuckets request with demodata orgID parameter
     const demoBuckets = await getDemoDataBuckets()
 
-    const demodataOrgID = get(demoBuckets, '[0].orgID') as string
+    const demodataOrgID = demoBuckets?.[0]?.orgID
 
     if (!demodataOrgID) {
       throw new Error('Could not get demodata orgID')

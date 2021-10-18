@@ -1,7 +1,6 @@
 // Libraries
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import CellHeader from 'src/shared/components/cells/CellHeader'
@@ -134,13 +133,21 @@ class CellComponent extends Component<Props, State> {
     }
 
     const isMarkdownView = view.properties.type === 'markdown'
-    const showNoteWhenEmpty = get(view, 'properties.showNoteWhenEmpty')
+    let showNoteWhenEmpty = false
+    if (
+      view.properties.type !== 'check' &&
+      view.properties.type !== 'markdown'
+    ) {
+      showNoteWhenEmpty = view?.properties?.showNoteWhenEmpty ?? false
+    }
 
     if (isMarkdownView || showNoteWhenEmpty) {
       return ''
     }
 
-    return get(view, 'properties.note', '')
+    return view.properties.type !== 'check' && !!view.properties.note
+      ? view.properties.note
+      : ''
   }
 
   private get view(): JSX.Element {

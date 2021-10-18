@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Types
 import {LocalStorage} from 'src/types'
 import {FlagState} from 'src/shared/reducers/flags'
@@ -23,7 +20,7 @@ export const normalizeGetLocalStorage = (state: LocalStorage): LocalStorage => {
     newState = {...newState, ranges: getLocalStateRanges(state.ranges)}
   }
 
-  const appPersisted = get(newState, 'app.persisted', false)
+  const appPersisted = newState?.app?.persisted ?? false
   if (appPersisted) {
     newState = {
       ...newState,

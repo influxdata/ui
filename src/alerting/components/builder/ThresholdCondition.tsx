@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useState, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import DashedButton from 'src/shared/components/dashed_button/DashedButton'
@@ -52,12 +51,22 @@ const ThresholdCondition: FC<Props> = ({
   onRemoveThreshold,
 }) => {
   const [inputs, changeInputs] = useState([
-    get(threshold, 'value') || get(threshold, 'min', 0),
-    get(threshold, 'max', 100),
+    (threshold?.type !== 'range' && threshold?.value) ||
+      (threshold?.type === 'range' && threshold?.min) ||
+      0,
+    (threshold?.type === 'range' && threshold?.max) || 100,
   ])
 
-  const min = get(threshold, 'value') || get(threshold, 'min', inputs[0])
-  const max = get(threshold, 'max', inputs[1])
+  let [min, max] = inputs
+  if (threshold?.type !== 'range' && threshold?.value) {
+    min = threshold?.value
+  }
+  if (threshold?.type === 'range' && threshold?.min) {
+    min = threshold?.min
+  }
+  if (threshold?.type === 'range' && threshold?.max) {
+    max = threshold?.max
+  }
 
   useEffect(() => {
     changeInputs([min, max])
@@ -98,7 +107,7 @@ const ThresholdCondition: FC<Props> = ({
     if (toType === 'greater' || toType === 'lesser') {
       const valueThreshold = {
         type: toType,
-        level: threshold.level,
+        level: threshold?.level,
         value: inputs[0],
       } as GreaterThreshold | LesserThreshold
       onUpdateThreshold(valueThreshold)
@@ -106,7 +115,7 @@ const ThresholdCondition: FC<Props> = ({
     if (toType === 'range') {
       const rangeThreshold = {
         type: toType,
-        level: threshold.level,
+        level: threshold?.level,
         min: inputs[0],
         max: inputs[1],
         within,
@@ -132,7 +141,7 @@ const ThresholdCondition: FC<Props> = ({
       removeLevel={removeLevel}
       changeThresholdType={changeThresholdType}
     >
-      {threshold.type === 'range' ? (
+      {threshold?.type === 'range' ? (
         <ThresholdRangeInput threshold={threshold} changeRange={changeRange} />
       ) : (
         <ThresholdValueInput

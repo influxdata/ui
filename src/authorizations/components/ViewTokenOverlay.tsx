@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {get} from 'lodash'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -69,19 +68,19 @@ export default class ViewTokenOverlay extends PureComponent<Props> {
   private get permissions(): {[x: string]: Permission['action'][]} {
     const p = this.props.auth.permissions.reduce((acc, {action, resource}) => {
       const {type} = resource
-      const name = get(resource, 'name', '')
+      const name = resource?.name ?? ''
       let key = `${type}`
       if (name) {
         key = `${type}-${name}`
       }
 
-      let actions = get(acc, key, [])
+      let actions = acc?.[key] ?? []
 
       if (name && actions) {
         return {...acc, [key]: [...actions, action]}
       }
 
-      actions = get(acc, key || resource.type, [])
+      actions = (acc?.[key] || resource.type) ?? []
       return {...acc, [type]: [...actions, action]}
     }, {})
 

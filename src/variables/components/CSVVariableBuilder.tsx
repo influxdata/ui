@@ -1,6 +1,5 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import Papa from 'papaparse'
-import {get} from 'lodash'
 
 // Component
 import {
@@ -73,9 +72,9 @@ export default class CSVTemplateBuilder extends PureComponent<Props, State> {
 
   private get defaultID(): string {
     const {selected, values} = this.props
-    const firstEntry = get(values, '0', 'Enter values above')
+    const firstEntry = values?.[0] ?? 'Enter values above'
 
-    return get(selected, '0', firstEntry)
+    return selected?.[0] ?? firstEntry
   }
 
   private handleBlur = (): void => {

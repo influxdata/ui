@@ -1,6 +1,5 @@
 // Utils
 import {buildQuery} from 'src/timeMachine/utils/queryBuilder'
-import {get} from 'lodash'
 
 // Constants
 import {defaultBuilderConfig} from 'src/views/helpers'
@@ -28,8 +27,8 @@ function applyAutoAggregateRequirements<T extends ViewWithQuery>(view: T): T {
       return q
     }
 
-    const functions = get(q, 'builderConfig.functions', [])
-    const queryText = get(q, 'text', '')
+    const functions = q?.builderConfig?.functions ?? []
+    const queryText = q?.text ?? ''
     const queryIsNotEmpty = !!queryText.trim()
 
     const originalQueryInScriptEditorMode = {
@@ -44,22 +43,22 @@ function applyAutoAggregateRequirements<T extends ViewWithQuery>(view: T): T {
 
     let alteredQuery = false
 
-    let period = get(q, 'builderConfig.aggregateWindow.period', null)
+    let period = q?.builderConfig?.aggregateWindow?.period ?? null
     if (period === null) {
       alteredQuery = true
       period = AGG_WINDOW_AUTO
     }
 
-    let fillValues = get(q, 'builderConfig.aggregateWindow.fillValues', null)
+    let fillValues = q?.builderConfig?.aggregateWindow?.fillValues ?? null
     if (fillValues === null) {
       alteredQuery = true
       fillValues = DEFAULT_FILLVALUES
     }
 
-    let builderConfig = get(q, 'builderConfig', {})
+    let builderConfig = q?.builderConfig ?? {}
     builderConfig = {...builderConfig, aggregateWindow: {period, fillValues}}
 
-    const originalQueryText = get(q, 'text', '')
+    const originalQueryText = q?.text ?? ''
 
     try {
       const text = alteredQuery ? buildQuery(builderConfig) : originalQueryText

@@ -7,7 +7,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {prohibitedDeselect} from 'src/shared/copy/notifications'
 // API
 import {normalize} from 'normalizr'
-import {get} from 'lodash'
 import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
 import * as api from 'src/client'
 
@@ -92,7 +91,7 @@ const loadTagSelectorValues = (index: number) => async (
 
   const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
   const foundBucket = allBuckets.find(b => b.name === bucket)
-  const orgID = get(foundBucket, 'orgID', getOrg(getState()).id)
+  const orgID = foundBucket?.orgID ?? getOrg(getState()).id
 
   dispatch(setBuilderTagValuesStatus(index, RemoteDataState.Loading))
 
@@ -163,7 +162,7 @@ export const loadTagSelector = (index: number) => async (
   const allBuckets = getAll<Bucket>(getState(), ResourceType.Buckets)
   const foundBucket = allBuckets.find(b => b.name === bucket)
 
-  const orgID = get(foundBucket, 'orgID', getOrg(getState()).id)
+  const orgID = foundBucket?.orgID ?? getOrg(getState()).id
 
   try {
     const timeRange = getTimeRangeWithTimezone(state)

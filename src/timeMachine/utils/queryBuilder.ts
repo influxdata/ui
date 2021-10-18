@@ -1,4 +1,4 @@
-import {get, isEmpty} from 'lodash'
+import {isEmpty} from 'lodash'
 import {
   BuilderConfig,
   BuilderTagsType,
@@ -45,13 +45,9 @@ export interface CheckQueryValidity {
 export const isDraftQueryAlertable = (
   draftQueries: DashboardDraftQuery[]
 ): CheckQueryValidity => {
-  const tags: BuilderTagsType[] = get(
-    draftQueries,
-    '[0].builderConfig.tags',
-    []
-  )
-  const fieldSelection = tags.find(t => get(t, 'key') === '_field')
-  const fieldValues = get(fieldSelection, 'values', [])
+  const tags: BuilderTagsType[] = draftQueries?.[0]?.builderConfig?.tags ?? []
+  const fieldSelection = tags.find(t => t?.key === '_field')
+  const fieldValues = fieldSelection?.values ?? []
   const functions = draftQueries[0].builderConfig.functions
   return {
     oneQuery: draftQueries.length === 1, // one query

@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {get, sortBy} from 'lodash'
+import {sortBy} from 'lodash'
 
 // Actions
 import {
@@ -13,7 +13,7 @@ import {
 import {ComponentColor, Dropdown, Icon, IconFont} from '@influxdata/clockface'
 
 // Types
-import {AppState, Bucket, ResourceType} from 'src/types'
+import {AppState, ResourceType} from 'src/types'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -104,7 +104,7 @@ const DemoDataDropdown: FC<Props> = ({
 
 const mstp = (state: AppState) => ({
   ownBucketsByID: state.resources[ResourceType.Buckets].byID,
-  demoDataBuckets: get(state, 'cloud.demoData.buckets', []) as Bucket[],
+  demoDataBuckets: state?.cloud?.demoData?.buckets ?? [],
 })
 
 const mdtp = {

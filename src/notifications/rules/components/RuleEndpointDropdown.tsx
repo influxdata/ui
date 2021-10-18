@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {get} from 'lodash'
 
 // Components
 import {Dropdown, ComponentStatus} from '@influxdata/clockface'
@@ -52,7 +51,7 @@ const RuleEndpointDropdown: FC<Props> = ({
       active={active}
       onClick={onClick}
     >
-      {get(selectedEndpoint, 'name')}
+      {selectedEndpoint?.name}
     </Dropdown.Button>
   )
 

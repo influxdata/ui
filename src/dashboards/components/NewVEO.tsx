@@ -2,7 +2,6 @@
 import React, {FunctionComponent, useEffect} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
@@ -53,7 +52,8 @@ const NewViewVEO: FunctionComponent<Props> = ({
   }
 
   let loadingState = RemoteDataState.Loading
-  const viewIsNew = !get(view, 'id', null)
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+  const viewIsNew = !view?.id ?? null
   if (activeTimeMachineID === 'veo' && viewIsNew) {
     loadingState = RemoteDataState.Done
   }

@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 import {connect} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import {
@@ -67,7 +66,7 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
 
 const mstp = (state: AppState) => {
   return {
-    assetName: get(state, 'overlays.params.asset', ''),
+    assetName: state?.overlays?.params?.asset ?? '',
   }
 }
 

@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Types
 import {
   AppState,
@@ -87,8 +84,9 @@ export const getCheckForView = (
   state: AppState,
   view: View
 ): Partial<Check> => {
-  const viewType: ViewType = get(view, 'properties.type')
-  const checkID = get(view, 'properties.checkID')
+  const viewType: ViewType = view?.properties?.type
+  const checkID =
+    view?.properties?.type === 'check' ? view?.properties?.checkID : null
 
   return viewType === 'check' ? state.resources.checks.byID[checkID] : null
 }

@@ -1,6 +1,5 @@
 import React, {FC} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {get} from 'lodash'
 import {ComponentSize, Gradients, Notification} from '@influxdata/clockface'
 
 // Utils
@@ -21,7 +20,7 @@ const matchGradientToColor = (style: NotificationStyle): Gradients => {
     [NotificationStyle.Info]: Gradients.DefaultLight,
     [NotificationStyle.Secondary]: Gradients.SecondaryDark,
   }
-  return get(converter, style, Gradients.DefaultLight)
+  return converter?.[style] ?? Gradients.DefaultLight
 }
 
 const Notifications: FC = () => {

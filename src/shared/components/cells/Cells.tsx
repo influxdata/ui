@@ -2,7 +2,6 @@
 import React, {Component} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
-import {get} from 'lodash'
 
 // Components
 const Grid = WidthProvider(ReactGridLayout)
@@ -81,7 +80,7 @@ class Cells extends Component<Props> {
           w: c.w,
           i: c.id,
         }
-        if (get(view, 'properties.type') === 'gauge') {
+        if (view?.properties?.type === 'gauge') {
           cell.minW = 2.5
           cell.minH = 2.5
           cell.maxW = 20

@@ -1,11 +1,11 @@
 // Libraries
 import {Dispatch} from 'react'
-import {get} from 'lodash'
 import {normalize} from 'normalizr'
 
 // API
 import * as api from 'src/client'
 import {memberSchema, arrayOfMembers} from 'src/schemas'
+import {getErrorMessage} from 'src/utils/api'
 
 // Types
 import {
@@ -101,7 +101,7 @@ export const addNewMember = (data: AddResourceMemberRequestBody) => async (
     dispatch(notify(memberAddSuccess(newMember.name)))
   } catch (e) {
     console.error(e)
-    const message = get(e, 'response.data.message', 'Unknown error')
+    const message = getErrorMessage(e)
     dispatch(notify(memberAddFailed(message)))
     throw e
   }

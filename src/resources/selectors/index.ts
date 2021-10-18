@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Types
 import {
   AppState,
@@ -45,20 +42,20 @@ export const getAllSecrets = (state: AppState): Secret[] =>
   getAll(state, ResourceType.Secrets) || []
 
 export const getToken = (state: AppState): string =>
-  get(state, 'dataLoading.dataLoaders.token', '') || ''
+  state?.dataLoading?.dataLoaders?.token ?? ''
 
 export const getByID = <R>(
   {resources}: AppState,
   type: ResourceType,
   id: string
 ): R => {
-  const byID = get(resources, `${type}.byID`)
+  const byID = resources?.[type]?.byID
 
   if (!byID) {
     throw new Error(`"${type}" resource has yet not been set`)
   }
 
-  const resource = get(byID, `${id}`, null)
+  const resource = byID?.[id] ?? null
 
   return resource
 }

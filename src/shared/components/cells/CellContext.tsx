@@ -2,7 +2,6 @@
 import React, {FC, useRef, RefObject, useState} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
-import {get} from 'lodash'
 import classnames from 'classnames'
 
 // Utils
@@ -58,7 +57,8 @@ const CellContext: FC<Props> = ({
   onDismissOverlay,
 }) => {
   const [popoverVisible, setPopoverVisibility] = useState<boolean>(false)
-  const editNoteText = !!get(view, 'properties.note') ? 'Edit Note' : 'Add Note'
+  const hasNote = view.properties.type !== 'check' && !!view.properties.note
+  const editNoteText = hasNote ? 'Edit Note' : 'Add Note'
   const triggerRef: RefObject<HTMLButtonElement> = useRef<HTMLButtonElement>(
     null
   )

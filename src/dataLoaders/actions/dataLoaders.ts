@@ -1,5 +1,4 @@
 // Libraries
-import {get} from 'lodash'
 import {normalize} from 'normalizr'
 
 // APIs
@@ -441,7 +440,7 @@ export const generateTelegrafToken = (configID: string) => async (
     const orgID = getOrg(state).id
     const telegraf = getByID<Telegraf>(state, ResourceType.Telegrafs, configID)
     telegrafName = telegraf.name
-    bucketName = get(telegraf, 'metadata.buckets[0]', '')
+    bucketName = telegraf?.metadata?.buckets?.[0] ?? ''
 
     if (bucketName === '') {
       throw new Error(

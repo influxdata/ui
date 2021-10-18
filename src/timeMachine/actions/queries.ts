@@ -1,6 +1,6 @@
 // Libraries
 import {parse} from 'src/external/parser'
-import {get, sortBy} from 'lodash'
+import {sortBy} from 'lodash'
 
 // API
 import {runQuery, RunQuerySuccessResult} from 'src/shared/apis/query'
@@ -102,41 +102,42 @@ export const getOrgIDFromBuckets = (
   allBuckets: Bucket[]
 ): string | null => {
   const ast = parse(text)
-  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
-    get(node, 'arguments.0.properties.0.value.value', '')
+  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(
+    node => node?.arguments?.[0]?.properties?.[0]?.value?.value ?? ''
   )
 
   // if there are buckets from multiple orgs in a query, query will error, and user will receive error from query
   const bucketMatch = allBuckets.find(a => bucketsInQuery.includes(a.name))
 
-  return get(bucketMatch, 'orgID', null)
+  return bucketMatch?.orgID ?? null
 }
 
 // We only need a minimum of one bucket, function, and tag,
 export const getQueryFromFlux = (text: string) => {
   const ast = parse(text)
 
-  const aggregateWindowQuery: string[] = findNodes(
-    ast,
-    isFromFunction
-  ).map(node =>
-    get(node, 'arguments.0.properties.0.value.values.0.magnitude', '')
+  const aggregateWindowQuery: string[] = findNodes(ast, isFromFunction).map(
+    node =>
+      node?.arguments?.[0]?.properties?.[0]?.value?.values?.[0]?.magnitude ?? ''
   )
 
-  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(node =>
-    get(node, 'arguments.0.properties.0.value.value', '')
+  const bucketsInQuery: string[] = findNodes(ast, isFromBucket).map(
+    node => node?.arguments?.[0]?.properties?.[0]?.value?.value ?? ''
   )
 
-  const functionsInQuery: string[] = findNodes(ast, isFromFunction).map(node =>
-    get(node, 'arguments.0.properties.1.value.name', '')
+  const functionsInQuery: string[] = findNodes(ast, isFromFunction).map(
+    node => node?.arguments?.[0]?.properties?.[1]?.value?.name ?? ''
   )
 
-  const tagsKeysInQuery: string[] = findNodes(ast, isFromTag).map(node =>
-    get(node, 'arguments.0.properties.0.value.body.left.property.value', '')
+  const tagsKeysInQuery: string[] = findNodes(ast, isFromTag).map(
+    node =>
+      node?.arguments?.[0]?.properties?.[0]?.value?.body?.left?.property
+        ?.value ?? ''
   )
 
-  const tagsValuesInQuery: string[] = findNodes(ast, isFromTag).map(node =>
-    get(node, 'arguments.0.properties.0.value.body.right.value', '')
+  const tagsValuesInQuery: string[] = findNodes(ast, isFromTag).map(
+    node =>
+      node?.arguments?.[0]?.properties?.[0]?.value?.body?.right?.value ?? ''
   )
 
   const functionName = functionsInQuery.join()
@@ -166,26 +167,33 @@ export const getQueryFromFlux = (text: string) => {
 
 const isFromBucket = (node: Node) => {
   return (
-    get(node, 'type') === 'CallExpression' &&
-    get(node, 'callee.type') === 'Identifier' &&
-    get(node, 'callee.name') === 'from' &&
-    get(node, 'arguments.0.properties.0.key.name') === 'bucket'
+    node?.type === 'CallExpression' &&
+    node?.callee?.type === 'Identifier' &&
+    node?.callee?.name === 'from' &&
+    node?.arguments?.[0]?.type === 'ObjectExpression' &&
+    node?.arguments?.[0]?.properties?.[0]?.key?.type === 'Identifier' &&
+    node?.arguments?.[0]?.properties?.[0]?.key?.name === 'bucket'
   )
 }
 
 const isFromFunction = (node: Node) => {
   return (
-    get(node, 'callee.type') === 'Identifier' &&
-    get(node, 'callee.name') === 'aggregateWindow' &&
-    get(node, 'arguments.0.properties.1.key.name') === 'fn'
+    node?.type === 'CallExpression' &&
+    node?.callee?.type === 'Identifier' &&
+    node?.callee?.name === 'aggregateWindow' &&
+    node?.arguments?.[0]?.type === 'ObjectExpression' &&
+    node?.arguments?.[0]?.properties?.[1]?.key?.type === 'Identifier' &&
+    node?.arguments?.[0]?.properties?.[1]?.key?.name === 'fn'
   )
 }
 
 const isFromTag = (node: Node) => {
   return (
-    get(node, 'callee.type') === 'Identifier' &&
-    get(node, 'callee.name') === 'filter' &&
-    get(node, 'arguments.0.properties.0.value.type') === 'FunctionExpression'
+    node?.type === 'CallExpression' &&
+    node?.callee?.type === 'Identifier' &&
+    node?.callee?.name === 'filter' &&
+    node?.arguments?.[0]?.type === 'ObjectExpression' &&
+    node?.arguments?.[0]?.properties?.[0]?.value?.type === 'FunctionExpression'
   )
 }
 

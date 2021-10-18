@@ -1,6 +1,5 @@
 // Libraries
 import {produce} from 'immer'
-import {get} from 'lodash'
 
 // Types
 import {
@@ -43,7 +42,7 @@ export const variablesReducer = (
       case SET_VARIABLE: {
         const {id, status, schema} = action
 
-        const variable = get(schema, ['entities', 'variables', id])
+        const variable = schema?.entities?.variables?.[id]
         const variableExists = !!draftState.byID[id]
 
         if (variable) {

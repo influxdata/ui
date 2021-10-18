@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // Utils
 import {getActiveQuery} from 'src/timeMachine/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
@@ -76,12 +73,9 @@ export const getUserVariableNames = (
   state: AppState,
   contextID: string
 ): string[] => {
-  const allIDs = get(state, ['resources', 'variables', 'allIDs'], [])
-  const contextIDs = get(
-    state,
-    ['resources', 'variables', 'values', contextID, 'order'],
-    []
-  )
+  const allIDs = state?.resources?.variables?.allIDs ?? []
+  const contextIDs =
+    state?.resources?.variables?.values?.[contextID]?.order ?? []
 
   return contextIDs
     .filter(v => allIDs.includes(v))
@@ -316,10 +310,8 @@ export const getTimeMachineValuesStatus = (
   state: AppState
 ): RemoteDataState => {
   const activeTimeMachineID = state.timeMachines.activeTimeMachineID
-  const valuesStatus = get(
-    state,
-    `resources.variables.values.${activeTimeMachineID}.status`
-  )
+  const valuesStatus =
+    state?.resources?.variables?.values?.[activeTimeMachineID]?.status
 
   return valuesStatus
 }
@@ -328,7 +320,7 @@ export const getTimeMachineValuesStatus = (
 export const getDashboardVariablesStatus = (
   state: AppState
 ): RemoteDataState => {
-  return get(state, 'resources.variables.status')
+  return state?.resources?.variables?.status
 }
 
 export const getControlBarVisibility = (state: AppState): boolean => {

@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import NoteEditor from 'src/dashboards/components/NoteEditor'
@@ -181,8 +180,8 @@ const mstp = ({noteEditor, resources, overlays}: AppState) => {
   const {mode} = noteEditor
   const {status} = resources.views
 
-  const cellID = get(params, 'cellID', undefined)
-  const dashboardID = get(params, 'dashboardID', undefined)
+  const cellID = params?.cellID ?? undefined
+  const dashboardID = params?.dashboardID ?? undefined
 
   return {mode, viewsStatus: status, cellID, dashboardID}
 }

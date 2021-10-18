@@ -2,7 +2,6 @@
 import React, {FunctionComponent, useEffect} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
@@ -55,7 +54,13 @@ const EditViewVEO: FunctionComponent<Props> = ({
     } catch (e) {}
   }
 
-  const viewMatchesRoute = get(view, 'id', null) === cellID
+  let viewMatchesRoute = false
+
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  if (view?.id) {
+    viewMatchesRoute = (view?.id ?? null) === cellID
+  }
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
 
   let loadingState = RemoteDataState.Loading
   if (activeTimeMachineID === 'veo' && viewMatchesRoute) {

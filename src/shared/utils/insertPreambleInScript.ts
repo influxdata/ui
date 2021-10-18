@@ -1,6 +1,3 @@
-// Libraries
-import {get} from 'lodash'
-
 // APIs
 import {postQueryAst} from 'src/client'
 
@@ -27,7 +24,7 @@ export const insertPreambleInScript = async (
   const ast = resp.data.ast as Package
 
   const imports: ImportDeclaration[] = ast?.files[0]?.imports ?? []
-  const body: Statement[] = get(ast, 'files.0.body', [])
+  const body: Statement[] = ast?.files?.[0]?.body ?? []
 
   const importsText = imports.map(d => d.location.source).join('\n')
   const bodyText = body.map(d => d.location.source).join('\n\n')

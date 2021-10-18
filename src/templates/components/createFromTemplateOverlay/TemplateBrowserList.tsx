@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {get, orderBy} from 'lodash'
+import {orderBy} from 'lodash'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
@@ -31,7 +31,7 @@ class TemplateBrowser extends PureComponent<Props> {
               label={t.meta.name}
               onClick={onSelectTemplate}
               testID={`template--${t.meta.name}`}
-              selected={get(selectedTemplateSummary, 'id', '') === t.id}
+              selected={(selectedTemplateSummary?.id ?? '') === t.id}
             />
           )
         )}

@@ -1,6 +1,5 @@
 // Libraries
 import {normalize} from 'normalizr'
-import {get} from 'lodash'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
@@ -143,7 +142,7 @@ const getActiveView = (state: AppState) => {
       variable => variable.dashboardID === dashboardID
     )
   }
-  if (get(state, ['timeMachines', 'activeTimeMachineID']) === 'de') {
+  if (state?.timeMachines?.activeTimeMachineID === 'de') {
     const de = getActiveTimeMachine(state)
     return [de.view]
   }

@@ -2,7 +2,6 @@
 import React, {FunctionComponent, useEffect} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {get} from 'lodash'
 
 // Components
 import {Overlay, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
@@ -41,7 +40,7 @@ const EditCheckEditorOverlay: FunctionComponent<Props> = ({
   view,
 }) => {
   const dispatch = useDispatch()
-  const query = get(view, 'properties.queries[0]', null)
+  const query = view?.properties?.queries?.[0] ?? null
 
   useEffect(() => {
     dispatch(getCheckForTimeMachine(checkID))

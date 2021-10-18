@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {get} from 'lodash'
 import {connect} from 'react-redux'
 
 // Components
@@ -108,14 +107,14 @@ class TaskOptionsBucketDropdown extends PureComponent<Props> {
       if (selectedBucketName) {
         return selectedBucketName
       }
-      return get(buckets, '0.name', '')
+      return buckets?.[0]?.name ?? ''
     }
     return 'no-buckets'
   }
 
   private setSelectedToFirst() {
     const {buckets, selectedBucketName, onChangeBucketName} = this.props
-    const firstBucketNameInList = get(buckets, '0.name', '')
+    const firstBucketNameInList = buckets?.[0]?.name ?? ''
 
     if (selectedBucketName) {
       return

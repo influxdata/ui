@@ -1,5 +1,5 @@
 // Libraries
-import {uniqBy, sortBy, get, isEmpty} from 'lodash'
+import {uniqBy, sortBy, isEmpty} from 'lodash'
 
 // Utils
 import {
@@ -117,7 +117,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
         ...state,
         telegrafPlugins: state.telegrafPlugins.map(tp => {
           if (tp.name === action.payload.name) {
-            const plugin = get(tp, 'plugin', createNewPlugin(tp))
+            const plugin = tp?.plugin ?? createNewPlugin(tp)
 
             return {
               ...tp,

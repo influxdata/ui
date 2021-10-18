@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
-import {get} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
@@ -42,8 +41,8 @@ class CreateScraperOverlay extends PureComponent<Props, State> {
       buckets,
     } = this.props
 
-    // The first two buckets are system buckets
-    const firstBucketID = get(buckets, '2.id', '')
+    const nonSystemBuckets = buckets.filter(b => b.name.charAt(0) !== '_')
+    const firstBucketID = nonSystemBuckets?.[0]?.id ?? ''
 
     this.state = {
       scraper: {

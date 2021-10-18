@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {get} from 'lodash'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -35,7 +34,7 @@ export class TelegrafInstructionsOverlay extends PureComponent<Props> {
             <GetResources resources={[ResourceType.Authorizations]}>
               <TelegrafInstructions
                 token={token}
-                configID={get(this.collector, 'id', '')}
+                configID={this.collector?.id ?? ''}
               />
             </GetResources>
           </Overlay.Body>

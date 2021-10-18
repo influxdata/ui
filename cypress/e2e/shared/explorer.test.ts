@@ -297,7 +297,7 @@ describe('DataExplorer', () => {
             .click({force: true})
 
           cy.getByTestID('time-machine-submit-button').click()
-          cy.get('giraffe.gauge').should('be.visible')
+          cy.get('.giraffe-gauge').should('be.visible')
 
           cy.getByTestID('cog-cell--button').click()
           cy.get('.view-options').within(() => {

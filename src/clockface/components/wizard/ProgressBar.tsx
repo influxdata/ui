@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {findIndex} from 'lodash'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -44,7 +43,7 @@ class ProgressBar extends PureComponent<Props, null> {
 
   private get nextNonSkippableStep(): number {
     const {currentStepIndex, stepSkippable, stepStatuses} = this.props
-    return findIndex(stepSkippable, (isSkippable, i) => {
+    return stepSkippable.findIndex((isSkippable, i) => {
       return (
         !isSkippable &&
         i > currentStepIndex &&

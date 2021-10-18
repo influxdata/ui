@@ -4,8 +4,10 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
     > .zuora-outage-panel {
       margin: 50px;
+      font-size: large;
     }
   }
 }

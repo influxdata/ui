@@ -10,19 +10,19 @@ import {Panel} from '@influxdata/clockface'
 
 const ZuoraOutagePanel: FC = () => {
   return (
-    <Panel className="zuora-outage-panel">
+    <Panel className="zuora-outage-panel" testID="zuora-outage--panel">
       <Panel.Header>Sorry!</Panel.Header>
       <Panel.Body className="zuora-outage-panel-body">
-        Our billing system is currently unavailable. Scheduled maintenance is
-        undergoing.
+        Our billing system is currently unavailable due to planned maintenance
+        or unexpected downtime by our payment provider.
         <br />
         <br />
         <div>
-          Please try back later, and check our{' '}
+          Please check back later or visit our{' '}
           <a target="_blank" href="https://status.influxdata.com/">
             status page
           </a>{' '}
-          for the latest updates.
+          for more detail on when our payment system will be back online.
         </div>
       </Panel.Body>
     </Panel>

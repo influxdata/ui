@@ -2,7 +2,7 @@
 import React, {FC} from 'react'
 import {FunnelPage} from '@influxdata/clockface'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
-import ZuoraOutagePanel from './ZuoraOutagePanel'
+import ZuoraOutagePanel from 'src/shared/components/zuora/ZuoraOutagePanel'
 
 // Components
 

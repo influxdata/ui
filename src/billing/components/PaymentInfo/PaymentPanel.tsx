@@ -3,10 +3,9 @@ import React, {FC, useContext, useState} from 'react'
 
 // Components
 import {Panel} from '@influxdata/clockface'
-import PaymentPanelHeader from './PaymentPanelHeader'
-import PaymentPanelBody from './PaymentPanelBody'
+import PaymentPanelHeader from 'src/billing/components/PaymentInfo/PaymentPanelHeader'
+import PaymentPanelBody from 'src/billing/components/PaymentInfo/PaymentPanelBody'
 import {BillingContext} from 'src/billing/context/billing'
-import ZuoraOutagePage from 'src/shared/components/zuora/ZuoraOutagePage'
 import ZuoraOutagePanel from 'src/shared/components/zuora/ZuoraOutagePanel'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 

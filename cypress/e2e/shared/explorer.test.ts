@@ -269,7 +269,7 @@ describe('DataExplorer', () => {
       )
     })
 
-    it.only('can add prefix and suffix labels when using original built-in gauge', () => {
+    it('can add prefix and suffix labels when using original built-in gauge', () => {
       cy.writeData(points(10))
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {

@@ -6,6 +6,9 @@ import {Panel} from '@influxdata/clockface'
 import PaymentPanelHeader from './PaymentPanelHeader'
 import PaymentPanelBody from './PaymentPanelBody'
 import {BillingContext} from 'src/billing/context/billing'
+import ZuoraOutagePage from 'src/shared/components/zuora/ZuoraOutagePage'
+import ZuoraOutagePanel from 'src/shared/components/zuora/ZuoraOutagePanel'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const PaymentPanel: FC = () => {
   const {
@@ -32,6 +35,10 @@ const PaymentPanel: FC = () => {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  if (isFlagEnabled('quartzZuoraDisabled')) {
+    return <ZuoraOutagePanel />
   }
 
   return (

@@ -269,7 +269,7 @@ describe('DataExplorer', () => {
       )
     })
 
-    it('can add prefix and suffix labels when using original built-in gauge', () => {
+    it.only('can add prefix and suffix labels when using original built-in gauge', () => {
       cy.writeData(points(10))
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
@@ -297,7 +297,7 @@ describe('DataExplorer', () => {
             .click({force: true})
 
           cy.getByTestID('time-machine-submit-button').click()
-          cy.get('canvas.gauge').should('be.visible')
+          cy.get('giraffe.gauge').should('be.visible')
 
           cy.getByTestID('cog-cell--button').click()
           cy.get('.view-options').within(() => {

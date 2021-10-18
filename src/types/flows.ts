@@ -164,7 +164,7 @@ export interface TypeRegistration {
 }
 
 export type EndpointProps = {
-  createSecret: Function
+  createSecret: (f: Function) => void
   secrets: Secret[]
 }
 

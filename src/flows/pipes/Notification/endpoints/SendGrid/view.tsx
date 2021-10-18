@@ -1,15 +1,6 @@
 import React, {FC, useContext} from 'react'
-import {
-  Form,
-  Input,
-  InputType,
-  ComponentSize,
-  ComponentColor,
-  Dropdown,
-  IconFont,
-  Icon,
-} from '@influxdata/clockface'
-
+import {Form, Input, InputType, ComponentSize} from '@influxdata/clockface'
+import SecretsDropdown from 'src/secrets/components/SecretsDropdown'
 import {PipeContext} from 'src/flows/context/pipe'
 import {EndpointProps} from 'src/types'
 
@@ -45,50 +36,6 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
 
   return (
     <div className="slack-endpoint-details--flex">
-      <Form.Element label="API Key" required={true}>
-        <Dropdown
-          testID="dropdown--apiKey"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--apiKey"
-            >
-              {data.endpointData.apiKey !== ''
-                ? data.endpointData.apiKey
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updateAPIKey)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updateAPIKey}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        />
-      </Form.Element>
       <Form.Element label="To Email" required={true}>
         <Input
           name="email"
@@ -107,6 +54,15 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
           value={data.endpointData.fromEmail}
           size={ComponentSize.Medium}
           onChange={updateFromEmail}
+        />
+      </Form.Element>
+      <Form.Element label="API Key" required={true}>
+        <SecretsDropdown
+          selected={data.endpointData.apiKey}
+          secrets={secrets}
+          onCreate={createSecret}
+          onSelect={updateAPIKey}
+          testID="apiKey"
         />
       </Form.Element>
     </div>

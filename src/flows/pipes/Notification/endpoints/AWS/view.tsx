@@ -4,13 +4,12 @@ import {
   Input,
   InputType,
   ComponentSize,
-  Dropdown,
-  IconFont,
-  Icon,
-  ComponentColor,
+  FlexBox,
+  AlignItems,
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {EndpointProps} from 'src/types'
+import SecretsDropdown from 'src/secrets/components/SecretsDropdown'
 
 const View: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
@@ -90,226 +89,6 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
           size={ComponentSize.Medium}
         />
       </Form.Element>
-      <Form.Element label="Authorization Access Key" required={true}>
-        <Dropdown
-          testID="dropdown--accessKey"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--accessKey"
-            >
-              {data.endpointData.accessKey !== ''
-                ? data.endpointData.accessKey
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updateAccessKey)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updateAccessKey}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        />
-      </Form.Element>
-      <Form.Element label="Authorization Algorithm" required={true}>
-        <Dropdown
-          testID="dropdown--authAlgo"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--authAlgo"
-            >
-              {data.endpointData.authAlgo !== ''
-                ? data.endpointData.authAlgo
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updateAuthAlgo)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updateAuthAlgo}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        />
-      </Form.Element>
-      <Form.Element label="Authorization Credential Scope" required={true}>
-        <Dropdown
-          testID="dropdown--credScope"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--credScope"
-            >
-              {data.endpointData.credScope !== ''
-                ? data.endpointData.credScope
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updateCredScope)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updateCredScope}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        />
-      </Form.Element>
-      <Form.Element label="Authorization Signed Headers" required={true}>
-        <Dropdown
-          testID="dropdown--signedHeaders"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--signedHeaders"
-            >
-              {data.endpointData.signedHeaders !== ''
-                ? data.endpointData.signedHeaders
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updateSignedHeaders)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updateSignedHeaders}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        />
-      </Form.Element>
-      <Form.Element label="Authorization Calculated Signature" required={true}>
-        <Dropdown
-          testID="dropdown--calcSignature"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--calcSignature"
-            >
-              {data.endpointData.calcSignature !== ''
-                ? data.endpointData.calcSignature
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updateCalcSignature)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updateCalcSignature}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
-        />
-      </Form.Element>
       <Form.Element label="Email" required={true}>
         <Input
           name="email"
@@ -320,6 +99,60 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
           size={ComponentSize.Medium}
         />
       </Form.Element>
+      <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.FlexStart}>
+        <FlexBox.Child grow={1} shrink={1}>
+          <Form.Element label="Authorization Access Key" required={true}>
+            <SecretsDropdown
+              selected={data.endpointData.accessKey}
+              secrets={secrets}
+              onCreate={createSecret}
+              onSelect={updateAccessKey}
+              testID="accessKey"
+            />
+          </Form.Element>
+          <Form.Element label="Authorization Algorithm" required={true}>
+            <SecretsDropdown
+              selected={data.endpointData.authAlgo}
+              secrets={secrets}
+              onCreate={createSecret}
+              onSelect={updateAuthAlgo}
+              testID="authAlgo"
+            />
+          </Form.Element>
+          <Form.Element label="Authorization Credential Scope" required={true}>
+            <SecretsDropdown
+              selected={data.endpointData.credScope}
+              secrets={secrets}
+              onCreate={createSecret}
+              onSelect={updateCredScope}
+              testID="credScope"
+            />
+          </Form.Element>
+        </FlexBox.Child>
+        <FlexBox.Child grow={1} shrink={1}>
+          <Form.Element label="Authorization Signed Headers" required={true}>
+            <SecretsDropdown
+              selected={data.endpointData.signedHeaders}
+              secrets={secrets}
+              onCreate={createSecret}
+              onSelect={updateSignedHeaders}
+              testID="signedHeaders"
+            />
+          </Form.Element>
+          <Form.Element
+            label="Authorization Calculated Signature"
+            required={true}
+          >
+            <SecretsDropdown
+              selected={data.endpointData.calcSignature}
+              secrets={secrets}
+              onCreate={createSecret}
+              onSelect={updateCalcSignature}
+              testID="calcSignature"
+            />
+          </Form.Element>
+        </FlexBox.Child>
+      </FlexBox>
     </div>
   )
 }

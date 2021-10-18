@@ -1,14 +1,6 @@
 import React, {FC, useContext} from 'react'
-import {
-  Form,
-  Input,
-  InputType,
-  ComponentSize,
-  ComponentColor,
-  IconFont,
-  Dropdown,
-  Icon,
-} from '@influxdata/clockface'
+import {Form, Input, InputType, ComponentSize} from '@influxdata/clockface'
+import SecretsDropdown from 'src/secrets/components/SecretsDropdown'
 import {EndpointProps} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
 
@@ -74,47 +66,12 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
         />
       </Form.Element>
       <Form.Element label="Token" required={true}>
-        <Dropdown
-          testID="dropdown--token"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--token"
-            >
-              {data.endpointData.token !== ''
-                ? data.endpointData.token
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updateToken)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updateToken}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
+        <SecretsDropdown
+          selected={data.endpointData.token}
+          secrets={secrets}
+          onCreate={createSecret}
+          onSelect={updateToken}
+          testID="token"
         />
       </Form.Element>
       <Form.Element label="Parse Mode">

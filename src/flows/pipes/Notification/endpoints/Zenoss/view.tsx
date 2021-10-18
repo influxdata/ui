@@ -7,8 +7,9 @@ import {
   ComponentColor,
   IconFont,
   Dropdown,
-  Icon,
 } from '@influxdata/clockface'
+import SecretsDropdown from 'src/secrets/components/SecretsDropdown'
+
 import {EndpointProps} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
 
@@ -83,91 +84,21 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
         />
       </Form.Element>
       <Form.Element label="Username" required={true}>
-        <Dropdown
-          testID="dropdown--username"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--username"
-            >
-              {data.endpointData.username !== ''
-                ? data.endpointData.username
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updateUsername)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updateUsername}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
+        <SecretsDropdown
+          selected={data.endpointData.username}
+          secrets={secrets}
+          onCreate={createSecret}
+          onSelect={updateUsername}
+          testID="username"
         />
       </Form.Element>
       <Form.Element label="Password" required={true}>
-        <Dropdown
-          testID="dropdown--password"
-          style={{width: '180px'}}
-          button={(active, onClick) => (
-            <Dropdown.Button
-              active={active}
-              onClick={onClick}
-              icon={IconFont.Lock}
-              color={ComponentColor.Default}
-              testID="dropdown-button--password"
-            >
-              {data.endpointData.password !== ''
-                ? data.endpointData.password
-                : 'Choose a secret'}
-            </Dropdown.Button>
-          )}
-          menu={onCollapse => (
-            <Dropdown.Menu onCollapse={onCollapse}>
-              <Dropdown.Item
-                testID="dropdown-item--create-secret"
-                id="create"
-                key="create"
-                value="create"
-                onClick={() => createSecret(updatePassword)}
-              >
-                <Icon style={{marginRight: '4px'}} glyph={IconFont.Plus} />
-                Create Secret
-              </Dropdown.Item>
-              {secrets.map(s => (
-                <Dropdown.Item
-                  testID={`dropdown-item--${s.id}`}
-                  id={s.id}
-                  key={s.id}
-                  value={s.id}
-                  onClick={updatePassword}
-                >
-                  {s.id}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          )}
+        <SecretsDropdown
+          selected={data.endpointData.password}
+          secrets={secrets}
+          onCreate={createSecret}
+          onSelect={updatePassword}
+          testID="password"
         />
       </Form.Element>
       <Form.Element label="Severity" required={true}>

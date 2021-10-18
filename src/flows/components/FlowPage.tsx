@@ -5,10 +5,10 @@ import {Page} from '@influxdata/clockface'
 import {DapperScrollbars} from '@influxdata/clockface'
 
 // Contexts
-import CurrentFlowProvider from 'src/flows/context/flow.current'
+import CurrentFlowProvider, {FlowContext} from 'src/flows/context/flow.current'
 import {RunModeProvider} from 'src/flows/context/runMode'
 import QueryProvider from 'src/shared/contexts/query'
-import {FlowQueryProvider} from 'src/flows/context/flow.query'
+import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
@@ -43,10 +43,24 @@ const FlowFromRoute = () => {
   return null
 }
 
+const RunOnMount = () => {
+  const {queryAll} = useContext(FlowQueryContext)
+  const {flow} = useContext(FlowContext)
+
+  useEffect(() => {
+    if (flow.readOnly) {
+      queryAll()
+    }
+  }, [])
+
+  return null
+}
+
 export const FlowPage: FC = () => (
   <RunModeProvider>
     <ResultsProvider>
       <FlowQueryProvider>
+        <RunOnMount />
         <FlowKeyboardPreview />
         <SidebarProvider>
           <Page>

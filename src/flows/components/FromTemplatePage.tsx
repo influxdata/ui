@@ -3,6 +3,7 @@ import {useSelector} from 'react-redux'
 import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 
 import {TEMPLATES} from 'src/flows/templates'
+import {RemoteDataState} from 'src/types'
 
 import {getOrg} from 'src/organizations/selectors'
 import NotFound from 'src/shared/components/NotFound'
@@ -31,7 +32,7 @@ import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
 const Template: FC = () => {
   const {add} = useContext(FlowListContext)
   const {flow, populate} = useContext(FlowContext)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const org = useSelector(getOrg)
   const history = useHistory()
   const params = useParams()[0].split('/')
@@ -41,25 +42,34 @@ const Template: FC = () => {
       return
     }
 
-    if (loading) {
+    if (loading !== RemoteDataState.NotStarted) {
       return
     }
 
-    setLoading(true)
+    setLoading(RemoteDataState.Loading)
 
     event('Notebook created from template', {type: params[0]})
 
-    const data = hydrate(TEMPLATES[params[0]].init.apply(this, params.slice(1)))
-
-    if (isFlagEnabled('ephemeralNotebook')) {
-      populate(data)
-    } else {
-      add(data).then(id => {
-        history.replace(`/orgs/${org.id}/notebooks/${id}`)
+    TEMPLATES[params[0]].init
+      .apply(this, params.slice(1))
+      .then(data => hydrate(data))
+      .then(data => {
+        if (isFlagEnabled('ephemeralNotebook')) {
+          populate(data)
+        } else {
+          add(data).then(id => {
+            history.replace(`/orgs/${org.id}/notebooks/${id}`)
+          })
+        }
       })
-      return
-    }
-  }, [])
+      .catch(() => {
+        setLoading(RemoteDataState.Error)
+      })
+  }, [add, history, org.id, loading, setLoading, params])
+
+  if (loading === RemoteDataState.Error) {
+    return <NotFound />
+  }
 
   if (!flow) {
     return <div />

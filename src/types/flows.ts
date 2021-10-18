@@ -30,11 +30,19 @@ export type PipeData = any
 
 export type Visibility = 'visible' | 'hidden'
 
+interface Layout {
+  x: number
+  y: number
+  h: number
+  w: number
+}
+
 export interface PipeMeta {
   title: string
   height?: number
   visible: boolean
   error?: string
+  layout?: Layout
 }
 
 export interface PipeProp {

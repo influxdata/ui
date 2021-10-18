@@ -43,9 +43,9 @@ export const OSS_FLAGS = {
   'client-library--swift': true,
   'notification-endpoint-telegram': false,
   'molly-first': false,
-  simpleTable: false,
   exploreWithFlows: false,
   createWithFlows: false,
+  leadWithFlows: false,
   notebooksExp: false,
 }
 
@@ -91,9 +91,9 @@ export const CLOUD_FLAGS = {
   'client-library--swift': true,
   'notification-endpoint-telegram': false,
   'molly-first': false,
-  simpleTable: false,
   exploreWithFlows: false,
   createWithFlows: false,
+  leadWithFlows: false,
   notebooksExp: false,
 }
 

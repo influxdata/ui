@@ -1,6 +1,6 @@
 // Utils
 import {buildQuery} from 'src/timeMachine/utils/queryBuilder'
-import {get, isNull} from 'lodash'
+import {get} from 'lodash'
 
 // Constants
 import {defaultBuilderConfig} from 'src/views/helpers'
@@ -45,13 +45,13 @@ function applyAutoAggregateRequirements<T extends ViewWithQuery>(view: T): T {
     let alteredQuery = false
 
     let period = get(q, 'builderConfig.aggregateWindow.period', null)
-    if (isNull(period)) {
+    if (period === null) {
       alteredQuery = true
       period = AGG_WINDOW_AUTO
     }
 
     let fillValues = get(q, 'builderConfig.aggregateWindow.fillValues', null)
-    if (isNull(fillValues)) {
+    if (fillValues === null) {
       alteredQuery = true
       fillValues = DEFAULT_FILLVALUES
     }

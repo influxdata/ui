@@ -7,7 +7,7 @@ import {useParams} from 'react-router'
 // Components
 import {Overlay} from '@influxdata/clockface'
 import PageSpinner from 'src/perf/components/PageSpinner'
-import {PluginCreateConfigurationFooter} from 'src/writeData/components/PluginCreateConfigurationFooter'
+import {Footer} from 'src/writeData/components/PluginCreateConfiguration/Footer'
 
 // Types
 import {AppState} from 'src/types'
@@ -29,30 +29,15 @@ import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
 
-const PluginCreateConfigurationStepSwitcher = Loadable({
+const StepSwitcher = Loadable({
   loader: () =>
-    import('src/writeData/components/PluginCreateConfigurationStepSwitcher'),
+    import('src/writeData/components/PluginCreateConfiguration/StepSwitcher'),
   loading() {
     return <PageSpinner />
   },
 })
 
-export interface PluginCreateConfigurationStepProps {
-  currentStepIndex: number
-  isValidConfiguration: boolean
-  notify: typeof notifyAction
-  onDecrementCurrentStepIndex: () => void
-  onExit: () => void
-  onIncrementCurrentStepIndex: () => void
-  onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
-  pluginConfig: string
-  pluginConfigName: string
-  setIsValidConfiguration: (isValid: boolean) => void
-  setPluginConfig: (config: string) => void
-  substepIndex?: number
-}
-
-interface PluginCreateConfigurationWizardProps {
+interface WizardProps {
   history: {
     goBack: () => void
   }
@@ -63,9 +48,9 @@ type ParamsType = {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & PluginCreateConfigurationWizardProps
+type Props = ReduxProps & WizardProps
 
-const PluginCreateConfigurationWizard: FC<Props> = props => {
+const Wizard: FC<Props> = props => {
   const {
     currentStepIndex,
     history,
@@ -148,9 +133,9 @@ const PluginCreateConfigurationWizard: FC<Props> = props => {
       <Overlay.Container maxWidth={maxWidth}>
         <Overlay.Header title={title} onDismiss={handleDismiss} />
         <Overlay.Body className={overlayBodyClassName}>
-          <PluginCreateConfigurationStepSwitcher stepProps={stepProps} />
+          <StepSwitcher stepProps={stepProps} />
         </Overlay.Body>
-        <PluginCreateConfigurationFooter {...stepProps} />
+        <Footer {...stepProps} />
       </Overlay.Container>
     </Overlay>
   )
@@ -182,4 +167,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(PluginCreateConfigurationWizard)
+export default connector(Wizard)

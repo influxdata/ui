@@ -4,12 +4,13 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 export default register =>
   register({
     type: 'blank',
-    init: () => ({
-      spec: {
-        readOnly: false,
-        range: DEFAULT_TIME_RANGE,
-        refresh: AUTOREFRESH_DEFAULT,
-        pipes: [],
-      },
-    }),
+    init: () =>
+      Promise.resolve({
+        spec: {
+          readOnly: false,
+          range: DEFAULT_TIME_RANGE,
+          refresh: AUTOREFRESH_DEFAULT,
+          pipes: [],
+        },
+      }),
   })

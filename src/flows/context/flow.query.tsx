@@ -144,7 +144,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   }, [variables, flow?.range])
 
   const generateMap = (withSideEffects?: boolean): Stage[] => {
-    const stages = flow.data.allIDs.reduce((acc, panelID) => {
+    const stages = (flow?.data?.allIDs ?? []).reduce((acc, panelID) => {
       const panel = flow.data.byID[panelID]
 
       if (!panel) {

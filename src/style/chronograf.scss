@@ -82,7 +82,6 @@
 @import 'src/timeMachine/components/QueryTab.scss';
 @import 'src/timeMachine/components/TimeMachine.scss';
 @import 'src/timeMachine/components/QueryBuilder.scss';
-@import 'src/timeMachine/components/RawFluxDataTable.scss';
 @import 'src/timeMachine/components/fluxFunctionsToolbar/FluxFunctionsToolbar.scss';
 @import 'src/timeMachine/components/ViewOptions.scss';
 @import 'src/visualization/components/ViewTypeDropdown.scss';
@@ -144,6 +143,7 @@
 @import 'src/writeData/components/fileUploads/FileUploads.scss';
 @import 'src/secrets/components/secrets.scss';
 @import 'src/buckets/components/createBucketForm/MeasurementSchema.scss';
+@import 'src/writeData/components/AddPluginToConfiguration.scss';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

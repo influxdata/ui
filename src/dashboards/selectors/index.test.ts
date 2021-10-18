@@ -112,6 +112,7 @@ describe('Dashboards.Selector', () => {
         timeZone: 'Local' as TimeZone,
         theme: 'dark',
         versionInfo: {version: '', commit: ''},
+        flowsCTA: {explorer: true, alerts: true, tasks: true},
       },
     }
 
@@ -135,6 +136,7 @@ describe('Dashboards.Selector', () => {
         timeZone: 'UTC' as TimeZone,
         theme: 'dark',
         versionInfo: {version: '', commit: ''},
+        flowsCTA: {explorer: true, alerts: true, tasks: true},
       },
     }
 
@@ -166,6 +168,7 @@ describe('Dashboards.Selector', () => {
         timeZone: 'UTC' as TimeZone,
         theme: 'dark',
         versionInfo: {version: '', commit: ''},
+        flowsCTA: {explorer: true, alerts: true, tasks: true},
       },
     }
 
@@ -197,6 +200,7 @@ describe('Dashboards.Selector', () => {
         timeZone: 'UTC' as TimeZone,
         theme: 'dark',
         versionInfo: {version: '', commit: ''},
+        flowsCTA: {explorer: true, alerts: true, tasks: true},
       },
     }
 
@@ -224,6 +228,7 @@ describe('Dashboards.Selector', () => {
         timeZone: 'UTC' as TimeZone,
         theme: 'dark',
         versionInfo: {version: '', commit: ''},
+        flowsCTA: {explorer: true, alerts: true, tasks: true},
       },
     }
 

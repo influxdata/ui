@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines, makeGraphSnapshot} from '../../support/commands'
+import {points, makeGraphSnapshot} from '../../support/commands'
 import {
   FROM,
   RANGE,
@@ -205,7 +205,7 @@ describe('DataExplorer', () => {
     const prefix = 'speed: '
     const suffix = ' mph'
     it('can add prefix and suffix labels when using Giraffe gauge', () => {
-      cy.writeData(lines(10))
+      cy.writeData(points(10))
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
           cy.getByTestID('view-type--dropdown').click()
@@ -270,7 +270,7 @@ describe('DataExplorer', () => {
     })
 
     it('can add prefix and suffix labels when using original built-in gauge', () => {
-      cy.writeData(lines(10))
+      cy.writeData(points(10))
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
           cy.getByTestID('view-type--dropdown').click()
@@ -670,7 +670,7 @@ describe('DataExplorer', () => {
 
   describe('refresh', () => {
     beforeEach(() => {
-      cy.writeData(lines(10))
+      cy.writeData(points(10))
 
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
@@ -692,7 +692,7 @@ describe('DataExplorer', () => {
 
   describe('saving', () => {
     beforeEach(() => {
-      cy.writeData(lines(10))
+      cy.writeData(points(10))
     })
 
     it('can open/close save as dialog and navigate inside', () => {

@@ -7,12 +7,13 @@ interface Props {
   row: Row
   style: CSSProperties
   fields: Fields
+  index: number
 }
 
-const TableRow: FC<Props> = ({row, style, fields}) => {
+const TableRow: FC<Props> = ({row, style, fields, index}) => {
   return (
-    <div style={style}>
-      <div className="event-row">
+    <div style={style} data-testid={`event-row ${index}`}>
+      <div className="event-row" data-testid="event-row--fields">
         {fields.map(({component: Component, columnWidth, rowKey}) => {
           const style = {flexBasis: `${columnWidth}px`}
 
@@ -27,7 +28,12 @@ const TableRow: FC<Props> = ({row, style, fields}) => {
           }
 
           return (
-            <div key={rowKey} className="event-row--field" style={style}>
+            <div
+              key={rowKey}
+              className="event-row--field"
+              style={style}
+              data-testid={`event-row--field ${rowKey}`}
+            >
               {content}
             </div>
           )

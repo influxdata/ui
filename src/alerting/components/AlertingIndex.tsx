@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent, useState, useContext} from 'react'
 import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
@@ -37,12 +37,13 @@ import 'src/shared/components/cta.scss'
 import {event} from 'src/cloud/utils/reporting'
 
 const alertsPath = '/orgs/:orgID/alerting'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 type ActiveColumn = 'checks' | 'endpoints' | 'rules'
 
 const AlertingIndex: FunctionComponent = () => {
   const [activeColumn, setActiveColumn] = useState<ActiveColumn>('checks')
-  const [dismissFlowsCTA, setDismissFlowsCTA] = useState(false)
+  const {flowsCTA, setFlowsCTA} = useContext(AppSettingContext)
 
   const pageContentsClassName = `alerting-index alerting-index__${activeColumn}`
 
@@ -55,7 +56,7 @@ const AlertingIndex: FunctionComponent = () => {
   }
 
   const hideFlowsCTA = () => {
-    setDismissFlowsCTA(true)
+    setFlowsCTA({alerts: false})
   }
 
   return (
@@ -72,7 +73,7 @@ const AlertingIndex: FunctionComponent = () => {
           scrollable={false}
           className={pageContentsClassName}
         >
-          {!dismissFlowsCTA && (
+          {flowsCTA.alerts && (
             <FeatureFlag name="flowsCTA">
               <div className="header-cta">
                 <Icon glyph={IconFont.BookPencil} />

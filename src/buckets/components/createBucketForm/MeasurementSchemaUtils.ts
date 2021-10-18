@@ -1,5 +1,3 @@
-import {trim} from 'lodash'
-
 const typeStrings = ['timestamp', 'tag', 'field']
 const dataTypeStrings = ['integer', 'float', 'boolean', 'string', 'unsigned']
 
@@ -68,8 +66,8 @@ export const TOO_LONG_ERROR = 'too long, max length is 128 characters'
  *
  *  this is about validating the name *after* the user has entered data
  * */
-export const isNameValid = name => {
-  name = trim(name)
+export const isNameValid = (name = '') => {
+  name = name.trim()
 
   // ok; it has contents:
   const illegalStartRegex = /^[0-9]/

@@ -1,7 +1,5 @@
-import {startsWith} from 'lodash'
-
 export const isSystemBucket = (bucketName: string): boolean => {
-  return startsWith(bucketName, '_')
+  return bucketName.startsWith('_')
 }
 
 export const BUCKET_OVERLAY_WIDTH = 475

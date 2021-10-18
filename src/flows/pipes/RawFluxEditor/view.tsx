@@ -6,7 +6,6 @@ import React, {
   useState,
   useContext,
   useCallback,
-  useMemo,
 } from 'react'
 import {
   RemoteDataState,
@@ -39,7 +38,6 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
-  const [showFn] = useState(true)
   const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
@@ -143,28 +141,27 @@ const Query: FC<PipeProp> = ({Context}) => {
     />
   )
 
-  return useMemo(() => {
-    return (
-      <Context controls={controls} resizes>
-        <Suspense
-          fallback={
-            <SpinnerContainer
-              loading={RemoteDataState.Loading}
-              spinnerComponent={<TechnoSpinner />}
-            />
-          }
-        >
-          <FluxMonacoEditor
-            script={query.text}
-            onChangeScript={updateText}
-            onSubmitScript={() => {}}
-            setEditorInstance={setEditorInstance}
-            wrapLines="on"
+  return (
+    <Context controls={controls}>
+      <Suspense
+        fallback={
+          <SpinnerContainer
+            loading={RemoteDataState.Loading}
+            spinnerComponent={<TechnoSpinner />}
           />
-        </Suspense>
-      </Context>
-    )
-  }, [editorInstance, showFn, showId])
+        }
+      >
+        <FluxMonacoEditor
+          script={query.text}
+          onChangeScript={updateText}
+          onSubmitScript={() => {}}
+          setEditorInstance={setEditorInstance}
+          wrapLines="on"
+          autogrow
+        />
+      </Suspense>
+    </Context>
+  )
 }
 
 export default Query

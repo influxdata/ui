@@ -1,5 +1,5 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {points} from '../../support/commands'
 
 describe('Dashboard', () => {
   beforeEach(() =>
@@ -284,7 +284,7 @@ describe('Dashboard', () => {
   describe('variable interactions', () => {
     beforeEach(() => {
       const numLines = 360
-      cy.writeData(lines(numLines))
+      cy.writeData(points(numLines))
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           cy.wrap({dashboard}).as('dashboard')
@@ -1146,7 +1146,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
   // based on issue #18339
   it('should save a time format change and show in the dashboard cell card', () => {
     const numLines = 360
-    cy.writeData(lines(numLines))
+    cy.writeData(points(numLines))
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
@@ -1193,7 +1193,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
   it('can sort values in a dashboard cell', () => {
     const numLines = 360
-    cy.writeData(lines(numLines))
+    cy.writeData(points(numLines))
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {

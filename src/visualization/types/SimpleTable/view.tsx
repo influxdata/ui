@@ -18,7 +18,7 @@ interface Props extends VisualizationProps {
 
 const SimpleTable: FC<Props> = ({properties, result}) => {
   return (
-    <div className="visualization--simple-table">
+    <div className="visualization--simple-table" data-testid="simple-table">
       <PaginationProvider total={result?.table?.length || 0}>
         <PagedTable properties={properties} result={result} />
         <PageControl />

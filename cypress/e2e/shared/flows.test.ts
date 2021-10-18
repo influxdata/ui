@@ -10,7 +10,6 @@ describe('Flows', () => {
             cy.getByTestID('version-info')
             return cy
               .setFeatureFlags({
-                simpleTable: true,
                 notebooksExp: true,
               })
               .then(() => {
@@ -34,7 +33,7 @@ describe('Flows', () => {
       ],
       'defbuck'
     )
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
 
@@ -49,31 +48,25 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector').click()
-    cy.getByTestID('flow-bucket-selector--defbuck').click()
-    cy.getByTestID('measurement-selector test').click()
+    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.getByTestID('selector-list defbuck')
+      .first()
+      .click()
+    cy.getByTestID('selector-list test')
+      .first()
+      .click()
 
     cy.getByTestID('time-machine-submit-button').click()
 
     cy.getByTestID('panel-add-btn-1').click()
 
     cy.getByTestID('add-flow-btn--visualization').click()
-
-    cy.getByTestID('slide-toggle').click()
-
-    cy.get('.flow-panel--header')
-      .eq(0)
-      .click()
-
-    // test for presentation mode state
-
-    cy.getByTestID('slide-toggle').click()
   })
 
-  it('can create a bucket from the metric selector and verify it is selected', () => {
+  // NOTE: we are hiding the metric selector from users for now
+  it.skip('can create a bucket from the metric selector and verify it is selected', () => {
     const newBucketName = 'IDontGiveABuck'
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
 
@@ -122,7 +115,7 @@ describe('Flows', () => {
       newBucketName
     )
 
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -137,17 +130,30 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector').click()
 
-    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.getByTestID('bucket-selector').within(() => {
+      cy.getByTestID('selector-list lets goooo').click()
+    })
 
     // select measurement and field
-    cy.getByTestID('measurement-selector test').click()
-    cy.getByTestID('field-selector dopeness').click()
-
+    cy.getByTestID('builder-card')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID(`selector-list test`).click()
+      })
+    cy.getByTestID('builder-card')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID(`selector-list dopeness`).click()
+      })
     // select beans tag and click preview
-    cy.getByTestID('tag-selector beans').click()
+    cy.getByTestID('builder-card')
+      .eq(2)
+      .within(() => {
+        cy.getByTestID(`selector-list beans`).click()
+      })
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -158,7 +164,11 @@ describe('Flows', () => {
     cy.getByTestID('table-cell cool').should('not.exist')
 
     // change tag to cool and click preview
-    cy.getByTestID('tag-selector cool').click()
+    cy.getByTestID('builder-card')
+      .eq(2)
+      .within(() => {
+        cy.getByTestID(`selector-list cool`).click()
+      })
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see cool in the table
@@ -166,7 +176,6 @@ describe('Flows', () => {
     cy.getByTestID('table-cell cool')
       .first()
       .should('be.visible')
-    cy.getByTestID('table-cell beans').should('not.exist')
   })
 
   it('can create, clone a flow and persist selected data in the clone, and delete a flow from the list page', () => {
@@ -187,7 +196,7 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -202,17 +211,30 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector').click()
 
-    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.getByTestID('bucket-selector').within(() => {
+      cy.getByTestID(`selector-list ${newBucketName}`).click()
+    })
 
     // select measurement and field
-    cy.getByTestID('measurement-selector test').click()
-    cy.getByTestID('field-selector dopeness').click()
-
+    cy.getByTestID('builder-card')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID(`selector-list test`).click()
+      })
+    cy.getByTestID('builder-card')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID(`selector-list dopeness`).click()
+      })
     // select beans tag and click preview
-    cy.getByTestID('tag-selector beans').click()
+    cy.getByTestID('builder-card')
+      .eq(2)
+      .within(() => {
+        cy.getByTestID(`selector-list beans`).click()
+      })
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -230,11 +252,6 @@ describe('Flows', () => {
 
     cy.getByTestID('resource-editable-name').click()
 
-    // Validate that the selections are maintained in the original selection
-    cy.getByTestID('label--pill measurement = test').should('exist')
-    cy.getByTestID('label--pill--delete field = dopeness').should('exist')
-    cy.getByTestID('label--pill--delete container_name = beans').should('exist')
-
     cy.getByTestID('nav-item-flows').click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
@@ -243,13 +260,9 @@ describe('Flows', () => {
 
     cy.getByTestID(`flow-card--${flowName}`).trigger('mouseover')
     cy.getByTestID(`flow-button--clone`).click({force: true})
+    cy.getByTestID('time-machine-submit-button').should('exist')
 
     const clone = `${flowName} (clone 1)`
-
-    // Validate that the selections are maintained in the original selection
-    cy.getByTestID('label--pill measurement = test').should('exist')
-    cy.getByTestID('label--pill--delete field = dopeness').should('exist')
-    cy.getByTestID('label--pill--delete container_name = beans').should('exist')
 
     // Should redirect the user to the newly cloned flow
     // Validates that the selected clone is the clone
@@ -289,7 +302,7 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -304,17 +317,30 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector').click()
 
-    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.getByTestID('bucket-selector').within(() => {
+      cy.getByTestID(`selector-list ${newBucketName}`).click()
+    })
 
     // select measurement and field
-    cy.getByTestID('measurement-selector test').click()
-    cy.getByTestID('field-selector dopeness').click()
-
+    cy.getByTestID('builder-card')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID(`selector-list test`).click()
+      })
+    cy.getByTestID('builder-card')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID(`selector-list dopeness`).click()
+      })
     // select beans tag and click preview
-    cy.getByTestID('tag-selector beans').click()
+    cy.getByTestID('builder-card')
+      .eq(2)
+      .within(() => {
+        cy.getByTestID(`selector-list beans`).click()
+      })
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -354,7 +380,7 @@ describe('Flows', () => {
 
     const flowName = 'Flowbooks'
 
-    cy.getByTestID('create-flow--button')
+    cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -369,17 +395,29 @@ describe('Flows', () => {
     cy.getByTestID('Delete--list-item').click()
 
     cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector').click()
-
-    cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
+    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.getByTestID('bucket-selector').within(() => {
+      cy.getByTestID(`selector-list ${newBucketName}`).click()
+    })
 
     // select measurement and field
-    cy.getByTestID('measurement-selector test').click()
-    cy.getByTestID('field-selector dopeness').click()
-
+    cy.getByTestID('builder-card')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID(`selector-list test`).click()
+      })
+    cy.getByTestID('builder-card')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID(`selector-list dopeness`).click()
+      })
     // select beans tag and click preview
-    cy.getByTestID('tag-selector beans').click()
+    cy.getByTestID('builder-card')
+      .eq(2)
+      .within(() => {
+        cy.getByTestID(`selector-list beans`).click()
+      })
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -431,7 +469,7 @@ describe('Flows', () => {
 
       const flowName = 'Flowbooks'
 
-      cy.getByTestID('create-flow--button')
+      cy.getByTestID('preset-new')
         .first()
         .click()
       cy.getByTestID('time-machine-submit-button').should('be.visible')
@@ -446,12 +484,28 @@ describe('Flows', () => {
       cy.getByTestID('Delete--list-item').click()
 
       cy.getByTestID('panel-add-btn--1').click()
-      cy.getByTestID('add-flow-btn--metricSelector').click()
-      cy.getByTestID('flow-bucket-selector').click()
-      cy.getByTestID(`flow-bucket-selector--${newBucketName}`).click()
-      cy.getByTestID('measurement-selector test').click()
-      cy.getByTestID('field-selector dopeness').click()
-      cy.getByTestID('tag-selector beans').click()
+      cy.getByTestID('add-flow-btn--queryBuilder').click()
+      cy.getByTestID('bucket-selector').within(() => {
+        cy.getByTestID(`selector-list ${newBucketName}`).click()
+      })
+
+      // select measurement and field
+      cy.getByTestID('builder-card')
+        .eq(0)
+        .within(() => {
+          cy.getByTestID(`selector-list test`).click()
+        })
+      cy.getByTestID('builder-card')
+        .eq(1)
+        .within(() => {
+          cy.getByTestID(`selector-list dopeness`).click()
+        })
+      // select beans tag and click preview
+      cy.getByTestID('builder-card')
+        .eq(2)
+        .within(() => {
+          cy.getByTestID(`selector-list beans`).click()
+        })
 
       // add an alert cell
       cy.getByTestID('panel-add-btn-2').click()

@@ -37,21 +37,6 @@ const StepSwitcher = Loadable({
   },
 })
 
-export interface PluginConfigurationStepProps {
-  currentStepIndex: number
-  isValidConfiguration: boolean
-  notify: typeof notifyAction
-  onDecrementCurrentStepIndex: () => void
-  onExit: () => void
-  onIncrementCurrentStepIndex: () => void
-  onSetSubstepIndex: (currentStepIndex: number, subStepIndex: number) => void
-  pluginConfig: string
-  pluginConfigName: string
-  setIsValidConfiguration: (isValid: boolean) => void
-  setPluginConfig: (config: string) => void
-  substepIndex?: number
-}
-
 interface WizardProps {
   history: {
     goBack: () => void

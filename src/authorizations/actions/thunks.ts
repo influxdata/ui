@@ -47,6 +47,7 @@ import {getStatus} from 'src/resources/selectors'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {getErrorMessage} from 'src/utils/api'
 
 type GetAuthorizations = (
   dispatch: Dispatch<Action | NotificationAction>,
@@ -121,8 +122,7 @@ export const createAuthorization = (auth: Authorization) => async (
     dispatch(notify(authorizationCreateSuccess()))
   } catch (error) {
     event('token.create.failure')
-    const message = error.data ? error.data.message : null
-    console.error(message)
+    const message = getErrorMessage(error)
     dispatch(notify(authorizationCreateFailed(message)))
     throw error
   }

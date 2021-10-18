@@ -69,18 +69,25 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
   }
 
   /**
-   *  change in newest api:  error 429 (too many requests) is in CLOUD and not in OSS
+   *  change in newest api (since the hash was last updated in 9/2021):
+   *     * error 429 (too many requests) is in CLOUD and not in OSS
+   *     * error 403 was removed, added error 404 (not found)
    *
-   *  doing the 'as any' cast away from the type because: safest way; this error code will never happen in OSS;
-   *    so the clause will never be activated, and the user still gets the proper error.
+   *  for error 429 which exists in only CLOUD:
+   *    doing the 'as any' cast away from the type because: safest way; this error code will never happen in OSS;
+   *    so the clause will never be activated, and the user still gets the proper error when in CLOUD.
    *
-   *    other strategies not implement here, with reasoning:
+   *    other strategies not implemented here, with reasoning:
    *
    *    1) not removing the clause and drop down to the generic error
    *          because then the user doesn't get a good error message
    *    2) bad code smell: add it to oss for code purposes, knowing it will never be called
    *    3) can't do an IF CLOUD b/c the code just ISN'T THERE; the type (PostWriteResult) exists in both
    *       cloud and oss and is different in each environment
+   *
+   *       for local testing, need to check out the open api repo, make sure it is named "openapi" (the default name) and
+   *       is present in the same directory as the ui repo,
+   *       and then run "yarn generate-local" in the ui repo to generate the OSS (not the cloud) files.
    */
   const writeLineProtocol = useCallback(
     async (bucket: string) => {

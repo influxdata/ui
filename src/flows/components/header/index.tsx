@@ -199,16 +199,18 @@ const FlowHeader: FC = () => {
             <PresentationMode />
             <TimeZoneDropdown />
             <TimeRangeDropdown />
-            <FeatureFlag name="shareNotebook">
-              <SquareButton
-                icon={IconFont.Share}
-                onClick={showShare}
-                color={
-                  !share ? ComponentColor.Default : ComponentColor.Secondary
-                }
-                titleText="Share Notebook"
-              />
-            </FeatureFlag>
+            {flow?.id && (
+              <FeatureFlag name="shareNotebook">
+                <SquareButton
+                  icon={IconFont.Share}
+                  onClick={showShare}
+                  color={
+                    !share ? ComponentColor.Default : ComponentColor.Secondary
+                  }
+                  titleText="Share Notebook"
+                />
+              </FeatureFlag>
+            )}
             <FeatureFlag name="flow-snapshot">
               <SquareButton
                 icon={IconFont.Export}

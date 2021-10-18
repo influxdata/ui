@@ -36,11 +36,9 @@ const PaymentPanel: FC = () => {
     }
   }
 
-  if (isFlagEnabled('quartzZuoraDisabled')) {
-    return <ZuoraOutagePanel />
-  }
-
-  return (
+  return isFlagEnabled('quartzZuoraDisabled') ? (
+    <ZuoraOutagePanel />
+  ) : (
     <Panel className="checkout-panel payment-method-panel">
       <PaymentPanelHeader
         onEdit={onEdit}

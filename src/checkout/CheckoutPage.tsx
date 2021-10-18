@@ -12,8 +12,11 @@ const CheckoutV2: FC = () => {
     <CheckoutProvider>
       <>
         <SuccessOverlay />
-        {isFlagEnabled('quartzZuoraDisabled') && <ZuoraOutagePage />}
-        {!isFlagEnabled('quartzZuoraDisabled') && <CheckoutForm />}
+        {isFlagEnabled('quartzZuoraDisabled') ? (
+          <ZuoraOutagePage />
+        ) : (
+          <CheckoutForm />
+        )}
       </>
     </CheckoutProvider>
   )

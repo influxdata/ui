@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {points} from '../../support/commands'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
@@ -15,7 +15,7 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
               .then(() => {
                 cy.createBucket(orgID, name, 'devbucket')
                 // have to add large amount of data to fill the window so that the random click for annotation works
-                cy.writeData(lines(3000), 'devbucket')
+                cy.writeData(points(3, 1_200_000), 'devbucket')
 
                 // make a dashboard cell
                 cy.getByTestID('add-cell--button').click()
@@ -184,17 +184,17 @@ export const addRangeAnnotation = (
 ) => {
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID(`giraffe-layer-${layerTestID}`).then(([canvas]) => {
-      const {width, height} = canvas
+      const {offsetWidth, offsetHeight} = canvas
 
       cy.wrap(canvas).trigger('mousedown', {
-        x: width / 3,
-        y: height / 2,
+        x: offsetWidth / 3,
+        y: offsetHeight / 2,
         force: true,
         shiftKey: true,
       })
       cy.wrap(canvas).trigger('mousemove', {
-        x: (width * 2) / 3,
-        y: height / 2,
+        x: (offsetWidth * 2) / 3,
+        y: offsetHeight / 2,
         force: true,
         shiftKey: true,
       })

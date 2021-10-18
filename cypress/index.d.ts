@@ -38,6 +38,7 @@ import {
   createDashWithCell,
   createDashWithViewAndVar,
   createRule,
+  createCheck,
   clickAttached,
   upsertSecret,
   setFeatureFlags,
@@ -90,6 +91,7 @@ declare global {
       fillInOSSLoginFormWithDefaults: typeof fillInOSSLoginFormWithDefaults
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
+      createCheck: typeof createCheck
       setFeatureFlags: typeof setFeatureFlags
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision

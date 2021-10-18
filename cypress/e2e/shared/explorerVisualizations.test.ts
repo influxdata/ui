@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines, makeGraphSnapshot} from '../../support/commands'
+import {points, makeGraphSnapshot} from '../../support/commands'
 const VIS_TYPES = [
   'band',
   //    'check',
@@ -52,11 +52,11 @@ describe('visualizations', () => {
     })
   })
 
-  const numLines = 360
-  describe(`visualize with ${numLines} lines`, () => {
+  const numPoints = 360
+  describe(`visualize with ${numPoints} points`, () => {
     beforeEach(() => {
-      // POST 360 lines to the server
-      cy.writeData(lines(numLines))
+      // POST 360 points to the server
+      cy.writeData(points(numPoints))
     })
 
     it('can view time-series data', () => {
@@ -150,7 +150,7 @@ describe('visualizations', () => {
               if (type.includes('single-stat')) {
                 cy.getByTestID('single-stat--text').should(
                   'contain',
-                  `${numLines}`
+                  `${numPoints}`
                 )
               }
             }

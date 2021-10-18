@@ -46,6 +46,7 @@ export const OSS_FLAGS = {
   exploreWithFlows: false,
   boardWithFlows: false,
   createWithFlows: false,
+  leadWithFlows: false,
   notebooksExp: false,
 }
 
@@ -94,6 +95,7 @@ export const CLOUD_FLAGS = {
   exploreWithFlows: false,
   boardWithFlows: false,
   createWithFlows: false,
+  leadWithFlows: false,
   notebooksExp: false,
 }
 

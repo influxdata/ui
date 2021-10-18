@@ -1,6 +1,6 @@
 import React, {useState, FC, useMemo} from 'react'
 
-import {debounce, trim} from 'lodash'
+import {debounce} from 'lodash'
 
 import {event} from 'src/cloud/utils/reporting'
 
@@ -312,11 +312,10 @@ export const MeasurementSchemaSection: FC<Props> = ({
     />
   )
 
-  const onAddName = (name, isValid, index) => {
+  const onAddName = (name = '', isValid, index) => {
     const lineItem = newSchemas[index]
 
-    // using lodash trim as it is null-safe
-    const trimmedName = trim(name)
+    const trimmedName = name.trim()
     lineItem.name = trimmedName
     if (lineItem.columns && lineItem.name && isValid) {
       lineItem.valid = true

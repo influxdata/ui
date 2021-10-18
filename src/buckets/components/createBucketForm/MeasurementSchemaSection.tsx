@@ -126,7 +126,8 @@ interface AddingProps {
 }
 
 // the MiniFileDnd component will catch any errors thrown here
-// and display them to the user
+// and display them to the user; as this method is only called from within
+// the 'handleFileUpload' that is passed to and called by the MiniFileDnd Component.
 const getColumnsFromFile = (contents: string) => {
   // do parsing here;  to check if in the correct format:
   let columns = null

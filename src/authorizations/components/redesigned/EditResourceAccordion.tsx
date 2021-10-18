@@ -53,13 +53,12 @@ export class EditResourceAccordion extends Component<Props> {
                 resource.charAt(0).toUpperCase() + resource.slice(1)
 
               return (
-                <>
-                  <AllAccordionBody
-                    resourceName={resourceName}
-                    permissions={permissions[resource]}
-                    disabled={true}
-                  />
-                </>
+                <AllAccordionBody
+                  key={resource}
+                  resourceName={resourceName}
+                  permissions={permissions[resource]}
+                  disabled={true}
+                />
               )
             })}
           </Accordion>

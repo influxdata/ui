@@ -72,9 +72,9 @@ const EditTokenOverlay: FC<Props> = props => {
   }
 
   const onSave = () => {
-    const {onUpdate, auth} = props
+    const {auth, updateAuthorization} = props
 
-    onUpdate({
+    updateAuthorization({
       ...auth,
       description: description,
       status: togglestatus ? 'active' : 'inactive',
@@ -175,7 +175,7 @@ const EditTokenOverlay: FC<Props> = props => {
 }
 
 const mdtp = {
-  onUpdate: updateAuthorization,
+  updateAuthorization,
 }
 
 const connector = connect(null, mdtp)

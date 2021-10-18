@@ -33,12 +33,15 @@ import {CLOUD} from 'src/shared/constants'
 import classnames from 'classnames'
 
 let MeasurementSchemaList = null,
-  MeasurementSchema = null
+  MeasurementSchema = null,
+  MeasurementSchemaColumn = null
 
 if (CLOUD) {
   MeasurementSchema = require('src/client/generatedRoutes').MeasurementSchema
   MeasurementSchemaList = require('src/client/generatedRoutes')
     .MeasurementSchemaList
+  MeasurementSchemaColumn = require('src/client/generatedRoutes')
+    .MeasurementSchemaColumn
 }
 
 /**
@@ -64,8 +67,8 @@ if (CLOUD) {
 
 interface Props {
   measurementSchemaList?: typeof MeasurementSchemaList
-  onUpdateSchemas?: (schemas: any) => void
-  onAddSchemas: (schemas: any, b?: boolean) => void
+  onUpdateSchemas?: (schemas: SchemaUpdateInfo[]) => void
+  onAddSchemas: (schemas: typeof MeasurementSchema, b?: boolean) => void
   showSchemaValidation: boolean
 }
 
@@ -386,6 +389,13 @@ const EditingPanel: FC<PanelProps> = ({
   )
 }
 
+export interface SchemaUpdateInfo {
+  currentSchema: typeof MeasurementSchema
+  hasUpdate: boolean
+  isValid?: boolean
+  columns?: typeof MeasurementSchemaColumn[]
+}
+
 export const MeasurementSchemaSection: FC<Props> = ({
   measurementSchemaList,
   onUpdateSchemas,
@@ -394,19 +404,16 @@ export const MeasurementSchemaSection: FC<Props> = ({
 }) => {
   const [newSchemas, setNewSchemas] = useState([])
 
-  // todo: turn into actual typescript interface after discussing things with stuart
-  // update:  stuart is putting in the correction, after it gets merged will update
-  // look for 'any' and reset those (onUpdateSchemas  , onAddSchemas)
   // each object:  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
   const updateInit = measurementSchemaList?.measurementSchemas?.map(schema => ({
-    currentSchema: schema,
+    currentSchema: schema as typeof MeasurementSchema,
     hasUpdate: false,
   }))
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
 
   // every time we update the local schema, should also send up the schema to the parent
   // so putting them together here
-  const doSchemaUpdate = schemaUpdates => {
+  const doSchemaUpdate = (schemaUpdates: SchemaUpdateInfo[]) => {
     onUpdateSchemas(schemaUpdates)
     setSchemaUpdates(schemaUpdates)
   }

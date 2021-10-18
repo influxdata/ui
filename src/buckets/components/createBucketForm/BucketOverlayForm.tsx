@@ -22,7 +22,10 @@ import {RuleType} from 'src/buckets/reducers/createBucket'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
-import {MeasurementSchemaSection} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
+import {
+  MeasurementSchemaSection,
+  SchemaUpdateInfo,
+} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
 
 let MeasurementSchemaList = null,
   MeasurementSchemaCreateRequest = null,
@@ -52,7 +55,7 @@ interface Props {
     schemas: any[],
     resetValidation?: boolean
   ) => void
-  onUpdateMeasurementSchemas?: (schemaInfo: any[]) => void
+  onUpdateMeasurementSchemas?: (schemaInfo: SchemaUpdateInfo[]) => void
   isEditing: boolean
   buttonText: string
   onClickRename?: () => void
@@ -90,7 +93,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     this.setState({newMeasurementSchemas: schemas})
   }
 
-  onUpdateSchemasInternal = schemas => {
+  onUpdateSchemasInternal = (schemas: SchemaUpdateInfo[]) => {
     this.props.onUpdateMeasurementSchemas(schemas)
     this.setState({measurementSchemaUpdates: schemas})
   }

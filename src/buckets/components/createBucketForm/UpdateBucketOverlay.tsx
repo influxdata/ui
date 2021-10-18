@@ -45,6 +45,8 @@ import {
   areSchemaUpdatesValid,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 
+import {SchemaUpdateInfo} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
+
 import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
 
 let SchemaType = null,
@@ -152,7 +154,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     }
   }
 
-  const handleMeasurementSchemaUpdates = schemas => {
+  const handleMeasurementSchemaUpdates = (schemas: SchemaUpdateInfo[]) => {
     setMeasurementSchemaUpdates(schemas)
   }
 

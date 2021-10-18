@@ -384,7 +384,7 @@ const mstp = (state: AppState) => {
 const mdtp = {
   getBuckets,
   getTelegrafs,
-  createAuthorization, 
+  createAuthorization,
   showOverlay,
   dismissOverlay,
 }

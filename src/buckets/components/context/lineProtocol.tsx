@@ -82,8 +82,9 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
         } else if (resp.status === 429) {
           setWriteStatus(RemoteDataState.Error)
           setWriteError('Failed due to plan limits: read cardinality reached')
-        } else if (resp.status === 403) {
-          const error = getErrorMessage(resp)
+        } else if (resp.status === 404) {
+          const error =
+            getErrorMessage(resp) || 'Endpoint not Found; Failed to write data'
           setWriteStatus(RemoteDataState.Error)
           setWriteError(error)
         } else {

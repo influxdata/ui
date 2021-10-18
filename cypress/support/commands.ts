@@ -1,4 +1,10 @@
-import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
+import {
+  AccountType,
+  NotificationEndpoint,
+  GenCheck,
+  NotificationRule,
+  Secret,
+} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
@@ -508,50 +514,6 @@ export const createTelegraf = (
   })
 }
 
-export const createRule = (
-  orgID: string,
-  endpointID: string,
-  name = ''
-): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.request({
-    method: 'POST',
-    url: 'api/v2/notificationRules',
-    body: genRule({endpointID, orgID, name}),
-  })
-}
-
-type RuleArgs = {
-  endpointID: string
-  orgID: string
-  type?: string
-  name?: string
-}
-
-const genRule = ({
-  endpointID,
-  orgID,
-  type = 'slack',
-  name = 'r1',
-}: RuleArgs) => ({
-  type,
-  every: '20m',
-  offset: '1m',
-  url: '',
-  orgID,
-  name,
-  activeStatus: 'active',
-  status: 'active',
-  endpointID,
-  tagRules: [],
-  labels: [],
-  statusRules: [
-    {currentLevel: 'CRIT', period: '1h', count: 1, previousLevel: 'INFO'},
-  ],
-  description: '',
-  messageTemplate: 'im a message',
-  channel: '',
-})
-
 /*
 [{action: 'write', resource: {type: 'views'}},
       {action: 'write', resource: {type: 'documents'}},
@@ -729,6 +691,33 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
   if (args.stagger) {
     return addStaggerTimestampToRecs(args.lines, args.offset, interval).then(
       stampedLines => {
+        if (args.namedBucket) {
+          return writeData(stampedLines, args.namedBucket).then(response => {
+            if (response.status !== 204) {
+              throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+            }
+            return cy.wrap('success')
+          })
+        } else {
+          return writeData(stampedLines).then(response => {
+            if (response.status !== 204) {
+              throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+            }
+            return cy.wrap('success')
+          })
+        }
+      }
+    )
+  } else {
+    return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
+      if (args.namedBucket) {
+        return writeData(stampedLines, args.namedBucket).then(response => {
+          if (response.status !== 204) {
+            throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+          }
+          return cy.wrap('success')
+        })
+      } else {
         return writeData(stampedLines).then(response => {
           if (response.status !== 204) {
             throw `Problem writing data. Status: ${response.status} ${response.statusText}`
@@ -736,15 +725,6 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
           return cy.wrap('success')
         })
       }
-    )
-  } else {
-    return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
-      return writeData(stampedLines).then(response => {
-        if (response.status !== 204) {
-          throw `Problem writing data. Status: ${response.status} ${response.statusText}`
-        }
-        return cy.wrap('success')
-      })
     })
   }
 }
@@ -865,6 +845,20 @@ export const createEndpoint = (
   return cy.request('POST', 'api/v2/notificationEndpoints', endpoint)
 }
 
+// checks
+export const createCheck = (
+  check: GenCheck
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', 'api/v2/checks', check)
+}
+
+// rules
+export const createRule = (
+  rule: NotificationRule
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', 'api/v2/notificationRules', rule)
+}
+
 // helpers
 // Re-query elements that are found 'detached' from the DOM
 // https://github.com/cypress-io/cypress/issues/7306
@@ -981,6 +975,8 @@ export const createTaskFromEmpty = (
 Cypress.Commands.add('createEndpoint', createEndpoint)
 // notification rules
 Cypress.Commands.add('createRule', createRule)
+// checks
+Cypress.Commands.add('createCheck', createCheck)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)

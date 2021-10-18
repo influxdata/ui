@@ -81,6 +81,7 @@ const EventTable: FC<Props> = ({state, dispatch, loadRows, fields}) => {
         style={style}
         row={state.rows[index]}
         fields={fields}
+        index={index}
       />
     )
   }

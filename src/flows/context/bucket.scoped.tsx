@@ -71,7 +71,37 @@ export const BucketProvider: FC<Props> = ({panel, children}) => {
               }
               return acc
             },
-            {system: [], user: []}
+            {
+              system: [],
+              user: [],
+              sample: [
+                {
+                  type: 'sample',
+                  name: 'Air Sensor Data',
+                  id: 'airSensor',
+                },
+                {
+                  type: 'sample',
+                  name: 'Coinbase bitcoin price',
+                  id: 'bitcoin',
+                },
+                {
+                  type: 'sample',
+                  name: 'Bird Migration',
+                  id: 'birdMigration',
+                },
+                {
+                  type: 'sample',
+                  name: 'NOAA National Buoy Data',
+                  id: 'noaa',
+                },
+                {
+                  type: 'sample',
+                  name: 'USGS Earthquakes',
+                  id: 'usgs',
+                },
+              ],
+            }
           )
 
         bucks.system.sort((a, b) =>
@@ -80,8 +110,11 @@ export const BucketProvider: FC<Props> = ({panel, children}) => {
         bucks.user.sort((a, b) =>
           `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
         )
+        bucks.sample.sort((a, b) =>
+          `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
+        )
         setLoading(RemoteDataState.Done)
-        setBuckets([...bucks.user, ...bucks.system])
+        setBuckets([...bucks.user, ...bucks.system, ...bucks.sample])
       })
       .catch(() => {})
   }, [scope.region, scope.org])

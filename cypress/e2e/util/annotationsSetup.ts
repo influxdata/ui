@@ -77,7 +77,7 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   })
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
       cy.getByTestID('edit-annotation-message')
         .should('be.visible')
@@ -102,7 +102,7 @@ export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
       cy.getByTestID('edit-annotation-message')
         .should('be.visible')
@@ -120,7 +120,7 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
       cy.getByTestID('delete-annotation-button').click({force: true})
     })
@@ -181,7 +181,7 @@ export const addRangeAnnotation = (
   })
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
       cy.getByTestID('edit-annotation-message')
         .should('be.visible')
@@ -237,7 +237,7 @@ export const testEditRangeAnnotation = (
   startEditingAnnotation(cy)
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
       cy.getByTestID('edit-annotation-message')
         .should('be.visible')

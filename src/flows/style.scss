@@ -433,6 +433,6 @@ $cf-radius-lg: $cf-radius + 4px;
   }
 }
 
-.flows-index--main {
-  margin-top: 10px;
+.flows-index--contents {
+  overflow: unset;
 }

@@ -324,12 +324,8 @@ const NEW_VIEW_CREATORS = {
     ...defaultView(),
     properties: {
       type: 'simple-table',
-      showAll: false,
-      queries: [defaultViewQuery()],
-      shape: 'chronograf-v2',
-      note: '',
-      showNoteWhenEmpty: false,
-    },
+      showAll: false
+    } as SimpleTableViewProperties,
   }),
   markdown: (): NewView<MarkdownViewProperties> => ({
     ...defaultView(),

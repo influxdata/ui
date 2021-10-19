@@ -451,16 +451,15 @@ describe('DataExplorer', () => {
           .within(() => {
             cy.get('textarea').type('foo |> bar', {force: true})
 
-            cy.get('.squiggly-error').should('be.visible')
+            // TODO the new flux lsp doesn't support squigglies.
+            // Turn this back on after [INSERT ISSUE] is fixed
+            // cy.get('.squiggly-error').should('be.visible')
 
             cy.get('textarea').type('{selectall} {backspace}', {force: true})
 
             cy.get('textarea').type('from(bucket: )', {force: true})
 
-            // error signature from lsp
-            // TODO(ariel): need to resolve this test. The issue for it is here:
-            // https://github.com/influxdata/ui/issues/481
-            // cy.get('.signature').should('be.visible')
+            cy.get('.signature').should('be.visible')
           })
       })
 

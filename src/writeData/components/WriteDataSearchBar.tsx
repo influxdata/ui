@@ -6,20 +6,17 @@ import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
 
 // Components
 import {Input, InputRef, ComponentSize, IconFont} from '@influxdata/clockface'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 const WriteDataSearchBar: FC = () => {
   const {searchTerm, setSearchTerm} = useContext(WriteDataSearchContext)
-  const handleInputChange = (e: ChangeEvent<InputRef>): void => {
-    setSearchTerm(e.target.value)
-  }
 
   return (
-    <Input
-      placeholder="Search data writing methods..."
-      value={searchTerm}
+    <SearchWidget
+      placeholderText="Search data writing methods..."
+      searchTerm={searchTerm}
       size={ComponentSize.Large}
-      icon={IconFont.Search_New}
-      onChange={handleInputChange}
+      onSearch={setSearchTerm}
       autoFocus={true}
       testID="write-data--search"
     />

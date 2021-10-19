@@ -3,7 +3,7 @@ import React, {Component, ChangeEvent} from 'react'
 import {debounce} from 'lodash'
 
 // Components
-import {Input} from '@influxdata/clockface'
+import {ComponentSize, Input} from '@influxdata/clockface'
 
 // Types
 import {IconFont} from '@influxdata/clockface'
@@ -18,6 +18,8 @@ interface Props {
   searchTerm: string
   testID: string
   tabIndex?: number
+  autoFocus?: boolean
+  size?: ComponentSize
 }
 
 interface State {
@@ -31,6 +33,9 @@ class SearchWidget extends Component<Props, State> {
     placeholderText: 'Search...',
     searchTerm: '',
     testID: 'search-widget',
+    autoFocus: false,
+    tabIndex: 0,
+    size: ComponentSize.Small,
   }
 
   public componentDidUpdate(prevProps: Props) {
@@ -51,7 +56,7 @@ class SearchWidget extends Component<Props, State> {
   }
 
   public render() {
-    const {placeholderText, testID, tabIndex = 0} = this.props
+    const {placeholderText, testID, tabIndex = 0, autoFocus, size} = this.props
     const {searchTerm} = this.state
 
     return (
@@ -66,6 +71,8 @@ class SearchWidget extends Component<Props, State> {
           className="search-widget-input"
           tabIndex={tabIndex}
           onClear={this.clear}
+          autoFocus={autoFocus}
+          size={size}
         />
       </ErrorBoundary>
     )

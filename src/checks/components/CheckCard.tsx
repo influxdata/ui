@@ -165,7 +165,7 @@ const CheckCard: FC<Props> = ({
         </FlexBox>
         <FlexBox
           direction={FlexDirection.Column}
-          margin={ComponentSize.Small}
+          margin={ComponentSize.Large}
           alignItems={AlignItems.FlexStart}
         >
           <ResourceCard.EditableName

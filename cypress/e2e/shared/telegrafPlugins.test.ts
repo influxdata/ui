@@ -142,7 +142,7 @@ describe('Sources > Telegraf Plugins', () => {
 
       // go back to the sources page
       cy.getByTestID('tree-nav').within(() => {
-        cy.getByTestID('nav-item-load-data').click()
+        cy.clickNavBarItem('nav-item-load-data')
       })
       cy.getByTestID('sources-telegraf-plugins').should('exist')
       cy.getByTestID(`load-data-item ${examplePlugin}`).click()

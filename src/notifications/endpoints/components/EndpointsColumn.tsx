@@ -57,7 +57,7 @@ const EndpointsColumn: FC<Props> = ({history, match, endpoints, tabIndex}) => {
 
   const createButton = (
     <Button
-      color={ComponentColor.Secondary}
+      color={ComponentColor.Primary}
       text="Create"
       onClick={handleOpenOverlay}
       testID="create-endpoint"

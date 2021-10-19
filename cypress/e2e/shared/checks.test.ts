@@ -332,7 +332,7 @@ describe('Checks', () => {
         cy.getByTestID('save-cell--button').click()
 
         // go to the history page
-        cy.getByTestID('context-history-menu').click({force: true})
+        cy.getByTestID('context-menu-task').click({force: true})
         cy.getByTestID('context-history-task').click({force: true})
 
         // make sure table is present
@@ -388,7 +388,7 @@ describe('Checks', () => {
     })
 
     it('after check creation confirm history page has graph', () => {
-      cy.getByTestID('context-history-menu').click()
+      cy.getByTestID('context-menu-task').click()
       cy.getByTestID('context-history-task').click()
       cy.getByTestID('giraffe-axes').should('be.visible')
 

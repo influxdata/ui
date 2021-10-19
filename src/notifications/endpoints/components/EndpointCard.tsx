@@ -127,7 +127,7 @@ const EndpointCard: FC<Props> = ({
         <FlexBox
           direction={FlexDirection.Column}
           alignItems={AlignItems.FlexStart}
-          margin={ComponentSize.Small}
+          margin={ComponentSize.Large}
         >
           <ResourceCard.EditableName
             key={id}

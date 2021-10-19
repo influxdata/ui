@@ -11,6 +11,7 @@ import {
   ComponentSize,
   FlexDirection,
   ComponentColor,
+  InfluxColors,
 } from '@influxdata/clockface'
 
 // Types
@@ -34,7 +35,11 @@ const CheckTagRow: FC<Props> = ({
   }
 
   return (
-    <Panel testID="tag-rule" className="alert-builder--tag-row">
+    <Panel
+      testID="tag-rule"
+      className="alert-builder--tag-row"
+      backgroundColor={InfluxColors.Grey25}
+    >
       <DismissButton
         onClick={() => {
           handleRemoveTagRow(index)

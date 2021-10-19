@@ -55,6 +55,7 @@ const CreateCheckDropdown: FunctionComponent<OwnProps & ReduxProps> = ({
       active={active}
       onClick={onClick}
       testID="create-check"
+      style={{textTransform: 'uppercase', letterSpacing: '0.07em'}}
     >
       Create
     </Dropdown.Button>

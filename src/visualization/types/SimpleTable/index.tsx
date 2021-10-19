@@ -33,7 +33,7 @@ export default register => {
     graphic: icon,
     initial: {type: 'simple-table', showAll: false},
     component: view,
-    featureFlag: 'simpleTable',
+    featureFlag: 'useGiraffeGraphs',
     options,
   })
 }

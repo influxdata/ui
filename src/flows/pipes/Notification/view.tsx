@@ -187,6 +187,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
 
       editorInstance.executeEdits('', edits)
       updateMessage(editorInstance.getValue())
+      event('Injecting Expression into Alert Message')
     },
     [editorInstance]
   )
@@ -481,6 +482,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
     if (showId === id) {
       hideSub()
     } else {
+      event('Opening the Expressions Sidebar')
       show(id)
       showSub(<Expressions parsed={results?.parsed} onSelect={inject} />)
     }

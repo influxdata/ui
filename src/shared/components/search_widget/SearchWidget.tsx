@@ -17,6 +17,7 @@ interface Props {
   placeholderText: string
   searchTerm: string
   testID: string
+  tabIndex?: number
 }
 
 interface State {
@@ -50,7 +51,7 @@ class SearchWidget extends Component<Props, State> {
   }
 
   public render() {
-    const {placeholderText, testID} = this.props
+    const {placeholderText, testID, tabIndex = 0} = this.props
     const {searchTerm} = this.state
 
     return (
@@ -63,6 +64,8 @@ class SearchWidget extends Component<Props, State> {
           onBlur={this.handleBlur}
           testID={testID}
           className="search-widget-input"
+          tabIndex={tabIndex}
+          onClear={this.clear}
         />
       </ErrorBoundary>
     )
@@ -78,6 +81,9 @@ class SearchWidget extends Component<Props, State> {
 
   private handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     this.setState({searchTerm: e.target.value}, this.handleSearch)
+  }
+  private clear = (): void => {
+    this.setState({searchTerm: ''}, this.handleSearch)
   }
 }
 

@@ -407,7 +407,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
 
   // each object:  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
   const updateInit = measurementSchemaList?.measurementSchemas?.map(schema => ({
-    currentSchema: schema as typeof MeasurementSchema,
+    currentSchema: schema,
     hasUpdate: false,
   }))
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])

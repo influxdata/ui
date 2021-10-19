@@ -324,7 +324,7 @@ const NEW_VIEW_CREATORS = {
     ...defaultView(),
     properties: {
       type: 'simple-table',
-      showAll: false
+      showAll: false,
     } as SimpleTableViewProperties,
   }),
   markdown: (): NewView<MarkdownViewProperties> => ({

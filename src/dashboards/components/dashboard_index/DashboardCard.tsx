@@ -207,10 +207,16 @@ class DashboardCard extends PureComponent<Props> {
       },
     } = this.props
 
+    let dest = `/notebook/from/dashboard/${id}`
+
+    if (!isFlagEnabled('boardWithFlows')) {
+      dest = `/orgs/${orgID}/dashboards/${id}`
+    }
+
     if (e.metaKey) {
-      window.open(`/orgs/${orgID}/dashboards/${id}`, '_blank')
+      window.open(dest, '_blank')
     } else {
-      history.push(`/orgs/${orgID}/dashboards/${id}`)
+      history.push(dest)
     }
 
     onResetViews()

@@ -118,7 +118,7 @@ class TokensRow extends PureComponent<Props> {
 
   private handleDelete = () => {
     const {id, description} = this.props.auth
-    this.props.onDelete(id, description)
+    this.props.deleteAuthorization(id, description)
   }
 
   private handleClone = () => {
@@ -128,7 +128,7 @@ class TokensRow extends PureComponent<Props> {
       auth => auth.description
     )
 
-    this.props.onClone({
+    this.props.createAuthorization({
       ...this.props.auth,
       description: incrementCloneName(allTokenDescriptions, description),
     })
@@ -141,8 +141,8 @@ class TokensRow extends PureComponent<Props> {
   }
 
   private handleUpdateName = (value: string) => {
-    const {auth, onUpdate} = this.props
-    onUpdate({...auth, description: value})
+    const {auth, updateAuthorization} = this.props
+    updateAuthorization({...auth, description: value})
   }
 }
 
@@ -152,9 +152,9 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  onDelete: deleteAuthorization,
-  onUpdate: updateAuthorization,
-  onClone: createAuthorization,
+  deleteAuthorization,
+  updateAuthorization,
+  createAuthorization,
   showOverlay,
   dismissOverlay,
 }

@@ -73,22 +73,22 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   })
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
-      cy.getByTestID('edit-annotation-message').should('be.visible')
-
       cy.getByTestID('edit-annotation-message')
+        .should('be.visible')
         .click()
-        .focused()
         .type('im a hippopotamus')
-      cy.getByTestID('annotation-submit-button').click()
+      cy.getByTestID('annotation-submit-button')
+        .should('be.visible')
+        .click()
     })
 }
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('cell blah').within(() => {
     // we have 2 line layers by the same id, we only want to click on the first
-    cy.get('line')
+    cy.get('.giraffe-annotation-line')
       .first()
       .click({force: true})
   })
@@ -98,38 +98,16 @@ export const editAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
-      if (Cypress.browser.name === 'firefox') {
-        // interacting with the 'edit-annotation-message' box is unstable in Firefox, causes flaky tests.
-        // to work around the issue, lets update the annotation by intercepting the request body.
-        cy.intercept(
-          'PUT',
-          '**/annotations/*',
-          (req: any) =>
-            (req.body = {
-              ...req.body,
-              summary: 'lets edit this annotation...',
-            })
-        ).as('updateAnnotation')
-      } else {
-        // for Chrome et. al., continue interacting with the UI per usual
-        cy.getByTestID('edit-annotation-message')
-          .should('be.visible')
-          .clear()
-
-        cy.getByTestID('edit-annotation-message')
-          .should('be.visible')
-          .type('lets edit this annotation...')
-
-        cy.intercept('PUT', '**/annotations/*').as('updateAnnotation')
-      }
+      cy.getByTestID('edit-annotation-message')
+        .should('be.visible')
+        .clear()
+        .type('lets edit this annotation...')
 
       cy.getByTestID('annotation-submit-button')
         .should('be.visible')
         .click()
-
-      cy.wait('@updateAnnotation')
     })
 }
 
@@ -138,7 +116,7 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
   startEditingAnnotation(cy)
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
       cy.getByTestID('delete-annotation-button').click({force: true})
     })
@@ -148,7 +126,7 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
 
   // annotation line should not exist in the dashboard cell
   cy.getByTestID('cell blah').within(() => {
-    cy.get('line').should('not.exist')
+    cy.get('.giraffe-annotation-line').should('not.exist')
   })
 }
 
@@ -199,18 +177,19 @@ export const addRangeAnnotation = (
   })
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
       cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .click()
-        .focused()
         .type('range annotation here!')
 
       // make sure the two times (start and end) are not equal:
       ensureRangeAnnotationTimesAreNotEqual(cy)
 
-      cy.getByTestID('annotation-submit-button').click()
+      cy.getByTestID('annotation-submit-button')
+        .should('be.visible')
+        .click()
     })
 }
 
@@ -254,14 +233,11 @@ export const testEditRangeAnnotation = (
   startEditingAnnotation(cy)
 
   cy.getByTestID('overlay--container')
-    .filter(':visible')
+    .should('be.visible')
     .within(() => {
       cy.getByTestID('edit-annotation-message')
         .should('be.visible')
         .clear()
-
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
         .type('editing the text here for the range annotation')
     })
 

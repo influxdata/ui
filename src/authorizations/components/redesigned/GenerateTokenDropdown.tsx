@@ -18,8 +18,8 @@ type GenerateTokenProps = RouteComponentProps
 type ReduxProps = ConnectedProps<typeof connector>
 
 const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
-  onShowOverlay,
-  onDismissOverlay,
+  showOverlay,
+  dismissOverlay,
   getAllResources,
 }) => {
   const dispatch = useDispatch()
@@ -28,13 +28,13 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
   const customApiOption = 'Custom API Token'
 
   const handleAllAccess = () => {
-    onShowOverlay('add-master-token', null, onDismissOverlay)
+    showOverlay('add-master-token', null, dismissOverlay)
   }
 
   const handleCustomApi = async () => {
     try {
       await getAllResources()
-      onShowOverlay('add-custom-token', null, onDismissOverlay)
+      showOverlay('add-custom-token', null, dismissOverlay)
     } catch (e) {
       dispatch(notify(getResourcesTokensFailure()))
     }
@@ -90,9 +90,9 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
 }
 
 const mdtp = {
-  onShowOverlay: showOverlay,
-  onDismissOverlay: dismissOverlay,
-  getAllResources: getAllResources,
+  showOverlay,
+  dismissOverlay,
+  getAllResources,
 }
 
 const connector = connect(null, mdtp)

@@ -98,23 +98,6 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
   })
 }
 
-export const editAnnotation = (cy: Cypress.Chainable) => {
-  startEditingAnnotation(cy)
-
-  cy.getByTestID('overlay--container')
-    .should('be.visible')
-    .within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .clear()
-        .type('lets edit this annotation...')
-
-      cy.getByTestID('annotation-submit-button')
-        .should('be.visible')
-        .click()
-    })
-}
-
 export const deleteAnnotation = (cy: Cypress.Chainable) => {
   // should have the annotation created , lets click it to show the modal.
   startEditingAnnotation(cy)
@@ -210,8 +193,20 @@ export const testAddAnnotation = (cy: Cypress.Chainable) => {
 export const testEditAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
-  // should have the annotation created , lets click it to show the modal.
-  editAnnotation(cy)
+  startEditingAnnotation(cy)
+
+  cy.getByTestID('overlay--container')
+    .should('be.visible')
+    .within(() => {
+      cy.getByTestID('edit-annotation-message')
+        .should('be.visible')
+        .clear()
+        .type('lets edit this annotation...')
+
+      cy.getByTestID('annotation-submit-button')
+        .should('be.visible')
+        .click()
+    })
 
   // reload to make sure the annotation was edited in the backend as well.
   reloadAndHandleAnnotationDefaultStatus()

@@ -172,7 +172,7 @@ const AddingPanel: FC<AddingProps> = ({
   if (fileErrorInit) {
     fileEMessage = 'You must upload a file'
   }
-  const [fileErrorMessage, setFileErrorMessage] = useState(fileEMessage)
+  const [fileErrorMessage, setFileErrorMessage] = useState<string>(fileEMessage)
 
   const setErrorState = (hasError, message) => {
     setHasFileError(hasError)
@@ -406,11 +406,12 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const [newSchemas, setNewSchemas] = useState([])
 
   // each object:  currentSchema: MeasurementSchema, hasUpdate:boolean, isValid:boolean, columns: MeasurementSchemaColumn[]
-  const updateInit = measurementSchemaList?.measurementSchemas?.map(schema => ({
-    currentSchema: schema,
-    hasUpdate: false,
-  }))
-  const [schemaUpdates, setSchemaUpdates] = useState(updateInit || [])
+  const updateInit =
+    measurementSchemaList?.measurementSchemas?.map(schema => ({
+      currentSchema: schema,
+      hasUpdate: false,
+    })) || []
+  const [schemaUpdates, setSchemaUpdates] = useState(updateInit)
 
   // every time we update the local schema, should also send up the schema to the parent
   // so putting them together here

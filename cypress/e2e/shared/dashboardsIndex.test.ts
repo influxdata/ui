@@ -565,8 +565,8 @@ describe('Dashboards', () => {
           cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card').invoke('hover')
-          cy.getByTestID('context-export-menu').click()
-          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('context-menu-dashboard').click()
+          cy.getByTestID('context-export-dashboard').click()
           cy.getByTestID('button').click()
           // readFile has a 4s timeout before the test fails
           cy.readFile('cypress/downloads/dashboard.json').should('exist')
@@ -586,8 +586,8 @@ describe('Dashboards', () => {
           })
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card').invoke('hover')
-          cy.getByTestID('context-export-menu').click()
-          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('context-menu-dashboard').click()
+          cy.getByTestID('context-export-dashboard').click()
           cy.getByTestID('button-copy').click()
           cy.getByTestID('notification-success--children').should('be.visible')
         })

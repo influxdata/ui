@@ -8,7 +8,6 @@ import {
   STACKED_LINE_CUMULATIVE,
   SingleStatLayerConfig,
   createGroupIDColumn,
-  formatStatValue,
   getDomainDataFromLines,
   getLatestValues,
   lineTransform,
@@ -19,7 +18,6 @@ import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
 
 // Component
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
-import LatestValueTransform from 'src/visualization/components/LatestValueTransform'
 
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
@@ -43,14 +41,12 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
-import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
 import {LinePlusSingleStatProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 // Annotations
 import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
@@ -233,107 +229,45 @@ const SingleStatWithLine: FC<Props> = ({
     ],
   }
 
-  if (isFlagEnabled('useGiraffeGraphs')) {
-    const statLayer: SingleStatLayerConfig = {
-      type: 'single stat',
-      prefix: properties.prefix,
-      suffix: properties.suffix,
-      decimalPlaces: properties.decimalPlaces,
-      textColor: textColor,
-      textOpacity: 100,
-      backgroundColor: backgroundColor ? backgroundColor : '',
-      svgTextStyle: {
-        fontSize: '100',
-        fontWeight: 'lighter',
-        dominantBaseline: 'middle',
-        textAnchor: 'middle',
-        letterSpacing: '-0.05em',
-      },
-      svgTextAttributes: {
-        'data-testid': 'single-stat--text',
-      },
-    }
-
-    config.layers.push(statLayer)
-
-    // adding this *after* the statLayer, it has to be the top layer
-    // for clicking to edit to function.  (if it is not the top layer it shows,
-    // but the annotations are not editable)
-
-    addAnnotationLayer(
-      config,
-      inAnnotationMode,
-      cellID,
-      xColumn,
-      yColumn,
-      groupKey,
-      annotations,
-      dispatch,
-      'singleStatWline'
-    )
-
-    return <Plot config={config} />
-  } else {
-    const statPortion = (
-      <LatestValueTransform table={result.table} allowString={true}>
-        {latestValue => {
-          const {
-            bgColor: backgroundColor,
-            textColor,
-          } = generateThresholdsListHexs({
-            colors: properties.colors.filter(c => c.type !== 'scale'),
-            lastValue: latestValue,
-            cellType: 'single-stat',
-          })
-
-          const timeFormatter = getFormatter('time', {
-            timeZone: timeZone === 'Local' ? undefined : timeZone,
-            timeFormat: DEFAULT_TIME_FORMAT,
-          })
-
-          const formattedValue =
-            result.table.getColumnType('_value') === 'time'
-              ? timeFormatter(latestValue)
-              : formatStatValue(latestValue, {
-                  decimalPlaces: properties.decimalPlaces,
-                  prefix: properties.prefix,
-                  suffix: properties.suffix,
-                })
-
-          return (
-            <div
-              className="single-stat"
-              style={{backgroundColor}}
-              data-testid="single-stat"
-            >
-              <div className="single-stat--resizer">
-                <svg
-                  width="100%"
-                  height="100%"
-                  viewBox={`0 0 ${formattedValue.length * 55} 100`}
-                >
-                  <text
-                    className="single-stat--text"
-                    data-testid="single-stat--text"
-                    fontSize="100"
-                    y="59%"
-                    x="50%"
-                    dominantBaseline="middle"
-                    textAnchor="middle"
-                    style={{fill: textColor}}
-                  >
-                    {formattedValue}
-                  </text>
-                </svg>
-              </div>
-            </div>
-          )
-        }}
-      </LatestValueTransform>
-    )
-
-    return <Plot config={config}>{statPortion}</Plot>
+  const statLayer: SingleStatLayerConfig = {
+    type: 'single stat',
+    prefix: properties.prefix,
+    suffix: properties.suffix,
+    decimalPlaces: properties.decimalPlaces,
+    textColor: textColor,
+    textOpacity: 100,
+    backgroundColor: backgroundColor ? backgroundColor : '',
+    svgTextStyle: {
+      fontSize: '100',
+      fontWeight: 'lighter',
+      dominantBaseline: 'middle',
+      textAnchor: 'middle',
+      letterSpacing: '-0.05em',
+    },
+    svgTextAttributes: {
+      'data-testid': 'single-stat--text',
+    },
   }
+
+  config.layers.push(statLayer)
+
+  // adding this *after* the statLayer, it has to be the top layer
+  // for clicking to edit to function.  (if it is not the top layer it shows,
+  // but the annotations are not editable)
+
+  addAnnotationLayer(
+    config,
+    inAnnotationMode,
+    cellID,
+    xColumn,
+    yColumn,
+    groupKey,
+    annotations,
+    dispatch,
+    'singleStatWline'
+  )
+
+  return <Plot config={config} />
 }
 
 export default SingleStatWithLine

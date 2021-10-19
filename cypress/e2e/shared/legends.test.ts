@@ -119,12 +119,12 @@ describe('Legends', () => {
             cy.getByTestID('hover-legend-colorize-rows-toggle').should('exist')
 
             // Hovering over the graph should trigger a legend
-            cy.getByTestID('single-stat').trigger('mouseover')
+            cy.getByTestID('giraffe-layer-single-stat').trigger('mouseover')
             cy.get('.giraffe-tooltip-container').should('exist')
 
             // Slide the toggle off and then hovering should not trigger a legend
             cy.get('label[for="radio_hover_legend_hide"]').click()
-            cy.getByTestID('single-stat').trigger('mouseover')
+            cy.getByTestID('giraffe-layer-single-stat').trigger('mouseover')
             cy.get('.giraffe-tooltip-container').should('not.exist')
 
             // Hover Legend options should not show

@@ -294,24 +294,20 @@ const AddingPanel: FC<AddingProps> = ({
 
 interface NameProps {
   name: string
-  maxChars:number
+  maxChars: number
 }
 
-const TruncatedNameDisplay: FC<NameProps> = ({
-  name,
-  maxChars
-}) => {
+const TruncatedNameDisplay: FC<NameProps> = ({name, maxChars}) => {
   name = trim(name)
-  if (name.length < maxChars){
+  if (name.length < maxChars) {
     return <>{name}</>
   }
- // it is over the max limit; truncate it to three below the limit,
+  // it is over the max limit; truncate it to three below the limit,
   // add three dots, and a title with the full name:
 
-  const displayName = name.substring(0, maxChars-3) + "..."
-  return <span title={name}> {displayName}</span>
+  const displayName = name.substring(0, maxChars - 3) + '...'
+  return <span title={name}>{displayName}</span>
 }
-
 
 const EditingPanel: FC<PanelProps> = ({
   index,
@@ -368,6 +364,8 @@ const EditingPanel: FC<PanelProps> = ({
     hasCancelBtn: isUpdateInProgress,
   })
 
+  // note:  for truncating the name; 14 characters works well with the current 575 pixel width
+  // if that changes, then will need to change that as well
   return (
     <Panel className="measurement-schema-panel-container">
       <FlexBox
@@ -384,7 +382,7 @@ const EditingPanel: FC<PanelProps> = ({
             className="value-text"
             data-testid={`measurement-schema-name-${index}`}
           >
-            <TruncatedNameDisplay name={measurementSchema.name} maxChars={14}/>
+            <TruncatedNameDisplay name={measurementSchema.name} maxChars={14} />
           </div>
           <Button
             icon={IconFont.Download}

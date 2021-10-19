@@ -348,7 +348,7 @@ describe('visualizations', () => {
       // check to see that the FE rows are NOT sorted with flux sort
       cy.get('.table-graph-cell__sort-asc').should('not.exist')
       cy.get('.table-graph-cell__sort-desc').should('not.exist')
-      cy.getByTestID('_value-table-header')
+      cy.getByTestID('_value-table-header table-graph-cell')
         .should('exist')
         .then(el => {
           // get the column index
@@ -363,11 +363,9 @@ describe('visualizations', () => {
             }
           })
         })
-      cy.getByTestID('_value-table-header').click()
-      cy.get('.table-graph-cell__sort-asc').should('exist')
-      cy.getByTestID('_value-table-header').click()
-      cy.get('.table-graph-cell__sort-desc').should('exist')
-      cy.getByTestID('_value-table-header').then(el => {
+      cy.getByTestID('_value-table-header table-graph-cell').click()
+      cy.getByTestID('_value-table-header table-graph-cell__sort-asc').should('exist').click()
+      cy.getByTestID('_value-table-header table-graph-cell__sort-desc').should('exist').then(el => {
         // get the column index
         const columnIndex = el[0].getAttribute('data-column-index')
         let prev = Infinity

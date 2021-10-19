@@ -1228,12 +1228,14 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
     // assert sorting
     cy.getByTestID(`cell Name this Cell`).then(() => {
-      cy.getByTestID('_value-table-header')
-        .should('have.class', 'table-graph-cell')
+      cy.getByTestID('_value-table-header table-graph-cell')
+        .should('exist')
         .click()
-        .should('have.class', 'table-graph-cell__sort-asc')
+      cy.getByTestID('_value-table-header table-graph-cell__sort-asc')
+        .should('exist')
         .click()
-        .should('have.class', 'table-graph-cell__sort-desc')
+      cy.getByTestID('_value-table-header table-graph-cell__sort-desc')
+        .should('exist')
     })
   })
 

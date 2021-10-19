@@ -27,7 +27,7 @@ const CheckAlertingButton: FunctionComponent<Props> = ({
   }
 
   return (
-    <SelectGroup shape={ButtonShape.StretchToFit} style={{width: '300px'}}>
+    <SelectGroup shape={ButtonShape.StretchToFit} style={{width: '376px'}}>
       <SelectGroup.Option
         name="query-mode"
         key="queries"

@@ -78,8 +78,12 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
       className={panelClassName}
       testID={`${type}--column`}
     >
-        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Small} justifyContent={JustifyContent.SpaceBetween}>
-          <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Small}>
+      <FlexBox
+        direction={FlexDirection.Row}
+        margin={ComponentSize.Small}
+        justifyContent={JustifyContent.SpaceBetween}
+      >
+        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Small}>
           <h4 style={{width: 'auto', marginRight: '6px'}}>{title}</h4>
           <QuestionMarkTooltip
             diameter={18}
@@ -87,9 +91,9 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
             testID={`${title}--question-mark`}
             tooltipContents={questionMarkTooltipContents}
           />
-          </FlexBox>
-        {isLimitExceeded ? assetLimitButton : createButton}
         </FlexBox>
+        {isLimitExceeded ? assetLimitButton : createButton}
+      </FlexBox>
       <div className="alerting-index--search">
         <Input
           icon={IconFont.Search_New}

@@ -64,7 +64,7 @@ interface StateProps {
 interface DispatchProps {
   getBuckets: () => void
   getTelegrafs: () => void
-  onCreateAuthorization: (auth) => void
+  createAuthorization: (auth) => void
   showOverlay: (arg1: string, arg2: any, any) => {}
 }
 
@@ -226,7 +226,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const generateToken = async () => {
-    const {onCreateAuthorization, orgID, showOverlay, orgName} = props
+    const {orgID, showOverlay, orgName, createAuthorization} = props
     const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
 
     const token: Authorization = {
@@ -238,7 +238,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     }
 
     try {
-      await onCreateAuthorization(token)
+      await createAuthorization(token)
       showOverlay('access-token', null, () => dismissOverlay())
     } catch (e) {
       setStatus(ComponentStatus.Disabled)
@@ -384,7 +384,7 @@ const mstp = (state: AppState) => {
 const mdtp = {
   getBuckets,
   getTelegrafs,
-  onCreateAuthorization: createAuthorization,
+  createAuthorization,
   showOverlay,
   dismissOverlay,
 }

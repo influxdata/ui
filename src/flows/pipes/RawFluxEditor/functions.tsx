@@ -70,7 +70,7 @@ const Functions: FC<Props> = ({onSelect}) => {
       <div className="flux-toolbar">
         <div className="flux-toolbar--search">
           <SearchWidget
-            placeholderText="Filter Functions...xx-jill"
+            placeholderText="Filter Functions..."
             onSearch={updateSearch}
             searchTerm={search}
             testID="flux-toolbar-search--input"

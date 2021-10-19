@@ -72,17 +72,15 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
     cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
   })
 
-  cy.getByTestID('overlay--container')
+  cy.getByTestID('overlay--container').should('be.visible')
+
+  cy.getByTestID('edit-annotation-message')
     .should('be.visible')
-    .within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .click()
-        .type('im a hippopotamus')
-      cy.getByTestID('annotation-submit-button')
-        .should('be.visible')
-        .click()
-    })
+    .click()
+    .type('im a hippopotamus')
+  cy.getByTestID('annotation-submit-button')
+    .should('be.visible')
+    .click()
 }
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
@@ -94,32 +92,13 @@ export const startEditingAnnotation = (cy: Cypress.Chainable) => {
   })
 }
 
-export const editAnnotation = (cy: Cypress.Chainable) => {
-  startEditingAnnotation(cy)
-
-  cy.getByTestID('overlay--container')
-    .should('be.visible')
-    .within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .clear()
-        .type('lets edit this annotation...')
-
-      cy.getByTestID('annotation-submit-button')
-        .should('be.visible')
-        .click()
-    })
-}
-
 export const deleteAnnotation = (cy: Cypress.Chainable) => {
   // should have the annotation created , lets click it to show the modal.
   startEditingAnnotation(cy)
 
-  cy.getByTestID('overlay--container')
-    .should('be.visible')
-    .within(() => {
-      cy.getByTestID('delete-annotation-button').click({force: true})
-    })
+  cy.getByTestID('overlay--container').should('be.visible')
+
+  cy.getByTestID('delete-annotation-button').click({force: true})
 
   // reload to make sure the annotation was deleted from the backend as well.
   reloadAndHandleAnnotationDefaultStatus()
@@ -176,21 +155,19 @@ export const addRangeAnnotation = (
     })
   })
 
-  cy.getByTestID('overlay--container')
+  cy.getByTestID('overlay--container').should('be.visible')
+
+  cy.getByTestID('edit-annotation-message')
     .should('be.visible')
-    .within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .click()
-        .type('range annotation here!')
+    .click()
+    .type('range annotation here!')
 
-      // make sure the two times (start and end) are not equal:
-      ensureRangeAnnotationTimesAreNotEqual(cy)
+  // make sure the two times (start and end) are not equal:
+  ensureRangeAnnotationTimesAreNotEqual(cy)
 
-      cy.getByTestID('annotation-submit-button')
-        .should('be.visible')
-        .click()
-    })
+  cy.getByTestID('annotation-submit-button')
+    .should('be.visible')
+    .click()
 }
 
 export const testAddAnnotation = (cy: Cypress.Chainable) => {
@@ -206,8 +183,18 @@ export const testAddAnnotation = (cy: Cypress.Chainable) => {
 export const testEditAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
-  // should have the annotation created , lets click it to show the modal.
-  editAnnotation(cy)
+  startEditingAnnotation(cy)
+
+  cy.getByTestID('overlay--container').should('be.visible')
+
+  cy.getByTestID('edit-annotation-message')
+    .should('be.visible')
+    .clear()
+    .type('lets edit this annotation...')
+
+  cy.getByTestID('annotation-submit-button')
+    .should('be.visible')
+    .click()
 
   // reload to make sure the annotation was edited in the backend as well.
   reloadAndHandleAnnotationDefaultStatus()
@@ -232,14 +219,12 @@ export const testEditRangeAnnotation = (
 
   startEditingAnnotation(cy)
 
-  cy.getByTestID('overlay--container')
+  cy.getByTestID('overlay--container').should('be.visible')
+
+  cy.getByTestID('edit-annotation-message')
     .should('be.visible')
-    .within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .clear()
-        .type('editing the text here for the range annotation')
-    })
+    .clear()
+    .type('editing the text here for the range annotation')
 
   ensureRangeAnnotationTimesAreNotEqual(cy)
 

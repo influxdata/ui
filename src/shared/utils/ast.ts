@@ -13,7 +13,7 @@ export const findNodes = (
   }
 
   for (const value of Object.values(node)) {
-    if (typeof value === 'object') {
+    if (value !== null && typeof value === 'object') {
       findNodes(value, predicate, acc)
     } else if (Array.isArray(value)) {
       for (const innerValue of value) {

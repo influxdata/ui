@@ -1,3 +1,8 @@
 String query = "<%= query %>";
 List<FluxTable> tables = client.getQueryApi().query(query, org);
 
+for (FluxTable table : tables) {
+  for (FluxRecord record : table.getRecords()) {
+    System.out.println(record);
+  }
+}

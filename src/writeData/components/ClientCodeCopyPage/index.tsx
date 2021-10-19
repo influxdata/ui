@@ -25,11 +25,16 @@ const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
 
 interface Props {
   contentID: string
+  onCopy?: () => void
 }
 
-const ClientCodeCopyPage: FC<Props> = ({contentID}) => {
+const ClientCodeCopyPage: FC<Props> = ({contentID, onCopy}) => {
   const def = CLIENT_DEFINITIONS[contentID]
 
+  let sampleCode = `${def.initialize}${def.execute}`
+  if (def.executeFull) {
+    sampleCode = `${def.executeFull}`
+  }
   return (
     <GetResources
       resources={[ResourceType.Authorizations, ResourceType.Buckets]}
@@ -47,7 +52,8 @@ const ClientCodeCopyPage: FC<Props> = ({contentID}) => {
           )}
           <CodeSampleBlock
             name="Initialize and Execute Flux"
-            sample={`${def.initialize}${def.execute}`}
+            sample={sampleCode}
+            onCopy={onCopy}
           />
         </div>
       </div>

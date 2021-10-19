@@ -1,43 +1,4 @@
-import Papa from 'papaparse'
-import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
-
-import {parseChunks} from 'src/shared/parsing/flux/response'
-
-export interface ParseFilesResult {
-  data: string[][]
-  maxColumnCount: number
-}
-
-export const parseFilesWithFromFlux = (
-  responses: string[]
-): ParseFilesResult => {
-  let maxColumnCount = 0
-  let tables = []
-  let curr: any
-  responses.forEach(response => {
-    curr = fromFluxTableTransformer(response)
-    maxColumnCount = Math.max(maxColumnCount, curr.max)
-    tables = tables.concat(curr.tableData)
-  })
-  return {data: tables, maxColumnCount}
-}
-
-export const fromFluxTableTransformer = (
-  response: string
-): {tableData: string[][]; max: number} => {
-  const parsedChunk = fromFlux(response)
-  if (parsedChunk.error) {
-    reportErrorThroughHoneyBadger(parsedChunk.error, {
-      name: 'fromFluxTableTransformer function',
-    })
-    return {
-      tableData: [[]],
-      max: 0,
-    }
-  }
-  return parseFromFluxResults(parsedChunk)
-}
+import {FromFluxResult} from '@influxdata/giraffe'
 
 export const parseFromFluxResults = (
   parsedChunk: FromFluxResult
@@ -125,28 +86,4 @@ export const parseFromFluxResults = (
   // this removes the unnecessary [] that's prepended to the table
   tableData.shift()
   return {tableData, max}
-}
-
-export const parseFiles = (responses: string[]): ParseFilesResult => {
-  const chunks = parseChunks(responses.join('\n\n'))
-  const parsedChunks = chunks.map(c => Papa.parse(c).data)
-  const maxColumnCount = Math.max(...parsedChunks.map(c => c[0].length))
-  const data = []
-
-  for (let i = 0; i < parsedChunks.length; i++) {
-    if (i !== 0) {
-      // Seperate each chunk by an empty line, just like in the unparsed CSV
-      data.push([])
-    }
-
-    for (let j = 0; j < parsedChunks[i].length; j++) {
-      // Danger zone! Since the contents of each chunk are potentially quite
-      // large, the contents need to be concated using a loop rather than with
-      // `concat`, a splat or similar. Otherwise we see a "Maximum call size
-      // exceeded" error for large CSVs
-      data.push(parsedChunks[i][j])
-    }
-  }
-
-  return {data, maxColumnCount}
 }

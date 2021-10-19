@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines, makeGraphSnapshot} from '../../support/commands'
+import {points, makeGraphSnapshot} from '../../support/commands'
 import {
   FROM,
   RANGE,
@@ -27,19 +27,19 @@ function getTimeMachineText() {
 }
 
 describe('DataExplorer', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.createMapVariable(id)
-        cy.fixture('routes').then(({orgs, explorer}) => {
-          cy.visit(`${orgs}/${id}${explorer}`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.createMapVariable(id)
+          cy.fixture('routes').then(({orgs, explorer}) => {
+            cy.visit(`${orgs}/${id}${explorer}`)
+            cy.getByTestID('tree-nav')
+          })
         })
       })
-    })
-  })
+    )
+  )
 
   describe('data-explorer state', () => {
     it('should persist and display last submitted script editor script ', () => {
@@ -205,8 +205,7 @@ describe('DataExplorer', () => {
     const prefix = 'speed: '
     const suffix = ' mph'
     it('can add prefix and suffix labels when using Giraffe gauge', () => {
-      cy.setFeatureFlags({useGiraffeGraphs: true})
-      cy.writeData(lines(10))
+      cy.writeData(points(10))
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
           cy.getByTestID('view-type--dropdown').click()
@@ -271,8 +270,7 @@ describe('DataExplorer', () => {
     })
 
     it('can add prefix and suffix labels when using original built-in gauge', () => {
-      cy.setFeatureFlags({useGiraffeGraphs: false})
-      cy.writeData(lines(10))
+      cy.writeData(points(10))
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
           cy.getByTestID('view-type--dropdown').click()
@@ -299,7 +297,7 @@ describe('DataExplorer', () => {
             .click({force: true})
 
           cy.getByTestID('time-machine-submit-button').click()
-          cy.get('canvas.gauge').should('be.visible')
+          cy.get('.giraffe-gauge').should('be.visible')
 
           cy.getByTestID('cog-cell--button').click()
           cy.get('.view-options').within(() => {
@@ -672,7 +670,7 @@ describe('DataExplorer', () => {
 
   describe('refresh', () => {
     beforeEach(() => {
-      cy.writeData(lines(10))
+      cy.writeData(points(10))
 
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
@@ -694,7 +692,7 @@ describe('DataExplorer', () => {
 
   describe('saving', () => {
     beforeEach(() => {
-      cy.writeData(lines(10))
+      cy.writeData(points(10))
     })
 
     it('can open/close save as dialog and navigate inside', () => {

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
@@ -11,12 +12,12 @@ namespace Examples
   {
     public static async Task Main(string[] args)
     {
-      // You can generate a Token from the "Tokens Tab" in the UI
+      // You can generate an API token from the "API Tokens Tab" in the UI
       const string token = "<%= token %>";
       const string bucket = "<%= bucket %>";
       const string org = "<%= org %>";
 
-      var client = InfluxDBClientFactory.Create("<%= server %>", token.ToCharArray());
+      using var client = InfluxDBClientFactory.Create("<%= server %>", token);
     }
   }
 }

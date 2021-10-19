@@ -1,0 +1,10 @@
+val mem = Mem("host1", 23.43234543, Instant.now())
+writeApi.writeMeasurement(mem, WritePrecision.NS)
+
+
+@Measurement(name = "mem")
+data class Mem(
+  @Column(tag = true) val host: String,
+  @Column val used_percent: Double,
+  @Column(timestamp = true) val time: Instant
+)

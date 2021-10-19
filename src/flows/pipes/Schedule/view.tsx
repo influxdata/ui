@@ -19,7 +19,7 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 
-import {remove} from 'src/flows/context/query'
+import {remove} from 'src/shared/contexts/query'
 
 import './style.scss'
 
@@ -149,7 +149,11 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   }, [queryText, data.interval, data.offset])
 
   const persist = (
-    <ExportTaskButton generate={generateTask} text="Export as Task" />
+    <ExportTaskButton
+      generate={generateTask}
+      text="Export as Task"
+      type="task"
+    />
   )
 
   return (

@@ -1,9 +1,9 @@
 describe('Onboarding Redirect', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.wrapEnvironmentVariablesForOss()
-    cy.visit('/')
-  })
+  beforeEach(() =>
+    cy
+      .flush()
+      .then(() => cy.wrapEnvironmentVariablesForOss().then(() => cy.visit('/')))
+  )
 
   it('Can redirect to onboarding page', () => {
     cy.getByTestID('init-step--head-main')
@@ -13,11 +13,13 @@ describe('Onboarding Redirect', () => {
 
 // NOTE: important to test for OSS
 describe('Onboarding', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.wrapEnvironmentVariablesForOss()
-    cy.visit('onboarding/0')
-  })
+  beforeEach(() =>
+    cy
+      .flush()
+      .then(() =>
+        cy.wrapEnvironmentVariablesForOss().then(() => cy.visit('onboarding/0'))
+      )
+  )
 
   it('Can Onboard to Quick Start', () => {
     cy.server()

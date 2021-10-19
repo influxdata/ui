@@ -49,7 +49,7 @@ export enum LineProtocolStep {
   'Verify',
 }
 
-export enum PluginCreateConfigurationStep {
+export enum PluginConfigurationStep {
   'Configure',
   'Customize',
   'Verify',
@@ -122,6 +122,13 @@ export type Plugin =
   | TelegrafPluginInputTail
   | TelegrafPluginOutputFile
   | TelegrafPluginOutputInfluxDBV2
+  | TelegrafPluginGeneric
+
+export type TelegrafPluginGeneric = {
+  name: string
+  type: string
+  comment?: string
+}
 
 export interface TelegrafPlugin {
   name: TelegrafPluginName
@@ -139,29 +146,7 @@ export enum BundleName {
   Redis = 'Redis',
 }
 
-export type TelegrafPluginName =
-  | TelegrafPluginInputCpu.NameEnum.Cpu
-  | TelegrafPluginInputDisk.NameEnum.Disk
-  | TelegrafPluginInputDiskio.NameEnum.Diskio
-  | TelegrafPluginInputDocker.NameEnum.Docker
-  | TelegrafPluginInputFile.NameEnum.File
-  | TelegrafPluginInputKernel.NameEnum.Kernel
-  | TelegrafPluginInputKubernetes.NameEnum.Kubernetes
-  | TelegrafPluginInputLogParser.NameEnum.Logparser
-  | TelegrafPluginInputMem.NameEnum.Mem
-  | TelegrafPluginInputNet.NameEnum.Net
-  | TelegrafPluginInputNetResponse.NameEnum.NetResponse
-  | TelegrafPluginInputNginx.NameEnum.Nginx
-  | TelegrafPluginInputProcesses.NameEnum.Processes
-  | TelegrafPluginInputProcstat.NameEnum.Procstat
-  | TelegrafPluginInputPrometheus.NameEnum.Prometheus
-  | TelegrafPluginInputRedis.NameEnum.Redis
-  | TelegrafPluginInputSyslog.NameEnum.Syslog
-  | TelegrafPluginInputSwap.NameEnum.Swap
-  | TelegrafPluginInputSystem.NameEnum.System
-  | TelegrafPluginInputTail.NameEnum.Tail
-  | TelegrafPluginOutputFile.NameEnum.File
-  | TelegrafPluginOutputInfluxDBV2.NameEnum.InfluxdbV2
+export type TelegrafPluginName = string
 
 export enum LineProtocolStatus {
   ImportData = 'importData',

@@ -1,6 +1,3 @@
-// Libraries
-import {trimEnd} from 'lodash'
-
 // Types
 import {TaskOptions, TaskSchedule} from 'src/types'
 
@@ -28,7 +25,7 @@ export const addDestinationToFluxScript = (
   const {toOrgName, toBucketName} = options
 
   if (toOrgName && toBucketName) {
-    const trimmedScript = trimEnd(script)
+    const trimmedScript = script.trimEnd()
     const trimmedOrgName = toOrgName.trim()
     const trimmedBucketName = toBucketName.trim()
     return `${trimmedScript}\n  |> to(bucket: "${trimmedBucketName}", org: "${trimmedOrgName}")`

@@ -9,6 +9,7 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import {
   MePage,
   TasksPage,
+  TasksPagePaginated,
   TaskPage,
   TaskRunsPage,
   TaskEditPage,
@@ -17,7 +18,9 @@ import {
   DashboardContainer,
   FlowPage,
   BucketsIndex,
+  BucketsIndexPaginated,
   TokensIndex,
+  PaginatedTokensIndex,
   RedesignedTokensIndex,
   TelegrafsPage,
   ScrapersIndex,
@@ -109,6 +112,36 @@ const SetOrg: FC = () => {
 
   const orgPath = '/orgs/:orgID'
 
+  let CorrectedTokensIndex = (
+    <Route path={`${orgPath}/${LOAD_DATA}/${TOKENS}`} component={TokensIndex} />
+  )
+
+  if (isFlagEnabled('tokensUIRedesign')) {
+    CorrectedTokensIndex = (
+      <Route
+        path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+        component={RedesignedTokensIndex}
+      />
+    )
+
+    // paginatedTokens already handles tokensUIRedesign being flagged on
+    if (isFlagEnabled('paginatedTokens')) {
+      CorrectedTokensIndex = (
+        <Route
+          path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+          component={PaginatedTokensIndex}
+        />
+      )
+    }
+  } else if (isFlagEnabled('paginatedTokens')) {
+    CorrectedTokensIndex = (
+      <Route
+        path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+        component={PaginatedTokensIndex}
+      />
+    )
+  }
+
   return (
     <PageSpinner loading={loading}>
       <Suspense fallback={<PageSpinner />}>
@@ -125,7 +158,11 @@ const SetOrg: FC = () => {
           <Route path={`${orgPath}/tasks/:id/runs`} component={TaskRunsPage} />
           <Route path={`${orgPath}/tasks/:id/edit`} component={TaskEditPage} />
           <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
-          <Route path={`${orgPath}/tasks`} component={TasksPage} />
+          {isFlagEnabled('paginatedTasks') ? (
+            <Route path={`${orgPath}/tasks`} component={TasksPagePaginated} />
+          ) : (
+            <Route path={`${orgPath}/tasks`} component={TasksPage} />
+          )}
 
           {/* Data Explorer */}
           <Route
@@ -191,21 +228,18 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${TELEGRAFS}`}
             component={TelegrafsPage}
           />
-          {isFlagEnabled('tokensUIRedesign') ? (
+          {CorrectedTokensIndex}
+          {isFlagEnabled('fetchAllBuckets') ? (
             <Route
-              path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-              component={RedesignedTokensIndex}
+              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
+              component={BucketsIndexPaginated}
             />
           ) : (
             <Route
-              path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-              component={TokensIndex}
+              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
+              component={BucketsIndex}
             />
           )}
-          <Route
-            path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
-            component={BucketsIndex}
-          />
 
           {/* Settings */}
           <Route
@@ -221,12 +255,10 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${SETTINGS}/${LABELS}`}
             component={LabelsIndex}
           />
-          {isFlagEnabled('secretsUI') && (
-            <Route
-              path={`${orgPath}/${SETTINGS}/${SECRETS}`}
-              component={SecretsIndex}
-            />
-          )}
+          <Route
+            path={`${orgPath}/${SETTINGS}/${SECRETS}`}
+            component={SecretsIndex}
+          />
           <Route
             exact
             path={`${orgPath}/${SETTINGS}`}

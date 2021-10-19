@@ -68,8 +68,8 @@ const TokenCodeSnippet: FC<Props> = ({
                 ? ComponentStatus.Default
                 : ComponentStatus.Disabled
             }
-            text="Generate New Token"
-            titleText="Generate New Token"
+            text="Generate New API Token"
+            titleText="Generate New API Token"
             icon={IconFont.Refresh}
             color={ComponentColor.Success}
             onClick={handleRefreshClick}

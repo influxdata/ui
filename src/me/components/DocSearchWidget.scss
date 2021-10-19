@@ -7,6 +7,7 @@ $article-text: #d4d7dd;
 .WidgetSearch {
   .WidgetHelperText {
     text-align: right;
+    margin: 0;
   }
   .DocSearch-Modal {
     background-color: transparent !important;
@@ -19,32 +20,17 @@ $article-text: #d4d7dd;
   .DocSearch-StartScreen {
     display: none;
   }
-  .DocSearch-Footer {
-    background: none;
-    box-shadow: none;
-    .DocSearch-Commands {
-      display: none !important;
-    }
-    height: 20px !important;
-    display: flex !important;
-    align-items: flex-start !important;
-  }
 
-  .DocSearch-Logo {
-    position: absolute;
-    bottom: 6px;
+  .DocSearch-Footer {
+    display: none !important;
   }
 
   .DocSearch-Label {
     margin-top: 3px;
   }
 
-  .emptyFooter {
-    display: none !important;
-  }
   .DocSearch-Container {
     background: transparent;
-    max-height: calc(100vh -500px) !important;
     height: auto !important;
     position: relative !important;
     width: 100% !important;

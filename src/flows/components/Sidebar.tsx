@@ -15,7 +15,6 @@ import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 import './Sidebar.scss'
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -44,7 +43,7 @@ export const SubSideBar: FC = () => {
           thumbStopColor="gray"
           thumbStartColor="gray"
         >
-          {submenu}
+          <div className="flow-sidebar--submenu-wrapper">{submenu}</div>
         </DapperScrollbars>
       </div>
     </div>
@@ -91,10 +90,6 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
     }
   }, [focused, submenu])
 
-  if (!isFlagEnabled('flowSidebar')) {
-    return null
-  }
-
   let dropdown
 
   if (id === focused && !submenu) {
@@ -110,7 +105,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
           id === focused ? ComponentColor.Secondary : ComponentColor.Default
         }
         className="flow-config-panel-button"
-        testID="square-button"
+        testID="sidebar-button"
       />
       {dropdown}
     </div>
@@ -118,7 +113,7 @@ export const MenuButton: FC<ButtonProps> = ({id}) => {
 }
 
 const Sidebar: FC = () => {
-  const {flow, add} = useContext(FlowContext)
+  const {flow, updateMeta, add, remove} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
 
@@ -129,85 +124,83 @@ const Sidebar: FC = () => {
         {
           title: 'Delete',
           action: () => {
-            const {type} = flow.data.get(id)
+            const {type} = flow.data.byID[id]
             event('notebook_delete_cell', {notebooksCellType: type})
 
-            flow.data.remove(id)
-            flow.meta.remove(id)
+            remove(id)
           },
         },
         {
           title: 'Duplicate',
           action: () => {
-            const data = flow.data.get(id)
-            const meta = flow.meta.get(id)
+            const data = flow.data.byID[id]
+            const meta = flow.meta.byID[id]
 
             data.title = meta.title
 
             event('Notebook Panel Cloned', {notebooksCellType: data.type})
 
-            add(data, flow.data.indexOf(id))
+            add(data, flow.data.allIDs.indexOf(id))
           },
         },
         {
           title: () => {
-            if (flow.meta.indexOf(id) === -1) {
-              return 'Hide'
+            if (!flow.meta.allIDs.includes(id)) {
+              return 'Hide panel'
             }
 
-            if (flow.meta.get(id).visible) {
-              return 'Hide'
+            if (flow.meta.byID[id].visible) {
+              return 'Hide panel'
             }
-            return 'Visible'
+            return 'Show panel'
           },
           action: () => {
             event('Panel Visibility Toggled', {
-              state: !flow.meta.get(id).visible ? 'true' : 'false',
+              state: !flow.meta.byID[id].visible ? 'true' : 'false',
             })
 
-            flow.meta.update(id, {
-              visible: !flow.meta.get(id).visible,
+            updateMeta(id, {
+              visible: !flow.meta.byID[id].visible,
             })
           },
         },
         {
           title: 'Convert to |> Flux',
           disable: () => {
-            if (flow.data.indexOf(id) === -1) {
+            if (!flow.data.allIDs.includes(id)) {
               return true
             }
 
-            const {type} = flow.data.get(id)
+            const {type} = flow.data.byID[id]
 
             if (type === 'rawFluxEditor') {
               return true
             }
 
-            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type].family)) {
+            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
               return true
             }
 
             return false
           },
           action: () => {
-            const {type} = flow.data.get(id)
-            const {title} = flow.meta.get(id)
+            const {type} = flow.data.byID[id]
+            const {title} = flow.meta.byID[id]
 
             event('Convert Cell To Flux', {from: type})
 
-            const {source} = getPanelQueries(id, true)
+            const {source, visual} = getPanelQueries(id, true)
 
             const init = JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
             )
-            init.queries[0].text = source
+            init.queries[0].text =
+              type === 'visualization' && visual ? visual : source
             init.title = title
             init.type = 'rawFluxEditor'
 
-            add(init, flow.data.indexOf(id))
-
-            flow.data.remove(id)
-            flow.meta.remove(id)
+            add(init, flow.data.allIDs.indexOf(id))
+            remove(id)
           },
         },
         {
@@ -266,6 +259,7 @@ const Sidebar: FC = () => {
                 event('Notebook Nav: Called Action', {menu: title})
                 // eslint-disable-next-line no-extra-semi
                 ;(action as ControlAction).action()
+
                 hide()
               }}
               wrapText={false}

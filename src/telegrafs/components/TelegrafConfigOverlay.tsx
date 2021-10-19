@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
@@ -11,9 +11,14 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Types
 import {ResourceType} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 const TelegrafConfigOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
+
+  useEffect(() => {
+    event(`telegraf_page.edit_config.at.${Date.now()}`)
+  }, [])
 
   return (
     <Overlay.Container maxWidth={1200} testID="telegraf-overlay">

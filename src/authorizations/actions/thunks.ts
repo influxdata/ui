@@ -16,6 +16,7 @@ import {
   setAuthorizations,
   removeAuthorization,
   setCurrentAuthorization,
+  setAllResources,
 } from 'src/authorizations/actions/creators'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -43,6 +44,10 @@ import {
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getStatus} from 'src/resources/selectors'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+import {getErrorMessage} from 'src/utils/api'
 
 type GetAuthorizations = (
   dispatch: Dispatch<Action | NotificationAction>,
@@ -105,6 +110,8 @@ export const createAuthorization = (auth: Authorization) => async (
       resp,
       authSchema
     )
+
+    event('token.create.success', {id: resp.id})
     dispatch(addAuthorization(newAuth))
     dispatch(
       setCurrentAuthorization(
@@ -114,8 +121,8 @@ export const createAuthorization = (auth: Authorization) => async (
     )
     dispatch(notify(authorizationCreateSuccess()))
   } catch (error) {
-    const message = error.data ? error.data.message : null
-    console.error(message)
+    event('token.create.failure')
+    const message = getErrorMessage(error)
     dispatch(notify(authorizationCreateFailed(message)))
     throw error
   }
@@ -151,11 +158,22 @@ export const deleteAuthorization = (id: string, name: string = '') => async (
     if (resp.status !== 204) {
       throw new Error(resp.data.message)
     }
-
+    event('token.delete.success', {id, name})
     dispatch(removeAuthorization(id))
     dispatch(notify(authorizationDeleteSuccess()))
   } catch (e) {
+    event('token.delete.failure', {id, name})
     console.error(e)
     dispatch(notify(authorizationDeleteFailed(name)))
   }
+}
+
+export const getAllResources = () => async dispatch => {
+  const resp = await api.getResources({headers: {}})
+
+  if (resp.status !== 200) {
+    throw new Error(resp.data.message)
+  }
+  const resources = resp.data
+  dispatch(setAllResources(resources))
 }

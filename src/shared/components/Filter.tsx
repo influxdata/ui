@@ -1,7 +1,7 @@
 // Libraries
 import {PureComponent} from 'react'
 
-import {get, sortBy, isEmpty, isObject, flatMap, sortedIndex} from 'lodash'
+import {get, isEmpty, flatMap, sortedIndex} from 'lodash'
 
 // Types
 import {Label} from 'src/types'
@@ -9,12 +9,14 @@ import {Label} from 'src/types'
 // searchKeys: the keys whose values you want to filter on
 // if the values are nested use dot notation i.e. tasks.org.name
 
+type Resource = {name?: string}
+
 export interface OwnProps<T> {
-  list: T[]
-  searchTerm: string
-  searchKeys: string[]
-  sortByKey?: string
   children: (list: T[]) => any
+  list: T[]
+  searchKeys: string[]
+  searchTerm: string
+  sortByKey?: string
 }
 
 export interface StateProps {
@@ -25,6 +27,7 @@ export type Props<T> = OwnProps<T> & StateProps
 
 const INEXACT_PATH = /\w+\[\]/g
 const EMPTY_ARRAY_BRACKETS = /\[\]?\./
+
 /**
  * Filters a list using a searchTerm and searchKeys where
  *  searchKeys is an array of strings represents either an
@@ -32,24 +35,31 @@ const EMPTY_ARRAY_BRACKETS = /\[\]?\./
  *  "user.name" (exact) or "authors[].name" (inexact)
  *
  */
+export default class FilterList<T extends Resource> extends PureComponent<
+  Props<T>
+> {
+  private collator: Intl.Collator
 
-export default class FilterList<T> extends PureComponent<Props<T>> {
+  public constructor(props) {
+    super(props)
+    this.collator = new Intl.Collator('en-us', {numeric: true})
+  }
+
   public render() {
     return this.props.children(this.sorted)
   }
 
   private get sorted(): T[] {
-    return sortBy<T>(this.filtered, [
-      (item: T) => {
-        const value = get(item, this.props.sortByKey)
+    return this.filtered.sort((item1, item2) => {
+      if (this.props.sortByKey) {
+        return this.collator.compare(
+          get(item1, this.props.sortByKey),
+          get(item2, this.props.sortByKey)
+        )
+      }
 
-        if (!!value && typeof value === 'string') {
-          return value.toLocaleLowerCase()
-        }
-
-        return value
-      },
-    ])
+      return this.collator.compare(item1.name, item2.name)
+    })
   }
 
   private get filtered(): T[] {
@@ -71,7 +81,7 @@ export default class FilterList<T> extends PureComponent<Props<T>> {
 
         const isStringArray = this.isStringArray(value)
 
-        if (!isStringArray && isObject(value)) {
+        if (!isStringArray && typeof value === 'object') {
           throw new Error(
             `The value at key "${key}" is an object.  Take a look at "searchKeys" and
              make sure you're indexing onto a primitive value`

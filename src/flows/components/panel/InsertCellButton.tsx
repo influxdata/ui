@@ -24,7 +24,7 @@ import {event} from 'src/cloud/utils/reporting'
 import 'src/flows/components/panel/InsertCellButton.scss'
 
 interface Props {
-  id: string
+  id?: string
 }
 
 const InsertCellButton: FC<Props> = ({id}) => {
@@ -32,7 +32,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
   const dividerRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const popoverVisible = useRef<boolean>(false)
-  const index = flow.data.indexOf(id)
+  const index = flow.data.allIDs.indexOf(id)
 
   const handlePopoverShow = () => {
     event('Insert Cell Clicked')

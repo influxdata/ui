@@ -6,13 +6,13 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {event} from 'src/cloud/utils/reporting'
 
 const PresentationMode: FC = () => {
-  const {flow, update} = useContext(FlowContext)
+  const {flow, updateOther} = useContext(FlowContext)
 
   const handleChange = () => {
     event('Presentation Mode Toggled', {
       state: !flow.readOnly ? 'edit' : 'presentation',
     })
-    update({readOnly: !flow.readOnly})
+    updateOther({readOnly: !flow.readOnly})
   }
 
   const toggleClassName = `flows-presentationmode-${

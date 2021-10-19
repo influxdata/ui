@@ -11,6 +11,8 @@ import {
   createAuthorization,
 } from 'src/authorizations/actions/thunks'
 
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 // Components
 import {
   ComponentSize,
@@ -22,6 +24,7 @@ import {
   Button,
   ResourceCard,
   IconFont,
+  ButtonShape,
 } from '@influxdata/clockface'
 
 import {Context} from 'src/clockface'
@@ -29,8 +32,8 @@ import {Context} from 'src/clockface'
 // Types
 import {Authorization, AppState} from 'src/types'
 import {
-  DEFAULT_TOKEN_DESCRIPTION,
   UPDATED_AT_TIME_FORMAT,
+  DEFAULT_TOKEN_DESCRIPTION,
 } from 'src/dashboards/constants'
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
@@ -51,7 +54,6 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
-
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
@@ -93,14 +95,22 @@ class TokensRow extends PureComponent<Props> {
             text="Clone"
             onClick={this.handleClone}
             testID="clone-token"
+            size={ComponentSize.ExtraSmall}
           />
-          <Button
+
+          <Context.Menu
             icon={IconFont.Trash}
             color={ComponentColor.Danger}
             text="Delete"
-            onClick={this.handleDelete}
-            testID="delete-token"
-          />
+            shape={ButtonShape.StretchToFit}
+            size={ComponentSize.ExtraSmall}
+          >
+            <Context.Item
+              label="Confirm"
+              action={this.handleDelete}
+              testID="delete-token"
+            />
+          </Context.Menu>
         </FlexBox>
       </Context>
     )
@@ -108,29 +118,21 @@ class TokensRow extends PureComponent<Props> {
 
   private handleDelete = () => {
     const {id, description} = this.props.auth
-    this.props.onDelete(id, description)
+    this.props.deleteAuthorization(id, description)
   }
 
   private handleClone = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-
     const {description} = this.props.auth
 
     const allTokenDescriptions = Object.values(this.props.authorizations).map(
       auth => auth.description
     )
 
-    this.props.onClone({
+    this.props.createAuthorization({
       ...this.props.auth,
       description: incrementCloneName(allTokenDescriptions, description),
     })
-
-    history.push(`/orgs/${orgID}/load-data/tokens/generate/clone-access`)
+    this.props.showOverlay('access-token', null, () => dismissOverlay())
   }
 
   private handleClickDescription = () => {
@@ -139,8 +141,8 @@ class TokensRow extends PureComponent<Props> {
   }
 
   private handleUpdateName = (value: string) => {
-    const {auth, onUpdate} = this.props
-    onUpdate({...auth, description: value})
+    const {auth, updateAuthorization} = this.props
+    updateAuthorization({...auth, description: value})
   }
 }
 
@@ -150,9 +152,11 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  onDelete: deleteAuthorization,
-  onUpdate: updateAuthorization,
-  onClone: createAuthorization,
+  deleteAuthorization,
+  updateAuthorization,
+  createAuthorization,
+  showOverlay,
+  dismissOverlay,
 }
 
 const connector = connect(mstp, mdtp)

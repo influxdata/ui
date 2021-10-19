@@ -10,6 +10,7 @@ export type OverlayID =
   | 'edit-note'
   | 'add-master-token'
   | 'access-token'
+  | 'add-custom-token'
   | 'add-token'
   | 'telegraf-config'
   | 'telegraf-output'
@@ -24,6 +25,7 @@ export type OverlayID =
   | 'edit-annotation'
   | 'toggle-auto-refresh'
   | 'cell-copy-overlay'
+  | 'bucket-schema-show'
 
 export interface OverlayState {
   id: OverlayID | null

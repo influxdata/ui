@@ -1,18 +1,19 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {points} from '../../support/commands'
 
 describe('Dashboard', () => {
-  beforeEach(() => {
-    cy.flush()
-    cy.signin().then(() =>
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id: orgID}: Organization) => {
-          cy.visit(`${orgs}/${orgID}/dashboards-list`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.get('@org').then(({id: orgID}: Organization) => {
+            cy.visit(`${orgs}/${orgID}/dashboards-list`)
+            cy.getByTestID('tree-nav')
+          })
         })
-      })
+      )
     )
-  })
+  )
 
   it("can edit a dashboard's name", () => {
     cy.get('@org').then(({id: orgID}: Organization) => {
@@ -283,7 +284,7 @@ describe('Dashboard', () => {
   describe('variable interactions', () => {
     beforeEach(() => {
       const numLines = 360
-      cy.writeData(lines(numLines))
+      cy.writeData(points(numLines))
       cy.get('@org').then(({id: orgID}: Organization) => {
         cy.createDashboard(orgID).then(({body: dashboard}) => {
           cy.wrap({dashboard}).as('dashboard')
@@ -1145,7 +1146,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
   // based on issue #18339
   it('should save a time format change and show in the dashboard cell card', () => {
     const numLines = 360
-    cy.writeData(lines(numLines))
+    cy.writeData(points(numLines))
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
@@ -1192,7 +1193,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
   it('can sort values in a dashboard cell', () => {
     const numLines = 360
-    cy.writeData(lines(numLines))
+    cy.writeData(points(numLines))
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
@@ -1227,12 +1228,15 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 
     // assert sorting
     cy.getByTestID(`cell Name this Cell`).then(() => {
-      cy.getByTestID('_value-table-header')
-        .should('have.class', 'table-graph-cell')
+      cy.getByTestID('_value-table-header table-graph-cell')
+        .should('exist')
         .click()
-        .should('have.class', 'table-graph-cell__sort-asc')
+      cy.getByTestID('_value-table-header table-graph-cell__sort-asc')
+        .should('exist')
         .click()
-        .should('have.class', 'table-graph-cell__sort-desc')
+      cy.getByTestID('_value-table-header table-graph-cell__sort-desc').should(
+        'exist'
+      )
     })
   })
 
@@ -1316,6 +1320,37 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.go('back')
       cy.getByTestID('tree-nav')
       cy.getByTestID('empty-state--text').should('be.visible')
+    })
+  })
+  describe('light/dark Mode Toggle', () => {
+    it('creates a dashboard to test light/dark mode toggle', () => {
+      // dashboard creation
+      cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.createDashboard(orgID).then(({body}) => {
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+            cy.getByTestID('tree-nav')
+          })
+        })
+      })
+      cy.getByTestID('select-group--option')
+        .last()
+        .click() // light mode
+      cy.getByTestID('app-wrapper')
+        .invoke('css', 'background-color')
+        .should('equal', 'rgb(246, 246, 248)')
+      cy.getByTestID('app-wrapper')
+        .invoke('css', 'color')
+        .should('equal', 'rgb(103, 105, 120)')
+      cy.getByTestID('select-group--option')
+        .first()
+        .click() // dark mode
+      cy.getByTestID('app-wrapper')
+        .invoke('css', 'background-color')
+        .should('equal', 'rgb(24, 24, 32)')
+      cy.getByTestID('app-wrapper')
+        .invoke('css', 'color')
+        .should('equal', 'rgb(190, 194, 204)')
     })
   })
 })

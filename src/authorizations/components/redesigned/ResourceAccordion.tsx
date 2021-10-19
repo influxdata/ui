@@ -1,147 +1,143 @@
 // Libraries
 import React, {Component} from 'react'
+import {isEmpty} from 'lodash'
 
 // Clockface
 import {Accordion} from '@influxdata/clockface'
-import {ResourceAccordionHeader} from './ResourceAccordionHeader'
-import GetResources from 'src/resources/components/GetResources'
-import {ResourceAccordionBody} from './ResourceAccordionBody'
+
+// Components
+import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
+import {AllAccordionBody} from 'src/authorizations/components/redesigned/AllAccordionBody'
+import {IndividualAccordionBody} from 'src/authorizations/components/redesigned/IndividualAccordionBody'
+import FilterList from 'src/shared/components/FilterList'
 
 // Types
-import {AppState, Telegraf, ResourceType} from 'src/types'
-
-// Selectors
-import {getAll} from 'src/resources/selectors'
-import {connect} from 'react-redux'
-import {Bucket} from 'src/client'
+import {Resource} from 'src/client'
 
 interface OwnProps {
-  resources: string[]
-}
-
-interface State {
+  resources: string[][]
   permissions: any
+  onToggleAll: (resourceName: string, permission: string) => void
+  onIndividualToggle: (
+    resourceName: string,
+    id: number,
+    permission: string
+  ) => void
+  searchTerm: string
 }
 
-interface StateProps {
-  telegrafPermissions: any
-  bucketPermissions: any
-}
+const Filter = FilterList<Resource>()
 
-type Props = OwnProps & StateProps
-
-class ResourceAccordion extends Component<Props, State> {
-  constructor(props) {
-    super(props)
-    this.state = {
-      permissions: {
-        telegrafs: props.telegrafPermissions,
-        buckets: props.bucketPermissions,
-      },
-    }
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (!props.telegrafPermissions) {
-      return null
-    }
-    return {
-      ...state,
-      permissions: {
-        telegrafs: props.telegrafPermissions,
-        buckets: props.bucketPermissions,
-      },
-    }
-  }
-
+class ResourceAccordion extends Component<OwnProps> {
   public render() {
-    const {resources} = this.props
-    const {permissions} = this.state
+    const {resources, permissions, onToggleAll} = this.props
 
-    if (!resources) {
+    if (!resources || isEmpty(permissions)) {
       return null
     }
-    return resources.map(resource => {
-      const resourceName = resource.charAt(0).toUpperCase() + resource.slice(1)
-      return (
-        <Accordion key={resource}>
-          <ResourceAccordionHeader
-            resourceName={resourceName}
-            permissions={permissions[resource]}
-            onToggleAll={this.handleToggleAll}
+
+    return (
+      <>
+        {resources[0].map(resource => {
+          const resourceName =
+            resource.charAt(0).toUpperCase() + resource.slice(1)
+
+          return (
+            <Accordion key={resource}>
+              <ResourceAccordionHeader resourceName={resourceName} />
+              <AllAccordionBody
+                resourceName={resourceName}
+                permissions={permissions[resource]}
+                onToggleAll={onToggleAll}
+                disabled={false}
+              />
+              {!permissions[resource].read && !permissions[resource].write
+                ? !isEmpty(permissions[resource].sublevelPermissions) &&
+                  this.getAccordionBody(resourceName, resource)
+                : null}
+            </Accordion>
+          )
+        })}
+        <Accordion key="Other Resources">
+          <ResourceAccordionHeader resourceName="Other Resources" />
+          <AllAccordionBody
+            resourceName="Other Resources"
+            permissions={permissions.otherResources}
+            onToggleAll={onToggleAll}
+            disabled={false}
           />
-          <GetResources resources={[ResourceType[resourceName]]}>
-            {resourceName === 'Telegrafs' ? (
-              <ResourceAccordionBody
-                resourceName={resource}
-                permissions={permissions[resource]}
-                onToggle={this.handleIndividualToggle}
-                title="Individual Telegraf Configuration Names"
-              />
-            ) : (
-              <ResourceAccordionBody
-                resourceName={resource}
-                permissions={permissions[resource]}
-                onToggle={this.handleIndividualToggle}
-                title="Individual Bucket Names"
-              />
-            )}
-          </GetResources>
+          {!permissions.otherResources.read && !permissions.otherResources.write
+            ? resources[1].map(resource => {
+                const resourceName =
+                  resource.charAt(0).toUpperCase() + resource.slice(1)
+
+                return (
+                  <AllAccordionBody
+                    key={resource}
+                    resourceName={resourceName}
+                    permissions={permissions[resource]}
+                    onToggleAll={onToggleAll}
+                    disabled={false}
+                  />
+                )
+              })
+            : null}
         </Accordion>
+      </>
+    )
+  }
+
+  getAccordionBody = (resourceName, resource) => {
+    const {permissions, onIndividualToggle} = this.props
+    const permissionNames = []
+    if (resourceName === 'Telegrafs') {
+      for (const [, value] of Object.entries(
+        permissions[resource].sublevelPermissions
+      )) {
+        permissionNames.push(value)
+      }
+      return (
+        <Filter
+          list={permissionNames}
+          searchTerm={this.props.searchTerm}
+          searchKeys={['name']}
+        >
+          {filteredNames => (
+            <IndividualAccordionBody
+              resourceName={resource}
+              permissions={filteredNames}
+              onToggle={onIndividualToggle}
+              title="Individual Telegraf Configuration Names"
+              disabled={false}
+            />
+          )}
+        </Filter>
       )
-    })
-  }
-
-  handleToggleAll = (resourceName, permission, value) => {
-    const {permissions} = this.state
-    const newPerm = {...permissions}
-    const name = resourceName.toLowerCase()
-    Object.keys(newPerm[name]).map(key => {
-      newPerm[name][key].permissions[permission] = !value
-    })
-    this.setState({
-      permissions: newPerm,
-    })
-  }
-
-  handleIndividualToggle = (resourceName, id, permission) => {
-    const {permissions} = this.state
-
-    const permValue = permissions[resourceName][id].permissions[permission]
-
-    const newPerm = {...permissions}
-    newPerm[resourceName][id].permissions[permission] = !permValue
-
-    this.setState({
-      permissions: newPerm,
-    })
+    } else if (resourceName === 'Buckets') {
+      for (const [, value] of Object.entries(
+        permissions[resource].sublevelPermissions
+      )) {
+        permissionNames.push(value)
+      }
+      return (
+        <Filter
+          list={permissionNames}
+          searchTerm={this.props.searchTerm}
+          searchKeys={['name']}
+        >
+          {filteredNames => (
+            <IndividualAccordionBody
+              resourceName={resource}
+              permissions={filteredNames}
+              onToggle={onIndividualToggle}
+              title="Individual Bucket Names"
+              disabled={false}
+            />
+          )}
+        </Filter>
+      )
+    }
   }
 }
 
-const mstp = (state: AppState) => {
-  const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
-  const telegrafPermissions = {}
-  telegrafs.forEach(telegraf => {
-    telegrafPermissions[telegraf.id] = {
-      id: telegraf.id,
-      orgID: telegraf.orgID,
-      name: telegraf.name,
-      permissions: {read: false, write: false},
-    }
-  })
-
-  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
-  const bucketPermissions = {}
-  buckets.forEach(bucket => {
-    bucketPermissions[bucket.id] = {
-      id: bucket.id,
-      orgID: bucket.orgID,
-      name: bucket.name,
-      permissions: {read: false, write: false},
-    }
-  })
-
-  return {telegrafPermissions, bucketPermissions}
-}
-
-export default connect<StateProps>(mstp, null)(ResourceAccordion)
+export default ResourceAccordion

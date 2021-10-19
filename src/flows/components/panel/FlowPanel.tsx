@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useContext, useState, useRef, useEffect} from 'react'
+import React, {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import classnames from 'classnames'
 import {
   Button,
@@ -9,10 +16,8 @@ import {
 } from '@influxdata/clockface'
 
 // Components
-import RemovePanelButton from 'src/flows/components/panel/RemovePanelButton'
 import Handle from 'src/flows/components/panel/Handle'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
-import PanelVisibilityToggle from 'src/flows/components/panel/PanelVisibilityToggle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import {MenuButton} from 'src/flows/components/Sidebar'
 
@@ -27,6 +32,9 @@ import {PipeContextProps} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import 'src/flows/shared/Resizer.scss'
 
@@ -44,11 +52,13 @@ const FlowPanel: FC<Props> = ({
   resizes,
   children,
 }) => {
-  const {flow} = useContext(FlowContext)
-  const {printMap, queryDependents} = useContext(FlowQueryContext)
+  const {flow, updateMeta} = useContext(FlowContext)
+  const {printMap, queryDependents, getPanelQueries} = useContext(
+    FlowQueryContext
+  )
   const {id: focused} = useContext(SidebarContext)
 
-  const isVisible = flow.meta.get(id).visible
+  const isVisible = flow.meta.byID[id]?.visible
 
   const panelClassName = classnames('flow-panel', {
     [`flow-panel__${isVisible ? 'visible' : 'hidden'}`]: true,
@@ -56,26 +66,31 @@ const FlowPanel: FC<Props> = ({
   })
 
   const [size, updateSize] = useState<number>(
-    flow.meta.get(id).height || DEFAULT_RESIZER_HEIGHT
+    flow.meta.byID[id]?.height || DEFAULT_RESIZER_HEIGHT
   )
-  const [isDragging, setIsDragging] = useState(false)
+  const [isDragging, setIsDragging] = useState(0)
   const bodyRef = useRef<HTMLDivElement>(null)
   const handleRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (isDragging === true) {
+    if (isDragging === 2) {
       handleRef.current &&
         handleRef.current.classList.add('panel-resizer--drag-handle__dragging')
     }
 
-    if (isDragging === false) {
+    if (isDragging === 1) {
       handleRef.current &&
         handleRef.current.classList.remove(
           'panel-resizer--drag-handle__dragging'
         )
-      flow.meta.update(id, {height: size})
+
+      if (flow.meta.byID[id].height !== size) {
+        updateMeta(id, {
+          height: size,
+        })
+      }
     }
-  }, [isDragging]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isDragging, id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleMouseMove = (e: MouseEvent): void => {
     if (!bodyRef.current) {
@@ -93,7 +108,7 @@ const FlowPanel: FC<Props> = ({
   }
 
   const handleMouseDown = (): void => {
-    setIsDragging(true)
+    setIsDragging(2)
     const body = document.getElementsByTagName('body')[0]
     body && body.classList.add('panel-resizer-dragging')
 
@@ -102,7 +117,7 @@ const FlowPanel: FC<Props> = ({
   }
 
   const handleMouseUp = (): void => {
-    setIsDragging(false)
+    setIsDragging(1)
     const body = document.getElementsByTagName('body')[0]
     body && body.classList.remove('panel-resizer-dragging')
 
@@ -111,7 +126,7 @@ const FlowPanel: FC<Props> = ({
   }
 
   useEffect(() => {
-    if (size === flow.meta.get(id).height) {
+    if (size === flow.meta.byID[id]?.height) {
       return
     }
 
@@ -119,20 +134,25 @@ const FlowPanel: FC<Props> = ({
       return
     }
 
-    flow.meta.update(id, {
+    updateMeta(id, {
       height: size,
     })
   }, [flow, size])
 
-  const title = PIPE_DEFINITIONS[flow.data.get(id).type] ? (
+  const title = PIPE_DEFINITIONS[flow.data.byID[id]?.type] ? (
     <FlowPanelTitle id={id} />
   ) : (
     <div className="flow-panel--editable-title">Error</div>
   )
 
+  const showPreviewButton = useMemo(() => !!getPanelQueries(id)?.visual, [
+    getPanelQueries,
+    id,
+  ])
+
   if (
     flow.readOnly &&
-    !/^(visualization|markdown)$/.test(flow.data.get(id).type)
+    !/^(visualization|markdown)$/.test(flow.data.byID[id]?.type)
   ) {
     return null
   }
@@ -159,11 +179,16 @@ const FlowPanel: FC<Props> = ({
                     className="flows-config-panel-button"
                   />
                 </FeatureFlag>
+                {isVisible &&
+                  isFlagEnabled('notebooksPreviewFromHere') &&
+                  showPreviewButton && (
+                    <Button
+                      onClick={() => queryDependents(id)}
+                      icon={IconFont.Play}
+                      text="Preview"
+                    />
+                  )}
                 <MenuButton id={id} />
-                <FeatureFlag name="flowSidebar" equals={false}>
-                  <PanelVisibilityToggle id={id} />
-                  <RemovePanelButton id={id} />
-                </FeatureFlag>
               </div>
             </>
           )}
@@ -183,15 +208,7 @@ const FlowPanel: FC<Props> = ({
             <Handle
               dragRef={handleRef}
               onStartDrag={handleMouseDown}
-              dragging={isDragging}
-            />
-          )}
-          {isVisible && (
-            <Button
-              className="flow-footer--preview"
-              onClick={() => queryDependents(id)}
-              icon={IconFont.Play}
-              text="Preview from here"
+              dragging={isDragging === 2}
             />
           )}
         </div>

@@ -6,6 +6,8 @@ import writePoint from 'src/writeData/clients/Swift/write.1.example'
 import writeTuple from 'src/writeData/clients/Swift/write.2.example'
 import execute from 'src/writeData/clients/Swift/execute.example'
 import query from 'src/writeData/clients/Swift/query.example'
+import dispose from 'src/writeData/clients/Swift/dispose.example'
+import executeFull from 'src/writeData/clients/Swift/executeFull.example'
 
 export default register =>
   register({
@@ -31,4 +33,6 @@ export default register =>
     ],
     execute,
     query,
+    dispose,
+    executeFull,
   })

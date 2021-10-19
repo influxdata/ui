@@ -3,20 +3,20 @@ import {Organization} from '../../../src/types'
 describe('Pinned Items', () => {
   let orgID: string
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() =>
-      cy.fixture('routes').then(() => {
-        cy.get('@org').then(({id}: any) => {
-          orgID = id
-          cy.setFeatureFlags({
-            pinnedItems: true,
-            docSearchWidget: true,
-          }).then(() => {
-            cy.getByTestID('tree-nav')
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy.fixture('routes').then(() => {
+          cy.get('@org').then(({id}: any) => {
+            orgID = id
+            cy.setFeatureFlags({
+              pinnedItems: true,
+              docSearchWidget: true,
+            }).then(() => {
+              cy.getByTestID('tree-nav')
+            })
           })
         })
-      })
+      )
     )
   })
 
@@ -44,7 +44,7 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.visit('/')
@@ -59,7 +59,7 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.getByTestID('dashboard-card').within(() => {
@@ -92,7 +92,7 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
           cy.getByTestID('context-pin-dashboard').click()
         })
       cy.visit('/')
@@ -131,24 +131,24 @@ describe('Pinned Items', () => {
   describe('Pin task tests', () => {
     let taskName: string
     beforeEach(() => {
-      cy.flush()
-
-      cy.signin().then(() => {
-        cy.get('@org').then(({id: orgID}: Organization) =>
-          cy
-            .createToken(orgID, 'test token', 'active', [
-              {action: 'write', resource: {type: 'views', orgID}},
-              {action: 'write', resource: {type: 'documents', orgID}},
-              {action: 'write', resource: {type: 'tasks', orgID}},
-            ])
-            .then(({body}) => {
-              cy.wrap(body.token).as('token')
-              cy.getByTestID('tree-nav')
-              cy.visit(`/orgs/${orgID}/tasks`)
-              cy.getByTestID('tree-nav')
-            })
-        )
-      })
+      cy.flush().then(() =>
+        cy.signin().then(() => {
+          cy.get('@org').then(({id: orgID}: Organization) =>
+            cy
+              .createToken(orgID, 'test token', 'active', [
+                {action: 'write', resource: {type: 'views', orgID}},
+                {action: 'write', resource: {type: 'documents', orgID}},
+                {action: 'write', resource: {type: 'tasks', orgID}},
+              ])
+              .then(({body}) => {
+                cy.wrap(body.token).as('token')
+                cy.getByTestID('tree-nav')
+                cy.visit(`/orgs/${orgID}/tasks`)
+                cy.getByTestID('tree-nav')
+              })
+          )
+        })
+      )
 
       taskName = 'Task'
       cy.createTaskFromEmpty(taskName, ({name}) => {
@@ -166,7 +166,7 @@ from(bucket: "${name}"{rightarrow}
         .first()
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
           cy.getByTestID('context-pin-task').click()
         })
     })
@@ -226,8 +226,6 @@ from(bucket: "${name}"{rightarrow}
   describe('Pin flow tests', () => {
     beforeEach(() => {
       cy.setFeatureFlags({
-        notebooks: true,
-        simpleTable: true,
         pinnedItems: true,
       }).then(() => {
         cy.getByTestID('nav-item-flows').should('be.visible')
@@ -242,7 +240,7 @@ from(bucket: "${name}"{rightarrow}
           ],
           'defbuck'
         )
-        cy.getByTestID('create-flow--button')
+        cy.getByTestID('preset-new')
           .first()
           .click()
 
@@ -260,8 +258,8 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--Flow')
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
+          cy.getByTestID('context-pin-flow').click({force: true})
         })
       cy.visit('/')
       cy.getByTestID('tree-nav')
@@ -274,8 +272,8 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--Flow')
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
+          cy.getByTestID('context-pin-flow').click({force: true})
         })
       cy.getByTestID('resource-editable-name')
         .first()
@@ -319,10 +317,14 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--Bucks In Six')
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click()
-          cy.getByTestID('context-pin-flow').click()
-          cy.getByTestID('context-delete-menu Bucks In Six').click()
-          cy.getByTestID('context-delete-flow Bucks In Six').click()
+          cy.getByTestID('context-pin-menu').click({force: true})
+          cy.getByTestID('context-pin-flow').click({force: true})
+          cy.getByTestID('context-delete-menu Bucks In Six').click({
+            force: true,
+          })
+          cy.getByTestID('context-delete-flow Bucks In Six').click({
+            force: true,
+          })
         })
       cy.visit('/')
       cy.getByTestID('tree-nav')

@@ -117,7 +117,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
         ...state,
         telegrafPlugins: state.telegrafPlugins.map(tp => {
           if (tp.name === action.payload.name) {
-            const plugin = get(tp, 'plugin', createNewPlugin(tp.name))
+            const plugin = get(tp, 'plugin', createNewPlugin(tp))
 
             return {
               ...tp,
@@ -136,7 +136,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
         ...state,
         telegrafPlugins: state.telegrafPlugins.map(tp => {
           if (tp.name === action.payload.pluginName) {
-            const plugin = get(tp, 'plugin', createNewPlugin(tp.name))
+            const plugin = get(tp, 'plugin', createNewPlugin(tp))
 
             const config = get(plugin, ['config', action.payload.fieldName], [])
 
@@ -162,7 +162,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
         ...state,
         telegrafPlugins: state.telegrafPlugins.map(tp => {
           if (tp.name === action.payload.pluginName) {
-            const plugin = get(tp, 'plugin', createNewPlugin(tp.name))
+            const plugin = get(tp, 'plugin', createNewPlugin(tp))
 
             const configFieldValues = get(
               plugin,
@@ -190,7 +190,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
         ...state,
         telegrafPlugins: state.telegrafPlugins.map(tp => {
           if (tp.name === action.payload.pluginName) {
-            const plugin = get(tp, 'plugin', createNewPlugin(tp.name))
+            const plugin = get(tp, 'plugin', createNewPlugin(tp))
             const configValues = get(
               plugin,
               `config.${action.payload.field}`,
@@ -228,7 +228,7 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
               return {...tp, configured: ConfigurationState.Configured}
             }
 
-            const plugin = getDeep<Plugin>(tp, 'plugin', createNewPlugin(name))
+            const plugin = getDeep<Plugin>(tp, 'plugin', createNewPlugin(tp))
             const config = get(plugin, 'config', {})
 
             let isValidConfig = true

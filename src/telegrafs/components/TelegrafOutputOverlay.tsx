@@ -40,7 +40,7 @@ const TELEGRAF_OUTPUT = ` [[outputs.influxdb_v2]]
   ##   ex: urls = ["https://us-west-2-1.aws.cloud2.influxdata.com"]
   urls = ["<%= server %>"]
 
-  ## Token for authentication.
+  ## API token for authentication.
   token = "<%= token %>"
 
   ## Organization is the name of the organization you wish to write to; must exist.
@@ -156,7 +156,9 @@ class TelegrafOutputOverlay extends PureComponent<Props> {
         <Overlay.Body>
           <p style={{marginTop: '-18px'}}>
             The $INFLUX_TOKEN can be generated on the
-            <Link to={`/orgs/${orgID}/load-data/tokens`}>&nbsp;Tokens tab</Link>
+            <Link to={`/orgs/${orgID}/load-data/tokens`}>
+              &nbsp;API Tokens tab
+            </Link>
             .
           </p>
           <p>{bucket_dd}</p>

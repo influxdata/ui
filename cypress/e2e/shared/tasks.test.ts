@@ -9,21 +9,21 @@ import {Organization} from '../../../src/types'
 
 describe('Tasks', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get<Organization>('@org').then(({id: orgID}: Organization) =>
-        cy
-          .createToken(orgID, 'test token', 'active', [
-            {action: 'write', resource: {type: 'views', orgID}},
-            {action: 'write', resource: {type: 'documents', orgID}},
-            {action: 'write', resource: {type: 'tasks', orgID}},
-          ])
-          .then(({body}) => {
-            cy.wrap(body.token).as('token')
-          })
-      )
-    })
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get<Organization>('@org').then(({id: orgID}: Organization) =>
+          cy
+            .createToken(orgID, 'test token', 'active', [
+              {action: 'write', resource: {type: 'views', orgID}},
+              {action: 'write', resource: {type: 'documents', orgID}},
+              {action: 'write', resource: {type: 'tasks', orgID}},
+            ])
+            .then(({body}) => {
+              cy.wrap(body.token).as('token')
+            })
+        )
+      })
+    )
 
     cy.fixture('routes').then(({orgs}) => {
       cy.get<Organization>('@org').then(({id}: Organization) => {

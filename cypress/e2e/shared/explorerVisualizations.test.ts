@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines, makeGraphSnapshot} from '../../support/commands'
+import {points, makeGraphSnapshot} from '../../support/commands'
 const VIS_TYPES = [
   'band',
   //    'check',
@@ -15,19 +15,19 @@ const VIS_TYPES = [
   'table',
 ]
 describe('visualizations', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.createMapVariable(id)
-        cy.fixture('routes').then(({orgs, explorer}) => {
-          cy.visit(`${orgs}/${id}${explorer}`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.createMapVariable(id)
+          cy.fixture('routes').then(({orgs, explorer}) => {
+            cy.visit(`${orgs}/${id}${explorer}`)
+            cy.getByTestID('tree-nav')
+          })
         })
       })
-    })
-  })
+    )
+  )
   describe('empty states', () => {
     it('shows a message if no queries have been created', () => {
       cy.getByTestID('empty-graph--no-queries').should('exist')
@@ -52,11 +52,11 @@ describe('visualizations', () => {
     })
   })
 
-  const numLines = 360
-  describe(`visualize with ${numLines} lines`, () => {
+  const numPoints = 360
+  describe(`visualize with ${numPoints} points`, () => {
     beforeEach(() => {
-      // POST 360 lines to the server
-      cy.writeData(lines(numLines))
+      // POST 360 points to the server
+      cy.writeData(points(numPoints))
     })
 
     it('can view time-series data', () => {
@@ -150,7 +150,7 @@ describe('visualizations', () => {
               if (type.includes('single-stat')) {
                 cy.getByTestID('single-stat--text').should(
                   'contain',
-                  `${numLines}`
+                  `${numPoints}`
                 )
               }
             }
@@ -163,7 +163,7 @@ describe('visualizations', () => {
 
           // view raw data table
           cy.getByTestID('raw-data--toggle').click()
-          cy.getByTestID('raw-data-table').should('exist')
+          cy.getByTestID('simple-table').should('exist')
           cy.getByTestID('raw-data--toggle').click()
           cy.getByTestID('giraffe-axes').should('exist')
         }
@@ -348,7 +348,7 @@ describe('visualizations', () => {
       // check to see that the FE rows are NOT sorted with flux sort
       cy.get('.table-graph-cell__sort-asc').should('not.exist')
       cy.get('.table-graph-cell__sort-desc').should('not.exist')
-      cy.getByTestID('_value-table-header')
+      cy.getByTestID('_value-table-header table-graph-cell')
         .should('exist')
         .then(el => {
           // get the column index
@@ -363,79 +363,25 @@ describe('visualizations', () => {
             }
           })
         })
-      cy.getByTestID('_value-table-header').click()
-      cy.get('.table-graph-cell__sort-asc').should('exist')
-      cy.getByTestID('_value-table-header').click()
-      cy.get('.table-graph-cell__sort-desc').should('exist')
-      cy.getByTestID('_value-table-header').then(el => {
-        // get the column index
-        const columnIndex = el[0].getAttribute('data-column-index')
-        let prev = Infinity
-        // get all the column values for that one and see if they are in order
-        cy.get(`[data-column-index="${columnIndex}"]`).each(val => {
-          const num = Number(val.text())
-          if (isNaN(num) === false) {
-            expect(num < prev).to.equal(true)
-            prev = num
-          }
-        })
-      })
-    })
-
-    it('can view table data with raw data & scroll to bottom', () => {
-      // build the query to return data from beforeEach
-      cy.getByTestID(`selector-list m`).click()
-      cy.getByTestID('selector-list v').click()
-      cy.getByTestID(`selector-list tv1`).click()
-      cy.getByTestID(`custom-function`).click()
-      cy.getByTestID('selector-list sort').click({force: true})
-
-      cy.getByTestID('time-machine-submit-button').click()
-
-      cy.getByTestID('view-type--dropdown').click()
-      cy.getByTestID(`view-type--table`).click()
-      // view raw data table
-      cy.getByTestID('raw-data--toggle').click()
-
-      cy.get('.time-machine--view').within(() => {
-        cy.getByTestID('rawdata-table--scrollbar--thumb-y')
-          .trigger('mousedown', {force: true})
-          .trigger('mousemove', {clientY: 5000})
-          .trigger('mouseup')
-
-        cy.getByTestID('rawdata-table--scrollbar--thumb-x')
-          .trigger('mousedown', {force: true})
-          .trigger('mousemove', {clientX: 1000})
-          .trigger('mouseup')
-      })
-
-      cy.getByTestID(`raw-flux-data-table--cell ${numLines}`).should(
-        'be.visible'
-      )
-    })
-
-    it('can view table data & scroll to bottom', () => {
-      // build the query to return data from beforeEach
-      cy.getByTestID(`selector-list m`).click()
-      cy.getByTestID('selector-list v').click()
-      cy.getByTestID(`selector-list tv1`).click()
-      cy.getByTestID(`custom-function`).click()
-      cy.getByTestID('selector-list sort').click({force: true})
-
-      cy.getByTestID('time-machine-submit-button').click()
-
-      cy.getByTestID('view-type--dropdown').click()
-      cy.getByTestID(`view-type--table`).click()
-
-      cy.get('.time-machine--view').within(() => {
-        cy.getByTestID('dapper-scrollbars--thumb-y')
-          .trigger('mousedown', {force: true})
-          .trigger('mousemove', {clientY: 5000})
-          .trigger('mouseup')
-          .then(() => {
-            cy.get(`[title="${numLines}"]`).should('be.visible')
+      cy.getByTestID('_value-table-header table-graph-cell').click()
+      cy.getByTestID('_value-table-header table-graph-cell__sort-asc')
+        .should('exist')
+        .click()
+      cy.getByTestID('_value-table-header table-graph-cell__sort-desc')
+        .should('exist')
+        .then(el => {
+          // get the column index
+          const columnIndex = el[0].getAttribute('data-column-index')
+          let prev = Infinity
+          // get all the column values for that one and see if they are in order
+          cy.get(`[data-column-index="${columnIndex}"]`).each(val => {
+            const num = Number(val.text())
+            if (isNaN(num) === false) {
+              expect(num < prev).to.equal(true)
+              prev = num
+            }
           })
-      })
+        })
     })
   })
 })

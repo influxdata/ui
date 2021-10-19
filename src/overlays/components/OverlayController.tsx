@@ -15,16 +15,17 @@ import {AppState} from 'src/types'
 // Components
 import {Overlay} from '@influxdata/clockface'
 import NoteEditorOverlay from 'src/dashboards/components/NoteEditorOverlay'
-import AllAccessTokenOverlay from 'src/authorizations/components/AllAccessTokenOverlay'
+import AllAccessTokenOverlay from 'src/authorizations/components/redesigned/AllAccessTokenOverlay'
 import BucketsTokenOverlay from 'src/authorizations/components/BucketsTokenOverlay'
 import TelegrafConfigOverlay from 'src/telegrafs/components/TelegrafConfigOverlay'
 import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverlay'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
-import CreateBucketOverlay from 'src/buckets/components/CreateBucketOverlay'
+import CreateBucketOverlay from 'src/buckets/components/createBucketForm/CreateBucketOverlay'
 import AssetLimitOverlay from 'src/cloud/components/AssetLimitOverlay'
 import RateLimitOverlay from 'src/cloud/components/RateLimitOverlay'
 import WriteLimitOverlay from 'src/cloud/components/WriteLimitOverlay'
 import {AddAnnotationOverlay} from 'src/annotations/components/AddAnnotationOverlay'
+import {ShowBucketSchemaOverlay} from 'src/buckets/components/schemaOverlay/ShowBucketSchemaOverlay'
 import {EditAnnotationOverlay} from 'src/annotations/components/EditAnnotationOverlay'
 import CreateVariableOverlay from 'src/variables/components/CreateVariableOverlay'
 import RenameVariableOverlay from 'src/variables/components/RenameVariableOverlay'
@@ -35,7 +36,7 @@ import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 import AutoRefreshOverlay from 'src/dashboards/components/AutoRefreshOverlay'
 import CellCloneOverlay from 'src/shared/components/cells/CellCloneOverlay'
-import {CustomApiTokenOverlay} from 'src/authorizations/components/redesigned/CustomApiTokenOverlay'
+import CustomApiTokenOverlay from 'src/authorizations/components/redesigned/CustomApiTokenOverlay'
 import DisplayTokenOverlay from 'src/authorizations/components/redesigned/DisplayTokenOverlay'
 
 // Actions
@@ -73,7 +74,7 @@ export const OverlayController: FunctionComponent = () => {
         activeOverlay.current = <CustomApiTokenOverlay onClose={onClose} />
         break
       case 'access-token':
-        activeOverlay.current = <DisplayTokenOverlay onClose={onClose} />
+        activeOverlay.current = <DisplayTokenOverlay />
         break
       case 'add-token':
         activeOverlay.current = <BucketsTokenOverlay onClose={onClose} />
@@ -104,6 +105,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'edit-annotation':
         activeOverlay.current = <EditAnnotationOverlay />
+        break
+      case 'bucket-schema-show':
+        activeOverlay.current = <ShowBucketSchemaOverlay />
         break
       case 'check-threshold':
         activeOverlay.current = <NewThresholdCheckEO />

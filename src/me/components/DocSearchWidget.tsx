@@ -24,6 +24,16 @@ const supportLinks = [
     link: `https://docs.influxdata.com/influxdb/${DOCS_URL_VERSION}/process-data/get-started/`,
     title: 'Write a Task',
   },
+  {
+    link: 'https://github.com/influxdata/ui/issues/new',
+    title: '🐛 Report a bug',
+  },
+  {link: 'https://community.influxdata.com', title: '💭 Community Forum'},
+  {
+    link:
+      'https://github.com/influxdata/influxdb/issues/new?template=feature_request.md',
+    title: '✨ Feature Requests',
+  },
 ]
 
 const DocSearchWidget: FC = () => {

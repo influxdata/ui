@@ -1,5 +1,4 @@
 // Libraries
-import {cloneDeep} from 'lodash'
 import {fromFlux} from '@influxdata/giraffe'
 
 // Utils
@@ -113,7 +112,7 @@ from(bucket: "${MONITORING_BUCKET}")
   The rewrite rules for the "notificationEndpoint" work similarly.
 */
 const renameTagKeys = (searchExpr: SearchExpr) => {
-  const rewrittenExpr = cloneDeep(searchExpr)
+  const rewrittenExpr = JSON.parse(JSON.stringify(searchExpr))
 
   const tagExprNodes: SearchTagExpr[] = findNodes(
     rewrittenExpr,

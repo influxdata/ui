@@ -21,6 +21,7 @@ import {Secret} from 'src/types'
 import {getAllSecrets} from 'src/resources/selectors'
 import {upsertSecret} from 'src/secrets/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 const CreateSecretForm: FC = () => {
   const secrets = useSelector(getAllSecrets)
@@ -70,6 +71,7 @@ const CreateSecretForm: FC = () => {
 
   const handleSubmit = () => {
     try {
+      event('New Secret Created')
       dispatch(upsertSecret(newSecret))
     } finally {
       handleDismiss()

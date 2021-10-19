@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -9,24 +9,35 @@ import {Dropdown} from '@influxdata/clockface'
 // Types
 import {IconFont, ComponentColor} from '@influxdata/clockface'
 
-// Selectors
-import {getOrg} from 'src/organizations/selectors'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {getAllResources} from 'src/authorizations/actions/thunks'
+import {notify} from 'src/shared/actions/notifications'
+import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 
 type GenerateTokenProps = RouteComponentProps
+type ReduxProps = ConnectedProps<typeof connector>
 
-const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
-  const org = useSelector(getOrg)
-
-  const allAccessOption = 'All Access Token'
+const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
+  showOverlay,
+  dismissOverlay,
+  getAllResources,
+}) => {
+  const dispatch = useDispatch()
+  const allAccessOption = 'All Access API Token'
 
   const customApiOption = 'Custom API Token'
 
   const handleAllAccess = () => {
-    history.push(`/orgs/${org.id}/load-data/tokens/generate/all-access`)
+    showOverlay('add-master-token', null, dismissOverlay)
   }
 
-  const handleCustomApi = () => {
-    history.push(`/orgs/${org.id}/load-data/tokens/generate/custom-api`)
+  const handleCustomApi = async () => {
+    try {
+      await getAllResources()
+      showOverlay('add-custom-token', null, dismissOverlay)
+    } catch (e) {
+      dispatch(notify(getResourcesTokensFailure()))
+    }
   }
 
   const handleSelect = (selection: string): void => {
@@ -40,7 +51,7 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   return (
     <Dropdown
       testID="dropdown--gen-token"
-      style={{width: '160px'}}
+      style={{width: '180px'}}
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}
@@ -49,7 +60,7 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
           color={ComponentColor.Primary}
           testID="dropdown-button--gen-token"
         >
-          Generate Token
+          Generate API Token
         </Dropdown.Button>
       )}
       menu={onCollapse => (
@@ -78,4 +89,12 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
   )
 }
 
-export default withRouter(GenerateTokenDropdown)
+const mdtp = {
+  showOverlay,
+  dismissOverlay,
+  getAllResources,
+}
+
+const connector = connect(null, mdtp)
+
+export default connector(withRouter(GenerateTokenDropdown))

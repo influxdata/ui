@@ -1,18 +1,18 @@
 import {Organization} from '../../src/types'
 
 describe('Load Data Sources', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) =>
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${id}/load-data/sources`)
-          cy.getByTestID('tree-nav')
-        })
-      )
-    })
-  })
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) =>
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(`${orgs}/${id}/load-data/sources`)
+            cy.getByTestID('tree-nav')
+          })
+        )
+      })
+    )
+  )
 
   it('navigate to Client Library details view and render it with essentials', () => {
     cy.getByTestID('write-data--section client-libraries').within(() => {

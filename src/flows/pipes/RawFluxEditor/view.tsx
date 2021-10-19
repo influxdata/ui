@@ -6,7 +6,6 @@ import React, {
   useState,
   useContext,
   useCallback,
-  useMemo,
 } from 'react'
 import {
   RemoteDataState,
@@ -26,10 +25,12 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import Functions from 'src/flows/pipes/RawFluxEditor/functions'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
@@ -37,7 +38,6 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
-  const [showFn, setShowFn] = useState(true)
   const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
   const {queries, activeQuery} = data
@@ -119,20 +119,18 @@ const Query: FC<PipeProp> = ({Context}) => {
     [editorInstance, query.text]
   )
 
-  const toggleFn = useCallback(() => {
-    setShowFn(!showFn)
-  }, [setShowFn, showFn])
-
   const launcher = () => {
     if (showId === id) {
+      event('Flux Panel (Notebooks) - Toggle Functions - Off')
       hideSub()
     } else {
+      event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
       showSub(<Functions onSelect={inject} />)
     }
   }
 
-  const controls = isFlagEnabled('flowSidebar') ? (
+  const controls = (
     <Button
       text="Functions"
       icon={IconFont.Function}
@@ -141,44 +139,29 @@ const Query: FC<PipeProp> = ({Context}) => {
       titleText="Function Reference"
       className="flows-config-function-button"
     />
-  ) : (
-    <Button
-      text="Functions"
-      icon={IconFont.Function}
-      onClick={toggleFn}
-      color={showFn ? ComponentColor.Primary : ComponentColor.Default}
-      titleText="Function Reference"
-      className="flows-config-function-button"
-    />
   )
 
-  return useMemo(() => {
-    return (
-      <Context controls={controls} resizes>
-        <Suspense
-          fallback={
-            <SpinnerContainer
-              loading={RemoteDataState.Loading}
-              spinnerComponent={<TechnoSpinner />}
-            />
-          }
-        >
-          <FluxMonacoEditor
-            script={query.text}
-            onChangeScript={updateText}
-            onSubmitScript={() => {}}
-            setEditorInstance={setEditorInstance}
-            wrapLines="on"
+  return (
+    <Context controls={controls}>
+      <Suspense
+        fallback={
+          <SpinnerContainer
+            loading={RemoteDataState.Loading}
+            spinnerComponent={<TechnoSpinner />}
           />
-        </Suspense>
-        {!isFlagEnabled('flowSidebar') && showFn && (
-          <div className="flow-nonsidebar">
-            <Functions onSelect={inject} />
-          </div>
-        )}
-      </Context>
-    )
-  }, [editorInstance, showFn, showId])
+        }
+      >
+        <FluxMonacoEditor
+          script={query.text}
+          onChangeScript={updateText}
+          onSubmitScript={() => {}}
+          setEditorInstance={setEditorInstance}
+          wrapLines="on"
+          autogrow
+        />
+      </Suspense>
+    </Context>
+  )
 }
 
 export default Query

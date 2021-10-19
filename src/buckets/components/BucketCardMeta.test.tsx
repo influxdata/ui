@@ -21,6 +21,13 @@ const setup = (
   return renderWithRedux(<BucketCardMeta bucket={bucket} />)
 }
 
+jest.mock('src/shared/constants/index', () => ({
+  CLOUD: true,
+}))
+
+const EXPLICIT_TEXT = 'Schema Type: Explicit'
+const IMPLICIT_TEXT = 'Schema Type: Implicit'
+
 describe('bucket meta data card, testing that the schema type shows up properly', () => {
   it('should show the explicit schema type', () => {
     const {getByTestId} = setup('explicit', 'user', 'fooabc')
@@ -32,7 +39,7 @@ describe('bucket meta data card, testing that the schema type shows up properly'
 
     expect(card.childElementCount).toEqual(3)
 
-    expect(schemaType).toHaveTextContent('Explicit Schema Type')
+    expect(schemaType).toHaveTextContent(EXPLICIT_TEXT)
   })
 
   it('should show "implicit" if the schema  is not there, with a user bucket', () => {
@@ -43,9 +50,7 @@ describe('bucket meta data card, testing that the schema type shows up properly'
     // should be three nodes ('30 days', "id string....", and 'implicit schema type')
     expect(card.childElementCount).toEqual(3)
 
-    expect(getByTestId('bucket-schemaType')).toHaveTextContent(
-      'Implicit Schema Type'
-    )
+    expect(getByTestId('bucket-schemaType')).toHaveTextContent(IMPLICIT_TEXT)
   })
 
   it('should show the implicit schema type', () => {
@@ -58,7 +63,7 @@ describe('bucket meta data card, testing that the schema type shows up properly'
 
     expect(card.childElementCount).toEqual(3)
 
-    expect(schemaType).toHaveTextContent('Implicit Schema Type')
+    expect(schemaType).toHaveTextContent(IMPLICIT_TEXT)
   })
 
   it('should show "implicit" if the schema  is not there, with a system bucket', () => {
@@ -69,8 +74,6 @@ describe('bucket meta data card, testing that the schema type shows up properly'
     // should be three nodes ('system', '30 days', 'implicit schema type')
     expect(card.childElementCount).toEqual(3)
 
-    expect(getByTestId('bucket-schemaType')).toHaveTextContent(
-      'Implicit Schema Type'
-    )
+    expect(getByTestId('bucket-schemaType')).toHaveTextContent(IMPLICIT_TEXT)
   })
 })

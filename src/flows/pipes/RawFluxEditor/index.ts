@@ -1,16 +1,16 @@
 import {parse, format_from_js_file} from '@influxdata/flux'
-import {find} from 'src/flows/context/query'
+import {find} from 'src/shared/contexts/query'
 import View from './view'
+import ReadOnly from './readOnly'
 import './style.scss'
-
-const PREVIOUS_REGEXP = /__PREVIOUS_RESULT__/g
 
 export default register => {
   register({
     type: 'rawFluxEditor',
-    family: 'transform',
-    priority: 1,
+    family: 'inputs',
+    priority: 0,
     component: View,
+    readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--raw-flux',
     button: 'Flux Script',
     initial: {
@@ -30,14 +30,35 @@ export default register => {
     },
     source: (data, query) => {
       try {
-        const ast = parse(
-          data.queries[data.activeQuery].text.replace(PREVIOUS_REGEXP, query)
+        const q = parse(query)
+        const ast = parse(data.queries[data.activeQuery].text)
+        const body = q.body.map(b => b.location.source).join('\n')
+
+        if (!ast.body.length) {
+          return ''
+        }
+
+        ast.imports = Object.values(
+          q.imports.concat(ast.imports).reduce((acc, curr) => {
+            acc[curr.path.value] = curr
+            return acc
+          }, {})
         )
+
         find(ast, node => !!Object.keys(node.comments || {}).length).forEach(
           node => {
             delete node.comments
           }
         )
+
+        find(
+          ast,
+          node =>
+            node.type === 'Identifier' && node.name === '__PREVIOUS_RESULT__'
+        ).forEach(node => {
+          node.name = body
+        })
+
         return format_from_js_file(ast)
       } catch {
         return

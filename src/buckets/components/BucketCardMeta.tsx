@@ -5,6 +5,7 @@ import {capitalize} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Constants
+import {CLOUD} from 'src/shared/constants'
 import {
   copyToClipboardSuccess,
   copyToClipboardFailed,
@@ -42,7 +43,7 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
   }
 
   const persistentBucketMeta = (
-    <span data-testid="bucket-retention">
+    <span data-testid="bucket-retention" key="bucket-retention">
       Retention: {capitalize(bucket.readableRetention)}
     </span>
   )
@@ -50,10 +51,16 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
   // if the schema type isn't present just default to implicit
   const schemaType = bucket?.schemaType || 'implicit'
 
-  const schemaLabel = `${capitalize(schemaType)} Schema Type`
+  const schemaLabel = `Schema Type: ${capitalize(schemaType)}`
   const schemaBlock = (
-    <span data-testid="bucket-schemaType"> {schemaLabel} </span>
+    <span data-testid="bucket-schemaType" key="bucket-schemaType">
+      {schemaLabel}
+    </span>
   )
+
+  const bucketInfo = CLOUD
+    ? [persistentBucketMeta, schemaBlock]
+    : [persistentBucketMeta]
 
   if (bucket.type === 'system') {
     return (
@@ -64,16 +71,14 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
         >
           System Bucket
         </span>
-        {persistentBucketMeta}
-        {schemaBlock}
+        {bucketInfo}
       </ResourceCard.Meta>
     )
   }
 
   return (
     <ResourceCard.Meta testID={`resourceCard-buckets-${bucket.id}`}>
-      {persistentBucketMeta}
-      {schemaBlock}
+      {bucketInfo}
       <CopyToClipboard text={bucket.id} onCopy={handleCopyAttempt}>
         <span className="copy-bucket-id" title="Click to Copy to Clipboard">
           ID: {bucket.id}

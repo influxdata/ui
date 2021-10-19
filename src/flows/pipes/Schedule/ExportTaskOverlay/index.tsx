@@ -26,7 +26,11 @@ import {
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-const ExportTaskOverlay: FC = () => {
+interface Props {
+  text?: string
+  type: string
+}
+const ExportTaskOverlay: FC<Props> = ({text}) => {
   const {activeTab, handleSetActiveTab} = useContext(Context)
   const {closeFn} = useContext(PopupContext)
 
@@ -40,7 +44,7 @@ const ExportTaskOverlay: FC = () => {
     <Overlay visible={true}>
       <Overlay.Container maxWidth={700}>
         <Overlay.Header
-          title="Export As Task"
+          title={text ?? 'Export As Task'}
           onDismiss={closer}
           testID="export-as-overlay--header"
         />
@@ -85,8 +89,8 @@ const ExportTaskOverlay: FC = () => {
   )
 }
 
-export default () => (
-  <Provider>
-    <ExportTaskOverlay />
+export default ({text, type}: Props) => (
+  <Provider type={type}>
+    <ExportTaskOverlay text={text} type={type} />
   </Provider>
 )

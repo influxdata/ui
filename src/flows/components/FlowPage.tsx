@@ -5,10 +5,10 @@ import {Page} from '@influxdata/clockface'
 import {DapperScrollbars} from '@influxdata/clockface'
 
 // Contexts
-import CurrentFlowProvider from 'src/flows/context/flow.current'
+import CurrentFlowProvider, {FlowContext} from 'src/flows/context/flow.current'
 import {RunModeProvider} from 'src/flows/context/runMode'
-import QueryProvider from 'src/flows/context/query'
-import {FlowQueryProvider} from 'src/flows/context/flow.query'
+import QueryProvider from 'src/shared/contexts/query'
+import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
@@ -43,41 +43,57 @@ const FlowFromRoute = () => {
   return null
 }
 
-const FlowContainer: FC = () => (
+const RunOnMount = () => {
+  const {queryAll} = useContext(FlowQueryContext)
+  const {flow} = useContext(FlowContext)
+
+  useEffect(() => {
+    if (flow.readOnly) {
+      queryAll()
+    }
+  }, [])
+
+  return null
+}
+
+export const FlowPage: FC = () => (
+  <RunModeProvider>
+    <ResultsProvider>
+      <FlowQueryProvider>
+        <RunOnMount />
+        <FlowKeyboardPreview />
+        <SidebarProvider>
+          <Page>
+            <FlowHeader />
+            <Page.Contents
+              fullWidth={true}
+              scrollable={false}
+              className="flow-page"
+            >
+              <PopupProvider>
+                <DapperScrollbars
+                  noScrollX
+                  thumbStartColor="gray"
+                  thumbStopColor="gray"
+                >
+                  <PipeList />
+                </DapperScrollbars>
+                <SubSideBar />
+                <PopupDrawer />
+              </PopupProvider>
+            </Page.Contents>
+          </Page>
+        </SidebarProvider>
+      </FlowQueryProvider>
+    </ResultsProvider>
+  </RunModeProvider>
+)
+
+export default () => (
   <QueryProvider>
     <CurrentFlowProvider>
-      <RunModeProvider>
-        <FlowFromRoute />
-        <ResultsProvider>
-          <FlowQueryProvider>
-            <FlowKeyboardPreview />
-            <SidebarProvider>
-              <Page>
-                <FlowHeader />
-                <Page.Contents
-                  fullWidth={true}
-                  scrollable={false}
-                  className="flow-page"
-                >
-                  <PopupProvider>
-                    <DapperScrollbars
-                      noScrollX
-                      thumbStartColor="gray"
-                      thumbStopColor="gray"
-                    >
-                      <PipeList />
-                    </DapperScrollbars>
-                    <SubSideBar />
-                    <PopupDrawer />
-                  </PopupProvider>
-                </Page.Contents>
-              </Page>
-            </SidebarProvider>
-          </FlowQueryProvider>
-        </ResultsProvider>
-      </RunModeProvider>
+      <FlowFromRoute />
+      <FlowPage />
     </CurrentFlowProvider>
   </QueryProvider>
 )
-
-export default FlowContainer

@@ -1,11 +1,3 @@
-export interface TelegrafPlugin {
-  id: string
-  name: string
-  url: string
-  image?: string
-  markdown?: string
-}
-
 export interface CodeSampleOption {
   title: string // text to describe the option
   code: string // the code
@@ -20,11 +12,14 @@ export interface ClientRegistration {
 
   initialize?: string | CodeSampleOption[] // code representing initializing the client library
   write?: string | CodeSampleOption[] // code representing different ways of writing to the backend with the client
-  execute?: string | CodeSampleOption[] // code representing how a user would execute a query with the client library
+  execute?: string | CodeSampleOption[] // code representing how a user would execute a query snipped with the client library
+  executeFull?: string | CodeSampleOption[] // code representing how a user would initialize & execute a query with the client library
+  dispose?: string | CodeSampleOption[] // code representing disposing the client library
 
   featureFlag?: string // designates a flag that should enable the client
 
   query?: string // Query to be rendered for examples
+  querySanitize?: (query: string) => string // function to sanitize Flux query
 }
 
 interface ClientLookup {

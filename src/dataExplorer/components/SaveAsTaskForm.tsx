@@ -105,6 +105,7 @@ class SaveAsTaskForm extends PureComponent<
 
     saveNewScript(script, preamble).then(() => {
       goToTasks()
+      event('data_explorer.script.saved.as_task')
     })
   }
 

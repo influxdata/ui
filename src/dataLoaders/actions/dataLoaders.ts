@@ -17,6 +17,7 @@ import {getDataLoaders, getSteps} from 'src/dataLoaders/selectors'
 import {getBucketByName} from 'src/buckets/selectors'
 import {getByID} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Constants
 import {
@@ -224,7 +225,7 @@ interface AddPluginBundle {
 
 interface AddTelegrafTelegrafUiRefresh {
   type: 'ADD_TELEGRAF_telegrafUiRefresh'
-  payload: {plugin: string}
+  payload: {plugin: TelegrafPlugin}
 }
 
 export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
@@ -233,7 +234,7 @@ export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
 })
 
 export const addTelegraf_telegrafUiRefresh = (
-  plugin: string
+  plugin: TelegrafPlugin
 ): AddTelegrafTelegrafUiRefresh => ({
   type: 'ADD_TELEGRAF_telegrafUiRefresh',
   payload: {plugin},
@@ -254,7 +255,7 @@ interface AddTelegrafPlugins {
 }
 interface AddTelegrafPluginsTelegrafUiRefresh {
   type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh'
-  payload: {telegrafPlugins}
+  payload: {telegrafPlugins: TelegrafPlugin}
 }
 
 export const addTelegrafPlugins = (
@@ -265,7 +266,7 @@ export const addTelegrafPlugins = (
 })
 
 export const addTelegrafPlugins_telegrafUiRefresh = (
-  telegrafPlugins
+  telegrafPlugins: TelegrafPlugin
 ): AddTelegrafPluginsTelegrafUiRefresh => ({
   type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh',
   payload: {telegrafPlugins},
@@ -357,7 +358,7 @@ export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
 }
 
 export const addTelegrafPlugin_telegrafUiRefresh = (
-  plugin: string
+  plugin: TelegrafPlugin
 ) => dispatch => {
   dispatch(addTelegraf_telegrafUiRefresh(plugin))
   dispatch(addTelegrafPlugins_telegrafUiRefresh(plugin))
@@ -397,7 +398,7 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   const plugins = telegrafPlugins.reduce(
     (acc, tp) => {
       if (tp.configured === ConfigurationState.Configured) {
-        return [...acc, tp.plugin || createNewPlugin(tp.name)]
+        return [...acc, tp.plugin || createNewPlugin(tp)]
       }
 
       return acc
@@ -419,6 +420,10 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
 
     dispatch(editTelegraf(normTelegraf))
     dispatch(setTelegrafConfigID(telegrafConfigID))
+    event(
+      `telegraf.config.${normalizeEventName(telegrafConfigName)}.edit.success`,
+      {id: telegraf?.id}
+    )
     return
   }
 
@@ -429,15 +434,18 @@ export const generateTelegrafToken = (configID: string) => async (
   dispatch,
   getState: GetState
 ) => {
+  let telegrafName: string = ''
+  let bucketName: string = ''
   try {
     const state = getState()
     const orgID = getOrg(state).id
     const telegraf = getByID<Telegraf>(state, ResourceType.Telegrafs, configID)
-    const bucketName = get(telegraf, 'metadata.buckets[0]', '')
+    telegrafName = telegraf.name
+    bucketName = get(telegraf, 'metadata.buckets[0]', '')
 
     if (bucketName === '') {
       throw new Error(
-        'A token cannot be generated without a corresponding bucket; no buckets are assigned'
+        'An API token cannot be generated without a corresponding bucket; no buckets are assigned'
       )
     }
 
@@ -474,12 +482,12 @@ export const generateTelegrafToken = (configID: string) => async (
 
     // create token
     const createdToken = await createAuthorization(token)
-
+    event('token.create.success', {name: telegrafName, bucket: bucketName})
     // add token to data loader state
     dispatch(setToken(createdToken.token))
   } catch (error) {
     console.error(error)
-
+    event('token.create.failure', {name: telegrafName, bucket: bucketName})
     if (error.message) {
       const customNotification = {
         ...TokenCreationError,
@@ -493,12 +501,16 @@ export const generateTelegrafToken = (configID: string) => async (
 }
 
 const createTelegraf = async (dispatch, getState: GetState, plugins) => {
+  let configName = ''
+  let bucketName = ''
   try {
     const state = getState()
     const {telegrafConfigName, telegrafConfigDescription} = getDataLoaders(
       state
     )
+    configName = telegrafConfigName
     const {bucket, bucketID} = getSteps(state)
+    bucketName = bucket
     const org = getOrg(getState())
 
     const telegrafRequest: TelegrafRequest = {
@@ -560,7 +572,14 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     dispatch(setTelegrafConfigID(tc.id))
     dispatch(addTelegraf(normTelegraf))
     dispatch(notify(TelegrafConfigCreationSuccess))
+    event(`telegraf.config.${normalizeEventName(configName)}.create.success`, {
+      id: tc.id,
+      bucket: bucketName,
+    })
   } catch (error) {
+    event(`telegraf.config.${normalizeEventName(configName)}.create.failure`, {
+      bucket: bucketName,
+    })
     console.error(error.message)
     dispatch(notify(TelegrafConfigCreationError))
   }

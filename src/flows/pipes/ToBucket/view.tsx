@@ -6,7 +6,7 @@ import {PipeProp} from 'src/types/flows'
 import {Bucket} from 'src/types'
 
 // Contexts
-import BucketProvider from 'src/flows/context/buckets'
+import {BucketProvider} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
 
 // Components
@@ -16,7 +16,7 @@ import BucketSelector from 'src/flows/shared/BucketSelector'
 import {event} from 'src/cloud/utils/reporting'
 
 const ToBucket: FC<PipeProp> = ({Context}) => {
-  const {data, update} = useContext(PipeContext)
+  const {id, data, update} = useContext(PipeContext)
   const updateBucket = (bucket: Bucket) => {
     event('Updated Bucket', {context: 'to bucket'})
     update({
@@ -25,7 +25,7 @@ const ToBucket: FC<PipeProp> = ({Context}) => {
   }
 
   return (
-    <BucketProvider>
+    <BucketProvider panel={id}>
       <Context>
         <div className="data-source--controls">
           <BucketSelector

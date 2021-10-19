@@ -5,6 +5,9 @@ export const DataExplorerPage = lazy(() =>
 )
 export const MePage = lazy(() => import('src/me/containers/MePage'))
 export const TasksPage = lazy(() => import('src/tasks/containers/TasksPage'))
+export const TasksPagePaginated = lazy(() =>
+  import('src/tasks/pagination/TasksPage')
+)
 export const TaskPage = lazy(() => import('src/tasks/containers/TaskPage'))
 export const TaskRunsPage = lazy(() =>
   import('src/tasks/components/TaskRunsPage')
@@ -22,11 +25,17 @@ export const FlowPage = lazy(() => import('src/flows/components/FlowPage'))
 export const BucketsIndex = lazy(() =>
   import('src/buckets/containers/BucketsIndex')
 )
+export const BucketsIndexPaginated = lazy(() =>
+  import('src/buckets/pagination/BucketsIndex')
+)
 export const TokensIndex = lazy(() =>
   import('src/authorizations/containers/TokensIndex')
 )
 export const RedesignedTokensIndex = lazy(() =>
   import('src/authorizations/containers/RedesignedTokensIndex')
+)
+export const PaginatedTokensIndex = lazy(() =>
+  import('src/authorizations/pagination/TokensIndex')
 )
 export const TelegrafsPage = lazy(() =>
   import('src/telegrafs/containers/TelegrafsPage')

@@ -6,20 +6,40 @@ export default register => {
     family: 'inputs',
     priority: 1,
     component: View,
-    featureFlag: 'flow-panel--remote-csv',
+    featureFlag: 'flowPanelRemoteCsv',
     button: 'Remote CSV',
     initial: {
-      csvType: 'NOAA National Buoy Data Center (NDBC)',
-      url:
-        'https://raw.githubusercontent.com/influxdata/influxdb2-sample-data/master/noaa-ndbc-data/latest-observations-annotated.csv',
+      csvType: '',
+      url: '',
+      sampleName: '',
     },
     source: data => {
       if (!data.url?.length) {
         return ''
       }
+      const dataQuery =
+        data.sampleName === 'Custom'
+          ? `import "experimental/csv"
+      data = csv.from(url: "${data.url}")`
+          : `import "influxdata/influxdb/sample"
+      data = sample.data(
+        set: "${data.sampleName}"
+      )`
+      return `${dataQuery}
+      csvRange = data
+          |> keep(columns: ["_time"])
+          |> group()
+          |> reduce(
+              fn: (r, accumulator) => ({
+                  min: if r._time < accumulator.min then r._time else accumulator.min,
+                  max: if r._time > accumulator.max then r._time else accumulator.max,
+              }),
+              identity: {min: now(), max: time(v: 0)},
+          )
+          |> findRecord(fn: (key) => true, idx: 0)
 
-      return `import "experimental/csv"
-      csv.from(url: "${data.url}")`
+      data
+          |> range(start: csvRange.min, stop: csvRange.max)`
     },
   })
 }

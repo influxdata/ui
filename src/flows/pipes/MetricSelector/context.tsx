@@ -2,7 +2,7 @@
 import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
 
 // Contexts
-import {QueryContext} from 'src/flows/context/query'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowContext} from 'src/flows/context/flow.current'
 
@@ -221,37 +221,23 @@ const normalizeSchema = (
 }
 
 export const SchemaProvider: FC = React.memo(({children}) => {
-  const {data, update} = useContext(PipeContext)
+  const {data} = useContext(PipeContext)
   const {flow} = useContext(FlowContext)
-  const {query} = useContext(QueryContext)
+  const {query, getPanelQueries} = useContext(FlowQueryContext)
   const [searchTerm, setSearchTerm] = useState('')
-  const [lastBucket, setLastBucket] = useState(data?.bucket)
   const [schema, setSchema] = useState({})
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
-
-  useEffect(() => {
-    if (!data?.bucket || data?.bucket?.id === lastBucket?.id) {
-      return
-    }
-
-    setLastBucket(data?.bucket)
-    setSearchTerm('')
-    setLoading(RemoteDataState.NotStarted)
-    update({
-      field: '',
-      tags: {},
-      measurement: '',
-    })
-  }, [data?.bucket?.id, lastBucket?.id, update]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const range = formatTimeRangeArguments(flow?.range)
 
   useEffect(() => {
-    if (!data?.bucket || loading === RemoteDataState.Loading) {
+    if (!data?.bucket) {
       return
     }
 
     setLoading(RemoteDataState.Loading)
+
+    const scope = getPanelQueries(data.id)?.scope ?? {}
 
     const text = `from(bucket: "${data.bucket.name}")
 |> range(${range})
@@ -259,7 +245,7 @@ export const SchemaProvider: FC = React.memo(({children}) => {
 |> drop(columns: ["_value"])
 |> group()`
 
-    query(text)
+    query(text, scope)
       .then((response: FluxResult) => {
         const schemaForBucket = parsedResultToSchema(response.parsed)
         setSchema(schemaForBucket)
@@ -270,7 +256,7 @@ export const SchemaProvider: FC = React.memo(({children}) => {
         setLoading(RemoteDataState.Error)
         setSchema({})
       })
-  }, [data?.bucket?.name, lastBucket?.id, range]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data?.bucket?.name, range]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const normalized = useMemo(() => normalizeSchema(schema, data, searchTerm), [
     data,

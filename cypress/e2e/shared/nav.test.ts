@@ -2,9 +2,7 @@ import {Organization} from '../../../src/types'
 
 describe('navigation', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => cy.visit('/'))
+    cy.flush().then(() => cy.signin().then(() => cy.visit('/')))
   })
 
   it('can navigate to each page from left nav', () => {

@@ -25,6 +25,7 @@ import {
   runTask,
   getRuns,
 } from 'src/tasks/actions/thunks'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions For Members
 import {getMembers} from 'src/members/actions/thunks'
@@ -145,6 +146,12 @@ class UnconnectedTaskRunsCard extends PureComponent<
         params: {orgID},
       },
     } = this.props
+
+    if (isFlagEnabled('createWithFlows')) {
+      history.push(`/notebook/from/task/${task.id}`)
+      return
+    }
+
     setCurrentTasksPage(TaskPage.TaskRunsPage)
     history.push(`/orgs/${orgID}/tasks/${task.id}/edit`)
   }

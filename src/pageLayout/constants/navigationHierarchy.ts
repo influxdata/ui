@@ -74,7 +74,7 @@ export const generateNavItems = (): NavItem[] => {
         {
           id: 'tokens',
           testID: 'nav-subitem-tokens',
-          label: 'Tokens',
+          label: 'API Tokens',
           link: `${orgPrefix}/load-data/tokens`,
         },
       ],
@@ -87,6 +87,17 @@ export const generateNavItems = (): NavItem[] => {
       shortLabel: 'Explore',
       link: `${orgPrefix}/data-explorer`,
       activeKeywords: ['data-explorer'],
+      enabled: () => !isFlagEnabled('leadWithFlows'),
+    },
+    {
+      id: 'notebook-explorer',
+      testID: 'nav-item-data-explorer',
+      icon: IconFont.GraphLine,
+      label: 'Data Explorer',
+      shortLabel: 'Explore',
+      link: `/notebook/from/default`,
+      activeKeywords: ['data-explorer'],
+      enabled: () => isFlagEnabled('leadWithFlows'),
     },
     {
       id: 'flows',
@@ -158,7 +169,6 @@ export const generateNavItems = (): NavItem[] => {
         },
         {
           id: 'secrets',
-          enabled: () => isFlagEnabled('secretsUI'),
           testID: 'nav-subitem-secrets',
           label: 'Secrets',
           link: `${orgPrefix}/settings/secrets`,

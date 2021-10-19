@@ -1,11 +1,12 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+
 // Types
 import {PipeProp} from 'src/types/flows'
 import {Bucket} from 'src/types'
 
 // Contexts
-import BucketProvider from 'src/flows/context/buckets'
+import {BucketProvider} from 'src/flows/context/bucket.scoped'
 import {SchemaProvider} from 'src/flows/pipes/MetricSelector/context'
 import {PipeContext} from 'src/flows/context/pipe'
 
@@ -14,21 +15,27 @@ import BucketSelector from 'src/flows/shared/BucketSelector'
 import FieldsList from 'src/flows/pipes/MetricSelector/FieldsList'
 import FilterTags from 'src/flows/pipes/MetricSelector/FilterTags'
 import SearchBar from 'src/flows/pipes/MetricSelector/SearchBar'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
 const DataSource: FC<PipeProp> = ({Context}) => {
-  const {data, update} = useContext(PipeContext)
+  const {id, data, update} = useContext(PipeContext)
+
   const updateBucket = (bucket: Bucket) => {
+    if (bucket?.id === data.bucket?.id) {
+      return
+    }
     event('Updated Bucket', {context: 'metric selector'})
     update({
       bucket,
+      ...PIPE_DEFINITIONS['metricSelector'].initial,
     })
   }
 
   return (
-    <BucketProvider>
+    <BucketProvider panel={id}>
       <SchemaProvider>
         <Context resizes>
           <div className="data-source">

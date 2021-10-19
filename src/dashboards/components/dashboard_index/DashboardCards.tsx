@@ -40,6 +40,7 @@ interface OwnProps {
 
 class DashboardCards extends PureComponent<OwnProps & StateProps> {
   private _observer
+  private _isMounted = true
   private _spinner
 
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
@@ -55,15 +56,21 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
   public componentDidMount() {
     if (isFlagEnabled('pinnedItems') && CLOUD) {
       getPinnedItems()
-        .then(res =>
-          this.setState(prev => ({...prev, pinnedItems: res, windowSize: 15}))
-        )
+        .then(res => {
+          if (this._isMounted) {
+            this.setState(prev => ({...prev, pinnedItems: res, windowSize: 15}))
+          }
+        })
         .catch(err => {
           console.error(err)
         })
     } else {
       this.setState(prev => ({...prev, windowSize: 15}))
     }
+  }
+
+  public componentWillUnmount() {
+    this._isMounted = false
   }
 
   private registerSpinner = elem => {

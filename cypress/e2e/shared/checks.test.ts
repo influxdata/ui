@@ -7,27 +7,28 @@ const measurement = 'my_meas'
 const field = 'my_field'
 const stringField = 'string_field'
 describe('Checks', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      // visit the alerting index
-      cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.writeData([
-          `${measurement} ${field}=0,${stringField}="string1"`,
-          `${measurement} ${field}=1,${stringField}="string2"`,
-        ])
-        cy.fixture('routes').then(({orgs, alerting}) => {
-          cy.visit(`${orgs}/${orgID}${alerting}`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        // visit the alerting index
+        cy.get('@org').then(({id: orgID}: Organization) => {
+          cy.writeData([
+            `${measurement} ${field}=0,${stringField}="string1"`,
+            `${measurement} ${field}=1,${stringField}="string2"`,
+          ])
+          cy.fixture('routes').then(({orgs, alerting}) => {
+            cy.visit(`${orgs}/${orgID}${alerting}`)
+            cy.getByTestID('tree-nav')
+            cy.get('[data-testid="resource-list--body"]', {
+              timeout: PAGE_LOAD_SLA,
+            })
+            // User can only see all panels at once on large screens
+            cy.getByTestID('alerting-tab--checks').click({force: true})
+          })
         })
       })
-    })
-    cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
-
-    // User can only see all panels at once on large screens
-    cy.getByTestID('alerting-tab--checks').click({force: true})
-  })
+    )
+  )
 
   it('can validate a threshold check', () => {
     cy.log('Create threshold check')
@@ -284,6 +285,8 @@ describe('Checks', () => {
   it('deadman checks should render a table for non-numeric fields', () => {
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
+        cy.intercept('POST', '/api/v2/query?*').as('query')
+
         // create deadman check
         cy.getByTestID('create-check').click()
         cy.getByTestID('create-deadman-check').click()
@@ -304,8 +307,11 @@ describe('Checks', () => {
         cy.getByTestID('empty-graph--no-queries')
         cy.getByTestID('time-machine-submit-button').click()
 
+        cy.wait('@query')
+          .its('response.statusCode')
+          .should('eq', 200)
         // check for table
-        cy.getByTestID('raw-data-table').should('exist')
+        cy.getByTestID('simple-table').should('exist')
         cy.getByTestID('raw-data--toggle').should('not.exist')
 
         // change field to numeric value
@@ -330,7 +336,7 @@ describe('Checks', () => {
         cy.getByTestID('context-history-task').click({force: true})
 
         // make sure table is present
-        cy.getByTestID('raw-data-table').should('exist')
+        cy.getByTestID('simple-table').should('exist')
       }
     )
   })

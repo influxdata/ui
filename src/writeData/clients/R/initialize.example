@@ -1,6 +1,6 @@
 library("influxdbclient")
 
-# You can generate a Token from the "Tokens Tab" in the UI
+# You can generate an API token from the "API Tokens Tab" in the UI
 token = "<%= token %>"
 
 client <- InfluxDBClient$new(url = "<%= server %>",

@@ -1,4 +1,10 @@
-import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
+import {
+  AccountType,
+  NotificationEndpoint,
+  GenCheck,
+  NotificationRule,
+  Secret,
+} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
@@ -508,50 +514,6 @@ export const createTelegraf = (
   })
 }
 
-export const createRule = (
-  orgID: string,
-  endpointID: string,
-  name = ''
-): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.request({
-    method: 'POST',
-    url: 'api/v2/notificationRules',
-    body: genRule({endpointID, orgID, name}),
-  })
-}
-
-type RuleArgs = {
-  endpointID: string
-  orgID: string
-  type?: string
-  name?: string
-}
-
-const genRule = ({
-  endpointID,
-  orgID,
-  type = 'slack',
-  name = 'r1',
-}: RuleArgs) => ({
-  type,
-  every: '20m',
-  offset: '1m',
-  url: '',
-  orgID,
-  name,
-  activeStatus: 'active',
-  status: 'active',
-  endpointID,
-  tagRules: [],
-  labels: [],
-  statusRules: [
-    {currentLevel: 'CRIT', period: '1h', count: 1, previousLevel: 'INFO'},
-  ],
-  description: '',
-  messageTemplate: 'im a message',
-  channel: '',
-})
-
 /*
 [{action: 'write', resource: {type: 'views'}},
       {action: 'write', resource: {type: 'documents'}},
@@ -573,18 +535,53 @@ export const createToken = (
   })
 }
 
-// TODO: have to go through setup because we cannot create a user w/ a password via the user API
-export const setupUser = (): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.request({
-    method: 'GET',
-    url: '/debug/provision',
-  })
+export const setupUser = (): Cypress.Chainable<any> => {
+  const defaultUser = Cypress.env('defaultUser')
+  const userParam = defaultUser ? `?user=${defaultUser}` : ''
+  return cy
+    .request({
+      method: 'GET',
+      url: `/debug/provision${userParam}`,
+    })
+    .then(response => {
+      if (response.status === 200) {
+        Cypress.env('defaultUser', response.body.user.name)
+        if (defaultUser) {
+          return cy
+            .log(`re-provsioned user ${defaultUser} successfully`)
+            .then(() => response)
+        } else {
+          return cy
+            .log(`provisioned new user ${response.body.user.name} successfully`)
+            .then(() => response)
+        }
+      } else {
+        // if for some reason the user wasn't flushed, do it now
+        return cy
+          .log('retrying the /flush because /provision failed')
+          .then(() => cy.flush().then(_ => cy.setupUser().then(res => res)))
+      }
+    })
 }
 
-export const flush = () => {
-  cy.request('/debug/flush').then(response => {
-    expect(response.status).to.eq(200)
-  })
+export const flush = (): Cypress.Chainable<Cypress.Response<any>> => {
+  const defaultUser = Cypress.env('defaultUser')
+  if (defaultUser) {
+    return cy
+      .request({method: 'POST', url: `/debug/flush?user=${defaultUser}`})
+      .then(response => {
+        expect(response.status).to.eq(200)
+        return cy
+          .log(`flushed user ${defaultUser} successfully`)
+          .then(() => response)
+      })
+  } else {
+    // this isn't really needed - just need to return a chainable cypress obj
+    return cy.request({method: 'GET', url: '/debug/flush'}).then(response => {
+      expect(response.status).to.eq(200)
+      return response
+    })
+  }
 }
 
 export type ProvisionData = {
@@ -633,19 +630,19 @@ export const quartzProvision = (
   })
 }
 
-export const lines = (numLines = 3) => {
-  // each line is 10 seconds before the previous line
-  const offset_ms = 10_000
+export const points = (numPoints = 3, offsetMilliseconds = 10_000) => {
+  // each point is 10 seconds (10,000ms) before the previous point by default
+  // the offset can be changed with the second argument
   const now = Date.now()
   const nanos_per_ms = '000000'
 
-  const decendingValues = Array(numLines)
+  const decendingValues = Array(numPoints)
     .fill(0)
     .map((_, i) => i)
     .reverse()
 
   const incrementingTimes = decendingValues.map(val => {
-    return now - offset_ms * val
+    return now - offsetMilliseconds * val
   })
 
   return incrementingTimes.map((tm, i) => {
@@ -694,6 +691,33 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
   if (args.stagger) {
     return addStaggerTimestampToRecs(args.lines, args.offset, interval).then(
       stampedLines => {
+        if (args.namedBucket) {
+          return writeData(stampedLines, args.namedBucket).then(response => {
+            if (response.status !== 204) {
+              throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+            }
+            return cy.wrap('success')
+          })
+        } else {
+          return writeData(stampedLines).then(response => {
+            if (response.status !== 204) {
+              throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+            }
+            return cy.wrap('success')
+          })
+        }
+      }
+    )
+  } else {
+    return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
+      if (args.namedBucket) {
+        return writeData(stampedLines, args.namedBucket).then(response => {
+          if (response.status !== 204) {
+            throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+          }
+          return cy.wrap('success')
+        })
+      } else {
         return writeData(stampedLines).then(response => {
           if (response.status !== 204) {
             throw `Problem writing data. Status: ${response.status} ${response.statusText}`
@@ -701,15 +725,6 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
           return cy.wrap('success')
         })
       }
-    )
-  } else {
-    return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
-      return writeData(stampedLines).then(response => {
-        if (response.status !== 204) {
-          throw `Problem writing data. Status: ${response.status} ${response.statusText}`
-        }
-        return cy.wrap('success')
-      })
     })
   }
 }
@@ -830,6 +845,20 @@ export const createEndpoint = (
   return cy.request('POST', 'api/v2/notificationEndpoints', endpoint)
 }
 
+// checks
+export const createCheck = (
+  check: GenCheck
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', 'api/v2/checks', check)
+}
+
+// rules
+export const createRule = (
+  rule: NotificationRule
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', 'api/v2/notificationRules', rule)
+}
+
 // helpers
 // Re-query elements that are found 'detached' from the DOM
 // https://github.com/cypress-io/cypress/issues/7306
@@ -946,6 +975,8 @@ export const createTaskFromEmpty = (
 Cypress.Commands.add('createEndpoint', createEndpoint)
 // notification rules
 Cypress.Commands.add('createRule', createRule)
+// checks
+Cypress.Commands.add('createCheck', createCheck)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)

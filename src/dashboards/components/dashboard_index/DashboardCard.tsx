@@ -106,11 +106,14 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {name})
-    try {
-      updatePinnedItemByParam(id, {name})
-      this.props.sendNotification(pinnedItemSuccess('dashboard', 'updated'))
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+
+    if (isFlagEnabled('pinnedItems') && CLOUD) {
+      try {
+        updatePinnedItemByParam(id, {name})
+        this.props.sendNotification(pinnedItemSuccess('dashboard', 'updated'))
+      } catch (err) {
+        this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+      }
     }
   }
 
@@ -204,10 +207,16 @@ class DashboardCard extends PureComponent<Props> {
       },
     } = this.props
 
+    let dest = `/notebook/from/dashboard/${id}`
+
+    if (!isFlagEnabled('boardWithFlows')) {
+      dest = `/orgs/${orgID}/dashboards/${id}`
+    }
+
     if (e.metaKey) {
-      window.open(`/orgs/${orgID}/dashboards/${id}`, '_blank')
+      window.open(dest, '_blank')
     } else {
-      history.push(`/orgs/${orgID}/dashboards/${id}`)
+      history.push(dest)
     }
 
     onResetViews()

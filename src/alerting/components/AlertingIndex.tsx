@@ -1,9 +1,15 @@
 // Libraries
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent, useState, useContext} from 'react'
 import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
-import {Page, SelectGroup, ButtonShape} from '@influxdata/clockface'
+import {
+  Page,
+  SelectGroup,
+  ButtonShape,
+  Icon,
+  IconFont,
+} from '@influxdata/clockface'
 import ChecksColumn from 'src/checks/components/ChecksColumn'
 import RulesColumn from 'src/notifications/rules/components/RulesColumn'
 import EndpointsColumn from 'src/notifications/endpoints/components/EndpointsColumn'
@@ -27,13 +33,17 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 // Types
 import {ResourceType} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import 'src/shared/components/cta.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 const alertsPath = '/orgs/:orgID/alerting'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
 type ActiveColumn = 'checks' | 'endpoints' | 'rules'
 
 const AlertingIndex: FunctionComponent = () => {
   const [activeColumn, setActiveColumn] = useState<ActiveColumn>('checks')
+  const {flowsCTA, setFlowsCTA} = useContext(AppSettingContext)
 
   const pageContentsClassName = `alerting-index alerting-index__${activeColumn}`
 
@@ -41,17 +51,19 @@ const AlertingIndex: FunctionComponent = () => {
     setActiveColumn(selectGroupOptionID)
   }
 
+  const recordClick = () => {
+    event('Alerts Index Page - Clicked Notebooks CTA')
+  }
+
+  const hideFlowsCTA = () => {
+    setFlowsCTA({alerts: false})
+  }
+
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['Alerts'])}>
         <Page.Header fullWidth={true} testID="alerts-page--header">
           <Page.Title title="Alerts" />
-          <FeatureFlag name="flowsCTA">
-            <div className="alert-header--cta">
-              <span>Need something more?</span>
-              <Link to="/notebook/from/notification">Create a Notebook</Link>
-            </div>
-          </FeatureFlag>
           <ErrorBoundary>
             <RateLimitAlert />
           </ErrorBoundary>
@@ -61,7 +73,28 @@ const AlertingIndex: FunctionComponent = () => {
           scrollable={false}
           className={pageContentsClassName}
         >
-          <GetResources resources={[ResourceType.Labels, ResourceType.Buckets]}>
+          {flowsCTA.alerts && (
+            <FeatureFlag name="flowsCTA">
+              <div className="header-cta">
+                <Icon glyph={IconFont.BookPencil} />
+                Now you can use Notebooks to explore your data while building an
+                alert
+                <Link to="/notebook/from/notification" onClick={recordClick}>
+                  Create an Alert
+                </Link>
+                <span className="header-cta--close-icon" onClick={hideFlowsCTA}>
+                  <Icon glyph={IconFont.Remove} />
+                </span>
+              </div>
+            </FeatureFlag>
+          )}
+          <GetResources
+            resources={[
+              ResourceType.Labels,
+              ResourceType.Buckets,
+              ResourceType.Variables,
+            ]}
+          >
             <GetAssetLimits>
               <SelectGroup
                 className="alerting-index--selector"

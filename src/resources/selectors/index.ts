@@ -4,11 +4,13 @@ import {get} from 'lodash'
 // Types
 import {
   AppState,
+  Bucket,
   Label,
   RemoteDataState,
   ResourceType,
   Secret,
   Task,
+  Telegraf,
 } from 'src/types'
 
 export const getStatus = (
@@ -27,8 +29,14 @@ export const getAll = <R>(
   return (allIDs ?? []).map(id => byID[id])
 }
 
+export const getAllBuckets = (state: AppState): Bucket[] =>
+  getAll(state, ResourceType.Buckets)
+
 export const getAllTasks = (state: AppState): Task[] =>
   getAll(state, ResourceType.Tasks) || []
+
+export const getAllTelegrafs = (state: AppState): Telegraf[] =>
+  getAll(state, ResourceType.Telegrafs)
 
 export const hasNoTasks = (state: AppState): boolean =>
   getAll(state, ResourceType.Tasks).length === 0

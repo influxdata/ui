@@ -18,16 +18,17 @@ import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   text: string
+  type: string
   generate?: () => string
 }
 
-const ExportTaskButton: FC<Props> = ({text, generate}) => {
+const ExportTaskButton: FC<Props> = ({text, type, generate}) => {
   const {data, range} = useContext(PipeContext)
   const {launch} = useContext(PopupContext)
 
   const onClick = () => {
-    event('Export Task Clicked', {from: 'schedule'})
-    launch(<ExportTaskOverlay />, {
+    event('Export Task Clicked', {from: type})
+    launch(<ExportTaskOverlay text={text} type={type} />, {
       bucket: data.bucket,
       query: generate ? generate() : data.query,
       range,

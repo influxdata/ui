@@ -12,7 +12,6 @@ import TokensTab from 'src/authorizations/components/redesigned/TokensTab'
 import {
   AllAccessTokenOverlay,
   CustomApiTokenOverlay,
-  DisplayTokenOverlay,
 } from 'src/overlays/components'
 
 // Utils
@@ -30,7 +29,7 @@ class TokensIndex extends Component {
   public render() {
     return (
       <>
-        <Page titleTag={pageTitleSuffixer(['Tokens', 'Load Data'])}>
+        <Page titleTag={pageTitleSuffixer(['API Tokens', 'Load Data'])}>
           <LoadDataHeader />
           <LoadDataTabbedPage activeTab="tokens">
             <GetResources resources={[ResourceType.Authorizations]}>
@@ -46,10 +45,6 @@ class TokensIndex extends Component {
           <Route
             path={`${tokensPath}/custom-api`}
             component={CustomApiTokenOverlay}
-          />
-          <Route
-            path={`${tokensPath}/clone-access`}
-            component={DisplayTokenOverlay}
           />
         </Switch>
       </>

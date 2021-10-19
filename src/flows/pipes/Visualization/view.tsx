@@ -1,28 +1,12 @@
 // Libraries
-import React, {
-  FC,
-  useContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, {FC, useContext, useEffect, useMemo} from 'react'
 
 // Components
-import {
-  Icon,
-  IconFont,
-  DapperScrollbars,
-  Button,
-  ComponentStatus,
-} from '@influxdata/clockface'
-import ExportDashboardOverlay from 'src/flows/pipes/Visualization/ExportDashboardOverlay'
-import ExportButton from 'src/flows/pipes/Visualization/ExportDashboardButton'
+import {Icon, IconFont} from '@influxdata/clockface'
 import Controls from 'src/flows/pipes/Visualization/Controls'
-import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
 // Utilities
-import {View, ViewOptions} from 'src/visualization'
+import {View} from 'src/visualization'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -31,40 +15,57 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {downloadTextFile} from 'src/shared/utils/download'
 
+// Constants
+import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
+
+import {downloadImage} from 'src/shared/utils/download'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+const downloadAsImage = (pipeID: string) => {
+  const canvas = document.getElementById(pipeID)
+  import('html2canvas').then((module: any) =>
+    module.default(canvas as HTMLDivElement).then(result => {
+      downloadImage(result.toDataURL(), 'visualization.png')
+    })
+  )
+}
+
+const downloadAsPDF = (pipeID: string) => {
+  const canvas = document.getElementById(pipeID)
+  import('html2canvas').then((module: any) =>
+    module.default(canvas as HTMLDivElement).then(result => {
+      import('jspdf').then((jsPDF: any) => {
+        const doc = new jsPDF.default({
+          orientation: 'l',
+          unit: 'pt',
+          format: [result.width, result.height],
+        })
+        doc.addImage(
+          result.toDataURL('image/png'),
+          'PNG',
+          0,
+          0,
+          result.width,
+          result.height
+        )
+        doc.save('visualization.pdf')
+      })
+    })
+  )
+}
+
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, update, loading, results} = useContext(PipeContext)
+  const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
-  const {launch} = useContext(PopupContext)
-  const [optionsVisibility, setOptionsVisibility] = useState(false)
-  const toggleOptions = useCallback(() => {
-    setOptionsVisibility(!optionsVisibility)
-  }, [optionsVisibility, setOptionsVisibility])
-
-  const updateProperties = useCallback(
-    properties => {
-      update({
-        properties: {
-          ...data.properties,
-          ...properties,
-        },
-      })
-    },
-    [data.properties, update]
-  )
 
   const dataExists = !!(results?.parsed?.table || []).length
 
   const queryText = getPanelQueries(id, true)?.source || ''
-  const downloadTitle = queryText
-    ? 'Download results as an annotated CSV file'
-    : 'Build a query to download your results'
   const download = () => {
     event('CSV Download Initiated')
     basic(queryText).promise.then(response => {
@@ -82,7 +83,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     }
 
     if (loading === RemoteDataState.NotStarted) {
-      return 'This cell will display results from the previous cell'
+      return UNPROCESSED_PANEL_TEXT
     }
 
     return 'No Data Returned'
@@ -103,43 +104,23 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             action: download,
           },
           {
-            title: 'Export to Dashboard',
-            action: () => {
-              event('Export to Dashboard Clicked')
-
-              launch(<ExportDashboardOverlay />, {
-                properties: data.properties,
-                range: range,
-                panel: id,
-              })
-            },
+            title: 'Download As Image',
+            action: () => downloadAsImage(id),
+            disable: !isFlagEnabled('pdfImageDownload'),
+          },
+          {
+            title: 'Download As PDF',
+            action: () => downloadAsPDF(id),
+            disable: !isFlagEnabled('pdfImageDownload'),
           },
         ],
       },
     ])
   }, [id, data.properties, results.parsed, range])
 
-  const persist = isFlagEnabled('flowSidebar') ? null : (
-    <>
-      <Button
-        titleText={downloadTitle}
-        text="CSV"
-        icon={IconFont.Download}
-        onClick={download}
-        status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
-      />
-      <ExportButton />
-    </>
-  )
-
   if (results.error) {
     return (
-      <Context
-        controls={
-          <Controls toggle={toggleOptions} visible={optionsVisibility} />
-        }
-        persistentControls={persist}
-      >
+      <Context controls={<Controls />}>
         <div className="panel-resizer panel-resizer__visible panel-resizer--error-state">
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
@@ -147,7 +128,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
               className="panel-resizer--vis-toggle"
             />
           </div>
-          <FriendlyQueryError error={results.error} />
         </div>
       </Context>
     )
@@ -155,13 +135,8 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   if (!dataExists) {
     return (
-      <Context
-        controls={
-          <Controls toggle={toggleOptions} visible={optionsVisibility} />
-        }
-        persistentControls={persist}
-      >
-        <div className="panel-resizer panel-resizer__visible">
+      <Context controls={<Controls />}>
+        <div className="panel-resizer panel-resizer__visible" id={id}>
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
               glyph={IconFont.BarChart}
@@ -177,12 +152,8 @@ const Visualization: FC<PipeProp> = ({Context}) => {
   }
 
   return (
-    <Context
-      controls={<Controls toggle={toggleOptions} visible={optionsVisibility} />}
-      persistentControls={persist}
-      resizes
-    >
-      <div className="flow-visualization">
+    <Context controls={<Controls />} resizes>
+      <div className="flow-visualization" id={id}>
         <div className="flow-visualization--view">
           <View
             loading={loading}
@@ -191,15 +162,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             timeRange={range}
           />
         </div>
-        {optionsVisibility && dataExists && (
-          <DapperScrollbars style={{width: '400px'}}>
-            <ViewOptions
-              properties={data.properties}
-              results={results.parsed}
-              update={updateProperties}
-            />
-          </DapperScrollbars>
-        )}
       </div>
     </Context>
   )

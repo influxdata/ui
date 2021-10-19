@@ -25,7 +25,6 @@ import {ComponentStatus} from '@influxdata/clockface'
 // Utils
 import {getByID} from 'src/resources/selectors'
 import {getTemplateNameFromUrl} from 'src/templates/utils'
-import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 
 import {
   installTemplate,
@@ -39,7 +38,7 @@ import {
   communityTemplateRenameFailed,
 } from 'src/shared/copy/notifications'
 
-import {event} from 'src/cloud/utils/reporting'
+import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 interface State {
   status: ComponentStatus
@@ -103,11 +102,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
       if (
         err.message.includes('mapping values are not allowed in this context')
       ) {
-        event('review_template', {templateUrl})
-      } else {
-        reportErrorThroughHoneyBadger(err, {
-          name: 'The community template fetch for preview failed',
-        })
+        event('review_template.failure', {templateUrl})
       }
     }
   }
@@ -121,6 +116,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
 
   private handleInstallTemplate = async () => {
     let summary
+    const templateUrl = this.props.stagedTemplateUrl
     try {
       summary = await installTemplate(
         this.props.org.id,
@@ -128,33 +124,48 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
         this.props.resourcesToSkip,
         this.props.stagedTemplateEnvReferences
       )
-      event('template_install', {templateUrl: this.props.stagedTemplateUrl})
-    } catch (err) {
-      this.props.notify(communityTemplateInstallFailed())
-      reportErrorThroughHoneyBadger(err, {
-        name: 'Failed to install community template',
+      event('template_install.success', {
+        templateUrl,
       })
+    } catch (err) {
+      event('template_install.failure', {
+        templateUrl,
+      })
+      this.props.notify(communityTemplateInstallFailed())
       return
     }
 
+    let templateName = ''
     try {
-      const templateDetails = getTemplateNameFromUrl(
-        this.props.stagedTemplateUrl
-      )
-      await updateStackName(summary.stackID, templateDetails.name)
+      const templateDetails = getTemplateNameFromUrl(templateUrl)
+      templateName = templateDetails.name
 
-      event('template_rename', {templateName: templateDetails.name})
+      await updateStackName(summary.stackID, templateName)
+
+      event('template_rename', {
+        templateUrl,
+        templateName,
+      })
 
       this.props.setStagedTemplateUrl('')
       this.props.setTemplateUrlValidationMessage('')
 
       this.props.getBuckets()
-      this.props.notify(communityTemplateInstallSucceeded(templateDetails.name))
+      this.props.notify(communityTemplateInstallSucceeded(templateName))
+      event(
+        `community_template.${normalizeEventName(
+          templateDetails.name
+        )}.install.success`,
+        {templateUrl}
+      )
     } catch (err) {
+      event(
+        `community_template.${normalizeEventName(
+          templateName
+        )}.install.failure`,
+        {templateUrl}
+      )
       this.props.notify(communityTemplateRenameFailed())
-      reportErrorThroughHoneyBadger(err, {
-        name: 'The community template rename failed',
-      })
     } finally {
       this.props.fetchAndSetStacks(this.props.org.id)
       this.onDismiss()

@@ -1,10 +1,10 @@
-import React, {FC, useContext, useState, useMemo} from 'react'
+import React, {FC, useContext, useMemo, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {ResultsContext} from 'src/flows/context/results'
-import {QueryContext, simplify} from 'src/flows/context/query'
+import {QueryContext, simplify} from 'src/shared/contexts/query'
 import {event} from 'src/cloud/utils/reporting'
 import {FluxResult, QueryScope} from 'src/types/flows'
 import {PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
@@ -34,20 +34,19 @@ export interface Stage {
 export interface FlowQueryContextType {
   generateMap: (withSideEffects?: boolean) => Stage[]
   printMap: (id?: string, withSideEffects?: boolean) => void
-  query: (text: string) => Promise<FluxResult>
+  query: (text: string, override?: QueryScope) => Promise<FluxResult>
   basic: (text: string) => any
   simplify: (text: string) => string
   queryAll: () => void
   queryDependents: (startID: string) => void
-  getPanelQueries: (id: string, withSideEffects?: boolean) => Stage
+  getPanelQueries: (id: string, withSideEffects?: boolean) => Stage | null
   status: RemoteDataState
-  getStatus: (id: string) => RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   printMap: () => {},
-  query: (_: string) => Promise.resolve({} as FluxResult),
+  query: (_: string, __: QueryScope) => Promise.resolve({} as FluxResult),
   basic: (_: string) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
@@ -59,7 +58,6 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
     visual: '',
   }),
   status: RemoteDataState.NotStarted,
-  getStatus: (_: string) => RemoteDataState.NotStarted,
 }
 
 export const FlowQueryContext = React.createContext<FlowQueryContextType>(
@@ -82,14 +80,25 @@ const generateTimeVar = (which, value): Variable =>
 export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {runMode} = useContext(RunModeContext)
-  const {add, update} = useContext(ResultsContext)
+  const {setResult, setStatuses, statuses} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
-  const [loading, setLoading] = useState({})
-  const org = useSelector(getOrg)
+  const org = useSelector(getOrg) ?? {id: ''}
+  const [prevLower, setPrevLower] = useState<string>(flow?.range?.lower)
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
   const variables = useSelector((state: AppState) => getVariables(state))
+
+  useEffect(() => {
+    if (flow?.range?.lower !== prevLower) {
+      // only run the query if a previously set value has been changed.
+      // unless we're in presentation mode, then we should run the query on load.
+      if (prevLower || flow.readOnly) {
+        queryAll()
+      }
+      setPrevLower(flow?.range?.lower)
+    }
+  }, [flow])
 
   // Share querying event across tabs
   const handleStorageEvent = e => {
@@ -134,21 +143,19 @@ export const FlowQueryProvider: FC = ({children}) => {
     }, {})
   }, [variables, flow?.range])
 
-  const getStatus = (id: string) => {
-    if (!loading.hasOwnProperty(id)) {
-      return RemoteDataState.NotStarted
-    }
-
-    return loading[id]
-  }
-
   const generateMap = (withSideEffects?: boolean): Stage[] => {
-    const stages = flow.data.allIDs.reduce((acc, panelID) => {
-      const panel = flow.data.get(panelID)
+    const stages = (flow?.data?.allIDs ?? []).reduce((acc, panelID) => {
+      const panel = flow.data.byID[panelID]
+
+      if (!panel) {
+        return acc
+      }
 
       const last = acc[acc.length - 1] || {
         scope: {
           withSideEffects: !!withSideEffects,
+          region: window.location.origin,
+          org: org.id,
         },
         source: '',
         visual: '',
@@ -156,7 +163,7 @@ export const FlowQueryProvider: FC = ({children}) => {
 
       const meta = {
         ...last,
-        id: panel.id,
+        id: panelID,
         visual: '',
       }
 
@@ -196,7 +203,14 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   // TODO figure out a better way to cache these requests
-  const getPanelQueries = (id: string, withSideEffects?: boolean): Stage => {
+  const getPanelQueries = (
+    id: string,
+    withSideEffects?: boolean
+  ): Stage | null => {
+    if (!id) {
+      return null
+    }
+
     return generateMap(withSideEffects).find(i => i.id === id)
   }
 
@@ -209,13 +223,18 @@ export const FlowQueryProvider: FC = ({children}) => {
     // Grab all the ids in the order that they're presented
     generateMap(withSideEffects).forEach(i => {
       console.log(
-        `\n\n%cPanel: %c ${i}`,
+        `\n\n%cPanel: %c ${i.id}`,
         'font-family: sans-serif; font-size: 16px; font-weight: bold; color: #000',
         i.id === id
           ? 'font-weight: bold; font-size: 16px; color: #666'
           : 'font-weight: normal; font-size: 16px; color: #888'
       )
 
+      console.log(
+        `%c Scope: \n%c ${JSON.stringify(i.scope, null, 2)}`,
+        'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
+        'font-family: monospace; color: #888'
+      )
       console.log(
         `%c Source Query: \n%c ${i.source}`,
         'font-family: sans-serif; font-weight: bold; font-size: 14px; color: #666',
@@ -260,23 +279,15 @@ export const FlowQueryProvider: FC = ({children}) => {
     return basicAPI(text, _override)
   }
 
-  const forceUpdate = (id, data) => {
-    try {
-      update(id, data)
-    } catch (_e) {
-      add(id, data)
-    }
-  }
-
-  const statuses = Object.values(loading)
+  const stati = Object.values(statuses)
 
   let status = RemoteDataState.Done
 
-  if (statuses.every(s => s === RemoteDataState.NotStarted)) {
+  if (stati.every(s => s === RemoteDataState.NotStarted)) {
     status = RemoteDataState.NotStarted
-  } else if (statuses.includes(RemoteDataState.Error)) {
+  } else if (stati.includes(RemoteDataState.Error)) {
     status = RemoteDataState.Error
-  } else if (statuses.includes(RemoteDataState.Loading)) {
+  } else if (stati.includes(RemoteDataState.Loading)) {
     status = RemoteDataState.Loading
   }
 
@@ -299,24 +310,28 @@ export const FlowQueryProvider: FC = ({children}) => {
     map = map.slice(map.findIndex(m => m.id === startID))
     event('Running Notebook QueryDependents')
 
+    setStatuses(
+      map
+        .filter(q => !!q?.visual)
+        .reduce((a, c) => {
+          a[c.id] = RemoteDataState.Loading
+          return a
+        }, {})
+    )
     Promise.all(
       map
         .filter(q => !!q?.visual)
         .map(stage => {
-          loading[stage.id] = RemoteDataState.Loading
-          setLoading(loading)
           return query(stage.visual, stage.scope)
             .then(response => {
-              loading[stage.id] = RemoteDataState.Done
-              setLoading(loading)
-              forceUpdate(stage.id, response)
+              setStatuses({[stage.id]: RemoteDataState.Done})
+              setResult(stage.id, response)
             })
             .catch(e => {
-              forceUpdate(stage.id, {
+              setResult(stage.id, {
                 error: e.message,
               })
-              loading[stage.id] = RemoteDataState.Error
-              setLoading(loading)
+              setStatuses({[stage.id]: RemoteDataState.Error})
             })
         })
     )
@@ -351,24 +366,28 @@ export const FlowQueryProvider: FC = ({children}) => {
 
     event('Running Notebook QueryAll')
 
+    setStatuses(
+      map
+        .filter(q => !!q?.visual)
+        .reduce((a, c) => {
+          a[c.id] = RemoteDataState.Loading
+          return a
+        }, {})
+    )
     Promise.all(
       map
         .filter(q => !!q.visual)
         .map(stage => {
-          loading[stage.id] = RemoteDataState.Loading
-          setLoading(loading)
           return query(stage.visual, stage.scope)
             .then(response => {
-              loading[stage.id] = RemoteDataState.Done
-              setLoading(loading)
-              forceUpdate(stage.id, response)
+              setStatuses({[stage.id]: RemoteDataState.Done})
+              setResult(stage.id, response)
             })
             .catch(e => {
-              forceUpdate(stage.id, {
+              setStatuses({[stage.id]: RemoteDataState.Error})
+              setResult(stage.id, {
                 error: e.message,
               })
-              loading[stage.id] = RemoteDataState.Error
-              setLoading(loading)
             })
         })
     )
@@ -414,7 +433,6 @@ export const FlowQueryProvider: FC = ({children}) => {
         queryDependents,
         getPanelQueries,
         status,
-        getStatus,
       }}
     >
       {children}

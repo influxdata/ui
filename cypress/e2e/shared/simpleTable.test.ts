@@ -1,28 +1,28 @@
 import {Organization} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {points} from '../../support/commands'
 
 describe('simple table interactions', () => {
   const simpleSmall = 'simple-small'
   const simpleLarge = 'simple-large'
   const simpleOverflow = 'simple-overflow'
   beforeEach(() => {
-    cy.flush()
-    cy.signin().then(() => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
-        cy.fixture('routes').then(({orgs, explorer}) => {
-          cy.visit(`${orgs}/${orgID}${explorer}`)
-          cy.getByTestID('tree-nav')
-          cy.createBucket(orgID, name, simpleLarge)
-          cy.writeData(lines(300), simpleLarge)
-          cy.createBucket(orgID, name, simpleSmall)
-          cy.writeData(lines(30), simpleSmall)
-          cy.createBucket(orgID, name, simpleOverflow)
-          cy.writeData(lines(31), simpleOverflow)
-          cy.reload()
-          cy.setFeatureFlags({simpleTable: true})
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id: orgID}: Organization) => {
+          cy.fixture('routes').then(({orgs, explorer}) => {
+            cy.visit(`${orgs}/${orgID}${explorer}`)
+            cy.getByTestID('tree-nav')
+            cy.createBucket(orgID, name, simpleLarge)
+            cy.writeData(points(300), simpleLarge)
+            cy.createBucket(orgID, name, simpleSmall)
+            cy.writeData(points(30), simpleSmall)
+            cy.createBucket(orgID, name, simpleOverflow)
+            cy.writeData(points(31), simpleOverflow)
+            cy.reload()
+          })
         })
       })
-    })
+    )
   })
 
   it('should render correctly after switching from a dataset with more pages to one with fewer', () => {

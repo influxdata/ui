@@ -9,21 +9,21 @@ const statHeaders = [
 
 describe('Usage Page Free User No Data', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
-          cy.quartzProvision({
-            hasData: false,
-            accountType: 'free',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/usage`)
-            cy.getByTestID('usage-page--header').should('be.visible')
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+            cy.quartzProvision({
+              hasData: false,
+              accountType: 'free',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/usage`)
+              cy.getByTestID('usage-page--header').should('be.visible')
+            })
           })
         })
       })
-    })
+    )
   })
 
   it('should display the usage page common features', () => {
@@ -113,21 +113,21 @@ describe('Usage Page Free User No Data', () => {
 
 describe('Usage Page PAYG With Data', () => {
   beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() => {
-      cy.get('@org').then(({id}: Organization) => {
-        cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
-          cy.quartzProvision({
-            hasData: true,
-            accountType: 'pay_as_you_go',
-          }).then(() => {
-            cy.visit(`/orgs/${id}/usage`)
-            cy.getByTestID('usage-page--header').should('be.visible')
+    cy.flush().then(() =>
+      cy.signin().then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+            cy.quartzProvision({
+              hasData: true,
+              accountType: 'pay_as_you_go',
+            }).then(() => {
+              cy.visit(`/orgs/${id}/usage`)
+              cy.getByTestID('usage-page--header').should('be.visible')
+            })
           })
         })
       })
-    })
+    )
   })
 
   it('should display the usage page with data for a PAYG user', () => {
@@ -139,7 +139,7 @@ describe('Usage Page PAYG With Data', () => {
     const stats = ['0.78 MB', '32,424', '2.06 GB-hr', '0.01 GB']
 
     // Check that the stats are returned and rendered for a user with data
-    cy.getByTestID('single-stat')
+    cy.getByTestID('giraffe-layer-single-stat')
       .should('have.length', 4)
       .each((child, index) => {
         expect(child.text().trim()).to.be.oneOf([

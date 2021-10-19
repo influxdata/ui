@@ -30,17 +30,26 @@ export type PipeData = any
 
 export type Visibility = 'visible' | 'hidden'
 
+interface Layout {
+  x: number
+  y: number
+  h: number
+  w: number
+}
+
 export interface PipeMeta {
   title: string
   height?: number
   visible: boolean
   error?: string
+  layout?: Layout
 }
 
 export interface PipeProp {
   Context:
     | FunctionComponent<PipeContextProps>
     | ComponentClass<PipeContextProps>
+  readOnly?: boolean
 }
 
 export type Column =
@@ -82,27 +91,8 @@ export interface Resource<T> {
   allIDs: string[]
 }
 
-export type ResourceGenerator<T> = () => T | T
-export type ResourceUpdater<T> = (resource: Resource<T>) => void
-
-export interface ResourceManipulator<T> {
-  get: (id: string) => T
-  add: (
-    id: string,
-    data?: T
-  ) => {resource: Resource<T>; onChange: (_) => void} | void
-  update: (id: string, data: Partial<T>) => void
-  remove: (id: string) => void
-  indexOf: (id: string) => number
-  move: (id: string, index: number) => void
-  byID: DataLookup<T>
-  serialize: () => Resource<T>
-
-  allIDs: string[]
-  all: T[]
-}
-
 export interface FlowState {
+  id?: string
   name: string
   range: TimeRange
   refresh: AutoRefresh
@@ -112,15 +102,17 @@ export interface FlowState {
 }
 
 export interface Flow {
+  id?: string
   name: string
   range: TimeRange
   refresh: AutoRefresh
-  data: ResourceManipulator<PipeData>
-  meta: ResourceManipulator<PipeMeta>
+  data: Resource<PipeData>
+  meta: Resource<PipeMeta>
   results: FluxResult
   readOnly?: boolean
   createdAt?: Date
   updatedAt?: Date
+  createdBy?: string
 }
 
 export interface FlowListState {
@@ -162,9 +154,22 @@ export interface TypeRegistration {
   disabled?: boolean // if you should show it or not
   featureFlag?: string // designates a flag that should enable the panel type
   component: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface
+  readOnlyComponent?: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface in read only mode
   button: string // a human readable string for appending the type
   initial: any // the default state for an add
   scope?: (data: PipeData, prev: QueryScope) => QueryScope // if defined, the function is expected to take a query context and return a new one
   visual?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the flux used for the pipe visualization (depreciate?)
   source?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the source flux that is passed between panels
+}
+
+export interface EndpointTypeRegistration {
+  type: string // a unique string that identifies an endpoint
+  name: string
+  data: any
+  component: FunctionComponent | ComponentClass
+  readOnlyComponent: FunctionComponent | ComponentClass
+  generateImports: Function
+  generateTestImports: Function
+  generateQuery: Function
+  generateTestQuery: Function
 }

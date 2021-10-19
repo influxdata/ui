@@ -6,18 +6,22 @@ const dashboardName2 = 'test dashboard'
 const dashSearchName = 'bEE'
 
 describe('Dashboards', () => {
-  beforeEach(() => {
-    cy.flush()
-
-    cy.signin().then(() =>
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
+  beforeEach(() =>
+    cy.flush().then(() =>
+      cy.signin().then(() =>
+        cy.fixture('routes').then(({orgs}) => {
+          cy.get<Organization>('@org').then(({id}: Organization) => {
+            cy.visit(`${orgs}/${id}/dashboards-list`)
+            cy.getByTestID('tree-nav')
+            cy.exec('rm cypress/downloads/*', {
+              log: true,
+              failOnNonZeroExit: false,
+            })
+          })
         })
-      })
+      )
     )
-  })
+  )
 
   it('empty state should have a header with text and a button to create a dashboard', () => {
     cy.getByTestID('page-contents').within(() => {
@@ -36,10 +40,8 @@ describe('Dashboards', () => {
     })
   })
 
-  // TODO - fix failing test (fails only in circleci - cloud-e2e-firefox)
-  it.skip('can CRUD dashboards from empty state, header, and a Template', () => {
+  it('can CRUD dashboards from empty state, header, and a Template', () => {
     const newName = 'new 🅱️ashboard'
-
     // Create from empty state
     cy.getByTestID('empty-dashboards-list').within(() => {
       cy.getByTestID('add-resource-dropdown--button').click()
@@ -49,8 +51,14 @@ describe('Dashboards', () => {
       .click()
       .then(() => {
         cy.fixture('routes').then(({orgs}) => {
-          cy.get('@org').then(({id}: Organization) => {
-            cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.get<Organization>('@org').then(({id}: Organization) => {
+            cy.on('uncaught:exception', () => {
+              // workaround for when ChunkLoadError is thrown at cy.visit in ffox
+              return false
+            })
+            cy.visit(`${orgs}/${id}/dashboards-list`, {
+              retryOnStatusCodeFailure: true,
+            })
             cy.getByTestID('tree-nav')
           })
         })
@@ -82,7 +90,11 @@ describe('Dashboards', () => {
     cy.getByTestID('add-resource-dropdown--new').click()
 
     cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.on('uncaught:exception', () => {
+          // workaround for when ChunkLoadError is thrown at cy.visit in ffox
+          return false
+        })
         cy.visit(`${orgs}/${id}/dashboards-list`)
         cy.getByTestID('tree-nav')
       })
@@ -93,28 +105,32 @@ describe('Dashboards', () => {
     const dashboardDescription = 'this dashboard contains secret information'
 
     // change description
-    cy.getByTestID('resource-list--editable-description')
+    cy.get(
+      '[data-testid=resource-list--editable-description] .cf-resource-description--preview'
+    )
       .first()
-      .click('topLeft')
-      .within(() => {
-        cy.get('[placeholder="Describe Name this Dashboard"]')
-          .type(dashboardDescription)
-          .type('{enter}')
-      })
+      .trigger('mouseover')
+      .click('topLeft', {force: true})
+    cy.get('[placeholder="Describe Name this Dashboard"]')
+      .first()
+      .type(dashboardDescription)
+      .type('{enter}')
     cy.getByTestID('resource-list--editable-description').should(
       'contain',
       dashboardDescription
     )
 
     // remove description
-    cy.getByTestID('resource-list--editable-description')
+    cy.get(
+      '[data-testid=resource-list--editable-description] .cf-resource-description--preview'
+    )
       .first()
-      .click('topLeft')
-      .within(() => {
-        cy.get('[placeholder="Describe Name this Dashboard"]')
-          .clear()
-          .type('{enter}')
-      })
+      .trigger('mouseover')
+      .click('topLeft', {force: true})
+    cy.get('[placeholder="Describe Name this Dashboard"]')
+      .first()
+      .clear()
+      .type('{enter}')
     cy.getByTestID('resource-list--editable-description').should(
       'not.contain',
       dashboardDescription
@@ -140,11 +156,14 @@ describe('Dashboards', () => {
     cy.getByTestID('empty-dashboards-list').should('exist')
   })
 
-  // TODO - fix failing test (fails only in circleci - cloud-e2e-firefox)
-  it.skip('can import as JSON or file', () => {
+  it('can import as JSON or file', () => {
     const checkImportedDashboard = () => {
       // wait for importing done
-      cy.wait(200)
+      cy.intercept('POST', '/api/v2/dashboards/*/cells').as('createCells')
+      // create cell 1
+      cy.wait('@createCells')
+      // create cell 2
+      cy.wait('@createCells')
       cy.getByTestID('dashboard-card--name')
         .should('contain', 'IMPORT dashboard')
         .click()
@@ -158,7 +177,7 @@ describe('Dashboards', () => {
 
       // return to previous page
       cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
           cy.getByTestID('tree-nav')
         })
@@ -196,7 +215,7 @@ describe('Dashboards', () => {
       .click()
     cy.getByTestID('add-resource-dropdown--import').click()
 
-    cy.getByTestID('select-group--option')
+    cy.getByTestID('select-group')
       .contains('Paste')
       .click()
 
@@ -238,7 +257,7 @@ describe('Dashboards', () => {
 
   describe('Dashboard List', () => {
     beforeEach(() =>
-      cy.get('@org').then(({id}: Organization) =>
+      cy.get<Organization>('@org').then(({id}: Organization) =>
         cy.createDashboard(id, dashboardName).then(({body}) =>
           cy
             .createAndAddLabel('dashboards', id, body.id, newLabelName)
@@ -248,10 +267,12 @@ describe('Dashboards', () => {
                   .createAndAddLabel('dashboards', id, body.id, 'bar')
                   .then(() =>
                     cy.fixture('routes').then(({orgs}) =>
-                      cy.get('@org').then(({id}: Organization) => {
-                        cy.visit(`${orgs}/${id}/dashboards-list`)
-                        return cy.getByTestID('tree-nav')
-                      })
+                      cy
+                        .get<Organization>('@org')
+                        .then(({id}: Organization) => {
+                          cy.visit(`${orgs}/${id}/dashboards-list`)
+                          return cy.getByTestID('tree-nav')
+                        })
                     )
                   )
               )
@@ -269,7 +290,7 @@ describe('Dashboards', () => {
         .wait(100)
 
       cy.fixture('routes').then(({orgs}) => {
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
           cy.getByTestID('tree-nav')
         })
@@ -345,7 +366,7 @@ describe('Dashboards', () => {
       it('clicking a list item adds a label and leaves open the popover with the next item highlighted', () => {
         const labelName = 'clicky'
 
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
             cy.reload()
             cy.getByTestID(`inline-labels--add`)
@@ -362,7 +383,7 @@ describe('Dashboards', () => {
       it('can add an existing label to a dashboard', () => {
         const labelName = 'swogglez'
 
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
             cy.reload()
             cy.getByTestID(`inline-labels--add`)
@@ -383,7 +404,7 @@ describe('Dashboards', () => {
       it('typing in the input updates the list', () => {
         const labelName = 'banana'
 
-        cy.get('@org').then(({id}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
           cy.createLabel(labelName, id).then(() => {
             cy.reload()
             cy.getByTestID(`inline-labels--add`)
@@ -520,10 +541,52 @@ describe('Dashboards', () => {
     const nonexistentID = '0499992503cd3700'
 
     // visiting the dashboard edit page
-    cy.get('@org').then(({id}: Organization) => {
+    cy.get<Organization>('@org').then(({id}: Organization) => {
       cy.fixture('routes').then(({orgs, dashboards}) => {
         cy.visit(`${orgs}/${id}${dashboards}/${nonexistentID}`)
         cy.url().should('include', `${orgs}/${id}/dashboards-list`)
+      })
+    })
+  })
+
+  // Skipping until https://github.com/influxdata/ui/issues/2864 is resolved by Bonitoo
+  it.skip('creates a dashboard and downloads JSON', () => {
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+          cy.getByTestID('nav-item-dashboards').click()
+          cy.getByTestID('dashboard-card--name').click()
+          cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name
+          cy.getByTestID('nav-item-dashboards').click()
+          cy.getByTestID('dashboard-card').invoke('hover')
+          cy.getByTestID('context-export-menu').click()
+          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('button').click()
+          // readFile has a 4s timeout before the test fails
+          cy.readFile('cypress/downloads/dashboard.json').should('exist')
+        })
+      })
+    })
+  })
+
+  it('copies to clipboard', () => {
+    cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
+          cy.getByTestID('tree-nav')
+          cy.window().then(win => {
+            cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
+          })
+          cy.getByTestID('nav-item-dashboards').click()
+          cy.getByTestID('dashboard-card').invoke('hover')
+          cy.getByTestID('context-export-menu').click()
+          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('button-copy').click()
+          cy.getByTestID('notification-success--children').should('be.visible')
+        })
       })
     })
   })

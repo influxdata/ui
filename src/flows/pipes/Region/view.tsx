@@ -4,21 +4,22 @@ import {useSelector} from 'react-redux'
 import {activeFlags} from 'src/shared/selectors/flags'
 import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
+import {getOrg} from 'src/organizations/selectors'
 
 import {
   Dropdown,
   ComponentColor,
+  ComponentStatus,
   ComponentSize,
   Form,
   FlexBox,
   Input,
   InputType,
-  ComponentStatus,
 } from '@influxdata/clockface'
 
 import './style.scss'
 
-const REGIONS = [
+export const REGIONS = [
   {
     label: 'US West (Oregon)',
     group: 'Amazon Web Services',
@@ -66,11 +67,13 @@ const REGIONS = [
     flag: 'local-dev',
     value: 'https://twodotoh.a.influxcloud.dev.local',
   },
+  {label: 'Current Region', value: 'self'},
   {label: 'Self Hosted', value: 'self-hosted'},
 ]
 
 const Source: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)
+  const org = useSelector(getOrg)
   const [error, setError] = useState<boolean>(false)
   const flags = useSelector(activeFlags)
 
@@ -79,6 +82,11 @@ const Source: FC<PipeProp> = ({Context}) => {
       update({
         source: 'custom',
         region: 'https://localhost:8086',
+      })
+    } else if (option.value === 'self') {
+      update({
+        source: 'self',
+        region: window.location.origin,
       })
     } else {
       update({
@@ -92,10 +100,6 @@ const Source: FC<PipeProp> = ({Context}) => {
     const hashed = JSON.parse(JSON.stringify(REGIONS)).reduce(
       (acc, curr) => {
         if (curr.flag && !flags[curr.flag]) {
-          return acc
-        }
-
-        if (curr.value === window.location.origin) {
           return acc
         }
 
@@ -139,22 +143,34 @@ const Source: FC<PipeProp> = ({Context}) => {
       return [options, REGIONS[REGIONS.length - 1]]
     }
 
+    if (data.source === 'self') {
+      return [options, REGIONS[REGIONS.length - 2]]
+    }
+
     if (hashed.selected) {
       return [options, hashed.selected]
     }
 
     update({
-      source: 'static',
-      region: REGIONS[2].value,
+      source: 'self',
+      region: window.location.origin,
     })
 
-    data.source = 'static'
-    data.region = REGIONS[2].value
+    data.source = 'self'
+    data.region = window.location.origin
 
-    return [options, REGIONS[2]]
+    return [options, REGIONS[REGIONS.length - 2]]
   }, [data.source, data.region, flags])
 
   useEffect(() => {
+    if (data.region === window.location.origin) {
+      update({
+        org: org.id,
+      })
+
+      return
+    }
+
     if (!data.region || !data.token) {
       return
     }
@@ -225,12 +241,17 @@ const Source: FC<PipeProp> = ({Context}) => {
                 <Dropdown.Menu onCollapse={onCollapse}>
                   {options.reduce((acc, curr) => {
                     if (!curr.options) {
+                      const selected =
+                        (data.source === 'self' && curr.value === 'self') ||
+                        (data.source === 'custom' && curr.value === 'custom') ||
+                        data.region === curr.value
+
                       acc.push(
                         <Dropdown.Item
                           value={curr.value}
                           key={curr.value}
                           onClick={() => updater(curr)}
-                          selected={data.region === curr.value}
+                          selected={selected}
                         >
                           {curr.label}
                         </Dropdown.Item>
@@ -244,16 +265,24 @@ const Source: FC<PipeProp> = ({Context}) => {
                     )
 
                     return acc.concat(
-                      curr.options.map(_curr => (
-                        <Dropdown.Item
-                          value={_curr.value}
-                          key={curr.value}
-                          onClick={() => updater(_curr)}
-                          selected={data.region === _curr.value}
-                        >
-                          {_curr.label}
-                        </Dropdown.Item>
-                      ))
+                      curr.options.map(_curr => {
+                        const selected =
+                          (data.source === 'self' && _curr.value === 'self') ||
+                          (data.source === 'custom' &&
+                            _curr.value === 'custom') ||
+                          data.region === _curr.value
+
+                        return (
+                          <Dropdown.Item
+                            value={_curr.value}
+                            key={_curr.value}
+                            onClick={() => updater(_curr)}
+                            selected={selected}
+                          >
+                            {_curr.label}
+                          </Dropdown.Item>
+                        )
+                      })
                     )
                   }, [])}
                 </Dropdown.Menu>
@@ -270,24 +299,26 @@ const Source: FC<PipeProp> = ({Context}) => {
               onChange={evt => update({region: evt.target.value})}
               size={ComponentSize.Medium}
               status={
-                data.source === 'static'
+                data.source !== 'custom'
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }
             />
           </Form.Element>
         </FlexBox.Child>
-        <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
-          <Form.Element label="Token" required={true}>
-            <Input
-              placeholder="authorization token"
-              type={InputType.Text}
-              value={data.token}
-              size={ComponentSize.Medium}
-              onChange={evt => update({token: evt.target.value})}
-            />
-          </Form.Element>
-        </FlexBox.Child>
+        {data.region !== window.location.origin && (
+          <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
+            <Form.Element label="Token" required={true}>
+              <Input
+                placeholder="authorization token"
+                type={InputType.Text}
+                value={data.token}
+                size={ComponentSize.Medium}
+                onChange={evt => update({token: evt.target.value})}
+              />
+            </Form.Element>
+          </FlexBox.Child>
+        )}
       </FlexBox>
       {!!error && (
         <div className="region-panel--eror">

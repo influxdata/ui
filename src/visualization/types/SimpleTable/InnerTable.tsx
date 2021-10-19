@@ -1,5 +1,5 @@
 import React, {FC} from 'react'
-import {Table, ComponentSize} from '@influxdata/clockface'
+import {ComponentSize, Table, VerticalAlignment} from '@influxdata/clockface'
 import {SubsetTable} from 'src/visualization/types/SimpleTable'
 
 interface InnerProps {
@@ -10,7 +10,10 @@ const InnerTable: FC<InnerProps> = ({table}) => {
   const headers = Object.values(table.cols).map(c => {
     if (c.name === 'table') {
       return (
-        <Table.HeaderCell key="htable">
+        <Table.HeaderCell
+          key="htable"
+          verticalAlignment={VerticalAlignment.Top}
+        >
           table
           <label>{table.yield}</label>
         </Table.HeaderCell>

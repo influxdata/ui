@@ -16,11 +16,18 @@
   padding: 16px;
   background: $g3-castle;
   border-radius: 4px;
+  align-items: center;
 }
 
 .flow-columns--toggle {
   flex: 0;
   margin-right: 12px;
+}
+
+.flow-columns--text {
+  font-size: 14px;
+  font-family: $cf-text-font;
+  font-weight: $cf-font-weight--medium;
 }
 
 .flow-columns--input {

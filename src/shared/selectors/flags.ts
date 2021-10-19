@@ -21,10 +21,8 @@ export const OSS_FLAGS = {
   'flow-panel--to-bucket': true,
   'flow-panel--notification': true,
   'flow-panel--schedule': true,
-  'flow-panel--remote-csv': false,
   'flow-panel--remote': false,
   'flow-debug-queries': false,
-  flowSidebar: false,
   collapseotron: false,
   disableDefaultTableSort: false,
   'load-data-client-libraries': true,
@@ -45,9 +43,11 @@ export const OSS_FLAGS = {
   'client-library--swift': true,
   'notification-endpoint-telegram': false,
   'molly-first': false,
-  simpleTable: false,
   exploreWithFlows: false,
+  boardWithFlows: false,
   createWithFlows: false,
+  leadWithFlows: false,
+  notebooksExp: false,
 }
 
 export const CLOUD_FLAGS = {
@@ -69,11 +69,9 @@ export const CLOUD_FLAGS = {
   'flow-panel--raw-flux': true,
   'flow-panel--to-bucket': true,
   'flow-panel--notification': true,
-  'flow-panel--remote-csv': false,
   'flow-panel--remote': false,
   'flow-panel--schedule': true,
   'flow-debug-queries': false,
-  flowSidebar: false,
   collapseotron: false,
   disableDefaultTableSort: false,
   'load-data-client-libraries': true,
@@ -94,9 +92,11 @@ export const CLOUD_FLAGS = {
   'client-library--swift': true,
   'notification-endpoint-telegram': false,
   'molly-first': false,
-  simpleTable: false,
   exploreWithFlows: false,
+  boardWithFlows: false,
   createWithFlows: false,
+  leadWithFlows: false,
+  notebooksExp: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

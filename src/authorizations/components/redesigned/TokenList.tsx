@@ -1,11 +1,12 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import memoizeOne from 'memoize-one'
+import isEqual from 'lodash/isEqual'
 
 // Components
 import {Overlay, ResourceList} from '@influxdata/clockface'
 import {TokenRow} from 'src/authorizations/components/redesigned/TokenRow'
-import {EditTokenOverlay} from 'src/authorizations/components/redesigned/EditTokenOverlay'
+import EditTokenOverlay from 'src/authorizations/components/redesigned/EditTokenOverlay'
 
 // Types
 import {Authorization} from 'src/types'
@@ -42,6 +43,18 @@ export class TokenList extends PureComponent<Props, State> {
     this.state = {
       isTokenOverlayVisible: false,
       authInView: null,
+    }
+  }
+
+  public componentDidUpdate(prevProps) {
+    const {auths: prevAuths} = prevProps
+    const {auths: nextAuths} = this.props
+
+    if (!isEqual(prevAuths, nextAuths)) {
+      const authInView = nextAuths.find(
+        auth => auth.id === this.state.authInView?.id
+      )
+      this.setState({authInView})
     }
   }
 

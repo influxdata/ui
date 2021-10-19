@@ -175,7 +175,7 @@ $table-light-graph--border: $g16-pearl;
     padding-right: 17px;
 
     &:before {
-      font-family: 'icomoon';
+      font-family: $cf-text-font;
       content: '\e902';
       font-size: 17px;
       position: absolute;

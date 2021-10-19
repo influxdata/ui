@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import {Switch, Route} from 'react-router-dom'
 import {setAutoFreeze} from 'immer'
 import {AppSettingContext, AppSettingProvider} from 'src/shared/contexts/app'
-
+import 'fix-date'
 import {
   RUDDERSTACK_DATA_PLANE_URL,
   RUDDERSTACK_WRITE_KEY,
@@ -25,7 +25,7 @@ import {
   OverlayController,
 } from 'src/overlays/components/OverlayController'
 import PageSpinner from 'src/perf/components/PageSpinner'
-import EngagementLink from './cloud/components/onboarding/EngagementLink'
+import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
 const SetOrg = lazy(() => import('src/shared/containers/SetOrg'))
 const CreateOrgOverlay = lazy(() =>
   import('src/organizations/components/CreateOrgOverlay')
@@ -60,6 +60,16 @@ const App: FC = () => {
         reportErrorThroughHoneyBadger(error, {
           name: 'Rudderstack Loading Function',
         })
+      }
+    }
+    if (CLOUD && isFlagEnabled('coveo')) {
+      const script = document.createElement('script')
+      script.src =
+        'https://platform.cloud.coveo.com/rest/organizations/influxdatanonproduction1eh1cn7go/pages/95a20052-218d-4048-9081-16dbcebbdebb/inappwidget/loader'
+      script.async = true
+      document.body.appendChild(script)
+      return () => {
+        document.body.removeChild(script)
       }
     }
     setAutoFreeze(false)

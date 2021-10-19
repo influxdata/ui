@@ -10,7 +10,8 @@ import {FlowListContext} from 'src/flows/context/flow.list'
 
 // Utils
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
-
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
 import {
   pinnedItemFailure,
   pinnedItemSuccess,
@@ -30,8 +31,13 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  const handleClick = () => {
-    history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`)
+  const handleClick = event => {
+    const url = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
+    if (event.metaKey) {
+      window.open(url, '_blank', 'noopener')
+    } else {
+      history.push(url)
+    }
   }
 
   const contextMenu = (
@@ -40,12 +46,40 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
 
   const handleRenameNotebook = (name: string) => {
     update(id, {...flow, name})
-    try {
-      updatePinnedItemByParam(id, {name})
-      dispatch(notify(pinnedItemSuccess('notebook', 'updated')))
-    } catch (err) {
-      dispatch(notify(pinnedItemFailure(err.message, 'update')))
+    if (isFlagEnabled('pinnedItems') && CLOUD) {
+      try {
+        updatePinnedItemByParam(id, {name})
+        dispatch(notify(pinnedItemSuccess('notebook', 'updated')))
+      } catch (err) {
+        dispatch(notify(pinnedItemFailure(err.message, 'update')))
+      }
     }
+  }
+
+  const meta = []
+
+  if (!!flow?.createdBy) {
+    meta.push(
+      <React.Fragment key={`${flow.id}--created-by`}>
+        Created by {flow.createdBy}
+      </React.Fragment>
+    )
+  }
+
+  if (flow?.createdAt) {
+    meta.push(
+      <React.Fragment key={`${flow.id}--created-at`}>
+        Created at {flow.createdAt}
+      </React.Fragment>
+    )
+  }
+
+  if (flow?.updatedAt) {
+    meta.push(
+      <React.Fragment key={`${flow.id}--updated-at`}>
+        Last Modified at {flow.updatedAt}
+      </React.Fragment>
+    )
   }
 
   return (
@@ -60,10 +94,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
         onUpdate={handleRenameNotebook}
         buttonTestID="flow-card--name-button"
       />
-      <ResourceCard.Meta>
-        {flow?.createdAt ? <>Created at {flow.createdAt}</> : null}
-        {flow?.updatedAt ? <>Last Modified at {flow.updatedAt}</> : null}
-      </ResourceCard.Meta>
+      <ResourceCard.Meta>{meta}</ResourceCard.Meta>
     </ResourceCard>
   )
 }

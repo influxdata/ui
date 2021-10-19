@@ -11,6 +11,7 @@ describe('Billing Page Free Users', () => {
             cy.quartzProvision({
               accountType: 'free',
             }).then(() => {
+              cy.wait(1000)
               cy.visit(`/checkout`)
             })
           })
@@ -36,6 +37,7 @@ describe('Billing Page PAYG Users', () => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',
             }).then(() => {
+              cy.wait(1000)
               cy.visit(`/orgs/${id}/billing`)
               cy.getByTestID('billing-page--header').should('be.visible')
             })

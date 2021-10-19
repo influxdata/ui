@@ -1234,8 +1234,9 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('_value-table-header table-graph-cell__sort-asc')
         .should('exist')
         .click()
-      cy.getByTestID('_value-table-header table-graph-cell__sort-desc')
-        .should('exist')
+      cy.getByTestID('_value-table-header table-graph-cell__sort-desc').should(
+        'exist'
+      )
     })
   })
 

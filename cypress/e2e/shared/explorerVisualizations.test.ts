@@ -364,20 +364,24 @@ describe('visualizations', () => {
           })
         })
       cy.getByTestID('_value-table-header table-graph-cell').click()
-      cy.getByTestID('_value-table-header table-graph-cell__sort-asc').should('exist').click()
-      cy.getByTestID('_value-table-header table-graph-cell__sort-desc').should('exist').then(el => {
-        // get the column index
-        const columnIndex = el[0].getAttribute('data-column-index')
-        let prev = Infinity
-        // get all the column values for that one and see if they are in order
-        cy.get(`[data-column-index="${columnIndex}"]`).each(val => {
-          const num = Number(val.text())
-          if (isNaN(num) === false) {
-            expect(num < prev).to.equal(true)
-            prev = num
-          }
+      cy.getByTestID('_value-table-header table-graph-cell__sort-asc')
+        .should('exist')
+        .click()
+      cy.getByTestID('_value-table-header table-graph-cell__sort-desc')
+        .should('exist')
+        .then(el => {
+          // get the column index
+          const columnIndex = el[0].getAttribute('data-column-index')
+          let prev = Infinity
+          // get all the column values for that one and see if they are in order
+          cy.get(`[data-column-index="${columnIndex}"]`).each(val => {
+            const num = Number(val.text())
+            if (isNaN(num) === false) {
+              expect(num < prev).to.equal(true)
+              prev = num
+            }
+          })
         })
-      })
     })
   })
 })

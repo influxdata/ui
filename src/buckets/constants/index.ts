@@ -1,8 +1,16 @@
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {CLOUD} from 'src/shared/constants'
+
 export const isSystemBucket = (bucketName: string): boolean => {
   return bucketName.startsWith('_')
 }
 
-export const BUCKET_OVERLAY_WIDTH = 575
+export const getBucketOverlayWidth = () => {
+  if (isFlagEnabled('measurementSchema') && CLOUD) {
+    return 575
+  }
+  return 450
+}
 
 export const BUCKET_NAME_MINIMUM_CHARACTERS = 1
 

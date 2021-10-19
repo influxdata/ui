@@ -65,14 +65,12 @@ interface Props {
   measurementSchemaList?: typeof MeasurementSchemaList
   showSchemaValidation?: boolean
 }
-// todo: determine exact real type of updates?  or don't bother
-// bc the specified return type is not exactly what we get back
-// (also get back bucketID and orgID, both of which I am using)
+
 interface State {
   showAdvanced: boolean
   schemaType: 'implicit' | 'explicit'
   newMeasurementSchemas: typeof MeasurementSchemaCreateRequest[]
-  measurementSchemaUpdates: any[]
+  measurementSchemaUpdates: SchemaUpdateInfo[]
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {

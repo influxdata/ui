@@ -292,6 +292,27 @@ const AddingPanel: FC<AddingProps> = ({
   )
 }
 
+interface NameProps {
+  name: string
+  maxChars:number
+}
+
+const TruncatedNameDisplay: FC<NameProps> = ({
+  name,
+  maxChars
+}) => {
+  name = trim(name)
+  if (name.length < maxChars){
+    return <>{name}</>
+  }
+ // it is over the max limit; truncate it to three below the limit,
+  // add three dots, and a title with the full name:
+
+  const displayName = name.substring(0, maxChars-3) + "..."
+  return <span title={name}> {displayName}</span>
+}
+
+
 const EditingPanel: FC<PanelProps> = ({
   index,
   measurementSchema,
@@ -363,7 +384,7 @@ const EditingPanel: FC<PanelProps> = ({
             className="value-text"
             data-testid={`measurement-schema-name-${index}`}
           >
-            {measurementSchema.name}
+            <TruncatedNameDisplay name={measurementSchema.name} maxChars={14}/>
           </div>
           <Button
             icon={IconFont.Download}

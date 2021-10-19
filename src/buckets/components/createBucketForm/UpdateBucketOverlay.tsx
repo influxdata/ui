@@ -47,7 +47,7 @@ import {
 
 import {SchemaUpdateInfo} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
 
-import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
+import {getBucketOverlayWidth} from 'src/buckets/constants'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -245,7 +245,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
 
   return (
     <Overlay visible={true}>
-      <Overlay.Container maxWidth={BUCKET_OVERLAY_WIDTH}>
+      <Overlay.Container maxWidth={getBucketOverlayWidth()}>
         <Overlay.Header title="Edit Bucket" onDismiss={handleClose} />
         <SpinnerContainer
           spinnerComponent={<TechnoSpinner />}

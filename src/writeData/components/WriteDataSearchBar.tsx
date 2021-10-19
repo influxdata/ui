@@ -1,11 +1,11 @@
 // Libraries
-import React, {FC, ChangeEvent, useContext} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Contexts
 import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
 
 // Components
-import {Input, InputRef, ComponentSize, IconFont} from '@influxdata/clockface'
+import {ComponentSize} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 const WriteDataSearchBar: FC = () => {

@@ -146,13 +146,13 @@ const Sidebar: FC = () => {
         {
           title: () => {
             if (!flow.meta.allIDs.includes(id)) {
-              return 'Hide'
+              return 'Hide panel'
             }
 
             if (flow.meta.byID[id].visible) {
-              return 'Hide'
+              return 'Hide panel'
             }
-            return 'Visible'
+            return 'Show panel'
           },
           action: () => {
             event('Panel Visibility Toggled', {

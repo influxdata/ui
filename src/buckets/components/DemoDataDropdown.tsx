@@ -83,7 +83,6 @@ const DemoDataDropdown: FC<Props> = ({
     <Dropdown
       testID="dropdown--demodata"
       style={{width: '240px'}}
-      className="demodata-dropdown"
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}

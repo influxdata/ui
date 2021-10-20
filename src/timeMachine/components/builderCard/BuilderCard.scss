@@ -139,6 +139,9 @@ $builder-card--header-margin: $ix-marg-b + $ix-border;
     }
   }
 }
+.aggregation-selector {
+  border-left: $cf-border solid $cf-grey-5;
+}
 
 .builder-card--menu {
   border-bottom: $ix-border solid $cf-grey-25;

@@ -1,10 +1,10 @@
 import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
-const ANNOTATION_TEXT = 'im a hippopotamus'
-const EDIT_ANNOTATION_TEXT = 'lets edit this annotation...'
-const RANGE_ANNOTATION_TEXT = 'range annotation here!'
-const EDIT_RANGE_ANNOTATION_TEXT =
+export const ANNOTATION_TEXT = 'im a hippopotamus'
+export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation...'
+export const RANGE_ANNOTATION_TEXT = 'range annotation here!'
+export const EDIT_RANGE_ANNOTATION_TEXT =
   'editing the text here for the range annotation'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
@@ -68,11 +68,6 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
     )
   )
 
-export const reloadAndHandleAnnotationDefaultStatus = () => {
-  cy.reload()
-  cy.getByTestID('toggle-annotations-controls').click()
-}
-
 export const addAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
@@ -107,8 +102,8 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('delete-annotation-button').clickAttached()
 
-  // reload to make sure the annotation was deleted from the backend as well.
-  reloadAndHandleAnnotationDefaultStatus()
+  // make sure the delete was successful
+  cy.getByTestID('notification-success').should('be.visible')
 
   // annotation line should not exist in the dashboard cell
   cy.getByTestID('cell blah').within(() => {
@@ -182,9 +177,6 @@ export const addRangeAnnotation = (
 export const testAddAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
-  // reload to make sure the annotation was added in the backend as well.
-  reloadAndHandleAnnotationDefaultStatus()
-
   // we need to see if the annotations got created and that the tooltip says "I'm a hippopotamus"
   checkAnnotationText(cy, ANNOTATION_TEXT)
 }
@@ -206,8 +198,8 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('annotation-submit-button').click()
 
-  // reload to make sure the annotation was edited in the backend as well.
-  reloadAndHandleAnnotationDefaultStatus()
+  // make sure the edit was saved successfully
+  cy.getByTestID('notification-success').should('be.visible')
 
   checkAnnotationText(cy, EDIT_ANNOTATION_TEXT)
 }
@@ -234,8 +226,8 @@ export const testEditRangeAnnotation = (
 
   cy.getByTestID('annotation-submit-button').click()
 
-  // reload to make sure the annotation was edited in the backend as well.
-  reloadAndHandleAnnotationDefaultStatus()
+  // make sure the edit was saved successfully
+  cy.getByTestID('notification-success').should('be.visible')
 
   checkAnnotationText(cy, EDIT_RANGE_ANNOTATION_TEXT)
 }

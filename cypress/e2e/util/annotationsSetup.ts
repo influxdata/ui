@@ -6,6 +6,7 @@ export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation...'
 export const RANGE_ANNOTATION_TEXT = 'range annotation here!'
 export const EDIT_RANGE_ANNOTATION_TEXT =
   'editing the text here for the range annotation'
+export const NO_TEXT = ' {backspace}'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
@@ -77,8 +78,8 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .click()
-    .type(ANNOTATION_TEXT)
+    .invoke('val', ANNOTATION_TEXT)
+    .type(NO_TEXT)
   cy.getByTestID('annotation-submit-button').click()
 }
 
@@ -147,8 +148,8 @@ export const addRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .click()
-    .type(RANGE_ANNOTATION_TEXT)
+    .invoke('val', RANGE_ANNOTATION_TEXT)
+    .type(NO_TEXT)
 
   cy.getByTestID('annotation-submit-button').click()
 }
@@ -169,9 +170,8 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .click()
-    .clear()
-    .type(EDIT_ANNOTATION_TEXT)
+    .invoke('val', EDIT_ANNOTATION_TEXT)
+    .type(NO_TEXT)
 
   cy.getByTestID('annotation-submit-button').click()
 
@@ -193,9 +193,8 @@ export const testEditRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .click()
-    .clear()
-    .type(EDIT_RANGE_ANNOTATION_TEXT)
+    .invoke('val', EDIT_RANGE_ANNOTATION_TEXT)
+    .type(NO_TEXT)
 
   // ensure the two times are not equal
   cy.getByTestID('endTime-testID')

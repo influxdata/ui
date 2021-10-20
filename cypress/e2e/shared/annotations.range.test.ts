@@ -1,6 +1,7 @@
 import {
   ANNOTATION_TEXT,
   EDIT_ANNOTATION_TEXT,
+  NO_TEXT,
   RANGE_ANNOTATION_TEXT,
   addAnnotation,
   addRangeAnnotation,
@@ -50,8 +51,8 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('annotation-message--form').should('be.visible')
 
       cy.getByTestID('edit-annotation-message')
-        .clear()
-        .type(EDIT_ANNOTATION_TEXT)
+        .invoke('val', EDIT_ANNOTATION_TEXT)
+        .type(NO_TEXT)
 
       cy.getByTestID('edit-annotation-cancel-button').click()
 
@@ -155,10 +156,8 @@ describe('Annotations, but in a different test suite', () => {
       })
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('edit-annotation-message')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type(RANGE_ANNOTATION_TEXT)
+          .invoke('val', RANGE_ANNOTATION_TEXT)
+          .type(NO_TEXT)
 
         // should be of type 'point'
         cy.getByTestID('annotation-form-point-type-option--input').should(

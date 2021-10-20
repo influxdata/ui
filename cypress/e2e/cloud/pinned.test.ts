@@ -233,7 +233,7 @@ from(bucket: "${name}"{rightarrow}
         pinnedItems: true,
       }).then(() => {
         cy.getByTestID('nav-item-flows').should('be.visible')
-        cy.getByTestID('nav-item-flows').click()
+        cy.clickNavBarItem('nav-item-flows')
         const now = Date.now()
         cy.writeData(
           [

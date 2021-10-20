@@ -252,7 +252,9 @@ describe('Explicit Buckets', () => {
         cy.getByTestID('bucket-settings').click({force: true})
       })
     cy.getByTestID('accordion-header').click()
-    const schemaName = 'oneSchema'
+    const schemaName = 'one schema'
+    const fileName = 'one_schema.json'
+
     cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('input-field').type(schemaName)
 
@@ -290,7 +292,7 @@ describe('Explicit Buckets', () => {
           .should('exist')
 
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/oneSchema.json`)
+        cy.readFile(`cypress/downloads/${fileName}`)
           .should('exist')
           .then(fileContent => {
             expect(fileContent[0].name).to.be.equal('time')
@@ -377,7 +379,7 @@ describe('Explicit Buckets', () => {
         })
 
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/oneSchema.json`)
+        cy.readFile(`cypress/downloads/${fileName}`)
           .should('exist')
           .then(fileContent => {
             expect(fileContent[0].name).to.be.equal('time')

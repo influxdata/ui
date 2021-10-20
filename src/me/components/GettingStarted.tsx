@@ -75,7 +75,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
             testID="getting-started--load-data--button"
             text="Load your data"
             color={ComponentColor.Primary}
-            size={ComponentSize.Medium}
+            size={ComponentSize.Small}
             onClick={handleLoadDataClick}
             onMouseOver={handleLoadDataMouseOver}
             onMouseOut={handleLoadDataMouseOut}
@@ -95,7 +95,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
             testID="getting-started--dashboards--button"
             text="Build a dashboard"
             color={ComponentColor.Primary}
-            size={ComponentSize.Medium}
+            size={ComponentSize.Small}
             onClick={handleDashboardsClick}
             onMouseOver={handleDashboardsMouseOver}
             onMouseOut={handleDashboardsMouseOut}
@@ -116,7 +116,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
             testID="getting-started--alerting--button"
             text="Set up alerting"
             color={ComponentColor.Primary}
-            size={ComponentSize.Medium}
+            size={ComponentSize.Small}
             onClick={handleAlertsClick}
             onMouseOver={handleAlertsMouseOver}
             onMouseOut={handleAlertsMouseOut}

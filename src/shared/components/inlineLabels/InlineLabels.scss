@@ -16,6 +16,7 @@ $inline-labels--margin: $ix-border / 2;
   display: flex;
   flex-wrap: wrap;
   padding: $inline-labels--margin;
+  column-gap: $cf-space-3xs;
 
   > .cf-label {
     margin: $inline-labels--margin;

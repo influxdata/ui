@@ -81,7 +81,7 @@ const NotificationRulesColumn: FunctionComponent<Props> = ({
 
   const createButton = (
     <Button
-      color={ComponentColor.Secondary}
+      color={ComponentColor.Primary}
       text="Create"
       onClick={handleOpenOverlay}
       testID="create-rule"

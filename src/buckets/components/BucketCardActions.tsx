@@ -126,7 +126,7 @@ const BucketCardActions: FC<Props> = ({
   return (
     <FlexBox
       direction={FlexDirection.Row}
-      margin={ComponentSize.Small}
+      margin={ComponentSize.Medium}
       style={{marginTop: '4px'}}
     >
       <InlineLabels

@@ -32,6 +32,9 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 // Events
 import {event} from 'src/cloud/utils/reporting'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 const CheckoutForm: FC = () => {
   const {
     handleFormValidation,
@@ -85,10 +88,12 @@ const CheckoutForm: FC = () => {
                 </a>
                 .
               </p>
-              <div className="checkout-form--banner">
-                <strong className="checkout-banner--credit">$250</strong>
-                <p>credit applied</p>
-              </div>
+              {isFlagEnabled('paygCheckoutCredit') && (
+                <div className="checkout-form--banner">
+                  <strong className="checkout-banner--credit">$250</strong>
+                  <p>credit applied</p>
+                </div>
+              )}
             </Panel.Body>
           </Panel>
           <Panel>

@@ -11,8 +11,6 @@ import {
   Panel,
   InfluxColors,
   DapperScrollbars,
-  Input,
-  IconFont,
   FlexBox,
   FlexDirection,
   ComponentSize,
@@ -22,6 +20,7 @@ import {
 } from '@influxdata/clockface'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import AssetLimitButton from 'src/cloud/components/AssetLimitButton'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Utils
 import {
@@ -95,11 +94,10 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
         {isLimitExceeded ? assetLimitButton : createButton}
       </FlexBox>
       <div className="alerting-index--search">
-        <Input
-          icon={IconFont.Search_New}
-          placeholder={`Filter ${title}...`}
-          value={searchTerm}
-          onChange={e => onChangeSearchTerm(e.target.value)}
+        <SearchWidget
+          placeholderText={`Filter ${title}...`}
+          searchTerm={searchTerm}
+          onSearch={onChangeSearchTerm}
           testID={`filter--input ${type}`}
           tabIndex={tabIndex}
         />

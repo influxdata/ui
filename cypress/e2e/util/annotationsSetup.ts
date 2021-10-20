@@ -6,6 +6,7 @@ export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation...'
 export const RANGE_ANNOTATION_TEXT = 'range annotation here!'
 export const EDIT_RANGE_ANNOTATION_TEXT =
   'editing the text here for the range annotation'
+export const NO_TEXT = ' {backspace}'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
@@ -77,11 +78,8 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .should($el => {
-      expect(Cypress.dom.isDetached($el)).to.be.false
-    })
-    .click()
-    .type(ANNOTATION_TEXT)
+    .invoke('val', ANNOTATION_TEXT)
+    .type(NO_TEXT)
   cy.getByTestID('annotation-submit-button').click()
 }
 
@@ -122,18 +120,6 @@ export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('giraffe-annotation-tooltip').contains(text)
 }
 
-const ensureRangeAnnotationTimesAreNotEqual = (cy: Cypress.Chainable) => {
-  cy.getByTestID('endTime-testID')
-    .invoke('val')
-    .then(endTimeValue => {
-      cy.getByTestID('startTime-testID')
-        .invoke('val')
-        .then(startTimeValue => {
-          expect(endTimeValue).to.not.equal(startTimeValue)
-        })
-    })
-}
-
 export const addRangeAnnotation = (
   cy: Cypress.Chainable,
   layerTestID = 'line'
@@ -162,14 +148,8 @@ export const addRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .should($el => {
-      expect(Cypress.dom.isDetached($el)).to.be.false
-    })
-    .click()
-    .type(RANGE_ANNOTATION_TEXT)
-
-  // make sure the two times (start and end) are not equal:
-  ensureRangeAnnotationTimesAreNotEqual(cy)
+    .invoke('val', RANGE_ANNOTATION_TEXT)
+    .type(NO_TEXT)
 
   cy.getByTestID('annotation-submit-button').click()
 }
@@ -190,11 +170,8 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .should($el => {
-      expect(Cypress.dom.isDetached($el)).to.be.false
-    })
-    .clear()
-    .type(EDIT_ANNOTATION_TEXT)
+    .invoke('val', EDIT_ANNOTATION_TEXT)
+    .type(NO_TEXT)
 
   cy.getByTestID('annotation-submit-button').click()
 
@@ -216,13 +193,19 @@ export const testEditRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .should($el => {
-      expect(Cypress.dom.isDetached($el)).to.be.false
-    })
-    .clear()
-    .type(EDIT_RANGE_ANNOTATION_TEXT)
+    .invoke('val', EDIT_RANGE_ANNOTATION_TEXT)
+    .type(NO_TEXT)
 
-  ensureRangeAnnotationTimesAreNotEqual(cy)
+  // ensure the two times are not equal
+  cy.getByTestID('endTime-testID')
+    .invoke('val')
+    .then(endTimeValue => {
+      cy.getByTestID('startTime-testID')
+        .invoke('val')
+        .then(startTimeValue => {
+          expect(endTimeValue).to.not.equal(startTimeValue)
+        })
+    })
 
   cy.getByTestID('annotation-submit-button').click()
 

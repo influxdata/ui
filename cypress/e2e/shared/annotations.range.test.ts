@@ -46,6 +46,9 @@ describe('Annotations, but in a different test suite', () => {
       // should have the annotation created, lets click it to show the modal.
       startEditingAnnotation(cy)
 
+      cy.getByTestID('overlay--container').should('be.visible')
+      cy.getByTestID('annotation-message--form').should('be.visible')
+
       cy.getByTestID('edit-annotation-message')
         .clear()
         .type(EDIT_ANNOTATION_TEXT)
@@ -76,6 +79,8 @@ describe('Annotations, but in a different test suite', () => {
     it('can add a range annotation, then edit it and switch back and forth from point->range and the endtime stays the same', () => {
       addRangeAnnotation(cy)
       startEditingAnnotation(cy)
+
+      cy.getByTestID('overlay--container').should('be.visible')
 
       // verify there is an end time:
       cy.getByTestID('endTime-testID').should('be.visible')
@@ -110,6 +115,8 @@ describe('Annotations, but in a different test suite', () => {
       addRangeAnnotation(cy)
       startEditingAnnotation(cy)
 
+      cy.getByTestID('overlay--container').should('be.visible')
+
       // verify that it is range annotation (the range selector option is selected)
       cy.getByTestID('annotation-form-range-type-option--input').should(
         'be.checked'
@@ -131,7 +138,9 @@ describe('Annotations, but in a different test suite', () => {
 
       // make sure the edit was saved successfully
       cy.getByTestID('notification-success').should('be.visible')
+
       startEditingAnnotation(cy)
+      cy.getByTestID('overlay--container').should('be.visible')
 
       // make sure it is (still) a point annotation:
       cy.getByTestID('endTime-testID').should('not.exist')
@@ -191,6 +200,8 @@ describe('Annotations, but in a different test suite', () => {
       checkAnnotationText(cy, RANGE_ANNOTATION_TEXT)
 
       startEditingAnnotation(cy)
+
+      cy.getByTestID('overlay--container').should('be.visible')
 
       // verify there is an end time:
       cy.getByTestID('endTime-testID').should('be.visible')

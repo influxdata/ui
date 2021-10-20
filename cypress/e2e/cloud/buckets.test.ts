@@ -145,6 +145,8 @@ describe('Explicit Buckets', () => {
 
     cy.getByTestID('bucket-form-submit').click()
 
+    // give it some time for the submit to happen/the bucket list to show up
+    cy.wait(500)
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
@@ -156,7 +158,7 @@ describe('Explicit Buckets', () => {
       .should('exist')
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
-          .contains('first schema file')
+          .contains('first schem...')
           .should('exist')
         cy.getByTestID('measurement-schema-download-button').click()
         cy.readFile(`cypress/downloads/first_schema_file.json`)
@@ -219,7 +221,7 @@ describe('Explicit Buckets', () => {
       .should('exist')
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
-          .contains('first schema file')
+          .contains('first schem...')
           .should('exist')
 
         cy.getByTestID('measurement-schema-download-button').click()
@@ -250,9 +252,9 @@ describe('Explicit Buckets', () => {
         cy.getByTestID('bucket-settings').click({force: true})
       })
     cy.getByTestID('accordion-header').click()
-
+    const schemaName = 'oneSchema'
     cy.getByTestID('measurement-schema-add-file-button').click()
-    cy.getByTestID('input-field').type('first schema file')
+    cy.getByTestID('input-field').type(schemaName)
 
     const schemaFile = 'valid.json'
     const type = 'application/json'
@@ -284,11 +286,11 @@ describe('Explicit Buckets', () => {
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
           .should('exist')
-          .contains('first schema file')
+          .contains(schemaName)
           .should('exist')
 
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/first_schema_file.json`)
+        cy.readFile(`cypress/downloads/oneSchema.json`)
           .should('exist')
           .then(fileContent => {
             expect(fileContent[0].name).to.be.equal('time')
@@ -365,7 +367,7 @@ describe('Explicit Buckets', () => {
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
           .should('exist')
-          .contains('first schema file')
+          .contains(schemaName)
           .should('exist')
 
         // remove the downloaded files
@@ -375,7 +377,7 @@ describe('Explicit Buckets', () => {
         })
 
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/first_schema_file.json`)
+        cy.readFile(`cypress/downloads/oneSchema.json`)
           .should('exist')
           .then(fileContent => {
             expect(fileContent[0].name).to.be.equal('time')

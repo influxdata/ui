@@ -122,18 +122,6 @@ export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('giraffe-annotation-tooltip').contains(text)
 }
 
-const ensureRangeAnnotationTimesAreNotEqual = (cy: Cypress.Chainable) => {
-  cy.getByTestID('endTime-testID')
-    .invoke('val')
-    .then(endTimeValue => {
-      cy.getByTestID('startTime-testID')
-        .invoke('val')
-        .then(startTimeValue => {
-          expect(endTimeValue).to.not.equal(startTimeValue)
-        })
-    })
-}
-
 export const addRangeAnnotation = (
   cy: Cypress.Chainable,
   layerTestID = 'line'
@@ -167,9 +155,6 @@ export const addRangeAnnotation = (
     })
     .click()
     .type(RANGE_ANNOTATION_TEXT)
-
-  // make sure the two times (start and end) are not equal:
-  ensureRangeAnnotationTimesAreNotEqual(cy)
 
   cy.getByTestID('annotation-submit-button').click()
 }
@@ -222,7 +207,16 @@ export const testEditRangeAnnotation = (
     .clear()
     .type(EDIT_RANGE_ANNOTATION_TEXT)
 
-  ensureRangeAnnotationTimesAreNotEqual(cy)
+  // ensure the two times are not equal
+  cy.getByTestID('endTime-testID')
+    .invoke('val')
+    .then(endTimeValue => {
+      cy.getByTestID('startTime-testID')
+        .invoke('val')
+        .then(startTimeValue => {
+          expect(endTimeValue).to.not.equal(startTimeValue)
+        })
+    })
 
   cy.getByTestID('annotation-submit-button').click()
 

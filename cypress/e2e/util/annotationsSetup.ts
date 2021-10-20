@@ -88,12 +88,13 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
 }
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
-  cy.getByTestID('cell blah').within(() => {
-    // we have 2 line layers by the same id, we only want to click on the first
-    cy.get('.giraffe-annotation-line')
-      .first()
-      .clickAttached()
-  })
+  cy.getByTestID('cell blah').should('be.visible')
+  cy.get('.giraffe-annotation-line')
+    .should($el => {
+      expect(Cypress.dom.isDetached($el)).to.be.false
+    })
+    .first()
+    .click({force: true})
 }
 
 export const deleteAnnotation = (cy: Cypress.Chainable) => {
@@ -116,7 +117,9 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
 export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('cell blah').within(() => {
     cy.get('.giraffe-annotation-line')
-      .should('exist')
+      .should($el => {
+        expect(Cypress.dom.isDetached($el)).to.be.false
+      })
       .first()
       .trigger('mouseover')
   })
@@ -199,14 +202,7 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
   // reload to make sure the annotation was edited in the backend as well.
   reloadAndHandleAnnotationDefaultStatus()
 
-  // annotation tooltip should say the new name
-  cy.getByTestID('cell blah').within(() => {
-    cy.get('.giraffe-annotation-line')
-      .should('exist')
-      .first()
-      .trigger('mouseover')
-  })
-  cy.getByTestID('giraffe-annotation-tooltip').contains(EDIT_ANNOTATION_TEXT)
+  checkAnnotationText(cy, EDIT_ANNOTATION_TEXT)
 }
 
 export const testEditRangeAnnotation = (

@@ -8,6 +8,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  column-gap: $cf-space-3xs;
 }
 
 .inline-labels--add-wrapper {

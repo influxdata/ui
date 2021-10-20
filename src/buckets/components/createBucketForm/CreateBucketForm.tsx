@@ -175,7 +175,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
       onChangeRetentionRule={handleChangeRetentionRule}
       testID={testID}
       onChangeSchemaType={handleChangeSchemaType}
-      onUpdateNewMeasurementSchemas={handleNewMeasurementSchemas}
+      onAddNewMeasurementSchemas={handleNewMeasurementSchemas}
       showSchemaValidation={showSchemaValidation}
     />
   )

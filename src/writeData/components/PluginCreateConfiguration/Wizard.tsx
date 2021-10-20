@@ -25,7 +25,7 @@ import {
 import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
 // Constants
-import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
+import {getBucketOverlayWidth} from 'src/buckets/constants'
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
 
@@ -116,7 +116,7 @@ const Wizard: FC<Props> = props => {
   let maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH
   if (currentStepIndex === 0) {
     if (substepIndex === 1) {
-      maxWidth = BUCKET_OVERLAY_WIDTH
+      maxWidth = getBucketOverlayWidth()
     } else {
       maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH
     }

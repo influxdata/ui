@@ -861,6 +861,13 @@ export const measurementSchemaAdditionSuccessful = (
   message: `MeasurementSchema ${schemaName}  has been successfully added to bucket ${bucketName}`,
 })
 
+export const measurementSchemaUpdateSuccessful = (
+  measurementName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `MeasurementSchema ${measurementName}  has been successfully updated`,
+})
+
 export const bucketUpdateFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to update bucket: "${error}"`,
@@ -873,6 +880,14 @@ export const measurementSchemaAdditionFailed = (
 ): Notification => ({
   ...defaultErrorNotification,
   message: `MeasurementSchema ${schemaName}  has *not* been successfully added to bucket ${bucketName}, error: ${errorMsg}`,
+})
+
+export const measurementSchemaUpdateFailed = (
+  measurementName: string,
+  errorMsg: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `MeasurementSchema ${measurementName}  has *not* been successfully updated, error: ${errorMsg}`,
 })
 
 export const bucketRenameSuccess = (bucketName: string): Notification => ({

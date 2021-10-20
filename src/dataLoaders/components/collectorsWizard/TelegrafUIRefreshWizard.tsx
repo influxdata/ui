@@ -45,7 +45,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {isSystemBucket} from 'src/buckets/constants'
 
 // Constants
-import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
+import {getBucketOverlayWidth} from 'src/buckets/constants'
 const TELEGRAF_UI_REFRESH_OVERLAY_DEFAULT_WIDTH = 1200
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -72,7 +72,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
 
     let maxWidth = TELEGRAF_UI_REFRESH_OVERLAY_DEFAULT_WIDTH
     if (currentStepIndex === 0 && substepIndex === 1) {
-      maxWidth = BUCKET_OVERLAY_WIDTH
+      maxWidth = getBucketOverlayWidth()
     }
 
     if (

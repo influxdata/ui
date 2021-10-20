@@ -92,11 +92,10 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('cell blah').should('be.visible')
-  cy.get('.giraffe-annotation-line')
+  cy.get('.giraffe-annotation-click-target')
     .should($el => {
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
-    .first()
     .click({force: true})
 }
 
@@ -113,17 +112,16 @@ export const deleteAnnotation = (cy: Cypress.Chainable) => {
 
   // annotation line should not exist in the dashboard cell
   cy.getByTestID('cell blah').within(() => {
-    cy.get('.giraffe-annotation-line').should('not.exist')
+    cy.get('.giraffe-annotation-click-target').should('not.exist')
   })
 }
 
 export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('cell blah').within(() => {
-    cy.get('.giraffe-annotation-line')
+    cy.get('.giraffe-annotation-click-target')
       .should($el => {
         expect(Cypress.dom.isDetached($el)).to.be.false
       })
-      .first()
       .trigger('mouseover')
   })
   cy.getByTestID('giraffe-annotation-tooltip').contains(text)

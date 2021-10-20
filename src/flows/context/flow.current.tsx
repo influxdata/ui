@@ -72,14 +72,17 @@ export const FlowProvider: FC = ({children}) => {
     if (isFlagEnabled('sharedFlowEditing')) {
       provider.current = new WebsocketProvider(
         'wss://demos.yjs.dev', // todo(ariel): replace this with an actual API that we setup
-        flowId,
+        flowId, // todo(ariel): we might need to confine this to an org, depends on how multi-org plays out
         yDoc.current
       )
-      const localState = provider.current.awareness.getLocalState()
-      if (!localState?.id) {
-        provider.current.awareness.setLocalState(DEFAULT_CONTEXT)
-      }
-
+      provider.current.on('sync', isSynced => {
+        if (isSynced) {
+          const localState = yDoc.current.getMap('localState')?.toJSON()
+          if (!localState) {
+            yDoc.current.getMap('localState').set('localState', currentFlow)
+          }
+        }
+      })
       yDoc.current.on('update', () => {
         const {localState} = yDoc.current.getMap('localState').toJSON()
         setCurrentFlow(prev => {

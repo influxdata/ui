@@ -77,7 +77,7 @@ describe('simple table interactions', () => {
     cy.getByTestID('pagination-item')
       .first()
       .within(() => {
-        cy.getByTestID('button').contains('1')
+        cy.getByTestID('pagination-item-1-active').should('exist')
       })
     // verify correct number of pages
     cy.getByTestID('pagination-item')
@@ -140,7 +140,7 @@ describe('simple table interactions', () => {
     cy.getByTestID('pagination-item')
       .first()
       .within(() => {
-        cy.getByTestID('button').contains('1')
+        cy.getByTestID('pagination-item-1-active').should('exist')
       })
     // verify correct number of pages
     cy.getByTestID('pagination-item')

@@ -82,6 +82,9 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
+    .should($el => {
+      expect(Cypress.dom.isDetached($el)).to.be.false
+    })
     .click()
     .type(ANNOTATION_TEXT)
   cy.getByTestID('annotation-submit-button').click()
@@ -166,6 +169,9 @@ export const addRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
+    .should($el => {
+      expect(Cypress.dom.isDetached($el)).to.be.false
+    })
     .click()
     .type(RANGE_ANNOTATION_TEXT)
 
@@ -194,6 +200,9 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
+    .should($el => {
+      expect(Cypress.dom.isDetached($el)).to.be.false
+    })
     .clear()
     .type(EDIT_ANNOTATION_TEXT)
 
@@ -217,6 +226,9 @@ export const testEditRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
+    .should($el => {
+      expect(Cypress.dom.isDetached($el)).to.be.false
+    })
     .clear()
     .type(EDIT_RANGE_ANNOTATION_TEXT)
 

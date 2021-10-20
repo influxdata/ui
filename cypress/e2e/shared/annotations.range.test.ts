@@ -1,8 +1,10 @@
 import {
+  ANNOTATION_TEXT,
+  EDIT_ANNOTATION_TEXT,
+  RANGE_ANNOTATION_TEXT,
   addAnnotation,
   addRangeAnnotation,
   checkAnnotationText,
-  reloadAndHandleAnnotationDefaultStatus,
   setupData,
   startEditingAnnotation,
 } from '../util/annotationsSetup'
@@ -31,12 +33,11 @@ describe('Annotations, but in a different test suite', () => {
       addAnnotation(cy)
 
       cy.getByTestID('cell blah').within(() => {
-        cy.get('.giraffe-annotation-line')
+        cy.get('.giraffe-annotation-click-target')
           .should('exist')
-          .first()
           .trigger('mouseover')
       })
-      cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+      cy.getByTestID('giraffe-annotation-tooltip').contains(ANNOTATION_TEXT)
     })
 
     it('can cancel an annotation edit process by clicking on the cancel button in the edit annotation form', () => {
@@ -47,18 +48,17 @@ describe('Annotations, but in a different test suite', () => {
 
       cy.getByTestID('edit-annotation-message')
         .clear()
-        .type('lets edit this annotation...')
+        .type(EDIT_ANNOTATION_TEXT)
 
       cy.getByTestID('edit-annotation-cancel-button').click()
 
       // annotation tooltip should say the old name
       cy.getByTestID('cell blah').within(() => {
-        cy.get('.giraffe-annotation-line')
+        cy.get('.giraffe-annotation-click-target')
           .should('exist')
-          .first()
           .trigger('mouseover')
       })
-      cy.getByTestID('giraffe-annotation-tooltip').contains('im a hippopotamus')
+      cy.getByTestID('giraffe-annotation-tooltip').contains(ANNOTATION_TEXT)
     })
   })
 
@@ -108,7 +108,6 @@ describe('Annotations, but in a different test suite', () => {
     })
     it('can add a range annotation, then edit it and change to a point annotation', () => {
       addRangeAnnotation(cy)
-      reloadAndHandleAnnotationDefaultStatus()
       startEditingAnnotation(cy)
 
       // verify that it is range annotation (the range selector option is selected)
@@ -130,8 +129,8 @@ describe('Annotations, but in a different test suite', () => {
       // save it
       cy.getByTestID('annotation-submit-button').click()
 
-      // reload to make sure it gets to the backend
-      reloadAndHandleAnnotationDefaultStatus()
+      // make sure the edit was saved successfully
+      cy.getByTestID('notification-success').should('be.visible')
       startEditingAnnotation(cy)
 
       // make sure it is (still) a point annotation:
@@ -150,7 +149,7 @@ describe('Annotations, but in a different test suite', () => {
           .should('be.visible')
           .click()
           .focused()
-          .type('random annotation, should be a range')
+          .type(RANGE_ANNOTATION_TEXT)
 
         // should be of type 'point'
         cy.getByTestID('annotation-form-point-type-option--input').should(
@@ -189,7 +188,7 @@ describe('Annotations, but in a different test suite', () => {
               })
           })
       }) // end overlay-container within
-      checkAnnotationText(cy, 'random annotation, should be a range')
+      checkAnnotationText(cy, RANGE_ANNOTATION_TEXT)
 
       startEditingAnnotation(cy)
 
@@ -226,18 +225,15 @@ describe('Annotations, but in a different test suite', () => {
       // create an annotation
       addAnnotation(cy)
 
-      // reload to make sure the annotation was added in the backend as well.
-      reloadAndHandleAnnotationDefaultStatus()
-
       // verify the tooltip shows up
-      checkAnnotationText(cy, 'im a hippopotamus')
+      checkAnnotationText(cy, ANNOTATION_TEXT)
 
       // turn off annotations mode
       cy.getByTestID('toggle-annotations-controls').click()
 
       // verify the annotation does NOT show up
       cy.getByTestID('cell blah').within(() => {
-        cy.get('.giraffe-annotation-line').should('not.exist')
+        cy.get('.giraffe-annotation-click-target').should('not.exist')
       })
 
       cy.getByTestID('giraffe-annotation-tooltip').should('not.exist')

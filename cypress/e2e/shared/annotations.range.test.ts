@@ -81,6 +81,8 @@ describe('Annotations, but in a different test suite', () => {
 
       cy.getByTestID('edit-annotation-message')
         .focused()
+        .clear()
+        .focused()
         .type(EDIT_ANNOTATION_TEXT)
 
       cy.getByTestID('edit-annotation-cancel-button').click()
@@ -91,6 +93,7 @@ describe('Annotations, but in a different test suite', () => {
           .should('exist')
           .trigger('mouseover')
       })
+
       cy.getByTestID('giraffe-annotation-tooltip').contains(ANNOTATION_TEXT)
     })
   })
@@ -100,6 +103,7 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
+
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('annotation-form-point-type-option').should('be.visible')
         cy.getByTestID('annotation-form-range-type-option').should('be.visible')
@@ -108,6 +112,7 @@ describe('Annotations, but in a different test suite', () => {
 
     it('can add a range annotation, then edit it and switch back and forth from point->range and the endtime stays the same', () => {
       addRangeAnnotation(cy)
+
       startEditingAnnotation(cy)
 
       cy.getByTestID('overlay--container').should('be.visible')
@@ -185,6 +190,7 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
+
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('edit-annotation-message')
           .focused()

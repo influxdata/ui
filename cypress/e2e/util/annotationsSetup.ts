@@ -175,6 +175,8 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('edit-annotation-message')
     .focused()
+    .clear()
+    .focused()
     .type(EDIT_ANNOTATION_TEXT)
 
   cy.getByTestID('annotation-submit-button')
@@ -199,6 +201,8 @@ export const testEditRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
+    .focused()
+    .clear()
     .focused()
     .type(EDIT_RANGE_ANNOTATION_TEXT)
 

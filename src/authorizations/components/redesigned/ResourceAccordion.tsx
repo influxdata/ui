@@ -90,7 +90,7 @@ class ResourceAccordion extends Component<OwnProps> {
       >
         {filteredNames => (
           <AllAccordionBody
-            resourceName={'All Resources'}
+            resourceName="All Resources"
             permissions={filteredNames}
             onToggleAll={onToggleAll}
             disabled={false}

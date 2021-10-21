@@ -4,7 +4,7 @@
 
 .variables-control-bar--grid {
   border-radius: $cf-radius;
-  padding: $cf-marg-b - $cf-border;
+  padding: $cf-space-2xs;
   width: 100%;
   display: flex;
   transition: box-shadow 0.25s ease;

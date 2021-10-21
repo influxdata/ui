@@ -108,7 +108,7 @@ const DeleteOrgOverlay: FC = () => {
               <DeleteOrgReasonsForm />
             </FlexBox>
           )}
-          <ul>
+          <ul style={{margin: '32px 0'}}>
             <li>
               The account for this Organization will be deleted immediately.
               This is irreversible and cannot be undone.
@@ -128,12 +128,13 @@ const DeleteOrgOverlay: FC = () => {
               direction={FlexDirection.Row}
               justifyContent={JustifyContent.FlexStart}
               margin={ComponentSize.Medium}
+              stretchToFitWidth={false}
             >
               <Input
                 className="agree-terms-input"
                 checked={hasAgreedToTerms}
                 onChange={() => setHasAgreedToTerms(prev => !prev)}
-                size={ComponentSize.Small}
+                size={ComponentSize.ExtraSmall}
                 titleText="I understand and agree to these conditions"
                 type={InputType.Checkbox}
                 testID="agree-terms--checkbox"

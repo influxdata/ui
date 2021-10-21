@@ -40,7 +40,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'load-data',
       testID: 'nav-item-load-data',
-      icon: IconFont.DisksNav,
+      icon: IconFont.Ingest_New,
       label: 'Load Data',
       shortLabel: 'Data',
       link: `${orgPrefix}/load-data/sources`,
@@ -111,7 +111,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'dashboards',
       testID: 'nav-item-dashboards',
-      icon: IconFont.Dashboards,
+      icon: IconFont.GraphLine_New,
       label: 'Dashboards',
       shortLabel: 'Boards',
       link: `${orgPrefix}/dashboards-list`,

@@ -11,6 +11,7 @@ import {
   TextBlock,
   FlexDirection,
   InfluxColors,
+  AlignItems,
 } from '@influxdata/clockface'
 import CheckLevelsDropdown from 'src/checks/components/CheckLevelsDropdown'
 
@@ -38,7 +39,7 @@ const DeadmanConditions: FC<Props> = ({
   onSetLevel,
 }) => {
   return (
-    <Panel backgroundColor={InfluxColors.Castle} testID="panel">
+    <Panel backgroundColor={InfluxColors.Grey15} testID="panel">
       <PanelBody testID="panel--body">
         <FlexBox
           direction={FlexDirection.Column}
@@ -63,23 +64,20 @@ const DeadmanConditions: FC<Props> = ({
             margin={ComponentSize.Small}
             stretchToFitWidth
             testID="component-spacer"
+            alignItems={AlignItems.Center}
           >
             <TextBlock testID="when-value-text-block" text="for" />
-            <FlexBox.Child testID="component-spacer--flex-child">
-              <DurationInput
-                suggestions={CHECK_OFFSET_OPTIONS}
-                onSubmit={onSetTimeSince}
-                value={timeSince}
-                showDivider={false}
-              />
-            </FlexBox.Child>
+            <DurationInput
+              suggestions={CHECK_OFFSET_OPTIONS}
+              onSubmit={onSetTimeSince}
+              value={timeSince}
+              showDivider={false}
+            />
             <TextBlock testID="set-status-to-text-block" text="set status to" />
-            <FlexBox.Child testID="component-spacer--flex-child">
-              <CheckLevelsDropdown
-                selectedLevel={level}
-                onClickLevel={onSetLevel}
-              />
-            </FlexBox.Child>
+            <CheckLevelsDropdown
+              selectedLevel={level}
+              onClickLevel={onSetLevel}
+            />
           </FlexBox>
           <FlexBox
             direction={FlexDirection.Row}

@@ -81,7 +81,8 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').should('contain', newName)
 
     // Open Export overlay
-    cy.getByTestID('context-menu-item-export').click({force: true})
+    cy.getByTestID('context-menu-dashboard').click()
+    cy.getByTestID('context-export-dashboard').click()
     cy.getByTestID('export-overlay--text-area').should('exist')
     cy.get('.cf-overlay--dismiss').click()
 
@@ -141,17 +142,17 @@ describe('Dashboards', () => {
       .first()
       .trigger('mouseover')
       .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
+        cy.getByTestID('context-delete-menu--button').click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.getByTestID('dashboard-card')
       .first()
       .trigger('mouseover')
       .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
+        cy.getByTestID('context-delete-menu--button').click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.getByTestID('empty-dashboards-list').should('exist')
   })
@@ -202,9 +203,9 @@ describe('Dashboards', () => {
       .first()
       .trigger('mouseover')
       .within(() => {
-        cy.getByTestID('context-delete-menu').click()
-        cy.getByTestID('context-delete-dashboard').click()
+        cy.getByTestID('context-delete-menu--button').click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
     // dashboard no longer exists
     cy.getByTestID('dashboard-card').should('not.exist')
@@ -284,10 +285,13 @@ describe('Dashboards', () => {
     it('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 2)
 
-      cy.getByTestID('clone-dashboard')
+      cy.getByTestID('dashboard-card')
         .first()
-        .click({force: true})
-        .wait(100)
+        .within(() => {
+          cy.getByTestID('context-menu-dashboard').click()
+        })
+
+      cy.getByTestID('context-clone-dashboard').click()
 
       cy.fixture('routes').then(({orgs}) => {
         cy.get<Organization>('@org').then(({id}: Organization) => {
@@ -321,12 +325,12 @@ describe('Dashboards', () => {
 
       // visit another page
       cy.getByTestID('tree-nav').then(() => {
-        cy.contains('Settings').click()
+        cy.contains('Settings').click({force: true})
         cy.contains(
           "Looks like there aren't any Variables, why not create one?"
         )
         // return to dashboards page
-        cy.contains('Boards').click()
+        cy.contains('Dashboards').click()
       })
 
       // assert dashboard order remains the same
@@ -561,8 +565,8 @@ describe('Dashboards', () => {
           cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card').invoke('hover')
-          cy.getByTestID('context-export-menu').click()
-          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('context-menu-dashboard').click()
+          cy.getByTestID('context-export-dashboard').click()
           cy.getByTestID('button').click()
           // readFile has a 4s timeout before the test fails
           cy.readFile('cypress/downloads/dashboard.json').should('exist')
@@ -582,8 +586,8 @@ describe('Dashboards', () => {
           })
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card').invoke('hover')
-          cy.getByTestID('context-export-menu').click()
-          cy.getByTestID('context-menu-item-export').click()
+          cy.getByTestID('context-menu-dashboard').click()
+          cy.getByTestID('context-export-dashboard').click()
           cy.getByTestID('button-copy').click()
           cy.getByTestID('notification-success--children').should('be.visible')
         })

@@ -11,7 +11,16 @@ import DashboardLightModeToggle from 'src/dashboards/components/DashboardLightMo
 import GraphTips from 'src/shared/components/graph_tips/GraphTips'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import {Button, IconFont, ComponentColor, Page} from '@influxdata/clockface'
+import {
+  Button,
+  IconFont,
+  ComponentColor,
+  Page,
+  Appearance,
+  InputLabel,
+  InputToggleType,
+  Toggle,
+} from '@influxdata/clockface'
 import {AnnotationsControlBarToggleButton} from 'src/annotations/components/AnnotationsControlBarToggleButton'
 
 // Actions
@@ -147,29 +156,35 @@ const DashboardHeader: FC<Props> = ({
       <Page.ControlBar fullWidth={true}>
         <Page.ControlBarLeft>
           <Button
-            icon={IconFont.AddCell}
+            icon={IconFont.AddCell_New}
             color={ComponentColor.Primary}
             onClick={handleAddCell}
             text="Add Cell"
             titleText="Add cell to dashboard"
           />
           <Button
-            icon={IconFont.TextBlock}
+            icon={IconFont.Text_New}
             text="Add Note"
             onClick={handleAddNote}
             testID="add-note--button"
           />
-          <Button
-            icon={IconFont.Cube}
-            text="Variables"
+          <Toggle
+            id="variables--button"
+            type={InputToggleType.Checkbox}
+            fill={Appearance.Solid}
+            titleText="Variables"
+            checked={showVariablesControls}
             testID="variables--button"
-            onClick={toggleShowVariablesControls}
-            color={
-              showVariablesControls
-                ? ComponentColor.Secondary
-                : ComponentColor.Default
-            }
-          />
+            onChange={toggleShowVariablesControls}
+          >
+            <InputLabel
+              htmlFor="variables--button"
+              active={showVariablesControls}
+              style={{fontWeight: 500}}
+            >
+              Show Variables
+            </InputLabel>
+          </Toggle>
           <AnnotationsControlBarToggleButton />
           <DashboardLightModeToggle />
           <PresentationModeToggle />

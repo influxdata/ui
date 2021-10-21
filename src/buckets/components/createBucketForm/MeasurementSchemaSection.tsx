@@ -385,7 +385,7 @@ const EditingPanel: FC<PanelProps> = ({
             <TruncatedNameDisplay name={measurementSchema.name} maxChars={14} />
           </div>
           <Button
-            icon={IconFont.Download}
+            icon={IconFont.Download_New}
             color={ComponentColor.Secondary}
             text="Download Schema"
             onClick={handleDownloadSchema}

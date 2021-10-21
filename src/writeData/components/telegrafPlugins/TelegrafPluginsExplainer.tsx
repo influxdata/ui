@@ -12,7 +12,7 @@ import {
 
 const TelegrafPluginsExplainer: FC = () => {
   return (
-    <Panel backgroundColor={InfluxColors.Castle} style={{marginBottom: '8px'}}>
+    <Panel backgroundColor={InfluxColors.Grey15} style={{marginBottom: '8px'}}>
       <Panel.Header>
         <Heading element={HeadingElement.H4} weight={FontWeight.Regular}>
           Getting Started with Telegraf

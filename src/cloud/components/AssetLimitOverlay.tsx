@@ -34,7 +34,7 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
     >
       <GradientBox
         borderGradient={Gradients.MiyazakiSky}
-        borderColor={InfluxColors.Raven}
+        borderColor={InfluxColors.Grey5}
       >
         <div className="asset-limit-overlay--contents">
           <Overlay.Header

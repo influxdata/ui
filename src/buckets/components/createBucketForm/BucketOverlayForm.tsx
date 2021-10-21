@@ -2,7 +2,7 @@
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 
 // Components
-import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
+import {Form, Input, Button, Accordion, Overlay} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
 import {SchemaToggle} from 'src/buckets/components/createBucketForm/SchemaToggle'
 
@@ -174,65 +174,53 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     return (
       <Form onSubmit={onSubmit} testID={testID}>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column>
-              <Form.ValidationElement
+        <Overlay.Body>
+          <Form.ValidationElement
+            value={name}
+            label="Name"
+            helpText={this.nameHelpText}
+            validationFunc={this.handleNameValidation}
+            required={true}
+          >
+            {status => (
+              <Input
+                status={nameInputStatus || status}
+                placeholder="Give your bucket a name"
+                name="name"
+                autoFocus={true}
                 value={name}
-                label="Name"
-                helpText={this.nameHelpText}
-                validationFunc={this.handleNameValidation}
-                required={true}
-              >
-                {status => (
-                  <Input
-                    status={nameInputStatus || status}
-                    placeholder="Give your bucket a name"
-                    name="name"
-                    autoFocus={true}
-                    value={name}
-                    onChange={onChangeInput}
-                    testID="bucket-form-name"
-                  />
-                )}
-              </Form.ValidationElement>
-              <Form.Element label="Delete Data">
-                <Retention
-                  type={ruleType}
-                  retentionSeconds={retentionSeconds}
-                  onChangeRuleType={onChangeRuleType}
-                  onChangeRetentionRule={onChangeRetentionRule}
-                />
-              </Form.Element>
-              {makeAdvancedSection()}
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
-              <Form.Footer>
-                <Button
-                  text="Cancel"
-                  onClick={onClose}
-                  type={ButtonType.Button}
-                />
-                {buttonText === 'Save Changes' && (
-                  <Button
-                    text="Rename"
-                    color={ComponentColor.Danger}
-                    onClick={onClickRename}
-                  />
-                )}
-                <Button
-                  text={buttonText}
-                  testID="bucket-form-submit"
-                  color={this.submitButtonColor}
-                  status={this.submitButtonStatus}
-                  type={ButtonType.Submit}
-                />
-              </Form.Footer>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+                onChange={onChangeInput}
+                testID="bucket-form-name"
+              />
+            )}
+          </Form.ValidationElement>
+          <Form.Element label="Delete Data">
+            <Retention
+              type={ruleType}
+              retentionSeconds={retentionSeconds}
+              onChangeRuleType={onChangeRuleType}
+              onChangeRetentionRule={onChangeRetentionRule}
+            />
+          </Form.Element>
+          {makeAdvancedSection()}
+        </Overlay.Body>
+        <Overlay.Footer>
+          <Button text="Cancel" onClick={onClose} type={ButtonType.Button} />
+          {buttonText === 'Save Changes' && (
+            <Button
+              text="Rename"
+              color={ComponentColor.Danger}
+              onClick={onClickRename}
+            />
+          )}
+          <Button
+            text={buttonText}
+            testID="bucket-form-submit"
+            color={this.submitButtonColor}
+            status={this.submitButtonStatus}
+            type={ButtonType.Submit}
+          />
+        </Overlay.Footer>
       </Form>
     )
   }

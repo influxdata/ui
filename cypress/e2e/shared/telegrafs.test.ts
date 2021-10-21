@@ -198,15 +198,15 @@ describe('Collectors', () => {
 
       it('can delete a config', () => {
         cy.getByTestID('resource-card').should('have.length', 1)
-        cy.getByTestID('telegraf-delete-menu').click({force: true})
-        cy.getByTestID('telegraf-delete-button').click()
+        cy.getByTestID('context-delete-menu--button').click({force: true})
+        cy.getByTestID('context-delete-menu--confirm-button').click()
         cy.getByTestID('empty-state').should('exist')
       })
 
       it('can clone a config', () => {
         cy.getByTestID('resource-card').should('have.length', 1)
-        cy.getByTestID('telegraf-clone-menu').click({force: true})
-        cy.getByTestID('telegraf-clone-button').click()
+        cy.getByTestID('context-menu-telegraf').click({force: true})
+        cy.getByTestID('context-clone-telegraf').click()
         cy.getByTestID('resource-card').should('have.length', 2)
         cy.getByTestID('collector-card--name').then(el => {
           expect(el[1].innerText).to.equal('New Config (clone 1)')
@@ -341,7 +341,7 @@ describe('Collectors', () => {
               cy.contains('Done')
                 .click()
                 .then(() => {
-                  cy.get('.cf-icon.checkmark').should('exist')
+                  cy.get('.cf-icon.checkmark-new').should('exist')
                 })
             })
         })
@@ -357,7 +357,7 @@ describe('Collectors', () => {
         cy.getByTestID('input-field').type('youre mom')
         cy.contains('Add').click()
         cy.contains('Done').click()
-        cy.get('.cf-icon.remove').should('exist')
+        cy.get('.cf-icon.remove-new').should('exist')
       })
     })
 
@@ -400,7 +400,7 @@ describe('Collectors', () => {
               cy.contains('alan bean').should('not.exist')
 
               cy.contains('Done').click()
-              cy.get('.cf-icon.checkmark').should('exist')
+              cy.get('.cf-icon.checkmark-new').should('exist')
             })
         })
       })

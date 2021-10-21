@@ -60,7 +60,7 @@ const ThresholdStatement: FC<Props> = ({
   }
 
   return (
-    <Panel backgroundColor={InfluxColors.Castle} testID="panel">
+    <Panel backgroundColor={InfluxColors.Grey15} testID="panel">
       <DismissButton
         color={ComponentColor.Default}
         onClick={removeLevel}

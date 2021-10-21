@@ -4,11 +4,11 @@
 */
 
 .markdown-cell .cf-dapper-scrollbars--track-y {
-  background-color: $g2-kevlar !important;
+  background-color: $cf-grey-5 !important;
 }
 
 .markdown-cell--contents {
-  padding: $cf-marg-b + $cf-marg-a 26px;
+  padding: $cf-space-2xs + $cf-space-3xs 26px;
   font-size: 1.2em;
 }
 
@@ -20,23 +20,37 @@
 */
 
 .markdown-format {
-  color: $g13-mist;
+  color: $cf-grey-75;
 
   p {
-    font-size: 1em;
-    line-height: 1.25em;
-    font-weight: $cf-font-weight--medium;
+    font-size: $cf-text-base;
+    line-height: 1.55em;
+    font-weight: $cf-font-weight--regular;
   }
 
-  h3:not(.cf-heading),
-  h4:not(.cf-heading) {
-    border-bottom: $cf-border solid $g4-onyx;
+  h3:not(.cf-heading) {
+    font-size: $cf-text-base-3;
+    font-weight: $cf-font-weight--medium;
+    line-height: 1.25em;
+    border-bottom: $cf-border solid $cf-grey-15;
     padding-bottom: 0.25em;
+  }
+  h4:not(.cf-heading) {
+    font-size: $cf-text-base-2;
+    font-weight: $cf-font-weight--medium;
+    line-height: 1.25em;
+    border-bottom: $cf-border solid $cf-grey-15;
+    padding-bottom: 0.25em;
+  }
+  h5:not(.cf-heading) {
+    font-size: $cf-text-base-1;
+    font-weight: $cf-font-weight--medium;
+    line-height: 1.25em;
   }
 
   strong {
     font-weight: $cf-font-weight--black;
-    color: $g16-pearl;
+    color: $cf-grey-85;
   }
 
   table:not(.cf-table) {
@@ -45,12 +59,12 @@
 
   td:not(.cf-table--cell),
   th:not(.cf-table--header-cell) {
-    padding: $cf-marg-a $cf-marg-b;
-    border: $cf-border solid $g5-pepper;
+    padding: $cf-space-3xs $cf-space-2xs;
+    border: $cf-border solid $cf-grey-25;
   }
 
   th:not(.cf-table--header-cell) {
-    background-color: $g5-pepper;
+    background-color: $cf-grey-25;
   }
 
   code {
@@ -60,13 +74,13 @@
     color: $c-potassium;
     letter-spacing: 0;
     font-weight: $cf-font-weight--bold;
-    background-color: $g1-raven;
+    background-color: $cf-grey-5;
   }
 
   pre {
     border-radius: $cf-radius-sm;
     padding: 6px;
-    background-color: $g1-raven;
+    background-color: $cf-grey-5;
 
     code {
       padding: 0;

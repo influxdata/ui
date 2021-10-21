@@ -51,7 +51,7 @@ export const SeriesCardinalityIncreaseForm: FC<Props> = ({orgID}) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Form.Divider lineColor={InfluxColors.Castle} />
+      <Form.Divider lineColor={InfluxColors.Grey15} />
       <Heading element={HeadingElement.H4}>
         Request Series Cardinality Limit Increase
       </Heading>

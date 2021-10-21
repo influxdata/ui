@@ -42,11 +42,11 @@ describe('Pinned Items', () => {
     it('pins a dashboard to the homepage for easy access as a pinned item', () => {
       cy.getByTestID('dashboard-card')
         .first()
-        .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-dashboard').click()
+          cy.getByTestID('context-menu-dashboard').click()
         })
+      cy.getByTestID('context-pin-dashboard').click()
+
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -57,11 +57,11 @@ describe('Pinned Items', () => {
     it('reflects an edit to the dashboard name on the dashboard card', () => {
       cy.getByTestID('dashboard-card')
         .first()
-        .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-dashboard').click()
+          cy.getByTestID('context-menu-dashboard').click()
         })
+      cy.getByTestID('context-pin-dashboard').click()
+
       cy.getByTestID('dashboard-card').within(() => {
         cy.getByTestID('dashboard-card--name')
           .first()
@@ -90,11 +90,11 @@ describe('Pinned Items', () => {
     it('unpins a card which removes it from the pinned list', () => {
       cy.getByTestID('dashboard-card')
         .first()
-        .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-dashboard').click()
+          cy.getByTestID('context-menu-dashboard').click()
         })
+      cy.getByTestID('context-pin-dashboard').click()
+
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--card')
@@ -115,9 +115,9 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('context-delete-menu').click()
-          cy.getByTestID('context-delete-dashboard').click()
+          cy.getByTestID('context-delete-menu--button').click()
         })
+      cy.getByTestID('context-delete-menu--confirm-button').click()
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
@@ -166,7 +166,7 @@ from(bucket: "${name}"{rightarrow}
         .first()
         .trigger('mouseover')
         .then(() => {
-          cy.getByTestID('context-pin-menu').click({force: true})
+          cy.getByTestID('context-menu-task').click()
           cy.getByTestID('context-pin-task').click()
         })
     })
@@ -208,10 +208,14 @@ from(bucket: "${name}"{rightarrow}
     it('unpins when the underlying resource is removed', () => {
       cy.getByTestID('task-card')
         .first()
-        .trigger('mouseover')
-        .within(() => {
-          cy.getByTestID('context-delete-menu').click()
-          cy.getByTestID('context-delete-task').click()
+        .then(() => {
+          cy.getByTestID(`context-delete-menu ${taskName}--button`)
+            .click()
+            .then(() => {
+              cy.getByTestID(
+                `context-delete-menu ${taskName}--confirm-button`
+              ).click()
+            })
         })
 
       cy.visit('/')
@@ -229,7 +233,7 @@ from(bucket: "${name}"{rightarrow}
         pinnedItems: true,
       }).then(() => {
         cy.getByTestID('nav-item-flows').should('be.visible')
-        cy.getByTestID('nav-item-flows').click()
+        cy.clickNavBarItem('nav-item-flows')
         const now = Date.now()
         cy.writeData(
           [
@@ -255,12 +259,11 @@ from(bucket: "${name}"{rightarrow}
     })
 
     it('pins a notebook to the homepage', () => {
-      cy.getByTestID('flow-card--Flow')
-        .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-flow').click({force: true})
-        })
+      cy.getByTestID('flow-card--Flow').within(() => {
+        cy.getByTestID('context-menu-flow').click()
+      })
+      cy.getByTestID('context-pin-flow').click()
+
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -269,12 +272,11 @@ from(bucket: "${name}"{rightarrow}
     })
 
     it('updates the name when the notebook name is updated', () => {
-      cy.getByTestID('flow-card--Flow')
-        .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-flow').click({force: true})
-        })
+      cy.getByTestID('flow-card--Flow').within(() => {
+        cy.getByTestID('context-menu-flow').click()
+      })
+      cy.getByTestID('context-pin-flow').click()
+
       cy.getByTestID('resource-editable-name')
         .first()
         .trigger('mouseover')
@@ -314,18 +316,14 @@ from(bucket: "${name}"{rightarrow}
         .focus()
         .type('Bucks In Six')
         .type('{enter}')
-      cy.getByTestID('flow-card--Bucks In Six')
-        .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('context-pin-menu').click({force: true})
-          cy.getByTestID('context-pin-flow').click({force: true})
-          cy.getByTestID('context-delete-menu Bucks In Six').click({
-            force: true,
-          })
-          cy.getByTestID('context-delete-flow Bucks In Six').click({
-            force: true,
-          })
-        })
+      cy.getByTestID('flow-card--Bucks In Six').within(() => {
+        cy.getByTestID('context-menu-flow').click()
+      })
+      cy.getByTestID('context-pin-flow').click()
+      cy.getByTestID('flow-card--Bucks In Six').within(() => {
+        cy.getByTestID(`context-delete-menu--button`).click()
+      })
+      cy.getByTestID(`context-delete-menu--confirm-button`).click()
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--emptystate').should(

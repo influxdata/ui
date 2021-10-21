@@ -49,7 +49,7 @@ const DemoDataDropdown: FC<Props> = ({
         >
           <div className="demodata-dropdown--item-contents">
             <Icon
-              glyph={IconFont.Checkmark}
+              glyph={IconFont.Checkmark_New}
               className="demodata-dropdown--item-icon"
             />
             {b.name}
@@ -70,7 +70,7 @@ const DemoDataDropdown: FC<Props> = ({
       >
         <div className="demodata-dropdown--item-contents">
           <Icon
-            glyph={IconFont.Checkmark}
+            glyph={IconFont.Checkmark_New}
             className="demodata-dropdown--item-icon"
           />
           {b.name}
@@ -82,15 +82,15 @@ const DemoDataDropdown: FC<Props> = ({
   return (
     <Dropdown
       testID="dropdown--demodata"
-      style={{width: '220px'}}
-      className="demodata-dropdown"
+      style={{width: '240px'}}
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}
           onClick={onClick}
-          icon={IconFont.Plus}
+          icon={IconFont.Plus_New}
           color={ComponentColor.Secondary}
           testID="dropdown-button--demodata"
+          style={{textTransform: 'uppercase', letterSpacing: '0.07em'}}
         >
           Add Demo Data
         </Dropdown.Button>

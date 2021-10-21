@@ -26,8 +26,9 @@ const DashboardLightModeToggle: FC<Props> = ({theme, onSetTheme}) => {
         id="presentation-mode-toggle--dark"
         active={theme === 'dark'}
         titleText="Dark Mode"
+        style={{display: 'flex'}}
       >
-        <Icon glyph={IconFont.Moon} />
+        <Icon glyph={IconFont.Darkmode_New} />
       </SelectGroup.Option>
       <SelectGroup.Option
         onClick={() => onSetTheme('light')}
@@ -35,8 +36,9 @@ const DashboardLightModeToggle: FC<Props> = ({theme, onSetTheme}) => {
         value={true}
         active={theme === 'light'}
         titleText="Light Mode"
+        style={{display: 'flex'}}
       >
-        <Icon glyph={IconFont.Sun} />
+        <Icon glyph={IconFont.Lightmode_New} />
       </SelectGroup.Option>
     </SelectGroup>
   )

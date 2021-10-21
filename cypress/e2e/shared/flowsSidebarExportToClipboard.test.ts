@@ -150,7 +150,7 @@ describe('Flows', () => {
             cy.visit(`${orgs}/${id}`)
             cy.getByTestID('tree-nav')
 
-            cy.getByTestID('nav-item-flows').click()
+            cy.clickNavBarItem('nav-item-flows')
           })
         })
       })

@@ -15,6 +15,7 @@ import {
   getByInputValue,
   getByTestIDAndSetInputValue,
   getByTitle,
+  clickNavBarItem,
   createTask,
   createMapVariable,
   createCSVVariable,
@@ -57,6 +58,7 @@ declare global {
       signin: typeof signin
       setupUser: typeof setupUser
       clickAttached: typeof clickAttached
+      clickNavBarItem: typeof clickNavBarItem
       createSource: typeof createSource
       createCSVVariable: typeof createCSVVariable
       createQueryVariable: typeof createQueryVariable

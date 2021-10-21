@@ -3,14 +3,11 @@ import React, {FC, useState} from 'react'
 
 // Components
 import {
-  Panel,
-  InfluxColors,
   Heading,
   HeadingElement,
   FontWeight,
   Icon,
   IconFont,
-  ComponentSize,
 } from '@influxdata/clockface'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
 import {Renderer} from 'react-markdown'
@@ -36,35 +33,29 @@ const InstallPackageHelper: FC<Props> = ({text, codeRenderer}) => {
 
   return (
     <div className="install-package--container">
-      <Panel backgroundColor={InfluxColors.Castle}>
-        <Panel.Header size={ComponentSize.ExtraSmall}>
-          <div
-            className={`install-package-helper--heading install-package-helper--heading__${mode}`}
-            onClick={handleToggleClick}
-          >
-            <Icon
-              glyph={IconFont.CaretRight}
-              className="install-package-helper--caret"
-            />
-            <Heading
-              element={HeadingElement.H5}
-              weight={FontWeight.Regular}
-              selectable={true}
-            >
-              Installation Instructions
-            </Heading>
-          </div>
-        </Panel.Header>
-        {mode === 'expanded' && (
-          <Panel.Body size={ComponentSize.ExtraSmall}>
-            <MarkdownRenderer
-              text={text}
-              cloudRenderers={{code: codeRenderer}}
-              escapeHtml={false}
-            />
-          </Panel.Body>
-        )}
-      </Panel>
+      <div
+        className={`install-package-helper--heading install-package-helper--heading__${mode}`}
+        onClick={handleToggleClick}
+      >
+        <Icon
+          glyph={IconFont.CaretRight}
+          className="install-package-helper--caret"
+        />
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Medium}
+          selectable={true}
+        >
+          Installation Instructions
+        </Heading>
+      </div>
+      {mode === 'expanded' && (
+        <MarkdownRenderer
+          text={text}
+          cloudRenderers={{code: codeRenderer}}
+          escapeHtml={false}
+        />
+      )}
     </div>
   )
 }

@@ -57,9 +57,9 @@ interface ColorizeRowsToggleProps {
 
 const getToggleColor = (toggle: boolean): CSSProperties => {
   if (toggle) {
-    return {color: InfluxColors.Cloud}
+    return {color: InfluxColors.Grey95}
   }
-  return {color: InfluxColors.Sidewalk}
+  return {color: InfluxColors.Grey65}
 }
 
 export const OrientationToggle: FC<OrientationToggleProps> = ({

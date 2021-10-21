@@ -49,14 +49,14 @@ class VEOHeader extends PureComponent<Props> {
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <SquareButton
-              icon={IconFont.Remove}
+              icon={IconFont.Remove_New}
               onClick={onCancel}
               size={ComponentSize.Small}
               testID="cancel-cell-edit--button"
             />
             <SquareButton
               className={saveButtonClass}
-              icon={IconFont.Checkmark}
+              icon={IconFont.Checkmark_New}
               color={ComponentColor.Success}
               size={ComponentSize.Small}
               onClick={onSave}

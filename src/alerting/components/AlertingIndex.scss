@@ -11,7 +11,7 @@
 
 .alerting-index--selector {
   width: 100%;
-  margin-bottom: $cf-marg-b;
+  margin-bottom: $cf-space-2xs;
 }
 
 .alerting-index--columns {
@@ -25,7 +25,7 @@
   flex-direction: column;
   flex: 1 0 0;
   overflow: hidden;
-  margin-bottom: $cf-marg-c;
+  margin-bottom: $cf-space-s;
 }
 
 .alerting-index__checks .alerting-index--checks,
@@ -40,7 +40,7 @@
 
 .alerting-index--list,
 .alerting-index--search {
-  padding: 20px;
+  padding: $cf-space-m 0;
   padding-top: 0;
 }
 
@@ -77,7 +77,7 @@
 
     strong {
       font-weight: 900;
-      color: $g20-white;
+      color: $cf-white;
     }
   }
 
@@ -102,7 +102,7 @@
     font-size: 14px;
     line-height: 1.5em;
     font-weight: 500;
-    color: $g15-platinum;
+    color: $cf-grey-85;
   }
   p {
     margin-top: 0;

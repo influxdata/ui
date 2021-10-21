@@ -11,6 +11,8 @@ import {
   Panel,
   InfluxColors,
   DapperScrollbars,
+  Input,
+  IconFont,
   FlexBox,
   FlexDirection,
   ComponentSize,
@@ -20,7 +22,6 @@ import {
 } from '@influxdata/clockface'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import AssetLimitButton from 'src/cloud/components/AssetLimitButton'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Utils
 import {
@@ -71,6 +72,10 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
     />
   )
 
+  // not using the SearchWidget here, just adding the onClear to the Input;
+  // because using the SearchWidget instead changes how the 'children(searchTerm)'
+  // function is called (with the vanilla Input, it is called on each keystroke,
+  // with the searchWidget is it only called once at render time)
   return (
     <Panel
       backgroundColor={InfluxColors.Grey5}
@@ -94,12 +99,14 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
         {isLimitExceeded ? assetLimitButton : createButton}
       </FlexBox>
       <div className="alerting-index--search">
-        <SearchWidget
-          placeholderText={`Filter ${title}...`}
-          searchTerm={searchTerm}
-          onSearch={onChangeSearchTerm}
+        <Input
+          icon={IconFont.Search}
+          placeholder={`Filter ${title}...`}
+          value={searchTerm}
+          onChange={e => onChangeSearchTerm(e.target.value)}
           testID={`filter--input ${type}`}
           tabIndex={tabIndex}
+          onClear={() => onChangeSearchTerm('')}
         />
       </div>
       <div className="alerting-index--column-body">

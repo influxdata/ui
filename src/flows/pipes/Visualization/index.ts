@@ -1,6 +1,8 @@
 import View from './view'
 import './style.scss'
+import {parse} from '@influxdata/flux'
 import {parseQuery} from 'src/shared/contexts/query'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
@@ -19,7 +21,9 @@ export default register => {
       }
 
       try {
-        const ast = parseQuery(query)
+        const ast = isFlagEnabled('fastFlows')
+          ? parseQuery(query)
+          : parse(query)
         if (!ast.body.length) {
           return ''
         }

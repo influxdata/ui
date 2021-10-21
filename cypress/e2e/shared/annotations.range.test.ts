@@ -130,13 +130,17 @@ describe('Annotations, but in a different test suite', () => {
         .invoke('val')
         .then(endTimeValue => {
           // switch it to a point annotation
-          cy.getByTestID('annotation-form-point-type-option').click()
+          cy.getByTestID('annotation-form-point-type-option')
+            .should('not.have.class', 'cf-select-group--option__active')
+            .click()
 
           // the endTime input should disappear
           cy.getByTestID('endTime-testID').should('not.exist')
 
           // switch back to range:
-          cy.getByTestID('annotation-form-range-type-option').click()
+          cy.getByTestID('annotation-form-range-type-option')
+            .should('not.have.class', 'cf-select-group--option__active')
+            .click()
 
           cy.getByTestID('endTime-testID')
             .should('be.visible')
@@ -158,7 +162,9 @@ describe('Annotations, but in a different test suite', () => {
       )
 
       // switch it to a point annotation
-      cy.getByTestID('annotation-form-point-type-option').click()
+      cy.getByTestID('annotation-form-point-type-option')
+        .should('not.have.class', 'cf-select-group--option__active')
+        .click()
 
       // verify that it is a point annotation now
       cy.getByTestID('annotation-form-point-type-option--input').should(
@@ -205,7 +211,9 @@ describe('Annotations, but in a different test suite', () => {
         cy.getByTestID('endTime-testID').should('not.exist')
 
         // now: click the button to switch to range:
-        cy.getByTestID('annotation-form-range-type-option').click()
+        cy.getByTestID('annotation-form-range-type-option')
+          .should('not.have.class', 'cf-select-group--option__active')
+          .click()
 
         // now, the end time input SHOULD show up
         cy.getByTestID('endTime-testID').should('be.visible')

@@ -83,11 +83,15 @@ describe('Secrets', () => {
             })
 
           // Delete API created secrets via the UI
-          cy.getByTestID('delete-secret-initial--toEverybody').click({
+          cy.getByTestID('context-delete-menu toEverybody--button').click({
             force: true,
           })
-          cy.getByTestID('delete-secret-confirm--toEverybody').should('exist')
-          cy.getByTestID('delete-secret-confirm--toEverybody').click({
+          cy.getByTestID(
+            'context-delete-menu toEverybody--confirm-button'
+          ).should('exist')
+          cy.getByTestID(
+            'context-delete-menu toEverybody--confirm-button'
+          ).click({
             force: true,
           })
           cy.wait('@deleteSecret')

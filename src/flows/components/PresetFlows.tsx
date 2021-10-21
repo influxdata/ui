@@ -50,7 +50,7 @@ const PresetFlows: FC = () => {
                       onClick={() => history.push(p.href)}
                     ></Button>
                   )}
-                  <h5 className="flows-index--presetHeader">{p}</h5>
+                  <h5 className="flows-index--presetHeader">{p.title}</h5>
                 </div>
               ))}
             </div>

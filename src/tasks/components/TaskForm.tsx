@@ -160,6 +160,7 @@ export default class TaskForm extends PureComponent<Props, State> {
             onClick={dismiss}
             titleText="Cancel save"
             type={ButtonType.Button}
+            color={ComponentColor.Tertiary}
           />
           <Button
             text="Save as Task"

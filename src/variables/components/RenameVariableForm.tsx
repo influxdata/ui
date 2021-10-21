@@ -4,7 +4,7 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {Form, Input, Button, Grid} from '@influxdata/clockface'
+import {Form, Input, Button, Overlay} from '@influxdata/clockface'
 
 // Utils
 import {validateVariableName} from 'src/variables/utils/validation'
@@ -46,55 +46,45 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
 
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column>
-              <div className="overlay-flux-editor--spacing">
-                <Form.ValidationElement
-                  label="Name"
+        <Overlay.Body>
+          <div className="overlay-flux-editor--spacing">
+            <Form.ValidationElement
+              label="Name"
+              value={workingVariable.name}
+              required={true}
+              prevalidate={true}
+              validationFunc={this.handleNameValidation}
+            >
+              {status => (
+                <Input
+                  placeholder="Rename your variable"
+                  name="name"
+                  autoFocus={true}
                   value={workingVariable.name}
-                  required={true}
-                  prevalidate={true}
-                  validationFunc={this.handleNameValidation}
-                >
-                  {status => (
-                    <Input
-                      placeholder="Rename your variable"
-                      name="name"
-                      autoFocus={true}
-                      value={workingVariable.name}
-                      onChange={this.handleChangeInput}
-                      status={status}
-                      testID="rename-variable-input"
-                    />
-                  )}
-                </Form.ValidationElement>
-              </div>
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
-              <Form.Footer>
-                <Button
-                  text="Cancel"
-                  color={ComponentColor.Danger}
-                  onClick={onClose}
+                  onChange={this.handleChangeInput}
+                  status={status}
+                  testID="rename-variable-input"
                 />
-                <Button
-                  text="Submit"
-                  type={ButtonType.Submit}
-                  color={ComponentColor.Primary}
-                  status={
-                    isNameValid
-                      ? ComponentStatus.Default
-                      : ComponentStatus.Disabled
-                  }
-                  testID="rename-variable-submit"
-                />
-              </Form.Footer>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+              )}
+            </Form.ValidationElement>
+          </div>
+        </Overlay.Body>
+        <Overlay.Footer>
+          <Button
+            text="Cancel"
+            color={ComponentColor.Tertiary}
+            onClick={onClose}
+          />
+          <Button
+            text="Submit"
+            type={ButtonType.Submit}
+            color={ComponentColor.Primary}
+            status={
+              isNameValid ? ComponentStatus.Default : ComponentStatus.Disabled
+            }
+            testID="rename-variable-submit"
+          />
+        </Overlay.Footer>
       </Form>
     )
   }

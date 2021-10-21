@@ -348,6 +348,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
           <div className={buttonClasses}>
             <Button
               text="Cancel"
+              color={ComponentColor.Tertiary}
               onClick={handleCancel}
               testID="edit-annotation-cancel-button"
               className="edit-annotation-cancel"

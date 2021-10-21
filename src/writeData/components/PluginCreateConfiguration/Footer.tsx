@@ -102,7 +102,7 @@ const FooterComponent: FC<Props> = props => {
     return (
       <Overlay.Footer>
         <Button
-          color={ComponentColor.Default}
+          color={ComponentColor.Tertiary}
           onClick={onExit}
           tabIndex={1}
           testID="plugin-create-configuration-cancel"

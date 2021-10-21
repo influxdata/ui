@@ -316,7 +316,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       </Overlay.Body>
       <Overlay.Footer>
         <Button
-          color={ComponentColor.Primary}
+          color={ComponentColor.Tertiary}
           shape={ButtonShape.Default}
           onClick={handleDismiss}
           testID="cancel-token-overlay--buton"

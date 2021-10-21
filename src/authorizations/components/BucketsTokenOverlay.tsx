@@ -128,6 +128,7 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
             <Overlay.Footer>
               <Button
                 text="Cancel"
+                color={ComponentColor.Tertiary}
                 onClick={this.handleDismiss}
                 testID="button--cancel"
               />

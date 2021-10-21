@@ -125,7 +125,11 @@ export default class VariableForm extends PureComponent<Props, State> {
           </Grid>
         </Overlay.Body>
         <Overlay.Footer>
-          <Button text="Cancel" onClick={onHideOverlay} />
+          <Button
+            text="Cancel"
+            color={ComponentColor.Tertiary}
+            onClick={onHideOverlay}
+          />
           <Button
             text={submitText}
             type={ButtonType.Submit}

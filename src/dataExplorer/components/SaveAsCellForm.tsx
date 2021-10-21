@@ -115,6 +115,7 @@ class SaveAsCellForm extends PureComponent<Props, State> {
                   onClick={dismiss}
                   titleText="Cancel save"
                   type={ButtonType.Button}
+                  color={ComponentColor.Tertiary}
                   testID="save-as-dashboard-cell--cancel"
                 />
                 <Button

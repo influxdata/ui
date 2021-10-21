@@ -29,7 +29,7 @@ export default class TaskHeader extends PureComponent<Props> {
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarRight>
             <Button
-              color={ComponentColor.Default}
+              color={ComponentColor.Tertiary}
               text="Cancel"
               onClick={onCancel}
               testID="task-cancel-btn"

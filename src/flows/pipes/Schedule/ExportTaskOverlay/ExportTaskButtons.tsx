@@ -18,6 +18,7 @@ const ExportTaskButtons: FC = () => {
         text="Cancel"
         onClick={closeFn}
         titleText="Cancel"
+        color={ComponentColor.Tertiary}
         type={ButtonType.Button}
       />
       <Button

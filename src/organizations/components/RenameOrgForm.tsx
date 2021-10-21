@@ -77,6 +77,7 @@ class RenameOrgForm extends PureComponent<Props, State> {
                 >
                   <Button
                     text="Cancel"
+                    color={ComponentColor.Tertiary}
                     icon={IconFont.Remove_New}
                     onClick={this.handleGoBack}
                   />

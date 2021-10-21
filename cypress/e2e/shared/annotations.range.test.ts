@@ -55,6 +55,7 @@ describe('Annotations, but in a different test suite', () => {
         .should($el => {
           expect(Cypress.dom.isDetached($el)).to.be.false
         })
+        .last()
         .click()
         .type(PERIOD)
 
@@ -164,6 +165,7 @@ describe('Annotations, but in a different test suite', () => {
           .should($el => {
             expect(Cypress.dom.isDetached($el)).to.be.false
           })
+          .last()
           .click()
           .type(PERIOD)
 

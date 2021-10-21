@@ -6,7 +6,6 @@ export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation'
 export const RANGE_ANNOTATION_TEXT = 'range annotation here'
 export const EDIT_RANGE_ANNOTATION_TEXT =
   'editing the text here for the range annotation'
-export const PERIOD = '.'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
@@ -78,11 +77,8 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .invoke('val', ANNOTATION_TEXT)
-    .should($el => {
-      expect(Cypress.dom.isDetached($el)).to.be.false
-    })
-    .type(PERIOD, {force: true, waitForAnimations: false})
+    .focused()
+    .type(ANNOTATION_TEXT)
 
   cy.getByTestID('annotation-submit-button').click({force: true})
 }
@@ -152,11 +148,8 @@ export const addRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .invoke('val', RANGE_ANNOTATION_TEXT)
-    .should($el => {
-      expect(Cypress.dom.isDetached($el)).to.be.false
-    })
-    .type(PERIOD, {force: true, waitForAnimations: false})
+    .focused()
+    .type(RANGE_ANNOTATION_TEXT)
 
   cy.getByTestID('annotation-submit-button').click({force: true})
 }
@@ -177,11 +170,8 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .invoke('val', EDIT_ANNOTATION_TEXT)
-    .should($el => {
-      expect(Cypress.dom.isDetached($el)).to.be.false
-    })
-    .type(PERIOD, {force: true, waitForAnimations: false})
+    .focused()
+    .type(EDIT_ANNOTATION_TEXT)
 
   cy.getByTestID('annotation-submit-button').click({force: true})
 
@@ -203,11 +193,8 @@ export const testEditRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .invoke('val', EDIT_RANGE_ANNOTATION_TEXT)
-    .should($el => {
-      expect(Cypress.dom.isDetached($el)).to.be.false
-    })
-    .type(PERIOD, {force: true, waitForAnimations: false})
+    .focused()
+    .type(EDIT_RANGE_ANNOTATION_TEXT)
 
   // ensure the two times are not equal
   cy.getByTestID('endTime-testID')

@@ -1,7 +1,6 @@
 import {
   ANNOTATION_TEXT,
   EDIT_ANNOTATION_TEXT,
-  PERIOD,
   RANGE_ANNOTATION_TEXT,
   addAnnotation,
   addRangeAnnotation,
@@ -30,6 +29,36 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('annotations-control-bar').should('not.exist')
     })
 
+    it('can create an annotation, and then after turning off annotation mode annotations disappear', () => {
+      // create an annotation
+      addAnnotation(cy)
+
+      // verify the tooltip shows up
+      checkAnnotationText(cy, ANNOTATION_TEXT)
+
+      // turn off annotations mode
+      cy.getByTestID('toggle-annotations-controls').click()
+
+      // verify the annotation does NOT show up
+      cy.getByTestID('cell blah').within(() => {
+        cy.get('.giraffe-annotation-click-target').should('not.exist')
+      })
+
+      cy.getByTestID('giraffe-annotation-tooltip').should('not.exist')
+    })
+
+    it('cannot create an annotation when graph is clicked and annotation mode is off', () => {
+      // switch off the control bar
+      cy.getByTestID('toggle-annotations-controls').click()
+      cy.getByTestID('annotations-control-bar').should('not.exist')
+
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+
+      cy.getByTestID('overlay--container').should('not.exist')
+    })
+
     it('can show a tooltip when annotation is hovered on in the graph', () => {
       addAnnotation(cy)
 
@@ -51,11 +80,8 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('annotation-message--form').should('be.visible')
 
       cy.getByTestID('edit-annotation-message')
-        .invoke('val', EDIT_ANNOTATION_TEXT)
-        .should($el => {
-          expect(Cypress.dom.isDetached($el)).to.be.false
-        })
-        .type(PERIOD, {force: true, waitForAnimations: false})
+        .focused()
+        .type(EDIT_ANNOTATION_TEXT)
 
       cy.getByTestID('edit-annotation-cancel-button').click()
 
@@ -159,11 +185,8 @@ describe('Annotations, but in a different test suite', () => {
       })
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('edit-annotation-message')
-          .invoke('val', RANGE_ANNOTATION_TEXT)
-          .should($el => {
-            expect(Cypress.dom.isDetached($el)).to.be.false
-          })
-          .type(PERIOD, {force: true, waitForAnimations: false})
+          .focused()
+          .type(RANGE_ANNOTATION_TEXT)
 
         // should be of type 'point'
         cy.getByTestID('annotation-form-point-type-option--input').should(
@@ -202,6 +225,7 @@ describe('Annotations, but in a different test suite', () => {
               })
           })
       }) // end overlay-container within
+
       checkAnnotationText(cy, RANGE_ANNOTATION_TEXT)
 
       startEditingAnnotation(cy)
@@ -235,36 +259,6 @@ describe('Annotations, but in a different test suite', () => {
               expect(minutes).to.equal(10)
             })
         })
-    })
-
-    it('can create an annotation, and then after turning off annotation mode annotations disappear', () => {
-      // create an annotation
-      addAnnotation(cy)
-
-      // verify the tooltip shows up
-      checkAnnotationText(cy, ANNOTATION_TEXT)
-
-      // turn off annotations mode
-      cy.getByTestID('toggle-annotations-controls').click()
-
-      // verify the annotation does NOT show up
-      cy.getByTestID('cell blah').within(() => {
-        cy.get('.giraffe-annotation-click-target').should('not.exist')
-      })
-
-      cy.getByTestID('giraffe-annotation-tooltip').should('not.exist')
-    })
-
-    it('cannot create an annotation when graph is clicked and annotation mode is off', () => {
-      // switch off the control bar
-      cy.getByTestID('toggle-annotations-controls').click()
-      cy.getByTestID('annotations-control-bar').should('not.exist')
-
-      cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
-      })
-
-      cy.getByTestID('overlay--container').should('not.exist')
     })
   })
 })

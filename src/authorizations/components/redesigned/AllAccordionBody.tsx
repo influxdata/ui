@@ -84,9 +84,7 @@ export const AllAccordionBody: FC<OwnProps> = props => {
     <>
       {resourceName === 'All Resources' ? (
         Object.keys(permissions).map(key => {
-          //[{name: perm:{read: write:}}]
-          let names = permissions[key].name
-
+          const names = permissions[key].name
           const resourceName = names.charAt(0).toUpperCase() + names.slice(1)
 
           return (

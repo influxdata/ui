@@ -71,7 +71,7 @@ const BucketSelector: FC = () => {
         <BuilderCard.Menu>
           <Input
             value={search}
-            placeholder="Search for a bucket b"
+            placeholder="Search for a bucket"
             className="tag-selector--search"
             onChange={e => setSearch(e.target.value)}
           />

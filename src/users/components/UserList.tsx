@@ -2,7 +2,7 @@
 import React, {FC, useContext, useState} from 'react'
 
 // Components
-import {Columns, Grid, IconFont, IndexList, Input} from '@influxdata/clockface'
+import {Columns, Grid, IndexList} from '@influxdata/clockface'
 import {UsersContext} from 'src/users/context/users'
 import UserListItem from 'src/users/components/UserListItem'
 import InviteListItem from 'src/users/components/InviteListItem'

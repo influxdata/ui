@@ -1,6 +1,6 @@
 import View from './view'
 import './style.scss'
-import {parse} from '@influxdata/flux'
+import {parseQuery} from 'src/shared/contexts/query'
 
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
@@ -19,7 +19,7 @@ export default register => {
       }
 
       try {
-        const ast = parse(query)
+        const ast = parseQuery(query)
         if (!ast.body.length) {
           return ''
         }

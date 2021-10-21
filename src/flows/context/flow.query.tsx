@@ -374,20 +374,21 @@ export const FlowQueryProvider: FC = ({children}) => {
           return a
         }, {})
     )
+
     Promise.all(
       map
         .filter(q => !!q.visual)
         .map(stage => {
           return query(stage.visual, stage.scope)
             .then(response => {
-              setStatuses({[stage.id]: RemoteDataState.Done})
               setResult(stage.id, response)
+              setStatuses({[stage.id]: RemoteDataState.Done})
             })
             .catch(e => {
-              setStatuses({[stage.id]: RemoteDataState.Error})
               setResult(stage.id, {
                 error: e.message,
               })
+              setStatuses({[stage.id]: RemoteDataState.Error})
             })
         })
     )

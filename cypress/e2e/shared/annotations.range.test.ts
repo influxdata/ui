@@ -52,6 +52,7 @@ describe('Annotations, but in a different test suite', () => {
 
       cy.getByTestID('edit-annotation-message')
         .invoke('val', EDIT_ANNOTATION_TEXT)
+        .click()
         .type(PERIOD)
 
       cy.getByTestID('edit-annotation-cancel-button').click()
@@ -157,6 +158,7 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('edit-annotation-message')
           .invoke('val', RANGE_ANNOTATION_TEXT)
+          .click()
           .type(PERIOD)
 
         // should be of type 'point'

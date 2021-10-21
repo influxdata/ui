@@ -2,11 +2,11 @@ import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
 export const ANNOTATION_TEXT = 'im a hippopotamus'
-export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation...'
-export const RANGE_ANNOTATION_TEXT = 'range annotation here!'
+export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation'
+export const RANGE_ANNOTATION_TEXT = 'range annotation here'
 export const EDIT_RANGE_ANNOTATION_TEXT =
   'editing the text here for the range annotation'
-export const NO_TEXT = ' {backspace}'
+export const PERIOD = '.'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
@@ -79,7 +79,7 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('edit-annotation-message')
     .invoke('val', ANNOTATION_TEXT)
-    .type(NO_TEXT)
+    .type(PERIOD)
   cy.getByTestID('annotation-submit-button').click()
 }
 
@@ -149,7 +149,7 @@ export const addRangeAnnotation = (
 
   cy.getByTestID('edit-annotation-message')
     .invoke('val', RANGE_ANNOTATION_TEXT)
-    .type(NO_TEXT)
+    .type(PERIOD)
 
   cy.getByTestID('annotation-submit-button').click()
 }
@@ -171,7 +171,7 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('edit-annotation-message')
     .invoke('val', EDIT_ANNOTATION_TEXT)
-    .type(NO_TEXT)
+    .type(PERIOD)
 
   cy.getByTestID('annotation-submit-button').click()
 
@@ -194,7 +194,7 @@ export const testEditRangeAnnotation = (
 
   cy.getByTestID('edit-annotation-message')
     .invoke('val', EDIT_RANGE_ANNOTATION_TEXT)
-    .type(NO_TEXT)
+    .type(PERIOD)
 
   // ensure the two times are not equal
   cy.getByTestID('endTime-testID')

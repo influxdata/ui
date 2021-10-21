@@ -1,7 +1,6 @@
 import {
   ANNOTATION_TEXT,
   EDIT_ANNOTATION_TEXT,
-  NO_TEXT,
   RANGE_ANNOTATION_TEXT,
   addAnnotation,
   addRangeAnnotation,
@@ -30,6 +29,36 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('annotations-control-bar').should('not.exist')
     })
 
+    it('can create an annotation, and then after turning off annotation mode annotations disappear', () => {
+      // create an annotation
+      addAnnotation(cy)
+
+      // verify the tooltip shows up
+      checkAnnotationText(cy, ANNOTATION_TEXT)
+
+      // turn off annotations mode
+      cy.getByTestID('toggle-annotations-controls').click()
+
+      // verify the annotation does NOT show up
+      cy.getByTestID('cell blah').within(() => {
+        cy.get('.giraffe-annotation-click-target').should('not.exist')
+      })
+
+      cy.getByTestID('giraffe-annotation-tooltip').should('not.exist')
+    })
+
+    it('cannot create an annotation when graph is clicked and annotation mode is off', () => {
+      // switch off the control bar
+      cy.getByTestID('toggle-annotations-controls').click()
+      cy.getByTestID('annotations-control-bar').should('not.exist')
+
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
+      })
+
+      cy.getByTestID('overlay--container').should('not.exist')
+    })
+
     it('can show a tooltip when annotation is hovered on in the graph', () => {
       addAnnotation(cy)
 
@@ -51,8 +80,10 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('annotation-message--form').should('be.visible')
 
       cy.getByTestID('edit-annotation-message')
-        .invoke('val', EDIT_ANNOTATION_TEXT)
-        .type(NO_TEXT)
+        .focused()
+        .clear()
+        .focused()
+        .type(EDIT_ANNOTATION_TEXT)
 
       cy.getByTestID('edit-annotation-cancel-button').click()
 
@@ -62,6 +93,7 @@ describe('Annotations, but in a different test suite', () => {
           .should('exist')
           .trigger('mouseover')
       })
+
       cy.getByTestID('giraffe-annotation-tooltip').contains(ANNOTATION_TEXT)
     })
   })
@@ -71,6 +103,7 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
+
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('annotation-form-point-type-option').should('be.visible')
         cy.getByTestID('annotation-form-range-type-option').should('be.visible')
@@ -79,6 +112,7 @@ describe('Annotations, but in a different test suite', () => {
 
     it('can add a range annotation, then edit it and switch back and forth from point->range and the endtime stays the same', () => {
       addRangeAnnotation(cy)
+
       startEditingAnnotation(cy)
 
       cy.getByTestID('overlay--container').should('be.visible')
@@ -96,13 +130,17 @@ describe('Annotations, but in a different test suite', () => {
         .invoke('val')
         .then(endTimeValue => {
           // switch it to a point annotation
-          cy.getByTestID('annotation-form-point-type-option').click()
+          cy.getByTestID('annotation-form-point-type-option')
+            .should('not.have.class', 'cf-select-group--option__active')
+            .click()
 
           // the endTime input should disappear
           cy.getByTestID('endTime-testID').should('not.exist')
 
           // switch back to range:
-          cy.getByTestID('annotation-form-range-type-option').click()
+          cy.getByTestID('annotation-form-range-type-option')
+            .should('not.have.class', 'cf-select-group--option__active')
+            .click()
 
           cy.getByTestID('endTime-testID')
             .should('be.visible')
@@ -124,7 +162,9 @@ describe('Annotations, but in a different test suite', () => {
       )
 
       // switch it to a point annotation
-      cy.getByTestID('annotation-form-point-type-option').click()
+      cy.getByTestID('annotation-form-point-type-option')
+        .should('not.have.class', 'cf-select-group--option__active')
+        .click()
 
       // verify that it is a point annotation now
       cy.getByTestID('annotation-form-point-type-option--input').should(
@@ -135,7 +175,9 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('endTime-testID').should('not.exist')
 
       // save it
-      cy.getByTestID('annotation-submit-button').click()
+      cy.getByTestID('annotation-submit-button')
+        .should('not.be.disabled')
+        .click()
 
       // make sure the edit was saved successfully
       cy.getByTestID('notification-success').should('be.visible')
@@ -154,10 +196,11 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('cell blah').within(() => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
+
       cy.getByTestID('overlay--container').within(() => {
         cy.getByTestID('edit-annotation-message')
-          .invoke('val', RANGE_ANNOTATION_TEXT)
-          .type(NO_TEXT)
+          .focused()
+          .type(RANGE_ANNOTATION_TEXT)
 
         // should be of type 'point'
         cy.getByTestID('annotation-form-point-type-option--input').should(
@@ -168,7 +211,9 @@ describe('Annotations, but in a different test suite', () => {
         cy.getByTestID('endTime-testID').should('not.exist')
 
         // now: click the button to switch to range:
-        cy.getByTestID('annotation-form-range-type-option').click()
+        cy.getByTestID('annotation-form-range-type-option')
+          .should('not.have.class', 'cf-select-group--option__active')
+          .click()
 
         // now, the end time input SHOULD show up
         cy.getByTestID('endTime-testID').should('be.visible')
@@ -192,10 +237,13 @@ describe('Annotations, but in a different test suite', () => {
                   .clear()
                   .type(newEndTime)
 
-                cy.getByTestID('annotation-submit-button').click()
+                cy.getByTestID('annotation-submit-button')
+                  .should('not.be.disabled')
+                  .click()
               })
           })
       }) // end overlay-container within
+
       checkAnnotationText(cy, RANGE_ANNOTATION_TEXT)
 
       startEditingAnnotation(cy)
@@ -229,36 +277,6 @@ describe('Annotations, but in a different test suite', () => {
               expect(minutes).to.equal(10)
             })
         })
-    })
-
-    it('can create an annotation, and then after turning off annotation mode annotations disappear', () => {
-      // create an annotation
-      addAnnotation(cy)
-
-      // verify the tooltip shows up
-      checkAnnotationText(cy, ANNOTATION_TEXT)
-
-      // turn off annotations mode
-      cy.getByTestID('toggle-annotations-controls').click()
-
-      // verify the annotation does NOT show up
-      cy.getByTestID('cell blah').within(() => {
-        cy.get('.giraffe-annotation-click-target').should('not.exist')
-      })
-
-      cy.getByTestID('giraffe-annotation-tooltip').should('not.exist')
-    })
-
-    it('cannot create an annotation when graph is clicked and annotation mode is off', () => {
-      // switch off the control bar
-      cy.getByTestID('toggle-annotations-controls').click()
-      cy.getByTestID('annotations-control-bar').should('not.exist')
-
-      cy.getByTestID('cell blah').within(() => {
-        cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
-      })
-
-      cy.getByTestID('overlay--container').should('not.exist')
     })
   })
 })

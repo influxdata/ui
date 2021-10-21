@@ -100,7 +100,7 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
       </FlexBox>
       <div className="alerting-index--search">
         <Input
-          icon={IconFont.Search}
+          icon={IconFont.Search_New}
           placeholder={`Filter ${title}...`}
           value={searchTerm}
           onChange={e => onChangeSearchTerm(e.target.value)}

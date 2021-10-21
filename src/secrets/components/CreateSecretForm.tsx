@@ -122,7 +122,11 @@ const CreateSecretForm: FC = () => {
         />
       </Overlay.Body>
       <Overlay.Footer>
-        <Button text="Cancel" onClick={handleDismiss} />
+        <Button
+          text="Cancel"
+          color={ComponentColor.Tertiary}
+          onClick={handleDismiss}
+        />
         <Button
           text="Add Secret"
           testID="variable-form-save"

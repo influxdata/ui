@@ -146,7 +146,7 @@ class DragAndDrop extends PureComponent<Props, State> {
       return (
         <span className="drag-and-drop--buttons">
           <Button
-            color={ComponentColor.Default}
+            color={ComponentColor.Tertiary}
             text="Cancel"
             size={ComponentSize.Medium}
             type={ButtonType.Button}
@@ -166,7 +166,7 @@ class DragAndDrop extends PureComponent<Props, State> {
           onClick={this.handleSubmit}
         />
         <Button
-          color={ComponentColor.Default}
+          color={ComponentColor.Tertiary}
           text="Cancel"
           size={ComponentSize.Medium}
           type={ButtonType.Submit}

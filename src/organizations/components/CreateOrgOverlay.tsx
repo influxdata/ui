@@ -96,7 +96,11 @@ class CreateOrgOverlay extends PureComponent<Props, State> {
               </Form.Element>
             </Overlay.Body>
             <Overlay.Footer>
-              <Button text="Cancel" onClick={this.closeModal} />
+              <Button
+                text="Cancel"
+                color={ComponentColor.Tertiary}
+                onClick={this.closeModal}
+              />
               <Button
                 text="Create"
                 type={ButtonType.Submit}

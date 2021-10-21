@@ -2,11 +2,10 @@ import {Organization} from '../../../src/types'
 import {points} from '../../support/commands'
 
 export const ANNOTATION_TEXT = 'im a hippopotamus'
-export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation...'
-export const RANGE_ANNOTATION_TEXT = 'range annotation here!'
+export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation'
+export const RANGE_ANNOTATION_TEXT = 'range annotation here'
 export const EDIT_RANGE_ANNOTATION_TEXT =
   'editing the text here for the range annotation'
-export const NO_TEXT = ' {backspace}'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
@@ -78,9 +77,12 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .invoke('val', ANNOTATION_TEXT)
-    .type(NO_TEXT)
-  cy.getByTestID('annotation-submit-button').click()
+    .focused()
+    .type(ANNOTATION_TEXT)
+
+  cy.getByTestID('annotation-submit-button')
+    .should('not.be.disabled')
+    .click()
 }
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
@@ -148,10 +150,12 @@ export const addRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .invoke('val', RANGE_ANNOTATION_TEXT)
-    .type(NO_TEXT)
+    .focused()
+    .type(RANGE_ANNOTATION_TEXT)
 
-  cy.getByTestID('annotation-submit-button').click()
+  cy.getByTestID('annotation-submit-button')
+    .should('not.be.disabled')
+    .click()
 }
 
 export const testAddAnnotation = (cy: Cypress.Chainable) => {
@@ -170,10 +174,14 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .invoke('val', EDIT_ANNOTATION_TEXT)
-    .type(NO_TEXT)
+    .focused()
+    .clear()
+    .focused()
+    .type(EDIT_ANNOTATION_TEXT)
 
-  cy.getByTestID('annotation-submit-button').click()
+  cy.getByTestID('annotation-submit-button')
+    .should('not.be.disabled')
+    .click()
 
   // make sure the edit was saved successfully
   cy.getByTestID('notification-success').should('be.visible')
@@ -193,8 +201,10 @@ export const testEditRangeAnnotation = (
   cy.getByTestID('annotation-message--form').should('be.visible')
 
   cy.getByTestID('edit-annotation-message')
-    .invoke('val', EDIT_RANGE_ANNOTATION_TEXT)
-    .type(NO_TEXT)
+    .focused()
+    .clear()
+    .focused()
+    .type(EDIT_RANGE_ANNOTATION_TEXT)
 
   // ensure the two times are not equal
   cy.getByTestID('endTime-testID')
@@ -207,7 +217,9 @@ export const testEditRangeAnnotation = (
         })
     })
 
-  cy.getByTestID('annotation-submit-button').click()
+  cy.getByTestID('annotation-submit-button')
+    .should('not.be.disabled')
+    .click()
 
   // make sure the edit was saved successfully
   cy.getByTestID('notification-success').should('be.visible')

@@ -143,7 +143,7 @@ class UpdateVariableOverlay extends PureComponent<Props, State> {
             <Overlay.Footer>
               <Button
                 text="Cancel"
-                color={ComponentColor.Secondary}
+                color={ComponentColor.Tertiary}
                 onClick={onClose}
               />
               <Button

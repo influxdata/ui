@@ -82,7 +82,11 @@ class AllAccessTokenOverlay extends PureComponent<Props, State> {
 
           <Form.Footer>
             <Overlay.Footer>
-              <Button text="Cancel" onClick={this.handleDismiss} />
+              <Button
+                text="Cancel"
+                color={ComponentColor.Tertiary}
+                onClick={this.handleDismiss}
+              />
               <Button
                 text="Save"
                 testID="button--save"

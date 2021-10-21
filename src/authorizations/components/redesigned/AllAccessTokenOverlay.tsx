@@ -95,6 +95,7 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
             <Form.Footer>
               <Button
                 text="Cancel"
+                color={ComponentColor.Tertiary}
                 icon={IconFont.Remove}
                 onClick={handleDismiss}
               />

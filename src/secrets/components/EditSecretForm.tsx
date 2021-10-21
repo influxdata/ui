@@ -103,7 +103,11 @@ const EditSecretForm: FC = () => {
       <Grid.Row>
         <Grid.Column>
           <Form.Footer>
-            <Button text="Cancel" onClick={handleDismiss} />
+            <Button
+              text="Cancel"
+              color={ComponentColor.Tertiary}
+              onClick={handleDismiss}
+            />
             <Button
               text={submitButtonText}
               onClick={handleSubmit}

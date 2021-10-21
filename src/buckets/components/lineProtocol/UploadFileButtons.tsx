@@ -26,7 +26,7 @@ const UploadFileButtons: FC = () => {
   if (writeStatus === RemoteDataState.Error) {
     return (
       <Button
-        color={ComponentColor.Default}
+        color={ComponentColor.Tertiary}
         text="Cancel"
         size={ComponentSize.Medium}
         type={ButtonType.Button}

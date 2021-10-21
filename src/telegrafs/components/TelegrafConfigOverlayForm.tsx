@@ -109,7 +109,7 @@ const TelegrafConfigOverlayForm: FC = () => {
       </Overlay.Body>
       <Overlay.Footer>
         <Button
-          color={ComponentColor.Default}
+          color={ComponentColor.Tertiary}
           text="Cancel"
           onClick={onClose}
         />

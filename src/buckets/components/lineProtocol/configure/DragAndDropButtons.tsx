@@ -25,7 +25,7 @@ const DragAndDropButtons: FC<Props> = ({
     return (
       <span className="drag-and-drop--buttons">
         <Button
-          color={ComponentColor.Default}
+          color={ComponentColor.Tertiary}
           text="Cancel"
           size={ComponentSize.Medium}
           type={ButtonType.Button}
@@ -51,7 +51,7 @@ const DragAndDropButtons: FC<Props> = ({
         testID="write-data--button"
       />
       <Button
-        color={ComponentColor.Default}
+        color={ComponentColor.Tertiary}
         text="Cancel"
         size={ComponentSize.Medium}
         type={ButtonType.Submit}

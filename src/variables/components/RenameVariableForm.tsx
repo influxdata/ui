@@ -77,7 +77,7 @@ class RenameVariableOverlayForm extends PureComponent<Props, State> {
               <Form.Footer>
                 <Button
                   text="Cancel"
-                  color={ComponentColor.Danger}
+                  color={ComponentColor.Tertiary}
                   onClick={onClose}
                 />
                 <Button

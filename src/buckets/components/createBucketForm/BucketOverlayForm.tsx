@@ -205,7 +205,12 @@ export default class BucketOverlayForm extends PureComponent<Props> {
           {makeAdvancedSection()}
         </Overlay.Body>
         <Overlay.Footer>
-          <Button text="Cancel" onClick={onClose} type={ButtonType.Button} />
+          <Button
+            text="Cancel"
+            color={ComponentColor.Tertiary}
+            onClick={onClose}
+            type={ButtonType.Button}
+          />
           {buttonText === 'Save Changes' && (
             <Button
               text="Rename"

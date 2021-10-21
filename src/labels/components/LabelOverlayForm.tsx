@@ -127,6 +127,7 @@ export default class LabelOverlayForm extends PureComponent<Props> {
         <Overlay.Footer>
           <Button
             text="Cancel"
+            color={ComponentColor.Tertiary}
             onClick={onCloseModal}
             titleText="Cancel creation of Label and return to list"
             type={ButtonType.Button}

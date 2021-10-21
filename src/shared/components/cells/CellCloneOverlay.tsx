@@ -203,7 +203,7 @@ const CellCloneOverlay: FC = () => {
           onClick={() => {
             onClose()
           }}
-          color={ComponentColor.Default}
+          color={ComponentColor.Tertiary}
           text="Cancel"
           testID="copy-cell-cancel-button"
         />

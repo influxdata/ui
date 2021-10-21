@@ -111,7 +111,7 @@ const XYPlot: FC<Props> = ({
   const col = result.table.columns[xColumn]
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
-    col.type === 'number' ? (col.data as number[]) : null,
+    col.type === 'number' ? col.data : null,
     timeRange
   )
 
@@ -129,7 +129,7 @@ const XYPlot: FC<Props> = ({
       return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
     const col = result.table.columns[yColumn]
-    return col.type === 'number' ? (col.data as number[]) : null
+    return col.type === 'number' ? col.data : null
   }, [
     result.table,
     xColumn,

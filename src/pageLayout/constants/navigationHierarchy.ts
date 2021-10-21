@@ -131,8 +131,15 @@ export const generateNavItems = (): NavItem[] => {
       icon: IconFont.Bell,
       label: 'Alerts',
       link: `${orgPrefix}/alerting`,
-      activeKeywords: ['alerting'],
+      activeKeywords: ['alerting', 'alert-history'],
       menu: [
+        {
+          id: 'alerting',
+          testID: 'nav-item-alerting',
+          label: 'Alerts',
+          link: `${orgPrefix}/alerting`,
+
+        },
         {
           id: 'history',
           testID: 'nav-subitem-history',

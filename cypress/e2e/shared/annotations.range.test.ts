@@ -56,7 +56,7 @@ describe('Annotations, but in a different test suite', () => {
           expect(Cypress.dom.isDetached($el)).to.be.false
         })
         .click({force: true, multiple: true})
-        .type(PERIOD)
+        .type(PERIOD, {force: true})
 
       cy.getByTestID('edit-annotation-cancel-button').click()
 
@@ -139,7 +139,7 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('endTime-testID').should('not.exist')
 
       // save it
-      cy.getByTestID('annotation-submit-button').click()
+      cy.getByTestID('annotation-submit-button').click({force: true})
 
       // make sure the edit was saved successfully
       cy.getByTestID('notification-success').should('be.visible')
@@ -165,7 +165,7 @@ describe('Annotations, but in a different test suite', () => {
             expect(Cypress.dom.isDetached($el)).to.be.false
           })
           .click({force: true, multiple: true})
-          .type(PERIOD)
+          .type(PERIOD, {force: true})
 
         // should be of type 'point'
         cy.getByTestID('annotation-form-point-type-option--input').should(
@@ -200,7 +200,7 @@ describe('Annotations, but in a different test suite', () => {
                   .clear()
                   .type(newEndTime)
 
-                cy.getByTestID('annotation-submit-button').click()
+                cy.getByTestID('annotation-submit-button').click({force: true})
               })
           })
       }) // end overlay-container within

@@ -55,7 +55,7 @@ describe('Annotations, but in a different test suite', () => {
         .should($el => {
           expect(Cypress.dom.isDetached($el)).to.be.false
         })
-        .click({multiple: true})
+        .click({force: true, multiple: true})
         .type(PERIOD)
 
       cy.getByTestID('edit-annotation-cancel-button').click()
@@ -164,7 +164,7 @@ describe('Annotations, but in a different test suite', () => {
           .should($el => {
             expect(Cypress.dom.isDetached($el)).to.be.false
           })
-          .click({multiple: true})
+          .click({force: true, multiple: true})
           .type(PERIOD)
 
         // should be of type 'point'

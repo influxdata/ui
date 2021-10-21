@@ -245,7 +245,7 @@ export const MiniFileDnd: FC<Props> = ({
 
   const dropZoneClasses = classnames('dnd', {
     active: dropAreaActive,
-    hasError: hasError && !fileName,
+    hasError: hasError,
   })
 
   const displayAreaClasses = classnames('display-area', {

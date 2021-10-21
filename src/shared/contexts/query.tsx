@@ -498,7 +498,7 @@ const parseCSV = (() => {
       return column.type
     }
 
-    queue[idx](data as InternalFromFluxResult)
+    queue[idx](data)
   }
 
   return (csv: string) =>

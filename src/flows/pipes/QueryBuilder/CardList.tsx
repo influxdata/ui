@@ -210,7 +210,7 @@ const Card: FC<Props> = ({idx}) => {
             onChange={evt => {
               valueSearch(evt.target.value)
             }}
-            onClear={()=>valueSearch('')}
+            onClear={() => valueSearch('')}
           />
         </BuilderCard.Menu>
         {_values}
@@ -253,7 +253,7 @@ const Card: FC<Props> = ({idx}) => {
           onChange={evt => {
             valueSearch(evt.target.value)
           }}
-          onClear={()=>valueSearch('')}
+          onClear={() => valueSearch('')}
         />
       </BuilderCard.Menu>
       {_values}

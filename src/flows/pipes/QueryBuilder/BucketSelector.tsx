@@ -123,7 +123,7 @@ const BucketSelector: FC = () => {
           placeholder="Search for a bucket"
           className="tag-selector--search"
           onChange={e => setSearch(e.target.value)}
-          onClear={()=>setSearch('')}
+          onClear={() => setSearch('')}
         />
       </BuilderCard.Menu>
       <List

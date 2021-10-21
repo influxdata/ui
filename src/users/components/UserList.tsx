@@ -9,7 +9,7 @@ import InviteListItem from 'src/users/components/InviteListItem'
 
 // Utils
 import {filter} from 'src/users/utils/filter'
-import SearchWidget from "../../shared/components/search_widget/SearchWidget";
+import SearchWidget from '../../shared/components/search_widget/SearchWidget'
 
 const UserList: FC = () => {
   const {users, invites} = useContext(UsersContext)
@@ -29,9 +29,9 @@ const UserList: FC = () => {
       <Grid.Row>
         <Grid.Column widthMD={Columns.Ten} widthLG={Columns.Six}>
           <SearchWidget
-              placeholderText="Filter members..."
-              searchTerm={searchTerm}
-              onSearch={setSearchTerm}
+            placeholderText="Filter members..."
+            searchTerm={searchTerm}
+            onSearch={setSearchTerm}
           />
         </Grid.Column>
       </Grid.Row>

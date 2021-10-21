@@ -138,7 +138,6 @@ export const generateNavItems = (): NavItem[] => {
           testID: 'nav-item-alerting',
           label: 'Alerts',
           link: `${orgPrefix}/alerting`,
-
         },
         {
           id: 'history',

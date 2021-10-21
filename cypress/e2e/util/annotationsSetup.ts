@@ -79,7 +79,7 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('edit-annotation-message')
     .invoke('val', ANNOTATION_TEXT)
-    .click()
+    .click({multiple: true})
     .type(PERIOD)
   cy.getByTestID('annotation-submit-button').click()
 }
@@ -150,7 +150,7 @@ export const addRangeAnnotation = (
 
   cy.getByTestID('edit-annotation-message')
     .invoke('val', RANGE_ANNOTATION_TEXT)
-    .click()
+    .click({multiple: true})
     .type(PERIOD)
 
   cy.getByTestID('annotation-submit-button').click()
@@ -173,7 +173,7 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('edit-annotation-message')
     .invoke('val', EDIT_ANNOTATION_TEXT)
-    .click()
+    .click({multiple: true})
     .type(PERIOD)
 
   cy.getByTestID('annotation-submit-button').click()
@@ -197,7 +197,7 @@ export const testEditRangeAnnotation = (
 
   cy.getByTestID('edit-annotation-message')
     .invoke('val', EDIT_RANGE_ANNOTATION_TEXT)
-    .click()
+    .click({multiple: true})
     .type(PERIOD)
 
   // ensure the two times are not equal

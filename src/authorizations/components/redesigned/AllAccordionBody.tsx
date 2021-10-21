@@ -15,7 +15,7 @@ import {
 } from '@influxdata/clockface'
 
 interface OwnProps {
-  resourceName: any
+  resourceName: string
   permissions: any
   onToggleAll?: (name: string, permission: string) => void
   disabled: boolean

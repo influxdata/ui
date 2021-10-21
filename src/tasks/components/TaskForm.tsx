@@ -157,6 +157,7 @@ export default class TaskForm extends PureComponent<Props, State> {
         <Form.Footer>
           <Button
             text="Cancel"
+            color={ComponentColor.Tertiary}
             onClick={dismiss}
             titleText="Cancel save"
             type={ButtonType.Button}

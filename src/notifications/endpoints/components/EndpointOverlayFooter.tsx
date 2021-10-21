@@ -59,6 +59,7 @@ const EndpointOverlayFooter: FC<Props> = ({
         testID="endpoint-cancel--button"
         onClick={onCancel}
         text="Cancel"
+        color={ComponentColor.Tertiary}
       />
       <Button
         testID="endpoint-save--button"

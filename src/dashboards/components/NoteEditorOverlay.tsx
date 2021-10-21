@@ -105,6 +105,7 @@ class NoteEditorOverlay extends PureComponent<Props, State> {
         <Overlay.Footer>
           <Button
             text="Cancel"
+            color={ComponentColor.Tertiary}
             onClick={this.handleDismiss}
             testID="cancel-note--button"
           />

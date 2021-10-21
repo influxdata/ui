@@ -82,7 +82,7 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
     .should($el => {
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
-    .type(PERIOD, {force: true})
+    .type(PERIOD, {force: true, waitForAnimations: false})
 
   cy.getByTestID('annotation-submit-button').click({force: true})
 }
@@ -156,7 +156,7 @@ export const addRangeAnnotation = (
     .should($el => {
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
-    .type(PERIOD, {force: true})
+    .type(PERIOD, {force: true, waitForAnimations: false})
 
   cy.getByTestID('annotation-submit-button').click({force: true})
 }
@@ -181,7 +181,7 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
     .should($el => {
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
-    .type(PERIOD, {force: true})
+    .type(PERIOD, {force: true, waitForAnimations: false})
 
   cy.getByTestID('annotation-submit-button').click({force: true})
 
@@ -207,7 +207,7 @@ export const testEditRangeAnnotation = (
     .should($el => {
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
-    .type(PERIOD, {force: true})
+    .type(PERIOD, {force: true, waitForAnimations: false})
 
   // ensure the two times are not equal
   cy.getByTestID('endTime-testID')

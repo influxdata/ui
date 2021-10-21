@@ -83,8 +83,9 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
     .click({force: true, multiple: true})
-    .type(PERIOD)
-  cy.getByTestID('annotation-submit-button').click()
+    .type(PERIOD, {force: true})
+
+  cy.getByTestID('annotation-submit-button').click({force: true})
 }
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
@@ -157,9 +158,9 @@ export const addRangeAnnotation = (
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
     .click({force: true, multiple: true})
-    .type(PERIOD)
+    .type(PERIOD, {force: true})
 
-  cy.getByTestID('annotation-submit-button').click()
+  cy.getByTestID('annotation-submit-button').click({force: true})
 }
 
 export const testAddAnnotation = (cy: Cypress.Chainable) => {
@@ -183,9 +184,9 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
     .click({force: true, multiple: true})
-    .type(PERIOD)
+    .type(PERIOD, {force: true})
 
-  cy.getByTestID('annotation-submit-button').click()
+  cy.getByTestID('annotation-submit-button').click({force: true})
 
   // make sure the edit was saved successfully
   cy.getByTestID('notification-success').should('be.visible')
@@ -210,7 +211,7 @@ export const testEditRangeAnnotation = (
       expect(Cypress.dom.isDetached($el)).to.be.false
     })
     .click({force: true, multiple: true})
-    .type(PERIOD)
+    .type(PERIOD, {force: true})
 
   // ensure the two times are not equal
   cy.getByTestID('endTime-testID')
@@ -223,7 +224,7 @@ export const testEditRangeAnnotation = (
         })
     })
 
-  cy.getByTestID('annotation-submit-button').click()
+  cy.getByTestID('annotation-submit-button').click({force: true})
 
   // make sure the edit was saved successfully
   cy.getByTestID('notification-success').should('be.visible')

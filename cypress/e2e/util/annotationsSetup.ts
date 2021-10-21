@@ -80,7 +80,9 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
     .focused()
     .type(ANNOTATION_TEXT)
 
-  cy.getByTestID('annotation-submit-button').click({force: true})
+  cy.getByTestID('annotation-submit-button')
+    .should('not.be.disabled')
+    .click()
 }
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
@@ -151,7 +153,9 @@ export const addRangeAnnotation = (
     .focused()
     .type(RANGE_ANNOTATION_TEXT)
 
-  cy.getByTestID('annotation-submit-button').click({force: true})
+  cy.getByTestID('annotation-submit-button')
+    .should('not.be.disabled')
+    .click()
 }
 
 export const testAddAnnotation = (cy: Cypress.Chainable) => {
@@ -173,7 +177,9 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
     .focused()
     .type(EDIT_ANNOTATION_TEXT)
 
-  cy.getByTestID('annotation-submit-button').click({force: true})
+  cy.getByTestID('annotation-submit-button')
+    .should('not.be.disabled')
+    .click()
 
   // make sure the edit was saved successfully
   cy.getByTestID('notification-success').should('be.visible')
@@ -207,7 +213,9 @@ export const testEditRangeAnnotation = (
         })
     })
 
-  cy.getByTestID('annotation-submit-button').click({force: true})
+  cy.getByTestID('annotation-submit-button')
+    .should('not.be.disabled')
+    .click()
 
   // make sure the edit was saved successfully
   cy.getByTestID('notification-success').should('be.visible')

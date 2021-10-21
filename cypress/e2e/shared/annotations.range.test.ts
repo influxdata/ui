@@ -164,7 +164,9 @@ describe('Annotations, but in a different test suite', () => {
       cy.getByTestID('endTime-testID').should('not.exist')
 
       // save it
-      cy.getByTestID('annotation-submit-button').click({force: true})
+      cy.getByTestID('annotation-submit-button')
+        .should('not.be.disabled')
+        .click()
 
       // make sure the edit was saved successfully
       cy.getByTestID('notification-success').should('be.visible')
@@ -221,7 +223,9 @@ describe('Annotations, but in a different test suite', () => {
                   .clear()
                   .type(newEndTime)
 
-                cy.getByTestID('annotation-submit-button').click({force: true})
+                cy.getByTestID('annotation-submit-button')
+                  .should('not.be.disabled')
+                  .click()
               })
           })
       }) // end overlay-container within

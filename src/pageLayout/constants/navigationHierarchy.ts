@@ -135,7 +135,7 @@ export const generateNavItems = (): NavItem[] => {
       menu: [
         {
           id: 'alerting',
-          testID: 'nav-item-alerting',
+          testID: 'nav-subitem-alerting',
           label: 'Alerts',
           link: `${orgPrefix}/alerting`,
         },

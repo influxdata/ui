@@ -81,11 +81,14 @@ describe('Annotations, but in a different test suite', () => {
 
       cy.getByTestID('edit-annotation-message')
         .focused()
-        .clear()
+        .invoke('val', EDIT_ANNOTATION_TEXT)
         .focused()
-        .type(EDIT_ANNOTATION_TEXT)
+        .type('.')
+        .then(() => {
+          cy.getByTestID('edit-annotation-cancel-button').click()
+        })
 
-      cy.getByTestID('edit-annotation-cancel-button').click()
+      cy.getByTestID('annotation-message--form').should('not.exist')
 
       // annotation tooltip should say the old name
       cy.getByTestID('cell blah').within(() => {
@@ -131,7 +134,11 @@ describe('Annotations, but in a different test suite', () => {
         .then(endTimeValue => {
           // switch it to a point annotation
           cy.getByTestID('annotation-form-point-type-option')
-            .should('not.have.class', 'cf-select-group--option__active')
+            .should($el => {
+              expect($el).to.not.have.class('cf-select-group--option__active')
+              expect(Cypress.dom.isDetached($el)).to.be.false
+              expect($el).to.have.length(1)
+            })
             .click()
 
           // the endTime input should disappear
@@ -139,7 +146,11 @@ describe('Annotations, but in a different test suite', () => {
 
           // switch back to range:
           cy.getByTestID('annotation-form-range-type-option')
-            .should('not.have.class', 'cf-select-group--option__active')
+            .should($el => {
+              expect($el).to.not.have.class('cf-select-group--option__active')
+              expect(Cypress.dom.isDetached($el)).to.be.false
+              expect($el).to.have.length(1)
+            })
             .click()
 
           cy.getByTestID('endTime-testID')
@@ -150,6 +161,7 @@ describe('Annotations, but in a different test suite', () => {
             })
         })
     })
+
     it('can add a range annotation, then edit it and change to a point annotation', () => {
       addRangeAnnotation(cy)
       startEditingAnnotation(cy)
@@ -163,7 +175,11 @@ describe('Annotations, but in a different test suite', () => {
 
       // switch it to a point annotation
       cy.getByTestID('annotation-form-point-type-option')
-        .should('not.have.class', 'cf-select-group--option__active')
+        .should($el => {
+          expect($el).to.not.have.class('cf-select-group--option__active')
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).to.have.length(1)
+        })
         .click()
 
       // verify that it is a point annotation now
@@ -197,52 +213,67 @@ describe('Annotations, but in a different test suite', () => {
         cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
       })
 
-      cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('edit-annotation-message')
-          .focused()
-          .type(RANGE_ANNOTATION_TEXT)
+      cy.getByTestID('overlay--container').should('be.visible')
+      cy.getByTestID('annotation-message--form').should('be.visible')
 
-        // should be of type 'point'
-        cy.getByTestID('annotation-form-point-type-option--input').should(
-          'be.checked'
-        )
+      // edit the Annotation message first becuase it gets focused automatically
+      cy.getByTestID('edit-annotation-message')
+        .focused()
+        .invoke('val', RANGE_ANNOTATION_TEXT)
+        .focused()
+        .type('.')
+        .then(() => {
+          // should be of type 'point'
+          cy.getByTestID('annotation-form-point-type-option--input').should(
+            'be.checked'
+          )
 
-        // confirm that the 'endTime' input is NOT THERE
-        cy.getByTestID('endTime-testID').should('not.exist')
+          // confirm that the 'endTime' input is NOT THERE
+          cy.getByTestID('endTime-testID').should('not.exist')
 
-        // now: click the button to switch to range:
-        cy.getByTestID('annotation-form-range-type-option')
-          .should('not.have.class', 'cf-select-group--option__active')
-          .click()
+          // now: click the button to switch to range:
+          cy.getByTestID('annotation-form-range-type-option')
+            .should($el => {
+              expect($el).not.to.have.class('cf-select-group--option__active') // HERE
+              expect(Cypress.dom.isDetached($el)).to.be.false
+              expect($el).to.have.length(1)
+            })
+            .click()
 
-        // now, the end time input SHOULD show up
-        cy.getByTestID('endTime-testID').should('be.visible')
+          // now, the end time input SHOULD show up
+          cy.getByTestID('endTime-testID').should('be.visible')
 
-        // at first the two times are equal; check that; then upgrade the time by 10 minutes; and save it
-        cy.getByTestID('startTime-testID')
-          .invoke('val')
-          .then(startTimeValue => {
-            cy.getByTestID('endTime-testID')
-              .invoke('val')
-              .then(endTimeValue => {
-                expect(endTimeValue).to.equal(startTimeValue)
+          // at first the two times are equal; check that; then upgrade the time by 10 minutes; and save it
+          cy.getByTestID('startTime-testID')
+            .invoke('val')
+            .then(startTimeValue => {
+              cy.getByTestID('endTime-testID')
+                .invoke('val')
+                .then(endTimeValue => {
+                  expect(endTimeValue).to.equal(startTimeValue)
 
-                const newEndTime = moment(endTimeValue, DEFAULT_TIME_FORMAT)
-                  .add(10, 'minutes')
-                  .format(DEFAULT_TIME_FORMAT)
+                  const newEndTime = moment(endTimeValue, DEFAULT_TIME_FORMAT)
+                    .add(10, 'minutes')
+                    .format(DEFAULT_TIME_FORMAT)
 
-                cy.getByTestID('endTime-testID')
-                  .click()
-                  .focused()
-                  .clear()
-                  .type(newEndTime)
+                  cy.getByTestID('endTime-testID')
+                    .click()
+                    .focused()
+                    .clear()
+                    .type(newEndTime)
 
-                cy.getByTestID('annotation-submit-button')
-                  .should('not.be.disabled')
-                  .click()
-              })
-          })
-      }) // end overlay-container within
+                  cy.getByTestID('annotation-submit-button')
+                    .should($el => {
+                      expect($el).to.have.length(1)
+                      expect(Cypress.dom.isDetached($el)).to.be.false
+                      expect($el).not.to.be.disabled
+                    })
+                    .click()
+                })
+            })
+        })
+
+      cy.getByTestID('annotation-message--form').should('not.exist')
 
       checkAnnotationText(cy, RANGE_ANNOTATION_TEXT)
 

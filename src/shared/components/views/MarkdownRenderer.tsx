@@ -15,13 +15,9 @@ interface Props {
 // but ReactMarkdown expects a React element wrapping an image to be returned,
 // so we use any
 // see: https://github.com/rexxars/react-markdown/blob/master/index.d.ts#L101
-const imageRenderer: any = (): any =>
-  MARKDOWN_UNSUPPORTED_IMAGE
+const imageRenderer: any = (): any => MARKDOWN_UNSUPPORTED_IMAGE
 
-export const MarkdownRenderer: FC<Props> = ({
-  className = '',
-  text,
-}) => {
+export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
   // don't parse images in cloud environments to prevent arbitrary script execution via images
   if (CLOUD) {
     return (
@@ -34,10 +30,5 @@ export const MarkdownRenderer: FC<Props> = ({
   }
 
   // load images locally to your heart's content. caveat emptor
-  return (
-    <ReactMarkdown
-      children={text}
-      className={className}
-    />
-  )
+  return <ReactMarkdown children={text} className={className} />
 }

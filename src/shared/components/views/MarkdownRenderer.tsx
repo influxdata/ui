@@ -21,11 +21,9 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
   // don't parse images in cloud environments to prevent arbitrary script execution via images
   if (CLOUD) {
     return (
-      <ReactMarkdown
-        children={text}
-        className={className}
-        components={{img: imageRenderer}}
-      />
+      <ReactMarkdown className={className} components={{img: imageRenderer}}>
+        {text}
+      </ReactMarkdown>
     )
   }
 

@@ -1,14 +1,12 @@
 // Libraries
-import React, {FC} from 'react'
-import ReactMarkdown, {Renderer, Renderers} from 'react-markdown'
-import htmlParser from 'react-markdown/plugins/html-parser.js'
-import HtmlToReact from 'html-to-react'
+import React, {FC, ReactNode} from 'react'
+import ReactMarkdown from 'react-markdown'
 
 import {CLOUD, MARKDOWN_UNSUPPORTED_IMAGE} from 'src/shared/constants/index'
 
 interface Props {
   className?: string
-  cloudRenderers?: Renderers
+  cloudRenderers?: ReactNode
   text: string
   escapeHtml?: boolean
 }
@@ -17,52 +15,20 @@ interface Props {
 // but ReactMarkdown expects a React element wrapping an image to be returned,
 // so we use any
 // see: https://github.com/rexxars/react-markdown/blob/master/index.d.ts#L101
-const imageRenderer: Renderer<HTMLImageElement> = (): any =>
+const imageRenderer: any = (): any =>
   MARKDOWN_UNSUPPORTED_IMAGE
-
-// In cloud environments we don't want to render <img> or <script> tags.
-// This parser ignores <script> tags and replaces <img> tags with text
-// before the markdown is rendered via React-Markdown
-// https://github.com/remarkjs/react-markdown#appendix-a-html-in-markdown
-const processNodeDefinitions = new HtmlToReact.ProcessNodeDefinitions(React)
-const parseHtml = htmlParser({
-  isValidNode: node => node.type !== 'script',
-  processingInstructions: [
-    {
-      replaceChildren: false,
-      shouldProcessNode: node => node.name === 'img',
-      processNode: () => {
-        return (
-          <p data-testid="markdown-image-unsupported">
-            {MARKDOWN_UNSUPPORTED_IMAGE}
-          </p>
-        )
-      },
-    },
-    {
-      replaceChildren: false,
-      shouldProcessNode: () => true,
-      processNode: processNodeDefinitions.processDefaultNode,
-    },
-  ],
-})
 
 export const MarkdownRenderer: FC<Props> = ({
   className = '',
-  cloudRenderers = {},
   text,
-  escapeHtml = true,
 }) => {
   // don't parse images in cloud environments to prevent arbitrary script execution via images
   if (CLOUD) {
-    const renderers = {image: imageRenderer, imageReference: imageRenderer}
     return (
       <ReactMarkdown
-        source={text}
+        children={text}
         className={className}
-        renderers={{...renderers, ...cloudRenderers}}
-        astPlugins={[parseHtml]}
-        escapeHtml={escapeHtml}
+        components={{img: imageRenderer}}
       />
     )
   }
@@ -70,10 +36,8 @@ export const MarkdownRenderer: FC<Props> = ({
   // load images locally to your heart's content. caveat emptor
   return (
     <ReactMarkdown
-      source={text}
+      children={text}
       className={className}
-      renderers={cloudRenderers}
-      escapeHtml={false}
     />
   )
 }

@@ -163,7 +163,7 @@ class DashboardCard extends PureComponent<Props> {
           icon={IconFont.Trash_New}
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
-          confirmationLabel="Yes, Delete this bucket"
+          confirmationLabel="Yes, Delete this dashboard"
           onConfirm={this.handleDeleteDashboard}
           confirmationButtonText="Confirm"
           testID="context-delete-menu"

@@ -164,6 +164,7 @@ describe('Annotations, but in a different test suite', () => {
 
     it('can add a range annotation, then edit it and change to a point annotation', () => {
       addRangeAnnotation(cy)
+
       startEditingAnnotation(cy)
 
       cy.getByTestID('overlay--container').should('be.visible')

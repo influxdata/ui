@@ -101,7 +101,7 @@ class CollectorRow extends PureComponent<
           icon={IconFont.Trash_New}
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
-          confirmationLabel="Yes, Delete this configuration"
+          confirmationLabel="Yes, delete this configuration"
           onConfirm={this.handleDeleteConfig}
           confirmationButtonText="Confirm"
           testID="context-delete-menu"

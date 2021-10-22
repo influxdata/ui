@@ -28,5 +28,5 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
   }
 
   // load images locally to your heart's content. caveat emptor
-  return <ReactMarkdown children={text} className={className} />
+  return <ReactMarkdown className={className}>{text}</ReactMarkdown>
 }

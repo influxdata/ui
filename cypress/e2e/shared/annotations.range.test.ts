@@ -135,9 +135,9 @@ describe('Annotations, but in a different test suite', () => {
           // switch it to a point annotation
           cy.getByTestID('annotation-form-point-type-option')
             .should($el => {
-              expect($el).to.not.have.class('cf-select-group--option__active')
-              expect(Cypress.dom.isDetached($el)).to.be.false
               expect($el).to.have.length(1)
+              expect(Cypress.dom.isDetached($el)).to.be.false
+              expect($el).to.not.have.class('cf-select-group--option__active')
             })
             .click()
 
@@ -147,9 +147,9 @@ describe('Annotations, but in a different test suite', () => {
           // switch back to range:
           cy.getByTestID('annotation-form-range-type-option')
             .should($el => {
-              expect($el).to.not.have.class('cf-select-group--option__active')
-              expect(Cypress.dom.isDetached($el)).to.be.false
               expect($el).to.have.length(1)
+              expect(Cypress.dom.isDetached($el)).to.be.false
+              expect($el).to.not.have.class('cf-select-group--option__active')
             })
             .click()
 
@@ -176,9 +176,9 @@ describe('Annotations, but in a different test suite', () => {
       // switch it to a point annotation
       cy.getByTestID('annotation-form-point-type-option')
         .should($el => {
-          expect($el).to.not.have.class('cf-select-group--option__active')
-          expect(Cypress.dom.isDetached($el)).to.be.false
           expect($el).to.have.length(1)
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).to.not.have.class('cf-select-group--option__active')
         })
         .click()
 
@@ -234,7 +234,7 @@ describe('Annotations, but in a different test suite', () => {
           // now: click the button to switch to range:
           cy.getByTestID('annotation-form-range-type-option')
             .should($el => {
-              expect($el).not.to.have.class('cf-select-group--option__active') // HERE
+              expect($el).not.to.have.class('cf-select-group--option__active')
               expect(Cypress.dom.isDetached($el)).to.be.false
               expect($el).to.have.length(1)
             })

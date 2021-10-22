@@ -12,8 +12,9 @@
   border-radius: $ix-radius;
   z-index: 9999;
 
+  /** using 'rubik' makes the datepicker font look unfocused */
   .react-datepicker {
-    font-family: $ix-text-font;
+    font-family: $ix-text-font-no-rubik;
     font-size: $ix-text-base-1;
   }
 

@@ -1336,11 +1336,13 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
       })
-      cy.getByTestID('collapsible_menu').click().within(() => {
-        cy.getByTestID('select-group--option')
-          .last()
-          .click() // light mode
-      })
+      cy.getByTestID('collapsible_menu')
+        .click()
+        .within(() => {
+          cy.getByTestID('select-group--option')
+            .last()
+            .click() // light mode
+        })
 
       cy.getByTestID('app-wrapper')
         .invoke('css', 'background-color')

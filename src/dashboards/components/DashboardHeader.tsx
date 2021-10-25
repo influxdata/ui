@@ -58,6 +58,8 @@ import {
   DEFAULT_DASHBOARD_NAME,
 } from 'src/dashboards/constants/index'
 
+import './DashboardHeader.scss'
+
 // Types
 import {
   AppState,
@@ -181,6 +183,7 @@ const DashboardHeader: FC<Props> = ({
             checked={showVariablesControls}
             testID="variables--button"
             onChange={toggleShowVariablesControls}
+            className="control_buttons_collapsible"
           >
             <InputLabel
               htmlFor="variables--button"
@@ -190,7 +193,7 @@ const DashboardHeader: FC<Props> = ({
               Show Variables
             </InputLabel>
           </Toggle>
-          <AnnotationsControlBarToggleButton />
+          <AnnotationsControlBarToggleButton className="control_buttons_collapsible" />
 
           <Dropdown
             style={{width: '50px'}}
@@ -208,6 +211,7 @@ const DashboardHeader: FC<Props> = ({
                   testID="variables--button"
                   onChange={toggleShowVariablesControls}
                   style={{marginBottom: '8px'}}
+                  className="control_buttons_in_collapsed_menu"
                 >
                   <InputLabel
                     htmlFor="variables--button"
@@ -217,7 +221,7 @@ const DashboardHeader: FC<Props> = ({
                     Show Variables
                   </InputLabel>
                 </Toggle>
-                <AnnotationsControlBarToggleButton />
+                <AnnotationsControlBarToggleButton className="control_buttons_in_collapsed_menu" />
                 <Toggle
                   id="toggle_presentation"
                   type={InputToggleType.Checkbox}

@@ -1,6 +1,6 @@
 import {allAccessPermissions, toggleSelectedBucket} from './permissions'
 import {CLOUD} from 'src/shared/constants'
-import {generateDescription} from 'src/authorizations/utils/permissions'
+import {generateDescription, formatApiPermissions} from 'src/authorizations/utils/permissions'
 
 // TODO remove all of this when we move to server side authority
 const ossHvhs = [
@@ -724,4 +724,237 @@ describe('generateDescription method', () => {
       'Read buckets _monitoring Write buckets _monitoring'
     )
   })
+})
+
+// test format api perms - the method that converts perm into api style perm 
+// perm = { annotations: {read: true, write: false}} --> perm = {{action: read, resource: {orgID: 3432, type: annotations}}}
+const orgID = "ba9198e037d35d4d"
+const orgName = "blegesse"
+const monitoringID = "25a6692ba25d7147"
+
+const allAccessPerms = {
+  annotations: {
+      read: true, 
+      write: false 
+   },
+  authorizations: {
+      read: false, 
+      write: true
+  },
+}
+
+const allAccessApiPerm = [
+  {
+    action: 'read',
+    resource: {
+      orgID: orgID,
+      type: 'annotations',
+    }
+  }, 
+  {
+    action: 'write',
+    resource: {
+      orgID: orgID,
+      type: 'authorizations',
+    }
+  }
+  
+]
+
+const nonAllAcessPerms = {
+  buckets: {
+    read: false, 
+    write: false, 
+    sublevelPermissions: {
+      "25a6692ba25d7147": {
+          id: "25a6692ba25d7147",
+          name: "_monitoring",
+          orgID: "ba9198e037d35d4d",
+          permissions: {read: true, write: true}
+        },
+      "28eccf12e3e4ff8e": {
+          id: "28eccf12e3e4ff8e",
+          name: "frontendservices",
+          orgID: "ba9198e037d35d4d",
+          permissions: {read: false, write: false}
+        },
+        "32b8e84498b27938": {
+          id: "32b8e84498b27938",
+          name: "devbucket",
+          orgID: "ba9198e037d35d4d",
+          permissions: {read: false, write: false}
+        },
+      }   
+
+  }
+}
+
+const nonAllAcessApiPerms = [
+  {
+    action: 'read', 
+    resource: { 
+      orgID: orgID,
+      type: 'buckets',
+      id: monitoringID,
+      name: "_monitoring"
+    }
+  },
+  {
+    action: 'write', 
+    resource: { 
+      orgID: orgID,
+      type: 'buckets',
+      id: monitoringID,
+      name: "_monitoring"
+    }
+  }
+  
+]
+
+const orgsPerm = {
+  orgs: {
+    read: true, 
+    write: true
+  }
+}
+
+const orgsApiPerm = [
+  {
+    action: 'read',
+    resource: {
+      id: orgID,
+      name: orgName,
+      type: 'orgs',
+    },
+  },
+  {
+    action: 'write',
+      resource: {
+        id: orgID,
+        name: orgName,
+        type: 'orgs',
+      },
+  }
+]
+const permissions = {
+  annotations: {
+      read: false, 
+      write: false 
+   },
+  authorizations: {
+      read: false, 
+      write: false
+  },
+  buckets: {
+      read: false, 
+      write: false, 
+      sublevelPermissions: {
+        "25a6692ba25d7147": {
+            id: "25a6692ba25d7147",
+            name: "_monitoring",
+            orgID: "ba9198e037d35d4d",
+            permissions: {read: true, write: true}
+          },
+        "28eccf12e3e4ff8e": {
+            id: "28eccf12e3e4ff8e",
+            name: "frontendservices",
+            orgID: "ba9198e037d35d4d",
+            permissions: {read: false, write: false}
+          },
+          "32b8e84498b27938": {
+            id: "32b8e84498b27938",
+            name: "devbucket",
+            orgID: "ba9198e037d35d4d",
+            permissions: {read: false, write: false}
+          },
+        }   
+
+  },
+  checks: {
+      read: false, 
+      write: false
+  },
+  dashboards: {
+      read: false, 
+      write: false
+  },
+  dbrp: {
+      read: false, 
+      write: false
+  },
+  documents: {
+      read: false,
+      write: false
+  },
+  flows: {
+      read: false, 
+      write: false
+  },
+  functions: {
+      read: false, 
+      write: false
+  },
+  labels: {
+      read: false, 
+      write: false
+  },
+  notificationEndpoints: {
+      read: false, 
+      write: false
+  },
+  notificationRules: {
+      read: false, 
+      write: false
+  },
+  orgs: {
+      read: false, 
+      write: false
+  },
+  otherResources: {
+      read: false, 
+      write: false
+  },
+  scrapers: {
+      read: false, 
+      write: false
+  },
+  secrets: {
+      read: false, 
+      write: false
+  },
+  sources: {
+      read: false, 
+      write: false
+  },
+  tasks: {
+      read: false, 
+      write: false
+  },
+  telegrafs: {
+      read: false, 
+      write: false, 
+      sublevelPermissions: {}
+  },
+  users: {
+      read: false, 
+      write: false
+  },
+  variables: {
+      read: false, 
+      write: false
+  }
+
+} 
+
+describe('formatApiPermissions method', () => {
+  test('does it convert all access permission object into api permission', () => {
+    expect(formatApiPermissions(allAccessPerms, orgID, orgName)).toEqual(allAccessApiPerm)
+  })
+  test('does it convert non-all access permission object into api permission', () => {
+    expect(formatApiPermissions(nonAllAcessPerms, orgID, orgName)).toEqual(nonAllAcessApiPerms)
+  })
+  test('does it convert orgs permission object into api permission', () => {
+    expect(formatApiPermissions(orgsPerm, orgID, orgName)).toEqual(orgsApiPerm)
+  })
+  
 })

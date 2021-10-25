@@ -128,7 +128,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     const {windowSize, pages, pinnedItems} = this.state
 
     return (
-      <div style={{height: '100%', display: 'grid'}}>
+      <div style={{height: '100%'}}>
         <div className="dashboards-card-grid">
           {sortedDashboards
             .filter(d => d.status === RemoteDataState.Done)

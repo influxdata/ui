@@ -16,8 +16,14 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
             cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
             return cy.then(() => {
               cy.createBucket(orgID, name, 'devbucket')
-              // have to add large amount of data to fill the window so that the random click for annotation works
-              cy.writeData(points(3, 1_200_000), 'devbucket')
+              /*
+                note:
+                  graph types vary in the presentation of the line
+                  for example, "Graph" presents a line less steep than "Graph + Single Stat"
+                  use enough points and a time difference that works for all graph types
+                  10 points and 5 minute time difference works well
+              */
+              cy.writeData(points(10, 600_000), 'devbucket')
 
               // make a dashboard cell
               cy.getByTestID('add-cell--button').click()
@@ -78,11 +84,20 @@ export const addAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('edit-annotation-message')
     .focused()
-    .type(ANNOTATION_TEXT)
+    .invoke('val', ANNOTATION_TEXT)
+    .focused()
+    .type('.')
+    .then(() => {
+      cy.getByTestID('annotation-submit-button')
+        .should($el => {
+          expect($el).to.have.length(1)
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).not.to.be.disabled
+        })
+        .click()
+    })
 
-  cy.getByTestID('annotation-submit-button')
-    .should('not.be.disabled')
-    .click()
+  cy.getByTestID('annotation-message--form').should('not.exist')
 }
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
@@ -129,16 +144,17 @@ export const addRangeAnnotation = (
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID(`giraffe-layer-${layerTestID}`).then(([canvas]) => {
       const {offsetWidth, offsetHeight} = canvas
+      const {x, y} = canvas.getBoundingClientRect()
 
       cy.wrap(canvas).trigger('mousedown', {
-        x: offsetWidth / 3,
-        y: offsetHeight / 2,
+        pageX: x + offsetWidth / 4,
+        pageY: y + offsetHeight / 2,
         force: true,
         shiftKey: true,
       })
       cy.wrap(canvas).trigger('mousemove', {
-        x: (offsetWidth * 2) / 3,
-        y: offsetHeight / 2,
+        pageX: x + (offsetWidth * 3) / 4,
+        pageY: y + offsetHeight / 2,
         force: true,
         shiftKey: true,
       })
@@ -151,11 +167,20 @@ export const addRangeAnnotation = (
 
   cy.getByTestID('edit-annotation-message')
     .focused()
-    .type(RANGE_ANNOTATION_TEXT)
+    .invoke('val', RANGE_ANNOTATION_TEXT)
+    .focused()
+    .type('.')
+    .then(() => {
+      cy.getByTestID('annotation-submit-button')
+        .should($el => {
+          expect($el).to.have.length(1)
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).not.to.be.disabled
+        })
+        .click()
+    })
 
-  cy.getByTestID('annotation-submit-button')
-    .should('not.be.disabled')
-    .click()
+  cy.getByTestID('annotation-message--form').should('not.exist')
 }
 
 export const testAddAnnotation = (cy: Cypress.Chainable) => {
@@ -175,13 +200,20 @@ export const testEditAnnotation = (cy: Cypress.Chainable) => {
 
   cy.getByTestID('edit-annotation-message')
     .focused()
-    .clear()
+    .invoke('val', EDIT_ANNOTATION_TEXT)
     .focused()
-    .type(EDIT_ANNOTATION_TEXT)
+    .type('.')
+    .then(() => {
+      cy.getByTestID('annotation-submit-button')
+        .should($el => {
+          expect($el).to.have.length(1)
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).not.to.be.disabled
+        })
+        .click()
+    })
 
-  cy.getByTestID('annotation-submit-button')
-    .should('not.be.disabled')
-    .click()
+  cy.getByTestID('annotation-message--form').should('not.exist')
 
   // make sure the edit was saved successfully
   cy.getByTestID('notification-success').should('be.visible')
@@ -202,24 +234,31 @@ export const testEditRangeAnnotation = (
 
   cy.getByTestID('edit-annotation-message')
     .focused()
-    .clear()
+    .invoke('val', EDIT_RANGE_ANNOTATION_TEXT)
     .focused()
-    .type(EDIT_RANGE_ANNOTATION_TEXT)
-
-  // ensure the two times are not equal
-  cy.getByTestID('endTime-testID')
-    .invoke('val')
-    .then(endTimeValue => {
-      cy.getByTestID('startTime-testID')
+    .type('.')
+    .then(() => {
+      // ensure the two times are not equal before submitting
+      cy.getByTestID('endTime-testID')
         .invoke('val')
-        .then(startTimeValue => {
-          expect(endTimeValue).to.not.equal(startTimeValue)
+        .then(endTimeValue => {
+          cy.getByTestID('startTime-testID')
+            .invoke('val')
+            .then(startTimeValue => {
+              expect(endTimeValue).to.not.equal(startTimeValue)
+
+              cy.getByTestID('annotation-submit-button')
+                .should($el => {
+                  expect($el).to.have.length(1)
+                  expect(Cypress.dom.isDetached($el)).to.be.false
+                  expect($el).not.to.be.disabled
+                })
+                .click()
+            })
         })
     })
 
-  cy.getByTestID('annotation-submit-button')
-    .should('not.be.disabled')
-    .click()
+  cy.getByTestID('annotation-message--form').should('not.exist')
 
   // make sure the edit was saved successfully
   cy.getByTestID('notification-success').should('be.visible')

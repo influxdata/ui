@@ -85,7 +85,7 @@ class TokenRow extends PureComponent<Props> {
           icon={IconFont.Trash_New}
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
-          confirmationLabel="Yes, Delete this token"
+          confirmationLabel="Yes, delete this token"
           onConfirm={this.handleDelete}
           confirmationButtonText="Confirm"
           testID="context-delete-menu"

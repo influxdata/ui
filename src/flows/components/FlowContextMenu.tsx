@@ -92,7 +92,7 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
         icon={IconFont.Trash_New}
         shape={ButtonShape.Square}
         size={ComponentSize.ExtraSmall}
-        confirmationLabel="Yes, Delete this bucket"
+        confirmationLabel="Yes, delete this bucket"
         onConfirm={handleDelete}
         confirmationButtonText="Confirm"
         testID="context-delete-menu"

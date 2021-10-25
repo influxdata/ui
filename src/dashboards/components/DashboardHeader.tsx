@@ -173,6 +173,25 @@ const DashboardHeader: FC<Props> = ({
             onClick={handleAddNote}
             testID="add-note--button"
           />
+          <Toggle
+            id="variables--button"
+            type={InputToggleType.Checkbox}
+            fill={Appearance.Solid}
+            titleText="Variables"
+            checked={showVariablesControls}
+            testID="variables--button"
+            onChange={toggleShowVariablesControls}
+          >
+            <InputLabel
+              htmlFor="variables--button"
+              active={showVariablesControls}
+              style={{fontWeight: 500}}
+            >
+              Show Variables
+            </InputLabel>
+          </Toggle>
+          <AnnotationsControlBarToggleButton />
+
           <Dropdown
             style={{width: '50px'}}
             button={(active, onClick) => (

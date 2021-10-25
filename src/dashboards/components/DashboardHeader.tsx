@@ -198,7 +198,7 @@ const DashboardHeader: FC<Props> = ({
           <Dropdown
             style={{width: '40px'}}
             button={(active, onClick) => (
-              <Button icon={IconFont.More} onClick={onClick} active={active} />
+              <Button icon={IconFont.More} onClick={onClick} active={active} testID="collapsible_menu" />
             )}
             menu={() => (
               <Dropdown.Menu style={{width: '200px'}}>
@@ -249,7 +249,6 @@ const DashboardHeader: FC<Props> = ({
                 </FlexBox>
               </Dropdown.Menu>
             )}
-            testID="collapsible_menu"
           />
           <GraphTips />
         </Page.ControlBarLeft>

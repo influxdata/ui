@@ -196,7 +196,7 @@ const DashboardHeader: FC<Props> = ({
           <AnnotationsControlBarToggleButton className="control_buttons_collapsible" />
 
           <Dropdown
-            style={{width: '50px'}}
+            style={{width: '40px'}}
             button={(active, onClick) => (
               <Button icon={IconFont.More} onClick={onClick} active={active} />
             )}
@@ -246,10 +246,11 @@ const DashboardHeader: FC<Props> = ({
                 </FlexBox>
               </Dropdown.Menu>
             )}
+            testID="collapsible_menu"
           />
+          <GraphTips />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
-          <GraphTips />
           <AutoRefreshDropdown
             onChoose={() => {}}
             onManualRefresh={resetCacheAndRefresh}

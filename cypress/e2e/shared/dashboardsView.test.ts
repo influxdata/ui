@@ -146,7 +146,9 @@ describe('Dashboard', () => {
     })
 
     // toggle presentation mode
+    cy.getByTestID('collapsible_menu').click()
     cy.getByTestID('presentation-mode-toggle').click()
+
     // ensure a notification is sent when toggling to presentation mode
     cy.getByTestID('notification-primary--children').should('exist')
     // escape to toggle the presentation mode off
@@ -1334,9 +1336,12 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
       })
-      cy.getByTestID('select-group--option')
-        .last()
-        .click() // light mode
+      cy.getByTestID('collapsible_menu').click().within(() => {
+        cy.getByTestID('select-group--option')
+          .last()
+          .click() // light mode
+      })
+
       cy.getByTestID('app-wrapper')
         .invoke('css', 'background-color')
         .should('equal', 'rgb(241, 241, 243)')

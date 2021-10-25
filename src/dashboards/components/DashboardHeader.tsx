@@ -230,10 +230,13 @@ const DashboardHeader: FC<Props> = ({
                   }}
                   fill={Appearance.Solid}
                   style={{marginTop: '8px'}}
+                  testID="presentation-mode-toggle"
+                  checked={presentationMode}
                 >
                   <InputLabel
                     active={presentationMode}
                     style={{fontWeight: 500}}
+                    htmlFor="toggle_presentation"
                   >
                     Presentation Mode
                   </InputLabel>

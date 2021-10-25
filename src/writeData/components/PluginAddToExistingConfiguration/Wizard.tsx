@@ -23,6 +23,11 @@ import {
 } from 'src/dataLoaders/actions/steps'
 import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+
+// Constants
+import {TELEGRAF_PLUGINS} from 'src/shared/constants/routes'
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
 const PREVENT_OVERLAY_FLICKER_STEP = -1
@@ -39,7 +44,7 @@ const StepSwitcher = Loadable({
 
 interface WizardProps {
   history: {
-    goBack: () => void
+    push: (route: string) => void
   }
 }
 
@@ -61,6 +66,7 @@ const Wizard: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetCurrentStepIndex,
     onSetSubstepIndex,
+    org,
   } = props
 
   const {contentID} = useParams<ParamsType>()
@@ -80,7 +86,7 @@ const Wizard: FC<Props> = props => {
     onClearDataLoaders()
     onClearSteps()
     onSetCurrentStepIndex(PREVENT_OVERLAY_FLICKER_STEP)
-    history.goBack()
+    history.push(`/orgs/${org.id}/load-data/${TELEGRAF_PLUGINS}/${contentID}`)
     setIsVisible(false)
   }
 
@@ -134,8 +140,11 @@ const mstp = (state: AppState) => {
     },
   } = state
 
+  const org = getOrg(state)
+
   return {
     currentStepIndex: currentStep,
+    org,
   }
 }
 

@@ -198,7 +198,12 @@ const DashboardHeader: FC<Props> = ({
           <Dropdown
             style={{width: '40px'}}
             button={(active, onClick) => (
-              <Button icon={IconFont.More} onClick={onClick} active={active} testID="collapsible_menu" />
+              <Button
+                icon={IconFont.More}
+                onClick={onClick}
+                active={active}
+                testID="collapsible_menu"
+              />
             )}
             menu={() => (
               <Dropdown.Menu style={{width: '200px'}}>

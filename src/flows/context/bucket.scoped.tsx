@@ -1,8 +1,16 @@
 // Libraries
-import React, {FC, createContext, useContext, useEffect, useState} from 'react'
+import React, {
+  FC,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+} from 'react'
 
 // Contexts
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {PipeContext} from 'src/flows/context/pipe'
 
 // Types
 import {Bucket, RemoteDataState} from 'src/types'
@@ -19,15 +27,12 @@ const DEFAULT_CONTEXT: BucketContextType = {
 
 export const BucketContext = createContext<BucketContextType>(DEFAULT_CONTEXT)
 
-interface Props {
-  panel: string
-}
-
-export const BucketProvider: FC<Props> = ({panel, children}) => {
+export const BucketProvider: FC = ({children}) => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [buckets, setBuckets] = useState<Bucket[]>([])
   const {getPanelQueries} = useContext(FlowQueryContext)
-  const scope = getPanelQueries(panel)?.scope ?? {}
+  const {id} = useContext(PipeContext)
+  const scope = getPanelQueries(id)?.scope ?? {}
 
   useEffect(() => {
     if (!scope.region || !scope.org) {
@@ -119,9 +124,12 @@ export const BucketProvider: FC<Props> = ({panel, children}) => {
       .catch(() => {})
   }, [scope.region, scope.org])
 
-  return (
-    <BucketContext.Provider value={{loading, buckets}}>
-      {children}
-    </BucketContext.Provider>
+  return useMemo(
+    () => (
+      <BucketContext.Provider value={{loading, buckets}}>
+        {children}
+      </BucketContext.Provider>
+    ),
+    [loading, buckets]
   )
 }

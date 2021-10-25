@@ -127,11 +127,11 @@ class UnconnectedTaskRunsCard extends PureComponent<
     )
   }
 
-  private handleRunTask = () => {
+  private handleRunTask = async () => {
     const {onRunTask, match, getRuns} = this.props
     try {
-      onRunTask(match.params.id)
-      getRuns(match.params.id)
+      await onRunTask(match.params.id)
+      await getRuns(match.params.id)
     } catch (error) {
       console.error(error)
     }

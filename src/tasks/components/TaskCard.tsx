@@ -158,7 +158,7 @@ export class TaskCard extends PureComponent<
           icon={IconFont.Trash_New}
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
-          confirmationLabel="Yes, Delete this task"
+          confirmationLabel="Yes, delete this task"
           onConfirm={() => {
             this.handleOnDelete(task)
           }}

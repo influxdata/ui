@@ -36,6 +36,8 @@ interface PipeContextProps {
 export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {flow, updateData} = useContext(FlowContext)
   const {results, statuses} = useContext(ResultsContext)
+  const result = results[id]
+  const status = statuses[id]
 
   const updater = useCallback(
     (data: Partial<PipeData>) => {
@@ -52,13 +54,13 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
           data: flow.data.byID[id],
           range: flow.range,
           update: updater,
-          results: results[id] || {...DEFAULT_CONTEXT.results},
-          loading: statuses[id] || RemoteDataState.NotStarted,
+          results: result || {...DEFAULT_CONTEXT.results},
+          loading: status || RemoteDataState.NotStarted,
           readOnly: flow.readOnly,
         }}
       >
         {children}
       </PipeContext.Provider>
     )
-  }, [flow, id, results, statuses, children, updater])
+  }, [flow, id, result, status, children, updater])
 }

@@ -178,4 +178,3 @@ workflows:
       - lint
       - unit-cloud
       - lint-cloud
-      - monitor-ci-tests

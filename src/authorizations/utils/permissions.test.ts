@@ -8,6 +8,20 @@ const ossHvhs = [
     action: 'read',
     resource: {
       orgID: 'bulldogs',
+      type: 'annotations',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'annotations',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
       type: 'authorizations',
     },
   },
@@ -100,6 +114,20 @@ const ossHvhs = [
     resource: {
       orgID: 'bulldogs',
       type: 'labels',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'notebooks',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'notebooks',
     },
   },
   {

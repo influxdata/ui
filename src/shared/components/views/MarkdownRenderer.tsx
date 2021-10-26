@@ -26,19 +26,26 @@ const cloudImageRenderer: any = (): any => MARKDOWN_UNSUPPORTED_IMAGE
 // this custom renderer.  If you want to disallow these, remove this renderer or
 // change to the cloudImageRenderer instead.
 const ossImageRenderer: FC<ImageProps> = ({src, alt}) => {
-  return <img src={src} alt={alt}/>
+  return <img src={src} alt={alt} />
 }
 
 export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
   // don't parse images in cloud environments to prevent arbitrary script execution via images
   if (CLOUD) {
     return (
-      <ReactMarkdown className={className} components={{img: cloudImageRenderer}}>
+      <ReactMarkdown
+        className={className}
+        components={{img: cloudImageRenderer}}
+      >
         {text}
       </ReactMarkdown>
     )
   }
 
   // load images locally to your heart's content. caveat emptor
-  return <ReactMarkdown className={className} components={{img: ossImageRenderer}}>{text}</ReactMarkdown>
+  return (
+    <ReactMarkdown className={className} components={{img: ossImageRenderer}}>
+      {text}
+    </ReactMarkdown>
+  )
 }

@@ -262,6 +262,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       },
     }
 
+    console.log('k', text, _override)
     return queryAPI(text, _override)
   }
 

@@ -27,9 +27,9 @@ const disallowedImageRenderer: any = (): any => MARKDOWN_UNSUPPORTED_IMAGE
 // change to the disallowedImageRenderer instead.
 const allowedImageRenderer: FC<ImageProps> = ({src, alt}) => {
   return (
-      <div>
-        <img src={src} alt={alt} />
-      </div>
+    <div>
+      <img src={src} alt={alt} />
+    </div>
   )
 }
 
@@ -48,7 +48,10 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
 
   // load images locally to your heart's content. caveat emptor
   return (
-    <ReactMarkdown className={className} components={{img: allowedImageRenderer}}>
+    <ReactMarkdown
+      className={className}
+      components={{img: allowedImageRenderer}}
+    >
       {text}
     </ReactMarkdown>
   )

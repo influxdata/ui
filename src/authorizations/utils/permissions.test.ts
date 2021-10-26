@@ -1,6 +1,6 @@
 import {allAccessPermissions, toggleSelectedBucket} from './permissions'
 import {CLOUD} from 'src/shared/constants'
-import {generateDescription, formatApiPermissions} from 'src/authorizations/utils/permissions'
+import {generateDescription, formatApiPermissions, formatPermissionsObj} from 'src/authorizations/utils/permissions'
 
 // TODO remove all of this when we move to server side authority
 const ossHvhs = [
@@ -732,7 +732,7 @@ const orgID = "ba9198e037d35d4d"
 const orgName = "blegesse"
 const monitoringID = "25a6692ba25d7147"
 
-const allAccessPerms = {
+const allAccessAccordionPerms = {
   annotations: {
       read: true, 
       write: false 
@@ -761,7 +761,7 @@ const allAccessApiPerm = [
   
 ]
 
-const nonAllAcessPerms = {
+const nonAllAcessAccordionPerms = {
   buckets: {
     read: false, 
     write: false, 
@@ -789,6 +789,22 @@ const nonAllAcessPerms = {
   }
 }
 
+const nonAllAcessAccordionPerms2 = {
+  buckets: {
+    read: true, 
+    write: true, 
+    sublevelPermissions: {
+      "25a6692ba25d7147": {
+          id: "25a6692ba25d7147",
+          name: "_monitoring",
+          orgID: "ba9198e037d35d4d",
+          permissions: {read: true, write: true}
+        }
+      }   
+
+  }
+}
+
 const nonAllAcessApiPerms = [
   {
     action: 'read', 
@@ -811,7 +827,7 @@ const nonAllAcessApiPerms = [
   
 ]
 
-const orgsPerm = {
+const orgsAccordionPerm = {
   orgs: {
     read: true, 
     write: true
@@ -836,7 +852,7 @@ const orgsApiPerm = [
       },
   }
 ]
-const permissions = {
+const accordionPermissions = {
   annotations: {
       read: false, 
       write: false 
@@ -946,15 +962,42 @@ const permissions = {
 
 } 
 
-describe('formatApiPermissions method', () => {
+const apiBucketPerm = [
+  {
+    action: "read",
+    resource:{
+      id: "25a6692ba25d7147",
+      name: "_monitoring",
+      org: "dev",
+      orgID: "ba9198e037d35d4d",
+      type: "buckets"
+    }
+
+  }
+]
+
+
+
+describe('Testing formatApiPermissions function', () => {
   test('does it convert all access permission object into api permission', () => {
-    expect(formatApiPermissions(allAccessPerms, orgID, orgName)).toEqual(allAccessApiPerm)
+    expect(formatApiPermissions(allAccessAccordionPerms, orgID, orgName)).toMatchObject(allAccessApiPerm)
   })
   test('does it convert non-all access permission object into api permission', () => {
-    expect(formatApiPermissions(nonAllAcessPerms, orgID, orgName)).toEqual(nonAllAcessApiPerms)
+    expect(formatApiPermissions(nonAllAcessAccordionPerms, orgID, orgName)).toMatchObject(nonAllAcessApiPerms)
   })
   test('does it convert orgs permission object into api permission', () => {
-    expect(formatApiPermissions(orgsPerm, orgID, orgName)).toEqual(orgsApiPerm)
+    expect(formatApiPermissions(orgsAccordionPerm, orgID, orgName)).toMatchObject(orgsApiPerm)
   })
   
+})
+describe('Testing formatPermissionsObj function', () => {
+  test('for api permissions with IDs, it creates perms with sublevel permissions', () => {
+    expect(formatPermissionsObj(nonAllAcessApiPerms)).toMatchObject(nonAllAcessAccordionPerms2)
+  })
+  test('if all sublevel permissions are true, it updates the top level perms to true', () => {
+    expect(formatPermissionsObj(nonAllAcessApiPerms)).toEqual(nonAllAcessAccordionPerms2)
+  })
+  test('for all access permissions, it creates an all access accordion api permission', () => {
+    expect(formatPermissionsObj(orgsApiPerm)).toMatchObject(orgsAccordionPerm)
+  })
 })

@@ -3,7 +3,7 @@ import {sortBy} from 'lodash'
 
 // a generous commitment to delivering this page in a loaded state
 const PAGE_LOAD_SLA = 10000
-const all_access_token_name = 'the prince and the frog'
+const all_access_token_name = 'the princess and the frog'
 
 describe('tokens', () => {
   let authData: {description: string; status: boolean; id: string}[]

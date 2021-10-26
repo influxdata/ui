@@ -729,7 +729,7 @@ describe('generateDescription method', () => {
 // test format api perms - the method that converts perm into api style perm 
 // perm = { annotations: {read: true, write: false}} --> perm = {{action: read, resource: {orgID: 3432, type: annotations}}}
 const orgID = "ba9198e037d35d4d"
-const orgName = "blegesse"
+const orgName = "dev"
 const monitoringID = "25a6692ba25d7147"
 
 const allAccessAccordionPerms = {
@@ -852,131 +852,6 @@ const orgsApiPerm = [
       },
   }
 ]
-const accordionPermissions = {
-  annotations: {
-      read: false, 
-      write: false 
-   },
-  authorizations: {
-      read: false, 
-      write: false
-  },
-  buckets: {
-      read: false, 
-      write: false, 
-      sublevelPermissions: {
-        "25a6692ba25d7147": {
-            id: "25a6692ba25d7147",
-            name: "_monitoring",
-            orgID: "ba9198e037d35d4d",
-            permissions: {read: true, write: true}
-          },
-        "28eccf12e3e4ff8e": {
-            id: "28eccf12e3e4ff8e",
-            name: "frontendservices",
-            orgID: "ba9198e037d35d4d",
-            permissions: {read: false, write: false}
-          },
-          "32b8e84498b27938": {
-            id: "32b8e84498b27938",
-            name: "devbucket",
-            orgID: "ba9198e037d35d4d",
-            permissions: {read: false, write: false}
-          },
-        }   
-
-  },
-  checks: {
-      read: false, 
-      write: false
-  },
-  dashboards: {
-      read: false, 
-      write: false
-  },
-  dbrp: {
-      read: false, 
-      write: false
-  },
-  documents: {
-      read: false,
-      write: false
-  },
-  flows: {
-      read: false, 
-      write: false
-  },
-  functions: {
-      read: false, 
-      write: false
-  },
-  labels: {
-      read: false, 
-      write: false
-  },
-  notificationEndpoints: {
-      read: false, 
-      write: false
-  },
-  notificationRules: {
-      read: false, 
-      write: false
-  },
-  orgs: {
-      read: false, 
-      write: false
-  },
-  otherResources: {
-      read: false, 
-      write: false
-  },
-  scrapers: {
-      read: false, 
-      write: false
-  },
-  secrets: {
-      read: false, 
-      write: false
-  },
-  sources: {
-      read: false, 
-      write: false
-  },
-  tasks: {
-      read: false, 
-      write: false
-  },
-  telegrafs: {
-      read: false, 
-      write: false, 
-      sublevelPermissions: {}
-  },
-  users: {
-      read: false, 
-      write: false
-  },
-  variables: {
-      read: false, 
-      write: false
-  }
-
-} 
-
-const apiBucketPerm = [
-  {
-    action: "read",
-    resource:{
-      id: "25a6692ba25d7147",
-      name: "_monitoring",
-      org: "dev",
-      orgID: "ba9198e037d35d4d",
-      type: "buckets"
-    }
-
-  }
-]
-
-
 
 describe('Testing formatApiPermissions function', () => {
   test('does it convert all access permission object into api permission', () => {

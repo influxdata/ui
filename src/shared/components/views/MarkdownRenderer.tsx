@@ -20,13 +20,17 @@ interface ImageProps {
 // but ReactMarkdown expects a React element wrapping an image to be returned,
 // so we use any
 // see: https://github.com/rexxars/react-markdown/blob/master/index.d.ts#L101
-const cloudImageRenderer: any = (): any => MARKDOWN_UNSUPPORTED_IMAGE
+const disallowedImageRenderer: any = (): any => MARKDOWN_UNSUPPORTED_IMAGE
 
 // In OSS we want to allow users to render images to external sources, requiring
 // this custom renderer.  If you want to disallow these, remove this renderer or
 // change to the cloudImageRenderer instead.
-const ossImageRenderer: FC<ImageProps> = ({src, alt}) => {
-  return <img src={src} alt={alt} />
+const allowedImageRenderer: FC<ImageProps> = ({src, alt}) => {
+  return (
+    <div>
+      <img src={src} alt={alt} />
+    </div>
+  )
 }
 
 export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
@@ -35,7 +39,7 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
     return (
       <ReactMarkdown
         className={className}
-        components={{img: cloudImageRenderer}}
+        components={{img: disallowedImageRenderer}}
       >
         {text}
       </ReactMarkdown>
@@ -44,7 +48,10 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
 
   // load images locally to your heart's content. caveat emptor
   return (
-    <ReactMarkdown className={className} components={{img: ossImageRenderer}}>
+    <ReactMarkdown
+      className={className}
+      components={{img: allowedImageRenderer}}
+    >
       {text}
     </ReactMarkdown>
   )

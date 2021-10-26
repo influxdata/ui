@@ -11,6 +11,7 @@ import {
   deleteOrg,
   flush,
   getByTestID,
+  getByTestIDHead,
   getByInputName,
   getByInputValue,
   getByTestIDAndSetInputValue,
@@ -73,6 +74,7 @@ declare global {
       deleteOrg: typeof deleteOrg
       flush: typeof flush
       getByTestID: typeof getByTestID
+      getByTestIDHead: typeof getByTestIDHead
       getByInputName: typeof getByInputName
       getByInputValue: typeof getByInputValue
       getByTestIDAndSetInputValue: typeof getByTestIDAndSetInputValue

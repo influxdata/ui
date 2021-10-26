@@ -37,6 +37,9 @@ export const AllAccordionBody: FC<OwnProps> = props => {
     event.stopPropagation()
   }
 
+  const readToggleStyle = {marginRight: '10px'}
+  const writeToggleStyle = {marginRight: '0px'}
+
   const AllResourceAccordionBody = (permission?, resourceName?) => (
     <FlexBox
       margin={ComponentSize.Small}
@@ -44,7 +47,6 @@ export const AllAccordionBody: FC<OwnProps> = props => {
       direction={FlexDirection.Row}
       stretchToFitWidth={true}
       alignItems={AlignItems.Center}
-      style={{textAlign: 'start'}}
     >
       <FlexBox.Child basis={40} grow={8}>
         <InputLabel size={ComponentSize.Small}>{`All ${
@@ -59,7 +61,7 @@ export const AllAccordionBody: FC<OwnProps> = props => {
           size={ComponentSize.ExtraSmall}
           checked={permission ? permission.perm.read : permissions.read}
           value={permission ? permission.name : props.resourceName}
-          style={{marginRight: '10px'}}
+          style={readToggleStyle}
           tabIndex={0}
           disabled={disabled}
         ></Toggle>
@@ -72,7 +74,7 @@ export const AllAccordionBody: FC<OwnProps> = props => {
           size={ComponentSize.ExtraSmall}
           checked={permission ? permission.perm.write : permissions.write}
           value={permission ? permission.name : props.resourceName}
-          style={{marginRight: '0px'}}
+          style={writeToggleStyle}
           tabIndex={0}
           disabled={disabled}
         ></Toggle>

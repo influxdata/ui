@@ -78,7 +78,7 @@ class ResourceAccordion extends Component<OwnProps> {
     const {onToggleAll, resources, permissions} = this.props
     const resourcePermissions = []
 
-    resources[1].map(resource => {
+    resources[1].forEach(resource => {
       resourcePermissions.push({name: resource, perm: permissions[resource]})
     })
 

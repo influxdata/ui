@@ -12,7 +12,7 @@ describe('Checks', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         // visit the alerting index
-        cy.get('@org').then(({id: orgID}: Organization) => {
+        cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
           cy.writeData([
             `${measurement} ${field}=0,${stringField}="string1"`,
             `${measurement} ${field}=1,${stringField}="string2"`,
@@ -361,7 +361,7 @@ describe('Checks', () => {
       const nonexistentID = '046cd86a2030f000'
 
       // visiting the check edit overlay
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, checks}) => {
           cy.visit(`${orgs}/${id}${alerting}${checks}/${nonexistentID}/edit`)
 
@@ -471,7 +471,7 @@ describe('Checks', () => {
     it('should allow created checks to be selected and routed to the edit page', () => {
       cy.getByTestID('check-card--name').should('have.length', 1)
       cy.getByTestID('check-card--name').click()
-      cy.get('@org').then(({id}: Organization) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, alerting, checks}) => {
           cy.url().then(url => {
             Cypress.minimatch(

@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-unused-vars: "off" */
 import 'jest'
+import 'cypress-plugin-tab'
 
 import {
   signin,

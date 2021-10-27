@@ -87,16 +87,14 @@ class TaskRunsPage extends PureComponent<Props, State> {
             </Page.ControlBarRight>
           </Page.ControlBar>
           <Page.Contents fullWidth={false} scrollable={true}>
-            <GetResources resources={[ResourceType.Tasks]}>
-              <TaskRunsList
-                taskID={match.params.id}
-                runs={runs}
-                sortKey={sortKey}
-                sortDirection={sortDirection}
-                sortType={sortType}
-                onClickColumn={this.handleClickColumn}
-              />
-            </GetResources>
+            <TaskRunsList
+              taskID={match.params.id}
+              runs={runs}
+              sortKey={sortKey}
+              sortDirection={sortDirection}
+              sortType={sortType}
+              onClickColumn={this.handleClickColumn}
+            />
           </Page.Contents>
         </Page>
       </SpinnerContainer>
@@ -144,12 +142,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
 }
 
 const mstp = (state: AppState, props) => {
-  const {runs, runStatus} = state.resources.tasks
-  const currentTask = getByID<Task>(
-    state,
-    ResourceType.Tasks,
-    props.match.params.id
-  )
+  const {currentTask, runs, runStatus} = state.resources.tasks
 
   return {
     runs,
@@ -159,9 +152,9 @@ const mstp = (state: AppState, props) => {
 }
 
 const mdtp = {
-  updateTaskStatus,
   getRuns,
   onRunTask: runTask,
+  updateTaskStatus,
 }
 
 const connector = connect(mstp, mdtp)

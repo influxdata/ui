@@ -12,5 +12,7 @@
     "www.google-analytics.com",
     "www.googletagmanager.com",
     "www.honeybadger.io"
-  ]
+  ],
+  "viewportWidth": 1400,
+  "viewportHeight": 1000
 }

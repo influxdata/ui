@@ -6,7 +6,7 @@
 .tabbed-page {
   display: flex;
   align-items: stretch;
-  background-color: rgba($g3-castle, 0.25);
+  background-color: rgba($cf-grey-15, 0.25);
   border-radius: $radius;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .tabbed-page-nav--avatar {
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
 }
 
 .tabbed-page-nav--description {
@@ -39,7 +39,7 @@
   line-height: 15px;
   margin: 0;
   margin-top: $ix-marg-a + $ix-marg-b;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 }
 
 .tabbed-page-nav--tabs {
@@ -55,24 +55,24 @@
   height: $nav-size;
   line-height: $nav-size;
   padding: 0 $form-lg-font;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   white-space: nowrap;
   transition: background-color 0.25s ease, color 0.25s ease;
 
   &:hover {
-    background-color: rgba($g3-castle, 0.5);
-    color: $g16-pearl;
+    background-color: rgba($cf-grey-15, 0.5);
+    color: $cf-grey-85;
     cursor: pointer;
   }
 
   &.active {
-    background-color: $g3-castle;
-    color: $g18-cloud;
+    background-color: $cf-grey-15;
+    color: $cf-grey-95;
   }
 }
 .tabbed-page-content {
   flex: 1 0 0;
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   border-radius: $radius;
   min-height: 500px;
   padding: $ix-marg-d;

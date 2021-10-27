@@ -91,7 +91,7 @@ class Labels extends PureComponent<Props, State> {
       <Button
         text="Create Label"
         color={ComponentColor.Primary}
-        icon={IconFont.Plus}
+        icon={IconFont.Plus_New}
         onClick={this.handleShowOverlay}
         testID="button-create"
       />
@@ -187,7 +187,7 @@ class Labels extends PureComponent<Props, State> {
         <Button
           text="Create Label"
           color={ComponentColor.Primary}
-          icon={IconFont.Plus}
+          icon={IconFont.Plus_New}
           onClick={this.handleShowOverlay}
           testID="button-create-initial"
         />

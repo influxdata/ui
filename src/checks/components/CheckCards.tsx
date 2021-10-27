@@ -102,7 +102,7 @@ const EmptyChecksList: FunctionComponent<EmptyProps> = ({
             color={ComponentColor.Primary}
             onClick={onCreateThreshold}
             text="Threshold Check"
-            icon={IconFont.Plus}
+            icon={IconFont.Plus_New}
             shape={ButtonShape.StretchToFit}
           />
           <h5>If a service stops sending metrics:</h5>
@@ -111,7 +111,7 @@ const EmptyChecksList: FunctionComponent<EmptyProps> = ({
             color={ComponentColor.Primary}
             onClick={onCreateDeadman}
             text="Deadman Check"
-            icon={IconFont.Plus}
+            icon={IconFont.Plus_New}
             shape={ButtonShape.StretchToFit}
           />
         </Panel.Body>

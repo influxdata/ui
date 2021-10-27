@@ -67,6 +67,7 @@ describe('Dashboard', () => {
       cy.getByTestID('renamable-page-title--input')
         .clear()
         .type(xyCellName)
+        .type('{enter}')
       cy.getByTestID('save-cell--button').click()
     })
 
@@ -145,7 +146,9 @@ describe('Dashboard', () => {
     })
 
     // toggle presentation mode
+    cy.getByTestID('collapsible_menu').click()
     cy.getByTestID('presentation-mode-toggle').click()
+
     // ensure a notification is sent when toggling to presentation mode
     cy.getByTestID('notification-primary--children').should('exist')
     // escape to toggle the presentation mode off
@@ -1287,7 +1290,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah')
+          .type('blah{enter}')
         cy.getByTestID('save-cell--button').click()
       })
       cy.getByTestID('cell-context--toggle')
@@ -1333,24 +1336,27 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
       })
+      cy.getByTestID('collapsible_menu').click()
+
       cy.getByTestID('select-group--option')
         .last()
         .click() // light mode
+
       cy.getByTestID('app-wrapper')
         .invoke('css', 'background-color')
-        .should('equal', 'rgb(246, 246, 248)')
+        .should('equal', 'rgb(241, 241, 243)')
       cy.getByTestID('app-wrapper')
         .invoke('css', 'color')
-        .should('equal', 'rgb(103, 105, 120)')
+        .should('equal', 'rgb(104, 104, 123)')
       cy.getByTestID('select-group--option')
         .first()
         .click() // dark mode
       cy.getByTestID('app-wrapper')
         .invoke('css', 'background-color')
-        .should('equal', 'rgb(24, 24, 32)')
+        .should('equal', 'rgb(7, 7, 14)')
       cy.getByTestID('app-wrapper')
         .invoke('css', 'color')
-        .should('equal', 'rgb(190, 194, 204)')
+        .should('equal', 'rgb(241, 241, 243)')
     })
   })
 })

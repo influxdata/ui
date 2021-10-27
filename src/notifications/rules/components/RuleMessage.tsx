@@ -3,7 +3,14 @@ import React, {FC, useEffect} from 'react'
 import {connect} from 'react-redux'
 
 // Components
-import {Form, Panel, Grid, Columns} from '@influxdata/clockface'
+import {
+  Form,
+  Panel,
+  Grid,
+  Columns,
+  Heading,
+  HeadingElement,
+} from '@influxdata/clockface'
 import RuleEndpointDropdown from 'src/notifications/rules/components/RuleEndpointDropdown'
 import RuleMessageContents from 'src/notifications/rules/components/RuleMessageContents'
 
@@ -52,7 +59,9 @@ const RuleMessage: FC<Props> = ({endpoints, rule}) => {
 
   return (
     <Grid.Row>
-      <Grid.Column widthSM={Columns.Two}>Message</Grid.Column>
+      <Grid.Column widthSM={Columns.Two}>
+        <Heading element={HeadingElement.H4}> Message</Heading>
+      </Grid.Column>
       <Grid.Column widthSM={Columns.Ten}>
         <Panel>
           <Panel.Body>

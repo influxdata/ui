@@ -1,15 +1,11 @@
-.demodata-dropdown {
-  margin-right: $cf-marg-b;
-}
-
 .demodata-dropdown--item-contents {
   display: inline-flex;
   align-items: center;
 }
 
 .demodata-dropdown--item-icon {
-  margin-right: $cf-marg-b;
-  opacity: 0;
+  margin-right: $cf-space-2xs;
+  display: none;
 }
 
 .demodata-dropdown--item,
@@ -21,7 +17,7 @@
 .demodata-dropdown--item__added,
 .demodata-dropdown--item__added:hover {
   .demodata-dropdown--item-icon {
-    opacity: 1;
+    display: block;
   }
 
   cursor: default;

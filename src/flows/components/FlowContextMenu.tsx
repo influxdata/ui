@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {createRef, FC, RefObject, useContext} from 'react'
 import {useParams, useHistory} from 'react-router-dom'
 import 'src/flows/components/FlowContextMenu.scss'
 
@@ -8,16 +8,20 @@ import {getMe} from 'src/me/selectors'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
-import {Context} from 'src/clockface'
 import {
-  Button,
+  Appearance,
   ButtonShape,
   ComponentColor,
   ComponentSize,
+  ConfirmationButton,
+  FlexBox,
   IconFont,
+  List,
+  Popover,
+  SquareButton,
 } from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
-import {PROJECT_NAME_PLURAL} from 'src/flows'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -79,49 +83,57 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
     )
   }
+  const settingsRef: RefObject<HTMLButtonElement> = createRef()
 
   return (
-    <div className="flow-context--wrapper">
-      <Context>
-        <Button
-          text="Clone"
-          icon={IconFont.Duplicate}
-          color={ComponentColor.Secondary}
-          size={ComponentSize.ExtraSmall}
-          titleText="Clone"
-          testID="flow-button--clone"
-          onClick={handleClone}
-          className="flow-menu--clone"
-        />
-        {isFlagEnabled('pinnedItems') && CLOUD && (
-          <Context.Menu
-            icon={IconFont.Star}
-            color={ComponentColor.Success}
-            testID="context-pin-menu"
-          >
-            <Context.Item
-              label="Pin to Homepage"
-              action={handlePinFlow}
-              testID="context-pin-flow"
-              disabled={isPinned}
-            />
-          </Context.Menu>
+    <FlexBox margin={ComponentSize.ExtraSmall}>
+      <ConfirmationButton
+        color={ComponentColor.Colorless}
+        icon={IconFont.Trash_New}
+        shape={ButtonShape.Square}
+        size={ComponentSize.ExtraSmall}
+        confirmationLabel={`Yes, delete this ${PROJECT_NAME}`}
+        onConfirm={handleDelete}
+        confirmationButtonText="Confirm"
+        testID="context-delete-menu"
+      />
+      <SquareButton
+        ref={settingsRef}
+        size={ComponentSize.ExtraSmall}
+        icon={IconFont.CogSolid_New}
+        color={ComponentColor.Colorless}
+        testID="context-menu-flow"
+      />
+      <Popover
+        appearance={Appearance.Outline}
+        enableDefaultStyles={false}
+        style={{minWidth: '112px'}}
+        triggerRef={settingsRef}
+        contents={() => (
+          <List>
+            <List.Item
+              onClick={handleClone}
+              size={ComponentSize.Small}
+              style={{fontWeight: 500}}
+              testID="context-clone-flow"
+            >
+              Clone
+            </List.Item>
+            {isFlagEnabled('pinnedItems') && CLOUD && (
+              <List.Item
+                onClick={handlePinFlow}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-pin-flow"
+                disabled={isPinned}
+              >
+                Pin
+              </List.Item>
+            )}
+          </List>
         )}
-        <Context.Menu
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-          shape={ButtonShape.Default}
-          text="Delete"
-          testID={`context-delete-menu ${name}`}
-        >
-          <Context.Item
-            label="Confirm"
-            action={handleDelete}
-            testID={`context-delete-flow ${name}`}
-          />
-        </Context.Menu>
-      </Context>
-    </div>
+      />
+    </FlexBox>
   )
 }
 

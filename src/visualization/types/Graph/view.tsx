@@ -83,13 +83,11 @@ const XYPlot: FC<Props> = ({
   const storedYDomain = useMemo(() => parseYBounds(properties.axes.y.bounds), [
     properties.axes.y.bounds,
   ])
+  const columnKeys = Object.keys(result.table.columns)
   const xColumn = properties.xColumn || defaultXColumn(result.table, '_time')
   const yColumn =
-    (result.table.columnKeys.includes(properties.yColumn) &&
-      properties.yColumn) ||
+    (columnKeys.includes(properties.yColumn) && properties.yColumn) ||
     defaultYColumn(result.table)
-
-  const columnKeys = result.table.columnKeys
 
   const isValidView =
     xColumn &&
@@ -110,9 +108,10 @@ const XYPlot: FC<Props> = ({
     result,
   ])
 
+  const col = result.table.columns[xColumn]
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
-    result.table.getColumn(xColumn, 'number'),
+    col.type === 'number' ? col.data : null,
     timeRange
   )
 
@@ -129,7 +128,8 @@ const XYPlot: FC<Props> = ({
       const [fillColumn] = createGroupIDColumn(result.table, groupKey)
       return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
-    return result.table.getColumn(yColumn, 'number')
+    const col = result.table.columns[yColumn]
+    return col.type === 'number' ? col.data : null
   }, [
     result.table,
     xColumn,
@@ -157,7 +157,7 @@ const XYPlot: FC<Props> = ({
     result.table
   )
 
-  const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
+  const xFormatter = getFormatter(result.table.columns[xColumn].type, {
     prefix: properties.axes.x.prefix,
     suffix: properties.axes.x.suffix,
     base: properties.axes.x.base,
@@ -165,7 +165,7 @@ const XYPlot: FC<Props> = ({
     timeFormat: properties.timeFormat,
   })
 
-  const yFormatter = getFormatter(result.table.getColumnType(yColumn), {
+  const yFormatter = getFormatter(result.table.columns[yColumn].type, {
     prefix: properties.axes.y.prefix,
     suffix: properties.axes.y.suffix,
     base: properties.axes.y.base,

@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 import {useParams} from 'react-router-dom'
-import {Renderer} from 'react-markdown'
 import {Panel, InfluxColors, ComponentSize} from '@influxdata/clockface'
 
 // Components
@@ -32,7 +31,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import 'src/writeData/components/WriteDataDetailsView.scss'
 import LineProtocolFooterButtons from 'src/buckets/components/lineProtocol/LineProtocolFooterButtons'
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+const codeRenderer: any = (props: any): any => (
   <CodeSnippet text={props.value} label={props.language} />
 )
 
@@ -88,7 +87,7 @@ const UploadDataDetailsView: FC = () => {
                   className="write-data--details-content markdown-format"
                   data-testid="load-data-details-content"
                 >
-                  <Panel backgroundColor={InfluxColors.Castle}>
+                  <Panel backgroundColor={InfluxColors.Grey15}>
                     <Panel.Body size={ComponentSize.ExtraSmall}>
                       <WriteDataHelperBuckets />
                     </Panel.Body>

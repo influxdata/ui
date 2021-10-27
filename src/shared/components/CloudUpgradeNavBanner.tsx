@@ -47,7 +47,7 @@ const CloudUpgradeNavBanner: FC = () => {
             </Panel.Footer>
           </Panel>
           <Link className="cloud-upgrade-banner__collapsed" to="/checkout">
-            <Icon glyph={IconFont.CrownSolid} />
+            <Icon glyph={IconFont.CrownSolid_New} />
             <Heading element={HeadingElement.H5}>Upgrade Now</Heading>
           </Link>
         </CloudOnly>

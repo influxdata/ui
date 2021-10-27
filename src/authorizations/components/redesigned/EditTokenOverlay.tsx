@@ -153,7 +153,7 @@ const EditTokenOverlay: FC<Props> = props => {
             <Page.ControlBarCenter>
               <FlexBox margin={ComponentSize.Medium}>
                 <Button
-                  color={ComponentColor.Default}
+                  color={ComponentColor.Tertiary}
                   text="Cancel"
                   onClick={handleDismiss}
                   testID="token-cancel-btn"

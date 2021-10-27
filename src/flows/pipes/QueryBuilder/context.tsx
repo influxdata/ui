@@ -251,7 +251,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
         scope
       )
         .then(resp => {
-          return resp.parsed.table.getColumn('_value', 'string') || []
+          return Object.values(resp.parsed.table.columns).filter(
+            c => c.name === '_value' && c.type === 'string'
+          )[0].data as string[]
         })
         .then(keys => {
           if (!cards[idx].keys.selected[0]) {
@@ -274,7 +276,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
           })
           setCardMeta([...cardMeta])
         })
-        .catch(() => {})
+        .catch(e => {
+          console.error(e)
+        })
     },
     [data.buckets, cards]
   )
@@ -339,7 +343,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
         scope
       )
         .then(resp => {
-          return resp.parsed.table.getColumn('_value', 'string') || []
+          return Object.values(resp.parsed.table.columns).filter(
+            c => c.name === '_value' && c.type === 'string'
+          )[0].data as string[]
         })
         .then(values => {
           cardMeta.splice(idx, 1, {
@@ -349,7 +355,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
           })
           setCardMeta([...cardMeta])
         })
-        .catch(() => {})
+        .catch(e => {
+          console.error(e)
+        })
     },
     [data.buckets, cards]
   )

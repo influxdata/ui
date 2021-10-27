@@ -2,19 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: $ix-marg-b + $ix-marg-a;
 }
 
 .bucket-add-data--option {
   border-radius: $ix-radius;
-  background-color: $g3-castle;
-  margin-bottom: $ix-border;
-  padding: $ix-marg-b + $ix-marg-a;
+  background-color: $cf-grey-15;
+  margin-bottom: $cf-space-3xs;
+  padding: $cf-space-s;
   transition: background-color 0.25s ease;
-
-  &:last-child {
-    margin-bottom: $ix-border;
-  }
 }
 
 .bucket-add-data--option-header,
@@ -26,14 +21,14 @@
 .bucket-add-data--option-header {
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: $ix-marg-a + $ix-border;
-  color: $g14-chromium;
+  margin-bottom: $cf-space-xs;
+  color: $cf-grey-75;
 }
 
 .bucket-add-data--option-desc {
   font-size: 13px;
   font-weight: 500;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 }
 
 /*
@@ -41,16 +36,16 @@
 */
 .bucket-add-data--option:hover {
   cursor: pointer;
-  background-color: $g5-pepper;
+  background-color: $cf-grey-25;
 
   .bucket-add-data--option-header {
-    color: $g18-cloud;
+    color: $cf-grey-95;
   }
   .bucket-add-data--option-desc {
-    color: $g13-mist;
+    color: $cf-grey-75;
   }
 }
 
 .system-bucket {
-  color: mix($c-honeydew, $g13-mist);
+  color: mix($c-honeydew, $cf-grey-75);
 }

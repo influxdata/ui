@@ -17,6 +17,7 @@ import {
   JustifyContent,
   IconFont,
   ConfirmationButton,
+  ComponentSize,
 } from '@influxdata/clockface'
 
 // Contexts
@@ -88,10 +89,11 @@ const TelegrafConfigOverlayForm: FC = () => {
             direction={FlexDirection.Row}
             alignItems={AlignItems.Center}
             justifyContent={JustifyContent.SpaceBetween}
+            size={ComponentSize.ExtraSmall}
           >
-            <Heading element={HeadingElement.H5}>{telegraf.name}</Heading>
+            <Heading element={HeadingElement.H4}>{telegraf.name}</Heading>
             <Button
-              icon={IconFont.Download}
+              icon={IconFont.Download_New}
               color={ComponentColor.Secondary}
               text="Download Config"
               onClick={handleDownloadConfig}
@@ -107,7 +109,7 @@ const TelegrafConfigOverlayForm: FC = () => {
       </Overlay.Body>
       <Overlay.Footer>
         <Button
-          color={ComponentColor.Default}
+          color={ComponentColor.Tertiary}
           text="Cancel"
           onClick={onClose}
         />

@@ -31,7 +31,7 @@ class DangerConfirmationOverlay extends PureComponent<Props, State> {
           title={this.overlayTitle}
           onDismiss={this.handleCloseOverlay}
         />
-        <Overlay.Body>{this.overlayContents}</Overlay.Body>
+        {this.overlayContents}
       </Overlay.Container>
     )
   }

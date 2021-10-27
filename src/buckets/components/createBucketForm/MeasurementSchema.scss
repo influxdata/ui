@@ -9,8 +9,8 @@
     border-radius: 3px;
 
     &.hasError {
-      border-color: $c-dreamsicle;
-      color: $c-dreamsicle;
+      border-color: $c-fire;
+      color: $c-fire;
     }
 
     input[type='file'].drag-and-drop--input {
@@ -76,12 +76,12 @@
   }
 
   .title-text {
-    color: $g14-chromium;
+    color: $cf-grey-75;
     font-weight: 500;
   }
 
   .value-text {
-    color: $g20-white;
+    color: $cf-white;
     font-weight: 500;
   }
 

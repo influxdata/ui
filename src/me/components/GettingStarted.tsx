@@ -7,7 +7,6 @@ import {connect, ConnectedProps} from 'react-redux'
 import {
   Panel,
   Button,
-  Gradients,
   InfluxColors,
   ComponentColor,
   ComponentSize,
@@ -64,8 +63,8 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
   return (
     <div className="getting-started">
       <Panel
-        className="getting-started--card highlighted"
-        gradient={Gradients.PolarExpress}
+        className="getting-started--card"
+        backgroundColor={InfluxColors.Grey25}
       >
         <div className="getting-started--card-digit">1</div>
         <Panel.Body>
@@ -76,7 +75,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
             testID="getting-started--load-data--button"
             text="Load your data"
             color={ComponentColor.Primary}
-            size={ComponentSize.Large}
+            size={ComponentSize.Small}
             onClick={handleLoadDataClick}
             onMouseOver={handleLoadDataMouseOver}
             onMouseOut={handleLoadDataMouseOut}
@@ -85,7 +84,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
       </Panel>
       <Panel
         className="getting-started--card"
-        backgroundColor={InfluxColors.Onyx}
+        backgroundColor={InfluxColors.Grey25}
       >
         <div className="getting-started--card-digit">2</div>
         <Panel.Body>
@@ -96,7 +95,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
             testID="getting-started--dashboards--button"
             text="Build a dashboard"
             color={ComponentColor.Primary}
-            size={ComponentSize.Large}
+            size={ComponentSize.Small}
             onClick={handleDashboardsClick}
             onMouseOver={handleDashboardsMouseOver}
             onMouseOut={handleDashboardsMouseOut}
@@ -105,7 +104,8 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
       </Panel>
       <Panel
         className="getting-started--card"
-        backgroundColor={InfluxColors.Onyx}
+        backgroundColor={InfluxColors.Grey25}
+        style={{backgroundColor: '#333346'}}
       >
         <div className="getting-started--card-digit">3</div>
         <Panel.Body>
@@ -116,7 +116,7 @@ const GettingStarted: FunctionComponent<Props> = ({orgID, history}) => {
             testID="getting-started--alerting--button"
             text="Set up alerting"
             color={ComponentColor.Primary}
-            size={ComponentSize.Large}
+            size={ComponentSize.Small}
             onClick={handleAlertsClick}
             onMouseOver={handleAlertsMouseOver}
             onMouseOut={handleAlertsMouseOut}

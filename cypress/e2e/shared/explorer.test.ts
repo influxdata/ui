@@ -64,6 +64,7 @@ describe('DataExplorer', () => {
       })
       cy.contains('Submit').click()
       cy.get('.cf-tree-nav--toggle').click()
+      cy.getByTestID('nav-item-load-data').click()
       // Can't use the testID to select this nav item because Clockface is silly and uses the same testID twice
       // Issue: https://github.com/influxdata/clockface/issues/539
       cy.get('.cf-tree-nav--sub-item-label')
@@ -644,7 +645,7 @@ describe('DataExplorer', () => {
       // rename the first tab
       cy.get('.query-tab')
         .first()
-        .trigger('contextmenu')
+        .trigger('contextmenu', {force: true})
       cy.getByTestID('right-click--edit-tab').click()
       cy.getByTestID('edit-query-name').type('NewName{enter}')
       cy.get('.query-tab')
@@ -874,7 +875,7 @@ describe('DataExplorer', () => {
               .first()
               .trigger('mouseover')
               .then(() => {
-                cy.getByTestID('context-cog-runs').click()
+                cy.getByTestID('context-menu-task').click()
                 cy.getByTestID('context-edit-task').click()
               })
 

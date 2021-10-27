@@ -102,6 +102,7 @@ describe('Sources > Telegraf Plugins', () => {
       cy.getByTestID('sources-telegraf-plugins').should('exist')
       cy.getByTestID(`load-data-item ${examplePlugin}`).click()
       cy.getByTestID('add-plugin-to-configuration--dropdown')
+        .scrollIntoView()
         .should('be.visible')
         .click()
       cy.getByTestID('create-new-configuration-from-plugin--dropdown-item')
@@ -141,13 +142,14 @@ describe('Sources > Telegraf Plugins', () => {
 
       // go back to the sources page
       cy.getByTestID('tree-nav').within(() => {
-        cy.getByTestID('nav-item-load-data').click()
+        cy.clickNavBarItem('nav-item-load-data')
       })
       cy.getByTestID('sources-telegraf-plugins').should('exist')
       cy.getByTestID(`load-data-item ${examplePlugin}`).click()
 
       // Add to the existing config with the same plugin
       cy.getByTestID('add-plugin-to-configuration--dropdown')
+        .scrollIntoView()
         .should('be.visible')
         .click()
       cy.getByTestID('add-to-existing-configuration-from-plugin--dropdown-item')
@@ -242,9 +244,8 @@ describe('Sources > Telegraf Plugins', () => {
       cy.getByTestID('overlay--mask').should('not.exist')
 
       // Navigate back to Data > Sources to select another plugin
-      cy.getByTestID('nav-item-load-data')
-        .should('be.visible')
-        .click()
+      cy.clickNavBarItem('nav-item-load-data')
+
       cy.getByTestID(`load-data-item ${plugin2}`)
         .should('exist')
         .click()

@@ -240,7 +240,7 @@ describe('Notification Endpoints', () => {
 
   it('can view history of endpoint', () => {
     cy.get<SlackNotificationEndpoint>('@endpoint').then(() => {
-      cy.getByTestID(`context-history-menu`).click()
+      cy.getByTestID(`context-menu-task`).click()
       cy.getByTestID(`context-history-task`).click()
       cy.getByTestID(`alert-history-title`).should('exist')
     })
@@ -248,8 +248,8 @@ describe('Notification Endpoints', () => {
 
   it('can delete endpoint', () => {
     cy.get<SlackNotificationEndpoint>('@endpoint').then(() => {
-      cy.getByTestID(`context-delete-menu`).click()
-      cy.getByTestID(`context-delete-task`).click()
+      cy.getByTestID(`context-delete-task--button`).click()
+      cy.getByTestID(`context-delete-task--confirm-button`).click()
       cy.getByTestID(`endpoint-card--name ${name}`).should('not.exist')
     })
   })

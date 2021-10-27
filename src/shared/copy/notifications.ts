@@ -35,7 +35,7 @@ const defaultButtonElement = () => null
 const defaultErrorNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Error,
-  icon: IconFont.AlertTriangle,
+  icon: IconFont.AlertTriangle_New,
   duration: TEN_SECONDS,
 }
 
@@ -49,14 +49,14 @@ const defaultWarningNotification: NotificationExcludingMessage = {
 const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
-  icon: IconFont.Checkmark,
+  icon: IconFont.Checkmark_New,
   duration: FIVE_SECONDS,
 }
 
 const defaultDeletionNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Primary,
-  icon: IconFont.Trash,
+  icon: IconFont.Trash_New,
   duration: FIVE_SECONDS,
 }
 
@@ -793,7 +793,7 @@ export const taskGetFailed = (error: string): Notification => ({
 export const taskRetrySuccess = (id: string): Notification => ({
   ...defaultSuccessNotification,
   duration: FIVE_SECONDS,
-  message: `Task run ${id} was succesful`,
+  message: `Task run ${id} successfully scheduled`,
 })
 
 export const taskRetryFailed = (error: string): Notification => ({
@@ -1339,7 +1339,7 @@ export const deleteAnnotationFailed = (error: string): Notification => ({
 
 export const editAnnotationSuccess = (): Notification => ({
   ...defaultSuccessNotification,
-  icon: IconFont.Checkmark,
+  icon: IconFont.Checkmark_New,
   message: 'Annotation updated successfully',
 })
 
@@ -1368,7 +1368,7 @@ export const dashboardAutoRefreshTimeoutSuccess = (
 ): Notification => ({
   ...defaultSuccessNotification,
   duration: INDEFINITE,
-  icon: IconFont.Clock,
+  icon: IconFont.Clock_New,
   message: `Your dashboard auto refresh settings have been reset due to inactivity ${
     time ? 'over the last' + time : ''
   }`,

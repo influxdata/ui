@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent, MouseEvent} from 'react'
+import React, {PureComponent, MouseEvent, RefObject, createRef} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
@@ -20,8 +20,13 @@ import {
   FlexBox,
   AlignItems,
   FlexDirection,
+  SquareButton,
+  Popover,
+  Appearance,
+  List,
+  ButtonShape,
+  ConfirmationButton,
 } from '@influxdata/clockface'
-import {Context} from 'src/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import LastRunTaskStatus from 'src/shared/components/lastRunTaskStatus/LastRunTaskStatus'
 import {CopyResourceID} from 'src/shared/components/CopyResourceID'
@@ -138,61 +143,91 @@ export class TaskCard extends PureComponent<
     }
   }
 
-  private handleOnDelete = () => {
-    this.props.onDelete(this.props.task)
-    deletePinnedItemByParam(this.props.task.id)
+  private handleOnDelete = task => {
+    this.props.onDelete(task)
+    deletePinnedItemByParam(task.id)
   }
   private get contextMenu(): JSX.Element {
     const {task, onClone, isPinned} = this.props
+    const settingsRef: RefObject<HTMLButtonElement> = createRef()
 
     return (
-      <Context>
-        <Context.Menu icon={IconFont.CogThick} testID="context-cog-runs">
-          <Context.Item label="Export" action={this.handleExport} />
-          <Context.Item
-            label="Edit Task"
-            action={this.handleEditTask}
-            testID="context-edit-task"
-          />
-          <Context.Item
-            label="Run Task"
-            action={this.handleRunTask}
-            value={task.id}
-          />
-        </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Duplicate}
-          color={ComponentColor.Secondary}
-        >
-          <Context.Item label="Clone" action={onClone} value={task} />
-        </Context.Menu>
-        {isFlagEnabled('pinnedItems') && CLOUD && (
-          <Context.Menu
-            icon={IconFont.Star}
-            color={ComponentColor.Success}
-            testID="context-pin-menu"
-          >
-            <Context.Item
-              label="Pin to Homepage"
-              action={this.handlePinTask}
-              testID="context-pin-task"
-              disabled={isPinned}
-            />
-          </Context.Menu>
-        )}
-        <Context.Menu
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-          testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={this.handleOnDelete}
-            value={task}
-            testID="context-delete-task"
-          />
-        </Context.Menu>
-      </Context>
+      <FlexBox margin={ComponentSize.ExtraSmall}>
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, delete this task"
+          onConfirm={() => {
+            this.handleOnDelete(task)
+          }}
+          confirmationButtonText="Confirm"
+          testID={`context-delete-menu ${task.name}`}
+        />
+        <SquareButton
+          ref={settingsRef}
+          size={ComponentSize.ExtraSmall}
+          icon={IconFont.CogSolid_New}
+          color={ComponentColor.Colorless}
+          testID="context-menu-task"
+        />
+        <Popover
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          style={{minWidth: '112px'}}
+          contents={() => (
+            <List>
+              <List.Item
+                onClick={this.handleExport}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-export-task"
+              >
+                Export
+              </List.Item>
+              <List.Item
+                onClick={this.handleEditTask}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-edit-task"
+              >
+                Edit
+              </List.Item>
+              <List.Item
+                value={task.id}
+                onClick={this.handleRunTask}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-run-task"
+              >
+                Run
+              </List.Item>
+              <List.Item
+                value={task}
+                onClick={onClone}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-clone-task"
+              >
+                Clone
+              </List.Item>
+              {isFlagEnabled('pinnedItems') && CLOUD && (
+                <List.Item
+                  onClick={this.handlePinTask}
+                  disabled={isPinned}
+                  size={ComponentSize.Small}
+                  style={{fontWeight: 500}}
+                  testID="context-pin-task"
+                >
+                  Pin
+                </List.Item>
+              )}
+            </List>
+          )}
+          triggerRef={settingsRef}
+        />
+      </FlexBox>
     )
   }
 

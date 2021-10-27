@@ -18,8 +18,8 @@
 .annotations-searchbar--swatch {
   width: 10px;
   height: 10px;
-  margin-right: $cf-marg-b;
-  margin-top: $cf-marg-a + $cf-border + $cf-border / 2;
+  margin-right: $cf-space-2xs;
+  margin-top: $cf-space-3xs + $cf-border + $cf-border / 2;
 }
 
 .annotations-searchbar--item-details {
@@ -30,10 +30,10 @@
 
 .annotations-searchbar--item-name {
   width: 100%;
-  margin-top: $cf-marg-a;
+  margin-top: $cf-space-3xs;
 
   &:only-child {
-    margin-bottom: $cf-marg-a;
+    margin-bottom: $cf-space-3xs;
   }
 }
 
@@ -41,6 +41,6 @@
   margin-top: $cf-border;
   width: 100%;
   opacity: 0.666;
-  margin-bottom: $cf-marg-a;
+  margin-bottom: $cf-space-3xs;
   font-weight: $cf-font-weight--regular;
 }

@@ -36,7 +36,7 @@ const PresetFlows: FC = () => {
                     <Button
                       titleText={p.title}
                       color={ComponentColor.Primary}
-                      icon={IconFont.Plus}
+                      icon={IconFont.Plus_New}
                       className="flows-index--presetButton"
                       testID={`preset-${p.testID}`}
                       onClick={() => history.push(p.href)}
@@ -50,7 +50,7 @@ const PresetFlows: FC = () => {
                       onClick={() => history.push(p.href)}
                     ></Button>
                   )}
-                  <h4 className="flows-index--presetHeader">{p.title}</h4>
+                  <h5 className="flows-index--presetHeader">{p.title}</h5>
                 </div>
               ))}
             </div>

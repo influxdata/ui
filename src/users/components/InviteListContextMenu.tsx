@@ -66,13 +66,13 @@ function InviteListContextMenu({invite}: Props) {
       <FlexBox margin={ComponentSize.Small}>
         <SquareButton
           titleText="Resend Invitation"
-          icon={IconFont.Refresh}
+          icon={IconFont.Refresh_New}
           color={ComponentColor.Secondary}
           onClick={handleResend}
           testID="resend-invite"
         />
         <ConfirmationButton
-          icon={IconFont.Trash}
+          icon={IconFont.Trash_New}
           onShow={() => setHover(false)}
           onHide={() => setHover(true)}
           confirmationLabel="This action will invalidate the invitation link sent to this user"

@@ -47,7 +47,7 @@ const UsageXYGraph: FC<Props> = ({usageVector, fromFluxResult, status}) => {
 
   return (
     <Panel
-      backgroundColor={InfluxColors.Raven}
+      backgroundColor={InfluxColors.Grey5}
       className="graph-type--panel"
       testID="graph-type--panel"
     >

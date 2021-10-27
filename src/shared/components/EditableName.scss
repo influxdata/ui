@@ -36,11 +36,11 @@ $rename-dash-title-padding: 6px;
   margin-left: $ix-marg-b;
   transition: color 0.25s ease, opacity 0.25s ease;
   opacity: 1;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 
   &:hover {
     cursor: pointer;
-    color: $g15-platinum;
+    color: $cf-grey-85;
   }
 }
 

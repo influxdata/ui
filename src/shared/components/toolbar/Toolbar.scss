@@ -1,15 +1,15 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-$toolbar-padding-sm: $cf-marg-a + $cf-marg-b;
-$toolbar-padding-md: $cf-marg-d;
+$toolbar-padding-sm: $cf-space-3xs + $cf-space-2xs;
+$toolbar-padding-md: $cf-space-l;
 
 .toolbar {
   padding: 0 $toolbar-padding-sm;
-  margin-bottom: $cf-marg-a;
+  margin-bottom: $cf-space-s;
 
   &:last-of-type,
   &:only-of-type {
-    margin-bottom: $cf-marg-c;
+    margin-bottom: $cf-space-s;
   }
 }
 
@@ -34,7 +34,7 @@ $toolbar-padding-md: $cf-marg-d;
 }
 
 .toolbar--contents {
-  background-color: $g0-obsidian;
-  padding: $cf-marg-b;
+  background-color: rgba(26, 26, 42, 0.5);
+  padding: $cf-space-2xs;
   border-radius: $cf-radius;
 }

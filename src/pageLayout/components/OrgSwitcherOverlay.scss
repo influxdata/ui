@@ -7,24 +7,24 @@
 .org-switcher--prompt {
   text-align: center;
   margin-top: 0;
-  margin-bottom: $cf-marg-a;
-  color: $g9-mountain;
+  margin-bottom: $cf-space-3xs;
+  color: $cf-grey-45;
 }
 
 .org-switcher--item {
   display: flex;
   align-items: center;
-  color: $g11-sidewalk;
-  background-color: $g2-kevlar;
-  padding: $cf-marg-c;
-  margin-bottom: $cf-marg-a;
+  color: $cf-grey-65;
+  background-color: $cf-grey-5;
+  padding: $cf-space-s;
+  margin-bottom: $cf-space-3xs;
   border-radius: $cf-radius;
   transition: background-color 0.25s ease, color 0.25s ease;
 
   &:hover {
     cursor: pointer;
-    color: $g15-platinum;
-    background-color: $g4-onyx;
+    color: $cf-grey-85;
+    background-color: $cf-grey-15;
   }
 }
 
@@ -39,27 +39,27 @@
     font-style: normal;
     opacity: 0.3;
     display: inline-block;
-    margin-left: $cf-marg-b;
+    margin-left: $cf-space-2xs;
   }
 }
 
 .org-switcher--item-circle {
-  width: $cf-marg-d;
-  height: $cf-marg-d;
+  width: $cf-space-l;
+  height: $cf-space-l;
   border-radius: 50%;
-  background-color: $g1-raven;
-  margin-right: $cf-marg-c;
+  background-color: $cf-grey-5;
+  margin-right: $cf-space-s;
   display: flex;
   justify-content: center;
   align-items: center;
   align-content: center;
   transition: background-color 0.25s ease, color 0.25s ease,
     text-shadow 0.25s ease;
-  color: $g1-raven;
+  color: $cf-grey-5;
 
   .org-switcher--item:hover & {
     text-shadow: 0 0 4px $c-ocean;
-    background-color: $g2-kevlar;
+    background-color: $cf-grey-5;
     color: $c-pool;
   }
 }
@@ -67,12 +67,12 @@
 .org-switcher--item__selected,
 .org-switcher--item__selected:hover {
   cursor: default;
-  background-color: $g5-pepper;
-  color: $g20-white;
+  background-color: $cf-grey-25;
+  color: $cf-white;
 
   .org-switcher--item-circle {
     text-shadow: 0 0 4px $c-viridian;
     color: $c-honeydew;
-    background-color: $g3-castle;
+    background-color: $cf-grey-15;
   }
 }

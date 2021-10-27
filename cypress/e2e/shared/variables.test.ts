@@ -16,8 +16,8 @@ describe('Variables', () => {
 
   it('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {
     // Navigate away from and back to variables index using the nav bar
-    cy.getByTestID('nav-item-dashboards').click()
-    cy.getByTestID('nav-item-settings').click()
+    cy.clickNavBarItem('nav-item-dashboards')
+    cy.clickNavBarItem('nav-item-settings')
     cy.getByTestID('templates--tab').click()
     cy.getByTestID('variables--tab').click()
 
@@ -76,8 +76,7 @@ describe('Variables', () => {
             force: true,
           })
       })
-
-      cy.get('form')
+      cy.getByTestID('variable-update-submit--button')
         .contains('Submit')
         .click()
     })
@@ -100,7 +99,7 @@ describe('Variables', () => {
       cy.getByTestID('map-variable-dropdown--button').click()
       cy.contains(lastMapItem).click()
 
-      cy.get('form')
+      cy.getByTestID('variable-update-submit--button')
         .contains('Submit')
         .click()
     })
@@ -118,12 +117,12 @@ describe('Variables', () => {
       .contains(variableName)
 
     // Delete a variable
-    cy.getByTestID('context-delete-menu')
+    cy.getByTestID(`context-delete-variable ${variableName}--button`)
       .first()
-      .click({force: true})
-    cy.getByTestID(`context-delete-variable ${variableName}`)
+      .click()
+    cy.getByTestID(`context-delete-variable ${variableName}--confirm-button`)
       .first()
-      .click({force: true})
+      .click()
 
     cy.getByTestID('notification-success--dismiss').should('exist')
     cy.getByTestID('notification-success--dismiss').click()
@@ -135,8 +134,8 @@ describe('Variables', () => {
       .contains('LittleVariable')
 
     // Rename the variable
-    cy.getByTestID('context-menu')
-      .first()
+    cy.getByTestID('context-menu-variable')
+      .last()
       .click({force: true})
 
     cy.getByTestID('context-rename-variable').click({force: true})
@@ -342,7 +341,9 @@ describe('Variables', () => {
     cy.getByTestID('inline-labels--popover--contents').type(labelName)
     cy.getByTestID('inline-labels--create-new').click()
 
-    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     cy.getByTestID('overlay--children').should('not.exist')
@@ -448,27 +449,33 @@ describe('Variables', () => {
     cy.get('button.inline-labels--add')
       .first()
       .clickAttached()
-    cy.getByTestID('inline-labels--popover--contents').type(firstLabelName)
+    cy.getByTestID('inline-labels--popover-field').type(firstLabelName)
     cy.getByTestID('inline-labels--create-new').click()
-    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     const secondLabelName = 'query'
     cy.get('button.inline-labels--add')
       .eq(1)
       .clickAttached()
-    cy.getByTestID('inline-labels--popover--contents').type(secondLabelName)
+    cy.getByTestID('inline-labels--popover-field').type(secondLabelName)
     cy.getByTestID('inline-labels--create-new').click()
-    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     const thirdLabelName = 'csv'
     cy.get('button.inline-labels--add')
       .last()
       .clickAttached()
-    cy.getByTestID('inline-labels--popover--contents').type(thirdLabelName)
+    cy.getByTestID('inline-labels--popover-field').type(thirdLabelName)
     cy.getByTestID('inline-labels--create-new').click()
-    cy.getByTestID('create-label-form--submit').should('be.visible')
+    cy.getByTestID('create-label-form--submit')
+      .scrollIntoView()
+      .should('be.visible')
     cy.getByTestID('create-label-form--submit').click()
 
     // Select ascending order and use filter on variable name

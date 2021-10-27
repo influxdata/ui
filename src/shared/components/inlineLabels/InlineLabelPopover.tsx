@@ -76,7 +76,7 @@ export default class InlineLabelPopover extends PureComponent<Props> {
           <>
             <h5 className="inline-labels--popover-heading">Add Labels</h5>
             <Input
-              icon={IconFont.Search}
+              icon={IconFont.Search_New}
               placeholder="Filter labels..."
               value={searchTerm}
               onKeyDown={this.handleKeyDown}

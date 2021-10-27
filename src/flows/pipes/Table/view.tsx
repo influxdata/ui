@@ -81,6 +81,7 @@ const Table: FC<PipeProp> = ({Context}) => {
               className="panel-resizer--vis-toggle"
             />
           </div>
+          <div className="panel-resizer--error">{results.error}</div>
         </div>
       </Context>
     )

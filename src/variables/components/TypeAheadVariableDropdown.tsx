@@ -271,6 +271,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             value={typedValue}
             onKeyDown={this.maybeSelectNextItem}
             testID={`variable-dropdown-input-typeAhead--${name}`}
+            onFocus={(element) => element.target.select()}
           />
         )
       }

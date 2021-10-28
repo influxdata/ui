@@ -498,6 +498,16 @@ const parseCSV = (() => {
       return column.type
     }
 
+    data.table.getOriginalColumnType = (columnKey: string) => {
+      const column = data.table.columns[columnKey]
+
+      if (!column) {
+        return null
+      }
+
+      return column.fluxDataType
+    }
+
     queue[idx](data)
   }
 

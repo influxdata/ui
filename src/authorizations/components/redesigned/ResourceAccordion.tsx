@@ -67,23 +67,36 @@ class ResourceAccordion extends Component<OwnProps> {
             disabled={false}
           />
           {!permissions.otherResources.read && !permissions.otherResources.write
-            ? resources[1].map(resource => {
-                const resourceName =
-                  resource.charAt(0).toUpperCase() + resource.slice(1)
-
-                return (
-                  <AllAccordionBody
-                    key={resource}
-                    resourceName={resourceName}
-                    permissions={permissions[resource]}
-                    onToggleAll={onToggleAll}
-                    disabled={false}
-                  />
-                )
-              })
+            ? this.otherResourcesAccordionBody()
             : null}
         </Accordion>
       </>
+    )
+  }
+
+  otherResourcesAccordionBody = () => {
+    const {onToggleAll, resources, permissions} = this.props
+    const resourcePermissions = []
+
+    resources[1].forEach(resource => {
+      resourcePermissions.push({name: resource, perm: permissions[resource]})
+    })
+
+    return (
+      <Filter
+        list={resourcePermissions}
+        searchTerm={this.props.searchTerm}
+        searchKeys={['name']}
+      >
+        {filteredNames => (
+          <AllAccordionBody
+            resourceName="All Resources"
+            permissions={filteredNames}
+            onToggleAll={onToggleAll}
+            disabled={false}
+          />
+        )}
+      </Filter>
     )
   }
 
@@ -96,6 +109,7 @@ class ResourceAccordion extends Component<OwnProps> {
       )) {
         permissionNames.push(value)
       }
+
       return (
         <Filter
           list={permissionNames}

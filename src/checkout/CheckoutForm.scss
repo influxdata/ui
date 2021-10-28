@@ -21,6 +21,21 @@
   max-height: 140px;
 }
 
+.checkout-banner--container {
+  position: relative;
+  margin: 0;
+}
+.checkout-form--banner::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  transform-origin: center;
+  background: linear-gradient(45deg, #34bb55 0%, #34bb55 100%);
+  display: block;
+  position: absolute;
+  left: -8px;
+}
 .checkout-form--banner {
   background: linear-gradient(
     45deg,
@@ -29,16 +44,13 @@
   );
   box-sizing: border-box;
   position: absolute;
-  top: 20px;
-  right: 55px;
+  top: -20px;
   width: 270px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: black;
-  transform: translate(50%) rotate(45deg);
-  transform-origin: center;
 
   p {
     margin: 8px 0px;
@@ -56,23 +68,34 @@
   }
 }
 
-@media screen and (max-width: $cf-grid--breakpoint-md) {
+@media screen and (max-width: $cf-grid--breakpoint-sm) {
+  .cf-funnel-page--footer-container {
+    margin-bottom: 30px;
+  }
+
+  .checkout-banner--container {
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+    left: -8px;
+  }
+
+  .checkout-form--banner::before {
+    display: none;
+  }
+
   .checkout-form--banner {
     position: relative;
     height: auto;
     display: flex;
     rotate: 0deg;
-    bottom: 0;
-    top: 0;
-    left: 0;
+    bottom: 100%;
+    top: -25%;
     flex-direction: row;
-    width: 100%;
+    width: 100vw;
     transform: translate(0%) rotate(0deg);
-    border-radius: 8px;
-    .checkout-banner--credit {
-      margin-top: 0px;
-      padding-right: 8px;
-    }
+    margin: 0 auto;
+    right: 0px;
   }
 
   .checkout--panel {

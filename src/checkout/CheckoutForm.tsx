@@ -88,12 +88,6 @@ const CheckoutForm: FC = () => {
                 </a>
                 .
               </p>
-              {isFlagEnabled('paygCheckoutCredit') && (
-                <div className="checkout-form--banner">
-                  <strong className="checkout-banner--credit">$250</strong>
-                  <p>credit applied</p>
-                </div>
-              )}
             </Panel.Body>
           </Panel>
           <Panel>
@@ -169,6 +163,7 @@ const CheckoutForm: FC = () => {
               justifyContent={JustifyContent.Center}
             >
               <CancelButton />
+
               <CTAButton
                 color={ComponentColor.Primary}
                 status={
@@ -181,6 +176,13 @@ const CheckoutForm: FC = () => {
                 id="button-upgrade" // for google-analytics
                 testID="checkout-upgrade--button"
               />
+              <div className="checkout-banner--container">
+                {isFlagEnabled('paygCheckoutCredit') && (
+                  <div className="checkout-form--banner">
+                    <p>Upgrade now to get $250 in credit</p>
+                  </div>
+                )}
+              </div>
             </FlexBox>
           </FunnelPage.FooterSection>
         </FunnelPage.Footer>

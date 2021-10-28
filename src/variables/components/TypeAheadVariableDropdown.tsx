@@ -260,6 +260,9 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     const widthStyle = this.getWidth(placeHolderText)
 
+    const selectAllTextInInput = element => {
+      element.target.select()
+    }
     const getInnerComponent = () => {
       if (status === RemoteDataState.Loading || this.noValuesPresent()) {
         return placeHolderText
@@ -271,7 +274,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             value={typedValue}
             onKeyDown={this.maybeSelectNextItem}
             testID={`variable-dropdown-input-typeAhead--${name}`}
-            onFocus={element => element.target.select()}
+            onFocus={selectAllTextInInput}
           />
         )
       }

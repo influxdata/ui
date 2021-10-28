@@ -1,4 +1,3 @@
-import {Error} from 'src/client'
 import {
   Authorization,
   Bucket,

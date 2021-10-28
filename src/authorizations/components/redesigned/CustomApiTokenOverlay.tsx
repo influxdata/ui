@@ -48,7 +48,6 @@ import {
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
-
 interface OwnProps {
   onClose: () => void
 }
@@ -72,7 +71,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     const perms = {
       otherResources: {read: false, write: false},
     }
-    
+
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
@@ -84,7 +83,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     })
     setPermissions(perms)
   }, [props.telegrafPermissions, props.bucketPermissions])
-  
+
   const handleDismiss = () => {
     props.onClose()
   }

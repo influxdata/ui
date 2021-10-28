@@ -1,5 +1,5 @@
 import React, {FC, useState, useContext, useEffect} from 'react'
-import {connect} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Actions
@@ -21,7 +21,6 @@ import {
   ButtonShape,
   InputLabel,
   JustifyContent,
-  RemoteDataState,
   ComponentStatus,
 } from '@influxdata/clockface'
 import ResourceAccordion from 'src/authorizations/components/redesigned/ResourceAccordion'
@@ -33,6 +32,7 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Types
 import {AppState, ResourceType, Authorization} from 'src/types'
 import {Bucket, Telegraf} from 'src/client'
+import {RouteComponentProps} from 'react-router-dom'
 
 // Seletors
 import {getOrg} from 'src/organizations/selectors'
@@ -48,31 +48,16 @@ import {
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
+
 interface OwnProps {
   onClose: () => void
 }
 
-interface StateProps {
-  allResources: string[]
-  telegrafPermissions: any
-  bucketPermissions: any
-  remoteDataState: RemoteDataState
-  orgID: string
-  orgName: string
-}
-
-interface DispatchProps {
-  getBuckets: () => void
-  getTelegrafs: () => void
-  createAuthorization: (auth) => void
-  showOverlay: (arg1: string, arg2: any, any) => {}
-}
-
-type Props = OwnProps & StateProps & DispatchProps
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
 
 const CustomApiTokenOverlay: FC<Props> = props => {
   const {onClose} = useContext(OverlayContext)
-
   const [description, setDescription] = useState('')
   const [permissions, setPermissions] = useState({})
   const [searchTerm, setSearchTerm] = useState('')
@@ -87,7 +72,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     const perms = {
       otherResources: {read: false, write: false},
     }
-
+    
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
@@ -99,7 +84,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     })
     setPermissions(perms)
   }, [props.telegrafPermissions, props.bucketPermissions])
-
+  
   const handleDismiss = () => {
     props.onClose()
   }
@@ -389,4 +374,5 @@ const mdtp = {
   dismissOverlay,
 }
 
-export default connect(mstp, mdtp)(CustomApiTokenOverlay)
+const connector = connect(mstp, mdtp)
+export default connector(CustomApiTokenOverlay)

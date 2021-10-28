@@ -60,7 +60,7 @@ export const setCurrentAuthorization = (
     item,
   } as const)
 
-export const setAllResources = (list?: string[] | Error) =>
+export const setAllResources = (list?: string[]) =>
   ({
     type: SET_ALL_RESOURCES,
     list,

@@ -176,13 +176,13 @@ const CheckoutForm: FC = () => {
                 id="button-upgrade" // for google-analytics
                 testID="checkout-upgrade--button"
               />
-              <div className="checkout-banner--container">
-                {isFlagEnabled('paygCheckoutCredit') && (
+              {isFlagEnabled('paygCheckoutCredit') && (
+                <div className="checkout-banner--container">
                   <div className="checkout-form--banner">
                     <p>Upgrade now to get $250 in credit</p>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </FlexBox>
           </FunnelPage.FooterSection>
         </FunnelPage.Footer>

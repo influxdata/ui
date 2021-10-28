@@ -1,5 +1,5 @@
 import React, {FC, useState, useContext, useEffect} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {connect} from 'react-redux'
 import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Actions
@@ -20,6 +20,7 @@ import {
   ComponentColor,
   ButtonShape,
   InputLabel,
+  RemoteDataState,
   JustifyContent,
   ComponentStatus,
 } from '@influxdata/clockface'
@@ -32,7 +33,6 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Types
 import {AppState, ResourceType, Authorization} from 'src/types'
 import {Bucket, Telegraf} from 'src/client'
-import {RouteComponentProps} from 'react-router-dom'
 
 // Seletors
 import {getOrg} from 'src/organizations/selectors'
@@ -51,9 +51,22 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 interface OwnProps {
   onClose: () => void
 }
+interface StateProps {
+  allResources: string[]
+  telegrafPermissions: any
+  bucketPermissions: any
+  remoteDataState: RemoteDataState
+  orgID: string
+  orgName: string
+}
+interface DispatchProps {
+  getBuckets: () => void
+  getTelegrafs: () => void
+  createAuthorization: (auth) => void
+  showOverlay: (arg1: string, arg2: any, any) => {}
+}
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
+type Props = StateProps & OwnProps & DispatchProps
 
 const CustomApiTokenOverlay: FC<Props> = props => {
   const {onClose} = useContext(OverlayContext)

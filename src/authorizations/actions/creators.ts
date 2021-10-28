@@ -1,7 +1,6 @@
 // Types
 import {RemoteDataState, AuthEntities, Authorization} from 'src/types'
 import {NormalizedSchema} from 'normalizr'
-import {Error} from 'src/client'
 
 export const SET_AUTH = 'SET_AUTH'
 export const ADD_AUTH = 'ADD_AUTH'

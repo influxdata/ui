@@ -142,7 +142,7 @@ class TelegrafUIRefreshSelector extends PureComponent<Props, State> {
           <>
             <Grid.Row>
               <Grid.Column widthSM={Columns.Six}>
-                <FormElement label="Bucket">
+                <FormElement label="Bucket" required={true}>
                   <BucketDropdown
                     selectedBucketID={selectedBucket?.id}
                     buckets={sortedBuckets}

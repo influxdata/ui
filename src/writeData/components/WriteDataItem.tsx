@@ -53,7 +53,7 @@ const WriteDataItem: FC<Props> = ({
   if (image) {
     thumb = (
       <Suspense fallback="Loading...">
-        <LazySVG image={image} style={svgStyle} />
+        <LazySVG image={image} style={svgStyle} alt={name} />
       </Suspense>
     )
   }

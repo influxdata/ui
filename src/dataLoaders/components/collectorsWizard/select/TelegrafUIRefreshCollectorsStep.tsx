@@ -71,7 +71,14 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
                 </a>{' '}
                 is an open-source data collection agent for collecting and
                 reporting metrics. Simply choose a bucket and one of the plugin
-                libraries to start writing data into InfluxDB.
+                libraries to start writing data into InfluxDB. View Telegraf{' '}
+                <a
+                  href="https://docs.influxdata.com/telegraf/latest/plugins/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  plugin documentation.
+                </a>
               </h5>
             </Grid.Column>
           </Grid.Row>

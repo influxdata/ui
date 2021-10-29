@@ -175,14 +175,16 @@ describe('tokens', () => {
     cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.wait('@deleteToken')
+    
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-delete-menu--button').click()
+        cy.getByTestID('context-delete-menu--button').should('exist').click()
       })
-    cy.getByTestID('context-delete-menu--confirm-button').click()
+    cy.getByTestID('context-delete-menu--confirm-button').should('exist').click()
 
     cy.wait('@deleteToken')
+
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
@@ -195,7 +197,7 @@ describe('tokens', () => {
       cy.getByTestID('dropdown--gen-token').should('exist')
     })
   })
-
+  
   it('can generate a all access token', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
 

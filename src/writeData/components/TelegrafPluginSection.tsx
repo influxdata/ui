@@ -52,6 +52,7 @@ const TelegrafPluginSection = () => {
             id={item.id}
             name={item.name}
             image={item.image}
+            style={item.style}
             url={`${TELEGRAF_PLUGINS}/${item.id}`}
           />
         ))}

@@ -26,6 +26,7 @@ interface OwnProps {
   variable: Variable
   onDeleteVariable: (variable: Variable) => void
   onFilterChange: (searchTerm: string) => void
+  onSelectVariableCard: (variable: Variable) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -35,7 +36,7 @@ class VariableCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {
   public render() {
-    const {variable, variables, onDeleteVariable} = this.props
+    const {variable, variables, onDeleteVariable, onSelectVariableCard} = this.props
 
     const {error} = validateVariableName(variables, variable.name, variable.id)
     const errorMessage = (error && `Rename required. ${error}`) ?? null
@@ -51,6 +52,7 @@ class VariableCard extends PureComponent<
               onExport={this.handleExport}
               onRename={this.handleRenameVariable}
               onDelete={onDeleteVariable}
+              onSelect={onSelectVariableCard}
             />
           }
         >

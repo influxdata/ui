@@ -21,6 +21,7 @@ interface Props {
   sortKey: string
   sortDirection: Sort
   sortType: SortTypes
+  onSelectVariable: (variable: Variable) => void
 }
 
 const VariableList: FC<Props> = props => {
@@ -32,6 +33,7 @@ const VariableList: FC<Props> = props => {
     sortType,
     onDeleteVariable,
     onFilterChange,
+    onSelectVariable
   } = props
 
   const sortedVariables = useMemo(
@@ -49,6 +51,7 @@ const VariableList: FC<Props> = props => {
               variable={variable}
               onDeleteVariable={onDeleteVariable}
               onFilterChange={onFilterChange}
+              onSelectVariableCard={onSelectVariable}
             />
           ))}
         </ResourceList.Body>

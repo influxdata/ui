@@ -23,6 +23,7 @@ interface Props {
   onExport: () => void
   onRename: () => void
   onDelete: (variable: Variable) => void
+  onSelect: (variable: Variable) => void
 }
 
 export default class VariableContextMenu extends PureComponent<Props> {
@@ -61,7 +62,7 @@ export default class VariableContextMenu extends PureComponent<Props> {
   }
 
   private getPopoverMenuItems = () => {
-    const {onExport, onRename} = this.props
+    const {onExport, onRename, onSelect, variable} = this.props
     return (
       <List>
         <List.Item
@@ -79,6 +80,14 @@ export default class VariableContextMenu extends PureComponent<Props> {
           testID="context-rename-variable"
         >
           Rename
+        </List.Item>
+        <List.Item
+          onClick={() => onSelect(variable)}
+          size={ComponentSize.Small}
+          style={{fontWeight: 500}}
+          testID="context-rename-variable"
+        >
+          Select
         </List.Item>
       </List>
     )

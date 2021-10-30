@@ -1,14 +1,14 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 // Utils
 import {deleteVariable} from 'src/variables/actions/thunks'
 import {getVariables} from 'src/variables/selectors'
 
 // Components
-import {EmptyState} from '@influxdata/clockface'
+import {Button, ComponentSize, EmptyState, IconFont, Sort} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import VariableList from 'src/variables/components/VariableList'
@@ -16,11 +16,9 @@ import Filter from 'src/shared/components/FilterList'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import GetResources from 'src/resources/components/GetResources'
-import {Sort} from '@influxdata/clockface'
 
 // Types
 import {AppState, OverlayState, ResourceType, Variable} from 'src/types'
-import {ComponentSize} from '@influxdata/clockface'
 import {SortTypes} from 'src/shared/utils/sort'
 import {VariableSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
@@ -33,6 +31,7 @@ interface State {
   sortKey: VariableSortKey
   sortDirection: Sort
   sortType: SortTypes
+  selectedVariables: Variable[]
 }
 
 const FilterList = Filter<Variable>()
@@ -44,11 +43,21 @@ class VariablesTab extends PureComponent<Props, State> {
     sortKey: 'name',
     sortDirection: Sort.Ascending,
     sortType: SortTypes.String,
+    selectedVariables: [],
   }
 
   public render() {
-    const {variables} = this.props
+    const {variables, onDeleteVariable} = this.props
     const {searchTerm, sortKey, sortDirection, sortType} = this.state
+
+    const batchDeleteVariables = async (variables: Variable[]) =>  {
+      await variables.forEach((value) => {
+         onDeleteVariable(value.id)
+      })
+
+      this.setState({selectedVariables: []})
+      console.log('batch deleted', variables)
+    }
 
     const leftHeaderItems = (
       <>
@@ -64,6 +73,7 @@ class VariablesTab extends PureComponent<Props, State> {
           sortKey={sortKey}
           sortType={sortType}
         />
+        <Button icon={IconFont.Trash} text={'Batch Delete selected'} onClick={() => {batchDeleteVariables(this.state.selectedVariables)}}/>
       </>
     )
 
@@ -74,6 +84,15 @@ class VariablesTab extends PureComponent<Props, State> {
         onSelectNew={this.handleOpenCreateOverlay}
       />
     )
+
+    const {selectedVariables} = this.state
+
+    console.log('selectedVariables : ', selectedVariables)
+
+    const updateSelectedVariableList = (variable: Variable) => {
+      const list = selectedVariables.concat(variable)
+      this.setState({selectedVariables: list})
+    }
 
     return (
       <>
@@ -96,6 +115,7 @@ class VariablesTab extends PureComponent<Props, State> {
                 sortKey={sortKey}
                 sortDirection={sortDirection}
                 sortType={sortType}
+                onSelectVariable={updateSelectedVariableList}
               />
             )}
           </FilterList>

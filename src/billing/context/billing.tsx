@@ -46,7 +46,6 @@ import {
 } from 'src/types'
 import {CreditCardParams} from 'src/types/billing'
 import {getErrorMessage} from 'src/utils/api'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export type Props = {
   children: JSX.Element
@@ -202,9 +201,7 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
         throw new Error(resp.data.message)
       }
 
-      if (!isFlagEnabled('trackCancellations')) {
-        history.push(`/logout`)
-      }
+      history.push(`/logout`)
     } catch (error) {
       const message = getErrorMessage(error)
       console.error({error})

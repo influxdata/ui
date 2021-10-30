@@ -18,12 +18,6 @@ export enum VariableItems {
   OTHER_REASON = 'Other reason',
 }
 
-const RedirectLocations = {
-  SWITCHING_ORGANIZATION: '/org_cancel',
-  RE_SIGNUP: '/cancel',
-}
-const DEFAULT_REDIRECT_LOCATION = '/mkt_cancel'
-
 export interface CancelServiceContextType {
   shortSuggestion: string
   isShortSuggestionEnabled: boolean
@@ -35,7 +29,6 @@ export interface CancelServiceContextType {
   setReason: (_: string) => void
   canContactForFeedback: boolean
   toggleCanContactForFeedback: () => void
-  getRedirectLocation: () => string
 }
 
 export const DEFAULT_CANCEL_SERVICE_CONTEXT: CancelServiceContextType = {
@@ -49,7 +42,6 @@ export const DEFAULT_CANCEL_SERVICE_CONTEXT: CancelServiceContextType = {
   setReason: (_: string) => null,
   canContactForFeedback: false,
   toggleCanContactForFeedback: () => null,
-  getRedirectLocation: () => DEFAULT_REDIRECT_LOCATION,
 }
 
 export const CancelServiceContext = createContext<CancelServiceContextType>(
@@ -75,12 +67,6 @@ const CancelServiceProvider: FC<Props> = ({children}) => {
     setCanContactForFeedback(prev => !prev)
   }
 
-  const getRedirectLocation = () => {
-    const uri = RedirectLocations[reason] ?? '/mkt_cancel'
-
-    return `https://www.influxdata.com${uri}`
-  }
-
   return (
     <CancelServiceContext.Provider
       value={{
@@ -94,7 +80,6 @@ const CancelServiceProvider: FC<Props> = ({children}) => {
         setReason,
         canContactForFeedback,
         toggleCanContactForFeedback,
-        getRedirectLocation,
       }}
     >
       {children}

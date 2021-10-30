@@ -21,7 +21,6 @@ import {useSelector} from 'react-redux'
 import {getQuartzMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {postSignout} from 'src/client'
 
 interface Props {
   onHideOverlay: () => void
@@ -36,7 +35,6 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     canContactForFeedback,
     suggestions,
     shortSuggestion,
-    getRedirectLocation,
   } = useContext(CancelServiceContext)
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
@@ -66,13 +64,6 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     }
 
     handleCancelAccount()
-
-    if (isFlagEnabled('trackCancellations')) {
-      postSignout({}).then(() => {
-        window.location.href = getRedirectLocation()
-      })
-    }
-
     event('Cancel Service Executed', payload)
   }
 

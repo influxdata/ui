@@ -8,7 +8,19 @@ import {deleteVariable} from 'src/variables/actions/thunks'
 import {getVariables} from 'src/variables/selectors'
 
 // Components
-import {Button, ComponentSize, EmptyState, IconFont, Sort} from '@influxdata/clockface'
+import {
+  Button,
+  ButtonShape,
+  ComponentColor,
+  ComponentSize,
+  Dropdown,
+  EmptyState,
+  FlexBox,
+  FlexDirection,
+  IconFont,
+  JustifyContent,
+  Sort,
+} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import VariableList from 'src/variables/components/VariableList'
@@ -21,6 +33,8 @@ import GetResources from 'src/resources/components/GetResources'
 import {AppState, OverlayState, ResourceType, Variable} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {VariableSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
+
+import 'src/shared/components/cta.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps<{orgID: string}> & ReduxProps
@@ -48,11 +62,17 @@ class VariablesTab extends PureComponent<Props, State> {
 
   public render() {
     const {variables, onDeleteVariable} = this.props
-    const {searchTerm, sortKey, sortDirection, sortType} = this.state
+    const {
+      searchTerm,
+      sortKey,
+      sortDirection,
+      sortType,
+      selectedVariables,
+    } = this.state
 
-    const batchDeleteVariables = async (variables: Variable[]) =>  {
-      await variables.forEach((value) => {
-         onDeleteVariable(value.id)
+    const batchDeleteVariables = async (variables: Variable[]) => {
+      await variables.forEach(value => {
+        onDeleteVariable(value.id)
       })
 
       this.setState({selectedVariables: []})
@@ -73,7 +93,38 @@ class VariablesTab extends PureComponent<Props, State> {
           sortKey={sortKey}
           sortType={sortType}
         />
-        <Button icon={IconFont.Trash} text={'Batch Delete selected'} onClick={() => {batchDeleteVariables(this.state.selectedVariables)}}/>
+        <Dropdown
+          style={{width: '40px'}}
+          button={(active, onClick) => (
+            <Button icon={IconFont.More} active={active} onClick={onClick} />
+          )}
+          menu={() => (
+            <Dropdown.Menu style={{width: '200px'}}>
+              <Button
+                icon={IconFont.Trash_New}
+                text={`${selectedVariables.length} selected`}
+                onClick={() => {
+                  batchDeleteVariables(selectedVariables)
+                }}
+              />
+              <Button
+                text="Select All"
+                icon={IconFont.Checkmark_New}
+                onClick={() => {
+                  this.setState({selectedVariables: variables})
+                }}
+              />
+              <Button
+                icon={IconFont.Remove_New}
+                color={ComponentColor.Danger}
+                onClick={() => {
+                  this.setState({selectedVariables: []})
+                }}
+                shape={ButtonShape.Square}
+              />
+            </Dropdown.Menu>
+          )}
+        />
       </>
     )
 
@@ -84,10 +135,6 @@ class VariablesTab extends PureComponent<Props, State> {
         onSelectNew={this.handleOpenCreateOverlay}
       />
     )
-
-    const {selectedVariables} = this.state
-
-    console.log('selectedVariables : ', selectedVariables)
 
     const updateSelectedVariableList = (variable: Variable) => {
       const list = selectedVariables.concat(variable)
@@ -100,6 +147,33 @@ class VariablesTab extends PureComponent<Props, State> {
           childrenLeft={leftHeaderItems}
           childrenRight={rightHeaderItems}
         />
+        <div className="header-cta--batch-operation">
+          <div className="header-cta">
+            <FlexBox justifyContent={JustifyContent.SpaceBetween} direction={FlexDirection.Row}>
+              <Button
+                icon={IconFont.Trash_New}
+                text={`${selectedVariables.length} selected`}
+                onClick={() => {
+                  batchDeleteVariables(selectedVariables)
+                }}
+              />
+              <Button
+                text="Select All"
+                icon={IconFont.Checkmark_New}
+                onClick={() => {
+                  this.setState({selectedVariables: variables})
+                }}
+              />
+              <Button
+                icon={IconFont.Remove_New}
+                color={ComponentColor.Danger}
+                onClick={() => {
+                  this.setState({selectedVariables: []})
+                }}
+              />
+            </FlexBox>
+          </div>
+        </div>
         <GetResources resources={[ResourceType.Labels]}>
           <FilterList
             searchTerm={searchTerm}

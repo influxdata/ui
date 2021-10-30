@@ -33,7 +33,7 @@ const VariableList: FC<Props> = props => {
     sortType,
     onDeleteVariable,
     onFilterChange,
-    onSelectVariable
+    onSelectVariable,
   } = props
 
   const sortedVariables = useMemo(

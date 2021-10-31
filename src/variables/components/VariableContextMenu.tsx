@@ -54,14 +54,14 @@ export default class VariableContextMenu extends PureComponent<Props> {
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
           style={{minWidth: '112px'}}
-          contents={this.getPopoverMenuItems}
+          contents={onHide => this.getPopoverMenuItems(onHide)}
           triggerRef={settingsRef}
         />
       </FlexBox>
     )
   }
 
-  private getPopoverMenuItems = () => {
+  private getPopoverMenuItems = onHide => {
     const {onExport, onRename, onSelect, variable} = this.props
     return (
       <List>
@@ -82,7 +82,10 @@ export default class VariableContextMenu extends PureComponent<Props> {
           Rename
         </List.Item>
         <List.Item
-          onClick={() => onSelect(variable)}
+          onClick={() => {
+            onSelect(variable)
+            onHide()
+          }}
           size={ComponentSize.Small}
           style={{fontWeight: 500}}
           testID="context-rename-variable"

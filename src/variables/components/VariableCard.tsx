@@ -4,7 +4,11 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {ComponentStatus, ResourceCard} from '@influxdata/clockface'
+import {
+  ComponentStatus,
+  InfluxColors,
+  ResourceCard,
+} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 import VariableContextMenu from 'src/variables/components/VariableContextMenu'
 
@@ -27,6 +31,7 @@ interface OwnProps {
   onDeleteVariable: (variable: Variable) => void
   onFilterChange: (searchTerm: string) => void
   onSelectVariableCard: (variable: Variable) => void
+  isSelected: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -41,6 +46,7 @@ class VariableCard extends PureComponent<
       variables,
       onDeleteVariable,
       onSelectVariableCard,
+      isSelected,
     } = this.props
 
     const {error} = validateVariableName(variables, variable.name, variable.id)
@@ -60,6 +66,12 @@ class VariableCard extends PureComponent<
               onSelect={onSelectVariableCard}
             />
           }
+          style={{
+            borderLeft: isSelected
+              ? `8px solid ${InfluxColors.White}`
+              : `8px solid transparent`,
+          }}
+          onClick={() => {}}
         >
           <ResourceCard.Name
             onClick={this.handleNameClick}

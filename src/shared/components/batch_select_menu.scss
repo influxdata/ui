@@ -1,0 +1,9 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.batch_select_menu {
+  border-radius: $cf-radius;
+  background: rgb(74 144 226 / 20%);
+  padding: 8px 20px;
+  margin-bottom: 14px;
+  margin-top: -18px;
+}

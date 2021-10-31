@@ -9,17 +9,19 @@ import {getVariables} from 'src/variables/selectors'
 
 // Components
 import {
+  Appearance,
   Button,
-  ButtonShape,
   ComponentColor,
   ComponentSize,
-  Dropdown,
+  ConfirmationButton,
   EmptyState,
   FlexBox,
   FlexDirection,
   IconFont,
+  InfluxColors,
   JustifyContent,
   Sort,
+  TextBlock,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
@@ -34,7 +36,7 @@ import {AppState, OverlayState, ResourceType, Variable} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {VariableSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
-import 'src/shared/components/cta.scss'
+import 'src/shared/components/batch_select_menu.scss'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = RouteComponentProps<{orgID: string}> & ReduxProps
@@ -71,12 +73,11 @@ class VariablesTab extends PureComponent<Props, State> {
     } = this.state
 
     const batchDeleteVariables = async (variables: Variable[]) => {
-      await variables.forEach(value => {
-        onDeleteVariable(value.id)
-      })
+      for (const variable of variables) {
+        await onDeleteVariable(variable.id)
+      }
 
       this.setState({selectedVariables: []})
-      console.log('batch deleted', variables)
     }
 
     const leftHeaderItems = (
@@ -93,38 +94,6 @@ class VariablesTab extends PureComponent<Props, State> {
           sortKey={sortKey}
           sortType={sortType}
         />
-        <Dropdown
-          style={{width: '40px'}}
-          button={(active, onClick) => (
-            <Button icon={IconFont.More} active={active} onClick={onClick} />
-          )}
-          menu={() => (
-            <Dropdown.Menu style={{width: '200px'}}>
-              <Button
-                icon={IconFont.Trash_New}
-                text={`${selectedVariables.length} selected`}
-                onClick={() => {
-                  batchDeleteVariables(selectedVariables)
-                }}
-              />
-              <Button
-                text="Select All"
-                icon={IconFont.Checkmark_New}
-                onClick={() => {
-                  this.setState({selectedVariables: variables})
-                }}
-              />
-              <Button
-                icon={IconFont.Remove_New}
-                color={ComponentColor.Danger}
-                onClick={() => {
-                  this.setState({selectedVariables: []})
-                }}
-                shape={ButtonShape.Square}
-              />
-            </Dropdown.Menu>
-          )}
-        />
       </>
     )
 
@@ -137,8 +106,10 @@ class VariablesTab extends PureComponent<Props, State> {
     )
 
     const updateSelectedVariableList = (variable: Variable) => {
-      const list = selectedVariables.concat(variable)
-      this.setState({selectedVariables: list})
+      if (!selectedVariables.includes(variable)) {
+        const list = selectedVariables.concat(variable)
+        this.setState({selectedVariables: list})
+      }
     }
 
     return (
@@ -147,16 +118,31 @@ class VariablesTab extends PureComponent<Props, State> {
           childrenLeft={leftHeaderItems}
           childrenRight={rightHeaderItems}
         />
-        <div className="header-cta--batch-operation">
-          <div className="header-cta">
-            <FlexBox justifyContent={JustifyContent.SpaceBetween} direction={FlexDirection.Row}>
+        <div
+          className="batch_select_menu"
+          style={{display: selectedVariables.length === 0 ? 'none' : ''}}
+        >
+          <FlexBox
+            margin={ComponentSize.Small}
+            direction={FlexDirection.Row}
+            justifyContent={JustifyContent.SpaceBetween}
+          >
+            <FlexBox>
+              <TextBlock
+                text={`${selectedVariables.length} SELECTED`}
+                backgroundColor={InfluxColors.White}
+                textColor={InfluxColors.Graphite}
+              />
               <Button
-                icon={IconFont.Trash_New}
-                text={`${selectedVariables.length} selected`}
+                text="Cancel"
+                color={ComponentColor.Tertiary}
                 onClick={() => {
-                  batchDeleteVariables(selectedVariables)
+                  this.setState({selectedVariables: []})
                 }}
               />
+            </FlexBox>
+
+            <FlexBox margin={ComponentSize.Large}>
               <Button
                 text="Select All"
                 icon={IconFont.Checkmark_New}
@@ -164,15 +150,17 @@ class VariablesTab extends PureComponent<Props, State> {
                   this.setState({selectedVariables: variables})
                 }}
               />
-              <Button
-                icon={IconFont.Remove_New}
-                color={ComponentColor.Danger}
-                onClick={() => {
-                  this.setState({selectedVariables: []})
+              <ConfirmationButton
+                icon={IconFont.Trash_New}
+                onConfirm={() => {
+                  batchDeleteVariables(selectedVariables)
                 }}
+                confirmationButtonText="Yes"
+                confirmationLabel="Permanently DELETE all the selected variables?"
+                popoverAppearance={Appearance.Outline}
               />
             </FlexBox>
-          </div>
+          </FlexBox>
         </div>
         <GetResources resources={[ResourceType.Labels]}>
           <FilterList
@@ -190,6 +178,7 @@ class VariablesTab extends PureComponent<Props, State> {
                 sortDirection={sortDirection}
                 sortType={sortType}
                 onSelectVariable={updateSelectedVariableList}
+                selectedVariablesList={selectedVariables}
               />
             )}
           </FilterList>

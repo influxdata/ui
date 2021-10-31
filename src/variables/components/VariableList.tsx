@@ -22,6 +22,7 @@ interface Props {
   sortDirection: Sort
   sortType: SortTypes
   onSelectVariable: (variable: Variable) => void
+  selectedVariablesList: Variable[]
 }
 
 const VariableList: FC<Props> = props => {
@@ -41,6 +42,11 @@ const VariableList: FC<Props> = props => {
     [variables, sortKey, sortDirection, sortType]
   )
 
+  const isVariableSelected = (variable: Variable): boolean => {
+    const {selectedVariablesList} = props
+    return selectedVariablesList.includes(variable)
+  }
+
   return (
     <>
       <ResourceList>
@@ -52,6 +58,7 @@ const VariableList: FC<Props> = props => {
               onDeleteVariable={onDeleteVariable}
               onFilterChange={onFilterChange}
               onSelectVariableCard={onSelectVariable}
+              isSelected={isVariableSelected(variable)}
             />
           ))}
         </ResourceList.Body>

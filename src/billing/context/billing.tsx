@@ -74,8 +74,22 @@ export interface BillingContextType {
   zuoraParamsStatus: RemoteDataState
 }
 
+const DEFAULT_BILLING_INFO = {
+  balance: 0,
+  balanceUpdatedAt: '',
+  contact: {
+    companyName: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    country: '',
+    city: '',
+    postalCode: '',
+  },
+} as BillingInfo
+
 export const DEFAULT_CONTEXT: BillingContextType = {
-  billingInfo: null,
+  billingInfo: DEFAULT_BILLING_INFO,
   billingInfoStatus: RemoteDataState.NotStarted,
   billingSettings: null,
   billingSettingsStatus: RemoteDataState.NotStarted,
@@ -130,7 +144,9 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
     RemoteDataState.NotStarted
   )
 
-  const [billingInfo, setBillingInfo] = useState(null)
+  const [billingInfo, setBillingInfo] = useState<BillingInfo>(
+    DEFAULT_CONTEXT.billingInfo
+  )
   const [billingInfoStatus, setBillingInfoStatus] = useState(
     RemoteDataState.NotStarted
   )

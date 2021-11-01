@@ -164,7 +164,13 @@ export const MiniFileDnd: FC<Props> = ({
     setErrorState(hasError, message)
   }
 
-  const processFile = file => {
+  const processFile = (file, isCsv?: boolean) => {
+    console.log('processing file...... is csv??', isCsv)
+    if (isCsv) {
+      console.log('csv not enabled yet....')
+      return
+    }
+
     const reader = new FileReader()
     reader.readAsText(file)
     reader.onload = () => {
@@ -191,8 +197,14 @@ export const MiniFileDnd: FC<Props> = ({
       return
     }
 
+    console.log('file props...', file, file.name)
+    const fileExt = file.name.split('.').pop()
+    let processCsv = false
+    if (fileExt === 'csv') {
+      processCsv = true
+    }
     // don't need to see if the file type is valid; the input filters it already for us
-    processFile(file)
+    processFile(file, processCsv)
   }
 
   const dropHandler = (event: any): void => {
@@ -207,7 +219,7 @@ export const MiniFileDnd: FC<Props> = ({
     const fileType = file.type
 
     if (allowedTypes.includes(fileType)) {
-      processFile(file)
+      processFile(file, fileType === 'text/csv')
     } else {
       const niceTypes = setGrammar(allowedTypes)
       const fileTypeInfo = fileType ? ` (${fileType})` : ''

@@ -145,8 +145,8 @@ const getColumnsFromFile = (contents: string) => {
 }
 
 // the first is for dnd; the second is for the file input
-const allowedTypes = ['application/json']
-const allowedExtensions = '.json'
+const allowedTypes = ['application/json', 'text/csv']
+const allowedExtensions = '.json,.csv'
 
 const AddingPanel: FC<AddingProps> = ({
   index,

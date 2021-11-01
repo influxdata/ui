@@ -23,6 +23,7 @@ describe('Flows', () => {
   )
 
   it('CRUD a flow from the index page', () => {
+    cy.log('hehe')
     const now = Date.now()
     cy.writeData(
       [

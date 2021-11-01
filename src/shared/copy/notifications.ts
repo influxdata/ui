@@ -793,7 +793,7 @@ export const taskGetFailed = (error: string): Notification => ({
 export const taskRetrySuccess = (id: string): Notification => ({
   ...defaultSuccessNotification,
   duration: FIVE_SECONDS,
-  message: `Task run ${id} was succesful`,
+  message: `Task run ${id} successfully scheduled`,
 })
 
 export const taskRetryFailed = (error: string): Notification => ({

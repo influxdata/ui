@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import {Renderer} from 'react-markdown'
 
 // Components
 import CodeSnippet from 'src/shared/components/CodeSnippet'
@@ -19,7 +18,7 @@ import 'src/writeData/components/WriteDataDetailsView.scss'
 // Utils
 import GetResources from 'src/resources/components/GetResources'
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => {
+const codeRenderer: any = (props: any): any => {
   return <CodeSnippet text={props.value} label={props.language} />
 }
 

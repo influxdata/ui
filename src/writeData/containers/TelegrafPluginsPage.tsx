@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
-import {Renderer} from 'react-markdown'
 import {RouteComponentProps, useParams} from 'react-router-dom'
 
 // Components
@@ -53,7 +52,7 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
   const onCopy = () => {
     event(`telegraf_tile.${eventName}.config_copied`, {id: contentID, name})
   }
-  const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+  const codeRenderer: any = (props: any): any => (
     <CodeSnippet text={props.value} label={props.language} onCopy={onCopy} />
   )
 

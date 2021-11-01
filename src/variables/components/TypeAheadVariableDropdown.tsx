@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import classnames from 'classnames'
 

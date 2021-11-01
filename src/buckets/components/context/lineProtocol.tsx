@@ -45,7 +45,7 @@ export const DEFAULT_CONTEXT: LineProtocolContextType = {
 }
 
 export const LineProtocolContext = React.createContext<LineProtocolContextType>(
-  DEFAULT_CONTEXT
+    DEFAULT_CONTEXT
 )
 
 export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
@@ -68,77 +68,93 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
     setWriteError('')
   }
 
+  /**
+   *  change in newest api:  error 429 (too many requests) is in CLOUD and not in OSS
+   *
+   *  doing the 'as any' cast away from the type because: safest way; this error code will never happen in OSS;
+   *    so the clause will never be activated, and the user still gets the proper error.
+   *
+   *    other strategies not implement here, with reasoning:
+   *
+   *    1) not removing the clause and drop down to the generic error
+   *          because then the user doesn't get a good error message
+   *    2) bad code smell: add it to oss for code purposes, knowing it will never be called
+   *    3) can't do an IF CLOUD b/c the code just ISN'T THERE; the type (PostWriteResult) exists in both
+   *       cloud and oss and is different in each environment
+   */
   const writeLineProtocol = useCallback(
-    async (bucket: string) => {
-      try {
-        setWriteStatus(RemoteDataState.Loading)
-        const resp = await postWrite({
-          data: body,
-          query: {org, bucket, precision},
-        })
+      async (bucket: string) => {
+        try {
+          setWriteStatus(RemoteDataState.Loading)
+          const resp = await postWrite({
+            data: body,
+            query: {org, bucket, precision},
+          })
 
-        if (resp.status === 204) {
-          setWriteStatus(RemoteDataState.Done)
-        } else if (resp.status === 429) {
-          setWriteStatus(RemoteDataState.Error)
-          setWriteError('Failed due to plan limits: read cardinality reached')
-        } else if (resp.status === 403) {
-          const error = getErrorMessage(resp)
-          setWriteStatus(RemoteDataState.Error)
-          setWriteError(error)
-        } else {
-          const message = getErrorMessage(resp) || 'Failed to write data'
-          if (resp?.data?.code === 'invalid') {
+          if (resp.status === 204) {
+            setWriteStatus(RemoteDataState.Done)
+            // here is the cast:
+          } else if ((resp.status as any) === 429) {
             setWriteStatus(RemoteDataState.Error)
-            setWriteError(
-              'Failed to write data - invalid line protocol submitted'
-            )
+            setWriteError('Failed due to plan limits: read cardinality reached')
+          } else if (resp.status === 404) {
+            const error =
+                getErrorMessage(resp) || 'Endpoint not Found; Failed to write data'
+            setWriteStatus(RemoteDataState.Error)
+            setWriteError(error)
           } else {
-            setWriteStatus(RemoteDataState.Error)
-            setWriteError(message)
+            const message = getErrorMessage(resp) || 'Failed to write data'
+            if (resp?.data?.code === 'invalid') {
+              setWriteStatus(RemoteDataState.Error)
+              setWriteError(
+                  'Failed to write data - invalid line protocol submitted'
+              )
+            } else {
+              setWriteStatus(RemoteDataState.Error)
+              setWriteError(message)
+            }
+            throw new Error(message)
           }
-          throw new Error(message)
+        } catch (error) {
+          console.error(error)
         }
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    [body, org, precision]
+      },
+      [body, org, precision]
   )
 
   const handleSetTab = useCallback(
-    (tab: LineProtocolTab) => {
-      setBody('')
-      setTab(tab)
-    },
-    [setTab, setBody]
+      (tab: LineProtocolTab) => {
+        setBody('')
+        setTab(tab)
+      },
+      [setTab, setBody]
   )
 
   const handleSetBody = useCallback(
-    (b: string) => {
-      setBody(b)
-    },
-    [setBody]
+      (b: string) => {
+        setBody(b)
+      },
+      [setBody]
   )
 
   return (
-    <LineProtocolContext.Provider
-      value={{
-        body,
-        handleSetBody,
-        handleResetLineProtocol,
-        handleTryAgainLineProtocol,
-        handleSetTab,
-        precision,
-        setPrecision,
-        tab,
-        writeError,
-        writeLineProtocol,
-        writeStatus,
-      }}
-    >
-      {children}
-    </LineProtocolContext.Provider>
+      <LineProtocolContext.Provider
+          value={{
+            body,
+            handleSetBody,
+            handleResetLineProtocol,
+            handleTryAgainLineProtocol,
+            handleSetTab,
+            precision,
+            setPrecision,
+            tab,
+            writeError,
+            writeLineProtocol,
+            writeStatus,
+          }}
+      >
+        {children}
+      </LineProtocolContext.Provider>
   )
 })
 

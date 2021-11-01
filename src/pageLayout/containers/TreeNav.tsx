@@ -66,6 +66,7 @@ const TreeSidebar: FC = () => {
             >
               {Boolean(item.menu) && (
                 <TreeNav.SubMenu>
+                  <TreeNav.SubHeading label={item.label} />
                   {item.menu.map((menuItem: NavSubItem) => {
                     const linkElement = (className: string): JSX.Element => (
                       <Link to={menuItem.link} className={className} />

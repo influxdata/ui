@@ -27,7 +27,10 @@ import {
   isNameValid,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 import {downloadTextFile} from 'src/shared/utils/download'
-import {MiniFileDnd} from 'src/buckets/components/createBucketForm/MiniFileDnd'
+import {
+  csvToArray,
+  MiniFileDnd,
+} from 'src/buckets/components/createBucketForm/MiniFileDnd'
 
 import {CLOUD} from 'src/shared/constants'
 import classnames from 'classnames'
@@ -128,14 +131,21 @@ interface AddingProps {
 // the MiniFileDnd component will catch any errors thrown here
 // and display them to the user; as this method is only called from within
 // the 'handleFileUpload' that is passed to and called by the MiniFileDnd Component.
-const getColumnsFromFile = (contents: string) => {
+const getColumnsFromFile = (contents: string, isCsv: boolean) => {
   // do parsing here;  to check if in the correct format:
   let columns = null
   if (contents) {
-    // parse them; if proper/valid; great!  if not, set errors and do not proceed
-    // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
-    columns = JSON.parse(contents)
+    if (isCsv) {
+      columns = csvToArray(contents)
+      console.log('just parsed the csv:', columns)
+    } else {
+      // it's json:
 
+      // parse them; if proper/valid; great!  if not, set errors and do not proceed
+      // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
+      columns = JSON.parse(contents)
+      console.log('just parsed json:', columns)
+    }
     if (!areColumnsProper(columns)) {
       // set errors
       throw {message: 'column file is not formatted correctly'}
@@ -188,10 +198,14 @@ const AddingPanel: FC<AddingProps> = ({
   // since the mini file dnd component calls this method,
   // then calls setError(false).  so; if we call setError(true) then it gets immediately
   // overridden.  with the propagation, the error state only gets called once properly.
-  const handleUploadFile = (contents: string, fileName: string) => {
+  const handleFileUpload = (
+    contents: string,
+    isCsv: boolean,
+    fileName: string
+  ) => {
     // keep swapping out the file, cancel out of the dialog, x out the adding line....etc
 
-    const columns = getColumnsFromFile(contents)
+    const columns = getColumnsFromFile(contents, isCsv)
     onAddContents(columns, fileName, index)
   }
 
@@ -254,7 +268,7 @@ const AddingPanel: FC<AddingProps> = ({
       key={`mini-dnd-${index}`}
       allowedExtensions={allowedExtensions}
       allowedTypes={allowedTypes}
-      handleFileUpload={handleUploadFile}
+      handleFileUpload={handleFileUpload}
       setErrorState={setErrorState}
       alreadySetFileName={filename}
     />
@@ -338,8 +352,8 @@ const EditingPanel: FC<PanelProps> = ({
     downloadTextFile(contents, name || 'schema', '.json')
   }
 
-  const handleFileUpload = (contents: string) => {
-    const columns = getColumnsFromFile(contents)
+  const handleFileUpload = (contents: string, isCsv: boolean) => {
+    const columns = getColumnsFromFile(contents, isCsv)
     onAddUpdate(columns, index)
   }
 
@@ -414,6 +428,25 @@ export interface SchemaUpdateInfo {
   hasUpdate: boolean
   isValid?: boolean
   columns?: typeof MeasurementSchemaColumn[]
+}
+
+export const toCsvString = columns => {
+  return [
+    ['name', 'type', 'dataType'],
+    ...columns.map(schemaLine => {
+      const line = [schemaLine.name, schemaLine.type]
+      if (schemaLine.dataType) {
+        line.push(schemaLine.dataType)
+      } else {
+        // putting in an empty entry, to get the trailing comma if there are only two entries
+        // this make the line be: ' host,tag,' as opposed to : ' host,tag'
+        line.push('')
+      }
+      return line
+    }),
+  ]
+    .map(e => e.join(','))
+    .join('\n')
 }
 
 export const MeasurementSchemaSection: FC<Props> = ({

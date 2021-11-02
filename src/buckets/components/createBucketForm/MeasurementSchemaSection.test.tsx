@@ -6,6 +6,7 @@ import {
   areNewSchemasValid,
   areSchemaUpdatesValid,
 } from './MeasurementSchemaUtils'
+import {toCsvString} from './MeasurementSchemaSection'
 
 const oneColumns = [
   {name: 'time', type: 'timestamp'},
@@ -262,5 +263,25 @@ describe('test schema  update validity function', () => {
   })
   it('should be valid, it is null', () => {
     doTest(null, true)
+  })
+})
+
+describe('test csv conversion function (object->csv file)', () => {
+  it('should create a valid csv file', () => {
+    const csvString = toCsvString(oneColumns)
+
+    const lines = csvString.split('\n')
+    expect(lines[0]).toEqual('name,type,dataType')
+    expect(lines[1]).toEqual('time,timestamp,')
+    expect(lines[2]).toEqual('host,tag,')
+    expect(lines[3]).toEqual('service,tag,')
+    expect(lines[4]).toEqual('fsRead,field,float')
+    expect(lines[5]).toEqual('fsWrite,field,float')
+    expect(lines[6]).toEqual('timeSignature,tag,')
+    expect(lines[7]).toEqual('composer,tag,')
+    expect(lines[8]).toEqual('instrument,field,string')
+    expect(lines[9]).toEqual('one,field,string')
+
+    expect(lines.length).toEqual(10)
   })
 })

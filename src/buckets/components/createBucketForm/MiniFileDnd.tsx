@@ -33,7 +33,8 @@ import {
  * allowedExtensions =".png, .jpg, .jpeg"
  *
  * handleFileUpload: required function that sends along the text contents of the file
- * being uploaded along with the name of the file.
+ * being uploaded; a flag that is set to true if it is a csv file (else it is a json file),
+ * and the (optional) name of the file.
  *
  *   this method  is within a try/catch, so if the method throws an error, it will
  *   be caught *here* in this component, so that this component can then
@@ -51,7 +52,7 @@ import {
  *   but this component can be displayed as if the file is already uploaded (it is, in the state
  *   of the parent)
  *
- *   preFileUpload: a mothod (optional) that is called when the file upload starts
+ *   preFileUpload: a method (optional) that is called when the file upload starts
  *   this is guaranteed to be called, whereas the method handleFileUpload
  *   might error out.  this is used for telling the parent that the component has been used,
  *   so it can set relevant flags for styling; for example
@@ -65,7 +66,11 @@ import {
 interface Props {
   allowedExtensions: string
   allowedTypes: string[]
-  handleFileUpload: (contents: string, fileName?: string) => void
+  handleFileUpload: (
+    contents: string,
+    isCsv: boolean,
+    fileName?: string
+  ) => void
   setErrorState: (hasError: boolean, message?: string) => void
   alreadySetFileName?: string
   defaultText?: string
@@ -199,14 +204,8 @@ export const MiniFileDnd: FC<Props> = ({
     setErrorState(hasError, message)
   }
 
-  const processFile = (file, isCsv?: boolean) => {
+  const processFile = (file, isCsv: boolean = false) => {
     console.log('processing file...... is csv??', isCsv)
-    if (isCsv) {
-      console.log('csv not enabled yet....')
-      // todo: use this: https://sebhastian.com/javascript-csv-to-array/
-      // and write a test for it
-      return
-    }
 
     const reader = new FileReader()
     reader.readAsText(file)
@@ -217,7 +216,7 @@ export const MiniFileDnd: FC<Props> = ({
         preFileUpload()
       }
       try {
-        handleFileUpload(reader.result as string, fileName)
+        handleFileUpload(reader.result as string, isCsv, fileName)
 
         setFileName(fileName)
         setError(false)

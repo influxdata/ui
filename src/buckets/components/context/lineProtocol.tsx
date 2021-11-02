@@ -45,7 +45,7 @@ export const DEFAULT_CONTEXT: LineProtocolContextType = {
 }
 
 export const LineProtocolContext = React.createContext<LineProtocolContextType>(
-    DEFAULT_CONTEXT
+  DEFAULT_CONTEXT
 )
 
 export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
@@ -83,78 +83,78 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
    *       cloud and oss and is different in each environment
    */
   const writeLineProtocol = useCallback(
-      async (bucket: string) => {
-        try {
-          setWriteStatus(RemoteDataState.Loading)
-          const resp = await postWrite({
-            data: body,
-            query: {org, bucket, precision},
-          })
+    async (bucket: string) => {
+      try {
+        setWriteStatus(RemoteDataState.Loading)
+        const resp = await postWrite({
+          data: body,
+          query: {org, bucket, precision},
+        })
 
-          if (resp.status === 204) {
-            setWriteStatus(RemoteDataState.Done)
-            // here is the cast:
-          } else if ((resp.status as any) === 429) {
+        if (resp.status === 204) {
+          setWriteStatus(RemoteDataState.Done)
+          // here is the cast:
+        } else if ((resp.status as any) === 429) {
+          setWriteStatus(RemoteDataState.Error)
+          setWriteError('Failed due to plan limits: read cardinality reached')
+        } else if (resp.status === 404) {
+          const error =
+            getErrorMessage(resp) || 'Endpoint not Found; Failed to write data'
+          setWriteStatus(RemoteDataState.Error)
+          setWriteError(error)
+        } else {
+          const message = getErrorMessage(resp) || 'Failed to write data'
+          if (resp?.data?.code === 'invalid') {
             setWriteStatus(RemoteDataState.Error)
-            setWriteError('Failed due to plan limits: read cardinality reached')
-          } else if (resp.status === 404) {
-            const error =
-                getErrorMessage(resp) || 'Endpoint not Found; Failed to write data'
-            setWriteStatus(RemoteDataState.Error)
-            setWriteError(error)
+            setWriteError(
+              'Failed to write data - invalid line protocol submitted'
+            )
           } else {
-            const message = getErrorMessage(resp) || 'Failed to write data'
-            if (resp?.data?.code === 'invalid') {
-              setWriteStatus(RemoteDataState.Error)
-              setWriteError(
-                  'Failed to write data - invalid line protocol submitted'
-              )
-            } else {
-              setWriteStatus(RemoteDataState.Error)
-              setWriteError(message)
-            }
-            throw new Error(message)
+            setWriteStatus(RemoteDataState.Error)
+            setWriteError(message)
           }
-        } catch (error) {
-          console.error(error)
+          throw new Error(message)
         }
-      },
-      [body, org, precision]
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [body, org, precision]
   )
 
   const handleSetTab = useCallback(
-      (tab: LineProtocolTab) => {
-        setBody('')
-        setTab(tab)
-      },
-      [setTab, setBody]
+    (tab: LineProtocolTab) => {
+      setBody('')
+      setTab(tab)
+    },
+    [setTab, setBody]
   )
 
   const handleSetBody = useCallback(
-      (b: string) => {
-        setBody(b)
-      },
-      [setBody]
+    (b: string) => {
+      setBody(b)
+    },
+    [setBody]
   )
 
   return (
-      <LineProtocolContext.Provider
-          value={{
-            body,
-            handleSetBody,
-            handleResetLineProtocol,
-            handleTryAgainLineProtocol,
-            handleSetTab,
-            precision,
-            setPrecision,
-            tab,
-            writeError,
-            writeLineProtocol,
-            writeStatus,
-          }}
-      >
-        {children}
-      </LineProtocolContext.Provider>
+    <LineProtocolContext.Provider
+      value={{
+        body,
+        handleSetBody,
+        handleResetLineProtocol,
+        handleTryAgainLineProtocol,
+        handleSetTab,
+        precision,
+        setPrecision,
+        tab,
+        writeError,
+        writeLineProtocol,
+        writeStatus,
+      }}
+    >
+      {children}
+    </LineProtocolContext.Provider>
   )
 })
 

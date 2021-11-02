@@ -174,7 +174,7 @@ describe('Explicit Buckets', () => {
       })
   })
 
-  it.only('should be able to create an explicit bucket and add schema file during editing', function() {
+  it('should be able to create an explicit bucket and add schema file during editing', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('overlay--container').within(() => {
       cy.getByTestID('bucket-form-name').type('explicit_bucket')

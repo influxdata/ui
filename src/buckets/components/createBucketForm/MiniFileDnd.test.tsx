@@ -1,6 +1,6 @@
 import React from 'react'
 import {renderWithRedux} from 'src/mockState'
-import {MiniFileDnd, setGrammar} from './MiniFileDnd'
+import {csvToArray, MiniFileDnd, setGrammar} from './MiniFileDnd'
 
 const setup = (
   allowedExtensions: string,
@@ -76,7 +76,43 @@ describe('mini file uploader, testing rendering and behavior', () => {
     expect(displayArea).toHaveTextContent(fileName)
   })
 })
+describe('test csv to array function (parsing)', () => {
+  it('should parse the csv correctly', () => {
+    const contents = `foo,bar,baz
+    hello,how,are
+    you,today,really`
 
+    const parsed = csvToArray(contents)
+
+    expect(parsed?.length).toEqual(2)
+    expect(parsed[0]['foo']).toEqual('hello')
+    expect(parsed[0]['bar']).toEqual('how')
+    expect(parsed[0]['baz']).toEqual('are')
+    expect(parsed[1]['foo']).toEqual('you')
+    expect(parsed[1]['bar']).toEqual('today')
+    expect(parsed[1]['baz']).toEqual('really')
+  })
+  it('should parse the csv correctly, with a missing third element', () => {
+    const contents = `foo,bar,baz
+    hello,how,are
+    you,today,`
+
+    const parsed = csvToArray(contents)
+
+    expect(parsed?.length).toEqual(2)
+    expect(parsed[0]['foo']).toEqual('hello')
+    expect(parsed[0]['bar']).toEqual('how')
+    expect(parsed[0]['baz']).toEqual('are')
+    expect(parsed[1]['foo']).toEqual('you')
+    expect(parsed[1]['bar']).toEqual('today')
+
+    const secondKeys = Object.keys(parsed[1])
+    expect(secondKeys.length).toEqual(2)
+    expect(secondKeys).toContain('foo')
+    expect(secondKeys).toContain('bar')
+    expect(secondKeys).not.toContain('baz')
+  })
+})
 describe('test grammar function for error messages', () => {
   it('should have correct grammar for one element', () => {
     const foo1 = ['ack']

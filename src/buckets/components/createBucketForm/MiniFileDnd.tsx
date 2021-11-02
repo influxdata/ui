@@ -95,6 +95,41 @@ export const setGrammar = (fileTypes: string[]) => {
 }
 
 /**
+ * take a csv file, as a string, and turn it into a javascript object
+ * based off: https://sebhastian.com/javascript-csv-to-array/
+ * if the value isn't present, then it isn't put into the object.
+ * all strings are trimmed as well.
+ */
+export const csvToArray = (contents: string, delimiter = ',') => {
+  // slice from start of text to the first \n index
+  // use split to create an array from string by delimiter
+  const headers = contents.slice(0, contents.indexOf('\n')).split(delimiter)
+
+  // slice from \n index + 1 to the end of the text
+  // use split to create an array of each csv value row
+  const rows = contents.slice(contents.indexOf('\n') + 1).split('\n')
+
+  // Map the rows
+  // split values from each row into an array
+  // use headers.reduce to create an object
+  // object properties derived from headers:values
+  // the object passed as an element of the array
+  const arr = rows.map(function(row) {
+    const values = row.split(delimiter)
+    const el = headers.reduce(function(object, header, index) {
+      const val = values[index]
+      if (val) {
+        object[header] = val.trim()
+      }
+      return object
+    }, {})
+    return el
+  })
+
+  // return the array
+  return arr
+}
+/**
  *  This is a small File Drag-and-Drop Input
  *  It just has some text, with an outline.  There is no icon.
  *
@@ -168,6 +203,8 @@ export const MiniFileDnd: FC<Props> = ({
     console.log('processing file...... is csv??', isCsv)
     if (isCsv) {
       console.log('csv not enabled yet....')
+      // todo: use this: https://sebhastian.com/javascript-csv-to-array/
+      // and write a test for it
       return
     }
 

@@ -18,3 +18,66 @@
     padding: $cf-space-2xs $cf-space-s;
   }
 }
+
+.flow-task-history {
+  h1 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  &.inactive {
+    h1 {
+      color: $cf-grey-55;
+    }
+
+    .toggle label {
+      color: $cf-grey-55;
+    }
+  }
+
+  .interaction {
+    margin-bottom: 28px;
+    display: flex;
+  }
+
+  .toggle {
+    flex: 1 1;
+    padding-top: 2px;
+
+    label {
+      margin-left: 8px;
+      vertical-align: sub;
+    }
+  }
+
+  .run {
+    margin-bottom: 18px;
+
+    label {
+      font-weight: 500;
+      display: inline-block;
+      width: 64px;
+    }
+
+    .run--buttons {
+      margin-top: 4px;
+      display: flex;
+      gap: 4px;
+
+      .cf-button {
+        flex: 1 1;
+        width: 100%;
+      }
+    }
+
+    .run--row.success span {
+      font-weight: 500;
+      color: $c-rainforest;
+    }
+
+    .run--row.failed span {
+      font-weight: 500;
+      color: $c-fire;
+    }
+  }
+}

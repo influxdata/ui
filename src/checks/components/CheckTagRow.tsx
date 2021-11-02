@@ -59,7 +59,7 @@ const CheckTagRow: FC<Props> = ({
           </FlexBox.Child>
           <FlexBox.Child grow={0} basis={20}>
             <TextBlock
-              backgroundColor={'#00000000'}
+              backgroundColor="#00000000"
               textColor={InfluxColors.Pool}
               text="="
             />

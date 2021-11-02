@@ -170,6 +170,71 @@ jobs:
       - store_artifacts:
           path: monitor-ci/test-artifacts/results/remocal
           destination: test_artifacts/results/remocal
+
+  oss-changelog:
+    docker:
+      - image: quay.io/influxdb/changelogger:0dbf37ba8a912460358d322dcad414b80ce074f2
+    steps:
+      - checkout
+      - run:
+          name: Generate changelog
+          command: |
+            mkdir release
+            previous_tag="$(git tag -l --merged | egrep '^OSS-[0-9]+\.[0-9]+\.[0-9]+.*' | sort -V | tail -2 | head -1)"
+            GIT_REPO=https://github.com/influxdata/ui git-cliff -t ${CIRCLE_TAG} "${previous_tag}"..${CIRCLE_TAG} > release/CHANGELOG.md
+      - persist_to_workspace:
+          root: .
+          paths:
+            - release/CHANGELOG.md
+      - store_artifacts:
+          path: release/
+
+  build-oss-ui:
+    docker:
+      - image: cimg/node:16.13.0
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: Build UI
+          no_output_timeout: 30m
+          command: |
+            yarn install && yarn build
+            mkdir release
+            tar -czvf release/build.tar.gz ./build
+            cd release && shasum -a 256 build.tar.gz > sha256.txt && cd ../
+      - persist_to_workspace:
+          root: .
+          paths:
+            - release/build.tar.gz
+            - release/sha256.txt
+      - store_artifacts:
+          path: release/
+
+  publish-oss-release:
+    docker:
+      - image: cimg/go:1.17.2
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install ghr
+          command: |
+            go install github.com/tcnksm/ghr@v0.14.0
+      - run:
+          name: Push draft release
+          command: |
+            ghr \
+              -t ${TEAM_EDGE_BOT_GITHUB_TOKEN} \
+              -u influxdata \
+              -r ui \
+              -c ${CIRCLE_SHA1} \
+              -n ${CIRCLE_TAG} \
+              -b "$(cat release/CHANGELOG.md)" \
+              -draft \
+              ${CIRCLE_TAG} \
+              release
+
 workflows:
   version: 2
   build:
@@ -179,3 +244,30 @@ workflows:
       - unit-cloud
       - lint-cloud
       - monitor-ci-tests
+
+  oss-release:
+    jobs:
+      - oss-changelog:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only:
+                - /^OSS-[0-9]+\.[0-9]+\.[0-9]+.*/
+      - build-oss-ui:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only:
+                - /^OSS-[0-9]+\.[0-9]+\.[0-9]+.*/
+      - publish-oss-release:
+          requires:
+            - oss-changelog
+            - build-oss-ui
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only:
+                - /^OSS-[0-9]+\.[0-9]+\.[0-9]+.*/

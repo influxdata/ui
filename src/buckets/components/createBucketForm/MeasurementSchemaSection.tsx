@@ -1,4 +1,4 @@
-import React, {useState, FC, useMemo} from 'react'
+import React, {FC, useMemo, useState} from 'react'
 
 import {trim} from 'lodash'
 
@@ -13,15 +13,15 @@ import {
   DismissButton,
   FlexBox,
   FlexDirection,
+  FormElementError,
   IconFont,
   Input,
+  InputLabel,
   InputProps,
+  InputToggleType,
   InputType,
   Panel,
-  FormElementError,
   Toggle,
-  InputToggleType,
-  InputLabel,
 } from '@influxdata/clockface'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
@@ -78,6 +78,8 @@ interface Props {
   showSchemaValidation: boolean
 }
 
+type DownloadTypes = 'csv' | 'json'
+
 /**
  * toggleUpdate:  is this line being updated?
  * need to have this passed up, because the erroring on the
@@ -111,6 +113,7 @@ interface PanelProps {
   index: number
   onAddUpdate: (columns: string, index: number) => void
   toggleUpdate: (doingUpdate: boolean, index: number) => void
+  downloadFormat?: DownloadTypes
 }
 /**
  * onAddName: called when the name of the schema has been added
@@ -331,6 +334,7 @@ const EditingPanel: FC<PanelProps> = ({
   measurementSchema,
   onAddUpdate,
   toggleUpdate,
+  downloadFormat = 'json',
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
   const [fileError, setFileError] = useState(false)
@@ -350,10 +354,15 @@ const EditingPanel: FC<PanelProps> = ({
 
   const handleDownloadSchema = () => {
     const {name} = measurementSchema
-    const contents = JSON.stringify(measurementSchema.columns)
+    let contents = JSON.stringify(measurementSchema.columns)
+    let extension = '.json'
     // if csv selected, do csv conversion instead TODO
+    if (downloadFormat === 'csv') {
+      contents = toCsvString(measurementSchema.columns)
+      extension = '.csv'
+    }
     event('bucket.download.schema.explicit')
-    downloadTextFile(contents, name || 'schema', '.json')
+    downloadTextFile(contents, name || 'schema', extension)
   }
 
   const handleFileUpload = (contents: string, isCsv: boolean) => {
@@ -468,7 +477,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
       hasUpdate: false,
     })) || []
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit)
-  const [downloadType, setDownloadType] = useState('json')
+  const [downloadType, setDownloadType] = useState<DownloadTypes>('json')
 
   // every time we update the local schema, should also send up the schema to the parent
   // so putting them together here
@@ -509,7 +518,9 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const schemas = measurementSchemaList?.measurementSchemas
   let readSection = null
   if (schemas) {
-
+    const onDownloadTypeChange = ack => {
+      console.log('got download type change....', ack)
+    }
 
     const readPanels = schemas.map((oneSchema, index) => (
       <EditingPanel
@@ -518,54 +529,63 @@ export const MeasurementSchemaSection: FC<Props> = ({
         index={index}
         onAddUpdate={onAddUpdate}
         toggleUpdate={toggleUpdate}
+        downloadFormat={downloadType}
       />
     ))
     const downloadToggle = (
-        <React.Fragment>
-          <Toggle
-              tabIndex={1}
-              value="json"
-              id="json-download-flavor-choice"
-              name="json-download-flavor-choice"
-              className="option"
-              checked={downloadType === 'json'}
-              onChange={setDownloadType}
-              type={InputToggleType.Radio}
-              size={ComponentSize.ExtraSmall}
-              color={ComponentColor.Primary}
-              testID="json-download-flavor-choice"
+      <FlexBox direction={FlexDirection.Row}>
+        <InputLabel style={{marginRight: 10}}>
+          {' '}
+          Download File Format:{' '}
+        </InputLabel>
+        {/*todo:  the schema section .option classes are being applied, don't want them applied here!  plus need margins fixed in general*/}
+        <Toggle
+          tabIndex={1}
+          value="json"
+          id="json-download-flavor-choice"
+          name="json-download-flavor-choice"
+          className="option"
+          checked={downloadType === 'json'}
+          onChange={setDownloadType}
+          type={InputToggleType.Radio}
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Primary}
+          testID="json-download-flavor-choice"
+        >
+          <InputLabel
+            htmlFor="json-download-flavor-choice"
+            active={downloadType === 'json'}
           >
-            <InputLabel
-                htmlFor="json-download-flavor-choice"
-                active={downloadType === 'json'}
-            >
-              json
-            </InputLabel>
-          </Toggle>
-          <Toggle
-              tabIndex={2}
-              value="csv"
-              id="csv-download-flavor-choice"
-              name="csv-download-flavor-choice"
-              className="option"
-              checked={downloadType === 'csv'}
-              onChange={setDownloadType}
-              type={InputToggleType.Radio}
-              size={ComponentSize.ExtraSmall}
-              color={ComponentColor.Primary}
-              testID="csv-download-flavor-choice"
+            json
+          </InputLabel>
+        </Toggle>
+        <Toggle
+          tabIndex={2}
+          value="csv"
+          id="csv-download-flavor-choice"
+          name="csv-download-flavor-choice"
+          className="option"
+          checked={downloadType === 'csv'}
+          onChange={setDownloadType}
+          type={InputToggleType.Radio}
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Primary}
+          testID="csv-download-flavor-choice"
+        >
+          <InputLabel
+            htmlFor="csv-download-flavor-choice"
+            active={downloadType === 'csv'}
           >
-            <InputLabel
-                htmlFor="csv-download-flavor-choice"
-                active={downloadType === 'csv'}
-            >
-              csv
-            </InputLabel>
-          </Toggle>
-        </React.Fragment>
+            csv
+          </InputLabel>
+        </Toggle>
+      </FlexBox>
     )
-    readSection = <>{downloadToggle} {readPanels} </>
-
+    readSection = (
+      <>
+        {downloadToggle} {readPanels}{' '}
+      </>
+    )
   }
 
   const setNewSchemasWithUpdates = schemaArray => {
@@ -663,8 +683,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
     newSchemas.length,
     showSchemaValidation,
   ])
-
-
 
   return (
     <FlexBox

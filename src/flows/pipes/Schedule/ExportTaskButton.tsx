@@ -14,7 +14,7 @@ import {
   taskNotCreated,
 } from 'src/shared/copy/notifications'
 import {ASSET_LIMIT_ERROR_STATUS} from 'src/cloud/constants/index'
-import {postTask} from 'src/client'
+import {postTask, patchTask} from 'src/client'
 import {notify} from 'src/shared/actions/notifications'
 import {checkTaskLimits} from 'src/cloud/actions/limits'
 
@@ -55,6 +55,16 @@ const ExportTaskButton: FC<Props> = ({
 
     if (isFlagEnabled('removeExportModal')) {
       event('Export Task Modal Skipped', {from: type})
+
+      // we can soft delete the previously connected task by marking the old one inactive
+      if (data?.task?.id) {
+        patchTask({
+          taskID: data.task.id,
+          data: {
+            status: 'inactive',
+          },
+        })
+      }
 
       postTask({data: {orgID: org.id, flux: query}})
         .then(resp => {

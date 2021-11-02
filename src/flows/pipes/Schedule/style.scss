@@ -81,3 +81,12 @@
     }
   }
 }
+
+.flow-task-run--log {
+  .time {
+    white-space: nowrap;
+  }
+  .message pre {
+    white-space: normal;
+  }
+}

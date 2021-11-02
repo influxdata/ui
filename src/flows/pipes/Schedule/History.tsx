@@ -1,9 +1,10 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useState, useContext} from 'react'
 import {
   getTask,
   patchTask,
   getTasksRuns,
   postTasksRun,
+  getTasksRunsLogs,
 } from 'src/client/generatedRoutes'
 import {
   EmptyState,
@@ -11,8 +12,14 @@ import {
   ComponentSize,
   ComponentColor,
   SlideToggle,
+  IndexList,
+  DapperScrollbars,
+  Overlay,
 } from '@influxdata/clockface'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {PopupContext} from 'src/flows/context/popup'
+
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   task: any
@@ -37,9 +44,68 @@ const duration = (start: string, finish: string): string => {
   return `${diff} ${timeTag}`
 }
 
+const RunLogs: FC<LogProps> = ({taskID, runID}) => {
+  const {closeFn} = useContext(PopupContext)
+  const [logs, setLogs] = useState<any[]>([])
+
+  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
+
+  useEffect(() => {
+    getTasksRunsLogs({taskID, runID}).then(resp => {
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      setLogs(resp.data.events)
+    })
+  }, [taskID, runID])
+
+  const closer = () => {
+    event('Task Run Log Overlay Closed')
+
+    closeFn()
+  }
+
+  const _logs = logs.map((l, idx) => (
+    <IndexList.Row key={`run-log--${idx}`} className="flow-task-run--log">
+      <IndexList.Cell>
+        <span className="time">{formatter.format(new Date(l.time))}</span>
+      </IndexList.Cell>
+      <IndexList.Cell>
+        <span className="message">
+          <pre>{l.message}</pre>
+        </span>
+      </IndexList.Cell>
+    </IndexList.Row>
+  ))
+
+  return (
+    <Overlay visible={true}>
+      <Overlay.Container>
+        <Overlay.Header title="Task Run Log" onDismiss={closer} />
+        <Overlay.Body>
+          <DapperScrollbars autoSizeHeight={true} style={{maxHeight: '700px'}}>
+            <IndexList>
+              <IndexList.Header>
+                <IndexList.HeaderCell columnName="Time" />
+                <IndexList.HeaderCell columnName="Message" />
+              </IndexList.Header>
+              <IndexList.Body emptyState={<></>} columnCount={2}>
+                {_logs}
+              </IndexList.Body>
+            </IndexList>
+          </DapperScrollbars>
+        </Overlay.Body>
+      </Overlay.Container>
+    </Overlay>
+  )
+}
+
 const History: FC<Props> = ({task}) => {
   const [runs, setRuns] = useState<any[]>([])
   const [status, setStatus] = useState<string>('inactive')
+  const {launch} = useContext(PopupContext)
+
   const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
 
   useEffect(() => {
@@ -84,6 +150,10 @@ const History: FC<Props> = ({task}) => {
     })
   }
 
+  const viewLogs = (taskID, runID) => {
+    launch(<RunLogs taskID={taskID} runID={runID} />)
+  }
+
   const _runs = runs.map(r => (
     <div className="run" key={`run-id==${r.id}`}>
       <div className={`run--row ${r.status}`}>
@@ -108,7 +178,7 @@ const History: FC<Props> = ({task}) => {
           size={ComponentSize.ExtraSmall}
           color={ComponentColor.Default}
           text="View Logs"
-          onClick={() => {}}
+          onClick={() => viewLogs(task.id, r.id)}
         />
       </div>
     </div>

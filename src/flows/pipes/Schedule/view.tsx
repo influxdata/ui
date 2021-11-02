@@ -201,7 +201,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
       generate={generateTask}
       onCreate={storeTask}
       text={taskButtonText}
-      disabled={!hasChanges}
+      disabled={!hasChanges || !!intervalError || !!offsetError}
       type="task"
     />
   )

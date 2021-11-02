@@ -64,7 +64,7 @@ const RunPipeResults: FC = () => {
 const ReadOnly: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const params = useParams<{accessID: string}>()
-  if (!params.accessID || params.accessID.length !== 16 || !flow) {
+  if (!params.accessID || !flow) {
     return (
       <div style={{width: '100%'}}>
         <NotFound />

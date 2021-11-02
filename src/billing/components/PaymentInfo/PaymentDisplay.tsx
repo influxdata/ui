@@ -9,10 +9,10 @@ const PaymentDisplay: FC = () => {
   return (
     <div data-testid="payment-display">
       <p>
-        Your current payment card is {paymentMethod.cardType}{' '}
-        <strong>{paymentMethod.cardNumber}</strong> &mdash; Expiring{' '}
+        Your current payment card is {paymentMethod?.cardType}{' '}
+        <strong>{paymentMethod?.cardNumber}</strong> &mdash; Expiring{' '}
         <strong>
-          {paymentMethod.expirationMonth}/{paymentMethod.expirationYear}
+          {paymentMethod?.expirationMonth}/{paymentMethod?.expirationYear}
         </strong>
       </p>
     </div>

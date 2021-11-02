@@ -13,6 +13,7 @@ const InnerTable: FC<InnerProps> = ({table}) => {
         <Table.HeaderCell
           key="htable"
           verticalAlignment={VerticalAlignment.Top}
+          style={{textTransform: 'none'}}
         >
           table
           <label>{table.yield}</label>
@@ -20,7 +21,7 @@ const InnerTable: FC<InnerProps> = ({table}) => {
       )
     }
     return (
-      <Table.HeaderCell key={`h${c.name}`}>
+      <Table.HeaderCell key={`h${c.name}`} style={{textTransform: 'none'}}>
         {c.name}
         <label>{c.group ? 'group' : 'no group'}</label>
         <label>{c.fluxDataType}</label>

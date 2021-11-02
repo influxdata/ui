@@ -5,6 +5,7 @@ import {capitalize} from 'lodash'
 type PermissionTypes = Permission['resource']['type']
 
 const sharedPermissionTypes: PermissionTypes[] = [
+  'annotations',
   'authorizations',
   'buckets',
   'checks',
@@ -23,9 +24,9 @@ const sharedPermissionTypes: PermissionTypes[] = [
   'views',
 ]
 
-const cloudPermissionTypes = ['annotations', 'flows', 'functions']
+const cloudPermissionTypes = ['flows', 'functions']
 
-const ossPermissionTypes = ['scrapers', 'sources']
+const ossPermissionTypes = ['notebooks', 'scrapers', 'sources']
 
 // TODO: replace this with some server side mechanism
 const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(

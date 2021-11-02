@@ -37,6 +37,12 @@ describe('Checks', () => {
         req.alias = 'measurementQuery'
       }
     })
+    cy.intercept('POST', '/api/v2/query?*', req => {
+      if (req.body.query.includes('_field')) {
+        req.alias = 'fieldQuery'
+      }
+    })
+
     cy.log('Create threshold check')
     cy.getByTestID('create-check').click()
     cy.getByTestID('create-threshold-check').click()
@@ -57,6 +63,7 @@ describe('Checks', () => {
         cy.getByTestID('save-cell--button').should('be.disabled')
         cy.wait('@measurementQuery')
         cy.getByTestID(`selector-list ${measurement}`).click()
+        cy.wait('@fieldQuery')
         cy.getByTestID(`selector-list ${field}`).click()
         cy.get('.query-checklist--popover').should('be.visible')
         cy.getByTestID('save-cell--button').should('be.disabled')
@@ -212,6 +219,11 @@ describe('Checks', () => {
         req.alias = 'measurementQuery'
       }
     })
+    cy.intercept('POST', '/api/v2/query?*', req => {
+      if (req.body.query.includes('distinct(column: "_field")')) {
+        req.alias = 'fieldQuery'
+      }
+    })
 
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
@@ -228,6 +240,7 @@ describe('Checks', () => {
         cy.wait('@measurementQuery')
         cy.getByTestID(`selector-list ${measurement}`).click()
         cy.getByTestID('save-cell--button').should('be.disabled')
+        cy.wait('@fieldQuery')
         cy.getByTestID(`selector-list ${field}`).click()
         cy.get('.query-checklist--popover').should('not.exist')
         cy.getByTestID('save-cell--button').should('be.enabled')
@@ -639,7 +652,7 @@ describe('Checks', () => {
         })
     }
 
-    it('can clone a deadman check', () => {
+    it('can clone and delete a deadman check', () => {
       cy.intercept('POST', '/api/v2/checks*').as('createCheck')
       const cloneName = `${deadmanCheck.name} (clone 1)`
       // 1. create deadman over API
@@ -711,13 +724,22 @@ describe('Checks', () => {
         )
         cy.getByTestID('selector-list bar').should('be.visible')
         cy.getByTestID('giraffe-layer-line').should('be.visible')
+        cy.getByTestID('square-button')
+          .eq(0)
+          .click()
+        cy.getByTestID(`check-card ${cloneName}`).within(() => {
+          cy.getByTestID('context-delete-task--button').click()
+        })
+        cy.getByTestID('context-delete-task--confirm-button').click()
+        cy.getByTestID(`check-card ${cloneName}`).should('not.exist')
+        cy.getByTestID(`check-card ${deadmanCheck.name}`).should('be.visible')
+        cy.getByTestID('check-card--name').should('have.length', 1)
       })
     })
 
     // TODO fill in actual test
     it.skip('can clone a threshold check', () => {
       // 1. create threshold over API
-      cy.log('DEBUG clone a threashold check')
     })
   })
 })

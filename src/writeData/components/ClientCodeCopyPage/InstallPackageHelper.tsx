@@ -13,14 +13,13 @@ import {
   ComponentSize,
 } from '@influxdata/clockface'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
-import {Renderer} from 'react-markdown'
 
 // Styles
 import 'src/writeData/components/ClientCodeCopyPage/InstallPackageHelper.scss'
 
 interface Props {
   text: string
-  codeRenderer: Renderer<HTMLPreElement>
+  codeRenderer: any
 }
 
 const InstallPackageHelper: FC<Props> = ({text, codeRenderer}) => {

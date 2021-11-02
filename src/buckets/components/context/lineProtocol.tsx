@@ -68,6 +68,20 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
     setWriteError('')
   }
 
+  /**
+   *  change in newest api:  error 429 (too many requests) is in CLOUD and not in OSS
+   *
+   *  doing the 'as any' cast away from the type because: safest way; this error code will never happen in OSS;
+   *    so the clause will never be activated, and the user still gets the proper error.
+   *
+   *    other strategies not implement here, with reasoning:
+   *
+   *    1) not removing the clause and drop down to the generic error
+   *          because then the user doesn't get a good error message
+   *    2) bad code smell: add it to oss for code purposes, knowing it will never be called
+   *    3) can't do an IF CLOUD b/c the code just ISN'T THERE; the type (PostWriteResult) exists in both
+   *       cloud and oss and is different in each environment
+   */
   const writeLineProtocol = useCallback(
     async (bucket: string) => {
       try {
@@ -79,11 +93,13 @@ export const LineProtocolProvider: FC<Props> = React.memo(({children}) => {
 
         if (resp.status === 204) {
           setWriteStatus(RemoteDataState.Done)
-        } else if (resp.status === 429) {
+          // here is the cast:
+        } else if ((resp.status as any) === 429) {
           setWriteStatus(RemoteDataState.Error)
           setWriteError('Failed due to plan limits: read cardinality reached')
-        } else if (resp.status === 403) {
-          const error = getErrorMessage(resp)
+        } else if (resp.status === 404) {
+          const error =
+            getErrorMessage(resp) || 'Endpoint not Found; Failed to write data'
           setWriteStatus(RemoteDataState.Error)
           setWriteError(error)
         } else {

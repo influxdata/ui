@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 import {useParams} from 'react-router-dom'
-import {Renderer} from 'react-markdown'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -29,7 +28,7 @@ import CodeSnippet, {
 import 'src/writeData/components/WriteDataDetailsView.scss'
 import ClientCodeQueryHelper from '../components/ClientCodeQueryHelper'
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+const codeRenderer: any = (props: any): any => (
   <CodeSnippet text={props.value} label={props.language} />
 )
 

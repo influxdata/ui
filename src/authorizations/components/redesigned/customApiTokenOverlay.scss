@@ -29,3 +29,10 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.resource-accordion-scrollbar {
+  flex-direction: column;
+  flex: 1 0 0;
+  overflow: hidden;
+  height: 300px;
+}

@@ -174,7 +174,7 @@ describe('Explicit Buckets', () => {
       })
   })
 
-  it('should be able to create an explicit bucket and add schema file during editing', function() {
+  it('should be able to create an explicit bucket and add json schema file during editing', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()
@@ -234,6 +234,79 @@ describe('Explicit Buckets', () => {
             expect(fileContent[1].name).to.be.equal('fsWrite')
             expect(fileContent[1].type).to.be.equal('field')
             expect(fileContent[1].dataType).to.be.equal('float')
+          })
+      })
+  })
+
+  it('should be able to create an explicit bucket and add csv schema file during editing', function() {
+    cy.getByTestID('Create Bucket').click()
+    cy.getByTestID('bucket-form-name').type('explicit_bucket')
+    cy.getByTestID('accordion-header').click()
+    cy.getByTestID('explicit-bucket-schema-choice-ID').click()
+
+    cy.getByTestID('bucket-form-submit').click()
+
+    cy.getByTestID(`bucket-card explicit_bucket`)
+      .should('exist')
+      .within(() => {
+        cy.getByTestID('bucket-settings').click()
+      })
+    cy.getByTestID('accordion-header').click()
+
+    cy.getByTestID('measurement-schema-add-file-button').click()
+    cy.getByTestID('input-field').type('first schema file')
+
+    const schemaFile = 'valid.csv'
+    const type = 'text/csv'
+
+      const origFileContents =  `name,type,dataType
+time,timestamp,
+host,tag,
+service,tag,
+fsRead,field,float`
+
+    const testFile = new File(
+      [
+       origFileContents
+      ],
+      schemaFile,
+      {type}
+    )
+
+    const event = {dataTransfer: {files: [testFile]}, force: true}
+    cy.getByTestID('dndContainer')
+      .trigger('dragover', event)
+      .trigger('drop', event)
+
+    cy.getByTestID('bucket-form-submit').click()
+
+    cy.getByTestID(`bucket-card explicit_bucket`)
+      .should('exist')
+      .within(() => {
+        cy.getByTestID('bucket-settings').click()
+      })
+    cy.getByTestID('accordion-header').click()
+
+    cy.getByTestID('advancedSection')
+      .should('exist')
+      .within(() => {
+        cy.getByTestID('csv-download-flavor-choice').click()
+
+        cy.getByTestID('measurement-schema-readOnly-panel-0')
+          .should('exist')
+          .within(() => {
+            cy.getByTestID('measurement-schema-name-0')
+              .contains('first schem...')
+              .should('exist')
+
+            cy.getByTestID('measurement-schema-download-button').click()
+
+            cy.readFile(`cypress/downloads/first_schema_file.csv`)
+              .should('exist')
+              .then(fileContent => {
+                console.log('got file contents...', fileContent)
+                  expect(fileContent).to.equal(origFileContents)
+              })
           })
       })
   })

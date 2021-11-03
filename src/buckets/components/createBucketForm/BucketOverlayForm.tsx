@@ -164,7 +164,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
             <Accordion.AccordionHeader>
               <span>Advanced Configuration (Optional)</span>
             </Accordion.AccordionHeader>
-            <Accordion.AccordionBodyItem>
+            <Accordion.AccordionBodyItem testID="advancedSection">
               <div>{contents}</div>
             </Accordion.AccordionBodyItem>
           </Accordion>

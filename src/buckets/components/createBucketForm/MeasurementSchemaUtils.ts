@@ -107,3 +107,62 @@ export const areSchemaUpdatesValid = schemaInfo => {
       !schemaInfo.hasUpdate || (schemaInfo.hasUpdate && schemaInfo.valid)
   )
 }
+
+// the MiniFileDnd component will catch any errors thrown here
+// and display them to the user; as this method is only called from within
+// the 'handleFileUpload' that is passed to and called by the MiniFileDnd Component.
+export const getColumnsFromFile = (contents: string, isCsv: boolean) => {
+  // do parsing here;  to check if in the correct format:
+  let columns = null
+  if (contents) {
+    if (isCsv) {
+      columns = csvToArray(contents)
+    } else {
+      // it's json:
+
+      // parse them; if proper/valid; great!  if not, set errors and do not proceed
+      // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
+      columns = JSON.parse(contents)
+    }
+    if (!areColumnsProper(columns)) {
+      // set errors
+      throw {message: 'column file is not formatted correctly'}
+    }
+  }
+  return columns
+}
+/**
+ * take a csv file, as a string, and turn it into a javascript object
+ * based off: https://sebhastian.com/javascript-csv-to-array/
+ * if the value isn't present, then it isn't put into the object.
+ * all strings are trimmed as well.
+ */
+export const csvToArray = (contents: string, delimiter = ',') => {
+  // slice from start of text to the first \n index
+  // use split to create an array from string by delimiter
+  const headers = contents.slice(0, contents.indexOf('\n')).split(delimiter)
+
+  // slice from \n index + 1 to the end of the text
+  // use split to create an array of each csv value row
+  const rows = contents.slice(contents.indexOf('\n') + 1).split('\n')
+
+  // Map the rows
+  // split values from each row into an array
+  // use headers.reduce to create an object
+  // object properties derived from headers:values
+  // the object passed as an element of the array
+  const arr = rows.map(function(row) {
+    const values = row.split(delimiter)
+    const el = headers.reduce(function(object, header, index) {
+      const val = values[index]
+      if (val) {
+        object[header] = val.trim()
+      }
+      return object
+    }, {})
+    return el
+  })
+
+  // return the array
+  return arr
+}

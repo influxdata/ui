@@ -26,14 +26,11 @@ import {
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
 import {
-  areColumnsProper,
   isNameValid,
+  getColumnsFromFile,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 import {downloadTextFile} from 'src/shared/utils/download'
-import {
-  csvToArray,
-  MiniFileDnd,
-} from 'src/buckets/components/createBucketForm/MiniFileDnd'
+import {MiniFileDnd} from 'src/buckets/components/createBucketForm/MiniFileDnd'
 
 import {CLOUD} from 'src/shared/constants'
 import classnames from 'classnames'
@@ -132,32 +129,6 @@ interface AddingProps {
   filename?: string
   name?: string
   showSchemaValidation?: boolean
-}
-
-// the MiniFileDnd component will catch any errors thrown here
-// and display them to the user; as this method is only called from within
-// the 'handleFileUpload' that is passed to and called by the MiniFileDnd Component.
-const getColumnsFromFile = (contents: string, isCsv: boolean) => {
-  // do parsing here;  to check if in the correct format:
-  let columns = null
-  if (contents) {
-    if (isCsv) {
-      columns = csvToArray(contents)
-      console.log('just parsed the csv:', columns)
-    } else {
-      // it's json:
-
-      // parse them; if proper/valid; great!  if not, set errors and do not proceed
-      // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
-      columns = JSON.parse(contents)
-      console.log('just parsed json:', columns)
-    }
-    if (!areColumnsProper(columns)) {
-      // set errors
-      throw {message: 'column file is not formatted correctly'}
-    }
-  }
-  return columns
 }
 
 // the first is for dnd; the second is for the file input
@@ -356,7 +327,7 @@ const EditingPanel: FC<PanelProps> = ({
     const {name} = measurementSchema
     let contents = JSON.stringify(measurementSchema.columns)
     let extension = '.json'
-    // if csv selected, do csv conversion instead TODO
+    // if csv selected, do csv conversion instead
     if (downloadFormat === 'csv') {
       contents = toCsvString(measurementSchema.columns)
       extension = '.csv'
@@ -518,8 +489,12 @@ export const MeasurementSchemaSection: FC<Props> = ({
   const schemas = measurementSchemaList?.measurementSchemas
   let readSection = null
   if (schemas) {
-    const onDownloadTypeChange = ack => {
-      console.log('got download type change....', ack)
+    /**
+     * typescript transpiler needs this; using just setDownloadType
+     * yields an error (claims the argument is of type string)
+     * */
+    const onDownloadTypeChange = (dtype: DownloadTypes) => {
+      setDownloadType(dtype)
     }
 
     const readPanels = schemas.map((oneSchema, index) => (
@@ -538,7 +513,6 @@ export const MeasurementSchemaSection: FC<Props> = ({
           {' '}
           Download File Format:{' '}
         </InputLabel>
-        {/*todo:  the schema section .option classes are being applied, don't want them applied here!  plus need margins fixed in general*/}
         <Toggle
           tabIndex={1}
           value="json"
@@ -546,7 +520,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
           name="json-download-flavor-choice"
           className="option"
           checked={downloadType === 'json'}
-          onChange={setDownloadType}
+          onChange={onDownloadTypeChange}
           type={InputToggleType.Radio}
           size={ComponentSize.ExtraSmall}
           color={ComponentColor.Primary}
@@ -566,7 +540,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
           name="csv-download-flavor-choice"
           className="option"
           checked={downloadType === 'csv'}
-          onChange={setDownloadType}
+          onChange={onDownloadTypeChange}
           type={InputToggleType.Radio}
           size={ComponentSize.ExtraSmall}
           color={ComponentColor.Primary}
@@ -690,7 +664,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
       testID="measurement-schema-section-parent"
-      className="schema-section measurement"
+      className="measurement-section measurement"
     >
       <div className="header">
         <div className="title-text">Measurement Schema</div>

@@ -28,6 +28,7 @@ import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
 import {
   isNameValid,
   getColumnsFromFile,
+  toCsvString,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 import {downloadTextFile} from 'src/shared/utils/download'
 import {MiniFileDnd} from 'src/buckets/components/createBucketForm/MiniFileDnd'
@@ -412,25 +413,6 @@ export interface SchemaUpdateInfo {
   hasUpdate: boolean
   isValid?: boolean
   columns?: typeof MeasurementSchemaColumn[]
-}
-
-export const toCsvString = columns => {
-  return [
-    ['name', 'type', 'dataType'],
-    ...columns.map(schemaLine => {
-      const line = [schemaLine.name, schemaLine.type]
-      if (schemaLine.dataType) {
-        line.push(schemaLine.dataType)
-      } else {
-        // putting in an empty entry, to get the trailing comma if there are only two entries
-        // this make the line be: ' host,tag,' as opposed to : ' host,tag'
-        line.push('')
-      }
-      return line
-    }),
-  ]
-    .map(e => e.join(','))
-    .join('\n')
 }
 
 export const MeasurementSchemaSection: FC<Props> = ({

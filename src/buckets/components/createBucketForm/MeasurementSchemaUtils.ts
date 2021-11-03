@@ -166,3 +166,22 @@ export const csvToArray = (contents: string, delimiter = ',') => {
   // return the array
   return arr
 }
+
+export const toCsvString = columns => {
+  return [
+    ['name', 'type', 'dataType'],
+    ...columns.map(schemaLine => {
+      const line = [schemaLine.name, schemaLine.type]
+      if (schemaLine.dataType) {
+        line.push(schemaLine.dataType)
+      } else {
+        // putting in an empty entry, to get the trailing comma if there are only two entries
+        // this make the line be: ' host,tag,' as opposed to : ' host,tag'
+        line.push('')
+      }
+      return line
+    }),
+  ]
+    .map(e => e.join(','))
+    .join('\n')
+}

@@ -170,8 +170,6 @@ export const MiniFileDnd: FC<Props> = ({
   }
 
   const processFile = (file, isCsv: boolean = false) => {
-    console.log('processing file...... is csv??', isCsv)
-
     const reader = new FileReader()
     reader.readAsText(file)
     reader.onload = () => {
@@ -198,7 +196,6 @@ export const MiniFileDnd: FC<Props> = ({
       return
     }
 
-    console.log('file props...', file, file.name)
     const fileExt = file.name.split('.').pop()
     let processCsv = false
     if (fileExt === 'csv') {

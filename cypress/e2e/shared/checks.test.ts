@@ -736,10 +736,5 @@ describe('Checks', () => {
         cy.getByTestID('check-card--name').should('have.length', 1)
       })
     })
-
-    // TODO fill in actual test
-    it.skip('can clone a threshold check', () => {
-      // 1. create threshold over API
-    })
   })
 })

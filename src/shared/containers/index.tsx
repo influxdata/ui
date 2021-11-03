@@ -12,6 +12,9 @@ export const TaskPage = lazy(() => import('src/tasks/containers/TaskPage'))
 export const TaskRunsPage = lazy(() =>
   import('src/tasks/components/TaskRunsPage')
 )
+export const TaskRunsPagePaginated = lazy(() =>
+  import('src/tasks/pagination/TaskRunsPage')
+)
 export const TaskEditPage = lazy(() =>
   import('src/tasks/containers/TaskEditPage')
 )

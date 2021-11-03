@@ -222,7 +222,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
             !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
           }
         >
-          {threshold?.field || 'Select a numeric column'}
+          {threshold?.field || 'Select a numeric field'}
         </Dropdown.Button>
       )
       return <Dropdown menu={menu} button={menuButton} />

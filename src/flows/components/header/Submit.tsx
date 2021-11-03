@@ -46,6 +46,7 @@ export const Submit: FC = () => {
     return (
       <ButtonGroup>
         <SubmitQueryButton
+          className="submit-btn"
           text={runMode}
           icon={IconFont.Play}
           submitButtonDisabled={hasQueries === false}

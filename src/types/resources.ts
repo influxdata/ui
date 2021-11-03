@@ -1,4 +1,3 @@
-import {Error} from 'src/client'
 import {
   Authorization,
   Bucket,
@@ -61,7 +60,7 @@ export interface TelegrafsState extends NormalizedState<Telegraf> {
 
 export interface AuthState extends NormalizedState<Authorization> {
   currentAuth: {status: RemoteDataState; item: Authorization}
-  allResources: string[] | Error
+  allResources: string[]
 }
 
 export interface RulesState extends NormalizedState<NotificationRule> {

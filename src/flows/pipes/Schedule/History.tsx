@@ -6,6 +6,8 @@ import {
   getTasksRun,
   postTasksRun,
   getTasksRunsLogs,
+  Task,
+  Run,
 } from 'src/client/generatedRoutes'
 import {
   EmptyState,
@@ -17,13 +19,14 @@ import {
   DapperScrollbars,
   Overlay,
 } from '@influxdata/clockface'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
-  task: any
+  task: Task
 }
 
 interface LogProps {
@@ -32,8 +35,8 @@ interface LogProps {
 }
 
 interface RunProps {
-  task: any
-  run: any
+  task: Task
+  run: Run
 }
 
 const duration = (start: string, finish: string): string => {
@@ -117,7 +120,7 @@ const UPDATE_INTERVAL = 3 * 1000
 const Run: FC<RunProps> = ({task, run}) => {
   const {launch} = useContext(PopupContext)
   const timer = useRef<ReturnType<typeof setInterval>>()
-  const [runOverride, setRunOverride] = useState({})
+  const [runOverride, setRunOverride] = useState<Partial<Run>>({})
   const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
   const viewLogs = () => {
     launch(<RunLogs taskID={task.id} runID={run.id} />, {})
@@ -289,4 +292,9 @@ const History: FC<Props> = ({task}) => {
   )
 }
 
-export default History
+const WrappedHistory: FC<Props> = ({task}) => (
+  <ErrorBoundary>
+    <History task={task} />
+  </ErrorBoundary>
+)
+export default WrappedHistory

@@ -22,7 +22,7 @@
 .flow-task-history {
   h1 {
     font-size: 18px;
-    margin-bottom: 8px;
+    margin-bottom: $cf-marg-b;
   }
 
   &.inactive {
@@ -36,7 +36,7 @@
   }
 
   .interaction {
-    margin-bottom: 28px;
+    margin-bottom: $cf-marg-d;
     display: flex;
   }
 
@@ -45,13 +45,13 @@
     padding-top: 2px;
 
     label {
-      margin-left: 8px;
+      margin-left: $cf-marg-b;
       vertical-align: sub;
     }
   }
 
   .run {
-    margin-bottom: 18px;
+    margin-bottom: $cf-marg-c;
 
     label {
       font-weight: 500;
@@ -60,9 +60,9 @@
     }
 
     .run--buttons {
-      margin-top: 4px;
+      margin-top: $cf-marg-a;
       display: flex;
-      gap: 4px;
+      gap: $cf-marg-a;
 
       .cf-button {
         flex: 1 1;

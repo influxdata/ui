@@ -777,6 +777,15 @@ export const getByTestID = (
   return cy.get(`[data-testid="${dataTest}"]`, options)
 }
 
+export const getByTestIDHead = (
+  dataTest: string,
+  options?: Partial<
+    Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow
+  >
+): Cypress.Chainable => {
+  return cy.get(`[data-testid^="${dataTest}"]`, options)
+}
+
 export const getByTestIDAndSetInputValue = (
   testId: string,
   value: string | number
@@ -992,6 +1001,7 @@ Cypress.Commands.add('getByInputName', getByInputName)
 Cypress.Commands.add('getByInputValue', getByInputValue)
 Cypress.Commands.add('getByTitle', getByTitle)
 Cypress.Commands.add('getByTestIDSubStr', getByTestIDSubStr)
+Cypress.Commands.add('getByTestIDHead', getByTestIDHead)
 
 // auth flow
 Cypress.Commands.add('signin', signin)

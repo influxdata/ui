@@ -164,8 +164,8 @@ export class LSPServer {
         limit = -1
       }
 
-      const buckets = await fetchAllBuckets(org.id, limit)
-      return Object.values(buckets.entities.buckets).map(b => b.name)
+      const {normalizedBuckets} = await fetchAllBuckets(org.id, limit)
+      return Object.values(normalizedBuckets.entities.buckets).map(b => b.name)
     } catch (e) {
       console.error(e)
       return []

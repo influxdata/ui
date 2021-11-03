@@ -3,15 +3,15 @@ import React, {FC} from 'react'
 
 // Components
 import {
+  ComponentColor,
+  ComponentSize,
+  DismissButton,
+  FlexBox,
+  FlexDirection,
+  InfluxColors,
   Input,
   Panel,
-  DismissButton,
   TextBlock,
-  FlexBox,
-  ComponentSize,
-  FlexDirection,
-  ComponentColor,
-  InfluxColors,
 } from '@influxdata/clockface'
 
 // Types
@@ -38,7 +38,7 @@ const CheckTagRow: FC<Props> = ({
     <Panel
       testID="tag-rule"
       className="alert-builder--tag-row"
-      backgroundColor={InfluxColors.Grey25}
+      style={{backgroundColor: 'rgba(51,51,70, .3)'}}
     >
       <DismissButton
         onClick={() => {
@@ -58,7 +58,11 @@ const CheckTagRow: FC<Props> = ({
             />
           </FlexBox.Child>
           <FlexBox.Child grow={0} basis={20}>
-            <TextBlock text="=" />
+            <TextBlock
+              backgroundColor="#00000000"
+              textColor={InfluxColors.Pool}
+              text="="
+            />
           </FlexBox.Child>
           <FlexBox.Child grow={1}>
             <Input

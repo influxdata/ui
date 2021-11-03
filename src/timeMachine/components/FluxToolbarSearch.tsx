@@ -31,6 +31,10 @@ class FluxToolbarSearch extends PureComponent<Props, State> {
   }
 
   public render() {
+    const {searchTerm} = this.state
+
+    // not using the searchwidget, as this uses a debounced search
+    // just adding the onClear.  if others use a debounced search, then will enhance the searchwidget
     return (
       <div className="flux-toolbar--search">
         <Input
@@ -38,8 +42,9 @@ class FluxToolbarSearch extends PureComponent<Props, State> {
           icon={IconFont.Search_New}
           placeholder={`Filter ${this.props.resourceName}...`}
           onChange={this.handleChange}
-          value={this.state.searchTerm}
+          value={searchTerm}
           testID="flux-toolbar-search--input"
+          onClear={this.onClear}
         />
       </div>
     )
@@ -51,6 +56,10 @@ class FluxToolbarSearch extends PureComponent<Props, State> {
 
   private handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     this.setState({searchTerm: e.target.value}, this.handleSearch)
+  }
+
+  private onClear = (): void => {
+    this.setState({searchTerm: ''}, this.handleSearch)
   }
 }
 

@@ -246,7 +246,6 @@ const History: FC<Props> = ({task}) => {
       if (resp.status !== 201) {
         throw new Error(resp.data.message)
       }
-      console.log('neat', resp.data)
       setRuns([resp.data, ...runs])
     })
   }

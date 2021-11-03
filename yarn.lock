@@ -855,10 +855,10 @@
     "@docsearch/css" "3.0.0-alpha.37"
     algoliasearch "^4.0.0"
 
-"@influxdata/clockface@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.0.1.tgz#a36f14b738f3841ecca540ff623c48610a175484"
-  integrity sha512-jxqHmPT46R0TZ67DGwCweuub1bqSXdytn8cMk074k8JK2jbimQbfgLAEdoB73CMOOX+OAlf9pyVybfsZN6CUcQ==
+"@influxdata/clockface@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.1.0.tgz#71607eb036a16d2da2af4df4a42a1d5cf6b127f1"
+  integrity sha512-2J9xPVtEa3VncRzD1CRGSaTuy5eSDUSOxvEqlx1j9kqGHNwk026bG/mvEAGY9RrDBe42NZQak906IIp6YvO95g==
 
 "@influxdata/flux-lsp-browser@^0.5.53":
   version "0.5.53"

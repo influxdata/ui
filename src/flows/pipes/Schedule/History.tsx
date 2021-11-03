@@ -1,8 +1,9 @@
-import React, {FC, useEffect, useState, useContext} from 'react'
+import React, {FC, useEffect, useState, useRef, useContext} from 'react'
 import {
   getTask,
   patchTask,
   getTasksRuns,
+  getTasksRun,
   postTasksRun,
   getTasksRunsLogs,
 } from 'src/client/generatedRoutes'
@@ -23,6 +24,16 @@ import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   task: any
+}
+
+interface LogProps {
+  taskID: string
+  runID: string
+}
+
+interface RunProps {
+  task: any
+  run: any
 }
 
 const duration = (start: string, finish: string): string => {
@@ -87,8 +98,8 @@ const RunLogs: FC<LogProps> = ({taskID, runID}) => {
           <DapperScrollbars autoSizeHeight={true} style={{maxHeight: '700px'}}>
             <IndexList>
               <IndexList.Header>
-                <IndexList.HeaderCell columnName="Time" />
-                <IndexList.HeaderCell columnName="Message" />
+                <IndexList.HeaderCell columnName="Time" width="auto" />
+                <IndexList.HeaderCell columnName="Message" width="auto" />
               </IndexList.Header>
               <IndexList.Body emptyState={<></>} columnCount={2}>
                 {_logs}
@@ -101,12 +112,101 @@ const RunLogs: FC<LogProps> = ({taskID, runID}) => {
   )
 }
 
+const UPDATE_INTERVAL = 3 * 1000
+
+const Run: FC<RunProps> = ({task, run}) => {
+  const {launch} = useContext(PopupContext)
+  const timer = useRef<ReturnType<typeof setInterval>>()
+  const [runOverride, setRunOverride] = useState({})
+  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
+  const viewLogs = () => {
+    launch(<RunLogs taskID={task.id} runID={run.id} />, {})
+  }
+  const _run = {
+    ...run,
+    ...runOverride,
+  }
+
+  useEffect(() => {
+    // no need to update as we are in a final state
+    if (run.status === 'success' || run.status === 'failed') {
+      return
+    }
+
+    // shouldnt happen, but lets not risk the memory leak
+    if (timer.current) {
+      return
+    }
+
+    timer.current = setInterval(() => {
+      getTasksRun({
+        taskID: task.id,
+        runID: run.id,
+      }).then(resp => {
+        if (resp.status !== 200) {
+          return
+        }
+
+        setRunOverride(resp.data)
+
+        if (
+          (resp.data.status === 'success' || resp.data.status === 'failed') &&
+          timer.current
+        ) {
+          clearInterval(timer.current)
+        }
+      })
+    }, UPDATE_INTERVAL)
+
+    return () => {
+      if (timer.current) {
+        clearInterval(timer.current)
+      }
+    }
+  }, [])
+
+  const format = (date: string) => {
+    try {
+      return formatter.format(new Date(date))
+    } catch {
+      return null
+    }
+  }
+
+  return (
+    <div className="run">
+      <div className={`run--row ${_run.status}`}>
+        <label>status</label>
+        <span>{_run.status}</span>
+      </div>
+      <div className="run--row">
+        <label>started</label>
+        <span>{format(_run.scheduledFor)}</span>
+      </div>
+      <div className="run--row">
+        <label>waited</label>
+        <span>{duration(_run.scheduledFor, _run.startedAt)}</span>
+      </div>
+      <div className="run--row">
+        <label>duration</label>
+        <span>{duration(_run.startedAt, _run.finishedAt)}</span>
+      </div>
+      <div className="run--buttons">
+        <Button
+          key={`logs-${run.id}`}
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Default}
+          text="View Logs"
+          onClick={viewLogs}
+        />
+      </div>
+    </div>
+  )
+}
+
 const History: FC<Props> = ({task}) => {
   const [runs, setRuns] = useState<any[]>([])
   const [status, setStatus] = useState<string>('inactive')
-  const {launch} = useContext(PopupContext)
-
-  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
 
   useEffect(() => {
     if (!task.id) {
@@ -146,42 +246,13 @@ const History: FC<Props> = ({task}) => {
       if (resp.status !== 201) {
         throw new Error(resp.data.message)
       }
+      console.log('neat', resp.data)
       setRuns([resp.data, ...runs])
     })
   }
 
-  const viewLogs = (taskID, runID) => {
-    launch(<RunLogs taskID={taskID} runID={runID} />)
-  }
-
   const _runs = runs.map(r => (
-    <div className="run" key={`run-id==${r.id}`}>
-      <div className={`run--row ${r.status}`}>
-        <label>status</label>
-        <span>{r.status}</span>
-      </div>
-      <div className="run--row">
-        <label>started</label>
-        <span>{formatter.format(new Date(r.scheduledFor))}</span>
-      </div>
-      <div className="run--row">
-        <label>waited</label>
-        <span>{duration(r.scheduledFor, r.startedAt)}</span>
-      </div>
-      <div className="run--row">
-        <label>duration</label>
-        <span>{duration(r.startedAt, r.finishedAt)}</span>
-      </div>
-      <div className="run--buttons">
-        <Button
-          key={`logs-${r.id}`}
-          size={ComponentSize.ExtraSmall}
-          color={ComponentColor.Default}
-          text="View Logs"
-          onClick={() => viewLogs(task.id, r.id)}
-        />
-      </div>
-    </div>
+    <Run key={`run-id--${r.id}`} task={task} run={r} />
   ))
 
   return (

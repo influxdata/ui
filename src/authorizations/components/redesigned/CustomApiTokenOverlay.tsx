@@ -20,8 +20,8 @@ import {
   ComponentColor,
   ButtonShape,
   InputLabel,
-  RemoteDataState,
   JustifyContent,
+  RemoteDataState,
   ComponentStatus,
 } from '@influxdata/clockface'
 import ResourceAccordion from 'src/authorizations/components/redesigned/ResourceAccordion'
@@ -51,6 +51,7 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 interface OwnProps {
   onClose: () => void
 }
+
 interface StateProps {
   allResources: string[]
   telegrafPermissions: any
@@ -59,6 +60,7 @@ interface StateProps {
   orgID: string
   orgName: string
 }
+
 interface DispatchProps {
   getBuckets: () => void
   getTelegrafs: () => void
@@ -66,10 +68,11 @@ interface DispatchProps {
   showOverlay: (arg1: string, arg2: any, any) => {}
 }
 
-type Props = StateProps & OwnProps & DispatchProps
+type Props = OwnProps & StateProps & DispatchProps
 
 const CustomApiTokenOverlay: FC<Props> = props => {
   const {onClose} = useContext(OverlayContext)
+
   const [description, setDescription] = useState('')
   const [permissions, setPermissions] = useState({})
   const [searchTerm, setSearchTerm] = useState('')
@@ -386,5 +389,4 @@ const mdtp = {
   dismissOverlay,
 }
 
-const connector = connect(mstp, mdtp)
-export default connector(CustomApiTokenOverlay)
+export default connect(mstp, mdtp)(CustomApiTokenOverlay)

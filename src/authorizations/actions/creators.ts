@@ -1,6 +1,7 @@
 // Types
 import {RemoteDataState, AuthEntities, Authorization} from 'src/types'
 import {NormalizedSchema} from 'normalizr'
+import {Error} from 'src/client'
 
 export const SET_AUTH = 'SET_AUTH'
 export const ADD_AUTH = 'ADD_AUTH'
@@ -59,7 +60,7 @@ export const setCurrentAuthorization = (
     item,
   } as const)
 
-export const setAllResources = (list?: string[]) =>
+export const setAllResources = (list?: string[] | Error) =>
   ({
     type: SET_ALL_RESOURCES,
     list,

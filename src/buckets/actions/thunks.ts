@@ -90,16 +90,17 @@ export const getBuckets = () => async (
     }
     const org = getOrg(state)
 
-    let buckets
+    let bucketsResponse
     if (isFlagEnabled('fetchAllBuckets')) {
       // a limit of -1 means fetch all buckets for this org
-      buckets = await fetchAllBuckets(org.id, -1)
+      bucketsResponse = await fetchAllBuckets(org.id, -1)
     } else {
-      buckets = await fetchAllBuckets(org.id)
+      bucketsResponse = await fetchAllBuckets(org.id)
     }
-    dispatch(setBuckets(RemoteDataState.Done, buckets))
+    dispatch(
+      setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)
+    )
   } catch (error) {
-    console.error(error)
     dispatch(setBuckets(RemoteDataState.Error))
     dispatch(notify(getBucketsFailed()))
   }

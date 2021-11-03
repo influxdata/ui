@@ -24,8 +24,12 @@ export const fetchAllBuckets = async (orgID: string, limit = BUCKET_LIMIT) => {
     demoDataBuckets = await fetchDemoDataBuckets()
   }
 
-  return normalize<Bucket, BucketEntities, string[]>(
-    [...resp.data.buckets, ...demoDataBuckets],
-    arrayOfBuckets
-  )
+  return {
+    buckets: resp.data.buckets,
+    demoDataBuckets: demoDataBuckets,
+    normalizedBuckets: normalize<Bucket, BucketEntities, string[]>(
+      [...resp.data.buckets, ...demoDataBuckets],
+      arrayOfBuckets
+    ),
+  }
 }

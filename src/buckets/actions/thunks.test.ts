@@ -56,7 +56,7 @@ describe('buckets thunks', () => {
     it('should return results upon success', async () => {
       mockGetBuckets(true)
 
-      const bucks = await fetchAllBuckets('ord01')
+      const {normalizedBuckets: bucks} = await fetchAllBuckets('ord01')
       expect(bucks.result).toContain('custom-id')
       expect(bucks.result).toContain('demo-bucket')
     })

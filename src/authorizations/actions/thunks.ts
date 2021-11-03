@@ -105,7 +105,7 @@ export const createAuthorization = (auth: Authorization) => async (
 ) => {
   try {
     const resp = await authAPI.createAuthorization(auth)
-
+    console.log("line 108")
     const newAuth = normalize<Authorization, AuthEntities, string>(
       resp,
       authSchema
@@ -122,6 +122,7 @@ export const createAuthorization = (auth: Authorization) => async (
     dispatch(notify(authorizationCreateSuccess()))
   } catch (error) {
     event('token.create.failure')
+    console.log("line 125")
     const message = getErrorMessage(error)
     dispatch(notify(authorizationCreateFailed(message)))
     throw error

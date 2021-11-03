@@ -234,7 +234,7 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
       return
     }
     if (permissions[key].read) {
-      if (key === 'orgs') {
+      // if (key === 'orgs') {
         apiPerms.push({
           action: 'read',
           resource: {
@@ -243,7 +243,7 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
             type: key,
           },
         })
-      } else {
+      // } else {
         apiPerms.push({
           action: 'read',
           resource: {
@@ -251,7 +251,7 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
             type: key,
           },
         })
-      }
+      // }
     }
     if (permissions[key].write) {
       if (key === 'orgs') {

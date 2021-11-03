@@ -223,6 +223,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const generateToken = async () => {
+    
     const {orgID, showOverlay, orgName, createAuthorization} = props
     const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
 
@@ -233,11 +234,12 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         : generateDescription(apiPermissions),
       permissions: apiPermissions,
     }
-
+    
     try {
       await createAuthorization(token)
       showOverlay('access-token', null, () => dismissOverlay())
     } catch (e) {
+      console.log("in catch", e)
       setStatus(ComponentStatus.Disabled)
       throw e
     }
@@ -250,7 +252,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         onDismiss={onClose}
       />
       <Overlay.Body>
-        <Form>
+        <Form onSubmit={generateToken}>
           <FlexBox
             alignItems={AlignItems.Center}
             direction={FlexDirection.Column}

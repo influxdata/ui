@@ -68,8 +68,6 @@ const testSchemaFiles = (
     .within(() => {
       if (isCsv) {
         cy.getByTestID('csv-download-flavor-choice').click()
-      } else {
-        //todo:  check that json is selected
       }
 
       cy.getByTestID('measurement-schema-readOnly-panel-0')
@@ -80,14 +78,7 @@ const testSchemaFiles = (
             .should('exist')
 
           cy.getByTestID('measurement-schema-download-button').click()
-
           checkContents(cy)
-          // cy.readFile(`cypress/downloads/first_schema_file.csv`)
-          //     .should('exist')
-          //     .then(fileContent => {
-          //         console.log('got file contents...', fileContent)
-          //         expect(fileContent).to.equal(origFileContents)
-          //     })
         })
     })
 }

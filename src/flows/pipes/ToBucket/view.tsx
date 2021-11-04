@@ -25,7 +25,7 @@ const ToBucket: FC<PipeProp> = ({Context}) => {
   }
 
   return (
-    <BucketProvider>
+    <BucketProvider key={`Provider ${data.bucket.id}`}>
       <Context>
         <div className="data-source--controls">
           <BucketSelector

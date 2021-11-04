@@ -158,7 +158,7 @@
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.37",
-    "@influxdata/clockface": "^3.1.0",
+    "@influxdata/clockface": "^3.1.3",
     "@influxdata/flux": "^0.5.1",
     "@influxdata/flux-lsp-browser": "^0.5.53",
     "@influxdata/giraffe": "^2.20.0",

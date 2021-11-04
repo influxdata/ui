@@ -92,7 +92,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       } else if (resource === 'buckets') {
         perms[resource] = props.bucketPermissions
       } else {
-        perms[resource] = {read: false, write: false} 
+        perms[resource] = {read: false, write: false}
       }
     })
     setPermissions(perms)
@@ -225,7 +225,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const generateToken = async () => {
-    
     const {orgID, showOverlay, orgName, createAuthorization} = props
     const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
 
@@ -236,7 +235,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         : generateDescription(apiPermissions),
       permissions: apiPermissions,
     }
-    
+
     try {
       await createAuthorization(token)
       showOverlay('access-token', null, () => dismissOverlay())

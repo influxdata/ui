@@ -81,17 +81,18 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }, [])
 
   useEffect(() => {
+    if (permissions['telegrafs'] && permissions['buckets']) return
+
     const perms = {
       otherResources: {read: false, write: false},
     }
-
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
       } else if (resource === 'buckets') {
         perms[resource] = props.bucketPermissions
       } else {
-        perms[resource] = {read: false, write: false}
+        perms[resource] = {read: false, write: false} 
       }
     })
     setPermissions(perms)
@@ -143,6 +144,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const handleIndividualToggle = (resourceName, id, permission) => {
     setStatus(ComponentStatus.Default)
+
     const permValue =
       permissions[resourceName].sublevelPermissions[id].permissions[permission]
 
@@ -239,9 +241,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       await createAuthorization(token)
       showOverlay('access-token', null, () => dismissOverlay())
     } catch (e) {
-      console.log("in catch", e)
       setStatus(ComponentStatus.Disabled)
-      throw e
     }
   }
 
@@ -252,7 +252,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         onDismiss={onClose}
       />
       <Overlay.Body>
-        <Form onSubmit={generateToken}>
+        <Form>
           <FlexBox
             alignItems={AlignItems.Center}
             direction={FlexDirection.Column}

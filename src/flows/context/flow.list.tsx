@@ -75,7 +75,7 @@ export const FlowListContext = React.createContext<FlowListContextType>(
 )
 
 export function serialize(flow: Flow, orgID: string) {
-  const apiFlow = {
+  const apiFlow: any = {
     data: {
       orgID,
       name: flow.name,
@@ -85,6 +85,7 @@ export function serialize(flow: Flow, orgID: string) {
         range: flow.range,
         refresh: flow.refresh,
         createdAt: flow.createdAt,
+        createdBy: flow.createdBy,
         updatedAt: flow.updatedAt,
         pipes: flow.data.allIDs.map(id => {
           const meta = flow.meta.byID[id]
@@ -110,6 +111,10 @@ export function serialize(flow: Flow, orgID: string) {
     },
   }
 
+  if (flow.id) {
+    apiFlow.data.id = flow.id
+  }
+
   return apiFlow
 }
 
@@ -120,9 +125,9 @@ export function hydrate(data) {
     range: data.spec.range,
     refresh: data.spec.refresh,
     readOnly: data.spec.readOnly,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-    createdBy: data.createdBy,
+    createdAt: data.spec?.createdAt,
+    updatedAt: data.spec?.updatedAt,
+    createdBy: data.spec?.createdBy,
   }
   if (data.id) {
     flow.id = data.id

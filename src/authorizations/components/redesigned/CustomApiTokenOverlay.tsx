@@ -81,8 +81,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }, [])
 
   useEffect(() => {
-    if (permissions['telegrafs'] && permissions['buckets']) { 
-      return 
+    if (permissions['telegrafs'] && permissions['buckets']) {
+      return
     }
     const perms = {
       otherResources: {read: false, write: false},

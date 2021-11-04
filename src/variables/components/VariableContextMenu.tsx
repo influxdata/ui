@@ -37,7 +37,7 @@ export default class VariableContextMenu extends PureComponent<Props> {
           icon={IconFont.Trash_New}
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
-          confirmationLabel="Yes, delete this Variable"
+          confirmationLabel="Yes, delete this variable"
           onConfirm={this.deleteVariable}
           confirmationButtonText="Confirm"
           testID={`context-delete-variable ${variable.name}`}

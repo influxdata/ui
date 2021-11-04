@@ -7,7 +7,7 @@ export const isSystemBucket = (bucketName: string): boolean => {
 
 export const getBucketOverlayWidth = () => {
   if (isFlagEnabled('measurementSchema') && CLOUD) {
-    return 575
+    return 650
   }
   return 450
 }

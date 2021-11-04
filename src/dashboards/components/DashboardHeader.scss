@@ -1,0 +1,11 @@
+@media (max-width: 1350px) {
+  .control_buttons_collapsible {
+    display: none;
+  }
+}
+
+@media (min-width: 1350px) {
+  .control_buttons_in_collapsed_menu {
+    display: none;
+  }
+}

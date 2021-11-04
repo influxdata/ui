@@ -137,6 +137,7 @@ const FlowsIndex = () => {
                   onSelect={setSort}
                 />
               </Page.ControlBarLeft>
+              <Page.ControlBarRight />
             </Page.ControlBar>
           </>
         )}
@@ -167,6 +168,7 @@ const FlowsIndex = () => {
                 onSelect={setSort}
               />
             </Page.ControlBarLeft>
+            <Page.ControlBarRight />
           </Page.ControlBar>
         </Page.Contents>
 

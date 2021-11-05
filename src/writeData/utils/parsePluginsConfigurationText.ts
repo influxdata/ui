@@ -105,7 +105,7 @@ const inputPluginsList = [
   'kernel_vmstat',
   'kibana',
   'kinesis_consumer',
-  'KNXListener',
+  'knx_listener',
   'kube_inventory',
   'kubernetes',
   'lanz',

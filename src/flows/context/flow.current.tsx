@@ -72,17 +72,32 @@ export const FlowProvider: FC = ({children}) => {
     const doc = yDoc.current
     if (isFlagEnabled('sharedFlowEditing') && currentID) {
       provider.current = new WebsocketProvider(
+        // 'ws://localhost:1223', // todo(ariel): replace this with an actual API that we setup
         'wss://demos.yjs.dev', // todo(ariel): replace this with an actual API that we setup
-        currentID, // todo(ariel): we might need to confine this to an org, depends on how multi-org plays out
+        currentID,
         doc
       )
+
       provider.current.on('sync', isSynced => {
         if (isSynced) {
           const {flowUpdateData} = doc.getMap('flowUpdateData')?.toJSON()
-          if (!flowUpdateData && currentFlow) {
-            doc
-              .getMap('flowUpdateData')
-              .set('flowUpdateData', serialize(currentFlow, orgID))
+          if (!flowUpdateData) {
+            /**
+             * Don't feel too good about this, but this was the only way I could think of to get the currentFlow
+             * Without causing the useEffect to call every single time the currentFlow was updated,
+             * which is basically any time a user interacts with a notebook.
+             *
+             * For some reason, the useEffect being called every keystroke was mounting and
+             * unmounting the component, causing the Websocket to constantly connect and disconnect
+             */
+            setCurrentFlow(flow => {
+              if (flow) {
+                doc
+                  .getMap('flowUpdateData')
+                  .set('flowUpdateData', serialize(flow, orgID))
+              }
+              return flow
+            })
           }
         }
       })
@@ -92,12 +107,7 @@ export const FlowProvider: FC = ({children}) => {
       const {flowUpdateData} = doc.getMap('flowUpdateData').toJSON()
       const hydrated = hydrate(flowUpdateData?.data)
 
-      setCurrentFlow(prev => {
-        if (btoa(JSON.stringify(prev)) === btoa(JSON.stringify(hydrated))) {
-          return prev
-        }
-        return hydrated
-      })
+      setCurrentFlow(hydrated)
     }
 
     doc.on('update', onUpdate)
@@ -107,7 +117,7 @@ export const FlowProvider: FC = ({children}) => {
       }
       doc.off('update', onUpdate)
     }
-  }, [currentID, currentFlow, orgID])
+  }, [currentID, orgID])
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
@@ -118,13 +128,9 @@ export const FlowProvider: FC = ({children}) => {
             ...(flowCopy.data.byID[id] || {}),
             ...data,
           }
-          const update = {
-            ...flowCopy,
-            ...flowCopy.data.byID[id],
-          }
           yDoc.current
             .getMap('flowUpdateData')
-            .set('flowUpdateData', serialize(update, orgID))
+            .set('flowUpdateData', serialize(flowCopy, orgID))
         }
         return
       }
@@ -164,13 +170,9 @@ export const FlowProvider: FC = ({children}) => {
             ...meta,
           }
 
-          const update = {
-            ...flowCopy,
-            ...flowCopy.meta.byID[id],
-          }
           yDoc.current
             .getMap('flowUpdateData')
-            .set('flowUpdateData', serialize(update, orgID))
+            .set('flowUpdateData', serialize(flowCopy, orgID))
         }
         return
       }
@@ -210,15 +212,9 @@ export const FlowProvider: FC = ({children}) => {
           for (const ni in flow) {
             flowCopy[ni] = flow[ni]
           }
-          yDoc.current.getMap('flowUpdateData').set(
-            'flowUpdateData',
-            serialize(
-              {
-                ...flowCopy,
-              },
-              orgID
-            )
-          )
+          yDoc.current
+            .getMap('flowUpdateData')
+            .set('flowUpdateData', serialize(flowCopy, orgID))
         }
         return
       }
@@ -266,15 +262,9 @@ export const FlowProvider: FC = ({children}) => {
         flowCopy.data.allIDs.push(id)
         flowCopy.meta.allIDs.push(id)
       }
-      yDoc.current.getMap('flowUpdateData').set(
-        'flowUpdateData',
-        serialize(
-          {
-            ...flowCopy,
-          },
-          orgID
-        )
-      )
+      yDoc.current
+        .getMap('flowUpdateData')
+        .set('flowUpdateData', serialize(flowCopy, orgID))
       return
     }
     if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
@@ -323,15 +313,9 @@ export const FlowProvider: FC = ({children}) => {
 
       delete flowCopy.data.byID[id]
       delete flowCopy.meta.byID[id]
-      yDoc.current.getMap('flowUpdateData').set(
-        'flowUpdateData',
-        serialize(
-          {
-            ...flowCopy,
-          },
-          orgID
-        )
-      )
+      yDoc.current
+        .getMap('flowUpdateData')
+        .set('flowUpdateData', serialize(flowCopy, orgID))
       return
     }
     if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {

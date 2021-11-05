@@ -64,6 +64,8 @@ const ConfigureComponent: FC<Props> = props => {
 
   if (!selectedTelegraf) {
     setIsValidConfiguration(false)
+  } else {
+    setIsValidConfiguration(true)
   }
 
   const selectedName = selectedTelegraf

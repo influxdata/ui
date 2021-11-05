@@ -548,6 +548,7 @@ describe('Dashboards', () => {
       })
     })
   })
+
   before(() =>
     cy.exec('rm cypress/downloads/*', {
       log: true,
@@ -555,12 +556,10 @@ describe('Dashboards', () => {
     })
   )
 
-  it('creates a dashboard and downloads JSON', {browser: '!firefox'}, () => {
+  it('creates a dashboard and downloads JSON', () => {   
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-          cy.getByTestID('tree-nav')
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card--name').click()
           cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name

@@ -322,4 +322,18 @@ describe('test csv to array function (parsing)', () => {
     expect(secondKeys).toContain('type')
     expect(secondKeys).not.toContain('dataType')
   })
+  it('should throw an error because of bad columns in the csv', () => {
+    const contents = `name,type,data_type
+    hello,how,are
+    you,today,`
+    try {
+      const parsed = csvToObjectArray(contents)
+      fail('code should not reach here, it should throw an error')
+    } catch (error) {
+      expect(error).not.toEqual(null)
+      expect(error.message).toEqual(
+        'csv headers are not correct; they need to be : "name, type, dataType"'
+      )
+    }
+  })
 })

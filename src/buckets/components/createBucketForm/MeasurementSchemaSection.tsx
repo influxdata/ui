@@ -338,8 +338,8 @@ const EditingPanel: FC<PanelProps> = ({
     downloadTextFile(contents, name || 'schema', extension)
   }
 
-  const handleFileUpload = (contents: string, isCsv: boolean) => {
-    const columns = getColumnsFromFile(contents, isCsv)
+  const handleFileUpload = (contents: string, fileType: DownloadTypes) => {
+    const columns = getColumnsFromFile(contents, fileType)
     onAddUpdate(columns, index)
   }
 
@@ -490,12 +490,11 @@ export const MeasurementSchemaSection: FC<Props> = ({
         downloadFormat={downloadType}
       />
     ))
+
+    const labelStyle = {marginRight: 10}
     const downloadToggle = (
       <FlexBox direction={FlexDirection.Row}>
-        <InputLabel style={{marginRight: 10}}>
-          {' '}
-          Download File Format:{' '}
-        </InputLabel>
+        <InputLabel style={labelStyle}> Download File Format: </InputLabel>
         <Toggle
           tabIndex={1}
           value="json"

@@ -1,13 +1,13 @@
 import React from 'react'
 import {renderWithRedux} from 'src/mockState'
-import {MiniFileDnd, setGrammar} from './MiniFileDnd'
+import {DownloadTypes, MiniFileDnd, setGrammar} from './MiniFileDnd'
 
 const setup = (
   allowedExtensions: string,
   allowedTypes: string[],
   handleFileUpload: (
     contents: string,
-    isCsv: boolean,
+    fileType: DownloadTypes,
     fileName: string
   ) => void,
   setErrorState: (hasError: boolean, message?: string) => void,

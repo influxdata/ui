@@ -63,7 +63,7 @@ const testSchemaFiles = (
     })
   cy.getByTestID('accordion-header').click()
 
-  cy.getByTestID('advancedSection')
+  cy.getByTestID('accordion--advanced-section')
     .should('exist')
     .within(() => {
       if (isCsv) {

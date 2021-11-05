@@ -31,7 +31,10 @@ import {
   toCsvString,
 } from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
 import {downloadTextFile} from 'src/shared/utils/download'
-import {MiniFileDnd} from 'src/buckets/components/createBucketForm/MiniFileDnd'
+import {
+  DownloadTypes,
+  MiniFileDnd,
+} from 'src/buckets/components/createBucketForm/MiniFileDnd'
 
 import {CLOUD} from 'src/shared/constants'
 import classnames from 'classnames'
@@ -75,8 +78,6 @@ interface Props {
   onAddSchemas: (schemas: typeof MeasurementSchema, b?: boolean) => void
   showSchemaValidation: boolean
 }
-
-type DownloadTypes = 'csv' | 'json'
 
 /**
  * toggleUpdate:  is this line being updated?
@@ -178,12 +179,12 @@ const AddingPanel: FC<AddingProps> = ({
   // overridden.  with the propagation, the error state only gets called once properly.
   const handleFileUpload = (
     contents: string,
-    isCsv: boolean,
+    fileType: DownloadTypes,
     fileName: string
   ) => {
     // keep swapping out the file, cancel out of the dialog, x out the adding line....etc
 
-    const columns = getColumnsFromFile(contents, isCsv)
+    const columns = getColumnsFromFile(contents, fileType)
     onAddContents(columns, fileName, index)
   }
 

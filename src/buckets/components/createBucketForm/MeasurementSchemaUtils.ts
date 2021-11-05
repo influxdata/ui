@@ -1,3 +1,5 @@
+import {DownloadTypes} from './MiniFileDnd'
+
 const typeStrings = ['timestamp', 'tag', 'field']
 const dataTypeStrings = ['integer', 'float', 'boolean', 'string', 'unsigned']
 
@@ -111,11 +113,14 @@ export const areSchemaUpdatesValid = schemaInfo => {
 // the MiniFileDnd component will catch any errors thrown here
 // and display them to the user; as this method is only called from within
 // the 'handleFileUpload' that is passed to and called by the MiniFileDnd Component.
-export const getColumnsFromFile = (contents: string, isCsv: boolean) => {
+export const getColumnsFromFile = (
+  contents: string,
+  fileType: DownloadTypes
+) => {
   // do parsing here;  to check if in the correct format:
   let columns = null
   if (contents) {
-    if (isCsv) {
+    if (fileType === 'csv') {
       columns = csvToObjectArray(contents)
     } else {
       // it's json:

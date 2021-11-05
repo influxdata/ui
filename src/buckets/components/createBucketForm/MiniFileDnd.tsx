@@ -33,7 +33,7 @@ import {
  * allowedExtensions =".png, .jpg, .jpeg"
  *
  * handleFileUpload: required function that sends along the text contents of the file
- * being uploaded; a flag that is set to true if it is a csv file (else it is a json file),
+ * being uploaded; an enumerated type that states the download file type (csv or json),
  * and the (optional) name of the file.
  *
  *   this method  is within a try/catch, so if the method throws an error, it will
@@ -68,7 +68,7 @@ interface Props {
   allowedTypes: string[]
   handleFileUpload: (
     contents: string,
-    isCsv: boolean,
+    fileType: DownloadTypes,
     fileName?: string
   ) => void
   setErrorState: (hasError: boolean, message?: string) => void
@@ -98,6 +98,8 @@ export const setGrammar = (fileTypes: string[]) => {
 
   return addOrToLastOne().join(', ')
 }
+
+export type DownloadTypes = 'csv' | 'json'
 
 /**
  *  This is a small File Drag-and-Drop Input
@@ -169,7 +171,7 @@ export const MiniFileDnd: FC<Props> = ({
     setErrorState(hasError, message)
   }
 
-  const processFile = (file, isCsv: boolean = false) => {
+  const processFile = (file, fileType) => {
     const reader = new FileReader()
     reader.readAsText(file)
     reader.onload = () => {
@@ -179,7 +181,7 @@ export const MiniFileDnd: FC<Props> = ({
         preFileUpload()
       }
       try {
-        handleFileUpload(reader.result as string, isCsv, fileName)
+        handleFileUpload(reader.result as string, fileType, fileName)
 
         setFileName(fileName)
         setError(false)
@@ -197,12 +199,9 @@ export const MiniFileDnd: FC<Props> = ({
     }
 
     const fileExt = file.name.split('.').pop()
-    let processCsv = false
-    if (fileExt === 'csv') {
-      processCsv = true
-    }
+
     // don't need to see if the file type is valid; the input filters it already for us
-    processFile(file, processCsv)
+    processFile(file, fileExt)
   }
 
   const dropHandler = (event: any): void => {
@@ -217,7 +216,8 @@ export const MiniFileDnd: FC<Props> = ({
     const fileType = file.type
 
     if (allowedTypes.includes(fileType)) {
-      processFile(file, fileType === 'text/csv')
+      const downloadFileType = fileType === 'text/csv' ? 'csv' : 'json'
+      processFile(file, downloadFileType)
     } else {
       const niceTypes = setGrammar(allowedTypes)
       const fileTypeInfo = fileType ? ` (${fileType})` : ''

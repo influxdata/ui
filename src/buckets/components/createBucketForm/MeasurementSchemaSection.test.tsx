@@ -5,7 +5,7 @@ import {
   TOO_LONG_ERROR,
   areNewSchemasValid,
   areSchemaUpdatesValid,
-  csvToArray,
+  csvToObjectArray,
   toCsvString,
 } from './MeasurementSchemaUtils'
 
@@ -288,38 +288,38 @@ describe('test csv conversion function (object->csv file)', () => {
 })
 describe('test csv to array function (parsing)', () => {
   it('should parse the csv correctly', () => {
-    const contents = `foo,bar,baz
+    const contents = `name,type,dataType
     hello,how,are
     you,today,really`
 
-    const parsed = csvToArray(contents)
+    const parsed = csvToObjectArray(contents)
 
     expect(parsed?.length).toEqual(2)
-    expect(parsed[0]['foo']).toEqual('hello')
-    expect(parsed[0]['bar']).toEqual('how')
-    expect(parsed[0]['baz']).toEqual('are')
-    expect(parsed[1]['foo']).toEqual('you')
-    expect(parsed[1]['bar']).toEqual('today')
-    expect(parsed[1]['baz']).toEqual('really')
+    expect(parsed[0]['name']).toEqual('hello')
+    expect(parsed[0]['type']).toEqual('how')
+    expect(parsed[0]['dataType']).toEqual('are')
+    expect(parsed[1]['name']).toEqual('you')
+    expect(parsed[1]['type']).toEqual('today')
+    expect(parsed[1]['dataType']).toEqual('really')
   })
   it('should parse the csv correctly, with a missing third element', () => {
-    const contents = `foo,bar,baz
+    const contents = `name,type,dataType
     hello,how,are
     you,today,`
 
-    const parsed = csvToArray(contents)
+    const parsed = csvToObjectArray(contents)
 
     expect(parsed?.length).toEqual(2)
-    expect(parsed[0]['foo']).toEqual('hello')
-    expect(parsed[0]['bar']).toEqual('how')
-    expect(parsed[0]['baz']).toEqual('are')
-    expect(parsed[1]['foo']).toEqual('you')
-    expect(parsed[1]['bar']).toEqual('today')
+    expect(parsed[0]['name']).toEqual('hello')
+    expect(parsed[0]['type']).toEqual('how')
+    expect(parsed[0]['dataType']).toEqual('are')
+    expect(parsed[1]['name']).toEqual('you')
+    expect(parsed[1]['type']).toEqual('today')
 
     const secondKeys = Object.keys(parsed[1])
     expect(secondKeys.length).toEqual(2)
-    expect(secondKeys).toContain('foo')
-    expect(secondKeys).toContain('bar')
-    expect(secondKeys).not.toContain('baz')
+    expect(secondKeys).toContain('name')
+    expect(secondKeys).toContain('type')
+    expect(secondKeys).not.toContain('dataType')
   })
 })

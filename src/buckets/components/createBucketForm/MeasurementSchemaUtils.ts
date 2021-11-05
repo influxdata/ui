@@ -116,7 +116,7 @@ export const getColumnsFromFile = (contents: string, isCsv: boolean) => {
   let columns = null
   if (contents) {
     if (isCsv) {
-      columns = csvToArray(contents)
+      columns = csvToObjectArray(contents)
     } else {
       // it's json:
 
@@ -132,39 +132,40 @@ export const getColumnsFromFile = (contents: string, isCsv: boolean) => {
   return columns
 }
 /**
- * take a csv file, as a string, and turn it into a javascript object
+ * take a csv file, as a string, and turn it into an array of javascript objects.
+ *
  * based off: https://sebhastian.com/javascript-csv-to-array/
  * if the value isn't present, then it isn't put into the object.
  * all strings are trimmed as well.
  */
-export const csvToArray = (contents: string, delimiter = ',') => {
-  // slice from start of text to the first \n index
-  // use split to create an array from string by delimiter
+export const csvToObjectArray = (contents: string, delimiter = ',') => {
   const headers = contents.slice(0, contents.indexOf('\n')).split(delimiter)
 
-  // slice from \n index + 1 to the end of the text
-  // use split to create an array of each csv value row
+  // check that the headers are correct; if not throw an exception:
+  if (
+    headers[0] !== 'name' ||
+    headers[1] !== 'type' ||
+    headers[2] !== 'dataType'
+  ) {
+    throw {
+      message:
+        'csv headers are not correct; they need to be : "name, type, dataType"',
+    }
+  }
+
   const rows = contents.slice(contents.indexOf('\n') + 1).split('\n')
 
-  // Map the rows
-  // split values from each row into an array
-  // use headers.reduce to create an object
-  // object properties derived from headers:values
-  // the object passed as an element of the array
-  const arr = rows.map(function(row) {
+  return rows.map(function(row) {
     const values = row.split(delimiter)
-    const el = headers.reduce(function(object, header, index) {
+
+    return headers.reduce(function(object, header, index) {
       const val = values[index]
       if (val) {
         object[header] = val.trim()
       }
       return object
     }, {})
-    return el
   })
-
-  // return the array
-  return arr
 }
 
 export const toCsvString = columns => {
@@ -182,6 +183,6 @@ export const toCsvString = columns => {
       return line
     }),
   ]
-    .map(e => e.join(','))
+    .map(lineItem => lineItem.join(','))
     .join('\n')
 }

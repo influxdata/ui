@@ -327,7 +327,7 @@ describe('test csv to array function (parsing)', () => {
     hello,how,are
     you,today,`
     try {
-      const parsed = csvToObjectArray(contents)
+      csvToObjectArray(contents)
       fail('code should not reach here, it should throw an error')
     } catch (error) {
       expect(error).not.toEqual(null)

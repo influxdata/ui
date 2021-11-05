@@ -135,11 +135,9 @@ const CellCloneOverlay: FC = () => {
     )
   }
 
-  const selectedDashboard  = otherDashboards.find(
+  const selectedDashboard = otherDashboards.find(
     d => d.id === destinationDashboardID
   )
-
-  console.log('has a selected dash??? 44a-jill', selectedDashboard)
 
   const dashItems = otherDashboards as SelectableItem[]
 

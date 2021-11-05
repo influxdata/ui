@@ -5,7 +5,6 @@ import {useDispatch, useSelector} from 'react-redux'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Clockface
 import {
-  Dropdown,
   Button,
   Overlay,
   ComponentColor,
@@ -136,15 +135,12 @@ const CellCloneOverlay: FC = () => {
     )
   }
 
-  const selectedDashboard = otherDashboards.find(
+  const selectedDashboard  = otherDashboards.find(
     d => d.id === destinationDashboardID
-  )?.name
+  )
 
-  // otherDashboards.sort((dash1, dash2) => {
-  //   return dash1.name.localeCompare(dash2.name)
-  // })
+  console.log('has a selected dash??? 44a-jill', selectedDashboard)
 
-  console.log('UNsorted dashes??', otherDashboards)
   const dashItems = otherDashboards as SelectableItem[]
 
   const onDashSelection = item => {
@@ -159,6 +155,7 @@ const CellCloneOverlay: FC = () => {
       menuTestID="copy-dashboard-cell--dropdown-menu"
       itemTestIdPrefix="other-dashboard"
       sortNames={true}
+      selectedOption={selectedDashboard as SelectableItem}
       placeholderText="Choose a Destination Dashboard"
       defaultNameText="Name this Dashboard"
     />

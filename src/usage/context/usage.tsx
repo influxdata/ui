@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 
 // Utils
@@ -20,6 +20,8 @@ import {
   SelectableDurationTimeRange,
   UsageVector,
 } from 'src/types'
+import {useSelector} from 'react-redux'
+import {getMe} from 'src/me/selectors'
 
 export type Props = {
   children: JSX.Element
@@ -38,6 +40,10 @@ export interface UsageContextType {
   usageStats: FromFluxResult
   usageStatsStatus: RemoteDataState
   usageVectors: UsageVector[]
+  creditUsage: number
+  creditUsageStatus: RemoteDataState
+  creditDaysRemaining: number
+  paygCreditEnabled: boolean
 }
 
 export const DEFAULT_CONTEXT: UsageContextType = {
@@ -53,6 +59,10 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   usageStats: null,
   usageStatsStatus: RemoteDataState.NotStarted,
   usageVectors: [],
+  creditUsage: 0,
+  creditUsageStatus: RemoteDataState.NotStarted,
+  creditDaysRemaining: 0,
+  paygCreditEnabled: false,
 }
 
 export const UsageContext = React.createContext<UsageContextType>(
@@ -75,9 +85,25 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [rateLimitsStatus, setRateLimitsStatus] = useState(
     RemoteDataState.NotStarted
   )
+
+  const [creditUsage, setCreditUsage] = useState(0)
+  const [creditUsageStatus, setCreditUsageStatus] = useState(
+    DEFAULT_CONTEXT.creditUsageStatus
+  )
   const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
     DEFAULT_USAGE_TIME_RANGE
   )
+  const {quartzMe} = useSelector(getMe)
+  const creditDaysRemaining = useMemo(() => {
+    const startDate = new Date(quartzMe?.paygCreditStartDate)
+    const current = new Date()
+    const diffTime = Math.abs(current.getTime() - startDate.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    return 30 - diffDays
+  }, [quartzMe?.paygCreditStartDate])
+
+  const paygCreditEnabled = creditDaysRemaining > 0 && creditDaysRemaining <= 30
 
   const handleSetTimeRange = useCallback(
     (range: SelectableDurationTimeRange) => {
@@ -131,6 +157,58 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   useEffect(() => {
     handleGetBillingDate()
   }, [handleGetBillingDate])
+
+  const getComputedUsage = (vector_name: string, csvData: string) => {
+    const vectors = {
+      storage_gb: v => v * 0.02,
+      writes_mb: v => v * 0.002,
+      reads_gb: v => v * 0.09,
+      query_count: v => (v * 0.01) / 100,
+    }
+
+    const values = fromFlux(csvData).table.getColumn(vector_name) as Array<any>
+    if (!values) {
+      return 0
+    }
+
+    const tot = values.reduce((a, b) => a + b, 0)
+    return vectors[vector_name](tot)
+  }
+
+  const handleGetCreditUsage = useCallback(async () => {
+    try {
+      setCreditUsageStatus(RemoteDataState.Loading)
+      const vectors = ['storage_gb', 'writes_mb', 'reads_gb', 'query_count']
+      const promises = []
+
+      vectors.forEach(vector_name => {
+        promises.push(
+          new Promise(async resolve => {
+            const resp = await getUsage({vector_name, query: {range: '30d'}})
+            if (resp.status !== 200) {
+              throw new Error(resp.data.message)
+            }
+
+            resolve(getComputedUsage(vector_name, resp.data))
+          })
+        )
+      })
+
+      Promise.all(promises).then(result => {
+        const usage: number = result
+          .reduce((a: number, b) => a + parseFloat(b), 0)
+          .toFixed(2)
+        console.log({usage, result})
+        setCreditUsage(usage)
+        setCreditUsageStatus(RemoteDataState.Done)
+      })
+    } catch (error) {
+      setCreditUsageStatus(RemoteDataState.Error)
+    }
+  }, [])
+  useEffect(() => {
+    handleGetCreditUsage()
+  }, [handleGetCreditUsage])
 
   const handleGetBillingStats = useCallback(async () => {
     try {
@@ -234,6 +312,10 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         usageStats,
         usageStatsStatus,
         usageVectors,
+        creditUsage,
+        creditUsageStatus,
+        creditDaysRemaining,
+        paygCreditEnabled,
       }}
     >
       {children}

@@ -1,44 +1,57 @@
-import React, {FC} from 'react'
-import {ProgressBar, Gradients, InfluxColors} from '@influxdata/clockface'
+import React, {FC, useContext} from 'react'
 import {
-  BUCKET_LIMIT,
-  RULE_LIMIT,
-  TASK_LIMIT,
-  DASHBOARD_LIMIT,
-} from 'src/resources/constants'
+  ProgressBar,
+  Gradients,
+  InfluxColors,
+  Panel,
+  HeadingElement,
+  Heading,
+} from '@influxdata/clockface'
+import {UsageContext} from 'src/usage/context/usage'
+
+const MAX_CREDIT = 250
+const CREDIT_DAYS = 30
 
 const UsagePanel: FC = () => {
+  const {creditUsage, creditDaysRemaining} = useContext(UsageContext)
+
   return (
-    <div className="usagepanel--container">
-      <ProgressBar
-        value={50}
-        max={BUCKET_LIMIT}
-        barGradient={Gradients.SavannaHeat}
-        color={InfluxColors.Ruby}
-        label="Buckets"
-      />
-      <ProgressBar
-        value={50}
-        max={RULE_LIMIT}
-        barGradient={Gradients.SavannaHeat}
-        color={InfluxColors.Ruby}
-        label="Rules"
-      />
-      <ProgressBar
-        value={50}
-        max={TASK_LIMIT}
-        barGradient={Gradients.MillennialAvocado}
-        color={InfluxColors.Rainforest}
-        label="Tasks"
-      />
-      <ProgressBar
-        value={50}
-        max={DASHBOARD_LIMIT}
-        barGradient={Gradients.GoldenHour}
-        color={InfluxColors.Pineapple}
-        label="Dashboards"
-      />
-    </div>
+    <Panel>
+      <Panel.Header>
+        <Heading element={HeadingElement.H3}>
+          <label htmlFor="usagepanel--title">Usage</label>
+        </Heading>
+      </Panel.Header>
+      <Panel.Body>
+        <ProgressBar
+          value={creditUsage}
+          max={MAX_CREDIT}
+          barGradient={Gradients.HotelBreakfast}
+          color={InfluxColors.Wasabi}
+          label="Credit Usage"
+          valueText={`$${creditUsage}`}
+          maxText={`$${MAX_CREDIT} credit`}
+        />
+        <ProgressBar
+          className="customprogress"
+          value={CREDIT_DAYS - creditDaysRemaining}
+          max={CREDIT_DAYS}
+          barGradient={
+            creditDaysRemaining > 15
+              ? Gradients.HotelBreakfast
+              : Gradients.DangerDark
+          }
+          color={
+            creditDaysRemaining > 15
+              ? InfluxColors.Wasabi
+              : InfluxColors.Curacao
+          }
+          label="Credit Period"
+          valueText={`${creditDaysRemaining}`}
+          maxText={`${CREDIT_DAYS} days remaining`}
+        />
+      </Panel.Body>
+    </Panel>
   )
 }
 

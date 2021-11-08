@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, memo} from 'react'
+import React, {FC, memo, useMemo} from 'react'
 
 import {
   Panel,
@@ -22,8 +22,24 @@ import LogoutButton from 'src/me/components/LogoutButton'
 import DashboardsList from 'src/me/components/DashboardsList'
 import GetResources from 'src/resources/components/GetResources'
 import {ResourceType} from 'src/types'
+import UsagePanel from './UsagePanel'
+import UsageProvider from 'src/usage/context/usage'
+import {useSelector} from 'react-redux'
+import {getMe} from '../selectors'
 
 const ResourceLists: FC = () => {
+  const {quartzMe} = useSelector(getMe)
+  const creditDaysRemaining = useMemo(() => {
+    const startDate = new Date(quartzMe?.paygCreditStartDate)
+    const current = new Date()
+    const diffTime = Math.abs(current.getTime() - startDate.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    return 30 - diffDays
+  }, [quartzMe?.paygCreditStartDate])
+
+  const paygCreditEnabled = creditDaysRemaining > 0 && creditDaysRemaining <= 30
+
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -63,6 +79,11 @@ const ResourceLists: FC = () => {
             </Panel.Body>
           </Panel>
         </>
+      )}
+      {isFlagEnabled('paygCheckoutCredit') && paygCreditEnabled && (
+        <UsageProvider>
+          <UsagePanel />
+        </UsageProvider>
       )}
       <Panel>
         <Panel.Footer>

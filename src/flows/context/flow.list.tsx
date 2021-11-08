@@ -74,10 +74,10 @@ export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
 
-export function serialize(flow: Flow, orgID: string) {
+export function serialize(flow: Flow) {
   const apiFlow: any = {
     data: {
-      orgID,
+      orgID: flow.orgID,
       name: flow.name,
       spec: {
         name: flow.name,
@@ -131,6 +131,9 @@ export function hydrate(data) {
   }
   if (data.id) {
     flow.id = data.id
+  }
+  if (data.orgID) {
+    flow.orgID = data.orgID
   }
 
   if (!data?.spec?.pipes) {
@@ -198,10 +201,12 @@ export const FlowListProvider: FC = ({children}) => {
       _flow = hydrate({
         ...TEMPLATES['default'].init(),
         name: DEFAULT_PROJECT_NAME,
+        orgID: org.id,
       })
     } else {
       _flow = {
         name: flow.name,
+        orgID: flow.orgID,
         range: flow.range,
         refresh: flow.refresh,
         data: flow.data,
@@ -212,7 +217,7 @@ export const FlowListProvider: FC = ({children}) => {
       }
     }
 
-    const apiFlow = serialize(_flow, org.id)
+    const apiFlow = serialize(_flow)
 
     let id: string = `local_${UUID()}`
     try {
@@ -252,13 +257,10 @@ export const FlowListProvider: FC = ({children}) => {
         },
       }))
 
-      const apiFlow = serialize(
-        {
-          ...flows[id],
-          ...flow,
-        },
-        org.id
-      )
+      const apiFlow = serialize({
+        ...flows[id],
+        ...flow,
+      })
 
       pooledUpdateAPI({id, ...apiFlow})
     },

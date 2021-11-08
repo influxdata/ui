@@ -52,7 +52,10 @@ const Template: FC = () => {
 
     TEMPLATES[params[0]].init
       .apply(this, params.slice(1))
-      .then(data => hydrate(data))
+      .then(data => {
+        data.orgID = org.id
+        return hydrate(data)
+      })
       .then(data => {
         if (isFlagEnabled('ephemeralNotebook')) {
           populate(data)

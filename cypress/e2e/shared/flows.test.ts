@@ -200,6 +200,7 @@ describe('Flows', () => {
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
+    cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
 
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
@@ -234,6 +235,8 @@ describe('Flows', () => {
       .within(() => {
         cy.getByTestID(`selector-list beans`).click()
       })
+
+    cy.wait('@updateNotebook')
 
     cy.getByTestID('time-machine-submit-button').click()
 

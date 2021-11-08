@@ -250,10 +250,6 @@ describe('Flows', () => {
 
     cy.clickNavBarItem('nav-item-flows')
 
-    cy.getByTestID('resource-editable-name').click()
-
-    cy.clickNavBarItem('nav-item-flows')
-
     cy.get('.cf-resource-card').should('have.length', 1)
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)

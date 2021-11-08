@@ -52,7 +52,9 @@ const CommunityTemplateHumanReadableResourceUnconnected: FC<Props> = ({
 
   return (
     <Link to={link} onClick={recordClick}>
-      <Heading element={HeadingElement.H5}><code>{humanName}</code></Heading>
+      <Heading element={HeadingElement.H5}>
+        <code>{humanName}</code>
+      </Heading>
     </Link>
   )
 }

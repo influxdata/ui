@@ -175,7 +175,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     return vectors[vector_name](tot)
   }
 
-  const handleGetCreditUsage = useCallback(async () => {
+  const handleGetCreditUsage = useCallback(() => {
     try {
       setCreditUsageStatus(RemoteDataState.Loading)
       const vectors = ['storage_gb', 'writes_mb', 'reads_gb', 'query_count']
@@ -183,13 +183,14 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
       vectors.forEach(vector_name => {
         promises.push(
-          new Promise(async resolve => {
-            const resp = await getUsage({vector_name, query: {range: '30d'}})
+          getUsage({vector_name, query: {range: '30d'}}).then(resp => {
             if (resp.status !== 200) {
               throw new Error(resp.data.message)
             }
 
-            resolve(getComputedUsage(vector_name, resp.data))
+            return new Promise(resolve =>
+              resolve(getComputedUsage(vector_name, resp.data))
+            )
           })
         )
       })
@@ -198,7 +199,6 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         const usage: number = result
           .reduce((a: number, b) => a + parseFloat(b), 0)
           .toFixed(2)
-        console.log({usage, result})
         setCreditUsage(usage)
         setCreditUsageStatus(RemoteDataState.Done)
       })

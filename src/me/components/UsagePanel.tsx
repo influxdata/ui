@@ -1,3 +1,4 @@
+// Libraries
 import React, {FC, useContext} from 'react'
 import {
   ProgressBar,
@@ -7,6 +8,8 @@ import {
   HeadingElement,
   Heading,
 } from '@influxdata/clockface'
+
+// Contexts
 import {UsageContext} from 'src/usage/context/usage'
 
 const MAX_CREDIT = 250

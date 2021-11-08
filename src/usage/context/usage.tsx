@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {useSelector} from 'react-redux'
 
 // Utils
 import {
@@ -20,7 +21,6 @@ import {
   SelectableDurationTimeRange,
   UsageVector,
 } from 'src/types'
-import {useSelector} from 'react-redux'
 import {getMe} from 'src/me/selectors'
 
 export type Props = {

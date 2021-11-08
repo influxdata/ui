@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, memo, useMemo} from 'react'
-
+import {useSelector} from 'react-redux'
 import {
   Panel,
   FlexBox,
@@ -11,21 +11,22 @@ import {
   HeadingElement,
   FontWeight,
 } from '@influxdata/clockface'
-import VersionInfo from 'src/shared/components/VersionInfo'
 
 // Types
+import {ResourceType} from 'src/types'
 
-import DocSearchWidget from 'src/me/components/DocSearchWidget'
+// Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import UsageProvider from 'src/usage/context/usage'
+import {getMe} from 'src/me/selectors'
 
+// Components
+import UsagePanel from 'src/me/components/UsagePanel'
+import DocSearchWidget from 'src/me/components/DocSearchWidget'
 import LogoutButton from 'src/me/components/LogoutButton'
 import DashboardsList from 'src/me/components/DashboardsList'
 import GetResources from 'src/resources/components/GetResources'
-import {ResourceType} from 'src/types'
-import UsagePanel from './UsagePanel'
-import UsageProvider from 'src/usage/context/usage'
-import {useSelector} from 'react-redux'
-import {getMe} from '../selectors'
+import VersionInfo from 'src/shared/components/VersionInfo'
 
 const ResourceLists: FC = () => {
   const {quartzMe} = useSelector(getMe)

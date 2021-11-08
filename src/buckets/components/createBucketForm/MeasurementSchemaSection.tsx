@@ -357,14 +357,11 @@ const EditingPanel: FC<PanelProps> = ({
         className="measurement-schema-panel"
         key={`romsp-${index}`}
       >
-        <div>
-          Name:
-          <span
+        <div
             data-testid={`measurement-schema-name-${index}`}
             className="value-text"
           >
             {measurementSchema.name}
-          </span>
         </div>
         <FlexBox direction={FlexDirection.Row} className={schemaRowClasses}>
           <Button

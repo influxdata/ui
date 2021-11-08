@@ -16,9 +16,14 @@ interface ResourceWithID {
 interface ResourceProps {
   resource: ResourceWithID
   resourceName: string
+  testID?: string
 }
 
-export const CopyResourceID: FC<ResourceProps> = ({resource, resourceName}) => {
+export const CopyResourceID: FC<ResourceProps> = ({
+  resource,
+  resourceName,
+  testID = 'copy-resource-id',
+}) => {
   const dispatch = useDispatch()
 
   const handleCopy = (copiedText: string, copyWasSuccessful: boolean): void => {
@@ -31,7 +36,11 @@ export const CopyResourceID: FC<ResourceProps> = ({resource, resourceName}) => {
   }
 
   return (
-    <CopyToClipboard text={resource.id} onCopy={handleCopy}>
+    <CopyToClipboard
+      text={resource.id}
+      onCopy={handleCopy}
+      data-testid={testID}
+    >
       <span className="copy-resource-id" title="Click to Copy to Clipboard">
         ID: {resource.id}
         <span className="copy-resource-id--click-target">
@@ -44,9 +53,13 @@ export const CopyResourceID: FC<ResourceProps> = ({resource, resourceName}) => {
 
 interface TaskProps {
   taskID: string
+  testID?: string
 }
 
-export const CopyTaskID: FC<TaskProps> = ({taskID}) => {
+export const CopyTaskID: FC<TaskProps> = ({
+  taskID,
+  testID = 'copy-task-id',
+}) => {
   const dispatch = useDispatch()
 
   const handleCopy = (copiedText: string, copyWasSuccessful: boolean): void => {
@@ -60,7 +73,11 @@ export const CopyTaskID: FC<TaskProps> = ({taskID}) => {
 
   return (
     <CopyToClipboard text={taskID} onCopy={handleCopy}>
-      <span className="copy-resource-id" title="Click to Copy to Clipboard">
+      <span
+        className="copy-resource-id"
+        title="Click to Copy to Clipboard"
+        data-testid={testID}
+      >
         Task ID: {taskID}
         <span className="copy-resource-id--click-target">
           Copy to Clipboard

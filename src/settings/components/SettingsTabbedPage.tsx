@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react'
 
 // Components
 import SettingsNavigation from 'src/settings/components/SettingsNavigation'
-import {Tabs, Orientation, Page} from '@influxdata/clockface'
+import {ComponentSize, Orientation, Page, Tabs} from '@influxdata/clockface'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -19,7 +19,12 @@ class SettingsTabbedPage extends PureComponent<Props> {
     const {activeTab, orgID, children} = this.props
 
     return (
-      <Page.Contents fullWidth={false} scrollable={true}>
+      <Page.Contents
+        fullWidth={false}
+        scrollable={true}
+        scrollbarSize={ComponentSize.Large}
+        autoHideScrollbar={true}
+      >
         <Tabs.Container orientation={Orientation.Horizontal}>
           <SettingsNavigation activeTab={activeTab} orgID={orgID} />
           <Tabs.TabContents>{children}</Tabs.TabContents>

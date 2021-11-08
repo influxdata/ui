@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo} from 'react'
+import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
 import {
   ComponentStatus,
   Form,
@@ -18,14 +18,18 @@ import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {SidebarContext} from 'src/flows/context/sidebar'
+import History from 'src/flows/pipes/Schedule/History'
 
 import {remove} from 'src/shared/contexts/query'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './style.scss'
 
 const Schedule: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const {register} = useContext(SidebarContext)
   let intervalError = ''
   let offsetError = ''
 
@@ -69,45 +73,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
       ).length,
     [queryText]
   )
-
-  const updateInterval = evt => {
-    update({
-      interval: evt.target.value,
-    })
-  }
-
-  const updateOffset = evt => {
-    update({
-      offset: evt.target.value,
-    })
-  }
-  const warningMessage = useMemo(() => {
-    if (!hasTaskOption) {
-      return
-    }
-
-    return (
-      <div className="flow-error">
-        <div className="flow-error--header">
-          <Icon
-            glyph={IconFont.AlertTriangle}
-            className="flow-error--vis-toggle"
-          />
-        </div>
-        <div className="flow-error--body">
-          <h1>The task option is reserved</h1>
-          <p>
-            This panel will take precedence over any task configuration and
-            overwrite the option. Remove it from your source query to remove
-            this message
-          </p>
-        </div>
-      </div>
-    )
-  }, [hasTaskOption])
-
-  const generateTask = useCallback(() => {
-    // simplify takes care of all the variable nonsense in the query
+  const taskText = useMemo(() => {
     const ast = parse(simplify(queryText))
 
     const params = remove(
@@ -147,11 +113,95 @@ const Schedule: FC<PipeProp> = ({Context}) => {
 
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
+  const hasChanges = useMemo(() => {
+    return taskText !== data?.task?.flux
+  }, [taskText, data?.task?.flux])
+
+  const updateInterval = evt => {
+    update({
+      interval: evt.target.value,
+    })
+  }
+
+  const updateOffset = evt => {
+    update({
+      offset: evt.target.value,
+    })
+  }
+
+  const warningMessage = useMemo(() => {
+    if (!hasTaskOption) {
+      return
+    }
+
+    return (
+      <div className="flow-error">
+        <div className="flow-error--header">
+          <Icon
+            glyph={IconFont.AlertTriangle}
+            className="flow-error--vis-toggle"
+          />
+        </div>
+        <div className="flow-error--body">
+          <h1>The task option is reserved</h1>
+          <p>
+            This panel will take precedence over any task configuration and
+            overwrite the option. Remove it from your source query to remove
+            this message
+          </p>
+        </div>
+      </div>
+    )
+  }, [hasTaskOption])
+
+  const generateTask = useCallback(() => {
+    return taskText
+  }, [taskText])
+
+  const storeTask = (task: any) => {
+    update({
+      task: {
+        id: task.id,
+        name: task.name,
+        flux: task.flux,
+      },
+    })
+  }
+
+  useEffect(() => {
+    if (!id || !data.task) {
+      return
+    }
+
+    register(id, [
+      {
+        title: 'Task',
+        actions: [
+          {
+            title: 'View Run History',
+            menu: <History task={data.task} />,
+          },
+        ],
+      },
+    ])
+  }, [id, data.task])
+
+  let taskButtonText = 'Export as Task'
+
+  if (isFlagEnabled('removeExportModal')) {
+    if (hasChanges) {
+      taskButtonText = 'Export as New Task'
+    } else {
+      taskButtonText = 'Task in Sync'
+    }
+  }
 
   const persist = (
     <ExportTaskButton
       generate={generateTask}
-      text="Export as Task"
+      onCreate={storeTask}
+      text={taskButtonText}
+      disabled={!hasChanges || !!intervalError || !!offsetError}
       type="task"
     />
   )
@@ -160,7 +210,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     <Context persistentControls={persist}>
       <FlexBox margin={ComponentSize.Medium}>
         <FlexBox.Child
-          basis={168}
+          basis={200}
           grow={0}
           shrink={0}
           className="flow-panel-schedule--header"

@@ -404,11 +404,13 @@ import zfsLogo from 'src/writeData/graphics/zfs.svg'
 import zipkinLogo from 'src/writeData/graphics/zipkin.svg'
 import zookeeperLogo from 'src/writeData/graphics/zookeeper.svg'
 
+import {CSSProperties} from 'react'
 export interface TelegrafPluginAssets {
   id: string
   name: string
   image?: string
   markdown?: string
+  style?: CSSProperties
 }
 
 export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
@@ -429,6 +431,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'Alibaba (Aliyun) CloudMonitor Service Statistics',
     markdown: aliyuncmsMarkdown,
     image: aliyuncmsLogo,
+    style: {maxWidth: '150%'},
   },
   {
     id: 'amd_rocm_smi',

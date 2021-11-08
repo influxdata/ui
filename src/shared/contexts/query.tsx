@@ -424,7 +424,8 @@ const parseCSV = (() => {
     // we have to rewrap the response to mimic the giraffe fromFlux interface
 
     Object.defineProperty(data.table, 'length', {
-      get: () => Object.values(data.table.columns)[0].data.length,
+      get: () =>
+        (Object.values(data?.table?.columns ?? {})[0]?.data ?? []).length || 0,
     })
     Object.defineProperty(data.table, 'columnKeys', {
       get: () => Object.keys(data.table.columns),

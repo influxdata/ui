@@ -62,9 +62,23 @@ export class SelectCollectorsStep extends PureComponent<Props, State> {
                 Where do you want to collect data from?
               </h3>
               <h5 className="wizard-step--sub-title">
-                Telegraf is an open-source data collection agent for collecting
-                and reporting metrics. Simply choose one of the plugin libraries
-                to start writing data into influxDB. LINK.
+                <a
+                  href="https://www.influxdata.com/time-series-platform/telegraf/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Telegraf
+                </a>{' '}
+                is an open-source data collection agent for collecting and
+                reporting metrics. Simply choose a bucket and one of the plugin
+                libraries to start writing data into InfluxDB. View Telegraf{' '}
+                <a
+                  href="https://docs.influxdata.com/telegraf/latest/plugins/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  plugin documentation.
+                </a>
               </h5>
             </Grid.Column>
           </Grid.Row>

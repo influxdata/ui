@@ -105,7 +105,6 @@ export const createAuthorization = (auth: Authorization) => async (
 ) => {
   try {
     const resp = await authAPI.createAuthorization(auth)
-
     const newAuth = normalize<Authorization, AuthEntities, string>(
       resp,
       authSchema

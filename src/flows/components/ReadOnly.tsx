@@ -44,12 +44,23 @@ const RunPipeResults: FC = () => {
     )
     map.forEach(id => {
       fetch(`/api/share/${accessID}/query/${id}`)
-        .then(res => res.text())
-        .then(resp => {
-          const csv = fromFlux(resp)
-          setResult(id, {parsed: csv, source: ''})
-          setStatuses({[id]: RemoteDataState.Done})
-        })
+        .then(res =>
+          res.text().then(resp => {
+            if (res.status == 200) {
+              const csv = fromFlux(resp)
+              setResult(id, {parsed: csv, source: ''})
+              setStatuses({[id]: RemoteDataState.Done})
+            } else {
+              try {
+                const json = JSON.parse(resp)
+                setResult(id, {error: json.message || json.error})
+              } catch (err) {
+                setResult(id, {error: resp})
+              }
+              setStatuses({[id]: RemoteDataState.Error})
+            }
+          })
+        )
         .catch(err => {
           console.error('failed to execute query', err)
           setStatuses({[id]: RemoteDataState.Error})
@@ -64,7 +75,7 @@ const RunPipeResults: FC = () => {
 const ReadOnly: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const params = useParams<{accessID: string}>()
-  if (!params.accessID || params.accessID.length !== 16 || !flow) {
+  if (!params.accessID || !flow) {
     return (
       <div style={{width: '100%'}}>
         <NotFound />

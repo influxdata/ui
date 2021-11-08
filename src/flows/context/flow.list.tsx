@@ -125,9 +125,9 @@ export function hydrate(data) {
     range: data.spec.range,
     refresh: data.spec.refresh,
     readOnly: data.spec.readOnly,
-    createdAt: data.spec?.createdAt,
-    updatedAt: data.spec?.updatedAt,
-    createdBy: data.spec?.createdBy,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+    createdBy: data.createdBy,
   }
   if (data.id) {
     flow.id = data.id

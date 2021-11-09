@@ -15,6 +15,7 @@ import {
   FlexDirection,
   FormElementError,
   IconFont,
+  InfluxColors,
   Input,
   InputLabel,
   InputProps,
@@ -264,6 +265,7 @@ const AddingPanel: FC<AddingProps> = ({
     <Panel
       className="measurement-schema-panel-container"
       key={`addMsp-${index}`}
+      backgroundColor={InfluxColors.Pepper}
     >
       <FlexBox
         direction={FlexDirection.Column}
@@ -273,7 +275,7 @@ const AddingPanel: FC<AddingProps> = ({
         className="measurement-schema-panel"
         key={`addMsp-column-${index}`}
       >
-        <div> name</div>
+        <div className="value-text"> name</div>
         <FlexBox direction={FlexDirection.Row} className="schema-row">
           {makeNameInput()}
           {newDndElement}
@@ -348,7 +350,10 @@ const EditingPanel: FC<PanelProps> = ({
   })
 
   return (
-    <Panel className="measurement-schema-panel-container">
+    <Panel
+      className="measurement-schema-panel-container"
+      backgroundColor={InfluxColors.Pepper}
+    >
       <FlexBox
         direction={FlexDirection.Column}
         margin={ComponentSize.Large}
@@ -358,10 +363,10 @@ const EditingPanel: FC<PanelProps> = ({
         key={`romsp-${index}`}
       >
         <div
-            data-testid={`measurement-schema-name-${index}`}
-            className="value-text"
-          >
-            {measurementSchema.name}
+          data-testid={`measurement-schema-name-${index}`}
+          className="value-text"
+        >
+          {measurementSchema.name}
         </div>
         <FlexBox direction={FlexDirection.Row} className={schemaRowClasses}>
           <Button

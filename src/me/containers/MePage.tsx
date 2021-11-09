@@ -131,9 +131,14 @@ export class MePage extends PureComponent<Props> {
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
-                <UsageProvider>
+                {isFlagEnabled('uiUnificationFlag') &&
+                isFlagEnabled('paygCheckoutCredit') ? (
+                  <UsageProvider>
+                    <Resources />
+                  </UsageProvider>
+                ) : (
                   <Resources />
-                </UsageProvider>
+                )}
               </Grid.Column>
             </Grid.Row>
           </Grid>

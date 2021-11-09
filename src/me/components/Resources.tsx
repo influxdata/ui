@@ -69,9 +69,9 @@ const ResourceLists: FC = () => {
           </Panel>
         </>
       )}
-      {isFlagEnabled('paygCheckoutCredit') && paygCreditEnabled && (
-        <UsagePanel />
-      )}
+      {isFlagEnabled('uiUnificationFlag') &&
+        isFlagEnabled('paygCheckoutCredit') &&
+        paygCreditEnabled && <UsagePanel />}
       <Panel>
         <Panel.Footer>
           <VersionInfo />

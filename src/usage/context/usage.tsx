@@ -52,7 +52,6 @@ export interface UsageContextType {
   usageStatsStatus: RemoteDataState
   usageVectors: UsageVector[]
   creditUsage: Usage
-  creditUsageStatus: RemoteDataState
   creditDaysRemaining: number
   paygCreditEnabled: boolean
 }
@@ -71,7 +70,6 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   usageStatsStatus: RemoteDataState.NotStarted,
   usageVectors: [],
   creditUsage: DEFAULT_USAGE,
-  creditUsageStatus: RemoteDataState.NotStarted,
   creditDaysRemaining: 0,
   paygCreditEnabled: false,
 }

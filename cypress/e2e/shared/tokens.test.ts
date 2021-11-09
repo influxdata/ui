@@ -198,7 +198,9 @@ describe('tokens', () => {
           .should('exist')
           .click()
       })
-    cy.getByTestID('context-delete-menu--confirm-button').click()
+    cy.getByTestID('context-delete-menu--confirm-button')
+      .should('exist')
+      .click()
 
     // Assert empty state
     cy.getByTestID('empty-state').within(() => {

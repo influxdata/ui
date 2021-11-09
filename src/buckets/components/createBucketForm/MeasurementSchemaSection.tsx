@@ -265,7 +265,6 @@ const AddingPanel: FC<AddingProps> = ({
     <Panel
       className="measurement-schema-panel-container"
       key={`addMsp-${index}`}
-      backgroundColor={InfluxColors.Pepper}
     >
       <FlexBox
         direction={FlexDirection.Column}
@@ -350,10 +349,7 @@ const EditingPanel: FC<PanelProps> = ({
   })
 
   return (
-    <Panel
-      className="measurement-schema-panel-container"
-      backgroundColor={InfluxColors.Pepper}
-    >
+    <Panel className="measurement-schema-panel-container">
       <FlexBox
         direction={FlexDirection.Column}
         margin={ComponentSize.Large}

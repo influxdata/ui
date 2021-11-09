@@ -11,17 +11,18 @@ import {event} from 'src/cloud/utils/reporting'
 // Types
 import {
   AppState,
-  Dashboard,
-  Task,
-  Label,
   Bucket,
-  Telegraf,
-  Variable,
-  ResourceType,
   Check,
+  Dashboard,
+  Label,
   NotificationEndpoint,
   NotificationRule,
+  ResourceType,
+  Task,
+  Telegraf,
+  Variable,
 } from 'src/types'
+import {Heading, HeadingElement} from '@influxdata/clockface'
 
 interface ComponentProps {
   link: string
@@ -51,7 +52,9 @@ const CommunityTemplateHumanReadableResourceUnconnected: FC<Props> = ({
 
   return (
     <Link to={link} onClick={recordClick}>
-      <code>{humanName}</code>
+      <Heading element={HeadingElement.H5}>
+        <code>{humanName}</code>
+      </Heading>
     </Link>
   )
 }

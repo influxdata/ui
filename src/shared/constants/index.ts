@@ -161,3 +161,6 @@ export const GLOBALSEARCH_APP_ID = formatConstant(
 export const GLOBALSEARCH_API_KEY = formatConstant(
   process.env.GLOBALSEARCH_API_KEY
 )
+
+export const PAYG_CREDIT_DAYS = 30
+export const PAYG_MAX_CREDIT = 250

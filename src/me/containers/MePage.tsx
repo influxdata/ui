@@ -43,6 +43,7 @@ import {CLOUD} from 'src/shared/constants'
 
 // Context
 import PinnedItemsProvider from 'src/shared/contexts/pinneditems'
+import UsageProvider from 'src/usage/context/usage'
 
 const QUERY_WRITE_LIMIT_HITS = 100
 
@@ -130,7 +131,9 @@ export class MePage extends PureComponent<Props> {
                 </FlexBox>
               </Grid.Column>
               <Grid.Column widthSM={Columns.Four} widthMD={Columns.Three}>
-                <Resources />
+                <UsageProvider>
+                  <Resources />
+                </UsageProvider>
               </Grid.Column>
             </Grid.Row>
           </Grid>

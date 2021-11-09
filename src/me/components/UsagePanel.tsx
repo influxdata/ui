@@ -7,38 +7,38 @@ import {
   Panel,
   HeadingElement,
   Heading,
+  TechnoSpinner,
+  JustifyContent,
+  AlignItems,
 } from '@influxdata/clockface'
 
 // Contexts
 import {UsageContext} from 'src/usage/context/usage'
 
-const MAX_CREDIT = 250
-const CREDIT_DAYS = 30
+// Constants
+import {PAYG_CREDIT_DAYS, PAYG_MAX_CREDIT} from 'src/shared/constants'
+
+// Types
+import {RemoteDataState} from 'src/types'
 
 const UsagePanel: FC = () => {
   const {creditUsage, creditDaysRemaining} = useContext(UsageContext)
 
-  return (
-    <Panel>
-      <Panel.Header>
-        <Heading element={HeadingElement.H3}>
-          <label htmlFor="usagepanel--title">Usage</label>
-        </Heading>
-      </Panel.Header>
+  const getUsageBars = () => {
+    return (
       <Panel.Body>
         <ProgressBar
-          value={creditUsage}
-          max={MAX_CREDIT}
+          value={creditUsage?.amount}
+          max={PAYG_MAX_CREDIT}
           barGradient={Gradients.HotelBreakfast}
           color={InfluxColors.Wasabi}
           label="Credit Usage"
-          valueText={`$${creditUsage}`}
-          maxText={`$${MAX_CREDIT} credit`}
+          valueText={`$${creditUsage?.amount}`}
+          maxText={`$${PAYG_MAX_CREDIT} credit`}
         />
         <ProgressBar
-          className="customprogress"
-          value={CREDIT_DAYS - creditDaysRemaining}
-          max={CREDIT_DAYS}
+          value={PAYG_CREDIT_DAYS - creditDaysRemaining}
+          max={PAYG_CREDIT_DAYS}
           barGradient={
             creditDaysRemaining > 15
               ? Gradients.HotelBreakfast
@@ -51,9 +51,29 @@ const UsagePanel: FC = () => {
           }
           label="Credit Period"
           valueText={`${creditDaysRemaining}`}
-          maxText={`${CREDIT_DAYS} days remaining`}
+          maxText={`${PAYG_CREDIT_DAYS} days remaining`}
         />
       </Panel.Body>
+    )
+  }
+
+  return (
+    <Panel>
+      <Panel.Header>
+        <Heading element={HeadingElement.H3}>
+          <label htmlFor="usagepanel--title">Usage</label>
+        </Heading>
+      </Panel.Header>
+      {creditUsage.status === RemoteDataState.Loading ? (
+        <Panel.Body
+          justifyContent={JustifyContent.Center}
+          alignItems={AlignItems.Center}
+        >
+          <TechnoSpinner />
+        </Panel.Body>
+      ) : (
+        getUsageBars()
+      )}
     </Panel>
   )
 }

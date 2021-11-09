@@ -1,6 +1,5 @@
 // Libraries
-import React, {FC, memo, useMemo} from 'react'
-import {useSelector} from 'react-redux'
+import React, {FC, memo, useContext} from 'react'
 import {
   Panel,
   FlexBox,
@@ -17,8 +16,7 @@ import {ResourceType} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import UsageProvider from 'src/usage/context/usage'
-import {getMe} from 'src/me/selectors'
+import {UsageContext} from 'src/usage/context/usage'
 
 // Components
 import UsagePanel from 'src/me/components/UsagePanel'
@@ -29,17 +27,7 @@ import GetResources from 'src/resources/components/GetResources'
 import VersionInfo from 'src/shared/components/VersionInfo'
 
 const ResourceLists: FC = () => {
-  const {quartzMe} = useSelector(getMe)
-  const creditDaysRemaining = useMemo(() => {
-    const startDate = new Date(quartzMe?.paygCreditStartDate)
-    const current = new Date()
-    const diffTime = Math.abs(current.getTime() - startDate.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    return 30 - diffDays
-  }, [quartzMe?.paygCreditStartDate])
-
-  const paygCreditEnabled = creditDaysRemaining > 0 && creditDaysRemaining <= 30
+  const {paygCreditEnabled} = useContext(UsageContext)
 
   return (
     <FlexBox
@@ -82,9 +70,7 @@ const ResourceLists: FC = () => {
         </>
       )}
       {isFlagEnabled('paygCheckoutCredit') && paygCreditEnabled && (
-        <UsageProvider>
-          <UsagePanel />
-        </UsageProvider>
+        <UsagePanel />
       )}
       <Panel>
         <Panel.Footer>

@@ -191,10 +191,10 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
 
   const handleGetCreditUsage = useCallback(() => {
     try {
-      setCreditUsage({
-        ...creditUsage,
+      setCreditUsage(prev => ({
+        ...prev,
         status: RemoteDataState.Loading,
-      })
+      }))
       const vectors = ['storage_gb', 'writes_mb', 'reads_gb', 'query_count']
       const promises = []
 

@@ -15,7 +15,6 @@ import {
   FlexDirection,
   FormElementError,
   IconFont,
-  InfluxColors,
   Input,
   InputLabel,
   InputProps,

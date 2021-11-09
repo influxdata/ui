@@ -307,6 +307,11 @@ export const FlowListProvider: FC = ({children}) => {
   )
 
   const migrate = async () => {
+    const localFlows = Object.keys(flows).filter(id => id.includes('local'))
+    if (!localFlows.length) {
+      return
+    }
+
     const _flows = await migrateLocalFlowsToAPI(
       org.id,
       flows,

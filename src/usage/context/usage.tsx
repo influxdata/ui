@@ -229,7 +229,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         status: RemoteDataState.Done,
       }))
     }
-  }, [creditUsage?.amount])
+  }, [])
 
   useEffect(() => {
     handleGetCreditUsage()

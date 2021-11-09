@@ -224,10 +224,10 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         })
       })
     } catch (error) {
-      setCreditUsage({
-        ...creditUsage,
+      setCreditUsage(prev => ({
+        ...prev,
         status: RemoteDataState.Done,
-      })
+      }))
     }
   }, [creditUsage?.amount])
 

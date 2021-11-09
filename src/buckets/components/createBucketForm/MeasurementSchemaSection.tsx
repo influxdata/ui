@@ -273,7 +273,7 @@ const AddingPanel: FC<AddingProps> = ({
         className="measurement-schema-panel"
         key={`addMsp-column-${index}`}
       >
-        <div> name</div>
+        <div className="value-text"> name</div>
         <FlexBox direction={FlexDirection.Row} className="schema-row">
           {makeNameInput()}
           {newDndElement}
@@ -283,23 +283,6 @@ const AddingPanel: FC<AddingProps> = ({
       </FlexBox>
     </Panel>
   )
-}
-
-interface NameProps {
-  name: string
-  maxChars: number
-}
-
-const TruncatedNameDisplay: FC<NameProps> = ({name, maxChars}) => {
-  name = trim(name)
-  if (name.length < maxChars) {
-    return <>{name}</>
-  }
-  // it is over the max limit; truncate it to three below the limit,
-  // add three dots, and a title with the full name:
-
-  const displayName = name.substring(0, maxChars - 3) + '...'
-  return <span title={name}>{displayName}</span>
 }
 
 const EditingPanel: FC<PanelProps> = ({
@@ -364,8 +347,6 @@ const EditingPanel: FC<PanelProps> = ({
     hasCancelBtn: isUpdateInProgress,
   })
 
-  // note:  for truncating the name; 14 characters works well with the current 575 pixel width
-  // if that changes, then will need to change that as well
   return (
     <Panel className="measurement-schema-panel-container">
       <FlexBox
@@ -376,14 +357,13 @@ const EditingPanel: FC<PanelProps> = ({
         className="measurement-schema-panel"
         key={`romsp-${index}`}
       >
-        <div> name</div>
+        <div
+          data-testid={`measurement-schema-name-${index}`}
+          className="value-text"
+        >
+          {measurementSchema.name}
+        </div>
         <FlexBox direction={FlexDirection.Row} className={schemaRowClasses}>
-          <div
-            className="value-text"
-            data-testid={`measurement-schema-name-${index}`}
-          >
-            <TruncatedNameDisplay name={measurementSchema.name} maxChars={14} />
-          </div>
           <Button
             icon={IconFont.Download_New}
             color={ComponentColor.Secondary}

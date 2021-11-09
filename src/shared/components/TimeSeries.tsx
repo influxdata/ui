@@ -221,7 +221,7 @@ class TimeSeries extends Component<Props, State> {
       onGetCachedResultsThunk,
       variables,
     } = this.props
-    const queries = this.props.queries.filter(({text}) => !!text.trim())
+    const queries = this.props.queries?.filter(({text}) => !!text.trim())
 
     if (!queries.length) {
       this.setState(defaultState())

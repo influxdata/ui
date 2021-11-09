@@ -8,7 +8,6 @@ import MonacoEditor from 'react-monaco-editor'
 import LANGID from 'src/external/monaco.markdown.syntax'
 import THEME_NAME from 'src/external/monaco.flux.theme'
 import {registerAutogrow} from 'src/external/monaco.autogrow'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {EditorType} from 'src/types'
@@ -21,20 +20,19 @@ const MarkdownMonacoEditor: FC<EditorProps> = ({
   script,
   onChangeScript,
   autogrow,
+  autofocus,
 }) => {
   const editorDidMount = (editor: EditorType) => {
     if (autogrow) {
       registerAutogrow(editor)
     }
 
-    if (isFlagEnabled('cursorAtEOF')) {
+    if (autofocus) {
       const lines = (script || '').split('\n')
       editor.setPosition({
         lineNumber: lines.length,
         column: lines[lines.length - 1].length + 1,
       })
-      editor.focus()
-    } else {
       editor.focus()
     }
   }

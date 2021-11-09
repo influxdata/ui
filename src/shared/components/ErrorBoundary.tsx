@@ -38,6 +38,16 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     })
   }
 
+  public shouldComponentUpdate() {
+    if (this.state.error) {
+      this.setState(() => {
+        return {error: null}
+      })
+    }
+
+    return true
+  }
+
   public render() {
     const {error} = this.state
 

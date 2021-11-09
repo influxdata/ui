@@ -74,7 +74,7 @@ const testSchemaFiles = (
         .should('exist')
         .within(() => {
           cy.getByTestID('measurement-schema-name-0')
-            .contains('first schem...')
+            .contains('first schema file')
             .should('exist')
 
           cy.getByTestID('measurement-schema-download-button').click()
@@ -225,7 +225,7 @@ describe('Explicit Buckets', () => {
       .should('exist')
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
-          .contains('first schem...')
+          .contains('first schema file')
           .should('exist')
         cy.getByTestID('measurement-schema-download-button').click()
         cy.readFile(`cypress/downloads/first_schema_file.json`)

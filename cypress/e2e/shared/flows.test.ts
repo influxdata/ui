@@ -200,6 +200,7 @@ describe('Flows', () => {
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
+    cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
 
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
@@ -235,6 +236,8 @@ describe('Flows', () => {
         cy.getByTestID(`selector-list beans`).click()
       })
 
+    cy.wait('@updateNotebook')
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -247,10 +250,6 @@ describe('Flows', () => {
     // This is a random validator that the autorefresh option doesn't pop up
     // In Flows again without explicit changes
     cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
-
-    cy.clickNavBarItem('nav-item-flows')
-
-    cy.getByTestID('resource-editable-name').click()
 
     cy.clickNavBarItem('nav-item-flows')
 

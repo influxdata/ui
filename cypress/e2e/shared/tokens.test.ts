@@ -150,63 +150,81 @@ describe('tokens', () => {
     })
   })
 
-  it('can delete a token', () => {
-    cy.get('.cf-resource-card').should('have.length', 4)
 
-    cy.intercept('**/authorizations/*').as('deleteToken')
+  for (let i = 0; i < 30; i++) {
+    it.only('can delete a token', () => {
+      cy.get('.cf-resource-card').should('have.length', 4)
 
-    cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('context-delete-menu--button').click()
+      cy.getByTestID('token-card token test 03').within(() => {
+        cy.getByTestID('context-delete-menu--button').click()
+      })
+      cy.getByTestID('context-delete-menu--confirm-button').click()
+
+      cy.getByTestID('notification-success').should(
+        'contain',
+        'API token was deleted successfully'
+      )
+
+      cy.get('.cf-resource-card').should('have.length', 3)
+
+      cy.getByTestID('resource-card token test 03').should('not.exist')
+
+      // Delete remaining tokens
+      cy.get('.cf-resource-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('context-delete-menu--button')
+            .should('be.visible')
+            .click()
+        })
+      cy.getByTestID('context-delete-menu--confirm-button').should('be.visible').click()
+
+      cy.getByTestID('notification-success').should(
+        'contain',
+        'API token was deleted successfully'
+      )
+
+      cy.getByTestID('notification-success--dismiss').click()
+
+
+      cy.get('.cf-resource-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('context-delete-menu--button')
+          .should('be.visible')
+            .click()
+        })
+      cy.getByTestID('context-delete-menu--confirm-button')
+      .should('be.visible')
+        .click()
+      
+        cy.getByTestID('notification-success').should(
+          'contain',
+          'API token was deleted successfully'
+        )
+
+      cy.get('.cf-resource-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('context-delete-menu--button')
+          .should('be.visible')
+            .click()
+        })
+      cy.getByTestID('context-delete-menu--confirm-button').should('be.visible').click()
+      
+        cy.getByTestID('notification-success').should(
+          'contain',
+          'API token was deleted successfully'
+        )
+  
+        cy.getByTestID('notification-success--dismiss').click()
+
+      // Assert empty state
+      cy.getByTestID('empty-state').within(() => {
+        cy.getByTestID('dropdown--gen-token').should('exist')
+      })
     })
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-
-    cy.wait('@deleteToken')
-
-    cy.get('.cf-resource-card').should('have.length', 3)
-
-    cy.getByTestID('resource-card token test 03').should('not.exist')
-
-    // Delete remaining tokens
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('context-delete-menu--button')
-          .should('exist')
-          .click()
-      })
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-
-    cy.wait('@deleteToken')
-
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('context-delete-menu--button')
-          .should('exist')
-          .click()
-      })
-    cy.getByTestID('context-delete-menu--confirm-button')
-      .should('exist')
-      .click()
-
-    cy.wait('@deleteToken')
-
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('context-delete-menu--button')
-          .should('exist')
-          .click()
-      })
-    cy.getByTestID('context-delete-menu--confirm-button')
-      .should('exist')
-      .click()
-
-    // Assert empty state
-    cy.getByTestID('empty-state').within(() => {
-      cy.getByTestID('dropdown--gen-token').should('exist')
-    })
-  })
+  }
 
   it('can generate a all access token', () => {
     cy.get('.cf-resource-card').should('have.length', 4)

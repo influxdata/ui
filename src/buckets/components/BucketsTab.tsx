@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react'
 import {isEmpty} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
-import Modal from 'react-modal';
+import Modal from 'react-modal'
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {
@@ -51,7 +51,7 @@ interface State {
   sortKey: BucketSortKey
   sortDirection: Sort
   sortType: SortTypes
-  showDialog:boolean
+  showDialog: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -77,16 +77,22 @@ class BucketsTab extends PureComponent<Props, State> {
     this.props.checkBucketLimits()
   }
 
-  private openModal() {
-    this.setState({showDialog:true})
+  private openModal = () => {
+    this.setState({showDialog: true})
   }
-  private closeModal() {
-    this.setState({showDialog:false})
+  private closeModal = () => {
+    this.setState({showDialog: false})
   }
 
   public render() {
     const {buckets, limitStatus} = this.props
-    const {searchTerm, sortKey, sortDirection, sortType, showDialog} = this.state
+    const {
+      searchTerm,
+      sortKey,
+      sortDirection,
+      sortType,
+      showDialog,
+    } = this.state
 
     const customStyle = {
       content: {
@@ -98,28 +104,28 @@ class BucketsTab extends PureComponent<Props, State> {
       },
       overlay: {
         zIndex: 9399,
-      }
+      },
     }
     //{height:400, width:200, position:'absolute', left: 400, top:200}
-    const modalAck  = (
-          <Modal
-              isOpen={showDialog}
-              onRequestClose={this.closeModal}
-              contentLabel="Example Modal"
-              style={customStyle}
-          >
-            <h2>Hello</h2>
-            <button onClick={this.closeModal}>close</button>
-            <div>I am a modal</div>
-            <form>
-              <input />
-              <button>tab navigation</button>
-              <button>stays</button>
-              <button>inside</button>
-              <button>the modal</button>
-            </form>
-          </Modal>
-    );
+    const modalAck = (
+      <Modal
+        isOpen={showDialog}
+        onRequestClose={this.closeModal}
+        contentLabel="Example Modal"
+        style={customStyle}
+      >
+        <h2>Hello</h2>
+        <button onClick={this.closeModal}>close</button>
+        <div>I am a modal</div>
+        <form>
+          <input />
+          <button>tab navigation</button>
+          <button>stays</button>
+          <button>inside</button>
+          <button>the modal</button>
+        </form>
+      </Modal>
+    )
 
     const leftHeaderItems = (
       <>
@@ -213,15 +219,15 @@ class BucketsTab extends PureComponent<Props, State> {
   }
 
   private handleShowBucketSchema = async ({id, name}: OwnBucket) => {
-  const schemaData = await this.props.getBucketSchema(id)
-  const schema = schemaData?.measurementSchemas
+    const schemaData = await this.props.getBucketSchema(id)
+    const schema = schemaData?.measurementSchemas
 
-    console.log("arghh; showing schema stuff?", schema, name)
+    console.log('arghh; showing schema stuff?', schema, name)
 
     this.openModal()
-   /** */
-   //const contents = <ModalDialog/>
-   // const {addElementToPortal} = usePortal()
+    /** */
+    //const contents = <ModalDialog/>
+    // const {addElementToPortal} = usePortal()
 
     //addElementToPortal(contents)
     // this.props.showOverlay(

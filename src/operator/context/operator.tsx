@@ -128,9 +128,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     status = RemoteDataState.Loading
   }
 
-  const hasWritePermissions =
-    !isFlagEnabled('operatorRole') ||
-    (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
+  const hasWritePermissions = (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
 
   return (
     <OperatorContext.Provider

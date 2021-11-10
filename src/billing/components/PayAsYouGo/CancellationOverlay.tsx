@@ -58,7 +58,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     }
 
     if (
-      isFlagEnabled('rudderStackReporting') &&
+      isFlagEnabled('rudderstackReporting') &&
       isFlagEnabled('trackCancellations')
     ) {
       // Send to Rudderstack

@@ -1,4 +1,4 @@
-import {GenCheck, NotificationRule, Organization} from '../../../src/types'
+import {GenCheck, Organization} from '../../../src/types'
 import {Bucket} from '../../../src/client'
 import {calcNanoTimestamp} from '../../support/Utils'
 
@@ -610,100 +610,95 @@ describe('Checks', () => {
     timeSince: '3m',
   }
 
-const thresholdCheck: GenCheck = {
-  type: 'threshold',
-  name: 'Phantom Check',
-  status: 'active',
-  orgID: '',
-  query: {
-    name: '',
-    text: 'from(bucket: \"%BUCKETNAME%\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")',
-    editMode: 'builder',
-    builderConfig: {
-      buckets: [],
-      tags: [
-        {
-          key: '_measurement',
-          values: ['wumpus'],
-          aggregateFunctionType: 'filter',
+  const thresholdCheck: GenCheck = {
+    type: 'threshold',
+    name: 'Phantom Check',
+    status: 'active',
+    orgID: '',
+    query: {
+      name: '',
+      text:
+        'from(bucket: "%BUCKETNAME%")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r["_measurement"] == "wumpus")\n  |> filter(fn: (r) => r["_field"] == "mag")\n  |> aggregateWindow(every: 1m, fn: mean, createEmpty: false)\n  |> yield(name: "mean")',
+      editMode: 'builder',
+      builderConfig: {
+        buckets: [],
+        tags: [
+          {
+            key: '_measurement',
+            values: ['wumpus'],
+            aggregateFunctionType: 'filter',
+          },
+          {key: '_field', values: ['mag'], aggregateFunctionType: 'filter'},
+          {key: 'foo', values: [], aggregateFunctionType: 'filter'},
+        ],
+        functions: [],
+        aggregateWindow: {
+          period: '1m',
+          fillValues: false,
         },
-        {key: '_field', values: ['mag'], aggregateFunctionType: 'filter'},
-        {key: 'foo', values: [], aggregateFunctionType: 'filter'},
-      ],
-      functions: [],
-      aggregateWindow: {
-        period: "1m",
-        fillValues: false
-      }
+      },
+      //        hidden: false
     },
-    //        hidden: false
-  },
-  labels: [],
-  every: '1m',
-  offset: '10s',
-  statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }',
-  tags: [],
-  thresholds: [
-    {
-      allValues:false,
-      level:'CRIT',
-      value:15.03155,
-      type:'greater'
-    },
-    {
-      allValues:false,
-      level:'WARN',
-      value:6.03155,
-      type:'greater'
-    },
-    {
-      allValues:false,
-      level:'INFO',
-      value:1.03155,
-      type:'greater'
-    },
-    {
-      allValues:false,
-      level:'OK',
-      value:1.03155,
-      type:'lesser'
-    }
-  ],
-}
-
-  const createCheck = (check: GenCheck, org: Organization, bucket: Bucket, alias: string): Cypress.Chainable<any> => {
-    //let bucketName: string
-//        return cy.get<Organization>('@org').then((org: Organization) => {
-//          return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-      //      bucketName = bucket.name
-            if (
-              check.query.builderConfig &&
-              check.query.builderConfig.buckets
-            ) {
-              check.query.builderConfig.buckets[0] = bucket.name
-            }
-            if (check.query.text) {
-              check.query.text = check.query.text.replace(
-                '%BUCKETNAME%',
-                bucket.name
-              )
-            } else {
-              throw `check ${check.name} does not contain query text`
-            }
-            if (org.id) {
-              check.orgID = org.id
-            } else {
-              throw `org ${org.name} has no id`
-            }
-            // get default org and bucket
-            // create check
-            return cy.createCheck(check).then((resp: any) => {
-              cy.wrap(resp.body).as(alias)
-            })
-  //        })
-  //      })
+    labels: [],
+    every: '1m',
+    offset: '10s',
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }',
+    tags: [],
+    thresholds: [
+      {
+        allValues: false,
+        level: 'CRIT',
+        value: 15.03155,
+        type: 'greater',
+      },
+      {
+        allValues: false,
+        level: 'WARN',
+        value: 6.03155,
+        type: 'greater',
+      },
+      {
+        allValues: false,
+        level: 'INFO',
+        value: 1.03155,
+        type: 'greater',
+      },
+      {
+        allValues: false,
+        level: 'OK',
+        value: 1.03155,
+        type: 'lesser',
+      },
+    ],
   }
 
+  const createCheck = (
+    check: GenCheck,
+    org: Organization,
+    bucket: Bucket,
+    alias: string
+  ): Cypress.Chainable<any> => {
+    if (check.query.builderConfig && check.query.builderConfig.buckets) {
+      check.query.builderConfig.buckets[0] = bucket.name
+    }
+    if (check.query.text) {
+      check.query.text = check.query.text.replace('%BUCKETNAME%', bucket.name)
+    } else {
+      throw `check ${check.name} does not contain query text`
+    }
+    if (org.id) {
+      check.orgID = org.id
+    } else {
+      throw `org ${org.name} has no id`
+    }
+    // get default org and bucket
+    // create check
+    return cy.createCheck(check).then((resp: any) => {
+      cy.wrap(resp.body).as(alias)
+    })
+    //        })
+    //      })
+  }
 
   describe('Clone checks', () => {
     let bucketName: string = ''
@@ -719,7 +714,7 @@ const thresholdCheck: GenCheck = {
           return cy.get<Organization>('@org').then((org: Organization) => {
             return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
               bucketName = bucket.name
-              createCheck(deadmanCheck, org, bucket, 'check')
+              createCheck(check, org, bucket, 'check')
               /* if (
                 check.query.builderConfig &&
                 check.query.builderConfig.buckets
@@ -835,32 +830,38 @@ const thresholdCheck: GenCheck = {
     })
   })
 
-
-  interface checkStatus{
+  interface CheckStatus {
     level: string
     message: string
-    pair: {key: string, val: any}
+    pair: {key: string; val: any}
     sourceTimeStamp: number
     offset: string
-    type ?: 'deadman' | 'threshold'
-    name ?: string
+    type?: 'deadman' | 'threshold'
+    name?: string
   }
 
-  interface checkStatusRec extends checkStatus{
+  interface CheckStatusRec extends CheckStatus {
     check: GenCheck
   }
 
-  const writeCheckStatusRecord = (rec: checkStatusRec): Cypress.Chainable<any> =>
-  {
-
-    const lp = `statuses,_check_id=${rec.check.id},_check_name=${rec.check.name.replace(/ /g, '\\ ')},_level=${rec.level},_source_management=wumpus ` +
+  const writeCheckStatusRecord = (
+    rec: CheckStatusRec
+  ): Cypress.Chainable<any> => {
+    const lp =
+      `statuses,_check_id=${rec.check.id},_check_name=${rec.check.name.replace(
+        / /g,
+        '\\ '
+      )},_level=${rec.level},_source_management=wumpus ` +
       `_source_timestamp=${rec.sourceTimeStamp},_message="${rec.message}",${rec.pair.key}=${rec.pair.val}`
 
-    return cy.writeLPData({lines: [lp], offset: rec.offset, namedBucket: '_monitoring'})
-
+    return cy.writeLPData({
+      lines: [lp],
+      offset: rec.offset,
+      namedBucket: '_monitoring',
+    })
   }
 
-  const deadmanStatuses: checkStatus[] = [
+  const deadmanStatuses: CheckStatus[] = [
     {
       sourceTimeStamp: calcNanoTimestamp('5m'),
       level: 'ok',
@@ -868,7 +869,7 @@ const thresholdCheck: GenCheck = {
       pair: {key: 'dur', val: 9},
       offset: '-3m',
       type: 'deadman',
-      name: deadmanCheck.name
+      name: deadmanCheck.name,
     },
     {
       sourceTimeStamp: calcNanoTimestamp('10m'),
@@ -877,7 +878,7 @@ const thresholdCheck: GenCheck = {
       pair: {key: 'dur', val: 89},
       offset: '-8m',
       type: 'deadman',
-      name: deadmanCheck.name
+      name: deadmanCheck.name,
     },
     {
       sourceTimeStamp: calcNanoTimestamp('15m'),
@@ -886,11 +887,11 @@ const thresholdCheck: GenCheck = {
       pair: {key: 'dur', val: 7},
       offset: '-13m',
       type: 'deadman',
-      name: deadmanCheck.name
+      name: deadmanCheck.name,
     },
   ]
 
-  const thresholdStatuses: checkStatus[] = [
+  const thresholdStatuses: CheckStatus[] = [
     {
       sourceTimeStamp: calcNanoTimestamp('6m'),
       level: 'warn',
@@ -898,7 +899,7 @@ const thresholdCheck: GenCheck = {
       pair: {key: 'mag', val: 10.3},
       offset: '-4m',
       type: 'threshold',
-      name: thresholdCheck.name
+      name: thresholdCheck.name,
     },
     {
       sourceTimeStamp: calcNanoTimestamp('11m'),
@@ -907,7 +908,7 @@ const thresholdCheck: GenCheck = {
       pair: {key: 'mag', val: 1.5},
       offset: '-9m',
       type: 'threshold',
-      name: thresholdCheck.name
+      name: thresholdCheck.name,
     },
     {
       sourceTimeStamp: calcNanoTimestamp('16m'),
@@ -916,7 +917,7 @@ const thresholdCheck: GenCheck = {
       pair: {key: 'mag', val: 67.2},
       offset: '-14m',
       type: 'threshold',
-      name: thresholdCheck.name
+      name: thresholdCheck.name,
     },
     {
       sourceTimeStamp: calcNanoTimestamp('21m'),
@@ -925,29 +926,27 @@ const thresholdCheck: GenCheck = {
       pair: {key: 'mag', val: 1.01},
       offset: '-19m',
       type: 'threshold',
-      name: thresholdCheck.name
+      name: thresholdCheck.name,
     },
   ]
 
-  const sourceTimeStampSort = (a: checkStatus, b: checkStatus) => {
-    if(a.sourceTimeStamp > b.sourceTimeStamp){
+  const sourceTimeStampSort = (a: CheckStatus, b: CheckStatus) => {
+    if (a.sourceTimeStamp > b.sourceTimeStamp) {
       return 1
-    }else if(a.sourceTimeStamp < b.sourceTimeStamp){
+    } else if (a.sourceTimeStamp < b.sourceTimeStamp) {
       return -1
-    }else{
+    } else {
       return 0
     }
   }
 
-  const checkStatuses: checkStatus[] = thresholdStatuses
+  const checkStatuses: CheckStatus[] = thresholdStatuses
     .concat(deadmanStatuses)
     .sort(sourceTimeStampSort)
 
-  describe.only('status history', () => {
+  describe('Status history', () => {
 
-    let bucketName: string = ''
-
-    beforeEach(() =>{
+    beforeEach(() => {
       cy.writeLPDataFromFile({
         filename: 'data/wumpus01.lp',
         offset: '20m',
@@ -956,66 +955,72 @@ const thresholdCheck: GenCheck = {
 
       return cy.get<Organization>('@org').then((org: Organization) => {
         cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-          bucketName = bucket.name;
-          createCheck(deadmanCheck, org, bucket, 'deadmanCheck').then(dmresult => {
-            createCheck(thresholdCheck, org, bucket, 'thresholdCheck').then((thresult) => {
-               cy.log('Now write status messages')
-               deadmanStatuses.forEach((status: checkStatus) => {
-                 return writeCheckStatusRecord({
-                   check: dmresult,
-                   sourceTimeStamp: status.sourceTimeStamp,
-                   level: status.level,
-                   message: status.message,
-                   pair: status.pair,
-                   offset: status.offset
-                 })
-               })
+          createCheck(deadmanCheck, org, bucket, 'deadmanCheck').then(
+            dmresult => {
+              createCheck(thresholdCheck, org, bucket, 'thresholdCheck').then(
+                thresult => {
+                  cy.log('Now write status messages')
+                  deadmanStatuses.forEach((status: CheckStatus) => {
+                    writeCheckStatusRecord({
+                      check: dmresult,
+                      sourceTimeStamp: status.sourceTimeStamp,
+                      level: status.level,
+                      message: status.message,
+                      pair: status.pair,
+                      offset: status.offset,
+                    })
+                  })
 
-              thresholdStatuses.forEach((status: checkStatus) => {
-                return writeCheckStatusRecord({
-                  check: thresult,
-                  sourceTimeStamp: status.sourceTimeStamp,
-                  level: status.level,
-                  message: status.message,
-                  pair: status.pair,
-                  offset: status.offset
-                })
-              })
-              cy.reload()
-            })
-          })
+                  thresholdStatuses.forEach((status: CheckStatus) => {
+                    writeCheckStatusRecord({
+                      check: thresult,
+                      sourceTimeStamp: status.sourceTimeStamp,
+                      level: status.level,
+                      message: status.message,
+                      pair: status.pair,
+                      offset: status.offset,
+                    })
+                  })
+                  cy.reload()
+                }
+              )
+            }
+          )
         })
       })
     })
 
-    const assertStatusesMatch = (statuses: checkStatus[]) => {
+    const assertStatusesMatch = (statuses: CheckStatus[]) => {
       cy.getByTestIDHead('event-row ').should('have.length', statuses.length)
 
-      for(let i = 0; i < statuses.length; i++){
+      for (let i = 0; i < statuses.length; i++) {
         cy.getByTestID(`event-row ${i}`).within(() => {
-          cy.getByTestID('event-row--field level').should('have.text', statuses[i].level)
-          cy.getByTestID('event-row--field checkID').should('have.text', statuses[i].name)
-          cy.getByTestID('event-row--field message').should('have.text', statuses[i].message)
+          cy.getByTestID('event-row--field level').should(
+            'have.text',
+            statuses[i].level
+          )
+          cy.getByTestID('event-row--field checkID').should(
+            'have.text',
+            statuses[i].name
+          )
+          cy.getByTestID('event-row--field message').should(
+            'have.text',
+            statuses[i].message
+          )
         })
       }
     }
 
     it('shows and filters general status history', () => {
       // direct route to statuses page - no data-testids in clockface nav submenu issue #699
-      cy.get<Organization>('@org')
-        .then(({id}: Organization) => {
-            cy.fixture('routes').then(({orgs}) => {
-              cy.visit(
-                `${orgs}/${id}/alert-history?type=statuses"`
-              )
-              cy.url().should(
-                'include',
-                `${orgs}/${id}/alert-history`
-              )
-              // Make sure page is loaded
-              cy.getByTestID('page-contents', { timeout: PAGE_LOAD_SLA})
-            })
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/alert-history?type=statuses"`)
+          cy.url().should('include', `${orgs}/${id}/alert-history`)
+          // Make sure page is loaded
+          cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
         })
+      })
 
       cy.getByTestID('alert-history-statuses--radio').click()
 
@@ -1023,14 +1028,16 @@ const thresholdCheck: GenCheck = {
       assertStatusesMatch(checkStatuses)
 
       // filter by check name
-      cy.getByTestID('check-status-input').type(`"checkName" == "${thresholdCheck.name}"`)
+      cy.getByTestID('check-status-input').type(
+        `"checkName" == "${thresholdCheck.name}"`
+      )
       // make sure order matches UI records order
       const sortedThStatuses = thresholdStatuses.sort(sourceTimeStampSort)
       assertStatusesMatch(sortedThStatuses)
 
       // filter by level
-      const critStatuses = checkStatuses.filter((check: checkStatus) => {
-          return check.level === 'crit'
+      const critStatuses = checkStatuses.filter((check: CheckStatus) => {
+        return check.level === 'crit'
       })
 
       cy.getByTestID('check-status-input').clear()
@@ -1039,7 +1046,7 @@ const thresholdCheck: GenCheck = {
       assertStatusesMatch(critStatuses)
 
       // filter by message part
-      const stanStatuses = checkStatuses.filter((check: checkStatus) => {
+      const stanStatuses = checkStatuses.filter((check: CheckStatus) => {
         return check.message.match(/^Stan/)
       })
 
@@ -1047,24 +1054,17 @@ const thresholdCheck: GenCheck = {
       cy.getByTestID('check-status-input').type('"message" =~  /^Stan/')
 
       assertStatusesMatch(stanStatuses)
-
     })
 
     it('shows status history per check', () => {
-      cy.get<Organization>('@org')
-        .then(({id}: Organization) => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(
-              `${orgs}/${id}/alerting`
-            )
-            cy.url().should(
-              'include',
-              `${orgs}/${id}/alerting`
-            )
-            // Make sure page is loaded
-            cy.getByTestID('page-contents', { timeout: PAGE_LOAD_SLA})
-          })
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/alerting`)
+          cy.url().should('include', `${orgs}/${id}/alerting`)
+          // Make sure page is loaded
+          cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
         })
+      })
 
       // Deadman history
       cy.getByTestID(`check-card ${deadmanCheck.name}`).within(() => {
@@ -1105,32 +1105,41 @@ const thresholdCheck: GenCheck = {
       cy.getByTestID('event-marker--rect--crit').trigger('mouseover')
       cy.getByTestID('box-tooltip').should('be.visible')
       cy.getByTestID('event-marker-tooltip--cell time').should('be.visible')
-      cy.getByTestID('event-marker-tooltip--cell level').should('have.text', 'crit')
-      cy.getByTestID('event-marker-tooltip--cell checkName').should('have.text', thresholdCheck.name)
-      cy.getByTestID('event-marker-tooltip--cell message').should('have.text',
-        thresholdStatuses.filter((status: checkStatus) => {
+      cy.getByTestID('event-marker-tooltip--cell level').should(
+        'have.text',
+        'crit'
+      )
+      cy.getByTestID('event-marker-tooltip--cell checkName').should(
+        'have.text',
+        thresholdCheck.name
+      )
+      cy.getByTestID('event-marker-tooltip--cell message').should(
+        'have.text',
+        thresholdStatuses.filter((status: CheckStatus) => {
           return status.level === 'crit'
-        })[0].message)
+        })[0].message
+      )
 
       // Check right side level handle display
       const levels: string[] = ['ok', 'info', 'warn', 'crit']
 
       // Make sure handle locations are correct
-      let lastY = 0;
-      for(let i = 0; i < levels.length; i++){
+      let lastY = 0
+      for (let i = 0; i < levels.length; i++) {
         cy.getByTestID(`threshold-marker--handle--${levels[i]}`)
           .should('be.visible')
           .then(handle => {
-              let handleY = handle[0].getBoundingClientRect().y
-              if( i === 1){ // OK and INFO are same
-                expect(lastY).to.equal(handleY)
-              }else if(i > 1){ // WARN and CRIT are higher
-                expect(lastY).to.be.above(handleY)
-              }
-              lastY = handleY
+            const handleY = handle[0].getBoundingClientRect().y
+            if (i === 1) {
+              // OK and INFO are same
+              expect(lastY).to.equal(handleY)
+            } else if (i > 1) {
+              // WARN and CRIT are higher
+              expect(lastY).to.be.above(handleY)
+            }
+            lastY = handleY
           })
       }
-
     })
   })
 })

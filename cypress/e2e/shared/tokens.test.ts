@@ -153,14 +153,15 @@ describe('tokens', () => {
   it('can delete a token', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
 
-    cy.intercept('**/authorizations/*').as('deleteToken')
-
     cy.getByTestID('token-card token test 03').within(() => {
       cy.getByTestID('context-delete-menu--button').click()
     })
     cy.getByTestID('context-delete-menu--confirm-button').click()
 
-    cy.wait('@deleteToken')
+    cy.getByTestID('notification-success').should(
+      'contain',
+      'API token was deleted successfully'
+    )
 
     cy.get('.cf-resource-card').should('have.length', 3)
 
@@ -171,34 +172,53 @@ describe('tokens', () => {
       .first()
       .within(() => {
         cy.getByTestID('context-delete-menu--button')
-          .should('exist')
-          .click()
-      })
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-
-    cy.wait('@deleteToken')
-
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('context-delete-menu--button')
-          .should('exist')
+          .should('be.visible')
           .click()
       })
     cy.getByTestID('context-delete-menu--confirm-button')
-      .should('exist')
+      .should('be.visible')
       .click()
 
-    cy.wait('@deleteToken')
+    cy.getByTestID('notification-success').should(
+      'contain',
+      'API token was deleted successfully'
+    )
+
+    cy.getByTestID('notification-success--dismiss').click()
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
         cy.getByTestID('context-delete-menu--button')
-          .should('exist')
+          .should('be.visible')
           .click()
       })
-    cy.getByTestID('context-delete-menu--confirm-button').click()
+    cy.getByTestID('context-delete-menu--confirm-button')
+      .should('be.visible')
+      .click()
+
+    cy.getByTestID('notification-success').should(
+      'contain',
+      'API token was deleted successfully'
+    )
+
+    cy.get('.cf-resource-card')
+      .first()
+      .within(() => {
+        cy.getByTestID('context-delete-menu--button')
+          .should('be.visible')
+          .click()
+      })
+    cy.getByTestID('context-delete-menu--confirm-button')
+      .should('be.visible')
+      .click()
+
+    cy.getByTestID('notification-success').should(
+      'contain',
+      'API token was deleted successfully'
+    )
+
+    cy.getByTestID('notification-success--dismiss').click()
 
     // Assert empty state
     cy.getByTestID('empty-state').within(() => {

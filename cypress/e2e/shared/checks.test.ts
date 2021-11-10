@@ -945,7 +945,6 @@ describe('Checks', () => {
     .sort(sourceTimeStampSort)
 
   describe('Status history', () => {
-
     beforeEach(() => {
       cy.writeLPDataFromFile({
         filename: 'data/wumpus01.lp',

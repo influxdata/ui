@@ -57,10 +57,22 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
       {schemaLabel}
     </span>
   )
+  const bucketID = (
+    <CopyToClipboard
+      text={bucket.id}
+      onCopy={handleCopyAttempt}
+      key={bucket.id}
+    >
+      <span className="copy-bucket-id" title="Click to Copy to Clipboard">
+        ID: {bucket.id}
+        <span className="copy-bucket-id--helper">Copy to Clipboard</span>
+      </span>
+    </CopyToClipboard>
+  )
 
   const bucketInfo = CLOUD
-    ? [persistentBucketMeta, schemaBlock]
-    : [persistentBucketMeta]
+    ? [persistentBucketMeta, schemaBlock, bucketID]
+    : [persistentBucketMeta, bucketID]
 
   if (bucket.type === 'system') {
     return (
@@ -79,12 +91,6 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
   return (
     <ResourceCard.Meta testID={`resourceCard-buckets-${bucket.id}`}>
       {bucketInfo}
-      <CopyToClipboard text={bucket.id} onCopy={handleCopyAttempt}>
-        <span className="copy-bucket-id" title="Click to Copy to Clipboard">
-          ID: {bucket.id}
-          <span className="copy-bucket-id--helper">Copy to Clipboard</span>
-        </span>
-      </CopyToClipboard>
     </ResourceCard.Meta>
   )
 }

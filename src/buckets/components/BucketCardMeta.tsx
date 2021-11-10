@@ -58,19 +58,21 @@ const BucketCardMeta: FC<Props> = ({bucket, notify}) => {
     </span>
   )
   const bucketID = (
-    <CopyToClipboard text={bucket.id} onCopy={handleCopyAttempt} key={bucket.id}>
-        <span className="copy-bucket-id" title="Click to Copy to Clipboard">
-          ID: {bucket.id}
-          <span className="copy-bucket-id--helper">Copy to Clipboard</span>
-        </span>
-      </CopyToClipboard>
+    <CopyToClipboard
+      text={bucket.id}
+      onCopy={handleCopyAttempt}
+      key={bucket.id}
+    >
+      <span className="copy-bucket-id" title="Click to Copy to Clipboard">
+        ID: {bucket.id}
+        <span className="copy-bucket-id--helper">Copy to Clipboard</span>
+      </span>
+    </CopyToClipboard>
   )
 
   const bucketInfo = CLOUD
     ? [persistentBucketMeta, schemaBlock, bucketID]
     : [persistentBucketMeta, bucketID]
-
-  
 
   if (bucket.type === 'system') {
     return (

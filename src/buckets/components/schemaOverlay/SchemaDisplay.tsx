@@ -16,7 +16,7 @@ if (CLOUD) {
 }
 
 interface Props {
-  onClose: () => void
+  onClose?: () => void
   bucketName: string
   measurementSchemaList?: typeof MeasurementSchemaList
   schema?: typeof MeasurementSchema
@@ -29,6 +29,7 @@ interface Props {
  * */
 export const SchemaDisplay: FC<Props> = (props: Props) => {
   const handleClose = () => {
+
     props.onClose()
   }
 

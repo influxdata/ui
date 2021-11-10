@@ -63,7 +63,6 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
     this.props.clearDataLoaders()
     this.props.onSetCurrentStepIndex(0)
     this.props.onSetSubstepIndex(0, 0)
-    this.props.setBucketInfo('', '', '')
   }
 
   public render() {
@@ -99,12 +98,12 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
   }
 
   private handleDismiss = () => {
-    const {history, org} = this.props
+    const {history} = this.props
     const {clearDataLoaders, onClearSteps} = this.props
     clearDataLoaders()
     onClearSteps()
     this.setState({isVisible: false})
-    history.push(`/orgs/${org.id}/load-data/telegrafs`)
+    history.goBack()
   }
 
   private handleSetIsValidConfiguration = (isValid: boolean) => {

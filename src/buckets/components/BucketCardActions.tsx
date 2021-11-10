@@ -76,7 +76,7 @@ const BucketCardActions: FC<Props> = ({
     onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
 
     onSetDataLoadersType(DataLoaderType.Streaming)
-    history.push(`/orgs/${orgID}/load-data/buckets/${bucket.id}/telegrafs/new`)
+    history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
   }
 
   const handleAddLineProtocol = () => {

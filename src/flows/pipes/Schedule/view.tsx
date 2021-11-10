@@ -49,7 +49,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
-  const queryText = getPanelQueries(id, true)?.source ?? ''
+  const queryText = getPanelQueries(id)?.source ?? ''
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(

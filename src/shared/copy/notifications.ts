@@ -1243,20 +1243,14 @@ export const editNotificationRuleCodeWarning = (): Notification => ({
 
 // Notebooks
 
-export const notebookRunSuccess = (
-  runMode: string,
-  projectName: string
-): Notification => ({
+export const notebookRunSuccess = (projectName: string): Notification => ({
   ...defaultSuccessNotification,
-  message: `${projectName} ${runMode.toLowerCase()} successful!`,
+  message: `${projectName} Run successful!`,
 })
 
-export const notebookRunFail = (
-  runMode: string,
-  projectName: string
-): Notification => ({
+export const notebookRunFail = (projectName: string): Notification => ({
   ...defaultErrorNotification,
-  message: `${projectName} ${runMode.toLowerCase()} failed`,
+  message: `${projectName} Run failed`,
 })
 
 export const notebookCreateFail = (): Notification => ({

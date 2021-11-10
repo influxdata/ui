@@ -75,7 +75,7 @@ const DeleteOrgOverlay: FC = () => {
     }
 
     if (
-      isFlagEnabled('rudderStackReporting') &&
+      isFlagEnabled('rudderstackReporting') &&
       isFlagEnabled('trackCancellations')
     ) {
       track('DeleteOrgExecuted', payload)

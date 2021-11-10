@@ -9,7 +9,7 @@ describe('Operator Page', () => {
           }).then(() => {
             cy.quartzProvision({
               isOperator: true,
-              operatorRole: 'read-only',
+              operatorRole: 'read-write',
             }).then(() => {
               cy.visit(`/operator`)
               cy.getByTestID('operator-page--title').contains('2.0 Resources')

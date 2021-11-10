@@ -1,6 +1,5 @@
 // Libraries
-import React, {FC, memo} from 'react'
-
+import React, {FC, memo, useContext} from 'react'
 import {
   Panel,
   FlexBox,
@@ -11,19 +10,25 @@ import {
   HeadingElement,
   FontWeight,
 } from '@influxdata/clockface'
-import VersionInfo from 'src/shared/components/VersionInfo'
 
 // Types
+import {ResourceType} from 'src/types'
 
-import DocSearchWidget from 'src/me/components/DocSearchWidget'
+// Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {UsageContext} from 'src/usage/context/usage'
 
+// Components
+import UsagePanel from 'src/me/components/UsagePanel'
+import DocSearchWidget from 'src/me/components/DocSearchWidget'
 import LogoutButton from 'src/me/components/LogoutButton'
 import DashboardsList from 'src/me/components/DashboardsList'
 import GetResources from 'src/resources/components/GetResources'
-import {ResourceType} from 'src/types'
+import VersionInfo from 'src/shared/components/VersionInfo'
 
 const ResourceLists: FC = () => {
+  const {paygCreditEnabled} = useContext(UsageContext)
+
   return (
     <FlexBox
       direction={FlexDirection.Column}
@@ -64,6 +69,9 @@ const ResourceLists: FC = () => {
           </Panel>
         </>
       )}
+      {isFlagEnabled('uiUnificationFlag') &&
+        isFlagEnabled('paygCheckoutCredit') &&
+        paygCreditEnabled && <UsagePanel />}
       <Panel>
         <Panel.Footer>
           <VersionInfo />

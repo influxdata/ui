@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext, useMemo} from 'react'
-import {IconFont, ButtonGroup} from '@influxdata/clockface'
+import {IconFont} from '@influxdata/clockface'
 
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {QueryContext} from 'src/shared/contexts/query'

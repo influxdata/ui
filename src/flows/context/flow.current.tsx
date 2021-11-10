@@ -100,8 +100,7 @@ export const FlowProvider: FC = ({children}) => {
     const doc = yDoc.current
     if (isFlagEnabled('sharedFlowEditing') && currentID) {
       provider.current = new WebsocketProvider(
-        'ws://localhost:1223', // todo(ariel): replace this with an actual API that we setup
-        // 'wss://demos.yjs.dev', // todo(ariel): replace this with an actual API that we setup
+        `wss://${window.location.origin}/api/v2private/workbench`,
         currentID,
         doc
       )

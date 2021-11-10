@@ -2,7 +2,7 @@
 import qs from 'qs'
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory, useParams} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'

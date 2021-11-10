@@ -49,7 +49,7 @@ class ResourceAccordion extends Component<OwnProps> {
               <DapperScrollbars
                 autoHide={true}
                 autoSize={true}
-                //this width is max-width of modal - padding left and right
+                // this width is max-width of modal - padding left and right
                 style={{width: '100%', maxWidth: '752px', maxHeight: '300px'}}
               >
                 <AllAccordionBody
@@ -71,7 +71,7 @@ class ResourceAccordion extends Component<OwnProps> {
           <DapperScrollbars
             autoHide={true}
             autoSize={true}
-            //this width is max-width of modal - padding left and right
+            // this width is max-width of modal - padding left and right
             style={{width: '100%', maxWidth: '752px', maxHeight: '300px'}}
           >
             <AllAccordionBody

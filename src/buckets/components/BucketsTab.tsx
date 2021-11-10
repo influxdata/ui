@@ -87,14 +87,26 @@ class BucketsTab extends PureComponent<Props, State> {
   public render() {
     const {buckets, limitStatus} = this.props
     const {searchTerm, sortKey, sortDirection, sortType, showDialog} = this.state
+
+    const customStyle = {
+      content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        zIndex: 9400,
+      },
+      overlay: {
+        zIndex: 9399,
+      }
+    }
+    //{height:400, width:200, position:'absolute', left: 400, top:200}
     const modalAck  = (
-        <div>
-          <button onClick={this.openModal}>Open Modal</button>
           <Modal
               isOpen={showDialog}
               onRequestClose={this.closeModal}
               contentLabel="Example Modal"
-              style={{height:400, width:200, position:'absolute', left: 400, top:200}}
+              style={customStyle}
           >
             <h2>Hello</h2>
             <button onClick={this.closeModal}>close</button>
@@ -107,7 +119,6 @@ class BucketsTab extends PureComponent<Props, State> {
               <button>the modal</button>
             </form>
           </Modal>
-        </div>
     );
 
     const leftHeaderItems = (

@@ -14,7 +14,10 @@ const ClientList: FC = () => {
   const {launch} = useContext(PopupContext)
 
   return (
-    <FlexBox style={{flexWrap: 'wrap'}} className="flow-sidebar--client-list">
+    <FlexBox
+      style={{flexWrap: 'wrap', gap: '8px'}}
+      className="flow-sidebar--client-list"
+    >
       {Object.values(CLIENT_DEFINITIONS).map(item => {
         const click = (client: string) => {
           event('Export Client Library Opened', {client})

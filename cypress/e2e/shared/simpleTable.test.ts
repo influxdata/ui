@@ -79,7 +79,7 @@ describe('simple table interactions', () => {
       .within(() => {
         cy.getByTestID('button').should(
           'have.class',
-          'cf-button cf-button-md cf-button-tertiary cf-button-square active'
+          'cf-button cf-button-md cf-button-tertiary active'
         )
       })
     // verify correct number of pages
@@ -145,7 +145,7 @@ describe('simple table interactions', () => {
       .within(() => {
         cy.getByTestID('button').should(
           'have.class',
-          'cf-button cf-button-md cf-button-tertiary cf-button-square active'
+          'cf-button cf-button-md cf-button-tertiary active'
         )
       })
     // verify correct number of pages

@@ -170,7 +170,9 @@ describe('tokens', () => {
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-delete-menu--button').click()
+        cy.getByTestID('context-delete-menu--button')
+          .should('exist')
+          .click()
       })
     cy.getByTestID('context-delete-menu--confirm-button').click()
 
@@ -192,7 +194,9 @@ describe('tokens', () => {
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-delete-menu--button').click()
+        cy.getByTestID('context-delete-menu--button')
+          .should('exist')
+          .click()
       })
     cy.getByTestID('context-delete-menu--confirm-button').click()
 

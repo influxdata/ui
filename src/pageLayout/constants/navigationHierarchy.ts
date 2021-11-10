@@ -40,7 +40,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'load-data',
       testID: 'nav-item-load-data',
-      icon: IconFont.Ingest_New,
+      icon: IconFont.Upload_New,
       label: 'Load Data',
       shortLabel: 'Data',
       link: `${orgPrefix}/load-data/sources`,

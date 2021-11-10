@@ -1,9 +1,10 @@
 // Libraries
 import React, {Component} from 'react'
 import {isEmpty} from 'lodash'
+import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Clockface
-import {Accordion} from '@influxdata/clockface'
+import {Accordion, DapperScrollbars} from '@influxdata/clockface'
 
 // Components
 import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
@@ -45,30 +46,43 @@ class ResourceAccordion extends Component<OwnProps> {
           return (
             <Accordion key={resource}>
               <ResourceAccordionHeader resourceName={resourceName} />
-              <AllAccordionBody
-                resourceName={resourceName}
-                permissions={permissions[resource]}
-                onToggleAll={onToggleAll}
-                disabled={false}
-              />
-              {!permissions[resource].read && !permissions[resource].write
-                ? !isEmpty(permissions[resource].sublevelPermissions) &&
-                  this.getAccordionBody(resourceName, resource)
-                : null}
+              <DapperScrollbars
+                autoHide={true}
+                autoSize={true}
+                style={{width: '100%', maxHeight: '300px'}}
+              >
+                <AllAccordionBody
+                  resourceName={resourceName}
+                  permissions={permissions[resource]}
+                  onToggleAll={onToggleAll}
+                  disabled={false}
+                />
+                {!permissions[resource].read && !permissions[resource].write
+                  ? !isEmpty(permissions[resource].sublevelPermissions) &&
+                    this.getAccordionBody(resourceName, resource)
+                  : null}
+              </DapperScrollbars>
             </Accordion>
           )
         })}
         <Accordion key="Other Resources">
           <ResourceAccordionHeader resourceName="Other Resources" />
-          <AllAccordionBody
-            resourceName="Other Resources"
-            permissions={permissions.otherResources}
-            onToggleAll={onToggleAll}
-            disabled={false}
-          />
-          {!permissions.otherResources.read && !permissions.otherResources.write
-            ? this.otherResourcesAccordionBody()
-            : null}
+          <DapperScrollbars
+            autoHide={true}
+            autoSize={true}
+            style={{width: '100%', maxHeight: '300px'}}
+          >
+            <AllAccordionBody
+              resourceName="Other Resources"
+              permissions={permissions.otherResources}
+              onToggleAll={onToggleAll}
+              disabled={false}
+            />
+            {!permissions.otherResources.read &&
+            !permissions.otherResources.write
+              ? this.otherResourcesAccordionBody()
+              : null}
+          </DapperScrollbars>
         </Accordion>
       </>
     )

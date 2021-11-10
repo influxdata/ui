@@ -140,7 +140,7 @@ const FlowHeader: FC = () => {
 
   const printJSON = () => {
     /* eslint-disable no-console */
-    console.log(JSON.stringify(serialize(flow, orgID), null, 2))
+    console.log(JSON.stringify(serialize(flow), null, 2))
     /* eslint-enable no-console */
   }
 

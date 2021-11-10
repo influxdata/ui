@@ -81,10 +81,12 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }, [])
 
   useEffect(() => {
+    if (permissions['telegrafs'] && permissions['buckets']) {
+      return
+    }
     const perms = {
       otherResources: {read: false, write: false},
     }
-
     props.allResources.forEach(resource => {
       if (resource === 'telegrafs') {
         perms[resource] = props.telegrafPermissions
@@ -143,6 +145,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const handleIndividualToggle = (resourceName, id, permission) => {
     setStatus(ComponentStatus.Default)
+
     const permValue =
       permissions[resourceName].sublevelPermissions[id].permissions[permission]
 
@@ -239,7 +242,6 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       showOverlay('access-token', null, () => dismissOverlay())
     } catch (e) {
       setStatus(ComponentStatus.Disabled)
-      throw e
     }
   }
 

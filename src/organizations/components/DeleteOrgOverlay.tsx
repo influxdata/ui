@@ -40,7 +40,12 @@ const DeleteOrgOverlay: FC = () => {
   const history = useHistory()
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const dispatch = useDispatch()
-  const {reason, shortSuggestion, suggestions} = useContext(DeleteOrgContext)
+  const {
+    reason,
+    shortSuggestion,
+    suggestions,
+    getRedirectLocation,
+  } = useContext(DeleteOrgContext)
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
 
@@ -83,8 +88,11 @@ const DeleteOrgOverlay: FC = () => {
       if (resp.status !== 204) {
         throw new Error(resp.data.message)
       }
-
-      window.location.href = `https://www.influxdata.com/free_cancel/`
+      if (isFlagEnabled('trackCancellations')) {
+        window.location.href = getRedirectLocation()
+      } else {
+        window.location.href = `https://www.influxdata.com/free_cancel/`
+      }
     } catch {
       dispatch(notify(accountSelfDeletionFailed()))
     }

@@ -32,8 +32,20 @@
     }
   }
 }
-
 .schema-section {
+  .option {
+    margin-bottom: 6px !important;
+  }
+}
+
+.measurement-section {
+  .option:nth-child(3) {
+    margin-left: 10px;
+  }
+}
+
+.schema-section,
+.measurement-section {
   &.measurement {
     margin-top: 15px;
   }
@@ -83,10 +95,7 @@
   .value-text {
     color: $cf-white;
     font-weight: 500;
-  }
-
-  .option {
-    margin-bottom: 6px !important;
+    margin-top: 8px;
   }
 
   .measurement-schema-panel-container {

@@ -5,7 +5,7 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import LoadDataNavigation from 'src/settings/components/LoadDataNavigation'
-import {Tabs, Orientation, Page} from '@influxdata/clockface'
+import {ComponentSize, Orientation, Page, Tabs} from '@influxdata/clockface'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -28,6 +28,8 @@ const LoadDataTabbedPage: FC<Props> = ({activeTab, orgID, children}) => {
     <Page.Contents
       fullWidth={false}
       scrollable={shouldPageBeScrollable(activeTab)}
+      scrollbarSize={ComponentSize.Large}
+      autoHideScrollbar={true}
     >
       <Tabs.Container
         orientation={Orientation.Horizontal}

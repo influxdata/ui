@@ -1,7 +1,8 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import qs from 'qs'
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
@@ -27,6 +28,7 @@ import {
 // Types
 import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export type Props = {
   children: JSX.Element
@@ -249,6 +251,13 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     return errs.length
   }
 
+  const isPaygCreditActive = useMemo(() => {
+    const {search} = window.location
+    const params = qs.parse(search, {ignoreQueryPrefix: true})
+
+    return !!params?.signup && isFlagEnabled('paygCheckoutCredit')
+  }, [])
+
   const handleSubmit = useCallback(
     async (paymentMethodId: string) => {
       if (isDirty === false) {
@@ -283,8 +292,11 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         delete formData.intlSubdivision
         delete formData.shouldNotify
 
-        const paymentInformation = {...formData, paymentMethodId}
-
+        const paymentInformation = {
+          ...formData,
+          paymentMethodId,
+          isPaygCreditActive,
+        }
         const response = await postCheckout({data: paymentInformation})
 
         if (response.status !== 201) {

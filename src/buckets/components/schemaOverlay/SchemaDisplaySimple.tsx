@@ -5,6 +5,7 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 // Components
 import {Button, Overlay} from '@influxdata/clockface'
 import {CLOUD} from 'src/shared/constants'
+import {SimpleOverlay} from "./OverlayFactory";
 
 let MeasurementSchemaList = null,
   MeasurementSchema = null
@@ -16,7 +17,7 @@ if (CLOUD) {
 }
 
 interface Props {
-  onClose?: () => void
+  onClose: () => void
   bucketName: string
   measurementSchemaList?: typeof MeasurementSchemaList
   schema?: typeof MeasurementSchema
@@ -27,33 +28,15 @@ interface Props {
  * it does not allow editing but it does allow the user to copy it easily into the clipboard using the
  * CodeSnippet component.
  * */
-export const SchemaDisplay: FC<Props> = (props: Props) => {
-  const handleClose = () => {
+export const SchemaDisplaySimple: FC<Props> = (props: Props) => {
 
-    props.onClose()
-  }
-
-  const {schema} = props
+  const {schema, bucketName, onClose} = props
   const rawSchema = JSON.stringify(schema, null, 2)
 
-  const makeRawDataView = () => <CodeSnippet text={rawSchema} />
+const body = <CodeSnippet text={rawSchema} />
+const title = `cc-Explicit Schema for: ${bucketName}`
 
-  return (
-   <Overlay.Container maxWidth={600}>
-      <Overlay.Header
-        title={`Explicit Schema for: ${props.bucketName}`}
-        onDismiss={handleClose}
-      />
-      <Overlay.Body>{makeRawDataView()}</Overlay.Body>
-      <Overlay.Footer>
-        <div>
-          <Button
-            text="Close"
-            onClick={handleClose}
-            testID="show-explicit-schema-button-close"
-          />
-        </div>
-      </Overlay.Footer>
-    </Overlay.Container>
+    return <SimpleOverlay onClose={onClose} body={body}
+                          title={title} maxWidth={650} />
   )
 }

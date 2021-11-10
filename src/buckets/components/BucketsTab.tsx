@@ -44,16 +44,17 @@ import {SortTypes} from 'src/shared/utils/sort'
 // Types
 import {AppState, Bucket, ResourceType, OwnBucket} from 'src/types'
 import {BucketSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
-import {ShowBucketSchemaOverlay} from "./schemaOverlay/ShowBucketSchemaOverlay";
+//import {ShowBucketSchemaOverlay} from "./schemaOverlay/ShowBucketSchemaOverlay";
+import {SchemaDisplaySimple} from "./schemaOverlay/SchemaDisplaySimple";
 //import {ModalDialog} from "src/overlays/components/ModalDialog";
 
 interface State {
-  searchTerm: string
   sortKey: BucketSortKey
   sortDirection: Sort
   sortType: SortTypes
   showDialog: boolean
   schemaDialogContents: any
+  schemaDialogProps: any
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -79,15 +80,17 @@ class BucketsTab extends PureComponent<Props, State> {
     this.props.checkBucketLimits()
   }
 
-  private openModal = (contents?) => {
-    this.setState({schemaDialogContents: contents, showDialog:true})
+  private openModal = (dialogProps?) => {
+    this.setState({schemaDialogProps: dialogProps, showDialog:true})
   }
   private closeModal = () => {
-    this.setState({showDialog: false, schemaDialogContents: null})
+    this.setState({showDialog: false, schemaDialogProps: null})
   }
 
   public render() {
     const {buckets, limitStatus} = this.props
+    const {schemaDialogProps} = this.state
+
     const {
       searchTerm,
       sortKey,
@@ -108,6 +111,10 @@ class BucketsTab extends PureComponent<Props, State> {
         zIndex: 9399,
       },
     }
+
+
+    const makeContent = (props, children) =>
+        <SchemaDisplaySimple onClose={this.closeModal} {...schemaDialogProps}></SchemaDisplaySimple>
     //{height:400, width:200, position:'absolute', left: 400, top:200}
     const modalAck = (
       <Modal
@@ -115,7 +122,7 @@ class BucketsTab extends PureComponent<Props, State> {
         onRequestClose={this.closeModal}
         contentLabel="Example Modal"
         style={customStyle}
-
+        contentElement={makeContent}
       >
         {schemaDialogContents}
       </Modal>
@@ -218,9 +225,8 @@ class BucketsTab extends PureComponent<Props, State> {
 
     console.log('arghh; showing schema stuff?', schema, name)
 
-    const contents = <SchemaDisplay onClose={this.closeModal}
-                                    schema={schema}
-                                    bucketName={name}/>
+    const contents = {schema,
+                                    bucketName:name}
 
     this.openModal(contents)
     /** */

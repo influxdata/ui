@@ -20,7 +20,7 @@ $dashboard-grid-gap: $cf-space-2xs;
 }
 
 .pinned-items--card {
-  background: #333346;
+  background: $cf-grey-25;
 }
 
 @media screen and (max-width: $cf-grid--breakpoint-md) {

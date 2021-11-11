@@ -64,8 +64,12 @@ const PinnedItems: FC = () => {
       Pin a task, dashboard, or notebook here
     </Heading>
   )
+
+  const mainPanelStyle = {margin: '4px 0px'}
+  const resourceCardStyle = {marginTop: '0px'}
+
   return CLOUD && isFlagEnabled('pinnedItems') ? (
-    <Panel style={{margin: '4px 0px'}}>
+    <Panel style={mainPanelStyle}>
       <Panel.Header>
         <h2 className="pinned-items--header">Pinned Items</h2>
       </Panel.Header>
@@ -90,16 +94,17 @@ const PinnedItems: FC = () => {
                     confirmationLabel="Unpin this item?"
                     onConfirm={() => handleDeletePinnedItem(item.id)}
                     confirmationButtonText="Yes"
-                    testID="context-delete-menu"
+                    testID="pinneditems-delete--menu"
                   />
                 </FlexBox>
               }
-              style={{marginTop: '0px'}}
+              style={resourceCardStyle}
             >
               <ResourceCard.Meta>
                 <Heading
                   type={Typeface.IBMPlexMono}
                   element={HeadingElement.H5}
+                  testID="pinneditems--type"
                 >
                   {item.type.toUpperCase()}
                 </Heading>

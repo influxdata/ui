@@ -696,8 +696,6 @@ describe('Checks', () => {
     return cy.createCheck(check).then((resp: any) => {
       cy.wrap(resp.body).as(alias)
     })
-    //        })
-    //      })
   }
 
   describe('Clone checks', () => {
@@ -715,30 +713,6 @@ describe('Checks', () => {
             return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
               bucketName = bucket.name
               createCheck(check, org, bucket, 'check')
-              /* if (
-                check.query.builderConfig &&
-                check.query.builderConfig.buckets
-              ) {
-                check.query.builderConfig.buckets[0] = bucket.name
-              }
-              if (check.query.text) {
-                check.query.text = check.query.text.replace(
-                  '%BUCKETNAME%',
-                  bucket.name
-                )
-              } else {
-                throw `check ${check.name} does not contain query text`
-              }
-              if (org.id) {
-                check.orgID = org.id
-              } else {
-                throw `org ${org.name} has no id`
-              }
-              // get default org and bucket
-              // create check
-              return cy.createCheck(check).then((resp: any) => {
-                cy.wrap(resp.body).as('check')
-              }) */
             })
           })
         })
@@ -967,7 +941,7 @@ describe('Checks', () => {
                       message: status.message,
                       pair: status.pair,
                       offset: status.offset,
-                    })
+                    }).should('eq', 'success')
                   })
 
                   thresholdStatuses.forEach((status: CheckStatus) => {
@@ -978,7 +952,7 @@ describe('Checks', () => {
                       message: status.message,
                       pair: status.pair,
                       offset: status.offset,
-                    })
+                    }).should('eq', 'success')
                   })
                   cy.reload()
                 }

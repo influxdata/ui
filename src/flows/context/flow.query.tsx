@@ -1,4 +1,11 @@
-import React, {FC, useContext, useMemo, useEffect, useState} from 'react'
+import React, {
+  FC,
+  useContext,
+  useMemo,
+  useEffect,
+  useState,
+  useRef,
+} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -141,7 +148,8 @@ export const FlowQueryProvider: FC = ({children}) => {
     }, {})
   }, [variables, flow?.range])
 
-  const generateMap = (): Stage[] => {
+  const _map = useRef([])
+  const _generateMap = (): Stage[] => {
     const stages = (flow?.data?.allIDs ?? []).reduce((acc, panelID) => {
       const panel = flow.data.byID[panelID]
 
@@ -196,7 +204,23 @@ export const FlowQueryProvider: FC = ({children}) => {
       return acc
     }, [])
 
+    _map.current = stages
     return stages
+  }
+
+  useEffect(() => {
+    _generateMap()
+  }, [flow])
+
+  const generateMap = (): Stage[] => {
+    if (
+      !_map.current ||
+      (!_map.current.length && (flow?.data?.allIDs ?? []).length)
+    ) {
+      _generateMap()
+    }
+
+    return _map.current
   }
 
   // TODO figure out a better way to cache these requests

@@ -103,7 +103,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     return 'No Data Returned'
   }, [loading])
 
-  const queryText = getPanelQueries(id, true)?.source
+  const queryText = getPanelQueries(id)?.source
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(

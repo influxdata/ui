@@ -173,7 +173,7 @@ const FlowPanel: FC<Props> = ({
                 <FeatureFlag name="flow-debug-queries">
                   <SquareButton
                     icon={IconFont.BookCode}
-                    onClick={() => printMap(id, true)}
+                    onClick={() => printMap(id)}
                     color={ComponentColor.Default}
                     titleText="Debug Notebook Queries"
                     className="flows-config-panel-button"

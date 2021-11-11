@@ -23,7 +23,7 @@ const PanelQueryOverlay: FC = () => {
   } = useContext(PopupContext)
   const {getPanelQueries, simplify} = useContext(FlowQueryContext)
 
-  const query = simplify(getPanelQueries(panelID, true).source)
+  const query = simplify(getPanelQueries(panelID).source)
 
   const reportCopyClick = () => {
     event('Export to Client Library (Notebooks) - Copy to Clipboard Clicked')

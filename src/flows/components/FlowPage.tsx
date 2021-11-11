@@ -6,7 +6,6 @@ import {DapperScrollbars} from '@influxdata/clockface'
 
 // Contexts
 import CurrentFlowProvider, {FlowContext} from 'src/flows/context/flow.current'
-import {RunModeProvider} from 'src/flows/context/runMode'
 import QueryProvider from 'src/shared/contexts/query'
 import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
@@ -57,36 +56,34 @@ const RunOnMount = () => {
 }
 
 export const FlowPage: FC = () => (
-  <RunModeProvider>
-    <ResultsProvider>
-      <FlowQueryProvider>
-        <RunOnMount />
-        <FlowKeyboardPreview />
-        <SidebarProvider>
-          <Page>
-            <FlowHeader />
-            <Page.Contents
-              fullWidth={true}
-              scrollable={false}
-              className="flow-page"
-            >
-              <PopupProvider>
-                <DapperScrollbars
-                  noScrollX
-                  thumbStartColor="gray"
-                  thumbStopColor="gray"
-                >
-                  <PipeList />
-                </DapperScrollbars>
-                <SubSideBar />
-                <PopupDrawer />
-              </PopupProvider>
-            </Page.Contents>
-          </Page>
-        </SidebarProvider>
-      </FlowQueryProvider>
-    </ResultsProvider>
-  </RunModeProvider>
+  <ResultsProvider>
+    <FlowQueryProvider>
+      <RunOnMount />
+      <FlowKeyboardPreview />
+      <SidebarProvider>
+        <Page>
+          <FlowHeader />
+          <Page.Contents
+            fullWidth={true}
+            scrollable={false}
+            className="flow-page"
+          >
+            <PopupProvider>
+              <DapperScrollbars
+                noScrollX
+                thumbStartColor="gray"
+                thumbStopColor="gray"
+              >
+                <PipeList />
+              </DapperScrollbars>
+              <SubSideBar />
+              <PopupDrawer />
+            </PopupProvider>
+          </Page.Contents>
+        </Page>
+      </SidebarProvider>
+    </FlowQueryProvider>
+  </ResultsProvider>
 )
 
 export default () => (

@@ -58,7 +58,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     }
 
     if (
-      isFlagEnabled('rudderStackReporting') &&
+      isFlagEnabled('rudderstackReporting') &&
       isFlagEnabled('trackCancellations')
     ) {
       // Send to Rudderstack
@@ -77,6 +77,19 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   }
 
   const handleDismiss = () => {
+    if (
+      isFlagEnabled('rudderstackReporting') &&
+      isFlagEnabled('trackCancellations')
+    ) {
+      const payload = {
+        org: org.id,
+        tier: quartzMe?.accountType,
+        email: quartzMe?.email,
+      }
+      // Send to Rudderstack
+      track('CancelServiceDismissed', payload)
+    }
+
     setHasClickedCancel(false)
     onHideOverlay()
   }
@@ -94,7 +107,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
 
   return (
     <Overlay visible={true} className="cancellation-overlay">
-      <Overlay.Container maxWidth={600}>
+      <Overlay.Container maxWidth={700}>
         <Overlay.Header title="Cancel Service" onDismiss={handleDismiss} />
         <Overlay.Body>
           <Alert

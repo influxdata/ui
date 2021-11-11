@@ -27,7 +27,7 @@ const CancellationPanel: FC = () => {
   const handleCancelService = () => {
     if (
       isFlagEnabled('trackCancellations') &&
-      isFlagEnabled('rudderStackReporting')
+      isFlagEnabled('rudderstackReporting')
     ) {
       const payload = {
         org: org.id,

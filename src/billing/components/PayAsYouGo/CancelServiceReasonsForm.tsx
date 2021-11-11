@@ -123,7 +123,7 @@ function CancelServiceReasonsForm() {
               checked={canContactForFeedback}
               onChange={toggleCanContactForFeedback}
               size={ComponentSize.Small}
-              titleText="I understand and agree to these conditions"
+              titleText="I am open to talking further with the Influx product &amp; design"
               type={InputType.Checkbox}
               testID="agree-terms--checkbox"
             />
@@ -131,7 +131,8 @@ function CancelServiceReasonsForm() {
               active={canContactForFeedback}
               size={ComponentSize.Small}
             >
-              I understand and agree to these conditions
+              I am open to talking further with the Influx product &amp; design
+              team about my experience
             </InputLabel>
           </FlexBox>
         </span>

@@ -50,6 +50,19 @@ const DeleteOrgOverlay: FC = () => {
   const org = useSelector(getOrg)
 
   const handleClose = () => {
+    if (
+      isFlagEnabled('rudderstackReporting') &&
+      isFlagEnabled('trackCancellations')
+    ) {
+      const payload = {
+        org: org.id,
+        tier: quartzMe?.accountType,
+        email: quartzMe?.email,
+      }
+      // Send to Rudderstack
+      track('DeleteOrgDismissed', payload)
+    }
+
     history.goBack()
   }
 
@@ -75,7 +88,7 @@ const DeleteOrgOverlay: FC = () => {
     }
 
     if (
-      isFlagEnabled('rudderStackReporting') &&
+      isFlagEnabled('rudderstackReporting') &&
       isFlagEnabled('trackCancellations')
     ) {
       track('DeleteOrgExecuted', payload)

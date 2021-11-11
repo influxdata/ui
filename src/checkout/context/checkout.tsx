@@ -60,6 +60,7 @@ export interface CheckoutContextType {
   isSubmitting: boolean
   setIsDirty: (_: boolean) => void
   zuoraParams: CreditCardParams
+  isPaygCreditActive: boolean
 }
 
 export const DEFAULT_CONTEXT: CheckoutContextType = {
@@ -75,6 +76,7 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   isSubmitting: false,
   setIsDirty: (_: boolean) => {},
   zuoraParams: EMPTY_ZUORA_PARAMS,
+  isPaygCreditActive: false,
 }
 
 export const CheckoutContext = React.createContext<CheckoutContextType>(
@@ -339,6 +341,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         isSubmitting,
         setIsDirty,
         zuoraParams,
+        isPaygCreditActive,
       }}
     >
       {children}

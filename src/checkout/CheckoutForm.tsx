@@ -33,7 +33,6 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 import {event} from 'src/cloud/utils/reporting'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const CheckoutForm: FC = () => {
   const {
@@ -41,6 +40,8 @@ const CheckoutForm: FC = () => {
     zuoraParams,
     handleSubmit,
     setIsDirty,
+    isPaygCreditActive,
+    isSubmitting,
   } = useContext(CheckoutContext)
 
   const onSubmit = () => {
@@ -57,8 +58,6 @@ const CheckoutForm: FC = () => {
       console.error(error)
     }
   }
-
-  const {isSubmitting} = useContext(CheckoutContext)
 
   return (
     <Form noValidate onSubmit={onSubmit}>
@@ -88,7 +87,7 @@ const CheckoutForm: FC = () => {
                 </a>
                 .
               </p>
-              {isFlagEnabled('paygCheckoutCredit') && (
+              {isPaygCreditActive && (
                 <div className="checkout-form--banner">
                   <strong className="checkout-banner--credit">$250</strong>
                   <p>credit applied</p>

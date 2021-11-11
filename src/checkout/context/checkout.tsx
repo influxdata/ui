@@ -1,5 +1,4 @@
 // Libraries
-import qs from 'qs'
 import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
@@ -252,10 +251,10 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   }
 
   const isPaygCreditActive = useMemo(() => {
-    const {search} = window.location
-    const params = qs.parse(search, {ignoreQueryPrefix: true})
+    const query = new URLSearchParams(window.location.search)
 
-    return !!params?.signup && isFlagEnabled('paygCheckoutCredit')
+    const hasSignup = query.get('signup')
+    return !!hasSignup && isFlagEnabled('paygCheckoutCredit')
   }, [])
 
   const handleSubmit = useCallback(

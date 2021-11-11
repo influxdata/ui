@@ -81,7 +81,7 @@ const testSchemaFiles = (
 
           cy.getByTestID('measurement-schema-download-button').click()
           cy.wait(WAIT_FOR_DOWNLOADED_FILE)
-            checkContents(cy)
+          checkContents(cy)
         })
     })
 }
@@ -231,7 +231,7 @@ describe('Explicit Buckets', () => {
           .contains('first schema file')
           .should('exist')
         cy.getByTestID('measurement-schema-download-button').click()
-          cy.wait(WAIT_FOR_DOWNLOADED_FILE)
+        cy.wait(WAIT_FOR_DOWNLOADED_FILE)
         cy.readFile(`cypress/downloads/first_schema_file.json`)
           .should('exist')
           .then(fileContent => {
@@ -335,7 +335,7 @@ fsRead,field,float`
           .should('exist')
 
         cy.getByTestID('measurement-schema-download-button').click()
-          cy.wait(WAIT_FOR_DOWNLOADED_FILE)
+        cy.wait(WAIT_FOR_DOWNLOADED_FILE)
         cy.readFile(`cypress/downloads/${fileName}`)
           .should('exist')
           .then(fileContent => {
@@ -424,7 +424,7 @@ fsRead,field,float`
 
         cy.getByTestID('measurement-schema-download-button').click()
         cy.wait(WAIT_FOR_DOWNLOADED_FILE)
-          cy.readFile(`cypress/downloads/${fileName}`)
+        cy.readFile(`cypress/downloads/${fileName}`)
           .should('exist')
           .then(fileContent => {
             expect(fileContent[0].name).to.be.equal('time')

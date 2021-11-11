@@ -149,7 +149,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   }, [variables, flow?.range])
 
   const _map = useRef([])
-  const _generateMap = () => {
+  const _generateMap = (): Stage[] => {
     const stages = (flow?.data?.allIDs ?? []).reduce((acc, panelID) => {
       const panel = flow.data.byID[panelID]
 
@@ -205,6 +205,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }, [])
 
     _map.current = stages
+    return stages
   }
 
   useEffect(() => {
@@ -212,7 +213,10 @@ export const FlowQueryProvider: FC = ({children}) => {
   }, [flow])
 
   const generateMap = (): Stage[] => {
-    if (!_map.current) {
+    if (
+      !_map.current ||
+      (!_map.current.length && (flow?.data?.allIDs ?? []).length)
+    ) {
       _generateMap()
     }
 

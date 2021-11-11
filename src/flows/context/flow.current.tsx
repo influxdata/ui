@@ -86,7 +86,7 @@ export const FlowProvider: FC = ({children}) => {
       const {cookie} = document
       // send the session as an ArrayBuffer
       const buffer = Buffer.from(cookie)
-      const messageType = Buffer.from('2')
+      const messageType = Buffer.from([2])
       const uIntArray = new Uint8Array(
         buffer.byteLength + messageType.byteLength
       )
@@ -100,7 +100,7 @@ export const FlowProvider: FC = ({children}) => {
     const doc = yDoc.current
     if (isFlagEnabled('sharedFlowEditing') && currentID) {
       provider.current = new WebsocketProvider(
-        `wss://${window.location.origin}/api/v2private/workbench`,
+        `wss://${window.location.host}/api/v2private/workbench`,
         currentID,
         doc
       )

@@ -186,7 +186,7 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('measurement-schema-section-parent').should('not.exist')
     })
   })
-  it('should be able to create an explicit bucket using one schema file', function() {
+  it.only('should be able to create an explicit bucket using one schema file', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()
@@ -213,7 +213,10 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('bucket-form-submit').click()
 
     // give it some time for the submit to happen/the bucket list to show up
+      //console.log("url now??? ack-before wait", cy.url())
     cy.wait(500)
+      cy.location('pathname', {timeout: 60000})
+          .should('match', /.*load-data\/buckets$/);
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {

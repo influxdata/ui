@@ -10,7 +10,6 @@ import {
   ComponentSize,
   ConfirmationButton,
   FlexBox,
-  FlexDirection,
   Heading,
   HeadingElement,
   IconFont,

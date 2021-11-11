@@ -81,7 +81,7 @@ class AddResourceDropdown extends PureComponent<Props> {
     const importOption = this.importOption
     const newOption = this.newOption
     const templateOption = this.templateOption
-    let fromDashboard = this.props.resourceName === 'Dashboard'
+    const fromDashboard = this.props.resourceName === 'Dashboard'
 
     const templateFromDashboard = (
       <Dropdown.Item

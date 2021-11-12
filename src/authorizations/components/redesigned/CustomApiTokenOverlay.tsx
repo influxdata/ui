@@ -74,16 +74,14 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   const [permissions, setPermissions] = useState({})
   const [searchTerm, setSearchTerm] = useState('')
   const [status, setStatus] = useState(ComponentStatus.Disabled)
-
+  
   useEffect(() => {
     props.getBuckets()
     props.getTelegrafs()
   }, [])
 
   useEffect(() => {
-    if (permissions['telegrafs'] && permissions['buckets']) {
-      return
-    }
+
     const perms = {
       otherResources: {read: false, write: false},
     }
@@ -97,7 +95,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       }
     })
     setPermissions(perms)
-  }, [props.telegrafPermissions, props.bucketPermissions])
+  }, [props.remoteDataState])
 
   const handleDismiss = () => {
     props.onClose()
@@ -339,7 +337,6 @@ const mstp = (state: AppState) => {
     ResourceType.Buckets,
     ResourceType.Telegrafs,
   ])
-
   const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
   const telegrafPermissions = {
     read: false,

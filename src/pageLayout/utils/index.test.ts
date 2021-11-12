@@ -21,7 +21,7 @@ describe('pageLayout.utils.getNavItemActivation', () => {
       getNavItemActivation([HOMEPAGE_PATHNAME, 'account'], pathname)
     ).toEqual(true)
 
-    pathname = '/orgs/3491cbaef55b4559/some-path'
+    pathname = '/orgs/3491cbaef55b4559/not-a-path'
     expect(
       getNavItemActivation([HOMEPAGE_PATHNAME, 'account'], pathname)
     ).toEqual(false)
@@ -69,21 +69,6 @@ describe('pageLayout.utils.getNavItemActivation', () => {
 
     given = 'buckets'
     expect(getNavItemActivation([given], `${base}${given}/${given}`)).toEqual(
-      true
-    )
-
-    given = 'telegrafs'
-    expect(getNavItemActivation([given], `${base}/${given}${given}`)).toEqual(
-      false
-    )
-
-    given = 'scrapers'
-    expect(
-      getNavItemActivation([given], `${base}/${given}${given}${given}`)
-    ).toEqual(false)
-
-    given = 'tokens'
-    expect(getNavItemActivation([given], `${base}////////${given}`)).toEqual(
       true
     )
   })

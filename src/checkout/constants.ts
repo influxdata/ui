@@ -1,0 +1,1 @@
+export const PAYG_CREDIT_EXPERIMENT_ID = 'OWMWJ2XjTsW6Wny5AroCCg'

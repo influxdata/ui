@@ -17,6 +17,7 @@ import {
   JustifyContent,
   Panel,
 } from '@influxdata/clockface'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Components
 import ContactForm from 'src/checkout/utils/ContactForm'
@@ -31,6 +32,10 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 
 // Events
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Constants
+import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/checkout/constants'
 
 // Utils
 
@@ -40,7 +45,6 @@ const CheckoutForm: FC = () => {
     zuoraParams,
     handleSubmit,
     setIsDirty,
-    isPaygCreditActive,
     isSubmitting,
   } = useContext(CheckoutContext)
 
@@ -87,11 +91,17 @@ const CheckoutForm: FC = () => {
                 </a>
                 .
               </p>
-              {isPaygCreditActive && (
-                <div className="checkout-form--banner">
-                  <strong className="checkout-banner--credit">$250</strong>
-                  <p>credit applied</p>
-                </div>
+
+              {isFlagEnabled('paygCheckoutCredit') && (
+                <GoogleOptimizeExperiment
+                  experimentID={PAYG_CREDIT_EXPERIMENT_ID}
+                  variants={[
+                    <div className="checkout-form--banner">
+                      <strong className="checkout-banner--credit">$250</strong>
+                      <p>credit applied</p>
+                    </div>,
+                  ]}
+                />
               )}
             </Panel.Body>
           </Panel>

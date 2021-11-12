@@ -1,7 +1,10 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
+
+// Components
+import {getExperimentVariantId} from 'src/cloud/utils/experiments'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
@@ -23,6 +26,7 @@ import {
   BALANCE_THRESHOLD_DEFAULT,
   EMPTY_ZUORA_PARAMS,
 } from 'src/shared/constants'
+import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/checkout/constants'
 
 // Types
 import {CreditCardParams, RemoteDataState} from 'src/types'
@@ -252,12 +256,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     return errs.length
   }
 
-  const isPaygCreditActive = useMemo(() => {
-    const query = new URLSearchParams(window.location.search)
-
-    const hasSignup = query.get('signup')
-    return !!hasSignup && isFlagEnabled('paygCheckoutCredit')
-  }, [])
+  const isPaygCreditActive =
+    isFlagEnabled('paygCheckoutCredit') &&
+    getExperimentVariantId(PAYG_CREDIT_EXPERIMENT_ID) === '1'
 
   const handleSubmit = useCallback(
     async (paymentMethodId: string) => {

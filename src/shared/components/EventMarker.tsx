@@ -58,9 +58,14 @@ const EventMarker: FC<Props> = ({xScale, xDomain, events, xFormatter}) => {
   return (
     isInDomain(time, xDomain) && (
       <>
-        <div className={markerClass} style={style}>
+        <div
+          className={markerClass}
+          style={style}
+          data-testid={`event-marker--line--${level}`}
+        >
           <div
             className="event-marker--line-rect"
+            data-testid={`event-marker--rect--${level}`}
             ref={trigger}
             onMouseOver={() => {
               setTooltipVisible(true)

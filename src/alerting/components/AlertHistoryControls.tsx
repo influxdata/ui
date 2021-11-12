@@ -39,6 +39,7 @@ const AlertHistoryControls: FC<Props> = ({
             onClick={() => onSetHistoryType('statuses')}
             titleText="View Status History"
             active={historyType === 'statuses'}
+            testID="alert-history-statuses--radio"
           >
             Statuses
           </SelectGroup.Option>
@@ -49,6 +50,7 @@ const AlertHistoryControls: FC<Props> = ({
             onClick={() => onSetHistoryType('notifications')}
             titleText="View Notification History"
             active={historyType === 'notifications'}
+            testID="alert-history-notifications--radio"
           >
             Notifications
           </SelectGroup.Option>

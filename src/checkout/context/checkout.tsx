@@ -26,7 +26,7 @@ import {
   BALANCE_THRESHOLD_DEFAULT,
   EMPTY_ZUORA_PARAMS,
 } from 'src/shared/constants'
-import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/checkout/constants'
+import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
 import {CreditCardParams, RemoteDataState} from 'src/types'

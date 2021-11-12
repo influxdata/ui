@@ -35,7 +35,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
-import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/checkout/constants'
+import { PAYG_CREDIT_EXPERIMENT_ID } from 'src/shared/constants'
+
 
 // Utils
 

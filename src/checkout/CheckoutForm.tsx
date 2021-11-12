@@ -96,7 +96,7 @@ const CheckoutForm: FC = () => {
                 <GoogleOptimizeExperiment
                   experimentID={PAYG_CREDIT_EXPERIMENT_ID}
                   variants={[
-                    <div className="checkout-form--banner">
+                    <div className="checkout-form--banner" key='checkout-form-banner'>
                       <strong className="checkout-banner--credit">$250</strong>
                       <p>credit applied</p>
                     </div>,

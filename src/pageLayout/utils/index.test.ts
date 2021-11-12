@@ -31,7 +31,7 @@ describe('pageLayout.utils.getNavItemActivation', () => {
       false
     )
 
-    pathname = '/new/meme/reviews'
+    pathname = '/new/superb/reviews'
     expect(
       getNavItemActivation([HOMEPAGE_PATHNAME, 'account'], pathname)
     ).toEqual(false)

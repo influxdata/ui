@@ -71,5 +71,8 @@ describe('pageLayout.utils.getNavItemActivation', () => {
     expect(getNavItemActivation([given], `${base}${given}/${given}`)).toEqual(
       true
     )
+
+    given = 'notebook/from'
+    expect(getNavItemActivation([given], `${base}${given}`)).toEqual(true)
   })
 })

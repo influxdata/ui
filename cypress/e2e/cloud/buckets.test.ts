@@ -29,6 +29,8 @@ const testSchemaFiles = (
 
   cy.getByTestID('bucket-form-submit').click()
 
+  // todo:  find a way to check that the dialog is closed
+
   cy.getByTestID(`bucket-card explicit_bucket`)
     .should('exist')
     .within(() => {
@@ -55,6 +57,14 @@ const testSchemaFiles = (
     .trigger('drop', event)
 
   cy.getByTestID('bucket-form-submit').click()
+
+  // in settings:
+  // give it some time for the submit to happen/the bucket list to show up
+  // check the url to make sure it has navigated back to the main buckets list
+  cy.location('pathname', {timeout: 60000}).should(
+    'match',
+    /.*load-data\/buckets$/
+  )
 
   cy.getByTestID(`bucket-card explicit_bucket`)
     .should('exist')
@@ -115,6 +125,8 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('bucket-form-submit').click()
     })
 
+    // find a way to see that the overlay closed (todo)
+
     cy.getByTestID('bucket-card explicit-bucket-test').within($card => {
       expect($card.length).to.equal(1)
 
@@ -162,6 +174,8 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('bucket-form-submit').click()
     })
 
+    // find a way to see that the overlay closed (todo)
+
     cy.getByTestID('bucket-card implicit-bucket-test').within($card => {
       expect($card.length).to.equal(1)
 
@@ -186,7 +200,7 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('measurement-schema-section-parent').should('not.exist')
     })
   })
-  it.only('should be able to create an explicit bucket using one schema file', function() {
+  it('should be able to create an explicit bucket using one schema file', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()
@@ -209,14 +223,11 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('dndContainer')
       .trigger('dragover', event)
       .trigger('drop', event)
-
+    cy.pause()
     cy.getByTestID('bucket-form-submit').click()
 
-    // give it some time for the submit to happen/the bucket list to show up
-      //console.log("url now??? ack-before wait", cy.url())
-    cy.wait(500)
-      cy.location('pathname', {timeout: 60000})
-          .should('match', /.*load-data\/buckets$/);
+    // todo:  find out how to make sure the overlay is closed!
+
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
@@ -288,6 +299,8 @@ fsRead,field,float`
 
     cy.getByTestID('bucket-form-submit').click()
 
+    // todo:  find out how to make sure the overlay is closed!
+
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
@@ -317,6 +330,15 @@ fsRead,field,float`
       .trigger('drop', event)
 
     cy.getByTestID('bucket-form-submit').click()
+
+    // in settings:
+    // b/c editing has a different url, this *should* work
+    // give it some time for the submit to happen/the bucket list to show up
+    // check the url to make sure it has navigated back to the main buckets list
+    cy.location('pathname', {timeout: 60000}).should(
+      'match',
+      /.*load-data\/buckets$/
+    )
 
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
@@ -398,6 +420,14 @@ fsRead,field,float`
           .trigger('drop', validFileEvent)
       })
     cy.getByTestID('bucket-form-submit').click()
+
+    // in settings:
+    // give it some time for the submit to happen/the bucket list to show up
+    // check the url to make sure it has navigated back to the main buckets list
+    cy.location('pathname', {timeout: 60000}).should(
+      'match',
+      /.*load-data\/buckets$/
+    )
 
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')

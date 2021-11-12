@@ -8,7 +8,7 @@ export interface TypeLookup {
 }
 
 export const UNPROCESSED_PANEL_TEXT =
-  'This cell will display results from the previous cell after selecting Preview.'
+  'This cell will display results from the previous cell after selecting Run.'
 
 export const PIPE_DEFINITIONS: TypeLookup = {}
 export const PROJECT_NAME: string = 'Notebook'

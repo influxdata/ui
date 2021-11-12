@@ -185,7 +185,7 @@ const FlowPanel: FC<Props> = ({
                     <Button
                       onClick={() => queryDependents(id)}
                       icon={IconFont.Play}
-                      text="Preview"
+                      text="Run"
                     />
                   )}
                 <MenuButton id={id} />

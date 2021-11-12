@@ -29,7 +29,8 @@ const testSchemaFiles = (
 
   cy.getByTestID('bucket-form-submit').click()
 
-  // todo:  find a way to check that the dialog is closed
+  // make sure the overlay is closed!
+  cy.getByTestID('create-bucket-form').should('not.exist')
 
   cy.getByTestID(`bucket-card explicit_bucket`)
     .should('exist')
@@ -125,7 +126,8 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('bucket-form-submit').click()
     })
 
-    // find a way to see that the overlay closed (todo)
+    // make sure the overlay is closed!
+    cy.getByTestID('create-bucket-form').should('not.exist')
 
     cy.getByTestID('bucket-card explicit-bucket-test').within($card => {
       expect($card.length).to.equal(1)
@@ -174,7 +176,8 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('bucket-form-submit').click()
     })
 
-    // find a way to see that the overlay closed (todo)
+    // make sure the overlay is closed!
+    cy.getByTestID('create-bucket-form').should('not.exist')
 
     cy.getByTestID('bucket-card implicit-bucket-test').within($card => {
       expect($card.length).to.equal(1)
@@ -223,10 +226,11 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('dndContainer')
       .trigger('dragover', event)
       .trigger('drop', event)
-    cy.pause()
+
     cy.getByTestID('bucket-form-submit').click()
 
-    // todo:  find out how to make sure the overlay is closed!
+    // make sure the overlay is closed!
+    cy.getByTestID('create-bucket-form').should('not.exist')
 
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
@@ -299,7 +303,8 @@ fsRead,field,float`
 
     cy.getByTestID('bucket-form-submit').click()
 
-    // todo:  find out how to make sure the overlay is closed!
+    // make sure the overlay is closed!
+    cy.getByTestID('create-bucket-form').should('not.exist')
 
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')

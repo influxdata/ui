@@ -8,3 +8,10 @@
 .submit-btn span {
   margin-right: 0.6em;
 }
+
+.warning-icon {
+  color: $c-thunder;
+  &:hover {
+    color: $c-pineapple;
+  }
+}

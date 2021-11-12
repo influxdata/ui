@@ -89,6 +89,7 @@ const testSchemaFiles = (
             .should('exist')
 
           cy.getByTestID('measurement-schema-download-button').click()
+
           checkContents(cy)
         })
     })
@@ -278,7 +279,7 @@ describe('Explicit Buckets', () => {
     testSchemaFiles(cy, false, origFileContents, checkContents)
   })
 
-  it('should be able to create an explicit bucket and add csv schema file during editing', function() {
+  it.only('should be able to create an explicit bucket and add csv schema file during editing', function() {
     const origFileContents = `name,type,dataType
 time,timestamp,
 host,tag,

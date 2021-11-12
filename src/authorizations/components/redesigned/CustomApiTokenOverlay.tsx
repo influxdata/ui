@@ -74,14 +74,13 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   const [permissions, setPermissions] = useState({})
   const [searchTerm, setSearchTerm] = useState('')
   const [status, setStatus] = useState(ComponentStatus.Disabled)
-  
+
   useEffect(() => {
     props.getBuckets()
     props.getTelegrafs()
   }, [])
 
   useEffect(() => {
-
     const perms = {
       otherResources: {read: false, write: false},
     }

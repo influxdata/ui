@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {createRef, PureComponent, RefObject} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
@@ -21,13 +21,15 @@ import {
   FlexDirection,
   JustifyContent,
   ComponentColor,
-  Button,
   ResourceCard,
   IconFont,
   ButtonShape,
+  Appearance,
+  ConfirmationButton,
+  List,
+  Popover,
+  SquareButton,
 } from '@influxdata/clockface'
-
-import {Context} from 'src/clockface'
 
 // Types
 import {Authorization, AppState} from 'src/types'
@@ -86,33 +88,46 @@ class TokensRow extends PureComponent<Props> {
   }
 
   private get contextMenu(): JSX.Element {
-    return (
-      <Context>
-        <FlexBox margin={ComponentSize.Medium}>
-          <Button
-            icon={IconFont.Duplicate}
-            color={ComponentColor.Secondary}
-            text="Clone"
-            onClick={this.handleClone}
-            testID="clone-token"
-            size={ComponentSize.ExtraSmall}
-          />
+    const settingsRef: RefObject<HTMLButtonElement> = createRef()
 
-          <Context.Menu
-            icon={IconFont.Trash_New}
-            color={ComponentColor.Danger}
-            text="Delete"
-            shape={ButtonShape.StretchToFit}
-            size={ComponentSize.ExtraSmall}
-          >
-            <Context.Item
-              label="Confirm"
-              action={this.handleDelete}
-              testID="delete-token"
-            />
-          </Context.Menu>
-        </FlexBox>
-      </Context>
+    return (
+      <FlexBox margin={ComponentSize.ExtraSmall}>
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, delete this dashboard"
+          onConfirm={this.handleDelete}
+          confirmationButtonText="Confirm"
+          testID="context-delete-menu"
+        />
+        <SquareButton
+          ref={settingsRef}
+          size={ComponentSize.ExtraSmall}
+          icon={IconFont.CogSolid_New}
+          color={ComponentColor.Colorless}
+          testID="context-menu-token"
+        />
+        <Popover
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          style={{minWidth: '112px'}}
+          contents={() => (
+            <List>
+              <List.Item
+                onClick={this.handleClone}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-clone-token"
+              >
+                Clone
+              </List.Item>
+            </List>
+          )}
+          triggerRef={settingsRef}
+        />
+      </FlexBox>
     )
   }
 

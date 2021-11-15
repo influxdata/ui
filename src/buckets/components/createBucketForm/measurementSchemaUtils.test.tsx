@@ -7,7 +7,7 @@ import {
   areSchemaUpdatesValid,
   csvToObjectArray,
   toCsvString,
-} from './MeasurementSchemaUtils'
+} from './measurementSchemaUtils'
 
 const oneColumns = [
   {name: 'time', type: 'timestamp'},

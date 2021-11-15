@@ -14,6 +14,9 @@ import {getAllResources} from 'src/authorizations/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 type GenerateTokenProps = RouteComponentProps
 type ReduxProps = ConnectedProps<typeof connector>
 
@@ -29,14 +32,17 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
 
   const handleAllAccess = () => {
     showOverlay('add-master-token', null, dismissOverlay)
+    event('all access overlay accessed')
   }
 
   const handleCustomApi = async () => {
     try {
       await getAllResources()
       showOverlay('add-custom-token', null, dismissOverlay)
+      event('custom API overlay accessed')
     } catch (e) {
       dispatch(notify(getResourcesTokensFailure()))
+      event('custom API overlay failed to open')
     }
   }
 

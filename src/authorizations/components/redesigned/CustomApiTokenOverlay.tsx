@@ -46,6 +46,7 @@ import {
   formatResources,
   generateDescription,
 } from 'src/authorizations/utils/permissions'
+import {event} from 'src/cloud/utils/reporting'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
@@ -243,9 +244,11 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
     try {
       await createAuthorization(token)
+      event('customApiToken.create.success', {description})
       showOverlay('access-token', null, () => dismissOverlay())
     } catch (e) {
       setStatus(ComponentStatus.Disabled)
+      event('customApiToken.create.failure', {description})
     }
   }
 

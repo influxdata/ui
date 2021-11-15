@@ -117,7 +117,6 @@ const EditTokenOverlay: FC<Props> = props => {
     } catch {
       event('token.edit.failure', {id: auth.id})
     }
-    
   }
 
   return (

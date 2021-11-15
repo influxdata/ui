@@ -142,7 +142,7 @@ class TokensRow extends PureComponent<Props> {
     const allTokenDescriptions = Object.values(this.props.authorizations).map(
       auth => auth.description
     )
-    
+
     try {
       await this.props.createAuthorization({
         ...this.props.auth,
@@ -153,7 +153,6 @@ class TokensRow extends PureComponent<Props> {
     } catch {
       event('token.clone.failure', {id: this.props.auth.id, name: description})
     }
-    
   }
 
   private handleClickDescription = () => {
@@ -165,7 +164,10 @@ class TokensRow extends PureComponent<Props> {
   private handleUpdateName = (value: string) => {
     const {auth, updateAuthorization} = this.props
     updateAuthorization({...auth, description: value})
-    event('token.desciption.edited', {id: this.props.auth.id, description: value})
+    event('token.desciption.edited', {
+      id: this.props.auth.id,
+      description: value,
+    })
   }
 }
 

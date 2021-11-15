@@ -60,7 +60,7 @@ const PinnedItems: FC = () => {
     await deletePinnedItemsHelper(itemId)
   }
   const EmptyState = () => (
-    <Heading element={HeadingElement.H5} data-testid="pinneditems--emptystate">
+    <Heading element={HeadingElement.H5} testID="pinneditems--emptystate">
       Pin a task, dashboard, or notebook here
     </Heading>
   )
@@ -83,7 +83,6 @@ const PinnedItems: FC = () => {
               key={item.id}
               testID="pinneditems--card"
               className="pinned-items--card"
-              contextMenuInteraction="showOnHover"
               contextMenu={
                 <FlexBox margin={ComponentSize.ExtraSmall}>
                   <ConfirmationButton

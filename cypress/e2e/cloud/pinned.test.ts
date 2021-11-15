@@ -101,7 +101,7 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('pinneditems-delete--menu').click()
+          cy.getByTestID('pinneditems-delete--menu--button').click()
           cy.getByTestID('pinneditems-delete--menu--confirm-button').click()
         })
       cy.getByTestID('pinneditems--emptystate').should(

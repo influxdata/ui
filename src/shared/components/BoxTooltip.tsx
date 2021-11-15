@@ -83,6 +83,7 @@ const BoxTooltip: FunctionComponent<Props> = ({
       className={`box-tooltip box-tooltip__${color}`}
       ref={ref}
       style={{maxWidth}}
+      data-testid="box-tooltip"
     >
       {children}
       <div className="box-tooltip--caret-container">

@@ -43,6 +43,7 @@ const EventMarkerTooltip: FunctionComponent<Props> = ({events}) => {
                   <div
                     className="event-marker-tooltip--cell"
                     style={calculateLevelStyle(level, colName === 'level')}
+                    data-testid={`event-marker-tooltip--cell ${colName}`}
                   >
                     {event[colName]}
                   </div>

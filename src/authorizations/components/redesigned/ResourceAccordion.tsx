@@ -49,7 +49,8 @@ class ResourceAccordion extends Component<OwnProps> {
               <DapperScrollbars
                 autoHide={true}
                 autoSize={true}
-                style={{width: '100%', maxHeight: '300px'}}
+                // this width is max-width of modal - padding left and right
+                style={{width: '100%', maxWidth: '752px', maxHeight: '300px'}}
               >
                 <AllAccordionBody
                   resourceName={resourceName}
@@ -70,7 +71,8 @@ class ResourceAccordion extends Component<OwnProps> {
           <DapperScrollbars
             autoHide={true}
             autoSize={true}
-            style={{width: '100%', maxHeight: '300px'}}
+            // this width is max-width of modal - padding left and right
+            style={{width: '100%', maxWidth: '752px', maxHeight: '300px'}}
           >
             <AllAccordionBody
               resourceName="Other Resources"

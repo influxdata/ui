@@ -26,9 +26,14 @@ const ThresholdMarker: FunctionComponent<Props> = ({
 
   return (
     <>
-      <div className={`threshold-marker--line ${levelClass}`} style={style} />
+      <div
+        className={`threshold-marker--line ${levelClass}`}
+        style={style}
+        data-testid={`threshold-marker-line--${level.toLowerCase()}`}
+      />
       <div
         className={`threshold-marker--handle ${levelClass}`}
+        data-testid={`threshold-marker--handle--${level.toLowerCase()}`}
         style={style}
         {...dragTargetProps}
         onMouseUp={onMouseUp}

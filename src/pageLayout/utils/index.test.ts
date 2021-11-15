@@ -21,7 +21,7 @@ describe('pageLayout.utils.getNavItemActivation', () => {
       getNavItemActivation([HOMEPAGE_PATHNAME, 'account'], pathname)
     ).toEqual(true)
 
-    pathname = '/orgs/3491cbaef55b4559/some-path'
+    pathname = '/orgs/3491cbaef55b4559/not-a-path'
     expect(
       getNavItemActivation([HOMEPAGE_PATHNAME, 'account'], pathname)
     ).toEqual(false)
@@ -31,7 +31,7 @@ describe('pageLayout.utils.getNavItemActivation', () => {
       false
     )
 
-    pathname = '/new/meme/reviews'
+    pathname = '/new/superb/reviews'
     expect(
       getNavItemActivation([HOMEPAGE_PATHNAME, 'account'], pathname)
     ).toEqual(false)
@@ -72,19 +72,7 @@ describe('pageLayout.utils.getNavItemActivation', () => {
       true
     )
 
-    given = 'telegrafs'
-    expect(getNavItemActivation([given], `${base}/${given}${given}`)).toEqual(
-      false
-    )
-
-    given = 'scrapers'
-    expect(
-      getNavItemActivation([given], `${base}/${given}${given}${given}`)
-    ).toEqual(false)
-
-    given = 'tokens'
-    expect(getNavItemActivation([given], `${base}////////${given}`)).toEqual(
-      true
-    )
+    given = 'notebook/from'
+    expect(getNavItemActivation([given], `${base}${given}`)).toEqual(true)
   })
 })

@@ -188,7 +188,7 @@ const Sidebar: FC = () => {
 
             event('Convert Cell To Flux', {from: type})
 
-            const {source, visual} = getPanelQueries(id, true)
+            const {source, visual} = getPanelQueries(id)
 
             const init = JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)

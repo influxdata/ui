@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
@@ -27,9 +27,11 @@ import {Authorization} from 'src/types'
 
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
+import {getTelegraf} from 'src/telegrafs/actions/thunks'
 
 // Utills
 import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
+import _ from 'lodash'
 interface OwnProps {
   auth: Authorization
   onDismissOverlay: () => void
@@ -51,6 +53,32 @@ const EditTokenOverlay: FC<Props> = props => {
     props.auth.status === 'active'
   )
   const [label, setlabel] = useState(props.auth.status)
+  const [permissions, setPermissions] = useState([])
+
+  useEffect(() => {
+    if (_.isEmpty(permissions)) {
+      formatPermissions()
+    }
+  }, [])
+
+  const formatPermissions = async () => {
+    const {
+      auth: {permissions},
+    } = props
+    const newPerms = permissions
+
+    for (let i = 0; i < permissions.length; i++) {
+      const name = permissions[i].resource.name
+      if (!name) {
+        if (permissions[i].resource.type === 'telegrafs') {
+          const telegraf = await props.getTelegraf(permissions[i].resource.id)
+          newPerms[i].resource.name = telegraf
+        }
+      }
+    }
+
+    setPermissions(newPerms)
+  }
 
   const handleInputChange = event => {
     setDescription(event.target.value)
@@ -148,7 +176,7 @@ const EditTokenOverlay: FC<Props> = props => {
               </FlexBox.Child>
             </FlexBox>
             <EditResourceAccordion
-              permissions={formatPermissionsObj(props.auth.permissions)}
+              permissions={formatPermissionsObj(permissions)}
             />
           </FlexBox.Child>
           <Page.ControlBarCenter>
@@ -176,6 +204,7 @@ const EditTokenOverlay: FC<Props> = props => {
 
 const mdtp = {
   updateAuthorization,
+  getTelegraf,
 }
 
 const connector = connect(null, mdtp)

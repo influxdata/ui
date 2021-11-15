@@ -43,7 +43,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {
   areNewSchemasValid,
   areSchemaUpdatesValid,
-} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
+} from 'src/buckets/components/createBucketForm/measurementSchemaUtils'
 
 import {SchemaUpdateInfo} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
 

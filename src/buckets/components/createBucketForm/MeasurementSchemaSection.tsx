@@ -29,7 +29,8 @@ import {
   isNameValid,
   getColumnsFromFile,
   toCsvString,
-} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
+} from 'src/buckets/components/createBucketForm/measurementSchemaUtils'
+
 import {downloadTextFile} from 'src/shared/utils/download'
 import {
   DownloadTypes,

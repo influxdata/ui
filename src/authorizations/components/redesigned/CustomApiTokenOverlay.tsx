@@ -1,6 +1,7 @@
 import React, {FC, useState, useContext, useEffect} from 'react'
 import {connect} from 'react-redux'
 import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
+import {isEmpty} from 'lodash'
 
 // Actions
 import {getBuckets} from 'src/buckets/actions/thunks'
@@ -81,19 +82,21 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }, [])
 
   useEffect(() => {
-    const perms = {
-      otherResources: {read: false, write: false},
-    }
-    props.allResources.forEach(resource => {
-      if (resource === 'telegrafs') {
-        perms[resource] = props.telegrafPermissions
-      } else if (resource === 'buckets') {
-        perms[resource] = props.bucketPermissions
-      } else {
-        perms[resource] = {read: false, write: false}
+    if (!isEmpty(props.bucketPermissions.sublevelPermissions)) {
+      const perms = {
+        otherResources: {read: false, write: false},
       }
-    })
-    setPermissions(perms)
+      props.allResources.forEach(resource => {
+        if (resource === 'telegrafs') {
+          perms[resource] = props.telegrafPermissions
+        } else if (resource === 'buckets') {
+          perms[resource] = props.bucketPermissions
+        } else {
+          perms[resource] = {read: false, write: false}
+        }
+      })
+      setPermissions(perms)
+    }
   }, [props.remoteDataState])
 
   const handleDismiss = () => {

@@ -63,6 +63,7 @@ function addTheme(monaco: MonacoType) {
       'editor.lineHighlightBackground': '#353640',
       'editorCursor.foreground': '#ffffff',
       'editorActiveLineNumber.foreground': '#bec2cc',
+      'minimap.background': InfluxColors.Grey15,
     },
   })
 }

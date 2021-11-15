@@ -39,6 +39,7 @@ import {
   useVisXDomainSettings,
   useVisYDomainSettings,
 } from 'src/visualization/utils/useVisDomainSettings'
+import {colorMappingCallback, mapSeriesToColor} from 'src/visualization/utils/colorMapping'
 import {
   geomToInterpolation,
   filterNoisyColumns,
@@ -108,6 +109,16 @@ const XYPlot: FC<Props> = ({
     result,
   ])
 
+  const [fillColumn, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
+  const colorMapping = mapSeriesToColor(fillColumnMap, properties)
+
+  // if (!localStorage.getItem('colorMapping')) {
+
+
+  //   console.log('colorMapping', colorMapping)
+  // }
+  // const colorMapping = localStorage.getItem('colorMapping')
+
   const col = result.table.columns[xColumn]
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
@@ -116,18 +127,20 @@ const XYPlot: FC<Props> = ({
   )
 
   const memoizedYColumnData = useMemo(() => {
-    if (properties.position === 'stacked') {
+    // if (properties.position === 'stacked') {
       const {lineData} = lineTransform(
         result.table,
         xColumn,
         yColumn,
         groupKey,
         colorHexes,
-        properties.position
+        properties.position,
+        colorMapping,
+        colorMappingCallback
       )
-      const [fillColumn] = createGroupIDColumn(result.table, groupKey)
+      // const [fillColumn, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
       return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
-    }
+    // }
     const col = result.table.columns[yColumn]
     return col.type === 'number' ? col.data : null
   }, [

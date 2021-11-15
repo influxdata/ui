@@ -87,7 +87,7 @@ describe('Pinned Items', () => {
       })
     })
 
-    it.only('unpins a card which removes it from the pinned list', () => {
+    it('unpins a card which removes it from the pinned list', () => {
       cy.getByTestID('dashboard-card')
         .first()
         .within(() => {

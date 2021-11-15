@@ -97,9 +97,9 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       })
       setPermissions(perms)
     }
-    // Each time remoteDataState changes, the useEffect hook will be called. 
-    // BUT, code inside the hook won't run until remoteDataState is 'Done'. 
-    // Only then will props.bucketPermissions.sublevelPermissions will have value. 
+    // Each time remoteDataState changes, the useEffect hook will be called.
+    // BUT, code inside the hook won't run until remoteDataState is 'Done'.
+    // Only then will props.bucketPermissions.sublevelPermissions will have value.
     // Consequently, we update the permissions state.
   }, [props.remoteDataState])
 

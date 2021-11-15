@@ -187,7 +187,7 @@
     "memoize-one": "^4.0.2",
     "monaco-editor": "^0.21.0",
     "monaco-editor-textmate": "^2.2.1",
-    "monaco-editor-webpack-plugin": "^1.8.2",
+    "monaco-editor-webpack-plugin": "^2.1.0",
     "monaco-languageclient": "^0.11.0",
     "monaco-textmate": "^3.0.1",
     "normalizr": "^3.4.1",

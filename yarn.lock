@@ -7580,12 +7580,12 @@ monaco-editor-textmate@^2.2.1:
   resolved "https://registry.yarnpkg.com/monaco-editor-textmate/-/monaco-editor-textmate-2.2.1.tgz#93f3f1932061dd2311b92a42ea1c027cfeb3e439"
   integrity sha512-RYTNNfvyjK15M0JA8WIi9UduU10eX5724UGNKnaA8MSetehjThGENctUTuKaxPk/k3pq59QzaQ/C06A44iJd3Q==
 
-monaco-editor-webpack-plugin@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.8.2.tgz#3721b8d9a3e2e41b154cf2a2955a7d7246c03714"
-  integrity sha512-g9G7A/lxQtpPsYaZFBqm73dwVkOziGUXExIR6iW7ksZUaiMkpvdTiE9O8edgdJGo+XtCmjycmIKB1Lt8VKbSTQ==
+monaco-editor-webpack-plugin@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-2.1.0.tgz#216bd35512a282beac7befd2fcdc5adb110403ff"
+  integrity sha512-DG7Dpo/ItWEOl/BG2egc/UIiHoCbHjq0EOF0E6eJQT+6QNZBOfSVU4GxaXG+kQJXB8rauxli96Xp1ITnNLZtSw==
   dependencies:
-    loader-utils "^1.2.3"
+    loader-utils "^2.0.0"
 
 monaco-editor@^0.21.0:
   version "0.21.3"

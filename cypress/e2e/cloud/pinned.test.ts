@@ -87,7 +87,7 @@ describe('Pinned Items', () => {
       })
     })
 
-    it('unpins a card which removes it from the pinned list', () => {
+    it.only('unpins a card which removes it from the pinned list', () => {
       cy.getByTestID('dashboard-card')
         .first()
         .within(() => {
@@ -102,8 +102,8 @@ describe('Pinned Items', () => {
         .trigger('mouseover')
         .within(() => {
           cy.getByTestID('pinneditems-delete--menu--button').click()
-          cy.getByTestID('pinneditems-delete--menu--confirm-button').click()
         })
+      cy.getByTestID('pinneditems-delete--menu--confirm-button').click()
       cy.getByTestID('pinneditems--emptystate').should(
         'contain.text',
         'Pin a task, dashboard, or notebook here'

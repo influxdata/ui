@@ -1,9 +1,6 @@
 // Libraries
 import {normalize} from 'normalizr'
 
-// API
-import {client} from 'src/utils/api'
-
 // Schemas
 import {arrayOfScrapers, scraperSchema} from 'src/schemas'
 
@@ -40,6 +37,20 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getStatus} from 'src/resources/selectors'
 
+import {CLOUD} from 'src/shared/constants'
+
+let postScraper = null
+let deleteScraperApi = null
+let getAllScrapers = null
+let patchScraper = null
+
+if (!CLOUD) {
+  postScraper = require('src/client').postScraper
+  deleteScraperApi = require('src/client').deleteScraper
+  getAllScrapers = require('src/client').getScrapers
+  patchScraper = require('src/client').patchScraper
+}
+
 type Action = ScraperAction | NotifyAction
 
 export const getScrapers = () => async (
@@ -57,7 +68,7 @@ export const getScrapers = () => async (
 
     dispatch(setScrapers(RemoteDataState.Loading))
 
-    const resp = await client.scrapers.getAll(org.id)
+    const resp = await getAllScrapers({query: {orgID: org.id}})
 
     const normalized = normalize<Scraper, ScraperEntities, string[]>(
       resp,
@@ -75,7 +86,7 @@ export const createScraper = (scraper: Scraper) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    const resp = await client.scrapers.create(scraper)
+    const resp = await postScraper({data: {scraper}})
 
     const normalized = normalize<Scraper, ScraperEntities, string>(
       resp,
@@ -94,7 +105,10 @@ export const updateScraper = (scraper: Scraper) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    const resp = await client.scrapers.update(scraper.id, scraper)
+    const resp = await patchScraper({
+      scraperTargetID: scraper.id,
+      data: scraper,
+    })
     const normalized = normalize<Scraper, ScraperEntities, string>(
       resp,
       scraperSchema
@@ -112,7 +126,7 @@ export const deleteScraper = (scraper: Scraper) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    await client.scrapers.delete(scraper.id)
+    await deleteScraperApi({scraperTargetID: scraper.id})
 
     dispatch(removeScraper(scraper.id))
     dispatch(notify(scraperDeleteSuccess(scraper.name)))

@@ -18,7 +18,6 @@ import {ossMetricsTemplate} from 'src/templates/constants/defaultTemplates'
 
 // APIs
 import {getDashboards} from 'src/organizations/apis'
-import {client} from 'src/utils/api'
 import {createDashboardFromTemplate as createDashboardFromTemplateAJAX} from 'src/templates/api'
 
 // Types
@@ -34,7 +33,13 @@ import {Dashboard} from 'src/types'
 import {ScraperTargetRequest} from '@influxdata/influx'
 import {OnboardingStepProps} from 'src/onboarding/containers/OnboardingWizard'
 import {QUICKSTART_SCRAPER_TARGET_URL} from 'src/dataLoaders/constants/pluginConfigs'
+import {CLOUD} from 'src/shared/constants'
 
+let createScraper = null
+
+if (!CLOUD) {
+  createScraper = require('src/client').postScraper
+}
 interface Props extends OnboardingStepProps {
   orgID: string
   bucketID: string
@@ -134,12 +139,14 @@ class CompletionStep extends PureComponent<Props> {
 
   private handleQuickStart = async () => {
     try {
-      await client.scrapers.create({
-        name: 'new target',
-        type: ScraperTargetRequest.TypeEnum.Prometheus,
-        url: QUICKSTART_SCRAPER_TARGET_URL,
-        bucketID: this.props.bucketID,
-        orgID: this.props.orgID,
+      await createScraper({
+        data: {
+          name: 'new target',
+          type: ScraperTargetRequest.TypeEnum.Prometheus,
+          url: QUICKSTART_SCRAPER_TARGET_URL,
+          bucketID: this.props.bucketID,
+          orgID: this.props.orgID,
+        },
       })
       this.props.notify(QuickstartScraperCreationSuccess)
     } catch (err) {

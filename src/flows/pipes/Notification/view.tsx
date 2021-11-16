@@ -55,7 +55,6 @@ import {
   testNotificationSuccess,
   testNotificationFailure,
 } from 'src/shared/copy/notifications'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'

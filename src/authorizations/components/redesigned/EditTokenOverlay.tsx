@@ -31,11 +31,8 @@ import {getTelegraf} from 'src/telegrafs/actions/thunks'
 
 // Utills
 import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
-<<<<<<< HEAD
 import _ from 'lodash'
-=======
 import {event} from 'src/cloud/utils/reporting'
->>>>>>> 61ffd2153 (feat: metrics added to tokens redesign)
 interface OwnProps {
   auth: Authorization
   onDismissOverlay: () => void
@@ -103,15 +100,21 @@ const EditTokenOverlay: FC<Props> = props => {
     }
   }
 
-  const onSave = () => {
+  const onSave = async () => {
     const {auth, updateAuthorization} = props
 
-    updateAuthorization({
-      ...auth,
-      description: description,
-      status: togglestatus ? 'active' : 'inactive',
-    })
-    handleDismiss()
+    try {
+      await updateAuthorization({
+        ...auth,
+        description: description,
+        status: togglestatus ? 'active' : 'inactive',
+      })
+      event('token.edit.success', {id: auth.id, name: description})
+      handleDismiss()
+    } catch {
+      event('token.edit.failure', {id: auth.id})
+    }
+    
   }
 
   return (

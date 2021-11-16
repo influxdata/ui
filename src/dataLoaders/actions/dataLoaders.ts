@@ -58,6 +58,15 @@ import {
   TelegrafConfigCreationSuccess,
   TokenCreationError,
 } from 'src/shared/copy/notifications'
+import {CLOUD} from 'src/shared/constants'
+
+let createScraper = null
+let updateScraper = null
+
+if (!CLOUD) {
+  createScraper = require('src/client').postScraper
+  updateScraper = require('src/client').patchScraper
+}
 
 const DEFAULT_COLLECTION_INTERVAL = 10000
 
@@ -624,14 +633,16 @@ export const saveScraperTarget = () => async (
 
   try {
     if (id) {
-      await client.scrapers.update(id, {url, bucketID})
+      await updateScraper({scraperTargetID: id, data: {url, bucketID}})
     } else {
-      const newTarget = await client.scrapers.create({
-        name,
-        type: ScraperTargetRequest.TypeEnum.Prometheus,
-        url,
-        bucketID,
-        orgID,
+      const newTarget = await createScraper({
+        data: {
+          name,
+          type: ScraperTargetRequest.TypeEnum.Prometheus,
+          url,
+          bucketID,
+          orgID,
+        },
       })
       dispatch(setScraperTargetID(newTarget.id))
     }

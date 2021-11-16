@@ -148,7 +148,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('cancel-cell-edit--button').click()
       })
 
-      const queriesMade = cy.state('requests').filter((call: any) => {
+      const queriesMade = cy.state('requests')?.filter((call: any) => {
         call.alias === 'refreshQuery'
       }).length
 

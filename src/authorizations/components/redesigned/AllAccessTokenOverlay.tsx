@@ -55,7 +55,7 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
     }
     dispatch(createAuthorization(token))
     handleDismiss()
-    event('token.allAccess.success', {meID, name: description})
+    event('token.allAccess.create.success', {meID, name: description})
     dispatch(showOverlay('access-token', null, () => dismissOverlay()))
   }
 

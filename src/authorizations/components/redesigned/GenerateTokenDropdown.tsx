@@ -32,17 +32,17 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
 
   const handleAllAccess = () => {
     showOverlay('add-master-token', null, dismissOverlay)
-    event('all access overlay accessed')
+    event('generate_token_dropdown.all_access_overlay.opened')
   }
 
   const handleCustomApi = async () => {
     try {
       await getAllResources()
       showOverlay('add-custom-token', null, dismissOverlay)
-      event('custom API overlay accessed')
+      event('generate_token_dropdown.custom_API_token_overlay.opened')
     } catch (e) {
       dispatch(notify(getResourcesTokensFailure()))
-      event('custom API overlay failed to open')
+      event('generate_token_dropdown.custom_API_token_overlay.failed')
     }
   }
 

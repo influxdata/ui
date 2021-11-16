@@ -157,7 +157,7 @@ class TokensRow extends PureComponent<Props> {
 
   private handleClickDescription = () => {
     const {onClickDescription, auth} = this.props
-    event('edit token overlay accessed')
+    event('token_row.edit_overlay.opened')
     onClickDescription(auth.id)
   }
 

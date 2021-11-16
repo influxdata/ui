@@ -32,6 +32,7 @@ import {getTelegraf} from 'src/telegrafs/actions/thunks'
 // Utills
 import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
 import _ from 'lodash'
+import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   auth: Authorization
   onDismissOverlay: () => void
@@ -89,7 +90,7 @@ const EditTokenOverlay: FC<Props> = props => {
 
   const changeToggle = () => {
     setStatus(ComponentStatus.Default)
-
+    event('tokens.status.updated')
     if (togglestatus) {
       setToggleStatus(false)
       setlabel('inactive')

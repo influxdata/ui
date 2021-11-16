@@ -20,7 +20,7 @@ import {setSetupParams, setStepStatus, setupAdmin} from 'src/onboarding/actions'
 import {StepStatus} from 'src/clockface/constants/wizard'
 
 // Types
-import {ISetupParams} from '@influxdata/influx'
+import {OnboardingRequest} from 'src/client'
 import {AppState} from 'src/types'
 
 export interface OnboardingStepProps {
@@ -32,8 +32,8 @@ export interface OnboardingStepProps {
   stepStatuses: StepStatus[]
   stepTitles: string[]
   stepTestIds: string[]
-  setupParams: ISetupParams
-  handleSetSetupParams: (setupParams: ISetupParams) => void
+  setupParams: OnboardingRequest
+  handleSetSetupParams: (setupParams: OnboardingRequest) => void
   notify: typeof notifyAction
   onCompleteSetup: () => void
   onExit: () => void

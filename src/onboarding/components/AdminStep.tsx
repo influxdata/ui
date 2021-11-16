@@ -10,7 +10,7 @@ import OnboardingButtons from 'src/onboarding/components/OnboardingButtons'
 import {setupAdmin} from 'src/onboarding/actions'
 
 // Types
-import {ISetupParams} from '@influxdata/influx'
+import {OnboardingRequest} from 'src/client'
 import {
   Columns,
   IconFont,
@@ -25,7 +25,7 @@ import {OnboardingStepProps} from 'src/onboarding/containers/OnboardingWizard'
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
-interface State extends ISetupParams {
+interface State extends OnboardingRequest {
   confirmPassword: string
   isPassMismatched: boolean
   isPassTooShort: boolean

@@ -2,8 +2,7 @@
 import React, {ReactElement, PureComponent} from 'react'
 import {Switch, Route, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
-
-import {client} from 'src/utils/api'
+import {getMe} from 'src/client'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -95,7 +94,10 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      await client.users.me()
+      const response = await getMe({})
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
+      }
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')
       if (redirectIsSet) {

@@ -4,7 +4,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
 // APIs
-import {client} from 'src/utils/api'
+import {getSetup} from 'src/client'
 
 // Actions
 import {dismissAllNotifications} from 'src/shared/actions/notifications'
@@ -44,7 +44,8 @@ class SigninPage extends PureComponent<Props, State> {
     }
   }
   public async componentDidMount() {
-    const {allowed} = await client.setup.status()
+    const resp = await getSetup({})
+    const {allowed} = resp.data
 
     if (allowed) {
       this.props.history.push('/onboarding/0')

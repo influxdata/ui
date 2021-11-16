@@ -100,21 +100,15 @@ const EditTokenOverlay: FC<Props> = props => {
     }
   }
 
-  const onSave = async () => {
+  const onSave = () => {
     const {auth, updateAuthorization} = props
 
-    try {
-      await updateAuthorization({
-        ...auth,
-        description: description,
-        status: togglestatus ? 'active' : 'inactive',
-      })
-      event('token.edit.success', {id: auth.id, name: description})
-      handleDismiss()
-    } catch {
-      event('token.edit.failure', {id: auth.id})
-    }
-    
+    updateAuthorization({
+      ...auth,
+      description: description,
+      status: togglestatus ? 'active' : 'inactive',
+    })
+    handleDismiss()
   }
 
   return (

@@ -1,3 +1,3 @@
-import {ScraperTargetResponse} from 'src/client'
+import * as oss from 'src/client'
 
-export interface Scraper extends ScraperTargetResponse {}
+export interface Scraper extends oss.ScraperTargetResponse {}

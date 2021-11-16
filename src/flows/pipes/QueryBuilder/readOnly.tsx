@@ -37,7 +37,7 @@ const QueryBuilder: FC<PipeProp> = ({Context}) => {
                         icon={IconFont.BucketSolid}
                         status={ComponentStatus.Disabled}
                       >
-                        {!!data.buckets.length && data.buckets[0].name
+                        {!!data?.buckets?.length && data?.buckets?.[0]?.name
                           ? data.buckets[0].name
                           : 'No Bucket Selected'}
                       </Dropdown.Button>

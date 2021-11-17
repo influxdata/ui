@@ -2,6 +2,7 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import classnames from 'classnames'
+import InfiniteLoader from "react-window-infinite-loader";
 
 // Components
 import {
@@ -42,6 +43,7 @@ interface MyState {
   selectHappened: boolean
   menuOpen: MenuStatus
   loaded: boolean
+  renderedItems: any[]
 }
 
 class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
@@ -250,6 +252,62 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     }
   }
 
+  const  handleSelect = (selectedValue: string, closeMenuNow?: boolean) => {
+  const {
+    variableID,
+    onSelectValue,
+    onSelect,
+    selectedValue: prevSelectedValue,
+  } = this.props
+
+  if (prevSelectedValue !== selectedValue) {
+    onSelectValue(variableID, selectedValue)
+  }
+
+  if (onSelect) {
+    onSelect()
+  }
+
+  const newState = {
+    typedValue: selectedValue,
+    actualVal: selectedValue,
+    selectHappened: true,
+    selectIndex: -1,
+  }
+
+  if (closeMenuNow) {
+    newState['menuOpen'] = MenuStatus.Closed
+  }
+
+  this.setState(newState)
+}
+
+  const loadMoreItems = (startIndex, stopIndex) => {
+  const {renderedItems, shownValues, selectIndex} = this.state
+  const {selectedValue} = this.props
+
+  const realStopIndex = stopIndex<shownValues.length? stopIndex : shownValues.length
+  for (let index = startIndex; index <= realStopIndex; index++) {
+        const value = shownValues[index]
+
+    const classN = classnames('variable-dropdown--item', {
+      active: index === selectIndex,
+    })
+
+    renderedItems[index] =  (<Dropdown.Item
+        key={value}
+        id={value}
+        value={value}
+        onClick={this.handleSelect}
+        selected={value === selectedValue}
+        testID="variable-dropdown--item"
+        className={classN}
+    >
+      {value}
+    </Dropdown.Item>)
+  }
+}
+
   render() {
     const {selectedValue, values, name, status} = this.props
     const {typedValue, shownValues, menuOpen, selectIndex} = this.state
@@ -283,6 +341,11 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       }
     }
 
+    const isItemLoaded  = (index) => {
+    const {renderedItems} = this.state
+      return index < renderedItems.length
+  }
+
     return (
       <Dropdown
         style={{width: '192px'}}
@@ -307,6 +370,11 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             onCollapse={onCollapse}
             theme={DropdownMenuTheme.Amethyst}
           >
+            <InfiniteLoader
+                isItemLoaded={isItemLoaded}
+                itemCount={shownValues.length}
+                loadMoreItems={this.loadMoreItems}
+            >
             {shownValues.map((value, index) => {
               // add the 'active' class to highlight when arrowing; like a hover
               const classN = classnames('variable-dropdown--item', {
@@ -347,35 +415,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     return widthStyle
   }
 
-  private handleSelect = (selectedValue: string, closeMenuNow?: boolean) => {
-    const {
-      variableID,
-      onSelectValue,
-      onSelect,
-      selectedValue: prevSelectedValue,
-    } = this.props
 
-    if (prevSelectedValue !== selectedValue) {
-      onSelectValue(variableID, selectedValue)
-    }
-
-    if (onSelect) {
-      onSelect()
-    }
-
-    const newState = {
-      typedValue: selectedValue,
-      actualVal: selectedValue,
-      selectHappened: true,
-      selectIndex: -1,
-    }
-
-    if (closeMenuNow) {
-      newState['menuOpen'] = MenuStatus.Closed
-    }
-
-    this.setState(newState)
-  }
 
   // show the 'loading' or 'no values' as a string (no input field yet!)
   // when it is loading

@@ -120,6 +120,7 @@ const UserWidget: FC<Props> = ({
 const mstp = (state: AppState) => {
   const org = getOrg(state)
   const me = state.me
+  console.log('state here???', me, org)
   return {org, me}
 }
 

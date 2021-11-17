@@ -52,7 +52,7 @@ export interface UsageContextType {
   usageStatsStatus: RemoteDataState
   usageVectors: UsageVector[]
   creditUsage: Usage
-  creditDaysRemaining: number
+  creditDaysUsed: number
   paygCreditEnabled: boolean
 }
 
@@ -70,7 +70,7 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   usageStatsStatus: RemoteDataState.NotStarted,
   usageVectors: [],
   creditUsage: DEFAULT_USAGE,
-  creditDaysRemaining: 0,
+  creditDaysUsed: 0,
   paygCreditEnabled: false,
 }
 
@@ -100,17 +100,15 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     DEFAULT_USAGE_TIME_RANGE
   )
   const {quartzMe} = useSelector(getMe)
-  const creditDaysRemaining = useMemo(() => {
+  const creditDaysUsed = useMemo(() => {
     const startDate = new Date(quartzMe?.paygCreditStartDate)
     const current = new Date()
     const diffTime = Math.abs(current.getTime() - startDate.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-    return PAYG_CREDIT_DAYS - diffDays
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24))
   }, [quartzMe?.paygCreditStartDate])
 
   const paygCreditEnabled =
-    creditDaysRemaining > 0 && creditDaysRemaining <= PAYG_CREDIT_DAYS
+    creditDaysUsed >= 0 && creditDaysUsed < PAYG_CREDIT_DAYS
 
   const handleSetTimeRange = useCallback(
     (range: SelectableDurationTimeRange) => {
@@ -338,7 +336,7 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         usageStatsStatus,
         usageVectors,
         creditUsage,
-        creditDaysRemaining,
+        creditDaysUsed,
         paygCreditEnabled,
       }}
     >

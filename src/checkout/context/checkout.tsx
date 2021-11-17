@@ -87,6 +87,8 @@ export const CheckoutContext = React.createContext<CheckoutContextType>(
   DEFAULT_CONTEXT
 )
 
+const CHECKOUT_PARAM_CODE = '757vMPJiCMdTFkO4'
+
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
 
@@ -256,9 +258,12 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     return errs.length
   }
 
+  const query = new URLSearchParams(window.location.search)
+  const checkoutCode = query.get('c')
   const isPaygCreditActive =
     isFlagEnabled('paygCheckoutCredit') &&
-    getExperimentVariantId(PAYG_CREDIT_EXPERIMENT_ID) === '1'
+    getExperimentVariantId(PAYG_CREDIT_EXPERIMENT_ID) === '1' &&
+    checkoutCode === CHECKOUT_PARAM_CODE
 
   const handleSubmit = useCallback(
     async (paymentMethodId: string) => {

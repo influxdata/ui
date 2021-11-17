@@ -36,8 +36,8 @@ const UsagePanelDetails: FC = () => {
           creditDaysRemaining > 15 ? InfluxColors.Wasabi : InfluxColors.Curacao
         }
         label="Credit Period"
-        valueText={`${creditDaysRemaining}`}
-        maxText={`${PAYG_CREDIT_DAYS} days remaining`}
+        valueText={`${PAYG_CREDIT_DAYS - creditDaysRemaining}`}
+        maxText={`${PAYG_CREDIT_DAYS} days used`}
       />
     </>
   )

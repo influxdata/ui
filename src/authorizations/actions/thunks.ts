@@ -139,11 +139,12 @@ export const updateAuthorization = (authorization: Authorization) => async (
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-
+    event('token.edit.success', {id: authorization.id})
     dispatch(getAuthorizations())
     dispatch(notify(authorizationUpdateSuccess()))
   } catch (e) {
     console.error(e)
+    event('token.edit.failure', {id: authorization.id})
     dispatch(notify(authorizationUpdateFailed(authorization.id)))
   }
 }

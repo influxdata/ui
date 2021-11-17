@@ -229,7 +229,6 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
   const hasChanges = useMemo(() => {
-    console.log('k', taskText, data?.task?.flux)
     return taskText !== data?.task?.flux
   }, [taskText, data?.task?.flux])
 

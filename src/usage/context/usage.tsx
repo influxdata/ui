@@ -107,7 +107,6 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
     return Math.floor(diffTime / (1000 * 60 * 60 * 24))
   }, [quartzMe?.paygCreditStartDate])
 
-  console.log(creditDaysUsed, quartzMe?.paygCreditStartDate)
   const paygCreditEnabled =
     creditDaysUsed >= 0 && creditDaysUsed < PAYG_CREDIT_DAYS
 

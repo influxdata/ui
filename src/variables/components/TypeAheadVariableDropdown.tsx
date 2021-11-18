@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import classnames from 'classnames'
+//import classnames from 'classnames'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { FixedSizeList as List } from "react-window";
 
@@ -77,6 +77,14 @@ class Row extends PureComponent {
     let label;
     if (itemStatusMap[index] === LOADED) {
       label = item || `Row ${index}`
+
+      return   <button type="button" id={label}
+                       onClick={() => this.handleClick(label)} className="cf-dropdown-item variable-dropdown--item cf-dropdown-item__no-wrap"
+                       data-testid="variable-dropdown--item">
+
+        <div className="cf-dropdown-item--children">{label}</div>
+      </button>
+
     } else {
       label = "Loading..."
     }
@@ -88,6 +96,8 @@ class Row extends PureComponent {
 
 
     return (
+
+
         <div onClick={() => this.handleClick(label)}
              className="variable-dropdown--item" style={style}>
           {label}
@@ -303,8 +313,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   }
 
   render() {
-    const {selectedValue, values, name, status} = this.props
-    const {typedValue, shownValues, menuOpen, selectIndex} = this.state
+    const { values, name, status} = this.props
+    const {typedValue, shownValues, menuOpen} = this.state
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
 

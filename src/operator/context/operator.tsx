@@ -69,7 +69,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
-console.log('gettitng account: ', resp.data)
+      console.log('gettitng account: ', resp.data)
       setAccountStatus(RemoteDataState.Done)
       setAccounts(resp.data)
     } catch (error) {

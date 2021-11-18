@@ -16,6 +16,7 @@ import {setMe, setQuartzMe, setQuartzMeStatus} from 'src/me/actions/creators'
 
 // Reducers
 import {MeState} from 'src/me/reducers'
+import {Me} from 'src/client/unityRoutes'
 
 // Types
 import {RemoteDataState, GetState} from 'src/types'
@@ -66,7 +67,13 @@ export const getQuartzMe = () => async dispatch => {
       throw new Error(resp.data.message)
     }
 
-    dispatch(setQuartzMe(resp.data, RemoteDataState.Done))
+    const data = {
+      ...resp.data,
+      isOperator: true,
+      operatorRole: 'read-write'
+    } as Me
+
+    dispatch(setQuartzMe(data, RemoteDataState.Done))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))

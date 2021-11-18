@@ -631,6 +631,7 @@ export const quartzProvision = (
   data: ProvisionData
 ): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request('/api/v2/quartz/provision', data).then(response => {
+    cy.pause()
     expect(response.status).to.eq(200)
   })
 }

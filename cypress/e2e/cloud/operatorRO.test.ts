@@ -15,6 +15,7 @@ describe('Operator Page', () => {
               uiUnificationFlag: true,
             }).then(() => {
               cy.getByTestID('nav-item--operator').click()
+              cy.pause()
               cy.getByTestID('operator-page--title').contains('2.0 Resources')
             })
           })

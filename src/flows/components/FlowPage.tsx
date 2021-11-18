@@ -38,7 +38,7 @@ const FlowFromRoute = () => {
 
   useEffect(() => {
     if (currentID !== null) {
-      event(`Notebook Accessed. NotebookID: ${currentID}`)
+      event('Notebook Accessed', {notebookID: currentID})
     }
   }, [currentID])
 

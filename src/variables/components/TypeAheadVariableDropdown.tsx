@@ -45,6 +45,7 @@ interface MyState {
   selectHappened: boolean
   menuOpen: MenuStatus
   loaded: boolean
+  cachedItems: any[]
 }
 const LOADING = 1;
 const LOADED = 2;
@@ -64,6 +65,10 @@ const loadMoreItems = (startIndex, stopIndex) => {
       }, 100)
   );
 };
+
+
+
+
 
 class Row extends PureComponent {
   handleClick=(ack) => {
@@ -123,6 +128,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       selectHappened: false,
       menuOpen: null,
       loaded: false,
+      cachedItems: [],
     }
 
     // if it's a csv var, loading is instantaneous, so if it is done just set it:
@@ -197,6 +203,26 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     this.setState(newState)
   }
+  handleClick=(ack) => {
+    console.log("did click!", ack)
+  }
+   makeMenuItem = (label: string, index?: number) => {
+    return   <button type="button" id={label}
+                     onClick={() => this.handleClick(label)}
+                     className="cf-dropdown-item variable-dropdown--item cf-dropdown-item__no-wrap"
+                     data-testid="variable-dropdown--item">
+
+      <div className="cf-dropdown-item--children">{label}</div>
+    </button>
+}
+
+  makeMenuItems(amount:number, startIndex=0) {
+    const {cachedItems,shownValues} = this.state
+
+    for(let i = startIndex; i<amount; i++) {
+      cachedItems[i] = this.makeMenuItem(shownValues[i])
+    }
+  }
 
   getInitialValuesAfterLoading() {
     const {values, selectedValue} = this.props
@@ -209,11 +235,14 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       newSelectedValue = selectedValue
     }
 
+    const cachedItems = makeMenuItems(20)
+
     return {
       shownValues: values,
       typedValue: newSelectedValue,
       loaded: true,
       actualVal: newSelectedValue,
+      cachedItems : cachedItems,
     }
   }
 
@@ -319,7 +348,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
   render() {
     const { values, name, status} = this.props
-    const {typedValue, shownValues, menuOpen} = this.state
+    const {typedValue, shownValues, menuOpen, cachedItems} = this.state
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
 
@@ -368,6 +397,15 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     const itemCount = shownValues? shownValues.length: 0
 
+
+    const Row2 = ({ index, style }) => {
+      if (!isItemLoaded(index)) {
+        return <div style={style}>...Loiding...</div>
+      } else {
+        return cachedItems[index]
+      }
+    }
+
     return (
       <Dropdown
         style={{width: '192px'}}
@@ -411,7 +449,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
                       itemData={shownValues}
                       itemKey={itemKey}
                   >
-                    {Row}
+                    {Row2}
                   </List>
               )}
             </InfiniteLoader>

@@ -2,6 +2,9 @@
 import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import classnames from 'classnames'
+import InfiniteLoader from 'react-window-infinite-loader'
+import { FixedSizeList as List } from "react-window";
+
 
 // Components
 import {
@@ -42,6 +45,55 @@ interface MyState {
   selectHappened: boolean
   menuOpen: MenuStatus
   loaded: boolean
+}
+const LOADING = 1;
+const LOADED = 2;
+let itemStatusMap = {};
+
+const isItemLoaded = index => !!itemStatusMap[index];
+const loadMoreItems = (startIndex, stopIndex) => {
+  for (let index = startIndex; index <= stopIndex; index++) {
+    itemStatusMap[index] = LOADING;
+  }
+  return new Promise(resolve =>
+      setTimeout(() => {
+        for (let index = startIndex; index <= stopIndex; index++) {
+          itemStatusMap[index] = LOADED;
+        }
+        resolve();
+      }, 100)
+  );
+};
+
+class Row extends PureComponent {
+  handleClick=(ack) => {
+    console.log("did click!", ack)
+  }
+
+  render() {
+    // @ts-ignore
+    const { index, style, valueText, data } = this.props;
+    const item = data[index]
+    let label;
+    if (itemStatusMap[index] === LOADED) {
+      label = item || `Row ${index}`
+    } else {
+      label = "Loading..."
+    }
+
+    // const classN = classnames('variable-dropdown--item', {
+    //   active: index === selectIndex,
+    // })
+
+
+
+    return (
+        <div onClick={() => this.handleClick(label)}
+             className="variable-dropdown--item" style={style}>
+          {label}
+        </div>
+    );
+  }
 }
 
 class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
@@ -307,26 +359,26 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             onCollapse={onCollapse}
             theme={DropdownMenuTheme.Amethyst}
           >
-            {shownValues.map((value, index) => {
-              // add the 'active' class to highlight when arrowing; like a hover
-              const classN = classnames('variable-dropdown--item', {
-                active: index === selectIndex,
-              })
-
-              return (
-                <Dropdown.Item
-                  key={value}
-                  id={value}
-                  value={value}
-                  onClick={this.handleSelect}
-                  selected={value === selectedValue}
-                  testID="variable-dropdown--item"
-                  className={classN}
-                >
-                  {value}
-                </Dropdown.Item>
-              )
-            })}
+            <InfiniteLoader
+                isItemLoaded={isItemLoaded}
+                itemCount={1000}
+                loadMoreItems={loadMoreItems}
+            >
+              {({ onItemsRendered, ref }) => (
+                  <List
+                      className="List"
+                      height={150}
+                      itemCount={1000}
+                      itemSize={30}
+                      onItemsRendered={onItemsRendered}
+                      ref={ref}
+                      width={300}
+                      itemData={shownValues}
+                  >
+                    {Row}
+                  </List>
+              )}
+            </InfiniteLoader>
           </Dropdown.Menu>
         )}
       />

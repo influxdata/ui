@@ -213,10 +213,14 @@ export const FlowQueryProvider: FC = ({children}) => {
   }, [flow])
 
   const generateMap = (): Stage[] => {
-    if (
-      !_map.current ||
-      (!_map.current.length && (flow?.data?.allIDs ?? []).length)
-    ) {
+    // this is to get around an issue where a panel is added, which triggers the useEffect that updates
+    // _map.current and a rerender that updates the panel view components within the same render cycle
+    // leading to a panel on the list without a corresponding map entry
+    const forceUpdate =
+      (flow?.data?.allIDs ?? []).join(' ') !==
+      (_map.current ?? []).map(m => m.id).join(' ')
+
+    if (forceUpdate) {
       _generateMap()
     }
 

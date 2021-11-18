@@ -3,6 +3,7 @@ import 'intersection-observer'
 import MutationObserver from 'mutation-observer'
 import fetchMock from 'jest-fetch-mock'
 import '@testing-library/jest-dom'
+import 'setimmediate'
 
 // global vars
 process.env.API_PREFIX = 'http://example.com/'

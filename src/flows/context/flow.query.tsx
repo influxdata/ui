@@ -217,14 +217,8 @@ export const FlowQueryProvider: FC = ({children}) => {
     // _map.current and a rerender that updates the panel view components within the same render cycle
     // leading to a panel on the list without a corresponding map entry
     const forceUpdate =
-      (flow?.data?.allIDs ?? [])
-        .slice(0)
-        .sort((a, b) => a.localeCompare(b))
-        .join(' ') !==
-      (_map.current ?? [])
-        .map(m => m.id)
-        .sort((a, b) => a.localeCompare(b))
-        .join(' ')
+      (flow?.data?.allIDs ?? []).join(' ') !==
+      (_map.current ?? []).map(m => m.id).join(' ')
 
     if (forceUpdate) {
       _generateMap()

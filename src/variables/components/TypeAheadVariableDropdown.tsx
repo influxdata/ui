@@ -72,11 +72,16 @@ class Row extends PureComponent {
 
   render() {
     // @ts-ignore
-    const { index, style, valueText, data } = this.props;
+    const { index, style, data } = this.props;
+    if (!data || index >= data.length) {
+      return null;
+    }
+
     const item = data[index]
     let label;
+
     if (itemStatusMap[index] === LOADED) {
-      label = item || `Row ${index}`
+      label = item
 
       return   <button type="button" id={label}
                        onClick={() => this.handleClick(label)} className="cf-dropdown-item variable-dropdown--item cf-dropdown-item__no-wrap"
@@ -344,6 +349,24 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         )
       }
     }
+ // items here are strings; they do not have an id
+   const  itemKey = (index, data) => {
+      // Find the item at the specified index.
+      // In this case "data" is an Array that was passed to List as "itemData".
+     if (!index || index < 0) {
+       return 'not-found'
+     }
+
+     const item = data[index];
+     if (!item) {
+       return index
+     }
+      // Return a value that uniquely identifies this item.
+      // Typically this will be a UID of some sort.
+      return item;
+    }
+
+    const itemCount = shownValues? shownValues.length: 0
 
     return (
       <Dropdown
@@ -371,19 +394,22 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
           >
             <InfiniteLoader
                 isItemLoaded={isItemLoaded}
-                itemCount={1000}
+                itemCount={itemCount}
                 loadMoreItems={loadMoreItems}
+                key='ack-infini-load'
+
             >
               {({ onItemsRendered, ref }) => (
                   <List
                       className="List"
                       height={150}
-                      itemCount={1000}
+                      itemCount={itemCount}
                       itemSize={30}
                       onItemsRendered={onItemsRendered}
                       ref={ref}
                       width={300}
                       itemData={shownValues}
+                      itemKey={itemKey}
                   >
                     {Row}
                   </List>

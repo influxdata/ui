@@ -125,9 +125,20 @@ class BucketList
       this.props.bucketCount
     )
 
+    const userBuckets = []
+    const systemBuckets = []
+    sortedBuckets.forEach(bucket => {
+      if(bucket.type === 'user') {
+        userBuckets.push(bucket)
+      }else {
+        systemBuckets.push(bucket)
+      }
+    })
+    const userAndSystemBuckets = [...userBuckets, ...systemBuckets]
+
     const buckets = []
     for (let i = startIndex; i < endIndex; i++) {
-      const bucket = sortedBuckets[i]
+      const bucket = userAndSystemBuckets[i]
       if (bucket) {
         buckets.push(
           <BucketCard

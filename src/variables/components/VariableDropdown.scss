@@ -5,6 +5,8 @@
   border-radius: $cf-radius;
   background-color: $cf-grey-25;
   margin-right: $cf-border;
+  color: darkgrey;
+  z-index: 12;
 }
 
 .variable-dropdown__dragging {

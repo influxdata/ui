@@ -253,18 +253,22 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
   render() {
     const {selectedValue, values, name, status} = this.props
-    const {shownValues} = this.state
+    //const {shownValues} = this.state
 
-    const isDisabled = !values || values.length === 0
+    const shownValues = ['ab', 'c', 'd', 'ernie', 'rosita', 'bert']
+    const isDisabled = !shownValues || shownValues.length === 0
 
     //const placeHolderText = this.getPlaceHolderText('Select a Value')
 
-console.log(`trying to render ${name}.....`, values)
+console.log(`trying to render ${name}.....`, shownValues)
     let realVals  = []
     //   { value: 'vanilla', label: 'Vanilla' }
-if (values && values.length) {
-  realVals = values.map(val => {value: val; label: val})
+if (shownValues && shownValues.length) {
+  realVals = shownValues.map(val => ({value: val; label: val}))
 }
+
+console.log(`arghh; for ${name}`, realVals)
+
     return <Select
     className="basic-single"
     classNamePrefix="select"
@@ -277,83 +281,6 @@ if (values && values.length) {
     name={name}
     options={realVals}
     />
-
-
-
-
-    // const widthStyle = this.getWidth(placeHolderText)
-    //
-    // const selectAllTextInInput = (event?: ChangeEvent<HTMLInputElement>) => {
-    //   if (event) {
-    //     event.target.select()
-    //   }
-    // }
-    //
-    // const getInnerComponent = () => {
-    //   if (status === RemoteDataState.Loading || this.noValuesPresent()) {
-    //     return placeHolderText
-    //   } else {
-    //     return (
-    //       <Input
-    //         placeholder={placeHolderText}
-    //         onChange={this.filterVals}
-    //         value={typedValue}
-    //         onKeyDown={this.maybeSelectNextItem}
-    //         testID={`variable-dropdown-input-typeAhead--${name}`}
-    //         onFocus={selectAllTextInInput}
-    //       />
-    //     )
-    //   }
-    // }
-    //
-    // return (
-    //   <Dropdown
-    //     style={{width: '192px'}}
-    //     className="variable-dropdown--dropdown"
-    //     testID={this.props.testID || `variable-dropdown--${name}`}
-    //     onClickAway={this.onClickAwayHere}
-    //     menuOpen={menuOpen}
-    //     disableAutoFocus
-    //     button={(active, onClick) => (
-    //       <Dropdown.Button
-    //         active={active}
-    //         onClick={onClick}
-    //         testID="variable-dropdown--button"
-    //         status={dropdownStatus}
-    //       >
-    //         {getInnerComponent()}
-    //       </Dropdown.Button>
-    //     )}
-    //     menu={onCollapse => (
-    //       <Dropdown.Menu
-    //         style={widthStyle}
-    //         onCollapse={onCollapse}
-    //         theme={DropdownMenuTheme.Amethyst}
-    //       >
-    //         {shownValues.map((value, index) => {
-    //           // add the 'active' class to highlight when arrowing; like a hover
-    //           const classN = classnames('variable-dropdown--item', {
-    //             active: index === selectIndex,
-    //           })
-    //
-    //           return (
-    //             <Dropdown.Item
-    //               key={value}
-    //               id={value}
-    //               value={value}
-    //               onClick={this.handleSelect}
-    //               selected={value === selectedValue}
-    //               testID="variable-dropdown--item"
-    //               className={classN}
-    //             >
-    //               {value}
-    //             </Dropdown.Item>
-    //           )
-    //         })}
-    //       </Dropdown.Menu>
-    //     )}
-    //   />
-    // )
   }
 
   private getWidth(placeHolderText) {

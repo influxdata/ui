@@ -42,7 +42,6 @@ describe('buckets thunks', () => {
 
       const {normalizedBuckets: bucks} = await fetchAllBuckets('ord01')
       expect(bucks.result).toContain('custom-id')
-      expect(bucks.result).toContain('demo-bucket')
     })
 
     it('should throw an error upon failure', async () => {
@@ -68,7 +67,6 @@ describe('buckets thunks', () => {
       expect(dispatched[0].status).toBe(RemoteDataState.Loading)
       expect(dispatched[1].status).toBe(RemoteDataState.Done)
       expect(dispatched[1].schema.result).toContain('custom-id')
-      expect(dispatched[1].schema.result).toContain('demo-bucket')
     })
 
     it('should throw an error upon failure message received', async () => {

@@ -25,7 +25,6 @@ import {
 } from 'src/shared/apis/queryCache'
 jest.mock('src/shared/apis/query')
 
-// TODO: As part of #1708, move the contents of this file to query.test.ts and remove this file.
 const orgID = 'orgID'
 
 const promise = new Promise(res => {

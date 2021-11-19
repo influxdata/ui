@@ -44,7 +44,6 @@ jest.mock('src/variables/actions/thunks', () => {
 
 import SubmitQueryButton from 'src/timeMachine/components/SubmitQueryButton'
 
-// TODO: As part of #1708, move the contents of this file to SubmitQueryButton.test.tsx and remove this file.
 const stateOverride = {
   timeMachines: {
     activeTimeMachineID: 'veo',

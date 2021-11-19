@@ -276,9 +276,10 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         backgroundColor: 'darkgray',
         padding: 20,
       }),
-      control: () => ({
-        // none of react-select's styles are passed to <Control />
+      control: (provided) => ({
+        ...provided,
         width: 225,
+        height:30,
         color: 'white',
         backgroundColor: 'darkgray',
         display: 'flex',
@@ -286,12 +287,21 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       indicatorSeparator: () => ({
         display: 'none',
       }),
+      dropdownIndicator: (provided) => ({
+        ...provided,
+        color:'magenta',
+      }),
       singleValue: (provided, state) => {
         const opacity = state.isDisabled ? 0.5 : 1
         const transition = 'opacity 300ms'
 
         return {...provided, opacity, transition}
       },
+      menu: (provided)=> ({
+        ...provided,
+        zIndex:15,
+        backgroundColor: 'cyan',
+      })
     }
 
     //    const style={width:200}

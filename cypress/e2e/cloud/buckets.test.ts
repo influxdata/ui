@@ -483,13 +483,29 @@ describe('Buckets', () => {
     cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
       const tasksBucket = '_tasks'
       const monitoringBucket = '_monitoring'
-      const buckets = [defaultBucket, tasksBucket, monitoringBucket]
-      const retentionDesc = [defaultBucket, monitoringBucket, tasksBucket]
-      const retentionAsc = [tasksBucket, monitoringBucket, defaultBucket]
+      const createdBucket = 'womp womp'
+      const buckets = [
+        createdBucket,
+        defaultBucket,
+        tasksBucket,
+        monitoringBucket,
+      ]
+      const retentionDesc = [
+        defaultBucket,
+        monitoringBucket,
+        createdBucket,
+        tasksBucket,
+      ]
+      const retentionAsc = [
+        tasksBucket,
+        monitoringBucket,
+        createdBucket,
+        defaultBucket,
+      ]
 
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByInputName('name').type('a new bucket')
+        cy.getByInputName('name').type(createdBucket)
         cy.getByTestID('retention-intervals--button').click()
         cy.getByTestID('duration-selector--button').click()
         cy.getByTestID('duration-selector--7d')

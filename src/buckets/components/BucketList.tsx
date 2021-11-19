@@ -36,9 +36,7 @@ class BucketList extends PureComponent<
     getSortedResources
   )
 
-
   public render() {
-    
     return (
       <ResourceList>
         <ResourceList.Body emptyState={this.props.emptyState}>
@@ -59,20 +57,19 @@ class BucketList extends PureComponent<
       onUpdateBucket,
       onGetBucketSchema,
     } = this.props
-   
+
     const sortedBuckets = this.memGetSortedResources(
       buckets,
       sortKey,
       sortDirection,
-      sortType,
-      
+      sortType
     )
     const userBuckets = []
     const systemBuckets = []
     sortedBuckets.forEach(bucket => {
-      if(bucket.type === 'user') {
+      if (bucket.type === 'user') {
         userBuckets.push(bucket)
-      }else {
+      } else {
         systemBuckets.push(bucket)
       }
     })

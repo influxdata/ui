@@ -128,9 +128,9 @@ class BucketList
     const userBuckets = []
     const systemBuckets = []
     sortedBuckets.forEach(bucket => {
-      if(bucket.type === 'user') {
+      if (bucket.type === 'user') {
         userBuckets.push(bucket)
-      }else {
+      } else {
         systemBuckets.push(bucket)
       }
     })

@@ -24,21 +24,19 @@ import {RemoteDataState} from 'src/types'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-const fb = term => bucket => 
-  
+const fb = term => bucket =>
   bucket.toLocaleLowerCase().includes(term.toLocaleLowerCase())
 
 const BucketSelector: FunctionComponent<Props> = ({
-  selectedBucket, 
-  sortedBucketNames, 
+  selectedBucket,
+  sortedBucketNames,
   bucketsStatus,
   onSelectBucket,
-  
 }) => {
   const [searchTerm, setSearchTerm] = useState('')
-  
-  const list = sortedBucketNames.filter(fb(searchTerm))  
-  
+
+  const list = sortedBucketNames.filter(fb(searchTerm))
+
   const onSelect = (bucket: string) => {
     onSelectBucket(bucket, true)
   }
@@ -104,8 +102,9 @@ const Selector: FunctionComponent<SelectorProps> = ({
 }
 
 const mstp = (state: AppState) => {
-
-  const sortedBucketNames = getSortedBuckets(state).map(bucket => bucket.name || '')
+  const sortedBucketNames = getSortedBuckets(state).map(
+    bucket => bucket.name || ''
+  )
   const bucketsStatus = getStatus(state, ResourceType.Buckets)
   const selectedBucket =
     getActiveQuery(state).builderConfig.buckets[0] || sortedBucketNames[0]

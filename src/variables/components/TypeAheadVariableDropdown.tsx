@@ -272,20 +272,25 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const foreground = 'white'
     const background='black'
 
-    const genericColors = (provided) => ({
-      ...provided,
-      color:foreground,
-      backgroundColor:background,
-    })
+    // const genericColors = (provided) => ({
+    //   ...provided,
+    //   color:foreground,
+    //   backgroundColor:background,
+    // })
 
     const customStyles = {
-      option: (provided, state) => ({
+      option: (provided, state) => {
+        let backgroundColor = state.isSelected? 'lightblue' : background
+        if (state.isFocused) {
+          backgroundColor = 'pink'
+        }
+        return {
         ...provided,
         borderBottom: '1px dotted gray',
         color: foreground,
-        backgroundColor: background,
-        padding: 20,
-      }),
+        backgroundColor,
+        padding: 10,
+      }},
       control: () => ({
         width: 225,
         height:30,
@@ -293,8 +298,16 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         backgroundColor: background,
         display: 'flex',
       }),
-      valueContainer: genericColors,
-      placeHolder:genericColors,
+      valueContainer: (provided) => ({
+        ...provided,
+        color:foreground,
+        backgroundColor:background,
+      }),
+      placeHolder:(provided) => ({
+        ...provided,
+        color:foreground,
+        backgroundColor:background,
+      }),
       indicatorSeparator: () => ({
         display: 'none',
       }),
@@ -307,7 +320,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         const transition = 'opacity 300ms'
 
         return {...provided, opacity, transition,
-          color:'magenta',
+          color:foreground,
           backgroundColor:background,
         }
       },

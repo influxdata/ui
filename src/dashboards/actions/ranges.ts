@@ -94,7 +94,7 @@ export const updateQueryParams = (updatedQueryParams: object): RouterAction => {
 export const updateQueryVars = varsObj => {
   const urlVars = qs.parse(window.location.search, {ignoreQueryPrefix: true})
   const vars = {
-    ...(urlVars.vars || {}),
+    ...(urlVars.vars || {}) as {},
     ...varsObj,
   }
 

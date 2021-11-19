@@ -66,7 +66,7 @@ const baseQueryVariableAction = {
 describe('hydrateVariables', () => {
   it('should call hydrateVars once per query variable', async () => {
     const dispatch = jest.fn()
-    const getState = jest.fn(() => getMockAppState())
+    const getState: any = jest.fn(() => getMockAppState())
 
     fetchMock.mockResponse(() => {
       return new Promise(resolve => {
@@ -101,7 +101,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, getState).then(() => {
+    hydrateVariables()(dispatch, (getState as any)).then(() => {
       expect(dispatch).not.toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledTimes(0)
     })
@@ -124,7 +124,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, getState).then(() => {
+    hydrateVariables()(dispatch, (getState as any)).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)
       expect(dispatch).not.toHaveBeenCalledWith(baseQueryVariableAction)
@@ -152,7 +152,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, getState).then(() => {
+    hydrateVariables()(dispatch, (getState as any)).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(buildVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)
@@ -180,7 +180,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, getState).then(() => {
+    hydrateVariables()(dispatch, (getState as any)).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(buildVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)

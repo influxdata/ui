@@ -30,7 +30,8 @@ describe('templates api calls', () => {
     mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
-        data: {},
+        data: {} as any,
+        headers: {} as any,
       })
     })
 
@@ -48,10 +49,11 @@ describe('templates api calls', () => {
 
     mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
-        status: 404,
+        status: 500,
         data: {
           message: 'whoops',
-        },
+        } as any,
+        headers: {} as any,
       })
     })
 
@@ -68,7 +70,8 @@ describe('templates api calls', () => {
     mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
-        data: {},
+        data: {} as any,
+        headers: {} as any,
       })
     })
 
@@ -87,10 +90,11 @@ describe('templates api calls', () => {
 
     mocked(postTemplatesApplyMock).mockImplementation(() => {
       return Promise.resolve({
-        status: 404,
+        status: 500,
         data: {
           message: 'whoops',
-        },
+        } as any,
+        headers: {} as any
       })
     })
 
@@ -106,7 +110,8 @@ describe('templates api calls', () => {
     mocked(getStacksMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
-        data: {},
+        data: {} as any,
+        headers: {} as any,
       })
     })
 
@@ -120,10 +125,11 @@ describe('templates api calls', () => {
     const orgID = '1234'
     mocked(getStacksMock).mockImplementation(() => {
       return Promise.resolve({
-        status: 404,
+        status: 500,
         data: {
           message: 'whoops',
-        },
+        } as any,
+        headers: {} as any,
       })
     })
 
@@ -139,8 +145,9 @@ describe('templates api calls', () => {
     const stackID = '063ea6d269ea4000'
     mocked(deleteStackMock).mockImplementation(() => {
       return Promise.resolve({
-        status: 200,
-        data: {},
+        status: 204,
+        data: {} as any,
+        headers: {} as any,
       })
     })
 
@@ -156,10 +163,11 @@ describe('templates api calls', () => {
     const stackID = '63728'
     mocked(deleteStackMock).mockImplementation(() => {
       return Promise.resolve({
-        status: 404,
+        status: 500,
         data: {
           message: 'whoops',
-        },
+        } as any,
+        headers: {} as any,
       })
     })
 
@@ -176,7 +184,8 @@ describe('templates api calls', () => {
     mocked(patchStackMock).mockImplementation(() => {
       return Promise.resolve({
         status: 200,
-        data: {},
+        data: {} as any,
+        headers: {} as any,
       })
     })
 
@@ -192,10 +201,11 @@ describe('templates api calls', () => {
     const stackID = '63728'
     mocked(patchStackMock).mockImplementation(() => {
       return Promise.resolve({
-        status: 404,
+        status: 500,
         data: {
           message: 'whoops',
-        },
+        } as any,
+        headers: {} as any,
       })
     })
 

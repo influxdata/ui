@@ -32,9 +32,23 @@ const cancel = jest.fn()
 describe('history utils', () => {
   beforeEach(jest.clearAllMocks)
 
+  const fluxGroupKeyUnion = ['']
+  const length = 100
+  const cols = 20
+  const table: Table = {
+    columnKeys: ['table', ...range(cols).map(x => x.toString(10))],
+    getColumn: (col: string) =>
+      col === 'table' ? alwaysZero : (range(length).map(x => x * +col) as any),
+    length,
+    getColumnName: jest.fn(),
+    getColumnType: jest.fn(),
+    getOriginalColumnType: jest.fn(),
+    addColumn: jest.fn(),
+  }
+
   describe('process response', () => {
     it('process empty table', async () => {
-      mocked(fromFlux).mockImplementationOnce(() => ({table: {length: 0}}))
+      mocked(fromFlux).mockImplementationOnce(() => ({table: {...table, length: 0}, fluxGroupKeyUnion}))
 
       const actual = await processResponse({
         promise: Promise.resolve({
@@ -50,21 +64,7 @@ describe('history utils', () => {
     })
 
     it('process single table', async () => {
-      const length = 100
-      const cols = 20
-      const table: Table = {
-        columnKeys: ['table', ...range(cols).map(x => x.toString(10))],
-        getColumn: (col: string) =>
-          col === 'table'
-            ? alwaysZero
-            : (range(length).map(x => x * +col) as any),
-        length,
-        getColumnName: jest.fn(),
-        getColumnType: jest.fn(),
-        getOriginalColumnType: jest.fn(),
-        addColumn: jest.fn(),
-      }
-      mocked(fromFlux).mockImplementationOnce(() => ({table}))
+      mocked(fromFlux).mockImplementationOnce(() => ({table, fluxGroupKeyUnion}))
       const expected = range(length).map(i =>
         Object.fromEntries([
           ['table', 0],
@@ -106,7 +106,7 @@ describe('history utils', () => {
   describe('load statuses', () => {
     it('should use processResponse function', () => {
       const id = 'some-id'
-      const runqueryReturnObj = {}
+      const runqueryReturnObj: any = {}
       mocked(runQuery).mockImplementationOnce(() => runqueryReturnObj)
       mocked(history.processResponse).mockReturnValueOnce(undefined)
 

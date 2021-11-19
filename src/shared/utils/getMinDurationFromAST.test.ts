@@ -1914,7 +1914,7 @@ export const AST_TESTS = [
 ]
 
 describe('getMinDurationFromAST', () => {
-  test.each(AST_TESTS)('%s:\n\n```\n%s\n```', (__, ___, expected, ast) => {
+  test.each(AST_TESTS)('%s:\n\n```\n%s\n```', (_: string, __: string, expected: number, ast: any) => {
     const actual = getMinDurationFromAST(ast)
 
     expect(Math.abs(actual - expected)).toBeLessThan(5)

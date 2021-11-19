@@ -1,5 +1,7 @@
 import {parseSearchInput, searchExprToFlux} from './search'
 
+import {SearchExpr} from 'src/types'
+
 const SUCCESS_TEST_CASES = [
   [
     'basic == expression',
@@ -125,7 +127,7 @@ const FAIL_TEST_CASES = ['howdy', '() and ()', '/bar/ =~ /bar/']
 
 describe('event viewer search utilities', () => {
   describe('parseSearchInput', () => {
-    test.each(SUCCESS_TEST_CASES)('%p', (_, input, expected) => {
+    test.each(SUCCESS_TEST_CASES)('%p', (_, input: string, expected: any) => {
       expect(parseSearchInput(input)).toEqual(expected)
     })
 
@@ -137,7 +139,7 @@ describe('event viewer search utilities', () => {
   describe('searchExprToFlux', () => {
     test.each(SUCCESS_TEST_CASES)(
       'can format expression for: %p',
-      (_, __, expr, expected) => {
+      (_, __, expr: SearchExpr, expected: any) => {
         expect(searchExprToFlux(expr)).toEqual(expected)
       }
     )

@@ -6,6 +6,10 @@ import {fireEvent} from '@testing-library/react'
 import {renderWithRedux} from 'src/mockState'
 import {RemoteDataState} from 'src/types'
 
+// Mock Data
+import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
+import {timeMachineQuery} from 'src/shared/utils/mocks/data'
+
 declare global {
   interface Window {
     TextDecoder: any
@@ -24,20 +28,7 @@ window.TextDecoder = FakeTextDecoder
 
 jest.mock('src/external/parser', () => {
   return {
-    parse: jest.fn(() => {
-      return {
-        type: 'File',
-        package: {
-          name: {
-            name: 'fake',
-            type: 'Identifier',
-          },
-          type: 'PackageClause',
-        },
-        imports: [],
-        body: [],
-      }
-    }),
+    parse: jest.fn(getMockedParse()),
   }
 })
 
@@ -53,6 +44,7 @@ jest.mock('src/variables/actions/thunks', () => {
 
 import SubmitQueryButton from 'src/timeMachine/components/SubmitQueryButton'
 
+// TODO: As part of #1708, move the contents of this file to SubmitQueryButton.test.tsx and remove this file.
 const stateOverride = {
   timeMachines: {
     activeTimeMachineID: 'veo',
@@ -60,12 +52,7 @@ const stateOverride = {
       veo: {
         draftQueries: [
           {
-            text: `from(bucket: "apps")
-  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r["_measurement"] == "rum")
-  |> filter(fn: (r) => r["_field"] == "domInteractive")
-  |> map(fn: (r) => ({r with _value: r._value / 1000.0}))
-  |> group()`,
+            text: timeMachineQuery,
           },
         ],
         activeQueryIndex: 0,

@@ -492,15 +492,15 @@ describe('Buckets', () => {
       ]
       const retentionDesc = [
         defaultBucket,
-        monitoringBucket,
         createdBucket,
+        monitoringBucket,
         tasksBucket,
       ]
       const retentionAsc = [
-        tasksBucket,
-        monitoringBucket,
         createdBucket,
         defaultBucket,
+        tasksBucket,
+        monitoringBucket,
       ]
 
       cy.getByTestID('Create Bucket').click()

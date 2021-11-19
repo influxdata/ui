@@ -266,30 +266,43 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     if (shownValues && shownValues.length) {
       realVals = shownValues.map(val => ({value: val, label: val}))
     }
+    const placeHolderText = this.getPlaceHolderText('Select a Value')
 
     console.log(`arghh; for ${name}`, realVals)
+    const foreground = 'white'
+    const background='black'
+
     const customStyles = {
       option: (provided, state) => ({
         ...provided,
-        borderBottom: '1px dotted pink',
-        color: 'white',
-        backgroundColor: 'darkgray',
+        borderBottom: '1px dotted gray',
+        color: foreground,
+        backgroundColor: background,
         padding: 20,
       }),
-      control: (provided) => ({
-        ...provided,
+      control: () => ({
         width: 225,
         height:30,
-        color: 'white',
-        backgroundColor: 'darkgray',
+        color: foreground,
+        backgroundColor: background,
         display: 'flex',
+      }),
+      valueContainer: (provided) => ({
+        ...provided,
+        color:foreground,
+        backgroundColor:background,
+      }),
+      singleValue: (provided) => ({
+        ...provided,
+        color:foreground,
+        backgroundColor:background,
       }),
       indicatorSeparator: () => ({
         display: 'none',
       }),
       dropdownIndicator: (provided) => ({
         ...provided,
-        color:'magenta',
+        color:foreground,
       }),
       singleValue: (provided, state) => {
         const opacity = state.isDisabled ? 0.5 : 1
@@ -300,14 +313,18 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       menu: (provided)=> ({
         ...provided,
         zIndex:15,
-        backgroundColor: 'cyan',
+        backgroundColor: background,
       })
     }
 
+    const onChange=(ack) => {
+      console.log("made a change:", ack)
+    }
     //    const style={width:200}
     return (
       <Select
         classNamePrefix="select"
+        onChange={onChange}
         defaultValue={selectedValue}
         isDisabled={isDisabled}
         isLoading={status === RemoteDataState.Loading || isDisabled}
@@ -317,6 +334,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         styles={customStyles}
         name={name}
         options={realVals}
+        placeholder={placeHolderText}
       />
     )
     //

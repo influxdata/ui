@@ -15,6 +15,7 @@ describe('Operator Page', () => {
               uiUnificationFlag: true,
             }).then(() => {
               cy.getByTestID('nav-item--operator').click()
+              // cy.pause()
               cy.getByTestID('operator-page--title').contains('2.0 Resources')
             })
           })
@@ -52,6 +53,10 @@ describe('Operator Page', () => {
     cy.location().should(loc => {
       expect(loc.pathname).to.eq('/operator/accounts')
     })
+
+    // todo: after getting local testing with local quartz-mock working:
+    //  check that the name ''operator-678' is on the page
+    // (that is the name)
 
     cy.getByTestID('account-id')
       .first()

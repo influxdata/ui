@@ -3,6 +3,7 @@ import {CellInfo, ResourceInfo} from 'src/types'
 import {Link} from 'react-router-dom'
 
 export const accountHeaderInfo = [
+  'Account Name',
   'Company Name',
   'Acct ID',
   'Owner Email',
@@ -13,6 +14,11 @@ export const accountHeaderInfo = [
 ]
 
 export const accountColumnInfo: CellInfo[] = [
+  {
+    path: 'name',
+    name: 'name',
+    defaultValue: '',
+  },
   {
     path: 'billingContact.companyName',
     name: 'company-name',

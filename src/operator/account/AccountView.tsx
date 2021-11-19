@@ -15,11 +15,19 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 const AccountView: FC = () => {
   const {account, accountStatus} = useContext(AccountContext)
 
+  let accountTitle = ''
+  if (account.name) {
+    const accountIdPart = account.id ? `(${account.id})` : ''
+    accountTitle = `${account.name} ${accountIdPart} `
+  } else {
+    accountTitle = `Account ${account?.id}`
+  }
+
   return (
     <PageSpinner loading={accountStatus}>
       <AppWrapper>
-        <Page titleTag={`Account ${account?.id}`} testID="account-view--header">
-          <AppPageHeader title={`Account ${account?.id}`} />
+        <Page titleTag={accountTitle} testID="account-view--header">
+          <AppPageHeader title={accountTitle} />
           <Page.Contents scrollable={true}>
             <DeleteAccountOverlay />
             <AccountViewHeader />

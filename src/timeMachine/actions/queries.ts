@@ -25,10 +25,7 @@ import {
 // Utils
 import fromFlux from 'src/shared/utils/fromFlux'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  buildVarsOption,
-  buildUsedVarsOption,
-} from 'src/variables/utils/buildVarsOption'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
 import {
   isDemoDataAvailabilityError,
@@ -62,7 +59,7 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors/index'
 import {isCurrentPageDashboard} from 'src/dashboards/selectors'
-import {getAllVariables, asAssignment} from 'src/variables/selectors'
+import {getAllVariables} from 'src/variables/selectors'
 import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 
 export type Action = SaveDraftQueriesAction | SetQueryResults
@@ -290,11 +287,6 @@ export const executeQueries = (abortController?: AbortController) => async (
     await dispatch(hydrateVariables())
 
     const allVariables = getAllVariables(state)
-
-    const variableAssignments = allVariables
-      .map(v => asAssignment(v))
-      .filter(v => !!v)
-
     const startTime = window.performance.now()
     const startDate = Date.now()
 
@@ -308,12 +300,7 @@ export const executeQueries = (abortController?: AbortController) => async (
         event('demoData_queried')
       }
 
-      let extern
-      if (isFlagEnabled('filterExtern')) {
-        extern = buildUsedVarsOption(text, allVariables)
-      } else {
-        extern = buildVarsOption(variableAssignments)
-      }
+      const extern = buildUsedVarsOption(text, allVariables)
 
       event('runQuery', {context: 'timeMachine'})
 

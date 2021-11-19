@@ -16,14 +16,6 @@ import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
 
 // TODO: As part of #1708, move the contents of this file to filterUnusedVars.test.ts and remove this file.
 describe('filterUnusedVars', () => {
-  beforeAll(() => {
-    window.influx.set('filterExtern', true)
-  })
-
-  afterAll(() => {
-    window.influx.set('filterExtern', false)
-  })
-
   describe('filterUnusedVarsBasedOnQuery', () => {
     it('returns an empty array when no variables or queries are passed', () => {
       const actual = filterUnusedVarsBasedOnQuery([], [])

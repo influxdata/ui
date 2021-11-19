@@ -11,14 +11,6 @@ import {exportVariables} from 'src/variables/utils/exportVariables'
 
 // TODO: As part of #1708, move the contents of this file to exportVariables.test.ts and remove this file.
 describe('exportVariables', () => {
-  beforeAll(() => {
-    window.influx.set('filterExtern', true)
-  })
-
-  afterAll(() => {
-    window.influx.set('filterExtern', false)
-  })
-
   it('should find dependent variables', () => {
     const a = createVariable('a', 'f(x: v.b)')
     const b = createVariable('b', 'cool')

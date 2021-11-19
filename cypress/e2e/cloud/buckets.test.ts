@@ -487,7 +487,6 @@ describe('Buckets', () => {
       const retentionDesc = [defaultBucket, monitoringBucket, tasksBucket]
       const retentionAsc = [tasksBucket, monitoringBucket, defaultBucket]
 
-      // if demo data bucket doesn't exist, create a bucket with the same name
       cy.getByTestID('Create Bucket').click()
       cy.getByTestID('overlay--container').within(() => {
         cy.getByInputName('name').type('a new bucket')

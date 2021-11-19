@@ -260,27 +260,56 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     //const placeHolderText = this.getPlaceHolderText('Select a Value')
 
-console.log(`trying to render ${name}.....`, shownValues)
-    let realVals  = []
+    console.log(`trying to render ${name}.....`, shownValues)
+    let realVals = []
     //   { value: 'vanilla', label: 'Vanilla' }
-if (shownValues && shownValues.length) {
-  realVals = shownValues.map(val => ({value: val, label: val}))
-}
+    if (shownValues && shownValues.length) {
+      realVals = shownValues.map(val => ({value: val, label: val}))
+    }
 
-console.log(`arghh; for ${name}`, realVals)
+    console.log(`arghh; for ${name}`, realVals)
+    const customStyles = {
+      option: (provided, state) => ({
+        ...provided,
+        borderBottom: '1px dotted pink',
+        color: 'white',
+        backgroundColor: 'darkgray',
+        padding: 20,
+      }),
+      control: () => ({
+        // none of react-select's styles are passed to <Control />
+        width: 225,
+        color: 'white',
+        backgroundColor: 'darkgray',
+        display: 'flex',
+      }),
+      indicatorSeparator: () => ({
+        display: 'none',
+      }),
+      singleValue: (provided, state) => {
+        const opacity = state.isDisabled ? 0.5 : 1
+        const transition = 'opacity 300ms'
 
-//    const style={width:200}
-    return <Select
-    classNamePrefix="select"
-    defaultValue={selectedValue}
-    isDisabled={isDisabled}
-    isLoading={status === RemoteDataState.Loading || isDisabled }
-    isClearable={true}
-    isRtl={false}
-    isSearchable={true}
-    name={name}
-    options={realVals}
-    />
+        return {...provided, opacity, transition}
+      },
+    }
+
+    //    const style={width:200}
+    return (
+      <Select
+        classNamePrefix="select"
+        defaultValue={selectedValue}
+        isDisabled={isDisabled}
+        isLoading={status === RemoteDataState.Loading || isDisabled}
+        isClearable={true}
+        isRtl={false}
+        isSearchable={true}
+        styles={customStyles}
+        name={name}
+        options={realVals}
+      />
+    )
+    //
   }
 
   private getWidth(placeHolderText) {

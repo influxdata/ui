@@ -253,9 +253,9 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
   render() {
     const {selectedValue, values, name, status} = this.props
-    //const {shownValues} = this.state
+    const {shownValues} = this.state
 
-    const shownValues = ['ab', 'c', 'd', 'ernie', 'rosita', 'bert']
+    //const shownValues = ['ab', 'c', 'd', 'ernie', 'rosita', 'bert']
     const isDisabled = !shownValues || shownValues.length === 0
 
     //const placeHolderText = this.getPlaceHolderText('Select a Value')
@@ -264,13 +264,13 @@ console.log(`trying to render ${name}.....`, shownValues)
     let realVals  = []
     //   { value: 'vanilla', label: 'Vanilla' }
 if (shownValues && shownValues.length) {
-  realVals = shownValues.map(val => ({value: val; label: val}))
+  realVals = shownValues.map(val => ({value: val, label: val}))
 }
 
 console.log(`arghh; for ${name}`, realVals)
 
+//    const style={width:200}
     return <Select
-    className="basic-single"
     classNamePrefix="select"
     defaultValue={selectedValue}
     isDisabled={isDisabled}

@@ -86,7 +86,7 @@
     "@types/codemirror": "^0.0.56",
     "@types/history": "4.7.6",
     "@types/jest": "^27.0.2",
-    "@types/lodash": "^4.14.116",
+    "@types/lodash": "^4.14.177",
     "@types/memoize-one": "^4.0.2",
     "@types/node": "^12.6.8",
     "@types/papaparse": "^4.5.9",

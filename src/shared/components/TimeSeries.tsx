@@ -30,21 +30,12 @@ import {
 } from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
-import {
-  isDemoDataAvailabilityError,
-  demoDataErrorMessage,
-} from 'src/cloud/utils/demoDataErrors'
 import {hashCode} from 'src/shared/apis/queryCache'
 import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
-import {getDemoDataErrorButton} from 'src/shared/components/notifications/NotificationButtons'
 import {parseASTIM} from 'src/variables/utils/astim'
 
 // Constants
-import {
-  rateLimitReached,
-  resultTooLarge,
-  demoDataAvailability,
-} from 'src/shared/copy/notifications'
+import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
 import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
 // Actions & Selectors
@@ -63,7 +54,6 @@ import {
   DashboardQuery,
   AppState,
   CancelBox,
-  NotificationButtonElement,
 } from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
@@ -308,13 +298,6 @@ class TimeSeries extends Component<Props, State> {
 
       for (const result of results) {
         if (result.type === 'UNKNOWN_ERROR') {
-          if (isDemoDataAvailabilityError(result.code, result.message)) {
-            const message = demoDataErrorMessage()
-            const buttonElement: NotificationButtonElement = onDismiss =>
-              getDemoDataErrorButton(onDismiss)
-
-            notify(demoDataAvailability(message, buttonElement))
-          }
           errorMessage = result.message
           throw new Error(result.message)
         }

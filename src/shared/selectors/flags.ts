@@ -5,7 +5,6 @@ import {CLOUD, CLOUD_BILLING_VISIBLE} from 'src/shared/constants'
 export const OSS_FLAGS = {
   cursorAtEOF: false,
   customCheckQuery: false,
-  demodata: false,
   downloadCellCSV: false,
   fluxParser: false,
   matchingNotificationRules: false,
@@ -53,7 +52,6 @@ export const CLOUD_FLAGS = {
   cloudBilling: CLOUD_BILLING_VISIBLE, // should be visible in dev and acceptance, but not in cloud
   cursorAtEOF: false,
   customCheckQuery: false,
-  demodata: true,
   downloadCellCSV: false,
   fluxParser: false,
   matchingNotificationRules: false,

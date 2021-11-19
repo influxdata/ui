@@ -481,47 +481,23 @@ describe('Buckets', () => {
 
   it('can sort by name and retention', () => {
     cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-      const demoDataBucket = 'Website Monitoring Bucket'
       const tasksBucket = '_tasks'
       const monitoringBucket = '_monitoring'
-      const buckets = [
-        demoDataBucket,
-        defaultBucket,
-        tasksBucket,
-        monitoringBucket,
-      ]
-      const retentionDesc = [
-        defaultBucket,
-        monitoringBucket,
-        demoDataBucket,
-        tasksBucket,
-      ]
-      const retentionAsc = [
-        tasksBucket,
-        monitoringBucket,
-        demoDataBucket,
-        defaultBucket,
-      ]
+      const buckets = [defaultBucket, tasksBucket, monitoringBucket]
+      const retentionDesc = [defaultBucket, monitoringBucket, tasksBucket]
+      const retentionAsc = [tasksBucket, monitoringBucket, defaultBucket]
 
       // if demo data bucket doesn't exist, create a bucket with the same name
-      cy.getByTestID('resource-list').then($body => {
-        if (
-          $body.find(`[data-testid="bucket-card ${demoDataBucket}"]`).length ===
-          0
-        ) {
-          cy.getByTestID(`bucket-card ${demoDataBucket}`).should('not.exist')
-          cy.getByTestID('Create Bucket').click()
-          cy.getByTestID('overlay--container').within(() => {
-            cy.getByInputName('name').type(demoDataBucket)
-            cy.getByTestID('retention-intervals--button').click()
-            cy.getByTestID('duration-selector--button').click()
-            cy.getByTestID('duration-selector--7d')
-              .click()
-              .then(() => {
-                cy.getByTestID('bucket-form-submit').click()
-              })
+      cy.getByTestID('Create Bucket').click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByInputName('name').type('a new bucket')
+        cy.getByTestID('retention-intervals--button').click()
+        cy.getByTestID('duration-selector--button').click()
+        cy.getByTestID('duration-selector--7d')
+          .click()
+          .then(() => {
+            cy.getByTestID('bucket-form-submit').click()
           })
-        }
       })
 
       cy.getByTestID('resource-sorter--button')

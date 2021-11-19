@@ -605,45 +605,6 @@ export const getSchemaFailed = (
   message: `Failed to fetch schema for bucket with id ${bucketName}: ${error}`,
 })
 
-// Demodata buckets
-
-export const demoDataAddBucketFailed = (
-  bucketName: string,
-  message: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Could not create dashboard for demodata bucket ${bucketName}: ${message}`,
-})
-
-export const demoDataDeleteBucketFailed = (
-  bucketName: string,
-  error: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Failed to delete demo data bucket: ${bucketName}: ${error}`,
-})
-
-export const demoDataSucceeded = (
-  bucketName: string,
-  buttonElement: NotificationButtonElement
-): Notification => ({
-  ...defaultSuccessNotification,
-  message: `Successfully added demodata bucket ${bucketName}, and demodata dashboard.`,
-  duration: FIFTEEN_SECONDS,
-  buttonElement,
-})
-
-export const demoDataAvailability = (
-  message: string,
-  buttonElement?: NotificationButtonElement
-): Notification => ({
-  ...defaultErrorNotification,
-  message,
-  buttonElement,
-  duration: TEN_SECONDS,
-  type: 'demoDataAvailabilityError',
-})
-
 export const updateAggregateType = (
   message: string,
   buttonElement?: NotificationButtonElement

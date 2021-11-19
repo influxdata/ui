@@ -17,17 +17,10 @@ import {
   getTimeRangeWithTimezone,
   isCurrentPageDashboard as isCurrentPageDashboardSelector,
 } from 'src/dashboards/selectors'
-import {getVariables, asAssignment} from 'src/variables/selectors'
-import {isInQuery} from 'src/variables/utils/hydrateVars'
+import {getVariables} from 'src/variables/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
-import {
-  getWindowVars,
-  getWindowVarsFromVariables,
-} from 'src/variables/utils/getWindowVars'
-import {
-  buildVarsOption,
-  buildUsedVarsOption,
-} from 'src/variables/utils/buildVarsOption'
+import {getWindowVarsFromVariables} from 'src/variables/utils/getWindowVars'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import 'intersection-observer'
 import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
 import {
@@ -254,20 +247,13 @@ class TimeSeries extends Component<Props, State> {
         await new Promise(() => {})
       }
 
-      const vars = variables.map(v => asAssignment(v))
       // Issue new queries
       this.pendingResults = queries.map(({text}) => {
         const orgID =
           getOrgIDFromBuckets(text, buckets) || this.props.match.params.orgID
 
-        let extern
-        if (isFlagEnabled('filterExtern')) {
-          const windowVars = getWindowVarsFromVariables(text, variables)
-          extern = buildUsedVarsOption(text, variables, windowVars)
-        } else {
-          const windowVars = getWindowVars(text, vars)
-          extern = buildVarsOption([...vars, ...windowVars])
-        }
+        const windowVars = getWindowVarsFromVariables(text, variables)
+        const extern = buildUsedVarsOption(text, variables, windowVars)
 
         event('runQuery', {context: 'TimeSeries'})
         if (isCurrentPageDashboard) {
@@ -287,15 +273,10 @@ class TimeSeries extends Component<Props, State> {
 
       let statuses = [] as StatusRow[][]
       if (check) {
-        let extern
-        if (isFlagEnabled('filterExtern')) {
-          extern = buildUsedVarsOption(
-            queries.map(query => query.text),
-            variables
-          )
-        } else {
-          extern = buildVarsOption(vars)
-        }
+        const extern = buildUsedVarsOption(
+          queries.map(query => query.text),
+          variables
+        )
         this.pendingCheckStatuses = runStatusesQuery(
           this.props.match.params.orgID,
           check.id,
@@ -416,15 +397,11 @@ const mstp = (state: AppState, props: OwnProps) => {
   const queries = props.queries
     ? props.queries.map(q => q.text).filter(t => !!t.trim())
     : []
-  let vars
-  if (isFlagEnabled('filterExtern')) {
-    const astims = queries.map(query => parseASTIM(query))
-    vars = getVariables(state).filter(v =>
-      astims.some(astim => astim.hasVariable(v.name))
-    )
-  } else {
-    vars = getVariables(state).filter(v => queries.some(t => isInQuery(t, v)))
-  }
+
+  const astims = queries.map(query => parseASTIM(query))
+  const vars = getVariables(state).filter(v =>
+    astims.some(astim => astim.hasVariable(v.name))
+  )
   const variables = [
     ...vars,
     getRangeVariable(TIME_RANGE_START, timeRange),

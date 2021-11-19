@@ -227,14 +227,15 @@ export const createCell = (
 
 export const createView = (
   dbID: string,
-  cellID: string
+  cellID: string,
+  viewFile = 'view'
 ): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.fixture('view').then(view => {
-    return cy.request({
-      method: 'PATCH',
-      url: `/api/v2/dashboards/${dbID}/cells/${cellID}/view`,
-      body: view,
-    })
+  return cy.fixture(viewFile).then(view => {
+      return cy.request({
+        method: 'PATCH',
+        url: `/api/v2/dashboards/${dbID}/cells/${cellID}/view`,
+        body: view,
+      })
   })
 }
 
@@ -395,6 +396,21 @@ export const createMapVariable = (
       orgID,
       arguments: argumentsObj,
     },
+  })
+}
+
+export const createMapVariableFromFix = (
+  fixName: string,
+  orgID?: string
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.fixture(fixName).then(varBody => {
+    varBody.orgID = orgID;
+    return cy.request({
+      method: 'POST',
+      url: '/api/v2/variables',
+      body: varBody
+    })
+
   })
 }
 
@@ -1054,6 +1070,7 @@ Cypress.Commands.add('createToken', createToken)
 Cypress.Commands.add('createQueryVariable', createQueryVariable)
 Cypress.Commands.add('createCSVVariable', createCSVVariable)
 Cypress.Commands.add('createMapVariable', createMapVariable)
+Cypress.Commands.add('createMapVariableFromFix', createMapVariableFromFix)
 
 // labels
 Cypress.Commands.add('createLabel', createLabel)

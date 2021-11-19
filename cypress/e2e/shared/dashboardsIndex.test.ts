@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+import {makeGraphSnapshot} from '../../support/commands'
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
@@ -10,7 +11,7 @@ describe('Dashboards', () => {
     cy.flush().then(() =>
       cy.signin().then(() =>
         cy.fixture('routes').then(({orgs}) => {
-          cy.get('@org').then(({id: orgID}: Organization) => {
+          cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
             cy.visit(`${orgs}/${orgID}/dashboards-list`)
             cy.getByTestID('tree-nav')
           })
@@ -252,6 +253,144 @@ describe('Dashboards', () => {
     )
   })
 
+  describe.only('cloning', () => {
+    const DashName = 'Happy Dashboard'
+    const LabelName = 'bark'
+    beforeEach(() => {
+      cy
+        .writeLPDataFromFile({
+          filename: 'data/wumpus01.lp',
+          offset: '20m',
+          stagger: '1m',
+        }).should('equal', 'success')
+
+      /*
+      // import dashboard from file
+      cy.getByTestID('add-resource-dropdown--button')
+        .first()
+        .click()
+      cy.getByTestID('add-resource-dropdown--import').click()
+
+      cy.getByTestID('drag-and-drop--input').attachFile({
+        filePath: 'toBeClonedDashboard.json',
+      })
+
+      cy.getByTestID('submit-button Dashboard').click()
+      */
+
+
+      return cy.get<Organization>('@org')
+        .then(({id}: Organization) =>
+          cy.createDashboard(id, DashName)
+            .then(({body}) =>
+              cy.createAndAddLabel('dashboards', id, body.id, LabelName)
+                .then(() =>
+                  cy.createCell(body.id)
+                    .then((cell1Resp) =>
+                      cy.createMapVariableFromFix('power_vars', id).then(() =>
+                        cy.createView(body.id, cell1Resp.body.id, 'wumpusDurView').then(() =>
+                          cy.createCell(body.id, {x: 4, y: 0, height: 8, width: 4}).then(cell2Resp =>
+                            cy.createView(body.id, cell2Resp.body.id, 'sampleNote').then(() => {
+                              cy.fixture('routes')
+                                .then(({orgs}) =>
+                                  cy.get<Organization>('@org')
+                                    .then(({id}: Organization) => {
+                                      cy.wait(1000)
+                                      cy.visit(`${orgs}/${id}/dashboards-list`)
+                                      return cy.getByTestID('tree-nav')
+                                    })
+                                )
+                            })
+                          )
+                        )
+                      )
+                    )
+                )
+            )
+        )
+    })
+
+    it.only('can clone a dashboard', () => {
+      cy.getByTestID('dashboard-card').should('have.length', 1)
+
+      // get graph in original view
+
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('dashboard-card--name').click()
+        })
+
+      const viewGraphOrig = makeGraphSnapshot();
+
+      cy.getByTestID('nav-item-dashboards').click()
+
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('context-menu-dashboard').click()
+        })
+
+      cy.getByTestID('context-clone-dashboard').click()
+
+      // Verify cloned card contents
+
+      cy.getByTestID('page-title').should('contain.text', `${DashName} (clone 1)`)
+      cy.getByTestID('variable-dropdown--Power').should('be.visible')
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').should('have.value','base')
+
+      makeGraphSnapshot().shouldBeSameAs(viewGraphOrig)
+
+      cy.getByTestID('cell--view-empty markdown').should('contain.text', 'The cat went here and there')
+
+      // Verify changes in clone are not reflected in original
+      // change variable
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').click()
+      cy.getByTestID('variable-dropdown--item').eq(4).click()
+      const viewGraphCopy = makeGraphSnapshot()
+      cy.getByTestID('cell Name this Cell').within(() => {
+        cy.getByTestID('cell-context--toggle').click()
+      })
+
+      const replaceText = '### William Blake\n#### Augeries of Innocense\n\n To see a World in a Grain of Sand\n\nAnd a Heaven in a Wild Flower\n\n...`'
+      cy.getByTestID('cell-context--note').click()
+      cy.getByTestID('markdown-editor')
+        .click()
+        .focused()
+        .type('{ctrl}a')
+        .type(replaceText)
+
+      cy.getByTestID('save-note--button').click()
+
+      cy.getByTestID('nav-item-dashboards').click()
+
+      // assert graph and variable in original are not same as in copy
+
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('dashboard-card--name').click()
+        })
+
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').should('have.value','base')
+      makeGraphSnapshot().shouldBeSameAs(viewGraphOrig, false)
+
+      /*
+            cy.fixture('routes').then(({orgs}) => {
+              cy.get<Organization>('@org').then(({id}: Organization) => {
+                cy.visit(`${orgs}/${id}/dashboards-list`)
+                cy.getByTestID('tree-nav')
+              })
+            })
+
+            cy.getByTestID('dashboard-card').should('have.length', 2)
+
+       */
+    })
+
+
+  })
+
   describe('Dashboard List', () => {
     beforeEach(() =>
       cy.get<Organization>('@org').then(({id}: Organization) =>
@@ -277,27 +416,6 @@ describe('Dashboards', () => {
         )
       )
     )
-
-    it('can clone a dashboard', () => {
-      cy.getByTestID('dashboard-card').should('have.length', 2)
-
-      cy.getByTestID('dashboard-card')
-        .first()
-        .within(() => {
-          cy.getByTestID('context-menu-dashboard').click()
-        })
-
-      cy.getByTestID('context-clone-dashboard').click()
-
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
-        })
-      })
-
-      cy.getByTestID('dashboard-card').should('have.length', 3)
-    })
 
     it('retains dashboard sort order after navigating away', () => {
       const expectedDashboardOrder = ['test dashboard', 'Bee Happy']
@@ -557,7 +675,7 @@ describe('Dashboards', () => {
   )
 
   it('creates a dashboard and downloads JSON', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -583,7 +701,7 @@ describe('Dashboards', () => {
   })
 
   it('copies to clipboard', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)

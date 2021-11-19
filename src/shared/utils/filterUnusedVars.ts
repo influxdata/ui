@@ -54,9 +54,8 @@ export const filterUnusedVarsBasedOnQuery = (
   variables: Variable[],
   queryTexts: string[]
 ): Variable[] => {
-  let varsInUse
   const astims = queryTexts.map(query => parseASTIM(query))
-  varsInUse = variables.filter(variable =>
+  const varsInUse = variables.filter(variable =>
     astims.some(astim => astim.hasVariable(variable.name))
   )
   const cachedVars = createdUsedVarsCache(varsInUse)

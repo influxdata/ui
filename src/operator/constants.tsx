@@ -1,9 +1,9 @@
 import React from 'react'
 import {CellInfo, ResourceInfo} from 'src/types'
 import {Link} from 'react-router-dom'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const accountHeaderBaseInfo =[
+export const accountHeaderInfo = [
+  'Account Name',
   'Company Name',
   'Acct ID',
   'Owner Email',
@@ -13,13 +13,12 @@ const accountHeaderBaseInfo =[
   'Billing Provider',
 ]
 
-if (isFlagEnabled('accountOpName')) {
-   accountHeaderBaseInfo.unshift( 'Account Name')
-}
-
-export const accountHeaderInfo = accountHeaderBaseInfo
-
-const accountColumnBaseInfo: CellInfo[] = [
+export const accountColumnInfo: CellInfo[] = [
+  {
+    path: 'name',
+    name: 'name',
+    defaultValue: '',
+  },
   {
     path: 'billingContact.companyName',
     name: 'company-name',
@@ -59,18 +58,6 @@ const accountColumnBaseInfo: CellInfo[] = [
     defaultValue: 'Zuora',
   },
 ]
-
-if (isFlagEnabled('accountOpName')) {
-  accountColumnBaseInfo.unshift(
-      {
-        path: 'name',
-        name: 'name',
-        defaultValue: '',
-      })
-}
-
-export const accountColumnInfo: CellInfo[] = accountColumnBaseInfo
-
 
 export const organizationColumnHeaders = [
   'Org Name',

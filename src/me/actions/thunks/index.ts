@@ -70,7 +70,7 @@ export const getQuartzMe = () => async dispatch => {
     const data = {
       ...resp.data,
       isOperator: true,
-      operatorRole: 'read-write'
+      operatorRole: 'read-write',
     } as Me
 
     dispatch(setQuartzMe(data, RemoteDataState.Done))

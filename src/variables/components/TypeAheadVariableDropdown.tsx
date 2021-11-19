@@ -3,8 +3,7 @@ import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 //import classnames from 'classnames'
 import InfiniteLoader from 'react-window-infinite-loader'
-import { FixedSizeList as List } from "react-window";
-
+import {FixedSizeList as List} from 'react-window'
 
 // Components
 import {
@@ -47,72 +46,71 @@ interface MyState {
   loaded: boolean
   cachedItems: any[]
 }
-const LOADING = 1;
-const LOADED = 2;
-let itemStatusMap = {};
+const LOADING = 1
+const LOADED = 2
+let itemStatusMap = {}
 
-const isItemLoaded = index => !!itemStatusMap[index];
+const isItemLoaded = index => !!itemStatusMap[index]
 const loadMoreItems = (startIndex, stopIndex) => {
   for (let index = startIndex; index <= stopIndex; index++) {
-    itemStatusMap[index] = LOADING;
+    itemStatusMap[index] = LOADING
   }
   return new Promise(resolve =>
-      setTimeout(() => {
-        for (let index = startIndex; index <= stopIndex; index++) {
-          itemStatusMap[index] = LOADED;
-        }
-        resolve();
-      }, 100)
-  );
-};
-
-
-
-
+    setTimeout(() => {
+      for (let index = startIndex; index <= stopIndex; index++) {
+        itemStatusMap[index] = LOADED
+      }
+      resolve()
+    }, 100)
+  )
+}
 
 class Row extends PureComponent {
-  handleClick=(ack) => {
-    console.log("did click!", ack)
+  handleClick = ack => {
+    console.log('did click!', ack)
   }
 
   render() {
     // @ts-ignore
-    const { index, style, data } = this.props;
+    const {index, style, data} = this.props
     if (!data || index >= data.length) {
-      return null;
+      return null
     }
 
     const item = data[index]
-    let label;
+    let label
 
     if (itemStatusMap[index] === LOADED) {
       label = item
 
-      return   <button type="button" id={label}
-                       onClick={() => this.handleClick(label)} className="cf-dropdown-item variable-dropdown--item cf-dropdown-item__no-wrap"
-                       data-testid="variable-dropdown--item">
-
-        <div className="cf-dropdown-item--children">{label}</div>
-      </button>
-
+      return (
+        <button
+          type="button"
+          id={label}
+          onClick={() => this.handleClick(label)}
+          className="cf-dropdown-item variable-dropdown--item cf-dropdown-item__no-wrap"
+          data-testid="variable-dropdown--item"
+        >
+          <div className="cf-dropdown-item--children">{label}</div>
+        </button>
+      )
     } else {
-      label = "Loading..."
+      label = 'Loading...'
     }
 
     // const classN = classnames('variable-dropdown--item', {
     //   active: index === selectIndex,
     // })
 
-
-
     return (
-
-
-        <div onClick={() => this.handleClick(label)}
-             className="variable-dropdown--item" style={style}>
-          {label}
-        </div>
-    );
+      <div
+        onClick={() => this.handleClick(label)}
+        className="variable-dropdown--item"
+        style={style}
+      >
+        {label}
+      </div>
+    )
   }
 }
 
@@ -203,23 +201,27 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     this.setState(newState)
   }
-  handleClick=(ack) => {
-    console.log("did click!", ack)
+  handleClick = ack => {
+    console.log('did click!', ack)
   }
-   makeMenuItem = (label: string, index?: number) => {
-    return   <button type="button" id={label}
-                     onClick={() => this.handleClick(label)}
-                     className="cf-dropdown-item variable-dropdown--item cf-dropdown-item__no-wrap"
-                     data-testid="variable-dropdown--item">
+  makeMenuItem = (label: string, index?: number) => {
+    return (
+      <button
+        type="button"
+        id={label}
+        onClick={() => this.handleClick(label)}
+        className="cf-dropdown-item variable-dropdown--item cf-dropdown-item__no-wrap"
+        data-testid="variable-dropdown--item"
+      >
+        <div className="cf-dropdown-item--children">{label}</div>
+      </button>
+    )
+  }
 
-      <div className="cf-dropdown-item--children">{label}</div>
-    </button>
-}
+  makeMenuItems(amount: number, startIndex = 0) {
+    const {cachedItems, shownValues} = this.state
 
-  makeMenuItems(amount:number, startIndex=0) {
-    const {cachedItems,shownValues} = this.state
-
-    for(let i = startIndex; i<amount; i++) {
+    for (let i = startIndex; i < amount; i++) {
       cachedItems[i] = this.makeMenuItem(shownValues[i])
     }
   }
@@ -242,7 +244,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       typedValue: newSelectedValue,
       loaded: true,
       actualVal: newSelectedValue,
-      cachedItems : cachedItems,
+      cachedItems: cachedItems,
     }
   }
 
@@ -347,7 +349,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   }
 
   render() {
-    const { values, name, status} = this.props
+    const {values, name, status} = this.props
     const {typedValue, shownValues, menuOpen, cachedItems} = this.state
     const dropdownStatus =
       values.length === 0 ? ComponentStatus.Disabled : ComponentStatus.Default
@@ -378,27 +380,26 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         )
       }
     }
- // items here are strings; they do not have an id
-   const  itemKey = (index, data) => {
+    // items here are strings; they do not have an id
+    const itemKey = (index, data) => {
       // Find the item at the specified index.
       // In this case "data" is an Array that was passed to List as "itemData".
-     if (!index || index < 0) {
-       return 'not-found'
-     }
+      if (!index || index < 0) {
+        return 'not-found'
+      }
 
-     const item = data[index];
-     if (!item) {
-       return index
-     }
+      const item = data[index]
+      if (!item) {
+        return index
+      }
       // Return a value that uniquely identifies this item.
       // Typically this will be a UID of some sort.
-      return item;
+      return item
     }
 
-    const itemCount = shownValues? shownValues.length: 0
+    const itemCount = shownValues ? shownValues.length : 0
 
-
-    const Row2 = ({ index, style }) => {
+    const Row2 = ({index, style}) => {
       if (!isItemLoaded(index)) {
         return <div style={style}>...Loiding...</div>
       } else {
@@ -431,26 +432,25 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             theme={DropdownMenuTheme.Amethyst}
           >
             <InfiniteLoader
-                isItemLoaded={isItemLoaded}
-                itemCount={itemCount}
-                loadMoreItems={loadMoreItems}
-                key='ack-infini-load'
-
+              isItemLoaded={isItemLoaded}
+              itemCount={itemCount}
+              loadMoreItems={loadMoreItems}
+              key="ack-infini-load"
             >
-              {({ onItemsRendered, ref }) => (
-                  <List
-                      className="List"
-                      height={150}
-                      itemCount={itemCount}
-                      itemSize={30}
-                      onItemsRendered={onItemsRendered}
-                      ref={ref}
-                      width={300}
-                      itemData={shownValues}
-                      itemKey={itemKey}
-                  >
-                    {Row2}
-                  </List>
+              {({onItemsRendered, ref}) => (
+                <List
+                  className="List"
+                  height={150}
+                  itemCount={itemCount}
+                  itemSize={30}
+                  onItemsRendered={onItemsRendered}
+                  ref={ref}
+                  width={300}
+                  itemData={shownValues}
+                  itemKey={itemKey}
+                >
+                  {Row2}
+                </List>
               )}
             </InfiniteLoader>
           </Dropdown.Menu>

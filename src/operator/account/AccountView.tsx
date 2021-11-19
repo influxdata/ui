@@ -15,9 +15,9 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 const AccountView: FC = () => {
   const {account, accountStatus} = useContext(AccountContext)
 
-  let accountTitle=''
+  let accountTitle = ''
   if (account.name) {
-    const accountIdPart = account.id? `(${account.id})` : ''
+    const accountIdPart = account.id ? `(${account.id})` : ''
     accountTitle = `${account.name} ${accountIdPart} `
   } else {
     accountTitle = `Account ${account?.id}`

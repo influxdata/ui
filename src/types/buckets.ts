@@ -7,11 +7,7 @@ export interface OwnBucket extends Omit<GenBucket, 'labels'> {
   readableRetention: string
 }
 
-export interface DemoBucket extends Omit<OwnBucket, 'type'> {
-  type: 'demodata'
-}
-
-export type Bucket = DemoBucket | OwnBucket
+export type Bucket = OwnBucket
 
 export type RetentionRule = GenBucket['retentionRules'][0]
 

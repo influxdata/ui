@@ -18,7 +18,6 @@ import {hydrateVariables} from 'src/variables/actions/thunks'
 import {
   rateLimitReached,
   resultTooLarge,
-  demoDataAvailability,
   updateAggregateType,
 } from 'src/shared/copy/notifications'
 
@@ -27,18 +26,11 @@ import fromFlux from 'src/shared/utils/fromFlux'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
-import {
-  isDemoDataAvailabilityError,
-  demoDataErrorMessage,
-} from 'src/cloud/utils/demoDataErrors'
 import {isAggregateTypeError} from 'src/utils/aggregateTypeErrors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {
-  getAggregateTypeErrorButton,
-  getDemoDataErrorButton,
-} from 'src/shared/components/notifications/NotificationButtons'
+import {getAggregateTypeErrorButton} from 'src/shared/components/notifications/NotificationButtons'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -296,8 +288,6 @@ export const executeQueries = (abortController?: AbortController) => async (
 
       if (getOrg(state).id === orgID) {
         event('orgData_queried')
-      } else {
-        event('demoData_queried')
       }
 
       const extern = buildUsedVarsOption(text, allVariables)
@@ -343,12 +333,6 @@ export const executeQueries = (abortController?: AbortController) => async (
 
     for (const result of results) {
       if (result.type === 'UNKNOWN_ERROR') {
-        if (isDemoDataAvailabilityError(result.code, result.message)) {
-          const message = demoDataErrorMessage()
-          const buttonElement: NotificationButtonElement = onDismiss =>
-            getDemoDataErrorButton(onDismiss)
-          dispatch(notify(demoDataAvailability(message, buttonElement)))
-        }
         if (
           isAggregateTypeError(result.code, result.message) &&
           state.currentExplorer.isAutoFunction

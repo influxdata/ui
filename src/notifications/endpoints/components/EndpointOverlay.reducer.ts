@@ -34,7 +34,7 @@ export const reducer = (
           'headers',
           'clientURL',
           'routingKey',
-        ])
+        ]) as NotificationEndpoint
 
         switch (endpoint.type) {
           case 'pagerduty':

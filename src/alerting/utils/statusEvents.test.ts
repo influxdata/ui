@@ -35,7 +35,10 @@ describe('process statuses response', () => {
   }
 
   it('process empty table', async () => {
-    mocked(fromFlux).mockImplementationOnce(() => ({table: {...table, length: 0}, fluxGroupKeyUnion}))
+    mocked(fromFlux).mockImplementationOnce(() => ({
+      table: {...table, length: 0},
+      fluxGroupKeyUnion,
+    }))
 
     const actual = await processStatusesResponse({
       promise: Promise.resolve({

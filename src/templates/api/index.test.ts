@@ -94,7 +94,7 @@ describe('templates api calls', () => {
         data: {
           message: 'whoops',
         } as any,
-        headers: {} as any
+        headers: {} as any,
       })
     })
 

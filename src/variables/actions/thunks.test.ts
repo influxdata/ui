@@ -101,7 +101,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, (getState as any)).then(() => {
+    hydrateVariables()(dispatch, getState as any).then(() => {
       expect(dispatch).not.toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledTimes(0)
     })
@@ -124,7 +124,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, (getState as any)).then(() => {
+    hydrateVariables()(dispatch, getState as any).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)
       expect(dispatch).not.toHaveBeenCalledWith(baseQueryVariableAction)
@@ -152,7 +152,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, (getState as any)).then(() => {
+    hydrateVariables()(dispatch, getState as any).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(buildVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)
@@ -180,7 +180,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, (getState as any)).then(() => {
+    hydrateVariables()(dispatch, getState as any).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(buildVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)

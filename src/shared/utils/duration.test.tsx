@@ -137,7 +137,6 @@ describe('convertTimeRangeToCustom', () => {
       windowPeriod: 10000, // 10s
     }
 
-
     const lowerDate = new Date(1466424490000)
     lowerDate.setHours(lowerDate.getHours() - 1)
 

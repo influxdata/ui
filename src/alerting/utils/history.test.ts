@@ -48,7 +48,10 @@ describe('history utils', () => {
 
   describe('process response', () => {
     it('process empty table', async () => {
-      mocked(fromFlux).mockImplementationOnce(() => ({table: {...table, length: 0}, fluxGroupKeyUnion}))
+      mocked(fromFlux).mockImplementationOnce(() => ({
+        table: {...table, length: 0},
+        fluxGroupKeyUnion,
+      }))
 
       const actual = await processResponse({
         promise: Promise.resolve({
@@ -64,7 +67,10 @@ describe('history utils', () => {
     })
 
     it('process single table', async () => {
-      mocked(fromFlux).mockImplementationOnce(() => ({table, fluxGroupKeyUnion}))
+      mocked(fromFlux).mockImplementationOnce(() => ({
+        table,
+        fluxGroupKeyUnion,
+      }))
       const expected = range(length).map(i =>
         Object.fromEntries([
           ['table', 0],

@@ -46,6 +46,7 @@ const CheckoutForm: FC = () => {
     handleSubmit,
     setIsDirty,
     isSubmitting,
+    isPaygCreditActive,
   } = useContext(CheckoutContext)
 
   const onSubmit = () => {
@@ -92,7 +93,7 @@ const CheckoutForm: FC = () => {
                 .
               </p>
 
-              {isFlagEnabled('paygCheckoutCredit') && (
+              {isPaygCreditActive && (
                 <GoogleOptimizeExperiment
                   experimentID={PAYG_CREDIT_EXPERIMENT_ID}
                   variants={[

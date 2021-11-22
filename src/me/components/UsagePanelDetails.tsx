@@ -11,7 +11,7 @@ import {PAYG_CREDIT_DAYS, PAYG_MAX_CREDIT} from 'src/shared/constants'
 // Types
 
 const UsagePanelDetails: FC = () => {
-  const {creditUsage, creditDaysRemaining} = useContext(UsageContext)
+  const {creditUsage, creditDaysUsed} = useContext(UsageContext)
 
   return (
     <>
@@ -25,19 +25,17 @@ const UsagePanelDetails: FC = () => {
         maxText={`$${PAYG_MAX_CREDIT} credit`}
       />
       <ProgressBar
-        value={PAYG_CREDIT_DAYS - creditDaysRemaining}
+        value={creditDaysUsed}
         max={PAYG_CREDIT_DAYS}
         barGradient={
-          creditDaysRemaining > 15
-            ? Gradients.HotelBreakfast
-            : Gradients.DangerDark
+          creditDaysUsed <= 15 ? Gradients.HotelBreakfast : Gradients.DangerDark
         }
         color={
-          creditDaysRemaining > 15 ? InfluxColors.Wasabi : InfluxColors.Curacao
+          creditDaysUsed <= 15 ? InfluxColors.Wasabi : InfluxColors.Curacao
         }
         label="Credit Period"
-        valueText={`${creditDaysRemaining}`}
-        maxText={`${PAYG_CREDIT_DAYS} days remaining`}
+        valueText={`${creditDaysUsed}`}
+        maxText={`${PAYG_CREDIT_DAYS} days used`}
       />
     </>
   )

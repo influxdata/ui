@@ -101,9 +101,9 @@ describe('Pinned Items', () => {
         .first()
         .trigger('mouseover')
         .within(() => {
-          cy.getByTestID('pinneditems-delete--menu').click()
-          cy.getByTestID('pinneditems-delete--confirm').click()
+          cy.getByTestID('pinneditems-delete--menu--button').click()
         })
+      cy.getByTestID('pinneditems-delete--menu--confirm-button').click()
       cy.getByTestID('pinneditems--emptystate').should(
         'contain.text',
         'Pin a task, dashboard, or notebook here'
@@ -267,7 +267,7 @@ from(bucket: "${name}"{rightarrow}
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
-        cy.getByTestID('pinneditems--type').should('contain.text', 'Notebook')
+        cy.getByTestID('pinneditems--type').should('contain.text', 'NOTEBOOK')
       })
     })
 

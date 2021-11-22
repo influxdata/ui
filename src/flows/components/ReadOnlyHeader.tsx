@@ -46,12 +46,12 @@ const ReadOnlyHeader: FC = () => {
               className="flows-header-column-signup"
             >
               <Button
-                icon={IconFont.Star}
+                icon={IconFont.CuboNav}
                 color={ComponentColor.Success}
                 size={ComponentSize.Medium}
                 shape={ButtonShape.Default}
                 onClick={handleSignUpClick}
-                text="Sign up!"
+                text="Get InfluxDB"
                 testID="sign-up--button"
               />
             </Grid.Column>

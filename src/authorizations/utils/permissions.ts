@@ -329,14 +329,20 @@ export const generateDescription = apiPermissions => {
     }
   } else {
     apiPermissions.forEach(perm => {
-      if (perm.resource.name) {
+      if (perm.resource.type === 'orgs') {
         generatedDescription += `${capitalize(perm.action)} ${
           perm.resource.type
-        } ${perm.resource.name} `
+        }  `
       } else {
-        generatedDescription += `${capitalize(perm.action)} ${
-          perm.resource.type
-        } `
+        if (perm.resource.name) {
+          generatedDescription += `${capitalize(perm.action)} ${
+            perm.resource.type
+          } ${perm.resource.name} `
+        } else {
+          generatedDescription += `${capitalize(perm.action)} ${
+            perm.resource.type
+          } `
+        }
       }
     })
   }

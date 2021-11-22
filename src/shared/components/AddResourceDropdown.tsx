@@ -80,6 +80,20 @@ class AddResourceDropdown extends PureComponent<Props> {
   private get optionItems(): JSX.Element[] {
     const importOption = this.importOption
     const newOption = this.newOption
+    const templateOption = this.templateOption
+    const fromDashboard = this.props.resourceName === 'Dashboard'
+
+    const templateFromDashboard = (
+      <Dropdown.Item
+        id={templateOption}
+        key={templateOption}
+        onClick={this.handleSelect}
+        value={templateOption}
+        testID="add-resource-dropdown--template"
+      >
+        {templateOption}
+      </Dropdown.Item>
+    )
 
     const items = [
       <Dropdown.Item
@@ -100,6 +114,7 @@ class AddResourceDropdown extends PureComponent<Props> {
       >
         {importOption}
       </Dropdown.Item>,
+      ...(fromDashboard ? [templateFromDashboard] : []),
     ]
 
     return items
@@ -114,7 +129,7 @@ class AddResourceDropdown extends PureComponent<Props> {
   }
 
   private get templateOption(): string {
-    return `From a Template`
+    return `Add a Template`
   }
 
   private handleLimit = (): void => {

@@ -123,15 +123,17 @@ describe('TokensTab', () => {
       ).toHaveTextContent('My token')
 
       const deleteButton = tokenCard.querySelector(
-        "[data-testid='delete-token']"
+        "[data-testid='context-delete-menu--button']"
       )
+
+      fireEvent.click(deleteButton)
 
       const tokenID = '03c03a8a64728000'
 
       expect(ui.store.getState().resources.tokens.byID[tokenID]).toBeTruthy()
       expect(ui.store.getState().resources.tokens.allIDs).toContain(tokenID)
 
-      fireEvent.click(deleteButton)
+      fireEvent.click(screen.getByText('Confirm'))
 
       await waitFor(() => expect(deleteAuthorization).toBeCalled())
       expect(mocked(deleteAuthorization).mock.calls[0][0]['authID']).toEqual(
@@ -148,10 +150,12 @@ describe('TokensTab', () => {
       )
 
       const tokenCard = (await screen.findAllByTestId('token-card My token'))[0]
+      const menuButton = tokenCard.querySelector(
+        "[data-testid='context-menu-token']"
+      )
+      fireEvent.click(menuButton)
 
-      const cloneButton = tokenCard.querySelector('[data-testid=clone-token]')
-
-      fireEvent.click(cloneButton)
+      fireEvent.click(screen.getByText('Clone'))
 
       await waitFor(() => expect(createAuthorization).toBeCalled())
     })

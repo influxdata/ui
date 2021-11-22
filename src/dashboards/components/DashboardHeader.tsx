@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useContext, useEffect} from 'react'
+import React, {FC, useCallback, useContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
 
@@ -42,7 +42,6 @@ import {
 } from 'src/overlays/actions/overlays'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
 import {resetQueryCache} from 'src/shared/apis/queryCache'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
@@ -52,7 +51,6 @@ import {getByID} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Constants
-import {DemoDataDashboardNames} from 'src/cloud/constants'
 import {
   DASHBOARD_NAME_MAX_LENGTH,
   DEFAULT_DASHBOARD_NAME,
@@ -96,13 +94,6 @@ const DashboardHeader: FC<Props> = ({
   showOverlay,
   dismissOverlay,
 }) => {
-  const demoDataset = DemoDataDashboardNames[dashboard.name]
-  useEffect(() => {
-    if (demoDataset) {
-      event('demoData_dashboardViewed', {demo_dataset: demoDataset})
-    }
-  }, [dashboard.id, demoDataset])
-
   const handleAddNote = () => {
     history.push(`/orgs/${org.id}/dashboards/${dashboard.id}/notes/new`)
   }

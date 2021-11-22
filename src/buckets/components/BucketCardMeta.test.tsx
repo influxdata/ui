@@ -59,9 +59,9 @@ describe('bucket meta data card, testing that the schema type shows up properly'
     const card = getByTestId('resourceCard-buckets-fooabc')
 
     const schemaType = getByTestId('bucket-schemaType')
-    // should be three nodes ('system', '30 days', and 'implicit schema type')
+    // should be three nodes ('system', '30 days', and 'implicit schema type', <id string>)
 
-    expect(card.childElementCount).toEqual(3)
+    expect(card.childElementCount).toEqual(4)
 
     expect(schemaType).toHaveTextContent(IMPLICIT_TEXT)
   })
@@ -71,8 +71,8 @@ describe('bucket meta data card, testing that the schema type shows up properly'
 
     const card = getByTestId('resourceCard-buckets-fooabc')
 
-    // should be three nodes ('system', '30 days', 'implicit schema type')
-    expect(card.childElementCount).toEqual(3)
+    // should be three nodes ('system', '30 days', 'implicit schema type', <id string>)
+    expect(card.childElementCount).toEqual(4)
 
     expect(getByTestId('bucket-schemaType')).toHaveTextContent(IMPLICIT_TEXT)
   })

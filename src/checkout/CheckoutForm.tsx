@@ -17,6 +17,7 @@ import {
   JustifyContent,
   Panel,
 } from '@influxdata/clockface'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 
 // Components
 import ContactForm from 'src/checkout/utils/ContactForm'
@@ -31,9 +32,12 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 
 // Events
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Constants
+import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const CheckoutForm: FC = () => {
   const {
@@ -41,6 +45,7 @@ const CheckoutForm: FC = () => {
     zuoraParams,
     handleSubmit,
     setIsDirty,
+    isSubmitting,
   } = useContext(CheckoutContext)
 
   const onSubmit = () => {
@@ -57,8 +62,6 @@ const CheckoutForm: FC = () => {
       console.error(error)
     }
   }
-
-  const {isSubmitting} = useContext(CheckoutContext)
 
   return (
     <Form noValidate onSubmit={onSubmit}>
@@ -88,11 +91,20 @@ const CheckoutForm: FC = () => {
                 </a>
                 .
               </p>
+
               {isFlagEnabled('paygCheckoutCredit') && (
-                <div className="checkout-form--banner">
-                  <strong className="checkout-banner--credit">$250</strong>
-                  <p>credit applied</p>
-                </div>
+                <GoogleOptimizeExperiment
+                  experimentID={PAYG_CREDIT_EXPERIMENT_ID}
+                  variants={[
+                    <div
+                      className="checkout-form--banner"
+                      key="checkout-form-banner"
+                    >
+                      <strong className="checkout-banner--credit">$250</strong>
+                      <p>credit applied</p>
+                    </div>,
+                  ]}
+                />
               )}
             </Panel.Body>
           </Panel>

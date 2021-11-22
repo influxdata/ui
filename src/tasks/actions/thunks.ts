@@ -224,6 +224,7 @@ export const updateTaskStatus = (task: Task) => async (
     )
 
     dispatch(editTask(normTask))
+    dispatch(setCurrentTask(normTask))
     dispatch(notify(copy.taskUpdateSuccess()))
   } catch (e) {
     console.error(e)

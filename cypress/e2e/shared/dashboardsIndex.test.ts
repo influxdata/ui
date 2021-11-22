@@ -10,13 +10,9 @@ describe('Dashboards', () => {
     cy.flush().then(() =>
       cy.signin().then(() =>
         cy.fixture('routes').then(({orgs}) => {
-          cy.get<Organization>('@org').then(({id}: Organization) => {
-            cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.get('@org').then(({id: orgID}: Organization) => {
+            cy.visit(`${orgs}/${orgID}/dashboards-list`)
             cy.getByTestID('tree-nav')
-            cy.exec('rm cypress/downloads/*', {
-              log: true,
-              failOnNonZeroExit: false,
-            })
           })
         })
       )
@@ -553,23 +549,34 @@ describe('Dashboards', () => {
     })
   })
 
-  // Skipping until https://github.com/influxdata/ui/issues/2864 is resolved by Bonitoo
-  it.skip('creates a dashboard and downloads JSON', () => {
+  before(() =>
+    cy.exec('rm cypress/downloads/*', {
+      log: true,
+      failOnNonZeroExit: false,
+    })
+  )
+
+  it('creates a dashboard and downloads JSON', () => {
     cy.get('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-          cy.getByTestID('tree-nav')
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card--name').click()
           cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name
+          cy.getByTestID('add-note--button').click()
+          cy.getByTestID('note-editor--overlay').should('be.visible')
+          cy.getByTestID('markdown-editor').type('test note added')
+          cy.getByTestID('save-note--button').click() // note added to add content to be downloaded in the JSON file
           cy.getByTestID('nav-item-dashboards').click()
           cy.getByTestID('dashboard-card').invoke('hover')
           cy.getByTestID('context-menu-dashboard').click()
           cy.getByTestID('context-export-dashboard').click()
+          cy.getByTestID('form-container').should('be.visible')
+          cy.getByTestID('export-overlay--text-area').should('be.visible')
           cy.getByTestID('button').click()
           // readFile has a 4s timeout before the test fails
-          cy.readFile('cypress/downloads/dashboard.json').should('exist')
+          cy.readFile('cypress/downloads/dashboard.json').should('not.be.null')
         })
       })
     })

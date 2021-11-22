@@ -74,6 +74,7 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .presentation-panel {
+  overflow: auto;
   display: flex;
   height: 100%;
   flex-direction: column;

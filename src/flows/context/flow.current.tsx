@@ -80,17 +80,33 @@ export const FlowProvider: FC = ({children}) => {
     [currentFlow]
   )
 
+  const statusFunc = useCallback(({status}: {status: string}) => {
+    if (status === 'connected') {
+      // get the session from the cookie
+      const {cookie} = document
+      // send the session as an ArrayBuffer
+      const buffer = Buffer.from(cookie)
+      const messageType = Buffer.from([2])
+      const uIntArray = new Uint8Array(
+        buffer.byteLength + messageType.byteLength
+      )
+      uIntArray.set(new Uint8Array(messageType), 0)
+      uIntArray.set(new Uint8Array(buffer), messageType.byteLength)
+      provider.current.ws.send(uIntArray)
+    }
+  }, [])
+
   useEffect(() => {
     const doc = yDoc.current
     if (isFlagEnabled('sharedFlowEditing') && currentID) {
       provider.current = new WebsocketProvider(
-        // 'ws://localhost:1223', // todo(ariel): replace this with an actual API that we setup
-        'wss://demos.yjs.dev', // todo(ariel): replace this with an actual API that we setup
+        `wss://${window.location.host}/api/v2private/workbench`,
         currentID,
         doc
       )
 
       provider.current.on('sync', syncFunc)
+      provider.current.on('status', statusFunc)
     }
 
     const onUpdate = () => {

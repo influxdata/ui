@@ -5,10 +5,7 @@ import {fromFlux} from '@influxdata/giraffe'
 // Utils
 import {resolveSelectedKey} from 'src/variables/utils/resolveSelectedValue'
 import {formatVarsOption} from 'src/variables/utils/formatVarsOption'
-import {
-  buildVarsOption,
-  buildUsedVarsOption,
-} from 'src/variables/utils/buildVarsOption'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
@@ -19,7 +16,6 @@ import {
   Variable,
 } from 'src/types'
 import {CancelBox} from 'src/types/promises'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const cacheKey = (
   url: string,
@@ -103,12 +99,7 @@ export class DefaultValueFetcher implements ValueFetcher {
       }
     }
 
-    let extern
-    if (isFlagEnabled('filterExtern')) {
-      extern = buildUsedVarsOption(query, variables)
-    } else {
-      extern = buildVarsOption(variables)
-    }
+    const extern = buildUsedVarsOption(query, variables)
     const request = runQuery(orgID, query, extern, abortController)
     event('runQuery', {context: 'variables'})
 

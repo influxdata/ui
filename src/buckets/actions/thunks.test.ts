@@ -1,7 +1,6 @@
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {fetchAllBuckets} from 'src/buckets/api'
 import * as api from 'src/client'
-import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
 import {getMockAppState} from 'src/mockAppState'
 import {RemoteDataState} from '@influxdata/clockface'
 import {PublishNotificationAction} from 'src/shared/actions/notifications'
@@ -13,21 +12,6 @@ jest.mock('src/client', () => ({
 
 jest.mock('src/shared/constants/index', () => ({
   CLOUD: true,
-}))
-
-jest.mock('src/cloud/apis/demodata', () => ({
-  fetchDemoDataBuckets: jest.fn(() => {
-    const res: ReturnType<typeof fetchDemoDataBuckets> = Promise.resolve([
-      {
-        id: 'demo-bucket',
-        retentionRules: [],
-        name: 'demo-buck',
-        readableRetention: 'retee',
-        type: 'demodata',
-      },
-    ])
-    return res
-  }),
 }))
 
 const mockGetBuckets = (shouldSucess: boolean) => {
@@ -58,7 +42,6 @@ describe('buckets thunks', () => {
 
       const {normalizedBuckets: bucks} = await fetchAllBuckets('ord01')
       expect(bucks.result).toContain('custom-id')
-      expect(bucks.result).toContain('demo-bucket')
     })
 
     it('should throw an error upon failure', async () => {
@@ -84,7 +67,6 @@ describe('buckets thunks', () => {
       expect(dispatched[0].status).toBe(RemoteDataState.Loading)
       expect(dispatched[1].status).toBe(RemoteDataState.Done)
       expect(dispatched[1].schema.result).toContain('custom-id')
-      expect(dispatched[1].schema.result).toContain('demo-bucket')
     })
 
     it('should throw an error upon failure message received', async () => {

@@ -241,10 +241,7 @@ export const loadBuckets = () => async (
       setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)
     )
 
-    const allBuckets = [
-      ...bucketsResponse.buckets,
-      ...bucketsResponse.demoDataBuckets,
-    ].map(b => b.name)
+    const allBuckets = bucketsResponse.buckets.map(b => b.name)
 
     const systemBuckets = allBuckets.filter(b => b.startsWith('_'))
     const userBuckets = allBuckets.filter(b => !b.startsWith('_'))

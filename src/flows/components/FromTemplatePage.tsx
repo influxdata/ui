@@ -14,6 +14,7 @@ import {
   hydrate,
 } from 'src/flows/context/flow.list'
 import {FlowProvider, FlowContext} from 'src/flows/context/flow.current'
+import {AppSettingProvider} from 'src/shared/contexts/app'
 import QueryProvider from 'src/shared/contexts/query'
 import {FlowPage} from 'src/flows/components/FlowPage'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -85,24 +86,26 @@ const FromTemplatePage: FC = () => {
   if (isFlagEnabled('ephemeralNotebook')) {
     return (
       <AppWrapper>
-        <Notifications />
-        <TooltipPortal />
-        <NotesPortal />
-        <OverlayProviderComp>
-          <OverlayController />
-        </OverlayProviderComp>
-        <EngagementLink />
-        <TreeNav />
-        <QueryProvider>
-          <FlowListProvider>
-            <FlowProvider>
-              <Switch>
-                <Route path="/notebook/from/*" component={Template} />
-                <Route component={NotFound} />
-              </Switch>
-            </FlowProvider>
-          </FlowListProvider>
-        </QueryProvider>
+        <AppSettingProvider>
+          <Notifications />
+          <TooltipPortal />
+          <NotesPortal />
+          <OverlayProviderComp>
+            <OverlayController />
+          </OverlayProviderComp>
+          <EngagementLink />
+          <TreeNav />
+          <QueryProvider>
+            <FlowListProvider>
+              <FlowProvider>
+                <Switch>
+                  <Route path="/notebook/from/*" component={Template} />
+                  <Route component={NotFound} />
+                </Switch>
+              </FlowProvider>
+            </FlowListProvider>
+          </QueryProvider>
+        </AppSettingProvider>
       </AppWrapper>
     )
   }

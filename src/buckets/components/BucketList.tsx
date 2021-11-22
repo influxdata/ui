@@ -5,7 +5,6 @@ import memoizeOne from 'memoize-one'
 
 // Components
 import BucketCard from 'src/buckets/components/BucketCard'
-import DemoDataBucketCard from 'src/buckets/components/DemoDataBucketCard'
 import {ResourceList} from '@influxdata/clockface'
 
 // Selectors
@@ -66,9 +65,6 @@ class BucketList extends PureComponent<
     )
 
     return sortedBuckets.map(bucket => {
-      if (bucket.type === 'demodata') {
-        return <DemoDataBucketCard key={bucket.id} bucket={bucket} />
-      }
       return (
         <BucketCard
           key={bucket.id}

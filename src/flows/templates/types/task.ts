@@ -15,19 +15,15 @@ export default register =>
             refresh: AUTOREFRESH_DEFAULT,
             pipes: [
               {
-                activeQuery: 0,
-                queries: [
+                buckets: [],
+                tags: [
                   {
-                    text: '',
-                    editMode: 'advanced',
-                    builderConfig: {
-                      buckets: [],
-                      tags: [],
-                      functions: [],
-                    },
+                    key: '_measurement',
+                    values: [],
+                    aggregateFunctionType: 'filter',
                   },
                 ],
-                type: 'rawFluxEditor',
+                type: 'queryBuilder',
                 title: 'Query to Run',
                 visible: true,
               },
@@ -38,7 +34,7 @@ export default register =>
               },
               {
                 type: 'schedule',
-                title: 'Schedule',
+                title: 'Schedule as a Task',
                 visible: true,
               },
             ],
@@ -104,10 +100,17 @@ export default register =>
                 },
                 {
                   type: 'schedule',
-                  title: 'Schedule',
+                  title: 'Schedule as a Task',
                   visible: true,
-                  interval: taskParams.every,
+                  interval:
+                    taskParams.every ||
+                    taskParams.cron.replace(/(^")|("$)/g, ''),
                   offset: taskParams.offset,
+                  task: {
+                    id,
+                    name: resp.name,
+                    flux: resp.flux,
+                  },
                 },
               ],
             },

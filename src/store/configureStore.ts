@@ -45,7 +45,6 @@ import {annotationsReducer} from 'src/annotations/reducers'
 import {membersReducer} from 'src/members/reducers'
 import {autoRefreshReducer} from 'src/shared/reducers/autoRefresh'
 import {limitsReducer, LimitsState} from 'src/cloud/reducers/limits'
-import {demoDataReducer, DemoDataState} from 'src/cloud/reducers/demodata'
 import checksReducer from 'src/checks/reducers'
 import rulesReducer from 'src/notifications/rules/reducers'
 import endpointsReducer from 'src/notifications/endpoints/reducers'
@@ -78,10 +77,8 @@ export const rootReducer = (history: History) => (state, action) => {
     alertBuilder: alertBuilderReducer,
     cloud: combineReducers<{
       limits: LimitsState
-      demoData: DemoDataState
     }>({
       limits: limitsReducer,
-      demoData: demoDataReducer,
     }),
     currentPage: currentPageReducer,
     currentDashboard: currentDashboardReducer,

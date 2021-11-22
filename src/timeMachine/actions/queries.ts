@@ -18,30 +18,19 @@ import {hydrateVariables} from 'src/variables/actions/thunks'
 import {
   rateLimitReached,
   resultTooLarge,
-  demoDataAvailability,
   updateAggregateType,
 } from 'src/shared/copy/notifications'
 
 // Utils
 import fromFlux from 'src/shared/utils/fromFlux'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  buildVarsOption,
-  buildUsedVarsOption,
-} from 'src/variables/utils/buildVarsOption'
+import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
-import {
-  isDemoDataAvailabilityError,
-  demoDataErrorMessage,
-} from 'src/cloud/utils/demoDataErrors'
 import {isAggregateTypeError} from 'src/utils/aggregateTypeErrors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {
-  getAggregateTypeErrorButton,
-  getDemoDataErrorButton,
-} from 'src/shared/components/notifications/NotificationButtons'
+import {getAggregateTypeErrorButton} from 'src/shared/components/notifications/NotificationButtons'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -62,7 +51,7 @@ import {
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors/index'
 import {isCurrentPageDashboard} from 'src/dashboards/selectors'
-import {getAllVariables, asAssignment} from 'src/variables/selectors'
+import {getAllVariables} from 'src/variables/selectors'
 import {getActiveTimeMachine, getActiveQuery} from 'src/timeMachine/selectors'
 
 export type Action = SaveDraftQueriesAction | SetQueryResults
@@ -290,11 +279,6 @@ export const executeQueries = (abortController?: AbortController) => async (
     await dispatch(hydrateVariables())
 
     const allVariables = getAllVariables(state)
-
-    const variableAssignments = allVariables
-      .map(v => asAssignment(v))
-      .filter(v => !!v)
-
     const startTime = window.performance.now()
     const startDate = Date.now()
 
@@ -304,16 +288,9 @@ export const executeQueries = (abortController?: AbortController) => async (
 
       if (getOrg(state).id === orgID) {
         event('orgData_queried')
-      } else {
-        event('demoData_queried')
       }
 
-      let extern
-      if (isFlagEnabled('filterExtern')) {
-        extern = buildUsedVarsOption(text, allVariables)
-      } else {
-        extern = buildVarsOption(variableAssignments)
-      }
+      const extern = buildUsedVarsOption(text, allVariables)
 
       event('runQuery', {context: 'timeMachine'})
 
@@ -356,12 +333,6 @@ export const executeQueries = (abortController?: AbortController) => async (
 
     for (const result of results) {
       if (result.type === 'UNKNOWN_ERROR') {
-        if (isDemoDataAvailabilityError(result.code, result.message)) {
-          const message = demoDataErrorMessage()
-          const buttonElement: NotificationButtonElement = onDismiss =>
-            getDemoDataErrorButton(onDismiss)
-          dispatch(notify(demoDataAvailability(message, buttonElement)))
-        }
         if (
           isAggregateTypeError(result.code, result.message) &&
           state.currentExplorer.isAutoFunction

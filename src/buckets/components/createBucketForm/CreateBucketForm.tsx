@@ -25,7 +25,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {getOrg} from 'src/organizations/selectors'
 import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
-import {areNewSchemasValid} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
+import {areNewSchemasValid} from 'src/buckets/components/createBucketForm/measurementSchemaUtils'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null

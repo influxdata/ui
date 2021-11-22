@@ -14,13 +14,13 @@
 .task-form--options {
   flex: 1 0 140px;
   padding: $ix-marg-d;
+  border-right: 2px solid $cf-grey-35;
 }
 
 .task-form--editor {
   position: relative;
   flex: 6 0 0;
   border-radius: 0 $radius $radius 0;
-  margin: $ix-marg-b;
 }
 
 .task-form--form-label {

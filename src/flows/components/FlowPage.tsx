@@ -6,7 +6,6 @@ import {DapperScrollbars} from '@influxdata/clockface'
 
 // Contexts
 import CurrentFlowProvider, {FlowContext} from 'src/flows/context/flow.current'
-import {RunModeProvider} from 'src/flows/context/runMode'
 import QueryProvider from 'src/shared/contexts/query'
 import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
 import {FlowListContext} from 'src/flows/context/flow.list'
@@ -25,7 +24,9 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 import 'src/flows/style.scss'
 
+// Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {event} from 'src/cloud/utils/reporting'
 
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()
@@ -34,6 +35,12 @@ const FlowFromRoute = () => {
   useEffect(() => {
     change(id)
   }, [id, change])
+
+  useEffect(() => {
+    if (currentID !== null) {
+      event('Notebook Accessed', {notebookID: currentID})
+    }
+  }, [currentID])
 
   document.title = pageTitleSuffixer([
     flows[currentID]?.name,
@@ -57,36 +64,34 @@ const RunOnMount = () => {
 }
 
 export const FlowPage: FC = () => (
-  <RunModeProvider>
-    <ResultsProvider>
-      <FlowQueryProvider>
-        <RunOnMount />
-        <FlowKeyboardPreview />
-        <SidebarProvider>
-          <Page>
-            <FlowHeader />
-            <Page.Contents
-              fullWidth={true}
-              scrollable={false}
-              className="flow-page"
-            >
-              <PopupProvider>
-                <DapperScrollbars
-                  noScrollX
-                  thumbStartColor="gray"
-                  thumbStopColor="gray"
-                >
-                  <PipeList />
-                </DapperScrollbars>
-                <SubSideBar />
-                <PopupDrawer />
-              </PopupProvider>
-            </Page.Contents>
-          </Page>
-        </SidebarProvider>
-      </FlowQueryProvider>
-    </ResultsProvider>
-  </RunModeProvider>
+  <ResultsProvider>
+    <FlowQueryProvider>
+      <RunOnMount />
+      <FlowKeyboardPreview />
+      <SidebarProvider>
+        <Page>
+          <FlowHeader />
+          <Page.Contents
+            fullWidth={true}
+            scrollable={false}
+            className="flow-page"
+          >
+            <PopupProvider>
+              <DapperScrollbars
+                noScrollX
+                thumbStartColor="gray"
+                thumbStopColor="gray"
+              >
+                <PipeList />
+              </DapperScrollbars>
+              <SubSideBar />
+              <PopupDrawer />
+            </PopupProvider>
+          </Page.Contents>
+        </Page>
+      </SidebarProvider>
+    </FlowQueryProvider>
+  </ResultsProvider>
 )
 
 export default () => (

@@ -30,8 +30,8 @@ import {
 import {incrementCloneName} from 'src/utils/naming'
 
 export interface FlowListContextType extends FlowList {
-  add: (flow?: Flow) => Promise<string>
-  clone: (id: string) => void
+  add: (flow?: Flow) => Promise<string | void>
+  clone: (id: string) => Promise<string | void>
   update: (id: string, flow: Partial<Flow>) => void
   remove: (id: string) => void
   currentID: string | null
@@ -176,7 +176,7 @@ export const FlowListProvider: FC = ({children}) => {
     getAll()
   }, [])
 
-  const clone = async (id: string): Promise<string> => {
+  const clone = async (id: string): Promise<string | void> => {
     if (!flows.hasOwnProperty(id)) {
       throw new Error(`${PROJECT_NAME} not found`)
     }
@@ -194,7 +194,7 @@ export const FlowListProvider: FC = ({children}) => {
     return await add(data)
   }
 
-  const add = async (flow?: Flow): Promise<string> => {
+  const add = (flow?: Flow): Promise<string | void> => {
     let _flow
 
     if (!flow) {
@@ -217,30 +217,18 @@ export const FlowListProvider: FC = ({children}) => {
       }
     }
 
-    const apiFlow = serialize(_flow)
-
-    let id: string = `local_${UUID()}`
-    try {
-      const flow = await createAPI(apiFlow)
-      id = flow.id
-
-      _flow = hydrate(flow)
-    } catch {
-      dispatch(notify(notebookCreateFail()))
-    }
-
-    return new Promise(resolve => {
-      setTimeout(() => {
+    return createAPI(serialize(_flow))
+      .then(flow => {
         setFlows({
           ...flows,
-          [id]: _flow,
+          [flow.id]: hydrate(flow),
         })
 
-        setCurrentID(id)
-
-        resolve(id)
-      }, 200)
-    })
+        return flow.id
+      })
+      .catch(() => {
+        dispatch(notify(notebookCreateFail()))
+      })
   }
 
   const update = useCallback(
@@ -307,6 +295,11 @@ export const FlowListProvider: FC = ({children}) => {
   )
 
   const migrate = async () => {
+    const localFlows = Object.keys(flows).filter(id => id.includes('local'))
+    if (!localFlows.length) {
+      return
+    }
+
     const _flows = await migrateLocalFlowsToAPI(
       org.id,
       flows,

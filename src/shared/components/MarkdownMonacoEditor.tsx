@@ -31,7 +31,7 @@ const MarkdownMonacoEditor: FC<EditorProps> = ({
       const model = editor.getModel()
       editor.setPosition({
         lineNumber: model.getLineCount(),
-        column: model.getLineLastNonWhitespaceColumn(model.getLineCount()),
+        column: model.getLineLength(model.getLineCount()),
       })
       editor.focus()
     }

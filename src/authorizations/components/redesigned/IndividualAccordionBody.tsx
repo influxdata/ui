@@ -28,10 +28,19 @@ export const IndividualAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title, disabled} = props
   let sortedPermissions
 
-  if (title === 'Individual Bucket Names') {
+  if (resourceName === 'buckets') {
     // re-order buckets: user buckets first followed by system buckets
-    const systemBuckets = permissions.splice(0, 2)
-    sortedPermissions = [...permissions, ...systemBuckets]
+    const systemBuckets = []
+    const userBuckets = []
+
+    permissions.forEach(bucket => {
+      if (bucket.name === '_monitoring' || bucket.name === '_tasks') {
+        systemBuckets.push(bucket)
+      } else {
+        userBuckets.push(bucket)
+      }
+    })
+    sortedPermissions = [...userBuckets, ...systemBuckets]
   } else {
     sortedPermissions = [...permissions]
   }

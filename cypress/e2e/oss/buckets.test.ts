@@ -14,7 +14,6 @@ describe('Buckets', () => {
     )
   )
 
-  // TODO: Skipping this until we can sort out the differences between OSS and Cloud
   it('can sort by name and retention', () => {
     const buckets = ['defbuck', '_tasks', '_monitoring']
     const retentionDesc = ['defbuck', '_monitoring', '_tasks']

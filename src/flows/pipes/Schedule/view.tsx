@@ -301,21 +301,13 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, data.task])
 
-  let taskButtonText = 'Export as Task'
-
-  if (isFlagEnabled('removeExportModal')) {
-    if (hasChanges) {
-      taskButtonText = 'Export as New Task'
-    } else {
-      taskButtonText = 'Task in Sync'
-    }
-  }
-
   const persist = (
     <ExportTaskButton
       generate={generateTask}
       onCreate={storeTask}
-      text={taskButtonText}
+      text={
+        isFlagEnabled('removeExportModal') ? 'Export Task' : 'Export as Task'
+      }
       disabled={!hasChanges || !!intervalError || !!offsetError}
       type="task"
     />

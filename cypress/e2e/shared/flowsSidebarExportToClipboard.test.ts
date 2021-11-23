@@ -15,11 +15,8 @@ const addFluxQueryInNotebook = (query: string) => {
     cy.get('.monaco-editor .view-line:last')
       .click({force: true})
       .focused()
-      .type(Cypress.platform === 'darwin' ? '{cmd}a' : '{ctrl}a', {
-        force: true,
-        delay: 2,
-      })
-      .type(query, {force: true, delay: 2})
+      .clear()
+      .type(query)
   })
 }
 

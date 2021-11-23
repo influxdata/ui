@@ -416,7 +416,7 @@ describe('Checks', () => {
       )
     })
 
-    it('after check creation confirm history page has graph', () => {
+    it('ensures the history page has a graph after check creation confirmation', () => {
       cy.getByTestID('context-menu-task').click()
       cy.getByTestID('context-history-task').click()
       cy.getByTestID('giraffe-axes').should('be.visible')
@@ -428,7 +428,7 @@ describe('Checks', () => {
       cy.getByTestID('check-status-dropdown').should('not.exist')
 
       // Minimize the graph by dragging
-      cy.get('.threshold-marker--area.threshold-marker--crit')
+      cy.get('.threshold-marker--handle.threshold-marker--crit')
         .trigger('mousedown', {which: 1, pageX: 600, pageY: 100})
         .trigger('mousemove', {which: 1, pageX: 700, pageY: 100})
         .trigger('mouseup', {force: true})
@@ -499,7 +499,7 @@ describe('Checks', () => {
       })
     })
 
-    it('should allow created checks edited checks to persist changes (especially if the value is 0)', () => {
+    it('should allow edited checks to persist changes (especially if the value is 0)', () => {
       const checkName = 'Check it out!'
       // Selects the check to edit
       cy.getByTestID('check-card--name').should('have.length', 1)

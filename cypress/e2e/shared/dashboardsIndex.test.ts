@@ -313,7 +313,7 @@ describe('Dashboards', () => {
       )
     })
 
-    it.only('can clone a dashboard', () => {
+    it('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 1)
 
       // get graph in original view
@@ -619,6 +619,9 @@ describe('Dashboards', () => {
         cy.getByTestID('inline-labels--create-new').click()
 
         cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('label-overlay-form').should(form => {
+            expect(form).to.exist
+          })
           cy.getByTestID('create-label-form--name').should('have.value', label)
           cy.getByTestID('create-label-form--submit').click()
         })

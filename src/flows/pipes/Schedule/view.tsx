@@ -229,7 +229,13 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
   const hasChanges = useMemo(() => {
-    return taskText !== data?.task?.flux
+    if (data.task?.id) {
+      return taskText !== data.task.flux
+    }
+    if (data.task.length) {
+      return taskText !== data.task[0].flux
+    }
+    return false
   }, [taskText, data?.task?.flux])
 
   const updateInterval = evt => {
@@ -274,12 +280,14 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   }, [taskText])
 
   const storeTask = (task: any) => {
+    const list = ((data.task.id ? [data.task] : data.task) || []).slice(0)
+    list.unshift({
+      id: task.id,
+      name: task.name,
+      flux: task.flux,
+    })
     update({
-      task: {
-        id: task.id,
-        name: task.name,
-        flux: task.flux,
-      },
+      task: list
     })
   }
 
@@ -294,7 +302,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
         actions: [
           {
             title: 'View Run History',
-            menu: <History task={data.task} />,
+            menu: <History task={data.task.id?data.task:data.task[0]} />,
           },
         ],
       },

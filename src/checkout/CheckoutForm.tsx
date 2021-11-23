@@ -32,7 +32,6 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 
 // Events
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
@@ -46,6 +45,7 @@ const CheckoutForm: FC = () => {
     handleSubmit,
     setIsDirty,
     isSubmitting,
+    isPaygCreditActive,
   } = useContext(CheckoutContext)
 
   const onSubmit = () => {
@@ -92,7 +92,7 @@ const CheckoutForm: FC = () => {
                 .
               </p>
 
-              {isFlagEnabled('paygCheckoutCredit') && (
+              {isPaygCreditActive && (
                 <GoogleOptimizeExperiment
                   experimentID={PAYG_CREDIT_EXPERIMENT_ID}
                   variants={[

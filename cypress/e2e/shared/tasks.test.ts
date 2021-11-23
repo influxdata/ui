@@ -66,21 +66,13 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
   })
 
   it('can create a cron task', () => {
-    cy.getByTestID('create-task--button')
-      .first()
-      .click()
+    const taskName = 'Cron task test'
 
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
-        .focus()
-        .type('from(bucket: "defbuck")\n' + '\t|> range(start: -2m)', {
-          delay: 2,
-        })
+    cy.createTaskFromEmpty(taskName, ({name}) => {
+      return `from(bucket: "${name}"{rightarrow}
+   |> range(start: -2m{rightarrow}`
     })
 
-    cy.getByTestID('task-form-name')
-      .click()
-      .type('Cron task test')
     cy.getByTestID('task-card-cron-btn').click()
     cy.getByTestID('task-form-schedule-input')
       .click()

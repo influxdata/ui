@@ -40,6 +40,7 @@ import {
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {incrementCloneName} from 'src/utils/naming'
+import {event} from 'src/cloud/utils/reporting'
 
 interface OwnProps {
   auth: Authorization
@@ -97,7 +98,7 @@ class TokensRow extends PureComponent<Props> {
           icon={IconFont.Trash_New}
           shape={ButtonShape.Square}
           size={ComponentSize.ExtraSmall}
-          confirmationLabel="Yes, delete this dashboard"
+          confirmationLabel="Yes, delete this token"
           onConfirm={this.handleDelete}
           confirmationButtonText="Confirm"
           testID="context-delete-menu"
@@ -136,28 +137,37 @@ class TokensRow extends PureComponent<Props> {
     this.props.deleteAuthorization(id, description)
   }
 
-  private handleClone = () => {
+  private handleClone = async () => {
     const {description} = this.props.auth
-
     const allTokenDescriptions = Object.values(this.props.authorizations).map(
       auth => auth.description
     )
 
-    this.props.createAuthorization({
-      ...this.props.auth,
-      description: incrementCloneName(allTokenDescriptions, description),
-    })
-    this.props.showOverlay('access-token', null, () => dismissOverlay())
+    try {
+      await this.props.createAuthorization({
+        ...this.props.auth,
+        description: incrementCloneName(allTokenDescriptions, description),
+      })
+      event('token.clone.success', {id: this.props.auth.id, name: description})
+      this.props.showOverlay('access-token', null, () => dismissOverlay())
+    } catch {
+      event('token.clone.failure', {id: this.props.auth.id, name: description})
+    }
   }
 
   private handleClickDescription = () => {
     const {onClickDescription, auth} = this.props
+    event('token_row.edit_overlay.opened')
     onClickDescription(auth.id)
   }
 
   private handleUpdateName = (value: string) => {
     const {auth, updateAuthorization} = this.props
     updateAuthorization({...auth, description: value})
+    event('token.desciption.edited', {
+      id: this.props.auth.id,
+      description: value,
+    })
   }
 }
 

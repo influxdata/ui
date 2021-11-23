@@ -106,7 +106,7 @@ export const generateNavItems = (): NavItem[] => {
       label: PROJECT_NAME_PLURAL,
       shortLabel: PROJECT_NAME_SHORT,
       link: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
-      activeKeywords: [PROJECT_NAME_PLURAL.toLowerCase()],
+      activeKeywords: [PROJECT_NAME_PLURAL.toLowerCase(), 'notebook/from'],
     },
     {
       id: 'dashboards',

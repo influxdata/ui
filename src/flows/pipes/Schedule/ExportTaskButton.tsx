@@ -102,12 +102,11 @@ const ExportTaskButton: FC<Props> = ({
   return (
     <Button
       text={text}
-      color={disabled ? ComponentColor.Default : ComponentColor.Success}
+      color={ComponentColor.Success}
       type={ButtonType.Submit}
       onClick={onClick}
       status={disabled ? ComponentStatus.Disabled : ComponentStatus.Default}
       testID="task-form-save"
-      style={{opacity: 1}}
       icon={IconFont.Export_New}
       titleText={text}
     />

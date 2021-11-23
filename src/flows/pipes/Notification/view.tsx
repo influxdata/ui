@@ -55,7 +55,6 @@ import {
   testNotificationSuccess,
   testNotificationFailure,
 } from 'src/shared/copy/notifications'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
@@ -583,21 +582,19 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                     alignItems={AlignItems.FlexEnd}
                     margin={ComponentSize.Medium}
                   >
-                    {isFlagEnabled('notebooksExp') && (
-                      <FlexBox.Child grow={0} shrink={0}>
-                        <Button
-                          text="${exp}"
-                          onClick={launcher}
-                          color={ComponentColor.Secondary}
-                          testID="notification-exp-button"
-                          status={
-                            editorInstance
-                              ? ComponentStatus.Default
-                              : ComponentStatus.Loading
-                          }
-                        />
-                      </FlexBox.Child>
-                    )}
+                    <FlexBox.Child grow={0} shrink={0}>
+                      <Button
+                        text="${exp}"
+                        onClick={launcher}
+                        color={ComponentColor.Secondary}
+                        testID="notification-exp-button"
+                        status={
+                          editorInstance
+                            ? ComponentStatus.Default
+                            : ComponentStatus.Loading
+                        }
+                      />
+                    </FlexBox.Child>
                     <FlexBox.Child grow={0} shrink={0}>
                       <Button
                         text="Test Alert"

@@ -194,3 +194,13 @@ export const getTelegrafConfigToml = (telegrafConfigID: string) => async (
     dispatch(notify(getTelegrafConfigFailed()))
   }
 }
+
+export const getTelegraf = (telegrafConfigID: string) => async () => {
+  try {
+    const config = await client.telegrafConfigs.get(telegrafConfigID)
+    return config.name
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}

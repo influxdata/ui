@@ -15,6 +15,7 @@ import {
   ComponentColor,
   ComponentStatus,
   Dropdown,
+  ErrorTooltip,
 } from '@influxdata/clockface'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
@@ -246,6 +247,11 @@ const FlowHeader: FC = () => {
                 </Dropdown.Menu>
               )}
               style={{width: '250px', flex: '0 0 250px'}}
+            />
+            <ErrorTooltip
+              className="warning-icon"
+              tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
+              tooltipStyle={{width: '250px'}}
             />
             <SquareButton
               icon={IconFont.Checkmark_New}

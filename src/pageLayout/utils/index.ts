@@ -5,10 +5,8 @@ export const getNavItemActivation = (
   keywords: string[],
   location: string
 ): boolean => {
-  const ignoreOrgAndOrgID = 3
-  const parentPath = location.split('/').slice(ignoreOrgAndOrgID)
-  if (!parentPath.length) {
-    parentPath.push(HOMEPAGE_PATHNAME)
+  if (location.split('/').length <= 3) {
+    location = HOMEPAGE_PATHNAME
   }
-  return keywords.some(path => parentPath.includes(path))
+  return keywords.some(path => location.includes(path))
 }

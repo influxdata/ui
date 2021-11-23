@@ -855,10 +855,10 @@
     "@docsearch/css" "3.0.0-alpha.37"
     algoliasearch "^4.0.0"
 
-"@influxdata/clockface@^3.1.5":
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.1.5.tgz#d3a073351f35905e8aa937d66189a702a4055521"
-  integrity sha512-A2twQYz50XVU7zTVtkEGN5VghSdsyEbF1HbuiDt8ecyI1si7x2j853eHiMtZgeXCoDxAqkhp4ifys/3Vz2rJng==
+"@influxdata/clockface@^3.1.6":
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.1.6.tgz#3e86dcf100816048a7282c835d42f70e2a642bff"
+  integrity sha512-Rq8iwozupCFrsmAg5cTwF1EhS4Hog8yNoCE2p2EwICRlPef2RArN+rqDYj+k0tljUv8WUHaL0jvcV/Mf7s9UZA==
 
 "@influxdata/flux-lsp-browser@^0.5.53":
   version "0.5.53"
@@ -870,10 +870,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
   integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
 
-"@influxdata/giraffe@^2.20.0":
-  version "2.20.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.20.0.tgz#587e9e19edaacd9bad17555804ffd06f1594c885"
-  integrity sha512-hKNxZts+fZRhK3O5xJU8gr7w31IZcB2W9DXbL4sD5ncys6pV5vblH4fw2/kmA03N+nif+rIo7Usx/w0UjHV76w==
+"@influxdata/giraffe@^2.20.2":
+  version "2.20.2"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.20.2.tgz#c59cb3b790e60a43f33b6fe9e8c3ca789c1592f3"
+  integrity sha512-cgNs5511bwAqJ9Yb79QFx1XjU7d/1zOfMzxNUf5Rc2t6lI10i4alU1IF6T4qAPEUE1rG+YvYm4F8mNrg3o+DPQ==
   dependencies:
     merge-images "^2.0.0"
 
@@ -7580,17 +7580,17 @@ monaco-editor-textmate@^2.2.1:
   resolved "https://registry.yarnpkg.com/monaco-editor-textmate/-/monaco-editor-textmate-2.2.1.tgz#93f3f1932061dd2311b92a42ea1c027cfeb3e439"
   integrity sha512-RYTNNfvyjK15M0JA8WIi9UduU10eX5724UGNKnaA8MSetehjThGENctUTuKaxPk/k3pq59QzaQ/C06A44iJd3Q==
 
-monaco-editor-webpack-plugin@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.8.2.tgz#3721b8d9a3e2e41b154cf2a2955a7d7246c03714"
-  integrity sha512-g9G7A/lxQtpPsYaZFBqm73dwVkOziGUXExIR6iW7ksZUaiMkpvdTiE9O8edgdJGo+XtCmjycmIKB1Lt8VKbSTQ==
+monaco-editor-webpack-plugin@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-2.1.0.tgz#216bd35512a282beac7befd2fcdc5adb110403ff"
+  integrity sha512-DG7Dpo/ItWEOl/BG2egc/UIiHoCbHjq0EOF0E6eJQT+6QNZBOfSVU4GxaXG+kQJXB8rauxli96Xp1ITnNLZtSw==
   dependencies:
-    loader-utils "^1.2.3"
+    loader-utils "^2.0.0"
 
-monaco-editor@^0.19.2:
-  version "0.19.3"
-  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.19.3.tgz#1c994b3186c00650dbcd034d5370d46bf56c0663"
-  integrity sha512-2n1vJBVQF2Hhi7+r1mMeYsmlf18hjVb6E0v5SoMZyb4aeOmYPKun+CE3gYpiNA1KEvtSdaDHFBqH9d7Wd9vREg==
+monaco-editor@^0.21.0:
+  version "0.21.3"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.21.3.tgz#3381b66614b64d1c5e3b77dd5564ad496d1b4e5d"
+  integrity sha512-9N7wATLpi+googstvtm6IKg97vPQ77FDYEpkow5tLriM/VJ0DaTRyUP4UVzcoH7KlPDX+e/rE7/imcOUeGkT6g==
 
 monaco-languageclient@^0.11.0:
   version "0.11.0"

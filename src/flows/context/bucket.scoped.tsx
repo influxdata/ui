@@ -92,11 +92,6 @@ export const BucketProvider: FC = ({children}) => {
                 },
                 {
                   type: 'sample',
-                  name: 'Bird Migration',
-                  id: 'birdMigration',
-                },
-                {
-                  type: 'sample',
                   name: 'NOAA National Buoy Data',
                   id: 'noaa',
                 },

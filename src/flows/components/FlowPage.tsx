@@ -24,7 +24,9 @@ import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 import 'src/flows/style.scss'
 
+// Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {event} from 'src/cloud/utils/reporting'
 
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()
@@ -33,6 +35,12 @@ const FlowFromRoute = () => {
   useEffect(() => {
     change(id)
   }, [id, change])
+
+  useEffect(() => {
+    if (currentID !== null) {
+      event('Notebook Accessed', {notebookID: currentID})
+    }
+  }, [currentID])
 
   document.title = pageTitleSuffixer([
     flows[currentID]?.name,

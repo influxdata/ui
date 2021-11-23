@@ -19,8 +19,6 @@ import FilterList from 'src/shared/components/FilterList'
 import BucketList from 'src/buckets/pagination/BucketList'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import BucketExplainer from 'src/buckets/components/BucketExplainer'
-import DemoDataDropdown from 'src/buckets/components/DemoDataDropdown'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 
@@ -128,9 +126,6 @@ class BucketsTab extends PureComponent<Props, State> {
 
     const rightHeaderItems = (
       <>
-        <FeatureFlag name="demodata">
-          <DemoDataDropdown />
-        </FeatureFlag>
         <CreateBucketButton />
       </>
     )

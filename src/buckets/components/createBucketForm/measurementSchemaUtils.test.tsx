@@ -7,7 +7,7 @@ import {
   areSchemaUpdatesValid,
   csvToObjectArray,
   toCsvString,
-} from './MeasurementSchemaUtils'
+} from './measurementSchemaUtils'
 
 const oneColumns = [
   {name: 'time', type: 'timestamp'},
@@ -326,6 +326,20 @@ describe('test csv to array function (parsing)', () => {
     const contents = `name,type,data_type
     hello,how,are
     you,today,`
+    try {
+      csvToObjectArray(contents)
+      fail('code should not reach here, it should throw an error')
+    } catch (error) {
+      expect(error).not.toEqual(null)
+      expect(error.message).toEqual(
+        'csv headers are not correct; they need to be : "name, type, dataType"'
+      )
+    }
+  })
+  it('should throw an error because of bad columns in the csv-not enough columns', () => {
+    const contents = `name,type
+    hello,how
+    you,today`
     try {
       csvToObjectArray(contents)
       fail('code should not reach here, it should throw an error')

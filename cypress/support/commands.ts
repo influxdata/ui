@@ -231,11 +231,11 @@ export const createView = (
   viewFile = 'view'
 ): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.fixture(viewFile).then(view => {
-      return cy.request({
-        method: 'PATCH',
-        url: `/api/v2/dashboards/${dbID}/cells/${cellID}/view`,
-        body: view,
-      })
+    return cy.request({
+      method: 'PATCH',
+      url: `/api/v2/dashboards/${dbID}/cells/${cellID}/view`,
+      body: view,
+    })
   })
 }
 
@@ -404,13 +404,12 @@ export const createMapVariableFromFix = (
   orgID?: string
 ): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.fixture(fixName).then(varBody => {
-    varBody.orgID = orgID;
+    varBody.orgID = orgID
     return cy.request({
       method: 'POST',
       url: '/api/v2/variables',
-      body: varBody
+      body: varBody,
     })
-
   })
 }
 

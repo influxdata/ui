@@ -328,21 +328,22 @@ describe('Dashboard', () => {
               cy.getByTestID('switch-to-script-editor').should('be.visible')
               cy.getByTestID('switch-to-script-editor').click()
               cy.getByTestID('toolbar-tab').click()
-
+              cy.getByTestID('flux-editor').should('be.visible')
               // check to see if the default timeRange variables are available
               cy.get('.flux-toolbar--list-item').contains('timeRangeStart')
               cy.get('.flux-toolbar--list-item').contains('timeRangeStop')
 
-              cy.getByTestID('flux-editor')
-                .should('be.visible')
-                .click()
-                .focused()
-                .type(' ')
               cy.get('.flux-toolbar--list-item')
                 .eq(bucketVarIndex)
                 .within(() => {
                   cy.get('.cf-button').click()
                 })
+              cy.getByTestID('flux-editor').within(() => {
+                cy.get('.monaco-editor .view-line:last')
+                  .click({force: true})
+                  .focused()
+                  .type(' ', {force: true, delay: 1})
+              })
               cy.getByTestID('save-cell--button').click()
 
               // Make sure typeAhead input box is rendered and is visible
@@ -586,21 +587,23 @@ describe('Dashboard', () => {
               cy.getByTestID('switch-to-script-editor').click()
 
               // query for data
-              cy.getByTestID('flux-editor')
-                .should('be.visible')
-                .click()
-                .focused()
-                .clear()
-                .type(
-                  `from(bucket: v.bucketsCSV)
+
+              cy.getByTestID('flux-editor').within(() => {
+                cy.get('.monaco-editor .view-line:last')
+                  .click({force: true})
+                  .focused()
+                  .clear()
+                  .type(
+                    `from(bucket: v.bucketsCSV)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "m")
 |> filter(fn: (r) => r["_field"] == "v")
 |> filter(fn: (r) => r["tk1"] == "tv1")
 |> aggregateWindow(every: v.windowPeriod, fn: max)
 |> yield(name: "max")`,
-                  {force: true, delay: 1}
-                )
+                    {force: true, delay: 1}
+                  )
+              })
 
               // `bucketOne` should not exist nor have data written to it
               cy.getByTestID('save-cell--button').click()
@@ -669,19 +672,20 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.getByTestID('switch-to-script-editor').click()
             cy.getByTestID('toolbar-tab').click()
 
-            cy.getByTestID('flux-editor')
-              .should('be.visible')
-              .click()
-              .focused()
-              .clear()
-              .type(
-                `from(bucket: v.bucketsCSV)
+            cy.getByTestID('flux-editor').within(() => {
+              cy.get('.monaco-editor .view-line:last')
+                .click({force: true})
+                .focused()
+                .clear()
+                .type(
+                  `from(bucket: v.bucketsCSV)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_field"] == v.greeting)
 |> aggregateWindow(every: v.windowPeriod, fn: max)
 |> yield(name: "max")`,
-                {force: true, delay: 1}
-              )
+                  {force: true, delay: 1}
+                )
+            })
             cy.get('.flux-toolbar--list-item')
               .eq(bucketVarIndex)
               .within(() => {
@@ -887,15 +891,20 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.getByTestID('switch-to-script-editor').click()
             cy.getByTestID('toolbar-tab').click()
 
-            cy
-              .getByTestID('flux-editor')
-              .should('be.visible')
-              .click()
-              .focused().type(`from(bucket: v.static)
+            cy.getByTestID('flux-editor').within(() => {
+              cy.get('.monaco-editor .view-line:last')
+                .click({force: true})
+                .focused()
+                .clear()
+                .type(
+                  `from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
-|> filter(fn: (r) => r["container_name"] == v.build)`)
+|> filter(fn: (r) => r["container_name"] == v.build)`,
+                  {force: true, delay: 1}
+                )
+            })
 
             cy.getByTestID('save-cell--button').click()
 
@@ -1052,15 +1061,20 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         cy.getByTestID('switch-to-script-editor').click()
         cy.getByTestID('toolbar-tab').click()
 
-        cy
-          .getByTestID('flux-editor')
-          .should('be.visible')
-          .click()
-          .focused().type(`from(bucket: v.static)
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('.monaco-editor .view-line:last')
+            .click({force: true})
+            .focused()
+            .clear()
+            .type(
+              `from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
-|> filter(fn: (r) => r["container_name"] == v.dependent)`)
+|> filter(fn: (r) => r["container_name"] == v.dependent)`,
+              {force: true, delay: 1}
+            )
+        })
         cy.getByTestID('save-cell--button').click()
 
         // the default bucket selection should have no results
@@ -1281,11 +1295,13 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       const query1 = `from(bucket: "schmucket")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
   |> filter(fn: (r) => r["container_name"] == "cool")`
-      cy.getByTestID('flux-editor').should('be.visible')
-      cy.getByTestID('flux-editor').click()
-      cy.getByTestID('flux-editor')
-        .focused()
-        .type(query1)
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('.monaco-editor .view-line:last')
+          .click({force: true})
+          .focused()
+          .clear()
+          .type(query1, {force: true, delay: 1})
+      })
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')

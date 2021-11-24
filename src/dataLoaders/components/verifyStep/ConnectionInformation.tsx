@@ -60,7 +60,7 @@ class ConnectionInformation extends PureComponent<Props> {
   private get additionalText(): any {
     const docs = (
       <a
-        href={`https://docs.influxdata.com/telegraf/${DOCS_URL_VERSION}/administration/troubleshooting/`}
+        href={`https://docs.influxdata.com/telegraf/latest/administration/troubleshooting/`}
         target="_blank"
         rel="noreferrer"
       >

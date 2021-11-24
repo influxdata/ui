@@ -387,10 +387,6 @@ describe('Dashboards', () => {
           cy.getByTestID('dashboard-card--name').contains(
             `${localDashName} (clone 1)`
           )
-          //  .should(
-          //  'contain.text',
-          //  `${localDashName} (clone 1)`
-          // )
           cy.getByTestID('inline-labels--add').click()
         })
 
@@ -429,10 +425,6 @@ describe('Dashboards', () => {
       cy.getByTestID('cell--view-empty markdown').contains(
         'The cat went here and there'
       )
-      // .should(
-      // 'contain.text',
-      // 'The cat went here and there'
-      // )
     })
   })
 

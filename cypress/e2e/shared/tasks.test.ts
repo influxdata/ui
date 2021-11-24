@@ -267,9 +267,9 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
       // focused() waits for monoco editor to get input focus
       cy.focused()
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .contains('option task = {')
+      cy.getByTestID('flux-editor').should('be.visible')
+
+      cy.contains('option task = {')
 
       cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
       cy.getByTestID('task-form-name')

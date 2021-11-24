@@ -272,9 +272,9 @@ describe('Dashboards', () => {
                 description: 'I hate mieces',
                 color: '#00ff44',
               })
-              .then(() => {
+              .then(() =>
                 cy.createCell(body.id).then(cell1Resp =>
-                  cy.createMapVariableFromFix('power_vars', id).then(() =>
+                  cy.createMapVariableFromFixture('power_vars', id).then(() =>
                     cy
                       .createView(body.id, cell1Resp.body.id, 'wumpusDurView')
                       .then(() =>
@@ -292,22 +292,21 @@ describe('Dashboards', () => {
                                 cell2Resp.body.id,
                                 'sampleNote'
                               )
-                              .then(() => {
+                              .then(() =>
                                 cy.fixture('routes').then(({orgs}) =>
                                   cy
-                                    .get<Organization>('@org')
+                                    .get<Organization>('@org', {timeout: 1000})
                                     .then(({id}: Organization) => {
-                                      cy.wait(1000)
                                       cy.visit(`${orgs}/${id}/dashboards-list`)
                                       return cy.getByTestID('tree-nav')
                                     })
                                 )
-                              })
+                              )
                           )
                       )
                   )
                 )
-              })
+              )
           )
         )
       )
@@ -385,10 +384,13 @@ describe('Dashboards', () => {
         .eq(1)
         .within(() => {
           cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
-          cy.getByTestID('dashboard-card--name').should(
-            'contain.text',
+          cy.getByTestID('dashboard-card--name').contains(
             `${localDashName} (clone 1)`
           )
+          //  .should(
+          //  'contain.text',
+          //  `${localDashName} (clone 1)`
+          // )
           cy.getByTestID('inline-labels--add').click()
         })
 
@@ -418,15 +420,19 @@ describe('Dashboards', () => {
 
       /*
       // TODO verify graph and variable in original once #3287 is fixed
+      // https://github.com/influxdata/ui/issues/3287
 
       cy.getByTestID('variable-dropdown-input-typeAhead--Power').should('have.value','base')
       makeGraphSnapshot().shouldBeSameAs(viewGraphCopy, false)
 
        */
-      cy.getByTestID('cell--view-empty markdown').should(
-        'contain.text',
+      cy.getByTestID('cell--view-empty markdown').contains(
         'The cat went here and there'
       )
+      // .should(
+      // 'contain.text',
+      // 'The cat went here and there'
+      // )
     })
   })
 

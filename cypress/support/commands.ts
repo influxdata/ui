@@ -399,7 +399,7 @@ export const createMapVariable = (
   })
 }
 
-export const createMapVariableFromFix = (
+export const createMapVariableFromFixture = (
   fixName: string,
   orgID?: string
 ): Cypress.Chainable<Cypress.Response<any>> => {
@@ -1069,7 +1069,10 @@ Cypress.Commands.add('createToken', createToken)
 Cypress.Commands.add('createQueryVariable', createQueryVariable)
 Cypress.Commands.add('createCSVVariable', createCSVVariable)
 Cypress.Commands.add('createMapVariable', createMapVariable)
-Cypress.Commands.add('createMapVariableFromFix', createMapVariableFromFix)
+Cypress.Commands.add(
+  'createMapVariableFromFixture',
+  createMapVariableFromFixture
+)
 
 // labels
 Cypress.Commands.add('createLabel', createLabel)

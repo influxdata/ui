@@ -22,7 +22,7 @@ import {
   createMapVariable,
   createCSVVariable,
   createQueryVariable,
-  createMapVariableFromFix,
+  createMapVariableFromFixture,
   createAndAddLabel,
   createLabel,
   createBucket,
@@ -67,7 +67,7 @@ declare global {
       createQueryVariable: typeof createQueryVariable
       createTask: typeof createTask
       createMapVariable: typeof createMapVariable
-      createMapVariableFromFix: typeof createMapVariableFromFix
+      createMapVariableFromFixture: typeof createMapVariableFromFixture
       createDashboard: typeof createDashboard
       createCell: typeof createCell
       createDashWithCell: typeof createDashWithCell

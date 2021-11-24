@@ -26,7 +26,7 @@ export class EditResourceAccordion extends Component<Props> {
     if (!permissions) {
       return null
     }
-    console.log("permissions from props ", permissions)
+    console.log('permissions from props ', permissions)
     const allResourceNames = formatResources(Object.keys(permissions))
 
     return (
@@ -47,7 +47,7 @@ export class EditResourceAccordion extends Component<Props> {
                     disabled={true}
                   />
                 ) : (
-                  this.getAccordionBody(resourceName, resource) 
+                  this.getAccordionBody(resourceName, resource)
                 )}
               </Accordion>
             )
@@ -56,35 +56,34 @@ export class EditResourceAccordion extends Component<Props> {
         {!isEmpty(allResourceNames[1]) && (
           <Accordion key="Other Resources" expanded={true}>
             <ResourceAccordionHeader resourceName="Other Resources" />
-              {this.getOtherResourceAccordionBody(allResourceNames)}
+            {this.getOtherResourceAccordionBody(allResourceNames)}
           </Accordion>
         )}
       </>
     )
   }
-  
-  getOtherResourceAccordionBody = (allResourceNames) => { 
+
+  getOtherResourceAccordionBody = allResourceNames => {
     const {permissions, searchTerm} = this.props
     const resourcePermissions = []
     allResourceNames[1].forEach(resource => {
       resourcePermissions.push({name: resource, perm: permissions[resource]})
-      
     })
-      return (
-        <Filter
-          list={resourcePermissions}
-          searchTerm={searchTerm}
-          searchKeys={['name']}
-        >
-          {filteredNames => (
-            <AllAccordionBody
-              resourceName={'All Resources'}
-              permissions={filteredNames}
-              disabled={true}
-            />
-          )}
-        </Filter>
-      )
+    return (
+      <Filter
+        list={resourcePermissions}
+        searchTerm={searchTerm}
+        searchKeys={['name']}
+      >
+        {filteredNames => (
+          <AllAccordionBody
+            resourceName={'All Resources'}
+            permissions={filteredNames}
+            disabled={true}
+          />
+        )}
+      </Filter>
+    )
   }
 
   getAccordionBody = (resourceName, resource) => {

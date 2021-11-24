@@ -26,7 +26,6 @@ export class EditResourceAccordion extends Component<Props> {
     if (!permissions) {
       return null
     }
-    console.log('permissions from props ', permissions)
     const allResourceNames = formatResources(Object.keys(permissions))
 
     return (

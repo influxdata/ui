@@ -28,10 +28,10 @@ const MarkdownMonacoEditor: FC<EditorProps> = ({
     }
 
     if (autofocus) {
-      const lines = (script || '').split('\n')
+      const model = editor.getModel()
       editor.setPosition({
-        lineNumber: lines.length,
-        column: lines[lines.length - 1].length + 1,
+        lineNumber: model.getLineCount(),
+        column: model.getLineLength(model.getLineCount()),
       })
       editor.focus()
     }

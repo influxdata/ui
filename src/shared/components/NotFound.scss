@@ -1,4 +1,38 @@
-.page-not-found-footer {
-  height: 65%;
-  background-image: url('~assets/images/NotFoundBottom.png');
+.page-not-found {
+  > .page-not-found-footer {
+    height: 65%;
+    background-image: url('~assets/images/NotFoundBottom.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+
+    > .page-not-found-panel {
+      top: -120px;
+      width: 660px;
+      height: 250px;
+      margin: 0 auto;
+      z-index: 10;
+
+      > .page-not-found-panel-content {
+        margin: 30px 65px;
+
+        > .page-not-found-panel-section {
+          margin: 30px 0;
+
+          > .page-not-found-panel-title {
+            font-weight: bold;
+            margin: 5px 0;
+          }
+        }
+
+        .page-not-found-community-links {
+          margin-right: 45px;
+
+          > a {
+            margin: 0 5px;
+          }
+        }
+      }
+    }
+  }
 }

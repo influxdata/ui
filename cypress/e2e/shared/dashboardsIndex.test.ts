@@ -384,7 +384,8 @@ describe('Dashboards', () => {
         .eq(1)
         .within(() => {
           cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
-          cy.getByTestID('dashboard-card--name').contains(
+          cy.getByTestID('dashboard-card--name').should(
+            'contain',
             `${localDashName} (clone 1)`
           )
           cy.getByTestID('inline-labels--add').click()
@@ -422,7 +423,8 @@ describe('Dashboards', () => {
       makeGraphSnapshot().shouldBeSameAs(viewGraphCopy, false)
 
        */
-      cy.getByTestID('cell--view-empty markdown').contains(
+      cy.getByTestID('cell--view-empty markdown').should(
+        'contain',
         'The cat went here and there'
       )
     })

@@ -26,7 +26,7 @@ interface Props {
 
 export const IndividualAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title, disabled} = props
-  let sortedPermissions = permissions
+  let sortedPermissions
 
   if (resourceName === 'buckets') {
     // re-order buckets: user buckets first followed by system buckets

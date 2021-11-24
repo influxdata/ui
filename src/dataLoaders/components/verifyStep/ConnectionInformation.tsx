@@ -3,7 +3,6 @@ import React, {PureComponent} from 'react'
 
 // Decorator
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 export enum LoadingState {
   NotStarted = 'NotStarted',

@@ -28,6 +28,7 @@ import {Authorization} from 'src/types'
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
 import {getTelegraf} from 'src/telegrafs/actions/thunks'
+import {getBucketSchema} from 'src/buckets/actions/thunks'
 
 // Utills
 import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
@@ -72,8 +73,21 @@ const EditTokenOverlay: FC<Props> = props => {
       const name = permissions[i].resource.name
       if (!name) {
         if (permissions[i].resource.type === 'telegrafs') {
-          const telegraf = await props.getTelegraf(permissions[i].resource.id)
-          newPerms[i].resource.name = telegraf
+          try {
+            const telegraf = await props.getTelegraf(permissions[i].resource.id)
+            newPerms[i].resource.name = telegraf
+          } catch (e) {
+            newPerms[i].resource.name = 'Resource deleted'
+          }
+        } else if (permissions[i].resource.type === 'buckets') {
+          try {
+            const bucket = await props.getBucketSchema(
+              permissions[i].resource.id
+            )
+            newPerms[i].resource.name = bucket.name
+          } catch (e) {
+            newPerms[i].resource.name = 'Resource deleted'
+          }
         }
       }
     }
@@ -206,6 +220,7 @@ const EditTokenOverlay: FC<Props> = props => {
 const mdtp = {
   updateAuthorization,
   getTelegraf,
+  getBucketSchema,
 }
 
 const connector = connect(null, mdtp)

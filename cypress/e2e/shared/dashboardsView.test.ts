@@ -171,7 +171,7 @@ describe('Dashboard', () => {
     cy.getByTestID('note-editor--overlay').within(() => {
       cy.getByTestID('markdown-editor').within(() => {
         cy.get('textarea')
-          .clear()
+          .clear({force: true})
           .type(`${headerPrefix2} ${noteText2}`)
       })
       cy.getByTestID('note-editor--preview').contains(noteText2)
@@ -592,7 +592,7 @@ describe('Dashboard', () => {
                 cy.get('.monaco-editor .view-line:last')
                   .click({force: true})
                   .focused()
-                  .clear()
+                  .clear({force: true})
                   .type(
                     `from(bucket: v.bucketsCSV)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
@@ -676,7 +676,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
               cy.get('.monaco-editor .view-line:last')
                 .click({force: true})
                 .focused()
-                .clear()
+                .clear({force: true})
                 .type(
                   `from(bucket: v.bucketsCSV)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
@@ -895,7 +895,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
               cy.get('.monaco-editor .view-line:last')
                 .click({force: true})
                 .focused()
-                .clear()
+                .clear({force: true})
                 .type(
                   `from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
@@ -1065,7 +1065,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.get('.monaco-editor .view-line:last')
             .click({force: true})
             .focused()
-            .clear()
+            .clear({force: true})
             .type(
               `from(bucket: v.static)
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
@@ -1299,7 +1299,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         cy.get('.monaco-editor .view-line:last')
           .click({force: true})
           .focused()
-          .clear()
+          .clear({force: true})
           .type(query1, {force: true, delay: 1})
       })
       cy.getByTestID('overlay').within(() => {

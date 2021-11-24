@@ -95,7 +95,7 @@ const FluxEditorMonaco: FC<Props> = ({
         const model = editor.getModel()
         editor.setPosition({
           lineNumber: model.getLineCount(),
-          column: model.getLineLength(model.getLineCount()),
+          column: model.getLineLength(model.getLineCount()) + 1,
         })
         editor.focus()
       }

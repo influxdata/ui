@@ -76,7 +76,7 @@ export class EditResourceAccordion extends Component<Props> {
       >
         {filteredNames => (
           <AllAccordionBody
-            resourceName='All Resources'
+            resourceName="All Resources"
             permissions={filteredNames}
             disabled={true}
           />

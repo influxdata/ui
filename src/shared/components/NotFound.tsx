@@ -33,7 +33,12 @@ const NotFoundNew: FC = () => (
               <span>
                 The webpage you were trying to reach may have been removed or
                 your access to this page may have expired.&nbsp;
-                <a href="" about="_blank">
+                {/* Add rel options to avoid "tabnapping" */}
+                <a
+                  href="mailto:support@influxdata.com"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
                   Contact InfluxData Support
                 </a>
               </span>
@@ -51,14 +56,24 @@ const NotFoundNew: FC = () => (
           <FlexBox>
             <FlexBox className="page-not-found-community-links">
               <Icon glyph={IconFont.Cubouniform}></Icon>
-              <a href="" about="_blank">
+              {/* Add rel options to avoid "tabnapping" */}
+              <a
+                href="https://community.influxdata.com/"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
                 InfluxData Community
               </a>
             </FlexBox>
             <FlexBox className="page-not-found-community-links">
               {/* TODO: Change with Slack Icon */}
-              <Icon glyph={IconFont.NavChat}></Icon>
-              <a href="" about="_blank">
+              <span className="slack-icon" />
+              {/* Add rel options to avoid "tabnapping" */}
+              <a
+                href="https://influxdata.com/slack/"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
                 InfluxDB Community Slack
               </a>
             </FlexBox>

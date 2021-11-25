@@ -159,6 +159,7 @@ const TimeMachineFluxEditor: FC<Props> = ({
               onChangeScript={onSetActiveQueryText}
               onSubmitScript={onSubmitQueries}
               setEditorInstance={setEditorInstance}
+              autofocus
             />
           </Suspense>
         </div>

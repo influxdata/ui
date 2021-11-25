@@ -11,11 +11,13 @@ const openCopyAs = () => {
 
 const addFluxQueryInNotebook = (query: string) => {
   cy.getByTestID('add-flow-btn--rawFluxEditor').click()
-  cy.getByTestID('flux-editor')
-    .scrollIntoView()
-    .focused()
-    .type(Cypress.platform === 'darwin' ? '{cmd}a' : '{ctrl}a')
-    .type(query)
+  cy.getByTestID('flux-editor').within(() => {
+    cy.get('.monaco-editor .view-line:last')
+      .click({force: true})
+      .focused()
+      .clear()
+      .type(query)
+  })
 }
 
 const createEmptyNotebook = () => {

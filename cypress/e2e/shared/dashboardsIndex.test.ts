@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+import {makeGraphSnapshot} from '../../support/commands'
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
@@ -10,7 +11,7 @@ describe('Dashboards', () => {
     cy.flush().then(() =>
       cy.signin().then(() =>
         cy.fixture('routes').then(({orgs}) => {
-          cy.get('@org').then(({id: orgID}: Organization) => {
+          cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
             cy.visit(`${orgs}/${orgID}/dashboards-list`)
             cy.getByTestID('tree-nav')
           })
@@ -252,6 +253,183 @@ describe('Dashboards', () => {
     )
   })
 
+  describe('cloning', () => {
+    const localDashName = 'Happy Dashboard'
+    const labelName = 'bark'
+    const secondLabelName = 'prrr'
+    beforeEach(() => {
+      cy.writeLPDataFromFile({
+        filename: 'data/wumpus01.lp',
+        offset: '20m',
+        stagger: '1m',
+      }).should('equal', 'success')
+
+      return cy.get<Organization>('@org').then(({id}: Organization) =>
+        cy.createDashboard(id, localDashName).then(({body}) =>
+          cy.createAndAddLabel('dashboards', id, body.id, labelName).then(() =>
+            cy
+              .createLabel(secondLabelName, id, {
+                description: 'I hate mieces',
+                color: '#00ff44',
+              })
+              .then(() =>
+                cy.createCell(body.id).then(cell1Resp =>
+                  cy.createMapVariableFromFixture('power_vars', id).then(() =>
+                    cy
+                      .createView(body.id, cell1Resp.body.id, 'wumpusDurView')
+                      .then(() =>
+                        cy
+                          .createCell(body.id, {
+                            x: 4,
+                            y: 0,
+                            height: 8,
+                            width: 4,
+                          })
+                          .then(cell2Resp =>
+                            cy
+                              .createView(
+                                body.id,
+                                cell2Resp.body.id,
+                                'sampleNote'
+                              )
+                              .then(() =>
+                                cy.fixture('routes').then(({orgs}) =>
+                                  cy
+                                    .get<Organization>('@org', {timeout: 1000})
+                                    .then(({id}: Organization) => {
+                                      cy.visit(`${orgs}/${id}/dashboards-list`)
+                                      return cy.getByTestID('tree-nav')
+                                    })
+                                )
+                              )
+                          )
+                      )
+                  )
+                )
+              )
+          )
+        )
+      )
+    })
+
+    it('can clone a dashboard', () => {
+      cy.getByTestID('dashboard-card').should('have.length', 1)
+
+      // get graph in original view
+
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
+          cy.getByTestID('dashboard-card--name').click()
+        })
+
+      const viewGraphOrig = makeGraphSnapshot()
+
+      cy.getByTestID('nav-item-dashboards').click()
+
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('context-menu-dashboard').click()
+        })
+
+      cy.getByTestID('context-clone-dashboard').click()
+
+      // Verify cloned dashboard contents
+
+      cy.getByTestID('page-title').should(
+        'contain.text',
+        `${localDashName} (clone 1)`
+      )
+      cy.getByTestID('variable-dropdown--Power').should('be.visible')
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').should(
+        'have.value',
+        'base'
+      )
+
+      makeGraphSnapshot().shouldBeSameAs(viewGraphOrig)
+
+      cy.getByTestID('cell--view-empty markdown').should(
+        'contain.text',
+        'The cat went here and there'
+      )
+
+      // Prep verification that changes in clone are not reflected in original,
+      // i.e. that they are fully decoupled
+      // change variable N.B. final assert is waiting on fix for #3287 see below
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').click()
+      cy.getByTestID('variable-dropdown--item')
+        .eq(4)
+        .click()
+      // const viewGraphCopy = makeGraphSnapshot()
+      cy.getByTestID('cell Name this Cell').within(() => {
+        cy.getByTestID('cell-context--toggle').click()
+      })
+
+      const replaceText =
+        '### William Blake\n#### Augeries of Innocense\n\n To see a World in a Grain of Sand\n\nAnd a Heaven in a Wild Flower\n\n...`'
+      cy.getByTestID('cell-context--note').click()
+      cy.getByTestID('markdown-editor')
+        .click()
+        .type('{ctrl}a')
+        .type(replaceText)
+
+      cy.getByTestID('save-note--button').click()
+
+      cy.getByTestID('nav-item-dashboards').click()
+
+      // Verify labels
+      cy.getByTestID('dashboard-card')
+        .eq(1)
+        .within(() => {
+          cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
+          cy.getByTestID('dashboard-card--name').should(
+            'contain',
+            `${localDashName} (clone 1)`
+          )
+          cy.getByTestID('inline-labels--add').click()
+        })
+
+      cy.getByTestID(`label--pill ${secondLabelName}`).click()
+
+      cy.getByTestID('dashboard-card')
+        .eq(1)
+        .within(() => {
+          cy.getByTestID(`label--pill ${secondLabelName}`).should('be.visible')
+          cy.getByTestID(`label--pill--delete ${labelName}`).click()
+          cy.getByTestID(`label--pill ${labelName}`).should('not.exist')
+        })
+
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID(`label--pill ${secondLabelName}`).should('not.exist')
+          cy.getByTestID(`label--pill ${labelName}`).should('exist')
+        })
+
+      // Verify original is decoupled from clone
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('dashboard-card--name').click()
+        })
+
+      /*
+      // TODO verify graph and variable in original once #3287 is fixed
+      // https://github.com/influxdata/ui/issues/3287
+
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').should('have.value','base')
+      makeGraphSnapshot().shouldBeSameAs(viewGraphCopy, false)
+
+       */
+      cy.getByTestID('cell--view-empty markdown').should(
+        'contain',
+        'The cat went here and there'
+      )
+    })
+  })
+
   describe('Dashboard List', () => {
     beforeEach(() =>
       cy.get<Organization>('@org').then(({id}: Organization) =>
@@ -277,27 +455,6 @@ describe('Dashboards', () => {
         )
       )
     )
-
-    it('can clone a dashboard', () => {
-      cy.getByTestID('dashboard-card').should('have.length', 2)
-
-      cy.getByTestID('dashboard-card')
-        .first()
-        .within(() => {
-          cy.getByTestID('context-menu-dashboard').click()
-        })
-
-      cy.getByTestID('context-clone-dashboard').click()
-
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
-        })
-      })
-
-      cy.getByTestID('dashboard-card').should('have.length', 3)
-    })
 
     it('retains dashboard sort order after navigating away', () => {
       const expectedDashboardOrder = ['test dashboard', 'Bee Happy']
@@ -462,6 +619,9 @@ describe('Dashboards', () => {
         cy.getByTestID('inline-labels--create-new').click()
 
         cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('label-overlay-form').should(form => {
+            expect(form).to.exist
+          })
           cy.getByTestID('create-label-form--name').should('have.value', label)
           cy.getByTestID('create-label-form--submit').click()
         })
@@ -557,7 +717,7 @@ describe('Dashboards', () => {
   )
 
   it('creates a dashboard and downloads JSON', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -583,7 +743,7 @@ describe('Dashboards', () => {
   })
 
   it('copies to clipboard', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)

@@ -103,7 +103,6 @@ const NotFoundOld: FC = () => (
 )
 
 const NotFound: FC = () => {
-  console.log('ajajsjasas sdsdsdsss')
   if (isFlagEnabled('newNotFoundPage')) {
     return <NotFoundNew />
   }

@@ -282,10 +282,6 @@ describe('Tasks.Containers.TasksPage', () => {
 
       expect(mocked(parse).mock.calls[0][0]).toEqual(sampleScript)
 
-      expect(mocked(postTask).mock.calls[0][0].data.id).toEqual(InactiveTask.id)
-      expect(mocked(postTask).mock.calls[0][0].data.name).toEqual(
-        InactiveTask.name
-      )
       expect(mocked(postTask).mock.calls[0][0].data.status).toEqual(
         InactiveTask.status
       )

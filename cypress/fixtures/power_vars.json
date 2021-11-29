@@ -1,0 +1,17 @@
+{
+  "name": "Power",
+  "arguments": {
+    "type": "map",
+    "values": {
+      "base": "1",
+      "cube": "3",
+      "negBase": "-1",
+      "negSqr": "-2",
+      "negSqrt": "-0.5",
+      "quad": "4",
+      "sqrt": "0.5",
+      "square": "2"
+    }
+  },
+  "selected": ["base"]
+}

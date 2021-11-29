@@ -33,7 +33,9 @@ const OverlayHandler: FC<OverlayHandlerProps> = props => {
 
     dispatch(showOverlay(overlayID, match.params, closer))
 
-    return () => dispatch(dismissOverlay())
+    return () => {
+      dispatch(dismissOverlay())
+    }
   }, [overlayID]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return null

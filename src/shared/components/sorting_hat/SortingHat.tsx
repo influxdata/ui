@@ -8,7 +8,7 @@ import {Sort} from '@influxdata/clockface'
 interface Props<T> {
   list: T[]
   sortKey?: string
-  direction?: Sort
+  direction?: Sort.Ascending | Sort.Descending
   children: (sortedList: T[]) => JSX.Element
 }
 

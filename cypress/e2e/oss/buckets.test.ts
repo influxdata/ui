@@ -14,10 +14,9 @@ describe('Buckets', () => {
     )
   )
 
-  // TODO: Skipping this until we can sort out the differences between OSS and Cloud
   it('can sort by name and retention', () => {
     const buckets = ['defbuck', '_tasks', '_monitoring']
-    const retentionDesc = ['_monitoring', '_tasks', 'defbuck']
+    const retentionDesc = ['defbuck', '_monitoring', '_tasks']
     const retentionAsc = ['defbuck', '_tasks', '_monitoring']
 
     cy.getByTestID('resource-sorter--button')

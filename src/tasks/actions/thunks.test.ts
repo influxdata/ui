@@ -85,7 +85,7 @@ describe('Tasks.Actions.Thunks', () => {
 
     const dispatch = jest.fn()
 
-    const getState = jest.fn(getMockAppStateWTask)
+    const getState: any = jest.fn(getMockAppStateWTask)
 
     await thunks.getTasks()(dispatch, getState)
 

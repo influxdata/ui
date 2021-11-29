@@ -57,14 +57,25 @@ class BucketList extends PureComponent<
       onUpdateBucket,
       onGetBucketSchema,
     } = this.props
+
     const sortedBuckets = this.memGetSortedResources(
       buckets,
       sortKey,
       sortDirection,
       sortType
     )
+    const userBuckets = []
+    const systemBuckets = []
+    sortedBuckets.forEach(bucket => {
+      if (bucket.type === 'user') {
+        userBuckets.push(bucket)
+      } else {
+        systemBuckets.push(bucket)
+      }
+    })
+    const userAndSystemBuckets = [...userBuckets, ...systemBuckets]
 
-    return sortedBuckets.map(bucket => {
+    return userAndSystemBuckets.map(bucket => {
       return (
         <BucketCard
           key={bucket.id}

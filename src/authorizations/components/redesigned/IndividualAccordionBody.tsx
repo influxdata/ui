@@ -26,6 +26,24 @@ interface Props {
 
 export const IndividualAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title, disabled} = props
+  let sortedPermissions
+
+  if (resourceName === 'buckets') {
+    // re-order buckets: user buckets first followed by system buckets
+    const systemBuckets = []
+    const userBuckets = []
+
+    permissions.forEach(bucket => {
+      if (bucket.name === '_monitoring' || bucket.name === '_tasks') {
+        systemBuckets.push(bucket)
+      } else {
+        userBuckets.push(bucket)
+      }
+    })
+    sortedPermissions = [...userBuckets, ...systemBuckets]
+  } else {
+    sortedPermissions = [...permissions]
+  }
 
   const handleReadToggle = id => {
     onToggle(resourceName, id, PermissionType.Read)
@@ -81,13 +99,13 @@ export const IndividualAccordionBody: FC<Props> = props => {
         {title}
       </Accordion.AccordionBodyItem>
       {permissions
-        ? Object.keys(permissions).map(key => {
+        ? Object.keys(sortedPermissions).map(key => {
             return (
               <Accordion.AccordionBodyItem
-                key={permissions[key].id}
+                key={sortedPermissions[key].id}
                 className="resource-accordion-body"
               >
-                {accordionBody(permissions[key])}
+                {accordionBody(sortedPermissions[key])}
               </Accordion.AccordionBodyItem>
             )
           })

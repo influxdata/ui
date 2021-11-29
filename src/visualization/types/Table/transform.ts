@@ -233,7 +233,7 @@ export const sortTableData = (
         }
         return Number(sortedValue)
       },
-      [sort.direction]
+      [sort.direction as 'asc' | 'desc']
     ),
   ] as string[][]
 

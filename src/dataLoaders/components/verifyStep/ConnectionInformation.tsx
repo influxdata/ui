@@ -3,7 +3,6 @@ import React, {PureComponent} from 'react'
 
 // Decorator
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 export enum LoadingState {
   NotStarted = 'NotStarted',
@@ -60,7 +59,7 @@ class ConnectionInformation extends PureComponent<Props> {
   private get additionalText(): any {
     const docs = (
       <a
-        href={`https://docs.influxdata.com/telegraf/${DOCS_URL_VERSION}/administration/troubleshooting/`}
+        href="https://docs.influxdata.com/telegraf/latest/administration/troubleshooting/"
         target="_blank"
         rel="noreferrer"
       >

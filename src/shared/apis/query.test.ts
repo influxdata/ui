@@ -27,14 +27,12 @@ jest.mock('src/shared/apis/query')
 
 const orgID = 'orgID'
 
-const promise = new Promise(res => {
-  return res({
-    type: 'SUCCESS',
-    csv: 'wooooo',
-    didTruncate: true,
-    bytesRead: 1,
-  } as RunQuerySuccessResult)
-})
+const promise = Promise.resolve({
+  type: 'SUCCESS',
+  csv: 'wooooo',
+  didTruncate: true,
+  bytesRead: 1,
+} as RunQuerySuccessResult)
 
 const variables: Variable[] = [
   bucketVariable,

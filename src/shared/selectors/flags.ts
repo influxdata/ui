@@ -3,7 +3,6 @@ import {FlagMap} from 'src/shared/actions/flags'
 import {CLOUD, CLOUD_BILLING_VISIBLE} from 'src/shared/constants'
 
 export const OSS_FLAGS = {
-  cursorAtEOF: false,
   customCheckQuery: false,
   downloadCellCSV: false,
   fluxParser: false,
@@ -50,7 +49,6 @@ export const OSS_FLAGS = {
 
 export const CLOUD_FLAGS = {
   cloudBilling: CLOUD_BILLING_VISIBLE, // should be visible in dev and acceptance, but not in cloud
-  cursorAtEOF: false,
   customCheckQuery: false,
   downloadCellCSV: false,
   fluxParser: false,

@@ -52,16 +52,17 @@ describe('Dashboard refresh', () => {
       const query1 = `from(bucket: "schmucket")
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "cool")`
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type(query1)
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('.monaco-editor .view-line:last')
+          .click({force: true})
+          .focused()
+          .type(query1, {force: true, delay: 1})
+      })
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah{enter}')
+          .type('blah{enter}', {force: true, delay: 1})
         cy.getByTestID('save-cell--button').click()
       })
     })
@@ -73,7 +74,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('2s')
+        .type('2s', {force: true, delay: 1})
       cy.getByTestID('refresh-form-activate-button').click({force: true})
       cy.wait('@refreshQuery')
       cy.getByTestID('enable-auto-refresh-button').click()
@@ -91,13 +92,13 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('4s')
-        .type('{enter}')
+        .type('4s', {force: true, delay: 1})
+        .type('{enter}', {force: true, delay: 1})
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
-          .type(`${jumpAheadTime('00:00:05')}`)
+          .type(`${jumpAheadTime('00:00:05')}`, {force: true, delay: 1})
         cy.getByTestID('daterange--apply-btn').click()
       })
       cy.getByTestID('refresh-form-activate-button').click()
@@ -120,13 +121,13 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('2s')
-        .type('{enter}')
+        .type('2s', {force: true, delay: 1})
+        .type('{enter}', {force: true, delay: 1})
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
-          .type(`${jumpAheadTime('00:00:10')}`)
+          .type(`${jumpAheadTime('00:00:10')}`, {force: true, delay: 1})
         cy.getByTestID('daterange--apply-btn').click()
       })
       cy.intercept('POST', '/api/v2/query?*', req => {
@@ -169,13 +170,13 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('3s')
-        .type('{enter}')
+        .type('3s', {force: true, delay: 1})
+        .type('{enter}', {force: true, delay: 1})
       cy.getByTestID('timerange-popover-button').click()
       cy.getByTestID('timerange-popover--dialog').within(() => {
         cy.getByTestID('timerange--input')
           .clear()
-          .type(`${jumpAheadTime('00:00:08')}`)
+          .type(`${jumpAheadTime('00:00:08')}`, {force: true, delay: 1})
         cy.getByTestID('daterange--apply-btn').click()
       })
       cy.intercept('POST', '/api/v2/query?*', req => {
@@ -254,17 +255,18 @@ describe('Dashboard refresh', () => {
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type(query1)
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('.monaco-editor .view-line:last')
+          .click({force: true})
+          .focused()
+          .type(query1, {force: true, delay: 1})
+      })
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah{enter}')
+          .type('blah{enter}', {force: true, delay: 1})
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -274,11 +276,12 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('flux-editor')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type(query2)
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('.monaco-editor .view-line:last')
+            .click({force: true})
+            .focused()
+            .type(query2, {force: true, delay: 1})
+        })
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -302,7 +305,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('2s')
+        .type('2s', {force: true, delay: 1})
       cy.getByTestID('refresh-form-activate-button').click({force: true})
       cy.wait('@secondCellQuery')
       cy.wait('@firstCellQuery')
@@ -353,17 +356,18 @@ describe('Dashboard refresh', () => {
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type(query1)
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('.monaco-editor .view-line:last')
+          .click({force: true})
+          .focused()
+          .type(query1, {force: true, delay: 1})
+      })
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah{enter}')
+          .type('blah{enter}', {force: true, delay: 1})
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -373,11 +377,12 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('flux-editor')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type(query2)
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('.monaco-editor .view-line:last')
+            .click({force: true})
+            .focused()
+            .type(query2, {force: true, delay: 1})
+        })
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -400,7 +405,7 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('enable-auto-refresh-button').click()
       cy.getByTestID('auto-refresh-input')
         .clear()
-        .type('2s')
+        .type('2s', {force: true, delay: 1})
       cy.getByTestID('refresh-form-activate-button').click({force: true})
 
       cy.wait('@secondCellQuery')
@@ -451,17 +456,18 @@ describe('Dashboard refresh', () => {
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type(query1)
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('.monaco-editor .view-line:last')
+          .click({force: true})
+          .focused()
+          .type(query1, {force: true, delay: 1})
+      })
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah{enter}')
+          .type('blah{enter}', {force: true, delay: 1})
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -471,11 +477,12 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('flux-editor')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type(query2)
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('.monaco-editor .view-line:last')
+            .click({force: true})
+            .focused()
+            .type(query2, {force: true, delay: 1})
+        })
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -537,17 +544,18 @@ describe('Dashboard refresh', () => {
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type(query1)
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('.monaco-editor .view-line:last')
+          .click({force: true})
+          .focused()
+          .type(query1, {force: true, delay: 0})
+      })
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')
           .clear()
-          .type('blah{enter}')
+          .type('blah{enter}', {force: true, delay: 1})
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -557,11 +565,12 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('flux-editor')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type(query2)
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('.monaco-editor .view-line:last')
+            .click({force: true})
+            .focused()
+            .type(query2, {force: true, delay: 1})
+        })
         cy.getByTestID('save-cell--button').click()
       })
 

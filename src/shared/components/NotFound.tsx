@@ -12,7 +12,7 @@ import {
 } from '@influxdata/clockface'
 import React, {FC} from 'react'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
-import {isFlagEnabled} from '../utils/featureFlag'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found">

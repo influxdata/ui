@@ -1,11 +1,14 @@
 export const mapSeriesToColor = (fillColumnMap, properties) => {
   const colorMapping = {...fillColumnMap}
 
+  const colors = ['#ffffff', `#ff0000`]
   colorMapping.mappings.forEach((graphLine, colorIndex) => {
-    graphLine.colorMapping =
-      properties.colors[colorIndex % properties.colors.length].hex
-    // graphLine.colorMapping = '#ffffff'
+    graphLine.color =
+      // properties.colors[colorIndex % properties.colors.length].hex
+    graphLine.color = colors[colorIndex % colors.length]
   })
+
+  // TODO: save the color mapping to IDPE
 
   return colorMapping
 }

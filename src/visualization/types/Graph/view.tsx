@@ -131,8 +131,7 @@ const XYPlot: FC<Props> = ({
         groupKey,
         colorHexes,
         properties.position,
-        colorMapping,
-        colorMappingCallback
+        colorMapping
       )
       const [fillColumn] = createGroupIDColumn(result.table, groupKey)
       return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)

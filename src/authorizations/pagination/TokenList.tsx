@@ -104,7 +104,7 @@ export default class TokenList extends PureComponent<Props, State> {
             style={{
               maxHeight: this.props.pageHeight,
               minHeight: this.props.pageHeight,
-              overflow: 'scroll',
+              overflow: 'auto',
             }}
             testID="token-list"
           >

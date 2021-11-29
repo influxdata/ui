@@ -73,7 +73,6 @@ const ExportTaskButton: FC<Props> = ({
         })
       }
 
-
       postTask({data: {orgID: org.id, flux: query}})
         .then(resp => {
           if (resp.status !== 201) {

@@ -287,7 +287,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
       flux: task.flux,
     })
     update({
-      task: list
+      task: list,
     })
   }
 
@@ -302,7 +302,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
         actions: [
           {
             title: 'View Run History',
-            menu: <History task={data.task.id?data.task:data.task[0]} />,
+            menu: <History tasks={data.task.id ? data.task : data.task} />,
           },
         ],
       },

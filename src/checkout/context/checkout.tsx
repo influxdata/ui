@@ -312,7 +312,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         }
 
         event('CheckoutSuccess', {
-          creditApplied: isPaygCreditActive ? 'true' : 'false',
+          creditApplied: isPaygCreditActive.toString(),
         })
         setCheckoutStatus(RemoteDataState.Done)
       } catch (error) {

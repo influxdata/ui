@@ -21,7 +21,7 @@ import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
 import {CheckViewProperties} from 'src/types'
-import {useCheckYDomain} from 'src/alerting/utils/vis'
+import {useCheckYDomainWithState} from 'src/alerting/utils/vis'
 
 // Types
 import {VisualizationProps} from 'src/visualization'
@@ -37,7 +37,7 @@ const CheckPlot: FC<Props> = ({properties, result}) => {
   const {statuses, thresholds, updateThresholds} = useContext(CheckContext)
   const {theme, timeZone} = useContext(AppSettingContext)
 
-  const [yDomain, onSetYDomain, onResetYDomain] = useCheckYDomain(
+  const [yDomain, onSetYDomain, onResetYDomain] = useCheckYDomainWithState(
     result.table.getColumn(Y_COLUMN, 'number'),
     thresholds
   )

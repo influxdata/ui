@@ -84,7 +84,7 @@ describe('TimeMachine.Components.SubmitQueryButton', () => {
       body: {
         getReader: () => fakeReader,
       },
-    }
+    } as any
 
     const expectedMockedFetchCall = {
       method: 'POST',

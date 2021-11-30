@@ -457,12 +457,14 @@ describe('Dashboard refresh', () => {
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('.monaco-editor .view-line:last')
-          .click({force: true})
-          .focused()
-          .type(query1, {force: true, delay: 1})
-      })
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .within(() => {
+          cy.get('.monaco-editor .view-line:last')
+            .click({force: true})
+            .focused()
+            .type(query1, {force: true, delay: 1})
+        })
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
@@ -478,12 +480,14 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('.monaco-editor .view-line:last')
-            .click({force: true})
-            .focused()
-            .type(query2, {force: true, delay: 1})
-        })
+        cy.getByTestID('flux-editor')
+          .should('be.visible')
+          .within(() => {
+            cy.get('.monaco-editor .view-line:last')
+              .click({force: true})
+              .focused()
+              .type(query2, {force: true, delay: 1})
+          })
         cy.getByTestID('save-cell--button').click()
       })
 
@@ -545,12 +549,14 @@ describe('Dashboard refresh', () => {
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('.monaco-editor .view-line:last')
-          .click({force: true})
-          .focused()
-          .type(query1, {force: true, delay: 0})
-      })
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .within(() => {
+          cy.get('.monaco-editor .view-line:last')
+            .click({force: true})
+            .focused()
+            .type(query1, {force: true, delay: 0})
+        })
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
@@ -566,12 +572,14 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('toolbar-tab').click()
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('flux-editor').within(() => {
-          cy.get('.monaco-editor .view-line:last')
-            .click({force: true})
-            .focused()
-            .type(query2, {force: true, delay: 1})
-        })
+        cy.getByTestID('flux-editor')
+          .should('be.visible')
+          .within(() => {
+            cy.get('.monaco-editor .view-line:last')
+              .click({force: true})
+              .focused()
+              .type(query2, {force: true, delay: 1})
+          })
         cy.getByTestID('save-cell--button').click()
       })
 

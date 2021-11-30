@@ -820,7 +820,7 @@ describe('Dashboards', () => {
     // past 2d
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past2d').click()
-    cy.wait('@loadQuery')
+    cy.wait(500)
 
     const snapshot9 = makeGraphSnapshot()
     snapshot9.shouldBeSameAs(snapshot8, false)
@@ -828,7 +828,7 @@ describe('Dashboards', () => {
     // past 7d
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past7d').click()
-    cy.wait('@loadQuery')
+    cy.wait(500)
 
     const snapshot10 = makeGraphSnapshot()
     snapshot10.shouldBeSameAs(snapshot9, false)
@@ -836,7 +836,7 @@ describe('Dashboards', () => {
     // past 30d
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past30d').click()
-    cy.wait('@loadQuery')
+    cy.wait(1000)
 
     const snapshot11 = makeGraphSnapshot()
     snapshot11.shouldBeSameAs(snapshot10, false)

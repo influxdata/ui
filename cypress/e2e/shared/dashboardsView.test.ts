@@ -105,9 +105,10 @@ describe('Dashboard', () => {
 
     cy.getByTestID('add-note--button').click()
     cy.getByTestID('note-editor--overlay').within(() => {
-      cy.getByTestID('markdown-editor').within(() => {
-        cy.get('textarea').type(`${headerPrefix} ${noteText}`, {force: true})
-      })
+      cy.get('.monaco-editor .view-line:last')
+        .click({force: true})
+        .focused()
+        .type(`${headerPrefix} ${noteText}`, {force: true, delay: 1})
 
       cy.getByTestID('note-editor--preview').contains(noteText)
       cy.getByTestID('note-editor--preview').should('not.contain', headerPrefix)
@@ -169,11 +170,10 @@ describe('Dashboard', () => {
     const headerPrefix2 = '-'
 
     cy.getByTestID('note-editor--overlay').within(() => {
-      cy.getByTestID('markdown-editor').within(() => {
-        cy.get('textarea')
-          .clear({force: true})
-          .type(`${headerPrefix2} ${noteText2}`)
-      })
+      cy.get('.monaco-editor .view-line:last')
+        .click({force: true})
+        .focused()
+        .type(`${headerPrefix2} ${noteText2}`, {force: true, delay: 1})
       cy.getByTestID('note-editor--preview').contains(noteText2)
       cy.getByTestID('note-editor--preview').should(
         'not.contain',

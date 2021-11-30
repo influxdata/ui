@@ -26,7 +26,13 @@ const sharedPermissionTypes: PermissionTypes[] = [
 
 const cloudPermissionTypes = ['flows', 'functions']
 
-const ossPermissionTypes = ['notebooks', 'scrapers', 'sources']
+const ossPermissionTypes = [
+  'notebooks',
+  'scrapers',
+  'sources',
+  'remotes',
+  'replications',
+]
 
 // TODO: replace this with some server side mechanism
 const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(

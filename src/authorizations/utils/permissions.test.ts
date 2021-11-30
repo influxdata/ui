@@ -173,6 +173,34 @@ const ossHvhs = [
     action: 'read',
     resource: {
       orgID: 'bulldogs',
+      type: 'remotes',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'remotes',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'replications',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'replications',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
       type: 'scrapers',
     },
   },

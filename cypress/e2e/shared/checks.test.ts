@@ -519,6 +519,14 @@ describe('Checks', () => {
     })
 
     it('can edit the check card', () => {
+      const newDescription =
+        'русский дворянин, лечившийся четыре года в Швейцарии от эпилепсии.'
+      const newName = 'Князь Мышкин'
+
+      cy.get<Organization>('@org').then(({id}: Organization) =>
+        cy.intercept('PATCH', `/api/v2/checks/${id}`).as('patchCheck')
+      )
+
       // toggle on / off
       cy.get('.cf-resource-card__disabled').should('not.exist')
       cy.getByTestID('check-card--slide-toggle').click()
@@ -537,8 +545,96 @@ describe('Checks', () => {
         // Need to trigger mouseout else the popover obscures the other buttons
         .trigger('mouseout')
 
+      // implicitly verify id value while setting up intercept
+      cy.getByTestID('copy-resource-id').then(elem => {
+        const checkID = elem
+          .text()
+          .replace(/^\D+/g, '')
+          .substring(0, 16)
+        return cy
+          .intercept('PATCH', `/api/v2/checks/${checkID}*`)
+          .as('patchCheck')
+      })
+
+      // edit the name
+      cy.getByTestID('check-card--name-button').click()
+      cy.getByTestID('check-card--input')
+        .clear()
+        .type(newName + '{enter}')
+
+      cy.wait('@patchCheck').then(({response}) => {
+        if (response) {
+          expect(response.body.name).to.equal(newName)
+        } else {
+          fail('no response from patch name call')
+        }
+      })
+
+      // verify last completed and last updated
+      cy.getByTestID('resource-list--meta').within(() => {
+        cy.contains('Last completed').then((elem: any) => {
+          const now = new Date()
+          const text = elem.text()
+          const cdate = new Date(text.replace(/^\D+/g, ''))
+          // assert last completed value timestamp is sane
+          expect(now.getTime() - cdate.getTime())
+            .to.be.at.least(0)
+            .and.to.be.below(Cypress.config('requestTimeout'))
+        })
+        cy.contains('Last updated').then((elem: any) => {
+          const interval = parseInt(elem.text().replace(/\D+/g, ''))
+          // assert last update value is sane
+          expect(interval)
+            .to.be.at.least(0)
+            .and.to.be.at.most(Cypress.config('requestTimeout') / 1000)
+        })
+      })
+
+      cy.getByTestID('check-card--name').should('have.text', newName)
+
+      // edit the description
+      cy.getByTestID('resource-list--editable-description')
+        .click()
+        .within(() => {
+          cy.getByTestID('input-field')
+            .clear()
+            .type(newDescription + `{enter}`)
+          cy.wait('@patchCheck').then(({response}) => {
+            if (response) {
+              expect(response.body.description).to.equal(newDescription)
+            } else {
+              fail('no response from patch description call')
+            }
+          })
+        })
+
+      cy.getByTestID('resource-list--editable-description').should(
+        'have.text',
+        newDescription
+      )
+
+      // copy task id to clipboard
+      cy.window().then(win => {
+        cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
+      })
+
+      // verify copy task id to clipboard notification
+      // NB. since cypress.click event is javascript generated and untrusted
+      // calling navigator.clipboard or document.execCommand('copy') are
+      // blocked in automated tests without native calls.
+      // So for now just assert a notification with the correct ID was fired
+      // even if the notification is failure to copy
+      cy.getByTestID('copy-task-id').then(elem => {
+        const taskID = elem
+          .text()
+          .replace(/^\D+/g, '')
+          .substring(0, 16)
+        elem.click()
+        cy.getByTestIDHead('notification-').should('contain', taskID)
+      })
+
       // create a label
-      cy.getByTestID('check-card Name this Check').within(() => {
+      cy.getByTestID(`check-card ${newName}`).within(() => {
         cy.getByTestID('inline-labels--add').click()
       })
 

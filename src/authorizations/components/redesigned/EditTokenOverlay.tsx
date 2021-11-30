@@ -74,14 +74,20 @@ const EditTokenOverlay: FC<Props> = props => {
     for (let i = 0; i < permissions.length; i++) {
       const name = permissions[i].resource.name
       if (!name) {
-        if (permissions[i].resource.type === 'telegrafs') {
+        if (
+          permissions[i].resource.type === 'telegrafs' &&
+          permissions[i].resource.id
+        ) {
           try {
             const telegraf = await props.getTelegraf(permissions[i].resource.id)
             newPerms[i].resource.name = telegraf
           } catch (e) {
             newPerms[i].resource.name = 'Resource deleted'
           }
-        } else if (permissions[i].resource.type === 'buckets') {
+        } else if (
+          permissions[i].resource.type === 'buckets' &&
+          permissions[i].resource.id
+        ) {
           try {
             const bucket = await props.getBucketSchema(
               permissions[i].resource.id

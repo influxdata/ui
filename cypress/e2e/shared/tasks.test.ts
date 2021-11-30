@@ -65,8 +65,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       .and('contain', taskName)
   })
 
-  // skipping because it's blocking CI. See https://github.com/influxdata/ui/issues/3333
-  it.skip('can create a cron task', () => {
+  it('can create a cron task', () => {
     const taskName = 'Cron task test'
 
     cy.createTaskFromEmpty(taskName, ({name}) => {
@@ -83,6 +82,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       .click()
       .clear()
       .type('10m')
+    cy.getByTestID('task-form-offset-input').should('have.value', '10m')
 
     cy.getByTestID('task-save-btn').click()
 

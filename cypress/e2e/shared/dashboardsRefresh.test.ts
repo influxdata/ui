@@ -360,6 +360,7 @@ describe('Dashboard refresh', () => {
         cy.get('.monaco-editor .view-line:last')
           .click({force: true})
           .focused()
+          .clear()
           .type(query1, {force: true, delay: 1})
       })
 

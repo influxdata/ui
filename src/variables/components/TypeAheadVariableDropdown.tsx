@@ -6,10 +6,6 @@ import Select from 'react-select'
 
 // Components
 import {
-  Dropdown,
-  DropdownMenuTheme,
-  ComponentStatus,
-  Input,
   MenuStatus,
 } from '@influxdata/clockface'
 
@@ -331,8 +327,12 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       })
     }
 
+    // update this here!!!!! TODO
     const onChange=(ack) => {
       console.log("made a change:", ack)
+      if (ack && ack.value) {
+        this.handleSelect(ack.value)
+      }
     }
     //    const style={width:200}
     return (

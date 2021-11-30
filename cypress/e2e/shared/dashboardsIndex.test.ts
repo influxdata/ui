@@ -742,4 +742,147 @@ describe('Dashboards', () => {
     const snapshot12 = makeGraphSnapshot()
     snapshot12.shouldBeSameAs(snapshot4, false)
   })
+  it('changes time range', () => {
+    const dashName = 'dashboard'
+    cy.writeLPData({
+      lines: genCurve({points: 87000, freq: 10}),
+      offset: `${30 * 24 * 60}m`,
+      stagger: `${(30 * 24 * 60) / 87000}m`,
+    })
+    cy.intercept('POST', '/api/v2/query?*', req => {
+      req.alias = 'loadQuery'
+    })
+    cy.get<Organization>('@org').then(({id}: Organization) =>
+      cy.createDashboard(id, dashName).then(({body}) => {
+        cy.createCell(body.id).then(cell1Resp =>
+          cy.createView(body.id, cell1Resp.body.id).then(() =>
+            cy.fixture('routes').then(({orgs}) =>
+              cy.get<Organization>('@org').then(({id}: Organization) => {
+                cy.visit(`${orgs}/${id}/dashboards-list`)
+                cy.getByTestID('tree-nav')
+              })
+            )
+          )
+        )
+      })
+    )
+    cy.getByTestID('dashboard-card--name').click()
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('selector-list curve').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+
+    const snapshot = makeGraphSnapshot()
+
+    // fixed time range values
+    // past 1m
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past1m').click()
+    cy.wait('@loadQuery')
+
+    const snapshot2 = makeGraphSnapshot()
+    snapshot2.shouldBeSameAs(snapshot, false)
+
+    // past 5m
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past5m').click()
+    cy.wait('@loadQuery')
+
+    const snapshot3 = makeGraphSnapshot()
+    snapshot3.shouldBeSameAs(snapshot2, false)
+
+    // past 15m
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past15m').click()
+    cy.wait('@loadQuery')
+
+    const snapshot4 = makeGraphSnapshot()
+    snapshot4.shouldBeSameAs(snapshot3, false)
+    // past 1h is set as default value
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past1h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot1 = makeGraphSnapshot()
+    snapshot1.shouldBeSameAs(snapshot, true)
+
+    // past 3h
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past3h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot5 = makeGraphSnapshot()
+    snapshot5.shouldBeSameAs(snapshot1, false)
+
+    // past 6h
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past6h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot6 = makeGraphSnapshot()
+    snapshot6.shouldBeSameAs(snapshot5, false)
+
+    // past 12h
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past12h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot7 = makeGraphSnapshot()
+    snapshot7.shouldBeSameAs(snapshot6, false)
+
+    // past 24h
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past24h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot8 = makeGraphSnapshot()
+    snapshot8.shouldBeSameAs(snapshot7, false)
+
+    // past 2d
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past2d').click()
+    cy.wait('@loadQuery')
+
+    const snapshot9 = makeGraphSnapshot()
+    snapshot9.shouldBeSameAs(snapshot8, false)
+
+    // past 7d
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past7d').click()
+    cy.wait('@loadQuery')
+
+    const snapshot10 = makeGraphSnapshot()
+    snapshot10.shouldBeSameAs(snapshot9, false)
+
+    // past 30d
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past30d').click()
+    cy.wait('@loadQuery')
+
+    const snapshot11 = makeGraphSnapshot()
+    snapshot11.shouldBeSameAs(snapshot10, false)
+
+    // custom time range value
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-customtimerange').click()
+    cy.getByTestID('timerange-popover--dialog').should('be.visible')
+
+    cy.getByTestID('timerange--input')
+      .first()
+      .clear()
+      .type('2021-11-11 07:00')
+
+    cy.getByTestID('timerange--input')
+      .last()
+      .clear()
+      .type('2021-11-11 11:00')
+
+    cy.getByTestID('daterange--apply-btn').click()
+    cy.wait('@loadQuery')
+
+    const snapshot12 = makeGraphSnapshot()
+    snapshot12.shouldBeSameAs(snapshot11, false)
+  })
 })

@@ -987,7 +987,7 @@ export const createTaskFromEmpty = (
 
   cy.get<Bucket>('@bucket').then(bucket => {
     cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
+      cy.get('.monaco-editor .view-line:last')
         .click({force: true})
         .focused()
         .type(flux(bucket), {force: true, delay: 2})

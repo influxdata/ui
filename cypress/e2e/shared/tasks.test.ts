@@ -69,7 +69,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const taskName = 'Cron task test'
 
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `from(bucket: "${name}"{rightarrow}
+      return `from(bucket: "${name}"){rightarrow}
    |> range(start: -2m{rightarrow}`
     })
 

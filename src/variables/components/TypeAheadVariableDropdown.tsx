@@ -327,19 +327,19 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       })
     }
 
-    // update this here!!!!! TODO
-    const onChange=(ack) => {
-      console.log("made a change:", ack)
-      if (ack && ack.value) {
-        this.handleSelect(ack.value)
+    const onChange=(selection) => {
+      // console.log("made a change:", selection)
+      if (selection && selection.value) {
+        this.handleSelect(selection.value)
       }
     }
     //    const style={width:200}
+    const selectedObjectValue = {value:selectedValue, label:selectedValue}
     return (
       <Select
         classNamePrefix="select"
         onChange={onChange}
-        defaultValue={selectedValue}
+        defaultValue={selectedObjectValue}
         isDisabled={isDisabled}
         isLoading={status === RemoteDataState.Loading || isDisabled}
         isClearable={true}

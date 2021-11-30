@@ -523,10 +523,13 @@ export const saveNewScript = (script: string, preamble: string) => async (
     dispatch(notify(copy.taskCreatedSuccess()))
     dispatch(checkTaskLimits())
   } catch (error) {
+    console.error('error while saving task script: ', error)
+    const message = getErrorMessage(error)
+    console.error(`error message: ${message}`)
     if (isLimitError(error)) {
+      console.error('is limit error')
       dispatch(notify(copy.resourceLimitReached('tasks')))
     } else {
-      const message = getErrorMessage(error)
       dispatch(notify(copy.taskNotCreated(message)))
     }
   }

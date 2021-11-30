@@ -5,7 +5,7 @@ import PagerDutyReadOnly from './readOnly'
 export default register => {
   register({
     type: 'pagerduty',
-    name: 'Pager Duty',
+    name: 'PagerDuty',
     data: {
       url: '',
       key: '',

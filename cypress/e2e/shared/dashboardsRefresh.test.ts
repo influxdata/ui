@@ -458,7 +458,6 @@ describe('Dashboard refresh', () => {
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
       cy.getByTestID('flux-editor')
-        .should('be.visible')
         .within(() => {
           cy.get('.monaco-editor .view-line:last')
             .click({force: true})
@@ -481,7 +480,6 @@ describe('Dashboard refresh', () => {
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('flux-editor')
-          .should('be.visible')
           .within(() => {
             cy.get('.monaco-editor .view-line:last')
               .click({force: true})
@@ -550,7 +548,6 @@ describe('Dashboard refresh', () => {
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
       cy.getByTestID('flux-editor')
-        .should('be.visible')
         .within(() => {
           cy.get('.monaco-editor .view-line:last')
             .click({force: true})
@@ -573,7 +570,6 @@ describe('Dashboard refresh', () => {
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('flux-editor')
-          .should('be.visible')
           .within(() => {
             cy.get('.monaco-editor .view-line:last')
               .click({force: true})

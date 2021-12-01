@@ -523,7 +523,6 @@ export const saveNewScript = (script: string, preamble: string) => async (
     dispatch(notify(copy.taskCreatedSuccess()))
     dispatch(checkTaskLimits())
   } catch (error) {
-    console.error(error)
     if (isLimitError(error)) {
       dispatch(notify(copy.resourceLimitReached('tasks')))
     } else {

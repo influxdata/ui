@@ -57,7 +57,7 @@ describe('buckets thunks', () => {
     it('should load and dispatch successfully', async () => {
       mockGetBuckets(true)
       const dispatch = jest.fn()
-      const getState = jest.fn(getMockAppState)
+      const getState: any = jest.fn(getMockAppState)
 
       await getBuckets()(dispatch, getState)
 
@@ -72,7 +72,7 @@ describe('buckets thunks', () => {
     it('should throw an error upon failure message received', async () => {
       mockGetBuckets(false)
       const dispatch = jest.fn()
-      const getState = jest.fn(getMockAppState)
+      const getState: any = jest.fn(getMockAppState)
 
       await getBuckets()(dispatch, getState)
 

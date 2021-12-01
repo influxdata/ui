@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import qs from 'qs'
+import qs, {ParsedQs} from 'qs'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
@@ -28,7 +28,7 @@ type Props = ReduxProps &
   RouteComponentProps<{orgID: string; dashboardID: string}>
 
 class DashboardRoute extends PureComponent<Props> {
-  pendingVars: [{[key: string]: any}]
+  pendingVars: ParsedQs[string]
 
   // this function takes the hydrated variables from state
   // and runs the `selectValue` action against them if the

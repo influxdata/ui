@@ -64,6 +64,13 @@ const ExportTaskButton: FC<Props> = ({
             status: 'inactive',
           },
         })
+      } else if ((data?.task ?? []).length) {
+        patchTask({
+          taskID: data.task[0].id,
+          data: {
+            status: 'inactive',
+          },
+        })
       }
 
       postTask({data: {orgID: org.id, flux: query}})

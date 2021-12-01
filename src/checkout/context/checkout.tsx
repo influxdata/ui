@@ -32,6 +32,7 @@ import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
 import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 
 export type Props = {
   children: JSX.Element
@@ -310,6 +311,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
           throw new Error(response.data.message)
         }
 
+        event('CheckoutSuccess', {
+          creditApplied: isPaygCreditActive.toString(),
+        })
         setCheckoutStatus(RemoteDataState.Done)
       } catch (error) {
         console.error(error)

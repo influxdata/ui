@@ -69,17 +69,20 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const taskName = 'Cron task test'
 
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `from(bucket: "${name}"{rightarrow}
+      return `from(bucket: "${name}"){rightarrow}
    |> range(start: -2m{rightarrow}`
     })
 
     cy.getByTestID('task-card-cron-btn').click()
     cy.getByTestID('task-form-schedule-input')
       .click()
+      .clear()
       .type('0 4 8-14 * *')
     cy.getByTestID('task-form-offset-input')
       .click()
+      .clear()
       .type('10m')
+    cy.getByTestID('task-form-offset-input').should('have.value', '10m')
 
     cy.getByTestID('task-save-btn').click()
 
@@ -123,9 +126,11 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       .then(() => {
         cy.getByTestID('task-form-schedule-input')
           .click()
+          .clear()
           .type('24h')
         cy.getByTestID('task-form-offset-input')
           .click()
+          .clear()
           .type('20m')
       })
 

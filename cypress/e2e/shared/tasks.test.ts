@@ -707,7 +707,7 @@ const createTask = (
     cy.get('textarea.inputarea')
       .click({force: true})
       .focused()
-      .type(task, {force: true, delay: 2})
+      .type(task, {force: true})
   })
 
   cy.getByTestIDAndSetInputValue('task-form-name', name)

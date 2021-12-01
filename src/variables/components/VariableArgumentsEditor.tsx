@@ -43,7 +43,6 @@ class VariableArgumentsEditor extends PureComponent<Props> {
                 <FluxMonacoEditor
                   script={args.values.query}
                   onChangeScript={this.handleChangeQuery}
-                  autofocus
                 />
               </Suspense>
             </div>

@@ -91,7 +91,6 @@ class TaskEditPage extends PureComponent<Props> {
                 <FluxMonacoEditor
                   script={currentScript}
                   onChangeScript={this.handleChangeScript}
-                  autofocus
                 />
               </Suspense>
             </div>

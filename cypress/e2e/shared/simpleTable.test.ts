@@ -90,7 +90,6 @@ describe('simple table interactions', () => {
         .last()
         .contains('5')
     })
-
   })
 
   it('should render correctly after switching from a dataset with fewer pages to one with more', () => {

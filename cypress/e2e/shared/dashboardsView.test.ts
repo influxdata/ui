@@ -108,7 +108,7 @@ describe('Dashboard', () => {
       cy.get('.monaco-editor .view-line:last')
         .click({force: true})
         .focused()
-        .type(`${headerPrefix} ${noteText}`, {force: true, delay: 1})
+        .type(`${headerPrefix} ${noteText}`, {force: true})
 
       cy.getByTestID('note-editor--preview').contains(noteText)
       cy.getByTestID('note-editor--preview').should('not.contain', headerPrefix)
@@ -173,7 +173,7 @@ describe('Dashboard', () => {
       cy.get('.monaco-editor .view-line:last')
         .click({force: true})
         .focused()
-        .type(`${headerPrefix2} ${noteText2}`, {force: true, delay: 1})
+        .type(`${headerPrefix2} ${noteText2}`, {force: true})
       cy.getByTestID('note-editor--preview').contains(noteText2)
       cy.getByTestID('note-editor--preview').should(
         'not.contain',
@@ -342,7 +342,7 @@ describe('Dashboard', () => {
                 cy.get('.monaco-editor .view-line:last')
                   .click({force: true})
                   .focused()
-                  .type(' ', {force: true, delay: 1})
+                  .type(' ', {force: true})
               })
               cy.getByTestID('save-cell--button').click()
 
@@ -601,7 +601,7 @@ describe('Dashboard', () => {
 |> filter(fn: (r) => r["tk1"] == "tv1")
 |> aggregateWindow(every: v.windowPeriod, fn: max)
 |> yield(name: "max")`,
-                    {force: true, delay: 1}
+                    {force: true}
                   )
               })
 
@@ -683,7 +683,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 |> filter(fn: (r) => r["_field"] == v.greeting)
 |> aggregateWindow(every: v.windowPeriod, fn: max)
 |> yield(name: "max")`,
-                  {force: true, delay: 1}
+                  {force: true}
                 )
             })
             cy.get('.flux-toolbar--list-item')
@@ -902,7 +902,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
 |> filter(fn: (r) => r["container_name"] == v.build)`,
-                  {force: true, delay: 1}
+                  {force: true}
                 )
             })
 
@@ -1072,7 +1072,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
 |> filter(fn: (r) => r["container_name"] == v.dependent)`,
-              {force: true, delay: 1}
+              {force: true}
             )
         })
         cy.getByTestID('save-cell--button').click()
@@ -1300,7 +1300,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           .click({force: true})
           .focused()
           .clear({force: true})
-          .type(query1, {force: true, delay: 1})
+          .type(query1, {force: true})
       })
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()

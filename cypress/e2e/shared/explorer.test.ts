@@ -10,8 +10,6 @@ import {
   STRINGS_TRIM,
 } from '../../../src/shared/constants/fluxFunctions'
 
-const TYPE_DELAY = 0
-
 function getTimeMachineText() {
   return cy
     .wrap({

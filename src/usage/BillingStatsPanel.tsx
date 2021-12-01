@@ -41,7 +41,9 @@ const BillingStatsPanel: FC = () => {
           data-testid="usage-billing--title"
         >
           <h4 className="usage--billing-date-range">
-            {`Billing Stats For ${billingDate} to Today`}
+            {billingDate
+              ? `Billing Stats For ${billingDate} to Today`
+              : 'Billing Stats'}
           </h4>
         </ReflessPopover>
         <QuestionMarkTooltip

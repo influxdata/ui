@@ -36,7 +36,7 @@ describe('Tasks', () => {
   it('can create a task', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `import "influxdata/influxdb/v1{rightarrow}
+      return `import "influxdata/influxdb/v1"{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
 from(bucket: "${name}"{rightarrow}
    |> range(start: -2m{rightarrow}`

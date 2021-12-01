@@ -15,19 +15,18 @@ const VIS_TYPES = [
   'table',
 ]
 describe('visualizations', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.createMapVariable(id)
-          cy.fixture('routes').then(({orgs, explorer}) => {
-            cy.visit(`${orgs}/${id}${explorer}`)
-            cy.getByTestID('tree-nav')
-          })
-        })
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+
+    cy.get('@org').then(({id}: Organization) => {
+      cy.createMapVariable(id)
+      cy.fixture('routes').then(({orgs, explorer}) => {
+        cy.visit(`${orgs}/${id}${explorer}`)
+        cy.getByTestID('tree-nav')
       })
-    )
-  )
+    })
+  })
   describe('empty states', () => {
     it('shows a message if no queries have been created', () => {
       cy.getByTestID('empty-graph--no-queries').should('exist')
@@ -42,11 +41,7 @@ describe('visualizations', () => {
           cy.getByTestID('time-machine-submit-button').click()
           cy.getByTestID('empty-graph--error').should('exist')
         })
-        cy.getByTestID('flux-editor')
-          .click({force: true})
-          .focused()
-          .clear()
-          .type('from(', {force: true})
+        cy.getByTestID('flux-editor').monacoType(`{selectall}{del}from(`)
         cy.getByTestID('time-machine-submit-button').click()
       })
     })
@@ -98,9 +93,7 @@ describe('visualizations', () => {
             .last()
             .contains('aggregate.')
           cy.getByTestID('flux-editor').should('exist')
-          cy.getByTestID('flux-editor').within(() => {
-            cy.get('textarea').type('yoyoyoyoyo', {force: true})
-          })
+          cy.getByTestID('flux-editor').monacoType(`yoyoyoyoyo`)
 
           cy.log('can over over flux functions')
           cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')

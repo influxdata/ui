@@ -1,18 +1,16 @@
 import {Bucket, Organization} from '../../../src/types'
 
 describe('Buckets', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs, buckets}) => {
-            cy.visit(`${orgs}/${id}${buckets}`)
-            cy.getByTestID('tree-nav')
-          })
-        )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs, buckets}) => {
+        cy.visit(`${orgs}/${id}${buckets}`)
       })
     )
-  )
+    cy.getByTestID('tree-nav')
+  })
 
   describe('from the buckets index page', () => {
     it('can create a bucket', () => {
@@ -56,11 +54,8 @@ describe('Buckets', () => {
         cy.getByInputName('name').type(newBucket)
         cy.getByTestID('retention-intervals--button').click()
         cy.getByTestID('duration-selector--button').click()
-        cy.getByTestID('duration-selector--12h')
-          .click()
-          .then(() => {
-            cy.getByTestID('bucket-form-submit').click()
-          })
+        cy.getByTestID('duration-selector--12h').click()
+        cy.getByTestID('bucket-form-submit').click()
       })
 
       // assert bucket with retention
@@ -88,9 +83,7 @@ describe('Buckets', () => {
         cy.contains('Save').click()
       })
 
-      cy.get<Bucket>('@bucket').then(() => {
-        cy.getByTestID(`bucket-retention`).should('contain', '7 days')
-      })
+      cy.getByTestID(`bucket-retention`).should('contain', '7 days')
     })
 
     it('can delete a bucket', () => {
@@ -272,16 +265,10 @@ describe('Buckets', () => {
       })
 
       // filter plugins and choose system
-      cy.getByTestID('input-field')
-        .type('sys')
-        .then(() => {
-          cy.getByTestID('square-grid--card').should('have.length', 1)
-          cy.getByTestID('input-field')
-            .clear()
-            .then(() => {
-              cy.getByTestID('square-grid--card').should('have.length', 5)
-            })
-        })
+      cy.getByTestID('input-field').type('sys')
+      cy.getByTestID('square-grid--card').should('have.length', 1)
+      cy.getByTestID('input-field').clear()
+      cy.getByTestID('square-grid--card').should('have.length', 5)
       cy.getByTestID('telegraf-plugins--System').click()
       cy.getByTestID('next').click()
 

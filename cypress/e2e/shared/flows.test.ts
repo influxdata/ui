@@ -1,20 +1,18 @@
 import {Organization} from '../../src/types'
 
 describe('Flows', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() =>
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${id}`)
-            cy.getByTestID('version-info')
-            cy.getByTestID('nav-item-flows').should('be.visible')
-            return cy.getByTestID('nav-item-flows').click()
-          })
-        )
-      )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.visit(`${orgs}/${id}`)
+      })
     )
-  )
+    cy.getByTestID('version-info')
+    cy.getByTestID('nav-item-flows').should('be.visible')
+    cy.getByTestID('nav-item-flows').click()
+  })
 
   it('CRUD a flow from the index page', () => {
     const now = Date.now()

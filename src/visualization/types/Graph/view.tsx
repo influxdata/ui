@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo, useContext} from 'react'
+import React, {FC, useMemo, useContext, useCallback, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {
   Config,
@@ -27,7 +27,7 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
-import {XYViewProperties} from 'src/types'
+import {ViewProperties, XYViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
@@ -54,6 +54,7 @@ import {
 
 // Annotations
 import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
+import {setViewProperties} from '../../../timeMachine/actions'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -65,6 +66,7 @@ const XYPlot: FC<Props> = ({
   timeRange,
   annotations,
   cellID,
+  update,
 }) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -114,6 +116,24 @@ const XYPlot: FC<Props> = ({
 
   const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
   const colorMapping = mapSeriesToColor(fillColumnMap, properties)
+  const [needsUpdateBit, setNeedsUpdateBit] = useState(true)
+
+  const update = useCallback(
+    (properties: Partial<ViewProperties>) => {
+      console.log('UPDATEINGINGING')
+      dispatch(
+        setViewProperties({
+          ...properties,
+        } as ViewProperties)
+      )
+    },
+    [dispatch, properties]
+  )
+
+  if (needsUpdateBit) {
+    update(colorMapping)
+    setNeedsUpdateBit(false)
+  }
 
   const col = result.table.columns[xColumn]
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
@@ -130,8 +150,7 @@ const XYPlot: FC<Props> = ({
         yColumn,
         groupKey,
         colorHexes,
-        properties.position,
-        colorMapping
+        properties.position
       )
       const [fillColumn] = createGroupIDColumn(result.table, groupKey)
       return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)

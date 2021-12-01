@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useMemo} from 'react'
 
 import {
   Input,
@@ -30,6 +30,8 @@ import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksG
 import Checkbox from 'src/shared/components/Checkbox'
 import {XYViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
+import {createGroupIDColumn} from '../../../../../giraffe/giraffe'
+import {makeColorMappingFromColors} from '../../utils/colorMapping'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 
@@ -93,6 +95,12 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
 
     updateAxis('y', {bounds})
   }
+
+  const groupKey = useMemo(() => [...results.fluxGroupKeyUnion, 'result'], [
+    results,
+  ])
+
+  const [, fillColumnMap] = createGroupIDColumn(results.table, groupKey)
 
   return (
     <Grid>
@@ -195,7 +203,10 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
             <ColorSchemeDropdown
               value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
-                update({colors})
+
+                const colorMapping = makeColorMappingFromColors(fillColumnMap, properties)
+
+                update({colors, colorMapping})
               }}
             />
           </Form.Element>

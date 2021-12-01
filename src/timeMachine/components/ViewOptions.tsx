@@ -20,6 +20,7 @@ const ViewOptions: FC = () => {
   const results = useSelector(getVisTable)
   const dispatch = useDispatch()
 
+  // check hererererererererere
   const update = useCallback(
     (properties: Partial<ViewProperties>) => {
       dispatch(

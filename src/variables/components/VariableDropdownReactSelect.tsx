@@ -168,11 +168,12 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     const customStyles = {
       option: (provided, state) => {
-        let backgroundColor = state.isSelected? selectColor : background
+        let backgroundColor = state.isFocused? focusColor : background
         console.log("state??", state)
-        if (state.isFocused) {
-          backgroundColor = focusColor
+        if (state.isSelected) {
+          backgroundColor = selectColor
         }
+
         return {
         ...provided,
         color: foreground,
@@ -220,11 +221,13 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     }
 
     const onChange=(selection) => {
-      // console.log("made a change:", selection)
       if (selection && selection.value) {
         this.handleSelect(selection.value)
       }
     }
+    // primary50 is the color that is used when an item is clicked on to change the selection
+    // have not found an alternative way (via the customStyles) to change that color)
+
     //    const style={width:200}
     const selectedObjectValue = {value:selectedValue, label:selectedValue}
     return (
@@ -241,6 +244,15 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         name={name}
         options={realVals}
         placeholder={placeHolderText}
+
+        theme={(theme) => ({
+          ...theme,
+          colors: {
+            ...theme.colors,
+            primary50:selectColor,
+          },
+        })}
+
       />
     )
     //

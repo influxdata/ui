@@ -999,7 +999,7 @@ export const createTaskFromEmpty = (
     .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
-    cy.monacoType('flux-editor', flux(bucket))
+    cy.getByTestID('flux-editor').monacoType(flux(bucket))
   })
 
   cy.getByInputName('name').type(name)

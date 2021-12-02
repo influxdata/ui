@@ -164,7 +164,10 @@ export const formatPermissionsObj = permissions => {
 
     if (acc.hasOwnProperty(type)) {
       accordionPermission = {...acc[type]}
-      if (id && (type === ResourceType.Buckets || type === ResourceType.Telegrafs)) {
+      if (
+        id &&
+        (type === ResourceType.Buckets || type === ResourceType.Telegrafs)
+      ) {
         if (accordionPermission.sublevelPermissions.hasOwnProperty(id)) {
           accordionPermission.sublevelPermissions[id].permissions[action] = true
         } else {
@@ -182,7 +185,10 @@ export const formatPermissionsObj = permissions => {
         accordionPermission[action] = true
       }
     } else {
-      if (id && (type === ResourceType.Buckets || type === ResourceType.Telegrafs)) {
+      if (
+        id &&
+        (type === ResourceType.Buckets || type === ResourceType.Telegrafs)
+      ) {
         accordionPermission = {
           read: false,
           write: false,

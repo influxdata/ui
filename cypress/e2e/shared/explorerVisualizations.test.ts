@@ -14,6 +14,7 @@ const VIS_TYPES = [
   'line-plus-single-stat',
   'table',
 ]
+const NUM_POINTS = 360
 describe('visualizations', () => {
   beforeEach(() => {
     cy.flush()
@@ -23,9 +24,10 @@ describe('visualizations', () => {
       cy.createMapVariable(id)
       cy.fixture('routes').then(({orgs, explorer}) => {
         cy.visit(`${orgs}/${id}${explorer}`)
-        cy.getByTestID('tree-nav')
       })
     })
+    cy.writeData(points(NUM_POINTS))
+    cy.getByTestID('time-machine--bottom')
   })
   describe('empty states', () => {
     it('shows a message if no queries have been created', () => {
@@ -36,24 +38,21 @@ describe('visualizations', () => {
       cy.getByTestID('switch-to-script-editor').click()
 
       cy.getByTestID('time-machine--bottom').within(() => {
-        const remove = cy.state().window.store.subscribe(() => {
-          remove()
-          cy.getByTestID('time-machine-submit-button').click()
-          cy.getByTestID('empty-graph--error').should('exist')
-        })
-        cy.getByTestID('flux-editor').monacoType(`{selectall}{del}from(`)
+        cy.getByTestID('flux-editor')
+          .should('exist')
+          .monacoType('{selectall}{del}from(')
+
         cy.getByTestID('time-machine-submit-button').click()
+      })
+      const remove = cy.state().window.store.subscribe(() => {
+        remove()
+        cy.getByTestID('time-machine-submit-button').click()
+        cy.getByTestID('empty-graph--error').should('exist')
       })
     })
   })
 
-  const numPoints = 360
-  describe(`visualize with ${numPoints} points`, () => {
-    beforeEach(() => {
-      // POST 360 points to the server
-      cy.writeData(points(numPoints))
-    })
-
+  describe(`visualize with ${NUM_POINTS} points`, () => {
     it('can view time-series data', () => {
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
@@ -143,7 +142,7 @@ describe('visualizations', () => {
               if (type.includes('single-stat')) {
                 cy.getByTestID('single-stat--text').should(
                   'contain',
-                  `${numPoints}`
+                  `${NUM_POINTS}`
                 )
               }
             }

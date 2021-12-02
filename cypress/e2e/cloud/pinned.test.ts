@@ -3,21 +3,16 @@ import {Organization} from '../../../src/types'
 describe('Pinned Items', () => {
   let orgID: string
   beforeEach(() => {
-    cy.flush().then(() =>
-      cy.signin().then(() =>
-        cy.fixture('routes').then(() => {
-          cy.get('@org').then(({id}: any) => {
-            orgID = id
-            cy.setFeatureFlags({
-              pinnedItems: true,
-              docSearchWidget: true,
-            }).then(() => {
-              cy.getByTestID('tree-nav')
-            })
-          })
-        })
-      )
-    )
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: any) => {
+      orgID = id
+      cy.setFeatureFlags({
+        pinnedItems: true,
+        docSearchWidget: true,
+      })
+      cy.getByTestID('tree-nav')
+    })
   })
 
   it('renders a pinned items modal in the homepage with initial empty state', () => {
@@ -29,15 +24,13 @@ describe('Pinned Items', () => {
 
   describe('Pin dashboard tests', () => {
     beforeEach(() => {
-      cy.createDashboard(orgID).then(() => {
-        cy.setFeatureFlags({
-          pinnedItems: true,
-          docSearchWidget: true,
-        }).then(() => {
-          cy.getByTestID('nav-item-dashboards').should('be.visible')
-          cy.getByTestID('nav-item-dashboards').click()
-        })
+      cy.createDashboard(orgID)
+      cy.setFeatureFlags({
+        pinnedItems: true,
+        docSearchWidget: true,
       })
+      cy.getByTestID('nav-item-dashboards').should('be.visible')
+      cy.getByTestID('nav-item-dashboards').click()
     })
     it('pins a dashboard to the homepage for easy access as a pinned item', () => {
       cy.getByTestID('dashboard-card')
@@ -131,23 +124,21 @@ describe('Pinned Items', () => {
   describe('Pin task tests', () => {
     let taskName: string
     beforeEach(() => {
-      cy.flush().then(() =>
-        cy.signin().then(() => {
-          cy.get('@org').then(({id: orgID}: Organization) =>
-            cy
-              .createToken(orgID, 'test token', 'active', [
-                {action: 'write', resource: {type: 'views', orgID}},
-                {action: 'write', resource: {type: 'documents', orgID}},
-                {action: 'write', resource: {type: 'tasks', orgID}},
-              ])
-              .then(({body}) => {
-                cy.wrap(body.token).as('token')
-                cy.getByTestID('tree-nav')
-                cy.visit(`/orgs/${orgID}/tasks`)
-                cy.getByTestID('tree-nav')
-              })
-          )
-        })
+      cy.flush()
+      cy.signin()
+      cy.get('@org').then(({id: orgID}: Organization) =>
+        cy
+          .createToken(orgID, 'test token', 'active', [
+            {action: 'write', resource: {type: 'views', orgID}},
+            {action: 'write', resource: {type: 'documents', orgID}},
+            {action: 'write', resource: {type: 'tasks', orgID}},
+          ])
+          .then(({body}) => {
+            cy.wrap(body.token).as('token')
+            cy.getByTestID('tree-nav')
+            cy.visit(`/orgs/${orgID}/tasks`)
+            cy.getByTestID('tree-nav')
+          })
       )
 
       taskName = 'Task'
@@ -165,10 +156,8 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('task-card')
         .first()
         .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('context-menu-task').click()
-          cy.getByTestID('context-pin-task').click()
-        })
+      cy.getByTestID('context-menu-task').click()
+      cy.getByTestID('context-pin-task').click()
     })
 
     it('can pin a task to the homepage', () => {
@@ -206,17 +195,9 @@ from(bucket: "${name}"{rightarrow}
     })
 
     it('unpins when the underlying resource is removed', () => {
-      cy.getByTestID('task-card')
-        .first()
-        .then(() => {
-          cy.getByTestID(`context-delete-menu ${taskName}--button`)
-            .click()
-            .then(() => {
-              cy.getByTestID(
-                `context-delete-menu ${taskName}--confirm-button`
-              ).click()
-            })
-        })
+      cy.getByTestID('task-card').first()
+      cy.getByTestID(`context-delete-menu ${taskName}--button`).click()
+      cy.getByTestID(`context-delete-menu ${taskName}--confirm-button`).click()
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
@@ -231,31 +212,30 @@ from(bucket: "${name}"{rightarrow}
     beforeEach(() => {
       cy.setFeatureFlags({
         pinnedItems: true,
-      }).then(() => {
-        cy.getByTestID('nav-item-flows').should('be.visible')
-        cy.clickNavBarItem('nav-item-flows')
-        const now = Date.now()
-        cy.writeData(
-          [
-            `test,container_name=cool dopeness=12 ${now - 1000}000000`,
-            `test,container_name=beans dopeness=18 ${now - 1200}000000`,
-            `test,container_name=cool dopeness=14 ${now - 1400}000000`,
-            `test,container_name=beans dopeness=10 ${now - 1600}000000`,
-          ],
-          'defbuck'
-        )
-        cy.getByTestID('preset-new')
-          .first()
-          .click()
-
-        cy.getByTestID('time-machine-submit-button').should('be.visible')
-        cy.getByTestID('page-title').click()
-        cy.getByTestID('renamable-page-title--input')
-          .clear()
-          .type('Flow')
-          .type('{enter}')
-        cy.visit(`/orgs/${orgID}/notebooks`)
       })
+      cy.getByTestID('nav-item-flows').should('be.visible')
+      cy.clickNavBarItem('nav-item-flows')
+      const now = Date.now()
+      cy.writeData(
+        [
+          `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+          `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+          `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+          `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+        ],
+        'defbuck'
+      )
+      cy.getByTestID('preset-new')
+        .first()
+        .click()
+
+      cy.getByTestID('time-machine-submit-button').should('be.visible')
+      cy.getByTestID('page-title').click()
+      cy.getByTestID('renamable-page-title--input')
+        .clear()
+        .type('Flow')
+        .type('{enter}')
+      cy.visit(`/orgs/${orgID}/notebooks`)
     })
 
     it('pins a notebook to the homepage', () => {

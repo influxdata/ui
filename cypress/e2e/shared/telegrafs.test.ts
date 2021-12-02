@@ -306,41 +306,41 @@ describe('Collectors', () => {
         cy.contains('Continue').click()
         cy.contains('nginx').click()
       })
-    })
 
-    it('can add and delete urls', () => {
-      cy.getByTestID('input-field').type('http://localhost:9999')
-      cy.contains('Add').click()
-
-      cy.contains('http://localhost:9999').should('exist', () => {
-        cy.getByTestID('input-field').type('http://example.com')
+      it('can add and delete urls', () => {
+        cy.getByTestID('input-field').type('http://localhost:9999')
         cy.contains('Add').click()
 
-        cy.contains('http://example.com')
-          .should('exist')
-          .then($example => {
-            $example.contains('Delete').click()
-            $example.contains('Confirm').click()
+        cy.contains('http://localhost:9999').should('exist', () => {
+          cy.getByTestID('input-field').type('http://example.com')
+          cy.contains('Add').click()
 
-            cy.contains('http://example').should('not.exist')
+          cy.contains('http://example.com')
+            .should('exist')
+            .then($example => {
+              $example.contains('Delete').click()
+              $example.contains('Confirm').click()
 
-            cy.contains('Done').click()
-            cy.get('.cf-icon.checkmark-new').should('exist')
-          })
+              cy.contains('http://example').should('not.exist')
+
+              cy.contains('Done').click()
+              cy.get('.cf-icon.checkmark-new').should('exist')
+            })
+        })
       })
-    })
 
-    it('handles busted input', () => {
-      // do nothing when clicking done with no urls
-      cy.contains('Done').click()
-      cy.contains('nginx').should('exist')
-      cy.get('.cf-icon.circle-thick').should('exist')
+      it('handles busted input', () => {
+        // do nothing when clicking done with no urls
+        cy.contains('Done').click()
+        cy.contains('nginx').should('exist')
+        cy.get('.cf-icon.circle-thick').should('exist')
 
-      cy.contains('nginx').click()
-      cy.getByTestID('input-field').type('youre mom')
-      cy.contains('Add').click()
-      cy.contains('Done').click()
-      cy.get('.cf-icon.remove-new').should('exist')
+        cy.contains('nginx').click()
+        cy.getByTestID('input-field').type('youre mom')
+        cy.contains('Add').click()
+        cy.contains('Done').click()
+        cy.get('.cf-icon.remove-new').should('exist')
+      })
     })
   })
 

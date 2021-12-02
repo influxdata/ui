@@ -228,15 +228,13 @@ const Schedule: FC<PipeProp> = ({Context}) => {
 
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
-  const hasChanges = useMemo(() => {
-    if (data.task?.id) {
-      return taskText !== data.task.flux
-    }
-    if (data.task.length) {
-      return taskText !== data.task[0].flux
-    }
-    return false
-  }, [taskText, data?.task?.flux])
+  let latestTask
+  if (data.task?.id) {
+    latestTask = data.task
+  } else if (data.task?.length) {
+    latestTask = data.task[0]
+  }
+  const hasChanges = taskText !== latestTask?.flux ?? ''
 
   const updateInterval = evt => {
     update({

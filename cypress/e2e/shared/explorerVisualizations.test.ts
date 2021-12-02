@@ -46,7 +46,7 @@ describe('visualizations', () => {
           .click({force: true})
           .focused()
           .clear()
-          .type('from(', {force: true, delay: 2})
+          .type('from(', {force: true})
         cy.getByTestID('time-machine-submit-button').click()
       })
     })

@@ -990,7 +990,7 @@ export const createTaskFromEmpty = (
       cy.get('.monaco-editor .view-line:last')
         .click({force: true})
         .focused()
-        .type(flux(bucket), {force: true, delay: 2})
+        .type(flux(bucket), {force: true})
     })
   })
 

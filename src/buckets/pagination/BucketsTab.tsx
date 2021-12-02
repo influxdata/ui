@@ -152,7 +152,8 @@ class BucketsTab extends PureComponent<Props, State> {
                   <Grid.Column
                     widthXS={Columns.Twelve}
                     widthSM={Columns.Eight}
-                    widthMD={Columns.Ten}
+                    widthMD={Columns.Nine}
+                    widthLG={Columns.Ten}
                   >
                     <FilterBuckets
                       searchTerm={searchTerm}
@@ -190,7 +191,8 @@ class BucketsTab extends PureComponent<Props, State> {
                   <Grid.Column
                     widthXS={Columns.Twelve}
                     widthSM={Columns.Four}
-                    widthMD={Columns.Two}
+                    widthMD={Columns.Three}
+                    widthLG={Columns.Two}
                   >
                     <BucketExplainer />
                   </Grid.Column>

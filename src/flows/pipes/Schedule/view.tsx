@@ -228,13 +228,13 @@ const Schedule: FC<PipeProp> = ({Context}) => {
 
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
-  let lastTask
+  let latestTask
   if (data.task?.id) {
-    lastTask = data.task
+    latestTask = data.task
   } else if (data.task?.length) {
-    lastTask = data.task[0]
+    latestTask = data.task[0]
   }
-  const hasChanges = taskText !== lastTask?.flux ?? ''
+  const hasChanges = taskText !== latestTask?.flux ?? ''
 
   const updateInterval = evt => {
     update({

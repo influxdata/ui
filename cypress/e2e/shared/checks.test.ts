@@ -520,12 +520,8 @@ describe('Checks', () => {
 
     it('can edit the check card', () => {
       const newDescription =
-        'русский дворянин, лечившийся четыре года в Швейцарии от эпилепсии.'
-      const newName = 'Князь Мышкин'
-
-      cy.get<Organization>('@org').then(({id}: Organization) =>
-        cy.intercept('PATCH', `/api/v2/checks/${id}`).as('patchCheck')
-      )
+        "The protagonist of Fyodor Dostoevsky's 1869 novel The Idiot."
+      const newName = 'Prince Myshkin'
 
       // toggle on / off
       cy.get('.cf-resource-card__disabled').should('not.exist')

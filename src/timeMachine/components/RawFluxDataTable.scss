@@ -2,7 +2,7 @@
 
 .raw-flux-data-table > .fancy-scroll--container,
 .raw-flux-data-table--cell {
-  border: ($ix-border / 2) solid $cf-grey-15;
+  border: ($ix-border * 0.5) solid $cf-grey-15;
 }
 
 .raw-flux-data-table--cell {

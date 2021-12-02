@@ -6,7 +6,7 @@
 .hidden-tasks-alert {
   font-size: 13px;
   font-weight: 600;
-  margin-top: ($ix-border / 2);
+  margin-top: ($ix-border * 0.5);
   width: 100%;
   background-color: rgba($cf-grey-15, 0.5);
   text-align: center;

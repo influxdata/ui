@@ -15,7 +15,7 @@
   background-color: $cf-grey-5;
   padding: $cf-space-3xs;
   padding-bottom: 0;
-  border-radius: $cf-radius + ($cf-border / 2);
+  border-radius: $cf-radius + ($cf-border * 0.5);
 }
 
 .time-machine-queries--tabs {

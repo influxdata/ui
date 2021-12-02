@@ -10,8 +10,8 @@ $builder-card--header-margin: $ix-marg-b + $ix-border;
   height: 100%;
 
   > * {
-    margin-left: $builder-card--margin / 2;
-    margin-right: $builder-card--margin / 2;
+    margin-left: $builder-card--margin * 0.5;
+    margin-right: $builder-card--margin * 0.5;
 
     &:first-child {
       margin-left: 0;
@@ -87,9 +87,9 @@ $builder-card--header-margin: $ix-marg-b + $ix-border;
 }
 
 .builder-card--hamburger {
-  flex: 0 0 ($builder-card--header-height / 2);
+  flex: 0 0 ($builder-card--header-height * 0.5);
   height: $ix-border;
-  border-radius: $ix-border / 2;
+  border-radius: $ix-border * 0.5;
   background-color: $cf-grey-35;
   margin-left: $builder-card--header-margin;
   position: relative;
@@ -103,7 +103,7 @@ $builder-card--header-margin: $ix-marg-b + $ix-border;
     width: 100%;
     height: 100%;
     background-color: $cf-grey-35;
-    border-radius: $ix-border / 2;
+    border-radius: $ix-border * 0.5;
     transition: background-color 0.25s ease;
   }
 

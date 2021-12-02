@@ -88,9 +88,9 @@ const CustomApiTokenOverlay: FC<Props> = props => {
         otherResources: {read: false, write: false},
       }
       props.allResources.forEach(resource => {
-        if (resource === 'telegrafs') {
+        if (resource === ResourceType.Telegrafs) {
           perms[resource] = props.telegrafPermissions
-        } else if (resource === 'buckets') {
+        } else if (resource === ResourceType.Buckets) {
           perms[resource] = props.bucketPermissions
         } else {
           perms[resource] = {read: false, write: false}
@@ -133,8 +133,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     if (name === 'otherResources') {
       Object.keys(newPerm).forEach(key => {
         if (
-          key !== 'buckets' &&
-          key !== 'telegrafs' &&
+          key !== ResourceType.Buckets &&
+          key !== ResourceType.Telegrafs &&
           key !== 'otherResources'
         ) {
           newPerm[key][permission] = !newPerm[key][permission]
@@ -181,11 +181,12 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     let noTelegrafWritePermSelected
 
     const bucketsTelegrafs = Object.keys(permissions).filter(
-      resource => resource === 'buckets' || resource === 'telegrafs'
+      resource =>
+        resource === ResourceType.Buckets || resource === ResourceType.Telegrafs
     )
 
     bucketsTelegrafs.forEach(resource => {
-      if (resource === 'buckets') {
+      if (resource === ResourceType.Buckets) {
         noBucketReadPermSelected = Object.keys(
           newPerm[resource].sublevelPermissions
         ).every(

@@ -27,7 +27,7 @@ const MarkdownMonacoEditor: FC<EditorProps> = ({
       registerAutogrow(editor)
     }
 
-    if (autofocus) {
+    if (autofocus && !editor.hasTextFocus()) {
       const model = editor.getModel()
       editor.setPosition({
         lineNumber: model.getLineCount(),

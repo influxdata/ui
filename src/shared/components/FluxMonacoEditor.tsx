@@ -91,7 +91,7 @@ const FluxEditorMonaco: FC<Props> = ({
       updateDiagnostics(diagnostics)
       monacoEditor.remeasureFonts()
 
-      if (autofocus && !readOnly) {
+      if (autofocus && !readOnly && !editor.hasTextFocus()) {
         const model = editor.getModel()
         editor.setPosition({
           lineNumber: model.getLineCount(),

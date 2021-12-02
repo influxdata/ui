@@ -53,8 +53,9 @@ describe('Dashboard refresh', () => {
 |> filter(fn: (r) => r["container_name"] == "cool")`
       cy.getByTestID('flux-editor').monacoType(query1)
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('page-title').click()
-        cy.getByTestID('renamable-page-title--input')
+        cy.getByTestID('page-title')
+          .click()
+          .focused()
           .clear()
           .type('blah{enter}', {force: true})
         cy.getByTestID('save-cell--button').click()
@@ -252,8 +253,9 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('flux-editor').monacoType(query1)
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('page-title').click()
-        cy.getByTestID('renamable-page-title--input')
+        cy.getByTestID('page-title')
+          .click()
+          .focused()
           .clear()
           .type('blah{enter}', {force: true})
         cy.getByTestID('save-cell--button').click()
@@ -343,8 +345,9 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query2}`)
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('page-title').click()
-        cy.getByTestID('renamable-page-title--input')
+        cy.getByTestID('page-title')
+          .click()
+          .focused()
           .clear()
           .type('blah{enter}', {force: true})
         cy.getByTestID('save-cell--button').click()
@@ -433,8 +436,9 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('flux-editor').monacoType(query1)
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('page-title').click()
-        cy.getByTestID('renamable-page-title--input')
+        cy.getByTestID('page-title')
+          .click()
+          .focused()
           .clear()
           .type('blah{enter}', {force: true})
         cy.getByTestID('save-cell--button').click()
@@ -511,8 +515,9 @@ describe('Dashboard refresh', () => {
       cy.getByTestID('flux-editor').monacoType(query1)
 
       cy.getByTestID('overlay').within(() => {
-        cy.getByTestID('page-title').click()
-        cy.getByTestID('renamable-page-title--input')
+        cy.getByTestID('page-title')
+          .click()
+          .focused()
           .clear()
           .type('blah{enter}', {force: true})
         cy.getByTestID('save-cell--button').click()

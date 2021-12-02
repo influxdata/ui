@@ -5,13 +5,14 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {isEmpty} from 'lodash'
 
 // Components
-import {Sort, ComponentSize, EmptyState} from '@influxdata/clockface'
+import {Sort, ComponentSize, EmptyState, Grid, Columns} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/components/TokenList'
 import FilterList from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
+import TokensRedesignBanner from 'src/authorizations/components/TokensRedesignBanner'
 
 // Types
 import {AppState, Authorization, ResourceType} from 'src/types'
@@ -53,11 +54,10 @@ class TokensTab extends PureComponent<Props, State> {
       sortType: SortTypes.String,
     }
   }
-
+  
   public render() {
     const {searchTerm, sortKey, sortDirection, sortType} = this.state
     const {tokens} = this.props
-
     const leftHeaderItems = (
       <>
         <SearchWidget
@@ -85,6 +85,13 @@ class TokensTab extends PureComponent<Props, State> {
           childrenLeft={leftHeaderItems}
           childrenRight={rightHeaderItems}
         />
+        <Grid>
+          <Grid.Row>
+            <Grid.Column
+              widthXS={Columns.Twelve}
+              widthSM={Columns.Eight}
+              widthMD={Columns.Ten}
+            >
         <FilterAuthorizations
           list={tokens}
           searchTerm={searchTerm}
@@ -102,6 +109,16 @@ class TokensTab extends PureComponent<Props, State> {
             />
           )}
         </FilterAuthorizations>
+        </Grid.Column>
+            <Grid.Column
+              widthXS={Columns.Twelve}
+              widthSM={Columns.Four}
+              widthMD={Columns.Two}
+            >
+              <TokensRedesignBanner />
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </>
     )
   }

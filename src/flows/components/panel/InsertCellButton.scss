@@ -13,7 +13,7 @@
   &:after {
     content: '';
     position: absolute;
-    left: $flow-panel--node-gap / 2;
+    left: $flow-panel--node-gap * 0.5;
     width: $cf-border;
     pointer-events: none;
     z-index: 2;
@@ -46,7 +46,7 @@
   border-radius: 50%;
   position: absolute;
   top: 50%;
-  left: $flow-panel--node-gap / 2;
+  left: $flow-panel--node-gap * 0.5;
   transform: translate(-50%, -50%);
   cursor: pointer;
   background: linear-gradient(45deg, #5c10a0 0%, #8e1fc3 100%);
@@ -58,7 +58,7 @@
 .flow-divider--collapse {
   position: absolute;
   top: 50%;
-  left: $flow-panel--node-gap / 2 + 20;
+  left: $flow-panel--node-gap * 0.5 + 20;
   transform: translate(0, -50%);
   padding: 4px 16px;
 }

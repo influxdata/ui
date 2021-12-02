@@ -49,7 +49,7 @@
   .hamburger {
     width: 10px;
     height: $cf-border;
-    border-radius: $cf-border / 2;
+    border-radius: $cf-border * 0.5;
     position: absolute;
     top: 50%;
     right: 0;
@@ -66,7 +66,7 @@
       height: 100%;
       background-color: $c-star;
       transition: background-color 0.25s ease;
-      border-radius: $cf-border / 2;
+      border-radius: $cf-border * 0.5;
       left: 0;
     }
     &:before {

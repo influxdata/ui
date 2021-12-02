@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   padding: 0 $cf-space-2xs;
-  border-radius: ($cf-form-sm-height - $cf-space-3xs) / 2;
+  border-radius: ($cf-form-sm-height - $cf-space-3xs) * 0.5;
   background-color: $cf-grey-15;
 
   &:hover {

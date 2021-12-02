@@ -5,6 +5,7 @@ import {useHistory} from 'react-router-dom'
 
 // Components
 import {SelectableCard, SquareGrid, ComponentSize} from '@influxdata/clockface'
+// import LazySVG from 'src/perf/components/LazySVG'
 const LazySVG = React.lazy(() => import('src/perf/components/LazySVG'))
 
 // Utils

@@ -278,7 +278,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   }, [taskText])
 
   const storeTask = (task: any) => {
-    const list = ((data.task.id ? [data.task] : data.task) || []).slice(0)
+    const list = ((data.task?.id ? [data.task] : data.task) || []).slice(0)
     list.unshift({
       id: task.id,
       name: task.name,

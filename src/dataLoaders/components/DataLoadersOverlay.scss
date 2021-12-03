@@ -93,7 +93,7 @@ $line-protocol--content-height: 206px;
 }
 
 .line-protocol--spinner {
-  height: $line-protocol--content-height + $ix-marg-b + $form-sm-height;
+  height: $line-protocol--content-height + $ix-marg-f + $form-sm-height;
   border: $ix-border solid $cf-grey-15;
   border-radius: $ix-radius;
   display: flex;

@@ -24,7 +24,7 @@ import {EditResourceAccordion} from 'src/authorizations/components/redesigned/Ed
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Types
-import {Authorization} from 'src/types'
+import {Authorization, ResourceType} from 'src/types'
 
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
@@ -74,14 +74,20 @@ const EditTokenOverlay: FC<Props> = props => {
     for (let i = 0; i < permissions.length; i++) {
       const name = permissions[i].resource.name
       if (!name) {
-        if (permissions[i].resource.type === 'telegrafs') {
+        if (
+          permissions[i].resource.type === ResourceType.Telegrafs &&
+          permissions[i].resource.id
+        ) {
           try {
             const telegraf = await props.getTelegraf(permissions[i].resource.id)
             newPerms[i].resource.name = telegraf
           } catch (e) {
             newPerms[i].resource.name = 'Resource deleted'
           }
-        } else if (permissions[i].resource.type === 'buckets') {
+        } else if (
+          permissions[i].resource.type === ResourceType.Buckets &&
+          permissions[i].resource.id
+        ) {
           try {
             const bucket = await props.getBucketSchema(
               permissions[i].resource.id

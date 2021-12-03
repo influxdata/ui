@@ -15,6 +15,7 @@ import {
   InputToggleType,
 } from '@influxdata/clockface'
 import {PermissionType} from 'src/types/tokens'
+import {ResourceType} from 'src/types'
 
 interface Props {
   resourceName: string
@@ -28,7 +29,7 @@ export const IndividualAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title, disabled} = props
   let sortedPermissions
 
-  if (resourceName === 'buckets') {
+  if (resourceName === ResourceType.Buckets) {
     // re-order buckets: user buckets first followed by system buckets
     const systemBuckets = []
     const userBuckets = []

@@ -57,9 +57,11 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
+
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
+        disabled={!this.isTokenActive}
         testID={`token-card ${auth.description}`}
         direction={FlexDirection.Row}
         justifyContent={JustifyContent.SpaceBetween}
@@ -130,6 +132,11 @@ class TokensRow extends PureComponent<Props> {
         />
       </FlexBox>
     )
+  }
+
+  private get isTokenActive(): boolean {
+    const {auth} = this.props
+    return auth.status === 'active'
   }
 
   private handleDelete = () => {

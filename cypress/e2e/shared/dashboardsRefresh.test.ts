@@ -282,6 +282,7 @@ describe('Dashboard refresh', () => {
         }
       })
       cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot')
         cy.getByTestID('cell-context--toggle')
           .last()
           .click()
@@ -342,7 +343,7 @@ describe('Dashboard refresh', () => {
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "beans")`
 
-      cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query2}`)
+      cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query1}`)
 
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title')
@@ -373,6 +374,7 @@ describe('Dashboard refresh', () => {
         }
       })
       cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot')
         cy.getByTestID('cell-context--toggle')
           .last()
           .click()
@@ -387,6 +389,7 @@ describe('Dashboard refresh', () => {
 
       cy.wait('@secondCellQuery')
       cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot')
         cy.getByTestID('cell-context--toggle')
           .last()
           .click()
@@ -443,6 +446,9 @@ describe('Dashboard refresh', () => {
           .type('blah{enter}', {force: true})
         cy.getByTestID('save-cell--button').click()
       })
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot')
+      })
 
       cy.getByTestID('button').click()
       cy.getByTestID('switch-to-script-editor').should('be.visible')
@@ -467,6 +473,7 @@ describe('Dashboard refresh', () => {
         }
       })
       cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot')
         cy.getByTestID('cell-context--toggle')
           .last()
           .click()
@@ -521,6 +528,9 @@ describe('Dashboard refresh', () => {
           .clear()
           .type('blah{enter}', {force: true})
         cy.getByTestID('save-cell--button').click()
+      })
+      cy.getByTestID('cell blah').within(() => {
+        cy.getByTestID('giraffe-inner-plot')
       })
 
       cy.getByTestID('button').click()

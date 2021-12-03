@@ -143,11 +143,11 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   let intervalError = ''
   let offsetError = ''
 
-  if (!data.interval) {
+  if (data?.interval === '') {
     intervalError = 'Required'
   } else if (
     data.interval !==
-      data.interval.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('') &&
+      data.interval?.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('') &&
     !validCron(data.interval)
   ) {
     intervalError = 'Invalid Time'

@@ -68,6 +68,19 @@ export const loginViaDexUI = (username: string, password: string) => {
   cy.get('.theme-btn--success').click()
 }
 
+Cypress.Commands.add(
+  'monacoType',
+  {prevSubject: true},
+  (subject, text: string) => {
+    return cy.wrap(subject).within(() => {
+      cy.get('.monaco-editor .view-line:last')
+        .click({force: true})
+        .focused()
+        .type(text, {force: true, delay: 10})
+    })
+  }
+)
+
 // login via the purple OSS screen by typing in username/password
 // this is only used if you're using monitor-ci + DEV_MODE_CLOUD=0
 export const loginViaOSS = (username: string, password: string) => {
@@ -986,12 +999,7 @@ export const createTaskFromEmpty = (
     .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('.monaco-editor .view-line:last')
-        .click({force: true})
-        .focused()
-        .type(flux(bucket), {force: true})
-    })
+    cy.getByTestID('flux-editor').monacoType(flux(bucket))
   })
 
   cy.getByInputName('name').type(name)

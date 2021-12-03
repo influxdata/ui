@@ -10,8 +10,6 @@ import {
   STRINGS_TRIM,
 } from '../../../src/shared/constants/fluxFunctions'
 
-const TYPE_DELAY = 0
-
 function getTimeMachineText() {
   return cy
     .wrap({
@@ -27,28 +25,23 @@ function getTimeMachineText() {
 }
 
 describe('DataExplorer', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.createMapVariable(id)
-          cy.fixture('routes').then(({orgs, explorer}) => {
-            cy.visit(`${orgs}/${id}${explorer}`)
-            cy.getByTestID('tree-nav')
-          })
-        })
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) => {
+      cy.createMapVariable(id)
+      cy.fixture('routes').then(({orgs, explorer}) => {
+        cy.visit(`${orgs}/${id}${explorer}`)
+        cy.getByTestID('tree-nav')
       })
-    )
-  )
+    })
+  })
 
   describe('data-explorer state', () => {
     it('should persist and display last submitted script editor script ', () => {
       const fluxCode = 'from(bucket: "_monitoring")'
       cy.getByTestID('switch-to-script-editor').click()
-      cy.get('.flux-editor').within(() => {
-        cy.get('.view-lines').should('be.visible')
-        cy.get('.view-lines').type(fluxCode)
-      })
+      cy.getByTestID('flux-editor').monacoType(fluxCode)
       cy.contains('Submit').click()
       cy.getByTestID('nav-item-tasks').click()
       cy.getByTestID('nav-item-data-explorer').click()
@@ -58,10 +51,7 @@ describe('DataExplorer', () => {
     it('can navigate to data explorer from buckets list and override state', () => {
       const fluxCode = 'from(bucket: "_monitoring")'
       cy.getByTestID('switch-to-script-editor').click()
-      cy.get('.flux-editor').within(() => {
-        cy.get('.view-lines').should('be.visible')
-        cy.get('.view-lines').type(fluxCode)
-      })
+      cy.getByTestID('flux-editor').monacoType(fluxCode)
       cy.contains('Submit').click()
       cy.get('.cf-tree-nav--toggle').click()
       cy.getByTestID('nav-item-load-data').click()
@@ -448,37 +438,21 @@ describe('DataExplorer', () => {
       cy.getByTestID('time-machine--bottom').then(() => {
         cy.getByTestID('flux-editor', {timeout: 30000})
           .should('be.visible')
+          .monacoType('foo |> bar')
           .within(() => {
-            cy.get('textarea').type('foo |> bar', {force: true})
-
             cy.get('.squiggly-error').should('be.visible')
-
-            cy.get('textarea').type('{selectall} {backspace}', {force: true})
-
-            cy.get('textarea').type('from(bucket: )', {force: true})
-
             // error signature from lsp
             // TODO(ariel): need to resolve this test. The issue for it is here:
             // https://github.com/influxdata/ui/issues/481
             // cy.get('.signature').should('be.visible')
           })
+          .monacoType(`{selectall}{del}from(bucket: )`)
       })
 
       cy.getByTestID('time-machine-submit-button').should('not.be.disabled')
 
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('.react-monaco-editor-container')
-          .should('be.visible')
-          .click()
-          .focused()
-          .type('yo', {force: true, delay: TYPE_DELAY})
-      })
-
-      cy.get('.react-monaco-editor-container')
-        .should('be.visible')
-        .click()
-        .focused()
-        .type('{selectall} {backspace}', {force: true, delay: TYPE_DELAY})
+      cy.getByTestID('flux-editor').monacoType('yo')
+      cy.getByTestID('flux-editor').monacoType('{selectall}{del}')
     })
 
     it('imports the appropriate packages to build a query', () => {
@@ -555,14 +529,9 @@ describe('DataExplorer', () => {
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor').should('be.visible')
-        cy.getByTestID('flux-editor').click()
-        cy.getByTestID('flux-editor')
-          .focused()
-          .type(
-            `from(bucket: "defbuck"{rightarrow}
+          .monacoType(`from(bucket: "defbuck"{rightarrow}
   |> range(start: -10s{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement == "no exist"{rightarrow}`
-          )
+  |> filter(fn: (r{rightarrow} => r._measurement == "no exist"{rightarrow}`)
         cy.getByTestID('time-machine-submit-button').click()
       })
 
@@ -572,17 +541,10 @@ describe('DataExplorer', () => {
     it('can save query as task even when it has a variable', () => {
       const taskName = 'tax'
       // begin flux
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('.react-monaco-editor-container').should('be.visible')
-        cy.get('.react-monaco-editor-container').click()
-        cy.get('.react-monaco-editor-container')
-          .focused()
-          .type(
-            `from(bucket: "defbuck"{rightarrow}
+      cy.getByTestID('flux-editor').should('be.visible')
+        .monacoType(`from(bucket: "defbuck"{rightarrow}
   |> range(start: -15m, stop: now({rightarrow}{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement ==`
-          )
-      })
+  |> filter(fn: (r{rightarrow} => r._measurement ==`)
 
       cy.getByTestID('toolbar-tab').click()
       // checks to see if the default variables exist

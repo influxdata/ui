@@ -9,50 +9,49 @@ describe('tokens', () => {
   let authData: {description: string; status: boolean; id: string}[]
 
   beforeEach(() => {
-    cy.flush().then(() => {
-      // this is bad
-      // use a cypress alias instead
-      // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Avoiding-the-use-of-this
-      // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Aliases
-      authData = []
+    // this is bad
+    // use a cypress alias instead
+    // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Avoiding-the-use-of-this
+    // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Aliases
+    authData = []
 
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          // check out array.reduce for the nested calls here
-          cy.request('api/v2/authorizations').then(resp => {
-            expect(resp.body).to.exist
-            authData.push({
-              description: resp.body.authorizations[0].description,
-              status: resp.body.authorizations[0].status === 'active',
-              id: resp.body.authorizations[0].id,
-            })
+    cy.flush()
 
-            cy.fixture('tokens.json').then(({tokens}) => {
-              tokens.forEach(token => {
-                token.permissions.forEach(p => (p.resource.orgID = id))
-                cy.createToken(
-                  id,
-                  token.description,
-                  token.status,
-                  token.permissions
-                ).then(resp => {
-                  expect(resp.body).to.exist
-                  authData.push({
-                    description: resp.body.description,
-                    status: resp.body.status === 'active',
-                    id: resp.body.id,
-                  })
-                })
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) => {
+      // check out array.reduce for the nested calls here
+      cy.request('api/v2/authorizations').then(resp => {
+        expect(resp.body).to.exist
+        authData.push({
+          description: resp.body.authorizations[0].description,
+          status: resp.body.authorizations[0].status === 'active',
+          id: resp.body.authorizations[0].id,
+        })
+
+        cy.fixture('tokens.json').then(({tokens}) => {
+          tokens.forEach(token => {
+            token.permissions.forEach(p => (p.resource.orgID = id))
+            cy.createToken(
+              id,
+              token.description,
+              token.status,
+              token.permissions
+            ).then(resp => {
+              expect(resp.body).to.exist
+              authData.push({
+                description: resp.body.description,
+                status: resp.body.status === 'active',
+                id: resp.body.id,
               })
             })
-
-            cy.fixture('routes').then(({orgs}) => {
-              cy.visit(`${orgs}/${id}/load-data/tokens`)
-              cy.getByTestID('tree-nav')
-            })
-            cy.get('[data-testid="resource-list"]', {timeout: PAGE_LOAD_SLA})
           })
         })
+
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/load-data/tokens`)
+          cy.getByTestID('tree-nav')
+        })
+        cy.get('[data-testid="resource-list"]', {timeout: PAGE_LOAD_SLA})
       })
     })
   })

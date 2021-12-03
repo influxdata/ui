@@ -9,20 +9,18 @@ import {Organization} from '../../../src/types'
 
 describe('Tasks', () => {
   beforeEach(() => {
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get<Organization>('@org').then(({id: orgID}: Organization) =>
-          cy
-            .createToken(orgID, 'test token', 'active', [
-              {action: 'write', resource: {type: 'views', orgID}},
-              {action: 'write', resource: {type: 'documents', orgID}},
-              {action: 'write', resource: {type: 'tasks', orgID}},
-            ])
-            .then(({body}) => {
-              cy.wrap(body.token).as('token')
-            })
-        )
-      })
+    cy.flush()
+    cy.signin()
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) =>
+      cy
+        .createToken(orgID, 'test token', 'active', [
+          {action: 'write', resource: {type: 'views', orgID}},
+          {action: 'write', resource: {type: 'documents', orgID}},
+          {action: 'write', resource: {type: 'tasks', orgID}},
+        ])
+        .then(({body}) => {
+          cy.wrap(body.token).as('token')
+        })
     )
 
     cy.fixture('routes').then(({orgs}) => {
@@ -109,16 +107,13 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
 
     cy.focused()
 
-    cy.getByTestID('flux-editor').type(
-      'option task = \n' +
-        '{\n' +
-        'name: "Option Test", \n' +
-        'every: 24h, \n' +
-        'offset: 20m\n' +
-        '}\n' +
-        'from(bucket: "defbuck")\n' +
-        '\t|> range(start: -2m)'
-    )
+    cy.getByTestID('flux-editor').monacoType(`option task = {
+  name: "Option Test",
+  every: 24h,
+  offset: 20m
+}
+from(bucket: "defbuck")
+  |> range(start: -2m)`)
 
     cy.getByTestID('task-form-name')
       .click()
@@ -627,7 +622,7 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
       // making it seem randomly jumping to elements
       cy.focused()
 
-      cy.getByTestID('flux-editor').type(task.query)
+      cy.getByTestID('flux-editor').monacoType(task.query)
       cy.getByTestIDAndSetInputValue('task-form-name', task.name)
       cy.getByTestIDAndSetInputValue('task-form-schedule-input', task.every)
       cy.getByTestIDAndSetInputValue('task-form-offset-input', task.offset)
@@ -703,12 +698,7 @@ const createTask = (
     .first()
     .click()
 
-  cy.getByTestID('flux-editor').within(() => {
-    cy.get('textarea.inputarea')
-      .click({force: true})
-      .focused()
-      .type(task, {force: true})
-  })
+  cy.getByTestID('flux-editor').monacoType(task)
 
   cy.getByTestIDAndSetInputValue('task-form-name', name)
   cy.getByTestIDAndSetInputValue('task-form-offset-input', offset)

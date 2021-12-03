@@ -71,6 +71,12 @@ class DashboardsIndexContents extends Component<Props>
     
   }
 
+  public renderDashboardCards(filteredDashboards) { 
+    // similar to tasksList pagination line 184-186
+    // use start and end index to loop over filteredDash and push 
+    return filteredDashboards
+  }
+
   public render() {
     const {
       searchTerm,
@@ -109,7 +115,8 @@ class DashboardsIndexContents extends Component<Props>
             >
                 {filteredDashboards => (
                     <DashboardCardsPaginated 
-                    dashboards={filteredDashboards}
+                    dashboards={this.renderDashboardCards(filteredDashboards)}
+          
                     onFilterChange={onFilterChange}
                     sortDirection={sortDirection}
                     sortType={sortType}

@@ -5,7 +5,7 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {isEmpty} from 'lodash'
 
 // Components
-import {Sort, ComponentSize, EmptyState, Grid, Columns} from '@influxdata/clockface'
+import {Sort, ComponentSize, EmptyState, BannerPanel, FlexBox, FlexDirection, AlignItems, Gradients, IconFont, InfluxColors} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/components/TokenList'
 import FilterList from 'src/shared/components/FilterList'
@@ -54,10 +54,11 @@ class TokensTab extends PureComponent<Props, State> {
       sortType: SortTypes.String,
     }
   }
-  
+
   public render() {
     const {searchTerm, sortKey, sortDirection, sortType} = this.state
     const {tokens} = this.props
+
     const leftHeaderItems = (
       <>
         <SearchWidget
@@ -81,44 +82,43 @@ class TokensTab extends PureComponent<Props, State> {
 
     return (
       <>
+      <FlexBox
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.Center}
+        margin={ComponentSize.Large}
+        // className={}
+      >
+        <BannerPanel
+          size={ComponentSize.ExtraSmall}
+          gradient={Gradients.PolarExpress}
+          icon={IconFont.Bell}
+          hideMobileIcon={true}
+          textColor={InfluxColors.Yeti}
+        >
+          <TokensRedesignBanner />
+        </BannerPanel>
         <TabbedPageHeader
           childrenLeft={leftHeaderItems}
           childrenRight={rightHeaderItems}
-        />
-        <Grid>
-          <Grid.Row>
-            <Grid.Column
-              widthXS={Columns.Twelve}
-              widthSM={Columns.Eight}
-              widthMD={Columns.Ten}
-            >
+          />
         <FilterAuthorizations
           list={tokens}
           searchTerm={searchTerm}
           searchKeys={this.searchKeys}
-        >
+          >
           {filteredAuths => (
             <TokenList
-              auths={filteredAuths}
-              emptyState={this.emptyState}
-              searchTerm={searchTerm}
-              sortKey={sortKey}
-              sortDirection={sortDirection}
-              sortType={sortType}
-              onClickColumn={this.handleClickColumn}
+            auths={filteredAuths}
+            emptyState={this.emptyState}
+            searchTerm={searchTerm}
+            sortKey={sortKey}
+            sortDirection={sortDirection}
+            sortType={sortType}
+            onClickColumn={this.handleClickColumn}
             />
-          )}
+            )}
         </FilterAuthorizations>
-        </Grid.Column>
-            <Grid.Column
-              widthXS={Columns.Twelve}
-              widthSM={Columns.Four}
-              widthMD={Columns.Two}
-            >
-              <TokensRedesignBanner />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+            </FlexBox>
       </>
     )
   }

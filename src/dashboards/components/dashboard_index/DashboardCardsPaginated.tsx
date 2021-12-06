@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
-import memoizeOne from 'memoize-one'
+// import memoizeOne from 'memoize-one'
 
 // Components
 import DashboardCard from 'src/dashboards/components/dashboard_index/DashboardCard'
@@ -43,9 +43,9 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
   private _isMounted = true
   private _spinner
 
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
+  // private memGetSortedResources = memoizeOne<typeof getSortedResources>(
+  //   getSortedResources
+  // )
 
   state = {
     pages: 1,
@@ -118,19 +118,19 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
       sortType,
       onFilterChange,
     } = this.props
-    const sortedDashboards = this.memGetSortedResources(
-      dashboards,
-      sortKey,
-      sortDirection,
-      sortType
-    )
-      console.log('working?' , sortedDashboards)
+    // const sortedDashboards = this.memGetSortedResources(
+    //   dashboards,
+    //   sortKey,
+    //   sortDirection,
+    //   sortType
+    // )
+      // console.log('working?' , sortedDashboards)
     const {windowSize, pages, pinnedItems} = this.state
 
     return (
       <div>
         <div className="dashboards-card-grid">
-          {sortedDashboards
+          {dashboards
             // .filter(d => d.status === RemoteDataState.Done)
             // .slice(0, pages * windowSize)
             .map(({id, name, description, labels, meta}) => (

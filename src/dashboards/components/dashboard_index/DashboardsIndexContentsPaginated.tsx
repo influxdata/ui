@@ -2,10 +2,11 @@
 import React, {Component, createRef, RefObject} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
+import memoizeOne from 'memoize-one'
 
 // Components
 import Table from 'src/dashboards/components/dashboard_index/Table'
-import FilterList from 'src/shared/components/FilterList'
+// import FilterList from 'src/shared/components/FilterList'
 import DashboardsTableEmpty from 'src/dashboards/components/dashboard_index/DashboardsTableEmpty'
 import DashboardCardsPaginated from 'src/dashboards/components/dashboard_index/DashboardCardsPaginated'
 
@@ -20,8 +21,8 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 // Types
 import {Dashboard, AppState, ResourceType, Pageable, RemoteDataState} from 'src/types'
 import {Sort} from '@influxdata/clockface'
-import {getAll} from 'src/resources/selectors'
-import {SortTypes} from 'src/shared/utils/sort'
+// import {getAll} from 'src/resources/selectors'
+import {SortTypes, getSortedResources} from 'src/shared/utils/sort'
 import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 // Utils
@@ -37,12 +38,13 @@ interface OwnProps {
   sortKey: DashboardSortKey
   pageHeight: number
   pageWidth: number
+  dashboards: any
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
 
-const FilterDashboards = FilterList<Dashboard>()
+// const FilterDashboards = FilterList<Dashboard>()
 
 @ErrorHandling
 class DashboardsIndexContents extends Component<Props> 
@@ -52,13 +54,16 @@ class DashboardsIndexContents extends Component<Props>
     public currentPage: number = 1
     public rowsPerPage: number = 12
     public totalPages: number
-
+    
+    private memGetSortedResources = memoizeOne<typeof getSortedResources>(
+      getSortedResources
+    )
     constructor(props) {
         super(props)
         this.paginationRef = createRef<HTMLDivElement>()
 
     }
-
+    
 
   public componentDidMount() {
     const {dashboards} = this.props
@@ -91,6 +96,7 @@ class DashboardsIndexContents extends Component<Props>
   }
 
   public render() {
+   
     const {
       searchTerm,
       status,
@@ -103,12 +109,21 @@ class DashboardsIndexContents extends Component<Props>
       onCreateDashboard,
     } = this.props
 
-    console.log('dash lenght ', dashboards.length)
+    // console.log('dash lenght ', dashboards.length)
+    console.log({'sort type': sortType, 'sort key': sortKey})
 
+    const sortedDashboards = this.memGetSortedResources(
+      dashboards,
+      sortKey,
+      sortDirection,
+      sortType
+    )
+    console.log('sorted dash ', sortedDashboards)
     this.totalPages = Math.max(
         Math.ceil(dashboards.length / this.rowsPerPage),
         1
       )
+    
       if (status === RemoteDataState.Done && !dashboards.length) {
         return (
           <DashboardsTableEmpty
@@ -122,31 +137,16 @@ class DashboardsIndexContents extends Component<Props>
   
     return (
         <>
-            <FilterDashboards
-            list={dashboards}
-            searchTerm={searchTerm}
-            searchKeys={['name', 'labels[].name']}
-            sortByKey="name"
-            >
-                {filteredDashboards => (
-                    <DashboardCardsPaginated 
-                    dashboards={this.renderDashboardCards(filteredDashboards)}
-                    onFilterChange={onFilterChange}
-                    sortDirection={sortDirection}
-                    sortType={sortType}
-                    sortKey={sortKey}
-                    />
-                //   <Table
-                //     searchTerm={searchTerm}
-                //     filterComponent={filterComponent}
-                //     dashboards={filteredDashboards}
-                //     onFilterChange={onFilterChange}
-                //     sortDirection={sortDirection}
-                //     sortType={sortType}
-                //     sortKey={sortKey}
-                //   />
-                )}
-            </FilterDashboards>
+            
+
+            <DashboardCardsPaginated 
+            dashboards={this.renderDashboardCards(sortedDashboards)}
+            onFilterChange={onFilterChange}
+            sortDirection={sortDirection}
+            sortType={sortType}
+            sortKey={sortKey}
+            />
+                  
             <PaginationNav.PaginationNav
             ref={this.paginationRef}
             style={{width: this.props.pageWidth}}
@@ -183,7 +183,7 @@ class DashboardsIndexContents extends Component<Props>
 
 const mstp = (state: AppState) => {
   return {
-    dashboards: getAll<Dashboard>(state, ResourceType.Dashboards),
+    // dashboards: getAll<Dashboard>(state, ResourceType.Dashboards),
     status: state.resources.dashboards.status
   }
 }

@@ -6,11 +6,7 @@ const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) =>
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs, buckets}) => {
           cy.visit(`${orgs}/${id}${buckets}`)
-          return cy
-            .setFeatureFlags({measurementSchema: enableMeasurementSchema})
-            .then(() => {
-              return cy.getByTestID('tree-nav')
-            })
+          return cy.getByTestID('tree-nav')
         })
       )
     )

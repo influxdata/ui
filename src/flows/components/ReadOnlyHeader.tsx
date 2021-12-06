@@ -1,10 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {
-  Page,
-  Grid,
-  Columns,
-} from '@influxdata/clockface'
+import {Page, Grid, Columns} from '@influxdata/clockface'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'

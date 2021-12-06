@@ -21,7 +21,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import GetInfluxButton from 'src/shared/components/GetInfluxButton'
 
-
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found">
     <FunnelPage enableGraphic={true} className="page-not-found-funnel">

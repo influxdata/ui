@@ -1,12 +1,17 @@
 import {Organization} from '../../../src/types'
 import * as moment from 'moment'
 
+let orgID = ''
+let name = ''
+
 describe('Dashboard refresh', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() =>
         cy.fixture('routes').then(({orgs}) => {
-          cy.get('@org').then(({id: orgID}: Organization) => {
+          cy.get('@org').then(({id, name: orgName}: Organization) => {
+            orgID = id
+            name = orgName
             cy.visit(`${orgs}/${orgID}/dashboards-list`)
             cy.getByTestID('tree-nav')
           })
@@ -23,28 +28,26 @@ describe('Dashboard refresh', () => {
     }
 
     beforeEach(() => {
-      cy.get('@org').then(({id: orgID, name}: Organization) => {
-        cy.createDashboard(orgID).then(({body}) => {
-          cy.fixture('routes').then(({orgs}) => {
-            routeToReturnTo = `${orgs}/${orgID}/dashboards/${body.id}`
-            cy.visit(routeToReturnTo)
-            cy.getByTestID('tree-nav')
-          })
+      cy.createDashboard(orgID).then(({body}) => {
+        cy.fixture('routes').then(({orgs}) => {
+          routeToReturnTo = `${orgs}/${orgID}/dashboards/${body.id}`
+          cy.visit(routeToReturnTo)
+          cy.getByTestID('tree-nav')
         })
-        // TODO: remove when feature flag is removed
-        cy.setFeatureFlags({newAutoRefresh: true})
-        cy.createBucket(orgID, name, 'schmucket')
-        const now = Date.now()
-        cy.writeData(
-          [
-            `test,container_name=cool dopeness=12 ${now - 1000}000000`,
-            `test,container_name=beans dopeness=18 ${now - 1200}000000`,
-            `test,container_name=cool dopeness=14 ${now - 1400}000000`,
-            `test,container_name=beans dopeness=10 ${now - 1600}000000`,
-          ],
-          'schmucket'
-        )
       })
+      // TODO: remove when feature flag is removed
+      cy.setFeatureFlags({newAutoRefresh: true})
+      cy.createBucket(orgID, name, 'schmucket')
+      const now = Date.now()
+      cy.writeData(
+        [
+          `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+          `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+          `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+          `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+        ],
+        'schmucket'
+      )
       cy.getByTestID('button').click()
       cy.getByTestID('switch-to-script-editor').should('be.visible')
       cy.getByTestID('switch-to-script-editor').click()
@@ -68,7 +71,7 @@ describe('Dashboard refresh', () => {
     })
 
     it('can enable the auto refresh process, then manually stop the process via the dropdown', done => {
-      cy.intercept('POST', '/api/v2/query?*', req => {
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
         req.alias = 'refreshQuery'
       })
       cy.getByTestID('enable-auto-refresh-button').click()
@@ -103,7 +106,7 @@ describe('Dashboard refresh', () => {
       })
       cy.getByTestID('refresh-form-activate-button').click()
 
-      cy.intercept('POST', '/api/v2/query?*', req => {
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
         req.alias = 'refreshQuery'
       })
 
@@ -130,7 +133,7 @@ describe('Dashboard refresh', () => {
           .type(`${jumpAheadTime('00:00:10')}`, {force: true})
         cy.getByTestID('daterange--apply-btn').click()
       })
-      cy.intercept('POST', '/api/v2/query?*', req => {
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
         req.alias = 'refreshQuery'
       })
 
@@ -179,7 +182,7 @@ describe('Dashboard refresh', () => {
           .type(`${jumpAheadTime('00:00:08')}`, {force: true})
         cy.getByTestID('daterange--apply-btn').click()
       })
-      cy.intercept('POST', '/api/v2/query?*', req => {
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
         req.alias = 'refreshQuery'
       })
 
@@ -285,14 +288,14 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('save-cell--button').click()
       })
 
-      cy.intercept('POST', '/api/v2/query?*', req => {
-        if (req.body.query === query2) {
-          req.alias = 'secondCellQuery'
-        }
-      })
-      cy.intercept('POST', '/api/v2/query?*', req => {
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
         if (req.body.query === query1) {
           req.alias = 'firstCellQuery'
+        }
+      })
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
+        if (req.body.query === query2) {
+          req.alias = 'secondCellQuery'
         }
       })
       cy.getByTestID('cell blah').within(() => {
@@ -387,7 +390,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('save-cell--button').click()
       })
 
-      cy.intercept('POST', '/api/v2/query?*', req => {
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
         if (req.body.query === query1) {
           // This will only fire when the first cell is unpaused AND it then gets refreshed as part of auto refresh loop, indicating successful operation
           done()
@@ -491,7 +494,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('giraffe-inner-plot')
       })
 
-      cy.intercept('POST', '/api/v2/query?*', req => {
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
         if (req.body.query === query1) {
           req.alias = 'refreshCellQuery'
         }
@@ -579,7 +582,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('giraffe-inner-plot')
       })
 
-      cy.intercept('POST', '/api/v2/query?*', req => {
+      cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
         if (req.body.query === query1) {
           req.alias = 'refreshCellQuery'
         }

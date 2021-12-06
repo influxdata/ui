@@ -1,8 +1,12 @@
+import {Organization} from '../../../src/types'
+
+let orgID = ''
 describe('Home Page Tests', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
-        cy.get('@org').then(() => {
+        cy.get('@org').then(({id}: Organization) => {
+          orgID = id
           cy.getByTestID('home-page--header').should('be.visible')
           cy.setFeatureFlags({
             alertsActivity: true,
@@ -39,7 +43,7 @@ describe('Home Page Tests', () => {
 ,,0,2021-08-05T20:54:31.642101603Z,Alpha,07f205512a38f000,Alpha,ok
 ,,0,2021-08-05T20:54:00Z,Check: Beta is: ok,07f2055f7a12d000,Beta,ok`
 
-    cy.intercept('POST', '/api/v2/query?*', req => {
+    cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
       if (req.body.query.includes('r._measurement == "statuses"')) {
         req.alias = 'statusesQuery'
 

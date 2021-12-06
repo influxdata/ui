@@ -8,12 +8,14 @@ const PAGE_LOAD_SLA = 10000
 const measurement = 'my_meas'
 const field = 'my_field'
 const stringField = 'string_field'
+let orgID = ''
 describe('Checks', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
         // visit the alerting index
-        cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+        cy.get<Organization>('@org').then(({id}: Organization) => {
+          orgID = id
           cy.writeData([
             `${measurement} ${field}=0,${stringField}="string1"`,
             `${measurement} ${field}=1,${stringField}="string2"`,
@@ -33,14 +35,14 @@ describe('Checks', () => {
   )
 
   it('can validate a threshold check', () => {
-    cy.intercept('POST', '/api/v2/query?*', req => {
-      if (req.body.query.includes('_measurement')) {
-        req.alias = 'measurementQuery'
-      }
-    })
-    cy.intercept('POST', '/api/v2/query?*', req => {
+    cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
       if (req.body.query.includes('_field')) {
         req.alias = 'fieldQuery'
+      }
+    })
+    cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
+      if (req.body.query.includes('_measurement')) {
+        req.alias = 'measurementQuery'
       }
     })
 
@@ -119,12 +121,12 @@ describe('Checks', () => {
   })
 
   it('can create and filter checks', () => {
-    cy.intercept('POST', '/api/v2/query?*', req => {
+    cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
       if (req.body.query.includes('_measurement')) {
         req.alias = 'measurementQuery'
       }
     })
-    cy.intercept('POST', '/api/v2/query?*', req => {
+    cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
       if (req.body.query.includes('distinct(column: "_field")')) {
         req.alias = 'fieldQuery'
       }
@@ -159,14 +161,14 @@ describe('Checks', () => {
         cy.getByTestID('overlay').should('not.exist')
 
         // create a second check
-        cy.intercept('POST', '/api/v2/query?*', req => {
-          if (req.body.query.includes('_measurement')) {
-            req.alias = 'measurementQueryBeta'
-          }
-        })
-        cy.intercept('POST', '/api/v2/query?*', req => {
+        cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
           if (req.body.query.includes('distinct(column: "_field")')) {
             req.alias = 'fieldQueryBeta'
+          }
+        })
+        cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
+          if (req.body.query.includes('_measurement')) {
+            req.alias = 'measurementQueryBeta'
           }
         })
         // bust the /query cache
@@ -215,12 +217,12 @@ describe('Checks', () => {
   })
 
   it('can validate a deadman check', () => {
-    cy.intercept('POST', '/api/v2/query?*', req => {
+    cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
       if (req.body.query.includes('_measurement')) {
         req.alias = 'measurementQuery'
       }
     })
-    cy.intercept('POST', '/api/v2/query?*', req => {
+    cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
       if (req.body.query.includes('distinct(column: "_field")')) {
         req.alias = 'fieldQuery'
       }
@@ -305,7 +307,7 @@ describe('Checks', () => {
   })
 
   it('deadman checks should render a table for non-numeric fields', () => {
-    cy.intercept('POST', '/api/v2/query?*', req => {
+    cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
       if (req.body.query.includes('_measurement')) {
         req.alias = 'measurementQuery'
       }
@@ -313,7 +315,7 @@ describe('Checks', () => {
 
     cy.get<string>('@defaultBucketListSelector').then(
       (defaultBucketListSelector: string) => {
-        cy.intercept('POST', '/api/v2/query?*').as('query')
+        cy.intercept('POST', `/api/v2/query?orgID=${orgID}`).as('query')
 
         // create deadman check
         cy.getByTestID('create-check').click()
@@ -1078,13 +1080,11 @@ describe('Checks', () => {
 
     it('shows and filters general status history', () => {
       // direct route to statuses page - no data-testids in clockface nav submenu issue #699
-      cy.get<Organization>('@org').then(({id}: Organization) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${id}/alert-history?type=statuses"`)
-          cy.url().should('include', `${orgs}/${id}/alert-history`)
-          // Make sure page is loaded
-          cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
-        })
+      cy.fixture('routes').then(({orgs}) => {
+        cy.visit(`${orgs}/${orgID}/alert-history?type=statuses"`)
+        cy.url().should('include', `${orgs}/${orgID}/alert-history`)
+        // Make sure page is loaded
+        cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
       })
 
       cy.getByTestID('alert-history-statuses--radio').click()

@@ -3,11 +3,6 @@ import React, {FC, useContext} from 'react'
 import {
   Page,
   Grid,
-  Button,
-  IconFont,
-  ComponentColor,
-  ButtonShape,
-  ComponentSize,
   Columns,
 } from '@influxdata/clockface'
 

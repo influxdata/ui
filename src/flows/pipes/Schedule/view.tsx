@@ -314,7 +314,9 @@ const Schedule: FC<PipeProp> = ({Context}) => {
       text={
         isFlagEnabled('removeExportModal') ? 'Export Task' : 'Export as Task'
       }
-      disabled={!hasChanges || !!intervalError || !!offsetError || !data?.interval}
+      disabled={
+        !hasChanges || !!intervalError || !!offsetError || !data?.interval
+      }
       type="task"
     />
   )

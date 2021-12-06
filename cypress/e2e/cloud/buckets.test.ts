@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) =>
+const setupData = (cy: Cypress.Chainable) =>
   cy.flush().then(() =>
     cy.signin().then(() =>
       cy.get('@org').then(({id}: Organization) =>
@@ -93,7 +93,7 @@ const testSchemaFiles = (
 
 describe('Explicit Buckets', () => {
   beforeEach(() => {
-    setupData(cy, true)
+    setupData(cy)
 
     // remove the downloaded files
     cy.exec('rm cypress/downloads/*', {

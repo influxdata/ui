@@ -1,14 +1,24 @@
 import {
   AlignItems,
   AppWrapper,
+  BannerPanel,
   ComponentSize,
   FlexBox,
   FunnelPage,
+  Gradients,
+  Grid,
   Icon,
   IconFont,
   InfluxColors,
   JustifyContent,
+  Page,
   Panel,
+  Columns as Cols,
+  ComponentColor,
+  ButtonShape,
+  Button,
+  FlexDirection,
+  FlexBoxChild,
 } from '@influxdata/clockface'
 import React, {FC} from 'react'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
@@ -17,10 +27,32 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found">
     <FunnelPage
-      logo={<LogoWithCubo />}
+      // logo={<LogoWithCubo />}
       enableGraphic={true}
       className="page-not-found-funnel"
-    ></FunnelPage>
+    >
+      <div className="page-not-found-header">
+        <div className="page-not-found-header-item">
+          <LogoWithCubo />
+        </div>
+        <div className="page-not-found-header-item">
+          <Button
+            icon={IconFont.CuboNav}
+            color={ComponentColor.Success}
+            size={ComponentSize.Medium}
+            shape={ButtonShape.Default}
+            onClick={() => {}}
+            text="Get InfluxDB"
+            testID="sign-up--button"
+          />
+        </div>
+      </div>
+      <div className="page-not-found-content">
+        <div className="page-not-found-content-highlight">
+          404: Page Not Found
+        </div>
+      </div>
+    </FunnelPage>
     <FunnelPage.Footer className="page-not-found-footer">
       <Panel
         className="page-not-found-panel"

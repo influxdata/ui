@@ -1,4 +1,34 @@
 .page-not-found {
+  > .page-not-found-funnel {
+    display: flex;
+    flex-direction: column;
+
+    .page-not-found-header {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      align-items: center;
+      justify-content: space-between;
+
+      > .page-not-found-header-item {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .page-not-found-content {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      > .page-not-found-content-highlight {
+        color: #FFF;
+        font-weight: bolder;
+        font-size-adjust: .8;
+      }
+    }
+  }
   > .page-not-found-footer {
     height: 65%;
     background-image: url('~assets/images/NotFoundBottom.png');

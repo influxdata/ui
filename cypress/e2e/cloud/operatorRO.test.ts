@@ -15,7 +15,6 @@ describe('Operator Page', () => {
               uiUnificationFlag: true,
             }).then(() => {
               cy.getByTestID('nav-item--operator').click()
-              // cy.pause()
               cy.getByTestID('operator-page--title').contains('2.0 Resources')
             })
           })
@@ -54,9 +53,18 @@ describe('Operator Page', () => {
       expect(loc.pathname).to.eq('/operator/accounts')
     })
 
-    // todo: after getting local testing with local quartz-mock working:
-    //  check that the name ''operator-678' is on the page
-    // (that is the name)
+    // testing that the "account name" column has been added, and that the first value is 'operator1'
+    cy.getByTestID('table')
+      .find('tr')
+      .first()
+      .find('th')
+      .first()
+      .should('contain.text', 'Account Name')
+
+    // make sure there is a name column with data:
+    cy.getByTestID('name')
+      .first()
+      .should('contain.text', 'operator1')
 
     cy.getByTestID('account-id')
       .first()
@@ -71,6 +79,7 @@ describe('Operator Page', () => {
     // make sure the buttons don't exist on the page
     cy.getByTestID('account-delete--button').should('not.exist')
     cy.getByTestID('remove-user--button').should('not.exist')
+    cy.getByTestID('page-title').should('contain.text', 'operator1 (1)')
 
     // go back to account listing
     cy.getByTestID('account-view--back-button').click()

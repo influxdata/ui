@@ -50,7 +50,7 @@ class DashboardsIndexContents extends Component<Props>
 
     private paginationRef: RefObject<HTMLDivElement>
     public currentPage: number = 1
-    public rowsPerPage: number = 10
+    public rowsPerPage: number = 12
     public totalPages: number
 
     constructor(props) {
@@ -58,6 +58,7 @@ class DashboardsIndexContents extends Component<Props>
         this.paginationRef = createRef<HTMLDivElement>()
 
     }
+
 
   public componentDidMount() {
     const {dashboards} = this.props
@@ -68,6 +69,10 @@ class DashboardsIndexContents extends Component<Props>
   }
 
   public paginate = page => {
+    this.currentPage = page
+    // const url = new URL(location.href)
+    this.forceUpdate()
+    console.log('current page ', this.currentPage)
     
   }
 
@@ -79,9 +84,7 @@ class DashboardsIndexContents extends Component<Props>
     for (let i = startIndex; i < endIndex; i++) {
       const dashboard = filteredDashboards[i]
       if(dashboard) {
-        rows.push(
-          dashboard
-        )
+        rows.push(dashboard)
       }
     }
     return rows
@@ -99,6 +102,8 @@ class DashboardsIndexContents extends Component<Props>
       sortKey,
       onCreateDashboard,
     } = this.props
+
+    console.log('dash lenght ', dashboards.length)
 
     this.totalPages = Math.max(
         Math.ceil(dashboards.length / this.rowsPerPage),

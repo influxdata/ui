@@ -25,17 +25,17 @@ const CancellationPanel: FC = () => {
   const org = useSelector(getOrg)
 
   const handleCancelService = () => {
+    const payload = {
+      org: org.id,
+      tier: quartzMe?.accountType,
+      email: quartzMe?.email,
+    }
+    event('CancelServiceInitiation Event', payload)
+
     if (
       isFlagEnabled('trackCancellations') &&
       isFlagEnabled('rudderstackReporting')
     ) {
-      const payload = {
-        org: org.id,
-        tier: quartzMe?.accountType,
-        email: quartzMe?.email,
-      }
-
-      event('Cancel Service Initiated', payload)
       track('CancelServiceInitiation', payload)
     }
 

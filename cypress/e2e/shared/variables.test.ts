@@ -2,16 +2,14 @@ import {Organization} from '../../../src/types'
 
 describe('Variables', () => {
   beforeEach(() => {
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.createQueryVariable(id)
-          cy.visit(`orgs/${id}/settings/variables`)
-          cy.getByTestID('tree-nav')
-        })
-        cy.location('pathname').should('match', /\/variables$/)
-      })
-    )
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) => {
+      cy.createQueryVariable(id)
+      cy.visit(`orgs/${id}/settings/variables`)
+      cy.getByTestID('tree-nav')
+    })
+    cy.location('pathname').should('match', /\/variables$/)
   })
 
   it('can CRUD a CSV, upload, map, and query variable and search for variables based on names', () => {
@@ -68,14 +66,9 @@ describe('Variables', () => {
       cy.getByTestID('variable-type-dropdown--button').click()
       cy.getByTestID('variable-type-dropdown-query').click()
 
-      cy.getByTestID('flux-editor').within(() => {
-        cy.get('.react-monaco-editor-container')
-          .click()
-          .focused()
-          .type('filter(fn: (r) => r._field == "cpu")', {
-            force: true,
-          })
-      })
+      cy.getByTestID('flux-editor').monacoType(
+        'filter(fn: (r) => r._field == "cpu")'
+      )
       cy.getByTestID('variable-update-submit--button')
         .contains('Submit')
         .click()
@@ -194,14 +187,9 @@ describe('Variables', () => {
     cy.getByTestID('variable-type-dropdown--button').click()
     cy.getByTestID('variable-type-dropdown-query').click()
 
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('.react-monaco-editor-container')
-        .click()
-        .focused()
-        .type('filter(fn: (r) => r._field == "cpu")', {
-          force: true,
-        })
-    })
+    cy.getByTestID('flux-editor').monacoType(
+      'filter(fn: (r) => r._field == "cpu")'
+    )
 
     cy.get('form')
       .contains('Create')
@@ -289,14 +277,9 @@ describe('Variables', () => {
     cy.getByTestID('variable-type-dropdown--button').click()
     cy.getByTestID('variable-type-dropdown-query').click()
 
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('.react-monaco-editor-container')
-        .click()
-        .focused()
-        .type('filter(fn: (r) => r._field == "cpu")', {
-          force: true,
-        })
-    })
+    cy.getByTestID('flux-editor').monacoType(
+      'filter(fn: (r) => r._field == "cpu")'
+    )
 
     cy.getByInputName('name')
       .clear()
@@ -407,14 +390,9 @@ describe('Variables', () => {
     cy.getByTestID('variable-type-dropdown--button').click()
     cy.getByTestID('variable-type-dropdown-query').click()
 
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('.react-monaco-editor-container')
-        .click()
-        .focused()
-        .type('filter(fn: (r) => r._field == "cpu")', {
-          force: true,
-        })
-    })
+    cy.getByTestID('flux-editor').monacoType(
+      'filter(fn: (r) => r._field == "cpu")'
+    )
     cy.getByInputName('name').type(secondVariableName)
 
     cy.get('form')

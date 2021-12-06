@@ -11,13 +11,7 @@ const openCopyAs = () => {
 
 const addFluxQueryInNotebook = (query: string) => {
   cy.getByTestID('add-flow-btn--rawFluxEditor').click()
-  cy.getByTestID('flux-editor').within(() => {
-    cy.get('.monaco-editor .view-line:last')
-      .click({force: true})
-      .focused()
-      .clear()
-      .type(query)
-  })
+  cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query}`)
 }
 
 const createEmptyNotebook = () => {
@@ -143,19 +137,18 @@ describe('Flows', () => {
 
   describe('Flows Copy To Clipboard', () => {
     beforeEach(() => {
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.fixture('routes').then(({orgs}) => {
-            cy.request('api/v2/authorizations').then(({body}) => {
-              cy.wrap(body.authorizations).as('tokens')
-            })
-            cy.visit(`${orgs}/${id}`)
-            cy.getByTestID('tree-nav')
-
-            cy.clickNavBarItem('nav-item-flows')
+      cy.signin()
+      cy.get('@org').then(({id}: Organization) => {
+        cy.fixture('routes').then(({orgs}) => {
+          cy.request('api/v2/authorizations').then(({body}) => {
+            cy.wrap(body.authorizations).as('tokens')
           })
+          cy.visit(`${orgs}/${id}`)
         })
       })
+      cy.getByTestID('tree-nav')
+
+      cy.clickNavBarItem('nav-item-flows')
     })
 
     it('Export to Clipboard as Code', () => {

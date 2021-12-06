@@ -10,29 +10,27 @@ const field = 'my_field'
 const stringField = 'string_field'
 let orgID = ''
 describe('Checks', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        // visit the alerting index
-        cy.get<Organization>('@org').then(({id}: Organization) => {
-          orgID = id
-          cy.writeData([
-            `${measurement} ${field}=0,${stringField}="string1"`,
-            `${measurement} ${field}=1,${stringField}="string2"`,
-          ])
-          cy.fixture('routes').then(({orgs, alerting}) => {
-            cy.visit(`${orgs}/${orgID}${alerting}`)
-            cy.getByTestID('tree-nav')
-            cy.get('[data-testid="resource-list--body"]', {
-              timeout: PAGE_LOAD_SLA,
-            })
-            // User can only see all panels at once on large screens
-            cy.getByTestID('alerting-tab--checks').click({force: true})
-          })
-        })
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.writeData([
+      `${measurement} ${field}=0,${stringField}="string1"`,
+      `${measurement} ${field}=1,${stringField}="string2"`,
+    ])
+    // visit the alerting index
+    cy.get<Organization>('@org').then((org: Organization) => {
+      orgID = org.id ?? ''
+      cy.fixture('routes').then(({orgs, alerting}) => {
+        cy.visit(`${orgs}/${orgID}${alerting}`)
       })
-    )
-  )
+    })
+    cy.getByTestID('tree-nav')
+    cy.get('[data-testid="resource-list--body"]', {
+      timeout: PAGE_LOAD_SLA,
+    })
+    // User can only see all panels at once on large screens
+    cy.getByTestID('alerting-tab--checks').click({force: true})
+  })
 
   it('can validate a threshold check', () => {
     cy.intercept('POST', `/api/v2/query?orgID=${orgID}`, req => {
@@ -649,22 +647,19 @@ describe('Checks', () => {
 
   describe('External links', () => {
     it('can assert the link on the checks page points to "Create checks" article in documentation ', () => {
-      cy.getByTestID('Checks--question-mark')
-        .trigger('mouseover')
-        .then(() => {
-          cy.getByTestID('Checks--question-mark--tooltip--contents')
-            .should('be.visible')
-            .within(() => {
-              cy.get('a').then($a => {
-                const url = $a.prop('href')
-                cy.request(url)
-                  .its('body')
-                  .should(
-                    'match',
-                    /https:\/\/docs\.influxdata\.com\/influxdb\/.+?\/monitor-alert\/checks\/create\//i
-                  )
-              })
-            })
+      cy.getByTestID('Checks--question-mark').trigger('mouseover')
+      cy.getByTestID('Checks--question-mark--tooltip--contents')
+        .should('be.visible')
+        .within(() => {
+          cy.get('a').then($a => {
+            const url = $a.prop('href')
+            cy.request(url)
+              .its('body')
+              .should(
+                'match',
+                /https:\/\/docs\.influxdata\.com\/influxdb\/.+?\/monitor-alert\/checks\/create\//i
+              )
+          })
         })
     })
   })
@@ -796,105 +791,95 @@ describe('Checks', () => {
     let bucketName: string = ''
 
     const initCheck = (check: GenCheck): Cypress.Chainable<any> => {
-      return cy
-        .writeLPDataFromFile({
-          filename: 'data/wumpus01.lp',
-          offset: '20m',
-          stagger: '1m',
+      cy.writeLPDataFromFile({
+        filename: 'data/wumpus01.lp',
+        offset: '20m',
+        stagger: '1m',
+      })
+      cy.get<Organization>('@org').then((org: Organization) => {
+        cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+          bucketName = bucket.name
+          createCheck(check, org, bucket, 'check')
         })
-        .then(() => {
-          return cy.get<Organization>('@org').then((org: Organization) => {
-            return cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-              bucketName = bucket.name
-              createCheck(check, org, bucket, 'check')
-            })
-          })
-        })
+      })
     }
 
     it('can clone and delete a deadman check', () => {
       cy.intercept('POST', '/api/v2/checks*').as('createCheck')
       const cloneName = `${deadmanCheck.name} (clone 1)`
       // 1. create deadman over API
-      initCheck(deadmanCheck).then(() => {
-        cy.reload()
-        cy.getByTestID('tree-nav')
-        cy.getByTestID('copy-resource-id')
-          .invoke('text')
-          .wrap('checkIDOrig')
-        cy.getByTestID('copy-task-id')
-          .invoke('text')
-          .wrap('taskIDOrig')
-        // 2. Clone
-        cy.getByTestID('context-menu-task').click()
-        cy.getByTestID('context-clone-task').click()
-        cy.wait('@createCheck')
-        // 3. Asserts
-        cy.get<GenCheck>('@check').then(check => {
-          cy.getByTestID(`check-card ${cloneName}`).within(() => {
-            cy.getByTestID('copy-resource-id').should('not.have.text', check.id)
-            cy.getByTestID('copy-task-id').should('not.have.text', check.taskID)
-          })
-        })
-
-        cy.getByTestID('check-card--name').then(nameDivs => {
-          const names = nameDivs.toArray().map((r: any) => r.innerText)
-          expect(names.length).to.equal(2)
-          expect(names[1]).to.equal(cloneName)
-        })
-        // 3.1 Assert configure same
-        cy.contains(cloneName).click()
-        cy.getByTestID('duration-input--for').should(
-          'have.value',
-          deadmanCheck.timeSince
-        )
-        cy.getByTestID('check-levels--dropdown--button').should(
-          'contain',
-          deadmanCheck.level
-        )
-        cy.getByTestID('duration-input--stop').should(
-          'have.value',
-          deadmanCheck.staleTime
-        )
-        cy.getByTestID('status-message-textarea').should(
-          'contain',
-          deadmanCheck.statusMessageTemplate
-        )
-        cy.getByTestID('offset-options').should(
-          'have.value',
-          deadmanCheck.offset
-        )
-        cy.getByTestID('schedule-check').should(
-          'have.value',
-          deadmanCheck.every
-        )
-        // 3.2 Assert query-builder
-        cy.getByTestID('select-group--option').click()
-        cy.getByTestID(`selector-list ${bucketName}`).should(
-          'have.class',
-          'cf-list-item__active'
-        )
-        cy.getByTestID('selector-list wumpus').should(
-          'have.class',
-          'cf-list-item__active'
-        )
-        cy.getByTestID('selector-list dur').should(
-          'have.class',
-          'cf-list-item__active'
-        )
-        cy.getByTestID('selector-list bar').should('be.visible')
-        cy.getByTestID('giraffe-layer-line').should('be.visible')
-        cy.getByTestID('square-button')
-          .eq(0)
-          .click()
+      initCheck(deadmanCheck)
+      cy.reload()
+      cy.getByTestID('tree-nav')
+      cy.getByTestID('copy-resource-id')
+        .invoke('text')
+        .wrap('checkIDOrig')
+      cy.getByTestID('copy-task-id')
+        .invoke('text')
+        .wrap('taskIDOrig')
+      // 2. Clone
+      cy.getByTestID('context-menu-task').click()
+      cy.getByTestID('context-clone-task').click()
+      cy.wait('@createCheck')
+      // 3. Asserts
+      cy.get<GenCheck>('@check').then(check => {
         cy.getByTestID(`check-card ${cloneName}`).within(() => {
-          cy.getByTestID('context-delete-task--button').click()
+          cy.getByTestID('copy-resource-id').should('not.have.text', check.id)
+          cy.getByTestID('copy-task-id').should('not.have.text', check.taskID)
         })
-        cy.getByTestID('context-delete-task--confirm-button').click()
-        cy.getByTestID(`check-card ${cloneName}`).should('not.exist')
-        cy.getByTestID(`check-card ${deadmanCheck.name}`).should('be.visible')
-        cy.getByTestID('check-card--name').should('have.length', 1)
       })
+
+      cy.getByTestID('check-card--name').then(nameDivs => {
+        const names = nameDivs.toArray().map((r: any) => r.innerText)
+        expect(names.length).to.equal(2)
+        expect(names[1]).to.equal(cloneName)
+      })
+      // 3.1 Assert configure same
+      cy.contains(cloneName).click()
+      cy.getByTestID('duration-input--for').should(
+        'have.value',
+        deadmanCheck.timeSince
+      )
+      cy.getByTestID('check-levels--dropdown--button').should(
+        'contain',
+        deadmanCheck.level
+      )
+      cy.getByTestID('duration-input--stop').should(
+        'have.value',
+        deadmanCheck.staleTime
+      )
+      cy.getByTestID('status-message-textarea').should(
+        'contain',
+        deadmanCheck.statusMessageTemplate
+      )
+      cy.getByTestID('offset-options').should('have.value', deadmanCheck.offset)
+      cy.getByTestID('schedule-check').should('have.value', deadmanCheck.every)
+      // 3.2 Assert query-builder
+      cy.getByTestID('select-group--option').click()
+      cy.getByTestID(`selector-list ${bucketName}`).should(
+        'have.class',
+        'cf-list-item__active'
+      )
+      cy.getByTestID('selector-list wumpus').should(
+        'have.class',
+        'cf-list-item__active'
+      )
+      cy.getByTestID('selector-list dur').should(
+        'have.class',
+        'cf-list-item__active'
+      )
+      cy.getByTestID('selector-list bar').should('be.visible')
+      cy.getByTestID('giraffe-layer-line').should('be.visible')
+      cy.getByTestID('square-button')
+        .eq(0)
+        .click()
+      cy.getByTestID(`check-card ${cloneName}`).within(() => {
+        cy.getByTestID('context-delete-task--button').click()
+      })
+      cy.getByTestID('context-delete-task--confirm-button').click()
+      cy.getByTestID(`check-card ${cloneName}`).should('not.exist')
+      cy.getByTestID(`check-card ${deadmanCheck.name}`).should('be.visible')
+      cy.getByTestID('check-card--name').should('have.length', 1)
     })
   })
 

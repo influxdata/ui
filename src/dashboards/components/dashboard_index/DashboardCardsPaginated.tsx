@@ -128,11 +128,11 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     const {windowSize, pages, pinnedItems} = this.state
 
     return (
-      <div style={{height: '100%'}}>
+      <div>
         <div className="dashboards-card-grid">
           {sortedDashboards
-            .filter(d => d.status === RemoteDataState.Done)
-            .slice(0, pages * windowSize)
+            // .filter(d => d.status === RemoteDataState.Done)
+            // .slice(0, pages * windowSize)
             .map(({id, name, description, labels, meta}) => (
               <DashboardCard
                 key={id}

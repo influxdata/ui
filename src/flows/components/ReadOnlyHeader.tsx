@@ -21,13 +21,10 @@ import TimeRangeLabel from 'src/flows/components/header/TimeRangeLabel'
 import {DEFAULT_PROJECT_NAME} from 'src/flows'
 
 import './ReadOnlyHeader.scss'
+import GetInfluxButton from 'src/shared/components/GetInfluxButton'
 
 const ReadOnlyHeader: FC = () => {
   const {flow} = useContext(FlowContext)
-
-  const handleSignUpClick = () => {
-    window.open('https://cloud2.influxdata.com/signup', '_blank').focus()
-  }
 
   const handleLogoClick = () => {
     window.open('https://influxdata.com', '_blank').focus()
@@ -45,15 +42,7 @@ const ReadOnlyHeader: FC = () => {
               widthMD={Columns.Ten}
               className="flows-header-column-signup"
             >
-              <Button
-                icon={IconFont.CuboNav}
-                color={ComponentColor.Success}
-                size={ComponentSize.Medium}
-                shape={ButtonShape.Default}
-                onClick={handleSignUpClick}
-                text="Get InfluxDB"
-                testID="sign-up--button"
-              />
+              <GetInfluxButton />
             </Grid.Column>
           </Grid.Row>
           <Page.Title title={flow.name || DEFAULT_PROJECT_NAME} />

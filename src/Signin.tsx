@@ -30,7 +30,7 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {getMe} from './client'
+import {getMe} from 'src/client'
 
 interface State {
   loading: RemoteDataState

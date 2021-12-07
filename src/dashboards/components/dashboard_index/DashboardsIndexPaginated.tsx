@@ -9,7 +9,7 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Components
 import DashboardsIndexContents from 'src/dashboards/components/dashboard_index/DashboardsIndexContentsPaginated'
-import {ComponentSize, Page, Sort} from '@influxdata/clockface'
+import {ComponentSize, Page, Sort, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import FilterList from 'src/shared/components/FilterList'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
@@ -29,6 +29,7 @@ import {createDashboard as createDashboardAction, getDashboards} from 'src/dashb
 import {setDashboardSort, setSearchTerm} from 'src/dashboards/actions/creators'
 import {getLabels} from 'src/labels/actions/thunks'
 import {getAll} from 'src/resources/selectors'
+import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 
 // Types
 import {AppState, ResourceType, Dashboard} from 'src/types'
@@ -66,11 +67,14 @@ class DashboardIndex extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {createDashboard, sortOptions, limitStatus, dashboards} = this.props
+    const {createDashboard, sortOptions, limitStatus, dashboards, remoteDataState} = this.props
     const {searchTerm} = this.state
 
     return (
-      <>
+      <SpinnerContainer
+        loading={remoteDataState}
+        spinnerComponent={< TechnoSpinner/>}
+      >
         <Page
           testID="empty-dashboards-list"
           titleTag={pageTitleSuffixer(['Dashboards'])}
@@ -160,7 +164,7 @@ class DashboardIndex extends PureComponent<Props, State> {
             component={DashboardImportOverlay}
           />
         </Switch>
-      </>
+      </SpinnerContainer>
     )
   }
 
@@ -199,12 +203,16 @@ class DashboardIndex extends PureComponent<Props, State> {
 
 const mstp = (state: AppState) => {
   const {sortOptions, searchTerm} = state.resources.dashboards
-    // console.log("its the one");
+  const remoteDataState = getResourcesStatus(state, [
+    ResourceType.Dashboards,
+    ResourceType.Labels,
+  ])
     return {
     dashboards: getAll<Dashboard>(state, ResourceType.Dashboards),
     limitStatus: extractDashboardLimits(state),
     sortOptions,
     searchTerm,
+    remoteDataState,
   }
 }
 

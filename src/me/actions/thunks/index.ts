@@ -4,7 +4,6 @@ import {identify} from 'rudder-sdk-js'
 import {Dispatch} from 'react'
 
 // API
-import {client} from 'src/utils/api'
 import {getMe as apiGetApiMe} from 'src/client'
 import {getMe as apiGetQuartzMe} from 'src/client/unityRoutes'
 // Utils

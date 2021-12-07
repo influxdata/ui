@@ -103,7 +103,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe('routing directly to the edit overlay', () => {
+  describe.skip('routing directly to the edit overlay', () => {
     it('reroutes to buckets view if bucket does not exist', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, buckets}) => {
@@ -131,7 +131,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe('add data', function() {
+  describe.skip('add data', function() {
     it('can write data to buckets', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         // writing a well-formed line is accepted
@@ -307,7 +307,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe('upload csv', function() {
+  describe.skip('upload csv', function() {
     it('can write a properly annotated csv', () => {
       // Navigate to csv uploader
       cy.getByTestID('add-data--button').click()

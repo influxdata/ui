@@ -23,7 +23,6 @@ interface Props extends VisualizationProps {
 }
 
 const SimpleTable: FC<Props> = ({properties, result}) => {
-
   if (isFlagEnabled('useGiraffeGraphs')) {
     const parsed = parseFromFluxResults(result)
     const fluxResponse = parsed.tableData.join('\n')

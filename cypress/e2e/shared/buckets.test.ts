@@ -178,7 +178,7 @@ describe('Buckets', () => {
       })
     })
 
-    it('upload a file and write data', () => {
+    it.skip('upload a file and write data', () => {
       cy.getByTestID('add-data--button').click()
       cy.getByTestID('bucket-add-line-protocol').click()
       cy.getByTestID('Upload File').click()
@@ -251,7 +251,7 @@ describe('Buckets', () => {
       cy.getByTestID('selector-list mymeasurement').should('exist')
     })
 
-    it.skip('configure telegraf agent', () => {
+    it('configure telegraf agent', () => {
       // click "add data" and choose Configure Telegraf Agent
       cy.getByTestID('add-data--button').click()
       cy.get('.bucket-add-data--option')

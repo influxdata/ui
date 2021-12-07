@@ -130,6 +130,7 @@ class DashboardIndex extends PureComponent<Props, State> {
                         pageWidth={width}
                         pageHeight={height}
                         dashboards={filteredDashboards}
+                        totalDashboards={dashboards.length}
                         searchTerm={searchTerm}
                         onFilterChange={this.handleFilterDashboards}
                         sortDirection={sortOptions.sortDirection}

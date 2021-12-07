@@ -39,6 +39,7 @@ interface OwnProps {
   pageHeight: number
   pageWidth: number
   dashboards: any
+  totalDashboards: number
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -71,23 +72,41 @@ class DashboardsIndexContents extends Component<Props>
     const dashboardIDs = dashboards.map(d => d.id)
     this.props.retainRangesDashTimeV1(dashboardIDs)
     this.props.checkDashboardLimits()
+
+    const params = new URLSearchParams(window.location.search)
+    const urlPageNumber = parseInt(params.get('page'), 10)
+    console.log('url page num ', urlPageNumber, this.totalPages)
+
+    const passedInPageIsValid =
+      urlPageNumber && urlPageNumber <= this.totalPages && urlPageNumber > 0
+    if (passedInPageIsValid) {
+      this.currentPage = urlPageNumber
+      console.log('its valid')
+    }
   }
 
   public paginate = page => {
     this.currentPage = page
-    // const url = new URL(location.href)
+    const url = new URL(location.href)
+    url.searchParams.set('page', page)
+    history.replaceState(null, '', url.toString())
     this.forceUpdate()
-    console.log('current page ', this.currentPage)
     
   }
 
-  public renderDashboardCards(filteredDashboards) { 
+  public renderDashboardCards() { 
+    const sortedDashboards = this.memGetSortedResources(
+      this.props.dashboards,
+      this.props.sortKey,
+      this.props.sortDirection,
+      this.props.sortType
+    )
    
     const startIndex = this.rowsPerPage * Math.max(this.currentPage - 1, 0)
-    const endIndex = Math.min(startIndex + this.rowsPerPage, this.props.dashboards.length)
+    const endIndex = Math.min(startIndex + this.rowsPerPage, this.props.totalDashboards)
     const rows = []
     for (let i = startIndex; i < endIndex; i++) {
-      const dashboard = filteredDashboards[i]
+      const dashboard = sortedDashboards[i]
       if(dashboard) {
         rows.push(dashboard)
       }
@@ -109,20 +128,13 @@ class DashboardsIndexContents extends Component<Props>
       onCreateDashboard,
     } = this.props
 
-    // console.log('dash lenght ', dashboards.length)
-    console.log({'sort type': sortType, 'sort key': sortKey})
-
-    const sortedDashboards = this.memGetSortedResources(
-      dashboards,
-      sortKey,
-      sortDirection,
-      sortType
-    )
-    console.log('sorted dash ', sortedDashboards)
     this.totalPages = Math.max(
-        Math.ceil(dashboards.length / this.rowsPerPage),
-        1
-      )
+      Math.ceil(dashboards.length / this.rowsPerPage),
+      1
+    )
+    console.log('total pages ', this.totalPages)
+    // console.log('sorted dash ', sortedDashboards)
+    
     
       if (status === RemoteDataState.Done && !dashboards.length) {
         return (
@@ -140,7 +152,7 @@ class DashboardsIndexContents extends Component<Props>
             
 
             <DashboardCardsPaginated 
-            dashboards={this.renderDashboardCards(sortedDashboards)}
+            dashboards={this.renderDashboardCards()}
             onFilterChange={onFilterChange}
             sortDirection={sortDirection}
             sortType={sortType}

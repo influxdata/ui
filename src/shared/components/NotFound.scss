@@ -4,7 +4,7 @@
     flex-direction: column;
 
     .page-not-found-content {
-      margin: 10px;
+      padding: 10px;
       color: #fff;
 
       > .page-not-found-content-highlight {
@@ -22,15 +22,14 @@
     > .page-not-found-panel {
       top: -20%;
       width: 660px;
-      height: 250px;
       margin: 0 auto;
       z-index: 10;
 
       > .page-not-found-panel-content {
-        margin: 30px 65px;
+        padding: 40px 50px;
 
         > .page-not-found-panel-section {
-          margin: 10px 0;
+          margin: 10px;
 
           > .page-not-found-panel-title {
             font-weight: bold;
@@ -40,7 +39,7 @@
 
         .page-not-found-community-links {
           display: flex;
-          margin: 10px 45px 0 0;
+          margin: 10px;
           align-items: center;
 
           > a {

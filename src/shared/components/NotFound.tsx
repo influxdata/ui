@@ -3,6 +3,8 @@ import {
   AppWrapper,
   ComponentSize,
   FlexBox,
+  FlexBoxChild,
+  FlexDirection,
   FunnelPage,
   Icon,
   IconFont,
@@ -11,23 +13,49 @@ import {
   Panel,
 } from '@influxdata/clockface'
 import React, {FC} from 'react'
-import LogoWithCubo from 'src/checkout/LogoWithCubo'
+
+// Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Components
+import LogoWithCubo from 'src/checkout/LogoWithCubo'
+import GetInfluxButton from 'src/shared/components/GetInfluxButton'
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found">
-    <FunnelPage
-      logo={<LogoWithCubo />}
-      enableGraphic={true}
-      className="page-not-found-funnel"
-    ></FunnelPage>
+    <FunnelPage enableGraphic={true} className="page-not-found-funnel">
+      <FlexBox
+        direction={FlexDirection.Row}
+        margin={ComponentSize.Large}
+        stretchToFitWidth={true}
+        justifyContent={JustifyContent.SpaceBetween}
+      >
+        <LogoWithCubo />
+        <GetInfluxButton />
+      </FlexBox>
+      <FlexBox
+        className="page-not-found-content"
+        direction={FlexDirection.Column}
+        margin={ComponentSize.Large}
+        stretchToFitWidth={true}
+      >
+        <h2 className="page-not-found-content-highlight">
+          404: Page Not Found
+        </h2>
+        <div>Please refresh the page or check the URL and try again.</div>
+      </FlexBox>
+    </FunnelPage>
     <FunnelPage.Footer className="page-not-found-footer">
       <Panel
         className="page-not-found-panel"
         backgroundColor={InfluxColors.Grey15}
       >
-        <div className="page-not-found-panel-content">
-          <div className="page-not-found-panel-section">
+        <FlexBox
+          direction={FlexDirection.Column}
+          className="page-not-found-panel-content"
+          margin={ComponentSize.Small}
+        >
+          <FlexBoxChild className="page-not-found-panel-section">
             <div className="page-not-found-panel-title">Not a URL issue?</div>
             <div>
               <span>
@@ -43,8 +71,8 @@ const NotFoundNew: FC = () => (
                 </a>
               </span>
             </div>
-          </div>
-          <div className="page-not-found-panel-section">
+          </FlexBoxChild>
+          <FlexBoxChild className="page-not-found-panel-section">
             <div className="page-not-found-panel-title">
               Have more feedback?
             </div>
@@ -52,9 +80,9 @@ const NotFoundNew: FC = () => (
               We welcome and encourage your feedback and bug reports for
               InfluxDB. The following resources are available:
             </div>
-          </div>
-          <FlexBox>
-            <FlexBox className="page-not-found-community-links">
+          </FlexBoxChild>
+          <FlexBox alignItems={AlignItems.Stretch} stretchToFitWidth={true}>
+            <FlexBoxChild className="page-not-found-community-links">
               <Icon glyph={IconFont.Cubouniform}></Icon>
               {/* Add rel options to avoid "tabnapping" */}
               <a
@@ -64,9 +92,8 @@ const NotFoundNew: FC = () => (
               >
                 InfluxData Community
               </a>
-            </FlexBox>
-            <FlexBox className="page-not-found-community-links">
-              {/* TODO: Change with Slack Icon */}
+            </FlexBoxChild>
+            <FlexBoxChild className="page-not-found-community-links">
               <span className="slack-icon" />
               {/* Add rel options to avoid "tabnapping" */}
               <a
@@ -76,9 +103,9 @@ const NotFoundNew: FC = () => (
               >
                 InfluxDB Community Slack
               </a>
-            </FlexBox>
+            </FlexBoxChild>
           </FlexBox>
-        </div>
+        </FlexBox>
       </Panel>
       <FunnelPage.FooterSection>
         <FlexBox

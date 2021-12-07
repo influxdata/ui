@@ -131,7 +131,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe('add data', function() {
+  describe.skip('add data', function() {
     it('can write data to buckets', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         // writing a well-formed line is accepted
@@ -307,7 +307,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe.skip('upload csv', function() {
+  describe('upload csv', function() {
     it('can write a properly annotated csv', () => {
       // Navigate to csv uploader
       cy.getByTestID('add-data--button').click()

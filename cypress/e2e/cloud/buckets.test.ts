@@ -16,6 +16,7 @@ const testSchemaFiles = (
   cy: Cypress.Chainable,
   isCsv: boolean,
   origFileContents: string,
+  fixtureFileName: string,
   checkContents: (cy: Cypress.Chainable) => void
 ) => {
   cy.getByTestID('Create Bucket').click()
@@ -37,21 +38,7 @@ const testSchemaFiles = (
 
   cy.getByTestID('measurement-schema-add-file-button').click()
   cy.getByTestID('input-field').type('first schema file')
-
-  let schemaFile = 'valid.json'
-  let type = 'application/json'
-
-  if (isCsv) {
-    schemaFile = 'valid.csv'
-    type = 'text/csv'
-  }
-
-  const testFile = new File([origFileContents], schemaFile, {type})
-
-  const event = {dataTransfer: {files: [testFile]}, force: true}
-  cy.getByTestID('dndContainer')
-    .trigger('dragover', event)
-    .trigger('drop', event)
+  cy.getByTestID('drag-and-drop--input').attachFile(fixtureFileName)
 
   cy.getByTestID('bucket-form-submit').click()
 
@@ -207,22 +194,7 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('explicit-bucket-schema-choice-ID').click()
     cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('input-field').type('first schema file')
-
-    const schemaFile = 'valid.json'
-    const type = 'application/json'
-    const testFile = new File(
-      [
-        `[{"name":"time","type":"timestamp"},
-        {"name":"fsWrite","type":"field","dataType":"float"} ]`,
-      ],
-      schemaFile,
-      {type}
-    )
-
-    const event = {dataTransfer: {files: [testFile]}, force: true}
-    cy.getByTestID('dndContainer')
-      .trigger('dragover', event)
-      .trigger('drop', event)
+    cy.getByTestID('drag-and-drop--input').attachFile('validSchema1.json')
 
     cy.getByTestID('bucket-form-submit').click()
 
@@ -272,7 +244,13 @@ describe('Explicit Buckets', () => {
           expect(fileContent[1].dataType).to.be.equal('float')
         })
     }
-    testSchemaFiles(cy, false, origFileContents, checkContents)
+    testSchemaFiles(
+      cy,
+      false,
+      origFileContents,
+      'validSchema1.json',
+      checkContents
+    )
   })
 
   it('should be able to create an explicit bucket and add csv schema file during editing', function() {
@@ -289,7 +267,7 @@ fsRead,field,float`
           expect(fileContent).to.equal(origFileContents)
         })
     }
-    testSchemaFiles(cy, true, origFileContents, checkContents)
+    testSchemaFiles(cy, true, origFileContents, 'schema.csv', checkContents)
   })
 
   it('should be able to create an explicit bucket and update the existing schema file during editing', function() {
@@ -315,21 +293,7 @@ fsRead,field,float`
     cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('input-field').type(schemaName)
 
-    const schemaFile = 'valid.json'
-    const type = 'application/json'
-    const testFile = new File(
-      [
-        `[{"name":"time","type":"timestamp"},
-        {"name":"fsWrite","type":"field","dataType":"float"} ]`,
-      ],
-      schemaFile,
-      {type}
-    )
-
-    const event = {dataTransfer: {files: [testFile]}, force: true}
-    cy.getByTestID('dndContainer')
-      .trigger('dragover', event)
-      .trigger('drop', event)
+    cy.getByTestID('drag-and-drop--input').attachFile('validSchema1.json')
 
     cy.getByTestID('bucket-form-submit').click()
 
@@ -369,39 +333,11 @@ fsRead,field,float`
             expect(fileContent[1].dataType).to.be.equal('float')
           })
 
-        const schemaFile = 'updated_valid.json'
-        const type = 'application/json'
-        const validTestFile = new File(
-          [
-            `[{"name":"time","type":"timestamp"},
-        {"name":"fsWrite","type":"field","dataType":"float"}, 
-        {"name": "hello there", "type": "field" , "dataType": "string"}]`,
-          ],
-          schemaFile,
-          {type}
-        )
-
-        const invalidTestFile = new File(
-          [
-            `[{"name":"time","type":"timestamp"},
-        {"name":"fsWrite","type":"field","dataType":"float"}, 
-        {"name": "hello there"}]`,
-          ],
-          schemaFile,
-          {type}
-        )
-
         // cancel button should not be showing yet
         cy.getByTestID('dndContainer-cancel-update').should('not.exist')
 
         // use the invalid file first to test the error handling
-        const invalidFileEvent = {
-          dataTransfer: {files: [invalidTestFile]},
-          force: true,
-        }
-        cy.getByTestID('dndContainer')
-          .trigger('dragover', invalidFileEvent)
-          .trigger('drop', invalidFileEvent)
+        cy.getByTestID('drag-and-drop--input').attachFile('invalidSchema.json')
 
         // should show error
         cy.getByTestID('form--element-error').should('exist')
@@ -413,63 +349,61 @@ fsRead,field,float`
         cy.getByTestID('form--element-error').should('not.exist')
 
         // add the right one
-        const validFileEvent = {
-          dataTransfer: {files: [validTestFile]},
-          force: true,
-        }
-        cy.getByTestID('dndContainer')
-          .trigger('dragover', validFileEvent)
-          .trigger('drop', validFileEvent)
-      })
-    cy.getByTestID('bucket-form-submit').click()
+        cy.getByTestID('drag-and-drop--input').attachFile(
+          'updateValidSchema1.json'
+        )
 
-    // in settings:
-    // give it some time for the submit to happen/the bucket list to show up
-    // check the url to make sure it has navigated back to the main buckets list
-    cy.location('pathname', {timeout: 60000}).should(
-      'match',
-      /.*load-data\/buckets$/
-    )
+        cy.getByTestID('bucket-form-submit').click()
 
-    cy.getByTestID(`bucket-card explicit_bucket`)
-      .should('exist')
-      .within(() => {
-        cy.getByTestID('bucket-settings').click({force: true})
-      })
-    cy.getByTestID('accordion-header').click()
+        // in settings:
+        // give it some time for the submit to happen/the bucket list to show up
+        // check the url to make sure it has navigated back to the main buckets list
+        cy.location('pathname', {timeout: 60000}).should(
+          'match',
+          /.*load-data\/buckets$/
+        )
 
-    cy.getByTestID('measurement-schema-readOnly-panel-0')
-      .should('exist')
-      .within(() => {
-        cy.getByTestID('measurement-schema-name-0')
+        cy.getByTestID(`bucket-card explicit_bucket`)
           .should('exist')
-          .contains(schemaName)
+          .within(() => {
+            cy.getByTestID('bucket-settings').click({force: true})
+          })
+        cy.getByTestID('accordion-header').click()
+
+        cy.getByTestID('measurement-schema-readOnly-panel-0')
           .should('exist')
+          .within(() => {
+            cy.getByTestID('measurement-schema-name-0')
+              .should('exist')
+              .contains(schemaName)
+              .should('exist')
 
-        // remove the downloaded files
-        cy.exec('rm cypress/downloads/*', {
-          log: true,
-          failOnNonZeroExit: false,
-        })
+            // remove the downloaded files
+            cy.exec('rm cypress/downloads/*', {
+              log: true,
+              failOnNonZeroExit: false,
+            })
 
-        cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/${fileName}`)
-          .should('exist')
-          .then(fileContent => {
-            expect(fileContent[0].name).to.be.equal('time')
-            expect(fileContent[0].type).to.be.equal('timestamp')
+            cy.getByTestID('measurement-schema-download-button').click()
+            cy.readFile(`cypress/downloads/${fileName}`)
+              .should('exist')
+              .then(fileContent => {
+                expect(fileContent[0].name).to.be.equal('time')
+                expect(fileContent[0].type).to.be.equal('timestamp')
 
-            expect(fileContent[1].name).to.be.equal('fsWrite')
-            expect(fileContent[1].type).to.be.equal('field')
-            expect(fileContent[1].dataType).to.be.equal('float')
+                expect(fileContent[1].name).to.be.equal('fsWrite')
+                expect(fileContent[1].type).to.be.equal('field')
+                expect(fileContent[1].dataType).to.be.equal('float')
 
-            expect(fileContent[2].name).to.be.equal('hello there')
-            expect(fileContent[2].type).to.be.equal('field')
-            expect(fileContent[2].dataType).to.be.equal('string')
+                expect(fileContent[2].name).to.be.equal('hello there')
+                expect(fileContent[2].type).to.be.equal('field')
+                expect(fileContent[2].dataType).to.be.equal('string')
+              })
           })
       })
   })
 })
+
 describe('Buckets', () => {
   beforeEach(() => {
     setupData(cy)

@@ -286,17 +286,18 @@ fsRead,field,float`
       .within(() => {
         cy.getByTestID('bucket-settings').click({force: true})
       })
-    cy.getByTestID('accordion-header').click()
     const schemaName = 'one schema'
     const fileName = 'one_schema.json'
 
-    cy.getByTestID('measurement-schema-add-file-button').click()
-    cy.getByTestID('input-field').type(schemaName)
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('accordion-header').click()
+      cy.getByTestID('measurement-schema-add-file-button').click()
+      cy.getByTestID('input-field').type(schemaName)
 
-    cy.getByTestID('drag-and-drop--input').attachFile('validSchema1.json')
+      cy.getByTestID('drag-and-drop--input').attachFile('validSchema1.json')
 
-    cy.getByTestID('bucket-form-submit').click()
-
+      cy.getByTestID('bucket-form-submit').click()
+    })
     // in settings:
     // b/c editing has a different url, this *should* work
     // give it some time for the submit to happen/the bucket list to show up
@@ -311,96 +312,104 @@ fsRead,field,float`
       .within(() => {
         cy.getByTestID('bucket-settings').click({force: true})
       })
-    cy.getByTestID('accordion-header').click()
 
-    cy.getByTestID('measurement-schema-readOnly-panel-0')
-      .should('exist')
-      .within(() => {
-        cy.getByTestID('measurement-schema-name-0')
-          .should('exist')
-          .contains(schemaName)
-          .should('exist')
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('accordion-header').click()
 
-        cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/${fileName}`)
-          .should('exist')
-          .then(fileContent => {
-            expect(fileContent[0].name).to.be.equal('time')
-            expect(fileContent[0].type).to.be.equal('timestamp')
+      cy.getByTestID('measurement-schema-readOnly-panel-0')
+        .should('exist')
+        .within(() => {
+          cy.getByTestID('measurement-schema-name-0')
+            .should('exist')
+            .contains(schemaName)
+            .should('exist')
 
-            expect(fileContent[1].name).to.be.equal('fsWrite')
-            expect(fileContent[1].type).to.be.equal('field')
-            expect(fileContent[1].dataType).to.be.equal('float')
-          })
+          cy.getByTestID('measurement-schema-download-button').click()
+          cy.readFile(`cypress/downloads/${fileName}`)
+            .should('exist')
+            .then(fileContent => {
+              expect(fileContent[0].name).to.be.equal('time')
+              expect(fileContent[0].type).to.be.equal('timestamp')
 
-        // cancel button should not be showing yet
-        cy.getByTestID('dndContainer-cancel-update').should('not.exist')
-
-        // use the invalid file first to test the error handling
-        cy.getByTestID('drag-and-drop--input').attachFile('invalidSchema.json')
-
-        // should show error
-        cy.getByTestID('form--element-error').should('exist')
-
-        // cancel it
-        cy.getByTestID('dndContainer-cancel-update').click()
-
-        // error should be gone
-        cy.getByTestID('form--element-error').should('not.exist')
-
-        // add the right one
-        cy.getByTestID('drag-and-drop--input').attachFile(
-          'updateValidSchema1.json'
-        )
-
-        cy.getByTestID('bucket-form-submit').click()
-
-        // in settings:
-        // give it some time for the submit to happen/the bucket list to show up
-        // check the url to make sure it has navigated back to the main buckets list
-        cy.location('pathname', {timeout: 60000}).should(
-          'match',
-          /.*load-data\/buckets$/
-        )
-
-        cy.getByTestID(`bucket-card explicit_bucket`)
-          .should('exist')
-          .within(() => {
-            cy.getByTestID('bucket-settings').click({force: true})
-          })
-        cy.getByTestID('accordion-header').click()
-
-        cy.getByTestID('measurement-schema-readOnly-panel-0')
-          .should('exist')
-          .within(() => {
-            cy.getByTestID('measurement-schema-name-0')
-              .should('exist')
-              .contains(schemaName)
-              .should('exist')
-
-            // remove the downloaded files
-            cy.exec('rm cypress/downloads/*', {
-              log: true,
-              failOnNonZeroExit: false,
+              expect(fileContent[1].name).to.be.equal('fsWrite')
+              expect(fileContent[1].type).to.be.equal('field')
+              expect(fileContent[1].dataType).to.be.equal('float')
             })
 
-            cy.getByTestID('measurement-schema-download-button').click()
-            cy.readFile(`cypress/downloads/${fileName}`)
-              .should('exist')
-              .then(fileContent => {
-                expect(fileContent[0].name).to.be.equal('time')
-                expect(fileContent[0].type).to.be.equal('timestamp')
+          // cancel button should not be showing yet
+          cy.getByTestID('dndContainer-cancel-update').should('not.exist')
 
-                expect(fileContent[1].name).to.be.equal('fsWrite')
-                expect(fileContent[1].type).to.be.equal('field')
-                expect(fileContent[1].dataType).to.be.equal('float')
+          // use the invalid file first to test the error handling
+          cy.getByTestID('drag-and-drop--input').attachFile(
+            'invalidSchema.json'
+          )
 
-                expect(fileContent[2].name).to.be.equal('hello there')
-                expect(fileContent[2].type).to.be.equal('field')
-                expect(fileContent[2].dataType).to.be.equal('string')
-              })
-          })
+          // should show error
+          cy.getByTestID('form--element-error').should('exist')
+
+          // cancel it
+          cy.getByTestID('dndContainer-cancel-update').click()
+
+          // error should be gone
+          cy.getByTestID('form--element-error').should('not.exist')
+
+          // add the right one
+          cy.getByTestID('drag-and-drop--input').attachFile(
+            'updateValidSchema1.json'
+          )
+        })
+      //need to get out of the 'within' for the readonly panel to find the submit button:
+      cy.getByTestID('bucket-form-submit').click()
+    })
+
+    // in settings:
+    // give it some time for the submit to happen/the bucket list to show up
+    // check the url to make sure it has navigated back to the main buckets list
+    cy.location('pathname', {timeout: 60000}).should(
+      'match',
+      /.*load-data\/buckets$/
+    )
+
+    cy.getByTestID(`bucket-card explicit_bucket`)
+      .should('exist')
+      .within(() => {
+        cy.getByTestID('bucket-settings').click({force: true})
       })
+
+    cy.getByTestID('overlay--container').within(() => {
+      cy.getByTestID('accordion-header').click()
+
+      cy.getByTestID('measurement-schema-readOnly-panel-0')
+        .should('exist')
+        .within(() => {
+          cy.getByTestID('measurement-schema-name-0')
+            .should('exist')
+            .contains(schemaName)
+            .should('exist')
+
+          // remove the downloaded files
+          cy.exec('rm cypress/downloads/*', {
+            log: true,
+            failOnNonZeroExit: false,
+          })
+
+          cy.getByTestID('measurement-schema-download-button').click()
+          cy.readFile(`cypress/downloads/${fileName}`)
+            .should('exist')
+            .then(fileContent => {
+              expect(fileContent[0].name).to.be.equal('time')
+              expect(fileContent[0].type).to.be.equal('timestamp')
+
+              expect(fileContent[1].name).to.be.equal('fsWrite')
+              expect(fileContent[1].type).to.be.equal('field')
+              expect(fileContent[1].dataType).to.be.equal('float')
+
+              expect(fileContent[2].name).to.be.equal('hello there')
+              expect(fileContent[2].type).to.be.equal('field')
+              expect(fileContent[2].dataType).to.be.equal('string')
+            })
+        })
+    })
   })
 })
 

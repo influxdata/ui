@@ -58,7 +58,8 @@ describe('Load Data Sources', () => {
     cy.getByTestID('load-data-item diskio').should('exist')
   })
 
-  it('can write data to buckets', () => {
+  // TODO(ariel): address these skipped tests later https://github.com/influxdata/ui/issues/3394
+  it.skip('can write data to buckets', () => {
     // writing a well-formed line is accepted
     cy.getByTestID('load-data-item lp').click()
     cy.getByTestID('Enter Manually').click()
@@ -94,7 +95,7 @@ describe('Load Data Sources', () => {
     cy.getByTestID('line-protocol--status').contains('Success')
   })
 
-  it('upload a file and write data', () => {
+  it.skip('upload a file and write data', () => {
     cy.getByTestID('load-data-item lp').click()
     cy.getByTestID('Upload File').click()
 

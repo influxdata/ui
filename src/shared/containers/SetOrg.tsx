@@ -180,18 +180,18 @@ const SetOrg: FC = () => {
           <Route
             path={`${orgPath}/data-explorer`}
             component={DataExplorerPage}
-            />
+          />
           {/* Dashboards */}
           {true ? (
             <Route
-            path={`${orgPath}/dashboards-list`}
-            component={DashboardsIndexPaginated}
-          />
+              path={`${orgPath}/dashboards-list`}
+              component={DashboardsIndexPaginated}
+            />
           ) : (
             <Route
-            path={`${orgPath}/dashboards-list`}
-            component={DashboardsIndex}
-          />
+              path={`${orgPath}/dashboards-list`}
+              component={DashboardsIndex}
+            />
           )}
           {/* <Route
             path={`${orgPath}/dashboards-list`}

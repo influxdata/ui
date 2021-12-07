@@ -124,7 +124,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     //   sortDirection,
     //   sortType
     // )
-      // console.log('working?' , sortedDashboards)
+    // console.log('working?' , sortedDashboards)
     const {windowSize, pages, pinnedItems} = this.state
 
     return (

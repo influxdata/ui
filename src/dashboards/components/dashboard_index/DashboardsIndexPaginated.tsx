@@ -9,7 +9,13 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Components
 import DashboardsIndexContents from 'src/dashboards/components/dashboard_index/DashboardsIndexContentsPaginated'
-import {ComponentSize, Page, Sort, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import {
+  ComponentSize,
+  Page,
+  Sort,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 import FilterList from 'src/shared/components/FilterList'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
@@ -25,7 +31,10 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {extractDashboardLimits} from 'src/cloud/utils/limits'
 
 // Actions
-import {createDashboard as createDashboardAction, getDashboards} from 'src/dashboards/actions/thunks'
+import {
+  createDashboard as createDashboardAction,
+  getDashboards,
+} from 'src/dashboards/actions/thunks'
 import {setDashboardSort, setSearchTerm} from 'src/dashboards/actions/creators'
 import {getLabels} from 'src/labels/actions/thunks'
 import {getAll} from 'src/resources/selectors'
@@ -60,6 +69,33 @@ class DashboardIndex extends PureComponent<Props, State> {
   componentDidMount() {
     this.props.getDashboards()
     this.props.getLabels()
+
+    let sortType: SortTypes = this.props.sortOptions.sortType
+    const params = new URLSearchParams(window.location.search)
+      console.log('sort type ', sortType)
+    let sortKey: DashboardSortKey = 'name'
+    if (params.get('sortKey') === 'name' ) {
+      sortKey = 'name'
+    } else if(params.get('sortKey') === 'meta.updatedAt') {
+      sortKey = 'meta.updatedAt'
+      sortType = SortTypes.Date
+    }
+
+    let sortDirection: Sort = this.props.sortOptions.sortDirection
+    if (params.get('sortDirection') === Sort.Ascending) {
+      sortDirection = Sort.Ascending
+    } else if (params.get('sortDirection') === Sort.Descending) {
+      sortDirection = Sort.Descending
+    }
+
+    let searchTerm: string = ''
+    if (params.get('searchTerm') !== null) {
+      searchTerm = params.get('searchTerm')
+      this.props.setSearchTerm(searchTerm)
+      this.setState({searchTerm})
+    }
+
+    this.props.setDashboardSort({sortKey, sortDirection, sortType})
   }
 
   componentWillUnmount() {
@@ -67,13 +103,19 @@ class DashboardIndex extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {createDashboard, sortOptions, limitStatus, dashboards, remoteDataState} = this.props
+    const {
+      createDashboard,
+      sortOptions,
+      limitStatus,
+      dashboards,
+      remoteDataState,
+    } = this.props
     const {searchTerm} = this.state
 
     return (
       <SpinnerContainer
         loading={remoteDataState}
-        spinnerComponent={< TechnoSpinner/>}
+        spinnerComponent={<TechnoSpinner />}
       >
         <Page
           testID="empty-dashboards-list"
@@ -118,35 +160,34 @@ class DashboardIndex extends PureComponent<Props, State> {
               scrollbarSize={ComponentSize.Large}
               autoHideScrollbar={true}
             >
-                <AutoSizer style={{height: '100%', width: '100%'}}>
+              <AutoSizer style={{height: '100%', width: '100%'}}>
                 {({width, height}) => {
-                return (
+                  return (
                     <GetAssetLimits>
                       <FilterDashboards
-                      list={dashboards}
-                      searchTerm={searchTerm}
-                      searchKeys={['name', 'labels[].name']}
-                      sortByKey="name"
-                      >
-              {filteredDashboards => (
-
-                        <DashboardsIndexContents
-                        pageWidth={width}
-                        pageHeight={height}
-                        dashboards={filteredDashboards}
-                        totalDashboards={dashboards.length}
+                        list={dashboards}
                         searchTerm={searchTerm}
-                        onFilterChange={this.handleFilterDashboards}
-                        sortDirection={sortOptions.sortDirection}
-                        sortType={sortOptions.sortType}
-                        sortKey={sortOptions.sortKey}
-                        />
-              )}
-            </FilterDashboards>
+                        searchKeys={['name', 'labels[].name']}
+                        sortByKey="name"
+                      >
+                        {filteredDashboards => (
+                          <DashboardsIndexContents
+                            pageWidth={width}
+                            pageHeight={height}
+                            dashboards={filteredDashboards}
+                            totalDashboards={dashboards.length}
+                            searchTerm={searchTerm}
+                            onFilterChange={this.handleFilterDashboards}
+                            sortDirection={sortOptions.sortDirection}
+                            sortType={sortOptions.sortType}
+                            sortKey={sortOptions.sortKey}
+                          />
+                        )}
+                      </FilterDashboards>
                     </GetAssetLimits>
-                    )}}
-                
-                </AutoSizer>
+                  )
+                }}
+              </AutoSizer>
             </Page.Contents>
           </ErrorBoundary>
         </Page>
@@ -169,6 +210,10 @@ class DashboardIndex extends PureComponent<Props, State> {
   }
 
   private handleFilterDashboards = (searchTerm: string): void => {
+    const url = new URL(location.href)
+    url.searchParams.set('searchTerm', searchTerm)
+    history.replaceState(null, '', url.toString())
+
     this.setState({searchTerm})
   }
 
@@ -177,6 +222,11 @@ class DashboardIndex extends PureComponent<Props, State> {
     sortDirection: Sort,
     sortType: SortTypes
   ): void => {
+    const url = new URL(location.href)
+    url.searchParams.set('sortKey', sortKey)
+    url.searchParams.set('sortDirection', sortDirection)
+    history.replaceState(null, '', url.toString())
+
     this.props.setDashboardSort({sortKey, sortDirection, sortType})
   }
 
@@ -207,7 +257,7 @@ const mstp = (state: AppState) => {
     ResourceType.Dashboards,
     ResourceType.Labels,
   ])
-    return {
+  return {
     dashboards: getAll<Dashboard>(state, ResourceType.Dashboards),
     limitStatus: extractDashboardLimits(state),
     sortOptions,

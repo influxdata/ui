@@ -1,12 +1,12 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {Switch, Route} from 'react-router-dom'
+import {Route, RouteComponentProps, Switch} from 'react-router-dom'
 
 // Components
 import TasksHeader from 'src/tasks/components/TasksHeader'
 import TasksList from 'src/tasks/components/TasksList'
-import {Page} from '@influxdata/clockface'
+import {ComponentSize, Page, Sort} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import FilterList from 'src/shared/components/FilterList'
 import GetResources from 'src/resources/components/GetResources'
@@ -20,12 +20,12 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {
-  updateTaskStatus,
-  updateTaskName,
-  deleteTask,
-  cloneTask,
   addTaskLabel,
+  cloneTask,
+  deleteTask,
   runTask,
+  updateTaskName,
+  updateTaskStatus,
 } from 'src/tasks/actions/thunks'
 
 import {
@@ -36,9 +36,7 @@ import {
 import {checkTaskLimits as checkTasksLimitsAction} from 'src/cloud/actions/limits'
 
 // Types
-import {AppState, Task, ResourceType} from 'src/types'
-import {RouteComponentProps} from 'react-router-dom'
-import {Sort} from '@influxdata/clockface'
+import {AppState, ResourceType, Task} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {extractTaskLimits} from 'src/cloud/utils/limits'
 import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
@@ -105,7 +103,12 @@ class TasksPage extends PureComponent<Props, State> {
             sortType={sortType}
             onSort={this.handleSort}
           />
-          <Page.Contents fullWidth={false} scrollable={true}>
+          <Page.Contents
+            fullWidth={false}
+            scrollable={true}
+            scrollbarSize={ComponentSize.Large}
+            autoHideScrollbar={true}
+          >
             <GetResources resources={[ResourceType.Tasks, ResourceType.Labels]}>
               <GetAssetLimits>
                 <Filter

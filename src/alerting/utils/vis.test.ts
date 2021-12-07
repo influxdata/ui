@@ -14,6 +14,6 @@ const TESTS = [
   ],
 ]
 
-test.each(TESTS)('getCheckVisTimeRange(%s)', (input, expected) => {
+test.each(TESTS)('getCheckVisTimeRange(%s)', (input: string, expected) => {
   expect(getCheckVisTimeRange(input)).toEqual(expected)
 })

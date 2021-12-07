@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
@@ -21,15 +21,20 @@ import {
   Page,
 } from '@influxdata/clockface'
 import {EditResourceAccordion} from 'src/authorizations/components/redesigned/EditResourceAccordion'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Types
-import {Authorization} from 'src/types'
+import {Authorization, ResourceType} from 'src/types'
 
 // Actions
 import {updateAuthorization} from 'src/authorizations/actions/thunks'
+import {getTelegraf} from 'src/telegrafs/actions/thunks'
+import {getBucketSchema} from 'src/buckets/actions/thunks'
 
 // Utills
 import {formatPermissionsObj} from 'src/authorizations/utils/permissions'
+import _ from 'lodash'
+import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   auth: Authorization
   onDismissOverlay: () => void
@@ -51,17 +56,67 @@ const EditTokenOverlay: FC<Props> = props => {
     props.auth.status === 'active'
   )
   const [label, setlabel] = useState(props.auth.status)
+  const [permissions, setPermissions] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    if (_.isEmpty(permissions)) {
+      formatPermissions()
+    }
+  }, [])
+
+  const formatPermissions = async () => {
+    const {
+      auth: {permissions},
+    } = props
+    const newPerms = permissions
+
+    for (let i = 0; i < permissions.length; i++) {
+      const name = permissions[i].resource.name
+      if (!name) {
+        if (
+          permissions[i].resource.type === ResourceType.Telegrafs &&
+          permissions[i].resource.id
+        ) {
+          try {
+            const telegraf = await props.getTelegraf(permissions[i].resource.id)
+            newPerms[i].resource.name = telegraf
+          } catch (e) {
+            newPerms[i].resource.name = 'Resource deleted'
+          }
+        } else if (
+          permissions[i].resource.type === ResourceType.Buckets &&
+          permissions[i].resource.id
+        ) {
+          try {
+            const bucket = await props.getBucketSchema(
+              permissions[i].resource.id
+            )
+            newPerms[i].resource.name = bucket.name
+          } catch (e) {
+            newPerms[i].resource.name = 'Resource deleted'
+          }
+        }
+      }
+    }
+
+    setPermissions(newPerms)
+  }
 
   const handleInputChange = event => {
     setDescription(event.target.value)
     setStatus(ComponentStatus.Default)
   }
 
+  const handleChangeSearchTerm = (searchTerm: string): void => {
+    setSearchTerm(searchTerm)
+  }
+
   const handleDismiss = () => props.onDismissOverlay()
 
   const changeToggle = () => {
     setStatus(ComponentStatus.Default)
-
+    event('tokens.status.updated')
     if (togglestatus) {
       setToggleStatus(false)
       setlabel('inactive')
@@ -83,7 +138,7 @@ const EditTokenOverlay: FC<Props> = props => {
   }
 
   return (
-    <Overlay.Container maxWidth={630}>
+    <Overlay.Container maxWidth={800}>
       <Overlay.Header title="API Token Summary" onDismiss={handleDismiss} />
       <Overlay.Body>
         <FlexBox
@@ -115,59 +170,65 @@ const EditTokenOverlay: FC<Props> = props => {
                 />
               </Form.Element>
             </FlexBox>
-            <FlexBox.Child className="main-flexbox-child">
-              <FlexBox
-                margin={ComponentSize.Large}
-                justifyContent={JustifyContent.SpaceBetween}
-                direction={FlexDirection.Row}
-                stretchToFitWidth={true}
-                alignItems={AlignItems.Center}
-                className="flex-box-label"
-              >
-                <FlexBox.Child basis={40} grow={8}>
-                  <InputLabel size={ComponentSize.ExtraSmall}>
-                    Resources
-                  </InputLabel>
-                </FlexBox.Child>
-                <FlexBox.Child grow={1} className="flexbox-child-label-read">
-                  <InputLabel
-                    className="input-label-read"
-                    size={ComponentSize.ExtraSmall}
-                  >
-                    Read
-                  </InputLabel>
-                </FlexBox.Child>
-                <FlexBox.Child grow={1} className="flexbox-child-label-write">
-                  <InputLabel
-                    className="input-label-write"
-                    size={ComponentSize.ExtraSmall}
-                  >
-                    Write
-                  </InputLabel>
-                </FlexBox.Child>
-              </FlexBox>
-              <EditResourceAccordion
-                permissions={formatPermissionsObj(props.auth.permissions)}
-              />
-            </FlexBox.Child>
-            <Page.ControlBarCenter>
-              <FlexBox margin={ComponentSize.Medium}>
-                <Button
-                  color={ComponentColor.Tertiary}
-                  text="Cancel"
-                  onClick={handleDismiss}
-                  testID="token-cancel-btn"
-                />
-                <Button
-                  color={ComponentColor.Primary}
-                  text="Save"
-                  onClick={onSave}
-                  testID="token-save-btn"
-                  status={status}
-                />
-              </FlexBox>
-            </Page.ControlBarCenter>
           </Form>
+          <FlexBox.Child className="main-flexbox-child">
+            <SearchWidget
+              searchTerm={searchTerm}
+              placeholderText="Filter Access Permissions..."
+              onSearch={handleChangeSearchTerm}
+            />
+            <FlexBox
+              margin={ComponentSize.Large}
+              justifyContent={JustifyContent.SpaceBetween}
+              direction={FlexDirection.Row}
+              stretchToFitWidth={true}
+              alignItems={AlignItems.Center}
+              className="flex-box-label"
+            >
+              <FlexBox.Child basis={40} grow={8}>
+                <InputLabel size={ComponentSize.ExtraSmall}>
+                  Resources
+                </InputLabel>
+              </FlexBox.Child>
+              <FlexBox.Child grow={1} className="flexbox-child-label-read">
+                <InputLabel
+                  className="input-label-read"
+                  size={ComponentSize.ExtraSmall}
+                >
+                  Read
+                </InputLabel>
+              </FlexBox.Child>
+              <FlexBox.Child grow={1} className="flexbox-child-label-write">
+                <InputLabel
+                  className="input-label-write"
+                  size={ComponentSize.ExtraSmall}
+                >
+                  Write
+                </InputLabel>
+              </FlexBox.Child>
+            </FlexBox>
+            <EditResourceAccordion
+              permissions={formatPermissionsObj(permissions)}
+              searchTerm={searchTerm}
+            />
+          </FlexBox.Child>
+          <Page.ControlBarCenter>
+            <FlexBox margin={ComponentSize.Medium}>
+              <Button
+                color={ComponentColor.Tertiary}
+                text="Cancel"
+                onClick={handleDismiss}
+                testID="token-cancel-btn"
+              />
+              <Button
+                color={ComponentColor.Primary}
+                text="Save"
+                onClick={onSave}
+                testID="token-save-btn"
+                status={status}
+              />
+            </FlexBox>
+          </Page.ControlBarCenter>
         </FlexBox>
       </Overlay.Body>
     </Overlay.Container>
@@ -176,6 +237,8 @@ const EditTokenOverlay: FC<Props> = props => {
 
 const mdtp = {
   updateAuthorization,
+  getTelegraf,
+  getBucketSchema,
 }
 
 const connector = connect(null, mdtp)

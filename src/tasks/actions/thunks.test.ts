@@ -85,7 +85,7 @@ describe('Tasks.Actions.Thunks', () => {
 
     const dispatch = jest.fn()
 
-    const getState = jest.fn(getMockAppStateWTask)
+    const getState: any = jest.fn(getMockAppStateWTask)
 
     await thunks.getTasks()(dispatch, getState)
 
@@ -103,14 +103,19 @@ describe('Tasks.Actions.Thunks', () => {
 
     await thunks.updateTaskStatus({...sampleTask, status: 'active'})(dispatch)
 
-    expect(dispatch.mock.calls.length).toEqual(2)
+    expect(dispatch.mock.calls.length).toEqual(3)
     expect(dispatch.mock.calls[0][0].type).toBe('EDIT_TASK')
     expect(
       dispatch.mock.calls[0][0].schema.entities.tasks[sampleTask.id]
     ).toEqual({...sampleTask, status: 'active'})
 
-    expect(dispatch.mock.calls[1][0].type).toBe('PUBLISH_NOTIFICATION')
-    expect(dispatch.mock.calls[1][0].payload.notification).toEqual(
+    expect(dispatch.mock.calls[1][0].type).toBe('SET_CURRENT_TASK')
+    expect(
+      dispatch.mock.calls[1][0].schema.entities.tasks[sampleTask.id]
+    ).toEqual({...sampleTask, status: 'active'})
+
+    expect(dispatch.mock.calls[2][0].type).toBe('PUBLISH_NOTIFICATION')
+    expect(dispatch.mock.calls[2][0].payload.notification).toEqual(
       taskUpdateSuccess()
     )
   })

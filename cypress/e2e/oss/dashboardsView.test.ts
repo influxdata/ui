@@ -24,7 +24,7 @@ describe('Dashboard', () => {
 
     // Note cell
     const noteText =
-      "<img src='https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png'/>"
+      '![](https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png)'
 
     cy.getByTestID('add-note--button').click()
     cy.getByTestID('note-editor--overlay').within(() => {

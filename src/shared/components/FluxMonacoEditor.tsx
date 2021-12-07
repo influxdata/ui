@@ -12,7 +12,6 @@ import THEME_NAME from 'src/external/monaco.flux.theme'
 import loadServer, {LSPServer} from 'src/external/monaco.flux.server'
 import {comments, submit} from 'src/external/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/external/monaco.autogrow'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
@@ -26,6 +25,7 @@ export interface EditorProps {
   onSubmitScript?: () => void
   autogrow?: boolean
   readOnly?: boolean
+  autofocus?: boolean
   wrapLines?: 'off' | 'on' | 'bounded'
 }
 
@@ -35,6 +35,7 @@ const FluxEditorMonaco: FC<EditorProps> = ({
   onSubmitScript,
   autogrow,
   readOnly,
+  autofocus,
   wrapLines,
 }) => {
   const lspServer = useRef<LSPServer>(null)
@@ -65,17 +66,13 @@ const FluxEditorMonaco: FC<EditorProps> = ({
       await lspServer.current.didOpen(uri, script)
       monacoEditor.remeasureFonts()
 
-      if (isFlagEnabled('cursorAtEOF')) {
-        const lines = (script || '').split('\n')
+      if (autofocus && !readOnly && !editor.hasTextFocus()) {
+        const model = editor.getModel()
         editor.setPosition({
-          lineNumber: lines.length,
-          column: lines[lines.length - 1].length + 1,
+          lineNumber: model.getLineCount(),
+          column: model.getLineLength(model.getLineCount()) + 1,
         })
         editor.focus()
-      } else {
-        if (!readOnly) {
-          editor.focus()
-        }
       }
     } catch (e) {
       // TODO: notify user that lsp failed

@@ -30,8 +30,8 @@ import {
 import {incrementCloneName} from 'src/utils/naming'
 
 export interface FlowListContextType extends FlowList {
-  add: (flow?: Flow) => Promise<string>
-  clone: (id: string) => void
+  add: (flow?: Flow) => Promise<string | void>
+  clone: (id: string) => Promise<string | void>
   update: (id: string, flow: Partial<Flow>) => void
   remove: (id: string) => void
   currentID: string | null
@@ -74,10 +74,10 @@ export const FlowListContext = React.createContext<FlowListContextType>(
   DEFAULT_CONTEXT
 )
 
-export function serialize(flow: Flow, orgID: string) {
-  const apiFlow = {
+export function serialize(flow: Flow) {
+  const apiFlow: any = {
     data: {
-      orgID,
+      orgID: flow.orgID,
       name: flow.name,
       spec: {
         name: flow.name,
@@ -85,6 +85,7 @@ export function serialize(flow: Flow, orgID: string) {
         range: flow.range,
         refresh: flow.refresh,
         createdAt: flow.createdAt,
+        createdBy: flow.createdBy,
         updatedAt: flow.updatedAt,
         pipes: flow.data.allIDs.map(id => {
           const meta = flow.meta.byID[id]
@@ -110,6 +111,10 @@ export function serialize(flow: Flow, orgID: string) {
     },
   }
 
+  if (flow.id) {
+    apiFlow.data.id = flow.id
+  }
+
   return apiFlow
 }
 
@@ -126,6 +131,9 @@ export function hydrate(data) {
   }
   if (data.id) {
     flow.id = data.id
+  }
+  if (data.orgID) {
+    flow.orgID = data.orgID
   }
 
   if (!data?.spec?.pipes) {
@@ -168,7 +176,7 @@ export const FlowListProvider: FC = ({children}) => {
     getAll()
   }, [])
 
-  const clone = async (id: string): Promise<string> => {
+  const clone = async (id: string): Promise<string | void> => {
     if (!flows.hasOwnProperty(id)) {
       throw new Error(`${PROJECT_NAME} not found`)
     }
@@ -186,17 +194,19 @@ export const FlowListProvider: FC = ({children}) => {
     return await add(data)
   }
 
-  const add = async (flow?: Flow): Promise<string> => {
+  const add = (flow?: Flow): Promise<string | void> => {
     let _flow
 
     if (!flow) {
       _flow = hydrate({
         ...TEMPLATES['default'].init(),
         name: DEFAULT_PROJECT_NAME,
+        orgID: org.id,
       })
     } else {
       _flow = {
         name: flow.name,
+        orgID: flow.orgID,
         range: flow.range,
         refresh: flow.refresh,
         data: flow.data,
@@ -207,30 +217,18 @@ export const FlowListProvider: FC = ({children}) => {
       }
     }
 
-    const apiFlow = serialize(_flow, org.id)
-
-    let id: string = `local_${UUID()}`
-    try {
-      const flow = await createAPI(apiFlow)
-      id = flow.id
-
-      _flow = hydrate(flow)
-    } catch {
-      dispatch(notify(notebookCreateFail()))
-    }
-
-    return new Promise(resolve => {
-      setTimeout(() => {
+    return createAPI(serialize(_flow))
+      .then(flow => {
         setFlows({
           ...flows,
-          [id]: _flow,
+          [flow.id]: hydrate(flow),
         })
 
-        setCurrentID(id)
-
-        resolve(id)
-      }, 200)
-    })
+        return flow.id
+      })
+      .catch(() => {
+        dispatch(notify(notebookCreateFail()))
+      })
   }
 
   const update = useCallback(
@@ -247,13 +245,10 @@ export const FlowListProvider: FC = ({children}) => {
         },
       }))
 
-      const apiFlow = serialize(
-        {
-          ...flows[id],
-          ...flow,
-        },
-        org.id
-      )
+      const apiFlow = serialize({
+        ...flows[id],
+        ...flow,
+      })
 
       pooledUpdateAPI({id, ...apiFlow})
     },
@@ -300,6 +295,11 @@ export const FlowListProvider: FC = ({children}) => {
   )
 
   const migrate = async () => {
+    const localFlows = Object.keys(flows).filter(id => id.includes('local'))
+    if (!localFlows.length) {
+      return
+    }
+
     const _flows = await migrateLocalFlowsToAPI(
       org.id,
       flows,

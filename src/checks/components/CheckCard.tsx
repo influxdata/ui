@@ -130,7 +130,7 @@ const CheckCard: FC<Props> = ({
     <ErrorBoundary>
       <ResourceCard
         key={`check-id--${id}`}
-        testID="check-card"
+        testID={`check-card ${name}`}
         disabled={activeStatus === 'inactive'}
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}

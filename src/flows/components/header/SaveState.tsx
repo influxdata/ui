@@ -34,7 +34,7 @@ const SaveState: FC = () => {
     return (
       <Button
         text="Save Notebook"
-        color={ComponentColor.Success}
+        color={ComponentColor.Default}
         type={ButtonType.Submit}
         onClick={addFlow}
         status={ComponentStatus.Default}

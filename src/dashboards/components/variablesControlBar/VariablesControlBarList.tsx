@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, CSSProperties} from 'react'
+import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
 import {DragDropContext, Droppable} from 'react-beautiful-dnd'
 import classnames from 'classnames'
@@ -40,17 +40,15 @@ const VariablesControlBarList: FC<Props> = ({variables}) => {
     await dispatch(moveVariable(source.index, destination.index))
   }
 
-  const getGridClassName = (isDraggingOver: boolean): CSSProperties =>
-    classnames('variables-control-bar--grid', {
-      'variables-control-bar--grid__dragging-over': isDraggingOver,
-    })
-
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="variables-dropdowns" direction="horizontal">
         {(provided, snapshot) => (
           <div
-            className={getGridClassName(snapshot.isDraggingOver)}
+            className={classnames('variables-control-bar--grid', {
+              'variables-control-bar--grid__dragging-over':
+                snapshot.isDraggingOver,
+            })}
             ref={provided.innerRef}
             {...provided.droppableProps}
           >

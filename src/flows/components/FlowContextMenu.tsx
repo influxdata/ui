@@ -21,7 +21,7 @@ import {
   SquareButton,
 } from '@influxdata/clockface'
 import {FlowListContext} from 'src/flows/context/flow.list'
-import {PROJECT_NAME_PLURAL} from 'src/flows'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -92,7 +92,7 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
         icon={IconFont.Trash_New}
         shape={ButtonShape.Square}
         size={ComponentSize.ExtraSmall}
-        confirmationLabel="Yes, delete this bucket"
+        confirmationLabel={`Yes, delete this ${PROJECT_NAME}`}
         onConfirm={handleDelete}
         confirmationButtonText="Confirm"
         testID="context-delete-menu"

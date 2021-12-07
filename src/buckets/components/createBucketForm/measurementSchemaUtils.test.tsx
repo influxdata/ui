@@ -5,7 +5,9 @@ import {
   TOO_LONG_ERROR,
   areNewSchemasValid,
   areSchemaUpdatesValid,
-} from './MeasurementSchemaUtils'
+  csvToObjectArray,
+  toCsvString,
+} from './measurementSchemaUtils'
 
 const oneColumns = [
   {name: 'time', type: 'timestamp'},
@@ -262,5 +264,90 @@ describe('test schema  update validity function', () => {
   })
   it('should be valid, it is null', () => {
     doTest(null, true)
+  })
+})
+
+describe('test csv conversion function (object->csv file)', () => {
+  it('should create a valid csv file', () => {
+    const csvString = toCsvString(oneColumns)
+
+    const lines = csvString.split('\n')
+    expect(lines[0]).toEqual('name,type,dataType')
+    expect(lines[1]).toEqual('time,timestamp,')
+    expect(lines[2]).toEqual('host,tag,')
+    expect(lines[3]).toEqual('service,tag,')
+    expect(lines[4]).toEqual('fsRead,field,float')
+    expect(lines[5]).toEqual('fsWrite,field,float')
+    expect(lines[6]).toEqual('timeSignature,tag,')
+    expect(lines[7]).toEqual('composer,tag,')
+    expect(lines[8]).toEqual('instrument,field,string')
+    expect(lines[9]).toEqual('one,field,string')
+
+    expect(lines.length).toEqual(10)
+  })
+})
+describe('test csv to array function (parsing)', () => {
+  it('should parse the csv correctly', () => {
+    const contents = `name,type,dataType
+    hello,how,are
+    you,today,really`
+
+    const parsed = csvToObjectArray(contents)
+
+    expect(parsed?.length).toEqual(2)
+    expect(parsed[0]['name']).toEqual('hello')
+    expect(parsed[0]['type']).toEqual('how')
+    expect(parsed[0]['dataType']).toEqual('are')
+    expect(parsed[1]['name']).toEqual('you')
+    expect(parsed[1]['type']).toEqual('today')
+    expect(parsed[1]['dataType']).toEqual('really')
+  })
+  it('should parse the csv correctly, with a missing third element', () => {
+    const contents = `name,type,dataType
+    hello,how,are
+    you,today,`
+
+    const parsed = csvToObjectArray(contents)
+
+    expect(parsed?.length).toEqual(2)
+    expect(parsed[0]['name']).toEqual('hello')
+    expect(parsed[0]['type']).toEqual('how')
+    expect(parsed[0]['dataType']).toEqual('are')
+    expect(parsed[1]['name']).toEqual('you')
+    expect(parsed[1]['type']).toEqual('today')
+
+    const secondKeys = Object.keys(parsed[1])
+    expect(secondKeys.length).toEqual(2)
+    expect(secondKeys).toContain('name')
+    expect(secondKeys).toContain('type')
+    expect(secondKeys).not.toContain('dataType')
+  })
+  it('should throw an error because of bad columns in the csv', () => {
+    const contents = `name,type,data_type
+    hello,how,are
+    you,today,`
+    try {
+      csvToObjectArray(contents)
+      fail('code should not reach here, it should throw an error')
+    } catch (error) {
+      expect(error).not.toEqual(null)
+      expect(error.message).toEqual(
+        'csv headers are not correct; they need to be : "name, type, dataType"'
+      )
+    }
+  })
+  it('should throw an error because of bad columns in the csv-not enough columns', () => {
+    const contents = `name,type
+    hello,how
+    you,today`
+    try {
+      csvToObjectArray(contents)
+      fail('code should not reach here, it should throw an error')
+    } catch (error) {
+      expect(error).not.toEqual(null)
+      expect(error.message).toEqual(
+        'csv headers are not correct; they need to be : "name, type, dataType"'
+      )
+    }
   })
 })

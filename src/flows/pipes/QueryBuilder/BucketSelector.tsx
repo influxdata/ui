@@ -8,6 +8,7 @@ import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {BucketContext} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
 
+// this is used by notebooks
 const BucketSelector: FC = () => {
   const {data, update} = useContext(PipeContext)
   const {loading, buckets} = useContext(BucketContext)
@@ -122,6 +123,7 @@ const BucketSelector: FC = () => {
           placeholder="Search for a bucket"
           className="tag-selector--search"
           onChange={e => setSearch(e.target.value)}
+          onClear={() => setSearch('')}
         />
       </BuilderCard.Menu>
       <List

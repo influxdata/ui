@@ -99,6 +99,7 @@
 }
 
 .community-templates--resources-table {
+  margin-left: 1.4em;
   & > tbody > tr > td {
     padding-right: $cf-space-2xs;
     font-size: 13px;
@@ -108,10 +109,6 @@
 .community-templates--resources-table-toggle {
   display: flex;
   align-items: center;
-
-  h6 {
-    margin: 0;
-  }
 
   &:hover {
     cursor: pointer;

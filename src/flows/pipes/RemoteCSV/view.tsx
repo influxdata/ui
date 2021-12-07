@@ -16,7 +16,6 @@ import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 const SampleCSVs = {
   airSensor: 'Sample Air Sensor Data',
-  birdMigration: 'Bird Migration',
   noaa: 'NOAA National Buoy Data Center (NDBC)',
   usgs: 'USGS Earthquake Data',
 }

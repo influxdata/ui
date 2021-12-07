@@ -12,7 +12,6 @@ import {
 } from '@influxdata/clockface'
 import BucketAddDataButton from 'src/buckets/components/BucketAddDataButton'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {addBucketLabel, deleteBucketLabel} from 'src/buckets/actions/thunks'
@@ -107,11 +106,7 @@ const BucketCardActions: FC<Props> = ({
   }
 
   const makeSchemaButton = () => {
-    if (
-      isFlagEnabled('measurementSchema') &&
-      CLOUD &&
-      bucket?.schemaType === 'explicit'
-    ) {
+    if (CLOUD && bucket?.schemaType === 'explicit') {
       return (
         <Button
           text="Show Schema"

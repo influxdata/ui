@@ -19,11 +19,14 @@ import {
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
+interface Props {
+  className?: string
+}
 /**
  * This turns annotation on and off.
  * the control bar itself just shows messages at this point.
  * */
-export const AnnotationsControlBarToggleButton: FC = () => {
+export const AnnotationsControlBarToggleButton: FC<Props> = ({className}) => {
   const dispatch = useDispatch()
   const inAnnotationsMode = useSelector(isAnnotationsModeEnabled)
 
@@ -47,6 +50,7 @@ export const AnnotationsControlBarToggleButton: FC = () => {
       checked={inAnnotationsMode}
       testID="toggle-annotations-controls"
       onChange={handleClick}
+      className={className}
     >
       <InputLabel
         htmlFor="toggle-annotations-controls"

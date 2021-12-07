@@ -45,7 +45,7 @@ type EndpointOverrides = {
   activeStatus: TaskStatusType
   labels: string[]
 }
-// GenEndpoint is the shape of a NotificationEndpoint from the server -- before any UI specific fields are or modified
+// GenEndpoint is the shape of a NotificationEndpoint from the server -- before any UI specific fields are added or modified
 export type GenEndpoint = GEndpoint
 export type NotificationEndpoint =
   | (Omit<SlackNotificationEndpoint, 'status' | 'labels'> & EndpointOverrides)

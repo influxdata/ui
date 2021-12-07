@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo} from 'react'
+import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
 import {
   ComponentStatus,
   Form,
@@ -18,22 +18,137 @@ import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {SidebarContext} from 'src/flows/context/sidebar'
+import History from 'src/flows/pipes/Schedule/History'
 
 import {remove} from 'src/shared/contexts/query'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './style.scss'
+
+const validCron = (text: string): boolean => {
+  const isNumber = (str: string, min: number, max: number) => {
+    if (str.search(/[^\d-,\/*]/) !== -1) {
+      return false
+    }
+
+    return str.split(',').every(item => {
+      if (item.trim().endsWith('/')) {
+        return false
+      }
+      const splits = item.split('/')
+
+      if (splits.length > 2) {
+        return false
+      }
+
+      const [left, right] = splits
+      const sides = left.split('-')
+
+      if (
+        right !== undefined &&
+        (!/^\d+$/.test(right) || parseInt(right) <= 0)
+      ) {
+        return false
+      }
+
+      if (sides.length > 2) {
+        return false
+      }
+
+      if (sides.length === 1) {
+        return (
+          sides[0] === '*' ||
+          (/^\d+$/.test(sides[0]) &&
+            min <= parseInt(sides[0]) &&
+            parseInt(sides[0]) <= max)
+        )
+      }
+
+      if (!/^\d+$/.test(sides[0]) || !/^\d+$/.test(sides[1])) {
+        return false
+      }
+
+      const small = parseInt(sides[0])
+      const big = parseInt(sides[1])
+
+      return (
+        !isNaN(small) &&
+        !isNaN(big) &&
+        small <= big &&
+        min <= small &&
+        small <= max &&
+        min <= big &&
+        big <= max
+      )
+    })
+  }
+
+  const mapMonth = (str: string): string =>
+    str.toLowerCase().replace(
+      /[a-z]{3}/g,
+      _str =>
+        ({
+          jan: '1',
+          feb: '2',
+          mar: '3',
+          apr: '4',
+          may: '5',
+          jun: '6',
+          jul: '7',
+          aug: '8',
+          sep: '9',
+          oct: '10',
+          nov: '11',
+          dec: '12',
+        }[_str] || _str)
+    )
+  const mapDay = (str: string): string =>
+    str.toLowerCase().replace(
+      /[a-z]{3}/g,
+      _str =>
+        ({
+          sun: '0',
+          mon: '1',
+          tue: '2',
+          wed: '3',
+          thu: '4',
+          fri: '5',
+          sat: '6',
+        }[_str] || _str)
+    )
+  const split = text.trim().split(/\s+/)
+  if (split.length < 5 || split.length > 6) {
+    return false
+  }
+
+  if (split.length === 5) {
+    split.unshift('*')
+  }
+
+  return [
+    isNumber(split[0], 0, 59),
+    isNumber(split[1], 0, 59),
+    isNumber(split[2], 0, 23),
+    isNumber(split[3], 1, 31),
+    isNumber(mapMonth(split[4]), 1, 12),
+    isNumber(mapDay(split[5]), 0, 7),
+  ].reduce((acc, curr) => acc && curr, true)
+}
 
 const Schedule: FC<PipeProp> = ({Context}) => {
   const {id, data, update} = useContext(PipeContext)
   const {simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const {register} = useContext(SidebarContext)
   let intervalError = ''
   let offsetError = ''
 
-  if (!data.interval) {
+  if (data?.interval === '') {
     intervalError = 'Required'
   } else if (
     data.interval !==
-    data.interval.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
+      data.interval?.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('') &&
+    !validCron(data.interval)
   ) {
     intervalError = 'Invalid Time'
   }
@@ -45,7 +160,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     offsetError = 'Invalid Time'
   }
 
-  const queryText = getPanelQueries(id, true)?.source ?? ''
+  const queryText = getPanelQueries(id)?.source ?? ''
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(
@@ -69,6 +184,57 @@ const Schedule: FC<PipeProp> = ({Context}) => {
       ).length,
     [queryText]
   )
+  const taskText = useMemo(() => {
+    const ast = parse(simplify(queryText))
+
+    const params = remove(
+      ast,
+      node =>
+        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
+    ).reduce((acc, curr) => {
+      // eslint-disable-next-line no-extra-semi
+      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
+        if (_curr.key?.name && _curr.value?.location?.source) {
+          _acc[_curr.key.name] = _curr.value.location.source
+        }
+
+        return _acc
+      }, acc)
+
+      return acc
+    }, {})
+
+    if (!params.name) {
+      params.name = `"Notebook Task for ${id}"`
+    }
+
+    if (data.interval && !intervalError) {
+      if (validCron(data.interval)) {
+        params.cron = `"${data.interval}"`
+      } else {
+        params.every = data.interval
+      }
+    }
+
+    if (data.offset && !offsetError) {
+      params.offset = data.offset
+    }
+
+    const paramString = Object.entries(params)
+      .map(([key, val]) => `${key}: ${val}`)
+      .join(',\n')
+    const header = parse(`option task = {${paramString}}\n`)
+    ast.body.unshift(header.body[0])
+
+    return format_from_js_file(ast)
+  }, [queryText, data.interval, data.offset])
+  let latestTask
+  if (data.task?.id) {
+    latestTask = data.task
+  } else if (data.task?.length) {
+    latestTask = data.task[0]
+  }
+  const hasChanges = taskText !== latestTask?.flux ?? ''
 
   const updateInterval = evt => {
     update({
@@ -81,6 +247,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
       offset: evt.target.value,
     })
   }
+
   const warningMessage = useMemo(() => {
     if (!hasTaskOption) {
       return
@@ -107,51 +274,49 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   }, [hasTaskOption])
 
   const generateTask = useCallback(() => {
-    // simplify takes care of all the variable nonsense in the query
-    const ast = parse(simplify(queryText))
+    return taskText
+  }, [taskText])
 
-    const params = remove(
-      ast,
-      node =>
-        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
+  const storeTask = (task: any) => {
+    const list = ((data.task?.id ? [data.task] : data.task) || []).slice(0)
+    list.unshift({
+      id: task.id,
+      name: task.name,
+      flux: task.flux,
+    })
+    update({
+      task: list,
+    })
+  }
 
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-
-    if (!params.name) {
-      params.name = `"Notebook Task for ${id}"`
+  useEffect(() => {
+    if (!id || !data.task) {
+      return
     }
 
-    if (data.interval && !intervalError) {
-      params.every = data.interval
-    }
-
-    if (data.offset && !offsetError) {
-      params.offset = data.offset
-    }
-
-    const paramString = Object.entries(params)
-      .map(([key, val]) => `${key}: ${val}`)
-      .join(',\n')
-    const header = parse(`option task = {${paramString}}\n`)
-    ast.body.unshift(header.body[0])
-
-    return format_from_js_file(ast)
-  }, [queryText, data.interval, data.offset])
+    register(id, [
+      {
+        title: 'Task',
+        actions: [
+          {
+            title: 'View Run History',
+            menu: <History tasks={data.task.id ? data.task : data.task} />,
+          },
+        ],
+      },
+    ])
+  }, [id, data.task])
 
   const persist = (
     <ExportTaskButton
       generate={generateTask}
-      text="Export as Task"
+      onCreate={storeTask}
+      text={
+        isFlagEnabled('removeExportModal') ? 'Export Task' : 'Export as Task'
+      }
+      disabled={
+        !hasChanges || !!intervalError || !!offsetError || !data?.interval
+      }
       type="task"
     />
   )
@@ -160,7 +325,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     <Context persistentControls={persist}>
       <FlexBox margin={ComponentSize.Medium}>
         <FlexBox.Child
-          basis={168}
+          basis={200}
           grow={0}
           shrink={0}
           className="flow-panel-schedule--header"
@@ -171,6 +336,23 @@ const Schedule: FC<PipeProp> = ({Context}) => {
         <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
           <Form.Element
             label="Every"
+            helpText={
+              ((
+                <>
+                  Supports{' '}
+                  <a
+                    href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax"
+                    target="_blank"
+                  >
+                    flux durations
+                  </a>{' '}
+                  and{' '}
+                  <a href="https://crontab.guru" target="_blank">
+                    cron intervals
+                  </a>
+                </>
+              ) as unknown) as string
+            }
             required={true}
             errorMessage={intervalError}
           >
@@ -191,6 +373,19 @@ const Schedule: FC<PipeProp> = ({Context}) => {
         <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
           <Form.Element
             label="Offset"
+            helpText={
+              ((
+                <>
+                  Supports{' '}
+                  <a
+                    href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax"
+                    target="_blank"
+                  >
+                    flux durations
+                  </a>
+                </>
+              ) as unknown) as string
+            }
             required={false}
             errorMessage={offsetError}
           >

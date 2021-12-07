@@ -14,7 +14,6 @@ const PaymentPanel: FC = () => {
     billingInfo: {paymentMethod},
     handleUpdatePaymentMethod,
   } = useContext(BillingContext)
-
   const [isEditing, setIsEditing] = useState(paymentMethod === null)
 
   const hasExistingPayment = paymentMethod !== null

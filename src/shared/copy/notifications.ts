@@ -605,45 +605,6 @@ export const getSchemaFailed = (
   message: `Failed to fetch schema for bucket with id ${bucketName}: ${error}`,
 })
 
-// Demodata buckets
-
-export const demoDataAddBucketFailed = (
-  bucketName: string,
-  message: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Could not create dashboard for demodata bucket ${bucketName}: ${message}`,
-})
-
-export const demoDataDeleteBucketFailed = (
-  bucketName: string,
-  error: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Failed to delete demo data bucket: ${bucketName}: ${error}`,
-})
-
-export const demoDataSucceeded = (
-  bucketName: string,
-  buttonElement: NotificationButtonElement
-): Notification => ({
-  ...defaultSuccessNotification,
-  message: `Successfully added demodata bucket ${bucketName}, and demodata dashboard.`,
-  duration: FIFTEEN_SECONDS,
-  buttonElement,
-})
-
-export const demoDataAvailability = (
-  message: string,
-  buttonElement?: NotificationButtonElement
-): Notification => ({
-  ...defaultErrorNotification,
-  message,
-  buttonElement,
-  duration: TEN_SECONDS,
-  type: 'demoDataAvailabilityError',
-})
-
 export const updateAggregateType = (
   message: string,
   buttonElement?: NotificationButtonElement
@@ -793,7 +754,7 @@ export const taskGetFailed = (error: string): Notification => ({
 export const taskRetrySuccess = (id: string): Notification => ({
   ...defaultSuccessNotification,
   duration: FIVE_SECONDS,
-  message: `Task run ${id} was succesful`,
+  message: `Task run ${id} successfully scheduled`,
 })
 
 export const taskRetryFailed = (error: string): Notification => ({
@@ -1243,20 +1204,14 @@ export const editNotificationRuleCodeWarning = (): Notification => ({
 
 // Notebooks
 
-export const notebookRunSuccess = (
-  runMode: string,
-  projectName: string
-): Notification => ({
+export const notebookRunSuccess = (projectName: string): Notification => ({
   ...defaultSuccessNotification,
-  message: `${projectName} ${runMode.toLowerCase()} successful!`,
+  message: `${projectName} run successful!`,
 })
 
-export const notebookRunFail = (
-  runMode: string,
-  projectName: string
-): Notification => ({
+export const notebookRunFail = (projectName: string): Notification => ({
   ...defaultErrorNotification,
-  message: `${projectName} ${runMode.toLowerCase()} failed`,
+  message: `${projectName} run failed`,
 })
 
 export const notebookCreateFail = (): Notification => ({

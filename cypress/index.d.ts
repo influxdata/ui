@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-unused-vars: "off" */
 import 'jest'
+import 'cypress-plugin-tab'
 
 import {
   signin,
@@ -11,6 +12,7 @@ import {
   deleteOrg,
   flush,
   getByTestID,
+  getByTestIDHead,
   getByInputName,
   getByInputValue,
   getByTestIDAndSetInputValue,
@@ -20,6 +22,7 @@ import {
   createMapVariable,
   createCSVVariable,
   createQueryVariable,
+  createMapVariableFromFixture,
   createAndAddLabel,
   createLabel,
   createBucket,
@@ -64,6 +67,7 @@ declare global {
       createQueryVariable: typeof createQueryVariable
       createTask: typeof createTask
       createMapVariable: typeof createMapVariable
+      createMapVariableFromFixture: typeof createMapVariableFromFixture
       createDashboard: typeof createDashboard
       createCell: typeof createCell
       createDashWithCell: typeof createDashWithCell
@@ -73,6 +77,7 @@ declare global {
       deleteOrg: typeof deleteOrg
       flush: typeof flush
       getByTestID: typeof getByTestID
+      getByTestIDHead: typeof getByTestIDHead
       getByInputName: typeof getByInputName
       getByInputValue: typeof getByInputValue
       getByTestIDAndSetInputValue: typeof getByTestIDAndSetInputValue

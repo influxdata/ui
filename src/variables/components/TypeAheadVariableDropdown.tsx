@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import classnames from 'classnames'
 
@@ -260,6 +260,12 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     const widthStyle = this.getWidth(placeHolderText)
 
+    const selectAllTextInInput = (event?: ChangeEvent<HTMLInputElement>) => {
+      if (event) {
+        event.target.select()
+      }
+    }
+
     const getInnerComponent = () => {
       if (status === RemoteDataState.Loading || this.noValuesPresent()) {
         return placeHolderText
@@ -271,6 +277,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
             value={typedValue}
             onKeyDown={this.maybeSelectNextItem}
             testID={`variable-dropdown-input-typeAhead--${name}`}
+            onFocus={selectAllTextInInput}
           />
         )
       }

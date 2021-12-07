@@ -1,0 +1,61 @@
+.page-not-found {
+  > .page-not-found-funnel {
+    display: flex;
+    flex-direction: column;
+
+    .page-not-found-content {
+      padding: 10px;
+      color: #fff;
+
+      > .page-not-found-content-highlight {
+        margin: 20px;
+      }
+    }
+  }
+  > .page-not-found-footer {
+    display: flex;
+    height: 60%;
+    background-image: url('~assets/images/NotFoundBottom.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    > .page-not-found-panel {
+      top: -20%;
+      width: 660px;
+      margin: 0 auto;
+      z-index: 10;
+
+      > .page-not-found-panel-content {
+        padding: 40px 50px;
+
+        > .page-not-found-panel-section {
+          margin: 10px;
+
+          > .page-not-found-panel-title {
+            font-weight: bold;
+            margin: 5px 0;
+          }
+        }
+
+        .page-not-found-community-links {
+          display: flex;
+          margin: 10px;
+          align-items: center;
+
+          > a {
+            margin: 0 5px;
+          }
+
+          > .slack-icon {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-image: url('~assets/images/SlackIcon.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+          }
+        }
+      }
+    }
+  }
+}

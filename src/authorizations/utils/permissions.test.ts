@@ -1,6 +1,10 @@
 import {allAccessPermissions, toggleSelectedBucket} from './permissions'
 import {CLOUD} from 'src/shared/constants'
-import {generateDescription} from 'src/authorizations/utils/permissions'
+import {
+  generateDescription,
+  formatApiPermissions,
+  formatPermissionsObj,
+} from 'src/authorizations/utils/permissions'
 
 // TODO remove all of this when we move to server side authority
 const ossHvhs = [
@@ -163,6 +167,34 @@ const ossHvhs = [
     resource: {
       id: 'bulldogs',
       type: 'orgs',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'remotes',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'remotes',
+    },
+  },
+  {
+    action: 'read',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'replications',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: 'bulldogs',
+      type: 'replications',
     },
   },
   {
@@ -723,5 +755,159 @@ describe('generateDescription method', () => {
     expect(generateDescription(apiPermission5)).toBe(
       'Read buckets _monitoring Write buckets _monitoring'
     )
+  })
+})
+
+const orgID = 'ba9198e037d35d4d'
+const orgName = 'dev'
+const monitoringID = '25a6692ba25d7147'
+
+const allAccessAccordionPerms = {
+  annotations: {
+    read: true,
+    write: false,
+  },
+  authorizations: {
+    read: false,
+    write: true,
+  },
+}
+
+const allAccessApiPerm = [
+  {
+    action: 'read',
+    resource: {
+      orgID: orgID,
+      type: 'annotations',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: orgID,
+      type: 'authorizations',
+    },
+  },
+]
+
+const nonAllAcessAccordionPerms = {
+  buckets: {
+    read: false,
+    write: false,
+    sublevelPermissions: {
+      '25a6692ba25d7147': {
+        id: '25a6692ba25d7147',
+        name: '_monitoring',
+        orgID: 'ba9198e037d35d4d',
+        permissions: {read: true, write: true},
+      },
+      '28eccf12e3e4ff8e': {
+        id: '28eccf12e3e4ff8e',
+        name: 'frontendservices',
+        orgID: 'ba9198e037d35d4d',
+        permissions: {read: false, write: false},
+      },
+      '32b8e84498b27938': {
+        id: '32b8e84498b27938',
+        name: 'devbucket',
+        orgID: 'ba9198e037d35d4d',
+        permissions: {read: false, write: false},
+      },
+    },
+  },
+}
+
+const nonAllAcessAccordionPerms2 = {
+  buckets: {
+    read: true,
+    write: true,
+    sublevelPermissions: {
+      '25a6692ba25d7147': {
+        id: '25a6692ba25d7147',
+        name: '_monitoring',
+        orgID: 'ba9198e037d35d4d',
+        permissions: {read: true, write: true},
+      },
+    },
+  },
+}
+
+const nonAllAcessApiPerms = [
+  {
+    action: 'read',
+    resource: {
+      orgID: orgID,
+      type: 'buckets',
+      id: monitoringID,
+      name: '_monitoring',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      orgID: orgID,
+      type: 'buckets',
+      id: monitoringID,
+      name: '_monitoring',
+    },
+  },
+]
+
+const orgsAccordionPerm = {
+  orgs: {
+    read: true,
+    write: true,
+  },
+}
+
+const orgsApiPerm = [
+  {
+    action: 'read',
+    resource: {
+      id: orgID,
+      name: orgName,
+      type: 'orgs',
+    },
+  },
+  {
+    action: 'write',
+    resource: {
+      id: orgID,
+      name: orgName,
+      type: 'orgs',
+    },
+  },
+]
+
+describe('Testing formatApiPermissions function', () => {
+  test('does it convert all access permission object into api permission', () => {
+    expect(
+      formatApiPermissions(allAccessAccordionPerms, orgID, orgName)
+    ).toMatchObject(allAccessApiPerm)
+  })
+  test('does it convert non-all access permission object into api permission', () => {
+    expect(
+      formatApiPermissions(nonAllAcessAccordionPerms, orgID, orgName)
+    ).toMatchObject(nonAllAcessApiPerms)
+  })
+  test('does it convert orgs permission object into api permission', () => {
+    expect(
+      formatApiPermissions(orgsAccordionPerm, orgID, orgName)
+    ).toMatchObject(orgsApiPerm)
+  })
+})
+describe('Testing formatPermissionsObj function', () => {
+  test('for api permissions with IDs, it creates perms with sublevel permissions', () => {
+    expect(formatPermissionsObj(nonAllAcessApiPerms)).toMatchObject(
+      nonAllAcessAccordionPerms2
+    )
+  })
+  test('if all sublevel permissions are true, it updates the top level perms to true', () => {
+    expect(formatPermissionsObj(nonAllAcessApiPerms)).toEqual(
+      nonAllAcessAccordionPerms2
+    )
+  })
+  test('for all access permissions, it creates an all access accordion api permission', () => {
+    expect(formatPermissionsObj(orgsApiPerm)).toMatchObject(orgsAccordionPerm)
   })
 })

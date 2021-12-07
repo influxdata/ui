@@ -48,7 +48,7 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 
-import {getTasks} from 'src/tasks/actions/thunks'
+import {getAllTasks} from 'src/tasks/actions/thunks'
 import {getLabels} from 'src/labels/actions/thunks'
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -83,7 +83,7 @@ class TasksPage extends PureComponent<Props, State> {
   }
 
   public componentDidMount() {
-    this.props.getTasks(-1) // -1 means fetch all tasks with no limit
+    this.props.getAllTasks()
     this.props.getLabels()
 
     let sortType: SortTypes = this.state.sortType
@@ -313,7 +313,7 @@ const mdtp = {
   checkTaskLimits: checkTasksLimitsAction,
   cloneTask,
   deleteTask,
-  getTasks,
+  getAllTasks,
   getLabels,
   onAddTaskLabel: addTaskLabel,
   onRunTask: runTask,

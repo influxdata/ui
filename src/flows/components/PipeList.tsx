@@ -71,34 +71,36 @@ const PipeList: FC = () => {
     }
 
     return (
-      <Grid
-        cols={12}
-        layout={layout}
-        rowHeight={DASHBOARD_LAYOUT_ROW_HEIGHT}
-        useCSSTransforms={false}
-        containerPadding={[0, 0]}
-        margin={[LAYOUT_MARGIN, LAYOUT_MARGIN]}
-        onLayoutChange={layoutChange}
-        draggableHandle=".cell--draggable"
-        isDraggable
-        isResizable
-      >
-        {flow.data.allIDs
-          .filter(
-            id =>
-              /^(visualization|markdown)$/.test(flow.data.byID[id]?.type) &&
-              flow.meta.byID[id].visible
-          )
-          .map(id => (
-            <div
-              key={id}
-              className="cell"
-              data-testid={`cell ${flow.meta.byID[id].title}`}
-            >
-              <PresentationPipe id={id} />
-            </div>
-          ))}
-      </Grid>
+      <div className="flow">
+        <Grid
+          cols={12}
+          layout={layout}
+          rowHeight={DASHBOARD_LAYOUT_ROW_HEIGHT}
+          useCSSTransforms={false}
+          containerPadding={[0, 0]}
+          margin={[LAYOUT_MARGIN, LAYOUT_MARGIN]}
+          onLayoutChange={layoutChange}
+          draggableHandle=".cell--draggable"
+          isDraggable
+          isResizable
+        >
+          {flow.data.allIDs
+            .filter(
+              id =>
+                /^(visualization|markdown)$/.test(flow.data.byID[id]?.type) &&
+                flow.meta.byID[id].visible
+            )
+            .map(id => (
+              <div
+                key={id}
+                className="cell"
+                data-testid={`cell ${flow.meta.byID[id].title}`}
+              >
+                <PresentationPipe id={id} />
+              </div>
+            ))}
+        </Grid>
+      </div>
     )
   }
 

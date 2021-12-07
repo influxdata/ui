@@ -61,6 +61,16 @@ import {TASK_LIMIT} from 'src/resources/constants'
 type Action = TaskAction | ExternalActions | ReturnType<typeof getTasks>
 type ExternalActions = NotifyAction | ReturnType<typeof checkTaskLimits>
 
+const fetchTasks = async (query: GetTasksParams['query']) => {
+  const resp = await api.getTasks({query})
+
+  if (resp.status !== 200) {
+    throw new Error(resp.data.message)
+  }
+
+  return resp
+}
+
 // Thunks
 export const getTasks = (limit: number = TASK_LIMIT) => async (
   dispatch: Dispatch<TaskAction | NotifyAction>,
@@ -75,15 +85,62 @@ export const getTasks = (limit: number = TASK_LIMIT) => async (
     const org = getOrg(state)
 
     const query: GetTasksParams['query'] = {orgID: org.id, limit}
-
-    const resp = await api.getTasks({query})
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
+    const resp = await fetchTasks(query)
 
     const tasks = normalize<Task, TaskEntities, string[]>(
       resp.data.tasks,
+      arrayOfTasks
+    )
+
+    dispatch(setTasks(RemoteDataState.Done, tasks))
+  } catch (error) {
+    dispatch(setTasks(RemoteDataState.Error))
+    const message = getErrorMessage(error)
+    console.error(error)
+    dispatch(notify(copy.tasksFetchFailed(message)))
+  }
+}
+
+export const getAllTasks = () => async (
+  dispatch: Dispatch<TaskAction | NotifyAction>,
+  getState: GetState
+): Promise<void> => {
+  try {
+    const state = getState()
+    if (getStatus(state, ResourceType.Tasks) === RemoteDataState.NotStarted) {
+      dispatch(setTasks(RemoteDataState.Loading))
+    }
+    const org = getOrg(state)
+
+    // fetching 500 tasks at once strikes a balance between large requests and many requests
+    const limit = 500
+    const query: GetTasksParams['query'] = {orgID: org.id, limit}
+    const resp = await fetchTasks(query)
+
+    let nonNormalizedTasks = resp.data.tasks
+    let next = resp.data.links.next
+    while (next && next.includes('after=')) {
+      const afterAndExtras = next.split('after=')
+      if (afterAndExtras.length < 2) {
+        break
+      }
+
+      const after = afterAndExtras[1].split('&')[0]
+      if (!after) {
+        break
+      }
+
+      query.after = after
+      const resp = await api.getTasks({query})
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      nonNormalizedTasks = [...nonNormalizedTasks, ...resp.data.tasks]
+      next = resp.data.links.next
+    }
+
+    const tasks = normalize<Task, TaskEntities, string[]>(
+      nonNormalizedTasks,
       arrayOfTasks
     )
 
@@ -166,6 +223,7 @@ export const updateTaskStatus = (task: Task) => async (
     )
 
     dispatch(editTask(normTask))
+    dispatch(setCurrentTask(normTask))
     dispatch(notify(copy.taskUpdateSuccess()))
   } catch (e) {
     console.error(e)
@@ -464,7 +522,6 @@ export const saveNewScript = (script: string, preamble: string) => async (
     dispatch(notify(copy.taskCreatedSuccess()))
     dispatch(checkTaskLimits())
   } catch (error) {
-    console.error(error)
     if (isLimitError(error)) {
       dispatch(notify(copy.resourceLimitReached('tasks')))
     } else {

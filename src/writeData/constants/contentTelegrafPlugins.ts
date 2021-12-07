@@ -115,7 +115,7 @@ import nats_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nats
 import natsMarkdown from 'src/writeData/components/telegrafPlugins/nats.md'
 import neptune_apexMarkdown from 'src/writeData/components/telegrafPlugins/neptune_apex.md'
 import net_responseMarkdown from 'src/writeData/components/telegrafPlugins/net_response.md'
-import net_statMarkdown from 'src/writeData/components/telegrafPlugins/net_stat.md'
+import netstatMarkdown from 'src/writeData/components/telegrafPlugins/netstat.md'
 import netMarkdown from 'src/writeData/components/telegrafPlugins/net.md'
 import nfsclientMarkdown from 'src/writeData/components/telegrafPlugins/nfsclient.md'
 import nginx_plus_apiMarkdown from 'src/writeData/components/telegrafPlugins/nginx_plus_api.md'
@@ -404,11 +404,13 @@ import zfsLogo from 'src/writeData/graphics/zfs.svg'
 import zipkinLogo from 'src/writeData/graphics/zipkin.svg'
 import zookeeperLogo from 'src/writeData/graphics/zookeeper.svg'
 
+import {CSSProperties} from 'react'
 export interface TelegrafPluginAssets {
   id: string
   name: string
   image?: string
   markdown?: string
+  style?: CSSProperties
 }
 
 export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
@@ -429,6 +431,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'Alibaba (Aliyun) CloudMonitor Service Statistics',
     markdown: aliyuncmsMarkdown,
     image: aliyuncmsLogo,
+    style: {maxWidth: '150%'},
   },
   {
     id: 'amd_rocm_smi',
@@ -947,7 +950,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: kinesis_consumerLogo,
   },
   {
-    id: 'KNXListener',
+    id: 'knx_listener',
     name: 'KNX',
     markdown: knx_listenerMarkdown,
     image: knx_listenerLogo,
@@ -1109,9 +1112,9 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: net_responseLogo,
   },
   {
-    id: 'net_stat',
+    id: 'netstat',
     name: 'Net Stat',
-    markdown: net_statMarkdown,
+    markdown: netstatMarkdown,
     image: net_responseLogo,
   },
   {

@@ -1,26 +1,18 @@
 import {Organization} from '../../src/types'
 
 describe('Flows', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() =>
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${id}`)
-            cy.getByTestID('version-info')
-            return cy
-              .setFeatureFlags({
-                notebooksExp: true,
-              })
-              .then(() => {
-                cy.getByTestID('nav-item-flows').should('be.visible')
-                return cy.getByTestID('nav-item-flows').click()
-              })
-          })
-        )
-      )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.visit(`${orgs}/${id}`)
+      })
     )
-  )
+    cy.getByTestID('version-info')
+    cy.getByTestID('nav-item-flows').should('be.visible')
+    cy.getByTestID('nav-item-flows').click()
+  })
 
   it('CRUD a flow from the index page', () => {
     const now = Date.now()
@@ -200,6 +192,7 @@ describe('Flows', () => {
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
+    cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
 
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
@@ -235,6 +228,8 @@ describe('Flows', () => {
         cy.getByTestID(`selector-list beans`).click()
       })
 
+    cy.wait('@updateNotebook')
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -247,10 +242,6 @@ describe('Flows', () => {
     // This is a random validator that the autorefresh option doesn't pop up
     // In Flows again without explicit changes
     cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
-
-    cy.clickNavBarItem('nav-item-flows')
-
-    cy.getByTestID('resource-editable-name').click()
 
     cy.clickNavBarItem('nav-item-flows')
 

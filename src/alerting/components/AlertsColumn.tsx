@@ -72,6 +72,10 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
     />
   )
 
+  // not using the SearchWidget here, just adding the onClear to the Input;
+  // because using the SearchWidget instead changes how the 'children(searchTerm)'
+  // function is called (with the vanilla Input, it is called on each keystroke,
+  // with the searchWidget is it only called once at render time)
   return (
     <Panel
       backgroundColor={InfluxColors.Grey5}
@@ -102,6 +106,7 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
           onChange={e => onChangeSearchTerm(e.target.value)}
           testID={`filter--input ${type}`}
           tabIndex={tabIndex}
+          onClear={() => onChangeSearchTerm('')}
         />
       </div>
       <div className="alerting-index--column-body">

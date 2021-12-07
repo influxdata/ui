@@ -241,7 +241,9 @@ describe('Tasks.Components.TaskCard', () => {
     })
 
     mocked(goToTasks).mockImplementation(() => {
-      return {type: 'MOCKED'}
+      return () => {
+        return {type: 'MOCKED'}
+      }
     })
 
     await mockNotify()
@@ -296,7 +298,9 @@ describe('Tasks.Components.TaskCard', () => {
     })
 
     mocked(goToTasks).mockImplementation(() => {
-      return {type: 'MOCKED'}
+      return () => {
+        return {type: 'MOCKED'}
+      }
     })
 
     await mockNotify()

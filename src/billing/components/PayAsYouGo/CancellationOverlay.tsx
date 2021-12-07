@@ -21,6 +21,7 @@ import {useSelector} from 'react-redux'
 import {getQuartzMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {postSignout} from 'src/client'
 
 interface Props {
   onHideOverlay: () => void
@@ -35,6 +36,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     canContactForFeedback,
     suggestions,
     shortSuggestion,
+    getRedirectLocation,
   } = useContext(CancelServiceContext)
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
@@ -54,9 +56,10 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
       reason: VariableItems[reason],
       canContactForFeedback: canContactForFeedback ? 'true' : 'false',
     }
+    event('CancelServiceExecuted Event', payload)
 
     if (
-      isFlagEnabled('rudderStackReporting') &&
+      isFlagEnabled('rudderstackReporting') &&
       isFlagEnabled('trackCancellations')
     ) {
       // Send to Rudderstack
@@ -64,10 +67,32 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     }
 
     handleCancelAccount()
+
+    if (isFlagEnabled('trackCancellations')) {
+      postSignout({}).then(() => {
+        window.location.href = getRedirectLocation()
+      })
+    }
+
     event('Cancel Service Executed', payload)
   }
 
   const handleDismiss = () => {
+    const payload = {
+      org: org.id,
+      tier: quartzMe?.accountType,
+      email: quartzMe?.email,
+    }
+    event('CancelServiceDismissed Event', payload)
+
+    if (
+      isFlagEnabled('rudderstackReporting') &&
+      isFlagEnabled('trackCancellations')
+    ) {
+      // Send to Rudderstack
+      track('CancelServiceDismissed', payload)
+    }
+
     setHasClickedCancel(false)
     onHideOverlay()
   }
@@ -85,7 +110,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
 
   return (
     <Overlay visible={true} className="cancellation-overlay">
-      <Overlay.Container maxWidth={600}>
+      <Overlay.Container maxWidth={700}>
         <Overlay.Header title="Cancel Service" onDismiss={handleDismiss} />
         <Overlay.Body>
           <Alert

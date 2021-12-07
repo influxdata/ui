@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 import {useParams} from 'react-router-dom'
-import {Renderer} from 'react-markdown'
 import {Panel, InfluxColors, ComponentSize} from '@influxdata/clockface'
 
 // Components
@@ -32,7 +31,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import 'src/writeData/components/WriteDataDetailsView.scss'
 import LineProtocolFooterButtons from 'src/buckets/components/lineProtocol/LineProtocolFooterButtons'
 
-const codeRenderer: Renderer<HTMLPreElement> = (props: any): any => (
+const codeRenderer: any = (props: any): any => (
   <CodeSnippet text={props.value} label={props.language} />
 )
 

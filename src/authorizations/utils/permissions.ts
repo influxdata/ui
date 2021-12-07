@@ -1,4 +1,4 @@
-import {Bucket, Permission} from 'src/types'
+import {Bucket, Permission, ResourceType} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 import {capitalize} from 'lodash'
 
@@ -26,7 +26,13 @@ const sharedPermissionTypes: PermissionTypes[] = [
 
 const cloudPermissionTypes = ['flows', 'functions']
 
-const ossPermissionTypes = ['notebooks', 'scrapers', 'sources']
+const ossPermissionTypes = [
+  'notebooks',
+  'scrapers',
+  'sources',
+  'remotes',
+  'replications',
+]
 
 // TODO: replace this with some server side mechanism
 const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(
@@ -140,12 +146,12 @@ export enum BucketTab {
 
 export const formatResources = resourceNames => {
   const resources = resourceNames.filter(
-    item => item !== 'buckets' && item !== 'telegrafs'
+    item => item !== ResourceType.Buckets && item !== ResourceType.Telegrafs
   )
   resources.sort()
-  resources.unshift('telegrafs')
-  resources.unshift('buckets')
-  const indexToSplit = resources.indexOf('telegrafs')
+  resources.unshift(ResourceType.Telegrafs)
+  resources.unshift(ResourceType.Buckets)
+  const indexToSplit = resources.indexOf(ResourceType.Telegrafs)
   const first = resources.slice(0, indexToSplit + 1)
   const second = resources.slice(indexToSplit + 1)
   return [first, second]
@@ -158,7 +164,10 @@ export const formatPermissionsObj = permissions => {
 
     if (acc.hasOwnProperty(type)) {
       accordionPermission = {...acc[type]}
-      if (id && (type === 'buckets' || type === 'telegrafs')) {
+      if (
+        id &&
+        (type === ResourceType.Buckets || type === ResourceType.Telegrafs)
+      ) {
         if (accordionPermission.sublevelPermissions.hasOwnProperty(id)) {
           accordionPermission.sublevelPermissions[id].permissions[action] = true
         } else {
@@ -176,7 +185,10 @@ export const formatPermissionsObj = permissions => {
         accordionPermission[action] = true
       }
     } else {
-      if (id && (type === 'buckets' || type === 'telegrafs')) {
+      if (
+        id &&
+        (type === ResourceType.Buckets || type === ResourceType.Telegrafs)
+      ) {
         accordionPermission = {
           read: false,
           write: false,
@@ -329,14 +341,20 @@ export const generateDescription = apiPermissions => {
     }
   } else {
     apiPermissions.forEach(perm => {
-      if (perm.resource.name) {
+      if (perm.resource.type === 'orgs') {
         generatedDescription += `${capitalize(perm.action)} ${
           perm.resource.type
-        } ${perm.resource.name} `
+        }  `
       } else {
-        generatedDescription += `${capitalize(perm.action)} ${
-          perm.resource.type
-        } `
+        if (perm.resource.name) {
+          generatedDescription += `${capitalize(perm.action)} ${
+            perm.resource.type
+          } ${perm.resource.name} `
+        } else {
+          generatedDescription += `${capitalize(perm.action)} ${
+            perm.resource.type
+          } `
+        }
       }
     })
   }

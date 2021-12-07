@@ -1,44 +1,44 @@
-import React, {FC} from 'react'
-import {ProgressBar, Gradients, InfluxColors} from '@influxdata/clockface'
+// Libraries
+import React, {FC, useContext} from 'react'
 import {
-  BUCKET_LIMIT,
-  RULE_LIMIT,
-  TASK_LIMIT,
-  DASHBOARD_LIMIT,
-} from 'src/resources/constants'
+  Panel,
+  HeadingElement,
+  Heading,
+  TechnoSpinner,
+  JustifyContent,
+  AlignItems,
+} from '@influxdata/clockface'
+
+// Contexts
+import {UsageContext} from 'src/usage/context/usage'
+
+// Constants
+
+// Types
+import {RemoteDataState} from 'src/types'
+import UsagePanelDetails from 'src/me/components/UsagePanelDetails'
 
 const UsagePanel: FC = () => {
+  const {creditUsage} = useContext(UsageContext)
+
   return (
-    <div className="usagepanel--container">
-      <ProgressBar
-        value={50}
-        max={BUCKET_LIMIT}
-        barGradient={Gradients.SavannaHeat}
-        color={InfluxColors.Ruby}
-        label="Buckets"
-      />
-      <ProgressBar
-        value={50}
-        max={RULE_LIMIT}
-        barGradient={Gradients.SavannaHeat}
-        color={InfluxColors.Ruby}
-        label="Rules"
-      />
-      <ProgressBar
-        value={50}
-        max={TASK_LIMIT}
-        barGradient={Gradients.MillennialAvocado}
-        color={InfluxColors.Rainforest}
-        label="Tasks"
-      />
-      <ProgressBar
-        value={50}
-        max={DASHBOARD_LIMIT}
-        barGradient={Gradients.GoldenHour}
-        color={InfluxColors.Pineapple}
-        label="Dashboards"
-      />
-    </div>
+    <Panel>
+      <Panel.Header>
+        <Heading element={HeadingElement.H3}>
+          <label htmlFor="usagepanel--title">Usage</label>
+        </Heading>
+      </Panel.Header>
+      <Panel.Body
+        justifyContent={JustifyContent.Center}
+        alignItems={AlignItems.Center}
+      >
+        {creditUsage.status === RemoteDataState.Loading ? (
+          <TechnoSpinner />
+        ) : (
+          <UsagePanelDetails />
+        )}
+      </Panel.Body>
+    </Panel>
   )
 }
 

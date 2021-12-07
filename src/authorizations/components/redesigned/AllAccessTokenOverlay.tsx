@@ -27,6 +27,7 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Utils
 import {allAccessPermissions} from 'src/authorizations/utils/permissions'
+import {event} from 'src/cloud/utils/reporting'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -54,6 +55,7 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
     }
     dispatch(createAuthorization(token))
     handleDismiss()
+    event('token.allAccess.create.success', {meID, name: description})
     dispatch(showOverlay('access-token', null, () => dismissOverlay()))
   }
 

@@ -1,23 +1,99 @@
 import {Organization} from '../../../src/types'
 
-const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) =>
+const setupData = (cy: Cypress.Chainable) =>
   cy.flush().then(() =>
     cy.signin().then(() =>
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs, buckets}) => {
           cy.visit(`${orgs}/${id}${buckets}`)
-          return cy
-            .setFeatureFlags({measurementSchema: enableMeasurementSchema})
-            .then(() => {
-              return cy.getByTestID('tree-nav')
-            })
+          return cy.getByTestID('tree-nav')
         })
       )
     )
   )
+
+const testSchemaFiles = (
+  cy: Cypress.Chainable,
+  isCsv: boolean,
+  origFileContents: string,
+  checkContents: (cy: Cypress.Chainable) => void
+) => {
+  cy.getByTestID('Create Bucket').click()
+  cy.getByTestID('bucket-form-name').type('explicit_bucket')
+  cy.getByTestID('accordion-header').click()
+  cy.getByTestID('explicit-bucket-schema-choice-ID').click()
+
+  cy.getByTestID('bucket-form-submit').click()
+
+  // make sure the overlay is closed!
+  cy.getByTestID('create-bucket-form').should('not.exist')
+
+  cy.getByTestID(`bucket-card explicit_bucket`)
+    .should('exist')
+    .within(() => {
+      cy.getByTestID('bucket-settings').click()
+    })
+  cy.getByTestID('accordion-header').click()
+
+  cy.getByTestID('measurement-schema-add-file-button').click()
+  cy.getByTestID('input-field').type('first schema file')
+
+  let schemaFile = 'valid.json'
+  let type = 'application/json'
+
+  if (isCsv) {
+    schemaFile = 'valid.csv'
+    type = 'text/csv'
+  }
+
+  const testFile = new File([origFileContents], schemaFile, {type})
+
+  const event = {dataTransfer: {files: [testFile]}, force: true}
+  cy.getByTestID('dndContainer')
+    .trigger('dragover', event)
+    .trigger('drop', event)
+
+  cy.getByTestID('bucket-form-submit').click()
+
+  // in settings:
+  // give it some time for the submit to happen/the bucket list to show up
+  // check the url to make sure it has navigated back to the main buckets list
+  cy.location('pathname', {timeout: 60000}).should(
+    'match',
+    /.*load-data\/buckets$/
+  )
+
+  cy.getByTestID(`bucket-card explicit_bucket`)
+    .should('exist')
+    .within(() => {
+      cy.getByTestID('bucket-settings').click()
+    })
+  cy.getByTestID('accordion-header').click()
+
+  cy.getByTestID('accordion--advanced-section')
+    .should('exist')
+    .within(() => {
+      if (isCsv) {
+        cy.getByTestID('csv-download-flavor-choice').click()
+      }
+
+      cy.getByTestID('measurement-schema-readOnly-panel-0')
+        .should('exist')
+        .within(() => {
+          cy.getByTestID('measurement-schema-name-0')
+            .contains('first schema file')
+            .should('exist')
+
+          cy.getByTestID('measurement-schema-download-button').click()
+
+          checkContents(cy)
+        })
+    })
+}
+
 describe('Explicit Buckets', () => {
   beforeEach(() => {
-    setupData(cy, true)
+    setupData(cy)
 
     // remove the downloaded files
     cy.exec('rm cypress/downloads/*', {
@@ -25,7 +101,6 @@ describe('Explicit Buckets', () => {
       failOnNonZeroExit: false,
     })
   })
-
   it('can create a bucket with an explicit schema', () => {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('overlay--container').within(() => {
@@ -47,6 +122,9 @@ describe('Explicit Buckets', () => {
 
       cy.getByTestID('bucket-form-submit').click()
     })
+
+    // make sure the overlay is closed!
+    cy.getByTestID('create-bucket-form').should('not.exist')
 
     cy.getByTestID('bucket-card explicit-bucket-test').within($card => {
       expect($card.length).to.equal(1)
@@ -94,6 +172,9 @@ describe('Explicit Buckets', () => {
 
       cy.getByTestID('bucket-form-submit').click()
     })
+
+    // make sure the overlay is closed!
+    cy.getByTestID('create-bucket-form').should('not.exist')
 
     cy.getByTestID('bucket-card implicit-bucket-test').within($card => {
       expect($card.length).to.equal(1)
@@ -145,8 +226,9 @@ describe('Explicit Buckets', () => {
 
     cy.getByTestID('bucket-form-submit').click()
 
-    // give it some time for the submit to happen/the bucket list to show up
-    cy.wait(500)
+    // make sure the overlay is closed!
+    cy.getByTestID('create-bucket-form').should('not.exist')
+
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
@@ -158,7 +240,7 @@ describe('Explicit Buckets', () => {
       .should('exist')
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
-          .contains('first schem...')
+          .contains('first schema file')
           .should('exist')
         cy.getByTestID('measurement-schema-download-button').click()
         cy.readFile(`cypress/downloads/first_schema_file.json`)
@@ -174,68 +256,40 @@ describe('Explicit Buckets', () => {
       })
   })
 
-  it('should be able to create an explicit bucket and add schema file during editing', function() {
-    cy.getByTestID('Create Bucket').click()
-    cy.getByTestID('bucket-form-name').type('explicit_bucket')
-    cy.getByTestID('accordion-header').click()
-    cy.getByTestID('explicit-bucket-schema-choice-ID').click()
+  it('should be able to create an explicit bucket and add json schema file during editing', function() {
+    const origFileContents = `[{"name":"time","type":"timestamp"},
+        {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
-    cy.getByTestID('bucket-form-submit').click()
+    const checkContents = (cy: Cypress.Chainable) => {
+      cy.readFile(`cypress/downloads/first_schema_file.json`)
+        .should('exist')
+        .then(fileContent => {
+          expect(fileContent[0].name).to.be.equal('time')
+          expect(fileContent[0].type).to.be.equal('timestamp')
 
-    cy.getByTestID(`bucket-card explicit_bucket`)
-      .should('exist')
-      .within(() => {
-        cy.getByTestID('bucket-settings').click()
-      })
-    cy.getByTestID('accordion-header').click()
+          expect(fileContent[1].name).to.be.equal('fsWrite')
+          expect(fileContent[1].type).to.be.equal('field')
+          expect(fileContent[1].dataType).to.be.equal('float')
+        })
+    }
+    testSchemaFiles(cy, false, origFileContents, checkContents)
+  })
 
-    cy.getByTestID('measurement-schema-add-file-button').click()
-    cy.getByTestID('input-field').type('first schema file')
+  it('should be able to create an explicit bucket and add csv schema file during editing', function() {
+    const origFileContents = `name,type,dataType
+time,timestamp,
+host,tag,
+service,tag,
+fsRead,field,float`
 
-    const schemaFile = 'valid.json'
-    const type = 'application/json'
-    const testFile = new File(
-      [
-        `[{"name":"time","type":"timestamp"},
-        {"name":"fsWrite","type":"field","dataType":"float"} ]`,
-      ],
-      schemaFile,
-      {type}
-    )
-
-    const event = {dataTransfer: {files: [testFile]}, force: true}
-    cy.getByTestID('dndContainer')
-      .trigger('dragover', event)
-      .trigger('drop', event)
-
-    cy.getByTestID('bucket-form-submit').click()
-
-    cy.getByTestID(`bucket-card explicit_bucket`)
-      .should('exist')
-      .within(() => {
-        cy.getByTestID('bucket-settings').click()
-      })
-    cy.getByTestID('accordion-header').click()
-
-    cy.getByTestID('measurement-schema-readOnly-panel-0')
-      .should('exist')
-      .within(() => {
-        cy.getByTestID('measurement-schema-name-0')
-          .contains('first schem...')
-          .should('exist')
-
-        cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/first_schema_file.json`)
-          .should('exist')
-          .then(fileContent => {
-            expect(fileContent[0].name).to.be.equal('time')
-            expect(fileContent[0].type).to.be.equal('timestamp')
-
-            expect(fileContent[1].name).to.be.equal('fsWrite')
-            expect(fileContent[1].type).to.be.equal('field')
-            expect(fileContent[1].dataType).to.be.equal('float')
-          })
-      })
+    const checkContents = (cy: Cypress.Chainable) => {
+      cy.readFile(`cypress/downloads/first_schema_file.csv`)
+        .should('exist')
+        .then(fileContent => {
+          expect(fileContent).to.equal(origFileContents)
+        })
+    }
+    testSchemaFiles(cy, true, origFileContents, checkContents)
   })
 
   it('should be able to create an explicit bucket and update the existing schema file during editing', function() {
@@ -245,6 +299,9 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('explicit-bucket-schema-choice-ID').click()
 
     cy.getByTestID('bucket-form-submit').click()
+
+    // make sure the overlay is closed!
+    cy.getByTestID('create-bucket-form').should('not.exist')
 
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
@@ -275,6 +332,15 @@ describe('Explicit Buckets', () => {
       .trigger('drop', event)
 
     cy.getByTestID('bucket-form-submit').click()
+
+    // in settings:
+    // b/c editing has a different url, this *should* work
+    // give it some time for the submit to happen/the bucket list to show up
+    // check the url to make sure it has navigated back to the main buckets list
+    cy.location('pathname', {timeout: 60000}).should(
+      'match',
+      /.*load-data\/buckets$/
+    )
 
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
@@ -357,6 +423,14 @@ describe('Explicit Buckets', () => {
       })
     cy.getByTestID('bucket-form-submit').click()
 
+    // in settings:
+    // give it some time for the submit to happen/the bucket list to show up
+    // check the url to make sure it has navigated back to the main buckets list
+    cy.location('pathname', {timeout: 60000}).should(
+      'match',
+      /.*load-data\/buckets$/
+    )
+
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
@@ -403,47 +477,38 @@ describe('Buckets', () => {
 
   it('can sort by name and retention', () => {
     cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-      const demoDataBucket = 'Website Monitoring Bucket'
       const tasksBucket = '_tasks'
       const monitoringBucket = '_monitoring'
+      const createdBucket = 'womp womp'
       const buckets = [
-        demoDataBucket,
+        createdBucket,
         defaultBucket,
         tasksBucket,
         monitoringBucket,
       ]
       const retentionDesc = [
         defaultBucket,
+        createdBucket,
         monitoringBucket,
-        demoDataBucket,
         tasksBucket,
       ]
       const retentionAsc = [
+        createdBucket,
+        defaultBucket,
         tasksBucket,
         monitoringBucket,
-        demoDataBucket,
-        defaultBucket,
       ]
 
-      // if demo data bucket doesn't exist, create a bucket with the same name
-      cy.getByTestID('resource-list').then($body => {
-        if (
-          $body.find(`[data-testid="bucket-card ${demoDataBucket}"]`).length ===
-          0
-        ) {
-          cy.getByTestID(`bucket-card ${demoDataBucket}`).should('not.exist')
-          cy.getByTestID('Create Bucket').click()
-          cy.getByTestID('overlay--container').within(() => {
-            cy.getByInputName('name').type(demoDataBucket)
-            cy.getByTestID('retention-intervals--button').click()
-            cy.getByTestID('duration-selector--button').click()
-            cy.getByTestID('duration-selector--7d')
-              .click()
-              .then(() => {
-                cy.getByTestID('bucket-form-submit').click()
-              })
+      cy.getByTestID('Create Bucket').click()
+      cy.getByTestID('overlay--container').within(() => {
+        cy.getByInputName('name').type(createdBucket)
+        cy.getByTestID('retention-intervals--button').click()
+        cy.getByTestID('duration-selector--button').click()
+        cy.getByTestID('duration-selector--7d')
+          .click()
+          .then(() => {
+            cy.getByTestID('bucket-form-submit').click()
           })
-        }
       })
 
       cy.getByTestID('resource-sorter--button')

@@ -103,6 +103,7 @@ export interface FlowState {
 
 export interface Flow {
   id?: string
+  orgID?: string
   name: string
   range: TimeRange
   refresh: AutoRefresh

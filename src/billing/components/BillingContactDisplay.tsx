@@ -13,29 +13,32 @@ const BillingContactDisplay: FC = () => {
     <Panel.Body size={ComponentSize.Large} testID="billing-contact">
       <Grid>
         <Grid.Row>
-          <BillingContactItem header="First Name" value={contact.firstName} />
-          <BillingContactItem header="Last Name" value={contact.lastName} />
+          <BillingContactItem header="First Name" value={contact?.firstName} />
+          <BillingContactItem header="Last Name" value={contact?.lastName} />
         </Grid.Row>
         <Grid.Row>
           <BillingContactItem
             header="Company Name"
-            value={contact.companyName}
+            value={contact?.companyName}
           />
-          <BillingContactItem header="Country" value={contact.country} />
+          <BillingContactItem header="Country" value={contact?.country} />
         </Grid.Row>
         <Grid.Row>
           <BillingContactItem
             header="Physical Address"
-            value={`${contact.street1}, ${contact.street2}`}
+            value={`${contact?.street1}, ${contact?.street2}`}
           />
         </Grid.Row>
         <Grid.Row>
-          <BillingContactItem header="City" value={contact.city} />
+          <BillingContactItem header="City" value={contact?.city} />
           <BillingContactItem
             header="State (Subdivision)"
-            value={contact.subdivision}
+            value={contact?.subdivision}
           />
-          <BillingContactItem header="Postal Code" value={contact.postalCode} />
+          <BillingContactItem
+            header="Postal Code"
+            value={contact?.postalCode}
+          />
         </Grid.Row>
       </Grid>
     </Panel.Body>

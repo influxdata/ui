@@ -159,6 +159,7 @@ class TagSelector extends PureComponent<Props> {
             placeholder={placeholderText}
             className="tag-selector--search"
             onChange={this.handleValuesSearch}
+            onClear={this.clearSearch}
           />
         </BuilderCard.Menu>
         {this.values}
@@ -255,10 +256,18 @@ class TagSelector extends PureComponent<Props> {
   }
 
   private handleValuesSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    const {onSetValuesSearchTerm, index} = this.props
     const {value} = e.target
+    this.doSearch(value)
+  }
 
-    onSetValuesSearchTerm(index, value)
+  private clearSearch = () => {
+    this.doSearch('')
+  }
+
+  private doSearch = (searchTerm: string) => {
+    const {onSetValuesSearchTerm, index} = this.props
+
+    onSetValuesSearchTerm(index, searchTerm)
     this.debouncer.call(this.emitValuesSearch, SEARCH_DEBOUNCE_MS)
   }
 

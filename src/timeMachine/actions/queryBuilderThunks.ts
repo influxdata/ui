@@ -1,20 +1,19 @@
 import {Dispatch} from 'react'
+import {get} from 'lodash'
 
 import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {prohibitedDeselect} from 'src/shared/copy/notifications'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 // API
-import {normalize} from 'normalizr'
-import {get} from 'lodash'
-import {fetchDemoDataBuckets} from 'src/cloud/apis/demodata'
-import * as api from 'src/client'
+import {fetchAllBuckets} from 'src/buckets/api'
 
 // Types
 import {
   Bucket,
-  BucketEntities,
   GetState,
   RemoteDataState,
   ResourceType,
@@ -57,12 +56,9 @@ import {
 } from 'src/timeMachine/actions/queryBuilder'
 import {setBuckets} from 'src/buckets/actions/creators'
 import {notify} from 'src/shared/actions/notifications'
-// Constants
-import {LIMIT} from 'src/resources/constants'
-import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
 
-// Schemas
-import {arrayOfBuckets} from 'src/schemas'
+// Constants
+import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
 
 export const removeTagSelector = (index: number) => (
   dispatch: Dispatch<Action>
@@ -232,25 +228,20 @@ export const loadBuckets = () => async (
   const orgID = getOrg(getState()).id
   dispatch(setBuilderBucketsStatus(RemoteDataState.Loading))
 
+  let bucketsResponse
   try {
-    const resp = await api.getBuckets({query: {orgID, limit: LIMIT}})
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+    if (isFlagEnabled('fetchAllBuckets')) {
+      // a limit of -1 means fetch all buckets for this org
+      bucketsResponse = await fetchAllBuckets(orgID, -1)
+    } else {
+      bucketsResponse = await fetchAllBuckets(orgID)
     }
 
-    const demoDataBuckets = await fetchDemoDataBuckets()
-
-    const normalizedBuckets = normalize<Bucket, BucketEntities, string[]>(
-      [...resp.data.buckets, ...demoDataBuckets],
-      arrayOfBuckets
+    dispatch(
+      setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)
     )
 
-    dispatch(setBuckets(RemoteDataState.Done, normalizedBuckets))
-
-    const allBuckets = [...resp.data.buckets, ...demoDataBuckets].map(
-      b => b.name
-    )
+    const allBuckets = bucketsResponse.buckets.map(b => b.name)
 
     const systemBuckets = allBuckets.filter(b => b.startsWith('_'))
     const userBuckets = allBuckets.filter(b => !b.startsWith('_'))

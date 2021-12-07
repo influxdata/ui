@@ -28,7 +28,7 @@ export default class LabelContextMenu extends PureComponent<Props> {
         icon={IconFont.Trash_New}
         shape={ButtonShape.Square}
         size={ComponentSize.ExtraSmall}
-        confirmationLabel="Yes, delete this Label"
+        confirmationLabel="Yes, delete this label"
         onConfirm={() => {
           onDelete(label.id)
         }}

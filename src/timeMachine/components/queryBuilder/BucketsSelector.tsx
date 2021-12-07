@@ -14,10 +14,11 @@ import {selectBucket} from 'src/timeMachine/actions/queryBuilderThunks'
 
 // Utils
 import {getActiveQuery} from 'src/timeMachine/selectors'
-import {getAll, getStatus} from 'src/resources/selectors'
+import {getStatus} from 'src/resources/selectors'
+import {getSortedBuckets} from 'src/buckets/selectors/index'
 
 // Types
-import {AppState, Bucket, ResourceType} from 'src/types'
+import {AppState, ResourceType} from 'src/types'
 import {RemoteDataState} from 'src/types'
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -28,12 +29,13 @@ const fb = term => bucket =>
 
 const BucketSelector: FunctionComponent<Props> = ({
   selectedBucket,
-  bucketNames,
+  sortedBucketNames,
   bucketsStatus,
   onSelectBucket,
 }) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const list = bucketNames.filter(fb(searchTerm))
+
+  const list = sortedBucketNames.filter(fb(searchTerm))
 
   const onSelect = (bucket: string) => {
     onSelectBucket(bucket, true)
@@ -51,7 +53,7 @@ const BucketSelector: FunctionComponent<Props> = ({
     )
   }
 
-  if (bucketsStatus === RemoteDataState.Done && !bucketNames.length) {
+  if (bucketsStatus === RemoteDataState.Done && !sortedBucketNames.length) {
     return <BuilderCard.Empty>No buckets found</BuilderCard.Empty>
   }
 
@@ -63,6 +65,7 @@ const BucketSelector: FunctionComponent<Props> = ({
           placeholder="Search for a bucket"
           className="tag-selector--search"
           onChange={e => setSearchTerm(e.target.value)}
+          onClear={() => setSearchTerm('')}
         />
       </BuilderCard.Menu>
       <Selector list={list} selected={selectedBucket} onSelect={onSelect} />
@@ -99,13 +102,14 @@ const Selector: FunctionComponent<SelectorProps> = ({
 }
 
 const mstp = (state: AppState) => {
-  const buckets = getAll<Bucket>(state, ResourceType.Buckets)
-  const bucketNames = buckets.map(bucket => bucket.name || '')
+  const sortedBucketNames = getSortedBuckets(state).map(
+    bucket => bucket.name || ''
+  )
   const bucketsStatus = getStatus(state, ResourceType.Buckets)
   const selectedBucket =
-    getActiveQuery(state).builderConfig.buckets[0] || bucketNames[0]
+    getActiveQuery(state).builderConfig.buckets[0] || sortedBucketNames[0]
 
-  return {selectedBucket, bucketNames, bucketsStatus}
+  return {selectedBucket, sortedBucketNames, bucketsStatus}
 }
 
 const mdtp = {

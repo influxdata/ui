@@ -139,7 +139,7 @@ $context-menu--arrow-size: 8px;
     }
 
     .context-menu--list:before {
-      right: calc(100% - #{$context-menu--toggle-size / 2});
+      right: calc(100% - #{$context-menu--toggle-size * 0.5});
     }
   }
 }
@@ -160,7 +160,7 @@ $context-menu--arrow-size: 8px;
     }
 
     .context-menu--list:before {
-      right: $context-menu--toggle-size / 2;
+      right: $context-menu--toggle-size * 0.5;
     }
   }
 }

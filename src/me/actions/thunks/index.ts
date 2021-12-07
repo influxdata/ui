@@ -45,7 +45,7 @@ export const getMe = () => async (
       user_id: user.id,
     })
 
-    if (CLOUD && isFlagEnabled('rudderStackReporting')) {
+    if (CLOUD && isFlagEnabled('rudderstackReporting')) {
       const state = getState()
       const org = getOrg(state)
       identify(user.id, {email: user.name, orgID: org.id})

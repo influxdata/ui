@@ -8,7 +8,6 @@ import {notify} from 'src/shared/actions/notifications'
 import {getOperatorAccounts, getOperatorOrgs} from 'src/client/unityRoutes'
 import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 import {getQuartzMe} from 'src/me/selectors'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {OperatorAccount, OperatorOrg, RemoteDataState} from 'src/types'
@@ -129,8 +128,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   }
 
   const hasWritePermissions =
-    !isFlagEnabled('operatorRole') ||
-    (quartzMe.isOperator && quartzMe?.operatorRole === 'read-write')
+    quartzMe.isOperator && quartzMe?.operatorRole === 'read-write'
 
   return (
     <OperatorContext.Provider

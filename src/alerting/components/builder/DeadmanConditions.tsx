@@ -72,6 +72,7 @@ const DeadmanConditions: FC<Props> = ({
               onSubmit={onSetTimeSince}
               value={timeSince}
               showDivider={false}
+              testID="duration-input--for"
             />
             <TextBlock testID="set-status-to-text-block" text="set status to" />
             <CheckLevelsDropdown
@@ -95,6 +96,7 @@ const DeadmanConditions: FC<Props> = ({
                 onSubmit={onSetStaleTime}
                 value={staleTime}
                 showDivider={false}
+                testID="duration-input--stop"
               />
             </FlexBox.Child>
           </FlexBox>

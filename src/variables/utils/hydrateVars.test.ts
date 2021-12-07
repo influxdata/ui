@@ -1,13 +1,21 @@
-// Utils
-import {ValueFetcher} from 'src/variables/utils/ValueFetcher'
-import {hydrateVars} from 'src/variables/utils/hydrateVars'
-
 // Mocks
 import {
   createVariable,
   associatedVariable,
   defaultVariables,
+  hydrateVarsAdditionalMappings,
 } from 'src/variables/mocks'
+import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
+
+jest.mock('src/external/parser', () => {
+  return {
+    parse: jest.fn(getMockedParse(hydrateVarsAdditionalMappings)),
+  }
+})
+
+// Utils
+import {ValueFetcher} from 'src/variables/utils/ValueFetcher'
+import {hydrateVars} from 'src/variables/utils/hydrateVars'
 
 // Types
 import {Variable, CancellationError, RemoteDataState} from 'src/types'

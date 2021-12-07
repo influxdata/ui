@@ -60,6 +60,15 @@ export const useCheckYDomain = (
     return extent(extrema)
   }, [dataDomain, thresholds])
 
+  return initialDomain
+}
+
+// Calls the above method, but allows for the setting of state one way
+export const useCheckYDomainWithState = (
+  data: NumericColumnData,
+  thresholds: Threshold[]
+) => {
+  const initialDomain = useCheckYDomain(data, thresholds)
   const [domain, setDomain] = useOneWayState(initialDomain)
   const resetDomain = () => setDomain(initialDomain)
 

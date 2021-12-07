@@ -3,8 +3,6 @@ import React, {ReactElement, PureComponent} from 'react'
 import {Switch, Route, RouteComponentProps} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
-import {client} from 'src/utils/api'
-
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
@@ -32,6 +30,7 @@ import {
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {getMe} from './client'
 
 interface State {
   loading: RemoteDataState
@@ -95,7 +94,12 @@ export class Signin extends PureComponent<Props, State> {
 
   private checkForLogin = async () => {
     try {
-      await client.users.me()
+      const resp = await getMe({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
       this.setState({auth: true})
       const redirectIsSet = !!getFromLocalStorage('redirectTo')
       if (redirectIsSet) {

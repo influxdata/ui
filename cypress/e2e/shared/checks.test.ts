@@ -793,8 +793,6 @@ describe('Checks', () => {
   }
 
   describe('Clone checks', () => {
-    let bucketName: string = ''
-
     const initCheck = (check: GenCheck): Cypress.Chainable<any> => {
       cy.writeLPDataFromFile({
         filename: 'data/wumpus01.lp',
@@ -803,7 +801,7 @@ describe('Checks', () => {
       })
       cy.get<Organization>('@org').then((org: Organization) => {
         cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-          bucketName = bucket.name
+          cy.wrap(bucket.name).as('bucketName')
           createCheck(check, org, bucket, 'check')
         })
       })
@@ -861,10 +859,12 @@ describe('Checks', () => {
       cy.getByTestID('schedule-check').should('have.value', deadmanCheck.every)
       // 3.2 Assert query-builder
       cy.getByTestID('select-group--option').click()
-      cy.getByTestID(`selector-list ${bucketName}`).should(
-        'have.class',
-        'cf-list-item__active'
+      cy.get('@bucketName').then(bn =>
+        cy
+          .getByTestID(`selector-list ${bn}`)
+          .should('have.class', 'cf-list-item__active')
       )
+
       cy.getByTestID('selector-list wumpus').should(
         'have.class',
         'cf-list-item__active'

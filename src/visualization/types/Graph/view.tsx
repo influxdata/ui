@@ -66,7 +66,6 @@ const XYPlot: FC<Props> = ({
   timeRange,
   annotations,
   cellID,
-  update,
 }) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -120,7 +119,7 @@ const XYPlot: FC<Props> = ({
 
   const update = useCallback(
     (properties: Partial<ViewProperties>) => {
-      console.log('UPDATEINGINGING')
+      console.log('Updating view properties', {properties})
       dispatch(
         setViewProperties({
           ...properties,
@@ -131,7 +130,7 @@ const XYPlot: FC<Props> = ({
   )
 
   if (needsUpdateBit) {
-    update(colorMapping)
+    update({...properties, colorMapping})
     setNeedsUpdateBit(false)
   }
 

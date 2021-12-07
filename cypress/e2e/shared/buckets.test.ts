@@ -103,7 +103,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe.skip('routing directly to the edit overlay', () => {
+  describe('routing directly to the edit overlay', () => {
     it('reroutes to buckets view if bucket does not exist', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs, buckets}) => {

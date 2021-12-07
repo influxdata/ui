@@ -131,13 +131,13 @@ describe('Buckets', () => {
     })
   })
 
-  describe.skip('add data', function() {
+  describe('add data', function() {
     it('can write data to buckets', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         // writing a well-formed line is accepted
         cy.getByTestID('add-data--button').click()
         cy.getByTestID('bucket-add-client-library').click()
-        cy.location('pathname').should('contain', `/orgs/${orgID}/load-data/`)
+        cy.location().should((loc) => expect(loc.pathname).to.include(`/orgs/${orgID}/load-data/`))
         cy.go('back')
         cy.getByTestID('add-data--button').click()
 
@@ -176,7 +176,7 @@ describe('Buckets', () => {
       })
     })
 
-    it('upload a file and write data', () => {
+    it.skip('upload a file and write data', () => {
       cy.getByTestID('add-data--button').click()
       cy.getByTestID('bucket-add-line-protocol').click()
       cy.getByTestID('Upload File').click()
@@ -249,7 +249,7 @@ describe('Buckets', () => {
       cy.getByTestID('selector-list mymeasurement').should('exist')
     })
 
-    it('configure telegraf agent', () => {
+    it.skip('configure telegraf agent', () => {
       // click "add data" and choose Configure Telegraf Agent
       cy.getByTestID('add-data--button').click()
       cy.get('.bucket-add-data--option')

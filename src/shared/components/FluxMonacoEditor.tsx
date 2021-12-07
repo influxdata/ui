@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useRef, useState} from 'react'
-import {ProtocolToMonacoConverter} from 'monaco-languageclient/lib/monaco-converter'
 import classnames from 'classnames'
 
 // Components
@@ -21,10 +20,6 @@ import {EditorType} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
 import './FluxMonacoEditor.scss'
-import {Diagnostic} from 'monaco-languageclient/lib/services'
-
-const p2m = new ProtocolToMonacoConverter()
-
 export interface EditorProps {
   script: string
   onChangeScript: OnChangeScript
@@ -34,41 +29,22 @@ export interface EditorProps {
   wrapLines?: 'off' | 'on' | 'bounded'
 }
 
-interface Props extends EditorProps {
-  setEditorInstance?: (editor: EditorType) => void
-}
-
-const FluxEditorMonaco: FC<Props> = ({
+const FluxEditorMonaco: FC<EditorProps> = ({
   script,
   onChangeScript,
   onSubmitScript,
-  setEditorInstance,
   autogrow,
   readOnly,
   wrapLines,
 }) => {
   const lspServer = useRef<LSPServer>(null)
-  const [editorInst, seteditorInst] = useState<EditorType | null>(null)
   const [docURI, setDocURI] = useState('')
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
   })
 
-  const updateDiagnostics = (diagnostics: Diagnostic[]) => {
-    if (editorInst) {
-      const results = p2m.asDiagnostics(diagnostics)
-      monacoEditor.setModelMarkers(editorInst.getModel(), 'default', results)
-    }
-  }
-
   const editorDidMount = async (editor: EditorType) => {
-    if (setEditorInstance) {
-      setEditorInstance(editor)
-    }
-
-    seteditorInst(editor)
-
     const uri = editor.getModel().uri.toString()
 
     setDocURI(uri)
@@ -86,8 +62,7 @@ const FluxEditorMonaco: FC<Props> = ({
 
     try {
       lspServer.current = await loadServer()
-      const diagnostics = await lspServer.current.didOpen(uri, script)
-      updateDiagnostics(diagnostics)
+      await lspServer.current.didOpen(uri, script)
       monacoEditor.remeasureFonts()
 
       if (isFlagEnabled('cursorAtEOF')) {
@@ -110,8 +85,7 @@ const FluxEditorMonaco: FC<Props> = ({
   const onChange = async (text: string) => {
     onChangeScript(text)
     try {
-      const diagnostics = await lspServer.current.didChange(docURI, text)
-      updateDiagnostics(diagnostics)
+      await lspServer.current.didChange(docURI, text)
     } catch (e) {
       // TODO: notify user that lsp failed
     }

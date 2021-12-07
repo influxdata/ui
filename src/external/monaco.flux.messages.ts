@@ -1,4 +1,3 @@
-import {ServerResponse} from 'src/types'
 import {
   CompletionContext,
   ReferenceContext,
@@ -159,19 +158,10 @@ export const signatureHelp = (
   })
 }
 
-export const parseResponse = (response: ServerResponse): LSPResponse => {
-  const message = response.get_message()
-  const error = response.get_error()
-
-  if (error) {
-    throw new Error(error)
-  }
-
-  if (message) {
-    const split = (message || '').split('\r\n')
-
+export const parseResponse = (response: string): LSPResponse => {
+  if (response) {
     try {
-      return JSON.parse(split.slice(2).join('\n'))
+      return JSON.parse(response)
     } catch (e) {
       throw new Error('failed to parse LSP response')
     }
@@ -179,11 +169,6 @@ export const parseResponse = (response: ServerResponse): LSPResponse => {
 }
 
 export async function sendMessage(message: LSPMessage, server) {
-  const stringifiedMessage = JSON.stringify(message),
-    size = stringifiedMessage.length
-
-  const fullMessage = `Content-Length: ${size}\r\n\r\n${stringifiedMessage}`
-  const response = await server.process(fullMessage)
-
+  const response = await server.process(JSON.stringify(message))
   return parseResponse(response)
 }

@@ -451,9 +451,7 @@ describe('DataExplorer', () => {
           .within(() => {
             cy.get('textarea').type('foo |> bar', {force: true})
 
-            // TODO the new flux lsp doesn't support squigglies.
-            // Turn this back on after [INSERT ISSUE] is fixed
-            // cy.get('.squiggly-error').should('be.visible')
+            cy.get('.squiggly-error').should('be.visible')
 
             cy.get('textarea').type('{selectall} {backspace}', {force: true})
 

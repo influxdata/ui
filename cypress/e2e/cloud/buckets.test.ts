@@ -1,16 +1,12 @@
 import {Organization} from '../../../src/types'
 
-const setupData = (cy: Cypress.Chainable, enableMeasurementSchema = false) =>
+const setupData = (cy: Cypress.Chainable) =>
   cy.flush().then(() =>
     cy.signin().then(() =>
       cy.get('@org').then(({id}: Organization) =>
         cy.fixture('routes').then(({orgs, buckets}) => {
           cy.visit(`${orgs}/${id}${buckets}`)
-          return cy
-            .setFeatureFlags({measurementSchema: enableMeasurementSchema})
-            .then(() => {
-              return cy.getByTestID('tree-nav')
-            })
+          return cy.getByTestID('tree-nav')
         })
       )
     )
@@ -97,7 +93,7 @@ const testSchemaFiles = (
 
 describe('Explicit Buckets', () => {
   beforeEach(() => {
-    setupData(cy, true)
+    setupData(cy)
 
     // remove the downloaded files
     cy.exec('rm cypress/downloads/*', {

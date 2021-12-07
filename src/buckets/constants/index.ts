@@ -1,4 +1,3 @@
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
 export const isSystemBucket = (bucketName: string): boolean => {
@@ -6,7 +5,7 @@ export const isSystemBucket = (bucketName: string): boolean => {
 }
 
 export const getBucketOverlayWidth = () => {
-  if (isFlagEnabled('measurementSchema') && CLOUD) {
+  if (CLOUD) {
     return 650
   }
   return 450

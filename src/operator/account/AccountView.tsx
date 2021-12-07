@@ -16,7 +16,7 @@ const AccountView: FC = () => {
   const {account, accountStatus} = useContext(AccountContext)
 
   let accountTitle = ''
-  if (account.name) {
+  if (account?.name) {
     const accountIdPart = account.id ? `(${account.id})` : ''
     accountTitle = `${account.name} ${accountIdPart} `
   } else {

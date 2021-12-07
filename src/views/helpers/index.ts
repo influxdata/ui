@@ -44,6 +44,7 @@ import {
   NewView,
   RemoteDataState,
   ScatterViewProperties,
+  SimpleTableViewProperties,
   SingleStatViewProperties,
   StaticLegend,
   TableViewProperties,
@@ -318,6 +319,13 @@ const NEW_VIEW_CREATORS = {
       note: '',
       showNoteWhenEmpty: false,
     },
+  }),
+  'simple-table': (): NewView<SimpleTableViewProperties> => ({
+    ...defaultView(),
+    properties: {
+      type: 'simple-table',
+      showAll: false,
+    } as SimpleTableViewProperties,
   }),
   markdown: (): NewView<MarkdownViewProperties> => ({
     ...defaultView(),

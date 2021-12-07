@@ -1,7 +1,7 @@
 import {FunctionComponent, ComponentClass} from 'react'
 import {AnnotationsList, ViewProperties, TimeRange} from 'src/types'
 import {FluxResult} from 'src/types/flows'
-import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
+import {SimpleTableViewProperties} from 'src/types'
 
 export interface VisualizationOptionProps {
   properties: ViewProperties

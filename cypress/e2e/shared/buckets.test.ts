@@ -131,7 +131,7 @@ describe('Buckets', () => {
     })
   })
 
-  describe.skip('add data', function() {
+  describe('add data', function() {
     it('can write data to buckets', () => {
       cy.get('@org').then(({id: orgID}: Organization) => {
         // writing a well-formed line is accepted

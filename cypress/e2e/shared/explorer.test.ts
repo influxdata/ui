@@ -437,11 +437,10 @@ describe('DataExplorer', () => {
 
       cy.getByTestID('time-machine--bottom').then(() => {
         cy.getByTestID('flux-editor', {timeout: 30000})
-          .wait(1000) // TODO: find another way to wait on the LSP to be initalized
           .should('be.visible')
           .monacoType('foo |> bar')
           .within(() => {
-            cy.get('.squiggly-error').should('be.visible')
+            cy.get('.squiggly-error', {timeout: 30000}).should('be.visible')
           })
           .monacoType('{selectall} {backspace}')
           .monacoType('from(bucket: )')

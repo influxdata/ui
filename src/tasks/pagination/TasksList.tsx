@@ -186,7 +186,7 @@ export default class TasksList extends PureComponent<Props, State>
       startIndex + this.rowsPerPage,
       this.props.totalCount
     )
-    
+
     const rows = []
     for (let i = startIndex; i < endIndex; i++) {
       const task = sortedTasks[i]

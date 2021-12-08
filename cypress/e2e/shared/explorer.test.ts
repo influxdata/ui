@@ -443,10 +443,9 @@ describe('DataExplorer', () => {
             cy.get('.squiggly-error', {timeout: 30000}).should('be.visible')
           })
           .monacoType('{selectall} {backspace}')
-          .monacoType('from(bucket: )')
+          .monacoType('from()')
           .within(() => {
-            // The new LSP library doesn't support the signature feature yet
-            // cy.get('.signature').should('be.visible')
+            cy.get('.signature').should('be.visible')
           })
           .monacoType(`{selectall}{del}from(bucket: )`)
       })

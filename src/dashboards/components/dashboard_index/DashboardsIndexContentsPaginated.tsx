@@ -46,7 +46,6 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
 
-
 @ErrorHandling
 class DashboardsIndexContents extends Component<Props> implements Pageable {
   private paginationRef: RefObject<HTMLDivElement>
@@ -124,12 +123,9 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
       status,
       dashboards,
       onFilterChange,
-      sortDirection,
-      sortType,
-      sortKey,
       onCreateDashboard,
     } = this.props
-
+    
     this.totalPages = Math.max(
       Math.ceil(dashboards.length / this.rowsPerPage),
       1
@@ -151,11 +147,7 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
         <DashboardCardsPaginated
           dashboards={this.renderDashboardCards()}
           onFilterChange={onFilterChange}
-          sortDirection={sortDirection}
-          sortType={sortType}
-          sortKey={sortKey}
         />
-
         <PaginationNav.PaginationNav
           ref={this.paginationRef}
           style={{width: this.props.pageWidth}}

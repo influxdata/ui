@@ -40,15 +40,11 @@ describe('visualizations', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor')
           .should('exist')
-          .monacoType('{selectall}{del}from(')
+          .monacoType('{selectall}{del}from()')
 
         cy.getByTestID('time-machine-submit-button').click()
       })
-      const remove = cy.state().window.store.subscribe(() => {
-        remove()
-        cy.getByTestID('time-machine-submit-button').click()
-        cy.getByTestID('empty-graph--error').should('exist')
-      })
+      cy.getByTestID('empty-graph--error').should('exist')
     })
   })
 

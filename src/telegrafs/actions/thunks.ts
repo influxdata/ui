@@ -46,6 +46,7 @@ import {
   TelegrafEntities,
   ResourceType,
 } from 'src/types'
+import {getTelegrafs as apiGetTelegrafs} from 'src/client'
 
 export const getTelegrafs = () => async (
   dispatch: Dispatch<Action>,
@@ -60,8 +61,13 @@ export const getTelegrafs = () => async (
     }
     const org = getOrg(state)
 
-    const telegrafs = await client.telegrafConfigs.getAll(org.id)
+    const response = await apiGetTelegrafs({query: {orgID: org.id}})
 
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const telegrafs = response.data
     const normTelegrafs = normalize<Telegraf, TelegrafEntities, string[]>(
       telegrafs,
       arrayOfTelegrafs

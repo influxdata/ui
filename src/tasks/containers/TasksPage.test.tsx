@@ -42,6 +42,24 @@ const localHistory = createMemoryHistory({initialEntries: ['/']})
 
 withRouterProps.match.params.orgID = orgs[0].id
 
+jest.mock('src/external/parser', () => ({
+  parse: jest.fn(() => {
+    return {
+      type: 'File',
+      package: {
+        name: {
+          name: 'fake',
+          type: 'Identifier',
+        },
+        type: 'PackageClause',
+      },
+      imports: [],
+      body: [],
+    }
+  }),
+  format_from_js_file: jest.fn(),
+}))
+
 jest.mock('src/shared/contexts/pinneditems', () => ({
   getPinnedItems: jest.fn(() =>
     Promise.resolve({

@@ -182,7 +182,7 @@ const SetOrg: FC = () => {
             component={DataExplorerPage}
           />
           {/* Dashboards */}
-          {true ? (
+          {isFlagEnabled('paginatedDashboards') ? (
             <Route
               path={`${orgPath}/dashboards-list`}
               component={DashboardsIndexPaginated}
@@ -193,10 +193,6 @@ const SetOrg: FC = () => {
               component={DashboardsIndex}
             />
           )}
-          {/* <Route
-            path={`${orgPath}/dashboards-list`}
-            component={DashboardsIndex}
-          /> */}
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardContainer}

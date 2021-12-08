@@ -29,10 +29,15 @@ export interface EditorProps {
   wrapLines?: 'off' | 'on' | 'bounded'
 }
 
-const FluxEditorMonaco: FC<EditorProps> = ({
+interface Props extends EditorProps {
+  setEditorInstance?: (editor: EditorType) => void
+}
+
+const FluxEditorMonaco: FC<Props> = ({
   script,
   onChangeScript,
   onSubmitScript,
+  setEditorInstance,
   autogrow,
   readOnly,
   autofocus,
@@ -46,6 +51,10 @@ const FluxEditorMonaco: FC<EditorProps> = ({
   })
 
   const editorDidMount = async (editor: EditorType) => {
+    if (setEditorInstance) {
+      setEditorInstance(editor)
+    }
+
     const uri = editor.getModel().uri.toString()
 
     setDocURI(uri)

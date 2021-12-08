@@ -95,12 +95,13 @@ export const IndividualAccordionBody: FC<Props> = props => {
   )
 
   return (
-    <>{title ? (
-      <Accordion.AccordionBodyItem className="resource-accordion-body">
-        {title}
-      </Accordion.AccordionBodyItem>
-    ) : null}
-      
+    <>
+      {title ? (
+        <Accordion.AccordionBodyItem className="resource-accordion-body">
+          {title}
+        </Accordion.AccordionBodyItem>
+      ) : null}
+
       {permissions
         ? Object.keys(sortedPermissions).map(key => {
             return (

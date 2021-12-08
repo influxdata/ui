@@ -46,7 +46,10 @@ import {
   TelegrafEntities,
   ResourceType,
 } from 'src/types'
-import {getTelegrafs as apiGetTelegrafs} from 'src/client'
+import {
+  getTelegrafs as apiGetTelegrafs,
+  getTelegraf as apiGetTelegraf,
+} from 'src/client'
 
 export const getTelegrafs = () => async (
   dispatch: Dispatch<Action>,
@@ -156,7 +159,13 @@ export const addTelegrafLabelsAsync = (
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
     await client.telegrafConfigs.addLabels(telegrafID, labels as ILabel[])
-    const telegraf = await client.telegrafConfigs.get(telegrafID)
+    const response = await apiGetTelegraf({telegrafID})
+
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const telegraf = response.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -175,7 +184,13 @@ export const removeTelegrafLabelsAsync = (
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
     await client.telegrafConfigs.removeLabels(telegrafID, labels as ILabel[])
-    const telegraf = await client.telegrafConfigs.get(telegrafID)
+    const response = await apiGetTelegraf({telegrafID})
+
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const telegraf = response.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -203,7 +218,13 @@ export const getTelegrafConfigToml = (telegrafConfigID: string) => async (
 
 export const getTelegraf = (telegrafConfigID: string) => async () => {
   try {
-    const config = await client.telegrafConfigs.get(telegrafConfigID)
+    const response = await apiGetTelegraf({telegrafID: telegrafConfigID})
+
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const config = response.data
     return config.name
   } catch (error) {
     console.error(error)

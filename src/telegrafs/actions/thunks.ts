@@ -16,7 +16,6 @@ import {
   addTelegraf,
   editTelegraf,
   removeTelegraf,
-  setCurrentConfig,
 } from 'src/telegrafs/actions/creators'
 
 // Constants
@@ -27,7 +26,6 @@ import {
   telegrafDeleteFailed,
   addTelegrafLabelFailed,
   removeTelegrafLabelFailed,
-  getTelegrafConfigFailed,
 } from 'src/shared/copy/notifications'
 
 // Utils

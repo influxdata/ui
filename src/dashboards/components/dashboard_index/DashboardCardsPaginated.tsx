@@ -30,9 +30,7 @@ interface OwnProps {
 }
 
 class DashboardCards extends PureComponent<OwnProps & StateProps> {
-  
   private _isMounted = true
-
 
   state = {
     pinnedItems: [],
@@ -49,7 +47,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
         .catch(err => {
           console.error(err)
         })
-    } 
+    }
   }
 
   public componentWillUnmount() {
@@ -57,31 +55,27 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
   }
 
   public render() {
-    const {
-      dashboards,
-      onFilterChange,
-    } = this.props
+    const {dashboards, onFilterChange} = this.props
 
     const {pinnedItems} = this.state
 
     return (
       <div>
         <div className="dashboards-card-grid">
-          {dashboards
-            .map(({id, name, description, labels, meta}) => (
-              <DashboardCard
-                key={id}
-                id={id}
-                name={name}
-                labels={labels}
-                updatedAt={meta.updatedAt}
-                description={description}
-                onFilterChange={onFilterChange}
-                isPinned={
-                  !!pinnedItems.find(item => item?.metadata.dashboardID === id)
-                }
-              />
-            ))}
+          {dashboards.map(({id, name, description, labels, meta}) => (
+            <DashboardCard
+              key={id}
+              id={id}
+              name={name}
+              labels={labels}
+              updatedAt={meta.updatedAt}
+              description={description}
+              onFilterChange={onFilterChange}
+              isPinned={
+                !!pinnedItems.find(item => item?.metadata.dashboardID === id)
+              }
+            />
+          ))}
           <AssetLimitAlert
             className="dashboards--asset-alert"
             resourceName="dashboards"

@@ -17,12 +17,7 @@ import {createDashboard} from 'src/dashboards/actions/thunks'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Types
-import {
-  Dashboard,
-  AppState,
-  Pageable,
-  RemoteDataState,
-} from 'src/types'
+import {Dashboard, AppState, Pageable, RemoteDataState} from 'src/types'
 import {Sort} from '@influxdata/clockface'
 import {SortTypes, getSortedResources} from 'src/shared/utils/sort'
 import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
@@ -125,7 +120,7 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
       onFilterChange,
       onCreateDashboard,
     } = this.props
-    
+
     this.totalPages = Math.max(
       Math.ceil(dashboards.length / this.rowsPerPage),
       1

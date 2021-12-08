@@ -73,9 +73,9 @@ class DashboardIndex extends PureComponent<Props, State> {
     let sortType: SortTypes = this.props.sortOptions.sortType
     const params = new URLSearchParams(window.location.search)
     let sortKey: DashboardSortKey = 'name'
-    if (params.get('sortKey') === 'name' ) {
+    if (params.get('sortKey') === 'name') {
       sortKey = 'name'
-    } else if(params.get('sortKey') === 'meta.updatedAt') {
+    } else if (params.get('sortKey') === 'meta.updatedAt') {
       sortKey = 'meta.updatedAt'
       sortType = SortTypes.Date
     }

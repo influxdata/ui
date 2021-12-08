@@ -47,6 +47,7 @@ import {
 import {
   getTelegrafs as apiGetTelegrafs,
   getTelegraf as apiGetTelegraf,
+  postTelegrafsLabel,
 } from 'src/client'
 
 export const getTelegrafs = () => async (
@@ -89,10 +90,16 @@ export const createTelegraf = (telegraf: Telegraf) => async (
   try {
     const state = getState()
     const labels = getLabels(state, telegraf.labels)
-    const createdTelegraf = await client.telegrafConfigs.create({
-      ...telegraf,
-      labels,
-    })
+
+    // TODO: `data` type and `labels` type does not match
+    const response = await postTelegrafsLabel({telegrafID: telegraf.id, data: labels})
+
+    if (response.status !== 201) {
+      // there is no 200 response for postTelegrafsLabel
+      throw new Error(response.data.message)
+    }
+
+    const createdTelegraf = response.data
 
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       createdTelegraf,

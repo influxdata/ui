@@ -38,7 +38,11 @@ const testSchemaFiles = (
 
   cy.getByTestID('measurement-schema-add-file-button').click()
   cy.getByTestID('input-field').type('first schema file')
+
   cy.getByTestID('drag-and-drop--input').attachFile(fixtureFileName)
+
+  // making sure the file is there before moving on to the next step:
+  cy.getByTestID('displayArea').contains(fixtureFileName)
 
   cy.getByTestID('bucket-form-submit').click()
 

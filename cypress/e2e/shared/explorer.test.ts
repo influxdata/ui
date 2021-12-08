@@ -446,7 +446,8 @@ describe('DataExplorer', () => {
           .monacoType('{selectall} {backspace}')
           .monacoType('from(bucket: )')
           .within(() => {
-            cy.get('.signature').should('be.visible')
+            // The new LSP library doesn't support the signature feature yet
+            // cy.get('.signature').should('be.visible')
           })
           .monacoType(`{selectall}{del}from(bucket: )`)
       })

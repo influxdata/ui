@@ -130,6 +130,7 @@ const BucketSelector: FC = () => {
         autoHideScrollbars={true}
         testID="buckets-list"
         style={{flex: '1 0 0'}}
+        scrollToSelected={true}
       >
         {sections.user.length && (
           <List.Divider

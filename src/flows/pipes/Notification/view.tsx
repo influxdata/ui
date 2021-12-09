@@ -38,7 +38,10 @@ import Threshold, {
   deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Notification/Threshold'
-import {ENDPOINT_DEFINITIONS} from 'src/flows/pipes/Notification/endpoints'
+import {
+  ENDPOINT_DEFINITIONS,
+  ENDPOINT_ORDER,
+} from 'src/flows/pipes/Notification/endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 import {SidebarContext} from 'src/flows/context/sidebar'
 const NotificationMonacoEditor = lazy(() =>
@@ -243,6 +246,7 @@ const Notification: FC<PipeProp & OwnProps> = ({Context, secrets}) => {
         !ENDPOINT_DEFINITIONS[k].featureFlag ||
         isFlagEnabled(ENDPOINT_DEFINITIONS[k].featureFlag)
     )
+    .sort((a, b) => ENDPOINT_ORDER.indexOf(a) - ENDPOINT_ORDER.indexOf(b))
     .map(k => (
       <Dropdown.Item
         key={k}

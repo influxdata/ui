@@ -101,10 +101,10 @@ describe('Explicit Buckets', () => {
     setupData(cy)
 
     // remove the downloaded files
-    cy.exec('rm cypress/downloads/*', {
-      log: true,
-      failOnNonZeroExit: false,
-    })
+    // cy.exec('rm cypress/downloads/*', {
+    //   log: true,
+    //   failOnNonZeroExit: false,
+    // })
   })
   it('can create a bucket with an explicit schema', () => {
     cy.getByTestID('Create Bucket').click()
@@ -237,7 +237,14 @@ describe('Explicit Buckets', () => {
           .contains('first schema file')
           .should('exist')
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/first_schema_file.json`)
+
+        const downloadsFolder = Cypress.config('downloadsFolder')
+        const downloadedFile = path.join(
+          downloadsFolder,
+          'first_schema_file.json'
+        )
+
+        cy.readFile(downloadedFile)
           .should('exist')
           .then(fileContent => {
             expect(fileContent[0].name).to.be.equal('time')
@@ -359,7 +366,11 @@ fsRead,field,float`
             .should('exist')
 
           cy.getByTestID('measurement-schema-download-button').click()
-          cy.readFile(`cypress/downloads/${fileName}`)
+
+          const downloadsFolder = Cypress.config('downloadsFolder')
+          const downloadedFile = path.join(downloadsFolder, fileName)
+
+          cy.readFile(downloadedFile)
             .should('exist')
             .then(fileContent => {
               expect(fileContent[0].name).to.be.equal('time')

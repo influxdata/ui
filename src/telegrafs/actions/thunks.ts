@@ -30,7 +30,7 @@ import {
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {getLabels, getStatus} from 'src/resources/selectors'
+import {getStatus} from 'src/resources/selectors'
 import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Types
@@ -51,7 +51,6 @@ import {
   postTelegrafsLabel,
   putTelegraf,
 } from 'src/client'
-import { lab } from 'chroma-js'
 
 export const getTelegrafs =
   () => async (dispatch: Dispatch<Action>, getState: GetState) => {

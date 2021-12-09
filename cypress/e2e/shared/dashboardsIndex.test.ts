@@ -828,7 +828,7 @@ describe('Dashboards', () => {
     // past 2d
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past2d').click()
-    cy.wait(500)
+    cy.wait('@loadQuery')
 
     const snapshot9 = makeGraphSnapshot()
     snapshot9.shouldBeSameAs(snapshot8, false)
@@ -836,7 +836,7 @@ describe('Dashboards', () => {
     // past 7d
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past7d').click()
-    cy.wait(500)
+    cy.wait('@loadQuery')
 
     const snapshot10 = makeGraphSnapshot()
     snapshot10.shouldBeSameAs(snapshot9, false)
@@ -844,7 +844,7 @@ describe('Dashboards', () => {
     // past 30d
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past30d').click()
-    cy.wait(1000)
+    cy.wait('@loadQuery')
 
     const snapshot11 = makeGraphSnapshot()
     snapshot11.shouldBeSameAs(snapshot10, false)
@@ -872,14 +872,10 @@ describe('Dashboards', () => {
   })
   it('changes time range', () => {
     const dashName = 'dashboard'
-    cy.writeLPData({
-      lines: genCurve({points: 87000, freq: 10}),
-      offset: `${30 * 24 * 60}m`,
-      stagger: `${(30 * 24 * 60) / 87000}m`,
-    })
-    cy.intercept('POST', '/api/v2/query?*', req => {
-      req.alias = 'loadQuery'
-    })
+    const newDate = new Date()
+    const now = newDate.toISOString()
+    const pastDate = new Date(new Date() - 1000 * 60 * 60 * 2)
+    const past = pastDate.toISOString()
     cy.get<Organization>('@org').then(({id}: Organization) =>
       cy.createDashboard(id, dashName).then(({body}) => {
         cy.createCell(body.id).then(cell1Resp =>
@@ -887,7 +883,18 @@ describe('Dashboards', () => {
             cy.fixture('routes').then(({orgs}) =>
               cy.get<Organization>('@org').then(({id}: Organization) => {
                 cy.visit(`${orgs}/${id}/dashboards-list`)
-                cy.getByTestID('tree-nav')
+                cy.getByTestID('tree-nav').then(() =>
+                  cy
+                    .intercept('POST', '/api/v2/query?*')
+                    .as('loadQuery')
+                    .then(() =>
+                      cy.writeLPData({
+                        lines: genCurve({points: 10000, freq: 6, shift: 13}),
+                        offset: `${8 * 24 * 60}m`,
+                        stagger: `${(8 * 24 * 60) / 9990}m`,
+                      })
+                    )
+                )
               })
             )
           )
@@ -898,6 +905,7 @@ describe('Dashboards', () => {
     cy.getByTestID('cell-context--toggle').click()
     cy.getByTestID('cell-context--configure').click()
     cy.getByTestID('selector-list curve').click()
+    cy.getByTestID('selector-list p').click()
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('save-cell--button').click()
     cy.wait('@loadQuery')
@@ -1000,12 +1008,12 @@ describe('Dashboards', () => {
     cy.getByTestID('timerange--input')
       .first()
       .clear()
-      .type('2021-11-11 07:00')
+      .type(past)
 
     cy.getByTestID('timerange--input')
       .last()
       .clear()
-      .type('2021-11-11 11:00')
+      .type(now)
 
     cy.getByTestID('daterange--apply-btn').click()
     cy.wait('@loadQuery')

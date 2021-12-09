@@ -125,8 +125,8 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
     } = this.props
 
     const heightWithPagination =
-    this.paginationRef?.current?.clientHeight ||
-    DEFAULT_PAGINATION_CONTROL_HEIGHT
+      this.paginationRef?.current?.clientHeight ||
+      DEFAULT_PAGINATION_CONTROL_HEIGHT
     const height = this.props.pageHeight - heightWithPagination
 
     this.totalPages = Math.max(
@@ -147,15 +147,15 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
 
     return (
       <>
-      <ResourceList style={{width: this.props.pageWidth}}>
+        <ResourceList style={{width: this.props.pageWidth}}>
           <ResourceList.Body
             style={{maxHeight: height, minHeight: height, overflow: 'auto'}}
             emptyState={null}
           >
-        <DashboardCardsPaginated
-          dashboards={this.renderDashboardCards()}
-          onFilterChange={onFilterChange}
-        />
+            <DashboardCardsPaginated
+              dashboards={this.renderDashboardCards()}
+              onFilterChange={onFilterChange}
+            />
           </ResourceList.Body>
         </ResourceList>
         <PaginationNav.PaginationNav

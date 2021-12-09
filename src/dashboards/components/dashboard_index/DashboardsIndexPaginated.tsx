@@ -159,7 +159,7 @@ class DashboardIndex extends PureComponent<Props, State> {
               scrollbarSize={ComponentSize.Large}
               autoHideScrollbar={true}
             >
-              <AutoSizer style={{height: "100%", width: "100%"}}>
+              <AutoSizer style={{height: '100%', width: '100%'}}>
                 {({width, height}) => {
                   return (
                     <GetAssetLimits>

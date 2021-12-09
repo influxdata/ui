@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+const path = require('path')
 
 const setupData = (cy: Cypress.Chainable) =>
   cy.flush().then(() =>
@@ -12,13 +13,22 @@ const setupData = (cy: Cypress.Chainable) =>
     )
   )
 
+export const deleteDownloadsFolder = (cy: Cypress.Chainable) => {
+    const downloadsFolder = Cypress.config('downloadsFolder')
+    cy.task('deleteFolder', downloadsFolder)
+}
+
+
 const testSchemaFiles = (
   cy: Cypress.Chainable,
   isCsv: boolean,
   origFileContents: string,
   fixtureFileName: string,
-  checkContents: (cy: Cypress.Chainable) => void
+  checkContents: (cy: Cypress.Chainable, downloadFile:string) => void
 ) => {
+
+    const downloadsFolder = Cypress.config('downloadsFolder')
+
   cy.getByTestID('Create Bucket').click()
   cy.getByTestID('bucket-form-name').type('explicit_bucket')
   cy.getByTestID('accordion-header').click()
@@ -77,7 +87,10 @@ const testSchemaFiles = (
 
           cy.getByTestID('measurement-schema-download-button').click()
 
-          checkContents(cy)
+            const extension = isCsv? '.csv' : '.json'
+            const filename = path.join(downloadsFolder, `first_schema_file${extension}`)
+
+            checkContents(cy, filename)
         })
     })
 }
@@ -236,8 +249,11 @@ describe('Explicit Buckets', () => {
     const origFileContents = `[{"name":"time","type":"timestamp"},
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
-    const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile(`cypress/downloads/first_schema_file.json`)
+    const checkContents = (cy: Cypress.Chainable, downloadFile: string) => {
+        // file path is relative to the working folder
+       // const filename = path.join(downloadsFolder, 'first_schema_file.json')
+
+      cy.readFile(downloadFile)
         .should('exist')
         .then(fileContent => {
           expect(fileContent[0].name).to.be.equal('time')
@@ -247,6 +263,8 @@ describe('Explicit Buckets', () => {
           expect(fileContent[1].type).to.be.equal('field')
           expect(fileContent[1].dataType).to.be.equal('float')
         })
+
+        deleteDownloadsFolder(cy)
     }
     testSchemaFiles(
       cy,
@@ -264,12 +282,16 @@ host,tag,
 service,tag,
 fsRead,field,float`
 
-    const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile(`cypress/downloads/first_schema_file.csv`)
+    const checkContents = (cy: Cypress.Chainable, downloadFile: string) => {
+        //const filename = path.join(downloadsFolder, 'first_schema_file.json')
+
+        cy.readFile(downloadFile)
         .should('exist')
         .then(fileContent => {
+            cy.log('fileContent....', fileContent)
           expect(fileContent).to.equal(origFileContents)
         })
+        deleteDownloadsFolder(cy)
     }
     testSchemaFiles(cy, true, origFileContents, 'schema.csv', checkContents)
   })

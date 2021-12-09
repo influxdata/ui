@@ -1,4 +1,5 @@
 const clipboardy = require('clipboardy')
+const { rmdir } = require('fs')
 
 module.exports = on => {
   on('before:browser:launch', (browser = {}, launchOptions) => {
@@ -36,6 +37,21 @@ module.exports = on => {
     on('task', {
       getClipboard: () => {
         return clipboardy.readSync()
+      },
+      deleteFolder (folderName) {
+        //cy.log('deleting folder %s', folderName)
+
+        return new Promise((resolve, reject) => {
+          rmdir(folderName, { maxRetries: 10, recursive: true }, (err) => {
+            if (err && err.code !== 'ENOENT') {
+              console.error(err)
+
+              return reject(err)
+            }
+
+            resolve(null)
+          })
+        })
       },
     })
 }

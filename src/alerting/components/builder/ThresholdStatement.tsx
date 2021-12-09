@@ -24,6 +24,7 @@ interface Props {
   threshold: Threshold
   removeLevel: () => void
   changeThresholdType: (toType: ThresholdType, within?: boolean) => void
+  dataTestID: string
 }
 
 const OptionSelector = (threshold: Threshold) => {
@@ -44,6 +45,7 @@ const ThresholdStatement: FC<Props> = ({
   children,
   removeLevel,
   changeThresholdType,
+  dataTestID = "panel"
 }) => {
   const dropdownOptions = {
     ['is above']: 'greater',
@@ -63,7 +65,7 @@ const ThresholdStatement: FC<Props> = ({
     <Panel
       backgroundColor={InfluxColors.Grey15}
       style={{backgroundColor: 'rgba(51,51,70, .3)'}}
-      testID="panel"
+      testID={dataTestID}
     >
       <DismissButton
         color={ComponentColor.Default}

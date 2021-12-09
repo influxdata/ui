@@ -306,7 +306,7 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click({force: true})
+        cy.getByTestID('bucket-settings').click()
       })
     cy.getByTestID('accordion-header').click()
     const schemaName = 'one schema'
@@ -326,7 +326,7 @@ fsRead,field,float`
       {type}
     )
 
-    const event = {dataTransfer: {files: [testFile]}, force: true}
+    const event = {dataTransfer: {files: [testFile]}}
     cy.getByTestID('dndContainer')
       .trigger('dragover', event)
       .trigger('drop', event)
@@ -345,7 +345,7 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click({force: true})
+        cy.getByTestID('bucket-settings').click()
       })
     cy.getByTestID('accordion-header').click()
 
@@ -395,10 +395,7 @@ fsRead,field,float`
         cy.getByTestID('dndContainer-cancel-update').should('not.exist')
 
         // use the invalid file first to test the error handling
-        const invalidFileEvent = {
-          dataTransfer: {files: [invalidTestFile]},
-          force: true,
-        }
+        const invalidFileEvent = {dataTransfer: {files: [invalidTestFile]}}
         cy.getByTestID('dndContainer')
           .trigger('dragover', invalidFileEvent)
           .trigger('drop', invalidFileEvent)
@@ -413,15 +410,18 @@ fsRead,field,float`
         cy.getByTestID('form--element-error').should('not.exist')
 
         // add the right one
-        const validFileEvent = {
-          dataTransfer: {files: [validTestFile]},
-          force: true,
-        }
+        const validFileEvent = {dataTransfer: {files: [validTestFile]}}
         cy.getByTestID('dndContainer')
           .trigger('dragover', validFileEvent)
           .trigger('drop', validFileEvent)
       })
     cy.getByTestID('bucket-form-submit').click()
+
+    // remove the downloaded files
+    cy.exec('rm cypress/downloads/*', {
+      log: true,
+      failOnNonZeroExit: false,
+    })
 
     // in settings:
     // give it some time for the submit to happen/the bucket list to show up
@@ -434,7 +434,7 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click({force: true})
+        cy.getByTestID('bucket-settings').click()
       })
     cy.getByTestID('accordion-header').click()
 
@@ -445,12 +445,6 @@ fsRead,field,float`
           .should('exist')
           .contains(schemaName)
           .should('exist')
-
-        // remove the downloaded files
-        cy.exec('rm cypress/downloads/*', {
-          log: true,
-          failOnNonZeroExit: false,
-        })
 
         cy.getByTestID('measurement-schema-download-button').click()
         cy.readFile(`cypress/downloads/${fileName}`)

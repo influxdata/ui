@@ -6,7 +6,7 @@ import {isEmpty} from 'lodash'
 import {AutoSizer} from 'react-virtualized'
 
 // Components
-import {Sort, ComponentSize, EmptyState} from '@influxdata/clockface'
+import {Sort, ComponentSize, EmptyState, BannerPanel, Gradients, IconFont, InfluxColors} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/pagination/TokenList'
 import FilterList from 'src/shared/components/FilterList'
@@ -14,6 +14,7 @@ import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 import GenerateTokenDropdownRedesigned from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
+import TokensRedesignBanner from 'src/authorizations/components/TokensRedesignBanner'
 
 // Types
 import {AppState, Authorization, ResourceType} from 'src/types'
@@ -45,6 +46,7 @@ interface StateProps {
 
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
+const DEFAULT_ALERT_HEIGHT = 100
 
 type SortKey = keyof Authorization
 
@@ -123,45 +125,60 @@ class TokensTab extends PureComponent<Props, State> {
     }
 
     return (
+      <>
+          <BannerPanel
+            size={ComponentSize.ExtraSmall}
+            gradient={Gradients.PolarExpress}
+            icon={IconFont.Bell}
+            hideMobileIcon={true}
+            textColor={InfluxColors.Yeti} 
+          > 
+          <TokensRedesignBanner />
+          </BannerPanel>
       <AutoSizer>
         {({width, height}) => {
           const heightWithPagination =
             this.paginationRef?.current?.clientHeight +
               DEFAULT_TAB_NAVIGATION_HEIGHT ||
-            DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT
+            DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT + DEFAULT_ALERT_HEIGHT
 
-          const adjustedHeight = height - heightWithPagination
+          const adjustedHeight = height - heightWithPagination 
           return (
             <>
+          <div style={{margin: "10px 0px"}}>
+
               <TabbedPageHeader
                 childrenLeft={leftHeaderItems}
                 childrenRight={rightHeaderItems}
                 width={width}
-              />
+                
+                />
               <FilterAuthorizations
                 list={tokens}
                 searchTerm={searchTerm}
                 searchKeys={this.searchKeys}
-              >
+                >
                 {filteredAuths => (
                   <TokenList
-                    tokenCount={tokens.length}
-                    auths={filteredAuths}
-                    emptyState={this.emptyState}
-                    pageWidth={width}
-                    pageHeight={adjustedHeight}
-                    searchTerm={searchTerm}
-                    sortKey={sortKey}
-                    sortDirection={sortDirection}
-                    sortType={sortType}
-                    onClickColumn={this.handleClickColumn}
+                  tokenCount={tokens.length}
+                  auths={filteredAuths}
+                  emptyState={this.emptyState}
+                  pageWidth={width}
+                  pageHeight={adjustedHeight}
+                  searchTerm={searchTerm}
+                  sortKey={sortKey}
+                  sortDirection={sortDirection}
+                  sortType={sortType}
+                  onClickColumn={this.handleClickColumn}
                   />
-                )}
+                  )}
               </FilterAuthorizations>
+                  </div>
             </>
           )
         }}
       </AutoSizer>
+        </>
     )
   }
 

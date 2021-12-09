@@ -45,6 +45,7 @@ import {
   ResourceType,
 } from 'src/types'
 import {
+  deleteTelegraf as apiDeleteTelegraf,
   getTelegrafs as apiGetTelegrafs,
   postTelegraf,
 } from 'src/client'
@@ -141,7 +142,11 @@ export const deleteTelegraf = (id: string, name: string) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    await client.telegrafConfigs.delete(id)
+    const response = await apiDeleteTelegraf({telegrafID: id})
+
+    if (response.status !== 204) {
+      throw new Error(response.data.message)
+    }
 
     dispatch(removeTelegraf(id))
     event(`telegraf.config.${normalizeEventName(name)}.delete.success`, {id})

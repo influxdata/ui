@@ -16,7 +16,6 @@ import {
   addTelegraf,
   editTelegraf,
   removeTelegraf,
-  setCurrentConfig,
 } from 'src/telegrafs/actions/creators'
 
 // Constants
@@ -27,7 +26,6 @@ import {
   telegrafDeleteFailed,
   addTelegrafLabelFailed,
   removeTelegrafLabelFailed,
-  getTelegrafConfigFailed,
 } from 'src/shared/copy/notifications'
 
 // Utils
@@ -179,19 +177,6 @@ export const removeTelegrafLabelsAsync = (
   } catch (error) {
     console.error(error)
     dispatch(notify(removeTelegrafLabelFailed()))
-  }
-}
-
-export const getTelegrafConfigToml = (telegrafConfigID: string) => async (
-  dispatch: Dispatch<Action>
-): Promise<void> => {
-  try {
-    dispatch(setCurrentConfig(RemoteDataState.Loading))
-    const config = await client.telegrafConfigs.getTOML(telegrafConfigID)
-    dispatch(setCurrentConfig(RemoteDataState.Done, config))
-  } catch (error) {
-    dispatch(setCurrentConfig(RemoteDataState.Error))
-    dispatch(notify(getTelegrafConfigFailed()))
   }
 }
 

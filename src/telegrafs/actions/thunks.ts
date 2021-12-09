@@ -157,6 +157,8 @@ export const addTelegrafLabelsAsync = (
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
     await client.telegrafConfigs.addLabels(telegrafID, labels as ILabel[])
+    // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
+    // getTelegraf from `src/client` returns a string instead of an object
     const telegraf = await client.telegrafConfigs.get(telegrafID)
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
@@ -176,6 +178,8 @@ export const removeTelegrafLabelsAsync = (
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
     await client.telegrafConfigs.removeLabels(telegrafID, labels as ILabel[])
+    // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
+    // getTelegraf from `src/client` returns a string instead of an object
     const telegraf = await client.telegrafConfigs.get(telegrafID)
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
@@ -191,6 +195,8 @@ export const removeTelegrafLabelsAsync = (
 
 export const getTelegraf = (telegrafConfigID: string) => async () => {
   try {
+    // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
+    // getTelegraf from `src/client` returns a string instead of an object
     const config = await client.telegrafConfigs.get(telegrafConfigID)
     return config.name
   } catch (error) {

@@ -35,6 +35,12 @@ interface Props {
   idx: number
 }
 
+const joinAndDedupeArrays = (arr1: string[], arr2: string[]): string[] => {
+  const deduped = new Set([...arr1, ...arr2])
+
+  return Array.from(deduped)
+}
+
 const Card: FC<Props> = ({idx}) => {
   const {cards, add, update, remove, loadKeys, loadValues} = useContext(
     QueryBuilderContext
@@ -87,7 +93,6 @@ const Card: FC<Props> = ({idx}) => {
   const valueSelect = val => {
     const _vals = [...card.values.selected]
     const index = _vals.indexOf(val)
-
     if (index === -1) {
       _vals.push(val)
     } else {
@@ -175,7 +180,7 @@ const Card: FC<Props> = ({idx}) => {
     )
   } else if (
     card.values.loading === RemoteDataState.Done &&
-    !card.values.results.length
+    !(card.values.results.length + card.values.selected.length)
   ) {
     _values = (
       <BuilderCard.Empty>
@@ -185,7 +190,7 @@ const Card: FC<Props> = ({idx}) => {
   } else {
     _values = (
       <SelectorList
-        items={card.values.results}
+        items={joinAndDedupeArrays(card.values.results, card.values.selected)}
         selectedItems={card.values.selected}
         onSelectItem={valueSelect}
         multiSelect

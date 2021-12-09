@@ -46,6 +46,7 @@ import {
 } from 'src/types'
 import {
   deleteTelegraf as apiDeleteTelegraf,
+  deleteTelegrafsLabel,
   getTelegrafs as apiGetTelegrafs,
   postTelegraf,
   postTelegrafsLabel,
@@ -164,10 +165,9 @@ export const addTelegrafLabelsAsync = (
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
     if (labels.length === 0) {
-      throw new Error('No label is found')
+      throw new Error('No label found to add')
     }
-    const labelID = labels[0].id
-    const response = await postTelegrafsLabel({telegrafID, data: {labelID}})
+    const response = await postTelegrafsLabel({telegrafID, data: {labelID: labels[0].id}})
 
     if (response.status !== 201) {
       throw new Error(response.data.message)
@@ -193,7 +193,15 @@ export const removeTelegrafLabelsAsync = (
   labels: Label[]
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
-    await client.telegrafConfigs.removeLabels(telegrafID, labels as ILabel[])
+    if (labels.length === 0) {
+      throw new Error('No label found to delete')
+    }
+    const response = await deleteTelegrafsLabel({telegrafID, labelID: labels[0].id})
+
+    if (response.status !== 204) {
+      throw new Error(response.data.message)
+    }
+
     // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
     // getTelegraf from `src/client` returns a string instead of an object
     const telegraf = await client.telegrafConfigs.get(telegrafID)

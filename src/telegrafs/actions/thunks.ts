@@ -16,6 +16,7 @@ import {
   addTelegraf,
   editTelegraf,
   removeTelegraf,
+  setCurrentConfig,
 } from 'src/telegrafs/actions/creators'
 
 // Constants
@@ -26,6 +27,7 @@ import {
   telegrafDeleteFailed,
   addTelegrafLabelFailed,
   removeTelegrafLabelFailed,
+  getTelegrafConfigFailed,
 } from 'src/shared/copy/notifications'
 
 // Utils
@@ -44,12 +46,6 @@ import {
   TelegrafEntities,
   ResourceType,
 } from 'src/types'
-import {
-  deleteTelegraf as apiDeleteTelegraf,
-  getTelegrafs as apiGetTelegrafs,
-  getTelegraf as apiGetTelegraf,
-  postTelegrafsLabel,
-} from 'src/client'
 
 export const getTelegrafs = () => async (
   dispatch: Dispatch<Action>,
@@ -64,13 +60,8 @@ export const getTelegrafs = () => async (
     }
     const org = getOrg(state)
 
-    const response = await apiGetTelegrafs({query: {orgID: org.id}})
+    const telegrafs = await client.telegrafConfigs.getAll(org.id)
 
-    if (response.status !== 200) {
-      throw new Error(response.data.message)
-    }
-
-    const telegrafs = response.data
     const normTelegrafs = normalize<Telegraf, TelegrafEntities, string[]>(
       telegrafs,
       arrayOfTelegrafs
@@ -91,16 +82,10 @@ export const createTelegraf = (telegraf: Telegraf) => async (
   try {
     const state = getState()
     const labels = getLabels(state, telegraf.labels)
-
-    // TODO: `data` type and `labels` type does not match
-    const response = await postTelegrafsLabel({telegrafID: telegraf.id, data: labels})
-
-    if (response.status !== 201) {
-      // there is no 200 response for postTelegrafsLabel
-      throw new Error(response.data.message)
-    }
-
-    const createdTelegraf = response.data
+    const createdTelegraf = await client.telegrafConfigs.create({
+      ...telegraf,
+      labels,
+    })
 
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       createdTelegraf,
@@ -148,11 +133,7 @@ export const deleteTelegraf = (id: string, name: string) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    const response = await apiDeleteTelegraf({telegrafID: id})
-
-    if (response.status !== 204) {
-      throw new Error(response.data.message)
-    }
+    await client.telegrafConfigs.delete(id)
 
     dispatch(removeTelegraf(id))
     event(`telegraf.config.${normalizeEventName(name)}.delete.success`, {id})
@@ -168,18 +149,8 @@ export const addTelegrafLabelsAsync = (
   labels: Label[]
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
-    const res = await postTelegrafsLabel({telegrafID, data: labels})
-
-    if (res.status !== 201) {
-      throw new Error(res.data.message)
-    }
-    const response = await apiGetTelegraf({telegrafID})
-
-    if (response.status !== 200) {
-      throw new Error(response.data.message)
-    }
-
-    const telegraf = response.data
+    await client.telegrafConfigs.addLabels(telegrafID, labels as ILabel[])
+    const telegraf = await client.telegrafConfigs.get(telegrafID)
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -198,13 +169,7 @@ export const removeTelegrafLabelsAsync = (
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
     await client.telegrafConfigs.removeLabels(telegrafID, labels as ILabel[])
-    const response = await apiGetTelegraf({telegrafID})
-
-    if (response.status !== 200) {
-      throw new Error(response.data.message)
-    }
-
-    const telegraf = response.data
+    const telegraf = await client.telegrafConfigs.get(telegrafID)
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -232,13 +197,7 @@ export const getTelegrafConfigToml = (telegrafConfigID: string) => async (
 
 export const getTelegraf = (telegrafConfigID: string) => async () => {
   try {
-    const response = await apiGetTelegraf({telegrafID: telegrafConfigID})
-
-    if (response.status !== 200) {
-      throw new Error(response.data.message)
-    }
-
-    const config = response.data
+    const config = await client.telegrafConfigs.get(telegrafConfigID)
     return config.name
   } catch (error) {
     console.error(error)

@@ -168,7 +168,11 @@ export const addTelegrafLabelsAsync = (
   labels: Label[]
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
-    await client.telegrafConfigs.addLabels(telegrafID, labels as ILabel[])
+    const res = await postTelegrafsLabel({telegrafID, data: labels})
+
+    if (res.status !== 201) {
+      throw new Error(res.data.message)
+    }
     const response = await apiGetTelegraf({telegrafID})
 
     if (response.status !== 200) {

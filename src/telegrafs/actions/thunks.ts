@@ -217,6 +217,19 @@ export const removeTelegrafLabelsAsync = (
   }
 }
 
+export const getTelegrafConfigToml = (telegrafConfigID: string) => async (
+  dispatch: Dispatch<Action>
+): Promise<void> => {
+  try {
+    dispatch(setCurrentConfig(RemoteDataState.Loading))
+    const config = await client.telegrafConfigs.getTOML(telegrafConfigID)
+    dispatch(setCurrentConfig(RemoteDataState.Done, config))
+  } catch (error) {
+    dispatch(setCurrentConfig(RemoteDataState.Error))
+    dispatch(notify(getTelegrafConfigFailed()))
+  }
+}
+
 export const getTelegraf = (telegrafConfigID: string) => async () => {
   try {
     const response = await apiGetTelegraf({telegrafID: telegrafConfigID})

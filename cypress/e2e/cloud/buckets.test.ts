@@ -14,20 +14,18 @@ const setupData = (cy: Cypress.Chainable) =>
   )
 
 export const deleteDownloadsFolder = (cy: Cypress.Chainable) => {
-    const downloadsFolder = Cypress.config('downloadsFolder')
-    cy.task('deleteFolder', downloadsFolder)
+  const downloadsFolder = Cypress.config('downloadsFolder')
+  cy.task('deleteFolder', downloadsFolder)
 }
-
 
 const testSchemaFiles = (
   cy: Cypress.Chainable,
   isCsv: boolean,
   origFileContents: string,
   fixtureFileName: string,
-  checkContents: (cy: Cypress.Chainable, downloadFile:string) => void
+  checkContents: (cy: Cypress.Chainable, downloadFile: string) => void
 ) => {
-
-    const downloadsFolder = Cypress.config('downloadsFolder')
+  const downloadsFolder = Cypress.config('downloadsFolder')
 
   cy.getByTestID('Create Bucket').click()
   cy.getByTestID('bucket-form-name').type('explicit_bucket')
@@ -87,10 +85,13 @@ const testSchemaFiles = (
 
           cy.getByTestID('measurement-schema-download-button').click()
 
-            const extension = isCsv? '.csv' : '.json'
-            const filename = path.join(downloadsFolder, `first_schema_file${extension}`)
+          const extension = isCsv ? '.csv' : '.json'
+          const filename = path.join(
+            downloadsFolder,
+            `first_schema_file${extension}`
+          )
 
-            checkContents(cy, filename)
+          checkContents(cy, filename)
         })
     })
 }
@@ -211,7 +212,11 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('explicit-bucket-schema-choice-ID').click()
     cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('input-field').type('first schema file')
-    cy.getByTestID('drag-and-drop--input').attachFile('validSchema1.json')
+
+    const filename = 'validSchema1.json'
+    cy.getByTestID('drag-and-drop--input').attachFile(filename)
+    // making sure the file is there before moving on to the next step:
+    cy.getByTestID('displayArea').contains(filename)
 
     cy.getByTestID('bucket-form-submit').click()
 
@@ -250,8 +255,8 @@ describe('Explicit Buckets', () => {
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
     const checkContents = (cy: Cypress.Chainable, downloadFile: string) => {
-        // file path is relative to the working folder
-       // const filename = path.join(downloadsFolder, 'first_schema_file.json')
+      // file path is relative to the working folder
+      // const filename = path.join(downloadsFolder, 'first_schema_file.json')
 
       cy.readFile(downloadFile)
         .should('exist')
@@ -264,7 +269,7 @@ describe('Explicit Buckets', () => {
           expect(fileContent[1].dataType).to.be.equal('float')
         })
 
-        deleteDownloadsFolder(cy)
+      deleteDownloadsFolder(cy)
     }
     testSchemaFiles(
       cy,
@@ -283,15 +288,15 @@ service,tag,
 fsRead,field,float`
 
     const checkContents = (cy: Cypress.Chainable, downloadFile: string) => {
-        //const filename = path.join(downloadsFolder, 'first_schema_file.json')
+      //const filename = path.join(downloadsFolder, 'first_schema_file.json')
 
-        cy.readFile(downloadFile)
+      cy.readFile(downloadFile)
         .should('exist')
         .then(fileContent => {
-            cy.log('fileContent....', fileContent)
+          cy.log('fileContent....', fileContent)
           expect(fileContent).to.equal(origFileContents)
         })
-        deleteDownloadsFolder(cy)
+      deleteDownloadsFolder(cy)
     }
     testSchemaFiles(cy, true, origFileContents, 'schema.csv', checkContents)
   })
@@ -320,7 +325,10 @@ fsRead,field,float`
       cy.getByTestID('measurement-schema-add-file-button').click()
       cy.getByTestID('input-field').type(schemaName)
 
-      cy.getByTestID('drag-and-drop--input').attachFile('validSchema1.json')
+      const filename = 'validSchema1.json'
+      cy.getByTestID('drag-and-drop--input').attachFile(filename)
+      // making sure the file is there before moving on to the next step:
+      cy.getByTestID('displayArea').contains(filename)
 
       cy.getByTestID('bucket-form-submit').click()
     })
@@ -369,6 +377,8 @@ fsRead,field,float`
           cy.getByTestID('drag-and-drop--input').attachFile(
             'invalidSchema.json'
           )
+          // don't need to check that the filename is showing;
+          // since there is an error it doesn't show up
 
           // should show error
           cy.getByTestID('form--element-error').should('exist')
@@ -379,10 +389,11 @@ fsRead,field,float`
           // error should be gone
           cy.getByTestID('form--element-error').should('not.exist')
 
+          const updateFilename = 'updateValidSchema1.json'
           // add the right one
-          cy.getByTestID('drag-and-drop--input').attachFile(
-            'updateValidSchema1.json'
-          )
+          cy.getByTestID('drag-and-drop--input').attachFile(updateFilename)
+          // making sure the file is there before moving on to the next step:
+          cy.getByTestID('displayArea').contains(updateFilename)
         })
       // need to get out of the 'within' for the readonly panel to find the submit button:
       cy.getByTestID('bucket-form-submit').click()

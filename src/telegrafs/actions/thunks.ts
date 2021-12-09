@@ -46,6 +46,7 @@ import {
 } from 'src/types'
 import {
   getTelegrafs as apiGetTelegrafs,
+  postTelegraf,
 } from 'src/client'
 
 export const getTelegrafs = () => async (
@@ -83,17 +84,17 @@ export const getTelegrafs = () => async (
 }
 
 export const createTelegraf = (telegraf: Telegraf) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
+  dispatch: Dispatch<Action>
 ) => {
   try {
-    const state = getState()
-    const labels = getLabels(state, telegraf.labels)
-    const createdTelegraf = await client.telegrafConfigs.create({
-      ...telegraf,
-      labels,
-    })
+    // New telegraf config has no labels
+    const response = await postTelegraf({data: telegraf})
 
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const createdTelegraf = response.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       createdTelegraf,
       telegrafSchema

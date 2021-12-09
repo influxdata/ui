@@ -154,12 +154,12 @@ class DashboardIndex extends PureComponent<Props, State> {
           <ErrorBoundary>
             <Page.Contents
               className="dashboards-index__page-contents"
-              fullWidth={false}
+              fullWidth={true}
               scrollable={true}
               scrollbarSize={ComponentSize.Large}
               autoHideScrollbar={true}
             >
-              <AutoSizer style={{height: '100%', width: '100%'}}>
+              <AutoSizer style={{height: "100%", width: "100%"}}>
                 {({width, height}) => {
                   return (
                     <GetAssetLimits>

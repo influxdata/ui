@@ -7,6 +7,7 @@ import memoizeOne from 'memoize-one'
 // Components
 import DashboardsTableEmpty from 'src/dashboards/components/dashboard_index/DashboardsTableEmpty'
 import DashboardCardsPaginated from 'src/dashboards/components/dashboard_index/DashboardCardsPaginated'
+import {ResourceList} from '@influxdata/clockface'
 
 // Actions
 import {retainRangesDashTimeV1 as retainRangesDashTimeV1Action} from 'src/dashboards/actions/ranges'
@@ -40,6 +41,8 @@ interface OwnProps {
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps & RouteComponentProps<{orgID: string}>
+
+const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 
 @ErrorHandling
 class DashboardsIndexContents extends Component<Props> implements Pageable {
@@ -121,6 +124,11 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
       onCreateDashboard,
     } = this.props
 
+    const heightWithPagination =
+    this.paginationRef?.current?.clientHeight ||
+    DEFAULT_PAGINATION_CONTROL_HEIGHT
+    const height = this.props.pageHeight - heightWithPagination
+
     this.totalPages = Math.max(
       Math.ceil(dashboards.length / this.rowsPerPage),
       1
@@ -139,10 +147,17 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
 
     return (
       <>
+      <ResourceList style={{width: this.props.pageWidth}}>
+          <ResourceList.Body
+            style={{maxHeight: height, minHeight: height, overflow: 'auto'}}
+            emptyState={null}
+          >
         <DashboardCardsPaginated
           dashboards={this.renderDashboardCards()}
           onFilterChange={onFilterChange}
         />
+          </ResourceList.Body>
+        </ResourceList>
         <PaginationNav.PaginationNav
           ref={this.paginationRef}
           style={{width: this.props.pageWidth}}
@@ -154,6 +169,7 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
       </>
     )
   }
+
   private summonImportOverlay = (): void => {
     const {
       history,

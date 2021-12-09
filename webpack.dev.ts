@@ -21,22 +21,31 @@ module.exports = merge(common, {
   },
   devServer: {
     hot: true,
-    historyApiFallback: {
-      index: `${BASE_PATH}/index.html`,
-    },
-    compress: true,
+    historyApiFallback: true,
     proxy: {
       '/api/v2': 'http://localhost:8086',
       '/debug/flush': 'http://localhost:8086',
       '/oauth': 'http://localhost:8086',
       '/health': 'http://localhost:8086',
     },
-    disableHostCheck: true,
+    allowedHosts: 'all',
     host: '0.0.0.0',
     port: PORT,
-    public: PUBLIC,
-    publicPath: PUBLIC,
-    sockPath: `${BASE_PATH}hmr`,
+    devMiddleware: {
+      publicPath: PUBLIC,
+    },
+    webSocketServer: {
+      options: {
+        path: `${BASE_PATH}hmr`,
+      },
+    },
+    client: {
+      webSocketURL: {
+        hostname: '0.0.0.0',
+        pathname: `${BASE_PATH}hmr`,
+        port: 443,
+      },
+    },
   },
   plugins: [
     new webpack.DllReferencePlugin({

@@ -47,6 +47,9 @@ import {
   TelegrafPluginOutputInfluxDBV2,
   Permission,
 } from '@influxdata/influx'
+import {
+  postTelegraf,
+} from 'src/client'
 import {Dispatch} from 'redux'
 
 // Actions
@@ -521,8 +524,13 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
       plugins,
     }
 
-    // create telegraf config
-    const tc = await client.telegrafConfigs.create(telegrafRequest)
+    const response = await postTelegraf({data: telegrafRequest})
+
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const tc = response.data
 
     const permissions = [
       {

@@ -1,0 +1,20 @@
+.zuora-outage-funnel-page {
+  .cf-funnel-page--content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    > .zuora-outage-panel {
+      margin: 50px;
+      font-size: large;
+    }
+  }
+}
+
+.zuora-outage-panel {
+  font-size: larger;
+  > .zuora-outage-panel-body {
+    text-align: left;
+  }
+}

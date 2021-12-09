@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {points} from '../../support/commands'
 const VIS_TYPES = [
   'band',
   'gauge',
@@ -15,19 +15,17 @@ const VIS_TYPES = [
 
 describe('Legends', () => {
   describe('in the Data Explorer', () => {
-    beforeEach(() =>
-      cy.flush().then(() =>
-        cy.signin().then(() => {
-          cy.get('@org').then(({id}: Organization) => {
-            cy.createMapVariable(id)
-            cy.fixture('routes').then(({orgs, explorer}) => {
-              cy.visit(`${orgs}/${id}${explorer}`)
-              cy.getByTestID('tree-nav')
-            })
-          })
+    beforeEach(() => {
+      cy.flush()
+      cy.signin()
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createMapVariable(id)
+        cy.fixture('routes').then(({orgs, explorer}) => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+          cy.getByTestID('tree-nav')
         })
-      )
-    )
+      })
+    })
 
     describe('hover legend aka "tooltip"', () => {
       it('gives the user a toggle for hide the tooltip only for line graph, line graph plus single stat, and band plot', () => {
@@ -48,7 +46,7 @@ describe('Legends', () => {
       })
 
       it('allows the user to toggle the hover legend to hide or show it', () => {
-        cy.writeData(lines(100))
+        cy.writeData(points(100))
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
             cy.getByTestID('query-builder').should('exist')
@@ -119,12 +117,12 @@ describe('Legends', () => {
             cy.getByTestID('hover-legend-colorize-rows-toggle').should('exist')
 
             // Hovering over the graph should trigger a legend
-            cy.getByTestID('single-stat').trigger('mouseover')
+            cy.getByTestID('giraffe-layer-single-stat').trigger('mouseover')
             cy.get('.giraffe-tooltip-container').should('exist')
 
             // Slide the toggle off and then hovering should not trigger a legend
             cy.get('label[for="radio_hover_legend_hide"]').click()
-            cy.getByTestID('single-stat').trigger('mouseover')
+            cy.getByTestID('giraffe-layer-single-stat').trigger('mouseover')
             cy.get('.giraffe-tooltip-container').should('not.exist')
 
             // Hover Legend options should not show
@@ -190,7 +188,7 @@ describe('Legends', () => {
       })
 
       it('allows the user to render and remove the static legend', () => {
-        cy.writeData(lines(100))
+        cy.writeData(points(100))
 
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
@@ -297,7 +295,7 @@ describe('Legends', () => {
 
       it('saves to a dashboard as a cell with the static legend options open and without submitting the query', () => {
         const cellName = 'anti-crash test not submitted data explorer'
-        cy.writeData(lines(100))
+        cy.writeData(points(100))
 
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
@@ -352,7 +350,7 @@ describe('Legends', () => {
       // Skip for now because Firefox does not run the test correctly with a newly created cell with query and view options included
       it.skip('saves to a dashboard as a cell with the static legend options open and with the query pre-submitted', () => {
         const cellName = 'anti-crash test pre-submitted data explorer'
-        cy.writeData(lines(100))
+        cy.writeData(points(100))
 
         cy.get<string>('@defaultBucketListSelector').then(
           (defaultBucketListSelector: string) => {
@@ -412,22 +410,20 @@ describe('Legends', () => {
   })
 
   describe('in Dashboards', () => {
-    beforeEach(() =>
-      cy.flush().then(() =>
-        cy.signin().then(() =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.get('@org').then(({id}: Organization) => {
-              cy.visit(`${orgs}/${id}/dashboards-list`)
-              cy.getByTestID('tree-nav')
-            })
-          })
-        )
-      )
-    )
+    beforeEach(() => {
+      cy.flush()
+      cy.signin()
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+    })
 
     it('adds a new cell to a dashboard with the static legend options open and without submitting the query', () => {
       const cellName = 'anti-crash test not subbmited dashboard add cell'
-      cy.writeData(lines(100))
+      cy.writeData(points(100))
 
       cy.getByTestID('add-resource-dropdown--button')
         .first()
@@ -478,7 +474,7 @@ describe('Legends', () => {
           cy.getByTestID('overlay').within(() => {
             cy.getByTestID('page-header')
               .click()
-              .type(cellName)
+              .type(cellName + '{enter}')
           })
 
           // Without submitting the query, save it to a dashboard
@@ -492,7 +488,7 @@ describe('Legends', () => {
     // Skip for now because Firefox does not run the test correctly with a newly created cell with query and view options included
     it.skip('adds a new cell to a dashboard with the static legend options open and with the query pre-submitted', () => {
       const cellName = 'anti-crash test pre-submitted dashboard add cell'
-      cy.writeData(lines(100))
+      cy.writeData(points(100))
 
       cy.getByTestID('add-resource-dropdown--button')
         .first()

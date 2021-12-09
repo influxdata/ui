@@ -5,15 +5,15 @@
 @import 'src/style/modules';
 
 .view-options--wrap {
-  flex: 0 0 (420px - $cf-marg-b);
+  flex: 0 0 (420px - $cf-space-2xs);
   height: 100%;
-  background-color: $g3-castle;
-  margin-right: $cf-marg-b;
+  background-color: $cf-grey-15;
+  margin-right: $cf-space-2xs;
   border-radius: $radius;
 }
 
 .view-options {
-  padding: $cf-marg-d;
+  padding: $cf-space-l;
 
   > .cf-grid--container > .cf-grid--row > .cf-grid--column {
     width: 100% !important;
@@ -23,15 +23,15 @@
 .view-options--header {
   @include no-user-select();
   font-weight: 500;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 }
 
 h4.view-options--header {
   font-size: 16px;
-  padding-top: $cf-marg-c;
-  border-top: $cf-border solid $g5-pepper;
-  margin-top: $cf-marg-b;
-  margin-bottom: $cf-marg-c;
+  padding-top: $cf-space-s;
+  border-top: $cf-border solid $cf-grey-25;
+  margin-top: $cf-space-2xs;
+  margin-bottom: $cf-space-s;
 
   *:first-child > & {
     margin-top: 0;
@@ -42,14 +42,14 @@ h4.view-options--header {
 
 h5.view-options--header {
   font-size: 14px;
-  border-bottom: $cf-border solid $g5-pepper;
-  margin-top: $cf-marg-d;
-  margin-bottom: $cf-marg-c;
-  padding-bottom: $cf-marg-a;
+  border-bottom: $cf-border solid $cf-grey-25;
+  margin-top: $cf-space-l;
+  margin-bottom: $cf-space-s;
+  padding-bottom: $cf-space-3xs;
 }
 
 .view-options--checkbox {
-  margin-bottom: $cf-marg-c;
+  margin-bottom: $cf-space-s;
 }
 
 .column-option {

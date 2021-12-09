@@ -44,7 +44,7 @@
   align-items: stretch;
   flex-wrap: nowrap;
   border-radius: $radius;
-  background-color: $g2-kevlar;
+  background-color: $cf-grey-5;
   margin: $ix-marg-d;
   margin-top: $ix-marg-a;
   flex-grow: 1;
@@ -58,7 +58,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   border-radius: $radius;
   padding: $ix-marg-c;
   flex: 1 0 0;
@@ -148,12 +148,12 @@
   height: 50px;
   width: 100%;
   margin-top: 10px;
-  background-color: $g6-smoke;
+  background-color: $cf-grey-25;
   text-align: center;
 
   > label {
     font-size: small;
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
     margin: 10px;
   }
 
@@ -169,7 +169,7 @@
 .wizard-step--title {
   font-size: 32px;
   font-weight: 300;
-  color: $g15-platinum;
+  color: $cf-grey-85;
   margin-bottom: $ix-marg-b;
   justify-content: flex-start;
   @include no-user-select();
@@ -180,7 +180,7 @@
   margin-bottom: $ix-marg-d;
   font-size: 16px;
   font-weight: 400;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   @include no-user-select();
 
   a {
@@ -191,19 +191,19 @@
 /* Streaming */
 .wizard-step--body,
 .wizard-step--body-streaming {
-  background-color: $g2-kevlar;
-  color: $g20-white;
+  background-color: $cf-grey-5;
+  color: $cf-white;
   padding: 25px;
   width: 100%;
   text-align: left;
   border-radius: $radius;
 
   > h6 {
-    color: $g15-platinum;
+    color: $cf-grey-85;
   }
 
   > p {
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
     padding-bottom: 10px;
   }
 }
@@ -228,7 +228,7 @@
 }
 
 .wizard-step--body-snippet {
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   border-radius: $radius;
   margin: $ix-marg-a 0;
   padding: $ix-marg-b;
@@ -245,7 +245,7 @@
   margin-bottom: $ix-marg-b;
   font-size: 16px;
   font-weight: 400;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   @include no-user-select();
 
   a {
@@ -263,7 +263,7 @@
   width: 100%;
   padding: 40px;
   border-radius: $radius;
-  background-color: $g2-kevlar;
+  background-color: $cf-grey-5;
   transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
@@ -285,13 +285,13 @@
   width: 100%;
   margin-top: $ix-marg-a;
   margin-bottom: $ix-marg-a;
-  background-color: $g6-smoke;
+  background-color: $cf-grey-25;
   text-align: left;
   z-index: $z--drag-n-drop + 1;
 
   > label {
     font-size: medium;
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
     margin: 10px;
   }
 
@@ -314,12 +314,12 @@
   dt {
     margin: $ix-marg-c 0;
     font-weight: 700;
-    color: $g15-platinum;
+    color: $cf-grey-85;
   }
 
   dd {
     font-weight: 400;
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
 }
 

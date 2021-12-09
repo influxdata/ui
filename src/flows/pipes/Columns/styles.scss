@@ -7,14 +7,14 @@
   grid-template-columns: repeat(6, minmax(100px, 1fr));
   grid-gap: 4px;
   height: auto;
-  background-color: $g0-obsidian;
+  background-color: $cf-grey-5;
   padding: 4px;
 }
 
 .flow-columns--column {
   display: flex;
   padding: 16px;
-  background: $g3-castle;
+  background: $cf-grey-15;
   border-radius: 4px;
   align-items: center;
 }
@@ -36,14 +36,14 @@
   font-weight: $cf-font-weight--medium;
   user-select: none;
 
-  color: $g15-platinum;
+  color: $cf-grey-85;
   height: $cf-form-sm-height;
   position: relative;
 
   input {
     background-color: transparent;
     border: $cf-border solid $flow-panel--bg;
-    color: $g15-platinum;
+    color: $cf-grey-85;
     font-size: 14px;
     font-family: $cf-text-font;
     font-weight: $cf-font-weight--medium;
@@ -55,12 +55,12 @@
     border-radius: $cf-radius;
 
     &:hover {
-      border-color: $g5-pepper;
+      border-color: $cf-grey-25;
     }
 
     &:hover,
     &:focus {
-      color: $g20-white;
+      color: $cf-white;
     }
 
     &:focus {

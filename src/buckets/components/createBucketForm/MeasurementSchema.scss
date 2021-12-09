@@ -1,34 +1,51 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
-.dnd {
-  border: 2px dashed gray;
-  border-radius: 3px;
+.dnd-container {
+  display: flex;
+  align-items: center;
 
-  &.hasError {
-    border-color: $c-dreamsicle;
-    color: $c-dreamsicle;
-  }
+  .dnd {
+    border: 2px dashed gray;
+    border-radius: 3px;
 
-  input[type='file'].drag-and-drop--input {
-    display: none;
-  }
+    &.hasError {
+      border-color: $c-fire;
+      color: $c-fire;
+    }
 
-  .display-area {
-    min-width: 150px;
-    padding: 10px;
-    text-align: center;
+    input[type='file'].drag-and-drop--input {
+      display: none;
+    }
+
+    .display-area {
+      min-width: 150px;
+      padding: 10px;
+      text-align: center;
+
+      &.active {
+        color: black;
+      }
+    }
 
     &.active {
-      color: black;
+      background: lightgrey;
     }
   }
-
-  &.active {
-    background: lightgrey;
+}
+.schema-section {
+  .option {
+    margin-bottom: 6px !important;
   }
 }
 
-.schema-section {
+.measurement-section {
+  .option:nth-child(3) {
+    margin-left: 10px;
+  }
+}
+
+.schema-section,
+.measurement-section {
   &.measurement {
     margin-top: 15px;
   }
@@ -71,17 +88,14 @@
   }
 
   .title-text {
-    color: $g14-chromium;
+    color: $cf-grey-75;
     font-weight: 500;
   }
 
   .value-text {
-    color: $g20-white;
+    color: $cf-white;
     font-weight: 500;
-  }
-
-  .option {
-    margin-bottom: 6px !important;
+    margin-top: 8px;
   }
 
   .measurement-schema-panel-container {
@@ -90,12 +104,22 @@
     border-radius: 10px;
 
     .measurement-schema-panel {
-      width: 93%;
+      width: 100%;
+      margin-right: 5px;
+      margin-left: 5px;
+
+      .download-button {
+        margin-right: 9px;
+      }
 
       .schema-row {
         justify-content: space-between;
-        width: 100%;
+        width: 93%;
         margin-bottom: 8px;
+
+        &.hasCancelBtn {
+          width: 98%;
+        }
       }
     }
   }

@@ -69,6 +69,7 @@ class RenameBucketForm extends PureComponent<Props, State> {
                 >
                   <Button
                     text="Cancel"
+                    color={ComponentColor.Tertiary}
                     onClick={this.handleClose}
                     type={ButtonType.Button}
                   />

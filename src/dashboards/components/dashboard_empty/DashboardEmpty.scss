@@ -48,10 +48,10 @@
     background-image: url('../../assets/images/dashboard-empty--light.svg');
   }
   .dashboard-empty .cf-empty-state--text {
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
   .dashboard-empty .cf-empty-state--text strong,
   .dashboard-empty .cf-empty-state--text b {
-    color: $g7-graphite;
+    color: $cf-grey-35;
   }
 }

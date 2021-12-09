@@ -58,7 +58,7 @@ const WriteDataHelperBuckets: FC = () => {
   if (buckets.length) {
     body = (
       <List
-        backgroundColor={InfluxColors.Obsidian}
+        backgroundColor={InfluxColors.Grey5}
         style={{height: '200px'}}
         maxHeight="200px"
       >

@@ -3,7 +3,7 @@
   Lists Org Limits and their values
 */
 .org-limit {
-  margin: 0 0 $cf-marg-c;
+  margin: 0 0 $cf-space-s;
   position: relative;
 }
 
@@ -11,7 +11,7 @@
   text-align: right;
   font-size: $cf-text-base-4;
   font-weight: 500;
-  color: $g18-cloud;
+  color: $cf-grey-95;
 }
 
 /*
@@ -32,10 +32,10 @@
 
   > li {
     font-size: $cf-text-base-1;
-    padding-left: $cf-marg-d;
+    padding-left: $cf-space-l;
     position: relative;
     margin: 0;
-    margin-bottom: $cf-marg-c;
+    margin-bottom: $cf-space-s;
 
     &:before {
       content: '';
@@ -66,15 +66,15 @@ p.conversion-panel--final-p {
 
 .billing--contact-info,
 .billing--contact-info * {
-  color: $g16-pearl;
+  color: $cf-grey-85;
   height: 30px;
-  padding: $cf-marg-b 11px;
+  padding: $cf-space-2xs 11px;
   font-size: 12px;
   font-weight: 600;
 }
 
 .billing-contact--alert {
-  margin-bottom: $cf-marg-c;
+  margin-bottom: $cf-space-s;
 }
 
 /*
@@ -84,7 +84,7 @@ p.conversion-panel--final-p {
 
 .payment-method-panel strong {
   color: $c-laser;
-  margin-bottom: $cf-marg-d;
+  margin-bottom: $cf-space-l;
 }
 
 /*
@@ -110,9 +110,9 @@ p.conversion-panel--final-p {
 */
 
 .list-item {
-  margin-bottom: $cf-marg-a;
-  padding: $cf-marg-c 24px $cf-marg-c $cf-marg-c;
-  background-color: $g4-onyx;
+  margin-bottom: $cf-space-3xs;
+  padding: $cf-space-s 24px $cf-space-s $cf-space-s;
+  background-color: $cf-grey-15;
   border-radius: $cf-radius;
   width: 100%;
 
@@ -121,7 +121,7 @@ p.conversion-panel--final-p {
   }
 
   &:hover {
-    background-color: $g5-pepper;
+    background-color: $cf-grey-25;
   }
 }
 

@@ -2,13 +2,13 @@
   width: 100%;
   height: 100%;
   border-radius: $cf-radius;
-  background-color: $g0-obsidian;
+  background-color: $cf-grey-5;
   color: $c-dreamsicle;
-  border: $cf-border solid $g2-kevlar;
+  border: $cf-border solid $cf-grey-5;
 
   pre {
     font-size: 14px;
-    padding: $cf-marg-b;
+    padding: $cf-space-2xs;
     user-select: text !important;
     cursor: text;
   }
@@ -16,14 +16,14 @@
 
 .empty-graph-error--icon {
   display: inline-block;
-  margin-right: $cf-marg-b;
+  margin-right: $cf-space-2xs;
 }
 
 .empty-graph-error--copy {
-  margin-top: $cf-marg-a;
-  margin-right: $cf-marg-a;
+  margin-top: $cf-space-3xs;
+  margin-right: $cf-space-3xs;
 }
 
 .empty-graph-error--scroll {
-  margin-top: $cf-marg-c;
+  margin-top: $cf-space-s;
 }

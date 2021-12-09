@@ -222,7 +222,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
             !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
           }
         >
-          {threshold?.field || 'Select a numeric column'}
+          {threshold?.field || 'Select a numeric field'}
         </Dropdown.Button>
       )
       return <Dropdown menu={menu} button={menuButton} />
@@ -443,7 +443,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
                 className="threshold-trash-icon--block"
                 onClick={() => handleRemoveThreshold(index)}
               >
-                <Icon glyph={IconFont.Trash} />
+                <Icon glyph={IconFont.Trash_New} />
               </div>
             ) : null}
           </FlexBox.Child>

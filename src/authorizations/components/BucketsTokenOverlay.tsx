@@ -3,12 +3,7 @@ import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import {
-  IconFont,
   ComponentColor,
-  FlexBox,
-  AlignItems,
-  FlexDirection,
-  ComponentSize,
   Button,
   ButtonType,
   Grid,
@@ -83,75 +78,70 @@ class BucketsTokenOverlay extends PureComponent<Props, State> {
     const {buckets} = this.props
 
     return (
-      <Overlay.Container maxWidth={700}>
+      <Overlay.Container maxWidth={800}>
         <Overlay.Header
           title="Generate Read/Write API Token"
           onDismiss={this.handleDismiss}
         />
-        <Overlay.Body>
-          <Form onSubmit={this.handleSave}>
-            <FlexBox
-              alignItems={AlignItems.Center}
-              direction={FlexDirection.Column}
-              margin={ComponentSize.Large}
-            >
-              <Form.Element label="Description">
-                <Input
-                  placeholder="Describe this new API token"
-                  value={description}
-                  onChange={this.handleInputChange}
-                  testID="input-field--descr"
-                />
-              </Form.Element>
-              <Form.Element label="">
-                <BucketsProvider>
-                  <Grid.Row>
-                    <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
-                      <BucketsSelector
-                        onSelect={this.handleSelectReadBucket}
-                        buckets={buckets}
-                        selectedBuckets={readBuckets}
-                        title="Read"
-                        onSelectAll={this.handleReadSelectAllBuckets}
-                        onDeselectAll={this.handleReadDeselectAllBuckets}
-                        activeTab={activeTabRead}
-                        onTabClick={this.handleReadTabClick}
-                      />
-                    </Grid.Column>
-                    <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
-                      <BucketsSelector
-                        onSelect={this.handleSelectWriteBucket}
-                        buckets={buckets}
-                        selectedBuckets={writeBuckets}
-                        title="Write"
-                        onSelectAll={this.handleWriteSelectAllBuckets}
-                        onDeselectAll={this.handleWriteDeselectAllBuckets}
-                        activeTab={activeTabWrite}
-                        onTabClick={this.handleWriteTabClick}
-                      />
-                    </Grid.Column>
-                  </Grid.Row>
-                </BucketsProvider>
-              </Form.Element>
-              <Form.Footer>
-                <Button
-                  text="Cancel"
-                  icon={IconFont.Remove}
-                  onClick={this.handleDismiss}
-                  testID="button--cancel"
-                />
+        <Form onSubmit={this.handleSave}>
+          <Overlay.Body>
+            <Form.Element label="Description">
+              <Input
+                placeholder="Describe this new API Token"
+                value={description}
+                onChange={this.handleInputChange}
+                testID="input-field--descr"
+              />
+            </Form.Element>
+            <Form.Element label="">
+              <BucketsProvider>
+                <Grid.Row>
+                  <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
+                    <BucketsSelector
+                      onSelect={this.handleSelectReadBucket}
+                      buckets={buckets}
+                      selectedBuckets={readBuckets}
+                      title="Read"
+                      onSelectAll={this.handleReadSelectAllBuckets}
+                      onDeselectAll={this.handleReadDeselectAllBuckets}
+                      activeTab={activeTabRead}
+                      onTabClick={this.handleReadTabClick}
+                    />
+                  </Grid.Column>
+                  <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
+                    <BucketsSelector
+                      onSelect={this.handleSelectWriteBucket}
+                      buckets={buckets}
+                      selectedBuckets={writeBuckets}
+                      title="Write"
+                      onSelectAll={this.handleWriteSelectAllBuckets}
+                      onDeselectAll={this.handleWriteDeselectAllBuckets}
+                      activeTab={activeTabWrite}
+                      onTabClick={this.handleWriteTabClick}
+                    />
+                  </Grid.Column>
+                </Grid.Row>
+              </BucketsProvider>
+            </Form.Element>
+          </Overlay.Body>
+          <Form.Footer>
+            <Overlay.Footer>
+              <Button
+                text="Cancel"
+                color={ComponentColor.Tertiary}
+                onClick={this.handleDismiss}
+                testID="button--cancel"
+              />
 
-                <Button
-                  text="Save"
-                  icon={IconFont.Checkmark}
-                  color={ComponentColor.Success}
-                  type={ButtonType.Submit}
-                  testID="button--save"
-                />
-              </Form.Footer>
-            </FlexBox>
-          </Form>
-        </Overlay.Body>
+              <Button
+                text="Save"
+                color={ComponentColor.Success}
+                type={ButtonType.Submit}
+                testID="button--save"
+              />
+            </Overlay.Footer>
+          </Form.Footer>
+        </Form>
       </Overlay.Container>
     )
   }

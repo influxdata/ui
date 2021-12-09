@@ -12,6 +12,7 @@ import {
   TasksPagePaginated,
   TaskPage,
   TaskRunsPage,
+  TaskRunsPagePaginated,
   TaskEditPage,
   DashboardsIndex,
   DataExplorerPage,
@@ -155,7 +156,17 @@ const SetOrg: FC = () => {
           <Route path={`${orgPath}/checks/:checkID`} component={CheckHistory} />
 
           {/* Tasks */}
-          <Route path={`${orgPath}/tasks/:id/runs`} component={TaskRunsPage} />
+          {isFlagEnabled('paginatedTasks') ? (
+            <Route
+              path={`${orgPath}/tasks/:id/runs`}
+              component={TaskRunsPagePaginated}
+            />
+          ) : (
+            <Route
+              path={`${orgPath}/tasks/:id/runs`}
+              component={TaskRunsPage}
+            />
+          )}
           <Route path={`${orgPath}/tasks/:id/edit`} component={TaskEditPage} />
           <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
           {isFlagEnabled('paginatedTasks') ? (

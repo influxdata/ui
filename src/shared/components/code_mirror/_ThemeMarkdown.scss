@@ -5,14 +5,14 @@
 */
 
 .cm-s-markdown {
-  background-color: $g2-kevlar;
-  color: $g15-platinum;
+  background-color: $cf-grey-5;
+  color: $cf-grey-85;
   padding: 12px;
-  border: 2px solid $g5-pepper;
+  border: 2px solid $cf-grey-25;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
-    border-color: $g7-graphite;
+    border-color: $cf-grey-35;
     cursor: text;
   }
 
@@ -48,8 +48,8 @@
   }
 
   .cm-blockquote {
-    color: $g18-cloud;
-    background-color: $g3-castle;
+    color: $cf-grey-95;
+    background-color: $cf-grey-15;
   }
 
   .CodeMirror-scrollbar-filler {
@@ -58,11 +58,11 @@
 
   .CodeMirror-vscrollbar,
   .CodeMirror-hscrollbar {
-    @include custom-scrollbar-round($g2-kevlar, $c-pool);
+    @include custom-scrollbar-round($cf-grey-5, $c-pool);
   }
 }
 
 .cm-s-markdown.CodeMirror-empty {
   font-style: italic;
-  color: $g9-mountain;
+  color: $cf-grey-45;
 }

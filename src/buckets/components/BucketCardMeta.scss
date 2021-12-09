@@ -8,11 +8,11 @@
 }
 
 .copy-bucket-id--helper {
-  color: $g13-mist;
+  color: $cf-grey-75;
   transition: opacity 0.25s ease;
   opacity: 0;
   display: inline-block;
-  margin-left: $cf-marg-b;
+  margin-left: $cf-space-2xs;
 }
 
 .copy-bucket-id:hover .copy-bucket-id--helper {

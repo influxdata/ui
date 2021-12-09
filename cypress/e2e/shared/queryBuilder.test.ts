@@ -15,19 +15,15 @@ const generateRandomSixDigitNumber = () => {
 
 describe('The Query Builder', () => {
   beforeEach(() => {
-    cy.flush().then(() =>
-      cy
-        .signin()
-        .then(() =>
-          cy.writeData([
-            `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
-            `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
+    cy.flush()
+    cy.signin()
+    cy.writeData([
+      `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
+      `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
 
-            `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
-            `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
-          ])
-        )
-    )
+      `mem,host=thrillbo-swaggins active=${generateRandomSixDigitNumber()}`,
+      `mem,host=thrillbo-swaggins cached=${generateRandomSixDigitNumber()}`,
+    ])
   })
 
   describe('from the Data Explorer', () => {
@@ -217,7 +213,7 @@ describe('The Query Builder', () => {
       })
 
       // build query
-      cy.contains('mem').click('topLeft') // users sometimes click in random spots
+      cy.contains('mem').click('topLeft', {force: true}) // users sometimes click in random spots
       cy.contains('cached').click('bottomLeft')
       cy.contains('thrillbo-swaggins').click('left')
       cy.contains('sum').click()
@@ -228,7 +224,7 @@ describe('The Query Builder', () => {
       cy.getByTestID('overlay')
         .contains('Name this Cell')
         .click()
-      cy.get('[placeholder="Name this Cell"]').type('A better name!')
+      cy.get('[placeholder="Name this Cell"]').type('A better name!{enter}')
       cy.get('.veo-contents').click() // click out of inline editor
       cy.getByTestID('save-cell--button').click()
 

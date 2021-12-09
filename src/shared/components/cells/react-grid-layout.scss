@@ -46,8 +46,8 @@
   background-image: none;
   cursor: nwse-resize;
   border: 15px solid transparent;
-  border-right-color: $g6-smoke;
-  border-bottom-color: $g6-smoke;
+  border-right-color: $cf-grey-25;
+  border-bottom-color: $cf-grey-25;
   border-bottom-right-radius: $ix-radius;
   z-index: $z--cell-resizer;
   transition: border-color 0.25s ease, opacity 0.25s ease;
@@ -64,7 +64,7 @@
     position: absolute;
     height: 2px;
     border-radius: 1px;
-    background-color: $g0-obsidian;
+    background-color: $cf-grey-5;
     transition: background-color 0.25s ease;
     transform: translate(-50%, -50%) rotate(-45deg);
     border: 0;

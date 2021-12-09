@@ -8,12 +8,14 @@
 
 .button {
   &.bucket-selectors--button {
-    background-color: $g6-smoke;
+    background-color: $cf-grey-25;
   }
 }
 
 .title {
   align-content: center;
   text-align: center;
-  color: $g10-wolf;
+  color: $cf-grey-55;
+  font-size: $cf-text-base-1;
+  font-weight: $cf-font-weight--medium;
 }

@@ -1,18 +1,5 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .flow-menu--clone {
-  margin-right: $cf-marg-b;
-}
-
-.cf-resource-card {
-  .cf-resource-card--context-menu {
-    // NOTE: we're overriding the existing context-menu positioning for this particular
-    // case because we want to allow for centering of the menus within the resource card
-    position: relative;
-    top: 0;
-    right: 0;
-    .flow-context--wrapper {
-      align-items: center;
-    }
-  }
+  margin-right: $cf-space-2xs;
 }

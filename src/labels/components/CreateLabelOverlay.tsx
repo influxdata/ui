@@ -58,25 +58,23 @@ class CreateLabelOverlay extends Component<Props, State> {
       <Overlay visible={isVisible}>
         <Overlay.Container maxWidth={400}>
           <Overlay.Header title="Create Label" onDismiss={onDismiss} />
-          <Overlay.Body>
-            <ErrorBoundary>
-              <LabelOverlayForm
-                data-testid="create-label--overlay"
-                id={label.id}
-                name={label.name}
-                onCloseModal={onDismiss}
-                buttonText="Create Label"
-                onSubmit={this.handleSubmit}
-                isFormValid={this.isFormValid}
-                color={label.properties.color}
-                onNameValidation={onNameValidation}
-                onInputChange={this.handleInputChange}
-                onLabelPropertyChange={this.handleLabelPropertyChange}
-                onColorChange={this.handleColorChange}
-                description={label.properties.description}
-              />
-            </ErrorBoundary>
-          </Overlay.Body>
+          <ErrorBoundary>
+            <LabelOverlayForm
+              data-testid="create-label--overlay"
+              id={label.id}
+              name={label.name}
+              onCloseModal={onDismiss}
+              buttonText="Create Label"
+              onSubmit={this.handleSubmit}
+              isFormValid={this.isFormValid}
+              color={label.properties.color}
+              onNameValidation={onNameValidation}
+              onInputChange={this.handleInputChange}
+              onLabelPropertyChange={this.handleLabelPropertyChange}
+              onColorChange={this.handleColorChange}
+              description={label.properties.description}
+            />
+          </ErrorBoundary>
         </Overlay.Container>
       </Overlay>
     )

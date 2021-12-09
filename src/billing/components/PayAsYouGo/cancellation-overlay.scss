@@ -4,10 +4,10 @@
 */
 .cancellation-overlay {
   .cancellation-overlay--content {
-    margin-top: $cf-marg-c;
+    margin-top: $cf-space-s;
   }
 }
 
 .agree-terms-input {
-  width: 20px !important;
+  width: $cf-form-xs-height !important;
 }

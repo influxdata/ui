@@ -12,16 +12,16 @@
   flex-direction: column;
   align-items: stretch;
   width: 100%;
-  background-color: $g0-obsidian;
-  padding: $cf-marg-a;
+  background-color: $cf-grey-5;
+  padding: $cf-space-3xs;
   padding-bottom: 0;
-  border-radius: $cf-radius + ($cf-border / 2);
+  border-radius: $cf-radius + ($cf-border * 0.5);
 }
 
 .time-machine-queries--tabs {
   display: inline-flex;
-  margin-right: $cf-marg-b;
-  margin-bottom: $cf-marg-a;
+  margin-right: $cf-space-2xs;
+  margin-bottom: $cf-space-3xs;
   position: relative;
   flex: 1 1 auto;
 
@@ -41,7 +41,7 @@
   flex-wrap: wrap;
 
   > * {
-    margin-bottom: $cf-marg-a;
+    margin-bottom: $cf-space-3xs;
   }
 }
 
@@ -63,17 +63,17 @@
   user-select: none;
   font-weight: 500;
   padding-left: 6px;
-  color: $g13-mist;
+  color: $cf-grey-75;
 }
 
 .view-raw-data-toggle {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-right: $cf-marg-b;
+  margin-right: $cf-space-2xs;
 
   .cf-slide-toggle {
-    margin-left: $cf-marg-a;
+    margin-left: $cf-space-3xs;
   }
 }
 
@@ -82,7 +82,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: $cf-marg-a;
+    padding: $cf-space-3xs;
   }
   .time-machine-queries--tabs {
     margin-bottom: 0;

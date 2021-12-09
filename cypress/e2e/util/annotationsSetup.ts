@@ -1,5 +1,11 @@
 import {Organization} from '../../../src/types'
-import {lines} from '../../support/commands'
+import {points} from '../../support/commands'
+
+export const ANNOTATION_TEXT = 'im a hippopotamus'
+export const EDIT_ANNOTATION_TEXT = 'lets edit this annotation'
+export const RANGE_ANNOTATION_TEXT = 'range annotation here'
+export const EDIT_RANGE_ANNOTATION_TEXT =
+  'editing the text here for the range annotation'
 
 export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
   cy.flush().then(() =>
@@ -8,174 +14,127 @@ export const setupData = (cy: Cypress.Chainable, plotTypeSuffix = '') =>
         cy.createDashboard(orgID).then(({body}) =>
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-            return cy
-              .setFeatureFlags({
-                useGiraffeGraphs: true,
+            return cy.then(() => {
+              cy.createBucket(orgID, name, 'devbucket')
+              /*
+                note:
+                  graph types vary in the presentation of the line
+                  for example, "Graph" presents a line less steep than "Graph + Single Stat"
+                  use enough points and a time difference that works for all graph types
+                  10 points and 5 minute time difference works well
+              */
+              cy.writeData(points(10, 600_000), 'devbucket')
+
+              // make a dashboard cell
+              cy.getByTestID('add-cell--button').click()
+              cy.getByTestID('selector-list devbucket').should(
+                'have.length.of.at.least',
+                1
+              )
+              cy.getByTestID('selector-list devbucket').click()
+
+              cy.getByTestID('selector-list m').should(
+                'have.length.of.at.least',
+                1
+              )
+              cy.getByTestID('selector-list m').clickAttached()
+
+              cy.getByTestID('selector-list v').should(
+                'have.length.of.at.least',
+                1
+              )
+              cy.getByTestID('selector-list v').clickAttached()
+
+              if (plotTypeSuffix) {
+                cy.getByTestID('view-type--dropdown').click()
+                cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
+              }
+
+              cy.getByTestID(`selector-list tv1`).should(
+                'have.length.of.at.least',
+                1
+              )
+              cy.getByTestID(`selector-list tv1`).clickAttached()
+
+              cy.getByTestID('time-machine-submit-button').click()
+
+              cy.getByTestID('overlay').within(() => {
+                cy.getByTestID('page-title').click()
+                cy.getByTestID('renamable-page-title--input')
+                  .clear()
+                  .type('blah{enter}')
+                cy.getByTestID('save-cell--button').click()
               })
-              .then(() => {
-                cy.createBucket(orgID, name, 'devbucket')
-                // have to add large amount of data to fill the window so that the random click for annotation works
-                cy.writeData(lines(3000), 'devbucket')
 
-                // make a dashboard cell
-                cy.getByTestID('add-cell--button').click()
-                cy.getByTestID('selector-list devbucket').should(
-                  'have.length.of.at.least',
-                  1
-                )
-                cy.getByTestID('selector-list devbucket').click()
-
-                cy.getByTestID('selector-list m').should(
-                  'have.length.of.at.least',
-                  1
-                )
-                cy.getByTestID('selector-list m').clickAttached()
-
-                cy.getByTestID('selector-list v').should(
-                  'have.length.of.at.least',
-                  1
-                )
-                cy.getByTestID('selector-list v').clickAttached()
-
-                if (plotTypeSuffix) {
-                  cy.getByTestID('view-type--dropdown').click()
-                  cy.getByTestID(`view-type--${plotTypeSuffix}`).click()
-                }
-
-                cy.getByTestID(`selector-list tv1`).should(
-                  'have.length.of.at.least',
-                  1
-                )
-                cy.getByTestID(`selector-list tv1`).clickAttached()
-
-                cy.getByTestID('time-machine-submit-button').click()
-
-                cy.getByTestID('overlay').within(() => {
-                  cy.getByTestID('page-title').click()
-                  cy.getByTestID('renamable-page-title--input')
-                    .clear()
-                    .type('blah')
-                  cy.getByTestID('save-cell--button').click()
-                })
-
-                cy.getByTestID('toggle-annotations-controls').click()
-              })
+              cy.getByTestID('toggle-annotations-controls').click()
+            })
           })
         )
       )
     )
   )
 
-export const reloadAndHandleAnnotationDefaultStatus = () => {
-  cy.reload()
-  cy.getByTestID('toggle-annotations-controls').click()
-}
-
 export const addAnnotation = (cy: Cypress.Chainable) => {
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID('giraffe-inner-plot').click({shiftKey: true})
   })
 
-  cy.getByTestID('overlay--container')
-    .filter(':visible')
-    .within(() => {
-      cy.getByTestID('edit-annotation-message').should('be.visible')
+  cy.getByTestID('overlay--container').should('be.visible')
+  cy.getByTestID('annotation-message--form').should('be.visible')
 
-      cy.getByTestID('edit-annotation-message')
+  cy.getByTestID('edit-annotation-message')
+    .focused()
+    .invoke('val', ANNOTATION_TEXT)
+    .focused()
+    .type('.')
+    .then(() => {
+      cy.getByTestID('annotation-submit-button')
+        .should($el => {
+          expect($el).to.have.length(1)
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).not.to.be.disabled
+        })
         .click()
-        .focused()
-        .type('im a hippopotamus')
-      cy.getByTestID('annotation-submit-button').click()
     })
+
+  cy.getByTestID('annotation-message--form').should('not.exist')
 }
 
 export const startEditingAnnotation = (cy: Cypress.Chainable) => {
-  cy.getByTestID('cell blah').within(() => {
-    // we have 2 line layers by the same id, we only want to click on the first
-    cy.get('line')
-      .first()
-      .click({force: true})
-  })
-}
-
-export const editAnnotation = (cy: Cypress.Chainable) => {
-  startEditingAnnotation(cy)
-
-  cy.getByTestID('overlay--container')
-    .filter(':visible')
-    .within(() => {
-      if (Cypress.browser.name === 'firefox') {
-        // interacting with the 'edit-annotation-message' box is unstable in Firefox, causes flaky tests.
-        // to work around the issue, lets update the annotation by intercepting the request body.
-        cy.intercept(
-          'PUT',
-          '**/annotations/*',
-          (req: any) =>
-            (req.body = {
-              ...req.body,
-              summary: 'lets edit this annotation...',
-            })
-        ).as('updateAnnotation')
-      } else {
-        // for Chrome et. al., continue interacting with the UI per usual
-        cy.getByTestID('edit-annotation-message')
-          .should('be.visible')
-          .clear()
-
-        cy.getByTestID('edit-annotation-message')
-          .should('be.visible')
-          .type('lets edit this annotation...')
-
-        cy.intercept('PUT', '**/annotations/*').as('updateAnnotation')
-      }
-
-      cy.getByTestID('annotation-submit-button')
-        .should('be.visible')
-        .click()
-
-      cy.wait('@updateAnnotation')
+  cy.getByTestID('cell blah').should('be.visible')
+  cy.get('.giraffe-annotation-click-target')
+    .should($el => {
+      expect(Cypress.dom.isDetached($el)).to.be.false
     })
+    .click({force: true})
 }
 
 export const deleteAnnotation = (cy: Cypress.Chainable) => {
   // should have the annotation created , lets click it to show the modal.
   startEditingAnnotation(cy)
 
-  cy.getByTestID('overlay--container')
-    .filter(':visible')
-    .within(() => {
-      cy.getByTestID('delete-annotation-button').click({force: true})
-    })
+  cy.getByTestID('overlay--container').should('be.visible')
 
-  // reload to make sure the annotation was deleted from the backend as well.
-  reloadAndHandleAnnotationDefaultStatus()
+  cy.getByTestID('delete-annotation-button').clickAttached()
+
+  // make sure the delete was successful
+  cy.getByTestID('notification-success').should('be.visible')
 
   // annotation line should not exist in the dashboard cell
   cy.getByTestID('cell blah').within(() => {
-    cy.get('line').should('not.exist')
+    cy.get('.giraffe-annotation-click-target').should('not.exist')
   })
 }
 
 export const checkAnnotationText = (cy: Cypress.Chainable, text: string) => {
   cy.getByTestID('cell blah').within(() => {
-    cy.get('.giraffe-annotation-line')
-      .should('exist')
-      .first()
+    cy.get('.giraffe-annotation-click-target')
+      .should($el => {
+        expect(Cypress.dom.isDetached($el)).to.be.false
+      })
       .trigger('mouseover')
   })
   cy.getByTestID('giraffe-annotation-tooltip').contains(text)
-}
-
-const ensureRangeAnnotationTimesAreNotEqual = (cy: Cypress.Chainable) => {
-  cy.getByTestID('endTime-testID')
-    .invoke('val')
-    .then(endTimeValue => {
-      cy.getByTestID('startTime-testID')
-        .invoke('val')
-        .then(startTimeValue => {
-          expect(endTimeValue).to.not.equal(startTimeValue)
-        })
-    })
 }
 
 export const addRangeAnnotation = (
@@ -184,17 +143,18 @@ export const addRangeAnnotation = (
 ) => {
   cy.getByTestID('cell blah').within(() => {
     cy.getByTestID(`giraffe-layer-${layerTestID}`).then(([canvas]) => {
-      const {width, height} = canvas
+      const {offsetWidth, offsetHeight} = canvas
+      const {x, y} = canvas.getBoundingClientRect()
 
       cy.wrap(canvas).trigger('mousedown', {
-        x: width / 3,
-        y: height / 2,
+        pageX: x + offsetWidth / 4,
+        pageY: y + offsetHeight / 2,
         force: true,
         shiftKey: true,
       })
       cy.wrap(canvas).trigger('mousemove', {
-        x: (width * 2) / 3,
-        y: height / 2,
+        pageX: x + (offsetWidth * 3) / 4,
+        pageY: y + offsetHeight / 2,
         force: true,
         shiftKey: true,
       })
@@ -202,51 +162,63 @@ export const addRangeAnnotation = (
     })
   })
 
-  cy.getByTestID('overlay--container')
-    .filter(':visible')
-    .within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
+  cy.getByTestID('overlay--container').should('be.visible')
+  cy.getByTestID('annotation-message--form').should('be.visible')
+
+  cy.getByTestID('edit-annotation-message')
+    .focused()
+    .invoke('val', RANGE_ANNOTATION_TEXT)
+    .focused()
+    .type('.')
+    .then(() => {
+      cy.getByTestID('annotation-submit-button')
+        .should($el => {
+          expect($el).to.have.length(1)
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).not.to.be.disabled
+        })
         .click()
-        .focused()
-        .type('range annotation here!')
-
-      // make sure the two times (start and end) are not equal:
-      ensureRangeAnnotationTimesAreNotEqual(cy)
-
-      cy.getByTestID('annotation-submit-button').click()
     })
+
+  cy.getByTestID('annotation-message--form').should('not.exist')
 }
 
 export const testAddAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
-  // reload to make sure the annotation was added in the backend as well.
-  reloadAndHandleAnnotationDefaultStatus()
-
   // we need to see if the annotations got created and that the tooltip says "I'm a hippopotamus"
-  checkAnnotationText(cy, 'im a hippopotamus')
+  checkAnnotationText(cy, ANNOTATION_TEXT)
 }
 
 export const testEditAnnotation = (cy: Cypress.Chainable) => {
   addAnnotation(cy)
 
-  // should have the annotation created , lets click it to show the modal.
-  editAnnotation(cy)
+  startEditingAnnotation(cy)
 
-  // reload to make sure the annotation was edited in the backend as well.
-  reloadAndHandleAnnotationDefaultStatus()
+  cy.getByTestID('overlay--container').should('be.visible')
+  cy.getByTestID('annotation-message--form').should('be.visible')
 
-  // annotation tooltip should say the new name
-  cy.getByTestID('cell blah').within(() => {
-    cy.get('.giraffe-annotation-line')
-      .should('exist')
-      .first()
-      .trigger('mouseover')
-  })
-  cy.getByTestID('giraffe-annotation-tooltip').contains(
-    'lets edit this annotation...'
-  )
+  cy.getByTestID('edit-annotation-message')
+    .focused()
+    .invoke('val', EDIT_ANNOTATION_TEXT)
+    .focused()
+    .type('.')
+    .then(() => {
+      cy.getByTestID('annotation-submit-button')
+        .should($el => {
+          expect($el).to.have.length(1)
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).not.to.be.disabled
+        })
+        .click()
+    })
+
+  cy.getByTestID('annotation-message--form').should('not.exist')
+
+  // make sure the edit was saved successfully
+  cy.getByTestID('notification-success').should('be.visible')
+
+  checkAnnotationText(cy, EDIT_ANNOTATION_TEXT)
 }
 
 export const testEditRangeAnnotation = (
@@ -257,26 +229,41 @@ export const testEditRangeAnnotation = (
 
   startEditingAnnotation(cy)
 
-  cy.getByTestID('overlay--container')
-    .filter(':visible')
-    .within(() => {
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .clear()
+  cy.getByTestID('overlay--container').should('be.visible')
+  cy.getByTestID('annotation-message--form').should('be.visible')
 
-      cy.getByTestID('edit-annotation-message')
-        .should('be.visible')
-        .type('editing the text here for the range annotation')
+  cy.getByTestID('edit-annotation-message')
+    .focused()
+    .invoke('val', EDIT_RANGE_ANNOTATION_TEXT)
+    .focused()
+    .type('.')
+    .then(() => {
+      // ensure the two times are not equal before submitting
+      cy.getByTestID('endTime-testID')
+        .invoke('val')
+        .then(endTimeValue => {
+          cy.getByTestID('startTime-testID')
+            .invoke('val')
+            .then(startTimeValue => {
+              expect(endTimeValue).to.not.equal(startTimeValue)
+
+              cy.getByTestID('annotation-submit-button')
+                .should($el => {
+                  expect($el).to.have.length(1)
+                  expect(Cypress.dom.isDetached($el)).to.be.false
+                  expect($el).not.to.be.disabled
+                })
+                .click()
+            })
+        })
     })
 
-  ensureRangeAnnotationTimesAreNotEqual(cy)
+  cy.getByTestID('annotation-message--form').should('not.exist')
 
-  cy.getByTestID('annotation-submit-button').click()
+  // make sure the edit was saved successfully
+  cy.getByTestID('notification-success').should('be.visible')
 
-  // reload to make sure the annotation was edited in the backend as well.
-  reloadAndHandleAnnotationDefaultStatus()
-
-  checkAnnotationText(cy, 'editing the text here for the range annotation')
+  checkAnnotationText(cy, EDIT_RANGE_ANNOTATION_TEXT)
 }
 
 export const testDeleteAnnotation = (cy: Cypress.Chainable) => {

@@ -1,17 +1,24 @@
-import React, {FC, useContext, useCallback} from 'react'
-import {capitalize} from 'lodash'
+import React, {FC, useCallback, useContext} from 'react'
 import {
+  PinnedItem,
   PinnedItemsContext,
   PinnedItemTypes,
-  PinnedItem,
 } from 'src/shared/contexts/pinneditems'
-
-import {Context} from 'src/clockface'
-import {ComponentColor, IconFont, Panel} from '@influxdata/clockface'
+import {
+  ButtonShape,
+  ComponentColor,
+  ComponentSize,
+  ConfirmationButton,
+  FlexBox,
+  Heading,
+  HeadingElement,
+  IconFont,
+  Panel,
+  ResourceCard,
+  Typeface,
+} from '@influxdata/clockface'
 
 import './PinnedItems.scss'
-
-import {ResourceCard} from '@influxdata/clockface'
 
 import {useHistory} from 'react-router-dom'
 import {CLOUD} from 'src/shared/constants'
@@ -53,12 +60,16 @@ const PinnedItems: FC = () => {
     await deletePinnedItemsHelper(itemId)
   }
   const EmptyState = () => (
-    <h3 data-testid="pinneditems--emptystate">
+    <Heading element={HeadingElement.H5} testID="pinneditems--emptystate">
       Pin a task, dashboard, or notebook here
-    </h3>
+    </Heading>
   )
+
+  const mainPanelStyle = {margin: '4px 0px'}
+  const resourceCardStyle = {marginTop: '0px'}
+
   return CLOUD && isFlagEnabled('pinnedItems') ? (
-    <Panel style={{margin: '4px 0px'}}>
+    <Panel style={mainPanelStyle}>
       <Panel.Header>
         <h2 className="pinned-items--header">Pinned Items</h2>
       </Panel.Header>
@@ -73,32 +84,34 @@ const PinnedItems: FC = () => {
               testID="pinneditems--card"
               className="pinned-items--card"
               contextMenu={
-                <Context>
-                  <Context.Menu
-                    icon={IconFont.Trash}
-                    color={ComponentColor.Danger}
+                <FlexBox margin={ComponentSize.ExtraSmall}>
+                  <ConfirmationButton
+                    color={ComponentColor.Colorless}
+                    icon={IconFont.Trash_New}
+                    shape={ButtonShape.Square}
+                    size={ComponentSize.ExtraSmall}
+                    confirmationLabel="Unpin this item?"
+                    onConfirm={() => handleDeletePinnedItem(item.id)}
+                    confirmationButtonText="Yes"
                     testID="pinneditems-delete--menu"
-                  >
-                    <Context.Item
-                      label="Unpin"
-                      action={() => handleDeletePinnedItem(item.id)}
-                      testID="pinneditems-delete--confirm"
-                    />
-                  </Context.Menu>
-                </Context>
+                  />
+                </FlexBox>
               }
+              style={resourceCardStyle}
             >
-              <ResourceCard.Name
-                testID="pinneditems--type"
-                name={capitalize(item.type)}
-              />
+              <ResourceCard.Meta>
+                <Heading
+                  type={Typeface.IBMPlexMono}
+                  element={HeadingElement.H5}
+                  testID="pinneditems--type"
+                >
+                  {item.type.toUpperCase()}
+                </Heading>
+              </ResourceCard.Meta>
               <ResourceCard.Name
                 name={item.metadata.name ?? ''}
                 onClick={() => followMetadataToRoute(item)}
                 testID="pinneditems--link"
-              />
-              <ResourceCard.Description
-                description={item.metadata.description ?? ''}
               />
             </ResourceCard>
           ))

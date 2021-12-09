@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/no-unused-vars: "off" */
 import 'jest'
+import 'cypress-plugin-tab'
 
 import {
   signin,
@@ -11,14 +12,17 @@ import {
   deleteOrg,
   flush,
   getByTestID,
+  getByTestIDHead,
   getByInputName,
   getByInputValue,
   getByTestIDAndSetInputValue,
   getByTitle,
+  clickNavBarItem,
   createTask,
   createMapVariable,
   createCSVVariable,
   createQueryVariable,
+  createMapVariableFromFixture,
   createAndAddLabel,
   createLabel,
   createBucket,
@@ -38,6 +42,7 @@ import {
   createDashWithCell,
   createDashWithViewAndVar,
   createRule,
+  createCheck,
   clickAttached,
   upsertSecret,
   setFeatureFlags,
@@ -56,11 +61,13 @@ declare global {
       signin: typeof signin
       setupUser: typeof setupUser
       clickAttached: typeof clickAttached
+      clickNavBarItem: typeof clickNavBarItem
       createSource: typeof createSource
       createCSVVariable: typeof createCSVVariable
       createQueryVariable: typeof createQueryVariable
       createTask: typeof createTask
       createMapVariable: typeof createMapVariable
+      createMapVariableFromFixture: typeof createMapVariableFromFixture
       createDashboard: typeof createDashboard
       createCell: typeof createCell
       createDashWithCell: typeof createDashWithCell
@@ -70,6 +77,7 @@ declare global {
       deleteOrg: typeof deleteOrg
       flush: typeof flush
       getByTestID: typeof getByTestID
+      getByTestIDHead: typeof getByTestIDHead
       getByInputName: typeof getByInputName
       getByInputValue: typeof getByInputValue
       getByTestIDAndSetInputValue: typeof getByTestIDAndSetInputValue
@@ -90,6 +98,7 @@ declare global {
       fillInOSSLoginFormWithDefaults: typeof fillInOSSLoginFormWithDefaults
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
+      createCheck: typeof createCheck
       setFeatureFlags: typeof setFeatureFlags
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision

@@ -23,7 +23,7 @@ class CSVExportButton extends PureComponent<StateProps, {}> {
       <Button
         titleText={this.titleText}
         text="CSV"
-        icon={IconFont.Download}
+        icon={IconFont.Download_New}
         onClick={this.handleClick}
         status={this.buttonStatus}
       />

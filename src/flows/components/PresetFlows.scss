@@ -5,13 +5,8 @@ h3 {
   color: white;
 }
 
-h4 {
-  margin: 12px 0px 0px;
-  text-align: left;
-}
-
 .flows-index--presetContainer {
-  border: 1px solid $g5-pepper;
+  border: 1px solid $cf-grey-25;
   border-radius: 7px;
   padding: 30px;
   margin: 0px 0px 12px;
@@ -35,9 +30,14 @@ h4 {
   }
 }
 
+.flows-index--presetHeader {
+  margin: 12px 0px 0px;
+  text-align: left;
+}
+
 .flows-index--presetButton {
   height: 100px;
-  border: 1px solid $g5-pepper;
+  border: 1px solid $cf-grey-25;
   &:after {
     background: inherit;
   }
@@ -54,22 +54,22 @@ h4 {
 
 .flows-index--presetCard:nth-child(2) .flows-index--presetButton {
   background-image: url('../../../assets/images/Alert.png');
-  background-size: contain;
+  background-size: cover;
 }
 
 .flows-index--presetCard:nth-child(3) .flows-index--presetButton {
   background-image: url('../../../assets/images/Task.png');
-  background-size: contain;
+  background-size: cover;
 }
 
 .flows-index--presetCard:nth-child(4) .flows-index--presetButton {
   background-image: url('../../../assets/images/Flux.png');
-  background-size: contain;
+  background-size: cover;
 }
 
 .flows-index--presetCard:nth-child(5) .flows-index--presetButton {
   background-image: url('../../../assets/images/BlankFlow.png');
-  background-size: contain;
+  background-size: cover;
 }
 
 @media screen and (max-width: $cf-grid--breakpoint-md) {

@@ -10,7 +10,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  box-shadow: 0 2px 5px 0.6px fade-out($g0-obsidian, 0.8);
+  box-shadow: 0 2px 5px 0.6px fade-out($cf-grey-5, 0.8);
   border-radius: $radius;
   font-size: 12px;
   font-family: $cf-code-font;
@@ -31,5 +31,5 @@ li.CodeMirror-hint {
 
 li.CodeMirror-hint-active {
   @include gradient-h($c-comet, $c-laser);
-  color: $g20-white;
+  color: $cf-white;
 }

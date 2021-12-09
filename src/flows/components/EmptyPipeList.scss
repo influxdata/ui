@@ -7,7 +7,7 @@
   justify-content: center;
   height: 100%;
   font-size: 1.25em;
-  color: $g10-wolf;
+  color: $cf-grey-55;
   user-select: none;
 
   p {
@@ -15,7 +15,7 @@
   }
 
   strong {
-    color: $g18-cloud;
+    color: $cf-grey-95;
   }
 
   > *:last-child {
@@ -33,5 +33,5 @@
   background-repeat: no-repeat;
 }
 .flow-empty--buttons {
-  margin-top: $cf-marg-c;
+  margin-top: $cf-space-s;
 }

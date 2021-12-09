@@ -6,7 +6,7 @@ jest.mock('src/shared/components/FluxMonacoEditor', () => {
 })
 
 jest.mock('src/client/generatedRoutes.ts', () => ({
-  ...require.requireActual('src/client/generatedRoutes.ts'),
+  ...jest.requireActual('src/client/generatedRoutes.ts'),
   postVariable: jest.fn(() => {
     return {
       status: 201,
@@ -80,7 +80,7 @@ jest.mock('src/resources/selectors/index.ts', () => {
 })
 
 jest.mock('src/templates/api/index.ts', () => ({
-  ...require.requireActual('src/templates/api/index.ts'),
+  ...jest.requireActual('src/templates/api/index.ts'),
   createVariableFromTemplate: jest.fn(() => {
     return {
       id: 'test_variable_id',
@@ -408,10 +408,14 @@ describe('the variables ui functionality', () => {
   })
   describe('the variable deleting process', () => {
     it('can delete a Map variable', async () => {
-      const deleteButton = getByTestId('context-delete-variable values')
+      const deleteButton = getByTestId('context-delete-variable values--button')
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
+        const confirmButton = getByTestId(
+          'context-delete-variable values--confirm-button'
+        )
+        fireEvent.click(confirmButton)
       })
 
       const [notifyCallArguments] = mocked(notify).mock.calls
@@ -420,11 +424,15 @@ describe('the variables ui functionality', () => {
     })
     it('can delete a CSV variable', async () => {
       const deleteButton = getByTestId(
-        'context-delete-variable csv_test_variable'
+        'context-delete-variable csv_test_variable--button'
       )
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
+        const confirmButton = getByTestId(
+          'context-delete-variable csv_test_variable--confirm-button'
+        )
+        fireEvent.click(confirmButton)
       })
 
       const [notifyCallArguments] = mocked(notify).mock.calls
@@ -432,10 +440,16 @@ describe('the variables ui functionality', () => {
       expect(notifyMessage).toEqual(deleteVariableSuccess())
     })
     it('can delete a Query variable', async () => {
-      const deleteButton = getByTestId('context-delete-variable base_query')
+      const deleteButton = getByTestId(
+        'context-delete-variable base_query--button'
+      )
 
       await waitFor(() => {
         fireEvent.click(deleteButton)
+        const confirmButton = getByTestId(
+          'context-delete-variable base_query--confirm-button'
+        )
+        fireEvent.click(confirmButton)
       })
 
       const [notifyCallArguments] = mocked(notify).mock.calls

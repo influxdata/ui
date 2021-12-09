@@ -26,7 +26,7 @@ const TelegrafExplainer: FunctionComponent<Props> = ({
 }) => (
   <Panel gradient={Gradients.PolarExpress} border={true} style={{textAlign}}>
     {hasNoTelegrafs && (
-      <EmptyState.Text style={{color: InfluxColors.Platinum, marginTop: 16}}>
+      <EmptyState.Text style={{color: InfluxColors.Grey85, marginTop: 16}}>
         What is Telegraf?
       </EmptyState.Text>
     )}

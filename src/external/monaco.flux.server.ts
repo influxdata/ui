@@ -1,5 +1,4 @@
 import Deferred from '../utils/Deferred'
-import {fromFlux} from '@influxdata/giraffe'
 import {
   LSPResponse,
   parseResponse,
@@ -22,12 +21,6 @@ import {registerCompletion} from 'src/external/monaco.flux.lsp'
 import {AppState, LocalStorage} from 'src/types'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
 import {buildVarsOption} from 'src/variables/utils/buildVarsOption'
-import {runQuery} from 'src/shared/apis/query'
-import {getOrg} from 'src/organizations/selectors'
-import {event} from 'src/cloud/utils/reporting'
-
-import {fetchAllBuckets} from 'src/buckets/api'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {getStore} from 'src/store/configureStore'
 
@@ -44,142 +37,52 @@ import {
   SymbolInformation,
   TextEdit,
 } from 'monaco-languageclient/lib/services'
-import {Server} from '@influxdata/flux-lsp-browser'
-
-import {BUCKET_LIMIT} from 'src/resources/constants'
-
-type BucketCallback = () => Promise<string[]>
-type MeasurementsCallback = (bucket: string) => Promise<string[]>
-type TagKeysCallback = (bucket: string) => Promise<string[]>
-
-export interface WASMServer extends Server {
-  register_buckets_callback: (BucketCallback) => void
-  register_measurements_callback: (MeasurementsCallback) => void
-  register_tag_keys_callback: (TagKeysCallback) => void
-}
+import {Lsp} from '@influxdata/flux-lsp-browser'
+import {ProtocolToMonacoConverter} from 'monaco-languageclient/lib/monaco-converter'
 
 import {format_from_js_file} from '@influxdata/flux-lsp-browser'
-
-// NOTE: parses table then select measurements from the _value column
-const parseQueryResponse = response => {
-  const {table} = fromFlux(response.csv)
-  return table.getColumn('_value', 'string') || []
-}
-
-const queryMeasurements = async (orgID, bucket) => {
-  if (!orgID || orgID === '') {
-    throw new Error('no org is provided')
-  }
-
-  const query = `import "influxdata/influxdb/v1"
-      v1.measurements(bucket:"${bucket}")`
-
-  event('runQuery', {context: 'monaco'})
-  const raw = await runQuery(orgID, query).promise
-  if (raw.type !== 'SUCCESS') {
-    throw new Error('failed to get measurements')
-  }
-
-  return raw
-}
-
-const queryTagKeys = async (orgID, bucket) => {
-  if (!orgID || orgID === '') {
-    throw new Error('no org is provided')
-  }
-
-  const query = `import "influxdata/influxdb/v1"
-      v1.tagKeys(bucket:"${bucket}")`
-
-  event('runQuery', {context: 'monaco'})
-  const raw = await runQuery(orgID, query).promise
-  if (raw.type !== 'SUCCESS') {
-    throw new Error('failed to get tagKeys')
-  }
-
-  return raw
-}
-
-const queryTagValues = async (orgID, bucket, tag) => {
-  if (!orgID || orgID === '') {
-    throw new Error('no org is provided')
-  }
-
-  const query = `import "influxdata/influxdb/v1"
-      v1.tagValues(bucket:"${bucket}", tag: "${tag}")`
-
-  event('runQuery', {context: 'monaco'})
-  const raw = await runQuery(orgID, query).promise
-  if (raw.type !== 'SUCCESS') {
-    throw new Error('failed to get tagKeys')
-  }
-
-  return raw
-}
-
 export class LSPServer {
-  private server: WASMServer
+  private server: Lsp
   private messageID: number = 0
   private documentVersions: {[key: string]: number} = {}
   public store: Store<AppState & LocalStorage>
+  private p2m: ProtocolToMonacoConverter
 
-  constructor(server: WASMServer, reduxStore = getStore()) {
+  constructor(server: Lsp, reduxStore = getStore()) {
     this.server = server
-    this.server.register_buckets_callback(this.getBuckets)
-    this.server.register_measurements_callback(this.getMeasurements)
-    this.server.register_tag_keys_callback(this.getTagKeys)
-    this.server.register_tag_values_callback(this.getTagValues)
+    this.server.onMessage(this.onMessage)
     this.store = reduxStore
+    this.p2m = new ProtocolToMonacoConverter()
+    this.server
+      .run()
+      .then(() => console.warn('lsp server has stopped'))
+      .catch(err => console.error('lsp server has crashed', err))
   }
 
-  getTagKeys = async bucket => {
-    try {
-      const org = getOrg(this.store.getState())
-      const response = await queryTagKeys(org.id, bucket)
-      return parseQueryResponse(response)
-    } catch (e) {
-      console.error(e)
-      return []
-    }
-  }
-
-  getTagValues = async (bucket, tag) => {
-    try {
-      const org = getOrg(this.store.getState())
-      const response = await queryTagValues(org.id, bucket, tag)
-      return parseQueryResponse(response)
-    } catch (e) {
-      console.error(e)
-      return []
-    }
-  }
-
-  getBuckets = async () => {
-    try {
-      const org = getOrg(this.store.getState())
-
-      let limit = BUCKET_LIMIT
-      if (isFlagEnabled('fetchAllBuckets')) {
-        // a limit of -1 means fetch all buckets for this org
-        limit = -1
+  onMessage = (msg: string) => {
+    const response = parseResponse(msg) as NotificationMessage
+    switch (response.method) {
+      case 'textDocument/publishDiagnostics': {
+        this.updateDiagnostics(response.params)
+        break
       }
-
-      const buckets = await fetchAllBuckets(org.id, limit)
-      return Object.values(buckets.entities.buckets).map(b => b.name)
-    } catch (e) {
-      console.error(e)
-      return []
+      default: {
+        console.warn('unsupported lsp message type received')
+        break
+      }
     }
   }
 
-  getMeasurements = async (bucket: string) => {
+  updateDiagnostics = params => {
     try {
-      const org = getOrg(this.store.getState())
-      const response = await queryMeasurements(org.id, bucket)
-      return parseQueryResponse(response)
+      const results = this.p2m.asDiagnostics(params?.diagnostics)
+      window.monaco.editor.setModelMarkers(
+        window.monaco.editor.getModel(params?.uri),
+        'default',
+        results
+      )
     } catch (e) {
-      console.error(e)
-      return []
+      console.error('updateDiagnostics error', e)
     }
   }
 
@@ -293,9 +196,8 @@ export class LSPServer {
 
   private parseDiagnostics(response: NotificationMessage): Diagnostic[] {
     if (
-      response &&
-      response.method === 'textDocument/publishDiagnostics' &&
-      response.params
+      response?.method === 'textDocument/publishDiagnostics' &&
+      response?.params
     ) {
       const {diagnostics} = response.params as {diagnostics: Diagnostic[]}
 
@@ -313,9 +215,7 @@ export class LSPServer {
 
   private async send(message: LSPMessage): Promise<LSPResponse> {
     const body = JSON.stringify(message)
-    const fullMessage = `Content-Length: ${body.length}\r\n\r\n${body}`
-    const response = await this.server.process(fullMessage)
-
+    const response = await this.server.send(body)
     return parseResponse(response)
   }
 
@@ -357,8 +257,8 @@ class LSPLoader {
 
     this.loading = true
 
-    const {Server} = await import('@influxdata/flux-lsp-browser')
-    this.server = new LSPServer(new Server(false, true) as WASMServer)
+    const {Lsp} = await import('@influxdata/flux-lsp-browser')
+    this.server = new LSPServer(new Lsp())
     registerCompletion(window.monaco, this.server)
 
     await this.server.initialize()

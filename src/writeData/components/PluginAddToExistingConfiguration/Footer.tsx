@@ -43,7 +43,7 @@ const FooterConfigure: FC<FooterProps> = props => {
   return (
     <>
       <Button
-        color={ComponentColor.Default}
+        color={ComponentColor.Tertiary}
         onClick={onCancel}
         tabIndex={1}
         testID="plugin-add-to-configuration-cancel"

@@ -39,7 +39,7 @@ const QueryTabs: FC<Props> = ({draftQueries, isInCheckOverlay, onAddQuery}) => {
       {!isInCheckOverlay && (
         <SquareButton
           className="time-machine-queries--new"
-          icon={IconFont.PlusSkinny}
+          icon={IconFont.Plus_New}
           size={ComponentSize.Small}
           color={ComponentColor.Default}
           onClick={onAddQuery}

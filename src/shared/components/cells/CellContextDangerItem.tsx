@@ -21,7 +21,7 @@ interface Props {
 }
 
 const CellContextItem: FunctionComponent<Props> = ({
-  icon = IconFont.Trash,
+  icon = IconFont.Trash_New,
   label,
   testID,
   onHide,

@@ -9,16 +9,14 @@ import {CreateBucketForm} from 'src/buckets/components/createBucketForm/CreateBu
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Constants
-import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
+import {getBucketOverlayWidth} from 'src/buckets/constants'
 
 const CreateBucketOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
   return (
-    <Overlay.Container maxWidth={BUCKET_OVERLAY_WIDTH}>
+    <Overlay.Container maxWidth={getBucketOverlayWidth()}>
       <Overlay.Header title="Create Bucket" onDismiss={onClose} />
-      <Overlay.Body>
-        <CreateBucketForm onClose={onClose} />
-      </Overlay.Body>
+      <CreateBucketForm onClose={onClose} />
     </Overlay.Container>
   )
 }

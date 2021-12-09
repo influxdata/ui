@@ -29,13 +29,11 @@ const CreateSecretOverlay: FC = () => {
           onDismiss={onDismiss}
           testID="modify-secret-overlay-header"
         />
-        <Overlay.Body>
-          <GetResources resources={[ResourceType.Secrets]}>
-            <ErrorBoundary>
-              <CreateSecretForm onDismiss={onDismiss} />
-            </ErrorBoundary>
-          </GetResources>
-        </Overlay.Body>
+        <GetResources resources={[ResourceType.Secrets]}>
+          <ErrorBoundary>
+            <CreateSecretForm onDismiss={onDismiss} />
+          </ErrorBoundary>
+        </GetResources>
       </Overlay.Container>
     </Overlay>
   )

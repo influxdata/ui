@@ -16,7 +16,7 @@ const TimeZoneDropdown: FC = () => {
       options={TIME_ZONES.map(tz => tz.timeZone)}
       selectedOption={timeZone}
       onSelect={setTimeZone}
-      buttonIcon={IconFont.Annotate}
+      buttonIcon={IconFont.Annotate_New}
       style={{width: '115px'}}
     />
   )

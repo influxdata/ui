@@ -2,21 +2,10 @@
 import React, {FC} from 'react'
 
 // Components
-import {
-  Panel,
-  Gradients,
-  Button,
-  ComponentColor,
-  AlignItems,
-  IconFont,
-} from '@influxdata/clockface'
+import {Panel, Gradients, AlignItems} from '@influxdata/clockface'
 import {PROJECT_NAME_PLURAL, NOTEBOOKS_DOCUMENTATION_LINK} from 'src/flows'
 
 const FlowsExplainer: FC = () => {
-  const handleDocumentationClick = (): void => {
-    window.open(NOTEBOOKS_DOCUMENTATION_LINK, '_blank')
-  }
-
   return (
     <Panel gradient={Gradients.PolarExpress} border={true}>
       <Panel.Header>
@@ -25,16 +14,19 @@ const FlowsExplainer: FC = () => {
       <Panel.Body alignItems={AlignItems.FlexStart}>
         <p>
           {PROJECT_NAME_PLURAL} are a tool to help you explore, visualize, and
-          process your data. Learn how to downsample data and other handy
-          tutorials:
+          process your data.
+          <br />
+          Learn{' '}
+          <a
+            href={NOTEBOOKS_DOCUMENTATION_LINK}
+            style={{margin: '30px 0px 10px 0px'}}
+            target="_blank"
+            rel="noreferrer"
+          >
+            how you can use notebooks
+          </a>{' '}
+          to downsample data or other handy tutorials.
         </p>
-        <Button
-          icon={IconFont.TextBlock}
-          onClick={handleDocumentationClick}
-          color={ComponentColor.Secondary}
-          text="Notebooks Docs"
-          style={{margin: '30px 0px 10px 0px'}}
-        />
       </Panel.Body>
     </Panel>
   )

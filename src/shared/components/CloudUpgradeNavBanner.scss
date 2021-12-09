@@ -9,19 +9,19 @@
 a.cloud-upgrade-banner__collapsed {
   text-align: center;
   border-radius: $cf-radius;
-  margin: $cf-marg-b 0;
+  margin: $cf-space-2xs 0;
   display: none;
   width: 100%;
 
   h5 {
     font-size: $cf-text-tiny;
     font-size: 0.9em;
-    margin-bottom: $cf-marg-a;
+    margin-bottom: $cf-space-3xs;
   }
 
   .cf-icon {
     font-size: 2.75em;
-    margin-bottom: $cf-marg-a;
+    margin-bottom: $cf-space-3xs;
   }
 }
 

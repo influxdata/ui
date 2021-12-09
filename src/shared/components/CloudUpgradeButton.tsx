@@ -8,7 +8,6 @@ import {useHistory} from 'react-router-dom'
 import {
   IconFont,
   Button,
-  ComponentColor,
   ComponentSize,
   ButtonShape,
 } from '@influxdata/clockface'
@@ -49,13 +48,16 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     <CloudOnly>
       {showUpgradeButton && (
         <Button
-          icon={IconFont.CrownSolid}
+          icon={IconFont.CrownSolid_New}
           className={cloudUpgradeButtonClass}
-          color={ComponentColor.Success}
           size={size}
           shape={ButtonShape.Default}
           onClick={handleClick}
           text={buttonText}
+          style={{
+            background:
+              'linear-gradient(45deg, rgb(52, 187, 85) 0%, rgb(0, 163, 255) 100%)',
+          }}
           testID="cloud-upgrade--button"
         />
       )}

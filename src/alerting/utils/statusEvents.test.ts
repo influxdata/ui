@@ -20,8 +20,25 @@ const cancel = jest.fn()
 describe('process statuses response', () => {
   beforeEach(jest.clearAllMocks)
 
+  const fluxGroupKeyUnion = ['']
+  const length = 100
+  const cols = 20
+  const table: Table = {
+    columnKeys: ['table', ...range(cols).map(x => x.toString(10))],
+    getColumn: (col: string) =>
+      col === 'table' ? alwaysZero : (range(length).map(x => x * +col) as any),
+    length,
+    getColumnName: jest.fn(),
+    getColumnType: jest.fn(),
+    getOriginalColumnType: jest.fn(),
+    addColumn: jest.fn(),
+  }
+
   it('process empty table', async () => {
-    mocked(fromFlux).mockImplementationOnce(() => ({table: {length: 0}}))
+    mocked(fromFlux).mockImplementationOnce(() => ({
+      table: {...table, length: 0},
+      fluxGroupKeyUnion,
+    }))
 
     const actual = await processStatusesResponse({
       promise: Promise.resolve({
@@ -38,21 +55,7 @@ describe('process statuses response', () => {
   })
 
   it('process single table', async () => {
-    const length = 100
-    const cols = 20
-    const table: Table = {
-      columnKeys: ['table', ...range(cols).map(x => x.toString(10))],
-      getColumn: (col: string) =>
-        col === 'table'
-          ? alwaysZero
-          : (range(length).map(x => x * +col) as any),
-      length,
-      getColumnName: jest.fn(),
-      getColumnType: jest.fn(),
-      getOriginalColumnType: jest.fn(),
-      addColumn: jest.fn(),
-    }
-    mocked(fromFlux).mockImplementationOnce(() => ({table}))
+    mocked(fromFlux).mockImplementationOnce(() => ({table, fluxGroupKeyUnion}))
     const expected = range(length).map(i =>
       Object.fromEntries([
         ['table', 0],

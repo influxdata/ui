@@ -4,6 +4,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+const WorkerPlugin = require('worker-plugin')
 
 const webpack = require('webpack')
 const {
@@ -46,11 +47,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /flux_bg.wasm$/,
-        type: 'webassembly/experimental',
-      },
-      {
-        test: /^((?!flux_parser_bg|flux-lsp-browser_bg|flux_bg).)*.wasm$/,
+        test: /^((?!flux-lsp-browser_bg).)*.wasm$/,
         loader: 'file-loader',
         type: 'javascript/auto',
       },
@@ -142,6 +139,7 @@ module.exports = {
       chunkFilename: `${STATIC_DIRECTORY}[id].[contenthash:10].css`,
     }),
     new ForkTsCheckerWebpackPlugin(),
+    new WorkerPlugin(),
     new webpack.ProgressPlugin(),
     new webpack.EnvironmentPlugin({
       ...process.env,

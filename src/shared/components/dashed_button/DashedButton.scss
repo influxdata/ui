@@ -1,19 +1,20 @@
 .dashed-button {
   width: 100%;
-  border: $ix-border dashed $g5-pepper;
-  background-color: rgba($g5-pepper, 0);
-  color: $g9-mountain;
+  border: $ix-border dashed $cf-grey-25;
+  background-color: rgba($cf-grey-25, 0);
+  color: $cf-grey-45;
   transition: background-color 0.25s ease, color 0.25s ease,
     border-color 0.25s ease;
   font-weight: 700;
   outline: none;
   border-radius: $ix-radius;
+  text-align: center;
 
   &:hover {
     cursor: pointer;
-    background-color: rgba($g5-pepper, 0.25);
-    border-color: $g6-smoke;
-    color: $g13-mist;
+    background-color: rgba($cf-grey-25, 0.25);
+    border-color: $cf-grey-25;
+    color: $cf-grey-75;
   }
 }
 
@@ -23,8 +24,8 @@
 */
 
 .dashed-button__default:active {
-  border-color: $g9-mountain;
-  color: $g16-pearl;
+  border-color: $cf-grey-45;
+  color: $cf-grey-85;
 }
 
 .dashed-button__primary:active {

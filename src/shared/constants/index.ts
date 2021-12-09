@@ -112,31 +112,31 @@ export const FLUX_RESPONSE_BYTES_LIMIT = CLOUD
 export const VIS_SIG_DIGITS = 4
 
 export const VIS_THEME: Partial<Config> = {
-  axisColor: InfluxColors.Kevlar,
-  gridColor: InfluxColors.Kevlar,
+  axisColor: InfluxColors.Grey35,
+  gridColor: InfluxColors.Grey35,
   gridOpacity: 1,
   tickFont: '500 11px Rubik',
-  tickFontColor: InfluxColors.Mist,
+  tickFontColor: InfluxColors.Grey75,
   legendFont: '12px Rubik',
-  legendFontColor: InfluxColors.Wolf,
-  legendFontBrightColor: InfluxColors.Chromium,
-  legendBackgroundColor: InfluxColors.Raven,
-  legendBorder: `1px solid ${InfluxColors.Kevlar}`,
-  legendCrosshairColor: InfluxColors.Smoke,
+  legendFontColor: InfluxColors.Grey55,
+  legendFontBrightColor: InfluxColors.Grey75,
+  legendBackgroundColor: InfluxColors.Grey5,
+  legendBorder: `1px solid ${InfluxColors.Grey15}`,
+  legendCrosshairColor: InfluxColors.Grey35,
 }
 
 export const VIS_THEME_LIGHT: Partial<Config> = {
-  axisColor: InfluxColors.Whisper,
-  gridColor: InfluxColors.Whisper,
+  axisColor: InfluxColors.Grey95,
+  gridColor: InfluxColors.Grey95,
   gridOpacity: 1,
   tickFont: '500 11px Rubik',
-  tickFontColor: InfluxColors.Mountain,
+  tickFontColor: InfluxColors.Grey45,
   legendFont: '12px Rubik',
-  legendFontColor: InfluxColors.Graphite,
-  legendFontBrightColor: InfluxColors.Forge,
-  legendBackgroundColor: InfluxColors.Ghost,
-  legendBorder: `1px solid ${InfluxColors.Whisper}`,
-  legendCrosshairColor: InfluxColors.Smoke,
+  legendFontColor: InfluxColors.Grey35,
+  legendFontBrightColor: InfluxColors.Grey65,
+  legendBackgroundColor: InfluxColors.Grey95,
+  legendBorder: `1px solid ${InfluxColors.Grey95}`,
+  legendCrosshairColor: InfluxColors.Grey25,
 }
 
 export const GIRAFFE_COLOR_SCHEMES = [
@@ -161,3 +161,7 @@ export const GLOBALSEARCH_APP_ID = formatConstant(
 export const GLOBALSEARCH_API_KEY = formatConstant(
   process.env.GLOBALSEARCH_API_KEY
 )
+
+export const PAYG_CREDIT_DAYS = 30
+export const PAYG_MAX_CREDIT = 250
+export const PAYG_CREDIT_EXPERIMENT_ID = process.env.PAYG_CREDIT_EXPERIMENT_ID

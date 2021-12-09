@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {lines, makeGraphSnapshot} from '../../support/commands'
+import {points, makeGraphSnapshot} from '../../support/commands'
 const VIS_TYPES = [
   'band',
   //    'check',
@@ -14,20 +14,21 @@ const VIS_TYPES = [
   'line-plus-single-stat',
   'table',
 ]
+const NUM_POINTS = 360
 describe('visualizations', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.createMapVariable(id)
-          cy.fixture('routes').then(({orgs, explorer}) => {
-            cy.visit(`${orgs}/${id}${explorer}`)
-            cy.getByTestID('tree-nav')
-          })
-        })
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+
+    cy.get('@org').then(({id}: Organization) => {
+      cy.createMapVariable(id)
+      cy.fixture('routes').then(({orgs, explorer}) => {
+        cy.visit(`${orgs}/${id}${explorer}`)
       })
-    )
-  )
+    })
+    cy.writeData(points(NUM_POINTS))
+    cy.getByTestID('time-machine--bottom')
+  })
   describe('empty states', () => {
     it('shows a message if no queries have been created', () => {
       cy.getByTestID('empty-graph--no-queries').should('exist')
@@ -37,28 +38,17 @@ describe('visualizations', () => {
       cy.getByTestID('switch-to-script-editor').click()
 
       cy.getByTestID('time-machine--bottom').within(() => {
-        const remove = cy.state().window.store.subscribe(() => {
-          remove()
-          cy.getByTestID('time-machine-submit-button').click()
-          cy.getByTestID('empty-graph--error').should('exist')
-        })
         cy.getByTestID('flux-editor')
-          .click({force: true})
-          .focused()
-          .clear()
-          .type('from(', {force: true, delay: 2})
+          .should('exist')
+          .monacoType('{selectall}{del}from()')
+
         cy.getByTestID('time-machine-submit-button').click()
       })
+      cy.getByTestID('empty-graph--error').should('exist')
     })
   })
 
-  const numLines = 360
-  describe(`visualize with ${numLines} lines`, () => {
-    beforeEach(() => {
-      // POST 360 lines to the server
-      cy.writeData(lines(numLines))
-    })
-
+  describe(`visualize with ${NUM_POINTS} points`, () => {
     it('can view time-series data', () => {
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
@@ -98,9 +88,7 @@ describe('visualizations', () => {
             .last()
             .contains('aggregate.')
           cy.getByTestID('flux-editor').should('exist')
-          cy.getByTestID('flux-editor').within(() => {
-            cy.get('textarea').type('yoyoyoyoyo', {force: true})
-          })
+          cy.getByTestID('flux-editor').monacoType(`yoyoyoyoyo`)
 
           cy.log('can over over flux functions')
           cy.getByTestID('flux-docs--aggregateWindow').should('not.exist')
@@ -150,7 +138,7 @@ describe('visualizations', () => {
               if (type.includes('single-stat')) {
                 cy.getByTestID('single-stat--text').should(
                   'contain',
-                  `${numLines}`
+                  `${NUM_POINTS}`
                 )
               }
             }
@@ -348,7 +336,7 @@ describe('visualizations', () => {
       // check to see that the FE rows are NOT sorted with flux sort
       cy.get('.table-graph-cell__sort-asc').should('not.exist')
       cy.get('.table-graph-cell__sort-desc').should('not.exist')
-      cy.getByTestID('_value-table-header')
+      cy.getByTestID('_value-table-header table-graph-cell')
         .should('exist')
         .then(el => {
           // get the column index
@@ -363,23 +351,25 @@ describe('visualizations', () => {
             }
           })
         })
-      cy.getByTestID('_value-table-header').click()
-      cy.get('.table-graph-cell__sort-asc').should('exist')
-      cy.getByTestID('_value-table-header').click()
-      cy.get('.table-graph-cell__sort-desc').should('exist')
-      cy.getByTestID('_value-table-header').then(el => {
-        // get the column index
-        const columnIndex = el[0].getAttribute('data-column-index')
-        let prev = Infinity
-        // get all the column values for that one and see if they are in order
-        cy.get(`[data-column-index="${columnIndex}"]`).each(val => {
-          const num = Number(val.text())
-          if (isNaN(num) === false) {
-            expect(num < prev).to.equal(true)
-            prev = num
-          }
+      cy.getByTestID('_value-table-header table-graph-cell').click()
+      cy.getByTestID('_value-table-header table-graph-cell__sort-asc')
+        .should('exist')
+        .click()
+      cy.getByTestID('_value-table-header table-graph-cell__sort-desc')
+        .should('exist')
+        .then(el => {
+          // get the column index
+          const columnIndex = el[0].getAttribute('data-column-index')
+          let prev = Infinity
+          // get all the column values for that one and see if they are in order
+          cy.get(`[data-column-index="${columnIndex}"]`).each(val => {
+            const num = Number(val.text())
+            if (isNaN(num) === false) {
+              expect(num < prev).to.equal(true)
+              prev = num
+            }
+          })
         })
-      })
     })
   })
 })

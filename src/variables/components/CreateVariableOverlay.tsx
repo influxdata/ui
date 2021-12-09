@@ -28,13 +28,11 @@ const CreateVariableOverlay: FC = () => {
         onDismiss={handleHide}
         testID="create-variable-overlay-header"
       />
-      <Overlay.Body>
-        <GetResources resources={[ResourceType.Variables]}>
-          <ErrorBoundary>
-            <VariableFormContext onHideOverlay={handleHide} />
-          </ErrorBoundary>
-        </GetResources>
-      </Overlay.Body>
+      <GetResources resources={[ResourceType.Variables]}>
+        <ErrorBoundary>
+          <VariableFormContext onHideOverlay={handleHide} />
+        </ErrorBoundary>
+      </GetResources>
     </Overlay.Container>
   )
 }

@@ -73,7 +73,7 @@ const SecretsTab: FC = () => {
         <Button
           text="Add Secret"
           color={ComponentColor.Primary}
-          icon={IconFont.Plus}
+          icon={IconFont.Plus_New}
           onClick={handleCreateSecret}
           testID="button-add-secret"
         />
@@ -98,7 +98,7 @@ const SecretsTab: FC = () => {
             <Button
               text="Add Secret"
               color={ComponentColor.Primary}
-              icon={IconFont.Plus}
+              icon={IconFont.Plus_New}
               onClick={handleCreateSecret}
               testID="button-add-secret"
             />
@@ -131,7 +131,7 @@ const SecretsTab: FC = () => {
           <Button
             text="Add Secret"
             color={ComponentColor.Primary}
-            icon={IconFont.Plus}
+            icon={IconFont.Plus_New}
             onClick={handleCreateSecret}
             testID="button-add-secret"
           />

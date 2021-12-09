@@ -1,6 +1,5 @@
-import React, {FC, useContext, useCallback, useEffect, useMemo} from 'react'
+import React, {FC, useContext, useCallback, useEffect} from 'react'
 import {
-  MultiSelectDropdown,
   ComponentColor,
   ComponentStatus,
   IconFont,
@@ -14,12 +13,9 @@ import {
 } from 'src/visualization'
 import {ViewType} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
-import {FUNCTIONS} from 'src/timeMachine/constants/queryBuilder'
 
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
-
-const AVAILABLE_FUNCTIONS = FUNCTIONS.map(f => f.name)
 
 const WrappedViewOptions: FC = () => {
   const {data, update, results} = useContext(PipeContext)
@@ -72,36 +68,6 @@ const Controls: FC = () => {
     }
   }
 
-  const options = useMemo(() => {
-    if (!data.functions || !data.functions.length) {
-      return []
-    }
-    return data.functions.map(f => f.name)
-  }, [data.functions])
-
-  const selectFn = useCallback(
-    (fn: string) => {
-      const fns = options.map(f => ({name: f}))
-      let found = false
-      let fnIdx = fns.findIndex(f => f.name === fn)
-
-      while (fnIdx !== -1) {
-        found = true
-        fns.splice(fnIdx, 1)
-        fnIdx = fns.findIndex(f => f.name === fn)
-      }
-
-      if (!found) {
-        fns.push({name: fn})
-      }
-
-      update({
-        functions: fns,
-      })
-    },
-    [options, update]
-  )
-
   useEffect(() => {
     let period
     if (range.type === 'custom') {
@@ -124,7 +90,7 @@ const Controls: FC = () => {
   const toggler = (
     <Button
       text="Configure"
-      icon={IconFont.CogThick}
+      icon={IconFont.CogSolid_New}
       onClick={launcher}
       status={dataExists ? ComponentStatus.Default : ComponentStatus.Disabled}
       color={ComponentColor.Default}
@@ -138,7 +104,9 @@ const Controls: FC = () => {
   if (data.properties.type === 'simple-table') {
     return (
       <>
-        <label style={{alignSelf: 'center', marginRight: '12px'}}>
+        <label
+          style={{alignSelf: 'center', marginRight: '12px', minWidth: '150px'}}
+        >
           Limited to most recent 100 results per series
         </label>
         <ViewTypeDropdown
@@ -150,32 +118,8 @@ const Controls: FC = () => {
     )
   }
 
-  if (
-    data.properties.type === 'single-stat' ||
-    data.properties.type === 'gauge'
-  ) {
-    return (
-      <>
-        <ViewTypeDropdown
-          viewType={data.properties.type}
-          onUpdateType={updateType as any}
-        />
-        {toggler}
-      </>
-    )
-  }
-
   return (
     <>
-      <MultiSelectDropdown
-        emptyText="Select"
-        style={{width: '250px'}}
-        options={AVAILABLE_FUNCTIONS}
-        selectedOptions={options}
-        onSelect={selectFn}
-        buttonColor={ComponentColor.Secondary}
-        buttonIcon={IconFont.BarChart}
-      />
       <ViewTypeDropdown
         viewType={data.properties.type}
         onUpdateType={updateType as any}

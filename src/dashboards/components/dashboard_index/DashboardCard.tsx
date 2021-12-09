@@ -1,11 +1,22 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {createRef, PureComponent, RefObject} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {IconFont, ComponentColor, ResourceCard} from '@influxdata/clockface'
-import {Context} from 'src/clockface'
+import {
+  IconFont,
+  ComponentColor,
+  ResourceCard,
+  FlexBox,
+  ComponentSize,
+  Appearance,
+  ButtonShape,
+  ConfirmationButton,
+  List,
+  Popover,
+  SquareButton,
+} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 
 // Actions
@@ -143,51 +154,65 @@ class DashboardCard extends PureComponent<Props> {
   }
 
   private get contextMenu(): JSX.Element {
+    const settingsRef: RefObject<HTMLButtonElement> = createRef()
+
     return (
-      <Context>
-        <Context.Menu icon={IconFont.CogThick} testID="context-export-menu">
-          <Context.Item
-            label="Export"
-            action={this.handleExport}
-            testID="context-menu-item-export"
-          />
-        </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Duplicate}
-          color={ComponentColor.Secondary}
-        >
-          <Context.Item
-            label="Clone"
-            action={this.handleCloneDashboard}
-            testID="clone-dashboard"
-          />
-        </Context.Menu>
-        {isFlagEnabled('pinnedItems') && CLOUD && (
-          <Context.Menu
-            icon={IconFont.Star}
-            color={ComponentColor.Success}
-            testID="context-pin-menu"
-          >
-            <Context.Item
-              label="Pin to Homepage"
-              action={this.handlePinDashboard}
-              testID="context-pin-dashboard"
-              disabled={this.props.isPinned}
-            />
-          </Context.Menu>
-        )}
-        <Context.Menu
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
+      <FlexBox margin={ComponentSize.ExtraSmall}>
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, delete this dashboard"
+          onConfirm={this.handleDeleteDashboard}
+          confirmationButtonText="Confirm"
           testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={this.handleDeleteDashboard}
-            testID="context-delete-dashboard"
-          />
-        </Context.Menu>
-      </Context>
+        />
+        <SquareButton
+          ref={settingsRef}
+          size={ComponentSize.ExtraSmall}
+          icon={IconFont.CogSolid_New}
+          color={ComponentColor.Colorless}
+          testID="context-menu-dashboard"
+        />
+        <Popover
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          style={{minWidth: '112px'}}
+          contents={() => (
+            <List>
+              <List.Item
+                onClick={this.handleExport}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-export-dashboard"
+              >
+                Export
+              </List.Item>
+              <List.Item
+                onClick={this.handleCloneDashboard}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-clone-dashboard"
+              >
+                Clone
+              </List.Item>
+              {isFlagEnabled('pinnedItems') && CLOUD && (
+                <List.Item
+                  onClick={this.handlePinDashboard}
+                  disabled={this.props.isPinned}
+                  size={ComponentSize.Small}
+                  style={{fontWeight: 500}}
+                  testID="context-pin-dashboard"
+                >
+                  Pin
+                </List.Item>
+              )}
+            </List>
+          )}
+          triggerRef={settingsRef}
+        />
+      </FlexBox>
     )
   }
 
@@ -207,10 +232,16 @@ class DashboardCard extends PureComponent<Props> {
       },
     } = this.props
 
+    let dest = `/notebook/from/dashboard/${id}`
+
+    if (!isFlagEnabled('boardWithFlows')) {
+      dest = `/orgs/${orgID}/dashboards/${id}`
+    }
+
     if (e.metaKey) {
-      window.open(`/orgs/${orgID}/dashboards/${id}`, '_blank')
+      window.open(dest, '_blank')
     } else {
-      history.push(`/orgs/${orgID}/dashboards/${id}`)
+      history.push(dest)
     }
 
     onResetViews()

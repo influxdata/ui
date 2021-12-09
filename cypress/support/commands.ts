@@ -1,4 +1,10 @@
-import {AccountType, NotificationEndpoint, Secret} from '../../src/types'
+import {
+  AccountType,
+  NotificationEndpoint,
+  GenCheck,
+  NotificationRule,
+  Secret,
+} from '../../src/types'
 import {Bucket, Organization} from '../../src/client'
 import {setOverrides, FlagMap} from 'src/shared/actions/flags'
 import {addTimestampToRecs, addStaggerTimestampToRecs, parseTime} from './Utils'
@@ -61,6 +67,19 @@ export const loginViaDexUI = (username: string, password: string) => {
   cy.get('#submit-login').click()
   cy.get('.theme-btn--success').click()
 }
+
+Cypress.Commands.add(
+  'monacoType',
+  {prevSubject: true},
+  (subject, text: string) => {
+    return cy.wrap(subject).within(() => {
+      cy.get('.monaco-editor .view-line:last')
+        .click({force: true})
+        .focused()
+        .type(text, {force: true, delay: 10})
+    })
+  }
+)
 
 // login via the purple OSS screen by typing in username/password
 // this is only used if you're using monitor-ci + DEV_MODE_CLOUD=0
@@ -221,9 +240,10 @@ export const createCell = (
 
 export const createView = (
   dbID: string,
-  cellID: string
+  cellID: string,
+  viewFile = 'view'
 ): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.fixture('view').then(view => {
+  return cy.fixture(viewFile).then(view => {
     return cy.request({
       method: 'PATCH',
       url: `/api/v2/dashboards/${dbID}/cells/${cellID}/view`,
@@ -295,6 +315,11 @@ export const upsertSecret = (
     url: `/api/v2/orgs/${orgID}/secrets`,
     body: secret,
   })
+}
+
+// TODO: (sahas) need to make this function to actually mimic the navbar functionality
+export const clickNavBarItem = (testID: string): Cypress.Chainable => {
+  return cy.getByTestID(testID).click({force: true})
 }
 
 export const createTask = (
@@ -384,6 +409,20 @@ export const createMapVariable = (
       orgID,
       arguments: argumentsObj,
     },
+  })
+}
+
+export const createMapVariableFromFixture = (
+  fixName: string,
+  orgID?: string
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.fixture(fixName).then(varBody => {
+    varBody.orgID = orgID
+    return cy.request({
+      method: 'POST',
+      url: '/api/v2/variables',
+      body: varBody,
+    })
   })
 }
 
@@ -508,50 +547,6 @@ export const createTelegraf = (
   })
 }
 
-export const createRule = (
-  orgID: string,
-  endpointID: string,
-  name = ''
-): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.request({
-    method: 'POST',
-    url: 'api/v2/notificationRules',
-    body: genRule({endpointID, orgID, name}),
-  })
-}
-
-type RuleArgs = {
-  endpointID: string
-  orgID: string
-  type?: string
-  name?: string
-}
-
-const genRule = ({
-  endpointID,
-  orgID,
-  type = 'slack',
-  name = 'r1',
-}: RuleArgs) => ({
-  type,
-  every: '20m',
-  offset: '1m',
-  url: '',
-  orgID,
-  name,
-  activeStatus: 'active',
-  status: 'active',
-  endpointID,
-  tagRules: [],
-  labels: [],
-  statusRules: [
-    {currentLevel: 'CRIT', period: '1h', count: 1, previousLevel: 'INFO'},
-  ],
-  description: '',
-  messageTemplate: 'im a message',
-  channel: '',
-})
-
 /*
 [{action: 'write', resource: {type: 'views'}},
       {action: 'write', resource: {type: 'documents'}},
@@ -668,19 +663,19 @@ export const quartzProvision = (
   })
 }
 
-export const lines = (numLines = 3) => {
-  // each line is 10 seconds before the previous line
-  const offset_ms = 10_000
+export const points = (numPoints = 3, offsetMilliseconds = 10_000) => {
+  // each point is 10 seconds (10,000ms) before the previous point by default
+  // the offset can be changed with the second argument
   const now = Date.now()
   const nanos_per_ms = '000000'
 
-  const decendingValues = Array(numLines)
+  const decendingValues = Array(numPoints)
     .fill(0)
     .map((_, i) => i)
     .reverse()
 
   const incrementingTimes = decendingValues.map(val => {
-    return now - offset_ms * val
+    return now - offsetMilliseconds * val
   })
 
   return incrementingTimes.map((tm, i) => {
@@ -729,6 +724,33 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
   if (args.stagger) {
     return addStaggerTimestampToRecs(args.lines, args.offset, interval).then(
       stampedLines => {
+        if (args.namedBucket) {
+          return writeData(stampedLines, args.namedBucket).then(response => {
+            if (response.status !== 204) {
+              throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+            }
+            return cy.wrap('success')
+          })
+        } else {
+          return writeData(stampedLines).then(response => {
+            if (response.status !== 204) {
+              throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+            }
+            return cy.wrap('success')
+          })
+        }
+      }
+    )
+  } else {
+    return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
+      if (args.namedBucket) {
+        return writeData(stampedLines, args.namedBucket).then(response => {
+          if (response.status !== 204) {
+            throw `Problem writing data. Status: ${response.status} ${response.statusText}`
+          }
+          return cy.wrap('success')
+        })
+      } else {
         return writeData(stampedLines).then(response => {
           if (response.status !== 204) {
             throw `Problem writing data. Status: ${response.status} ${response.statusText}`
@@ -736,15 +758,6 @@ export const writeLPData = (args: WriteLPDataConf): Cypress.Chainable => {
           return cy.wrap('success')
         })
       }
-    )
-  } else {
-    return addTimestampToRecs(args.lines, args.offset).then(stampedLines => {
-      return writeData(stampedLines).then(response => {
-        if (response.status !== 204) {
-          throw `Problem writing data. Status: ${response.status} ${response.statusText}`
-        }
-        return cy.wrap('success')
-      })
     })
   }
 }
@@ -790,6 +803,15 @@ export const getByTestID = (
   >
 ): Cypress.Chainable => {
   return cy.get(`[data-testid="${dataTest}"]`, options)
+}
+
+export const getByTestIDHead = (
+  dataTest: string,
+  options?: Partial<
+    Cypress.Loggable & Cypress.Timeoutable & Cypress.Withinable & Cypress.Shadow
+  >
+): Cypress.Chainable => {
+  return cy.get(`[data-testid^="${dataTest}"]`, options)
 }
 
 export const getByTestIDAndSetInputValue = (
@@ -863,6 +885,20 @@ export const createEndpoint = (
   endpoint: NotificationEndpoint
 ): Cypress.Chainable<Cypress.Response<any>> => {
   return cy.request('POST', 'api/v2/notificationEndpoints', endpoint)
+}
+
+// checks
+export const createCheck = (
+  check: GenCheck
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', 'api/v2/checks', check)
+}
+
+// rules
+export const createRule = (
+  rule: NotificationRule
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.request('POST', 'api/v2/notificationRules', rule)
 }
 
 // helpers
@@ -963,12 +999,7 @@ export const createTaskFromEmpty = (
     .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
-        .click({force: true})
-        .focused()
-        .type(flux(bucket), {force: true, delay: 2})
-    })
+    cy.getByTestID('flux-editor').monacoType(flux(bucket))
   })
 
   cy.getByInputName('name').type(name)
@@ -981,6 +1012,8 @@ export const createTaskFromEmpty = (
 Cypress.Commands.add('createEndpoint', createEndpoint)
 // notification rules
 Cypress.Commands.add('createRule', createRule)
+// checks
+Cypress.Commands.add('createCheck', createCheck)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)
@@ -991,6 +1024,7 @@ Cypress.Commands.add('getByInputName', getByInputName)
 Cypress.Commands.add('getByInputValue', getByInputValue)
 Cypress.Commands.add('getByTitle', getByTitle)
 Cypress.Commands.add('getByTestIDSubStr', getByTestIDSubStr)
+Cypress.Commands.add('getByTestIDHead', getByTestIDHead)
 
 // auth flow
 Cypress.Commands.add('signin', signin)
@@ -1005,6 +1039,9 @@ Cypress.Commands.add(
   'wrapEnvironmentVariablesForOss',
   wrapEnvironmentVariablesForOss
 )
+
+// navigation bar
+Cypress.Commands.add('clickNavBarItem', clickNavBarItem)
 
 // dashboards
 Cypress.Commands.add('createDashboard', createDashboard)
@@ -1040,6 +1077,10 @@ Cypress.Commands.add('createToken', createToken)
 Cypress.Commands.add('createQueryVariable', createQueryVariable)
 Cypress.Commands.add('createCSVVariable', createCSVVariable)
 Cypress.Commands.add('createMapVariable', createMapVariable)
+Cypress.Commands.add(
+  'createMapVariableFromFixture',
+  createMapVariableFromFixture
+)
 
 // labels
 Cypress.Commands.add('createLabel', createLabel)

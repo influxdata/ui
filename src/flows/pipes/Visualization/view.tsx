@@ -4,7 +4,6 @@ import React, {FC, useContext, useEffect, useMemo} from 'react'
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
 import Controls from 'src/flows/pipes/Visualization/Controls'
-import FriendlyQueryError from 'src/flows/shared/FriendlyQueryError'
 
 // Utilities
 import {View} from 'src/visualization'
@@ -66,7 +65,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   const dataExists = !!(results?.parsed?.table || []).length
 
-  const queryText = getPanelQueries(id, true)?.source || ''
+  const queryText = getPanelQueries(id)?.source || ''
   const download = () => {
     event('CSV Download Initiated')
     basic(queryText).promise.then(response => {
@@ -129,7 +128,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
               className="panel-resizer--vis-toggle"
             />
           </div>
-          <FriendlyQueryError error={results.error} />
+          <div className="panel-resizer--error">{results.error}</div>
         </div>
       </Context>
     )
@@ -141,7 +140,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         <div className="panel-resizer panel-resizer__visible" id={id}>
           <div className="panel-resizer--header panel-resizer--header__multiple-controls">
             <Icon
-              glyph={IconFont.BarChart}
+              glyph={IconFont.BarChart_New}
               className="panel-resizer--vis-toggle"
             />
           </div>

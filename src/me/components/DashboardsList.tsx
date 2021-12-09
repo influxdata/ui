@@ -36,6 +36,10 @@ const DashboardList: FC<Props> = ({dashboards, org}) => {
     setSearchTerm(e.target.value)
   }
 
+  const clear = (): void => {
+    setSearchTerm('')
+  }
+
   let dashboardsList = (
     <EmptyState size={ComponentSize.ExtraSmall}>
       <EmptyState.Text>You don't have any Dashboards</EmptyState.Text>
@@ -86,10 +90,11 @@ const DashboardList: FC<Props> = ({dashboards, org}) => {
       <Input
         className="recent-dashboards--filter"
         value={searchTerm}
-        icon={IconFont.Search}
+        icon={IconFont.Search_New}
         placeholder="Filter dashboards..."
         onChange={handleInputChange}
         id="filter-dashboards"
+        onClear={clear}
       />
       {dashboardsList}
     </>

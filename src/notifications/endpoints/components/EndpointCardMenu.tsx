@@ -1,9 +1,19 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {createRef, FC, RefObject} from 'react'
 
 // Components
-import {Context, IconFont} from 'src/clockface'
-import {ComponentColor} from '@influxdata/clockface'
+import {
+  Appearance,
+  ButtonShape,
+  ComponentColor,
+  ComponentSize,
+  ConfirmationButton,
+  FlexBox,
+  IconFont,
+  List,
+  Popover,
+  SquareButton,
+} from '@influxdata/clockface'
 
 interface Props {
   onDelete: () => void
@@ -12,27 +22,46 @@ interface Props {
 }
 
 const EndpointCardContext: FC<Props> = ({onDelete, onView}) => {
+  const settingsRef: RefObject<HTMLButtonElement> = createRef()
+
   return (
-    <Context>
-      <Context.Menu icon={IconFont.EyeOpen} testID="context-history-menu">
-        <Context.Item
-          label="View History"
-          action={onView}
-          testID="context-history-task"
-        />
-      </Context.Menu>
-      <Context.Menu
-        icon={IconFont.Trash}
-        color={ComponentColor.Danger}
-        testID="context-delete-menu"
-      >
-        <Context.Item
-          label="Delete"
-          action={onDelete}
-          testID="context-delete-task"
-        />
-      </Context.Menu>
-    </Context>
+    <FlexBox margin={ComponentSize.ExtraSmall}>
+      <ConfirmationButton
+        color={ComponentColor.Colorless}
+        icon={IconFont.Trash_New}
+        shape={ButtonShape.Square}
+        size={ComponentSize.ExtraSmall}
+        confirmationLabel="Yes, delete this endpoint"
+        onConfirm={onDelete}
+        confirmationButtonText="Confirm"
+        testID="context-delete-task"
+      />
+      <SquareButton
+        ref={settingsRef}
+        size={ComponentSize.ExtraSmall}
+        icon={IconFont.CogSolid_New}
+        color={ComponentColor.Colorless}
+        testID="context-menu-task"
+      />
+      <Popover
+        appearance={Appearance.Outline}
+        enableDefaultStyles={false}
+        style={{minWidth: '160px'}}
+        contents={() => (
+          <List>
+            <List.Item
+              onClick={onView}
+              size={ComponentSize.Small}
+              style={{fontWeight: 500}}
+              testID="context-history-task"
+            >
+              View History
+            </List.Item>
+          </List>
+        )}
+        triggerRef={settingsRef}
+      />
+    </FlexBox>
   )
 }
 

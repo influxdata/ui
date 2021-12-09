@@ -7,20 +7,20 @@
   height: calc(100% - #{$ix-marg-d});
   display: flex;
   align-items: stretch;
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   border-radius: $radius;
 }
 
 .task-form--options {
   flex: 1 0 140px;
   padding: $ix-marg-d;
+  border-right: 2px solid $cf-grey-35;
 }
 
 .task-form--editor {
   position: relative;
   flex: 6 0 0;
   border-radius: 0 $radius $radius 0;
-  margin: $ix-marg-b;
 }
 
 .task-form--form-label {
@@ -28,7 +28,7 @@
   line-height: 30px;
   font-size: 13px;
   font-weight: 600;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   flex: 1 0 60px;
   padding-left: 11px;
 }

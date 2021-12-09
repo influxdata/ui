@@ -91,7 +91,7 @@ const UserListItem: FC<Props> = ({user}) => {
       <IndexList.Cell revealOnHover={revealOnHover} alignment={Alignment.Right}>
         {!isCurrentUser && (
           <ConfirmationButton
-            icon={IconFont.Trash}
+            icon={IconFont.Trash_New}
             onShow={handleShow}
             status={status}
             onHide={handleHide}

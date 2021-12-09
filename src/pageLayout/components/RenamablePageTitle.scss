@@ -3,7 +3,7 @@
   ------------------------------------------------------------------------------
 */
 
-$renamable-page-title--height: $cf-marg-d + $cf-marg-c;
+$renamable-page-title--height: $cf-space-l + $cf-space-s;
 $renamable-page-title--padding: 0;
 
 .renamable-page-title {
@@ -57,24 +57,24 @@ $renamable-page-title--padding: 0;
 }
 
 .renamable-page-title.untitled > .cf-heading.cf-page--title {
-  color: $g9-mountain;
+  color: $cf-grey-45;
   font-style: italic;
 }
 
 .renamable-page-title:hover > .cf-heading.cf-page--title {
-  color: $g20-white;
-  border-color: $g3-castle;
+  color: $cf-white;
+  border-color: $cf-grey-15;
 }
 
 .renamable-page-title--icon {
   position: absolute;
   font-size: 1.5em;
   top: 50%;
-  right: $renamable-page-title--height / 2;
+  right: $renamable-page-title--height * 0.5;
   transform: translate(50%, -50%);
   opacity: 0;
   transition: opacity 0.25s ease;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 
   .renamable-page-title:hover & {
     opacity: 1;
@@ -105,31 +105,31 @@ $renamable-page-title--padding: 0;
 .clockface--app-wrapper.dashboard-light-mode {
   .renamable-page-title > .cf-heading.cf-page--title,
   .cf-input.renamable-page-title--input > input {
-    color: $g8-storm;
+    color: $cf-grey-45;
   }
   .renamable-page-title.untitled > .cf-heading.cf-page--title {
-    color: $g15-platinum;
+    color: $cf-grey-85;
   }
 
   .renamable-page-title:hover > .cf-heading.cf-page--title {
-    color: $g10-wolf;
-    border-color: $g16-pearl;
+    color: $cf-grey-55;
+    border-color: $cf-grey-85;
   }
 
   .cf-input.renamable-page-title--input > input {
-    background-color: $g20-white;
+    background-color: $cf-white;
 
     &::-webkit-input-placeholder {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
     &::-moz-placeholder {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
     &:-ms-input-placeholder {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
     &:-moz-placeholder {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
   }
 }

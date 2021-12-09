@@ -22,7 +22,7 @@ class RenameOrgOverlay extends PureComponent<
           message={this.message}
           effectedItems={this.effectedItems}
           onClose={this.handleClose}
-          confirmButtonText="I understand, let's rename my Organization"
+          confirmButtonText="I understand, rename my Organization"
         >
           <RenameOrgForm />
         </DangerConfirmationOverlay>

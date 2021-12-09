@@ -5,16 +5,7 @@ import {useHistory} from 'react-router-dom'
 import {track} from 'rudder-sdk-js'
 
 // Components
-import {
-  Button,
-  ComponentSize,
-  Panel,
-  IconFont,
-  FlexBox,
-  AlignItems,
-  FlexDirection,
-  JustifyContent,
-} from '@influxdata/clockface'
+import {Button, IconFont, FlexBox} from '@influxdata/clockface'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {UsersContext} from 'src/users/context/users'
 import {getDeleteAccountWarningButton} from 'src/shared/components/notifications/NotificationButtons'
@@ -39,17 +30,17 @@ const OrgProfileTab: FC = () => {
   const dispatch = useDispatch()
 
   const handleShowDeleteOverlay = () => {
+    const payload = {
+      org: org.id,
+      tier: quartzMe?.accountType,
+      email: quartzMe?.email,
+    }
+    event('DeleteOrgInitiation Event', payload)
+
     if (
       isFlagEnabled('trackCancellations') &&
-      isFlagEnabled('rudderStackReporting')
+      isFlagEnabled('rudderstackReporting')
     ) {
-      const payload = {
-        org: org.id,
-        tier: quartzMe?.accountType,
-        email: quartzMe?.email,
-      }
-
-      event('Delete Organization Initiated', payload)
       track('DeleteOrgInitiation', payload)
     }
 
@@ -72,30 +63,23 @@ const OrgProfileTab: FC = () => {
     <PageSpinner loading={status}>
       <>
         {CLOUD && quartzMe?.accountType === 'free' && (
-          <Panel.Body size={ComponentSize.ExtraSmall}>
-            <FlexBox
-              stretchToFitWidth={true}
-              alignItems={AlignItems.Center}
-              direction={FlexDirection.Row}
-              justifyContent={JustifyContent.SpaceBetween}
-            >
-              <div>
-                <h5 style={{marginBottom: '0'}}>
-                  Delete Organization {org.name}
-                </h5>
-                <p style={{marginTop: '2px'}}>
-                  Delete your Free InfluxDB Cloud account and remove any data
-                  that you have loaded.
-                </p>
-              </div>
+          <>
+            <FlexBox.Child>
+              <h4 style={{marginBottom: '4px'}}>Delete Organization</h4>
+              <p style={{margin: '0px'}}>
+                Delete your Free InfluxDB Cloud account and remove any data that
+                you have loaded.
+              </p>
+            </FlexBox.Child>
+            <FlexBox.Child>
               <Button
                 testID="delete-org--button"
                 text="Delete"
-                icon={IconFont.Trash}
+                icon={IconFont.Trash_New}
                 onClick={handleDeleteClick}
               />
-            </FlexBox>
-          </Panel.Body>
+            </FlexBox.Child>
+          </>
         )}
       </>
     </PageSpinner>

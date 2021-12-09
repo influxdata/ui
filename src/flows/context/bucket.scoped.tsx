@@ -1,8 +1,16 @@
 // Libraries
-import React, {FC, createContext, useContext, useEffect, useState} from 'react'
+import React, {
+  FC,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+} from 'react'
 
 // Contexts
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {PipeContext} from 'src/flows/context/pipe'
 
 // Types
 import {Bucket, RemoteDataState} from 'src/types'
@@ -19,15 +27,12 @@ const DEFAULT_CONTEXT: BucketContextType = {
 
 export const BucketContext = createContext<BucketContextType>(DEFAULT_CONTEXT)
 
-interface Props {
-  panel: string
-}
-
-export const BucketProvider: FC<Props> = ({panel, children}) => {
+export const BucketProvider: FC = ({children}) => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [buckets, setBuckets] = useState<Bucket[]>([])
   const {getPanelQueries} = useContext(FlowQueryContext)
-  const scope = getPanelQueries(panel)?.scope ?? {}
+  const {id} = useContext(PipeContext)
+  const scope = getPanelQueries(id)?.scope ?? {}
 
   useEffect(() => {
     if (!scope.region || !scope.org) {
@@ -71,7 +76,32 @@ export const BucketProvider: FC<Props> = ({panel, children}) => {
               }
               return acc
             },
-            {system: [], user: []}
+            {
+              system: [],
+              user: [],
+              sample: [
+                {
+                  type: 'sample',
+                  name: 'Air Sensor Data',
+                  id: 'airSensor',
+                },
+                {
+                  type: 'sample',
+                  name: 'Coinbase bitcoin price',
+                  id: 'bitcoin',
+                },
+                {
+                  type: 'sample',
+                  name: 'NOAA National Buoy Data',
+                  id: 'noaa',
+                },
+                {
+                  type: 'sample',
+                  name: 'USGS Earthquakes',
+                  id: 'usgs',
+                },
+              ],
+            }
           )
 
         bucks.system.sort((a, b) =>
@@ -80,15 +110,21 @@ export const BucketProvider: FC<Props> = ({panel, children}) => {
         bucks.user.sort((a, b) =>
           `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
         )
+        bucks.sample.sort((a, b) =>
+          `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
+        )
         setLoading(RemoteDataState.Done)
-        setBuckets([...bucks.user, ...bucks.system])
+        setBuckets([...bucks.user, ...bucks.system, ...bucks.sample])
       })
       .catch(() => {})
   }, [scope.region, scope.org])
 
-  return (
-    <BucketContext.Provider value={{loading, buckets}}>
-      {children}
-    </BucketContext.Provider>
+  return useMemo(
+    () => (
+      <BucketContext.Provider value={{loading, buckets}}>
+        {children}
+      </BucketContext.Provider>
+    ),
+    [loading, buckets]
   )
 }

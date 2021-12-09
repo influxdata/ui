@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {v4 as UUID} from 'uuid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
@@ -8,7 +8,13 @@ import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
 import {getStatus} from 'src/resources/selectors'
 import {fromFlux} from '@influxdata/giraffe'
-import {FluxResult, QueryScope, VariableMap} from 'src/types/flows'
+import {
+  FluxResult,
+  QueryScope,
+  InternalFromFluxResult,
+  VariableMap,
+  Column,
+} from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
 // Constants
@@ -22,6 +28,7 @@ import {
   TIME_RANGE_STOP,
   WINDOW_PERIOD,
 } from 'src/variables/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {
@@ -136,7 +143,11 @@ const _getVars = (
       tot[curr] = allVars[curr]
 
       if (tot[curr].arguments.type === 'query') {
-        _getVars(parse(tot[curr].arguments.values.query), allVars, tot)
+        if (isFlagEnabled('fastFlows')) {
+          _getVars(parseQuery(tot[curr].arguments.values.query), allVars, tot)
+        } else {
+          _getVars(parse(tot[curr].arguments.values.query), allVars, tot)
+        }
       }
 
       return tot
@@ -234,7 +245,7 @@ const _addWindowPeriod = (ast, optionAST): void => {
 
 export const simplify = (text, vars: VariableMap = {}) => {
   try {
-    const ast = parse(text)
+    const ast = isFlagEnabled('fastFlows') ? parseQuery(text) : parse(text)
     const usedVars = _getVars(ast, vars)
 
     // Grab all global variables and turn them into a hashmap
@@ -346,7 +357,9 @@ export const simplify = (text, vars: VariableMap = {}) => {
     const varVals = Object.entries(joinedVars)
       .map(([k, v]) => `${k}: ${v}`)
       .join(',\n')
-    const optionAST = parse(`option v = {\n${varVals}\n}\n`)
+    const optionAST = isFlagEnabled('fastFlows')
+      ? parseQuery(`option v = {\n${varVals}\n}\n`)
+      : parse(`option v = {\n${varVals}\n}\n`)
 
     if (varVals.length) {
       ast.body.unshift(optionAST.body[0])
@@ -376,7 +389,9 @@ export const simplify = (text, vars: VariableMap = {}) => {
       const taskVals = Object.entries(taskParams)
         .map(([k, v]) => `${k}: ${v}`)
         .join(',\n')
-      const taskAST = parse(`option task = {\n${taskVals}\n}\n`)
+      const taskAST = isFlagEnabled('fastFlows')
+        ? parseQuery(`option task = {\n${taskVals}\n}\n`)
+        : parse(`option task = {\n${taskVals}\n}\n`)
       ast.body.unshift(taskAST.body[0])
     }
 
@@ -392,12 +407,137 @@ export const simplify = (text, vars: VariableMap = {}) => {
   }
 }
 
+const parseCSV = (() => {
+  const worker = new Worker('./csv.worker', {type: 'module'})
+  const queue = {}
+  let counter = 0
+
+  worker.onmessage = msg => {
+    const idx = msg.data[0]
+    const data = msg.data[1] as InternalFromFluxResult
+
+    if (!queue[idx]) {
+      return
+    }
+
+    // NOTE Only POJOs survive the jump between webworkers and the main thread, so here
+    // we have to rewrap the response to mimic the giraffe fromFlux interface
+
+    Object.defineProperty(data.table, 'length', {
+      get: () =>
+        (Object.values(data?.table?.columns ?? {})[0]?.data ?? []).length || 0,
+    })
+    Object.defineProperty(data.table, 'columnKeys', {
+      get: () => Object.keys(data.table.columns),
+    })
+    data.table.getColumn = (
+      columnKey: string,
+      columnType?: string
+    ): any[] | null => {
+      const column = data.table.columns[columnKey]
+
+      if (!column) {
+        return null
+      }
+
+      // Allow time columns to be retrieved as number columns
+      const isWideningTimeType =
+        columnType === 'number' && column.type === 'time'
+
+      if (columnType && columnType !== column.type && !isWideningTimeType) {
+        return null
+      }
+
+      switch (columnType) {
+        case 'number':
+          return column.data as number[]
+        case 'time':
+          return column.data as number[]
+        case 'string':
+          return column.data as string[]
+        case 'boolean':
+          return column.data as boolean[]
+        default:
+          return column.data as any[]
+      }
+    }
+
+    data.table.addColumn = (
+      columnKey: string,
+      fluxDataType: string,
+      type: string,
+      _data: any[],
+      name?: string
+    ) => {
+      data.table.columns[columnKey] = {
+        name: name || columnKey,
+        fluxDataType,
+        type,
+        data: _data,
+      } as Column
+
+      return data.table
+    }
+
+    data.table.getColumnName = (columnKey: string): string => {
+      const column = data.table.columns[columnKey]
+
+      if (!column) {
+        return null
+      }
+
+      return column.name
+    }
+
+    data.table.getColumnType = (columnKey: string) => {
+      const column = data.table.columns[columnKey]
+
+      if (!column) {
+        return null
+      }
+
+      return column.type
+    }
+
+    data.table.getOriginalColumnType = (columnKey: string) => {
+      const column = data.table.columns[columnKey]
+
+      if (!column) {
+        return null
+      }
+
+      return column.fluxDataType
+    }
+
+    queue[idx](data)
+  }
+
+  return (csv: string) =>
+    new Promise<InternalFromFluxResult>(resolve => {
+      queue[++counter] = resolve
+      worker.postMessage([counter, csv])
+    })
+})()
+
+export const parseQuery = (() => {
+  const qs = {}
+
+  return q => {
+    const key = btoa(q)
+    if (!qs[key]) {
+      qs[key] = parse(q)
+    }
+
+    return qs[key]
+  }
+})()
+
 export const QueryProvider: FC = ({children}) => {
   const buckets = useSelector((state: AppState) => getSortedBuckets(state))
   const bucketsLoadingState = useSelector((state: AppState) =>
     getStatus(state, ResourceType.Buckets)
   )
-  const [pending, setPending] = useState({} as CancelMap)
+  const pending = useRef({} as CancelMap)
   const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
@@ -412,7 +552,7 @@ export const QueryProvider: FC = ({children}) => {
   // navigate away from the query provider
   useEffect(() => {
     return () => {
-      Object.values(pending).forEach(c => c())
+      Object.values(pending.current).forEach(c => c())
     }
   }, [])
 
@@ -435,7 +575,9 @@ export const QueryProvider: FC = ({children}) => {
     const query = simplify(text, override?.vars || {})
 
     // Here we grab the org from the contents of the query, in case it references a sampledata bucket
-    const orgID = override?.org || _getOrg(parse(query))
+    const orgID =
+      override?.org ||
+      _getOrg(isFlagEnabled('fastFlows') ? parseQuery(query) : parse(query))
 
     const url = `${override?.region ||
       window.location.origin}/api/v2/query?${new URLSearchParams({orgID})}`
@@ -467,9 +609,8 @@ export const QueryProvider: FC = ({children}) => {
         (response: Response): Promise<RunQueryResult> => {
           if (response.status === 200) {
             return response.text().then(csv => {
-              if (pending[id]) {
-                delete pending[id]
-                setPending({...pending})
+              if (pending.current[id]) {
+                delete pending.current[id]
               }
 
               return {
@@ -515,13 +656,9 @@ export const QueryProvider: FC = ({children}) => {
         return Promise.reject(e)
       })
 
-    pending[id] = () => {
+    pending.current[id] = () => {
       controller.abort()
     }
-
-    setPending({
-      ...pending,
-    })
 
     return {
       id,
@@ -534,20 +671,18 @@ export const QueryProvider: FC = ({children}) => {
 
   const cancel = (queryID?: string) => {
     if (!queryID) {
-      Object.values(pending).forEach(c => c())
-      setPending({})
+      Object.values(pending.current).forEach(c => c())
+      pending.current = {}
       return
     }
 
-    if (!pending.hasOwnProperty(queryID)) {
+    if (!pending.current.hasOwnProperty(queryID)) {
       return
     }
 
-    pending[queryID]()
+    pending.current[queryID]()
 
-    delete pending[queryID]
-
-    setPending(pending)
+    delete pending.current[queryID]
   }
 
   const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
@@ -562,21 +697,19 @@ export const QueryProvider: FC = ({children}) => {
         return raw
       })
       .then(raw => {
-        return new Promise((resolve, reject) => {
-          requestAnimationFrame(() => {
-            try {
-              const parsed = fromFlux(raw.csv)
-              resolve({
-                source: text,
-                parsed,
-                error: null,
-              } as FluxResult)
-            } catch (e) {
-              reject(e)
-            }
-          })
-        })
+        if (isFlagEnabled('fastFlows')) {
+          return parseCSV(raw.csv)
+        }
+        return fromFlux(raw.csv)
       })
+      .then(
+        parsed =>
+          ({
+            source: text,
+            parsed,
+            error: null,
+          } as FluxResult)
+      )
   }
 
   if (bucketsLoadingState !== RemoteDataState.Done) {

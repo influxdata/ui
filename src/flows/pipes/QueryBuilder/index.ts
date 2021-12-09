@@ -63,7 +63,14 @@ export default register => {
         })
         .join('')
 
-      return `from(bucket: "${data.buckets[0]}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}`
+      let _source
+      if (data.buckets[0].type === 'sample') {
+        _source = `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
+      } else {
+        _source = `from(bucket: "${data.buckets[0].name}")`
+      }
+
+      return `${_source} |> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}`
     },
   })
 }

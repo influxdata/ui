@@ -1,10 +1,15 @@
-import {startsWith} from 'lodash'
+import {CLOUD} from 'src/shared/constants'
 
 export const isSystemBucket = (bucketName: string): boolean => {
-  return startsWith(bucketName, '_')
+  return bucketName.startsWith('_')
 }
 
-export const BUCKET_OVERLAY_WIDTH = 475
+export const getBucketOverlayWidth = () => {
+  if (CLOUD) {
+    return 650
+  }
+  return 450
+}
 
 export const BUCKET_NAME_MINIMUM_CHARACTERS = 1
 

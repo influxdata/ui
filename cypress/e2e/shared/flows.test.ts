@@ -1,26 +1,18 @@
 import {Organization} from '../../src/types'
 
 describe('Flows', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() =>
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${id}`)
-            cy.getByTestID('version-info')
-            return cy
-              .setFeatureFlags({
-                notebooksExp: true,
-              })
-              .then(() => {
-                cy.getByTestID('nav-item-flows').should('be.visible')
-                return cy.getByTestID('nav-item-flows').click()
-              })
-          })
-        )
-      )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.visit(`${orgs}/${id}`)
+      })
     )
-  )
+    cy.getByTestID('version-info')
+    cy.getByTestID('nav-item-flows').should('be.visible')
+    cy.getByTestID('nav-item-flows').click()
+  })
 
   it('CRUD a flow from the index page', () => {
     const now = Date.now()
@@ -200,6 +192,7 @@ describe('Flows', () => {
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
+    cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
 
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
@@ -235,6 +228,8 @@ describe('Flows', () => {
         cy.getByTestID(`selector-list beans`).click()
       })
 
+    cy.wait('@updateNotebook')
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -248,18 +243,16 @@ describe('Flows', () => {
     // In Flows again without explicit changes
     cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
 
-    cy.getByTestID('nav-item-flows').click()
-
-    cy.getByTestID('resource-editable-name').click()
-
-    cy.getByTestID('nav-item-flows').click()
+    cy.clickNavBarItem('nav-item-flows')
 
     cy.get('.cf-resource-card').should('have.length', 1)
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
-    cy.getByTestID(`flow-card--${flowName}`).trigger('mouseover')
-    cy.getByTestID(`flow-button--clone`).click({force: true})
+    cy.getByTestID(`flow-card--${flowName}`).within(() => {
+      cy.getByTestID(`context-menu-flow`).click()
+    })
+    cy.getByTestID(`context-clone-flow`).click()
     cy.getByTestID('time-machine-submit-button').should('exist')
 
     const clone = `${flowName} (clone 1)`
@@ -268,7 +261,7 @@ describe('Flows', () => {
     // Validates that the selected clone is the clone
     cy.getByTestID('page-title').contains(`${clone}`)
 
-    cy.getByTestID('nav-item-flows').click()
+    cy.clickNavBarItem('nav-item-flows')
 
     cy.get('.cf-resource-card').should('have.length', 2)
     cy.getByTestID('resource-editable-name')
@@ -276,9 +269,10 @@ describe('Flows', () => {
       .contains(`${clone}`)
 
     // Delete the cloned flow
-    cy.getByTestID(`flow-card--${clone}`).trigger('mouseover')
-    cy.getByTestID(`context-delete-menu ${clone}`).click({force: true})
-    cy.getByTestID(`context-delete-flow ${clone}`).click({force: true})
+    cy.getByTestID(`flow-card--${clone}`).within(() => {
+      cy.getByTestID(`context-delete-menu--button`).click()
+    })
+    cy.getByTestID(`context-delete-menu--confirm-button`).click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
@@ -351,7 +345,7 @@ describe('Flows', () => {
     cy.getByTestID('table-cell cool').should('not.exist')
 
     // exit the flow, reload, and come back in
-    cy.getByTestID('nav-item-flows').click()
+    cy.clickNavBarItem('nav-item-flows')
     cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
     cy.getByTestID('resource-editable-name').should('exist')
@@ -440,13 +434,15 @@ describe('Flows', () => {
     cy.wait('@notebooksSave')
 
     // exit the flow, reload, and come back in
-    cy.getByTestID('nav-item-flows').click()
+    cy.clickNavBarItem('nav-item-flows')
     cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
     cy.getByTestID('resource-editable-name').should('exist')
     cy.getByTestID('resource-editable-name').click()
 
     // visualizations should exist
-    cy.getByTestID('giraffe-inner-plot').should('be.visible')
+    cy.getByTestID('giraffe-inner-plot')
+      .scrollIntoView()
+      .should('be.visible')
   })
 })

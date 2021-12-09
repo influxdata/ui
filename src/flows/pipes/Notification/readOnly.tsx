@@ -134,7 +134,7 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
           <FlexBox.Child>
             <Form.Element label="Notification" required={true}>
-              <Panel backgroundColor={InfluxColors.Onyx}>
+              <Panel backgroundColor={InfluxColors.Grey15}>
                 <Panel.Body>
                   <FlexBox
                     alignItems={AlignItems.Stretch}

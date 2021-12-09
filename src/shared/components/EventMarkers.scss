@@ -32,7 +32,7 @@ $event-marker-z-index: 2;
   // Shadow
   &:before {
     width: $event-marker-line-width + ($event-marker-line-shadow * 2);
-    background-color: rgba($g0-obsidian, 0.8);
+    background-color: rgba($cf-grey-5, 0.8);
     opacity: 0;
     z-index: $event-marker-z-index;
     left: -$event-marker-line-shadow;

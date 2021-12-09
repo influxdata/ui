@@ -4,7 +4,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  @include gradient-v($g2-kevlar, $g0-obsidian);
+  @include gradient-v($cf-grey-5, $cf-grey-5);
   border-radius: 0 0 $radius $radius;
 
   .rule-eo-contents {
@@ -15,7 +15,7 @@
   .condition-row {
     display: flex;
     flex-direction: column;
-    background-color: $g5-pepper;
+    background-color: $cf-grey-25;
     border-radius: $radius;
     margin-bottom: 4px;
     padding: 10px;
@@ -44,7 +44,7 @@
   }
 
   .sentence-frag {
-    background-color: $g7-graphite;
+    background-color: $cf-grey-35;
     border-radius: $radius;
     font-size: 12px;
     padding: 0 9px;

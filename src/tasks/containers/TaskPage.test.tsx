@@ -15,7 +15,7 @@ import {renderWithReduxAndRouter} from '../../mockState'
 import {buckets, labels, orgs, tasks, withRouterProps} from 'mocks/dummyData'
 import {mockAppState} from 'src/mockAppState'
 import {NotificationStyle, RemoteDataState} from '../../types'
-import {IconFont} from '../../clockface'
+import {IconFont} from '@influxdata/clockface'
 
 jest.mock('src/shared/components/FluxMonacoEditor', () => () => (
   <div>Monaco Here</div>
@@ -43,7 +43,7 @@ const mockNotify = () => {
         notification: {
           message: 'MOCKED NOTIFICATION',
           style: NotificationStyle.Error,
-          icon: IconFont.Trash,
+          icon: IconFont.Trash_New,
         },
       },
     }
@@ -241,7 +241,9 @@ describe('Tasks.Components.TaskCard', () => {
     })
 
     mocked(goToTasks).mockImplementation(() => {
-      return {type: 'MOCKED'}
+      return () => {
+        return {type: 'MOCKED'}
+      }
     })
 
     await mockNotify()
@@ -296,7 +298,9 @@ describe('Tasks.Components.TaskCard', () => {
     })
 
     mocked(goToTasks).mockImplementation(() => {
-      return {type: 'MOCKED'}
+      return () => {
+        return {type: 'MOCKED'}
+      }
     })
 
     await mockNotify()
@@ -310,7 +314,7 @@ describe('Tasks.Components.TaskCard', () => {
     expect(mocked(notify).mock.calls[0][0].message).toEqual(
       'Failed to create new task: mocked error'
     )
-    expect(mocked(notify).mock.calls[0][0].icon).toEqual('alert-triangle')
+    expect(mocked(notify).mock.calls[0][0].icon).toEqual('alert-triangle-new')
   })
 
   // ensure clean destruction

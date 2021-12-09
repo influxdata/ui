@@ -1,18 +1,16 @@
 import {Organization} from '../../../src/types'
 
 describe('labels', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${id}/settings/labels`)
-            cy.getByTestID('tree-nav')
-          })
-        )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.visit(`${orgs}/${id}/settings/labels`)
+        cy.getByTestID('tree-nav')
       })
     )
-  )
+  })
 
   function hex2BgColor(hex: string): string {
     hex = hex.replace('#', '')
@@ -125,16 +123,13 @@ describe('labels', () => {
     // enter color
     cy.getByTestID('color-picker--input').clear()
     cy.getByTestID('color-picker--input').type(newLabelColor)
+    cy.getByTestID('color-picker--input').invoke('val')
     cy.getByTestID('color-picker--input')
-      .invoke('val')
-      .then(() => {
-        cy.getByTestID('color-picker--input')
-          .parent()
-          .parent()
-          .children('div.cf-color-picker--selected')
-          .invoke('attr', 'style')
-          .should('equal', hex2BgColor(newLabelColor))
-      })
+      .parent()
+      .parent()
+      .children('div.cf-color-picker--selected')
+      .invoke('attr', 'style')
+      .should('equal', hex2BgColor(newLabelColor))
 
     // save
     cy.getByTestID('create-label-form--submit').click()
@@ -277,11 +272,8 @@ describe('labels', () => {
       }
     })
 
-    cy.getByTestID('resource-sorter--button')
-      .click()
-      .then(() => {
-        cy.getByTestID('resource-sorter--name-desc').click()
-      })
+    cy.getByTestID('resource-sorter--button').click()
+    cy.getByTestID('resource-sorter--name-desc').click()
 
     // check sort desc
     cy.getByTestIDSubStr('label--pill').then(labels => {
@@ -293,11 +285,8 @@ describe('labels', () => {
     })
 
     // reset to asc
-    cy.getByTestID('resource-sorter--button')
-      .click()
-      .then(() => {
-        cy.getByTestID('resource-sorter--name-asc').click()
-      })
+    cy.getByTestID('resource-sorter--button').click()
+    cy.getByTestID('resource-sorter--name-asc').click()
 
     cy.getByTestIDSubStr('label--pill').then(labels => {
       for (let i = 0; i < labels.length; i++) {
@@ -333,11 +322,8 @@ describe('labels', () => {
       a.description < b.description ? -1 : a.description > b.description ? 1 : 0
     )
     // check sort asc
-    cy.getByTestID('resource-sorter--button')
-      .click()
-      .then(() => {
-        cy.getByTestID('resource-sorter--properties.description-asc').click()
-      })
+    cy.getByTestID('resource-sorter--button').click()
+    cy.getByTestID('resource-sorter--properties.description-asc').click()
 
     cy.getByTestID('label-card').then(labels => {
       for (let i = 0; i < labels.length; i++) {
@@ -348,11 +334,8 @@ describe('labels', () => {
     })
 
     // check sort desc
-    cy.getByTestID('resource-sorter--button')
-      .click()
-      .then(() => {
-        cy.getByTestID('resource-sorter--properties.description-desc').click()
-      })
+    cy.getByTestID('resource-sorter--button').click()
+    cy.getByTestID('resource-sorter--properties.description-desc').click()
 
     cy.getByTestID('label-card').then(labels => {
       for (let i = 0; i < labels.length; i++) {
@@ -438,8 +421,13 @@ describe('labels', () => {
       cy.getByTestID('label-card').should('have.length', 1)
       cy.getByTestID('empty-state').should('not.exist')
 
-      cy.getByTestID('context-delete-menu').click({force: true})
-      cy.getByTestID('context-delete-label').click({force: true})
+      // Delete a label
+      cy.getByTestID(`context-delete-label ${labelName}--button`)
+        .first()
+        .click()
+      cy.getByTestID(`context-delete-label ${labelName}--confirm-button`)
+        .first()
+        .click()
 
       cy.getByTestID('empty-state').should('exist')
     })

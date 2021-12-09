@@ -68,7 +68,7 @@ const TESTS = [
 
 test.each(TESTS)(
   'createCheckQueryFromAlertBuilder',
-  (builderConfig, alertBuilder, expected) => {
+  (builderConfig: BuilderConfig, alertBuilder: AlertBuilderState, expected) => {
     expect(
       createCheckQueryFromAlertBuilder(builderConfig, alertBuilder)
     ).toEqual(expected)

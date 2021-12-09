@@ -14,7 +14,7 @@ const Selectors: FC = () => {
   const noResults = !fields.length && !measurements.length && !tags.length
 
   let list = (
-    <List className="data-source--list" backgroundColor={InfluxColors.Obsidian}>
+    <List className="data-source--list" backgroundColor={InfluxColors.Grey5}>
       <MeasurementSelectors measurements={measurements} />
       <FieldSelectors fields={fields} />
       <TagSelectors tags={tags} />

@@ -32,10 +32,10 @@ const AssetLimitAlert: FC<Props> = ({limitStatus, resourceName, className}) => {
     return (
       <GradientBox
         borderGradient={Gradients.MiyazakiSky}
-        borderColor={InfluxColors.Raven}
+        borderColor={InfluxColors.Grey5}
         className={className}
       >
-        <Panel backgroundColor={InfluxColors.Raven} className="asset-alert">
+        <Panel backgroundColor={InfluxColors.Grey5} className="asset-alert">
           <Panel.Header>
             <Heading element={HeadingElement.H4}>
               Need more {resourceName}?

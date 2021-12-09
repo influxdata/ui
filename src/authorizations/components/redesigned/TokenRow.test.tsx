@@ -33,6 +33,6 @@ describe('TokenRowResourceCard', () => {
   it('displays delete button', () => {
     const {getByTestId} = setup()
 
-    expect(getByTestId('delete-token')).toBeVisible()
+    expect(getByTestId('context-delete-menu--button')).toBeVisible()
   })
 })

@@ -14,12 +14,15 @@ import {getAllResources} from 'src/authorizations/actions/thunks'
 import {notify} from 'src/shared/actions/notifications'
 import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 type GenerateTokenProps = RouteComponentProps
 type ReduxProps = ConnectedProps<typeof connector>
 
 const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
-  onShowOverlay,
-  onDismissOverlay,
+  showOverlay,
+  dismissOverlay,
   getAllResources,
 }) => {
   const dispatch = useDispatch()
@@ -28,15 +31,18 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
   const customApiOption = 'Custom API Token'
 
   const handleAllAccess = () => {
-    onShowOverlay('add-master-token', null, onDismissOverlay)
+    showOverlay('add-master-token', null, dismissOverlay)
+    event('generate_token_dropdown.all_access_overlay.opened')
   }
 
   const handleCustomApi = async () => {
     try {
       await getAllResources()
-      onShowOverlay('add-custom-token', null, onDismissOverlay)
+      showOverlay('add-custom-token', null, dismissOverlay)
+      event('generate_token_dropdown.custom_API_token_overlay.opened')
     } catch (e) {
       dispatch(notify(getResourcesTokensFailure()))
+      event('generate_token_dropdown.custom_API_token_overlay.failed')
     }
   }
 
@@ -51,14 +57,15 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
   return (
     <Dropdown
       testID="dropdown--gen-token"
-      style={{width: '180px'}}
+      style={{width: '240px'}}
       button={(active, onClick) => (
         <Dropdown.Button
           active={active}
           onClick={onClick}
-          icon={IconFont.Plus}
+          icon={IconFont.Plus_New}
           color={ComponentColor.Primary}
           testID="dropdown-button--gen-token"
+          style={{textTransform: 'uppercase', letterSpacing: '0.07em'}}
         >
           Generate API Token
         </Dropdown.Button>
@@ -90,9 +97,9 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
 }
 
 const mdtp = {
-  onShowOverlay: showOverlay,
-  onDismissOverlay: dismissOverlay,
-  getAllResources: getAllResources,
+  showOverlay,
+  dismissOverlay,
+  getAllResources,
 }
 
 const connector = connect(null, mdtp)

@@ -1,6 +1,5 @@
 // Libraries
 import React, {useMemo, useEffect, FunctionComponent} from 'react'
-import {cloneDeep} from 'lodash'
 
 // Components
 import ThresholdSetting from 'src/shared/components/ThresholdSetting'
@@ -117,7 +116,9 @@ const ThresholdsSettings: FunctionComponent<Props> = ({
   const initialState: State = useMemo(
     () => ({
       thresholds: sortThresholds(
-        cloneDeep(thresholds.filter(({type}) => type !== 'scale'))
+        JSON.parse(
+          JSON.stringify(thresholds.filter(({type}) => type !== 'scale'))
+        )
       ),
       inputs: thresholds.reduce(
         (acc, {id, value}) => ({...acc, [id]: String(value)}),
@@ -147,7 +148,7 @@ const ThresholdsSettings: FunctionComponent<Props> = ({
     >
       <Button
         shape={ButtonShape.StretchToFit}
-        icon={IconFont.Plus}
+        icon={IconFont.Plus_New}
         text="Add a Threshold"
         onClick={() => dispatch({type: 'THRESHOLD_ADDED'})}
       />

@@ -1,7 +1,7 @@
 // Libraries
 import {PureComponent} from 'react'
 
-import {get, isEmpty, isObject, flatMap, sortedIndex} from 'lodash'
+import {get, isEmpty, flatMap, sortedIndex} from 'lodash'
 
 // Types
 import {Label} from 'src/types'
@@ -81,7 +81,7 @@ export default class FilterList<T extends Resource> extends PureComponent<
 
         const isStringArray = this.isStringArray(value)
 
-        if (!isStringArray && isObject(value)) {
+        if (!isStringArray && typeof value === 'object') {
           throw new Error(
             `The value at key "${key}" is an object.  Take a look at "searchKeys" and
              make sure you're indexing onto a primitive value`

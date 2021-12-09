@@ -14,7 +14,7 @@ const TEST_CASES = [
 describe('isCommented function', () => {
   test.each(TEST_CASES)(
     'returns true / false if text is commented or not',
-    (input, expected) => {
+    (input: string, expected: boolean) => {
       expect(isCommented(input)).toEqual(expected)
     }
   )

@@ -7,14 +7,86 @@
 
   p {
     margin-top: 0;
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
 }
 
 .flow-update-task--export-warning {
-  margin: $cf-marg-b 0;
+  margin: $cf-space-2xs 0;
 
   > .cf-panel--body {
-    padding: $cf-marg-b $cf-marg-c;
+    padding: $cf-space-2xs $cf-space-s;
+  }
+}
+
+.flow-task-history {
+  h1 {
+    font-size: 18px;
+    margin-bottom: $cf-marg-b;
+  }
+
+  &.inactive {
+    h1 {
+      color: $cf-grey-55;
+    }
+
+    .toggle label {
+      color: $cf-grey-55;
+    }
+  }
+
+  .interaction {
+    margin-bottom: $cf-marg-d;
+    display: flex;
+  }
+
+  .toggle {
+    flex: 1 1;
+    padding-top: 2px;
+
+    label {
+      margin-left: $cf-marg-b;
+      vertical-align: sub;
+    }
+  }
+
+  .run {
+    margin-bottom: $cf-marg-c;
+
+    label {
+      font-weight: 500;
+      display: inline-block;
+      width: 64px;
+    }
+
+    .run--buttons {
+      margin-top: $cf-marg-a;
+      display: flex;
+      gap: $cf-marg-a;
+
+      .cf-button {
+        flex: 1 1;
+        width: 100%;
+      }
+    }
+
+    .run--row.success span {
+      font-weight: 500;
+      color: $c-rainforest;
+    }
+
+    .run--row.failed span {
+      font-weight: 500;
+      color: $c-fire;
+    }
+  }
+}
+
+.flow-task-run--log {
+  .time {
+    white-space: nowrap;
+  }
+  .message pre {
+    white-space: normal;
   }
 }

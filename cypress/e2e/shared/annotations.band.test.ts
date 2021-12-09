@@ -7,6 +7,7 @@ import {
   testEditAnnotation,
   testEditRangeAnnotation,
   testDeleteAnnotation,
+  RANGE_ANNOTATION_TEXT,
 } from '../util/annotationsSetup'
 
 describe('The Annotations UI functionality on a band plot graph type', () => {
@@ -26,7 +27,7 @@ describe('The Annotations UI functionality on a band plot graph type', () => {
 
   it('can add a range annotation for the band plot', () => {
     addRangeAnnotation(cy, 'band-chart')
-    checkAnnotationText(cy, 'range annotation here!')
+    checkAnnotationText(cy, RANGE_ANNOTATION_TEXT)
   })
   it('can add and edit a range annotation for the band plot', () => {
     testEditRangeAnnotation(cy, 'band-chart')

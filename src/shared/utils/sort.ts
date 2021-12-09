@@ -1,4 +1,4 @@
-import {get, toLower} from 'lodash'
+import {get} from 'lodash'
 
 export enum SortTypes {
   String = 'string',
@@ -11,7 +11,7 @@ const collator = new Intl.Collator('en-us', {numeric: true})
 function orderByType(data, type) {
   switch (type) {
     case SortTypes.String:
-      return toLower(data)
+      return data?.toLowerCase() ?? ''
     case SortTypes.Date:
       return Date.parse(data)
     case SortTypes.Float:

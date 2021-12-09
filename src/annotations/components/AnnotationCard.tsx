@@ -36,9 +36,9 @@ export const AnnotationCard: FC<Props> = ({annotationStream}) => {
       <ResourceCard.Meta>
         <>
           <Bullet
-            glyph={IconFont.Annotate}
+            glyph={IconFont.Annotate_New}
             size={ComponentSize.ExtraSmall}
-            color={InfluxColors.Castle}
+            color={InfluxColors.Grey15}
             backgroundColor={annotationStream.color}
             style={{marginRight: '4px'}}
           />

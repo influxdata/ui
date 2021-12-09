@@ -1,25 +1,10 @@
-/* The two styles below are a bandaid fix until the clockface dependency can be safely updated */
-.cf-panel.community-templates-panel
-  .cf-panel--symbol-header.cf-panel--symbol-header__sm {
-  padding-left: 46px;
-  padding-right: 46px;
-}
-
-@media screen and (min-width: $cf-grid--breakpoint-sm) {
-  .cf-panel.community-templates-panel
-    .cf-panel--symbol-header.cf-panel--symbol-header__sm {
-    padding-left: 70px;
-    padding-right: 70px;
-  }
-}
-
 .community-templates-template-url {
   display: inline-block;
   margin-right: 15px;
 }
 
 .community-templates-template-url--feedback {
-  margin-top: $cf-marg-a;
+  margin-top: $cf-space-3xs;
   font-weight: $cf-font-weight--medium;
   padding-left: $cf-form-lg-padding;
 }
@@ -42,26 +27,24 @@
 }
 
 .community-templates--template-name {
-  color: $g20-white;
+  color: $cf-white;
 }
 
 .community-templates--template-description {
   user-select: none;
   color: $c-neutrino;
-  font-weight: $cf-font-weight--medium;
   margin: 0;
-  margin-top: $cf-marg-b;
-  line-height: 1.125em;
+  margin-top: $cf-space-2xs;
 
   strong {
-    color: $g20-white;
+    color: $cf-white;
     font-weight: $cf-font-weight--bold;
   }
 }
 
 .community-templates--item-description {
-  color: $g13-mist;
-  margin: $cf-marg-a 0;
+  color: $cf-grey-75;
+  margin: $cf-space-3xs 0;
   line-height: 1.125em;
 
   &:last-child {
@@ -70,36 +53,36 @@
 }
 
 .community-templates--item-description__blank {
-  color: $g8-storm;
+  color: $cf-grey-45;
   font-style: italic;
 }
 
 .community-templates--list-header {
   display: flex;
   align-items: center;
-  padding: $cf-marg-a 0;
+  padding: $cf-space-3xs 0;
   transition: color 0.25s ease;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 
   &:hover,
   .community-templates--list-group__expanded & {
     cursor: pointer;
-    color: $g18-cloud;
+    color: $cf-grey-95;
   }
 }
 
 .community-templates--list-counter {
-  margin-left: $cf-marg-b;
+  margin-left: $cf-space-2xs;
   opacity: 0.6;
 }
 
 .community-templates--list-group-items {
-  padding-left: $cf-marg-d;
+  padding-left: $cf-space-l;
 }
 
 .community-templates--list-toggle {
-  width: $cf-marg-d;
-  height: $cf-marg-d;
+  width: $cf-space-l;
+  height: $cf-space-l;
   position: relative;
 
   > .cf-icon {
@@ -116,8 +99,9 @@
 }
 
 .community-templates--resources-table {
+  margin-left: 1.4em;
   & > tbody > tr > td {
-    padding-right: $cf-marg-b;
+    padding-right: $cf-space-2xs;
     font-size: 13px;
   }
 }
@@ -126,17 +110,13 @@
   display: flex;
   align-items: center;
 
-  h6 {
-    margin: 0;
-  }
-
   &:hover {
     cursor: pointer;
   }
 }
 
 .community-templates--resources-table-caret {
-  margin-right: $cf-marg-b;
+  margin-right: $cf-space-2xs;
   transition: transform 0.25s ease;
 }
 
@@ -151,5 +131,5 @@
 }
 
 .community-templates--readme {
-  padding-top: $cf-marg-d;
+  padding-top: $cf-space-l;
 }

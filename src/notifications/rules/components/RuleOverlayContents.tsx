@@ -9,6 +9,8 @@ import {
   ComponentSize,
   Form,
   Input,
+  Heading,
+  HeadingElement,
 } from '@influxdata/clockface'
 import RuleSchedule from 'src/notifications/rules/components/RuleSchedule'
 import RuleConditions from 'src/notifications/rules/components/RuleConditions'
@@ -52,7 +54,9 @@ const RuleOverlayContents: FC<Props> = ({saveButtonText, onSave}) => {
     <Grid>
       <Form>
         <Grid.Row>
-          <Grid.Column widthSM={Columns.Two}>About</Grid.Column>
+          <Grid.Column widthSM={Columns.Two}>
+            <Heading element={HeadingElement.H4}> About</Heading>
+          </Grid.Column>
           <Grid.Column widthSM={Columns.Ten}>
             <Panel>
               <Panel.Body size={ComponentSize.ExtraSmall}>

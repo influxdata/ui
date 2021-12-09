@@ -10,6 +10,8 @@ import {
   ComponentSize,
   ComponentColor,
   AlignItems,
+  Heading,
+  HeadingElement,
 } from '@influxdata/clockface'
 import StatusRuleComponent from 'src/notifications/rules/components/StatusRule'
 import TagRuleComponent from 'src/notifications/rules/components/TagRule'
@@ -49,7 +51,9 @@ const RuleConditions: FC<Props> = ({rule}) => {
 
   return (
     <Grid.Row>
-      <Grid.Column widthSM={Columns.Two}>Conditions</Grid.Column>
+      <Grid.Column widthSM={Columns.Two}>
+        <Heading element={HeadingElement.H4}> Conditions</Heading>
+      </Grid.Column>
       <Grid.Column widthSM={Columns.Ten}>
         <FlexBox
           direction={FlexDirection.Column}

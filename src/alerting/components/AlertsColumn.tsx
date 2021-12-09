@@ -18,6 +18,7 @@ import {
   ComponentSize,
   QuestionMarkTooltip,
   ComponentColor,
+  JustifyContent,
 } from '@influxdata/clockface'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import AssetLimitButton from 'src/cloud/components/AssetLimitButton'
@@ -71,13 +72,21 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
     />
   )
 
+  // not using the SearchWidget here, just adding the onClear to the Input;
+  // because using the SearchWidget instead changes how the 'children(searchTerm)'
+  // function is called (with the vanilla Input, it is called on each keystroke,
+  // with the searchWidget is it only called once at render time)
   return (
     <Panel
-      backgroundColor={InfluxColors.Kevlar}
+      backgroundColor={InfluxColors.Grey5}
       className={panelClassName}
       testID={`${type}--column`}
     >
-      <Panel.Header>
+      <FlexBox
+        direction={FlexDirection.Row}
+        margin={ComponentSize.Small}
+        justifyContent={JustifyContent.SpaceBetween}
+      >
         <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Small}>
           <h4 style={{width: 'auto', marginRight: '6px'}}>{title}</h4>
           <QuestionMarkTooltip
@@ -88,15 +97,16 @@ const AlertsColumnHeader: FC<OwnProps & StateProps> = ({
           />
         </FlexBox>
         {isLimitExceeded ? assetLimitButton : createButton}
-      </Panel.Header>
+      </FlexBox>
       <div className="alerting-index--search">
         <Input
-          icon={IconFont.Search}
+          icon={IconFont.Search_New}
           placeholder={`Filter ${title}...`}
           value={searchTerm}
           onChange={e => onChangeSearchTerm(e.target.value)}
           testID={`filter--input ${type}`}
           tabIndex={tabIndex}
+          onClear={() => onChangeSearchTerm('')}
         />
       </div>
       <div className="alerting-index--column-body">

@@ -322,7 +322,7 @@ class AdminStep extends PureComponent<Props, State> {
 
   private get InputIcon(): IconFont {
     if (this.isAdminSet) {
-      return IconFont.Checkmark
+      return IconFont.Checkmark_New
     }
     return null
   }

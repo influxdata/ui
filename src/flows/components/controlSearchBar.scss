@@ -2,10 +2,6 @@
   .cf-page-control-bar--fixed {
     padding: 0px;
   }
-  .cf-dropdown-menu {
-    position: fixed;
-    max-width: 210px;
-  }
 }
 
 .buttonMode {
@@ -33,10 +29,6 @@
     flex-direction: column;
     align-items: flex-start;
   }
-}
-
-.flows-preset--buttonmode {
-  width: 148px;
 }
 
 .buttonModeList {

@@ -1,7 +1,3 @@
-.usage--billing-date-range {
-  font-size: 16px;
-}
-
 .usage--billing-header.cf-panel--header {
   justify-content: flex-start;
 }
@@ -13,10 +9,10 @@
 }
 
 .billing-stats--panel {
-  margin-bottom: $cf-marg-c !important;
+  margin-bottom: $cf-space-s !important;
 
   .cf-panel {
-    margin-bottom: $cf-marg-a;
+    margin-bottom: $cf-space-3xs;
   }
 }
 
@@ -29,7 +25,7 @@
 }
 
 .usage-tooltip {
-  margin-left: $cf-marg-b;
+  margin-left: $cf-space-2xs;
 }
 
 .billing-stats--graph-body {

@@ -25,7 +25,7 @@ const AddButton: FC = () => {
     <SquareButton
       className="query-builder--add-card-button"
       onClick={onClick}
-      icon={IconFont.Plus}
+      icon={IconFont.Plus_New}
     />
   )
 }

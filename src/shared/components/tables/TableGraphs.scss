@@ -1,25 +1,25 @@
 $table-graph--font: 12px;
-$table-graph--text-color: $g11-sidewalk;
-$table-graph--text-highlight: $g20-white;
-$table-graph--cell: $g0-obsidian;
-$table-graph--cell-highlight: $g2-kevlar;
-$table-graph--heading-text: $g14-chromium;
-$table-graph--heading-text-corner: $g18-cloud;
+$table-graph--text-color: $cf-grey-65;
+$table-graph--text-highlight: $cf-white;
+$table-graph--cell: $cf-grey-5;
+$table-graph--cell-highlight: $cf-grey-5;
+$table-graph--heading-text: $cf-grey-75;
+$table-graph--heading-text-corner: $cf-grey-95;
 $table-graph--heading-sort: $c-pool;
-$table-graph--heading-bg: $g1-raven;
-$table-graph--heading-bg--active: $g3-castle;
-$table-graph--border: $g3-castle;
+$table-graph--heading-bg: $cf-grey-5;
+$table-graph--heading-bg--active: $cf-grey-15;
+$table-graph--border: $cf-grey-15;
 
-$table-light-graph--text-color: $g8-storm;
-$table-light-graph--text-highlight: $g5-pepper;
-$table-light-graph--cell: $g20-white;
-$table-light-graph--cell-highlight: $g18-cloud;
-$table-light-graph--heading-text: $g9-mountain;
-$table-light-graph--heading-text-corner: $g6-smoke;
+$table-light-graph--text-color: $cf-grey-45;
+$table-light-graph--text-highlight: $cf-grey-25;
+$table-light-graph--cell: $cf-white;
+$table-light-graph--cell-highlight: $cf-grey-95;
+$table-light-graph--heading-text: $cf-grey-45;
+$table-light-graph--heading-text-corner: $cf-grey-25;
 $table-light-graph--heading-sort: $c-pool;
-$table-light-graph--heading-bg: $g17-whisper;
-$table-light-graph--heading-bg--active: $g16-pearl;
-$table-light-graph--border: $g16-pearl;
+$table-light-graph--heading-bg: $cf-grey-95;
+$table-light-graph--heading-bg--active: $cf-grey-85;
+$table-light-graph--border: $cf-grey-85;
 
 .time-machine-tables {
   display: flex;
@@ -32,7 +32,7 @@ $table-light-graph--border: $g16-pearl;
 .time-machine-sidebar {
   flex: 1 0 180px;
   background-color: $table-graph--cell;
-  margin-right: $cf-marg-a;
+  margin-right: $cf-space-3xs;
   overflow: hidden;
   border-radius: $cf-radius;
   border: $cf-border solid $table-graph--border;
@@ -63,7 +63,7 @@ $table-light-graph--border: $g16-pearl;
   color: $table-graph--text-color;
   font-size: $table-graph--font;
   font-weight: $cf-font-weight--regular;
-  padding: $cf-marg-b $cf-marg-b;
+  padding: $cf-space-2xs $cf-space-2xs;
   transition: color 0.25s ease, background-color 0.25s ease;
   white-space: nowrap;
 
@@ -78,7 +78,7 @@ $table-light-graph--border: $g16-pearl;
 
   > span.value {
     font-weight: $cf-font-weight--medium;
-    padding-right: $cf-marg-b;
+    padding-right: $cf-space-2xs;
     color: $table-graph--text-color;
   }
 
@@ -139,7 +139,7 @@ $table-light-graph--border: $g16-pearl;
   background-color: $table-graph--cell;
   font-weight: 500;
   color: $table-graph--text-color;
-  border: ($cf-border / 2) solid $table-graph--border;
+  border: ($cf-border * 0.5) solid $table-graph--border;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -292,31 +292,31 @@ $table-light-graph--border: $g16-pearl;
   }
 
   .cf-input.time-machine-sidebar--filter > input {
-    background-color: $g18-cloud;
-    color: $g7-graphite;
-    border-color: $g15-platinum;
+    background-color: $cf-grey-95;
+    color: $cf-grey-35;
+    border-color: $cf-grey-85;
 
     &::-webkit-input-placeholder {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
     &::-moz-placeholder {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
     &:-ms-input-placeholder {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
     &:-moz-placeholder {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
 
     &:focus {
       border-color: $c-pool;
-      background-color: $g20-white;
+      background-color: $cf-white;
     }
   }
   .cf-input.time-machine-sidebar--filter:hover > input {
-    background-color: $g20-white;
-    border-color: mix($g15-platinum, $c-pool, 50%);
+    background-color: $cf-white;
+    border-color: mix($cf-grey-85, $c-pool, 50%);
   }
 
   .cf-input.cf-input__focused.time-machine-sidebar--filter > .cf-input-icon {
@@ -324,6 +324,6 @@ $table-light-graph--border: $g16-pearl;
   }
 
   .time-machine-sidebar--scroll .cf-dapper-scrollbars--track-y {
-    background-color: $g15-platinum !important;
+    background-color: $cf-grey-85 !important;
   }
 }

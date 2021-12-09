@@ -35,7 +35,7 @@ const defaultButtonElement = () => null
 const defaultErrorNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Error,
-  icon: IconFont.AlertTriangle,
+  icon: IconFont.AlertTriangle_New,
   duration: TEN_SECONDS,
 }
 
@@ -49,14 +49,14 @@ const defaultWarningNotification: NotificationExcludingMessage = {
 const defaultSuccessNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Success,
-  icon: IconFont.Checkmark,
+  icon: IconFont.Checkmark_New,
   duration: FIVE_SECONDS,
 }
 
 const defaultDeletionNotification: NotificationExcludingMessage = {
   buttonElement: defaultButtonElement,
   style: NotificationStyle.Primary,
-  icon: IconFont.Trash,
+  icon: IconFont.Trash_New,
   duration: FIVE_SECONDS,
 }
 
@@ -605,45 +605,6 @@ export const getSchemaFailed = (
   message: `Failed to fetch schema for bucket with id ${bucketName}: ${error}`,
 })
 
-// Demodata buckets
-
-export const demoDataAddBucketFailed = (
-  bucketName: string,
-  message: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Could not create dashboard for demodata bucket ${bucketName}: ${message}`,
-})
-
-export const demoDataDeleteBucketFailed = (
-  bucketName: string,
-  error: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Failed to delete demo data bucket: ${bucketName}: ${error}`,
-})
-
-export const demoDataSucceeded = (
-  bucketName: string,
-  buttonElement: NotificationButtonElement
-): Notification => ({
-  ...defaultSuccessNotification,
-  message: `Successfully added demodata bucket ${bucketName}, and demodata dashboard.`,
-  duration: FIFTEEN_SECONDS,
-  buttonElement,
-})
-
-export const demoDataAvailability = (
-  message: string,
-  buttonElement?: NotificationButtonElement
-): Notification => ({
-  ...defaultErrorNotification,
-  message,
-  buttonElement,
-  duration: TEN_SECONDS,
-  type: 'demoDataAvailabilityError',
-})
-
 export const updateAggregateType = (
   message: string,
   buttonElement?: NotificationButtonElement
@@ -793,7 +754,7 @@ export const taskGetFailed = (error: string): Notification => ({
 export const taskRetrySuccess = (id: string): Notification => ({
   ...defaultSuccessNotification,
   duration: FIVE_SECONDS,
-  message: `Task run ${id} was succesful`,
+  message: `Task run ${id} successfully scheduled`,
 })
 
 export const taskRetryFailed = (error: string): Notification => ({
@@ -861,6 +822,13 @@ export const measurementSchemaAdditionSuccessful = (
   message: `MeasurementSchema ${schemaName}  has been successfully added to bucket ${bucketName}`,
 })
 
+export const measurementSchemaUpdateSuccessful = (
+  measurementName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `MeasurementSchema ${measurementName}  has been successfully updated`,
+})
+
 export const bucketUpdateFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to update bucket: "${error}"`,
@@ -873,6 +841,14 @@ export const measurementSchemaAdditionFailed = (
 ): Notification => ({
   ...defaultErrorNotification,
   message: `MeasurementSchema ${schemaName}  has *not* been successfully added to bucket ${bucketName}, error: ${errorMsg}`,
+})
+
+export const measurementSchemaUpdateFailed = (
+  measurementName: string,
+  errorMsg: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `MeasurementSchema ${measurementName}  has *not* been successfully updated, error: ${errorMsg}`,
 })
 
 export const bucketRenameSuccess = (bucketName: string): Notification => ({
@@ -1228,20 +1204,14 @@ export const editNotificationRuleCodeWarning = (): Notification => ({
 
 // Notebooks
 
-export const notebookRunSuccess = (
-  runMode: string,
-  projectName: string
-): Notification => ({
+export const notebookRunSuccess = (projectName: string): Notification => ({
   ...defaultSuccessNotification,
-  message: `${projectName} ${runMode.toLowerCase()} successful!`,
+  message: `${projectName} run successful!`,
 })
 
-export const notebookRunFail = (
-  runMode: string,
-  projectName: string
-): Notification => ({
+export const notebookRunFail = (projectName: string): Notification => ({
   ...defaultErrorNotification,
-  message: `${projectName} ${runMode.toLowerCase()} failed`,
+  message: `${projectName} run failed`,
 })
 
 export const notebookCreateFail = (): Notification => ({
@@ -1324,7 +1294,7 @@ export const deleteAnnotationFailed = (error: string): Notification => ({
 
 export const editAnnotationSuccess = (): Notification => ({
   ...defaultSuccessNotification,
-  icon: IconFont.Checkmark,
+  icon: IconFont.Checkmark_New,
   message: 'Annotation updated successfully',
 })
 
@@ -1353,7 +1323,7 @@ export const dashboardAutoRefreshTimeoutSuccess = (
 ): Notification => ({
   ...defaultSuccessNotification,
   duration: INDEFINITE,
-  icon: IconFont.Clock,
+  icon: IconFont.Clock_New,
   message: `Your dashboard auto refresh settings have been reset due to inactivity ${
     time ? 'over the last' + time : ''
   }`,

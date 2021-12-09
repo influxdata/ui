@@ -1,11 +1,13 @@
 // Libraries
 import React, {FC, useContext, useState, useEffect} from 'react'
-import {Link} from 'react-router-dom'
+import {useHistory, Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
+import {FlowListContext} from 'src/flows/context/flow.list'
 import {AppSettingProvider} from 'src/shared/contexts/app'
+import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 
 // Components
 import {
@@ -14,8 +16,12 @@ import {
   IconFont,
   ComponentColor,
   ComponentStatus,
+  ConfirmationButton,
+  ButtonShape,
   Dropdown,
+  ErrorTooltip,
 } from '@influxdata/clockface'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
@@ -48,7 +54,9 @@ interface Share {
 }
 
 const FlowHeader: FC = () => {
+  const {remove, clone} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
+  const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
   const [token, setToken] = useState<Token>()
@@ -140,8 +148,23 @@ const FlowHeader: FC = () => {
 
   const printJSON = () => {
     /* eslint-disable no-console */
-    console.log(JSON.stringify(serialize(flow, orgID), null, 2))
+    console.log(JSON.stringify(serialize(flow), null, 2))
     /* eslint-enable no-console */
+  }
+
+  const handleClone = async () => {
+    event('clone_notebook')
+    const clonedId = await clone(flow.id)
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
+    )
+  }
+
+  const handleDelete = () => {
+    event('delete_notebook')
+    deletePinnedItemByParam(flow.id)
+    remove(flow.id)
+    history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
   }
 
   if (!flow) {
@@ -199,19 +222,38 @@ const FlowHeader: FC = () => {
             <PresentationMode />
             <TimeZoneDropdown />
             <TimeRangeDropdown />
-            <FeatureFlag name="shareNotebook">
-              <SquareButton
-                icon={IconFont.Share}
-                onClick={showShare}
-                color={
-                  !share ? ComponentColor.Default : ComponentColor.Secondary
-                }
-                titleText="Share Notebook"
-              />
-            </FeatureFlag>
+            {flow?.id && (
+              <>
+                <ConfirmationButton
+                  icon={IconFont.Trash_New}
+                  shape={ButtonShape.Square}
+                  confirmationLabel={`Yes, delete this ${PROJECT_NAME}`}
+                  onConfirm={handleDelete}
+                  confirmationButtonText="Confirm"
+                  testID="context-delete-menu"
+                />
+                <SquareButton
+                  icon={IconFont.Duplicate_New}
+                  onClick={handleClone}
+                  titleText="Clone"
+                />
+                <FeatureFlag name="shareNotebook">
+                  <SquareButton
+                    icon={IconFont.Share}
+                    onClick={showShare}
+                    color={
+                      !!share
+                        ? ComponentColor.Primary
+                        : ComponentColor.Secondary
+                    }
+                    titleText="Share Notebook"
+                  />
+                </FeatureFlag>
+              </>
+            )}
             <FeatureFlag name="flow-snapshot">
               <SquareButton
-                icon={IconFont.Export}
+                icon={IconFont.Export_New}
                 onClick={printJSON}
                 color={ComponentColor.Default}
                 titleText="Export Notebook"
@@ -245,15 +287,20 @@ const FlowHeader: FC = () => {
               )}
               style={{width: '250px', flex: '0 0 250px'}}
             />
+            <ErrorTooltip
+              className="warning-icon"
+              tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
+              tooltipStyle={{width: '250px'}}
+            />
             <SquareButton
-              icon={IconFont.Checkmark}
+              icon={IconFont.Checkmark_New}
               onClick={generateLink}
               color={ComponentColor.Success}
               status={linkGenerationStatus}
               titleText="Set Token"
             />
             <SquareButton
-              icon={IconFont.Remove}
+              icon={IconFont.Remove_New}
               onClick={hideShare}
               color={ComponentColor.Danger}
               titleText="Cancel"
@@ -274,13 +321,13 @@ const FlowHeader: FC = () => {
               </a>
             </p>
             <SquareButton
-              icon={IconFont.Trash}
+              icon={IconFont.Trash_New}
               onClick={deleteShare}
               color={ComponentColor.Danger}
               titleText="Delete"
             />
             <SquareButton
-              icon={IconFont.Remove}
+              icon={IconFont.Remove_New}
               onClick={hideShare}
               color={ComponentColor.Default}
               titleText="Cancel"

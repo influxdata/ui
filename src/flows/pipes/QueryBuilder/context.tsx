@@ -12,6 +12,7 @@ import React, {
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {BucketContext} from 'src/flows/context/bucket.scoped'
 
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
@@ -105,6 +106,7 @@ const fromBuilderConfig = (
 export const QueryBuilderProvider: FC = ({children}) => {
   const {id, data, range, update} = useContext(PipeContext)
   const {query, getPanelQueries} = useContext(FlowQueryContext)
+  const {buckets} = useContext(BucketContext)
 
   const [cardMeta, setCardMeta] = useState<QueryBuilderMeta[]>(
     Array(data.tags.length).fill({
@@ -116,9 +118,29 @@ export const QueryBuilderProvider: FC = ({children}) => {
   )
 
   useEffect(() => {
+    // Migrate old data
+    if (typeof data.buckets[0] === 'string') {
+      const buck = buckets.find(b => b.name === data.buckets[0])
+
+      if (!buck) {
+        update({
+          buckets: [{type: 'user', name: data.buckets[0]}],
+        })
+
+        return
+      }
+
+      update({
+        buckets: [buck],
+      })
+
+      return
+    }
+
     if (data.tags.length) {
       return
     }
+
     const card = getDefaultCard()
     card.keys.selected = ['_measurement']
     update({tags: [card].map(toBuilderConfig)})
@@ -155,9 +177,11 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
   const loadKeys = useCallback(
     (idx, search) => {
-      const {buckets} = data
-
-      if (!data.buckets[0] || !cards[idx]) {
+      if (
+        !data.buckets[0] ||
+        typeof data.buckets[0] === 'string' ||
+        !cards[idx]
+      ) {
         return
       }
 
@@ -168,6 +192,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
       if (cardMeta[idx].loadingKeys === RemoteDataState.Loading) {
         return
       }
+
       cardMeta.splice(idx, 1, {
         ...cardMeta[idx],
         loadingKeys: RemoteDataState.Loading,
@@ -203,10 +228,18 @@ export const QueryBuilderProvider: FC = ({children}) => {
         : ''
 
       const {scope} = getPanelQueries(id)
+
+      let _source
+      if (data.buckets[0].type === 'sample') {
+        _source = `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
+      } else {
+        _source = `from(bucket: "${data.buckets[0].name}")`
+      }
+
       // TODO: Use the `v1.tagKeys` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
       query(
-        `from(bucket: "${buckets[0]}")
+        `${_source}
               |> range(${formatTimeRangeArguments(range)})
               |> filter(fn: (r) => ${tagString})
               |> keys()
@@ -218,7 +251,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
         scope
       )
         .then(resp => {
-          return resp.parsed.table.getColumn('_value', 'string') || []
+          return (Object.values(resp.parsed.table.columns).filter(
+            c => c.name === '_value' && c.type === 'string'
+          )[0]?.data ?? []) as string[]
         })
         .then(keys => {
           if (!cards[idx].keys.selected[0]) {
@@ -241,7 +276,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
           })
           setCardMeta([...cardMeta])
         })
-        .catch(() => {})
+        .catch(e => {
+          console.error(e)
+        })
     },
     [data.buckets, cards]
   )
@@ -256,6 +293,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
         ...cardMeta[idx],
         loadingValues: RemoteDataState.Loading,
       })
+
       setCardMeta([...cardMeta])
 
       const tagSelections = cards
@@ -282,10 +320,17 @@ export const QueryBuilderProvider: FC = ({children}) => {
         : ''
 
       const {scope} = getPanelQueries(id)
+      let _source
+      if (data.buckets[0].type === 'sample') {
+        _source = `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
+      } else {
+        _source = `from(bucket: "${data.buckets[0].name}")`
+      }
+
       // TODO: Use the `v1.tagValues` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
       query(
-        `from(bucket: "${data.buckets[0]}")
+        `${_source}
               |> range(${formatTimeRangeArguments(range)})
               |> filter(fn: (r) => ${tagString})
               |> keep(columns: ["${cards[idx].keys.selected[0]}"])
@@ -298,7 +343,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
         scope
       )
         .then(resp => {
-          return resp.parsed.table.getColumn('_value', 'string') || []
+          return (Object.values(resp.parsed.table.columns).filter(
+            c => c.name === '_value' && c.type === 'string'
+          )[0]?.data ?? []) as string[]
         })
         .then(values => {
           cardMeta.splice(idx, 1, {
@@ -308,7 +355,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
           })
           setCardMeta([...cardMeta])
         })
-        .catch(() => {})
+        .catch(e => {
+          console.error(e)
+        })
     },
     [data.buckets, cards]
   )

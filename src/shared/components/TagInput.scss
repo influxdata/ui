@@ -32,14 +32,14 @@ $input-tag--item-height: 24px;
   padding: 0 0 0 9px;
   font-size: 12px;
   font-weight: 600;
-  background-color: $g5-pepper;
-  color: $g18-cloud;
+  background-color: $cf-grey-25;
+  color: $cf-grey-95;
   cursor: default;
 }
 
 .btn.confirm-button.input-tag--remove {
   margin-left: 2px;
-  color: $g8-storm;
+  color: $cf-grey-45;
   background-color: transparent;
 
   &:hover {
@@ -53,7 +53,7 @@ $input-tag--item-height: 24px;
   position: relative;
   width: $input-tag--item-height;
   background-color: $c-pool;
-  color: $g20-white;
+  color: $cf-white;
   text-align: center;
   transition: background-color 0.25s ease;
 
@@ -93,13 +93,13 @@ $input-tag--item-height: 24px;
 
   &:hover {
     cursor: pointer;
-    color: $g20-white;
+    color: $cf-white;
     @include gradient-h($c-laser, $c-pool);
   }
   &:active,
   &:active:focus {
     cursor: pointer;
-    color: $g20-white;
+    color: $cf-white;
     @include gradient-h($c-sapphire, $c-pool);
   }
 }

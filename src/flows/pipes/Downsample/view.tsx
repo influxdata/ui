@@ -88,7 +88,7 @@ const Downsample: FC<PipeProp> = ({Context}) => {
             selectedOptions={options}
             onSelect={selectFn}
             buttonColor={ComponentColor.Secondary}
-            buttonIcon={IconFont.BarChart}
+            buttonIcon={IconFont.BarChart_New}
           />
         </div>
         <div className="downsample-panel--right">

@@ -45,9 +45,9 @@ export const GeoOptions: FC<Props> = ({properties, update, results}) => {
 
   const getToggleColor = (toggle: boolean): CSSProperties => {
     if (toggle) {
-      return {color: InfluxColors.Cloud}
+      return {color: InfluxColors.Grey95}
     }
-    return {color: InfluxColors.Sidewalk}
+    return {color: InfluxColors.Grey65}
   }
 
   return CLOUD ? (

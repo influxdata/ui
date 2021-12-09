@@ -9,12 +9,12 @@
 
 .annotation-pill {
   margin: $cf-border;
-  height: $cf-form-sm-height - $cf-marg-a;
+  height: $cf-form-sm-height - $cf-space-3xs;
   display: flex;
   align-items: center;
-  padding: 0 $cf-marg-b;
-  border-radius: ($cf-form-sm-height - $cf-marg-a) / 2;
-  background-color: $g4-onyx;
+  padding: 0 $cf-space-2xs;
+  border-radius: ($cf-form-sm-height - $cf-space-3xs) * 0.5;
+  background-color: $cf-grey-15;
 
   &:hover {
     cursor: default;
@@ -25,15 +25,15 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  margin-right: $cf-marg-a;
+  margin-right: $cf-space-3xs;
 }
 
 .annotation-pill--label {
   font-size: $cf-form-sm-font;
   font-weight: $cf-font-weight--medium;
-  color: $g15-platinum;
+  color: $cf-grey-85;
   line-height: $cf-form-sm-height;
-  margin-right: $cf-marg-a;
+  margin-right: $cf-space-3xs;
   user-select: none;
 }
 
@@ -48,12 +48,12 @@
   align-content: center;
   text-align: center;
   background-color: transparent;
-  color: $g8-storm;
+  color: $cf-grey-45;
   transition: color 0.25s ease;
 
   &:hover {
     cursor: pointer;
-    color: $g18-cloud;
+    color: $cf-grey-95;
   }
 
   &:active {

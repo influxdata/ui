@@ -21,7 +21,7 @@ import {
   ListItemRef,
 } from '@influxdata/clockface'
 import BucketOverlayForm from 'src/buckets/components/createBucketForm/BucketOverlayForm'
-import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
+import {getBucketOverlayWidth} from 'src/buckets/constants'
 
 // Utils
 import {
@@ -147,7 +147,7 @@ const SelectorListCreateBucket: FC<Props> = ({
         position={PopoverPosition.Above}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
-        style={{maxWidth: BUCKET_OVERLAY_WIDTH}}
+        style={{maxWidth: getBucketOverlayWidth()}}
         testID="create-bucket-popover"
         contents={onHide => (
           <BucketOverlayForm

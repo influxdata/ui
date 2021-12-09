@@ -9,50 +9,49 @@ describe('tokens', () => {
   let authData: {description: string; status: boolean; id: string}[]
 
   beforeEach(() => {
-    cy.flush().then(() => {
-      // this is bad
-      // use a cypress alias instead
-      // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Avoiding-the-use-of-this
-      // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Aliases
-      authData = []
+    // this is bad
+    // use a cypress alias instead
+    // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Avoiding-the-use-of-this
+    // docs.cypress.io/guides/core-concepts/variables-and-aliases.html#Aliases
+    authData = []
 
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          // check out array.reduce for the nested calls here
-          cy.request('api/v2/authorizations').then(resp => {
-            expect(resp.body).to.exist
-            authData.push({
-              description: resp.body.authorizations[0].description,
-              status: resp.body.authorizations[0].status === 'active',
-              id: resp.body.authorizations[0].id,
-            })
+    cy.flush()
 
-            cy.fixture('tokens.json').then(({tokens}) => {
-              tokens.forEach(token => {
-                token.permissions.forEach(p => (p.resource.orgID = id))
-                cy.createToken(
-                  id,
-                  token.description,
-                  token.status,
-                  token.permissions
-                ).then(resp => {
-                  expect(resp.body).to.exist
-                  authData.push({
-                    description: resp.body.description,
-                    status: resp.body.status === 'active',
-                    id: resp.body.id,
-                  })
-                })
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) => {
+      // check out array.reduce for the nested calls here
+      cy.request('api/v2/authorizations').then(resp => {
+        expect(resp.body).to.exist
+        authData.push({
+          description: resp.body.authorizations[0].description,
+          status: resp.body.authorizations[0].status === 'active',
+          id: resp.body.authorizations[0].id,
+        })
+
+        cy.fixture('tokens.json').then(({tokens}) => {
+          tokens.forEach(token => {
+            token.permissions.forEach(p => (p.resource.orgID = id))
+            cy.createToken(
+              id,
+              token.description,
+              token.status,
+              token.permissions
+            ).then(resp => {
+              expect(resp.body).to.exist
+              authData.push({
+                description: resp.body.description,
+                status: resp.body.status === 'active',
+                id: resp.body.id,
               })
             })
-
-            cy.fixture('routes').then(({orgs}) => {
-              cy.visit(`${orgs}/${id}/load-data/tokens`)
-              cy.getByTestID('tree-nav')
-            })
-            cy.get('[data-testid="resource-list"]', {timeout: PAGE_LOAD_SLA})
           })
         })
+
+        cy.fixture('routes').then(({orgs}) => {
+          cy.visit(`${orgs}/${id}/load-data/tokens`)
+          cy.getByTestID('tree-nav')
+        })
+        cy.get('[data-testid="resource-list"]', {timeout: PAGE_LOAD_SLA})
       })
     })
   })
@@ -153,17 +152,15 @@ describe('tokens', () => {
   it('can delete a token', () => {
     cy.get('.cf-resource-card').should('have.length', 4)
 
-    cy.intercept('**/authorizations/*').as('deleteToken')
-
     cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('context-menu').click({force: true})
+      cy.getByTestID('context-delete-menu--button').click()
     })
+    cy.getByTestID('context-delete-menu--confirm-button').click()
 
-    cy.getByTestID('token-card token test 03').within(() => {
-      cy.getByTestID('delete-token').click({force: true})
-    })
-
-    cy.wait('@deleteToken')
+    cy.getByTestID('notification-success').should(
+      'contain',
+      'API token was deleted successfully'
+    )
 
     cy.get('.cf-resource-card').should('have.length', 3)
 
@@ -173,40 +170,54 @@ describe('tokens', () => {
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('context-menu').click({force: true})
+        cy.getByTestID('context-delete-menu--button')
+          .should('be.visible')
+          .click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button')
+      .should('be.visible')
+      .click()
+
+    cy.getByTestID('notification-success').should(
+      'contain',
+      'API token was deleted successfully'
+    )
+
+    cy.getByTestID('notification-success--dismiss').click()
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('delete-token').click({force: true})
+        cy.getByTestID('context-delete-menu--button')
+          .should('be.visible')
+          .click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button')
+      .should('be.visible')
+      .click()
 
-    cy.wait('@deleteToken')
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('context-menu').click({force: true})
-      })
-
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('delete-token').click({force: true})
-      })
-
-    cy.wait('@deleteToken')
-    cy.get('.cf-resource-card')
-      .first()
-      .within(() => {
-        cy.getByTestID('context-menu').click({force: true})
-      })
+    cy.getByTestID('notification-success').should(
+      'contain',
+      'API token was deleted successfully'
+    )
 
     cy.get('.cf-resource-card')
       .first()
       .within(() => {
-        cy.getByTestID('delete-token').click({force: true})
+        cy.getByTestID('context-delete-menu--button')
+          .should('be.visible')
+          .click()
       })
+    cy.getByTestID('context-delete-menu--confirm-button')
+      .should('be.visible')
+      .click()
+
+    cy.getByTestID('notification-success').should(
+      'contain',
+      'API token was deleted successfully'
+    )
+
+    cy.getByTestID('notification-success--dismiss').click()
 
     // Assert empty state
     cy.getByTestID('empty-state').within(() => {
@@ -363,12 +374,9 @@ describe('tokens', () => {
   it('can do sorting', () => {
     cy.get<string>('@defaultUser').then((defaultUser: string) => {
       cy.getByTestID(`token-card ${defaultUser}'s Token`).within(() => {
-        cy.getByTestID('context-menu').click()
-
-        cy.getByTestID('delete-token')
-          .contains('Delete')
-          .click()
+        cy.getByTestID('context-delete-menu--button').click()
       })
+      cy.getByTestID('context-delete-menu--confirm-button').click()
     })
 
     cy.log('sort by Description (Asc)')

@@ -7,7 +7,7 @@ import {
   PermissionsWidgetMode,
   PermissionsWidgetSelection,
 } from 'src/shared/components/permissionsWidget/PermissionsWidget'
-import {IconFont} from 'src/clockface'
+import {IconFont} from '@influxdata/clockface'
 
 interface Props {
   mode?: PermissionsWidgetMode
@@ -43,7 +43,7 @@ class PermissionsWidgetItem extends Component<Props> {
     if (mode === PermissionsWidgetMode.Write) {
       return (
         <div className="permissions-widget--checkbox">
-          <span className={`icon ${IconFont.Checkmark}`} />
+          <span className={`icon ${IconFont.Checkmark_New}`} />
         </div>
       )
     }
@@ -51,14 +51,14 @@ class PermissionsWidgetItem extends Component<Props> {
     if (selected === PermissionsWidgetSelection.Selected) {
       return (
         <div className="permissions-widget--icon">
-          <span className={`icon ${IconFont.Checkmark}`} />
+          <span className={`icon ${IconFont.Checkmark_New}`} />
         </div>
       )
     }
 
     return (
       <div className="permissions-widget--icon">
-        <span className={`icon ${IconFont.Remove}`} />
+        <span className={`icon ${IconFont.Remove_New}`} />
       </div>
     )
   }

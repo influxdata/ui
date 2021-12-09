@@ -18,7 +18,7 @@ $cf-radius-lg: $cf-radius + 4px;
 
 .flow--add-cell-label {
   user-select: none;
-  margin: 0 $cf-marg-c 0 0;
+  margin: 0 $cf-space-s 0 0;
   font-size: 14px;
   font-weight: $cf-font-weight--medium;
 }
@@ -46,15 +46,15 @@ $cf-radius-lg: $cf-radius + 4px;
     content: '';
     position: absolute;
     width: $cf-border;
-    background-color: $g5-pepper;
+    background-color: $cf-grey-25;
     // Ensures there is no visible gap
     bottom: 0;
     top: 0;
-    left: ($flow-panel--node-gap / 2) - ($cf-border / 2);
+    left: ($flow-panel--node-gap * 0.5) - ($cf-border * 0.5);
   }
 
   &:first-child::after {
-    top: ($flow-header-height - $flow-panel--node-dot) / 2;
+    top: ($flow-header-height - $flow-panel--node-dot) * 0.5;
   }
 }
 
@@ -74,6 +74,7 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .presentation-panel {
+  overflow: auto;
   display: flex;
   height: 100%;
   flex-direction: column;
@@ -95,7 +96,7 @@ $cf-radius-lg: $cf-radius + 4px;
 
 .flow-panel--header {
   border-radius: $cf-radius-lg $cf-radius-lg 0 0;
-  padding: $cf-marg-b;
+  padding: $cf-space-2xs;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -112,7 +113,7 @@ $cf-radius-lg: $cf-radius + 4px;
   display: flex;
 
   & > * {
-    margin-left: $cf-marg-b;
+    margin-left: $cf-space-2xs;
   }
 }
 
@@ -133,7 +134,7 @@ $cf-radius-lg: $cf-radius + 4px;
   height: $flow-panel--node-dot;
   border-radius: 50%;
   background-color: $flow-panel--bg;
-  border: $cf-border solid $g5-pepper;
+  border: $cf-border solid $cf-grey-25;
   position: relative;
 }
 
@@ -143,7 +144,7 @@ $cf-radius-lg: $cf-radius + 4px;
   font-size: 14px;
   font-weight: $cf-font-weight--medium;
   user-select: none;
-  margin-right: $cf-marg-b !important;
+  margin-right: $cf-space-2xs !important;
 }
 
 .flow-panel .cf-draggable-resizer--handle {
@@ -213,18 +214,18 @@ $cf-radius-lg: $cf-radius + 4px;
 .flow-panel--editable-title,
 .flow-panel--title {
   order: 1;
-  color: $g15-platinum;
+  color: $cf-grey-85;
   flex: 1 1;
   height: $cf-form-sm-height;
   position: relative;
-  margin-left: $cf-marg-b;
+  margin-left: $cf-space-2xs;
 }
 
 .flow-panel--editable-title,
 .flow-panel--title-input {
   background-color: transparent;
   border: $cf-border solid $flow-panel--bg;
-  color: $g15-platinum;
+  color: $cf-grey-85;
   font-size: 14px;
   font-family: $cf-text-font;
   font-weight: $cf-font-weight--medium;
@@ -238,12 +239,12 @@ $cf-radius-lg: $cf-radius + 4px;
 
 .flow-panel--title-input {
   &:hover {
-    border-color: $g5-pepper;
+    border-color: $cf-grey-25;
   }
 
   &:hover,
   &:focus {
-    color: $g20-white;
+    color: $cf-white;
   }
 
   &:focus {
@@ -260,12 +261,12 @@ $cf-radius-lg: $cf-radius + 4px;
 .flow-panel--title-icon {
   position: absolute;
   top: 50%;
-  right: $cf-form-sm-height / 2;
+  right: $cf-form-sm-height * 0.5;
   transform: translate(50%, -50%);
   opacity: 0;
   transition: opacity 0.25s ease;
   pointer-events: none;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 }
 
 .flow-panel--title:hover .flow-panel--title-icon {
@@ -274,7 +275,7 @@ $cf-radius-lg: $cf-radius + 4px;
 
 .flow-panel--data-caret {
   display: inline-block;
-  margin-left: $cf-marg-a;
+  margin-left: $cf-space-3xs;
   font-size: 0.8em;
   position: relative;
   top: -2px;
@@ -295,7 +296,7 @@ $cf-radius-lg: $cf-radius + 4px;
 .flow-panel--body,
 .flow-panel--results {
   border-radius: 0 0 $cf-radius $cf-radius;
-  padding: $cf-marg-b;
+  padding: $cf-space-2xs;
   padding-left: $flow-panel--node-gap;
   padding-top: 0;
   position: relative;
@@ -317,7 +318,7 @@ $cf-radius-lg: $cf-radius + 4px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  background-color: $g0-obsidian;
+  background-color: $cf-grey-5;
   position: relative;
 }
 
@@ -333,8 +334,6 @@ $cf-radius-lg: $cf-radius + 4px;
 */
 
 .flow-panel__hidden {
-  height: $flow-header-height + ($cf-border * 2);
-
   .flow-panel--body,
   .flow-panel--results {
     display: none;
@@ -375,7 +374,7 @@ $cf-radius-lg: $cf-radius + 4px;
   margin-right: 0;
 }
 .flow-panel--body .view-options {
-  padding: $cf-marg-c;
+  padding: $cf-space-s;
 }
 
 .share-token--option {
@@ -417,7 +416,7 @@ $cf-radius-lg: $cf-radius + 4px;
   flex-wrap: wrap;
 
   > * {
-    margin-left: $cf-marg-a;
+    margin-left: $cf-space-3xs;
   }
 }
 
@@ -429,10 +428,10 @@ $cf-radius-lg: $cf-radius + 4px;
   display: flex;
 
   > * {
-    margin-left: $cf-marg-a;
+    margin-left: $cf-space-3xs;
   }
 }
 
-.flows-index--main {
-  margin-top: 10px;
+.flows-index--contents {
+  overflow: unset;
 }

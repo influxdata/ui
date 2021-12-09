@@ -6,17 +6,15 @@ import {useHistory} from 'react-router-dom'
 // Components
 import {
   Button,
-  ComponentSize,
-  Panel,
   IconFont,
   FlexBox,
   AlignItems,
   FlexDirection,
-  Gradients,
-  InfluxColors,
-  JustifyContent,
-  Grid,
-  Columns,
+  ComponentSize,
+  Input,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 import CopyButton from 'src/shared/components/CopyButton'
 import UsersProvider from 'src/users/context/users'
@@ -46,103 +44,103 @@ const OrgProfileTab: FC = () => {
 
   return (
     <>
-      <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
-        <Panel
-          backgroundColor={InfluxColors.Onyx}
-          testID="organization-profile--panel"
+      <FlexBox
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.FlexStart}
+        stretchToFitWidth={false}
+        testID="organization-profile--panel"
+        margin={ComponentSize.Large}
+      >
+        <h4>Organization Profile</h4>
+
+        <Heading
+          element={HeadingElement.H4}
+          weight={FontWeight.Regular}
+          style={{marginBottom: '4px'}}
         >
-          <Panel.Header size={ComponentSize.Small}>
-            <h4>Organization Profile</h4>
-          </Panel.Header>
-          <Panel.Body size={ComponentSize.Small}>
-            <Panel gradient={Gradients.DocScott}>
-              <Panel.Header
-                size={ComponentSize.ExtraSmall}
-                testID="danger-zone--header"
-              >
-                <h5>Danger Zone!</h5>
-              </Panel.Header>
-              <Panel.Body size={ComponentSize.ExtraSmall}>
-                <FlexBox
-                  stretchToFitWidth={true}
-                  alignItems={AlignItems.Center}
-                  direction={FlexDirection.Row}
-                  justifyContent={JustifyContent.SpaceBetween}
-                >
-                  <div>
-                    <h5
-                      style={{marginBottom: '0'}}
-                      data-testid="danger-zone--org-name"
-                    >
-                      Rename Organization {org.name}
-                    </h5>
-                    <p style={{marginTop: '2px'}}>
-                      This action can have wide-reaching unintended
-                      consequences.
-                    </p>
-                  </div>
-                  <Button
-                    testID="rename-org--button"
-                    text="Rename"
-                    icon={IconFont.Pencil}
-                    onClick={handleShowEditOverlay}
-                  />
-                </FlexBox>
-              </Panel.Body>
-              {CLOUD && isFlagEnabled('uiUnificationFlag') && (
-                <UsersProvider>
-                  <OrgProfileDeletePanel />
-                </UsersProvider>
-              )}
-            </Panel>
-          </Panel.Body>
-        </Panel>
-      </Grid.Column>
-      <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Six}>
-        <Panel testID="common-ids--panel">
-          <Panel.Header
-            size={ComponentSize.ExtraSmall}
-            testID="common-ids--header"
+          Name
+        </Heading>
+        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
+          <Input
+            value={org.name}
+            data-testid="danger-zone--org-name"
+            testID="danger-zone--org-name"
+          ></Input>
+          <Button
+            testID="rename-org--button"
+            text="Rename"
+            icon={IconFont.Pencil}
+            onClick={handleShowEditOverlay}
+          />
+        </FlexBox>
+
+        <FlexBox.Child testID="common-ids--panel">
+          <h4>Common IDs</h4>
+
+          <Heading
+            element={HeadingElement.H4}
+            style={{marginBottom: '4px'}}
+            weight={FontWeight.Regular}
           >
-            <h4>Common Ids</h4>
-          </Panel.Header>
-          <Panel.Body>
-            <div className="code-snippet" data-testid="code-snippet--userid">
-              <div className="code-snippet--text">
-                <pre>
-                  <code>{me.id}</code>
-                </pre>
-              </div>
-              <div className="code-snippet--footer">
-                <CopyButton
-                  text={me.id}
-                  testID="copy-btn--userid"
-                  onCopy={generateCopyText('User ID', me.id)}
-                />
-                <label className="code-snippet--label">{`${me.name} | User ID`}</label>
-              </div>
+            User ID
+          </Heading>
+          <div className="code-snippet" data-testid="code-snippet--userid">
+            <div className="code-snippet--text">
+              <pre>
+                <code>{me.id}</code>
+              </pre>
             </div>
-            <div className="code-snippet" data-testid="code-snippet--orgid">
-              <div className="code-snippet--text">
-                <pre>
-                  <code>{org.id}</code>
-                </pre>
-              </div>
-              <div className="code-snippet--footer">
-                <CopyButton
-                  text={org.id}
-                  onCopy={generateCopyText('Organization ID', org.id)}
-                  testID="copy-btn--orgid"
-                />
-                <label
-                  className="code-snippet--label"
-                  data-testid="org-profile--name"
-                >{`${org.name} | Organization ID`}</label>
-              </div>
+            <FlexBox
+              className="code-snippet--footer"
+              margin={ComponentSize.Medium}
+            >
+              <CopyButton
+                text={me.id}
+                testID="copy-btn--userid"
+                onCopy={generateCopyText('User ID', me.id)}
+              />
+              <label className="code-snippet--label">
+                {`${me.name} |`} <b>User ID</b>
+              </label>
+            </FlexBox>
+          </div>
+          <Heading
+            element={HeadingElement.H4}
+            style={{marginTop: '16px', marginBottom: '4px'}}
+            weight={FontWeight.Regular}
+          >
+            Organization ID
+          </Heading>
+          <div className="code-snippet" data-testid="code-snippet--orgid">
+            <div className="code-snippet--text">
+              <pre>
+                <code>{org.id}</code>
+              </pre>
             </div>
-          </Panel.Body>
-        </Panel>
-      </Grid.Column>
+            <FlexBox
+              className="code-snippet--footer"
+              margin={ComponentSize.Medium}
+            >
+              <CopyButton
+                text={org.id}
+                onCopy={generateCopyText('Organization ID', org.id)}
+                testID="copy-btn--orgid"
+              />
+              <label
+                className="code-snippet--label"
+                data-testid="org-profile--name"
+              >
+                {`${org.name} |`} <b> Organization ID </b>
+              </label>
+            </FlexBox>
+          </div>
+        </FlexBox.Child>
+        {CLOUD && isFlagEnabled('uiUnificationFlag') && (
+          <UsersProvider>
+            <OrgProfileDeletePanel />
+          </UsersProvider>
+        )}
+      </FlexBox>
     </>
   )
 }

@@ -18,25 +18,23 @@ describe('Notification Endpoints', () => {
   }
 
   beforeEach(() => {
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get<Organization>('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs, alerting}) => {
-            cy.createEndpoint({
-              ...(endpoint as NotificationEndpoint),
-              orgID: id,
-            }).then(({body}) => {
-              cy.wrap(body).as('endpoint')
-            })
-            cy.visit(`${orgs}/${id}${alerting}`)
-            cy.getByTestID('tree-nav')
-
-            // User can only see all panels at once on large screens
-            cy.getByTestID('alerting-tab--endpoints').click({force: true})
-          })
-        )
+    cy.flush()
+    cy.signin()
+    cy.get<Organization>('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs, alerting}) => {
+        cy.createEndpoint({
+          ...(endpoint as NotificationEndpoint),
+          orgID: id,
+        }).then(({body}) => {
+          cy.wrap(body).as('endpoint')
+        })
+        cy.visit(`${orgs}/${id}${alerting}`)
       })
     )
+    cy.getByTestID('tree-nav')
+
+    // User can only see all panels at once on large screens
+    cy.getByTestID('alerting-tab--endpoints').click({force: true})
   })
 
   it('can create a notification endpoint', () => {
@@ -239,19 +237,15 @@ describe('Notification Endpoints', () => {
   })
 
   it('can view history of endpoint', () => {
-    cy.get<SlackNotificationEndpoint>('@endpoint').then(() => {
-      cy.getByTestID(`context-history-menu`).click()
-      cy.getByTestID(`context-history-task`).click()
-      cy.getByTestID(`alert-history-title`).should('exist')
-    })
+    cy.getByTestID(`context-menu-task`).click()
+    cy.getByTestID(`context-history-task`).click()
+    cy.getByTestID(`alert-history-title`).should('exist')
   })
 
   it('can delete endpoint', () => {
-    cy.get<SlackNotificationEndpoint>('@endpoint').then(() => {
-      cy.getByTestID(`context-delete-menu`).click()
-      cy.getByTestID(`context-delete-task`).click()
-      cy.getByTestID(`endpoint-card--name ${name}`).should('not.exist')
-    })
+    cy.getByTestID(`context-delete-task--button`).click()
+    cy.getByTestID(`context-delete-task--confirm-button`).click()
+    cy.getByTestID(`endpoint-card--name ${name}`).should('not.exist')
   })
 
   describe('When managing the list', () => {

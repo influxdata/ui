@@ -4,31 +4,31 @@
 */
 
 .clockface--app-wrapper.dashboard-light-mode {
-  background-color: $g18-cloud;
-  color: $g8-storm;
+  background-color: $cf-grey-95;
+  color: $cf-grey-45;
 
   .cf-page-contents > .cf-dapper-scrollbars--track-y {
-    background-color: $g15-platinum !important;
+    background-color: $cf-grey-85 !important;
   }
 
   .cf-page--sub-title {
-    color: $g13-mist;
+    color: $cf-grey-75;
   }
 
   .cell {
-    background-color: $g20-white;
+    background-color: $cf-white;
   }
 
   .cell--dot-grid,
   .cell--dot-grid:before,
   .cell--dot-grid:after {
-    background-color: $g13-mist;
+    background-color: $cf-grey-75;
   }
 
   .cell:hover .cell--dot-grid,
   .cell:hover .cell--dot-grid:before,
   .cell:hover .cell--dot-grid:after {
-    background-color: $g8-storm;
+    background-color: $cf-grey-45;
   }
 
   .cell:hover .cell--draggable:hover .cell--dot-grid,
@@ -38,10 +38,10 @@
   }
 
   .cell--context {
-    color: $g13-mist;
+    color: $cf-grey-75;
   }
   .cell:hover .cell--context {
-    color: $g8-storm;
+    color: $cf-grey-45;
   }
   .cell:hover .cell--context:hover,
   .cell .cell--context.cell--context__active,
@@ -50,7 +50,7 @@
   }
 
   .cell--note-indicator {
-    color: $g13-mist;
+    color: $cf-grey-75;
 
     &.cell--note-indicator__active,
     &:hover,
@@ -60,32 +60,32 @@
   }
 
   .markdown-format {
-    color: $g7-graphite;
+    color: $cf-grey-35;
 
     strong {
-      color: $g6-smoke;
+      color: $cf-grey-25;
     }
 
     code {
-      background-color: $g19-ghost;
+      background-color: $cf-grey-95;
       color: $c-star;
     }
 
     pre {
-      background-color: $g19-ghost;
+      background-color: $cf-grey-95;
     }
   }
 
   .markdown-cell .cf-dapper-scrollbars--track-y {
-    background-color: $g17-whisper !important;
+    background-color: $cf-grey-95 !important;
   }
 
   .cell--view-empty {
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
   .variables-control-bar--empty,
   .variables-control-bar--full {
-    background-color: $g20-white;
+    background-color: $cf-white;
   }
 }
 
@@ -96,12 +96,12 @@
 
 .clockface--app-wrapper.dashboard-light-mode {
   .react-resizable-handle {
-    border-right-color: $g14-chromium;
-    border-bottom-color: $g14-chromium;
+    border-right-color: $cf-grey-75;
+    border-bottom-color: $cf-grey-75;
 
     &:before,
     &:after {
-      background-color: $g20-white;
+      background-color: $cf-white;
     }
 
     &:hover {

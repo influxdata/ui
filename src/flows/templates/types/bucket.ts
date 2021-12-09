@@ -20,7 +20,7 @@ export default register =>
               ...JSON.parse(
                 JSON.stringify(PIPE_DEFINITIONS['queryBuilder'].initial)
               ),
-              buckets: [name],
+              buckets: [{name, type: 'user'}],
             },
             {
               title: 'Validate the Data',

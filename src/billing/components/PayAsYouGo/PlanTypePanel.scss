@@ -6,7 +6,7 @@
   .plan-type-panel--detail {
     flex-grow: 1;
     flex-basis: 100%;
-    margin-bottom: $cf-marg-a;
+    margin-bottom: $cf-space-3xs;
 
     &:last-child {
       margin-bottom: 0;
@@ -26,7 +26,7 @@
     .billing--update-frequency {
       font-size: $cf-text-tiny;
       text-align: right;
-      color: $g8-storm;
+      color: $cf-grey-45;
     }
   }
 }
@@ -35,7 +35,7 @@
 .cf-heading.section-header {
   width: 100%;
   font-size: $cf-text-base-5;
-  margin: $cf-marg-d 0;
+  margin: $cf-space-l 0;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -63,7 +63,7 @@
     .plan-type-panel--detail {
       flex-grow: 1;
       margin-bottom: 0;
-      margin-right: $cf-marg-c;
+      margin-right: $cf-space-s;
 
       &:last-child {
         margin-bottom: 0;
@@ -83,7 +83,8 @@
     .graph-type--panel {
       flex-grow: 1;
       margin-bottom: 0;
-      margin-right: $cf-marg-c;
+      margin-right: $cf-space-s;
+      margin-top: 0;
 
       &:last-child {
         margin-bottom: 0;

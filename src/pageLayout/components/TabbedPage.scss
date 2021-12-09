@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  margin-bottom: $cf-marg-d;
+  margin-bottom: $cf-space-l;
 }
 
 .tabbed-page--header-left,
@@ -13,7 +13,7 @@
   justify-content: center;
 
   & > * {
-    margin-right: $cf-marg-a;
+    margin-right: $cf-space-2xs;
 
     &:last-child {
       margin-right: 0;
@@ -23,7 +23,7 @@
 
 .tabbed-page--header-right {
   order: 1;
-  margin-bottom: $cf-marg-b;
+  margin-bottom: $cf-space-2xs;
 
   &:only-child {
     margin-bottom: 0;

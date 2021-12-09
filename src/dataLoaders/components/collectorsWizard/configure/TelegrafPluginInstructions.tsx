@@ -1,7 +1,7 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {includes, get} from 'lodash'
+import {get} from 'lodash'
 
 // Components
 import {Form, Input, DapperScrollbars} from '@influxdata/clockface'
@@ -136,8 +136,7 @@ export class TelegrafPluginInstructions extends PureComponent<Props> {
         .filter(t => t)
 
       const templatesToInstantiate = influxdbTemplateList.filter(t => {
-        return includes(
-          configuredPluginTemplateIdentifiers,
+        return configuredPluginTemplateIdentifiers.includes(
           get(t, 'meta.templateID')
         )
       })

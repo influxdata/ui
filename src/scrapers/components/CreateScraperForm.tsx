@@ -93,6 +93,7 @@ export class ScraperTarget extends PureComponent<Props> {
               <Form.Footer>
                 <Button
                   text="Cancel"
+                  color={ComponentColor.Tertiary}
                   onClick={onDismiss}
                   testID="create-scraper--cancel"
                 />

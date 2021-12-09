@@ -17,7 +17,7 @@ const SearchBar: FC = () => {
   return (
     <Input
       className="data-source--search"
-      icon={IconFont.Search}
+      icon={IconFont.Search_New}
       size={ComponentSize.Medium}
       value={searchTerm}
       placeholder="Filter data by measurement, field, or tag ..."

@@ -9,6 +9,7 @@ import {
   Grid,
   Columns,
   Dropdown,
+  Overlay,
 } from '@influxdata/clockface'
 import VariableArgumentsEditor from 'src/variables/components/VariableArgumentsEditor'
 
@@ -53,92 +54,94 @@ export default class VariableForm extends PureComponent<Props, State> {
 
     return (
       <Form onSubmit={this.handleSubmit} testID="variable-form--root">
-        <Grid>
-          <Grid.Row>
-            <Grid.Column widthXS={Columns.Six}>
-              <div className="overlay-flux-editor--spacing">
-                <Form.ValidationElement
-                  label="Name"
-                  value={name}
-                  required={true}
-                  prevalidate={true}
-                  validationFunc={this.handleNameValidation}
-                >
-                  {status => (
-                    <Input
-                      placeholder="Give your variable a name"
-                      testID="variable-name-input"
-                      name="name"
-                      autoFocus={true}
-                      value={name}
-                      onChange={this.handleChangeInput}
-                      status={status}
-                    />
-                  )}
-                </Form.ValidationElement>
-              </div>
-            </Grid.Column>
-            <Grid.Column widthXS={Columns.Six}>
-              <Form.Element label="Type" required={true}>
-                <Dropdown
-                  button={(active, onClick) => (
-                    <Dropdown.Button
-                      active={active}
-                      onClick={onClick}
-                      testID="variable-type-dropdown--button"
-                    >
-                      {this.typeDropdownLabel}
-                    </Dropdown.Button>
-                  )}
-                  menu={onCollapse => (
-                    <Dropdown.Menu onCollapse={onCollapse}>
-                      {variableItemTypes.map(v => (
-                        <Dropdown.Item
-                          key={v.type}
-                          id={v.type}
-                          testID={`variable-type-dropdown-${v.type}`}
-                          value={v.type}
-                          onClick={this.handleChangeType}
-                          selected={v.type === variableType}
-                        >
-                          {v.label}
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  )}
+        <Overlay.Body>
+          <Grid>
+            <Grid.Row>
+              <Grid.Column widthXS={Columns.Six}>
+                <div className="overlay-flux-editor--spacing">
+                  <Form.ValidationElement
+                    label="Name"
+                    value={name}
+                    required={true}
+                    prevalidate={true}
+                    validationFunc={this.handleNameValidation}
+                  >
+                    {status => (
+                      <Input
+                        placeholder="Give your variable a name"
+                        testID="variable-name-input"
+                        name="name"
+                        autoFocus={true}
+                        value={name}
+                        onChange={this.handleChangeInput}
+                        status={status}
+                      />
+                    )}
+                  </Form.ValidationElement>
+                </div>
+              </Grid.Column>
+              <Grid.Column widthXS={Columns.Six}>
+                <Form.Element label="Type" required={true}>
+                  <Dropdown
+                    button={(active, onClick) => (
+                      <Dropdown.Button
+                        active={active}
+                        onClick={onClick}
+                        testID="variable-type-dropdown--button"
+                      >
+                        {this.typeDropdownLabel}
+                      </Dropdown.Button>
+                    )}
+                    menu={onCollapse => (
+                      <Dropdown.Menu onCollapse={onCollapse}>
+                        {variableItemTypes.map(v => (
+                          <Dropdown.Item
+                            key={v.type}
+                            id={v.type}
+                            testID={`variable-type-dropdown-${v.type}`}
+                            value={v.type}
+                            onClick={this.handleChangeType}
+                            selected={v.type === variableType}
+                          >
+                            {v.label}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    )}
+                  />
+                </Form.Element>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+              <Grid.Column>
+                <VariableArgumentsEditor
+                  onChange={this.handleChangeArgs}
+                  onSelectMapDefault={this.handleSelectMapDefault}
+                  selected={selected}
+                  args={this.activeVariable}
                 />
-              </Form.Element>
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
-              <VariableArgumentsEditor
-                onChange={this.handleChangeArgs}
-                onSelectMapDefault={this.handleSelectMapDefault}
-                selected={selected}
-                args={this.activeVariable}
-              />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
-              <Form.Footer>
-                <Button text="Cancel" onClick={onHideOverlay} />
-                <Button
-                  text={submitText}
-                  type={ButtonType.Submit}
-                  testID="variable-form-save"
-                  color={ComponentColor.Success}
-                  status={
-                    this.isFormValid
-                      ? ComponentStatus.Default
-                      : ComponentStatus.Disabled
-                  }
-                />
-              </Form.Footer>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Overlay.Body>
+        <Overlay.Footer>
+          <Button
+            text="Cancel"
+            color={ComponentColor.Tertiary}
+            onClick={onHideOverlay}
+          />
+          <Button
+            text={submitText}
+            type={ButtonType.Submit}
+            testID="variable-form-save"
+            color={ComponentColor.Success}
+            status={
+              this.isFormValid
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
+          />
+        </Overlay.Footer>
       </Form>
     )
   }

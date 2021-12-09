@@ -1,9 +1,19 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {createRef, PureComponent, RefObject} from 'react'
 
 // Components
-import {Context} from 'src/clockface'
-import {IconFont, ComponentColor} from '@influxdata/clockface'
+import {ButtonShape} from 'src/clockface'
+import {
+  IconFont,
+  ComponentColor,
+  ConfirmationButton,
+  ComponentSize,
+  FlexBox,
+  SquareButton,
+  Popover,
+  Appearance,
+  List,
+} from '@influxdata/clockface'
 
 // Types
 import {Variable} from 'src/types'
@@ -17,31 +27,64 @@ interface Props {
 
 export default class VariableContextMenu extends PureComponent<Props> {
   public render() {
-    const {variable, onExport, onRename, onDelete} = this.props
+    const {variable} = this.props
 
+    const settingsRef: RefObject<HTMLButtonElement> = createRef()
     return (
-      <Context>
-        <Context.Menu icon={IconFont.CogThick}>
-          <Context.Item label="Export" action={onExport} />
-          <Context.Item
-            label="Rename"
-            action={onRename}
-            testID="context-rename-variable"
-          />
-        </Context.Menu>
-        <Context.Menu
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-          testID="context-delete-menu"
-        >
-          <Context.Item
-            label="Delete"
-            action={onDelete}
-            value={variable}
-            testID={`context-delete-variable ${variable.name}`}
-          />
-        </Context.Menu>
-      </Context>
+      <FlexBox margin={ComponentSize.ExtraSmall}>
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, delete this variable"
+          onConfirm={this.deleteVariable}
+          confirmationButtonText="Confirm"
+          testID={`context-delete-variable ${variable.name}`}
+        />
+        <SquareButton
+          ref={settingsRef}
+          size={ComponentSize.ExtraSmall}
+          icon={IconFont.CogSolid_New}
+          color={ComponentColor.Colorless}
+          testID="context-menu-variable"
+        />
+        <Popover
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          style={{minWidth: '112px'}}
+          contents={this.getPopoverMenuItems}
+          triggerRef={settingsRef}
+        />
+      </FlexBox>
     )
+  }
+
+  private getPopoverMenuItems = () => {
+    const {onExport, onRename} = this.props
+    return (
+      <List>
+        <List.Item
+          onClick={onExport}
+          size={ComponentSize.Small}
+          style={{fontWeight: 500}}
+          testID="context-export-variable"
+        >
+          Export
+        </List.Item>
+        <List.Item
+          onClick={onRename}
+          size={ComponentSize.Small}
+          style={{fontWeight: 500}}
+          testID="context-rename-variable"
+        >
+          Rename
+        </List.Item>
+      </List>
+    )
+  }
+  private deleteVariable = () => {
+    const {onDelete, variable} = this.props
+    onDelete(variable)
   }
 }

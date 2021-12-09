@@ -1,17 +1,15 @@
-// Libraries
-import {isNull, isObject} from 'lodash'
-
 // Utils
 import {validateAndTypeRange} from 'src/dashboards/utils/time'
 
 // Types
 import {RangeState} from 'src/dashboards/reducers/ranges'
 
-const isCorrectType = (bound: any) => typeof bound === 'string' || isNull(bound)
+const isCorrectType = (bound: any) =>
+  typeof bound === 'string' || bound === null
 
 export const getLocalStateRangesAsArray = (ranges: any[]): RangeState => {
   const normalizedRanges = ranges.filter(r => {
-    if (!isObject(r)) {
+    if (typeof r !== 'object') {
       return false
     }
 
@@ -61,7 +59,7 @@ const normalizeRangesState = (ranges: RangeState): RangeState => {
 
   for (const key in ranges) {
     if (
-      isObject(ranges[key]) &&
+      typeof ranges[key] === 'object' &&
       ranges[key].hasOwnProperty('upper') &&
       ranges[key].hasOwnProperty('lower') &&
       isCorrectType(ranges[key].lower) &&
@@ -80,7 +78,7 @@ const normalizeRangesState = (ranges: RangeState): RangeState => {
 export const getLocalStateRanges = (ranges: RangeState | any[]) => {
   if (Array.isArray(ranges)) {
     return getLocalStateRangesAsArray(ranges)
-  } else if (isObject(ranges)) {
+  } else if (typeof ranges === 'object') {
     return normalizeRangesState(ranges)
   } else {
     return {}

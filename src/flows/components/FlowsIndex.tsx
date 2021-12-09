@@ -19,6 +19,7 @@ import {Flow} from 'src/types/flows'
 import {ResourceType} from 'src/types'
 
 import 'src/flows/components/controlSearchBar.scss'
+import 'src/flows/style.scss'
 import PresetFlowsButtons from './PresetFlowsButtons'
 
 const FlowsIndex = () => {
@@ -136,12 +137,18 @@ const FlowsIndex = () => {
                   onSelect={setSort}
                 />
               </Page.ControlBarLeft>
+              <Page.ControlBarRight />
             </Page.ControlBar>
           </>
         )}
       </PageHeader>
-      <DapperScrollbars onScroll={scrollHandler} className="flows-index--main">
-        <Page.Contents fullWidth={false} id="fadebox" ref={fadingBoxRef}>
+      <DapperScrollbars onScroll={scrollHandler}>
+        <Page.Contents
+          fullWidth={false}
+          id="fadebox"
+          ref={fadingBoxRef}
+          className="flows-index--contents"
+        >
           <PresetFlows />
           <Page.ControlBar
             className="flows-index--control-bar"
@@ -161,6 +168,7 @@ const FlowsIndex = () => {
                 onSelect={setSort}
               />
             </Page.ControlBarLeft>
+            <Page.ControlBarRight />
           </Page.ControlBar>
         </Page.Contents>
 

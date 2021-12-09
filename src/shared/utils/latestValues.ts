@@ -1,8 +1,8 @@
-import {range, flatMap, isFinite} from 'lodash'
+import {range, flatMap} from 'lodash'
 import {Table, NumericColumnData} from '@influxdata/giraffe'
 
 /*
-  Return a list of the maximum elements in `xs`, where the magnitude of each
+Return a list of the maximum elements in `xs`, where the magnitude of each
   element is computed using the passed function `d`.
 */
 const maxesBy = <X>(xs: X[], d: (x: X) => number): X[] => {
@@ -102,7 +102,7 @@ export const latestValues = (table: Table): number[] => {
     if (
       time &&
       valueColsData.some(colData => {
-        return isFinite(colData[i]) || typeof colData[i] === 'string'
+        return Number.isFinite(colData[i]) || typeof colData[i] === 'string'
       })
     ) {
       return time
@@ -119,7 +119,7 @@ export const latestValues = (table: Table): number[] => {
   )
 
   const definedLatestValues = latestValues.filter(
-    x => isFinite(x) || typeof x === 'string'
+    x => Number.isFinite(x) || typeof x === 'string'
   )
 
   return definedLatestValues

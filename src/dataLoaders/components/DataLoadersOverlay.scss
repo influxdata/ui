@@ -37,7 +37,7 @@
 }
 
 .data-loading--column-panel {
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   border-radius: 0 $radius $radius 0;
   flex: 1 0 auto;
   padding: $ix-marg-d;
@@ -93,8 +93,8 @@ $line-protocol--content-height: 206px;
 }
 
 .line-protocol--spinner {
-  height: $line-protocol--content-height + $ix-marg-b + $form-sm-height;
-  border: $ix-border solid $g3-castle;
+  height: $line-protocol--content-height + $ix-marg-f + $form-sm-height;
+  border: $ix-border solid $cf-grey-15;
   border-radius: $ix-radius;
   display: flex;
   align-items: center;
@@ -104,6 +104,6 @@ $line-protocol--content-height: 206px;
 
 .cf-panel {
   .csv-body--padding {
-    padding: $cf-marg-d $cf-marg-c;
+    padding: $cf-space-l $cf-space-s;
   }
 }

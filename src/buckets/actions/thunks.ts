@@ -54,21 +54,29 @@ import {
   removeBucketLabelFailed,
   measurementSchemaAdditionSuccessful,
   measurementSchemaAdditionFailed,
+  measurementSchemaUpdateFailed,
+  measurementSchemaUpdateSuccessful,
 } from 'src/shared/copy/notifications'
 
 type Action = BucketAction | NotifyAction
 
 let getBucketsSchemaMeasurements = null,
   MeasurementSchemaCreateRequest = null,
-  postBucketsSchemaMeasurement = null
+  MeasurementSchemaUpdateRequest = null,
+  postBucketsSchemaMeasurement = null,
+  patchBucketsSchemaMeasurement = null
 
 if (CLOUD) {
   getBucketsSchemaMeasurements = require('src/client/generatedRoutes')
     .getBucketsSchemaMeasurements
   MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
     .MeasurementSchemaCreateRequest
+  MeasurementSchemaUpdateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaUpdateRequest
   postBucketsSchemaMeasurement = require('src/client/generatedRoutes')
     .postBucketsSchemaMeasurement
+  patchBucketsSchemaMeasurement = require('src/client/generatedRoutes')
+    .patchBucketsSchemaMeasurement
 }
 
 export const getBuckets = () => async (
@@ -82,16 +90,17 @@ export const getBuckets = () => async (
     }
     const org = getOrg(state)
 
-    let buckets
+    let bucketsResponse
     if (isFlagEnabled('fetchAllBuckets')) {
       // a limit of -1 means fetch all buckets for this org
-      buckets = await fetchAllBuckets(org.id, -1)
+      bucketsResponse = await fetchAllBuckets(org.id, -1)
     } else {
-      buckets = await fetchAllBuckets(org.id)
+      bucketsResponse = await fetchAllBuckets(org.id)
     }
-    dispatch(setBuckets(RemoteDataState.Done, buckets))
+    dispatch(
+      setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)
+    )
   } catch (error) {
-    console.error(error)
     dispatch(setBuckets(RemoteDataState.Error))
     dispatch(notify(getBucketsFailed()))
   }
@@ -373,6 +382,33 @@ export const addSchemaToBucket = (
     bucketName,
     dispatch
   )
+}
+
+export const updateMeasurementSchema = (
+  bucketID: string,
+  measurementID: string,
+  measurementName: string,
+  schema: typeof MeasurementSchemaUpdateRequest,
+  orgID: string
+) => async (dispatch: Dispatch<Action>) => {
+  const params = {
+    bucketID,
+    measurementID,
+    data: schema,
+    query: {orgID},
+  }
+
+  try {
+    const resp = await patchBucketsSchemaMeasurement(params)
+    if (resp.status !== 200) {
+      const msg = resp?.data?.message
+      throw new Error(msg)
+    }
+    dispatch(notify(measurementSchemaUpdateSuccessful(measurementName)))
+  } catch (error) {
+    const message = getErrorMessage(error)
+    dispatch(notify(measurementSchemaUpdateFailed(measurementName, message)))
+  }
 }
 
 const denormalizeBucket = (state: AppState, bucket: OwnBucket): GenBucket => {

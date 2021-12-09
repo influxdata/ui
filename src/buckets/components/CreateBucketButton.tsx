@@ -42,7 +42,7 @@ const CreateBucketButton: FC<ReduxProps> = ({
 
   return (
     <Button
-      icon={IconFont.Plus}
+      icon={IconFont.Plus_New}
       color={ComponentColor.Primary}
       text="Create Bucket"
       titleText="Click to create a bucket"

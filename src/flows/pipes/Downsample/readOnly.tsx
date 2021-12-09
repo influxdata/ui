@@ -33,7 +33,7 @@ const Downsample: FC<PipeProp> = ({Context}) => {
               <Dropdown.Button
                 onClick={onClick}
                 active={active}
-                icon={IconFont.BarChart}
+                icon={IconFont.BarChart_New}
                 color={ComponentColor.Secondary}
                 status={ComponentStatus.Disabled}
               >

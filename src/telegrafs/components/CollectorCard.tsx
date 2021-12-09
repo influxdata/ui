@@ -1,11 +1,21 @@
 // Libraries
-import React, {PureComponent, MouseEvent} from 'react'
+import React, {PureComponent, MouseEvent, RefObject, createRef} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps, Link} from 'react-router-dom'
 
 // Components
-import {Context} from 'src/clockface'
-import {ResourceCard, IconFont} from '@influxdata/clockface'
+import {
+  Appearance,
+  ButtonShape,
+  ComponentSize,
+  ConfirmationButton,
+  FlexBox,
+  IconFont,
+  List,
+  Popover,
+  SquareButton,
+  ResourceCard,
+} from '@influxdata/clockface'
 import {ComponentColor} from '@influxdata/clockface'
 import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 
@@ -82,31 +92,46 @@ class CollectorRow extends PureComponent<
   }
 
   private get contextMenu(): JSX.Element {
+    const settingsRef: RefObject<HTMLButtonElement> = createRef()
+
     return (
-      <Context>
-        <Context.Menu
-          icon={IconFont.Duplicate}
-          color={ComponentColor.Secondary}
-          testID="telegraf-clone-menu"
-        >
-          <Context.Item
-            label="Clone"
-            action={this.cloneTelegraf}
-            testID="telegraf-clone-button"
-          />
-        </Context.Menu>
-        <Context.Menu
-          testID="telegraf-delete-menu"
-          icon={IconFont.Trash}
-          color={ComponentColor.Danger}
-        >
-          <Context.Item
-            testID="telegraf-delete-button"
-            label="Delete"
-            action={this.handleDeleteConfig}
-          />
-        </Context.Menu>
-      </Context>
+      <FlexBox margin={ComponentSize.ExtraSmall}>
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, delete this configuration"
+          onConfirm={this.handleDeleteConfig}
+          confirmationButtonText="Confirm"
+          testID="context-delete-menu"
+        />
+        <SquareButton
+          ref={settingsRef}
+          size={ComponentSize.ExtraSmall}
+          icon={IconFont.CogSolid_New}
+          color={ComponentColor.Colorless}
+          testID="context-menu-telegraf"
+        />
+        <Popover
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          style={{minWidth: '80px'}}
+          contents={() => (
+            <List>
+              <List.Item
+                onClick={this.cloneTelegraf}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-clone-telegraf"
+              >
+                Clone
+              </List.Item>
+            </List>
+          )}
+          triggerRef={settingsRef}
+        />
+      </FlexBox>
     )
   }
 

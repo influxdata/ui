@@ -1,6 +1,7 @@
 // Libraries
-import React, {FC, useCallback, useEffect, useState} from 'react'
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {useSelector} from 'react-redux'
 
 // Utils
 import {
@@ -12,6 +13,7 @@ import {
 } from 'src/client/unityRoutes'
 
 // Constants
+import {PAYG_CREDIT_DAYS} from 'src/shared/constants'
 import {DEFAULT_USAGE_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
 // Types
@@ -20,9 +22,20 @@ import {
   SelectableDurationTimeRange,
   UsageVector,
 } from 'src/types'
+import {getMe} from 'src/me/selectors'
 
 export type Props = {
   children: JSX.Element
+}
+
+interface Usage {
+  amount: number
+  status: RemoteDataState
+}
+
+const DEFAULT_USAGE: Usage = {
+  amount: 0,
+  status: RemoteDataState.NotStarted,
 }
 
 export interface UsageContextType {
@@ -38,6 +51,9 @@ export interface UsageContextType {
   usageStats: FromFluxResult
   usageStatsStatus: RemoteDataState
   usageVectors: UsageVector[]
+  creditUsage: Usage
+  creditDaysUsed: number
+  paygCreditEnabled: boolean
 }
 
 export const DEFAULT_CONTEXT: UsageContextType = {
@@ -53,6 +69,9 @@ export const DEFAULT_CONTEXT: UsageContextType = {
   usageStats: null,
   usageStatsStatus: RemoteDataState.NotStarted,
   usageVectors: [],
+  creditUsage: DEFAULT_USAGE,
+  creditDaysUsed: 0,
+  paygCreditEnabled: false,
 }
 
 export const UsageContext = React.createContext<UsageContextType>(
@@ -75,9 +94,21 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   const [rateLimitsStatus, setRateLimitsStatus] = useState(
     RemoteDataState.NotStarted
   )
+
+  const [creditUsage, setCreditUsage] = useState<Usage>(DEFAULT_USAGE)
   const [timeRange, setTimeRange] = useState<SelectableDurationTimeRange>(
     DEFAULT_USAGE_TIME_RANGE
   )
+  const {quartzMe} = useSelector(getMe)
+  const creditDaysUsed = useMemo(() => {
+    const startDate = new Date(quartzMe?.paygCreditStartDate)
+    const current = new Date()
+    const diffTime = Math.abs(current.getTime() - startDate.getTime())
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24))
+  }, [quartzMe?.paygCreditStartDate])
+
+  const paygCreditEnabled =
+    creditDaysUsed >= 0 && creditDaysUsed < PAYG_CREDIT_DAYS
 
   const handleSetTimeRange = useCallback(
     (range: SelectableDurationTimeRange) => {
@@ -131,6 +162,76 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
   useEffect(() => {
     handleGetBillingDate()
   }, [handleGetBillingDate])
+
+  const getComputedUsage = (vector_name: string, csvData: string) => {
+    // Calculation Formula
+    // Credit usage: $250 - (
+    //   (sum of 30-day writes * $0.002) +
+    //   (sum of 30-day query count * $0.01 / 100) +
+    //   (sum of 30-day query storage * $0.02) +
+    //   (sum of 30-day data out * $0.09)
+    //  )
+    const vectors = {
+      storage_gb: v => v * 0.02,
+      writes_mb: v => v * 0.002,
+      reads_gb: v => v * 0.09,
+      query_count: v => (v * 0.01) / 100,
+    }
+
+    const values = fromFlux(csvData).table.getColumn(vector_name) as Array<any>
+    if (!values) {
+      return 0
+    }
+
+    const tot = values.reduce((a, b) => a + b, 0)
+    return vectors[vector_name](tot)
+  }
+
+  const handleGetCreditUsage = useCallback(() => {
+    try {
+      setCreditUsage(prev => ({
+        ...prev,
+        status: RemoteDataState.Loading,
+      }))
+      const vectors = ['storage_gb', 'writes_mb', 'reads_gb', 'query_count']
+      const promises = []
+
+      vectors.forEach(vector_name => {
+        promises.push(
+          getUsage({vector_name, query: {range: `${PAYG_CREDIT_DAYS}d`}}).then(
+            resp => {
+              if (resp.status !== 200) {
+                throw new Error(resp.data.message)
+              }
+
+              return new Promise(resolve =>
+                resolve(getComputedUsage(vector_name, resp.data))
+              )
+            }
+          )
+        )
+      })
+
+      Promise.all(promises).then(result => {
+        const amount: number = result
+          .reduce((a: number, b) => a + parseFloat(b), 0)
+          .toFixed(2)
+        setCreditUsage({
+          amount,
+          status: RemoteDataState.Done,
+        })
+      })
+    } catch (error) {
+      setCreditUsage(prev => ({
+        ...prev,
+        status: RemoteDataState.Done,
+      }))
+    }
+  }, [])
+
+  useEffect(() => {
+    handleGetCreditUsage()
+  }, [creditUsage?.amount, handleGetCreditUsage])
 
   const handleGetBillingStats = useCallback(async () => {
     try {
@@ -234,6 +335,9 @@ export const UsageProvider: FC<Props> = React.memo(({children}) => {
         usageStats,
         usageStatsStatus,
         usageVectors,
+        creditUsage,
+        creditDaysUsed,
+        paygCreditEnabled,
       }}
     >
       {children}

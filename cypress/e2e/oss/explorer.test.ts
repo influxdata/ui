@@ -1,8 +1,8 @@
-import {lines, makeGraphSnapshot} from '../../support/commands'
+import {points, makeGraphSnapshot} from '../../support/commands'
 
 describe('refresh', () => {
   beforeEach(() => {
-    cy.writeData(lines(10))
+    cy.writeData(points(10))
 
     cy.getByTestID(`selector-list m`).click()
     cy.getByTestID('time-machine-submit-button').click()

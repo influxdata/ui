@@ -37,6 +37,7 @@ export const AnnotationMessageInput: FC<Props> = (props: Props) => {
       label={`Message (${characterCount} / ${characterLimit})`}
       required={true}
       errorMessage={validationMessage}
+      testID="annotation-message--form"
     >
       <TextArea
         name="message"

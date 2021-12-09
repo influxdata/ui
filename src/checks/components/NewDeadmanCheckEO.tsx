@@ -39,7 +39,9 @@ const NewCheckOverlay: FunctionComponent = () => {
         view,
       })
     )
-    return () => dispatch(resetAlertBuilder)
+    return () => {
+      dispatch(resetAlertBuilder)
+    }
   }, [dispatch])
 
   return (

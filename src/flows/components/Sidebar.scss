@@ -3,13 +3,11 @@
 .flow-sidebar {
   flex: 0 0 300px;
   width: 300px;
-  padding: 0 0 0 $cf-marg-b;
+  padding: 0 $cf-space-2xs;
 
   .sidebar--item {
     width: 137px;
     height: 137px;
-    margin-bottom: $cf-marg-b;
-    margin-right: $cf-marg-b;
 
     .cf-selectable-card--body {
       overflow: hidden;
@@ -36,7 +34,7 @@
 }
 
 .flow-sidebar--submenu {
-  padding-top: $cf-marg-b;
+  padding-top: $cf-space-2xs;
   height: calc(
     100% - 30px
   ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
@@ -52,7 +50,11 @@
   right: 0;
   z-index: 9999;
   padding: 10px 0px;
-  background: $g5-pepper;
+}
+.flow-sidebar--dropdownmenu-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 $cf-space-2xs;
 }
 
 .flow-sidebar--buttons {

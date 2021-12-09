@@ -10,8 +10,8 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
   height: 100%;
 
   > * {
-    margin-left: $selector-list--margin / 2;
-    margin-right: $selector-list--margin / 2;
+    margin-left: $selector-list--margin * 0.5;
+    margin-right: $selector-list--margin * 0.5;
 
     &:first-child {
       margin-left: 0;
@@ -25,7 +25,7 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
 
 .selector-list {
   border-radius: $radius;
-  background-color: $g4-onyx;
+  background-color: $cf-grey-15;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -35,21 +35,18 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
 }
 
 .selector-list--header {
-  flex: 0 0 $selector-list--header-height;
-  background-color: $g5-pepper;
+  background-color: $cf-grey-25;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .selector-list--title {
   display: inline-block;
-  margin: 0 $selector-list--header-margin;
   font-weight: 900;
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
 }
 
 .selector-list--delete {
@@ -66,7 +63,7 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
     width: 14px;
     height: 2px;
     border-radius: 1px;
-    background-color: $g9-mountain;
+    background-color: $cf-grey-45;
     transition: background-color 0.25s ease;
   }
 
@@ -88,10 +85,10 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
 }
 
 .selector-list--hamburger {
-  flex: 0 0 ($selector-list--header-height / 2);
+  flex: 0 0 ($selector-list--header-height * 0.5);
   height: $ix-border;
-  border-radius: $ix-border / 2;
-  background-color: $g7-graphite;
+  border-radius: $ix-border * 0.5;
+  background-color: $cf-grey-35;
   margin-left: $selector-list--header-margin;
   position: relative;
   transition: background-color 0.25s ease;
@@ -103,8 +100,8 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: $g7-graphite;
-    border-radius: $ix-border / 2;
+    background-color: $cf-grey-35;
+    border-radius: $ix-border * 0.5;
     transition: background-color 0.25s ease;
   }
 
@@ -131,18 +128,18 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
   &:hover {
     cursor: grab;
     .selector-list--title {
-      color: $g15-platinum;
+      color: $cf-grey-85;
     }
     .selector-list--hamburger,
     .selector-list--hamburger:before,
     .selector-list--hamburger:after {
-      background-color: $g15-platinum;
+      background-color: $cf-grey-85;
     }
   }
 }
 
 .selector-list--menu {
-  border-bottom: $ix-border solid $g5-pepper;
+  border-bottom: $ix-border solid $cf-grey-25;
   padding: $ix-marg-b;
 }
 
@@ -158,7 +155,7 @@ $selector-list--header-margin: $ix-marg-b + $ix-border;
   align-items: center;
   justify-content: center;
   align-content: center;
-  color: $g9-mountain;
+  color: $cf-grey-45;
 
   > * {
     margin: $ix-marg-a 0;

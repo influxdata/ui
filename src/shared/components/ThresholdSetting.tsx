@@ -102,7 +102,7 @@ const ThresholdSetting: FunctionComponent<Props> = ({
         />
         {isRemoveable && (
           <SquareButton
-            icon={IconFont.Remove}
+            icon={IconFont.Remove_New}
             onClick={onRemove}
             style={{flex: '0 0 30px'}}
           />

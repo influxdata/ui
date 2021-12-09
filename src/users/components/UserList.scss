@@ -1,6 +1,5 @@
 .user-list-invite--form-panel {
-  border: $cf-border solid $c-sapphire;
-  margin-bottom: $cf-marg-d + $cf-marg-a;
+  margin-bottom: $cf-space-l + $cf-space-3xs;
 
   .user-list-invite--form-heading {
     color: $c-neutrino;
@@ -14,7 +13,7 @@
   align-items: flex-end;
 
   .element {
-    margin-right: $cf-marg-b;
+    margin-right: $cf-space-2xs;
     flex-basis: 150px;
 
     label {

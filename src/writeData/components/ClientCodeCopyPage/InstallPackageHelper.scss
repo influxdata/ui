@@ -1,7 +1,7 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .install-package--container {
-  margin: 20px 0px;
+  margin: $cf-space-l 0px;
 }
 
 .install-package--details {
@@ -13,9 +13,9 @@
 .install-package--details-thumbnail {
   order: 1;
   width: 200px;
-  margin-bottom: $cf-marg-c;
-  padding: $cf-marg-d;
-  background-color: $g3-castle;
+  margin-bottom: $cf-space-s;
+  padding: $cf-space-l;
+  background-color: $cf-grey-15;
   border-radius: $cf-radius;
 
   img {
@@ -31,15 +31,15 @@
 
 .install-package--details-widget {
   width: 100%;
-  background-color: $g3-castle;
-  padding: $cf-marg-c;
-  margin-top: $cf-marg-c;
+  background-color: $cf-grey-15;
+  padding: $cf-space-s;
+  margin-top: $cf-space-s;
   border-radius: $cf-radius;
 }
 
 .install-package--details-widget-title {
-  margin-bottom: $cf-marg-b;
-  padding-left: $cf-marg-b + $cf-marg-a;
+  margin-bottom: $cf-space-2xs;
+  padding-left: $cf-space-2xs + $cf-space-3xs;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -54,7 +54,7 @@
 }
 
 .markdown-format .code-snippet--text {
-  background-color: $g1-raven;
+  background-color: $cf-grey-5;
 }
 
 @media screen and (min-width: $cf-grid--breakpoint-md) {
@@ -66,7 +66,7 @@
   .install-package--details-thumbnail {
     flex: 1 0 200px;
     width: auto;
-    margin-right: $cf-marg-e;
+    margin-right: $cf-space-2xl;
     margin-bottom: 0;
   }
 
@@ -78,7 +78,7 @@
   .install-package--details-sidebar {
     flex: 1 0 200px;
     width: auto;
-    margin-left: $cf-marg-c;
+    margin-left: $cf-space-s;
     margin-top: 0;
   }
 }
@@ -108,7 +108,7 @@
 .install-package-helper--caret {
   transition: transform 0.25s ease;
   transform: rotate(0deg);
-  margin-right: $cf-marg-b;
+  margin-right: $cf-space-2xs;
 }
 
 .install-package-helper--heading__expanded .install-package-helper--caret {

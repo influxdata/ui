@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, ChangeEvent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import classnames from 'classnames'
 
@@ -260,18 +260,24 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     const widthStyle = this.getWidth(placeHolderText)
 
+    const selectAllTextInInput = (event?: ChangeEvent<HTMLInputElement>) => {
+      if (event) {
+        event.target.select()
+      }
+    }
+
     const getInnerComponent = () => {
       if (status === RemoteDataState.Loading || this.noValuesPresent()) {
         return placeHolderText
       } else {
         return (
           <Input
-            style={widthStyle}
             placeholder={placeHolderText}
             onChange={this.filterVals}
             value={typedValue}
             onKeyDown={this.maybeSelectNextItem}
             testID={`variable-dropdown-input-typeAhead--${name}`}
+            onFocus={selectAllTextInInput}
           />
         )
       }
@@ -279,11 +285,12 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     return (
       <Dropdown
-        style={{width: '140px'}}
+        style={{width: '192px'}}
         className="variable-dropdown--dropdown"
         testID={this.props.testID || `variable-dropdown--${name}`}
         onClickAway={this.onClickAwayHere}
         menuOpen={menuOpen}
+        disableAutoFocus
         button={(active, onClick) => (
           <Dropdown.Button
             active={active}
@@ -335,7 +342,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       }, '').length * 10
     )
 
-    const widthLength = Math.max(140, longestItemWidth)
+    const widthLength = Math.max(192, longestItemWidth)
     const widthStyle = {width: `${widthLength}px`}
     return widthStyle
   }

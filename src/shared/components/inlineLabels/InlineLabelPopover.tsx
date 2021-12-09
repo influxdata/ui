@@ -5,7 +5,6 @@ import React, {
   KeyboardEvent,
   RefObject,
 } from 'react'
-import {findIndex} from 'lodash'
 
 // Components
 import {Input, ButtonBaseRef} from '@influxdata/clockface'
@@ -77,7 +76,7 @@ export default class InlineLabelPopover extends PureComponent<Props> {
           <>
             <h5 className="inline-labels--popover-heading">Add Labels</h5>
             <Input
-              icon={IconFont.Search}
+              icon={IconFont.Search_New}
               placeholder="Filter labels..."
               value={searchTerm}
               onKeyDown={this.handleKeyDown}
@@ -144,8 +143,7 @@ export default class InlineLabelPopover extends PureComponent<Props> {
       return null
     }
 
-    const selectedItemIndex = findIndex(
-      filteredLabels,
+    const selectedItemIndex = filteredLabels.findIndex(
       label => label.id === selectedItemID
     )
 

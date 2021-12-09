@@ -9,9 +9,9 @@ import {
   ComponentColor,
   ComponentStatus,
   Form,
-  Grid,
   IconFont,
   Input,
+  Overlay,
   RemoteDataState,
 } from '@influxdata/clockface'
 import {Secret} from 'src/types'
@@ -87,77 +87,64 @@ const CreateSecretForm: FC<OwnProps> = ({onDismiss, onSubmit}) => {
     'Make sure you know your secret value! You will be able to reference the secret in queries by key but you will not be able to see the value again.'
 
   return (
-    <Grid>
-      <Grid.Row>
-        <Grid.Column>
-          <Alert
-            className="alert"
-            icon={IconFont.AlertTriangle}
-            color={ComponentColor.Warning}
-          >
-            {warningText}
-          </Alert>
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Column>
-          <Form.ValidationElement
-            label="Key"
-            required={true}
-            validationFunc={handleKeyValidation}
-            value={newSecret.id}
-          >
-            {status => (
-              <Input
-                autoFocus={true}
-                testID="input--secret-name"
-                name="id"
-                titleText="This is how you will reference your secret in Flux"
-                value={newSecret.id}
-                status={status}
-                onChange={handleChangeInput}
-              />
-            )}
-          </Form.ValidationElement>
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Column>
-          <Form.Label label="Value" />
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Column>
-          <Input
-            placeholder="your_secret_value"
-            onChange={handleChangeInput}
-            required={true}
-            name="value"
-            testID="input--secret-value"
-            titleText="This is the value that will be injected by the server when your secret is in use"
-            value={newSecret.value}
-          />
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Column>
-          <Form.Footer>
-            <Button text="Cancel" onClick={handleDismiss} />
-            <Button
-              text="Add Secret"
-              testID="variable-form-save"
-              onClick={handleSubmit}
-              color={ComponentColor.Success}
-              status={
-                isFormValid()
-                  ? ComponentStatus.Default
-                  : ComponentStatus.Disabled
-              }
+    <>
+      <Overlay.Body>
+        <Alert
+          className="alert"
+          icon={IconFont.AlertTriangle}
+          color={ComponentColor.Warning}
+        >
+          {warningText}
+        </Alert>
+
+        <Form.ValidationElement
+          label="Key"
+          required={true}
+          validationFunc={handleKeyValidation}
+          value={newSecret.id}
+        >
+          {status => (
+            <Input
+              autoFocus={true}
+              testID="input--secret-name"
+              name="id"
+              titleText="This is how you will reference your secret in Flux"
+              value={newSecret.id}
+              status={status}
+              onChange={handleChangeInput}
             />
-          </Form.Footer>
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
+          )}
+        </Form.ValidationElement>
+
+        <Form.Label label="Value" />
+
+        <Input
+          placeholder="your_secret_value"
+          onChange={handleChangeInput}
+          required={true}
+          name="value"
+          testID="input--secret-value"
+          titleText="This is the value that will be injected by the server when your secret is in use"
+          value={newSecret.value}
+        />
+      </Overlay.Body>
+      <Overlay.Footer>
+        <Button
+          text="Cancel"
+          color={ComponentColor.Tertiary}
+          onClick={handleDismiss}
+        />
+        <Button
+          text="Add Secret"
+          testID="variable-form-save"
+          onClick={handleSubmit}
+          color={ComponentColor.Success}
+          status={
+            isFormValid() ? ComponentStatus.Default : ComponentStatus.Disabled
+          }
+        />
+      </Overlay.Footer>
+    </>
   )
 }
 

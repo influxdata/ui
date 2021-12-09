@@ -12,7 +12,8 @@ $sidebar-width-md: 240px;
   transform: translate3d(0, 0, 0);
   flex: 0 1 auto;
   border-radius: $radius 0 0 $radius;
-  background-color: $g2-kevlar;
+  background-color: $cf-grey-5;
+  border: $cf-border solid $cf-grey-15;
   max-width: 250px;
 
   &.show {
@@ -37,7 +38,7 @@ $sidebar-width-md: 240px;
 .side-bar--title {
   text-align: left;
   margin: 0 $ix-marg-c $ix-marg-c $ix-marg-c;
-  color: $g13-mist;
+  color: $cf-grey-75;
   font-size: $ix-text-base-1;
 }
 
@@ -59,31 +60,31 @@ $sidebar-width-md: 240px;
   font-size: 15px;
   font-weight: 600;
   margin-left: $ix-marg-c;
-  color: $g10-wolf;
+  color: $cf-grey-55;
   background-color: transparent;
   white-space: nowrap;
 
   &:hover {
-    color: $g15-platinum;
+    color: $cf-grey-85;
     cursor: pointer;
-    background-color: rgba($g3-castle, 0.6);
+    background-color: rgba($cf-grey-25, 0.6);
   }
 
   &.active {
-    color: $g15-platinum;
-    background-color: $g3-castle;
+    color: $cf-grey-85;
+    background-color: $cf-grey-25;
   }
 }
 
 .side-bar--icon {
   width: 16px;
-  color: $g7-graphite;
+  color: $cf-grey-35;
   display: inline-block;
   font-size: 16px;
   margin: 0 13px;
 
   .side-bar--tab:hover & {
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
 
   .side-bar--tab.active & {

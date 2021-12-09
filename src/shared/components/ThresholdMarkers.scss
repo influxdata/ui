@@ -71,8 +71,8 @@ $threshold-marker--caret-width: 12px;
 
   &:before {
     content: '';
-    border-top: ($threshold-marker--handle-height / 2) solid transparent;
-    border-bottom: ($threshold-marker--handle-height / 2) solid transparent;
+    border-top: ($threshold-marker--handle-height * 0.5) solid transparent;
+    border-bottom: ($threshold-marker--handle-height * 0.5) solid transparent;
     display: block;
     left: 0 - $threshold-marker--caret-width;
     position: absolute;

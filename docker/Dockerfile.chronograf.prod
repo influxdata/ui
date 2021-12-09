@@ -1,5 +1,5 @@
-# from node latest alpine 3.12
-FROM node:alpine3.12 AS repo
+# from node lts alpine 3.12
+FROM node:lts-alpine3.12 AS repo
 
 # env vars to configure the system
 
@@ -36,6 +36,8 @@ ARG RUDDERSTACK_WRITE_KEY
 ARG GLOBALSEARCH_API_KEY
 # Global Search App ID
 ARG GLOBALSEARCH_APP_ID
+# Google Experiment ID for PAYG $250 Credit
+ARG PAYG_CREDIT_EXPERIMENT_ID
 
 COPY . /repo/ui
 WORKDIR /repo/ui

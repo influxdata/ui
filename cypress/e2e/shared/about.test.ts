@@ -1,16 +1,15 @@
 import {Organization} from '../../../src/types'
 
 describe('About Page', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.visit(`/orgs/${id}/about`)
-          cy.getByTestID('about-page--header').should('be.visible')
-        })
-      })
-    )
-  )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+
+    cy.get('@org').then((org: Organization) => {
+      cy.visit(`/orgs/${org.id}/about`)
+      cy.getByTestID('about-page--header').should('be.visible')
+    })
+  })
 
   it('should display everything correctly', () => {
     cy.getByTestID('common-ids--panel').within(() => {
@@ -51,6 +50,6 @@ describe('About Page', () => {
       .contains(newOrgName)
 
     cy.getByTestID('org-profile--name').contains(newOrgName)
-    cy.getByTestID('danger-zone--org-name').contains(newOrgName)
+    cy.getByTestID('danger-zone--org-name').should('have.value', newOrgName)
   })
 })

@@ -5,7 +5,6 @@ import {useDispatch, useSelector} from 'react-redux'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Clockface
 import {
-  Dropdown,
   Button,
   Overlay,
   ComponentColor,
@@ -13,6 +12,8 @@ import {
   SlideToggle,
   Form,
   ComponentStatus,
+  TypeAheadDropDown,
+  SelectableItem,
 } from '@influxdata/clockface'
 
 // Actions
@@ -136,45 +137,34 @@ const CellCloneOverlay: FC = () => {
 
   const selectedDashboard = otherDashboards.find(
     d => d.id === destinationDashboardID
-  )?.name
+  )
+
+  const dashItems = otherDashboards as SelectableItem[]
+
+  const onDashSelection = item => {
+    setDestinationDashboardID(item?.id)
+  }
+
+  const typeAheadDropdown = (
+    <TypeAheadDropDown
+      items={dashItems}
+      onSelect={onDashSelection}
+      buttonTestId="clone-to-other-dashboard"
+      menuTestID="copy-dashboard-cell--dropdown-menu"
+      itemTestIdPrefix="other-dashboard"
+      sortNames={true}
+      selectedOption={selectedDashboard as SelectableItem}
+      placeholderText="Choose a Destination Dashboard"
+      defaultNameText="Name this Dashboard"
+    />
+  )
 
   return (
     <Overlay.Container maxWidth={400}>
       <Overlay.Header title="Move Cell" onDismiss={onClose} />
       <Overlay.Body className="dashboard-clonecell--overlayopen">
         <Form.Element label="" className="dashboard-clonecell--dropdownopen">
-          <Dropdown
-            className="dashboard-clonecell--dropdownopen"
-            button={(active, onClick) => (
-              <Dropdown.Button
-                active={active}
-                onClick={onClick}
-                testID="clone-to-other-dashboard"
-              >
-                {selectedDashboard ?? 'Choose a Destination Dashboard'}
-              </Dropdown.Button>
-            )}
-            menu={onCollapse => (
-              <Dropdown.Menu
-                onCollapse={onCollapse}
-                testID="copy-dashboard-cell--dropdown-menu"
-              >
-                {otherDashboards.map(d => {
-                  return (
-                    <Dropdown.Item
-                      key={d.id}
-                      value={d.id}
-                      onClick={id => setDestinationDashboardID(id)}
-                      selected={d.id === destinationDashboardID}
-                      testID={`other-dashboard-${d.id}`}
-                    >
-                      {d.name ?? 'Name this Dashboard'}
-                    </Dropdown.Item>
-                  )
-                })}
-              </Dropdown.Menu>
-            )}
-          />
+          {typeAheadDropdown}
         </Form.Element>
         <Form.Element label="" className="dashboard-clonecell--removecurrent">
           <span className="dashboard-clonecell--movetype">Move type: </span>
@@ -203,7 +193,7 @@ const CellCloneOverlay: FC = () => {
           onClick={() => {
             onClose()
           }}
-          color={ComponentColor.Default}
+          color={ComponentColor.Tertiary}
           text="Cancel"
           testID="copy-cell-cancel-button"
         />

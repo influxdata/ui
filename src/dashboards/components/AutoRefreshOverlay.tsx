@@ -163,7 +163,7 @@ const AutoRefreshForm: FC = () => {
             <Button
               onClick={handleCancel}
               text="Cancel"
-              color={ComponentColor.Default}
+              color={ComponentColor.Tertiary}
               className="refresh-form-cancel-button"
               testID="refresh-form-cancel-button"
             />

@@ -21,7 +21,7 @@ const RuleSchedule: FC<Props> = ({rule, onChange}) => {
 
   return (
     <Grid.Row>
-      <Grid.Column widthXS={Columns.Four}>
+      <Grid.Column widthXS={Columns.Four} style={{paddingLeft: '0px'}}>
         <Form.Element label="Schedule Every">
           <DurationInput
             value={every || ''}

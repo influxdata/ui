@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, Suspense} from 'react'
+import React, {CSSProperties, FC, Suspense} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
@@ -24,6 +24,7 @@ interface Props {
   name: string
   url: string
   image?: string
+  style?: CSSProperties
   selected?: boolean
   onClick?: any
   testID?: string
@@ -34,6 +35,7 @@ const WriteDataItem: FC<Props> = ({
   name,
   url,
   image,
+  style,
   selected,
   onClick,
   testID,
@@ -46,46 +48,26 @@ const WriteDataItem: FC<Props> = ({
   }
 
   let thumb = <img src={placeholderLogo} />
+  const svgStyle = style ? style : ({} as CSSProperties)
 
   if (image) {
     thumb = (
       <Suspense fallback="Loading...">
-        <LazySVG image={image} />
+        <LazySVG image={image} style={svgStyle} alt={name} />
       </Suspense>
     )
   }
 
   if (onClick) {
-    {
-      return (
-        <SquareGrid.Card key={id}>
-          <SelectableCard
-            id={id}
-            formName="load-data-cards"
-            label={name}
-            selected={selected}
-            onClick={onClick}
-            testID={testID}
-            fontSize={ComponentSize.ExtraSmall}
-            className="write-data--item"
-          >
-            <div className="write-data--item-thumb">{thumb}</div>
-          </SelectableCard>
-        </SquareGrid.Card>
-      )
-    }
-  }
-
-  {
     return (
       <SquareGrid.Card key={id}>
         <SelectableCard
           id={id}
           formName="load-data-cards"
           label={name}
-          testID={`load-data-item ${id}`}
-          selected={false}
-          onClick={handleClick}
+          selected={selected}
+          onClick={onClick}
+          testID={testID}
           fontSize={ComponentSize.ExtraSmall}
           className="write-data--item"
         >
@@ -94,6 +76,23 @@ const WriteDataItem: FC<Props> = ({
       </SquareGrid.Card>
     )
   }
+
+  return (
+    <SquareGrid.Card key={id}>
+      <SelectableCard
+        id={id}
+        formName="load-data-cards"
+        label={name}
+        testID={`load-data-item ${id}`}
+        selected={false}
+        onClick={handleClick}
+        fontSize={ComponentSize.ExtraSmall}
+        className="write-data--item"
+      >
+        <div className="write-data--item-thumb">{thumb}</div>
+      </SelectableCard>
+    </SquareGrid.Card>
+  )
 }
 
 export default WriteDataItem

@@ -1,10 +1,10 @@
 .load-data--asset-alert {
-  margin-bottom: $cf-marg-d;
+  margin-bottom: $cf-space-l;
 }
 
 .cf-page-control-bar {
   + .rate-alert {
-    margin: 0 $cf-marg-c $cf-marg-c;
+    margin: 0 $cf-space-s $cf-space-s;
   }
 }
 
@@ -14,7 +14,7 @@
   font-weight: 500;
 
   .rate-alert--button {
-    margin-top: $cf-marg-b;
+    margin-top: $cf-space-2xs;
   }
 }
 
@@ -42,7 +42,7 @@ a.upgrade-payg--button {
 }
 
 .asset-limit-overlay--contents {
-  background-color: $g1-raven;
+  background-color: $cf-grey-5;
   border-radius: $cf-radius;
   p {
     text-align: center;
@@ -85,7 +85,7 @@ a.upgrade-payg--button {
 
 @media screen and (min-width: $cf-nav-menu--breakpoint) {
   .rate-alert {
-    margin-left: $cf-marg-d;
+    margin-left: $cf-space-l;
   }
 
   .rate-alert--content {
@@ -97,13 +97,13 @@ a.upgrade-payg--button {
 
     .rate-alert--button {
       margin-top: 0;
-      margin-left: $cf-marg-c;
+      margin-left: $cf-space-s;
     }
   }
 
   .cf-page-control-bar {
     + .rate-alert {
-      margin: 0 $cf-marg-d $cf-marg-c;
+      margin: 0 $cf-space-l $cf-space-s;
     }
   }
 

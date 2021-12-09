@@ -23,18 +23,18 @@ $context-menu--arrow-size: 8px;
     position: relative;
     border: 0;
     border-radius: $radius-small;
-    background-color: $g2-kevlar;
-    color: $g13-mist;
+    background-color: $cf-grey-5;
+    color: $cf-grey-75;
     transition: color 0.25s ease, background-color 0.25s ease;
     outline: none;
 
     &:hover {
       cursor: pointer;
-      color: $g20-white;
+      color: $cf-white;
     }
 
     &.active {
-      color: $g20-white;
+      color: $cf-white;
     }
   }
 }
@@ -80,7 +80,7 @@ $context-menu--arrow-size: 8px;
 
 .context-menu--item {
   text-align: left;
-  color: $g20-white;
+  color: $cf-white;
   outline: none;
   border: 0;
   background-color: transparent;
@@ -108,7 +108,7 @@ $context-menu--arrow-size: 8px;
   &.context-menu--item__disabled,
   &.context-menu--item__disabled:hover {
     cursor: default;
-    color: rgba($g20-white, 0.6);
+    color: rgba($cf-white, 0.6);
     font-style: italic;
     background-color: transparent;
   }
@@ -139,7 +139,7 @@ $context-menu--arrow-size: 8px;
     }
 
     .context-menu--list:before {
-      right: calc(100% - #{$context-menu--toggle-size / 2});
+      right: calc(100% - #{$context-menu--toggle-size * 0.5});
     }
   }
 }
@@ -160,7 +160,7 @@ $context-menu--arrow-size: 8px;
     }
 
     .context-menu--list:before {
-      right: $context-menu--toggle-size / 2;
+      right: $context-menu--toggle-size * 0.5;
     }
   }
 }
@@ -190,10 +190,10 @@ $context-menu--arrow-size: 8px;
 
 /* Theme Modifiers */
 .context-menu--toggle.context-menu--default {
-  @include contextToggleThemeModifier($g7-graphite, $g8-storm);
+  @include contextToggleThemeModifier($cf-grey-35, $cf-grey-45);
 }
 .context-menu--list.context-menu--default {
-  @include contextListThemeModifier($g7-graphite, $g8-storm);
+  @include contextListThemeModifier($cf-grey-35, $cf-grey-45);
 }
 
 .context-menu--toggle.context-menu--primary {

@@ -5,11 +5,13 @@ import {useDispatch} from 'react-redux'
 
 // Components
 import {
-  Button,
   ButtonShape,
   ComponentColor,
   ComponentSize,
+  ConfirmationButton,
+  FlexBox,
   IconFont,
+  SquareButton,
 } from '@influxdata/clockface'
 
 // Actions
@@ -23,7 +25,6 @@ import {
 
 // Types
 import {Secret} from 'src/types'
-import {Context} from 'src/clockface'
 
 // Utils
 import {deleteSecret} from 'src/secrets/actions/thunks'
@@ -52,35 +53,29 @@ const SecretContextMenu: FC<Props> = ({secret}) => {
       dispatch(notify(copyToClipboardFailed(copiedText, 'Secret ID')))
     }
   }
-
   return (
-    <Context className="secrets-context-menu">
+    <FlexBox margin={ComponentSize.ExtraSmall}>
       <CopyToClipboard text={secret.id} onCopy={handleCopyAttempt}>
-        <Button
+        <SquareButton
           testID={`copy-to-clipboard--${secret.id}`}
-          size={ComponentSize.Small}
-          color={ComponentColor.Secondary}
-          text="Copy to Clipboard"
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Colorless}
+          icon={IconFont.Clipboard_New}
           shape={ButtonShape.StretchToFit}
-          style={{margin: '4px 0 0 0'}}
+          titleText="Copy to clipboard"
         />
       </CopyToClipboard>
-      <Context.Menu
-        testID={`delete-secret-initial--${secret.id}`}
-        size={ComponentSize.Small}
-        color={ComponentColor.Danger}
-        icon={IconFont.Trash}
-        text="Delete"
-        shape={ButtonShape.StretchToFit}
-        style={{margin: '4px 0 0 10px'}}
-      >
-        <Context.Item
-          label="Delete"
-          action={handleDelete}
-          testID={`delete-secret-confirm--${secret.id}`}
-        />
-      </Context.Menu>
-    </Context>
+      <ConfirmationButton
+        color={ComponentColor.Colorless}
+        icon={IconFont.Trash_New}
+        shape={ButtonShape.Square}
+        size={ComponentSize.ExtraSmall}
+        confirmationLabel="Yes, delete this secret"
+        onConfirm={handleDelete}
+        confirmationButtonText="Confirm"
+        testID={`context-delete-menu ${secret.id}`}
+      />
+    </FlexBox>
   )
 }
 

@@ -4,8 +4,7 @@ import {
   ComponentColor,
   IconFont,
   DapperScrollbars,
-  DropdownMenu,
-  DropdownItem,
+  Dropdown,
 } from '@influxdata/clockface'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -28,7 +27,7 @@ export const SubSideBar: FC = () => {
     <div className="flow-sidebar">
       <div className="flow-sidebar--buttons">
         <Button
-          icon={IconFont.Remove}
+          icon={IconFont.Remove_New}
           onClick={() => {
             event('Closing Submenu')
             hideSub()
@@ -146,13 +145,13 @@ const Sidebar: FC = () => {
         {
           title: () => {
             if (!flow.meta.allIDs.includes(id)) {
-              return 'Hide'
+              return 'Hide panel'
             }
 
             if (flow.meta.byID[id].visible) {
-              return 'Hide'
+              return 'Hide panel'
             }
-            return 'Visible'
+            return 'Show panel'
           },
           action: () => {
             event('Panel Visibility Toggled', {
@@ -189,7 +188,7 @@ const Sidebar: FC = () => {
 
             event('Convert Cell To Flux', {from: type})
 
-            const {source, visual} = getPanelQueries(id, true)
+            const {source, visual} = getPanelQueries(id)
 
             const init = JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
@@ -229,7 +228,7 @@ const Sidebar: FC = () => {
 
           if (action.hasOwnProperty('menu')) {
             return (
-              <DropdownItem
+              <Dropdown.Item
                 onClick={() => {
                   const title =
                     typeof action.title === 'function'
@@ -245,12 +244,12 @@ const Sidebar: FC = () => {
                 testID={`${title}--list-item`}
               >
                 {title}
-              </DropdownItem>
+              </Dropdown.Item>
             )
           }
 
           return (
-            <DropdownItem
+            <Dropdown.Item
               onClick={() => {
                 const title =
                   typeof action.title === 'function'
@@ -269,22 +268,29 @@ const Sidebar: FC = () => {
               testID={`${title}--list-item`}
             >
               {title}
-            </DropdownItem>
+            </Dropdown.Item>
           )
         })
 
       const sectionTitle =
         typeof section.title === 'function' ? section.title() : section.title
-      return <div key={sectionTitle}>{links}</div>
+      return (
+        <div
+          key={sectionTitle}
+          className="flow-sidebar--dropdownmenu-container"
+        >
+          {links}
+        </div>
+      )
     })
 
   return (
-    <DropdownMenu
+    <Dropdown.Menu
       className="flow-sidebar--dropdownmenu"
       style={{width: '200px'}}
     >
       {sections}
-    </DropdownMenu>
+    </Dropdown.Menu>
   )
 }
 

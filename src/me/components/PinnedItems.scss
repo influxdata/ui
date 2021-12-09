@@ -1,5 +1,5 @@
 @import '@influxdata/clockface/dist/variables.scss';
-$dashboard-grid-gap: $cf-marg-a;
+$dashboard-grid-gap: $cf-space-2xs;
 
 .pinned-items--header {
   font-weight: 400;
@@ -20,7 +20,7 @@ $dashboard-grid-gap: $cf-marg-a;
 }
 
 .pinned-items--card {
-  background: rgb(49, 49, 61);
+  background: $cf-grey-25;
 }
 
 @media screen and (max-width: $cf-grid--breakpoint-md) {

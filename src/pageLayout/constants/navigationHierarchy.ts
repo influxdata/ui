@@ -40,7 +40,7 @@ export const generateNavItems = (): NavItem[] => {
     {
       id: 'load-data',
       testID: 'nav-item-load-data',
-      icon: IconFont.DisksNav,
+      icon: IconFont.Upload_New,
       label: 'Load Data',
       shortLabel: 'Data',
       link: `${orgPrefix}/load-data/sources`,
@@ -87,6 +87,17 @@ export const generateNavItems = (): NavItem[] => {
       shortLabel: 'Explore',
       link: `${orgPrefix}/data-explorer`,
       activeKeywords: ['data-explorer'],
+      enabled: () => !isFlagEnabled('leadWithFlows'),
+    },
+    {
+      id: 'notebook-explorer',
+      testID: 'nav-item-data-explorer',
+      icon: IconFont.GraphLine,
+      label: 'Data Explorer',
+      shortLabel: 'Explore',
+      link: `/notebook/from/default`,
+      activeKeywords: ['data-explorer'],
+      enabled: () => isFlagEnabled('leadWithFlows'),
     },
     {
       id: 'flows',
@@ -95,12 +106,12 @@ export const generateNavItems = (): NavItem[] => {
       label: PROJECT_NAME_PLURAL,
       shortLabel: PROJECT_NAME_SHORT,
       link: `${orgPrefix}/${PROJECT_NAME_PLURAL.toLowerCase()}`,
-      activeKeywords: [PROJECT_NAME_PLURAL.toLowerCase()],
+      activeKeywords: [PROJECT_NAME_PLURAL.toLowerCase(), 'notebook/from'],
     },
     {
       id: 'dashboards',
       testID: 'nav-item-dashboards',
-      icon: IconFont.Dashboards,
+      icon: IconFont.GraphLine_New,
       label: 'Dashboards',
       shortLabel: 'Boards',
       link: `${orgPrefix}/dashboards-list`,
@@ -120,8 +131,14 @@ export const generateNavItems = (): NavItem[] => {
       icon: IconFont.Bell,
       label: 'Alerts',
       link: `${orgPrefix}/alerting`,
-      activeKeywords: ['alerting'],
+      activeKeywords: ['alerting', 'alert-history'],
       menu: [
+        {
+          id: 'alerting',
+          testID: 'nav-subitem-alerting',
+          label: 'Alerts',
+          link: `${orgPrefix}/alerting`,
+        },
         {
           id: 'history',
           testID: 'nav-subitem-history',

@@ -2,7 +2,7 @@
 import React, {PureComponent, ChangeEvent, FormEvent} from 'react'
 
 // Components
-import {Form, Input, Button, Grid, Accordion} from '@influxdata/clockface'
+import {Form, Input, Button, Accordion, Overlay} from '@influxdata/clockface'
 import Retention from 'src/buckets/components/Retention'
 import {SchemaToggle} from 'src/buckets/components/createBucketForm/SchemaToggle'
 
@@ -19,10 +19,12 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {RuleType} from 'src/buckets/reducers/createBucket'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
-import {MeasurementSchemaSection} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
+import {
+  MeasurementSchemaSection,
+  SchemaUpdateInfo,
+} from 'src/buckets/components/createBucketForm/MeasurementSchemaSection'
 
 let MeasurementSchemaList = null,
   MeasurementSchemaCreateRequest = null,
@@ -48,10 +50,11 @@ interface Props {
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (t: RuleType) => void
   onChangeInput: (e: ChangeEvent<HTMLInputElement>) => void
-  onUpdateNewMeasurementSchemas?: (
+  onAddNewMeasurementSchemas?: (
     schemas: any[],
     resetValidation?: boolean
   ) => void
+  onUpdateMeasurementSchemas?: (schemaInfo: SchemaUpdateInfo[]) => void
   isEditing: boolean
   buttonText: string
   onClickRename?: () => void
@@ -66,6 +69,7 @@ interface State {
   showAdvanced: boolean
   schemaType: 'implicit' | 'explicit'
   newMeasurementSchemas: typeof MeasurementSchemaCreateRequest[]
+  measurementSchemaUpdates: SchemaUpdateInfo[]
 }
 
 export default class BucketOverlayForm extends PureComponent<Props> {
@@ -73,6 +77,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     showAdvanced: false,
     schemaType: 'implicit',
     newMeasurementSchemas: [],
+    measurementSchemaUpdates: [],
   }
 
   onChangeSchemaTypeInternal = (newSchemaType: typeof SchemaType) => {
@@ -80,9 +85,14 @@ export default class BucketOverlayForm extends PureComponent<Props> {
     this.props.onChangeSchemaType(newSchemaType)
   }
 
-  onUpdateSchemasInternal = (schemas, resetValidation) => {
-    this.props.onUpdateNewMeasurementSchemas(schemas, resetValidation)
+  onAddSchemasInternal = (schemas, resetValidation) => {
+    this.props.onAddNewMeasurementSchemas(schemas, resetValidation)
     this.setState({newMeasurementSchemas: schemas})
+  }
+
+  onUpdateSchemasInternal = (schemas: SchemaUpdateInfo[]) => {
+    this.props.onUpdateMeasurementSchemas(schemas)
+    this.setState({measurementSchemaUpdates: schemas})
   }
 
   public render() {
@@ -112,8 +122,9 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       <MeasurementSchemaSection
         measurementSchemaList={measurementSchemaList}
         key="measurementSchemaSection"
-        onUpdateSchemas={this.onUpdateSchemasInternal}
+        onAddSchemas={this.onAddSchemasInternal}
         showSchemaValidation={showSchemaValidation}
+        onUpdateSchemas={this.onUpdateSchemasInternal}
       />
     )
 
@@ -126,7 +137,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       : null
 
     const makeAdvancedSection = () => {
-      if (isFlagEnabled('measurementSchema') && CLOUD) {
+      if (CLOUD) {
         let schemaToggle = (
           <SchemaToggle onChangeSchemaType={this.onChangeSchemaTypeInternal} />
         )
@@ -152,7 +163,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
             <Accordion.AccordionHeader>
               <span>Advanced Configuration (Optional)</span>
             </Accordion.AccordionHeader>
-            <Accordion.AccordionBodyItem>
+            <Accordion.AccordionBodyItem testID="accordion--advanced-section">
               <div>{contents}</div>
             </Accordion.AccordionBodyItem>
           </Accordion>
@@ -162,65 +173,58 @@ export default class BucketOverlayForm extends PureComponent<Props> {
 
     return (
       <Form onSubmit={onSubmit} testID={testID}>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column>
-              <Form.ValidationElement
+        <Overlay.Body>
+          <Form.ValidationElement
+            value={name}
+            label="Name"
+            helpText={this.nameHelpText}
+            validationFunc={this.handleNameValidation}
+            required={true}
+          >
+            {status => (
+              <Input
+                status={nameInputStatus || status}
+                placeholder="Give your bucket a name"
+                name="name"
+                autoFocus={true}
                 value={name}
-                label="Name"
-                helpText={this.nameHelpText}
-                validationFunc={this.handleNameValidation}
-                required={true}
-              >
-                {status => (
-                  <Input
-                    status={nameInputStatus || status}
-                    placeholder="Give your bucket a name"
-                    name="name"
-                    autoFocus={true}
-                    value={name}
-                    onChange={onChangeInput}
-                    testID="bucket-form-name"
-                  />
-                )}
-              </Form.ValidationElement>
-              <Form.Element label="Delete Data">
-                <Retention
-                  type={ruleType}
-                  retentionSeconds={retentionSeconds}
-                  onChangeRuleType={onChangeRuleType}
-                  onChangeRetentionRule={onChangeRetentionRule}
-                />
-              </Form.Element>
-              {makeAdvancedSection()}
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
-              <Form.Footer>
-                <Button
-                  text="Cancel"
-                  onClick={onClose}
-                  type={ButtonType.Button}
-                />
-                {buttonText === 'Save Changes' && (
-                  <Button
-                    text="Rename"
-                    color={ComponentColor.Danger}
-                    onClick={onClickRename}
-                  />
-                )}
-                <Button
-                  text={buttonText}
-                  testID="bucket-form-submit"
-                  color={this.submitButtonColor}
-                  status={this.submitButtonStatus}
-                  type={ButtonType.Submit}
-                />
-              </Form.Footer>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+                onChange={onChangeInput}
+                testID="bucket-form-name"
+              />
+            )}
+          </Form.ValidationElement>
+          <Form.Element label="Delete Data">
+            <Retention
+              type={ruleType}
+              retentionSeconds={retentionSeconds}
+              onChangeRuleType={onChangeRuleType}
+              onChangeRetentionRule={onChangeRetentionRule}
+            />
+          </Form.Element>
+          {makeAdvancedSection()}
+        </Overlay.Body>
+        <Overlay.Footer>
+          <Button
+            text="Cancel"
+            color={ComponentColor.Tertiary}
+            onClick={onClose}
+            type={ButtonType.Button}
+          />
+          {buttonText === 'Save Changes' && (
+            <Button
+              text="Rename"
+              color={ComponentColor.Danger}
+              onClick={onClickRename}
+            />
+          )}
+          <Button
+            text={buttonText}
+            testID="bucket-form-submit"
+            color={this.submitButtonColor}
+            status={this.submitButtonStatus}
+            type={ButtonType.Submit}
+          />
+        </Overlay.Footer>
       </Form>
     )
   }

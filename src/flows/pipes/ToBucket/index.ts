@@ -10,8 +10,8 @@ export default register => {
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--to-bucket',
     button: 'Output to Bucket',
-    source: (data, query, scope) => {
-      if (!scope.withSideEffects || !data?.bucket) {
+    output: (data, query) => {
+      if (!data?.bucket) {
         return query
       }
 

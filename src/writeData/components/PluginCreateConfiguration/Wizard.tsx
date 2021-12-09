@@ -24,8 +24,12 @@ import {
 } from 'src/dataLoaders/actions/steps'
 import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+
 // Constants
-import {BUCKET_OVERLAY_WIDTH} from 'src/buckets/constants'
+import {getBucketOverlayWidth} from 'src/buckets/constants'
+import {TELEGRAF_PLUGINS} from 'src/shared/constants/routes'
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH = 1200
 const PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH = 480
 
@@ -39,7 +43,7 @@ const StepSwitcher = Loadable({
 
 interface WizardProps {
   history: {
-    goBack: () => void
+    push: (route: string) => void
   }
 }
 
@@ -61,6 +65,7 @@ const Wizard: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSetCurrentStepIndex,
     onSetSubstepIndex,
+    org,
     setBucketInfo,
     substepIndex,
   } = props
@@ -87,7 +92,7 @@ const Wizard: FC<Props> = props => {
       onSetSubstepIndex(0, 0)
     } else {
       setIsVisible(false)
-      history.goBack()
+      history.push(`/orgs/${org.id}/load-data/${TELEGRAF_PLUGINS}/${contentID}`)
     }
   }
 
@@ -116,7 +121,7 @@ const Wizard: FC<Props> = props => {
   let maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_DEFAULT_WIDTH
   if (currentStepIndex === 0) {
     if (substepIndex === 1) {
-      maxWidth = BUCKET_OVERLAY_WIDTH
+      maxWidth = getBucketOverlayWidth()
     } else {
       maxWidth = PLUGIN_CREATE_CONFIGURATION_OVERLAY_OPTIONS_WIDTH
     }
@@ -148,8 +153,11 @@ const mstp = (state: AppState) => {
     },
   } = state
 
+  const org = getOrg(state)
+
   return {
     currentStepIndex: currentStep,
+    org,
     substepIndex: typeof substep === 'number' ? substep : 0,
   }
 }

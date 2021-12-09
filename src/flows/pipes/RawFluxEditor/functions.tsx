@@ -1,15 +1,10 @@
 import React, {FC, useState, useMemo, useCallback} from 'react'
 
-import {
-  Input,
-  InputType,
-  IconFont,
-  EmptyState,
-  ComponentSize,
-} from '@influxdata/clockface'
+import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
 import Fn from './function'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 interface Props {
   onSelect: (fn: FluxToolbarFunction) => void
@@ -22,8 +17,8 @@ interface FilteredFn {
 const Functions: FC<Props> = ({onSelect}) => {
   const [search, setSearch] = useState('')
   const updateSearch = useCallback(
-    e => {
-      setSearch(e.target.value)
+    text => {
+      setSearch(text)
     },
     [search, setSearch]
   )
@@ -74,12 +69,10 @@ const Functions: FC<Props> = ({onSelect}) => {
     return (
       <div className="flux-toolbar">
         <div className="flux-toolbar--search">
-          <Input
-            type={InputType.Text}
-            icon={IconFont.Search}
-            placeholder="Filter Functions..."
-            onChange={updateSearch}
-            value={search}
+          <SearchWidget
+            placeholderText="Filter Functions..."
+            onSearch={updateSearch}
+            searchTerm={search}
             testID="flux-toolbar-search--input"
           />
         </div>

@@ -19,7 +19,7 @@ const PlanTypePanel: FC = () => {
       </Panel.Header>
       <Panel.Body alignItems={AlignItems.Stretch}>
         <Panel
-          backgroundColor={InfluxColors.Onyx}
+          backgroundColor={InfluxColors.Grey15}
           className="plan-type-panel--detail"
         >
           <Panel.Header
@@ -32,11 +32,11 @@ const PlanTypePanel: FC = () => {
             size={ComponentSize.ExtraSmall}
             testID="payg-plan--region-body"
           >
-            {billingInfo.region}
+            {billingInfo?.region}
           </Panel.Body>
         </Panel>
         <Panel
-          backgroundColor={InfluxColors.Onyx}
+          backgroundColor={InfluxColors.Grey15}
           className="plan-type-panel--detail"
         >
           <Panel.Header
@@ -50,12 +50,12 @@ const PlanTypePanel: FC = () => {
             testID="payg-plan--balance-body"
           >
             <span className="money">
-              {parseFloat(`${billingInfo.balance}`).toFixed(2)}
+              {parseFloat(`${billingInfo?.balance}`).toFixed(2)}
             </span>
           </Panel.Body>
         </Panel>
         <Panel
-          backgroundColor={InfluxColors.Onyx}
+          backgroundColor={InfluxColors.Grey15}
           className="plan-type-panel--detail"
         >
           <Panel.Header
@@ -68,7 +68,7 @@ const PlanTypePanel: FC = () => {
             size={ComponentSize.ExtraSmall}
             testID="payg-plan--updated-body"
           >
-            {new Date(billingInfo.balanceUpdatedAt).toLocaleString('default', {
+            {new Date(billingInfo?.balanceUpdatedAt).toLocaleString('default', {
               month: 'numeric',
               day: 'numeric',
               year: 'numeric',

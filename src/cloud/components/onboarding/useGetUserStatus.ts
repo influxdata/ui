@@ -4,7 +4,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Table} from '@influxdata/giraffe'
 import {CLOUD} from 'src/shared/constants'
 import {usageStatsCsv} from 'src/shared/utils/mocks/usageStats.mocks'
-import _ from 'lodash'
 
 let getUsage = null
 

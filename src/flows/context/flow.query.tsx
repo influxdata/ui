@@ -1,8 +1,14 @@
-import React, {FC, useContext, useMemo, useEffect, useState} from 'react'
+import React, {
+  FC,
+  useContext,
+  useMemo,
+  useEffect,
+  useState,
+  useRef,
+} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
-import {RunModeContext, RunMode} from 'src/flows/context/runMode'
 import {ResultsContext} from 'src/flows/context/results'
 import {QueryContext, simplify} from 'src/shared/contexts/query'
 import {event} from 'src/cloud/utils/reporting'
@@ -32,14 +38,14 @@ export interface Stage {
 }
 
 export interface FlowQueryContextType {
-  generateMap: (withSideEffects?: boolean) => Stage[]
-  printMap: (id?: string, withSideEffects?: boolean) => void
+  generateMap: () => Stage[]
+  printMap: (id?: string) => void
   query: (text: string, override?: QueryScope) => Promise<FluxResult>
   basic: (text: string) => any
   simplify: (text: string) => string
   queryAll: () => void
   queryDependents: (startID: string) => void
-  getPanelQueries: (id: string, withSideEffects?: boolean) => Stage | null
+  getPanelQueries: (id: string) => Stage | null
   status: RemoteDataState
 }
 
@@ -51,7 +57,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   simplify: (_: string) => '',
   queryAll: () => {},
   queryDependents: () => {},
-  getPanelQueries: (_, _a) => ({
+  getPanelQueries: _ => ({
     id: '',
     scope: {vars: {}},
     source: '',
@@ -79,7 +85,6 @@ const generateTimeVar = (which, value): Variable =>
 
 export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
-  const {runMode} = useContext(RunModeContext)
   const {setResult, setStatuses, statuses} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const org = useSelector(getOrg) ?? {id: ''}
@@ -143,7 +148,8 @@ export const FlowQueryProvider: FC = ({children}) => {
     }, {})
   }, [variables, flow?.range])
 
-  const generateMap = (withSideEffects?: boolean): Stage[] => {
+  const _map = useRef([])
+  const _generateMap = (): Stage[] => {
     const stages = (flow?.data?.allIDs ?? []).reduce((acc, panelID) => {
       const panel = flow.data.byID[panelID]
 
@@ -153,7 +159,6 @@ export const FlowQueryProvider: FC = ({children}) => {
 
       const last = acc[acc.length - 1] || {
         scope: {
-          withSideEffects: !!withSideEffects,
           region: window.location.origin,
           org: org.id,
         },
@@ -199,29 +204,46 @@ export const FlowQueryProvider: FC = ({children}) => {
       return acc
     }, [])
 
+    _map.current = stages
     return stages
   }
 
+  useEffect(() => {
+    _generateMap()
+  }, [flow])
+
+  const generateMap = (): Stage[] => {
+    // this is to get around an issue where a panel is added, which triggers the useEffect that updates
+    // _map.current and a rerender that updates the panel view components within the same render cycle
+    // leading to a panel on the list without a corresponding map entry
+    const forceUpdate =
+      (flow?.data?.allIDs ?? []).join(' ') !==
+      (_map.current ?? []).map(m => m.id).join(' ')
+
+    if (forceUpdate) {
+      _generateMap()
+    }
+
+    return _map.current
+  }
+
   // TODO figure out a better way to cache these requests
-  const getPanelQueries = (
-    id: string,
-    withSideEffects?: boolean
-  ): Stage | null => {
+  const getPanelQueries = (id: string): Stage | null => {
     if (!id) {
       return null
     }
 
-    return generateMap(withSideEffects).find(i => i.id === id)
+    return generateMap().find(i => i.id === id)
   }
 
   // This function allows the developer to see the queries
   // that the panels are generating through a notebook. Each
   // panel should have a source query, any panel that needs
   // to display some data should have a visualization query
-  const printMap = (id?: string, withSideEffects?: boolean) => {
+  const printMap = (id?: string) => {
     /* eslint-disable no-console */
     // Grab all the ids in the order that they're presented
-    generateMap(withSideEffects).forEach(i => {
+    generateMap().forEach(i => {
       console.log(
         `\n\n%cPanel: %c ${i.id}`,
         'font-family: sans-serif; font-size: 16px; font-weight: bold; color: #000',
@@ -301,7 +323,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       return
     }
 
-    let map = generateMap(runMode === RunMode.Run)
+    let map = generateMap()
 
     if (!map.length) {
       return
@@ -336,12 +358,12 @@ export const FlowQueryProvider: FC = ({children}) => {
         })
     )
       .then(() => {
-        event('run_notebook_success', {runMode})
-        dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
+        event('run_notebook_success')
+        dispatch(notify(notebookRunSuccess(PROJECT_NAME)))
       })
       .catch(e => {
-        event('run_notebook_fail', {runMode})
-        dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
+        event('run_notebook_fail')
+        dispatch(notify(notebookRunFail(PROJECT_NAME)))
 
         // NOTE: this shouldn't fire, but lets wrap it for completeness
         throw e
@@ -358,7 +380,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       return
     }
 
-    const map = generateMap(runMode === RunMode.Run)
+    const map = generateMap()
 
     if (!map.length) {
       return
@@ -374,30 +396,31 @@ export const FlowQueryProvider: FC = ({children}) => {
           return a
         }, {})
     )
+
     Promise.all(
       map
         .filter(q => !!q.visual)
         .map(stage => {
           return query(stage.visual, stage.scope)
             .then(response => {
-              setStatuses({[stage.id]: RemoteDataState.Done})
               setResult(stage.id, response)
+              setStatuses({[stage.id]: RemoteDataState.Done})
             })
             .catch(e => {
-              setStatuses({[stage.id]: RemoteDataState.Error})
               setResult(stage.id, {
                 error: e.message,
               })
+              setStatuses({[stage.id]: RemoteDataState.Error})
             })
         })
     )
       .then(() => {
-        event('run_notebook_success', {runMode})
-        dispatch(notify(notebookRunSuccess(runMode, PROJECT_NAME)))
+        event('run_notebook_success')
+        dispatch(notify(notebookRunSuccess(PROJECT_NAME)))
       })
       .catch(e => {
-        event('run_notebook_fail', {runMode})
-        dispatch(notify(notebookRunFail(runMode, PROJECT_NAME)))
+        event('run_notebook_fail')
+        dispatch(notify(notebookRunFail(PROJECT_NAME)))
 
         // NOTE: this shouldn't fire, but lets wrap it for completeness
         throw e

@@ -38,7 +38,7 @@ class DashboardEmpty extends Component<Props> {
           <Button
             text="Add Cell"
             size={ComponentSize.Medium}
-            icon={IconFont.AddCell}
+            icon={IconFont.AddCell_New}
             color={ComponentColor.Primary}
             onClick={this.handleAdd}
             testID="add-cell--button"

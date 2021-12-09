@@ -21,7 +21,7 @@ import {PIPE_DEFINITIONS} from 'src/flows'
 import {event} from 'src/cloud/utils/reporting'
 
 const DataSource: FC<PipeProp> = ({Context}) => {
-  const {id, data, update} = useContext(PipeContext)
+  const {data, update} = useContext(PipeContext)
 
   const updateBucket = (bucket: Bucket) => {
     if (bucket?.id === data.bucket?.id) {
@@ -35,7 +35,7 @@ const DataSource: FC<PipeProp> = ({Context}) => {
   }
 
   return (
-    <BucketProvider panel={id}>
+    <BucketProvider>
       <SchemaProvider>
         <Context resizes>
           <div className="data-source">

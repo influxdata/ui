@@ -110,7 +110,7 @@ const CheckEOHeader: FC<Props> = ({
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <SquareButton
-            icon={IconFont.Remove}
+            icon={IconFont.Remove_New}
             onClick={onCancel}
             size={ComponentSize.Small}
           />

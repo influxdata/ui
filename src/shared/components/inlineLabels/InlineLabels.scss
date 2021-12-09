@@ -3,7 +3,7 @@
   ------------------------------------------------------------------------------
 */
 
-$inline-labels--margin: $ix-border / 2;
+$inline-labels--margin: $ix-border * 0.5;
 
 .inline-labels {
   width: 100%;
@@ -16,6 +16,8 @@ $inline-labels--margin: $ix-border / 2;
   display: flex;
   flex-wrap: wrap;
   padding: $inline-labels--margin;
+  column-gap: $cf-space-3xs;
+  row-gap: $cf-space-3xs;
 
   > .cf-label {
     margin: $inline-labels--margin;
@@ -68,8 +70,8 @@ $label-edit-button-diameter: 18px; // Should be the same as the height of labels
     left: 50%;
     height: $cf-border;
     width: floor($label-edit-button-diameter * 0.5);
-    background-color: $g20-white;
-    border-radius: $cf-border / 2;
+    background-color: $cf-white;
+    border-radius: $cf-border * 0.5;
     transition: width 0.25s ease;
   }
 

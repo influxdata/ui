@@ -1,4 +1,4 @@
-import {get, findIndex, replace, indexOf, orderBy, drop, unzip} from 'lodash'
+import {get, replace, orderBy, unzip} from 'lodash'
 import {fastMap, fastReduce, fastFilter} from 'src/utils/fast'
 
 import {CELL_HORIZONTAL_PADDING, DEFAULT_TIME_FIELD} from './constants'
@@ -188,7 +188,7 @@ export const orderTableColumns = (
   fieldOptions: FieldOption[]
 ): string[][] => {
   const fieldsSortOrder = fieldOptions.map(fieldOption => {
-    return findIndex(data[0], dataLabel => {
+    return data[0].findIndex(dataLabel => {
       return dataLabel === fieldOption.internalName
     })
   })
@@ -213,7 +213,7 @@ export const sortTableData = (
   let sortIndex = 0
 
   if (headerSet.has(sort.field)) {
-    sortIndex = indexOf(data[0], sort.field)
+    sortIndex = data[0].indexOf(sort.field)
   } else if (!sort.field) {
     return {
       sortedData: [...data],
@@ -221,7 +221,7 @@ export const sortTableData = (
     }
   }
 
-  const dataValues = drop(data, 1)
+  const dataValues = data.slice(1)
   const sortedData = [
     data[0],
     ...orderBy<string[][]>(
@@ -233,7 +233,7 @@ export const sortTableData = (
         }
         return Number(sortedValue)
       },
-      [sort.direction]
+      [sort.direction as 'asc' | 'desc']
     ),
   ] as string[][]
 

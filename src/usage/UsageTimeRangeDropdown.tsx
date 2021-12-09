@@ -2,7 +2,7 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import {ComponentColor, Dropdown, Form, IconFont} from '@influxdata/clockface'
+import {Dropdown, Form, IconFont} from '@influxdata/clockface'
 import {UsageContext} from 'src/usage/context/usage'
 
 // Utils
@@ -29,8 +29,7 @@ const UsageTimeRangeDropdown: FC = () => {
           <Dropdown.Button
             active={active}
             onClick={onClick}
-            icon={IconFont.Clock}
-            color={ComponentColor.Primary}
+            icon={IconFont.Clock_New}
             testID="usage-timerange--selected"
           >
             {timeRangeLabel}

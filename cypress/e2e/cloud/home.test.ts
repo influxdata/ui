@@ -1,3 +1,5 @@
+import {Organization} from '../../../src/types'
+
 describe('Home Page Tests', () => {
   beforeEach(() =>
     cy.flush().then(() =>
@@ -39,22 +41,23 @@ describe('Home Page Tests', () => {
 ,,0,2021-08-05T20:54:31.642101603Z,Alpha,07f205512a38f000,Alpha,ok
 ,,0,2021-08-05T20:54:00Z,Check: Beta is: ok,07f2055f7a12d000,Beta,ok`
 
-    cy.intercept('POST', '/api/v2/query?*', req => {
-      if (req.body.query.includes('r._measurement == "statuses"')) {
-        req.alias = 'statusesQuery'
+    cy.get('@org').then(({id}: Organization) => {
+      cy.intercept('POST', `/api/v2/query?orgID=${id}`, req => {
+        if (req.body.query.includes('r._measurement == "statuses"')) {
+          req.alias = 'statusesQuery'
 
-        req.reply(mockResponse)
-      }
+          req.reply(mockResponse)
+        }
+      })
+      cy.getByTestID('tree-nav--header').click()
+      cy.wait('@statusesQuery')
+
+      cy.getByTestID('alerts-activity')
+        .scrollIntoView()
+        .should('be.visible')
+      cy.getByTestID('alerts-activity-table-container')
+        .find('.event-row')
+        .should('have.length.gte', 3)
     })
-
-    cy.getByTestID('tree-nav--header').click()
-    cy.wait('@statusesQuery')
-
-    cy.getByTestID('alerts-activity')
-      .scrollIntoView()
-      .should('be.visible')
-    cy.getByTestID('alerts-activity-table-container')
-      .find('.event-row')
-      .should('have.length.gte', 3)
   })
 })

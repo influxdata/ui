@@ -7,6 +7,7 @@ import {
   testEditAnnotation,
   testEditRangeAnnotation,
   testDeleteAnnotation,
+  RANGE_ANNOTATION_TEXT,
 } from '../util/annotationsSetup'
 
 describe('The Annotations UI functionality on a graph + single stat graph type', () => {
@@ -25,7 +26,7 @@ describe('The Annotations UI functionality on a graph + single stat graph type',
   })
   it('can add a range annotation for the xy single stat + line graph', () => {
     addRangeAnnotation(cy)
-    checkAnnotationText(cy, 'range annotation here!')
+    checkAnnotationText(cy, RANGE_ANNOTATION_TEXT)
   })
   it('can add and edit a range annotation for the single stat + line graph', () => {
     testEditRangeAnnotation(cy)

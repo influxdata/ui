@@ -3,6 +3,9 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
+// Components
+import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+
 // Utils
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -23,10 +26,13 @@ import {
   BALANCE_THRESHOLD_DEFAULT,
   EMPTY_ZUORA_PARAMS,
 } from 'src/shared/constants'
+import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
 import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 
 export type Props = {
   children: JSX.Element
@@ -59,6 +65,7 @@ export interface CheckoutContextType {
   isSubmitting: boolean
   setIsDirty: (_: boolean) => void
   zuoraParams: CreditCardParams
+  isPaygCreditActive: boolean
 }
 
 export const DEFAULT_CONTEXT: CheckoutContextType = {
@@ -74,11 +81,14 @@ export const DEFAULT_CONTEXT: CheckoutContextType = {
   isSubmitting: false,
   setIsDirty: (_: boolean) => {},
   zuoraParams: EMPTY_ZUORA_PARAMS,
+  isPaygCreditActive: false,
 }
 
 export const CheckoutContext = React.createContext<CheckoutContextType>(
   DEFAULT_CONTEXT
 )
+
+const CHECKOUT_PARAM_CODE = '757vMPJiCMdTFkO4'
 
 export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
@@ -249,6 +259,13 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     return errs.length
   }
 
+  const query = new URLSearchParams(window.location.search)
+  const checkoutCode = query.get('c')
+  const isPaygCreditActive =
+    isFlagEnabled('paygCheckoutCredit') &&
+    getExperimentVariantId(PAYG_CREDIT_EXPERIMENT_ID) === '1' &&
+    checkoutCode === CHECKOUT_PARAM_CODE
+
   const handleSubmit = useCallback(
     async (paymentMethodId: string) => {
       if (isDirty === false) {
@@ -283,14 +300,20 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         delete formData.intlSubdivision
         delete formData.shouldNotify
 
-        const paymentInformation = {...formData, paymentMethodId}
-
+        const paymentInformation = {
+          ...formData,
+          paymentMethodId,
+          isPaygCreditActive,
+        }
         const response = await postCheckout({data: paymentInformation})
 
         if (response.status !== 201) {
           throw new Error(response.data.message)
         }
 
+        event('CheckoutSuccess', {
+          creditApplied: isPaygCreditActive.toString(),
+        })
         setCheckoutStatus(RemoteDataState.Done)
       } catch (error) {
         console.error(error)
@@ -328,6 +351,7 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
         isSubmitting,
         setIsDirty,
         zuoraParams,
+        isPaygCreditActive,
       }}
     >
       {children}

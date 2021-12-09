@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $cf-marg-b + 4px $cf-marg-e;
+  padding: $cf-space-2xs + 4px $cf-space-2xl;
   &.reverse {
     flex-direction: row-reverse;
   }
@@ -32,7 +32,7 @@
   display: grid;
   grid-template-columns: auto auto;
   grid-gap: 10px;
-  padding: $cf-marg-c $cf-marg-a $cf-marg-b $cf-marg-a;
+  padding: $cf-space-s $cf-space-3xs $cf-space-2xs $cf-space-3xs;
 }
 
 .refresh-form-cancel-button {
@@ -45,7 +45,7 @@
 }
 
 .refresh-form-timeout-dropdown {
-  padding: 0 0 0 $cf-marg-b;
+  padding: 0 0 0 $cf-space-2xs;
   flex: 1;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .refresh-form-timerange-toggle {
-  margin: 0px $cf-marg-b;
+  margin: 0px $cf-space-2xs;
 }
 
 .refresh-input {

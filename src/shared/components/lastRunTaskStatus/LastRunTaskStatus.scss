@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   align-content: center;
-  background-color: rgba($g5-pepper, 0.5);
+  background-color: rgba($cf-grey-25, 0.5);
   border-radius: 50%;
   transition: color 0.25s ease, text-shadow 0.25s ease;
 
@@ -16,7 +16,7 @@
     color: $c-curacao;
 
     .cf-resource-card__disabled & {
-      color: mix($c-curacao, $g8-storm, 60%);
+      color: mix($c-curacao, $cf-grey-45, 60%);
     }
 
     &.last-run-task-status__highlight {
@@ -29,7 +29,7 @@
     color: $c-rainforest;
 
     .cf-resource-card__disabled & {
-      color: mix($c-rainforest, $g8-storm, 60%);
+      color: mix($c-rainforest, $cf-grey-45, 60%);
     }
 
     &.last-run-task-status__highlight {
@@ -42,7 +42,7 @@
     color: $c-pineapple;
 
     .cf-resource-card__disabled & {
-      color: mix($c-pineapple, $g8-storm, 60%);
+      color: mix($c-pineapple, $cf-grey-45, 60%);
     }
 
     &.last-run-task-status__highlight {

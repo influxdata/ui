@@ -72,6 +72,7 @@ class DashboardImportFromTemplateOverlay extends PureComponent<
             <Overlay.Body>{this.overlayBody}</Overlay.Body>
             <Overlay.Footer>
               <Button
+                color={ComponentColor.Tertiary}
                 text="Cancel"
                 onClick={this.onDismiss}
                 key="cancel-button"

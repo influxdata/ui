@@ -139,7 +139,7 @@ describe('Usage Page PAYG With Data', () => {
     const stats = ['0.78 MB', '32,424', '2.06 GB-hr', '0.01 GB']
 
     // Check that the stats are returned and rendered for a user with data
-    cy.getByTestID('single-stat')
+    cy.getByTestID('giraffe-layer-single-stat')
       .should('have.length', 4)
       .each((child, index) => {
         expect(child.text().trim()).to.be.oneOf([

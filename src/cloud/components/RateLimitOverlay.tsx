@@ -76,7 +76,7 @@ const RateLimitOverlay: FC<Props> = ({onClose, orgID}) => {
               </a>
               .
             </p>
-            <FormDivider lineColor={InfluxColors.Castle} />
+            <FormDivider lineColor={InfluxColors.Grey15} />
             <p>
               Need some guidance?
               <br />
@@ -88,7 +88,7 @@ const RateLimitOverlay: FC<Props> = ({onClose, orgID}) => {
                 Solving Runaway Series Cardinality When Using InfluxDB
               </a>
             </p>
-            <FormDivider lineColor={InfluxColors.Castle} />
+            <FormDivider lineColor={InfluxColors.Grey15} />
             <p>
               If you’ve inspected your schema and determined that your use-case
               requires a higher series cardinalty limit you may{' '}

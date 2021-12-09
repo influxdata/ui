@@ -1,15 +1,14 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {RouteComponentProps} from 'react-router-dom'
+import {Route, RouteComponentProps, Switch} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
-import {Switch, Route} from 'react-router-dom'
 
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Components
 import DashboardsIndexContents from 'src/dashboards/components/dashboard_index/DashboardsIndexContents'
-import {Page} from '@influxdata/clockface'
+import {ComponentSize, Page, Sort} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
@@ -29,7 +28,6 @@ import {setDashboardSort, setSearchTerm} from 'src/dashboards/actions/creators'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
-import {Sort} from '@influxdata/clockface'
 import {SortTypes} from 'src/shared/utils/sort'
 import {DashboardSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
@@ -90,7 +88,7 @@ class DashboardIndex extends PureComponent<Props, State> {
                 <AddResourceDropdown
                   onSelectNew={createDashboard}
                   onSelectImport={this.summonImportOverlay}
-                  onSelectTemplate={this.summonImportFromTemplateOverlay}
+                  onSelectTemplate={this.summonTemplatePage}
                   resourceName="Dashboard"
                   limitStatus={limitStatus}
                 />
@@ -102,6 +100,8 @@ class DashboardIndex extends PureComponent<Props, State> {
               className="dashboards-index__page-contents"
               fullWidth={false}
               scrollable={true}
+              scrollbarSize={ComponentSize.Large}
+              autoHideScrollbar={true}
             >
               <GetAssetLimits>
                 <DashboardsIndexContents
@@ -155,14 +155,14 @@ class DashboardIndex extends PureComponent<Props, State> {
     history.push(`/orgs/${orgID}/dashboards-list/import`)
   }
 
-  private summonImportFromTemplateOverlay = (): void => {
+  private summonTemplatePage = (): void => {
     const {
       history,
       match: {
         params: {orgID},
       },
     } = this.props
-    history.push(`/orgs/${orgID}/dashboards-list/import/template`)
+    history.push(`/orgs/${orgID}/settings/templates`)
   }
 }
 

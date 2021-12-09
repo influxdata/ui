@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {startCase, floor} from 'lodash'
+import {startCase} from 'lodash'
 
 // Componentd
 import {ComponentSize, InfluxColors, Panel} from '@influxdata/clockface'
@@ -34,7 +34,7 @@ const getStat = (name: string, value: any) => {
     case 'readKBs':
       const sIn5Min = minToSeconds(5)
       const mbPerSecond = value / 1000
-      const mb5Min = floor(mbPerSecond * sIn5Min)
+      const mb5Min = Math.floor(mbPerSecond * sIn5Min)
       return `${mb5Min} MB / 5 min`
     case 'maxRetentionSeconds':
       return `${secondsToDays(value)} days`
@@ -44,7 +44,7 @@ const getStat = (name: string, value: any) => {
 }
 
 const OrgLimitStat: FC<Props> = ({name, value}) => (
-  <Panel backgroundColor={InfluxColors.Onyx} className="org-limit">
+  <Panel backgroundColor={InfluxColors.Grey25} className="org-limit">
     <Panel.Header size={ComponentSize.ExtraSmall}>
       <h5 data-testid="title-header--name">{getName(name)}</h5>
     </Panel.Header>

@@ -1,11 +1,11 @@
 .searchable-dropdown--input-container {
   width: 100%;
-  padding: $ix-marg-b;
-  border-bottom: $ix-border solid $g5-pepper;
+  padding: $cf-space-2xs 0;
+  border-bottom: $ix-border solid $cf-grey-25;
 }
 
 .searchable-dropdown--empty {
-  padding: $ix-marg-b;
+  padding: $cf-space-2xs;
   text-align: center;
   opacity: 0.75;
   user-select: none;

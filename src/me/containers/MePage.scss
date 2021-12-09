@@ -13,14 +13,14 @@
 }
 
 .recent-dashboards--item {
-  margin-bottom: $cf-marg-b;
-  white-space: pre-wrap;
+  margin-bottom: $cf-space-2xs;
+  white-space: nowrap;
   word-break: break-all;
-  padding-right: $cf-marg-c;
+  padding-right: $cf-space-s;
 }
 
 .recent-dashboards--filter {
-  margin-bottom: $cf-marg-b;
+  margin-bottom: $cf-space-2xs;
 }
 
 .tutorials-list,
@@ -33,7 +33,7 @@
 
 .tutorials-list > li {
   font-size: 1.25em;
-  background-color: $g2-kevlar;
+  background-color: $cf-grey-5;
   border-radius: $radius;
   padding: $ix-marg-c;
   margin-bottom: $ix-marg-a;
@@ -48,6 +48,6 @@
 }
 
 .useful-links > li {
-  margin-bottom: $cf-marg-b;
+  margin-bottom: $cf-space-2xs;
   padding: 0;
 }

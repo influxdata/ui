@@ -72,7 +72,7 @@ const WriteDataHelperTokens: FC = () => {
   if (tokensWithDescription.length) {
     body = (
       <List
-        backgroundColor={InfluxColors.Obsidian}
+        backgroundColor={InfluxColors.Grey5}
         style={{height: '200px'}}
         maxHeight="200px"
         testID="write-data-tokens-list"

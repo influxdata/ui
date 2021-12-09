@@ -1,6 +1,6 @@
 .flux-editor {
   position: absolute;
-  top: $cf-marg-b;
+  top: $cf-space-2xs;
   right: 0;
   bottom: 0;
   left: 0;
@@ -18,7 +18,7 @@
 
 // Variables / Functions List
 .flux-editor--right-panel {
-  margin-left: $cf-marg-b;
+  margin-left: $cf-space-2xs;
   display: flex;
 }
 
@@ -41,7 +41,7 @@
 .time-machine-editor--embedded {
   @extend .flux-editor--monaco;
   border-radius: $cf-radius;
-  border: $cf-border solid $g5-pepper;
+  border: $cf-border solid $cf-grey-25;
   overflow: hidden;
 }
 

@@ -2,13 +2,14 @@
 import React, {FC, useContext, useState} from 'react'
 
 // Components
-import {Columns, Grid, IconFont, IndexList, Input} from '@influxdata/clockface'
+import {Columns, Grid, IndexList} from '@influxdata/clockface'
 import {UsersContext} from 'src/users/context/users'
 import UserListItem from 'src/users/components/UserListItem'
 import InviteListItem from 'src/users/components/InviteListItem'
 
 // Utils
 import {filter} from 'src/users/utils/filter'
+import SearchWidget from '../../shared/components/search_widget/SearchWidget'
 
 const UserList: FC = () => {
   const {users, invites} = useContext(UsersContext)
@@ -27,11 +28,10 @@ const UserList: FC = () => {
     <Grid>
       <Grid.Row>
         <Grid.Column widthMD={Columns.Ten} widthLG={Columns.Six}>
-          <Input
-            icon={IconFont.Search}
-            placeholder="Filter members..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+          <SearchWidget
+            placeholderText="Filter members..."
+            searchTerm={searchTerm}
+            onSearch={setSearchTerm}
           />
         </Grid.Column>
       </Grid.Row>

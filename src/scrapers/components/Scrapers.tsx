@@ -140,7 +140,7 @@ class Scrapers extends PureComponent<Props, State> {
     return (
       <Button
         text="Create Scraper"
-        icon={IconFont.Plus}
+        icon={IconFont.Plus_New}
         color={ComponentColor.Primary}
         onClick={this.handleShowOverlay}
         status={status}

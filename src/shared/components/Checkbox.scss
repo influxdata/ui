@@ -3,7 +3,7 @@ $checkbox--dot-size: 6px;
 $checkbox--h-padding: $ix-marg-c;
 
 .fancy-checkbox {
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   font-size: 12px;
   font-weight: 600;
   position: relative;
@@ -26,16 +26,16 @@ $checkbox--h-padding: $ix-marg-c;
   }
 
   &:before {
-    left: $checkbox--size / 2;
+    left: $checkbox--size * 0.5;
     z-index: 2;
     width: $checkbox--size;
     height: $checkbox--size;
-    background-color: $g2-kevlar;
+    background-color: $cf-grey-5;
     border-radius: 3px;
   }
 
   &:after {
-    left: $checkbox--size / 2;
+    left: $checkbox--size * 0.5;
     z-index: 3;
     width: $checkbox--dot-size;
     height: $checkbox--dot-size;

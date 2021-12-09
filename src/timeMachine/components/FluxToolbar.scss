@@ -1,6 +1,6 @@
-$flux-toolbar--search-height: $cf-form-sm-height + $cf-marg-c;
-$flux-toolbar--item-height: $cf-marg-d;
-$flux-toolbar--gap: $cf-marg-b;
+$flux-toolbar--search-height: $cf-form-sm-height + $cf-space-s;
+$flux-toolbar--item-height: $cf-form-xs-height;
+$flux-toolbar--gap: $cf-space-2xs;
 
 .flux-toolbar {
   display: flex;
@@ -27,8 +27,8 @@ $flux-toolbar--gap: $cf-marg-b;
   font-size: $cf-form-sm-font;
   line-height: $cf-form-sm-font;
   font-weight: $cf-font-weight--medium;
-  background-color: $g2-kevlar;
-  color: $g8-storm;
+  background-color: $cf-grey-5;
+  color: $cf-grey-45;
   margin-bottom: $flux-toolbar--gap;
   transition: color 0.25s ease, background-color 0.25s ease;
   overflow: hidden;
@@ -39,13 +39,13 @@ $flux-toolbar--gap: $cf-marg-b;
 
   &:hover {
     cursor: pointer;
-    background-color: mix($g2-kevlar, $g3-castle, 50%);
-    color: $g13-mist;
+    background-color: mix($cf-grey-5, $cf-grey-15, 50%);
+    color: $cf-grey-75;
   }
 
   &.flux-toolbar--tab__active {
-    background-color: $g3-castle;
-    color: $g15-platinum;
+    background-color: $cf-grey-15;
+    color: $cf-grey-85;
   }
 }
 
@@ -56,7 +56,7 @@ $flux-toolbar--gap: $cf-marg-b;
 
 .flux-toolbar--tab-contents {
   width: 300px;
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   flex: 1 0 0;
   position: relative;
   border-radius: $cf-radius;
@@ -65,7 +65,7 @@ $flux-toolbar--gap: $cf-marg-b;
 }
 
 .flux-toolbar--search {
-  padding: 0 $cf-marg-b;
+  padding: 0 $cf-space-2xs;
   display: flex;
   align-items: center;
   width: 100%;
@@ -92,23 +92,22 @@ $flux-toolbar--gap: $cf-marg-b;
 }
 
 .flux-toolbar--list-item {
-  padding-left: $cf-marg-b;
-  padding-right: $cf-marg-b + $cf-marg-a + $cf-border;
+  padding: $cf-space-m $cf-space-xs;
   height: $flux-toolbar--item-height;
   line-height: $flux-toolbar--item-height;
   font-family: $cf-code-font;
   font-weight: $cf-font-weight--bold;
   transition: background-color 0.25s ease, color 0.25s ease;
-  background-color: $g3-castle;
+  background-color: $cf-grey-15;
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   > code {
     font-size: $cf-form-sm-font;
-    background-color: $g1-raven;
+    background-color: $cf-grey-5;
     border-radius: $cf-radius-sm;
-    padding: 0 $cf-marg-b;
+    padding: 0 $cf-space-2xs;
     height: $cf-form-xs-height;
     line-height: $cf-form-xs-height;
     white-space: nowrap;
@@ -124,10 +123,10 @@ $flux-toolbar--gap: $cf-marg-b;
   }
 
   &:hover {
-    background-color: $g4-onyx;
+    background-color: $cf-grey-15;
 
     > code {
-      background-color: $g2-kevlar;
+      background-color: $cf-grey-5;
     }
 
     .flux-toolbar--injector {
@@ -137,12 +136,12 @@ $flux-toolbar--gap: $cf-marg-b;
 }
 
 .flux-toolbar--heading {
-  padding: $cf-marg-b $cf-marg-c;
-  padding-bottom: $cf-marg-b + $cf-marg-a;
+  padding: $cf-space-2xs $cf-space-s;
+  padding-bottom: $cf-space-2xs + $cf-space-3xs;
   font-weight: $cf-font-weight--medium;
-  color: $g15-platinum;
-  border-bottom: $cf-border solid $g5-pepper;
-  margin-bottom: $cf-marg-a;
+  color: $cf-grey-85;
+  border-bottom: $cf-border solid $cf-grey-25;
+  margin-bottom: $cf-space-3xs;
 }
 
 .flux-toolbar--variable {
@@ -169,5 +168,5 @@ $flux-toolbar--gap: $cf-marg-b;
 
 .flux-toolbar--popover {
   font-size: 13px;
-  padding: $cf-marg-c + $cf-marg-a;
+  padding: $cf-space-s + $cf-space-3xs;
 }

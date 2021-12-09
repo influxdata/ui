@@ -4,14 +4,14 @@
 .legend-orientation-toggle,
 .legend-opacity-slider,
 .legend-colorize-rows-toggle {
-  margin-top: $cf-marg-b;
-  margin-bottom: $cf-marg-c;
+  margin-top: $cf-space-2xs;
+  margin-bottom: $cf-space-s;
 
   label.legend-orientation-label {
-    color: $g11-sidewalk;
+    color: $cf-grey-65;
   }
 }
 
 .legend-orientation--horizontal {
-  margin-bottom: $cf-marg-b !important;
+  margin-bottom: $cf-space-2xs !important;
 }

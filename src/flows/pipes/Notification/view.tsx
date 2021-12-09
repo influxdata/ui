@@ -122,7 +122,7 @@ const Notification: FC<PipeProp & OwnProps> = ({Context, secrets}) => {
     return 'No Data Returned'
   }, [loading])
 
-  const queryText = getPanelQueries(id, true)?.source
+  const queryText = getPanelQueries(id)?.source
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(
@@ -206,6 +206,7 @@ const Notification: FC<PipeProp & OwnProps> = ({Context, secrets}) => {
 
       editorInstance.executeEdits('', edits)
       updateMessage(editorInstance.getValue())
+      event('Injecting Expression into Alert Message')
     },
     [editorInstance]
   )
@@ -508,6 +509,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
     if (showId === id) {
       hideSub()
     } else {
+      event('Opening the Expressions Sidebar')
       show(id)
       showSub(<Expressions parsed={results?.parsed} onSelect={inject} />)
     }
@@ -601,28 +603,26 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
           <FlexBox.Child>
             <Form.Element label="Notification" required={true}>
-              <Panel backgroundColor={InfluxColors.Onyx}>
+              <Panel backgroundColor={InfluxColors.Grey15}>
                 <Panel.Body>
                   <FlexBox
                     justifyContent={JustifyContent.FlexEnd}
                     alignItems={AlignItems.FlexEnd}
                     margin={ComponentSize.Medium}
                   >
-                    {isFlagEnabled('notebooksExp') && (
-                      <FlexBox.Child grow={0} shrink={0}>
-                        <Button
-                          text="${exp}"
-                          onClick={launcher}
-                          color={ComponentColor.Secondary}
-                          testID="notification-exp-button"
-                          status={
-                            editorInstance
-                              ? ComponentStatus.Default
-                              : ComponentStatus.Loading
-                          }
-                        />
-                      </FlexBox.Child>
-                    )}
+                    <FlexBox.Child grow={0} shrink={0}>
+                      <Button
+                        text="${exp}"
+                        onClick={launcher}
+                        color={ComponentColor.Secondary}
+                        testID="notification-exp-button"
+                        status={
+                          editorInstance
+                            ? ComponentStatus.Default
+                            : ComponentStatus.Loading
+                        }
+                      />
+                    </FlexBox.Child>
                     <FlexBox.Child grow={0} shrink={0}>
                       <Button
                         text="Test Alert"

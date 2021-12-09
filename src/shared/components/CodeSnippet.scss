@@ -6,9 +6,9 @@
 .code-snippet {
   border-radius: $cf-radius;
   overflow: hidden;
-  border: $cf-border solid $g2-kevlar;
-  background-color: $g2-kevlar;
-  margin-bottom: $cf-marg-b;
+  border: $cf-border solid $cf-grey-15;
+  background-color: $cf-grey-15;
+  margin-bottom: $cf-space-2xs;
 }
 
 .code-snippet--scroll {
@@ -23,13 +23,13 @@
   color: $c-potassium;
   font-weight: $cf-font-weight--bold;
   font-family: $cf-code-font;
-  border-radius: $cf-radius-sm;
-  background-color: $g0-obsidian;
+  border-radius: $cf-radius;
+  background-color: $cf-grey-5;
 
   pre {
     display: inline-block;
     white-space: pre-wrap;
-    padding: $cf-marg-b $cf-marg-c;
+    padding: $cf-space-2xs $cf-space-s;
   }
 
   pre,
@@ -40,19 +40,19 @@
 }
 
 .new-token--btn {
-  margin: $cf-marg-a $cf-marg-c;
+  margin: $cf-space-3xs $cf-space-s;
 }
 
 .code-snippet--footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $cf-marg-b $cf-marg-c;
-  border-top: $cf-border solid $g2-kevlar;
+  padding: $cf-space-2xs $cf-space-s;
+  border-top: $cf-border solid $cf-grey-15;
 }
 
 .code-snippet--label {
   font-size: $cf-text-base;
-  color: $g11-sidewalk;
+  color: $cf-grey-65;
   margin: 0;
 }

@@ -89,7 +89,7 @@ class StreamingSelector extends PureComponent<Props, State> {
                   <Input
                     className="wizard-step--filter"
                     size={ComponentSize.Small}
-                    icon={IconFont.Search}
+                    icon={IconFont.Search_New}
                     value={searchTerm}
                     onBlur={this.handleFilterBlur}
                     onChange={this.handleFilterChange}
@@ -109,7 +109,7 @@ class StreamingSelector extends PureComponent<Props, State> {
                       testID={`telegraf-plugins--${b}`}
                       selected={this.isCardChecked(b)}
                       onClick={this.handleToggle}
-                      icon={IconFont.Checkmark}
+                      icon={IconFont.Checkmark_New}
                     >
                       {createElement(BUNDLE_LOGOS[b])}
                     </SelectableCard>

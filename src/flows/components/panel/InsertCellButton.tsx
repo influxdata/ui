@@ -54,11 +54,11 @@ const InsertCellButton: FC<Props> = ({id}) => {
   return (
     <div className="flow-divider" ref={dividerRef}>
       <SquareButton
-        icon={IconFont.Plus}
+        icon={IconFont.Plus_New}
+        size={ComponentSize.ExtraSmall}
         ref={buttonRef}
         testID={`panel-add-btn-${index}`}
         className="flow-divider--button"
-        color={ComponentColor.Secondary}
         active={popoverVisible.current}
       />
       <Popover

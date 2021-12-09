@@ -64,9 +64,9 @@ const baseQueryVariableAction = {
 }
 
 describe('hydrateVariables', () => {
-  it('should call hydrateVars once per query variable', async () => {
+  it('should call hydrateVars once per query variable', () => {
     const dispatch = jest.fn()
-    const getState = jest.fn(() => getMockAppState())
+    const getState: any = jest.fn(() => getMockAppState())
 
     fetchMock.mockResponse(() => {
       return new Promise(resolve => {
@@ -84,7 +84,7 @@ describe('hydrateVariables', () => {
       expect(dispatch).toHaveBeenCalledTimes(1)
     })
   })
-  it('should not call hydrateVars when the query has no variable reference', async () => {
+  it('should not call hydrateVars when the query has no variable reference', () => {
     const dispatch = jest.fn()
     const getState = jest.fn(() =>
       getMockAppState(
@@ -101,12 +101,12 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, getState).then(() => {
+    hydrateVariables()(dispatch, getState as any).then(() => {
       expect(dispatch).not.toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledTimes(0)
     })
   })
-  it('should call hydrateVars twice when there are query variables', async () => {
+  it('should call hydrateVars twice when there are query variables', () => {
     const dispatch = jest.fn()
     const getState = jest.fn(() =>
       getMockAppState(
@@ -124,7 +124,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, getState).then(() => {
+    hydrateVariables()(dispatch, getState as any).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)
       expect(dispatch).not.toHaveBeenCalledWith(baseQueryVariableAction)
@@ -134,7 +134,7 @@ describe('hydrateVariables', () => {
       expect(dispatch).toHaveBeenCalledTimes(2)
     })
   })
-  it('should call hydrateVars on all the query variables and their nested variables', async () => {
+  it('should call hydrateVars on all the query variables and their nested variables', () => {
     const dispatch = jest.fn()
     const getState = jest.fn(() =>
       getMockAppState(
@@ -152,7 +152,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, getState).then(() => {
+    hydrateVariables()(dispatch, getState as any).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(buildVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)
@@ -162,7 +162,7 @@ describe('hydrateVariables', () => {
       expect(dispatch).toHaveBeenCalledTimes(3)
     })
   })
-  it('should call all the nested query variables to the one query variable', async () => {
+  it('should call all the nested query variables to the one query variable', () => {
     const dispatch = jest.fn()
     const getState = jest.fn(() =>
       getMockAppState(
@@ -180,7 +180,7 @@ describe('hydrateVariables', () => {
       })
     })
 
-    hydrateVariables()(dispatch, getState).then(() => {
+    hydrateVariables()(dispatch, getState as any).then(() => {
       expect(dispatch).toHaveBeenCalledWith(bucketVariableAction)
       expect(dispatch).toHaveBeenCalledWith(buildVariableAction)
       expect(dispatch).toHaveBeenCalledWith(deploymentVariableAction)

@@ -1,5 +1,7 @@
 import View from './view'
-import {parse} from '@influxdata/flux'
+import {parse} from '@influxdata/flux-lsp-browser'
+import {parseQuery} from 'src/shared/contexts/query'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
@@ -19,7 +21,9 @@ export default register => {
       }
 
       try {
-        const ast = parse(query)
+        const ast = isFlagEnabled('fastFlows')
+          ? parseQuery(query)
+          : parse(query)
         if (!ast.body.length) {
           return ''
         }

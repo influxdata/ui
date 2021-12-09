@@ -292,7 +292,8 @@ fsRead,field,float`
     testSchemaFiles(cy, true, origFileContents, checkContents)
   })
 
-  it('should be able to create an explicit bucket and update the existing schema file during editing', function() {
+  // [gh] this test is too flaky to be in our CI - a fix is incoming
+  it.skip('should be able to create an explicit bucket and update the existing schema file during editing', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
     cy.getByTestID('accordion-header').click()

@@ -48,12 +48,13 @@ const testSchemaFiles = (
 
   const testFile = new File([origFileContents], schemaFile, {type})
 
-  const event = {dataTransfer: {files: [testFile]}, force: true}
+  const event = {dataTransfer: {files: [testFile]}}
   cy.getByTestID('dndContainer')
     .trigger('dragover', event)
     .trigger('drop', event)
 
   cy.getByTestID('bucket-form-submit').click()
+  cy.getByTestID('notification-success').should('be.visible')
 
   // in settings:
   // give it some time for the submit to happen/the bucket list to show up
@@ -219,7 +220,7 @@ describe('Explicit Buckets', () => {
       {type}
     )
 
-    const event = {dataTransfer: {files: [testFile]}, force: true}
+    const event = {dataTransfer: {files: [testFile]}}
     cy.getByTestID('dndContainer')
       .trigger('dragover', event)
       .trigger('drop', event)
@@ -332,6 +333,7 @@ fsRead,field,float`
       .trigger('drop', event)
 
     cy.getByTestID('bucket-form-submit').click()
+    cy.getByTestID('notification-success').should('be.visible')
 
     // in settings:
     // b/c editing has a different url, this *should* work
@@ -416,6 +418,7 @@ fsRead,field,float`
           .trigger('drop', validFileEvent)
       })
     cy.getByTestID('bucket-form-submit').click()
+    cy.getByTestID('notification-success').should('be.visible')
 
     // remove the downloaded files
     cy.exec('rm cypress/downloads/*', {

@@ -391,6 +391,9 @@ describe('flows alert panel', () => {
       cy.getByTestID('flux-editor').contains(parseMode)
     })
 
+    // close popup
+    cy.get('.cf-overlay--dismiss').click()
+
     // === ZENOSS ===
     const zenossAction = 'my-action'
     const zenossMethod = 'my-method'

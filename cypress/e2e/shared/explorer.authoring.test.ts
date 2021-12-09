@@ -143,9 +143,9 @@ describe('DataExplorer authoring tests', () => {
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor').should('be.visible')
-          .monacoType(`from(bucket: "defbuck"{rightarrow}
-  |> range(start: -10s{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement == "no exist"{rightarrow}`)
+          .monacoType(`from(bucket: "defbuck"{rightarrow})
+  |> range(start: -10s{rightarrow}{esc}
+|> filter(fn: (r{rightarrow} => r._measurement == "no exist"{rightarrow}`)
         cy.getByTestID('time-machine-submit-button').click()
       })
 
@@ -156,7 +156,7 @@ describe('DataExplorer authoring tests', () => {
       const taskName = 'tax'
       // begin flux
       cy.getByTestID('flux-editor').should('be.visible')
-        .monacoType(`from(bucket: "defbuck"{rightarrow}
+        .monacoType(`from(bucket: "defbuck"{rightarrow})
   |> range(start: -15m, stop: now({rightarrow}{rightarrow}
   |> filter(fn: (r{rightarrow} => r._measurement ==`)
 

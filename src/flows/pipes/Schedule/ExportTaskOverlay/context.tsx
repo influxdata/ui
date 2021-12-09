@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useState, useCallback, useEffect, useContext} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {parse, format_from_js_file} from '@influxdata/flux'
+import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 // Components
 import {

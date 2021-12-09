@@ -9,7 +9,7 @@ import React, {
   Suspense,
 } from 'react'
 import {useDispatch} from 'react-redux'
-import {parse, format_from_js_file} from '@influxdata/flux'
+import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 import {
   ComponentStatus,
   Form,

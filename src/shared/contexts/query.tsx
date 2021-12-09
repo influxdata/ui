@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {v4 as UUID} from 'uuid'
-import {parse, format_from_js_file} from '@influxdata/flux'
+import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'

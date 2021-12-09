@@ -1093,15 +1093,10 @@
   resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.1.8.tgz#1b4dfc156e3cb0742beda0f50ae2b471411571b4"
   integrity sha512-REuXFbWIPulS18yvY9BqdEfhE0ngnG2GeSukZKD9NSUWjwhZ+Z4woRQmGQlmU0j320V9hW0/rMAHXS5RV66Maw==
 
-"@influxdata/flux-lsp-browser@^0.5.53":
-  version "0.5.99"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.5.99.tgz#fe42b110974da12f7693aa4b023bdc577ded5d9f"
-  integrity sha512-fbuc3N2l8GB9xHfKe0kqdxXbGxyaz2t54up+TU4ds0RuvcleS+jAkigDz2vtCfncUQqzwr6HYh5CJbXaIb8DnA==
-
-"@influxdata/flux@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/flux/-/flux-0.5.1.tgz#e39e7a7af9163fc9494422c8fed77f3ae1b68f56"
-  integrity sha512-GHlkXBhSdJ2m56JzDkbnKPAqLj3/lexPooacu14AWTO4f2sDGLmzM7r0AxgdtU1M2x7EXNBwgGOI5EOAdN6mkw==
+"@influxdata/flux-lsp-browser@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.0.tgz#2b0b8d543f9b89e73ee2379a90aa66499fa92026"
+  integrity sha512-A7bGnbDzOnsEIAYpxuqdKJjPbtlP5H5EcXsqdpMISdp80y0TBbGv41U3dsfrOIPENvXNYLjroIvp6QYnnF/uaw==
 
 "@influxdata/giraffe@^2.20.3":
   version "2.20.3"

@@ -2,7 +2,6 @@
 import {push, goBack, RouterAction} from 'connected-react-router'
 import {Dispatch} from 'react'
 import {normalize} from 'normalizr'
-import {format_from_js_file} from '@influxdata/flux'
 
 // APIs
 import * as api from 'src/client'
@@ -31,7 +30,7 @@ import {
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
-import {parse} from 'src/external/parser'
+import {parse, format_from_js_file} from 'src/external/parser'
 
 // Types
 import {

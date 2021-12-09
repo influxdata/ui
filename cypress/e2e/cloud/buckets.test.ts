@@ -280,8 +280,8 @@ describe('Explicit Buckets', () => {
       checkContents
     )
   })
-
-  it('should be able to create an explicit bucket and add csv schema file during editing', function() {
+  // alse skipping this flaky test for now; fixes are being worked on
+  it.skip('should be able to create an explicit bucket and add csv schema file during editing', function() {
     const origFileContents = `name,type,dataType
 time,timestamp,
 host,tag,

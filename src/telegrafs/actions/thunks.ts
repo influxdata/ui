@@ -48,6 +48,7 @@ import {
   deleteTelegraf as apiDeleteTelegraf,
   getTelegrafs as apiGetTelegrafs,
   postTelegraf,
+  postTelegrafsLabel,
 } from 'src/client'
 
 export const getTelegrafs = () => async (
@@ -162,9 +163,16 @@ export const addTelegrafLabelsAsync = (
   labels: Label[]
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
-    // TODO: fix OpenAPI POST /telegrafs/{telegrafID}/labels
-    // postTelegrafsLabel from `src/client` only add one label each time
-    await client.telegrafConfigs.addLabels(telegrafID, labels as ILabel[])
+    if (labels.length === 0) {
+      throw new Error('No label is found')
+    }
+    const labelID = labels[0].id
+    const response = await postTelegrafsLabel({telegrafID, data: {labelID}})
+
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
     // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
     // getTelegraf from `src/client` returns a string instead of an object
     const telegraf = await client.telegrafConfigs.get(telegrafID)

@@ -121,13 +121,13 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
               </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
-                  testID={`dropdown-item--${s.key}`}
+                  testID={`dropdown-item--${s.id}`}
                   id={s.id}
-                  key={s.key}
-                  value={s.key}
+                  key={s.id}
+                  value={s.id}
                   onClick={updateAccessKey}
                 >
-                  {s.key}
+                  {s.id}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -165,13 +165,13 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
               </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
-                  testID={`dropdown-item--${s.key}`}
+                  testID={`dropdown-item--${s.id}`}
                   id={s.id}
-                  key={s.key}
-                  value={s.key}
+                  key={s.id}
+                  value={s.id}
                   onClick={updateAuthAlgo}
                 >
-                  {s.key}
+                  {s.id}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -209,13 +209,13 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
               </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
-                  testID={`dropdown-item--${s.key}`}
+                  testID={`dropdown-item--${s.id}`}
                   id={s.id}
-                  key={s.key}
-                  value={s.key}
+                  key={s.id}
+                  value={s.id}
                   onClick={updateCredScope}
                 >
-                  {s.key}
+                  {s.id}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -253,13 +253,13 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
               </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
-                  testID={`dropdown-item--${s.key}`}
+                  testID={`dropdown-item--${s.id}`}
                   id={s.id}
-                  key={s.key}
-                  value={s.key}
+                  key={s.id}
+                  value={s.id}
                   onClick={updateSignedHeaders}
                 >
-                  {s.key}
+                  {s.id}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -297,13 +297,13 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
               </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
-                  testID={`dropdown-item--${s.key}`}
+                  testID={`dropdown-item--${s.id}`}
                   id={s.id}
-                  key={s.key}
-                  value={s.key}
+                  key={s.id}
+                  value={s.id}
                   onClick={updateCalcSignature}
                 >
-                  {s.key}
+                  {s.id}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>

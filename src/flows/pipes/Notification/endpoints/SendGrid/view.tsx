@@ -76,13 +76,13 @@ const View: FC<EndpointProps> = ({createSecret, secrets}) => {
               </Dropdown.Item>
               {secrets.map(s => (
                 <Dropdown.Item
-                  testID={`dropdown-item--${s.key}`}
+                  testID={`dropdown-item--${s.id}`}
                   id={s.id}
-                  key={s.key}
-                  value={s.key}
+                  key={s.id}
+                  value={s.id}
                   onClick={updateAPIKey}
                 >
-                  {s.key}
+                  {s.id}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>

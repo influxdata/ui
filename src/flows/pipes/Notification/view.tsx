@@ -645,7 +645,10 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                       label="Endpoint"
                       className="endpoint-dropdown--element"
                     >
-                      <Dropdown.Menu className="flows-endpoints--dropdown">
+                      <Dropdown.Menu
+                        className="flows-endpoints--dropdown"
+                        maxHeight={500}
+                      >
                         {avail}
                       </Dropdown.Menu>
                     </Form.Element>

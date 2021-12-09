@@ -34,7 +34,6 @@ import {getLabels, getStatus} from 'src/resources/selectors'
 import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Types
-import {ILabel} from '@influxdata/influx'
 import {
   AppThunk,
   RemoteDataState,
@@ -50,7 +49,9 @@ import {
   getTelegrafs as apiGetTelegrafs,
   postTelegraf,
   postTelegrafsLabel,
+  putTelegraf,
 } from 'src/client'
+import { lab } from 'chroma-js'
 
 export const getTelegrafs =
   () => async (dispatch: Dispatch<Action>, getState: GetState) => {
@@ -109,15 +110,15 @@ export const createTelegraf =
 
 export const updateTelegraf =
   (telegraf: Telegraf) =>
-  async (dispatch: Dispatch<Action>, getState: GetState) => {
+  async (dispatch: Dispatch<Action>) => {
     try {
-      const state = getState()
-      const labels = getLabels(state, telegraf.labels)
-      const t = await client.telegrafConfigs.update(telegraf.id, {
-        ...telegraf,
-        labels,
-      })
+      const response = await putTelegraf({telegrafID: telegraf.id, data: telegraf})
 
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
+      }
+
+      const t = response.data
       const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
         t,
         telegrafSchema

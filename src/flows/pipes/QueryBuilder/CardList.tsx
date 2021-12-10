@@ -1,3 +1,4 @@
+// Libraries
 import React, {
   FC,
   useCallback,
@@ -14,15 +15,23 @@ import {
   FlexBox,
 } from '@influxdata/clockface'
 
+// Contexts
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
 import {PipeContext} from 'src/flows/context/pipe'
 
+// Utils
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
+
+// Types
 import {RemoteDataState, BuilderAggregateFunctionType} from 'src/types'
+
+// Components
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
+import TagSelectorCount from 'src/shared/components/TagSelectorCount'
+import WaitingText from 'src/shared/components/WaitingText'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import SelectorList from 'src/timeMachine/components/SelectorList'
-import WaitingText from 'src/shared/components/WaitingText'
+
 
 const DEBOUNCE_TIMEOUT = 500
 const debounce_array = []
@@ -255,6 +264,9 @@ const Card: FC<Props> = ({idx}) => {
             menuTestID="tag-selector--dropdown-menu"
             options={card.keys.results}
           />
+          {!!card.values.selected.length && (
+            <TagSelectorCount count={card.values.selected.length} />
+          )}
         </FlexBox>
         <Input
           value={valueSearches[idx] || ''}

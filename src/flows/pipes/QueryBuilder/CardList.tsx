@@ -60,8 +60,8 @@ const Card: FC<Props> = ({idx}) => {
   const [valueSearches, setValueSearches] = useState([])
 
   const allItems = useMemo(() => {
-    const results = new Set(card.values.results)
-    const selected = card.values.selected.filter(s => !results.has(s))
+    const results = new Set(card?.values?.results)
+    const selected = card?.values?.selected?.filter(s => !results.has(s))
 
     return [...selected, ...Array.from(results)]
   }, [card?.values?.selected, card?.values?.results])
@@ -263,7 +263,7 @@ const Card: FC<Props> = ({idx}) => {
             menuTestID="tag-selector--dropdown-menu"
             options={card.keys.results}
           />
-          {!!card.values.selected.length && (
+          {!!card?.values?.selected?.length && (
             <TagSelectorCount count={card.values.selected.length} />
           )}
         </FlexBox>

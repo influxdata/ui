@@ -92,6 +92,7 @@ describe('Explicit Buckets', () => {
       failOnNonZeroExit: false,
     })
   })
+
   it('can create a bucket with an explicit schema', () => {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('overlay--container').within(() => {
@@ -191,6 +192,7 @@ describe('Explicit Buckets', () => {
       cy.getByTestID('measurement-schema-section-parent').should('not.exist')
     })
   })
+
   it('should be able to create an explicit bucket using one schema file', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
@@ -278,7 +280,6 @@ fsRead,field,float`
     testSchemaFiles(cy, true, origFileContents, 'schema.csv', checkContents)
   })
 
-  // [gh] this test is too flaky to be in our CI - a fix is incoming
   it('should be able to create an explicit bucket and update the existing schema file during editing', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('bucket-form-name').type('explicit_bucket')
@@ -293,7 +294,7 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click({force: true})
+        cy.getByTestID('bucket-settings').click()
       })
     const schemaName = 'one schema'
     const fileName = 'one_schema.json'
@@ -322,7 +323,7 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click({force: true})
+        cy.getByTestID('bucket-settings').click()
       })
 
     cy.getByTestID('overlay--container').within(() => {
@@ -388,7 +389,7 @@ fsRead,field,float`
     cy.getByTestID(`bucket-card explicit_bucket`)
       .should('exist')
       .within(() => {
-        cy.getByTestID('bucket-settings').click({force: true})
+        cy.getByTestID('bucket-settings').click()
       })
 
     cy.getByTestID('overlay--container').within(() => {

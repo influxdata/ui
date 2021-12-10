@@ -52,12 +52,10 @@ const Card: FC<Props> = ({idx}) => {
   const [valueSearches, setValueSearches] = useState([])
 
   const allItems = useMemo(() => {
-    const selected = new Set(card.values.selected)
-    const remaining = card.values.results.filter(
-      result => !selected.has(result)
-    )
+    const results = new Set(card.values.results)
+    const selected = card.values.selected.filter(s => !results.has(s))
 
-    return [...Array.from(selected), ...remaining]
+    return [...selected, ...Array.from(results)]
   }, [card?.values?.selected, card?.values?.results])
 
   const _remove =

@@ -1,6 +1,6 @@
 import {TEST_NOTIFICATION} from 'src/flows/pipes/Notification/endpoints'
-import HTTP from './view'
-import HTTPReadOnly from './readOnly'
+import View from './view'
+import ReadOnly from './readOnly'
 
 export default register => {
   register({
@@ -10,8 +10,8 @@ export default register => {
       auth: 'none',
       url: 'https://www.example.com/endpoint',
     },
-    component: HTTP,
-    readOnlyComponent: HTTPReadOnly,
+    component: View,
+    readOnlyComponent: ReadOnly,
     generateImports: () =>
       ['http', 'json'].map(i => `import "${i}"`).join('\n'),
     generateTestImports: () =>

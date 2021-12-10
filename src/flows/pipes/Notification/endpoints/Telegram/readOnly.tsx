@@ -14,35 +14,45 @@ const ReadOnly: FC = () => {
 
   return (
     <div className="slack-endpoint-details--flex">
-      <Form.Element label="Incoming Webhook URL" required={true}>
+      <Form.Element label="URL" required={true}>
         <Input
           name="url"
+          testID="input--url"
           type={InputType.Text}
-          placeholder="ex: https://hooks.slack.com/services/X/X/X"
           value={data.endpointData.url}
           size={ComponentSize.Medium}
           status={ComponentStatus.Disabled}
         />
       </Form.Element>
-      <Form.Element label="Slack Channel" required={true}>
+      <Form.Element label="Channel" required={true}>
         <Input
-          name="channel"
+          name="url"
+          testID="input--channel"
           type={InputType.Text}
           value={data.endpointData.channel}
           size={ComponentSize.Medium}
           status={ComponentStatus.Disabled}
         />
       </Form.Element>
-      <Form.Element label="Message Color">
-        (
+      <Form.Element label="Token" required={true}>
         <Input
-          name="color"
-          type={InputType.Text}
-          value={data.endpointData.color}
+          name="token"
+          testID="input--token"
+          type={InputType.Password}
+          value={data.endpointData.token}
           size={ComponentSize.Medium}
           status={ComponentStatus.Disabled}
         />
-        )
+      </Form.Element>
+      <Form.Element label="Parse Mode">
+        <Input
+          name="parseMode"
+          testID="input--parseMode"
+          type={InputType.Email}
+          value={data.endpointData.parseMode}
+          size={ComponentSize.Medium}
+          status={ComponentStatus.Disabled}
+        />
       </Form.Element>
     </div>
   )

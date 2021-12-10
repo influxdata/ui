@@ -11,8 +11,9 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {getOrg} from 'src/organizations/selectors'
+import {EndpointProps} from 'src/types'
 
-const PagerDuty: FC = () => {
+const View: FC<EndpointProps> = () => {
   const {data, update} = useContext(PipeContext)
   const org = useSelector(getOrg)
 
@@ -40,6 +41,7 @@ const PagerDuty: FC = () => {
       <Form.Element label="Client URL">
         <Input
           name="url"
+          testID="input--url"
           type={InputType.Text}
           placeholder={defaultEndpoint}
           value={data.endpointData.url}
@@ -50,6 +52,7 @@ const PagerDuty: FC = () => {
       <Form.Element label="Routing Key">
         <Input
           name="key"
+          testID="input--key"
           type={InputType.Password}
           value={data.endpointData.key}
           onChange={updateKey}
@@ -60,4 +63,4 @@ const PagerDuty: FC = () => {
   )
 }
 
-export default PagerDuty
+export default View

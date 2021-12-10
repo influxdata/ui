@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-const setupData = (cy: Cypress.Chainable) =>
+const setup = (cy: Cypress.Chainable) =>
   cy.flush().then(() =>
     cy.signin().then(() =>
       cy.get('@org').then(({id}: Organization) =>
@@ -19,61 +19,65 @@ const testSchemaFiles = (
   fixtureFileName: string,
   checkContents: (cy: Cypress.Chainable) => void
 ) => {
+  const bucketName = 'explicit_bucket'
+  const schemaFileName = 'first schema file'
+
   cy.getByTestID('Create Bucket').click()
-  cy.getByTestID('bucket-form-name').type('explicit_bucket')
+  cy.getByTestID('create-bucket-form').should('be.visible')
+  cy.getByTestID('bucket-form-name').type(bucketName)
   cy.getByTestID('accordion-header').click()
+  cy.getByTestID('create-bucket-schema-type-toggle-box').should('be.visible')
   cy.getByTestID('explicit-bucket-schema-choice-ID').click()
+  cy.getByTestID('measurement-schema-section-parent').should('be.visible')
 
   cy.getByTestID('bucket-form-submit').click()
 
   // make sure the overlay is closed!
   cy.getByTestID('create-bucket-form').should('not.exist')
 
-  cy.getByTestID(`bucket-card explicit_bucket`)
+  cy.getByTestID(`bucket-card ${bucketName}`)
     .should('exist')
     .within(() => {
       cy.getByTestID('bucket-settings').click()
     })
+
+  cy.getByTestID('bucket-form').should('be.visible')
   cy.getByTestID('accordion-header').click()
+  cy.getByTestID('measurement-schema-section-parent').should('be.visible')
 
   cy.getByTestID('measurement-schema-add-file-button').click()
-  cy.getByTestID('input-field').type('first schema file')
+  cy.getByTestID('measurement-schema-readOnly-panel-0').should('be.visible')
+  cy.getByTestID('input-field').type(schemaFileName)
 
   cy.getByTestID('drag-and-drop--input').attachFile(fixtureFileName)
 
-  // making sure the file is there before moving on to the next step:
+  // make sure the file is there before moving on to the next step:
   cy.getByTestID('displayArea').contains(fixtureFileName)
 
   cy.getByTestID('bucket-form-submit').click()
+  cy.getByTestID('notification-success').should('be.visible')
+  cy.getByTestID('bucket-form').should('not.exist')
 
-  // in settings:
-  // give it some time for the submit to happen/the bucket list to show up
-  // check the url to make sure it has navigated back to the main buckets list
-  cy.location('pathname', {timeout: 60000}).should(
-    'match',
-    /.*load-data\/buckets$/
-  )
-
-  cy.getByTestID(`bucket-card explicit_bucket`)
+  cy.getByTestID(`bucket-card ${bucketName}`)
     .should('exist')
     .within(() => {
       cy.getByTestID('bucket-settings').click()
     })
+
+  cy.getByTestID('bucket-form').should('be.visible')
   cy.getByTestID('accordion-header').click()
 
   cy.getByTestID('accordion--advanced-section')
-    .should('exist')
+    .should('be.visible')
     .within(() => {
       if (isCsv) {
         cy.getByTestID('csv-download-flavor-choice').click()
       }
 
       cy.getByTestID('measurement-schema-readOnly-panel-0')
-        .should('exist')
+        .should('be.visible')
         .within(() => {
-          cy.getByTestID('measurement-schema-name-0')
-            .contains('first schema file')
-            .should('exist')
+          cy.getByTestID('measurement-schema-name-0').contains(schemaFileName)
 
           cy.getByTestID('measurement-schema-download-button').click()
 
@@ -84,7 +88,7 @@ const testSchemaFiles = (
 
 describe('Explicit Buckets', () => {
   beforeEach(() => {
-    setupData(cy)
+    setup(cy)
 
     // remove the downloaded files
     cy.exec('rm cypress/downloads/*', {
@@ -431,7 +435,7 @@ fsRead,field,float`
 
 describe('Buckets', () => {
   beforeEach(() => {
-    setupData(cy)
+    setup(cy)
   })
 
   it('can sort by name and retention', () => {

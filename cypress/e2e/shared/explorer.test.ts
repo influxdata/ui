@@ -634,7 +634,7 @@ describe('DataExplorer', () => {
 
   describe('refresh', () => {
     beforeEach(() => {
-      cy.writeData(points(10))
+      cy.writeData(points(20))
 
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
@@ -650,6 +650,8 @@ describe('DataExplorer', () => {
       // graph will slightly move
       cy.wait(200)
       cy.get('.autorefresh-dropdown--pause').click()
+
+      // not actually same as (see the false as the second arg)
       makeGraphSnapshot().shouldBeSameAs(snapshot, false)
     })
   })

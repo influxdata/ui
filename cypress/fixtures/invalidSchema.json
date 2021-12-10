@@ -1,0 +1,5 @@
+[
+  {"name": "time", "type": "timestamp"},
+  {"name": "fsWrite", "type": "field", "dataType": "float"},
+  {"name": "hello there"}
+]

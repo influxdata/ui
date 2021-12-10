@@ -10,7 +10,6 @@ describe('flows alert panel', () => {
             cy.getByTestID('version-info')
             return cy
               .setFeatureFlags({
-                simpleTable: true,
                 notebooksExp: true,
                 notebooksNewEndpoints: true,
               })

@@ -9,7 +9,7 @@ import React, {
   Suspense,
   useEffect,
 } from 'react'
-import {useDispatch, connect} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 import {
   ComponentStatus,
@@ -49,7 +49,7 @@ const NotificationMonacoEditor = lazy(() =>
 )
 
 // Types
-import {RemoteDataState, EditorType, Secret} from 'src/types'
+import {RemoteDataState, EditorType} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 // Utils
@@ -70,10 +70,7 @@ import 'src/flows/pipes/Notification/styles.scss'
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 import CreateSecretForm from 'src/secrets/components/CreateSecretForm'
 
-type OwnProps = {
-  secrets: Secret[]
-}
-const Notification: FC<PipeProp & OwnProps> = ({Context, secrets}) => {
+const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
   const {id, data, update, results, loading} = useContext(PipeContext)
   const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
@@ -96,6 +93,8 @@ const Notification: FC<PipeProp & OwnProps> = ({Context, secrets}) => {
       showSub(<CreateSecretForm onDismiss={hideSub} onSubmit={callback} />)
     }
   }
+
+  const secrets = useSelector(getAllSecrets)
 
   if (!data.interval) {
     intervalError = 'Required'
@@ -716,10 +715,4 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    secrets: getAllSecrets(state),
-  }
-}
-
-export default connect(mapStateToProps, null)(Notification)
+export default Notification

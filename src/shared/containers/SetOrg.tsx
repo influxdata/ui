@@ -15,6 +15,7 @@ import {
   TaskRunsPagePaginated,
   TaskEditPage,
   DashboardsIndex,
+  DashboardsIndexPaginated,
   DataExplorerPage,
   DashboardContainer,
   FlowPage,
@@ -180,12 +181,18 @@ const SetOrg: FC = () => {
             path={`${orgPath}/data-explorer`}
             component={DataExplorerPage}
           />
-
           {/* Dashboards */}
-          <Route
-            path={`${orgPath}/dashboards-list`}
-            component={DashboardsIndex}
-          />
+          {isFlagEnabled('paginatedDashboards') ? (
+            <Route
+              path={`${orgPath}/dashboards-list`}
+              component={DashboardsIndexPaginated}
+            />
+          ) : (
+            <Route
+              path={`${orgPath}/dashboards-list`}
+              component={DashboardsIndex}
+            />
+          )}
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardContainer}

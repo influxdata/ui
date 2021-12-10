@@ -58,6 +58,7 @@ import {
   TelegrafConfigCreationSuccess,
   TokenCreationError,
 } from 'src/shared/copy/notifications'
+import { postTelegraf, putTelegraf } from 'src/client'
 
 const DEFAULT_COLLECTION_INTERVAL = 10000
 
@@ -410,13 +411,18 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
     // TODO:
     //   Either add `POST` and `PUT` to /telegraf/plugins` on OpenAPI
     //   or add `plugins` to the request body for `PUT /telegrafs/{telegrafID}`
-    //     because right now postTelegraf does not include `plugins`
-    const telegraf = await client.telegrafConfigs.update(telegrafConfigID, {
+    //     because right now putTelegraf does not include `plugins`
+    const response = await putTelegraf({telegrafID: telegrafConfigID, data: {
       name: telegrafConfigName,
       description: telegrafConfigDescription,
       plugins,
-    })
+    }})
 
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const telegraf = response.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -531,7 +537,13 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     //     because right now postTelegraf does not include `plugins`
 
     // create telegraf config
-    const tc = await client.telegrafConfigs.create(telegrafRequest)
+    const response = await postTelegraf({data: telegrafRequest})
+
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const tc = response.data
 
     const permissions = [
       {

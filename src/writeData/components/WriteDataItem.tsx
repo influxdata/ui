@@ -48,7 +48,9 @@ const WriteDataItem: FC<Props> = ({
   }
 
   let thumb = <img src={placeholderLogo} />
-  const svgStyle = style ? style : ({} as CSSProperties)
+  const svgStyle = style
+    ? style
+    : ({height: '100px', width: '50px'} as CSSProperties)
 
   if (image) {
     thumb = (

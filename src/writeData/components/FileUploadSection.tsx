@@ -19,6 +19,7 @@ import WriteDataItem from 'src/writeData/components/WriteDataItem'
 const FileUploadSection = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
   const items = search(searchTerm)
+  console.log('file upload items: ', items)
 
   if (!items.length) {
     return null

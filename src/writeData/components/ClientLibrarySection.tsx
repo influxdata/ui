@@ -19,6 +19,7 @@ import WriteDataItem from 'src/writeData/components/WriteDataItem'
 const ClientLibrarySection = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
   const items = searchClients(searchTerm)
+  console.log('client library items: ', items)
 
   if (!items.length) {
     return null

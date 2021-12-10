@@ -19,6 +19,7 @@ import WriteDataItem from 'src/writeData/components/WriteDataItem'
 const TelegrafPluginSection = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
   const items = search(searchTerm)
+  console.log('telegraf plugin items: ', items)
 
   if (!items.length) {
     return null

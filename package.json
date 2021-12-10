@@ -23,8 +23,8 @@
     "start:docker": "yarn generate && yarn build:vendor && yarn run start:dev",
     "start:kind": "yarn build:vendor && NODE_ENV=development UI_SHA=local_dev_mode BASE_PATH=/ API_BASE_PATH=/ PORT=8080 PUBLIC=${PUBLIC:-https://twodotoh.a.influxcloud.dev.local/} CLOUD_URL=/auth yarn start",
     "build": "yarn install --silent && yarn build:ci",
-    "build:ci": "yarn generate && yarn build:vendor && webpack --config webpack.prod.ts --bail",
-    "build:fast": "webpack --config webpack.fast.ts --bail",
+    "build:ci": "yarn generate && yarn build:vendor && webpack --config webpack.prod.ts",
+    "build:fast": "webpack --config webpack.fast.ts",
     "build:vendor": "webpack --config webpack.vendor.ts",
     "clean": "rm -rf ./build && rm -rf ./.cache && rm -rf node_modules && rm -rf cypress/screenshots && rm -rf cypress/videos && rm -f junit-results/* ",
     "test": "jest --maxWorkers=2",
@@ -153,10 +153,10 @@
     "ts-node": "^8.3.0",
     "tslib": "^2.0.3",
     "typescript": "3.8.3",
-    "webpack": "^4.41.4",
-    "webpack-cli": "^4.7.0",
-    "webpack-dev-server": "^4.0.0",
-    "webpack-merge": "^4.2.1"
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-server": "^4.1.1",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.37",

@@ -1,4 +1,11 @@
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import {
   Input,
   AlignItems,
@@ -35,12 +42,6 @@ interface Props {
   idx: number
 }
 
-const joinAndDedupeArrays = (arr1: string[], arr2: string[]): string[] => {
-  const deduped = new Set([...arr1, ...arr2])
-
-  return Array.from(deduped)
-}
-
 const Card: FC<Props> = ({idx}) => {
   const {cards, add, update, remove, loadKeys, loadValues} = useContext(
     QueryBuilderContext
@@ -49,6 +50,15 @@ const Card: FC<Props> = ({idx}) => {
   const card = cards[idx]
   const [keySearches, setKeySearches] = useState([])
   const [valueSearches, setValueSearches] = useState([])
+
+  const allItems = useMemo(() => {
+    const selected = new Set(card.values.selected)
+    const remaining = card.values.results.filter(
+      result => !selected.has(result)
+    )
+
+    return [...Array.from(selected), ...remaining]
+  }, [card?.values?.selected, card?.values?.results])
 
   const _remove =
     idx !== 0 &&
@@ -178,10 +188,7 @@ const Card: FC<Props> = ({idx}) => {
         <WaitingText text="Loading tag values" />
       </BuilderCard.Empty>
     )
-  } else if (
-    card.values.loading === RemoteDataState.Done &&
-    !(card.values.results.length + card.values.selected.length)
-  ) {
+  } else if (card.values.loading === RemoteDataState.Done && !allItems.length) {
     _values = (
       <BuilderCard.Empty>
         No values found <small>in the current time range</small>
@@ -190,7 +197,7 @@ const Card: FC<Props> = ({idx}) => {
   } else {
     _values = (
       <SelectorList
-        items={joinAndDedupeArrays(card.values.results, card.values.selected)}
+        items={allItems}
         selectedItems={card.values.selected}
         onSelectItem={valueSelect}
         multiSelect

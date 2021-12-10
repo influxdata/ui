@@ -32,7 +32,6 @@ import WaitingText from 'src/shared/components/WaitingText'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import SelectorList from 'src/timeMachine/components/SelectorList'
 
-
 const DEBOUNCE_TIMEOUT = 500
 const debounce_array = []
 type NOOP = () => void

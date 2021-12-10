@@ -101,7 +101,7 @@ export class MePage extends PureComponent<Props> {
   public render() {
     return (
       <Page titleTag={pageTitleSuffixer(['Home'])}>
-        <Page.Header fullWidth={'false'}>
+        <Page.Header fullWidth={false}>
           <Page.Title title="Getting Started" testID="home-page--header" />
           <RateLimitAlert />
         </Page.Header>

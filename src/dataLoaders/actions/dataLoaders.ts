@@ -407,6 +407,10 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   )
 
   if (telegrafConfigID) {
+    // TODO:
+    //   Either add `POST` and `PUT` to /telegraf/plugins` on OpenAPI
+    //   or add `plugins` to the request body for `PUT /telegrafs/{telegrafID}`
+    //     because right now postTelegraf does not include `plugins`
     const telegraf = await client.telegrafConfigs.update(telegrafConfigID, {
       name: telegrafConfigName,
       description: telegrafConfigDescription,
@@ -520,6 +524,11 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
       orgID: org.id,
       plugins,
     }
+
+    // TODO:
+    //   Either add to OpenAPI `POST /telegraf/plugins`
+    //   or add `plugins` to the request body for `POST /telegrafs/{telegrafID}`
+    //     because right now postTelegraf does not include `plugins`
 
     // create telegraf config
     const tc = await client.telegrafConfigs.create(telegrafRequest)

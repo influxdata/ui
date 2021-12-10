@@ -46,6 +46,7 @@ import {
 import {
   deleteTelegraf as apiDeleteTelegraf,
   deleteTelegrafsLabel,
+  getTelegraf as apiGetTelegraf,
   getTelegrafs as apiGetTelegrafs,
   postTelegraf,
   postTelegrafsLabel,
@@ -178,7 +179,13 @@ export const addTelegrafLabelsAsync =
 
       // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
       // getTelegraf from `src/client` returns a string instead of an object
-      const telegraf = await client.telegrafConfigs.get(telegrafID)
+      const res = await apiGetTelegraf({telegrafID})
+
+      if (res.status !== 200) {
+        throw new Error(res.data.message)
+      }
+
+      const telegraf = res.data
       const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
         telegraf,
         telegrafSchema
@@ -209,7 +216,13 @@ export const removeTelegrafLabelsAsync =
 
       // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
       // getTelegraf from `src/client` returns a string instead of an object
-      const telegraf = await client.telegrafConfigs.get(telegrafID)
+      const res = await apiGetTelegraf({telegrafID})
+
+      if (res.status !== 200) {
+        throw new Error(res.data.message)
+      }
+
+      const telegraf = res.data
       const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
         telegraf,
         telegrafSchema
@@ -226,7 +239,16 @@ export const getTelegraf = (telegrafConfigID: string) => async () => {
   try {
     // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
     // getTelegraf from `src/client` returns a string instead of an object
-    const config = await client.telegrafConfigs.get(telegrafConfigID)
+    const res = await apiGetTelegraf({telegrafID: telegrafConfigID})
+
+    if (res.status !== 200) {
+      throw new Error(res.data.message)
+    }
+
+    // TODO:
+    // might want to double check the data structure after
+    // fix the above issue on OpenAPI
+    const config = res.data
     return config.name
   } catch (error) {
     console.error(error)

@@ -15,7 +15,6 @@ const setup = (cy: Cypress.Chainable) =>
 const schemaFileName = 'schema file'
 const bucketName = 'explicit_bucket'
 const READFILE_TIMEOUT = 90000
-const EMPTY_FOLDER_LIST = ''
 
 const testSchemaFiles = (
   cy: Cypress.Chainable,
@@ -82,18 +81,6 @@ const testSchemaFiles = (
         .should('be.visible')
         .within(() => {
           cy.getByTestID('measurement-schema-name-0').contains(schemaFileName)
-
-          // delete any duplicate files before downloading
-          cy.exec(
-            `rm cypress/downloads/schema_file.${flavorChoice.split('-')[0]}`,
-            {
-              log: true,
-              failOnNonZeroExit: false,
-            }
-          )
-          cy.readFile(`cypress/downloads/schema_file.${flavorChoice.split('-')[0]}`, 'utf-8', {
-            timeout: READFILE_TIMEOUT,
-          }).should('not.exist')
 
           cy.getByTestID('measurement-schema-download-button').click()
 
@@ -245,18 +232,6 @@ describe('Explicit Buckets', () => {
         cy.getByTestID('measurement-schema-name-0').contains(
           `${schemaFileName} a`
         )
-      
-        // delete any duplicate files before downloading
-        cy.exec(
-          'rm cypress/downloads/schema_file_a.json',
-          {
-            log: true,
-            failOnNonZeroExit: false,
-          }
-        )
-        cy.readFile('cypress/downloads/schema_file_a.json', 'utf-8', {
-          timeout: READFILE_TIMEOUT,
-        }).should('not.exist')
 
         cy.getByTestID('measurement-schema-download-button').click()
         cy.readFile('cypress/downloads/schema_file_a.json', 'utf-8', {
@@ -372,30 +347,6 @@ fsRead,field,float`
 
     cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
-    // delete any duplicate then download
-    cy.exec(
-      'rm cypress/downloads/one_schema.json',
-      {
-        log: true,
-        failOnNonZeroExit: false,
-      }
-    )
-    cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
-      timeout: READFILE_TIMEOUT,
-    }).should('not.exist')
-    cy.getByTestID('measurement-schema-download-button').click()
-
-    cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
-      timeout: READFILE_TIMEOUT,
-    }).should(fileContent => {
-      expect(Array.isArray(fileContent)).to.equal(true)
-      expect(fileContent.length).equal(2)
-      expect(fileContent).to.deep.equal([
-        {name: 'time', type: 'timestamp'},
-        {name: 'fsWrite', type: 'field', dataType: 'float'},
-      ])
-    })
-
     // cancel button should not be showing yet
     cy.getByTestID('dndContainer-cancel-update').should('not.exist')
 
@@ -434,18 +385,6 @@ fsRead,field,float`
     cy.getByTestID('measurement-schema-readOnly-panel-0').should('be.visible')
 
     cy.getByTestID('measurement-schema-name-0').contains(schemaName)
-
-    // delete any duplicate then download
-    cy.exec(
-      'rm cypress/downloads/one_schema.json',
-      {
-        log: true,
-        failOnNonZeroExit: false,
-      }
-    )
-    cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
-      timeout: READFILE_TIMEOUT,
-    }).should('not.exist')
 
     cy.getByTestID('measurement-schema-download-button').click()
     cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {

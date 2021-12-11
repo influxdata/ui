@@ -98,7 +98,7 @@ describe('Explicit Buckets', () => {
     cy.exec('rm cypress/downloads/* && ls cypress/downloads/*', {
       log: true,
       failOnNonZeroExit: false,
-    }).then(folderContent => {
+    }).should(folderContent => {
       expect(folderContent.stdout).to.equal(EMPTY_FOLDER_LIST)
     })
   })
@@ -392,14 +392,6 @@ fsRead,field,float`
     cy.getByTestID('notification-success').should('be.visible')
     cy.getByTestID('bucket-form').should('not.exist')
 
-    // remove the downloaded files and double-check they are gone
-    cy.exec('rm cypress/downloads/* && ls cypress/downloads/*', {
-      log: true,
-      failOnNonZeroExit: false,
-    }).then(folderContent => {
-      expect(folderContent.stdout).to.equal(EMPTY_FOLDER_LIST)
-    })
-
     cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
@@ -413,18 +405,28 @@ fsRead,field,float`
 
     cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
-    cy.getByTestID('measurement-schema-download-button').click()
-    cy.readFile('cypress/downloads/one_schema.json', {
-      timeout: READFILE_TIMEOUT,
-    }).should(fileContent => {
-      expect(Array.isArray(fileContent)).to.equal(true)
-      expect(fileContent.length).equal(3)
-      expect(fileContent).to.deep.equal([
-        {name: 'time', type: 'timestamp'},
-        {name: 'fsWrite', type: 'field', dataType: 'float'},
-        {name: 'hello there', type: 'field', dataType: 'string'},
-      ])
+    // remove, double-check, then download again
+    cy.exec('rm cypress/downloads/* && ls cypress/downloads/*', {
+      log: true,
+      failOnNonZeroExit: false,
     })
+      .should(folderContent => {
+        expect(folderContent.stdout).to.equal(EMPTY_FOLDER_LIST)
+      })
+      .then(() => {
+        cy.getByTestID('measurement-schema-download-button').click()
+        cy.readFile('cypress/downloads/one_schema.json', {
+          timeout: READFILE_TIMEOUT,
+        }).should(fileContent => {
+          expect(Array.isArray(fileContent)).to.equal(true)
+          expect(fileContent.length).equal(3)
+          expect(fileContent).to.deep.equal([
+            {name: 'time', type: 'timestamp'},
+            {name: 'fsWrite', type: 'field', dataType: 'float'},
+            {name: 'hello there', type: 'field', dataType: 'string'},
+          ])
+        })
+      })
   })
 })
 

@@ -14,6 +14,8 @@ const setup = (cy: Cypress.Chainable) =>
 
 const schemaFileName = 'first schema file'
 const bucketName = 'explicit_bucket'
+const READFILE_TIMEOUT = 15000
+const EMPTY_FOLDER_LIST = ''
 
 const testSchemaFiles = (
   cy: Cypress.Chainable,
@@ -92,10 +94,12 @@ describe('Explicit Buckets', () => {
   beforeEach(() => {
     setup(cy)
 
-    // remove the downloaded files
-    cy.exec('rm cypress/downloads/*', {
+    // remove the downloaded files and double-check they are gone
+    cy.exec('rm cypress/downloads/* && ls cypress/downloads/*', {
       log: true,
       failOnNonZeroExit: false,
+    }).then(folderContent => {
+      expect(folderContent.stdout).to.equal(EMPTY_FOLDER_LIST)
     })
   })
 
@@ -234,17 +238,18 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('measurement-schema-readOnly-panel-0')
       .should('be.visible')
       .within(() => {
-        cy.getByTestID('measurement-schema-name-0').contains(
-          `${schemaFileName}`
-        )
+        cy.getByTestID('measurement-schema-name-0').contains(schemaFileName)
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/first_schema_file.json`).should(
-          'deep.equal',
-          [
+        cy.readFile('cypress/downloads/first_schema_file.json', {
+          timeout: READFILE_TIMEOUT,
+        }).should(fileContent => {
+          expect(Array.isArray(fileContent)).to.equal(true)
+          expect(fileContent.length).equal(2)
+          expect(fileContent).to.deep.equal([
             {name: 'time', type: 'timestamp'},
             {name: 'fsWrite', type: 'field', dataType: 'float'},
-          ]
-        )
+          ])
+        })
       })
   })
 
@@ -253,13 +258,16 @@ describe('Explicit Buckets', () => {
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile(`cypress/downloads/first_schema_file.json`).should(
-        'deep.equal',
-        [
+      cy.readFile('cypress/downloads/first_schema_file.json', {
+        timeout: READFILE_TIMEOUT,
+      }).should(fileContent => {
+        expect(Array.isArray(fileContent)).to.equal(true)
+        expect(fileContent.length).equal(2)
+        expect(fileContent).to.deep.equal([
           {name: 'time', type: 'timestamp'},
           {name: 'fsWrite', type: 'field', dataType: 'float'},
-        ]
-      )
+        ])
+      })
     }
 
     testSchemaFiles(
@@ -279,10 +287,9 @@ service,tag,
 fsRead,field,float`
 
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile(`cypress/downloads/first_schema_file.csv`).should(
-        'eq',
-        origFileContents
-      )
+      cy.readFile('cypress/downloads/first_schema_file.csv', {
+        timeout: READFILE_TIMEOUT,
+      }).should('eq', origFileContents)
     }
     testSchemaFiles(
       cy,
@@ -348,10 +355,16 @@ fsRead,field,float`
 
     cy.getByTestID('measurement-schema-download-button').click()
 
-    cy.readFile(`cypress/downloads/one_schema.json`).should('deep.equal', [
-      {name: 'time', type: 'timestamp'},
-      {name: 'fsWrite', type: 'field', dataType: 'float'},
-    ])
+    cy.readFile('cypress/downloads/one_schema.json', {
+      timeout: READFILE_TIMEOUT,
+    }).should(fileContent => {
+      expect(Array.isArray(fileContent)).to.equal(true)
+      expect(fileContent.length).equal(2)
+      expect(fileContent).to.deep.equal([
+        {name: 'time', type: 'timestamp'},
+        {name: 'fsWrite', type: 'field', dataType: 'float'},
+      ])
+    })
 
     // cancel button should not be showing yet
     cy.getByTestID('dndContainer-cancel-update').should('not.exist')
@@ -379,6 +392,14 @@ fsRead,field,float`
     cy.getByTestID('notification-success').should('be.visible')
     cy.getByTestID('bucket-form').should('not.exist')
 
+    // remove the downloaded files and double-check they are gone
+    cy.exec('rm cypress/downloads/* && ls cypress/downloads/*', {
+      log: true,
+      failOnNonZeroExit: false,
+    }).then(folderContent => {
+      expect(folderContent.stdout).to.equal(EMPTY_FOLDER_LIST)
+    })
+
     cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
@@ -392,18 +413,18 @@ fsRead,field,float`
 
     cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
-    // remove the downloaded files
-    cy.exec('rm cypress/downloads/*', {
-      log: true,
-      failOnNonZeroExit: false,
-    })
-
     cy.getByTestID('measurement-schema-download-button').click()
-    cy.readFile(`cypress/downloads/one_schema.json`).should('deep.equal', [
-      {name: 'time', type: 'timestamp'},
-      {name: 'fsWrite', type: 'field', dataType: 'float'},
-      {name: 'hello there', type: 'field', dataType: 'string'},
-    ])
+    cy.readFile('cypress/downloads/one_schema.json', {
+      timeout: READFILE_TIMEOUT,
+    }).should(fileContent => {
+      expect(Array.isArray(fileContent)).to.equal(true)
+      expect(fileContent.length).equal(3)
+      expect(fileContent).to.deep.equal([
+        {name: 'time', type: 'timestamp'},
+        {name: 'fsWrite', type: 'field', dataType: 'float'},
+        {name: 'hello there', type: 'field', dataType: 'string'},
+      ])
+    })
   })
 })
 

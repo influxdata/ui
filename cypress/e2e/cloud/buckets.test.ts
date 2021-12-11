@@ -238,16 +238,13 @@ describe('Explicit Buckets', () => {
           `${schemaFileName}`
         )
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile(`cypress/downloads/first_schema_file.json`)
-          .should('exist')
-          .then(fileContent => {
-            expect(fileContent[0].name).to.be.equal('time')
-            expect(fileContent[0].type).to.be.equal('timestamp')
-
-            expect(fileContent[1].name).to.be.equal('fsWrite')
-            expect(fileContent[1].type).to.be.equal('field')
-            expect(fileContent[1].dataType).to.be.equal('float')
-          })
+        cy.readFile(`cypress/downloads/first_schema_file.json`).should(
+          'deep.equal',
+          [
+            {name: 'time', type: 'timestamp'},
+            {name: 'fsWrite', type: 'field', dataType: 'float'},
+          ]
+        )
       })
   })
 
@@ -256,17 +253,15 @@ describe('Explicit Buckets', () => {
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile(`cypress/downloads/first_schema_file.json`)
-        .should('exist')
-        .then(fileContent => {
-          expect(fileContent[0].name).to.be.equal('time')
-          expect(fileContent[0].type).to.be.equal('timestamp')
-
-          expect(fileContent[1].name).to.be.equal('fsWrite')
-          expect(fileContent[1].type).to.be.equal('field')
-          expect(fileContent[1].dataType).to.be.equal('float')
-        })
+      cy.readFile(`cypress/downloads/first_schema_file.json`).should(
+        'deep.equal',
+        [
+          {name: 'time', type: 'timestamp'},
+          {name: 'fsWrite', type: 'field', dataType: 'float'},
+        ]
+      )
     }
+
     testSchemaFiles(
       cy,
       'json-download-flavor-choice',
@@ -353,16 +348,10 @@ fsRead,field,float`
 
     cy.getByTestID('measurement-schema-download-button').click()
 
-    cy.readFile(`cypress/downloads/one_schema.json`)
-      .should('exist')
-      .then(fileContent => {
-        expect(fileContent[0].name).to.be.equal('time')
-        expect(fileContent[0].type).to.be.equal('timestamp')
-
-        expect(fileContent[1].name).to.be.equal('fsWrite')
-        expect(fileContent[1].type).to.be.equal('field')
-        expect(fileContent[1].dataType).to.be.equal('float')
-      })
+    cy.readFile(`cypress/downloads/one_schema.json`).should('deep.equal', [
+      {name: 'time', type: 'timestamp'},
+      {name: 'fsWrite', type: 'field', dataType: 'float'},
+    ])
 
     // cancel button should not be showing yet
     cy.getByTestID('dndContainer-cancel-update').should('not.exist')
@@ -410,20 +399,11 @@ fsRead,field,float`
     })
 
     cy.getByTestID('measurement-schema-download-button').click()
-    cy.readFile(`cypress/downloads/one_schema.json`)
-      .should('exist')
-      .then(fileContent => {
-        expect(fileContent[0].name).to.be.equal('time')
-        expect(fileContent[0].type).to.be.equal('timestamp')
-
-        expect(fileContent[1].name).to.be.equal('fsWrite')
-        expect(fileContent[1].type).to.be.equal('field')
-        expect(fileContent[1].dataType).to.be.equal('float')
-
-        expect(fileContent[2].name).to.be.equal('hello there')
-        expect(fileContent[2].type).to.be.equal('field')
-        expect(fileContent[2].dataType).to.be.equal('string')
-      })
+    cy.readFile(`cypress/downloads/one_schema.json`).should('deep.equal', [
+      {name: 'time', type: 'timestamp'},
+      {name: 'fsWrite', type: 'field', dataType: 'float'},
+      {name: 'hello there', type: 'field', dataType: 'string'},
+    ])
   })
 })
 

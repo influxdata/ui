@@ -242,7 +242,7 @@ describe('Explicit Buckets', () => {
           `${schemaFileName} a`
         )
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile('cypress/downloads/schema_file_a.json', {
+        cy.readFile('cypress/downloads/schema_file_a.json', 'utf-8', {
           timeout: READFILE_TIMEOUT,
         }).should(fileContent => {
           expect(Array.isArray(fileContent)).to.equal(true)
@@ -260,7 +260,7 @@ describe('Explicit Buckets', () => {
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile('cypress/downloads/schema_file.json', {
+      cy.readFile('cypress/downloads/schema_file.json', 'utf-8', {
         timeout: READFILE_TIMEOUT,
       }).should(fileContent => {
         expect(Array.isArray(fileContent)).to.equal(true)
@@ -289,7 +289,7 @@ service,tag,
 fsRead,field,float`
 
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile('cypress/downloads/schema_file.csv', {
+      cy.readFile('cypress/downloads/schema_file.csv', 'utf-8', {
         timeout: READFILE_TIMEOUT,
       }).should('eq', origFileContents)
     }
@@ -357,7 +357,7 @@ fsRead,field,float`
 
     cy.getByTestID('measurement-schema-download-button').click()
 
-    cy.readFile('cypress/downloads/one_schema.json', {
+    cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
       timeout: READFILE_TIMEOUT,
     }).should(fileContent => {
       expect(Array.isArray(fileContent)).to.equal(true)
@@ -420,7 +420,7 @@ fsRead,field,float`
       })
       .then(() => {
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile('cypress/downloads/one_schema.json', {
+        cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
           timeout: READFILE_TIMEOUT,
         }).should(fileContent => {
           expect(Array.isArray(fileContent)).to.equal(true)

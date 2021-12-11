@@ -13,6 +13,7 @@ const setup = (cy: Cypress.Chainable) =>
   )
 
 const schemaFileName = 'first schema file'
+const bucketName = 'explicit_bucket'
 
 const testSchemaFiles = (
   cy: Cypress.Chainable,
@@ -21,8 +22,6 @@ const testSchemaFiles = (
   fixtureFileName: string,
   checkContents: (cy: Cypress.Chainable) => void
 ) => {
-  const bucketName = 'explicit_bucket'
-
   cy.getByTestID('Create Bucket').click()
   cy.getByTestID('create-bucket-form').should('be.visible')
   cy.getByTestID('bucket-form-name').type(bucketName)
@@ -202,7 +201,7 @@ describe('Explicit Buckets', () => {
 
   it('should be able to create an explicit bucket using one schema file', function() {
     cy.getByTestID('Create Bucket').click()
-    cy.getByTestID('bucket-form-name').type('explicit_bucket')
+    cy.getByTestID('bucket-form-name').type(`${bucketName}`)
     cy.getByTestID('accordion-header').click()
     cy.getByTestID('explicit-bucket-schema-choice-ID').click()
     cy.getByTestID('measurement-schema-add-file-button').click()
@@ -218,7 +217,7 @@ describe('Explicit Buckets', () => {
     // make sure the overlay is closed!
     cy.getByTestID('create-bucket-form').should('not.exist')
 
-    cy.getByTestID(`bucket-card explicit_bucket`)
+    cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
         cy.getByTestID('bucket-settings').click()
@@ -294,7 +293,7 @@ fsRead,field,float`
 
   it('should be able to create an explicit bucket and update the existing schema file during editing', function() {
     cy.getByTestID('Create Bucket').click()
-    cy.getByTestID('bucket-form-name').type('explicit_bucket')
+    cy.getByTestID('bucket-form-name').type(`${bucketName}`)
     cy.getByTestID('accordion-header').click()
     cy.getByTestID('explicit-bucket-schema-choice-ID').click()
 
@@ -303,7 +302,7 @@ fsRead,field,float`
     // make sure the overlay is closed!
     cy.getByTestID('create-bucket-form').should('not.exist')
 
-    cy.getByTestID(`bucket-card explicit_bucket`)
+    cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
         cy.getByTestID('bucket-settings').click()
@@ -332,7 +331,7 @@ fsRead,field,float`
       /.*load-data\/buckets$/
     )
 
-    cy.getByTestID(`bucket-card explicit_bucket`)
+    cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
         cy.getByTestID('bucket-settings').click()
@@ -398,7 +397,7 @@ fsRead,field,float`
       /.*load-data\/buckets$/
     )
 
-    cy.getByTestID(`bucket-card explicit_bucket`)
+    cy.getByTestID(`bucket-card ${bucketName}`)
       .should('exist')
       .within(() => {
         cy.getByTestID('bucket-settings').click()

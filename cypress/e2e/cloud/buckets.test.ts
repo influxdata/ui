@@ -14,7 +14,7 @@ const setup = (cy: Cypress.Chainable) =>
 
 const schemaFileName = 'schema file'
 const bucketName = 'explicit_bucket'
-const READFILE_TIMEOUT = 30000
+const READFILE_TIMEOUT = 90000
 const EMPTY_FOLDER_LIST = ''
 
 const testSchemaFiles = (

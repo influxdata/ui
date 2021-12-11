@@ -83,6 +83,15 @@ const testSchemaFiles = (
         .within(() => {
           cy.getByTestID('measurement-schema-name-0').contains(schemaFileName)
 
+          // delete any duplicate files before downloading
+          cy.exec(`rm cypress/downloads/schema_file.${flavorChoice.split('-')[0]}`, {
+            log: true,
+            failOnNonZeroExit: false,
+          })
+          cy.readFile(`cypress/downloads/schema_file.${flavorChoice.split('-')[0]}`, 'utf-8', {
+            timeout: READFILE_TIMEOUT,
+          }).should('not.exist')
+
           cy.getByTestID('measurement-schema-download-button').click()
 
           checkContents(cy)
@@ -93,14 +102,6 @@ const testSchemaFiles = (
 describe('Explicit Buckets', () => {
   beforeEach(() => {
     setup(cy)
-
-    // remove the downloaded files and double-check they are gone
-    cy.exec('rm cypress/downloads/* && ls cypress/downloads/*', {
-      log: true,
-      failOnNonZeroExit: false,
-    }).should(folderContent => {
-      expect(folderContent.stdout).to.equal(EMPTY_FOLDER_LIST)
-    })
   })
 
   it('can create a bucket with an explicit schema', () => {
@@ -241,6 +242,16 @@ describe('Explicit Buckets', () => {
         cy.getByTestID('measurement-schema-name-0').contains(
           `${schemaFileName} a`
         )
+      
+        // delete any duplicate files before downloading
+        cy.exec('rm cypress/downloads/schema_file_a.json', {
+          log: true,
+          failOnNonZeroExit: false,
+        })
+        cy.readFile('cypress/downloads/schema_file_a.json', 'utf-8', {
+          timeout: READFILE_TIMEOUT,
+        }).should('not.exist')
+
         cy.getByTestID('measurement-schema-download-button').click()
         cy.readFile('cypress/downloads/schema_file_a.json', 'utf-8', {
           timeout: READFILE_TIMEOUT,
@@ -355,6 +366,17 @@ fsRead,field,float`
 
     cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
+    // delete any duplicate then download
+    cy.exec(
+      'rm cypress/downloads/one_schema.json',
+      {
+        log: true,
+        failOnNonZeroExit: false,
+      }
+    )
+    cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
+      timeout: READFILE_TIMEOUT,
+    }).should('not.exist')
     cy.getByTestID('measurement-schema-download-button').click()
 
     cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
@@ -407,9 +429,9 @@ fsRead,field,float`
 
     cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
-    // remove, double-check, then download again
+    // delete any duplicate then download
     cy.exec(
-      'rm cypress/downloads/one_schema.json && ls cypress/downloads/one_schema.json',
+      'rm cypress/downloads/one_schema.json',
       {
         log: true,
         failOnNonZeroExit: false,

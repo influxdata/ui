@@ -415,23 +415,22 @@ fsRead,field,float`
         failOnNonZeroExit: false,
       }
     )
-      .should(folderContent => {
-        expect(folderContent.stdout).to.equal(EMPTY_FOLDER_LIST)
-      })
-      .then(() => {
-        cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
-          timeout: READFILE_TIMEOUT,
-        }).should(fileContent => {
-          expect(Array.isArray(fileContent)).to.equal(true)
-          expect(fileContent.length).equal(3)
-          expect(fileContent).to.deep.equal([
-            {name: 'time', type: 'timestamp'},
-            {name: 'fsWrite', type: 'field', dataType: 'float'},
-            {name: 'hello there', type: 'field', dataType: 'string'},
-          ])
-        })
-      })
+    cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
+      timeout: READFILE_TIMEOUT,
+    }).should('not.exist')
+
+    cy.getByTestID('measurement-schema-download-button').click()
+    cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
+      timeout: READFILE_TIMEOUT,
+    }).should(fileContent => {
+      expect(Array.isArray(fileContent)).to.equal(true)
+      expect(fileContent.length).equal(3)
+      expect(fileContent).to.deep.equal([
+        {name: 'time', type: 'timestamp'},
+        {name: 'fsWrite', type: 'field', dataType: 'float'},
+        {name: 'hello there', type: 'field', dataType: 'string'},
+      ])
+    })
   })
 })
 

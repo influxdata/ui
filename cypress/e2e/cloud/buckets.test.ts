@@ -12,15 +12,16 @@ const setup = (cy: Cypress.Chainable) =>
     )
   )
 
+const schemaFileName = 'first schema file'
+
 const testSchemaFiles = (
   cy: Cypress.Chainable,
-  isCsv: boolean,
+  flavorChoice: string,
   origFileContents: string,
   fixtureFileName: string,
   checkContents: (cy: Cypress.Chainable) => void
 ) => {
   const bucketName = 'explicit_bucket'
-  const schemaFileName = 'first schema file'
 
   cy.getByTestID('Create Bucket').click()
   cy.getByTestID('create-bucket-form').should('be.visible')
@@ -70,9 +71,11 @@ const testSchemaFiles = (
   cy.getByTestID('accordion--advanced-section')
     .should('be.visible')
     .within(() => {
-      if (isCsv) {
-        cy.getByTestID('csv-download-flavor-choice').click()
-      }
+      cy.getByTestID(flavorChoice).click()
+      cy.get(`label[for='${flavorChoice}']`).should(
+        'have.class',
+        'cf-input-label__active'
+      )
 
       cy.getByTestID('measurement-schema-readOnly-panel-0')
         .should('be.visible')
@@ -203,7 +206,7 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('accordion-header').click()
     cy.getByTestID('explicit-bucket-schema-choice-ID').click()
     cy.getByTestID('measurement-schema-add-file-button').click()
-    cy.getByTestID('input-field').type('first schema file')
+    cy.getByTestID('input-field').type(`${schemaFileName}}`)
 
     const filename = 'validSchema1.json'
     cy.getByTestID('drag-and-drop--input').attachFile(filename)
@@ -226,7 +229,7 @@ describe('Explicit Buckets', () => {
       .should('exist')
       .within(() => {
         cy.getByTestID('measurement-schema-name-0')
-          .contains('first schema file')
+          .contains(`${schemaFileName}`)
           .should('exist')
         cy.getByTestID('measurement-schema-download-button').click()
         cy.readFile(`cypress/downloads/first_schema_file.json`)
@@ -260,7 +263,7 @@ describe('Explicit Buckets', () => {
     }
     testSchemaFiles(
       cy,
-      false,
+      'json-download-flavor-choice',
       origFileContents,
       'validSchema1.json',
       checkContents
@@ -275,13 +278,18 @@ service,tag,
 fsRead,field,float`
 
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile(`cypress/downloads/first_schema_file.csv`)
-        .should('exist')
-        .then(fileContent => {
-          expect(fileContent).to.equal(origFileContents)
-        })
+      cy.readFile(`cypress/downloads/first_schema_file.csv`).should(
+        'eq',
+        origFileContents
+      )
     }
-    testSchemaFiles(cy, true, origFileContents, 'schema.csv', checkContents)
+    testSchemaFiles(
+      cy,
+      'csv-download-flavor-choice',
+      origFileContents,
+      'schema.csv',
+      checkContents
+    )
   })
 
   it('should be able to create an explicit bucket and update the existing schema file during editing', function() {

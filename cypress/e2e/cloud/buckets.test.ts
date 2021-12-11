@@ -12,7 +12,7 @@ const setup = (cy: Cypress.Chainable) =>
     )
   )
 
-const schemaFileName = 'first schema file'
+const schemaFileName = 'schema file'
 const bucketName = 'explicit_bucket'
 const READFILE_TIMEOUT = 15000
 const EMPTY_FOLDER_LIST = ''
@@ -214,7 +214,7 @@ describe('Explicit Buckets', () => {
 
     cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('measurement-schema-readOnly-panel-0').should('be.visible')
-    cy.getByTestID('input-field').type(schemaFileName)
+    cy.getByTestID('input-field').type(`${schemaFileName} a`)
 
     const filename = 'validSchema1.json'
     cy.getByTestID('drag-and-drop--input').attachFile(filename)
@@ -238,9 +238,11 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('measurement-schema-readOnly-panel-0')
       .should('be.visible')
       .within(() => {
-        cy.getByTestID('measurement-schema-name-0').contains(schemaFileName)
+        cy.getByTestID('measurement-schema-name-0').contains(
+          `${schemaFileName} a`
+        )
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile('cypress/downloads/first_schema_file.json', {
+        cy.readFile('cypress/downloads/schema_file_a.json', {
           timeout: READFILE_TIMEOUT,
         }).should(fileContent => {
           expect(Array.isArray(fileContent)).to.equal(true)
@@ -258,7 +260,7 @@ describe('Explicit Buckets', () => {
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile('cypress/downloads/first_schema_file.json', {
+      cy.readFile('cypress/downloads/schema_file.json', {
         timeout: READFILE_TIMEOUT,
       }).should(fileContent => {
         expect(Array.isArray(fileContent)).to.equal(true)
@@ -287,7 +289,7 @@ service,tag,
 fsRead,field,float`
 
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile('cypress/downloads/first_schema_file.csv', {
+      cy.readFile('cypress/downloads/schema_file.csv', {
         timeout: READFILE_TIMEOUT,
       }).should('eq', origFileContents)
     }
@@ -406,10 +408,13 @@ fsRead,field,float`
     cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
     // remove, double-check, then download again
-    cy.exec('rm cypress/downloads/* && ls cypress/downloads/*', {
-      log: true,
-      failOnNonZeroExit: false,
-    })
+    cy.exec(
+      'rm cypress/downloads/one_schema.json && ls cypress/downloads/one_schema.json',
+      {
+        log: true,
+        failOnNonZeroExit: false,
+      }
+    )
       .should(folderContent => {
         expect(folderContent.stdout).to.equal(EMPTY_FOLDER_LIST)
       })

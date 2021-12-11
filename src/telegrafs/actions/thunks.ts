@@ -2,9 +2,6 @@
 import {normalize} from 'normalizr'
 import {Dispatch} from 'react'
 
-// API
-import {client} from 'src/utils/api'
-
 // Schemas
 import {telegrafSchema, arrayOfTelegrafs} from 'src/schemas/telegrafs'
 
@@ -109,10 +106,12 @@ export const createTelegraf =
   }
 
 export const updateTelegraf =
-  (telegraf: Telegraf) =>
-  async (dispatch: Dispatch<Action>) => {
+  (telegraf: Telegraf) => async (dispatch: Dispatch<Action>) => {
     try {
-      const response = await putTelegraf({telegrafID: telegraf.id, data: telegraf})
+      const response = await putTelegraf({
+        telegrafID: telegraf.id,
+        data: telegraf,
+      })
 
       if (response.status !== 200) {
         throw new Error(response.data.message)

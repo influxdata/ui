@@ -84,10 +84,13 @@ const testSchemaFiles = (
           cy.getByTestID('measurement-schema-name-0').contains(schemaFileName)
 
           // delete any duplicate files before downloading
-          cy.exec(`rm cypress/downloads/schema_file.${flavorChoice.split('-')[0]}`, {
-            log: true,
-            failOnNonZeroExit: false,
-          })
+          cy.exec(
+            `rm cypress/downloads/schema_file.${flavorChoice.split('-')[0]}`,
+            {
+              log: true,
+              failOnNonZeroExit: false,
+            }
+          )
           cy.readFile(`cypress/downloads/schema_file.${flavorChoice.split('-')[0]}`, 'utf-8', {
             timeout: READFILE_TIMEOUT,
           }).should('not.exist')
@@ -244,10 +247,13 @@ describe('Explicit Buckets', () => {
         )
       
         // delete any duplicate files before downloading
-        cy.exec('rm cypress/downloads/schema_file_a.json', {
-          log: true,
-          failOnNonZeroExit: false,
-        })
+        cy.exec(
+          'rm cypress/downloads/schema_file_a.json',
+          {
+            log: true,
+            failOnNonZeroExit: false,
+          }
+        )
         cy.readFile('cypress/downloads/schema_file_a.json', 'utf-8', {
           timeout: READFILE_TIMEOUT,
         }).should('not.exist')

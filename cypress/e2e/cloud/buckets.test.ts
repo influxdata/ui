@@ -12,12 +12,18 @@ const setup = (cy: Cypress.Chainable) =>
     )
   )
 
-const schemaFileName = 'schema file'
 const bucketName = 'explicit_bucket'
 const READFILE_TIMEOUT = 90000
+const getDownloadedFileName = (
+  schemaName: string,
+  fileFormat: string
+): string => {
+  return `cypress/downloads/${schemaName.split(' ').join('_')}.${fileFormat}`
+}
 
 const testSchemaFiles = (
   cy: Cypress.Chainable,
+  schemaName: string,
   flavorChoice: string,
   origFileContents: string,
   fixtureFileName: string,
@@ -48,7 +54,7 @@ const testSchemaFiles = (
 
   cy.getByTestID('measurement-schema-add-file-button').click()
   cy.getByTestID('measurement-schema-readOnly-panel-0').should('be.visible')
-  cy.getByTestID('input-field').type(schemaFileName)
+  cy.getByTestID('input-field').type(schemaName)
 
   cy.getByTestID('drag-and-drop--input').attachFile(fixtureFileName)
 
@@ -80,7 +86,7 @@ const testSchemaFiles = (
       cy.getByTestID('measurement-schema-readOnly-panel-0')
         .should('be.visible')
         .within(() => {
-          cy.getByTestID('measurement-schema-name-0').contains(schemaFileName)
+          cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
           cy.getByTestID('measurement-schema-download-button').click()
 
@@ -195,6 +201,9 @@ describe('Explicit Buckets', () => {
   })
 
   it('should be able to create an explicit bucket using one schema file', function() {
+    const schemaName = 'only one schema'
+    const filename = 'validSchema1.json'
+
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('create-bucket-form').should('be.visible')
     cy.getByTestID('bucket-form-name').type(bucketName)
@@ -205,9 +214,8 @@ describe('Explicit Buckets', () => {
 
     cy.getByTestID('measurement-schema-add-file-button').click()
     cy.getByTestID('measurement-schema-readOnly-panel-0').should('be.visible')
-    cy.getByTestID('input-field').type(`${schemaFileName} a`)
+    cy.getByTestID('input-field').type(schemaName)
 
-    const filename = 'validSchema1.json'
     cy.getByTestID('drag-and-drop--input').attachFile(filename)
 
     // make sure the file is there before moving on to the next step:
@@ -229,12 +237,10 @@ describe('Explicit Buckets', () => {
     cy.getByTestID('measurement-schema-readOnly-panel-0')
       .should('be.visible')
       .within(() => {
-        cy.getByTestID('measurement-schema-name-0').contains(
-          `${schemaFileName} a`
-        )
+        cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
         cy.getByTestID('measurement-schema-download-button').click()
-        cy.readFile('cypress/downloads/schema_file_a.json', 'utf-8', {
+        cy.readFile(getDownloadedFileName(schemaName, 'json'), 'utf-8', {
           timeout: READFILE_TIMEOUT,
         }).should(fileContent => {
           expect(Array.isArray(fileContent)).to.equal(true)
@@ -251,8 +257,9 @@ describe('Explicit Buckets', () => {
     const origFileContents = `[{"name":"time","type":"timestamp"},
         {"name":"fsWrite","type":"field","dataType":"float"} ]`
 
+    const schemaName = 'schema json file'
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile('cypress/downloads/schema_file.json', 'utf-8', {
+      cy.readFile(getDownloadedFileName(schemaName, 'json'), 'utf-8', {
         timeout: READFILE_TIMEOUT,
       }).should(fileContent => {
         expect(Array.isArray(fileContent)).to.equal(true)
@@ -266,6 +273,7 @@ describe('Explicit Buckets', () => {
 
     testSchemaFiles(
       cy,
+      schemaName,
       'json-download-flavor-choice',
       origFileContents,
       'validSchema1.json',
@@ -280,13 +288,15 @@ host,tag,
 service,tag,
 fsRead,field,float`
 
+    const schemaName = 'schema csv file'
     const checkContents = (cy: Cypress.Chainable) => {
-      cy.readFile('cypress/downloads/schema_file.csv', 'utf-8', {
+      cy.readFile(getDownloadedFileName(schemaName, 'csv'), 'utf-8', {
         timeout: READFILE_TIMEOUT,
       }).should('eq', origFileContents)
     }
     testSchemaFiles(
       cy,
+      schemaName,
       'csv-download-flavor-choice',
       origFileContents,
       'schema.csv',
@@ -314,7 +324,7 @@ fsRead,field,float`
         cy.getByTestID('bucket-settings').click()
       })
 
-    const schemaName = 'one schema'
+    const schemaName = 'updated schema'
     const fileName = 'validSchema1.json'
 
     cy.getByTestID('bucket-form').should('be.visible')
@@ -363,7 +373,7 @@ fsRead,field,float`
     cy.getByTestID('form--element-error').should('not.exist')
 
     const updateFilename = 'updateValidSchema1.json'
-    // add the right one
+    // add the valid one
     cy.getByTestID('drag-and-drop--input').attachFile(updateFilename)
 
     // make sure the file is there before moving on to the next step:
@@ -387,7 +397,7 @@ fsRead,field,float`
     cy.getByTestID('measurement-schema-name-0').contains(schemaName)
 
     cy.getByTestID('measurement-schema-download-button').click()
-    cy.readFile('cypress/downloads/one_schema.json', 'utf-8', {
+    cy.readFile(getDownloadedFileName(schemaName, 'json'), 'utf-8', {
       timeout: READFILE_TIMEOUT,
     }).should(fileContent => {
       expect(Array.isArray(fileContent)).to.equal(true)

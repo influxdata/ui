@@ -5,15 +5,9 @@ export const DataExplorerPage = lazy(() =>
 )
 export const MePage = lazy(() => import('src/me/containers/MePage'))
 export const TasksPage = lazy(() => import('src/tasks/containers/TasksPage'))
-export const TasksPagePaginated = lazy(() =>
-  import('src/tasks/pagination/TasksPage')
-)
 export const TaskPage = lazy(() => import('src/tasks/containers/TaskPage'))
 export const TaskRunsPage = lazy(() =>
   import('src/tasks/components/TaskRunsPage')
-)
-export const TaskRunsPagePaginated = lazy(() =>
-  import('src/tasks/pagination/TaskRunsPage')
 )
 export const TaskEditPage = lazy(() =>
   import('src/tasks/containers/TaskEditPage')

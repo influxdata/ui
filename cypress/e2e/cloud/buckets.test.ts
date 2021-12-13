@@ -280,8 +280,8 @@ describe('Explicit Buckets', () => {
       checkContents
     )
   })
-  // also skipping this flaky test for now; fixes are being worked on
-  it.skip('should be able to create an explicit bucket and add csv schema file during editing', function() {
+
+  it('should be able to create an explicit bucket and add csv schema file during editing', function() {
     const origFileContents = `name,type,dataType
 time,timestamp,
 host,tag,
@@ -303,6 +303,7 @@ fsRead,field,float`
       checkContents
     )
   })
+
   it('should be able to create an explicit bucket and update the existing schema file during editing', function() {
     cy.getByTestID('Create Bucket').click()
     cy.getByTestID('create-bucket-form').should('be.visible')

@@ -21,7 +21,7 @@ interface Props {
   resourceName: string
   permissions: any
   onToggle?: (name, id, permission) => void
-  title: string
+  title?: string
   disabled: boolean
 }
 
@@ -96,9 +96,12 @@ export const IndividualAccordionBody: FC<Props> = props => {
 
   return (
     <>
-      <Accordion.AccordionBodyItem className="resource-accordion-body">
-        {title}
-      </Accordion.AccordionBodyItem>
+      {title ? (
+        <Accordion.AccordionBodyItem className="resource-accordion-body">
+          {title}
+        </Accordion.AccordionBodyItem>
+      ) : null}
+
       {permissions
         ? Object.keys(sortedPermissions).map(key => {
             return (

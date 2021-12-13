@@ -103,7 +103,6 @@ export class EditResourceAccordion extends Component<Props> {
             <IndividualAccordionBody
               resourceName={resource}
               permissions={filteredNames}
-              title="Individual Telegraf Configuration Names"
               disabled={true}
             />
           )}
@@ -125,7 +124,6 @@ export class EditResourceAccordion extends Component<Props> {
             <IndividualAccordionBody
               resourceName={resource}
               permissions={filteredNames}
-              title="Individual Bucket Names"
               disabled={true}
             />
           )}

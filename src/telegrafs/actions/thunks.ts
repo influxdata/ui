@@ -167,6 +167,7 @@ export const addTelegrafLabelsAsync =
       if (labels.length === 0) {
         throw new Error('No label found to add')
       }
+
       const response = await postTelegrafsLabel({
         telegrafID,
         data: {labelID: labels[0].id},
@@ -176,9 +177,7 @@ export const addTelegrafLabelsAsync =
         throw new Error(response.data.message)
       }
 
-      // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
-      // getTelegraf from `src/client` returns a string instead of an object
-      const res = await apiGetTelegraf({telegrafID})
+      const res = await apiGetTelegraf({telegrafID, headers: {Accept: 'application/json'}})
 
       if (res.status !== 200) {
         throw new Error(res.data.message)
@@ -213,9 +212,7 @@ export const removeTelegrafLabelsAsync =
         throw new Error(response.data.message)
       }
 
-      // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
-      // getTelegraf from `src/client` returns a string instead of an object
-      const res = await apiGetTelegraf({telegrafID})
+      const res = await apiGetTelegraf({telegrafID, headers: {Accept: 'application/json'}})
 
       if (res.status !== 200) {
         throw new Error(res.data.message)
@@ -236,17 +233,12 @@ export const removeTelegrafLabelsAsync =
 
 export const getTelegraf = (telegrafConfigID: string) => async () => {
   try {
-    // TODO: fix OpenAPI GET /telegrafs/{telegrafID}
-    // getTelegraf from `src/client` returns a string instead of an object
-    const res = await apiGetTelegraf({telegrafID: telegrafConfigID})
+    const res = await apiGetTelegraf({telegrafID: telegrafConfigID, headers: {Accept: 'application/json'}})
 
     if (res.status !== 200) {
       throw new Error(res.data.message)
     }
 
-    // TODO:
-    // might want to double check the data structure after
-    // fix the above issue on OpenAPI
     const config = res.data
     return config.name
   } catch (error) {

@@ -12,7 +12,6 @@ import {authSchema} from 'src/schemas'
 import {telegrafSchema} from 'src/schemas/telegrafs'
 
 // Utils
-import {createNewPlugin} from 'src/dataLoaders/utils/pluginConfigs'
 import {getDataLoaders, getSteps} from 'src/dataLoaders/selectors'
 import {getBucketByName} from 'src/buckets/selectors'
 import {getByID} from 'src/resources/selectors'
@@ -44,7 +43,6 @@ import {
 } from 'src/types'
 import {
   TelegrafRequest,
-  TelegrafPluginOutputInfluxDBV2,
   Permission,
 } from '@influxdata/influx'
 import {Dispatch} from 'redux'

@@ -177,7 +177,10 @@ export const addTelegrafLabelsAsync =
         throw new Error(response.data.message)
       }
 
-      const res = await apiGetTelegraf({telegrafID, headers: {Accept: 'application/json'}})
+      const res = await apiGetTelegraf({
+        telegrafID,
+        headers: {Accept: 'application/json'},
+      })
 
       if (res.status !== 200) {
         throw new Error(res.data.message)
@@ -212,7 +215,10 @@ export const removeTelegrafLabelsAsync =
         throw new Error(response.data.message)
       }
 
-      const res = await apiGetTelegraf({telegrafID, headers: {Accept: 'application/json'}})
+      const res = await apiGetTelegraf({
+        telegrafID,
+        headers: {Accept: 'application/json'},
+      })
 
       if (res.status !== 200) {
         throw new Error(res.data.message)
@@ -233,7 +239,10 @@ export const removeTelegrafLabelsAsync =
 
 export const getTelegraf = (telegrafConfigID: string) => async () => {
   try {
-    const res = await apiGetTelegraf({telegrafID: telegrafConfigID, headers: {Accept: 'application/json'}})
+    const res = await apiGetTelegraf({
+      telegrafID: telegrafConfigID,
+      headers: {Accept: 'application/json'},
+    })
 
     if (res.status !== 200) {
       throw new Error(res.data.message)

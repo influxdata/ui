@@ -41,10 +41,7 @@ import {
   TelegrafEntities,
   Telegraf,
 } from 'src/types'
-import {
-  TelegrafRequest,
-  Permission,
-} from '@influxdata/influx'
+import {TelegrafRequest, Permission} from '@influxdata/influx'
 import {Dispatch} from 'redux'
 
 // Actions
@@ -371,11 +368,8 @@ export const removePluginBundleWithPlugins =
 
 export const createOrUpdateTelegrafConfigAsync =
   () => async (dispatch, getState: GetState) => {
-    const {
-      telegrafConfigID,
-      telegrafConfigName,
-      telegrafConfigDescription,
-    } = getDataLoaders(getState())
+    const {telegrafConfigID, telegrafConfigName, telegrafConfigDescription} =
+      getDataLoaders(getState())
 
     if (telegrafConfigID) {
       const response = await putTelegraf({

@@ -374,47 +374,17 @@ export const removePluginBundleWithPlugins =
 export const createOrUpdateTelegrafConfigAsync =
   () => async (dispatch, getState: GetState) => {
     const {
-      telegrafPlugins,
       telegrafConfigID,
       telegrafConfigName,
       telegrafConfigDescription,
     } = getDataLoaders(getState())
-    const {name} = getOrg(getState())
-    const {bucket} = getSteps(getState())
-
-    const influxDB2Out = {
-      name: TelegrafPluginOutputInfluxDBV2.NameEnum.InfluxdbV2,
-      type: TelegrafPluginOutputInfluxDBV2.TypeEnum.Output,
-      config: {
-        urls: [`${window.location.origin}`],
-        token: '$INFLUX_TOKEN',
-        organization: name,
-        bucket,
-      },
-    }
-
-    const plugins = telegrafPlugins.reduce(
-      (acc, tp) => {
-        if (tp.configured === ConfigurationState.Configured) {
-          return [...acc, tp.plugin || createNewPlugin(tp)]
-        }
-
-        return acc
-      },
-      [influxDB2Out]
-    )
 
     if (telegrafConfigID) {
-      // TODO:
-      //   Either add `POST` and `PUT` to /telegraf/plugins` on OpenAPI
-      //   or add `plugins` to the request body for `PUT /telegrafs/{telegrafID}`
-      //     because right now putTelegraf does not include `plugins`
       const response = await putTelegraf({
         telegrafID: telegrafConfigID,
         data: {
           name: telegrafConfigName,
           description: telegrafConfigDescription,
-          plugins,
         },
       })
 
@@ -439,7 +409,7 @@ export const createOrUpdateTelegrafConfigAsync =
       return
     }
 
-    createTelegraf(dispatch, getState, plugins)
+    createTelegraf(dispatch, getState)
   }
 
 export const generateTelegrafToken =
@@ -514,7 +484,7 @@ export const generateTelegrafToken =
     }
   }
 
-const createTelegraf = async (dispatch, getState: GetState, plugins) => {
+const createTelegraf = async (dispatch, getState: GetState) => {
   let configName = ''
   let bucketName = ''
   try {
@@ -531,13 +501,7 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
       description: telegrafConfigDescription,
       agent: {collectionInterval: DEFAULT_COLLECTION_INTERVAL},
       orgID: org.id,
-      plugins,
     }
-
-    // TODO:
-    //   Either add to OpenAPI `POST /telegraf/plugins`
-    //   or add `plugins` to the request body for `POST /telegrafs/{telegrafID}`
-    //     because right now postTelegraf does not include `plugins`
 
     // create telegraf config
     const response = await postTelegraf({data: telegrafRequest})

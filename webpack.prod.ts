@@ -33,6 +33,7 @@ module.exports = merge(common, {
     ],
   },
   optimization: {
+    noEmitOnErrors: true,
     minimizer: [
       new TerserJSPlugin({
         cache: true,

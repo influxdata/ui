@@ -12,6 +12,7 @@ import {authSchema} from 'src/schemas'
 import {telegrafSchema} from 'src/schemas/telegrafs'
 
 // Utils
+import {createNewPlugin} from 'src/dataLoaders/utils/pluginConfigs'
 import {getDataLoaders, getSteps} from 'src/dataLoaders/selectors'
 import {getBucketByName} from 'src/buckets/selectors'
 import {getByID} from 'src/resources/selectors'
@@ -41,7 +42,11 @@ import {
   TelegrafEntities,
   Telegraf,
 } from 'src/types'
-import {TelegrafRequest, Permission} from '@influxdata/influx'
+import {
+  TelegrafRequest,
+  TelegrafPluginOutputInfluxDBV2,
+  Permission
+} from '@influxdata/influx'
 import {Dispatch} from 'redux'
 
 // Actions
@@ -372,10 +377,35 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   getState: GetState
 ) => {
   const {
+    telegrafPlugins,
     telegrafConfigID,
     telegrafConfigName,
     telegrafConfigDescription,
   } = getDataLoaders(getState())
+  const {name} = getOrg(getState())
+  const {bucket} = getSteps(getState())
+
+  const influxDB2Out = {
+    name: TelegrafPluginOutputInfluxDBV2.NameEnum.InfluxdbV2,
+    type: TelegrafPluginOutputInfluxDBV2.TypeEnum.Output,
+    config: {
+      urls: [`${window.location.origin}`],
+      token: '$INFLUX_TOKEN',
+      organization: name,
+      bucket,
+    },
+  }
+
+  const plugins = telegrafPlugins.reduce(
+    (acc, tp) => {
+      if (tp.configured === ConfigurationState.Configured) {
+        return [...acc, tp.plugin || createNewPlugin(tp)]
+      }
+
+      return acc
+    },
+    [influxDB2Out]
+  )
 
   if (telegrafConfigID) {
     const response = await putTelegraf({
@@ -383,6 +413,8 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
       data: {
         name: telegrafConfigName,
         description: telegrafConfigDescription,
+        // TODO: interface TelegrafPlugin does not have property 'type'
+        plugins,
       },
     })
 
@@ -405,7 +437,7 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
     return
   }
 
-  createTelegraf(dispatch, getState)
+  createTelegraf(dispatch, getState, plugins)
 }
 
 export const generateTelegrafToken = (configID: string) => async (
@@ -478,7 +510,7 @@ export const generateTelegrafToken = (configID: string) => async (
   }
 }
 
-const createTelegraf = async (dispatch, getState: GetState) => {
+const createTelegraf = async (dispatch, getState: GetState, plugins) => {
   let configName = ''
   let bucketName = ''
   try {
@@ -496,6 +528,7 @@ const createTelegraf = async (dispatch, getState: GetState) => {
       description: telegrafConfigDescription,
       agent: {collectionInterval: DEFAULT_COLLECTION_INTERVAL},
       orgID: org.id,
+      plugins,
     }
 
     // create telegraf config

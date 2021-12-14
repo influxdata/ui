@@ -45,7 +45,7 @@ const ThresholdStatement: FC<Props> = ({
   children,
   removeLevel,
   changeThresholdType,
-  dataTestID = "panel"
+  dataTestID = 'panel',
 }) => {
   const dropdownOptions = {
     ['is above']: 'greater',

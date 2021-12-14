@@ -1,7 +1,6 @@
 import {GenCheck, Organization} from '../../../src/types'
 import {Bucket} from '../../../src/client'
 import {calcNanoTimestamp} from '../../support/Utils'
-import {Interception} from 'cypress/types/net-stubbing'
 
 // a generous commitment to delivering this page in a loaded state
 const PAGE_LOAD_SLA = 10000
@@ -119,33 +118,35 @@ describe('Checks', () => {
     })
 
     it('can reconfigure a threshold check', () => {
-
       const every = '5m'
       const offset = '1m'
-      const testTags: {key: string, value: string}[] = [
+      const testTags: {key: string; value: string}[] = [
         {key: 'Prima', value: 'Smith'},
         {key: 'Astaire', value: 'Rodgers'},
-        {key: 'Gable', value: 'Lombard'}
+        {key: 'Gable', value: 'Lombard'},
       ]
-      const newMsg = "Just a message from ${r._check_name} whoa level is ${r._level} " +
-        "for type ${r._type} and ${r._source_measurement} " +
-        "where foo is ${r.foo}"
+      const newMsg =
+        'Just a message from ${r._check_name} whoa level is ${r._level} ' +
+        'for type ${r._type} and ${r._source_measurement} ' +
+        'where foo is ${r.foo}'
 
-      // use negative value after #3399 is resolved
+      // TODO use negative value after #3399 is resolved
+      // https://github.com/influxdata/ui/issues/3399
       // const rangeBtm = "-0.01"
-      const rangeBtm = "0.01"
-      const rangeTop = "7.28"
-
+      const rangeBtm = '0.01'
+      const rangeTop = '7.28'
 
       initCheck(thresholdCheck).then(resp => {
         expect(resp.name).to.equal(thresholdCheck.name)
       })
       cy.reload()
       cy.intercept('PUT', '**/checks/*').as('putCheck')
-      cy.getByTestID('check-card--name').eq(0).click()
+      cy.getByTestID('check-card--name')
+        .eq(0)
+        .click()
       cy.getByTestID('overlay').should('be.visible')
       // Properties
-        // Scheduler properties
+      // Scheduler properties
       cy.getByTestID('schedule-check').click()
       cy.getByTestID('dropdown-menu--contents').within(() => {
         cy.contains('5m').click()
@@ -154,22 +155,26 @@ describe('Checks', () => {
       cy.getByTestID('dropdown-menu--contents').within(() => {
         cy.contains('1m').click()
       })
-        // Tags
+      // Tags
 
-      for( let i = 0; i < testTags.length; i++){
+      for (let i = 0; i < testTags.length; i++) {
         cy.getByTestID('dashed-button').click()
-        cy.getByTestID('tag-rule-key--input').eq(i).type(testTags[i].key)
-        cy.getByTestID('tag-rule-value--input').eq(i).type(testTags[i].value)
+        cy.getByTestID('tag-rule-key--input')
+          .eq(i)
+          .type(testTags[i].key)
+        cy.getByTestID('tag-rule-value--input')
+          .eq(i)
+          .type(testTags[i].value)
       }
 
       // Status Message Template
 
       cy.getByTestID('status-message-textarea')
         .clear()
-        .type(newMsg, { parseSpecialCharSequences: false })
+        .type(newMsg, {parseSpecialCharSequences: false})
 
       // Thresholds
-         // remove one threshold
+      // remove one threshold
       cy.getByTestID('panel-OK').within(() => {
         cy.getByTestID('add-threshold-condition-OK').should('not.exist')
         cy.getByTestID('dismiss-button').click()
@@ -183,7 +188,7 @@ describe('Checks', () => {
           .should('contain.text', 'is above')
           .click()
         cy.getByTestID('dropdown-menu--contents').within(() => {
-           cy.contains('is inside range').click()
+          cy.contains('is inside range').click()
         })
         cy.getByTestID('input-field')
           .should('have.length', 2)
@@ -192,14 +197,16 @@ describe('Checks', () => {
           // seem to be encountering cypress issue here https://github.com/cypress-io/cypress/issues/3817
           .type(` ${rangeBtm}{del}`) // workaround
         cy.getByTestID('input-field')
-          .eq(0).should('have.value', rangeBtm)
+          .eq(0)
+          .should('have.value', rangeBtm)
         cy.getByTestID('input-field')
           .eq(1)
           .clear()
           // seem to be encountering cypress issue here https://github.com/cypress-io/cypress/issues/3817
           .type(` ${rangeTop}{del}`) // workaround
         cy.getByTestID('input-field')
-          .eq(1).should('have.value', rangeTop)
+          .eq(1)
+          .should('have.value', rangeTop)
       })
       // change value of one threshold
       cy.getByTestID('panel-WARN').within(() => {
@@ -210,18 +217,24 @@ describe('Checks', () => {
       })
       cy.getByTestID('save-cell--button').click()
       cy.wait('@putCheck').then(({response}) => {
-        if(response){
+        if (response) {
           expect(response.body.tags).to.deep.equal(testTags)
           expect(response.body.every).to.equal(every)
           expect(response.body.offset).to.equal(offset)
           expect(response.body.statusMessageTemplate).to.equal(newMsg)
-          expect(response.body.thresholds
-            .filter((th: any) => th.level === 'INFO')[0].min).to.equal(parseFloat(rangeBtm))
-          expect(response.body.thresholds
-            .filter((th: any) => th.level === 'INFO')[0].max).to.equal(parseFloat(rangeTop))
-          expect(response.body.thresholds
-            .filter((th: any) => th.level === 'WARN')[0].value).to.equal(parseFloat(rangeTop))
-        }else{
+          expect(
+            response.body.thresholds.filter((th: any) => th.level === 'INFO')[0]
+              .min
+          ).to.equal(parseFloat(rangeBtm))
+          expect(
+            response.body.thresholds.filter((th: any) => th.level === 'INFO')[0]
+              .max
+          ).to.equal(parseFloat(rangeTop))
+          expect(
+            response.body.thresholds.filter((th: any) => th.level === 'WARN')[0]
+              .value
+          ).to.equal(parseFloat(rangeTop))
+        } else {
           fail('No response after update check')
         }
       })
@@ -496,11 +509,13 @@ describe('Checks', () => {
 
       cy.reload()
       cy.intercept('PUT', '**/checks/*').as('putCheck')
-      cy.getByTestID('check-card--name').eq(0).click()
+      cy.getByTestID('check-card--name')
+        .eq(0)
+        .click()
       cy.getByTestID('overlay').should('be.visible')
 
       // Tags, properties and message already covered in threshold check
-      // Just modify alert criteria - by clicking
+      // Just modify alert criteria by clicking
       cy.getByTestID('duration-input--for').click()
       cy.getByTestID('dropdown-menu--contents').within(() => {
         cy.contains(tmSinceClick).click()
@@ -527,7 +542,9 @@ describe('Checks', () => {
       })
 
       // Now modify criteria by typing
-      cy.getByTestID('check-card--name').eq(0).click()
+      cy.getByTestID('check-card--name')
+        .eq(0)
+        .click()
       cy.getByTestID('overlay').should('be.visible')
 
       cy.getByTestID('duration-input--for')
@@ -901,7 +918,7 @@ describe('Checks', () => {
           {key: '_field', values: ['mag'], aggregateFunctionType: 'filter'},
           {key: 'foo', values: [], aggregateFunctionType: 'filter'},
         ],
-        functions: [{"name":"mean"}],
+        functions: [{name: 'mean'}],
         aggregateWindow: {
           period: '1m',
           fillValues: false,
@@ -983,8 +1000,6 @@ describe('Checks', () => {
   }
 
   describe('Clone checks', () => {
-
-
     it('can clone and delete a deadman check', () => {
       cy.intercept('POST', '/api/v2/checks*').as('createCheck')
       const cloneName = `${deadmanCheck.name} (clone 1)`
@@ -1247,17 +1262,6 @@ describe('Checks', () => {
     }
 
     it('shows and filters general status history', () => {
-      // direct route to statuses page - no data-testids in clockface nav submenu issue #699
-    /*  cy.get<Organization>('@org').then(({id}: Organization) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${org.id}/alert-history?type=statuses"`)
-          cy.url().should('include', `${orgs}/${org.id}/alert-history`)
-          // Make sure page is loaded
-          cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
-        })
-      }) */
-
-//      cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
       cy.getByTestID('nav-item-alerting').within(() => {
         cy.get('+ button').trigger('mouseover')
       })
@@ -1300,15 +1304,6 @@ describe('Checks', () => {
     })
 
     it('shows status history per check', () => {
-    /*  cy.get<Organization>('@org').then(({id}: Organization) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${id}/alerting`)
-          cy.url().should('include', `${orgs}/${id}/alerting`)
-          // Make sure page is loaded
-          cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
-        })
-      }) */
-
       // Deadman history
       cy.getByTestID(`check-card ${deadmanCheck.name}`).within(() => {
         cy.getByTestID('context-menu-task').click()

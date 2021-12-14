@@ -11,7 +11,9 @@ import {
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
-import {client} from 'src/utils/api'
+
+// Types
+import {getMe} from 'src/client'
 
 // Components
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
@@ -24,7 +26,12 @@ export const LoginPage: FC = () => {
 
   const getSessionValidity = useCallback(async () => {
     try {
-      await client.users.me()
+      const resp = await getMe({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
       setHasValidSession(true)
     } catch {
       setHasValidSession(false)

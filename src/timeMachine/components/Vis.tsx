@@ -7,7 +7,7 @@ import {isEqual} from 'lodash'
 
 // Components
 import {View} from 'src/visualization'
-import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
+import {SimpleTableViewProperties} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import SimpleTable from 'src/visualization/types/SimpleTable/view'

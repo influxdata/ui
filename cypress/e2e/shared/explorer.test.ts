@@ -440,11 +440,12 @@ describe('DataExplorer', () => {
           .should('be.visible')
           .monacoType('foo |> bar')
           .within(() => {
-            cy.get('.squiggly-error').should('be.visible')
-            // error signature from lsp
-            // TODO(ariel): need to resolve this test. The issue for it is here:
-            // https://github.com/influxdata/ui/issues/481
-            // cy.get('.signature').should('be.visible')
+            cy.get('.squiggly-error', {timeout: 30000}).should('be.visible')
+          })
+          .monacoType('{selectall} {backspace}')
+          .monacoType('from()')
+          .within(() => {
+            cy.get('.signature').should('be.visible')
           })
           .monacoType(`{selectall}{del}from(bucket: )`)
       })
@@ -633,7 +634,7 @@ describe('DataExplorer', () => {
 
   describe('refresh', () => {
     beforeEach(() => {
-      cy.writeData(points(10))
+      cy.writeData(points(20))
 
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
@@ -649,6 +650,8 @@ describe('DataExplorer', () => {
       // graph will slightly move
       cy.wait(200)
       cy.get('.autorefresh-dropdown--pause').click()
+
+      // not actually same as (see the false as the second arg)
       makeGraphSnapshot().shouldBeSameAs(snapshot, false)
     })
   })

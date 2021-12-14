@@ -6,6 +6,22 @@ export interface TypeLookup {
   [key: string]: EndpointTypeRegistration
 }
 export const ENDPOINT_DEFINITIONS: TypeLookup = {}
+export const ENDPOINT_ORDER = [
+  'slack',
+  'http',
+  'pagerduty',
+  'sendgrid',
+  'aws',
+  'mailjet',
+  'mailgun',
+  'discord',
+  'opsgenie',
+  'pushbullet',
+  'teams',
+  'telegram',
+  'sensu',
+  'zenoss',
+]
 
 // NOTE: this loads in all the modules under the current directory
 // to make it easier to add new types

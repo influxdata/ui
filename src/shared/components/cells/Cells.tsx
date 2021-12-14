@@ -86,6 +86,10 @@ class Cells extends Component<Props> {
           cell.minH = 2.5
           cell.maxW = 20
         }
+        if (get(view, 'properties.type') === 'simple table') {
+          cell.minW = 5
+          cell.minH = 5
+        }
         return cell
       })
   }

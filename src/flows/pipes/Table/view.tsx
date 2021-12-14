@@ -8,7 +8,7 @@ import {Icon, IconFont} from '@influxdata/clockface'
 import {View} from 'src/visualization'
 
 // Types
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
@@ -117,7 +117,12 @@ const Table: FC<PipeProp> = ({Context}) => {
         <div className="flow-visualization--view">
           <View
             loading={loading}
-            properties={{type: 'simple-table', showAll: false}}
+            properties={
+              {
+                type: 'simple-table',
+                showAll: false,
+              } as SimpleTableViewProperties
+            }
             result={results.parsed}
             timeRange={range}
           />

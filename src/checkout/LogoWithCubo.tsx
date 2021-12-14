@@ -7,14 +7,14 @@ import {
 import React, {FC} from 'react'
 
 const LogoWithCubo: FC = () => (
-  <>
+  <div className="logo-with-cubo">
     <Icon glyph={IconFont.Cubo} className="cubo-logo" />
     <InfluxDBCloudLogo
       fill={InfluxColors.White}
       cloud={true}
       className="influx-cloud-logo"
     />
-  </>
+  </div>
 )
 
 export default LogoWithCubo

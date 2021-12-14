@@ -42,11 +42,6 @@ const localHistory = createMemoryHistory({initialEntries: ['/']})
 
 withRouterProps.match.params.orgID = orgs[0].id
 
-/*
-  N.B. when using react testing library render()
-  the mocked values in src/external/parser are ignored.
-  So, need to mock here as well
-*/
 jest.mock('src/external/parser', () => ({
   parse: jest.fn(() => {
     return {
@@ -62,6 +57,7 @@ jest.mock('src/external/parser', () => ({
       body: [],
     }
   }),
+  format_from_js_file: jest.fn(),
 }))
 
 jest.mock('src/shared/contexts/pinneditems', () => ({

@@ -1,15 +1,16 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {Route, RouteComponentProps, Switch} from 'react-router-dom'
+import {Switch, Route} from 'react-router-dom'
+import {AutoSizer} from 'react-virtualized'
+
+import {Page, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
 // Components
 import TasksHeader from 'src/tasks/components/TasksHeader'
 import TasksList from 'src/tasks/components/TasksList'
-import {ComponentSize, Page, Sort} from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import FilterList from 'src/shared/components/FilterList'
-import GetResources from 'src/resources/components/GetResources'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import TaskExportOverlay from 'src/tasks/components/TaskExportOverlay'
@@ -20,12 +21,12 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {
-  addTaskLabel,
-  cloneTask,
-  deleteTask,
-  runTask,
-  updateTaskName,
   updateTaskStatus,
+  updateTaskName,
+  deleteTask,
+  cloneTask,
+  addTaskLabel,
+  runTask,
 } from 'src/tasks/actions/thunks'
 
 import {
@@ -36,13 +37,19 @@ import {
 import {checkTaskLimits as checkTasksLimitsAction} from 'src/cloud/actions/limits'
 
 // Types
-import {AppState, ResourceType, Task} from 'src/types'
+import {AppState, Task, ResourceType} from 'src/types'
+import {RouteComponentProps} from 'react-router-dom'
+import {Sort} from '@influxdata/clockface'
 import {SortTypes} from 'src/shared/utils/sort'
 import {extractTaskLimits} from 'src/cloud/utils/limits'
 import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
+
+import {getAllTasks} from 'src/tasks/actions/thunks'
+import {getLabels} from 'src/labels/actions/thunks'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
@@ -75,74 +82,113 @@ class TasksPage extends PureComponent<Props, State> {
     }
   }
 
+  public componentDidMount() {
+    this.props.getAllTasks()
+    this.props.getLabels()
+
+    let sortType: SortTypes = this.state.sortType
+    const params = new URLSearchParams(window.location.search)
+
+    let sortKey: TaskSortKey = 'name'
+    if (params.get('sortKey') === 'status') {
+      sortKey = 'status'
+    } else if (params.get('sortKey') === 'latestCompleted') {
+      sortKey = 'latestCompleted'
+      sortType = SortTypes.Date
+    } else if (params.get('sortKey') === 'every') {
+      sortKey = 'every'
+      sortType = SortTypes.String
+    }
+
+    let sortDirection: Sort = this.state.sortDirection
+    if (params.get('sortDirection') === Sort.Ascending) {
+      sortDirection = Sort.Ascending
+    } else if (params.get('sortDirection') === Sort.Descending) {
+      sortDirection = Sort.Descending
+    }
+
+    let searchTerm: string = ''
+    if (params.get('searchTerm') !== null) {
+      searchTerm = params.get('searchTerm')
+      this.props.setSearchTerm(searchTerm)
+    }
+
+    this.setState({sortKey, sortDirection, sortType})
+  }
+
   public render(): JSX.Element {
     const {sortKey, sortDirection, sortType} = this.state
     const {
-      setSearchTerm,
-      updateTaskName,
-      searchTerm,
-      setShowInactive,
-      showInactive,
-      onAddTaskLabel,
-      onRunTask,
       checkTaskLimits,
       limitStatus,
+      onAddTaskLabel,
+      onRunTask,
+      remoteDataState,
+      searchTerm,
+      setSearchTerm,
+      setShowInactive,
+      showInactive,
+      updateTaskName,
     } = this.props
 
     return (
-      <>
+      <SpinnerContainer
+        loading={remoteDataState}
+        spinnerComponent={<TechnoSpinner />}
+      >
         <Page titleTag={pageTitleSuffixer(['Tasks'])}>
           <TasksHeader
             onCreateTask={this.handleCreateTask}
             setShowInactive={setShowInactive}
             showInactive={showInactive}
             searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
+            setSearchTerm={this.onSetSearchTerm}
             sortKey={sortKey}
             sortDirection={sortDirection}
             sortType={sortType}
             onSort={this.handleSort}
           />
-          <Page.Contents
-            fullWidth={false}
-            scrollable={true}
-            scrollbarSize={ComponentSize.Large}
-            autoHideScrollbar={true}
-          >
-            <GetResources resources={[ResourceType.Tasks, ResourceType.Labels]}>
-              <GetAssetLimits>
-                <Filter
-                  list={this.filteredTasks}
-                  searchTerm={searchTerm}
-                  searchKeys={['name', 'labels[].name', 'id']}
-                >
-                  {ts => (
-                    <TasksList
+          <Page.Contents fullWidth={false} scrollable={false}>
+            <AutoSizer>
+              {({width, height}) => {
+                return (
+                  <GetAssetLimits>
+                    <Filter
+                      list={this.filteredTasks}
                       searchTerm={searchTerm}
-                      tasks={ts}
-                      totalCount={this.totalTaskCount}
-                      onActivate={this.handleActivate}
-                      onDelete={this.handleDelete}
-                      onCreate={this.handleCreateTask}
-                      onClone={this.handleClone}
-                      onAddTaskLabel={onAddTaskLabel}
-                      onRunTask={onRunTask}
-                      onFilterChange={setSearchTerm}
-                      onUpdate={updateTaskName}
-                      sortKey={sortKey}
-                      sortDirection={sortDirection}
-                      sortType={sortType}
-                      checkTaskLimits={checkTaskLimits}
+                      searchKeys={['name', 'labels[].name', 'id']}
+                    >
+                      {ts => (
+                        <TasksList
+                          pageWidth={width}
+                          pageHeight={height}
+                          searchTerm={searchTerm}
+                          tasks={ts}
+                          totalCount={this.totalTaskCount}
+                          onActivate={this.handleActivate}
+                          onDelete={this.handleDelete}
+                          onCreate={this.handleCreateTask}
+                          onClone={this.handleClone}
+                          onAddTaskLabel={onAddTaskLabel}
+                          onRunTask={onRunTask}
+                          onFilterChange={setSearchTerm}
+                          onUpdate={updateTaskName}
+                          sortKey={sortKey}
+                          sortDirection={sortDirection}
+                          sortType={sortType}
+                          checkTaskLimits={checkTaskLimits}
+                        />
+                      )}
+                    </Filter>
+                    {this.hiddenTaskAlert}
+                    <AssetLimitAlert
+                      resourceName="tasks"
+                      limitStatus={limitStatus}
                     />
-                  )}
-                </Filter>
-                {this.hiddenTaskAlert}
-                <AssetLimitAlert
-                  resourceName="tasks"
-                  limitStatus={limitStatus}
-                />
-              </GetAssetLimits>
-            </GetResources>
+                  </GetAssetLimits>
+                )
+              }}
+            </AutoSizer>
           </Page.Contents>
         </Page>
         <Switch>
@@ -151,15 +197,29 @@ class TasksPage extends PureComponent<Props, State> {
             component={TaskExportOverlay}
           />
         </Switch>
-      </>
+      </SpinnerContainer>
     )
   }
 
+  private onSetSearchTerm = (searchTerm: string) => {
+    const {setSearchTerm} = this.props
+
+    const url = new URL(location.href)
+    url.searchParams.set('searchTerm', searchTerm)
+    history.replaceState(null, '', url.toString())
+
+    return setSearchTerm(searchTerm)
+  }
   private handleSort = (
     sortKey: TaskSortKey,
     sortDirection: Sort,
     sortType: SortTypes
   ) => {
+    const url = new URL(location.href)
+    url.searchParams.set('sortKey', sortKey)
+    url.searchParams.set('sortDirection', sortDirection)
+    history.replaceState(null, '', url.toString())
+
     this.setState({sortKey, sortDirection, sortType})
   }
 
@@ -234,25 +294,33 @@ const mstp = (state: AppState) => {
   const {resources} = state
   const {status, searchTerm, showInactive} = resources.tasks
 
+  const remoteDataState = getResourcesStatus(state, [
+    ResourceType.Tasks,
+    ResourceType.Labels,
+  ])
+
   return {
     tasks: getAll<Task>(state, ResourceType.Tasks),
     status: status,
     searchTerm,
     showInactive,
     limitStatus: extractTaskLimits(state),
+    remoteDataState,
   }
 }
 
 const mdtp = {
-  updateTaskStatus,
-  updateTaskName,
-  deleteTask,
+  checkTaskLimits: checkTasksLimitsAction,
   cloneTask,
-  setSearchTerm: setSearchTermAction,
-  setShowInactive: setShowInactiveAction,
+  deleteTask,
+  getAllTasks,
+  getLabels,
   onAddTaskLabel: addTaskLabel,
   onRunTask: runTask,
-  checkTaskLimits: checkTasksLimitsAction,
+  setSearchTerm: setSearchTermAction,
+  setShowInactive: setShowInactiveAction,
+  updateTaskName,
+  updateTaskStatus,
 }
 
 const connector = connect(mstp, mdtp)

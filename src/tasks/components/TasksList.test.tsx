@@ -23,6 +23,8 @@ const setup = (override?) => {
     onSelect: oneTestFunction,
     onImportTask: oneTestFunction,
     checkTaskLimits: secondTestFunction,
+    pageHeight: 600,
+    totalCount: tasks.length,
     ...override,
   }
 

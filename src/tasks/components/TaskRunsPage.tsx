@@ -7,7 +7,6 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {Page, Sort} from '@influxdata/clockface'
 import TaskRunsList from 'src/tasks/components/TaskRunsList'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import GetResources from 'src/resources/components/GetResources'
 import {TaskRunsCard} from 'src/tasks/components/TaskRunsCard'
 import {PageBreadcrumbs} from 'src/tasks/components/PageBreadcrumbs'
 
@@ -18,16 +17,12 @@ import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 // Actions
 import {getRuns, runTask, updateTaskStatus} from 'src/tasks/actions/thunks'
 
-// Selectors
-import {getByID} from 'src/resources/selectors'
-
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {SortTypes} from 'src/shared/utils/sort'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import {ResourceType, Task} from 'src/types'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string; orgID: string}>
@@ -87,16 +82,14 @@ class TaskRunsPage extends PureComponent<Props, State> {
             </Page.ControlBarRight>
           </Page.ControlBar>
           <Page.Contents fullWidth={false} scrollable={true}>
-            <GetResources resources={[ResourceType.Tasks]}>
-              <TaskRunsList
-                taskID={match.params.id}
-                runs={runs}
-                sortKey={sortKey}
-                sortDirection={sortDirection}
-                sortType={sortType}
-                onClickColumn={this.handleClickColumn}
-              />
-            </GetResources>
+            <TaskRunsList
+              taskID={match.params.id}
+              runs={runs}
+              sortKey={sortKey}
+              sortDirection={sortDirection}
+              sortType={sortType}
+              onClickColumn={this.handleClickColumn}
+            />
           </Page.Contents>
         </Page>
       </SpinnerContainer>
@@ -143,13 +136,8 @@ class TaskRunsPage extends PureComponent<Props, State> {
   }
 }
 
-const mstp = (state: AppState, props) => {
-  const {runs, runStatus} = state.resources.tasks
-  const currentTask = getByID<Task>(
-    state,
-    ResourceType.Tasks,
-    props.match.params.id
-  )
+const mstp = (state: AppState) => {
+  const {currentTask, runs, runStatus} = state.resources.tasks
 
   return {
     runs,
@@ -159,9 +147,9 @@ const mstp = (state: AppState, props) => {
 }
 
 const mdtp = {
-  updateTaskStatus,
   getRuns,
   onRunTask: runTask,
+  updateTaskStatus,
 }
 
 const connector = connect(mstp, mdtp)

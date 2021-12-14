@@ -45,7 +45,7 @@ import {
 import {
   TelegrafRequest,
   TelegrafPluginOutputInfluxDBV2,
-  Permission
+  Permission,
 } from '@influxdata/influx'
 import {Dispatch} from 'redux'
 

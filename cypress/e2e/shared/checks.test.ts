@@ -32,7 +32,7 @@ describe('Checks', () => {
     cy.getByTestID('alerting-tab--checks').click({force: true})
   })
 
-  describe.only('threshold checks', () => {
+  describe('threshold checks', () => {
     it('can validate a threshold check', () => {
       cy.intercept('POST', '/api/v2/query?*', req => {
         if (req.body.query.includes('_measurement')) {
@@ -119,7 +119,7 @@ describe('Checks', () => {
       )
     })
 
-    it.only('can reconfigure a threshold check', () => {
+    it('can reconfigure a threshold check', () => {
 
       const every = '5m'
       const offset = '1m'
@@ -179,9 +179,6 @@ describe('Checks', () => {
       cy.getByTestID('add-threshold-condition-OK').should('be.visible')
 
       // change logic of one threshold
-
-
-
       cy.getByTestID('panel-INFO').within(() => {
         cy.getByTestID('dropdown--button')
           .should('contain.text', 'is above')
@@ -483,6 +480,73 @@ describe('Checks', () => {
           cy.getByTestID('simple-table').should('exist')
         }
       )
+    })
+
+    it('can reconfigure a deadman check', () => {
+      const tmSinceClick = '1h'
+      const tmSinceText = '10m'
+      const tmStaleClick = '24h'
+      const tmStaleText = '90m'
+      const newLevel = 'WARN'
+
+      initCheck(deadmanCheck).then(resp => {
+        expect(resp.name).to.equal(deadmanCheck.name)
+      })
+
+      cy.reload()
+      cy.intercept('PUT', '**/checks/*').as('putCheck')
+      cy.getByTestID('check-card--name').eq(0).click()
+      cy.getByTestID('overlay').should('be.visible')
+
+      // Tags, properties and message already covered in threshold check
+      // Just modify alert criteria - by clicking
+      cy.getByTestID('duration-input--for').click()
+      cy.getByTestID('dropdown-menu--contents').within(() => {
+        cy.contains(tmSinceClick).click()
+      })
+
+      cy.getByTestID('check-levels--dropdown--button').click()
+      cy.getByTestID(`check-levels--dropdown-item ${newLevel}`).click()
+
+      cy.getByTestID('duration-input--stop').click()
+      cy.getByTestID('dropdown-menu--contents').within(() => {
+        cy.contains(tmStaleClick).click()
+      })
+
+      cy.getByTestID('save-cell--button').click()
+
+      cy.wait('@putCheck').then(({response}) => {
+        if (response) {
+          expect(response.body.timeSince).to.equal(tmSinceClick)
+          expect(response.body.staleTime).to.equal(tmStaleClick)
+          expect(response.body.level).to.equal(newLevel)
+        } else {
+          fail('no response on save check')
+        }
+      })
+
+      // Now modify criteria by typing
+      cy.getByTestID('check-card--name').eq(0).click()
+      cy.getByTestID('overlay').should('be.visible')
+
+      cy.getByTestID('duration-input--for')
+        .clear()
+        .type(tmSinceText)
+
+      cy.getByTestID('duration-input--stop')
+        .clear()
+        .type(tmStaleText)
+
+      cy.getByTestID('save-cell--button').click()
+
+      cy.wait('@putCheck').then(({response}) => {
+        if (response) {
+          expect(response.body.timeSince).to.equal(tmSinceText)
+          expect(response.body.staleTime).to.equal(tmStaleText)
+        } else {
+          fail('no response on save check')
+        }
+      })
     })
   })
 
@@ -1183,13 +1247,21 @@ describe('Checks', () => {
 
     it('shows and filters general status history', () => {
       // direct route to statuses page - no data-testids in clockface nav submenu issue #699
-      cy.get<Organization>('@org').then(({id}: Organization) => {
+    /*  cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}/alert-history?type=statuses"`)
           cy.url().should('include', `${orgs}/${id}/alert-history`)
           // Make sure page is loaded
           cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
         })
+      }) */
+
+//      cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
+      cy.getByTestID('nav-item-alerting').within(() => {
+        cy.get('+ button').trigger('mouseover')
+      })
+      cy.getByTestID('popover--dialog').within(() => {
+        cy.contains('Alert History').click()
       })
 
       cy.getByTestID('alert-history-statuses--radio').click()
@@ -1227,14 +1299,14 @@ describe('Checks', () => {
     })
 
     it('shows status history per check', () => {
-      cy.get<Organization>('@org').then(({id}: Organization) => {
+    /*  cy.get<Organization>('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${id}/alerting`)
           cy.url().should('include', `${orgs}/${id}/alerting`)
           // Make sure page is loaded
           cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
         })
-      })
+      }) */
 
       // Deadman history
       cy.getByTestID(`check-card ${deadmanCheck.name}`).within(() => {

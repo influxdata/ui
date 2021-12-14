@@ -2,7 +2,7 @@
 import React, {SFC} from 'react'
 
 // Components
-import ToolbarFunction from 'src/timeMachine/components/fluxFunctionsToolbar/ToolbarFunction'
+import ToolbarFunction from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/ToolbarFunction'
 
 // Types
 import {FluxToolbarFunction} from 'src/types/shared'
@@ -18,7 +18,7 @@ const FunctionCategory: SFC<Props> = props => {
 
   return (
     <dl className="flux-toolbar--category">
-      <dt className="flux-toolbar--heading">{category} example</dt>
+      <dt className="flux-toolbar--heading">{category}</dt>
       {funcs.map(func => (
         <ToolbarFunction
           onClickFunction={onClickFunction}

@@ -2,7 +2,7 @@
 import React, {FC, createRef} from 'react'
 
 // Component
-import FunctionTooltipContents from 'src/timeMachine/components/fluxFunctionsToolbar/FunctionTooltipContents'
+import FunctionTooltipContents from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/FunctionTooltipContents'
 import {
   Popover,
   PopoverPosition,

@@ -10,7 +10,7 @@ import FluxToolbarTab from 'src/timeMachine/components/FluxToolbarTab'
 // Types
 import {FluxToolbarFunction} from 'src/types'
 
-// Utils 
+// Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
@@ -37,16 +37,15 @@ const FluxToolbar: FC<Props> = ({
   if (activeTab === 'functions') {
     if (isFlagEnabled('fluxDynamicDocs')) {
       activeToolbar = (
-        <DynamicFluxFunctionsToolbar onInsertFluxFunction={onInsertFluxFunction} />
+        <DynamicFluxFunctionsToolbar
+          onInsertFluxFunction={onInsertFluxFunction}
+        />
       )
-      
     } else {
       activeToolbar = (
-      
         <FluxFunctionsToolbar onInsertFluxFunction={onInsertFluxFunction} />
       )
     }
-    
   }
 
   if (activeTab === 'variables') {

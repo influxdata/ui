@@ -38,7 +38,7 @@ const FlowPanel: FC<Props> = ({id, children, resizes}) => {
     .join(' ')
 
   return (
-    <div className={panelClassName} style={{marginBottom: '16px'}}>
+    <div className={panelClassName} style={{marginBottom: '4px'}}>
       <div className="flow-panel--header">
         <div className="flow-panel--title">{flow.meta.byID[id].title}</div>
       </div>

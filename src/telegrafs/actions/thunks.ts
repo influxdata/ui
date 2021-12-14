@@ -159,18 +159,14 @@ export const deleteTelegraf = (id: string, name: string) => async (
   }
 }
 
-export const addTelegrafLabelsAsync = (
+export const addTelegrafLabelAsync = (
   telegrafID: string,
-  labels: Label[]
+  label: Label
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
-    if (labels.length === 0) {
-      throw new Error('No label found to add')
-    }
-
     const response = await postTelegrafsLabel({
       telegrafID,
-      data: {labelID: labels[0].id},
+      data: {labelID: label.id},
     })
 
     if (response.status !== 201) {
@@ -199,17 +195,14 @@ export const addTelegrafLabelsAsync = (
   }
 }
 
-export const removeTelegrafLabelsAsync = (
+export const removeTelegrafLabelAsync = (
   telegrafID: string,
-  labels: Label[]
+  label: Label
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
-    if (labels.length === 0) {
-      throw new Error('No label found to delete')
-    }
     const response = await deleteTelegrafsLabel({
       telegrafID,
-      labelID: labels[0].id,
+      labelID: label.id,
     })
 
     if (response.status !== 204) {

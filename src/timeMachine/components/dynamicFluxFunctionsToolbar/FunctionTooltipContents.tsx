@@ -3,9 +3,9 @@ import React, {FunctionComponent} from 'react'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
-import TooltipDescription from 'src/timeMachine/components/fluxFunctionsToolbar/TooltipDescription'
-import TooltipArguments from 'src/timeMachine/components/fluxFunctionsToolbar/TooltipArguments'
-import TooltipLink from 'src/timeMachine/components/fluxFunctionsToolbar/TooltipLink'
+import TooltipDescription from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipDescription'
+import TooltipArguments from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipArguments'
+import TooltipLink from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipLink'
 
 // Types
 import {FluxToolbarFunction} from 'src/types/shared'

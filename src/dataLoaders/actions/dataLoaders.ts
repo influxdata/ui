@@ -396,7 +396,8 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
     },
   }
 
-  const plugins = telegrafPlugins.reduce(
+  // TODO: convert this into a generic type
+  const plugins: any = telegrafPlugins.reduce(
     (acc, tp) => {
       if (tp.configured === ConfigurationState.Configured) {
         return [...acc, tp.plugin || createNewPlugin(tp)]

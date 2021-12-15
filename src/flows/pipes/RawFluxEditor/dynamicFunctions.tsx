@@ -10,7 +10,6 @@ interface Props {
   onSelect: (fn: FluxToolbarFunction) => void
 }
 
-
 const DynamicFunctions: FC<Props> = ({onSelect}) => {
   const [search, setSearch] = useState('')
   const updateSearch = useCallback(
@@ -34,14 +33,14 @@ const DynamicFunctions: FC<Props> = ({onSelect}) => {
         </EmptyState>
       )
     } else {
-      fnComponent = filteredFunctions.map( fn => 
-            <Fn
-              onClickFunction={onSelect}
-              key={`${fn.name}_${fn.desc}`}
-              func={fn}
-              testID={fn.name}
-            />
-          )
+      fnComponent = filteredFunctions.map(fn => (
+        <Fn
+          onClickFunction={onSelect}
+          key={`${fn.name}_${fn.desc}`}
+          func={fn}
+          testID={fn.name}
+        />
+      ))
     }
 
     return (

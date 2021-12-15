@@ -128,11 +128,10 @@ const Query: FC<PipeProp> = ({Context}) => {
     } else {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
-      if(isFlagEnabled('fluxDynamicDocs')){
+      if (isFlagEnabled('fluxDynamicDocs')) {
         showSub(<DynamicFunctions onSelect={inject} />)
       } else {
         showSub(<Functions onSelect={inject} />)
-
       }
     }
   }

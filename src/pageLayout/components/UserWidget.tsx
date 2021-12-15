@@ -108,6 +108,12 @@ const UserWidget: FC<Props> = ({
         />
       </CloudExclude>
       <TreeNav.UserItem
+        id="account"
+        label="Account"
+        testID='user-account-switching-page'
+        linkElement={className=> <Link className={className} to={`${orgPrefix}/accounts/about`}/>}
+        />
+      <TreeNav.UserItem
         id="logout"
         label="Logout"
         testID="user-nav-item-logout"

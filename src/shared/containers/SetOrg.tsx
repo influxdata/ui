@@ -7,7 +7,7 @@ import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {
-    UserAccountPage,
+  UserAccountPage,
   MePage,
   TasksPage,
   TaskPage,
@@ -79,7 +79,6 @@ import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
-
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -288,7 +287,10 @@ const SetOrg: FC = () => {
           <Route path={`${orgPath}/about`} component={OrgProfilePage} />
 
           {/* account about page */}
-          <Route path={`${orgPath}/accounts/about`} component={UserAccountPage} />
+          <Route
+            path={`${orgPath}/accounts/about`}
+            component={UserAccountPage}
+          />
 
           {/* Getting Started */}
           <Route exact path="/orgs/:orgID" component={MePage} />

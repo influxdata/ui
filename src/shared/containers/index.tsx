@@ -94,9 +94,7 @@ export const OperatorPage = lazy(() => import('src/operator/OperatorPage'))
 export const AccountPage = lazy(() =>
   import('src/operator/account/AccountPage')
 )
-export const UserAccountPage = lazy(() =>
-    import('src/accounts/AccountPage')
-)
+export const UserAccountPage = lazy(() => import('src/accounts/AccountPage'))
 export const OrgOverlay = lazy(() => import('src/operator/OrgOverlayWrapper'))
 
 export const CheckoutPage = lazy(() => import('src/checkout/CheckoutPage'))

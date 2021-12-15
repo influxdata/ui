@@ -35,8 +35,8 @@ export const mapSeriesToColor = (
   let needsToSaveToIDPE = false
   if (
     areMappingsSame(
-      properties.colorMapping?.seriesToColorIndexMap,
-      newColorMapping.seriesToColorIndexMap
+      properties.colorMapping,
+      newColorMapping
     )
   ) {
     console.log('@ui color mapping already exists returning', properties)
@@ -48,7 +48,7 @@ export const mapSeriesToColor = (
       const seriesID = getSeriesId(graphLine, columnKeys)
       const colors = properties.colors
       graphLine.color =
-        colors[properties.colorMapping?.seriesToColorIndexMap[seriesID]].hex
+        colors[properties.colorMapping[seriesID]].hex
     })
     needsToSaveToIDPE = false
     return [{columnKeys, ...mappings}, needsToSaveToIDPE]
@@ -86,5 +86,5 @@ export const makeColorMappingFromColors = (
       properties.colors[colorIndex % properties.colors.length].hex
   })
 
-  return {...colorMapping, seriesToColorIndexMap}
+  return {...seriesToColorIndexMap}
 }

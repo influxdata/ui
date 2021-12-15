@@ -761,9 +761,9 @@ describe('Dashboards', () => {
                     .as('loadQuery')
                     .then(() =>
                       cy.writeLPData({
-                        lines: genCurve({points: 2500, freq: 6, shift: 13}),
+                        lines: genCurve({points: 3500, freq: 6, shift: 13}),
                         offset: `${8 * 24 * 60}m`,
-                        stagger: `${(8 * 24 * 60) / 2499}m`,
+                        stagger: `${(8 * 24 * 60) / 3499}m`,
                       })
                     )
                 )

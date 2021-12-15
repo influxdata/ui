@@ -33,12 +33,7 @@ export const mapSeriesToColor = (
 ) => {
   const newColorMapping = makeColorMappingFromColors(fillColumnMap, properties)
   let needsToSaveToIDPE = false
-  if (
-    areMappingsSame(
-      properties.colorMapping,
-      newColorMapping
-    )
-  ) {
+  if (areMappingsSame(properties.colorMapping, newColorMapping)) {
     console.log('@ui color mapping already exists returning', properties)
 
     const columnKeys = fillColumnMap.columnKeys
@@ -47,15 +42,18 @@ export const mapSeriesToColor = (
     mappings.mappings.forEach(graphLine => {
       const seriesID = getSeriesId(graphLine, columnKeys)
       const colors = properties.colors
-      graphLine.color =
-        colors[properties.colorMapping[seriesID]].hex
+      graphLine.color = colors[properties.colorMapping[seriesID]].hex
     })
     needsToSaveToIDPE = false
     return [{columnKeys, ...mappings}, needsToSaveToIDPE]
   } else {
     console.log('@ui needs new colormapping, generating...')
     needsToSaveToIDPE = true
-    return [newColorMapping, needsToSaveToIDPE]
+    const newColorMappingForGiraffe = {
+      ...fillColumnMap,
+      seriesToColorIndexMap: newColorMapping,
+    }
+    return [newColorMapping, newColorMappingForGiraffe, needsToSaveToIDPE]
   }
 }
 

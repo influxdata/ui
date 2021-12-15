@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useMemo, useContext, useCallback, useState} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
 import {
   Config,
   DomainLabel,
@@ -27,7 +27,13 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
-import {ViewProperties, XYViewProperties} from 'src/types'
+import {
+  AppState,
+  ResourceType,
+  View,
+  ViewProperties,
+  XYViewProperties,
+} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
@@ -54,11 +60,16 @@ import {
 
 // Annotations
 import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
-import {setViewProperties} from '../../../timeMachine/actions'
+import {updateViewAndVariables} from '../../../views/actions/thunks'
+import {getByID} from '../../../resources/selectors'
 
-interface Props extends VisualizationProps {
+type ReduxProps = ConnectedProps<typeof connector>
+
+interface OwnProps extends VisualizationProps {
   properties: XYViewProperties
 }
+
+type Props = OwnProps & ReduxProps
 
 const XYPlot: FC<Props> = ({
   properties,
@@ -66,6 +77,8 @@ const XYPlot: FC<Props> = ({
   timeRange,
   annotations,
   cellID,
+  view,
+  triggerSaveViewProperties,
 }) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -117,22 +130,23 @@ const XYPlot: FC<Props> = ({
   const [needsUpdateBit, setNeedsUpdateBit] = useState(true)
 
   const update = useCallback(
-    (properties: Partial<ViewProperties>) => {
+    (properties: Partial<XYViewProperties>) => {
       console.log('Updating view properties', {properties})
-      dispatch(
-        setViewProperties({
-          ...properties,
-        } as ViewProperties)
-      )
+      const newView = {...view}
+      newView.properties.colorMapping = properties.colorMapping
+      console.log(newView)
+      triggerSaveViewProperties(view.dashboardID, newView)
     },
     [dispatch, properties]
   )
-  const [colorMapping, needsUpdate] = mapSeriesToColor(
-    fillColumnMap,
-    properties
-  )
 
-  if (needsUpdateBit && needsUpdate) {
+  const [
+    colorMapping,
+    newColorMappingForGiraffe,
+    needsUpdate,
+  ] = mapSeriesToColor(fillColumnMap, properties)
+
+  if (needsUpdateBit && needsUpdate && view?.dashboardID) {
     update({...properties, colorMapping})
     setNeedsUpdateBit(false)
   }
@@ -242,7 +256,7 @@ const XYPlot: FC<Props> = ({
         shadeBelow: !!properties.shadeBelow,
         shadeBelowOpacity: 0.08,
         hoverDimension: properties.hoverDimension,
-        colorMapping,
+        colorMapping: newColorMappingForGiraffe,
         colorMappingCallback,
       },
     ],
@@ -262,4 +276,20 @@ const XYPlot: FC<Props> = ({
   return <Plot config={config} />
 }
 
-export default XYPlot
+const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
+  const view = getByID<View<XYViewProperties>>(
+    state,
+    ResourceType.Views,
+    ownProps.cellID
+  )
+  return {
+    view,
+  }
+}
+
+const mapDispatchToProps = {
+  triggerSaveViewProperties: updateViewAndVariables,
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps)
+export default connector(XYPlot)

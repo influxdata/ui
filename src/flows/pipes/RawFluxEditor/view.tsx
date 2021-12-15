@@ -25,12 +25,14 @@ import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import Functions from 'src/flows/pipes/RawFluxEditor/functions'
+import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/dynamicFunctions'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxMonacoEditor = lazy(() =>
   import('src/shared/components/FluxMonacoEditor')
@@ -126,7 +128,12 @@ const Query: FC<PipeProp> = ({Context}) => {
     } else {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
-      showSub(<Functions onSelect={inject} />)
+      if(isFlagEnabled('fluxDynamicDocs')){
+        showSub(<DynamicFunctions onSelect={inject} />)
+      } else {
+        showSub(<Functions onSelect={inject} />)
+
+      }
     }
   }
 

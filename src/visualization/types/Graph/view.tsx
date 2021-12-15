@@ -114,7 +114,6 @@ const XYPlot: FC<Props> = ({
   ])
 
   const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
-  const colorMapping = mapSeriesToColor(fillColumnMap, properties)
   const [needsUpdateBit, setNeedsUpdateBit] = useState(true)
 
   const update = useCallback(
@@ -128,8 +127,12 @@ const XYPlot: FC<Props> = ({
     },
     [dispatch, properties]
   )
+  const [colorMapping, needsUpdate] = mapSeriesToColor(
+    fillColumnMap,
+    properties
+  )
 
-  if (needsUpdateBit) {
+  if (needsUpdateBit && needsUpdate) {
     update({...properties, colorMapping})
     setNeedsUpdateBit(false)
   }

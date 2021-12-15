@@ -203,8 +203,10 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
             <ColorSchemeDropdown
               value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
-
-                const colorMapping = makeColorMappingFromColors(fillColumnMap, properties)
+                const colorMapping = makeColorMappingFromColors(
+                  fillColumnMap,
+                  properties
+                )
 
                 update({colors, colorMapping})
               }}

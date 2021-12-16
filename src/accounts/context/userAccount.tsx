@@ -45,13 +45,12 @@ export const UserAccountContext = React.createContext<UserAccountContextType>(
   DEFAULT_CONTEXT
 )
 
-
 //todo:  put in dependency array:  whenever the default account changes, should redo the call.
 
 export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)
   const [defaultAccountId, setDefaultAccountId] = useState<number>(null)
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   const handleGetAccounts = useCallback(async () => {
     try {
@@ -60,19 +59,17 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         // set user account status to error;...TODO
         throw new Error(resp.data.message)
       }
-      console.log('got the data response!', resp.data)
-      const arghh = resp.data
-      if (Array.isArray(arghh)) {
-        setUserAccounts(resp.data)
+      //console.log('got the data response!', resp.data)
+      const {data} = resp
+      if (Array.isArray(data)) {
+        setUserAccounts(data)
 
-        const defaultAcctArray = resp.data.filter(line => line.isDefault)
+        const defaultAcctArray = data.filter(line => line.isDefault)
         if (defaultAcctArray && defaultAcctArray.length === 1) {
           const defaultId = defaultAcctArray[0].id
-          console.log('got the default id....', defaultId)
+          //console.log('got the default id....', defaultId)
           setDefaultAccountId(defaultId)
         }
-      } else {
-        console.log('arghh!  did not get an array.... :(')
       }
     } catch (error) {
       console.log('caught error...', error)

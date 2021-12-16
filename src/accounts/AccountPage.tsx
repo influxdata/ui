@@ -14,22 +14,27 @@ import UserAccountProvider from './context/userAccount'
 import {UserAccountContext} from './context/userAccount'
 
 const AccountAboutPage: FC = () => {
+  const {userAccounts, defaultAccountId} = useContext(UserAccountContext)
+
+  console.log('got userAccounts???', userAccounts)
+  console.log('arghh, default account id?', defaultAccountId)
+
   return (
-    <UserAccountProvider>
-      <h1 data-testid='account-about--header'> hello world on the account about page</h1>
-    </UserAccountProvider>
+    <h1 data-testid="account-about--header">
+      {' '}
+      hello world on the account about page
+    </h1>
   )
 }
 
 const AccountPage: FC = () => {
-  const {userAccounts} = useContext(UserAccountContext)
-
   //todo:  look at userlistcontainer for a tabbed example!
-  console.log('got userAccounts???', userAccounts)
-  console.log('arghh')
+
   return (
     <Page titleTag={pageTitleSuffixer(['Account About page....'])}>
-      <AccountAboutPage />
+      <UserAccountProvider>
+        <AccountAboutPage />
+      </UserAccountProvider>
     </Page>
   )
 }

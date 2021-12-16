@@ -135,7 +135,6 @@ class SubmitQueryButton extends PureComponent<Props> {
     event('SubmitQueryButton click')
 
     this.props.onSubmit()
-    this.props.update()
   }
 
   private handleCancelClick = (): void => {

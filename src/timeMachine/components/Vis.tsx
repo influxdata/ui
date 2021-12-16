@@ -1,8 +1,8 @@
 // Libraries
 import React, {FC, memo} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import classnames from 'classnames'
-import {fromFlux} from '@influxdata/giraffe'
+import {createGroupIDColumn, fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // Components
@@ -27,10 +27,12 @@ import {
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
 
 // Types
-import {RemoteDataState, AppState, ViewProperties} from 'src/types'
+import {RemoteDataState, AppState, ViewProperties, XYViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
+import {makeColorMappingFromColors} from '../../visualization/utils/colorMapping'
+import {setViewProperties} from '../actions'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -66,6 +68,18 @@ const TimeMachineVis: FC<Props> = ({
     fillColumns,
     symbolColumns,
   } as ViewProperties | SimpleTableViewProperties
+
+  const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
+  const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
+
+  const colorMapping = makeColorMappingFromColors(fillColumnMap, viewProperties as XYViewProperties)
+
+  console.log("UPDATE ----- REEEEEEE", {colorMapping})
+
+  const dispatch = useDispatch()
+  if (loading === 'Done'){
+    dispatch(setViewProperties({...viewProperties, colorMapping} as XYViewProperties))
+  }
 
   const simpleTableProperties = {
     type: 'simple-table',

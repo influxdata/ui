@@ -78,24 +78,12 @@ class TimeMachineQueries extends PureComponent<Props> {
                 <TimeMachineQueriesSwitcher />
               </>
             )}
-            <SubmitQueryButton update={this.update}/>
+            <SubmitQueryButton />
           </FlexBox>
         </div>
         <div className="time-machine-queries--body">{this.queryEditor}</div>
       </div>
     )
-  }
-
-  private update = () => {
-    const {view, results, update} = this.props
-    const groupKey = [...results.fluxGroupKeyUnion, 'result']
-    const [, fillColumnMap] = createGroupIDColumn(results.table, groupKey)
-
-    const colorMapping = makeColorMappingFromColors(fillColumnMap, view.properties as XYViewProperties)
-
-    console.log("UPDATE ----- REEEEEEE", {...view.properties, colorMapping})
-
-    update({...view.properties, colorMapping} as XYViewProperties)
   }
 
   private handleSetTimeRange = (timeRange: TimeRange) => {

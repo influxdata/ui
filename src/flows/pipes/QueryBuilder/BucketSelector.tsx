@@ -3,7 +3,7 @@ import React, {FC, useState, useContext, useEffect} from 'react'
 
 // Components
 import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
-import {RemoteDataState} from 'src/types'
+import {Bucket, RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {BucketContext} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
@@ -11,7 +11,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 // this is used by notebooks
 const BucketSelector: FC = () => {
   const {data, update} = useContext(PipeContext)
-  const {loading, buckets} = useContext(BucketContext)
+  const {loading, buckets, addBucket} = useContext(BucketContext)
 
   const [search, setSearch] = useState('')
 
@@ -25,6 +25,12 @@ const BucketSelector: FC = () => {
 
     data.tags = []
 
+    if (!item && dataBuckets) {
+      addBucket({
+        name: dataBuckets[0].name,
+        type: dataBuckets[0].type,
+      } as Bucket)
+    }
     update(data)
   }
 

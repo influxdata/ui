@@ -18,11 +18,13 @@ import {Bucket, RemoteDataState} from 'src/types'
 interface BucketContextType {
   loading: RemoteDataState
   buckets: Bucket[]
+  addBucket: (_: Bucket) => void
 }
 
 const DEFAULT_CONTEXT: BucketContextType = {
   loading: RemoteDataState.NotStarted,
   buckets: [],
+  addBucket: (_: Bucket) => {},
 }
 
 export const BucketContext = createContext<BucketContextType>(DEFAULT_CONTEXT)
@@ -119,9 +121,13 @@ export const BucketProvider: FC = ({children}) => {
       .catch(() => {})
   }, [scope.region, scope.org])
 
+  const addBucket = (bucket: Bucket) => {
+    setBuckets([...buckets, bucket])
+  }
+
   return useMemo(
     () => (
-      <BucketContext.Provider value={{loading, buckets}}>
+      <BucketContext.Provider value={{loading, buckets, addBucket}}>
         {children}
       </BucketContext.Provider>
     ),

@@ -396,7 +396,8 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
     },
   }
 
-  // TODO: convert this into a generic type
+  // Consider to convert the type 'any' into a generic type
+  // https://github.com/influxdata/ui/issues/3433
   const plugins: any = telegrafPlugins.reduce(
     (acc, tp) => {
       if (tp.configured === ConfigurationState.Configured) {

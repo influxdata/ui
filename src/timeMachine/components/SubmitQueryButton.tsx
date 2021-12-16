@@ -35,6 +35,7 @@ interface OwnProps {
   icon?: IconFont
   testID?: string
   className?: string
+  update?: () => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -134,6 +135,7 @@ class SubmitQueryButton extends PureComponent<Props> {
     event('SubmitQueryButton click')
 
     this.props.onSubmit()
+    this.props.update()
   }
 
   private handleCancelClick = (): void => {

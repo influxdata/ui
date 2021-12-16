@@ -1,6 +1,6 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {PureComponent, useMemo} from 'react'
+import {connect, ConnectedProps, useSelector} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -33,12 +33,15 @@ import {enableUpdatedTimeRangeInVEO} from 'src/shared/actions/app'
 import {
   getActiveTimeMachine,
   getIsInCheckOverlay,
-  getActiveQuery,
+  getActiveQuery, getVisTable,
 } from 'src/timeMachine/selectors'
 import {getTimeRange} from 'src/dashboards/selectors'
 
 // Types
-import {AppState, TimeRange, AutoRefreshStatus} from 'src/types'
+import {AppState, TimeRange, AutoRefreshStatus, XYViewProperties} from 'src/types'
+import {makeColorMappingFromColors} from '../../visualization/utils/colorMapping'
+import {createGroupIDColumn} from '../../../../giraffe/giraffe'
+import {setViewProperties} from 'src/timeMachine/actions'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type RouterProps = RouteComponentProps<{
@@ -75,12 +78,24 @@ class TimeMachineQueries extends PureComponent<Props> {
                 <TimeMachineQueriesSwitcher />
               </>
             )}
-            <SubmitQueryButton />
+            <SubmitQueryButton update={this.update}/>
           </FlexBox>
         </div>
         <div className="time-machine-queries--body">{this.queryEditor}</div>
       </div>
     )
+  }
+
+  private update = () => {
+    const {view, results, update} = this.props
+    const groupKey = [...results.fluxGroupKeyUnion, 'result']
+    const [, fillColumnMap] = createGroupIDColumn(results.table, groupKey)
+
+    const colorMapping = makeColorMappingFromColors(fillColumnMap, view.properties as XYViewProperties)
+
+    console.log("UPDATE ----- REEEEEEE", {...view.properties, colorMapping})
+
+    update({...view.properties, colorMapping} as XYViewProperties)
   }
 
   private handleSetTimeRange = (timeRange: TimeRange) => {
@@ -133,7 +148,8 @@ class TimeMachineQueries extends PureComponent<Props> {
 
 const mstp = (state: AppState) => {
   const timeRange = getTimeRange(state)
-  const {autoRefresh} = getActiveTimeMachine(state)
+  const {autoRefresh, view} = getActiveTimeMachine(state)
+  const results = getVisTable(state)
 
   const activeQuery = getActiveQuery(state)
 
@@ -142,6 +158,8 @@ const mstp = (state: AppState) => {
     activeQuery,
     autoRefresh,
     isInCheckOverlay: getIsInCheckOverlay(state),
+    view,
+    results
   }
 }
 
@@ -150,6 +168,7 @@ const mdtp = {
   onSetTimeRange: setTimeRange,
   onEnableUpdatedTimeRangeInVEO: enableUpdatedTimeRangeInVEO,
   onSetAutoRefresh: setAutoRefresh,
+  update: setViewProperties,
 }
 
 const connector = connect(mstp, mdtp)

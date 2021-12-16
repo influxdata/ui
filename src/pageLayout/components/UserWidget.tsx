@@ -35,19 +35,13 @@ const UserWidget: FC<Props> = ({
     handleShowOverlay('switch-organizations', {}, handleDismissOverlay)
   }
 
+  console.log('hello there....from the user widget....')
   const orgPrefix = `/orgs/${org.id}`
 
   return (
     <TreeNav.User username={me.name} team={org.name} testID="user-nav">
       <CloudOnly>
-        <TreeNav.UserItem
-          id="usage"
-          label="Usage"
-          testID="user-nav-item-usage"
-          linkElement={className => (
-            <Link className={className} to={`${orgPrefix}/usage`} />
-          )}
-        />
+        <TreeNav.SubHeading label="Account" />
         <TreeNav.UserItem
           id="billing"
           label="Billing"
@@ -56,6 +50,15 @@ const UserWidget: FC<Props> = ({
             <Link className={className} to={`${orgPrefix}/billing`} />
           )}
         />
+        <TreeNav.UserItem
+          id="account"
+          label="Account"
+          testID="user-account-switching-page"
+          linkElement={className => (
+            <Link className={className} to={`${orgPrefix}/accounts/about`} />
+          )}
+        />
+        <TreeNav.SubHeading label="Organization" />
         <TreeNav.UserItem
           id="users"
           label="Users"
@@ -70,6 +73,14 @@ const UserWidget: FC<Props> = ({
           testID="user-nav-item-about"
           linkElement={className => (
             <Link className={className} to={`${orgPrefix}/about`} />
+          )}
+        />
+        <TreeNav.UserItem
+          id="usage"
+          label="Usage"
+          testID="user-nav-item-usage"
+          linkElement={className => (
+            <Link className={className} to={`${orgPrefix}/usage`} />
           )}
         />
       </CloudOnly>
@@ -107,14 +118,6 @@ const UserWidget: FC<Props> = ({
           )}
         />
       </CloudExclude>
-      <TreeNav.UserItem
-        id="account"
-        label="Account"
-        testID="user-account-switching-page"
-        linkElement={className => (
-          <Link className={className} to={`${orgPrefix}/accounts/about`} />
-        )}
-      />
       <TreeNav.UserItem
         id="logout"
         label="Logout"

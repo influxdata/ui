@@ -16,8 +16,9 @@ const BucketSelector: FC = () => {
   const [search, setSearch] = useState('')
 
   const selectBucket = (item?: string): void => {
+    const dataBuckets = !!data.buckets ? [data.buckets[0]] : []
     if (!item) {
-      data.buckets = []
+      data.buckets = dataBuckets
     } else {
       data.buckets = [item]
     }
@@ -36,11 +37,8 @@ const BucketSelector: FC = () => {
       return
     }
 
-    const bucks = buckets.reduce((acc, curr) => {
-      acc[curr.name] = true
-      return acc
-    }, {})
-    const filtered = data.buckets.filter(b => bucks.hasOwnProperty(b.name))
+    const bucks = new Set(buckets.map(b => b.name))
+    const filtered = data.buckets.filter(b => bucks.has(b.name))
 
     if (data.buckets.length == filtered.length) {
       return

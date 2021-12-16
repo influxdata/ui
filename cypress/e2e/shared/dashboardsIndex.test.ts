@@ -719,7 +719,7 @@ describe('Dashboards', () => {
     cy.getByTestID('button-copy').click()
     cy.getByTestID('notification-success--children').should('be.visible')
   })
-  it.only('changes time range', () => {
+  it('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()

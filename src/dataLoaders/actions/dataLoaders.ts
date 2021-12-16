@@ -415,7 +415,6 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
       data: {
         name: telegrafConfigName,
         description: telegrafConfigDescription,
-        // TODO: interface TelegrafPlugin does not have property 'type'
         plugins,
       },
     })

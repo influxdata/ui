@@ -26,7 +26,6 @@ const BucketSelector: FC = () => {
     data.tags = []
 
     if (!item && dataBuckets) {
-      // FIXME: Remove when Issue #3461 is fixed
       addBucket({
         name: dataBuckets[0].name,
         type: dataBuckets[0].type,

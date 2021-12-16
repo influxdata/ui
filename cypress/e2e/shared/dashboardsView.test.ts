@@ -1039,11 +1039,17 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           'beans'
         )
 
-        // and cause the rest to exist in loading states
+        // and cause the rest to exist in error states
         cy.getByTestIDSubStr('variable-dropdown--dependent').should(
           'contain',
-          'Loading'
+          'Error'
         )
+
+        // An error notification should tell the user that this failed
+        cy.getByTestID('notification-error').contains(
+          'could not find bucket "beans"'
+        )
+        cy.getByTestID('notification-error--dismiss').click()
 
         cy.getByTestIDSubStr('cell--view-empty')
 

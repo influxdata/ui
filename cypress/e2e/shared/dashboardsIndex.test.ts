@@ -742,7 +742,7 @@ describe('Dashboards', () => {
     const snapshot12 = makeGraphSnapshot()
     snapshot12.shouldBeSameAs(snapshot4, false)
   })
-  it.only('changes time range', () => {
+  it('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()

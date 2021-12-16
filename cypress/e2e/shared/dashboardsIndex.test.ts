@@ -802,12 +802,14 @@ describe('Dashboards', () => {
     snapshot3.shouldBeSameAs(snapshot2, false)
 
     // past 15m
+    /*
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past15m').click()
     cy.wait('@loadQuery')
 
     const snapshot4 = makeGraphSnapshot()
     snapshot4.shouldBeSameAs(snapshot3, false)
+    */
     // past 1h is set as default value
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past1h').click()

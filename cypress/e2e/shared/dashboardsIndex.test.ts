@@ -719,7 +719,7 @@ describe('Dashboards', () => {
     cy.getByTestID('button-copy').click()
     cy.getByTestID('notification-success--children').should('be.visible')
   })
-  it('changes time range', () => {
+  it.only('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()
@@ -778,15 +778,6 @@ describe('Dashboards', () => {
     const snapshot3 = makeGraphSnapshot()
     snapshot3.shouldBeSameAs(snapshot2, false)
 
-    // past 15m
-    /*
-    cy.getByTestID('timerange-dropdown').click()
-    cy.getByTestID('dropdown-item-past15m').click()
-    cy.wait('@loadQuery')
-
-    const snapshot4 = makeGraphSnapshot()
-    snapshot4.shouldBeSameAs(snapshot3, false)
-    */
     // past 1h is set as default value
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past1h').click()
@@ -794,6 +785,14 @@ describe('Dashboards', () => {
 
     const snapshot1 = makeGraphSnapshot()
     snapshot1.shouldBeSameAs(snapshot, true)
+
+    // past 15m
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past15m').click()
+    cy.wait('@loadQuery')
+        
+    const snapshot4 = makeGraphSnapshot()
+    snapshot4.shouldBeSameAs(snapshot1, false)
 
     // past 3h
     cy.getByTestID('timerange-dropdown').click()

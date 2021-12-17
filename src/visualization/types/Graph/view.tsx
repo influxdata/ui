@@ -50,6 +50,7 @@ import {
 
 // Annotations
 import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
+import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -179,6 +180,12 @@ const XYPlot: FC<Props> = ({
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
+  const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
+  const {colorMappingForGiraffe} = getColorMappingObjects(
+    fillColumnMap,
+    properties
+  )
+
   const config: Config = {
     ...currentTheme,
     table: result.table,
@@ -210,6 +217,7 @@ const XYPlot: FC<Props> = ({
         interpolation,
         position: properties.position,
         colors: colorHexes,
+        colorMapping: colorMappingForGiraffe,
         shadeBelow: !!properties.shadeBelow,
         shadeBelowOpacity: 0.08,
         hoverDimension: properties.hoverDimension,

@@ -40,7 +40,7 @@ const areMappingsSame = (map1, map2) => {
  * @returns an object shaped : {colorMappingForIDPE?, colorMappingForGiraffe?, needsToSaveToIDPE}
  */
 
-export const getColorMappingObjectsForIDPEAndGiraffe = (
+export const getColorMappingObjects = (
   columnGroupMap,
   properties: XYViewProperties
 ) => {
@@ -52,8 +52,6 @@ export const getColorMappingObjectsForIDPEAndGiraffe = (
 
   // if the mappings from the IDPE and the *required* one's for the current view are the same, we don't need to generate new mappings
   if (areMappingsSame(properties.colorMapping, seriesToColorIndexMap)) {
-    console.log('@ui color mapping already exists ', {properties})
-
     const columnKeys = columnGroupMap.columnKeys
     const mappings = {...columnGroupMap}
 
@@ -73,13 +71,23 @@ export const getColorMappingObjectsForIDPEAndGiraffe = (
       needsToSaveToIDPE,
     }
   } else {
-    console.log('@ui needs new colormapping, generating...')
+    const columnKeys = columnGroupMap.columnKeys
+    const mappings = {...columnGroupMap}
 
-    needsToSaveToIDPE = true
+    mappings.mappings.forEach(graphLine => {
+      const seriesID = getSeriesId(graphLine, columnKeys)
+
+      const colors = properties.colors
+
+      // this is needed for giraffe
+      graphLine.color = colors[seriesToColorIndexMap[seriesID]].hex
+    })
+
     const newColorMappingForGiraffe = {
-      ...columnGroupMap,
+      ...mappings,
       seriesToColorIndexMap,
     }
+    needsToSaveToIDPE = true
 
     return {
       colorMappingForIDPE: seriesToColorIndexMap,

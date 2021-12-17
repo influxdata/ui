@@ -428,6 +428,12 @@ export const getVariableFailed = (): Notification => ({
   message: 'Failed to fetch variable',
 })
 
+export const getVariableFailedWithMessage = (name, message): Notification => ({
+  ...defaultErrorNotification,
+  duration: INDEFINITE,
+  message: `Failed to fetch variable ${name}: ${message}`,
+})
+
 export const createVariableFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.Cube,

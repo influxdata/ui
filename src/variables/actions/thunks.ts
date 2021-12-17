@@ -82,6 +82,7 @@ export const getVariables = (controller?: AbortController) => async (
       {query: {orgID: org.id}},
       {signal: controller?.signal}
     )
+
     if (!resp) {
       return
     }
@@ -186,6 +187,12 @@ export const hydrateVariables = (
       dispatch(setVariable(variable.id, RemoteDataState.Done, _variable))
     }
   })
+
+  hydration.on('error', (variable, error) => {
+    dispatch(setVariable(variable.id, RemoteDataState.Error))
+    dispatch(notify(copy.getVariableFailedWithMessage(variable?.name, error)))
+  })
+
   await hydration.promise
 }
 

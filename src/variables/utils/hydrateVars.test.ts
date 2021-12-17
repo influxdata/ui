@@ -177,12 +177,16 @@ describe('hydrate vars', () => {
 
     fetcher.setResponse(b, Promise.reject('oopsy whoopsies'))
 
-    const actual = await hydrateVars(vars, vars, {
+    const response = hydrateVars(vars, vars, {
       url: '',
       orgID: '',
       selections: {},
       fetcher,
-    }).promise
+    })
+
+    const mockFire = jest.spyOn(response.on, 'fire')
+
+    const actual = await response.promise
 
     // We expect the following end state:
     //
@@ -204,6 +208,12 @@ describe('hydrate vars', () => {
       actual.filter(v => v.id === 'c')[0].arguments.values.results
     ).toEqual(['cVal'])
     expect(actual.filter(v => v.id === 'c')[0].selected).toEqual(['cVal'])
+
+    const errorCall = mockFire.mock.calls[4]
+    const [eventName, variable, errorMessage] = errorCall
+    expect(eventName).toBe('error')
+    expect(variable).toEqual(b)
+    expect(errorMessage).toBe('oopsy whoopsies')
   })
 
   test('works with map template variables', async () => {
@@ -355,5 +365,34 @@ describe('hydrate vars', () => {
       fetcher,
     }).promise
     expect(actual.length).toEqual(2)
+  })
+
+  it('fires an error event when an error is caught', async () => {
+    const error = 'four_oh_four not found'
+    const fetcher = new FakeFetcher()
+    const queryVariable = createVariable(
+      'errorVariable',
+      'f(x: v.four_oh_four)',
+      null,
+      RemoteDataState.Error
+    )
+
+    fetcher.setResponse(queryVariable, Promise.reject(error))
+
+    const actual = hydrateVars([queryVariable], [queryVariable], {
+      url: '',
+      orgID: '',
+      selections: {},
+      fetcher,
+    })
+    const mockFire = jest.spyOn(actual.on, 'fire')
+
+    await actual.promise
+
+    const [_, errorCall] = mockFire.mock.calls
+    const [eventName, variable, errorMessage] = errorCall
+    expect(eventName).toBe('error')
+    expect(variable).toEqual(queryVariable)
+    expect(errorMessage).toBe(error)
   })
 })

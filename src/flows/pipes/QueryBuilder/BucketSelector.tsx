@@ -14,32 +14,52 @@ const BucketSelector: FC = () => {
   const {loading, buckets, addBucket} = useContext(BucketContext)
 
   const [search, setSearch] = useState('')
+  const [selected, setSelected] = useState(null)
+
+  useEffect(() => {
+    const bucks = data.buckets.filter(b => !!b)
+    if (!selected && bucks.length) {
+      setSelected(bucks[0].name)
+    }
+  }, [selected, data.buckets])
+
+  useEffect(() => {
+    const allBuckets = new Set(buckets.map(b => b.name))
+    data.buckets
+      .filter(b => !allBuckets.has(b.name))
+      .forEach(b => {
+        addBucket({
+          name: b.name,
+          type: b.type,
+        } as Bucket)
+      })
+  }, [buckets, data.buckets])
 
   const selectBucket = (item?: string): void => {
-    const dataBuckets = !!data.buckets ? [data.buckets[0]] : []
+    let bucket
     if (!item) {
-      data.buckets = dataBuckets
+      data.buckets = []
+    } else if (item !== selected) {
+      data.buckets = [buckets.find(b => b.name === item)]
+      bucket = item
     } else {
-      data.buckets = [item]
+      data.buckets = []
+      bucket = null
     }
 
     data.tags = []
-
-    if (!item && dataBuckets) {
-      addBucket({
-        name: dataBuckets[0].name,
-        type: dataBuckets[0].type,
-      } as Bucket)
-    }
     update(data)
+    if (item) {
+      setSelected(bucket)
+    }
   }
 
   useEffect(() => {
-    if (loading !== RemoteDataState.Done) {
-      return
-    }
-
-    if (!data.buckets.length) {
+    if (
+      loading !== RemoteDataState.Done ||
+      !data.buckets.length ||
+      !buckets.find(b => b.name === selected)
+    ) {
       return
     }
 
@@ -51,7 +71,7 @@ const BucketSelector: FC = () => {
     }
 
     selectBucket()
-  }, [buckets])
+  }, [buckets, selected, data.buckets])
 
   if (loading === RemoteDataState.Done && !buckets.length) {
     return (
@@ -94,9 +114,8 @@ const BucketSelector: FC = () => {
   )
 
   const renderListItem = item => {
-    const selected = !!data.buckets.find(b => b.name === item.name)
-
-    const title = selected
+    const isSelected = selected === item.name
+    const title = isSelected
       ? 'Click to remove this filter'
       : `Click to filter by ${item.name}`
 
@@ -108,7 +127,7 @@ const BucketSelector: FC = () => {
         value={item.name}
         onClick={selectBucket}
         title={title}
-        selected={selected}
+        selected={isSelected}
         size={ComponentSize.ExtraSmall}
         gradient={Gradients.GundamPilot}
         wrapText={false}

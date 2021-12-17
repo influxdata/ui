@@ -35,6 +35,18 @@ export const BucketProvider: FC = ({children}) => {
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id} = useContext(PipeContext)
   const scope = getPanelQueries(id)?.scope ?? {}
+  const controller = useMemo(() => new AbortController(), [])
+
+  useEffect(() => {
+    return () => {
+      try {
+        // Cancelling active query so that there's no memory leak in this component when unmounting
+        controller.abort()
+      } catch (e) {
+        // Do nothing
+      }
+    }
+  }, [controller])
 
   useEffect(() => {
     if (!scope.region || !scope.org) {
@@ -57,6 +69,7 @@ export const BucketProvider: FC = ({children}) => {
     fetch(`${scope.region}/api/v2/buckets?limit=100&orgID=${scope.org}`, {
       method: 'GET',
       headers,
+      signal: controller.signal,
     })
       .then(response => {
         return response.json()
@@ -119,7 +132,7 @@ export const BucketProvider: FC = ({children}) => {
         setBuckets([...bucks.user, ...bucks.system, ...bucks.sample])
       })
       .catch(() => {})
-  }, [scope.region, scope.org])
+  }, [scope.region, scope.org, controller])
 
   const addBucket = (bucket: Bucket) => {
     setBuckets([...buckets, bucket])

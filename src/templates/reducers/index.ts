@@ -2,12 +2,10 @@ import {produce} from 'immer'
 import {
   Action,
   ADD_TEMPLATE_SUMMARY,
-  POPULATE_TEMPLATE_SUMMARIES,
   SET_EXPORT_TEMPLATE,
   SET_STACKS,
   SET_STAGED_TEMPLATE,
   SET_STAGED_TEMPLATE_URL,
-  SET_TEMPLATES_STATUS,
   TOGGLE_TEMPLATE_RESOURCE_INSTALL,
   UPDATE_TEMPLATE_ENV_REF,
   SET_TEMPLATE_README,
@@ -19,7 +17,7 @@ import {
   TemplateSummary,
   TemplatesState,
 } from 'src/types'
-import {addResource, setResource} from 'src/resources/reducers/helpers'
+import {addResource} from 'src/resources/reducers/helpers'
 
 const defaultCommunityTemplate = (): CommunityTemplate => {
   return {
@@ -52,18 +50,6 @@ export const templatesReducer = (
 ): TemplatesState =>
   produce(state, draftState => {
     switch (action.type) {
-      case POPULATE_TEMPLATE_SUMMARIES: {
-        setResource<TemplateSummary>(draftState, action, ResourceType.Templates)
-
-        return
-      }
-
-      case SET_TEMPLATES_STATUS: {
-        const {status} = action
-        draftState.status = status
-        return
-      }
-
       case SET_STAGED_TEMPLATE_URL: {
         const {templateUrl} = action
 

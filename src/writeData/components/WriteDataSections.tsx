@@ -10,7 +10,7 @@ import {search as searchPlugins} from 'src/writeData/constants/contentTelegrafPl
 import {searchClients} from 'src/writeData'
 
 // Components
-import {EmptyState, ComponentSize, Grid} from '@influxdata/clockface'
+import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import FileUploadSection from 'src/writeData/components/FileUploadSection'
 import ClientLibrarySection from 'src/writeData/components/ClientLibrarySection'
 import TelegrafPluginSection from 'src/writeData/components/TelegrafPluginSection'
@@ -34,17 +34,9 @@ const WriteDataSections: FC = () => {
 
   return (
     <>
-      <Grid>
-        <Grid.Row>
-          <FileUploadSection />
-        </Grid.Row>
-        <Grid.Row>
-          <ClientLibrarySection />
-        </Grid.Row>
-        <Grid.Row>
-          <TelegrafPluginSection />
-        </Grid.Row>
-      </Grid>
+      <FileUploadSection />
+      <ClientLibrarySection />
+      <TelegrafPluginSection />
     </>
   )
 }

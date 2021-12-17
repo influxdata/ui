@@ -101,11 +101,11 @@ describe('Secrets', () => {
         .first() // There's a second one in the empty state.
         .click()
       cy.getByTestID('variable-form-save').should('be.disabled')
-      cy.getByTestID('input-field')
+      cy.getByTestID('input--secret-name')
         .first()
         .type(secretName)
       cy.getByTestID('variable-form-save').should('be.disabled')
-      cy.getByTestID('input-field')
+      cy.getByTestID('input--secret-value')
         .last()
         .type("I'm a secret!")
       cy.getByTestID('variable-form-save').should('be.enabled')

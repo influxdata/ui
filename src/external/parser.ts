@@ -1,5 +1,8 @@
 import {File} from 'src/types/ast'
-
+import {
+  parse as flux_parse,
+  format_from_js_file as flux_format_from_js_file,
+} from '@influxdata/flux-lsp-browser'
 /*
   NOTE: This is a work around for flux being generated (from rust) for the browser and jest tests running in
         a node environment (this is only for handling tests). If a test requires a specific AST result
@@ -7,7 +10,7 @@ import {File} from 'src/types/ast'
 */
 export const parse = (script): File => {
   if (window) {
-    return require('@influxdata/flux').parse(script)
+    return flux_parse(script)
   } else {
     return {
       type: 'File',
@@ -21,5 +24,13 @@ export const parse = (script): File => {
       imports: [],
       body: [],
     }
+  }
+}
+
+export const format_from_js_file = (script): string => {
+  if (window) {
+    return flux_format_from_js_file(script)
+  } else {
+    return script
   }
 }

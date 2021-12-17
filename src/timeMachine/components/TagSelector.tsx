@@ -48,6 +48,7 @@ import {
   BuilderAggregateFunctionType,
   RemoteDataState,
 } from 'src/types'
+import TagSelectorCount from 'src/shared/components/TagSelectorCount'
 
 const SEARCH_DEBOUNCE_MS = 500
 
@@ -210,17 +211,8 @@ class TagSelector extends PureComponent<Props> {
   private get selectedCounter(): JSX.Element {
     const {selectedValues} = this.props
 
-    const pluralizer = selectedValues.length === 1 ? '' : 's'
-
     if (selectedValues.length > 0) {
-      return (
-        <div
-          className="tag-selector--count"
-          title={`${selectedValues.length} value${pluralizer} selected`}
-        >
-          {selectedValues.length}
-        </div>
-      )
+      return <TagSelectorCount count={selectedValues.length} />
     }
   }
 

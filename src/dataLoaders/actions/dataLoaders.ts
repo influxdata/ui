@@ -58,6 +58,7 @@ import {
   TelegrafConfigCreationSuccess,
   TokenCreationError,
 } from 'src/shared/copy/notifications'
+import {postTelegraf, putTelegraf} from 'src/client'
 
 const DEFAULT_COLLECTION_INTERVAL = 10000
 
@@ -395,7 +396,9 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
     },
   }
 
-  const plugins = telegrafPlugins.reduce(
+  // Consider to convert the type 'any' into a generic type
+  // https://github.com/influxdata/ui/issues/3433
+  const plugins: any = telegrafPlugins.reduce(
     (acc, tp) => {
       if (tp.configured === ConfigurationState.Configured) {
         return [...acc, tp.plugin || createNewPlugin(tp)]
@@ -407,12 +410,20 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   )
 
   if (telegrafConfigID) {
-    const telegraf = await client.telegrafConfigs.update(telegrafConfigID, {
-      name: telegrafConfigName,
-      description: telegrafConfigDescription,
-      plugins,
+    const response = await putTelegraf({
+      telegrafID: telegrafConfigID,
+      data: {
+        name: telegrafConfigName,
+        description: telegrafConfigDescription,
+        plugins,
+      },
     })
 
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const telegraf = response.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -522,7 +533,13 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     }
 
     // create telegraf config
-    const tc = await client.telegrafConfigs.create(telegrafRequest)
+    const response = await postTelegraf({data: telegrafRequest})
+
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const tc = response.data
 
     const permissions = [
       {

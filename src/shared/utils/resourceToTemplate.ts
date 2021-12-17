@@ -334,10 +334,3 @@ export const dashboardToTemplate = (
 
   return template
 }
-
-export const addOrgIDToTemplate = (
-  template: DocumentCreate,
-  orgID: string
-): DocumentCreate => {
-  return {...template, orgID}
-}

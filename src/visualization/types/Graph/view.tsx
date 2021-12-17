@@ -181,10 +181,14 @@ const XYPlot: FC<Props> = ({
   }
 
   const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
+  console.log({fillColumnMap, properties})
+
   const {colorMappingForGiraffe} = getColorMappingObjects(
     fillColumnMap,
     properties
   )
+
+  console.log({colorMappingForGiraffe})
 
   const config: Config = {
     ...currentTheme,

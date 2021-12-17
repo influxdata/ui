@@ -120,8 +120,8 @@ export const generateSeriesToColorIndexMap = (
   properties: XYViewProperties
 ) => {
   const seriesToColorIndexMap = {}
-
-  columnGroupMap.mappings.forEach((graphLine, colorIndex) => {
+  const cgMap = {...columnGroupMap}
+  cgMap.mappings.forEach((graphLine, colorIndex) => {
     const id = getSeriesId(graphLine, columnGroupMap.columnKeys)
     seriesToColorIndexMap[id] = colorIndex % properties.colors.length
   })

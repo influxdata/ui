@@ -37,7 +37,7 @@ const areMappingsSame = (map1, map2) => {
  * Returns the colorMapping objects for UI, based on the state of the current view it will return the existing or generate a new one and request trigger saving to IDPE
  * @param columnGroupMap
  * @param properties
- * @returns [colorMappingForIDPE, colorMappingForGiraffe, needsToSaveToIDPE]
+ * @returns an object shaped : {colorMappingForIDPE?, colorMappingForGiraffe?, needsToSaveToIDPE}
  */
 
 export const getColorMappingObjectsForIDPEAndGiraffe = (
@@ -50,8 +50,9 @@ export const getColorMappingObjectsForIDPEAndGiraffe = (
   )
   let needsToSaveToIDPE = false
 
+  // if the mappings from the IDPE and the *required* one's for the current view are the same, we don't need to generate new mappings
   if (areMappingsSame(properties.colorMapping, seriesToColorIndexMap)) {
-    console.log('@ui color mapping already exists returning', properties)
+    console.log('@ui color mapping already exists ', {properties})
 
     const columnKeys = columnGroupMap.columnKeys
     const mappings = {...columnGroupMap}
@@ -60,23 +61,31 @@ export const getColorMappingObjectsForIDPEAndGiraffe = (
       const seriesID = getSeriesId(graphLine, columnKeys)
 
       const colors = properties.colors
+
+      // this is needed for giraffe
       graphLine.color = colors[properties.colorMapping[seriesID]].hex
     })
 
     needsToSaveToIDPE = false
 
-    return [{columnKeys, ...mappings}, needsToSaveToIDPE]
+    return {
+      colorMappingForGiraffe: {columnKeys, ...mappings},
+      needsToSaveToIDPE,
+    }
   } else {
     console.log('@ui needs new colormapping, generating...')
 
     needsToSaveToIDPE = true
     const newColorMappingForGiraffe = {
       ...columnGroupMap,
-      seriesToColorIndexMap: seriesToColorIndexMap,
+      seriesToColorIndexMap,
     }
-    const colorMappingForIDPE = seriesToColorIndexMap
 
-    return [colorMappingForIDPE, newColorMappingForGiraffe, needsToSaveToIDPE]
+    return {
+      colorMappingForIDPE: seriesToColorIndexMap,
+      colorMappingForGiraffe: newColorMappingForGiraffe,
+      needsToSaveToIDPE,
+    }
   }
 }
 

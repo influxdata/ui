@@ -94,6 +94,25 @@ export const IndividualAccordionBody: FC<Props> = props => {
     </FlexBox>
   )
 
+  const getAccordionBody = () => {
+    return sortedPermissions.length !== 0 ? (
+      Object.keys(sortedPermissions).map(key => {
+        return (
+          <Accordion.AccordionBodyItem
+            key={sortedPermissions[key].id}
+            className="resource-accordion-body"
+          >
+            {accordionBody(sortedPermissions[key])}
+          </Accordion.AccordionBodyItem>
+        )
+      })
+    ) : (
+      <Accordion.AccordionBodyItem className="resource-accordion-error">
+        {`No ${resourceName} match your search term`}
+      </Accordion.AccordionBodyItem>
+    )
+  }
+
   return (
     <>
       {title ? (
@@ -101,19 +120,7 @@ export const IndividualAccordionBody: FC<Props> = props => {
           {title}
         </Accordion.AccordionBodyItem>
       ) : null}
-
-      {permissions
-        ? Object.keys(sortedPermissions).map(key => {
-            return (
-              <Accordion.AccordionBodyItem
-                key={sortedPermissions[key].id}
-                className="resource-accordion-body"
-              >
-                {accordionBody(sortedPermissions[key])}
-              </Accordion.AccordionBodyItem>
-            )
-          })
-        : null}
+      {permissions ? getAccordionBody() : null}
     </>
   )
 }

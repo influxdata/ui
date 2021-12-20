@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
   useMemo,
+  useRef,
 } from 'react'
 
 // Contexts
@@ -35,13 +36,13 @@ export const BucketProvider: FC = ({children}) => {
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id} = useContext(PipeContext)
   const scope = getPanelQueries(id)?.scope ?? {}
-  const controller = useMemo(() => new AbortController(), [])
+  const controller = useRef(new AbortController())
 
   useEffect(() => {
     return () => {
       try {
         // Cancelling active query so that there's no memory leak in this component when unmounting
-        controller.abort()
+        controller.current.abort()
       } catch (e) {
         // Do nothing
       }
@@ -69,7 +70,7 @@ export const BucketProvider: FC = ({children}) => {
     fetch(`${scope.region}/api/v2/buckets?limit=100&orgID=${scope.org}`, {
       method: 'GET',
       headers,
-      signal: controller.signal,
+      signal: controller.current.signal,
     })
       .then(response => {
         return response.json()

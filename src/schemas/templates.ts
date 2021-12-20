@@ -11,5 +11,3 @@ import {labelSchema} from './labels'
 export const templateSchema = new schema.Entity(ResourceType.Templates, {
   labels: [labelSchema],
 })
-
-export const arrayOfTemplates = [templateSchema]

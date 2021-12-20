@@ -15,7 +15,6 @@ import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import DashboardImportOverlay from 'src/dashboards/components/DashboardImportOverlay'
-import CreateFromTemplateOverlay from 'src/templates/components/createFromTemplateOverlay/CreateFromTemplateOverlay'
 import DashboardExportOverlay from 'src/dashboards/components/DashboardExportOverlay'
 
 // Utils
@@ -119,10 +118,6 @@ class DashboardIndex extends PureComponent<Props, State> {
           <Route
             path="/orgs/:orgID/dashboards-list/:dashboardID/export"
             component={DashboardExportOverlay}
-          />
-          <Route
-            path="/orgs/:orgID/dashboards-list/import/template"
-            component={CreateFromTemplateOverlay}
           />
           <Route
             path="/orgs/:orgID/dashboards-list/import"

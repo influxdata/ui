@@ -1,6 +1,5 @@
 // Libraries
-import React, {SFC, ReactElement} from 'react'
-import {groupBy} from 'lodash'
+import React, {FC, ReactElement} from 'react'
 
 // Components
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
@@ -11,19 +10,17 @@ import {FluxToolbarFunction} from 'src/types/shared'
 interface Props {
   funcs: FluxToolbarFunction[]
   searchTerm?: string
-  children: (funcs: {
-    [category: string]: FluxToolbarFunction[]
-  }) => JSX.Element | JSX.Element[]
+  children: (funcs: 
+    FluxToolbarFunction[]
+  ) => JSX.Element | JSX.Element[]
 }
 
-const TransformToolbarFunctions: SFC<Props> = props => {
+const TransformToolbarFunctions: FC<Props> = props => {
   const {searchTerm, funcs, children} = props
 
   const filteredFunctions = funcs.filter(func =>
     func.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
-
-  const groupedFunctions = groupBy(filteredFunctions, 'category')
 
   if (filteredFunctions.length === 0) {
     return (
@@ -33,7 +30,7 @@ const TransformToolbarFunctions: SFC<Props> = props => {
     )
   }
 
-  return children(groupedFunctions) as ReactElement<any>
+  return children(filteredFunctions) as ReactElement<any>
 }
 
 export default TransformToolbarFunctions

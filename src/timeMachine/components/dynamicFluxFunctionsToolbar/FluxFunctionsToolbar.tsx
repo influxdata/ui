@@ -3,10 +3,10 @@ import React, {FC, useMemo, useState, useCallback} from 'react'
 
 // Components
 import TransformToolbarFunctions from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TransformToolbarFunctions'
-import FunctionCategory from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/FunctionCategory'
 import FluxToolbarSearch from 'src/timeMachine/components/FluxToolbarSearch'
 import {DapperScrollbars} from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import ToolbarFunction from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/ToolbarFunction'
 
 // Constants
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
@@ -43,13 +43,13 @@ const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
               searchTerm={searchTerm}
             >
               {sortedFunctions =>
-                Object.entries(sortedFunctions).map(([category, funcs]) => (
-                  <FunctionCategory
-                    key={category}
-                    category={category}
-                    funcs={funcs}
-                    onClickFunction={handleClickFunction}
-                  />
+                sortedFunctions.map(func => (
+                  <ToolbarFunction
+                  onClickFunction={handleClickFunction}
+                  key={`${func.name}_${func.desc}`}
+                  func={func}
+                  testID={func.name}
+                />
                 ))
               }
             </TransformToolbarFunctions>

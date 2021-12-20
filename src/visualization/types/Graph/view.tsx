@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useMemo, useContext} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
 import {
   Config,
   DomainLabel,
@@ -21,6 +21,8 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 
 // Redux
 import {isAnnotationsModeEnabled} from 'src/annotations/selectors'
+import {getByID} from 'src/resources/selectors'
+import {updateViewAndVariables} from 'src/views/actions/thunks'
 
 // Constants
 import {VIS_THEME, VIS_THEME_LIGHT} from 'src/shared/constants'
@@ -28,7 +30,7 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
-import {XYViewProperties} from 'src/types'
+import {AppState, ResourceType, View, XYViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
@@ -48,15 +50,19 @@ import {
   defaultXColumn,
   defaultYColumn,
 } from 'src/shared/utils/vis'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
 
 // Annotations
 import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
-import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
-import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
-interface Props extends VisualizationProps {
+type ReduxProps = ConnectedProps<typeof connector>
+
+interface OwnProps extends VisualizationProps {
   properties: XYViewProperties
 }
+
+type Props = OwnProps & ReduxProps
 
 const XYPlot: FC<Props> = ({
   properties,
@@ -64,6 +70,8 @@ const XYPlot: FC<Props> = ({
   timeRange,
   annotations,
   cellID,
+  view,
+  saveViewPropertiesToIDPE,
 }) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -186,11 +194,19 @@ const XYPlot: FC<Props> = ({
 
   if (isFlagEnabled('graphColorMapping')) {
     const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
-    const {colorMappingForGiraffe} = getColorMappingObjects(
+    const {colorMappingForGiraffe, colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
       fillColumnMap,
       properties
     )
     colorMapping = colorMappingForGiraffe
+
+    // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.
+    console.log({needsToSaveToIDPE})
+    if (needsToSaveToIDPE && view?.dashboardID) {
+      const newView = {...view}
+      newView.properties.colorMapping = colorMappingForIDPE
+      saveViewPropertiesToIDPE(view.dashboardID, newView)
+    }
   }
 
   const config: Config = {
@@ -253,4 +269,21 @@ const XYPlot: FC<Props> = ({
   return <Plot config={config} />
 }
 
-export default XYPlot
+const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
+  // the view inside a cell for which we want to update the view properties of
+  const view = getByID<View<XYViewProperties>>(
+    state,
+    ResourceType.Views,
+    ownProps.cellID
+  )
+  return {
+    view,
+  }
+}
+
+const mapDispatchToProps = {
+  saveViewPropertiesToIDPE: updateViewAndVariables,
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps)
+export default connector(XYPlot)

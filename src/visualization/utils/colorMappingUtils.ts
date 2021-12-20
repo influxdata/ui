@@ -16,7 +16,7 @@ const areMappingsSame = (map1, map2) => {
 
   // If number of properties is different,
   // objects are not equivalent
-  if (aProps.length != bProps.length) {
+  if (aProps.length !== bProps.length) {
     return false
   }
 
@@ -48,7 +48,6 @@ export const getColorMappingObjects = (
     columnGroupMap,
     properties
   )
-  let needsToSaveToIDPE = false
 
   // if the mappings from the IDPE and the *required* one's for the current view are the same, we don't need to generate new mappings
   if (areMappingsSame(properties.colorMapping, seriesToColorIndexMap)) {
@@ -64,8 +63,7 @@ export const getColorMappingObjects = (
       graphLine.color = colors[properties.colorMapping[seriesID]].hex
     })
 
-    needsToSaveToIDPE = false
-
+    const needsToSaveToIDPE = false
     return {
       colorMappingForGiraffe: {columnKeys, ...mappings},
       needsToSaveToIDPE,
@@ -73,6 +71,7 @@ export const getColorMappingObjects = (
   } else {
     const columnKeys = columnGroupMap.columnKeys
     const mappings = {...columnGroupMap}
+    const needsToSaveToIDPE = true
 
     mappings.mappings.forEach(graphLine => {
       const seriesID = getSeriesId(graphLine, columnKeys)
@@ -85,9 +84,7 @@ export const getColorMappingObjects = (
 
     const newColorMappingForGiraffe = {
       ...mappings,
-      seriesToColorIndexMap,
     }
-    needsToSaveToIDPE = true
 
     return {
       colorMappingForIDPE: seriesToColorIndexMap,
@@ -97,6 +94,33 @@ export const getColorMappingObjects = (
   }
 }
 
+/**
+ * This function returns the series id of the graphLine.
+ * Example Graph line would look like:
+ * {
+ *    _start: `${MOCK_START}`,
+ *    _stop: `${MOCK_STOP}`,
+ *    _field: 'co',
+ *    _measurement: 'airSensors',
+ *    sensor_id: 'TLM0102',
+ *    result: 'mean',
+ * },
+ *
+ * The columnKeys are:
+ * columnKeys: [
+ *       '_start',
+ *       '_stop',
+ *       '_field',
+ *       '_measurement',
+ *       'sensor_id',
+ *       'result',
+ *     ],
+ *
+ * the seriesID would be : "co-airSensors-TLM0102-mean-"
+ *
+ * @param graphLine
+ * @param columnKeys
+ */
 const getSeriesId = (graphLine, columnKeys) => {
   let id = ''
   for (const key of columnKeys) {

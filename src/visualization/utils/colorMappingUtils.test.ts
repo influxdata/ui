@@ -1,5 +1,3 @@
-// tests will go here
-
 import {getColorMappingObjects} from './colorMappingUtils'
 import {XYViewProperties} from '../../client'
 

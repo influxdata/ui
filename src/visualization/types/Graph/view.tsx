@@ -9,7 +9,8 @@ import {
   STACKED_LINE_CUMULATIVE,
   createGroupIDColumn,
   getDomainDataFromLines,
-  lineTransform, LineLayerConfig,
+  lineTransform,
+  LineLayerConfig,
 } from '@influxdata/giraffe'
 
 // Components
@@ -231,7 +232,11 @@ const XYPlot: FC<Props> = ({
   }
 
   if (isFlagEnabled('graphColorMapping')) {
-    (config.layers[0] as LineLayerConfig).colorMapping = colorMapping
+    const layer = {...(config.layers[0] as LineLayerConfig)}
+
+    layer.colorMapping = colorMapping
+
+    config.layers[0] = layer
   }
 
   addAnnotationLayer(

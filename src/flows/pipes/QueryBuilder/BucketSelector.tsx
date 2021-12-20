@@ -54,25 +54,6 @@ const BucketSelector: FC = () => {
     }
   }
 
-  useEffect(() => {
-    if (
-      loading !== RemoteDataState.Done ||
-      !data.buckets.length ||
-      !buckets.find(b => b.name === selected)
-    ) {
-      return
-    }
-
-    const bucks = new Set(buckets.map(b => b.name))
-    const filtered = data.buckets.filter(b => bucks.has(b.name))
-
-    if (data.buckets.length == filtered.length) {
-      return
-    }
-
-    selectBucket()
-  }, [buckets, selected, data.buckets])
-
   if (loading === RemoteDataState.Done && !buckets.length) {
     return (
       <BuilderCard testID="bucket-selector">

@@ -224,7 +224,7 @@ const dataFromIDPE_fiveSeries = {
   },
 }
 const expectedData = {
-  threeSeries : {
+  threeSeries: {
     mappingForGiraffe: {
       mappings: [
         {
@@ -339,7 +339,7 @@ const expectedData = {
         'co-airSensors-TLM0104-mean-': 1,
       },
     },
-  }
+  },
 }
 
 describe('color mapping utils', function() {
@@ -353,7 +353,9 @@ describe('color mapping utils', function() {
       dataFromIDPE_noColorMapping.properties as XYViewProperties
     )
 
-    expect(colorMappingForGiraffe).toStrictEqual(expectedData.threeSeries.mappingForGiraffe)
+    expect(colorMappingForGiraffe).toStrictEqual(
+      expectedData.threeSeries.mappingForGiraffe
+    )
     expect(needsToSaveToIDPE).toBe(true)
     expect(colorMappingForIDPE).toStrictEqual(
       expectedData.threeSeries.mappingForIDPE.colorMapping
@@ -370,7 +372,9 @@ describe('color mapping utils', function() {
       dataFromIDPE_sameColorMapping.properties as XYViewProperties
     )
 
-    expect(colorMappingForGiraffe).toStrictEqual(expectedData.threeSeries.mappingForGiraffe)
+    expect(colorMappingForGiraffe).toStrictEqual(
+      expectedData.threeSeries.mappingForGiraffe
+    )
     expect(needsToSaveToIDPE).toBe(false)
 
     // no object returned for IDPE since we don't need to save
@@ -387,7 +391,9 @@ describe('color mapping utils', function() {
       dataFromIDPE_fiveSeries.properties as XYViewProperties
     )
 
-    expect(colorMappingForGiraffe).toStrictEqual(expectedData.fiveSeries.mappingForGiraffe)
+    expect(colorMappingForGiraffe).toStrictEqual(
+      expectedData.fiveSeries.mappingForGiraffe
+    )
     expect(needsToSaveToIDPE).toBe(true)
     expect(colorMappingForIDPE).toStrictEqual(
       expectedData.fiveSeries.mappingForIDPE.colorMapping

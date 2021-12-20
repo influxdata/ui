@@ -1,13 +1,12 @@
 // Installed libraries
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
-import {Task as TaskApi} from '@influxdata/influx'
 
 // Constants
 import {tasks, orgs, withRouterProps, labels} from 'mocks/dummyData'
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {mockAppState} from 'src/mockAppState'
-import {RemoteDataState} from 'src/types'
+import {RemoteDataState, Task as TaskApi} from 'src/types'
 import {createMemoryHistory} from 'history'
 
 // Items under test

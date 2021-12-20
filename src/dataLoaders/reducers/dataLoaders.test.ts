@@ -45,13 +45,6 @@ import {QUICKSTART_SCRAPER_TARGET_URL} from 'src/dataLoaders/constants/pluginCon
 
 // Types
 import {
-  TelegrafPluginInputCpu,
-  TelegrafPluginInputDisk,
-  TelegrafPluginInputRedis,
-  TelegrafPluginInputKubernetes,
-  TelegrafPluginInputFile,
-} from '@influxdata/influx'
-import {
   DataLoaderType,
   ConfigurationState,
   TelegrafPlugin,
@@ -83,20 +76,20 @@ describe('dataLoader reducer', () => {
         type: DataLoaderType.Streaming,
         telegrafPlugins: [
           {
-            name: TelegrafPluginInputCpu.NameEnum.Cpu,
+            name: 'cpu',
             configured: ConfigurationState.Unconfigured,
             active: true,
             templateID: '0000000000000009',
           },
           {
-            name: TelegrafPluginInputDisk.NameEnum.Disk,
+            name: 'disk',
             configured: ConfigurationState.Unconfigured,
             active: false,
             templateID: '0000000000000009',
           },
         ],
       },
-      setActiveTelegrafPlugin(TelegrafPluginInputDisk.NameEnum.Disk)
+      setActiveTelegrafPlugin('disk')
     )
 
     const expected = {
@@ -104,13 +97,13 @@ describe('dataLoader reducer', () => {
       type: DataLoaderType.Streaming,
       telegrafPlugins: [
         {
-          name: TelegrafPluginInputCpu.NameEnum.Cpu,
+          name: 'cpu',
           configured: ConfigurationState.Unconfigured,
           active: false,
           templateID: '0000000000000009',
         },
         {
-          name: TelegrafPluginInputDisk.NameEnum.Disk,
+          name: 'disk',
           configured: ConfigurationState.Unconfigured,
           active: true,
           templateID: '0000000000000009',
@@ -127,19 +120,19 @@ describe('dataLoader reducer', () => {
         ...INITIAL_STATE,
         telegrafPlugins: [
           {
-            name: TelegrafPluginInputDisk.NameEnum.Disk,
+            name: 'disk',
             configured: ConfigurationState.Configured,
             active: false,
             templateID: '0000000000000009',
           },
           {
-            name: TelegrafPluginInputFile.NameEnum.File,
+            name: 'file',
             configured: ConfigurationState.Configured,
             active: false,
             templateID: '0000000000000009',
             plugin: {
-              name: TelegrafPluginInputFile.NameEnum.File,
-              type: TelegrafPluginInputFile.TypeEnum.Input,
+              name: 'file',
+              type: 'input',
               config: {
                 files: [],
               },
@@ -147,26 +140,26 @@ describe('dataLoader reducer', () => {
           },
         ],
       },
-      setPluginConfiguration(TelegrafPluginInputFile.NameEnum.File)
+      setPluginConfiguration('file')
     )
 
     const expected = {
       ...INITIAL_STATE,
       telegrafPlugins: [
         {
-          name: TelegrafPluginInputDisk.NameEnum.Disk,
+          name: 'disk',
           configured: ConfigurationState.Configured,
           active: false,
           templateID: '0000000000000009',
         },
         {
-          name: TelegrafPluginInputFile.NameEnum.File,
+          name: 'file',
           configured: ConfigurationState.InvalidConfiguration,
           active: false,
           templateID: '0000000000000009',
           plugin: {
-            name: TelegrafPluginInputFile.NameEnum.File,
-            type: TelegrafPluginInputFile.TypeEnum.Input,
+            name: 'file',
+            type: 'input',
             config: {
               files: [],
             },
@@ -184,13 +177,13 @@ describe('dataLoader reducer', () => {
         ...INITIAL_STATE,
         telegrafPlugins: [
           {
-            name: TelegrafPluginInputKubernetes.NameEnum.Kubernetes,
+            name: 'kubernetes',
             configured: ConfigurationState.Unconfigured,
             templateID: '0000000000000005',
             active: false,
             plugin: {
-              name: TelegrafPluginInputKubernetes.NameEnum.Kubernetes,
-              type: TelegrafPluginInputKubernetes.TypeEnum.Input,
+              name: 'kubernetes',
+              type: 'input',
               config: {
                 url: 'https://server.net',
               },
@@ -198,20 +191,20 @@ describe('dataLoader reducer', () => {
           },
         ],
       },
-      setPluginConfiguration(TelegrafPluginInputKubernetes.NameEnum.Kubernetes)
+      setPluginConfiguration('kubernetes')
     )
 
     const expected = {
       ...INITIAL_STATE,
       telegrafPlugins: [
         {
-          name: TelegrafPluginInputKubernetes.NameEnum.Kubernetes,
+          name: 'kubernetes',
           configured: ConfigurationState.Configured,
           active: false,
           templateID: '0000000000000005',
           plugin: {
-            name: TelegrafPluginInputKubernetes.NameEnum.Kubernetes,
-            type: TelegrafPluginInputKubernetes.TypeEnum.Input,
+            name: 'kubernetes',
+            type: 'input',
             config: {
               url: 'https://server.net',
             },
@@ -238,18 +231,14 @@ describe('dataLoader reducer', () => {
       config: {servers: [], password: ''},
     }
     const tp: TelegrafPlugin = {
-      name: TelegrafPluginInputRedis.NameEnum.Redis,
+      name: 'redis',
       configured: ConfigurationState.Unconfigured,
       active: true,
       plugin,
     }
     const actual = dataLoadersReducer(
       {...INITIAL_STATE, telegrafPlugins: [tp]},
-      updateTelegrafPluginConfig(
-        TelegrafPluginInputRedis.NameEnum.Redis,
-        'password',
-        'pa$$w0rd'
-      )
+      updateTelegrafPluginConfig('redis', 'password', 'pa$$w0rd')
     )
 
     const expected = {
@@ -274,18 +263,14 @@ describe('dataLoader reducer', () => {
       config: {servers: ['first'], password: ''},
     }
     const tp: TelegrafPlugin = {
-      name: TelegrafPluginInputRedis.NameEnum.Redis,
+      name: 'redis',
       configured: ConfigurationState.Unconfigured,
       active: true,
       plugin,
     }
     const actual = dataLoadersReducer(
       {...INITIAL_STATE, telegrafPlugins: [tp]},
-      addConfigValue(
-        TelegrafPluginInputRedis.NameEnum.Redis,
-        'servers',
-        'second'
-      )
+      addConfigValue('redis', 'servers', 'second')
     )
 
     const expected = {
@@ -310,18 +295,14 @@ describe('dataLoader reducer', () => {
       config: {servers: ['first', 'second'], password: ''},
     }
     const tp: TelegrafPlugin = {
-      name: TelegrafPluginInputRedis.NameEnum.Redis,
+      name: 'redis',
       configured: ConfigurationState.Unconfigured,
       active: true,
       plugin,
     }
     const actual = dataLoadersReducer(
       {...INITIAL_STATE, telegrafPlugins: [tp]},
-      removeConfigValue(
-        TelegrafPluginInputRedis.NameEnum.Redis,
-        'servers',
-        'first'
-      )
+      removeConfigValue('redis', 'servers', 'first')
     )
 
     const expected = {

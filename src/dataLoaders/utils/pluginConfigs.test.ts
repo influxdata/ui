@@ -6,15 +6,11 @@ import {
 
 // Types
 import {BundleName} from 'src/types/dataLoaders'
-import {
-  TelegrafPluginInputCpu,
-  TelegrafPluginInputSystem,
-} from '@influxdata/influx'
 
 describe('Onboarding.Utils.PluginConfig', () => {
   describe('if plugin is found in only one bundle', () => {
     it('isPluginUniqueToBundle returns true', () => {
-      const telegrafPlugin = TelegrafPluginInputCpu.NameEnum.Cpu
+      const telegrafPlugin = 'cpu'
       const bundle = BundleName.System
       const bundles = [BundleName.System, BundleName.Docker]
 
@@ -26,7 +22,7 @@ describe('Onboarding.Utils.PluginConfig', () => {
 
   describe('if plugin is not in bundle', () => {
     it('isPluginInBundle returns false', () => {
-      const telegrafPlugin = TelegrafPluginInputSystem.NameEnum.System
+      const telegrafPlugin = 'system'
       const bundle = BundleName.Docker
 
       const actual = isPluginInBundle(telegrafPlugin, bundle)
@@ -37,7 +33,7 @@ describe('Onboarding.Utils.PluginConfig', () => {
 
   describe('if plugin is in bundle', () => {
     it('isPluginInBundle returns true', () => {
-      const telegrafPlugin = TelegrafPluginInputSystem.NameEnum.System
+      const telegrafPlugin = 'system'
       const bundle = BundleName.System
 
       const actual = isPluginInBundle(telegrafPlugin, bundle)

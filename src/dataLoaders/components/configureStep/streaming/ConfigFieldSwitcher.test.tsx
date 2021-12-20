@@ -7,7 +7,6 @@ import ConfigFieldSwitcher from 'src/dataLoaders/components/configureStep/stream
 
 // Types
 import {ConfigFieldType} from 'src/types'
-import {TelegrafPluginInputCpu} from '@influxdata/influx'
 
 import {renderWithReduxAndRouter} from 'src/mockState'
 
@@ -22,7 +21,7 @@ const setup = (override = {}) => {
     value: '',
     isRequired: true,
     onSetConfigArrayValue: jest.fn(),
-    telegrafPluginName: TelegrafPluginInputCpu.NameEnum.Cpu,
+    telegrafPluginName: 'cpu',
     ...override,
   }
 

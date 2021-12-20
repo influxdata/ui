@@ -5,7 +5,6 @@ import {screen} from '@testing-library/react'
 // Components
 import MultipleRows from './MultipleRows'
 
-import {TelegrafPluginInputCpu} from '@influxdata/influx'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
@@ -15,7 +14,7 @@ const setup = (override = {}) => {
     fieldName: '',
     tags: [],
     onSetConfigArrayValue: jest.fn(),
-    telegrafPluginName: TelegrafPluginInputCpu.NameEnum.Cpu,
+    telegrafPluginName: 'cpu',
     ...override,
   }
 

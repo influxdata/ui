@@ -6,29 +6,6 @@ import {
   BundleName,
 } from 'src/types'
 
-import {
-  TelegrafPluginInputCpu,
-  TelegrafPluginInputDisk,
-  TelegrafPluginInputDiskio,
-  TelegrafPluginInputDocker,
-  TelegrafPluginInputFile,
-  TelegrafPluginInputKernel,
-  TelegrafPluginInputKubernetes,
-  TelegrafPluginInputLogParser,
-  TelegrafPluginInputMem,
-  TelegrafPluginInputNet,
-  TelegrafPluginInputNetResponse,
-  TelegrafPluginInputNginx,
-  TelegrafPluginInputProcesses,
-  TelegrafPluginInputProcstat,
-  TelegrafPluginInputPrometheus,
-  TelegrafPluginInputRedis,
-  TelegrafPluginInputSyslog,
-  TelegrafPluginInputSwap,
-  TelegrafPluginInputSystem,
-  TelegrafPluginInputTail,
-} from '@influxdata/influx'
-
 export const QUICKSTART_SCRAPER_TARGET_URL = `${window.location.origin}/metrics`
 
 interface PluginBundles {
@@ -37,47 +14,47 @@ interface PluginBundles {
 
 export const pluginsByBundle: PluginBundles = {
   [BundleName.System]: [
-    TelegrafPluginInputCpu.NameEnum.Cpu,
-    TelegrafPluginInputDisk.NameEnum.Disk,
-    TelegrafPluginInputDiskio.NameEnum.Diskio,
-    TelegrafPluginInputSystem.NameEnum.System,
-    TelegrafPluginInputMem.NameEnum.Mem,
-    TelegrafPluginInputNet.NameEnum.Net,
-    TelegrafPluginInputProcesses.NameEnum.Processes,
-    TelegrafPluginInputSwap.NameEnum.Swap,
+    'cpu',
+    'disk',
+    'diskio',
+    'system',
+    'mem',
+    'net',
+    'processes',
+    'swap',
   ],
-  [BundleName.Docker]: [TelegrafPluginInputDocker.NameEnum.Docker],
-  [BundleName.Kubernetes]: [TelegrafPluginInputKubernetes.NameEnum.Kubernetes],
-  [BundleName.Nginx]: [TelegrafPluginInputNginx.NameEnum.Nginx],
-  [BundleName.Redis]: [TelegrafPluginInputRedis.NameEnum.Redis],
+  [BundleName.Docker]: ['docker'],
+  [BundleName.Kubernetes]: ['kubernetes'],
+  [BundleName.Nginx]: ['nginx'],
+  [BundleName.Redis]: ['redis'],
 }
 
 export const telegrafPluginsInfo: TelegrafPluginInfo = {
-  [TelegrafPluginInputCpu.NameEnum.Cpu]: {
+  cpu: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputCpu.NameEnum.Cpu,
-      type: TelegrafPluginInputCpu.TypeEnum.Input,
+      name: 'cpu',
+      type: 'input',
     },
     templateID: '0000000000000009',
   },
-  [TelegrafPluginInputDisk.NameEnum.Disk]: {
+  disk: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputDisk.NameEnum.Disk,
-      type: TelegrafPluginInputDisk.TypeEnum.Input,
+      name: 'disk',
+      type: 'input',
     },
     templateID: '0000000000000009',
   },
-  [TelegrafPluginInputDiskio.NameEnum.Diskio]: {
+  diskio: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputDiskio.NameEnum.Diskio,
-      type: TelegrafPluginInputDiskio.TypeEnum.Input,
+      name: 'diskio',
+      type: 'input',
     },
     templateID: '0000000000000009',
   },
-  [TelegrafPluginInputDocker.NameEnum.Docker]: {
+  docker: {
     fields: {
       endpoint: {
         type: ConfigFieldType.String,
@@ -85,13 +62,13 @@ export const telegrafPluginsInfo: TelegrafPluginInfo = {
       },
     },
     defaults: {
-      name: TelegrafPluginInputDocker.NameEnum.Docker,
-      type: TelegrafPluginInputDocker.TypeEnum.Input,
+      name: 'docker',
+      type: 'input',
       config: {endpoint: ''},
     },
     templateID: '0000000000000002',
   },
-  [TelegrafPluginInputFile.NameEnum.File]: {
+  file: {
     fields: {
       files: {
         type: ConfigFieldType.StringArray,
@@ -99,19 +76,19 @@ export const telegrafPluginsInfo: TelegrafPluginInfo = {
       },
     },
     defaults: {
-      name: TelegrafPluginInputFile.NameEnum.File,
-      type: TelegrafPluginInputFile.TypeEnum.Input,
+      name: 'file',
+      type: 'input',
       config: {files: []},
     },
   },
-  [TelegrafPluginInputKernel.NameEnum.Kernel]: {
+  kernel: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputKernel.NameEnum.Kernel,
-      type: TelegrafPluginInputDiskio.TypeEnum.Input,
+      name: 'kernel',
+      type: 'input',
     },
   },
-  [TelegrafPluginInputKubernetes.NameEnum.Kubernetes]: {
+  kubernetes: {
     fields: {
       url: {
         type: ConfigFieldType.Uri,
@@ -119,141 +96,141 @@ export const telegrafPluginsInfo: TelegrafPluginInfo = {
       },
     },
     defaults: {
-      name: TelegrafPluginInputKubernetes.NameEnum.Kubernetes,
-      type: TelegrafPluginInputKubernetes.TypeEnum.Input,
+      name: 'kubernetes',
+      type: 'input',
       config: {url: ''},
     },
     templateID: '0000000000000005',
   },
-  [TelegrafPluginInputLogParser.NameEnum.Logparser]: {
+  logparser: {
     fields: {files: {type: ConfigFieldType.StringArray, isRequired: true}},
     defaults: {
-      name: TelegrafPluginInputLogParser.NameEnum.Logparser,
-      type: TelegrafPluginInputLogParser.TypeEnum.Input,
+      name: 'logparser',
+      type: 'input',
       config: {files: []},
     },
   },
-  [TelegrafPluginInputMem.NameEnum.Mem]: {
+  mem: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputMem.NameEnum.Mem,
-      type: TelegrafPluginInputMem.TypeEnum.Input,
+      name: 'mem',
+      type: 'input',
     },
     templateID: '0000000000000009',
   },
-  [TelegrafPluginInputNet.NameEnum.Net]: {
+  net: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputNet.NameEnum.Net,
-      type: TelegrafPluginInputNet.TypeEnum.Input,
+      name: 'net',
+      type: 'input',
     },
     templateID: '0000000000000009',
   },
-  [TelegrafPluginInputNetResponse.NameEnum.NetResponse]: {
+  net_response: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputNetResponse.NameEnum.NetResponse,
-      type: TelegrafPluginInputNetResponse.TypeEnum.Input,
+      name: 'net_response',
+      type: 'input',
     },
   },
-  [TelegrafPluginInputNginx.NameEnum.Nginx]: {
+  nginx: {
     fields: {urls: {type: ConfigFieldType.UriArray, isRequired: true}},
     defaults: {
-      name: TelegrafPluginInputNginx.NameEnum.Nginx,
-      type: TelegrafPluginInputNginx.TypeEnum.Input,
+      name: 'nginx',
+      type: 'input',
     },
     templateID: '0000000000000006',
   },
-  [TelegrafPluginInputProcesses.NameEnum.Processes]: {
+  ['processes']: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputProcesses.NameEnum.Processes,
-      type: TelegrafPluginInputProcesses.TypeEnum.Input,
+      name: 'processes',
+      type: 'input',
     },
     templateID: '0000000000000009',
   },
-  [TelegrafPluginInputProcstat.NameEnum.Procstat]: {
+  procstat: {
     fields: {exe: {type: ConfigFieldType.String, isRequired: true}},
     defaults: {
-      name: TelegrafPluginInputProcstat.NameEnum.Procstat,
-      type: TelegrafPluginInputProcstat.TypeEnum.Input,
+      name: 'procstat',
+      type: 'input',
       config: {exe: ''},
     },
   },
-  [TelegrafPluginInputPrometheus.NameEnum.Prometheus]: {
+  prometheus: {
     fields: {urls: {type: ConfigFieldType.UriArray, isRequired: true}},
     defaults: {
-      name: TelegrafPluginInputPrometheus.NameEnum.Prometheus,
-      type: TelegrafPluginInputPrometheus.TypeEnum.Input,
+      name: 'prometheus',
+      type: 'input',
       config: {urls: []},
     },
   },
-  [TelegrafPluginInputRedis.NameEnum.Redis]: {
+  redis: {
     fields: {
       servers: {type: ConfigFieldType.StringArray, isRequired: true},
       password: {type: ConfigFieldType.String, isRequired: false},
     },
     defaults: {
-      name: TelegrafPluginInputRedis.NameEnum.Redis,
-      type: TelegrafPluginInputRedis.TypeEnum.Input,
+      name: 'redis',
+      type: 'input',
       config: {servers: [], password: ''},
     },
     templateID: '0000000000000008',
   },
-  [TelegrafPluginInputSyslog.NameEnum.Syslog]: {
+  syslog: {
     fields: {server: {type: ConfigFieldType.String, isRequired: true}},
     defaults: {
-      name: TelegrafPluginInputSyslog.NameEnum.Syslog,
-      type: TelegrafPluginInputSyslog.TypeEnum.Input,
+      name: 'syslog',
+      type: 'input',
       config: {server: ''},
     },
   },
-  [TelegrafPluginInputSwap.NameEnum.Swap]: {
+  swap: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputSwap.NameEnum.Swap,
-      type: TelegrafPluginInputSwap.TypeEnum.Input,
+      name: 'swap',
+      type: 'input',
     },
     templateID: '0000000000000009',
   },
-  [TelegrafPluginInputSystem.NameEnum.System]: {
+  system: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputSystem.NameEnum.System,
-      type: TelegrafPluginInputSystem.TypeEnum.Input,
+      name: 'system',
+      type: 'input',
     },
     templateID: '0000000000000009',
   },
-  [TelegrafPluginInputTail.NameEnum.Tail]: {
+  tail: {
     fields: null,
     defaults: {
-      name: TelegrafPluginInputTail.NameEnum.Tail,
-      type: TelegrafPluginInputTail.TypeEnum.Input,
+      name: 'tail',
+      type: 'input',
     },
   },
 }
 
 export const PLUGIN_OPTIONS: TelegrafPluginName[] = [
-  TelegrafPluginInputCpu.NameEnum.Cpu,
-  TelegrafPluginInputDisk.NameEnum.Disk,
-  TelegrafPluginInputDiskio.NameEnum.Diskio,
-  TelegrafPluginInputDocker.NameEnum.Docker,
-  TelegrafPluginInputFile.NameEnum.File,
-  TelegrafPluginInputKernel.NameEnum.Kernel,
-  TelegrafPluginInputKubernetes.NameEnum.Kubernetes,
-  TelegrafPluginInputLogParser.NameEnum.Logparser,
-  TelegrafPluginInputMem.NameEnum.Mem,
-  TelegrafPluginInputNet.NameEnum.Net,
-  TelegrafPluginInputNetResponse.NameEnum.NetResponse,
-  TelegrafPluginInputNginx.NameEnum.Nginx,
-  TelegrafPluginInputProcesses.NameEnum.Processes,
-  TelegrafPluginInputProcstat.NameEnum.Procstat,
-  TelegrafPluginInputPrometheus.NameEnum.Prometheus,
-  TelegrafPluginInputRedis.NameEnum.Redis,
-  TelegrafPluginInputSyslog.NameEnum.Syslog,
-  TelegrafPluginInputSwap.NameEnum.Swap,
-  TelegrafPluginInputSystem.NameEnum.System,
-  TelegrafPluginInputTail.NameEnum.Tail,
+  'cpu',
+  'disk',
+  'diskio',
+  'docker',
+  'file',
+  'kernel',
+  'kubernetes',
+  'logparser',
+  'mem',
+  'net',
+  'net_response',
+  'nginx',
+  'processes',
+  'procstat',
+  'prometheus',
+  'redis',
+  'syslog',
+  'swap',
+  'system',
+  'tail',
 ]
 
 import {

@@ -15,7 +15,7 @@ import {
   LabelRelationship,
   LabelIncluded,
 } from 'src/types'
-import {TemplateType, DocumentCreate} from '@influxdata/influx'
+import {DocumentCreate} from '@influxdata/influx'
 
 const CURRENT_TEMPLATE_VERSION = '1'
 
@@ -29,10 +29,10 @@ const blankTaskTemplate = () => {
   const baseTemplate = blankTemplate()
   return {
     ...baseTemplate,
-    meta: {...baseTemplate.meta, type: TemplateType.Task},
+    meta: {...baseTemplate.meta, type: 'task'},
     content: {
       ...baseTemplate.content,
-      data: {...baseTemplate.content.data, type: TemplateType.Task},
+      data: {...baseTemplate.content.data, type: 'task'},
     },
   }
 }
@@ -41,10 +41,10 @@ const blankVariableTemplate = () => {
   const baseTemplate = blankTemplate()
   return {
     ...baseTemplate,
-    meta: {...baseTemplate.meta, type: TemplateType.Variable},
+    meta: {...baseTemplate.meta, type: 'variable'},
     content: {
       ...baseTemplate.content,
-      data: {...baseTemplate.content.data, type: TemplateType.Variable},
+      data: {...baseTemplate.content.data, type: 'variable'},
     },
   }
 }
@@ -53,21 +53,21 @@ const blankDashboardTemplate = () => {
   const baseTemplate = blankTemplate()
   return {
     ...baseTemplate,
-    meta: {...baseTemplate.meta, type: TemplateType.Dashboard},
+    meta: {...baseTemplate.meta, type: 'dashboard'},
     content: {
       ...baseTemplate.content,
-      data: {...baseTemplate.content.data, type: TemplateType.Dashboard},
+      data: {...baseTemplate.content.data, type: 'dashboard'},
     },
   }
 }
 
 export const labelToRelationship = (l: Label): LabelRelationship => {
-  return {type: TemplateType.Label, id: l.id}
+  return {type: 'label', id: l.id}
 }
 
 export const labelToIncluded = (l: Label): LabelIncluded => {
   return {
-    type: TemplateType.Label,
+    type: 'label',
     id: l.id,
     attributes: {
       name: l.name,
@@ -110,10 +110,10 @@ export const taskToTemplate = (
       ...baseTemplate.content,
       data: {
         ...baseTemplate.content.data,
-        type: TemplateType.Task,
+        type: 'task',
         attributes: taskAttributes,
         relationships: {
-          [TemplateType.Label]: {data: relationshipsLabels},
+          ['label']: {data: relationshipsLabels},
         },
       },
       included: [...baseTemplate.content.included, ...includedLabels],
@@ -142,14 +142,14 @@ const viewToIncluded = (view: View) => {
   }
 
   return {
-    type: TemplateType.View,
+    type: 'view',
     id: view.id,
     attributes: {name: view.name, properties},
   }
 }
 
 const viewToRelationship = (view: View) => ({
-  type: TemplateType.View,
+  type: 'view',
   id: view.id,
 })
 
@@ -161,10 +161,10 @@ const cellToIncluded = (cell: Cell, views: View[]) => {
 
   return {
     id: cell.id,
-    type: TemplateType.Cell,
+    type: 'cell',
     attributes: cellAttributes,
     relationships: {
-      [TemplateType.View]: {
+      ['view']: {
         data: viewRelationship,
       },
     },
@@ -172,7 +172,7 @@ const cellToIncluded = (cell: Cell, views: View[]) => {
 }
 
 const cellToRelationship = (cell: Cell) => ({
-  type: TemplateType.Cell,
+  type: 'cell',
   id: cell.id,
 })
 
@@ -213,10 +213,10 @@ export const variableToTemplate = (
         ...baseTemplate.content.data,
         ...variableData,
         relationships: {
-          [TemplateType.Variable]: {
+          ['variable']: {
             data: [...variableRelationships],
           },
-          [TemplateType.Label]: {
+          ['label']: {
             data: [...labelRelationships],
           },
         },
@@ -247,10 +247,10 @@ const variableToIncluded = (v: Variable, labelsByID: LabelsByID) => {
 
   return {
     id: v.id,
-    type: TemplateType.Variable,
+    type: 'variable',
     attributes: variableAttributes,
     relationships: {
-      [TemplateType.Label]: {
+      ['label']: {
         data: [...labelRelationships],
       },
     },
@@ -258,7 +258,7 @@ const variableToIncluded = (v: Variable, labelsByID: LabelsByID) => {
 }
 
 const variableToRelationship = (v: Variable) => ({
-  type: TemplateType.Variable,
+  type: 'variable',
   id: v.id,
 })
 
@@ -314,12 +314,12 @@ export const dashboardToTemplate = (
       ...baseTemplate.content,
       data: {
         ...baseTemplate.content.data,
-        type: TemplateType.Dashboard,
+        type: 'dashboard',
         attributes: dashboardAttributes,
         relationships: {
-          [TemplateType.Label]: {data: relationshipsLabels},
-          [TemplateType.Cell]: {data: relationshipsCells},
-          [TemplateType.Variable]: {data: relationshipsVariables},
+          ['label']: {data: relationshipsLabels},
+          ['cell']: {data: relationshipsCells},
+          ['variable']: {data: relationshipsVariables},
         },
       },
       included: [

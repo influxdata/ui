@@ -7,7 +7,7 @@ import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
 
 // Fixtures
 import {auth} from 'mocks/dummyData'
-import {Permission} from '@influxdata/influx'
+import {Permission} from 'src/types'
 import {get} from 'lodash'
 import {renderWithReduxAndRouter} from 'src/mockState'
 

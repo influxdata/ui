@@ -3,7 +3,7 @@ import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {mockAppState} from 'src/mockAppState'
-import {AuthorizationUpdateRequest as AuthApi} from '@influxdata/influx'
+import {AuthorizationUpdateRequest as AuthApi} from 'src/types'
 
 import {mocked} from 'ts-jest/utils'
 

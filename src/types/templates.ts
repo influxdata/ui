@@ -3,7 +3,6 @@ import {
   DocumentCreate,
   DocumentMeta,
   TemplateSummary as GenTemplateSummary,
-  TemplateType,
 } from '@influxdata/influx'
 import {
   Cell,
@@ -18,6 +17,15 @@ import {
 } from 'src/types'
 
 import {Stack} from 'src/client'
+
+export declare enum TemplateType {
+  Label = 'label',
+  Task = 'task',
+  Dashboard = 'dashboard',
+  View = 'view',
+  Cell = 'cell',
+  Variable = 'variable',
+}
 
 export interface InstalledStack extends Stack {
   eventType: string
@@ -95,10 +103,10 @@ export type Relationships = {
 type OneOrMany<T> = T | T[]
 
 interface RelationshipMap {
-  [TemplateType.Cell]: CellRelationship
-  [TemplateType.Label]: LabelRelationship
-  [TemplateType.View]: ViewRelationship
-  [TemplateType.Variable]: VariableRelationship
+  cell: CellRelationship
+  label: LabelRelationship
+  view: ViewRelationship
+  variable: VariableRelationship
 }
 
 export interface CellRelationship {
@@ -107,7 +115,7 @@ export interface CellRelationship {
 }
 
 export interface LabelRelationship {
-  type: TemplateType.Label
+  type: 'label'
   id: string
 }
 
@@ -131,7 +139,7 @@ export interface CellIncluded extends TemplateIncluded {
   type: TemplateType.Cell
   attributes: Cell
   relationships: {
-    [TemplateType.View]: {data: ViewRelationship}
+    view: {data: ViewRelationship}
   }
 }
 
@@ -209,5 +217,3 @@ export interface VariableTemplate extends TemplateBase {
 }
 
 export type Template = TaskTemplate | DashboardTemplate | VariableTemplate
-
-export {TemplateType} from '@influxdata/influx'

@@ -1,13 +1,4 @@
-import {
-  Permission,
-  PermissionResource,
-  Authorization,
-  AuthorizationUpdateRequest,
-} from '@influxdata/influx'
-
-const {TypeEnum} = PermissionResource
-const {ActionEnum} = Permission
-const {StatusEnum} = AuthorizationUpdateRequest
+import {Authorization} from 'src/types'
 
 export const authorization: Authorization = {
   links: {
@@ -17,13 +8,13 @@ export const authorization: Authorization = {
   id: '030444b11fb10000',
   token:
     'ohEmfY80A9UsW_cicNXgOMIPIsUvU6K9YcpTfCPQE3NV8Y6nTsCwVghczATBPyQh96CoZkOW5DIKldya6Y84KA==',
-  status: StatusEnum.Active,
+  status: 'active',
   user: 'watts',
   userID: '030444b10a710000',
   orgID: '030444b10a713000',
   description: 'im a token',
   permissions: [
-    {action: ActionEnum.Write, resource: {type: TypeEnum.Orgs}},
-    {action: ActionEnum.Write, resource: {type: TypeEnum.Buckets}},
+    {action: 'write', resource: {type: 'orgs'}},
+    {action: 'write', resource: {type: 'buckets'}},
   ],
 }

@@ -1,50 +1,9 @@
-// Types
-import {
-  TelegrafPluginInputCpu,
-  TelegrafPluginInputDisk,
-  TelegrafPluginInputDiskio,
-  TelegrafPluginInputDocker,
-  TelegrafPluginInputFile,
-  TelegrafPluginInputKernel,
-  TelegrafPluginInputKubernetes,
-  TelegrafPluginInputLogParser,
-  TelegrafPluginInputMem,
-  TelegrafPluginInputNet,
-  TelegrafPluginInputNetResponse,
-  TelegrafPluginInputNginx,
-  TelegrafPluginInputProcesses,
-  TelegrafPluginInputProcstat,
-  TelegrafPluginInputPrometheus,
-  TelegrafPluginInputRedis,
-  TelegrafPluginInputSyslog,
-  TelegrafPluginInputSwap,
-  TelegrafPluginInputSystem,
-  TelegrafPluginInputTail,
-  TelegrafPluginOutputFile,
-  TelegrafPluginOutputInfluxDBV2,
-  TelegrafPluginInputDockerConfig,
-  TelegrafPluginInputFileConfig,
-  TelegrafPluginInputKubernetesConfig,
-  TelegrafPluginInputLogParserConfig,
-  TelegrafPluginInputProcstatConfig,
-  TelegrafPluginInputPrometheusConfig,
-  TelegrafPluginInputRedisConfig,
-  TelegrafPluginInputSyslogConfig,
-  TelegrafPluginOutputFileConfig,
-  TelegrafPluginOutputInfluxDBV2Config,
-} from '@influxdata/influx'
+import {TelegrafPlugin as GenTelegrafPlugin} from 'src/client'
 
-export enum DataLoaderStep {
-  'Configure',
-}
+export interface Plugin extends GenTelegrafPlugin {}
 
 export enum CollectorsStep {
   'Select',
-  'Configure',
-  'Verify',
-}
-
-export enum LineProtocolStep {
   'Configure',
   'Verify',
 }
@@ -87,50 +46,7 @@ export enum DataLoaderType {
   Empty = '',
 }
 
-export type PluginConfig =
-  | TelegrafPluginInputDockerConfig
-  | TelegrafPluginInputFileConfig
-  | TelegrafPluginInputKubernetesConfig
-  | TelegrafPluginInputLogParserConfig
-  | TelegrafPluginInputProcstatConfig
-  | TelegrafPluginInputPrometheusConfig
-  | TelegrafPluginInputRedisConfig
-  | TelegrafPluginInputSyslogConfig
-  | TelegrafPluginOutputFileConfig
-  | TelegrafPluginOutputInfluxDBV2Config
-
-export type Plugin =
-  | TelegrafPluginInputCpu
-  | TelegrafPluginInputDisk
-  | TelegrafPluginInputDiskio
-  | TelegrafPluginInputDocker
-  | TelegrafPluginInputFile
-  | TelegrafPluginInputKernel
-  | TelegrafPluginInputKubernetes
-  | TelegrafPluginInputLogParser
-  | TelegrafPluginInputMem
-  | TelegrafPluginInputNet
-  | TelegrafPluginInputNetResponse
-  | TelegrafPluginInputNginx
-  | TelegrafPluginInputProcesses
-  | TelegrafPluginInputProcstat
-  | TelegrafPluginInputPrometheus
-  | TelegrafPluginInputRedis
-  | TelegrafPluginInputSyslog
-  | TelegrafPluginInputSwap
-  | TelegrafPluginInputSystem
-  | TelegrafPluginInputTail
-  | TelegrafPluginOutputFile
-  | TelegrafPluginOutputInfluxDBV2
-  | TelegrafPluginGeneric
-
-export type TelegrafPluginGeneric = {
-  name: string
-  type: string
-  comment?: string
-}
-
-export interface TelegrafPlugin {
+export interface TelegrafPlugin extends GenTelegrafPlugin {
   name: TelegrafPluginName
   configured: ConfigurationState
   active: boolean
@@ -147,13 +63,6 @@ export enum BundleName {
 }
 
 export type TelegrafPluginName = string
-
-export enum LineProtocolStatus {
-  ImportData = 'importData',
-  Loading = 'loading',
-  Success = 'success',
-  Error = 'error',
-}
 
 export enum Precision {
   Milliseconds = 'Milliseconds',

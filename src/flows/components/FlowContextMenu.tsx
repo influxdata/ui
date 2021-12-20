@@ -35,7 +35,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
 import {
-  notebookDeleteSuccess,
   pinnedItemFailure,
   pinnedItemSuccess,
 } from 'src/shared/copy/notifications'
@@ -75,7 +74,6 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
     event('delete_notebook')
     deletePinnedItemByParam(id)
     remove(id)
-    dispatch(notify(notebookDeleteSuccess()))
   }
 
   const handleClone = async () => {

@@ -45,11 +45,11 @@ const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
               {sortedFunctions =>
                 sortedFunctions.map(func => (
                   <ToolbarFunction
-                  onClickFunction={handleClickFunction}
-                  key={`${func.name}_${func.desc}`}
-                  func={func}
-                  testID={func.name}
-                />
+                    onClickFunction={handleClickFunction}
+                    key={`${func.name}_${func.desc}`}
+                    func={func}
+                    testID={func.name}
+                  />
                 ))
               }
             </TransformToolbarFunctions>

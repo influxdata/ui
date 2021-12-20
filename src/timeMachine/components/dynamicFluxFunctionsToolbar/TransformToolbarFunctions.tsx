@@ -10,9 +10,7 @@ import {FluxToolbarFunction} from 'src/types/shared'
 interface Props {
   funcs: FluxToolbarFunction[]
   searchTerm?: string
-  children: (funcs: 
-    FluxToolbarFunction[]
-  ) => JSX.Element | JSX.Element[]
+  children: (funcs: FluxToolbarFunction[]) => JSX.Element | JSX.Element[]
 }
 
 const TransformToolbarFunctions: FC<Props> = props => {

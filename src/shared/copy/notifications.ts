@@ -1235,6 +1235,11 @@ export const notebookDeleteFail = (): Notification => ({
   message: `Failed to delete Notebook, please try again.`,
 })
 
+export const notebookDeleteSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Notebook was deleted successfully',
+})
+
 export const csvUploaderErrorNotification = (
   message: string
 ): Notification => ({

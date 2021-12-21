@@ -1,17 +1,13 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-//import {Switch, Route} from 'react-router-dom'
 import {Page} from '@influxdata/clockface'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import UserAccountProvider from './context/userAccount'
-// import {event, useLoadTimeReporting} from 'src/cloud/utils/reporting'
-// import {FeatureFlag} from 'src/shared/utils/featureFlag'
-//
-//
-// import {AppSettingContext} from 'src/shared/contexts/app'
-import {UserAccountContext} from './context/userAccount'
+import AccountTabContainer from './AccountTabContainer'
+
+import {UserAccountContext} from 'src/accounts/context/userAccount'
 
 const AccountAboutPage: FC = () => {
   const {userAccounts, defaultAccountId} = useContext(UserAccountContext)
@@ -20,10 +16,15 @@ const AccountAboutPage: FC = () => {
   console.log('arghh, default account id?', defaultAccountId)
 
   return (
-    <h1 data-testid="account-about--header">
-      {' '}
-      hello world on the account about page
-    </h1>
+    <Page titleTag={pageTitleSuffixer(['About', 'Account'])}>
+      <AccountTabContainer activeTab="about">
+        <>
+          <h1 data-testid="account-about--header">
+            hello world on the account about page
+          </h1>
+        </>
+      </AccountTabContainer>
+    </Page>
   )
 }
 

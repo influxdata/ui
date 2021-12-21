@@ -3,6 +3,9 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 // import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 
+// Types
+import {Account as UserAccount} from 'src/client/unityRoutes'
+
 // Utils
 import {getAccounts} from 'src/client/unityRoutes'
 // import {notify} from 'src/shared/actions/notifications'
@@ -13,12 +16,12 @@ import {getAccounts} from 'src/client/unityRoutes'
 
 // todo:  talk to randy, about making this a real type, like OperatorAccount in unityRoutes.ts
 // for now: defining it here (duck typing)
-export interface UserAccount {
-  id: number
-  isActive: boolean
-  isDefault: boolean
-  name: string
-}
+// export interface UserAccount {
+//   id: number
+//   isActive: boolean
+//   isDefault: boolean
+//   name: string
+// }
 export type Props = {
   children: JSX.Element
 }
@@ -30,7 +33,7 @@ export interface UserAccountContextType {
   defaultAccountId: number
 }
 
-// hmm...you know from the MeContext which is the account that is currently logged into.....
+// isActive: true is for the currently logged in/active account
 
 export const DEFAULT_CONTEXT: UserAccountContextType = {
   userAccounts: [],

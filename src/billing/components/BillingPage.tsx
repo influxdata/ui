@@ -4,25 +4,18 @@ import {Page} from '@influxdata/clockface'
 
 // Components
 import BillingPageContents from 'src/billing/components/BillingPageContents'
-import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import LimitChecker from 'src/cloud/components/LimitChecker'
 import BillingProvider from 'src/billing/context/billing'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import AccountTabContainer from '../../accounts/AccountTabContainer'
 
 const BillingPage: FC = () => (
   <BillingProvider>
     <Page titleTag={pageTitleSuffixer(['Billing'])}>
-      <Page.Header fullWidth={false} testID="billing-page--header">
-        <Page.Title title="Billing" />
-        <LimitChecker>
-          <RateLimitAlert />
-        </LimitChecker>
-      </Page.Header>
-      <Page.Contents scrollable={true} testID="billing-page-contents--scroll">
+      <AccountTabContainer activeTab="billing">
         <BillingPageContents />
-      </Page.Contents>
+      </AccountTabContainer>
     </Page>
   </BillingProvider>
 )

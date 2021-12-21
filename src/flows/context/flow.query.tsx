@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useContext,
-  useMemo,
-  useEffect,
-  useState,
-  useRef,
-} from 'react'
+import React, {FC, useContext, useEffect, useState, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
@@ -15,7 +8,6 @@ import {FluxResult, QueryScope} from 'src/types/flows'
 import {PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
-import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
 import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 import {getOrg} from 'src/organizations/selectors'
 
@@ -26,7 +18,7 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {AppState, RemoteDataState} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 export interface Stage {
   id: string
@@ -100,11 +92,13 @@ export const FlowQueryProvider: FC = ({children}) => {
   const _map = useRef([])
   let timeRangeStart, timeRangeStop
 
-  if (!flow.range) {
+  if (!flow?.range) {
     timeRangeStart = timeRangeStop = null
   } else {
-    if (flow.range.type !== 'custom') {
-      timeRangeStart = parseDurations(timeRangeToDuration(flow.range))
+    if (flow.range.type === 'selectable-duration') {
+      timeRangeStart = '-' + flow.range.duration
+    } else if (flow.range.type === 'duration') {
+      timeRangeStart = '-' + flow.range.lower
     } else if (isNaN(Date.parse(flow.range.lower))) {
       timeRangeStart = null
     } else {
@@ -134,8 +128,8 @@ export const FlowQueryProvider: FC = ({children}) => {
           org: org.id,
           vars: {
             timeRangeStart,
-            timeRangeStop
-          }
+            timeRangeStop,
+          },
         },
         source: '',
         visual: '',
@@ -397,7 +391,7 @@ export const FlowQueryProvider: FC = ({children}) => {
   const simple = (text: string) => {
     return simplify(text, {
       timeRangeStart,
-      timeRangeStop
+      timeRangeStop,
     })
   }
 

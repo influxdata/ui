@@ -29,9 +29,6 @@ import {
   AppState,
   ResourceType,
   RemoteDataState,
-  OptionStatement,
-  VariableAssignment,
-  ObjectExpression,
   CancellationError,
   File,
 } from 'src/types'
@@ -140,18 +137,16 @@ const _addWindowPeriod = (ast, optionAST): void => {
     )
   )
 
+  const windowPeriod = find(
+    optionAST,
+    node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
+  )
   if (!queryRanges.length) {
-    ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-      .init as ObjectExpression).properties.push({
-      type: 'Property',
-      key: {
-        type: 'Identifier',
-        name: 'windowPeriod',
-      },
-      value: {
+    windowPeriod.forEach(node => {
+      node.value = {
         type: 'DurationLiteral',
         values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
-      },
+      }
     })
 
     return
@@ -172,29 +167,18 @@ const _addWindowPeriod = (ast, optionAST): void => {
   )
 
   if (foundDuration) {
-    ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-      .init as ObjectExpression).properties.push({
-      type: 'Property',
-      key: {
-        type: 'Identifier',
-        name: 'windowPeriod',
-      },
-      value: {
+    windowPeriod.forEach(node => {
+      node.value = {
         type: 'DurationLiteral',
         values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
-      },
+      }
     })
 
     return
   }
-  ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-    .init as ObjectExpression).properties.push({
-    type: 'Property',
-    key: {
-      type: 'Identifier',
-      name: 'windowPeriod',
-    },
-    value: {
+
+  windowPeriod.forEach(node => {
+    node.value = {
       type: 'DurationLiteral',
       values: [
         {
@@ -202,7 +186,7 @@ const _addWindowPeriod = (ast, optionAST): void => {
           unit: 'ms',
         },
       ],
-    },
+    }
   })
 }
 
@@ -212,11 +196,12 @@ export const simplify = (text, vars = {}) => {
     const referencedVars = find(
       ast,
       node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
-    ).map(node => node.property.name)
-    .reduce((acc, curr) => {
-      acc[curr] = vars[curr]
-      return acc
-    }, {})
+    )
+      .map(node => node.property.name)
+      .reduce((acc, curr) => {
+        acc[curr] = vars[curr]
+        return acc
+      }, {})
 
     // Grab all variables that are defined in the query while removing the old definition from the AST
     const queryDefinedVars = remove(
@@ -237,9 +222,9 @@ export const simplify = (text, vars = {}) => {
 
     // Merge the two variable maps, allowing for any user defined variables to override
     // global system variables
-    Object.keys(queryDefinedVars).forEach(var => {
-      if (referencedVars.hasOwnProperty(var)) {
-        referencedVars[var] = queryDefinedVars[var]
+    Object.keys(queryDefinedVars).forEach(vari => {
+      if (referencedVars.hasOwnProperty(vari)) {
+        referencedVars[vari] = queryDefinedVars[vari]
       }
     })
 
@@ -250,13 +235,13 @@ export const simplify = (text, vars = {}) => {
       ? parseQuery(`option v = {\n${varVals}\n}\n`)
       : parse(`option v = {\n${varVals}\n}\n`)
 
+    if (varVals.length) {
+      ast.body.unshift(optionAST.body[0])
+    }
+
     // load in windowPeriod at the last second, because it needs to self reference all the things
     if (referencedVars.hasOwnProperty('windowPeriod')) {
       _addWindowPeriod(ast, optionAST)
-    }
-
-    if (varVals.length) {
-      ast.body.unshift(optionAST.body[0])
     }
 
     // Join together any duplicate task options

@@ -6,6 +6,7 @@ import React, {
   useEffect,
   useState,
   useMemo,
+  useRef,
 } from 'react'
 
 // Contexts
@@ -18,11 +19,13 @@ import {Bucket, RemoteDataState} from 'src/types'
 interface BucketContextType {
   loading: RemoteDataState
   buckets: Bucket[]
+  addBucket: (_: Bucket) => void
 }
 
 const DEFAULT_CONTEXT: BucketContextType = {
   loading: RemoteDataState.NotStarted,
   buckets: [],
+  addBucket: (_: Bucket) => {},
 }
 
 export const BucketContext = createContext<BucketContextType>(DEFAULT_CONTEXT)
@@ -33,6 +36,18 @@ export const BucketProvider: FC = ({children}) => {
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id} = useContext(PipeContext)
   const scope = getPanelQueries(id)?.scope ?? {}
+  const controller = useRef(new AbortController())
+
+  useEffect(() => {
+    return () => {
+      try {
+        // Cancelling active query so that there's no memory leak in this component when unmounting
+        controller.current.abort()
+      } catch (e) {
+        // Do nothing
+      }
+    }
+  }, [controller])
 
   useEffect(() => {
     if (!scope.region || !scope.org) {
@@ -55,6 +70,7 @@ export const BucketProvider: FC = ({children}) => {
     fetch(`${scope.region}/api/v2/buckets?limit=100&orgID=${scope.org}`, {
       method: 'GET',
       headers,
+      signal: controller.current.signal,
     })
       .then(response => {
         return response.json()
@@ -117,11 +133,15 @@ export const BucketProvider: FC = ({children}) => {
         setBuckets([...bucks.user, ...bucks.system, ...bucks.sample])
       })
       .catch(() => {})
-  }, [scope.region, scope.org])
+  }, [scope.region, scope.org, controller])
+
+  const addBucket = (bucket: Bucket) => {
+    setBuckets([...buckets, bucket])
+  }
 
   return useMemo(
     () => (
-      <BucketContext.Provider value={{loading, buckets}}>
+      <BucketContext.Provider value={{loading, buckets, addBucket}}>
         {children}
       </BucketContext.Provider>
     ),

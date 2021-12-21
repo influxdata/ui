@@ -5,6 +5,13 @@ import {
   ConfigFieldType,
   BundleName,
 } from 'src/types'
+import {
+  LogoCpu,
+  LogoDocker,
+  LogoKubernetes,
+  LogoNginx,
+  LogoRedis,
+} from 'src/dataLoaders/graphics'
 
 export const QUICKSTART_SCRAPER_TARGET_URL = `${window.location.origin}/metrics`
 
@@ -209,37 +216,6 @@ export const telegrafPluginsInfo: TelegrafPluginInfo = {
     },
   },
 }
-
-export const PLUGIN_OPTIONS: TelegrafPluginName[] = [
-  'cpu',
-  'disk',
-  'diskio',
-  'docker',
-  'file',
-  'kernel',
-  'kubernetes',
-  'logparser',
-  'mem',
-  'net',
-  'net_response',
-  'nginx',
-  'processes',
-  'procstat',
-  'prometheus',
-  'redis',
-  'syslog',
-  'swap',
-  'system',
-  'tail',
-]
-
-import {
-  LogoCpu,
-  LogoDocker,
-  LogoKubernetes,
-  LogoNginx,
-  LogoRedis,
-} from 'src/dataLoaders/graphics'
 
 export const BUNDLE_LOGOS = {
   [BundleName.System]: LogoCpu,

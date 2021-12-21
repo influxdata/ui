@@ -14,6 +14,7 @@ import {
   Variable,
   LabelRelationship,
   LabelIncluded,
+  TemplateType,
 } from 'src/types'
 import {DocumentCreate} from '@influxdata/influx'
 
@@ -62,12 +63,12 @@ const blankDashboardTemplate = () => {
 }
 
 export const labelToRelationship = (l: Label): LabelRelationship => {
-  return {type: 'label', id: l.id}
+  return {type: TemplateType.Label, id: l.id}
 }
 
 export const labelToIncluded = (l: Label): LabelIncluded => {
   return {
-    type: 'label',
+    type: TemplateType.Label,
     id: l.id,
     attributes: {
       name: l.name,
@@ -113,7 +114,7 @@ export const taskToTemplate = (
         type: 'task',
         attributes: taskAttributes,
         relationships: {
-          ['label']: {data: relationshipsLabels},
+          [TemplateType.Label]: {data: relationshipsLabels},
         },
       },
       included: [...baseTemplate.content.included, ...includedLabels],
@@ -216,7 +217,7 @@ export const variableToTemplate = (
           ['variable']: {
             data: [...variableRelationships],
           },
-          ['label']: {
+          [TemplateType.Label]: {
             data: [...labelRelationships],
           },
         },
@@ -250,7 +251,7 @@ const variableToIncluded = (v: Variable, labelsByID: LabelsByID) => {
     type: 'variable',
     attributes: variableAttributes,
     relationships: {
-      ['label']: {
+      [TemplateType.Label]: {
         data: [...labelRelationships],
       },
     },
@@ -317,7 +318,7 @@ export const dashboardToTemplate = (
         type: 'dashboard',
         attributes: dashboardAttributes,
         relationships: {
-          ['label']: {data: relationshipsLabels},
+          [TemplateType.Label]: {data: relationshipsLabels},
           ['cell']: {data: relationshipsCells},
           ['variable']: {data: relationshipsVariables},
         },

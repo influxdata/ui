@@ -1,6 +1,8 @@
 import {TelegrafPlugin as GenTelegrafPlugin} from 'src/client'
 
-export interface Plugin extends GenTelegrafPlugin {}
+export interface Plugin extends Omit<GenTelegrafPlugin, 'config'> {
+  config?: any
+}
 
 export enum CollectorsStep {
   'Select',

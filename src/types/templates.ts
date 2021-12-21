@@ -115,7 +115,7 @@ export interface CellRelationship {
 }
 
 export interface LabelRelationship {
-  type: 'label'
+  type: TemplateType.Label
   id: string
 }
 

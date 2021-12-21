@@ -13,7 +13,7 @@ import {renderWithReduxAndRouter} from 'src/mockState'
 
 const permissions = (
   permissions: Permission[]
-): {[x: string]: Permission.ActionEnum[]} => {
+): {[x: string]: ('read' | 'write')[]} => {
   const p = permissions.reduce((acc, {action, resource}) => {
     const {type} = resource
     const name = get(resource, 'name', '')
@@ -62,12 +62,10 @@ describe('Account', () => {
         authorizations: ['read', 'write'],
         buckets: ['read', 'write'],
         dashboards: ['read', 'write'],
-        sources: ['read', 'write'],
         tasks: ['read', 'write'],
         telegrafs: ['read', 'write'],
         users: ['read', 'write'],
         variables: ['read', 'write'],
-        scrapers: ['read', 'write'],
         secrets: ['read', 'write'],
         labels: ['read', 'write'],
         views: ['read', 'write'],

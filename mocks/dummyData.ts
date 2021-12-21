@@ -8,14 +8,12 @@ import {
   RemoteDataState,
   Label,
   Authorization,
-  AuthorizationUpdateRequest,
   Organization,
-  Variable,
+  GenVariable,
 } from 'src/types'
 import {OnboardingStepProps} from 'src/onboarding/containers/OnboardingWizard'
 import {RouteComponentProps} from 'react-router-dom'
 import {NumericColumnData} from '@influxdata/giraffe'
-import {Resource} from 'src/client'
 
 export const queryConfig = {
   queries: [
@@ -129,7 +127,7 @@ export const labels: Label[] = [
   },
 ]
 
-const labelIDs = labels.map(l => l.id)
+const labelIDs: any[] = labels.map(l => l.id)
 
 export const dashboardWithLabels: Dashboard = {
   id: '1',
@@ -204,7 +202,7 @@ export const tasks: Task[] = [
   },
 ]
 
-export const variables: Variable[] = [
+export const variables: GenVariable[] = [
   {
     name: 'LittleVariable',
     orgID: '0',
@@ -508,8 +506,6 @@ export const setSetupParamsResponse = {
         {action: 'write', resource: 'dashboards', orgID: '033bc62534be3000'},
         {action: 'read', resource: 'orgs', orgID: '033bc62534be3000'},
         {action: 'write', resource: 'orgs', orgID: '033bc62534be3000'},
-        {action: 'read', resource: 'sources', orgID: '033bc62534be3000'},
-        {action: 'write', resource: 'sources', orgID: '033bc62534be3000'},
         {action: 'read', resource: 'tasks', orgID: '033bc62534be3000'},
         {action: 'write', resource: 'tasks', orgID: '033bc62534be3000'},
         {action: 'read', resource: 'telegrafs', orgID: '033bc62534be3000'},
@@ -593,7 +589,7 @@ export const auth: Authorization = {
   id: '03c03a8a64728000',
   token:
     'RcW2uWiD-vfxujKyJCirK8un3lJsWPfiA6ulmWY_SlSITUal7Z180OwExiKKfrO98X8W6qGrd5hSGdag-hEpWw==',
-  status: AuthorizationUpdateRequest.StatusEnum.Active,
+  status: 'active',
   description: 'My token',
   orgID: '039edab314789000',
   org: 'a',
@@ -659,22 +655,6 @@ export const auth: Authorization = {
     {
       action: 'read',
       resource: {
-        type: 'sources',
-        orgID: '039edab314789000',
-        org: 'a',
-      },
-    },
-    {
-      action: 'write',
-      resource: {
-        type: Resource.TypeEnum.Sources,
-        orgID: '039edab314789000',
-        org: 'a',
-      },
-    },
-    {
-      action: 'read',
-      resource: {
         type: 'tasks',
         orgID: '039edab314789000',
         org: 'a',
@@ -739,22 +719,6 @@ export const auth: Authorization = {
     {
       action: 'read',
       resource: {
-        type: 'scrapers',
-        orgID: '039edab314789000',
-        org: 'a',
-      },
-    },
-    {
-      action: 'write',
-      resource: {
-        type: 'scrapers',
-        orgID: '039edab314789000',
-        org: 'a',
-      },
-    },
-    {
-      action: 'read',
-      resource: {
         type: 'secrets',
         orgID: '039edab314789000',
         org: 'a',
@@ -787,7 +751,7 @@ export const auth: Authorization = {
     {
       action: 'read',
       resource: {
-        type: Resource.TypeEnum.Views,
+        type: 'views',
         orgID: '039edab314789000',
         org: 'a',
       },
@@ -795,7 +759,7 @@ export const auth: Authorization = {
     {
       action: 'write',
       resource: {
-        type: Resource.TypeEnum.Views,
+        type: 'views',
         orgID: '039edab314789000',
         org: 'a',
       },
@@ -803,7 +767,7 @@ export const auth: Authorization = {
     {
       action: 'read',
       resource: {
-        type: Resource.TypeEnum.Documents,
+        type: 'documents',
         orgID: '039edab314789000',
         org: 'a',
       },
@@ -811,7 +775,7 @@ export const auth: Authorization = {
     {
       action: 'write',
       resource: {
-        type: Resource.TypeEnum.Documents,
+        type: 'documents',
         orgID: '039edab314789000',
         org: 'a',
       },
@@ -827,7 +791,7 @@ export const auth2 = {
   id: '03c03a8a64728000',
   token:
     'RcW2uWiD-vfxujKyJCirK8un3lJsWPfiA6ulmWY_SlSITUal7Z180OwExiKKfrO98X8W6qGrd5hSGdag-hEpWw==',
-  status: AuthorizationUpdateRequest.StatusEnum.Active,
+  status: 'active',
   description: 'My token',
   orgID: '039edab314789000',
   org: 'a',
@@ -895,22 +859,6 @@ export const auth2 = {
     {
       action: 'read',
       resource: {
-        type: Resource.TypeEnum.Sources,
-        orgID: '039edab314789000',
-        org: 'a',
-      },
-    },
-    {
-      action: 'write',
-      resource: {
-        type: Resource.TypeEnum.Sources,
-        orgID: '039edab314789000',
-        org: 'a',
-      },
-    },
-    {
-      action: 'read',
-      resource: {
         type: 'tasks',
         orgID: '039edab314789000',
         org: 'a',
@@ -975,22 +923,6 @@ export const auth2 = {
     {
       action: 'read',
       resource: {
-        type: 'scrapers',
-        orgID: '039edab314789000',
-        org: 'a',
-      },
-    },
-    {
-      action: 'write',
-      resource: {
-        type: 'scrapers',
-        orgID: '039edab314789000',
-        org: 'a',
-      },
-    },
-    {
-      action: 'read',
-      resource: {
         type: 'secrets',
         orgID: '039edab314789000',
         org: 'a',
@@ -1023,7 +955,7 @@ export const auth2 = {
     {
       action: 'read',
       resource: {
-        type: Resource.TypeEnum.Views,
+        type: 'views',
         orgID: '039edab314789000',
         org: 'a',
       },
@@ -1031,7 +963,7 @@ export const auth2 = {
     {
       action: 'write',
       resource: {
-        type: Resource.TypeEnum.Views,
+        type: 'views',
         orgID: '039edab314789000',
         org: 'a',
       },
@@ -1039,7 +971,7 @@ export const auth2 = {
     {
       action: 'read',
       resource: {
-        type: Resource.TypeEnum.Documents,
+        type: 'documents',
         orgID: '039edab314789000',
         org: 'a',
       },
@@ -1047,7 +979,7 @@ export const auth2 = {
     {
       action: 'write',
       resource: {
-        type: Resource.TypeEnum.Documents,
+        type: 'documents',
         orgID: '039edab314789000',
         org: 'a',
       },

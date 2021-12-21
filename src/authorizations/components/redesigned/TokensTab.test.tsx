@@ -3,7 +3,6 @@ import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
 import {renderWithReduxAndRouter} from 'src/mockState'
 import {mockAppState} from 'src/mockAppState'
-import {AuthorizationUpdateRequest as AuthApi} from 'src/types'
 
 import {mocked} from 'ts-jest/utils'
 
@@ -20,7 +19,7 @@ const InactiveToken = {
   id: '02f12c50dcb93000',
   orgID: '02ee9e2a29d73000',
   token: 'skjflkdsjfkd',
-  status: AuthApi.StatusEnum.Inactive,
+  status: 'Inactive',
   org: 'default',
   description: 'XYZ',
 }

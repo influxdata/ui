@@ -1,48 +1,36 @@
 import {XYViewProperties} from 'src/types'
+import { addedDiff, deletedDiff } from 'deep-object-diff';
+
 
 /**
  * Evaluates whether mappings need to be updated
  * @param map1
  * @param map2
  */
-const isMappingReusable = (map1, map2) => {
+const compareIDPEandLocalMappings = (map1, map2) => {
   if (!map1 || !map2) {
-    return false
+    return {isMappingReusable: false}
   }
 
-  // Create Set of property names
-  const aProps = new Set(Object.getOwnPropertyNames(map1))
-  const bProps = new Set(Object.getOwnPropertyNames(map2))
+  const additions = addedDiff(map1, map2)
+  const deletions = deletedDiff(map1, map2)
 
-
-
-  if (aProps.size === 0) {
-    return false
+  if (!isEmpty(additions) || !isEmpty(deletions)){
+    console.log('%c these new elements need to be updated in to the idpe map', 'background: red; color: white')
+    console.log(`%c additions : `, 'background: green; color: black', additions)
+    console.log(`%c deletions : `, 'background: red; color: white', deletions)
   }
 
-  const diff1 = difference(aProps, bProps)
-  const diff2 = difference(bProps, aProps)
+  // if no additions or no deletions we are good to
+  const isMappingReusable = isEmpty(additions) && isEmpty(deletions)
 
-  if (diff1.size || diff2.size){
-    console.log('%c these new elements need to be added to the idpe map', 'background: red; color: white')
-    console.log({aProps, bProps})
-    console.log(new Set([...diff1, ...diff2]))
-
-  }
-
-  return (
-    difference(aProps, bProps).size === 0 &&
-    difference(bProps, aProps).size === 0
-  )
+  return {isMappingReusable, additions, deletions}
 }
 
-const difference = (setA, setB) => {
-  const _difference = new Set(setA)
-  for (const elem of setB) {
-    _difference.delete(elem)
-  }
-  return _difference
+function isEmpty(obj) {
+  return Object.keys(obj).length === 0;
 }
+
 
 /**
  * Returns the colorMapping objects for UI, based on the state of the current view it will return the existing or generate a new one and request trigger saving to IDPE
@@ -61,11 +49,9 @@ export const getColorMappingObjects = (
   )
 
   // if the mappings from the IDPE and the *required* one's for the current view are the same, we don't need to generate new mappings
-  if (isMappingReusable(properties.colorMapping, seriesToColorIndexMap)) {
-    // console.log('mappings can be reused', {
-    //   properties: properties.colorMapping,
-    //   seriesToColorIndexMap,
-    // })
+  const {isMappingReusable} = compareIDPEandLocalMappings(properties.colorMapping, seriesToColorIndexMap)
+
+  if (isMappingReusable) {
     const columnKeys = columnGroupMap.columnKeys
     const mappings = {...columnGroupMap}
     const needsToSaveToIDPE = false
@@ -107,8 +93,24 @@ export const getColorMappingObjects = (
       {properties: properties.colorMapping, seriesToColorIndexMap}
     )
 
+    const {additions, deletions} = compareIDPEandLocalMappings(properties.colorMapping, seriesToColorIndexMap)
+
+    const colorMappingForIDPE = {...properties.colorMapping}
+
+    // perform additions
+    for (const add in additions) {
+       colorMappingForIDPE[add] = seriesToColorIndexMap[add]
+    }
+
+    // perform deletions
+    for (const minus in deletions) {
+      delete colorMappingForIDPE[minus]
+    }
+
+    console.log({colorMappingForIDPE})
+
     return {
-      colorMappingForIDPE: seriesToColorIndexMap,
+      colorMappingForIDPE: colorMappingForIDPE,
       colorMappingForGiraffe: newColorMappingForGiraffe,
       needsToSaveToIDPE,
     }
@@ -160,7 +162,7 @@ const getSeriesId = (graphLine, columnKeys) => {
  * @returns - a map that contains the series ID and it's color index (value bounded by the properties.colors array)
  */
 
-export const generateSeriesToColorIndexMap = (
+const generateSeriesToColorIndexMap = (
   columnGroupMap,
   properties: XYViewProperties
 ) => {

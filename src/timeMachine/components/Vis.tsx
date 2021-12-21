@@ -32,7 +32,7 @@ import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 import {setViewProperties} from 'src/timeMachine/actions'
-import {generateSeriesToColorIndexMap} from 'src/visualization/utils/colorMappingUtils'
+import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -94,15 +94,15 @@ const TimeMachineVis: FC<Props> = ({
 
   const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
   const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
-  const colorMapping = generateSeriesToColorIndexMap(
+  const {colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
     fillColumnMap,
     viewProperties as XYViewProperties
   )
   const dispatch = useDispatch()
 
-  if (loading === RemoteDataState.Done) {
+  if (loading === RemoteDataState.Done && needsToSaveToIDPE) {
     dispatch(
-      setViewProperties({...viewProperties, colorMapping} as XYViewProperties)
+      setViewProperties({...viewProperties, colorMapping: colorMappingForIDPE} as XYViewProperties)
     )
   }
 

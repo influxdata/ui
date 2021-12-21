@@ -1,13 +1,13 @@
 // Libraries
 import React, {FC, memo} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import classnames from 'classnames'
-import {fromFlux} from '@influxdata/giraffe'
+import {createGroupIDColumn, fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // Components
 import {View} from 'src/visualization'
-import {SimpleTableViewProperties} from 'src/types'
+import {SimpleTableViewProperties, XYViewProperties} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import SimpleTable from 'src/visualization/types/SimpleTable/view'
@@ -31,6 +31,8 @@ import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
+import {setViewProperties} from 'src/timeMachine/actions'
+import {generateSeriesToColorIndexMap} from 'src/visualization/utils/colorMappingUtils'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -89,6 +91,20 @@ const TimeMachineVis: FC<Props> = ({
     (type === 'check' &&
       giraffeResult.table.getColumnType('_value') !== 'number' &&
       !!giraffeResult.table.length)
+
+  const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
+  const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
+  const colorMapping = generateSeriesToColorIndexMap(
+    fillColumnMap,
+    viewProperties as XYViewProperties
+  )
+  const dispatch = useDispatch()
+
+  if (loading === RemoteDataState.Done) {
+    dispatch(
+      setViewProperties({...viewProperties, colorMapping} as XYViewProperties)
+    )
+  }
 
   // Handles deadman check edge case to allow non-numeric values
   if (viewRawData && files && files?.length) {

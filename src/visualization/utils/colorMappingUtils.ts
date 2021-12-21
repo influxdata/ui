@@ -1,36 +1,47 @@
 import {XYViewProperties} from 'src/types'
 
 /**
- * Evaluates deeper equality for two map objects based on their key:value pair
+ * Evaluates whether mappings need to be updated
  * @param map1
  * @param map2
  */
-const areMappingsSame = (map1, map2) => {
+const isMappingReusable = (map1, map2) => {
   if (!map1 || !map2) {
     return false
   }
 
-  // Create arrays of property names
-  const aProps = Object.getOwnPropertyNames(map1)
-  const bProps = Object.getOwnPropertyNames(map2)
+  // Create Set of property names
+  const aProps = new Set(Object.getOwnPropertyNames(map1))
+  const bProps = new Set(Object.getOwnPropertyNames(map2))
 
-  // If number of properties is different,
-  // objects are not equivalent
-  if (aProps.length !== bProps.length) {
+
+
+  if (aProps.size === 0) {
     return false
   }
 
-  for (let i = 0; i < aProps.length; i++) {
-    const propName = aProps[i]
+  const diff1 = difference(aProps, bProps)
+  const diff2 = difference(bProps, aProps)
 
-    // If values of same property are not equal,
-    // objects are not equivalent
-    if (map1[propName] !== map2[propName]) {
-      return false
-    }
+  if (diff1.size || diff2.size){
+    console.log('%c these new elements need to be added to the idpe map', 'background: red; color: white')
+    console.log({aProps, bProps})
+    console.log(new Set([...diff1, ...diff2]))
+
   }
 
-  return true
+  return (
+    difference(aProps, bProps).size === 0 &&
+    difference(bProps, aProps).size === 0
+  )
+}
+
+const difference = (setA, setB) => {
+  const _difference = new Set(setA)
+  for (const elem of setB) {
+    _difference.delete(elem)
+  }
+  return _difference
 }
 
 /**
@@ -50,9 +61,14 @@ export const getColorMappingObjects = (
   )
 
   // if the mappings from the IDPE and the *required* one's for the current view are the same, we don't need to generate new mappings
-  if (areMappingsSame(properties.colorMapping, seriesToColorIndexMap)) {
+  if (isMappingReusable(properties.colorMapping, seriesToColorIndexMap)) {
+    // console.log('mappings can be reused', {
+    //   properties: properties.colorMapping,
+    //   seriesToColorIndexMap,
+    // })
     const columnKeys = columnGroupMap.columnKeys
     const mappings = {...columnGroupMap}
+    const needsToSaveToIDPE = false
 
     mappings.mappings.forEach(graphLine => {
       const seriesID = getSeriesId(graphLine, columnKeys)
@@ -63,7 +79,6 @@ export const getColorMappingObjects = (
       graphLine.color = colors[properties.colorMapping[seriesID]].hex
     })
 
-    const needsToSaveToIDPE = false
     return {
       colorMappingForGiraffe: {columnKeys, ...mappings},
       needsToSaveToIDPE,
@@ -85,6 +100,12 @@ export const getColorMappingObjects = (
     const newColorMappingForGiraffe = {
       ...mappings,
     }
+
+    console.log(
+      '%c mappings can NOT be reused',
+      'background: #222; color: #bada55',
+      {properties: properties.colorMapping, seriesToColorIndexMap}
+    )
 
     return {
       colorMappingForIDPE: seriesToColorIndexMap,

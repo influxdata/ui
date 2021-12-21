@@ -72,6 +72,7 @@ const XYPlot: FC<Props> = ({
   cellID,
   view,
   saveViewPropertiesToIDPE,
+  veoOpen,
 }) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -194,15 +195,16 @@ const XYPlot: FC<Props> = ({
 
   if (isFlagEnabled('graphColorMapping')) {
     const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
-    const {colorMappingForGiraffe, colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
-      fillColumnMap,
-      properties
-    )
+    const {
+      colorMappingForGiraffe,
+      colorMappingForIDPE,
+      needsToSaveToIDPE,
+    } = getColorMappingObjects(fillColumnMap, properties)
     colorMapping = colorMappingForGiraffe
 
     // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.
-    console.log({needsToSaveToIDPE})
-    if (needsToSaveToIDPE && view?.dashboardID) {
+    if (needsToSaveToIDPE && view?.dashboardID && !veoOpen) {
+      console.log('%c updating the view properties to idpe', 'background: #bada55; color: #222',)
       const newView = {...view}
       newView.properties.colorMapping = colorMappingForIDPE
       saveViewPropertiesToIDPE(view.dashboardID, newView)
@@ -276,8 +278,16 @@ const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
     ResourceType.Views,
     ownProps.cellID
   )
+
+  const {
+    timeMachines: {activeTimeMachineID},
+  } = state
+
+  const veoOpen = activeTimeMachineID === 'veo'
+
   return {
     view,
+    veoOpen,
   }
 }
 

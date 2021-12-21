@@ -18,7 +18,7 @@ import {
 
 import {Stack} from 'src/client'
 
-export declare enum TemplateType {
+export enum TemplateType {
   Label = 'label',
   Task = 'task',
   Dashboard = 'dashboard',

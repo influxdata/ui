@@ -1,30 +1,23 @@
 // Libraries
-import React, {FC, useContext, useCallback, useMemo} from 'react'
+import React, {FC, useContext} from 'react'
 import {
   ComponentStatus,
   Form,
   FlexBox,
   Input,
   InputType,
-  Icon,
-  IconFont,
   ComponentSize,
 } from '@influxdata/clockface'
-import {parse, format_from_js_file} from '@influxdata/flux'
-import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 
 // Types
 import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
-import {FlowQueryContext} from 'src/flows/context/flow.query'
-
-import {remove} from 'src/shared/contexts/query'
 
 import './style.scss'
 
 const Time: FC<PipeProp> = ({Context}) => {
-  const {id, data, update} = useContext(PipeContext)
+  const {data, update} = useContext(PipeContext)
 
   let startError = ''
   let stopError = ''

@@ -35,7 +35,7 @@ const UserWidget: FC<Props> = ({
     handleShowOverlay('switch-organizations', {}, handleDismissOverlay)
   }
 
-  console.log('hello there....from the user widget....')
+  console.log('hello there....from the user widget....',me)
   const orgPrefix = `/orgs/${org.id}`
 
   return (

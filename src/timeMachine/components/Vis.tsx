@@ -33,6 +33,7 @@ import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
 import {setViewProperties} from 'src/timeMachine/actions'
 import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -92,18 +93,21 @@ const TimeMachineVis: FC<Props> = ({
       giraffeResult.table.getColumnType('_value') !== 'number' &&
       !!giraffeResult.table.length)
 
-  const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
-  const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
-  const {colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
-    fillColumnMap,
-    viewProperties as XYViewProperties
-  )
   const dispatch = useDispatch()
 
-  if (loading === RemoteDataState.Done && needsToSaveToIDPE) {
-    dispatch(
-      setViewProperties({...viewProperties, colorMapping: colorMappingForIDPE} as XYViewProperties)
+  if (isFlagEnabled('graphColorMapping')){
+    const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
+    const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
+    const {colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
+      fillColumnMap,
+      viewProperties as XYViewProperties
     )
+
+    if (loading === RemoteDataState.Done && needsToSaveToIDPE) {
+      dispatch(
+        setViewProperties({...viewProperties, colorMapping: colorMappingForIDPE} as XYViewProperties)
+      )
+    }
   }
 
   // Handles deadman check edge case to allow non-numeric values

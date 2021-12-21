@@ -21,7 +21,7 @@ const compareIDPEandLocalMappings = (map1, map2) => {
     console.log(`%c deletions : `, 'background: red; color: white', deletions)
   }
 
-  // if no additions or no deletions we are good to
+  // if no additions or no deletionsm we are good to go
   const isMappingReusable = isEmpty(additions) && isEmpty(deletions)
 
   return {isMappingReusable, additions, deletions}

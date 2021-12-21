@@ -17,6 +17,7 @@ interface AccountPageTab {
   text: string
   id: string
   link: string
+  testID: string
 }
 
 enum Tab {
@@ -33,28 +34,31 @@ const AccountTabs: FC<Props> = ({activeTab}) => {
     {
       text: 'Billing',
       id: Tab.Billing,
+      testID: 'accounts-billing-tab',
       link: `/orgs/${orgID}/billing`,
     },
     {
       text: 'Settings',
       id: Tab.About,
+      testID: 'accounts-setting-tab',
       link: `/orgs/${orgID}/accounts/settings`,
     },
   ]
 
   return (
     <Tabs orientation={Orientation.Horizontal} size={ComponentSize.Large}>
-      {tabs.map(t => {
-        const isActive = t.id === activeTab
+      {tabs.map(tabInfo => {
+        const isActive = tabInfo.id === activeTab
 
         return (
           <Tabs.Tab
-            key={t.id}
-            text={t.text}
-            id={t.id}
+            key={tabInfo.id}
+            text={tabInfo.text}
+            id={tabInfo.id}
             linkElement={className => (
-              <Link to={t.link} className={className} />
+              <Link to={tabInfo.link} className={className} />
             )}
+            testID={tabInfo.testID}
             active={isActive}
           />
         )

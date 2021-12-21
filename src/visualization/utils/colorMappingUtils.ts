@@ -1,5 +1,6 @@
 import {XYViewProperties} from 'src/types'
 import { addedDiff, deletedDiff } from 'deep-object-diff';
+import {getNominalColorScale} from '../../../../giraffe/giraffe/src/transforms'
 
 
 /**
@@ -43,13 +44,14 @@ export const getColorMappingObjects = (
   columnGroupMap,
   properties: XYViewProperties
 ) => {
-  const seriesToColorIndexMap = generateSeriesToColorIndexMap(
+  const seriesToColorHexMap = generateSeriesToColorHex(
     columnGroupMap,
     properties
   )
 
+  console.log({seriesToColorHexMap})
   // if the mappings from the IDPE and the *required* one's for the current view are the same, we don't need to generate new mappings
-  const {isMappingReusable} = compareIDPEandLocalMappings(properties.colorMapping, seriesToColorIndexMap)
+  const {isMappingReusable} = compareIDPEandLocalMappings(properties.colorMapping, seriesToColorHexMap)
 
   if (isMappingReusable) {
     const columnKeys = columnGroupMap.columnKeys
@@ -59,10 +61,9 @@ export const getColorMappingObjects = (
     mappings.mappings.forEach(graphLine => {
       const seriesID = getSeriesId(graphLine, columnKeys)
 
-      const colors = properties.colors
-
+      // TODO: change here
       // this is needed for giraffe
-      graphLine.color = colors[properties.colorMapping[seriesID]].hex
+      graphLine.color = properties.colorMapping[seriesID]
     })
 
     return {
@@ -77,10 +78,10 @@ export const getColorMappingObjects = (
     mappings.mappings.forEach(graphLine => {
       const seriesID = getSeriesId(graphLine, columnKeys)
 
-      const colors = properties.colors
-
       // this is needed for giraffe
-      graphLine.color = colors[seriesToColorIndexMap[seriesID]].hex
+      // TODO: change here
+      // graphLine.color = colors[seriesToColorIndexMap[seriesID]].hex
+      graphLine.color = seriesToColorHexMap[seriesID]
     })
 
     const newColorMappingForGiraffe = {
@@ -90,16 +91,16 @@ export const getColorMappingObjects = (
     console.log(
       '%c mappings can NOT be reused',
       'background: #222; color: #bada55',
-      {properties: properties.colorMapping, seriesToColorIndexMap}
+      {properties: properties.colorMapping, seriesToColorIndexMap: seriesToColorHexMap}
     )
 
-    const {additions, deletions} = compareIDPEandLocalMappings(properties.colorMapping, seriesToColorIndexMap)
+    const {additions, deletions} = compareIDPEandLocalMappings(properties.colorMapping, seriesToColorHexMap)
 
     const colorMappingForIDPE = {...properties.colorMapping}
 
     // perform additions
     for (const add in additions) {
-       colorMappingForIDPE[add] = seriesToColorIndexMap[add]
+       colorMappingForIDPE[add] = seriesToColorHexMap[add]
     }
 
     // perform deletions
@@ -162,16 +163,19 @@ const getSeriesId = (graphLine, columnKeys) => {
  * @returns - a map that contains the series ID and it's color index (value bounded by the properties.colors array)
  */
 
-const generateSeriesToColorIndexMap = (
+const generateSeriesToColorHex = (
   columnGroupMap,
   properties: XYViewProperties
 ) => {
-  const seriesToColorIndexMap = {}
+  const seriesToColorHex = {}
   const cgMap = {...columnGroupMap}
   cgMap.mappings.forEach((graphLine, colorIndex) => {
     const id = getSeriesId(graphLine, columnGroupMap.columnKeys)
-    seriesToColorIndexMap[id] = colorIndex % properties.colors.length
+    // seriesToColorIndexMap[id] = colorIndex % properties.colors.length
+    const colors = properties.colors.map(value => value.hex)
+    const fillScale = getNominalColorScale(columnGroupMap, colors)
+    seriesToColorHex[id] = fillScale(colorIndex)
   })
 
-  return {...seriesToColorIndexMap}
+  return {...seriesToColorHex}
 }

@@ -1,13 +1,5 @@
-import React, {
-  FC,
-  useContext,
-  useMemo,
-  useEffect,
-  useState,
-  useRef,
-} from 'react'
+import React, {FC, useContext, useEffect, useState, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {getVariables} from 'src/variables/selectors'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
 import {QueryContext, simplify} from 'src/shared/contexts/query'
@@ -16,7 +8,6 @@ import {FluxResult, QueryScope} from 'src/types/flows'
 import {PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
 import {notify} from 'src/shared/actions/notifications'
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
-import {parseDuration, timeRangeToDuration} from 'src/shared/utils/duration'
 import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 import {getOrg} from 'src/organizations/selectors'
 
@@ -25,10 +16,9 @@ import {
   notebookRunSuccess,
   notebookRunFail,
 } from 'src/shared/copy/notifications'
-import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 
 // Types
-import {AppState, RemoteDataState, Variable} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 export interface Stage {
   id: string
@@ -59,7 +49,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   queryDependents: () => {},
   getPanelQueries: _ => ({
     id: '',
-    scope: {vars: {}},
+    scope: {},
     source: '',
     visual: '',
   }),
@@ -70,19 +60,6 @@ export const FlowQueryContext = React.createContext<FlowQueryContextType>(
   DEFAULT_CONTEXT
 )
 
-const generateTimeVar = (which, value): Variable =>
-  ({
-    orgID: '',
-    id: which,
-    name: which,
-    arguments: {
-      type: 'system',
-      values: [value],
-    },
-    status: RemoteDataState.Done,
-    labels: [],
-  } as Variable)
-
 export const FlowQueryProvider: FC = ({children}) => {
   const {flow} = useContext(FlowContext)
   const {setResult, setStatuses, statuses} = useContext(ResultsContext)
@@ -92,7 +69,6 @@ export const FlowQueryProvider: FC = ({children}) => {
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
-  const variables = useSelector((state: AppState) => getVariables(state))
 
   useEffect(() => {
     if (flow?.range?.lower !== prevLower) {
@@ -113,42 +89,31 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
   useEvent('storage', handleStorageEvent)
 
-  const vars = useMemo(() => {
-    const _vars = [...variables]
-
-    if (!flow?.range) {
-      return _vars.reduce((acc, curr) => {
-        acc[curr.name] = curr
-        return acc
-      }, {})
-    }
-
-    // Here we add in those optional time range variables if we have them
-    if (!flow.range.upper) {
-      _vars.push(generateTimeVar(TIME_RANGE_STOP, 'now()'))
-    } else if (isNaN(Date.parse(flow.range.upper))) {
-      _vars.push(generateTimeVar(TIME_RANGE_STOP, null))
-    } else {
-      _vars.push(generateTimeVar(TIME_RANGE_STOP, flow.range.upper))
-    }
-
-    if ((flow.range.type as any) !== 'custom') {
-      const duration = parseDuration(timeRangeToDuration(flow.range))
-
-      _vars.push(generateTimeVar(TIME_RANGE_START, duration))
-    } else if (isNaN(Date.parse(flow.range.lower))) {
-      _vars.push(generateTimeVar(TIME_RANGE_START, null))
-    } else {
-      _vars.push(generateTimeVar(TIME_RANGE_START, flow.range.lower))
-    }
-
-    return _vars.reduce((acc, curr) => {
-      acc[curr.name] = curr
-      return acc
-    }, {})
-  }, [variables, flow?.range])
-
   const _map = useRef([])
+  let timeRangeStart, timeRangeStop
+
+  if (!flow?.range) {
+    timeRangeStart = timeRangeStop = null
+  } else {
+    if (flow.range.type === 'selectable-duration') {
+      timeRangeStart = '-' + flow.range.duration
+    } else if (flow.range.type === 'duration') {
+      timeRangeStart = '-' + flow.range.lower
+    } else if (isNaN(Date.parse(flow.range.lower))) {
+      timeRangeStart = null
+    } else {
+      timeRangeStart = new Date(flow.range.lower).toISOString()
+    }
+
+    if (!flow.range.upper) {
+      timeRangeStop = 'now()'
+    } else if (isNaN(Date.parse(flow.range.upper))) {
+      timeRangeStop = null
+    } else {
+      timeRangeStop = new Date(flow.range.upper).toISOString()
+    }
+  }
+
   const _generateMap = (): Stage[] => {
     const stages = (flow?.data?.allIDs ?? []).reduce((acc, panelID) => {
       const panel = flow.data.byID[panelID]
@@ -161,6 +126,10 @@ export const FlowQueryProvider: FC = ({children}) => {
         scope: {
           region: window.location.origin,
           org: org.id,
+          vars: {
+            timeRangeStart,
+            timeRangeStop,
+          },
         },
         source: '',
         visual: '',
@@ -278,10 +247,6 @@ export const FlowQueryProvider: FC = ({children}) => {
       region: window.location.origin,
       org: org.id,
       ...(override || {}),
-      vars: {
-        ...vars,
-        ...(override?.vars || {}),
-      },
     }
 
     return queryAPI(text, _override)
@@ -292,10 +257,6 @@ export const FlowQueryProvider: FC = ({children}) => {
       region: window.location.origin,
       org: org.id,
       ...(override || {}),
-      vars: {
-        ...vars,
-        ...(override?.vars || {}),
-      },
     }
 
     return basicAPI(text, _override)
@@ -428,7 +389,10 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   const simple = (text: string) => {
-    return simplify(text, vars)
+    return simplify(text, {
+      timeRangeStart,
+      timeRangeStop,
+    })
   }
 
   if (!flow) {

@@ -20,7 +20,7 @@ const AccountAboutPage: FC = () => {
       <AccountTabContainer activeTab="about">
         <>
           <h1 data-testid="account-about--header">
-            hello world on the account about page
+            hello world on the account settings page
           </h1>
         </>
       </AccountTabContainer>
@@ -32,7 +32,7 @@ const AccountPage: FC = () => {
   //todo:  look at userlistcontainer for a tabbed example!
 
   return (
-    <Page titleTag={pageTitleSuffixer(['Account About page....'])}>
+    <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <UserAccountProvider>
         <AccountAboutPage />
       </UserAccountProvider>

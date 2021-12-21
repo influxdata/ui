@@ -52,10 +52,10 @@ const UserWidget: FC<Props> = ({
         />
         <TreeNav.UserItem
           id="account"
-          label="Account"
+          label="Settings"
           testID="user-account-switching-page"
           linkElement={className => (
-            <Link className={className} to={`${orgPrefix}/accounts/about`} />
+            <Link className={className} to={`${orgPrefix}/accounts/settings`} />
           )}
         />
         <TreeNav.SubHeading label="Organization" />

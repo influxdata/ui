@@ -286,9 +286,9 @@ const SetOrg: FC = () => {
           {/* About */}
           <Route path={`${orgPath}/about`} component={OrgProfilePage} />
 
-          {/* account about page */}
+          {/* account settings page */}
           <Route
-            path={`${orgPath}/accounts/about`}
+            path={`${orgPath}/accounts/settings`}
             component={UserAccountPage}
           />
 

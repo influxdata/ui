@@ -36,9 +36,9 @@ const AccountTabs: FC<Props> = ({activeTab}) => {
       link: `/orgs/${orgID}/billing`,
     },
     {
-      text: 'About',
+      text: 'Settings',
       id: Tab.About,
-      link: `/orgs/${orgID}/accounts/about`,
+      link: `/orgs/${orgID}/accounts/settings`,
     },
   ]
 

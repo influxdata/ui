@@ -11,7 +11,7 @@ describe('Account Page (take 2)', () => {
             cy.quartzProvision({
               accountType: 'free',
             }).then(() => {
-              cy.visit(`/orgs/${id}/accounts/about`)
+              cy.visit(`/orgs/${id}/accounts/settings`)
               cy.getByTestID('account-about--header').should('be.visible')
 
               // cy.visit(`/orgs/${id}/billing`)

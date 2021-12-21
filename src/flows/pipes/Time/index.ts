@@ -9,17 +9,17 @@ export default register => {
     component: View,
     initial: {
       start: '-1h',
-      stop: 'now()'
+      stop: 'now()',
     },
     scope: (data, prev) => {
       return {
         ...prev,
         vars: {
-          ...prev.vars || {},
+          ...(prev.vars || {}),
           timeRangeStart: data.start,
-          timeRangeStop: data.stop
-        }
+          timeRangeStop: data.stop,
+        },
       }
-    }
+    },
   })
 }

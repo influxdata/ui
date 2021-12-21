@@ -13,6 +13,10 @@ const compareIDPEandLocalMappings = (map1, map2) => {
     return {isMappingReusable: false}
   }
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
   const additions = addedDiff(map1, map2)
   const deletions = deletedDiff(map1, map2)
 
@@ -28,9 +32,6 @@ const compareIDPEandLocalMappings = (map1, map2) => {
   return {isMappingReusable, additions, deletions}
 }
 
-function isEmpty(obj) {
-  return Object.keys(obj).length === 0;
-}
 
 
 /**
@@ -49,7 +50,6 @@ export const getColorMappingObjects = (
     properties
   )
 
-  console.log({seriesToColorHexMap})
   // if the mappings from the IDPE and the *required* one's for the current view are the same, we don't need to generate new mappings
   const {isMappingReusable} = compareIDPEandLocalMappings(properties.colorMapping, seriesToColorHexMap)
 
@@ -61,7 +61,6 @@ export const getColorMappingObjects = (
     mappings.mappings.forEach(graphLine => {
       const seriesID = getSeriesId(graphLine, columnKeys)
 
-      // TODO: change here
       // this is needed for giraffe
       graphLine.color = properties.colorMapping[seriesID]
     })
@@ -79,8 +78,6 @@ export const getColorMappingObjects = (
       const seriesID = getSeriesId(graphLine, columnKeys)
 
       // this is needed for giraffe
-      // TODO: change here
-      // graphLine.color = colors[seriesToColorIndexMap[seriesID]].hex
       graphLine.color = seriesToColorHexMap[seriesID]
     })
 
@@ -107,8 +104,6 @@ export const getColorMappingObjects = (
     for (const minus in deletions) {
       delete colorMappingForIDPE[minus]
     }
-
-    console.log({colorMappingForIDPE})
 
     return {
       colorMappingForIDPE: colorMappingForIDPE,
@@ -171,7 +166,6 @@ const generateSeriesToColorHex = (
   const cgMap = {...columnGroupMap}
   cgMap.mappings.forEach((graphLine, colorIndex) => {
     const id = getSeriesId(graphLine, columnGroupMap.columnKeys)
-    // seriesToColorIndexMap[id] = colorIndex % properties.colors.length
     const colors = properties.colors.map(value => value.hex)
     const fillScale = getNominalColorScale(columnGroupMap, colors)
     seriesToColorHex[id] = fillScale(colorIndex)

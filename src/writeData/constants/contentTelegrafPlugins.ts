@@ -115,7 +115,7 @@ import nats_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nats
 import natsMarkdown from 'src/writeData/components/telegrafPlugins/nats.md'
 import neptune_apexMarkdown from 'src/writeData/components/telegrafPlugins/neptune_apex.md'
 import net_responseMarkdown from 'src/writeData/components/telegrafPlugins/net_response.md'
-import net_statMarkdown from 'src/writeData/components/telegrafPlugins/net_stat.md'
+import netstatMarkdown from 'src/writeData/components/telegrafPlugins/netstat.md'
 import netMarkdown from 'src/writeData/components/telegrafPlugins/net.md'
 import nfsclientMarkdown from 'src/writeData/components/telegrafPlugins/nfsclient.md'
 import nginx_plus_apiMarkdown from 'src/writeData/components/telegrafPlugins/nginx_plus_api.md'
@@ -950,7 +950,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: kinesis_consumerLogo,
   },
   {
-    id: 'KNXListener',
+    id: 'knx_listener',
     name: 'KNX',
     markdown: knx_listenerMarkdown,
     image: knx_listenerLogo,
@@ -1112,9 +1112,9 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: net_responseLogo,
   },
   {
-    id: 'net_stat',
+    id: 'netstat',
     name: 'Net Stat',
-    markdown: net_statMarkdown,
+    markdown: netstatMarkdown,
     image: net_responseLogo,
   },
   {

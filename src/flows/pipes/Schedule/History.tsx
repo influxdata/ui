@@ -25,6 +25,10 @@ import {PopupContext} from 'src/flows/context/popup'
 
 import {event} from 'src/cloud/utils/reporting'
 
+interface ListProps {
+  tasks: Task[]
+}
+
 interface Props {
   task: Task
 }
@@ -292,9 +296,11 @@ const History: FC<Props> = ({task}) => {
   )
 }
 
-const WrappedHistory: FC<Props> = ({task}) => (
+const WrappedHistory: FC<ListProps> = ({tasks}) => (
   <ErrorBoundary>
-    <History task={task} />
+    {tasks.map(task => (
+      <History key={task.id} task={task} />
+    ))}
   </ErrorBoundary>
 )
 export default WrappedHistory

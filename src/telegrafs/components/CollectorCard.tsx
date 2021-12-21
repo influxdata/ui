@@ -21,8 +21,8 @@ import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 
 // Actions
 import {
-  addTelegrafLabelsAsync,
-  removeTelegrafLabelsAsync,
+  addTelegrafLabelAsync,
+  removeTelegrafLabelAsync,
 } from 'src/telegrafs/actions/thunks'
 
 import {createTelegraf} from 'src/telegrafs/actions/thunks'
@@ -161,15 +161,15 @@ class CollectorRow extends PureComponent<
   }
 
   private handleAddLabel = async (label: Label) => {
-    const {collector, onAddLabels} = this.props
+    const {collector, onAddLabel} = this.props
 
-    await onAddLabels(collector.id, [label])
+    await onAddLabel(collector.id, label)
   }
 
   private handleRemoveLabel = async (label: Label) => {
-    const {collector, onRemoveLabels} = this.props
+    const {collector, onRemoveLabel} = this.props
 
-    await onRemoveLabels(collector.id, [label])
+    await onRemoveLabel(collector.id, label)
   }
 
   private handleNameClick = (e: MouseEvent) => {
@@ -205,8 +205,8 @@ const mstp = (state: AppState) => {
 
 const mdtp = {
   onCloneTelegraf: createTelegraf,
-  onAddLabels: addTelegrafLabelsAsync,
-  onRemoveLabels: removeTelegrafLabelsAsync,
+  onAddLabel: addTelegrafLabelAsync,
+  onRemoveLabel: removeTelegrafLabelAsync,
 }
 
 const connector = connect(mstp, mdtp)

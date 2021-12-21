@@ -36,6 +36,8 @@ ARG RUDDERSTACK_WRITE_KEY
 ARG GLOBALSEARCH_API_KEY
 # Global Search App ID
 ARG GLOBALSEARCH_APP_ID
+# Google Experiment ID for PAYG $250 Credit
+ARG PAYG_CREDIT_EXPERIMENT_ID
 
 COPY . /repo/ui
 WORKDIR /repo/ui
@@ -51,7 +53,7 @@ RUN apk \
 # makes big steps like yarn install expensive
 RUN yarn install --production=false && \
     yarn generate && \
-    $(npm bin)/webpack --config ./webpack.${WEBPACK_FILE}.ts --bail && \
+    $(npm bin)/webpack --config ./webpack.${WEBPACK_FILE}.ts && \
     rm -rf ./node_modules
 
 RUN mkdir /includes

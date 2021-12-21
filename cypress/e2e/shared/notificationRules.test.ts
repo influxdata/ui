@@ -17,28 +17,24 @@ describe('NotificationRules', () => {
   const name3 = 'Slack 3'
 
   beforeEach(() => {
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get<Organization>('@org').then(({id}: Organization) => {
-          // create the notification endpoints
-          cy.fixture('endpoints').then(({slack}) => {
-            cy.createEndpoint({...slack, name: name1, orgID: id})
-            cy.createEndpoint({...slack, name: name2, orgID: id}).then(
-              ({body}) => {
-                cy.wrap(body).as('selectedEndpoint')
-              }
-            )
-            cy.createEndpoint({...slack, name: name3, orgID: id})
-          })
-
-          // visit the alerting index
-          cy.fixture('routes').then(({orgs, alerting}) => {
-            cy.visit(`${orgs}/${id}${alerting}`)
-            cy.getByTestID('tree-nav')
-          })
+    cy.flush()
+    cy.signin()
+    cy.get<Organization>('@org').then(({id}: Organization) => {
+      // create the notification endpoints
+      cy.fixture('endpoints').then(({slack}) => {
+        cy.createEndpoint({...slack, name: name1, orgID: id})
+        cy.createEndpoint({...slack, name: name2, orgID: id}).then(({body}) => {
+          cy.wrap(body).as('selectedEndpoint')
         })
+        cy.createEndpoint({...slack, name: name3, orgID: id})
       })
-    )
+
+      // visit the alerting index
+      cy.fixture('routes').then(({orgs, alerting}) => {
+        cy.visit(`${orgs}/${id}${alerting}`)
+        cy.getByTestID('tree-nav')
+      })
+    })
   })
 
   describe('When a rule does not exist', () => {
@@ -414,145 +410,126 @@ describe('NotificationRules', () => {
     // Ensure all Async data prep is completed in correct order before starting tests
     // Replaces beforeEach()
     beforeEach(() => {
-      return cy
-        .writeLPDataFromFile({
-          filename: 'data/wumpus01.lp',
-          offset: '20m',
-          stagger: '1m',
-        })
-        .then(() => {
-          return cy
-            .get<Organization>('@org')
-            .then((org: Organization) => {
-              cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-                // get default org and bucket
-                // 2. create check
-                const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
-                cy.createCheck({
-                  ...check,
-                  orgID: org.id,
-                  query: {
-                    ...check.query,
-                    text: queryText,
-                    builderConfig: {
-                      ...check.query.builderConfig,
-                      buckets: [bucket.id],
-                    },
-                  },
-                }).then(resp => {
-                  cy.wrap(resp.body).as('check')
-                })
+      cy.writeLPDataFromFile({
+        filename: 'data/wumpus01.lp',
+        offset: '20m',
+        stagger: '1m',
+      })
+      cy.get<Organization>('@org').then((org: Organization) => {
+        cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+          // get default org and bucket
+          // 2. create check
+          const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
+          cy.createCheck({
+            ...check,
+            orgID: org.id,
+            query: {
+              ...check.query,
+              text: queryText,
+              builderConfig: {
+                ...check.query.builderConfig,
+                buckets: [bucket.id],
+              },
+            },
+          }).then(resp => {
+            cy.wrap(resp.body).as('check')
+          })
 
-                cy.createEndpoint({
-                  ...(endp as NotificationEndpoint),
-                  orgID: org.id,
-                }).then(resp => {
-                  cy.wrap(resp.body).as('endp')
-                })
+          cy.createEndpoint({
+            ...(endp as NotificationEndpoint),
+            orgID: org.id,
+          }).then(resp => {
+            cy.wrap(resp.body).as('endp')
+          })
 
-                cy.get<NotificationEndpoint>('@endp').then(endp => {
-                  cy.createRule({
-                    ...(rule as NotificationRule),
-                    orgID: org.id,
-                    endpointID: endp.id,
-                  }).then(resp => {
-                    cy.wrap(resp.body).as('rule')
-                  })
-                })
-              })
+          cy.get<NotificationEndpoint>('@endp').then(endp => {
+            cy.createRule({
+              ...(rule as NotificationRule),
+              orgID: org.id,
+              endpointID: endp.id,
+            }).then(resp => {
+              cy.wrap(resp.body).as('rule')
             })
-            .then(() => {
-              return cy
-                .get<GenCheck>('@check')
-                .then(check => {
-                  cy.get<NotificationEndpoint>('@endp').then(endp => {
-                    cy.get<GenRule>('@rule').then(rule => {
-                      writeMonitoringRecord(
-                        {
-                          check: check,
-                          endp: endp,
-                          rule: rule,
-                          level: 'crit',
-                          source: 'wumpus',
-                          sent: 'true',
-                          valField: {key: 'foo', val: 'bar'},
-                          sourceTimestamp: calcNanoTimestamp('17m'),
-                          statusTimestamp: calcNanoTimestamp('16m'),
-                          message: 'This is a fake critical message',
-                        },
-                        '15m'
-                      ).then(() => {
-                        writeMonitoringRecord(
-                          {
-                            check: check,
-                            endp: endp,
-                            rule: rule,
-                            level: 'info',
-                            source: 'wumpus',
-                            sent: 'false',
-                            valField: {key: 'foo', val: 'bar'},
-                            sourceTimestamp: calcNanoTimestamp('12m'),
-                            statusTimestamp: calcNanoTimestamp('11m'),
-                            message: 'This is a fake info message',
-                          },
-                          '10m'
-                        ).then(() => {
-                          writeMonitoringRecord(
-                            {
-                              check: check,
-                              endp: endp,
-                              rule: rule,
-                              level: 'warn',
-                              source: 'wumpus',
-                              sent: 'true',
-                              valField: {key: 'foo', val: 'bar'},
-                              sourceTimestamp: calcNanoTimestamp('22m'),
-                              statusTimestamp: calcNanoTimestamp('21m'),
-                              message: 'This is a fake warning message',
-                            },
-                            '20m'
-                          ).then(() => {
-                            return writeMonitoringRecord(
-                              {
-                                check: check,
-                                endp: endp,
-                                rule: rule,
-                                level: 'ok',
-                                source: 'wumpus',
-                                sent: 'true',
-                                valField: {key: 'foo', val: 'bar'},
-                                sourceTimestamp: calcNanoTimestamp('7m'),
-                                statusTimestamp: calcNanoTimestamp('6m'),
-                                message: 'This is a fake OK message',
-                              },
-                              '5m'
-                            )
-                          })
-                        })
-                      })
-                    })
-                  })
-                })
-                .then(() => {
-                  // use direct route to page
-                  return cy
-                    .get<Organization>('@org')
-                    .then(({id}: Organization) => {
-                      cy.get<NotificationRule>('@rule').then(rule => {
-                        cy.fixture('routes').then(({orgs}) => {
-                          cy.visit(
-                            `${orgs}/${id}/alert-history?type=notifications&filter="notificationRuleID%20%3D%3D%20%22${rule.id}"`
-                          )
-                          cy.url().should(
-                            'include',
-                            `${orgs}/${id}/alert-history`
-                          )
-                        })
-                      })
-                    })
-                })
-            })
+          })
         })
+      })
+      cy.get<GenCheck>('@check').then(check => {
+        cy.get<NotificationEndpoint>('@endp').then(endp => {
+          cy.get<GenRule>('@rule').then(rule => {
+            writeMonitoringRecord(
+              {
+                check: check,
+                endp: endp,
+                rule: rule,
+                level: 'crit',
+                source: 'wumpus',
+                sent: 'true',
+                valField: {key: 'foo', val: 'bar'},
+                sourceTimestamp: calcNanoTimestamp('17m'),
+                statusTimestamp: calcNanoTimestamp('16m'),
+                message: 'This is a fake critical message',
+              },
+              '15m'
+            )
+            writeMonitoringRecord(
+              {
+                check: check,
+                endp: endp,
+                rule: rule,
+                level: 'info',
+                source: 'wumpus',
+                sent: 'false',
+                valField: {key: 'foo', val: 'bar'},
+                sourceTimestamp: calcNanoTimestamp('12m'),
+                statusTimestamp: calcNanoTimestamp('11m'),
+                message: 'This is a fake info message',
+              },
+              '10m'
+            )
+            writeMonitoringRecord(
+              {
+                check: check,
+                endp: endp,
+                rule: rule,
+                level: 'warn',
+                source: 'wumpus',
+                sent: 'true',
+                valField: {key: 'foo', val: 'bar'},
+                sourceTimestamp: calcNanoTimestamp('22m'),
+                statusTimestamp: calcNanoTimestamp('21m'),
+                message: 'This is a fake warning message',
+              },
+              '20m'
+            )
+            writeMonitoringRecord(
+              {
+                check: check,
+                endp: endp,
+                rule: rule,
+                level: 'ok',
+                source: 'wumpus',
+                sent: 'true',
+                valField: {key: 'foo', val: 'bar'},
+                sourceTimestamp: calcNanoTimestamp('7m'),
+                statusTimestamp: calcNanoTimestamp('6m'),
+                message: 'This is a fake OK message',
+              },
+              '5m'
+            )
+          })
+        })
+      })
+      // use direct route to page
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.get<NotificationRule>('@rule').then(rule => {
+          cy.fixture('routes').then(({orgs}) => {
+            cy.visit(
+              `${orgs}/${id}/alert-history?type=notifications&filter="notificationRuleID%20%3D%3D%20%22${rule.id}"`
+            )
+            cy.url().should('include', `${orgs}/${id}/alert-history`)
+          })
+        })
+      })
     })
 
     it('shows and filters history', () => {

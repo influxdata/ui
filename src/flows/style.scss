@@ -50,11 +50,11 @@ $cf-radius-lg: $cf-radius + 4px;
     // Ensures there is no visible gap
     bottom: 0;
     top: 0;
-    left: ($flow-panel--node-gap / 2) - ($cf-border / 2);
+    left: ($flow-panel--node-gap * 0.5) - ($cf-border * 0.5);
   }
 
   &:first-child::after {
-    top: ($flow-header-height - $flow-panel--node-dot) / 2;
+    top: ($flow-header-height - $flow-panel--node-dot) * 0.5;
   }
 }
 
@@ -74,6 +74,7 @@ $cf-radius-lg: $cf-radius + 4px;
 }
 
 .presentation-panel {
+  overflow: auto;
   display: flex;
   height: 100%;
   flex-direction: column;
@@ -260,7 +261,7 @@ $cf-radius-lg: $cf-radius + 4px;
 .flow-panel--title-icon {
   position: absolute;
   top: 50%;
-  right: $cf-form-sm-height / 2;
+  right: $cf-form-sm-height * 0.5;
   transform: translate(50%, -50%);
   opacity: 0;
   transition: opacity 0.25s ease;

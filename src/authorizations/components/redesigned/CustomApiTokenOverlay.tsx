@@ -1,6 +1,7 @@
 import React, {FC, useState, useContext, useEffect} from 'react'
 import {connect} from 'react-redux'
 import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
+import {isEmpty} from 'lodash'
 
 // Actions
 import {getBuckets} from 'src/buckets/actions/thunks'
@@ -45,6 +46,7 @@ import {
   formatResources,
   generateDescription,
 } from 'src/authorizations/utils/permissions'
+import {event} from 'src/cloud/utils/reporting'
 
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
@@ -81,21 +83,26 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }, [])
 
   useEffect(() => {
-    const perms = {
-      otherResources: {read: false, write: false},
-    }
-
-    props.allResources.forEach(resource => {
-      if (resource === 'telegrafs') {
-        perms[resource] = props.telegrafPermissions
-      } else if (resource === 'buckets') {
-        perms[resource] = props.bucketPermissions
-      } else {
-        perms[resource] = {read: false, write: false}
+    if (!isEmpty(props.bucketPermissions.sublevelPermissions)) {
+      const perms = {
+        otherResources: {read: false, write: false},
       }
-    })
-    setPermissions(perms)
-  }, [props.telegrafPermissions, props.bucketPermissions])
+      props.allResources.forEach(resource => {
+        if (resource === ResourceType.Telegrafs) {
+          perms[resource] = props.telegrafPermissions
+        } else if (resource === ResourceType.Buckets) {
+          perms[resource] = props.bucketPermissions
+        } else {
+          perms[resource] = {read: false, write: false}
+        }
+      })
+      setPermissions(perms)
+    }
+    // Each time remoteDataState changes, the useEffect hook will be called.
+    // BUT, code inside the hook won't run until remoteDataState is 'Done'.
+    // Only then will props.bucketPermissions.sublevelPermissions will have value.
+    // Consequently, we update the permissions state.
+  }, [props.remoteDataState])
 
   const handleDismiss = () => {
     props.onClose()
@@ -126,8 +133,8 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     if (name === 'otherResources') {
       Object.keys(newPerm).forEach(key => {
         if (
-          key !== 'buckets' &&
-          key !== 'telegrafs' &&
+          key !== ResourceType.Buckets &&
+          key !== ResourceType.Telegrafs &&
           key !== 'otherResources'
         ) {
           newPerm[key][permission] = !newPerm[key][permission]
@@ -143,6 +150,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   const handleIndividualToggle = (resourceName, id, permission) => {
     setStatus(ComponentStatus.Default)
+
     const permValue =
       permissions[resourceName].sublevelPermissions[id].permissions[permission]
 
@@ -173,11 +181,12 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     let noTelegrafWritePermSelected
 
     const bucketsTelegrafs = Object.keys(permissions).filter(
-      resource => resource === 'buckets' || resource === 'telegrafs'
+      resource =>
+        resource === ResourceType.Buckets || resource === ResourceType.Telegrafs
     )
 
     bucketsTelegrafs.forEach(resource => {
-      if (resource === 'buckets') {
+      if (resource === ResourceType.Buckets) {
         noBucketReadPermSelected = Object.keys(
           newPerm[resource].sublevelPermissions
         ).every(
@@ -236,10 +245,11 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
     try {
       await createAuthorization(token)
+      event('customApiToken.create.success', {description})
       showOverlay('access-token', null, () => dismissOverlay())
     } catch (e) {
       setStatus(ComponentStatus.Disabled)
-      throw e
+      event('customApiToken.create.failure', {description})
     }
   }
 
@@ -337,7 +347,6 @@ const mstp = (state: AppState) => {
     ResourceType.Buckets,
     ResourceType.Telegrafs,
   ])
-
   const telegrafs = getAll<Telegraf>(state, ResourceType.Telegrafs)
   const telegrafPermissions = {
     read: false,

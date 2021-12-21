@@ -82,22 +82,32 @@ export const AllAccordionBody: FC<OwnProps> = props => {
     </FlexBox>
   )
 
+  const getAccordionBody = () => {
+    return permissions.length !== 0 ? (
+      Object.keys(permissions).map(key => {
+        const names = permissions[key].name
+        const resourceName = names.charAt(0).toUpperCase() + names.slice(1)
+
+        return (
+          <Accordion.AccordionBodyItem
+            key={key}
+            className="resource-accordion-body"
+          >
+            {AllResourceAccordionBody(permissions[key], resourceName)}
+          </Accordion.AccordionBodyItem>
+        )
+      })
+    ) : (
+      <Accordion.AccordionBodyItem className="resource-accordion-error">
+        {`No ${resourceName.replace('All ', '')} match your search term`}
+      </Accordion.AccordionBodyItem>
+    )
+  }
+
   return (
     <>
       {resourceName === 'All Resources' ? (
-        Object.keys(permissions).map(key => {
-          const names = permissions[key].name
-          const resourceName = names.charAt(0).toUpperCase() + names.slice(1)
-
-          return (
-            <Accordion.AccordionBodyItem
-              key={key}
-              className="resource-accordion-body"
-            >
-              {AllResourceAccordionBody(permissions[key], resourceName)}
-            </Accordion.AccordionBodyItem>
-          )
-        })
+        getAccordionBody()
       ) : (
         <Accordion.AccordionBodyItem className="resource-accordion-body">
           {AllResourceAccordionBody()}

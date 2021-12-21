@@ -1,18 +1,18 @@
 import {TEST_NOTIFICATION} from 'src/flows/pipes/Notification/endpoints'
-import PagerDuty from './view'
-import PagerDutyReadOnly from './readOnly'
+import View from './view'
+import ReadOnly from './readOnly'
 
 export default register => {
   register({
     type: 'pagerduty',
-    name: 'Pager Duty',
+    name: 'PagerDuty',
     data: {
       url: '',
       key: '',
       level: 'warning',
     },
-    component: PagerDuty,
-    readOnlyComponent: PagerDutyReadOnly,
+    component: View,
+    readOnlyComponent: ReadOnly,
     generateTestImports: () =>
       ['array', 'pagerduty', 'influxdata/influxdb/secrets']
         .map(i => `import "${i}"`)

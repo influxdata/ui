@@ -50,6 +50,7 @@ class TokenRow extends PureComponent<Props> {
       <ResourceCard
         contextMenu={this.contextMenu}
         testID={`token-card ${auth.description}`}
+        disabled={!this.isTokenEnabled}
       >
         <ResourceCard.EditableName
           onUpdate={this.handleUpdateName}

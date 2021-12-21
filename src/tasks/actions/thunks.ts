@@ -2,7 +2,6 @@
 import {push, goBack, RouterAction} from 'connected-react-router'
 import {Dispatch} from 'react'
 import {normalize} from 'normalizr'
-import {format_from_js_file} from '@influxdata/flux'
 
 // APIs
 import * as api from 'src/client'
@@ -31,7 +30,7 @@ import {
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
-import {parse} from 'src/external/parser'
+import {parse, format_from_js_file} from 'src/external/parser'
 
 // Types
 import {
@@ -224,6 +223,7 @@ export const updateTaskStatus = (task: Task) => async (
     )
 
     dispatch(editTask(normTask))
+    dispatch(setCurrentTask(normTask))
     dispatch(notify(copy.taskUpdateSuccess()))
   } catch (e) {
     console.error(e)
@@ -522,7 +522,6 @@ export const saveNewScript = (script: string, preamble: string) => async (
     dispatch(notify(copy.taskCreatedSuccess()))
     dispatch(checkTaskLimits())
   } catch (error) {
-    console.error(error)
     if (isLimitError(error)) {
       dispatch(notify(copy.resourceLimitReached('tasks')))
     } else {

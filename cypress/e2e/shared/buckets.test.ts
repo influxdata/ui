@@ -1,18 +1,16 @@
 import {Bucket, Organization} from '../../../src/types'
 
 describe('Buckets', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs, buckets}) => {
-            cy.visit(`${orgs}/${id}${buckets}`)
-            cy.getByTestID('tree-nav')
-          })
-        )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs, buckets}) => {
+        cy.visit(`${orgs}/${id}${buckets}`)
       })
     )
-  )
+    cy.getByTestID('tree-nav')
+  })
 
   describe('from the buckets index page', () => {
     it('can create a bucket', () => {
@@ -56,11 +54,8 @@ describe('Buckets', () => {
         cy.getByInputName('name').type(newBucket)
         cy.getByTestID('retention-intervals--button').click()
         cy.getByTestID('duration-selector--button').click()
-        cy.getByTestID('duration-selector--12h')
-          .click()
-          .then(() => {
-            cy.getByTestID('bucket-form-submit').click()
-          })
+        cy.getByTestID('duration-selector--12h').click()
+        cy.getByTestID('bucket-form-submit').click()
       })
 
       // assert bucket with retention
@@ -88,9 +83,7 @@ describe('Buckets', () => {
         cy.contains('Save').click()
       })
 
-      cy.get<Bucket>('@bucket').then(() => {
-        cy.getByTestID(`bucket-retention`).should('contain', '7 days')
-      })
+      cy.getByTestID(`bucket-retention`).should('contain', '7 days')
     })
 
     it('can delete a bucket', () => {
@@ -139,123 +132,6 @@ describe('Buckets', () => {
   })
 
   describe('add data', function() {
-    it('can write data to buckets', () => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
-        // writing a well-formed line is accepted
-        cy.getByTestID('add-data--button').click()
-        cy.getByTestID('bucket-add-client-library').click()
-        cy.location('pathname').should('contain', `/orgs/${orgID}/load-data/`)
-        cy.go('back')
-        cy.getByTestID('add-data--button').click()
-
-        cy.getByTestID('bucket-add-line-protocol').click()
-        cy.getByTestID('Enter Manually').click()
-        cy.getByTestID('lp-write-data--button').should('be.disabled')
-        cy.getByTestID('line-protocol--text-area').type('m1,t1=v1 v=1.0')
-        cy.getByTestID('lp-write-data--button').click()
-        cy.getByTestID('line-protocol--status').contains('Success')
-        cy.getByTestID('lp-close--button').click()
-
-        // writing a poorly-formed line errors
-        cy.getByTestID('add-data--button').click()
-        cy.getByTestID('bucket-add-line-protocol').click()
-        cy.getByTestID('Enter Manually').click()
-        cy.getByTestID('line-protocol--text-area').type('invalid invalid')
-        cy.getByTestID('lp-write-data--button').click()
-        cy.getByTestID('line-protocol--status').contains('Unable')
-
-        // Using the Edit button should show the same invalid text
-        cy.getByTestID('lp-edit--button').click()
-        cy.getByTestID('line-protocol--text-area').contains('invalid invalid')
-
-        // Using the Clear button should clear text
-        cy.getByTestID('lp-write-data--button').click()
-        cy.getByTestID('lp-cancel--button').click()
-        cy.getByTestID('line-protocol--text-area').should('have.value', '')
-
-        // writing a well-formed line with millisecond precision is accepted
-        cy.getByTestID('wizard-step--lp-precision--dropdown').click()
-        cy.getByTestID('wizard-step--lp-precision-ms').click()
-        const now = Date.now()
-        cy.getByTestID('line-protocol--text-area').type(`m2,t2=v2 v=2.0 ${now}`)
-        cy.getByTestID('lp-write-data--button').click()
-        cy.getByTestID('line-protocol--status').contains('Success')
-      })
-    })
-
-    it('upload a file and write data', () => {
-      cy.getByTestID('add-data--button').click()
-      cy.getByTestID('bucket-add-line-protocol').click()
-      cy.getByTestID('Upload File').click()
-
-      // When a file is larger than 10MB
-      const bigFile = 'data-big.txt'
-      const type = 'plain/text'
-      const testFile = new File(
-        ['a'.repeat(1e7) + 'just a bit over 10mb'],
-        bigFile,
-        {type}
-      )
-      const event = {dataTransfer: {files: [testFile]}, force: true}
-      cy.getByTestID('drag-and-drop--input')
-        .trigger('dragover', event)
-        .trigger('drop', event)
-
-      cy.getByTestID('dnd--header-error').contains(bigFile)
-      cy.getByTestID('cancel-upload--button').click()
-
-      cy.getByTestID('wizard-step--lp-precision--dropdown').click()
-      cy.getByTestID('wizard-step--lp-precision-ms').click()
-      cy.getByTestID('wizard-step--lp-precision--dropdown').contains(
-        'Milliseconds'
-      )
-
-      // When a file is the correct size
-      const smallFile = 'data.txt'
-      cy.fixture(smallFile, 'base64')
-        .then(Cypress.Blob.base64StringToBlob)
-        .then(blob => {
-          const type = 'plain/text'
-          const testFile = new File([blob], smallFile, {type})
-          const event = {dataTransfer: {files: [testFile]}, force: true}
-          cy.getByTestID('drag-and-drop--input')
-            .trigger('dragover', event)
-            .trigger('drop', event)
-        })
-
-      cy.getByTestID('write-data--button').click()
-      cy.getByTestID('lp-close--button').click()
-
-      // navigate to data explorer to see data
-      cy.getByTestID('nav-item-data-explorer').click({force: true})
-      cy.getByTestID('timerange-dropdown').click()
-      cy.getByTestID('dropdown-item-customtimerange').click()
-
-      // time range start
-      cy.getByTestID('timerange--input')
-        .first()
-        .clear()
-        .type('2020-08-06 00:00:00.000')
-
-      // time range stop
-      cy.getByTestID('timerange--input')
-        .last()
-        .clear()
-        .type('2020-08-08 00:00:00.000')
-
-      cy.getByTestID('daterange--apply-btn').click()
-
-      // TODO replace this with proper health checks
-      cy.wait(1000)
-      cy.get<string>('@defaultBucketListSelector').then(
-        (defaultBucketListSelector: string) => {
-          cy.getByTestID(defaultBucketListSelector).click()
-        }
-      )
-      // mymeasurement comes from fixtures/data.txt
-      cy.getByTestID('selector-list mymeasurement').should('exist')
-    })
-
     it('configure telegraf agent', () => {
       // click "add data" and choose Configure Telegraf Agent
       cy.getByTestID('add-data--button').click()
@@ -272,16 +148,10 @@ describe('Buckets', () => {
       })
 
       // filter plugins and choose system
-      cy.getByTestID('input-field')
-        .type('sys')
-        .then(() => {
-          cy.getByTestID('square-grid--card').should('have.length', 1)
-          cy.getByTestID('input-field')
-            .clear()
-            .then(() => {
-              cy.getByTestID('square-grid--card').should('have.length', 5)
-            })
-        })
+      cy.getByTestID('input-field').type('sys')
+      cy.getByTestID('square-grid--card').should('have.length', 1)
+      cy.getByTestID('input-field').clear()
+      cy.getByTestID('square-grid--card').should('have.length', 5)
       cy.getByTestID('telegraf-plugins--System').click()
       cy.getByTestID('next').click()
 

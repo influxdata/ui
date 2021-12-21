@@ -15,19 +15,17 @@ const VIS_TYPES = [
 
 describe('Legends', () => {
   describe('in the Data Explorer', () => {
-    beforeEach(() =>
-      cy.flush().then(() =>
-        cy.signin().then(() => {
-          cy.get('@org').then(({id}: Organization) => {
-            cy.createMapVariable(id)
-            cy.fixture('routes').then(({orgs, explorer}) => {
-              cy.visit(`${orgs}/${id}${explorer}`)
-              cy.getByTestID('tree-nav')
-            })
-          })
+    beforeEach(() => {
+      cy.flush()
+      cy.signin()
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createMapVariable(id)
+        cy.fixture('routes').then(({orgs, explorer}) => {
+          cy.visit(`${orgs}/${id}${explorer}`)
+          cy.getByTestID('tree-nav')
         })
-      )
-    )
+      })
+    })
 
     describe('hover legend aka "tooltip"', () => {
       it('gives the user a toggle for hide the tooltip only for line graph, line graph plus single stat, and band plot', () => {
@@ -412,18 +410,16 @@ describe('Legends', () => {
   })
 
   describe('in Dashboards', () => {
-    beforeEach(() =>
-      cy.flush().then(() =>
-        cy.signin().then(() =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.get('@org').then(({id}: Organization) => {
-              cy.visit(`${orgs}/${id}/dashboards-list`)
-              cy.getByTestID('tree-nav')
-            })
-          })
-        )
-      )
-    )
+    beforeEach(() => {
+      cy.flush()
+      cy.signin()
+      cy.fixture('routes').then(({orgs}) => {
+        cy.get('@org').then(({id}: Organization) => {
+          cy.visit(`${orgs}/${id}/dashboards-list`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+    })
 
     it('adds a new cell to a dashboard with the static legend options open and without submitting the query', () => {
       const cellName = 'anti-crash test not subbmited dashboard add cell'

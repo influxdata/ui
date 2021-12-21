@@ -45,7 +45,7 @@ const TEST_CASES = [
 describe('parseDuration', () => {
   test.each(TEST_CASES)(
     'can parse Flux duration literals',
-    (input, expected) => {
+    (input: string, expected) => {
       expect(parseDuration(input)).toEqual(expected)
     }
   )
@@ -115,13 +115,17 @@ describe('isDurationParseable', () => {
 
   test.each(TEST_CASES)(
     'returns true when passed valid duration',
-    (input, _) => {
+    (input: string, _) => {
       expect(isDurationParseable(input)).toEqual(true)
     }
   )
 })
 
 describe('convertTimeRangeToCustom', () => {
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
   test('conversion of SelectableDurationTimeRange to custom ', async () => {
     const pastHourTimeRange: SelectableDurationTimeRange = {
       seconds: 3600,
@@ -137,8 +141,7 @@ describe('convertTimeRangeToCustom', () => {
     lowerDate.setHours(lowerDate.getHours() - 1)
 
     const mockDate = new Date(1466424490000)
-
-    const spy = jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+    jest.useFakeTimers().setSystemTime(mockDate)
 
     const expected: CustomTimeRange = {
       lower: lowerDate.toISOString(),
@@ -148,6 +151,5 @@ describe('convertTimeRangeToCustom', () => {
     const {convertTimeRangeToCustom} = await import('src/shared/utils/duration')
 
     expect(convertTimeRangeToCustom(pastHourTimeRange)).toStrictEqual(expected)
-    spy.mockRestore()
   })
 })

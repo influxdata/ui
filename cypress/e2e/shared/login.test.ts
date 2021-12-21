@@ -1,12 +1,11 @@
 describe('The Login Page', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.setupUser().then(({body}) => {
-        cy.wrap(body.org.id).as('orgID')
-        cy.visit('/')
-      })
-    )
-  )
+  beforeEach(() => {
+    cy.flush()
+    cy.setupUser().then(({body}) => {
+      cy.wrap(body.org.id).as('orgID')
+      cy.visit('/')
+    })
+  })
 
   // NOTE: we aren't currently loading the login page
   // for dex

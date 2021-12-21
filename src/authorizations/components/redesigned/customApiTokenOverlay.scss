@@ -28,4 +28,10 @@
 .resource-accordion-body {
   padding-top: 10px;
   padding-bottom: 10px;
+  font-weight: bold;
+}
+
+.resource-accordion-error {
+  justify-content: center;
+  color: gray;
 }

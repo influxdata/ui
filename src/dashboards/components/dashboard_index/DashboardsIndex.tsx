@@ -15,7 +15,6 @@ import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import DashboardImportOverlay from 'src/dashboards/components/DashboardImportOverlay'
-import CreateFromTemplateOverlay from 'src/templates/components/createFromTemplateOverlay/CreateFromTemplateOverlay'
 import DashboardExportOverlay from 'src/dashboards/components/DashboardExportOverlay'
 
 // Utils
@@ -88,7 +87,7 @@ class DashboardIndex extends PureComponent<Props, State> {
                 <AddResourceDropdown
                   onSelectNew={createDashboard}
                   onSelectImport={this.summonImportOverlay}
-                  onSelectTemplate={this.summonImportFromTemplateOverlay}
+                  onSelectTemplate={this.summonTemplatePage}
                   resourceName="Dashboard"
                   limitStatus={limitStatus}
                 />
@@ -121,10 +120,6 @@ class DashboardIndex extends PureComponent<Props, State> {
             component={DashboardExportOverlay}
           />
           <Route
-            path="/orgs/:orgID/dashboards-list/import/template"
-            component={CreateFromTemplateOverlay}
-          />
-          <Route
             path="/orgs/:orgID/dashboards-list/import"
             component={DashboardImportOverlay}
           />
@@ -155,14 +150,14 @@ class DashboardIndex extends PureComponent<Props, State> {
     history.push(`/orgs/${orgID}/dashboards-list/import`)
   }
 
-  private summonImportFromTemplateOverlay = (): void => {
+  private summonTemplatePage = (): void => {
     const {
       history,
       match: {
         params: {orgID},
       },
     } = this.props
-    history.push(`/orgs/${orgID}/dashboards-list/import/template`)
+    history.push(`/orgs/${orgID}/settings/templates`)
   }
 }
 

@@ -1,4 +1,12 @@
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
+// Libraries
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import {
   Input,
   AlignItems,
@@ -7,15 +15,22 @@ import {
   FlexBox,
 } from '@influxdata/clockface'
 
+// Contexts
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
 import {PipeContext} from 'src/flows/context/pipe'
 
+// Utils
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
+
+// Types
 import {RemoteDataState, BuilderAggregateFunctionType} from 'src/types'
+
+// Components
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
+import TagSelectorCount from 'src/shared/components/TagSelectorCount'
+import WaitingText from 'src/shared/components/WaitingText'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import SelectorList from 'src/timeMachine/components/SelectorList'
-import WaitingText from 'src/shared/components/WaitingText'
 
 const DEBOUNCE_TIMEOUT = 500
 const debounce_array = []
@@ -43,6 +58,13 @@ const Card: FC<Props> = ({idx}) => {
   const card = cards[idx]
   const [keySearches, setKeySearches] = useState([])
   const [valueSearches, setValueSearches] = useState([])
+
+  const allItems = useMemo(() => {
+    const results = new Set(card?.values?.results)
+    const selected = card?.values?.selected?.filter(s => !results.has(s))
+
+    return [...selected, ...Array.from(results)]
+  }, [card?.values?.selected, card?.values?.results])
 
   const _remove =
     idx !== 0 &&
@@ -87,7 +109,6 @@ const Card: FC<Props> = ({idx}) => {
   const valueSelect = val => {
     const _vals = [...card.values.selected]
     const index = _vals.indexOf(val)
-
     if (index === -1) {
       _vals.push(val)
     } else {
@@ -173,10 +194,7 @@ const Card: FC<Props> = ({idx}) => {
         <WaitingText text="Loading tag values" />
       </BuilderCard.Empty>
     )
-  } else if (
-    card.values.loading === RemoteDataState.Done &&
-    !card.values.results.length
-  ) {
+  } else if (card.values.loading === RemoteDataState.Done && !allItems.length) {
     _values = (
       <BuilderCard.Empty>
         No values found <small>in the current time range</small>
@@ -185,7 +203,7 @@ const Card: FC<Props> = ({idx}) => {
   } else {
     _values = (
       <SelectorList
-        items={card.values.results}
+        items={allItems}
         selectedItems={card.values.selected}
         onSelectItem={valueSelect}
         multiSelect
@@ -245,6 +263,9 @@ const Card: FC<Props> = ({idx}) => {
             menuTestID="tag-selector--dropdown-menu"
             options={card.keys.results}
           />
+          {!!card?.values?.selected?.length && (
+            <TagSelectorCount count={card.values.selected.length} />
+          )}
         </FlexBox>
         <Input
           value={valueSearches[idx] || ''}

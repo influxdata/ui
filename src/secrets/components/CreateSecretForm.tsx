@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -20,12 +19,14 @@ import {Secret} from 'src/types'
 // Utils
 import {getAllSecrets} from 'src/resources/selectors'
 import {upsertSecret} from 'src/secrets/actions/thunks'
-import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
 
-const CreateSecretForm: FC = () => {
+type OwnProps = {
+  onDismiss?: () => void
+  onSubmit?: (id?: string) => void
+}
+const CreateSecretForm: FC<OwnProps> = ({onDismiss, onSubmit}) => {
   const secrets = useSelector(getAllSecrets)
-  const orgId = useSelector(getOrg)?.id
   const handleKeyValidation = (key: string): string | null => {
     if (!key) {
       return null
@@ -48,7 +49,6 @@ const CreateSecretForm: FC = () => {
     value: '',
     status: RemoteDataState.NotStarted,
   })
-  const history = useHistory()
   const dispatch = useDispatch()
 
   const isFormValid = (): boolean => {
@@ -66,13 +66,18 @@ const CreateSecretForm: FC = () => {
   }
 
   const handleDismiss = () => {
-    history.push(`/orgs/${orgId}/settings/secrets`)
+    if (onDismiss) {
+      onDismiss()
+    }
   }
 
   const handleSubmit = () => {
     try {
       event('New Secret Created')
       dispatch(upsertSecret(newSecret))
+      if (onSubmit) {
+        onSubmit(newSecret.id)
+      }
     } finally {
       handleDismiss()
     }
@@ -101,6 +106,7 @@ const CreateSecretForm: FC = () => {
           {status => (
             <Input
               autoFocus={true}
+              testID="input--secret-name"
               name="id"
               titleText="This is how you will reference your secret in Flux"
               value={newSecret.id}
@@ -117,6 +123,7 @@ const CreateSecretForm: FC = () => {
           onChange={handleChangeInput}
           required={true}
           name="value"
+          testID="input--secret-value"
           titleText="This is the value that will be injected by the server when your secret is in use"
           value={newSecret.value}
         />

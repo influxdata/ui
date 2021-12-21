@@ -84,9 +84,7 @@ describe('Annotations, but in a different test suite', () => {
         .invoke('val', EDIT_ANNOTATION_TEXT)
         .focused()
         .type('.')
-        .then(() => {
-          cy.getByTestID('edit-annotation-cancel-button').click()
-        })
+      cy.getByTestID('edit-annotation-cancel-button').click()
 
       cy.getByTestID('annotation-message--form').should('not.exist')
 
@@ -222,54 +220,52 @@ describe('Annotations, but in a different test suite', () => {
         .invoke('val', RANGE_ANNOTATION_TEXT)
         .focused()
         .type('.')
-        .then(() => {
-          // should be of type 'point'
-          cy.getByTestID('annotation-form-point-type-option--input').should(
-            'be.checked'
-          )
+      // should be of type 'point'
+      cy.getByTestID('annotation-form-point-type-option--input').should(
+        'be.checked'
+      )
 
-          // confirm that the 'endTime' input is NOT THERE
-          cy.getByTestID('endTime-testID').should('not.exist')
+      // confirm that the 'endTime' input is NOT THERE
+      cy.getByTestID('endTime-testID').should('not.exist')
 
-          // now: click the button to switch to range:
-          cy.getByTestID('annotation-form-range-type-option')
-            .should($el => {
-              expect($el).not.to.have.class('cf-select-group--option__active')
-              expect(Cypress.dom.isDetached($el)).to.be.false
-              expect($el).to.have.length(1)
-            })
-            .click()
+      // now: click the button to switch to range:
+      cy.getByTestID('annotation-form-range-type-option')
+        .should($el => {
+          expect($el).not.to.have.class('cf-select-group--option__active')
+          expect(Cypress.dom.isDetached($el)).to.be.false
+          expect($el).to.have.length(1)
+        })
+        .click()
 
-          // now, the end time input SHOULD show up
-          cy.getByTestID('endTime-testID').should('be.visible')
+      // now, the end time input SHOULD show up
+      cy.getByTestID('endTime-testID').should('be.visible')
 
-          // at first the two times are equal; check that; then upgrade the time by 10 minutes; and save it
-          cy.getByTestID('startTime-testID')
+      // at first the two times are equal; check that; then upgrade the time by 10 minutes; and save it
+      cy.getByTestID('startTime-testID')
+        .invoke('val')
+        .then(startTimeValue => {
+          cy.getByTestID('endTime-testID')
             .invoke('val')
-            .then(startTimeValue => {
+            .then(endTimeValue => {
+              expect(endTimeValue).to.equal(startTimeValue)
+
+              const newEndTime = moment(endTimeValue, DEFAULT_TIME_FORMAT)
+                .add(10, 'minutes')
+                .format(DEFAULT_TIME_FORMAT)
+
               cy.getByTestID('endTime-testID')
-                .invoke('val')
-                .then(endTimeValue => {
-                  expect(endTimeValue).to.equal(startTimeValue)
+                .click()
+                .focused()
+                .clear()
+                .type(newEndTime)
 
-                  const newEndTime = moment(endTimeValue, DEFAULT_TIME_FORMAT)
-                    .add(10, 'minutes')
-                    .format(DEFAULT_TIME_FORMAT)
-
-                  cy.getByTestID('endTime-testID')
-                    .click()
-                    .focused()
-                    .clear()
-                    .type(newEndTime)
-
-                  cy.getByTestID('annotation-submit-button')
-                    .should($el => {
-                      expect($el).to.have.length(1)
-                      expect(Cypress.dom.isDetached($el)).to.be.false
-                      expect($el).not.to.be.disabled
-                    })
-                    .click()
+              cy.getByTestID('annotation-submit-button')
+                .should($el => {
+                  expect($el).to.have.length(1)
+                  expect(Cypress.dom.isDetached($el)).to.be.false
+                  expect($el).not.to.be.disabled
                 })
+                .click()
             })
         })
 

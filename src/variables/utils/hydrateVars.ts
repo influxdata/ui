@@ -4,7 +4,6 @@ import Deferred from 'src/utils/Deferred'
 import {parseASTIM} from 'src/variables/utils/astim'
 
 // Selectors
-import {asAssignment} from 'src/variables/selectors'
 
 // Constants
 import {OPTION_NAME, BOUNDARY_GROUP} from 'src/variables/constants/index'
@@ -17,7 +16,6 @@ import {
   ValueSelections,
 } from 'src/types'
 import {CancelBox, CancellationError} from 'src/types/promises'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface VariableNode {
   variable: Variable
@@ -94,15 +92,11 @@ const getVarChildren = (
   }: Variable,
   allVariables: Variable[]
 ) => {
-  if (isFlagEnabled('filterExtern')) {
-    const astim = parseASTIM(query)
+  const astim = parseASTIM(query)
 
-    return allVariables.filter(maybeChild => {
-      return astim.hasVariable(maybeChild.name)
-    })
-  } else {
-    return allVariables.filter(maybeChild => isInQuery(query, maybeChild))
-  }
+  return allVariables.filter(maybeChild => {
+    return astim.hasVariable(maybeChild.name)
+  })
 }
 
 /*
@@ -254,15 +248,7 @@ const hydrateVarsHelper = async (
       })
   }
 
-  let descendants, assignments
-  if (isFlagEnabled('filterExtern')) {
-    descendants = collectDescendants(node).map(node => node.variable)
-  } else {
-    descendants = collectDescendants(node)
-    assignments = descendants
-      .map(node => asAssignment(node.variable))
-      .filter(v => !!v)
-  }
+  const descendants = collectDescendants(node).map(node => node.variable)
 
   const {url, orgID} = options
   const {query} = node.variable.arguments.values
@@ -272,7 +258,7 @@ const hydrateVarsHelper = async (
     url,
     orgID,
     query,
-    isFlagEnabled('filterExtern') ? descendants : assignments,
+    descendants,
     null,
     '',
     options.skipCache,
@@ -352,11 +338,13 @@ const invalidateCycles = (graph: VariableNode[]): void => {
 /*
   Given a node, mark all ancestors of that node as `Error`.
 */
-const invalidateAncestors = (node: VariableNode): void => {
+const invalidateAncestors = (node: VariableNode, e: Error, on: any): void => {
   const ancestors = collectAncestors(node)
 
   for (const ancestor of ancestors) {
     ancestor.status = RemoteDataState.Error
+    on.fire('error', ancestor.variable, e)
+
     if (ancestor.variable.arguments.type === 'query') {
       ancestor.variable.arguments.values.results = []
     }
@@ -479,7 +467,8 @@ export const hydrateVars = (
       node.status = RemoteDataState.Error
       node.variable.arguments.values.results = []
 
-      invalidateAncestors(node)
+      on.fire('error', node.variable, e)
+      invalidateAncestors(node, e, on)
     }
   }
 

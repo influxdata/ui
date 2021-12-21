@@ -1,4 +1,5 @@
 import {Organization} from '../../../src/types'
+import {makeGraphSnapshot} from '../../support/commands'
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
@@ -6,22 +7,16 @@ const dashboardName2 = 'test dashboard'
 const dashSearchName = 'bEE'
 
 describe('Dashboards', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() =>
-        cy.fixture('routes').then(({orgs}) => {
-          cy.get<Organization>('@org').then(({id}: Organization) => {
-            cy.visit(`${orgs}/${id}/dashboards-list`)
-            cy.getByTestID('tree-nav')
-            cy.exec('rm cypress/downloads/*', {
-              log: true,
-              failOnNonZeroExit: false,
-            })
-          })
-        })
-      )
-    )
-  )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.fixture('routes').then(({orgs}) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+        cy.visit(`${orgs}/${orgID}/dashboards-list`)
+      })
+    })
+    cy.getByTestID('tree-nav')
+  })
 
   it('empty state should have a header with text and a button to create a dashboard', () => {
     cy.getByTestID('page-contents').within(() => {
@@ -47,22 +42,19 @@ describe('Dashboards', () => {
       cy.getByTestID('add-resource-dropdown--button').click()
     })
 
-    cy.getByTestID('add-resource-dropdown--new')
-      .click()
-      .then(() => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.get<Organization>('@org').then(({id}: Organization) => {
-            cy.on('uncaught:exception', () => {
-              // workaround for when ChunkLoadError is thrown at cy.visit in ffox
-              return false
-            })
-            cy.visit(`${orgs}/${id}/dashboards-list`, {
-              retryOnStatusCodeFailure: true,
-            })
-            cy.getByTestID('tree-nav')
-          })
+    cy.getByTestID('add-resource-dropdown--new').click()
+    cy.fixture('routes').then(({orgs}) => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.on('uncaught:exception', () => {
+          // workaround for when ChunkLoadError is thrown at cy.visit in ffox
+          return false
         })
+        cy.visit(`${orgs}/${id}/dashboards-list`, {
+          retryOnStatusCodeFailure: true,
+        })
+        cy.getByTestID('tree-nav')
       })
+    })
 
     cy.getByTestID('dashboard-card').within(() => {
       cy.getByTestID('dashboard-card--name')
@@ -256,34 +248,63 @@ describe('Dashboards', () => {
     )
   })
 
-  describe('Dashboard List', () => {
-    beforeEach(() =>
+  describe('cloning', () => {
+    const localDashName = 'Happy Dashboard'
+    const labelName = 'bark'
+    const secondLabelName = 'prrr'
+    beforeEach(() => {
+      cy.writeLPDataFromFile({
+        filename: 'data/wumpus01.lp',
+        offset: '20m',
+        stagger: '1m',
+      }).should('equal', 'success')
+
       cy.get<Organization>('@org').then(({id}: Organization) =>
-        cy.createDashboard(id, dashboardName).then(({body}) =>
-          cy
-            .createAndAddLabel('dashboards', id, body.id, newLabelName)
-            .then(() =>
-              cy.createDashboard(id, dashboardName2).then(({body}) =>
+        cy.createDashboard(id, localDashName).then(({body}) => {
+          cy.createAndAddLabel('dashboards', id, body.id, labelName)
+          cy.createLabel(secondLabelName, id, {
+            description: 'I hate mieces',
+            color: '#00ff44',
+          })
+          cy.createCell(body.id).then(cell1Resp => {
+            cy.createMapVariableFromFixture('power_vars', id)
+            cy.createView(body.id, cell1Resp.body.id, 'wumpusDurView')
+            cy.createCell(body.id, {
+              x: 4,
+              y: 0,
+              height: 8,
+              width: 4,
+            }).then(cell2Resp => {
+              cy.createView(body.id, cell2Resp.body.id, 'sampleNote')
+              cy.fixture('routes').then(({orgs}) =>
                 cy
-                  .createAndAddLabel('dashboards', id, body.id, 'bar')
-                  .then(() =>
-                    cy.fixture('routes').then(({orgs}) =>
-                      cy
-                        .get<Organization>('@org')
-                        .then(({id}: Organization) => {
-                          cy.visit(`${orgs}/${id}/dashboards-list`)
-                          return cy.getByTestID('tree-nav')
-                        })
-                    )
-                  )
+                  .get<Organization>('@org', {timeout: 1000})
+                  .then(({id}: Organization) => {
+                    cy.visit(`${orgs}/${id}/dashboards-list`)
+                    cy.getByTestID('tree-nav')
+                  })
               )
-            )
-        )
+            })
+          })
+        })
       )
-    )
+    })
 
     it('can clone a dashboard', () => {
-      cy.getByTestID('dashboard-card').should('have.length', 2)
+      cy.getByTestID('dashboard-card').should('have.length', 1)
+
+      // get graph in original view
+
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
+          cy.getByTestID('dashboard-card--name').click()
+        })
+
+      const viewGraphOrig = makeGraphSnapshot()
+
+      cy.getByTestID('nav-item-dashboards').click()
 
       cy.getByTestID('dashboard-card')
         .first()
@@ -293,14 +314,116 @@ describe('Dashboards', () => {
 
       cy.getByTestID('context-clone-dashboard').click()
 
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
-        })
+      // Verify cloned dashboard contents
+
+      cy.getByTestID('page-title').should(
+        'contain.text',
+        `${localDashName} (clone 1)`
+      )
+      cy.getByTestID('variable-dropdown--Power').should('be.visible')
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').should(
+        'have.value',
+        'base'
+      )
+
+      makeGraphSnapshot().shouldBeSameAs(viewGraphOrig)
+
+      cy.getByTestID('cell--view-empty markdown').should(
+        'contain.text',
+        'The cat went here and there'
+      )
+
+      // Prep verification that changes in clone are not reflected in original,
+      // i.e. that they are fully decoupled
+      // change variable N.B. final assert is waiting on fix for #3287 see below
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').click()
+      cy.getByTestID('variable-dropdown--item')
+        .eq(4)
+        .click()
+      // const viewGraphCopy = makeGraphSnapshot()
+      cy.getByTestID('cell Name this Cell').within(() => {
+        cy.getByTestID('cell-context--toggle').click()
       })
 
-      cy.getByTestID('dashboard-card').should('have.length', 3)
+      const replaceText =
+        '### William Blake\n#### Augeries of Innocense\n\n To see a World in a Grain of Sand\n\nAnd a Heaven in a Wild Flower\n\n...`'
+      cy.getByTestID('cell-context--note').click()
+      cy.getByTestID('markdown-editor')
+        .click()
+        .type('{ctrl}a')
+        .type(replaceText)
+
+      cy.getByTestID('save-note--button').click()
+
+      cy.getByTestID('nav-item-dashboards').click()
+
+      // Verify labels
+      cy.getByTestID('dashboard-card')
+        .eq(1)
+        .within(() => {
+          cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
+          cy.getByTestID('dashboard-card--name').should(
+            'contain',
+            `${localDashName} (clone 1)`
+          )
+          cy.getByTestID('inline-labels--add').click()
+        })
+
+      cy.getByTestID(`label--pill ${secondLabelName}`).click()
+
+      cy.getByTestID('dashboard-card')
+        .eq(1)
+        .within(() => {
+          cy.getByTestID(`label--pill ${secondLabelName}`).should('be.visible')
+          cy.getByTestID(`label--pill--delete ${labelName}`).click()
+          cy.getByTestID(`label--pill ${labelName}`).should('not.exist')
+        })
+
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID(`label--pill ${secondLabelName}`).should('not.exist')
+          cy.getByTestID(`label--pill ${labelName}`).should('exist')
+        })
+
+      // Verify original is decoupled from clone
+      cy.getByTestID('dashboard-card')
+        .first()
+        .within(() => {
+          cy.getByTestID('dashboard-card--name').click()
+        })
+
+      /*
+      // TODO verify graph and variable in original once #3287 is fixed
+      // https://github.com/influxdata/ui/issues/3287
+
+      cy.getByTestID('variable-dropdown-input-typeAhead--Power').should('have.value','base')
+      makeGraphSnapshot().shouldBeSameAs(viewGraphCopy, false)
+
+       */
+      cy.getByTestID('cell--view-empty markdown').should(
+        'contain',
+        'The cat went here and there'
+      )
+    })
+  })
+
+  describe('Dashboard List', () => {
+    beforeEach(() => {
+      cy.get<Organization>('@org').then(({id}: Organization) => {
+        cy.createDashboard(id, dashboardName).then(({body}) => {
+          cy.createAndAddLabel('dashboards', id, body.id, newLabelName)
+          cy.createDashboard(id, dashboardName2).then(({body}) => {
+            cy.createAndAddLabel('dashboards', id, body.id, 'bar')
+          })
+        })
+        cy.fixture('routes').then(({orgs}) =>
+          cy.get<Organization>('@org').then(({id}: Organization) => {
+            cy.visit(`${orgs}/${id}/dashboards-list`)
+            return cy.getByTestID('tree-nav')
+          })
+        )
+      })
     })
 
     it('retains dashboard sort order after navigating away', () => {
@@ -309,29 +432,19 @@ describe('Dashboards', () => {
       cy.getByTestID('dashboard-card').should('have.length', 2)
 
       // change sort order to 'Name (Z → A)'
-      cy.getByTestID('resource-sorter--button')
-        .click()
-        .then(() => {
-          cy.contains('Name (Z → A)').click()
-        })
-        .then(() => {
-          // assert dashboard order is correct
-          cy.get('span[data-testid*="dashboard-card--name"]').each(
-            (val, index) => {
-              cy.wrap(val).contains(expectedDashboardOrder[index])
-            }
-          )
-        })
+      cy.getByTestID('resource-sorter--button').click()
+      cy.contains('Name (Z → A)').click()
+      // assert dashboard order is correct
+      cy.get('span[data-testid*="dashboard-card--name"]').each((val, index) => {
+        cy.wrap(val).contains(expectedDashboardOrder[index])
+      })
 
       // visit another page
-      cy.getByTestID('tree-nav').then(() => {
-        cy.contains('Settings').click({force: true})
-        cy.contains(
-          "Looks like there aren't any Variables, why not create one?"
-        )
-        // return to dashboards page
-        cy.contains('Dashboards').click()
-      })
+      cy.getByTestID('tree-nav')
+      cy.contains('Settings').click({force: true})
+      cy.contains("Looks like there aren't any Variables, why not create one?")
+      // return to dashboards page
+      cy.contains('Dashboards').click()
 
       // assert dashboard order remains the same
       cy.get('span[data-testid*="dashboard-card--name"]').each((val, index) => {
@@ -371,16 +484,15 @@ describe('Dashboards', () => {
         const labelName = 'clicky'
 
         cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.createLabel(labelName, id).then(() => {
-            cy.reload()
-            cy.getByTestID(`inline-labels--add`)
-              .first()
-              .click()
+          cy.createLabel(labelName, id)
+          cy.reload()
+          cy.getByTestID(`inline-labels--add`)
+            .first()
+            .click()
 
-            cy.getByTestID(`label--pill ${labelName}`).click()
+          cy.getByTestID(`label--pill ${labelName}`).click()
 
-            cy.getByTestID(`label--pill bar`).should('be.visible')
-          })
+          cy.getByTestID(`label--pill bar`).should('be.visible')
         })
       })
 
@@ -388,20 +500,19 @@ describe('Dashboards', () => {
         const labelName = 'swogglez'
 
         cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.createLabel(labelName, id).then(() => {
-            cy.reload()
-            cy.getByTestID(`inline-labels--add`)
-              .first()
-              .click()
+          cy.createLabel(labelName, id)
+          cy.reload()
+          cy.getByTestID(`inline-labels--add`)
+            .first()
+            .click()
 
-            cy.getByTestID(`label--pill ${labelName}`).click()
+          cy.getByTestID(`label--pill ${labelName}`).click()
 
-            cy.getByTestID('dashboard-card')
-              .first()
-              .within(() => {
-                cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
-              })
-          })
+          cy.getByTestID('dashboard-card')
+            .first()
+            .within(() => {
+              cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
+            })
         })
       })
 
@@ -409,17 +520,16 @@ describe('Dashboards', () => {
         const labelName = 'banana'
 
         cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.createLabel(labelName, id).then(() => {
-            cy.reload()
-            cy.getByTestID(`inline-labels--add`)
-              .first()
-              .click()
+          cy.createLabel(labelName, id)
+          cy.reload()
+          cy.getByTestID(`inline-labels--add`)
+            .first()
+            .click()
 
-            cy.getByTestID(`inline-labels--popover-field`).type(labelName)
+          cy.getByTestID(`inline-labels--popover-field`).type(labelName)
 
-            cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
-            cy.getByTestID('inline-labels--list').should('have.length', 1)
-          })
+          cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
+          cy.getByTestID('inline-labels--list').should('have.length', 1)
         })
       })
 
@@ -466,6 +576,9 @@ describe('Dashboards', () => {
         cy.getByTestID('inline-labels--create-new').click()
 
         cy.getByTestID('overlay--container').within(() => {
+          cy.getByTestID('label-overlay-form').should(form => {
+            expect(form).to.exist
+          })
           cy.getByTestID('create-label-form--name').should('have.value', label)
           cy.getByTestID('create-label-form--submit').click()
         })
@@ -553,45 +666,56 @@ describe('Dashboards', () => {
     })
   })
 
-  // Skipping until https://github.com/influxdata/ui/issues/2864 is resolved by Bonitoo
-  it.skip('creates a dashboard and downloads JSON', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+  before(() =>
+    cy.exec('rm cypress/downloads/*', {
+      log: true,
+      failOnNonZeroExit: false,
+    })
+  )
+
+  it('creates a dashboard and downloads JSON', () => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-          cy.getByTestID('tree-nav')
-          cy.getByTestID('nav-item-dashboards').click()
-          cy.getByTestID('dashboard-card--name').click()
-          cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name
-          cy.getByTestID('nav-item-dashboards').click()
-          cy.getByTestID('dashboard-card').invoke('hover')
-          cy.getByTestID('context-menu-dashboard').click()
-          cy.getByTestID('context-export-dashboard').click()
-          cy.getByTestID('button').click()
-          // readFile has a 4s timeout before the test fails
-          cy.readFile('cypress/downloads/dashboard.json').should('exist')
         })
       })
     })
+    cy.getByTestID('nav-item-dashboards').click()
+    cy.getByTestID('dashboard-card--name').click()
+    cy.getByTestID('page-title').type('dashboard') // dashboard name added to prevent failure due to downloading JSON with a different name
+    cy.getByTestID('add-note--button').click()
+    cy.getByTestID('note-editor--overlay').should('be.visible')
+    cy.getByTestID('markdown-editor').type('test note added')
+    cy.getByTestID('save-note--button').click() // note added to add content to be downloaded in the JSON file
+    cy.getByTestID('nav-item-dashboards').click()
+    cy.getByTestID('dashboard-card').invoke('hover')
+    cy.getByTestID('context-menu-dashboard').click()
+    cy.getByTestID('context-export-dashboard').click()
+    cy.getByTestID('form-container').should('be.visible')
+    cy.getByTestID('export-overlay--text-area').should('be.visible')
+    cy.getByTestID('button').click()
+    // readFile has a 4s timeout before the test fails
+    cy.readFile('cypress/downloads/dashboard.json').should('not.be.null')
   })
 
   it('copies to clipboard', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-          cy.getByTestID('tree-nav')
-          cy.window().then(win => {
-            cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
-          })
-          cy.getByTestID('nav-item-dashboards').click()
-          cy.getByTestID('dashboard-card').invoke('hover')
-          cy.getByTestID('context-menu-dashboard').click()
-          cy.getByTestID('context-export-dashboard').click()
-          cy.getByTestID('button-copy').click()
-          cy.getByTestID('notification-success--children').should('be.visible')
         })
       })
     })
+    cy.getByTestID('tree-nav')
+    cy.window().then(win => {
+      cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
+    })
+    cy.getByTestID('nav-item-dashboards').click()
+    cy.getByTestID('dashboard-card').invoke('hover')
+    cy.getByTestID('context-menu-dashboard').click()
+    cy.getByTestID('context-export-dashboard').click()
+    cy.getByTestID('button-copy').click()
+    cy.getByTestID('notification-success--children').should('be.visible')
   })
 })

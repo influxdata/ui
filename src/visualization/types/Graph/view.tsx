@@ -10,6 +10,7 @@ import {
   createGroupIDColumn,
   getDomainDataFromLines,
   lineTransform,
+  LineLayerConfig,
 } from '@influxdata/giraffe'
 
 // Components
@@ -50,6 +51,8 @@ import {
 
 // Annotations
 import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
+import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
+import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -179,6 +182,17 @@ const XYPlot: FC<Props> = ({
     return <EmptyGraphMessage message={INVALID_DATA_COPY} />
   }
 
+  let colorMapping = null
+
+  if (isFlagEnabled('graphColorMapping')) {
+    const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
+    const {colorMappingForGiraffe} = getColorMappingObjects(
+      fillColumnMap,
+      properties
+    )
+    colorMapping = colorMappingForGiraffe
+  }
+
   const config: Config = {
     ...currentTheme,
     table: result.table,
@@ -215,6 +229,14 @@ const XYPlot: FC<Props> = ({
         hoverDimension: properties.hoverDimension,
       },
     ],
+  }
+
+  if (isFlagEnabled('graphColorMapping')) {
+    const layer = {...(config.layers[0] as LineLayerConfig)}
+
+    layer.colorMapping = colorMapping
+
+    config.layers[0] = layer
   }
 
   addAnnotationLayer(

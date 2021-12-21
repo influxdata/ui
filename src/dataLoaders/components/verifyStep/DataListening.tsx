@@ -36,9 +36,9 @@ type Props = RouteComponentProps<{orgID: string}> & OwnProps
 
 @ErrorHandling
 class DataListening extends PureComponent<Props, State> {
-  private intervalID: NodeJS.Timer
+  private intervalID: ReturnType<typeof setInterval>
   private startTime: number
-  private timer: NodeJS.Timer
+  private timer: ReturnType<typeof setInterval>
 
   constructor(props) {
     super(props)

@@ -3,9 +3,7 @@ import {FlagMap} from 'src/shared/actions/flags'
 import {CLOUD, CLOUD_BILLING_VISIBLE} from 'src/shared/constants'
 
 export const OSS_FLAGS = {
-  cursorAtEOF: false,
   customCheckQuery: false,
-  demodata: false,
   downloadCellCSV: false,
   fluxParser: false,
   matchingNotificationRules: false,
@@ -18,7 +16,7 @@ export const OSS_FLAGS = {
   'flow-panel--markdown': true,
   'flow-panel--query-builder': true,
   'flow-panel--raw-flux': true,
-  'flow-panel--to-bucket': true,
+  'flow-panel--to-bucket': false,
   'flow-panel--notification': true,
   'flow-panel--schedule': true,
   'flow-panel--remote': false,
@@ -47,14 +45,11 @@ export const OSS_FLAGS = {
   boardWithFlows: false,
   createWithFlows: false,
   leadWithFlows: false,
-  notebooksExp: false,
 }
 
 export const CLOUD_FLAGS = {
   cloudBilling: CLOUD_BILLING_VISIBLE, // should be visible in dev and acceptance, but not in cloud
-  cursorAtEOF: false,
   customCheckQuery: false,
-  demodata: true,
   downloadCellCSV: false,
   fluxParser: false,
   matchingNotificationRules: false,
@@ -67,7 +62,7 @@ export const CLOUD_FLAGS = {
   'flow-panel--markdown': true,
   'flow-panel--query-builder': true,
   'flow-panel--raw-flux': true,
-  'flow-panel--to-bucket': true,
+  'flow-panel--to-bucket': false,
   'flow-panel--notification': true,
   'flow-panel--remote': false,
   'flow-panel--schedule': true,
@@ -96,7 +91,6 @@ export const CLOUD_FLAGS = {
   boardWithFlows: false,
   createWithFlows: false,
   leadWithFlows: false,
-  notebooksExp: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

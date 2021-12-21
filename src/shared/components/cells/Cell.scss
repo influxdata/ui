@@ -85,7 +85,7 @@ $cell--header-button-active-color: $c-pool;
   &,
   &:before,
   &:after {
-    border-radius: $ix-border / 2;
+    border-radius: $ix-border * 0.5;
     background-color: $cell--header-button-color;
     transition: background-color 0.25s ease;
   }

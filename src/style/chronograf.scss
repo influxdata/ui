@@ -39,11 +39,13 @@
 @import 'src/shared/components/ExportOverlay.scss';
 @import 'src/shared/components/EditableName.scss';
 @import 'src/shared/components/DragAndDrop.scss';
+@import 'src/shared/components/NotFound.scss';
 @import 'src/shared/components/SearchableDropdown.scss';
 @import 'src/shared/components/BoxTooltip.scss';
 @import 'src/shared/components/dropdown_auto_refresh/AutoRefreshDropdown.scss';
 @import 'src/shared/components/selectorList/SelectorList.scss';
 @import 'src/shared/components/CodeSnippet.scss';
+@import 'src/shared/components/TagSelectorCount.scss';
 @import 'src/buckets/components/Retention.scss';
 @import 'src/buckets/components/BucketAddDataButton.scss';
 @import 'src/buckets/components/NoBucketsWarning.scss';
@@ -93,7 +95,7 @@
 @import 'src/shared/components/Checkbox.scss';
 @import 'src/shared/components/dapperScrollbars/DapperScrollbars.scss';
 @import 'src/shared/components/search_widget/SearchWidget.scss';
-@import 'src/templates/components/createFromTemplateOverlay/CreateFromTemplateOverlay.scss';
+@import 'src/templates/components/CreateFromTemplateOverlay.scss';
 @import 'src/onboarding/components/SigninForm.scss';
 @import 'src/onboarding/containers/LoginPage.scss';
 @import 'src/shared/components/ThresholdsSettings.scss';
@@ -118,7 +120,6 @@
 @import 'src/alerting/components/SearchBar.scss';
 @import 'src/dashboards/components/DashboardsCardGrid.scss';
 @import 'src/dashboards/components/DashboardLightMode.scss';
-@import 'src/buckets/components/DemoDataDropdown.scss';
 @import 'src/buckets/components/BucketCardMeta.scss';
 @import 'src/cloud/components/RateLimitOverlay.scss';
 @import 'src/cloud/components/experiments/DatalessEmptyState.scss';

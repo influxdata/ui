@@ -15,17 +15,36 @@ import {
   InputToggleType,
 } from '@influxdata/clockface'
 import {PermissionType} from 'src/types/tokens'
+import {ResourceType} from 'src/types'
 
 interface Props {
   resourceName: string
   permissions: any
   onToggle?: (name, id, permission) => void
-  title: string
+  title?: string
   disabled: boolean
 }
 
 export const IndividualAccordionBody: FC<Props> = props => {
   const {resourceName, permissions, onToggle, title, disabled} = props
+  let sortedPermissions
+
+  if (resourceName === ResourceType.Buckets) {
+    // re-order buckets: user buckets first followed by system buckets
+    const systemBuckets = []
+    const userBuckets = []
+
+    permissions.forEach(bucket => {
+      if (bucket.name === '_monitoring' || bucket.name === '_tasks') {
+        systemBuckets.push(bucket)
+      } else {
+        userBuckets.push(bucket)
+      }
+    })
+    sortedPermissions = [...userBuckets, ...systemBuckets]
+  } else {
+    sortedPermissions = [...permissions]
+  }
 
   const handleReadToggle = id => {
     onToggle(resourceName, id, PermissionType.Read)
@@ -75,23 +94,33 @@ export const IndividualAccordionBody: FC<Props> = props => {
     </FlexBox>
   )
 
+  const getAccordionBody = () => {
+    return sortedPermissions.length !== 0 ? (
+      Object.keys(sortedPermissions).map(key => {
+        return (
+          <Accordion.AccordionBodyItem
+            key={sortedPermissions[key].id}
+            className="resource-accordion-body"
+          >
+            {accordionBody(sortedPermissions[key])}
+          </Accordion.AccordionBodyItem>
+        )
+      })
+    ) : (
+      <Accordion.AccordionBodyItem className="resource-accordion-error">
+        {`No ${resourceName} match your search term`}
+      </Accordion.AccordionBodyItem>
+    )
+  }
+
   return (
     <>
-      <Accordion.AccordionBodyItem className="resource-accordion-body">
-        {title}
-      </Accordion.AccordionBodyItem>
-      {permissions
-        ? Object.keys(permissions).map(key => {
-            return (
-              <Accordion.AccordionBodyItem
-                key={permissions[key].id}
-                className="resource-accordion-body"
-              >
-                {accordionBody(permissions[key])}
-              </Accordion.AccordionBodyItem>
-            )
-          })
-        : null}
+      {title ? (
+        <Accordion.AccordionBodyItem className="resource-accordion-body">
+          {title}
+        </Accordion.AccordionBodyItem>
+      ) : null}
+      {permissions ? getAccordionBody() : null}
     </>
   )
 }

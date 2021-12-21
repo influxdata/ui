@@ -3,6 +3,8 @@ import 'intersection-observer'
 import MutationObserver from 'mutation-observer'
 import fetchMock from 'jest-fetch-mock'
 import '@testing-library/jest-dom'
+import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
+import 'setimmediate'
 
 // global vars
 process.env.API_PREFIX = 'http://example.com/'
@@ -24,6 +26,16 @@ window.flushAllPromises = async () => {
 // mocks and stuff
 fetchMock.enableMocks()
 jest.mock('src/shared/utils/errors')
+
+/*
+  N.B. when using react testing library render()
+  the mocked values in src/external/parser are ignored.
+  So, need to mock here as well
+*/
+jest.mock('src/external/parser', () => ({
+  parse: jest.fn(getMockedParse()),
+  format_from_js_file: jest.fn(),
+}))
 
 // cleans up state between @testing-library/react tests
 afterEach(() => {

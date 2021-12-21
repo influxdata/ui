@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {createRef, PureComponent, RefObject} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
@@ -21,13 +21,15 @@ import {
   FlexDirection,
   JustifyContent,
   ComponentColor,
-  Button,
   ResourceCard,
   IconFont,
   ButtonShape,
+  Appearance,
+  ConfirmationButton,
+  List,
+  Popover,
+  SquareButton,
 } from '@influxdata/clockface'
-
-import {Context} from 'src/clockface'
 
 // Types
 import {Authorization, AppState} from 'src/types'
@@ -38,6 +40,7 @@ import {
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {incrementCloneName} from 'src/utils/naming'
+import {event} from 'src/cloud/utils/reporting'
 
 interface OwnProps {
   auth: Authorization
@@ -54,9 +57,11 @@ class TokensRow extends PureComponent<Props> {
     const {description} = this.props.auth
     const {auth} = this.props
     const date = new Date(auth.createdAt)
+
     return (
       <ResourceCard
         contextMenu={this.contextMenu}
+        disabled={!this.isTokenActive}
         testID={`token-card ${auth.description}`}
         direction={FlexDirection.Row}
         justifyContent={JustifyContent.SpaceBetween}
@@ -86,34 +91,52 @@ class TokensRow extends PureComponent<Props> {
   }
 
   private get contextMenu(): JSX.Element {
-    return (
-      <Context>
-        <FlexBox margin={ComponentSize.Medium}>
-          <Button
-            icon={IconFont.Duplicate}
-            color={ComponentColor.Secondary}
-            text="Clone"
-            onClick={this.handleClone}
-            testID="clone-token"
-            size={ComponentSize.ExtraSmall}
-          />
+    const settingsRef: RefObject<HTMLButtonElement> = createRef()
 
-          <Context.Menu
-            icon={IconFont.Trash_New}
-            color={ComponentColor.Danger}
-            text="Delete"
-            shape={ButtonShape.StretchToFit}
-            size={ComponentSize.ExtraSmall}
-          >
-            <Context.Item
-              label="Confirm"
-              action={this.handleDelete}
-              testID="delete-token"
-            />
-          </Context.Menu>
-        </FlexBox>
-      </Context>
+    return (
+      <FlexBox margin={ComponentSize.ExtraSmall}>
+        <ConfirmationButton
+          color={ComponentColor.Colorless}
+          icon={IconFont.Trash_New}
+          shape={ButtonShape.Square}
+          size={ComponentSize.ExtraSmall}
+          confirmationLabel="Yes, delete this token"
+          onConfirm={this.handleDelete}
+          confirmationButtonText="Confirm"
+          testID="context-delete-menu"
+        />
+        <SquareButton
+          ref={settingsRef}
+          size={ComponentSize.ExtraSmall}
+          icon={IconFont.CogSolid_New}
+          color={ComponentColor.Colorless}
+          testID="context-menu-token"
+        />
+        <Popover
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          style={{minWidth: '112px'}}
+          contents={() => (
+            <List>
+              <List.Item
+                onClick={this.handleClone}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-clone-token"
+              >
+                Clone
+              </List.Item>
+            </List>
+          )}
+          triggerRef={settingsRef}
+        />
+      </FlexBox>
     )
+  }
+
+  private get isTokenActive(): boolean {
+    const {auth} = this.props
+    return auth.status === 'active'
   }
 
   private handleDelete = () => {
@@ -121,28 +144,37 @@ class TokensRow extends PureComponent<Props> {
     this.props.deleteAuthorization(id, description)
   }
 
-  private handleClone = () => {
+  private handleClone = async () => {
     const {description} = this.props.auth
-
     const allTokenDescriptions = Object.values(this.props.authorizations).map(
       auth => auth.description
     )
 
-    this.props.createAuthorization({
-      ...this.props.auth,
-      description: incrementCloneName(allTokenDescriptions, description),
-    })
-    this.props.showOverlay('access-token', null, () => dismissOverlay())
+    try {
+      await this.props.createAuthorization({
+        ...this.props.auth,
+        description: incrementCloneName(allTokenDescriptions, description),
+      })
+      event('token.clone.success', {id: this.props.auth.id, name: description})
+      this.props.showOverlay('access-token', null, () => dismissOverlay())
+    } catch {
+      event('token.clone.failure', {id: this.props.auth.id, name: description})
+    }
   }
 
   private handleClickDescription = () => {
     const {onClickDescription, auth} = this.props
+    event('token_row.edit_overlay.opened')
     onClickDescription(auth.id)
   }
 
   private handleUpdateName = (value: string) => {
     const {auth, updateAuthorization} = this.props
     updateAuthorization({...auth, description: value})
+    event('token.desciption.edited', {
+      id: this.props.auth.id,
+      description: value,
+    })
   }
 }
 

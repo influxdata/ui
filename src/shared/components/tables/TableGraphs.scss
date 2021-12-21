@@ -139,7 +139,7 @@ $table-light-graph--border: $cf-grey-85;
   background-color: $table-graph--cell;
   font-weight: 500;
   color: $table-graph--text-color;
-  border: ($cf-border / 2) solid $table-graph--border;
+  border: ($cf-border * 0.5) solid $table-graph--border;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

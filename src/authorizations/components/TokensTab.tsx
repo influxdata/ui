@@ -5,13 +5,25 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {isEmpty} from 'lodash'
 
 // Components
-import {Sort, ComponentSize, EmptyState} from '@influxdata/clockface'
+import {
+  Sort,
+  ComponentSize,
+  EmptyState,
+  BannerPanel,
+  FlexBox,
+  FlexDirection,
+  AlignItems,
+  Gradients,
+  IconFont,
+  InfluxColors,
+} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/components/TokenList'
 import FilterList from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
+import TokensRedesignBanner from 'src/authorizations/components/TokensRedesignBanner'
 
 // Types
 import {AppState, Authorization, ResourceType} from 'src/types'
@@ -81,27 +93,42 @@ class TokensTab extends PureComponent<Props, State> {
 
     return (
       <>
-        <TabbedPageHeader
-          childrenLeft={leftHeaderItems}
-          childrenRight={rightHeaderItems}
-        />
-        <FilterAuthorizations
-          list={tokens}
-          searchTerm={searchTerm}
-          searchKeys={this.searchKeys}
+        <FlexBox
+          direction={FlexDirection.Column}
+          alignItems={AlignItems.Center}
+          margin={ComponentSize.Large}
         >
-          {filteredAuths => (
-            <TokenList
-              auths={filteredAuths}
-              emptyState={this.emptyState}
-              searchTerm={searchTerm}
-              sortKey={sortKey}
-              sortDirection={sortDirection}
-              sortType={sortType}
-              onClickColumn={this.handleClickColumn}
-            />
-          )}
-        </FilterAuthorizations>
+          <BannerPanel
+            size={ComponentSize.ExtraSmall}
+            gradient={Gradients.PolarExpress}
+            icon={IconFont.Bell}
+            hideMobileIcon={true}
+            textColor={InfluxColors.Yeti}
+          >
+            <TokensRedesignBanner />
+          </BannerPanel>
+          <TabbedPageHeader
+            childrenLeft={leftHeaderItems}
+            childrenRight={rightHeaderItems}
+          />
+          <FilterAuthorizations
+            list={tokens}
+            searchTerm={searchTerm}
+            searchKeys={this.searchKeys}
+          >
+            {filteredAuths => (
+              <TokenList
+                auths={filteredAuths}
+                emptyState={this.emptyState}
+                searchTerm={searchTerm}
+                sortKey={sortKey}
+                sortDirection={sortDirection}
+                sortType={sortType}
+                onClickColumn={this.handleClickColumn}
+              />
+            )}
+          </FilterAuthorizations>
+        </FlexBox>
       </>
     )
   }

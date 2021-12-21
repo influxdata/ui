@@ -428,6 +428,12 @@ export const getVariableFailed = (): Notification => ({
   message: 'Failed to fetch variable',
 })
 
+export const getVariableFailedWithMessage = (name, message): Notification => ({
+  ...defaultErrorNotification,
+  duration: INDEFINITE,
+  message: `Failed to fetch variable ${name}: ${message}`,
+})
+
 export const createVariableFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.Cube,
@@ -603,45 +609,6 @@ export const getSchemaFailed = (
 ): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to fetch schema for bucket with id ${bucketName}: ${error}`,
-})
-
-// Demodata buckets
-
-export const demoDataAddBucketFailed = (
-  bucketName: string,
-  message: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Could not create dashboard for demodata bucket ${bucketName}: ${message}`,
-})
-
-export const demoDataDeleteBucketFailed = (
-  bucketName: string,
-  error: string
-): Notification => ({
-  ...defaultErrorNotification,
-  message: `Failed to delete demo data bucket: ${bucketName}: ${error}`,
-})
-
-export const demoDataSucceeded = (
-  bucketName: string,
-  buttonElement: NotificationButtonElement
-): Notification => ({
-  ...defaultSuccessNotification,
-  message: `Successfully added demodata bucket ${bucketName}, and demodata dashboard.`,
-  duration: FIFTEEN_SECONDS,
-  buttonElement,
-})
-
-export const demoDataAvailability = (
-  message: string,
-  buttonElement?: NotificationButtonElement
-): Notification => ({
-  ...defaultErrorNotification,
-  message,
-  buttonElement,
-  duration: TEN_SECONDS,
-  type: 'demoDataAvailabilityError',
 })
 
 export const updateAggregateType = (
@@ -1243,20 +1210,14 @@ export const editNotificationRuleCodeWarning = (): Notification => ({
 
 // Notebooks
 
-export const notebookRunSuccess = (
-  runMode: string,
-  projectName: string
-): Notification => ({
+export const notebookRunSuccess = (projectName: string): Notification => ({
   ...defaultSuccessNotification,
-  message: `${projectName} ${runMode.toLowerCase()} successful!`,
+  message: `${projectName} run successful!`,
 })
 
-export const notebookRunFail = (
-  runMode: string,
-  projectName: string
-): Notification => ({
+export const notebookRunFail = (projectName: string): Notification => ({
   ...defaultErrorNotification,
-  message: `${projectName} ${runMode.toLowerCase()} failed`,
+  message: `${projectName} run failed`,
 })
 
 export const notebookCreateFail = (): Notification => ({
@@ -1272,6 +1233,11 @@ export const notebookUpdateFail = (): Notification => ({
 export const notebookDeleteFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to delete Notebook, please try again.`,
+})
+
+export const notebookDeleteSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Notebook was deleted successfully',
 })
 
 export const csvUploaderErrorNotification = (

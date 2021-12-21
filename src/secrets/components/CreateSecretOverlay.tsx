@@ -17,17 +17,21 @@ const CreateSecretOverlay: FC = () => {
   const history = useHistory()
   const orgId = useSelector(getOrg).id
 
+  const onDismiss = () => {
+    history.push(`/orgs/${orgId}/settings/secrets`)
+  }
+
   return (
     <Overlay visible={true}>
       <Overlay.Container maxWidth={750}>
         <Overlay.Header
           title="Add Secret"
-          onDismiss={() => history.push(`/orgs/${orgId}/settings/secrets`)}
+          onDismiss={onDismiss}
           testID="modify-secret-overlay-header"
         />
         <GetResources resources={[ResourceType.Secrets]}>
           <ErrorBoundary>
-            <CreateSecretForm />
+            <CreateSecretForm onDismiss={onDismiss} />
           </ErrorBoundary>
         </GetResources>
       </Overlay.Container>

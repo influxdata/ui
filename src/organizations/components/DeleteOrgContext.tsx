@@ -17,6 +17,7 @@ export enum VariableItems {
   RE_SIGNUP = 'I want to sign up for a new account using a marketplace option',
   OTHER_REASON = 'Other reason',
 }
+
 export interface DeleteOrgContextType {
   shortSuggestion: string
   isShortSuggestionEnabled: boolean
@@ -26,6 +27,7 @@ export interface DeleteOrgContextType {
   setSuggestions: (_: string) => void
   reason: string
   setReason: (_: string) => void
+  getRedirectLocation: () => string
 }
 
 export const DEFAULT_DELETE_ORG_CONTEXT: DeleteOrgContextType = {
@@ -37,7 +39,14 @@ export const DEFAULT_DELETE_ORG_CONTEXT: DeleteOrgContextType = {
   setSuggestions: (_: string) => null,
   reason: 'NO_OPTION',
   setReason: (_: string) => null,
+  getRedirectLocation: () => DEFAULT_REDIRECT_LOCATION,
 }
+
+const RedirectLocations = {
+  SWITCHING_ORGANIZATION: '/org_cancel',
+  RE_SIGNUP: '/cancel',
+}
+const DEFAULT_REDIRECT_LOCATION = '/mkt_cancel'
 
 export const DeleteOrgContext = createContext<DeleteOrgContextType>(
   DEFAULT_DELETE_ORG_CONTEXT
@@ -55,6 +64,12 @@ const DeleteOrgProvider: FC<Props> = ({children}) => {
   )
   const [reason, setReason] = useState(DEFAULT_DELETE_ORG_CONTEXT.reason)
 
+  const getRedirectLocation = () => {
+    const uri = RedirectLocations[reason] ?? '/mkt_cancel'
+
+    return `https://www.influxdata.com${uri}`
+  }
+
   return (
     <DeleteOrgContext.Provider
       value={{
@@ -66,6 +81,7 @@ const DeleteOrgProvider: FC<Props> = ({children}) => {
         setSuggestions,
         reason,
         setReason,
+        getRedirectLocation,
       }}
     >
       {children}

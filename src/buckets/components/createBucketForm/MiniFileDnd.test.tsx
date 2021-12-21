@@ -1,11 +1,15 @@
 import React from 'react'
 import {renderWithRedux} from 'src/mockState'
-import {MiniFileDnd, setGrammar} from './MiniFileDnd'
+import {DownloadTypes, MiniFileDnd, setGrammar} from './MiniFileDnd'
 
 const setup = (
   allowedExtensions: string,
   allowedTypes: string[],
-  handleFileUpload: (contents: string, fileName: string) => void,
+  handleFileUpload: (
+    contents: string,
+    fileType: DownloadTypes,
+    fileName: string
+  ) => void,
   setErrorState: (hasError: boolean, message?: string) => void,
   alreadySetFileName?: string
 ) => {
@@ -21,8 +25,9 @@ const setup = (
 }
 
 const mockSetErrorState = jest.fn((hasError, message) => ({hasError, message}))
-const mockHandleFileUpload = jest.fn((contents, fileName) => ({
+const mockHandleFileUpload = jest.fn((contents, isCsv, fileName) => ({
   contents,
+  isCsv,
   fileName,
 }))
 
@@ -76,7 +81,6 @@ describe('mini file uploader, testing rendering and behavior', () => {
     expect(displayArea).toHaveTextContent(fileName)
   })
 })
-
 describe('test grammar function for error messages', () => {
   it('should have correct grammar for one element', () => {
     const foo1 = ['ack']

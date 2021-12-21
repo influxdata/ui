@@ -13,7 +13,7 @@
   }
 
   .minimap {
-    border-left: 2px solid #25252e;
+    border-left: 2px solid #4d4d60;
 
     .minimap-slider {
       background: rgba(53, 54, 64, 0.4);
@@ -37,10 +37,6 @@
 
   .scroll-decoration {
     box-shadow: #1b1b1b 0 6px 6px -6px inset;
-  }
-
-  .margin {
-    background: #25252e;
   }
 
   .current-line ~ .line-numbers {

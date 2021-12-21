@@ -7,9 +7,10 @@ import React, {
   useState,
   lazy,
   Suspense,
+  useEffect,
 } from 'react'
-import {useDispatch} from 'react-redux'
-import {parse, format_from_js_file} from '@influxdata/flux'
+import {useDispatch, useSelector} from 'react-redux'
+import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 import {
   ComponentStatus,
   Form,
@@ -37,7 +38,10 @@ import Threshold, {
   deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Notification/Threshold'
-import {ENDPOINT_DEFINITIONS} from 'src/flows/pipes/Notification/endpoints'
+import {
+  ENDPOINT_DEFINITIONS,
+  ENDPOINT_ORDER,
+} from 'src/flows/pipes/Notification/endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 import {SidebarContext} from 'src/flows/context/sidebar'
 const NotificationMonacoEditor = lazy(() =>
@@ -56,12 +60,15 @@ import {
   testNotificationFailure,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getSecrets} from 'src/secrets/actions/thunks'
+import {getAllSecrets} from 'src/resources/selectors'
 
 // Styles
 import 'src/flows/pipes/Notification/styles.scss'
 
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
+import CreateSecretForm from 'src/secrets/components/CreateSecretForm'
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
@@ -72,8 +79,22 @@ const Notification: FC<PipeProp> = ({Context}) => {
     RemoteDataState.NotStarted
   )
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
+
   let intervalError = ''
   let offsetError = ''
+
+  useEffect(() => {
+    dispatch(getSecrets())
+  }, [])
+
+  const createSecret = (callback: (id: string) => void) => {
+    if (showId !== id) {
+      show(id)
+      showSub(<CreateSecretForm onDismiss={hideSub} onSubmit={callback} />)
+    }
+  }
+
+  const secrets = useSelector(getAllSecrets)
 
   if (!data.interval) {
     intervalError = 'Required'
@@ -103,7 +124,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     return 'No Data Returned'
   }, [loading])
 
-  const queryText = getPanelQueries(id, true)?.source
+  const queryText = getPanelQueries(id)?.source
   const hasTaskOption = useMemo(
     () =>
       !!Object.keys(
@@ -217,16 +238,25 @@ const Notification: FC<PipeProp> = ({Context}) => {
     )
   }, [hasTaskOption])
 
-  const avail = Object.keys(ENDPOINT_DEFINITIONS).map(k => (
-    <Dropdown.Item
-      key={k}
-      id={k}
-      onClick={() => updateEndpoint(k)}
-      selected={data.endpoint === k}
-    >
-      {ENDPOINT_DEFINITIONS[k].name}
-    </Dropdown.Item>
-  ))
+  const avail = Object.keys(ENDPOINT_DEFINITIONS)
+    .filter(
+      k =>
+        // show endpoints without feature flags or that have their flags enabled
+        !ENDPOINT_DEFINITIONS[k].featureFlag ||
+        isFlagEnabled(ENDPOINT_DEFINITIONS[k].featureFlag)
+    )
+    .sort((a, b) => ENDPOINT_ORDER.indexOf(a) - ENDPOINT_ORDER.indexOf(b))
+    .map(k => (
+      <Dropdown.Item
+        key={k}
+        id={k}
+        testID={`dropdown-item--${k}`}
+        onClick={() => updateEndpoint(k)}
+        selected={data.endpoint === k}
+      >
+        {ENDPOINT_DEFINITIONS[k].name}
+      </Dropdown.Item>
+    ))
 
   const generateDeadmanTask = useCallback(() => {
     // simplify takes care of all the variable nonsense in the query
@@ -583,21 +613,19 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                     alignItems={AlignItems.FlexEnd}
                     margin={ComponentSize.Medium}
                   >
-                    {isFlagEnabled('notebooksExp') && (
-                      <FlexBox.Child grow={0} shrink={0}>
-                        <Button
-                          text="${exp}"
-                          onClick={launcher}
-                          color={ComponentColor.Secondary}
-                          testID="notification-exp-button"
-                          status={
-                            editorInstance
-                              ? ComponentStatus.Default
-                              : ComponentStatus.Loading
-                          }
-                        />
-                      </FlexBox.Child>
-                    )}
+                    <FlexBox.Child grow={0} shrink={0}>
+                      <Button
+                        text="${exp}"
+                        onClick={launcher}
+                        color={ComponentColor.Secondary}
+                        testID="notification-exp-button"
+                        status={
+                          editorInstance
+                            ? ComponentStatus.Default
+                            : ComponentStatus.Loading
+                        }
+                      />
+                    </FlexBox.Child>
                     <FlexBox.Child grow={0} shrink={0}>
                       <Button
                         text="Test Alert"
@@ -620,7 +648,10 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                       label="Endpoint"
                       className="endpoint-dropdown--element"
                     >
-                      <Dropdown.Menu className="flows-endpoints--dropdown">
+                      <Dropdown.Menu
+                        className="flows-endpoints--dropdown"
+                        maxHeight={500}
+                      >
                         {avail}
                       </Dropdown.Menu>
                     </Form.Element>
@@ -630,7 +661,13 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                         className="endpoint-details--element"
                       >
                         {React.createElement(
-                          ENDPOINT_DEFINITIONS[data.endpoint].component
+                          ENDPOINT_DEFINITIONS[data.endpoint].component,
+                          {
+                            createSecret,
+                            secrets: secrets.sort((a, b) =>
+                              a.id.localeCompare(b.id)
+                            ),
+                          }
                         )}
                       </Form.Element>
                     </FlexBox.Child>

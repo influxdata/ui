@@ -68,6 +68,19 @@ export const loginViaDexUI = (username: string, password: string) => {
   cy.get('.theme-btn--success').click()
 }
 
+Cypress.Commands.add(
+  'monacoType',
+  {prevSubject: true},
+  (subject, text: string) => {
+    return cy.wrap(subject).within(() => {
+      cy.get('.monaco-editor .view-line:last')
+        .click({force: true})
+        .focused()
+        .type(text, {force: true, delay: 10})
+    })
+  }
+)
+
 // login via the purple OSS screen by typing in username/password
 // this is only used if you're using monitor-ci + DEV_MODE_CLOUD=0
 export const loginViaOSS = (username: string, password: string) => {
@@ -227,9 +240,10 @@ export const createCell = (
 
 export const createView = (
   dbID: string,
-  cellID: string
+  cellID: string,
+  viewFile = 'view'
 ): Cypress.Chainable<Cypress.Response<any>> => {
-  return cy.fixture('view').then(view => {
+  return cy.fixture(viewFile).then(view => {
     return cy.request({
       method: 'PATCH',
       url: `/api/v2/dashboards/${dbID}/cells/${cellID}/view`,
@@ -395,6 +409,20 @@ export const createMapVariable = (
       orgID,
       arguments: argumentsObj,
     },
+  })
+}
+
+export const createMapVariableFromFixture = (
+  fixName: string,
+  orgID?: string
+): Cypress.Chainable<Cypress.Response<any>> => {
+  return cy.fixture(fixName).then(varBody => {
+    varBody.orgID = orgID
+    return cy.request({
+      method: 'POST',
+      url: '/api/v2/variables',
+      body: varBody,
+    })
   })
 }
 
@@ -971,12 +999,7 @@ export const createTaskFromEmpty = (
     .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
-    cy.getByTestID('flux-editor').within(() => {
-      cy.get('textarea.inputarea')
-        .click({force: true})
-        .focused()
-        .type(flux(bucket), {force: true, delay: 2})
-    })
+    cy.getByTestID('flux-editor').monacoType(flux(bucket))
   })
 
   cy.getByInputName('name').type(name)
@@ -1054,6 +1077,10 @@ Cypress.Commands.add('createToken', createToken)
 Cypress.Commands.add('createQueryVariable', createQueryVariable)
 Cypress.Commands.add('createCSVVariable', createCSVVariable)
 Cypress.Commands.add('createMapVariable', createMapVariable)
+Cypress.Commands.add(
+  'createMapVariableFromFixture',
+  createMapVariableFromFixture
+)
 
 // labels
 Cypress.Commands.add('createLabel', createLabel)

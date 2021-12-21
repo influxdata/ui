@@ -3,9 +3,8 @@ describe('Orgs', () => {
 
   describe('updating and switching orgs', () => {
     beforeEach(() => {
-      cy.signin().then(() => {
-        cy.visit('/')
-      })
+      cy.signin()
+      cy.visit('/')
     })
 
     it('should be able to rename the org', () => {

@@ -19,7 +19,6 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {RuleType} from 'src/buckets/reducers/createBucket'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
 import {
@@ -138,7 +137,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       : null
 
     const makeAdvancedSection = () => {
-      if (isFlagEnabled('measurementSchema') && CLOUD) {
+      if (CLOUD) {
         let schemaToggle = (
           <SchemaToggle onChangeSchemaType={this.onChangeSchemaTypeInternal} />
         )
@@ -164,7 +163,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
             <Accordion.AccordionHeader>
               <span>Advanced Configuration (Optional)</span>
             </Accordion.AccordionHeader>
-            <Accordion.AccordionBodyItem>
+            <Accordion.AccordionBodyItem testID="accordion--advanced-section">
               <div>{contents}</div>
             </Accordion.AccordionBodyItem>
           </Accordion>

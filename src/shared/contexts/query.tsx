@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {v4 as UUID} from 'uuid'
-import {parse, format_from_js_file} from '@influxdata/flux'
+import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
@@ -12,7 +12,6 @@ import {
   FluxResult,
   QueryScope,
   InternalFromFluxResult,
-  VariableMap,
   Column,
 } from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
@@ -23,11 +22,6 @@ import {
   RATE_LIMIT_ERROR_STATUS,
   RATE_LIMIT_ERROR_TEXT,
 } from 'src/cloud/constants'
-import {
-  TIME_RANGE_START,
-  TIME_RANGE_STOP,
-  WINDOW_PERIOD,
-} from 'src/variables/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
@@ -35,9 +29,6 @@ import {
   AppState,
   ResourceType,
   RemoteDataState,
-  OptionStatement,
-  VariableAssignment,
-  ObjectExpression,
   CancellationError,
   File,
 } from 'src/types'
@@ -121,38 +112,6 @@ export const remove = (node: File, test, acc = []) => {
   return acc
 }
 
-const _getVars = (
-  ast,
-  allVars: VariableMap = {},
-  acc: VariableMap = {}
-): VariableMap =>
-  find(
-    ast,
-    node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
-  )
-    .map(node => node.property.name)
-    .reduce((tot, curr) => {
-      if (tot.hasOwnProperty(curr)) {
-        return tot
-      }
-
-      if (!allVars[curr]) {
-        tot[curr] = null
-        return tot
-      }
-      tot[curr] = allVars[curr]
-
-      if (tot[curr].arguments.type === 'query') {
-        if (isFlagEnabled('fastFlows')) {
-          _getVars(parseQuery(tot[curr].arguments.values.query), allVars, tot)
-        } else {
-          _getVars(parse(tot[curr].arguments.values.query), allVars, tot)
-        }
-      }
-
-      return tot
-    }, acc)
-
 const _addWindowPeriod = (ast, optionAST): void => {
   const queryRanges = find(
     ast,
@@ -178,22 +137,21 @@ const _addWindowPeriod = (ast, optionAST): void => {
     )
   )
 
+  const windowPeriod = find(
+    optionAST,
+    node => node?.type === 'Property' && node?.key?.name === 'windowPeriod'
+  )
   if (!queryRanges.length) {
-    ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-      .init as ObjectExpression).properties.push({
-      type: 'Property',
-      key: {
-        type: 'Identifier',
-        name: 'windowPeriod',
-      },
-      value: {
+    windowPeriod.forEach(node => {
+      node.value = {
         type: 'DurationLiteral',
         values: [{magnitude: FALLBACK_WINDOW_PERIOD, unit: 'ms'}],
-      },
+      }
     })
 
     return
   }
+
   const starts = queryRanges.map(t => t.start)
   const stops = queryRanges.map(t => t.stop)
   const cartesianProduct = starts.map(start => stops.map(stop => [start, stop]))
@@ -209,29 +167,18 @@ const _addWindowPeriod = (ast, optionAST): void => {
   )
 
   if (foundDuration) {
-    ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-      .init as ObjectExpression).properties.push({
-      type: 'Property',
-      key: {
-        type: 'Identifier',
-        name: 'windowPeriod',
-      },
-      value: {
+    windowPeriod.forEach(node => {
+      node.value = {
         type: 'DurationLiteral',
         values: [{magnitude: foundDuration.windowPeriod, unit: 'ms'}],
-      },
+      }
     })
 
     return
   }
-  ;(((optionAST.body[0] as OptionStatement).assignment as VariableAssignment) // eslint-disable-line no-extra-semi
-    .init as ObjectExpression).properties.push({
-    type: 'Property',
-    key: {
-      type: 'Identifier',
-      name: 'windowPeriod',
-    },
-    value: {
+
+  windowPeriod.forEach(node => {
+    node.value = {
       type: 'DurationLiteral',
       values: [
         {
@@ -239,89 +186,22 @@ const _addWindowPeriod = (ast, optionAST): void => {
           unit: 'ms',
         },
       ],
-    },
+    }
   })
 }
 
-export const simplify = (text, vars: VariableMap = {}) => {
+export const simplify = (text, vars = {}) => {
   try {
     const ast = isFlagEnabled('fastFlows') ? parseQuery(text) : parse(text)
-    const usedVars = _getVars(ast, vars)
-
-    // Grab all global variables and turn them into a hashmap
-    // TODO: move off this variable junk and just use strings
-    const globalDefinedVars = Object.values(usedVars).reduce((acc, v) => {
-      let _val
-
-      if (!v) {
+    const referencedVars = find(
+      ast,
+      node => node?.type === 'MemberExpression' && node?.object?.name === 'v'
+    )
+      .map(node => node.property.name)
+      .reduce((acc, curr) => {
+        acc[curr] = vars[curr]
         return acc
-      }
-
-      if (v.id === WINDOW_PERIOD) {
-        acc[v.id] = (v.arguments?.values || [10000])[0] + 'ms'
-
-        return acc
-      }
-
-      if (v.id === TIME_RANGE_START || v.id === TIME_RANGE_STOP) {
-        const val = v.arguments.values[0]
-
-        if (!isNaN(Date.parse(val))) {
-          acc[v.id] = new Date(val).toISOString()
-          return acc
-        }
-
-        if (typeof val === 'string') {
-          if (val) {
-            acc[v.id] = val
-          }
-
-          return acc
-        }
-
-        _val = '-' + val[0].magnitude + val[0].unit
-
-        if (_val !== '-') {
-          acc[v.id] = _val
-        }
-
-        return acc
-      }
-
-      if (v.arguments.type === 'map') {
-        _val =
-          v.arguments.values[
-            v.selected ? v.selected[0] : Object.keys(v.arguments.values)[0]
-          ]
-
-        if (_val) {
-          acc[v.id] = _val
-        }
-
-        return acc
-      }
-
-      if (v.arguments.type === 'constant') {
-        _val = v.selected ? v.selected[0] : v.arguments.values[0]
-
-        if (_val) {
-          acc[v.id] = _val
-        }
-
-        return acc
-      }
-
-      if (v.arguments.type === 'query') {
-        if (!v.selected || !v.selected[0]) {
-          return
-        }
-
-        acc[v.id] = v.selected[0]
-        return acc
-      }
-
-      return acc
-    }, {})
+      }, {})
 
     // Grab all variables that are defined in the query while removing the old definition from the AST
     const queryDefinedVars = remove(
@@ -342,19 +222,13 @@ export const simplify = (text, vars: VariableMap = {}) => {
 
     // Merge the two variable maps, allowing for any user defined variables to override
     // global system variables
-    const joinedVars = Object.keys(usedVars).reduce((acc, curr) => {
-      if (globalDefinedVars.hasOwnProperty(curr)) {
-        acc[curr] = globalDefinedVars[curr]
+    Object.keys(queryDefinedVars).forEach(vari => {
+      if (referencedVars.hasOwnProperty(vari)) {
+        referencedVars[vari] = queryDefinedVars[vari]
       }
+    })
 
-      if (queryDefinedVars.hasOwnProperty(curr)) {
-        acc[curr] = queryDefinedVars[curr]
-      }
-
-      return acc
-    }, {})
-
-    const varVals = Object.entries(joinedVars)
+    const varVals = Object.entries(referencedVars)
       .map(([k, v]) => `${k}: ${v}`)
       .join(',\n')
     const optionAST = isFlagEnabled('fastFlows')
@@ -363,6 +237,11 @@ export const simplify = (text, vars: VariableMap = {}) => {
 
     if (varVals.length) {
       ast.body.unshift(optionAST.body[0])
+    }
+
+    // load in windowPeriod at the last second, because it needs to self reference all the things
+    if (referencedVars.hasOwnProperty('windowPeriod')) {
+      _addWindowPeriod(ast, optionAST)
     }
 
     // Join together any duplicate task options
@@ -393,11 +272,6 @@ export const simplify = (text, vars: VariableMap = {}) => {
         ? parseQuery(`option task = {\n${taskVals}\n}\n`)
         : parse(`option task = {\n${taskVals}\n}\n`)
       ast.body.unshift(taskAST.body[0])
-    }
-
-    // load in windowPeriod at the last second, because it needs to self reference all the things
-    if (usedVars.hasOwnProperty('windowPeriod')) {
-      _addWindowPeriod(ast, optionAST)
     }
 
     // turn it back into a query

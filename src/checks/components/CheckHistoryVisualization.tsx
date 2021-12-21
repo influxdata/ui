@@ -6,7 +6,7 @@ import TimeSeries from 'src/shared/components/TimeSeries'
 import {View, SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 import {CheckContext} from 'src/checks/utils/context'
 import SimpleTable from 'src/visualization/types/SimpleTable/view'
-import {SimpleTableViewProperties} from 'src/visualization/types/SimpleTable'
+import {SimpleTableViewProperties} from 'src/types'
 
 const CheckHistoryVisualization: FC = () => {
   // NOTE: this is lazy, but i'm hoping we get rid of checks pretty soon

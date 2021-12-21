@@ -9,12 +9,11 @@ import PageSpinner from 'src/perf/components/PageSpinner'
 import {
   MePage,
   TasksPage,
-  TasksPagePaginated,
   TaskPage,
   TaskRunsPage,
-  TaskRunsPagePaginated,
   TaskEditPage,
   DashboardsIndex,
+  DashboardsIndexPaginated,
   DataExplorerPage,
   DashboardContainer,
   FlowPage,
@@ -156,36 +155,27 @@ const SetOrg: FC = () => {
           <Route path={`${orgPath}/checks/:checkID`} component={CheckHistory} />
 
           {/* Tasks */}
-          {isFlagEnabled('paginatedTasks') ? (
-            <Route
-              path={`${orgPath}/tasks/:id/runs`}
-              component={TaskRunsPagePaginated}
-            />
-          ) : (
-            <Route
-              path={`${orgPath}/tasks/:id/runs`}
-              component={TaskRunsPage}
-            />
-          )}
+          <Route path={`${orgPath}/tasks/:id/runs`} component={TaskRunsPage} />
           <Route path={`${orgPath}/tasks/:id/edit`} component={TaskEditPage} />
           <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
-          {isFlagEnabled('paginatedTasks') ? (
-            <Route path={`${orgPath}/tasks`} component={TasksPagePaginated} />
-          ) : (
-            <Route path={`${orgPath}/tasks`} component={TasksPage} />
-          )}
-
+          <Route path={`${orgPath}/tasks`} component={TasksPage} />
           {/* Data Explorer */}
           <Route
             path={`${orgPath}/data-explorer`}
             component={DataExplorerPage}
           />
-
           {/* Dashboards */}
-          <Route
-            path={`${orgPath}/dashboards-list`}
-            component={DashboardsIndex}
-          />
+          {isFlagEnabled('paginatedDashboards') ? (
+            <Route
+              path={`${orgPath}/dashboards-list`}
+              component={DashboardsIndexPaginated}
+            />
+          ) : (
+            <Route
+              path={`${orgPath}/dashboards-list`}
+              component={DashboardsIndex}
+            />
+          )}
           <Route
             path={`${orgPath}/dashboards/:dashboardID`}
             component={DashboardContainer}

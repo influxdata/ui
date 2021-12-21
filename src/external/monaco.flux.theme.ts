@@ -1,4 +1,5 @@
 import {MonacoType} from 'src/types'
+import {InfluxColors} from '@influxdata/clockface'
 
 const THEME_NAME = 'baseTheme'
 
@@ -55,13 +56,14 @@ function addTheme(monaco: MonacoType) {
     ],
     colors: {
       'editor.foreground': '#F8F8F8',
-      'editor.background': '#202028',
-      'editorGutter.background': '#25252e',
+      'editor.background': InfluxColors.Grey15,
+      'editorGutter.background': InfluxColors.Grey15,
       'editor.selectionBackground': '#353640',
       'editorLineNumber.foreground': '#666978',
       'editor.lineHighlightBackground': '#353640',
       'editorCursor.foreground': '#ffffff',
       'editorActiveLineNumber.foreground': '#bec2cc',
+      'minimap.background': InfluxColors.Grey15,
     },
   })
 }

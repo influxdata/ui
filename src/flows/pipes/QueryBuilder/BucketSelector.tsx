@@ -3,7 +3,7 @@ import React, {FC, useState, useContext, useEffect} from 'react'
 
 // Components
 import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
-import {RemoteDataState} from 'src/types'
+import {Bucket, RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {BucketContext} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
@@ -11,43 +11,48 @@ import {PipeContext} from 'src/flows/context/pipe'
 // this is used by notebooks
 const BucketSelector: FC = () => {
   const {data, update} = useContext(PipeContext)
-  const {loading, buckets} = useContext(BucketContext)
+  const {loading, buckets, addBucket} = useContext(BucketContext)
 
   const [search, setSearch] = useState('')
+  const [selected, setSelected] = useState(null)
+
+  useEffect(() => {
+    const bucks = data.buckets.filter(b => !!b)
+    if (!selected && bucks.length) {
+      setSelected(bucks[0].name)
+    }
+  }, [selected, data.buckets])
+
+  useEffect(() => {
+    const allBuckets = new Set(buckets.map(b => b.name))
+    data.buckets
+      .filter(b => !allBuckets.has(b.name))
+      .forEach(b => {
+        addBucket({
+          name: b.name,
+          type: b.type,
+        } as Bucket)
+      })
+  }, [buckets, data.buckets])
 
   const selectBucket = (item?: string): void => {
+    let bucket
     if (!item) {
       data.buckets = []
+    } else if (item !== selected) {
+      data.buckets = [buckets.find(b => b.name === item)]
+      bucket = item
     } else {
-      data.buckets = [item]
+      data.buckets = []
+      bucket = null
     }
 
     data.tags = []
-
     update(data)
+    if (item) {
+      setSelected(bucket)
+    }
   }
-
-  useEffect(() => {
-    if (loading !== RemoteDataState.Done) {
-      return
-    }
-
-    if (!data.buckets.length) {
-      return
-    }
-
-    const bucks = buckets.reduce((acc, curr) => {
-      acc[curr.name] = true
-      return acc
-    }, {})
-    const filtered = data.buckets.filter(b => bucks.hasOwnProperty(b.name))
-
-    if (data.buckets.length == filtered.length) {
-      return
-    }
-
-    selectBucket()
-  }, [buckets])
 
   if (loading === RemoteDataState.Done && !buckets.length) {
     return (
@@ -90,9 +95,8 @@ const BucketSelector: FC = () => {
   )
 
   const renderListItem = item => {
-    const selected = !!data.buckets.find(b => b.name === item.name)
-
-    const title = selected
+    const isSelected = selected === item.name
+    const title = isSelected
       ? 'Click to remove this filter'
       : `Click to filter by ${item.name}`
 
@@ -104,7 +108,7 @@ const BucketSelector: FC = () => {
         value={item.name}
         onClick={selectBucket}
         title={title}
-        selected={selected}
+        selected={isSelected}
         size={ComponentSize.ExtraSmall}
         gradient={Gradients.GundamPilot}
         wrapText={false}
@@ -130,6 +134,7 @@ const BucketSelector: FC = () => {
         autoHideScrollbars={true}
         testID="buckets-list"
         style={{flex: '1 0 0'}}
+        scrollToSelected={true}
       >
         {sections.user.length && (
           <List.Divider

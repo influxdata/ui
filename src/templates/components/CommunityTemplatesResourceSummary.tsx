@@ -3,7 +3,7 @@ import React, {FC, useState} from 'react'
 import classnames from 'classnames'
 
 // Components
-import {Icon, IconFont} from '@influxdata/clockface'
+import {Heading, HeadingElement, Icon, IconFont} from '@influxdata/clockface'
 import {CommunityTemplateHumanReadableResource} from 'src/templates/components/CommunityTemplateHumanReadableResource'
 
 // Types
@@ -49,7 +49,9 @@ export const CommunityTemplatesResourceSummary: FC<Props> = ({
       case 'Bucket': {
         return (
           <tr key={`${resource.templateMetaName}-${stackID}-${resource.kind}`}>
-            <td>{resource.kind}</td>
+            <td>
+              <Heading element={HeadingElement.H5}>{resource.kind}</Heading>
+            </td>
             <td>
               <CommunityTemplateHumanReadableResource
                 link={`/orgs/${orgID}/load-data/buckets`}
@@ -194,7 +196,9 @@ export const CommunityTemplatesResourceSummary: FC<Props> = ({
         onClick={handleToggleTable}
       >
         <Icon className={caretClassName} glyph={IconFont.CaretRight} />
-        <h6>{toggleText}</h6>
+        <Heading element={HeadingElement.H4} style={{lineHeight: '40px'}}>
+          {toggleText}
+        </Heading>
       </div>
       {summaryState === 'expanded' && (
         <table className="community-templates--resources-table">

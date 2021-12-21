@@ -5,10 +5,7 @@ import {get} from 'lodash'
 import {getActiveQuery} from 'src/timeMachine/selectors'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
 import {getTimeRange, getTimeRangeWithTimezone} from 'src/dashboards/selectors'
-import {
-  getWindowPeriodVariable,
-  getWindowPeriodVariableFromVariables,
-} from 'src/variables/utils/getWindowVars'
+import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 import {
   TIME_RANGE_START,
   TIME_RANGE_STOP,
@@ -28,7 +25,6 @@ import {AppState, VariableArgumentType, Variable} from 'src/types'
 
 // Utils
 import {filterUnusedVars} from 'src/shared/utils/filterUnusedVars'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const extractVariableEditorName = (state: AppState): string => {
   return state.variableEditor.name
@@ -166,25 +162,10 @@ export const getVariable = (state: AppState, variableID: string): Variable => {
       getRangeVariable(TIME_RANGE_STOP, range),
     ]
 
-    if (isFlagEnabled('filterExtern')) {
-      vari = (getWindowPeriodVariableFromVariables(text, [
-        ...timeVars,
-        ...variables,
-      ]) || [])[0]
-    } else {
-      const assignments = variables.reduce(
-        (acc, curr) => {
-          if (!curr.name || !curr.selected) {
-            return acc
-          }
-
-          return [...acc, asAssignment(curr)]
-        },
-        timeVars.map(v => asAssignment(v))
-      )
-
-      vari = (getWindowPeriodVariable(text, assignments) || [])[0]
-    }
+    vari = (getWindowPeriodVariableFromVariables(text, [
+      ...timeVars,
+      ...variables,
+    ]) || [])[0]
   }
 
   if (!vari) {

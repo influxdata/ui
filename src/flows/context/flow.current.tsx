@@ -7,13 +7,13 @@ import React, {
   useEffect,
 } from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
-import {useParams} from 'react-router'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import * as Y from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
+import {serialize, hydrate} from 'src/flows/context/flow.list'
 
 export interface FlowContextType {
   name: string
@@ -45,13 +45,10 @@ export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
 
-  const yDoc = useRef(new Y.Doc())
   const provider = useRef<WebsocketProvider>()
-
-  const {id: flowId} = useParams<{id: string}>()
-
+  const yDoc = useRef(new Y.Doc())
   function disconnectProvider() {
-    if (provider.current?.wsconnected) {
+    if (provider.current) {
       provider.current.disconnect()
     }
   }
@@ -68,38 +65,48 @@ export const FlowProvider: FC = ({children}) => {
     }
   }, [flows, currentID])
 
-  useEffect(() => {
-    if (isFlagEnabled('sharedFlowEditing')) {
-      provider.current = new WebsocketProvider(
-        'wss://demos.yjs.dev', // todo(ariel): replace this with an actual API that we setup
-        flowId, // todo(ariel): we might need to confine this to an org, depends on how multi-org plays out
+  const syncFunc = useCallback(
+    (isSynced: boolean) => {
+      if (!isSynced || !yDoc.current) {
+        return
+      }
+      const {flowUpdateData} = yDoc.current.getMap('flowUpdateData')?.toJSON()
+      if (!flowUpdateData && currentFlow) {
         yDoc.current
+          .getMap('flowUpdateData')
+          .set('flowUpdateData', serialize(currentFlow))
+      }
+    },
+    [currentFlow]
+  )
+
+  useEffect(() => {
+    const doc = yDoc.current
+    if (isFlagEnabled('sharedFlowEditing') && currentID) {
+      provider.current = new WebsocketProvider(
+        `wss://${window.location.host}/api/workbench`,
+        currentID,
+        doc
       )
-      provider.current.on('sync', isSynced => {
-        if (isSynced) {
-          const localState = yDoc.current.getMap('localState')?.toJSON()
-          if (!localState) {
-            yDoc.current.getMap('localState').set('localState', currentFlow)
-          }
-        }
-      })
-      yDoc.current.on('update', () => {
-        const {localState} = yDoc.current.getMap('localState').toJSON()
-        setCurrentFlow(prev => {
-          if (btoa(JSON.stringify(prev)) === btoa(JSON.stringify(localState))) {
-            return prev
-          }
-          return localState
-        })
-      })
+
+      provider.current.on('sync', syncFunc)
     }
 
+    const onUpdate = () => {
+      const {flowUpdateData} = doc.getMap('flowUpdateData').toJSON()
+      const hydrated = hydrate(flowUpdateData?.data)
+
+      setCurrentFlow(hydrated)
+    }
+
+    doc.on('update', onUpdate)
     return () => {
       if (isFlagEnabled('sharedFlowEditing')) {
         disconnectProvider()
       }
+      doc.off('update', onUpdate)
     }
-  }, [flowId])
+  }, [currentID])
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
@@ -110,11 +117,9 @@ export const FlowProvider: FC = ({children}) => {
             ...(flowCopy.data.byID[id] || {}),
             ...data,
           }
-          const update = {
-            ...flowCopy,
-            ...flowCopy.data.byID[id],
-          }
-          yDoc.current.getMap('localState').set('localState', update)
+          yDoc.current
+            .getMap('flowUpdateData')
+            .set('flowUpdateData', serialize(flowCopy))
         }
         return
       }
@@ -154,11 +159,9 @@ export const FlowProvider: FC = ({children}) => {
             ...meta,
           }
 
-          const update = {
-            ...flowCopy,
-            ...flowCopy.meta.byID[id],
-          }
-          yDoc.current.getMap('localState').set('localState', update)
+          yDoc.current
+            .getMap('flowUpdateData')
+            .set('flowUpdateData', serialize(flowCopy))
         }
         return
       }
@@ -198,9 +201,9 @@ export const FlowProvider: FC = ({children}) => {
           for (const ni in flow) {
             flowCopy[ni] = flow[ni]
           }
-          yDoc.current.getMap('localState').set('localState', {
-            ...flowCopy,
-          })
+          yDoc.current
+            .getMap('flowUpdateData')
+            .set('flowUpdateData', serialize(flowCopy))
         }
         return
       }
@@ -248,9 +251,9 @@ export const FlowProvider: FC = ({children}) => {
         flowCopy.data.allIDs.push(id)
         flowCopy.meta.allIDs.push(id)
       }
-      yDoc.current.getMap('localState').set('localState', {
-        ...flowCopy,
-      })
+      yDoc.current
+        .getMap('flowUpdateData')
+        .set('flowUpdateData', serialize(flowCopy))
       return
     }
     if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
@@ -299,9 +302,9 @@ export const FlowProvider: FC = ({children}) => {
 
       delete flowCopy.data.byID[id]
       delete flowCopy.meta.byID[id]
-      yDoc.current.getMap('localState').set('localState', {
-        ...flowCopy,
-      })
+      yDoc.current
+        .getMap('flowUpdateData')
+        .set('flowUpdateData', serialize(flowCopy))
       return
     }
     if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {

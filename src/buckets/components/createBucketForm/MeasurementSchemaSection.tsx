@@ -1,4 +1,4 @@
-import React, {useState, FC, useMemo} from 'react'
+import React, {FC, useMemo, useState} from 'react'
 
 import {trim} from 'lodash'
 
@@ -13,21 +13,29 @@ import {
   DismissButton,
   FlexBox,
   FlexDirection,
+  FormElementError,
   IconFont,
   Input,
+  InputLabel,
   InputProps,
+  InputToggleType,
   InputType,
   Panel,
-  FormElementError,
+  Toggle,
 } from '@influxdata/clockface'
 
 import 'src/buckets/components/createBucketForm/MeasurementSchema.scss'
 import {
-  areColumnsProper,
   isNameValid,
-} from 'src/buckets/components/createBucketForm/MeasurementSchemaUtils'
+  getColumnsFromFile,
+  toCsvString,
+} from 'src/buckets/components/createBucketForm/measurementSchemaUtils'
+
 import {downloadTextFile} from 'src/shared/utils/download'
-import {MiniFileDnd} from 'src/buckets/components/createBucketForm/MiniFileDnd'
+import {
+  DownloadTypes,
+  MiniFileDnd,
+} from 'src/buckets/components/createBucketForm/MiniFileDnd'
 
 import {CLOUD} from 'src/shared/constants'
 import classnames from 'classnames'
@@ -105,6 +113,7 @@ interface PanelProps {
   index: number
   onAddUpdate: (columns: string, index: number) => void
   toggleUpdate: (doingUpdate: boolean, index: number) => void
+  downloadFormat?: DownloadTypes
 }
 /**
  * onAddName: called when the name of the schema has been added
@@ -125,28 +134,9 @@ interface AddingProps {
   showSchemaValidation?: boolean
 }
 
-// the MiniFileDnd component will catch any errors thrown here
-// and display them to the user; as this method is only called from within
-// the 'handleFileUpload' that is passed to and called by the MiniFileDnd Component.
-const getColumnsFromFile = (contents: string) => {
-  // do parsing here;  to check if in the correct format:
-  let columns = null
-  if (contents) {
-    // parse them; if proper/valid; great!  if not, set errors and do not proceed
-    // don't need to wrap this in try/catch since the caller of this function is inside a try/catch
-    columns = JSON.parse(contents)
-
-    if (!areColumnsProper(columns)) {
-      // set errors
-      throw {message: 'column file is not formatted correctly'}
-    }
-  }
-  return columns
-}
-
 // the first is for dnd; the second is for the file input
-const allowedTypes = ['application/json']
-const allowedExtensions = '.json'
+const allowedTypes = ['application/json', 'text/csv']
+const allowedExtensions = '.json,.csv'
 
 const AddingPanel: FC<AddingProps> = ({
   index,
@@ -188,10 +178,14 @@ const AddingPanel: FC<AddingProps> = ({
   // since the mini file dnd component calls this method,
   // then calls setError(false).  so; if we call setError(true) then it gets immediately
   // overridden.  with the propagation, the error state only gets called once properly.
-  const handleUploadFile = (contents: string, fileName: string) => {
+  const handleFileUpload = (
+    contents: string,
+    fileType: DownloadTypes,
+    fileName: string
+  ) => {
     // keep swapping out the file, cancel out of the dialog, x out the adding line....etc
 
-    const columns = getColumnsFromFile(contents)
+    const columns = getColumnsFromFile(contents, fileType)
     onAddContents(columns, fileName, index)
   }
 
@@ -254,7 +248,7 @@ const AddingPanel: FC<AddingProps> = ({
       key={`mini-dnd-${index}`}
       allowedExtensions={allowedExtensions}
       allowedTypes={allowedTypes}
-      handleFileUpload={handleUploadFile}
+      handleFileUpload={handleFileUpload}
       setErrorState={setErrorState}
       alreadySetFileName={filename}
     />
@@ -280,7 +274,7 @@ const AddingPanel: FC<AddingProps> = ({
         className="measurement-schema-panel"
         key={`addMsp-column-${index}`}
       >
-        <div> name</div>
+        <div className="value-text"> name</div>
         <FlexBox direction={FlexDirection.Row} className="schema-row">
           {makeNameInput()}
           {newDndElement}
@@ -292,28 +286,12 @@ const AddingPanel: FC<AddingProps> = ({
   )
 }
 
-interface NameProps {
-  name: string
-  maxChars: number
-}
-
-const TruncatedNameDisplay: FC<NameProps> = ({name, maxChars}) => {
-  name = trim(name)
-  if (name.length < maxChars) {
-    return <>{name}</>
-  }
-  // it is over the max limit; truncate it to three below the limit,
-  // add three dots, and a title with the full name:
-
-  const displayName = name.substring(0, maxChars - 3) + '...'
-  return <span title={name}>{displayName}</span>
-}
-
 const EditingPanel: FC<PanelProps> = ({
   index,
   measurementSchema,
   onAddUpdate,
   toggleUpdate,
+  downloadFormat = 'json',
 }) => {
   const [fileErrorMessage, setFileErrorMessage] = useState(null)
   const [fileError, setFileError] = useState(false)
@@ -333,13 +311,19 @@ const EditingPanel: FC<PanelProps> = ({
 
   const handleDownloadSchema = () => {
     const {name} = measurementSchema
-    const contents = JSON.stringify(measurementSchema.columns)
+    let contents = JSON.stringify(measurementSchema.columns)
+    let extension = '.json'
+    // if csv selected, do csv conversion instead
+    if (downloadFormat === 'csv') {
+      contents = toCsvString(measurementSchema.columns)
+      extension = '.csv'
+    }
     event('bucket.download.schema.explicit')
-    downloadTextFile(contents, name || 'schema', '.json')
+    downloadTextFile(contents, name || 'schema', extension)
   }
 
-  const handleFileUpload = (contents: string) => {
-    const columns = getColumnsFromFile(contents)
+  const handleFileUpload = (contents: string, fileType: DownloadTypes) => {
+    const columns = getColumnsFromFile(contents, fileType)
     onAddUpdate(columns, index)
   }
 
@@ -364,8 +348,6 @@ const EditingPanel: FC<PanelProps> = ({
     hasCancelBtn: isUpdateInProgress,
   })
 
-  // note:  for truncating the name; 14 characters works well with the current 575 pixel width
-  // if that changes, then will need to change that as well
   return (
     <Panel className="measurement-schema-panel-container">
       <FlexBox
@@ -376,14 +358,13 @@ const EditingPanel: FC<PanelProps> = ({
         className="measurement-schema-panel"
         key={`romsp-${index}`}
       >
-        <div> name</div>
+        <div
+          data-testid={`measurement-schema-name-${index}`}
+          className="value-text"
+        >
+          {measurementSchema.name}
+        </div>
         <FlexBox direction={FlexDirection.Row} className={schemaRowClasses}>
-          <div
-            className="value-text"
-            data-testid={`measurement-schema-name-${index}`}
-          >
-            <TruncatedNameDisplay name={measurementSchema.name} maxChars={14} />
-          </div>
           <Button
             icon={IconFont.Download_New}
             color={ComponentColor.Secondary}
@@ -431,6 +412,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
       hasUpdate: false,
     })) || []
   const [schemaUpdates, setSchemaUpdates] = useState(updateInit)
+  const [downloadType, setDownloadType] = useState<DownloadTypes>('json')
 
   // every time we update the local schema, should also send up the schema to the parent
   // so putting them together here
@@ -469,17 +451,78 @@ export const MeasurementSchemaSection: FC<Props> = ({
     'https://docs.influxdata.com/influxdb/cloud/organizations/buckets/bucket-schema/'
 
   const schemas = measurementSchemaList?.measurementSchemas
-  let readPanels = null
+  let readSection = null
   if (schemas) {
-    readPanels = schemas.map((oneSchema, index) => (
+    /**
+     * typescript transpiler needs this; using just setDownloadType
+     * yields an error (claims the argument is of type string)
+     * */
+    const onDownloadTypeChange = (dtype: DownloadTypes) => {
+      setDownloadType(dtype)
+    }
+
+    const readPanels = schemas.map((oneSchema, index) => (
       <EditingPanel
         key={`mss-ep-${index}`}
         measurementSchema={oneSchema}
         index={index}
         onAddUpdate={onAddUpdate}
         toggleUpdate={toggleUpdate}
+        downloadFormat={downloadType}
       />
     ))
+
+    const labelStyle = {marginRight: 10}
+    const downloadToggle = (
+      <FlexBox direction={FlexDirection.Row}>
+        <InputLabel style={labelStyle}> Download File Format: </InputLabel>
+        <Toggle
+          tabIndex={1}
+          value="json"
+          id="json-download-flavor-choice"
+          name="json-download-flavor-choice"
+          className="option"
+          checked={downloadType === 'json'}
+          onChange={onDownloadTypeChange}
+          type={InputToggleType.Radio}
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Primary}
+          testID="json-download-flavor-choice"
+        >
+          <InputLabel
+            htmlFor="json-download-flavor-choice"
+            active={downloadType === 'json'}
+          >
+            json
+          </InputLabel>
+        </Toggle>
+        <Toggle
+          tabIndex={2}
+          value="csv"
+          id="csv-download-flavor-choice"
+          name="csv-download-flavor-choice"
+          className="option"
+          checked={downloadType === 'csv'}
+          onChange={onDownloadTypeChange}
+          type={InputToggleType.Radio}
+          size={ComponentSize.ExtraSmall}
+          color={ComponentColor.Primary}
+          testID="csv-download-flavor-choice"
+        >
+          <InputLabel
+            htmlFor="csv-download-flavor-choice"
+            active={downloadType === 'csv'}
+          >
+            csv
+          </InputLabel>
+        </Toggle>
+      </FlexBox>
+    )
+    readSection = (
+      <>
+        {downloadToggle} {readPanels}{' '}
+      </>
+    )
   }
 
   const setNewSchemasWithUpdates = schemaArray => {
@@ -584,7 +627,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
       margin={ComponentSize.Large}
       alignItems={AlignItems.FlexStart}
       testID="measurement-schema-section-parent"
-      className="schema-section measurement"
+      className="measurement-section measurement"
     >
       <div className="header">
         <div className="title-text">Measurement Schema</div>
@@ -598,7 +641,7 @@ export const MeasurementSchemaSection: FC<Props> = ({
           </a>
         </div>
       </div>
-      {readPanels}
+      {readSection}
       {addSchemaButton}
       {addPanels}
     </FlexBox>

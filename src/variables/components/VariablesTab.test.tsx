@@ -6,7 +6,7 @@ jest.mock('src/shared/components/FluxMonacoEditor', () => {
 })
 
 jest.mock('src/client/generatedRoutes.ts', () => ({
-  ...require.requireActual('src/client/generatedRoutes.ts'),
+  ...jest.requireActual('src/client/generatedRoutes.ts'),
   postVariable: jest.fn(() => {
     return {
       status: 201,
@@ -80,7 +80,7 @@ jest.mock('src/resources/selectors/index.ts', () => {
 })
 
 jest.mock('src/templates/api/index.ts', () => ({
-  ...require.requireActual('src/templates/api/index.ts'),
+  ...jest.requireActual('src/templates/api/index.ts'),
   createVariableFromTemplate: jest.fn(() => {
     return {
       id: 'test_variable_id',

@@ -9,6 +9,7 @@ describe('Operator Page', () => {
           }).then(() => {
             cy.quartzProvision({
               isOperator: true,
+              operatorRole: 'read-write',
             }).then(() => {
               cy.visit(`/operator`)
               cy.getByTestID('operator-page--title').contains('2.0 Resources')
@@ -130,7 +131,7 @@ describe('Operator Page', () => {
       expect(loc.pathname).to.eq('/operator/accounts/1')
     })
 
-    cy.getByTestID('account-view--header').contains('Account 1')
+    cy.getByTestID('account-view--header').contains('operator1 (1)')
     // should not be able to delete undeletable accounts
     cy.getByTestID('account-delete--button').should('be.disabled')
 

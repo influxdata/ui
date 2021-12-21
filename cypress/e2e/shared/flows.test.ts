@@ -1,26 +1,18 @@
 import {Organization} from '../../src/types'
 
 describe('Flows', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() =>
-        cy.get('@org').then(({id}: Organization) =>
-          cy.fixture('routes').then(({orgs}) => {
-            cy.visit(`${orgs}/${id}`)
-            cy.getByTestID('version-info')
-            return cy
-              .setFeatureFlags({
-                notebooksExp: true,
-              })
-              .then(() => {
-                cy.getByTestID('nav-item-flows').should('be.visible')
-                return cy.getByTestID('nav-item-flows').click()
-              })
-          })
-        )
-      )
+  beforeEach(() => {
+    cy.flush()
+    cy.signin()
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.visit(`${orgs}/${id}`)
+      })
     )
-  )
+    cy.getByTestID('version-info')
+    cy.getByTestID('nav-item-flows').should('be.visible')
+    cy.getByTestID('nav-item-flows').click()
+  })
 
   it('CRUD a flow from the index page', () => {
     const now = Date.now()
@@ -200,6 +192,7 @@ describe('Flows', () => {
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
+    cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
 
     cy.getByTestID('page-title').click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
@@ -235,6 +228,8 @@ describe('Flows', () => {
         cy.getByTestID(`selector-list beans`).click()
       })
 
+    cy.wait('@updateNotebook')
+
     cy.getByTestID('time-machine-submit-button').click()
 
     // we should only see beans in the table
@@ -247,10 +242,6 @@ describe('Flows', () => {
     // This is a random validator that the autorefresh option doesn't pop up
     // In Flows again without explicit changes
     cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
-
-    cy.clickNavBarItem('nav-item-flows')
-
-    cy.getByTestID('resource-editable-name').click()
 
     cy.clickNavBarItem('nav-item-flows')
 
@@ -453,113 +444,5 @@ describe('Flows', () => {
     cy.getByTestID('giraffe-inner-plot')
       .scrollIntoView()
       .should('be.visible')
-  })
-
-  describe('alert panel', () => {
-    it('should build expressions list and allow for injection', () => {
-      const newBucketName = 'shmucket'
-      const now = Date.now()
-      cy.get<Organization>('@org').then(({id, name}: Organization) => {
-        cy.createBucket(id, name, newBucketName)
-      })
-      cy.writeData(
-        [
-          `test,container_name=cool dopeness=12 ${now - 1000}000000`,
-          `test,container_name=beans dopeness=18 ${now - 1200}000000`,
-          `test,container_name=cool dopeness=14 ${now - 1400}000000`,
-          `test,container_name=beans dopeness=10 ${now - 1600}000000`,
-        ],
-        newBucketName
-      )
-
-      const flowName = 'Flowbooks'
-
-      cy.getByTestID('preset-new')
-        .first()
-        .click()
-      cy.getByTestID('time-machine-submit-button').should('be.visible')
-
-      cy.getByTestID('page-title').click()
-      cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
-
-      // select our bucket, measurement, field and tag
-      cy.getByTestID('sidebar-button')
-        .first()
-        .click()
-      cy.getByTestID('Delete--list-item').click()
-
-      cy.getByTestID('panel-add-btn--1').click()
-      cy.getByTestID('add-flow-btn--queryBuilder').click()
-      cy.getByTestID('bucket-selector').within(() => {
-        cy.getByTestID(`selector-list ${newBucketName}`).click()
-      })
-
-      // select measurement and field
-      cy.getByTestID('builder-card')
-        .eq(0)
-        .within(() => {
-          cy.getByTestID(`selector-list test`).click()
-        })
-      cy.getByTestID('builder-card')
-        .eq(1)
-        .within(() => {
-          cy.getByTestID(`selector-list dopeness`).click()
-        })
-      // select beans tag and click preview
-      cy.getByTestID('builder-card')
-        .eq(2)
-        .within(() => {
-          cy.getByTestID(`selector-list beans`).click()
-        })
-
-      // add an alert cell
-      cy.getByTestID('panel-add-btn-2').click()
-      cy.getByTestID('add-flow-btn--notification').click()
-      cy.getByTestID('time-machine-submit-button').click()
-      cy.getByTestID('notification-exp-button').scrollIntoView()
-      cy.getByTestID('text-editor').should('be.visible')
-
-      // open exp sidebar panel
-      cy.getByTestID('notification-exp-button').should('be.visible')
-      cy.getByTestID('notification-exp-button').click()
-      cy.getByTestID('flux-toolbar--list').should('be.visible')
-
-      // check that all expressions are listed
-      cy.getByTestID('fields-dopeness').should('be.visible')
-      cy.getByTestID('tags-container_name').should('be.visible')
-      cy.getByTestID('columns-_start').should('be.visible')
-      cy.getByTestID('system-_source_measurement')
-        .scrollIntoView()
-        .should('be.visible')
-
-      // filter for dopeness
-      cy.getByTestID('flux-toolbar-search--input').type('dopeness')
-      cy.getByTestID('flux--fields-dopeness--inject').click({force: true})
-      cy.getByTestID('flux-toolbar-search--input').clear()
-      // filter for notebook
-      cy.getByTestID('flux-toolbar-search--input').type('notebook')
-      cy.getByTestID('flux--system-_notebook_link--inject').click({force: true})
-
-      // make sure message contains injected expressions
-      cy.getByTestID('notification-message--monaco-editor').contains(
-        'r.dopeness'
-      )
-      cy.getByTestID('notification-message--monaco-editor').contains(
-        'r._notebook_link'
-      )
-
-      // make sure task export contains notebook link
-      cy.getByTestID('task-form-save').click()
-      cy.getByTestID('overlay--body').should('be.visible')
-      cy.getByTestID('flux-editor').should('exist')
-      cy.getByTestID('form--footer').scrollIntoView()
-      cy.getByTestID('overlay--body').within(() => {
-        cy.url().then(url => {
-          cy.getByTestID('flux-editor').contains(
-            `|> set(key: "_notebook_link", value: "${url}")`
-          )
-        })
-      })
-    })
   })
 })

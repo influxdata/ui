@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 
 // Components
 import {
-    Button,
+  Button,
   ComponentColor,
   ComponentSize,
   InputLabel,
@@ -60,17 +60,13 @@ export const SwitchAccountOverlay: FC<Props> = ({
 }) => {
   return (
     <Overlay.Container maxWidth={630}>
-      <Overlay.Header
-        title="Switch Account"
-        wrapText={true}
-      />
+      <Overlay.Header title="Switch Account" wrapText={true} />
       <Overlay.Body>
-          <ToggleGroup userAccounts={userAccounts}/>
+        <ToggleGroup userAccounts={userAccounts} />
       </Overlay.Body>
-        <Overlay.Footer>
-            <Button text='Cancel'
-                    onClick={onDismissOverlay}/>
-        </Overlay.Footer>
+      <Overlay.Footer>
+        <Button text="Cancel" onClick={onDismissOverlay} />
+      </Overlay.Footer>
     </Overlay.Container>
   )
 }

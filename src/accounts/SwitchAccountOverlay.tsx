@@ -20,7 +20,11 @@ interface Props {
   onDismissOverlay: () => void
 }
 
-const ToggleGroup: FC = () => {
+interface ToggleProps {
+    onClickAcct: (acct:number) => void
+}
+
+const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
   const {userAccounts, activeAccountId} = useContext(UserAccountContext)
 
   const [selectedAcct, setSelectedAcct] = useState(activeAccountId)
@@ -31,6 +35,7 @@ const ToggleGroup: FC = () => {
     console.log('previously selected....', selectedAcct)
     console.log('clicked on change....', ack)
     const numacct = parseInt(ack)
+      onClickAcct(numacct)
     setSelectedAcct(numacct)
   }
 
@@ -70,11 +75,16 @@ const ToggleGroup: FC = () => {
 }
 
 export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
-  return (
+
+    const onClickAcct = (acctNo: number) => {
+        console.log('clicked on acct number....', acctNo)
+    }
+
+    return (
     <Overlay.Container maxWidth={630}>
       <Overlay.Header title="Switch Account" wrapText={true} />
       <Overlay.Body>
-        <ToggleGroup />
+        <ToggleGroup onClickAcct={onClickAcct} />
       </Overlay.Body>
       <Overlay.Footer>
         <Button text="Cancel" onClick={onDismissOverlay} />

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
 
 // Components
 import {
@@ -13,19 +13,21 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {Account as UserAccount} from 'src/client/unityRoutes'
+//import {Account as UserAccount} from 'src/client/unityRoutes'
+import {UserAccountContext} from "./context/userAccount";
 
 interface Props {
-  userAccounts: UserAccount[]
   onDismissOverlay: () => void
 }
 
-interface ToggleProps {
-  userAccounts: UserAccount[]
-}
 
-const ToggleGroup: FC<ToggleProps> = ({userAccounts}) => {
-  const onChange = ack => {
+
+const ToggleGroup: FC = () => {
+    const {userAccounts, defaultAccountId, activeAccountId} = useContext(UserAccountContext)
+
+    console.log('(tg) arghh, default account id?', defaultAccountId)
+    console.log('(tg) active acct id???', activeAccountId)
+    const onChange = ack => {
     console.log('clicked on change....', ack)
   }
 
@@ -59,13 +61,12 @@ const ToggleGroup: FC<ToggleProps> = ({userAccounts}) => {
 
 export const SwitchAccountOverlay: FC<Props> = ({
   onDismissOverlay,
-  userAccounts,
 }) => {
   return (
     <Overlay.Container maxWidth={630}>
       <Overlay.Header title="Switch Account" wrapText={true} />
       <Overlay.Body>
-        <ToggleGroup userAccounts={userAccounts} />
+        <ToggleGroup/>
       </Overlay.Body>
       <Overlay.Footer>
         <Button text="Cancel" onClick={onDismissOverlay} />

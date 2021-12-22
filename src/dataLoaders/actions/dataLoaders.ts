@@ -382,7 +382,7 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   const {bucket} = getSteps(getState())
 
   const influxDB2Out = {
-    name: 'nfluxdb_v2',
+    name: 'influxdb_v2',
     type: 'output',
     config: {
       urls: [`${window.location.origin}`],

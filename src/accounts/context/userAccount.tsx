@@ -18,6 +18,7 @@ export interface UserAccountContextType {
   handleGetAccounts: () => void
   setDefaultAccountId: (id: number) => void
   defaultAccountId: number
+  activeAccountId:number
 }
 
 // isActive: true is for the currently logged in/active account
@@ -25,6 +26,7 @@ export interface UserAccountContextType {
 export const DEFAULT_CONTEXT: UserAccountContextType = {
   userAccounts: [],
   defaultAccountId: -1,
+  activeAccountId: -1,
   handleGetAccounts: () => {},
   setDefaultAccountId: (id: number) => {
     console.log('would set id here....', id)
@@ -40,6 +42,8 @@ export const UserAccountContext = React.createContext<UserAccountContextType>(
 export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)
   const [defaultAccountId, setDefaultAccountId] = useState<number>(null)
+  const [activeAccountId, setActiveAccountId] = useState<number>(null)
+
   const dispatch = useDispatch()
 
   const handleGetAccounts = useCallback(async () => {
@@ -60,6 +64,13 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
           //console.log('got the default id....', defaultId)
           setDefaultAccountId(defaultId)
         }
+
+        const activeAcctArray = data.filter(line=>line.isActive)
+        if (activeAcctArray && activeAcctArray.length === 1) {
+          const activeId = activeAcctArray[0].id
+          setActiveAccountId(activeId)
+        }
+
       }
     } catch (error) {
       console.log('caught error...', error)
@@ -68,13 +79,14 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   useEffect(() => {
     handleGetAccounts()
-  }, [handleGetAccounts, defaultAccountId])
+  }, [handleGetAccounts, defaultAccountId, activeAccountId])
 
   return (
     <UserAccountContext.Provider
       value={{
         userAccounts,
         defaultAccountId,
+        activeAccountId,
         setDefaultAccountId,
         handleGetAccounts,
       }}

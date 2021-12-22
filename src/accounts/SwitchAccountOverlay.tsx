@@ -34,6 +34,8 @@ const ToggleGroup: FC<ToggleProps> = ({userAccounts}) => {
       {userAccounts.map((account, index) => {
         const idString = `accountSwitch-toggle-choice-${index}`
 
+
+
         return (
           <Toggle
             tabIndex={index + 1}
@@ -44,6 +46,7 @@ const ToggleGroup: FC<ToggleProps> = ({userAccounts}) => {
             color={ComponentColor.Primary}
             testID={idString}
             name={idString}
+            id={idString}
             key={idString}
           >
             <InputLabel htmlFor={idString}>{account.name}</InputLabel>

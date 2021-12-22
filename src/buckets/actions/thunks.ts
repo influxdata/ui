@@ -56,6 +56,7 @@ import {
   measurementSchemaAdditionFailed,
   measurementSchemaUpdateFailed,
   measurementSchemaUpdateSuccessful,
+  bucketDeleteSuccess,
 } from 'src/shared/copy/notifications'
 
 type Action = BucketAction | NotifyAction
@@ -271,6 +272,7 @@ export const deleteBucket = (id: string, name: string) => async (
 
     dispatch(removeBucket(id))
     dispatch(checkBucketLimits())
+    dispatch(notify(bucketDeleteSuccess()))
   } catch (error) {
     console.error(error)
     dispatch(notify(bucketDeleteFailed(name)))

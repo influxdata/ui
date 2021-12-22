@@ -10,6 +10,7 @@ import {auth} from 'mocks/dummyData'
 import {Permission} from 'src/types'
 import {get} from 'lodash'
 import {renderWithReduxAndRouter} from 'src/mockState'
+import {CLOUD} from 'src/shared/constants'
 
 const permissions = (
   permissions: Permission[]
@@ -57,7 +58,7 @@ describe('Account', () => {
     it('renders permissions correctly', () => {
       const actual = permissions(auth.permissions)
 
-      const expected = {
+      const expected: any = {
         'orgs-a': ['read'],
         authorizations: ['read', 'write'],
         buckets: ['read', 'write'],
@@ -70,6 +71,11 @@ describe('Account', () => {
         labels: ['read', 'write'],
         views: ['read', 'write'],
         documents: ['read', 'write'],
+      }
+
+      if (!CLOUD) {
+        expected.scrapers = ['read', 'write']
+        expected.sources = ['read', 'write']
       }
 
       expect(actual).toEqual(expected)

@@ -1,0 +1,12 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.flow-panel-time--header {
+  h5 {
+    margin-bottom: 0;
+  }
+
+  p {
+    margin-top: 0;
+    color: $cf-grey-65;
+  }
+}

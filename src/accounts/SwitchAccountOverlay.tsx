@@ -80,6 +80,7 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
     console.log('would switch account to this now: ', newAccountId)
     // todo: set window.location correctly!  (on a timeout?) investigate!
     onDismissOverlay()
+    window.location.href = `/accounts/${newAccountId}`
   }
 
   return (

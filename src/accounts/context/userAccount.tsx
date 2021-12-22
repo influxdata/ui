@@ -8,20 +8,7 @@ import {Account as UserAccount} from 'src/client/unityRoutes'
 
 // Utils
 import {getAccounts} from 'src/client/unityRoutes'
-// import {notify} from 'src/shared/actions/notifications'
-// import {
-//     getAccountError,
-//     deleteAccountError,
-// } from 'src/shared/copy/notifications'
 
-// todo:  talk to randy, about making this a real type, like OperatorAccount in unityRoutes.ts
-// for now: defining it here (duck typing)
-// export interface UserAccount {
-//   id: number
-//   isActive: boolean
-//   isDefault: boolean
-//   name: string
-// }
 export type Props = {
   children: JSX.Element
 }

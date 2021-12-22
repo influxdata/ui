@@ -7,13 +7,15 @@ import {
   ConfigurationState,
   RemoteDataState,
   Label,
-  Authorization,
   Organization,
-  GenVariable,
+  GenVariable as Variable,
+  Authorization,
 } from 'src/types'
 import {OnboardingStepProps} from 'src/onboarding/containers/OnboardingWizard'
 import {RouteComponentProps} from 'react-router-dom'
 import {NumericColumnData} from '@influxdata/giraffe'
+import {PermissionResource} from '@influxdata/influx'
+import {CLOUD} from 'src/shared/constants'
 
 export const queryConfig = {
   queries: [
@@ -202,7 +204,7 @@ export const tasks: Task[] = [
   },
 ]
 
-export const variables: GenVariable[] = [
+export const variables: Variable[] = [
   {
     name: 'LittleVariable',
     orgID: '0',
@@ -506,6 +508,8 @@ export const setSetupParamsResponse = {
         {action: 'write', resource: 'dashboards', orgID: '033bc62534be3000'},
         {action: 'read', resource: 'orgs', orgID: '033bc62534be3000'},
         {action: 'write', resource: 'orgs', orgID: '033bc62534be3000'},
+        {action: 'read', resource: 'sources', orgID: '033bc62534be3000'},
+        {action: 'write', resource: 'sources', orgID: '033bc62534be3000'},
         {action: 'read', resource: 'tasks', orgID: '033bc62534be3000'},
         {action: 'write', resource: 'tasks', orgID: '033bc62534be3000'},
         {action: 'read', resource: 'telegrafs', orgID: '033bc62534be3000'},
@@ -585,7 +589,7 @@ export const scraperTargets = [
   },
 ]
 
-export const auth: Authorization = {
+const commonAuth: Authorization = {
   id: '03c03a8a64728000',
   token:
     'RcW2uWiD-vfxujKyJCirK8un3lJsWPfiA6ulmWY_SlSITUal7Z180OwExiKKfrO98X8W6qGrd5hSGdag-hEpWw==',
@@ -787,6 +791,54 @@ export const auth: Authorization = {
   },
 }
 
+const getCloudAuth = () => {
+  const common: any = {
+    ...commonAuth,
+  }
+  return common
+}
+
+const getOssAuth = () => {
+  const common = getCloudAuth()
+  common.permissions?.push(
+    {
+      action: 'read',
+      resource: {
+        type: 'scrapers',
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: 'write',
+      resource: {
+        type: 'scrapers',
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: 'read',
+      resource: {
+        type: 'sources',
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: 'write',
+      resource: {
+        type: 'sources',
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    }
+  )
+  return common
+}
+
+export const auth = CLOUD ? getCloudAuth() : getOssAuth()
+
 export const auth2 = {
   id: '03c03a8a64728000',
   token:
@@ -859,6 +911,22 @@ export const auth2 = {
     {
       action: 'read',
       resource: {
+        type: 'sources',
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: 'write',
+      resource: {
+        type: 'sources',
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: 'read',
+      resource: {
         type: 'tasks',
         orgID: '039edab314789000',
         org: 'a',
@@ -916,6 +984,22 @@ export const auth2 = {
       action: 'write',
       resource: {
         type: 'variables',
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: 'read',
+      resource: {
+        type: PermissionResource.TypeEnum.Scrapers,
+        orgID: '039edab314789000',
+        org: 'a',
+      },
+    },
+    {
+      action: 'write',
+      resource: {
+        type: PermissionResource.TypeEnum.Scrapers,
         orgID: '039edab314789000',
         org: 'a',
       },

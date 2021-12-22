@@ -1,5 +1,5 @@
 // Libraries
-import React, {useEffect, useState, FC, Suspense} from 'react'
+import React, {useEffect, useState, FC, Suspense, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 
@@ -74,10 +74,11 @@ import {updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Decorators
-import {RemoteDataState} from '@influxdata/clockface'
+import {ClickOutside, RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import DeveloperCLI from 'src/shared/components/DeveloperCLI/'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -90,6 +91,27 @@ const SetOrg: FC = () => {
 
   const foundOrg = orgs.find(o => o.id === orgID)
   const firstOrgID = orgs[0]?.id
+  const [developerCLI, setDeveloperCLI] = useState(true)
+
+  const shortcutsListener = useCallback(
+    e => {
+      if (e.charCode === 247) {
+        setDeveloperCLI(prev => {
+          console.log({prev})
+          return !prev
+        })
+      }
+    },
+    [developerCLI]
+  )
+  useEffect(() => {
+    window.addEventListener('keypress', shortcutsListener, true)
+
+    return () => {
+      console.log('shortcuts listener: Removed!')
+      window.removeEventListener('keypress', shortcutsListener, true)
+    }
+  }, [orgID, shortcutsListener])
 
   useEffect(() => {
     // does orgID from url match any orgs that exist
@@ -290,6 +312,15 @@ const SetOrg: FC = () => {
 
           <Route component={NotFound} />
         </Switch>
+        {developerCLI && (
+          <ClickOutside
+            onClickOutside={() => {
+              setDeveloperCLI(false)
+            }}
+          >
+            <DeveloperCLI />
+          </ClickOutside>
+        )}
       </Suspense>
     </PageSpinner>
   )

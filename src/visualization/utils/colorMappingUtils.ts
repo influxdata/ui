@@ -8,8 +8,9 @@ import {getNominalColorScale} from '@influxdata/giraffe'
  * @param map2
  */
 const compareIDPEandLocalMappings = (map1, map2) => {
-  if (!map1 || !map2) {
-    return {isMappingReusable: false}
+  // SPECIAL CASE: handle null case when colorMapping from IDPE is `null`
+  if (!map1) {
+    return {isMappingReusable: false, additions: map2}
   }
 
   function isEmpty(obj) {
@@ -97,7 +98,7 @@ export const getColorMappingObjects = (
     }
 
     return {
-      colorMappingForIDPE,
+      colorMappingForIDPE: colorMappingForIDPE,
       colorMappingForGiraffe: newColorMappingForGiraffe,
       needsToSaveToIDPE,
     }

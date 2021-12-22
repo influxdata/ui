@@ -9,7 +9,6 @@ import EmptyDataSourceState from 'src/dataLoaders/components/configureStep/Empty
 
 // Constants
 import {telegrafPlugin, token} from 'mocks/dummyData'
-import {TelegrafPluginInputCpu} from '@influxdata/influx'
 
 const setup = (override = {}) => {
   const props = {
@@ -20,7 +19,7 @@ const setup = (override = {}) => {
     onAddConfigValue: jest.fn(),
     onRemoveConfigValue: jest.fn(),
     onSetConfigArrayValue: jest.fn(),
-    telegrafPluginName: TelegrafPluginInputCpu.NameEnum.Cpu,
+    telegrafPluginName: 'cpu',
     onClickNext: jest.fn(),
     onClickPrevious: jest.fn(),
     onClickSkip: jest.fn(),

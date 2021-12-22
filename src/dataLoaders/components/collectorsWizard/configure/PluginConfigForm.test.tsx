@@ -9,22 +9,18 @@ import {PluginConfigForm} from 'src/dataLoaders/components/collectorsWizard/conf
 import {telegrafPluginsInfo} from 'src/dataLoaders/constants/pluginConfigs'
 import {telegrafPlugin} from 'mocks/dummyData'
 
-// Types
-import {TelegrafPluginInputCpu} from '@influxdata/influx'
-
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
     telegrafPlugin,
-    configFields:
-      telegrafPluginsInfo[TelegrafPluginInputCpu.NameEnum.Cpu].fields,
+    configFields: telegrafPluginsInfo['cpu'].fields,
     onUpdateTelegrafPluginConfig: jest.fn(),
     onAddConfigValue: jest.fn(),
     onRemoveConfigValue: jest.fn(),
     authToken: '',
     onSetConfigArrayValue: jest.fn(),
-    telegrafPluginName: TelegrafPluginInputCpu.NameEnum.Cpu,
+    telegrafPluginName: 'cpu',
     onSetActiveTelegrafPlugin: jest.fn(),
     onClickPrevious: jest.fn(),
     onClickSkip: jest.fn(),
@@ -43,8 +39,7 @@ describe('DataLoaders.Components.CollectorsWizard.Configure.PluginConfigForm', (
     it('renders text and buttons', async () => {
       setup({
         telegrafPlugin,
-        configFields:
-          telegrafPluginsInfo[TelegrafPluginInputCpu.NameEnum.Cpu].fields,
+        configFields: telegrafPluginsInfo['cpu'].fields,
       })
       const form = await screen.findByTestId('form-container')
       const title = await screen.getByRole('heading', {level: 3})

@@ -43,9 +43,7 @@ export const findLabelsToCreate = (
 }
 
 export const findIncludedVariables = (included: {type: TemplateType}[]) => {
-  return included.filter(
-    (r): r is VariableIncluded => r.type === TemplateType.Variable
-  )
+  return included.filter((r): r is VariableIncluded => r.type === 'variable')
 }
 
 export const findVariablesToCreate = (
@@ -59,7 +57,7 @@ export const findVariablesToCreate = (
 
 export const hasLabelsRelationships = (resource: {
   relationships?: Relationships
-}) => !!resource.relationships && !!resource.relationships[TemplateType.Label]
+}) => !!resource.relationships && !!resource.relationships['label']
 
 export const getLabelRelationships = (resource: {
   relationships?: Relationships
@@ -68,11 +66,11 @@ export const getLabelRelationships = (resource: {
     return []
   }
 
-  return [].concat(resource.relationships[TemplateType.Label].data)
+  return [].concat(resource.relationships['label'].data)
 }
 
 export const getIncludedLabels = (included: {type: TemplateType}[]) =>
-  included.filter((i): i is LabelIncluded => i.type === TemplateType.Label)
+  included.filter((i): i is LabelIncluded => i.type === 'label')
 
 export interface TemplateDetails {
   directory: string

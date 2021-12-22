@@ -5,7 +5,6 @@ import {
   variableToTemplate,
   dashboardToTemplate,
 } from 'src/shared/utils/resourceToTemplate'
-import {TemplateType} from '@influxdata/influx'
 import {createVariable} from 'src/variables/mocks'
 import {
   myDashboard,
@@ -35,7 +34,7 @@ describe('resourceToTemplate', () => {
   describe('labelToRelationship', () => {
     it('converts a label to a relationship struct', () => {
       const actual = labelToRelationship(myfavelabel)
-      const expected = {type: TemplateType.Label, id: myfavelabel.id}
+      const expected = {type: 'label', id: myfavelabel.id}
 
       expect(actual).toEqual(expected)
     })
@@ -45,7 +44,7 @@ describe('resourceToTemplate', () => {
     it('converts a label to a data structure in included', () => {
       const actual = labelToIncluded(myfavelabel)
       const expected = {
-        type: TemplateType.Label,
+        type: 'label',
         id: myfavelabel.id,
         attributes: {
           name: myfavelabel.name,
@@ -241,7 +240,7 @@ describe('resourceToTemplate', () => {
                 },
               },
               id: '037b0c86a92a2000',
-              type: TemplateType.Label,
+              type: 'label',
             },
           ],
         },

@@ -1,4 +1,4 @@
-export {Authorization, Permission} from 'src/client'
+export {Authorization, AuthorizationUpdateRequest, Permission} from 'src/client'
 
 export enum Auth0Connection {
   Google = 'google-oauth2',

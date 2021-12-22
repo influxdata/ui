@@ -6,8 +6,6 @@ import {screen} from '@testing-library/react'
 import ArrayFormElement from 'src/dataLoaders/components/configureStep/streaming/ArrayFormElement'
 import {renderWithReduxAndRouter} from 'src/mockState'
 
-import {TelegrafPluginInputCpu} from '@influxdata/influx'
-
 const setup = (override = {}) => {
   const props = {
     fieldName: '',
@@ -18,7 +16,7 @@ const setup = (override = {}) => {
     fieldType: null,
     helpText: '',
     onSetConfigArrayValue: jest.fn(),
-    telegrafPluginName: TelegrafPluginInputCpu.NameEnum.Cpu,
+    telegrafPluginName: 'cpu',
     ...override,
   }
 

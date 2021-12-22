@@ -4,7 +4,7 @@ import {normalize} from 'normalizr'
 
 // APIs
 import {client} from 'src/utils/api'
-import {ScraperTargetRequest, PermissionResource} from '@influxdata/influx'
+import {ScraperTargetRequest} from '@influxdata/influx'
 import {createAuthorization} from 'src/authorizations/apis'
 
 // Schemas
@@ -42,11 +42,7 @@ import {
   TelegrafEntities,
   Telegraf,
 } from 'src/types'
-import {
-  TelegrafRequest,
-  TelegrafPluginOutputInfluxDBV2,
-  Permission,
-} from '@influxdata/influx'
+import {TelegrafRequest} from '@influxdata/influx'
 import {Dispatch} from 'redux'
 
 // Actions
@@ -386,8 +382,8 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   const {bucket} = getSteps(getState())
 
   const influxDB2Out = {
-    name: TelegrafPluginOutputInfluxDBV2.NameEnum.InfluxdbV2,
-    type: TelegrafPluginOutputInfluxDBV2.TypeEnum.Output,
+    name: 'influxdb_v2',
+    type: 'output',
     config: {
       urls: [`${window.location.origin}`],
       token: '$INFLUX_TOKEN',
@@ -467,17 +463,17 @@ export const generateTelegrafToken = (configID: string) => async (
     }
     const permissions = [
       {
-        action: Permission.ActionEnum.Write,
+        action: 'write',
         resource: {
-          type: PermissionResource.TypeEnum.Buckets,
+          type: 'buckets',
           id: bucket.id,
           orgID,
         },
       },
       {
-        action: Permission.ActionEnum.Read,
+        action: 'read',
         resource: {
-          type: PermissionResource.TypeEnum.Telegrafs,
+          type: 'telegrafs',
           id: configID,
           orgID,
         },
@@ -543,17 +539,17 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
 
     const permissions = [
       {
-        action: Permission.ActionEnum.Write,
+        action: 'write',
         resource: {
-          type: PermissionResource.TypeEnum.Buckets,
+          type: 'buckets',
           id: bucketID,
           orgID: org.id,
         },
       },
       {
-        action: Permission.ActionEnum.Read,
+        action: 'read',
         resource: {
-          type: PermissionResource.TypeEnum.Telegrafs,
+          type: 'telegrafs',
           id: tc.id,
           orgID: org.id,
         },

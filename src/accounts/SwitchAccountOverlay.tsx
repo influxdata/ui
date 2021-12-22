@@ -21,22 +21,21 @@ interface Props {
 }
 
 interface ToggleProps {
-    onClickAcct: (acct:number) => void
+  onClickAcct: (acct: number) => void
 }
 
 const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
   const {userAccounts, activeAccountId} = useContext(UserAccountContext)
 
   const [selectedAcct, setSelectedAcct] = useState(activeAccountId)
-  // console.log('(tg) arghh, default account id?', defaultAccountId)
-  // console.log('(tg) active acct id???', activeAccountId)
 
-  const onChange = ack => {
-    console.log('previously selected....', selectedAcct)
-    console.log('clicked on change....', ack)
-    const numacct = parseInt(ack)
-      onClickAcct(numacct)
-    setSelectedAcct(numacct)
+  // need to change it to a number, so that the equality for
+  // active and isChecked works properly
+  // it is a string because that is how the toggle works
+  const onChange = strValue => {
+    const numAcct = parseInt(strValue)
+    onClickAcct(numAcct)
+    setSelectedAcct(numAcct)
   }
 
   const style = {marginBottom: 7}
@@ -45,8 +44,9 @@ const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
     <React.Fragment>
       {userAccounts.map((account, index) => {
         const idString = `accountSwitch-toggle-choice-${index}`
-
-        const nameSuffix = account.isDefault ? ' (default)' : ''
+        const displayName = account.isDefault
+          ? `${account.name} (default)`
+          : account.name
 
         return (
           <Toggle
@@ -54,19 +54,18 @@ const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
             value={`${account.id}`}
             onChange={onChange}
             type={InputToggleType.Radio}
-            size={ComponentSize.ExtraSmall}
+            size={ComponentSize.Small}
             color={ComponentColor.Primary}
-            testID={idString}
+            testID={`${idString}-ID`}
             name={idString}
             id={idString}
             key={idString}
             style={style}
             checked={account.id === selectedAcct}
           >
-            <InputLabel
-              htmlFor={idString}
-              active={account.id === selectedAcct}
-            >{`${account.name}${nameSuffix}`}</InputLabel>
+            <InputLabel htmlFor={idString} active={account.id === selectedAcct}>
+              {displayName}
+            </InputLabel>
           </Toggle>
         )
       })}
@@ -75,19 +74,23 @@ const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
 }
 
 export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
+  const [newAccountId, setNewAccountId] = useState<number>(null)
 
-    const onClickAcct = (acctNo: number) => {
-        console.log('clicked on acct number....', acctNo)
-    }
+  const doSwitchAccount = () => {
+    console.log('would switch account to this now: ', newAccountId)
+    // todo: set window.location correctly!  (on a timeout?) investigate!
+    onDismissOverlay()
+  }
 
-    return (
+  return (
     <Overlay.Container maxWidth={630}>
       <Overlay.Header title="Switch Account" wrapText={true} />
       <Overlay.Body>
-        <ToggleGroup onClickAcct={onClickAcct} />
+        <ToggleGroup onClickAcct={setNewAccountId} />
       </Overlay.Body>
       <Overlay.Footer>
         <Button text="Cancel" onClick={onDismissOverlay} />
+        <Button text="Switch Account" onClick={doSwitchAccount} />
       </Overlay.Footer>
     </Overlay.Container>
   )

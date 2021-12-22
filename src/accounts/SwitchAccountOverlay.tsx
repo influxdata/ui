@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useState} from 'react'
 
 // Components
 import {
@@ -14,29 +14,34 @@ import {
 
 // Types
 //import {Account as UserAccount} from 'src/client/unityRoutes'
-import {UserAccountContext} from "./context/userAccount";
+import {UserAccountContext} from './context/userAccount'
 
 interface Props {
   onDismissOverlay: () => void
 }
 
-
-
 const ToggleGroup: FC = () => {
-    const {userAccounts, defaultAccountId, activeAccountId} = useContext(UserAccountContext)
+  const {userAccounts, activeAccountId} = useContext(UserAccountContext)
 
-    console.log('(tg) arghh, default account id?', defaultAccountId)
-    console.log('(tg) active acct id???', activeAccountId)
-    const onChange = ack => {
+  const [selectedAcct, setSelectedAcct] = useState(activeAccountId)
+  // console.log('(tg) arghh, default account id?', defaultAccountId)
+  // console.log('(tg) active acct id???', activeAccountId)
+
+  const onChange = ack => {
+    console.log('previously selected....', selectedAcct)
     console.log('clicked on change....', ack)
+    const numacct = parseInt(ack)
+    setSelectedAcct(numacct)
   }
+
+  const style = {marginBottom: 7}
 
   return (
     <React.Fragment>
       {userAccounts.map((account, index) => {
         const idString = `accountSwitch-toggle-choice-${index}`
 
-
+        const nameSuffix = account.isDefault ? ' (default)' : ''
 
         return (
           <Toggle
@@ -50,8 +55,13 @@ const ToggleGroup: FC = () => {
             name={idString}
             id={idString}
             key={idString}
+            style={style}
+            checked={account.id === selectedAcct}
           >
-            <InputLabel htmlFor={idString}>{account.name}</InputLabel>
+            <InputLabel
+              htmlFor={idString}
+              active={account.id === selectedAcct}
+            >{`${account.name}${nameSuffix}`}</InputLabel>
           </Toggle>
         )
       })}
@@ -59,14 +69,12 @@ const ToggleGroup: FC = () => {
   )
 }
 
-export const SwitchAccountOverlay: FC<Props> = ({
-  onDismissOverlay,
-}) => {
+export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   return (
     <Overlay.Container maxWidth={630}>
       <Overlay.Header title="Switch Account" wrapText={true} />
       <Overlay.Body>
-        <ToggleGroup/>
+        <ToggleGroup />
       </Overlay.Body>
       <Overlay.Footer>
         <Button text="Cancel" onClick={onDismissOverlay} />

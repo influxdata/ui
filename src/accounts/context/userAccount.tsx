@@ -18,7 +18,7 @@ export interface UserAccountContextType {
   handleGetAccounts: () => void
   setDefaultAccountId: (id: number) => void
   defaultAccountId: number
-  activeAccountId:number
+  activeAccountId: number
 }
 
 // isActive: true is for the currently logged in/active account
@@ -65,12 +65,11 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
           setDefaultAccountId(defaultId)
         }
 
-        const activeAcctArray = data.filter(line=>line.isActive)
+        const activeAcctArray = data.filter(line => line.isActive)
         if (activeAcctArray && activeAcctArray.length === 1) {
           const activeId = activeAcctArray[0].id
           setActiveAccountId(activeId)
         }
-
       }
     } catch (error) {
       console.log('caught error...', error)

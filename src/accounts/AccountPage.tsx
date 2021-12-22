@@ -12,7 +12,9 @@ import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
 
 const AccountAboutPage: FC = () => {
-  const {userAccounts, defaultAccountId, activeAccountId} = useContext(UserAccountContext)
+  const {userAccounts, defaultAccountId, activeAccountId} = useContext(
+    UserAccountContext
+  )
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
 
   console.log('got userAccounts???', userAccounts)
@@ -20,7 +22,7 @@ const AccountAboutPage: FC = () => {
   console.log('active acct id???', activeAccountId)
 
   const switchAccount = () => {
-    console.log('would switch account here.....')
+    // show the dialog
     setSwitchAccountVisible(true)
   }
 
@@ -42,9 +44,7 @@ const AccountAboutPage: FC = () => {
           />
 
           <Overlay visible={isSwitchAccountVisible}>
-            <SwitchAccountOverlay
-              onDismissOverlay={handleDismissOverlay}
-            />
+            <SwitchAccountOverlay onDismissOverlay={handleDismissOverlay} />
           </Overlay>
         </>
       </AccountTabContainer>

@@ -25,7 +25,7 @@ describe('Onboarding', () => {
     cy.server()
 
     // Will want to capture response from this
-    cy.route('POST', 'api/v2/setup').as('orgSetup')
+    cy.intercept('POST', 'api/v2/setup').as('orgSetup')
 
     // Check and visit splash page
     cy.getByTestID('init-step--head-main').contains('Welcome to InfluxDB')
@@ -113,7 +113,7 @@ describe('Onboarding', () => {
     cy.server()
     cy.wrapEnvironmentVariablesForOss()
 
-    cy.route('POST', 'api/v2/setup').as('orgSetup')
+    cy.intercept('api/v2/setup').as('orgSetup')
 
     // Continue
     cy.getByTestID('onboarding-get-started').click()
@@ -145,7 +145,7 @@ describe('Onboarding', () => {
   it('Can onboard to configure later', () => {
     cy.server()
 
-    cy.route('POST', 'api/v2/setup').as('orgSetup')
+    cy.intercept('api/v2/setup').as('orgSetup')
 
     // Continue
     cy.getByTestID('onboarding-get-started').click()

@@ -389,9 +389,9 @@ describe('color mapping utils', function() {
       dataFromIDPE_fiveSeries.properties as XYViewProperties
     )
 
-    // expect(colorMappingForGiraffe).toStrictEqual(
-    //   expectedData.fiveSeries.mappingForGiraffe
-    // )
+    expect(colorMappingForGiraffe).toStrictEqual(
+      expectedData.fiveSeries.mappingForGiraffe
+    )
     expect(needsToSaveToIDPE).toBe(true)
     expect(colorMappingForIDPE).toStrictEqual(
       expectedData.fiveSeries.mappingForIDPE.colorMapping

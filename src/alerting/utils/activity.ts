@@ -18,16 +18,13 @@ export const runAlertsActivityQuery = (
 ): CancelBox<StatusRow[]> => {
   const start = since ? Math.round(since / 1000) : '-1d'
 
-  const checks = Object.keys(checkIDs)
-  const filterQuery = checks.length
-    ? `\n  |> filter(fn: (r) => contains(value: r._check_id, set: ["${checks.join(
-        '", "'
-      )}"]))`
-    : ''
+  // Empty checkIDs set will result in 0 records being fetched by the following query
+  const checks = Object.keys(checkIDs).join('", "')
   const query = `
 from(bucket: "${MONITORING_BUCKET}")
   |> range(start: ${start})
-  |> filter(fn: (r) => r._measurement == "statuses" and r._field == "_message")${filterQuery}
+  |> filter(fn: (r) => r._measurement == "statuses" and r._field == "_message")
+  |> filter(fn: (r) => contains(value: r._check_id, set: ["${checks}"]))
   |> group(columns: ["_check_name", "_check_id"])
   |> last()
   |> keep(columns: ["_level", "_time", "_value", "_check_name", "_check_id"])

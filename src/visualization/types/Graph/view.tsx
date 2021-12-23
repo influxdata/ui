@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useMemo, useContext} from 'react'
-import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   Config,
   DomainLabel,
@@ -58,12 +58,9 @@ import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 import {getByID} from 'src/resources/selectors'
 import {updateViewAndVariables} from 'src/views/actions/thunks'
 
-type ReduxProps = ConnectedProps<typeof connector>
-interface OwnProps extends VisualizationProps {
+interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
-
-type Props = OwnProps & ReduxProps
 
 const XYPlot: FC<Props> = ({
   properties,
@@ -71,9 +68,6 @@ const XYPlot: FC<Props> = ({
   timeRange,
   annotations,
   cellID,
-  view,
-  saveViewPropertiesToIDPE,
-  veoOpen,
 }) => {
   const {theme, timeZone} = useContext(AppSettingContext)
   const axisTicksOptions = useAxisTicksGenerator(properties)
@@ -83,6 +77,13 @@ const XYPlot: FC<Props> = ({
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const staticLegend = useStaticLegend(properties)
   const dispatch = useDispatch()
+  const view = useSelector((state: AppState) =>
+    getByID<View<XYViewProperties>>(state, ResourceType.Views, cellID)
+  )
+  const {activeTimeMachineID} = useSelector(
+    (state: AppState) => state.timeMachines
+  )
+  const veoOpen = activeTimeMachineID === 'veo'
 
   // these two values are set in the dashboard, and used whether or not this view
   // is in a dashboard or in configuration/single cell popout mode
@@ -208,7 +209,9 @@ const XYPlot: FC<Props> = ({
     if (needsToSaveToIDPE && view?.dashboardID && !veoOpen) {
       const newView = {...view}
       newView.properties.colorMapping = colorMappingForIDPE
-      saveViewPropertiesToIDPE(view.dashboardID, newView)
+
+      // save to IDPE
+      dispatch(updateViewAndVariables(view.dashboardID, newView))
     }
   }
 
@@ -272,29 +275,4 @@ const XYPlot: FC<Props> = ({
   return <Plot config={config} />
 }
 
-const mapStateToProps = (state: AppState, ownProps: OwnProps) => {
-  // the view inside a cell for which we want to update the view properties of
-  const view = getByID<View<XYViewProperties>>(
-    state,
-    ResourceType.Views,
-    ownProps.cellID
-  )
-
-  const {
-    timeMachines: {activeTimeMachineID},
-  } = state
-
-  const veoOpen = activeTimeMachineID === 'veo'
-
-  return {
-    view,
-    veoOpen,
-  }
-}
-
-const mapDispatchToProps = {
-  saveViewPropertiesToIDPE: updateViewAndVariables,
-}
-
-const connector = connect(mapStateToProps, mapDispatchToProps)
-export default connector(XYPlot)
+export default XYPlot

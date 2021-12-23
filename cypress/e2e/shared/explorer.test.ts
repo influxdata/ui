@@ -432,7 +432,7 @@ describe('DataExplorer', () => {
         .click()
     })
 
-    it('shows the proper errors and query button state', () => {
+    it.only('shows the proper errors and query button state', () => {
       cy.getByTestID('time-machine-submit-button').should('be.disabled')
 
       cy.getByTestID('time-machine--bottom').then(() => {

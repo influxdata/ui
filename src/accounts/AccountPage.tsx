@@ -37,11 +37,13 @@ const AccountAboutPage: FC = () => {
           <h1 data-testid="account-about--header">
             hello world on the account settings page
           </h1>
-          <Button
-            text="Switch Account"
-            icon={IconFont.Switch_New}
-            onClick={switchAccount}
-          />
+          {userAccounts && userAccounts.length >= 2 && (
+            <Button
+              text="Switch Account"
+              icon={IconFont.Switch_New}
+              onClick={switchAccount}
+            />
+          )}
 
           <Overlay visible={isSwitchAccountVisible}>
             <SwitchAccountOverlay onDismissOverlay={handleDismissOverlay} />

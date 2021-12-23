@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-describe('Account Page (take 2)', () => {
+describe('Account Page (take 3)', () => {
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() => {
@@ -10,6 +10,7 @@ describe('Account Page (take 2)', () => {
           }).then(() => {
             cy.quartzProvision({
               accountType: 'free',
+              numAccounts: 3,
             }).then(() => {
               cy.visit(`/orgs/${id}/accounts/settings`)
               cy.getByTestID('account-about--header').should('be.visible')

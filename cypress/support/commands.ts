@@ -624,6 +624,7 @@ export type ProvisionData = {
   isOperator?: boolean
   operatorRole?: string
   isRegionBeta?: boolean
+  numAccounts?: number
 }
 
 /*

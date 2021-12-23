@@ -3,8 +3,6 @@ import {get} from 'lodash'
 import {normalize} from 'normalizr'
 
 // APIs
-import {client} from 'src/utils/api'
-import {ScraperTargetRequest} from '@influxdata/influx'
 import {createAuthorization} from 'src/authorizations/apis'
 
 // Schemas
@@ -42,7 +40,6 @@ import {
   TelegrafEntities,
   Telegraf,
 } from 'src/types'
-import {TelegrafRequest} from '@influxdata/influx'
 import {Dispatch} from 'redux'
 
 // Actions
@@ -55,6 +52,15 @@ import {
   TokenCreationError,
 } from 'src/shared/copy/notifications'
 import {postTelegraf, putTelegraf} from 'src/client'
+import {CLOUD} from 'src/shared/constants'
+
+let postScraper
+let patchScraper
+
+if (!CLOUD) {
+  postScraper = require('src/client').postScraper
+  patchScraper = require('src/client').patchScraper
+}
 
 const DEFAULT_COLLECTION_INTERVAL = 10000
 
@@ -520,7 +526,7 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     bucketName = bucket
     const org = getOrg(getState())
 
-    const telegrafRequest: TelegrafRequest = {
+    const telegrafRequest = {
       name: telegrafConfigName,
       description: telegrafConfigDescription,
       agent: {collectionInterval: DEFAULT_COLLECTION_INTERVAL},
@@ -637,14 +643,19 @@ export const saveScraperTarget = () => async (
 
   try {
     if (id) {
-      await client.scrapers.update(id, {url, bucketID})
+      await patchScraper({
+        scraperTargetID: id,
+        data: {url, bucketID},
+      })
     } else {
-      const newTarget = await client.scrapers.create({
-        name,
-        type: ScraperTargetRequest.TypeEnum.Prometheus,
-        url,
-        bucketID,
-        orgID,
+      const newTarget = await postScraper({
+        data: {
+          name,
+          type: 'prometheus',
+          url,
+          bucketID,
+          orgID,
+        },
       })
       dispatch(setScraperTargetID(newTarget.id))
     }

@@ -1,12 +1,10 @@
 import {
-  Document,
-  DocumentCreate,
-  DocumentMeta,
-  TemplateSummary as GenTemplateSummary,
-} from '@influxdata/influx'
-import {
   Cell,
   Dashboard,
+  Document,
+  DocumentCreate,
+  DocumentListEntry,
+  DocumentMeta,
   NormalizedState,
   RemoteDataState,
   Variable,
@@ -34,7 +32,7 @@ export interface InstalledStack extends Stack {
   sources: string[]
 }
 
-export interface TemplateSummary extends Omit<GenTemplateSummary, 'labels'> {
+export interface TemplateSummary extends Omit<DocumentListEntry, 'labels'> {
   labels: string[]
   status: RemoteDataState
 }

@@ -1,9 +1,6 @@
 // Libraries
 import {normalize} from 'normalizr'
 
-// API
-import {client} from 'src/utils/api'
-
 // Schemas
 import {arrayOfScrapers, scraperSchema} from 'src/schemas'
 
@@ -39,6 +36,19 @@ import {
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getStatus} from 'src/resources/selectors'
+import {CLOUD} from 'src/shared/constants'
+
+let getScrapersApi
+let deleteScraperApi
+let postScraper
+let patchScraper
+
+if (!CLOUD) {
+  getScrapersApi = require('src/client').getScrapers
+  deleteScraperApi = require('src/client').deleteScraper
+  postScraper = require('src/client').postScraper
+  patchScraper = require('src/client').patchScraper
+}
 
 type Action = ScraperAction | NotifyAction
 
@@ -57,7 +67,7 @@ export const getScrapers = () => async (
 
     dispatch(setScrapers(RemoteDataState.Loading))
 
-    const resp = await client.scrapers.getAll(org.id)
+    const resp = await getScrapersApi({query: {orgID: org.id}})
 
     const normalized = normalize<Scraper, ScraperEntities, string[]>(
       resp,
@@ -75,7 +85,9 @@ export const createScraper = (scraper: Scraper) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    const resp = await client.scrapers.create(scraper)
+    const resp = await postScraper({
+      data: scraper,
+    })
 
     const normalized = normalize<Scraper, ScraperEntities, string>(
       resp,
@@ -94,7 +106,10 @@ export const updateScraper = (scraper: Scraper) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    const resp = await client.scrapers.update(scraper.id, scraper)
+    const resp = await patchScraper({
+      scraperTargetID: scraper.id,
+      data: scraper,
+    })
     const normalized = normalize<Scraper, ScraperEntities, string>(
       resp,
       scraperSchema
@@ -112,7 +127,7 @@ export const deleteScraper = (scraper: Scraper) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    await client.scrapers.delete(scraper.id)
+    await deleteScraperApi({scraperTargetID: scraper.id})
 
     dispatch(removeScraper(scraper.id))
     dispatch(notify(scraperDeleteSuccess(scraper.name)))

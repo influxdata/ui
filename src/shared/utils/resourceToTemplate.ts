@@ -9,6 +9,7 @@ import {
   Label,
   Dashboard,
   DashboardQuery,
+  DocumentCreate,
   Cell,
   View,
   Variable,
@@ -16,7 +17,6 @@ import {
   LabelIncluded,
   TemplateType,
 } from 'src/types'
-import {DocumentCreate} from '@influxdata/influx'
 
 const CURRENT_TEMPLATE_VERSION = '1'
 

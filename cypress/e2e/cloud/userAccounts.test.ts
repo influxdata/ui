@@ -1,32 +1,33 @@
 import {Organization} from '../../../src/types'
 
-describe('Account Page (take 3)', () => {
-  beforeEach(() =>
-    cy.flush().then(() =>
-      cy.signin().then(() => {
-        cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({
-            uiUnificationFlag: true,
-          }).then(() => {
-            cy.quartzProvision({
-              accountType: 'free',
-              numAccounts: 3,
-            }).then(() => {
-              cy.visit(`/orgs/${id}/accounts/settings`)
-              cy.getByTestID('account-about--header').should('be.visible')
-
-              // cy.visit(`/orgs/${id}/billing`)
-              // cy.getByTestID('billing-page--header').should('be.visible')
-            })
-          })
+const doSetup = (cy, numAccounts: number) => {
+  cy.signin().then(() => {
+    console.log('in nest-0')
+    cy.get('@org').then(({id}: Organization) => {
+      console.log('in nest-1')
+      cy.setFeatureFlags({
+        uiUnificationFlag: true,
+      }).then(() => {
+        console.log('in nest-2')
+        cy.quartzProvision({
+          accountType: 'free',
+          numAccounts,
+        }).then(() => {
+          cy.visit(`/orgs/${id}/accounts/settings`)
+          console.log('in nest-3')
         })
       })
-    )
-  )
+    })
+  })
+}
+
+describe('Account Page (take 3)', () => {
+  beforeEach(() => doSetup(cy, 3))
 
   it('can get to the page and get the accounts', () => {
     console.log('hi there')
     //cy.pause();
     expect(true).to.equal(true)
+    cy.getByTestID('account-about--header').should('be.visible')
   })
 })

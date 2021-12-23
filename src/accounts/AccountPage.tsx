@@ -42,6 +42,7 @@ const AccountAboutPage: FC = () => {
               text="Switch Account"
               icon={IconFont.Switch_New}
               onClick={switchAccount}
+              testID="user-account-switch-btn"
             />
           )}
 

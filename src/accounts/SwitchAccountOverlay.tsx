@@ -1,6 +1,8 @@
 // Libraries
 import React, {FC, useContext, useState} from 'react'
 
+import {CLOUD_URL} from 'src/shared/constants'
+
 // Components
 import {
   Button,
@@ -77,10 +79,11 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   const [newAccountId, setNewAccountId] = useState<number>(null)
 
   const doSwitchAccount = () => {
-    console.log('would switch account to this now: ', newAccountId)
-    // todo: set window.location correctly!  (on a timeout?) investigate!
+    // console.log('would switch account to this now: ', newAccountId)
     onDismissOverlay()
-    window.location.href = `/accounts/${newAccountId}`
+
+    // console.log('cloud url????', CLOUD_URL);
+    window.location.href = `${CLOUD_URL}/accounts/${newAccountId}`
   }
 
   return (

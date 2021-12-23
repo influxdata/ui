@@ -432,7 +432,7 @@ describe('DataExplorer', () => {
         .click()
     })
 
-    it.only('shows the proper errors and query button state', () => {
+    it('shows the proper errors and query button state', () => {
       cy.getByTestID('time-machine-submit-button').should('be.disabled')
 
       cy.getByTestID('time-machine--bottom').then(() => {
@@ -527,7 +527,7 @@ describe('DataExplorer', () => {
       })
     })
 
-    it('shows the empty state when the query returns no results', () => {
+    it.only('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor').should('be.visible')
           .monacoType(`from(bucket: "defbuck"{rightarrow}

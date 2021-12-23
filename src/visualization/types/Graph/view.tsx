@@ -83,7 +83,7 @@ const XYPlot: FC<Props> = ({
   const {activeTimeMachineID} = useSelector(
     (state: AppState) => state.timeMachines
   )
-  const veoOpen = activeTimeMachineID === 'veo'
+  const isVeoOpen = activeTimeMachineID === 'veo'
 
   // these two values are set in the dashboard, and used whether or not this view
   // is in a dashboard or in configuration/single cell popout mode
@@ -206,7 +206,7 @@ const XYPlot: FC<Props> = ({
 
     // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.
     // when VEO is open, prevent from saving because it causes state issues. It will be handled in the timemachine code separately.
-    if (needsToSaveToIDPE && view?.dashboardID && !veoOpen) {
+    if (needsToSaveToIDPE && view?.dashboardID && !isVeoOpen) {
       const newView = {...view}
       newView.properties.colorMapping = colorMappingForIDPE
 

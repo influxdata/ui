@@ -1,3 +1,3 @@
 export type CheckIDsMap = {
-  [_: string]: boolean
+  [key: string]: boolean
 }

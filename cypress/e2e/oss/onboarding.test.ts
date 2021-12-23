@@ -21,7 +21,7 @@ describe('Onboarding', () => {
       )
   )
 
-  it('Can Onboard to Quick Start', () => {
+  it.only('Can Onboard to Quick Start', () => {
     cy.server()
 
     // Will want to capture response from this
@@ -86,8 +86,11 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then(xhr => {
-      const orgId: string = xhr.responseBody.org.id
+    cy.get('@orgSetup').then(req => {
+      const {
+        response: {body},
+      } = req
+      const orgId: string = body.org.id
 
       // wait for new page to load
       cy.location('pathname').should('include', 'onboarding/2')
@@ -125,8 +128,11 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then(xhr => {
-      const orgId: string = xhr.responseBody.org.id
+    cy.get('@orgSetup').then(req => {
+      const {
+        response: {body},
+      } = req
+      const orgId: string = body.org.id
 
       // wait for new page to load
       cy.location('pathname').should('include', 'onboarding/2')
@@ -157,8 +163,12 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then(xhr => {
-      const orgId: string = xhr.responseBody.org.id
+    cy.get('@orgSetup').then(req => {
+      const {
+        response: {body},
+      } = req
+      const orgId: string = body.org.id
+
       // wait for new page to load
 
       cy.location('pathname').should('include', 'onboarding/2')

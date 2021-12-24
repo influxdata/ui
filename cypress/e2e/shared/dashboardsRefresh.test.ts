@@ -46,17 +46,37 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('button').click()
         cy.getByTestID('switch-to-script-editor').should('be.visible')
         cy.getByTestID('switch-to-script-editor').click()
+        // adding in these assertions since lazy loading the script editor
+        // makes this a painfully slow and flakey test
+        cy.getByTestID('switch-query-builder-confirm--button').should(
+          'be.visible'
+        )
+        cy.get('.time-machine-queries--new').click()
+        // switch between tabs
+        cy.get('.query-tab')
+          .first()
+          .click()
+        cy.get('.query-tab')
+          .last()
+          .click()
+        cy.get('.query-tab--close')
+          .last()
+          .click()
+        cy.getByTestID('view-type--dropdown').click()
+        cy.getByTestID('view-type--gauge').click()
+        cy.getByTestID('raw-data--toggle').click()
         cy.getByTestID('toolbar-tab').click()
+        // added all of the above to fill out the test while the monaco editor loads
         const query1 = `from(bucket: "schmucket")
 |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["container_name"] == "cool")`
-        cy.getByTestID('flux-editor').monacoType(query1)
         cy.getByTestID('overlay').within(() => {
           cy.getByTestID('page-title')
             .click()
             .focused()
             .clear()
             .type('blah{enter}', {force: true})
+          cy.getByTestID('flux-editor').monacoType(query1)
           cy.getByTestID('save-cell--button').click()
         })
       })
@@ -149,11 +169,7 @@ describe('Dashboard refresh', () => {
           cy.getByTestID('cancel-cell-edit--button').click()
         })
 
-        const queriesMade = cy.state('requests').filter((call: any) => {
-          call.alias === 'refreshQuery'
-        }).length
-
-        expect(queriesMade).to.equal(0)
+        expect(!!cy.state('requests')).to.eq(false)
 
         cy.visit(routeToReturnTo)
         cy.wait('@refreshQuery')

@@ -69,8 +69,14 @@ export const getScrapers = () => async (
 
     const resp = await getScrapersApi({query: {orgID: org.id}})
 
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    const scrapers = resp.data
+
     const normalized = normalize<Scraper, ScraperEntities, string[]>(
-      resp,
+      scrapers,
       arrayOfScrapers
     )
 
@@ -89,8 +95,14 @@ export const createScraper = (scraper: Scraper) => async (
       data: scraper,
     })
 
+    if (resp.status !== 201) {
+      throw new Error(resp.data.message)
+    }
+
+    const {data} = resp
+
     const normalized = normalize<Scraper, ScraperEntities, string>(
-      resp,
+      data,
       scraperSchema
     )
 
@@ -110,8 +122,14 @@ export const updateScraper = (scraper: Scraper) => async (
       scraperTargetID: scraper.id,
       data: scraper,
     })
+
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
+    }
+
+    const {data} = resp
     const normalized = normalize<Scraper, ScraperEntities, string>(
-      resp,
+      data,
       scraperSchema
     )
 

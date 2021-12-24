@@ -648,7 +648,7 @@ export const saveScraperTarget = () => async (
         data: {url, bucketID},
       })
     } else {
-      const newTarget = await postScraper({
+      const resp = await postScraper({
         data: {
           name,
           type: 'prometheus',
@@ -657,7 +657,13 @@ export const saveScraperTarget = () => async (
           orgID,
         },
       })
-      dispatch(setScraperTargetID(newTarget.id))
+
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+
+      const scraper = resp.data
+      dispatch(setScraperTargetID(scraper.id))
     }
   } catch (error) {
     console.error()

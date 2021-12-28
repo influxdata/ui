@@ -34,9 +34,6 @@ const AccountAboutPage: FC = () => {
     <Page titleTag={pageTitleSuffixer(['About', 'Account'])}>
       <AccountTabContainer activeTab="about">
         <>
-          <h1 data-testid="account-about--header">
-            hello world on the account settings page
-          </h1>
           {userAccounts && userAccounts.length >= 2 && (
             <Button
               text="Switch Account"
@@ -45,6 +42,10 @@ const AccountAboutPage: FC = () => {
               testID="user-account-switch-btn"
             />
           )}
+          <hr/>
+          <h2  data-testid="account-settings--header" > Account Details </h2>
+           <div> ack ack ack ack (4) </div>
+
 
           <Overlay visible={isSwitchAccountVisible}>
             <SwitchAccountOverlay onDismissOverlay={handleDismissOverlay} />

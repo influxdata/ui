@@ -27,6 +27,7 @@ describe('Account Page; user with 3 accounts', () => {
   it('can get to the page and get the accounts, and the switch button is showing', () => {
     cy.getByTestID('account-settings--header').should('be.visible')
     cy.getByTestID('user-account-switch-btn').should('be.visible')
+    cy.getByTestID('account-active-name--block').contains('Influx')
   })
 })
 
@@ -36,5 +37,8 @@ describe('Account Page; user with one account', () => {
   it('can get to the page and get the accounts, and the switch button is NOT showing', () => {
     cy.getByTestID('account-settings--header').should('be.visible')
     cy.getByTestID('user-account-switch-btn').should('not.exist')
+
+
+    cy.getByTestID('account-active-name--block').contains('Veganomicon')
   })
 })

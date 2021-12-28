@@ -25,10 +25,26 @@ const doSetup = (cy, numAccounts: number) => {
 describe('Account Page; user with 3 accounts', () => {
   beforeEach(() => doSetup(cy, 3))
 
-  it('can get to the page and get the accounts, and the switch button is showing', () => {
+  it.only('can get to the page and get the accounts, and the switch button is showing', () => {
     cy.getByTestID('account-settings--header').should('be.visible')
     cy.getByTestID('user-account-switch-btn').should('be.visible')
     cy.getByTestID('account-active-name--block').contains('Influx')
+
+    cy.getByTestID('user-account-switch-btn').click()
+
+    cy.getByTestID('switch-account--dialog').within(() => {
+      const prefix = 'accountSwitch-toggle-choice'
+
+      cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
+      cy.getByTestID(`${prefix}-0-ID`).contains('Influx')
+      cy.getByTestID(`${prefix}-0-ID--input`).should('be.checked')
+
+      cy.getByTestID(`${prefix}-1-ID`).should('be.visible')
+      cy.getByTestID(`${prefix}-1-ID`).contains('Veganomicon (default)')
+
+      cy.getByTestID(`${prefix}-2-ID`).should('be.visible')
+      cy.getByTestID(`${prefix}-2-ID`).contains('Stradivarius')
+    })
   })
 })
 

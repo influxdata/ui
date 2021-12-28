@@ -1,10 +1,10 @@
 // Types
 import {
   CommunityTemplate,
+  DocumentCreate,
   RemoteDataState,
   TemplateSummaryEntities,
 } from 'src/types'
-import {DocumentCreate} from '@influxdata/influx'
 import {NormalizedSchema} from 'normalizr'
 
 import {InstalledStack} from 'src/types'

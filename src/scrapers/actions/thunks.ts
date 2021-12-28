@@ -68,18 +68,16 @@ export const getScrapers = () => async (
     dispatch(setScrapers(RemoteDataState.Loading))
 
     const resp = await getScrapersApi({query: {orgID: org.id}})
-
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
 
-    const scrapers = resp.data
+    const scrapers = resp.data.configurations
 
     const normalized = normalize<Scraper, ScraperEntities, string[]>(
       scrapers,
       arrayOfScrapers
     )
-
     dispatch(setScrapers(RemoteDataState.Done, normalized))
   } catch (error) {
     console.error(error)

@@ -21,6 +21,8 @@ const AccountAboutPage: FC = () => {
   console.log('arghh, default account id?', defaultAccountId)
   console.log('active acct id???', activeAccountId)
 
+  const activeAcctName= userAccounts && userAccounts.filter(acct => acct.isActive)[0].name
+
   const switchAccount = () => {
     // show the dialog
     setSwitchAccountVisible(true)
@@ -44,7 +46,7 @@ const AccountAboutPage: FC = () => {
           )}
           <hr/>
           <h2  data-testid="account-settings--header" > Account Details </h2>
-           <div> ack ack ack ack (4) </div>
+           <div> Currently logged in Active Account: {activeAcctName} </div>
 
 
           <Overlay visible={isSwitchAccountVisible}>

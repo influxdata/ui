@@ -14,7 +14,6 @@ import {
 import {OnboardingStepProps} from 'src/onboarding/containers/OnboardingWizard'
 import {RouteComponentProps} from 'react-router-dom'
 import {NumericColumnData} from '@influxdata/giraffe'
-import {PermissionResource} from '@influxdata/influx'
 import {CLOUD} from 'src/shared/constants'
 
 export const queryConfig = {
@@ -991,7 +990,7 @@ export const auth2 = {
     {
       action: 'read',
       resource: {
-        type: PermissionResource.TypeEnum.Scrapers,
+        type: 'scrapers',
         orgID: '039edab314789000',
         org: 'a',
       },
@@ -999,7 +998,7 @@ export const auth2 = {
     {
       action: 'write',
       resource: {
-        type: PermissionResource.TypeEnum.Scrapers,
+        type: 'scrapers',
         orgID: '039edab314789000',
         org: 'a',
       },

@@ -9,12 +9,11 @@ import {SetupSuccess, SetupError} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // APIs
-import {client} from 'src/utils/api'
 import * as api from 'src/client'
 
 // Types
 import {AppThunk} from 'src/types'
-import {ISetupParams} from '@influxdata/influx'
+import {OnboardingRequest} from 'src/client'
 
 export type Action =
   | SetSetupParams
@@ -24,10 +23,12 @@ export type Action =
 
 interface SetSetupParams {
   type: 'SET_SETUP_PARAMS'
-  payload: {setupParams: ISetupParams}
+  payload: {setupParams: OnboardingRequest}
 }
 
-export const setSetupParams = (setupParams: ISetupParams): SetSetupParams => ({
+export const setSetupParams = (
+  setupParams: OnboardingRequest
+): SetSetupParams => ({
   type: 'SET_SETUP_PARAMS',
   payload: {setupParams},
 })
@@ -69,14 +70,18 @@ export const setBucketID = (bucketID: string): SetBucketID => ({
 })
 
 export const setupAdmin = (
-  params: ISetupParams
+  params: OnboardingRequest
 ): AppThunk<Promise<boolean>> => async dispatch => {
   try {
     dispatch(setSetupParams(params))
-    const response = await client.setup.create(params)
+    const response = await api.postSetup({data: params})
 
-    const {id: orgID} = response.org
-    const {id: bucketID} = response.bucket
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const {id: orgID} = response.data.org
+    const {id: bucketID} = response.data.bucket
 
     dispatch(setOrganizationID(orgID))
     dispatch(setBucketID(bucketID))

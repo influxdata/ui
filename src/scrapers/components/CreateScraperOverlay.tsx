@@ -12,8 +12,7 @@ import CreateScraperForm from 'src/scrapers/components/CreateScraperForm'
 import {createScraper} from 'src/scrapers/actions/thunks'
 
 // Types
-import {ScraperTargetRequest} from '@influxdata/influx'
-import {AppState, Bucket, ResourceType} from 'src/types'
+import {AppState, Bucket, ResourceType, ScraperTargetRequest} from 'src/types'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
@@ -48,7 +47,7 @@ class CreateScraperOverlay extends PureComponent<Props, State> {
     this.state = {
       scraper: {
         name: 'Name this Scraper',
-        type: ScraperTargetRequest.TypeEnum.Prometheus,
+        type: 'prometheus',
         url: `${this.origin}/metrics`,
         orgID,
         bucketID: bucketID ? bucketID : firstBucketID,

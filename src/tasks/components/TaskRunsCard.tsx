@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 
@@ -45,6 +45,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
   const members = useSelector((state: AppState) => state.resources.members.byID)
   const org = useSelector(getOrg)
   const history = useHistory()
+  const [route, setRoute] = useState(`/orgs/${org.id}/tasks/${task.id}/edit`)
   const changeToggle = () => {
     dispatch(
       updateTaskStatus({
@@ -64,18 +65,43 @@ const TaskRunsCard: FC<Props> = ({task}) => {
   }
 
   const handleEditTask = () => {
-    if (isFlagEnabled('createWithFlows')) {
-      history.push(`/notebook/from/task/${task.id}`)
-      return
+    if (!isFlagEnabled('createWithFlows')) {
+      dispatch(setCurrentTasksPage(TaskPage.TaskRunsPage))
     }
 
-    dispatch(setCurrentTasksPage(TaskPage.TaskRunsPage))
-    history.push(`/orgs/${org.id}/tasks/${task.id}/edit`)
+    history.push(route)
   }
 
   useEffect(() => {
     dispatch(getMembers())
   }, [])
+
+  useEffect(() => {
+    if (!isFlagEnabled('createWithFlows')) {
+      return
+    }
+
+    fetch(`/api/v2private/notebooks/resources?type=task&resource=${task.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip',
+      },
+    })
+      .then(resp => {
+        return resp.json()
+      })
+      .then(resp => {
+        if (resp.length) {
+          setRoute(`/orgs/${org.id}/notebooks/${resp[0].notebookID}`)
+        } else {
+          setRoute(`/notebook/from/task/${task.id}`)
+        }
+      })
+      .catch(() => {
+        setRoute(`/notebook/from/task/${task.id}`)
+      })
+  }, [isFlagEnabled('createWithFlows')])
 
   if (!task) {
     return null

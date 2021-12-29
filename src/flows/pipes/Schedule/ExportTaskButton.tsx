@@ -21,8 +21,7 @@ import {checkTaskLimits} from 'src/cloud/actions/limits'
 // Components
 import {Button} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
-import {PopupContext} from 'src/flows/context/popup'
-import ExportTaskOverlay from 'src/flows/pipes/Schedule/ExportTaskOverlay'
+import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -45,65 +44,87 @@ const ExportTaskButton: FC<Props> = ({
   onCreate,
   disabled,
 }) => {
-  const {data, range} = useContext(PipeContext)
-  const {launch} = useContext(PopupContext)
+  const {flow} = useContext(FlowContext)
+  const {data} = useContext(PipeContext)
   const dispatch = useDispatch()
   const org = useSelector(getOrg)
 
   const onClick = () => {
     const query = generate ? generate() : data.query
 
-    if (isFlagEnabled('removeExportModal')) {
-      event('Export Task Modal Skipped', {from: type})
+    event('Export Task Modal Skipped', {from: type})
+    let taskid
 
-      // we can soft delete the previously connected task by marking the old one inactive
-      if (data?.task?.id) {
-        patchTask({
-          taskID: data.task.id,
-          data: {
-            status: 'inactive',
-          },
-        })
-      } else if ((data?.task ?? []).length) {
-        patchTask({
-          taskID: data.task[0].id,
-          data: {
-            status: 'inactive',
-          },
-        })
-      }
-
-      postTask({data: {orgID: org.id, flux: query}})
-        .then(resp => {
-          if (resp.status !== 201) {
-            throw new Error(resp.data.message)
-          }
-
-          dispatch(notify(taskCreatedSuccess()))
-          dispatch(checkTaskLimits())
-
-          if (onCreate) {
-            onCreate(resp.data)
-          }
-        })
-        .catch(error => {
-          if (error?.response?.status === ASSET_LIMIT_ERROR_STATUS) {
-            dispatch(notify(resourceLimitReached('tasks')))
-          } else {
-            const message = getErrorMessage(error)
-            dispatch(notify(taskNotCreated(message)))
-          }
-        })
-
-      return
+    // we can soft delete the previously connected task by marking the old one inactive
+    if (data?.task?.id) {
+      taskid = data.task.id
+    } else if ((data?.task ?? []).length) {
+      taskid = data.task[0].id
     }
 
-    event('Export Task Clicked', {from: type})
-    launch(<ExportTaskOverlay text={text} type={type} />, {
-      bucket: data.bucket,
-      query,
-      range,
-    })
+    if (taskid) {
+      patchTask({
+        taskID: taskid,
+        data: {
+          status: 'inactive',
+        },
+      })
+
+      if (isFlagEnabled('createWithFlows')) {
+        fetch(
+          `/api/v2private/notebooks/${flow.id}/resources?type=task&resource=${taskid}`,
+          {
+            method: 'GET',
+          }
+        )
+          .then(resp => resp.json())
+          .then(resp => {
+            if (!resp.length) {
+              return
+            }
+
+            fetch(
+              `/api/v2private/notebooks/${flow.id}/resources/${resp[0].id}`,
+              {
+                method: 'DELETE',
+              }
+            )
+          })
+      }
+    }
+
+    postTask({data: {orgID: org.id, flux: query}})
+      .then(resp => {
+        if (resp.status !== 201) {
+          throw new Error(resp.data.message)
+        }
+
+        if (isFlagEnabled('createWithFlows')) {
+          fetch(`/api/v2private/notebooks/${flow.id}/resources`, {
+            method: 'POST',
+            body: JSON.stringify({
+              panel: data.id,
+              resource: resp.data.id,
+              type: 'task',
+            }),
+          })
+        }
+
+        dispatch(notify(taskCreatedSuccess()))
+        dispatch(checkTaskLimits())
+
+        if (onCreate) {
+          onCreate(resp.data)
+        }
+      })
+      .catch(error => {
+        if (error?.response?.status === ASSET_LIMIT_ERROR_STATUS) {
+          dispatch(notify(resourceLimitReached('tasks')))
+        } else {
+          const message = getErrorMessage(error)
+          dispatch(notify(taskNotCreated(message)))
+        }
+      })
   }
 
   return (

@@ -54,7 +54,7 @@ interface Share {
 }
 
 const FlowHeader: FC = () => {
-  const {remove, clone} = useContext(FlowListContext)
+  const {remove, clone, currentID} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
@@ -120,6 +120,48 @@ const FlowHeader: FC = () => {
         event('Delete Share Link')
       })
       .catch(err => console.error('failed to delete share', err))
+  }
+
+  const downloadAsPDF = () => {
+    console.log('download PDF...')
+    console.log('FlowListContext ID', currentID)
+    const canvas = document.getElementById(currentID)
+    console.log(canvas)
+    import('html2canvas').then((module: any) =>
+      module
+        .default(canvas as HTMLDivElement, {
+          backgroundColor: '#07070e',
+        })
+        .then(result => {
+          import('jspdf').then((jsPDF: any) => {
+            const doc = new jsPDF.default({
+              orientation: 'landscape',
+              unit: 'pt',
+              format: 'a4',
+            })
+            doc.text(flow.name, 0, 20)
+            var imgData = result.toDataURL('image/png')
+            // a4 format landscape size in pt unit is 842 x 595
+            var imgWidth = 842
+            var pageHeight = 595
+            var imgHeight = (result.height * imgWidth) / result.width
+            var heightLeft = imgHeight
+            var position = 0
+
+            doc.addImage(imgData, 'PNG', 0, position + 40, imgWidth, imgHeight)
+            heightLeft -= pageHeight
+
+            // add multiple pages
+            while (heightLeft >= 0) {
+              position = heightLeft - imgHeight
+              doc.addPage()
+              doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+              heightLeft -= pageHeight
+            }
+            doc.save('visualization.pdf')
+          })
+        })
+    )
   }
 
   const generateLink = () => {
@@ -249,6 +291,14 @@ const FlowHeader: FC = () => {
                     titleText="Share Notebook"
                   />
                 </FeatureFlag>
+                <SquareButton
+                  icon={IconFont.Wood}
+                  onClick={downloadAsPDF}
+                  color={
+                    !!share ? ComponentColor.Primary : ComponentColor.Secondary
+                  }
+                  titleText="Download PDF"
+                />
               </>
             )}
             <FeatureFlag name="flow-snapshot">

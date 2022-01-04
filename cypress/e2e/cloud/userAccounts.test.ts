@@ -44,6 +44,18 @@ describe('Account Page; user with 3 accounts', () => {
 
       cy.getByTestID(`${prefix}-2-ID`).should('be.visible')
       cy.getByTestID(`${prefix}-2-ID`).contains('Stradivarius')
+
+      // at first; the switch button should be disabled:
+      cy.getByTestID('actually-switch-account--btn').should('be.disabled')
+
+      // now:  select another option:
+      cy.getByTestID(`${prefix}-2-ID`).click()
+
+      // check that it is selected before checking the button enabled state:
+      cy.getByTestID(`${prefix}-2-ID--input`).should('be.checked')
+
+      // now; the button should be enabled:
+      cy.getByTestID('actually-switch-account--btn').should('be.enabled')
     })
   })
 })

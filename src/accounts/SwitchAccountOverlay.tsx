@@ -14,8 +14,9 @@ import {
   Toggle,
 } from '@influxdata/clockface'
 
-// Types
-//import {Account as UserAccount} from 'src/client/unityRoutes'
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 import {UserAccountContext} from './context/userAccount'
 import {ComponentStatus} from '../clockface'
 
@@ -83,20 +84,18 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   const {activeAccountId} = useContext(UserAccountContext)
 
   const doSwitchAccount = () => {
-    // console.log('would switch account to this now: ', newAccountId)
     onDismissOverlay()
+    event('multiAccount.switchAccount')
 
-    // console.log('cloud url????', CLOUD_URL);
     window.location.href = `${CLOUD_URL}/accounts/${newAccountId}`
   }
 
   useEffect(() => {
-    console.log('got new account id, setting button state....', newAccountId)
     const bStatus =
       !newAccountId || newAccountId === activeAccountId
         ? ComponentStatus.Disabled
         : ComponentStatus.Default
-    console.log('(umbrella) settin button status....', bStatus)
+
     setButtonStatus(bStatus)
   }, [newAccountId])
 
@@ -116,6 +115,7 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
           onClick={doSwitchAccount}
           status={buttonStatus}
           disabledTitleText={disabledTitleText}
+          testID="actually-switch-account--btn"
         />
       </Overlay.Footer>
     </Overlay.Container>

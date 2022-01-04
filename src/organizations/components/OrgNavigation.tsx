@@ -32,8 +32,6 @@ enum Tab {
 const OrgNavigation: FC<Props> = ({activeTab}) => {
   const orgID = useSelector(getOrg)?.id
 
-  console.log('inside org navigation!', activeTab)
-
   const tabs: OrgPageTab[] = [
     {
       text: 'Members',

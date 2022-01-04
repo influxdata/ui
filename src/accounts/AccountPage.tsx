@@ -48,8 +48,7 @@ const AccountAboutPage: FC = () => {
           <hr />
           <h2 data-testid="account-settings--header"> Account Details </h2>
           <div data-testid="account-active-name--block">
-            {' '}
-            Currently logged in Active Account: {activeAcctName}{' '}
+            Currently logged in Active Account: {activeAcctName}
           </div>
 
           <Overlay visible={isSwitchAccountVisible}>

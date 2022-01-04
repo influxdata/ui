@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC, useContext, useState, useEffect} from 'react'
 
 import {CLOUD_URL} from 'src/shared/constants'
 
@@ -17,6 +17,7 @@ import {
 // Types
 //import {Account as UserAccount} from 'src/client/unityRoutes'
 import {UserAccountContext} from './context/userAccount'
+import {ComponentStatus} from '../clockface'
 
 interface Props {
   onDismissOverlay: () => void
@@ -77,6 +78,9 @@ const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
 
 export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   const [newAccountId, setNewAccountId] = useState<number>(null)
+  const [buttonStatus, setButtonStatus] = useState(ComponentStatus.Disabled)
+
+  const {activeAccountId} = useContext(UserAccountContext)
 
   const doSwitchAccount = () => {
     // console.log('would switch account to this now: ', newAccountId)
@@ -86,6 +90,18 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
     window.location.href = `${CLOUD_URL}/accounts/${newAccountId}`
   }
 
+  useEffect(() => {
+    console.log('got new account id, setting button state....', newAccountId)
+    const bStatus =
+      !newAccountId || newAccountId === activeAccountId
+        ? ComponentStatus.Disabled
+        : ComponentStatus.Default
+    console.log('(umbrella) settin button status....', bStatus)
+    setButtonStatus(bStatus)
+  }, [newAccountId])
+
+  //
+
   return (
     <Overlay.Container maxWidth={630} testID="switch-account--dialog">
       <Overlay.Header title="Switch Account" wrapText={true} />
@@ -94,7 +110,11 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
       </Overlay.Body>
       <Overlay.Footer>
         <Button text="Cancel" onClick={onDismissOverlay} />
-        <Button text="Switch Account" onClick={doSwitchAccount} />
+        <Button
+          text="Switch Account"
+          onClick={doSwitchAccount}
+          status={buttonStatus}
+        />
       </Overlay.Footer>
     </Overlay.Container>
   )

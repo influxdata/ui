@@ -16,21 +16,19 @@ export type Props = {
 export interface UserAccountContextType {
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
-  setDefaultAccountId: (id: number) => void
+
   defaultAccountId: number
   activeAccountId: number
 }
+//   todo: add to above when implementing:
+//    setDefaultAccountId: (id: number) => void
 
 // isActive: true is for the currently logged in/active account
-
 export const DEFAULT_CONTEXT: UserAccountContextType = {
   userAccounts: [],
   defaultAccountId: -1,
   activeAccountId: -1,
   handleGetAccounts: () => {},
-  setDefaultAccountId: (id: number) => {
-    console.log('would set id here....', id)
-  },
 }
 
 export const UserAccountContext = React.createContext<UserAccountContextType>(
@@ -53,7 +51,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         // set user account status to error;...TODO
         throw new Error(resp.data.message)
       }
-      //console.log('got the data response!', resp.data)
       const {data} = resp
       if (Array.isArray(data)) {
         setUserAccounts(data)
@@ -61,7 +58,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         const defaultAcctArray = data.filter(line => line.isDefault)
         if (defaultAcctArray && defaultAcctArray.length === 1) {
           const defaultId = defaultAcctArray[0].id
-          //console.log('got the default id....', defaultId)
           setDefaultAccountId(defaultId)
         }
 
@@ -72,7 +68,8 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         }
       }
     } catch (error) {
-      console.log('caught error...', error)
+      // leaving this in for now while developing; will remove when feature is done
+      console.error('caught error...', error)
     }
   }, [dispatch])
 

@@ -100,7 +100,8 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
     setButtonStatus(bStatus)
   }, [newAccountId])
 
-  //
+  const disabledTitleText =
+    'Select a Different Account to Enable the Switch Button'
 
   return (
     <Overlay.Container maxWidth={630} testID="switch-account--dialog">
@@ -114,6 +115,7 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
           text="Switch Account"
           onClick={doSwitchAccount}
           status={buttonStatus}
+          disabledTitleText={disabledTitleText}
         />
       </Overlay.Footer>
     </Overlay.Container>

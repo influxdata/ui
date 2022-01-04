@@ -12,14 +12,8 @@ import {UserAccountContext} from 'src/accounts/context/userAccount'
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
 
 const AccountAboutPage: FC = () => {
-  const {userAccounts, defaultAccountId, activeAccountId} = useContext(
-    UserAccountContext
-  )
+  const {userAccounts} = useContext(UserAccountContext)
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
-
-  console.log('got userAccounts???', userAccounts)
-  console.log('arghh, default account id?', defaultAccountId)
-  console.log('active acct id???', activeAccountId)
 
   const activeAcctName =
     userAccounts && userAccounts.filter(acct => acct.isActive)[0].name
@@ -61,8 +55,6 @@ const AccountAboutPage: FC = () => {
 }
 
 const AccountPage: FC = () => {
-  //todo:  look at userlistcontainer for a tabbed example!
-
   return (
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <UserAccountProvider>

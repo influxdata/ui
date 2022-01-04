@@ -35,7 +35,8 @@ export const UserAccountContext = React.createContext<UserAccountContextType>(
   DEFAULT_CONTEXT
 )
 
-//todo:  put in dependency array:  whenever the default account changes, should redo the call.
+// todo:  put in dependency array:  whenever the default account changes, should redo the call.
+// put this in *after* the ability to change the default account has been added
 
 export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)

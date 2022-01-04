@@ -12,7 +12,13 @@ import {
   JustifyContent,
   Panel,
 } from '@influxdata/clockface'
-import React, {FC} from 'react'
+import React, {Component, FC} from 'react'
+import {connect} from 'react-redux'
+import {getOrg} from 'src/organizations/selectors'
+
+import {withRouter, RouteComponentProps} from 'react-router-dom'
+
+import {AppState, Organization} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -20,6 +26,12 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 // Components
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import GetInfluxButton from 'src/shared/components/GetInfluxButton'
+
+interface StateProps {
+  org: Organization
+}
+
+type Props = RouteComponentProps & StateProps
 
 const NotFoundNew: FC = () => (
   <AppWrapper type="funnel" className="page-not-found">
@@ -129,12 +141,40 @@ const NotFoundOld: FC = () => (
   </div>
 )
 
-const NotFound: FC = () => {
-  if (isFlagEnabled('newNotFoundPage')) {
-    return <NotFoundNew />
+class NotFound extends Component<Props> {
+  componentDidMount() {
+    if (isFlagEnabled('deepLinking')) {
+      const deepLinkingMap = {
+        '/me/alerts': `/orgs/${this.props.org.id}/alerting`,
+        '/me/billing': `/orgs/${this.props.org.id}/billing`,
+        '/me/dashboards': `/orgs/${this.props.org.id}/dashboards-list`,
+        '/me/notebooks': `/orgs/${this.props.org.id}/notebooks`,
+        '/me/tasks': `/orgs/${this.props.org.id}/tasks`,
+        '/me/usage': `/orgs/${this.props.org.id}/usage`,
+      }
+
+      if (deepLinkingMap.hasOwnProperty(this.props.location.pathname)) {
+        this.props.history.replace(deepLinkingMap[this.props.location.pathname])
+        return
+      }
+    }
   }
 
-  return <NotFoundOld />
+  render() {
+    if (isFlagEnabled('newNotFoundPage')) {
+      return <NotFoundNew />
+    }
+
+    return <NotFoundOld />
+  }
 }
 
-export default NotFound
+const mstp = (state: AppState) => {
+  return {
+    org: getOrg(state),
+  }
+}
+
+const connector = connect(mstp)
+
+export default connector(withRouter(NotFound))

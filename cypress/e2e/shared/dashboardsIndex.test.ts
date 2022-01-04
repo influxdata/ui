@@ -778,15 +778,6 @@ describe('Dashboards', () => {
     const snapshot3 = makeGraphSnapshot()
     snapshot3.shouldBeSameAs(snapshot2, false)
 
-    /*
-    // past 15m
-    cy.getByTestID('timerange-dropdown').click()
-    cy.getByTestID('dropdown-item-past15m').click()
-    cy.wait('@loadQuery')
-
-    const snapshot4 = makeGraphSnapshot()
-    snapshot4.shouldBeSameAs(snapshot3, false)
-*/
     // past 1h is set as default value
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-past1h').click()
@@ -851,6 +842,14 @@ describe('Dashboards', () => {
     const snapshot11 = makeGraphSnapshot()
     snapshot11.shouldBeSameAs(snapshot10, false)
 
+    // past 15m
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past15m').click()
+    cy.wait('@loadQuery')
+
+    const snapshot4 = makeGraphSnapshot()
+    snapshot4.shouldBeSameAs(snapshot11, false)
+
     // custom time range value
     cy.getByTestID('timerange-dropdown').click()
     cy.getByTestID('dropdown-item-customtimerange').click()
@@ -870,6 +869,6 @@ describe('Dashboards', () => {
     cy.wait('@loadQuery')
 
     const snapshot12 = makeGraphSnapshot()
-    snapshot12.shouldBeSameAs(snapshot11, false)
+    snapshot12.shouldBeSameAs(snapshot4, false)
   })
 })

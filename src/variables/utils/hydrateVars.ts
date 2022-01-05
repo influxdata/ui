@@ -338,11 +338,13 @@ const invalidateCycles = (graph: VariableNode[]): void => {
 /*
   Given a node, mark all ancestors of that node as `Error`.
 */
-const invalidateAncestors = (node: VariableNode): void => {
+const invalidateAncestors = (node: VariableNode, e: Error, on: any): void => {
   const ancestors = collectAncestors(node)
 
   for (const ancestor of ancestors) {
     ancestor.status = RemoteDataState.Error
+    on.fire('error', ancestor.variable, e)
+
     if (ancestor.variable.arguments.type === 'query') {
       ancestor.variable.arguments.values.results = []
     }
@@ -465,7 +467,8 @@ export const hydrateVars = (
       node.status = RemoteDataState.Error
       node.variable.arguments.values.results = []
 
-      invalidateAncestors(node)
+      on.fire('error', node.variable, e)
+      invalidateAncestors(node, e, on)
     }
   }
 

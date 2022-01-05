@@ -51,7 +51,14 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
   })
 
   useEffect(() => {
-    if (CLOUD) {
+    const token = properties?.layers?.find(
+      layer => layer?.tileServerConfiguration?.tileServerUrl
+    )
+    if (CLOUD && token) {
+      setMapServiceError(RemoteDataState.Done)
+      setMapToken(token.tileServerConfiguration?.tileServerUrl)
+    }
+    if (CLOUD && !token) {
       const getToken = async () => {
         try {
           setMapServiceError(RemoteDataState.Loading)
@@ -71,7 +78,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       }
       getToken()
     }
-  }, [])
+  }, [properties.layers])
 
   useEffect(() => {
     try {
@@ -132,6 +139,7 @@ const GeoPlot: FC<Props> = ({result, properties}) => {
       </div>
     )
   }
+
   const tileServerConfiguration = {
     tileServerUrl: getMapboxUrl(),
     bingKey: '',

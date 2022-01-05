@@ -1,9 +1,6 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC} from 'react'
 import {Link} from 'react-router-dom'
-
-// Context
-import {CheckIDsContext} from 'src/me/components/AlertsActivity'
 
 // Utils
 import {formatOrgRoute} from 'src/shared/utils/formatOrgRoute'
@@ -11,17 +8,11 @@ import {formatOrgRoute} from 'src/shared/utils/formatOrgRoute'
 // Types
 import {StatusRow} from 'src/types'
 
-interface Props {
+interface OwnProps {
   row: StatusRow
 }
 
-const CheckActivityTableField: FC<Props> = ({row: {checkName, checkID}}) => {
-  const checkIDs = useContext(CheckIDsContext)
-
-  if (!checkIDs[checkID]) {
-    return <div className="check-name-field">{checkName}</div>
-  }
-
+const CheckActivityTableField: FC<OwnProps> = ({row: {checkName, checkID}}) => {
   const href = formatOrgRoute(
     `/checks/${checkID}/?filter="checkID"=="${checkID}"&type=statuses`
   )

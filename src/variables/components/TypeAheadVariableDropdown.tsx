@@ -267,7 +267,11 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     }
 
     const getInnerComponent = () => {
-      if (status === RemoteDataState.Loading || this.noValuesPresent()) {
+      if (
+        status === RemoteDataState.Loading ||
+        status === RemoteDataState.Error ||
+        this.noValuesPresent()
+      ) {
         return placeHolderText
       } else {
         return (
@@ -385,6 +389,10 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     if (status === RemoteDataState.Loading) {
       return 'Loading...'
     }
+    if (status === RemoteDataState.Error) {
+      return 'Error'
+    }
+
     if (this.noFilteredValuesPresent()) {
       return 'No Values'
     }

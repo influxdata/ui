@@ -1,0 +1,17 @@
+.import-template-overlay,
+.import-template-overlay--empty {
+  height: 500px;
+  display: flex;
+}
+
+.import-template-overlay {
+  align-items: stretch;
+}
+
+.import-template-overlay--empty {
+  background-color: $cf-grey-15;
+  border-radius: $ix-radius;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}

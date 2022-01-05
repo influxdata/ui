@@ -3,7 +3,7 @@ import React, {ReactElement, PureComponent, Suspense, lazy} from 'react'
 import {Switch, Route, RouteComponentProps} from 'react-router-dom'
 
 // APIs
-import {client} from 'src/utils/api'
+import {getSetup} from 'src/client'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -60,7 +60,14 @@ export class Setup extends PureComponent<Props, State> {
       return
     }
 
-    const {allowed} = await client.setup.status()
+    const resp = await getSetup({})
+
+    if (resp.status !== 200) {
+      throw new Error('There was an error onboarding')
+    }
+
+    const {allowed} = resp.data
+
     this.setState({
       loading: RemoteDataState.Done,
       allowed,
@@ -80,7 +87,13 @@ export class Setup extends PureComponent<Props, State> {
 
     if (prevProps.location.pathname.includes('/onboarding/2')) {
       this.setState({loading: RemoteDataState.Loading})
-      const {allowed} = await client.setup.status()
+      const resp = await getSetup({})
+
+      if (resp.status !== 200) {
+        throw new Error('There was an error onboarding')
+      }
+
+      const {allowed} = resp.data
       this.setState({allowed, loading: RemoteDataState.Done})
     }
   }

@@ -428,6 +428,12 @@ export const getVariableFailed = (): Notification => ({
   message: 'Failed to fetch variable',
 })
 
+export const getVariableFailedWithMessage = (name, message): Notification => ({
+  ...defaultErrorNotification,
+  duration: INDEFINITE,
+  message: `Failed to fetch variable ${name}: ${message}`,
+})
+
 export const createVariableFailed = (error: string): Notification => ({
   ...defaultErrorNotification,
   icon: IconFont.Cube,
@@ -777,6 +783,11 @@ export const savingNoteFailed = (error: string): Notification => ({
 export const bucketDeleteFailed = (bucketName: string): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to delete bucket: "${bucketName}"`,
+})
+
+export const bucketDeleteSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Bucket was deleted successfully',
 })
 
 export const predicateDeleteFailed = (): Notification => ({
@@ -1227,6 +1238,11 @@ export const notebookUpdateFail = (): Notification => ({
 export const notebookDeleteFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to delete Notebook, please try again.`,
+})
+
+export const notebookDeleteSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: 'Notebook was deleted successfully',
 })
 
 export const csvUploaderErrorNotification = (

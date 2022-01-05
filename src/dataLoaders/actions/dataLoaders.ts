@@ -3,8 +3,6 @@ import {get} from 'lodash'
 import {normalize} from 'normalizr'
 
 // APIs
-import {client} from 'src/utils/api'
-import {ScraperTargetRequest, PermissionResource} from '@influxdata/influx'
 import {createAuthorization} from 'src/authorizations/apis'
 
 // Schemas
@@ -42,11 +40,6 @@ import {
   TelegrafEntities,
   Telegraf,
 } from 'src/types'
-import {
-  TelegrafRequest,
-  TelegrafPluginOutputInfluxDBV2,
-  Permission,
-} from '@influxdata/influx'
 import {Dispatch} from 'redux'
 
 // Actions
@@ -58,6 +51,16 @@ import {
   TelegrafConfigCreationSuccess,
   TokenCreationError,
 } from 'src/shared/copy/notifications'
+import {postTelegraf, putTelegraf} from 'src/client'
+import {CLOUD} from 'src/shared/constants'
+
+let postScraper
+let patchScraper
+
+if (!CLOUD) {
+  postScraper = require('src/client').postScraper
+  patchScraper = require('src/client').patchScraper
+}
 
 const DEFAULT_COLLECTION_INTERVAL = 10000
 
@@ -385,8 +388,8 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   const {bucket} = getSteps(getState())
 
   const influxDB2Out = {
-    name: TelegrafPluginOutputInfluxDBV2.NameEnum.InfluxdbV2,
-    type: TelegrafPluginOutputInfluxDBV2.TypeEnum.Output,
+    name: 'influxdb_v2',
+    type: 'output',
     config: {
       urls: [`${window.location.origin}`],
       token: '$INFLUX_TOKEN',
@@ -395,7 +398,9 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
     },
   }
 
-  const plugins = telegrafPlugins.reduce(
+  // Consider to convert the type 'any' into a generic type
+  // https://github.com/influxdata/ui/issues/3433
+  const plugins: any = telegrafPlugins.reduce(
     (acc, tp) => {
       if (tp.configured === ConfigurationState.Configured) {
         return [...acc, tp.plugin || createNewPlugin(tp)]
@@ -407,12 +412,20 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
   )
 
   if (telegrafConfigID) {
-    const telegraf = await client.telegrafConfigs.update(telegrafConfigID, {
-      name: telegrafConfigName,
-      description: telegrafConfigDescription,
-      plugins,
+    const response = await putTelegraf({
+      telegrafID: telegrafConfigID,
+      data: {
+        name: telegrafConfigName,
+        description: telegrafConfigDescription,
+        plugins,
+      },
     })
 
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const telegraf = response.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -456,17 +469,17 @@ export const generateTelegrafToken = (configID: string) => async (
     }
     const permissions = [
       {
-        action: Permission.ActionEnum.Write,
+        action: 'write',
         resource: {
-          type: PermissionResource.TypeEnum.Buckets,
+          type: 'buckets',
           id: bucket.id,
           orgID,
         },
       },
       {
-        action: Permission.ActionEnum.Read,
+        action: 'read',
         resource: {
-          type: PermissionResource.TypeEnum.Telegrafs,
+          type: 'telegrafs',
           id: configID,
           orgID,
         },
@@ -513,7 +526,7 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     bucketName = bucket
     const org = getOrg(getState())
 
-    const telegrafRequest: TelegrafRequest = {
+    const telegrafRequest = {
       name: telegrafConfigName,
       description: telegrafConfigDescription,
       agent: {collectionInterval: DEFAULT_COLLECTION_INTERVAL},
@@ -522,21 +535,27 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     }
 
     // create telegraf config
-    const tc = await client.telegrafConfigs.create(telegrafRequest)
+    const response = await postTelegraf({data: telegrafRequest})
+
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const tc = response.data
 
     const permissions = [
       {
-        action: Permission.ActionEnum.Write,
+        action: 'write',
         resource: {
-          type: PermissionResource.TypeEnum.Buckets,
+          type: 'buckets',
           id: bucketID,
           orgID: org.id,
         },
       },
       {
-        action: Permission.ActionEnum.Read,
+        action: 'read',
         resource: {
-          type: PermissionResource.TypeEnum.Telegrafs,
+          type: 'telegrafs',
           id: tc.id,
           orgID: org.id,
         },
@@ -624,16 +643,27 @@ export const saveScraperTarget = () => async (
 
   try {
     if (id) {
-      await client.scrapers.update(id, {url, bucketID})
-    } else {
-      const newTarget = await client.scrapers.create({
-        name,
-        type: ScraperTargetRequest.TypeEnum.Prometheus,
-        url,
-        bucketID,
-        orgID,
+      await patchScraper({
+        scraperTargetID: id,
+        data: {url, bucketID},
       })
-      dispatch(setScraperTargetID(newTarget.id))
+    } else {
+      const resp = await postScraper({
+        data: {
+          name,
+          type: 'prometheus',
+          url,
+          bucketID,
+          orgID,
+        },
+      })
+
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
+
+      const scraper = resp.data
+      dispatch(setScraperTargetID(scraper.id))
     }
   } catch (error) {
     console.error()

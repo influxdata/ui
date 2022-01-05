@@ -26,6 +26,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   notebookCreateFail,
   notebookDeleteFail,
+  notebookDeleteSuccess,
 } from 'src/shared/copy/notifications'
 import {incrementCloneName} from 'src/utils/naming'
 
@@ -261,6 +262,7 @@ export const FlowListProvider: FC = ({children}) => {
     }
     try {
       await deleteAPI({id})
+      dispatch(notify(notebookDeleteSuccess()))
     } catch (error) {
       dispatch(notify(notebookDeleteFail()))
     }

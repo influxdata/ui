@@ -2,16 +2,13 @@
 import {normalize} from 'normalizr'
 
 // Schema
-import {templateSchema, arrayOfTemplates} from 'src/schemas/templates'
+import {templateSchema} from 'src/schemas/templates'
 
 // Reducer
 import {templatesReducer as reducer} from 'src/templates/reducers'
 
 // Actions
-import {
-  addTemplateSummary,
-  populateTemplateSummaries,
-} from 'src/templates/actions/creators'
+import {addTemplateSummary} from 'src/templates/actions/creators'
 
 // Types
 import {
@@ -58,22 +55,6 @@ const initialState = () => ({
 })
 
 describe('templates reducer', () => {
-  it('can set the templatess', () => {
-    const schema = normalize<
-      TemplateSummary,
-      TemplateSummaryEntities,
-      string[]
-    >([templateSummary], arrayOfTemplates)
-
-    const byID = schema.entities.templates
-    const allIDs = schema.result
-
-    const actual = reducer(undefined, populateTemplateSummaries(schema))
-
-    expect(actual.byID).toEqual(byID)
-    expect(actual.allIDs).toEqual(allIDs)
-  })
-
   it('can add a template', () => {
     const id = '3'
     const anotherTemplateSummary = {...templateSummary, id}

@@ -1,21 +1,19 @@
 // Types
 import {
   CommunityTemplate,
+  DocumentCreate,
   RemoteDataState,
   TemplateSummaryEntities,
 } from 'src/types'
-import {DocumentCreate} from '@influxdata/influx'
 import {NormalizedSchema} from 'normalizr'
 
 import {InstalledStack} from 'src/types'
 
 export const ADD_TEMPLATE_SUMMARY = 'ADD_TEMPLATE_SUMMARY'
 export const GET_TEMPLATE_SUMMARIES_FOR_ORG = 'GET_TEMPLATE_SUMMARIES_FOR_ORG'
-export const POPULATE_TEMPLATE_SUMMARIES = 'POPULATE_TEMPLATE_SUMMARIES'
 export const SET_STAGED_TEMPLATE = 'SET_STAGED_TEMPLATE'
 export const SET_STAGED_TEMPLATE_URL = 'SET_STAGED_TEMPLATE_URL'
 export const SET_EXPORT_TEMPLATE = 'SET_EXPORT_TEMPLATE'
-export const SET_TEMPLATES_STATUS = 'SET_TEMPLATES_STATUS'
 export const TOGGLE_TEMPLATE_RESOURCE_INSTALL =
   'TOGGLE_TEMPLATE_RESOURCE_INSTALL'
 export const UPDATE_TEMPLATE_ENV_REF = 'UPDATE_TEMPLATE_ENV_REF'
@@ -28,9 +26,7 @@ export type EnvRefValue = string | number | boolean
 
 export type Action =
   | ReturnType<typeof addTemplateSummary>
-  | ReturnType<typeof populateTemplateSummaries>
   | ReturnType<typeof setExportTemplate>
-  | ReturnType<typeof setTemplatesStatus>
   | ReturnType<typeof setStagedCommunityTemplate>
   | ReturnType<typeof setStagedTemplateUrl>
   | ReturnType<typeof toggleTemplateResourceInstall>
@@ -51,15 +47,6 @@ export const addTemplateSummary = (schema: TemplateSummarySchema<string>) =>
     schema,
   } as const)
 
-export const populateTemplateSummaries = (
-  schema: TemplateSummarySchema<string[]>
-) =>
-  ({
-    type: POPULATE_TEMPLATE_SUMMARIES,
-    status: RemoteDataState.Done,
-    schema,
-  } as const)
-
 export const setExportTemplate = (
   status: RemoteDataState,
   item?: DocumentCreate
@@ -68,12 +55,6 @@ export const setExportTemplate = (
     type: SET_EXPORT_TEMPLATE,
     status,
     item,
-  } as const)
-
-export const setTemplatesStatus = (status: RemoteDataState) =>
-  ({
-    type: SET_TEMPLATES_STATUS,
-    status,
   } as const)
 
 export const setStagedCommunityTemplate = (template: CommunityTemplate) =>

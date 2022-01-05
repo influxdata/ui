@@ -5,6 +5,12 @@
   color: $cf-white;
 }
 
+.write-data--item {
+  .cf-selectable-card--children {
+    filter: unset !important;
+  }
+}
+
 .write-data--item-thumb {
   position: relative;
   display: flex;

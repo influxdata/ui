@@ -1100,19 +1100,12 @@
   resolved "https://registry.yarnpkg.com/@influxdata/flux-lsp-browser/-/flux-lsp-browser-0.8.0.tgz#2b0b8d543f9b89e73ee2379a90aa66499fa92026"
   integrity sha512-A7bGnbDzOnsEIAYpxuqdKJjPbtlP5H5EcXsqdpMISdp80y0TBbGv41U3dsfrOIPENvXNYLjroIvp6QYnnF/uaw==
 
-"@influxdata/giraffe@^2.20.3":
-  version "2.21.2"
-  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.21.2.tgz#b600fda2a6f243f04db1c1cdeb003d148a98ea45"
-  integrity sha512-T1ABwgXfS4TBFs90ZCyBrMWnthKq8CdX/RPGMuItDXSOYfsdvv9on4BXIbZfun3/H69Mw4tps1wMRCssUF+Qrg==
+"@influxdata/giraffe@^2.23.0":
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/giraffe/-/giraffe-2.23.0.tgz#3032a6e3266b44e6dd1b3c18474d3a818bcac909"
+  integrity sha512-HVIRU63GFKaAF5Y7ygwtxzabKTRvMxbZY50sqk2xzVxHO0dlp2xTHIYUlikNyaWh41RLI7lu4ESOkNQ2ZraNIQ==
   dependencies:
     merge-images "^2.0.0"
-
-"@influxdata/influx@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@influxdata/influx/-/influx-0.5.5.tgz#ff30862ba3837df8e6e237634e7c844a00c03c08"
-  integrity sha512-mmyymYIT/HpWDrdR1/x9+ENJIrZTFyr46EF42adqRwujwLxVyG1MPOC7H6aoH87DZgVxKV4nt+zmRSgOnetdpg==
-  dependencies:
-    axios "^0.19.0"
 
 "@influxdata/influxdb-templates@0.9.0":
   version "0.9.0"
@@ -2577,13 +2570,6 @@ aws4@^1.8.0:
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
-
-axios@^0.19.0:
-  version "0.19.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
-  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
-  dependencies:
-    follow-redirects "1.5.10"
 
 babel-jest@^27.4.4:
   version "27.4.4"
@@ -4114,7 +4100,7 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   dependencies:
     ms "2.0.0"
 
-debug@3.1.0, debug@=3.1.0:
+debug@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
@@ -5251,13 +5237,6 @@ flush-write-stream@^1.0.0:
   dependencies:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
-
-follow-redirects@1.5.10:
-  version "1.5.10"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
-  integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
-  dependencies:
-    debug "=3.1.0"
 
 follow-redirects@^1.0.0:
   version "1.14.6"

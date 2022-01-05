@@ -7,6 +7,7 @@ const PUBLIC = process.env.PUBLIC || undefined
 const {BASE_PATH} = require('./src/utils/env')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 const webpack = require('webpack')
 
@@ -42,6 +43,11 @@ module.exports = merge(common, {
       },
     },
     client: {
+      progress: false,
+      overlay: {
+        errors: true,
+        warnings: false,
+      },
       webSocketURL: {
         hostname: '0.0.0.0',
         pathname: `${BASE_PATH}hmr`,
@@ -50,6 +56,12 @@ module.exports = merge(common, {
     },
   },
   plugins: [
+    new ForkTsCheckerWebpackPlugin({
+      async: true,
+      logger: {
+        devServer: false, // don't block UI compilation on TS errors
+      },
+    }),
     new webpack.DllReferencePlugin({
       context: path.join(__dirname, 'build'),
       manifest: require('./build/vendor-manifest.json'),

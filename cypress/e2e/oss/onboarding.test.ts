@@ -25,7 +25,7 @@ describe('Onboarding', () => {
     cy.server()
 
     // Will want to capture response from this
-    cy.route('POST', 'api/v2/setup').as('orgSetup')
+    cy.intercept('POST', 'api/v2/setup').as('orgSetup')
 
     // Check and visit splash page
     cy.getByTestID('init-step--head-main').contains('Welcome to InfluxDB')
@@ -86,8 +86,11 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then(xhr => {
-      const orgId: string = xhr.responseBody.org.id
+    cy.get('@orgSetup').then(req => {
+      const {
+        response: {body},
+      } = req
+      const orgId: string = body.org.id
 
       // wait for new page to load
       cy.location('pathname').should('include', 'onboarding/2')
@@ -113,7 +116,7 @@ describe('Onboarding', () => {
     cy.server()
     cy.wrapEnvironmentVariablesForOss()
 
-    cy.route('POST', 'api/v2/setup').as('orgSetup')
+    cy.intercept('api/v2/setup').as('orgSetup')
 
     // Continue
     cy.getByTestID('onboarding-get-started').click()
@@ -125,8 +128,11 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then(xhr => {
-      const orgId: string = xhr.responseBody.org.id
+    cy.get('@orgSetup').then(req => {
+      const {
+        response: {body},
+      } = req
+      const orgId: string = body.org.id
 
       // wait for new page to load
       cy.location('pathname').should('include', 'onboarding/2')
@@ -145,7 +151,7 @@ describe('Onboarding', () => {
   it('Can onboard to configure later', () => {
     cy.server()
 
-    cy.route('POST', 'api/v2/setup').as('orgSetup')
+    cy.intercept('api/v2/setup').as('orgSetup')
 
     // Continue
     cy.getByTestID('onboarding-get-started').click()
@@ -157,8 +163,12 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
-    cy.get('@orgSetup').then(xhr => {
-      const orgId: string = xhr.responseBody.org.id
+    cy.get('@orgSetup').then(req => {
+      const {
+        response: {body},
+      } = req
+      const orgId: string = body.org.id
+
       // wait for new page to load
 
       cy.location('pathname').should('include', 'onboarding/2')

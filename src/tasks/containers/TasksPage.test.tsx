@@ -1,7 +1,6 @@
 // Installed libraries
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
-import {Task as TaskApi} from '@influxdata/influx'
 
 // Constants
 import {tasks, orgs, withRouterProps, labels} from 'mocks/dummyData'
@@ -27,7 +26,7 @@ const InactiveTask = {
   id: '02f12c50dcb93000',
   orgID: '02ee9e2a29d73000',
   name: 'Dead Beetle',
-  status: TaskApi.StatusEnum.Inactive,
+  status: 'inactive',
   flux: sampleScript,
   every: '1h',
   org: 'default',

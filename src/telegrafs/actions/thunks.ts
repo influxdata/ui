@@ -2,9 +2,6 @@
 import {normalize} from 'normalizr'
 import {Dispatch} from 'react'
 
-// API
-import {client} from 'src/utils/api'
-
 // Schemas
 import {telegrafSchema, arrayOfTelegrafs} from 'src/schemas/telegrafs'
 
@@ -16,7 +13,6 @@ import {
   addTelegraf,
   editTelegraf,
   removeTelegraf,
-  setCurrentConfig,
 } from 'src/telegrafs/actions/creators'
 
 // Constants
@@ -27,16 +23,14 @@ import {
   telegrafDeleteFailed,
   addTelegrafLabelFailed,
   removeTelegrafLabelFailed,
-  getTelegrafConfigFailed,
 } from 'src/shared/copy/notifications'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {getLabels, getStatus} from 'src/resources/selectors'
+import {getStatus} from 'src/resources/selectors'
 import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Types
-import {ILabel} from '@influxdata/influx'
 import {
   AppThunk,
   RemoteDataState,
@@ -46,6 +40,15 @@ import {
   TelegrafEntities,
   ResourceType,
 } from 'src/types'
+import {
+  deleteTelegraf as apiDeleteTelegraf,
+  deleteTelegrafsLabel,
+  getTelegraf as apiGetTelegraf,
+  getTelegrafs as apiGetTelegrafs,
+  postTelegraf,
+  postTelegrafsLabel,
+  putTelegraf,
+} from 'src/client'
 
 export const getTelegrafs = () => async (
   dispatch: Dispatch<Action>,
@@ -60,7 +63,13 @@ export const getTelegrafs = () => async (
     }
     const org = getOrg(state)
 
-    const telegrafs = await client.telegrafConfigs.getAll(org.id)
+    const response = await apiGetTelegrafs({query: {orgID: org.id}})
+
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const telegrafs = response.data.configurations
 
     const normTelegrafs = normalize<Telegraf, TelegrafEntities, string[]>(
       telegrafs,
@@ -76,17 +85,17 @@ export const getTelegrafs = () => async (
 }
 
 export const createTelegraf = (telegraf: Telegraf) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
+  dispatch: Dispatch<Action>
 ) => {
   try {
-    const state = getState()
-    const labels = getLabels(state, telegraf.labels)
-    const createdTelegraf = await client.telegrafConfigs.create({
-      ...telegraf,
-      labels,
-    })
+    // New telegraf config has no labels
+    const response = await postTelegraf({data: telegraf})
 
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const createdTelegraf = response.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       createdTelegraf,
       telegrafSchema
@@ -100,17 +109,19 @@ export const createTelegraf = (telegraf: Telegraf) => async (
 }
 
 export const updateTelegraf = (telegraf: Telegraf) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
+  dispatch: Dispatch<Action>
 ) => {
   try {
-    const state = getState()
-    const labels = getLabels(state, telegraf.labels)
-    const t = await client.telegrafConfigs.update(telegraf.id, {
-      ...telegraf,
-      labels,
+    const response = await putTelegraf({
+      telegrafID: telegraf.id,
+      data: telegraf,
     })
 
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const t = response.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       t,
       telegrafSchema
@@ -133,7 +144,11 @@ export const deleteTelegraf = (id: string, name: string) => async (
   dispatch: Dispatch<Action>
 ) => {
   try {
-    await client.telegrafConfigs.delete(id)
+    const response = await apiDeleteTelegraf({telegrafID: id})
+
+    if (response.status !== 204) {
+      throw new Error(response.data.message)
+    }
 
     dispatch(removeTelegraf(id))
     event(`telegraf.config.${normalizeEventName(name)}.delete.success`, {id})
@@ -144,13 +159,30 @@ export const deleteTelegraf = (id: string, name: string) => async (
   }
 }
 
-export const addTelegrafLabelsAsync = (
+export const addTelegrafLabelAsync = (
   telegrafID: string,
-  labels: Label[]
+  label: Label
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
-    await client.telegrafConfigs.addLabels(telegrafID, labels as ILabel[])
-    const telegraf = await client.telegrafConfigs.get(telegrafID)
+    const response = await postTelegrafsLabel({
+      telegrafID,
+      data: {labelID: label.id},
+    })
+
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const res = await apiGetTelegraf({
+      telegrafID,
+      headers: {Accept: 'application/json'},
+    })
+
+    if (res.status !== 200) {
+      throw new Error(res.data.message)
+    }
+
+    const telegraf = res.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -163,13 +195,30 @@ export const addTelegrafLabelsAsync = (
   }
 }
 
-export const removeTelegrafLabelsAsync = (
+export const removeTelegrafLabelAsync = (
   telegrafID: string,
-  labels: Label[]
+  label: Label
 ): AppThunk<Promise<void>> => async (dispatch): Promise<void> => {
   try {
-    await client.telegrafConfigs.removeLabels(telegrafID, labels as ILabel[])
-    const telegraf = await client.telegrafConfigs.get(telegrafID)
+    const response = await deleteTelegrafsLabel({
+      telegrafID,
+      labelID: label.id,
+    })
+
+    if (response.status !== 204) {
+      throw new Error(response.data.message)
+    }
+
+    const res = await apiGetTelegraf({
+      telegrafID,
+      headers: {Accept: 'application/json'},
+    })
+
+    if (res.status !== 200) {
+      throw new Error(res.data.message)
+    }
+
+    const telegraf = res.data
     const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
       telegraf,
       telegrafSchema
@@ -182,22 +231,18 @@ export const removeTelegrafLabelsAsync = (
   }
 }
 
-export const getTelegrafConfigToml = (telegrafConfigID: string) => async (
-  dispatch: Dispatch<Action>
-): Promise<void> => {
-  try {
-    dispatch(setCurrentConfig(RemoteDataState.Loading))
-    const config = await client.telegrafConfigs.getTOML(telegrafConfigID)
-    dispatch(setCurrentConfig(RemoteDataState.Done, config))
-  } catch (error) {
-    dispatch(setCurrentConfig(RemoteDataState.Error))
-    dispatch(notify(getTelegrafConfigFailed()))
-  }
-}
-
 export const getTelegraf = (telegrafConfigID: string) => async () => {
   try {
-    const config = await client.telegrafConfigs.get(telegrafConfigID)
+    const res = await apiGetTelegraf({
+      telegrafID: telegrafConfigID,
+      headers: {Accept: 'application/json'},
+    })
+
+    if (res.status !== 200) {
+      throw new Error(res.data.message)
+    }
+
+    const config = res.data
     return config.name
   } catch (error) {
     console.error(error)

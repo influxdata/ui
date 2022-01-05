@@ -46,7 +46,8 @@ export const defaultVariableAssignments: VariableAssignment[] = [
 export const createVariable = (
   name: string,
   query: string,
-  selected?: string
+  selected?: string,
+  status: RemoteDataState = RemoteDataState.Done
 ): Variable => ({
   name,
   id: name,
@@ -60,7 +61,7 @@ export const createVariable = (
       language: 'flux',
     },
   },
-  status: RemoteDataState.Done,
+  status,
 })
 
 export const createMapVariable = (

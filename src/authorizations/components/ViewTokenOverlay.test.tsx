@@ -7,13 +7,14 @@ import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
 
 // Fixtures
 import {auth} from 'mocks/dummyData'
-import {Permission} from '@influxdata/influx'
+import {Permission} from 'src/types'
 import {get} from 'lodash'
 import {renderWithReduxAndRouter} from 'src/mockState'
+import {CLOUD} from 'src/shared/constants'
 
 const permissions = (
   permissions: Permission[]
-): {[x: string]: Permission.ActionEnum[]} => {
+): {[x: string]: ('read' | 'write')[]} => {
   const p = permissions.reduce((acc, {action, resource}) => {
     const {type} = resource
     const name = get(resource, 'name', '')
@@ -57,21 +58,24 @@ describe('Account', () => {
     it('renders permissions correctly', () => {
       const actual = permissions(auth.permissions)
 
-      const expected = {
+      const expected: any = {
         'orgs-a': ['read'],
         authorizations: ['read', 'write'],
         buckets: ['read', 'write'],
         dashboards: ['read', 'write'],
-        sources: ['read', 'write'],
         tasks: ['read', 'write'],
         telegrafs: ['read', 'write'],
         users: ['read', 'write'],
         variables: ['read', 'write'],
-        scrapers: ['read', 'write'],
         secrets: ['read', 'write'],
         labels: ['read', 'write'],
         views: ['read', 'write'],
         documents: ['read', 'write'],
+      }
+
+      if (!CLOUD) {
+        expected.scrapers = ['read', 'write']
+        expected.sources = ['read', 'write']
       }
 
       expect(actual).toEqual(expected)

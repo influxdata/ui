@@ -1,7 +1,7 @@
 import {authorization} from './data'
 
 // Types
-import {Authorization} from '@influxdata/influx'
+import {Authorization} from 'src/types'
 
 export const getAuthorizations = async (): Promise<Authorization[]> => {
   return Promise.resolve([authorization, {...authorization, id: '1'}])

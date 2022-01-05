@@ -44,7 +44,6 @@ import {addDashboardDefaults} from 'src/schemas/dashboards'
 import {
   DashboardTemplate,
   Dashboard,
-  TemplateType,
   InstalledStack,
   Cell,
   CellIncluded,
@@ -65,10 +64,7 @@ export const createDashboardFromTemplate = async (
   try {
     const {content} = template
 
-    if (
-      content.data.type !== TemplateType.Dashboard ||
-      template.meta.version !== '1'
-    ) {
+    if (content.data.type !== 'dashboard' || template.meta.version !== '1') {
       throw new Error('Cannot create dashboard from this template')
     }
 
@@ -213,11 +209,11 @@ const createCellsFromTemplate = async (
     content: {data, included},
   } = template
 
-  if (!data.relationships || !data.relationships[TemplateType.Cell]) {
+  if (!data.relationships || !data.relationships['cell']) {
     return
   }
 
-  const cellRelationships = data.relationships[TemplateType.Cell].data
+  const cellRelationships = data.relationships['cell'].data
 
   const cellsToCreate = findIncludedsFromRelationships<CellIncluded>(
     included,
@@ -261,7 +257,7 @@ const createViewsFromTemplate = async (
       content: {included},
     } = template
 
-    const viewRelationship = c.relationships[TemplateType.View].data
+    const viewRelationship = c.relationships['view'].data
 
     return findIncludedFromRelationship<ViewIncluded>(
       included,
@@ -288,7 +284,7 @@ const createVariablesFromTemplate = async (
   const {
     content: {data, included},
   } = template
-  if (!data.relationships || !data.relationships[TemplateType.Variable]) {
+  if (!data.relationships || !data.relationships['variable']) {
     return
   }
   const variablesIncluded = findIncludedVariables(included)
@@ -357,10 +353,7 @@ export const createVariableFromTemplate = async (
 ) => {
   const {content} = template
   try {
-    if (
-      content.data.type !== TemplateType.Variable ||
-      template.meta.version !== '1'
-    ) {
+    if (content.data.type !== 'variable' || template.meta.version !== '1') {
       throw new Error('Cannot create variable from this template')
     }
 

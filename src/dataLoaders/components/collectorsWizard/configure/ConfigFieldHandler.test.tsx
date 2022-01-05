@@ -10,18 +10,12 @@ import {telegrafPluginsInfo} from 'src/dataLoaders/constants/pluginConfigs'
 import {telegrafPlugin} from 'mocks/dummyData'
 
 // Types
-import {
-  TelegrafPluginInputCpu,
-  TelegrafPluginInputRedis,
-} from '@influxdata/influx'
-
 import {renderWithReduxAndRouter} from 'src/mockState'
 
 const setup = (override = {}) => {
   const props = {
     telegrafPlugin,
-    configFields:
-      telegrafPluginsInfo[TelegrafPluginInputCpu.NameEnum.Cpu].fields,
+    configFields: telegrafPluginsInfo['cpu'].fields,
     onUpdateTelegrafPluginConfig: jest.fn(),
     onAddConfigValue: jest.fn(),
     onRemoveConfigValue: jest.fn(),
@@ -37,8 +31,7 @@ describe('DataLoaders.Components.CollectorsWizard.Configure.ConfigFieldHandler',
     it('renders no config text', async () => {
       setup({
         telegrafPlugin,
-        configFields:
-          telegrafPluginsInfo[TelegrafPluginInputCpu.NameEnum.Cpu].fields,
+        configFields: telegrafPluginsInfo['cpu'].fields,
       })
       const noConfig = await screen.findByTestId('no-config')
       expect(noConfig).toBeVisible()
@@ -47,8 +40,7 @@ describe('DataLoaders.Components.CollectorsWizard.Configure.ConfigFieldHandler',
 
   describe('if configFields have  keys', () => {
     it('renders correct number of switchers', async () => {
-      const configFields =
-        telegrafPluginsInfo[TelegrafPluginInputRedis.NameEnum.Redis].fields
+      const configFields = telegrafPluginsInfo['redis'].fields
       setup({
         telegrafPlugin,
         configFields,

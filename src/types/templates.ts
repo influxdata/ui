@@ -1,13 +1,10 @@
 import {
-  Document,
-  DocumentCreate,
-  DocumentMeta,
-  TemplateSummary as GenTemplateSummary,
-  TemplateType,
-} from '@influxdata/influx'
-import {
   Cell,
   Dashboard,
+  Document,
+  DocumentCreate,
+  DocumentListEntry,
+  DocumentMeta,
   NormalizedState,
   RemoteDataState,
   Variable,
@@ -19,6 +16,15 @@ import {
 
 import {Stack} from 'src/client'
 
+export enum TemplateType {
+  Label = 'label',
+  Task = 'task',
+  Dashboard = 'dashboard',
+  View = 'view',
+  Cell = 'cell',
+  Variable = 'variable',
+}
+
 export interface InstalledStack extends Stack {
   eventType: string
   name: string
@@ -26,7 +32,7 @@ export interface InstalledStack extends Stack {
   sources: string[]
 }
 
-export interface TemplateSummary extends Omit<GenTemplateSummary, 'labels'> {
+export interface TemplateSummary extends Omit<DocumentListEntry, 'labels'> {
   labels: string[]
   status: RemoteDataState
 }
@@ -95,10 +101,10 @@ export type Relationships = {
 type OneOrMany<T> = T | T[]
 
 interface RelationshipMap {
-  [TemplateType.Cell]: CellRelationship
-  [TemplateType.Label]: LabelRelationship
-  [TemplateType.View]: ViewRelationship
-  [TemplateType.Variable]: VariableRelationship
+  cell: CellRelationship
+  label: LabelRelationship
+  view: ViewRelationship
+  variable: VariableRelationship
 }
 
 export interface CellRelationship {
@@ -131,7 +137,7 @@ export interface CellIncluded extends TemplateIncluded {
   type: TemplateType.Cell
   attributes: Cell
   relationships: {
-    [TemplateType.View]: {data: ViewRelationship}
+    view: {data: ViewRelationship}
   }
 }
 
@@ -209,5 +215,3 @@ export interface VariableTemplate extends TemplateBase {
 }
 
 export type Template = TaskTemplate | DashboardTemplate | VariableTemplate
-
-export {TemplateType} from '@influxdata/influx'

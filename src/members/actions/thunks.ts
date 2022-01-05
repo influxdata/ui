@@ -15,7 +15,7 @@ import {
   MemberEntities,
   ResourceType,
 } from 'src/types'
-import {AddResourceMemberRequestBody} from '@influxdata/influx'
+import {AddResourceMemberRequestBody} from 'src/client'
 
 // Actions
 import {

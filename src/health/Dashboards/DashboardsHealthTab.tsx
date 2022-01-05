@@ -1,5 +1,5 @@
 import DashboardsHealth from './DashboardsHealth'
-import {EmptyState, EmptyStateText} from '@influxdata/clockface'
+import {EmptyState, EmptyStateText, RemoteDataState, SparkleSpinner} from '@influxdata/clockface'
 import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {getOrg} from '../../organizations/selectors'
@@ -86,14 +86,23 @@ const DashboardsHealthTab = () => {
 
   return (
     <>
+      {!dashboardsLoaded ?
+        <EmptyState>
+        <div style={{display: 'flex', justifyContent: 'center'}}><SparkleSpinner loading={RemoteDataState.Loading}/></div>
+        <EmptyStateText>Analyzing ... </EmptyStateText>
+      </EmptyState> : null}
+
       {dashboards.length > 0 ? (
         <DashboardsHealth dashboards={dashboards} />
       ) : null}
-      {dashboardsLoaded ?? (
+
+      {dashboardsLoaded &&
+      Object.values(dashboards).every(item => item.healthy === true) ? (
         <EmptyState>
-          <EmptyStateText>No illegal references found,</EmptyStateText>
+          <div style={{display: 'flex', justifyContent: 'center'}}><SparkleSpinner loading={RemoteDataState.Done}/></div>
+          <EmptyStateText>No illegal references found!</EmptyStateText>
         </EmptyState>
-      )}
+      ) : null}
     </>
   )
 }

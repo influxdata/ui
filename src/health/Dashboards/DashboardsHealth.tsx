@@ -13,13 +13,13 @@ const DashboardsHealth = (props: DashboardHealthProps) => {
   return (
     <>
       <Table>
-      {dashboards
-        .filter(dashboard => !dashboard.healthy)
-        .map((dashboard, index) => (
-          <>
+        {dashboards
+          .filter(dashboard => !dashboard.healthy)
+          .map((dashboard, index) => (
+            <>
               <DashboardHealth dashboard={dashboard} key={index} />
-          </>
-        ))}
+            </>
+          ))}
       </Table>
     </>
   )

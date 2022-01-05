@@ -1,5 +1,5 @@
 import TasksHealth from './TasksHealth'
-import {EmptyState, EmptyStateText} from '@influxdata/clockface'
+import {EmptyState, EmptyStateText, RemoteDataState, SparkleSpinner} from '@influxdata/clockface'
 import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {getOrg} from '../../organizations/selectors'
@@ -73,11 +73,11 @@ const TasksHealthTab = () => {
   return (
     <>
       {tasks.length > 0 ? <TasksHealth tasks={tasks} /> : null}
-      {tasksLoaded ?? (
+      {!tasksLoaded ?
         <EmptyState>
-          <EmptyStateText>No illegal references found,</EmptyStateText>
-        </EmptyState>
-      )}
+          <div style={{display: 'flex', justifyContent: 'center'}}><SparkleSpinner loading={RemoteDataState.Loading}/></div>
+          <EmptyStateText>Analyzing ... </EmptyStateText>
+        </EmptyState> : null}
     </>
   )
 }

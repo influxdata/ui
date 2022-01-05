@@ -291,8 +291,6 @@ const SetOrg: FC = () => {
             component={DashboardsHealthIndex}
           />
 
-
-
           {/* Users */}
           {CLOUD && <Route path={`${orgPath}/users`} component={UsersPage} />}
 

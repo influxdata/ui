@@ -2,7 +2,7 @@ import React from 'react'
 
 import {HealthDashboard} from 'src/types'
 import CellHealth from './CellHealth'
-import {Icon, IconFont, Table} from '@influxdata/clockface'
+import {Table} from '@influxdata/clockface'
 
 type DashboardHealthProps = {
   dashboard: HealthDashboard

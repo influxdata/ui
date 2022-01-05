@@ -17,7 +17,7 @@ import {
   SpinnerContainer,
 } from '@influxdata/clockface'
 import Threshold from 'src/flows/pipes/Notification/Threshold'
-
+import {FlowContext} from 'src/flows/context/flow.current'
 import {PipeContext} from 'src/flows/context/pipe'
 import {ENDPOINT_DEFINITIONS} from 'src/flows/pipes/Notification/endpoints'
 const NotificationMonacoEditor = lazy(() =>
@@ -35,6 +35,7 @@ import 'src/flows/pipes/Notification/styles.scss'
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
 const ReadOnly: FC<PipeProp> = ({Context}) => {
+  const {flow} = useContext(FlowContext)
   const {data, results, loading} = useContext(PipeContext)
 
   const loadingText = useMemo(() => {
@@ -134,7 +135,13 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
           <FlexBox.Child>
             <Form.Element label="Notification" required={true}>
-              <Panel backgroundColor={InfluxColors.Grey15}>
+              <Panel
+                backgroundColor={
+                  flow?.theme === 'light'
+                    ? InfluxColors.Grey95
+                    : InfluxColors.Grey15
+                }
+              >
                 <Panel.Body>
                   <FlexBox
                     alignItems={AlignItems.Stretch}

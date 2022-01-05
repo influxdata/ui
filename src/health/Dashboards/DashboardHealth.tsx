@@ -2,7 +2,7 @@ import React from 'react'
 
 import {HealthDashboard} from 'src/types'
 import CellHealth from './CellHealth'
-import {Icon, IconFont, InfluxColors, Table} from '@influxdata/clockface'
+import {InfluxColors, Table} from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {getOrg} from '../../organizations/selectors'
@@ -23,7 +23,7 @@ const DashboardHealth = (props: DashboardHealthProps) => {
   return (
     <>
       <Table.Header>
-        <h3 onClick={openDashboard} style={{cursor: 'pointer'}}>{dashboard.name}</h3>
+        <h4 onClick={openDashboard} style={{cursor: 'pointer', color: InfluxColors.Pool, textDecorationLine:'underline'}}>{dashboard.name}</h4>
         <Table.Row>
           <Table.HeaderCell>Cells</Table.HeaderCell>
           <Table.HeaderCell>Bucket(s) Name</Table.HeaderCell>

@@ -6,13 +6,23 @@ type TaskHealthProps = {
   task: HealthTask
 }
 
-import {Table} from '@influxdata/clockface'
+import {InfluxColors, Table} from '@influxdata/clockface'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {getOrg} from '../../organizations/selectors'
 
 const TaskHealth = (props: TaskHealthProps) => {
+  const history = useHistory()
+  const org = useSelector(getOrg)
+
+  const openTask = () => {
+    history.push(`/orgs/${org.id}/tasks/${props.task.id}/runs`)
+  }
+
   return (
     <>
       <Table.Row>
-        <Table.Cell>{props.task.name}</Table.Cell>
+        <Table.Cell><span onClick={openTask} style={{cursor: 'pointer', color: InfluxColors.Pool}}>{props.task.name}</span></Table.Cell>
         <Table.Cell>{props.task.missingBuckets.join(', ')}</Table.Cell>
         <Table.Cell style={{color: 'red'}}>error</Table.Cell>
       </Table.Row>

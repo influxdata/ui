@@ -50,6 +50,7 @@ const TasksHealthTab = () => {
         query: task.flux,
         missingBuckets: [],
         healthy: true,
+        id: task.id
       }
 
       const query = task.flux as any

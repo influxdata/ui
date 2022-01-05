@@ -14,4 +14,5 @@ export type HealthTask = {
   name: string
   healthy: boolean
   missingBuckets: string[]
+  id: string
 }

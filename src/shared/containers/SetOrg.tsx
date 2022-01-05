@@ -285,6 +285,14 @@ const SetOrg: FC = () => {
             component={TasksHealthIndex}
           />
 
+          {/* Dashboard */}
+          <Route
+            path={`${orgPath}/${HEALTH_CHECK}`}
+            component={DashboardsHealthIndex}
+          />
+
+
+
           {/* Users */}
           {CLOUD && <Route path={`${orgPath}/users`} component={UsersPage} />}
 

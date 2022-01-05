@@ -36,6 +36,10 @@ class HealthNavigation extends PureComponent<Props> {
         text: 'Tasks',
         id: 'tasks',
       },
+      {
+        text: 'Notebooks',
+        id: 'notebooks',
+      },
     ]
 
     return (

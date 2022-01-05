@@ -1,5 +1,10 @@
 import DashboardsHealth from './DashboardsHealth'
-import {EmptyState, EmptyStateText, RemoteDataState, SparkleSpinner} from '@influxdata/clockface'
+import {
+  EmptyState,
+  EmptyStateText,
+  RemoteDataState,
+  SparkleSpinner,
+} from '@influxdata/clockface'
 import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {getOrg} from '../../organizations/selectors'
@@ -47,7 +52,7 @@ const DashboardsHealthTab = () => {
         name: dashboard.name,
         cells: [],
         healthy: true,
-        id: dashboard.id
+        id: dashboard.id,
       }
 
       // For every cell in the dashboard, load the queries and verify
@@ -87,20 +92,25 @@ const DashboardsHealthTab = () => {
 
   return (
     <>
-      {!dashboardsLoaded ?
+      {!dashboardsLoaded ? (
         <EmptyState>
-        <div style={{display: 'flex', justifyContent: 'center'}}><SparkleSpinner loading={RemoteDataState.Loading}/></div>
-        <EmptyStateText>Analyzing ... </EmptyStateText>
-      </EmptyState> : null}
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <SparkleSpinner loading={RemoteDataState.Loading} />
+          </div>
+          <EmptyStateText>Analyzing ... </EmptyStateText>
+        </EmptyState>
+      ) : null}
 
       {dashboards.length > 0 ? (
         <DashboardsHealth dashboards={dashboards} />
       ) : null}
 
-      {(dashboardsLoaded &&
-      Object.values(dashboards).every(item => item.healthy === true)) ? (
+      {dashboardsLoaded &&
+      Object.values(dashboards).every(item => item.healthy === true) ? (
         <EmptyState>
-          <div style={{display: 'flex', justifyContent: 'center'}}><SparkleSpinner loading={RemoteDataState.Done}/></div>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <SparkleSpinner loading={RemoteDataState.Done} />
+          </div>
           <EmptyStateText>No illegal references found!</EmptyStateText>
         </EmptyState>
       ) : null}

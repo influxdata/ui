@@ -1,5 +1,10 @@
 import TasksHealth from './TasksHealth'
-import {EmptyState, EmptyStateText, RemoteDataState, SparkleSpinner} from '@influxdata/clockface'
+import {
+  EmptyState,
+  EmptyStateText,
+  RemoteDataState,
+  SparkleSpinner,
+} from '@influxdata/clockface'
 import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {getOrg} from '../../organizations/selectors'
@@ -50,7 +55,7 @@ const TasksHealthTab = () => {
         query: task.flux,
         missingBuckets: [],
         healthy: true,
-        id: task.id
+        id: task.id,
       }
 
       const query = task.flux as any
@@ -74,11 +79,14 @@ const TasksHealthTab = () => {
   return (
     <>
       {tasks.length > 0 ? <TasksHealth tasks={tasks} /> : null}
-      {!tasksLoaded ?
+      {!tasksLoaded ? (
         <EmptyState>
-          <div style={{display: 'flex', justifyContent: 'center'}}><SparkleSpinner loading={RemoteDataState.Loading}/></div>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <SparkleSpinner loading={RemoteDataState.Loading} />
+          </div>
           <EmptyStateText>Analyzing ... </EmptyStateText>
-        </EmptyState> : null}
+        </EmptyState>
+      ) : null}
     </>
   )
 }

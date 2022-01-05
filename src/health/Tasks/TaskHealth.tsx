@@ -22,7 +22,14 @@ const TaskHealth = (props: TaskHealthProps) => {
   return (
     <>
       <Table.Row>
-        <Table.Cell><span onClick={openTask} style={{cursor: 'pointer', color: InfluxColors.Pool}}>{props.task.name}</span></Table.Cell>
+        <Table.Cell>
+          <span
+            onClick={openTask}
+            style={{cursor: 'pointer', color: InfluxColors.Pool}}
+          >
+            {props.task.name}
+          </span>
+        </Table.Cell>
         <Table.Cell>{props.task.missingBuckets.join(', ')}</Table.Cell>
         <Table.Cell style={{color: 'red'}}>error</Table.Cell>
       </Table.Row>

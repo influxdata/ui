@@ -16,3 +16,15 @@ export type HealthTask = {
   missingBuckets: string[]
   id: string
 }
+
+export type HealthNotebookFlow = {
+  title: string
+  missingBuckets: string[]
+}
+
+export type HealthNotebook = {
+  name: string
+  healthy: boolean
+  flows: HealthNotebookFlow[]
+  id: string
+}

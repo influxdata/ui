@@ -2,7 +2,13 @@ import React from 'react'
 
 import {HealthTask} from 'src/types'
 import TaskHealth from './TaskHealth'
-import {EmptyState, EmptyStateText, RemoteDataState, SparkleSpinner, Table} from '@influxdata/clockface'
+import {
+  EmptyState,
+  EmptyStateText,
+  RemoteDataState,
+  SparkleSpinner,
+  Table,
+} from '@influxdata/clockface'
 
 type TaskHealthProps = {
   tasks: HealthTask[]
@@ -14,7 +20,9 @@ const TasksHealth = (props: TaskHealthProps) => {
     <>
       {Object.values(tasks).every(item => item.healthy === true) ? (
         <EmptyState>
-          <div style={{display: 'flex', justifyContent: 'center'}}><SparkleSpinner loading={RemoteDataState.Done}/></div>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <SparkleSpinner loading={RemoteDataState.Done} />
+          </div>
           <EmptyStateText>No illegal references found!</EmptyStateText>
         </EmptyState>
       ) : (

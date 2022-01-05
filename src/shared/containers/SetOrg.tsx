@@ -81,6 +81,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 // Selectors
 import {getAll} from 'src/resources/selectors'
 import TasksHealthIndex from '../../health/Tasks/TasksHealthIndex'
+import NotebooksHealthIndex from '../../health/NoteBooks/NotebooksHealthIndex'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -285,7 +286,13 @@ const SetOrg: FC = () => {
             component={TasksHealthIndex}
           />
 
-          {/* Dashboard */}
+          <Route
+            exact
+            path={`${orgPath}/${HEALTH_CHECK}/notebooks`}
+            component={NotebooksHealthIndex}
+          />
+
+          {/* Default to  Dashboard */}
           <Route
             path={`${orgPath}/${HEALTH_CHECK}`}
             component={DashboardsHealthIndex}

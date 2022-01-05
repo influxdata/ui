@@ -2,12 +2,11 @@ import React from 'react'
 
 import {HealthDashboard} from 'src/types'
 import CellHealth from './CellHealth'
+import {Icon, IconFont, Table} from '@influxdata/clockface'
 
 type DashboardHealthProps = {
   dashboard: HealthDashboard
 }
-
-import {Table} from '@influxdata/clockface'
 
 const DashboardHealth = (props: DashboardHealthProps) => {
   const {dashboard} = props
@@ -15,6 +14,7 @@ const DashboardHealth = (props: DashboardHealthProps) => {
   return (
     <>
       <Table.Header>
+        <h4>{dashboard.name}</h4>
         <Table.Row>
           <Table.HeaderCell>Cells</Table.HeaderCell>
           <Table.HeaderCell>Bucket(s) Name</Table.HeaderCell>

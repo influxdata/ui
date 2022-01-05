@@ -157,15 +157,15 @@ describe('Checks', () => {
       })
       // Tags
 
-      for (let i = 0; i < testTags.length; i++) {
+      testTags.forEach((tag, index) => {
         cy.getByTestID('dashed-button').click()
         cy.getByTestID('tag-rule-key--input')
-          .eq(i)
-          .type(testTags[i].key)
+          .eq(index)
+          .type(tag.key)
         cy.getByTestID('tag-rule-value--input')
-          .eq(i)
-          .type(testTags[i].value)
-      }
+          .eq(index)
+          .type(tag.value)
+      })
 
       // Status Message Template
 
@@ -178,7 +178,6 @@ describe('Checks', () => {
       cy.getByTestID('panel-OK').within(() => {
         cy.getByTestID('add-threshold-condition-OK').should('not.exist')
         cy.getByTestID('dismiss-button').click()
-        cy.wait(500)
       })
       cy.getByTestID('add-threshold-condition-OK').should('be.visible')
 
@@ -217,26 +216,25 @@ describe('Checks', () => {
       })
       cy.getByTestID('save-cell--button').click()
       cy.wait('@putCheck').then(({response}) => {
-        if (response) {
-          expect(response.body.tags).to.deep.equal(testTags)
-          expect(response.body.every).to.equal(every)
-          expect(response.body.offset).to.equal(offset)
-          expect(response.body.statusMessageTemplate).to.equal(newMsg)
-          expect(
-            response.body.thresholds.filter((th: any) => th.level === 'INFO')[0]
-              .min
-          ).to.equal(parseFloat(rangeBtm))
-          expect(
-            response.body.thresholds.filter((th: any) => th.level === 'INFO')[0]
-              .max
-          ).to.equal(parseFloat(rangeTop))
-          expect(
-            response.body.thresholds.filter((th: any) => th.level === 'WARN')[0]
-              .value
-          ).to.equal(parseFloat(rangeTop))
-        } else {
+        if (!response) {
           fail('No response after update check')
         }
+        expect(response.body.tags).to.deep.equal(testTags)
+        expect(response.body.every).to.equal(every)
+        expect(response.body.offset).to.equal(offset)
+        expect(response.body.statusMessageTemplate).to.equal(newMsg)
+        expect(
+          response.body.thresholds.filter((th: any) => th.level === 'INFO')[0]
+            .min
+        ).to.equal(parseFloat(rangeBtm))
+        expect(
+          response.body.thresholds.filter((th: any) => th.level === 'INFO')[0]
+            .max
+        ).to.equal(parseFloat(rangeTop))
+        expect(
+          response.body.thresholds.filter((th: any) => th.level === 'WARN')[0]
+            .value
+        ).to.equal(parseFloat(rangeTop))
       })
     })
   })

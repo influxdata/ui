@@ -1,23 +1,27 @@
 import React from 'react'
 
-import {Dashboard as GenDashboard} from 'src/client'
+import {HealthDashboard} from 'src/types'
 import DashboardHealth from './DashboardHealth'
 import {Table} from '@influxdata/clockface'
 
 type DashboardHealthProps = {
-  dashboards: GenDashboard[]
+  dashboards: HealthDashboard[]
 }
 
 const DashboardsHealth = (props: DashboardHealthProps) => {
   const {dashboards} = props
-
   return (
     <>
-      <Table>
-        {dashboards.map((dashboard, index) => (
-          <DashboardHealth dashboard={dashboard} key={index} />
+      {dashboards
+        .filter(dashboard => !dashboard.healthy)
+        .map((dashboard, index) => (
+          <div key={index}>
+            <h4>{dashboard.name}</h4>
+            <Table>
+              <DashboardHealth dashboard={dashboard} key={index} />
+            </Table>
+          </div>
         ))}
-      </Table>
     </>
   )
 }

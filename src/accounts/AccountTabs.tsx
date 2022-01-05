@@ -28,8 +28,6 @@ enum Tab {
 const AccountTabs: FC<Props> = ({activeTab}) => {
   const orgID = useSelector(getOrg)?.id
 
-  console.log('inside tabs for accounts!', activeTab)
-
   const tabs: AccountPageTab[] = [
     {
       text: 'Billing',

@@ -719,7 +719,7 @@ describe('Dashboards', () => {
     cy.getByTestID('button-copy').click()
     cy.getByTestID('notification-success--children').should('be.visible')
   })
-  it('changes time range', () => {
+  it.only('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()
@@ -753,11 +753,13 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card--name').click()
     cy.getByTestID('cell-context--toggle').click()
     cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
     cy.getByTestID('selector-list curve').click()
     cy.getByTestID('selector-list p').click()
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('save-cell--button').click()
     cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-axes').should('be.visible')
 
     const snapshot = makeGraphSnapshot()
 

@@ -527,7 +527,7 @@ describe('DataExplorer', () => {
       })
     })
 
-    it.only('shows the empty state when the query returns no results', () => {
+    it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor').should('be.visible')
           .monacoType(`from(bucket: "defbuck"{rightarrow}

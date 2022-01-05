@@ -78,13 +78,14 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     handleGetAccounts()
   }, [handleGetAccounts, defaultAccountId, activeAccountId])
 
+  // todo: add to the value object when restoring/doing the default account setting:
+  //         setDefaultAccountId,
   return (
     <UserAccountContext.Provider
       value={{
         userAccounts,
         defaultAccountId,
         activeAccountId,
-        setDefaultAccountId,
         handleGetAccounts,
       }}
     >

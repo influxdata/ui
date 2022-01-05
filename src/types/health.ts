@@ -8,3 +8,9 @@ export type HealthDashboard = {
   cells: HealthDashboardCell[]
   healthy: boolean
 }
+
+export type HealthTask = {
+  name: string
+  healthy: boolean
+  missingBuckets: string[]
+}

@@ -98,3 +98,7 @@ export const OrgOverlay = lazy(() => import('src/operator/OrgOverlayWrapper'))
 export const CheckoutPage = lazy(() => import('src/checkout/CheckoutPage'))
 
 export const HealthPage = lazy(() => import('src/health/HealthPage'))
+
+export const DashboardsHealthIndex = lazy(() =>
+  import('src/health/Dashboards/DashboardsHealthIndex')
+)

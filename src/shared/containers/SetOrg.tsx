@@ -42,7 +42,7 @@ import {
   FileUploadsPage,
   ClientLibrariesPage,
   TelegrafPluginsPage,
-  HealthPage,
+  DashboardsHealthIndex,
 } from 'src/shared/containers'
 
 // Types
@@ -80,6 +80,7 @@ import {RemoteDataState} from '@influxdata/clockface'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import TasksHealthIndex from '../../health/Tasks/TasksHealthIndex'
 
 const SetOrg: FC = () => {
   const [loading, setLoading] = useState(RemoteDataState.Loading)
@@ -268,11 +269,20 @@ const SetOrg: FC = () => {
             component={VariablesIndex}
           />
 
-          {/* Health Check */}
+          {/* Health Checks */}
+
+          {/* Dashboard */}
           <Route
             exact
-            path={`${orgPath}/${HEALTH_CHECK}`}
-            component={HealthPage}
+            path={`${orgPath}/${HEALTH_CHECK}/dashboards`}
+            component={DashboardsHealthIndex}
+          />
+
+          {/* Tasks */}
+          <Route
+            exact
+            path={`${orgPath}/${HEALTH_CHECK}/tasks`}
+            component={TasksHealthIndex}
           />
 
           {/* Users */}

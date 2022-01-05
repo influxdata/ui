@@ -1,27 +1,13 @@
-// Libraries
+import DashboardsHealth from './DashboardsHealth'
+import {EmptyState, EmptyStateText} from '@influxdata/clockface'
 import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
+import {getOrg} from '../../organizations/selectors'
+import * as api from '../../client'
+import {Dashboard as GenDashboard} from '../../client'
+import {parseASTIM} from '../../buckets/utils/astim'
 
-// Utils
-import {pageTitleSuffixer} from '../shared/utils/pageTitles'
-import * as api from '../client'
-import {Dashboard as GenDashboard} from '../client'
-import {parseASTIM} from '../buckets/utils/astim'
-
-// Components
-import {
-  EmptyState,
-  EmptyStateText,
-  Orientation,
-  Page,
-  Tabs,
-} from '@influxdata/clockface'
-import DashboardsHealth from './Dashboards/DashboardsHealth'
-
-// selectors
-import {getOrg} from '../organizations/selectors'
-
-const HealthPage = () => {
+const DashboardsHealthTab = () => {
   const [dashboards, setDashboards] = useState([])
   const [dashboardsLoaded, setDashboardsLoaded] = useState(false)
 
@@ -100,31 +86,16 @@ const HealthPage = () => {
 
   return (
     <>
-      <Page titleTag={pageTitleSuffixer(['Health Page'])}>
-        <Page.Header fullWidth={true} testID="health-check-page--header">
-          <Page.Title title="Dependency checks" />
-        </Page.Header>
-        <Page.Contents scrollable={true}>
-          <Tabs.Container orientation={Orientation.Horizontal}>
-            <Tabs>
-              <Tabs.Tab active={true} id="dashboards" text="Dashboards" />
-              <Tabs.Tab id="tasks" text="Tasks" active={false} />
-            </Tabs>
-            <Tabs.TabContents>
-              {dashboards.length > 0 ? (
-                <DashboardsHealth dashboards={dashboards} />
-              ) : null}
-              {dashboardsLoaded ?? (
-                <EmptyState>
-                  <EmptyStateText>No illegal references found,</EmptyStateText>
-                </EmptyState>
-              )}
-            </Tabs.TabContents>
-          </Tabs.Container>
-        </Page.Contents>
-      </Page>
+      {dashboards.length > 0 ? (
+        <DashboardsHealth dashboards={dashboards} />
+      ) : null}
+      {dashboardsLoaded ?? (
+        <EmptyState>
+          <EmptyStateText>No illegal references found,</EmptyStateText>
+        </EmptyState>
+      )}
     </>
   )
 }
 
-export default HealthPage
+export default DashboardsHealthTab

@@ -15,8 +15,99 @@
     color: $cf-grey-75;
   }
 
+  .flow-panel,
+  .panel-resizer,
+  .flow-panel--title-input,
+  .cf-panel {
+    background-color: $cf-grey-85;
+    color: $cf-grey-65;
+  }
+
+  .flow-visualization--view {
+    background-color: $cf-white;
+    color: $cf-grey-75;
+  }
+
+  input,
   .cell {
     background-color: $cf-white;
+    color: $cf-grey-65;
+  }
+
+  .cf-page--title,
+  .cf-form--label {
+    color: $cf-grey-55;
+  }
+
+  .flow-panel--node {
+    background-color: #b27eca;
+    border-color: #9a38c7;
+  }
+
+  .panel-resizer,
+  .flow-panel--title-input {
+    border-color: $cf-grey-85;
+    color: $cf-grey-65;
+  }
+
+  .flow-panel--body .query-builder {
+    background-color: $cf-grey-55;
+    border-color: $cf-grey-55;
+  }
+
+  .panel-resizer--header,
+  .panel-resizer--error,
+  .panel-resizer--empty {
+    color: $cf-grey-55;
+  }
+
+  .flow-panel::after {
+    background-color: #b27eca;
+  }
+
+  .flow-divider:before {
+    background: linear-gradient(to bottom, #b27eca 0%, #8e1fc3 100%);
+  }
+  .flow-divider:after {
+    background: linear-gradient(to bottom, #8e1fc3 0%, #b27eca 100%);
+  }
+
+  .cf-input-label,
+  .flow-panel--title,
+  .panel-resizer {
+    color: $cf-grey-45;
+
+    :hover {
+      color: $cf-grey-65;
+    }
+  }
+
+  .cf-dropdown__onyx {
+    background-color: rgba(26, 26, 42, 0.9);
+  }
+
+  .builder-card--header,
+  .builder-card--title,
+  .builder-card {
+    background-color: $cf-grey-75;
+    color: $cf-white;
+  }
+
+  .cf-list-indicator__checkbox {
+    background-color: rgba(241, 241, 243, 0.8);
+  }
+
+  .query-builder--add-card-button,
+  .cf-select-group--option,
+  .flows-endpoints--dropdown {
+    background: $cf-grey-75;
+    color: $cf-white;
+  }
+
+  h5,
+  p,
+  h3 {
+    color: $cf-grey-65;
   }
 
   .cell--dot-grid,

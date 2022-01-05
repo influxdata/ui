@@ -27,6 +27,7 @@ export interface EditorProps {
   readOnly?: boolean
   autofocus?: boolean
   wrapLines?: 'off' | 'on' | 'bounded'
+  theme?: string
 }
 
 interface Props extends EditorProps {

@@ -85,6 +85,7 @@ export function serialize(flow: Flow) {
         readOnly: flow.readOnly,
         range: flow.range,
         refresh: flow.refresh,
+        theme: flow?.theme ?? 'dark',
         createdAt: flow.createdAt,
         createdBy: flow.createdBy,
         updatedAt: flow.updatedAt,
@@ -129,6 +130,7 @@ export function hydrate(data) {
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     createdBy: data.createdBy,
+    theme: data.spec?.theme ?? 'dark',
   }
   if (data.id) {
     flow.id = data.id

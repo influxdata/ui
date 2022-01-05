@@ -21,6 +21,7 @@ const MarkdownMonacoEditor: FC<EditorProps> = ({
   onChangeScript,
   autogrow,
   autofocus,
+  theme,
 }) => {
   const editorDidMount = (editor: EditorType) => {
     if (autogrow) {
@@ -45,7 +46,7 @@ const MarkdownMonacoEditor: FC<EditorProps> = ({
     <div className="markdown-editor--monaco" data-testid="markdown-editor">
       <MonacoEditor
         language={LANGID}
-        theme={THEME_NAME}
+        theme={theme ?? THEME_NAME}
         value={script}
         onChange={onChange}
         options={{

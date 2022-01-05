@@ -88,23 +88,33 @@ const ReadOnly: FC = ({children}) => {
 const ReadOnlyFlowPage: FC = () => {
   const {flow} = useContext(FlowContext)
 
+  console.log({flow})
+
   return (
-    <Page titleTag={flow.name + ' (Shared) | InfluxDB Cloud'}>
-      <ReadOnlyHeader />
-      <Page.Contents fullWidth={true} scrollable={false} className="flow-page">
-        <PopupProvider>
-          <DapperScrollbars
-            noScrollX
-            thumbStartColor="gray"
-            thumbStopColor="gray"
-          >
-            <ReadOnlyPipeList />
-          </DapperScrollbars>
-          <SubSideBar />
-          <PopupDrawer />
-        </PopupProvider>
-      </Page.Contents>
-    </Page>
+    <AppWrapper
+      className={flow?.theme === 'light' ? 'dashboard-light-mode' : ''}
+    >
+      <Page titleTag={flow.name + ' (Shared) | InfluxDB Cloud'}>
+        <ReadOnlyHeader />
+        <Page.Contents
+          fullWidth={true}
+          scrollable={false}
+          className="flow-page"
+        >
+          <PopupProvider>
+            <DapperScrollbars
+              noScrollX
+              thumbStartColor="gray"
+              thumbStopColor="gray"
+            >
+              <ReadOnlyPipeList />
+            </DapperScrollbars>
+            <SubSideBar />
+            <PopupDrawer />
+          </PopupProvider>
+        </Page.Contents>
+      </Page>
+    </AppWrapper>
   )
 }
 

@@ -38,6 +38,7 @@ const MarkdownPanel: FC<PipeProp> = ({Context}) => {
       <MarkdownMonacoEditor
         script={data.text}
         onChangeScript={handleChange}
+        theme={flow?.theme === 'light' ? 'light' : null}
         autogrow
       />
     </Suspense>

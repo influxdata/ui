@@ -2,7 +2,7 @@
 import React, {FC, Suspense, lazy, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 import classnames from 'classnames'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, useLocation} from 'react-router-dom'
 import {setAutoFreeze} from 'immer'
 import {AppSettingContext, AppSettingProvider} from 'src/shared/contexts/app'
 import 'fix-date'
@@ -31,19 +31,23 @@ const CreateOrgOverlay = lazy(() =>
   import('src/organizations/components/CreateOrgOverlay')
 )
 
-// Types
-import {AppState} from 'src/types'
-
 // Utils
+import {isCurrentPageDashboard} from './dashboards/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {PROJECT_NAME_PLURAL} from './flows'
 
 const App: FC = () => {
   const {theme, presentationMode} = useContext(AppSettingContext)
-  const currentPage = useSelector((state: AppState) => state.currentPage)
+  const isDashboard = useSelector(isCurrentPageDashboard)
+
+  const location = useLocation()
+  const hasTheming =
+    isDashboard ||
+    location.pathname.includes(`/${PROJECT_NAME_PLURAL.toLowerCase()}/`)
 
   const appWrapperClass = classnames('', {
-    'dashboard-light-mode': currentPage === 'dashboard' && theme === 'light',
+    'dashboard-light-mode': hasTheming && theme === 'light',
   })
 
   useEffect(() => {

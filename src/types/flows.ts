@@ -1,6 +1,6 @@
 import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
-import {AutoRefresh, TimeRange, Variable, Secret} from 'src/types'
+import {AutoRefresh, TimeRange, Variable, Secret, Theme} from 'src/types'
 
 export interface ControlAction {
   title: string | (() => string)
@@ -114,6 +114,7 @@ export interface Flow {
   createdAt?: Date
   updatedAt?: Date
   createdBy?: string
+  theme?: Theme
 }
 
 export interface FlowListState {

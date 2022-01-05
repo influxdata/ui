@@ -44,6 +44,7 @@ import {
 } from 'src/flows/pipes/Notification/endpoints'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 import {SidebarContext} from 'src/flows/context/sidebar'
+import {FlowContext} from 'src/flows/context/flow.current'
 const NotificationMonacoEditor = lazy(() =>
   import('src/flows/pipes/Notification/NotificationMonacoEditor')
 )
@@ -73,6 +74,7 @@ import CreateSecretForm from 'src/secrets/components/CreateSecretForm'
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()
   const {id, data, update, results, loading} = useContext(PipeContext)
+  const {flow} = useContext(FlowContext)
   const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
   const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
   const [status, setStatus] = useState<RemoteDataState>(
@@ -606,7 +608,13 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
         <FlexBox alignItems={AlignItems.Stretch} margin={ComponentSize.Medium}>
           <FlexBox.Child>
             <Form.Element label="Notification" required={true}>
-              <Panel backgroundColor={InfluxColors.Grey15}>
+              <Panel
+                backgroundColor={
+                  flow?.theme === 'light'
+                    ? InfluxColors.Grey95
+                    : InfluxColors.Grey15
+                }
+              >
                 <Panel.Body>
                   <FlexBox
                     justifyContent={JustifyContent.FlexEnd}

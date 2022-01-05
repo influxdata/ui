@@ -36,7 +36,6 @@ const DashboardsHealthTab = () => {
           })
           .then(result => {
             parseDashboards(buckets, result.data['dashboards'])
-            setDashboardsLoaded(true)
           })
       })
   }, [org.id])
@@ -48,6 +47,7 @@ const DashboardsHealthTab = () => {
         name: dashboard.name,
         cells: [],
         healthy: true,
+        id: dashboard.id
       }
 
       // For every cell in the dashboard, load the queries and verify
@@ -82,6 +82,7 @@ const DashboardsHealthTab = () => {
       results.push(dashboardDetails)
     }
     setDashboards(results)
+    setDashboardsLoaded(true)
   }
 
   return (
@@ -96,8 +97,8 @@ const DashboardsHealthTab = () => {
         <DashboardsHealth dashboards={dashboards} />
       ) : null}
 
-      {dashboardsLoaded &&
-      Object.values(dashboards).every(item => item.healthy === true) ? (
+      {(dashboardsLoaded &&
+      Object.values(dashboards).every(item => item.healthy === true)) ? (
         <EmptyState>
           <div style={{display: 'flex', justifyContent: 'center'}}><SparkleSpinner loading={RemoteDataState.Done}/></div>
           <EmptyStateText>No illegal references found!</EmptyStateText>

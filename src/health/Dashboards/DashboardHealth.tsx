@@ -2,7 +2,10 @@ import React from 'react'
 
 import {HealthDashboard} from 'src/types'
 import CellHealth from './CellHealth'
-import {Table} from '@influxdata/clockface'
+import {Icon, IconFont, InfluxColors, Table} from '@influxdata/clockface'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {getOrg} from '../../organizations/selectors'
 
 type DashboardHealthProps = {
   dashboard: HealthDashboard
@@ -11,10 +14,16 @@ type DashboardHealthProps = {
 const DashboardHealth = (props: DashboardHealthProps) => {
   const {dashboard} = props
 
+  const history = useHistory()
+  const org = useSelector(getOrg)
+
+  const openDashboard = () => {
+    history.push(`/orgs/${org.id}/dashboards/${dashboard.id}`)
+  }
   return (
     <>
       <Table.Header>
-        <h4>{dashboard.name}</h4>
+        <h3 onClick={openDashboard} style={{cursor: 'pointer'}}>{dashboard.name}</h3>
         <Table.Row>
           <Table.HeaderCell>Cells</Table.HeaderCell>
           <Table.HeaderCell>Bucket(s) Name</Table.HeaderCell>

@@ -42,6 +42,7 @@ import {
   FileUploadsPage,
   ClientLibrariesPage,
   TelegrafPluginsPage,
+  HealthPage,
 } from 'src/shared/containers'
 
 // Types
@@ -64,6 +65,7 @@ import {
   CLIENT_LIBS,
   TELEGRAF_PLUGINS,
   SECRETS,
+  HEALTH_CHECK,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -264,6 +266,13 @@ const SetOrg: FC = () => {
             exact
             path={`${orgPath}/${SETTINGS}`}
             component={VariablesIndex}
+          />
+
+          {/* Health Check */}
+          <Route
+            exact
+            path={`${orgPath}/${HEALTH_CHECK}`}
+            component={HealthPage}
           />
 
           {/* Users */}

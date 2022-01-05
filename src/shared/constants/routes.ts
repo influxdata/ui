@@ -33,6 +33,8 @@ export const LOAD_DATA = 'load-data'
 
 export const LABELS = 'labels'
 
+export const HEALTH_CHECK = 'health-check'
+
 export const FILE_UPLOAD = 'file-upload'
 export const CLIENT_LIBS = 'client-libraries'
 export const TELEGRAF_PLUGINS = 'telegraf-plugins'

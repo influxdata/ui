@@ -8,6 +8,9 @@ import {Account as UserAccount} from 'src/client/unityRoutes'
 // Utils
 import {getAccounts} from 'src/client/unityRoutes'
 
+// Metrics
+import {event} from 'src/cloud/utils/reporting'
+
 export type Props = {
   children: JSX.Element
 }
@@ -22,7 +25,6 @@ export interface UserAccountContextType {
 //   todo: add to above when implementing:
 //    setDefaultAccountId: (id: number) => void
 
-// isActive: true is for the currently logged in/active account
 export const DEFAULT_CONTEXT: UserAccountContextType = {
   userAccounts: [],
   defaultAccountId: -1,
@@ -61,6 +63,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
           setDefaultAccountId(defaultId)
         }
 
+        // isActive: true is for the currently logged in/active account
         const activeAcctArray = data.filter(line => line.isActive)
         if (activeAcctArray && activeAcctArray.length === 1) {
           const activeId = activeAcctArray[0].id
@@ -68,8 +71,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         }
       }
     } catch (error) {
-      // leaving this in for now while developing; will remove when feature is done
-      console.error('caught error...', error)
+      event('multiAccount.retrieveAccounts.error', {error})
     }
   }, [dispatch])
 
@@ -92,5 +94,3 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     </UserAccountContext.Provider>
   )
 })
-
-export default UserAccountProvider

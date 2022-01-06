@@ -617,6 +617,15 @@ export const flush = (): Cypress.Chainable<Cypress.Response<any>> => {
   }
 }
 
+/**
+ * numAccounts: this is the number of accounts that a particular user has.
+ * (if there is more than one account, then show the switch button,
+ * if only one account don't show the switch button)
+ *
+ * if this number is not supplied, then quartz-mock has a default value of 1 (1 account)
+ *
+ *  this is for the new multi-user/multi-account capability (adding to the UI in early 2022)
+ * */
 export type ProvisionData = {
   accountType?: AccountType
   hasData?: boolean

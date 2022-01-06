@@ -4,7 +4,7 @@ import {Button, IconFont, Overlay, Page} from '@influxdata/clockface'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import UserAccountProvider from 'src/accounts/context/userAccount'
+import {UserAccountProvider} from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
 
 import {UserAccountContext} from 'src/accounts/context/userAccount'
@@ -14,6 +14,15 @@ import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
 const AccountAboutPage: FC = () => {
   const {userAccounts} = useContext(UserAccountContext)
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
+
+  /**
+   * confirmed with @Grace and @distortia that there is guaranteed
+   * to be at least one account (since the user has to be logged in
+   * to get to this call); and each account is guaranteed to have a name.
+   *
+   * and one of the accounts has to be active (the one that the user currently
+   * is logged in as)
+   */
 
   const activeAcctName =
     userAccounts && userAccounts.filter(acct => acct.isActive)[0].name

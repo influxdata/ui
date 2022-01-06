@@ -12,12 +12,7 @@ describe('Billing Page Free Users', () => {
               accountType: 'free',
             }).then(() => {
               cy.visit(`/orgs/${id}/billing`)
-              cy.getByTestID('accounts-billing-tab').should('be.visible')
-
-              cy.getByTestID('accounts-billing-tab').should(
-                'have.class',
-                'cf-tabs--tab__active'
-              )
+              cy.getByTestID('billing-page--header').should('be.visible')
             })
           })
         })
@@ -64,7 +59,10 @@ describe('Billing Page PAYG Users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+          cy.setFeatureFlags({
+            uiUnificationFlag: true,
+            multiAccount: true,
+          }).then(() => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',
             }).then(() => {

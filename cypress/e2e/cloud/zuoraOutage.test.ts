@@ -39,12 +39,7 @@ describe('Billing Page PAYG Users', () => {
             }).then(() => {
               cy.wait(1000)
               cy.visit(`/orgs/${id}/billing`)
-              cy.getByTestID('accounts-billing-tab').should('be.visible')
-
-              cy.getByTestID('accounts-billing-tab').should(
-                'have.class',
-                'cf-tabs--tab__active'
-              )
+              cy.getByTestID('billing-page--header').should('be.visible')
             })
           })
         })

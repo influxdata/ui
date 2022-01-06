@@ -8,6 +8,7 @@ import {
   Button,
   ComponentColor,
   ComponentSize,
+  ComponentStatus,
   InputLabel,
   InputToggleType,
   Overlay,
@@ -18,7 +19,6 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 
 import {UserAccountContext} from './context/userAccount'
-import {ComponentStatus} from '../clockface'
 
 interface Props {
   onDismissOverlay: () => void

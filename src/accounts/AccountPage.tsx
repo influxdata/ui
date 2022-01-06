@@ -18,12 +18,11 @@ const AccountAboutPage: FC = () => {
   const activeAcctName =
     userAccounts && userAccounts.filter(acct => acct.isActive)[0].name
 
-  const switchAccount = () => {
-    // show the dialog
+  const showSwitchAccountDialog = () => {
     setSwitchAccountVisible(true)
   }
 
-  const handleDismissOverlay = () => {
+  const closeSwitchAccountDialog = () => {
     setSwitchAccountVisible(false)
   }
 
@@ -35,7 +34,7 @@ const AccountAboutPage: FC = () => {
             <Button
               text="Switch Account"
               icon={IconFont.Switch_New}
-              onClick={switchAccount}
+              onClick={showSwitchAccountDialog}
               testID="user-account-switch-btn"
             />
           )}
@@ -46,7 +45,7 @@ const AccountAboutPage: FC = () => {
           </div>
 
           <Overlay visible={isSwitchAccountVisible}>
-            <SwitchAccountOverlay onDismissOverlay={handleDismissOverlay} />
+            <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
           </Overlay>
         </>
       </AccountTabContainer>

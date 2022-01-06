@@ -6,6 +6,7 @@ import {
   DapperScrollbars,
   Dropdown,
 } from '@influxdata/clockface'
+import {useDispatch} from 'react-redux'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
@@ -14,6 +15,13 @@ import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 import './Sidebar.scss'
 import {event} from 'src/cloud/utils/reporting'
+import {notify} from 'src/shared/actions/notifications'
+
+// Constants
+import {
+  panelCopyLinkSuccess,
+  panelCopyLinkFail,
+} from 'src/shared/copy/notifications'
 
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -115,6 +123,7 @@ const Sidebar: FC = () => {
   const {flow, updateMeta, add, remove} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
+  const dispatch = useDispatch()
 
   const sections = ([
     {
@@ -127,6 +136,24 @@ const Sidebar: FC = () => {
             event('notebook_delete_cell', {notebooksCellType: type})
 
             remove(id)
+          },
+        },
+        {
+          title: 'Share',
+          action: () => {
+            const {type} = flow.data.byID[id]
+            event('notebook_share_panel', {notebooksCellType: type})
+            const url = new URL(
+              `${window.location.origin}${window.location.pathname}?panel=${id}`
+            ).toString()
+            try {
+              navigator.clipboard.writeText(url)
+              event('panel_share_success', {notebooksCellType: type})
+              dispatch(notify(panelCopyLinkSuccess()))
+            } catch {
+              event('panel_share_failure', {notebooksCellType: type})
+              dispatch(notify(panelCopyLinkFail()))
+            }
           },
         },
         {

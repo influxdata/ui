@@ -4,8 +4,8 @@ import {Button, IconFont, Overlay, Page} from '@influxdata/clockface'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import UserAccountProvider from './context/userAccount'
-import AccountTabContainer from './AccountTabContainer'
+import UserAccountProvider from 'src/accounts/context/userAccount'
+import AccountTabContainer from 'src/accounts/AccountTabContainer'
 
 import {UserAccountContext} from 'src/accounts/context/userAccount'
 

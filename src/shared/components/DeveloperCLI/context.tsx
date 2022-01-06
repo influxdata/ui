@@ -7,12 +7,15 @@ enum CLIContext {
   Buckets = 'buckets',
   Notebooks = 'notebooks',
   Commands = 'commands',
+  Docs = 'docs',
 }
 interface DeveloperCLIContextType {
   term: string
   setSearchTerm: (_: string) => void
   searchContext: CLIContext
   items: DeveloperCLIAutoCompleteItem[]
+  selected: number | null
+  setSelected: (_: number) => void
 }
 
 export const DEFAULT_CONTEXT: DeveloperCLIContextType = {
@@ -20,6 +23,8 @@ export const DEFAULT_CONTEXT: DeveloperCLIContextType = {
   setSearchTerm: (_: string) => null,
   searchContext: CLIContext.Commands,
   items: [],
+  selected: null,
+  setSelected: (_: number) => null,
 }
 
 export const DeveloperCLIContext = createContext<DeveloperCLIContextType>(
@@ -64,7 +69,11 @@ const commands = {
       window.location.href = `/orgs/${orgId}/notebooks`
     },
   },
-  webflux: {},
+  'search docs': {
+    cbClick: orgId => {
+      orgId
+    },
+  },
 }
 
 export interface DeveloperCLIAutoCompleteItem {
@@ -84,6 +93,7 @@ export const DeveloperCLIProvider: FC = ({children}) => {
   const [autocompleteItems, setAutocompleteItems] = useState<
     DeveloperCLIAutoCompleteItem[]
   >([])
+  const [selected, setSelected] = useState(null)
 
   useEffect(() => {
     if (!term && !currentCommand) {
@@ -166,6 +176,8 @@ export const DeveloperCLIProvider: FC = ({children}) => {
       case 'search':
       case 'list':
         return CLIContext.Commands
+      case 'docs':
+        return CLIContext.Docs
     }
   }
 
@@ -193,6 +205,8 @@ export const DeveloperCLIProvider: FC = ({children}) => {
         setSearchTerm,
         searchContext,
         items: autocompleteItems,
+        selected,
+        setSelected,
       }}
     >
       {children}

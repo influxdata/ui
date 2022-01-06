@@ -97,7 +97,6 @@ const SetOrg: FC = () => {
     e => {
       if (e.charCode === 247) {
         setDeveloperCLI(prev => {
-          console.log({prev})
           return !prev
         })
       }
@@ -108,7 +107,6 @@ const SetOrg: FC = () => {
     window.addEventListener('keypress', shortcutsListener, true)
 
     return () => {
-      console.log('shortcuts listener: Removed!')
       window.removeEventListener('keypress', shortcutsListener, true)
     }
   }, [orgID, shortcutsListener])

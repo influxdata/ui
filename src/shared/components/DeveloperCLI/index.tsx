@@ -5,7 +5,6 @@ import DeveloperCLIInput from './Input'
 import {DeveloperCLIProvider} from './context'
 
 const DeveloperCLI: FC = () => {
-  // const {autocompleteItems} = useContext(DeveloperCLIContext)
   return (
     <DeveloperCLIProvider>
       <div className="developer-cli">

@@ -1,14 +1,19 @@
 import React, {FC} from 'react'
+import {DeveloperCLIAutoCompleteItem} from '../context'
 
 interface OwnProps {
-  value: string
+  item: DeveloperCLIAutoCompleteItem
 }
 
-const DeveloperCLIAutoCompleteItem: FC<OwnProps> = ({value}) => {
+const DeveloperCLIAutoCompleteItem: FC<OwnProps> = ({item}) => {
   return (
-      <div className='developer-cli-ac-item'>
-        {value}
-      </div>
+    <div
+      id={item.id}
+      className="developer-cli-ac-item"
+      onClick={item.cbClick ?? undefined}
+    >
+      {item.title}
+    </div>
   )
 }
 

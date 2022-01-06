@@ -1,16 +1,15 @@
-import React, {FC} from 'react'
+import React, {FC, useContext} from 'react'
+import {DeveloperCLIContext} from '../context'
 import DeveloperCLIAutoCompleteItem from './Item'
 
-interface OwnProps {
-  items?: string[]
-}
-
-const DeveloperCLIAutoComplete: FC<OwnProps> = ({items=[]}) => {
-  console.log('itemssss', items)
+const DeveloperCLIAutoComplete: FC = () => {
+  const {items} = useContext(DeveloperCLIContext)
   return (
-      <div className='developer-cli-ac'>
-        {items.map((item) => <DeveloperCLIAutoCompleteItem value={item} />)} 
-      </div>
+    <div className="developer-cli-ac">
+      {items.map((item, i) => (
+        <DeveloperCLIAutoCompleteItem key={i} item={item} />
+      ))}
+    </div>
   )
 }
 

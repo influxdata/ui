@@ -3,7 +3,7 @@ import React, {FC} from 'react'
 // Components
 import {Page} from '@influxdata/clockface'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
-import LimitChecker from '../cloud/components/LimitChecker'
+import LimitChecker from 'src/cloud/components/LimitChecker'
 
 type Props = {
   testID?: string

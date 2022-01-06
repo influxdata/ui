@@ -1225,6 +1225,16 @@ export const notebookRunFail = (projectName: string): Notification => ({
   message: `${projectName} run failed`,
 })
 
+export const panelCopyLinkSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Panel link copied successfully!`,
+})
+
+export const panelCopyLinkFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to copy the panel link`,
+})
+
 export const notebookCreateFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to create Notebook, please try again.`,

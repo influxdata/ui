@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
-// import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 
 // Types

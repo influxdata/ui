@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState, useEffect} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 
 import {CLOUD_URL} from 'src/shared/constants'
 
@@ -79,10 +79,23 @@ const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
 
 export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   const [newAccountId, setNewAccountId] = useState<number>(null)
-  const [buttonStatus, setButtonStatus] = useState(ComponentStatus.Disabled)
+  const [switchButtonStatus, setSwitchButtonStatus] = useState(
+    ComponentStatus.Disabled
+  )
 
-  const {activeAccountId, handleSetDefaultAccount} = useContext(
-    UserAccountContext
+  const {
+    activeAccountId,
+    handleSetDefaultAccount,
+    defaultAccountId,
+  } = useContext(UserAccountContext)
+
+  const defaultBtnStatus =
+    activeAccountId === defaultAccountId
+      ? ComponentStatus.Disabled
+      : ComponentStatus.Default
+
+  const [defaultButtonStatus, setDefaultButtonStatus] = useState(
+    defaultBtnStatus
   )
 
   const doSwitchAccount = () => {
@@ -105,7 +118,16 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
         ? ComponentStatus.Disabled
         : ComponentStatus.Default
 
-    setButtonStatus(bStatus)
+    setSwitchButtonStatus(bStatus)
+
+    if (newAccountId) {
+      // something has been set, so let's change the default switch btn status:
+      const defaultSwitchStatus =
+        newAccountId === defaultAccountId
+          ? ComponentStatus.Disabled
+          : ComponentStatus.Default
+      setDefaultButtonStatus(defaultSwitchStatus)
+    }
   }, [newAccountId])
 
   const disabledTitleText =
@@ -122,13 +144,14 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
         <Button
           text="Switch Account"
           onClick={doSwitchAccount}
-          status={buttonStatus}
+          status={switchButtonStatus}
           disabledTitleText={disabledTitleText}
           testID="actually-switch-account--btn"
         />
         <Button
           testID="switch-default-account--btn"
           text="Set Default Account"
+          status={defaultButtonStatus}
           onClick={doSetDefaultAccount}
         />
       </Overlay.Footer>

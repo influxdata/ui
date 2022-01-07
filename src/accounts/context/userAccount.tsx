@@ -74,7 +74,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     } catch (error) {
       event('multiAccount.retrieveAccounts.error', {error})
     }
-  }, [dispatch])
+  }, [dispatch, defaultAccountId])
 
   async function handleSetDefaultAccount(newDefaultAcctId) {
     try {
@@ -83,11 +83,12 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         newDefaultAcctId
       )
       const resp = await putAccountsDefault({data: {id: newDefaultAcctId}})
+      setDefaultAccountId(newDefaultAcctId)
 
       if (resp.status !== 204) {
         console.error('arghh!!!! setting default didn not work :(', resp)
       } else {
-        console.log('succussful in setting default acct:', resp)
+        console.log('successful in setting default acct:', resp)
       }
     } catch (error) {
       console.log('caught error here while trying to set the default acct.....')

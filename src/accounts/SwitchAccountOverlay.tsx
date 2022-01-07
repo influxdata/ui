@@ -37,7 +37,7 @@ const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
   // active and isChecked works properly
   // it is a string because that is how the toggle works
   const onChange = strValue => {
-    const numAcct = parseInt(strValue)
+    const numAcct = parseInt(strValue, 10)
     onClickAcct(numAcct)
     setSelectedAcct(numAcct)
   }

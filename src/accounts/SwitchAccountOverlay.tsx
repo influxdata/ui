@@ -110,6 +110,8 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
     // will eventually get from the ui, setting it now for testing....
     const newId = 666
     handleSetDefaultAccount(newId)
+    onDismissOverlay()
+    event('multiAccount.switchDefaultAccount')
   }
 
   useEffect(() => {

@@ -18,7 +18,7 @@ import {
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
 
-import {UserAccountContext} from './context/userAccount'
+import {UserAccountContext} from 'src/accounts/context/userAccount'
 
 interface Props {
   onDismissOverlay: () => void

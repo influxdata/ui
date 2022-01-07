@@ -18,7 +18,7 @@ export type Props = {
 export interface UserAccountContextType {
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
-
+  handleSetDefaultAccount: (newId: number) => void
   defaultAccountId: number
   activeAccountId: number
 }
@@ -30,6 +30,7 @@ export const DEFAULT_CONTEXT: UserAccountContextType = {
   defaultAccountId: -1,
   activeAccountId: -1,
   handleGetAccounts: () => {},
+  handleSetDefaultAccount: () => {},
 }
 
 export const UserAccountContext = React.createContext<UserAccountContextType>(
@@ -75,19 +76,23 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }, [dispatch])
 
-
-  async function handleSetDefaultAccount(newDefaultAcctId){
+  async function handleSetDefaultAccount(newDefaultAcctId) {
     try {
-      const resp = await putAccountsDefault({data:{id:newDefaultAcctId}})
+      console.log(
+        'in context...trying to set default acct....',
+        newDefaultAcctId
+      )
+      const resp = await putAccountsDefault({data: {id: newDefaultAcctId}})
 
       if (resp.status !== 204) {
-        console.error('arghh!!!! setting default didn not work :(')
+        console.error('arghh!!!! setting default didn not work :(', resp)
+      } else {
+        console.log('succussful in setting default acct:', resp)
       }
-    } catch(error){
+    } catch (error) {
       console.log('caught error here while trying to set the default acct.....')
     }
   }
-
 
   useEffect(() => {
     handleGetAccounts()
@@ -102,6 +107,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         defaultAccountId,
         activeAccountId,
         handleGetAccounts,
+        handleSetDefaultAccount,
       }}
     >
       {children}

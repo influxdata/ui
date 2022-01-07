@@ -81,7 +81,9 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   const [newAccountId, setNewAccountId] = useState<number>(null)
   const [buttonStatus, setButtonStatus] = useState(ComponentStatus.Disabled)
 
-  const {activeAccountId} = useContext(UserAccountContext)
+  const {activeAccountId, handleSetDefaultAccount} = useContext(
+    UserAccountContext
+  )
 
   const doSwitchAccount = () => {
     onDismissOverlay()
@@ -91,7 +93,10 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   }
 
   const doSetDefaultAccount = () => {
-    console.log('pressed button to switch account......')
+    console.log('pressed button to switch DEFAULT account......')
+    // will eventually get from the ui, setting it now for testing....
+    const newId = 666
+    handleSetDefaultAccount(newId)
   }
 
   useEffect(() => {
@@ -121,9 +126,10 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
           disabledTitleText={disabledTitleText}
           testID="actually-switch-account--btn"
         />
-        <Button testID='switch-default-account--btn'
-        text='Set Default Account'
-        onClick={doSetDefaultAccount}
+        <Button
+          testID="switch-default-account--btn"
+          text="Set Default Account"
+          onClick={doSetDefaultAccount}
         />
       </Overlay.Footer>
     </Overlay.Container>

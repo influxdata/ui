@@ -90,6 +90,10 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
     window.location.href = `${CLOUD_URL}/accounts/${newAccountId}`
   }
 
+  const doSetDefaultAccount = () => {
+    console.log('pressed button to switch account......')
+  }
+
   useEffect(() => {
     const bStatus =
       !newAccountId || newAccountId === activeAccountId
@@ -116,6 +120,10 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
           status={buttonStatus}
           disabledTitleText={disabledTitleText}
           testID="actually-switch-account--btn"
+        />
+        <Button testID='switch-default-account--btn'
+        text='Set Default Account'
+        onClick={doSetDefaultAccount}
         />
       </Overlay.Footer>
     </Overlay.Container>

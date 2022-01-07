@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux'
 import {Account as UserAccount} from 'src/client/unityRoutes'
 
 // Utils
-import {getAccounts} from 'src/client/unityRoutes'
+import {getAccounts, putAccountsDefault} from 'src/client/unityRoutes'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
@@ -74,6 +74,20 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       event('multiAccount.retrieveAccounts.error', {error})
     }
   }, [dispatch])
+
+
+  async function handleSetDefaultAccount(newDefaultAcctId){
+    try {
+      const resp = await putAccountsDefault({data:{id:newDefaultAcctId}})
+
+      if (resp.status !== 204) {
+        console.error('arghh!!!! setting default didn not work :(')
+      }
+    } catch(error){
+      console.log('caught error here while trying to set the default acct.....')
+    }
+  }
+
 
   useEffect(() => {
     handleGetAccounts()

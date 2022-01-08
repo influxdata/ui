@@ -192,6 +192,7 @@
     "normalizr": "^3.4.1",
     "onigasm": "^2.2.4",
     "papaparse": "^5.2.0",
+    "qrcode.react": "^1.0.1",
     "qs": "^6.5.2",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.0.0",

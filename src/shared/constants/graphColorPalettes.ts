@@ -291,6 +291,30 @@ export const LINE_COLORS_SOLID_PURPLE = [
   },
 ]
 
+export const LINE_COLORS_SOLID_WHITE = [
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#fff',
+    id: uuid.v4(),
+    name: 'Solid White',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#fff',
+    id: uuid.v4(),
+    name: 'Solid White',
+    value: 0,
+  },
+  {
+    type: COLOR_TYPE_SCALE,
+    hex: '#fff',
+    id: uuid.v4(),
+    name: 'Solid White',
+    value: 0,
+  },
+]
+
 export const DEFAULT_LINE_COLORS = LINE_COLORS_A
 
 export const LINE_COLOR_SCALES = [
@@ -306,6 +330,7 @@ export const LINE_COLOR_SCALES = [
   LINE_COLORS_SOLID_YELLOW,
   LINE_COLORS_SOLID_GREEN,
   LINE_COLORS_SOLID_PURPLE,
+  LINE_COLORS_SOLID_WHITE,
 ].map(colorScale => {
   const name = colorScale[0].name
   const colors = colorScale

@@ -11,6 +11,7 @@ const doSetup = (cy, numAccounts: number) => {
           accountType: 'free',
           numAccounts,
         }).then(() => {
+          cy.wait(1000)
           cy.visit(`/orgs/${id}/accounts/settings`)
         })
       })

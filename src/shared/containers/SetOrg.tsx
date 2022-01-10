@@ -7,6 +7,7 @@ import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {
+  UserAccountPage,
   MePage,
   TasksPage,
   TaskPage,
@@ -284,6 +285,12 @@ const SetOrg: FC = () => {
 
           {/* About */}
           <Route path={`${orgPath}/about`} component={OrgProfilePage} />
+
+          {/* account settings page */}
+          <Route
+            path={`${orgPath}/accounts/settings`}
+            component={UserAccountPage}
+          />
 
           {/* Getting Started */}
           <Route exact path="/orgs/:orgID" component={MePage} />

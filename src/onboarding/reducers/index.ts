@@ -3,11 +3,11 @@ import {StepStatus} from 'src/clockface/constants/wizard'
 
 // Types
 import {Action} from 'src/onboarding/actions'
-import {ISetupParams} from '@influxdata/influx'
+import {OnboardingRequest} from 'src/client'
 
 export interface OnboardingState {
   stepStatuses: StepStatus[]
-  setupParams: ISetupParams
+  setupParams: OnboardingRequest
   orgID: string
   bucketID: string
 }

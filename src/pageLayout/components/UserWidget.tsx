@@ -2,6 +2,7 @@
 import React, {FC} from 'react'
 import {Link} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import {TreeNav} from '@influxdata/clockface'
@@ -37,17 +38,47 @@ const UserWidget: FC<Props> = ({
 
   const orgPrefix = `/orgs/${org.id}`
 
-  return (
-    <TreeNav.User username={me.name} team={org.name} testID="user-nav">
-      <CloudOnly>
-        <TreeNav.UserItem
-          id="usage"
-          label="Usage"
-          testID="user-nav-item-usage"
-          linkElement={className => (
-            <Link className={className} to={`${orgPrefix}/usage`} />
-          )}
-        />
+  let cloudEntries = (
+    <>
+      <TreeNav.UserItem
+        id="usage"
+        label="Usage"
+        testID="user-nav-item-usage"
+        linkElement={className => (
+          <Link className={className} to={`${orgPrefix}/usage`} />
+        )}
+      />
+      <TreeNav.UserItem
+        id="billing"
+        label="Billing"
+        testID="user-nav-item-billing"
+        linkElement={className => (
+          <Link className={className} to={`${orgPrefix}/billing`} />
+        )}
+      />
+      <TreeNav.UserItem
+        id="users"
+        label="Users"
+        testID="user-nav-item-users"
+        linkElement={className => (
+          <Link className={className} to={`${orgPrefix}/users`} />
+        )}
+      />
+      <TreeNav.UserItem
+        id="about"
+        label="About"
+        testID="user-nav-item-about"
+        linkElement={className => (
+          <Link className={className} to={`${orgPrefix}/about`} />
+        )}
+      />
+    </>
+  )
+
+  if (isFlagEnabled('multiAccount')) {
+    cloudEntries = (
+      <>
+        <TreeNav.SubHeading label="Account" />
         <TreeNav.UserItem
           id="billing"
           label="Billing"
@@ -56,6 +87,15 @@ const UserWidget: FC<Props> = ({
             <Link className={className} to={`${orgPrefix}/billing`} />
           )}
         />
+        <TreeNav.UserItem
+          id="account"
+          label="Settings"
+          testID="user-account-switching-page"
+          linkElement={className => (
+            <Link className={className} to={`${orgPrefix}/accounts/settings`} />
+          )}
+        />
+        <TreeNav.SubHeading label="Organization" />
         <TreeNav.UserItem
           id="users"
           label="Users"
@@ -72,7 +112,21 @@ const UserWidget: FC<Props> = ({
             <Link className={className} to={`${orgPrefix}/about`} />
           )}
         />
-      </CloudOnly>
+        <TreeNav.UserItem
+          id="usage"
+          label="Usage"
+          testID="user-nav-item-usage"
+          linkElement={className => (
+            <Link className={className} to={`${orgPrefix}/usage`} />
+          )}
+        />
+      </>
+    )
+  }
+
+  return (
+    <TreeNav.User username={me.name} team={org.name} testID="user-nav">
+      <CloudOnly>{cloudEntries}</CloudOnly>
       <CloudExclude>
         <TreeNav.UserItem
           id="members"

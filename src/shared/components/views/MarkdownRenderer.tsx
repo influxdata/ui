@@ -40,6 +40,7 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
       <ReactMarkdown
         className={className}
         components={{img: disallowedImageRenderer}}
+        linkTarget="_blank"
       >
         {text}
       </ReactMarkdown>
@@ -51,6 +52,7 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
     <ReactMarkdown
       className={className}
       components={{img: allowedImageRenderer}}
+      linkTarget="_blank"
     >
       {text}
     </ReactMarkdown>

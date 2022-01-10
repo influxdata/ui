@@ -1,4 +1,4 @@
-For more detailed and up to date information check out the <a href="https://docs.influxdata.com/influxdb/v2.0/write-data/developer-tools/csv/#csv-annotations" target="_blank" rel="noreferrer">Annotated CSV Documentation</a>
+For more detailed and up to date information check out the [Annotated CSV Documentation](https://docs.influxdata.com/influxdb/v2.0/write-data/developer-tools/csv/#csv-annotations)
 
 ##### Getting Started
 

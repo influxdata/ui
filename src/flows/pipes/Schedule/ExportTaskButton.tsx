@@ -72,7 +72,7 @@ const ExportTaskButton: FC<Props> = ({
 
       if (isFlagEnabled('createWithFlows')) {
         fetch(
-          `/api/v2private/notebooks/${flow.id}/resources?type=task&resource=${taskid}`,
+          `/api/v2private/notebooks/${flow.id}/resources?type=tasks&resource=${taskid}`,
           {
             method: 'GET',
           }
@@ -102,10 +102,13 @@ const ExportTaskButton: FC<Props> = ({
         if (isFlagEnabled('createWithFlows')) {
           fetch(`/api/v2private/notebooks/${flow.id}/resources`, {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
               panel: data.id,
               resource: resp.data.id,
-              type: 'task',
+              type: 'tasks',
             }),
           })
         }

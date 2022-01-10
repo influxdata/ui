@@ -14,6 +14,7 @@ import {
   Button,
   ComponentSize,
   ComponentColor,
+  ComponentStatus,
   SlideToggle,
   IndexList,
   DapperScrollbars,
@@ -260,6 +261,19 @@ const History: FC<Props> = ({task}) => {
   const _runs = runs.map(r => (
     <Run key={`run-id--${r.id}`} task={task} run={r} />
   ))
+  let runsView
+
+  if (_runs.length) {
+    runsView = _runs
+  } else if (status === 'active') {
+    runsView = (
+          <EmptyState size={ComponentSize.Large}>
+            <EmptyState.Text>
+              Looks like this Task doesn't have any <b>Runs</b>
+            </EmptyState.Text>
+          </EmptyState>
+    )
+  }
 
   return (
     <div className={`flow-task-history ${status}`}>
@@ -277,20 +291,13 @@ const History: FC<Props> = ({task}) => {
         <Button
           size={ComponentSize.ExtraSmall}
           color={ComponentColor.Default}
+          status={status === 'inactive' ? ComponentStatus.Disabled : ComponentStatus.Default}
           text="Run Manually"
           onClick={run}
         />
       </div>
       <div>
-        {_runs.length ? (
-          _runs
-        ) : (
-          <EmptyState size={ComponentSize.Large}>
-            <EmptyState.Text>
-              Looks like this Task doesn't have any <b>Runs</b>
-            </EmptyState.Text>
-          </EmptyState>
-        )}
+        {runsView}
       </div>
     </div>
   )

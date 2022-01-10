@@ -81,7 +81,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       return
     }
 
-    fetch(`/api/v2private/notebooks/resources?type=task&resource=${task.id}`, {
+    fetch(`/api/v2private/notebooks/resources?type=tasks&resource=${task.id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       })
       .then(resp => {
         if (resp.length) {
-          setRoute(`/orgs/${org.id}/notebooks/${resp[0].notebookID}`)
+          setRoute(`/orgs/${org.id}/notebooks/${resp[0].notebookID}?panel=${resp[0].panelID}`)
         } else {
           setRoute(`/notebook/from/task/${task.id}`)
         }

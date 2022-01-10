@@ -1,36 +1,29 @@
 import {XYViewProperties} from 'src/types'
+import {addedDiff, deletedDiff} from 'deep-object-diff'
+import {getNominalColorScale} from '@influxdata/giraffe'
 
 /**
- * Evaluates deeper equality for two map objects based on their key:value pair
+ * Evaluates whether mappings need to be updated
  * @param map1
  * @param map2
  */
-const areMappingsSame = (map1, map2) => {
-  if (!map1 || !map2) {
-    return false
+const compareIDPEandLocalMappings = (map1, map2) => {
+  // SPECIAL CASE: handle null case when colorMapping from IDPE is `null`
+  if (!map1) {
+    return {isMappingReusable: false, additions: map2}
   }
 
-  // Create arrays of property names
-  const aProps = Object.getOwnPropertyNames(map1)
-  const bProps = Object.getOwnPropertyNames(map2)
-
-  // If number of properties is different,
-  // objects are not equivalent
-  if (aProps.length !== bProps.length) {
-    return false
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0
   }
 
-  for (let i = 0; i < aProps.length; i++) {
-    const propName = aProps[i]
+  const additions = addedDiff(map1, map2)
+  const deletions = deletedDiff(map1, map2)
 
-    // If values of same property are not equal,
-    // objects are not equivalent
-    if (map1[propName] !== map2[propName]) {
-      return false
-    }
-  }
+  // if no additions or no deletions we are good to go
+  const isMappingReusable = isEmpty(additions) && isEmpty(deletions)
 
-  return true
+  return {isMappingReusable, additions, deletions}
 }
 
 /**
@@ -44,26 +37,29 @@ export const getColorMappingObjects = (
   columnGroupMap,
   properties: XYViewProperties
 ) => {
-  const seriesToColorIndexMap = generateSeriesToColorIndexMap(
+  const seriesToColorHexMap = generateSeriesToColorHex(
     columnGroupMap,
     properties
   )
 
+  const {isMappingReusable} = compareIDPEandLocalMappings(
+    properties.colorMapping,
+    seriesToColorHexMap
+  )
+
   // if the mappings from the IDPE and the *required* one's for the current view are the same, we don't need to generate new mappings
-  if (areMappingsSame(properties.colorMapping, seriesToColorIndexMap)) {
+  if (isMappingReusable) {
     const columnKeys = columnGroupMap.columnKeys
     const mappings = {...columnGroupMap}
+    const needsToSaveToIDPE = false
 
     mappings.mappings.forEach(graphLine => {
       const seriesID = getSeriesId(graphLine, columnKeys)
 
-      const colors = properties.colors
-
       // this is needed for giraffe
-      graphLine.color = colors[properties.colorMapping[seriesID]].hex
+      graphLine.color = properties.colorMapping[seriesID]
     })
 
-    const needsToSaveToIDPE = false
     return {
       colorMappingForGiraffe: {columnKeys, ...mappings},
       needsToSaveToIDPE,
@@ -76,18 +72,33 @@ export const getColorMappingObjects = (
     mappings.mappings.forEach(graphLine => {
       const seriesID = getSeriesId(graphLine, columnKeys)
 
-      const colors = properties.colors
-
       // this is needed for giraffe
-      graphLine.color = colors[seriesToColorIndexMap[seriesID]].hex
+      graphLine.color = seriesToColorHexMap[seriesID]
     })
 
     const newColorMappingForGiraffe = {
       ...mappings,
     }
 
+    const {additions, deletions} = compareIDPEandLocalMappings(
+      properties.colorMapping,
+      seriesToColorHexMap
+    )
+
+    const colorMappingForIDPE = {...properties.colorMapping}
+
+    // perform additions
+    for (const add in additions) {
+      colorMappingForIDPE[add] = seriesToColorHexMap[add]
+    }
+
+    // perform deletions
+    for (const minus in deletions) {
+      delete colorMappingForIDPE[minus]
+    }
+
     return {
-      colorMappingForIDPE: seriesToColorIndexMap,
+      colorMappingForIDPE: colorMappingForIDPE,
       colorMappingForGiraffe: newColorMappingForGiraffe,
       needsToSaveToIDPE,
     }
@@ -136,19 +147,21 @@ const getSeriesId = (graphLine, columnKeys) => {
  * This function generates a map that maps the series ID to the color Index.
  * @param columnGroupMap - generated using the createGroupIDColumn function
  * @param properties - XYViewProperties
- * @returns - a map that contains the series ID and it's color index (value bounded by the properties.colors array)
+ * @returns - a map that contains the series ID and it's color hex value
  */
 
-export const generateSeriesToColorIndexMap = (
+const generateSeriesToColorHex = (
   columnGroupMap,
   properties: XYViewProperties
 ) => {
-  const seriesToColorIndexMap = {}
+  const seriesToColorHex = {}
   const cgMap = {...columnGroupMap}
   cgMap.mappings.forEach((graphLine, colorIndex) => {
     const id = getSeriesId(graphLine, columnGroupMap.columnKeys)
-    seriesToColorIndexMap[id] = colorIndex % properties.colors.length
+    const colors = properties.colors.map(value => value.hex)
+    const fillScale = getNominalColorScale(columnGroupMap, colors)
+    seriesToColorHex[id] = fillScale(colorIndex)
   })
 
-  return {...seriesToColorIndexMap}
+  return {...seriesToColorHex}
 }

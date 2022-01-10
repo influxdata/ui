@@ -267,11 +267,11 @@ const History: FC<Props> = ({task}) => {
     runsView = _runs
   } else if (status === 'active') {
     runsView = (
-          <EmptyState size={ComponentSize.Large}>
-            <EmptyState.Text>
-              Looks like this Task doesn't have any <b>Runs</b>
-            </EmptyState.Text>
-          </EmptyState>
+      <EmptyState size={ComponentSize.Large}>
+        <EmptyState.Text>
+          Looks like this Task doesn't have any <b>Runs</b>
+        </EmptyState.Text>
+      </EmptyState>
     )
   }
 
@@ -291,14 +291,16 @@ const History: FC<Props> = ({task}) => {
         <Button
           size={ComponentSize.ExtraSmall}
           color={ComponentColor.Default}
-          status={status === 'inactive' ? ComponentStatus.Disabled : ComponentStatus.Default}
+          status={
+            status === 'inactive'
+              ? ComponentStatus.Disabled
+              : ComponentStatus.Default
+          }
           text="Run Manually"
           onClick={run}
         />
       </div>
-      <div>
-        {runsView}
-      </div>
+      <div>{runsView}</div>
     </div>
   )
 }

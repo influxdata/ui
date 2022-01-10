@@ -103,7 +103,7 @@ const ExportTaskButton: FC<Props> = ({
           fetch(`/api/v2private/notebooks/${flow.id}/resources`, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               panel: data.id,

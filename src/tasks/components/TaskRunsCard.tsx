@@ -93,7 +93,9 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       })
       .then(resp => {
         if (resp.length) {
-          setRoute(`/orgs/${org.id}/notebooks/${resp[0].notebookID}?panel=${resp[0].panelID}`)
+          setRoute(
+            `/orgs/${org.id}/notebooks/${resp[0].notebookID}?panel=${resp[0].panelID}`
+          )
         } else {
           setRoute(`/notebook/from/task/${task.id}`)
         }

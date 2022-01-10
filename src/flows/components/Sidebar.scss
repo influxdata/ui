@@ -1,8 +1,8 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .flow-sidebar {
-  flex: 0 0 300px; // TODO(ariel): the sidebar needs more real estate for this to work. 550px is a good min, but a redesign is likely needed
-  width: 300px;
+  flex: 0 0 calc(420px - $cf-space-2xs);
+  width: 420px - $cf-space-2xs;
   padding: 0 $cf-space-2xs;
 
   .sidebar--item {

@@ -11,7 +11,8 @@ describe('Billing Page Free Users', () => {
             cy.quartzProvision({
               accountType: 'free',
             }).then(() => {
-              cy.wait(1000)
+              cy.getByTestID('home-page--header').should('be.visible')
+              //cy.wait(1000)
               cy.visit(`/orgs/${id}/billing`)
               cy.getByTestID('billing-page--header').should('be.visible')
             })
@@ -67,7 +68,13 @@ describe('Billing Page PAYG Users', () => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',
             }).then(() => {
-              cy.wait(1000)
+              // these next three lines are to give the system time to register the 'multiAccount'
+              // feature flag; since the page (billing) loads differently if the flag is on
+              // these next three lines can be removed when the feature flag is removed (and on by default)
+              cy.getByTestID('home-page--header').should('be.visible')
+              cy.visit(`orgs/${id}/load-data/tokens`)
+              cy.getByTestID('dropdown-button--gen-token').should('be.visible')
+
               cy.visit(`/orgs/${id}/billing`)
               cy.getByTestID('accounts-billing-tab').should('be.visible')
 

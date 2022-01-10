@@ -36,7 +36,7 @@ interface Props {
   maxDate?: string
   minDate?: string
   onSelectDate: (date: string) => void
-  onInvalidInput?: () => void
+  onInvalidInput: () => void
 }
 
 interface State {

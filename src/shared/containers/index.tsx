@@ -3,6 +3,7 @@ import {lazy} from 'react'
 export const DataExplorerPage = lazy(() =>
   import('src/dataExplorer/components/DataExplorerPage')
 )
+
 export const MePage = lazy(() => import('src/me/containers/MePage'))
 export const TasksPage = lazy(() => import('src/tasks/containers/TasksPage'))
 export const TaskPage = lazy(() => import('src/tasks/containers/TaskPage'))
@@ -93,6 +94,7 @@ export const OperatorPage = lazy(() => import('src/operator/OperatorPage'))
 export const AccountPage = lazy(() =>
   import('src/operator/account/AccountPage')
 )
+export const UserAccountPage = lazy(() => import('src/accounts/AccountPage'))
 export const OrgOverlay = lazy(() => import('src/operator/OrgOverlayWrapper'))
 
 export const CheckoutPage = lazy(() => import('src/checkout/CheckoutPage'))

@@ -59,6 +59,10 @@ const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
             <div className="flux-function-docs--heading">Arguments</div>
             <div className="flux-function-docs--snippet">{argComponent}</div>
           </article>
+          <article>
+            <div className="flux-function-docs--heading">Example</div>
+            <div className="flux-function-docs--snippet">{func.example}</div>
+          </article>
           <p className="tooltip--link">
             Still have questions? Check out the{' '}
             <a target="_blank" rel="noreferrer" href={func.link}>

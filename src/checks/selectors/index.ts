@@ -1,10 +1,10 @@
-import {AppState, Check} from 'src/types'
+import {AppState, Check, CheckIDsMap} from 'src/types'
 
 export const getCheck = (state: AppState, id: string): Check => {
   return state.resources.checks.byID[id] || null
 }
 
-export const getCheckIDs = (state: AppState): {[x: string]: boolean} => {
+export const getCheckIDs = (state: AppState): CheckIDsMap => {
   return state.resources.checks.allIDs.reduce(
     (acc, id) => ({...acc, [id]: true}),
     {}

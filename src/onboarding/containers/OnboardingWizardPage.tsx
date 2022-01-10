@@ -3,7 +3,7 @@ import React, {ReactElement, PureComponent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // APIs
-import {client} from 'src/utils/api'
+import {getSetup} from 'src/client'
 
 // Components
 import {
@@ -47,7 +47,13 @@ export class OnboardingWizardPage extends PureComponent<Props, State> {
   public async componentDidMount() {
     this.setState({loading: RemoteDataState.Loading})
     try {
-      const {allowed} = await client.setup.status()
+      const resp = await getSetup({})
+
+      if (resp.status !== 200) {
+        throw new Error('There was an error onboarding')
+      }
+
+      const {allowed} = resp.data
       if (!allowed) {
         this.setState({isSetupComplete: true})
       }

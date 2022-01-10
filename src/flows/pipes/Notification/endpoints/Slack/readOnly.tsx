@@ -34,7 +34,6 @@ const ReadOnly: FC = () => {
         />
       </Form.Element>
       <Form.Element label="Message Color">
-        (
         <Input
           name="color"
           type={InputType.Text}
@@ -42,7 +41,6 @@ const ReadOnly: FC = () => {
           size={ComponentSize.Medium}
           status={ComponentStatus.Disabled}
         />
-        )
       </Form.Element>
     </div>
   )

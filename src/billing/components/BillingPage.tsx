@@ -10,21 +10,39 @@ import BillingProvider from 'src/billing/context/billing'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import AccountTabContainer from 'src/accounts/AccountTabContainer'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const BillingPage: FC = () => (
-  <BillingProvider>
-    <Page titleTag={pageTitleSuffixer(['Billing'])}>
-      <Page.Header fullWidth={false} testID="billing-page--header">
-        <Page.Title title="Billing" />
-        <LimitChecker>
-          <RateLimitAlert />
-        </LimitChecker>
-      </Page.Header>
-      <Page.Contents scrollable={true} testID="billing-page-contents--scroll">
+const BillingPage: FC = () => {
+  let contents = null
+
+  if (isFlagEnabled('multiAccount')) {
+    contents = (
+      <AccountTabContainer activeTab="billing">
         <BillingPageContents />
-      </Page.Contents>
-    </Page>
-  </BillingProvider>
-)
+      </AccountTabContainer>
+    )
+  } else {
+    contents = (
+      <>
+        <Page.Header fullWidth={false} testID="billing-page--header">
+          <Page.Title title="Billing" />
+          <LimitChecker>
+            <RateLimitAlert />
+          </LimitChecker>
+        </Page.Header>
+        <Page.Contents scrollable={true} testID="billing-page-contents--scroll">
+          <BillingPageContents />
+        </Page.Contents>
+      </>
+    )
+  }
+
+  return (
+    <BillingProvider>
+      <Page titleTag={pageTitleSuffixer(['Billing'])}>{contents}</Page>
+    </BillingProvider>
+  )
+}
 
 export default BillingPage

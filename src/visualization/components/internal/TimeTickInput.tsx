@@ -43,6 +43,8 @@ interface TimeTickInputProps {
   update: (data: any) => void
 }
 
+const noOp = () => {}
+
 export const TimeTickInput: FC<TimeTickInputProps> = props => {
   const {
     axisName,
@@ -198,6 +200,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
                       dateTime={getDatePickerDateTime()}
                       onSelectDate={handleSelectDate}
                       label="Start Tick Marks At"
+                      onInvalidInput={noOp}
                     />
                   </div>
                   <Button

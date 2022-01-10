@@ -5,6 +5,7 @@ import React, {FunctionComponent} from 'react'
 import {DapperScrollbars} from '@influxdata/clockface'
 import TooltipDescription from 'src/timeMachine/components/fluxFunctionsToolbar/TooltipDescription'
 import TooltipArguments from 'src/timeMachine/components/fluxFunctionsToolbar/TooltipArguments'
+import TooltipExample from 'src/timeMachine/components/fluxFunctionsToolbar/TooltipExample'
 import TooltipLink from 'src/timeMachine/components/fluxFunctionsToolbar/TooltipLink'
 
 // Types
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const FunctionTooltipContents: FunctionComponent<Props> = ({
-  func: {desc, args, link, name},
+  func: {desc, args, example, link, name},
 }) => {
   return (
     <div className="flux-function-docs" data-testid={`flux-docs--${name}`}>
@@ -23,6 +24,7 @@ const FunctionTooltipContents: FunctionComponent<Props> = ({
         <div className="flux-toolbar--popover">
           <TooltipDescription description={desc} />
           <TooltipArguments argsList={args} />
+          <TooltipExample example={example} />
           <TooltipLink link={link} />
         </div>
       </DapperScrollbars>

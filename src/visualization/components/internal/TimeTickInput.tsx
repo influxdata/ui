@@ -8,10 +8,6 @@ import React, {
   useState,
 } from 'react'
 
-// Utils
-import {useOneWayState} from 'src/shared/utils/useOneWayState'
-import {convertUserInputValueToNumOrNaN} from 'src/shared/utils/convertUserInput'
-
 // Components
 import DatePicker from 'src/shared/components/dateRangePicker/DatePicker'
 import {ClickOutside} from 'src/shared/components/ClickOutside'
@@ -33,6 +29,7 @@ import {
 } from '@influxdata/clockface'
 
 import {TICK_PROPERTY_PREFIX} from 'src/visualization/constants'
+import {RFC3339_VALIDATOR} from 'src/utils/datetime/constants'
 
 interface TimeTickInputProps {
   axisName: string
@@ -45,20 +42,54 @@ interface TimeTickInputProps {
 
 const noOp = () => {}
 
+const isValidRFC3339 = (input: string) => {
+  return (
+    RFC3339_VALIDATOR.test(input) &&
+    new Date(input).toString() !== 'Invalid Date'
+  )
+}
+
+const convertDateToLocalTime = (date: Date): string => {
+  if (!date || date.toDateString() === 'Invalid Date') {
+    return date.toDateString()
+  }
+  const year = date.getFullYear()
+  const month =
+    date.getMonth() + 1 < 10
+      ? `0${date.getMonth() + 1}`
+      : `${date.getMonth() + 1}`
+  const dayOfMonth =
+    date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`
+
+  const timeStringParsed = date.toTimeString().split(' ')
+  const localTime = timeStringParsed[0]
+  const utcOffset = timeStringParsed[1].replace('GMT', '')
+
+  return `${year}-${month}-${dayOfMonth} ${localTime}${utcOffset}`
+}
+
+const getInitialTimeTick = (initialTick: string | number): string => {
+  if (typeof initialTick === 'number' && initialTick === initialTick) {
+    const initialDate = new Date(initialTick)
+    if (isValidRFC3339(initialDate.toISOString())) {
+      return convertDateToLocalTime(initialDate)
+    }
+  }
+  return ''
+}
+
 export const TimeTickInput: FC<TimeTickInputProps> = props => {
   const {
     axisName,
     tickPropertyName,
     tickOptions,
     initialTickOptionValue,
-    dateFormatPlaceholder = 'RFC3339',
+    dateFormatPlaceholder = 'RFC 3339 or YYYY-MM-DD HH:MM:SSZ',
     update,
   } = props
 
-  const [tickOptionInput, setTickOptionInput] = useOneWayState(
-    initialTickOptionValue === initialTickOptionValue
-      ? initialTickOptionValue
-      : ''
+  const [tickOptionInput, setTickOptionInput] = useState<string>(
+    getInitialTimeTick(initialTickOptionValue)
   )
 
   const [tickOptionInputStatus, setTickOptionInputStatus] = useState<
@@ -74,10 +105,9 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   const triggerRef: RefObject<ButtonRef> = createRef()
 
-  const updateTickOption = (value?: string | number) => {
-    const convertedValue = convertUserInputValueToNumOrNaN(
-      value === undefined ? tickOptionInput : value
-    )
+  const updateTickOption = (value?: string) => {
+    const dateString = value === undefined ? tickOptionInput : value
+    const convertedValue = new Date(dateString).valueOf()
     const tickOptionNameWithoutAxis = `${TICK_PROPERTY_PREFIX}${tickPropertyName
       .slice(0, 1)
       .toUpperCase()}${tickPropertyName.slice(1).toLowerCase()}`
@@ -99,7 +129,11 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     setTickOptionInput(event.target.value)
-    setTickOptionInputStatus(ComponentStatus.Default)
+    if (isValidRFC3339(event.target.value)) {
+      setTickOptionInputStatus(ComponentStatus.Default)
+    } else {
+      setTickOptionInputStatus(ComponentStatus.Error)
+    }
   }
 
   const handleBlur = () => updateTickOption()
@@ -121,6 +155,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
   const handleReset = () => {
     setTickOptionInput('')
     updateTickOption('')
+    setTickOptionInputStatus(ComponentStatus.Default)
   }
 
   const showDatePicker = () => setIsDatePickerOpen(true)
@@ -135,10 +170,15 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
   }
 
   const handleSelectDate = (date: string) => {
-    const dateRFC3339 = new Date(date).valueOf()
-    setTickOptionInput(dateRFC3339 === dateRFC3339 ? String(dateRFC3339) : '')
-    setTickOptionInputStatus(ComponentStatus.Default)
-    updateTickOption(dateRFC3339)
+    if (isValidRFC3339(date)) {
+      const dateRFC3339 = convertDateToLocalTime(new Date(date))
+      setTickOptionInput(dateRFC3339)
+      setTickOptionInputStatus(ComponentStatus.Default)
+      updateTickOption(dateRFC3339)
+    } else {
+      setTickOptionInput('')
+      setTickOptionInputStatus(ComponentStatus.Error)
+    }
   }
 
   const onClickOutside = () => {
@@ -160,7 +200,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   return (
     <>
-      <Grid.Column widthXS={Columns.Six}>
+      <Grid.Column widthXS={Columns.Twelve}>
         <Form.Element label="Start Tick Marks At">
           <Input
             placeholder={dateFormatPlaceholder}
@@ -173,7 +213,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
           />
         </Form.Element>
       </Grid.Column>
-      <Grid.Column widthXS={Columns.Six}>
+      <Grid.Column widthXS={Columns.Twelve}>
         <Form.Element label="Date Picker">
           <Popover
             appearance={Appearance.Outline}

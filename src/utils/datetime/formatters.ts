@@ -1,6 +1,7 @@
 // TODO: handle these any types
 
 import {TimeZone} from 'src/types'
+import {STRICT_ISO8061_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 const dateTimeOptions: any = {
   hourCycle: 'h23',
@@ -67,6 +68,12 @@ export const createDateTimeFormatter = (
         )
       }
       break
+    }
+
+    case STRICT_ISO8061_TIME_FORMAT: {
+      return {
+        format: date => date,
+      }
     }
 
     case 'YYYY-MM-DD': {

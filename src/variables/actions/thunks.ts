@@ -29,8 +29,6 @@ import {
   normalizeValues,
   getVariablesForDashboard,
 } from 'src/variables/selectors'
-import {variableToTemplate} from 'src/shared/utils/resourceToTemplate'
-import {findDependentVariables} from 'src/variables/utils/exportVariables'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {currentContext} from 'src/shared/selectors/currentContext'

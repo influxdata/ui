@@ -1,10 +1,5 @@
 // Types
-import {
-  CommunityTemplate,
-  DocumentCreate,
-  RemoteDataState,
-  TemplateSummaryEntities,
-} from 'src/types'
+import {CommunityTemplate, TemplateSummaryEntities} from 'src/types'
 import {NormalizedSchema} from 'normalizr'
 
 import {InstalledStack} from 'src/types'

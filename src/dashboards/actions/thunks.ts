@@ -45,9 +45,6 @@ import {setNoteState, Action as NoteAction} from 'src/dashboards/actions/notes'
 import {createView} from 'src/views/helpers'
 
 // Utils
-import {filterUnusedVars} from 'src/shared/utils/filterUnusedVars'
-import {dashboardToTemplate} from 'src/shared/utils/resourceToTemplate'
-import {exportVariables} from 'src/variables/utils/exportVariables'
 import {getSaveableView} from 'src/timeMachine/selectors'
 import {incrementCloneName} from 'src/utils/naming'
 import {isLimitError} from 'src/cloud/utils/limits'
@@ -71,14 +68,11 @@ import {
   DashboardEntities,
   ViewEntities,
   ResourceType,
-  VariableEntities,
-  Variable,
   LabelEntities,
   NoteEditorMode,
   MarkdownViewProperties,
 } from 'src/types'
 import {CellsWithViewProperties} from 'src/client'
-import {arrayOfVariables} from 'src/schemas/variables'
 
 type Action = creators.Action
 

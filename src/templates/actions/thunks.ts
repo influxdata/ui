@@ -10,7 +10,6 @@ import {
 
 // Types
 import {Dispatch} from 'react'
-import {RemoteDataState} from 'src/types'
 
 // Utils
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'

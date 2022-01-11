@@ -47,7 +47,6 @@ import {GetTasksParams} from 'src/client'
 // Utils
 import {getErrorMessage} from 'src/utils/api'
 import {insertPreambleInScript} from 'src/shared/utils/insertPreambleInScript'
-import {taskToTemplate} from 'src/shared/utils/resourceToTemplate'
 import {isLimitError} from 'src/cloud/utils/limits'
 import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {getOrg} from 'src/organizations/selectors'

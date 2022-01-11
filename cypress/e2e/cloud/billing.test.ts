@@ -20,7 +20,7 @@ describe('Billing Page Free Users', () => {
     )
   )
 
-  it('should display the free billing page for free users', () => {
+  it.skip('should display the free billing page for free users', () => {
     cy.getByTestID('cloud-upgrade--button').should('be.visible')
     cy.getByTestID('title-header--name')
       .should('not.have.value', 'blockedNotificationRules')
@@ -80,7 +80,7 @@ describe('Billing Page PAYG Users', () => {
     )
   )
 
-  it('should display the free billing page for free users', () => {
+  it.skip('should display the free billing page for free users', () => {
     // The implication here is that there is no Upgrade Now button
     cy.get('.cf-page-header--fixed')
       .children()

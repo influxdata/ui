@@ -45,6 +45,7 @@ export const OSS_FLAGS = {
   boardWithFlows: false,
   createWithFlows: false,
   leadWithFlows: false,
+  selfRemovalFromAccount: false,
 }
 
 export const CLOUD_FLAGS = {
@@ -91,6 +92,7 @@ export const CLOUD_FLAGS = {
   boardWithFlows: false,
   createWithFlows: false,
   leadWithFlows: false,
+  selfRemovalFromAccount: false,
 }
 
 export const activeFlags = (state: AppState): FlagMap => {

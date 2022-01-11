@@ -30,7 +30,6 @@ import {
   updateTimeRangeFromQueryParams,
 } from 'src/dashboards/actions/ranges'
 import {getVariables, hydrateVariables} from 'src/variables/actions/thunks'
-import {setExportTemplate} from 'src/templates/actions/creators'
 import {checkDashboardLimits} from 'src/cloud/actions/limits'
 import {setCells, Action as CellAction} from 'src/cells/actions/creators'
 import {
@@ -501,70 +500,6 @@ export const removeDashboardLabel = (
   } catch (error) {
     console.error(error)
     dispatch(notify(copy.removedDashboardLabelFailed()))
-  }
-}
-
-export const convertToTemplate = (dashboardID: string) => async (
-  dispatch,
-  getState: GetState
-): Promise<void> => {
-  try {
-    dispatch(setExportTemplate(RemoteDataState.Loading))
-    const state = getState()
-    const org = getOrg(state)
-
-    const dashResp = await api.getDashboard({dashboardID})
-
-    if (dashResp.status !== 200) {
-      throw new Error(dashResp.data.message)
-    }
-
-    const {entities, result} = normalize<Dashboard, DashboardEntities, string>(
-      dashResp.data,
-      dashboardSchema
-    )
-
-    const dashboard = entities.dashboards[result]
-    const cells = dashboard.cells.map(cellID => entities.cells[cellID])
-
-    const pendingViews = dashboard.cells.map(cellID =>
-      dashAPI.getView(dashboardID, cellID)
-    )
-
-    const views = await Promise.all(pendingViews)
-    const resp = await api.getVariables({query: {orgID: org.id}})
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    let vars = []
-
-    // dumb bug
-    // https://github.com/paularmstrong/normalizr/issues/290
-    if (resp.data.variables.length) {
-      const normVars = normalize<Variable, VariableEntities, string>(
-        resp.data.variables,
-        arrayOfVariables
-      )
-
-      vars = Object.values(normVars.entities.variables)
-    }
-
-    const variables = filterUnusedVars(vars, views)
-    const exportedVariables = exportVariables(variables, vars)
-    const dashboardTemplate = dashboardToTemplate(
-      state,
-      dashboard,
-      cells,
-      views,
-      exportedVariables
-    )
-
-    dispatch(setExportTemplate(RemoteDataState.Done, dashboardTemplate))
-  } catch (error) {
-    console.error(error)
-    dispatch(setExportTemplate(RemoteDataState.Error))
-    dispatch(notify(copy.createTemplateFailed(error)))
   }
 }
 

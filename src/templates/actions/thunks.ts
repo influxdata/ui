@@ -4,7 +4,6 @@ import {fetchStacks, fetchReadMe} from 'src/templates/api'
 // Actions
 import {
   setStacks,
-  setExportTemplate,
   setTemplateReadMe,
   Action as TemplateAction,
 } from 'src/templates/actions/creators'
@@ -19,10 +18,6 @@ import {readMeFormatter} from 'src/templates/utils'
 import {event} from 'src/cloud/utils/reporting'
 
 type Action = TemplateAction
-
-export const clearExportTemplate = () => (dispatch: Dispatch<Action>) => {
-  dispatch(setExportTemplate(RemoteDataState.NotStarted, null))
-}
 
 // community template thunks
 

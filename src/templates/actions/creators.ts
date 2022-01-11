@@ -13,7 +13,6 @@ export const ADD_TEMPLATE_SUMMARY = 'ADD_TEMPLATE_SUMMARY'
 export const GET_TEMPLATE_SUMMARIES_FOR_ORG = 'GET_TEMPLATE_SUMMARIES_FOR_ORG'
 export const SET_STAGED_TEMPLATE = 'SET_STAGED_TEMPLATE'
 export const SET_STAGED_TEMPLATE_URL = 'SET_STAGED_TEMPLATE_URL'
-export const SET_EXPORT_TEMPLATE = 'SET_EXPORT_TEMPLATE'
 export const TOGGLE_TEMPLATE_RESOURCE_INSTALL =
   'TOGGLE_TEMPLATE_RESOURCE_INSTALL'
 export const UPDATE_TEMPLATE_ENV_REF = 'UPDATE_TEMPLATE_ENV_REF'
@@ -26,7 +25,6 @@ export type EnvRefValue = string | number | boolean
 
 export type Action =
   | ReturnType<typeof addTemplateSummary>
-  | ReturnType<typeof setExportTemplate>
   | ReturnType<typeof setStagedCommunityTemplate>
   | ReturnType<typeof setStagedTemplateUrl>
   | ReturnType<typeof toggleTemplateResourceInstall>
@@ -45,16 +43,6 @@ export const addTemplateSummary = (schema: TemplateSummarySchema<string>) =>
   ({
     type: ADD_TEMPLATE_SUMMARY,
     schema,
-  } as const)
-
-export const setExportTemplate = (
-  status: RemoteDataState,
-  item?: DocumentCreate
-) =>
-  ({
-    type: SET_EXPORT_TEMPLATE,
-    status,
-    item,
   } as const)
 
 export const setStagedCommunityTemplate = (template: CommunityTemplate) =>

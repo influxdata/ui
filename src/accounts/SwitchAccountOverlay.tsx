@@ -78,21 +78,22 @@ const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
 }
 
 export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
-  const [newAccountId, setNewAccountId] = useState<number>(null)
-  const [switchButtonStatus, setSwitchButtonStatus] = useState(
-    ComponentStatus.Disabled
-  )
-
   const {
     activeAccountId,
     handleSetDefaultAccount,
     defaultAccountId,
   } = useContext(UserAccountContext)
 
+  console.log('immediately have active acct id???', activeAccountId)
   const defaultBtnStatus =
     activeAccountId === defaultAccountId
       ? ComponentStatus.Disabled
       : ComponentStatus.Default
+
+  const [newAccountId, setNewAccountId] = useState<number>(activeAccountId)
+  const [switchButtonStatus, setSwitchButtonStatus] = useState(
+    ComponentStatus.Disabled
+  )
 
   const [defaultButtonStatus, setDefaultButtonStatus] = useState(
     defaultBtnStatus

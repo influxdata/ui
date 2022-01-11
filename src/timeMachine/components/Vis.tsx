@@ -1,13 +1,13 @@
 // Libraries
 import React, {FC, memo} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import classnames from 'classnames'
-import {fromFlux} from '@influxdata/giraffe'
+import {createGroupIDColumn, fromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // Components
 import {View} from 'src/visualization'
-import {SimpleTableViewProperties} from 'src/types'
+import {SimpleTableViewProperties, XYViewProperties} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import SimpleTable from 'src/visualization/types/SimpleTable/view'
@@ -25,12 +25,15 @@ import {
   getYSeriesColumns,
 } from 'src/timeMachine/selectors'
 import {getTimeRangeWithTimezone} from 'src/dashboards/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
 
 // Types
 import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
+import {setViewProperties} from '../actions'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -89,6 +92,26 @@ const TimeMachineVis: FC<Props> = ({
     (type === 'check' &&
       giraffeResult.table.getColumnType('_value') !== 'number' &&
       !!giraffeResult.table.length)
+
+  const dispatch = useDispatch()
+
+  if (isFlagEnabled('graphColorMapping')) {
+    const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
+    const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
+    const {colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
+      fillColumnMap,
+      viewProperties as XYViewProperties
+    )
+
+    if (loading === RemoteDataState.Done && needsToSaveToIDPE) {
+      dispatch(
+        setViewProperties({
+          ...viewProperties,
+          colorMapping: colorMappingForIDPE,
+        } as XYViewProperties)
+      )
+    }
+  }
 
   // Handles deadman check edge case to allow non-numeric values
   if (viewRawData && files && files?.length) {

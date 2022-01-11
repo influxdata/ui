@@ -1,5 +1,5 @@
+// Libraries
 import React, {FC, useMemo} from 'react'
-
 import {
   Input,
   Grid,
@@ -11,9 +11,11 @@ import {
   ComponentStatus,
   ButtonShape,
 } from '@influxdata/clockface'
+import {createGroupIDColumn} from '@influxdata/giraffe'
 
-import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import {AXES_SCALE_OPTIONS} from 'src/visualization/constants'
+
+// Utils
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
@@ -23,6 +25,10 @@ import {
   defaultYColumn,
   parseYBounds,
 } from 'src/shared/utils/vis'
+import {generateSeriesToColorHex} from 'src/visualization/utils/colorMappingUtils'
+
+// Components
+import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
@@ -30,8 +36,6 @@ import AxisTicksGenerator from 'src/visualization/components/internal/AxisTicksG
 import Checkbox from 'src/shared/components/Checkbox'
 import {XYViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
-import {createGroupIDColumn} from '@influxdata/giraffe'
-import {generateSeriesToColorHex} from '../../utils/colorMappingUtils'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 

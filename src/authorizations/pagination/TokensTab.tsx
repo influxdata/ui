@@ -23,6 +23,7 @@ import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDr
 import GenerateTokenDropdownRedesigned from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import TokensRedesignBanner from 'src/authorizations/components/TokensRedesignBanner'
+import PostDeploymentTokensBanner from 'src/authorizations/components/PostDeploymentTokensBanner'
 
 // Types
 import {AppState, Authorization, ResourceType} from 'src/types'
@@ -133,21 +134,23 @@ class TokensTab extends PureComponent<Props, State> {
     }
 
     const tokensBanner = () => {
-      if (!isFlagEnabled('tokensUIRedesign')) {
-        return (
-          <>
-            <BannerPanel
-              size={ComponentSize.ExtraSmall}
-              gradient={Gradients.PolarExpress}
-              icon={IconFont.Bell}
-              hideMobileIcon={true}
-              textColor={InfluxColors.Yeti}
-            >
+      return (
+        <>
+          <BannerPanel
+            size={ComponentSize.ExtraSmall}
+            gradient={Gradients.PolarExpress}
+            icon={IconFont.Bell}
+            hideMobileIcon={true}
+            textColor={InfluxColors.Yeti}
+          >
+            {isFlagEnabled('tokensUIRedesign') ? (
+              <PostDeploymentTokensBanner />
+            ) : (
               <TokensRedesignBanner />
-            </BannerPanel>
-          </>
-        )
-      }
+            )}
+          </BannerPanel>
+        </>
+      )
     }
 
     return (
@@ -156,19 +159,12 @@ class TokensTab extends PureComponent<Props, State> {
         <AutoSizer>
           {({width, height}) => {
             // if tokens redesign flag is off, adjust the page height so the banner doesn't push the pagination controller off
-            let heightWithPagination
-            isFlagEnabled('tokensUIRedesign')
-              ? (heightWithPagination =
-                  this.paginationRef?.current?.clientHeight +
-                    DEFAULT_TAB_NAVIGATION_HEIGHT ||
-                  DEFAULT_PAGINATION_CONTROL_HEIGHT +
-                    DEFAULT_TAB_NAVIGATION_HEIGHT)
-              : (heightWithPagination =
-                  this.paginationRef?.current?.clientHeight +
-                    DEFAULT_TAB_NAVIGATION_HEIGHT ||
-                  DEFAULT_PAGINATION_CONTROL_HEIGHT +
-                    DEFAULT_TAB_NAVIGATION_HEIGHT +
-                    DEFAULT_ALERT_HEIGHT)
+            const heightWithPagination =
+              this.paginationRef?.current?.clientHeight +
+                DEFAULT_TAB_NAVIGATION_HEIGHT ||
+              DEFAULT_PAGINATION_CONTROL_HEIGHT +
+                DEFAULT_TAB_NAVIGATION_HEIGHT +
+                DEFAULT_ALERT_HEIGHT
 
             const adjustedHeight = height - heightWithPagination
             return (

@@ -5,7 +5,18 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import {isEmpty} from 'lodash'
 
 // Components
-import {Sort, ComponentSize, EmptyState} from '@influxdata/clockface'
+import {
+  Sort,
+  ComponentSize,
+  EmptyState,
+  FlexBox,
+  FlexDirection,
+  AlignItems,
+  BannerPanel,
+  Gradients,
+  IconFont,
+  InfluxColors,
+} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import {TokenList} from 'src/authorizations/components/redesigned/TokenList'
 import FilterList from 'src/shared/components/FilterList'
@@ -19,6 +30,7 @@ import {SortTypes} from 'src/shared/utils/sort'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import PostDeploymentTokensBanner from '../PostDeploymentTokensBanner'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -80,7 +92,20 @@ class TokensTab extends PureComponent<Props, State> {
     const rightHeaderItems = <GenerateTokenDropdown />
 
     return (
-      <>
+      <FlexBox
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.Center}
+        margin={ComponentSize.Large}
+      >
+        <BannerPanel
+          size={ComponentSize.ExtraSmall}
+          gradient={Gradients.PolarExpress}
+          icon={IconFont.Bell}
+          hideMobileIcon={true}
+          textColor={InfluxColors.Yeti}
+        >
+          <PostDeploymentTokensBanner />
+        </BannerPanel>
         <TabbedPageHeader
           childrenLeft={leftHeaderItems}
           childrenRight={rightHeaderItems}
@@ -102,7 +127,7 @@ class TokensTab extends PureComponent<Props, State> {
             />
           )}
         </FilterAuthorizations>
-      </>
+      </FlexBox>
     )
   }
 

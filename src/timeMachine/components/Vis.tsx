@@ -33,7 +33,7 @@ import {RemoteDataState, AppState, ViewProperties} from 'src/types'
 
 // Selectors
 import {getActiveTimeRange} from 'src/timeMachine/selectors/index'
-import {setViewProperties} from '../actions'
+import {setViewProperties} from 'src/timeMachine/actions'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
@@ -56,6 +56,8 @@ const TimeMachineVis: FC<Props> = ({
   cellID,
 }) => {
   const {type} = viewProperties
+  const dispatch = useDispatch()
+
   // If the current selections for `xColumn`/`yColumn`/ etc. are invalid given
   // the current Flux response, attempt to make a valid selection instead. This
   // fallback logic is contained within the selectors that supply each of these
@@ -92,8 +94,6 @@ const TimeMachineVis: FC<Props> = ({
     (type === 'check' &&
       giraffeResult.table.getColumnType('_value') !== 'number' &&
       !!giraffeResult.table.length)
-
-  const dispatch = useDispatch()
 
   if (isFlagEnabled('graphColorMapping')) {
     const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']

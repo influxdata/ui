@@ -873,4 +873,19 @@ describe('Dashboards', () => {
     const snapshot12 = makeGraphSnapshot()
     snapshot12.shouldBeSameAs(snapshot4, false)
   })
+
+  it('create dashboard to test hiding variables', () => {
+    cy.get<Organization>('@org').then(org => {
+      cy.createDashboard(org.id).then(dashboard => {
+        cy.fixture('routes').then(routes => {
+          cy.visit(`${routes.orgs}/${org.id}/dashboards/${dashboard.body.id}`)
+          cy.getByTestID('tree-nav')
+        })
+      })
+    })
+
+    cy.getByTestID('variables-control-bar').should('exist')
+    cy.getByTestID('variables--button').click()
+    cy.getByTestID('variables-control-bar').should('not.exist')
+  })
 })

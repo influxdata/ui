@@ -55,10 +55,9 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
     return columnType === 'time' || columnType === 'number'
   })
 
-  const groupKey = useMemo(
-    () => [...results.fluxGroupKeyUnion, 'result'],
-    [results]
-  )
+  const groupKey = useMemo(() => [...results.fluxGroupKeyUnion, 'result'], [
+    results,
+  ])
 
   const xColumn = defaultXColumn(results?.table, properties.xColumn)
   const yColumn = defaultYColumn(results?.table, properties.yColumn)
@@ -208,7 +207,6 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
               value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
                 if (isFlagEnabled('graphColorMapping')) {
-
                   const [, fillColumnMap] = createGroupIDColumn(
                     results.table,
                     groupKey

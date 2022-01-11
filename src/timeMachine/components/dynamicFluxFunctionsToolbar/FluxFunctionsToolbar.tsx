@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useMemo, useState, useCallback} from 'react'
+import React, {FC, useMemo, useState, useCallback, useEffect} from 'react'
 
 // Components
 import TransformToolbarFunctions from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TransformToolbarFunctions'
@@ -20,10 +20,17 @@ interface OwnProps {
 
 const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
   const [searchTerm, setSearchTerm] = useState('')
+  const [fluxFuncs, setFluxFuncs] = useState('')
 
   const handleSearch = (searchTerm: string): void => {
     setSearchTerm(searchTerm)
   }
+
+  useEffect(() => {
+    const url = 'http://localhost:3000/fluxdocs'
+    fetch(url).then(resp => resp.json())
+    .then(resp => setFluxFuncs(resp))
+  }, [])
 
   const handleClickFunction = useCallback(
     (func: FluxToolbarFunction) => {
@@ -39,14 +46,14 @@ const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
         <DapperScrollbars className="flux-toolbar--scroll-area">
           <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
             <TransformToolbarFunctions
-              funcs={FLUX_FUNCTIONS}
+              funcs={fluxFuncs}
               searchTerm={searchTerm}
             >
               {sortedFunctions =>
                 sortedFunctions.map(func => (
                   <ToolbarFunction
                     onClickFunction={handleClickFunction}
-                    key={`${func.name}_${func.desc}`}
+                    key={`${func.name}`}
                     func={func}
                     testID={func.name}
                   />

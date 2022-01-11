@@ -8,13 +8,14 @@ import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import {FluxToolbarFunction} from 'src/types/shared'
 
 interface Props {
-  funcs: FluxToolbarFunction[]
+  funcs: any
   searchTerm?: string
   children: (funcs: FluxToolbarFunction[]) => JSX.Element | JSX.Element[]
 }
 
 const TransformToolbarFunctions: FC<Props> = props => {
   const {searchTerm, funcs, children} = props
+  console.log(typeof funcs)
 
   const filteredFunctions = funcs.filter(func =>
     func.name.toLowerCase().includes(searchTerm.toLowerCase())

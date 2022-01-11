@@ -1,8 +1,3 @@
-.flows-endpoints--dropdown {
-  background: #181820;
-  height: 100%;
-}
-
 .slack-endpoint-details--flex {
   display: flex;
   flex-direction: column;
@@ -56,7 +51,7 @@
   padding: 8px;
 }
 
-.endpoint-dropdown--element {
+.endpoint-list--element {
   flex: 1;
   max-width: 14%;
 }

@@ -6,7 +6,7 @@ import {useDispatch} from 'react-redux'
 import {Account as UserAccount} from 'src/client/unityRoutes'
 
 // Utils
-import {getAccounts} from 'src/client/unityRoutes'
+import {getAccounts, putAccountsDefault} from 'src/client/unityRoutes'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
@@ -18,7 +18,7 @@ export type Props = {
 export interface UserAccountContextType {
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
-
+  handleSetDefaultAccount: (newId: number) => void
   defaultAccountId: number
   activeAccountId: number
 }
@@ -30,6 +30,7 @@ export const DEFAULT_CONTEXT: UserAccountContextType = {
   defaultAccountId: -1,
   activeAccountId: -1,
   handleGetAccounts: () => {},
+  handleSetDefaultAccount: () => {},
 }
 
 export const UserAccountContext = React.createContext<UserAccountContextType>(
@@ -73,7 +74,26 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     } catch (error) {
       event('multiAccount.retrieveAccounts.error', {error})
     }
-  }, [dispatch])
+  }, [dispatch, defaultAccountId])
+
+  async function handleSetDefaultAccount(newDefaultAcctId) {
+    try {
+      console.log(
+        'in context...trying to set default acct....',
+        newDefaultAcctId
+      )
+      const resp = await putAccountsDefault({data: {id: newDefaultAcctId}})
+      setDefaultAccountId(newDefaultAcctId)
+
+      if (resp.status !== 204) {
+        console.error('arghh!!!! setting default didn not work :(', resp)
+      } else {
+        console.log('successful in setting default acct:', resp)
+      }
+    } catch (error) {
+      console.log('caught error here while trying to set the default acct.....')
+    }
+  }
 
   useEffect(() => {
     handleGetAccounts()
@@ -88,6 +108,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         defaultAccountId,
         activeAccountId,
         handleGetAccounts,
+        handleSetDefaultAccount,
       }}
     >
       {children}

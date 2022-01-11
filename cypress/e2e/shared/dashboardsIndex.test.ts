@@ -73,12 +73,6 @@ describe('Dashboards', () => {
 
     cy.getByTestID('dashboard-card').should('contain', newName)
 
-    // Open Export overlay
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('export-overlay--text-area').should('exist')
-    cy.get('.cf-overlay--dismiss').click()
-
     // Create from header
     cy.getByTestID('add-resource-dropdown--button').click()
     cy.getByTestID('add-resource-dropdown--new').click()
@@ -592,34 +586,8 @@ describe('Dashboards', () => {
     cy.getByTestID('save-note--button').click() // note added to add content to be downloaded in the JSON file
     cy.getByTestID('nav-item-dashboards').click()
     cy.getByTestID('dashboard-card').invoke('hover')
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('form-container').should('be.visible')
-    cy.getByTestID('export-overlay--text-area').should('be.visible')
-    cy.getByTestID('button').click()
-    // readFile has a 4s timeout before the test fails
-    cy.readFile('cypress/downloads/dashboard.json').should('not.be.null')
   })
 
-  it('copies to clipboard', () => {
-    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-      cy.createDashboard(orgID).then(({body}) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-        })
-      })
-    })
-    cy.getByTestID('tree-nav')
-    cy.window().then(win => {
-      cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
-    })
-    cy.getByTestID('nav-item-dashboards').click()
-    cy.getByTestID('dashboard-card').invoke('hover')
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('button-copy').click()
-    cy.getByTestID('notification-success--children').should('be.visible')
-  })
   it('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()

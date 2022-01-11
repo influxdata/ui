@@ -1215,11 +1215,6 @@ export const editNotificationRuleCodeWarning = (): Notification => ({
 
 // Notebooks
 
-export const notebookRunSuccess = (projectName: string): Notification => ({
-  ...defaultSuccessNotification,
-  message: `${projectName} run successful!`,
-})
-
 export const notebookRunFail = (projectName: string): Notification => ({
   ...defaultErrorNotification,
   message: `${projectName} run failed`,

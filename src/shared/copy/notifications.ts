@@ -1215,14 +1215,19 @@ export const editNotificationRuleCodeWarning = (): Notification => ({
 
 // Notebooks
 
-export const notebookRunSuccess = (projectName: string): Notification => ({
-  ...defaultSuccessNotification,
-  message: `${projectName} run successful!`,
-})
-
 export const notebookRunFail = (projectName: string): Notification => ({
   ...defaultErrorNotification,
   message: `${projectName} run failed`,
+})
+
+export const panelCopyLinkSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Panel link copied successfully!`,
+})
+
+export const panelCopyLinkFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to copy the panel link`,
 })
 
 export const notebookCreateFail = (): Notification => ({

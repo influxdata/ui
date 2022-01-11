@@ -12,10 +12,7 @@ import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 import {getOrg} from 'src/organizations/selectors'
 
 // Constants
-import {
-  notebookRunSuccess,
-  notebookRunFail,
-} from 'src/shared/copy/notifications'
+import {notebookRunFail} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -320,7 +317,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     )
       .then(() => {
         event('run_notebook_success')
-        dispatch(notify(notebookRunSuccess(PROJECT_NAME)))
       })
       .catch(e => {
         event('run_notebook_fail')
@@ -377,7 +373,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     )
       .then(() => {
         event('run_notebook_success')
-        dispatch(notify(notebookRunSuccess(PROJECT_NAME)))
       })
       .catch(e => {
         event('run_notebook_fail')

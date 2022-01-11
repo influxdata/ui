@@ -59,7 +59,9 @@ describe('Billing Page PAYG Users', () => {
     cy.flush().then(() =>
       cy.signin().then(() => {
         cy.get('@org').then(({id}: Organization) => {
-          cy.setFeatureFlags({uiUnificationFlag: true}).then(() => {
+          cy.setFeatureFlags({
+            uiUnificationFlag: true,
+          }).then(() => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',
             }).then(() => {

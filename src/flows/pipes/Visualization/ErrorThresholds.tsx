@@ -18,21 +18,12 @@ import {
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
+import {
+  ThresholdFormat,
+  Threshold,
+} from 'src/flows/pipes/Notification/Threshold'
 
-enum ThresholdFormat {
-  Value = 'value',
-  Range = 'range',
-}
-
-type Threshold = {
-  value: number
-  type: string
-  field: string
-  max?: number
-  min?: number
-}
-
-export const THRESHOLD_TYPES = {
+export const COMMON_THRESHOLD_TYPES = {
   greater: {
     name: 'greater than',
     format: ThresholdFormat.Value,
@@ -90,7 +81,7 @@ const ErrorThresholds: FC = () => {
 
   const setThresholdType = useCallback(
     (type, index) => {
-      if (!THRESHOLD_TYPES[type]) {
+      if (!COMMON_THRESHOLD_TYPES[type]) {
         return
       }
 
@@ -105,7 +96,7 @@ const ErrorThresholds: FC = () => {
       threshold.type = type
       threshold.field = threshold.field || '_value'
 
-      if (THRESHOLD_TYPES[type].format === ThresholdFormat.Range) {
+      if (COMMON_THRESHOLD_TYPES[type].format === ThresholdFormat.Range) {
         threshold.min = 0
         threshold.max = 100
         delete threshold.value
@@ -220,17 +211,19 @@ const ErrorThresholds: FC = () => {
 
   const funcDropdown = useCallback(
     (threshold: Threshold, index: number) => {
-      const menuItems = Object.entries(THRESHOLD_TYPES).map(([key, value]) => (
-        <Dropdown.Item
-          key={key}
-          value={key}
-          onClick={type => setThresholdType(type, index)}
-          selected={key === threshold?.type}
-          title={value.name}
-        >
-          {value?.name}
-        </Dropdown.Item>
-      ))
+      const menuItems = Object.entries(COMMON_THRESHOLD_TYPES).map(
+        ([key, value]) => (
+          <Dropdown.Item
+            key={key}
+            value={key}
+            onClick={type => setThresholdType(type, index)}
+            selected={key === threshold?.type}
+            title={value.name}
+          >
+            {value?.name}
+          </Dropdown.Item>
+        )
+      )
       const menu = onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
       )
@@ -241,7 +234,7 @@ const ErrorThresholds: FC = () => {
           size={ComponentSize.Medium}
           status={ComponentStatus.Default}
         >
-          {THRESHOLD_TYPES[threshold?.type]?.name || 'Select a function'}
+          {COMMON_THRESHOLD_TYPES[threshold?.type]?.name || 'Select a function'}
         </Dropdown.Button>
       )
       return <Dropdown menu={menu} button={menuButton} />
@@ -250,7 +243,9 @@ const ErrorThresholds: FC = () => {
   )
 
   const thresholdEntry = (threshold: Threshold, index: number) => {
-    if (THRESHOLD_TYPES[threshold?.type]?.format === ThresholdFormat.Range) {
+    if (
+      COMMON_THRESHOLD_TYPES[threshold?.type]?.format === ThresholdFormat.Range
+    ) {
       return (
         <FlexBox
           direction={FlexDirection.Row}

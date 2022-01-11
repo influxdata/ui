@@ -26,6 +26,7 @@ import {
   parseYBounds,
 } from 'src/shared/utils/vis'
 import {generateSeriesToColorHex} from 'src/visualization/utils/colorMappingUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
@@ -53,6 +54,11 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
 
     return columnType === 'time' || columnType === 'number'
   })
+
+  const groupKey = useMemo(
+    () => [...results.fluxGroupKeyUnion, 'result'],
+    [results]
+  )
 
   const xColumn = defaultXColumn(results?.table, properties.xColumn)
   const yColumn = defaultYColumn(results?.table, properties.yColumn)
@@ -99,12 +105,6 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
 
     updateAxis('y', {bounds})
   }
-
-  const groupKey = useMemo(() => [...results.fluxGroupKeyUnion, 'result'], [
-    results,
-  ])
-
-  const [, fillColumnMap] = createGroupIDColumn(results.table, groupKey)
 
   return (
     <Grid>
@@ -207,12 +207,21 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
             <ColorSchemeDropdown
               value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
-                const colorMapping = generateSeriesToColorHex(
-                  fillColumnMap,
-                  properties
-                )
+                if (isFlagEnabled('graphColorMapping')) {
 
-                update({colors, colorMapping})
+                  const [, fillColumnMap] = createGroupIDColumn(
+                    results.table,
+                    groupKey
+                  )
+                  const colorMapping = generateSeriesToColorHex(
+                    fillColumnMap,
+                    properties
+                  )
+
+                  update({colors, colorMapping})
+                } else {
+                  update({colors})
+                }
               }}
             />
           </Form.Element>

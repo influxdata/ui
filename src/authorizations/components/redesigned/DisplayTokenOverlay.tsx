@@ -41,7 +41,7 @@ const DisplayTokenOverlay: FC<Props> = props => {
           alignItems={AlignItems.Stretch}
         >
           <Alert icon={IconFont.AlertTriangle} color={ComponentColor.Primary}>
-            Make sure to copy your new personal API token now. You won't be able
+            Make sure to copy your new custom API token now. You won't be able
             to see it again!
           </Alert>
 

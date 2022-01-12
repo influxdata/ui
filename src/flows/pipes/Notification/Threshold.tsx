@@ -40,7 +40,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
   const thresholds = useMemo(() => data?.thresholds ?? [], [data?.thresholds])
 
   const setThresholdType = useCallback(
-    (type, index) => {
+    (type: string, index) => {
       if (!THRESHOLD_TYPES[type]) {
         return
       }

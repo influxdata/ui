@@ -825,11 +825,19 @@ export const predicateDeleteSucceeded = (): Notification => ({
   message: 'Successfully deleted data with predicate!',
 })
 
-export const accountDefaultSettingSuccess = (accountName: string): Notification => ({
+export const accountDefaultSettingSuccess = (
+  accountName: string
+): Notification => ({
   ...defaultSuccessNotification,
   message: `Account "${accountName}" was successfully set as the default account`,
 })
 
+export const accountDefaultSettingError = (
+  accountName: string
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Account "${accountName}" was not set as the default account; the default is unchanged`,
+})
 
 export const measurementSchemaAdditionSuccessful = (
   bucketName: string,

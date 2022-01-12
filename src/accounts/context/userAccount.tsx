@@ -4,7 +4,10 @@ import {useDispatch} from 'react-redux'
 
 // Types
 import {Account as UserAccount} from 'src/client/unityRoutes'
-import {accountDefaultSettingSuccess} from "src/shared/copy/notifications";
+import {
+  accountDefaultSettingError,
+  accountDefaultSettingSuccess,
+} from 'src/shared/copy/notifications'
 
 // Utils
 import {getAccounts, putAccountsDefault} from 'src/client/unityRoutes'
@@ -13,7 +16,6 @@ import {notify} from 'src/shared/actions/notifications'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
-
 
 export type Props = {
   children: JSX.Element
@@ -51,6 +53,20 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   const dispatch = useDispatch()
 
+  /**
+   * get the name of the account as specified by ID
+   *
+   * needed for the notifications, no need to
+   * pass the name as an argument when all the data is here
+   * */
+  const getAccountNameById = id => {
+    const selectedAcctArray = userAccounts.filter(account => account.id === id)
+    // name is guaranteed to be there
+    if (selectedAcctArray && selectedAcctArray.length) {
+      return selectedAcctArray[0].name
+    }
+  }
+
   const handleGetAccounts = useCallback(async () => {
     try {
       const resp = await getAccounts({})
@@ -81,21 +97,19 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   }, [dispatch, defaultAccountId])
 
   async function handleSetDefaultAccount(newDefaultAcctId) {
+    const accountName = getAccountNameById(newDefaultAcctId)
+
     try {
       const resp = await putAccountsDefault({data: {id: newDefaultAcctId}})
       setDefaultAccountId(newDefaultAcctId)
 
       if (resp.status !== 204) {
-        // TODO: show notification!
-        console.error('arghh!!!! setting default didn not work :(', resp)
+        dispatch(notify(accountDefaultSettingError(accountName)))
       } else {
-        // TODO:  show notification
-        console.log('ACK 87f successful in setting default acct:', resp)
-        dispatch(notify(accountDefaultSettingSuccess('foo')))
+        dispatch(notify(accountDefaultSettingSuccess(accountName)))
       }
     } catch (error) {
-      // TODO:  show error notification
-      console.log('caught error here while trying to set the default acct.....')
+      dispatch(notify(accountDefaultSettingError(accountName)))
     }
   }
 

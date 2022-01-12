@@ -54,6 +54,10 @@ describe('Account Page; user with 3 accounts', () => {
       cy.getByTestID('actually-switch-account--btn').should('be.enabled')
     })
   })
+  it('can change the default account, and then see that it changed on the switch dialog', () => {
+    // TODO:  do this test next!
+    expect(5).equal(5)
+  })
 })
 
 describe('Account Page; user with one account', () => {

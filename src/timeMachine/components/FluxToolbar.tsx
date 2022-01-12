@@ -3,11 +3,15 @@ import React, {FC, useState} from 'react'
 
 // Components
 import FluxFunctionsToolbar from 'src/timeMachine/components/fluxFunctionsToolbar/FluxFunctionsToolbar'
+import DynamicFluxFunctionsToolbar from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/FluxFunctionsToolbar'
 import VariableToolbar from 'src/timeMachine/components/variableToolbar/VariableToolbar'
 import FluxToolbarTab from 'src/timeMachine/components/FluxToolbarTab'
 
 // Types
 import {FluxToolbarFunction} from 'src/types'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   activeQueryBuilderTab: string
@@ -31,9 +35,17 @@ const FluxToolbar: FC<Props> = ({
   let activeToolbar
 
   if (activeTab === 'functions') {
-    activeToolbar = (
-      <FluxFunctionsToolbar onInsertFluxFunction={onInsertFluxFunction} />
-    )
+    if (isFlagEnabled('fluxDynamicDocs')) {
+      activeToolbar = (
+        <DynamicFluxFunctionsToolbar
+          onInsertFluxFunction={onInsertFluxFunction}
+        />
+      )
+    } else {
+      activeToolbar = (
+        <FluxFunctionsToolbar onInsertFluxFunction={onInsertFluxFunction} />
+      )
+    }
   }
 
   if (activeTab === 'variables') {

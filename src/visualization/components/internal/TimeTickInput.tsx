@@ -5,12 +5,9 @@ import React, {
   CSSProperties,
   FC,
   RefObject,
+  useContext,
   useState,
 } from 'react'
-
-// Utils
-import {useOneWayState} from 'src/shared/utils/useOneWayState'
-import {convertUserInputValueToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Components
 import DatePicker from 'src/shared/components/dateRangePicker/DatePicker'
@@ -32,8 +29,14 @@ import {
   PopoverPosition,
 } from '@influxdata/clockface'
 
-import {TICK_PROPERTY_PREFIX} from 'src/visualization/constants'
+// Context
+import {AppSettingContext} from 'src/shared/contexts/app'
 
+// Utils
+import {isValidRFC3339} from 'src/utils/datetime/validator'
+import {convertDateToRFC3339} from 'src/utils/datetime/formatters'
+
+import {TICK_PROPERTY_PREFIX} from 'src/visualization/constants'
 interface TimeTickInputProps {
   axisName: string
   tickPropertyName: string
@@ -45,20 +48,33 @@ interface TimeTickInputProps {
 
 const noOp = () => {}
 
+const getInitialTimeTick = (
+  initialTick: string | number,
+  timeZone: string
+): string => {
+  if (typeof initialTick === 'number' && initialTick === initialTick) {
+    const initialDate = new Date(initialTick)
+    if (isValidRFC3339(initialDate.toISOString())) {
+      return convertDateToRFC3339(initialDate, timeZone)
+    }
+  }
+  return ''
+}
+
 export const TimeTickInput: FC<TimeTickInputProps> = props => {
   const {
     axisName,
     tickPropertyName,
     tickOptions,
     initialTickOptionValue,
-    dateFormatPlaceholder = 'RFC3339',
+    dateFormatPlaceholder = 'RFC 3339 or YYYY-MM-DD HH:MM:SSZ',
     update,
   } = props
 
-  const [tickOptionInput, setTickOptionInput] = useOneWayState(
-    initialTickOptionValue === initialTickOptionValue
-      ? initialTickOptionValue
-      : ''
+  const {timeZone} = useContext(AppSettingContext)
+
+  const [tickOptionInput, setTickOptionInput] = useState<string>(
+    getInitialTimeTick(initialTickOptionValue, timeZone)
   )
 
   const [tickOptionInputStatus, setTickOptionInputStatus] = useState<
@@ -74,10 +90,9 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   const triggerRef: RefObject<ButtonRef> = createRef()
 
-  const updateTickOption = (value?: string | number) => {
-    const convertedValue = convertUserInputValueToNumOrNaN(
-      value === undefined ? tickOptionInput : value
-    )
+  const updateTickOption = (value?: string) => {
+    const dateString = value === undefined ? tickOptionInput : value
+    const convertedValue = new Date(dateString).valueOf()
     const tickOptionNameWithoutAxis = `${TICK_PROPERTY_PREFIX}${tickPropertyName
       .slice(0, 1)
       .toUpperCase()}${tickPropertyName.slice(1).toLowerCase()}`
@@ -99,7 +114,11 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     setTickOptionInput(event.target.value)
-    setTickOptionInputStatus(ComponentStatus.Default)
+    if (isValidRFC3339(event.target.value)) {
+      setTickOptionInputStatus(ComponentStatus.Default)
+    } else {
+      setTickOptionInputStatus(ComponentStatus.Error)
+    }
   }
 
   const handleBlur = () => updateTickOption()
@@ -121,6 +140,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
   const handleReset = () => {
     setTickOptionInput('')
     updateTickOption('')
+    setTickOptionInputStatus(ComponentStatus.Default)
   }
 
   const showDatePicker = () => setIsDatePickerOpen(true)
@@ -135,10 +155,15 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
   }
 
   const handleSelectDate = (date: string) => {
-    const dateRFC3339 = new Date(date).valueOf()
-    setTickOptionInput(dateRFC3339 === dateRFC3339 ? String(dateRFC3339) : '')
-    setTickOptionInputStatus(ComponentStatus.Default)
-    updateTickOption(dateRFC3339)
+    if (isValidRFC3339(date)) {
+      const dateRFC3339 = convertDateToRFC3339(new Date(date), timeZone)
+      setTickOptionInput(dateRFC3339)
+      setTickOptionInputStatus(ComponentStatus.Default)
+      updateTickOption(dateRFC3339)
+    } else {
+      setTickOptionInput('')
+      setTickOptionInputStatus(ComponentStatus.Error)
+    }
   }
 
   const onClickOutside = () => {
@@ -160,7 +185,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   return (
     <>
-      <Grid.Column widthXS={Columns.Six}>
+      <Grid.Column widthXS={Columns.Twelve}>
         <Form.Element label="Start Tick Marks At">
           <Input
             placeholder={dateFormatPlaceholder}
@@ -173,7 +198,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
           />
         </Form.Element>
       </Grid.Column>
-      <Grid.Column widthXS={Columns.Six}>
+      <Grid.Column widthXS={Columns.Twelve}>
         <Form.Element label="Date Picker">
           <Popover
             appearance={Appearance.Outline}

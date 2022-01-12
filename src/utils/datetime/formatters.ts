@@ -1,6 +1,7 @@
 // TODO: handle these any types
 
 import {TimeZone} from 'src/types'
+import {STRICT_ISO8061_TIME_FORMAT} from 'src/utils/datetime/constants'
 
 const dateTimeOptions: any = {
   hourCycle: 'h23',
@@ -67,6 +68,12 @@ export const createDateTimeFormatter = (
         )
       }
       break
+    }
+
+    case STRICT_ISO8061_TIME_FORMAT: {
+      return {
+        format: date => date,
+      }
     }
 
     case 'YYYY-MM-DD': {
@@ -777,4 +784,27 @@ export const createDateTimeFormatter = (
       }
     }
   }
+}
+
+export const convertDateToRFC3339 = (date: Date, timeZone: string): string => {
+  if (!date || date.toDateString() === 'Invalid Date') {
+    return date.toDateString()
+  }
+
+  if (timeZone === 'Local') {
+    const year = date.getFullYear()
+    const month =
+      date.getMonth() + 1 < 10
+        ? `0${date.getMonth() + 1}`
+        : `${date.getMonth() + 1}`
+    const dayOfMonth =
+      date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`
+
+    const timeStringParsed = date.toTimeString().split(' ')
+    const localTime = timeStringParsed[0]
+    const utcOffset = timeStringParsed[1].replace('GMT', '')
+
+    return `${year}-${month}-${dayOfMonth} ${localTime}${utcOffset}`
+  }
+  return date.toISOString()
 }

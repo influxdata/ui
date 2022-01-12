@@ -23,20 +23,20 @@ export const WRITE_DATA_FILE_UPLOADS: FileUpload[] = [
     markdown: AnnotatedCSVMarkdown,
   },
   {
-    id: 'csv',
-    name: 'CSV Data',
-    image: CSVLogo,
-    markdown: CSVMarkdown,
-  },
-  {
     id: 'lp',
     name: 'Line Protocol',
     image: LPLogo,
     markdown: LPMarkdown,
+  },
+  {
+    id: 'csv',
+    name: 'CSV Data (CLI)',
+    image: CSVLogo,
+    markdown: CSVMarkdown,
   },
 ]
 
 export const search = (term: string): FileUpload[] =>
   WRITE_DATA_FILE_UPLOADS.filter(item =>
     item.name.toLowerCase().includes(term.toLowerCase())
-  ).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+  )

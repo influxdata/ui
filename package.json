@@ -171,6 +171,7 @@
     "classnames": "^2.2.3",
     "connected-react-router": "^6.8.0",
     "d3-dsv": "^3.0.1",
+    "deep-object-diff": "^1.1.0",
     "fix-date": "^1.1.6",
     "history": "^4.7.2",
     "honeybadger-js": "^1.0.2",

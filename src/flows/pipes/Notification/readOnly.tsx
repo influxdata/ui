@@ -11,7 +11,7 @@ import {
   ComponentSize,
   Panel,
   AlignItems,
-  Dropdown,
+  List,
   InfluxColors,
   TechnoSpinner,
   SpinnerContainer,
@@ -143,13 +143,13 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
                     <Form.Element
                       required={true}
                       label="Endpoint"
-                      className="endpoint-dropdown--element"
+                      className="endpoint-list--element"
                     >
-                      <Dropdown.Menu className="flows-endpoints--dropdown">
-                        <Dropdown.Item selected={true}>
+                      <List>
+                        <List.Item selected={true}>
                           {ENDPOINT_DEFINITIONS[data.endpoint].name}
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
+                        </List.Item>
+                      </List>
                     </Form.Element>
                     <FlexBox.Child grow={1} shrink={1}>
                       <Form.Element

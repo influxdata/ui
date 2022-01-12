@@ -134,9 +134,9 @@ const dataFromIDPE_sameColorMapping = {
       },
     ],
     colorMapping: {
-      'co-airSensors-TLM0100-mean-': 0,
-      'co-airSensors-TLM0101-mean-': 1,
-      'co-airSensors-TLM0102-mean-': 2,
+      'co-airSensors-TLM0100-mean-': '#31C0F6',
+      'co-airSensors-TLM0101-mean-': '#A500A5',
+      'co-airSensors-TLM0102-mean-': '#FF7E27',
     },
   },
 }
@@ -264,9 +264,9 @@ const expectedData = {
     },
     mappingForIDPE: {
       colorMapping: {
-        'co-airSensors-TLM0100-mean-': 0,
-        'co-airSensors-TLM0101-mean-': 1,
-        'co-airSensors-TLM0102-mean-': 2,
+        'co-airSensors-TLM0100-mean-': '#31C0F6',
+        'co-airSensors-TLM0101-mean-': '#A500A5',
+        'co-airSensors-TLM0102-mean-': '#FF7E27',
       },
     },
   },
@@ -280,7 +280,7 @@ const expectedData = {
           _measurement: 'airSensors',
           sensor_id: 'TLM0100',
           result: 'mean',
-          color: '#31C0F6',
+          color: 'rgb(49, 192, 246)',
         },
         {
           _start: `${MOCK_START}`,
@@ -289,7 +289,7 @@ const expectedData = {
           _measurement: 'airSensors',
           sensor_id: 'TLM0101',
           result: 'mean',
-          color: '#A500A5',
+          color: 'rgb(106, 103, 205)',
         },
         {
           _start: `${MOCK_START}`,
@@ -298,7 +298,7 @@ const expectedData = {
           _measurement: 'airSensors',
           sensor_id: 'TLM0102',
           result: 'mean',
-          color: '#FF7E27',
+          color: 'rgb(161, 53, 158)',
         },
         {
           _start: `${MOCK_START}`,
@@ -307,7 +307,7 @@ const expectedData = {
           _measurement: 'airSensors',
           sensor_id: 'TLM0103',
           result: 'mean',
-          color: '#31C0F6',
+          color: 'rgb(209, 70, 101)',
         },
         {
           _start: `${MOCK_START}`,
@@ -316,7 +316,7 @@ const expectedData = {
           _measurement: 'airSensors',
           sensor_id: 'TLM0104',
           result: 'mean',
-          color: '#A500A5',
+          color: 'rgb(255, 126, 39)',
         },
       ],
       columnKeys: [
@@ -330,11 +330,11 @@ const expectedData = {
     },
     mappingForIDPE: {
       colorMapping: {
-        'co-airSensors-TLM0100-mean-': 0,
-        'co-airSensors-TLM0101-mean-': 1,
-        'co-airSensors-TLM0102-mean-': 2,
-        'co-airSensors-TLM0103-mean-': 0,
-        'co-airSensors-TLM0104-mean-': 1,
+        'co-airSensors-TLM0100-mean-': 'rgb(49, 192, 246)',
+        'co-airSensors-TLM0101-mean-': 'rgb(106, 103, 205)',
+        'co-airSensors-TLM0102-mean-': 'rgb(161, 53, 158)',
+        'co-airSensors-TLM0103-mean-': 'rgb(209, 70, 101)',
+        'co-airSensors-TLM0104-mean-': 'rgb(255, 126, 39)',
       },
     },
   },

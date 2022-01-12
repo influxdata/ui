@@ -9,6 +9,7 @@ const LazySVG = React.lazy(() => import('src/perf/components/LazySVG'))
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Graphics
 import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
@@ -44,6 +45,7 @@ const WriteDataItem: FC<Props> = ({
   const org = useSelector(getOrg)
 
   const handleClick = (): void => {
+    event(`sources.load_data.${name}.clicked`)
     history.push(`/${ORGS}/${org.id}/load-data/${url}`)
   }
 

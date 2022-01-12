@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext, useEffect, useMemo} from 'react'
-import QRCode from 'qrcode.react'
+import QRComponent from 'src/flows/pipes/Visualization/QRCode'
 
 // Components
 import {
@@ -10,7 +10,6 @@ import {
   FlexDirection,
   Icon,
   IconFont,
-  InfluxColors,
   JustifyContent,
 } from '@influxdata/clockface'
 import Controls from 'src/flows/pipes/Visualization/Controls'
@@ -257,10 +256,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       const url = new URL(
         `${window.location.origin}${window.location.pathname}?panel=${id}`
       ).toString()
-      const doc = document.getElementById(
-        `${triggeredErrorThresholdMessage}-${id}`
-      )
-      const size = doc?.offsetHeight * 0.4 ?? 100
 
       return (
         <Context controls={<Controls />} resizes>
@@ -295,19 +290,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
                   justifyContent={JustifyContent.Center}
                   alignItems={AlignItems.Center}
                 >
-                  <QRCode
-                    value={url}
-                    size={size}
-                    fgColor={InfluxColors.Fire}
-                    bgColor={InfluxColors.White}
-                    imageSettings={{
-                      src:
-                        'https://www.influxdata.com/wp-content/uploads/Favicon-blue-200x200.png',
-                      width: size * 0.2,
-                      height: size * 0.2,
-                      excavate: true,
-                    }}
-                  />
+                  <QRComponent url={url} />
                   <div className="panel-threshold--message">
                     {triggeredErrorThresholdMessage}
                   </div>

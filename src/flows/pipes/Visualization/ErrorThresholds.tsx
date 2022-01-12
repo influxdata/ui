@@ -19,54 +19,10 @@ import {
 import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
 import {
-  ThresholdFormat,
+  COMMON_THRESHOLD_TYPES,
   Threshold,
-} from 'src/flows/pipes/Notification/Threshold'
-
-export const COMMON_THRESHOLD_TYPES = {
-  greater: {
-    name: 'greater than',
-    format: ThresholdFormat.Value,
-    condition: data => `(r) => (r["${data.field}"] > ${data.value})`,
-  },
-  'greater-equal': {
-    name: 'greater than or equal to',
-    format: ThresholdFormat.Value,
-    condition: data => `(r) => (r["${data.field}"] >= ${data.value})`,
-  },
-  less: {
-    name: 'less than',
-    format: ThresholdFormat.Value,
-    condition: data => `(r) => (r["${data.field}"] < ${data.value})`,
-  },
-  'less-equal': {
-    name: 'less than or equal to',
-    format: ThresholdFormat.Value,
-    condition: data => `(r) => (r["${data.field}"] <= ${data.value})`,
-  },
-  equal: {
-    name: 'equal to',
-    format: ThresholdFormat.Value,
-    condition: data => `(r) => (r["${data.field}"] == ${data.value})`,
-  },
-  'not-equal': {
-    name: 'not equal to',
-    format: ThresholdFormat.Value,
-    condition: data => `(r) => (r["${data.field}"] != ${data.value})`,
-  },
-  between: {
-    name: 'between',
-    format: ThresholdFormat.Range,
-    condition: data =>
-      `(r) => (r["${data.field}"] > ${data.min} and r["${data.field}"] < ${data.max})`,
-  },
-  'not-between': {
-    name: 'not between',
-    format: ThresholdFormat.Range,
-    condition: data =>
-      `(r) => (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
-  },
-}
+  ThresholdFormat,
+} from 'src/flows/pipes/Visualization/threshold'
 
 const ErrorThresholds: FC = () => {
   const {data, update, results} = useContext(PipeContext)

@@ -19,34 +19,12 @@ import 'src/flows/pipes/Notification/Threshold.scss'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {COMMON_THRESHOLD_TYPES} from 'src/flows/pipes/Visualization/ErrorThresholds'
-
-export enum ThresholdFormat {
-  Value = 'value',
-  Range = 'range',
-  Deadman = 'deadman',
-}
-
-export type Threshold = {
-  value: number
-  type: string
-  field: string
-  max?: number
-  min?: number
-  deadmanCheckValue?: string
-  deadmanStopValue: string
-}
-
-export const deadmanType = 'missing-for-longer-than'
-
-export const THRESHOLD_TYPES = {
-  ...COMMON_THRESHOLD_TYPES,
-  [deadmanType]: {
-    name: 'missing for longer than',
-    format: ThresholdFormat.Deadman,
-    condition: _ => `(r) => (r["dead"])`,
-  },
-}
+import {
+  deadmanType,
+  Threshold,
+  ThresholdFormat,
+  THRESHOLD_TYPES,
+} from 'src/flows/pipes/Visualization/threshold'
 
 interface Props {
   readOnly?: boolean

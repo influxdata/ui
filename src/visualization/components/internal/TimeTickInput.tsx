@@ -5,6 +5,7 @@ import React, {
   CSSProperties,
   FC,
   RefObject,
+  useContext,
   useState,
 } from 'react'
 
@@ -28,9 +29,14 @@ import {
   PopoverPosition,
 } from '@influxdata/clockface'
 
-import {TICK_PROPERTY_PREFIX} from 'src/visualization/constants'
-import {RFC3339_VALIDATOR} from 'src/utils/datetime/constants'
+// Context
+import {AppSettingContext} from 'src/shared/contexts/app'
 
+// Utils
+import {isValidRFC3339} from 'src/utils/datetime/validator'
+import {convertDateToRFC3339} from 'src/utils/datetime/formatters'
+
+import {TICK_PROPERTY_PREFIX} from 'src/visualization/constants'
 interface TimeTickInputProps {
   axisName: string
   tickPropertyName: string
@@ -42,37 +48,14 @@ interface TimeTickInputProps {
 
 const noOp = () => {}
 
-const isValidRFC3339 = (input: string) => {
-  return (
-    RFC3339_VALIDATOR.test(input) &&
-    new Date(input).toString() !== 'Invalid Date'
-  )
-}
-
-const convertDateToLocalTime = (date: Date): string => {
-  if (!date || date.toDateString() === 'Invalid Date') {
-    return date.toDateString()
-  }
-  const year = date.getFullYear()
-  const month =
-    date.getMonth() + 1 < 10
-      ? `0${date.getMonth() + 1}`
-      : `${date.getMonth() + 1}`
-  const dayOfMonth =
-    date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`
-
-  const timeStringParsed = date.toTimeString().split(' ')
-  const localTime = timeStringParsed[0]
-  const utcOffset = timeStringParsed[1].replace('GMT', '')
-
-  return `${year}-${month}-${dayOfMonth} ${localTime}${utcOffset}`
-}
-
-const getInitialTimeTick = (initialTick: string | number): string => {
+const getInitialTimeTick = (
+  initialTick: string | number,
+  timeZone: string
+): string => {
   if (typeof initialTick === 'number' && initialTick === initialTick) {
     const initialDate = new Date(initialTick)
     if (isValidRFC3339(initialDate.toISOString())) {
-      return convertDateToLocalTime(initialDate)
+      return convertDateToRFC3339(initialDate, timeZone)
     }
   }
   return ''
@@ -88,8 +71,10 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     update,
   } = props
 
+  const {timeZone} = useContext(AppSettingContext)
+
   const [tickOptionInput, setTickOptionInput] = useState<string>(
-    getInitialTimeTick(initialTickOptionValue)
+    getInitialTimeTick(initialTickOptionValue, timeZone)
   )
 
   const [tickOptionInputStatus, setTickOptionInputStatus] = useState<
@@ -171,7 +156,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
 
   const handleSelectDate = (date: string) => {
     if (isValidRFC3339(date)) {
-      const dateRFC3339 = convertDateToLocalTime(new Date(date))
+      const dateRFC3339 = convertDateToRFC3339(new Date(date), timeZone)
       setTickOptionInput(dateRFC3339)
       setTickOptionInputStatus(ComponentStatus.Default)
       updateTickOption(dateRFC3339)

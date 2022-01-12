@@ -148,7 +148,9 @@ describe('Onboarding', () => {
     })
   })
 
-  it('Can onboard to configure later', () => {
+  // test has been flaky lately.
+  // see https://github.com/influxdata/ui/issues/3515
+  it.skip('Can onboard to configure later', () => {
     cy.server()
 
     cy.intercept('api/v2/setup').as('orgSetup')

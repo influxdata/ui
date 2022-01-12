@@ -11,11 +11,13 @@ import {useDispatch} from 'react-redux'
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {PipeProvider} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
 
 // Components
 import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
+import SecretsList from 'src/flows/components/SecretsList'
 import './Sidebar.scss'
 
 // Utils
@@ -238,6 +240,23 @@ const Sidebar: FC = () => {
         {
           title: 'Export to Client Library',
           menu: <ClientList />,
+        },
+        {
+          title: 'Inject Secret',
+          disable: () => {
+            const {type} = flow.data.byID[id]
+
+            if (type === 'rawFluxEditor') {
+              return false
+            }
+
+            return true
+          },
+          menu: () => (
+              <PipeProvider id={id}>
+                <SecretsList />
+              </PipeProvider>
+          ),
         },
       ],
     },

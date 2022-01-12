@@ -123,7 +123,7 @@ const UserWidget: FC<Props> = ({
       </>
     )
   }
-  console.log('me stuff...the account...here! (jill42a)', me)
+
   return (
     <TreeNav.User username={me.name} team={org.name} testID="user-nav">
       <CloudOnly>{cloudEntries}</CloudOnly>
@@ -161,8 +161,6 @@ const UserWidget: FC<Props> = ({
           )}
         />
       </CloudExclude>
-
-      <TreeNav.SubHeading label={me.name} lowercase={true} />
       <TreeNav.UserItem
         id="logout"
         label="Logout"

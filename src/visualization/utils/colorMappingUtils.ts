@@ -150,7 +150,7 @@ const getSeriesId = (graphLine, columnKeys) => {
  * @returns - a map that contains the series ID and it's color hex value
  */
 
-const generateSeriesToColorHex = (
+export const generateSeriesToColorHex = (
   columnGroupMap,
   properties: XYViewProperties
 ) => {

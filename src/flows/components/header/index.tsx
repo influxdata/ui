@@ -43,6 +43,24 @@ import {
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 
+const MoreButton: FC = () => {
+  const [open, setOpen] = useState(false)
+  const toggleMenu = event => {
+    event.preventDefault()
+    if (open) {
+      console.log('closing the menu')
+    } else {
+      console.log('opening the menu')
+    }
+    setOpen(!open)
+  }
+  return (
+    <div style={{position: 'relative'}}>
+      <SquareButton icon={IconFont.More} onClick={toggleMenu} />
+      {open && <div>menu</div>}
+    </div>
+  )
+}
 interface Token {
   token: string
   description: string
@@ -299,6 +317,7 @@ const FlowHeader: FC = () => {
                   }
                   titleText="Download PDF"
                 />
+                <MoreButton />
               </>
             )}
             <FeatureFlag name="flow-snapshot">

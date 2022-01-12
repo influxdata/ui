@@ -28,8 +28,6 @@ export interface UserAccountContextType {
   defaultAccountId: number
   activeAccountId: number
 }
-//   todo: add to above when implementing:
-//    setDefaultAccountId: (id: number) => void
 
 export const DEFAULT_CONTEXT: UserAccountContextType = {
   userAccounts: [],
@@ -42,9 +40,6 @@ export const DEFAULT_CONTEXT: UserAccountContextType = {
 export const UserAccountContext = React.createContext<UserAccountContextType>(
   DEFAULT_CONTEXT
 )
-
-// todo:  put in dependency array:  whenever the default account changes, should redo the call.
-// put this in *after* the ability to change the default account has been added
 
 export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)
@@ -117,8 +112,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     handleGetAccounts()
   }, [handleGetAccounts, defaultAccountId, activeAccountId])
 
-  // todo: add to the value object when restoring/doing the default account setting:
-  //         setDefaultAccountId,
   return (
     <UserAccountContext.Provider
       value={{

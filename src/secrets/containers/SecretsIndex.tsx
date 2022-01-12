@@ -8,7 +8,7 @@ import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
 import {Page} from '@influxdata/clockface'
 import EditSecretOverlay from 'src/secrets/components/EditSecretOverlay'
-import CreateSecretOverlay from 'src/secrets/components/CreateSecretOverlay'
+import CreateSecretOverlay from 'src/shared/components/secrets/CreateSecretOverlay'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 

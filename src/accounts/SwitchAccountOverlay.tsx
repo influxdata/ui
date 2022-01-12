@@ -84,7 +84,6 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
     defaultAccountId,
   } = useContext(UserAccountContext)
 
-  console.log('immediately have active acct id???', activeAccountId)
   const defaultBtnStatus =
     activeAccountId === defaultAccountId
       ? ComponentStatus.Disabled
@@ -107,7 +106,6 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   }
 
   const doSetDefaultAccount = () => {
-    console.log('pressed button to switch DEFAULT account......')
     handleSetDefaultAccount(newAccountId)
     onDismissOverlay()
     event('multiAccount.switchDefaultAccount')

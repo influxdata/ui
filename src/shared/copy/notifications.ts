@@ -825,6 +825,12 @@ export const predicateDeleteSucceeded = (): Notification => ({
   message: 'Successfully deleted data with predicate!',
 })
 
+export const accountDefaultSettingSuccess = (accountName: string): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Account "${accountName}" was successfully set as the default account`,
+})
+
+
 export const measurementSchemaAdditionSuccessful = (
   bucketName: string,
   schemaName: string

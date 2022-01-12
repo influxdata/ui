@@ -4,12 +4,16 @@ import {useDispatch} from 'react-redux'
 
 // Types
 import {Account as UserAccount} from 'src/client/unityRoutes'
+import {accountDefaultSettingSuccess} from "src/shared/copy/notifications";
 
 // Utils
 import {getAccounts, putAccountsDefault} from 'src/client/unityRoutes'
 
+import {notify} from 'src/shared/actions/notifications'
+
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
+
 
 export type Props = {
   children: JSX.Element
@@ -78,19 +82,19 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
   async function handleSetDefaultAccount(newDefaultAcctId) {
     try {
-      console.log(
-        'in context...trying to set default acct....',
-        newDefaultAcctId
-      )
       const resp = await putAccountsDefault({data: {id: newDefaultAcctId}})
       setDefaultAccountId(newDefaultAcctId)
 
       if (resp.status !== 204) {
+        // TODO: show notification!
         console.error('arghh!!!! setting default didn not work :(', resp)
       } else {
-        console.log('successful in setting default acct:', resp)
+        // TODO:  show notification
+        console.log('ACK 87f successful in setting default acct:', resp)
+        dispatch(notify(accountDefaultSettingSuccess('foo')))
       }
     } catch (error) {
+      // TODO:  show error notification
       console.log('caught error here while trying to set the default acct.....')
     }
   }

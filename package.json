@@ -70,7 +70,7 @@
     "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
-    "telegraf-plugins:update": "node -r esm src/writeData/utils/parsePluginsConfigurationText.ts"
+    "telegraf-plugins:update": "node src/writeData/utils/parsePluginsConfigurationText.mjs"
   },
   "author": "",
   "devDependencies": {
@@ -119,7 +119,6 @@
     "eslint-plugin-jest": "^23.0.2",
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "esm": "^3.2.25",
     "file-loader": "^4.1.0",
     "fork-ts-checker-webpack-plugin": "^5.0.0",
     "html-webpack-plugin": "^3.2.0",

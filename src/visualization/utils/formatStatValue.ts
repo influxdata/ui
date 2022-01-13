@@ -35,18 +35,13 @@ export const formatStatValue = (
 
   digits = Math.min(digits, MAX_DECIMAL_PLACES)
 
+  const formatter = Intl.NumberFormat(undefined, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })
+
   if (typeof value === 'number') {
-    const [wholeNumber, fractionalNumber] = Number(value)
-      .toFixed(digits)
-      .split('.')
-
-    localeFormattedValue = Number(wholeNumber).toLocaleString(undefined, {
-      maximumFractionDigits: MAX_DECIMAL_PLACES,
-    })
-
-    if (fractionalNumber) {
-      localeFormattedValue += `.${fractionalNumber}`
-    }
+    localeFormattedValue = formatter.format(Number(value))
   } else if (typeof value === 'string') {
     localeFormattedValue = value
   } else {

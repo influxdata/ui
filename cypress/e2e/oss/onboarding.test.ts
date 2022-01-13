@@ -148,7 +148,7 @@ describe('Onboarding', () => {
     })
   })
 
-  it('Can onboard to configure later', () => {
+  it('Can onboard to configure laterr', () => {
     cy.server()
 
     cy.intercept('api/v2/setup').as('orgSetup')

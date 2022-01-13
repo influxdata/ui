@@ -29,9 +29,7 @@ import {ShowBucketSchemaOverlay} from 'src/buckets/components/schemaOverlay/Show
 import {EditAnnotationOverlay} from 'src/annotations/components/EditAnnotationOverlay'
 import CreateVariableOverlay from 'src/variables/components/CreateVariableOverlay'
 import RenameVariableOverlay from 'src/variables/components/RenameVariableOverlay'
-import ImportVariableOverlay from 'src/variables/components/VariableImportOverlay'
 import UpdateVariableOverlay from 'src/variables/components/UpdateVariableOverlay'
-import ExportVariableOverlay from 'src/variables/components/VariableExportOverlay'
 import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 import AutoRefreshOverlay from 'src/dashboards/components/AutoRefreshOverlay'
@@ -118,17 +116,11 @@ export const OverlayController: FunctionComponent = () => {
       case 'create-variable':
         activeOverlay.current = <CreateVariableOverlay />
         break
-      case 'import-variable':
-        activeOverlay.current = <ImportVariableOverlay />
-        break
       case 'rename-variable':
         activeOverlay.current = <RenameVariableOverlay />
         break
       case 'update-variable':
         activeOverlay.current = <UpdateVariableOverlay />
-        break
-      case 'export-variable':
-        activeOverlay.current = <ExportVariableOverlay />
         break
       case 'toggle-auto-refresh':
         activeOverlay.current = <AutoRefreshOverlay />

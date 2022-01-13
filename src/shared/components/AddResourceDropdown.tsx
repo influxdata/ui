@@ -22,7 +22,6 @@ import {CLOUD} from 'src/shared/constants'
 
 interface OwnProps {
   onSelectNew: () => void
-  onSelectImport: () => void
   onSelectTemplate?: () => void
   resourceName: string
   limitStatus?: LimitStatus['status']
@@ -78,7 +77,6 @@ class AddResourceDropdown extends PureComponent<Props> {
   }
 
   private get optionItems(): JSX.Element[] {
-    const importOption = this.importOption
     const newOption = this.newOption
     const templateOption = this.templateOption
     const fromDashboard = this.props.resourceName === 'Dashboard'
@@ -105,15 +103,6 @@ class AddResourceDropdown extends PureComponent<Props> {
       >
         {newOption}
       </Dropdown.Item>,
-      <Dropdown.Item
-        id={importOption}
-        key={importOption}
-        onClick={this.handleSelect}
-        value={importOption}
-        testID="add-resource-dropdown--import"
-      >
-        {importOption}
-      </Dropdown.Item>,
       ...(fromDashboard ? [templateFromDashboard] : []),
     ]
 
@@ -122,10 +111,6 @@ class AddResourceDropdown extends PureComponent<Props> {
 
   private get newOption(): string {
     return `New ${this.props.resourceName}`
-  }
-
-  private get importOption(): string {
-    return `Import ${this.props.resourceName}`
   }
 
   private get templateOption(): string {
@@ -138,12 +123,7 @@ class AddResourceDropdown extends PureComponent<Props> {
   }
 
   private handleSelect = (selection: string): void => {
-    const {
-      onSelectNew,
-      onSelectImport,
-      onSelectTemplate,
-      limitStatus = 'ok',
-    } = this.props
+    const {onSelectNew, onSelectTemplate, limitStatus = 'ok'} = this.props
 
     if (CLOUD && limitStatus === 'exceeded') {
       this.handleLimit()
@@ -152,9 +132,6 @@ class AddResourceDropdown extends PureComponent<Props> {
 
     if (selection === this.newOption) {
       onSelectNew()
-    }
-    if (selection === this.importOption) {
-      onSelectImport()
     }
     if (selection == this.templateOption) {
       onSelectTemplate()

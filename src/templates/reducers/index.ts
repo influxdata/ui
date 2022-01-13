@@ -2,7 +2,6 @@ import {produce} from 'immer'
 import {
   Action,
   ADD_TEMPLATE_SUMMARY,
-  SET_EXPORT_TEMPLATE,
   SET_STACKS,
   SET_STAGED_TEMPLATE,
   SET_STAGED_TEMPLATE_URL,
@@ -240,18 +239,6 @@ export const templatesReducer = (
 
         draftState.stagedTemplateEnvReferences = envReferences
         draftState.stagedCommunityTemplate = stagedCommunityTemplate
-        return
-      }
-
-      case SET_EXPORT_TEMPLATE: {
-        const {status, item} = action
-        draftState.exportTemplate.status = status
-
-        if (item) {
-          draftState.exportTemplate.item = item
-        } else {
-          draftState.exportTemplate.item = null
-        }
         return
       }
 

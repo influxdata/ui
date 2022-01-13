@@ -6,20 +6,16 @@ import {useHistory} from 'react-router-dom'
 
 // Components
 import {
-  AlignItems,
   Button,
   ComponentColor,
   ComponentSize,
   FlexBox,
-  FlexDirection,
   IconFont,
-  InfluxColors,
   JustifyContent,
-  ResourceCard,
-  TextBlock,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import FilterList from 'src/shared/components/FilterList'
+import InjectSecretOption from 'src/flows/pipes/RawFluxEditor/FluxInjectionOption'
 
 // Actions & Selectors
 import {getSecrets} from 'src/secrets/actions/thunks'
@@ -34,26 +30,16 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
 import {Secret} from 'src/types'
 
-// sidebar submenu (scroll container) has padding
-// then parent class flow-sidebar--secrets-list offset's the padding
-// we still then need to offset the offset (smelly)
-const offset = '16px'
-const padding = '2px'
-
 const FilterSecrets = FilterList<Secret>()
 
-const SecretToSelect: FC<{secret: Secret, onClick: (id: string) => void}> = ({secret, onClick}) => {
+const SecretToSelect: FC<{secret: Secret, onClick: (secret: Secret) => void}> = ({secret, onClick}) => {
   return (
-    <FlexBox.Child key={secret.id} onClick={() => onClick(secret.id)}>
-      <TextBlock
-        backgroundColor={InfluxColors.Grey5}
-        textColor={InfluxColors.Pool}
-        text={secret.id}
-        testID={`select-secret-${secret.id}`}
-        size={ComponentSize.ExtraSmall}
-        style={{margin: '8px'}}
-      />
-    </FlexBox.Child>
+    <InjectSecretOption
+      option={secret}
+      onClick={onClick}
+      key={secret.id}
+      testID={`select-secret-${secret.id}`}
+    />
   )
 }
 
@@ -86,9 +72,9 @@ const SecretsList: FC = () => {
     [update, queries, activeQuery]
   )
 
-  const click = (secretId) => {
-    updateQuery(secretId);
-    event('Concat secret ID to Flux Script', {secretId});
+  const click = (secret: Secret) => {
+    updateQuery(secret.id);
+    event('Concat secret ID to Flux Script', {secret: secret.id});
   };
 
   useEffect(() => {
@@ -96,29 +82,22 @@ const SecretsList: FC = () => {
       }, [])
 
   return (
-    <FlexBox
-      className="flow-sidebar--secrets-list"
-      direction={FlexDirection.Column}
-    >
-      <FlexBox
-        style={{marginLeft: offset, width: '100%'}}
-        justifyContent={JustifyContent.SpaceBetween}
-        className="flow-sidebar--secrets-list--toolbar"
-      >
+    <div className="flux-toolbar flow-sidebar--secrets-list">
+      <div className="flux-toolbar--search">
         <SearchWidget
           placeholderText="Filter secrets..."
           searchTerm={searchTerm}
           onSearch={setSearchTerm}
 
         />
-      </FlexBox>
+      </div>
       <FlexBox
-        style={{marginLeft: offset, paddingRight: offset, width: '100%'}}
+        className="flux-toolbar--heading"
         justifyContent={JustifyContent.SpaceBetween}
-        className="flow-sidebar--secrets-list--toolbar"
       >
-        <div style={{marginLeft: offset}}>Secrets</div>
+        <div>Secrets</div>
         <Button
+          style={{ marginRight: '-16px'}}
           text="Add Secret"
           color={ComponentColor.Primary}
           size={ComponentSize.ExtraSmall}
@@ -127,29 +106,20 @@ const SecretsList: FC = () => {
           testID="button-add-secret"
         />
       </FlexBox>
-      <ResourceCard style={{height: '0px', padding}}/>
-      <ResourceCard>
-        <FlexBox
-          direction={FlexDirection.Column}
-          alignItems={AlignItems.FlexStart}
-          style={{backgroundColor: ComponentColor.Default}}
-        >
-          <FilterSecrets
-            list={secrets}
-            searchKeys={['id']}
-            searchTerm={searchTerm}
-          >
-            {filteredSecrets => (
-              <>
-                {filteredSecrets.map(
-                  (s: Secret) => <SecretToSelect secret={s} key={s.id} onClick={click} />
-                )}
-              </>
+      <FilterSecrets
+        list={secrets}
+        searchKeys={['id']}
+        searchTerm={searchTerm}
+      >
+        {filteredSecrets => (
+          <>
+            {filteredSecrets.map(
+              (s: Secret) => <SecretToSelect secret={s} key={s.id} onClick={click} />
             )}
-          </FilterSecrets>
-        </FlexBox>
-      </ResourceCard>
-    </FlexBox>
+          </>
+        )}
+      </FilterSecrets>
+    </div>
   )
 }
 

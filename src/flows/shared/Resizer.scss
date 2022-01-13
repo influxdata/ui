@@ -116,6 +116,7 @@ $panel-resizer--drag-handle: 30px;
 .panel-resizer--error {
   color: $c-dreamsicle;
   height: auto;
+  white-space: pre;
 }
 
 .panel-resizer--error-button {

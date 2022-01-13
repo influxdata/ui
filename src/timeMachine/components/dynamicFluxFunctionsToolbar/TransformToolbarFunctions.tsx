@@ -15,9 +15,12 @@ interface Props {
 
 const TransformToolbarFunctions: FC<Props> = props => {
   const {searchTerm, funcs, children} = props
-  console.log(typeof funcs)
 
-  const filteredFunctions = funcs.filter(func =>
+  //sort by package name and then sort by function name 
+  const sortedFunctions = funcs.sort((a, b) => (a.package > b.package) ? 1 : -1).sort((a,b) => (a.name > b.name) ? 1 : -1)
+
+  const filteredFunctions = sortedFunctions.filter(func =>
+    
     func.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 

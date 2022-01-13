@@ -9,7 +9,7 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import ToolbarFunction from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/ToolbarFunction'
 
 // Constants
-import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
+// import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 
 // Types
 import {FluxToolbarFunction} from 'src/types'

@@ -1,9 +1,8 @@
 import React, {PureComponent} from 'react'
 
 interface Args {
+  headline: string
   name: string
-  type: string
-  desc: string
 }
 
 interface Props {
@@ -28,8 +27,8 @@ class TooltipArguments extends PureComponent<Props> {
         return (
           <div className="flux-function-docs--arguments" key={a.name}>
             <span>{a.name}:</span>
-            <span>{a.type}</span>
-            <div>{a.desc}</div>
+            {/* <span>{a.type}</span> */}
+            <div>{a.headline}</div>
           </div>
         )
       })

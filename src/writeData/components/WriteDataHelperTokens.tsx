@@ -28,6 +28,9 @@ import {AppState, ResourceType, Authorization} from 'src/types'
 
 import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
+import GenerateTokenDropdownRedesigned from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
+import {isFlagEnabled} from '../../shared/utils/featureFlag'
+
 const WriteDataHelperTokens: FC = () => {
   const tokens = useSelector((state: AppState) =>
     getAll<Authorization>(state, ResourceType.Authorizations)
@@ -102,7 +105,11 @@ const WriteDataHelperTokens: FC = () => {
         className="write-data--details-widget-title"
       >
         Token
-        <GenerateTokenDropdown />
+        {isFlagEnabled('tokensUIRedesign') ? (
+          <GenerateTokenDropdownRedesigned />
+        ) : (
+          <GenerateTokenDropdown />
+        )}
       </Heading>
       {body}
     </>

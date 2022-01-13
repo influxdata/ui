@@ -70,7 +70,7 @@
     "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
-    "telegraf-plugins:update": "node -r esm src/writeData/utils/parsePluginsConfigurationText.ts"
+    "telegraf-plugins:update": "node src/writeData/utils/parsePluginsConfigurationText.mjs"
   },
   "author": "",
   "devDependencies": {

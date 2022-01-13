@@ -43,22 +43,35 @@ import {
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 
-const MoreButton: FC = () => {
-  const [open, setOpen] = useState(false)
-  const toggleMenu = event => {
-    event.preventDefault()
-    if (open) {
-      console.log('closing the menu')
-    } else {
-      console.log('opening the menu')
-    }
-    setOpen(!open)
-  }
+type MenuItemType = {
+  title: string
+  onClick: () => void
+}
+interface ButtonProp {
+  menuItems: MenuItemType[]
+}
+
+const MenuButton: FC<ButtonProp> = ({menuItems}) => {
   return (
-    <div style={{position: 'relative'}}>
-      <SquareButton icon={IconFont.More} onClick={toggleMenu} />
-      {open && <div>menu</div>}
-    </div>
+    <Dropdown
+      button={(active, onClick) => (
+        <SquareButton
+          icon={IconFont.More}
+          onClick={onClick}
+          active={active}
+          // TODO: testID=""
+        />
+      )}
+      menu={() => (
+        <Dropdown.Menu style={{width: '200px'}}>
+          {menuItems.map(item => (
+            <Dropdown.Item key={item.title} onClick={item.onClick}>
+              {item.title}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      )}
+    />
   )
 }
 interface Token {
@@ -140,11 +153,13 @@ const FlowHeader: FC = () => {
       .catch(err => console.error('failed to delete share', err))
   }
 
-  const downloadAsPDF = () => {
+  const handleDownloadAsPNG = () => {
+    console.log('download PNG...')
+  }
+
+  const handleDownloadAsPDF = () => {
     console.log('download PDF...')
-    console.log('FlowListContext ID', currentID)
     const canvas = document.getElementById(currentID)
-    console.log(canvas)
     import('html2canvas').then((module: any) =>
       module
         .default(canvas as HTMLDivElement, {
@@ -353,15 +368,26 @@ const FlowHeader: FC = () => {
                     titleText="Share Notebook"
                   />
                 </FeatureFlag>
-                <SquareButton
-                  icon={IconFont.Wood}
-                  onClick={downloadAsPDF}
-                  color={
-                    !!share ? ComponentColor.Primary : ComponentColor.Secondary
-                  }
-                  titleText="Download PDF"
+                <MenuButton
+                  menuItems={[
+                    {
+                      title: 'Delete',
+                      onClick: handleDelete,
+                    },
+                    {
+                      title: 'Clone',
+                      onClick: handleClone,
+                    },
+                    {
+                      title: 'Download as PNG',
+                      onClick: handleDownloadAsPNG,
+                    },
+                    {
+                      title: 'Download as PDF',
+                      onClick: handleDownloadAsPDF,
+                    },
+                  ]}
                 />
-                <MoreButton />
               </>
             )}
             <FeatureFlag name="flow-snapshot">

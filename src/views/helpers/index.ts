@@ -74,7 +74,7 @@ export function defaultBuilderConfig(): BuilderConfig {
   return {
     buckets: [],
     tags: [{key: '_measurement', values: [], aggregateFunctionType: 'filter'}],
-    functions: [{name: DEFAULT_AGGREGATE_FUNCTION}],
+    functions: [],
     aggregateWindow: {period: AGG_WINDOW_AUTO, fillValues: DEFAULT_FILLVALUES},
   }
 }

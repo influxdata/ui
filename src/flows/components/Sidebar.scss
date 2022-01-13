@@ -1,8 +1,8 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .flow-sidebar {
-  flex: 0 0 300px;
-  width: 300px;
+  flex: 0 0 calc(420px - $cf-space-2xs);
+  width: 420px - $cf-space-2xs;
   padding: 0 $cf-space-2xs;
 
   .sidebar--item {
@@ -42,6 +42,7 @@
 
 .flow-sidebar--submenu-wrapper {
   width: calc(100% - 16px);
+  padding-bottom: 20px;
 }
 
 .flow-sidebar--dropdownmenu {

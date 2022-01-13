@@ -34,10 +34,11 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {remove} from 'src/shared/contexts/query'
 import Expressions from 'src/flows/pipes/Notification/Expressions'
-import Threshold, {
+import Threshold from 'src/flows/pipes/Notification/Threshold'
+import {
   deadmanType,
   THRESHOLD_TYPES,
-} from 'src/flows/pipes/Notification/Threshold'
+} from 'src/flows/pipes/Visualization/threshold'
 import {
   ENDPOINT_DEFINITIONS,
   ENDPOINT_ORDER,

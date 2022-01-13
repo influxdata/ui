@@ -13,6 +13,7 @@ import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {
   Page,
   SquareButton,
+  Icon,
   IconFont,
   ComponentColor,
   ComponentStatus,
@@ -46,6 +47,7 @@ import {event} from 'src/cloud/utils/reporting'
 type MenuItemType = {
   title: string
   onClick: () => void
+  icon: string
 }
 interface ButtonProp {
   menuItems: MenuItemType[]
@@ -62,11 +64,12 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
           // TODO: testID=""
         />
       )}
-      menu={() => (
-        <Dropdown.Menu style={{width: '200px'}}>
+      menu={onCollapse => (
+        <Dropdown.Menu style={{width: '200px'}} onCollapse={onCollapse}>
           {menuItems.map(item => (
             <Dropdown.Item key={item.title} onClick={item.onClick}>
-              {item.title}
+              <Icon glyph={item.icon} />
+              <span style={{paddingLeft: '10px'}}>{item.title}</span>
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>
@@ -373,18 +376,22 @@ const FlowHeader: FC = () => {
                     {
                       title: 'Delete',
                       onClick: handleDelete,
+                      icon: IconFont.Trash_New,
                     },
                     {
                       title: 'Clone',
                       onClick: handleClone,
+                      icon: IconFont.Duplicate_New,
                     },
                     {
                       title: 'Download as PNG',
                       onClick: handleDownloadAsPNG,
+                      icon: IconFont.Download_New,
                     },
                     {
                       title: 'Download as PDF',
                       onClick: handleDownloadAsPDF,
+                      icon: IconFont.Download_New,
                     },
                   ]}
                 />

@@ -67,6 +67,7 @@ import icinga2Markdown from 'src/writeData/components/telegrafPlugins/icinga2.md
 import infinibandMarkdown from 'src/writeData/components/telegrafPlugins/infiniband.md'
 import influxdb_listenerMarkdown from 'src/writeData/components/telegrafPlugins/influxdb_listener.md'
 import influxdb_v2_listenerMarkdown from 'src/writeData/components/telegrafPlugins/influxdb_v2_listener.md'
+import intel_pmuMarkdown from 'src/writeData/components/telegrafPlugins/intel_pmu.md'
 import intel_powerstatMarkdown from 'src/writeData/components/telegrafPlugins/intel_powerstat.md'
 import intel_rdtMarkdown from 'src/writeData/components/telegrafPlugins/intel_rdt.md'
 import influxdbMarkdown from 'src/writeData/components/telegrafPlugins/influxdb.md'
@@ -97,6 +98,7 @@ import linux_sysctl_fsMarkdown from 'src/writeData/components/telegrafPlugins/li
 import logparserMarkdown from 'src/writeData/components/telegrafPlugins/logparser.md'
 import logstashMarkdown from 'src/writeData/components/telegrafPlugins/logstash.md'
 import lustre2Markdown from 'src/writeData/components/telegrafPlugins/lustre2.md'
+import lvmMarkdown from 'src/writeData/components/telegrafPlugins/lvm.md'
 import mailchimpMarkdown from 'src/writeData/components/telegrafPlugins/mailchimp.md'
 import marklogicMarkdown from 'src/writeData/components/telegrafPlugins/marklogic.md'
 import mcrouterMarkdown from 'src/writeData/components/telegrafPlugins/mcrouter.md'
@@ -134,6 +136,7 @@ import opcuaMarkdown from 'src/writeData/components/telegrafPlugins/opcua.md'
 import openldapMarkdown from 'src/writeData/components/telegrafPlugins/openldap.md'
 import openntpdMarkdown from 'src/writeData/components/telegrafPlugins/openntpd.md'
 import opensmtpdMarkdown from 'src/writeData/components/telegrafPlugins/opensmtpd.md'
+import openstackMarkdown from 'src/writeData/components/telegrafPlugins/openstack.md'
 import opentelemetryMarkdown from 'src/writeData/components/telegrafPlugins/opentelemetry.md'
 import openweathermapMarkdown from 'src/writeData/components/telegrafPlugins/openweathermap.md'
 import passengerMarkdown from 'src/writeData/components/telegrafPlugins/passenger.md'
@@ -335,6 +338,7 @@ import opcuaLogo from 'src/writeData/graphics/opcua.svg'
 import openldapLogo from 'src/writeData/graphics/openldap.svg'
 import openntpdLogo from 'src/writeData/graphics/openntpd.svg'
 import opensmtpdLogo from 'src/writeData/graphics/opensmtpd.svg'
+import openstackLogo from 'src/writeData/graphics/openstack.svg'
 import opentelemetryLogo from 'src/writeData/graphics/opentelemetry.svg'
 import openweathermapLogo from 'src/writeData/graphics/openweathermap.svg'
 import passengerLogo from 'src/writeData/graphics/passenger.svg'
@@ -830,6 +834,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: influxdb_v2_listenerLogo,
   },
   {
+    id: 'intel_pmu',
+    name: 'Intel Performance Monitoring Unit',
+    markdown: intel_pmuMarkdown,
+    image: intel_powerstatLogo,
+  },
+  {
     id: 'intel_powerstat',
     name: 'Intel PowerStat',
     markdown: intel_powerstatMarkdown,
@@ -1002,6 +1012,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'Lustre',
     markdown: lustre2Markdown,
     image: lustre2Logo,
+  },
+  {
+    id: 'lvm',
+    name: 'Logical Volume Management',
+    markdown: lvmMarkdown,
+    image: linux_sysctl_fsLogo,
   },
   {
     id: 'mailchimp',
@@ -1224,6 +1240,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'OpenSMTPD',
     markdown: opensmtpdMarkdown,
     image: opensmtpdLogo,
+  },
+  {
+    id: 'openstack',
+    name: 'OpenStack',
+    markdown: openstackMarkdown,
+    image: openstackLogo,
   },
   {
     id: 'opentelemetry',

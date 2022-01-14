@@ -167,8 +167,6 @@ describe('Dashboard refresh', () => {
           cy.getByTestID('cancel-cell-edit--button').click()
         })
 
-        expect(!!cy.state('requests')).to.eq(false)
-
         cy.visit(routeToReturnTo)
         cy.wait('@refreshQuery')
         cy.wait(5000)
@@ -206,8 +204,7 @@ describe('Dashboard refresh', () => {
           .invoke('dispatch', {
             type: 'SET_INACTIVITY_TIMEOUT',
             ...{
-              dashboardID: cy.state().window.store.getState().currentDashboard
-                .id,
+              id: cy.state().window.store.getState().currentDashboard.id,
               inactivityTimeout: 3000,
             },
           })

@@ -4,9 +4,15 @@ import {useDispatch} from 'react-redux'
 
 // Types
 import {Account as UserAccount} from 'src/client/unityRoutes'
+import {
+  accountDefaultSettingError,
+  accountDefaultSettingSuccess,
+} from 'src/shared/copy/notifications'
 
 // Utils
-import {getAccounts} from 'src/client/unityRoutes'
+import {getAccounts, putAccountsDefault} from 'src/client/unityRoutes'
+
+import {notify} from 'src/shared/actions/notifications'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
@@ -18,26 +24,22 @@ export type Props = {
 export interface UserAccountContextType {
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
-
+  handleSetDefaultAccount: (newId: number) => void
   defaultAccountId: number
   activeAccountId: number
 }
-//   todo: add to above when implementing:
-//    setDefaultAccountId: (id: number) => void
 
 export const DEFAULT_CONTEXT: UserAccountContextType = {
   userAccounts: [],
   defaultAccountId: -1,
   activeAccountId: -1,
   handleGetAccounts: () => {},
+  handleSetDefaultAccount: () => {},
 }
 
 export const UserAccountContext = React.createContext<UserAccountContextType>(
   DEFAULT_CONTEXT
 )
-
-// todo:  put in dependency array:  whenever the default account changes, should redo the call.
-// put this in *after* the ability to change the default account has been added
 
 export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(null)
@@ -45,6 +47,20 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [activeAccountId, setActiveAccountId] = useState<number>(null)
 
   const dispatch = useDispatch()
+
+  /**
+   * get the name of the account as specified by ID
+   *
+   * needed for the notifications, no need to
+   * pass the name as an argument when all the data is here
+   * */
+  const getAccountNameById = id => {
+    const selectedAcctArray = userAccounts.filter(account => account.id === id)
+    // name is guaranteed to be there
+    if (selectedAcctArray && selectedAcctArray.length) {
+      return selectedAcctArray[0].name
+    }
+  }
 
   const handleGetAccounts = useCallback(async () => {
     try {
@@ -73,14 +89,29 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     } catch (error) {
       event('multiAccount.retrieveAccounts.error', {error})
     }
-  }, [dispatch])
+  }, [dispatch, defaultAccountId])
+
+  async function handleSetDefaultAccount(newDefaultAcctId) {
+    const accountName = getAccountNameById(newDefaultAcctId)
+
+    try {
+      const resp = await putAccountsDefault({data: {id: newDefaultAcctId}})
+      setDefaultAccountId(newDefaultAcctId)
+
+      if (resp.status !== 204) {
+        dispatch(notify(accountDefaultSettingError(accountName)))
+      } else {
+        dispatch(notify(accountDefaultSettingSuccess(accountName)))
+      }
+    } catch (error) {
+      dispatch(notify(accountDefaultSettingError(accountName)))
+    }
+  }
 
   useEffect(() => {
     handleGetAccounts()
   }, [handleGetAccounts, defaultAccountId, activeAccountId])
 
-  // todo: add to the value object when restoring/doing the default account setting:
-  //         setDefaultAccountId,
   return (
     <UserAccountContext.Provider
       value={{
@@ -88,6 +119,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         defaultAccountId,
         activeAccountId,
         handleGetAccounts,
+        handleSetDefaultAccount,
       }}
     >
       {children}

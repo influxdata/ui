@@ -43,7 +43,6 @@ import {
 
 // Utils
 import {resetQueryCache} from 'src/shared/apis/queryCache'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
@@ -255,27 +254,23 @@ const DashboardHeader: FC<Props> = ({
             selected={autoRefresh}
             showAutoRefresh={false}
           />
-          {isFlagEnabled('newAutoRefresh') && (
-            <Button
-              text={
-                isActive
-                  ? `Refreshing Every ${autoRefresh.label}`
-                  : 'Enable Auto Refresh'
-              }
-              color={
-                isActive ? ComponentColor.Secondary : ComponentColor.Default
-              }
-              onClick={
-                isActive
-                  ? () => resetAutoRefresh(dashboard.id)
-                  : () =>
-                      showOverlay('toggle-auto-refresh', null, () =>
-                        dismissOverlay()
-                      )
-              }
-              testID="enable-auto-refresh-button"
-            />
-          )}
+          <Button
+            text={
+              isActive
+                ? `Refreshing Every ${autoRefresh.label}`
+                : 'Enable Auto Refresh'
+            }
+            color={isActive ? ComponentColor.Secondary : ComponentColor.Default}
+            onClick={
+              isActive
+                ? () => resetAutoRefresh(dashboard.id)
+                : () =>
+                    showOverlay('toggle-auto-refresh', null, () =>
+                      dismissOverlay()
+                    )
+            }
+            testID="enable-auto-refresh-button"
+          />
           <TimeZoneDropdown />
           <TimeRangeDropdown
             onSetTimeRange={handleChooseTimeRange}

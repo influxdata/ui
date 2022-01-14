@@ -27,7 +27,6 @@ import {
   Dropdown,
   ErrorTooltip,
   Popover,
-  PopoverInteraction,
   List,
 } from '@influxdata/clockface'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
@@ -68,17 +67,11 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
   const triggerRef: RefObject<HTMLButtonElement> = createRef()
   return (
     <>
-      <SquareButton
-        ref={triggerRef}
-        icon={IconFont.More}
-        //testID="context-menu-flow"
-      />
+      <SquareButton ref={triggerRef} icon={IconFont.More} />
       <Popover
         triggerRef={triggerRef}
         enableDefaultStyles={false}
         style={{minWidth: '176px'}}
-        //showEvent={PopoverInteraction.Click}
-        hideEvent={PopoverInteraction.Click}
         contents={onHide => (
           <List>
             {menuItems.map(item => (

@@ -148,7 +148,9 @@ describe('Dashboard refresh', () => {
             .type(`${jumpAheadTime('00:00:10')}`, {force: true})
           cy.getByTestID('daterange--apply-btn').click()
         })
-        cy.intercept('POST', `/api/v2/query?orgID=${org.id}`).as('refreshQuery')
+        cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
+          req.alias = 'refreshQuery'
+        })
 
         cy.getByTestID('refresh-form-activate-button').click()
 

@@ -58,6 +58,7 @@ type MenuItemType = {
   title: string
   onClick: () => void
   icon: string
+  testID?: string
 }
 interface ButtonProp {
   menuItems: MenuItemType[]
@@ -67,7 +68,11 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
   const triggerRef: RefObject<HTMLButtonElement> = createRef()
   return (
     <>
-      <SquareButton ref={triggerRef} icon={IconFont.More} />
+      <SquareButton
+        ref={triggerRef}
+        icon={IconFont.More}
+        testID="flow-menu-button"
+      />
       <Popover
         triggerRef={triggerRef}
         enableDefaultStyles={false}
@@ -81,6 +86,7 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
                   item.onClick()
                   onHide()
                 }}
+                testID={item.testID || ''}
               >
                 <Icon glyph={item.icon} />
                 <span style={{paddingLeft: '10px'}}>{item.title}</span>
@@ -382,6 +388,7 @@ const FlowHeader: FC = () => {
                       title: 'Delete',
                       onClick: handleDelete,
                       icon: IconFont.Trash_New,
+                      testID: 'flow-menu-button-delete',
                     },
                     {
                       title: 'Clone',

@@ -73,23 +73,25 @@ export const retainRangesDashTimeV1 = (
 
 export const updateQueryParams = (updatedQueryParams): RouterAction => {
   const params = new URLSearchParams(window.location.search)
-  Object.entries(updatedQueryParams).forEach(([k, v]) => { params.set(k, v as string)})
+  Object.entries(updatedQueryParams).forEach(([k, v]) => {
+    params.set(k, v as string)
+  })
 
   return replace({
     pathname: stripPrefix(window.location.pathname),
-    search: params.toString()
+    search: params.toString(),
   })
 }
 
 export const updateQueryVars = varsObj => {
   const params = new URLSearchParams(window.location.search)
-  Object.entries(varsObj).forEach(([k,v]) => {
+  Object.entries(varsObj).forEach(([k, v]) => {
     params.set(`vars[${k}]`, v as string)
   })
 
   return replace({
     pathname: stripPrefix(window.location.pathname),
-    search: params.toString()
+    search: params.toString(),
   })
 }
 

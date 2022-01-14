@@ -65,9 +65,12 @@ class DashboardRoute extends PureComponent<Props> {
     }
 
     const params = new URLSearchParams(window.location.search)
-    const vars = params.entries().filter(([k, _v]) => /(^vars\[)(.+)(\]$)/g.test(k)).reduce((acc, [k, v]) => {
-      acc[k.slice(5, -1)] = v
-    }, {})
+    const vars = params
+      .entries()
+      .filter(([k, _v]) => /(^vars\[)(.+)(\]$)/g.test(k))
+      .reduce((acc, [k, v]) => {
+        acc[k.slice(5, -1)] = v
+      }, {})
 
     // nothing to sync as the query params aren't defining
     // any variables

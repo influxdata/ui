@@ -18,17 +18,12 @@ interface Props {
   historyType: AlertHistoryType
 }
 
-const AlertHistoryQueryParams: FC<Props> = ({
-  searchInput,
-  historyType,
-}) => {
+const AlertHistoryQueryParams: FC<Props> = ({searchInput, historyType}) => {
   useEffect(() => {
-    updateQueryParams(
-      {
-        [SEARCH_QUERY_PARAM]: searchInput || null,
-        [HISTORY_TYPE_QUERY_PARAM]: historyType || null,
-      },
-    )
+    updateQueryParams({
+      [SEARCH_QUERY_PARAM]: searchInput || null,
+      [HISTORY_TYPE_QUERY_PARAM]: historyType || null,
+    })
   }, [searchInput, historyType])
 
   return null

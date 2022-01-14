@@ -172,11 +172,15 @@ export const processResponse = ({
 }
 
 export const getInitialHistoryType = (): AlertHistoryType => {
-  return (new URLSearchParams(window.location.search).get(HISTORY_TYPE_QUERY_PARAM) || 'statuses') as AlertHistoryType
+  return (new URLSearchParams(window.location.search).get(
+    HISTORY_TYPE_QUERY_PARAM
+  ) || 'statuses') as AlertHistoryType
 }
 
 export const getInitialState = (): Partial<EventViewerState> => {
-  const searchInput = new URLSearchParams(window.location.search).get(SEARCH_QUERY_PARAM)
+  const searchInput = new URLSearchParams(window.location.search).get(
+    SEARCH_QUERY_PARAM
+  )
 
   if (!searchInput) {
     return {}

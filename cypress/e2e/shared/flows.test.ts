@@ -276,6 +276,25 @@ describe('Flows', () => {
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
+
+    // Clone a flow again
+    cy.getByTestID(`flow-card--${flowName}`).within(() => {
+      cy.getByTestID(`context-menu-flow`).click()
+    })
+    cy.getByTestID(`context-clone-flow`).click()
+
+    // Should redirect the user to the newly cloned flow
+    // Test menu button works
+    cy.getByTestID('flow-menu-button').click()
+
+    // Make sure the delete button is visible
+    cy.getByTestID('flow-menu-button-delete').should('be.visible')
+
+    // Delete the cloned flow inside the notebook
+    cy.getByTestID('flow-menu-button-delete').click()
+
+    cy.get('.cf-resource-card').should('have.length', 1)
+    cy.getByTestID('resource-editable-name').contains(`${flowName}`)
   })
 
   it('should not run Preview when presentation mode is off', () => {

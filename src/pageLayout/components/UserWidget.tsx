@@ -161,6 +161,7 @@ const UserWidget: FC<Props> = ({
           )}
         />
       </CloudExclude>
+      <TreeNav.SubHeading label={me.name} lowercase={true} />
       <TreeNav.UserItem
         id="logout"
         label="Logout"

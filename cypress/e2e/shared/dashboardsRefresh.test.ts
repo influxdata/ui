@@ -134,7 +134,7 @@ describe('Dashboard refresh', () => {
       })
     })
 
-    it.only('does not refresh if user edits cell, until user comes back, and then continues', () => {
+    it('does not refresh if user edits cell, until user comes back, and then continues', () => {
       cy.get<Organization>('@org').then((org: Organization) => {
         cy.getByTestID('enable-auto-refresh-button').click()
         cy.getByTestID('auto-refresh-input')

@@ -160,7 +160,6 @@ const FlowHeader: FC = () => {
   }
 
   const handleDownloadAsPNG = () => {
-    console.log('download PNG...')
     const canvas = document.getElementById(currentID)
     import('html2canvas').then((module: any) =>
       module
@@ -174,7 +173,6 @@ const FlowHeader: FC = () => {
   }
 
   const handleDownloadAsPDF = () => {
-    console.log('download PDF...')
     const canvas = document.getElementById(currentID)
     import('html2canvas').then((module: any) =>
       module

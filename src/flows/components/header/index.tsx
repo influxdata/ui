@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useContext, useState, useEffect} from 'react'
+import React, {
+  FC,
+  useContext,
+  useState,
+  useEffect,
+  createRef,
+  RefObject,
+} from 'react'
 import {useHistory, Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -17,12 +24,13 @@ import {
   IconFont,
   ComponentColor,
   ComponentStatus,
-  ConfirmationButton,
-  ButtonShape,
   Dropdown,
   ErrorTooltip,
+  Popover,
+  PopoverInteraction,
+  List,
 } from '@influxdata/clockface'
-import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
@@ -57,27 +65,38 @@ interface ButtonProp {
 }
 
 const MenuButton: FC<ButtonProp> = ({menuItems}) => {
+  const triggerRef: RefObject<HTMLButtonElement> = createRef()
   return (
-    <Dropdown
-      button={(active, onClick) => (
-        <SquareButton
-          icon={IconFont.More}
-          onClick={onClick}
-          active={active}
-          // TODO: testID=""
-        />
-      )}
-      menu={onCollapse => (
-        <Dropdown.Menu style={{width: '200px'}} onCollapse={onCollapse}>
-          {menuItems.map(item => (
-            <Dropdown.Item key={item.title} onClick={item.onClick}>
-              <Icon glyph={item.icon} />
-              <span style={{paddingLeft: '10px'}}>{item.title}</span>
-            </Dropdown.Item>
-          ))}
-        </Dropdown.Menu>
-      )}
-    />
+    <>
+      <SquareButton
+        ref={triggerRef}
+        icon={IconFont.More}
+        //testID="context-menu-flow"
+      />
+      <Popover
+        triggerRef={triggerRef}
+        enableDefaultStyles={false}
+        style={{minWidth: '176px'}}
+        //showEvent={PopoverInteraction.Click}
+        hideEvent={PopoverInteraction.Click}
+        contents={onHide => (
+          <List>
+            {menuItems.map(item => (
+              <List.Item
+                key={item.title}
+                onClick={() => {
+                  item.onClick()
+                  onHide()
+                }}
+              >
+                <Icon glyph={item.icon} />
+                <span style={{paddingLeft: '10px'}}>{item.title}</span>
+              </List.Item>
+            ))}
+          </List>
+        )}
+      />
+    </>
   )
 }
 interface Token {
@@ -352,19 +371,6 @@ const FlowHeader: FC = () => {
             <TimeRangeDropdown />
             {flow?.id && (
               <>
-                <ConfirmationButton
-                  icon={IconFont.Trash_New}
-                  shape={ButtonShape.Square}
-                  confirmationLabel={`Yes, delete this ${PROJECT_NAME}`}
-                  onConfirm={handleDelete}
-                  confirmationButtonText="Confirm"
-                  testID="context-delete-menu"
-                />
-                <SquareButton
-                  icon={IconFont.Duplicate_New}
-                  onClick={handleClone}
-                  titleText="Clone"
-                />
                 <FeatureFlag name="shareNotebook">
                   <SquareButton
                     icon={IconFont.Share}

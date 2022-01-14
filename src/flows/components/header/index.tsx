@@ -43,6 +43,9 @@ import {
   postNotebooksShare,
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
+import {downloadImage} from 'src/shared/utils/download'
+
+const backgroundColor = '#07070E'
 
 type MenuItemType = {
   title: string
@@ -158,6 +161,16 @@ const FlowHeader: FC = () => {
 
   const handleDownloadAsPNG = () => {
     console.log('download PNG...')
+    const canvas = document.getElementById(currentID)
+    import('html2canvas').then((module: any) =>
+      module
+        .default(canvas as HTMLDivElement, {
+          backgroundColor,
+        })
+        .then(result => {
+          downloadImage(result.toDataURL(), `${flow.name}.png`)
+        })
+    )
   }
 
   const handleDownloadAsPDF = () => {
@@ -166,7 +179,7 @@ const FlowHeader: FC = () => {
     import('html2canvas').then((module: any) =>
       module
         .default(canvas as HTMLDivElement, {
-          backgroundColor: '#07070e',
+          backgroundColor,
         })
         .then(result => {
           import('jspdf').then((jsPDF: any) => {
@@ -176,7 +189,7 @@ const FlowHeader: FC = () => {
               format: 'a4',
             })
             // Background Color
-            doc.setFillColor('#07070E')
+            doc.setFillColor(backgroundColor)
             doc.rect(0, 0, 850, 600, 'F')
 
             // InfluxData logo
@@ -238,7 +251,7 @@ const FlowHeader: FC = () => {
               )
               heightLeft -= pageHeight
             }
-            doc.save('visualization.pdf')
+            doc.save(`${flow.name}.pdf`)
           })
         })
     )

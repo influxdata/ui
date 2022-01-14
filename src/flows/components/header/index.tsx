@@ -219,15 +219,10 @@ const FlowHeader: FC = () => {
             let heightLeft = imgHeight
             let position = 0
 
-            doc.addImage(
-              imgData,
-              'PNG',
-              paddingX,
-              position + fontY + fontSize,
-              imgWidth,
-              imgHeight
-            )
-            heightLeft -= pageHeight
+            const imgX = paddingX
+            const imgY = position + fontY + fontSize
+            doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight)
+            heightLeft -= pageHeight - imgY
 
             // Add multiple pages
             while (heightLeft >= 0) {

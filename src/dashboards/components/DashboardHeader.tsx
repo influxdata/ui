@@ -29,7 +29,7 @@ import {AnnotationsControlBarToggleButton} from 'src/annotations/components/Anno
 import {toggleShowVariablesControls as toggleShowVariablesControlsAction} from 'src/userSettings/actions'
 import {updateDashboard as updateDashboardAction} from 'src/dashboards/actions/thunks'
 import {
-  resetDashboardAutoRefresh as resetDashboardAutoRefreshAction,
+  resetAutoRefresh as resetAutoRefreshAction,
   setAutoRefreshStatus as setAutoRefreshStatusAction,
 } from 'src/shared/actions/autoRefresh'
 import {
@@ -315,7 +315,7 @@ const mdtp = {
   onSetAutoRefreshStatus: setAutoRefreshStatusAction,
   updateQueryParams: updateQueryParamsAction,
   setDashboardTimeRange: setDashboardTimeRangeAction,
-  resetAutoRefresh: resetDashboardAutoRefreshAction,
+  resetAutoRefresh: resetAutoRefreshAction,
   showOverlay: showOverlayAction,
   dismissOverlay: dismissOverlayAction,
 }

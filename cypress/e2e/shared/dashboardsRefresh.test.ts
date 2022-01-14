@@ -134,7 +134,7 @@ describe('Dashboard refresh', () => {
       })
     })
 
-    it('does not refresh if user edits cell, until user comes back, and then continues', () => {
+    it.only('does not refresh if user edits cell, until user comes back, and then continues', () => {
       cy.get<Organization>('@org').then((org: Organization) => {
         cy.getByTestID('enable-auto-refresh-button').click()
         cy.getByTestID('auto-refresh-input')
@@ -148,9 +148,7 @@ describe('Dashboard refresh', () => {
             .type(`${jumpAheadTime('00:00:10')}`, {force: true})
           cy.getByTestID('daterange--apply-btn').click()
         })
-        cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-          req.alias = 'refreshQuery'
-        })
+        cy.intercept('POST', `/api/v2/query?orgID=${org.id}`).as('refreshQuery')
 
         cy.getByTestID('refresh-form-activate-button').click()
 
@@ -166,8 +164,6 @@ describe('Dashboard refresh', () => {
         cy.getByTestID('overlay').within(() => {
           cy.getByTestID('cancel-cell-edit--button').click()
         })
-
-        expect(!!cy.state('requests')).to.eq(false)
 
         cy.visit(routeToReturnTo)
         cy.wait('@refreshQuery')

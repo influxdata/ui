@@ -30,8 +30,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        // TODO: remove when feature flag is removed
-        cy.setFeatureFlags({newAutoRefresh: true})
         cy.createBucket(org.id, org.name, 'schmucket')
         const now = Date.now()
         cy.writeData(
@@ -246,7 +244,7 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true, newAutoRefresh: true})
+        cy.setFeatureFlags({pauseCell: true})
 
         cy.createBucket(orgID, name, 'schmucket')
 
@@ -339,7 +337,7 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true, newAutoRefresh: true})
+        cy.setFeatureFlags({pauseCell: true})
 
         cy.createBucket(orgID, name, 'schmucket')
 

@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
-import {useSelector} from 'react-redux'
-import {Switch, Route, useParams} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import {Page} from '@influxdata/clockface'
 import {DapperScrollbars} from '@influxdata/clockface'
 
@@ -19,15 +18,11 @@ import PipeList from 'src/flows/components/PipeList'
 import {SubSideBar} from 'src/flows/components/Sidebar'
 import FlowHeader from 'src/flows/components/header'
 import FlowKeyboardPreview from 'src/flows/components/FlowKeyboardPreview'
-import CreateSecretOverlay from 'src/shared/components/secrets/CreateSecretOverlay'
 
 // Constants
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 import 'src/flows/style.scss'
-
-// Selectors
-import {getOrg} from 'src/organizations/selectors'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -68,48 +63,36 @@ const RunOnMount = () => {
   return null
 }
 
-export const FlowPage: FC = () => {
-  const org = useSelector(getOrg)
-  const {currentID} = useContext(FlowListContext)
-
-  return (
-    <ResultsProvider>
-      <FlowQueryProvider>
-        <RunOnMount />
-        <FlowKeyboardPreview />
-        <SidebarProvider>
-          <Page>
-            <FlowHeader />
-            <Page.Contents
-              fullWidth={true}
-              scrollable={false}
-              className="flow-page"
-            >
-              <PopupProvider>
-                <DapperScrollbars
-                  noScrollX
-                  thumbStartColor="gray"
-                  thumbStopColor="gray"
-                >
-                  <PipeList />
-                </DapperScrollbars>
-                <SubSideBar />
-                <PopupDrawer />
-              </PopupProvider>
-            </Page.Contents>
-          </Page>
-          <Switch>
-            <Route
-              exact
-              path={`/orgs/${org.id}/notebooks/${currentID}/secrets/new`}
-              component={CreateSecretOverlay}
-            />
-          </Switch>
-        </SidebarProvider>
-      </FlowQueryProvider>
-    </ResultsProvider>
-  )
-}
+export const FlowPage: FC = () => (
+  <ResultsProvider>
+    <FlowQueryProvider>
+      <RunOnMount />
+      <FlowKeyboardPreview />
+      <SidebarProvider>
+        <Page>
+          <FlowHeader />
+          <Page.Contents
+            fullWidth={true}
+            scrollable={false}
+            className="flow-page"
+          >
+            <PopupProvider>
+              <DapperScrollbars
+                noScrollX
+                thumbStartColor="gray"
+                thumbStopColor="gray"
+              >
+                <PipeList />
+              </DapperScrollbars>
+              <SubSideBar />
+              <PopupDrawer />
+            </PopupProvider>
+          </Page.Contents>
+        </Page>
+      </SidebarProvider>
+    </FlowQueryProvider>
+  </ResultsProvider>
+)
 
 export default () => (
   <QueryProvider>

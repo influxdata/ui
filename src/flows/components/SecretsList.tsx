@@ -1,8 +1,9 @@
 import React, {
   FC, useCallback, useContext, useEffect, useState,
 } from 'react'
-import {useDispatch, useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
+import {
+  connect, ConnectedProps, useDispatch, useSelector,
+} from 'react-redux'
 
 // Components
 import {
@@ -16,15 +17,15 @@ import {
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import FilterList from 'src/shared/components/FilterList'
 import InjectSecretOption from 'src/flows/pipes/RawFluxEditor/FluxInjectionOption'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Actions & Selectors
 import {getSecrets} from 'src/secrets/actions/thunks'
-import {getOrg} from 'src/organizations/selectors'
 import {getAllSecrets} from 'src/resources/selectors'
 
 // Context
-import {FlowListContext} from 'src/flows/context/flow.list'
 import {PipeContext} from 'src/flows/context/pipe'
+import {EditorContextType} from 'src/flows/context/editor'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -43,43 +44,69 @@ const SecretToSelect: FC<{secret: Secret, onClick: (secret: Secret) => void}> = 
   )
 }
 
-const SecretsList: FC = () => {
+type ReduxProps = ConnectedProps<typeof connector>
+
+interface Props extends ReduxProps {
+  context: EditorContextType
+}
+
+const SecretsList: FC<Props> = ({
+  context: editorContext,
+  onDismissOverlay,
+  onShowOverlay,
+}) => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const dispatch = useDispatch()
-  const history = useHistory()
   const secrets = useSelector(getAllSecrets)
-  const orgId = useSelector(getOrg)?.id
-  const {currentID} = useContext(FlowListContext)
-  const {data, update} = useContext(PipeContext)
-  const {queries, activeQuery} = data
+  const {data} = useContext(PipeContext)
+  const {
+    editor,
+    calcInsertPosition,
+    updateText,
+  } = editorContext
+  const {queries, activeQuery} = data || {queries:[]}
+  const query = queries[activeQuery]
 
   const handleCreateSecret = () => {
     event('Create Secret Modal Opened')
-    history.push(`/orgs/${orgId}/notebooks/${currentID}/secrets/new`)
+    onShowOverlay('create-secret', null, onDismissOverlay)
   }
 
-  const updateQuery = useCallback(
+  const inject = useCallback(
     secret => {
-      const {text} = queries[activeQuery]
-      const _queries = queries.slice()
-      _queries[activeQuery] = {
-        ...queries[activeQuery],
-        text: `${text} secrets.get("${secret}")`,
+      if (!editor) {
+        return
+      }
+      const {row, shouldInsertOnLastLine} = calcInsertPosition(query.text)
+      let text = ''
+
+      if (shouldInsertOnLastLine) {
+        text = `\nsecrets.get("${secret.id}")`
+      } else {
+        text = ` secrets.get("${secret.id}")\n`
       }
 
-      update({queries: _queries})
+      const range = new window.monaco.Range(row, 1, row, 1)
+      const edits = [
+        {
+          range,
+          text,
+        },
+      ]
+      editor.executeEdits('', edits)
+      updateText(editor.getValue())
     },
-    [update, queries, activeQuery]
+    [editor, query.text]
   )
 
   const click = (secret: Secret) => {
-    updateQuery(secret.id);
+    inject(secret);
     event('Concat secret ID to Flux Script', {secret: secret.id});
   };
 
   useEffect(() => {
       dispatch(getSecrets())
-      }, [])
+  }, [])
 
   return (
     <div className="flux-toolbar flow-sidebar--secrets-list">
@@ -123,4 +150,11 @@ const SecretsList: FC = () => {
   )
 }
 
-export default SecretsList
+const mdtp = {
+  onShowOverlay: showOverlay,
+  onDismissOverlay: dismissOverlay,
+}
+
+const connector = connect(null, mdtp)
+
+export default connector(SecretsList)

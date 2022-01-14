@@ -1,4 +1,7 @@
 import React, {FC, useEffect, useContext, useRef} from 'react'
+import {useDispatch} from 'react-redux'
+
+// Components
 import {
   Button,
   ComponentColor,
@@ -6,21 +9,19 @@ import {
   DapperScrollbars,
   Dropdown,
 } from '@influxdata/clockface'
-import {useDispatch} from 'react-redux'
-
-// Contexts
-import {FlowContext} from 'src/flows/context/flow.current'
-import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {PipeProvider} from 'src/flows/context/pipe'
-import {SidebarContext} from 'src/flows/context/sidebar'
-
-// Components
 import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 import SecretsList from 'src/flows/components/SecretsList'
 import './Sidebar.scss'
 
-// Utils
+// Context
+import {FlowContext} from 'src/flows/context/flow.current'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {EditorContext} from 'src/flows/context/editor'
+import {SidebarContext} from 'src/flows/context/sidebar'
+import {PipeProvider} from 'src/flows/context/pipe'
+
+// Utils & Actions
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -30,6 +31,8 @@ import {
   panelCopyLinkFail,
 } from 'src/shared/copy/notifications'
 import {PIPE_DEFINITIONS} from 'src/flows'
+
+import './Sidebar.scss'
 
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -131,6 +134,7 @@ const Sidebar: FC = () => {
   const {flow, updateMeta, add, remove} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
+  const editorContext = useContext(EditorContext)
   const dispatch = useDispatch()
 
   const sections = ([
@@ -246,16 +250,16 @@ const Sidebar: FC = () => {
           disable: () => {
             const {type} = flow.data.byID[id]
 
-            if (type === 'rawFluxEditor') {
+            if (type === 'rawFluxEditor' && !!editorContext.editor) {
               return false
             }
 
             return true
           },
-          menu: () => (
-              <PipeProvider id={id}>
-                <SecretsList />
-              </PipeProvider>
+          menu: (
+            <PipeProvider id={id}>
+              <SecretsList context={editorContext} />
+            </PipeProvider>
           ),
         },
       ],

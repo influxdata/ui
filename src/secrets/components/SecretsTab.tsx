@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useState, useEffect} from 'react'
-import {useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
+import {connect, ConnectedProps, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -18,6 +17,7 @@ import SecretsList from 'src/secrets/components/SecretsList'
 import FilterList from 'src/shared/components/FilterList'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import GetResources from 'src/resources/components/GetResources'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Selectors
 import {getAllSecrets} from 'src/resources/selectors'
@@ -27,22 +27,21 @@ import {ResourceType, Secret} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {SecretSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
-// Actions
-import {getOrg} from 'src/organizations/selectors'
-
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-const SecretsTab: FC = () => {
+type ReduxProps = ConnectedProps<typeof connector>
+
+const SecretsTab: FC<ReduxProps> = ({
+  onDismissOverlay,
+  onShowOverlay,
+}) => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<Sort>(Sort.Ascending)
   const [sortKey, setSortKey] = useState<string>('id')
   const [sortType, setSortType] = useState<SortTypes>(SortTypes.String)
 
-  const history = useHistory()
-
   const secrets = useSelector(getAllSecrets)
-  const orgId = useSelector(getOrg)?.id
   const FilterSecrets = FilterList<Secret>()
 
   const handleFilterChange = (searchTerm: string) => {
@@ -61,7 +60,7 @@ const SecretsTab: FC = () => {
 
   const handleCreateSecret = () => {
     event('Create Secret Modal Opened')
-    history.push(`/orgs/${orgId}/settings/secrets/new`)
+    onShowOverlay('create-secret', null, onDismissOverlay)
   }
 
   let secretsEmptyState = (
@@ -158,4 +157,11 @@ const SecretsTab: FC = () => {
   )
 }
 
-export default SecretsTab
+const mdtp = {
+  onShowOverlay: showOverlay,
+  onDismissOverlay: dismissOverlay,
+}
+
+const connector = connect(null, mdtp)
+
+export default connector(SecretsTab)

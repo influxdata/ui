@@ -8,7 +8,7 @@ import SettingsTabbedPage from 'src/settings/components/SettingsTabbedPage'
 import SettingsHeader from 'src/settings/components/SettingsHeader'
 import {Page} from '@influxdata/clockface'
 import EditSecretOverlay from 'src/secrets/components/EditSecretOverlay'
-import CreateSecretOverlay from 'src/shared/components/secrets/CreateSecretOverlay'
+
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
@@ -32,11 +32,6 @@ const SecretsIndex: FC = () => {
         </SettingsTabbedPage>
       </Page>
       <Switch>
-        <Route
-          exact
-          path={`/orgs/${org.id}/settings/secrets/new`}
-          component={CreateSecretOverlay}
-        />
         <Route
           exact
           path={`/orgs/${org.id}/settings/secrets/:secretId/edit`}

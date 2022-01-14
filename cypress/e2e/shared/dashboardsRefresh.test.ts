@@ -206,8 +206,7 @@ describe('Dashboard refresh', () => {
           .invoke('dispatch', {
             type: 'SET_INACTIVITY_TIMEOUT',
             ...{
-              dashboardID: cy.state().window.store.getState().currentDashboard
-                .id,
+              id: cy.state().window.store.getState().currentDashboard.id,
               inactivityTimeout: 3000,
             },
           })

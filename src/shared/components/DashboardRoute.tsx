@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import qs, {ParsedQs} from 'qs'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
@@ -28,7 +27,7 @@ type Props = ReduxProps &
   RouteComponentProps<{orgID: string; dashboardID: string}>
 
 class DashboardRoute extends PureComponent<Props> {
-  pendingVars: ParsedQs[string]
+  pendingVars: object
 
   // this function takes the hydrated variables from state
   // and runs the `selectValue` action against them if the
@@ -59,18 +58,20 @@ class DashboardRoute extends PureComponent<Props> {
     const dashboardID = this.props.match.params.dashboardID
     dashboardVisit(dashboardID, new Date().getTime())
     event('Dashboard Visit', {dashboardID})
-    const urlVars = qs.parse(this.props.location.search, {
-      ignoreQueryPrefix: true,
-    })
 
     // always keep the dashboard in sync
     if (dashboard !== dashboardID) {
       updateDashboard(dashboardID)
     }
 
+    const params = new URLSearchParams(window.location.search)
+    const vars = params.entries().filter(([k, _v]) => /(^vars\[)(.+)(\]$)/g.test(k)).reduce((acc, [k, v]) => {
+      acc[k.slice(5, -1)] = v
+    }, {})
+
     // nothing to sync as the query params aren't defining
     // any variables
-    if (!urlVars.hasOwnProperty('vars')) {
+    if (!Object.keys(vars).length) {
       return
     }
 
@@ -78,11 +79,11 @@ class DashboardRoute extends PureComponent<Props> {
     // we have to wait for it so that we can filter out arbitrary user input
     // from the redux state before commiting it back to localstorage
     if (!variables.length) {
-      this.pendingVars = urlVars.vars
+      this.pendingVars = vars
       return
     }
 
-    this.syncVariables(this.props, urlVars.vars)
+    this.syncVariables(this.props, vars)
   }
 
   componentDidUpdate(props) {

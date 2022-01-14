@@ -1,8 +1,6 @@
 // Libraries
-import qs from 'qs'
 import {replace, RouterAction} from 'connected-react-router'
 import {Dispatch} from 'redux'
-import {get, pickBy} from 'lodash'
 
 // Actions
 import {notify, Action as NotifyAction} from 'src/shared/actions/notifications'
@@ -73,33 +71,25 @@ export const retainRangesDashTimeV1 = (
   payload: {dashboardIDs},
 })
 
-export const updateQueryParams = (updatedQueryParams: object): RouterAction => {
-  const {search, pathname} = window.location
-  const strippedPathname = stripPrefix(pathname)
+export const updateQueryParams = (updatedQueryParams): RouterAction => {
+  const params = new URLSearchParams(window.location.search)
+  Object.entries(updatedQueryParams).forEach(([k, v]) => { params.set(k, v as string)})
 
-  const newQueryParams = pickBy(
-    {
-      ...qs.parse(search, {ignoreQueryPrefix: true}),
-      ...updatedQueryParams,
-    },
-    v => !!v
-  )
-
-  const newSearch = qs.stringify(newQueryParams)
-  const newLocation = {pathname: strippedPathname, search: `?${newSearch}`}
-
-  return replace(newLocation)
+  return replace({
+    pathname: stripPrefix(window.location.pathname),
+    search: params.toString()
+  })
 }
 
 export const updateQueryVars = varsObj => {
-  const urlVars = qs.parse(window.location.search, {ignoreQueryPrefix: true})
-  const vars = {
-    ...((urlVars.vars || {}) as {}),
-    ...varsObj,
-  }
+  const params = new URLSearchParams(window.location.search)
+  Object.entries(varsObj).forEach(([k,v]) => {
+    params.set(`vars[${k}]`, v as string)
+  })
 
-  return updateQueryParams({
-    vars,
+  return replace({
+    pathname: stripPrefix(window.location.pathname),
+    search: params.toString()
   })
 }
 
@@ -108,20 +98,18 @@ export const updateTimeRangeFromQueryParams = (dashboardID: string) => (
   getState
 ): void => {
   const {ranges} = getState()
-  const queryParams = qs.parse(window.location.search, {
-    ignoreQueryPrefix: true,
-  })
+  const params = new URLSearchParams(window.location.search)
 
   const validatedTimeRangeFromQuery = validateAndTypeRange({
-    lower: get(queryParams, 'lower', null),
-    upper: get(queryParams, 'upper', null),
+    lower: params.get('lower'),
+    upper: params.get('upper'),
   })
 
   const validatedTimeRange =
     validatedTimeRangeFromQuery || ranges[dashboardID] || DEFAULT_TIME_RANGE
 
   if (
-    (queryParams.lower || queryParams.upper) &&
+    (params.get('lower') || params.get('upper')) &&
     !validatedTimeRangeFromQuery
   ) {
     dispatch(notify(copy.invalidTimeRangeValueInURLQuery()))

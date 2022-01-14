@@ -5,7 +5,6 @@ import {fromFlux} from '@influxdata/giraffe'
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
 import {parseSearchInput, searchExprToFlux} from 'src/eventViewer/utils/search'
 import {findNodes} from 'src/shared/utils/ast'
-import {readQueryParams} from 'src/shared/utils/queryParams'
 import {event} from 'src/cloud/utils/reporting'
 
 // Constants
@@ -173,11 +172,11 @@ export const processResponse = ({
 }
 
 export const getInitialHistoryType = (): AlertHistoryType => {
-  return readQueryParams()[HISTORY_TYPE_QUERY_PARAM] || 'statuses'
+  return (new URLSearchParams(window.location.search).get(HISTORY_TYPE_QUERY_PARAM) || 'statuses') as AlertHistoryType
 }
 
 export const getInitialState = (): Partial<EventViewerState> => {
-  const searchInput = readQueryParams()[SEARCH_QUERY_PARAM]
+  const searchInput = new URLSearchParams(window.location.search).get(SEARCH_QUERY_PARAM)
 
   if (!searchInput) {
     return {}

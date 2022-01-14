@@ -1,4 +1,4 @@
-import React, {FC, useContext} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import DurationInput from 'src/shared/components/DurationInput'
@@ -11,7 +11,6 @@ import {AutoRefreshStatus} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
 
 // Context
-import {AutoRefreshContext} from 'src/dashboards/components/RefreshContext'
 const SUGGESTIONS = [
   'Paused',
   '10s',
@@ -24,20 +23,24 @@ const SUGGESTIONS = [
   '1h',
 ]
 
-const AutoRefreshInput: FC = () => {
-  const {state, dispatch: setRefreshContext} = useContext(AutoRefreshContext)
+type Props = {
+  handleRefreshMilliseconds: (refreshMilliseconds: {
+    interval: number
+    status: AutoRefreshStatus
+    label: string
+  }) => void
+  label?: string
+}
 
+const AutoRefreshInput: FC<Props> = ({handleRefreshMilliseconds, label}) => {
   const handleChooseAutoRefresh = (selection: string) => {
     if (selection === 'Paused') {
-      setRefreshContext({
-        type: 'SET_REFRESH_MILLISECONDS',
-        refreshMilliseconds: {
-          interval: 0,
-          status: AutoRefreshStatus.Paused,
-          label: 'Paused',
-        },
+      handleRefreshMilliseconds({
+        interval: 0,
+        status: AutoRefreshStatus.Paused,
+        label: 'Paused',
       })
-      event('dashboards.autorefresh.autorefreshinput.intervalchange', {
+      event('autorefresh.autorefreshinput.intervalchange', {
         interval: 0,
       })
       return
@@ -56,15 +59,12 @@ const AutoRefreshInput: FC = () => {
       const calculatedMilliseconds =
         Number(selection.slice(0, selection.length - 1)) * multiplier * 1000
 
-      setRefreshContext({
-        type: 'SET_REFRESH_MILLISECONDS',
-        refreshMilliseconds: {
-          interval: calculatedMilliseconds,
-          status: AutoRefreshStatus.Active,
-          label: selection,
-        },
+      handleRefreshMilliseconds({
+        interval: calculatedMilliseconds,
+        status: AutoRefreshStatus.Active,
+        label: selection,
       })
-      event('dashboards.autorefresh.autorefreshinput.intervalchange', {
+      event('autorefresh.autorefreshinput.intervalchange', {
         interval: calculatedMilliseconds,
       })
     }
@@ -80,7 +80,7 @@ const AutoRefreshInput: FC = () => {
     <ButtonGroup>
       <DurationInput
         submitInvalid={false}
-        value={state.refreshMilliseconds?.label ?? 'Paused'}
+        value={label ?? 'Paused'}
         onSubmit={handleChooseAutoRefresh}
         suggestions={SUGGESTIONS}
         customClass="refresh-input"

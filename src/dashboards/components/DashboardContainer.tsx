@@ -34,12 +34,13 @@ import {event} from 'src/cloud/utils/reporting'
 const DashboardContainer: FC = () => {
   const timer = useRef(null)
   const dispatch = useDispatch()
-  const {autoRefresh, dashboard} = useSelector((state: AppState) => {
-    const dashboard = state.currentDashboard.id
-    const autoRefresh = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
+  const {autoRefresh, dashboardID} = useSelector((state: AppState) => {
+    const dashboardID = state.currentDashboard.id
+    const autoRefresh =
+      state.autoRefresh[`dashboard-${dashboardID}`] || AUTOREFRESH_DEFAULT
     return {
       autoRefresh,
-      dashboard,
+      dashboardID,
     }
   })
   const isEditing = useRouteMatch(
@@ -51,7 +52,7 @@ const DashboardContainer: FC = () => {
     }
 
     timer.current = setTimeout(() => {
-      dispatch(resetAutoRefresh(dashboard))
+      dispatch(resetAutoRefresh(`dashboard-${dashboardID}`))
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
       GlobalAutoRefresher.stopPolling()
@@ -63,7 +64,7 @@ const DashboardContainer: FC = () => {
     window.addEventListener('load', registerListeners)
     document.addEventListener('mousemove', registerListeners)
     document.addEventListener('keypress', registerListeners)
-  }, [dashboard, autoRefresh.inactivityTimeout])
+  }, [dashboardID, autoRefresh.inactivityTimeout])
 
   const stopFunc = useCallback(() => {
     if (
@@ -71,10 +72,10 @@ const DashboardContainer: FC = () => {
       new Date(autoRefresh?.duration?.upper).getTime() <= new Date().getTime()
     ) {
       GlobalAutoRefresher.stopPolling()
-      dispatch(resetAutoRefresh(dashboard))
+      dispatch(resetAutoRefresh(`dashboard-${dashboardID}`))
     }
   }, [
-    dashboard,
+    dashboardID,
     dispatch,
     autoRefresh?.duration?.upper,
     autoRefresh.infiniteDuration,
@@ -146,7 +147,9 @@ const DashboardContainer: FC = () => {
 
   return (
     <DashboardRoute>
-      <GetResource resources={[{type: ResourceType.Dashboards, id: dashboard}]}>
+      <GetResource
+        resources={[{type: ResourceType.Dashboards, id: dashboardID}]}
+      >
         <GetResources resources={[ResourceType.Buckets]}>
           <GetTimeRange />
           <DashboardPage />

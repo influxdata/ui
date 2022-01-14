@@ -263,10 +263,12 @@ const DashboardHeader: FC<Props> = ({
             color={isActive ? ComponentColor.Secondary : ComponentColor.Default}
             onClick={
               isActive
-                ? () => resetAutoRefresh(dashboard.id)
+                ? () => resetAutoRefresh(`dashboard-${dashboard.id}`)
                 : () =>
-                    showOverlay('toggle-auto-refresh', null, () =>
-                      dismissOverlay()
+                    showOverlay(
+                      'toggle-auto-refresh',
+                      {id: `dashboard-${dashboard.id}`},
+                      () => dismissOverlay()
                     )
             }
             testID="enable-auto-refresh-button"
@@ -293,7 +295,8 @@ const mstp = (state: AppState) => {
   const timeRange = getTimeRange(state)
   const org = getOrg(state)
 
-  const autoRefresh = state.autoRefresh[state.currentDashboard.id]
+  const autoRefresh =
+    state.autoRefresh[`dashboard-${state.currentDashboard.id}`]
 
   return {
     org,

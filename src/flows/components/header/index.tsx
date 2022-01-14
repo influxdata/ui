@@ -71,7 +71,7 @@ const FlowHeader: FC = () => {
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const autoRefresh = useSelector(
-    (state: AppState) => state.autoRefresh?.[flow?.id]
+    (state: AppState) => state.autoRefresh?.[`${PROJECT_NAME}-${flow?.id}`]
   )
   const dispatch = useDispatch()
   const [sharing, setSharing] = useState(false)
@@ -252,11 +252,16 @@ const FlowHeader: FC = () => {
                 }
                 onClick={
                   isActive
-                    ? () => dispatch(resetAutoRefresh(flow?.id))
+                    ? () =>
+                        dispatch(
+                          resetAutoRefresh(`${PROJECT_NAME}-${flow?.id}`)
+                        )
                     : () =>
                         dispatch(
-                          showOverlay('toggle-auto-refresh', null, () =>
-                            dispatch(dismissOverlay())
+                          showOverlay(
+                            'toggle-auto-refresh',
+                            {id: `${PROJECT_NAME}-${flow?.id}`},
+                            () => dispatch(dismissOverlay())
                           )
                         )
                 }

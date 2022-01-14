@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useCallback, useContext, useState} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -17,17 +18,42 @@ import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDro
 import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
 
 // Types
-import {CustomTimeRange, TimeRangeDirection} from 'src/types'
+import {AutoRefreshStatus, CustomTimeRange, TimeRangeDirection} from 'src/types'
 
 // Context
-import AutoRefreshContextProvider, {
-  AutoRefreshContext,
-} from 'src/dashboards/components/RefreshContext'
+import {addDurationToDate} from 'src/shared/utils/dateTimeUtils'
+import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
+import {
+  setAutoRefreshDuration,
+  setInactivityTimeout as setInactivityTimeoutAction,
+  setAutoRefreshInterval,
+  setAutoRefreshStatus,
+} from 'src/shared/actions/autoRefresh'
 
 import './AutoRefresh.scss'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
+
+const jumpAheadTime = () => {
+  const newTime = addDurationToDate(new Date(), 1, 'h')
+
+  const formatter = createDateTimeFormatter('YYYY-MM-DD HH:mm:ss')
+  return formatter.format(newTime)
+}
+
+const calculateTimeout = (timeout: string, timeoutUnit: string) => {
+  const timeoutNumber = parseInt(timeout, 10)
+  const startTime = new Date()
+  const endTime = addDurationToDate(
+    startTime,
+    timeoutNumber,
+    timeoutUnit[0].toLowerCase()
+  )
+  const cutoff = endTime.getTime() - startTime.getTime()
+
+  return cutoff
+}
 
 const selectInactivityArray = (unit: string) => {
   let selectionAmount = 0
@@ -51,13 +77,85 @@ const selectInactivityArray = (unit: string) => {
 
   return INACTIVITY_ARRAY
 }
-const AutoRefreshForm: FC = () => {
-  const {onClose} = useContext(OverlayContext)
-  const {
-    state,
-    dispatch: setRefreshContext,
-    setAutoRefreshSettings,
-  } = useContext(AutoRefreshContext)
+const AutoRefreshOverlay: FC = () => {
+  const {onClose, params} = useContext(OverlayContext)
+  const dispatch = useDispatch()
+
+  const [refreshMilliseconds, setRefreshMilliseconds] = useState({
+    interval: 60000,
+    status: AutoRefreshStatus.Active,
+    label: '60s',
+  })
+  const [duration, setDuration] = useState({
+    lower: new Date().toISOString(),
+    upper: jumpAheadTime(),
+    type: 'custom',
+  } as CustomTimeRange)
+  const [infiniteDuration, setInfiniteDuration] = useState(false)
+  const [inactivityTimeout, setInactivityTimeout] = useState('1')
+  const [inactivityTimeoutCategory, setInactivityTimeoutCategory] = useState(
+    'Hours'
+  )
+
+  const handleRefreshMilliseconds = useCallback(
+    (interval: {
+      interval: number
+      status: AutoRefreshStatus
+      label: string
+    }) => {
+      setRefreshMilliseconds(interval)
+    },
+    []
+  )
+
+  const handleConfirm = useCallback(() => {
+    try {
+      dispatch(
+        setAutoRefreshInterval(
+          params.id,
+          refreshMilliseconds.interval,
+          refreshMilliseconds.label
+        )
+      )
+
+      if (refreshMilliseconds.interval === 0) {
+        dispatch(setAutoRefreshStatus(params.id, AutoRefreshStatus.Paused))
+        return
+      }
+
+      dispatch(setAutoRefreshStatus(params.id, AutoRefreshStatus.Active))
+
+      if (inactivityTimeout !== 'Never') {
+        const cutoff = calculateTimeout(
+          inactivityTimeout,
+          inactivityTimeoutCategory
+        )
+        dispatch(setInactivityTimeoutAction(params.id, cutoff))
+      }
+
+      dispatch(setAutoRefreshDuration(params.id, duration))
+      onClose()
+      const [app] = params.id.split('-')
+      event('AutoRefresh Confirm Clicked', {
+        customAutoRefreshState: JSON.stringify({
+          app,
+          duration,
+          inactivityTimeout,
+          inactivityTimeoutCategory,
+        }),
+      })
+    } catch (error) {
+      console.error({error})
+    }
+  }, [
+    dispatch,
+    duration,
+    inactivityTimeout,
+    inactivityTimeoutCategory,
+    onClose,
+    params?.id,
+    refreshMilliseconds,
+  ])
 
   const handleCancel = () => {
     event('dashboards.autorefresh.autorefreshoverlay.cancelcustom')
@@ -71,44 +169,35 @@ const AutoRefreshForm: FC = () => {
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">Until: </span>
             <InputLabel
-              active={state.infiniteDuration}
+              active={infiniteDuration}
               className="refresh-form-time-label"
             >
               Indefinite
             </InputLabel>
             <SlideToggle
-              active={!state.infiniteDuration}
+              active={!infiniteDuration}
               onChange={() =>
-                setRefreshContext({
-                  type: 'SET_INFINITE_DURATION',
-                  infiniteDuration: !state.infiniteDuration,
-                })
+                setInfiniteDuration(prevInfinite => !prevInfinite)
               }
               className="refresh-form-timerange-toggle"
             />
             <InputLabel
-              active={!state.infiniteDuration}
+              active={!infiniteDuration}
               className="refresh-form-time-label"
             >
               Custom
             </InputLabel>
           </div>
-          {!state.infiniteDuration && (
+          {!infiniteDuration && (
             <div
               className="refresh-form-container reverse"
               data-testid="timerange-popover-button"
             >
               <TimeRangeDropdown
-                timeRange={state.duration}
+                timeRange={duration}
                 onSetTimeRange={(timeRange: CustomTimeRange) => {
-                  setRefreshContext({
-                    type: 'SET_DURATION',
-                    duration: timeRange,
-                  })
-                  setRefreshContext({
-                    type: 'SET_INFINITE_DURATION',
-                    infiniteDuration: false,
-                  })
+                  setDuration(timeRange)
+                  setInfiniteDuration(false)
                 }}
                 singleDirection={TimeRangeDirection.Upper}
                 className="timerange-dropdown"
@@ -121,31 +210,23 @@ const AutoRefreshForm: FC = () => {
             </span>
             <div
               className={`refresh-form-container-child ${
-                state.inactivityTimeout === 'Never' ? 'inactive' : 'active'
+                inactivityTimeout === 'Never' ? 'inactive' : 'active'
               }`}
             >
               <SelectDropdown
-                options={selectInactivityArray(state.inactivityTimeoutCategory)}
-                selectedOption={state.inactivityTimeout}
-                onSelect={(timeout: string) =>
-                  setRefreshContext({
-                    type: 'SET_INACTIVITY_TIMEOUT',
-                    inactivityTimeout: timeout,
-                  })
-                }
+                options={selectInactivityArray(inactivityTimeoutCategory)}
+                selectedOption={inactivityTimeout}
+                onSelect={(timeout: string) => setInactivityTimeout(timeout)}
                 buttonColor={ComponentColor.Default}
                 testID="inactivity-timeout-dropdown"
               />
-              {state.inactivityTimeout !== 'Never' && (
+              {inactivityTimeout !== 'Never' && (
                 <SelectDropdown
                   className="refresh-form-timeout-dropdown"
                   options={['Minutes', 'Hours', 'Days']}
-                  selectedOption={state.inactivityTimeoutCategory}
+                  selectedOption={inactivityTimeoutCategory}
                   onSelect={(timeoutCategory: string) =>
-                    setRefreshContext({
-                      type: 'SET_INACTIVITY_TIMEOUT_CATEGORY',
-                      inactivityTimeoutCategory: timeoutCategory,
-                    })
+                    setInactivityTimeoutCategory(timeoutCategory)
                   }
                   buttonColor={ComponentColor.Default}
                   testID="inactivity-timeout-category-dropdown"
@@ -157,7 +238,10 @@ const AutoRefreshForm: FC = () => {
             <span className="refresh-form-container-child">
               Refresh Interval:{' '}
             </span>
-            <AutoRefreshInput />
+            <AutoRefreshInput
+              handleRefreshMilliseconds={handleRefreshMilliseconds}
+              label={refreshMilliseconds?.label}
+            />
           </div>
           <div className="refresh-form-buttons">
             <Button
@@ -168,20 +252,13 @@ const AutoRefreshForm: FC = () => {
               testID="refresh-form-cancel-button"
             />
             <Button
-              onClick={() => {
-                setAutoRefreshSettings()
-                onClose()
-                event(
-                  'dashboards.autorefresh.autorefreshoverlay.confirmcustom',
-                  {customAutoRefreshState: JSON.stringify(state)}
-                )
-              }}
+              onClick={handleConfirm}
               text="Confirm"
               color={ComponentColor.Primary}
               className="refresh-form-activate-button"
               testID="refresh-form-activate-button"
               status={
-                state.refreshMilliseconds.interval === 0
+                refreshMilliseconds.interval === 0
                   ? ComponentStatus.Disabled
                   : ComponentStatus.Default
               }
@@ -190,13 +267,6 @@ const AutoRefreshForm: FC = () => {
         </Grid.Column>
       </Grid>
     </Overlay.Container>
-  )
-}
-const AutoRefreshOverlay: FC = () => {
-  return (
-    <AutoRefreshContextProvider>
-      <AutoRefreshForm />
-    </AutoRefreshContextProvider>
   )
 }
 

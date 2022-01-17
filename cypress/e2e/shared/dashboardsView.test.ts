@@ -292,6 +292,80 @@ describe('Dashboard', () => {
       })
     })
 
+    it('variables visibility control, informs user if variables are enabled but not defined', () => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+        cy.createDashWithViewAndVar(orgID).then(() => {
+          cy.get<string>('@defaultBucket').then(defaultBucket => {
+            cy.createCSVVariable(orgID, 'CSVVar', [
+              'FirstVar',
+              defaultBucket,
+              'SecondVar',
+            ])
+
+            cy.fixture('routes').then(({orgs, dashboards}) => {
+              cy.visit(`${orgs}/${orgID}${dashboards}/`)
+              cy.getByTestID('tree-nav')
+            })
+          })
+        })
+      })
+
+      cy.getByTestID('page-contents').within(() => {
+        cy.get('[data-testid="dashboard-card"]')
+          .eq(1)
+          .within(() => {
+            cy.getByTestID('dashboard-card--name').click()
+          })
+      })
+
+      // No defined variables
+      // Toggle off
+      cy.getByTestID('variables--button').click()
+      cy.getByTestID('variables-control-bar').should('not.exist')
+
+      // Toggle on
+      cy.getByTestID('variables--button').click()
+      cy.getByTestID('variables-control-bar')
+        .should('exist')
+        .and(
+          'contain',
+          "This dashboard doesn't have any cells with defined variables. Learn How"
+        )
+
+      // create query with variable
+      cy.getByTestID('cell-context--toggle').click()
+      cy.getByTestID('popover--contents')
+        .contains('Configure')
+        .click()
+      cy.getByTestID('buckets-list')
+        .contains('defbuck')
+        .click()
+      cy.getByTestID('selector-list m').click()
+      cy.getByTestID('selector-list v').click()
+      cy.getByTestID('selector-list tv1').click()
+      cy.getByTestID('switch-to-script-editor').click()
+      cy.getByTestID('flux-editor').should('exist')
+      cy.get('[class="view-line"]')
+        .last()
+        .type('v.CSVVar')
+      cy.getByTestID('save-cell--button').click()
+
+      // With variables
+      // Toggle off
+      cy.getByTestID('variables--button').click()
+      cy.getByTestID('variables-control-bar').should('not.exist')
+
+      // Toggle on
+      cy.getByTestID('variables--button').click()
+      cy.getByTestID('variables-control-bar')
+        .should('exist')
+        .and(
+          'not.contain',
+          "This dashboard doesn't have any cells with defined variables. Learn How"
+        )
+      cy.getByTestID('variable-dropdown--CSVVar').should('exist')
+    })
+
     it('can manage variable state with a lot of pointing and clicking', () => {
       const bucketOne = 'b1'
       const bucketThree = 'b3'

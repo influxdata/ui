@@ -255,10 +255,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   return (
     <Overlay.Container maxWidth={800}>
-      <Overlay.Header
-        title="Generate a Personal API Token"
-        onDismiss={onClose}
-      />
+      <Overlay.Header title="Generate a Custom API Token" onDismiss={onClose} />
       <Overlay.Body>
         <Form>
           <FlexBox

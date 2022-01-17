@@ -4,7 +4,6 @@ import {get} from 'lodash'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
-import {setExportTemplate} from 'src/templates/actions/creators'
 import {
   setVariables,
   setVariable,
@@ -30,8 +29,6 @@ import {
   normalizeValues,
   getVariablesForDashboard,
 } from 'src/variables/selectors'
-import {variableToTemplate} from 'src/shared/utils/resourceToTemplate'
-import {findDependentVariables} from 'src/variables/utils/exportVariables'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {currentContext} from 'src/shared/selectors/currentContext'
@@ -391,49 +388,6 @@ export const moveVariable = (originalIndex: number, newIndex: number) => async (
       byDashboardVariables.map((v: Variable) => v.id)
     )
   )
-}
-
-export const convertToTemplate = (variableID: string) => async (
-  dispatch,
-  getState: GetState
-): Promise<void> => {
-  try {
-    dispatch(setExportTemplate(RemoteDataState.Loading))
-    const state = getState()
-    const org = getOrg(state)
-    const resp = await api.getVariable({variableID})
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const allVariables = await api.getVariables({query: {orgID: org.id}})
-
-    if (allVariables.status !== 200) {
-      throw new Error(allVariables.data.message)
-    }
-
-    const normVariable = normalize<Variable, VariableEntities, string>(
-      resp.data,
-      variableSchema
-    )
-
-    const normVariables = normalize<Variable, VariableEntities, string>(
-      allVariables.data.variables,
-      arrayOfVariables
-    )
-
-    const variable = normVariable.entities.variables[normVariable.result]
-    const variables = Object.values(normVariables.entities.variables)
-
-    const dependencies = findDependentVariables(variable, variables)
-    const variableTemplate = variableToTemplate(state, variable, dependencies)
-
-    dispatch(setExportTemplate(RemoteDataState.Done, variableTemplate))
-  } catch (error) {
-    dispatch(setExportTemplate(RemoteDataState.Error))
-    dispatch(notify(copy.createTemplateFailed(error)))
-  }
 }
 
 export const addVariableLabelAsync = (

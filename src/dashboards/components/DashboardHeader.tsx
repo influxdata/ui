@@ -29,7 +29,7 @@ import {AnnotationsControlBarToggleButton} from 'src/annotations/components/Anno
 import {toggleShowVariablesControls as toggleShowVariablesControlsAction} from 'src/userSettings/actions'
 import {updateDashboard as updateDashboardAction} from 'src/dashboards/actions/thunks'
 import {
-  resetDashboardAutoRefresh as resetDashboardAutoRefreshAction,
+  resetAutoRefresh as resetAutoRefreshAction,
   setAutoRefreshStatus as setAutoRefreshStatusAction,
 } from 'src/shared/actions/autoRefresh'
 import {
@@ -43,7 +43,6 @@ import {
 
 // Utils
 import {resetQueryCache} from 'src/shared/apis/queryCache'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 // Selectors
 import {getTimeRange} from 'src/dashboards/selectors'
@@ -255,27 +254,23 @@ const DashboardHeader: FC<Props> = ({
             selected={autoRefresh}
             showAutoRefresh={false}
           />
-          {isFlagEnabled('newAutoRefresh') && (
-            <Button
-              text={
-                isActive
-                  ? `Refreshing Every ${autoRefresh.label}`
-                  : 'Enable Auto Refresh'
-              }
-              color={
-                isActive ? ComponentColor.Secondary : ComponentColor.Default
-              }
-              onClick={
-                isActive
-                  ? () => resetAutoRefresh(dashboard.id)
-                  : () =>
-                      showOverlay('toggle-auto-refresh', null, () =>
-                        dismissOverlay()
-                      )
-              }
-              testID="enable-auto-refresh-button"
-            />
-          )}
+          <Button
+            text={
+              isActive
+                ? `Refreshing Every ${autoRefresh.label}`
+                : 'Enable Auto Refresh'
+            }
+            color={isActive ? ComponentColor.Secondary : ComponentColor.Default}
+            onClick={
+              isActive
+                ? () => resetAutoRefresh(dashboard.id)
+                : () =>
+                    showOverlay('toggle-auto-refresh', null, () =>
+                      dismissOverlay()
+                    )
+            }
+            testID="enable-auto-refresh-button"
+          />
           <TimeZoneDropdown />
           <TimeRangeDropdown
             onSetTimeRange={handleChooseTimeRange}
@@ -315,7 +310,7 @@ const mdtp = {
   onSetAutoRefreshStatus: setAutoRefreshStatusAction,
   updateQueryParams: updateQueryParamsAction,
   setDashboardTimeRange: setDashboardTimeRangeAction,
-  resetAutoRefresh: resetDashboardAutoRefreshAction,
+  resetAutoRefresh: resetAutoRefreshAction,
   showOverlay: showOverlayAction,
   dismissOverlay: dismissOverlayAction,
 }

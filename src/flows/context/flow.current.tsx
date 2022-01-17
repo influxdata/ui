@@ -6,6 +6,7 @@ import React, {
   useState,
   useEffect,
 } from 'react'
+import {useLocation} from 'react-router-dom'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
@@ -52,6 +53,16 @@ export const FlowProvider: FC = ({children}) => {
       provider.current.disconnect()
     }
   }
+
+  const {search} = useLocation()
+
+  const panel = new URLSearchParams(search).get('panel')
+
+  useEffect(() => {
+    if (document && panel && currentFlow) {
+      document.getElementById(panel)?.scrollIntoView()
+    }
+  }, [panel, currentFlow])
 
   // NOTE this is a pretty awful mechanism, as it duplicates the source of
   // truth for the definition of the current flow, but i can't see a good

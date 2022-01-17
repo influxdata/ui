@@ -70,7 +70,6 @@ class VariablesTab extends PureComponent<Props, State> {
     const rightHeaderItems = (
       <AddResourceDropdown
         resourceName="Variable"
-        onSelectImport={this.handleOpenImportOverlay}
         onSelectNew={this.handleOpenCreateOverlay}
       />
     )
@@ -123,7 +122,6 @@ class VariablesTab extends PureComponent<Props, State> {
           </EmptyState.Text>
           <AddResourceDropdown
             resourceName="Variable"
-            onSelectImport={this.handleOpenImportOverlay}
             onSelectNew={this.handleOpenCreateOverlay}
           />
         </EmptyState>
@@ -143,12 +141,6 @@ class VariablesTab extends PureComponent<Props, State> {
 
   private handleFilterUpdate = (searchTerm: string) => {
     this.setState({searchTerm})
-  }
-
-  private handleOpenImportOverlay = (): void => {
-    const {history, match} = this.props
-
-    history.push(`/orgs/${match.params.orgID}/settings/variables/import`)
   }
 
   private handleOpenCreateOverlay = (): void => {

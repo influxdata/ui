@@ -11,7 +11,7 @@ import DashboardRoute from 'src/shared/components/DashboardRoute'
 
 // Actions
 import {setCurrentPage} from 'src/shared/reducers/currentPage'
-import {resetDashboardAutoRefresh} from 'src/shared/actions/autoRefresh'
+import {resetAutoRefresh} from 'src/shared/actions/autoRefresh'
 // Utils
 import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
 
@@ -51,7 +51,7 @@ const DashboardContainer: FC = () => {
     }
 
     timer.current = setTimeout(() => {
-      dispatch(resetDashboardAutoRefresh(dashboard))
+      dispatch(resetAutoRefresh(dashboard))
       dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
       registerStopListeners()
       GlobalAutoRefresher.stopPolling()
@@ -71,7 +71,7 @@ const DashboardContainer: FC = () => {
       new Date(autoRefresh?.duration?.upper).getTime() <= new Date().getTime()
     ) {
       GlobalAutoRefresher.stopPolling()
-      dispatch(resetDashboardAutoRefresh(dashboard))
+      dispatch(resetAutoRefresh(dashboard))
     }
   }, [
     dashboard,

@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {Switch, Route} from 'react-router-dom'
 import {AutoSizer} from 'react-virtualized'
 
 import {Page, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
@@ -13,7 +12,6 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import FilterList from 'src/shared/components/FilterList'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
-import TaskExportOverlay from 'src/tasks/components/TaskExportOverlay'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -191,12 +189,6 @@ class TasksPage extends PureComponent<Props, State> {
             </AutoSizer>
           </Page.Contents>
         </Page>
-        <Switch>
-          <Route
-            path="/orgs/:orgID/tasks/:id/export"
-            component={TaskExportOverlay}
-          />
-        </Switch>
       </SpinnerContainer>
     )
   }

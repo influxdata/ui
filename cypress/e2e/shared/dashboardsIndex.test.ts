@@ -1,5 +1,6 @@
 import {Organization} from '../../../src/types'
 import {makeGraphSnapshot} from '../../support/commands'
+import {genCurve} from '../../support/Utils'
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
@@ -72,12 +73,6 @@ describe('Dashboards', () => {
 
     cy.getByTestID('dashboard-card').should('contain', newName)
 
-    // Open Export overlay
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('export-overlay--text-area').should('exist')
-    cy.get('.cf-overlay--dismiss').click()
-
     // Create from header
     cy.getByTestID('add-resource-dropdown--button').click()
     cy.getByTestID('add-resource-dropdown--new').click()
@@ -147,105 +142,6 @@ describe('Dashboards', () => {
     cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.getByTestID('empty-dashboards-list').should('exist')
-  })
-
-  it('can import as JSON or file', () => {
-    const checkImportedDashboard = () => {
-      // wait for importing done
-      cy.intercept('POST', '/api/v2/dashboards/*/cells').as('createCells')
-      // create cell 1
-      cy.wait('@createCells')
-      // create cell 2
-      cy.wait('@createCells')
-      cy.getByTestID('dashboard-card--name')
-        .should('contain', 'IMPORT dashboard')
-        .click()
-      cy.getByTestID('cell Name this Cell').within(() => {
-        cy.get('.markdown-cell--contents').should(
-          'contain',
-          'Note about no tea'
-        )
-      })
-      cy.getByTestID('cell cellll').should('exist')
-
-      // return to previous page
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
-        })
-      })
-    }
-
-    // import dashboard from file
-    cy.getByTestID('add-resource-dropdown--button')
-      .first()
-      .click()
-    cy.getByTestID('add-resource-dropdown--import').click()
-
-    cy.getByTestID('drag-and-drop--input').attachFile({
-      filePath: 'dashboard-import.json',
-    })
-
-    cy.getByTestID('submit-button Dashboard').click()
-    checkImportedDashboard()
-
-    // delete dashboard before reimport
-    cy.getByTestID('dashboard-card')
-      .first()
-      .trigger('mouseover')
-      .within(() => {
-        cy.getByTestID('context-delete-menu--button').click()
-      })
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-
-    // dashboard no longer exists
-    cy.getByTestID('dashboard-card').should('not.exist')
-
-    // import dashboard as json
-    cy.getByTestID('add-resource-dropdown--button')
-      .first()
-      .click()
-    cy.getByTestID('add-resource-dropdown--import').click()
-
-    cy.getByTestID('select-group')
-      .contains('Paste')
-      .click()
-
-    cy.fixture('dashboard-import.json').then(json => {
-      cy.getByTestID('import-overlay--textarea')
-        .should('be.visible')
-        .click()
-        .type(JSON.stringify(json), {parseSpecialCharSequences: false})
-    })
-
-    cy.getByTestID('submit-button Dashboard').click()
-    checkImportedDashboard()
-  })
-
-  it('keeps user input in text area when attempting to import invalid JSON', () => {
-    cy.getByTestID('page-control-bar').within(() => {
-      cy.getByTestID('add-resource-dropdown--button').click()
-    })
-
-    cy.getByTestID('add-resource-dropdown--import').click()
-    cy.contains('Paste').click()
-    cy.getByTestID('import-overlay--textarea')
-      .click()
-      .type('this is invalid JSON')
-    cy.get('button[title*="Import JSON"]').click()
-    cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
-      expect($s).to.contain('this is invalid JSON')
-    )
-    cy.getByTestID('import-overlay--textarea').type(
-      '{backspace}{backspace}{backspace}{backspace}{backspace}'
-    )
-    cy.get('button[title*="Import JSON"]').click()
-    cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
-      expect($s).to.contain('this is invalid')
-    )
   })
 
   describe('cloning', () => {
@@ -690,32 +586,160 @@ describe('Dashboards', () => {
     cy.getByTestID('save-note--button').click() // note added to add content to be downloaded in the JSON file
     cy.getByTestID('nav-item-dashboards').click()
     cy.getByTestID('dashboard-card').invoke('hover')
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('form-container').should('be.visible')
-    cy.getByTestID('export-overlay--text-area').should('be.visible')
-    cy.getByTestID('button').click()
-    // readFile has a 4s timeout before the test fails
-    cy.readFile('cypress/downloads/dashboard.json').should('not.be.null')
   })
 
-  it('copies to clipboard', () => {
-    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-      cy.createDashboard(orgID).then(({body}) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-        })
+  it('changes time range', () => {
+    const dashName = 'dashboard'
+    const newDate = new Date()
+    const now = newDate.toISOString()
+    const pastDate = new Date(new Date() - 1000 * 60 * 60 * 2)
+    const past = pastDate.toISOString()
+    cy.get<Organization>('@org').then(({id}: Organization) =>
+      cy.createDashboard(id, dashName).then(({body}) => {
+        cy.createCell(body.id).then(cell1Resp =>
+          cy.createView(body.id, cell1Resp.body.id).then(() =>
+            cy.fixture('routes').then(({orgs}) =>
+              cy.get<Organization>('@org').then(({id}: Organization) => {
+                cy.visit(`${orgs}/${id}/dashboards-list`)
+                cy.getByTestID('tree-nav').then(() =>
+                  cy
+                    .intercept('POST', '/api/v2/query?*')
+                    .as('loadQuery')
+                    .then(() =>
+                      cy.writeLPData({
+                        lines: genCurve({points: 3500, freq: 6, shift: 13}),
+                        offset: `${8 * 24 * 60}m`,
+                        stagger: `${(8 * 24 * 60) / 3499}m`,
+                      })
+                    )
+                )
+              })
+            )
+          )
+        )
       })
-    })
-    cy.getByTestID('tree-nav')
-    cy.window().then(win => {
-      cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
-    })
-    cy.getByTestID('nav-item-dashboards').click()
-    cy.getByTestID('dashboard-card').invoke('hover')
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('button-copy').click()
-    cy.getByTestID('notification-success--children').should('be.visible')
+    )
+    cy.getByTestID('dashboard-card--name').click()
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('selector-list curve').click()
+    cy.getByTestID('selector-list p').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-axes').should('be.visible')
+
+    const snapshot = makeGraphSnapshot()
+
+    // fixed time range values
+    // past 1m
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past1m').click()
+    cy.wait('@loadQuery')
+
+    const snapshot2 = makeGraphSnapshot()
+    snapshot2.shouldBeSameAs(snapshot, false)
+
+    // past 5m
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past5m').click()
+    cy.wait('@loadQuery')
+
+    const snapshot3 = makeGraphSnapshot()
+    snapshot3.shouldBeSameAs(snapshot2, false)
+
+    // past 1h is set as default value
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past1h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot1 = makeGraphSnapshot()
+    snapshot1.shouldBeSameAs(snapshot, true)
+
+    // past 3h
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past3h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot5 = makeGraphSnapshot()
+    snapshot5.shouldBeSameAs(snapshot1, false)
+
+    // past 6h
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past6h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot6 = makeGraphSnapshot()
+    snapshot6.shouldBeSameAs(snapshot5, false)
+
+    // past 12h
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past12h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot7 = makeGraphSnapshot()
+    snapshot7.shouldBeSameAs(snapshot6, false)
+
+    // past 24h
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past24h').click()
+    cy.wait('@loadQuery')
+
+    const snapshot8 = makeGraphSnapshot()
+    snapshot8.shouldBeSameAs(snapshot7, false)
+
+    // past 2d
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past2d').click()
+    cy.wait('@loadQuery')
+
+    const snapshot9 = makeGraphSnapshot()
+    snapshot9.shouldBeSameAs(snapshot8, false)
+
+    // past 7d
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past7d').click()
+    cy.wait('@loadQuery')
+
+    const snapshot10 = makeGraphSnapshot()
+    snapshot10.shouldBeSameAs(snapshot9, false)
+
+    // past 30d
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past30d').click()
+    cy.wait('@loadQuery')
+
+    const snapshot11 = makeGraphSnapshot()
+    snapshot11.shouldBeSameAs(snapshot10, false)
+
+    // past 15m
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-past15m').click()
+    cy.wait('@loadQuery')
+
+    const snapshot4 = makeGraphSnapshot()
+    snapshot4.shouldBeSameAs(snapshot11, false)
+
+    // custom time range value
+    cy.getByTestID('timerange-dropdown').click()
+    cy.getByTestID('dropdown-item-customtimerange').click()
+    cy.getByTestID('timerange-popover--dialog').should('be.visible')
+
+    cy.getByTestID('timerange--input')
+      .first()
+      .clear()
+      .type(past)
+
+    cy.getByTestID('timerange--input')
+      .last()
+      .clear()
+      .type(now)
+
+    cy.getByTestID('daterange--apply-btn').click()
+    cy.wait('@loadQuery')
+
+    const snapshot12 = makeGraphSnapshot()
+    snapshot12.shouldBeSameAs(snapshot4, false)
   })
 })

@@ -80,6 +80,7 @@ $panel-resizer--drag-handle: 30px;
 
 .panel-resizer--body,
 .panel-resizer--empty,
+.panel-threshold--message,
 .panel-resizer--error {
   position: relative;
   flex: 1 0 0;
@@ -103,9 +104,19 @@ $panel-resizer--drag-handle: 30px;
   height: 30px;
 }
 
+.panel-threshold--message {
+  color: '#EFA5A9';
+  user-select: text;
+  padding: $cf-space-2xs 0;
+  font-weight: $cf-font-weight--bold;
+  text-align: center;
+  height: 30px;
+}
+
 .panel-resizer--error {
   color: $c-dreamsicle;
   height: auto;
+  white-space: pre;
 }
 
 .panel-resizer--error-button {

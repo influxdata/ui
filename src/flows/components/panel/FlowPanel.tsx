@@ -159,7 +159,7 @@ const FlowPanel: FC<Props> = ({
 
   return (
     <>
-      <div className={panelClassName}>
+      <div className={panelClassName} id={id}>
         <div className="flow-panel--header">
           <div className="flow-panel--node-wrapper">
             <div className="flow-panel--node" />

@@ -154,6 +154,49 @@ describe('The Query Builder', () => {
     })
   })
 
+  it('create bucket using explicit bucket schema', () => {
+    cy.get<Organization>('@org').then((org: Organization) => {
+      cy.fixture('routes').then(routes => {
+        cy.visit(`${routes.orgs}/${org.id}/data-explorer`)
+        cy.getByTestID('tree-nav')
+      })
+    })
+
+    const bucket = {
+      name: 'Sunny Bucket',
+      retention: {
+        delete: 'older than',
+        time: '72 h',
+      },
+      advancedConfig: {
+        type: 'Explicit',
+        schemaName: 'Rainy Schema',
+        // TODO: schemaPath: ''
+      },
+    }
+
+    cy.getByTestID('selector-list add-bucket').click()
+
+    cy.getByTestID('bucket-form').within(() => {
+      cy.getByTestID('bucket-form-name')
+        .clear()
+        .type(bucket.name + '{enter}')
+        .should('have.value', bucket.name)
+
+      cy.getByTestID('form--element')
+        .contains(bucket.retention.delete)
+        .click()
+      cy.getByTestID('duration-selector--button').click()
+      cy.getByTestID('duration-slector--menu')
+        .contains(bucket.retention.time)
+        .click()
+      cy.getByTestID('duration-selector--button').should(
+        'have.text',
+        bucket.retention.time
+      )
+    })
+  })
+
   describe('the group() function', () => {
     it('creates a query that has a group() function in it', () => {
       cy.get('@org').then((org: Organization) => {

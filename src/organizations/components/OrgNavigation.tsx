@@ -28,6 +28,7 @@ enum Tab {
   Members = 'members-oss',
   Users = 'users',
   About = 'about',
+  Usage = 'usage',
 }
 
 const OrgNavigation: FC<Props> = ({activeTab}) => {
@@ -62,6 +63,14 @@ const OrgNavigation: FC<Props> = ({activeTab}) => {
       link: `/orgs/${orgID}/about`,
     },
   ]
+
+  if (CLOUD && isFlagEnabled('multiAccount')) {
+    tabs.push({
+      text: 'usage',
+      id: Tab.Usage,
+      link: `/orgs/${orgID}/usage`,
+    })
+  }
 
   return (
     <Tabs orientation={Orientation.Horizontal} size={ComponentSize.Large}>

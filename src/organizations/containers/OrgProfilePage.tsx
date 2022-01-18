@@ -18,13 +18,16 @@ import DeleteOrgProvider from 'src/organizations/components/DeleteOrgContext'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const OrgProfilePage: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
 
+  const subTitle = isFlagEnabled('multiAccount') ? 'Settings' : 'About'
+
   return (
     <>
-      <Page titleTag={pageTitleSuffixer(['About', 'Organization'])}>
+      <Page titleTag={pageTitleSuffixer([subTitle, 'Organization'])}>
         <OrgHeader testID="about-page--header" />
         <OrgTabbedPage activeTab="about">
           <OrgProfileTab />

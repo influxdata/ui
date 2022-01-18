@@ -46,12 +46,12 @@ const DashboardContainer: FC = () => {
     '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
   )
 
-  const startTimeout = () => {
+  const startTimeout = useCallback(() => {
     GlobalAutoRefresher.startTimeout(
       timeoutFunction,
       autoRefresh.inactivityTimeout
     )
-  }
+  }, [autoRefresh.inactivityTimeout])
 
   const registerListeners = useCallback(() => {
     window.addEventListener('load', registerListeners)

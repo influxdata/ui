@@ -30,7 +30,7 @@ const DisplayTokenOverlay: FC<Props> = props => {
   return (
     <Overlay.Container maxWidth={750}>
       <Overlay.Header
-        title="You've Successfully cloned an API Token"
+        title="You've successfully created an API token"
         onDismiss={onClose}
         wrapText={true}
       />

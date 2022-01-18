@@ -13,13 +13,10 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const UserListContainer: FC = () => {
-  let titleTags = ['Users', 'Organization']
-  if (isFlagEnabled('multiAccount')) {
-    titleTags = ['Members', 'Organization']
-  }
+  const subTitle = isFlagEnabled('multiAccount') ? 'Members' : 'Users'
 
   return (
-    <Page titleTag={pageTitleSuffixer(titleTags)}>
+    <Page titleTag={pageTitleSuffixer([subTitle, 'Organization'])}>
       <OrgHeader testID="users-page--header" />
       <OrgTabbedPage activeTab="users">
         <>

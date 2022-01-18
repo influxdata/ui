@@ -29,9 +29,8 @@
 }
 
 .refresh-form-buttons {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 10px;
+  display: flex;
+  justify-content: flex-end;
   padding: $cf-space-s $cf-space-3xs $cf-space-2xs $cf-space-3xs;
 }
 

@@ -129,15 +129,10 @@ const AutoRefreshForm: FC = () => {
               </div>
             )}
           </div>
-          <div className="refresh-form-container">
-            <span className="refresh-form-container-child">
-              Inactivity Timeout:{' '}
-            </span>
-            <div
-              className={`refresh-form-container-child ${
-                state.inactivityTimeout === 'Never' ? 'inactive' : 'active'
-              }`}
-            >
+          <div>
+            <div>Inactivity Timeout</div>
+            <div>When your dashboard refresh will timeout</div>
+            <div className="refresh-form-container">
               <SelectDropdown
                 options={selectInactivityArray(state.inactivityTimeoutCategory)}
                 selectedOption={state.inactivityTimeout}
@@ -167,10 +162,9 @@ const AutoRefreshForm: FC = () => {
               )}
             </div>
           </div>
-          <div className="refresh-form-container">
-            <span className="refresh-form-container-child">
-              Refresh Interval:{' '}
-            </span>
+          <div>
+            <div>Refresh Interval</div>
+            <div>How often your dashboard will refresh</div>
             <AutoRefreshInput />
           </div>
           <div className="refresh-form-buttons">

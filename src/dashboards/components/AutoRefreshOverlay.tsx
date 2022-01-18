@@ -106,29 +106,29 @@ const AutoRefreshForm: FC = () => {
                 </SelectGroup.Option>
               ))}
             </SelectGroup>
+            {!state.infiniteDuration && (
+              <div
+                className="refresh-form-container reverse"
+                data-testid="timerange-popover-button"
+              >
+                <TimeRangeDropdown
+                  timeRange={state.duration}
+                  onSetTimeRange={(timeRange: CustomTimeRange) => {
+                    setRefreshContext({
+                      type: 'SET_DURATION',
+                      duration: timeRange,
+                    })
+                    setRefreshContext({
+                      type: 'SET_INFINITE_DURATION',
+                      infiniteDuration: false,
+                    })
+                  }}
+                  singleDirection={TimeRangeDirection.Upper}
+                  className="timerange-dropdown"
+                />
+              </div>
+            )}
           </div>
-          {!state.infiniteDuration && (
-            <div
-              className="refresh-form-container reverse"
-              data-testid="timerange-popover-button"
-            >
-              <TimeRangeDropdown
-                timeRange={state.duration}
-                onSetTimeRange={(timeRange: CustomTimeRange) => {
-                  setRefreshContext({
-                    type: 'SET_DURATION',
-                    duration: timeRange,
-                  })
-                  setRefreshContext({
-                    type: 'SET_INFINITE_DURATION',
-                    infiniteDuration: false,
-                  })
-                }}
-                singleDirection={TimeRangeDirection.Upper}
-                className="timerange-dropdown"
-              />
-            </div>
-          )}
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">
               Inactivity Timeout:{' '}

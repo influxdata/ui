@@ -23,7 +23,15 @@ export class AutoRefresher {
     }, autoRefresh.interval)
   }
 
+  public startTimeout(startFunc: () => void, time: number) {
+    this.timerID = setTimeout(() => {
+      startFunc()
+      this.stopPolling()
+    }, time)
+  }
+
   public stopPolling() {
+    this.clearTimeout()
     this.clearInterval()
   }
 

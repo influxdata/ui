@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useCallback, useRef} from 'react'
+import React, {FC, useEffect, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components

@@ -6,12 +6,12 @@ import {Page} from '@influxdata/clockface'
 import UsageToday from 'src/usage/UsageToday'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import LimitChecker from 'src/cloud/components/LimitChecker'
+import OrgHeader from 'src/organizations/components/OrgHeader'
+import OrgTabbedPage from 'src/organizations/components/OrgTabbedPage'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import OrgHeader from '../organizations/components/OrgHeader'
-import OrgTabbedPage from '../organizations/components/OrgTabbedPage'
 
 const Usage: FC = () => {
   if (isFlagEnabled('multiAccount')) {

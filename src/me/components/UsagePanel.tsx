@@ -25,7 +25,7 @@ const UsagePanel: FC = () => {
     <Panel>
       <Panel.Header>
         <Heading element={HeadingElement.H3}>
-          <label htmlFor="usagepanel--title">Usage ARTEMIS</label>
+          <label htmlFor="usagepanel--title">Usage</label>
         </Heading>
       </Panel.Header>
       <Panel.Body

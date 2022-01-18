@@ -19,10 +19,8 @@ import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/pagination/TokenList'
 import FilterList from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
-import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 import GenerateTokenDropdownRedesigned from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
-import TokensRedesignBanner from 'src/authorizations/components/TokensRedesignBanner'
 import PostDeploymentTokensBanner from 'src/authorizations/components/PostDeploymentTokensBanner'
 
 // Types
@@ -32,9 +30,6 @@ import {AuthorizationSortKey} from 'src/shared/components/resource_sort_dropdown
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
-
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -128,10 +123,7 @@ class TokensTab extends PureComponent<Props, State> {
       </>
     )
 
-    let rightHeaderItems = <GenerateTokenDropdown />
-    if (isFlagEnabled('tokensUIRedesign')) {
-      rightHeaderItems = <GenerateTokenDropdownRedesigned />
-    }
+    const rightHeaderItems = <GenerateTokenDropdownRedesigned />
 
     const tokensBanner = () => {
       return (
@@ -143,11 +135,7 @@ class TokensTab extends PureComponent<Props, State> {
             hideMobileIcon={true}
             textColor={InfluxColors.Yeti}
           >
-            {isFlagEnabled('tokensUIRedesign') ? (
-              <PostDeploymentTokensBanner />
-            ) : (
-              <TokensRedesignBanner />
-            )}
+            <PostDeploymentTokensBanner />
           </BannerPanel>
         </>
       )
@@ -246,7 +234,7 @@ class TokensTab extends PureComponent<Props, State> {
           <EmptyState.Text>
             Looks like there aren't any <b>Tokens</b>, why not generate one?
           </EmptyState.Text>
-          <GenerateTokenDropdown />
+          <GenerateTokenDropdownRedesigned />
         </EmptyState>
       )
     }

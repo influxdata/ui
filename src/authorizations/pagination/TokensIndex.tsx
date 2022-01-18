@@ -11,13 +11,11 @@ import GetResources from 'src/resources/components/GetResources'
 import TokensTab from 'src/authorizations/pagination/TokensTab'
 import {
   AllAccessTokenOverlay,
-  BucketsTokenOverlay,
   CustomApiTokenOverlay,
 } from 'src/overlays/components'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -44,17 +42,10 @@ class TokensIndex extends Component {
             path={`${tokensPath}/all-access`}
             component={AllAccessTokenOverlay}
           />
-          {isFlagEnabled('tokensUIRedesign') ? (
-            <Route
-              path={`${tokensPath}/custom-api`}
-              component={CustomApiTokenOverlay}
-            />
-          ) : (
-            <Route
-              path={`${tokensPath}/buckets`}
-              component={BucketsTokenOverlay}
-            />
-          )}
+          <Route
+            path={`${tokensPath}/custom-api`}
+            component={CustomApiTokenOverlay}
+          />
         </Switch>
       </>
     )

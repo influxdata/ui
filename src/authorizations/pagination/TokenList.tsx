@@ -5,9 +5,7 @@ import isEqual from 'lodash/isEqual'
 
 // Components
 import {Overlay, PaginationNav, ResourceList} from '@influxdata/clockface'
-import TokenRow from 'src/authorizations/components/TokenRow'
 import {TokenRow as TokenRowRedesigned} from 'src/authorizations/components/redesigned/TokenRow'
-import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
 import EditTokenOverlay from 'src/authorizations/components/redesigned/EditTokenOverlay'
 
 // Types
@@ -17,7 +15,6 @@ import {Sort} from '@influxdata/clockface'
 
 // Utils
 import {getSortedResources} from 'src/shared/utils/sort'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 type SortKey = keyof Authorization
 
@@ -76,16 +73,14 @@ export default class TokenList extends PureComponent<Props, State> {
       this.paginate(this.totalPages)
     }
 
-    if (isFlagEnabled('tokensUIRedesign')) {
-      const {auths: prevAuths} = prevProps
-      const {auths: nextAuths} = this.props
+    const {auths: prevAuths} = prevProps
+    const {auths: nextAuths} = this.props
 
-      if (!isEqual(prevAuths, nextAuths)) {
-        const authInView = nextAuths.find(
-          auth => auth.id === this.state.authInView?.id
-        )
-        this.setState({authInView})
-      }
+    if (!isEqual(prevAuths, nextAuths)) {
+      const authInView = nextAuths.find(
+        auth => auth.id === this.state.authInView?.id
+      )
+      this.setState({authInView})
     }
   }
 
@@ -119,22 +114,12 @@ export default class TokenList extends PureComponent<Props, State> {
           pageRangeOffset={1}
           onChange={this.paginate}
         />
-
-        {isFlagEnabled('tokensUIRedesign') ? (
-          <Overlay visible={isTokenOverlayVisible}>
-            <EditTokenOverlay
-              auth={authInView}
-              onDismissOverlay={this.handleDismissOverlay}
-            />
-          </Overlay>
-        ) : (
-          <Overlay visible={isTokenOverlayVisible}>
-            <ViewTokenOverlay
-              auth={authInView}
-              onDismissOverlay={this.handleDismissOverlay}
-            />
-          </Overlay>
-        )}
+        <Overlay visible={isTokenOverlayVisible}>
+          <EditTokenOverlay
+            auth={authInView}
+            onDismissOverlay={this.handleDismissOverlay}
+          />
+        </Overlay>
       </>
     )
   }
@@ -167,23 +152,13 @@ export default class TokenList extends PureComponent<Props, State> {
       const auth = sortedAuths[i]
 
       if (auth) {
-        if (isFlagEnabled('tokensUIRedesign')) {
-          paginatedAuths.push(
-            <TokenRowRedesigned
-              key={auth.id}
-              auth={auth}
-              onClickDescription={this.handleClickDescription}
-            />
-          )
-        } else {
-          paginatedAuths.push(
-            <TokenRow
-              key={auth.id}
-              auth={auth}
-              onClickDescription={this.handleClickDescription}
-            />
-          )
-        }
+        paginatedAuths.push(
+          <TokenRowRedesigned
+            key={auth.id}
+            auth={auth}
+            onClickDescription={this.handleClickDescription}
+          />
+        )
       }
     }
 

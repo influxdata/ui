@@ -114,27 +114,14 @@ const SetOrg: FC = () => {
   const orgPath = '/orgs/:orgID'
 
   let CorrectedTokensIndex = (
-    <Route path={`${orgPath}/${LOAD_DATA}/${TOKENS}`} component={TokensIndex} />
+    <Route
+      path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+      component={RedesignedTokensIndex}
+    />
   )
 
-  if (isFlagEnabled('tokensUIRedesign')) {
-    CorrectedTokensIndex = (
-      <Route
-        path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-        component={RedesignedTokensIndex}
-      />
-    )
-
-    // paginatedTokens already handles tokensUIRedesign being flagged on
-    if (isFlagEnabled('paginatedTokens')) {
-      CorrectedTokensIndex = (
-        <Route
-          path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-          component={PaginatedTokensIndex}
-        />
-      )
-    }
-  } else if (isFlagEnabled('paginatedTokens')) {
+  // paginatedTokens already handles tokensUIRedesign being flagged on
+  if (isFlagEnabled('paginatedTokens')) {
     CorrectedTokensIndex = (
       <Route
         path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}

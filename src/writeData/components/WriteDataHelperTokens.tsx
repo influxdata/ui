@@ -105,11 +105,7 @@ const WriteDataHelperTokens: FC = () => {
         className="write-data--details-widget-title"
       >
         Token
-        {isFlagEnabled('tokensUIRedesign') ? (
-          <GenerateTokenDropdownRedesigned />
-        ) : (
-          <GenerateTokenDropdown />
-        )}
+        <GenerateTokenDropdownRedesigned />
       </Heading>
       {body}
     </>

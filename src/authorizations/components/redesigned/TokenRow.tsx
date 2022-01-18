@@ -156,7 +156,7 @@ class TokensRow extends PureComponent<Props> {
         description: incrementCloneName(allTokenDescriptions, description),
       })
       event('token.clone.success', {id: this.props.auth.id, name: description})
-      this.props.showOverlay('access-token', null, () => dismissOverlay())
+      this.props.showOverlay('access-cloned-token', null, () => dismissOverlay())
     } catch {
       event('token.clone.failure', {id: this.props.auth.id, name: description})
     }

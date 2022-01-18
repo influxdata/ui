@@ -25,12 +25,12 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
 const DisplayTokenOverlay: FC<Props> = props => {
-  const {onClose} = useContext(OverlayContext)
+  const {onClose, overlayID} = useContext(OverlayContext)
 
   return (
     <Overlay.Container maxWidth={750}>
       <Overlay.Header
-        title="You've successfully created an API token"
+        title= {overlayID === 'access-token' ? "You've successfully created an API Token" : "You've successfully cloned an API Token"}
         onDismiss={onClose}
         wrapText={true}
       />

@@ -8,9 +8,9 @@ import {
   Button,
   ComponentColor,
   SelectDropdown,
-  SlideToggle,
-  InputLabel,
   ComponentStatus,
+  SelectGroup,
+  ButtonShape,
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
@@ -63,35 +63,49 @@ const AutoRefreshForm: FC = () => {
     event('dashboards.autorefresh.autorefreshoverlay.cancelcustom')
     onClose()
   }
+
+  const setRefreshState = () => {
+    setRefreshContext({
+      type: 'SET_INFINITE_DURATION',
+      infiniteDuration: !state.infiniteDuration,
+    })
+  }
+
+  const refreshOptions = [
+    {
+      id: 'indefinite-auto-refresh',
+      title: 'Indefinite',
+      active: state.infiniteDuration,
+    },
+    {
+      id: 'custom-auto-refresh',
+      title: 'Custom',
+      active: !state.infiniteDuration,
+    },
+  ]
+  // TODO: update 'refresh-form-container', 'refresh-form-time-label', 'refresh-form-timerange-toggle'
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
       <Overlay.Header title="Configure Auto Refresh" onDismiss={handleCancel} />
       <Grid>
         <Grid.Column className="refresh-form-column">
-          <div className="refresh-form-container">
-            <span className="refresh-form-container-child">Until: </span>
-            <InputLabel
-              active={state.infiniteDuration}
-              className="refresh-form-time-label"
-            >
-              Indefinite
-            </InputLabel>
-            <SlideToggle
-              active={!state.infiniteDuration}
-              onChange={() =>
-                setRefreshContext({
-                  type: 'SET_INFINITE_DURATION',
-                  infiniteDuration: !state.infiniteDuration,
-                })
-              }
-              className="refresh-form-timerange-toggle"
-            />
-            <InputLabel
-              active={!state.infiniteDuration}
-              className="refresh-form-time-label"
-            >
-              Custom
-            </InputLabel>
+          <div>
+            <div>Refresh Dashboard Until</div>
+            <SelectGroup shape={ButtonShape.StretchToFit}>
+              {refreshOptions.map(option => (
+                <SelectGroup.Option
+                  key={option.id}
+                  id={option.id}
+                  name="refreshOptions"
+                  active={option.active}
+                  value={option.id}
+                  titleText={option.title}
+                  onClick={setRefreshState}
+                >
+                  {option.title}
+                </SelectGroup.Option>
+              ))}
+            </SelectGroup>
           </div>
           {!state.infiniteDuration && (
             <div

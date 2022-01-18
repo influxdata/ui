@@ -15,6 +15,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 // Types
 import {Bucket, RemoteDataState} from 'src/types'
+import {BucketsCacheContext} from './buckets.cached'
 
 interface BucketContextType {
   loading: RemoteDataState
@@ -37,6 +38,7 @@ export const BucketProvider: FC = ({children}) => {
   const {id} = useContext(PipeContext)
   const scope = getPanelQueries(id)?.scope ?? {}
   const controller = useRef(new AbortController())
+  const {getAllBuckets} = useContext(BucketsCacheContext)
 
   useEffect(() => {
     return () => {
@@ -67,16 +69,15 @@ export const BucketProvider: FC = ({children}) => {
       headers['Authorization'] = `Token ${scope.token}`
     }
 
-    fetch(`${scope.region}/api/v2/buckets?limit=100&orgID=${scope.org}`, {
-      method: 'GET',
-      headers,
-      signal: controller.current.signal,
-    })
-      .then(response => {
-        return response.json()
-      })
-      .then(response => {
-        const bucks = response.buckets
+    // fetch(`${scope.region}/api/v2/buckets?limit=100&orgID=${scope.org}`, {
+    //   method: 'GET',
+    //   headers,
+    //   signal: controller.current.signal,
+    // })
+    getAllBuckets(scope.region, scope.org, scope?.token)
+      .then(buckz => {
+        console.log('I AM HERE', buckz)
+        const bucks = buckz
           .map(bucket => ({
             id: bucket.id,
             orgID: bucket.orgID,
@@ -133,7 +134,7 @@ export const BucketProvider: FC = ({children}) => {
         setBuckets([...bucks.user, ...bucks.system, ...bucks.sample])
       })
       .catch(() => {})
-  }, [scope.region, scope.org, controller])
+  }, [scope.region, scope.org, controller, getAllBuckets])
 
   const addBucket = (bucket: Bucket) => {
     setBuckets([...buckets, bucket])

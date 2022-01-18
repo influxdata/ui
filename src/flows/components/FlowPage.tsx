@@ -27,6 +27,7 @@ import 'src/flows/style.scss'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
+import {BucketsCacheProvider} from '../context/buckets.cached'
 
 const FlowFromRoute = () => {
   const {id} = useParams<{id: string}>()
@@ -98,7 +99,9 @@ export default () => (
   <QueryProvider>
     <CurrentFlowProvider>
       <FlowFromRoute />
-      <FlowPage />
+      <BucketsCacheProvider>
+        <FlowPage />
+      </BucketsCacheProvider>
     </CurrentFlowProvider>
   </QueryProvider>
 )

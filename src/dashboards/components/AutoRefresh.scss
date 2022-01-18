@@ -1,9 +1,11 @@
 @import '@influxdata/clockface/dist/variables.scss';
+.refresh-header {
+  padding: 0 $cf-space-l;
+}
+
 .refresh-form-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: $cf-space-2xs + 4px $cf-space-2xl;
+  padding: $cf-space-m $cf-space-l;
+
   &.reverse {
     flex-direction: row-reverse;
   }
@@ -20,10 +22,14 @@
     grid-template-columns: 1fr;
   }
 }
-.refresh-form-column {
-  display: grid;
+
+.refresh-form-title {
+  padding-bottom: $cf-space-2xs;
 }
 
+.refresh-form-description {
+  color: $cf-grey-65;
+}
 .refresh-timeout-span {
   flex: 1;
 }

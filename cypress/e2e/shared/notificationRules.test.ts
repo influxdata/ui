@@ -69,7 +69,7 @@ describe('NotificationRules', () => {
               .click()
               .type('{backspace}{backspace}')
               .invoke('attr', 'type')
-              .should('equal', 'text')
+              .should('equal', 'number')
               .getByTestID('input-field-CRIT--error')
               .should('have.length', 1)
               .and('have.value', '')

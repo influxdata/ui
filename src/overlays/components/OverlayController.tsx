@@ -62,6 +62,8 @@ export const OverlayController: FunctionComponent = () => {
   useMemo(() => {
     switch (overlayID) {
       case 'add-note':
+        activeOverlay.current = <NoteEditorOverlay onClose={onClose} />
+        break
       case 'edit-note':
         activeOverlay.current = <NoteEditorOverlay onClose={onClose} />
         break
@@ -72,6 +74,8 @@ export const OverlayController: FunctionComponent = () => {
         activeOverlay.current = <CustomApiTokenOverlay onClose={onClose} />
         break
       case 'access-cloned-token':
+        activeOverlay.current = <DisplayTokenOverlay />
+        break
       case 'access-token':
         activeOverlay.current = <DisplayTokenOverlay />
         break

@@ -92,7 +92,7 @@ const TagRule: FC<Props> = ({tagRule}) => {
           </FlexBox.Child>
           <FlexBox.Child grow={1}>
             <Input
-              testID="tag-rule-key--input"
+              testID="tag-rule-value--input"
               placeholder="Value"
               value={value}
               name="value"

@@ -131,6 +131,7 @@ const ThresholdCondition: FC<Props> = ({
       threshold={threshold}
       removeLevel={removeLevel}
       changeThresholdType={changeThresholdType}
+      dataTestID={`panel-${level}`}
     >
       {threshold.type === 'range' ? (
         <ThresholdRangeInput threshold={threshold} changeRange={changeRange} />

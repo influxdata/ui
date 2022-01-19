@@ -368,7 +368,7 @@ describe('Dashboard', () => {
             )
 
             // sanity check on the url before beginning
-            cy.location('search').should('eq', '?lower=now%28%29%20-%201h')
+            cy.location('search').should('eq', '?lower=now%28%29+-+1h')
 
             // select 3rd value in dashboard
             cy.getByTestID('variable-dropdown--button')
@@ -388,7 +388,7 @@ describe('Dashboard', () => {
             // and that it updates the variable in the URL
             cy.location('search').should(
               'eq',
-              `?lower=now%28%29%20-%201h&vars%5BbucketsCSV%5D=${bucketThree}`
+              `?lower=now%28%29+-+1h&vars%5BbucketsCSV%5D=${bucketThree}`
             )
 
             // select 2nd value in dashboard
@@ -400,7 +400,7 @@ describe('Dashboard', () => {
             // and that it updates the variable in the URL without breaking stuff
             cy.location('search').should(
               'eq',
-              `?lower=now%28%29%20-%201h&vars%5BbucketsCSV%5D=${defaultBucket}`
+              `?lower=now%28%29+-+1h&vars%5BbucketsCSV%5D=${defaultBucket}`
             )
 
             // start new stuff for typeAheadDropdown here:

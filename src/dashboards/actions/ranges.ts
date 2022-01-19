@@ -74,6 +74,9 @@ export const retainRangesDashTimeV1 = (
 export const updateQueryParams = (updatedQueryParams): RouterAction => {
   const params = new URLSearchParams(window.location.search)
   Object.entries(updatedQueryParams).forEach(([k, v]) => {
+    if (!v) {
+      return
+    }
     params.set(k, v as string)
   })
 

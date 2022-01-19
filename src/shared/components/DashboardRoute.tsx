@@ -27,7 +27,7 @@ type Props = ReduxProps &
   RouteComponentProps<{orgID: string; dashboardID: string}>
 
 class DashboardRoute extends PureComponent<Props> {
-  pendingVars: object
+  pendingVars: Record<string, string>
 
   // this function takes the hydrated variables from state
   // and runs the `selectValue` action against them if the
@@ -69,7 +69,8 @@ class DashboardRoute extends PureComponent<Props> {
       .filter(([k, _v]) => /(^vars\[)(.+)(\]$)/g.test(k))
       .reduce((acc, [k, v]) => {
         acc[k.slice(5, -1)] = v
-      }, {})
+        return acc
+      }, {}) as Record<string, string>
 
     // nothing to sync as the query params aren't defining
     // any variables

@@ -54,6 +54,7 @@ const selectInactivityArray = (unit: string) => {
 
   return INACTIVITY_ARRAY
 }
+
 const AutoRefreshForm: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const {

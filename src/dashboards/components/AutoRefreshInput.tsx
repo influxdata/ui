@@ -6,6 +6,7 @@ import {
   ButtonGroup,
   TypeAheadDropDown,
   SelectableItem,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 // Types
@@ -35,7 +36,7 @@ const SUGGESTION_ITEMS: SelectableItem[] = [
   {id: '10', name: '10s'},
   {id: '20', name: '15s'},
   {id: '30', name: '30s'},
-  // {id: '40', name: '60s'},
+  // {id: '40', name: '60s'}, // TODO: remove this one bc it was not in the original suggestion array
   {id: '50', name: '1m'},
   {id: '60', name: '5m'},
   {id: '70', name: '10m'},
@@ -90,11 +91,7 @@ const AutoRefreshInput: FC = () => {
   }
 
   const handleSelectAutoRefresh = (selection: SelectableItem) => {
-    if (selection === null) {
-      // TODO: how to handle?
-      return
-    }
-    if (selection.name === PAUSED.name) {
+    if (selection === null || selection.name === PAUSED.name) {
       setRefreshContext({
         type: 'SET_REFRESH_MILLISECONDS',
         refreshMilliseconds: {
@@ -146,6 +143,10 @@ const AutoRefreshInput: FC = () => {
     return input === PAUSED.name || !!input.match(durationRegExp)
   }
 
+  const selectedOption = SUGGESTION_ITEMS.find(
+    d => d.name === state.refreshMilliseconds.label
+  )
+
   return (
     <>
       <ButtonGroup>
@@ -165,9 +166,16 @@ const AutoRefreshInput: FC = () => {
           items={SUGGESTION_ITEMS}
           onSelect={handleSelectAutoRefresh}
           testID="auto-refresh-input"
+          selectedOption={selectedOption}
+          sortNames={false}
+          status={
+            state.refreshMilliseconds?.selection === null
+              ? ComponentStatus.Error
+              : ComponentStatus.Default
+          }
           // TODO:
-          // add selectedOption, IsValidInput, submitInvalid
-          // rewrite cypress test, add
+          // may rewrite cypress test
+          // check where the default value 60s was set, it is not in the SUGGESTION_ITEMS
         />
       </div>
     </>

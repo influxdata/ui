@@ -69,15 +69,9 @@ export const BucketProvider: FC = ({children}) => {
       headers['Authorization'] = `Token ${scope.token}`
     }
 
-    // fetch(`${scope.region}/api/v2/buckets?limit=100&orgID=${scope.org}`, {
-    //   method: 'GET',
-    //   headers,
-    //   signal: controller.current.signal,
-    // })
     getAllBuckets(scope.region, scope.org, scope?.token)
-      .then(buckz => {
-        console.log('I AM HERE', buckz)
-        const bucks = buckz
+      .then(bucketz => {
+        const bucks = bucketz
           .map(bucket => ({
             id: bucket.id,
             orgID: bucket.orgID,

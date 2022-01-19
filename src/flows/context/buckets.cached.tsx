@@ -1,4 +1,5 @@
 import React, {FC, useEffect, useState} from 'react'
+import {hashCode} from 'src/shared/apis/queryCache'
 
 // Actions
 
@@ -35,8 +36,8 @@ export const BucketsCacheContext = React.createContext<BucketsCacheContextType>(
   DEFAULT_CONTEXT
 )
 
-const getHash = (id: string) => {
-  return id
+const getHash = (region: string, orgID: string, token = '') => {
+  return hashCode(`${region}::::${orgID}::::${token}`)
 }
 
 const useLocalStorageState = createLocalStorageStateHook(
@@ -44,11 +45,33 @@ const useLocalStorageState = createLocalStorageStateHook(
   DEFAULT_CONTEXT.bucketsMap
 )
 
+// In Seconds
+const BUCKETS_CACHING_TIME = 30 * 1000
+
 export const BucketsCacheProvider: FC<Props> = ({children}) => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [bucketsMap, updateBucketsMap] = useLocalStorageState()
   const [removeMe, setRemoveMe] = useState(true)
 
+  const removeBucketsTimer = (id: string) => {
+    // Direct state mutation required
+    if (bucketsMap[id]) {
+      delete bucketsMap[id]
+    }
+    updateBucketsMap({...bucketsMap})
+  }
+  const addToBucketsMap = (id, buckets) => {
+    // Direct state mutation required
+    bucketsMap[id] = buckets
+    updateBucketsMap({...bucketsMap})
+    setTimeout(() => {
+      if (bucketsMap[id]) {
+        removeBucketsTimer(id)
+      }
+    }, BUCKETS_CACHING_TIME)
+  }
+
+  // FIXME: Remove this
   useEffect(() => {
     if (!removeMe) {
       return
@@ -58,23 +81,17 @@ export const BucketsCacheProvider: FC<Props> = ({children}) => {
     setRemoveMe(false)
   })
 
-  console.log({bucketsMap})
-
   const fetchOne = async (url, headers, page, limit = 100) => {
     const fullurl = `${url}&page=${page}&limit=${limit}`
-    console.log(fullurl)
     const response = await fetch(fullurl, {
       method: 'GET',
       headers,
-      // signal: controller.current.signal,
     })
     const json = await response.json()
-    console.log({json})
     return json.buckets
   }
 
   const fetchAll = async (url: string, token: string) => {
-    console.log('fetching all')
     const headers = {
       'Content-Type': 'application/json',
       'Accept-Encoding': 'gzip',
@@ -85,47 +102,47 @@ export const BucketsCacheProvider: FC<Props> = ({children}) => {
     }
 
     let page = 1
-    const bucks = []
+    const buckets = []
     const bucketIDs = new Set()
-    let bukz = await fetchOne(url, headers, page)
+    let bucketz = await fetchOne(url, headers, page)
     do {
-      for (let i = 0; i < bukz.length; i++) {
-        const bid = bukz[i].id
+      for (let i = 0; i < bucketz.length; i++) {
+        const bid = bucketz[i].id
         if (bucketIDs.has(bid)) {
-          return bucks
+          return buckets
         }
 
         bucketIDs.add(bid)
-        bucks.push(bukz[i])
+        buckets.push(bucketz[i])
       }
       page += 1
-      bukz = await fetchOne(url, headers, page)
-    } while (bukz.length)
+      bucketz = await fetchOne(url, headers, page)
+    } while (bucketz.length)
 
-    return bucks
+    return buckets
   }
 
-  const getAllBuckets = async (
+  const getAllBuckets = (
     region: string,
     orgID: string,
     token?: string
   ): Promise<Bucket[]> => {
-    const hash = getHash(`${region}::::${orgID}::::${token}`)
-    let bucks: Bucket[]
+    const hash = getHash(region, orgID, token)
+    let bucksPromise
     setLoading(RemoteDataState.Loading)
-    if (bucketsMap[hash] === undefined) {
-      console.log('GETTING... in IFFF')
-      bucks = await fetchAll(`${region}/api/v2/buckets?orgID=${orgID}`, token)
-      updateBucketsMap({...bucketsMap, [hash]: bucks})
+
+    if (!bucketsMap[hash]) {
+      bucksPromise = fetchAll(
+        `${region}/api/v2/buckets?orgID=${orgID}`,
+        token ?? ''
+      )
+      addToBucketsMap(hash, bucksPromise)
     } else {
-      console.log('GETTING... in ELSEEE')
-      bucks = bucketsMap[hash]
+      bucksPromise = bucketsMap[hash]
     }
 
     setLoading(RemoteDataState.Done)
-    return new Promise<Bucket[]>(resolve => {
-      resolve(bucks)
-    })
+    return bucksPromise
   }
 
   return (

@@ -10,6 +10,7 @@ export type OverlayID =
   | 'edit-note'
   | 'add-master-token'
   | 'access-token'
+  | 'access-cloned-token'
   | 'add-custom-token'
   | 'add-token'
   | 'telegraf-config'

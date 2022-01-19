@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useState, useEffect} from 'react'
-import {connect, ConnectedProps, useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -30,13 +30,12 @@ import {SecretSortKey} from 'src/shared/components/resource_sort_dropdown/genera
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-type ReduxProps = ConnectedProps<typeof connector>
-
-const SecretsTab: FC<ReduxProps> = ({onDismissOverlay, onShowOverlay}) => {
+const SecretsTab: FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<Sort>(Sort.Ascending)
   const [sortKey, setSortKey] = useState<string>('id')
   const [sortType, setSortType] = useState<SortTypes>(SortTypes.String)
+  const dispatch = useDispatch()
 
   const secrets = useSelector(getAllSecrets)
   const FilterSecrets = FilterList<Secret>()
@@ -57,7 +56,9 @@ const SecretsTab: FC<ReduxProps> = ({onDismissOverlay, onShowOverlay}) => {
 
   const handleCreateSecret = () => {
     event('Create Secret Modal Opened')
-    onShowOverlay('create-secret', null, onDismissOverlay)
+    dispatch(
+      showOverlay('create-secret', null, () => dispatch(dismissOverlay()))
+    )
   }
 
   let secretsEmptyState = (
@@ -154,11 +155,4 @@ const SecretsTab: FC<ReduxProps> = ({onDismissOverlay, onShowOverlay}) => {
   )
 }
 
-const mdtp = {
-  onShowOverlay: showOverlay,
-  onDismissOverlay: dismissOverlay,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(SecretsTab)
+export default SecretsTab

@@ -6,7 +6,7 @@ import React, {
   useState,
   useMemo,
 } from 'react'
-import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -50,17 +50,11 @@ const SecretToSelect: FC<{
   )
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-
-interface Props extends ReduxProps {
+interface Props {
   context: EditorContextType
 }
 
-const SecretsList: FC<Props> = ({
-  context: editorContext,
-  onDismissOverlay,
-  onShowOverlay,
-}) => {
+const SecretsList: FC<Props> = ({context: editorContext}) => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const dispatch = useDispatch()
   const secrets = useSelector(getAllSecrets)
@@ -71,7 +65,9 @@ const SecretsList: FC<Props> = ({
 
   const handleCreateSecret = () => {
     event('Create Secret Modal Opened')
-    onShowOverlay('create-secret', null, onDismissOverlay)
+    dispatch(
+      showOverlay('create-secret', null, () => dispatch(dismissOverlay()))
+    )
   }
 
   const inject = useCallback(
@@ -156,11 +152,4 @@ const SecretsList: FC<Props> = ({
   )
 }
 
-const mdtp = {
-  onShowOverlay: showOverlay,
-  onDismissOverlay: dismissOverlay,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(SecretsList)
+export default SecretsList

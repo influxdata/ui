@@ -10,8 +10,6 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Types
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
-import GetResources from 'src/resources/components/GetResources'
-import {ResourceType} from 'src/types'
 
 const CreateSecretOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
@@ -23,11 +21,9 @@ const CreateSecretOverlay: FC = () => {
         onDismiss={onClose}
         testID="create-secret-overlay-header"
       />
-      <GetResources resources={[ResourceType.Secrets]}>
-        <ErrorBoundary>
-          <CreateSecretForm onDismiss={onClose} />
-        </ErrorBoundary>
-      </GetResources>
+      <ErrorBoundary>
+        <CreateSecretForm onDismiss={onClose} />
+      </ErrorBoundary>
     </Overlay.Container>
   )
 }

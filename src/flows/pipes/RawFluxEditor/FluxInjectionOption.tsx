@@ -19,8 +19,8 @@ import {Secret} from 'src/types'
 type OptionType = FluxToolbarFunction | Secret
 
 interface Props {
-  option:  OptionType
-  onClick: (func:  OptionType) => void
+  option: OptionType
+  onClick: (func: OptionType) => void
   testID: string
   ToolTipContent?: (props: {item: any}) => JSX.Element
 }
@@ -29,7 +29,12 @@ const defaultProps = {
   testID: 'flux-injection-option',
 }
 
-const FluxInjectionOption: FC<Props> = ({option, onClick, testID, ToolTipContent}) => {
+const FluxInjectionOption: FC<Props> = ({
+  option,
+  onClick,
+  testID,
+  ToolTipContent,
+}) => {
   const itemRef = createRef<HTMLDListElement>()
   const handleClick = () => {
     onClick(option)
@@ -37,17 +42,19 @@ const FluxInjectionOption: FC<Props> = ({option, onClick, testID, ToolTipContent
 
   return (
     <>
-      {!!ToolTipContent && <Popover
-        appearance={Appearance.Outline}
-        enableDefaultStyles={false}
-        position={PopoverPosition.ToTheLeft}
-        triggerRef={itemRef}
-        showEvent={PopoverInteraction.Hover}
-        hideEvent={PopoverInteraction.Hover}
-        distanceFromTrigger={8}
-        testID="toolbar-popover"
-        contents={() => <ToolTipContent item={option} />}
-      />}
+      {!!ToolTipContent && (
+        <Popover
+          appearance={Appearance.Outline}
+          enableDefaultStyles={false}
+          position={PopoverPosition.ToTheLeft}
+          triggerRef={itemRef}
+          showEvent={PopoverInteraction.Hover}
+          hideEvent={PopoverInteraction.Hover}
+          distanceFromTrigger={8}
+          testID="toolbar-popover"
+          contents={() => <ToolTipContent item={option} />}
+        />
+      )}
       <dd
         ref={itemRef}
         data-testid={`flux--${testID}`}

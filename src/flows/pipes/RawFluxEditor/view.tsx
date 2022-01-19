@@ -1,11 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  lazy,
-  Suspense,
-  useContext,
-  useCallback,
-} from 'react'
+import React, {FC, lazy, Suspense, useContext, useCallback} from 'react'
 import {
   RemoteDataState,
   SpinnerContainer,

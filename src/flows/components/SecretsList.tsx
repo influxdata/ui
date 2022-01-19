@@ -1,9 +1,12 @@
 import React, {
-  FC, useCallback, useContext, useEffect, useState, useMemo,
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
 } from 'react'
-import {
-  connect, ConnectedProps, useDispatch, useSelector,
-} from 'react-redux'
+import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -33,7 +36,10 @@ import {Secret} from 'src/types'
 
 const FilterSecrets = FilterList<Secret>()
 
-const SecretToSelect: FC<{secret: Secret, onClick: (secret: Secret) => void}> = ({secret, onClick}) => {
+const SecretToSelect: FC<{
+  secret: Secret
+  onClick: (secret: Secret) => void
+}> = ({secret, onClick}) => {
   return (
     <InjectSecretOption
       option={secret}
@@ -59,12 +65,8 @@ const SecretsList: FC<Props> = ({
   const dispatch = useDispatch()
   const secrets = useSelector(getAllSecrets)
   const {data} = useContext(PipeContext)
-  const {
-    editor,
-    calcInsertPosition,
-    updateText,
-  } = editorContext
-  const {queries, activeQuery} = data || {queries:[]}
+  const {editor, calcInsertPosition, updateText} = editorContext
+  const {queries, activeQuery} = data || {queries: []}
   const query = queries[activeQuery]
 
   const handleCreateSecret = () => {
@@ -77,11 +79,9 @@ const SecretsList: FC<Props> = ({
       if (!editor) {
         return
       }
-      const {
-        row,
-        column,
-        shouldInsertOnNextLine,
-      } = calcInsertPosition(query.text)
+      const {row, column, shouldInsertOnNextLine} = calcInsertPosition(
+        query.text
+      )
       let text = ''
 
       if (shouldInsertOnNextLine) {
@@ -104,12 +104,12 @@ const SecretsList: FC<Props> = ({
   )
 
   const click = (secret: Secret) => {
-    inject(secret);
-    event('Concat secret ID to Flux Script', {secret: secret.id});
-  };
+    inject(secret)
+    event('Concat secret ID to Flux Script', {secret: secret.id})
+  }
 
   useEffect(() => {
-      dispatch(getSecrets())
+    dispatch(getSecrets())
   }, [])
 
   return useMemo(
@@ -120,7 +120,6 @@ const SecretsList: FC<Props> = ({
             placeholderText="Filter secrets..."
             searchTerm={searchTerm}
             onSearch={setSearchTerm}
-
           />
         </div>
         <FlexBox
@@ -145,14 +144,15 @@ const SecretsList: FC<Props> = ({
         >
           {filteredSecrets => (
             <>
-              {filteredSecrets.map(
-                (s: Secret) => <SecretToSelect secret={s} key={s.id} onClick={click} />
-              )}
+              {filteredSecrets.map((s: Secret) => (
+                <SecretToSelect secret={s} key={s.id} onClick={click} />
+              ))}
             </>
           )}
         </FilterSecrets>
       </div>
-    ), [searchTerm, secrets]
+    ),
+    [searchTerm, secrets]
   )
 }
 

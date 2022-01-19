@@ -1,9 +1,13 @@
 import React, {
-  FC, createContext, useState, useCallback, useMemo, useContext,
+  FC,
+  createContext,
+  useState,
+  useCallback,
+  useMemo,
+  useContext,
 } from 'react'
 import {EditorType} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
-
 
 interface InsertPosition {
   row: number
@@ -22,9 +26,9 @@ export interface EditorContextType {
 const DEFAULT_CONTEXT: EditorContextType = {
   pipeId: '',
   editor: null,
-  register: (_) => {},
-  calcInsertPosition: (_) => ({}),
-  updateText: (_) => {},
+  register: _ => {},
+  calcInsertPosition: _ => ({}),
+  updateText: _ => {},
 }
 
 export const EditorContext = createContext<EditorContextType>(DEFAULT_CONTEXT)
@@ -51,7 +55,10 @@ export const EditorProvider: FC<{id: string}> = ({children, id}) => {
     [queries, activeQuery]
   )
 
-  const calcInsertPosition = (text: string, onOwnLine = false): Partial<InsertPosition> => {
+  const calcInsertPosition = (
+    text: string,
+    onOwnLine = false
+  ): Partial<InsertPosition> => {
     if (!editor) {
       return {}
     }
@@ -92,6 +99,7 @@ export const EditorProvider: FC<{id: string}> = ({children, id}) => {
       >
         {children}
       </EditorContext.Provider>
-    ), [id, editor]
+    ),
+    [id, editor]
   )
 }

@@ -32,10 +32,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-const SecretsTab: FC<ReduxProps> = ({
-  onDismissOverlay,
-  onShowOverlay,
-}) => {
+const SecretsTab: FC<ReduxProps> = ({onDismissOverlay, onShowOverlay}) => {
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<Sort>(Sort.Ascending)
   const [sortKey, setSortKey] = useState<string>('id')

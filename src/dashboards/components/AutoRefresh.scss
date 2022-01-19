@@ -32,10 +32,6 @@
   }
 }
 
-.refresh-timeout-span {
-  flex: 1;
-}
-
 .refresh-form-buttons {
   display: flex;
   justify-content: flex-end;
@@ -49,11 +45,6 @@
 
 .refresh-form-activate-button {
   width: 140px;
-}
-
-.refresh-form-timeout-dropdown {
-  padding: 0 0 0 $cf-space-2xs;
-  flex: 1;
 }
 
 .refresh-form-time-label {
@@ -71,4 +62,18 @@
 
 .refresh-input {
   width: 190px;
+}
+
+.refresh-inactivity-timeout-container {
+  width: 190px;
+  display: flex;
+}
+
+.refresh-inactivity-timeout-num {
+  flex: 1;
+  padding-right: $cf-space-2xs;
+}
+
+.refresh-inactivity-timeout-unit {
+  flex: 1 0 40px;
 }

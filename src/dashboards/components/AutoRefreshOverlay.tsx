@@ -6,16 +6,17 @@ import {
   Overlay,
   Button,
   ComponentColor,
-  SelectDropdown,
   ComponentStatus,
   SelectGroup,
   ButtonShape,
   FlexBox,
   FlexDirection,
   AlignItems,
+  Dropdown,
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
+import DurationInput from 'src/shared/components/DurationInput'
 import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
 
 // Types
@@ -150,31 +151,51 @@ const AutoRefreshForm: FC = () => {
           <div className="refresh-form-container-description">
             When your dashboard refresh will timeout
           </div>
-          <div>
-            <SelectDropdown
-              options={selectInactivityArray(state.inactivityTimeoutCategory)}
-              selectedOption={state.inactivityTimeout}
-              onSelect={(timeout: string) =>
-                setRefreshContext({
-                  type: 'SET_INACTIVITY_TIMEOUT',
-                  inactivityTimeout: timeout,
-                })
-              }
-              buttonColor={ComponentColor.Default}
-              testID="inactivity-timeout-dropdown"
-            />
-            {state.inactivityTimeout !== 'Never' && (
-              <SelectDropdown
-                className="refresh-form-timeout-dropdown"
-                options={['Minutes', 'Hours', 'Days']}
-                selectedOption={state.inactivityTimeoutCategory}
-                onSelect={(timeoutCategory: string) =>
+          <div className="refresh-inactivity-timeout-container">
+            <div className="refresh-inactivity-timeout-num">
+              <DurationInput
+                suggestions={selectInactivityArray(
+                  state.inactivityTimeoutCategory
+                )}
+                onSubmit={(timeout: string) =>
                   setRefreshContext({
-                    type: 'SET_INACTIVITY_TIMEOUT_CATEGORY',
-                    inactivityTimeoutCategory: timeoutCategory,
+                    type: 'SET_INACTIVITY_TIMEOUT',
+                    inactivityTimeout: timeout,
                   })
                 }
-                buttonColor={ComponentColor.Default}
+                value={state.inactivityTimeout}
+                validFunction={() => true} // TODO: write a valid function
+                // TODO: do we want submitInvalid?
+                menuMaxHeight={150}
+                testID="inactivity-timeout-dropdown"
+              />
+            </div>
+            {state.inactivityTimeout !== 'Never' && (
+              <Dropdown
+                className="refresh-inactivity-timeout-unit"
+                menu={onCollapse => (
+                  <Dropdown.Menu onCollapse={onCollapse}>
+                    {['Minutes', 'Hours', 'Days'].map(option => (
+                      <Dropdown.Item
+                        key={option}
+                        onClick={() =>
+                          setRefreshContext({
+                            type: 'SET_INACTIVITY_TIMEOUT_CATEGORY',
+                            inactivityTimeoutCategory: option,
+                          })
+                        }
+                        selected={state.inactivityTimeoutCategory === option}
+                      >
+                        {option}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                )}
+                button={(active, onClick) => (
+                  <Dropdown.Button active={active} onClick={onClick}>
+                    {state.inactivityTimeoutCategory}
+                  </Dropdown.Button>
+                )}
                 testID="inactivity-timeout-category-dropdown"
               />
             )}

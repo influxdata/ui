@@ -30,18 +30,19 @@ describe('Checks', () => {
     cy.getByTestID('alerting-tab--checks').click({force: true})
   })
 
-  it('can validate a threshold check', () => {
-    cy.get<Organization>('@org').then((org: Organization) => {
-      cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
-        if (req.body.query.includes('_field')) {
-          req.alias = 'fieldQuery'
-        }
-      })
-      cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
+  describe('threshold checks', () => {
+    it('can validate a threshold check', () => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
         if (req.body.query.includes('_measurement')) {
           req.alias = 'measurementQuery'
         }
       })
+      cy.intercept('POST', '/api/v2/query?*', req => {
+        if (req.body.query.includes('_field')) {
+          req.alias = 'fieldQuery'
+        }
+      })
+
       cy.log('Create threshold check')
       cy.getByTestID('create-check').click()
       cy.getByTestID('create-threshold-check').click()
@@ -114,6 +115,127 @@ describe('Checks', () => {
             .should('exist')
         }
       )
+    })
+
+    it('can reconfigure a threshold check', () => {
+      const every = '5m'
+      const offset = '1m'
+      const testTags: {key: string; value: string}[] = [
+        {key: 'Prima', value: 'Smith'},
+        {key: 'Astaire', value: 'Rodgers'},
+        {key: 'Gable', value: 'Lombard'},
+      ]
+      const newMsg =
+        'Just a message from ${r._check_name} whoa level is ${r._level} ' +
+        'for type ${r._type} and ${r._source_measurement} ' +
+        'where foo is ${r.foo}'
+
+      // TODO use negative value after #3399 is resolved
+      // https://github.com/influxdata/ui/issues/3399
+      // const rangeBtm = "-0.01"
+      const rangeBtm = '0.01'
+      const rangeTop = '7.28'
+
+      initCheck(thresholdCheck).then(resp => {
+        expect(resp.name).to.equal(thresholdCheck.name)
+      })
+      cy.reload()
+      cy.intercept('PUT', '**/checks/*').as('putCheck')
+      cy.getByTestID('check-card--name')
+        .eq(0)
+        .click()
+      cy.getByTestID('overlay').should('be.visible')
+      // Properties
+      // Scheduler properties
+      cy.getByTestID('schedule-check').click()
+      cy.getByTestID('dropdown-menu--contents').within(() => {
+        cy.contains('5m').click()
+      })
+      cy.getByTestID('offset-options').click()
+      cy.getByTestID('dropdown-menu--contents').within(() => {
+        cy.contains('1m').click()
+      })
+      // Tags
+
+      testTags.forEach((tag, index) => {
+        cy.getByTestID('dashed-button').click()
+        cy.getByTestID('tag-rule-key--input')
+          .eq(index)
+          .type(tag.key)
+        cy.getByTestID('tag-rule-value--input')
+          .eq(index)
+          .type(tag.value)
+      })
+
+      // Status Message Template
+
+      cy.getByTestID('status-message-textarea')
+        .clear()
+        .type(newMsg, {parseSpecialCharSequences: false})
+
+      // Thresholds
+      // remove one threshold
+      cy.getByTestID('panel-OK').within(() => {
+        cy.getByTestID('add-threshold-condition-OK').should('not.exist')
+        cy.getByTestID('dismiss-button').click()
+      })
+      cy.getByTestID('add-threshold-condition-OK').should('be.visible')
+
+      // change logic of one threshold
+      cy.getByTestID('panel-INFO').within(() => {
+        cy.getByTestID('dropdown--button')
+          .should('contain.text', 'is above')
+          .click()
+        cy.getByTestID('dropdown-menu--contents').within(() => {
+          cy.contains('is inside range').click()
+        })
+        cy.getByTestID('input-field')
+          .should('have.length', 2)
+          .eq(0)
+          .clear()
+          // seem to be encountering cypress issue here https://github.com/cypress-io/cypress/issues/3817
+          .type(` ${rangeBtm}{del}`) // workaround
+        cy.getByTestID('input-field')
+          .eq(0)
+          .should('have.value', rangeBtm)
+        cy.getByTestID('input-field')
+          .eq(1)
+          .clear()
+          // seem to be encountering cypress issue here https://github.com/cypress-io/cypress/issues/3817
+          .type(` ${rangeTop}{del}`) // workaround
+        cy.getByTestID('input-field')
+          .eq(1)
+          .should('have.value', rangeTop)
+      })
+      // change value of one threshold
+      cy.getByTestID('panel-WARN').within(() => {
+        cy.getByTestID('input-field-WARN')
+          .clear()
+          // seem to be encountering cypress issue here https://github.com/cypress-io/cypress/issues/3817
+          .type(` ${rangeTop}{del}`) // workaround
+      })
+      cy.getByTestID('save-cell--button').click()
+      cy.wait('@putCheck').then(({response}) => {
+        if (!response) {
+          fail('No response after update check')
+        }
+        expect(response.body.tags).to.deep.equal(testTags)
+        expect(response.body.every).to.equal(every)
+        expect(response.body.offset).to.equal(offset)
+        expect(response.body.statusMessageTemplate).to.equal(newMsg)
+        expect(
+          response.body.thresholds.filter((th: any) => th.level === 'INFO')[0]
+            .min
+        ).to.equal(parseFloat(rangeBtm))
+        expect(
+          response.body.thresholds.filter((th: any) => th.level === 'INFO')[0]
+            .max
+        ).to.equal(parseFloat(rangeTop))
+        expect(
+          response.body.thresholds.filter((th: any) => th.level === 'WARN')[0]
+            .value
+        ).to.equal(parseFloat(rangeTop))
+      })
     })
   })
 
@@ -215,14 +337,14 @@ describe('Checks', () => {
     })
   })
 
-  it('can validate a deadman check', () => {
-    cy.get<Organization>('@org').then((org: Organization) => {
-      cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
+  describe('deadman checks', () => {
+    it('can validate a deadman check', () => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
         if (req.body.query.includes('_measurement')) {
           req.alias = 'measurementQuery'
         }
       })
-      cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
         if (req.body.query.includes('distinct(column: "_field")')) {
           req.alias = 'fieldQuery'
         }
@@ -305,11 +427,9 @@ describe('Checks', () => {
         }
       )
     })
-  })
 
-  it('deadman checks should render a table for non-numeric fields', () => {
-    cy.get<Organization>('@org').then((org: Organization) => {
-      cy.intercept('POST', `/api/v2/query?orgID=${org.id}`, req => {
+    it('deadman checks should render a table for non-numeric fields', () => {
+      cy.intercept('POST', '/api/v2/query?*', req => {
         if (req.body.query.includes('_measurement')) {
           req.alias = 'measurementQuery'
         }
@@ -317,7 +437,7 @@ describe('Checks', () => {
 
       cy.get<string>('@defaultBucketListSelector').then(
         (defaultBucketListSelector: string) => {
-          cy.intercept('POST', `/api/v2/query?orgID=${org.id}`).as('query')
+          cy.intercept('POST', '/api/v2/query?*').as('query')
 
           // create deadman check
           cy.getByTestID('create-check').click()
@@ -372,6 +492,77 @@ describe('Checks', () => {
           cy.getByTestID('simple-table').should('exist')
         }
       )
+    })
+
+    it('can reconfigure a deadman check', () => {
+      const tmSinceClick = '1h'
+      const tmSinceText = '10m'
+      const tmStaleClick = '24h'
+      const tmStaleText = '90m'
+      const newLevel = 'WARN'
+
+      initCheck(deadmanCheck).then(resp => {
+        expect(resp.name).to.equal(deadmanCheck.name)
+      })
+
+      cy.reload()
+      cy.intercept('PUT', '**/checks/*').as('putCheck')
+      cy.getByTestID('check-card--name')
+        .eq(0)
+        .click()
+      cy.getByTestID('overlay').should('be.visible')
+
+      // Tags, properties and message already covered in threshold check
+      // Just modify alert criteria by clicking
+      cy.getByTestID('duration-input--for').click()
+      cy.getByTestID('dropdown-menu--contents').within(() => {
+        cy.contains(tmSinceClick).click()
+      })
+
+      cy.getByTestID('check-levels--dropdown--button').click()
+      cy.getByTestID(`check-levels--dropdown-item ${newLevel}`).click()
+
+      cy.getByTestID('duration-input--stop').click()
+      cy.getByTestID('dropdown-menu--contents').within(() => {
+        cy.contains(tmStaleClick).click()
+      })
+
+      cy.getByTestID('save-cell--button').click()
+
+      cy.wait('@putCheck').then(({response}) => {
+        if (response) {
+          expect(response.body.timeSince).to.equal(tmSinceClick)
+          expect(response.body.staleTime).to.equal(tmStaleClick)
+          expect(response.body.level).to.equal(newLevel)
+        } else {
+          fail('no response on save check')
+        }
+      })
+
+      // Now modify criteria by typing
+      cy.getByTestID('check-card--name')
+        .eq(0)
+        .click()
+      cy.getByTestID('overlay').should('be.visible')
+
+      cy.getByTestID('duration-input--for')
+        .clear()
+        .type(tmSinceText)
+
+      cy.getByTestID('duration-input--stop')
+        .clear()
+        .type(tmStaleText)
+
+      cy.getByTestID('save-cell--button').click()
+
+      cy.wait('@putCheck').then(({response}) => {
+        if (response) {
+          expect(response.body.timeSince).to.equal(tmSinceText)
+          expect(response.body.staleTime).to.equal(tmStaleText)
+        } else {
+          fail('no response on save check')
+        }
+      })
     })
   })
 
@@ -725,7 +916,7 @@ describe('Checks', () => {
           {key: '_field', values: ['mag'], aggregateFunctionType: 'filter'},
           {key: 'foo', values: [], aggregateFunctionType: 'filter'},
         ],
-        functions: [],
+        functions: [{name: 'mean'}],
         aggregateWindow: {
           period: '1m',
           fillValues: false,
@@ -792,21 +983,21 @@ describe('Checks', () => {
     })
   }
 
-  describe('Clone checks', () => {
-    const initCheck = (check: GenCheck): Cypress.Chainable<any> => {
-      cy.writeLPDataFromFile({
-        filename: 'data/wumpus01.lp',
-        offset: '20m',
-        stagger: '1m',
+  const initCheck = (check: GenCheck): Cypress.Chainable<any> => {
+    cy.writeLPDataFromFile({
+      filename: 'data/wumpus01.lp',
+      offset: '20m',
+      stagger: '1m',
+    })
+    return cy.get<Organization>('@org').then((org: Organization) => {
+      cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+        cy.wrap(bucket.name).as('bucketName')
+        createCheck(check, org, bucket, 'check')
       })
-      cy.get<Organization>('@org').then((org: Organization) => {
-        cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-          cy.wrap(bucket.name).as('bucketName')
-          createCheck(check, org, bucket, 'check')
-        })
-      })
-    }
+    })
+  }
 
+  describe('Clone checks', () => {
     it('can clone and delete a deadman check', () => {
       cy.intercept('POST', '/api/v2/checks*').as('createCheck')
       const cloneName = `${deadmanCheck.name} (clone 1)`
@@ -1069,14 +1260,11 @@ describe('Checks', () => {
     }
 
     it('shows and filters general status history', () => {
-      // direct route to statuses page - no data-testids in clockface nav submenu issue #699
-      cy.get<Organization>('@org').then((org: Organization) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${org.id}/alert-history?type=statuses"`)
-          cy.url().should('include', `${orgs}/${org.id}/alert-history`)
-          // Make sure page is loaded
-          cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
-        })
+      cy.getByTestID('nav-item-alerting').within(() => {
+        cy.get('+ button').trigger('mouseover')
+      })
+      cy.getByTestID('popover--dialog').within(() => {
+        cy.contains('Alert History').click()
       })
 
       cy.getByTestID('alert-history-statuses--radio').click()
@@ -1114,15 +1302,6 @@ describe('Checks', () => {
     })
 
     it('shows status history per check', () => {
-      cy.get<Organization>('@org').then(({id}: Organization) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${id}/alerting`)
-          cy.url().should('include', `${orgs}/${id}/alerting`)
-          // Make sure page is loaded
-          cy.getByTestID('page-contents', {timeout: PAGE_LOAD_SLA})
-        })
-      })
-
       // Deadman history
       cy.getByTestID(`check-card ${deadmanCheck.name}`).within(() => {
         cy.getByTestID('context-menu-task').click()

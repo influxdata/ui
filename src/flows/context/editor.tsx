@@ -6,15 +6,16 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 
 interface InsertPosition {
-  row?: number
-  shouldInsertOnLastLine?: boolean
+  row: number
+  column: number
+  shouldInsertOnNextLine: boolean
 }
 
 export interface EditorContextType {
   pipeId: string
   editor: EditorType | null
   register: (editor: EditorType) => void
-  calcInsertPosition: (t: string) => InsertPosition
+  calcInsertPosition: (t: string, nextL?: boolean) => Partial<InsertPosition>
   updateText: (t: string) => void
 }
 
@@ -50,30 +51,32 @@ export const EditorProvider: FC<{id: string}> = ({children, id}) => {
     [queries, activeQuery]
   )
 
-  const calcInsertPosition = (text: string): InsertPosition => {
+  const calcInsertPosition = (text: string, onOwnLine = false): Partial<InsertPosition> => {
     if (!editor) {
       return {}
     }
-    const p = editor.getPosition()
-    const split = text.split('\n')
-    let row = p.lineNumber
+    const {lineNumber, column} = editor.getPosition()
+    let row = lineNumber
 
-    if ((split[row] || split[split.length - 1]).trim()) {
-      row = p.lineNumber + 1
+    const split = text.split('\n')
+    const currentLineHasText = (split[row] || split[split.length - 1]).trim()
+    if (currentLineHasText && onOwnLine) {
+      row++
     }
 
     const [currentRange] = editor.getVisibleRanges()
     // Determines whether the new insert line is beyond the current range
-    let shouldInsertOnLastLine = row > currentRange.endLineNumber
+    let shouldInsertOnNextLine = row > currentRange.endLineNumber
+
     // edge case for when user toggles to the script editor
     // this defaults the cursor to the initial position (top-left, 1:1 position)
-    if (p.lineNumber === 1 && p.column === 1) {
+    if (lineNumber === 1 && column === 1 && onOwnLine) {
       // adds the function to the end of the query
-      shouldInsertOnLastLine = true
-      row = currentRange.endLineNumber - 1
+      shouldInsertOnNextLine = true
+      row = currentRange.endLineNumber + 1
     }
 
-    return {row, shouldInsertOnLastLine}
+    return {row, column, shouldInsertOnNextLine}
   }
 
   return useMemo(

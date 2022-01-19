@@ -54,10 +54,11 @@ const Query: FC<PipeProp> = ({Context}) => {
       if (!editorInstance) {
         return
       }
-      const {row, shouldInsertOnLastLine} = calcInsertPosition(query.text)
+
+      const {row, shouldInsertOnNextLine} = calcInsertPosition(query.text, true)
       let text = ''
 
-      if (shouldInsertOnLastLine) {
+      if (shouldInsertOnNextLine) {
         text = `\n  |> ${fn.example}`
       } else {
         text = `  |> ${fn.example}\n`

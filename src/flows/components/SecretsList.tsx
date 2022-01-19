@@ -1,5 +1,5 @@
 import React, {
-  FC, useCallback, useContext, useEffect, useState,
+  FC, useCallback, useContext, useEffect, useState, useMemo,
 } from 'react'
 import {
   connect, ConnectedProps, useDispatch, useSelector,
@@ -77,16 +77,20 @@ const SecretsList: FC<Props> = ({
       if (!editor) {
         return
       }
-      const {row, shouldInsertOnLastLine} = calcInsertPosition(query.text)
+      const {
+        row,
+        column,
+        shouldInsertOnNextLine,
+      } = calcInsertPosition(query.text)
       let text = ''
 
-      if (shouldInsertOnLastLine) {
-        text = `\nsecrets.get("${secret.id}")`
+      if (shouldInsertOnNextLine) {
+        text = `\nsecrets.get("${secret.id}") `
       } else {
-        text = ` secrets.get("${secret.id}")\n`
+        text = ` secrets.get("${secret.id}") `
       }
 
-      const range = new window.monaco.Range(row, 1, row, 1)
+      const range = new window.monaco.Range(row, column, row, column)
       const edits = [
         {
           range,
@@ -108,45 +112,47 @@ const SecretsList: FC<Props> = ({
       dispatch(getSecrets())
   }, [])
 
-  return (
-    <div className="flux-toolbar flow-sidebar--secrets-list">
-      <div className="flux-toolbar--search">
-        <SearchWidget
-          placeholderText="Filter secrets..."
-          searchTerm={searchTerm}
-          onSearch={setSearchTerm}
+  return useMemo(
+    () => (
+      <div className="flux-toolbar flow-sidebar--secrets-list">
+        <div className="flux-toolbar--search">
+          <SearchWidget
+            placeholderText="Filter secrets..."
+            searchTerm={searchTerm}
+            onSearch={setSearchTerm}
 
-        />
+          />
+        </div>
+        <FlexBox
+          className="flux-toolbar--heading"
+          justifyContent={JustifyContent.SpaceBetween}
+        >
+          <div>Secrets</div>
+          <Button
+            style={{marginRight: '-16px'}}
+            text="Add Secret"
+            color={ComponentColor.Primary}
+            size={ComponentSize.ExtraSmall}
+            icon={IconFont.Plus_New}
+            onClick={handleCreateSecret}
+            testID="button-add-secret"
+          />
+        </FlexBox>
+        <FilterSecrets
+          list={secrets}
+          searchKeys={['id']}
+          searchTerm={searchTerm}
+        >
+          {filteredSecrets => (
+            <>
+              {filteredSecrets.map(
+                (s: Secret) => <SecretToSelect secret={s} key={s.id} onClick={click} />
+              )}
+            </>
+          )}
+        </FilterSecrets>
       </div>
-      <FlexBox
-        className="flux-toolbar--heading"
-        justifyContent={JustifyContent.SpaceBetween}
-      >
-        <div>Secrets</div>
-        <Button
-          style={{ marginRight: '-16px'}}
-          text="Add Secret"
-          color={ComponentColor.Primary}
-          size={ComponentSize.ExtraSmall}
-          icon={IconFont.Plus_New}
-          onClick={handleCreateSecret}
-          testID="button-add-secret"
-        />
-      </FlexBox>
-      <FilterSecrets
-        list={secrets}
-        searchKeys={['id']}
-        searchTerm={searchTerm}
-      >
-        {filteredSecrets => (
-          <>
-            {filteredSecrets.map(
-              (s: Secret) => <SecretToSelect secret={s} key={s.id} onClick={click} />
-            )}
-          </>
-        )}
-      </FilterSecrets>
-    </div>
+    ), [searchTerm, secrets]
   )
 }
 

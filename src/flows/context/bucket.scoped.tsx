@@ -67,7 +67,7 @@ export const BucketProvider: FC = ({children}) => {
       headers['Authorization'] = `Token ${scope.token}`
     }
 
-    fetch(`${scope.region}/api/v2/buckets?limit=100&orgID=${scope.org}`, {
+    fetch(`${scope.region}/api/v2/buckets?limit=-1&orgID=${scope.org}`, {
       method: 'GET',
       headers,
       signal: controller.current.signal,

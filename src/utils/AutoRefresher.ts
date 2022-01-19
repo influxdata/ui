@@ -6,6 +6,7 @@ export class AutoRefresher {
   public subscribers: func[] = []
 
   private intervalID: NodeJS.Timer
+  private timerID: NodeJS.Timer
 
   public subscribe(fn: func) {
     this.subscribers = [...this.subscribers, fn]
@@ -22,7 +23,15 @@ export class AutoRefresher {
     }, autoRefresh.interval)
   }
 
+  public startTimeout(startFunc: () => void, time: number) {
+    this.timerID = setTimeout(() => {
+      startFunc()
+      this.stopPolling()
+    }, time)
+  }
+
   public stopPolling() {
+    this.clearTimeout()
     this.clearInterval()
   }
 
@@ -33,6 +42,15 @@ export class AutoRefresher {
 
     clearInterval(this.intervalID)
     this.intervalID = null
+  }
+
+  private clearTimeout() {
+    if (!this.timerID) {
+      return
+    }
+
+    clearTimeout(this.timerID)
+    this.timerID = null
   }
 
   private refresh = (isAutoRefresh = false, stopFunc?: () => void) => {

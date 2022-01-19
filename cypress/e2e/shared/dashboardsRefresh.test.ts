@@ -215,12 +215,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID(
           'enable-auto-refresh-button'
         ).contains('ENABLE AUTO REFRESH', {matchCase: false})
-        cy.getByTestID('notification-success--children')
-          .children()
-          .should(
-            'have.text',
-            'Your dashboard auto refresh settings have been reset due to inactivity '
-          )
+
         cy.wait('@refreshQuery')
         cy.wait('@refreshQuery')
         // Wait the duration we'd expect on the next query to ensure stopping via the inactivity timeout actually stops the process. The fail means the request didn't run, which is what we want

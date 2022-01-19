@@ -85,22 +85,24 @@ const AutoRefreshForm: FC = () => {
       active: !state.infiniteDuration,
     },
   ]
-  // TODO: update 'refresh-form-container', 'refresh-form-time-label', 'refresh-form-timerange-toggle',
+  // TODO: update 'refresh-form-time-label', 'refresh-form-timerange-toggle',
 
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
       <Overlay.Header
-        className="refresh-header"
+        className="refresh-form-header"
         title="Configure Auto Refresh"
         onDismiss={handleCancel}
       />
       <FlexBox
-        className="refresh-form-container"
+        className="refresh-form-body"
         direction={FlexDirection.Column}
         alignItems={AlignItems.Stretch}
       >
         <FlexBox.Child>
-          <div className="refresh-form-title">Refresh Dashboard Until</div>
+          <div className="refresh-form-container-title">
+            Refresh Dashboard Until
+          </div>
           <SelectGroup shape={ButtonShape.StretchToFit}>
             {refreshOptions.map(option => (
               <SelectGroup.Option
@@ -117,10 +119,7 @@ const AutoRefreshForm: FC = () => {
             ))}
           </SelectGroup>
           {!state.infiniteDuration && (
-            <div
-              className="refresh-form-container reverse"
-              data-testid="timerange-popover-button"
-            >
+            <div data-testid="timerange-popover-button">
               <TimeRangeDropdown
                 timeRange={state.duration}
                 onSetTimeRange={(timeRange: CustomTimeRange) => {
@@ -139,12 +138,19 @@ const AutoRefreshForm: FC = () => {
             </div>
           )}
         </FlexBox.Child>
-        <FlexBox.Child>
-          <div className="refresh-form-title">Inactivity Timeout</div>
-          <div className="refresh-form-description">
+        <FlexBox.Child className="refresh-form-container">
+          <div className="refresh-form-container-title">Refresh Interval</div>
+          <div className="refresh-form-container-description">
+            How often your dashboard will refresh
+          </div>
+          <AutoRefreshInput />
+        </FlexBox.Child>
+        <FlexBox.Child className="refresh-form-container">
+          <div className="refresh-form-container-title">Inactivity Timeout</div>
+          <div className="refresh-form-container-description">
             When your dashboard refresh will timeout
           </div>
-          <div className="refresh-form-container">
+          <div>
             <SelectDropdown
               options={selectInactivityArray(state.inactivityTimeoutCategory)}
               selectedOption={state.inactivityTimeout}
@@ -173,13 +179,6 @@ const AutoRefreshForm: FC = () => {
               />
             )}
           </div>
-        </FlexBox.Child>
-        <FlexBox.Child>
-          <div className="refresh-form-title">Refresh Interval</div>
-          <div className="refresh-form-description">
-            How often your dashboard will refresh
-          </div>
-          <AutoRefreshInput />
         </FlexBox.Child>
         <div className="refresh-form-buttons">
           <Button

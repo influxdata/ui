@@ -1,14 +1,22 @@
 @import '@influxdata/clockface/dist/variables.scss';
-.refresh-header {
+.refresh-form-header {
   padding: 0 $cf-space-l;
 }
 
-.refresh-form-container {
+.refresh-form-body {
   padding: $cf-space-m $cf-space-l;
+}
 
-  &.reverse {
-    flex-direction: row-reverse;
-  }
+.refresh-form-container {
+  padding-top: $cf-space-l;
+}
+
+.refresh-form-container-title {
+  padding-bottom: $cf-space-2xs;
+}
+
+.refresh-form-container-description {
+  color: $cf-grey-65;
 }
 
 .refresh-form-container-child {
@@ -23,13 +31,6 @@
   }
 }
 
-.refresh-form-title {
-  padding-bottom: $cf-space-2xs;
-}
-
-.refresh-form-description {
-  color: $cf-grey-65;
-}
 .refresh-timeout-span {
   flex: 1;
 }

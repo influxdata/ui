@@ -12,7 +12,7 @@
 }
 
 .refresh-form-container-title {
-  padding-bottom: $cf-space-2xs;
+  padding-bottom: $cf-space-xs;
 }
 
 .refresh-form-container-description {
@@ -53,7 +53,8 @@
 
 .timerange-dropdown {
   justify-self: end;
-  width: 178px;
+  width: 100%;
+  padding-top: $cf-space-xs;
 }
 
 .refresh-form-timerange-toggle {

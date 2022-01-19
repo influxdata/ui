@@ -26,6 +26,7 @@ type Props = {
   customClass?: string
   dividerText?: string
   dividerOnClick?: () => void
+  menuMaxHeight?: number
 }
 
 const DurationInput: FC<Props> = ({
@@ -41,6 +42,7 @@ const DurationInput: FC<Props> = ({
   customClass,
   dividerText,
   dividerOnClick,
+  menuMaxHeight = 250,
 }) => {
   const [isFocused, setIsFocused] = useState(false)
 
@@ -101,7 +103,11 @@ const DurationInput: FC<Props> = ({
         />
       </ClickOutside>
       {isFocused && (
-        <DropdownMenu className="duration-input--menu" noScrollX={true}>
+        <DropdownMenu
+          className="duration-input--menu"
+          noScrollX={true}
+          maxHeight={menuMaxHeight}
+        >
           {showDivider && dividerText && dividerOnClick && (
             <Dropdown.Item
               value="Customize"

@@ -12,6 +12,7 @@ import PresentationPipe from 'src/flows/components/PresentationPipe'
 import EmptyPipeList from 'src/flows/components/EmptyPipeList'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import {InfluxColors, InfluxDataLogo, Page} from '@influxdata/clockface'
+import TimeRangeLabel from 'src/flows/components/header/TimeRangeLabel'
 
 import {LAYOUT_MARGIN, DASHBOARD_LAYOUT_ROW_HEIGHT} from 'src/shared/constants'
 
@@ -27,6 +28,9 @@ const HiddenHeader: FC = () => {
       </div>
       <div className="hidden-header-title">
         <Page.Title title={flow.name} />
+        <span>
+          <TimeRangeLabel turnOnTimezone={true} />
+        </span>
       </div>
     </div>
   )

@@ -455,4 +455,7 @@ $cf-radius-lg: $cf-radius + 4px;
 
 .hidden-header-title {
   padding-bottom: $cf-space-xs;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

@@ -16,16 +16,16 @@ export class AutoRefresher {
     this.unregisterListeners()
   }
 
-  private registerListeners() {
-    window.addEventListener('load', this.registerListeners.bind(this))
-    document.addEventListener('mousemove', this.registerListeners.bind(this))
-    document.addEventListener('keypress', this.registerListeners.bind(this))
+  private registerListeners = () => {
+    window.addEventListener('load', this.registerListeners)
+    document.addEventListener('mousemove', this.registerListeners)
+    document.addEventListener('keypress', this.registerListeners)
   }
 
-  private unregisterListeners() {
-    window.removeEventListener('load', this.registerListeners.bind(this))
-    document.removeEventListener('mousemove', this.registerListeners.bind(this))
-    document.removeEventListener('keypress', this.registerListeners.bind(this))
+  private unregisterListeners = () => {
+    window.removeEventListener('load', this.registerListeners)
+    document.removeEventListener('mousemove', this.registerListeners)
+    document.removeEventListener('keypress', this.registerListeners)
   }
 
   public subscribe(fn: func) {

@@ -11,10 +11,29 @@ import FlowPipe from 'src/flows/components/FlowPipe'
 import PresentationPipe from 'src/flows/components/PresentationPipe'
 import EmptyPipeList from 'src/flows/components/EmptyPipeList'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
+import {InfluxColors, InfluxDataLogo, Page} from '@influxdata/clockface'
 
 import {LAYOUT_MARGIN, DASHBOARD_LAYOUT_ROW_HEIGHT} from 'src/shared/constants'
 
 const Grid = WidthProvider(ReactGridLayout)
+
+// This component only shows up in downloaded PNG/PDF files
+const HiddenHeader: FC = () => {
+  const {flow} = useContext(FlowContext)
+  return (
+    <div id="pipe-list-hidden-header" style={{display: 'none'}}>
+      <div style={{paddingTop: '12px'}}>
+        <InfluxDataLogo
+          fill={InfluxColors.White}
+          style={{width: '250px', height: '100px'}}
+        />
+      </div>
+      <div style={{paddingBottom: '12px'}}>
+        <Page.Title title={flow.name} />
+      </div>
+    </div>
+  )
+}
 
 const PipeList: FC = () => {
   const {flow, updateMeta} = useContext(FlowContext)
@@ -74,6 +93,7 @@ const PipeList: FC = () => {
 
     return (
       <div className="flow" id={currentID}>
+        <HiddenHeader />
         <Grid
           cols={12}
           layout={layout}
@@ -112,6 +132,7 @@ const PipeList: FC = () => {
 
   return (
     <div className="flow" id={currentID}>
+      <HiddenHeader />
       <InsertCellButton />
       {_pipes}
     </div>

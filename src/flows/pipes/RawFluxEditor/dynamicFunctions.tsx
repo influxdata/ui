@@ -58,7 +58,7 @@ const DynamicFunctions: FC<Props> = ({onSelect}) => {
         </div>
       </div>
     )
-  }, [search, onSelect])
+  }, [search, onSelect, filteredFunctions, updateSearch])
 }
 
 export default DynamicFunctions

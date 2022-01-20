@@ -1,5 +1,13 @@
 // Libraries
-import React, {FC, lazy, Suspense, useContext, useCallback} from 'react'
+import React, {
+  FC,
+  lazy,
+  Suspense,
+  useContext,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react'
 import {
   RemoteDataState,
   SpinnerContainer,
@@ -13,10 +21,17 @@ import {
 import {FluxToolbarFunction} from 'src/types/shared'
 import {PipeProp} from 'src/types/flows'
 
-// Components
-import {PipeContext} from 'src/flows/context/pipe'
+// Context
+import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {EditorContext} from 'src/flows/context/editor'
+import {
+  EditorContext,
+  EditorProvider,
+  InjectionType,
+} from 'src/flows/context/editor'
+
+// Components
+import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
 import Functions from 'src/flows/pipes/RawFluxEditor/functions'
 import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/dynamicFunctions'
 
@@ -33,64 +48,54 @@ const FluxMonacoEditor = lazy(() =>
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data} = useContext(PipeContext)
-  const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
-  const {
-    editor: editorInstance,
-    register: setEditorInstance,
-    calcInsertPosition,
-    updateText,
-  } = useContext(EditorContext)
+  const {hideSub, id: showId, show, showSub, register} = useContext(
+    SidebarContext
+  )
+  const editorContext = useContext(EditorContext)
+  const {register: setEditorInstance, inject, updateText} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
 
-  const inject = useCallback(
+  useEffect(() => {
+    register(id, [
+      {
+        title: 'RawFluxEditor actions',
+        actions: [
+          {
+            title: 'Inject Secret',
+            disable: () => false,
+            menu: (
+              <PipeProvider id={id}>
+                <SecretsList context={editorContext} />
+              </PipeProvider>
+            ),
+          },
+        ],
+      },
+    ])
+  }, [id, editorContext.editor, editorContext.inject])
+
+  const injectIntoEditor = useCallback(
     (fn: FluxToolbarFunction): void => {
-      if (!editorInstance) {
-        return
-      }
-
-      const {row, shouldInsertOnNextLine} = calcInsertPosition(query.text, true)
       let text = ''
-
-      if (shouldInsertOnNextLine) {
-        text = `\n  |> ${fn.example}`
+      if (fn.name === 'from' || fn.name === 'union') {
+        text = `\n${fn.example}\n`
       } else {
         text = `  |> ${fn.example}\n`
       }
 
-      if (fn.name === 'from' || fn.name === 'union') {
-        text = `\n${fn.example}\n`
+      const options = {
+        text,
+        type: InjectionType.OnOwnLine,
+        header: !!fn.package ? `import "${fn.package}"` : null,
       }
-
-      const range = new window.monaco.Range(row, 1, row, 1)
-
-      const edits = [
-        {
-          range,
-          text,
-        },
-      ]
-
-      if (
-        fn.package &&
-        !editorInstance
-          .getModel()
-          .getValue()
-          .includes(`import "${fn.package}"`)
-      ) {
-        edits.unshift({
-          range: new window.monaco.Range(1, 1, 1, 1),
-          text: `import "${fn.package}"\n`,
-        })
-      }
-
-      editorInstance.executeEdits('', edits)
-      updateText(editorInstance.getValue())
+      inject(options)
+      event('Inject function into Flux Script', {fn: fn.name})
     },
-    [editorInstance, query.text]
+    [inject]
   )
 
-  const launcher = () => {
+  const launcher = useCallback((_) => {
     if (showId === id) {
       event('Flux Panel (Notebooks) - Toggle Functions - Off')
       hideSub()
@@ -98,14 +103,14 @@ const Query: FC<PipeProp> = ({Context}) => {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
       if (isFlagEnabled('fluxDynamicDocs')) {
-        showSub(<DynamicFunctions onSelect={inject} />)
+        showSub(<DynamicFunctions onSelect={injectIntoEditor} />)
       } else {
-        showSub(<Functions onSelect={inject} />)
+        showSub(<Functions onSelect={injectIntoEditor} />)
       }
     }
-  }
+  }, [injectIntoEditor, hideSub, showSub, show])
 
-  const controls = (
+  const controls = useMemo(() => (
     <Button
       text="Functions"
       icon={IconFont.Function}
@@ -114,9 +119,9 @@ const Query: FC<PipeProp> = ({Context}) => {
       titleText="Function Reference"
       className="flows-config-function-button"
     />
-  )
+  ), [launcher])
 
-  return (
+  return useMemo(() => (
     <Context controls={controls}>
       <Suspense
         fallback={
@@ -136,7 +141,11 @@ const Query: FC<PipeProp> = ({Context}) => {
         />
       </Suspense>
     </Context>
-  )
+  ), [query.text, controls, updateText])
 }
 
-export default Query
+export default ({Context}) => (
+  <EditorProvider>
+    <Query Context={Context} />
+  </EditorProvider>
+)

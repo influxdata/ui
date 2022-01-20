@@ -11,15 +11,11 @@ import {
 } from '@influxdata/clockface'
 import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
-import SecretsList from 'src/flows/components/SecretsList'
-import './Sidebar.scss'
 
 // Context
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {EditorContext} from 'src/flows/context/editor'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {PipeProvider} from 'src/flows/context/pipe'
 
 // Utils & Actions
 import {event} from 'src/cloud/utils/reporting'
@@ -134,7 +130,6 @@ const Sidebar: FC = () => {
   const {flow, updateMeta, add, remove} = useContext(FlowContext)
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
-  const editorContext = useContext(EditorContext)
   const dispatch = useDispatch()
 
   const sections = ([
@@ -244,23 +239,6 @@ const Sidebar: FC = () => {
         {
           title: 'Export to Client Library',
           menu: <ClientList />,
-        },
-        {
-          title: 'Inject Secret',
-          disable: () => {
-            const {type} = flow.data.byID[id]
-
-            if (type === 'rawFluxEditor' && !!editorContext.editor) {
-              return false
-            }
-
-            return true
-          },
-          menu: (
-            <PipeProvider id={id}>
-              <SecretsList context={editorContext} />
-            </PipeProvider>
-          ),
         },
       ],
     },

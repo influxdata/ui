@@ -6,7 +6,6 @@ import React, {
   useContext,
   useEffect,
   useCallback,
-  useMemo,
 } from 'react'
 import {
   RemoteDataState,
@@ -22,7 +21,7 @@ import {FluxToolbarFunction} from 'src/types/shared'
 import {PipeProp} from 'src/types/flows'
 
 // Context
-import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
+import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {
   EditorContext,
@@ -64,11 +63,7 @@ const Query: FC<PipeProp> = ({Context}) => {
           {
             title: 'Inject Secret',
             disable: () => false,
-            menu: (
-              <PipeProvider id={id}>
-                <SecretsList context={editorContext} />
-              </PipeProvider>
-            ),
+            menu: <SecretsList context={editorContext} />,
           },
         ],
       },
@@ -95,7 +90,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     [inject]
   )
 
-  const launcher = useCallback((_) => {
+  const launcher = () => {
     if (showId === id) {
       event('Flux Panel (Notebooks) - Toggle Functions - Off')
       hideSub()
@@ -108,9 +103,9 @@ const Query: FC<PipeProp> = ({Context}) => {
         showSub(<Functions onSelect={injectIntoEditor} />)
       }
     }
-  }, [injectIntoEditor, hideSub, showSub, show])
+  }
 
-  const controls = useMemo(() => (
+  const controls = (
     <Button
       text="Functions"
       icon={IconFont.Function}
@@ -119,9 +114,9 @@ const Query: FC<PipeProp> = ({Context}) => {
       titleText="Function Reference"
       className="flows-config-function-button"
     />
-  ), [launcher])
+  )
 
-  return useMemo(() => (
+  return (
     <Context controls={controls}>
       <Suspense
         fallback={
@@ -141,7 +136,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         />
       </Suspense>
     </Context>
-  ), [query.text, controls, updateText])
+  )
 }
 
 export default ({Context}) => (

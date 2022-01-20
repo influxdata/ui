@@ -5,6 +5,8 @@ import React, {
   useCallback,
   useMemo,
   useContext,
+  useRef,
+  useEffect,
 } from 'react'
 import {EditorType} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
@@ -50,6 +52,15 @@ export const EditorProvider: FC = ({children}) => {
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
 
+  // Downstream components use these callbacks.
+  // Deeply nested, memoized components.
+  // Avoid vulnerability to memoization ref checks.
+  // (e.g. Sidebar remaining open).
+  const queryText = useRef(() => query.text)
+  useEffect(() => {
+    queryText.current = () => query.text
+  }, [query.text])
+
   const register = (instance: EditorType) => {
     setEditor(instance)
   }
@@ -75,13 +86,11 @@ export const EditorProvider: FC = ({children}) => {
       const {lineNumber, column} = editor.getPosition()
       let row = lineNumber
 
-      console.log('CALC > queryText', query.text)
-      console.log('start row', row)
-      const split = query.text.split('\n')
+      const split = queryText.current().split('\n')
       // row is not zero indexed. 1..N
       const currentLineText = (
         split[row - 1] || split[split.length - 1]
-      ).trim()
+      ).trimEnd()
       const textAheadOfCursor = currentLineText.slice(0, column).trim()
       if (
         currentLineText &&
@@ -90,7 +99,6 @@ export const EditorProvider: FC = ({children}) => {
       ) {
         row++
       }
-      console.log('end row', row)
 
       const [currentRange] = editor.getVisibleRanges()
       // Determines whether the new insert line is beyond the current range
@@ -105,7 +113,7 @@ export const EditorProvider: FC = ({children}) => {
 
       return {row, column, shouldInsertOnNextLine}
     },
-    [editor, query.text]
+    [editor, queryText]
   )
 
   const inject = useCallback(
@@ -153,7 +161,7 @@ export const EditorProvider: FC = ({children}) => {
       editor.executeEdits('', edits)
       updateText(editor.getValue())
     },
-    [editor, query.text, calcInjectiontPosition, updateText]
+    [editor, calcInjectiontPosition, updateText]
   )
 
   return useMemo(

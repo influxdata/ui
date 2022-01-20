@@ -77,43 +77,43 @@ const SecretsList: FC<Props> = ({context: editorContext}) => {
 
   return useMemo(
     () => (
-        <div className="flux-toolbar flow-sidebar--secrets-list">
-          <div className="flux-toolbar--search">
-            <SearchWidget
-              placeholderText="Filter secrets..."
-              searchTerm={searchTerm}
-              onSearch={setSearchTerm}
-            />
-          </div>
-          <FlexBox
-            className="flux-toolbar--heading"
-            justifyContent={JustifyContent.SpaceBetween}
-          >
-            <div>Secrets</div>
-            <Button
-              style={{marginRight: '-16px'}}
-              text="Add Secret"
-              color={ComponentColor.Primary}
-              size={ComponentSize.ExtraSmall}
-              icon={IconFont.Plus_New}
-              onClick={handleCreateSecret}
-              testID="button-add-secret"
-            />
-          </FlexBox>
-          <FilterSecrets
-            list={secrets}
-            searchKeys={['id']}
+      <div className="flux-toolbar flow-sidebar--secrets-list">
+        <div className="flux-toolbar--search">
+          <SearchWidget
+            placeholderText="Filter secrets..."
             searchTerm={searchTerm}
-          >
-            {filteredSecrets => (
-              <>
-                {filteredSecrets.map((s: Secret) => (
-                  <SecretToSelect secret={s} key={s.id} onClick={click} />
-                ))}
-              </>
-            )}
-          </FilterSecrets>
+            onSearch={setSearchTerm}
+          />
         </div>
+        <FlexBox
+          className="flux-toolbar--heading"
+          justifyContent={JustifyContent.SpaceBetween}
+        >
+          <div>Secrets</div>
+          <Button
+            style={{marginRight: '-16px'}}
+            text="Add Secret"
+            color={ComponentColor.Primary}
+            size={ComponentSize.ExtraSmall}
+            icon={IconFont.Plus_New}
+            onClick={handleCreateSecret}
+            testID="button-add-secret"
+          />
+        </FlexBox>
+        <FilterSecrets
+          list={secrets}
+          searchKeys={['id']}
+          searchTerm={searchTerm}
+        >
+          {filteredSecrets => (
+            <>
+              {filteredSecrets.map((s: Secret) => (
+                <SecretToSelect secret={s} key={s.id} onClick={click} />
+              ))}
+            </>
+          )}
+        </FilterSecrets>
+      </div>
     ),
     [searchTerm, secrets, click]
   )

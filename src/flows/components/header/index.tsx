@@ -437,12 +437,6 @@ const FlowHeader: FC = () => {
                 <MenuButton
                   menuItems={[
                     {
-                      title: 'Delete',
-                      onClick: handleDelete,
-                      icon: IconFont.Trash_New,
-                      testID: 'flow-menu-button-delete',
-                    },
-                    {
                       title: 'Clone',
                       onClick: handleClone,
                       icon: IconFont.Duplicate_New,
@@ -456,6 +450,12 @@ const FlowHeader: FC = () => {
                       title: 'Download as PDF',
                       onClick: handleDownloadAsPDF,
                       icon: IconFont.Download_New,
+                    },
+                    {
+                      title: 'Delete',
+                      onClick: handleDelete,
+                      icon: IconFont.Trash_New,
+                      testID: 'flow-menu-button-delete',
                     },
                   ]}
                 />

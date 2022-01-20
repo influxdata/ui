@@ -16,6 +16,7 @@ import {notebookRunFail} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
 
 export interface Stage {
   id: string
@@ -331,8 +332,23 @@ export const FlowQueryProvider: FC = ({children}) => {
   // Use localstorage to communicate query execution to other tabs
   const queryAll = () => {
     sendEvent(notebookQueryKey)
+    console.log('queryAll is claled')
     _queryAll()
   }
+
+  const handleAutoRefresh = () => {
+    _generateMap()
+    queryAll()
+  }
+
+  useEffect(() => {
+    if (!flow?.id) {
+      return
+    }
+    GlobalAutoRefresher.subscribe(handleAutoRefresh)
+
+    return () => GlobalAutoRefresher.unsubscribe(handleAutoRefresh)
+  }, [flow?.id])
 
   const _queryAll = () => {
     if (status === RemoteDataState.Loading) {

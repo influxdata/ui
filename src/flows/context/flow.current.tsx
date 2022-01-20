@@ -71,28 +71,34 @@ export const FlowProvider: FC = ({children}) => {
   })
 
   const timeoutFunction = useCallback(() => {
-    dispatch(resetAutoRefresh(`${PROJECT_NAME}-${currentID}`))
-    dispatch(notify(autoRefreshTimeoutSuccess()))
-    GlobalAutoRefresher.onDisconnect()
-    event('flow inactivitytimeout', {
-      timeout: autoRefresh.inactivityTimeout,
-    })
+    if (isFlagEnabled('flowAutoRefresh')) {
+      dispatch(resetAutoRefresh(`${PROJECT_NAME}-${currentID}`))
+      dispatch(notify(autoRefreshTimeoutSuccess()))
+      GlobalAutoRefresher.onDisconnect()
+      event('flow inactivitytimeout', {
+        timeout: autoRefresh.inactivityTimeout,
+      })
+    }
   }, [autoRefresh.inactivityTimeout, currentID, dispatch])
 
   const startTimeout = useCallback(() => {
-    GlobalAutoRefresher.startTimeout(
-      timeoutFunction,
-      autoRefresh.inactivityTimeout
-    )
+    if (isFlagEnabled('flowAutoRefresh')) {
+      GlobalAutoRefresher.startTimeout(
+        timeoutFunction,
+        autoRefresh.inactivityTimeout
+      )
+    }
   }, [autoRefresh.inactivityTimeout, timeoutFunction])
 
   const stopFunc = useCallback(() => {
-    if (
-      !autoRefresh.infiniteDuration &&
-      new Date(autoRefresh?.duration?.upper).getTime() <= new Date().getTime()
-    ) {
-      GlobalAutoRefresher.stopPolling()
-      dispatch(resetAutoRefresh(`${PROJECT_NAME}-${currentID}`))
+    if (isFlagEnabled('flowAutoRefresh')) {
+      if (
+        !autoRefresh.infiniteDuration &&
+        new Date(autoRefresh?.duration?.upper).getTime() <= new Date().getTime()
+      ) {
+        GlobalAutoRefresher.stopPolling()
+        dispatch(resetAutoRefresh(`${PROJECT_NAME}-${currentID}`))
+      }
     }
   }, [
     currentID,
@@ -101,34 +107,25 @@ export const FlowProvider: FC = ({children}) => {
     autoRefresh.infiniteDuration,
   ])
 
-  const visChangeHandler = useCallback(() => {
-    if (
-      document.visibilityState === 'hidden' &&
-      autoRefresh.status === AutoRefreshStatus.Active
-    ) {
-      GlobalAutoRefresher.stopPolling()
-    } else if (document.visibilityState === 'visible') {
-      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
-    }
-  }, [autoRefresh.status, stopFunc])
-
   useEffect(() => {
-    if (autoRefresh?.status === AutoRefreshStatus.Active) {
-      GlobalAutoRefresher.poll(autoRefresh, stopFunc)
-      document.addEventListener('visibilitychange', visChangeHandler)
-      if (autoRefresh.inactivityTimeout > 0) {
+    if (isFlagEnabled('flowAutoRefresh')) {
+      if (autoRefresh?.status === AutoRefreshStatus.Active) {
+        GlobalAutoRefresher.poll(autoRefresh, stopFunc)
+        if (autoRefresh.inactivityTimeout > 0) {
+          GlobalAutoRefresher.onDisconnect()
+          startTimeout()
+          GlobalAutoRefresher.onConnect()
+        }
+      } else {
         GlobalAutoRefresher.onDisconnect()
-        startTimeout()
-        GlobalAutoRefresher.onConnect()
       }
-    } else {
-      GlobalAutoRefresher.onDisconnect()
     }
 
     return () => {
-      GlobalAutoRefresher.onDisconnect()
-      GlobalAutoRefresher.stopPolling()
-      document.removeEventListener('visibilitychange', visChangeHandler)
+      if (isFlagEnabled('flowAutoRefresh')) {
+        GlobalAutoRefresher.onDisconnect()
+        GlobalAutoRefresher.stopPolling()
+      }
     }
   }, [
     autoRefresh.interval,
@@ -136,7 +133,6 @@ export const FlowProvider: FC = ({children}) => {
     autoRefresh.inactivityTimeout,
     stopFunc,
     startTimeout,
-    visChangeHandler,
   ])
 
   const {search} = useLocation()

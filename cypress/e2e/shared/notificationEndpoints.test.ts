@@ -178,6 +178,10 @@ describe('Notification Endpoints', () => {
         'A minute, an hour, a month. Notification Endpoint is certain. The time is not.'
       const newURL = 'many-faced-god.gov'
 
+      cy.intercept('PUT', `/api/v2/notificationEndpoints/${endpoint.id}`).as(
+        'putEndp'
+      )
+
       cy.getByTestID(`endpoint-card--name ${name}`).click()
 
       cy.getByTestID('endpoint-name--input')
@@ -220,6 +224,26 @@ describe('Notification Endpoints', () => {
 
       cy.getByTestID('endpoint-save--button').click()
 
+      // now verify REST call
+      cy.wait('@putEndp').then(resp => {
+        if (!resp.response) {
+          throw 'PUT endpoint call returned no response'
+        }
+        expect(resp.response.body.name).to.equal(newName)
+        expect(resp.response.body.description).to.equal(newDescription)
+        expect(resp.response.body.clientURL).to.equal(newURL)
+        expect(resp.response.body.type).to.equal('pagerduty')
+        expect(resp.response.body.routingKey).to.match(/secret: .*-routing-key/)
+      })
+
+      // now verify Card Updated
+      cy.getByTestID(`endpoint-card ${newName}`).within(() => {
+        cy.getByTestID('resource-list--editable-description').should(
+          'have.text',
+          newDescription
+        )
+      })
+
       // Create a label
       cy.getByTestID(`endpoint-card ${newName}`).within(() => {
         cy.getByTestID('inline-labels--add').click()
@@ -246,6 +270,94 @@ describe('Notification Endpoints', () => {
     cy.getByTestID(`context-delete-task--button`).click()
     cy.getByTestID(`context-delete-task--confirm-button`).click()
     cy.getByTestID(`endpoint-card--name ${name}`).should('not.exist')
+  })
+
+  // to be used for status change values
+  const elementTextHasValueInRange = (
+    elem: JQuery,
+    min: number,
+    max: number
+  ) => {
+    const t = elem.text().match(/\d+/)
+    if (!t) {
+      throw `Element text: "${elem.text()}" contains no value`
+    }
+    expect(parseInt(t[0]))
+      .to.be.at.least(min)
+      .and.to.be.at.most(max)
+  }
+
+  it('can change endpoint status', () => {
+    cy.intercept('PATCH', '/api/v2/notificationEndpoints/*').as('patchEndp')
+
+    cy.getByTestID('endpoint-card Pre-Created Endpoint')
+      .should('not.have.class', 'cf-resource-card__disabled')
+      .within(() => {
+        // use opportunity to verify last update status
+        cy.getByTestID('resource-list--meta').within(() => {
+          cy.get('> div')
+            .eq(0)
+            .then(elem => {
+              elementTextHasValueInRange(elem, 1, 30)
+            })
+        })
+        // Toggle inactive
+        cy.getByTestID('endpoint-card--slide-toggle').click()
+      })
+    cy.wait('@patchEndp').then(resp => {
+      if (!resp.response) {
+        throw 'Patch endpoint call returned no response'
+      }
+      // assert call to stack
+      expect(resp.response.body.status).to.equal('inactive')
+      cy.wrap(resp.response.body.id).as('endpID')
+    })
+    // assert rendering
+    cy.getByTestID('endpoint-card Pre-Created Endpoint').should(
+      'have.class',
+      'cf-resource-card__disabled'
+    )
+
+    // N.B. Should inactive status be reflected elsewhere in UI?
+    //   e.g. Create/Edit Notification rule Popup > Endpoint select
+    //  see issue https://github.com/influxdata/ui/issues/3629
+    // If so, TODO add assert here once 3629 resolved
+
+    // N.B. also consider warning when endpoint is in use
+    // see issue https://github.com/influxdata/ui/issues/3644
+    //  TODO cover use case described in 3644 based on decision of team
+
+    // Toggle back to active
+    cy.getByTestID('endpoint-card Pre-Created Endpoint').within(() => {
+      cy.getByTestID('endpoint-card--slide-toggle').click()
+    })
+    cy.wait('@patchEndp').then(resp => {
+      if (!resp.response) {
+        throw 'Patch endpoint call returned no response'
+      }
+      expect(resp.response.body.status).to.equal('active')
+    })
+
+    cy.getByTestID('endpoint-card Pre-Created Endpoint')
+      .should('not.have.class', 'cf-resource-card__disabled')
+      .within(() => {
+        // use opportunity to verify change in last update status
+        cy.getByTestID('resource-list--meta').within(() => {
+          cy.get('> div')
+            .eq(0)
+            .then(elem => {
+              elementTextHasValueInRange(elem, 0, 3)
+            })
+          // use opportunity to verify id value in copy to clipboard
+          cy.get('> div')
+            .eq(1)
+            .then(elem => {
+              cy.get('@endpID').then(id => {
+                expect(elem.text()).to.contain(id)
+              })
+            })
+        })
+      })
   })
 
   describe('When managing the list', () => {

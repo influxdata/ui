@@ -67,16 +67,6 @@ describe('Billing Page PAYG Users', () => {
             }).then(() => {
               cy.visit(`/orgs/${id}/billing`)
               cy.getByTestID('billing-page--header').should('be.visible')
-
-              // note:  when the 'multiAccount' feature flag is on/removed (so always on)
-              // remove the above line, replace with:
-
-              // cy.getByTestID('accounts-billing-tab').should('be.visible')
-              //
-              // cy.getByTestID('accounts-billing-tab').should(
-              //     'have.class',
-              //     'cf-tabs--tab__active'
-              // )
             })
           })
         })

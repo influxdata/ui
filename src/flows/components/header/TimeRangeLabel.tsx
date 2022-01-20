@@ -4,7 +4,11 @@ import {getTimeZone} from 'src/dashboards/selectors'
 import {useSelector} from 'react-redux'
 import {getTimeRangeLabel} from 'src/shared/utils/duration'
 
-const TimeRangeLabel: FC = () => {
+interface Prop {
+  turnOnTimezone?: boolean
+}
+
+const TimeRangeLabel: FC<Prop> = ({turnOnTimezone = false}) => {
   const {flow} = useContext(FlowContext)
   const timeZone = useSelector(getTimeZone)
 
@@ -17,6 +21,13 @@ const TimeRangeLabel: FC = () => {
   return (
     <h4 style={{paddingRight: '10px', margin: '0'}}>
       {getTimeRangeLabel(flow.range, timeZone)}
+      {turnOnTimezone && (
+        <span style={{paddingLeft: '10px'}}>
+          {timeZone === 'Local'
+            ? Intl.DateTimeFormat().resolvedOptions().timeZone // e.g. America/Chicago
+            : timeZone}
+        </span>
+      )}
     </h4>
   )
 }

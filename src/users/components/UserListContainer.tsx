@@ -10,17 +10,22 @@ import OrgTabbedPage from 'src/organizations/components/OrgTabbedPage'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-const UserListContainer: FC = () => (
-  <Page titleTag={pageTitleSuffixer(['Users', 'Organization'])}>
-    <OrgHeader testID="users-page--header" />
-    <OrgTabbedPage activeTab="users">
-      <>
-        <UserListInviteForm />
-        <UserList />
-      </>
-    </OrgTabbedPage>
-  </Page>
-)
+const UserListContainer: FC = () => {
+  const subTitle = isFlagEnabled('multiAccount') ? 'Members' : 'Users'
+
+  return (
+    <Page titleTag={pageTitleSuffixer([subTitle, 'Organization'])}>
+      <OrgHeader testID="users-page--header" />
+      <OrgTabbedPage activeTab="users">
+        <>
+          <UserListInviteForm />
+          <UserList />
+        </>
+      </OrgTabbedPage>
+    </Page>
+  )
+}
 
 export default UserListContainer

@@ -435,3 +435,24 @@ $cf-radius-lg: $cf-radius + 4px;
 .flows-index--contents {
   overflow: unset;
 }
+
+/*
+  PipeList
+  ------------------------------------------------------------------------------
+*/
+
+#pipe-list-hidden-header {
+  display: none;
+}
+
+.hidden-header-logo {
+  padding-top: $cf-space-xs;
+  svg {
+    width: 250px;
+    height: 100px;
+  }
+}
+
+.hidden-header-title {
+  padding-bottom: $cf-space-xs;
+}

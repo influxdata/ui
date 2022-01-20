@@ -21,14 +21,11 @@ const Grid = WidthProvider(ReactGridLayout)
 const HiddenHeader: FC = () => {
   const {flow} = useContext(FlowContext)
   return (
-    <div id="pipe-list-hidden-header" style={{display: 'none'}}>
-      <div style={{paddingTop: '12px'}}>
-        <InfluxDataLogo
-          fill={InfluxColors.White}
-          style={{width: '250px', height: '100px'}}
-        />
+    <div id="pipe-list-hidden-header">
+      <div className="hidden-header-logo">
+        <InfluxDataLogo fill={InfluxColors.White} />
       </div>
-      <div style={{paddingBottom: '12px'}}>
+      <div className="hidden-header-title">
         <Page.Title title={flow.name} />
       </div>
     </div>

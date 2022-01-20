@@ -13,14 +13,13 @@ import {setBuilderBucketIfExists} from 'src/timeMachine/actions/queryBuilderThun
 // Utils
 import {HoverTimeProvider} from 'src/dashboards/utils/hoverTime'
 import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
-import {readQueryParams} from 'src/shared/utils/queryParams'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const DataExplorer: FC = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const bucketQP = readQueryParams()['bucket']
+    const bucketQP = new URLSearchParams(window.location.search).get('bucket')
     dispatch(setActiveTimeMachine('de'))
     queryBuilderFetcher.clearCache()
     dispatch(setBuilderBucketIfExists(bucketQP))

@@ -25,12 +25,16 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
 const DisplayTokenOverlay: FC<Props> = props => {
-  const {onClose} = useContext(OverlayContext)
+  const {onClose, overlayID} = useContext(OverlayContext)
 
   return (
     <Overlay.Container maxWidth={750}>
       <Overlay.Header
-        title="You've Successfully cloned an API Token"
+        title={
+          overlayID === 'access-token'
+            ? "You've successfully created an API Token"
+            : "You've successfully cloned an API Token"
+        }
         onDismiss={onClose}
         wrapText={true}
       />
@@ -41,7 +45,7 @@ const DisplayTokenOverlay: FC<Props> = props => {
           alignItems={AlignItems.Stretch}
         >
           <Alert icon={IconFont.AlertTriangle} color={ComponentColor.Primary}>
-            Make sure to copy your new personal API token now. You won't be able
+            Make sure to copy your new custom API token now. You won't be able
             to see it again!
           </Alert>
 

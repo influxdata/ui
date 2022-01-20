@@ -8,7 +8,7 @@ import React, {
   RefObject,
 } from 'react'
 import {useHistory, Link} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -18,6 +18,7 @@ import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 
 // Components
 import {
+  Button,
   Page,
   SquareButton,
   Icon,
@@ -30,20 +31,16 @@ import {
   PopoverInteraction,
   List,
 } from '@influxdata/clockface'
-import {PROJECT_NAME_PLURAL} from 'src/flows'
+
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
 import SaveState from 'src/flows/components/header/SaveState'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
-import {DEFAULT_PROJECT_NAME} from 'src/flows'
-import {serialize} from 'src/flows/context/flow.list'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
-import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
-import {getOrg} from 'src/organizations/selectors'
-import {getAuthorizations} from 'src/client/generatedRoutes'
-import {RemoteDataState} from 'src/types'
+
+// Utility
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {
   getNotebooksShare,
@@ -51,7 +48,24 @@ import {
   postNotebooksShare,
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
+
 import {downloadImage} from 'src/shared/utils/download'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+import {resetAutoRefresh} from 'src/shared/actions/autoRefresh'
+import {serialize} from 'src/flows/context/flow.list'
+import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
+import {getOrg} from 'src/organizations/selectors'
+import {getAuthorizations} from 'src/client/generatedRoutes'
+
+// Types
+import {AppState, AutoRefreshStatus, RemoteDataState} from 'src/types'
+
+// Constants
+import {
+  DEFAULT_PROJECT_NAME,
+  PROJECT_NAME,
+  PROJECT_NAME_PLURAL,
+} from 'src/flows'
 
 const backgroundColor = '#07070E'
 
@@ -116,6 +130,10 @@ const FlowHeader: FC = () => {
   const {flow, updateOther} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
+  const autoRefresh = useSelector(
+    (state: AppState) => state.autoRefresh?.[`${PROJECT_NAME}-${flow?.id}`]
+  )
+  const dispatch = useDispatch()
   const [sharing, setSharing] = useState(false)
   const [token, setToken] = useState<Token>()
   const [loadingToken, setLoadingToken] = useState(RemoteDataState.NotStarted)
@@ -160,6 +178,7 @@ const FlowHeader: FC = () => {
       }))
 
       setTokens(_tokens)
+      event('Notebook share tokens', {count: _tokens.length})
     })
     event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
   }
@@ -351,6 +370,8 @@ const FlowHeader: FC = () => {
     </Dropdown.Item>
   ))
 
+  const isActive = autoRefresh?.status === AutoRefreshStatus.Active
+
   return (
     <>
       <Page.Header fullWidth>
@@ -371,6 +392,34 @@ const FlowHeader: FC = () => {
             <PresentationMode />
             <TimeZoneDropdown />
             <TimeRangeDropdown />
+            {isFlagEnabled('flowAutoRefresh') && (
+              <Button
+                text={
+                  isActive
+                    ? `Refreshing Every ${autoRefresh.label}`
+                    : 'Enable Auto Refresh'
+                }
+                color={
+                  isActive ? ComponentColor.Secondary : ComponentColor.Default
+                }
+                onClick={
+                  isActive
+                    ? () =>
+                        dispatch(
+                          resetAutoRefresh(`${PROJECT_NAME}-${flow?.id}`)
+                        )
+                    : () =>
+                        dispatch(
+                          showOverlay(
+                            'toggle-auto-refresh',
+                            {id: `${PROJECT_NAME}-${flow?.id}`},
+                            () => dispatch(dismissOverlay())
+                          )
+                        )
+                }
+                testID="enable-auto-refresh-button"
+              />
+            )}
             {flow?.id && (
               <>
                 <FeatureFlag name="shareNotebook">

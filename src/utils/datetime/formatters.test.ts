@@ -1,4 +1,5 @@
 import {
+  convertDateToRFC3339,
   createDateTimeFormatter,
   createRelativeFormatter,
 } from 'src/utils/datetime/formatters'
@@ -390,6 +391,77 @@ describe('the DateTime formatter', () => {
       const date = new Date(timestamp)
       const formatter = createDateTimeFormatter('hh:mm:ss.sss a')
       expect(formatter.format(date)).toBe(`${hour}:00:00.000 PM`)
+    })
+  })
+
+  describe('convert date to local time in RFC3339 format', () => {
+    it('can reject invalid dates', () => {
+      expect(convertDateToRFC3339(new Date('abcd'), 'Local')).toEqual(
+        'Invalid Date'
+      )
+      expect(convertDateToRFC3339(new Date('abcd'), 'UTC')).toEqual(
+        'Invalid Date'
+      )
+    })
+
+    it('can use a converted date as the argument to create a valid Date', () => {
+      let convertedDateString = convertDateToRFC3339(new Date(), 'Local')
+      let date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+
+      convertedDateString = convertDateToRFC3339(new Date(), 'UTC')
+      date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+    })
+
+    it('can use the T as a separator', () => {
+      let convertedDateString = convertDateToRFC3339(
+        new Date('2022-01-18T17:30:00Z'),
+        'Local'
+      )
+      let date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+
+      convertedDateString = convertDateToRFC3339(
+        new Date('2022-01-19T01:30:00-0800'),
+        'UTC'
+      )
+      date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+    })
+
+    it('can use space as a separator', () => {
+      let convertedDateString = convertDateToRFC3339(
+        new Date('2022-01-18 17:30:00Z'),
+        'Local'
+      )
+      let date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+
+      convertedDateString = convertDateToRFC3339(
+        new Date('2022-01-19 01:30:00-0800'),
+        'UTC'
+      )
+      date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
     })
   })
 })

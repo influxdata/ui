@@ -56,7 +56,6 @@ class DashboardsTable extends PureComponent<Props> {
           searchTerm={searchTerm}
           onCreateDashboard={onCreateDashboard}
           summonImportFromTemplateOverlay={this.summonImportFromTemplateOverlay}
-          summonImportOverlay={this.summonImportOverlay}
         />
       )
     }
@@ -70,16 +69,6 @@ class DashboardsTable extends PureComponent<Props> {
         onFilterChange={onFilterChange}
       />
     )
-  }
-
-  private summonImportOverlay = (): void => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-    history.push(`/orgs/${orgID}/dashboards-list/import`)
   }
 
   private summonImportFromTemplateOverlay = (): void => {

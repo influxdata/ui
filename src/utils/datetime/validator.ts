@@ -1,5 +1,8 @@
 import {DateTime} from 'luxon'
-import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
+import {
+  DEFAULT_TIME_FORMAT,
+  RFC3339_PATTERN,
+} from 'src/utils/datetime/constants'
 
 const formatToLuxonMap = {
   [DEFAULT_TIME_FORMAT]: {
@@ -112,5 +115,11 @@ export const isValidStrictly = (
   return (
     strictCheck(formattedDateTimeString, format) &&
     DateTime.fromFormat(formattedDateTimeString, dateFnsFormatString).isValid
+  )
+}
+
+export const isValidRFC3339 = (input: string) => {
+  return (
+    RFC3339_PATTERN.test(input) && new Date(input).toString() !== 'Invalid Date'
   )
 }

@@ -9,7 +9,7 @@ import {Action} from 'src/shared/actions/autoRefresh'
 import {AutoRefresh} from 'src/types'
 
 export interface AutoRefreshState {
-  [dashboardID: string]: AutoRefresh
+  [id: string]: AutoRefresh
 }
 
 export const initialState = (): AutoRefreshState => {
@@ -20,55 +20,55 @@ export const autoRefreshReducer = (state = initialState(), action: Action) =>
   produce(state, draftState => {
     switch (action.type) {
       case 'SET_AUTO_REFRESH_INTERVAL': {
-        const {dashboardID, milliseconds, label} = action.payload
+        const {id, milliseconds, label} = action.payload
 
-        if (!draftState[dashboardID]) {
-          draftState[dashboardID] = AUTOREFRESH_DEFAULT
+        if (!draftState[id]) {
+          draftState[id] = AUTOREFRESH_DEFAULT
         }
 
-        draftState[dashboardID].interval = milliseconds
-        draftState[dashboardID].label = label
+        draftState[id].interval = milliseconds
+        draftState[id].label = label
 
         return
       }
 
       case 'SET_AUTO_REFRESH_STATUS': {
-        const {dashboardID, status} = action.payload
+        const {id, status} = action.payload
 
-        if (!draftState[dashboardID]) {
-          draftState[dashboardID] = {...AUTOREFRESH_DEFAULT, status}
+        if (!draftState[id]) {
+          draftState[id] = {...AUTOREFRESH_DEFAULT, status}
         } else {
-          draftState[dashboardID].status = status
+          draftState[id].status = status
         }
 
         return
       }
 
       case 'SET_AUTO_REFRESH_DURATION': {
-        const {duration, dashboardID} = action
+        const {duration, id} = action
 
-        if (!draftState[dashboardID]) {
-          draftState[dashboardID] = AUTOREFRESH_DEFAULT
+        if (!draftState[id]) {
+          draftState[id] = AUTOREFRESH_DEFAULT
         }
 
-        draftState[dashboardID].duration = duration
+        draftState[id].duration = duration
         return
       }
 
       case 'SET_INACTIVITY_TIMEOUT': {
-        const {dashboardID, inactivityTimeout} = action
+        const {id, inactivityTimeout} = action
 
-        if (!draftState[dashboardID]) {
-          draftState[dashboardID] = AUTOREFRESH_DEFAULT
+        if (!draftState[id]) {
+          draftState[id] = AUTOREFRESH_DEFAULT
         }
 
-        draftState[dashboardID].inactivityTimeout = inactivityTimeout
+        draftState[id].inactivityTimeout = inactivityTimeout
         return
       }
 
-      case 'RESET_DASHBOARD_AUTO_REFRESH': {
-        const {dashboardID} = action
-        draftState[dashboardID] = AUTOREFRESH_DEFAULT
+      case 'RESET_AUTO_REFRESH': {
+        const {id} = action
+        draftState[id] = AUTOREFRESH_DEFAULT
         return
       }
     }

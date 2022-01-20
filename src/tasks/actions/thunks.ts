@@ -10,7 +10,6 @@ import * as api from 'src/client'
 import {taskSchema, arrayOfTasks} from 'src/schemas/tasks'
 
 // Actions
-import {setExportTemplate} from 'src/templates/actions/creators'
 import {notify, Action as NotifyAction} from 'src/shared/actions/notifications'
 import {
   addTask,
@@ -48,7 +47,6 @@ import {GetTasksParams} from 'src/client'
 // Utils
 import {getErrorMessage} from 'src/utils/api'
 import {insertPreambleInScript} from 'src/shared/utils/insertPreambleInScript'
-import {taskToTemplate} from 'src/shared/utils/resourceToTemplate'
 import {isLimitError} from 'src/cloud/utils/limits'
 import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {getOrg} from 'src/organizations/selectors'
@@ -592,31 +590,6 @@ export const getLogs = (taskID: string, runID: string) => async (
   } catch (error) {
     console.error(error)
     dispatch(setLogs([]))
-  }
-}
-
-export const convertToTemplate = (taskID: string) => async (
-  dispatch,
-  getState: GetState
-): Promise<void> => {
-  try {
-    dispatch(setExportTemplate(RemoteDataState.Loading))
-    const resp = await api.getTask({taskID})
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const {entities, result} = normalize<Task, TaskEntities, string>(
-      resp.data,
-      taskSchema
-    )
-
-    const taskTemplate = taskToTemplate(getState(), entities.tasks[result])
-
-    dispatch(setExportTemplate(RemoteDataState.Done, taskTemplate))
-  } catch (error) {
-    dispatch(setExportTemplate(RemoteDataState.Error))
-    dispatch(notify(copy.createTemplateFailed(error)))
   }
 }
 

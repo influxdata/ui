@@ -23,7 +23,7 @@ import {
   Panel,
   AlignItems,
   JustifyContent,
-  Dropdown,
+  List,
   ComponentColor,
   Button,
   InfluxColors,
@@ -34,10 +34,11 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {remove} from 'src/shared/contexts/query'
 import Expressions from 'src/flows/pipes/Notification/Expressions'
-import Threshold, {
+import Threshold from 'src/flows/pipes/Notification/Threshold'
+import {
   deadmanType,
   THRESHOLD_TYPES,
-} from 'src/flows/pipes/Notification/Threshold'
+} from 'src/flows/pipes/Visualization/threshold'
 import {
   ENDPOINT_DEFINITIONS,
   ENDPOINT_ORDER,
@@ -247,7 +248,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     )
     .sort((a, b) => ENDPOINT_ORDER.indexOf(a) - ENDPOINT_ORDER.indexOf(b))
     .map(k => (
-      <Dropdown.Item
+      <List.Item
         key={k}
         id={k}
         testID={`dropdown-item--${k}`}
@@ -255,7 +256,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
         selected={data.endpoint === k}
       >
         {ENDPOINT_DEFINITIONS[k].name}
-      </Dropdown.Item>
+      </List.Item>
     ))
 
   const generateDeadmanTask = useCallback(() => {
@@ -646,14 +647,9 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
                     <Form.Element
                       required={true}
                       label="Endpoint"
-                      className="endpoint-dropdown--element"
+                      className="endpoint-list--element"
                     >
-                      <Dropdown.Menu
-                        className="flows-endpoints--dropdown"
-                        maxHeight={500}
-                      >
-                        {avail}
-                      </Dropdown.Menu>
+                      <List>{avail}</List>
                     </Form.Element>
                     <FlexBox.Child grow={1} shrink={1}>
                       <Form.Element

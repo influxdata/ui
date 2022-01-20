@@ -182,14 +182,6 @@ class DashboardCard extends PureComponent<Props> {
           contents={() => (
             <List>
               <List.Item
-                onClick={this.handleExport}
-                size={ComponentSize.Small}
-                style={{fontWeight: 500}}
-                testID="context-export-dashboard"
-              >
-                Export
-              </List.Item>
-              <List.Item
                 onClick={this.handleCloneDashboard}
                 size={ComponentSize.Small}
                 style={{fontWeight: 500}}
@@ -268,18 +260,6 @@ class DashboardCard extends PureComponent<Props> {
     const {onRemoveDashboardLabel, id} = this.props
 
     onRemoveDashboardLabel(id, label)
-  }
-
-  private handleExport = () => {
-    const {
-      history,
-      match: {
-        params: {orgID},
-      },
-      id,
-    } = this.props
-
-    history.push(`/orgs/${orgID}/dashboards-list/${id}/export`)
   }
 }
 

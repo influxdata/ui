@@ -22,6 +22,9 @@ import {getMe} from 'src/me/selectors'
 // Types
 import {CloudUser} from 'src/types'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 interface Props {
   user: CloudUser
 }
@@ -51,6 +54,7 @@ const UserListItem: FC<Props> = ({user}) => {
 
   const isCurrentUser = id === currentUserId
   const [revealOnHover, toggleRevealOnHover] = useState(true)
+  const selfRemovalFromAccount = isFlagEnabled('selfRemovalFromAccount')
 
   const handleShow = () => {
     toggleRevealOnHover(false)
@@ -89,7 +93,7 @@ const UserListItem: FC<Props> = ({user}) => {
       </IndexList.Cell>
       <IndexList.Cell className="user-list-cell-status">Active</IndexList.Cell>
       <IndexList.Cell revealOnHover={revealOnHover} alignment={Alignment.Right}>
-        {!isCurrentUser && (
+        {(!isCurrentUser || selfRemovalFromAccount) && (
           <ConfirmationButton
             icon={IconFont.Trash_New}
             onShow={handleShow}

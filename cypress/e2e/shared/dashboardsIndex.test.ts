@@ -73,12 +73,6 @@ describe('Dashboards', () => {
 
     cy.getByTestID('dashboard-card').should('contain', newName)
 
-    // Open Export overlay
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('export-overlay--text-area').should('exist')
-    cy.get('.cf-overlay--dismiss').click()
-
     // Create from header
     cy.getByTestID('add-resource-dropdown--button').click()
     cy.getByTestID('add-resource-dropdown--new').click()
@@ -148,105 +142,6 @@ describe('Dashboards', () => {
     cy.getByTestID('context-delete-menu--confirm-button').click()
 
     cy.getByTestID('empty-dashboards-list').should('exist')
-  })
-
-  it('can import as JSON or file', () => {
-    const checkImportedDashboard = () => {
-      // wait for importing done
-      cy.intercept('POST', '/api/v2/dashboards/*/cells').as('createCells')
-      // create cell 1
-      cy.wait('@createCells')
-      // create cell 2
-      cy.wait('@createCells')
-      cy.getByTestID('dashboard-card--name')
-        .should('contain', 'IMPORT dashboard')
-        .click()
-      cy.getByTestID('cell Name this Cell').within(() => {
-        cy.get('.markdown-cell--contents').should(
-          'contain',
-          'Note about no tea'
-        )
-      })
-      cy.getByTestID('cell cellll').should('exist')
-
-      // return to previous page
-      cy.fixture('routes').then(({orgs}) => {
-        cy.get<Organization>('@org').then(({id}: Organization) => {
-          cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
-        })
-      })
-    }
-
-    // import dashboard from file
-    cy.getByTestID('add-resource-dropdown--button')
-      .first()
-      .click()
-    cy.getByTestID('add-resource-dropdown--import').click()
-
-    cy.getByTestID('drag-and-drop--input').attachFile({
-      filePath: 'dashboard-import.json',
-    })
-
-    cy.getByTestID('submit-button Dashboard').click()
-    checkImportedDashboard()
-
-    // delete dashboard before reimport
-    cy.getByTestID('dashboard-card')
-      .first()
-      .trigger('mouseover')
-      .within(() => {
-        cy.getByTestID('context-delete-menu--button').click()
-      })
-    cy.getByTestID('context-delete-menu--confirm-button').click()
-
-    // dashboard no longer exists
-    cy.getByTestID('dashboard-card').should('not.exist')
-
-    // import dashboard as json
-    cy.getByTestID('add-resource-dropdown--button')
-      .first()
-      .click()
-    cy.getByTestID('add-resource-dropdown--import').click()
-
-    cy.getByTestID('select-group')
-      .contains('Paste')
-      .click()
-
-    cy.fixture('dashboard-import.json').then(json => {
-      cy.getByTestID('import-overlay--textarea')
-        .should('be.visible')
-        .click()
-        .type(JSON.stringify(json), {parseSpecialCharSequences: false})
-    })
-
-    cy.getByTestID('submit-button Dashboard').click()
-    checkImportedDashboard()
-  })
-
-  it('keeps user input in text area when attempting to import invalid JSON', () => {
-    cy.getByTestID('page-control-bar').within(() => {
-      cy.getByTestID('add-resource-dropdown--button').click()
-    })
-
-    cy.getByTestID('add-resource-dropdown--import').click()
-    cy.contains('Paste').click()
-    cy.getByTestID('import-overlay--textarea')
-      .click()
-      .type('this is invalid JSON')
-    cy.get('button[title*="Import JSON"]').click()
-    cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
-      expect($s).to.contain('this is invalid JSON')
-    )
-    cy.getByTestID('import-overlay--textarea').type(
-      '{backspace}{backspace}{backspace}{backspace}{backspace}'
-    )
-    cy.get('button[title*="Import JSON"]').click()
-    cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
-      expect($s).to.contain('this is invalid')
-    )
   })
 
   describe('cloning', () => {
@@ -691,34 +586,8 @@ describe('Dashboards', () => {
     cy.getByTestID('save-note--button').click() // note added to add content to be downloaded in the JSON file
     cy.getByTestID('nav-item-dashboards').click()
     cy.getByTestID('dashboard-card').invoke('hover')
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('form-container').should('be.visible')
-    cy.getByTestID('export-overlay--text-area').should('be.visible')
-    cy.getByTestID('button').click()
-    // readFile has a 4s timeout before the test fails
-    cy.readFile('cypress/downloads/dashboard.json').should('not.be.null')
   })
 
-  it('copies to clipboard', () => {
-    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
-      cy.createDashboard(orgID).then(({body}) => {
-        cy.fixture('routes').then(({orgs}) => {
-          cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
-        })
-      })
-    })
-    cy.getByTestID('tree-nav')
-    cy.window().then(win => {
-      cy.stub(win, 'prompt').returns('DISABLED WINDOW PROMPT') // disable pop-up prompt
-    })
-    cy.getByTestID('nav-item-dashboards').click()
-    cy.getByTestID('dashboard-card').invoke('hover')
-    cy.getByTestID('context-menu-dashboard').click()
-    cy.getByTestID('context-export-dashboard').click()
-    cy.getByTestID('button-copy').click()
-    cy.getByTestID('notification-success--children').should('be.visible')
-  })
   it('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()

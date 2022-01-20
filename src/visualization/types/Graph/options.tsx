@@ -1,5 +1,5 @@
-import React, {FC} from 'react'
-
+// Libraries
+import React, {FC, useMemo} from 'react'
 import {
   Input,
   Grid,
@@ -11,9 +11,11 @@ import {
   ComponentStatus,
   ButtonShape,
 } from '@influxdata/clockface'
+import {createGroupIDColumn} from '@influxdata/giraffe'
 
-import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import {AXES_SCALE_OPTIONS} from 'src/visualization/constants'
+
+// Utils
 import {
   FORMAT_OPTIONS,
   resolveTimeFormat,
@@ -23,6 +25,11 @@ import {
   defaultYColumn,
   parseYBounds,
 } from 'src/shared/utils/vis'
+import {generateSeriesToColorHex} from 'src/visualization/utils/colorMappingUtils'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
+// Components
+import AutoDomainInput from 'src/shared/components/AutoDomainInput'
 import ColorSchemeDropdown from 'src/visualization/components/internal/ColorSchemeDropdown'
 import HoverLegend from 'src/visualization/components/internal/HoverLegend'
 import StaticLegend from 'src/visualization/components/internal/StaticLegend'
@@ -47,6 +54,10 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
 
     return columnType === 'time' || columnType === 'number'
   })
+
+  const groupKey = useMemo(() => [...results.fluxGroupKeyUnion, 'result'], [
+    results,
+  ])
 
   const xColumn = defaultXColumn(results?.table, properties.xColumn)
   const yColumn = defaultYColumn(results?.table, properties.yColumn)
@@ -195,7 +206,20 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
             <ColorSchemeDropdown
               value={properties.colors?.filter(c => c.type === 'scale') ?? []}
               onChange={colors => {
-                update({colors})
+                if (isFlagEnabled('graphColorMapping')) {
+                  const [, fillColumnMap] = createGroupIDColumn(
+                    results.table,
+                    groupKey
+                  )
+                  const colorMapping = generateSeriesToColorHex(
+                    fillColumnMap,
+                    properties
+                  )
+
+                  update({colors, colorMapping})
+                } else {
+                  update({colors})
+                }
               }}
             />
           </Form.Element>

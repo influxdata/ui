@@ -1,4 +1,4 @@
-import {isValid, isValidStrictly} from './validator'
+import {isValid, isValidRFC3339, isValidStrictly} from './validator'
 
 describe('the datetime validator', () => {
   it('should return true on valid date formats', function() {
@@ -55,6 +55,7 @@ describe('the datetime validator', () => {
       )
     ).toBeTruthy()
   })
+
   it('should return false on invalid date formats', function() {
     expect(isValid('1999-02-09 23:00', 'YYYY-MM-DD HH:mm:ss')).toBeFalsy()
     expect(
@@ -98,6 +99,7 @@ describe('the datetime validator', () => {
       )
     ).toBeFalsy()
   })
+
   it('should be strict on date formats', function() {
     expect(
       isValidStrictly('1999-02-09 23:00:0', 'YYYY-MM-DD HH:mm:ss')
@@ -149,5 +151,55 @@ describe('the datetime validator', () => {
         'dddd, MMMM D, YYYY hh:mm:ss a'
       )
     ).toBeFalsy()
+  })
+
+  describe('can validate RFC3339 format', () => {
+    it('can identify valid RFC3339 format', () => {
+      expect(isValidRFC3339(new Date().toISOString())).toBeTruthy()
+
+      expect(isValidRFC3339('2022-01-11T23:00:00Z')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T00:00:00Z')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00+0800')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00+08:00')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00-0800')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00-08:00')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00+00:00')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00-00:00')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00+0000')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00-0000')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11T23:00:00+10:30')).toBeTruthy()
+
+      expect(isValidRFC3339('2022-01-11 23:00:00Z')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 00:00:00Z')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00+0800')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00+08:00')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00-0800')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00-08:00')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00+00:00')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00-00:00')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00+0000')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00-0000')).toBeTruthy()
+      expect(isValidRFC3339('2022-01-11 23:00:00+10:30')).toBeTruthy()
+    })
+
+    it('can identify invalid RFC3339 format', () => {
+      expect(isValidRFC3339('22-01-11T23:00:00')).toBeFalsy()
+      expect(isValidRFC3339('01-11T23:00:00')).toBeFalsy()
+      expect(isValidRFC3339('20220111T230000Z')).toBeFalsy()
+      expect(isValidRFC3339('2022-344T23:00:00Z')).toBeFalsy()
+      expect(isValidRFC3339('2022-01-11T23:00:00')).toBeFalsy()
+      expect(isValidRFC3339('2022-01-11T23:00:00+Z')).toBeFalsy()
+      expect(isValidRFC3339('2022-01-11T23:00:00+0')).toBeFalsy()
+      expect(isValidRFC3339('2022-01-11T23:00:00+8')).toBeFalsy()
+
+      expect(isValidRFC3339('22-01-11 23:00:00')).toBeFalsy()
+      expect(isValidRFC3339('01-11 23:00:00')).toBeFalsy()
+      expect(isValidRFC3339('20220111230000Z')).toBeFalsy()
+      expect(isValidRFC3339('2022-344 23:00:00Z')).toBeFalsy()
+      expect(isValidRFC3339('2022-01-11 23:00:00')).toBeFalsy()
+      expect(isValidRFC3339('2022-01-11 23:00:00+Z')).toBeFalsy()
+      expect(isValidRFC3339('2022-01-11 23:00:00+0')).toBeFalsy()
+      expect(isValidRFC3339('2022-01-11 23:00:00+8')).toBeFalsy()
+    })
   })
 })

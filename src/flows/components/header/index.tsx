@@ -118,6 +118,7 @@ const FlowHeader: FC = () => {
       }))
 
       setTokens(_tokens)
+      event('Notebook share tokens', {count: _tokens.length})
     })
     event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
   }

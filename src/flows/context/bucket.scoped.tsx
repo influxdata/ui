@@ -70,8 +70,8 @@ export const BucketProvider: FC = ({children}) => {
     }
 
     getAllBuckets(scope.region, scope.org, scope?.token)
-      .then(bucketz => {
-        const bucks = bucketz
+      .then(results => {
+        const bucks = results
           .map(bucket => ({
             id: bucket.id,
             orgID: bucket.orgID,
@@ -128,7 +128,7 @@ export const BucketProvider: FC = ({children}) => {
         setBuckets([...bucks.user, ...bucks.system, ...bucks.sample])
       })
       .catch(() => {})
-  }, [scope.region, scope.org, controller, getAllBuckets])
+  }, [scope.region, scope.org, controller])
 
   const addBucket = (bucket: Bucket) => {
     setBuckets([...buckets, bucket])

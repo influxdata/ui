@@ -26,6 +26,8 @@ import {getOrg} from 'src/organizations/selectors'
 import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
 import {areNewSchemasValid} from 'src/buckets/components/createBucketForm/measurementSchemaUtils'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
+import {BucketsCacheState} from 'src/flows/context/buckets.cached'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -41,7 +43,12 @@ interface CreateBucketFormProps {
   testID?: string
 }
 
+const useLocalStorageState = createLocalStorageStateHook('BucketsCacheState', {
+  isDirty: false,
+} as BucketsCacheState)
+
 export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
+  const [bucketsCache, updateBucketsCache] = useLocalStorageState()
   const {onClose, testID = 'create-bucket-form'} = props
   const org = useSelector(getOrg)
   const isRetentionLimitEnforced = useSelector((state: AppState): boolean => {
@@ -133,6 +140,10 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
 
       reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket, mSchemas))
       onClose()
+
+      if (!bucketsCache.isDirty) {
+        updateBucketsCache({isDirty: true})
+      }
     }
   }
 

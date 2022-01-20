@@ -9,15 +9,27 @@ import {hashCode} from 'src/shared/apis/queryCache'
 import {Bucket, RemoteDataState} from 'src/types'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
 
-interface BucketsMap {
-  [key: string]: Bucket[]
+type UnixTimestamp = number
+
+interface BucketsCache {
+  expires: UnixTimestamp
+  buckets: Bucket[]
+}
+
+export interface BucketsCacheState {
+  isDirty: boolean
+}
+
+interface BucketsCacheMap {
+  [key: string]: BucketsCache
 }
 export type Props = {
   children: JSX.Element
 }
 export interface BucketsCacheContextType {
   loading: RemoteDataState
-  bucketsMap: BucketsMap
+  bucketsMap: BucketsCacheMap
+  bucketsCacheState: BucketsCacheState
   getAllBuckets: (
     region: string,
     orgID: string,
@@ -28,6 +40,7 @@ export interface BucketsCacheContextType {
 export const DEFAULT_CONTEXT: BucketsCacheContextType = {
   loading: RemoteDataState.NotStarted,
   bucketsMap: {},
+  bucketsCacheState: {isDirty: false},
   getAllBuckets: (_: string, __: string, ___?: string) =>
     new Promise<[]>(r => r([])),
 }
@@ -41,45 +54,62 @@ const getHash = (region: string, orgID: string, token = '') => {
 }
 
 const useLocalStorageState = createLocalStorageStateHook(
-  'bucketsMap',
+  'BucketsCache',
   DEFAULT_CONTEXT.bucketsMap
 )
 
+const useBucketsCacheStorage = createLocalStorageStateHook(
+  'BucketsCacheState',
+  DEFAULT_CONTEXT.bucketsCacheState
+)
+
 // In Seconds
-const BUCKETS_CACHING_TIME = 30 * 1000
+const BUCKETS_CACHING_TIME = 30
+
+const getCurrentTimestamp = (): UnixTimestamp => {
+  return Math.round(new Date().getTime() / 1000)
+}
 
 export const BucketsCacheProvider: FC<Props> = ({children}) => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [bucketsMap, updateBucketsMap] = useLocalStorageState()
-  const [removeMe, setRemoveMe] = useState(true)
+  const [bucketsCacheState, updateBucketsCacheState] = useBucketsCacheStorage()
 
-  const removeBucketsTimer = (id: string) => {
-    // Direct state mutation required
-    if (bucketsMap[id]) {
-      delete bucketsMap[id]
-    }
-    updateBucketsMap({...bucketsMap})
-  }
-  const addToBucketsMap = (id, buckets) => {
-    // Direct state mutation required
-    bucketsMap[id] = buckets
-    updateBucketsMap({...bucketsMap})
+  const setCleanupTimer = id => {
+    const timeout = (bucketsMap[id]?.expires - getCurrentTimestamp()) * 1000
     setTimeout(() => {
-      if (bucketsMap[id]) {
-        removeBucketsTimer(id)
+      if (bucketsMap[id]?.expires) {
+        delete bucketsMap[id]
+        updateBucketsMap({...bucketsMap})
       }
-    }, BUCKETS_CACHING_TIME)
+    }, timeout)
   }
 
-  // FIXME: Remove this
   useEffect(() => {
-    if (!removeMe) {
+    if (bucketsCacheState.isDirty) {
+      updateBucketsCacheState({isDirty: false})
+      updateBucketsMap({})
+
       return
     }
 
-    updateBucketsMap({})
-    setRemoveMe(false)
-  })
+    Object.keys(bucketsMap).forEach(key => {
+      setCleanupTimer(key)
+    })
+  }, [])
+
+  useEffect(() => {})
+
+  const addToBucketsMap = (id, buckets) => {
+    // Direct state mutation required
+    const expires = getCurrentTimestamp() + BUCKETS_CACHING_TIME
+    bucketsMap[id] = {
+      buckets,
+      expires,
+    }
+    updateBucketsMap({...bucketsMap})
+    setCleanupTimer(id)
+  }
 
   const fetchOne = async (url, headers, page, limit = 100) => {
     const fullurl = `${url}&page=${page}&limit=${limit}`
@@ -102,47 +132,52 @@ export const BucketsCacheProvider: FC<Props> = ({children}) => {
     }
 
     let page = 1
-    const buckets = []
+
+    // To check if the list response has exhausted
     const bucketIDs = new Set()
-    let bucketz = await fetchOne(url, headers, page)
+
+    const buckets = []
+    let results = await fetchOne(url, headers, page)
     do {
-      for (let i = 0; i < bucketz.length; i++) {
-        const bid = bucketz[i].id
+      for (let i = 0; i < results.length; i++) {
+        const bid = results[i].id
         if (bucketIDs.has(bid)) {
           return buckets
         }
 
         bucketIDs.add(bid)
-        buckets.push(bucketz[i])
+        buckets.push(results[i])
       }
       page += 1
-      bucketz = await fetchOne(url, headers, page)
-    } while (bucketz.length)
+      results = await fetchOne(url, headers, page)
+    } while (results.length)
 
     return buckets
   }
 
-  const getAllBuckets = (
+  const isExpired = (map: BucketsCache): boolean => {
+    return !map?.expires || getCurrentTimestamp() - map.expires >= 0
+  }
+
+  const getAllBuckets = async (
     region: string,
     orgID: string,
-    token?: string
+    token = ''
   ): Promise<Bucket[]> => {
     const hash = getHash(region, orgID, token)
-    let bucksPromise
+    let buckets
     setLoading(RemoteDataState.Loading)
-
-    if (!bucketsMap[hash]) {
-      bucksPromise = fetchAll(
-        `${region}/api/v2/buckets?orgID=${orgID}`,
-        token ?? ''
-      )
-      addToBucketsMap(hash, bucksPromise)
+    if (isExpired(bucketsMap[hash])) {
+      buckets = await fetchAll(`${region}/api/v2/buckets?orgID=${orgID}`, token)
+      addToBucketsMap(hash, buckets)
     } else {
-      bucksPromise = bucketsMap[hash]
+      buckets = bucketsMap[hash].buckets
     }
 
-    setLoading(RemoteDataState.Done)
-    return bucksPromise
+    return new Promise(resolve => {
+      setLoading(RemoteDataState.Done)
+      resolve(buckets)
+    })
   }
 
   return (
@@ -151,6 +186,7 @@ export const BucketsCacheProvider: FC<Props> = ({children}) => {
         loading,
         bucketsMap,
         getAllBuckets,
+        bucketsCacheState,
       }}
     >
       {children}

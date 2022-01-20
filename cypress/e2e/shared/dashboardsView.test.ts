@@ -1427,7 +1427,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.wait('@loadQuery')
     cy.getByTestID('giraffe-layer-rect').should('be.visible')
     cy.getByTestID('cell--view-empty histogram').should('exist')
-
+/*
     // map
     cy.getByTestID('cell-context--toggle').click()
     cy.getByTestID('cell-context--configure').click()
@@ -1439,7 +1439,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.getByTestID('save-cell--button').click()
     cy.wait('@loadQuery')
     cy.getByTestID('cell--view-empty geo').should('be.visible')
-
+*/
     // mosaic
     cy.getByTestID('cell-context--toggle').click()
     cy.getByTestID('cell-context--configure').click()

@@ -332,7 +332,6 @@ export const FlowQueryProvider: FC = ({children}) => {
   // Use localstorage to communicate query execution to other tabs
   const queryAll = () => {
     sendEvent(notebookQueryKey)
-    console.log('queryAll is claled')
     _queryAll()
   }
 

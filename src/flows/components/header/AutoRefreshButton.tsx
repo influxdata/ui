@@ -90,13 +90,10 @@ const AutoRefreshButton: FC = () => {
   ])
 
   useEffect(() => {
-    if (flow?.id) {
-      return
-    }
     GlobalAutoRefresher.subscribe(queryAll)
 
     return () => GlobalAutoRefresher.unsubscribe(queryAll)
-  }, [flow?.id, queryAll])
+  }, [queryAll])
 
   const isActive = autoRefresh?.status === AutoRefreshStatus.Active
 

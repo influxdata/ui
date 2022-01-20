@@ -8,6 +8,7 @@ import {
   PopoverPosition,
   PopoverInteraction,
   Appearance,
+  IconFont,
 } from '@influxdata/clockface'
 import DateRangePicker from 'src/shared/components/dateRangePicker/DateRangePicker'
 
@@ -50,7 +51,10 @@ const TimeRangeDropdown: FC<Props> = ({
 
   return (
     <div ref={buttonRef} className={className} data-testid="timerange-dropdown">
-      <Dropdown.Button onClick={() => setPickerActive(!pickerActive)}>
+      <Dropdown.Button
+        icon={IconFont.Clock_New}
+        onClick={() => setPickerActive(!pickerActive)}
+      >
         {dropdownLabel}
       </Dropdown.Button>
       <Popover

@@ -6,23 +6,15 @@ import React, {
   useState,
   useEffect,
 } from 'react'
-import {useDispatch, useSelector} from 'react-redux'
 import {useLocation} from 'react-router-dom'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
-import {AppState, AutoRefreshStatus} from 'src/types'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {v4 as UUID} from 'uuid'
-import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS, PROJECT_NAME} from 'src/flows'
+import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import * as Y from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
-import {GlobalAutoRefresher} from 'src/utils/AutoRefresher'
-import {resetAutoRefresh} from 'src/shared/actions/autoRefresh'
-import {notify} from 'src/shared/actions/notifications'
-import {autoRefreshTimeoutSuccess} from 'src/shared/copy/notifications'
-import {event} from 'src/cloud/utils/reporting'
-import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 
 export interface FlowContextType {
   name: string
@@ -53,7 +45,6 @@ let GENERATOR_INDEX = 0
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
-  const dispatch = useDispatch()
   const provider = useRef<WebsocketProvider>()
   const yDoc = useRef(new Y.Doc())
   function disconnectProvider() {
@@ -61,79 +52,6 @@ export const FlowProvider: FC = ({children}) => {
       provider.current.disconnect()
     }
   }
-
-  const {autoRefresh} = useSelector((state: AppState) => {
-    const autoRefresh =
-      state.autoRefresh[`${PROJECT_NAME}-${currentID}`] ?? AUTOREFRESH_DEFAULT
-    return {
-      autoRefresh,
-    }
-  })
-
-  const timeoutFunction = useCallback(() => {
-    if (isFlagEnabled('flowAutoRefresh')) {
-      dispatch(resetAutoRefresh(`${PROJECT_NAME}-${currentID}`))
-      dispatch(notify(autoRefreshTimeoutSuccess()))
-      GlobalAutoRefresher.onDisconnect()
-      event('flow inactivitytimeout', {
-        timeout: autoRefresh.inactivityTimeout,
-      })
-    }
-  }, [autoRefresh.inactivityTimeout, currentID, dispatch])
-
-  const startTimeout = useCallback(() => {
-    if (isFlagEnabled('flowAutoRefresh')) {
-      GlobalAutoRefresher.startTimeout(
-        timeoutFunction,
-        autoRefresh.inactivityTimeout
-      )
-    }
-  }, [autoRefresh.inactivityTimeout, timeoutFunction])
-
-  const stopFunc = useCallback(() => {
-    if (isFlagEnabled('flowAutoRefresh')) {
-      if (
-        !autoRefresh.infiniteDuration &&
-        new Date(autoRefresh?.duration?.upper).getTime() <= new Date().getTime()
-      ) {
-        GlobalAutoRefresher.stopPolling()
-        dispatch(resetAutoRefresh(`${PROJECT_NAME}-${currentID}`))
-      }
-    }
-  }, [
-    currentID,
-    dispatch,
-    autoRefresh?.duration?.upper,
-    autoRefresh.infiniteDuration,
-  ])
-
-  useEffect(() => {
-    if (isFlagEnabled('flowAutoRefresh')) {
-      if (autoRefresh?.status === AutoRefreshStatus.Active) {
-        GlobalAutoRefresher.poll(autoRefresh, stopFunc)
-        if (autoRefresh.inactivityTimeout > 0) {
-          GlobalAutoRefresher.onDisconnect()
-          startTimeout()
-          GlobalAutoRefresher.onConnect()
-        }
-      } else {
-        GlobalAutoRefresher.onDisconnect()
-      }
-    }
-
-    return () => {
-      if (isFlagEnabled('flowAutoRefresh')) {
-        GlobalAutoRefresher.onDisconnect()
-        GlobalAutoRefresher.stopPolling()
-      }
-    }
-  }, [
-    autoRefresh.interval,
-    autoRefresh?.status,
-    autoRefresh.inactivityTimeout,
-    stopFunc,
-    startTimeout,
-  ])
 
   const {search} = useLocation()
 

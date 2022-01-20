@@ -65,10 +65,10 @@ class DashboardRoute extends PureComponent<Props> {
     }
 
     const params = new URLSearchParams(window.location.search)
-    const vars = (Array.from(params.entries()) || [])
-      .filter(([k, _v]) => /(^vars\[)(.+)(\]$)/g.test(k))
-      .reduce((acc, [k, v]) => {
-        acc[k.slice(5, -1)] = v
+    const vars = Array.from(params.keys())
+      .filter(k => /(^vars\[)(.+)(\]$)/g.test(k))
+      .reduce((acc, k) => {
+        acc[k.slice(5, -1)] = params.get(k)
         return acc
       }, {}) as Record<string, string>
 

@@ -46,38 +46,21 @@ const DashboardContainer: FC = () => {
     '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
   )
 
+  const timeoutFunction = useCallback(() => {
+    dispatch(resetAutoRefresh(`dashboard-${dashboardID}`))
+    dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
+    GlobalAutoRefresher.onDisconnect()
+    event('dashboards.autorefresh.dashboardcontainer.inactivitytimeout', {
+      timeout: autoRefresh.inactivityTimeout,
+    })
+  }, [autoRefresh.inactivityTimeout, dashboardID, dispatch])
+
   const startTimeout = useCallback(() => {
     GlobalAutoRefresher.startTimeout(
       timeoutFunction,
       autoRefresh.inactivityTimeout
     )
-  }, [autoRefresh.inactivityTimeout])
-
-  const registerListeners = useCallback(() => {
-    window.addEventListener('load', registerListeners)
-    document.addEventListener('mousemove', registerListeners)
-    document.addEventListener('keypress', registerListeners)
-  }, [])
-
-  const registerStopListeners = useCallback(() => {
-    window.removeEventListener('load', registerListeners)
-    document.removeEventListener('mousemove', registerListeners)
-    document.removeEventListener('keypress', registerListeners)
-  }, [registerListeners])
-
-  const timeoutFunction = useCallback(() => {
-    dispatch(resetAutoRefresh(`dashboard-${dashboardID}`))
-    dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
-    registerStopListeners()
-    event('dashboards.autorefresh.dashboardcontainer.inactivitytimeout', {
-      timeout: autoRefresh.inactivityTimeout,
-    })
-  }, [
-    autoRefresh.inactivityTimeout,
-    dashboardID,
-    dispatch,
-    registerStopListeners,
-  ])
+  }, [autoRefresh.inactivityTimeout, timeoutFunction])
 
   const stopFunc = useCallback(() => {
     if (
@@ -107,7 +90,7 @@ const DashboardContainer: FC = () => {
 
   useEffect(() => {
     if (isEditing) {
-      registerStopListeners()
+      GlobalAutoRefresher.onDisconnect()
       GlobalAutoRefresher.stopPolling()
       return
     }
@@ -116,16 +99,16 @@ const DashboardContainer: FC = () => {
       GlobalAutoRefresher.poll(autoRefresh, stopFunc)
       document.addEventListener('visibilitychange', visChangeHandler)
       if (autoRefresh.inactivityTimeout > 0) {
-        registerStopListeners()
+        GlobalAutoRefresher.onDisconnect()
         startTimeout()
-        registerListeners()
+        GlobalAutoRefresher.onConnect()
       }
     } else {
-      registerStopListeners()
+      GlobalAutoRefresher.onDisconnect()
     }
 
     return () => {
-      registerStopListeners()
+      GlobalAutoRefresher.onDisconnect()
       GlobalAutoRefresher.stopPolling()
       document.removeEventListener('visibilitychange', visChangeHandler)
     }
@@ -135,8 +118,6 @@ const DashboardContainer: FC = () => {
     autoRefresh.inactivityTimeout,
     stopFunc,
     isEditing?.path,
-    registerListeners,
-    registerStopListeners,
     startTimeout,
     visChangeHandler,
   ])

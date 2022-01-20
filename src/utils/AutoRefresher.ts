@@ -8,6 +8,26 @@ export class AutoRefresher {
   private intervalID: NodeJS.Timer
   private timerID: NodeJS.Timer
 
+  public onConnect() {
+    this.registerListeners()
+  }
+
+  public onDisconnect() {
+    this.unregisterListeners()
+  }
+
+  private registerListeners = () => {
+    window.addEventListener('load', this.registerListeners)
+    document.addEventListener('mousemove', this.registerListeners)
+    document.addEventListener('keypress', this.registerListeners)
+  }
+
+  private unregisterListeners = () => {
+    window.removeEventListener('load', this.registerListeners)
+    document.removeEventListener('mousemove', this.registerListeners)
+    document.removeEventListener('keypress', this.registerListeners)
+  }
+
   public subscribe(fn: func) {
     this.subscribers = [...this.subscribers, fn]
   }

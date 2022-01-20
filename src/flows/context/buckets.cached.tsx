@@ -71,6 +71,49 @@ const getCurrentTimestamp = (): UnixTimestamp => {
   return Math.round(new Date().getTime() / 1000)
 }
 
+const fetchOne = async (url, headers, limit = 100, page = 1) => {
+  const offset = page ? `&offset=${page * limit}` : ''
+  const fullurl = `${url}&limit=${limit}${offset}`
+  const method = 'GET'
+  let json
+  try {
+    const response = await fetch(fullurl, {method, headers})
+    json = await response.json()
+  } catch (e) {
+    console.error('error fetching buckets')
+  }
+
+  return json?.buckets ?? []
+}
+
+const fetchAll = async (url: string, token: string) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept-Encoding': 'gzip',
+  }
+
+  if (token) {
+    headers['Authorization'] = `Token ${token}`
+  }
+
+  if (CLOUD) {
+    return fetchOne(url, headers, -1)
+  }
+
+  let page = 1
+
+  let buckets = []
+  let results = await fetchOne(url, headers, page)
+  do {
+    buckets = [...buckets, ...results]
+
+    page += 1
+    results = await fetchOne(url, headers, page)
+  } while (!!results.length)
+
+  return buckets
+}
+
 export const BucketsCacheProvider: FC<Props> = ({children}) => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [bucketsMap, updateBucketsMap] = useLocalStorageState()
@@ -110,49 +153,6 @@ export const BucketsCacheProvider: FC<Props> = ({children}) => {
     }
     updateBucketsMap({...bucketsMap})
     setCleanupTimer(id)
-  }
-
-  const fetchOne = async (url, headers, limit = 100, page = 1) => {
-    const offset = page ? `&offset=${page * limit}` : ''
-    const fullurl = `${url}&limit=${limit}${offset}`
-    const method = 'GET'
-    let json
-    try {
-      const response = await fetch(fullurl, {method, headers})
-      json = await response.json()
-    } catch (e) {
-      console.error('error fetching buckets')
-    }
-
-    return json?.buckets ?? []
-  }
-
-  const fetchAll = async (url: string, token: string) => {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Accept-Encoding': 'gzip',
-    }
-
-    if (token) {
-      headers['Authorization'] = `Token ${token}`
-    }
-
-    if (CLOUD) {
-      return fetchOne(url, headers, -1)
-    }
-
-    let page = 1
-
-    let buckets = []
-    let results = await fetchOne(url, headers, page)
-    do {
-      buckets = [...buckets, ...results]
-
-      page += 1
-      results = await fetchOne(url, headers, page)
-    } while (!!results.length)
-
-    return buckets
   }
 
   const isExpired = (map: BucketsCache): boolean => {

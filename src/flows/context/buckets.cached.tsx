@@ -1,5 +1,6 @@
 import React, {FC, useEffect, useState} from 'react'
 import {hashCode} from 'src/shared/apis/queryCache'
+import {CLOUD} from 'src/shared/constants'
 
 // Actions
 
@@ -64,7 +65,7 @@ const useBucketsCacheStorage = createLocalStorageStateHook(
 )
 
 // In Seconds
-const BUCKETS_CACHING_TIME = 30
+const BUCKETS_CACHING_TIME = 30 * 60 // 30 Minutes
 
 const getCurrentTimestamp = (): UnixTimestamp => {
   return Math.round(new Date().getTime() / 1000)
@@ -111,14 +112,19 @@ export const BucketsCacheProvider: FC<Props> = ({children}) => {
     setCleanupTimer(id)
   }
 
-  const fetchOne = async (url, headers, page, limit = 100) => {
-    const fullurl = `${url}&page=${page}&limit=${limit}`
-    const response = await fetch(fullurl, {
-      method: 'GET',
-      headers,
-    })
-    const json = await response.json()
-    return json.buckets
+  const fetchOne = async (url, headers, limit = 100, page = 1) => {
+    const offset = page ? `&offset=${page * limit}` : ''
+    const fullurl = `${url}&limit=${limit}${offset}`
+    const method = 'GET'
+    let json
+    try {
+      const response = await fetch(fullurl, {method, headers})
+      json = await response.json()
+    } catch (e) {
+      console.error('error fetching buckets')
+    }
+
+    return json?.buckets ?? []
   }
 
   const fetchAll = async (url: string, token: string) => {
@@ -131,26 +137,20 @@ export const BucketsCacheProvider: FC<Props> = ({children}) => {
       headers['Authorization'] = `Token ${token}`
     }
 
+    if (CLOUD) {
+      return fetchOne(url, headers, -1)
+    }
+
     let page = 1
 
-    // To check if the list response has exhausted
-    const bucketIDs = new Set()
-
-    const buckets = []
+    let buckets = []
     let results = await fetchOne(url, headers, page)
     do {
-      for (let i = 0; i < results.length; i++) {
-        const bid = results[i].id
-        if (bucketIDs.has(bid)) {
-          return buckets
-        }
+      buckets = [...buckets, ...results]
 
-        bucketIDs.add(bid)
-        buckets.push(results[i])
-      }
       page += 1
       results = await fetchOne(url, headers, page)
-    } while (results.length)
+    } while (!!results.length)
 
     return buckets
   }

@@ -5,7 +5,6 @@ import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {prohibitedDeselect} from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // API
@@ -55,7 +54,6 @@ import {
   setFunctions,
 } from 'src/timeMachine/actions/queryBuilder'
 import {setBuckets} from 'src/buckets/actions/creators'
-import {notify} from 'src/shared/actions/notifications'
 
 // Constants
 import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
@@ -355,12 +353,7 @@ export const multiSelectBuilderFunction = (name: string) => (
     // add clicked to selected
     dispatch(setFunctions([...functionNames, name]))
   } else {
-    if (functions.length > 1) {
-      // if more than one function is selected, remove clicked from selected
-      dispatch(setFunctions(functionNames.filter(n => n != name)))
-    } else {
-      dispatch(notify(prohibitedDeselect()))
-    }
+    dispatch(setFunctions(functionNames.filter(n => n != name)))
   }
 }
 

@@ -64,12 +64,12 @@ describe('NotificationRules', () => {
         cy.getByTestID('checkeo--header alerting-tab').click()
         cy.getByTestID('add-threshold-condition-CRIT').click()
         cy.getByTestID('builder-conditions').within(() => {
-          cy.getByTestID('panel').within(() => {
+          cy.getByTestID('panel-CRIT').within(() => {
             cy.getByTestID('input-field-CRIT')
               .click()
               .type('{backspace}{backspace}')
               .invoke('attr', 'type')
-              .should('equal', 'text')
+              .should('equal', 'number')
               .getByTestID('input-field-CRIT--error')
               .should('have.length', 1)
               .and('have.value', '')
@@ -88,7 +88,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('checkeo--header alerting-tab').click()
         cy.getByTestID('add-threshold-condition-CRIT').click()
         cy.getByTestID('builder-conditions').within(() => {
-          cy.getByTestID('panel').within(() => {
+          cy.getByTestID('panel-CRIT').within(() => {
             cy.getByTestID('input-field-CRIT')
               .click()
               .type('{backspace}{backspace}9')
@@ -106,7 +106,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('checkeo--header alerting-tab').click()
         cy.getByTestID('add-threshold-condition-CRIT').click()
         cy.getByTestID('builder-conditions').within(() => {
-          cy.getByTestID('panel').within(() => {
+          cy.getByTestID('panel-CRIT').within(() => {
             cy.getByTestID('dropdown--button').click()
             cy.get(
               '.cf-dropdown-item--children:contains("is inside range")'
@@ -136,7 +136,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('checkeo--header alerting-tab').click()
         cy.getByTestID('add-threshold-condition-CRIT').click()
         cy.getByTestID('builder-conditions').within(() => {
-          cy.getByTestID('panel').within(() => {
+          cy.getByTestID('panel-CRIT').within(() => {
             cy.getByTestID('dropdown--button').click()
             cy.get(
               '.cf-dropdown-item--children:contains("is inside range")'

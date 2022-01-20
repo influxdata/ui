@@ -28,7 +28,7 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {INVALID_DATA_COPY} from 'src/visualization/constants'
 
 // Types
-import {XYViewProperties} from 'src/types'
+import {AppState, ResourceType, View, XYViewProperties} from 'src/types'
 import {VisualizationProps} from 'src/visualization'
 
 // Utils
@@ -54,6 +54,10 @@ import {addAnnotationLayer} from 'src/visualization/utils/annotationUtils'
 import {getColorMappingObjects} from 'src/visualization/utils/colorMappingUtils'
 import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 
+// Selectors
+import {getByID} from 'src/resources/selectors'
+import {updateViewAndVariables} from 'src/views/actions/thunks'
+
 interface Props extends VisualizationProps {
   properties: XYViewProperties
 }
@@ -73,6 +77,13 @@ const XYPlot: FC<Props> = ({
   const tooltipOrientationThreshold = properties.legendOrientationThreshold
   const staticLegend = useStaticLegend(properties)
   const dispatch = useDispatch()
+  const view = useSelector((state: AppState) =>
+    getByID<View<XYViewProperties>>(state, ResourceType.Views, cellID)
+  )
+  const {activeTimeMachineID} = useSelector(
+    (state: AppState) => state.timeMachines
+  )
+  const isVeoOpen = activeTimeMachineID === 'veo'
 
   // these two values are set in the dashboard, and used whether or not this view
   // is in a dashboard or in configuration/single cell popout mode
@@ -186,11 +197,22 @@ const XYPlot: FC<Props> = ({
 
   if (isFlagEnabled('graphColorMapping')) {
     const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
-    const {colorMappingForGiraffe} = getColorMappingObjects(
-      fillColumnMap,
-      properties
-    )
+    const {
+      colorMappingForGiraffe,
+      colorMappingForIDPE,
+      needsToSaveToIDPE,
+    } = getColorMappingObjects(fillColumnMap, properties)
     colorMapping = colorMappingForGiraffe
+
+    // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.
+    // when VEO is open, prevent from saving because it causes state issues. It will be handled in the timemachine code separately.
+    if (needsToSaveToIDPE && view?.dashboardID && !isVeoOpen) {
+      const newView = {...view}
+      newView.properties.colorMapping = colorMappingForIDPE
+
+      // save to IDPE
+      dispatch(updateViewAndVariables(view.dashboardID, newView))
+    }
   }
 
   const config: Config = {

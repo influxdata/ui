@@ -98,7 +98,7 @@ const UserWidget: FC<Props> = ({
         <TreeNav.SubHeading label="Organization" />
         <TreeNav.UserItem
           id="users"
-          label="Users"
+          label="Members"
           testID="user-nav-item-users"
           linkElement={className => (
             <Link className={className} to={`${orgPrefix}/users`} />
@@ -106,7 +106,7 @@ const UserWidget: FC<Props> = ({
         />
         <TreeNav.UserItem
           id="about"
-          label="About"
+          label="Settings"
           testID="user-nav-item-about"
           linkElement={className => (
             <Link className={className} to={`${orgPrefix}/about`} />
@@ -161,6 +161,7 @@ const UserWidget: FC<Props> = ({
           )}
         />
       </CloudExclude>
+      <TreeNav.SubHeading label={me.name} lowercase={true} />
       <TreeNav.UserItem
         id="logout"
         label="Logout"

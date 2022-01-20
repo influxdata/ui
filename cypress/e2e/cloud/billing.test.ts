@@ -61,18 +61,22 @@ describe('Billing Page PAYG Users', () => {
         cy.get('@org').then(({id}: Organization) => {
           cy.setFeatureFlags({
             uiUnificationFlag: true,
-            multiAccount: true,
           }).then(() => {
             cy.quartzProvision({
               accountType: 'pay_as_you_go',
             }).then(() => {
               cy.visit(`/orgs/${id}/billing`)
-              cy.getByTestID('accounts-billing-tab').should('be.visible')
+              cy.getByTestID('billing-page--header').should('be.visible')
 
-              cy.getByTestID('accounts-billing-tab').should(
-                'have.class',
-                'cf-tabs--tab__active'
-              )
+              // note:  when the 'multiAccount' feature flag is on/removed (so always on)
+              // remove the above line, replace with:
+
+              // cy.getByTestID('accounts-billing-tab').should('be.visible')
+              //
+              // cy.getByTestID('accounts-billing-tab').should(
+              //     'have.class',
+              //     'cf-tabs--tab__active'
+              // )
             })
           })
         })

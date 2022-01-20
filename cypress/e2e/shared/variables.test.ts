@@ -200,48 +200,6 @@ describe('Variables', () => {
     cy.getByTestID(`variable-card--name ${queryVariableName}`).contains(
       queryVariableName
     )
-
-    // create variable by uploader
-    cy.getByTestID('add-resource-dropdown--button').click()
-
-    cy.getByTestID('add-resource-dropdown--import').click()
-
-    const filePath = 'data-for-variable.json'
-    cy.get('.drag-and-drop').attachFile(
-      {filePath, mimeType: 'json'},
-      {
-        subjectType: 'drag-n-drop',
-      }
-    )
-
-    cy.getByTestID('submit-button Variable').click()
-
-    cy.getByTestID('resource-card variable')
-      .should('have.length', 4)
-      .contains('agent_host')
-  })
-
-  it('keeps user input in text area when attempting to import invalid JSON', () => {
-    cy.getByTestID('tabbed-page--header').within(() => {
-      cy.contains('Create').click()
-    })
-
-    cy.getByTestID('add-resource-dropdown--import').click()
-    cy.contains('Paste').click()
-    cy.getByTestID('import-overlay--textarea')
-      .click()
-      .type('this is invalid JSON')
-    cy.get('button[title*="Import JSON"]').click()
-    cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').should($s =>
-      expect($s).to.contain('this is invalid JSON')
-    )
-    cy.getByTestID('import-overlay--textarea').type(
-      '{backspace}{backspace}{backspace}{backspace}{backspace}'
-    )
-    cy.get('button[title*="Import JSON"]').click()
-    cy.getByTestID('import-overlay--textarea--error').should('have.length', 1)
-    cy.getByTestID('import-overlay--textarea').contains('this is invalid')
   })
 
   it('can prevent variable names with hyphens or spaces from being saved', () => {

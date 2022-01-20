@@ -8,6 +8,7 @@
   height: 100%;
 }
 
+.flow-visualization--view-error,
 .flow-visualization--view {
   width: 100%;
   border-radius: $cf-radius-sm;
@@ -17,6 +18,13 @@
   .empty-graph-error {
     height: 200px;
   }
+
+  .qr-code {
+    width: 60%;
+  }
+}
+.flow-visualization--view-error {
+  background-color: $c-fire;
 }
 
 .flow-sidebar--submenu .view-options {

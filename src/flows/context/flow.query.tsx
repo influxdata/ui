@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect, useState, useRef} from 'react'
+import React, {FC, useContext, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
@@ -12,10 +12,7 @@ import {useEvent, sendEvent} from 'src/users/hooks/useEvent'
 import {getOrg} from 'src/organizations/selectors'
 
 // Constants
-import {
-  notebookRunSuccess,
-  notebookRunFail,
-} from 'src/shared/copy/notifications'
+import {notebookRunFail} from 'src/shared/copy/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -65,21 +62,23 @@ export const FlowQueryProvider: FC = ({children}) => {
   const {setResult, setStatuses, statuses} = useContext(ResultsContext)
   const {query: queryAPI, basic: basicAPI} = useContext(QueryContext)
   const org = useSelector(getOrg) ?? {id: ''}
-  const [prevLower, setPrevLower] = useState<string>(flow?.range?.lower)
 
   const dispatch = useDispatch()
   const notebookQueryKey = `queryAll-${flow?.name}`
 
   useEffect(() => {
-    if (flow?.range?.lower !== prevLower) {
-      // only run the query if a previously set value has been changed.
-      // unless we're in presentation mode, then we should run the query on load.
-      if (prevLower || flow.readOnly) {
-        queryAll()
-      }
-      setPrevLower(flow?.range?.lower)
+    if (!flow?.range) {
+      return
     }
-  }, [flow])
+    _generateMap()
+    queryAll()
+  }, [flow?.range])
+
+  useEffect(() => {
+    if (flow?.readOnly) {
+      queryAll()
+    }
+  }, [flow?.readOnly])
 
   // Share querying event across tabs
   const handleStorageEvent = e => {
@@ -320,7 +319,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     )
       .then(() => {
         event('run_notebook_success')
-        dispatch(notify(notebookRunSuccess(PROJECT_NAME)))
       })
       .catch(e => {
         event('run_notebook_fail')
@@ -377,7 +375,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     )
       .then(() => {
         event('run_notebook_success')
-        dispatch(notify(notebookRunSuccess(PROJECT_NAME)))
       })
       .catch(e => {
         event('run_notebook_fail')

@@ -1,8 +1,17 @@
 // Libraries
 import React, {FC, useContext, useEffect, useMemo} from 'react'
+import QRComponent from 'src/flows/pipes/Visualization/QRCode'
 
 // Components
-import {Icon, IconFont} from '@influxdata/clockface'
+import {
+  AlignItems,
+  ComponentSize,
+  FlexBox,
+  FlexDirection,
+  Icon,
+  IconFont,
+  JustifyContent,
+} from '@influxdata/clockface'
 import Controls from 'src/flows/pipes/Visualization/Controls'
 
 // Utilities
@@ -21,7 +30,7 @@ import {downloadTextFile} from 'src/shared/utils/download'
 
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
-
+import {LINE_COLORS_SOLID_WHITE} from 'src/shared/constants/graphColorPalettes'
 import {downloadImage} from 'src/shared/utils/download'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -150,6 +159,148 @@ const Visualization: FC<PipeProp> = ({Context}) => {
         </div>
       </Context>
     )
+  }
+
+  if (
+    isFlagEnabled('flowErrorThresholds') &&
+    data?.errorThresholds?.length > 0
+  ) {
+    const fieldIndices = {}
+
+    data?.errorThresholds.forEach(threshold => {
+      fieldIndices[threshold.field] = {
+        type: threshold.type,
+        value: threshold.value,
+      }
+      if (threshold.min) {
+        fieldIndices[threshold.field].min = threshold.min
+      }
+      if (threshold.max) {
+        fieldIndices[threshold.field].max = threshold.max
+      }
+    })
+
+    const {columns} = results.parsed.table
+
+    let triggeredErrorThresholdMessage = ''
+
+    for (let i = 0; i < columns['_field'].data.length - 1; i++) {
+      const field = columns['_field'].data[i]
+      if (fieldIndices[`${field}`]) {
+        // find the value based on the indices
+        const value = columns['_value'].data[i]
+        const val = fieldIndices[`${field}`].value
+        switch (fieldIndices[`${field}`].type) {
+          case 'between':
+            if (
+              value > fieldIndices[`${field}`].min &&
+              value < fieldIndices[`${field}`].max
+            ) {
+              triggeredErrorThresholdMessage = `${field} is between ${
+                fieldIndices[`${field}`].min
+              } and ${fieldIndices[`${field}`].max}`
+            }
+            break
+          case 'not-between':
+            if (
+              value < fieldIndices[`${field}`].min &&
+              value > fieldIndices[`${field}`].max
+            ) {
+              triggeredErrorThresholdMessage = `${field} is not between ${
+                fieldIndices[`${field}`].min
+              } and ${fieldIndices[`${field}`].max}`
+            }
+            break
+          case 'not-equal':
+            if (value !== val) {
+              triggeredErrorThresholdMessage = `${field} is not equal to ${val}`
+            }
+            break
+          case 'equal':
+            if (value === val) {
+              triggeredErrorThresholdMessage = `${field} is equal to ${val}`
+            }
+            break
+          case 'less-equal':
+            if (value <= val) {
+              triggeredErrorThresholdMessage = `${field} is less than or equal to ${val}`
+            }
+            break
+          case 'less':
+            if (value < val) {
+              triggeredErrorThresholdMessage = `${field} is less than ${val}`
+            }
+            break
+          case 'greater-equal':
+            if (value >= val) {
+              triggeredErrorThresholdMessage = `${field} is greater than or equal to ${val}`
+            }
+            break
+          case 'greater':
+            if (value > val) {
+              triggeredErrorThresholdMessage = `${field} is greater than ${val}`
+            }
+            break
+          default:
+            break
+        }
+      }
+
+      if (triggeredErrorThresholdMessage) {
+        break
+      }
+    }
+
+    if (triggeredErrorThresholdMessage) {
+      // show the QR code if it exists
+      const url = new URL(
+        `${window.location.origin}${window.location.pathname}?panel=${id}`
+      ).toString()
+
+      return (
+        <Context controls={<Controls />} resizes>
+          <div
+            className="flow-visualization"
+            id={`${triggeredErrorThresholdMessage}-${id}`}
+          >
+            <div className="flow-visualization--view-error">
+              <FlexBox
+                direction={FlexDirection.Row}
+                margin={ComponentSize.Small}
+                justifyContent={JustifyContent.SpaceBetween}
+                stretchToFitHeight
+              >
+                <div
+                  className="flow-visualization--view-error"
+                  style={{height: '100%'}}
+                >
+                  <View
+                    loading={loading}
+                    properties={{
+                      ...data.properties,
+                      colors: LINE_COLORS_SOLID_WHITE,
+                    }}
+                    result={results.parsed}
+                    timeRange={range}
+                  />
+                </div>
+                <FlexBox
+                  direction={FlexDirection.Column}
+                  margin={ComponentSize.Small}
+                  justifyContent={JustifyContent.Center}
+                  alignItems={AlignItems.Center}
+                >
+                  <QRComponent url={url} />
+                  <div className="panel-threshold--message">
+                    {triggeredErrorThresholdMessage}
+                  </div>
+                </FlexBox>
+              </FlexBox>
+            </div>
+          </div>
+        </Context>
+      )
+    }
   }
 
   return (

@@ -30,8 +30,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        // TODO: remove when feature flag is removed
-        cy.setFeatureFlags({newAutoRefresh: true})
         cy.createBucket(org.id, org.name, 'schmucket')
         const now = Date.now()
         cy.writeData(
@@ -169,8 +167,6 @@ describe('Dashboard refresh', () => {
           cy.getByTestID('cancel-cell-edit--button').click()
         })
 
-        expect(!!cy.state('requests')).to.eq(false)
-
         cy.visit(routeToReturnTo)
         cy.wait('@refreshQuery')
         cy.wait(5000)
@@ -208,8 +204,9 @@ describe('Dashboard refresh', () => {
           .invoke('dispatch', {
             type: 'SET_INACTIVITY_TIMEOUT',
             ...{
-              dashboardID: cy.state().window.store.getState().currentDashboard
-                .id,
+              id: `dashboard-${
+                cy.state().window.store.getState().currentDashboard.id
+              }`,
               inactivityTimeout: 3000,
             },
           })
@@ -218,12 +215,7 @@ describe('Dashboard refresh', () => {
         cy.getByTestID(
           'enable-auto-refresh-button'
         ).contains('ENABLE AUTO REFRESH', {matchCase: false})
-        cy.getByTestID('notification-success--children')
-          .children()
-          .should(
-            'have.text',
-            'Your dashboard auto refresh settings have been reset due to inactivity '
-          )
+
         cy.wait('@refreshQuery')
         cy.wait('@refreshQuery')
         // Wait the duration we'd expect on the next query to ensure stopping via the inactivity timeout actually stops the process. The fail means the request didn't run, which is what we want
@@ -246,7 +238,7 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true, newAutoRefresh: true})
+        cy.setFeatureFlags({pauseCell: true})
 
         cy.createBucket(orgID, name, 'schmucket')
 
@@ -339,7 +331,7 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true, newAutoRefresh: true})
+        cy.setFeatureFlags({pauseCell: true})
 
         cy.createBucket(orgID, name, 'schmucket')
 

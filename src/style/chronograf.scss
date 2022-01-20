@@ -15,8 +15,6 @@
 @import 'src/shared/components/tables/TableGraphs.scss';
 @import 'src/shared/components/graph_tips/GraphTips.scss';
 @import 'src/shared/components/cells/Dashboards.scss';
-@import 'src/shared/components/code_mirror/CodeMirror.scss';
-@import 'src/shared/components/code_mirror/CodeMirrorTheme.scss';
 @import 'src/dashboards/components/dashboard_empty/DashboardEmpty.scss';
 @import 'src/shared/components/views/Markdown.scss';
 @import 'src/onboarding/OnboardingWizard.scss';
@@ -36,7 +34,6 @@
 @import 'src/shared/components/inlineLabels/InlineLabelsEditor.scss';
 @import 'src/shared/components/TagInput.scss';
 @import 'src/visualization/components/internal/ColorSchemeDropdownItem.scss';
-@import 'src/shared/components/ExportOverlay.scss';
 @import 'src/shared/components/EditableName.scss';
 @import 'src/shared/components/DragAndDrop.scss';
 @import 'src/shared/components/NotFound.scss';

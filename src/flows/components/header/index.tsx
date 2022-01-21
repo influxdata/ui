@@ -58,11 +58,7 @@ import {getAuthorizations} from 'src/client/generatedRoutes'
 import {RemoteDataState} from 'src/types'
 
 // Constants
-import {
-  DEFAULT_PROJECT_NAME,
-  PROJECT_NAME,
-  PROJECT_NAME_PLURAL,
-} from 'src/flows'
+import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 const backgroundColor = '#07070E'
 

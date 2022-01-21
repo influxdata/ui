@@ -458,4 +458,11 @@ $cf-radius-lg: $cf-radius + 4px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  span {
+    display: flex;
+    align-items: center;
+  }
+  h4 {
+    margin: 0px;
+  }
 }

@@ -1,9 +1,11 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
+import {getTimeZone} from 'src/dashboards/selectors'
 
 // Components
 import FlowPipe from 'src/flows/components/FlowPipe'
@@ -20,6 +22,7 @@ const Grid = WidthProvider(ReactGridLayout)
 // This component only shows up in downloaded PNG/PDF files
 const HiddenHeader: FC = () => {
   const {flow} = useContext(FlowContext)
+  const timeZone = useSelector(getTimeZone)
   return (
     <div className="html-download-hide">
       <div className="hidden-header-logo">
@@ -28,7 +31,12 @@ const HiddenHeader: FC = () => {
       <div className="hidden-header-title">
         <Page.Title title={flow.name} />
         <span>
-          <TimeRangeLabel turnOnTimezone={true} />
+          <TimeRangeLabel />
+          <h4>
+            {timeZone === 'Local'
+              ? Intl.DateTimeFormat().resolvedOptions().timeZone // e.g. America/Chicago
+              : timeZone}
+          </h4>
         </span>
       </div>
     </div>

@@ -285,7 +285,10 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
   const loadValues = useCallback(
     (idx, search) => {
-      if (cardMeta[idx].loadingValues === RemoteDataState.Loading) {
+      if (
+        cardMeta[idx].loadingValues === RemoteDataState.Loading ||
+        !data.buckets.length
+      ) {
         return
       }
 

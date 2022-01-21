@@ -36,7 +36,7 @@ const PanelQueryOverlay: FC = () => {
           title={`Export to ${CLIENT_DEFINITIONS[contentID].name} Client Library`}
           onDismiss={closeFn}
         />
-        <Overlay.Body>
+        <Overlay.Body className="flow--client-overlay">
           <ClientCodeQueryHelper contentID={contentID} clientQuery={query} />
           <ClientCodeCopyPage contentID={contentID} onCopy={reportCopyClick} />
         </Overlay.Body>

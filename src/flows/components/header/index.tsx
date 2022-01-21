@@ -199,27 +199,23 @@ const FlowHeader: FC = () => {
       .catch(err => console.error('failed to delete share', err))
   }
 
-  const canvasOptions = (canvasId: string) => {
-    return {
-      backgroundColor,
-      onclone: cloneDoc => {
-        // Add left and right padding on the selected screenshot
-        cloneDoc.getElementById(canvasId).style.padding = '0 12px'
-        cloneDoc
-          .querySelectorAll('.html-download-hide')
-          .forEach(d => (d.style.display = 'block'))
-      },
-    }
+  const canvasOptions = {
+    backgroundColor,
+    onclone: cloneDoc => {
+      // Add left and right padding on the selected screenshot
+      cloneDoc.getElementById(currentID).style.padding = '0 12px'
+      cloneDoc
+        .querySelectorAll('.html-download-hide')
+        .forEach(d => (d.style.display = 'block'))
+    },
   }
 
   const handleDownloadAsPNG = () => {
     const canvas = document.getElementById(currentID)
     import('html2canvas').then((module: any) =>
-      module
-        .default(canvas as HTMLDivElement, canvasOptions(currentID))
-        .then(result => {
-          downloadImage(result.toDataURL(), `${flow.name}.png`)
-        })
+      module.default(canvas as HTMLDivElement, canvasOptions).then(result => {
+        downloadImage(result.toDataURL(), `${flow.name}.png`)
+      })
     )
   }
 
@@ -261,7 +257,7 @@ const FlowHeader: FC = () => {
             doc.addPage()
 
             // Add background color
-            doc.setFillColor('#07070E')
+            doc.setFillColor(backgroundColor)
             doc.rect(0, 0, 850, 600, 'F')
 
             // Add piplist screenshot

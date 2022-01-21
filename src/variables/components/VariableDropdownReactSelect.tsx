@@ -14,6 +14,7 @@ import {getVariable, normalizeValues} from 'src/variables/selectors'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
+import {backgroundColor} from 'html2canvas/dist/types/css/property-descriptors/background-color'
 
 interface OwnProps {
   variableID: string
@@ -152,6 +153,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const placeHolderText = this.getPlaceHolderText('Select a Value')
 
     const foreground = 'white'
+    const inputBackground = 'black'
     const background = '#2c2d35'
     //  const background= 'cyan'
     const focusColor = '#46454e'
@@ -193,12 +195,12 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       valueContainer: provided => ({
         ...provided,
         color: foreground,
-        backgroundColor: 'black',
+        backgroundColor: inputBackground,
       }),
       placeHolder: provided => ({
         ...provided,
         color: foreground,
-        backgroundColor: 'black',
+        backgroundColor: inputBackground,
       }),
       indicatorSeparator: () => ({
         display: 'none',
@@ -225,7 +227,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
           opacity,
           transition,
           color: foreground,
-          backgroundColor: 'black',
+          backgroundColor: inputBackground,
         }
       },
       menu: provided => ({

@@ -4,7 +4,6 @@ import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {FlowListContext} from 'src/flows/context/flow.list'
 
 // Components
 import FlowPipe from 'src/flows/components/FlowPipe'
@@ -38,7 +37,6 @@ const HiddenHeader: FC = () => {
 
 const PipeList: FC = () => {
   const {flow, updateMeta} = useContext(FlowContext)
-  const {currentID} = useContext(FlowListContext)
 
   if (!flow.data || !flow.data.allIDs.length) {
     return <EmptyPipeList />
@@ -93,7 +91,7 @@ const PipeList: FC = () => {
     }
 
     return (
-      <div className="flow" id={currentID}>
+      <div className="flow" id={flow?.id}>
         <HiddenHeader />
         <Grid
           cols={12}
@@ -132,7 +130,7 @@ const PipeList: FC = () => {
   })
 
   return (
-    <div className="flow" id={currentID}>
+    <div className="flow" id={flow?.id}>
       <HiddenHeader />
       <InsertCellButton />
       {_pipes}

@@ -15,7 +15,7 @@ interface FilteredFn {
   [key: string]: FluxToolbarFunction[]
 }
 
-const Functions: FC<Props> = ({onSelect}) => {
+const GroupedFunctionsList: FC<Props> = ({onSelect}) => {
   const [search, setSearch] = useState('')
   const updateSearch = useCallback(
     text => {
@@ -58,6 +58,7 @@ const Functions: FC<Props> = ({onSelect}) => {
           {fns.map(fn => (
             <Fn
               onClick={onSelect}
+              extractor={fn => (fn as FluxToolbarFunction).name}
               key={`${fn.name}_${fn.desc}`}
               option={fn}
               testID={fn.name}
@@ -86,4 +87,4 @@ const Functions: FC<Props> = ({onSelect}) => {
   }, [search, onSelect, filteredFunctions, updateSearch])
 }
 
-export default Functions
+export default GroupedFunctionsList

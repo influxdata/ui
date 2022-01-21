@@ -22,6 +22,7 @@ const FunctionCategory: SFC<Props> = props => {
       <dt className="flux-toolbar--heading">{category}</dt>
       {funcs.map(func => (
         <ToolbarFunction
+          extractor={fn => (fn as FluxToolbarFunction).name}
           onClick={onClickFunction}
           key={`${func.name}_${func.desc}`}
           option={func}

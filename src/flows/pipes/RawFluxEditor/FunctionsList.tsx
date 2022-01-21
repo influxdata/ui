@@ -1,0 +1,39 @@
+import React, {FC, useMemo} from 'react'
+
+import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
+import {FluxToolbarFunction} from 'src/types/shared'
+import Fn from 'src/flows/pipes/RawFluxEditor/FluxInjectionOption'
+import FilterList from 'src/flows/shared/FilterList'
+import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionToolTipContent'
+
+interface Props {
+  onSelect: (fn: FluxToolbarFunction) => void
+}
+
+const FunctionsList: FC<Props> = ({onSelect}) => {
+  const render = fn => (
+    <Fn
+      onClick={onSelect}
+      extractor={fn => (fn as FluxToolbarFunction).name}
+      key={`${fn.name}_${fn.desc}`}
+      option={fn}
+      testID={fn.name}
+      ToolTipContent={FunctionTooltipContent}
+    />
+  )
+
+  return useMemo(
+    () => (
+      <FilterList
+        placeholder="Filter Functions..."
+        emptyMessage="No functions match your search"
+        extractor={fn => (fn as FluxToolbarFunction).name}
+        items={FLUX_FUNCTIONS}
+        renderItem={render}
+      />
+    ),
+    [onSelect]
+  )
+}
+
+export default FunctionsList

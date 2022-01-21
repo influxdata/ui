@@ -12,14 +12,11 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 
-// Types
-import {FluxToolbarFunction} from 'src/types/shared'
-import {Secret} from 'src/types'
-
-type OptionType = FluxToolbarFunction | Secret
+type OptionType = Record<string, any>
 
 interface Props {
   option: OptionType
+  extractor: (func: OptionType) => string
   onClick: (func: OptionType) => void
   testID: string
   ToolTipContent?: (props: {item: any}) => JSX.Element
@@ -31,6 +28,7 @@ const defaultProps = {
 
 const FluxInjectionOption: FC<Props> = ({
   option,
+  extractor,
   onClick,
   testID,
   ToolTipContent,
@@ -60,7 +58,7 @@ const FluxInjectionOption: FC<Props> = ({
         data-testid={`flux--${testID}`}
         className="flux-toolbar--list-item flux-toolbar--function"
       >
-        <code>{option.name || (option as Secret).id}</code>
+        <code>{extractor(option)}</code>
         <Button
           testID={`flux--${testID}--inject`}
           text="Inject"

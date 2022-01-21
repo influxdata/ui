@@ -14,7 +14,6 @@ import {getVariable, normalizeValues} from 'src/variables/selectors'
 
 // Types
 import {AppState, RemoteDataState} from 'src/types'
-import {backgroundColor} from 'html2canvas/dist/types/css/property-descriptors/background-color'
 
 interface OwnProps {
   variableID: string
@@ -138,15 +137,11 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const {selectedValue, name, status} = this.props
     const {shownValues} = this.state
 
-    //const shownValues = ['ab', 'c', 'd', 'ernie', 'rosita', 'bert']
     const isDisabled = !shownValues || shownValues.length === 0
 
-    //const placeHolderText = this.getPlaceHolderText('Select a Value')
-
-    console.log(`trying to render ${name}.....`, shownValues)
     let realVals = []
 
-    //   make them all look like: { value: 'vanilla', label: 'Vanilla' }
+    //  make them all look like: { value: 'vanilla', label: 'Vanilla' }
     if (shownValues && shownValues.length) {
       realVals = shownValues.map(val => ({value: val, label: val}))
     }
@@ -155,7 +150,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const foreground = 'white'
     const inputBackground = 'black'
     const background = '#2c2d35'
-    //  const background= 'cyan'
     const focusColor = '#46454e'
     const selectColor = '#ce58eb'
 
@@ -206,7 +200,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         display: 'none',
       }),
       dropdownIndicator: (provided, state) => {
-        //console.log('in ddi....state???', state)
         const hoverBackground = state.isFocused ? '#5d5f6f' : '#828497'
 
         return {
@@ -304,6 +297,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     }
 
     const newState = {
+      ...this.state,
       typedValue: selectedValue,
       actualVal: selectedValue,
       selectHappened: true,
@@ -314,7 +308,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       newState['menuOpen'] = MenuStatus.Closed
     }
 
-    // @ts-ignore
     this.setState(newState)
   }
 

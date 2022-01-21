@@ -22,7 +22,7 @@ const Grid = WidthProvider(ReactGridLayout)
 const HiddenHeader: FC = () => {
   const {flow} = useContext(FlowContext)
   return (
-    <div id="pipe-list-hidden-header">
+    <div className="html-download-hide">
       <div className="hidden-header-logo">
         <InfluxDataLogo fill={InfluxColors.White} />
       </div>

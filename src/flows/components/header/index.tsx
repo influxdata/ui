@@ -199,20 +199,27 @@ const FlowHeader: FC = () => {
       .catch(err => console.error('failed to delete share', err))
   }
 
-  const canvasOptions = {
-    backgroundColor,
-    onclone: cloneDoc => {
-      cloneDoc.getElementById(currentID).style.paddingLeft = '12px'
-      cloneDoc.getElementById('pipe-list-hidden-header').style.display = 'block'
-    },
+  const canvasOptions = (canvasId: string) => {
+    return {
+      backgroundColor,
+      onclone: cloneDoc => {
+        // Add left and right padding on the selected screenshot
+        cloneDoc.getElementById(canvasId).style.padding = '0 12px'
+        cloneDoc
+          .querySelectorAll('.html-download-hide')
+          .forEach(d => (d.style.display = 'block'))
+      },
+    }
   }
 
   const handleDownloadAsPNG = () => {
     const canvas = document.getElementById(currentID)
     import('html2canvas').then((module: any) =>
-      module.default(canvas as HTMLDivElement, canvasOptions).then(result => {
-        downloadImage(result.toDataURL(), `${flow.name}.png`)
-      })
+      module
+        .default(canvas as HTMLDivElement, canvasOptions(currentID))
+        .then(result => {
+          downloadImage(result.toDataURL(), `${flow.name}.png`)
+        })
     )
   }
 

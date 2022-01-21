@@ -56,18 +56,20 @@ const Query: FC<PipeProp> = ({Context}) => {
   const query = queries[activeQuery]
 
   useEffect(() => {
-    register(id, [
-      {
-        title: 'RawFluxEditor actions',
-        actions: [
-          {
-            title: 'Inject Secret',
-            disable: () => false,
-            menu: <SecretsList context={editorContext} />,
-          },
-        ],
-      },
-    ])
+    if (isFlagEnabled('fluxInjectSecrets')) {
+      register(id, [
+        {
+          title: 'RawFluxEditor actions',
+          actions: [
+            {
+              title: 'Inject Secret',
+              disable: () => false,
+              menu: <SecretsList context={editorContext} />,
+            },
+          ],
+        },
+      ])
+    }
   }, [id, editorContext.editor, editorContext.inject])
 
   const injectIntoEditor = useCallback(

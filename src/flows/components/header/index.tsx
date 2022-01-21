@@ -126,7 +126,7 @@ interface Share {
 }
 
 const FlowHeader: FC = () => {
-  const {remove, clone, currentID} = useContext(FlowListContext)
+  const {remove, clone} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
@@ -203,7 +203,7 @@ const FlowHeader: FC = () => {
     backgroundColor,
     onclone: cloneDoc => {
       // Add left and right padding on the selected screenshot
-      cloneDoc.getElementById(currentID).style.padding = '0 12px'
+      cloneDoc.getElementById(flow.id).style.padding = '0 12px'
       cloneDoc
         .querySelectorAll('.html-download-hide')
         .forEach(d => (d.style.display = 'block'))
@@ -211,7 +211,7 @@ const FlowHeader: FC = () => {
   }
 
   const handleDownloadAsPNG = () => {
-    const canvas = document.getElementById(currentID)
+    const canvas = document.getElementById(flow.id)
     import('html2canvas').then((module: any) =>
       module.default(canvas as HTMLDivElement, canvasOptions).then(result => {
         downloadImage(result.toDataURL(), `${flow.name}.png`)
@@ -220,7 +220,7 @@ const FlowHeader: FC = () => {
   }
 
   const handleDownloadAsPDF = () => {
-    const canvas = document.getElementById(currentID)
+    const canvas = document.getElementById(flow.id)
     import('html2canvas').then((module: any) =>
       module.default(canvas as HTMLDivElement, canvasOptions).then(result => {
         import('jspdf').then((jsPDF: any) => {

@@ -3,8 +3,9 @@ import React, {FC, useState, useMemo, useCallback} from 'react'
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
-import Fn from 'src/flows/pipes/RawFluxEditor/dynamicFunction'
+import Fn from 'src/flows/pipes/RawFluxEditor/FluxInjectionOption'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionToolTipContent'
 
 interface Props {
   onSelect: (fn: FluxToolbarFunction) => void
@@ -35,10 +36,11 @@ const DynamicFunctions: FC<Props> = ({onSelect}) => {
     } else {
       fnComponent = filteredFunctions.map(fn => (
         <Fn
-          onClickFunction={onSelect}
+          onClick={onSelect}
           key={`${fn.name}_${fn.desc}`}
-          func={fn}
+          option={fn}
           testID={fn.name}
+          ToolTipContent={FunctionTooltipContent}
         />
       ))
     }

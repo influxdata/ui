@@ -1,7 +1,7 @@
-import React, {FC, useState, useMemo, useCallback} from 'react'
+import React, {FC, useState, useMemo, useCallback, useEffect} from 'react'
 
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
-import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
+// import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
 import Fn from 'src/flows/pipes/RawFluxEditor/dynamicFunction'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
@@ -12,16 +12,25 @@ interface Props {
 
 const DynamicFunctions: FC<Props> = ({onSelect}) => {
   const [search, setSearch] = useState('')
+  const [fluxFuncs, setFluxFuncs] = useState([])
   const updateSearch = useCallback(
     text => {
       setSearch(text)
     },
     [search, setSearch]
   )
-
-  const filteredFunctions = FLUX_FUNCTIONS.filter(func =>
+  useEffect(() => {
+    const url = 'http://localhost:3000/fluxdocs'
+    fetch(url).then(resp => resp.json())
+    .then(resp => setFluxFuncs(resp))
+    
+  }, [])
+  // console.log('funcs ', typeof(fluxFuncs))
+  const sortedFunctions = fluxFuncs.sort((a, b) => (a.package > b.package) ? 1 : -1).sort((a,b) => (a.name > b.name) ? 1 : -1)
+  const filteredFunctions = sortedFunctions.filter(func =>
     func.name.toLowerCase().includes(search.toLowerCase())
-  )
+    )
+    // console.log('filtered funcs ', filteredFunctions.length)
 
   return useMemo(() => {
     let fnComponent
@@ -58,7 +67,7 @@ const DynamicFunctions: FC<Props> = ({onSelect}) => {
         </div>
       </div>
     )
-  }, [search, onSelect])
+  }, [search, onSelect, fluxFuncs])
 }
 
 export default DynamicFunctions

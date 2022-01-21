@@ -17,13 +17,13 @@ import {
 import {FluxToolbarFunction} from 'src/types/shared'
 
 interface Props {
-  func: FluxToolbarFunction
+  func: any
   onClickFunction: (func: FluxToolbarFunction) => void
   testID: string
 }
 
 interface TooltipProps {
-  func: FluxToolbarFunction
+  func: any
 }
 
 const defaultProps = {
@@ -33,19 +33,19 @@ const defaultProps = {
 const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
   let argComponent = <div className="flux-function-docs--arguments">None</div>
 
-  if (func.args.length > 0) {
-    argComponent = (
-      <>
-        {func.args.map(a => (
-          <div className="flux-function-docs--arguments" key={a.name}>
-            <span>{a.name}:</span>
-            <span>{a.type}</span>
-            <div>{a.desc}</div>
-          </div>
-        ))}
-      </>
-    )
-  }
+  // if (func.args.length > 0) {
+  //   argComponent = (
+  //     <>
+  //       {func.args.map(a => (
+  //         <div className="flux-function-docs--arguments" key={a.name}>
+  //           <span>{a.name}:</span>
+  //           <span>{a.type}</span>
+  //           <div>{a.desc}</div>
+  //         </div>
+  //       ))}
+  //     </>
+  //   )
+  // }
 
   return (
     <div className="flux-function-docs" data-testid={`flux-docs--${func.name}`}>
@@ -53,7 +53,7 @@ const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
         <div className="flux-toolbar--popover">
           <article className="flux-functions-toolbar--description">
             <div className="flux-function-docs--heading">Description</div>
-            <span>{func.desc}</span>
+            <span>{func.description}</span>
           </article>
           <article>
             <div className="flux-function-docs--heading">Arguments</div>
@@ -61,7 +61,7 @@ const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
           </article>
           <p className="tooltip--link">
             Still have questions? Check out the{' '}
-            <a target="_blank" rel="noreferrer" href={func.link}>
+            <a target="_blank" rel="noreferrer" href={"n/a"}>
               Flux Docs
             </a>
             .

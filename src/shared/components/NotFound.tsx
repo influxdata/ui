@@ -16,6 +16,8 @@ import React, {Component, FC} from 'react'
 import {connect} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 
+import {getOrg as fetchOrg} from 'src/organizations/apis'
+
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 import {AppState, Organization} from 'src/types'
@@ -142,25 +144,44 @@ const NotFoundOld: FC = () => (
 )
 
 class NotFound extends Component<Props> {
-  componentDidMount() {
+  state = {
+    isFetchingOrg: false,
+  }
+
+  async componentDidMount() {
     if (isFlagEnabled('deepLinking')) {
+      let org = this.props?.org
+
+      if (!org) {
+        this.setState({isFetchingOrg: true})
+        org = await fetchOrg()
+      }
+
       const deepLinkingMap = {
-        '/me/alerts': `/orgs/${this.props.org.id}/alerting`,
-        '/me/billing': `/orgs/${this.props.org.id}/billing`,
-        '/me/dashboards': `/orgs/${this.props.org.id}/dashboards-list`,
-        '/me/notebooks': `/orgs/${this.props.org.id}/notebooks`,
-        '/me/tasks': `/orgs/${this.props.org.id}/tasks`,
-        '/me/usage': `/orgs/${this.props.org.id}/usage`,
+        '/me/alerts': `/orgs/${org.id}/alerting`,
+        '/me/billing': `/orgs/${org.id}/billing`,
+        '/me/dashboards': `/orgs/${org.id}/dashboards-list`,
+        '/me/notebooks': `/orgs/${org.id}/notebooks`,
+        '/me/tasks': `/orgs/${org.id}/tasks`,
+        '/me/usage': `/orgs/${org.id}/usage`,
       }
 
       if (deepLinkingMap.hasOwnProperty(this.props.location.pathname)) {
         this.props.history.replace(deepLinkingMap[this.props.location.pathname])
         return
+      } else {
+        this.setState({isFetchingOrg: false})
       }
     }
   }
 
   render() {
+    if (this.state.isFetchingOrg) {
+      // don't render anything if this component is actively fetching org id
+      // this prevents popping in a 404 page then redirecting
+      return null
+    }
+
     if (isFlagEnabled('newNotFoundPage')) {
       return <NotFoundNew />
     }

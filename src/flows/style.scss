@@ -466,3 +466,9 @@ $cf-radius-lg: $cf-radius + 4px;
     margin: 0px;
   }
 }
+
+.flow--client-overlay {
+  .markdown-format pre {
+    white-space: pre-line;
+  }
+}

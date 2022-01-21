@@ -57,6 +57,7 @@ export const AUTOREFRESH_DEFAULT = {
   duration: null,
   inactivityTimeout: 0,
   infiniteDuration: false,
+  label: '',
 }
 
 export const LAYOUT_MARGIN = 4

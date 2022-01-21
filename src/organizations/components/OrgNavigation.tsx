@@ -11,6 +11,7 @@ import {CLOUD} from 'src/shared/constants'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   activeTab: string
@@ -27,10 +28,21 @@ enum Tab {
   Members = 'members-oss',
   Users = 'users',
   About = 'about',
+  Usage = 'usage',
 }
 
 const OrgNavigation: FC<Props> = ({activeTab}) => {
   const orgID = useSelector(getOrg)?.id
+
+  const tabNames = {
+    userCloudTab: 'Users',
+    aboutTab: 'About',
+  }
+
+  if (isFlagEnabled('multiAccount')) {
+    tabNames.userCloudTab = 'Members'
+    tabNames.aboutTab = 'Settings'
+  }
 
   const tabs: OrgPageTab[] = [
     {
@@ -40,17 +52,25 @@ const OrgNavigation: FC<Props> = ({activeTab}) => {
       link: `/orgs/${orgID}/members`,
     },
     {
-      text: 'Users',
+      text: tabNames.userCloudTab,
       id: Tab.Users,
       enabled: () => CLOUD,
       link: `/orgs/${orgID}/users`,
     },
     {
-      text: 'About',
+      text: tabNames.aboutTab,
       id: Tab.About,
       link: `/orgs/${orgID}/about`,
     },
   ]
+
+  if (CLOUD && isFlagEnabled('multiAccount')) {
+    tabs.push({
+      text: 'usage',
+      id: Tab.Usage,
+      link: `/orgs/${orgID}/usage`,
+    })
+  }
 
   return (
     <Tabs orientation={Orientation.Horizontal} size={ComponentSize.Large}>

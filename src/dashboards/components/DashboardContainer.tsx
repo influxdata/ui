@@ -22,7 +22,7 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {AppState, ResourceType, AutoRefreshStatus} from 'src/types'
 
 // Notifications
-import {dashboardAutoRefreshTimeoutSuccess} from 'src/shared/copy/notifications'
+import {autoRefreshTimeoutSuccess} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // History
@@ -48,7 +48,7 @@ const DashboardContainer: FC = () => {
 
   const timeoutFunction = useCallback(() => {
     dispatch(resetAutoRefresh(`dashboard-${dashboardID}`))
-    dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
+    dispatch(notify(autoRefreshTimeoutSuccess()))
     GlobalAutoRefresher.onDisconnect()
     event('dashboards.autorefresh.dashboardcontainer.inactivitytimeout', {
       timeout: autoRefresh.inactivityTimeout,

@@ -560,7 +560,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
   return (
     <Context>
       <div className="notification">
-        {RemoteDataState.Loading && (
+        {loading === RemoteDataState.Loading && (
           <TechnoSpinner
             style={{width: 25, height: 25, position: 'absolute', right: 15}}
           />

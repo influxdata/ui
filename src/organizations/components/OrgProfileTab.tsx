@@ -15,6 +15,7 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
+  JustifyContent,
 } from '@influxdata/clockface'
 import CopyButton from 'src/shared/components/CopyButton'
 import UsersProvider from 'src/users/context/users'
@@ -28,6 +29,8 @@ import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {getMe} from 'src/me/selectors'
+
+const stretchStyle = {width: '100%'}
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
@@ -43,97 +46,162 @@ const OrgProfileTab: FC = () => {
   }
 
   return (
-    <>
+    <div style={{width: '60%'}}>
       <FlexBox
         direction={FlexDirection.Column}
         alignItems={AlignItems.FlexStart}
-        stretchToFitWidth={false}
+        stretchToFitWidth={true}
         testID="organization-profile--panel"
         margin={ComponentSize.Large}
       >
-        <h4>Organization Profile</h4>
-
-        <Heading
-          element={HeadingElement.H4}
-          weight={FontWeight.Regular}
-          style={{marginBottom: '4px'}}
+        <FlexBox.Child
+          style={{...stretchStyle, margin: ComponentSize.Large}}
+          testID="org-profile--panel"
         >
-          Name
-        </Heading>
-        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
-          <Input
-            value={org.name}
-            data-testid="danger-zone--org-name"
-            testID="danger-zone--org-name"
-          ></Input>
-          <Button
-            testID="rename-org--button"
-            text="Rename"
-            icon={IconFont.Pencil}
-            onClick={handleShowEditOverlay}
-          />
-        </FlexBox>
-
-        <FlexBox.Child testID="common-ids--panel">
-          <h4>Common IDs</h4>
+          <h4>Organization Profile</h4>
 
           <Heading
             element={HeadingElement.H4}
-            style={{marginBottom: '4px'}}
             weight={FontWeight.Regular}
+            style={{marginTop: '16px', marginBottom: '8px'}}
           >
-            User ID
+            Name
           </Heading>
-          <div className="code-snippet" data-testid="code-snippet--userid">
-            <div className="code-snippet--text">
-              <pre>
-                <code>{me.id}</code>
-              </pre>
-            </div>
-            <FlexBox
-              className="code-snippet--footer"
-              margin={ComponentSize.Medium}
-            >
-              <CopyButton
-                text={me.id}
-                testID="copy-btn--userid"
-                onCopy={generateCopyText('User ID', me.id)}
-              />
-              <label className="code-snippet--label">
-                {`${me.name} |`} <b>User ID</b>
-              </label>
-            </FlexBox>
-          </div>
+          <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
+            <Input
+              value={org.name}
+              style={{width: 'max-content'}}
+              data-testid="danger-zone--org-name"
+              testID="danger-zone--org-name"
+            ></Input>
+            <Button
+              testID="rename-org--button"
+              text="Rename"
+              icon={IconFont.Pencil}
+              onClick={handleShowEditOverlay}
+            />
+          </FlexBox>
+          <FlexBox
+            direction={FlexDirection.Row}
+            margin={ComponentSize.Medium}
+            justifyContent={JustifyContent.SpaceBetween}
+            stretchToFitWidth={true}
+            style={{width: '85%'}}
+          >
+            {[
+              {label: 'Provider', src: me.quartzMe?.billingProvider},
+              {label: 'Region', src: me.quartzMe?.regionCode},
+              {label: 'Location', src: me.quartzMe?.regionName},
+            ].map(({label, src}) => {
+              if (!!src) {
+                return (
+                  <FlexBox
+                    key={`org-${label.toLowerCase()}`}
+                    direction={FlexDirection.Column}
+                    margin={ComponentSize.Large}
+                    alignItems={AlignItems.FlexStart}
+                  >
+                    <Heading
+                      element={HeadingElement.H4}
+                      weight={FontWeight.Regular}
+                      style={{marginTop: '16px', marginBottom: '8px'}}
+                    >
+                      {label}
+                    </Heading>
+                    <span style={{fontWeight: FontWeight.Light, width: '100%'}}>
+                      {src}
+                    </span>
+                  </FlexBox>
+                )
+              } else {
+                return null
+              }
+            })}
+          </FlexBox>
           <Heading
             element={HeadingElement.H4}
             style={{marginTop: '16px', marginBottom: '4px'}}
             weight={FontWeight.Regular}
           >
-            Organization ID
+            Organization URL
           </Heading>
-          <div className="code-snippet" data-testid="code-snippet--orgid">
+          <div
+            className="code-snippet"
+            style={stretchStyle}
+            data-testid="code-snippet--userid"
+          >
             <div className="code-snippet--text">
               <pre>
-                <code>{org.id}</code>
+                <code>{me.quartzMe.clusterHost}</code>
               </pre>
             </div>
             <FlexBox
               className="code-snippet--footer"
               margin={ComponentSize.Medium}
+              stretchToFitWidth={true}
             >
               <CopyButton
-                text={org.id}
-                onCopy={generateCopyText('Organization ID', org.id)}
-                testID="copy-btn--orgid"
+                text={me.id}
+                testID="copy-btn--organizationUrl"
+                onCopy={generateCopyText(
+                  'Organization URL',
+                  me.quartzMe.clusterHost
+                )}
               />
-              <label
-                className="code-snippet--label"
-                data-testid="org-profile--name"
-              >
-                {`${org.name} |`} <b> Organization ID </b>
-              </label>
             </FlexBox>
           </div>
+        </FlexBox.Child>
+
+        <FlexBox.Child
+          style={{...stretchStyle, margin: ComponentSize.Large}}
+          testID="common-ids--panel"
+        >
+          <h4>Common IDs</h4>
+          {[
+            {id: 'userid', humanId: 'User ID', src: me.id, label: me.name},
+            {
+              id: 'orgid',
+              humanId: 'Organization ID',
+              src: org.id,
+              label: org.name,
+            },
+          ].map(({id, humanId, src, label}) => (
+            <div key={`org-${label.toLowerCase()}`}>
+              <Heading
+                element={HeadingElement.H4}
+                style={{marginTop: '16px', marginBottom: '4px'}}
+                weight={FontWeight.Regular}
+              >
+                User ID
+              </Heading>
+              <div
+                className="code-snippet"
+                style={stretchStyle}
+                data-testid={`code-snippet--${id}`}
+              >
+                <div className="code-snippet--text">
+                  <pre>
+                    <code>{src}</code>
+                  </pre>
+                </div>
+                <FlexBox
+                  className="code-snippet--footer"
+                  margin={ComponentSize.Medium}
+                  stretchToFitWidth={true}
+                  justifyContent={JustifyContent.SpaceBetween}
+                >
+                  <CopyButton
+                    text={src}
+                    testID={`copy-btn--${id}`}
+                    onCopy={generateCopyText(humanId, src)}
+                  />
+                  <label className="code-snippet--label">
+                    {`${label} |`} <b>{humanId}</b>
+                  </label>
+                </FlexBox>
+              </div>
+            </div>
+          ))}
         </FlexBox.Child>
         {CLOUD && isFlagEnabled('uiUnificationFlag') && (
           <UsersProvider>
@@ -141,7 +209,7 @@ const OrgProfileTab: FC = () => {
           </UsersProvider>
         )}
       </FlexBox>
-    </>
+    </div>
   )
 }
 

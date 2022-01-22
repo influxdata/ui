@@ -32,6 +32,8 @@ import {CLOUD} from 'src/shared/constants'
 import {getMe} from 'src/me/selectors'
 
 const stretchStyle = {width: '100%'}
+const sectionStyle = {margin: ComponentSize.Large}
+const headingStyle = {marginTop: '24px', marginBottom: '8px'}
 
 const OrgProfileTab: FC = () => {
   const me = useSelector(getMe)
@@ -56,7 +58,7 @@ const OrgProfileTab: FC = () => {
         margin={ComponentSize.Large}
       >
         <FlexBox.Child
-          style={{...stretchStyle, margin: ComponentSize.Large}}
+          style={{...stretchStyle, ...sectionStyle}}
           testID="org-profile--panel"
         >
           <h4>Organization Profile</h4>
@@ -64,7 +66,7 @@ const OrgProfileTab: FC = () => {
           <Heading
             element={HeadingElement.H4}
             weight={FontWeight.Regular}
-            style={{marginTop: '16px', marginBottom: '8px'}}
+            style={headingStyle}
           >
             Name
           </Heading>
@@ -90,7 +92,10 @@ const OrgProfileTab: FC = () => {
             style={{width: '85%'}}
           >
             {[
-              {label: 'Provider', src: convertProviderSymbol(me.quartzMe?.billingProvider)},
+              {
+                label: 'Provider',
+                src: convertProviderSymbol(me.quartzMe?.billingProvider),
+              },
               {label: 'Region', src: me.quartzMe?.regionCode},
               {label: 'Location', src: me.quartzMe?.regionName},
             ].map(({label, src}) => {
@@ -105,7 +110,7 @@ const OrgProfileTab: FC = () => {
                     <Heading
                       element={HeadingElement.H4}
                       weight={FontWeight.Regular}
-                      style={{marginTop: '16px', marginBottom: '8px'}}
+                      style={headingStyle}
                     >
                       {label}
                     </Heading>
@@ -121,10 +126,10 @@ const OrgProfileTab: FC = () => {
           </FlexBox>
           <Heading
             element={HeadingElement.H4}
-            style={{marginTop: '16px', marginBottom: '4px'}}
+            style={headingStyle}
             weight={FontWeight.Regular}
           >
-            Organization URL
+            Cluster URL
           </Heading>
           <div
             className="code-snippet"
@@ -154,7 +159,7 @@ const OrgProfileTab: FC = () => {
         </FlexBox.Child>
 
         <FlexBox.Child
-          style={{...stretchStyle, margin: ComponentSize.Large}}
+          style={{...stretchStyle, ...sectionStyle}}
           testID="common-ids--panel"
         >
           <h4>Common IDs</h4>
@@ -170,7 +175,7 @@ const OrgProfileTab: FC = () => {
             <div key={`org-${label.toLowerCase()}`}>
               <Heading
                 element={HeadingElement.H4}
-                style={{marginTop: '16px', marginBottom: '4px'}}
+                style={headingStyle}
                 weight={FontWeight.Regular}
               >
                 User ID
@@ -205,9 +210,11 @@ const OrgProfileTab: FC = () => {
           ))}
         </FlexBox.Child>
         {CLOUD && isFlagEnabled('uiUnificationFlag') && (
-          <UsersProvider>
-            <OrgProfileDeletePanel />
-          </UsersProvider>
+          <FlexBox.Child style={sectionStyle}>
+            <UsersProvider>
+              <OrgProfileDeletePanel />
+            </UsersProvider>
+          </FlexBox.Child>
         )}
       </FlexBox>
     </div>

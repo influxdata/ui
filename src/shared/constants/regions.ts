@@ -1,10 +1,10 @@
 export const convertProviderSymbol = (sym: string) => symbolProviderMap[sym]
 
 const symbolProviderMap = {
-  'zuora': 'Zuora Z-Commerce Platform',
-  'aws': 'Amazon Web Services',
-  'gcm': 'Google Cloud Platform',
-  'azure': 'Microsoft Azure',
+  zuora: 'Zuora Z-Commerce Platform',
+  aws: 'Amazon Web Services',
+  gcm: 'Google Cloud Platform',
+  azure: 'Microsoft Azure',
 }
 
 export const REGIONS = [

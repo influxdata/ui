@@ -65,8 +65,8 @@ const OrgProfileTab: FC = () => {
         {CLOUD && quartzMe?.accountType === 'free' && (
           <>
             <FlexBox.Child>
-              <h4 style={{marginBottom: '4px'}}>Delete Organization</h4>
-              <p style={{margin: '0px'}}>
+              <h4>Delete Organization</h4>
+              <p style={{marginTop: '16px', marginBottom: '8px'}}>
                 Delete your Free InfluxDB Cloud account and remove any data that
                 you have loaded.
               </p>

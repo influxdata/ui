@@ -5,6 +5,7 @@ import {activeFlags} from 'src/shared/selectors/flags'
 import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
 import {getOrg} from 'src/organizations/selectors'
+import {REGIONS} from 'src/shared/constants/regions'
 
 import {
   Dropdown,
@@ -18,58 +19,6 @@ import {
 } from '@influxdata/clockface'
 
 import './style.scss'
-
-export const REGIONS = [
-  {
-    label: 'US West (Oregon)',
-    group: 'Amazon Web Services',
-    value: 'https://us-west-2-1.aws.cloud2.influxdata.com',
-  },
-  {
-    label: 'US East (Virginia)',
-    group: 'Amazon Web Services',
-    value: 'https://us-east-1-1.aws.cloud2.influxdata.com',
-  },
-  {
-    label: 'Europe West (Frankfurt)',
-    group: 'Amazon Web Services',
-    value: 'https://eu-central-1-1.aws.cloud2.influxdata.com',
-  },
-  {
-    label: 'US Central (Iowa)',
-    group: 'Google Cloud Platform',
-    value: 'https://us-central1-1.gcp.cloud2.influxdata.com',
-  },
-  {
-    label: 'Europe West (Belgium)',
-    group: 'Google Cloud Platform',
-    value: 'https://europe-west1-1.gcp.cloud2.influxdata.com',
-  },
-  {
-    label: 'US East (Virginia)',
-    group: 'Microsoft Azure',
-    value: 'https://eastus-1.azure.cloud2.influxdata.com',
-  },
-  {
-    label: 'Europe West (Amsterdam)',
-    group: 'Microsoft Azure',
-    value: 'https://westeurope-1.azure.cloud2.influxdata.com',
-  },
-  {
-    label: 'Tools Cluster',
-    group: 'Development',
-    flag: 'local-dev',
-    value: 'https://influxdb.aws.influxdata.io',
-  },
-  {
-    label: 'Local Kind Cluster',
-    group: 'Development',
-    flag: 'local-dev',
-    value: 'https://twodotoh.a.influxcloud.dev.local',
-  },
-  {label: 'Current Region', value: 'self'},
-  {label: 'Self Hosted', value: 'self-hosted'},
-]
 
 const Source: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)

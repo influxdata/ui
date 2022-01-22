@@ -2,6 +2,7 @@
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
+import {convertProviderSymbol} from 'src/shared/constants/regions'
 
 // Components
 import {
@@ -89,7 +90,7 @@ const OrgProfileTab: FC = () => {
             style={{width: '85%'}}
           >
             {[
-              {label: 'Provider', src: me.quartzMe?.billingProvider},
+              {label: 'Provider', src: convertProviderSymbol(me.quartzMe?.billingProvider)},
               {label: 'Region', src: me.quartzMe?.regionCode},
               {label: 'Location', src: me.quartzMe?.regionName},
             ].map(({label, src}) => {

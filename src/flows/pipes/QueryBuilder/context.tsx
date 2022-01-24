@@ -23,6 +23,7 @@ import {
 } from 'src/types'
 
 const DEFAULT_TAG_LIMIT = 200
+const EXTENDED_TAG_LIMIT = 500
 
 interface APIResultArray<T> {
   selected: T[]
@@ -247,7 +248,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
               |> distinct()${searchString}${previousTagString}
               |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
               |> sort()
-              |> limit(n: ${DEFAULT_TAG_LIMIT})`,
+              |> limit(n: ${EXTENDED_TAG_LIMIT})`,
         scope
       )
         .then(resp => {

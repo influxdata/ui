@@ -17,6 +17,7 @@ import {pastThirtyDaysTimeRange} from 'src/shared/constants/timeRanges'
 
 const DEFAULT_TIME_RANGE: TimeRange = pastThirtyDaysTimeRange
 const DEFAULT_LIMIT = 200
+const EXTENDED_LIMIT = 500
 
 export interface FindBucketsOptions {
   url: string
@@ -50,7 +51,7 @@ export function findKeys({
   tagsSelections,
   searchTerm = '',
   timeRange = DEFAULT_TIME_RANGE,
-  limit = DEFAULT_LIMIT,
+  limit = EXTENDED_LIMIT,
 }: FindKeysOptions): CancelBox<string[]> {
   const tagFilters = formatTagFilterPredicate(tagsSelections)
   const previousKeyFilter = formatTagKeyFilterCall(tagsSelections)

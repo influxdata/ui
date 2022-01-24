@@ -1,0 +1,15 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.org-profile-tab--heading {
+  margin-top: $cf-space-m;
+  margin-bottom: $cf-space-2xs;
+}
+
+.org-profile-tab--deleteHeading {
+  margin-bottom: $cf-space-s;
+}
+
+.org-profile-tab--section {
+  align-self: stretch;
+  margin: $cf-space-l;
+}

@@ -22,7 +22,9 @@ import {event} from 'src/cloud/utils/reporting'
 import {getQuartzMe} from 'src/me/selectors'
 import {NotificationButtonElement} from 'src/types'
 
-const OrgProfileTab: FC = () => {
+import 'src/organizations/components/OrgProfileTab/style.scss'
+
+const DeletePanel: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
   const history = useHistory()
@@ -66,7 +68,7 @@ const OrgProfileTab: FC = () => {
           <>
             <FlexBox.Child>
               <h4>Delete Organization</h4>
-              <p style={{marginTop: '16px', marginBottom: '8px'}}>
+              <p className="org-profile-tab--heading org-profile-tab--deleteHeading">
                 Delete your Free InfluxDB Cloud account and remove any data that
                 you have loaded.
               </p>
@@ -86,4 +88,4 @@ const OrgProfileTab: FC = () => {
   )
 }
 
-export default OrgProfileTab
+export default DeletePanel

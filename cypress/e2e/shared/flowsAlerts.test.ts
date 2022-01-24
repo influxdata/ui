@@ -204,12 +204,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--email').type(fakeEmail)
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-      cy.getByTestID('flux-editor').contains(fakeEmail)
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === HTTP ===
 
@@ -221,11 +219,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--token').type('fake-token')
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains('fake-token')
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === MAILGUN ===
     const mailgunDomain = 'fake.com'
@@ -238,12 +235,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--email').type(fakeEmail)
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(mailgunDomain)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-      cy.getByTestID('flux-editor').contains(fakeEmail)
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === MAILJET ===
 
@@ -256,11 +251,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--email').type(fakeEmail)
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(fakeEmail)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === PAGERDUTY ===
     const pagerDutyRoutingKey = 'fake-key'
@@ -271,11 +265,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--key').type(pagerDutyRoutingKey)
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(pagerDutyRoutingKey)
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === SENDGRID ===
 
@@ -286,11 +279,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown-item--mySecret').click()
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(fakeEmail)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === SLACK ===
 
@@ -300,12 +292,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--channel').type(fakeChannel)
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(fakeChannel)
-      cy.getByTestID('flux-editor').contains(slackColor)
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === TELEGRAM ===
 
@@ -322,15 +312,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown-button--token').contains('an apple a day')
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(telegramURL)
-      cy.getByTestID('flux-editor').contains(fakeChannel)
-      cy.getByTestID('flux-editor').contains(
-        'secrets.get(key: "an apple a day")'
-      )
-      cy.getByTestID('flux-editor').contains(parseMode)
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === ZENOSS ===
     const zenossAction = 'my-action'
@@ -349,13 +334,9 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--method').type(zenossMethod)
 
     cy.getByTestID('task-form-save').click()
-    /* NOTE: need to figure out how to re-enforce these tests now
-     * that we dont redirect anywhere (intercept?)
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-      cy.getByTestID('flux-editor').contains(zenossMethod)
-      cy.getByTestID('flux-editor').contains(zenossAction)
-      cy.getByTestID('flux-editor').contains('Critical')
-      */
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
   })
 })

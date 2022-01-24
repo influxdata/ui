@@ -112,18 +112,9 @@ describe('flows alert panel', () => {
       'r._notebook_link'
     )
 
-    // make sure task export contains notebook link
-    cy.getByTestID('task-form-save').click()
-    cy.getByTestID('overlay--body').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.url().then(url => {
-        cy.getByTestID('flux-editor').contains(
-          `|> set(key: "_notebook_link", value: "${url}")`
-        )
-      })
-    })
+    // NOTE: we need to verify that the generated task flux contains
+    //    `|> set(key: "_notebook_link", value: "${url}")`
+    // but we dont currently redirect to the task editor anymore
   })
 
   it('should build alert for each endpoint', () => {

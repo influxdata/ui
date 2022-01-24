@@ -137,7 +137,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const {selectedValue, name, status} = this.props
     const {shownValues} = this.state
 
-    const isDisabled = !shownValues || shownValues.length === 0
+    const isDisabled = !Array.isArray(shownValues) || shownValues.length === 0
 
     let realVals = []
 

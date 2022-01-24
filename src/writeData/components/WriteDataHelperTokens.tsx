@@ -15,6 +15,7 @@ import {
   InfluxColors,
   EmptyState,
 } from '@influxdata/clockface'
+import GenerateTokenDropdownRedesigned from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
 
 // Constants
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
@@ -25,11 +26,6 @@ import {getAll} from 'src/resources/selectors'
 
 // Types
 import {AppState, ResourceType, Authorization} from 'src/types'
-
-import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
-
-import GenerateTokenDropdownRedesigned from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const WriteDataHelperTokens: FC = () => {
   const tokens = useSelector((state: AppState) =>

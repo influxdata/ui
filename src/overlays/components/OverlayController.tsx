@@ -16,7 +16,6 @@ import {AppState} from 'src/types'
 import {Overlay} from '@influxdata/clockface'
 import NoteEditorOverlay from 'src/dashboards/components/NoteEditorOverlay'
 import AllAccessTokenOverlay from 'src/authorizations/components/redesigned/AllAccessTokenOverlay'
-import BucketsTokenOverlay from 'src/authorizations/components/BucketsTokenOverlay'
 import TelegrafConfigOverlay from 'src/telegrafs/components/TelegrafConfigOverlay'
 import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverlay'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
@@ -80,9 +79,6 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'access-token':
         activeOverlay.current = <DisplayTokenOverlay />
-        break
-      case 'add-token':
-        activeOverlay.current = <BucketsTokenOverlay onClose={onClose} />
         break
       case 'telegraf-config':
         activeOverlay.current = <TelegrafConfigOverlay />

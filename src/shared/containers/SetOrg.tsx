@@ -20,7 +20,6 @@ import {
   FlowPage,
   BucketsIndex,
   BucketsIndexPaginated,
-  TokensIndex,
   PaginatedTokensIndex,
   RedesignedTokensIndex,
   TelegrafsPage,

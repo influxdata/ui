@@ -23,12 +23,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-// actualVal keeps track of the actual, selected variable
-// it allows the component to return to that if something was typed that is not in the selected list
-
-// the typed val is what the user types in
 interface MyState {
-  actualVal: string
   shownValues: string[]
   selectHappened: boolean
   loaded: boolean
@@ -39,7 +34,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     super(props)
 
     const defaultState = {
-      actualVal: '',
       shownValues: props.values,
       selectHappened: false,
       loaded: false,
@@ -47,7 +41,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     // if it's a csv var, loading is instantaneous, so if it is done just set it:
     if (props.status === RemoteDataState.Done) {
-      defaultState.actualVal = props.selectedValue
       defaultState.loaded = true
     }
 
@@ -56,23 +49,17 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
   // set the 'shownValues' after loading, and
   componentDidUpdate(prevProps, prevState) {
-    const {values, selectedValue, status} = this.props
+    const {values, status} = this.props
     const {values: prevVals, status: prevStatus} = prevProps
-    const {actualVal, loaded, selectHappened} = this.state
-    const {
-      actualVal: prevActualVal,
-      selectHappened: prevSelectHappened} = prevState
+    const {loaded, selectHappened} = this.state
+    const {selectHappened: prevSelectHappened} = prevState
 
     let newState = {}
 
     const justLoaded =
       status === RemoteDataState.Done && prevStatus !== RemoteDataState.Done
 
-    const justSelected =
-      selectHappened &&
-      !prevSelectHappened &&
-      actualVal &&
-      actualVal !== prevActualVal
+    const justSelected = selectHappened && !prevSelectHappened
 
     // this is for updating the values:
     // (only want this to run *once* when the values get loaded)
@@ -85,14 +72,13 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     ) {
       newState = {
         shownValues: values,
-        typedValue: selectedValue,
         loaded: true,
       }
     }
 
     // for updating the selected value:
     if (justSelected) {
-      newState = {...newState, typedValue: actualVal, selectHappened: false}
+      newState = {...newState, selectHappened: false}
     }
 
     this.setState(newState)
@@ -130,6 +116,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const selectColor = '#ce58eb'
     const dropdownBackgroundFocused = '#5d5f6f'
     const dropdownBackgroundNotFocused = '#828497'
+    const clearIndicatorHoverColor = 'white'
 
     const customStyles = {
       option: (provided, state) => {
@@ -152,7 +139,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         return {
           ...provided,
           '&:hover': {
-            color: 'white',
+            color: clearIndicatorHoverColor,
           },
         }
       },
@@ -244,7 +231,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     )
   }
 
-  private handleSelect = (selectedValue: string, closeMenuNow?: boolean) => {
+  private handleSelect = (selectedValue: string) => {
     const {
       variableID,
       onSelectValue,
@@ -262,7 +249,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     const newState = {
       ...this.state,
-      typedValue: selectedValue,
       actualVal: selectedValue,
       selectHappened: true,
     }

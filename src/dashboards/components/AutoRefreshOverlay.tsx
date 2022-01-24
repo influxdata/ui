@@ -17,7 +17,9 @@ import {
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
 import DurationInput from 'src/shared/components/DurationInput'
-import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
+import AutoRefreshInput, {
+  PAUSED,
+} from 'src/dashboards/components/AutoRefreshInput'
 
 // Types
 import {CustomTimeRange, TimeRangeDirection} from 'src/types'
@@ -32,17 +34,26 @@ import './AutoRefresh.scss'
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
 
+enum inactivityTimeoutCategory {
+  Minutes = 'Minutes',
+  Hours = 'Hours',
+  Days = 'Days',
+}
+const MAX_MINUTE = 60
+const MAX_HOUR = 25
+const MAX_DAY = 30
+
 const selectInactivityArray = (unit: string) => {
   let selectionAmount = 0
   switch (unit) {
-    case 'Minutes':
-      selectionAmount = 60
+    case inactivityTimeoutCategory.Minutes:
+      selectionAmount = MAX_MINUTE
       break
-    case 'Hours':
-      selectionAmount = 25
+    case inactivityTimeoutCategory.Hours:
+      selectionAmount = MAX_HOUR
       break
-    case 'Days':
-      selectionAmount = 30
+    case inactivityTimeoutCategory.Days:
+      selectionAmount = MAX_DAY
       break
   }
   // This array creates an array of [0...24] for the hours selection, [0...59] for the minutes, and [0...30] for the days
@@ -73,6 +84,34 @@ const AutoRefreshForm: FC = () => {
       type: 'SET_INFINITE_DURATION',
       infiniteDuration: !state.infiniteDuration,
     })
+  }
+
+  const isValidTimeoutInput = (input: string) => {
+    if (+input <= 0) {
+      return false
+    }
+    const unit = state.inactivityTimeoutCategory
+    let isValid = false
+    switch (unit) {
+      case inactivityTimeoutCategory.Minutes:
+        isValid = +input < MAX_MINUTE
+        break
+      case inactivityTimeoutCategory.Hours:
+        isValid = +input < MAX_HOUR
+        break
+      case inactivityTimeoutCategory.Days:
+        isValid = +input < MAX_DAY
+        break
+    }
+    return input === 'Never' || isValid
+  }
+
+  const isValidSubmit = () => {
+    const isValidInterval =
+      state.refreshMilliseconds.interval > 0 ||
+      !!state.refreshMilliseconds.selection
+    const isValidTimeout = isValidTimeoutInput(state.inactivityTimeout)
+    return isValidInterval && isValidTimeout
   }
 
   const refreshOptions = [
@@ -164,8 +203,7 @@ const AutoRefreshForm: FC = () => {
                   })
                 }
                 value={state.inactivityTimeout}
-                validFunction={() => true} // TODO: write a valid function
-                // TODO: do we want submitInvalid?
+                validFunction={isValidTimeoutInput}
                 menuMaxHeight={150}
                 testID="inactivity-timeout-dropdown"
               />
@@ -175,7 +213,11 @@ const AutoRefreshForm: FC = () => {
                 className="refresh-inactivity-timeout-unit"
                 menu={onCollapse => (
                   <Dropdown.Menu onCollapse={onCollapse}>
-                    {['Minutes', 'Hours', 'Days'].map(option => (
+                    {[
+                      inactivityTimeoutCategory.Minutes,
+                      inactivityTimeoutCategory.Hours,
+                      inactivityTimeoutCategory.Days,
+                    ].map(option => (
                       <Dropdown.Item
                         key={option}
                         onClick={() =>
@@ -222,9 +264,9 @@ const AutoRefreshForm: FC = () => {
             className="refresh-form-activate-button"
             testID="refresh-form-activate-button"
             status={
-              state.refreshMilliseconds.interval === 0
-                ? ComponentStatus.Disabled
-                : ComponentStatus.Default
+              isValidSubmit()
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
             }
           />
         </div>

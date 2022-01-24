@@ -141,17 +141,17 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
       <Overlay.Footer>
         <Button text="Cancel" onClick={onDismissOverlay} />
         <Button
+          testID="switch-default-account--btn"
+          text="Set Default Account"
+          status={defaultButtonStatus}
+          onClick={doSetDefaultAccount}
+        />
+        <Button
           text="Switch Account"
           onClick={doSwitchAccount}
           status={switchButtonStatus}
           disabledTitleText={disabledTitleText}
           testID="actually-switch-account--btn"
-        />
-        <Button
-          testID="switch-default-account--btn"
-          text="Set Default Account"
-          status={defaultButtonStatus}
-          onClick={doSetDefaultAccount}
         />
       </Overlay.Footer>
     </Overlay.Container>

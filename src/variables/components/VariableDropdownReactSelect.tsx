@@ -73,10 +73,10 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     let newState = {}
 
-    const justLoaded = () =>
+    const justLoaded =
       status === RemoteDataState.Done && prevStatus !== RemoteDataState.Done
 
-    const justSelected = () =>
+    const justSelected =
       selectHappened &&
       !prevSelectHappened &&
       actualVal &&
@@ -84,7 +84,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     // this is for updating the values:
     // (only want this to run *once* when the values get loaded)
-    if (justLoaded()) {
+    if (justLoaded) {
       newState = this.getInitialValuesAfterLoading()
     } else if (
       !loaded &&
@@ -110,12 +110,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       newState['menuOpen'] = null
     }
 
-    // need to have this, as the 'onClickAwayHere' gets triggered *before*
-    // the selected value is set to the actualValue (it keeps re-using the original
-    // property)
-
     // for updating the selected value:
-    if (justSelected()) {
+    if (justSelected) {
       newState = {...newState, typedValue: actualVal, selectHappened: false}
     }
 
@@ -152,6 +148,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const background = '#2c2d35'
     const focusColor = '#46454e'
     const selectColor = '#ce58eb'
+    const dropdownBackgroundFocused = '#5d5f6f'
+    const dropdownBackgroundNotFocused = '#828497'
 
     const customStyles = {
       option: (provided, state) => {
@@ -200,7 +198,9 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         display: 'none',
       }),
       dropdownIndicator: (provided, state) => {
-        const hoverBackground = state.isFocused ? '#5d5f6f' : '#828497'
+        const hoverBackground = state.isFocused
+          ? dropdownBackgroundFocused
+          : dropdownBackgroundNotFocused
 
         return {
           ...provided,
@@ -238,7 +238,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     // primary50 is the color that is used when an item is clicked on to change the selection
     // have not found an alternative way (via the customStyles) to change that color)
 
-    //    const style={width:200}
     const selectedObjectValue = {value: selectedValue, label: selectedValue}
     return (
       <Select
@@ -263,22 +262,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         })}
       />
     )
-    //
   }
-
-  // private getWidth(placeHolderText) {
-  //   const {values} = this.props
-  //   const allVals = [placeHolderText, ...values]
-  //   const longestItemWidth = Math.floor(
-  //     allVals.reduce(function(a, b) {
-  //       return a.length > b.length ? a : b
-  //     }, '').length * 10
-  //   )
-  //
-  //   const widthLength = Math.max(192, longestItemWidth)
-  //   const widthStyle = {width: `${widthLength}px`}
-  //   return widthStyle
-  // }
 
   private handleSelect = (selectedValue: string, closeMenuNow?: boolean) => {
     const {
@@ -340,7 +324,8 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const {status} = this.props
 
     return (
-      status === RemoteDataState.Done && (!Array.isArray(valsToUse) || valsToUse.length === 0)
+      status === RemoteDataState.Done &&
+      (!Array.isArray(valsToUse) || valsToUse.length === 0)
     )
   }
 }

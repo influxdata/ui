@@ -441,7 +441,7 @@ $cf-radius-lg: $cf-radius + 4px;
   ------------------------------------------------------------------------------
 */
 
-.html-download-hide {
+[data-download-hide='true'] {
   display: none;
 }
 

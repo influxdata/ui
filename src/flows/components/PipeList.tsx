@@ -24,7 +24,7 @@ const HiddenHeader: FC = () => {
   const {flow} = useContext(FlowContext)
   const timeZone = useSelector(getTimeZone)
   return (
-    <div className="html-download-hide">
+    <div data-download-hide="true">
       <div className="hidden-header-logo">
         <InfluxDataLogo fill={InfluxColors.White} />
       </div>

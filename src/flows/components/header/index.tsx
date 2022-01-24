@@ -194,7 +194,7 @@ const FlowHeader: FC = () => {
       // Add left and right padding on the selected screenshot
       cloneDoc.getElementById(flow.id).style.padding = '0 12px'
       cloneDoc
-        .querySelectorAll('.html-download-hide')
+        .querySelectorAll('[data-download-hide]')
         .forEach(d => (d.style.display = 'block'))
     },
   }

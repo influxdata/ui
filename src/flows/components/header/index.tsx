@@ -65,7 +65,7 @@ const backgroundColor = '#07070E'
 type MenuItemType = {
   title: string
   onClick: () => void
-  icon: string
+  icon: IconFont
   testID?: string
 }
 interface ButtonProp {
@@ -311,6 +311,37 @@ const FlowHeader: FC = () => {
     history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
   }
 
+  const menuItems: MenuItemType[] = [
+    {
+      title: 'Clone',
+      onClick: handleClone,
+      icon: IconFont.Duplicate_New,
+    },
+    {
+      title: 'Delete',
+      onClick: handleDelete,
+      icon: IconFont.Trash_New,
+      testID: 'flow-menu-button-delete',
+    },
+  ]
+
+  if (isFlagEnabled('downloadNotebookPDF')) {
+    menuItems.splice(
+      1,
+      0,
+      {
+        title: 'Download as PNG',
+        onClick: handleDownloadAsPNG,
+        icon: IconFont.Download_New,
+      },
+      {
+        title: 'Download as PDF',
+        onClick: handleDownloadAsPDF,
+        icon: IconFont.Download_New, // TODO
+      }
+    )
+  }
+
   if (!flow) {
     return null
   }
@@ -381,31 +412,7 @@ const FlowHeader: FC = () => {
                     titleText="Share Notebook"
                   />
                 </FeatureFlag>
-                <MenuButton
-                  menuItems={[
-                    {
-                      title: 'Clone',
-                      onClick: handleClone,
-                      icon: IconFont.Duplicate_New,
-                    },
-                    {
-                      title: 'Download as PNG',
-                      onClick: handleDownloadAsPNG,
-                      icon: IconFont.Download_New,
-                    },
-                    {
-                      title: 'Download as PDF',
-                      onClick: handleDownloadAsPDF,
-                      icon: IconFont.Download_New,
-                    },
-                    {
-                      title: 'Delete',
-                      onClick: handleDelete,
-                      icon: IconFont.Trash_New,
-                      testID: 'flow-menu-button-delete',
-                    },
-                  ]}
-                />
+                <MenuButton menuItems={menuItems} />
               </>
             )}
             <FeatureFlag name="flow-snapshot">

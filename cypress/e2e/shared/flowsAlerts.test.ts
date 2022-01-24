@@ -183,7 +183,6 @@ describe('flows alert panel', () => {
 
     const fakeEmail = 'super@fake.com'
     const fakeUrl = 'super-fake.com'
-    const fakeSecretFlux = 'secrets.get(key: "mySecret")'
     const fakeChannel = 'fake-channel'
 
     // === AWS SES ===
@@ -294,7 +293,6 @@ describe('flows alert panel', () => {
       */
 
     // === SLACK ===
-    const slackColor = '#34BB55'
 
     // complete fields
     cy.getByTestID('dropdown-item--slack').click()
@@ -310,8 +308,6 @@ describe('flows alert panel', () => {
       */
 
     // === TELEGRAM ===
-    const parseMode = 'MarkdownV2'
-    const telegramURL = 'https://api.telegram.org/bot'
 
     // complete fields
     cy.getByTestID('dropdown-item--telegram').click()

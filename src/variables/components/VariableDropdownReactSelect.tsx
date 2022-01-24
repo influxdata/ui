@@ -29,7 +29,7 @@ interface MyState {
   loaded: boolean
 }
 
-class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
+class VariableDropdownReactSelect extends PureComponent<Props, MyState> {
   constructor(props) {
     super(props)
 
@@ -95,20 +95,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     }
   }
 
-  render() {
-    const {selectedValue, name, status} = this.props
-    const {shownValues} = this.state
-
-    const isDisabled = !Array.isArray(shownValues) || shownValues.length === 0
-
-    let realVals = []
-
-    //  make them all look like: { value: 'vanilla', label: 'Vanilla' }
-    if (shownValues && shownValues.length) {
-      realVals = shownValues.map(val => ({value: val, label: val}))
-    }
-    const placeHolderText = this.getPlaceHolderText('Select a Value')
-
+  makeCustomStyles = () => {
     const foreground = 'white'
     const inputBackground = 'black'
     const background = '#2c2d35'
@@ -118,93 +105,111 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const dropdownBackgroundNotFocused = '#828497'
     const clearIndicatorHoverColor = 'white'
 
-    const customStyles = {
-      option: (provided, state) => {
-        let backgroundColor = state.isFocused ? focusColor : background
+    return {
+      selectColor,
+      styles: {
+        option: (provided, state) => {
+          let backgroundColor = state.isFocused ? focusColor : background
 
-        if (state.isSelected) {
-          backgroundColor = selectColor
-        }
+          if (state.isSelected) {
+            backgroundColor = selectColor
+          }
 
-        return {
-          ...provided,
-          color: foreground,
-          backgroundColor,
-          padding: 10,
-        }
-      },
-      clearIndicator: provided => {
-        // console.log("clear indicator...state??? ACK", state)
-        // const foregroundColor = state.isFocused? 'yellow' : 'cyan'
-        return {
-          ...provided,
-          '&:hover': {
-            color: clearIndicatorHoverColor,
-          },
-        }
-      },
-      control: () => ({
-        width: 225,
-        height: 40,
-        color: foreground,
-        padding: 3,
-        backgroundColor: background,
-        display: 'flex',
-      }),
-      valueContainer: provided => ({
-        ...provided,
-        color: foreground,
-        backgroundColor: inputBackground,
-      }),
-      placeHolder: provided => ({
-        ...provided,
-        color: foreground,
-        backgroundColor: inputBackground,
-      }),
-      indicatorSeparator: () => ({
-        display: 'none',
-      }),
-      dropdownIndicator: (provided, state) => {
-        const hoverBackground = state.isFocused
-          ? dropdownBackgroundFocused
-          : dropdownBackgroundNotFocused
-
-        return {
-          ...provided,
-          color: foreground,
-          '&:hover': {
-            background: hoverBackground,
+          return {
+            ...provided,
             color: foreground,
-          },
-        }
-      },
-      singleValue: (provided, state) => {
-        const opacity = state.isDisabled ? 0.5 : 1
-        const transition = 'opacity 300ms'
-
-        return {
+            backgroundColor,
+            padding: 10,
+          }
+        },
+        clearIndicator: provided => {
+          return {
+            ...provided,
+            '&:hover': {
+              color: clearIndicatorHoverColor,
+            },
+          }
+        },
+        control: () => ({
+          width: 225,
+          height: 40,
+          color: foreground,
+          padding: 3,
+          backgroundColor: background,
+          display: 'flex',
+        }),
+        valueContainer: provided => ({
           ...provided,
-          opacity,
-          transition,
           color: foreground,
           backgroundColor: inputBackground,
-        }
+        }),
+        placeHolder: provided => ({
+          ...provided,
+          color: foreground,
+          backgroundColor: inputBackground,
+        }),
+        indicatorSeparator: () => ({
+          display: 'none',
+        }),
+        dropdownIndicator: (provided, state) => {
+          const hoverBackground = state.isFocused
+            ? dropdownBackgroundFocused
+            : dropdownBackgroundNotFocused
+
+          return {
+            ...provided,
+            color: foreground,
+            '&:hover': {
+              background: hoverBackground,
+              color: foreground,
+            },
+          }
+        },
+        singleValue: (provided, state) => {
+          const opacity = state.isDisabled ? 0.5 : 1
+          const transition = 'opacity 300ms'
+
+          return {
+            ...provided,
+            opacity,
+            transition,
+            color: foreground,
+            backgroundColor: inputBackground,
+          }
+        },
+        menu: provided => ({
+          ...provided,
+          zIndex: 15,
+          backgroundColor: background,
+        }),
       },
-      menu: provided => ({
-        ...provided,
-        zIndex: 15,
-        backgroundColor: background,
-      }),
     }
+  }
+
+  customStyles = this.makeCustomStyles()
+
+  render() {
+    const {selectedValue, name, status} = this.props
+    const {shownValues} = this.state
+
+    const isDisabled = !Array.isArray(shownValues) || shownValues.length === 0
+
+    let realVals = []
+
+    //  make them all look like: { value: 'vanilla', label: 'vanilla' }
+    if (!isDisabled) {
+      realVals = shownValues.map(val => ({value: val, label: val}))
+    }
+    const placeHolderText = this.getPlaceHolderText('Select a Value')
 
     const onChange = selection => {
       if (selection && selection.value) {
         this.handleSelect(selection.value)
       }
     }
+
     // primary50 is the color that is used when an item is clicked on to change the selection
     // have not found an alternative way (via the customStyles) to change that color)
-
     const selectedObjectValue = {value: selectedValue, label: selectedValue}
     return (
       <Select
@@ -216,7 +221,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         isClearable={true}
         isRtl={false}
         isSearchable={true}
-        styles={customStyles}
+        styles={this.customStyles.styles}
         name={name}
         options={realVals}
         placeholder={placeHolderText}
@@ -224,7 +229,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
           ...theme,
           colors: {
             ...theme.colors,
-            primary50: selectColor,
+            primary50: this.customStyles.selectColor,
           },
         })}
       />
@@ -312,4 +317,4 @@ const mdtp = {
 
 const connector = connect(mstp, mdtp)
 
-export default connector(TypeAheadVariableDropdown)
+export default connector(VariableDropdownReactSelect)

@@ -77,7 +77,7 @@ const App: FC = () => {
 
   return (
     <AppWrapper presentationMode={presentationMode} className={appWrapperClass}>
-      <GlobalSearch />
+      {CLOUD && <GlobalSearch />}
       <Notifications />
       <TooltipPortal />
       <NotesPortal />

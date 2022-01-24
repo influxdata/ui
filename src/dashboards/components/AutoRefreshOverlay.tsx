@@ -17,9 +17,7 @@ import {
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
 import DurationInput from 'src/shared/components/DurationInput'
-import AutoRefreshInput, {
-  PAUSED,
-} from 'src/dashboards/components/AutoRefreshInput'
+import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
 
 // Types
 import {CustomTimeRange, TimeRangeDirection} from 'src/types'

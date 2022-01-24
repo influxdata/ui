@@ -16,7 +16,7 @@ import {event} from 'src/cloud/utils/reporting'
 // Context
 import {AutoRefreshContext} from 'src/dashboards/components/RefreshContext'
 
-export const PAUSED: SelectableItem = {id: '0', name: 'Paused'}
+const PAUSED: SelectableItem = {id: '0', name: 'Paused'}
 
 const SUGGESTION_ITEMS: SelectableItem[] = [
   PAUSED,

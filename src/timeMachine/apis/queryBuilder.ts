@@ -20,22 +20,6 @@ const DEFAULT_TIME_RANGE: TimeRange = pastThirtyDaysTimeRange
 const DEFAULT_LIMIT = 200
 const EXTENDED_LIMIT = 500
 
-export interface FindBucketsOptions {
-  url: string
-  orgID: string
-}
-
-export function findBuckets({orgID}: FindBucketsOptions): CancelBox<string[]> {
-  const query = `buckets()
-  |> sort(columns: ["name"])
-  |> limit(n: ${DEFAULT_LIMIT})`
-
-  event('runQuery', {
-    context: 'queryBuilder-findBuckets',
-  })
-  return extractBoxedCol(runQuery(orgID, query), 'name')
-}
-
 export interface FindKeysOptions {
   url: string
   orgID: string

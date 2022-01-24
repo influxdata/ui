@@ -1,9 +1,7 @@
 // APIs
 import {
-  findBuckets,
   findKeys,
   findValues,
-  FindBucketsOptions,
   FindKeysOptions,
   FindValuesOptions,
 } from 'src/timeMachine/apis/queryBuilder'
@@ -14,39 +12,10 @@ import {CancelBox} from 'src/types'
 type CancelableQuery = CancelBox<string[]>
 
 class QueryBuilderFetcher {
-  private findBucketsQuery: CancelableQuery
   private findKeysQueries: CancelableQuery[] = []
   private findValuesQueries: CancelableQuery[] = []
   private findKeysCache: {[key: string]: string[]} = {}
   private findValuesCache: {[key: string]: string[]} = {}
-  private findBucketsCache: {[key: string]: string[]} = {}
-
-  public async findBuckets(options: FindBucketsOptions): Promise<string[]> {
-    this.cancelFindBuckets()
-
-    const cacheKey = JSON.stringify(options)
-    const cachedResult = this.findBucketsCache[cacheKey]
-
-    if (cachedResult) {
-      return Promise.resolve(cachedResult)
-    }
-
-    const pendingResult = findBuckets(options)
-
-    pendingResult.promise
-      .then(result => {
-        this.findBucketsCache[cacheKey] = result
-      })
-      .catch(() => {})
-
-    return pendingResult.promise
-  }
-
-  public cancelFindBuckets(): void {
-    if (this.findBucketsQuery) {
-      this.findBucketsQuery.cancel()
-    }
-  }
 
   public async findKeys(
     index: number,
@@ -113,7 +82,6 @@ class QueryBuilderFetcher {
   }
 
   public clearCache(): void {
-    this.findBucketsCache = {}
     this.findKeysCache = {}
     this.findValuesCache = {}
   }

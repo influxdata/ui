@@ -25,7 +25,6 @@ type Props = OwnProps & ReduxProps
 
 interface MyState {
   shownValues: string[]
-  selectHappened: boolean
   loaded: boolean
 }
 
@@ -35,7 +34,6 @@ class VariableDropdownReactSelect extends PureComponent<Props, MyState> {
 
     const defaultState = {
       shownValues: props.values,
-      selectHappened: false,
       loaded: false,
     }
 
@@ -48,18 +46,15 @@ class VariableDropdownReactSelect extends PureComponent<Props, MyState> {
   }
 
   // set the 'shownValues' after loading, and
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const {values, status} = this.props
     const {values: prevVals, status: prevStatus} = prevProps
-    const {loaded, selectHappened} = this.state
-    const {selectHappened: prevSelectHappened} = prevState
+    const {loaded} = this.state
 
     let newState = {}
 
     const justLoaded =
       status === RemoteDataState.Done && prevStatus !== RemoteDataState.Done
-
-    const justSelected = selectHappened && !prevSelectHappened
 
     // this is for updating the values:
     // (only want this to run *once* when the values get loaded)
@@ -74,11 +69,6 @@ class VariableDropdownReactSelect extends PureComponent<Props, MyState> {
         shownValues: values,
         loaded: true,
       }
-    }
-
-    // for updating the selected value:
-    if (justSelected) {
-      newState = {...newState, selectHappened: false}
     }
 
     this.setState(newState)
@@ -251,14 +241,6 @@ class VariableDropdownReactSelect extends PureComponent<Props, MyState> {
     if (onSelect) {
       onSelect()
     }
-
-    const newState = {
-      ...this.state,
-      actualVal: selectedValue,
-      selectHappened: true,
-    }
-
-    this.setState(newState)
   }
 
   // show the 'loading' or 'no values' as a string (no input field yet!)

@@ -2,7 +2,6 @@
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
-import {convertProviderSymbol} from 'src/shared/constants/regions'
 
 // Components
 import {
@@ -48,6 +47,8 @@ const OrgProfileTab: FC = () => {
     return copyToClipboardSuccess(text, title)
   }
 
+  const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
+
   return (
     <div style={{width: '60%'}}>
       <FlexBox
@@ -84,78 +85,89 @@ const OrgProfileTab: FC = () => {
               onClick={handleShowEditOverlay}
             />
           </FlexBox>
-          <FlexBox
-            direction={FlexDirection.Row}
-            margin={ComponentSize.Medium}
-            justifyContent={JustifyContent.SpaceBetween}
-            stretchToFitWidth={true}
-            style={{width: '85%'}}
-          >
-            {[
-              {
-                label: 'Provider',
-                src: convertProviderSymbol(me.quartzMe?.billingProvider),
-              },
-              {label: 'Region', src: me.quartzMe?.regionCode},
-              {label: 'Location', src: me.quartzMe?.regionName},
-            ].map(({label, src}) => {
-              if (!!src) {
-                return (
-                  <FlexBox
-                    key={`org-${label.toLowerCase()}`}
-                    direction={FlexDirection.Column}
-                    margin={ComponentSize.Large}
-                    alignItems={AlignItems.FlexStart}
+          {expectQuartzData && (
+            <>
+              <FlexBox
+                direction={FlexDirection.Row}
+                margin={ComponentSize.Medium}
+                justifyContent={JustifyContent.SpaceBetween}
+                stretchToFitWidth={true}
+                style={{width: '85%'}}
+              >
+                {[
+                  {
+                    label: 'Provider',
+                    // TODO: replace with pretty print name, when available in API
+                    src: me.quartzMe?.billingProvider,
+                  },
+                  {label: 'Region', src: me.quartzMe?.regionCode},
+                  {label: 'Location', src: me.quartzMe?.regionName},
+                ].map(({label, src}) => {
+                  if (!!src) {
+                    return (
+                      <FlexBox
+                        key={`org-${label.toLowerCase()}`}
+                        direction={FlexDirection.Column}
+                        margin={ComponentSize.Large}
+                        alignItems={AlignItems.FlexStart}
+                      >
+                        <Heading
+                          element={HeadingElement.H4}
+                          weight={FontWeight.Regular}
+                          style={headingStyle}
+                        >
+                          {label}
+                        </Heading>
+                        <span
+                          style={{fontWeight: FontWeight.Light, width: '100%'}}
+                        >
+                          {src}
+                        </span>
+                      </FlexBox>
+                    )
+                  } else {
+                    return null
+                  }
+                })}
+              </FlexBox>
+              {!!me.quartzMe?.clusterHost && (
+                <>
+                  <Heading
+                    element={HeadingElement.H4}
+                    style={headingStyle}
+                    weight={FontWeight.Regular}
                   >
-                    <Heading
-                      element={HeadingElement.H4}
-                      weight={FontWeight.Regular}
-                      style={headingStyle}
+                    Cluster URL
+                  </Heading>
+                  <div
+                    className="code-snippet"
+                    style={stretchStyle}
+                    data-testid="code-snippet--userid"
+                  >
+                    <div className="code-snippet--text">
+                      <pre>
+                        <code>{me.quartzMe.clusterHost}</code>
+                      </pre>
+                    </div>
+                    <FlexBox
+                      className="code-snippet--footer"
+                      margin={ComponentSize.Medium}
+                      stretchToFitWidth={true}
                     >
-                      {label}
-                    </Heading>
-                    <span style={{fontWeight: FontWeight.Light, width: '100%'}}>
-                      {src}
-                    </span>
-                  </FlexBox>
-                )
-              } else {
-                return null
-              }
-            })}
-          </FlexBox>
-          <Heading
-            element={HeadingElement.H4}
-            style={headingStyle}
-            weight={FontWeight.Regular}
-          >
-            Cluster URL
-          </Heading>
-          <div
-            className="code-snippet"
-            style={stretchStyle}
-            data-testid="code-snippet--userid"
-          >
-            <div className="code-snippet--text">
-              <pre>
-                <code>{me.quartzMe.clusterHost}</code>
-              </pre>
-            </div>
-            <FlexBox
-              className="code-snippet--footer"
-              margin={ComponentSize.Medium}
-              stretchToFitWidth={true}
-            >
-              <CopyButton
-                text={me.id}
-                testID="copy-btn--organizationUrl"
-                onCopy={generateCopyText(
-                  'Organization URL',
-                  me.quartzMe.clusterHost
-                )}
-              />
-            </FlexBox>
-          </div>
+                      <CopyButton
+                        text={me.id}
+                        testID="copy-btn--organizationUrl"
+                        onCopy={generateCopyText(
+                          'Organization URL',
+                          me.quartzMe.clusterHost
+                        )}
+                      />
+                    </FlexBox>
+                  </div>
+                </>
+              )}
+            </>
+          )}
         </FlexBox.Child>
 
         <FlexBox.Child
@@ -164,15 +176,15 @@ const OrgProfileTab: FC = () => {
         >
           <h4>Common IDs</h4>
           {[
-            {id: 'userid', humanId: 'User ID', src: me.id, label: me.name},
+            {id: 'userid', label: 'User ID', src: me.id, name: me.name},
             {
               id: 'orgid',
-              humanId: 'Organization ID',
+              label: 'Organization ID',
               src: org.id,
-              label: org.name,
+              name: org.name,
             },
-          ].map(({id, humanId, src, label}) => (
-            <div key={`org-${label.toLowerCase()}`}>
+          ].map(({id, label, src, name}) => (
+            <div key={`org-${name.toLowerCase()}`}>
               <Heading
                 element={HeadingElement.H4}
                 style={headingStyle}
@@ -199,17 +211,17 @@ const OrgProfileTab: FC = () => {
                   <CopyButton
                     text={src}
                     testID={`copy-btn--${id}`}
-                    onCopy={generateCopyText(humanId, src)}
+                    onCopy={generateCopyText(label, src)}
                   />
                   <label className="code-snippet--label">
-                    {`${label} |`} <b>{humanId}</b>
+                    {`${name} |`} <b>{label}</b>
                   </label>
                 </FlexBox>
               </div>
             </div>
           ))}
         </FlexBox.Child>
-        {CLOUD && isFlagEnabled('uiUnificationFlag') && (
+        {expectQuartzData && (
           <FlexBox.Child style={sectionStyle}>
             <UsersProvider>
               <OrgProfileDeletePanel />

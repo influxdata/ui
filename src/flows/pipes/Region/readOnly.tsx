@@ -2,7 +2,7 @@ import React, {FC, useContext} from 'react'
 
 import {PipeProp} from 'src/types/flows'
 import {PipeContext} from 'src/flows/context/pipe'
-import {REGIONS} from 'src/shared/constants/regions'
+import {REGIONS} from './view'
 
 import {
   Dropdown,

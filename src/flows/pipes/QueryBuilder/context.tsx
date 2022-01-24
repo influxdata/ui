@@ -16,6 +16,8 @@ import {BucketContext} from 'src/flows/context/bucket.scoped'
 
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+
 import {
   RemoteDataState,
   BuilderTagsType,
@@ -23,6 +25,7 @@ import {
 } from 'src/types'
 
 const DEFAULT_TAG_LIMIT = 200
+const EXTENDED_TAG_LIMIT = 500
 
 interface APIResultArray<T> {
   selected: T[]
@@ -236,6 +239,10 @@ export const QueryBuilderProvider: FC = ({children}) => {
         _source = `from(bucket: "${data.buckets[0].name}")`
       }
 
+      const limit = isFlagEnabled('increasedMeasurmentTagLimit')
+        ? EXTENDED_TAG_LIMIT
+        : DEFAULT_TAG_LIMIT
+
       // TODO: Use the `v1.tagKeys` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
       query(
@@ -247,7 +254,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
               |> distinct()${searchString}${previousTagString}
               |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
               |> sort()
-              |> limit(n: ${DEFAULT_TAG_LIMIT})`,
+              |> limit(n: ${limit})`,
         scope
       )
         .then(resp => {

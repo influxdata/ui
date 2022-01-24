@@ -9,6 +9,7 @@ import {getTimeRangeVars} from 'src/variables/utils/getTimeRangeVars'
 import {formatExpression} from 'src/variables/utils/formatExpression'
 import {tagToFlux} from 'src/timeMachine/utils/queryBuilder'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {TimeRange, BuilderConfig} from 'src/types'
@@ -17,6 +18,7 @@ import {pastThirtyDaysTimeRange} from 'src/shared/constants/timeRanges'
 
 const DEFAULT_TIME_RANGE: TimeRange = pastThirtyDaysTimeRange
 const DEFAULT_LIMIT = 200
+const EXTENDED_LIMIT = 500
 
 export interface FindBucketsOptions {
   url: string
@@ -61,10 +63,14 @@ export function findKeys({
     ? ''
     : `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
 
+  const adjustedLimit = isFlagEnabled('increasedMeasurmentTagLimit')
+    ? EXTENDED_LIMIT
+    : limit
+
   // TODO: Use the `v1.tagKeys` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
   const query = `import "regexp"
-  
+
   from(bucket: "${bucket}")
   |> range(${timeRangeArguments})
   |> filter(fn: ${tagFilters})
@@ -73,7 +79,7 @@ export function findKeys({
   |> distinct()${searchFilter}${previousKeyFilter}
   |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
   |> sort()
-  |> limit(n: ${limit})`
+  |> limit(n: ${adjustedLimit})`
 
   event('runQuery', {
     context: 'queryBuilder-findKeys',

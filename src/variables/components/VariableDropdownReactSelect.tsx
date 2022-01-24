@@ -30,7 +30,6 @@ type Props = OwnProps & ReduxProps
 // the typed val is what the user types in
 interface MyState {
   actualVal: string
-  selectIndex: number
   shownValues: string[]
   selectHappened: boolean
   menuOpen: MenuStatus
@@ -43,7 +42,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
 
     const defaultState = {
       actualVal: '',
-      selectIndex: -1,
       shownValues: props.values,
       selectHappened: false,
       menuOpen: null,
@@ -285,7 +283,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       typedValue: selectedValue,
       actualVal: selectedValue,
       selectHappened: true,
-      selectIndex: -1,
     }
 
     if (closeMenuNow) {

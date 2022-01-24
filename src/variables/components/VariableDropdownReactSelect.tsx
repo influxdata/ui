@@ -1,10 +1,9 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import Select from 'react-select'
 
 // Components
-import {MenuStatus} from '@influxdata/clockface'
+import Select from 'react-select'
 
 // Actions
 import {selectValue} from 'src/variables/actions/thunks'
@@ -32,7 +31,6 @@ interface MyState {
   actualVal: string
   shownValues: string[]
   selectHappened: boolean
-  menuOpen: MenuStatus
   loaded: boolean
 }
 
@@ -44,7 +42,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       actualVal: '',
       shownValues: props.values,
       selectHappened: false,
-      menuOpen: null,
       loaded: false,
     }
 
@@ -58,16 +55,13 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
   }
 
   // set the 'shownValues' after loading, and
-  // resets the menuOpen variable
   componentDidUpdate(prevProps, prevState) {
     const {values, selectedValue, status} = this.props
     const {values: prevVals, status: prevStatus} = prevProps
-    const {actualVal, loaded, selectHappened, menuOpen} = this.state
+    const {actualVal, loaded, selectHappened} = this.state
     const {
       actualVal: prevActualVal,
-      selectHappened: prevSelectHappened,
-      menuOpen: prevMenuOpen,
-    } = prevState
+      selectHappened: prevSelectHappened} = prevState
 
     let newState = {}
 
@@ -94,18 +88,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
         typedValue: selectedValue,
         loaded: true,
       }
-    }
-
-    /**
-     * unset the menuOpen; it should be set to closed (or open) only once; then undone
-     * this is needed because: (from clockface Dropdown.tsx documentation):
-     * if the string is set to 'open', and then the user closes it, and the code sets it to open again,
-     * unless the code sets it to something else in between (like null or 'close'),
-     * then nothing will happen- the menu will not open)
-     */
-
-    if (menuOpen !== prevMenuOpen && menuOpen !== null) {
-      newState['menuOpen'] = null
     }
 
     // for updating the selected value:
@@ -283,10 +265,6 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
       typedValue: selectedValue,
       actualVal: selectedValue,
       selectHappened: true,
-    }
-
-    if (closeMenuNow) {
-      newState['menuOpen'] = MenuStatus.Closed
     }
 
     this.setState(newState)

@@ -5,6 +5,11 @@ import {connect, ConnectedProps} from 'react-redux'
 // Components
 import Select from 'react-select'
 
+import {
+  InfluxColors,
+} from '@influxdata/clockface'
+
+
 // Actions
 import {selectValue} from 'src/variables/actions/thunks'
 
@@ -90,7 +95,7 @@ class VariableDropdownReactSelect extends PureComponent<Props, MyState> {
     const inputBackground = 'black'
     const background = '#2c2d35'
     const focusColor = '#46454e'
-    const selectColor = '#ce58eb'
+    const selectColor = InfluxColors.Comet // '#ce58eb'
     const dropdownBackgroundFocused = '#5d5f6f'
     const dropdownBackgroundNotFocused = '#828497'
     const clearIndicatorHoverColor = 'white'

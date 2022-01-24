@@ -87,7 +87,6 @@ const AutoRefreshForm: FC = () => {
       active: !state.infiniteDuration,
     },
   ]
-  // TODO: update 'refresh-form-time-label', 'refresh-form-timerange-toggle',
 
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">

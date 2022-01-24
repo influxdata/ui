@@ -340,7 +340,7 @@ class TypeAheadVariableDropdown extends PureComponent<Props, MyState> {
     const {status} = this.props
 
     return (
-      status === RemoteDataState.Done && (!valsToUse || valsToUse.length === 0)
+      status === RemoteDataState.Done && (!Array.isArray(valsToUse) || valsToUse.length === 0)
     )
   }
 }

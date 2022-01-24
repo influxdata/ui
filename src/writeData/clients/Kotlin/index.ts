@@ -13,7 +13,6 @@ export default register =>
   register({
     id: 'kotlin',
     name: 'Kotlin',
-    featureFlag: 'client-library--kotlin',
     description,
     logo,
     initialize,

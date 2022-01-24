@@ -10,7 +10,6 @@ export default register =>
   register({
     id: 'arduino',
     name: 'Arduino',
-    featureFlag: 'client-library--arduino',
     description,
     logo,
     initialize,

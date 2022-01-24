@@ -10,7 +10,6 @@ export default register =>
   register({
     id: 'javascript-node',
     name: 'JavaScript/Node.js',
-    featureFlag: 'client-library--javascript',
     description,
     logo,
     initialize,

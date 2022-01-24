@@ -28,7 +28,7 @@ const localTokens = [auth2, InactiveToken]
 const localHistory = createMemoryHistory({initialEntries: ['/']})
 const replacementID = '02f12c50dcb9300f'
 
-jest.mock('../../../../src/client', () => ({
+jest.mock('../../../src/client', () => ({
   getTokens: jest.fn(() => {
     return {
       data: {

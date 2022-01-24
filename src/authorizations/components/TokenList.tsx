@@ -5,8 +5,8 @@ import isEqual from 'lodash/isEqual'
 
 // Components
 import {Overlay, ResourceList} from '@influxdata/clockface'
-import {TokenRow} from 'src/authorizations/components/redesigned/TokenRow'
-import EditTokenOverlay from 'src/authorizations/components/redesigned/EditTokenOverlay'
+import {TokenRow} from 'src/authorizations/components/TokenRow'
+import EditTokenOverlay from 'src/authorizations/components/EditTokenOverlay'
 
 // Types
 import {Authorization} from 'src/types'

@@ -18,10 +18,10 @@ import {
   InfluxColors,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
-import {TokenList} from 'src/authorizations/components/redesigned/TokenList'
+import {TokenList} from 'src/authorizations/components/TokenList'
 import FilterList from 'src/shared/components/FilterList'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
-import GenerateTokenDropdown from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
+import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 
 // Types
@@ -30,7 +30,7 @@ import {SortTypes} from 'src/shared/utils/sort'
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
-import PostDeploymentTokensBanner from '../PostDeploymentTokensBanner'
+import PostDeploymentTokensBanner from './PostDeploymentTokensBanner'
 
 enum AuthSearchKeys {
   Description = 'description',

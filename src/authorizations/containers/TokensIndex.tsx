@@ -8,7 +8,7 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 import LoadDataTabbedPage from 'src/settings/components/LoadDataTabbedPage'
 import LoadDataHeader from 'src/settings/components/LoadDataHeader'
 import GetResources from 'src/resources/components/GetResources'
-import TokensTab from 'src/authorizations/components/redesigned/TokensTab'
+import TokensTab from 'src/authorizations/components/TokensTab'
 import {
   AllAccessTokenOverlay,
   CustomApiTokenOverlay,

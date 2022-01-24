@@ -9,9 +9,9 @@ import {mocked} from 'ts-jest/utils'
 import {createAuthorization} from 'src/authorizations/apis'
 import TokensTab from './TokensTab'
 
-import {deleteAuthorization} from '../../../../src/client'
+import {deleteAuthorization} from '../../../src/client'
 
-import {auth2, orgs, withRouterProps} from '../../../../mocks/dummyData'
+import {auth2, orgs, withRouterProps} from '../../../mocks/dummyData'
 import {createMemoryHistory} from 'history'
 import {RemoteDataState} from '@influxdata/clockface'
 

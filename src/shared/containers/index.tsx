@@ -29,8 +29,8 @@ export const BucketsIndex = lazy(() =>
 export const BucketsIndexPaginated = lazy(() =>
   import('src/buckets/pagination/BucketsIndex')
 )
-export const RedesignedTokensIndex = lazy(() =>
-  import('src/authorizations/containers/RedesignedTokensIndex')
+export const TokensIndex = lazy(() =>
+  import('src/authorizations/containers/TokensIndex')
 )
 export const PaginatedTokensIndex = lazy(() =>
   import('src/authorizations/pagination/TokensIndex')

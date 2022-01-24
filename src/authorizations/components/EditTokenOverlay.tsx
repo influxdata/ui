@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
+import 'src/authorizations/components/customApiTokenOverlay.scss'
 
 // Components
 import {
@@ -20,7 +20,7 @@ import {
   ComponentStatus,
   Page,
 } from '@influxdata/clockface'
-import {EditResourceAccordion} from 'src/authorizations/components/redesigned/EditResourceAccordion'
+import {EditResourceAccordion} from 'src/authorizations/components/EditResourceAccordion'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Types

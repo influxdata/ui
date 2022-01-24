@@ -21,7 +21,7 @@ import {
   BucketsIndex,
   BucketsIndexPaginated,
   PaginatedTokensIndex,
-  RedesignedTokensIndex,
+  TokensIndex,
   TelegrafsPage,
   ScrapersIndex,
   WriteDataPage,
@@ -113,10 +113,7 @@ const SetOrg: FC = () => {
   const orgPath = '/orgs/:orgID'
 
   let CorrectedTokensIndex = (
-    <Route
-      path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-      component={RedesignedTokensIndex}
-    />
+    <Route path={`${orgPath}/${LOAD_DATA}/${TOKENS}`} component={TokensIndex} />
   )
 
   // paginatedTokens already handles tokensUIRedesign being flagged on

@@ -4,7 +4,7 @@ import {fireEvent, screen} from '@testing-library/react'
 
 // Fixtures
 import {renderWithReduxAndRouter} from 'src/mockState'
-import GenerateTokenDropdown from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
+import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
 const setup = () => {
   return renderWithReduxAndRouter(<GenerateTokenDropdown />)

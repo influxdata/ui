@@ -1,6 +1,6 @@
 import React, {FC, useState, useContext, useEffect} from 'react'
 import {connect} from 'react-redux'
-import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
+import 'src/authorizations/components/customApiTokenOverlay.scss'
 import {isEmpty} from 'lodash'
 
 // Actions
@@ -25,7 +25,7 @@ import {
   JustifyContent,
   ComponentStatus,
 } from '@influxdata/clockface'
-import ResourceAccordion from 'src/authorizations/components/redesigned/ResourceAccordion'
+import ResourceAccordion from 'src/authorizations/components/ResourceAccordion'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Contexts

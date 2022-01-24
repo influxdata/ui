@@ -5,8 +5,8 @@ import isEqual from 'lodash/isEqual'
 
 // Components
 import {Overlay, PaginationNav, ResourceList} from '@influxdata/clockface'
-import {TokenRow as TokenRowRedesigned} from 'src/authorizations/components/redesigned/TokenRow'
-import EditTokenOverlay from 'src/authorizations/components/redesigned/EditTokenOverlay'
+import {TokenRow} from 'src/authorizations/components/TokenRow'
+import EditTokenOverlay from 'src/authorizations/components/EditTokenOverlay'
 
 // Types
 import {Authorization} from 'src/types'
@@ -153,7 +153,7 @@ export default class TokenList extends PureComponent<Props, State> {
 
       if (auth) {
         paginatedAuths.push(
-          <TokenRowRedesigned
+          <TokenRow
             key={auth.id}
             auth={auth}
             onClickDescription={this.handleClickDescription}

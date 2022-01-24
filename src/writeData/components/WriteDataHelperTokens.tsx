@@ -15,7 +15,7 @@ import {
   InfluxColors,
   EmptyState,
 } from '@influxdata/clockface'
-import GenerateTokenDropdownRedesigned from 'src/authorizations/components/redesigned/GenerateTokenDropdown'
+import GenerateTokenDropdown from 'src/authorizations/components/GenerateTokenDropdown'
 
 // Constants
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
@@ -101,7 +101,7 @@ const WriteDataHelperTokens: FC = () => {
         className="write-data--details-widget-title"
       >
         Token
-        <GenerateTokenDropdownRedesigned />
+        <GenerateTokenDropdown />
       </Heading>
       {body}
     </>

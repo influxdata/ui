@@ -141,6 +141,7 @@
 @import 'src/secrets/components/secrets.scss';
 @import 'src/buckets/components/createBucketForm/MeasurementSchema.scss';
 @import 'src/writeData/components/AddPluginToConfiguration.scss';
+@import 'src/authorizations/components/customApiTokenOverlay.scss';
 
 // External
 @import '../../node_modules/@influxdata/react-custom-scrollbars/dist/styles.css';

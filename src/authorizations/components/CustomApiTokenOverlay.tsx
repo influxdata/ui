@@ -1,6 +1,5 @@
 import React, {FC, useState, useContext, useEffect} from 'react'
 import {connect} from 'react-redux'
-import 'src/authorizations/components/customApiTokenOverlay.scss'
 import {isEmpty} from 'lodash'
 
 // Actions
@@ -255,7 +254,11 @@ const CustomApiTokenOverlay: FC<Props> = props => {
 
   return (
     <Overlay.Container maxWidth={800}>
-      <Overlay.Header title="Generate a Custom API Token" onDismiss={onClose} />
+      <Overlay.Header
+        className="overlay-header"
+        title="Generate a Custom API Token"
+        onDismiss={onClose}
+      />
       <Overlay.Body>
         <Form>
           <FlexBox
@@ -318,7 +321,7 @@ const CustomApiTokenOverlay: FC<Props> = props => {
           </FlexBox>
         </Form>
       </Overlay.Body>
-      <Overlay.Footer>
+      <Overlay.Footer className="overlay-footer">
         <Button
           color={ComponentColor.Tertiary}
           shape={ButtonShape.Default}

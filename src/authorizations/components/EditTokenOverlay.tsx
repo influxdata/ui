@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import 'src/authorizations/components/customApiTokenOverlay.scss'
 
 // Components
 import {
@@ -139,7 +138,11 @@ const EditTokenOverlay: FC<Props> = props => {
 
   return (
     <Overlay.Container maxWidth={800}>
-      <Overlay.Header title="API Token Summary" onDismiss={handleDismiss} />
+      <Overlay.Header
+        className="overlay-header"
+        title="API Token Summary"
+        onDismiss={handleDismiss}
+      />
       <Overlay.Body>
         <FlexBox
           alignItems={AlignItems.FlexStart}
@@ -212,25 +215,23 @@ const EditTokenOverlay: FC<Props> = props => {
               searchTerm={searchTerm}
             />
           </FlexBox.Child>
-          <Page.ControlBarCenter>
-            <FlexBox margin={ComponentSize.Medium}>
-              <Button
-                color={ComponentColor.Tertiary}
-                text="Cancel"
-                onClick={handleDismiss}
-                testID="token-cancel-btn"
-              />
-              <Button
-                color={ComponentColor.Primary}
-                text="Save"
-                onClick={onSave}
-                testID="token-save-btn"
-                status={status}
-              />
-            </FlexBox>
-          </Page.ControlBarCenter>
         </FlexBox>
       </Overlay.Body>
+      <Overlay.Footer className="overlay-footer">
+        <Button
+          color={ComponentColor.Tertiary}
+          text="Cancel"
+          onClick={handleDismiss}
+          testID="token-cancel-btn"
+        />
+        <Button
+          color={ComponentColor.Primary}
+          text="Save"
+          onClick={onSave}
+          testID="token-save-btn"
+          status={status}
+        />
+      </Overlay.Footer>
     </Overlay.Container>
   )
 }

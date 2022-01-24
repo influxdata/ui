@@ -17,7 +17,6 @@ import {
   Button,
   ComponentColor,
   ComponentStatus,
-  Page,
 } from '@influxdata/clockface'
 import {EditResourceAccordion} from 'src/authorizations/components/EditResourceAccordion'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'

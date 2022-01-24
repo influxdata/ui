@@ -337,7 +337,7 @@ const FlowHeader: FC = () => {
       {
         title: 'Download as PDF',
         onClick: handleDownloadAsPDF,
-        icon: IconFont.Download_New, // TODO
+        icon: IconFont.Download_New,
       }
     )
   }

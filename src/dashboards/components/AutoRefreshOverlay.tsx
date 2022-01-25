@@ -229,6 +229,16 @@ const AutoRefreshOverlay: FC = () => {
             </div>
           )}
         </FlexBox.Child>
+        <FlexBox.Child className="refresh-form-container">
+          <div className="refresh-form-container-title">Refresh Interval</div>
+          <div className="refresh-form-container-description">
+            How often your dashboard will refresh
+          </div>
+          <AutoRefreshInput
+            handleRefreshMilliseconds={handleRefreshMilliseconds}
+            label={refreshMilliseconds?.label}
+          />
+        </FlexBox.Child>
       </FlexBox>
       <Grid>
         <Grid.Column className="refresh-form-column">
@@ -261,15 +271,6 @@ const AutoRefreshOverlay: FC = () => {
                 />
               )}
             </div>
-          </div>
-          <div className="refresh-form-container">
-            <span className="refresh-form-container-child">
-              Refresh Interval:{' '}
-            </span>
-            <AutoRefreshInput
-              handleRefreshMilliseconds={handleRefreshMilliseconds}
-              label={refreshMilliseconds?.label}
-            />
           </div>
           <div className="refresh-form-buttons">
             <Button

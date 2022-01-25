@@ -9,8 +9,6 @@ import {
   Button,
   ComponentColor,
   SelectDropdown,
-  SlideToggle,
-  InputLabel,
   ComponentStatus,
   FlexBox,
   FlexDirection,

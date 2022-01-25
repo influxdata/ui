@@ -72,10 +72,17 @@ describe('tokens', () => {
         cy.getByTestID(`token-name ${authData[i].description}`)
           .eq(i)
           .contains(authData[i].description)
-        
-        cy.getByTestID('context-delete-menu--button').eq(i).should('be.visible')
-        cy.getByTestID('context-menu-token').eq(i).should('exist').click()
-        cy.getByTestID('context-clone-token').eq(i).should('exist')
+
+        cy.getByTestID('context-delete-menu--button')
+          .eq(i)
+          .should('be.visible')
+        cy.getByTestID('context-menu-token')
+          .eq(i)
+          .should('exist')
+          .click()
+        cy.getByTestID('context-clone-token')
+          .eq(i)
+          .should('exist')
       }
     })
   })
@@ -185,7 +192,7 @@ describe('tokens', () => {
 
     cy.getByTestID(`token-card ${all_access_token_name}`).should('be.visible')
   })
-  
+
   it('can view a token', () => {
     cy.getByTestID('token-name token test 03').click()
 
@@ -198,7 +205,10 @@ describe('tokens', () => {
 
     // description match
     cy.getByTestID('custom-api-token-input').should('be.visible')
-    cy.getByTestID('custom-api-token-input').should('have.value', 'token test 03')
+    cy.getByTestID('custom-api-token-input').should(
+      'have.value',
+      'token test 03'
+    )
 
     // filter exist
     cy.getByTestID('input-field--filter').should('be.visible')
@@ -305,5 +315,4 @@ describe('tokens', () => {
         })
       })
   })
-
 })

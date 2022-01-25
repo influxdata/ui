@@ -148,6 +148,7 @@ const EditTokenOverlay: FC<Props> = props => {
           margin={ComponentSize.Medium}
           direction={FlexDirection.Column}
           justifyContent={JustifyContent.SpaceBetween}
+          testID="custom-api-token-toggle"
         >
           <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
             <SlideToggle

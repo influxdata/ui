@@ -5,7 +5,6 @@ import {useDispatch} from 'react-redux'
 // Components
 import {
   Overlay,
-  Grid,
   Button,
   ComponentColor,
   ComponentStatus,

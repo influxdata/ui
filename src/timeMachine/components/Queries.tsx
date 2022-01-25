@@ -7,7 +7,6 @@ import {withRouter, RouteComponentProps} from 'react-router-dom'
 import TimeMachineFluxEditor from 'src/timeMachine/components/TimeMachineFluxEditor'
 import CSVExportButton from 'src/shared/components/CSVExportButton'
 import TimeMachineQueriesSwitcher from 'src/timeMachine/components/QueriesSwitcher'
-import TimeMachineRefreshDropdown from 'src/timeMachine/components/RefreshDropdown'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import TimeMachineQueryBuilder from 'src/timeMachine/components/QueryBuilder'
 import SubmitQueryButton from 'src/timeMachine/components/SubmitQueryButton'
@@ -67,7 +66,6 @@ class TimeMachineQueries extends PureComponent<Props> {
             {!isInCheckOverlay && (
               <>
                 <CSVExportButton />
-                <TimeMachineRefreshDropdown />
                 <TimeRangeDropdown
                   timeRange={timeRange}
                   onSetTimeRange={this.handleSetTimeRange}

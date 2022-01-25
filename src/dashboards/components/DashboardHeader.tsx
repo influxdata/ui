@@ -4,7 +4,6 @@ import {connect, ConnectedProps} from 'react-redux'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 // Components
-import AutoRefreshDropdown from 'src/shared/components/dropdown_auto_refresh/AutoRefreshDropdown'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import DashboardLightModeToggle from 'src/dashboards/components/DashboardLightModeToggle'
 import GraphTips from 'src/shared/components/graph_tips/GraphTips'
@@ -248,12 +247,6 @@ const DashboardHeader: FC<Props> = ({
           <GraphTips />
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
-          <AutoRefreshDropdown
-            onChoose={() => {}}
-            onManualRefresh={resetCacheAndRefresh}
-            selected={autoRefresh}
-            showAutoRefresh={false}
-          />
           <Button
             text={
               isActive

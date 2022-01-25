@@ -230,7 +230,7 @@ from(bucket: "${name}"{rightarrow}
         .click()
 
       cy.getByTestID('time-machine-submit-button').should('be.visible')
-      cy.getByTestID('page-title').click({multiple: true})
+      cy.getByTestID('page-title').first().click()
       cy.getByTestID('renamable-page-title--input')
         .clear()
         .type('Flow')

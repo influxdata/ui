@@ -48,97 +48,101 @@ const OrgProfileTab: FC = () => {
     me.quartzMe?.regionCode ||
     me.quartzMe?.regionName
 
-  // per design. stretch all copyable elements to the width of the max.
-  const widthCopyableElements = me.quartzMe?.clusterHost
-    ? me.quartzMe?.clusterHost.length * 15
-    : '600px'
+  const OrgProfile = () => (
+    <FlexBox.Child
+      className="org-profile-tab--section"
+      testID="org-profile--panel"
+    >
+      <h4>Organization Profile</h4>
+      <Heading
+        className="org-profile-tab--heading"
+        element={HeadingElement.H4}
+        weight={FontWeight.Regular}
+      >
+        Name
+      </Heading>
+      <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
+        <Input
+          value={org.name}
+          onChange={() => {}}
+          style={{width: 'max-content'}}
+          data-testid="danger-zone--org-name"
+          testID="danger-zone--org-name"
+        ></Input>
+        <Button
+          testID="rename-org--button"
+          text="Rename"
+          icon={IconFont.Pencil}
+          onClick={handleShowEditOverlay}
+        />
+      </FlexBox>
+      {expectQuartzData && hasSomeQuartzOrgData && (
+        <>
+          <FlexBox
+            direction={FlexDirection.Row}
+            margin={ComponentSize.Medium}
+            justifyContent={JustifyContent.SpaceBetween}
+            stretchToFitWidth={true}
+            style={{width: '85%'}}
+          >
+            {me.quartzMe?.billingProvider && (
+              <LabeledData label="Provider" src={me.quartzMe.billingProvider} />
+            )}
+            {me.quartzMe?.regionCode && (
+              <LabeledData label="Region" src={me.quartzMe.regionCode} />
+            )}
+            {me.quartzMe?.regionName && (
+              <LabeledData label="Location" src={me.quartzMe.regionName} />
+            )}
+          </FlexBox>
+          {expectQuartzData && me.quartzMe?.clusterHost && (
+            <CopyableLabeledData
+              id="clusterUrl"
+              label="Cluster URL"
+              src={me.quartzMe.clusterHost}
+            />
+          )}
+        </>
+      )}
+    </FlexBox.Child>
+  )
+
+  const CommonIds = () => (
+    <FlexBox.Child
+      className="org-profile-tab--section"
+      testID="common-ids--panel"
+    >
+      <h4>Common IDs</h4>
+      <CopyableLabeledData
+        id="userid"
+        label="User ID"
+        src={me.id}
+        name={me.name}
+      />
+      <CopyableLabeledData
+        id="orgid"
+        label="Organization ID"
+        src={org.id}
+        name={org.name}
+      />
+    </FlexBox.Child>
+  )
 
   return (
     <FlexBox
       direction={FlexDirection.Column}
       alignItems={AlignItems.FlexStart}
-      style={{width: widthCopyableElements}}
       testID="organization-profile--panel"
       margin={ComponentSize.Large}
     >
-      <FlexBox.Child
-        className="org-profile-tab--section"
-        testID="org-profile--panel"
+      <FlexBox
+        direction={FlexDirection.Row}
+        stretchToFitWidth={true}
+        style={{flexWrap: 'wrap'}}
       >
-        <h4>Organization Profile</h4>
-        <Heading
-          className="org-profile-tab--heading"
-          element={HeadingElement.H4}
-          weight={FontWeight.Regular}
-        >
-          Name
-        </Heading>
-        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
-          <Input
-            value={org.name}
-            onChange={() => {}}
-            style={{width: 'max-content'}}
-            data-testid="danger-zone--org-name"
-            testID="danger-zone--org-name"
-          ></Input>
-          <Button
-            testID="rename-org--button"
-            text="Rename"
-            icon={IconFont.Pencil}
-            onClick={handleShowEditOverlay}
-          />
-        </FlexBox>
-        {expectQuartzData && hasSomeQuartzOrgData && (
-          <>
-            <FlexBox
-              direction={FlexDirection.Row}
-              margin={ComponentSize.Medium}
-              justifyContent={JustifyContent.SpaceBetween}
-              stretchToFitWidth={true}
-              style={{width: '85%'}}
-            >
-              {me.quartzMe?.billingProvider && (
-                <LabeledData
-                  label="Provider"
-                  src={me.quartzMe.billingProvider}
-                />
-              )}
-              {me.quartzMe?.regionCode && (
-                <LabeledData label="Region" src={me.quartzMe.regionCode} />
-              )}
-              {me.quartzMe?.regionName && (
-                <LabeledData label="Location" src={me.quartzMe.regionName} />
-              )}
-            </FlexBox>
-            {expectQuartzData && me.quartzMe?.clusterHost && (
-              <CopyableLabeledData
-                id="clusterUrl"
-                label="Cluster URL"
-                src={me.quartzMe.clusterHost}
-              />
-            )}
-          </>
-        )}
-      </FlexBox.Child>
-
-      <FlexBox.Child
-        className="org-profile-tab--section"
-        testID="common-ids--panel"
-      >
-        <h4>Common IDs</h4>
-        <CopyableLabeledData
-          id="userid"
-          label="User ID"
-          src={me.id}
-          name={me.name}
-        />
-        <CopyableLabeledData
-          id="orgid"
-          label="Organization ID"
-          src={org.id}
-          name={org.name}
-        />
-      </FlexBox.Child>
+        <OrgProfile />
+        <CommonIds />
+      </FlexBox>
 
       {expectQuartzData && (
         <FlexBox.Child className="org-profile-tab--section">

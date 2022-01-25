@@ -38,8 +38,7 @@ const CopyableLabeledData: FC<Props> = ({id, label, src, name}) => {
         {label}
       </Heading>
       <div
-        className="code-snippet"
-        style={{width: '100%'}}
+        className="code-snippet org-profile-tab--copyableText"
         data-testid={`code-snippet--${id}`}
       >
         <div className="code-snippet--text">

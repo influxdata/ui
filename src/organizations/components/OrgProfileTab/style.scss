@@ -13,4 +13,10 @@
   align-self: stretch;
   margin-top: $cf-space-l;
   margin-bottom: $cf-space-l;
+  margin-right: $cf-space-3xl;
+  flex-shrink: 0;
+}
+
+.org-profile-tab--copyableText {
+  min-width: 500px;
 }

@@ -572,7 +572,6 @@ describe('Dashboard refresh', () => {
           }
         })
 
-        cy.getByTestID('autorefresh-dropdown-refresh').click()
         cy.wait('@refreshCellQuery')
         cy.wait('@refreshSecondQuery')
       })

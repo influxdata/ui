@@ -239,10 +239,6 @@ describe('Flows', () => {
       .should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
-    // This is a random validator that the autorefresh option doesn't pop up
-    // In Flows again without explicit changes
-    cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
-
     cy.clickNavBarItem('nav-item-flows')
 
     cy.get('.cf-resource-card').should('have.length', 1)

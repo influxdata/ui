@@ -8,14 +8,15 @@ import {
   Grid,
   Button,
   ComponentColor,
-  SelectDropdown,
   ComponentStatus,
   FlexBox,
   FlexDirection,
   AlignItems,
   SelectGroup,
   ButtonShape,
+  Dropdown,
 } from '@influxdata/clockface'
+import DurationInput from 'src/shared/components/DurationInput'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
 import AutoRefreshInput from 'src/dashboards/components/AutoRefreshInput'
@@ -37,6 +38,16 @@ import './AutoRefresh.scss'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
+
+enum TIMEOUT_CATEGORY {
+  Minutes = 'Minutes',
+  Hours = 'Hours',
+  Days = 'Days',
+}
+
+const MAX_MINUTE = 60
+const MAX_HOUR = 25
+const MAX_DAY = 30
 
 const jumpAheadTime = () => {
   const newTime = addDurationToDate(new Date(), 1, 'h')
@@ -112,6 +123,26 @@ const AutoRefreshOverlay: FC = () => {
       active: !infiniteDuration,
     },
   ]
+
+  const isValidTimeoutInput = (input: string) => {
+    if (+input <= 0) {
+      return false
+    }
+    const unit = inactivityTimeoutCategory
+    let isValid = false
+    switch (unit) {
+      case TIMEOUT_CATEGORY.Minutes:
+        isValid = +input < MAX_MINUTE
+        break
+      case TIMEOUT_CATEGORY.Hours:
+        isValid = +input < MAX_HOUR
+        break
+      case TIMEOUT_CATEGORY.Days:
+        isValid = +input < MAX_DAY
+        break
+    }
+    return input === 'Never' || isValid
+  }
 
   const handleRefreshMilliseconds = useCallback(
     (interval: {
@@ -237,39 +268,55 @@ const AutoRefreshOverlay: FC = () => {
             label={refreshMilliseconds?.label}
           />
         </FlexBox.Child>
+        <FlexBox.Child className="refresh-form-container">
+          <div className="refresh-form-container-title">Inactivity Timeout</div>
+          <div className="refresh-form-container-description">
+            When your dashboard refresh will timeout
+          </div>
+          <div className="refresh-inactivity-timeout-container">
+            <div className="refresh-inactivity-timeout-num">
+              <DurationInput
+                suggestions={selectInactivityArray(inactivityTimeoutCategory)}
+                onSubmit={(timeout: string) => setInactivityTimeout(timeout)}
+                value={inactivityTimeout}
+                validFunction={isValidTimeoutInput}
+                menuMaxHeight={150}
+                testID="inactivity-timeout-dropdown"
+              />
+            </div>
+            {inactivityTimeout !== 'Never' && (
+              <Dropdown
+                className="refresh-inactivity-timeout-unit"
+                menu={onCollapse => (
+                  <Dropdown.Menu onCollapse={onCollapse}>
+                    {[
+                      TIMEOUT_CATEGORY.Minutes,
+                      TIMEOUT_CATEGORY.Hours,
+                      TIMEOUT_CATEGORY.Days,
+                    ].map(option => (
+                      <Dropdown.Item
+                        key={option}
+                        onClick={() => setInactivityTimeoutCategory(option)}
+                        selected={inactivityTimeoutCategory === option}
+                      >
+                        {option}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                )}
+                button={(active, onClick) => (
+                  <Dropdown.Button active={active} onClick={onClick}>
+                    {inactivityTimeoutCategory}
+                  </Dropdown.Button>
+                )}
+                testID="inactivity-timeout-category-dropdown"
+              />
+            )}
+          </div>
+        </FlexBox.Child>
       </FlexBox>
       <Grid>
         <Grid.Column className="refresh-form-column">
-          <div className="refresh-form-container">
-            <span className="refresh-form-container-child">
-              Inactivity Timeout:{' '}
-            </span>
-            <div
-              className={`refresh-form-container-child ${
-                inactivityTimeout === 'Never' ? 'inactive' : 'active'
-              }`}
-            >
-              <SelectDropdown
-                options={selectInactivityArray(inactivityTimeoutCategory)}
-                selectedOption={inactivityTimeout}
-                onSelect={(timeout: string) => setInactivityTimeout(timeout)}
-                buttonColor={ComponentColor.Default}
-                testID="inactivity-timeout-dropdown"
-              />
-              {inactivityTimeout !== 'Never' && (
-                <SelectDropdown
-                  className="refresh-form-timeout-dropdown"
-                  options={['Minutes', 'Hours', 'Days']}
-                  selectedOption={inactivityTimeoutCategory}
-                  onSelect={(timeoutCategory: string) =>
-                    setInactivityTimeoutCategory(timeoutCategory)
-                  }
-                  buttonColor={ComponentColor.Default}
-                  testID="inactivity-timeout-category-dropdown"
-                />
-              )}
-            </div>
-          </div>
           <div className="refresh-form-buttons">
             <Button
               onClick={handleCancel}

@@ -569,6 +569,83 @@ describe('DataExplorer', () => {
         .should('exist')
         .should('contain', taskName)
     })
+
+    it('inject variables into flux-editor', () => {
+      const fluxQuery: Array<string> = [
+        'from(bucket: "defbuck")',
+        '  |>range(start: , stop: )',
+      ]
+
+      cy.get('.view-line')
+        .last()
+        .type(fluxQuery.join('{enter}'))
+
+      // Search for non-existing element
+      cy.getByTestID('toolbar-tab').click()
+      cy.getByTestID('flux-toolbar-search--input').type('timeRangeStartd')
+      cy.getByTestID('variable-name--timeRangeStart').should('not.exist')
+
+      // TODO: Missing data-testid attribute
+      cy.get('.flux-toolbar--list').within(() => {
+        cy.getByTestID('empty-state')
+          .should('exist')
+          .within(() => {
+            cy.getByTestID('empty-state--text')
+              .should('exist')
+              .and('contain', 'No variables match your search')
+          })
+      })
+
+      // Search for timeRange variables
+      cy.getByTestID('flux-toolbar-search--input')
+        .clear()
+        .type('timeRange')
+
+      cy.get('.flux-toolbar--list').within(() => {
+        cy.get('.flux-toolbar--list-item')
+          .should('have.length', 2)
+          .and('contain', 'timeRangeStart')
+          .and('contain', 'timeRangeStop')
+      })
+
+      // Inject variable after parameter
+      const injectVariable = (
+        varName: string,
+        filter: string,
+        param: string
+      ): void => {
+        cy.get('.view-line')
+          .contains(filter)
+          .parent()
+          .then((line: JQuery<HTMLElement>) => {
+            // Where to inject variable
+            const posOfCursor: number =
+              line.text().indexOf(param) + param.length
+            const cursor: string = '{rightarrow}'.repeat(posOfCursor)
+
+            // Move text cursor after parameter
+            cy.get('.view-line')
+              .contains(filter)
+              .parent()
+              .type('{home}' + cursor)
+
+            // Inject variable
+            cy.getByTestID(`variable--${varName}--inject`).click({force: true})
+          })
+      }
+
+      injectVariable('timeRangeStart', 'range', 'start')
+      injectVariable('timeRangeStop', 'range', 'stop')
+
+      cy.get('.view-line')
+        .should('contain', 'v.timeRangeStart')
+        .and('contain', 'v.timeRangeStop')
+
+      cy.getByTestID('flux-toolbar-search--input').clear()
+      cy.get('.flux-toolbar--list').within(() => {
+        cy.get('.flux-toolbar--list-item').should('have.length', 4)
+      })
+    })
   })
 
   describe('query builder', () => {

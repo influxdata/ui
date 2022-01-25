@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -11,6 +12,9 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 import CopyButton from 'src/shared/components/CopyButton'
+
+// Actions
+import {notify} from 'src/shared/actions/notifications'
 
 // Utils
 import {copyToClipboardSuccess} from 'src/shared/copy/notifications'
@@ -24,8 +28,9 @@ interface Props {
 }
 
 const CopyableLabeledData: FC<Props> = ({id, label, src, name}) => {
-  const generateCopyText = (title, text) => () => {
-    return copyToClipboardSuccess(text, title)
+  const dispatch = useDispatch()
+  const generateCopyText = () => {
+    dispatch(notify(copyToClipboardSuccess(label, src)))
   }
 
   return (
@@ -55,7 +60,7 @@ const CopyableLabeledData: FC<Props> = ({id, label, src, name}) => {
           <CopyButton
             text={src}
             testID={`copy-btn--${id}`}
-            onCopy={generateCopyText(label, src)}
+            onCopy={generateCopyText}
           />
           {name && (
             <label

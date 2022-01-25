@@ -21,7 +21,6 @@ import './Sidebar.scss'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
-import {patchTask} from 'src/client'
 
 // Constants
 import {
@@ -141,19 +140,6 @@ const Sidebar: FC = () => {
           action: () => {
             const {type} = flow.data.byID[id]
             event('notebook_delete_cell', {notebooksCellType: type})
-
-            if (type === 'schedule') {
-              // Silently disable all the tasks exported by this flow
-              const tasks = flow.data.byID[id]?.task ?? []
-              tasks.forEach(task => {
-                patchTask({
-                  taskID: task.id,
-                  data: {
-                    status: 'inactive',
-                  },
-                })
-              })
-            }
 
             remove(id)
           },

@@ -31,7 +31,9 @@ describe('Flows', () => {
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title').click()
+    cy.getByTestID('page-title')
+      .first()
+      .click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     cy.getByTestID('sidebar-button')
@@ -63,7 +65,9 @@ describe('Flows', () => {
       .click()
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
-    cy.getByTestID('page-title').click()
+    cy.getByTestID('page-title')
+      .first()
+      .click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     cy.getByTestID('sidebar-button')
@@ -112,7 +116,9 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title').click()
+    cy.getByTestID('page-title')
+      .first()
+      .click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
     // select our bucket
@@ -194,7 +200,9 @@ describe('Flows', () => {
     cy.getByTestID('time-machine-submit-button').should('be.visible')
     cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
 
-    cy.getByTestID('page-title').click()
+    cy.getByTestID('page-title')
+      .first()
+      .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket
@@ -320,7 +328,9 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title').click()
+    cy.getByTestID('page-title')
+      .first()
+      .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket
@@ -398,7 +408,9 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title').click()
+    cy.getByTestID('page-title')
+      .first()
+      .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket

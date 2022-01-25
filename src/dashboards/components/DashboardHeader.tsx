@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useCallback, useContext} from 'react'
+import React, {FC, useContext} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
 
@@ -77,7 +77,6 @@ type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
 
 const DashboardHeader: FC<Props> = ({
   dashboard,
-  onManualRefresh,
   toggleShowVariablesControls,
   showVariablesControls,
   onSetAutoRefreshStatus,
@@ -127,12 +126,6 @@ const DashboardHeader: FC<Props> = ({
       onSetAutoRefreshStatus(dashboard.id, AutoRefreshStatus.Active)
     }
   }
-
-  const resetCacheAndRefresh = useCallback((): void => {
-    // We want to invalidate the existing cache when a user manually refreshes the dashboard
-    resetQueryCache()
-    onManualRefresh()
-  }, [])
 
   const isActive =
     autoRefresh?.status && autoRefresh.status === AutoRefreshStatus.Active

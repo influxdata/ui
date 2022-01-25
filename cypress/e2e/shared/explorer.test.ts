@@ -570,7 +570,7 @@ describe('DataExplorer', () => {
         .should('contain', taskName)
     })
 
-    it('inject variables into flux-editor', () => {
+    it('injects variables into flux-editor', () => {
       const fluxQuery: Array<string> = [
         'from(bucket: "defbuck")',
         '  |>range(start: , stop: )',
@@ -580,7 +580,7 @@ describe('DataExplorer', () => {
         .last()
         .type(fluxQuery.join('{enter}'))
 
-      // Search for non-existing element
+      // Searches for non-existent variable
       cy.getByTestID('toolbar-tab').click()
       cy.getByTestID('flux-toolbar-search--input').type('timeRangeStartd')
       cy.getByTestID('variable-name--timeRangeStart').should('not.exist')
@@ -596,7 +596,7 @@ describe('DataExplorer', () => {
           })
       })
 
-      // Search for timeRange variables
+      // Searches for timeRange variables
       cy.getByTestID('flux-toolbar-search--input')
         .clear()
         .type('timeRange')
@@ -608,7 +608,7 @@ describe('DataExplorer', () => {
           .and('contain', 'timeRangeStop')
       })
 
-      // Inject variable after parameter
+      // Inject a variable after a parameter
       const injectVariable = (
         varName: string,
         filter: string,
@@ -618,18 +618,18 @@ describe('DataExplorer', () => {
           .contains(filter)
           .parent()
           .then((line: JQuery<HTMLElement>) => {
-            // Where to inject variable
+            // finds index of injection
             const posOfCursor: number =
               line.text().indexOf(param) + param.length
             const cursor: string = '{rightarrow}'.repeat(posOfCursor)
 
-            // Move text cursor after parameter
+            // moves text cursor
             cy.get('.view-line')
               .contains(filter)
               .parent()
               .type('{home}' + cursor)
 
-            // Inject variable
+            // injects variable
             cy.getByTestID(`variable--${varName}--inject`).click({force: true})
           })
       }

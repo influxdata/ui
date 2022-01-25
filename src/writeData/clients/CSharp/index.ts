@@ -12,7 +12,6 @@ export default register =>
   register({
     id: 'csharp',
     name: 'C#',
-    featureFlag: 'client-library--csharp',
     description,
     logo,
     initialize,

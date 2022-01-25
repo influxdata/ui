@@ -33,7 +33,6 @@ import {Cell, View, AppState} from 'src/types'
 interface OwnProps {
   cell: Cell
   view: View
-  onCSVDownload: () => void
   onRefresh: () => void
   variables: string
   isPaused: boolean
@@ -50,7 +49,6 @@ const CellContext: FC<Props> = ({
   cell,
   onCloneCell,
   onDeleteCell,
-  onCSVDownload,
   onRefresh,
   isPaused,
   togglePauseCell,
@@ -160,15 +158,6 @@ const CellContext: FC<Props> = ({
           onHide={onHide}
           testID="cell-context--clone"
         />
-        <FeatureFlag name="downloadCellCSV">
-          <CellContextItem
-            label="Download CSV"
-            onClick={onCSVDownload}
-            icon={IconFont.Download_New}
-            onHide={onHide}
-            testID="cell-context--download"
-          />
-        </FeatureFlag>
         <CellContextDangerItem
           label="Delete"
           onClick={handleDeleteCell}

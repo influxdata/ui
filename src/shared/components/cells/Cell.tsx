@@ -100,7 +100,6 @@ class CellComponent extends Component<Props, State> {
           <CellContext
             cell={cell}
             view={view}
-            onCSVDownload={this.handleCSVDownload}
             onRefresh={this.handleIncrementToken}
             isPaused={this.state.isPaused}
             togglePauseCell={this.handlePauseCell}
@@ -167,10 +166,6 @@ class CellComponent extends Component<Props, State> {
         submitToken={this.state.submitToken}
       />
     )
-  }
-
-  private handleCSVDownload = (): void => {
-    throw new Error('csv download not implemented')
   }
 }
 

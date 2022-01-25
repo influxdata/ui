@@ -208,6 +208,14 @@ const AutoRefreshOverlay: FC = () => {
     event('dashboards.autorefresh.autorefreshoverlay.cancelcustom')
     onClose()
   }
+
+  const isValidSubmit = () => {
+    const isValidInterval = refreshMilliseconds.interval > 0
+    const isValidTimeout = isValidTimeoutInput(inactivityTimeout)
+    console.log({isValidInterval, isValidTimeout})
+    return isValidInterval && isValidTimeout
+  }
+
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
       <Overlay.Header
@@ -314,9 +322,7 @@ const AutoRefreshOverlay: FC = () => {
             )}
           </div>
         </FlexBox.Child>
-      </FlexBox>
-      <Grid>
-        <Grid.Column className="refresh-form-column">
+        <FlexBox.Child>
           <div className="refresh-form-buttons">
             <Button
               onClick={handleCancel}
@@ -332,14 +338,14 @@ const AutoRefreshOverlay: FC = () => {
               className="refresh-form-activate-button"
               testID="refresh-form-activate-button"
               status={
-                refreshMilliseconds.interval === 0
-                  ? ComponentStatus.Disabled
-                  : ComponentStatus.Default
+                isValidSubmit()
+                  ? ComponentStatus.Default
+                  : ComponentStatus.Disabled
               }
             />
           </div>
-        </Grid.Column>
-      </Grid>
+        </FlexBox.Child>
+      </FlexBox>
     </Overlay.Container>
   )
 }

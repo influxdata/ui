@@ -7,21 +7,28 @@ import {
   Dropdown,
 } from '@influxdata/clockface'
 import {useDispatch} from 'react-redux'
+
+// Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {PIPE_DEFINITIONS} from 'src/flows'
+
+// Components
 import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
 import ClientList from 'src/flows/components/ClientList'
 import './Sidebar.scss'
+
+// Utils
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
+import {patchTask} from 'src/client'
 
 // Constants
 import {
   panelCopyLinkSuccess,
   panelCopyLinkFail,
 } from 'src/shared/copy/notifications'
+import {PIPE_DEFINITIONS} from 'src/flows'
 
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -134,6 +141,19 @@ const Sidebar: FC = () => {
           action: () => {
             const {type} = flow.data.byID[id]
             event('notebook_delete_cell', {notebooksCellType: type})
+
+            if (type === 'schedule') {
+              // Silently disable all the tasks exported by this flow
+              const tasks = flow.data.byID[id]?.task ?? []
+              tasks.forEach(task => {
+                patchTask({
+                  taskID: task.id,
+                  data: {
+                    status: 'inactive',
+                  },
+                })
+              })
+            }
 
             remove(id)
           },

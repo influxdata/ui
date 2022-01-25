@@ -9,7 +9,6 @@ describe('Pinned Items', () => {
       orgID = id
       cy.setFeatureFlags({
         pinnedItems: true,
-        docSearchWidget: true,
       })
       cy.getByTestID('tree-nav')
     })
@@ -27,7 +26,6 @@ describe('Pinned Items', () => {
       cy.createDashboard(orgID)
       cy.setFeatureFlags({
         pinnedItems: true,
-        docSearchWidget: true,
       })
       cy.getByTestID('nav-item-dashboards').should('be.visible')
       cy.getByTestID('nav-item-dashboards').click()

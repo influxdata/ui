@@ -43,9 +43,10 @@ const OrgProfileTab: FC = () => {
 
   const expectQuartzData = CLOUD && isFlagEnabled('uiUnificationFlag')
 
-  const hasSomeQuartzOrgData = me.quartzMe?.billingProvider ||
+  const hasSomeQuartzOrgData =
+    me.quartzMe?.billingProvider ||
     me.quartzMe?.regionCode ||
-      me.quartzMe?.regionName
+    me.quartzMe?.regionName
 
   // per design. stretch all copyable elements to the width of the max.
   const widthCopyableElements = me.quartzMe?.clusterHost
@@ -60,7 +61,6 @@ const OrgProfileTab: FC = () => {
       testID="organization-profile--panel"
       margin={ComponentSize.Large}
     >
-
       <FlexBox.Child
         className="org-profile-tab--section"
         testID="org-profile--panel"

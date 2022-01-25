@@ -59,7 +59,10 @@ const CopyableLabeledData: FC<Props> = ({id, label, src, name}) => {
             onCopy={generateCopyText(label, src)}
           />
           {name && (
-            <label className="code-snippet--label">
+            <label
+              className="code-snippet--label"
+              data-testid="org-profile--name"
+            >
               {`${name} |`} <b>{label}</b>
             </label>
           )}

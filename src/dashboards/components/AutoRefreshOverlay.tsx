@@ -211,7 +211,6 @@ const AutoRefreshOverlay: FC = () => {
   const isValidSubmit = () => {
     const isValidInterval = refreshMilliseconds.interval > 0
     const isValidTimeout = isValidTimeoutInput(inactivityTimeout)
-    console.log({isValidInterval, isValidTimeout})
     return isValidInterval && isValidTimeout
   }
 

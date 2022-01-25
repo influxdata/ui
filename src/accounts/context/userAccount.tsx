@@ -10,7 +10,11 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Utils
-import {getAccounts, putAccountsDefault} from 'src/client/unityRoutes'
+import {
+  getAccounts,
+  putAccountsDefault,
+  patchAccount,
+} from 'src/client/unityRoutes'
 
 import {notify} from 'src/shared/actions/notifications'
 
@@ -25,6 +29,7 @@ export interface UserAccountContextType {
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
   handleSetDefaultAccount: (newId: number) => void
+  handleRenameActiveAccount: (accountId: number, newName: string) => void
   defaultAccountId: number
   activeAccountId: number
 }
@@ -35,6 +40,7 @@ export const DEFAULT_CONTEXT: UserAccountContextType = {
   activeAccountId: -1,
   handleGetAccounts: () => {},
   handleSetDefaultAccount: () => {},
+  handleRenameActiveAccount: () => {},
 }
 
 export const UserAccountContext = React.createContext<UserAccountContextType>(
@@ -108,6 +114,25 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }
 
+  async function handleRenameActiveAccount(accountId, newName) {
+    console.log('in handle rename active acct', accountId, newName)
+
+    try {
+      const resp = await patchAccount({accountId, data: {name: newName}})
+
+      if (resp.status !== 200) {
+        //dispatch(notify(accountDefaultSettingError(accountName)))
+        console.log('changing name FAILED; resp:', resp)
+      } else {
+        // dispatch(notify(accountDefaultSettingSuccess(accountName)))
+        console.log('changing name SUCCEEDED; resp:', resp)
+      }
+    } catch (error) {
+      //dispatch(notify(accountDefaultSettingError(accountName)))
+      console.log('changing name failed; error:', error)
+    }
+  }
+
   useEffect(() => {
     handleGetAccounts()
   }, [handleGetAccounts, defaultAccountId, activeAccountId])
@@ -120,6 +145,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         activeAccountId,
         handleGetAccounts,
         handleSetDefaultAccount,
+        handleRenameActiveAccount,
       }}
     >
       {children}

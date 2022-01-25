@@ -12,6 +12,11 @@ import {
   SlideToggle,
   InputLabel,
   ComponentStatus,
+  FlexBox,
+  FlexDirection,
+  AlignItems,
+  SelectGroup,
+  ButtonShape,
 } from '@influxdata/clockface'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 import TimeRangeDropdown from 'src/shared/components/DeleteDataForm/TimeRangeDropdown'
@@ -97,6 +102,19 @@ const AutoRefreshOverlay: FC = () => {
     'Hours'
   )
 
+  const refreshOptions = [
+    {
+      id: 'indefinite-auto-refresh',
+      title: 'Indefinite',
+      active: infiniteDuration,
+    },
+    {
+      id: 'custom-auto-refresh',
+      title: 'Custom',
+      active: !infiniteDuration,
+    },
+  ]
+
   const handleRefreshMilliseconds = useCallback(
     (interval: {
       interval: number
@@ -163,34 +181,40 @@ const AutoRefreshOverlay: FC = () => {
   }
   return (
     <Overlay.Container maxWidth={500} testID="auto-refresh-overlay">
-      <Overlay.Header title="Configure Auto Refresh" onDismiss={handleCancel} />
-      <Grid>
-        <Grid.Column className="refresh-form-column">
-          <div className="refresh-form-container">
-            <span className="refresh-form-container-child">Until: </span>
-            <InputLabel
-              active={infiniteDuration}
-              className="refresh-form-time-label"
-            >
-              Indefinite
-            </InputLabel>
-            <SlideToggle
-              active={!infiniteDuration}
-              onChange={() =>
-                setInfiniteDuration(prevInfinite => !prevInfinite)
-              }
-              className="refresh-form-timerange-toggle"
-            />
-            <InputLabel
-              active={!infiniteDuration}
-              className="refresh-form-time-label"
-            >
-              Custom
-            </InputLabel>
+      <Overlay.Header
+        className="refresh-form-header"
+        title="Configure Auto Refresh"
+        onDismiss={handleCancel}
+      />
+      <FlexBox
+        className="refresh-form-body"
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.Stretch}
+      >
+        <FlexBox.Child>
+          <div className="refresh-form-container-title">
+            Refresh Dashboard Until
           </div>
+          <SelectGroup shape={ButtonShape.StretchToFit}>
+            {refreshOptions.map(option => (
+              <SelectGroup.Option
+                key={option.id}
+                id={option.id}
+                name="refreshOptions"
+                active={option.active}
+                value={option.id}
+                titleText={option.title}
+                onClick={() =>
+                  setInfiniteDuration(prevInfinite => !prevInfinite)
+                }
+              >
+                {option.title}
+              </SelectGroup.Option>
+            ))}
+          </SelectGroup>
           {!infiniteDuration && (
             <div
-              className="refresh-form-container reverse"
+              className="timerange-popover-button"
               data-testid="timerange-popover-button"
             >
               <TimeRangeDropdown
@@ -204,6 +228,10 @@ const AutoRefreshOverlay: FC = () => {
               />
             </div>
           )}
+        </FlexBox.Child>
+      </FlexBox>
+      <Grid>
+        <Grid.Column className="refresh-form-column">
           <div className="refresh-form-container">
             <span className="refresh-form-container-child">
               Inactivity Timeout:{' '}

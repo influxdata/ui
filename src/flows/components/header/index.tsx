@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext, useState, useEffect} from 'react'
-import {useHistory, Link} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Contexts
@@ -18,7 +18,6 @@ import {
   ComponentStatus,
   ConfirmationButton,
   ButtonShape,
-  Dropdown,
   ErrorTooltip,
 } from '@influxdata/clockface'
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
@@ -41,10 +40,10 @@ import {event} from 'src/cloud/utils/reporting'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
-import {getAuthorizations} from 'src/client/generatedRoutes'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {Authorization} from 'src/client'
 
 // Constants
 import {
@@ -52,11 +51,7 @@ import {
   PROJECT_NAME,
   PROJECT_NAME_PLURAL,
 } from 'src/flows'
-
-interface Token {
-  token: string
-  description: string
-}
+import {createReadOnlyAllAuthorization} from 'src/authorizations/apis'
 
 interface Share {
   id: string
@@ -69,9 +64,6 @@ const FlowHeader: FC = () => {
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
-  const [token, setToken] = useState<Token>()
-  const [loadingToken, setLoadingToken] = useState(RemoteDataState.NotStarted)
-  const [tokens, setTokens] = useState<Token[]>([])
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
@@ -99,28 +91,11 @@ const FlowHeader: FC = () => {
 
   const showShare = () => {
     setSharing(true)
-    setLoadingToken(RemoteDataState.Loading)
-    getAuthorizations({query: {orgID}}).then(resp => {
-      if (resp.status !== 200) {
-        return
-      }
-
-      setLoadingToken(RemoteDataState.Done)
-      const _tokens = resp.data.authorizations.map(a => ({
-        token: a.token,
-        description: a.description || 'Describe this token',
-      }))
-
-      setTokens(_tokens)
-      event('Notebook share tokens', {count: _tokens.length})
-    })
     event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
   }
 
   const hideShare = () => {
     setSharing(false)
-    setToken(null)
-    setLoadingToken(RemoteDataState.NotStarted)
   }
 
   const deleteShare = () => {
@@ -133,8 +108,25 @@ const FlowHeader: FC = () => {
       .catch(err => console.error('failed to delete share', err))
   }
 
-  const generateLink = () => {
+  const createAndGetReadOnlyToken = async (): Promise<Authorization> => {
+    const authName = `${flow.name} ${flow.createdAt}`
+
+    return await createReadOnlyAllAuthorization(orgID, authName)
+  }
+
+  const generateLink = async () => {
     setLinkLoading(RemoteDataState.Loading)
+    let token: Authorization
+
+    try {
+      token = await createAndGetReadOnlyToken()
+    } catch (e) {
+      console.error('failed to create read-only token')
+      setLinkLoading(RemoteDataState.Error)
+
+      return
+    }
+
     postNotebooksShare({
       data: {
         notebookID: flow.id,
@@ -181,37 +173,6 @@ const FlowHeader: FC = () => {
   if (!flow) {
     return null
   }
-
-  let tokenDropdownStatus = ComponentStatus.Disabled
-
-  if (loadingToken === RemoteDataState.Loading) {
-    tokenDropdownStatus = ComponentStatus.Loading
-  }
-  if (loadingToken === RemoteDataState.Done && tokens.length) {
-    tokenDropdownStatus = ComponentStatus.Default
-  }
-
-  let linkGenerationStatus = ComponentStatus.Disabled
-
-  if (linkLoading === RemoteDataState.Loading) {
-    linkGenerationStatus = ComponentStatus.Loading
-  } else if (!!token) {
-    linkGenerationStatus = ComponentStatus.Default
-  }
-
-  const tokenOptions = tokens.map(t => (
-    <Dropdown.Item
-      key={t.token}
-      value={t.token}
-      selected={t.token === token?.token}
-      title={t.description}
-      className="share-token--option"
-      onClick={() => setToken(t)}
-    >
-      <h1>{t.description}</h1>
-      <h3>{t.token}</h3>
-    </Dropdown.Item>
-  ))
 
   return (
     <>
@@ -277,28 +238,6 @@ const FlowHeader: FC = () => {
       {!!sharing && !share && (
         <Page.ControlBar fullWidth>
           <Page.ControlBarRight>
-            <p className="share-token--steps">
-              Choose an{' '}
-              <Link to={`/orgs/${orgID}/load-data/tokens`}>API Token</Link>{' '}
-              scoped to the resources you want to share
-            </p>
-            <Dropdown
-              button={(active, onClick) => (
-                <Dropdown.Button
-                  onClick={onClick}
-                  active={active}
-                  status={tokenDropdownStatus}
-                >
-                  {token ? token.description : 'Select an API Token'}
-                </Dropdown.Button>
-              )}
-              menu={onCollapse => (
-                <Dropdown.Menu onCollapse={onCollapse}>
-                  {tokenOptions}
-                </Dropdown.Menu>
-              )}
-              style={{width: '250px', flex: '0 0 250px'}}
-            />
             <ErrorTooltip
               className="warning-icon"
               tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
@@ -308,7 +247,11 @@ const FlowHeader: FC = () => {
               icon={IconFont.Checkmark_New}
               onClick={generateLink}
               color={ComponentColor.Success}
-              status={linkGenerationStatus}
+              status={
+                linkLoading === RemoteDataState.Loading
+                  ? ComponentStatus.Loading
+                  : ComponentStatus.Default
+              }
               titleText="Set Token"
             />
             <SquareButton

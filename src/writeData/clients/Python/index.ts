@@ -13,7 +13,6 @@ export default register =>
   register({
     id: 'python',
     name: 'Python',
-    featureFlag: 'client-library--python',
     description,
     logo,
     initialize,

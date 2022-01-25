@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useContext, useState, useEffect} from 'react'
 import {useHistory, Link} from 'react-router-dom'
-import {useSelector, useDispatch} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -11,7 +11,6 @@ import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 
 // Components
 import {
-  Button,
   Page,
   SquareButton,
   IconFont,
@@ -22,6 +21,7 @@ import {
   Dropdown,
   ErrorTooltip,
 } from '@influxdata/clockface'
+import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
@@ -38,15 +38,13 @@ import {
   postNotebooksShare,
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
-import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
-import {resetAutoRefresh} from 'src/shared/actions/autoRefresh'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
 import {getAuthorizations} from 'src/client/generatedRoutes'
 
 // Types
-import {AppState, AutoRefreshStatus, RemoteDataState} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 // Constants
 import {
@@ -70,10 +68,6 @@ const FlowHeader: FC = () => {
   const {flow, updateOther} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
-  const autoRefresh = useSelector(
-    (state: AppState) => state.autoRefresh?.[flow?.id]
-  )
-  const dispatch = useDispatch()
   const [sharing, setSharing] = useState(false)
   const [token, setToken] = useState<Token>()
   const [loadingToken, setLoadingToken] = useState(RemoteDataState.NotStarted)
@@ -118,6 +112,7 @@ const FlowHeader: FC = () => {
       }))
 
       setTokens(_tokens)
+      event('Notebook share tokens', {count: _tokens.length})
     })
     event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
   }
@@ -218,8 +213,6 @@ const FlowHeader: FC = () => {
     </Dropdown.Item>
   ))
 
-  const isActive = autoRefresh?.status === AutoRefreshStatus.Active
-
   return (
     <>
       <Page.Header fullWidth>
@@ -240,29 +233,7 @@ const FlowHeader: FC = () => {
             <PresentationMode />
             <TimeZoneDropdown />
             <TimeRangeDropdown />
-            {isFlagEnabled('flowAutoRefresh') && (
-              <Button
-                text={
-                  isActive
-                    ? `Refreshing Every ${autoRefresh.label}`
-                    : 'Enable Auto Refresh'
-                }
-                color={
-                  isActive ? ComponentColor.Secondary : ComponentColor.Default
-                }
-                onClick={
-                  isActive
-                    ? () => dispatch(resetAutoRefresh(flow?.id))
-                    : () =>
-                        dispatch(
-                          showOverlay('toggle-auto-refresh', null, () =>
-                            dispatch(dismissOverlay())
-                          )
-                        )
-                }
-                testID="enable-auto-refresh-button"
-              />
-            )}
+            {isFlagEnabled('flowAutoRefresh') && <AutoRefreshButton />}
             {flow?.id && (
               <>
                 <ConfirmationButton

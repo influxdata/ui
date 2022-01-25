@@ -1090,10 +1090,10 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@influxdata/clockface@^3.1.12":
-  version "3.1.12"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.1.12.tgz#dc7286041e917467587e954bb1219a992434370b"
-  integrity sha512-c3+yu2lkylMhgyAb0xnwKBsFZmzD/p2IJciqwLMe8R1Bgi6MGVFe3ArfubschCHRMUR3G+tOwjs17cokb9AWYA==
+"@influxdata/clockface@^3.1.13":
+  version "3.1.13"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.1.13.tgz#6a5f9f81c475077409d6ac50329014d23d8e486e"
+  integrity sha512-kqMnWYXhfK7olOntlhSxaV9Tyti5coo9mvt4Xh0xBmZq+OvbD1UrUwN46R90bFjiBIAvxA/L1Hh938Kfi7ZcFg==
 
 "@influxdata/flux-lsp-browser@^0.8.0":
   version "0.8.0"
@@ -1648,11 +1648,6 @@
   version "15.7.4"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.4.tgz#fcf7205c25dff795ee79af1e30da2c9790808f11"
   integrity sha512-rZ5drC/jWjrArrS8BR6SIr4cWpW09RNTYt9AMZo3Jwwif+iacXAqgVjm0B0Bv/S1jhDXKHqRVNCbACkJ89RAnQ==
-
-"@types/qs@^6.5.1":
-  version "6.9.7"
-  resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.7.tgz#63bb7d067db107cc1e457c303bc25d511febf6cb"
-  integrity sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==
 
 "@types/raf@^3.4.0":
   version "3.4.0"
@@ -9224,7 +9219,7 @@ qs@6.7.0:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
   integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
 
-qs@^6.10.1, qs@^6.5.2, qs@^6.9.4:
+qs@^6.10.1, qs@^6.9.4:
   version "6.10.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.10.2.tgz#c1431bea37fc5b24c5bdbafa20f16bdf2a4b9ffe"
   integrity sha512-mSIdjzqznWgfd4pMii7sHtaYF8rx8861hBO80SraY5GT0XQibWZWJSid0avzHGkDIZLImux2S5mXO0Hfct2QCw==

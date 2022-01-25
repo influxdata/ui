@@ -67,7 +67,7 @@ export const TimeTickInput: FC<TimeTickInputProps> = props => {
     tickPropertyName,
     tickOptions,
     initialTickOptionValue,
-    dateFormatPlaceholder = 'RFC 3339 or YYYY-MM-DD HH:MM:SSZ',
+    dateFormatPlaceholder = 'RFC 3339 or YYYY-MM-DDTHH:mm:ssZ',
     update,
   } = props
 

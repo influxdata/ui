@@ -44,12 +44,14 @@ export interface OverlayContextType {
   onClose: () => void
   visibility: boolean
   overlayID: string
+  params?: Record<string, any>
 }
 
 export const DEFAULT_OVERLAY_CONTEXT = {
   onClose: () => {},
   visibility: false,
   overlayID: '',
+  params: {},
 }
 
 export const OverlayContext = createContext<OverlayContextType>(
@@ -62,6 +64,8 @@ export const OverlayController: FunctionComponent = () => {
   useMemo(() => {
     switch (overlayID) {
       case 'add-note':
+        activeOverlay.current = <NoteEditorOverlay onClose={onClose} />
+        break
       case 'edit-note':
         activeOverlay.current = <NoteEditorOverlay onClose={onClose} />
         break
@@ -70,6 +74,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'add-custom-token':
         activeOverlay.current = <CustomApiTokenOverlay onClose={onClose} />
+        break
+      case 'access-cloned-token':
+        activeOverlay.current = <DisplayTokenOverlay />
         break
       case 'access-token':
         activeOverlay.current = <DisplayTokenOverlay />
@@ -144,13 +151,13 @@ export const OverlayController: FunctionComponent = () => {
 }
 
 const OverlayProvider: FunctionComponent = props => {
-  const {overlayID, onClose} = useSelector((state: AppState) => {
-    const id = state.overlays.id
-    const onClose = state.overlays.onClose
+  const {overlayID, onClose, params} = useSelector((state: AppState) => {
+    const {id, onClose, params} = state.overlays
 
     return {
       overlayID: id,
       onClose,
+      params,
     }
   })
   const dispatch = useDispatch()
@@ -165,7 +172,7 @@ const OverlayProvider: FunctionComponent = props => {
 
   return (
     <OverlayContext.Provider
-      value={{onClose: closer, visibility: !!overlayID, overlayID}}
+      value={{onClose: closer, visibility: !!overlayID, overlayID, params}}
     >
       {children}
     </OverlayContext.Provider>

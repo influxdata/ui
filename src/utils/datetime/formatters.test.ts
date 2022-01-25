@@ -419,6 +419,50 @@ describe('the DateTime formatter', () => {
         date.toISOString()
       }).not.toThrow()
     })
+
+    it('can use the T as a separator', () => {
+      let convertedDateString = convertDateToRFC3339(
+        new Date('2022-01-18T17:30:00Z'),
+        'Local'
+      )
+      let date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+
+      convertedDateString = convertDateToRFC3339(
+        new Date('2022-01-19T01:30:00-0800'),
+        'UTC'
+      )
+      date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+    })
+
+    it('can use space as a separator', () => {
+      let convertedDateString = convertDateToRFC3339(
+        new Date('2022-01-18 17:30:00Z'),
+        'Local'
+      )
+      let date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+
+      convertedDateString = convertDateToRFC3339(
+        new Date('2022-01-19 01:30:00-0800'),
+        'UTC'
+      )
+      date = new Date(convertedDateString)
+      expect(date.toDateString()).not.toEqual('Invalid Date')
+      expect(() => {
+        date.toISOString()
+      }).not.toThrow()
+    })
   })
 })
 

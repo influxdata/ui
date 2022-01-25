@@ -45,7 +45,6 @@ let GENERATOR_INDEX = 0
 export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
-
   const provider = useRef<WebsocketProvider>()
   const yDoc = useRef(new Y.Doc())
   function disconnectProvider() {

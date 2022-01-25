@@ -1353,13 +1353,11 @@ export const annotationsUnsupportedOnGraph = (
   message: `${graphType} does not support adding annotations.`,
 })
 
-export const dashboardAutoRefreshTimeoutSuccess = (
-  time?: string
-): Notification => ({
+export const autoRefreshTimeoutSuccess = (time?: string): Notification => ({
   ...defaultSuccessNotification,
   duration: INDEFINITE,
   icon: IconFont.Clock_New,
-  message: `Your dashboard auto refresh settings have been reset due to inactivity ${
+  message: `Your auto refresh settings have been reset due to inactivity ${
     time ? 'over the last' + time : ''
   }`,
 })

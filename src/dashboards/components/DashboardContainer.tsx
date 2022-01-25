@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useCallback, useRef} from 'react'
+import React, {FC, useEffect, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -22,7 +22,7 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {AppState, ResourceType, AutoRefreshStatus} from 'src/types'
 
 // Notifications
-import {dashboardAutoRefreshTimeoutSuccess} from 'src/shared/copy/notifications'
+import {autoRefreshTimeoutSuccess} from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 
 // History
@@ -32,38 +32,35 @@ import {useRouteMatch} from 'react-router-dom'
 import {event} from 'src/cloud/utils/reporting'
 
 const DashboardContainer: FC = () => {
-  const timer = useRef(null)
   const dispatch = useDispatch()
-  const {autoRefresh, dashboard} = useSelector((state: AppState) => {
-    const dashboard = state.currentDashboard.id
-    const autoRefresh = state.autoRefresh[dashboard] || AUTOREFRESH_DEFAULT
+  const {autoRefresh, dashboardID} = useSelector((state: AppState) => {
+    const dashboardID = state.currentDashboard.id
+    const autoRefresh =
+      state.autoRefresh[`dashboard-${dashboardID}`] || AUTOREFRESH_DEFAULT
     return {
       autoRefresh,
-      dashboard,
+      dashboardID,
     }
   })
   const isEditing = useRouteMatch(
     '/orgs/:orgID/dashboards/:dashboardID/cells/:cellID/edit'
   )
-  const registerListeners = useCallback(() => {
-    if (timer.current) {
-      registerStopListeners()
-    }
 
-    timer.current = setTimeout(() => {
-      dispatch(resetAutoRefresh(dashboard))
-      dispatch(notify(dashboardAutoRefreshTimeoutSuccess()))
-      registerStopListeners()
-      GlobalAutoRefresher.stopPolling()
-      event('dashboards.autorefresh.dashboardcontainer.inactivitytimeout', {
-        timeout: autoRefresh.inactivityTimeout,
-      })
-    }, autoRefresh.inactivityTimeout)
+  const timeoutFunction = useCallback(() => {
+    dispatch(resetAutoRefresh(`dashboard-${dashboardID}`))
+    dispatch(notify(autoRefreshTimeoutSuccess()))
+    GlobalAutoRefresher.onDisconnect()
+    event('dashboards.autorefresh.dashboardcontainer.inactivitytimeout', {
+      timeout: autoRefresh.inactivityTimeout,
+    })
+  }, [autoRefresh.inactivityTimeout, dashboardID, dispatch])
 
-    window.addEventListener('load', registerListeners)
-    document.addEventListener('mousemove', registerListeners)
-    document.addEventListener('keypress', registerListeners)
-  }, [dashboard, autoRefresh.inactivityTimeout])
+  const startTimeout = useCallback(() => {
+    GlobalAutoRefresher.startTimeout(
+      timeoutFunction,
+      autoRefresh.inactivityTimeout
+    )
+  }, [autoRefresh.inactivityTimeout, timeoutFunction])
 
   const stopFunc = useCallback(() => {
     if (
@@ -71,10 +68,10 @@ const DashboardContainer: FC = () => {
       new Date(autoRefresh?.duration?.upper).getTime() <= new Date().getTime()
     ) {
       GlobalAutoRefresher.stopPolling()
-      dispatch(resetAutoRefresh(dashboard))
+      dispatch(resetAutoRefresh(`dashboard-${dashboardID}`))
     }
   }, [
-    dashboard,
+    dashboardID,
     dispatch,
     autoRefresh?.duration?.upper,
     autoRefresh.infiniteDuration,
@@ -91,40 +88,27 @@ const DashboardContainer: FC = () => {
     }
   }, [autoRefresh.status, stopFunc])
 
-  const registerStopListeners = useCallback(() => {
-    // Stop all existing timers and deregister everythang
-    if (timer.current) {
-      clearTimeout(timer.current)
-      timer.current = null
-    }
-
-    window.removeEventListener('load', registerListeners)
-    document.removeEventListener('mousemove', registerListeners)
-    document.removeEventListener('keypress', registerListeners)
-  }, [registerListeners, timer])
-
   useEffect(() => {
     if (isEditing) {
-      registerStopListeners()
+      GlobalAutoRefresher.onDisconnect()
       GlobalAutoRefresher.stopPolling()
       return
     }
 
-    if (
-      autoRefresh?.status &&
-      autoRefresh.status === AutoRefreshStatus.Active
-    ) {
+    if (autoRefresh?.status === AutoRefreshStatus.Active) {
       GlobalAutoRefresher.poll(autoRefresh, stopFunc)
       document.addEventListener('visibilitychange', visChangeHandler)
       if (autoRefresh.inactivityTimeout > 0) {
-        registerListeners()
+        GlobalAutoRefresher.onDisconnect()
+        startTimeout()
+        GlobalAutoRefresher.onConnect()
       }
     } else {
-      registerStopListeners()
+      GlobalAutoRefresher.onDisconnect()
     }
 
     return () => {
-      registerStopListeners()
+      GlobalAutoRefresher.onDisconnect()
       GlobalAutoRefresher.stopPolling()
       document.removeEventListener('visibilitychange', visChangeHandler)
     }
@@ -134,6 +118,7 @@ const DashboardContainer: FC = () => {
     autoRefresh.inactivityTimeout,
     stopFunc,
     isEditing?.path,
+    startTimeout,
     visChangeHandler,
   ])
 
@@ -146,7 +131,9 @@ const DashboardContainer: FC = () => {
 
   return (
     <DashboardRoute>
-      <GetResource resources={[{type: ResourceType.Dashboards, id: dashboard}]}>
+      <GetResource
+        resources={[{type: ResourceType.Dashboards, id: dashboardID}]}
+      >
         <GetResources resources={[ResourceType.Buckets]}>
           <GetTimeRange />
           <DashboardPage />

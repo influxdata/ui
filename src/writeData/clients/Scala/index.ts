@@ -10,7 +10,6 @@ export default register =>
   register({
     id: 'scala',
     name: 'Scala',
-    featureFlag: 'client-library--scala',
     description,
     logo,
     initialize,

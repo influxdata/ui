@@ -435,3 +435,9 @@ $cf-radius-lg: $cf-radius + 4px;
 .flows-index--contents {
   overflow: unset;
 }
+
+.flow--client-overlay {
+  .markdown-format pre {
+    white-space: pre-line;
+  }
+}

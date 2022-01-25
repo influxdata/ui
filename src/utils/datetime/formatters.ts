@@ -804,7 +804,7 @@ export const convertDateToRFC3339 = (date: Date, timeZone: string): string => {
     const localTime = timeStringParsed[0]
     const utcOffset = timeStringParsed[1].replace('GMT', '')
 
-    return `${year}-${month}-${dayOfMonth} ${localTime}${utcOffset}`
+    return `${year}-${month}-${dayOfMonth}T${localTime}${utcOffset}`
   }
   return date.toISOString()
 }

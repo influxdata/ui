@@ -33,6 +33,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {currentContext} from 'src/shared/selectors/currentContext'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
@@ -56,8 +57,12 @@ import {
   EditorAction,
 } from 'src/variables/actions/creators'
 import {RouterAction} from 'connected-react-router'
-import {filterUnusedVars} from 'src/shared/utils/filterUnusedVars'
+import {
+  filterUnusedVars,
+  filterUnusedVarsBasedOnQuery,
+} from 'src/shared/utils/filterUnusedVars'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {getActiveQuery} from 'src/timeMachine/selectors'
 
 type Action = VariableAction | EditorAction | NotifyAction
 
@@ -156,7 +161,17 @@ export const hydrateVariables = (
   const org = getOrg(state)
   const vars = getVariablesFromState(state)
   const views = getActiveView(state)
-  const usedVars = views.length ? filterUnusedVars(vars, views) : vars
+  const activeQuery = getActiveQuery(state)
+
+  let usedVars = vars
+  if (views.length) {
+    usedVars = filterUnusedVars(vars, views)
+  } else if (
+    isFlagEnabled('hydrateRelevantDashboardVariables') &&
+    activeQuery.text
+  ) {
+    usedVars = filterUnusedVarsBasedOnQuery(vars, [activeQuery.text])
+  }
 
   const hydration = hydrateVars(usedVars, getAllVariablesFromState(state), {
     orgID: org.id,

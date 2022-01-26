@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -9,30 +9,48 @@ import {Dropdown} from '@influxdata/clockface'
 // Types
 import {IconFont, ComponentColor} from '@influxdata/clockface'
 
-// Selectors
-import {getOrg} from 'src/organizations/selectors'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {getAllResources} from 'src/authorizations/actions/thunks'
+import {notify} from 'src/shared/actions/notifications'
+import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 type GenerateTokenProps = RouteComponentProps
+type ReduxProps = ConnectedProps<typeof connector>
 
-const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
-  const org = useSelector(getOrg)
-
-  const bucketReadWriteOption = 'Read/Write API Token'
-
+const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
+  showOverlay,
+  dismissOverlay,
+  getAllResources,
+}) => {
+  const dispatch = useDispatch()
   const allAccessOption = 'All Access API Token'
 
+  const customApiOption = 'Custom API Token'
+
   const handleAllAccess = () => {
-    history.push(`/orgs/${org.id}/load-data/tokens/generate/all-access`)
+    showOverlay('add-master-token', null, dismissOverlay)
+    event('generate_token_dropdown.all_access_overlay.opened')
   }
 
-  const handleReadWrite = () => {
-    history.push(`/orgs/${org.id}/load-data/tokens/generate/buckets`)
+  const handleCustomApi = async () => {
+    try {
+      await getAllResources()
+      showOverlay('add-custom-token', null, dismissOverlay)
+      event('generate_token_dropdown.custom_API_token_overlay.opened')
+    } catch (e) {
+      dispatch(notify(getResourcesTokensFailure()))
+      event('generate_token_dropdown.custom_API_token_overlay.failed')
+    }
   }
+
   const handleSelect = (selection: string): void => {
     if (selection === allAccessOption) {
       handleAllAccess()
-    } else if (selection === bucketReadWriteOption) {
-      handleReadWrite()
+    } else if (selection === customApiOption) {
+      handleCustomApi()
     }
   }
 
@@ -55,15 +73,6 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
       menu={onCollapse => (
         <Dropdown.Menu onCollapse={onCollapse}>
           <Dropdown.Item
-            testID="dropdown-item generate-token--read-write"
-            id={bucketReadWriteOption}
-            key={bucketReadWriteOption}
-            value={bucketReadWriteOption}
-            onClick={handleSelect}
-          >
-            {bucketReadWriteOption}
-          </Dropdown.Item>
-          <Dropdown.Item
             testID="dropdown-item generate-token--all-access"
             id={allAccessOption}
             key={allAccessOption}
@@ -72,10 +81,27 @@ const GenerateTokenDropdown: FC<GenerateTokenProps> = ({history}) => {
           >
             {allAccessOption}
           </Dropdown.Item>
+          <Dropdown.Item
+            testID="dropdown-item generate-token--custom-api"
+            id={customApiOption}
+            key={customApiOption}
+            value={customApiOption}
+            onClick={handleSelect}
+          >
+            {customApiOption}
+          </Dropdown.Item>
         </Dropdown.Menu>
       )}
     />
   )
 }
 
-export default withRouter(GenerateTokenDropdown)
+const mdtp = {
+  showOverlay,
+  dismissOverlay,
+  getAllResources,
+}
+
+const connector = connect(null, mdtp)
+
+export default connector(withRouter(GenerateTokenDropdown))

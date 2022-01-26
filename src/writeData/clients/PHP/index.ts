@@ -13,7 +13,6 @@ export default register =>
   register({
     id: 'php',
     name: 'PHP',
-    featureFlag: 'client-library--php',
     description,
     logo,
     initialize,

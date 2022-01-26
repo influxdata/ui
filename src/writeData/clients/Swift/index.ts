@@ -13,7 +13,6 @@ export default register =>
   register({
     id: 'swift',
     name: 'Swift',
-    featureFlag: 'client-library--swift',
     description,
     logo,
     initialize,

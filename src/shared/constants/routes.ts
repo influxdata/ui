@@ -37,7 +37,6 @@ export const FILE_UPLOAD = 'file-upload'
 export const CLIENT_LIBS = 'client-libraries'
 export const TELEGRAF_PLUGINS = 'telegraf-plugins'
 export const DEVELOPER_TOOLS = 'developer-tools'
-export const FLUX_SOURCES = 'flux-sources'
 export const INTEGRATIONS = 'integrations'
 
 export const DATA_EXPLORER = 'data-explorer'

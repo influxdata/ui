@@ -11,7 +11,6 @@ export default register =>
   register({
     id: 'go',
     name: 'GO',
-    featureFlag: 'client-library--go',
     description,
     logo,
     initialize,

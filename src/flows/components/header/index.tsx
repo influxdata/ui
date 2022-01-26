@@ -43,7 +43,6 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {Authorization} from 'src/client'
 
 // Constants
 import {

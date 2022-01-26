@@ -98,7 +98,10 @@ describe('Account Page; user with one account', () => {
     cy.getByTestID('account-settings--header').should('be.visible')
     cy.getByTestID('user-account-switch-btn').should('not.exist')
 
-    cy.getByTestID('input--active-account-name').should('have.value', 'Influx')
+    cy.getByTestID('input--active-account-name').should(
+      'have.value',
+      'Veganomicon'
+    )
   })
 })
 

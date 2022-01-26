@@ -61,7 +61,7 @@ const WriteDataHelper: FC<Props> = ({collapsed}) => {
           </p>
           <Grid>
             <Grid.Row>
-            <Grid.Column widthSM={Columns.Twelve}>
+              <Grid.Column widthSM={Columns.Twelve}>
                 <WriteDataHelperBuckets />
               </Grid.Column>
             </Grid.Row>

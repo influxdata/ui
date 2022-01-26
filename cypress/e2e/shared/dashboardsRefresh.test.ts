@@ -238,8 +238,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -331,8 +329,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -424,8 +420,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({refreshSingleCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -507,8 +501,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({refreshSingleCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()

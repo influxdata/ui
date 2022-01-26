@@ -36,13 +36,6 @@ export const CustomApiTokenOverlay = RouteOverlay(
   }
 )
 
-export const BucketsTokenOverlay = RouteOverlay(
-  OverlayHandler,
-  'add-token',
-  (history, params) => {
-    history.push(`/orgs/${params.orgID}/load-data/tokens`)
-  }
-)
 export const TelegrafConfigOverlay = RouteOverlay(
   OverlayHandler,
   'telegraf-config',

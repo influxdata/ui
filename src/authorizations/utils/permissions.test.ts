@@ -1,4 +1,4 @@
-import {allAccessPermissions, toggleSelectedBucket} from './permissions'
+import {allAccessPermissions} from './permissions'
 import {CLOUD} from 'src/shared/constants'
 import {
   generateDescription,
@@ -714,20 +714,6 @@ test('all-access tokens/authorizations production test', () => {
   } else {
     expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(ossHvhs)
   }
-})
-
-test('toggleSelectedBucket test', () => {
-  const myBuckets: string[] = ['bucket1', 'bucket2', 'bucket3']
-
-  expect(toggleSelectedBucket('bucket4', myBuckets)).toEqual([
-    ...myBuckets,
-    'bucket4',
-  ])
-
-  expect(toggleSelectedBucket('bucket2', myBuckets)).toEqual([
-    'bucket1',
-    'bucket3',
-  ])
 })
 
 describe('generateDescription method', () => {

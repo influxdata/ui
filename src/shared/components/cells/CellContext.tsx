@@ -165,24 +165,20 @@ const CellContext: FC<Props> = ({
           onHide={onHide}
           testID="cell-context--delete"
         />
-        <FeatureFlag name="refreshSingleCell">
-          <CellContextItem
-            label="Refresh"
-            onClick={onRefresh}
-            icon={IconFont.Refresh_New}
-            onHide={onHide}
-            testID="cell-context--refresh"
-          />
-        </FeatureFlag>
-        <FeatureFlag name="pauseCell">
-          <CellContextItem
-            label={isPaused ? 'Resume' : 'Pause'}
-            onClick={togglePauseCell}
-            icon={isPaused ? IconFont.Play : IconFont.Pause}
-            onHide={onHide}
-            testID="cell-context--pause"
-          />
-        </FeatureFlag>
+        <CellContextItem
+          label="Refresh"
+          onClick={onRefresh}
+          icon={IconFont.Refresh_New}
+          onHide={onHide}
+          testID="cell-context--refresh"
+        />
+        <CellContextItem
+          label={isPaused ? 'Resume' : 'Pause'}
+          onClick={togglePauseCell}
+          icon={isPaused ? IconFont.Play : IconFont.Pause}
+          onHide={onHide}
+          testID="cell-context--pause"
+        />
         <FeatureFlag name="cloneToOtherBoards">
           <CellContextItem
             label="Relocate"

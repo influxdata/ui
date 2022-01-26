@@ -324,6 +324,7 @@ const NEW_VIEW_CREATORS = {
     ...defaultView(),
     properties: {
       type: 'simple-table',
+      shape: 'chronograf-v2',
       showAll: false,
     } as SimpleTableViewProperties,
   }),

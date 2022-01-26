@@ -7,6 +7,8 @@ describe('Flows', () => {
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
         cy.visit(`${orgs}/${id}`)
+        // TODO: remove when feature flag is removed
+        cy.setFeatureFlags({flowAutoRefresh: true})
       })
     )
     cy.getByTestID('version-info')
@@ -238,6 +240,8 @@ describe('Flows', () => {
       .first()
       .should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
+
+    cy.getByTestID('enable-auto-refresh-button').should('exist')
 
     cy.clickNavBarItem('nav-item-flows')
 

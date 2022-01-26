@@ -100,6 +100,10 @@ export function findValues({
     ? ''
     : `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${searchTerm}") + ")"))`
 
+  const adjustedLimit = isFlagEnabled('increasedMeasurmentTagLimit')
+    ? EXTENDED_LIMIT
+    : limit
+
   // TODO: Use the `v1.tagValues` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
   const query = `import "regexp"
@@ -110,7 +114,7 @@ export function findValues({
   |> keep(columns: ["${key}"])
   |> group()
   |> distinct(column: "${key}")${searchFilter}
-  |> limit(n: ${limit})
+  |> limit(n: ${adjustedLimit})
   |> sort()`
 
   event('runQuery', {

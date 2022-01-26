@@ -337,6 +337,10 @@ export const QueryBuilderProvider: FC = ({children}) => {
         _source += `from(bucket: "${data.buckets[0].name}")`
       }
 
+      const limit = isFlagEnabled('increasedMeasurmentTagLimit')
+        ? EXTENDED_TAG_LIMIT
+        : DEFAULT_TAG_LIMIT
+
       // TODO: Use the `v1.tagValues` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
       query(
@@ -348,7 +352,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
               |> distinct(column: "${
                 cards[idx].keys.selected[0]
               }")${searchString}
-              |> limit(n: ${DEFAULT_TAG_LIMIT})
+              |> limit(n: ${limit})
               |> sort()`,
         scope
       )

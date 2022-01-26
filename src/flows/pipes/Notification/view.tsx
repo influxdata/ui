@@ -520,8 +520,9 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
   }
 
   if (
-    loading === RemoteDataState.NotStarted ||
-    loading === RemoteDataState.Loading
+    (loading === RemoteDataState.NotStarted ||
+      loading === RemoteDataState.Loading) &&
+    !numericColumns.length
   ) {
     return (
       <Context>
@@ -559,6 +560,11 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
   return (
     <Context>
       <div className="notification">
+        {loading === RemoteDataState.Loading && (
+          <TechnoSpinner
+            style={{width: 25, height: 25, position: 'absolute', right: 15}}
+          />
+        )}
         <Threshold />
         <FlexBox margin={ComponentSize.Medium} style={{padding: '24px 0'}}>
           <FlexBox.Child grow={1} shrink={1}>

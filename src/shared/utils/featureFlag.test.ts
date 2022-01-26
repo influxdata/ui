@@ -8,7 +8,6 @@ describe("getting the user's feature flags", () => {
   it('gets the OSS flags by default if CLOUD is not enabled', () => {
     jest.mock('src/shared/constants/index', () => ({
       CLOUD: false,
-      CLOUD_BILLING_VISIBLE: true,
     }))
     const {getUserFlags} = require('src/shared/utils/featureFlag')
 
@@ -19,7 +18,6 @@ describe("getting the user's feature flags", () => {
   it('gets the cloud flags if CLOUD is enabled', () => {
     jest.mock('src/shared/constants/index', () => ({
       CLOUD: true,
-      CLOUD_BILLING_VISIBLE: false,
     }))
     const {getUserFlags} = require('src/shared/utils/featureFlag')
 

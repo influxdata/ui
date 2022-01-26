@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext, useState} from 'react'
-import {useSelector} from 'react-redux'
 import {capitalize} from 'lodash'
 
 // Components
@@ -16,14 +15,12 @@ import {
 } from '@influxdata/clockface'
 import {UsersContext} from 'src/users/context/users'
 
-// Selectors
-import {getMe} from 'src/me/selectors'
-
 // Types
 import {CloudUser} from 'src/types'
 
 interface Props {
   user: CloudUser
+  isDeletable: boolean
 }
 
 // TODO: add back in once https://github.com/influxdata/quartz/issues/2389 back-filling of names is complete
@@ -44,12 +41,10 @@ interface Props {
 //   return ''
 // }
 
-const UserListItem: FC<Props> = ({user}) => {
-  const {id, email, role} = user
-  const currentUserId = useSelector(getMe)?.id
+const UserListItem: FC<Props> = ({user, isDeletable}) => {
+  const {email, role} = user
   const {handleRemoveUser, removeUserStatus} = useContext(UsersContext)
 
-  const isCurrentUser = id === currentUserId
   const [revealOnHover, toggleRevealOnHover] = useState(true)
 
   const handleShow = () => {
@@ -89,7 +84,7 @@ const UserListItem: FC<Props> = ({user}) => {
       </IndexList.Cell>
       <IndexList.Cell className="user-list-cell-status">Active</IndexList.Cell>
       <IndexList.Cell revealOnHover={revealOnHover} alignment={Alignment.Right}>
-        {!isCurrentUser && (
+        {isDeletable && (
           <ConfirmationButton
             icon={IconFont.Trash_New}
             onShow={handleShow}

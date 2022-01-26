@@ -14,7 +14,6 @@ export default register =>
   register({
     id: 'ruby',
     name: 'Ruby',
-    featureFlag: 'client-library--ruby',
     description,
     logo,
     initialize,

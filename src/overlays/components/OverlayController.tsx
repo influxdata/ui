@@ -15,8 +15,7 @@ import {AppState} from 'src/types'
 // Components
 import {Overlay} from '@influxdata/clockface'
 import NoteEditorOverlay from 'src/dashboards/components/NoteEditorOverlay'
-import AllAccessTokenOverlay from 'src/authorizations/components/redesigned/AllAccessTokenOverlay'
-import BucketsTokenOverlay from 'src/authorizations/components/BucketsTokenOverlay'
+import AllAccessTokenOverlay from 'src/authorizations/components/AllAccessTokenOverlay'
 import TelegrafConfigOverlay from 'src/telegrafs/components/TelegrafConfigOverlay'
 import TelegrafOutputOverlay from 'src/telegrafs/components/TelegrafOutputOverlay'
 import OrgSwitcherOverlay from 'src/pageLayout/components/OrgSwitcherOverlay'
@@ -34,8 +33,8 @@ import NewThresholdCheckEO from 'src/checks/components/NewThresholdCheckEO'
 import NewDeadmanCheckEO from 'src/checks/components/NewDeadmanCheckEO'
 import AutoRefreshOverlay from 'src/dashboards/components/AutoRefreshOverlay'
 import CellCloneOverlay from 'src/shared/components/cells/CellCloneOverlay'
-import CustomApiTokenOverlay from 'src/authorizations/components/redesigned/CustomApiTokenOverlay'
-import DisplayTokenOverlay from 'src/authorizations/components/redesigned/DisplayTokenOverlay'
+import CustomApiTokenOverlay from 'src/authorizations/components/CustomApiTokenOverlay'
+import DisplayTokenOverlay from 'src/authorizations/components/DisplayTokenOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -64,6 +63,8 @@ export const OverlayController: FunctionComponent = () => {
   useMemo(() => {
     switch (overlayID) {
       case 'add-note':
+        activeOverlay.current = <NoteEditorOverlay onClose={onClose} />
+        break
       case 'edit-note':
         activeOverlay.current = <NoteEditorOverlay onClose={onClose} />
         break
@@ -73,11 +74,11 @@ export const OverlayController: FunctionComponent = () => {
       case 'add-custom-token':
         activeOverlay.current = <CustomApiTokenOverlay onClose={onClose} />
         break
-      case 'access-token':
+      case 'access-cloned-token':
         activeOverlay.current = <DisplayTokenOverlay />
         break
-      case 'add-token':
-        activeOverlay.current = <BucketsTokenOverlay onClose={onClose} />
+      case 'access-token':
+        activeOverlay.current = <DisplayTokenOverlay />
         break
       case 'telegraf-config':
         activeOverlay.current = <TelegrafConfigOverlay />

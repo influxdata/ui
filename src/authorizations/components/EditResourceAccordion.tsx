@@ -4,8 +4,8 @@ import {isEmpty, capitalize} from 'lodash'
 
 import {Accordion} from '@influxdata/clockface'
 
-import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
-import {IndividualAccordionBody} from 'src/authorizations/components/redesigned/IndividualAccordionBody'
+import {ResourceAccordionHeader} from 'src/authorizations/components/ResourceAccordionHeader'
+import {IndividualAccordionBody} from 'src/authorizations/components/IndividualAccordionBody'
 import {AllAccordionBody} from './AllAccordionBody'
 import {formatResources} from 'src/authorizations/utils/permissions'
 import FilterList from 'src/shared/components/FilterList'

@@ -22,7 +22,7 @@ describe('GenerateTokenDropdown', () => {
 
     fireEvent.click(screen.getByTestId('dropdown-button--gen-token'))
 
-    expect(queryByText('Read/Write API Token')).toBeVisible()
     expect(queryByText('All Access API Token')).toBeVisible()
+    expect(queryByText('Custom API Token')).toBeVisible()
   })
 })

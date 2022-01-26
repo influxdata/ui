@@ -9,6 +9,7 @@ import {
   HeadingElement,
   FontWeight,
   Grid,
+  Columns,
   Icon,
   IconFont,
   ComponentSize,
@@ -60,7 +61,9 @@ const WriteDataHelper: FC<Props> = ({collapsed}) => {
           </p>
           <Grid>
             <Grid.Row>
-              <WriteDataHelperBuckets />
+            <Grid.Column widthSM={Columns.Twelve}>
+                <WriteDataHelperBuckets />
+              </Grid.Column>
             </Grid.Row>
           </Grid>
         </Panel.Body>

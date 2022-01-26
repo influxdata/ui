@@ -7,6 +7,8 @@ import {Account as UserAccount} from 'src/client/unityRoutes'
 import {
   accountDefaultSettingError,
   accountDefaultSettingSuccess,
+  accountRenameError,
+  accountRenameSuccess,
 } from 'src/shared/copy/notifications'
 
 // Utils
@@ -115,31 +117,24 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   }
 
   async function handleRenameActiveAccount(accountId, newName) {
-    console.log('in handle rename active acct', accountId, newName)
+    const isActiveAcct = acct => acct.isActive
+    const activeIndex = userAccounts.findIndex(isActiveAcct)
+    const oldName = userAccounts[activeIndex].name
 
     try {
       const resp = await patchAccount({accountId, data: {name: newName}})
 
       if (resp.status !== 200) {
-        //dispatch(notify(accountDefaultSettingError(accountName)))
-        console.log('changing name FAILED; resp:', resp)
+        dispatch(notify(accountRenameError(oldName)))
       } else {
-        // dispatch(notify(accountDefaultSettingSuccess(accountName)))
+        dispatch(notify(accountRenameSuccess(oldName, newName)))
 
-        // get the index of the current active account; change its name to the new one;
-        // and reset the userAccounts:
-
-        const isActiveAcct = acct => acct.isActive
-        const activeIndex = userAccounts.findIndex(isActiveAcct)
-
+        // change the name, and reset the active accts:
         userAccounts[activeIndex].name = newName
         setUserAccounts(userAccounts)
-
-        console.log('changing name SUCCEEDED; resp:', resp)
       }
     } catch (error) {
-      //dispatch(notify(accountDefaultSettingError(accountName)))
-      console.log('changing name failed; error:', error)
+      dispatch(notify(accountRenameError(oldName)))
     }
   }
 

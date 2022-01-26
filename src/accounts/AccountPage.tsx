@@ -40,8 +40,6 @@ const AccountAboutPage: FC = () => {
     userAccounts && userAccounts.filter(acct => acct.isActive)[0]
   const [activeAcctName, setActiveAcctName] = useState(activeAccount?.name)
 
-  console.log('active acct name?', activeAcctName)
-
   useEffect(() => {
     setActiveAcctName(activeAccount?.name)
   }, [activeAccount])
@@ -60,6 +58,7 @@ const AccountAboutPage: FC = () => {
 
   const inputStyle = {width: 250}
   const labelStyle = {marginBottom: 8}
+
   return (
     <Page titleTag={pageTitleSuffixer(['About', 'Account'])}>
       <AccountTabContainer activeTab="about">

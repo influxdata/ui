@@ -125,6 +125,16 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         console.log('changing name FAILED; resp:', resp)
       } else {
         // dispatch(notify(accountDefaultSettingSuccess(accountName)))
+
+        // get the index of the current active account; change its name to the new one;
+        // and reset the userAccounts:
+
+        const isActiveAcct = acct => acct.isActive
+        const activeIndex = userAccounts.findIndex(isActiveAcct)
+
+        userAccounts[activeIndex].name = newName
+        setUserAccounts(userAccounts)
+
         console.log('changing name SUCCEEDED; resp:', resp)
       }
     } catch (error) {

@@ -1,8 +1,10 @@
 // Libraries
-import React, {FC, useContext, useState, useEffect} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 import {
   Button,
   ComponentSize,
+  FlexBox,
+  FlexDirection,
   IconFont,
   Input,
   InputType,
@@ -12,10 +14,11 @@ import {
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {UserAccountProvider} from 'src/accounts/context/userAccount'
+import {
+  UserAccountContext,
+  UserAccountProvider,
+} from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
-
-import {UserAccountContext} from 'src/accounts/context/userAccount'
 
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
 
@@ -55,6 +58,8 @@ const AccountAboutPage: FC = () => {
     setSwitchAccountVisible(false)
   }
 
+  const inputStyle = {width: 250}
+  const labelStyle = {marginBottom: 8}
   return (
     <Page titleTag={pageTitleSuffixer(['About', 'Account'])}>
       <AccountTabContainer activeTab="about">
@@ -72,24 +77,26 @@ const AccountAboutPage: FC = () => {
           )}
 
           <h2 data-testid="account-settings--header"> Account Details </h2>
-          <div data-testid="account-active-name--block">
-            Currently logged in Active Account: {activeAccount?.name}
+          <div data-testid="account-active-name--block" style={labelStyle}>
+            Account Name
           </div>
-          <Input
-            name="accountName"
-            testID="input--active-account-name"
-            type={InputType.Text}
-            value={activeAcctName}
-            onChange={updateAcctName}
-            size={ComponentSize.Medium}
-          />
-          <Button
-            onClick={() =>
-              handleRenameActiveAccount(activeAccount.id, activeAcctName)
-            }
-            text="Update ME (ACK ACK ACK NO BRUNO!)"
-          />
-
+          <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
+            <Input
+              name="accountName"
+              testID="input--active-account-name"
+              type={InputType.Text}
+              value={activeAcctName}
+              onChange={updateAcctName}
+              size={ComponentSize.Medium}
+              style={inputStyle}
+            />
+            <Button
+              onClick={() =>
+                handleRenameActiveAccount(activeAccount.id, activeAcctName)
+              }
+              text="Save"
+            />
+          </FlexBox>
           <Overlay visible={isSwitchAccountVisible}>
             <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
           </Overlay>

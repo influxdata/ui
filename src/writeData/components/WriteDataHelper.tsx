@@ -60,7 +60,7 @@ const WriteDataHelper: FC<Props> = ({collapsed}) => {
           </p>
           <Grid>
             <Grid.Row>
-                <WriteDataHelperBuckets />
+              <WriteDataHelperBuckets />
             </Grid.Row>
           </Grid>
         </Panel.Body>

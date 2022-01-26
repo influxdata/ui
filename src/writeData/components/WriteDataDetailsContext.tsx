@@ -43,7 +43,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
-  const org = useSelector(getOrg) 
+  const org = useSelector(getOrg)
   const bucketname = useSelector(
     (state: AppState) => state.dataLoading?.steps?.bucket
   )
@@ -109,7 +109,6 @@ const WriteDataDetailsProvider: FC = ({children}) => {
       bucket: bucket.name,
     })
   }, [variables, bucket?.name, bucket, update])
-
 
   return (
     <WriteDataDetailsContext.Provider

@@ -11,7 +11,7 @@ import (
 func main() {
   // Create a client
   // You can generate an API Token from the "API Tokens Tab" in the UI
-  client := influxdb2.NewClient("<%= server %>", "<%= token %>")
+  client := influxdb2.NewClient("<%= server %>", "<INFLUX_TOKEN>")
   // always close client at the end
   defer client.Close()
 }

@@ -1,7 +1,7 @@
 const {InfluxDB} = require('@influxdata/influxdb-client')
 
 // You can generate an API token from the "API Tokens Tab" in the UI
-const token = '<%= token %>'
+const token = '<INFLUX_TOKEN>'
 const org = '<%= org %>'
 const bucket = '<%= bucket %>'
 

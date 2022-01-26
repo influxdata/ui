@@ -22,7 +22,7 @@ interface InjectionPosition {
   shouldInsertOnNextLine: boolean
 }
 
-interface InjectionOptions {
+export interface InjectionOptions {
   header?: string | null
   text: string
   type: InjectionType

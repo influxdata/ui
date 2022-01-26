@@ -3,7 +3,7 @@ import React, {FC, useContext} from 'react'
 
 // Components
 import {Overlay} from '@influxdata/clockface'
-import CreateSecretForm from 'src/shared/components/secrets/CreateSecretForm'
+import CreateSecretForm from 'src/secrets/components/CreateSecret/CreateSecretForm'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'

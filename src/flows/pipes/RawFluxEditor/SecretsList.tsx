@@ -19,20 +19,19 @@ import {getSecrets} from 'src/secrets/actions/thunks'
 import {getAllSecrets} from 'src/resources/selectors'
 
 // Context
-import {EditorContextType, InjectionType} from 'src/flows/context/editor'
+import {InjectionOptions, InjectionType} from 'src/flows/context/editor'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {Secret} from 'src/types'
 
 interface Props {
-  context: EditorContextType
+  inject: (options: InjectionOptions) => void
 }
 
-const SecretsList: FC<Props> = ({context: editorContext}) => {
+const SecretsList: FC<Props> = ({inject}) => {
   const dispatch = useDispatch()
   const secrets = useSelector(getAllSecrets)
-  const {inject} = editorContext
 
   const handleCreateSecret = () => {
     event('Create Secret Modal Opened')

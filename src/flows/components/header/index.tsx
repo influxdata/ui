@@ -108,15 +108,16 @@ const FlowHeader: FC = () => {
       .catch(err => console.error('failed to delete share', err))
   }
 
-  const createAndGetReadOnlyToken = async (): Promise<Authorization> => {
+  const createAndGetReadOnlyToken = async (): Promise<string> => {
     const authName = `${flow.name} ${flow.createdAt}`
+    const response = await createReadOnlyAllAuthorization(orgID, authName)
 
-    return await createReadOnlyAllAuthorization(orgID, authName)
+    return response.token
   }
 
   const generateLink = async () => {
     setLinkLoading(RemoteDataState.Loading)
-    let token: Authorization
+    let token: string
 
     try {
       token = await createAndGetReadOnlyToken()
@@ -131,7 +132,7 @@ const FlowHeader: FC = () => {
       data: {
         notebookID: flow.id,
         orgID,
-        token: token.token,
+        token: token,
         region: window.location.hostname,
       },
     })

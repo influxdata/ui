@@ -35,11 +35,15 @@ const AccountAboutPage: FC = () => {
    *
    * and one of the accounts has to be active (the one that the user currently
    * is logged in as)
+   *
+   * but note that at first load, the accounts may not be loaded yet.  hence, the useEffect
+   * to re-initialize the activeAcctName
    */
   const activeAccount =
     userAccounts && userAccounts.filter(acct => acct.isActive)[0]
   const [activeAcctName, setActiveAcctName] = useState(activeAccount?.name)
 
+  // needed b/c the context updates the page once the active accts are loaded
   useEffect(() => {
     setActiveAcctName(activeAccount?.name)
   }, [activeAccount])
@@ -76,9 +80,7 @@ const AccountAboutPage: FC = () => {
           )}
 
           <h2 data-testid="account-settings--header"> Account Details </h2>
-          <div data-testid="account-active-name--block" style={labelStyle}>
-            Account Name
-          </div>
+          <div style={labelStyle}>Account Name</div>
           <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
             <Input
               name="accountName"
@@ -93,6 +95,7 @@ const AccountAboutPage: FC = () => {
               onClick={() =>
                 handleRenameActiveAccount(activeAccount.id, activeAcctName)
               }
+              testID="rename-account--button"
               text="Save"
             />
           </FlexBox>

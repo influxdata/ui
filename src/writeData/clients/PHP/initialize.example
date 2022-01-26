@@ -3,7 +3,7 @@ use InfluxDB2\Model\WritePrecision;
 use InfluxDB2\Point;
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-$token = '<INFLUX_TOKEN>';
+$token = getenv('INFLUX_TOKEN');
 $org = '<%= org %>';
 $bucket = '<%= bucket %>';
 

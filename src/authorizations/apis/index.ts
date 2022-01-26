@@ -54,6 +54,7 @@ export const createReadOnlyAllAuthorization = async (
     event('Read-only authorization created', {orgID, name})
     return resp.data
   } catch (error) {
+    event('Read-only authorization creation failed', {orgID, name})
     console.error(error)
     throw error
   }

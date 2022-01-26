@@ -76,16 +76,14 @@ const FlowHeader: FC = () => {
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
-    if (isFlagEnabled('shareNotebook')) {
-      getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
-        .then(res => {
-          if (!!res?.data?.[0]) {
-            // TODO: handle there being multiple links?
-            setShare({id: res.data[0].id, accessID: res.data[0].accessID})
-          }
-        })
-        .catch(err => console.error('failed to get notebook share', err))
-    }
+    getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
+      .then(res => {
+        if (!!res?.data?.[0]) {
+          // TODO: handle there being multiple links?
+          setShare({id: res.data[0].id, accessID: res.data[0].accessID})
+        }
+      })
+      .catch(err => console.error('failed to get notebook share', err))
   }, [flow.id])
 
   const handleRename = (name: string) => {
@@ -249,18 +247,14 @@ const FlowHeader: FC = () => {
                   onClick={handleClone}
                   titleText="Clone"
                 />
-                <FeatureFlag name="shareNotebook">
-                  <SquareButton
-                    icon={IconFont.Share}
-                    onClick={showShare}
-                    color={
-                      !!share
-                        ? ComponentColor.Primary
-                        : ComponentColor.Secondary
-                    }
-                    titleText="Share Notebook"
-                  />
-                </FeatureFlag>
+                <SquareButton
+                  icon={IconFont.Share}
+                  onClick={showShare}
+                  color={
+                    !!share ? ComponentColor.Primary : ComponentColor.Secondary
+                  }
+                  titleText="Share Notebook"
+                />
               </>
             )}
             <FeatureFlag name="flow-snapshot">

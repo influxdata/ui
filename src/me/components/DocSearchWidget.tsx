@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 // Components
 import DocSearch, {DocSearchType} from 'src/shared/search/DocSearch'
 
-import './DocSearchWidget.scss'
+import 'src/me/components/DocSearchWidget.scss'
 
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 const supportLinks = [

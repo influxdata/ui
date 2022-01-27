@@ -1,7 +1,7 @@
 require 'influxdb-client'
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = '<INFLUX_TOKEN>'
+token = ENV["INFLUX_TOKEN"]
 org = '<%= org %>'
 bucket = '<%= bucket %>'
 

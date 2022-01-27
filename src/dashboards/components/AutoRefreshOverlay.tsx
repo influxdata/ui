@@ -71,13 +71,13 @@ const calculateTimeout = (timeout: string, timeoutUnit: string) => {
 const selectInactivityArray = (unit: string) => {
   let selectionAmount = 0
   switch (unit) {
-    case 'Minutes':
+    case TIMEOUT_CATEGORY.Minutes:
       selectionAmount = 60
       break
-    case 'Hours':
+    case TIMEOUT_CATEGORY.Hours:
       selectionAmount = 25
       break
-    case 'Days':
+    case TIMEOUT_CATEGORY.Days:
       selectionAmount = 30
       break
   }
@@ -124,6 +124,9 @@ const AutoRefreshOverlay: FC = () => {
   ]
 
   const isValidTimeoutInput = (input: string) => {
+    if (input === 'Never') {
+      return true
+    }
     if (+input <= 0) {
       return false
     }
@@ -140,7 +143,7 @@ const AutoRefreshOverlay: FC = () => {
         isValid = +input < MAX_DAY
         break
     }
-    return input === 'Never' || isValid
+    return isValid
   }
 
   const handleRefreshMilliseconds = useCallback(

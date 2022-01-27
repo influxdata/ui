@@ -221,7 +221,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
         ? tagSelections.join(' and ')
         : 'true'
       const searchString = search
-        ? `\n  |> filter(fn: (r) => r._value =~ /(?i:${search})/)`
+        ? `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${search}") + ")"))`
         : ''
       const previousTagSelections = cards
         .slice(0, idx)
@@ -232,11 +232,11 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
       const {scope} = getPanelQueries(id)
 
-      let _source
+      let _source = 'import "regexp"\n'
       if (data.buckets[0].type === 'sample') {
-        _source = `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
+        _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
       } else {
-        _source = `from(bucket: "${data.buckets[0].name}")`
+        _source += `from(bucket: "${data.buckets[0].name}")`
       }
 
       const limit = isFlagEnabled('increasedMeasurmentTagLimit')
@@ -326,16 +326,20 @@ export const QueryBuilderProvider: FC = ({children}) => {
         ? tagSelections.join(' and ')
         : 'true'
       const searchString = search
-        ? `\n  |> filter(fn: (r) => r._value =~ /(?i:${search})/)`
+        ? `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${search}") + ")"))`
         : ''
 
       const {scope} = getPanelQueries(id)
-      let _source
+      let _source = 'import "regexp"\n'
       if (data.buckets[0].type === 'sample') {
-        _source = `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
+        _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
       } else {
-        _source = `from(bucket: "${data.buckets[0].name}")`
+        _source += `from(bucket: "${data.buckets[0].name}")`
       }
+
+      const limit = isFlagEnabled('increasedMeasurmentTagLimit')
+        ? EXTENDED_TAG_LIMIT
+        : DEFAULT_TAG_LIMIT
 
       // TODO: Use the `v1.tagValues` function from the Flux standard library once
       // this issue is resolved: https://github.com/influxdata/flux/issues/1071
@@ -348,7 +352,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
               |> distinct(column: "${
                 cards[idx].keys.selected[0]
               }")${searchString}
-              |> limit(n: ${DEFAULT_TAG_LIMIT})
+              |> limit(n: ${limit})
               |> sort()`,
         scope
       )

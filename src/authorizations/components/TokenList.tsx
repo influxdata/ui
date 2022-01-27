@@ -1,11 +1,12 @@
 // Libraries
 import React, {PureComponent} from 'react'
 import memoizeOne from 'memoize-one'
+import isEqual from 'lodash/isEqual'
 
 // Components
 import {Overlay, ResourceList} from '@influxdata/clockface'
-import TokenRow from 'src/authorizations/components/TokenRow'
-import ViewTokenOverlay from 'src/authorizations/components/ViewTokenOverlay'
+import {TokenRow} from 'src/authorizations/components/TokenRow'
+import EditTokenOverlay from 'src/authorizations/components/EditTokenOverlay'
 
 // Types
 import {Authorization} from 'src/types'
@@ -32,7 +33,7 @@ interface State {
   authInView: Authorization
 }
 
-export default class TokenList extends PureComponent<Props, State> {
+export class TokenList extends PureComponent<Props, State> {
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
     getSortedResources
   )
@@ -42,6 +43,18 @@ export default class TokenList extends PureComponent<Props, State> {
     this.state = {
       isTokenOverlayVisible: false,
       authInView: null,
+    }
+  }
+
+  public componentDidUpdate(prevProps) {
+    const {auths: prevAuths} = prevProps
+    const {auths: nextAuths} = this.props
+
+    if (!isEqual(prevAuths, nextAuths)) {
+      const authInView = nextAuths.find(
+        auth => auth.id === this.state.authInView?.id
+      )
+      this.setState({authInView})
     }
   }
 
@@ -60,7 +73,7 @@ export default class TokenList extends PureComponent<Props, State> {
         </ResourceList>
 
         <Overlay visible={isTokenOverlayVisible}>
-          <ViewTokenOverlay
+          <EditTokenOverlay
             auth={authInView}
             onDismissOverlay={this.handleDismissOverlay}
           />
@@ -92,7 +105,7 @@ export default class TokenList extends PureComponent<Props, State> {
   }
 
   private handleClickDescription = (authID: string): void => {
-    const authInView = this.props.auths.find(a => a.id === authID)
+    const authInView = this.props.auths.find(auth => auth.id === authID)
     this.setState({isTokenOverlayVisible: true, authInView})
   }
 }

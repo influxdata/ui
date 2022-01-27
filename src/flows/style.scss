@@ -436,6 +436,37 @@ $cf-radius-lg: $cf-radius + 4px;
   overflow: unset;
 }
 
+/*
+  PipeList
+  ------------------------------------------------------------------------------
+*/
+
+[data-download-hide='true'] {
+  display: none;
+}
+
+.hidden-header-logo {
+  padding-top: $cf-space-xs;
+  svg {
+    width: 250px;
+    height: 100px;
+  }
+}
+
+.hidden-header-title {
+  padding-bottom: $cf-space-xs;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  span {
+    display: flex;
+    align-items: center;
+  }
+  h4 {
+    margin: 0px;
+  }
+}
+
 .flow--client-overlay {
   .markdown-format pre {
     white-space: pre-line;

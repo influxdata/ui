@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useEffect, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
 
 // Components
 import {
@@ -18,9 +17,8 @@ import {
   Button,
   ComponentColor,
   ComponentStatus,
-  Page,
 } from '@influxdata/clockface'
-import {EditResourceAccordion} from 'src/authorizations/components/redesigned/EditResourceAccordion'
+import {EditResourceAccordion} from 'src/authorizations/components/EditResourceAccordion'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Types
@@ -139,13 +137,18 @@ const EditTokenOverlay: FC<Props> = props => {
 
   return (
     <Overlay.Container maxWidth={800}>
-      <Overlay.Header title="API Token Summary" onDismiss={handleDismiss} />
+      <Overlay.Header
+        className="overlay-header"
+        title="API Token Summary"
+        onDismiss={handleDismiss}
+      />
       <Overlay.Body>
         <FlexBox
           alignItems={AlignItems.FlexStart}
           margin={ComponentSize.Medium}
           direction={FlexDirection.Column}
           justifyContent={JustifyContent.SpaceBetween}
+          testID="custom-api-token-toggle"
         >
           <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
             <SlideToggle
@@ -212,25 +215,23 @@ const EditTokenOverlay: FC<Props> = props => {
               searchTerm={searchTerm}
             />
           </FlexBox.Child>
-          <Page.ControlBarCenter>
-            <FlexBox margin={ComponentSize.Medium}>
-              <Button
-                color={ComponentColor.Tertiary}
-                text="Cancel"
-                onClick={handleDismiss}
-                testID="token-cancel-btn"
-              />
-              <Button
-                color={ComponentColor.Primary}
-                text="Save"
-                onClick={onSave}
-                testID="token-save-btn"
-                status={status}
-              />
-            </FlexBox>
-          </Page.ControlBarCenter>
         </FlexBox>
       </Overlay.Body>
+      <Overlay.Footer className="overlay-footer">
+        <Button
+          color={ComponentColor.Tertiary}
+          text="Cancel"
+          onClick={handleDismiss}
+          testID="token-cancel-btn"
+        />
+        <Button
+          color={ComponentColor.Primary}
+          text="Save"
+          onClick={onSave}
+          testID="token-save-btn"
+          status={status}
+        />
+      </Overlay.Footer>
     </Overlay.Container>
   )
 }

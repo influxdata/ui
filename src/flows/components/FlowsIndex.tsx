@@ -1,15 +1,24 @@
 // Libraries
 import React, {useState, useContext, useRef} from 'react'
-import {DapperScrollbars, Sort} from '@influxdata/clockface'
 
 // Components
-import {Page, PageHeader} from '@influxdata/clockface'
+import {
+  DapperScrollbars,
+  FlexBox,
+  FlexDirection,
+  JustifyContent,
+  Page,
+  PageHeader,
+  Sort,
+} from '@influxdata/clockface'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import FlowCards from 'src/flows/components/FlowCards'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import {SortTypes} from 'src/shared/utils/sort'
 import PresetFlows from 'src/flows/components/PresetFlows'
+import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
@@ -115,7 +124,14 @@ const FlowsIndex = () => {
         fullWidth={false}
         className={`${showButtonMode && 'withButtonHeader'}`}
       >
-        <Page.Title title={PROJECT_NAME_PLURAL} />
+        <FlexBox
+          direction={FlexDirection.Row}
+          justifyContent={JustifyContent.SpaceBetween}
+          stretchToFitWidth
+        >
+          <Page.Title title={PROJECT_NAME_PLURAL} />
+          <RateLimitAlert />
+        </FlexBox>
         {showButtonMode && (
           <>
             <PresetFlowsButtons />

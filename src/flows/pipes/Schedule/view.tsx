@@ -22,7 +22,6 @@ import {SidebarContext} from 'src/flows/context/sidebar'
 import History from 'src/flows/pipes/Schedule/History'
 
 import {remove} from 'src/shared/contexts/query'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import './style.scss'
 
@@ -311,9 +310,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     <ExportTaskButton
       generate={generateTask}
       onCreate={storeTask}
-      text={
-        isFlagEnabled('removeExportModal') ? 'Export Task' : 'Export as Task'
-      }
+      text="Export Task"
       disabled={
         !hasChanges || !!intervalError || !!offsetError || !data?.interval
       }

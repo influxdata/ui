@@ -9,7 +9,6 @@ describe('Pinned Items', () => {
       orgID = id
       cy.setFeatureFlags({
         pinnedItems: true,
-        docSearchWidget: true,
       })
       cy.getByTestID('tree-nav')
     })
@@ -27,7 +26,6 @@ describe('Pinned Items', () => {
       cy.createDashboard(orgID)
       cy.setFeatureFlags({
         pinnedItems: true,
-        docSearchWidget: true,
       })
       cy.getByTestID('nav-item-dashboards').should('be.visible')
       cy.getByTestID('nav-item-dashboards').click()
@@ -230,7 +228,9 @@ from(bucket: "${name}"{rightarrow}
         .click()
 
       cy.getByTestID('time-machine-submit-button').should('be.visible')
-      cy.getByTestID('page-title').click()
+      cy.getByTestID('page-title')
+        .first()
+        .click()
       cy.getByTestID('renamable-page-title--input')
         .clear()
         .type('Flow')

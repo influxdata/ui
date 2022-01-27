@@ -1,15 +1,15 @@
 // Libraries
 import React, {Component} from 'react'
 import {isEmpty} from 'lodash'
-import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
+import 'src/authorizations/components/customApiTokenOverlay.scss'
 
 // Clockface
 import {Accordion, DapperScrollbars} from '@influxdata/clockface'
 
 // Components
-import {ResourceAccordionHeader} from 'src/authorizations/components/redesigned/ResourceAccordionHeader'
-import {AllAccordionBody} from 'src/authorizations/components/redesigned/AllAccordionBody'
-import {IndividualAccordionBody} from 'src/authorizations/components/redesigned/IndividualAccordionBody'
+import {ResourceAccordionHeader} from 'src/authorizations/components/ResourceAccordionHeader'
+import {AllAccordionBody} from 'src/authorizations/components/AllAccordionBody'
+import {IndividualAccordionBody} from 'src/authorizations/components/IndividualAccordionBody'
 import FilterList from 'src/shared/components/FilterList'
 
 // Types

@@ -238,8 +238,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -331,8 +329,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -424,8 +420,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({refreshSingleCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -507,8 +501,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({refreshSingleCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -572,9 +564,18 @@ describe('Dashboard refresh', () => {
           }
         })
 
-        cy.getByTestID('autorefresh-dropdown-refresh').click()
+        // Set dashboard to auto refresh every 2s
+        cy.getByTestID('enable-auto-refresh-button').click()
+        cy.getByTestID('auto-refresh-input')
+          .clear()
+          .type('2s', {force: true})
+        cy.getByTestID('refresh-form-activate-button').click({force: true})
+
         cy.wait('@refreshCellQuery')
         cy.wait('@refreshSecondQuery')
+
+        // Turn off auto refresh
+        cy.getByTestID('enable-auto-refresh-button').click()
       })
     })
   })

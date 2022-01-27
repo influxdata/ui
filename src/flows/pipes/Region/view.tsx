@@ -61,12 +61,6 @@ export const REGIONS = [
     flag: 'local-dev',
     value: 'https://influxdb.aws.influxdata.io',
   },
-  {
-    label: 'Local Kind Cluster',
-    group: 'Development',
-    flag: 'local-dev',
-    value: 'https://twodotoh.a.influxcloud.dev.local',
-  },
   {label: 'Current Region', value: 'self'},
   {label: 'Self Hosted', value: 'self-hosted'},
 ]

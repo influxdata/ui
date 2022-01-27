@@ -15,7 +15,7 @@ import {AppState, Run} from 'src/types'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
 // Actions
-import {getRuns, runTask, updateTaskStatus} from 'src/tasks/actions/thunks'
+import {getRuns, runTask} from 'src/tasks/actions/thunks'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -70,11 +70,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
             <RateLimitAlert />
           </Page.Header>
           <Page.ControlBar fullWidth={false}>
-            <TaskRunsCard
-              task={currentTask}
-              onActivate={this.handleActivate}
-              onEditTask={this.handleEditTask}
-            />
+            <TaskRunsCard task={currentTask} />
           </Page.ControlBar>
           <Page.ControlBar fullWidth={false}>
             <Page.ControlBarRight>
@@ -118,22 +114,6 @@ class TaskRunsPage extends PureComponent<Props, State> {
 
     history.push(`orgs/${currentTask.orgID}/tasks`)
   }
-
-  private handleEditTask = () => {
-    const {
-      history,
-      currentTask,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
-
-    history.push(`/orgs/${orgID}/tasks/${currentTask.id}/edit`)
-  }
-
-  private handleActivate = (task: any) => {
-    this.props.updateTaskStatus(task)
-  }
 }
 
 const mstp = (state: AppState) => {
@@ -149,7 +129,6 @@ const mstp = (state: AppState) => {
 const mdtp = {
   getRuns,
   onRunTask: runTask,
-  updateTaskStatus,
 }
 
 const connector = connect(mstp, mdtp)

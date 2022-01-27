@@ -33,9 +33,6 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 
-// Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
 import 'src/flows/shared/Resizer.scss'
 
 export interface Props extends PipeContextProps {
@@ -179,15 +176,13 @@ const FlowPanel: FC<Props> = ({
                     className="flows-config-panel-button"
                   />
                 </FeatureFlag>
-                {isVisible &&
-                  isFlagEnabled('notebooksPreviewFromHere') &&
-                  showPreviewButton && (
-                    <Button
-                      onClick={() => queryDependents(id)}
-                      icon={IconFont.Play}
-                      text="Run"
-                    />
-                  )}
+                {isVisible && showPreviewButton && (
+                  <Button
+                    onClick={() => queryDependents(id)}
+                    icon={IconFont.Play}
+                    text="Run"
+                  />
+                )}
                 <MenuButton id={id} />
               </div>
             </>

@@ -15,7 +15,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import * as Y from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
-import {patchTask} from 'src/client'
+import removeFlowTasks from 'src/flows/pipes/Schedule/remove'
 
 export interface FlowContextType {
   name: string
@@ -305,18 +305,7 @@ export const FlowProvider: FC = ({children}) => {
   }
 
   const removePipe = (id: string) => {
-    if (currentFlow.data.byID[id].type === 'schedule') {
-      // Silently disable all the tasks exported by this flow
-      const tasks = currentFlow.data.byID[id]?.task ?? []
-      tasks.forEach(task => {
-        patchTask({
-          taskID: task.id,
-          data: {
-            status: 'inactive',
-          },
-        })
-      })
-    }
+    removeFlowTasks(currentFlow.data.byID[id]?.task)
 
     if (isFlagEnabled('sharedFlowEditing')) {
       const flowCopy = JSON.parse(JSON.stringify(currentFlow))

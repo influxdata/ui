@@ -65,14 +65,19 @@ const useBucketsCacheStorage = createLocalStorageStateHook(
 )
 
 // In Seconds
-const BUCKETS_CACHING_TIME = 30 * 60 // 30 Minutes
+const BUCKETS_CACHING_MINUTES = 1
+const BUCKETS_CACHING_TIME = BUCKETS_CACHING_MINUTES * 60
 
 const getCurrentTimestamp = (): UnixTimestamp => {
   return Math.round(new Date().getTime() / 1000)
 }
 
 const fetchOne = async (url, headers, limit = 100, page = 1) => {
-  const offset = page ? `&offset=${page * limit}` : ''
+  let offset = ''
+
+  if (limit >= 0) {
+    offset = page ? `&offset=${page * limit}` : ''
+  }
   const fullurl = `${url}&limit=${limit}${offset}`
   const method = 'GET'
   let json

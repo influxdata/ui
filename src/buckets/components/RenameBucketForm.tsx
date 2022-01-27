@@ -111,10 +111,15 @@ class RenameBucketForm extends PureComponent<Props, State> {
     }
   }
 
+  private updateBucketsCacheState() {
+    localStorage.setItem('BucketsCacheState', JSON.stringify({isDirty: true}))
+  }
+
   private handleSubmit = (): void => {
     const {startBucket, onRenameBucket} = this.props
     const {bucket} = this.state
 
+    this.updateBucketsCacheState()
     onRenameBucket(startBucket.name, bucket)
     this.handleClose()
   }

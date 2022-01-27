@@ -222,7 +222,9 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
           event: GTM_USER_REMOVED,
         })
 
-        if (userId == currentUserId) window.location.href = CLOUD_URL
+        if (userId == currentUserId) {
+          window.location.href = CLOUD_URL
+        }
       } catch (error) {
         console.error(error)
         dispatch(notify(removeUserFailed()))

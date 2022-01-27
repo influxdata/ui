@@ -32,7 +32,9 @@ const WriteDataPage: FC = () => {
         <LoadDataHeader />
         <LoadDataTabbedPage activeTab="sources">
           <WriteDataSearchBar />
-          <WriteDataSections />
+          <Page.Contents scrollable={true}>
+            <WriteDataSections />
+          </Page.Contents>
         </LoadDataTabbedPage>
       </Page>
     </WriteDataSearchContext.Provider>

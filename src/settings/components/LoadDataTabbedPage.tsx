@@ -52,6 +52,9 @@ const shouldPageBeScrollable = (activeTab: string): boolean => {
   if (activeTab === 'tokens' && isFlagEnabled('paginatedTokens')) {
     return false
   }
+  if (activeTab === 'sources') {
+    return false
+  }
 
   return true
 }

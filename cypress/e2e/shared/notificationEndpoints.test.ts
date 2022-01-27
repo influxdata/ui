@@ -170,7 +170,7 @@ describe('Notification Endpoints', () => {
     cy.getByTestID(`endpoint-card ${name}`).should('exist')
   })
 
-  it.only('can edit a notification endpoint', () => {
+  it('can edit a notification endpoint', () => {
     cy.get<SlackNotificationEndpoint>('@endpoint').then(endpoint => {
       const {name, description, url} = endpoint
       const newName = 'An Endpoint Has No Name'

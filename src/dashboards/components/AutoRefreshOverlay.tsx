@@ -110,8 +110,6 @@ const AutoRefreshOverlay: FC = () => {
     'Hours'
   )
 
-  console.log({infiniteDuration})
-
   const refreshOptions = [
     {
       id: 'indefinite-auto-refresh',

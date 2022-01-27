@@ -110,16 +110,18 @@ const AutoRefreshOverlay: FC = () => {
     'Hours'
   )
 
+  console.log({infiniteDuration})
+
   const refreshOptions = [
     {
       id: 'indefinite-auto-refresh',
       title: 'Indefinite',
-      active: infiniteDuration,
+      isInfinite: infiniteDuration,
     },
     {
       id: 'custom-auto-refresh',
       title: 'Custom',
-      active: !infiniteDuration,
+      isInfinite: !infiniteDuration,
     },
   ]
 
@@ -239,7 +241,7 @@ const AutoRefreshOverlay: FC = () => {
                 key={option.id}
                 id={option.id}
                 name="refreshOptions"
-                active={option.active}
+                active={option.isInfinite}
                 value={option.id}
                 titleText={option.title}
                 onClick={() =>

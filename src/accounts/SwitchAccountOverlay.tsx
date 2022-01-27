@@ -101,7 +101,6 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   const doSwitchAccount = () => {
     onDismissOverlay()
     event('multiAccount.switchAccount')
-
     window.location.href = `${CLOUD_URL}/accounts/${newAccountId}`
   }
 

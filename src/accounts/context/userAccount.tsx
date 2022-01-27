@@ -128,6 +128,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         dispatch(notify(accountRenameError(oldName)))
       } else {
         dispatch(notify(accountRenameSuccess(oldName, newName)))
+        event('multiAccount.renameAccount')
 
         // change the name, and reset the active accts:
         userAccounts[activeIndex].name = newName

@@ -54,7 +54,9 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       })
     )
   }
-  const ownerName = members[task.ownerID] ? members[task.ownerID].name : ''
+  const ownerName = members[task?.ownerID]?.name
+    ? members[task.ownerID].name
+    : ''
   const handleRunTask = async () => {
     try {
       await dispatch(runTask(task.id))

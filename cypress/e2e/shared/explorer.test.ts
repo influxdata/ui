@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {points, makeGraphSnapshot} from '../../support/commands'
+import {points} from '../../support/commands'
 import {
   FROM,
   RANGE,

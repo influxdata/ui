@@ -170,7 +170,7 @@ describe('Notification Endpoints', () => {
     cy.getByTestID(`endpoint-card ${name}`).should('exist')
   })
 
-  it('can edit a notification endpoint', () => {
+  it.only('can edit a notification endpoint', () => {
     cy.get<SlackNotificationEndpoint>('@endpoint').then(endpoint => {
       const {name, description, url} = endpoint
       const newName = 'An Endpoint Has No Name'
@@ -179,7 +179,7 @@ describe('Notification Endpoints', () => {
       const newURL = 'many-faced-god.gov'
 
       cy.intercept('PUT', `/api/v2/notificationEndpoints/${endpoint.id}`).as(
-        'putEndp'
+        'notificationEndpointPutCall'
       )
 
       cy.getByTestID(`endpoint-card--name ${name}`).click()
@@ -225,7 +225,7 @@ describe('Notification Endpoints', () => {
       cy.getByTestID('endpoint-save--button').click()
 
       // now verify REST call
-      cy.wait('@putEndp').then(resp => {
+      cy.wait('@notificationEndpointPutCall').then(resp => {
         if (!resp.response) {
           throw 'PUT endpoint call returned no response'
         }

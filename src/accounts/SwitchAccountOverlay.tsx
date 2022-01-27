@@ -134,7 +134,11 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
 
   return (
     <Overlay.Container maxWidth={630} testID="switch-account--dialog">
-      <Overlay.Header title="Switch Account" wrapText={true} />
+      <Overlay.Header
+        title="Switch Account"
+        wrapText={true}
+        onDismiss={onDismissOverlay}
+      />
       <Overlay.Body>
         <ToggleGroup onClickAcct={setNewAccountId} />
       </Overlay.Body>

@@ -389,13 +389,13 @@ const FlowHeader: FC = () => {
         <Page.ControlBar fullWidth>
           <Page.ControlBarLeft>
             <Submit />
+            {isFlagEnabled('flowAutoRefresh') && <AutoRefreshButton />}
             <SaveState />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <PresentationMode />
             <TimeZoneDropdown />
             <TimeRangeDropdown />
-            {isFlagEnabled('flowAutoRefresh') && <AutoRefreshButton />}
             {flow?.id && (
               <>
                 <SquareButton

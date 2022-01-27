@@ -1,10 +1,11 @@
 from datetime import datetime
+import os
 
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 # You can generate an API token from the "API Tokens Tab" in the UI
-token = "<INFLUX_TOKEN>"
+token = os.getenv("INFLUX_TOKEN")
 org = "<%= org %>"
 bucket = "<%= bucket %>"
 

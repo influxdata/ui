@@ -142,7 +142,11 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
         <ToggleGroup onClickAcct={setNewAccountId} />
       </Overlay.Body>
       <Overlay.Footer>
-        <Button text="Cancel" onClick={onDismissOverlay} />
+        <Button
+          text="Cancel"
+          testID="multi-account-switch-cancel"
+          onClick={onDismissOverlay}
+        />
         <Button
           testID="switch-default-account--btn"
           text="Set Default Account"

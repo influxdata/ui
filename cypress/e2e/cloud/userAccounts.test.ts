@@ -124,7 +124,7 @@ describe('Account Page; user with two accounts', () => {
     // test that the notification is up:
     cy.getByTestID('notification-success').should('be.visible')
 
-    // now; bring up the dialog again, the active name should be changed:
+    // now; bring up the dialog, the active name should be changed:
     cy.getByTestID('user-account-switch-btn').click()
 
     const prefix = 'accountSwitch-toggle-choice'
@@ -133,6 +133,29 @@ describe('Account Page; user with two accounts', () => {
       cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
       cy.getByTestID(`${prefix}-0-ID`).contains(newName)
       cy.getByTestID(`${prefix}-0-ID--input`).should('be.checked')
+      cy.getByTestID('multi-account-switch-cancel').click()
+    })
+
+    // circle-ci and e2e tests got unstable, so best to put all the toys back
+    // (reset the name)
+    cy.getByTestID('account-settings--header').should('be.visible')
+
+    cy.getByTestID('input--active-account-name')
+      .clear()
+      .type('Influx')
+    cy.getByTestID('rename-account--button').click()
+
+    // test that the notification is up:
+    cy.getByTestID('notification-success').should('be.visible')
+
+    // now; bring up the dialog again, the active name should be changed:
+    cy.getByTestID('user-account-switch-btn').click()
+
+    cy.getByTestID('switch-account--dialog').within(() => {
+      cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
+      cy.getByTestID(`${prefix}-0-ID`).contains('Influx')
+      cy.getByTestID(`${prefix}-0-ID--input`).should('be.checked')
+      cy.getByTestID('multi-account-switch-cancel').click()
     })
   })
 })

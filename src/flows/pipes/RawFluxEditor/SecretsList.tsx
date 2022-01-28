@@ -43,8 +43,9 @@ const SecretsList: FC<Props> = ({inject}) => {
   const onSelect = useCallback(
     secret => {
       const options = {
-        text: `secrets.get("${secret.id}") `,
+        text: `secrets.get(key: "${secret.id}") `,
         type: InjectionType.SameLine,
+        header: `import "influxdata/influxdb/secrets"`,
       }
       inject(options)
       event('Inject secret into Flux Script', {secret: secret.id})

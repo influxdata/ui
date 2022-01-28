@@ -1,8 +1,13 @@
 // Libraries
 import React, {FC, useContext, useEffect, useState} from 'react'
+import {useSelector} from 'react-redux'
+
 import {
   Button,
+  ButtonShape,
+  ComponentColor,
   ComponentSize,
+  ConfirmationButton,
   FlexBox,
   FlexDirection,
   IconFont,
@@ -12,7 +17,11 @@ import {
   Page,
 } from '@influxdata/clockface'
 
+import {getMe} from 'src/me/selectors'
+import {UsersContext} from 'src/users/context/users'
+
 // Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {
   UserAccountContext,
@@ -27,6 +36,8 @@ const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} = useContext(
     UserAccountContext
   )
+  const {users, handleRemoveUser} = useContext(UsersContext)
+
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
 
   /**
@@ -60,6 +71,37 @@ const AccountAboutPage: FC = () => {
   const closeSwitchAccountDialog = () => {
     setSwitchAccountVisible(false)
   }
+  const currentUserId = useSelector(getMe)?.id
+
+  const handleRemove = () => {
+    handleRemoveUser(currentUserId)
+    // TODO: need to go somewhere else after this....removing current user; logout?  DETERMINE THIS
+  }
+
+  console.log('users number???', users?.length)
+
+  // so when this is 'real'; make sure the entire line below is enabled; commenting out the check
+  // that there are more than 1 user for the account in order to develop it.
+  // need to do some quartz-mock work, perhaps to get more than 1 user (heck, right now there are 0) in the
+  // account
+  const allowSelfRemoval = isFlagEnabled('selfRemovalFromAccount') // && (users.length > 1)
+
+  const leaveBtnStyle = {width: 250, marginTop: 8}
+
+  const leaveAcctBtn = (
+    <ConfirmationButton
+      confirmationLabel="This action will remove yourself from accessing this organization"
+      confirmationButtonText="Leave Account"
+      titleText="Leave Account"
+      text="Leave Account"
+      confirmationButtonColor={ComponentColor.Danger}
+      color={ComponentColor.Default}
+      shape={ButtonShape.Square}
+      onConfirm={handleRemove}
+      testID="delete-user"
+      style={leaveBtnStyle}
+    />
+  )
 
   const inputStyle = {width: 250}
   const labelStyle = {marginBottom: 8}
@@ -100,6 +142,7 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
+        {allowSelfRemoval && leaveAcctBtn}
         <Overlay visible={isSwitchAccountVisible}>
           <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
         </Overlay>

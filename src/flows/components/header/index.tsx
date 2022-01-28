@@ -50,7 +50,6 @@ import {
   PROJECT_NAME,
   PROJECT_NAME_PLURAL,
 } from 'src/flows'
-import {createReadOnlyAllAuthorization} from 'src/authorizations/apis'
 
 interface Share {
   id: string
@@ -107,31 +106,13 @@ const FlowHeader: FC = () => {
       .catch(err => console.error('failed to delete share', err))
   }
 
-  const createAndGetReadOnlyToken = async (): Promise<string> => {
-    const authName = `${flow.name} ${flow.createdAt}`
-    const response = await createReadOnlyAllAuthorization(orgID, authName)
-
-    return response.token
-  }
-
-  const generateLink = async () => {
+  const generateLink = () => {
     setLinkLoading(RemoteDataState.Loading)
-    let token: string
-
-    try {
-      token = await createAndGetReadOnlyToken()
-    } catch (e) {
-      console.error('failed to create read-only token')
-      setLinkLoading(RemoteDataState.Error)
-
-      return
-    }
 
     postNotebooksShare({
       data: {
         notebookID: flow.id,
         orgID,
-        token: token,
         region: window.location.hostname,
       },
     })

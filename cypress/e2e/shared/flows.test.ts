@@ -7,8 +7,6 @@ describe('Flows', () => {
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
         cy.visit(`${orgs}/${id}`)
-        // TODO: remove when feature flag is removed
-        cy.setFeatureFlags({flowAutoRefresh: true})
       })
     )
     cy.getByTestID('version-info')
@@ -249,7 +247,9 @@ describe('Flows', () => {
       .should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
-    cy.getByTestID('enable-auto-refresh-button').should('exist')
+    // This is a random validator that the autorefresh option doesn't pop up
+    // In Flows again without explicit changes
+    cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
 
     cy.clickNavBarItem('nav-item-flows')
 

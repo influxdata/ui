@@ -564,18 +564,9 @@ describe('Dashboard refresh', () => {
           }
         })
 
-        // Set dashboard to auto refresh every 2s
-        cy.getByTestID('enable-auto-refresh-button').click()
-        cy.getByTestID('auto-refresh-input')
-          .clear()
-          .type('2s', {force: true})
-        cy.getByTestID('refresh-form-activate-button').click({force: true})
-
+        cy.getByTestID('autorefresh-dropdown-refresh').click()
         cy.wait('@refreshCellQuery')
         cy.wait('@refreshSecondQuery')
-
-        // Turn off auto refresh
-        cy.getByTestID('enable-auto-refresh-button').click()
       })
     })
   })

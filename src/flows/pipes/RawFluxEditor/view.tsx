@@ -76,9 +76,9 @@ const Query: FC<PipeProp> = ({Context}) => {
     (fn: FluxToolbarFunction): void => {
       let text = ''
       if (fn.name === 'from' || fn.name === 'union') {
-        text = `\n${fn.example}\n`
+        text = `${fn.example}`
       } else {
-        text = `  |> ${fn.example}\n`
+        text = `  |> ${fn.example}`
       }
 
       const options = {

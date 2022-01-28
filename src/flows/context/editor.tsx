@@ -19,7 +19,8 @@ export enum InjectionType {
 interface InjectionPosition {
   row: number
   column: number
-  shouldInsertOnNextLine: boolean
+  shouldStartWithNewLine: boolean
+  shouldEndInNewLine: boolean
 }
 
 export interface InjectionOptions {
@@ -83,35 +84,57 @@ export const EditorProvider: FC = ({children}) => {
       if (!editor) {
         return {}
       }
-      const {lineNumber, column} = editor.getPosition()
+      const {lineNumber, column: col} = editor.getPosition()
       let row = lineNumber
+      let column = col
 
       const split = queryText.current().split('\n')
-      // row is not zero indexed. 1..N
-      const currentLineText = (
-        split[row - 1] || split[split.length - 1]
-      ).trimEnd()
-      const textAheadOfCursor = currentLineText.slice(0, column).trim()
-      if (
-        currentLineText &&
-        textAheadOfCursor &&
-        type == InjectionType.OnOwnLine
-      ) {
-        row++
+      const getCurrentLineText = () => {
+        // row is not zero indexed in monaco editor. 1..N
+        return (split[row - 1] || split[split.length - 1]).trimEnd()
       }
 
-      const [currentRange] = editor.getVisibleRanges()
-      // Determines whether the new insert line is beyond the current range
-      let shouldInsertOnNextLine = row > currentRange.endLineNumber
+      let currentLineText = getCurrentLineText()
+      // column is not zero indexed in monnao editor. 1..N
+      let textAheadOfCursor = currentLineText.slice(0, column - 1).trim()
+      let textBehindCursor = currentLineText.slice(column - 1).trim()
 
+      // if cursor has text in front of it, and should be onOwnRow
+      if (type == InjectionType.OnOwnLine && textAheadOfCursor) {
+        row++
+        column = 1
+      }
       // edge case for when user toggles to the script editor
       // this defaults the cursor to the initial position (top-left, 1:1 position)
-      if (lineNumber === 1 && column === 1) {
-        shouldInsertOnNextLine = true
+      const [currentRange] = editor.getVisibleRanges()
+      if (row === 1 && column === 1) {
         row = currentRange.endLineNumber + 1
       }
 
-      return {row, column, shouldInsertOnNextLine}
+      if (row !== lineNumber) {
+        currentLineText = getCurrentLineText()
+        textAheadOfCursor = currentLineText.slice(0, column - 1).trim()
+        textBehindCursor = currentLineText.slice(column - 1).trim()
+      }
+
+      let shouldEndInNewLine = false
+      // if cursor has text behind it, and should be onOwnRow
+      if (type == InjectionType.OnOwnLine && textBehindCursor) {
+        shouldEndInNewLine = true
+      }
+
+      const cursorInMiddleOfText = textAheadOfCursor && textBehindCursor
+      if (type == InjectionType.OnOwnLine && cursorInMiddleOfText) {
+        row++
+        column = 1
+        shouldEndInNewLine = true
+      }
+
+      // if we asked to insert on a row out-of-range
+      // then need to manually append newline to front of row
+      const shouldStartWithNewLine = row > currentRange.endLineNumber
+
+      return {row, column, shouldStartWithNewLine, shouldEndInNewLine}
     },
     [editor, queryText]
   )
@@ -126,14 +149,19 @@ export const EditorProvider: FC = ({children}) => {
       const {
         row,
         column: initC,
-        shouldInsertOnNextLine,
+        shouldStartWithNewLine,
+        shouldEndInNewLine,
       } = calcInjectiontPosition(type)
       let text = ''
 
-      if (shouldInsertOnNextLine && !/^(\W*)?\\n/.test(text)) {
+      if (shouldStartWithNewLine) {
         text = `\n${initT}`
       } else {
         text = initT
+      }
+
+      if (shouldEndInNewLine) {
+        text = `${text}\n`
       }
 
       const column = type == InjectionType.OnOwnLine ? 1 : initC

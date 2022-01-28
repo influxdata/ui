@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {points} from '../../support/commands'
+import {points, makeGraphSnapshot} from '../../support/commands'
 import {
   FROM,
   RANGE,
@@ -629,6 +629,30 @@ describe('DataExplorer', () => {
       cy.getByTestID('right-click--remove-tab').click()
 
       cy.get('.query-tab').should('have.length', 1)
+    })
+  })
+
+  describe('refresh', () => {
+    beforeEach(() => {
+      cy.writeData(points(20))
+
+      cy.getByTestID(`selector-list m`).click()
+      cy.getByTestID('time-machine-submit-button').click()
+
+      // select short time period to ensure graph changes after short time
+      cy.getByTestID('timerange-dropdown').click()
+      cy.getByTestID('dropdown-item-past5m').click()
+    })
+
+    it('manual refresh', () => {
+      const snapshot = makeGraphSnapshot()
+
+      // graph will slightly move
+      cy.wait(200)
+      cy.get('.autorefresh-dropdown--pause').click()
+
+      // not actually same as (see the false as the second arg)
+      makeGraphSnapshot().shouldBeSameAs(snapshot, false)
     })
   })
 

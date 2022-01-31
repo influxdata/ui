@@ -1,7 +1,7 @@
 import View from './view'
 import ReadOnly from './readOnly'
 import {PipeData} from 'src/types'
-import { patchTask } from 'src/client'
+import {patchTask} from 'src/client'
 
 const removeFlowTasks = (tasks = []) => {
   tasks.forEach(task => {

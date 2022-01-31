@@ -15,7 +15,6 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import * as Y from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
-import removeFlowTasks from 'src/flows/pipes/Schedule/remove'
 
 export interface FlowContextType {
   name: string

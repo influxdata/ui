@@ -16,7 +16,7 @@ public class InfluxDB2Example {
   public static void main(final String[] args) {
 
     // You can generate an API token from the "API Tokens Tab" in the UI
-    String token = "<%= token %>";
+    String token = System.getenv("INFLUX_TOKEN");
     String bucket = "<%= bucket %>";
     String org = "<%= org %>";
 

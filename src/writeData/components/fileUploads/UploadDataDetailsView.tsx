@@ -87,7 +87,7 @@ const UploadDataDetailsView: FC = () => {
                   className="write-data--details-content markdown-format"
                   data-testid="load-data-details-content"
                 >
-                  {name !== 'csv' ?? (
+                  {contentID !== 'csv' && (
                     <Panel backgroundColor={InfluxColors.Grey15}>
                       <Panel.Body size={ComponentSize.ExtraSmall}>
                         <WriteDataHelperBuckets />

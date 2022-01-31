@@ -45,7 +45,9 @@ describe('flows alert panel', () => {
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title').click()
+    cy.getByTestID('page-title')
+      .first()
+      .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket, measurement, field and tag
@@ -112,18 +114,9 @@ describe('flows alert panel', () => {
       'r._notebook_link'
     )
 
-    // make sure task export contains notebook link
-    cy.getByTestID('task-form-save').click()
-    cy.getByTestID('overlay--body').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.url().then(url => {
-        cy.getByTestID('flux-editor').contains(
-          `|> set(key: "_notebook_link", value: "${url}")`
-        )
-      })
-    })
+    // NOTE: we need to verify that the generated task flux contains
+    //    `|> set(key: "_notebook_link", value: "${url}")`
+    // but we dont currently redirect to the task editor anymore
   })
 
   it('should build alert for each endpoint', () => {
@@ -150,7 +143,9 @@ describe('flows alert panel', () => {
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    cy.getByTestID('page-title').click()
+    cy.getByTestID('page-title')
+      .first()
+      .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
     // select our bucket, measurement, field and tag
@@ -192,7 +187,6 @@ describe('flows alert panel', () => {
 
     const fakeEmail = 'super@fake.com'
     const fakeUrl = 'super-fake.com'
-    const fakeSecretFlux = 'secrets.get(key: "mySecret")'
     const fakeChannel = 'fake-channel'
 
     // === AWS SES ===
@@ -213,19 +207,11 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown-item--mySecret').click()
     cy.getByTestID('input--email').type(fakeEmail)
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-      cy.getByTestID('flux-editor').contains(fakeEmail)
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === HTTP ===
 
@@ -236,18 +222,11 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--url').type(fakeUrl)
     cy.getByTestID('input--token').type('fake-token')
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains('fake-token')
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === MAILGUN ===
     const mailgunDomain = 'fake.com'
@@ -259,19 +238,11 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown-item--mySecret').click()
     cy.getByTestID('input--email').type(fakeEmail)
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(mailgunDomain)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-      cy.getByTestID('flux-editor').contains(fakeEmail)
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === MAILJET ===
 
@@ -283,18 +254,11 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown-item--mySecret').click()
     cy.getByTestID('input--email').type(fakeEmail)
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(fakeEmail)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === PAGERDUTY ===
     const pagerDutyRoutingKey = 'fake-key'
@@ -304,18 +268,11 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--url').type(fakeUrl)
     cy.getByTestID('input--key').type(pagerDutyRoutingKey)
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(pagerDutyRoutingKey)
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === SENDGRID ===
 
@@ -325,44 +282,26 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown--apiKey').click()
     cy.getByTestID('dropdown-item--mySecret').click()
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(fakeEmail)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === SLACK ===
-    const slackColor = '#34BB55'
 
     // complete fields
     cy.getByTestID('dropdown-item--slack').click()
     cy.getByTestID('input--url').type(fakeUrl)
     cy.getByTestID('input--channel').type(fakeChannel)
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(fakeChannel)
-      cy.getByTestID('flux-editor').contains(slackColor)
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === TELEGRAM ===
-    const parseMode = 'MarkdownV2'
-    const telegramURL = 'https://api.telegram.org/bot'
 
     // complete fields
     cy.getByTestID('dropdown-item--telegram').click()
@@ -376,22 +315,11 @@ describe('flows alert panel', () => {
     cy.getByTestID('variable-form-save').click()
     cy.getByTestID('dropdown-button--token').contains('an apple a day')
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(telegramURL)
-      cy.getByTestID('flux-editor').contains(fakeChannel)
-      cy.getByTestID('flux-editor').contains(
-        'secrets.get(key: "an apple a day")'
-      )
-      cy.getByTestID('flux-editor').contains(parseMode)
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
 
     // === ZENOSS ===
     const zenossAction = 'my-action'
@@ -409,20 +337,10 @@ describe('flows alert panel', () => {
     cy.getByTestID('input--action').type(zenossAction)
     cy.getByTestID('input--method').type(zenossMethod)
 
-    // make sure task export contains the fields
     cy.getByTestID('task-form-save').click()
-    cy.getByTestID('export-as-overlay--header').should('be.visible')
-    cy.getByTestID('flux-editor').should('exist')
-    cy.getByTestID('form--footer').scrollIntoView()
-    cy.getByTestID('overlay--body').within(() => {
-      cy.getByTestID('flux-editor').contains(fakeUrl)
-      cy.getByTestID('flux-editor').contains(fakeSecretFlux)
-      cy.getByTestID('flux-editor').contains(zenossMethod)
-      cy.getByTestID('flux-editor').contains(zenossAction)
-      cy.getByTestID('flux-editor').contains('Critical')
-    })
-
-    // close popup
-    cy.get('.cf-overlay--dismiss').click()
+    /* NOTE: we used to be able to test that the generated flux contained the the
+     * selected values, but that mechanism has been removed from the product
+     * we should add back that ability here
+     */
   })
 })

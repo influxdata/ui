@@ -13,7 +13,6 @@ export default register =>
   register({
     id: 'java',
     name: 'Java',
-    featureFlag: 'client-library--java',
     description,
     logo,
     initialize,

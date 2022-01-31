@@ -1,4 +1,4 @@
-import {Bucket, Permission, ResourceType} from 'src/types'
+import {Permission, ResourceType} from 'src/types'
 import {CLOUD} from 'src/shared/constants'
 import {capitalize} from 'lodash'
 
@@ -92,56 +92,6 @@ export const allAccessPermissions = (
 ): Permission[] => {
   const withOrgID = ensureT(orgID, userID)
   return allPermissionTypes.flatMap(withOrgID)
-}
-
-// add a permission string ('read' or 'write' is the second argument)
-// to a list of buckets (the first argument)
-export const specificBucketsPermissions = (
-  buckets: Bucket[],
-  permission: Permission['action']
-): Permission[] => {
-  return buckets.map(b => {
-    return {
-      action: permission,
-      resource: {
-        type: 'buckets' as 'buckets',
-        orgID: b.orgID,
-        id: b.id,
-      },
-    }
-  })
-}
-
-// assign permission string ('read' or 'write' is the second argument)
-// to all the buckets that have a particular orgID (the first argument)
-export const allBucketsPermissions = (
-  orgID: string,
-  permission: Permission['action']
-): Permission[] => {
-  return [
-    {
-      action: permission,
-      resource: {type: 'buckets', orgID},
-    },
-  ]
-}
-
-export const toggleSelectedBucket = (
-  bucketName: string,
-  selectedBuckets: string[]
-): string[] => {
-  const isSelected = selectedBuckets.find(n => n === bucketName)
-
-  if (isSelected) {
-    return selectedBuckets.filter(n => n !== bucketName)
-  }
-
-  return [...selectedBuckets, bucketName]
-}
-
-export enum BucketTab {
-  AllBuckets = 'All Buckets',
-  Scoped = 'Scoped',
 }
 
 export const formatResources = resourceNames => {

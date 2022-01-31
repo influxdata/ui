@@ -4,7 +4,7 @@ For more detailed and up to date information check out the [Line Protocol Docume
 
 The Line Protocol uploader is a simple tool that can be used to upload files directly to a bucket by uploading a file or writing line protocol directly.
 
-If you're looking to upload Line Protocol files into a specific bucket, simply select the bucket you want your data uploaded to, select the precision of the timestamp your data is set to, and drag & drop your data into the dropzone below. If you're interested in manually writing data into your bucket using line protocol, please continue to the section below.
+If you're looking to upload Line Protocol files into a specific bucket, simply select the bucket you want your data uploaded to, select the precision of the timestamp your data is set to, and drag & drop your data into the dropzone above. If you're interested in manually writing data into your bucket using line protocol, please continue to the section below.
 
 ##### Writing Line Protocol
 

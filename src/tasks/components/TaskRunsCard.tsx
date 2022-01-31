@@ -1,7 +1,7 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FC, useEffect, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Components
 import {
@@ -19,16 +19,12 @@ import {
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 
 // Actions
-import {
-  addTaskLabel,
-  deleteTaskLabel,
-  runTask,
-  getRuns,
-} from 'src/tasks/actions/thunks'
+import {runTask, getRuns, updateTaskStatus} from 'src/tasks/actions/thunks'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions For Members
 import {getMembers} from 'src/members/actions/thunks'
+import {getOrg} from 'src/organizations/selectors'
 
 import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
@@ -39,156 +35,134 @@ import {Task, AppState} from 'src/types'
 // DateTime
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
-interface PassedProps {
+
+interface Props {
   task: Task
-  onActivate: (task: Task) => void
-  onEditTask: () => void
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = PassedProps & ReduxProps
-
-class UnconnectedTaskRunsCard extends PureComponent<
-  Props & RouteComponentProps<{orgID: string; id: string}>
-> {
-  componentDidMount() {
-    this.props.getMembers()
-  }
-
-  public render() {
-    const {task} = this.props
-
-    if (!task) {
-      return null
-    }
-    return (
-      <ResourceCard
-        testID="task-runs-task-card"
-        disabled={!this.isTaskActive}
-        alignItems={AlignItems.Center}
-        margin={ComponentSize.Large}
-        direction={FlexDirection.Row}
-        justifyContent={JustifyContent.SpaceBetween}
-      >
-        <FlexBox
-          alignItems={AlignItems.FlexStart}
-          direction={FlexDirection.Column}
-          margin={ComponentSize.Large}
-        >
-          <ResourceCard.Name name={task.name} testID="task-card--name" />
-          <ResourceCard.Meta>
-            {this.activeToggle}
-            <>
-              Created at:{' '}
-              <FormattedDateTime
-                format={DEFAULT_TIME_FORMAT}
-                date={new Date(task.createdAt)}
-              />
-            </>
-            <>Created by: {this.ownerName}</>
-            <>Last Used: {relativeTimestampFormatter(task.latestCompleted)}</>
-            <>{task.org}</>
-          </ResourceCard.Meta>
-        </FlexBox>
-
-        <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
-          <Button onClick={this.handleRunTask} text="Run Task" />
-          <Button
-            onClick={this.handleEditTask}
-            text="Edit Task"
-            color={ComponentColor.Primary}
-          />
-        </FlexBox>
-      </ResourceCard>
+const TaskRunsCard: FC<Props> = ({task}) => {
+  const dispatch = useDispatch()
+  const members = useSelector((state: AppState) => state.resources.members.byID)
+  const org = useSelector(getOrg)
+  const history = useHistory()
+  const [route, setRoute] = useState(`/orgs/${org?.id}/tasks/${task?.id}/edit`)
+  const changeToggle = () => {
+    dispatch(
+      updateTaskStatus({
+        ...task,
+        status: task.status === 'active' ? 'inactive' : 'active',
+      })
     )
   }
-
-  private get ownerName(): string {
-    const {task, members} = this.props
-
-    if (members[task.ownerID]) {
-      return members[task.ownerID].name
-    }
-    return ''
-  }
-
-  private get activeToggle(): JSX.Element {
-    const labelText = this.isTaskActive ? 'Active' : 'Inactive'
-    return (
-      <FlexBox margin={ComponentSize.Small}>
-        <SlideToggle
-          active={this.isTaskActive}
-          size={ComponentSize.ExtraSmall}
-          onChange={this.changeToggle}
-          testID="task-card--slide-toggle"
-        />
-        <InputLabel active={this.isTaskActive}>{labelText}</InputLabel>
-      </FlexBox>
-    )
-  }
-
-  private handleRunTask = async () => {
-    const {onRunTask, match, getRuns} = this.props
+  const ownerName = members[task?.ownerID]?.name
+    ? members[task.ownerID].name
+    : ''
+  const handleRunTask = async () => {
     try {
-      await onRunTask(match.params.id)
-      await getRuns(match.params.id)
+      await dispatch(runTask(task.id))
+      await dispatch(getRuns(task.id))
     } catch (error) {
       console.error(error)
     }
   }
 
-  private handleEditTask = () => {
-    const {
-      history,
-      task,
-      setCurrentTasksPage,
-      match: {
-        params: {orgID},
-      },
-    } = this.props
+  const handleEditTask = () => {
+    if (!isFlagEnabled('createWithFlows')) {
+      dispatch(setCurrentTasksPage(TaskPage.TaskRunsPage))
+    }
 
-    if (isFlagEnabled('createWithFlows')) {
-      history.push(`/notebook/from/task/${task.id}`)
+    history.push(route)
+  }
+
+  useEffect(() => {
+    dispatch(getMembers())
+  }, [])
+
+  useEffect(() => {
+    if (!isFlagEnabled('createWithFlows')) {
       return
     }
 
-    setCurrentTasksPage(TaskPage.TaskRunsPage)
-    history.push(`/orgs/${orgID}/tasks/${task.id}/edit`)
+    if (!task) {
+      return
+    }
+
+    fetch(`/api/v2private/notebooks/resources?type=tasks&resource=${task.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip',
+      },
+    })
+      .then(resp => {
+        return resp.json()
+      })
+      .then(resp => {
+        if (resp.length) {
+          setRoute(`/orgs/${org.id}/notebooks/${resp[0].notebookID}`)
+        } else {
+          setRoute(`/notebook/from/task/${task.id}`)
+        }
+      })
+      .catch(() => {
+        setRoute(`/notebook/from/task/${task.id}`)
+      })
+  }, [isFlagEnabled('createWithFlows'), task])
+
+  if (!task) {
+    return null
   }
 
-  private get isTaskActive(): boolean {
-    const {task} = this.props
-    return task.status === 'active'
-  }
+  return (
+    <ResourceCard
+      testID="task-runs-task-card"
+      disabled={task.status !== 'active'}
+      alignItems={AlignItems.Center}
+      margin={ComponentSize.Large}
+      direction={FlexDirection.Row}
+      justifyContent={JustifyContent.SpaceBetween}
+    >
+      <FlexBox
+        alignItems={AlignItems.FlexStart}
+        direction={FlexDirection.Column}
+        margin={ComponentSize.Large}
+      >
+        <ResourceCard.Name name={task.name} testID="task-card--name" />
+        <ResourceCard.Meta>
+          <FlexBox margin={ComponentSize.Small}>
+            <SlideToggle
+              active={task.status === 'active'}
+              size={ComponentSize.ExtraSmall}
+              onChange={changeToggle}
+              testID="task-card--slide-toggle"
+            />
+            <InputLabel active={task.status === 'active'}>
+              {task.status === 'active' ? 'Active' : 'Inactive'}
+            </InputLabel>
+          </FlexBox>
+          <>
+            Created at:{' '}
+            <FormattedDateTime
+              format={DEFAULT_TIME_FORMAT}
+              date={new Date(task.createdAt)}
+            />
+          </>
+          <>Created by: {ownerName}</>
+          <>Last Used: {relativeTimestampFormatter(task.latestCompleted)}</>
+          <>{task.org}</>
+        </ResourceCard.Meta>
+      </FlexBox>
 
-  private changeToggle = () => {
-    const {onActivate} = this.props
-    const task = {...this.props.task}
-    task.status = task.status === 'active' ? 'inactive' : 'active'
-    onActivate(task)
-  }
+      <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
+        <Button onClick={handleRunTask} text="Run Task" />
+        <Button
+          onClick={handleEditTask}
+          text="Edit Task"
+          color={ComponentColor.Primary}
+        />
+      </FlexBox>
+    </ResourceCard>
+  )
 }
 
-const mstp = (state: AppState) => {
-  const {runs, runStatus} = state.resources.tasks
-  const {byID} = state.resources.members
-
-  return {
-    runs,
-    runStatus,
-    members: byID,
-  }
-}
-
-const mdtp = {
-  onAddTaskLabel: addTaskLabel,
-  onDeleteTaskLabel: deleteTaskLabel,
-  onRunTask: runTask,
-  getRuns,
-  setCurrentTasksPage,
-  getMembers,
-}
-
-const connector = connect(mstp, mdtp)
-
-export const TaskRunsCard = connector(withRouter(UnconnectedTaskRunsCard))
+export {TaskRunsCard}

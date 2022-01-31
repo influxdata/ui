@@ -1,5 +1,5 @@
 import React, {FC, MouseEvent} from 'react'
-import 'src/authorizations/components/redesigned/customApiTokenOverlay.scss'
+import 'src/authorizations/components/customApiTokenOverlay.scss'
 
 // Components
 import {

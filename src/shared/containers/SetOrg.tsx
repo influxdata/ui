@@ -21,8 +21,6 @@ import {
   BucketsIndex,
   BucketsIndexPaginated,
   TokensIndex,
-  PaginatedTokensIndex,
-  RedesignedTokensIndex,
   TelegrafsPage,
   ScrapersIndex,
   WriteDataPage,
@@ -113,36 +111,6 @@ const SetOrg: FC = () => {
 
   const orgPath = '/orgs/:orgID'
 
-  let CorrectedTokensIndex = (
-    <Route path={`${orgPath}/${LOAD_DATA}/${TOKENS}`} component={TokensIndex} />
-  )
-
-  if (isFlagEnabled('tokensUIRedesign')) {
-    CorrectedTokensIndex = (
-      <Route
-        path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-        component={RedesignedTokensIndex}
-      />
-    )
-
-    // paginatedTokens already handles tokensUIRedesign being flagged on
-    if (isFlagEnabled('paginatedTokens')) {
-      CorrectedTokensIndex = (
-        <Route
-          path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-          component={PaginatedTokensIndex}
-        />
-      )
-    }
-  } else if (isFlagEnabled('paginatedTokens')) {
-    CorrectedTokensIndex = (
-      <Route
-        path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
-        component={PaginatedTokensIndex}
-      />
-    )
-  }
-
   return (
     <PageSpinner loading={loading}>
       <Suspense fallback={<PageSpinner />}>
@@ -230,7 +198,10 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${TELEGRAFS}`}
             component={TelegrafsPage}
           />
-          {CorrectedTokensIndex}
+          <Route
+            path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
+            component={TokensIndex}
+          />
           {isFlagEnabled('fetchAllBuckets') ? (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}

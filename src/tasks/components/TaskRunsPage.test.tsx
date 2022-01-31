@@ -287,6 +287,7 @@ const setup = () => {
         searchTerm: '',
         labels: [],
         runs: dummyTaskRuns,
+        currentTask: tasks[0],
       },
       orgs: {
         byID: {

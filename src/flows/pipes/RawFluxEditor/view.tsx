@@ -6,6 +6,7 @@ import React, {
   useContext,
   useEffect,
   useCallback,
+  useMemo,
 } from 'react'
 import {
   RemoteDataState,
@@ -64,13 +65,13 @@ const Query: FC<PipeProp> = ({Context}) => {
             {
               title: 'Inject Secret',
               disable: () => false,
-              menu: <SecretsList inject={editorContext.inject} />,
+              menu: <SecretsList inject={inject} />,
             },
           ],
         },
       ])
     }
-  }, [id, editorContext.editor, editorContext.inject])
+  }, [id, inject])
 
   const injectIntoEditor = useCallback(
     (fn: FluxToolbarFunction): void => {
@@ -118,26 +119,28 @@ const Query: FC<PipeProp> = ({Context}) => {
     />
   )
 
-  return (
-    <Context controls={controls}>
-      <Suspense
-        fallback={
-          <SpinnerContainer
-            loading={RemoteDataState.Loading}
-            spinnerComponent={<TechnoSpinner />}
+  return useMemo(
+    () => (
+      <Context controls={controls}>
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
+            />
+          }
+        >
+          <FluxMonacoEditor
+            script={query.text}
+            onChangeScript={updateText}
+            setEditorInstance={setEditorInstance}
+            wrapLines="on"
+            autogrow
           />
-        }
-      >
-        <FluxMonacoEditor
-          script={query.text}
-          onChangeScript={updateText}
-          onSubmitScript={() => {}}
-          setEditorInstance={setEditorInstance}
-          wrapLines="on"
-          autogrow
-        />
-      </Suspense>
-    </Context>
+        </Suspense>
+      </Context>
+    ),
+    [RemoteDataState.Loading, query.text, updateText, editorContext.editor]
   )
 }
 

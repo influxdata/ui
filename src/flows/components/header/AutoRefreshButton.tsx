@@ -100,9 +100,7 @@ const AutoRefreshButton: FC = () => {
   return (
     <Button
       text={
-        isActive
-          ? `Refreshing Every ${autoRefresh?.label}`
-          : 'Enable Auto Refresh'
+        isActive ? `Refreshing Every ${autoRefresh?.label}` : 'Set Auto Refresh'
       }
       color={isActive ? ComponentColor.Secondary : ComponentColor.Default}
       onClick={

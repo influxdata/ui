@@ -288,7 +288,7 @@ describe('Notification Endpoints', () => {
   }
 
   it('can change endpoint status', () => {
-    cy.intercept('PATCH', '/api/v2/notificationEndpoints/*').as('patchEndp')
+    cy.intercept('PATCH', '/api/v2/notificationEndpoints/*').as('notificationEndpointPatchCall')
 
     cy.getByTestID('endpoint-card Pre-Created Endpoint')
       .should('not.have.class', 'cf-resource-card__disabled')
@@ -304,7 +304,7 @@ describe('Notification Endpoints', () => {
         // Toggle inactive
         cy.getByTestID('endpoint-card--slide-toggle').click()
       })
-    cy.wait('@patchEndp').then(resp => {
+    cy.wait('@notificationEndpointPatchCall').then(resp => {
       if (!resp.response) {
         throw 'Patch endpoint call returned no response'
       }
@@ -331,7 +331,7 @@ describe('Notification Endpoints', () => {
     cy.getByTestID('endpoint-card Pre-Created Endpoint').within(() => {
       cy.getByTestID('endpoint-card--slide-toggle').click()
     })
-    cy.wait('@patchEndp').then(resp => {
+    cy.wait('@notificationEndpointPatchCall').then(resp => {
       if (!resp.response) {
         throw 'Patch endpoint call returned no response'
       }

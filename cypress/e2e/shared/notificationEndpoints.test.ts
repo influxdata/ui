@@ -288,7 +288,9 @@ describe('Notification Endpoints', () => {
   }
 
   it('can change endpoint status', () => {
-    cy.intercept('PATCH', '/api/v2/notificationEndpoints/*').as('notificationEndpointPatchCall')
+    cy.intercept('PATCH', '/api/v2/notificationEndpoints/*').as(
+      'notificationEndpointPatchCall'
+    )
 
     cy.getByTestID('endpoint-card Pre-Created Endpoint')
       .should('not.have.class', 'cf-resource-card__disabled')

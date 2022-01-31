@@ -161,6 +161,7 @@ export interface TypeRegistration {
   scope?: (data: PipeData, prev: QueryScope) => QueryScope // if defined, the function is expected to take a query context and return a new one
   visual?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the flux used for the pipe visualization (depreciate?)
   source?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the source flux that is passed between panels
+  beforeRemove?: (data: PipeData, scope?: QueryScope) => void
 }
 
 export type EndpointProps = {

@@ -1399,4 +1399,158 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         .should('equal', 'rgb(241, 241, 243)')
     })
   })
+  it('changes cell view type', () => {
+    const dashName = 'dashboard'
+    cy.get<Organization>('@org').then(({id}: Organization) =>
+      cy.createDashboard(id, dashName).then(({body}) => {
+        cy.createCell(body.id).then(cell1Resp =>
+          cy.createView(body.id, cell1Resp.body.id).then(() =>
+            cy.fixture('routes').then(({orgs}) =>
+              cy.get<Organization>('@org').then(({id}: Organization) => {
+                cy.visit(`${orgs}/${id}/dashboards-list`)
+                cy.getByTestID('tree-nav').then(() =>
+                  cy
+                    .intercept('POST', '/api/v2/query?*')
+                    .as('loadQuery')
+                    .then(() =>
+                      cy
+                        .writeLPDataFromFile({
+                          filename: 'data/wumpus01.lp',
+                          offset: '20m',
+                          stagger: '1m',
+                        })
+                        .should('equal', 'success')
+                    )
+                )
+              })
+            )
+          )
+        )
+      })
+    )
+
+    // graph
+    cy.getByTestID('dashboard-card--name').click()
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('selector-list wumpus').click()
+    cy.getByTestID('selector-list dur').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-layer-line').should('be.visible')
+
+    // band
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--band').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('cell--view-empty band').should('be.visible')
+
+    // gauge
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--gauge').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('cell--view-empty gauge').should('be.visible')
+
+    // graph + singe stat
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--line-plus-single-stat').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-layer-line').should('be.visible')
+    cy.getByTestID('giraffe-layer-single-stat').should('be.visible')
+
+    // heatmap
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--heatmap').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-layer-rect').should('be.visible')
+
+    // histogram
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--histogram').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-layer-rect').should('be.visible')
+    cy.getByTestID('cell--view-empty histogram').should('exist')
+
+    // mosaic
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--mosaic').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('cell--view-empty mosaic').should('be.visible')
+
+    // scatter
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--scatter').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-layer--scatter').should('be.visible')
+
+    // simple table skipped untill issue https://github.com/influxdata/ui/issues/3606 is resolved
+
+    // single stat
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--single-stat').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-layer-single-stat').should('be.visible')
+
+    // table
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('view-type--table').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('_start-table-header table-graph-cell').should('be.visible')
+  })
 })

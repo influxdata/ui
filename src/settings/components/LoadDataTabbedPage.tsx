@@ -49,7 +49,7 @@ const shouldPageBeScrollable = (activeTab: string): boolean => {
   if (activeTab === 'buckets' && isFlagEnabled('fetchAllBuckets')) {
     return false
   }
-  if (activeTab === 'tokens' && isFlagEnabled('paginatedTokens')) {
+  if (activeTab === 'tokens') {
     return false
   }
   if (activeTab === 'sources') {

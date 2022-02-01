@@ -70,15 +70,11 @@ const Time: FC<PipeProp> = ({Context}) => {
         >
           <h5>Set a time frame</h5>
           <p>
-            <SafeBlankLink
-              href="https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#duration-literals"
-            >
+            <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#duration-literals">
               durations
             </SafeBlankLink>{' '}
             and{' '}
-            <SafeBlankLink
-              href="https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#date-and-time-literals"
-            >
+            <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#date-and-time-literals">
               dates
             </SafeBlankLink>{' '}
             are valid

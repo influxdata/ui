@@ -338,9 +338,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
               ((
                 <>
                   Supports{' '}
-                  <SafeBlankLink
-                    href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax"
-                  >
+                  <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax">
                     flux durations
                   </SafeBlankLink>{' '}
                   and{' '}
@@ -374,9 +372,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
               ((
                 <>
                   Supports{' '}
-                  <SafeBlankLink
-                    href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax"
-                  >
+                  <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax">
                     flux durations
                   </SafeBlankLink>
                 </>

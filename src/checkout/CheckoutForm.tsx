@@ -84,9 +84,7 @@ const CheckoutForm: FC = () => {
                 turn off at any time. <br /> You can set notifications to be
                 alerted if your charges reach the limits you define. <br /> Have
                 any questions? Check out our{' '}
-                <SafeBlankLink
-                  href="https://www.influxdata.com/influxdb-pricing/"
-                >
+                <SafeBlankLink href="https://www.influxdata.com/influxdb-pricing/">
                   InfluxDB Cloud Pricing
                 </SafeBlankLink>
                 .

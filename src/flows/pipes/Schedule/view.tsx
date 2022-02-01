@@ -20,6 +20,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import History from 'src/flows/pipes/Schedule/History'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 import {remove} from 'src/shared/contexts/query'
 
@@ -337,16 +338,15 @@ const Schedule: FC<PipeProp> = ({Context}) => {
               ((
                 <>
                   Supports{' '}
-                  <a
+                  <SafeBlankLink
                     href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax"
-                    target="_blank"
                   >
                     flux durations
-                  </a>{' '}
+                  </SafeBlankLink>{' '}
                   and{' '}
-                  <a href="https://crontab.guru" target="_blank">
+                  <SafeBlankLink href="https://crontab.guru">
                     cron intervals
-                  </a>
+                  </SafeBlankLink>
                 </>
               ) as unknown) as string
             }
@@ -374,12 +374,11 @@ const Schedule: FC<PipeProp> = ({Context}) => {
               ((
                 <>
                   Supports{' '}
-                  <a
+                  <SafeBlankLink
                     href="https://docs.influxdata.com/flux/v0.x/data-types/basic/duration/#duration-syntax"
-                    target="_blank"
                   >
                     flux durations
-                  </a>
+                  </SafeBlankLink>
                 </>
               ) as unknown) as string
             }

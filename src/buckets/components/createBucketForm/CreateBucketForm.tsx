@@ -1,12 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  ChangeEvent,
-  FormEvent,
-  useReducer,
-  useState,
-  useContext,
-} from 'react'
+import React, {FC, ChangeEvent, FormEvent, useReducer, useState} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 
 // Components
@@ -33,7 +26,6 @@ import {getOrg} from 'src/organizations/selectors'
 import {getBucketRetentionLimit} from 'src/cloud/utils/limits'
 import {getOverlayParams} from 'src/overlays/selectors'
 import {areNewSchemasValid} from 'src/buckets/components/createBucketForm/measurementSchemaUtils'
-import {WriteDataDetailsContext} from '../../../writeData/components/WriteDataDetailsContext'
 
 let SchemaType = null,
   MeasurementSchemaCreateRequest = null
@@ -51,7 +43,6 @@ interface CreateBucketFormProps {
 
 export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   const {onClose, testID = 'create-bucket-form'} = props
-  const {changeBucket} = useContext(WriteDataDetailsContext)
 
   const org = useSelector(getOrg)
   const isRetentionLimitEnforced = useSelector((state: AppState): boolean => {
@@ -142,7 +133,6 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
       }
 
       reduxDispatch(createBucketAndUpdate(state, handleUpdateBucket, mSchemas))
-      changeBucket(state)
       onClose()
     }
   }

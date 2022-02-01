@@ -4,8 +4,6 @@ import React, {
   useState,
   useCallback,
   useContext,
-  useRef,
-  useEffect,
 } from 'react'
 import {EditorType} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
@@ -50,16 +48,6 @@ export const EditorProvider: FC = ({children}) => {
   const [editor, setEditor] = useState<EditorType>(null)
   const {data, update} = useContext(PipeContext)
   const {queries, activeQuery} = data
-  const query = queries[activeQuery]
-
-  // Downstream components use these callbacks.
-  // Deeply nested, memoized components.
-  // Avoid vulnerability to memoization ref checks.
-  // (e.g. Sidebar remaining open).
-  const queryText = useRef(() => query.text)
-  useEffect(() => {
-    queryText.current = () => query.text
-  }, [query.text])
 
   const updateText = useCallback(
     text => {
@@ -83,7 +71,8 @@ export const EditorProvider: FC = ({children}) => {
       let row = lineNumber
       let column = col
 
-      const split = queryText.current().split('\n')
+      const queryText = editor.getModel().getValue()
+      const split = queryText.split('\n')
       const getCurrentLineText = () => {
         // row is not zero indexed in monaco editor. 1..N
         return (split[row - 1] || split[split.length - 1]).trimEnd()
@@ -131,7 +120,7 @@ export const EditorProvider: FC = ({children}) => {
 
       return {row, column, shouldStartWithNewLine, shouldEndInNewLine}
     },
-    [editor, queryText]
+    [editor]
   )
 
   const inject = useCallback(

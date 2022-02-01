@@ -113,12 +113,12 @@ describe('Account Page; user with two accounts', () => {
 
     cy.getByTestID('input--active-account-name').should('have.value', 'Influx')
 
+    cy.getByTestID('input--active-account-name').clear()
+    cy.getByTestID('input--active-account-name').should('have.value', '')
+
     // what can I say?  i am a fan
     const newName = 'Bruno-no-no-no'
-
-    cy.getByTestID('input--active-account-name')
-      .clear()
-      .type(newName)
+    cy.getByTestID('input--active-account-name').type(newName)
     cy.getByTestID('rename-account--button').click()
 
     // test that the notification is up:

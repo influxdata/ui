@@ -69,7 +69,7 @@ import 'src/flows/pipes/Notification/styles.scss'
 
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
-import CreateSecretForm from 'src/secrets/components/CreateSecretForm'
+import CreateSecretForm from 'src/secrets/components/CreateSecret/CreateSecretForm'
 
 const Notification: FC<PipeProp> = ({Context}) => {
   const dispatch = useDispatch()

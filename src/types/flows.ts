@@ -26,7 +26,11 @@ export interface PipeContextProps {
   resizes?: boolean
 }
 
-export type PipeData = any
+interface PipeDataMeta {
+  id: string
+}
+
+export type PipeData = PipeDataMeta & any
 
 export type Visibility = 'visible' | 'hidden'
 

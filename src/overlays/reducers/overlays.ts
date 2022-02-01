@@ -27,6 +27,7 @@ export type OverlayID =
   | 'toggle-auto-refresh'
   | 'cell-copy-overlay'
   | 'bucket-schema-show'
+  | 'create-secret'
 
 export interface OverlayState {
   id: OverlayID | null

@@ -26,6 +26,7 @@ import NotificationSettingsForm from 'src/checkout/NotificationSettingsForm'
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
 import PoweredByStripeLogo from 'src/checkout/PoweredByStripeLogo'
 import CreditCardForm from 'src/shared/components/CreditCardForm'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Context
 import {CheckoutContext} from 'src/checkout/context/checkout'
@@ -83,12 +84,9 @@ const CheckoutForm: FC = () => {
                 turn off at any time. <br /> You can set notifications to be
                 alerted if your charges reach the limits you define. <br /> Have
                 any questions? Check out our{' '}
-                <a
-                  href="https://www.influxdata.com/influxdb-pricing/"
-                  target="_blank"
-                >
+                <SafeBlankLink href="https://www.influxdata.com/influxdb-pricing/">
                   InfluxDB Cloud Pricing
-                </a>
+                </SafeBlankLink>
                 .
               </p>
 

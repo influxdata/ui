@@ -1,3 +1,4 @@
+import React, {FC} from 'react'
 import {
   ComponentSize,
   IconFont,
@@ -5,17 +6,17 @@ import {
   ButtonShape,
   Button,
 } from '@influxdata/clockface'
-import React, {FC} from 'react'
+
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 interface OwnProps {
   hasIcon?: boolean
 }
 
+const handleSignUpClick = () => {
+  safeBlankLinkOpen('https://cloud2.influxdata.com/signup')
+}
 const GetInfluxButton: FC<OwnProps> = ({hasIcon}) => {
-  const handleSignUpClick = () => {
-    window.open('https://cloud2.influxdata.com/signup', '_blank').focus()
-  }
-
   return (
     <Button
       icon={hasIcon ? IconFont.CuboNav : null}

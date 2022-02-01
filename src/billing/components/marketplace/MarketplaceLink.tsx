@@ -6,6 +6,7 @@ import {
   ButtonShape,
 } from '@influxdata/clockface'
 import {BillingContext} from 'src/billing/context/billing'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 // Types
 import {Marketplace} from 'src/types/billing'
@@ -29,7 +30,7 @@ const MarketplaceLink: FC = () => {
   const text = buttonInfo(marketplace.shortName)
 
   const handleClick = () => {
-    window.open(marketplace.url, '_blank')
+    safeBlankLinkOpen(marketplace.url)
   }
 
   return (

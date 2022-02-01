@@ -21,12 +21,17 @@ import {
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
 
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
+import CancellationOverlay from './CancellationOverlay'
+import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServiceContext'
 
 const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} = useContext(
     UserAccountContext
   )
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
+  const [isDeactivateAccountVisible, setDeactivateAccountVisible] = useState(
+    false
+  )
 
   /**
    * confirmed with @Grace and @distortia that there is guaranteed
@@ -70,7 +75,7 @@ const AccountAboutPage: FC = () => {
           {userAccounts && userAccounts.length >= 2 && (
             <React.Fragment>
               <Button
-                text="Switch Account"
+                text="SWITCH ACCOUNT"
                 icon={IconFont.Switch_New}
                 onClick={showSwitchAccountDialog}
                 testID="user-account-switch-btn"
@@ -99,9 +104,28 @@ const AccountAboutPage: FC = () => {
               text="Save"
             />
           </FlexBox>
+          <h2 data-testid="account-settings--header"> Deactivate Account </h2>
+          <div style={labelStyle}>
+            If you decide to deactivate this account, all your writes, queries,
+            and tasks will be suspended immediately.
+          </div>
+          <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
+            <Button
+              onClick={() => setDeactivateAccountVisible(true)}
+              testID="rename-account--button"
+              text="DEACTIVATE ACCOUNT"
+            />
+          </FlexBox>
           <Overlay visible={isSwitchAccountVisible}>
             <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
           </Overlay>
+          <CancelServiceProvider>
+            <Overlay visible={isDeactivateAccountVisible}>
+              <CancellationOverlay
+                onHideOverlay={() => setDeactivateAccountVisible(false)}
+              />
+            </Overlay>
+          </CancelServiceProvider>
         </>
       </AccountTabContainer>
     </Page>

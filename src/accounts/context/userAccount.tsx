@@ -4,6 +4,9 @@ import {useDispatch} from 'react-redux'
 
 // Types
 import {Account as UserAccount} from 'src/client/unityRoutes'
+
+// Notifications
+import {notify} from 'src/shared/actions/notifications'
 import {
   accountDefaultSettingError,
   accountDefaultSettingSuccess,
@@ -18,15 +21,12 @@ import {
   patchAccount,
 } from 'src/client/unityRoutes'
 
-import {notify} from 'src/shared/actions/notifications'
-
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
 
 export type Props = {
   children: JSX.Element
 }
-
 export interface UserAccountContextType {
   userAccounts: UserAccount[]
   handleGetAccounts: () => void

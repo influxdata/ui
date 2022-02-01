@@ -19,6 +19,7 @@ import {
   UserAccountProvider,
 } from 'src/accounts/context/userAccount'
 import AccountTabContainer from 'src/accounts/AccountTabContainer'
+import AccountHeader from 'src/accounts/AccountHeader'
 
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
 
@@ -64,53 +65,52 @@ const AccountAboutPage: FC = () => {
   const labelStyle = {marginBottom: 8}
 
   return (
-    <Page titleTag={pageTitleSuffixer(['About', 'Account'])}>
-      <AccountTabContainer activeTab="about">
-        <>
-          {userAccounts && userAccounts.length >= 2 && (
-            <React.Fragment>
-              <Button
-                text="Switch Account"
-                icon={IconFont.Switch_New}
-                onClick={showSwitchAccountDialog}
-                testID="user-account-switch-btn"
-              />
-              <hr />
-            </React.Fragment>
-          )}
-
-          <h2 data-testid="account-settings--header"> Account Details </h2>
-          <div style={labelStyle}>Account Name</div>
-          <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
-            <Input
-              name="accountName"
-              testID="input--active-account-name"
-              type={InputType.Text}
-              value={activeAcctName}
-              onChange={updateAcctName}
-              size={ComponentSize.Medium}
-              style={inputStyle}
-            />
+    <AccountTabContainer activeTab="about">
+      <>
+        {userAccounts && userAccounts.length >= 2 && (
+          <React.Fragment>
             <Button
-              onClick={() =>
-                handleRenameActiveAccount(activeAccount.id, activeAcctName)
-              }
-              testID="rename-account--button"
-              text="Save"
+              text="Switch Account"
+              icon={IconFont.Switch_New}
+              onClick={showSwitchAccountDialog}
+              testID="user-account-switch-btn"
             />
-          </FlexBox>
-          <Overlay visible={isSwitchAccountVisible}>
-            <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
-          </Overlay>
-        </>
-      </AccountTabContainer>
-    </Page>
+            <hr />
+          </React.Fragment>
+        )}
+
+        <h2 data-testid="account-settings--header"> Account Details </h2>
+        <div style={labelStyle}>Account Name</div>
+        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
+          <Input
+            name="accountName"
+            testID="input--active-account-name"
+            type={InputType.Text}
+            value={activeAcctName}
+            onChange={updateAcctName}
+            size={ComponentSize.Medium}
+            style={inputStyle}
+          />
+          <Button
+            onClick={() =>
+              handleRenameActiveAccount(activeAccount.id, activeAcctName)
+            }
+            testID="rename-account--button"
+            text="Save"
+          />
+        </FlexBox>
+        <Overlay visible={isSwitchAccountVisible}>
+          <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
+        </Overlay>
+      </>
+    </AccountTabContainer>
   )
 }
 
 const AccountPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
+      <AccountHeader testID="account-page--header" />
       <UserAccountProvider>
         <AccountAboutPage />
       </UserAccountProvider>

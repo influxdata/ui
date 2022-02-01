@@ -43,7 +43,6 @@ interface CreateBucketFormProps {
 
 export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
   const {onClose, testID = 'create-bucket-form'} = props
-
   const org = useSelector(getOrg)
   const isRetentionLimitEnforced = useSelector((state: AppState): boolean => {
     if (CLOUD) {

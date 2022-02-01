@@ -3,7 +3,6 @@ import React, {
   createContext,
   useState,
   useCallback,
-  useMemo,
   useContext,
   useRef,
   useEffect,
@@ -31,7 +30,7 @@ export interface InjectionOptions {
 
 export interface EditorContextType {
   editor: EditorType | null
-  register: (editor: EditorType) => void
+  setEditor: (editor: EditorType) => void
   inject: (options: InjectionOptions) => void
   calcInjectiontPosition: (type: InjectionType) => Partial<InjectionPosition>
   updateText: (t: string) => void
@@ -39,7 +38,7 @@ export interface EditorContextType {
 
 const DEFAULT_CONTEXT: EditorContextType = {
   editor: null,
-  register: _ => {},
+  setEditor: _ => {},
   inject: _ => {},
   calcInjectiontPosition: _ => ({}),
   updateText: _ => {},
@@ -61,10 +60,6 @@ export const EditorProvider: FC = ({children}) => {
   useEffect(() => {
     queryText.current = () => query.text
   }, [query.text])
-
-  const register = (instance: EditorType) => {
-    setEditor(instance)
-  }
 
   const updateText = useCallback(
     text => {
@@ -192,20 +187,17 @@ export const EditorProvider: FC = ({children}) => {
     [editor, calcInjectiontPosition, updateText]
   )
 
-  return useMemo(
-    () => (
-      <EditorContext.Provider
-        value={{
-          editor,
-          register,
-          inject,
-          calcInjectiontPosition,
-          updateText,
-        }}
-      >
-        {children}
-      </EditorContext.Provider>
-    ),
-    [editor, inject, calcInjectiontPosition, updateText]
+  return (
+    <EditorContext.Provider
+      value={{
+        editor,
+        setEditor,
+        inject,
+        calcInjectiontPosition,
+        updateText,
+      }}
+    >
+      {children}
+    </EditorContext.Provider>
   )
 }

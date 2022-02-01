@@ -1,4 +1,4 @@
-import React, {FC, useMemo} from 'react'
+import React, {FC} from 'react'
 
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
@@ -22,17 +22,14 @@ const FunctionsList: FC<Props> = ({onSelect}) => {
     />
   )
 
-  return useMemo(
-    () => (
-      <FilterList
-        placeholder="Filter Functions..."
-        emptyMessage="No functions match your search"
-        extractor={fn => (fn as FluxToolbarFunction).name}
-        items={FLUX_FUNCTIONS}
-        renderItem={render}
-      />
-    ),
-    [onSelect]
+  return (
+    <FilterList
+      placeholder="Filter Functions..."
+      emptyMessage="No functions match your search"
+      extractor={fn => (fn as FluxToolbarFunction).name}
+      items={FLUX_FUNCTIONS}
+      renderItem={render}
+    />
   )
 }
 

@@ -52,7 +52,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     SidebarContext
   )
   const editorContext = useContext(EditorContext)
-  const {register: setEditorInstance, inject, updateText} = editorContext
+  const {setEditor, inject, updateText} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
 
@@ -133,7 +133,7 @@ const Query: FC<PipeProp> = ({Context}) => {
           <FluxMonacoEditor
             script={query.text}
             onChangeScript={updateText}
-            setEditorInstance={setEditorInstance}
+            setEditorInstance={setEditor}
             wrapLines="on"
             autogrow
           />

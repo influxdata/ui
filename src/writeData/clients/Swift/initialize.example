@@ -6,7 +6,7 @@ class Example {
     static func main() {
 
         let url = "<%= server %>"
-        let token = "<INFLUX_TOKEN>"
+        let token = ProcessInfo.processInfo.environment["INFLUX_TOKEN"]!
         let bucket = "<%= bucket %>"
         let org = "<%= org %>"
 

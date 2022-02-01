@@ -13,7 +13,7 @@ namespace Examples
     public static async Task Main(string[] args)
     {
       // You can generate an API token from the "API Tokens Tab" in the UI
-      const string token = "<INFLUX_TOKEN>";
+      var token = Environment.GetEnvironmentVariable("INFLUX_TOKEN")!;
       const string bucket = "<%= bucket %>";
       const string org = "<%= org %>";
 

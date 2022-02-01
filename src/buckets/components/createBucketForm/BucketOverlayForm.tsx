@@ -86,7 +86,9 @@ export default class BucketOverlayForm extends PureComponent<Props> {
   }
 
   onAddSchemasInternal = (schemas, resetValidation) => {
-    this.props.onAddNewMeasurementSchemas(schemas, resetValidation)
+    if (this.props.onAddNewMeasurementSchemas) {
+      this.props.onAddNewMeasurementSchemas(schemas, resetValidation)
+    }
     this.setState({newMeasurementSchemas: schemas})
   }
 

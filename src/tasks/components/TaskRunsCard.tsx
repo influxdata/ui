@@ -45,7 +45,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
   const members = useSelector((state: AppState) => state.resources.members.byID)
   const org = useSelector(getOrg)
   const history = useHistory()
-  const [route, setRoute] = useState(`/orgs/${org.id}/tasks/${task.id}/edit`)
+  const [route, setRoute] = useState(`/orgs/${org?.id}/tasks/${task?.id}/edit`)
   const changeToggle = () => {
     dispatch(
       updateTaskStatus({
@@ -54,7 +54,9 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       })
     )
   }
-  const ownerName = members[task.ownerID] ? members[task.ownerID].name : ''
+  const ownerName = members[task?.ownerID]?.name
+    ? members[task.ownerID].name
+    : ''
   const handleRunTask = async () => {
     try {
       await dispatch(runTask(task.id))
@@ -81,6 +83,10 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       return
     }
 
+    if (!task) {
+      return
+    }
+
     fetch(`/api/v2private/notebooks/resources?type=tasks&resource=${task.id}`, {
       method: 'GET',
       headers: {
@@ -101,7 +107,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       .catch(() => {
         setRoute(`/notebook/from/task/${task.id}`)
       })
-  }, [isFlagEnabled('createWithFlows')])
+  }, [isFlagEnabled('createWithFlows'), task])
 
   if (!task) {
     return null

@@ -14,7 +14,6 @@ import {
   IconFont,
   ComponentSize,
 } from '@influxdata/clockface'
-import WriteDataHelperTokens from 'src/writeData/components/WriteDataHelperTokens'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 
 interface Props {
@@ -62,10 +61,7 @@ const WriteDataHelper: FC<Props> = ({collapsed}) => {
           </p>
           <Grid>
             <Grid.Row>
-              <Grid.Column widthSM={Columns.Six}>
-                <WriteDataHelperTokens />
-              </Grid.Column>
-              <Grid.Column widthSM={Columns.Six}>
+              <Grid.Column widthSM={Columns.Twelve}>
                 <WriteDataHelperBuckets />
               </Grid.Column>
             </Grid.Row>

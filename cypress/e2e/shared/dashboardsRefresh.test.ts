@@ -172,14 +172,14 @@ describe('Dashboard refresh', () => {
         cy.wait(5000)
         cy.getByTestID(
           'enable-auto-refresh-button'
-        ).contains('ENABLE AUTO REFRESH', {matchCase: false})
+        ).contains('SET AUTO REFRESH', {matchCase: false})
       })
     })
     it('can timeout on a preset inactivity timeout', done => {
       cy.get<Organization>('@org').then((org: Organization) => {
         cy.getByTestID(
           'enable-auto-refresh-button'
-        ).contains('ENABLE AUTO REFRESH', {matchCase: false})
+        ).contains('SET AUTO REFRESH', {matchCase: false})
 
         cy.getByTestID('enable-auto-refresh-button').click()
         cy.getByTestID('auto-refresh-input')
@@ -214,7 +214,7 @@ describe('Dashboard refresh', () => {
         cy.wait(3100)
         cy.getByTestID(
           'enable-auto-refresh-button'
-        ).contains('ENABLE AUTO REFRESH', {matchCase: false})
+        ).contains('SET AUTO REFRESH', {matchCase: false})
 
         cy.wait('@refreshQuery')
         cy.wait('@refreshQuery')
@@ -238,8 +238,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -331,8 +329,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({pauseCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -424,8 +420,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({refreshSingleCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()
@@ -507,8 +501,6 @@ describe('Dashboard refresh', () => {
             cy.getByTestID('tree-nav')
           })
         })
-        cy.setFeatureFlags({refreshSingleCell: true})
-
         cy.createBucket(orgID, name, 'schmucket')
 
         const now = Date.now()

@@ -258,7 +258,7 @@ const DashboardHeader: FC<Props> = ({
             text={
               isActive
                 ? `Refreshing Every ${autoRefresh.label}`
-                : 'Enable Auto Refresh'
+                : 'Set Auto Refresh'
             }
             color={isActive ? ComponentColor.Secondary : ComponentColor.Default}
             onClick={

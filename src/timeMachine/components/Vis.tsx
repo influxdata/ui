@@ -95,7 +95,7 @@ const TimeMachineVis: FC<Props> = ({
       giraffeResult.table.getColumnType('_value') !== 'number' &&
       !!giraffeResult.table.length)
 
-  if (isFlagEnabled('graphColorMapping')) {
+  if (isFlagEnabled('graphColorMapping') && viewProperties.hasOwnProperty('colors')) {
     const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
     const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
     const {colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(

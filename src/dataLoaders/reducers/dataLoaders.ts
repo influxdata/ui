@@ -15,7 +15,7 @@ import {validateURI} from 'src/shared/utils/validateURI'
 // Types
 import {
   Action,
-  SET_LOCATION_ON_ABORT,
+  SET_LOCATION_ON_DISMISS,
 } from 'src/dataLoaders/actions/dataLoaders'
 import {
   DataLoaderType,
@@ -321,8 +321,8 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
         token: action.payload.token,
       }
 
-    case SET_LOCATION_ON_ABORT:
-      console.log('!!!! SET_LOCATION_ON_ABORT: state', state)
+    case SET_LOCATION_ON_DISMISS:
+      console.log('!!!! SET_LOCATION_ON_DISMISS: state', state)
       return {
         ...state,
         locationOnDismiss: action.locationOnDismiss,

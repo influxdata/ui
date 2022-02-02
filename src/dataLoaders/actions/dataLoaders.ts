@@ -64,7 +64,7 @@ if (!CLOUD) {
 
 const DEFAULT_COLLECTION_INTERVAL = 10000
 
-export const SET_LOCATION_ON_ABORT = 'SET_LOCATION_ON_ABORT'
+export const SET_LOCATION_ON_DISMISS = 'SET_LOCATION_ON_DISMISS'
 
 export type Action =
   | SetDataLoadersType
@@ -675,6 +675,6 @@ export const saveScraperTarget = () => async (
 
 export const setLocationOnDismiss = (url: string) =>
   ({
-    type: SET_LOCATION_ON_ABORT,
+    type: SET_LOCATION_ON_DISMISS,
     locationOnDismiss: url,
   } as const)

@@ -19,7 +19,7 @@ import {
   sortThresholds,
   validateThresholds,
   addThreshold,
-} from 'src/shared/utils/thresholds'
+} from 'src/visualization/components/internal/utils'
 
 // Types
 import {Color} from 'src/types'

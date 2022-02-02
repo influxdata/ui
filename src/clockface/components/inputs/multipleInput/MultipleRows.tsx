@@ -1,6 +1,6 @@
 // Libraries
 import React, {SFC} from 'react'
-import uuid from 'uuid'
+import {nanoid} from 'nanoid'
 
 // Components
 import Row from 'src/clockface/components/inputs/multipleInput/Row'
@@ -24,7 +24,7 @@ const Rows: SFC<RowsProps> = ({tags, onDeleteTag, onChange}) => {
         return (
           <Row
             index={tags.indexOf(item)}
-            key={uuid.v4()}
+            key={nanoid()}
             item={item}
             onDelete={onDeleteTag}
             onChange={onChange}

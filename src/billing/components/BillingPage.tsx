@@ -18,9 +18,14 @@ const BillingPage: FC = () => {
 
   if (isFlagEnabled('multiAccount')) {
     contents = (
-      <AccountTabContainer activeTab="billing">
-        <BillingPageContents />
-      </AccountTabContainer>
+      <>
+        <Page.Header fullWidth={false}>
+          <Page.Title title="Account" />
+        </Page.Header>
+        <AccountTabContainer activeTab="billing">
+          <BillingPageContents />
+        </AccountTabContainer>
+      </>
     )
   } else {
     contents = (

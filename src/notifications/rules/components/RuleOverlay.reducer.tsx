@@ -1,5 +1,5 @@
 // Libraries
-import {v4} from 'uuid'
+import {nanoid} from 'nanoid'
 import {omit} from 'lodash'
 
 // Types
@@ -48,7 +48,7 @@ export const reducer = (state: RuleState, action: Action) => {
       const {tagRule} = action
       return {
         ...state,
-        tagRules: [...state.tagRules, {...tagRule, id: v4()}],
+        tagRules: [...state.tagRules, {...tagRule, id: nanoid()}],
       }
     }
 

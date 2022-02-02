@@ -64,6 +64,8 @@ if (!CLOUD) {
 
 const DEFAULT_COLLECTION_INTERVAL = 10000
 
+export const SET_LOCATION_ON_ABORT = 'SET_LOCATION_ON_ABORT'
+
 export type Action =
   | SetDataLoadersType
   | SetTelegrafConfigID
@@ -88,6 +90,7 @@ export type Action =
   | SetTelegrafConfigName
   | SetTelegrafConfigDescription
   | SetToken
+  | ReturnType<typeof setLocationOnDismiss>
 
 interface SetDataLoadersType {
   type: 'SET_DATA_LOADERS_TYPE'
@@ -669,3 +672,9 @@ export const saveScraperTarget = () => async (
     console.error()
   }
 }
+
+export const setLocationOnDismiss = (url: string) =>
+  ({
+    type: SET_LOCATION_ON_ABORT,
+    locationOnDismiss: url,
+  } as const)

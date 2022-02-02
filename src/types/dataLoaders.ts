@@ -24,14 +24,15 @@ interface ScraperTarget {
 }
 
 export interface DataLoadersState {
-  telegrafPlugins: TelegrafPlugin[]
+  locationOnDismiss: string
   pluginBundles: BundleName[]
-  type: DataLoaderType
-  telegrafConfigID: string
   scraperTarget: ScraperTarget
-  telegrafConfigName: string
   telegrafConfigDescription: string
+  telegrafConfigID: string
+  telegrafConfigName: string
+  telegrafPlugins: TelegrafPlugin[]
   token: string
+  type: DataLoaderType
 }
 
 export enum ConfigurationState {

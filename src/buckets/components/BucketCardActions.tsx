@@ -16,7 +16,10 @@ import InlineLabels from 'src/shared/components/inlineLabels/InlineLabels'
 // Actions
 import {addBucketLabel, deleteBucketLabel} from 'src/buckets/actions/thunks'
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
-import {setDataLoadersType} from 'src/dataLoaders/actions/dataLoaders'
+import {
+  setDataLoadersType,
+  setLocationOnDismiss,
+} from 'src/dataLoaders/actions/dataLoaders'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
@@ -48,6 +51,7 @@ const BucketCardActions: FC<Props> = ({
   history,
   onSetDataLoadersBucket,
   onSetDataLoadersType,
+  setLocationOnDismiss,
 }) => {
   if (bucketType === 'system') {
     return null
@@ -76,6 +80,7 @@ const BucketCardActions: FC<Props> = ({
     onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
 
     onSetDataLoadersType(DataLoaderType.Streaming)
+    setLocationOnDismiss(`/orgs/${orgID}/load-data/buckets`)
     history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
   }
 
@@ -153,6 +158,7 @@ const mdtp = {
   onDeleteBucketLabel: deleteBucketLabel,
   onSetDataLoadersBucket: setBucketInfo,
   onSetDataLoadersType: setDataLoadersType,
+  setLocationOnDismiss,
 }
 
 const connector = connect(null, mdtp)

@@ -37,7 +37,14 @@ type Props = OwnProps & ReduxProps
 
 @ErrorHandling
 export class SelectCollectorsStep extends PureComponent<Props, State> {
-  state = {selectedBucketName: ''}
+  constructor(props: Props) {
+    super(props)
+    const {bucketID, buckets} = this.props
+
+    const selectedBucketName =
+      buckets.find(bucket => bucket.id === bucketID)?.name ?? ''
+    this.state = {selectedBucketName}
+  }
 
   public componentDidUpdate() {
     const {setIsValidConfiguration} = this.props

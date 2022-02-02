@@ -13,7 +13,10 @@ import {getDeep} from 'src/utils/wrappers'
 import {validateURI} from 'src/shared/utils/validateURI'
 
 // Types
-import {Action} from 'src/dataLoaders/actions/dataLoaders'
+import {
+  Action,
+  SET_LOCATION_ON_ABORT,
+} from 'src/dataLoaders/actions/dataLoaders'
 import {
   DataLoaderType,
   DataLoadersState,
@@ -36,6 +39,7 @@ export const INITIAL_STATE: DataLoadersState = {
   telegrafConfigName: 'Name this Configuration',
   telegrafConfigDescription: '',
   token: '',
+  locationOnDismiss: '',
 }
 
 export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
@@ -315,6 +319,13 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
       return {
         ...state,
         token: action.payload.token,
+      }
+
+    case SET_LOCATION_ON_ABORT:
+      console.log('!!!! SET_LOCATION_ON_ABORT: state', state)
+      return {
+        ...state,
+        locationOnDismiss: action.locationOnDismiss,
       }
     default:
       return state

@@ -204,6 +204,17 @@ const OrgOverlay: FC = () => {
                   </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
+                  <Grid.Column widthMD={Columns.Three}>
+                    <Form.Label label="Query Time (seconds)" />
+                    <LimitsField
+                      type={InputType.Number}
+                      name="dashboard.queryTime"
+                      limits={limits}
+                      onChangeLimits={setLimits}
+                    />
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
                   <h4>Notification Rules</h4>
                   <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Blocked Notification Rules" />

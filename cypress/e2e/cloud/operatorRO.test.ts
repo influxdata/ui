@@ -109,6 +109,7 @@ describe('Operator Page', () => {
       'bucket.maxRetentionDuration',
       'notificationRule.maxNotifications',
       'dashboard.maxDashboards',
+      'dashboard.queryTime',
       'task.maxTasks',
       'check.maxChecks',
       'notificationRule.blockedNotificationRules',

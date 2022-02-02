@@ -58,6 +58,7 @@ export enum ActionTypes {
   SetChecksLimitStatus = 'SET_CHECKS_LIMIT_STATUS',
   SetRulesLimitStatus = 'SET_RULES_LIMIT_STATUS',
   SetEndpointsLimitStatus = 'SET_ENDPOINTS_LIMIT_STATUS',
+  SetQueryTimeLimitStatus = 'SET_QUERY_TIME_LIMIT_STATUS',
   SetReadRateLimitStatus = 'SET_READ_RATE_LIMIT_STATUS',
   SetWriteRateLimitStatus = 'SET_WRITE_RATE_LIMIT_STATUS',
   SetCardinalityLimitStatus = 'SET_CARDINALITY_LIMIT_STATUS',
@@ -72,6 +73,7 @@ export type Actions =
   | SetChecksLimitStatus
   | SetRulesLimitStatus
   | SetEndpointsLimitStatus
+  | SetQueryTimeLimitStatus
   | SetReadRateLimitStatus
   | SetWriteRateLimitStatus
   | SetCardinalityLimitStatus
@@ -168,6 +170,20 @@ export const setEndpointsLimitStatus = (
 ): SetEndpointsLimitStatus => {
   return {
     type: ActionTypes.SetEndpointsLimitStatus,
+    payload: {limitStatus},
+  }
+}
+
+export interface SetQueryTimeLimitStatus {
+  type: ActionTypes.SetQueryTimeLimitStatus
+  payload: {limitStatus: LimitStatus['status']}
+}
+
+export const SetQueryTimeLimitStatus = (
+  limitStatus: LimitStatus['status']
+): SetQueryTimeLimitStatus => {
+  return {
+    type: ActionTypes.SetQueryTimeLimitStatus,
     payload: {limitStatus},
   }
 }

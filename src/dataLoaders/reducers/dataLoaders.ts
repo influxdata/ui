@@ -13,10 +13,7 @@ import {getDeep} from 'src/utils/wrappers'
 import {validateURI} from 'src/shared/utils/validateURI'
 
 // Types
-import {
-  Action,
-  SET_LOCATION_ON_DISMISS,
-} from 'src/dataLoaders/actions/dataLoaders'
+import {Action} from 'src/dataLoaders/actions/dataLoaders'
 import {
   DataLoaderType,
   DataLoadersState,
@@ -321,10 +318,10 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
         token: action.payload.token,
       }
 
-    case SET_LOCATION_ON_DISMISS:
+    case 'SET_LOCATION_ON_DISMISS':
       return {
         ...state,
-        locationOnDismiss: action.locationOnDismiss,
+        locationOnDismiss: action.payload.locationOnDismiss,
       }
     default:
       return state

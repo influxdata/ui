@@ -64,8 +64,6 @@ if (!CLOUD) {
 
 const DEFAULT_COLLECTION_INTERVAL = 10000
 
-export const SET_LOCATION_ON_DISMISS = 'SET_LOCATION_ON_DISMISS'
-
 export type Action =
   | SetDataLoadersType
   | SetTelegrafConfigID
@@ -90,7 +88,7 @@ export type Action =
   | SetTelegrafConfigName
   | SetTelegrafConfigDescription
   | SetToken
-  | ReturnType<typeof setLocationOnDismiss>
+  | SetLocationOnDismiss
 
 interface SetDataLoadersType {
   type: 'SET_DATA_LOADERS_TYPE'
@@ -673,8 +671,13 @@ export const saveScraperTarget = () => async (
   }
 }
 
-export const setLocationOnDismiss = (url: string) =>
-  ({
-    type: SET_LOCATION_ON_DISMISS,
-    locationOnDismiss: url,
-  } as const)
+interface SetLocationOnDismiss {
+  type: 'SET_LOCATION_ON_DISMISS'
+  payload: {locationOnDismiss: string}
+}
+export const setLocationOnDismiss = (
+  locationOnDismiss: string
+): SetLocationOnDismiss => ({
+  type: 'SET_LOCATION_ON_DISMISS',
+  payload: {locationOnDismiss},
+})

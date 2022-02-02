@@ -101,7 +101,6 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
   const doSwitchAccount = () => {
     onDismissOverlay()
     event('multiAccount.switchAccount')
-
     window.location.href = `${CLOUD_URL}/accounts/${newAccountId}`
   }
 
@@ -134,24 +133,32 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
 
   return (
     <Overlay.Container maxWidth={630} testID="switch-account--dialog">
-      <Overlay.Header title="Switch Account" wrapText={true} />
+      <Overlay.Header
+        title="Switch Account"
+        wrapText={true}
+        onDismiss={onDismissOverlay}
+      />
       <Overlay.Body>
         <ToggleGroup onClickAcct={setNewAccountId} />
       </Overlay.Body>
       <Overlay.Footer>
-        <Button text="Cancel" onClick={onDismissOverlay} />
         <Button
-          text="Switch Account"
-          onClick={doSwitchAccount}
-          status={switchButtonStatus}
-          disabledTitleText={disabledTitleText}
-          testID="actually-switch-account--btn"
+          text="Cancel"
+          testID="multi-account-switch-cancel"
+          onClick={onDismissOverlay}
         />
         <Button
           testID="switch-default-account--btn"
           text="Set Default Account"
           status={defaultButtonStatus}
           onClick={doSetDefaultAccount}
+        />
+        <Button
+          text="Switch Account"
+          onClick={doSwitchAccount}
+          status={switchButtonStatus}
+          disabledTitleText={disabledTitleText}
+          testID="actually-switch-account--btn"
         />
       </Overlay.Footer>
     </Overlay.Container>

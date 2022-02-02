@@ -839,6 +839,19 @@ export const accountDefaultSettingError = (
   message: `Account "${accountName}" was not set as the default account; the default is unchanged`,
 })
 
+export const accountRenameSuccess = (
+  oldAccountName: string,
+  newAccountName: string
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Account "${oldAccountName}" was successfully renamed to "${newAccountName}"`,
+})
+
+export const accountRenameError = (accountName: string): Notification => ({
+  ...defaultErrorNotification,
+  message: `Account "${accountName}" was not renamed; the rename update failed`,
+})
+
 export const measurementSchemaAdditionSuccessful = (
   bucketName: string,
   schemaName: string

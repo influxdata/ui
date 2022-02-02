@@ -7,10 +7,16 @@ import {Account as UserAccount} from 'src/client/unityRoutes'
 import {
   accountDefaultSettingError,
   accountDefaultSettingSuccess,
+  accountRenameError,
+  accountRenameSuccess,
 } from 'src/shared/copy/notifications'
 
 // Utils
-import {getAccounts, putAccountsDefault} from 'src/client/unityRoutes'
+import {
+  getAccounts,
+  putAccountsDefault,
+  patchAccount,
+} from 'src/client/unityRoutes'
 
 import {notify} from 'src/shared/actions/notifications'
 
@@ -25,6 +31,7 @@ export interface UserAccountContextType {
   userAccounts: UserAccount[]
   handleGetAccounts: () => void
   handleSetDefaultAccount: (newId: number) => void
+  handleRenameActiveAccount: (accountId: number, newName: string) => void
   defaultAccountId: number
   activeAccountId: number
 }
@@ -35,6 +42,7 @@ export const DEFAULT_CONTEXT: UserAccountContextType = {
   activeAccountId: -1,
   handleGetAccounts: () => {},
   handleSetDefaultAccount: () => {},
+  handleRenameActiveAccount: () => {},
 }
 
 export const UserAccountContext = React.createContext<UserAccountContextType>(
@@ -108,6 +116,29 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
     }
   }
 
+  async function handleRenameActiveAccount(accountId, newName) {
+    const isActiveAcct = acct => acct.isActive
+    const activeIndex = userAccounts.findIndex(isActiveAcct)
+    const oldName = userAccounts[activeIndex].name
+
+    try {
+      const resp = await patchAccount({accountId, data: {name: newName}})
+
+      if (resp.status !== 200) {
+        dispatch(notify(accountRenameError(oldName)))
+      } else {
+        dispatch(notify(accountRenameSuccess(oldName, newName)))
+        event('multiAccount.renameAccount')
+
+        // change the name, and reset the active accts:
+        userAccounts[activeIndex].name = newName
+        setUserAccounts(userAccounts)
+      }
+    } catch (error) {
+      dispatch(notify(accountRenameError(oldName)))
+    }
+  }
+
   useEffect(() => {
     handleGetAccounts()
   }, [handleGetAccounts, defaultAccountId, activeAccountId])
@@ -120,6 +151,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         activeAccountId,
         handleGetAccounts,
         handleSetDefaultAccount,
+        handleRenameActiveAccount,
       }}
     >
       {children}

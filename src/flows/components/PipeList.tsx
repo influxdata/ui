@@ -1,19 +1,47 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useSelector} from 'react-redux'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
+import {getTimeZone} from 'src/dashboards/selectors'
 
 // Components
 import FlowPipe from 'src/flows/components/FlowPipe'
 import PresentationPipe from 'src/flows/components/PresentationPipe'
 import EmptyPipeList from 'src/flows/components/EmptyPipeList'
 import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
+import {InfluxColors, InfluxDataLogo, Page} from '@influxdata/clockface'
+import TimeRangeLabel from 'src/flows/components/header/TimeRangeLabel'
 
 import {LAYOUT_MARGIN, DASHBOARD_LAYOUT_ROW_HEIGHT} from 'src/shared/constants'
 
 const Grid = WidthProvider(ReactGridLayout)
+
+// This component only shows up in downloaded PNG/PDF files
+const HiddenHeader: FC = () => {
+  const {flow} = useContext(FlowContext)
+  const timeZone = useSelector(getTimeZone)
+  return (
+    <div data-download-hide="true">
+      <div className="hidden-header-logo">
+        <InfluxDataLogo fill={InfluxColors.White} />
+      </div>
+      <div className="hidden-header-title">
+        <Page.Title title={flow.name} />
+        <span>
+          <TimeRangeLabel />
+          <h4>
+            {timeZone === 'Local'
+              ? Intl.DateTimeFormat().resolvedOptions().timeZone // e.g. America/Chicago
+              : timeZone}
+          </h4>
+        </span>
+      </div>
+    </div>
+  )
+}
 
 const PipeList: FC = () => {
   const {flow, updateMeta} = useContext(FlowContext)
@@ -71,7 +99,8 @@ const PipeList: FC = () => {
     }
 
     return (
-      <div className="flow">
+      <div className="flow" id={flow?.id}>
+        <HiddenHeader />
         <Grid
           cols={12}
           layout={layout}
@@ -109,7 +138,8 @@ const PipeList: FC = () => {
   })
 
   return (
-    <div className="flow">
+    <div className="flow" id={flow?.id}>
+      <HiddenHeader />
       <InsertCellButton />
       {_pipes}
     </div>

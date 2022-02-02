@@ -3,10 +3,7 @@ import React, {FC} from 'react'
 import {Panel} from '@influxdata/clockface'
 
 // Components
-
-// Types
-
-// Constants
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 const ZuoraOutagePanel: FC = () => {
   return (
@@ -19,9 +16,9 @@ const ZuoraOutagePanel: FC = () => {
         <br />
         <div>
           Please check back later or visit our{' '}
-          <a target="_blank" href="https://status.influxdata.com/">
+          <SafeBlankLink href="https://status.influxdata.com/">
             status page
-          </a>{' '}
+          </SafeBlankLink>{' '}
           for more detail on when our payment system will be back online.
         </div>
       </Panel.Body>

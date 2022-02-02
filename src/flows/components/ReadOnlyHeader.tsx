@@ -8,6 +8,7 @@ import {FlowContext} from 'src/flows/context/flow.current'
 // Components
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeLabel from 'src/flows/components/header/TimeRangeLabel'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 import {DEFAULT_PROJECT_NAME} from 'src/flows'
 
@@ -18,7 +19,7 @@ const ReadOnlyHeader: FC = () => {
   const {flow} = useContext(FlowContext)
 
   const handleLogoClick = () => {
-    window.open('https://influxdata.com', '_blank').focus()
+    safeBlankLinkOpen('https://influxdata.com')
   }
 
   return (

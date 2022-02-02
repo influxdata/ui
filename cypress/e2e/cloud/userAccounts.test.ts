@@ -24,7 +24,7 @@ describe('Account Page; user with 4 accounts', () => {
   it('can change the default account, and then see that it changed on the switch dialog; also checks that the switch button is enabled and disabled correctly', () => {
     cy.getByTestID('account-settings--header').should('be.visible')
     cy.getByTestID('user-account-switch-btn').should('be.visible')
-    cy.getByTestID('account-active-name--block').contains('Influx')
+    cy.getByTestID('input--active-account-name').should('have.value', 'Influx')
 
     cy.getByTestID('user-account-switch-btn').click()
 
@@ -98,6 +98,64 @@ describe('Account Page; user with one account', () => {
     cy.getByTestID('account-settings--header').should('be.visible')
     cy.getByTestID('user-account-switch-btn').should('not.exist')
 
-    cy.getByTestID('account-active-name--block').contains('Veganomicon')
+    cy.getByTestID('input--active-account-name').should(
+      'have.value',
+      'Veganomicon'
+    )
+  })
+})
+
+describe('Account Page; user with two accounts', () => {
+  beforeEach(() => cy.flush().then(() => doSetup(cy, 2)))
+
+  it('can get to the account page and rename the active account', () => {
+    cy.getByTestID('account-settings--header').should('be.visible')
+
+    cy.getByTestID('input--active-account-name').should('have.value', 'Influx')
+
+    cy.getByTestID('input--active-account-name').clear()
+    cy.getByTestID('input--active-account-name').should('have.value', '')
+
+    // what can I say?  i am a fan
+    const newName = 'Bruno-no-no-no'
+    cy.getByTestID('input--active-account-name').type(newName)
+    cy.getByTestID('rename-account--button').click()
+
+    // test that the notification is up:
+    cy.getByTestID('notification-success').should('be.visible')
+
+    // now; bring up the dialog, the active name should be changed:
+    cy.getByTestID('user-account-switch-btn').click()
+
+    const prefix = 'accountSwitch-toggle-choice'
+
+    cy.getByTestID('switch-account--dialog').within(() => {
+      cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
+      cy.getByTestID(`${prefix}-0-ID`).contains(newName)
+      cy.getByTestID(`${prefix}-0-ID--input`).should('be.checked')
+      cy.getByTestID('multi-account-switch-cancel').click()
+    })
+
+    // circle-ci and e2e tests got unstable, so best to put all the toys back
+    // (reset the name)
+    cy.getByTestID('account-settings--header').should('be.visible')
+
+    cy.getByTestID('input--active-account-name')
+      .clear()
+      .type('Influx')
+    cy.getByTestID('rename-account--button').click()
+
+    // test that the notification is up:
+    cy.getByTestID('notification-success').should('be.visible')
+
+    // now; bring up the dialog again, the active name should be changed:
+    cy.getByTestID('user-account-switch-btn').click()
+
+    cy.getByTestID('switch-account--dialog').within(() => {
+      cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
+      cy.getByTestID(`${prefix}-0-ID`).contains('Influx')
+      cy.getByTestID(`${prefix}-0-ID--input`).should('be.checked')
+      cy.getByTestID('multi-account-switch-cancel').click()
+    })
   })
 })

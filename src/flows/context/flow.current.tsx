@@ -304,6 +304,11 @@ export const FlowProvider: FC = ({children}) => {
   }
 
   const removePipe = (id: string) => {
+    const definition = PIPE_DEFINITIONS[currentFlow.data.byID[id].type]
+    if (definition?.beforeRemove) {
+      definition.beforeRemove(currentFlow.data.byID[id])
+    }
+
     if (isFlagEnabled('sharedFlowEditing')) {
       const flowCopy = JSON.parse(JSON.stringify(currentFlow))
 

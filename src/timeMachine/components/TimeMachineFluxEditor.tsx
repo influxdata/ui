@@ -86,17 +86,17 @@ const TimeMachineFluxEditor: FC<Props> = ({
 
     const [currentRange] = editorInstance.getVisibleRanges()
     // Determines whether the new insert line is beyond the current range
-    let shouldInsertOnLastLine = insertLineNumber > currentRange.endLineNumber
+    let shouldInsertOnNextLine = insertLineNumber > currentRange.endLineNumber
     // edge case for when user toggles to the script editor
     // this defaults the cursor to the initial position (top-left, 1:1 position)
     if (p.lineNumber === 1 && p.column === defaultColumnPosition) {
       // adds the function to the end of the query
-      shouldInsertOnLastLine = true
+      shouldInsertOnNextLine = true
       row = currentRange.endLineNumber + 1
     }
 
     let text = ''
-    if (shouldInsertOnLastLine) {
+    if (shouldInsertOnNextLine) {
       text = `\n  |> ${func.example}`
     } else {
       text = `  |> ${func.example}\n`

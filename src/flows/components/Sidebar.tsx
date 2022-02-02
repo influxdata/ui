@@ -1,4 +1,7 @@
 import React, {FC, useEffect, useContext, useRef} from 'react'
+import {useDispatch} from 'react-redux'
+
+// Components
 import {
   Button,
   ComponentColor,
@@ -6,14 +9,15 @@ import {
   DapperScrollbars,
   Dropdown,
 } from '@influxdata/clockface'
-import {useDispatch} from 'react-redux'
+import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
+import ClientList from 'src/flows/components/ClientList'
+
+// Context
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import {PIPE_DEFINITIONS} from 'src/flows'
-import {ControlSection, ControlAction, Submenu} from 'src/types/flows'
-import ClientList from 'src/flows/components/ClientList'
-import './Sidebar.scss'
+
+// Utils & Actions
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
 
@@ -22,6 +26,9 @@ import {
   panelCopyLinkSuccess,
   panelCopyLinkFail,
 } from 'src/shared/copy/notifications'
+import {PIPE_DEFINITIONS} from 'src/flows'
+
+import './Sidebar.scss'
 
 export const SubSideBar: FC = () => {
   const {flow} = useContext(FlowContext)

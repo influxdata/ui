@@ -3,9 +3,10 @@ import React, {
   FC,
   lazy,
   Suspense,
-  useState,
   useContext,
+  useEffect,
   useCallback,
+  useMemo,
 } from 'react'
 import {
   RemoteDataState,
@@ -17,15 +18,22 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {EditorType} from 'src/types'
 import {FluxToolbarFunction} from 'src/types/shared'
 import {PipeProp} from 'src/types/flows'
 
-// Components
+// Context
 import {PipeContext} from 'src/flows/context/pipe'
 import {SidebarContext} from 'src/flows/context/sidebar'
-import Functions from 'src/flows/pipes/RawFluxEditor/functions'
-import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/dynamicFunctions'
+import {
+  EditorContext,
+  EditorProvider,
+  InjectionType,
+} from 'src/flows/context/editor'
+
+// Components
+import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
+import Functions from 'src/flows/pipes/RawFluxEditor/GroupedFunctionsList'
+import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/FunctionsList'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -39,86 +47,50 @@ const FluxMonacoEditor = lazy(() =>
 )
 
 const Query: FC<PipeProp> = ({Context}) => {
-  const {id, data, update} = useContext(PipeContext)
-  const {hideSub, id: showId, show, showSub} = useContext(SidebarContext)
-  const [editorInstance, setEditorInstance] = useState<EditorType>(null)
+  const {id, data} = useContext(PipeContext)
+  const {hideSub, id: showId, show, showSub, register} = useContext(
+    SidebarContext
+  )
+  const editorContext = useContext(EditorContext)
+  const {setEditor, inject, updateText} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
 
-  const updateText = useCallback(
-    text => {
-      const _queries = queries.slice()
-      _queries[activeQuery] = {
-        ...queries[activeQuery],
-        text,
-      }
-
-      update({queries: _queries})
-    },
-    [update, queries, activeQuery]
-  )
-
-  const inject = useCallback(
-    (fn: FluxToolbarFunction): void => {
-      if (!editorInstance) {
-        return
-      }
-      const p = editorInstance.getPosition()
-      const split = query.text.split('\n')
-      let row = p.lineNumber
-      let text = ''
-
-      if ((split[row] || split[split.length - 1]).trim()) {
-        row = p.lineNumber + 1
-      }
-
-      const [currentRange] = editorInstance.getVisibleRanges()
-      // Determines whether the new insert line is beyond the current range
-      let shouldInsertOnLastLine = row > currentRange.endLineNumber
-      // edge case for when user toggles to the script editor
-      // this defaults the cursor to the initial position (top-left, 1:1 position)
-      if (p.lineNumber === 1 && p.column === 1) {
-        // adds the function to the end of the query
-        shouldInsertOnLastLine = true
-        row = currentRange.endLineNumber + 1
-      }
-
-      if (shouldInsertOnLastLine) {
-        text = `\n  |> ${fn.example}`
-      } else {
-        text = `  |> ${fn.example}\n`
-      }
-
-      if (fn.name === 'from' || fn.name === 'union') {
-        text = `\n${fn.example}\n`
-      }
-
-      const range = new window.monaco.Range(row, 1, row, 1)
-
-      const edits = [
+  useEffect(() => {
+    if (isFlagEnabled('fluxInjectSecrets')) {
+      register(id, [
         {
-          range,
-          text,
+          title: 'RawFluxEditor actions',
+          actions: [
+            {
+              title: 'Inject Secret',
+              disable: () => false,
+              menu: <SecretsList inject={inject} />,
+            },
+          ],
         },
-      ]
+      ])
+    }
+  }, [id, inject])
 
-      if (
-        fn.package &&
-        !editorInstance
-          .getModel()
-          .getValue()
-          .includes(`import "${fn.package}"`)
-      ) {
-        edits.unshift({
-          range: new window.monaco.Range(1, 1, 1, 1),
-          text: `import "${fn.package}"\n`,
-        })
+  const injectIntoEditor = useCallback(
+    (fn: FluxToolbarFunction): void => {
+      let text = ''
+      if (fn.name === 'from' || fn.name === 'union') {
+        text = `${fn.example}`
+      } else {
+        text = `  |> ${fn.example}`
       }
 
-      editorInstance.executeEdits('', edits)
-      updateText(editorInstance.getValue())
+      const options = {
+        text,
+        type: InjectionType.OnOwnLine,
+        header: !!fn.package ? `import "${fn.package}"` : null,
+      }
+      inject(options)
+      event('Inject function into Flux Script', {fn: fn.name})
     },
-    [editorInstance, query.text]
+    [inject]
   )
 
   const launcher = () => {
@@ -129,9 +101,9 @@ const Query: FC<PipeProp> = ({Context}) => {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
       if (isFlagEnabled('fluxDynamicDocs')) {
-        showSub(<DynamicFunctions onSelect={inject} />)
+        showSub(<DynamicFunctions onSelect={injectIntoEditor} />)
       } else {
-        showSub(<Functions onSelect={inject} />)
+        showSub(<Functions onSelect={injectIntoEditor} />)
       }
     }
   }
@@ -147,27 +119,33 @@ const Query: FC<PipeProp> = ({Context}) => {
     />
   )
 
-  return (
-    <Context controls={controls}>
-      <Suspense
-        fallback={
-          <SpinnerContainer
-            loading={RemoteDataState.Loading}
-            spinnerComponent={<TechnoSpinner />}
+  return useMemo(
+    () => (
+      <Context controls={controls}>
+        <Suspense
+          fallback={
+            <SpinnerContainer
+              loading={RemoteDataState.Loading}
+              spinnerComponent={<TechnoSpinner />}
+            />
+          }
+        >
+          <FluxMonacoEditor
+            script={query.text}
+            onChangeScript={updateText}
+            setEditorInstance={setEditor}
+            wrapLines="on"
+            autogrow
           />
-        }
-      >
-        <FluxMonacoEditor
-          script={query.text}
-          onChangeScript={updateText}
-          onSubmitScript={() => {}}
-          setEditorInstance={setEditorInstance}
-          wrapLines="on"
-          autogrow
-        />
-      </Suspense>
-    </Context>
+        </Suspense>
+      </Context>
+    ),
+    [RemoteDataState.Loading, query.text, updateText, editorContext.editor]
   )
 }
 
-export default Query
+export default ({Context}) => (
+  <EditorProvider>
+    <Query Context={Context} />
+  </EditorProvider>
+)

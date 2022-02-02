@@ -36,6 +36,7 @@ export const INITIAL_STATE: DataLoadersState = {
   telegrafConfigName: 'Name this Configuration',
   telegrafConfigDescription: '',
   token: '',
+  locationOnDismiss: '',
 }
 
 export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
@@ -315,6 +316,12 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
       return {
         ...state,
         token: action.payload.token,
+      }
+
+    case 'SET_LOCATION_ON_DISMISS':
+      return {
+        ...state,
+        locationOnDismiss: action.payload.locationOnDismiss,
       }
     default:
       return state

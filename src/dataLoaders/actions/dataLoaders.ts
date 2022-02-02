@@ -88,6 +88,7 @@ export type Action =
   | SetTelegrafConfigName
   | SetTelegrafConfigDescription
   | SetToken
+  | SetLocationOnDismiss
 
 interface SetDataLoadersType {
   type: 'SET_DATA_LOADERS_TYPE'
@@ -669,3 +670,14 @@ export const saveScraperTarget = () => async (
     console.error()
   }
 }
+
+interface SetLocationOnDismiss {
+  type: 'SET_LOCATION_ON_DISMISS'
+  payload: {locationOnDismiss: string}
+}
+export const setLocationOnDismiss = (
+  locationOnDismiss: string
+): SetLocationOnDismiss => ({
+  type: 'SET_LOCATION_ON_DISMISS',
+  payload: {locationOnDismiss},
+})

@@ -132,7 +132,12 @@ describe('Buckets', () => {
   })
 
   describe('add data', function() {
+    const TELEGRAF_SYSTEMS_PLUGINS_ORIGINAL_COUNT = 5
+
     it('configure telegraf agent', () => {
+      cy.setFeatureFlags({
+        telegrafUiRefresh: true,
+      })
       // click "add data" and choose Configure Telegraf Agent
       cy.getByTestID('add-data--button').click()
       cy.get('.bucket-add-data--option')
@@ -147,32 +152,45 @@ describe('Buckets', () => {
         )
       })
 
-      // filter plugins and choose system
+      // many plugins with "sys" in their names have been added
       cy.getByTestID('input-field').type('sys')
-      cy.getByTestID('square-grid--card').should('have.length', 1)
+      cy.getByTestID('square-grid--card').should('have.length.greaterThan', 1)
       cy.getByTestID('input-field').clear()
-      cy.getByTestID('square-grid--card').should('have.length', 5)
+
+      // total plugins should be greater than just the original Systems plugins
+      cy.getByTestID('square-grid--card').should(
+        'have.length.greaterThan',
+        TELEGRAF_SYSTEMS_PLUGINS_ORIGINAL_COUNT
+      )
       cy.getByTestID('telegraf-plugins--System').click()
-      cy.getByTestID('next').click()
+      cy.getByTestID('plugin-create-configuration-continue-configuring').click()
+
+      // cancel mid-flow and redo steps, ensuring user is still at Load Data > Buckets
+      cy.get('button.cf-overlay--dismiss').click()
+      cy.getByTestID('add-data--button').click()
+      cy.get('.bucket-add-data--option')
+        .contains('Configure Telegraf Agent')
+        .click()
+      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+        cy.getByTestID('bucket-dropdown--button').should(
+          'contain',
+          defaultBucket
+        )
+      })
+      cy.getByTestID('telegraf-plugins--System').click()
+      cy.getByTestID('plugin-create-configuration-continue-configuring').click()
 
       // add telegraf name and description
-      cy.getByTitle('Telegraf Configuration Name')
+      cy.getByTestID('plugin-create-configuration-customize-input--name')
         .clear()
         .type('Telegraf from bucket')
-      cy.getByTitle('Telegraf Configuration Description')
+      cy.getByTestID('plugin-create-configuration-customize-input--description')
         .clear()
         .type('This is a telegraf description')
-      cy.getByTestID('next').click()
+      cy.getByTestID('plugin-create-configuration-save-and-test').click()
 
-      // assert notifications
-      cy.getByTestID('notification-success').should(
-        'contain',
-        'Your configurations have been saved'
-      )
-      cy.getByTestID('notification-success').should(
-        'contain',
-        'Successfully created dashboards for telegraf plugin: system.'
-      )
+      cy.getByTestID('notification-success').should('be.visible')
+
       cy.getByTestID('next').click()
 
       // assert telegraf card parameters

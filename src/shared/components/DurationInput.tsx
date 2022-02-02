@@ -8,6 +8,9 @@ import {
   ClickOutside,
   ComponentStatus,
   Dropdown,
+  SquareButton,
+  IconFont,
+  ButtonGroup,
 } from '@influxdata/clockface'
 import {isDurationParseable} from 'src/shared/utils/duration'
 
@@ -26,6 +29,8 @@ type Props = {
   customClass?: string
   dividerText?: string
   dividerOnClick?: () => void
+  menuMaxHeight?: number
+  arrowButtonOn?: boolean
 }
 
 const DurationInput: FC<Props> = ({
@@ -41,6 +46,8 @@ const DurationInput: FC<Props> = ({
   customClass,
   dividerText,
   dividerOnClick,
+  menuMaxHeight = 250,
+  arrowButtonOn = false,
 }) => {
   const [isFocused, setIsFocused] = useState(false)
 
@@ -86,22 +93,35 @@ const DurationInput: FC<Props> = ({
   return (
     <div className={`duration-input ${customClass}`}>
       <ClickOutside onClickOutside={handleClickOutside}>
-        <Input
-          placeholder={placeholder}
-          value={inputValue}
-          status={inputStatus}
-          onChange={e => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onKeyPress={evt => {
-            if (evt.key === 'Enter') {
-              setIsFocused(false)
-            }
-          }}
-          testID={testID}
-        />
+        <ButtonGroup>
+          <Input
+            placeholder={placeholder}
+            value={inputValue}
+            status={inputStatus}
+            onChange={e => onChange(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onKeyPress={evt => {
+              if (evt.key === 'Enter') {
+                setIsFocused(false)
+              }
+            }}
+            testID={testID}
+          />
+          {!!arrowButtonOn && (
+            <SquareButton
+              className="duration-button--caret"
+              icon={isFocused ? IconFont.CaretUp_New : IconFont.CaretDown_New}
+              onClick={() => setIsFocused(!isFocused)}
+            />
+          )}
+        </ButtonGroup>
       </ClickOutside>
       {isFocused && (
-        <DropdownMenu className="duration-input--menu" noScrollX={true}>
+        <DropdownMenu
+          className="duration-input--menu"
+          noScrollX={true}
+          maxHeight={menuMaxHeight}
+        >
           {showDivider && dividerText && dividerOnClick && (
             <Dropdown.Item
               value="Customize"

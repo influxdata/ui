@@ -322,7 +322,6 @@ export default (state = INITIAL_STATE, action: Action): DataLoadersState => {
       }
 
     case SET_LOCATION_ON_DISMISS:
-      console.log('!!!! SET_LOCATION_ON_DISMISS: state', state)
       return {
         ...state,
         locationOnDismiss: action.locationOnDismiss,

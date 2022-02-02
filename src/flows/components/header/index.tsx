@@ -239,6 +239,84 @@ const FlowHeader: FC = () => {
     )
   }
 
+  const canvasOptions = {
+    backgroundColor,
+    onclone: cloneDoc => {
+      // Add left and right padding on the selected screenshot
+      cloneDoc.getElementById(flow.id).style.padding = '0 12px'
+      cloneDoc
+        .querySelectorAll('[data-download-hide]')
+        .forEach(d => (d.style.display = 'block'))
+    },
+  }
+
+  const handleDownloadAsPNG = () => {
+    const canvas = document.getElementById(flow.id)
+    import('html2canvas').then((module: any) =>
+      module.default(canvas as HTMLDivElement, canvasOptions).then(result => {
+        downloadImage(result.toDataURL(), `${flow.name}.png`)
+      })
+    )
+  }
+
+  const handleDownloadAsPDF = () => {
+    const canvas = document.getElementById(flow.id)
+    import('html2canvas').then((module: any) =>
+      module.default(canvas as HTMLDivElement, canvasOptions).then(result => {
+        import('jspdf').then((jsPDF: any) => {
+          const doc = new jsPDF.default({
+            orientation: 'landscape',
+            unit: 'pt',
+            format: 'a4',
+          })
+
+          // Background Color
+          doc.setFillColor(backgroundColor)
+          doc.rect(0, 0, 850, 600, 'F')
+
+          const paddingX = 24
+
+          // Pipelist screenshot
+          const imgData = result.toDataURL('image/png')
+
+          // a4 format landscape size in pt unit is 842 x 595
+          const pageWidth = 842
+          const pageHeight = 595
+          const imgWidth = pageWidth - paddingX * 2
+          const imgHeight = (result.height * imgWidth) / result.width
+          let heightLeft = imgHeight
+          let position = 0
+
+          // First page
+          doc.addImage(imgData, 'PNG', paddingX, 0, imgWidth, imgHeight)
+          heightLeft -= pageHeight
+
+          // Add multiple pages
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight
+            doc.addPage()
+
+            // Add background color
+            doc.setFillColor(backgroundColor)
+            doc.rect(0, 0, 850, 600, 'F')
+
+            // Add piplist screenshot
+            doc.addImage(
+              imgData,
+              'PNG',
+              paddingX,
+              position,
+              imgWidth,
+              imgHeight
+            )
+            heightLeft -= pageHeight
+          }
+          doc.save(`${flow.name}.pdf`)
+        })
+      })
+    )
+  }
+
   const generateLink = () => {
     event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
 

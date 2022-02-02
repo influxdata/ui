@@ -1,12 +1,23 @@
 @import '@influxdata/clockface/dist/variables.scss';
+.refresh-form-header {
+  padding: 0 $cf-space-l;
+}
+
+.refresh-form-body {
+  padding: $cf-space-m $cf-space-l;
+}
+
 .refresh-form-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: $cf-space-2xs + 4px $cf-space-2xl;
-  &.reverse {
-    flex-direction: row-reverse;
-  }
+  padding-top: $cf-space-l;
+}
+
+.refresh-form-container-title {
+  padding-bottom: $cf-space-xs;
+}
+
+.refresh-form-container-description {
+  color: $cf-grey-65;
+  padding-bottom: $cf-space-xs;
 }
 
 .refresh-form-container-child {
@@ -20,33 +31,20 @@
     grid-template-columns: 1fr;
   }
 }
-.refresh-form-column {
-  display: grid;
-}
-
-.refresh-timeout-span {
-  flex: 1;
-}
 
 .refresh-form-buttons {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 10px;
+  display: flex;
+  justify-content: flex-end;
   padding: $cf-space-s $cf-space-3xs $cf-space-2xs $cf-space-3xs;
 }
 
 .refresh-form-cancel-button {
-  width: 140px;
+  width: 100px;
   justify-self: end;
 }
 
 .refresh-form-activate-button {
-  width: 140px;
-}
-
-.refresh-form-timeout-dropdown {
-  padding: 0 0 0 $cf-space-2xs;
-  flex: 1;
+  width: 100px;
 }
 
 .refresh-form-time-label {
@@ -55,13 +53,24 @@
 
 .timerange-dropdown {
   justify-self: end;
-  width: 178px;
-}
-
-.refresh-form-timerange-toggle {
-  margin: 0px $cf-space-2xs;
+  width: 100%;
+  padding-top: $cf-space-xs;
 }
 
 .refresh-input {
-  width: 100px;
+  width: 210px;
+}
+
+.refresh-inactivity-timeout-container {
+  width: 210px;
+  display: flex;
+}
+
+.refresh-inactivity-timeout-num {
+  flex: 1;
+  padding-right: $cf-space-2xs;
+}
+
+.refresh-inactivity-timeout-unit {
+  flex: 1 0 20px;
 }

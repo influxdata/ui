@@ -64,6 +64,7 @@ const FlowHeader: FC = () => {
   const [sharing, setSharing] = useState(false)
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
+  const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
     if (isFlagEnabled('shareNotebook')) {
@@ -87,28 +88,34 @@ const FlowHeader: FC = () => {
     }
   }
 
-  const showShare = () => {
-    setSharing(true)
-    event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
-  }
-
   const hideShare = () => {
     setSharing(false)
   }
 
   const deleteShare = () => {
+    setLinkDeleting(RemoteDataState.Loading)
     deleteNotebooksShare({id: share.id})
       .then(() => {
+        setLinkDeleting(RemoteDataState.Done)
         hideShare()
         setShare(null)
         event('Delete Share Link')
       })
-      .catch(err => console.error('failed to delete share', err))
+      .catch(err => {
+        setLinkDeleting(RemoteDataState.Error)
+        console.error('failed to delete share', err)
+      })
   }
 
   const generateLink = () => {
-    setLinkLoading(RemoteDataState.Loading)
+    event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
 
+    if (!!share) {
+      setSharing(true)
+      return
+    }
+
+    setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
       data: {
         notebookID: flow.id,
@@ -118,6 +125,7 @@ const FlowHeader: FC = () => {
     })
       .then(res => {
         setLinkLoading(RemoteDataState.Done)
+        setSharing(true)
         setShare({
           id: (res.data as Share).id,
           accessID: (res.data as Share).accessID,
@@ -194,11 +202,16 @@ const FlowHeader: FC = () => {
                 <FeatureFlag name="shareNotebook">
                   <SquareButton
                     icon={IconFont.Share}
-                    onClick={showShare}
+                    onClick={generateLink}
                     color={
                       !!share
                         ? ComponentColor.Primary
                         : ComponentColor.Secondary
+                    }
+                    status={
+                      linkLoading === RemoteDataState.Loading
+                        ? ComponentStatus.Loading
+                        : ComponentStatus.Default
                     }
                     titleText="Share Notebook"
                   />
@@ -216,34 +229,6 @@ const FlowHeader: FC = () => {
           </Page.ControlBarRight>
         </Page.ControlBar>
       )}
-      {!!sharing && !share && (
-        <Page.ControlBar fullWidth>
-          <Page.ControlBarRight>
-            <ErrorTooltip
-              className="warning-icon"
-              tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
-              tooltipStyle={{width: '250px'}}
-            />
-            <SquareButton
-              icon={IconFont.Checkmark_New}
-              onClick={generateLink}
-              color={ComponentColor.Success}
-              status={
-                linkLoading === RemoteDataState.Loading
-                  ? ComponentStatus.Loading
-                  : ComponentStatus.Default
-              }
-              titleText="Set Token"
-            />
-            <SquareButton
-              icon={IconFont.Remove_New}
-              onClick={hideShare}
-              color={ComponentColor.Danger}
-              titleText="Cancel"
-            />
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-      )}
       {!!sharing && !!share && (
         <Page.ControlBar fullWidth>
           <Page.ControlBarRight>
@@ -256,11 +241,21 @@ const FlowHeader: FC = () => {
                 {`${window.location.origin}/share/${share.accessID}`}
               </a>
             </p>
+            <ErrorTooltip
+              className="warning-icon"
+              tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
+              tooltipStyle={{width: '250px'}}
+            />
             <SquareButton
               icon={IconFont.Trash_New}
               onClick={deleteShare}
               color={ComponentColor.Danger}
               titleText="Delete"
+              status={
+                linkDeleting === RemoteDataState.Loading
+                  ? ComponentStatus.Loading
+                  : ComponentStatus.Default
+              }
             />
             <SquareButton
               icon={IconFont.Remove_New}

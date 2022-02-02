@@ -74,10 +74,10 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   const dataExists = !!(results?.parsed?.table || []).length
 
-  const queryText = getPanelQueries(id)?.source || ''
   const download = () => {
     event('CSV Download Initiated')
-    basic(queryText).promise.then(response => {
+    const query = getPanelQueries(id)
+    basic(query?.source, query?.scope).promise.then(response => {
       if (response.type !== 'SUCCESS') {
         return
       }

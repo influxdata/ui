@@ -28,7 +28,7 @@ export interface FlowQueryContextType {
   generateMap: () => Stage[]
   printMap: (id?: string) => void
   query: (text: string, override?: QueryScope) => Promise<FluxResult>
-  basic: (text: string) => any
+  basic: (text: string, override?: QueryScope) => any
   simplify: (text: string) => string
   queryAll: () => void
   queryDependents: (startID: string) => void
@@ -40,7 +40,7 @@ export const DEFAULT_CONTEXT: FlowQueryContextType = {
   generateMap: () => [],
   printMap: () => {},
   query: (_: string, __: QueryScope) => Promise.resolve({} as FluxResult),
-  basic: (_: string) => {},
+  basic: (_: string, __: QueryScope) => {},
   simplify: (_: string) => '',
   queryAll: () => {},
   queryDependents: () => {},

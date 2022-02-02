@@ -1,4 +1,4 @@
-query = '<%= query %>'
+query = """<%= query %>"""
 tables = client.query_api().query(query, org=org)
 for table in tables:
     for record in table.records:

@@ -12,7 +12,6 @@ import {
 
 // Components
 import CancellationTerms from './CancellationTerms'
-import {BillingContext} from 'src/billing/context/billing'
 import {
   CancelServiceContext,
   VariableItems,
@@ -24,13 +23,14 @@ import {getQuartzMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {postSignout} from 'src/client'
+import {UserAccountContext} from './context/userAccount'
 
 interface Props {
   onHideOverlay: () => void
 }
 
 const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
-  const {handleCancelAccount} = useContext(BillingContext)
+  const {handleCancelAccount} = useContext(UserAccountContext)
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const [hasClickedCancel, setHasClickedCancel] = useState(false)
   const {

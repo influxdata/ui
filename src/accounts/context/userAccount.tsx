@@ -3,11 +3,12 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Types
-import {Account as UserAccount} from 'src/client/unityRoutes'
+import {Account as UserAccount, postCancel} from 'src/client/unityRoutes'
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
 import {
+  accountCancellationError,
   accountDefaultSettingError,
   accountDefaultSettingSuccess,
   accountRenameError,
@@ -23,12 +24,16 @@ import {
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {useHistory} from 'react-router-dom'
+import {getErrorMessage} from 'src/utils/api'
 
 export type Props = {
   children: JSX.Element
 }
 export interface UserAccountContextType {
   userAccounts: UserAccount[]
+  handleCancelAccount: () => void
   handleGetAccounts: () => void
   handleSetDefaultAccount: (newId: number) => void
   handleRenameActiveAccount: (accountId: number, newName: string) => void
@@ -40,6 +45,7 @@ export const DEFAULT_CONTEXT: UserAccountContextType = {
   userAccounts: [],
   defaultAccountId: -1,
   activeAccountId: -1,
+  handleCancelAccount: () => {},
   handleGetAccounts: () => {},
   handleSetDefaultAccount: () => {},
   handleRenameActiveAccount: () => {},
@@ -55,6 +61,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
   const [activeAccountId, setActiveAccountId] = useState<number>(null)
 
   const dispatch = useDispatch()
+  const history = useHistory()
 
   /**
    * get the name of the account as specified by ID
@@ -69,6 +76,24 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       return selectedAcctArray[0].name
     }
   }
+
+  const handleCancelAccount = useCallback(async () => {
+    try {
+      const resp = await postCancel({})
+
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+
+      if (!isFlagEnabled('trackCancellations')) {
+        history.push(`/logout`)
+      }
+    } catch (error) {
+      const message = getErrorMessage(error)
+      console.error({error})
+      dispatch(notify(accountCancellationError(message)))
+    }
+  }, [dispatch, history])
 
   const handleGetAccounts = useCallback(async () => {
     try {
@@ -149,6 +174,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         userAccounts,
         defaultAccountId,
         activeAccountId,
+        handleCancelAccount,
         handleGetAccounts,
         handleSetDefaultAccount,
         handleRenameActiveAccount,

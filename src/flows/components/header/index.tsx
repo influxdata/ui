@@ -1,6 +1,7 @@
 // Libraries
 import React, {
   FC,
+  useCallback,
   useContext,
   useState,
   useEffect,
@@ -56,7 +57,11 @@ import {getOrg} from 'src/organizations/selectors'
 import {RemoteDataState} from 'src/types'
 
 // Constants
-import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {
+  DEFAULT_PROJECT_NAME,
+  PROJECT_NAME,
+  PROJECT_NAME_PLURAL,
+} from 'src/flows'
 
 const backgroundColor = '#07070E'
 
@@ -118,6 +123,9 @@ const FlowHeader: FC = () => {
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
+  const [publishLoading, setPublishLoading] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
+  )
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
   const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
@@ -132,6 +140,53 @@ const FlowHeader: FC = () => {
       })
       .catch(err => console.error('failed to get notebook share', err))
   }, [flow.id])
+
+  const handlePublish = useCallback(() => {
+    if (isFlagEnabled('flowPublishLifecycle')) {
+      // TODO(ariel): move this to openAPI
+      setPublishLoading(RemoteDataState.Loading)
+      fetch(`/api/v2private/notebooks/${flow.id}/version`, {
+        method: 'POST',
+      })
+        .then(resp => resp.json())
+        .then(resp => {
+          if (!resp.length) {
+            return
+          }
+        })
+        .catch(error => {
+          console.error({error})
+          setPublishLoading(RemoteDataState.Error)
+        })
+      setPublishLoading(RemoteDataState.Done)
+    }
+  }, [flow.id])
+
+  const handleSave = useCallback(
+    event => {
+      if (isFlagEnabled('flowPublishLifecycle')) {
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+          // Prevent the Save dialog to open
+          event.preventDefault()
+          handlePublish()
+          // Place your code here
+        }
+      }
+    },
+    [handlePublish]
+  )
+
+  useEffect(() => {
+    if (isFlagEnabled('flowPublishLifecycle')) {
+      window.addEventListener('keydown', handleSave)
+    }
+
+    return () => {
+      if (isFlagEnabled('flowPublishLifecycle')) {
+        window.removeEventListener('keydown', handleSave)
+      }
+    }
+  }, [handleSave])
 
   const handleRename = (name: string) => {
     updateOther({name})
@@ -247,6 +302,10 @@ const FlowHeader: FC = () => {
       return
     }
 
+    if (isFlagEnabled('flowPublishLifecycle')) {
+      handlePublish()
+    }
+
     setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
       data: {
@@ -360,8 +419,21 @@ const FlowHeader: FC = () => {
                       ? ComponentStatus.Loading
                       : ComponentStatus.Default
                   }
-                  titleText="Share Notebook"
+                  titleText={`Share ${PROJECT_NAME}`}
                 />
+                {isFlagEnabled('flowPublishLifecycle') && (
+                  <SquareButton
+                    icon={IconFont.Checkmark}
+                    onClick={handlePublish}
+                    color={ComponentColor.Primary}
+                    status={
+                      publishLoading === RemoteDataState.Loading
+                        ? ComponentStatus.Loading
+                        : ComponentStatus.Default
+                    }
+                    titleText={`Publish ${PROJECT_NAME}`}
+                  />
+                )}
                 <MenuButton menuItems={menuItems} />
               </>
             )}

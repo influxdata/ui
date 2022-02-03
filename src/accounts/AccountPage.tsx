@@ -31,6 +31,7 @@ import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
 
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
+import {CLOUD_URL} from 'src/shared/constants'
 
 const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} = useContext(
@@ -75,16 +76,14 @@ const AccountAboutPage: FC = () => {
 
   const handleRemove = () => {
     handleRemoveUser(currentUserId)
-    // TODO: need to go somewhere else after this....removing current user; logout?  DETERMINE THIS
+    window.location.href = CLOUD_URL 
   }
-
-  console.log('users number???', users?.length)
 
   // so when this is 'real'; make sure the entire line below is enabled; commenting out the check
   // that there are more than 1 user for the account in order to develop it.
   // need to do some quartz-mock work, perhaps to get more than 1 user (heck, right now there are 0) in the
   // account
-  const allowSelfRemoval = isFlagEnabled('selfRemovalFromAccount') // && (users.length > 1)
+  const allowSelfRemoval = isFlagEnabled('selfRemovalFromAccount') && (users.length > 1)
 
   const leaveBtnStyle = {width: 250, marginTop: 8}
 

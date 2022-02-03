@@ -63,6 +63,7 @@ const AccountAboutPage: FC = () => {
 
   const inputStyle = {width: 250}
   const labelStyle = {marginBottom: 8}
+  const dividerStyle = {marginTop: '32px'}
 
   return (
     <AccountTabContainer activeTab="about">
@@ -75,7 +76,7 @@ const AccountAboutPage: FC = () => {
               onClick={showSwitchAccountDialog}
               testID="user-account-switch-btn"
             />
-            <hr style={{marginTop: '32px'}} />
+            <hr style={dividerStyle} />
           </div>
         )}
 

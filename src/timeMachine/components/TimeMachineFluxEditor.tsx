@@ -116,11 +116,36 @@ const TimeMachineFluxEditor: FC<Props> = ({
     return {text, range}
   }
 
+  const getFluxExample = (func) => {
+    const {name, fluxType} = func
+    
+    let signature 
+    let index = fluxType.indexOf('=')
+    // check the description after the arrow where A is something 
+    // if it is timeable then add time constant in the place of A 
+
+    /*
+      const firstIndex = fluxType.indexOf('(')
+      const secondIndex = fluxType.indexOf(')')
+
+      default:A, dict:[C:D], key:B
+
+      const parametersAsOneSentence = fluxType.substring(firstIndex + 1, secondIndex)
+      
+    */
+    
+    const fluxsign = fluxType.slice(0, index)
+
+    signature = name + fluxsign
+    console.log('flux sign ', func)
+    return {...func, example: signature}
+  }
+
   const handleInsertFluxFunction = (func: FluxToolbarFunction): void => {
     if (!editorInstance) {
       return
     }
-    const {text, range} = getFluxTextAndRange(func)
+    const {text, range} = getFluxTextAndRange(getFluxExample(func))
 
     const edits = [
       {

@@ -46,6 +46,7 @@ import {
   getNotebooksShare,
   deleteNotebooksShare,
   postNotebooksShare,
+  postNotebooksVersion,
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {downloadImage} from 'src/shared/utils/download'
@@ -146,25 +147,23 @@ const FlowHeader: FC = () => {
       .catch(err => console.error('failed to get notebook share', err))
   }, [flow.id])
 
-  const handlePublish = useCallback(() => {
+  const handlePublish = useCallback(async () => {
     if (isFlagEnabled('flowPublishLifecycle')) {
       setPublishLoading(RemoteDataState.Loading)
-      fetch(`/api/v2private/notebooks/${flow.id}/version`, {
-        method: 'POST',
-      })
-        .then(resp => resp.json())
-        .then(resp => {
-          if (!resp.length) {
-            return
-          }
-          setPublishLoading(RemoteDataState.Done)
-          dispatch(notify(publishNotebookSuccessful(flow.name)))
-        })
-        .catch(error => {
-          console.error({error})
-          dispatch(notify(publishNotebookFailed(flow.name)))
-          setPublishLoading(RemoteDataState.Error)
-        })
+      try {
+        const response = await postNotebooksVersion({id: flow.id})
+
+        if (response.status !== 204) {
+          throw new Error(response.data.message)
+        }
+
+        dispatch(notify(publishNotebookSuccessful(flow.name)))
+        setPublishLoading(RemoteDataState.Done)
+      } catch (error) {
+        console.error({error})
+        dispatch(notify(publishNotebookFailed(flow.name)))
+        setPublishLoading(RemoteDataState.Error)
+      }
     }
   }, [dispatch, flow.id, flow.name])
 

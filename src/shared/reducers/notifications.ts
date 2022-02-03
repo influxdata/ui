@@ -1,5 +1,5 @@
 import {produce} from 'immer'
-import uuid from 'uuid'
+import {nanoid} from 'nanoid'
 import {Action} from 'src/shared/actions/notifications'
 import {Notification} from 'src/types'
 
@@ -15,7 +15,7 @@ export const notificationsReducer = (
         const {notification} = action.payload
         const publishedNotification = {
           ...notification,
-          id: uuid.v4(),
+          id: nanoid(),
         }
         const matchIndex = state.findIndex(
           n =>

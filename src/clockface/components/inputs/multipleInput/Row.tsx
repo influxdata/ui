@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import uuid from 'uuid'
+import {nanoid} from 'nanoid'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Components
@@ -39,7 +39,7 @@ class Row extends PureComponent<RowProps> {
     return (
       <IndexList>
         <IndexList.Body emptyState={<div />} columnCount={2}>
-          <IndexList.Row key={uuid.v4()} disabled={false}>
+          <IndexList.Row key={nanoid()} disabled={false}>
             <IndexList.Cell>
               <EditableDescription
                 description={item.text}

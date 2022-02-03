@@ -1,6 +1,6 @@
 // Libraries
 import {omit} from 'lodash'
-import uuid from 'uuid'
+import {nanoid} from 'nanoid'
 
 // Types
 import {
@@ -109,7 +109,7 @@ export const initRuleDraft = (orgID: string): NotificationRuleDraft => ({
   labels: [],
   statusRules: [
     {
-      cid: uuid.v4(),
+      cid: nanoid(),
       value: {
         currentLevel: 'CRIT',
         period: '1h',
@@ -135,7 +135,7 @@ export const draftRuleToPostRule = (
 }
 
 export const newTagRuleDraft = () => ({
-  cid: uuid.v4(),
+  cid: nanoid(),
   value: {
     key: '',
     value: '',
@@ -153,7 +153,7 @@ export const ruleToDraftRule = (rule: GenRule): NotificationRuleDraft => {
     status: RemoteDataState.Done,
     activeStatus: rule.status,
     offset: rule.offset || '',
-    statusRules: statusRules.map(value => ({cid: uuid.v4(), value})),
-    tagRules: tagRules.map(value => ({cid: uuid.v4(), value})),
+    statusRules: statusRules.map(value => ({cid: nanoid(), value})),
+    tagRules: tagRules.map(value => ({cid: nanoid(), value})),
   }
 }

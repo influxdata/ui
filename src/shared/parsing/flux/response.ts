@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
 import {get, groupBy, isEmpty} from 'lodash'
-import uuid from 'uuid'
+import {nanoid} from 'nanoid'
 
 import {FluxTable} from 'src/types'
 import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
@@ -120,7 +120,7 @@ export const parseTables = (responseChunk: string): FluxTable[] => {
     )
 
     return {
-      id: uuid.v4(),
+      id: nanoid(),
       data: [[...headerRow], ...tableData],
       name,
       result,
@@ -210,7 +210,7 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
     .join(' ')
 
   let tableResult = {
-    id: uuid.v4(),
+    id: nanoid(),
     name, // this is based on the groupKey
     data, // based on all the columnHeaders
     result, // based on the index
@@ -275,7 +275,7 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
         .join(' ')
 
       tableResult = {
-        id: uuid.v4(),
+        id: nanoid(),
         name, // this is based on the groupKey
         data, // based on all the columnHeaders
         result, // based on the index

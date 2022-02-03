@@ -1,7 +1,7 @@
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
-import {v4 as UUID} from 'uuid'
+import {nanoid} from 'nanoid'
 import {
   FlowList,
   Flow,
@@ -141,7 +141,7 @@ export function hydrate(data) {
     return flow
   }
   data.spec.pipes.forEach(pipe => {
-    const id = pipe.id || `local_${UUID()}`
+    const id = pipe.id || `local_${nanoid()}`
 
     flow.data.allIDs.push(id)
     flow.meta.allIDs.push(id)

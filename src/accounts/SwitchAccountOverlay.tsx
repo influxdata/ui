@@ -132,9 +132,9 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
     'Select a Different Account to Enable the Switch Button'
 
   return (
-    <Overlay.Container maxWidth={630} testID="switch-account--dialog">
+    <Overlay.Container maxWidth={420} testID="switch-account--dialog">
       <Overlay.Header
-        title="Switch Account"
+        title="Switch account"
         wrapText={true}
         onDismiss={onDismissOverlay}
       />
@@ -146,19 +146,21 @@ export const SwitchAccountOverlay: FC<Props> = ({onDismissOverlay}) => {
           text="Cancel"
           testID="multi-account-switch-cancel"
           onClick={onDismissOverlay}
+          color={ComponentColor.Tertiary}
         />
         <Button
           testID="switch-default-account--btn"
-          text="Set Default Account"
+          text="Set as default"
           status={defaultButtonStatus}
           onClick={doSetDefaultAccount}
         />
         <Button
-          text="Switch Account"
+          text="Switch"
           onClick={doSwitchAccount}
           status={switchButtonStatus}
           disabledTitleText={disabledTitleText}
           testID="actually-switch-account--btn"
+          color={ComponentColor.Primary}
         />
       </Overlay.Footer>
     </Overlay.Container>

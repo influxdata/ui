@@ -75,7 +75,7 @@ const AccountAboutPage: FC = () => {
               onClick={showSwitchAccountDialog}
               testID="user-account-switch-btn"
             />
-            <hr style={{marginTop: '32px'}}/>
+            <hr style={{marginTop: '32px'}} />
           </div>
         )}
 

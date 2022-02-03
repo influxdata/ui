@@ -42,7 +42,7 @@ const ToggleGroup: FC<ToggleProps> = ({onClickAcct}) => {
     setSelectedAcct(numAcct)
   }
 
-  const style = {marginBottom: 7}
+  const style = {marginBottom: 17}
 
   return (
     <React.Fragment>

@@ -26,7 +26,6 @@ import {
   clearSteps,
   decrementCurrentStepIndex,
   incrementCurrentStepIndex,
-  setBucketInfo,
   setCurrentStepIndex,
   setSubstepIndex,
 } from 'src/dataLoaders/actions/steps'
@@ -60,10 +59,8 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
   }
 
   public componentDidMount() {
-    this.props.clearDataLoaders()
     this.props.onSetCurrentStepIndex(0)
     this.props.onSetSubstepIndex(0, 0)
-    this.props.setBucketInfo('', '', '')
   }
 
   public render() {
@@ -99,12 +96,15 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
   }
 
   private handleDismiss = () => {
-    const {history, org} = this.props
+    const {history, locationOnDismiss, org} = this.props
     const {clearDataLoaders, onClearSteps} = this.props
     clearDataLoaders()
     onClearSteps()
     this.setState({isVisible: false})
-    history.push(`/orgs/${org.id}/load-data/telegrafs`)
+    const location = locationOnDismiss
+      ? locationOnDismiss
+      : `/orgs/${org.id}/load-data/telegrafs`
+    history.push(location)
   }
 
   private handleSetIsValidConfiguration = (isValid: boolean) => {
@@ -150,7 +150,7 @@ class TelegrafUIRefreshWizard extends PureComponent<Props> {
 const mstp = (state: AppState) => {
   const {
     dataLoading: {
-      dataLoaders: {telegrafPlugins},
+      dataLoaders: {locationOnDismiss, telegrafPlugins},
       steps: {currentStep, substep = 0, bucket},
     },
     me: {name},
@@ -166,14 +166,15 @@ const mstp = (state: AppState) => {
   const org = getOrg(state)
 
   return {
-    telegrafPlugins,
-    text: telegrafEditor.text,
-    currentStepIndex: currentStep,
-    substepIndex: typeof substep === 'number' ? substep : 0,
-    username: name,
     bucket,
     buckets: nonSystemBuckets,
+    currentStepIndex: currentStep,
+    locationOnDismiss,
     org,
+    substepIndex: typeof substep === 'number' ? substep : 0,
+    telegrafPlugins,
+    text: telegrafEditor.text,
+    username: name,
   }
 }
 
@@ -185,7 +186,6 @@ const mdtp = {
   onIncrementCurrentStepIndex: incrementCurrentStepIndex,
   onSetCurrentStepIndex: setCurrentStepIndex,
   onSetSubstepIndex: setSubstepIndex,
-  setBucketInfo,
 }
 
 const connector = connect(mstp, mdtp)

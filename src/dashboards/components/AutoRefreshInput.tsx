@@ -86,6 +86,7 @@ const AutoRefreshInput: FC<Props> = ({handleRefreshMilliseconds, label}) => {
         customClass="refresh-input"
         validFunction={isValidInput}
         testID="auto-refresh-input"
+        arrowButtonOn={true}
       />
     </ButtonGroup>
   )

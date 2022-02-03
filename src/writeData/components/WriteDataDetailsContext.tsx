@@ -12,7 +12,6 @@ import {
   Context as TemplateContext,
   transform,
 } from 'src/shared/components/CodeSnippet'
-
 // Utils
 import {getAll} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
@@ -37,11 +36,9 @@ export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
   query: null,
   changeQuery: () => {},
 }
-
 export const WriteDataDetailsContext = createContext<
   WriteDataDetailsContextType
 >(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
-
 const WriteDataDetailsProvider: FC = ({children}) => {
   const {variables, update} = useContext(TemplateContext)
   const buckets = useSelector((state: AppState) =>
@@ -55,9 +52,7 @@ const WriteDataDetailsProvider: FC = ({children}) => {
     (state: AppState) => state.dataLoading?.steps?.bucket
   )
   const server = window.location.origin
-
   const toLoadBucket = buckets?.find(b => b.name === bucketname)
-
   const [bucket, setBucket] = useState(
     toLoadBucket ?? buckets[0] ?? ({name: '<BUCKET>'} as Bucket)
   )
@@ -79,44 +74,36 @@ const WriteDataDetailsProvider: FC = ({children}) => {
 
   useEffect(() => {
     const _query = transform(query, variables)
-
     if (_query === variables.query) {
       return
     }
-
     update({
       ...variables,
       query: _query,
     })
   }, [variables, update, query])
-
   useEffect(() => {
     if (server === variables.server) {
       return
     }
-
     update({
       ...variables,
       server,
     })
   }, [variables, server, update])
-
   useEffect(() => {
     if (org?.name === variables.org) {
       return
     }
-
     update({
       ...variables,
       org: org.name,
     })
   }, [variables, org?.name, update])
-
   useEffect(() => {
     if (bucket?.name === variables.bucket) {
       return
     }
-
     update({
       ...variables,
       bucket: bucket.name,
@@ -149,5 +136,4 @@ const WriteDataDetailsProvider: FC = ({children}) => {
     </WriteDataDetailsContext.Provider>
   )
 }
-
 export default WriteDataDetailsProvider

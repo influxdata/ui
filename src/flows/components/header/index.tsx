@@ -7,7 +7,7 @@ import React, {
   createRef,
   RefObject,
 } from 'react'
-import {useHistory, Link} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Contexts
@@ -24,7 +24,6 @@ import {
   IconFont,
   ComponentColor,
   ComponentStatus,
-  Dropdown,
   ErrorTooltip,
   Popover,
   PopoverInteraction,
@@ -52,7 +51,6 @@ import {downloadImage} from 'src/shared/utils/download'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
-import {getAuthorizations} from 'src/client/generatedRoutes'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -108,10 +106,6 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
     </>
   )
 }
-interface Token {
-  token: string
-  description: string
-}
 
 interface Share {
   id: string
@@ -124,11 +118,9 @@ const FlowHeader: FC = () => {
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
-  const [token, setToken] = useState<Token>()
-  const [loadingToken, setLoadingToken] = useState(RemoteDataState.NotStarted)
-  const [tokens, setTokens] = useState<Token[]>([])
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
+  const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
     getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
@@ -150,40 +142,23 @@ const FlowHeader: FC = () => {
     }
   }
 
-  const showShare = () => {
-    setSharing(true)
-    setLoadingToken(RemoteDataState.Loading)
-    getAuthorizations({query: {orgID}}).then(resp => {
-      if (resp.status !== 200) {
-        return
-      }
-
-      setLoadingToken(RemoteDataState.Done)
-      const _tokens = resp.data.authorizations.map(a => ({
-        token: a.token,
-        description: a.description || 'Describe this token',
-      }))
-
-      setTokens(_tokens)
-      event('Notebook share tokens', {count: _tokens.length})
-    })
-    event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
-  }
-
   const hideShare = () => {
     setSharing(false)
-    setToken(null)
-    setLoadingToken(RemoteDataState.NotStarted)
   }
 
   const deleteShare = () => {
+    setLinkDeleting(RemoteDataState.Loading)
     deleteNotebooksShare({id: share.id})
       .then(() => {
+        setLinkDeleting(RemoteDataState.Done)
         hideShare()
         setShare(null)
         event('Delete Share Link')
       })
-      .catch(err => console.error('failed to delete share', err))
+      .catch(err => {
+        setLinkDeleting(RemoteDataState.Error)
+        console.error('failed to delete share', err)
+      })
   }
 
   const canvasOptions = {
@@ -265,17 +240,24 @@ const FlowHeader: FC = () => {
   }
 
   const generateLink = () => {
+    event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
+
+    if (!!share) {
+      setSharing(true)
+      return
+    }
+
     setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
       data: {
         notebookID: flow.id,
         orgID,
-        token: token.token,
         region: window.location.hostname,
       },
     })
       .then(res => {
         setLinkLoading(RemoteDataState.Done)
+        setSharing(true)
         setShare({
           id: (res.data as Share).id,
           accessID: (res.data as Share).accessID,
@@ -344,37 +326,6 @@ const FlowHeader: FC = () => {
     return null
   }
 
-  let tokenDropdownStatus = ComponentStatus.Disabled
-
-  if (loadingToken === RemoteDataState.Loading) {
-    tokenDropdownStatus = ComponentStatus.Loading
-  }
-  if (loadingToken === RemoteDataState.Done && tokens.length) {
-    tokenDropdownStatus = ComponentStatus.Default
-  }
-
-  let linkGenerationStatus = ComponentStatus.Disabled
-
-  if (linkLoading === RemoteDataState.Loading) {
-    linkGenerationStatus = ComponentStatus.Loading
-  } else if (!!token) {
-    linkGenerationStatus = ComponentStatus.Default
-  }
-
-  const tokenOptions = tokens.map(t => (
-    <Dropdown.Item
-      key={t.token}
-      value={t.token}
-      selected={t.token === token?.token}
-      title={t.description}
-      className="share-token--option"
-      onClick={() => setToken(t)}
-    >
-      <h1>{t.description}</h1>
-      <h3>{t.token}</h3>
-    </Dropdown.Item>
-  ))
-
   return (
     <>
       <Page.Header fullWidth>
@@ -389,20 +340,25 @@ const FlowHeader: FC = () => {
         <Page.ControlBar fullWidth>
           <Page.ControlBarLeft>
             <Submit />
+            {isFlagEnabled('flowAutoRefresh') && <AutoRefreshButton />}
             <SaveState />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <PresentationMode />
             <TimeZoneDropdown />
             <TimeRangeDropdown />
-            {isFlagEnabled('flowAutoRefresh') && <AutoRefreshButton />}
             {flow?.id && (
               <>
                 <SquareButton
                   icon={IconFont.Share}
-                  onClick={showShare}
+                  onClick={generateLink}
                   color={
                     !!share ? ComponentColor.Primary : ComponentColor.Secondary
+                  }
+                  status={
+                    linkLoading === RemoteDataState.Loading
+                      ? ComponentStatus.Loading
+                      : ComponentStatus.Default
                   }
                   titleText="Share Notebook"
                 />
@@ -420,52 +376,6 @@ const FlowHeader: FC = () => {
           </Page.ControlBarRight>
         </Page.ControlBar>
       )}
-      {!!sharing && !share && (
-        <Page.ControlBar fullWidth>
-          <Page.ControlBarRight>
-            <p className="share-token--steps">
-              Choose an{' '}
-              <Link to={`/orgs/${orgID}/load-data/tokens`}>API Token</Link>{' '}
-              scoped to the resources you want to share
-            </p>
-            <Dropdown
-              button={(active, onClick) => (
-                <Dropdown.Button
-                  onClick={onClick}
-                  active={active}
-                  status={tokenDropdownStatus}
-                >
-                  {token ? token.description : 'Select an API Token'}
-                </Dropdown.Button>
-              )}
-              menu={onCollapse => (
-                <Dropdown.Menu onCollapse={onCollapse}>
-                  {tokenOptions}
-                </Dropdown.Menu>
-              )}
-              style={{width: '250px', flex: '0 0 250px'}}
-            />
-            <ErrorTooltip
-              className="warning-icon"
-              tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
-              tooltipStyle={{width: '250px'}}
-            />
-            <SquareButton
-              icon={IconFont.Checkmark_New}
-              onClick={generateLink}
-              color={ComponentColor.Success}
-              status={linkGenerationStatus}
-              titleText="Set Token"
-            />
-            <SquareButton
-              icon={IconFont.Remove_New}
-              onClick={hideShare}
-              color={ComponentColor.Danger}
-              titleText="Cancel"
-            />
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-      )}
       {!!sharing && !!share && (
         <Page.ControlBar fullWidth>
           <Page.ControlBarRight>
@@ -478,11 +388,21 @@ const FlowHeader: FC = () => {
                 {`${window.location.origin}/share/${share.accessID}`}
               </a>
             </p>
+            <ErrorTooltip
+              className="warning-icon"
+              tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
+              tooltipStyle={{width: '250px'}}
+            />
             <SquareButton
               icon={IconFont.Trash_New}
               onClick={deleteShare}
               color={ComponentColor.Danger}
               titleText="Delete"
+              status={
+                linkDeleting === RemoteDataState.Loading
+                  ? ComponentStatus.Loading
+                  : ComponentStatus.Default
+              }
             />
             <SquareButton
               icon={IconFont.Remove_New}

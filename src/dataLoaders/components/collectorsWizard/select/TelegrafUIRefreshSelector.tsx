@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent, ChangeEvent} from 'react'
-import uuid from 'uuid'
+import {nanoid} from 'nanoid'
 
 // Components
 import {
@@ -60,7 +60,7 @@ class TelegrafUIRefreshSelector extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      gridSizerUpdateFlag: uuid.v4(),
+      gridSizerUpdateFlag: nanoid(),
       isExistingBucket: true,
       searchTerm: '',
       selectedBucket: null,
@@ -87,7 +87,7 @@ class TelegrafUIRefreshSelector extends PureComponent<Props, State> {
       this.props.telegrafPlugins.length === 0
 
     if (addFirst || removeLast) {
-      const gridSizerUpdateFlag = uuid.v4()
+      const gridSizerUpdateFlag = nanoid()
       this.setState({gridSizerUpdateFlag})
     }
 

@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {v4 as UUID} from 'uuid'
+import {nanoid} from 'nanoid'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 import {getOrg} from 'src/organizations/selectors'
@@ -472,7 +472,7 @@ export const QueryProvider: FC = ({children}) => {
 
     const controller = new AbortController()
 
-    const id = UUID()
+    const id = nanoid()
     const promise = fetch(url, {
       method: 'POST',
       headers,

@@ -14,6 +14,8 @@ import {PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
 
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+
 import './style.scss'
 
 const Time: FC<PipeProp> = ({Context}) => {
@@ -68,19 +70,13 @@ const Time: FC<PipeProp> = ({Context}) => {
         >
           <h5>Set a time frame</h5>
           <p>
-            <a
-              target="_blank"
-              href="https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#duration-literals"
-            >
+            <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#duration-literals">
               durations
-            </a>{' '}
+            </SafeBlankLink>{' '}
             and{' '}
-            <a
-              target="_blank"
-              href="https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#date-and-time-literals"
-            >
+            <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#date-and-time-literals">
               dates
-            </a>{' '}
+            </SafeBlankLink>{' '}
             are valid
           </p>
         </FlexBox.Child>

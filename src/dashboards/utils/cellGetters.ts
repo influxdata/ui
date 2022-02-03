@@ -1,5 +1,5 @@
 // Libraries
-import uuid from 'uuid'
+import {nanoid} from 'nanoid'
 
 // Types
 import {
@@ -54,7 +54,7 @@ export const getNewDashboardCell = (
   const isStaticLegendType = staticLegendTypes.has(viewProperties?.type)
 
   const defaultCell = {
-    id: uuid.v4(),
+    id: nanoid(),
     x: 0,
     y: 0,
     h:

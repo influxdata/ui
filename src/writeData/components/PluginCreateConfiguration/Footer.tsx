@@ -11,7 +11,11 @@ import {
 } from '@influxdata/clockface'
 
 // Actions
-import {createOrUpdateTelegrafConfigAsync} from 'src/dataLoaders/actions/dataLoaders'
+import {
+  createOrUpdateTelegrafConfigAsync,
+  setLocationOnDismiss,
+} from 'src/dataLoaders/actions/dataLoaders'
+import {setBucketInfo} from 'src/dataLoaders/actions/steps'
 import {updateTelegraf} from 'src/telegrafs/actions/thunks'
 
 // Types
@@ -19,7 +23,6 @@ import {AppState, ResourceType, Telegraf} from 'src/types'
 import {PluginConfigurationStepProps} from 'src/writeData/components/AddPluginToConfiguration'
 
 // Selectors
-import {getDataLoaders} from 'src/dataLoaders/selectors'
 import {getAll} from 'src/resources/selectors'
 import {getQuartzMe} from 'src/me/selectors'
 
@@ -47,9 +50,12 @@ const FooterComponent: FC<Props> = props => {
     onIncrementCurrentStepIndex,
     onSaveTelegrafConfig,
     onUpdateTelegraf,
+    orgID,
     pluginConfig,
     pluginConfigName,
+    setBucketInfo,
     setIsValidConfiguration,
+    setLocationOnDismiss,
     substepIndex,
     telegrafConfig,
   } = props
@@ -86,6 +92,8 @@ const FooterComponent: FC<Props> = props => {
 
   const handleSaveAndTest = () => {
     onSaveTelegrafConfig()
+    setBucketInfo('', '', '')
+    setLocationOnDismiss(`/orgs/${orgID}/load-data/telegrafs`)
     onIncrementCurrentStepIndex()
   }
 
@@ -149,7 +157,12 @@ const FooterComponent: FC<Props> = props => {
 }
 
 const mstp = (state: AppState) => {
-  const {telegrafConfigID} = getDataLoaders(state)
+  const {
+    dataLoading: {
+      dataLoaders: {telegrafConfigID},
+      steps: {orgID},
+    },
+  } = state
   const accountType = getQuartzMe(state)?.accountType ?? 'free'
   let telegrafConfig = null
   if (telegrafConfigID) {
@@ -158,12 +171,14 @@ const mstp = (state: AppState) => {
       telegraf => telegraf.id === telegrafConfigID
     )
   }
-  return {accountType, telegrafConfig}
+  return {accountType, orgID, telegrafConfig}
 }
 
 const mdtp = {
   onSaveTelegrafConfig: createOrUpdateTelegrafConfigAsync,
   onUpdateTelegraf: updateTelegraf,
+  setBucketInfo,
+  setLocationOnDismiss,
 }
 
 const connector = connect(mstp, mdtp)

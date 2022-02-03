@@ -1,5 +1,5 @@
 // Libraries
-import uuid from 'uuid'
+import {nanoid} from 'nanoid'
 
 // Constants
 import {
@@ -102,7 +102,7 @@ export const addThreshold = (thresholds: Color[]): Color => {
 
   const threshold = {
     ...colorChoice,
-    id: uuid.v4(),
+    id: nanoid(),
     type: thresholdType,
     value,
   }

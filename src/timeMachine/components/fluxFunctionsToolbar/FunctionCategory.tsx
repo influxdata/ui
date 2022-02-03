@@ -2,7 +2,8 @@
 import React, {SFC} from 'react'
 
 // Components
-import ToolbarFunction from 'src/timeMachine/components/fluxFunctionsToolbar/ToolbarFunction'
+import ToolbarFunction from 'src/flows/pipes/RawFluxEditor/FluxInjectionOption'
+import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionToolTipContent'
 
 // Types
 import {FluxToolbarFunction} from 'src/types/shared'
@@ -21,10 +22,12 @@ const FunctionCategory: SFC<Props> = props => {
       <dt className="flux-toolbar--heading">{category}</dt>
       {funcs.map(func => (
         <ToolbarFunction
-          onClickFunction={onClickFunction}
+          extractor={fn => (fn as FluxToolbarFunction).name}
+          onClick={onClickFunction}
           key={`${func.name}_${func.desc}`}
-          func={func}
+          option={func}
           testID={func.name}
+          ToolTipContent={FunctionTooltipContent}
         />
       ))}
     </dl>

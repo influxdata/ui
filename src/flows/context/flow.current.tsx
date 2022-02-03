@@ -9,12 +9,14 @@ import React, {
 import {useLocation} from 'react-router-dom'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
-import {v4 as UUID} from 'uuid'
+import {customAlphabet} from 'nanoid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import * as Y from 'yjs'
+import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
+
+const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
 export interface FlowContextType {
   name: string
@@ -46,7 +48,7 @@ export const FlowProvider: FC = ({children}) => {
   const {flows, update, currentID} = useContext(FlowListContext)
   const [currentFlow, setCurrentFlow] = useState<Flow>()
   const provider = useRef<WebsocketProvider>()
-  const yDoc = useRef(new Y.Doc())
+  const yDoc = useRef(new Doc())
   function disconnectProvider() {
     if (provider.current) {
       provider.current.disconnect()
@@ -239,7 +241,7 @@ export const FlowProvider: FC = ({children}) => {
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
-    const id = `local_${UUID()}`
+    const id = prettyid()
     const title =
       initial.title ||
       `${PIPE_DEFINITIONS[initial.type].button || 'Panel'} ${++GENERATOR_INDEX}`

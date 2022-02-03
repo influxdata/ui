@@ -15,7 +15,7 @@ object InfluxDB2ScalaExample {
   def main(args: Array[String]): Unit = {
 
     // You can generate an API token from the "API Tokens Tab" in the UI
-    val token = "<%= token %>"
+    val token = sys.env.get("INFLUX_TOKEN")
     val org = "<%= org %>"
 
     val client = InfluxDBClientScalaFactory.create("<%= server %>", token.toCharArray, org)

@@ -1472,3 +1472,13 @@ export const getResourcesTokensFailure = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to fetch all resources for creating custom api token',
 })
+
+export const publishNotebookSuccessful = (name: string): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Successfully published ${name}`,
+})
+
+export const publishNotebookFailed = (name: string): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to publish ${name}`,
+})

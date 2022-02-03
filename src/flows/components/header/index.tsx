@@ -9,7 +9,7 @@ import React, {
   RefObject,
 } from 'react'
 import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -52,7 +52,11 @@ import {downloadImage} from 'src/shared/utils/download'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
-
+import {notify} from 'src/shared/actions/notifications'
+import {
+  publishNotebookFailed,
+  publishNotebookSuccessful,
+} from 'src/shared/copy/notifications'
 // Types
 import {RemoteDataState} from 'src/types'
 
@@ -118,6 +122,7 @@ interface Share {
 }
 
 const FlowHeader: FC = () => {
+  const dispatch = useDispatch()
   const {remove, clone} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
   const history = useHistory()
@@ -143,7 +148,6 @@ const FlowHeader: FC = () => {
 
   const handlePublish = useCallback(() => {
     if (isFlagEnabled('flowPublishLifecycle')) {
-      // TODO(ariel): move this to openAPI
       setPublishLoading(RemoteDataState.Loading)
       fetch(`/api/v2private/notebooks/${flow.id}/version`, {
         method: 'POST',
@@ -153,14 +157,16 @@ const FlowHeader: FC = () => {
           if (!resp.length) {
             return
           }
+          setPublishLoading(RemoteDataState.Done)
+          dispatch(notify(publishNotebookSuccessful(flow.name)))
         })
         .catch(error => {
           console.error({error})
+          dispatch(notify(publishNotebookFailed(flow.name)))
           setPublishLoading(RemoteDataState.Error)
         })
-      setPublishLoading(RemoteDataState.Done)
     }
-  }, [flow.id])
+  }, [dispatch, flow.id, flow.name])
 
   const handleSave = useCallback(
     event => {

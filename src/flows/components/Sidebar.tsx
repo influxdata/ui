@@ -240,6 +240,72 @@ const Sidebar: FC = () => {
           title: 'Export to Client Library',
           menu: <ClientList />,
         },
+        {
+          title: 'Link to Source',
+          disable: () => {
+            if (!flow.data.allIDs.includes(id)) {
+              return true
+            }
+
+            const {type} = flow.data.byID[id]
+
+            if (type === 'rawFluxEditor') {
+              return true
+            }
+
+            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
+              return true
+            }
+
+            return false
+          },
+          action: () => {
+            const {type} = flow.data.byID[id]
+            event('notebook source link', {notebooksCellType: type})
+            const url = new URL(
+              `${window.location.origin}/api/v2private/notebooks/${flow.id}/query/${id}`
+            ).toString()
+            try {
+              navigator.clipboard.writeText(url)
+              dispatch(notify(panelCopyLinkSuccess()))
+            } catch {
+              dispatch(notify(panelCopyLinkFail()))
+            }
+          },
+        },
+        {
+          title: 'Link to Results',
+          disable: () => {
+            if (!flow.data.allIDs.includes(id)) {
+              return true
+            }
+
+            const {type} = flow.data.byID[id]
+
+            if (type === 'rawFluxEditor') {
+              return true
+            }
+
+            if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
+              return true
+            }
+
+            return false
+          },
+          action: () => {
+            const {type} = flow.data.byID[id]
+            event('notebook result link', {notebooksCellType: type})
+            const url = new URL(
+              `${window.location.origin}/api/v2private/notebooks/${flow.id}/run/${id}`
+            ).toString()
+            try {
+              navigator.clipboard.writeText(url)
+              dispatch(notify(panelCopyLinkSuccess()))
+            } catch {
+              dispatch(notify(panelCopyLinkFail()))
+            }
+          },
+        },
       ],
     },
   ] as ControlSection[])

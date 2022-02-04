@@ -143,6 +143,66 @@ describe('fromFlux', () => {
     expect(fluxGroupKeyUnion).toEqual(['a', 'c', 'd'])
   })
 
+  test('returns all result column names', () => {
+    const CSV = `#group,true,false,false,true
+#datatype,string,string,string,string
+#default,new,,,
+,result,b,c,d
+,,0,0,0
+
+#group,false,false,true,false
+#datatype,string,string,string,string
+#default,old,,,
+,result,b,c,d
+,,0,0,0`
+
+    const flux = fromFlux(CSV)
+    const fluxLegacy = fromFluxLegacy(CSV)
+
+    expect(flux.resultColumnNames).toEqual(['new', 'old'])
+    expect(fluxLegacy.resultColumnNames).toEqual(['new', 'old'])
+  })
+
+  test('handles blank result column names', () => {
+    const CSV = `#group,true,false,false,true
+#datatype,string,string,string,string
+#default,,,,
+,result,b,c,d
+,,0,0,0
+
+#group,false,false,true,false
+#datatype,string,string,string,string
+#default,,,,
+,result,b,c,d
+,,0,0,0`
+
+    const flux = fromFlux(CSV)
+    const fluxLegacy = fromFluxLegacy(CSV)
+
+    expect(flux.resultColumnNames).toEqual([])
+    expect(fluxLegacy.resultColumnNames).toEqual([])
+  })
+
+  test('handles missing result column', () => {
+    const CSV = `#group,true,false,false,true
+#datatype,string,string,string,string
+#default,_result,,,
+,a,b,c,d
+,,0,0,0
+
+#group,false,false,true,false
+#datatype,string,string,string,string
+#default,_result,,,
+,a,b,c,d
+,,0,0,0`
+
+    const flux = fromFlux(CSV)
+    const fluxLegacy = fromFluxLegacy(CSV)
+
+    expect(flux.resultColumnNames).toEqual([])
+    expect(fluxLegacy.resultColumnNames).toEqual([])
+  })
+
   test('parses empty numeric values as null', () => {
     const CSV = `#group,false,false,true,true,false,true,true,true,true,true
 #datatype,string,long,dateTime:RFC3339,dateTime:RFC3339,dateTime:RFC3339,double,string,string,string,string

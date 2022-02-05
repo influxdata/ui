@@ -249,10 +249,6 @@ const Sidebar: FC = () => {
 
             const {type} = flow.data.byID[id]
 
-            if (type === 'rawFluxEditor') {
-              return true
-            }
-
             if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
               return true
             }
@@ -281,10 +277,6 @@ const Sidebar: FC = () => {
             }
 
             const {type} = flow.data.byID[id]
-
-            if (type === 'rawFluxEditor') {
-              return true
-            }
 
             if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {
               return true

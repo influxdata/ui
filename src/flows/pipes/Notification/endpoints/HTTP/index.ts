@@ -72,9 +72,11 @@ export default register => {
         }, [])
         .join(', ')
 
-      return `http["endpoint"](url: "${data.url}")(mapFn: (r) => {
-      return {headers: {${_headers}}, data: json["encode"](v: "${TEST_NOTIFICATION}")}
-  })
+      return `http.post(
+        url: "${data.url}",
+        data: json["encode"](v: "${TEST_NOTIFICATION}"),
+        headers: {${_headers}}
+      )
 
   array.from(rows: [{value: 0}])
 	|> yield(name: "ignore")`

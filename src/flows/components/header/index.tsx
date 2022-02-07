@@ -154,7 +154,7 @@ const FlowHeader: FC = () => {
       try {
         const response = await postNotebooksVersion({id: flow.id})
 
-        if (response.status < 200 && response.status > 299) {
+        if (response.status !== 200) {
           throw new Error(response.data.message)
         }
 

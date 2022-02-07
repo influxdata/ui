@@ -74,6 +74,18 @@ const AccountAboutPage: FC = () => {
   const dividerStyle = {marginTop: '32px', maxWidth: '500px'}
   const actionButtonStyle = {marginTop: '24px'}
 
+  const showDeactivateAccountOverlay = () => {
+    setDeactivateAccountVisible(true)
+  }
+
+  const hideDeactivateAccountOverlay = () => {
+    setDeactivateAccountVisible(false)
+  }
+
+  const onRenameAccountBtnClick = () => {
+    handleRenameActiveAccount(activeAccount.id, activeAcctName)
+  }
+
   return (
     <AccountTabContainer activeTab="about">
       <>
@@ -107,9 +119,7 @@ const AccountAboutPage: FC = () => {
             style={inputStyle}
           />
           <Button
-            onClick={() =>
-              handleRenameActiveAccount(activeAccount.id, activeAcctName)
-            }
+            onClick={onRenameAccountBtnClick}
             testID="rename-account--button"
             text="Save"
           />
@@ -127,7 +137,7 @@ const AccountAboutPage: FC = () => {
         </div>
         <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Large}>
           <Button
-            onClick={() => setDeactivateAccountVisible(true)}
+            onClick={showDeactivateAccountOverlay}
             testID="deactivate-account--button"
             text="DEACTIVATE ACCOUNT"
             style={actionButtonStyle}
@@ -138,9 +148,7 @@ const AccountAboutPage: FC = () => {
         </Overlay>
         <CancelServiceProvider>
           <Overlay visible={isDeactivateAccountVisible}>
-            <CancellationOverlay
-              onHideOverlay={() => setDeactivateAccountVisible(false)}
-            />
+            <CancellationOverlay onHideOverlay={hideDeactivateAccountOverlay} />
           </Overlay>
         </CancelServiceProvider>
       </>

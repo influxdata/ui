@@ -31,6 +31,8 @@ import {GTM_USER_REMOVED} from 'src/users/constants'
 // Types
 import {CloudUser, DraftInvite, Invite, RemoteDataState} from 'src/types'
 import {getOrg} from 'src/organizations/selectors'
+import {getMe} from 'src/me/selectors'
+import {CLOUD_URL} from 'src/shared/constants'
 
 export type Props = {
   children: JSX.Element
@@ -76,6 +78,8 @@ export const UsersContext = React.createContext<UsersContextType>(
 export const UsersProvider: FC<Props> = React.memo(({children}) => {
   const dispatch = useDispatch()
   const orgId = useSelector(getOrg)?.id
+  const currentUserId = useSelector(getMe)?.id
+
   const [users, setUsers] = useState<CloudUser[]>([])
   const [invites, setInvites] = useState<Invite[]>([])
   const [draftInvite, setDraftInvite] = useState<DraftInvite>(draft)
@@ -217,6 +221,10 @@ export const UsersProvider: FC<Props> = React.memo(({children}) => {
         window.dataLayer.push({
           event: GTM_USER_REMOVED,
         })
+
+        if (userId == currentUserId) {
+          window.location.href = CLOUD_URL
+        }
       } catch (error) {
         console.error(error)
         dispatch(notify(removeUserFailed()))

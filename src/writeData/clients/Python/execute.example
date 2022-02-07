@@ -1,5 +1,5 @@
-query = '<%= query %>'
-tables = client.query_api().query(query, org=org)
-for table in tables:
-    for record in table.records:
-        print(record)
+    query = """<%= query %>"""
+    tables = client.query_api().query(query, org=org)
+    for table in tables:
+        for record in table.records:
+            print(record)

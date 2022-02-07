@@ -1,6 +1,7 @@
 // Libraries
 import React, {
   FC,
+  useCallback,
   useContext,
   useState,
   useEffect,
@@ -8,7 +9,7 @@ import React, {
   RefObject,
 } from 'react'
 import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -45,18 +46,27 @@ import {
   getNotebooksShare,
   deleteNotebooksShare,
   postNotebooksShare,
+  postNotebooksVersion,
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {downloadImage} from 'src/shared/utils/download'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
-
+import {notify} from 'src/shared/actions/notifications'
+import {
+  publishNotebookFailed,
+  publishNotebookSuccessful,
+} from 'src/shared/copy/notifications'
 // Types
 import {RemoteDataState} from 'src/types'
 
 // Constants
-import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {
+  DEFAULT_PROJECT_NAME,
+  PROJECT_NAME,
+  PROJECT_NAME_PLURAL,
+} from 'src/flows'
 
 const backgroundColor = '#07070E'
 
@@ -113,11 +123,15 @@ interface Share {
 }
 
 const FlowHeader: FC = () => {
+  const dispatch = useDispatch()
   const {remove, clone} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
+  const [publishLoading, setPublishLoading] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
+  )
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
   const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
@@ -132,6 +146,52 @@ const FlowHeader: FC = () => {
       })
       .catch(err => console.error('failed to get notebook share', err))
   }, [flow.id])
+
+  const handlePublish = useCallback(async () => {
+    if (isFlagEnabled('flowPublishLifecycle')) {
+      setPublishLoading(RemoteDataState.Loading)
+      try {
+        const response = await postNotebooksVersion({id: flow.id})
+
+        if (response.status !== 204) {
+          throw new Error(response.data.message)
+        }
+
+        dispatch(notify(publishNotebookSuccessful(flow.name)))
+        setPublishLoading(RemoteDataState.Done)
+      } catch (error) {
+        console.error({error})
+        dispatch(notify(publishNotebookFailed(flow.name)))
+        setPublishLoading(RemoteDataState.Error)
+      }
+    }
+  }, [dispatch, flow.id, flow.name])
+
+  const handleSave = useCallback(
+    event => {
+      if (isFlagEnabled('flowPublishLifecycle')) {
+        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+          // Prevent the Save dialog to open
+          event.preventDefault()
+          handlePublish()
+          // Place your code here
+        }
+      }
+    },
+    [handlePublish]
+  )
+
+  useEffect(() => {
+    if (isFlagEnabled('flowPublishLifecycle')) {
+      window.addEventListener('keydown', handleSave)
+    }
+
+    return () => {
+      if (isFlagEnabled('flowPublishLifecycle')) {
+        window.removeEventListener('keydown', handleSave)
+      }
+    }
+  }, [handleSave])
 
   const handleRename = (name: string) => {
     updateOther({name})
@@ -247,6 +307,10 @@ const FlowHeader: FC = () => {
       return
     }
 
+    if (isFlagEnabled('flowPublishLifecycle')) {
+      handlePublish()
+    }
+
     setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
       data: {
@@ -360,8 +424,21 @@ const FlowHeader: FC = () => {
                       ? ComponentStatus.Loading
                       : ComponentStatus.Default
                   }
-                  titleText="Share Notebook"
+                  titleText={`Share ${PROJECT_NAME}`}
                 />
+                {isFlagEnabled('flowPublishLifecycle') && (
+                  <SquareButton
+                    icon={IconFont.Checkmark}
+                    onClick={handlePublish}
+                    color={ComponentColor.Primary}
+                    status={
+                      publishLoading === RemoteDataState.Loading
+                        ? ComponentStatus.Loading
+                        : ComponentStatus.Default
+                    }
+                    titleText={`Publish ${PROJECT_NAME}`}
+                  />
+                )}
                 <MenuButton menuItems={menuItems} />
               </>
             )}

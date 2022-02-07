@@ -68,23 +68,24 @@ const AccountAboutPage: FC = () => {
 
   const inputStyle = {width: 250}
   const labelStyle = {marginBottom: 8}
+  const dividerStyle = {marginTop: '32px'}
 
   return (
     <AccountTabContainer activeTab="about">
       <>
         {userAccounts && userAccounts.length >= 2 && (
-          <React.Fragment>
+          <div>
             <Button
               text="Switch Account"
               icon={IconFont.Switch_New}
               onClick={showSwitchAccountDialog}
               testID="user-account-switch-btn"
             />
-            <hr />
-          </React.Fragment>
+            <hr style={dividerStyle} />
+          </div>
         )}
 
-        <h2 data-testid="account-settings--header"> Account Details </h2>
+        <h4 data-testid="account-settings--header"> Account Details </h4>
         <div style={labelStyle}>Account Name</div>
         <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
           <Input

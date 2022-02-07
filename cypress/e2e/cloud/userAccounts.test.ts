@@ -157,5 +157,9 @@ describe('Account Page; user with two accounts', () => {
       cy.getByTestID(`${prefix}-0-ID--input`).should('be.checked')
       cy.getByTestID('multi-account-switch-cancel').click()
     })
+
+    // reset the account name to Influx
+    cy.getByTestID('input--active-account-name').clear().type('Influx')
+    cy.getByTestID('rename-account--button').click()
   })
 })

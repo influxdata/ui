@@ -128,7 +128,7 @@ const AccountAboutPage: FC = () => {
         <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Large}>
           <Button
             onClick={() => setDeactivateAccountVisible(true)}
-            testID="rename-account--button"
+            testID="deactivate-account--button"
             text="DEACTIVATE ACCOUNT"
             style={actionButtonStyle}
           />

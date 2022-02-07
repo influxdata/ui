@@ -86,6 +86,95 @@ describe('Buckets', () => {
       cy.getByTestID(`bucket-retention`).should('contain', '7 days')
     })
 
+    it('can create a bucket with explicit schema', () => {
+      const bucket = {
+        name: 'Sunny Bucket',
+        retention: {
+          value: 'intervals',
+          duration: '72 h',
+        },
+        schema: {
+          name: 'Rainy Schema',
+          path: 'schema.csv',
+        },
+      }
+
+      cy.getByTestID('Create Bucket').click()
+
+      cy.getByTestID('overlay--container').within(() => {
+        // Name bucket
+        cy.getByTestID('bucket-form-name')
+          .type(bucket.name)
+          .should('have.value', bucket.name)
+
+        // Select retention
+        cy.getByTestID('retention-never--button').click()
+        cy.getByTestID('duration-selector').should('not.exist')
+        cy.getByTestID('retention-intervals--button').click()
+        cy.getByTestID('duration-selector')
+          .should('exist')
+          .click()
+        cy.getByTestID('duration-selector--menu')
+          .contains(bucket.retention.duration)
+          .click()
+        cy.getByTestID('duration-selector').should(
+          'contain',
+          bucket.retention.duration
+        )
+
+        cy.getByTestID('schemaBucketToggle').click()
+
+        // Toggle implicit schema (Default)
+        cy.getByTestID('implicit-bucket-schema-choice-ID').click()
+        cy.getByTestID('measurement-schema-section-parent').should('not.exist')
+
+        // Toggle explicit schema
+        cy.getByTestID('explicit-bucket-schema-choice-ID').click()
+        cy.getByTestID('measurement-schema-section-parent').should('exist')
+
+        // Add new measurement schema
+        cy.getByTestID('measurement-schema-add-file-button').click()
+        cy.getByTestID('measurement-schema-readOnly-panel-0').should('exist')
+
+        // Fail to submit a bucket that uses explicit schema while schema wasn't uploaded
+        cy.getByTestID('input-field').type(bucket.schema.name)
+        cy.getByTestID('bucket-form-submit').click({force: true})
+        cy.getByTestID('form--element-error')
+          .should('exist')
+          .and('contain.text', 'You must upload a file')
+
+        // Attach schema and submit
+        cy.getByTestID('displayArea')
+          .attachFile(bucket.schema.path, {subjectType: 'drag-n-drop'})
+          .should('have.text', bucket.schema.path)
+        cy.getByTestID('bucket-form-submit').click({force: true})
+      })
+
+      cy.getByTestID('bucket-showSchema')
+        .should('exist')
+        .click()
+
+      // Check if uploaded schema is correct
+      ;(function(filePath: string): void {
+        cy.fixture(filePath).then((text: string) => {
+          // Split file content into columns with name, type, and data type. Split each value in a column and filter out empty values
+          const columns: string[][] = text
+            .split(/\s\n|\n/)
+            .map(str => str.split(',').filter(String))
+
+          // column[0] is a format of a column, that's why it's not included in the loop
+          for (let column = 1; column < columns.length; column++) {
+            for (let i = 0; i < columns[column].length; i++) {
+              cy.getByTestID('code-snippet').should(
+                'contain.text',
+                `"${columns[0][i]}": "${columns[column][i]}"`
+              )
+            }
+          }
+        })
+      })(bucket.schema.path)
+    })
+
     it('can delete a bucket', () => {
       const bucket1 = 'newbucket1'
       cy.get<Organization>('@org').then(({id, name}: Organization) => {

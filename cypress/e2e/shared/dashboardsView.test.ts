@@ -1401,13 +1401,26 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
   })
   it('changes cell view type', () => {
     const dashName = 'dashboard'
+    var dropdowns = [
+      'band',
+      'gauge',
+      'line-plus-single-stat',
+      'heatmap',
+      'histogram',
+      'mosaic',
+      'scatter',
+      'simple-table',
+      'single-stat',
+      'table',
+    ]
+
     cy.get<Organization>('@org').then(({id}: Organization) =>
       cy.createDashboard(id, dashName).then(({body}) => {
         cy.createCell(body.id).then(cell1Resp =>
           cy.createView(body.id, cell1Resp.body.id).then(() =>
             cy.fixture('routes').then(({orgs}) =>
               cy.get<Organization>('@org').then(({id}: Organization) => {
-                cy.visit(`${orgs}/${id}/dashboards-list`)
+                cy.visit(`${orgs}/${id}/dashboards/${body.id}`)
                 cy.getByTestID('tree-nav').then(() =>
                   cy
                     .intercept('POST', '/api/v2/query?*')
@@ -1430,7 +1443,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     )
 
     // graph
-    cy.getByTestID('dashboard-card--name').click()
     cy.getByTestID('cell-context--toggle').click()
     cy.getByTestID('cell-context--configure').click()
     cy.getByTestID('page-header').should('be.visible')
@@ -1440,117 +1452,19 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     cy.getByTestID('save-cell--button').click()
     cy.wait('@loadQuery')
     cy.getByTestID('giraffe-layer-line').should('be.visible')
-
-    // band
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--band').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('cell--view-empty band').should('be.visible')
-
-    // gauge
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--gauge').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('cell--view-empty gauge').should('be.visible')
-
-    // graph + singe stat
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--line-plus-single-stat').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('giraffe-layer-line').should('be.visible')
-    cy.getByTestID('giraffe-layer-single-stat').should('be.visible')
-
-    // heatmap
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--heatmap').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('giraffe-layer-rect').should('be.visible')
-
-    // histogram
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--histogram').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('giraffe-layer-rect').should('be.visible')
-    cy.getByTestID('cell--view-empty histogram').should('exist')
-
-    // mosaic
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--mosaic').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('cell--view-empty mosaic').should('be.visible')
-
-    // scatter
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--scatter').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('giraffe-layer--scatter').should('be.visible')
-
-    // simple table skipped untill issue https://github.com/influxdata/ui/issues/3606 is resolved
-
-    // single stat
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--single-stat').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('giraffe-layer-single-stat').should('be.visible')
-
-    // table
-    cy.getByTestID('cell-context--toggle').click()
-    cy.getByTestID('cell-context--configure').click()
-    cy.getByTestID('page-header').should('be.visible')
-    cy.getByTestID('view-type--dropdown').click()
-    cy.getByTestID('dropdown-menu').should('be.visible')
-    cy.getByTestID('view-type--table').click()
-    cy.getByTestID('time-machine-submit-button').click()
-    cy.getByTestID('save-cell--button').click()
-    cy.wait('@loadQuery')
-    cy.getByTestID('_start-table-header table-graph-cell').should('be.visible')
+    ;(function() {
+      for (let i: number = 0; i < dropdowns.length; i++) {
+        cy.getByTestID('cell-context--toggle').click()
+        cy.getByTestID('cell-context--configure').click()
+        cy.getByTestID('page-header').should('be.visible')
+        cy.getByTestID('view-type--dropdown').click()
+        cy.getByTestID('dropdown-menu').should('be.visible')
+        cy.getByTestID(`view-type--${dropdowns[i]}`).click()
+        cy.getByTestID('time-machine-submit-button').click()
+        cy.getByTestID('save-cell--button').click()
+        cy.wait('@loadQuery')
+        cy.getByTestID(`cell--view-empty ${dropdowns[i]}`).should('be.visible')
+      }
+    })()
   })
 })

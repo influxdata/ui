@@ -17,6 +17,8 @@ interface Props {
   onAgreedToTerms: () => void
 }
 
+const cancellationReasonsStyles = {marginTop: '20px'}
+
 const CancellationTerms: FC<Props> = ({hasAgreedToTerms, onAgreedToTerms}) => (
   <div className="cancellation-overlay--content">
     <ul>
@@ -56,6 +58,7 @@ const CancellationTerms: FC<Props> = ({hasAgreedToTerms, onAgreedToTerms}) => (
       direction={FlexDirection.Column}
       justifyContent={JustifyContent.Center}
       margin={ComponentSize.Large}
+      style={cancellationReasonsStyles}
     >
       <CancelServiceReasonsForm />
     </FlexBox>

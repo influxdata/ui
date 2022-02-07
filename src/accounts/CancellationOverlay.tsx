@@ -46,7 +46,6 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   const handleCancelService = () => {
     if (!hasClickedCancel) {
       setHasClickedCancel(true)
-      return
     }
 
     const payload = {

@@ -1409,7 +1409,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       'histogram',
       'mosaic',
       'scatter',
-      'simple-table',
       'single-stat',
       'table',
     ]

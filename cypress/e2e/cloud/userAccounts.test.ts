@@ -159,7 +159,9 @@ describe('Account Page; user with two accounts', () => {
     })
 
     // reset the account name to Influx
-    cy.getByTestID('input--active-account-name').clear().type('Influx')
+    cy.getByTestID('input--active-account-name')
+      .clear()
+      .type('Influx')
     cy.getByTestID('rename-account--button').click()
   })
 })

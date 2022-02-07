@@ -1401,7 +1401,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
   })
   it('changes cell view type', () => {
     const dashName = 'dashboard'
-    var dropdowns = [
+    const dropdowns = [
       'band',
       'gauge',
       'line-plus-single-stat',

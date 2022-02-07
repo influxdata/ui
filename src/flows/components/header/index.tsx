@@ -31,6 +31,7 @@ import {
   List,
 } from '@influxdata/clockface'
 
+import PublishedVersions from 'src/flows/components/header/PublishedVersions'
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
@@ -153,7 +154,7 @@ const FlowHeader: FC = () => {
       try {
         const response = await postNotebooksVersion({id: flow.id})
 
-        if (response.status !== 204) {
+        if (response.status < 200 && response.status > 299) {
           throw new Error(response.data.message)
         }
 
@@ -450,6 +451,13 @@ const FlowHeader: FC = () => {
                 titleText="Export Notebook"
               />
             </FeatureFlag>
+          </Page.ControlBarRight>
+        </Page.ControlBar>
+      )}
+      {isFlagEnabled('flowPublishLifecycle') && (
+        <Page.ControlBar fullWidth>
+          <Page.ControlBarRight>
+            <PublishedVersions />
           </Page.ControlBarRight>
         </Page.ControlBar>
       )}

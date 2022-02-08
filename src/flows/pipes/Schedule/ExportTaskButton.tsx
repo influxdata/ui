@@ -106,8 +106,7 @@ const ExportTaskButton: FC<Props> = ({
         if (isFlagEnabled('createWithFlows')) {
           new Promise(resolve => {
             if (flow.id) {
-              resolve(flow.id)
-              return
+              return resolve(flow.id)
             }
 
             return add(flow).then(id => resolve(id))

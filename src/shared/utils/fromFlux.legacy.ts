@@ -26,5 +26,6 @@ export default function fromFluxLegacy(csv: string): FromFluxResult {
       newTable(parsedFlux.table.length)
     ),
     fluxGroupKeyUnion: parsedFlux.fluxGroupKeyUnion,
+    resultColumnNames: parsedFlux.resultColumnNames,
   }
 }

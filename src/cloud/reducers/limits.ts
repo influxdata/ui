@@ -106,7 +106,7 @@ export const limitsReducer = (
         if (limits.rate) {
           const {queryTime, readKBs, writeKBs, cardinality} = limits.rate
 
-          draftState.rate.queryTime.maxAllowed = queryTime
+          draftState.rate.queryTime.maxAllowed = queryTime / 1e9
           draftState.rate.readKBs.maxAllowed = readKBs
           draftState.rate.writeKBs.maxAllowed = writeKBs
           draftState.rate.cardinality.maxAllowed = cardinality

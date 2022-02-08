@@ -147,6 +147,17 @@ const OrgOverlay: FC = () => {
                 </Grid.Row>
                 <Grid.Row>
                   <Grid.Column widthMD={Columns.Three}>
+                    <Form.Label label="Query Time (seconds)" />
+                    <LimitsField
+                      type={InputType.Number}
+                      name="rate.queryTime"
+                      limits={limits}
+                      onChangeLimits={setLimits}
+                    />
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                  <Grid.Column widthMD={Columns.Three}>
                     <Form.Label label="Max Buckets" />
                     <LimitsField
                       type={InputType.Number}
@@ -198,17 +209,6 @@ const OrgOverlay: FC = () => {
                     <LimitsField
                       type={InputType.Number}
                       name="check.maxChecks"
-                      limits={limits}
-                      onChangeLimits={setLimits}
-                    />
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                  <Grid.Column widthMD={Columns.Three}>
-                    <Form.Label label="Query Time (seconds)" />
-                    <LimitsField
-                      type={InputType.Number}
-                      name="dashboard.queryTime"
                       limits={limits}
                       onChangeLimits={setLimits}
                     />

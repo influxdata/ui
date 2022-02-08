@@ -80,6 +80,8 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
+    cy.getByTestID('notification-success').should('be.visible')
+
     cy.get('@orgSetup').then(req => {
       const {
         response: {body},
@@ -116,6 +118,8 @@ describe('Onboarding', () => {
     cy.getByTestID('next').click()
 
     cy.wait('@orgSetup')
+
+    cy.getByTestID('notification-success').should('be.visible')
 
     cy.get('@orgSetup').then(req => {
       const {

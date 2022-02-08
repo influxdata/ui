@@ -37,6 +37,7 @@ import {
   Error as PkgError,
   TemplateApply,
   TemplateSummary,
+  Template
 } from 'src/client'
 import {addDashboardDefaults} from 'src/schemas/dashboards'
 
@@ -106,6 +107,22 @@ export const createDashboardFromTemplate = async (
     console.error(error)
     throw new Error(error.message)
   }
+}
+
+export const createDashboardFromPkgrTemplate = async (
+  template: Template,
+  orgID: string
+): Promise<void> => {
+  await postTemplatesApply({
+    data: {
+      orgID,
+      dryRun: false,
+      template: {
+        contentType: 'json',
+        contents: template,
+      },
+    },
+  })
 }
 
 const addDashboardLabelsFromTemplate = async (

@@ -135,6 +135,7 @@ export interface ParsedFlux {
     length: number
   }
   fluxGroupKeyUnion: string[]
+  resultColumnNames: string[]
 }
 
 export default function fromFlux(csv: string): ParsedFlux {
@@ -347,6 +348,13 @@ export default function fromFlux(csv: string): ParsedFlux {
       }
     })
 
+  const resultColumnNames = new Set<string>()
+  output?.result?.data.forEach(columnName => {
+    if (String(columnName).length > 0) {
+      resultColumnNames.add(String(columnName))
+    }
+  })
+
   return {
     table: {
       columnKeys: Object.keys(output),
@@ -354,5 +362,6 @@ export default function fromFlux(csv: string): ParsedFlux {
       length: runningTotal,
     },
     fluxGroupKeyUnion: Object.keys(groupKey),
+    resultColumnNames: Array.from(resultColumnNames),
   }
 }

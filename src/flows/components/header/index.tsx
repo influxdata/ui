@@ -146,9 +146,9 @@ const FlowHeader: FC = () => {
 
   const handleSave = useCallback(
     event => {
-      event.preventDefault()
       if (isFlagEnabled('flowPublishLifecycle')) {
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+          event.preventDefault()
           handlePublish()
         }
       }
@@ -160,7 +160,6 @@ const FlowHeader: FC = () => {
     if (isFlagEnabled('flowPublishLifecycle')) {
       window.addEventListener('keydown', handleSave)
     }
-
     return () => {
       if (isFlagEnabled('flowPublishLifecycle')) {
         window.removeEventListener('keydown', handleSave)
@@ -169,6 +168,7 @@ const FlowHeader: FC = () => {
   }, [handleSave])
 
   const handleRename = (name: string) => {
+    console.log({name})
     updateOther({name})
     try {
       updatePinnedItemByParam(flow.id, {name})

@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import {
   ButtonType,
@@ -22,6 +23,7 @@ import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {Button} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {FlowListContext} from 'src/flows/context/flow.list'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -45,8 +47,10 @@ const ExportTaskButton: FC<Props> = ({
   disabled,
 }) => {
   const {flow} = useContext(FlowContext)
+  const {add} = useContext(FlowListContext)
   const {data} = useContext(PipeContext)
   const dispatch = useDispatch()
+  const history = useHistory()
   const org = useSelector(getOrg)
 
   const onClick = () => {
@@ -100,24 +104,41 @@ const ExportTaskButton: FC<Props> = ({
         }
 
         if (isFlagEnabled('createWithFlows')) {
-          fetch(`/api/v2private/notebooks/${flow.id}/resources`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              panel: data.id,
-              resource: resp.data.id,
-              type: 'tasks',
-            }),
+          new Promise(resolve => {
+            if (flow.id) {
+              resolve(flow.id)
+              return
+            }
+
+            return add(flow).then(id => resolve(id))
           })
-        }
+            .then(id => {
+              return fetch(`/api/v2private/notebooks/${id}/resources`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  panel: data.id,
+                  resource: resp.data.id,
+                  type: 'tasks',
+                }),
+              }).then(() => {
+                return id
+              })
+            })
+            .then(id => {
+              dispatch(notify(taskCreatedSuccess()))
+              dispatch(checkTaskLimits())
 
-        dispatch(notify(taskCreatedSuccess()))
-        dispatch(checkTaskLimits())
+              if (onCreate) {
+                onCreate(resp.data)
+              }
 
-        if (onCreate) {
-          onCreate(resp.data)
+              if (id !== flow.id) {
+                history.replace(`/orgs/${org.id}/notebooks/${id}`)
+              }
+            })
         }
       })
       .catch(error => {

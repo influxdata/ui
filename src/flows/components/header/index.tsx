@@ -168,7 +168,6 @@ const FlowHeader: FC = () => {
   }, [handleSave])
 
   const handleRename = (name: string) => {
-    console.log({name})
     updateOther({name})
     try {
       updatePinnedItemByParam(flow.id, {name})

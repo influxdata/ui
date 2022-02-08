@@ -4,6 +4,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react'
 import {useDispatch} from 'react-redux'
@@ -17,6 +18,7 @@ import {
   postNotebooksVersion,
   VersionHistories,
 } from 'src/client/notebooksRoutes'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {notify} from 'src/shared/actions/notifications'
 import {
   publishNotebookFailed,
@@ -27,14 +29,12 @@ import {
 import {RemoteDataState} from 'src/types'
 
 interface ContextType {
-  handleGetNotebookVersions: () => void
   handlePublish: () => void
   publishLoading: RemoteDataState
   versions: VersionHistories
 }
 
 const DEFAULT_CONTEXT: ContextType = {
-  handleGetNotebookVersions: () => {},
   handlePublish: () => {},
   publishLoading: RemoteDataState.NotStarted,
   versions: [],
@@ -64,6 +64,12 @@ export const VersionPublishProvider: FC = ({children}) => {
     }
   }, [flow.id])
 
+  useEffect(() => {
+    if (isFlagEnabled('flowPublishLifecycle')) {
+      handleGetNotebookVersions()
+    }
+  }, [handleGetNotebookVersions])
+
   const handlePublish = useCallback(async () => {
     try {
       const response = await postNotebooksVersion({id: flow.id})
@@ -84,7 +90,6 @@ export const VersionPublishProvider: FC = ({children}) => {
   return (
     <VersionPublishContext.Provider
       value={{
-        handleGetNotebookVersions,
         handlePublish,
         publishLoading,
         versions,

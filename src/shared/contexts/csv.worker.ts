@@ -1,5 +1,6 @@
 import {csvParse, csvParseRows} from 'd3-dsv'
 
+const RESULT_COLUMN_INDEX = 1
 interface FromFluxResult {
   error?: Error
   // The single parsed `Table`
@@ -7,6 +8,9 @@ interface FromFluxResult {
 
   // The union of unique group keys from all input Flux tables
   fluxGroupKeyUnion: string[]
+
+  // All possible values of the "result" column
+  resultColumnNames: string[]
 }
 
 type Column =
@@ -87,6 +91,7 @@ const assert = (condition: boolean, errorMessage: string) => {
 const fromFlux = (fluxCSV: string): FromFluxResult => {
   const columns: Columns = {}
   const fluxGroupKeyUnion = new Set<string>()
+  const resultColumnNames = new Set<string>()
   let tableLength = 0
 
   try {
@@ -101,11 +106,29 @@ const fromFlux = (fluxCSV: string): FromFluxResult => {
     let columnDefault: any = ''
 
     for (const chunk of chunks) {
-      tableText = chunk
-        .split('\n')
-        .filter(line => !line.startsWith('#'))
-        .join('\n')
-        .trim()
+      const splittedChunk = chunk.split('\n')
+
+      const tableTexts = []
+      const annotationTexts = []
+
+      splittedChunk.forEach(line => {
+        if (line.startsWith('#')) {
+          annotationTexts.push(line)
+        } else {
+          tableTexts.push(line)
+        }
+        if (line.startsWith('#default')) {
+          const defaults = line.split(',')
+          if (
+            defaults.length >= RESULT_COLUMN_INDEX + 1 &&
+            defaults[RESULT_COLUMN_INDEX].length
+          ) {
+            resultColumnNames.add(defaults[RESULT_COLUMN_INDEX])
+          }
+        }
+      })
+
+      tableText = tableTexts.join('\n').trim()
 
       assert(
         !!tableText,
@@ -114,11 +137,7 @@ const fromFlux = (fluxCSV: string): FromFluxResult => {
 
       tableData = csvParse(tableText)
 
-      annotationText = chunk
-        .split('\n')
-        .filter(line => line.startsWith('#'))
-        .join('\n')
-        .trim()
+      annotationText = annotationTexts.join('\n').trim()
 
       assert(
         !!annotationText,
@@ -182,16 +201,18 @@ const fromFlux = (fluxCSV: string): FromFluxResult => {
     const result = {
       table,
       fluxGroupKeyUnion: Array.from(fluxGroupKeyUnion),
+      resultColumnNames: Array.from(resultColumnNames),
     }
 
     return result
   } catch (error) {
     return {
+      error,
       table: {
         columns: {},
       },
       fluxGroupKeyUnion: [],
-      error,
+      resultColumnNames: [],
     }
   }
 }

@@ -33,6 +33,7 @@ const setup = () => {
     result: {
       table,
       fluxGroupKeyUnion: ['', ''],
+      resultColumnNames: [],
       results: {},
     },
   }

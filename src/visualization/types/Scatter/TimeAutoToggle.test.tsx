@@ -51,6 +51,7 @@ describe('Time Domain Auto Toggle', () => {
       results: {
         table,
         fluxGroupKeyUnion: ['', ''],
+        resultColumnNames: [],
         ...results,
       },
       update: jest.fn(),

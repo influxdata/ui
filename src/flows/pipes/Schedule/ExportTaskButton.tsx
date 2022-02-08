@@ -106,10 +106,11 @@ const ExportTaskButton: FC<Props> = ({
         if (isFlagEnabled('createWithFlows')) {
           new Promise(resolve => {
             if (flow.id) {
-              return resolve(flow.id)
+              resolve(flow.id)
+              return
             }
 
-            return add(flow).then(id => resolve(id))
+            add(flow).then(id => resolve(id))
           })
             .then(id => {
               return fetch(`/api/v2private/notebooks/${id}/resources`, {

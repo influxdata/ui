@@ -9,11 +9,15 @@ import React, {
   RefObject,
 } from 'react'
 import {useHistory} from 'react-router-dom'
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowListContext} from 'src/flows/context/flow.list'
+import {
+  VersionPublishContext,
+  VersionPublishProvider,
+} from 'src/flows/context/version.publish'
 import {AppSettingProvider} from 'src/shared/contexts/app'
 import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 
@@ -47,18 +51,13 @@ import {
   getNotebooksShare,
   deleteNotebooksShare,
   postNotebooksShare,
-  postNotebooksVersion,
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {downloadImage} from 'src/shared/utils/download'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
-import {notify} from 'src/shared/actions/notifications'
-import {
-  publishNotebookFailed,
-  publishNotebookSuccessful,
-} from 'src/shared/copy/notifications'
+
 // Types
 import {RemoteDataState} from 'src/types'
 
@@ -124,15 +123,12 @@ interface Share {
 }
 
 const FlowHeader: FC = () => {
-  const dispatch = useDispatch()
   const {remove, clone} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
+  const {handlePublish, publishLoading} = useContext(VersionPublishContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
-  const [publishLoading, setPublishLoading] = useState<RemoteDataState>(
-    RemoteDataState.NotStarted
-  )
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
   const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
@@ -148,34 +144,12 @@ const FlowHeader: FC = () => {
       .catch(err => console.error('failed to get notebook share', err))
   }, [flow.id])
 
-  const handlePublish = useCallback(async () => {
-    if (isFlagEnabled('flowPublishLifecycle')) {
-      setPublishLoading(RemoteDataState.Loading)
-      try {
-        const response = await postNotebooksVersion({id: flow.id})
-
-        if (response.status !== 200) {
-          throw new Error(response.data.message)
-        }
-
-        dispatch(notify(publishNotebookSuccessful(flow.name)))
-        setPublishLoading(RemoteDataState.Done)
-      } catch (error) {
-        console.error({error})
-        dispatch(notify(publishNotebookFailed(flow.name)))
-        setPublishLoading(RemoteDataState.Error)
-      }
-    }
-  }, [dispatch, flow.id, flow.name])
-
   const handleSave = useCallback(
     event => {
+      event.preventDefault()
       if (isFlagEnabled('flowPublishLifecycle')) {
         if ((event.ctrlKey || event.metaKey) && event.key === 's') {
-          // Prevent the Save dialog to open
-          event.preventDefault()
           handlePublish()
-          // Place your code here
         }
       }
     },
@@ -504,6 +478,8 @@ const FlowHeader: FC = () => {
 
 export default () => (
   <AppSettingProvider>
-    <FlowHeader />
+    <VersionPublishProvider>
+      <FlowHeader />
+    </VersionPublishProvider>
   </AppSettingProvider>
 )

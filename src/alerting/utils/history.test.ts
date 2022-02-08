@@ -33,6 +33,7 @@ describe('history utils', () => {
   beforeEach(jest.clearAllMocks)
 
   const fluxGroupKeyUnion = ['']
+  const resultColumnNames = []
   const length = 100
   const cols = 20
   const table: Table = {
@@ -51,6 +52,7 @@ describe('history utils', () => {
       mocked(fromFlux).mockImplementationOnce(() => ({
         table: {...table, length: 0},
         fluxGroupKeyUnion,
+        resultColumnNames,
       }))
 
       const actual = await processResponse({
@@ -70,6 +72,7 @@ describe('history utils', () => {
       mocked(fromFlux).mockImplementationOnce(() => ({
         table,
         fluxGroupKeyUnion,
+        resultColumnNames,
       }))
       const expected = range(length).map(i =>
         Object.fromEntries([

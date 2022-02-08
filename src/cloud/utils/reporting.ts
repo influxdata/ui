@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react'
 import {isEmpty} from 'lodash'
+import amplitude from 'amplitude-js'
 
 import {
   reportPoints as reportPointsAPI,
@@ -9,10 +10,10 @@ import {
 } from 'src/cloud/apis/reporting'
 
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {CLOUD, GIT_SHA} from 'src/shared/constants'
+import {CLOUD, GIT_SHA, AMPLITUDE_KEY} from 'src/shared/constants'
 export {Point, PointTags, PointFields} from 'src/cloud/apis/reporting'
 
-let reportingTags = {}
+let reportingTags: KeyValue = {}
 let reportingPoints = []
 let reportDecayTimeout = null
 let reportMaxTimeout = null
@@ -28,6 +29,21 @@ interface KeyValue {
 
 export const updateReportingContext = (properties: KeyValue) => {
   reportingTags = {...reportingTags, ...properties}
+
+  if (AMPLITUDE_KEY && isFlagEnabled('amplitude')) {
+    const inst = amplitude.getInstance()
+
+    if (!inst._isInitialized) {
+      inst.init(AMPLITUDE_KEY)
+    }
+
+    if (properties.hasOwnProperty('userID')) {
+      delete reportingTags.userID
+      inst.setUserId(properties.userID)
+    }
+
+    inst.setUserProperties(reportingTags)
+  }
 }
 
 export const toNano = (ms: number) => Math.round(ms * 1000000)
@@ -179,6 +195,16 @@ export const event = (
   }
 
   gaEvent(measurement, {...values, ...meta})
+
+  if (AMPLITUDE_KEY && isFlagEnabled('amplitude')) {
+    const inst = amplitude.getInstance()
+
+    if (!inst._isInitialized) {
+      inst.init(AMPLITUDE_KEY)
+    }
+
+    inst.logEvent(measurement, {...values, ...meta})
+  }
 
   pooledEvent({
     timestamp: toNano(time),

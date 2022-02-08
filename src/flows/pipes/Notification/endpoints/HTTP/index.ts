@@ -45,9 +45,10 @@ export default register => {
 		messageFn: messageFn,
 		crit: trigger,
 	)
-	|> monitor["notify"](data: notification, endpoint: http["endpoint"](url: "${data.url}")(mapFn: (r) => {
-      body = {r with _version: 1}
-      return {headers: {${_headers}}, data: json["encode"](v: body)}
+  |> monitor["notify"](data: notification, endpoint: http.endpoint(url: "${data.url}")(
+    mapFn: (r) => {
+        body = {r with _version: 1}
+        return {headers: {${_headers}}, data: json.encode(v: body)}
   }))`
       return out
     },
@@ -72,9 +73,11 @@ export default register => {
         }, [])
         .join(', ')
 
-      return `http["endpoint"](url: "${data.url}")(mapFn: (r) => {
-      return {headers: {${_headers}}, data: json["encode"](v: "${TEST_NOTIFICATION}")}
-  })
+      return `http.post(
+        url: "${data.url}",
+        headers: {${_headers}},
+        data: json.encode(v: { msg: "${TEST_NOTIFICATION}"})
+      )
 
   array.from(rows: [{value: 0}])
 	|> yield(name: "ignore")`

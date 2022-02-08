@@ -14,25 +14,19 @@ describe('Onboarding Redirect', () => {
 // NOTE: important to test for OSS
 describe('Onboarding', () => {
   beforeEach(() =>
-    cy
-      .flush()
-      .then(() =>
-        cy.wrapEnvironmentVariablesForOss().then(() => cy.visit('onboarding/0'))
-      )
+    cy.flush().then(() => {
+      cy.intercept('api/v2/setup').as('orgSetup')
+      cy.wrapEnvironmentVariablesForOss().then(() => cy.visit('onboarding/0'))
+    })
   )
 
   it('Can Onboard to Quick Start', () => {
-    cy.server()
-
-    // Will want to capture response from this
-    cy.intercept('POST', 'api/v2/setup').as('orgSetup')
-
     // Check and visit splash page
     cy.getByTestID('init-step--head-main').contains('Welcome to InfluxDB')
     cy.getByTestID('credits').contains('Powered by')
     cy.getByTestID('credits').contains('InfluxData')
 
-    // Continue
+    // Continue onboarding
     cy.getByTestID('onboarding-get-started').click()
 
     cy.location('pathname').should('include', 'onboarding/1')
@@ -86,6 +80,8 @@ describe('Onboarding', () => {
 
     cy.wait('@orgSetup')
 
+    cy.getByTestID('notification-success').should('be.visible')
+
     cy.get('@orgSetup').then(req => {
       const {
         response: {body},
@@ -113,12 +109,7 @@ describe('Onboarding', () => {
   })
 
   it('Can onboard to advanced', () => {
-    cy.server()
-    cy.wrapEnvironmentVariablesForOss()
-
-    cy.intercept('api/v2/setup').as('orgSetup')
-
-    // Continue
+    // Continue onboarding
     cy.getByTestID('onboarding-get-started').click()
     cy.location('pathname').should('include', 'onboarding/1')
 
@@ -127,6 +118,8 @@ describe('Onboarding', () => {
     cy.getByTestID('next').click()
 
     cy.wait('@orgSetup')
+
+    cy.getByTestID('notification-success').should('be.visible')
 
     cy.get('@orgSetup').then(req => {
       const {
@@ -149,11 +142,7 @@ describe('Onboarding', () => {
   })
 
   it('Can onboard to configure later', () => {
-    cy.server()
-
-    cy.intercept('api/v2/setup').as('orgSetup')
-
-    // Continue
+    // Continue onboarding
     cy.getByTestID('onboarding-get-started').click()
     cy.location('pathname').should('include', 'onboarding/1')
 

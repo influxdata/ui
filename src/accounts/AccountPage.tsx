@@ -31,6 +31,11 @@ import AccountTabContainer from 'src/accounts/AccountTabContainer'
 import AccountHeader from 'src/accounts/AccountHeader'
 
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
+import CancellationOverlay from './CancellationOverlay'
+import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServiceContext'
+
+// Styles
+import './AccountPageStyles.scss'
 import {CLOUD_URL} from 'src/shared/constants'
 
 const AccountAboutPage: FC = () => {
@@ -40,6 +45,9 @@ const AccountAboutPage: FC = () => {
   const {users, handleRemoveUser} = useContext(UsersContext)
 
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
+  const [isDeactivateAccountVisible, setDeactivateAccountVisible] = useState(
+    false
+  )
 
   /**
    * confirmed with @Grace and @distortia that there is guaranteed
@@ -104,8 +112,21 @@ const AccountAboutPage: FC = () => {
   )
 
   const inputStyle = {width: 250}
-  const labelStyle = {marginBottom: 8}
-  const dividerStyle = {marginTop: '32px'}
+  const labelStyle = {marginBottom: 8, maxWidth: '500px'}
+  const dividerStyle = {marginTop: '32px', maxWidth: '500px'}
+  const actionButtonStyle = {marginTop: '24px'}
+
+  const showDeactivateAccountOverlay = () => {
+    setDeactivateAccountVisible(true)
+  }
+
+  const hideDeactivateAccountOverlay = () => {
+    setDeactivateAccountVisible(false)
+  }
+
+  const onRenameAccountBtnClick = () => {
+    handleRenameActiveAccount(activeAccount.id, activeAcctName)
+  }
 
   return (
     <AccountTabContainer activeTab="about">
@@ -122,7 +143,12 @@ const AccountAboutPage: FC = () => {
           </div>
         )}
 
-        <h4 data-testid="account-settings--header"> Account Details </h4>
+        <h4
+          data-testid="account-settings--header"
+          className="account-settings--header"
+        >
+          Account Details
+        </h4>
         <div style={labelStyle}>Account Name</div>
         <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium}>
           <Input
@@ -135,17 +161,39 @@ const AccountAboutPage: FC = () => {
             style={inputStyle}
           />
           <Button
-            onClick={() =>
-              handleRenameActiveAccount(activeAccount.id, activeAcctName)
-            }
+            onClick={onRenameAccountBtnClick}
             testID="rename-account--button"
             text="Save"
+          />
+        </FlexBox>
+        <hr style={dividerStyle} />
+        <h4
+          data-testid="account-settings--header"
+          className="account-settings--header"
+        >
+          Deactivate Account
+        </h4>
+        <div style={labelStyle}>
+          If you decide to deactivate this account, all your writes, queries,
+          and tasks will be suspended immediately.
+        </div>
+        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Large}>
+          <Button
+            onClick={showDeactivateAccountOverlay}
+            testID="deactivate-account--button"
+            text="DEACTIVATE ACCOUNT"
+            style={actionButtonStyle}
           />
         </FlexBox>
         {allowSelfRemoval && leaveAcctBtn}
         <Overlay visible={isSwitchAccountVisible}>
           <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
         </Overlay>
+        <CancelServiceProvider>
+          <Overlay visible={isDeactivateAccountVisible}>
+            <CancellationOverlay onHideOverlay={hideDeactivateAccountOverlay} />
+          </Overlay>
+        </CancelServiceProvider>
       </>
     </AccountTabContainer>
   )

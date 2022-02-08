@@ -115,11 +115,13 @@ const getVisTableMemoized = memoizeOne(fromFlux)
 
 export const getVisTable = (
   state: AppState
-): {table: Table; fluxGroupKeyUnion: string[]} => {
+): {table: Table; fluxGroupKeyUnion: string[]; resultColumnNames: string[]} => {
   const files = getActiveTimeMachine(state).queryResults.files || []
-  const {table, fluxGroupKeyUnion} = getVisTableMemoized(files.join('\n\n'))
+  const {table, fluxGroupKeyUnion, resultColumnNames} = getVisTableMemoized(
+    files.join('\n\n')
+  )
 
-  return {table, fluxGroupKeyUnion}
+  return {table, fluxGroupKeyUnion, resultColumnNames}
 }
 
 const getNumericColumnsMemoized = memoizeOne(getNumericColumnsUtil)

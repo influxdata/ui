@@ -91,7 +91,7 @@ const AccountAboutPage: FC = () => {
   // that there are more than 1 user for the account in order to develop it.
   // need to do some quartz-mock work, perhaps to get more than 1 user (heck, right now there are 0) in the
   // account
-  const allowSelfRemoval = isFlagEnabled('selfRemovalFromAccount') // && users.length > 1
+  const allowSelfRemoval = isFlagEnabled('selfRemovalFromAccount')  && users.length > 1
 
   const leaveBtnStyle = {
     width: 'auto',

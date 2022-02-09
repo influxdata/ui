@@ -91,10 +91,14 @@ const AccountAboutPage: FC = () => {
   // that there are more than 1 user for the account in order to develop it.
   // need to do some quartz-mock work, perhaps to get more than 1 user (heck, right now there are 0) in the
   // account
-  const allowSelfRemoval =
-    isFlagEnabled('selfRemovalFromAccount') && users.length > 1
+  const allowSelfRemoval = isFlagEnabled('selfRemovalFromAccount') // && users.length > 1
 
-  const leaveBtnStyle = {width: 250, marginTop: 8}
+  const leaveBtnStyle = {
+    width: 'auto',
+    marginTop: 32,
+    paddingLeft: '8px',
+    paddingRight: '8px',
+  }
 
   const leaveAcctBtn = (
     <ConfirmationButton
@@ -166,6 +170,7 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
+        {allowSelfRemoval && leaveAcctBtn}
         <hr style={dividerStyle} />
         <h4
           data-testid="account-settings--header"
@@ -185,7 +190,6 @@ const AccountAboutPage: FC = () => {
             style={actionButtonStyle}
           />
         </FlexBox>
-        {allowSelfRemoval && leaveAcctBtn}
         <Overlay visible={isSwitchAccountVisible}>
           <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
         </Overlay>

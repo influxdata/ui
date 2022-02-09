@@ -37,7 +37,7 @@ import {
   Error as PkgError,
   TemplateApply,
   TemplateSummary,
-  Template
+  Template,
 } from 'src/client'
 import {addDashboardDefaults} from 'src/schemas/dashboards'
 

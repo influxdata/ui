@@ -289,9 +289,10 @@ export const getDashboards = () => async (
   }
 }
 
-export const createDashboardFromTemplate = (
-  template: api.Template
-) => async (dispatch, getState: GetState) => {
+export const createDashboardFromTemplate = (template: api.Template) => async (
+  dispatch,
+  getState: GetState
+) => {
   try {
     const org = getOrg(getState())
 

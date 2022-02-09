@@ -1,6 +1,8 @@
 import React, {FC, useContext} from 'react'
 import {
-  ColorPicker,
+  ColorPreview,
+  CreatableTypeAheadDropdown,
+  FlexBox,
   Form,
   Input,
   InputType,
@@ -9,6 +11,11 @@ import {
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {EndpointProps} from 'src/types'
+
+/** The hex colors are suggested from here
+ *  https://github.com/influxdata/ui/issues/2572
+ */
+const suggestedColors = ['#DC4E58', '#FFB94A', '#2FA74D', '#0098F0', '#8E1FC3']
 
 const View: FC<EndpointProps> = () => {
   const {data, update} = useContext(PipeContext)
@@ -64,7 +71,21 @@ const View: FC<EndpointProps> = () => {
         />
       </Form.Element>
       <Form.Element label="Message Color">
-        <ColorPicker color={data.endpointData.color} onChange={updateColor} />
+        <CreatableTypeAheadDropdown
+          selectedOption={data.endpointData.color}
+          onSelect={updateColor}
+          options={suggestedColors}
+          placeholder="#000000"
+          inputColorPreviewOn={true}
+          customizedDropdownItem={displayText => (
+            <FlexBox>
+              <ColorPreview color={displayText} />
+              <div className="slack-message-color--dropdown-item">
+                {displayText}
+              </div>
+            </FlexBox>
+          )}
+        />
       </Form.Element>
     </div>
   )

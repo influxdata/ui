@@ -27,6 +27,7 @@ import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServi
 
 // Styles
 import './AccountPageStyles.scss'
+import {isFlagEnabled} from '../shared/utils/featureFlag'
 
 const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} = useContext(
@@ -86,6 +87,8 @@ const AccountAboutPage: FC = () => {
     handleRenameActiveAccount(activeAccount.id, activeAcctName)
   }
 
+  const showDeactivateAccountSection = isFlagEnabled('freeAccountCancellation')
+
   return (
     <AccountTabContainer activeTab="about">
       <>
@@ -124,25 +127,29 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
-        <hr style={dividerStyle} />
-        <h4
-          data-testid="account-settings--header"
-          className="account-settings--header"
-        >
-          Deactivate Account
-        </h4>
-        <div style={labelStyle}>
-          If you decide to deactivate this account, all your writes, queries,
-          and tasks will be suspended immediately.
-        </div>
-        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Large}>
-          <Button
-            onClick={showDeactivateAccountOverlay}
-            testID="deactivate-account--button"
-            text="DEACTIVATE ACCOUNT"
-            style={actionButtonStyle}
-          />
-        </FlexBox>
+        {showDeactivateAccountSection && (
+          <>
+            <hr style={dividerStyle} />
+            <h4
+              data-testid="account-settings--header"
+              className="account-settings--header"
+            >
+              Deactivate Account
+            </h4>
+            <div style={labelStyle}>
+              If you decide to deactivate this account, all your writes,
+              queries, and tasks will be suspended immediately.
+            </div>
+            <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Large}>
+              <Button
+                onClick={showDeactivateAccountOverlay}
+                testID="deactivate-account--button"
+                text="DEACTIVATE ACCOUNT"
+                style={actionButtonStyle}
+              />
+            </FlexBox>
+          </>
+        )}
         <Overlay visible={isSwitchAccountVisible}>
           <SwitchAccountOverlay onDismissOverlay={closeSwitchAccountDialog} />
         </Overlay>

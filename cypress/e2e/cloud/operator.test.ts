@@ -132,8 +132,6 @@ describe('Operator Page', () => {
     })
 
     cy.getByTestID('account-view--header').contains('operator1 (1)')
-    // should not be able to delete undeletable accounts
-    cy.getByTestID('account-delete--button').should('be.disabled')
 
     // Associated Users Section
     cy.getByTestID('associated-users--title').contains('Associated Users')
@@ -202,25 +200,6 @@ describe('Operator Page', () => {
     // cy.location().should(loc => {
     //   expect(loc.pathname).to.eq('/operator/accounts/3')
     // })
-
-    // cy.getByTestID('account-delete--button').click()
-
-    // cy.getByTestID('cf-icon alert-triangle cf-alert--icon').should('exist')
-
-    // cy.getByTestID('delete-account--confirmation-button').click()
-
-    // redirect the operator back to the operator page once deleting an account
-    // cy.location().should(loc => {
-    //   expect(loc.pathname).to.eq('/operator')
-    // })
-
-    // cy.getByTestID('operator-resource--searchbar').type('ariel', {
-    //   force: true,
-    //   delay: 50,
-    // })
-
-    // // confirm that the account has been deleted
-    // cy.getByTestID('empty-state').should('exist')
 
     cy.getByTestID('orgTab').click()
 

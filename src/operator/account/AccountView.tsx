@@ -6,7 +6,6 @@ import {AppWrapper, Page} from '@influxdata/clockface'
 import AppPageHeader from 'src/operator/AppPageHeader'
 import AssociatedOrgsTable from 'src/operator/account/AssociatedOrgsTable'
 import AssociatedUsersTable from 'src/operator/account/AssociatedUsersTable'
-import DeleteAccountOverlay from 'src/operator/account/DeleteAccountOverlay'
 import AccountViewHeader from 'src/operator/account/AccountViewHeader'
 import AccountGrid from 'src/operator/account/AccountGrid'
 import {AccountContext} from 'src/operator/context/account'
@@ -30,7 +29,6 @@ const AccountView: FC = () => {
         <Page titleTag={accountTitle} testID="account-view--header">
           <AppPageHeader title={accountTitle} />
           <Page.Contents scrollable={true}>
-            <DeleteAccountOverlay />
             <AccountViewHeader />
             <AccountGrid />
             <h2 data-testid="associated-users--title">Associated Users</h2>

@@ -476,4 +476,22 @@ describe('Flows', () => {
       .scrollIntoView()
       .should('be.visible')
   })
+
+  it('should not show "Export to Client Library" for markdown', () => {
+    cy.getByTestID('preset-new')
+      .first()
+      .click()
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    cy.getByTestID('page-title')
+      .first()
+      .click()
+    cy.getByTestID('panel-add-btn--1').click()
+    cy.getByTestID('add-flow-btn--markdown').click()
+    cy.getByTestID('sidebar-button')
+      .first()
+      .click()
+    cy.getByTestID('dropdown-menu').should('be.visible')
+    cy.getByTestID('Export to Client Library--list-item').should('not.exist')
+  })
 })

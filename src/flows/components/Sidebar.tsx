@@ -239,6 +239,16 @@ const Sidebar: FC = () => {
         {
           title: 'Export to Client Library',
           menu: <ClientList />,
+          disable: () => {
+            if (!flow.data.allIDs.includes(id)) {
+              return true
+            }
+
+            const types = new Set(['markdown'])
+            const {type} = flow.data.byID[id]
+
+            return types.has(type)
+          },
         },
         {
           title: 'Link to Source',
@@ -246,7 +256,6 @@ const Sidebar: FC = () => {
             if (!flow.data.allIDs.includes(id)) {
               return true
             }
-
             const {type} = flow.data.byID[id]
 
             if (!/^(inputs|transform)$/.test(PIPE_DEFINITIONS[type]?.family)) {

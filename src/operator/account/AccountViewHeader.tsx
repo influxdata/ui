@@ -19,7 +19,7 @@ import {AccountContext} from 'src/operator/context/account'
 import {OperatorContext} from 'src/operator/context/operator'
 
 const AccountViewHeader: FC = () => {
-  const hideDeleteAccountButton = !isFlagEnabled('freeAccountCancellation')
+  const showDeleteAccountButton = !isFlagEnabled('freeAccountCancellation')
   const {account, setVisible, visible} = useContext(AccountContext)
   const {hasWritePermissions} = useContext(OperatorContext)
 
@@ -35,7 +35,7 @@ const AccountViewHeader: FC = () => {
           Back to Account List
         </Link>
       </FlexBox.Child>
-      {hasWritePermissions && hideDeleteAccountButton && (
+      {hasWritePermissions && showDeleteAccountButton && (
         <ButtonBase
           color={ComponentColor.Danger}
           shape={ButtonShape.Default}

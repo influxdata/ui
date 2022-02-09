@@ -1399,4 +1399,71 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         .should('equal', 'rgb(241, 241, 243)')
     })
   })
+  it('changes cell view type', () => {
+    const dashName = 'dashboard'
+    const dropdowns = [
+      'band',
+      'gauge',
+      'line-plus-single-stat',
+      'heatmap',
+      'histogram',
+      'mosaic',
+      'scatter',
+      'single-stat',
+      'table',
+    ]
+
+    cy.get<Organization>('@org').then(({id}: Organization) =>
+      cy.createDashboard(id, dashName).then(({body}) => {
+        cy.createCell(body.id).then(cell1Resp =>
+          cy.createView(body.id, cell1Resp.body.id).then(() =>
+            cy.fixture('routes').then(({orgs}) =>
+              cy.get<Organization>('@org').then(({id}: Organization) => {
+                cy.visit(`${orgs}/${id}/dashboards/${body.id}`)
+                cy.getByTestID('tree-nav').then(() =>
+                  cy
+                    .intercept('POST', '/api/v2/query?*')
+                    .as('loadQuery')
+                    .then(() =>
+                      cy
+                        .writeLPDataFromFile({
+                          filename: 'data/wumpus01.lp',
+                          offset: '20m',
+                          stagger: '1m',
+                        })
+                        .should('equal', 'success')
+                    )
+                )
+              })
+            )
+          )
+        )
+      })
+    )
+
+    // graph
+    cy.getByTestID('cell-context--toggle').click()
+    cy.getByTestID('cell-context--configure').click()
+    cy.getByTestID('page-header').should('be.visible')
+    cy.getByTestID('selector-list wumpus').click()
+    cy.getByTestID('selector-list dur').click()
+    cy.getByTestID('time-machine-submit-button').click()
+    cy.getByTestID('save-cell--button').click()
+    cy.wait('@loadQuery')
+    cy.getByTestID('giraffe-layer-line').should('be.visible')
+    ;(function() {
+      for (let i: number = 0; i < dropdowns.length; i++) {
+        cy.getByTestID('cell-context--toggle').click()
+        cy.getByTestID('cell-context--configure').click()
+        cy.getByTestID('page-header').should('be.visible')
+        cy.getByTestID('view-type--dropdown').click()
+        cy.getByTestID('dropdown-menu').should('be.visible')
+        cy.getByTestID(`view-type--${dropdowns[i]}`).click()
+        cy.getByTestID('time-machine-submit-button').click()
+        cy.getByTestID('save-cell--button').click()
+        cy.wait('@loadQuery')
+        cy.getByTestID(`cell--view-empty ${dropdowns[i]}`).should('be.visible')
+      }
+    })()
+  })
 })

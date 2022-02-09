@@ -21,6 +21,7 @@ import {OperatorContext} from 'src/operator/context/operator'
 
 const AssociatedTableUsers: FC = () => {
   const {account, handleRemoveUserFromAccount} = useContext(AccountContext)
+  const hasMultipleUsers = account?.users?.length > 1
   const {hasWritePermissions} = useContext(OperatorContext)
 
   return (
@@ -41,7 +42,7 @@ const AssociatedTableUsers: FC = () => {
                 resource={resource}
                 infos={acctUserColumnInfo}
               >
-                {hasWritePermissions && (
+                {hasWritePermissions && hasMultipleUsers && (
                   <RemoveFromAccount
                     removeUser={async () => {
                       await handleRemoveUserFromAccount(resource.id)

@@ -113,7 +113,7 @@ export const createDashboardFromPkgerTemplate = async (
   template: Template,
   orgID: string
 ): Promise<void> => {
-  await postTemplatesApply({
+  const response = await postTemplatesApply({
     data: {
       orgID,
       dryRun: false,
@@ -123,6 +123,10 @@ export const createDashboardFromPkgerTemplate = async (
       },
     },
   })
+
+  if (response.status === 500) {
+    throw new Error(response.data.message)
+  }
 }
 
 const addDashboardLabelsFromTemplate = async (

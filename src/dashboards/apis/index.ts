@@ -105,6 +105,10 @@ export const downloadDashboardTemplate = async (dashboard): Promise<void> => {
     },
   })
 
+  if (resp.status === 500) {
+    throw new Error(resp.data.message)
+  }
+
   const data = await resp.data
   downloadTextFile(JSON.stringify(data), dashboard.name, '.json', 'text/json')
 }

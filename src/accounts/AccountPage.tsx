@@ -38,6 +38,13 @@ import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServi
 import './AccountPageStyles.scss'
 import {CLOUD_URL} from 'src/shared/constants'
 
+const leaveBtnStyle = {
+  width: 'auto',
+  marginTop: 32,
+  paddingLeft: '8px',
+  paddingRight: '8px',
+}
+
 const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} = useContext(
     UserAccountContext
@@ -90,13 +97,6 @@ const AccountAboutPage: FC = () => {
   const allowSelfRemoval =
     isFlagEnabled('selfRemovalFromAccount') && users.length > 1
 
-  const leaveBtnStyle = {
-    width: 'auto',
-    marginTop: 32,
-    paddingLeft: '8px',
-    paddingRight: '8px',
-  }
-
   const leaveAcctBtn = (
     <ConfirmationButton
       confirmationLabel="This action will remove yourself from accessing this organization"
@@ -109,6 +109,7 @@ const AccountAboutPage: FC = () => {
       onConfirm={handleRemove}
       testID="delete-user"
       style={leaveBtnStyle}
+      className="leave-account-button"
     />
   )
 

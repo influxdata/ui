@@ -35,6 +35,7 @@ import AutoRefreshOverlay from 'src/dashboards/components/AutoRefreshOverlay'
 import CellCloneOverlay from 'src/shared/components/cells/CellCloneOverlay'
 import CustomApiTokenOverlay from 'src/authorizations/components/CustomApiTokenOverlay'
 import DisplayTokenOverlay from 'src/authorizations/components/DisplayTokenOverlay'
+import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import CreateSecretOverlay from 'src/secrets/components/CreateSecret/CreateSecretOverlay'
 
 // Actions
@@ -131,6 +132,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'cell-copy-overlay':
         activeOverlay.current = <CellCloneOverlay />
+        break
+      case 'create-rule':
+        activeOverlay.current = <NewRuleOverlay />
         break
       case 'create-secret':
         activeOverlay.current = <CreateSecretOverlay />

@@ -7,7 +7,13 @@ export const getRuleIDs = (state: AppState): {[x: string]: boolean} => {
   )
 }
 
-export const sortRulesByName = (
-  rules: NotificationRuleDraft[]
-): NotificationRuleDraft[] =>
+
+export const sortRulesByName = <T extends {name: string}>(
+  rules: T[]
+): T[] =>
   rules.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1))
+
+export const getAllRules = (state: AppState): NotificationRuleDraft[] => {
+  const rules: NotificationRuleDraft[] = Object.values(state.resources.rules.byID)
+  return !!rules.length ? sortRulesByName(rules) : []
+}

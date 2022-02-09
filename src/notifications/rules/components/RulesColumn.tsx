@@ -1,15 +1,9 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-import {connect} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Types
-import {
-  NotificationEndpoint,
-  NotificationRuleDraft,
-  AppState,
-  ResourceType,
-} from 'src/types'
+import {ResourceType} from 'src/types'
 
 // Components
 import {
@@ -20,34 +14,34 @@ import {
 } from '@influxdata/clockface'
 import NotificationRuleCards from 'src/notifications/rules/components/RuleCards'
 import AlertsColumn from 'src/alerting/components/AlertsColumn'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 // Constants
 import {DOCS_URL_VERSION} from 'src/shared/constants/fluxFunctions'
 
 // Selectors
-import {getAll} from 'src/resources/selectors'
+import {getAllActiveEndpoints} from 'src/notifications/endpoints/selectors'
+import {getAllRules} from 'src/notifications/rules/selectors'
 
-interface OwnProps {
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
+interface Props {
   tabIndex: number
 }
 
-interface StateProps {
-  rules: NotificationRuleDraft[]
-  endpoints: NotificationEndpoint[]
-}
-
-type Props = OwnProps & StateProps & RouteComponentProps<{orgID: string}>
-
 const NotificationRulesColumn: FunctionComponent<Props> = ({
-  rules,
-  history,
-  match,
-  endpoints,
   tabIndex,
 }) => {
+  const dispatch = useDispatch()
+  const endpoints = useSelector(getAllActiveEndpoints)
+  const rules = useSelector(getAllRules)
+
   const handleOpenOverlay = () => {
-    const newRuleRoute = `/orgs/${match.params.orgID}/alerting/rules/new`
-    history.push(newRuleRoute)
+    event('Create Notification Rule opened')
+    dispatch(
+      showOverlay('create-rule', null, () => dispatch(dismissOverlay()))
+    )
   }
 
   const tooltipContents = (
@@ -106,21 +100,4 @@ const NotificationRulesColumn: FunctionComponent<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const rules = getAll<NotificationRuleDraft>(
-    state,
-    ResourceType.NotificationRules
-  )
-
-  const endpoints = getAll<NotificationEndpoint>(
-    state,
-    ResourceType.NotificationEndpoints
-  )
-
-  return {rules, endpoints}
-}
-
-export default connect<StateProps>(
-  mstp,
-  null
-)(withRouter(NotificationRulesColumn))
+export default NotificationRulesColumn

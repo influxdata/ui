@@ -24,10 +24,10 @@ import AccountHeader from 'src/accounts/AccountHeader'
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
 import CancellationOverlay from './CancellationOverlay'
 import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServiceContext'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import './AccountPageStyles.scss'
-import {isFlagEnabled} from '../shared/utils/featureFlag'
 
 const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} = useContext(

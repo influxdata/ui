@@ -109,7 +109,6 @@ const AccountAboutPage: FC = () => {
       onConfirm={handleRemove}
       testID="delete-user"
       style={leaveBtnStyle}
-      className="leave-account-button"
     />
   )
 

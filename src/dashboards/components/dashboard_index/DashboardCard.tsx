@@ -71,6 +71,9 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
 
+const fontWeight = {fontWeight: '500px'}
+const minWidth = {minWidth: '165px'}
+
 class DashboardCard extends PureComponent<Props> {
   public render() {
     const {
@@ -180,21 +183,21 @@ class DashboardCard extends PureComponent<Props> {
         <Popover
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
-          style={{minWidth: '112px'}}
+          style={minWidth}
           contents={() => (
             <List>
               <List.Item
                 onClick={this.handleExport}
                 size={ComponentSize.Small}
-                style={{fontWeight: 500}}
+                style={fontWeight}
                 testID="context-export-dashboard"
               >
-                Export
+                Download Template
               </List.Item>
               <List.Item
                 onClick={this.handleCloneDashboard}
                 size={ComponentSize.Small}
-                style={{fontWeight: 500}}
+                style={fontWeight}
                 testID="context-clone-dashboard"
               >
                 Clone
@@ -204,7 +207,7 @@ class DashboardCard extends PureComponent<Props> {
                   onClick={this.handlePinDashboard}
                   disabled={this.props.isPinned}
                   size={ComponentSize.Small}
-                  style={{fontWeight: 500}}
+                  style={fontWeight}
                   testID="context-pin-dashboard"
                 >
                   Pin

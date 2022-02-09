@@ -3,6 +3,8 @@ import React, {createRef, PureComponent, RefObject} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
+import {downloadDashboardTemplate} from 'src/dashboards/apis'
+
 // Components
 import {
   IconFont,
@@ -182,6 +184,14 @@ class DashboardCard extends PureComponent<Props> {
           contents={() => (
             <List>
               <List.Item
+                onClick={this.handleExport}
+                size={ComponentSize.Small}
+                style={{fontWeight: 500}}
+                testID="context-export-dashboard"
+              >
+                Export
+              </List.Item>
+              <List.Item
                 onClick={this.handleCloneDashboard}
                 size={ComponentSize.Small}
                 style={{fontWeight: 500}}
@@ -261,6 +271,10 @@ class DashboardCard extends PureComponent<Props> {
 
     onRemoveDashboardLabel(id, label)
   }
+
+  private handleExport = () => {
+    downloadDashboardTemplate(this.props.dashboard)
+  }
 }
 
 const mdtp = {
@@ -273,13 +287,15 @@ const mdtp = {
   sendNotification: notify,
 }
 
-const mstp = (state: AppState) => {
+const mstp = (state: AppState, props: OwnProps) => {
+  const dashboard = state.resources.dashboards.byID[props.id]
   const me = getMe(state)
   const org = getOrg(state)
 
   return {
-    org,
+    dashboard,
     me,
+    org,
   }
 }
 const connector = connect(mstp, mdtp)

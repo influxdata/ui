@@ -12,12 +12,14 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import {Link} from 'react-router-dom'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Contexts
 import {AccountContext} from 'src/operator/context/account'
 import {OperatorContext} from 'src/operator/context/operator'
 
 const AccountViewHeader: FC = () => {
+  const hideDeleteAccountButton = !isFlagEnabled('freeAccountCancellation')
   const {account, setVisible, visible} = useContext(AccountContext)
   const {hasWritePermissions} = useContext(OperatorContext)
 
@@ -33,7 +35,7 @@ const AccountViewHeader: FC = () => {
           Back to Account List
         </Link>
       </FlexBox.Child>
-      {hasWritePermissions && (
+      {hasWritePermissions && hideDeleteAccountButton && (
         <ButtonBase
           color={ComponentColor.Danger}
           shape={ButtonShape.Default}

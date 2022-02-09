@@ -1,8 +1,13 @@
 // Libraries
 import React, {FC, useContext, useEffect, useState} from 'react'
+import {useSelector} from 'react-redux'
+
 import {
   Button,
+  ButtonShape,
+  ComponentColor,
   ComponentSize,
+  ConfirmationButton,
   FlexBox,
   FlexDirection,
   IconFont,
@@ -12,7 +17,11 @@ import {
   Page,
 } from '@influxdata/clockface'
 
+import {getMe} from 'src/me/selectors'
+import {UsersContext} from 'src/users/context/users'
+
 // Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {
   UserAccountContext,
@@ -24,15 +33,24 @@ import AccountHeader from 'src/accounts/AccountHeader'
 import {SwitchAccountOverlay} from 'src/accounts/SwitchAccountOverlay'
 import CancellationOverlay from './CancellationOverlay'
 import CancelServiceProvider from 'src/billing/components/PayAsYouGo/CancelServiceContext'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import './AccountPageStyles.scss'
+import {CLOUD_URL} from 'src/shared/constants'
+
+const leaveBtnStyle = {
+  width: 'auto',
+  marginTop: 32,
+  paddingLeft: '8px',
+  paddingRight: '8px',
+}
 
 const AccountAboutPage: FC = () => {
   const {userAccounts, handleRenameActiveAccount} = useContext(
     UserAccountContext
   )
+  const {users, handleRemoveUser} = useContext(UsersContext)
+
   const [isSwitchAccountVisible, setSwitchAccountVisible] = useState(false)
   const [isDeactivateAccountVisible, setDeactivateAccountVisible] = useState(
     false
@@ -69,6 +87,30 @@ const AccountAboutPage: FC = () => {
   const closeSwitchAccountDialog = () => {
     setSwitchAccountVisible(false)
   }
+  const currentUserId = useSelector(getMe)?.id
+
+  const handleRemove = () => {
+    handleRemoveUser(currentUserId)
+    window.location.href = CLOUD_URL
+  }
+
+  const allowSelfRemoval =
+    isFlagEnabled('selfRemovalFromAccount') && users.length > 1
+
+  const leaveAcctBtn = (
+    <ConfirmationButton
+      confirmationLabel="This action will remove yourself from accessing this organization"
+      confirmationButtonText="Leave Account"
+      titleText="Leave Account"
+      text="Leave Account"
+      confirmationButtonColor={ComponentColor.Danger}
+      color={ComponentColor.Default}
+      shape={ButtonShape.Square}
+      onConfirm={handleRemove}
+      testID="delete-user"
+      style={leaveBtnStyle}
+    />
+  )
 
   const inputStyle = {width: 250}
   const labelStyle = {marginBottom: 8, maxWidth: '500px'}
@@ -127,6 +169,7 @@ const AccountAboutPage: FC = () => {
             text="Save"
           />
         </FlexBox>
+        {allowSelfRemoval && leaveAcctBtn}
         {showDeactivateAccountSection && (
           <>
             <hr style={dividerStyle} />

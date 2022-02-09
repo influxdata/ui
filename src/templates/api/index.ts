@@ -109,7 +109,7 @@ export const createDashboardFromTemplate = async (
   }
 }
 
-export const createDashboardFromPkgrTemplate = async (
+export const createDashboardFromPkgerTemplate = async (
   template: Template,
   orgID: string
 ): Promise<void> => {

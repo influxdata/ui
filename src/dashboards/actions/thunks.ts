@@ -7,7 +7,7 @@ import {get} from 'lodash'
 // APIs
 import * as dashAPI from 'src/dashboards/apis'
 import * as api from 'src/client'
-import {createDashboardFromPkgrTemplate} from 'src/templates/api'
+import {createDashboardFromPkgerTemplate} from 'src/templates/api'
 import {createCellWithView} from 'src/cells/actions/thunks'
 
 // Schemas
@@ -296,7 +296,7 @@ export const createDashboardFromTemplate = (template: api.Template) => async (
   try {
     const org = getOrg(getState())
 
-    await createDashboardFromPkgrTemplate(template, org.id)
+    await createDashboardFromPkgerTemplate(template, org.id)
 
     const resp = await api.getDashboards({query: {orgID: org.id}})
 

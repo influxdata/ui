@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {RouteComponentProps} from 'react-router-dom'
+import {Route, RouteComponentProps, Switch} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 import {AutoSizer} from 'react-virtualized'
 
@@ -22,6 +22,7 @@ import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
+import DashboardImportOverlay from 'src/dashboards/components/DashboardImportOverlay'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -141,6 +142,7 @@ class DashboardIndex extends PureComponent<Props, State> {
                 <AddResourceDropdown
                   onSelectNew={createDashboard}
                   onSelectTemplate={this.summonTemplatePage}
+                  onSelectImport={this.summonImportOverlay}
                   resourceName="Dashboard"
                   limitStatus={limitStatus}
                 />
@@ -186,8 +188,24 @@ class DashboardIndex extends PureComponent<Props, State> {
             </Page.Contents>
           </ErrorBoundary>
         </Page>
+        <Switch>
+          <Route
+            path="/orgs/:orgID/dashboards-list/import"
+            component={DashboardImportOverlay}
+          />
+        </Switch>
       </SpinnerContainer>
     )
+  }
+
+  private summonImportOverlay = (): void => {
+    const {
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+    history.push(`/orgs/${orgID}/dashboards-list/import`)
   }
 
   private handleFilterDashboards = (searchTerm: string): void => {

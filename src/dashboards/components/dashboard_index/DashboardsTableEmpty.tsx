@@ -16,12 +16,14 @@ import {ResourceType} from 'src/types'
 interface ComponentProps {
   searchTerm?: string
   onCreateDashboard: typeof createDashboard
+  summonImportOverlay: () => void
   summonImportFromTemplateOverlay: () => void
 }
 
 const DashboardsTableEmpty: FC<ComponentProps> = ({
   searchTerm,
   onCreateDashboard,
+  summonImportOverlay,
   summonImportFromTemplateOverlay,
 }) => {
   if (searchTerm) {
@@ -42,6 +44,7 @@ const DashboardsTableEmpty: FC<ComponentProps> = ({
           </EmptyState.Text>
           <AddResourceDropdown
             onSelectNew={onCreateDashboard}
+            onSelectImport={summonImportOverlay}
             onSelectTemplate={summonImportFromTemplateOverlay}
             resourceName="Dashboard"
           />
@@ -60,6 +63,7 @@ const DashboardsTableEmpty: FC<ComponentProps> = ({
               </EmptyState.Text>
               <AddResourceDropdown
                 onSelectNew={onCreateDashboard}
+                onSelectImport={summonImportOverlay}
                 onSelectTemplate={summonImportFromTemplateOverlay}
                 resourceName="Dashboard"
               />

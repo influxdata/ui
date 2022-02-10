@@ -140,6 +140,7 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
           searchTerm={searchTerm}
           onCreateDashboard={onCreateDashboard}
           summonImportFromTemplateOverlay={this.summonImportFromTemplateOverlay}
+          summonImportOverlay={this.summonImportOverlay}
         />
       )
     }
@@ -167,6 +168,16 @@ class DashboardsIndexContents extends Component<Props> implements Pageable {
         />
       </>
     )
+  }
+
+  private summonImportOverlay = (): void => {
+    const {
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+    history.push(`/orgs/${orgID}/dashboards-list/import`)
   }
 
   private summonImportFromTemplateOverlay = (): void => {

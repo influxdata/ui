@@ -1,5 +1,9 @@
 // APIs
 import * as api from 'src/client'
+import {postTemplatesExport} from 'src/client'
+
+// Utils
+import {downloadTextFile} from 'src/shared/utils/download'
 
 // Types
 import {Cell, View, NewView, RemoteDataState} from 'src/types'
@@ -87,4 +91,24 @@ export const cloneUtilFunc = async (
       })
     }
   })
+}
+
+export const downloadDashboardTemplate = async (dashboard): Promise<void> => {
+  const resp = await postTemplatesExport({
+    data: {
+      resources: [
+        {
+          kind: 'Dashboard',
+          id: dashboard.id,
+        },
+      ],
+    },
+  })
+
+  if (resp.status === 500) {
+    throw new Error(resp.data.message)
+  }
+
+  const data = await resp.data
+  downloadTextFile(JSON.stringify(data), dashboard.name, '.json', 'text/json')
 }

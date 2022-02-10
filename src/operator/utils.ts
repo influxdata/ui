@@ -1,12 +1,17 @@
-import {hoursToNs, nsToHours} from 'src/billing/utils/timeHelpers'
+import {
+  hoursToNs,
+  nsToHours,
+  nsToSeconds,
+  secondsToNs,
+} from 'src/billing/utils/timeHelpers'
 
 // Types
-import {OrgLimits} from 'src/types'
+import {OperatorOrgLimits} from 'src/types'
 
 const updateMaxRetentionWithCallback = (
-  limits: OrgLimits,
+  limits: OperatorOrgLimits,
   cb: typeof nsToHours | typeof hoursToNs
-): OrgLimits => ({
+): OperatorOrgLimits => ({
   ...limits,
   bucket: {
     ...limits?.bucket,
@@ -14,8 +19,27 @@ const updateMaxRetentionWithCallback = (
   },
 })
 
-export const toDisplayLimits = (limits: OrgLimits): OrgLimits =>
-  updateMaxRetentionWithCallback(limits, nsToHours)
+const updateQueryTimeWithCallback = (
+  limits: OperatorOrgLimits,
+  cb: typeof nsToSeconds | typeof secondsToNs
+): OperatorOrgLimits => ({
+  ...limits,
+  rate: {
+    ...limits?.rate,
+    queryTime: cb(limits?.rate?.queryTime),
+  },
+})
 
-export const fromDisplayLimits = (displayLimits: OrgLimits): OrgLimits =>
-  updateMaxRetentionWithCallback(displayLimits, hoursToNs)
+export const toDisplayLimits = (
+  limits: OperatorOrgLimits
+): OperatorOrgLimits => {
+  const newLimits = updateMaxRetentionWithCallback(limits, nsToHours)
+  return updateQueryTimeWithCallback(newLimits, nsToSeconds)
+}
+
+export const fromDisplayLimits = (
+  displayLimits: OperatorOrgLimits
+): OperatorOrgLimits => {
+  const newLimits = updateMaxRetentionWithCallback(displayLimits, hoursToNs)
+  return updateQueryTimeWithCallback(newLimits, secondsToNs)
+}

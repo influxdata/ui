@@ -3,6 +3,8 @@ import React, {createRef, PureComponent, RefObject} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
+import {downloadDashboardTemplate} from 'src/dashboards/apis'
+
 // Components
 import {
   IconFont,
@@ -68,6 +70,9 @@ interface OwnProps {
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
+
+const fontWeight = {fontWeight: '500px'}
+const minWidth = {minWidth: '165px'}
 
 class DashboardCard extends PureComponent<Props> {
   public render() {
@@ -178,13 +183,21 @@ class DashboardCard extends PureComponent<Props> {
         <Popover
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
-          style={{minWidth: '112px'}}
+          style={minWidth}
           contents={() => (
             <List>
               <List.Item
+                onClick={this.handleExport}
+                size={ComponentSize.Small}
+                style={fontWeight}
+                testID="context-export-dashboard"
+              >
+                Download Template
+              </List.Item>
+              <List.Item
                 onClick={this.handleCloneDashboard}
                 size={ComponentSize.Small}
-                style={{fontWeight: 500}}
+                style={fontWeight}
                 testID="context-clone-dashboard"
               >
                 Clone
@@ -194,7 +207,7 @@ class DashboardCard extends PureComponent<Props> {
                   onClick={this.handlePinDashboard}
                   disabled={this.props.isPinned}
                   size={ComponentSize.Small}
-                  style={{fontWeight: 500}}
+                  style={fontWeight}
                   testID="context-pin-dashboard"
                 >
                   Pin
@@ -261,6 +274,10 @@ class DashboardCard extends PureComponent<Props> {
 
     onRemoveDashboardLabel(id, label)
   }
+
+  private handleExport = () => {
+    downloadDashboardTemplate(this.props.dashboard)
+  }
 }
 
 const mdtp = {
@@ -273,13 +290,15 @@ const mdtp = {
   sendNotification: notify,
 }
 
-const mstp = (state: AppState) => {
+const mstp = (state: AppState, props: OwnProps) => {
+  const dashboard = state.resources.dashboards.byID[props.id]
   const me = getMe(state)
   const org = getOrg(state)
 
   return {
-    org,
+    dashboard,
     me,
+    org,
   }
 }
 const connector = connect(mstp, mdtp)

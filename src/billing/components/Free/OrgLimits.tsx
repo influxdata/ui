@@ -43,19 +43,21 @@ const OrgLimits: FC = () => {
             })
         }
         if (name === 'rate') {
-          return Object.entries(value).map(([n, v]: [string, Limit]) => {
-            return (
-              <Grid.Column
-                key={n}
-                widthXS={Columns.Twelve}
-                widthSM={Columns.Six}
-                widthMD={Columns.Four}
-                widthLG={Columns.Three}
-              >
-                <OrgLimitStat name={n} value={v.maxAllowed} />
-              </Grid.Column>
-            )
-          })
+          return Object.entries(value)
+            .filter(([n]) => n !== 'queryTime')
+            .map(([n, v]: [string, Limit]) => {
+              return (
+                <Grid.Column
+                  key={n}
+                  widthXS={Columns.Twelve}
+                  widthSM={Columns.Six}
+                  widthMD={Columns.Four}
+                  widthLG={Columns.Three}
+                >
+                  <OrgLimitStat name={n} value={v.maxAllowed} />
+                </Grid.Column>
+              )
+            })
         }
         return (
           <Grid.Column

@@ -476,4 +476,75 @@ describe('Flows', () => {
       .scrollIntoView()
       .should('be.visible')
   })
+
+  it('should validate all dropdown menuitems', () => {
+    cy.getByTestID('preset-new')
+      .first()
+      .click()
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    cy.getByTestID('page-title')
+      .first()
+      .click()
+
+    const defaultMenuItems = ['Delete', 'Share', 'Duplicate', 'Hide panel']
+    const items = [
+      {
+        panel: 'queryBuilder',
+        menuItems: [
+          ...defaultMenuItems,
+          'Convert to |> Flux',
+          'Export to Client Library',
+          'Link to Source',
+          'Link to Results',
+        ],
+      },
+      {
+        panel: 'rawFluxEditor',
+        menuItems: [
+          ...defaultMenuItems,
+          'Export to Client Library',
+          'Link to Source',
+          'Link to Results',
+        ],
+      },
+      {
+        panel: 'table',
+        menuItems: [...defaultMenuItems],
+      },
+      {
+        panel: 'visualization',
+        menuItems: [...defaultMenuItems],
+      },
+      {
+        panel: 'markdown',
+        menuItems: [...defaultMenuItems],
+      },
+      {
+        panel: 'notification',
+        menuItems: [...defaultMenuItems],
+      },
+      {
+        panel: 'schedule',
+        menuItems: [...defaultMenuItems],
+      },
+    ]
+    items.forEach(item => {
+      cy.getByTestID('panel-add-btn--1').click()
+      // ugh.. cypress being cypress with ``
+      const panelTestId = 'add-flow-btn--' + item.panel
+      cy.getByTestID(panelTestId).click()
+      cy.getByTestID('sidebar-button')
+        .first()
+        .click()
+      cy.getByTestID('dropdown-menu').should('be.visible')
+      cy.getByTestID('dropdown-menu--contents')
+        .find('.flow-sidebar--dropdownmenu-container')
+        .children()
+        .should('have.length', item.menuItems.length)
+      item.menuItems.forEach(menuItem => {
+        cy.getByTestID(menuItem + '--list-item').should('be.visible')
+      })
+    })
+  })
 })

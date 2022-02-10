@@ -105,6 +105,7 @@ describe('Operator Page', () => {
       'rate.readKBs',
       'rate.writeKBs',
       'rate.cardinality',
+      'rate.queryTime',
       'bucket.maxBuckets',
       'bucket.maxRetentionDuration',
       'notificationRule.maxNotifications',

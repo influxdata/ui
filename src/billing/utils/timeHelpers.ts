@@ -7,8 +7,9 @@ const hoursPerDay = 24
 
 const secondsPerHour = minutesPerHour * secondsPerMinute
 
-const nanoPerHour =
-  secondsPerHour * milliPerSecond * microPerMilli * nanoPerMicro
+const nanoPerSecond = milliPerSecond * microPerMilli * nanoPerMicro
+
+const nanoPerHour = secondsPerHour * nanoPerSecond
 
 export const nsToHours = (ns: number): number => {
   if (ns === -1) {
@@ -57,4 +58,20 @@ export const minToSeconds = (min: number) => {
     return min
   }
   return min * secondsPerMinute
+}
+
+export const nsToSeconds = (ns: number): number => {
+  if (ns === -1) {
+    return ns
+  }
+
+  return ns / nanoPerSecond
+}
+
+export const secondsToNs = (seconds: number): number => {
+  if (seconds === -1) {
+    return seconds
+  }
+
+  return seconds * nanoPerSecond
 }

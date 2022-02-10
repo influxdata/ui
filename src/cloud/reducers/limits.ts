@@ -19,6 +19,7 @@ export interface LimitsState {
   endpoints: LimitWithBlocked
   rate: {
     readKBs: Limit
+    queryTime: Limit
     writeKBs: Limit
     cardinality: Limit
   }
@@ -41,6 +42,7 @@ export const defaultState: LimitsState = {
   endpoints: defaultLimitWithBlocked,
   rate: {
     readKBs: defaultLimit,
+    queryTime: defaultLimit,
     writeKBs: defaultLimit,
     cardinality: defaultLimit,
   },
@@ -102,8 +104,9 @@ export const limitsReducer = (
         }
 
         if (limits.rate) {
-          const {readKBs, writeKBs, cardinality} = limits.rate
+          const {queryTime, readKBs, writeKBs, cardinality} = limits.rate
 
+          draftState.rate.queryTime.maxAllowed = queryTime / 1e9
           draftState.rate.readKBs.maxAllowed = readKBs
           draftState.rate.writeKBs.maxAllowed = writeKBs
           draftState.rate.cardinality.maxAllowed = cardinality
@@ -139,6 +142,11 @@ export const limitsReducer = (
 
       case ActionTypes.SetEndpointsLimitStatus: {
         draftState.endpoints.limitStatus = action.payload.limitStatus
+        return
+      }
+
+      case ActionTypes.SetQueryTimeRateLimitStatus: {
+        draftState.rate.queryTime.limitStatus = action.payload.limitStatus
         return
       }
 

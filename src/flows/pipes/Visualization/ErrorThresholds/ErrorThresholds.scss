@@ -1,0 +1,24 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+$text-block-width: 56px;
+
+.threshold-entry--container {
+  position: relative;
+  left: calc($text-block-width + $cf-marg-a);
+  width: 263px;
+  margin-bottom: $cf-marg-b;
+}
+
+.error-threshold--text-block {
+  min-width: $text-block-width;
+  text-align: right;
+  background: transparent;
+}
+
+.error-threshold-flex--margin {
+  margin: 0 $cf-marg-a $cf-marg-b;
+}
+
+.add-error-threshold--button {
+  width: 100%;
+}

@@ -13,7 +13,7 @@ import {
 } from 'src/visualization'
 import {ViewType} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
-import ErrorThresholds from 'src/flows/pipes/Visualization/ErrorThresholds'
+import ErrorThresholds from 'src/flows/pipes/Visualization/ErrorThresholds/ErrorThresholds'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -35,12 +35,12 @@ const WrappedViewOptions: FC = () => {
 
   return (
     <>
+      {isFlagEnabled('flowErrorThresholds') && <ErrorThresholds />}
       <ViewOptions
         properties={data.properties}
         results={results.parsed}
         update={updateProperties}
       />
-      {isFlagEnabled('flowErrorThresholds') && <ErrorThresholds />}
     </>
   )
 }

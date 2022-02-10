@@ -244,10 +244,13 @@ const Sidebar: FC = () => {
               return true
             }
 
-            const types = new Set(['markdown'])
             const {type} = flow.data.byID[id]
 
-            return types.has(type)
+            if (!/^(inputs)$/.test(PIPE_DEFINITIONS[type]?.family)) {
+              return true
+            }
+
+            return false
           },
         },
         {

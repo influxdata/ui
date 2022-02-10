@@ -24,6 +24,7 @@ import {AppState, Organization} from 'src/types'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {buildDeepLinkingMap} from 'src/utils/deepLinks'
 
 // Components
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
@@ -157,21 +158,13 @@ class NotFound extends Component<Props> {
         org = await fetchOrg()
       }
 
-      const deepLinkingMap = {
-        '/me/alerts': `/orgs/${org.id}/alerting`,
-        '/me/billing': `/orgs/${org.id}/billing`,
-        '/me/dashboards': `/orgs/${org.id}/dashboards-list`,
-        '/me/notebooks': `/orgs/${org.id}/notebooks`,
-        '/me/tasks': `/orgs/${org.id}/tasks`,
-        '/me/usage': `/orgs/${org.id}/usage`,
-      }
+      const deepLinkingMap = buildDeepLinkingMap(org)
 
       if (deepLinkingMap.hasOwnProperty(this.props.location.pathname)) {
         this.props.history.replace(deepLinkingMap[this.props.location.pathname])
         return
-      } else {
-        this.setState({isFetchingOrg: false})
       }
+      this.setState({isFetchingOrg: false})
     }
   }
 

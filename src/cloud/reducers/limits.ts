@@ -145,7 +145,7 @@ export const limitsReducer = (
         return
       }
 
-      case ActionTypes.SetQueryTimeLimitStatus: {
+      case ActionTypes.SetQueryTimeRateLimitStatus: {
         draftState.rate.queryTime.limitStatus = action.payload.limitStatus
         return
       }

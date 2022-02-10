@@ -18,7 +18,7 @@ import {
 import {toDisplayLimits} from 'src/operator/utils'
 
 // Types
-import {OrgLimits, OperatorOrg} from 'src/types'
+import {OperatorOrgLimits, OperatorOrg} from 'src/types'
 import {RemoteDataState} from 'src/types'
 
 export type Props = {
@@ -26,26 +26,26 @@ export type Props = {
 }
 
 export interface OverlayContextType {
-  limits: OrgLimits
+  limits: OperatorOrgLimits
   limitsStatus: RemoteDataState
   handleGetLimits: (id: string) => void
   handleGetOrg: (id: string) => void
-  handleUpdateLimits: (id: string, limits: OrgLimits) => void
+  handleUpdateLimits: (id: string, limits: OperatorOrgLimits) => void
   organization: OperatorOrg
   orgStatus: RemoteDataState
-  setLimits: (_: OrgLimits) => void
+  setLimits: (_: OperatorOrgLimits) => void
   updateLimitStatus: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: OverlayContextType = {
   handleGetLimits: (_: string) => {},
   handleGetOrg: (_: string) => {},
-  handleUpdateLimits: (_id: string, _limits: OrgLimits) => {},
+  handleUpdateLimits: (_id: string, _limits: OperatorOrgLimits) => {},
   limits: null,
   limitsStatus: RemoteDataState.NotStarted,
   organization: null,
   orgStatus: RemoteDataState.NotStarted,
-  setLimits: (_: OrgLimits) => {},
+  setLimits: (_: OperatorOrgLimits) => {},
   updateLimitStatus: RemoteDataState.NotStarted,
 }
 
@@ -111,7 +111,7 @@ export const OverlayProvider: FC<Props> = React.memo(({children}) => {
   )
 
   const handleUpdateLimits = useCallback(
-    async (id: string, updatedLimits: OrgLimits) => {
+    async (id: string, updatedLimits: OperatorOrgLimits) => {
       try {
         setUpdateLimitStatus(RemoteDataState.Loading)
         await putOperatorOrgsLimits({orgId: id, data: updatedLimits})

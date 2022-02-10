@@ -21,10 +21,6 @@
     margin-right: 0px;
   }
 
-  .cf-color-picker--selected {
-    top: 19px;
-  }
-
   .cf-color-picker--form .cf-input-field {
     height: 38px;
     font-size: 14px;
@@ -54,4 +50,8 @@
 .endpoint-list--element {
   flex: 1;
   max-width: 14%;
+}
+
+.slack-message-color--dropdown-item {
+  padding-left: 26px;
 }

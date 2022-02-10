@@ -90,7 +90,7 @@ describe('labels', () => {
     cy.getByTestID('color-picker--input')
       .parent()
       .parent()
-      .children('div.cf-color-picker--selected')
+      .children('div.cf-color-preview')
       .invoke('attr', 'style')
       .should('equal', 'background-color: rgb(255, 210, 85);')
 
@@ -116,7 +116,7 @@ describe('labels', () => {
         cy.getByTestID('color-picker--input')
           .parent()
           .parent()
-          .children('div.cf-color-picker--selected')
+          .children('div.cf-color-preview')
           .invoke('attr', 'style')
           .should('equal', hex2BgColor(hex))
       })
@@ -127,7 +127,7 @@ describe('labels', () => {
     cy.getByTestID('color-picker--input')
       .parent()
       .parent()
-      .children('div.cf-color-picker--selected')
+      .children('div.cf-color-preview')
       .invoke('attr', 'style')
       .should('equal', hex2BgColor(newLabelColor))
 

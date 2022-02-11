@@ -27,6 +27,8 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {useHistory} from 'react-router-dom'
 import {getErrorMessage} from 'src/utils/api'
+import {setMe} from '../../me/actions/creators'
+import {MeState} from '../../me/reducers'
 
 export type Props = {
   children: JSX.Element
@@ -158,6 +160,13 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         // change the name, and reset the active accts:
         userAccounts[activeIndex].name = newName
         setUserAccounts(userAccounts)
+
+        if (isFlagEnabled('avatarNameForMultiAccountFix')) {
+          const name = resp.data.name
+          const id = resp.data.id.toString()
+          // update the state
+          dispatch(setMe({name, id} as MeState))
+        }
       }
     } catch (error) {
       dispatch(notify(accountRenameError(oldName)))

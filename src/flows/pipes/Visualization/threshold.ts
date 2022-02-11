@@ -14,6 +14,10 @@ export type Threshold = {
   deadmanStopValue: string
 }
 
+export interface ErrorThreshold extends Threshold {
+  fieldType: string
+}
+
 export const COMMON_THRESHOLD_TYPES = {
   greater: {
     name: 'greater than',
@@ -56,6 +60,19 @@ export const COMMON_THRESHOLD_TYPES = {
     format: ThresholdFormat.Range,
     condition: data =>
       `(r) => (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
+  },
+}
+
+export const EQUALITY_THRESHOLD_TYPES = {
+  equal: {
+    name: 'equal to',
+    format: ThresholdFormat.Value,
+    condition: data => `(r) => (r["${data.field}"] == ${data.value})`,
+  },
+  'not-equal': {
+    name: 'not equal to',
+    format: ThresholdFormat.Value,
+    condition: data => `(r) => (r["${data.field}"] != ${data.value})`,
   },
 }
 

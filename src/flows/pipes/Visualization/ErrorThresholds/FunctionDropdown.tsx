@@ -7,12 +7,13 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
 import {
   COMMON_THRESHOLD_TYPES,
-  Threshold,
+  EQUALITY_THRESHOLD_TYPES,
+  ErrorThreshold,
   ThresholdFormat,
 } from 'src/flows/pipes/Visualization/threshold'
 
 type Props = {
-  threshold: Threshold
+  threshold: ErrorThreshold
   index: number
 }
 const FunctionDropdown: FC<Props> = ({threshold, index}) => {
@@ -51,19 +52,22 @@ const FunctionDropdown: FC<Props> = ({threshold, index}) => {
     [errorThresholds, update]
   )
 
-  const menuItems = Object.entries(COMMON_THRESHOLD_TYPES).map(
-    ([key, value]) => (
-      <Dropdown.Item
-        key={key}
-        value={key}
-        onClick={type => setThresholdType(type, index)}
-        selected={key === threshold?.type}
-        title={value.name}
-      >
-        {value?.name}
-      </Dropdown.Item>
-    )
-  )
+  const THRESHOLD_TYPES =
+    threshold?.fieldType === 'number'
+      ? COMMON_THRESHOLD_TYPES
+      : EQUALITY_THRESHOLD_TYPES
+
+  const menuItems = Object.entries(THRESHOLD_TYPES).map(([key, value]) => (
+    <Dropdown.Item
+      key={key}
+      value={key}
+      onClick={type => setThresholdType(type, index)}
+      selected={key === threshold?.type}
+      title={value.name}
+    >
+      {value?.name}
+    </Dropdown.Item>
+  ))
   const menu = onCollapse => (
     <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
   )

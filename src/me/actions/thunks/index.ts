@@ -39,7 +39,7 @@ export const getMe = () => async (
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
-      user = resp.data.filter(account => account.isActive)[0]
+      user = resp.data.find(account => account.isActive)
     } else {
       const resp = await apiGetApiMe({})
 

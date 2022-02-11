@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useMemo, useCallback} from 'react'
+import React, {FC, useContext, useEffect, useMemo} from 'react'
 import QRComponent from 'src/flows/pipes/Visualization/QRCode'
 
 // Components
@@ -69,7 +69,7 @@ const downloadAsPDF = (pipeID: string) => {
 }
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, loading, results, update} = useContext(PipeContext)
+  const {id, data, range, loading, results} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
 

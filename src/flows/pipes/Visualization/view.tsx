@@ -191,15 +191,6 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     )
     const fields = columns['_field'].data
 
-    const dedupedFields = new Set([...fields])
-    const thresholdFields = Object.keys(fieldIndices)
-    for (const thresholdField of thresholdFields) {
-      if (!dedupedFields.has(thresholdField)) {
-        delete fieldIndices[thresholdField]
-        // invalidate the original data source
-      }
-    }
-
     const realValues = fields.map((_, index) =>
       values.reduce((acc, curr) => {
         if (curr.data[index] != null) {

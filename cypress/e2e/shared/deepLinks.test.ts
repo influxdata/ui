@@ -10,7 +10,7 @@ describe('Deep linking', () => {
   // that a deep link pointed to has changed. There are implications to this; docs and marketing pages
   // might use the deep link that has changed. We want to avoid having broken deep links out on the web,
   // so there might be some follow-up work necessary with docs or marketing pages.
-  it('should be redirected to the approprate page from a shortened link', () => {
+  it.skip('should be redirected to the approprate page from a shortened link', () => {
     cy.get('@org').then((org: Organization) => {
       cy.setFeatureFlags({
         deepLinking: true,

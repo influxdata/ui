@@ -30,18 +30,14 @@ interface Props {
   tabIndex: number
 }
 
-const NotificationRulesColumn: FunctionComponent<Props> = ({
-  tabIndex,
-}) => {
+const NotificationRulesColumn: FunctionComponent<Props> = ({tabIndex}) => {
   const dispatch = useDispatch()
   const endpoints = useSelector(getAllActiveEndpoints)
   const rules = useSelector(getAllRules)
 
   const handleOpenOverlay = () => {
     event('Create Notification Rule opened')
-    dispatch(
-      showOverlay('create-rule', null, () => dispatch(dismissOverlay()))
-    )
+    dispatch(showOverlay('create-rule', null, () => dispatch(dismissOverlay())))
   }
 
   const tooltipContents = (

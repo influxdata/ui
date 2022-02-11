@@ -25,7 +25,7 @@ const NewRuleOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
   const orgID = useSelector(getOrg)?.id
 
-  const handleCreateRule = async(rule: NotificationRuleDraft) => {
+  const handleCreateRule = async (rule: NotificationRuleDraft) => {
     await dispatch(createRule(rule))
     onClose()
   }

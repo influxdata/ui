@@ -21,9 +21,10 @@ const Filter = FilterList<Resource>()
 export class EditResourceAccordion extends Component<Props> {
   public render() {
     const {permissions} = this.props
-    if (!permissions) {
+    if (!permissions || isEmpty(permissions)) {
       return null
     }
+
     const allResourceNames = formatResources(Object.keys(permissions))
 
     return (

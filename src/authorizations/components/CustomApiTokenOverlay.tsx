@@ -122,11 +122,13 @@ const CustomApiTokenOverlay: FC<Props> = props => {
     let name = resourceName.replaceAll(/\s/g, '')
     name = name.charAt(0).toLowerCase() + name.slice(1)
     const newPermValue = newPerm[name][permission]
+    const oppPermission = permission === 'write' ? 'read' : 'write'
     if (newPerm[name].sublevelPermissions) {
       Object.keys(newPerm[name].sublevelPermissions).forEach(key => {
+        newPerm[name].sublevelPermissions[key].permissions[permission] = false
         newPerm[name].sublevelPermissions[key].permissions[
-          permission
-        ] = !newPermValue
+          oppPermission
+        ] = false
       })
     }
     if (name === 'otherResources') {

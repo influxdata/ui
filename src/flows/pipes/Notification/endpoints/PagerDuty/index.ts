@@ -46,7 +46,7 @@ export default register => {
       routingKey: "${data.key}",
       client: "influxdata",
       clientURL: "${data.url}",
-      dedupKey: "${(new Date()).toISOString()}",
+      dedupKey: "${new Date().toISOString()}",
       class: "check_name",
       group: "test_measurement",
       severity: "critical",
@@ -54,7 +54,7 @@ export default register => {
       source: "Notebook Generated Test Notification",
       component: "example-component",
       summary: "${TEST_NOTIFICATION}",
-      timestamp: "${(new Date()).toISOString()}",
+      timestamp: "${new Date().toISOString()}",
       customDetails: {}
     )
     array.from(rows: [{value: 0}])

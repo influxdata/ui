@@ -5,7 +5,7 @@ import {Dispatch} from 'react'
 
 // API
 import {getMe as apiGetApiMe} from 'src/client'
-import {getMe as apiGetQuartzMe} from 'src/client/unityRoutes'
+import {getAccounts, getMe as apiGetQuartzMe} from 'src/client/unityRoutes'
 // Utils
 import {gaEvent, updateReportingContext} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -28,12 +28,27 @@ export const getMe = () => async (
   getState: GetState
 ) => {
   try {
-    const resp = await apiGetApiMe({})
+    let user
 
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
+    if (
+      isFlagEnabled('multiAccount') &&
+      isFlagEnabled('avatarNameForMultiAccountFix')
+    ) {
+      const resp = await getAccounts({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      user = resp.data.find(account => account.isActive)
+    } else {
+      const resp = await apiGetApiMe({})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+      user = resp.data
     }
-    const user = resp.data
+
     updateReportingContext({userID: user.id, userEmail: user.name})
 
     gaEvent('cloudAppUserDataReady', {

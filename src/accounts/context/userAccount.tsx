@@ -27,8 +27,10 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {useHistory} from 'react-router-dom'
 import {getErrorMessage} from 'src/utils/api'
-import {setMe} from '../../me/actions/creators'
-import {MeState} from '../../me/reducers'
+
+// Actions
+import {setMe} from 'src/me/actions/creators'
+import {MeState} from 'src/me/reducers'
 
 export type Props = {
   children: JSX.Element

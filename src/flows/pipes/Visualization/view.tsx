@@ -69,11 +69,60 @@ const downloadAsPDF = (pipeID: string) => {
 }
 
 const Visualization: FC<PipeProp> = ({Context}) => {
-  const {id, data, range, loading, results} = useContext(PipeContext)
+  const {id, data, range, loading, results, update} = useContext(PipeContext)
   const {basic, getPanelQueries} = useContext(FlowQueryContext)
   const {register} = useContext(SidebarContext)
 
   const dataExists = !!(results?.parsed?.table || []).length
+
+  const invalidateField = React.useCallback(
+    (field: string) => {
+      const copy = data?.errorThresholds.slice()
+      const index = data?.errorThresholds.findIndex(
+        threshold => threshold.field === field
+      )
+
+      if (index === -1) {
+        return
+      }
+
+      copy.splice(index, 1)
+
+      update({
+        errorThresholds: copy,
+      })
+    },
+    [data?.errorThresholds, update]
+  )
+
+  // checks the existing error thresholds against the available fields from the results
+  const invalidateOutdatedErrorThreshold = React.useCallback(
+    (fields: any[]) => {
+      const dedupedFields = new Set([...fields])
+
+      const errorFields = data?.errorThresholds
+        .map(error => error.field)
+        .filter(error => error !== undefined)
+
+      for (const errorField of errorFields) {
+        if (!dedupedFields.has(errorField)) {
+          // if there's no overlap between the result fields and the given error threshold, remove the error threshold
+          invalidateField(errorField)
+        }
+      }
+    },
+    [data?.errorThresholds, invalidateField]
+  )
+
+  useEffect(() => {
+    // listen for changes on the results, and audit the existing error thresholds to see if they're still relevant
+    if (results?.parsed?.table) {
+      const {columns} = results.parsed.table
+      const fields = columns['_field'].data
+
+      invalidateOutdatedErrorThreshold(fields)
+    }
+  }, [invalidateOutdatedErrorThreshold, results])
 
   const download = () => {
     event('CSV Download Initiated')

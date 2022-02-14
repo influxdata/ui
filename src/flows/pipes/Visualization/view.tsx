@@ -77,10 +77,8 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
   const invalidateField = React.useCallback(
     (field: string) => {
-      const copy = data?.errorThresholds.slice()
-      const index = data?.errorThresholds.findIndex(
-        threshold => threshold.field === field
-      )
+      const copy = (data?.errorThresholds ?? []).slice()
+      const index = copy.findIndex(threshold => threshold.field === field)
 
       if (index === -1) {
         return
@@ -100,7 +98,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     (fields: any[]) => {
       const dedupedFields = new Set([...fields])
 
-      const errorFields = data?.errorThresholds
+      const errorFields = (data?.errorThresholds ?? [])
         .map(error => error.field)
         .filter(error => error !== undefined)
 
@@ -238,7 +236,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     const values: any = Object.values(columns).filter(
       column => column.name === '_value'
     )
-    const fields = columns['_field'].data
+    const fields = columns['_field'].data ?? []
 
     const realValues = fields.map((_, index) =>
       values.reduce((acc, curr) => {

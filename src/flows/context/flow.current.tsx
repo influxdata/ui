@@ -6,7 +6,7 @@ import React, {
   useState,
   useEffect,
 } from 'react'
-import {useLocation} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
 import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
 import {customAlphabet} from 'nanoid'
@@ -55,15 +55,23 @@ export const FlowProvider: FC = ({children}) => {
     }
   }
 
+  const history = useHistory()
   const {search} = useLocation()
 
   const panel = new URLSearchParams(search).get('panel')
 
   useEffect(() => {
     if (document && panel && currentFlow) {
-      document.getElementById(panel)?.scrollIntoView()
+      // TODO(ariel): only deep link when the results have been run and the panels have expanded
+      setTimeout(() => {
+        document.getElementById(panel)?.scrollIntoView()
+      }, 1000)
+      setTimeout(() => {
+        // then remove the deep linked panel from the URL?
+        history.push(window.location.pathname)
+      }, 2000)
     }
-  }, [panel, currentFlow])
+  }, [history, currentFlow, panel])
 
   // NOTE this is a pretty awful mechanism, as it duplicates the source of
   // truth for the definition of the current flow, but i can't see a good

@@ -67,7 +67,7 @@ export type Column =
   | {name: string; type: 'boolean'; fluxDataType: FluxDataType; data: boolean[]}
   | {name: string; type: 'string'; fluxDataType: FluxDataType; data: string[]}
 
-interface Columns {
+export interface Columns {
   [columnKey: string]: Column
 }
 

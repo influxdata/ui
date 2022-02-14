@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useMemo} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useMemo} from 'react'
 import QRComponent from 'src/flows/pipes/Visualization/QRCode'
 
 // Components
@@ -19,7 +19,7 @@ import {View} from 'src/visualization'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {PipeProp} from 'src/types/flows'
+import {Columns, PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -98,6 +98,10 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
     return 'No Data Returned'
   }, [loading])
+
+  const getValueColumn = useCallback((columns: Columns) => {
+    return Object.values(columns).filter(column => column.name === '_value')
+  }, [])
 
   useEffect(() => {
     if (!id) {
@@ -185,11 +189,9 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     const {columns} = results.parsed.table
 
     let triggeredErrorThresholdMessage = ''
-
-    const values: any = Object.values(columns).filter(
-      column => column.name === '_value'
-    )
     const fields = columns['_field'].data
+
+    const values = getValueColumn(columns)
 
     const realValues = fields.map((_, index) =>
       values.reduce((acc, curr) => {

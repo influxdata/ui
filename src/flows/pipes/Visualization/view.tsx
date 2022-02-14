@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useEffect, useMemo} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useMemo} from 'react'
 import QRComponent from 'src/flows/pipes/Visualization/QRCode'
 
 // Components
@@ -19,7 +19,7 @@ import {View} from 'src/visualization'
 
 // Types
 import {RemoteDataState} from 'src/types'
-import {PipeProp} from 'src/types/flows'
+import {Columns, PipeProp} from 'src/types/flows'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -33,6 +33,7 @@ import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 import {LINE_COLORS_SOLID_WHITE} from 'src/shared/constants/graphColorPalettes'
 import {downloadImage} from 'src/shared/utils/download'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const downloadAsImage = (pipeID: string) => {
   const canvas = document.getElementById(pipeID)
@@ -97,6 +98,10 @@ const Visualization: FC<PipeProp> = ({Context}) => {
 
     return 'No Data Returned'
   }, [loading])
+
+  const getValueColumn = useCallback((columns: Columns) => {
+    return Object.values(columns).filter(column => column.name === '_value')
+  }, [])
 
   useEffect(() => {
     if (!id) {
@@ -171,6 +176,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       fieldIndices[threshold.field] = {
         type: threshold.type,
         value: threshold.value,
+        fieldType: threshold.fieldType,
       }
       if (threshold.min) {
         fieldIndices[threshold.field].min = threshold.min
@@ -183,13 +189,26 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     const {columns} = results.parsed.table
 
     let triggeredErrorThresholdMessage = ''
+    const fields = columns['_field'].data
 
-    for (let i = 0; i < columns['_field'].data.length - 1; i++) {
-      const field = columns['_field'].data[i]
+    const values = getValueColumn(columns)
+
+    const realValues = fields.map((_, index) =>
+      values.reduce((acc, curr) => {
+        if (curr.data[index] != null) {
+          return curr.data[index]
+        }
+        return acc
+      }, undefined)
+    )
+
+    for (let i = 0; i < fields.length - 1; i++) {
+      const field = fields[i]
       if (fieldIndices[`${field}`]) {
         // find the value based on the indices
-        const value = columns['_value'].data[i]
-        const val = fieldIndices[`${field}`].value
+        const value = realValues[i]
+        const thresholdValue = fieldIndices[`${field}`]?.value
+
         switch (fieldIndices[`${field}`].type) {
           case 'between':
             if (
@@ -212,33 +231,33 @@ const Visualization: FC<PipeProp> = ({Context}) => {
             }
             break
           case 'not-equal':
-            if (value !== val) {
-              triggeredErrorThresholdMessage = `${field} is not equal to ${val}`
+            if (value !== thresholdValue) {
+              triggeredErrorThresholdMessage = `${field} is not equal to ${thresholdValue}`
             }
             break
           case 'equal':
-            if (value === val) {
-              triggeredErrorThresholdMessage = `${field} is equal to ${val}`
+            if (value === thresholdValue) {
+              triggeredErrorThresholdMessage = `${field} is equal to ${thresholdValue}`
             }
             break
           case 'less-equal':
-            if (value <= val) {
-              triggeredErrorThresholdMessage = `${field} is less than or equal to ${val}`
+            if (value <= thresholdValue) {
+              triggeredErrorThresholdMessage = `${field} is less than or equal to ${thresholdValue}`
             }
             break
           case 'less':
-            if (value < val) {
-              triggeredErrorThresholdMessage = `${field} is less than ${val}`
+            if (value < thresholdValue) {
+              triggeredErrorThresholdMessage = `${field} is less than ${thresholdValue}`
             }
             break
           case 'greater-equal':
-            if (value >= val) {
-              triggeredErrorThresholdMessage = `${field} is greater than or equal to ${val}`
+            if (value >= thresholdValue) {
+              triggeredErrorThresholdMessage = `${field} is greater than or equal to ${thresholdValue}`
             }
             break
           case 'greater':
-            if (value > val) {
-              triggeredErrorThresholdMessage = `${field} is greater than ${val}`
+            if (value > thresholdValue) {
+              triggeredErrorThresholdMessage = `${field} is greater than ${thresholdValue}`
             }
             break
           default:
@@ -307,12 +326,14 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     <Context controls={<Controls />} resizes>
       <div className="flow-visualization" id={id}>
         <div className="flow-visualization--view">
-          <View
-            loading={loading}
-            properties={data.properties}
-            result={results.parsed}
-            timeRange={range}
-          />
+          <ErrorBoundary>
+            <View
+              loading={loading}
+              properties={data.properties}
+              result={results.parsed}
+              timeRange={range}
+            />
+          </ErrorBoundary>
         </div>
       </div>
     </Context>

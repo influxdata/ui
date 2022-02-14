@@ -5,14 +5,14 @@ import React, {FC, useCallback, useContext, useMemo} from 'react'
 import {ComponentSize, Dropdown} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
-import {Threshold} from 'src/flows/pipes/Visualization/threshold'
+import {ErrorThreshold} from 'src/flows/pipes/Visualization/threshold'
 
 type Props = {
-  threshold: Threshold
+  threshold: ErrorThreshold
   index: number
 }
 
-const ColumnDropdown: FC<Props> = ({threshold, index}) => {
+const FieldColumnDropdown: FC<Props> = ({threshold, index}) => {
   const {data, update, results} = useContext(PipeContext)
 
   const fields = Array.from(
@@ -33,9 +33,43 @@ const ColumnDropdown: FC<Props> = ({threshold, index}) => {
         threshold.field = column
       }
 
+      const values = Object.values(results.parsed.table.columns).filter(c => {
+        return c.name === '_value'
+      })
+
+      const fields = (results.parsed.table.columns['_field']
+        .data as any).reduce((acc, curr, index) => {
+        const type = values.find(d => {
+          return d.data[index] !== undefined
+        })?.type
+        if (!acc[curr]) {
+          acc[curr] = {}
+        }
+        acc[curr][type] = true
+        return acc
+      }, {})
+
+      const fieldTypes = Object.keys(fields[threshold?.field] ?? {})
+      let fieldType: 'not-number' | 'number' = 'not-number'
+      if (fieldTypes.length === 1 && fieldTypes[0] === 'number') {
+        fieldType = 'number'
+      }
+
+      threshold.fieldType = fieldType
+
+      // We want to invalidate the previous type selection if the
+      // fieldType is not a number, and the selected type is not equality based
+      if (
+        threshold.fieldType !== 'number' &&
+        threshold.type !== 'equal' &&
+        threshold.type !== 'not-equal'
+      ) {
+        threshold.type = 'equal'
+      }
+
       update({errorThresholds})
     },
-    [errorThresholds, update]
+    [results.parsed.table.columns, errorThresholds, update]
   )
 
   const menuItems = fields.map(key => (
@@ -66,4 +100,4 @@ const ColumnDropdown: FC<Props> = ({threshold, index}) => {
   return <Dropdown menu={menu} button={menuButton} />
 }
 
-export default ColumnDropdown
+export default FieldColumnDropdown

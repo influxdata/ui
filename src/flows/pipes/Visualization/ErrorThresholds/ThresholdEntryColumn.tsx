@@ -14,13 +14,13 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
 import {
   COMMON_THRESHOLD_TYPES,
-  Threshold,
+  ErrorThreshold,
   ThresholdFormat,
 } from 'src/flows/pipes/Visualization/threshold'
 import './ErrorThresholds.scss'
 
 type Props = {
-  threshold: Threshold
+  threshold: ErrorThreshold
   index: number
 }
 
@@ -57,9 +57,14 @@ const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
   ) => {
     event('Alert Panel (Notebooks) - Threshold Value Entered')
     const threshold = errorThresholds.find((_, i) => index === i)
+    if (!threshold) {
+      return
+    }
 
-    if (threshold) {
+    if (threshold.fieldType === 'number') {
       threshold.value = Number(changeEvent.target.value)
+    } else {
+      threshold.value = changeEvent.target.value
     }
 
     update({errorThresholds})
@@ -83,7 +88,7 @@ const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
       <>
         <Input
           name="interval"
-          type={InputType.Text}
+          type={InputType.Number}
           placeholder="min"
           value={threshold.min}
           onChange={event => updateMin(event, index)}
@@ -96,7 +101,7 @@ const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
         />
         <Input
           name="interval"
-          type={InputType.Text}
+          type={InputType.Number}
           placeholder="max"
           value={threshold.max}
           onChange={event => updateMax(event, index)}

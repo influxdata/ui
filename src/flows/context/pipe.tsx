@@ -1,8 +1,9 @@
-import React, {FC, useContext, useMemo, useCallback} from 'react'
+import React, {FC, useContext, useEffect, useMemo, useCallback} from 'react'
 import {PipeData, FluxResult} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {ResultsContext} from 'src/flows/context/results'
 import {RemoteDataState, TimeRange} from 'src/types'
+import {useHistory, useLocation} from 'react-router-dom'
 
 export interface PipeContextType {
   id: string
@@ -38,6 +39,24 @@ export const PipeProvider: FC<PipeContextProps> = ({id, children}) => {
   const {results, statuses} = useContext(ResultsContext)
   const result = results[id]
   const status = statuses[id]
+
+  const history = useHistory()
+  const {search} = useLocation()
+
+  const panel = new URLSearchParams(search).get('panel')
+  const statusValues = Object.values(statuses).every(
+    stat => stat !== undefined && stat !== RemoteDataState.Loading
+  )
+
+  useEffect(() => {
+    if (panel && statusValues) {
+      document.getElementById(panel)?.scrollIntoView()
+      setTimeout(() => {
+        // then remove the deep linked panel from the URL?
+        history.push(window.location.pathname)
+      }, 1000)
+    }
+  }, [history, panel, statusValues])
 
   const updater = useCallback(
     (data: Partial<PipeData>) => {

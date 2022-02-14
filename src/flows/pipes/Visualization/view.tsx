@@ -189,7 +189,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     const {columns} = results.parsed.table
 
     let triggeredErrorThresholdMessage = ''
-    const fields = columns['_field'].data
+    const fields: any[] = columns['_field'].data
 
     const values = getValueColumn(columns)
 

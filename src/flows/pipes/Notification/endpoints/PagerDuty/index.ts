@@ -29,7 +29,7 @@ export default register => {
 		messageFn: messageFn,
     crit: trigger,
 	)
-	|> monitor["notify"](data: notification, endpoint: pagerduty["endpoint"]()(mapFn: (r) => ({
+	|> monitor["notify"](data: notification, endpoint: pagerduty.endpoint()(mapFn: (r) => ({ r with
         routingKey: "${data.key}",
         client: "influxdata",
         clientURL: "${data.url}",
@@ -41,20 +41,24 @@ export default register => {
         summary: r["_message"],
         timestamp: time(v: r["_source_timestamp"]),
   })))`,
-    generateTestQuery: data => `pagerduty["endpoint"]()(mapFn: (r) => ({
+    generateTestQuery: data => `pagerduty.sendEvent(
+      pagerdutyURL: "https://events.pagerduty.com/v2/enqueue",
       routingKey: "${data.key}",
       client: "influxdata",
       clientURL: "${data.url}",
-      class: r._check_name,
-      group: r["_source_measurement"],
+      dedupKey: "${new Date().toISOString()}",
+      class: "check_name",
+      group: "test_measurement",
       severity: "critical",
       eventAction: "trigger",
       source: "Notebook Generated Test Notification",
+      component: "example-component",
       summary: "${TEST_NOTIFICATION}",
-      timestamp: time(v: r["_source_timestamp"])
-}))
-  array.from(rows: [{value: 0}])
-	|> yield(name: "ignore")
-`,
+      timestamp: "${new Date().toISOString()}",
+      customDetails: {}
+    )
+    array.from(rows: [{value: 0}])
+      |> yield(name: "ignore")
+    `,
   })
 }

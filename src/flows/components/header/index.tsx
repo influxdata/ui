@@ -378,7 +378,7 @@ const FlowHeader: FC = () => {
         <Page.ControlBar fullWidth>
           <Page.ControlBarLeft>
             <Submit />
-            {isFlagEnabled('flowAutoRefresh') && <AutoRefreshButton />}
+            <AutoRefreshButton />
             <SaveState />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>

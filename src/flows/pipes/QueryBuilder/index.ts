@@ -70,7 +70,7 @@ export default register => {
         _source = `from(bucket: "${data.buckets[0].name}")`
       }
 
-      return `${_source} |> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}`
+      return `${_source}\n\t|> range(start: v.timeRangeStart, stop: v.timeRangeStop)${tags}`
     },
   })
 }

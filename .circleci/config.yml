@@ -87,6 +87,10 @@ jobs:
           name: 'Install Dependencies'
       - run: yarn generate
       - run:
+          name: parallel tsc
+          command: |
+            yarn tsc
+      - run:
           name: parallel eslint
           command: |
             set +e
@@ -115,6 +119,10 @@ jobs:
             yarn install
           name: 'Install Dependencies'
       - run: CLOUD_URL="/auth" yarn generate
+      - run:
+          name: parallel tsc
+          command: |
+            yarn tsc
       - run:
           name: parallel eslint
           command: |

@@ -40,9 +40,9 @@ const ResourceLists: FC = () => {
           <DocSearchWidget />
         </Panel.Body>
       </Panel>
-      {isFlagEnabled('uiUnificationFlag') &&
-        isFlagEnabled('paygCheckoutCredit') &&
-        paygCreditEnabled && <UsagePanel />}
+      {isFlagEnabled('uiUnificationFlag') && paygCreditEnabled && (
+        <UsagePanel />
+      )}
       <Panel>
         <Panel.Footer>
           <VersionInfo />

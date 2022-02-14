@@ -31,7 +31,6 @@ import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
 // Types
 import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 export type Props = {
@@ -262,7 +261,6 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
   const query = new URLSearchParams(window.location.search)
   const checkoutCode = query.get('c')
   const isPaygCreditActive =
-    isFlagEnabled('paygCheckoutCredit') &&
     getExperimentVariantId(PAYG_CREDIT_EXPERIMENT_ID) === '1' &&
     checkoutCode === CHECKOUT_PARAM_CODE
 

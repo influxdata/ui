@@ -28,7 +28,7 @@ export default register => {
         return ''
       }
 
-      let text = `from(bucket: "${bucket.name}") |> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
+      let text = `from(bucket: "${bucket.name}")\n\t|> range(start: v.timeRangeStart, stop: v.timeRangeStop)`
       if (measurement) {
         text += ` |> filter(fn: (r) => r["_measurement"] == "${measurement}")`
       }

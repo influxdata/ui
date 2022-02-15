@@ -74,7 +74,7 @@ describe('Billing Page PAYG Users', () => {
     )
   )
 
-  it('should display the free billing page for free users', () => {
+  it('should display the free billing page for PAYG users', () => {
     // The implication here is that there is no Upgrade Now button
     cy.get('.cf-page-header--fixed')
       .children()

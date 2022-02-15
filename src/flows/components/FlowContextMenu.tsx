@@ -109,7 +109,7 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
         enableDefaultStyles={false}
         style={{minWidth: '112px'}}
         triggerRef={settingsRef}
-        contents={() => (
+        contents={onHide => (
           <List>
             <List.Item
               onClick={handleClone}
@@ -121,7 +121,10 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
             </List.Item>
             {isFlagEnabled('pinnedItems') && CLOUD && (
               <List.Item
-                onClick={handlePinFlow}
+                onClick={() => {
+                  handlePinFlow()
+                  onHide()
+                }}
                 size={ComponentSize.Small}
                 style={{fontWeight: 500}}
                 testID="context-pin-flow"

@@ -164,7 +164,7 @@ export function defaultBandViewProperties() {
     },
     hoverDimension: 'auto' as LineHoverDimension,
     upperColumn: '',
-    mainColumn: DEFAULT_AGGREGATE_FUNCTION,
+    mainColumn: '',
     lowerColumn: '',
   }
 }

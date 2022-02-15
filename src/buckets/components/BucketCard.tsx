@@ -16,6 +16,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {OwnBucket} from 'src/types'
+import { PROJECT_NAME } from 'src/flows'
 
 interface Props {
   bucket: OwnBucket
@@ -37,7 +38,7 @@ const BucketCard: FC<Props & RouteComponentProps<{orgID: string}>> = ({
 }) => {
   const handleNameClick = () => {
     if (isFlagEnabled('exploreWithFlows')) {
-      history.push(`/notebook/from/bucket/${bucket.name}`)
+      history.push(`/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}`)
     } else {
       history.push(`/orgs/${orgID}/data-explorer?bucket=${bucket.name}`)
     }

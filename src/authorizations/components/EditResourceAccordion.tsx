@@ -38,15 +38,16 @@ export class EditResourceAccordion extends Component<Props> {
             return (
               <Accordion key={resource} expanded={true}>
                 <ResourceAccordionHeader resourceName={resourceName} />
-                {isEmpty(permissions[resource].sublevelPermissions) ? (
+                {this.hideAllAccordion(permissions[resource]) ? null : (
                   <AllAccordionBody
                     resourceName={resourceName}
                     permissions={permissions[resource]}
                     disabled={true}
                   />
-                ) : (
-                  this.getAccordionBody(resourceName, resource)
                 )}
+                {this.hideAccordionBody(permissions[resource])
+                  ? this.getAccordionBody(resourceName, resource)
+                  : null}
               </Accordion>
             )
           }
@@ -59,6 +60,24 @@ export class EditResourceAccordion extends Component<Props> {
         )}
       </>
     )
+  }
+
+  hideAllAccordion = resource => {
+    // if all resource read or all resource write is selected then don't hide all accordion body
+    if (!resource.read && !resource.write) {
+      return true
+    }
+    return false
+  }
+
+  hideAccordionBody = resource => {
+    // if all resource read and all resource write is selected then collapse accordion body
+    if (resource.read && resource.write) {
+      return false
+    } else if (isEmpty(resource.sublevelPermissions)) {
+      return false
+    }
+    return true
   }
 
   getOtherResourceAccordionBody = allResourceNames => {

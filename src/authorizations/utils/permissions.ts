@@ -158,14 +158,14 @@ export const formatPermissionsObj = permissions => {
         accordionPermission = {
           read: action === 'read',
           write: action === 'write',
-          sublevelPermissions: {}
+          sublevelPermissions: {},
         }
       }
     }
 
     return {...acc, [type]: accordionPermission}
   }, {})
-  
+
   return newPerms
 }
 

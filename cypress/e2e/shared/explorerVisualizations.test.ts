@@ -1,5 +1,6 @@
 import {Organization} from '../../../src/types'
 import {points, makeGraphSnapshot} from '../../support/commands'
+
 const VIS_TYPES = [
   'band',
   //    'check',
@@ -15,6 +16,7 @@ const VIS_TYPES = [
   'table',
 ]
 const NUM_POINTS = 360
+
 describe('visualizations', () => {
   beforeEach(() => {
     cy.flush()
@@ -29,6 +31,7 @@ describe('visualizations', () => {
     cy.writeData(points(NUM_POINTS))
     cy.getByTestID('time-machine--bottom')
   })
+
   describe('empty states', () => {
     it('shows a message if no queries have been created', () => {
       cy.getByTestID('empty-graph--no-queries').should('exist')
@@ -130,7 +133,7 @@ describe('visualizations', () => {
 
           // cycle through all the visualizations of the data
           VIS_TYPES.forEach(type => {
-            if (type !== 'mosaic' && type !== 'band') {
+            if (type !== 'mosaic') {
               // mosaic graph is behind feature flag
               cy.getByTestID('view-type--dropdown').click()
               cy.getByTestID(`view-type--${type}`).click()
@@ -370,6 +373,47 @@ describe('visualizations', () => {
             }
           })
         })
+    })
+  })
+
+  describe('Band plot behaves correctly', () => {
+    it('can find its main column before adjusting view options', () => {
+      cy.get<string>('@defaultBucketListSelector').then(
+        (defaultBucketListSelector: string) => {
+          const AGGREGATE_FUNCTION = 'last'
+
+          cy.getByTestID('query-builder').should('exist')
+          // build the query to return data from beforeEach
+          cy.getByTestID('selector-list _monitoring').should('be.visible')
+          cy.getByTestID('selector-list _monitoring').click()
+
+          cy.getByTestID(defaultBucketListSelector).should('be.visible')
+          cy.getByTestID(defaultBucketListSelector).click()
+
+          cy.getByTestID('selector-list m').should('be.visible')
+          cy.getByTestID('selector-list m').clickAttached()
+
+          cy.getByTestID('selector-list v').should('be.visible')
+          cy.getByTestID('selector-list v').clickAttached()
+
+          cy.getByTestID('selector-list tv1').clickAttached()
+
+          cy.getByTestID(`selector-list ${AGGREGATE_FUNCTION}`)
+            .scrollIntoView()
+            .should('be.visible')
+            .click()
+
+          cy.getByTestID('view-type--dropdown').click()
+          cy.getByTestID(`view-type--band`).click()
+          cy.getByTestID('time-machine-submit-button').click()
+          cy.getByTestID(`vis-graphic--band`).should('exist')
+
+          cy.get('button[title="Customize"').click()
+          cy.getByTestID('dropdown--button-main-column').within(() => {
+            cy.get('.cf-dropdown--selected').contains(AGGREGATE_FUNCTION)
+          })
+        }
+      )
     })
   })
 })

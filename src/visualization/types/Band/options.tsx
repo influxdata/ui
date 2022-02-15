@@ -219,6 +219,7 @@ const BandViewOptions: FC<Props> = props => {
                     active={active}
                     onClick={onClick}
                     status={getDropdownColumnStatus(properties.upperColumn)}
+                    testID="dropdown--button-upper-column"
                   >
                     {getColumnName(properties.upperColumn)}
                   </Dropdown.Button>
@@ -246,7 +247,11 @@ const BandViewOptions: FC<Props> = props => {
             <Dropdown
               button={(active, onClick) => {
                 return (
-                  <Dropdown.Button active={active} onClick={onClick}>
+                  <Dropdown.Button
+                    active={active}
+                    onClick={onClick}
+                    testID="dropdown--button-main-column"
+                  >
                     {getColumnName(properties.mainColumn, 'main')}
                   </Dropdown.Button>
                 )
@@ -277,6 +282,7 @@ const BandViewOptions: FC<Props> = props => {
                     active={active}
                     onClick={onClick}
                     status={getDropdownColumnStatus(properties.lowerColumn)}
+                    testID="dropdown--button-lower-column"
                   >
                     {getColumnName(properties.lowerColumn)}
                   </Dropdown.Button>

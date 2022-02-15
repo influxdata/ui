@@ -547,4 +547,77 @@ describe('Flows', () => {
       })
     })
   })
+
+  it('can create a Band plot without crashing', () => {
+    const newBucketName = 'lets goooo'
+    const now = Date.now()
+    cy.get<Organization>('@org').then(({id, name}: Organization) => {
+      cy.createBucket(id, name, newBucketName)
+    })
+    cy.writeData(
+      [
+        `test,container_name=cool dopeness=12 ${now - 1000}000000`,
+        `test,container_name=beans dopeness=18 ${now - 1200}000000`,
+        `test,container_name=cool dopeness=14 ${now - 1400}000000`,
+        `test,container_name=beans dopeness=10 ${now - 1600}000000`,
+      ],
+      newBucketName
+    )
+
+    cy.getByTestID('preset-new')
+      .first()
+      .click()
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    cy.getByTestID('page-title')
+      .first()
+      .click()
+    cy.getByTestID('renamable-page-title--input').type(
+      'I am not afraid of Band Plot {enter}'
+    )
+
+    // select our bucket
+    cy.getByTestID('bucket-selector').within(() => {
+      cy.getByTestID('selector-list lets goooo').click()
+    })
+
+    // select measurement and field
+    cy.getByTestID('builder-card')
+      .eq(0)
+      .within(() => {
+        cy.getByTestID(`selector-list test`).click()
+      })
+    cy.getByTestID('builder-card')
+      .eq(1)
+      .within(() => {
+        cy.getByTestID(`selector-list dopeness`).click()
+      })
+
+    cy.get('input.flow-panel--title-input')
+      .eq(1)
+      .should('have.value', 'Validate the Data')
+    cy.getByTestID('sidebar-button')
+      .eq(1)
+      .click()
+
+    cy.get('button.cf-dropdown-item[title="Delete"]')
+      .should('be.visible')
+      .click()
+
+    cy.get('input.flow-panel--title-input')
+      .eq(1)
+      .should('have.value', 'Visualize the Result')
+
+    cy.getByTestID('view-type--dropdown').click()
+    cy.getByTestID('view-type--band').click()
+    cy.get(
+      '.flow-panel--persistent-control > button.cf-button[title="Run"'
+    ).click()
+    cy.getByTestID(`vis-graphic--band`).should('exist')
+
+    cy.get('button.cf-button[title="Configure Visualization"]').click()
+    cy.getByTestID('dropdown--button-main-column').within(() => {
+      cy.get('.cf-dropdown--selected').contains('_result')
+    })
+  })
 })

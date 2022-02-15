@@ -408,7 +408,7 @@ describe('visualizations', () => {
           cy.getByTestID('time-machine-submit-button').click()
           cy.getByTestID(`vis-graphic--band`).should('exist')
 
-          cy.get('button[title="Customize"').click()
+          cy.get('button.cf-button[title="Customize"').click()
           cy.getByTestID('dropdown--button-main-column').within(() => {
             cy.get('.cf-dropdown--selected').contains(AGGREGATE_FUNCTION)
           })

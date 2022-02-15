@@ -165,7 +165,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
 
         if (
           isFlagEnabled('multiAccount') &&
-          isFlagEnabled('avatarNameForMultiAccountFix')
+          isFlagEnabled('avatarWidgetMultiAccountInfo')
         ) {
           const name = resp.data.name
           const id = resp.data.id.toString()

@@ -32,7 +32,7 @@ export const getMe = () => async (
 
     if (
       isFlagEnabled('multiAccount') &&
-      isFlagEnabled('avatarNameForMultiAccountFix')
+      isFlagEnabled('avatarWidgetMultiAccountInfo')
     ) {
       const resp = await getAccounts({})
 

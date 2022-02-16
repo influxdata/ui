@@ -15,11 +15,11 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () =>
-      ['http', 'influxdata/influxdb/secrets', 'json']
+      ['http', 'influxdata/influxdb/secrets']
         .map(i => `import "${i}"`)
         .join('\n'),
     generateTestImports: () =>
-      ['array', 'http', 'influxdata/influxdb/secrets', 'json']
+      ['array', 'http', 'influxdata/influxdb/secrets']
         .map(i => `import "${i}"`)
         .join('\n'),
     generateQuery: data => {

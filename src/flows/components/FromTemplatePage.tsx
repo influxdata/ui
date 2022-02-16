@@ -29,7 +29,7 @@ import {
   OverlayController,
 } from 'src/overlays/components/OverlayController'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
-import {PROJECT_NAME} from '..'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from '..'
 
 const Template: FC = () => {
   const {add} = useContext(FlowListContext)
@@ -63,7 +63,9 @@ const Template: FC = () => {
           populate(data)
         } else {
           add(data).then(id => {
-            history.replace(`/orgs/${org.id}/notebooks/${id}`)
+            history.replace(
+              `/orgs/${org.id}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
+            )
           })
         }
       })

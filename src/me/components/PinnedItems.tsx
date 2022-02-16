@@ -23,6 +23,7 @@ import './PinnedItems.scss'
 import {useHistory} from 'react-router-dom'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 const PinnedItems: FC = () => {
   const history = useHistory()
@@ -37,7 +38,9 @@ const PinnedItems: FC = () => {
           routeToFollow = `/orgs/${data.orgID}/tasks/${data.metadata.taskID}/edit`
           break
         case PinnedItemTypes.Notebook:
-          routeToFollow = `/orgs/${data.orgID}/notebooks/${data.metadata.flowID}`
+          routeToFollow = `/orgs/${
+            data.orgID
+          }/${PROJECT_NAME_PLURAL.toLowerCase()}/${data.metadata.flowID}`
           break
         default:
           break

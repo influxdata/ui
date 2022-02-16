@@ -30,6 +30,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import { PROJECT_NAME_PLURAL } from 'src/flows'
 
 interface Props {
   text: string
@@ -136,7 +137,7 @@ const ExportTaskButton: FC<Props> = ({
               }
 
               if (id !== flow.id) {
-                history.replace(`/orgs/${org.id}/notebooks/${id}`)
+                history.replace(`/orgs/${org.id}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`)
               }
             })
         }

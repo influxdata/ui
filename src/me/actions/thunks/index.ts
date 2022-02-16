@@ -84,6 +84,8 @@ export const getMe = () => async (
       identify(user.id, {email: user.name, orgID: org.id})
     }
 
+    // eslint-disable-next-line no-console
+    console.log('Final user object dispatched to state: ', {user})
     dispatch(setMe(user as MeState))
   } catch (error) {
     console.error(error)

@@ -9,7 +9,7 @@ import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetails
 
 // Constants
 import {CLIENT_DEFINITIONS} from 'src/writeData'
-import {Bucket, File} from 'src/types'
+import {File} from 'src/types'
 
 interface Props {
   clientQuery?: string
@@ -30,20 +30,9 @@ const updateBucketInAST = (ast: File, name: string) => {
   )
 }
 
-const getBucketsFromAST = (ast: File) => {
-  return find(
-    ast,
-    node =>
-      node?.type === 'CallExpression' &&
-      node?.callee?.type === 'Identifier' &&
-      node?.callee?.name === 'from' &&
-      node?.arguments[0]?.properties[0]?.key?.name === 'bucket'
-  ).map(node => node?.arguments[0]?.properties[0]?.value.value)
-}
-
 const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
   const def = CLIENT_DEFINITIONS[contentID]
-  const {changeBucket, changeQuery} = useContext(WriteDataDetailsContext)
+  const {changeQuery} = useContext(WriteDataDetailsContext)
 
   useEffect(() => {
     if (!clientQuery) {
@@ -52,17 +41,13 @@ const ClientCodeQueryHelper: FC<Props> = ({clientQuery, contentID}) => {
     }
 
     const ast = parse(clientQuery)
-    const queryBucket = getBucketsFromAST(ast)[0]
-    if (queryBucket) {
-      changeBucket({name: queryBucket} as Bucket)
-    }
     updateBucketInAST(ast, '<%= bucket %>')
     let query = format_from_js_file(ast)
     if (def.querySanitize) {
       query = def.querySanitize(query)
     }
     changeQuery(query)
-  }, [clientQuery, def.query, changeBucket, changeQuery])
+  }, [clientQuery, def.query, changeQuery])
 
   return null
 }

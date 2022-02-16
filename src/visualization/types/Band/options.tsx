@@ -1,4 +1,4 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 
 import {
   ButtonShape,
@@ -48,6 +48,16 @@ interface Props extends VisualizationOptionProps {
 }
 
 const BandViewOptions: FC<Props> = ({properties, results, update}) => {
+  useEffect(() => {
+    const {mainColumn} = properties
+    if (!mainColumn) {
+      const defaultColumn = results.resultColumnNames?.length
+        ? results.resultColumnNames[0]
+        : ''
+      update({mainColumn: defaultColumn})
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const numericColumns = (results?.table?.columnKeys || []).filter(key => {
     if (key === 'result' || key === 'table') {
       return false
@@ -124,16 +134,9 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
     }
   }
 
-  const getColumnName = (columnName: string, columnType?: string): string => {
+  const getColumnName = (columnName: string): string => {
     if (!results?.resultColumnNames.length) {
       return 'Build a query before selecting...'
-    }
-
-    if (columnType === 'main') {
-      const {mainColumn} = properties
-      if (!mainColumn) {
-        return results.resultColumnNames[0]
-      }
     }
 
     return results.resultColumnNames?.includes(columnName)
@@ -261,7 +264,7 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
                     onClick={onClick}
                     testID="dropdown--button-main-column"
                   >
-                    {getColumnName(properties.mainColumn, 'main')}
+                    {getColumnName(properties.mainColumn)}
                   </Dropdown.Button>
                 )
               }}

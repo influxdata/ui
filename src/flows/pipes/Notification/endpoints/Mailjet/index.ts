@@ -17,11 +17,11 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () =>
-      ['http', 'influxdata/influxdb/secrets']
+      ['http', 'influxdata/influxdb/secrets', 'json']
         .map(i => `import "${i}"`)
         .join('\n'),
     generateTestImports: () =>
-      ['array', 'http', 'influxdata/influxdb/secrets']
+      ['array', 'http', 'influxdata/influxdb/secrets', 'json']
         .map(i => `import "${i}"`)
         .join('\n'),
     generateQuery: data => `task_data
@@ -34,50 +34,56 @@ export default register => {
 	)
 	|> monitor["notify"](
     data: notification,
-    endpoint: ((r) => {
+    endpoint: http.endpoint(url: "${data.url}")(
+      mapFn: (r) => {
         apiKey = secrets.get(key: "${data.apiKey}")
         apiSecret = secrets.get(key: "${data.apiSecret}")
-        http.post(
-            url: "${data.url}",
-            headers: {
-              "Content-type": "application/json",
-              "Authorization": "Basic \${apiKey}:\${apiSecret}"
-            },
-            data: bytes(v: "{
-              \\"Messages\\": [{
-                \\"From\\": {
-                  \\"Email\\": \\"${data.fromEmail}\\"
-                },
-                \\"To\\": [{
-                  \\"Email\\": \\"${data.email}\\"
-                }],
-                \\"Subject\\": \\"InfluxDB Alert\\",
-                \\"TextPart\\": \\"\${ r._message }\\"
-              }]
-            }"))
-    })
+        auth = http.basicAuth(u: apiKey, p: apiSecret)
+
+        return {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": auth
+          },
+          data: json.encode(v: {
+            "Messages": [{
+              "From": {
+                "Email": "${data.fromEmail}"
+              },
+              "To": [{
+                "Email": "${data.email}"
+              }],
+              "Subject": "InfluxDB Alert",
+              "TextPart": r._message
+            }]
+          })
+        }
+      }
+    )
   )`,
     generateTestQuery: data => `
     apiKey = secrets.get(key: "${data.apiKey}")
-    apiSecrets = secrets.get(key: "${data.apiSecret}")
+    apiSecret = secrets.get(key: "${data.apiSecret}")
+    auth = http.basicAuth(u: apiKey, p: apiSecret)
+
     http.post(
       url: "${data.url}",
       headers: {
-        "Content-type": "application/json",
-        "Authorization": "Basic \${apiKey}:\${apiSecret}"
+        "Content-Type": "application/json",
+        "Authorization": auth
       },
-      data: bytes(v: "{
-        \\"Messages\\": [{
-          \\"From\\": {
-            \\"Email\\": \\"${data.fromEmail}\\"
+      data: json.encode(v: {
+        "Messages": [{
+          "From": {
+            "Email": "${data.fromEmail}"
           },
-          \\"To\\": [{
-            \\"Email\\": \\"${data.email}\\"
+          "To": [{
+            "Email": "${data.email}"
           }],
-          \\"Subject\\": \\"InfluxDB Alert\\",
-          \\"TextPart\\": \\"${TEST_NOTIFICATION}\\"
+          "Subject": "InfluxDB Alert",
+          "TextPart": "${TEST_NOTIFICATION}"
         }]
-      }"))
+      }))
 
     array.from(rows: [{value: 0}])
         |> yield(name: "ignore")`,

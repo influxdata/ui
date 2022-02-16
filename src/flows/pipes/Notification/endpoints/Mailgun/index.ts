@@ -24,6 +24,8 @@ export default register => {
         .join('\n'),
     generateQuery: data => {
       const subject = encodeURIComponent('InfluxDB Alert')
+      const fromEmail = `InfluxDB via Mailgun <mailgun@${data.domain}>`
+
       return `task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
@@ -39,7 +41,7 @@ export default register => {
       auth = http.basicAuth(u: "api", p: "\${apiKey}")
       url = "https://api.mailgun.net/v3/${data.domain}/messages"
       data = strings.joinStr(arr: [
-          "from=Username mailgun@${data.domain}",
+          "from=${fromEmail}",
           "to=${data.email}",
           "subject=${subject}",
           "text=\${r._message}"
@@ -61,12 +63,13 @@ export default register => {
     generateTestQuery: data => {
       const subject = encodeURIComponent('InfluxDB Alert')
       const message = encodeURIComponent(TEST_NOTIFICATION)
+      const fromEmail = `InfluxDB via Mailgun <mailgun@${data.domain}>`
 
       return `apiKey = secrets.get(key: "${data.apiKey}")
 auth = http.basicAuth(u: "api", p: "\${apiKey}")
 url = "https://api.mailgun.net/v3/${data.domain}/messages"
 data = strings.joinStr(arr: [
-  "from=Username mailgun@${data.domain}",
+  "from=${fromEmail}",
   "to=${data.email}",
   "subject=${subject}",
   "text=${message}"

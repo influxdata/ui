@@ -1,5 +1,7 @@
 import {Organization} from '../../../src/types'
 
+// test 2
+
 const resetInputs = () => {
   cy.getByTestID('notifyEmail--input')
     .clear()

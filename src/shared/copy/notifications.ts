@@ -1468,6 +1468,12 @@ export const testNotificationFailure = (
   message: `Failed to send the test alert to ${source}. Please try again`,
 })
 
+export const exportAlertToTaskSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `An alert task has been successfully created.
+  Please go to your tasks, and confirm the task runs correctly.`,
+})
+
 export const getResourcesTokensFailure = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to fetch all resources for creating custom api token',

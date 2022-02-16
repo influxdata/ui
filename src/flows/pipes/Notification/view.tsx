@@ -59,6 +59,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   testNotificationSuccess,
   testNotificationFailure,
+  exportAlertToTaskSuccess,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getSecrets} from 'src/secrets/actions/thunks'
@@ -375,6 +376,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
   ])
 
   const generateTask = useCallback(() => {
+    event('Alert Panel (Notebooks) - Export Alert Task Clicked')
     if (data.thresholds[0].type === deadmanType) {
       return generateDeadmanTask()
     }
@@ -472,6 +474,8 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
       .join(',\n')
     const taskHeader = parse(`option task = {${paramString}}\n`)
     newAST.body.unshift(taskHeader.body[0])
+
+    dispatch(notify(exportAlertToTaskSuccess()))
 
     return format_from_js_file(newAST)
   }, [

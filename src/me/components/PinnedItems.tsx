@@ -112,6 +112,7 @@ const PinnedItems: FC = () => {
                 name={item.metadata.name ?? ''}
                 onClick={() => followMetadataToRoute(item)}
                 testID="pinneditems--link"
+                className="pinneditems--link"
               />
             </ResourceCard>
           ))

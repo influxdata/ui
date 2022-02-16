@@ -30,18 +30,28 @@ export const getMe = () => async (
   try {
     let user
 
+    // TODO: remove these console statements, just for testing.
+    console.warn(
+      'Flag evaluation: ',
+      isFlagEnabled('multiAccount'),
+      isFlagEnabled('avatarWidgetMultiAccountInfo')
+    )
+
     if (
       isFlagEnabled('multiAccount') &&
       isFlagEnabled('avatarWidgetMultiAccountInfo')
     ) {
       const resp = await getAccounts({})
 
+      console.warn('Using Quartz api', {resp})
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
       user = resp.data.find(account => account.isActive)
     } else {
       const resp = await apiGetApiMe({})
+
+      console.warn('Using IDPE api', {resp})
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
@@ -71,6 +81,7 @@ export const getMe = () => async (
       identify(user.id, {email: user.name, orgID: org.id})
     }
 
+    console.warn('Final user object dispatched to state: ', {user})
     dispatch(setMe(user as MeState))
   } catch (error) {
     console.error(error)

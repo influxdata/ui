@@ -1,4 +1,6 @@
-import React, {createRef, FC, RefObject} from 'react'
+import React, {createRef, FC, RefObject, useContext} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 import {
   Appearance,
   Bullet,
@@ -9,8 +11,15 @@ import {
   PopoverInteraction,
 } from '@influxdata/clockface'
 
+// Context
+import {FlowContext} from 'src/flows/context/flow.current'
+
+// Selectors
+import {getOrg} from 'src/organizations/selectors'
+
 // Types
 import {VersionHistory} from 'src/client/notebooksRoutes'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 type Props = {
   version: VersionHistory
@@ -18,9 +27,16 @@ type Props = {
 
 const VersionBullet: FC<Props> = ({version}) => {
   const triggerRef: RefObject<HTMLElement> = createRef()
+  const {flow} = useContext(FlowContext)
+  const history = useHistory()
+  const orgID = useSelector(getOrg)?.id
 
   const handleBulletClick = () => {
-    // TODO(ariel): navigate to the version history based on the passed in version
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
+        flow.id
+      }/versions/${version.id}`
+    )
   }
 
   return (

@@ -613,7 +613,7 @@ describe('Flows', () => {
     cy.get(
       '.flow-panel--persistent-control > button.cf-button[title="Run"'
     ).click()
-    cy.getByTestID(`vis-graphic--band`).should('exist')
+    cy.getByTestID('giraffe-layer-band-chart').should('be.visible')
 
     cy.get('button.cf-button[title="Configure Visualization"]').click()
     cy.getByTestID('dropdown--button-main-column').within(() => {

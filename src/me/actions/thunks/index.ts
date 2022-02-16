@@ -30,9 +30,8 @@ export const getMe = () => async (
   try {
     let user
 
-    // TODO: remove these logs, just for testing.
-    // eslint-disable-next-line no-console
-    console.log(
+    // TODO: remove these console statements, just for testing.
+    console.warn(
       'Flag evaluation: ',
       isFlagEnabled('multiAccount'),
       isFlagEnabled('avatarWidgetMultiAccountInfo')
@@ -44,8 +43,7 @@ export const getMe = () => async (
     ) {
       const resp = await getAccounts({})
 
-      // eslint-disable-next-line no-console
-      console.log('Using Quartz api', {resp})
+      console.warn('Using Quartz api', {resp})
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
@@ -84,8 +82,7 @@ export const getMe = () => async (
       identify(user.id, {email: user.name, orgID: org.id})
     }
 
-    // eslint-disable-next-line no-console
-    console.log('Final user object dispatched to state: ', {user})
+    console.warn('Final user object dispatched to state: ', {user})
     dispatch(setMe(user as MeState))
   } catch (error) {
     console.error(error)

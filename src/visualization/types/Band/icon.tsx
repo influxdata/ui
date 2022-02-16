@@ -1,7 +1,7 @@
 import React from 'react'
 
 const icon = (
-  <div className="vis-graphic" data-testid="vis-graphic--band-chart">
+  <div className="vis-graphic" data-testid="vis-graphic--band">
     <svg
       id="Band Chart"
       x="0px"

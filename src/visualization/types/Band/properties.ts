@@ -2,7 +2,6 @@ import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 import {
   DEFAULT_FILLVALUES,
   AGG_WINDOW_AUTO,
-  DEFAULT_AGGREGATE_FUNCTION,
 } from 'src/timeMachine/constants/queryBuilder'
 
 import {Axis, Base, Color, BandViewProperties} from 'src/types'
@@ -87,6 +86,6 @@ export default {
   },
   hoverDimension: 'auto' as LineHoverDimension,
   upperColumn: '',
-  mainColumn: DEFAULT_AGGREGATE_FUNCTION,
+  mainColumn: '',
   lowerColumn: '',
 } as BandViewProperties

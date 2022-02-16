@@ -89,7 +89,10 @@ const GetOrganizations: FunctionComponent = () => {
         ) : (
           <Switch>
             <Route path="/no-orgs" component={NoOrgsPage} />
-            <Route path="/notebook/from" component={NotebookTemplates} />
+            <Route
+              path={`/${PROJECT_NAME.toLowerCase()}/from`}
+              component={NotebookTemplates}
+            />
             <Route path="/orgs" component={App} />
             <Route exact path="/" component={RouteToOrg} />
             <Route component={NotFound} />

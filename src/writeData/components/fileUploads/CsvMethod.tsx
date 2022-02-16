@@ -15,6 +15,7 @@ import {CsvUploaderContext} from 'src/buckets/components/context/csvUploader'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import CsvUploaderBody from 'src/buckets/components/csvUploader/CsvUploaderBody'
 import StatusIndicator from 'src/buckets/components/csvUploader/StatusIndicator'
+import {PROJECT_NAME} from 'src/flows'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -50,7 +51,7 @@ const CsvMethod: FC = () => {
 
   const handleSeeUploadedData = () => {
     if (isFlagEnabled('exploreWithFlows')) {
-      history.push(`/notebook/from/bucket/${bucket.name}`)
+      history.push(`/${PROJECT_NAME.toLowerCase()}/from/bucket/${bucket.name}`)
     } else {
       history.push(`/orgs/${orgId}/data-explorer?bucket=${bucket.name}`)
     }

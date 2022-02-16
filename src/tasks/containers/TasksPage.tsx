@@ -48,6 +48,7 @@ import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
 
 import {getAllTasks} from 'src/tasks/actions/thunks'
 import {getLabels} from 'src/labels/actions/thunks'
+import { PROJECT_NAME } from 'src/flows'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
@@ -236,7 +237,7 @@ class TasksPage extends PureComponent<Props, State> {
     } = this.props
 
     if (isFlagEnabled('createWithFlows')) {
-      history.push(`/notebook/from/task`)
+      history.push(`/${PROJECT_NAME.toLowerCase()}/from/task`)
     } else {
       history.push(`/orgs/${orgID}/tasks/new`)
     }

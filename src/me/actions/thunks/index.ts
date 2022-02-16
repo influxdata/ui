@@ -51,8 +51,7 @@ export const getMe = () => async (
     } else {
       const resp = await apiGetApiMe({})
 
-      // eslint-disable-next-line no-console
-      console.log('Using IDPE api', {resp})
+      console.warn('Using IDPE api', {resp})
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

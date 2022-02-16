@@ -1,10 +1,13 @@
 // Libraries
-import React, {useMemo, FC} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {useMemo, FC, useContext} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
-// Actions
+// Actions, Selectors
 import {createRule} from 'src/notifications/rules/actions/thunks'
+import {getOrg} from 'src/organizations/selectors'
+
+// Contexts
+import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Components
 import RuleOverlayContents from 'src/notifications/rules/components/RuleOverlayContents'
@@ -17,24 +20,14 @@ import {initRuleDraft} from 'src/notifications/rules/utils'
 // Types
 import {NotificationRuleDraft} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = RouteComponentProps<{orgID: string}> & ReduxProps
-
-const NewRuleOverlay: FC<Props> = ({
-  match: {
-    params: {orgID},
-  },
-  history,
-  onCreateRule,
-}) => {
-  const handleDismiss = () => {
-    history.push(`/orgs/${orgID}/alerting`)
-  }
+const NewRuleOverlay: FC = () => {
+  const dispatch = useDispatch()
+  const {onClose} = useContext(OverlayContext)
+  const orgID = useSelector(getOrg)?.id
 
   const handleCreateRule = async (rule: NotificationRuleDraft) => {
-    await onCreateRule(rule)
-
-    handleDismiss()
+    await dispatch(createRule(rule))
+    onClose()
   }
 
   const initialState = useMemo(() => initRuleDraft(orgID), [orgID])
@@ -45,7 +38,7 @@ const NewRuleOverlay: FC<Props> = ({
         <Overlay.Container maxWidth={800}>
           <Overlay.Header
             title="Create a Notification Rule"
-            onDismiss={handleDismiss}
+            onDismiss={onClose}
             testID="dismiss-overlay"
           />
           <Overlay.Body>
@@ -60,10 +53,4 @@ const NewRuleOverlay: FC<Props> = ({
   )
 }
 
-const mdtp = {
-  onCreateRule: createRule,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(withRouter(NewRuleOverlay))
+export default NewRuleOverlay

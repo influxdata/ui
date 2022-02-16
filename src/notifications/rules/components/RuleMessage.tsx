@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
-import {connect} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -16,29 +16,19 @@ import RuleMessageContents from 'src/notifications/rules/components/RuleMessageC
 
 // Utils
 import {getRuleVariantDefaults} from 'src/notifications/rules/utils'
-import {getAll} from 'src/resources/selectors'
+import {getAllActiveEndpoints} from 'src/notifications/endpoints/selectors'
 import {useRuleDispatch} from './RuleOverlayProvider'
 
 // Types
-import {
-  NotificationEndpoint,
-  NotificationRuleDraft,
-  AppState,
-  ResourceType,
-} from 'src/types'
+import {NotificationRuleDraft} from 'src/types'
 
-interface StateProps {
-  endpoints: NotificationEndpoint[]
-}
-
-interface OwnProps {
+interface Props {
   rule: NotificationRuleDraft
 }
 
-type Props = OwnProps & StateProps
-
-const RuleMessage: FC<Props> = ({endpoints, rule}) => {
+const RuleMessage: FC<Props> = ({rule}) => {
   const dispatch = useRuleDispatch()
+  const endpoints = useSelector(getAllActiveEndpoints)
 
   const onSelectEndpoint = endpointID => {
     dispatch({
@@ -80,15 +70,4 @@ const RuleMessage: FC<Props> = ({endpoints, rule}) => {
   )
 }
 
-const mstp = (state: AppState) => {
-  const endpoints = getAll<NotificationEndpoint>(
-    state,
-    ResourceType.NotificationEndpoints
-  )
-
-  return {
-    endpoints,
-  }
-}
-
-export default connect(mstp)(RuleMessage)
+export default RuleMessage

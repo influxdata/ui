@@ -17,7 +17,6 @@ import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import GetResources from 'src/resources/components/GetResources'
 import EditCheckEO from 'src/checks/components/EditCheckEO'
-import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import EditRuleOverlay from 'src/notifications/rules/components/EditRuleOverlay'
 import NewEndpointOverlay from 'src/notifications/endpoints/components/NewEndpointOverlay'
 import EditEndpointOverlay from 'src/notifications/endpoints/components/EditEndpointOverlay'
@@ -168,7 +167,6 @@ const AlertingIndex: FunctionComponent = () => {
           path={`${alertsPath}/checks/:checkID/edit`}
           component={EditCheckEO}
         />
-        <Route path={`${alertsPath}/rules/new`} component={NewRuleOverlay} />
         <Route
           path={`${alertsPath}/rules/:ruleID/edit`}
           component={EditRuleOverlay}

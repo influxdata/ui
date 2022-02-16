@@ -58,7 +58,7 @@ class ResourceAccordion extends Component<OwnProps> {
                   onToggleAll={onToggleAll}
                   disabled={false}
                 />
-                {!permissions[resource].read && !permissions[resource].write
+                {this.isCollapsible(resource)
                   ? !isEmpty(permissions[resource].sublevelPermissions) &&
                     this.getAccordionBody(resourceName, resource)
                   : null}
@@ -80,14 +80,22 @@ class ResourceAccordion extends Component<OwnProps> {
               onToggleAll={onToggleAll}
               disabled={false}
             />
-            {!permissions.otherResources.read &&
-            !permissions.otherResources.write
+            {this.isCollapsible('otherResources')
               ? this.otherResourcesAccordionBody()
               : null}
           </DapperScrollbars>
         </Accordion>
       </>
     )
+  }
+
+  isCollapsible = resource => {
+    const {permissions} = this.props
+    // if all resource read and all resource write is selected then collapse accordion body
+    if (permissions[resource].read && permissions[resource].write) {
+      return false
+    }
+    return true
   }
 
   otherResourcesAccordionBody = () => {

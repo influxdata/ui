@@ -805,8 +805,8 @@ const nonAllAcessAccordionPerms = {
 
 const nonAllAcessAccordionPerms2 = {
   buckets: {
-    read: true,
-    write: true,
+    read: false,
+    write: false,
     sublevelPermissions: {
       '25a6692ba25d7147': {
         id: '25a6692ba25d7147',
@@ -885,11 +885,6 @@ describe('Testing formatApiPermissions function', () => {
 describe('Testing formatPermissionsObj function', () => {
   test('for api permissions with IDs, it creates perms with sublevel permissions', () => {
     expect(formatPermissionsObj(nonAllAcessApiPerms)).toMatchObject(
-      nonAllAcessAccordionPerms2
-    )
-  })
-  test('if all sublevel permissions are true, it updates the top level perms to true', () => {
-    expect(formatPermissionsObj(nonAllAcessApiPerms)).toEqual(
       nonAllAcessAccordionPerms2
     )
   })

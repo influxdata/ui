@@ -30,18 +30,31 @@ export const getMe = () => async (
   try {
     let user
 
+    // TODO: remove these logs, just for testing.
+    // eslint-disable-next-line no-console
+    console.log(
+      'Flag evaluation: ',
+      isFlagEnabled('multiAccount'),
+      isFlagEnabled('avatarWidgetMultiAccountInfo')
+    )
+
     if (
       isFlagEnabled('multiAccount') &&
       isFlagEnabled('avatarWidgetMultiAccountInfo')
     ) {
       const resp = await getAccounts({})
 
+      // eslint-disable-next-line no-console
+      console.log('Using Quartz api', {resp})
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
       }
       user = resp.data.find(account => account.isActive)
     } else {
       const resp = await apiGetApiMe({})
+
+      // eslint-disable-next-line no-console
+      console.log('Using IDPE api', {resp})
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)

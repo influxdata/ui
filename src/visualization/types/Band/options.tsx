@@ -1,15 +1,17 @@
 import React, {FC} from 'react'
 
 import {
-  Input,
-  Grid,
+  ButtonShape,
   Columns,
+  ComponentStatus,
+  Dropdown,
   Form,
+  Grid,
+  Icon,
+  IconFont,
+  Input,
   SelectDropdown,
   SelectGroup,
-  Dropdown,
-  ComponentStatus,
-  ButtonShape,
 } from '@influxdata/clockface'
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
@@ -34,13 +36,18 @@ import {VisualizationOptionProps} from 'src/visualization'
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
 const REMOVE_COLUMN = '(none)'
 
+const ColumnSelectionError: FC = () => (
+  <div className="view-options--band-column-dropdown-error">
+    <Icon glyph={IconFont.AlertTriangle_New} />
+    <span> Cannot be the same as Main Column</span>
+  </div>
+)
+
 interface Props extends VisualizationOptionProps {
   properties: BandViewProperties
 }
 
-const BandViewOptions: FC<Props> = props => {
-  const {properties, results, update} = props
-
+const BandViewOptions: FC<Props> = ({properties, results, update}) => {
   const numericColumns = (results?.table?.columnKeys || []).filter(key => {
     if (key === 'result' || key === 'table') {
       return false
@@ -211,7 +218,7 @@ const BandViewOptions: FC<Props> = props => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Aggregate Functions</h5>
-          <Form.Element label="Upper Column Dropdown">
+          <Form.Element label="Upper Column">
             <Dropdown
               button={(active, onClick) => {
                 return (
@@ -242,8 +249,10 @@ const BandViewOptions: FC<Props> = props => {
                 </Dropdown.Menu>
               )}
             />
+            {getDropdownColumnStatus(properties.upperColumn) ===
+              ComponentStatus.Error && <ColumnSelectionError />}
           </Form.Element>
-          <Form.Element label="Main Column Dropdown">
+          <Form.Element label="Main Column">
             <Dropdown
               button={(active, onClick) => {
                 return (
@@ -274,7 +283,7 @@ const BandViewOptions: FC<Props> = props => {
               )}
             />
           </Form.Element>
-          <Form.Element label="Lower Column Dropdown">
+          <Form.Element label="Lower Column">
             <Dropdown
               button={(active, onClick) => {
                 return (
@@ -305,6 +314,8 @@ const BandViewOptions: FC<Props> = props => {
                 </Dropdown.Menu>
               )}
             />
+            {getDropdownColumnStatus(properties.lowerColumn) ===
+              ComponentStatus.Error && <ColumnSelectionError />}
           </Form.Element>
         </Grid.Column>
         <Grid.Column

@@ -12,6 +12,7 @@ import {
   Task,
   Telegraf,
 } from 'src/types'
+import {PermissionTypes} from 'src/authorizations/utils/permissions'
 
 export const getStatus = (
   {resources}: AppState,
@@ -68,3 +69,6 @@ export const getLabels = (state: AppState, labelIDs: string[]): Label[] => {
     .map(labelID => getByID<Label>(state, ResourceType.Labels, labelID))
     .filter(label => !!label)
 }
+
+export const getAllTokensResources = (state: AppState): PermissionTypes[] =>
+  get(state, 'resources.tokens.allResources', []) || []

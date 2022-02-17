@@ -611,7 +611,7 @@ describe('Flows', () => {
     cy.getByTestID('view-type--dropdown').click()
     cy.getByTestID('view-type--band').click()
     cy.get(
-      '.flow-panel--persistent-control > button.cf-button[title="Run"'
+      '.flow-panel--persistent-control > button.cf-button[title="Run"]'
     ).click()
     cy.getByTestID('giraffe-layer-band-chart').should('be.visible')
 

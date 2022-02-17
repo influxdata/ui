@@ -35,7 +35,6 @@ import {Task, AppState} from 'src/types'
 // DateTime
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
-import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 
 interface Props {
   task: Task
@@ -100,17 +99,13 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       })
       .then(resp => {
         if (resp.length) {
-          setRoute(
-            `/orgs/${org.id}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
-              resp[0].notebookID
-            }`
-          )
+          setRoute(`/orgs/${org.id}/notebooks/${resp[0].notebookID}`)
         } else {
-          setRoute(`/${PROJECT_NAME.toLowerCase()}/from/task/${task.id}`)
+          setRoute(`/notebook/from/task/${task.id}`)
         }
       })
       .catch(() => {
-        setRoute(`/${PROJECT_NAME.toLowerCase()}/from/task/${task.id}`)
+        setRoute(`/notebook/from/task/${task.id}`)
       })
   }, [isFlagEnabled('createWithFlows'), task])
 

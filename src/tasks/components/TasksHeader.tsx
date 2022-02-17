@@ -33,7 +33,6 @@ import {ResourceType} from 'src/types'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 import 'src/shared/components/cta.scss'
-import {PROJECT_NAME} from 'src/flows'
 
 interface Props {
   onCreateTask: () => void
@@ -88,10 +87,7 @@ const TasksHeader: FC<Props> = ({
               <Icon glyph={IconFont.BookPencil} />
               Now you can use Notebooks to explore your data while building a
               task
-              <Link
-                to={`/${PROJECT_NAME.toLowerCase()}/from/task`}
-                onClick={recordClick}
-              >
+              <Link to="/notebook/from/task" onClick={recordClick}>
                 Create a Task
               </Link>
               <span className="header-cta--close-icon" onClick={hideFlowsCTA}>

@@ -311,7 +311,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     <ExportTaskButton
       generate={generateTask}
       onCreate={storeTask}
-      text="Export Task"
+      text="Save to Tasks"
       disabled={
         !hasChanges || !!intervalError || !!offsetError || !data?.interval
       }

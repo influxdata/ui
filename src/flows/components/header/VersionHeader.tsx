@@ -5,7 +5,6 @@ import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {FlowListContext} from 'src/flows/context/flow.list'
 import {VersionPublishProvider} from 'src/flows/context/version.publish'
 import PublishedVersions from 'src/flows/components/header/PublishedVersions'
 
@@ -33,21 +32,22 @@ import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 const VersionHeader: FC = () => {
-  const {clone} = useContext(FlowListContext)
   const {timeZone} = useContext(AppSettingContext)
   const {flow} = useContext(FlowContext)
-  const history = useHistory()
-  const {id: orgID} = useSelector(getOrg)
+  // const history = useHistory()
+  // const {id: orgID} = useSelector(getOrg)
 
-  const handleClone = async () => {
-    event('clone_notebook')
-    const clonedId = await clone(flow.id)
-    history.push(
-      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
-    )
+  const handleClone = () => {
+    event('clone_notebook_version')
+    // const clonedId = await clone(flow.id)
+    // TODO(ariel): tweak this so we don't use the flowlist
+    // history.push(
+    //   `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
+    // )
   }
 
   const handleRevert = () => {
+    event('revert_notebook_version')
     console.warn('reverting') // TODO(ariel): finish this in the next PR
   }
 

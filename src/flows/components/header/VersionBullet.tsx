@@ -22,10 +22,11 @@ import {VersionHistory} from 'src/client/notebooksRoutes'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 type Props = {
-  version: VersionHistory
+  draftVersion?: boolean
+  version?: VersionHistory
 }
 
-const VersionBullet: FC<Props> = ({version}) => {
+const VersionBullet: FC<Props> = ({version, draftVersion}) => {
   const triggerRef: RefObject<HTMLElement> = createRef()
   const {flow} = useContext(FlowContext)
   const history = useHistory()
@@ -33,28 +34,51 @@ const VersionBullet: FC<Props> = ({version}) => {
   const params = useParams<{notebookID?: string; id?: string}>()
 
   const handleBulletClick = () => {
-    history.push(
-      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
-        flow.id
-      }/versions/${version.id}`
-    )
+    let baseRoute = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
+      flow.id
+    }`
+
+    if (!draftVersion) {
+      baseRoute = `${baseRoute}/versions/${version.id}`
+    }
+
+    history.push(baseRoute)
   }
 
   let activeClassname = ''
 
-  if (params.notebookID && params.id && version.id === params.id) {
+  const currentPublishedVersion =
+    params?.notebookID && params?.id && version?.id === params?.id
+  const notVersionedDraft = draftVersion && !params.notebookID && !version?.id
+
+  if (currentPublishedVersion || notVersionedDraft) {
     activeClassname = 'active-version--button'
+  }
+
+  let popoverMessage = `current draft version`
+
+  if (version) {
+    popoverMessage = `Published at ${new Date(
+      version.publishedAt
+    ).toLocaleString()}\n
+    by ${version.publishedBy}`
   }
 
   return (
     <>
-      <div onClick={handleBulletClick}>
+      <div onClick={handleBulletClick} className="publish-version--bullet">
         <Bullet
-          className={`publish-version-bullet--button ${activeClassname}`}
+          className={`${activeClassname} ${
+            draftVersion
+              ? 'publish-version-draft'
+              : 'publish-version-bullet--button'
+          }`}
           glyph={IconFont.Checkmark_New}
           size={ComponentSize.Small}
           color={InfluxColors.White}
-          backgroundColor={InfluxColors.Amethyst}
+          backgroundColor={
+            draftVersion ? InfluxColors.Grey45 : InfluxColors.Amethyst
+          }
           ref={triggerRef}
         />
       </div>
@@ -66,8 +90,7 @@ const VersionBullet: FC<Props> = ({version}) => {
         hideEvent={PopoverInteraction.Hover}
         contents={() => (
           <h6 className="publish-version--tooltip">
-            Published by {version.publishedBy} at{' '}
-            {new Date(version.publishedAt).toLocaleString()}
+            <pre>{popoverMessage}</pre>
           </h6>
         )}
       />

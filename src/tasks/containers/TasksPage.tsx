@@ -45,10 +45,11 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 // Selectors
 import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
-
 import {getAllTasks} from 'src/tasks/actions/thunks'
 import {getLabels} from 'src/labels/actions/thunks'
-import { PROJECT_NAME } from 'src/flows'
+
+// Constants
+import {PROJECT_NAME} from 'src/flows'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>

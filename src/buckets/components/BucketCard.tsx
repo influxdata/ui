@@ -10,13 +10,13 @@ import BucketCardActions from 'src/buckets/components/BucketCardActions'
 
 // Constants
 import {isSystemBucket} from 'src/buckets/constants/index'
+import {PROJECT_NAME} from 'src/flows'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {OwnBucket} from 'src/types'
-import { PROJECT_NAME } from 'src/flows'
 
 interface Props {
   bucket: OwnBucket

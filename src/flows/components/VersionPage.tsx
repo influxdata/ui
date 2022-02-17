@@ -6,6 +6,7 @@ import {useParams} from 'react-router'
 // Contexts
 import {VersionFlowProvider} from 'src/flows/context/version.read'
 import {FlowQueryProvider} from 'src/flows/context/flow.query'
+import QueryProvider from 'src/shared/contexts/query'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
 import {SidebarProvider} from 'src/flows/context/sidebar'
@@ -60,13 +61,15 @@ const ReadOnlyFlowPage: FC = () => {
 const FlowContainer: FC = () => (
   <VersionFlowProvider>
     <ReadOnly>
-      <ResultsProvider>
-        <FlowQueryProvider>
-          <SidebarProvider>
-            <ReadOnlyFlowPage />
-          </SidebarProvider>
-        </FlowQueryProvider>
-      </ResultsProvider>
+      <QueryProvider>
+        <ResultsProvider>
+          <FlowQueryProvider>
+            <SidebarProvider>
+              <ReadOnlyFlowPage />
+            </SidebarProvider>
+          </FlowQueryProvider>
+        </ResultsProvider>
+      </QueryProvider>
     </ReadOnly>
   </VersionFlowProvider>
 )

@@ -6,30 +6,35 @@ import {useSelector} from 'react-redux'
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowListContext} from 'src/flows/context/flow.list'
-import {AppSettingProvider} from 'src/shared/contexts/app'
+import {VersionPublishProvider} from 'src/flows/context/version.publish'
+import PublishedVersions from 'src/flows/components/header/PublishedVersions'
 
 // Components
 import {
   ComponentColor,
+  Dropdown,
   Page,
   SquareButton,
   IconFont,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
-import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
 
 // Utility
 import {event} from 'src/cloud/utils/reporting'
 import {getOrg} from 'src/organizations/selectors'
+import {getTimeRangeLabel} from 'src/shared/utils/duration'
 
 // Constants
 import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {AppSettingContext} from 'src/shared/contexts/app'
 
-const FlowHeader: FC = () => {
+const VersionHeader: FC = () => {
   const {clone} = useContext(FlowListContext)
+  const {timeZone} = useContext(AppSettingContext)
   const {flow} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
@@ -50,6 +55,8 @@ const FlowHeader: FC = () => {
     return null
   }
 
+  const timeRangeLabel = getTimeRangeLabel(flow.range, timeZone)
+
   return (
     <>
       <Page.Header fullWidth>
@@ -62,7 +69,15 @@ const FlowHeader: FC = () => {
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <TimeZoneDropdown />
-          <TimeRangeDropdown />
+          <Dropdown.Button
+            style={{width: `${flow.range.type === 'custom' ? 282 : 158}px`}}
+            testID="timerange-dropdown"
+            icon={IconFont.Clock_New}
+            onClick={() => {}}
+            status={ComponentStatus.Disabled}
+          >
+            {timeRangeLabel}
+          </Dropdown.Button>
           <SquareButton
             icon={IconFont.Duplicate_New}
             onClick={handleClone}
@@ -77,12 +92,15 @@ const FlowHeader: FC = () => {
           />
         </Page.ControlBarRight>
       </Page.ControlBar>
+      <Page.ControlBar fullWidth>
+        <Page.ControlBarRight>
+          <VersionPublishProvider>
+            <PublishedVersions />
+          </VersionPublishProvider>
+        </Page.ControlBarRight>
+      </Page.ControlBar>
     </>
   )
 }
 
-export default () => (
-  <AppSettingProvider>
-    <FlowHeader />
-  </AppSettingProvider>
-)
+export default VersionHeader

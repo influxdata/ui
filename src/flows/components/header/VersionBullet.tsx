@@ -1,5 +1,5 @@
 import React, {createRef, FC, RefObject, useContext} from 'react'
-import {useHistory} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {
   Appearance,
@@ -30,6 +30,7 @@ const VersionBullet: FC<Props> = ({version}) => {
   const {flow} = useContext(FlowContext)
   const history = useHistory()
   const orgID = useSelector(getOrg)?.id
+  const params = useParams<{notebookID?: string; id?: string}>()
 
   const handleBulletClick = () => {
     history.push(
@@ -39,11 +40,17 @@ const VersionBullet: FC<Props> = ({version}) => {
     )
   }
 
+  let activeClassname = ''
+
+  if (params.notebookID && params.id && version.id === params.id) {
+    activeClassname = 'active-version--button'
+  }
+
   return (
     <>
       <div onClick={handleBulletClick}>
         <Bullet
-          className="publish-version-bullet--button"
+          className={`publish-version-bullet--button ${activeClassname}`}
           glyph={IconFont.Checkmark_New}
           size={ComponentSize.Small}
           color={InfluxColors.White}

@@ -1,47 +1,7 @@
 import {Permission, ResourceType} from 'src/types'
-import {CLOUD} from 'src/shared/constants'
 import {capitalize} from 'lodash'
 
-type PermissionTypes = Permission['resource']['type']
-
-const sharedPermissionTypes: PermissionTypes[] = [
-  'annotations',
-  'authorizations',
-  'buckets',
-  'checks',
-  'dashboards',
-  'dbrp',
-  'documents',
-  'labels',
-  'notificationRules',
-  'notificationEndpoints',
-  'orgs',
-  'secrets',
-  'tasks',
-  'telegrafs',
-  'users',
-  'variables',
-  'views',
-]
-
-const cloudPermissionTypes = ['flows', 'functions']
-
-const ossPermissionTypes = [
-  'notebooks',
-  'scrapers',
-  'sources',
-  'remotes',
-  'replications',
-]
-
-// TODO: replace this with some server side mechanism
-const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(
-  (CLOUD ? cloudPermissionTypes : ossPermissionTypes) as PermissionTypes[]
-)
-
-allPermissionTypes.sort((a, b) =>
-  a.toLowerCase().localeCompare(b.toLowerCase())
-)
+export type PermissionTypes = Permission['resource']['type']
 
 const ensureT = (orgID: string, userID: string) => (
   t: PermissionTypes
@@ -70,10 +30,6 @@ const ensureT = (orgID: string, userID: string) => (
     ]
   }
 
-  if (!allPermissionTypes.includes(t)) {
-    throw new Error('Unexpected object: ' + t)
-  }
-
   return [
     {
       action: 'read' as 'read',
@@ -87,6 +43,7 @@ const ensureT = (orgID: string, userID: string) => (
 }
 
 export const allAccessPermissions = (
+  allPermissionTypes: PermissionTypes[],
   orgID: string,
   userID: string
 ): Permission[] => {

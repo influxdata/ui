@@ -1,4 +1,4 @@
-import {allAccessPermissions} from './permissions'
+import {allAccessPermissions, PermissionTypes} from './permissions'
 import {CLOUD} from 'src/shared/constants'
 import {
   generateDescription,
@@ -710,10 +710,40 @@ const apiPermission5 = [
 ]
 
 test('all-access tokens/authorizations production test', () => {
+  const allPermissions = new Set<PermissionTypes>()
+
   if (CLOUD) {
-    expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(cloudHvhs)
+    cloudHvhs.forEach(permission => {
+      allPermissions.add(permission.resource.type as PermissionTypes)
+    })
+    const sortedPermissions = Array.from(allPermissions).sort((a, b) =>
+      a.toLowerCase().localeCompare(b.toLowerCase())
+    )
+    expect(
+      allAccessPermissions(sortedPermissions, 'bulldogs', 'mario')
+    ).toMatchObject(
+      cloudHvhs.sort((a, b) =>
+        a.resource.type
+          .toLowerCase()
+          .localeCompare(b.resource.type.toLowerCase())
+      )
+    )
   } else {
-    expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(ossHvhs)
+    ossHvhs.forEach(permission => {
+      allPermissions.add(permission.resource.type as PermissionTypes)
+    })
+    const sortedPermissions = Array.from(allPermissions).sort((a, b) =>
+      a.toLowerCase().localeCompare(b.toLowerCase())
+    )
+    expect(
+      allAccessPermissions(sortedPermissions, 'bulldogs', 'mario')
+    ).toMatchObject(
+      ossHvhs.sort((a, b) =>
+        a.resource.type
+          .toLowerCase()
+          .localeCompare(b.resource.type.toLowerCase())
+      )
+    )
   }
 })
 

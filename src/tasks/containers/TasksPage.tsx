@@ -45,11 +45,9 @@ import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generate
 // Selectors
 import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
+
 import {getAllTasks} from 'src/tasks/actions/thunks'
 import {getLabels} from 'src/labels/actions/thunks'
-
-// Constants
-import {PROJECT_NAME} from 'src/flows'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{orgID: string}>
@@ -238,7 +236,7 @@ class TasksPage extends PureComponent<Props, State> {
     } = this.props
 
     if (isFlagEnabled('createWithFlows')) {
-      history.push(`/${PROJECT_NAME.toLowerCase()}/from/task`)
+      history.push(`/notebook/from/task`)
     } else {
       history.push(`/orgs/${orgID}/tasks/new`)
     }

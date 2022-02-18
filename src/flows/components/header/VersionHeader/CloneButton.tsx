@@ -13,6 +13,8 @@ import {ComponentColor, SquareButton, IconFont} from '@influxdata/clockface'
 import {event} from 'src/cloud/utils/reporting'
 import {getOrg} from 'src/organizations/selectors'
 import {postNotebook} from 'src/client/notebooksRoutes'
+import {getAllAPI} from 'src/flows/context/api'
+import {incrementCloneName} from 'src/utils/naming'
 
 // Constants
 import {PROJECT_NAME_PLURAL} from 'src/flows'
@@ -26,7 +28,14 @@ const CloneVersionButton: FC = () => {
   const handleClone = async () => {
     event('clone_notebook_version')
     try {
-      const _flow = serialize(flow)
+      const {flows} = await getAllAPI(orgID)
+
+      const allFlowNames = Object.values(flows).map(value => value.name)
+      const clonedName = incrementCloneName(allFlowNames, flow.name)
+
+      const _flow = serialize({...flow, name: clonedName})
+      delete _flow.data.id
+
       const response = await postNotebook(_flow)
 
       if (response.status !== 200) {
@@ -40,10 +49,6 @@ const CloneVersionButton: FC = () => {
     } catch (error) {
       console.error({error})
     }
-  }
-
-  if (!flow) {
-    return null
   }
 
   return (

@@ -510,11 +510,11 @@ describe('Flows', () => {
       },
       {
         panel: 'table',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Download as CSV'],
       },
       {
         panel: 'visualization',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Download as CSV'],
       },
       {
         panel: 'markdown',

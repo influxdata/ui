@@ -13,10 +13,10 @@ import {ComponentColor, SquareButton, IconFont} from '@influxdata/clockface'
 import {event} from 'src/cloud/utils/reporting'
 import {getOrg} from 'src/organizations/selectors'
 import {patchNotebook} from 'src/client/notebooksRoutes'
+import {serialize} from 'src/flows/context/flow.list'
 
 // Constants
 import {PROJECT_NAME_PLURAL} from 'src/flows'
-import {serialize} from 'src/flows/context/flow.list'
 
 const RevertVersionButton: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -26,7 +26,7 @@ const RevertVersionButton: FC = () => {
   const handleRevert = async () => {
     event('revert_notebook_version')
     try {
-      const _flow = serialize(flow)
+      const _flow = {id: flow.id, ...serialize(flow)}
       const response = await patchNotebook(_flow)
 
       if (response.status !== 200) {
@@ -39,10 +39,6 @@ const RevertVersionButton: FC = () => {
     } catch (error) {
       console.error({error})
     }
-  }
-
-  if (!flow) {
-    return null
   }
 
   return (

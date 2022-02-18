@@ -29,6 +29,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {Me} from 'src/client/unityRoutes'
+import {PROJECT_NAME} from 'src/flows'
 
 const canAccessCheckout = (me: Me): boolean => {
   if (!!me?.isRegionBeta) {
@@ -70,7 +71,10 @@ const GetOrganizations: FunctionComponent = () => {
           <PageSpinner loading={quartzMeStatus}>
             <Switch>
               <Route path="/no-orgs" component={NoOrgsPage} />
-              <Route path="/notebook/from" component={NotebookTemplates} />
+              <Route
+                path={`/${PROJECT_NAME.toLowerCase()}/from`}
+                component={NotebookTemplates}
+              />
               <Route path="/orgs" component={App} />
               <Route exact path="/" component={RouteToOrg} />
               {CLOUD && canAccessCheckout(me) && (
@@ -85,7 +89,10 @@ const GetOrganizations: FunctionComponent = () => {
         ) : (
           <Switch>
             <Route path="/no-orgs" component={NoOrgsPage} />
-            <Route path="/notebook/from" component={NotebookTemplates} />
+            <Route
+              path={`/${PROJECT_NAME.toLowerCase()}/from`}
+              component={NotebookTemplates}
+            />
             <Route path="/orgs" component={App} />
             <Route exact path="/" component={RouteToOrg} />
             <Route component={NotFound} />

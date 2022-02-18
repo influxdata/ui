@@ -9,11 +9,28 @@ import {
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 import FlowsExplainer from 'src/flows/components/FlowsExplainer'
+import {PROJECT_NAME} from 'src/flows'
 export const PRESET_MAP = [
-  {title: 'New Notebook', href: '/notebook/from/default', testID: 'new'},
-  {title: 'Set an Alert', href: '/notebook/from/notification', testID: 'alert'},
-  {title: 'Schedule a Task', href: '/notebook/from/task', testID: 'task'},
-  {title: 'Write a Flux Script', href: '/notebook/from/flux', testID: 'script'},
+  {
+    title: 'New Notebook',
+    href: `/${PROJECT_NAME.toLowerCase()}/from/default`,
+    testID: 'new',
+  },
+  {
+    title: 'Set an Alert',
+    href: `/${PROJECT_NAME.toLowerCase()}/from/notification`,
+    testID: 'alert',
+  },
+  {
+    title: 'Schedule a Task',
+    href: `/${PROJECT_NAME.toLowerCase()}/from/task`,
+    testID: 'task',
+  },
+  {
+    title: 'Write a Flux Script',
+    href: `/${PROJECT_NAME.toLowerCase()}/from/flux`,
+    testID: 'script',
+  },
 ]
 
 const PresetFlows: FC = () => {

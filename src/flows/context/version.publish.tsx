@@ -58,7 +58,7 @@ export const VersionPublishProvider: FC = ({children}) => {
         throw new Error(response.data.message)
       }
 
-      setVersions(response.data)
+      setVersions(response.data.reverse())
     } catch (error) {
       console.error({error})
     }

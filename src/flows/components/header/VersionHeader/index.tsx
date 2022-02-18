@@ -1,7 +1,5 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-// import {useHistory} from 'react-router-dom'
-// import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -9,22 +7,15 @@ import {VersionPublishProvider} from 'src/flows/context/version.publish'
 import PublishedVersions from 'src/flows/components/header/PublishedVersions'
 
 // Components
-import {
-  ComponentColor,
-  Dropdown,
-  Page,
-  SquareButton,
-  IconFont,
-  ComponentStatus,
-} from '@influxdata/clockface'
+import {Dropdown, Page, IconFont, ComponentStatus} from '@influxdata/clockface'
 
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import Submit from 'src/flows/components/header/Submit'
+import CloneVersionButton from 'src/flows/components/header/VersionHeader/CloneButton'
+import RevertVersionButton from 'src/flows/components/header/VersionHeader/RevertButton'
 
 // Utility
-import {event} from 'src/cloud/utils/reporting'
-// import {getOrg} from 'src/organizations/selectors'
 import {getTimeRangeLabel} from 'src/shared/utils/duration'
 
 // Constants
@@ -34,22 +25,6 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 const VersionHeader: FC = () => {
   const {timeZone} = useContext(AppSettingContext)
   const {flow} = useContext(FlowContext)
-  // const history = useHistory()
-  // const {id: orgID} = useSelector(getOrg)
-
-  const handleClone = () => {
-    event('clone_notebook_version')
-    // const clonedId = await clone(flow.id)
-    // TODO(ariel): tweak this so we don't use the flowlist
-    // history.push(
-    //   `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
-    // )
-  }
-
-  const handleRevert = () => {
-    event('revert_notebook_version')
-    console.warn('reverting') // TODO(ariel): finish this in the next PR
-  }
 
   if (!flow) {
     return null
@@ -78,18 +53,8 @@ const VersionHeader: FC = () => {
           >
             {timeRangeLabel}
           </Dropdown.Button>
-          <SquareButton
-            icon={IconFont.Duplicate_New}
-            onClick={handleClone}
-            color={ComponentColor.Primary}
-            titleText="Clone"
-          />
-          <SquareButton
-            icon={IconFont.Undo}
-            onClick={handleRevert}
-            color={ComponentColor.Danger}
-            titleText="Clone"
-          />
+          <CloneVersionButton />
+          <RevertVersionButton />
         </Page.ControlBarRight>
       </Page.ControlBar>
       <Page.ControlBar fullWidth>

@@ -478,7 +478,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
           <FlexBox margin={ComponentSize.Medium}>
-            <ExportTask setStatus={setStatus} />
+            <ExportTask />
           </FlexBox>
         </Panel.Footer>
       </div>

@@ -1468,15 +1468,17 @@ export const testNotificationFailure = (
   message: `Failed to send the test alert to ${source}. Please try again`,
 })
 
-export const exportAlertToTaskSuccess = (id: string): Notification => ({
+export const exportAlertToTaskSuccess = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
   ...defaultSuccessNotification,
-  message: `Successfully created task ${id}.`,
+  message: `Successfully created task for ${source} alert.`,
 })
 
 export const exportAlertToTaskFailure = (
   source: 'slack' | 'pagerduty' | 'https'
 ): Notification => ({
-  ...defaultSuccessNotification,
+  ...defaultErrorNotification,
   message: `Failed to create task for ${source} alert. Please check your configuration.`,
 })
 

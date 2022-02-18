@@ -39,6 +39,7 @@ interface Props {
   validate?: (query: string) => Promise<boolean>
   onCreate?: (task: any) => void
   disabled?: boolean
+  loading?: boolean
 }
 
 const ExportTaskButton: FC<Props> = ({
@@ -48,6 +49,7 @@ const ExportTaskButton: FC<Props> = ({
   validate,
   onCreate,
   disabled,
+  loading,
 }) => {
   const {flow} = useContext(FlowContext)
   const {add} = useContext(FlowListContext)
@@ -164,13 +166,20 @@ const ExportTaskButton: FC<Props> = ({
     }
   }
 
+  let status = ComponentStatus.Default
+  if (disabled) {
+    status = ComponentStatus.Disabled
+  } else if (loading) {
+    status = ComponentStatus.Loading
+  }
+
   return (
     <Button
       text={text}
       color={ComponentColor.Success}
       type={ButtonType.Submit}
       onClick={onClick}
-      status={disabled ? ComponentStatus.Disabled : ComponentStatus.Default}
+      status={status}
       testID="task-form-save"
       icon={IconFont.Export_New}
       titleText={text}

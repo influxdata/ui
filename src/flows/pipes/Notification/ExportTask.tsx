@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback} from 'react'
+import React, {FC, useContext, useCallback, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
@@ -16,7 +16,7 @@ import {
   deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Visualization/threshold'
-import {RemoteDataState, Task} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -26,14 +26,14 @@ import {
   exportAlertToTaskFailure,
 } from 'src/shared/copy/notifications'
 
-interface Props {
-  setStatus: React.Dispatch<React.SetStateAction<RemoteDataState>>
-}
-
-const ExportTask: FC<Props> = ({setStatus}) => {
+const ExportTask: FC = () => {
   const dispatch = useDispatch()
   const {id, data} = useContext(PipeContext)
   const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const [status, setStatus] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
+  )
+
   const queryText = getPanelQueries(id)?.source
 
   const generateDeadmanTask = useCallback(() => {
@@ -284,12 +284,13 @@ const ExportTask: FC<Props> = ({setStatus}) => {
     }
   }
 
-  const handleTaskCreation = (data: {task: Task}) => {
-    dispatch(notify(exportAlertToTaskSuccess(data.task?.id)))
+  const handleTaskCreation = _ => {
+    dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))
   }
 
   return (
     <ExportTaskButton
+      loading={status == RemoteDataState.Loading}
       generate={generateTask}
       validate={validateTask}
       onCreate={handleTaskCreation}

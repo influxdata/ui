@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+// import {useHistory} from 'react-router-dom'
+// import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -24,11 +24,11 @@ import Submit from 'src/flows/components/header/Submit'
 
 // Utility
 import {event} from 'src/cloud/utils/reporting'
-import {getOrg} from 'src/organizations/selectors'
+// import {getOrg} from 'src/organizations/selectors'
 import {getTimeRangeLabel} from 'src/shared/utils/duration'
 
 // Constants
-import {DEFAULT_PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {DEFAULT_PROJECT_NAME} from 'src/flows'
 import {AppSettingContext} from 'src/shared/contexts/app'
 
 const VersionHeader: FC = () => {

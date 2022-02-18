@@ -50,7 +50,7 @@ const NotificationMonacoEditor = lazy(() =>
 )
 
 // Types
-import {RemoteDataState, EditorType} from 'src/types'
+import {RemoteDataState, EditorType, Task} from 'src/types'
 import {PipeProp} from 'src/types/flows'
 
 // Utils
@@ -60,6 +60,7 @@ import {
   testNotificationSuccess,
   testNotificationFailure,
   exportAlertToTaskSuccess,
+  exportAlertToTaskFailure,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getSecrets} from 'src/secrets/actions/thunks'
@@ -375,11 +376,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
     data.message,
   ])
 
-  const generateTask = useCallback(() => {
-    event('Alert Panel (Notebooks) - Export Alert Task Clicked')
-    if (data.thresholds[0].type === deadmanType) {
-      return generateDeadmanTask()
-    }
+  const generateThresholdTask = useCallback(() => {
     // simplify takes care of all the variable nonsense in the query
     const ast = parse(simplify(queryText))
 
@@ -420,32 +417,32 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
       .join(' and ')
 
     const newQuery = `
-import "strings"
-import "regexp"
-import "influxdata/influxdb/monitor"
-import "influxdata/influxdb/schema"
-import "influxdata/influxdb/secrets"
-import "experimental"
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
+    import "strings"
+    import "regexp"
+    import "influxdata/influxdb/monitor"
+    import "influxdata/influxdb/schema"
+    import "influxdata/influxdb/secrets"
+    import "experimental"
+    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
 
-check = {
-	_check_id: "${id}",
-	_check_name: "Notebook Generated Check",
-	_type: "custom",
-	tags: {},
-}
-notification = {
-	_notification_rule_id: "${id}",
-	_notification_rule_name: "Notebook Generated Rule",
-	_notification_endpoint_id: "${id}",
-	_notification_endpoint_name: "Notebook Generated Endpoint",
-}
+    check = {
+    _check_id: "${id}",
+    _check_name: "Notebook Generated Check",
+    _type: "custom",
+    tags: {},
+    }
+    notification = {
+    _notification_rule_id: "${id}",
+    _notification_rule_name: "Notebook Generated Rule",
+    _notification_endpoint_id: "${id}",
+    _notification_endpoint_name: "Notebook Generated Endpoint",
+    }
 
-task_data = ${format_from_js_file(ast)}
-trigger = ${conditions}
-messageFn = (r) => ("${data.message}")
+    task_data = ${format_from_js_file(ast)}
+    trigger = ${conditions}
+    messageFn = (r) => ("${data.message}")
 
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
+    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
 
     const newAST = parse(newQuery)
 
@@ -475,8 +472,6 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
     const taskHeader = parse(`option task = {${paramString}}\n`)
     newAST.body.unshift(taskHeader.body[0])
 
-    dispatch(notify(exportAlertToTaskSuccess()))
-
     return format_from_js_file(newAST)
   }, [
     id,
@@ -489,26 +484,62 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.message,
   ])
 
-  const handleTestEndpoint = async () => {
-    event('Alert Panel (Notebooks) - Test Alert Clicked')
-    const queryText = `
-import "strings"
-import "regexp"
-import "influxdata/influxdb/schema"
-import "influxdata/influxdb/secrets"
-import "experimental"
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestImports()}
-
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
-
+  const runTestQuery = async (queryText: string): Promise<boolean> => {
     try {
       setStatus(RemoteDataState.Loading)
       await query(queryText)
 
       setStatus(RemoteDataState.Done)
-      dispatch(notify(testNotificationSuccess(data.endpoint)))
+      return true
     } catch {
       setStatus(RemoteDataState.Error)
+      return false
+    }
+  }
+
+  const generateTask = useCallback(() => {
+    event('Alert Panel (Notebooks) - Export Alert Task Clicked')
+
+    if (data.thresholds[0].type === deadmanType) {
+      return generateDeadmanTask()
+    } else {
+      return generateThresholdTask()
+    }
+  }, [generateDeadmanTask, generateThresholdTask, data.thresholds])
+
+  const validateTask = async (query: string): Promise<boolean> => {
+    const ok = await runTestQuery(query)
+    if (ok) {
+      dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))
+      return true
+    } else {
+      dispatch(notify(exportAlertToTaskFailure(data.endpoint)))
+      return false
+    }
+  }
+
+  const handleTaskCreation = (data: {task: Task}) => {
+    dispatch(notify(exportAlertToTaskSuccess(data.task?.id)))
+  }
+
+  const handleTestEndpoint = async () => {
+    event('Alert Panel (Notebooks) - Test Alert Clicked')
+    const queryText = `
+      import "strings"
+      import "regexp"
+      import "influxdata/influxdb/schema"
+      import "influxdata/influxdb/secrets"
+      import "experimental"
+      ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestImports()}
+
+      ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(
+        data.endpointData
+      )}
+    `
+    const ok = await runTestQuery(queryText)
+    if (ok) {
+      dispatch(notify(testNotificationSuccess(data.endpoint)))
+    } else {
       dispatch(notify(testNotificationFailure(data.endpoint)))
     }
   }
@@ -710,6 +741,8 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
           <FlexBox margin={ComponentSize.Medium}>
             <ExportTaskButton
               generate={generateTask}
+              validate={validateTask}
+              onCreate={handleTaskCreation}
               text="Export Alert Task"
               type="alert"
             />

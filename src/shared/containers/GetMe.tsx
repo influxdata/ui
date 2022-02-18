@@ -31,7 +31,7 @@ class GetMe extends PureComponent<Props, State> {
 
     this.state = {
       loading: RemoteDataState.NotStarted,
-      getMeCalledAfterFlagsLoaded: false
+      getMeCalledAfterFlagsLoaded: false,
     }
   }
 

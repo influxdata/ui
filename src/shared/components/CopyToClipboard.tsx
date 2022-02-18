@@ -4,14 +4,14 @@ import copy from 'copy-to-clipboard'
 
 interface Props {
   text: string
-  onCopy: (copiedText: string, copyWasSuccessful: boolean) => void
-  children?: JSX.Element
+  children: JSX.Element
+  onCopy?: (copiedText: string, copyWasSuccessful: boolean) => void
 }
 
-const CopyToClipboard: FC<Props> = ({text, onCopy, children, ...props}) => {
-  const onClick = (event: ChangeEvent<HTMLInputElement>) => {
-    const elem = React.Children.only(children)
+const CopyToClipboard: FC<Props> = ({text, children, onCopy, ...props}) => {
+  const elem = React.Children.only(children)
 
+  const onClick = (event: ChangeEvent<HTMLInputElement>) => {
     const result = copy(text)
 
     if (onCopy) {
@@ -23,8 +23,6 @@ const CopyToClipboard: FC<Props> = ({text, onCopy, children, ...props}) => {
       elem.props.onClick(event)
     }
   }
-
-  const elem = React.Children.only(children)
 
   return React.cloneElement(elem, {...props, onClick})
 }

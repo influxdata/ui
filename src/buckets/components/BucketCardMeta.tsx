@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import {capitalize} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 
@@ -16,6 +15,7 @@ import {notify as notifyAction} from 'src/shared/actions/notifications'
 
 // Components
 import {ResourceCard} from '@influxdata/clockface'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 // Types
 import {OwnBucket} from 'src/types'

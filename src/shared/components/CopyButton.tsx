@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent, MouseEvent} from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 
 // Components
 import {
@@ -9,6 +8,7 @@ import {
   ComponentSize,
   ButtonShape,
 } from '@influxdata/clockface'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 interface Props {
   text: string

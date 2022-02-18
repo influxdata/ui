@@ -107,8 +107,8 @@ const ExportTaskButton: FC<Props> = ({
       }
     }
 
-    const resp = await postTask({data: {orgID: org.id, flux: query}})
     try {
+      const resp = await postTask({data: {orgID: org.id, flux: query}})
       if (resp.status !== 201) {
         throw new Error(resp.data.message)
       }

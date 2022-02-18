@@ -79,8 +79,7 @@ const ExportTask: FC = () => {
 
     const conditions = THRESHOLD_TYPES[deadmanType].condition(deadman)
 
-    const newQuery = `
-    import "strings"
+    const newQuery = `import "strings"
     import "regexp"
     import "influxdata/influxdb/monitor"
     import "influxdata/influxdb/schema"
@@ -191,8 +190,7 @@ const ExportTask: FC = () => {
       .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
       .join(' and ')
 
-    const newQuery = `
-    import "strings"
+    const newQuery = `import "strings"
     import "regexp"
     import "influxdata/influxdb/monitor"
     import "influxdata/influxdb/schema"
@@ -201,16 +199,16 @@ const ExportTask: FC = () => {
     ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
 
     check = {
-    _check_id: "${id}",
-    _check_name: "Notebook Generated Check",
-    _type: "custom",
-    tags: {},
+        _check_id: "${id}",
+        _check_name: "Notebook Generated Check",
+        _type: "custom",
+        tags: {},
     }
     notification = {
-    _notification_rule_id: "${id}",
-    _notification_rule_name: "Notebook Generated Rule",
-    _notification_endpoint_id: "${id}",
-    _notification_endpoint_name: "Notebook Generated Endpoint",
+        _notification_rule_id: "${id}",
+        _notification_rule_name: "Notebook Generated Rule",
+        _notification_endpoint_id: "${id}",
+        _notification_endpoint_name: "Notebook Generated Endpoint",
     }
 
     task_data = ${format_from_js_file(ast)}

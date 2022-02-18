@@ -510,11 +510,11 @@ describe('Flows', () => {
       },
       {
         panel: 'table',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Download as CSV'],
       },
       {
         panel: 'visualization',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Download as CSV'],
       },
       {
         panel: 'markdown',
@@ -611,9 +611,9 @@ describe('Flows', () => {
     cy.getByTestID('view-type--dropdown').click()
     cy.getByTestID('view-type--band').click()
     cy.get(
-      '.flow-panel--persistent-control > button.cf-button[title="Run"'
+      '.flow-panel--persistent-control > button.cf-button[title="Run"]'
     ).click()
-    cy.getByTestID(`vis-graphic--band`).should('exist')
+    cy.getByTestID('giraffe-layer-band-chart').should('be.visible')
 
     cy.get('button.cf-button[title="Configure Visualization"]').click()
     cy.getByTestID('dropdown--button-main-column').within(() => {

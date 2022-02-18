@@ -1,5 +1,5 @@
 // Libraries
-import React, {ChangeEvent, FC, useState, useContext} from 'react'
+import React, {ChangeEvent, FC, useState, useContext, useMemo} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -32,6 +32,7 @@ import {event} from 'src/cloud/utils/reporting'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
+import {getAllTokensResources} from 'src/resources/selectors'
 
 // Types
 import {Authorization} from 'src/types'
@@ -46,12 +47,21 @@ const AllAccessTokenOverlay: FC<OwnProps> = props => {
   const [description, setDescription] = useState<string>('')
   const {id: orgID} = useSelector(getOrg)
   const {id: meID} = useSelector(getMe)
+  const allPermissionTypes = useSelector(getAllTokensResources)
+
+  const sortedPermissionTypes = useMemo(
+    () =>
+      allPermissionTypes.sort((a, b) =>
+        a.toLowerCase().localeCompare(b.toLowerCase())
+      ),
+    [allPermissionTypes]
+  )
 
   const handleSave = () => {
     const token: Authorization = {
       orgID,
       description,
-      permissions: allAccessPermissions(orgID, meID),
+      permissions: allAccessPermissions(sortedPermissionTypes, orgID, meID),
     }
     dispatch(createAuthorization(token))
     handleDismiss()

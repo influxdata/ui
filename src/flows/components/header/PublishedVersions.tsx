@@ -11,6 +11,7 @@ const PublishedVersions: FC = () => {
 
   return (
     <>
+      <VersionBullet draftVersion />
       {versions.map(version => (
         <VersionBullet key={version.id} version={version} />
       ))}

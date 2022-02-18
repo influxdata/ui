@@ -8,26 +8,39 @@ export default register => {
     name: 'HTTP Post',
     data: {
       auth: 'none',
+      username: '',
+      password: '',
+      token: '',
       url: 'https://www.example.com/endpoint',
     },
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () =>
-      ['http', 'json'].map(i => `import "${i}"`).join('\n'),
+      ['http', 'influxdata/influxdb/secrets', 'json']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateTestImports: () =>
-      ['array', 'http', 'json'].map(i => `import "${i}"`).join('\n'),
+      ['array', 'http', 'influxdata/influxdb/secrets', 'json']
+        .map(i => `import "${i}"`)
+        .join('\n'),
     generateQuery: data => {
       const headers = [['"Content-Type"', '"application/json"']]
+      let prefixSecrets = ''
 
       if (data.auth === 'basic') {
-        headers.push([
-          'Authorization',
-          `http.basicAuth(u:"${data.username}", p:"${data.password}")`,
-        ])
+        headers.push(['Authorization', 'auth'])
+        prefixSecrets = `
+          username = secrets.get(key: "${data.username}")
+          password = secrets.get(key: "${data.password}")
+          auth = http.basicAuth(u: username, p: password)
+        `
       }
 
       if (data.auth === 'bearer') {
-        headers.push(['Authorization', `"Bearer ${data.token}"`])
+        headers.push(['Authorization', `"Bearer \${token}"`])
+        prefixSecrets = `
+          token = secrets.get(key: "${data.token}")
+        `
       }
 
       const _headers = headers
@@ -37,33 +50,42 @@ export default register => {
         }, [])
         .join(', ')
 
-      const out = `task_data
-	|> schema["fieldsAsCols"]()
-      |> set(key: "_notebook_link", value: "${window.location.href}")
-	|> monitor["check"](
-		data: check,
-		messageFn: messageFn,
-		crit: trigger,
-	)
-  |> monitor["notify"](data: notification, endpoint: http.endpoint(url: "${data.url}")(
-    mapFn: (r) => {
-        body = {r with _version: 1}
-        return {headers: {${_headers}}, data: json.encode(v: body)}
-  }))`
+      const out = `
+        ${prefixSecrets}
+        task_data
+          |> schema["fieldsAsCols"]()
+              |> set(key: "_notebook_link", value: "${window.location.href}")
+          |> monitor["check"](
+            data: check,
+            messageFn: messageFn,
+            crit: trigger,
+          )
+          |> monitor["notify"](data: notification, endpoint: http.endpoint(url: "${data.url}")(
+            mapFn: (r) => {
+                body = {r with _version: 1}
+                return {headers: {${_headers}}, data: json.encode(v: body)}
+          }))
+      `
       return out
     },
     generateTestQuery: data => {
       const headers = [['"Content-Type"', '"application/json"']]
+      let prefixSecrets = ''
 
       if (data.auth === 'basic') {
-        headers.push([
-          'Authorization',
-          `http.basicAuth(u:"${data.username}", p:"${data.password}")`,
-        ])
+        headers.push(['Authorization', 'auth'])
+        prefixSecrets = `
+          username = secrets.get(key: "${data.username}")
+          password = secrets.get(key: "${data.password}")
+          auth = http.basicAuth(u: username, p: password)
+        `
       }
 
       if (data.auth === 'bearer') {
-        headers.push(['Authorization', `"Bearer ${data.token}"`])
+        headers.push(['Authorization', `"Bearer \${token}"`])
+        prefixSecrets = `
+          token = secrets.get(key: "${data.token}")
+        `
       }
 
       const _headers = headers
@@ -73,14 +95,16 @@ export default register => {
         }, [])
         .join(', ')
 
-      return `http.post(
-        url: "${data.url}",
-        headers: {${_headers}},
-        data: json.encode(v: { msg: "${TEST_NOTIFICATION}"})
-      )
-
-  array.from(rows: [{value: 0}])
-	|> yield(name: "ignore")`
+      return `
+        ${prefixSecrets}
+        http.post(
+          url: "${data.url}",
+          headers:  {${_headers}},
+          data: json.encode(v: { msg: "${TEST_NOTIFICATION}"})
+        )
+        array.from(rows: [{value: 0}])
+        |> yield(name: "ignore")
+      `
     },
   })
 }

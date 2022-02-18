@@ -1,4 +1,4 @@
-import {allAccessPermissions} from './permissions'
+import {allAccessPermissions, PermissionTypes} from './permissions'
 import {CLOUD} from 'src/shared/constants'
 import {
   generateDescription,
@@ -708,11 +708,42 @@ const apiPermission5 = [
     },
   },
 ]
+
 test('all-access tokens/authorizations production test', () => {
+  const allPermissions = new Set<PermissionTypes>()
+
   if (CLOUD) {
-    expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(cloudHvhs)
+    cloudHvhs.forEach(permission => {
+      allPermissions.add(permission.resource.type as PermissionTypes)
+    })
+    const sortedPermissions = Array.from(allPermissions).sort((a, b) =>
+      a.toLowerCase().localeCompare(b.toLowerCase())
+    )
+    expect(
+      allAccessPermissions(sortedPermissions, 'bulldogs', 'mario')
+    ).toMatchObject(
+      cloudHvhs.sort((a, b) =>
+        a.resource.type
+          .toLowerCase()
+          .localeCompare(b.resource.type.toLowerCase())
+      )
+    )
   } else {
-    expect(allAccessPermissions('bulldogs', 'mario')).toMatchObject(ossHvhs)
+    ossHvhs.forEach(permission => {
+      allPermissions.add(permission.resource.type as PermissionTypes)
+    })
+    const sortedPermissions = Array.from(allPermissions).sort((a, b) =>
+      a.toLowerCase().localeCompare(b.toLowerCase())
+    )
+    expect(
+      allAccessPermissions(sortedPermissions, 'bulldogs', 'mario')
+    ).toMatchObject(
+      ossHvhs.sort((a, b) =>
+        a.resource.type
+          .toLowerCase()
+          .localeCompare(b.resource.type.toLowerCase())
+      )
+    )
   }
 })
 
@@ -744,6 +775,7 @@ describe('generateDescription method', () => {
   })
 })
 
+const meID = '08e1982cb86af000'
 const orgID = 'ba9198e037d35d4d'
 const orgName = 'dev'
 const monitoringID = '25a6692ba25d7147'
@@ -868,26 +900,62 @@ const orgsApiPerm = [
 describe('Testing formatApiPermissions function', () => {
   test('does it convert all access permission object into api permission', () => {
     expect(
-      formatApiPermissions(allAccessAccordionPerms, orgID, orgName)
+      formatApiPermissions(allAccessAccordionPerms, meID, orgID, orgName)
     ).toMatchObject(allAccessApiPerm)
   })
+
   test('does it convert non-all access permission object into api permission', () => {
     expect(
-      formatApiPermissions(nonAllAcessAccordionPerms, orgID, orgName)
+      formatApiPermissions(nonAllAcessAccordionPerms, meID, orgID, orgName)
     ).toMatchObject(nonAllAcessApiPerms)
   })
+
   test('does it convert orgs permission object into api permission', () => {
     expect(
-      formatApiPermissions(orgsAccordionPerm, orgID, orgName)
+      formatApiPermissions(orgsAccordionPerm, meID, orgID, orgName)
     ).toMatchObject(orgsApiPerm)
   })
+
+  test('if custom api token for users has correct scope', () => {
+    const permissions = {
+      annotations: {read: false, write: false},
+      authorizations: {read: false, write: false},
+      buckets: {
+        read: false,
+        write: false,
+        sublevelPermissions: {
+          '3a64ac1f8ade33ef': {
+            id: '3a64ac1f8ade33ef',
+            name: 'devbucket',
+            orgID,
+            permissions: {read: false, write: false},
+          },
+        },
+      },
+      orgs: {read: false, write: false},
+      users: {read: true, write: true},
+    }
+
+    expect(formatApiPermissions(permissions, meID, orgID, orgName)).toEqual([
+      {
+        action: 'read',
+        resource: {id: meID, type: 'users'},
+      },
+      {
+        action: 'write',
+        resource: {id: meID, type: 'users'},
+      },
+    ])
+  })
 })
+
 describe('Testing formatPermissionsObj function', () => {
   test('for api permissions with IDs, it creates perms with sublevel permissions', () => {
     expect(formatPermissionsObj(nonAllAcessApiPerms)).toMatchObject(
       nonAllAcessAccordionPerms2
     )
   })
+
   test('for all access permissions, it creates an all access accordion api permission', () => {
     expect(formatPermissionsObj(orgsApiPerm)).toMatchObject(orgsAccordionPerm)
   })

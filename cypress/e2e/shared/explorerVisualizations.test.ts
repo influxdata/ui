@@ -406,9 +406,9 @@ describe('visualizations', () => {
           cy.getByTestID('view-type--dropdown').click()
           cy.getByTestID(`view-type--band`).click()
           cy.getByTestID('time-machine-submit-button').click()
-          cy.getByTestID(`vis-graphic--band`).should('exist')
+          cy.getByTestID('giraffe-layer-band-chart').should('be.visible')
 
-          cy.get('button.cf-button[title="Customize"').click()
+          cy.get('button.cf-button[title="Customize"]').click()
           cy.getByTestID('dropdown--button-main-column').within(() => {
             cy.get('.cf-dropdown--selected').contains(AGGREGATE_FUNCTION)
           })

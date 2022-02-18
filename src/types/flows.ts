@@ -5,12 +5,14 @@ import {AutoRefresh, TimeRange, Variable, Secret} from 'src/types'
 export interface ControlAction {
   title: string | (() => string)
   disable?: boolean | (() => boolean)
+  hidden?: boolean | (() => boolean)
   action: () => void
 }
 
 export interface Submenu {
   title: string | (() => string)
   disable?: boolean | (() => boolean)
+  hidden?: boolean | (() => boolean)
   menu: ReactNode
 }
 

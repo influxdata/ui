@@ -120,12 +120,14 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           {
             title: 'Download as Image',
             action: () => downloadAsImage(id),
-            disable: !isFlagEnabled('pdfImageDownload'),
+            hidden: !isFlagEnabled('pdfImageDownload'),
+            disable: !dataExists,
           },
           {
             title: 'Download as PDF',
             action: () => downloadAsPDF(id),
-            disable: !isFlagEnabled('pdfImageDownload'),
+            hidden: !isFlagEnabled('pdfImageDownload'),
+            disable: !dataExists,
           },
         ],
       },

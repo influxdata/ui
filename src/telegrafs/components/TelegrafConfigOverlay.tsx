@@ -17,7 +17,7 @@ const TelegrafConfigOverlay: FC = () => {
   const {onClose} = useContext(OverlayContext)
 
   useEffect(() => {
-    event(`telegraf_page.edit_config.at.${Date.now()}`)
+    event(`telegraf_page.edit_config`)
   }, [])
 
   return (

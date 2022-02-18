@@ -13,6 +13,7 @@ import {FlowContext} from 'src/flows/context/flow.current'
 import {FlowListContext} from 'src/flows/context/flow.list'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 const SaveState: FC = () => {
   const {flow} = useContext(FlowContext)
@@ -22,7 +23,9 @@ const SaveState: FC = () => {
   const addFlow = () => {
     event('Notebook save button clicked')
     add(flow).then(id => {
-      history.replace(`/orgs/${org.id}/notebooks/${id}`)
+      history.replace(
+        `/orgs/${org.id}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
+      )
     })
   }
 

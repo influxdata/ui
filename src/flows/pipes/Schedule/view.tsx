@@ -12,7 +12,7 @@ import {
 } from '@influxdata/clockface'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
-import {patchTask} from 'src/client'
+import {patchTask, TaskUpdateRequest} from 'src/client'
 
 // Types
 import {PipeProp} from 'src/types/flows'
@@ -307,7 +307,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
             title: 'Overwrite Existing Task',
             disable: () => !latestTask || !hasChanges,
             action: () => {
-              const _data = {
+              const _data: TaskUpdateRequest = {
                 flux: generateTask(),
               }
               if (

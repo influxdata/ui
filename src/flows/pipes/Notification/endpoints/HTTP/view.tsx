@@ -10,10 +10,11 @@ import {
   AlignItems,
 } from '@influxdata/clockface'
 
+import SecretsDropdown from 'src/secrets/components/SecretsDropdown'
 import {PipeContext} from 'src/flows/context/pipe'
 import {EndpointProps} from 'src/types'
 
-const View: FC<EndpointProps> = () => {
+const View: FC<EndpointProps> = ({createSecret, secrets}) => {
   const {data, update} = useContext(PipeContext)
 
   const updater = (field, value) => {
@@ -33,16 +34,16 @@ const View: FC<EndpointProps> = () => {
     updater('auth', auth)
   }
 
-  const updateUsername = evt => {
-    updater('username', evt.target.value)
+  const updateUsername = val => {
+    updater('username', val)
   }
 
-  const updatePassword = evt => {
-    updater('password', evt.target.value)
+  const updatePassword = val => {
+    updater('password', val)
   }
 
-  const updateToken = evt => {
-    updater('token', evt.target.value)
+  const updateToken = val => {
+    updater('token', val)
   }
 
   let submenu
@@ -51,23 +52,21 @@ const View: FC<EndpointProps> = () => {
     submenu = (
       <>
         <Form.Element label="Username">
-          <Input
-            name="username"
-            testID="input--username"
-            type={InputType.Text}
-            value={data.endpointData.username}
-            onChange={updateUsername}
-            size={ComponentSize.Medium}
+          <SecretsDropdown
+            testID="username"
+            selected={data.endpointData.username}
+            secrets={secrets}
+            onCreate={createSecret}
+            onSelect={updateUsername}
           />
         </Form.Element>
         <Form.Element label="Password">
-          <Input
-            name="password"
-            testID="input--password"
-            type={InputType.Text}
-            value={data.endpointData.password}
-            onChange={updatePassword}
-            size={ComponentSize.Medium}
+          <SecretsDropdown
+            testID="password"
+            selected={data.endpointData.password}
+            secrets={secrets}
+            onCreate={createSecret}
+            onSelect={updatePassword}
           />
         </Form.Element>
       </>
@@ -75,13 +74,12 @@ const View: FC<EndpointProps> = () => {
   } else if (data.endpointData.auth === 'bearer') {
     submenu = (
       <Form.Element label="Token">
-        <Input
-          name="token"
-          testID="input--token"
-          type={InputType.Text}
-          value={data.endpointData.token}
-          onChange={updateToken}
-          size={ComponentSize.Medium}
+        <SecretsDropdown
+          testID="token"
+          selected={data.endpointData.token}
+          secrets={secrets}
+          onCreate={createSecret}
+          onSelect={updateToken}
         />
       </Form.Element>
     )

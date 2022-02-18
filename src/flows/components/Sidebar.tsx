@@ -336,7 +336,17 @@ const Sidebar: FC = () => {
           }
 
           if (!active) {
-            return <Dropdown.Item disabled>{title}</Dropdown.Item>
+            return (
+              <Dropdown.Item
+                title={title}
+                id={title}
+                key={title}
+                testID={`${title}--list-item`}
+                disabled
+              >
+                {title}
+              </Dropdown.Item>
+            )
           }
 
           if (action.hasOwnProperty('menu')) {

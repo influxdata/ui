@@ -47,10 +47,10 @@ const RevertVersionButton: FC = () => {
 
   return (
     <SquareButton
-      icon={IconFont.Duplicate_New}
+      icon={IconFont.Undo}
       onClick={handleRevert}
-      color={ComponentColor.Primary}
-      titleText="Clone"
+      color={ComponentColor.Danger}
+      titleText="Revert"
     />
   )
 }

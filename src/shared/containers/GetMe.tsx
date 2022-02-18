@@ -18,6 +18,7 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 interface State {
   loading: RemoteDataState
+  getMeCalledAfterFlagsLoaded: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -30,6 +31,7 @@ class GetMe extends PureComponent<Props, State> {
 
     this.state = {
       loading: RemoteDataState.NotStarted,
+      getMeCalledAfterFlagsLoaded: false
     }
   }
 
@@ -48,6 +50,17 @@ class GetMe extends PureComponent<Props, State> {
   public componentDidMount() {
     this.props.getMe()
     this.setState({loading: RemoteDataState.Done})
+  }
+
+  public componentDidUpdate() {
+    // when the flags are loaded, we want to call this again so we can decide
+    // whether quartz or IDPE needs to be called to get the user information
+
+    // getMeCalledAfterFlagsLoaded state controls the call so it's only called once after flags are loaded.
+    if (this.state.getMeCalledAfterFlagsLoaded === false) {
+      this.props.getMe()
+      this.setState({getMeCalledAfterFlagsLoaded: true})
+    }
   }
 }
 

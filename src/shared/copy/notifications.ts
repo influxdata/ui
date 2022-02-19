@@ -1468,6 +1468,20 @@ export const testNotificationFailure = (
   message: `Failed to send the test alert to ${source}. Please try again`,
 })
 
+export const exportAlertToTaskSuccess = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Successfully created task for ${source} alert.`,
+})
+
+export const exportAlertToTaskFailure = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to create task for ${source} alert. Please check your configuration.`,
+})
+
 export const getResourcesTokensFailure = (): Notification => ({
   ...defaultErrorNotification,
   message: 'Failed to fetch all resources for creating custom api token',

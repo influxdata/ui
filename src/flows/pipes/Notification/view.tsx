@@ -10,7 +10,7 @@ import React, {
   useEffect,
 } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
+import {parse} from '@influxdata/flux-lsp-browser'
 import {
   ComponentStatus,
   Form,
@@ -36,15 +36,11 @@ import {remove} from 'src/shared/contexts/query'
 import Expressions from 'src/flows/pipes/Notification/Expressions'
 import Threshold from 'src/flows/pipes/Notification/Threshold'
 import {
-  deadmanType,
-  THRESHOLD_TYPES,
-} from 'src/flows/pipes/Visualization/threshold'
-import {
   ENDPOINT_DEFINITIONS,
   ENDPOINT_ORDER,
 } from 'src/flows/pipes/Notification/endpoints'
-import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
 import {SidebarContext} from 'src/flows/context/sidebar'
+import ExportTask from 'src/flows/pipes/Notification/ExportTask'
 const NotificationMonacoEditor = lazy(() =>
   import('src/flows/pipes/Notification/NotificationMonacoEditor')
 )
@@ -259,243 +255,21 @@ const Notification: FC<PipeProp> = ({Context}) => {
       </List.Item>
     ))
 
-  const generateDeadmanTask = useCallback(() => {
-    // simplify takes care of all the variable nonsense in the query
-    const ast = parse(simplify(queryText))
-
-    const [deadman] = data.thresholds
-
-    const vars = remove(
-      ast,
-      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
-
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-
-    vars.timeRangeStart = `-${deadman?.deadmanStopValue}`
-
-    const params = remove(
-      ast,
-      node =>
-        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
-
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-
-    const conditions = THRESHOLD_TYPES[deadmanType].condition(deadman)
-
-    const newQuery = `
-import "strings"
-import "regexp"
-import "influxdata/influxdb/monitor"
-import "influxdata/influxdb/schema"
-import "influxdata/influxdb/secrets"
-import "experimental"
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
-
-check = {
-	_check_id: "${id}",
-	_check_name: "Notebook Generated Deadman Check",
-	_type: "deadman",
-	tags: {},
-}
-
-notification = {
-	_notification_rule_id: "${id}",
-	_notification_rule_name: "Notebook Generated Rule",
-	_notification_endpoint_id: "${id}",
-	_notification_endpoint_name: "Notebook Generated Endpoint",
-}
-
-task_data = ${format_from_js_file(ast)}
-trigger = ${conditions}
-messageFn = (r) => ("${data.message}")
-
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
-|> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
-      deadman.deadmanCheckValue
-    }))`
-
-    const newAST = parse(newQuery)
-
-    if (!params.name) {
-      params.name = `"Notebook Deadman Task for ${id}"`
-    }
-
-    if (data.interval) {
-      params.every = data.interval
-    }
-
-    if (data.offset) {
-      params.offset = data.offset
-    }
-
-    if (Object.keys(vars).length) {
-      const varString = Object.entries(vars)
-        .map(([key, val]) => `${key}: ${val}`)
-        .join(',\n')
-      const varHeader = parse(`option v = {${varString}}\n`)
-      newAST.body.unshift(varHeader.body[0])
-    }
-
-    const paramString = Object.entries(params)
-      .map(([key, val]) => `${key}: ${val}`)
-      .join(',\n')
-    const taskHeader = parse(`option task = {${paramString}}\n`)
-    newAST.body.unshift(taskHeader.body[0])
-
-    return format_from_js_file(newAST)
-  }, [
-    id,
-    queryText,
-    data.every,
-    data.offset,
-    data.endpointData,
-    data.endpoint,
-    data.thresholds,
-    data.message,
-  ])
-
-  const generateTask = useCallback(() => {
-    if (data.thresholds[0].type === deadmanType) {
-      return generateDeadmanTask()
-    }
-    // simplify takes care of all the variable nonsense in the query
-    const ast = parse(simplify(queryText))
-
-    const vars = remove(
-      ast,
-      node => node.type === 'OptionStatement' && node.assignment.id.name === 'v'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
-
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-    const params = remove(
-      ast,
-      node =>
-        node.type === 'OptionStatement' && node.assignment.id.name === 'task'
-    ).reduce((acc, curr) => {
-      // eslint-disable-next-line no-extra-semi
-      ;(curr.assignment?.init?.properties || []).reduce((_acc, _curr) => {
-        if (_curr.key?.name && _curr.value?.location?.source) {
-          _acc[_curr.key.name] = _curr.value.location.source
-        }
-
-        return _acc
-      }, acc)
-
-      return acc
-    }, {})
-
-    const conditions = data.thresholds
-      .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
-      .join(' and ')
-
-    const newQuery = `
-import "strings"
-import "regexp"
-import "influxdata/influxdb/monitor"
-import "influxdata/influxdb/schema"
-import "influxdata/influxdb/secrets"
-import "experimental"
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
-
-check = {
-	_check_id: "${id}",
-	_check_name: "Notebook Generated Check",
-	_type: "custom",
-	tags: {},
-}
-notification = {
-	_notification_rule_id: "${id}",
-	_notification_rule_name: "Notebook Generated Rule",
-	_notification_endpoint_id: "${id}",
-	_notification_endpoint_name: "Notebook Generated Endpoint",
-}
-
-task_data = ${format_from_js_file(ast)}
-trigger = ${conditions}
-messageFn = (r) => ("${data.message}")
-
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
-
-    const newAST = parse(newQuery)
-
-    if (!params.name) {
-      params.name = `"Notebook Task for ${id}"`
-    }
-
-    if (data.interval) {
-      params.every = data.interval
-    }
-
-    if (data.offset) {
-      params.offset = data.offset
-    }
-
-    if (Object.keys(vars).length) {
-      const varString = Object.entries(vars)
-        .map(([key, val]) => `${key}: ${val}`)
-        .join(',\n')
-      const varHeader = parse(`option v = {${varString}}\n`)
-      newAST.body.unshift(varHeader.body[0])
-    }
-
-    const paramString = Object.entries(params)
-      .map(([key, val]) => `${key}: ${val}`)
-      .join(',\n')
-    const taskHeader = parse(`option task = {${paramString}}\n`)
-    newAST.body.unshift(taskHeader.body[0])
-
-    return format_from_js_file(newAST)
-  }, [
-    id,
-    queryText,
-    data.every,
-    data.offset,
-    data.endpointData,
-    data.endpoint,
-    data.thresholds,
-    data.message,
-  ])
-
   const handleTestEndpoint = async () => {
     event('Alert Panel (Notebooks) - Test Alert Clicked')
-    const queryText = `
-import "strings"
-import "regexp"
-import "influxdata/influxdb/schema"
-import "influxdata/influxdb/secrets"
-import "experimental"
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestImports()}
 
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
+    const queryText = `
+      import "strings"
+      import "regexp"
+      import "influxdata/influxdb/schema"
+      import "influxdata/influxdb/secrets"
+      import "experimental"
+      ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestImports()}
+
+      ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(
+        data.endpointData
+      )}
+    `
 
     try {
       setStatus(RemoteDataState.Loading)
@@ -704,11 +478,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateTestQuery(data.endpointData)}`
         </FlexBox>
         <Panel.Footer justifyContent={JustifyContent.FlexEnd}>
           <FlexBox margin={ComponentSize.Medium}>
-            <ExportTaskButton
-              generate={generateTask}
-              text="Export Alert Task"
-              type="alert"
-            />
+            <ExportTask />
           </FlexBox>
         </Panel.Footer>
       </div>

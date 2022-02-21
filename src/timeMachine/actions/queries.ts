@@ -259,6 +259,8 @@ export const executeQueries = (abortController?: AbortController) => async (
 
   const state = getState()
 
+  const {editMode} = getActiveQuery(state)
+
   const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
 
   const activeTimeMachine = getActiveTimeMachine(state)
@@ -335,7 +337,8 @@ export const executeQueries = (abortController?: AbortController) => async (
       if (result.type === 'UNKNOWN_ERROR') {
         if (
           isAggregateTypeError(result.code, result.message) &&
-          state.currentExplorer.isAutoFunction
+          state.currentExplorer.isAutoFunction &&
+          editMode !== 'advanced'
         ) {
           const message = `It looks like you're trying to apply a number-based aggregate function to a string, which cannot be processed. You can fix this by selecting the Aggregate Function "Last"`
           const buttonElement: NotificationButtonElement = onDismiss =>

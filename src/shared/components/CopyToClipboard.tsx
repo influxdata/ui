@@ -1,7 +1,25 @@
 // Libraries
 import React, {FC, ChangeEvent} from 'react'
-import copy from 'copy-to-clipboard'
 
+const copy = async (text: string): Promise<boolean> => {
+  let result: boolean
+  try {
+    if (navigator.clipboard) {
+      // All browsers except IE
+      await navigator.clipboard.writeText(text)
+    } else {
+      // IE
+      const successful = document.execCommand('copy')
+      if (!successful) {
+        throw new Error('Copy command was unsuccessful using execCommand')
+      }
+    }
+    result = true
+  } catch (err) {
+    result = false
+  }
+  return result
+}
 interface Props {
   text: string
   children: JSX.Element
@@ -11,8 +29,8 @@ interface Props {
 const CopyToClipboard: FC<Props> = ({text, children, onCopy, ...props}) => {
   const elem = React.Children.only(children)
 
-  const onClick = (event: ChangeEvent<HTMLInputElement>) => {
-    const result = copy(text)
+  const onClick = async (event: ChangeEvent<HTMLInputElement>) => {
+    const result = await copy(text)
 
     if (onCopy) {
       onCopy(text, result)

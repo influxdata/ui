@@ -62,7 +62,7 @@ const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
     }
 
     if (threshold.fieldType === 'number') {
-      threshold.value = Number(changeEvent.target.value)
+      threshold.value = parseFloat(changeEvent.target.value)
     } else {
       threshold.value = changeEvent.target.value
     }
@@ -72,7 +72,6 @@ const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
 
   let body = (
     <Input
-      name="interval"
       type={InputType.Text}
       placeholder="value"
       value={threshold.value}
@@ -87,7 +86,6 @@ const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
     body = (
       <>
         <Input
-          name="interval"
           type={InputType.Number}
           placeholder="min"
           value={threshold.min}
@@ -100,7 +98,6 @@ const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
           style={{background: 'transparent'}}
         />
         <Input
-          name="interval"
           type={InputType.Number}
           placeholder="max"
           value={threshold.max}

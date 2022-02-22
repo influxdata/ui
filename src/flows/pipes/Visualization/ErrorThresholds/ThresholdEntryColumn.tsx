@@ -61,11 +61,7 @@ const ThresholdEntryColumn: FC<Props> = ({threshold, index}) => {
       return
     }
 
-    if (threshold.fieldType === 'number') {
-      threshold.value = parseFloat(changeEvent.target.value)
-    } else {
-      threshold.value = changeEvent.target.value
-    }
+    threshold.value = changeEvent.target.value
 
     update({errorThresholds})
   }

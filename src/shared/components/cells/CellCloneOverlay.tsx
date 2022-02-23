@@ -154,8 +154,9 @@ const CellCloneOverlay: FC = () => {
       itemTestIdPrefix="other-dashboard"
       sortNames={true}
       selectedOption={selectedDashboard as SelectableItem}
-      placeholderText="Choose a Destination Dashboard"
+      placeholderText="Choose Dashboard"
       defaultNameText="Name this Dashboard"
+      className="dashboard-clonecell--dropdownopen"
     />
   )
 
@@ -166,7 +167,12 @@ const CellCloneOverlay: FC = () => {
         onDismiss={onClose}
       />
       <Overlay.Body className="dashboard-clonecell--overlayopen">
-        <Form.Element label="" className="dashboard-clonecell--dropdownopen">
+        <Form.Element
+          label="Dashboard"
+          helpText={`Where do you want to ${
+            removeFromCurrentBoard ? 'move' : 'copy'
+          } your cell to?`}
+        >
           {typeAheadDropdown}
         </Form.Element>
         <Form.Element label="" className="dashboard-clonecell--removecurrent">

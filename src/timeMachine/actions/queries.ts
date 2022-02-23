@@ -18,7 +18,6 @@ import {hydrateVariables} from 'src/variables/actions/thunks'
 import {
   rateLimitReached,
   resultTooLarge,
-  updateAggregateType,
 } from 'src/shared/copy/notifications'
 
 // Utils
@@ -26,11 +25,9 @@ import fromFlux from 'src/shared/utils/fromFlux'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
-import {isAggregateTypeError} from 'src/utils/aggregateTypeErrors'
 import {event} from 'src/cloud/utils/reporting'
 import {asSimplyKeyValueVariables, hashCode} from 'src/shared/apis/queryCache'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {getAggregateTypeErrorButton} from 'src/shared/components/notifications/NotificationButtons'
 
 // Types
 import {CancelBox} from 'src/types/promises'
@@ -44,7 +41,6 @@ import {
   QueryEditMode,
   BuilderTagsType,
   Variable,
-  NotificationButtonElement,
 } from 'src/types'
 
 // Selectors
@@ -259,8 +255,6 @@ export const executeQueries = (abortController?: AbortController) => async (
 
   const state = getState()
 
-  const {editMode} = getActiveQuery(state)
-
   const allBuckets = getAll<Bucket>(state, ResourceType.Buckets)
 
   const activeTimeMachine = getActiveTimeMachine(state)
@@ -335,17 +329,6 @@ export const executeQueries = (abortController?: AbortController) => async (
 
     for (const result of results) {
       if (result.type === 'UNKNOWN_ERROR') {
-        if (
-          isAggregateTypeError(result.code, result.message) &&
-          state.currentExplorer.isAutoFunction &&
-          editMode !== 'advanced'
-        ) {
-          const message = `It looks like you're trying to apply a number-based aggregate function to a string, which cannot be processed. You can fix this by selecting the Aggregate Function "Last"`
-          const buttonElement: NotificationButtonElement = onDismiss =>
-            getAggregateTypeErrorButton(onDismiss)
-          dispatch(notify(updateAggregateType(message, buttonElement)))
-        }
-
         throw new Error(result.message)
       }
 

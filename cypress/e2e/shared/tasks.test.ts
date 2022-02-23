@@ -211,26 +211,45 @@ from(bucket: "defbuck")
     })
 
     it('can clone a task and activate just the cloned one', () => {
-      createTask('task1', 'buckets()')
+      const firstLabel = 'very important task'
+      const secondLabel = 'mission critical'
 
-      cy.getByTestID('task-card')
-        .eq(1)
-        .then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(1)
-            .click()
-          cy.getByTestID('context-clone-task').click()
-        })
+      cy.get('button.cf-button[title="Add labels"]').click()
+      cy.getByTestID('inline-labels--popover--dialog').should('be.visible')
+      cy.getByTestID('inline-labels--popover-field').type(
+        `${firstLabel}{enter}`
+      )
+      cy.getByTestID('overlay--container').should('be.visible')
+      cy.getByTestID('create-label-form--submit').click()
 
+      cy.getByTestID('overlay--container').should('not.exist')
+      cy.get('button.cf-button[title="Add labels"]').click()
+      cy.getByTestID('inline-labels--popover--dialog').should('be.visible')
+      cy.getByTestID('inline-labels--popover-field').type(
+        `${secondLabel}{enter}`
+      )
+      cy.getByTestID('overlay--container').should('be.visible')
+      cy.getByTestID('create-label-form--submit').click()
+
+      // ensure the two labels are present before cloning
+      cy.getByTestID('overlay--container').should('not.exist')
+      cy.getByTestID(`label--pill ${firstLabel}`).should('be.visible')
+      cy.getByTestID(`label--pill ${secondLabel}`).should('be.visible')
+
+      // clone the task
+      cy.getByTestID('context-menu-task').click()
+      cy.getByTestID('context-clone-task').click()
+      cy.getByTestID('task-card--slide-toggle').should('have.length', 2)
+
+      // disable the first task
       cy.getByTestID('task-card--slide-toggle')
         .eq(0)
         .should('have.class', 'active')
       cy.getByTestID('task-card--slide-toggle')
         .eq(0)
         .click()
-      cy.getByTestID('task-card--slide-toggle')
-        .eq(0)
-        .should('not.have.class', 'active')
+
+      // only the clone should be active
       cy.getByTestID('task-card--slide-toggle')
         .eq(1)
         .should('have.class', 'active')

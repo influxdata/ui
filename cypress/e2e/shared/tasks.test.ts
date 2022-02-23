@@ -240,6 +240,8 @@ from(bucket: "defbuck")
       cy.getByTestID('context-menu-task').click()
       cy.getByTestID('context-clone-task').click()
       cy.getByTestID('task-card--slide-toggle').should('have.length', 2)
+      cy.getByTestID(`label--pill ${firstLabel}`).should('have.length', 2)
+      cy.getByTestID(`label--pill ${secondLabel}`).should('have.length', 2)
 
       // disable the first task
       cy.getByTestID('task-card--slide-toggle')

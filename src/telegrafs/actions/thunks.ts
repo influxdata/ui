@@ -108,6 +108,61 @@ export const createTelegraf = (telegraf: Telegraf) => async (
   }
 }
 
+export const cloneTelegraf = (telegraf: Telegraf) => async (
+  dispatch: Dispatch<Action>
+) => {
+  try {
+    // Step 1: create a new telegraf
+    const response = await postTelegraf({data: telegraf})
+
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    const clonedTelegraf = response.data
+
+    // Step 2: clone the labels and post them with the new telegraf's id
+    const pendingLabels = telegraf.labels.map(labelID =>
+      postTelegrafsLabel({
+        telegrafID: clonedTelegraf.id,
+        data: {labelID},
+      })
+    )
+
+    const mappedLabels = await Promise.all(pendingLabels)
+
+    if (
+      mappedLabels.length &&
+      mappedLabels.some(label => label.status !== 201)
+    ) {
+      throw new Error(
+        'An error occurred cloning the labels for this telegraf config'
+      )
+    }
+
+    // Step 3: get the cloned telegraf
+    const updatedResponse = await apiGetTelegraf({
+      telegrafID: clonedTelegraf.id,
+      headers: {Accept: 'application/json'},
+    })
+
+    if (updatedResponse.status !== 200) {
+      throw new Error(updatedResponse.data.message)
+    }
+
+    const clonedTelegrafWithLabels = updatedResponse.data
+    const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
+      clonedTelegrafWithLabels,
+      telegrafSchema
+    )
+
+    dispatch(addTelegraf(normTelegraf))
+  } catch (error) {
+    console.error(error)
+    dispatch(notify(telegrafCreateFailed()))
+  }
+}
+
 export const updateTelegraf = (telegraf: Telegraf) => async (
   dispatch: Dispatch<Action>
 ) => {

@@ -201,9 +201,39 @@ describe('Collectors', () => {
       })
 
       it('can clone a config', () => {
+        const firstLabel = 'test_label_1'
+        const secondLabel = 'test_label_2'
+
         cy.getByTestID('resource-card').should('have.length', 1)
-        cy.getByTestID('context-menu-telegraf').click({force: true})
+
+        // create two labels
+        cy.get('button.cf-button[title="Add labels"]').click()
+        cy.getByTestID('inline-labels--popover--dialog').should('be.visible')
+        cy.getByTestID('inline-labels--popover-field').type(
+          `${firstLabel}{enter}`
+        )
+        cy.getByTestID('overlay--container').should('be.visible')
+        cy.getByTestID('create-label-form--submit').click()
+
+        cy.getByTestID('overlay--container').should('not.exist')
+        cy.get('button.cf-button[title="Add labels"]').click()
+        cy.getByTestID('inline-labels--popover--dialog').should('be.visible')
+        cy.getByTestID('inline-labels--popover-field').type(
+          `${secondLabel}{enter}`
+        )
+        cy.getByTestID('overlay--container').should('be.visible')
+        cy.getByTestID('create-label-form--submit').click()
+
+        // ensure the two labels are present before cloning
+        cy.getByTestID('overlay--container').should('not.exist')
+        cy.getByTestID(`label--pill ${firstLabel}`).should('be.visible')
+        cy.getByTestID(`label--pill ${secondLabel}`).should('be.visible')
+
+        // clone the telegraf
+        cy.getByTestID('context-menu-telegraf').click()
         cy.getByTestID('context-clone-telegraf').click()
+        cy.getByTestID(`label--pill ${firstLabel}`).should('have.length', 2)
+        cy.getByTestID(`label--pill ${secondLabel}`).should('have.length', 2)
         cy.getByTestID('resource-card').should('have.length', 2)
         cy.getByTestID('collector-card--name').then(el => {
           expect(el[1].innerText).to.equal('New Config (clone 1)')

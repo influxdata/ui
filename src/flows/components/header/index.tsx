@@ -281,10 +281,6 @@ const FlowHeader: FC = () => {
       return
     }
 
-    if (isFlagEnabled('flowPublishLifecycle')) {
-      handlePublish()
-    }
-
     setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
       data: {

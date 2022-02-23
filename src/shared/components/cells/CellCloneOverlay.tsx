@@ -160,8 +160,11 @@ const CellCloneOverlay: FC = () => {
   )
 
   return (
-    <Overlay.Container maxWidth={400}>
-      <Overlay.Header title="Move Cell" onDismiss={onClose} />
+    <Overlay.Container maxWidth={500}>
+      <Overlay.Header
+        title="Move or Copy Cell to Dashboard"
+        onDismiss={onClose}
+      />
       <Overlay.Body className="dashboard-clonecell--overlayopen">
         <Form.Element label="" className="dashboard-clonecell--dropdownopen">
           {typeAheadDropdown}

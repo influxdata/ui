@@ -277,23 +277,8 @@ $cell--header-button-active-color: $c-pool;
   width: 70% !important;
 }
 
-.dashboard-clonecell--removecurrent {
-  justify-content: center;
-  flex-direction: row !important;
-  align-items: center !important;
-  padding-top: $form-sm-padding;
-}
-
 .dashboard-clonecell--overlayopen {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.dashboard-clonecell--movetype {
-  margin-right: 15px;
-}
-
-.dashboard-clonecell--typetoggle {
-  margin: 5px;
 }

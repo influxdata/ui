@@ -6,14 +6,15 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 // Clockface
 import {
   Button,
+  ButtonShape,
   Overlay,
   ComponentColor,
-  InputLabel,
   SlideToggle,
   Form,
   ComponentStatus,
   TypeAheadDropDown,
   SelectableItem,
+  SelectGroup,
 } from '@influxdata/clockface'
 
 // Actions
@@ -145,6 +146,30 @@ const CellCloneOverlay: FC = () => {
     setDestinationDashboardID(item?.id)
   }
 
+  const selectGroupOptions = [
+    {
+      id: 'cell-clone-move-cell',
+      title: 'Move',
+      removeFromCurrentBoard: removeFromCurrentBoard,
+    },
+    {
+      id: 'cell-clone-copy-cell',
+      title: 'Copy',
+      removeFromCurrentBoard: !removeFromCurrentBoard,
+    },
+  ].map(option => (
+    <SelectGroup.Option
+      key={option.id}
+      id={option.id}
+      active={option.removeFromCurrentBoard}
+      value={option.removeFromCurrentBoard}
+      onClick={() => setRemoveFromCurrentBoard(prevState => !prevState)}
+      testID={option.id}
+    >
+      {option.title}
+    </SelectGroup.Option>
+  ))
+
   const typeAheadDropdown = (
     <TypeAheadDropDown
       items={dashItems}
@@ -167,6 +192,11 @@ const CellCloneOverlay: FC = () => {
         onDismiss={onClose}
       />
       <Overlay.Body className="dashboard-clonecell--overlayopen">
+        <Form.Element label="">
+          <SelectGroup shape={ButtonShape.StretchToFit}>
+            {selectGroupOptions}
+          </SelectGroup>
+        </Form.Element>
         <Form.Element
           label="Dashboard"
           helpText={`Where do you want to ${
@@ -174,27 +204,6 @@ const CellCloneOverlay: FC = () => {
           } your cell to?`}
         >
           {typeAheadDropdown}
-        </Form.Element>
-        <Form.Element label="" className="dashboard-clonecell--removecurrent">
-          <span className="dashboard-clonecell--movetype">Move type: </span>
-          <InputLabel
-            active={!removeFromCurrentBoard}
-            className="refresh-form-time-label"
-          >
-            Copy
-          </InputLabel>
-          <SlideToggle
-            active={removeFromCurrentBoard}
-            onChange={() => setRemoveFromCurrentBoard(!removeFromCurrentBoard)}
-            testID="clone-cell-type-toggle"
-            className="dashboard-clonecell--typetoggle"
-          />
-          <InputLabel
-            active={removeFromCurrentBoard}
-            className="refresh-form-time-label"
-          >
-            Move
-          </InputLabel>
         </Form.Element>
       </Overlay.Body>
       <Overlay.Footer>

@@ -18,7 +18,6 @@ import {
 // Constants
 import {
   addTelegrafLabelFailed,
-  cloneTelegrafLabelsSuccess,
   cloneTelegrafSuccess,
   getTelegrafConfigFailed,
   removeTelegrafLabelFailed,
@@ -133,7 +132,7 @@ const cloneTelegrafLabels = (
         'An error occurred cloning the labels for this telegraf config'
       )
     }
-    dispatch(notify(cloneTelegrafLabelsSuccess()))
+    dispatch(notify(cloneTelegrafSuccess()))
   } catch {
     dispatch(notify(addTelegrafLabelFailed()))
   }
@@ -153,7 +152,6 @@ export const cloneTelegraf = (telegraf: Telegraf) => async (
     }
 
     clonedTelegraf = response.data
-    dispatch(notify(cloneTelegrafSuccess()))
   } catch (error) {
     console.error(error)
     dispatch(notify(telegrafCreateFailed()))

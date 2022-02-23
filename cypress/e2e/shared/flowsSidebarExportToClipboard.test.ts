@@ -12,7 +12,7 @@ const openCopyAs = () => {
 const addFluxQueryInNotebook = (query: string) => {
   cy.getByTestID('add-flow-btn--rawFluxEditor').click()
   cy.getByTestID('flux-editor').clear()
-  cy.getByTestID('flux-editor').monacoType(`${query}`)
+  cy.getByTestID('flux-editor').monacoType(query)
 }
 
 const createEmptyNotebook = () => {

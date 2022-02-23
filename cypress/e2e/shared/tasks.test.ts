@@ -706,22 +706,3 @@ from(bucket: "defbuck")
     })
   })
 })
-
-const createTask = (
-  name: string,
-  task: string,
-  every = '3h',
-  offset = '20m'
-) => {
-  cy.getByTestID('create-task--button')
-    .first()
-    .click()
-
-  cy.getByTestID('flux-editor').monacoType(task)
-
-  cy.getByTestIDAndSetInputValue('task-form-name', name)
-  cy.getByTestIDAndSetInputValue('task-form-offset-input', offset)
-  cy.getByTestIDAndSetInputValue('task-form-schedule-input', every)
-  cy.getByTestID('task-save-btn').click()
-  cy.getByTestID('notification-success--dismiss').click()
-}

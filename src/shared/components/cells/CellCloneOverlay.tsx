@@ -9,7 +9,6 @@ import {
   ButtonShape,
   Overlay,
   ComponentColor,
-  SlideToggle,
   Form,
   ComponentStatus,
   TypeAheadDropDown,

@@ -15,10 +15,7 @@ import {notify} from 'src/shared/actions/notifications'
 import {hydrateVariables} from 'src/variables/actions/thunks'
 
 // Constants
-import {
-  rateLimitReached,
-  resultTooLarge,
-} from 'src/shared/copy/notifications'
+import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
 
 // Utils
 import fromFlux from 'src/shared/utils/fromFlux'

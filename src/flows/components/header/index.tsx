@@ -317,6 +317,7 @@ const FlowHeader: FC = () => {
   const handleClone = async () => {
     event('clone_notebook')
     const clonedId = await clone(flow.id)
+    setShare(null)
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
     )

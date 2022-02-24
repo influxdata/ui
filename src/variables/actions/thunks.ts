@@ -19,7 +19,10 @@ import {variableSchema, arrayOfVariables} from 'src/schemas/variables'
 // APIs
 import * as api from 'src/client'
 import {hydrateVars} from 'src/variables/utils/hydrateVars'
-import {createVariableFromTemplate as createVariableFromTemplateAJAX} from 'src/templates/api'
+import {
+  createDashboardFromPkgerTemplate,
+  createVariableFromTemplate as createVariableFromTemplateAJAX,
+} from 'src/templates/api'
 
 // Utils
 import {
@@ -266,25 +269,34 @@ export const createVariable = (
     dispatch(notify(copy.createVariableFailed(error.message)))
   }
 }
-
+import {getVariables as getVariablesAction,
+} from 'src/variables/actions/thunks'
 export const createVariableFromTemplate = (
-  template: VariableTemplate
+  template: api.Template
 ) => async (dispatch: Dispatch<Action>, getState: GetState) => {
   try {
     const state = getState()
     const org = getOrg(state)
-    const resp = await createVariableFromTemplateAJAX(template, org.id)
 
-    const createdVar = normalize<Variable, VariableEntities, string>(
-      resp,
-      variableSchema
-    )
+    await createDashboardFromPkgerTemplate(template, org.id)
+
+    console.log(template)
+    dispatch(getVariablesAction())
+    // const resp = await api.getVariables({query: {orgID: org.id}})
+    //
+    // console.log({resp})
+    // const createdVar = normalize<Variable, VariableEntities, string[]>(
+    //   resp.data.variables,
+    //   arrayOfVariables
+    // )
+    //
+    // console.log({createdVar})
     event('variable.create.from_template.success', {
       id: resp?.id,
       name: resp?.name,
     })
-    dispatch(setVariable(resp.id, RemoteDataState.Done, createdVar))
-    dispatch(notify(copy.createVariableSuccess(resp.name)))
+    // dispatch(setVariable(resp.id, RemoteDataState.Done, createdVar))
+    dispatch(notify(copy.createVariableSuccess(template[0].spec.name)))
   } catch (error) {
     event('variable.create.from_template.failure', {template: template?.id})
     console.error(error)

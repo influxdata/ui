@@ -71,6 +71,7 @@ class VariablesTab extends PureComponent<Props, State> {
       <AddResourceDropdown
         resourceName="Variable"
         onSelectNew={this.handleOpenCreateOverlay}
+        onSelectImport={this.handleOpenImportOverlay}
       />
     )
 
@@ -152,6 +153,12 @@ class VariablesTab extends PureComponent<Props, State> {
   private handleDeleteVariable = (variable: Variable): void => {
     const {onDeleteVariable} = this.props
     onDeleteVariable(variable.id)
+  }
+
+  private handleOpenImportOverlay = () => {
+    const {history, match} = this.props
+
+    history.push(`/orgs/${match.params.orgID}/settings/variables/import`)
   }
 }
 

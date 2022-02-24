@@ -68,7 +68,7 @@ class VariableImportOverlay extends PureComponent<Props> {
     }
 
     createVariableFromTemplate(template)
-    getVariables()
+    // getVariables()
 
     this.onDismiss()
   }

@@ -305,6 +305,30 @@ export const deleteTask = (taskID: string) => async (
   }
 }
 
+const cloneTaskLabels = (sourceTask: Task, destinationTask: Task) => async (
+  dispatch: Dispatch<Action>
+) => {
+  try {
+    const pendingLabels = sourceTask.labels.map(labelID =>
+      api.postTasksLabel({
+        taskID: destinationTask.id,
+        data: {labelID},
+      })
+    )
+
+    const mappedLabels = await Promise.all(pendingLabels)
+
+    if (
+      mappedLabels.length &&
+      mappedLabels.some(label => label.status !== 201)
+    ) {
+      throw new Error('An error occurred cloning the labels for this task')
+    }
+  } catch {
+    dispatch(notify(copy.addTaskLabelFailed()))
+  }
+}
+
 export const cloneTask = (task: Task) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
@@ -362,21 +386,7 @@ export const cloneTask = (task: Task) => async (
     }
 
     // clone the labels
-    const pendingLabels = task.labels.map(labelID =>
-      api.postTasksLabel({
-        taskID: newTask.data.id,
-        data: {labelID},
-      })
-    )
-
-    const mappedLabels = await Promise.all(pendingLabels)
-
-    if (
-      mappedLabels.length &&
-      mappedLabels.some(label => label.status !== 201)
-    ) {
-      throw new Error('An error occurred cloning the labels for this task')
-    }
+    cloneTaskLabels(task, newTask.data as Task)(dispatch)
 
     // get the updated task
     const updatedTaskResponse = await api.getTask({

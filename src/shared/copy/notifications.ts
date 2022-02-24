@@ -1487,9 +1487,11 @@ export const exportAlertToTaskFailure = (
   message: `Failed to create task for ${source} alert. Please check your configuration.`,
 })
 
-export const getResourcesTokensFailure = (): Notification => ({
+export const getResourcesTokensFailure = (
+  tokenType: string = 'that token'
+): Notification => ({
   ...defaultErrorNotification,
-  message: 'Failed to fetch all resources for creating custom api token',
+  message: `Failed to fetch all resources for creating ${tokenType}`,
 })
 
 export const publishNotebookSuccessful = (name: string): Notification => ({

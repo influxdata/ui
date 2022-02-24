@@ -9,8 +9,8 @@ describe('Deep linking', () => {
   // If you're here and the test failure you're looking at is legitimate, it probably means a page
   // that a deep link pointed to has changed. There are implications to this; docs and marketing pages
   // might use the deep link that has changed. We want to avoid having broken deep links out on the web,
-  // so there might be some follow-up work necessary with docs or marketing pages.
-  it.skip('should be redirected to the approprate page from a shortened link', () => {
+  // so you'll probably need to follow-up with the docs and/or marketing teams.
+  it('should be redirected to the approprate page from a shortened link', () => {
     cy.get('@org').then((org: Organization) => {
       cy.setFeatureFlags({
         deepLinking: true,

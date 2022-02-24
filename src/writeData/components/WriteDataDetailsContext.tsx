@@ -19,7 +19,7 @@ import {getOrg} from 'src/organizations/selectors'
 // Types
 import {AppState, ResourceType, Bucket} from 'src/types'
 
-const DEFAULT_TOKEN = '<INFLUX TOKEN>'
+const DEFAULT_TOKEN = '<INFLUX_TOKEN>'
 const DEFAULT_BUCKET = '<BUCKET>'
 
 interface WriteDataDetailsContextType {

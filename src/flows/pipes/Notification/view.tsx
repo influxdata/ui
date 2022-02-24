@@ -256,7 +256,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
     ))
 
   const handleTestEndpoint = async () => {
-    event('Alert Panel (Notebooks) - Test Alert Clicked')
+    event('Alert Panel (Notebooks) - Test Endpoint Clicked')
 
     const queryText = `
       import "strings"
@@ -409,7 +409,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
                     </FlexBox.Child>
                     <FlexBox.Child grow={0} shrink={0}>
                       <Button
-                        text="Test Alert"
+                        text="Test Endpoint"
                         status={
                           status === RemoteDataState.Loading
                             ? ComponentStatus.Loading

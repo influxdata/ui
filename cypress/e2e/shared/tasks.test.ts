@@ -280,6 +280,9 @@ from(bucket: "defbuck")
 
       // focused() waits for monoco editor to get input focus
       cy.focused()
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .contains('import "csv"')
 
       cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
       cy.getByTestID('task-form-name')
@@ -298,10 +301,6 @@ from(bucket: "defbuck")
         .clear()
         .type('10m')
       cy.getByTestID('task-form-offset-input').should('have.value', '10m')
-
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .contains('option task = {')
 
       cy.getByTestID('task-save-btn').click()
 

@@ -261,7 +261,9 @@ from(bucket: "defbuck")
       cy.focused()
       cy.getByTestID('flux-editor')
         .should('be.visible')
-        .contains('option task = {')
+        .contains(
+          'option task = {name: "🦄ask (clone 1)", every: 24h, offset: 20m}'
+        )
 
       cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
       cy.getByTestID('task-form-name')

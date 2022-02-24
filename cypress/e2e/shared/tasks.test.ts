@@ -236,7 +236,7 @@ from(bucket: "defbuck")
         .should('have.class', 'active')
     })
 
-    it('can clone a task and edit it', () => {
+    it.only('can clone a task and edit it', () => {
       // clone a task
       cy.getByTestID('task-card').then(() => {
         cy.getByTestID('context-menu-task').click()
@@ -261,7 +261,7 @@ from(bucket: "defbuck")
       cy.focused()
       cy.getByTestID('flux-editor')
         .should('be.visible')
-        .contains('option task = {')
+        .contains('import "csv"')
 
       cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
       cy.getByTestID('task-form-name')

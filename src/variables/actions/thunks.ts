@@ -19,10 +19,7 @@ import {variableSchema, arrayOfVariables} from 'src/schemas/variables'
 // APIs
 import * as api from 'src/client'
 import {hydrateVars} from 'src/variables/utils/hydrateVars'
-import {
-  createDashboardFromPkgerTemplate,
-  createVariableFromTemplate as createVariableFromTemplateAJAX,
-} from 'src/templates/api'
+import {createDashboardFromPkgerTemplate} from 'src/templates/api'
 
 // Utils
 import {
@@ -47,7 +44,6 @@ import {
   AppState,
   GetState,
   RemoteDataState,
-  VariableTemplate,
   Label,
   GenVariable,
   Variable,
@@ -66,6 +62,7 @@ import {
 } from 'src/shared/utils/filterUnusedVars'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {getActiveQuery} from 'src/timeMachine/selectors'
+import {getVariables as getVariablesAction} from 'src/variables/actions/thunks'
 
 type Action = VariableAction | EditorAction | NotifyAction
 
@@ -269,36 +266,27 @@ export const createVariable = (
     dispatch(notify(copy.createVariableFailed(error.message)))
   }
 }
-import {getVariables as getVariablesAction,
-} from 'src/variables/actions/thunks'
-export const createVariableFromTemplate = (
-  template: api.Template
-) => async (dispatch: Dispatch<Action>, getState: GetState) => {
+
+export const createVariableFromTemplate = (template: api.Template) => async (
+  dispatch: Dispatch<Action>,
+  getState: GetState
+) => {
   try {
     const state = getState()
     const org = getOrg(state)
     // only one variable in the exported template so we can safely just index the 0th element
     const variableName = template[0].spec.name
+
     await createDashboardFromPkgerTemplate(template, org.id)
 
-    console.log(template)
-    getVariablesAction()
-    // const resp = await api.getVariables({query: {orgID: org.id}})
-    //
-    // console.log({resp})
-    // const createdVar = normalize<Variable, VariableEntities, string[]>(
-    //   resp.data.variables,
-    //   arrayOfVariables
-    // )
-    //
-    // console.log({createdVar})
+    await getVariablesAction()(dispatch, getState)
+
     event('variable.create.from_template.success', {
       name: variableName,
     })
-    // dispatch(setVariable(resp.id, RemoteDataState.Done, createdVar))
     dispatch(notify(copy.createVariableSuccess(variableName)))
   } catch (error) {
-    event('variable.create.from_template.failure', {template: template?.id})
+    event('variable.create.from_template.failure', {template: template[0].meta.name})
     console.error(error)
     dispatch(notify(copy.createVariableFailed(error.message)))
   }

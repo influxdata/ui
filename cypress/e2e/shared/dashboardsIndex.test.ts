@@ -331,7 +331,7 @@ describe('Dashboards', () => {
       cy.getByTestID('resource-sorter--button').click()
       cy.contains('Name (Z → A)').click()
       // assert dashboard order is correct
-      cy.get('span[data-testid*="dashboard-card--name"]').each((val, index) => {
+      cy.get('a[data-testid*="dashboard-card--name"]').each((val, index) => {
         cy.wrap(val).contains(expectedDashboardOrder[index])
       })
 

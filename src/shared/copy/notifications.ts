@@ -984,6 +984,11 @@ export const telegrafUpdateFailed = (telegrafName: string): Notification => ({
   message: `Failed to update telegraf: "${telegrafName}"`,
 })
 
+export const cloneTelegrafSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Telegraf configuration was cloned successfully`,
+})
+
 export const addTelegrafLabelFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to add label to telegraf config`,

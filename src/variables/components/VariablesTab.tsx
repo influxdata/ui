@@ -124,6 +124,7 @@ class VariablesTab extends PureComponent<Props, State> {
           <AddResourceDropdown
             resourceName="Variable"
             onSelectNew={this.handleOpenCreateOverlay}
+            onSelectImport={this.handleOpenImportOverlay}
           />
         </EmptyState>
       )

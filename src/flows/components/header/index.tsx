@@ -204,6 +204,8 @@ const FlowHeader: FC = () => {
         .querySelectorAll('[data-download-hide]')
         .forEach(d => (d.style.display = 'block'))
     },
+    // Enable map background
+    useCORS: true,
   }
 
   const handleDownloadAsPNG = () => {

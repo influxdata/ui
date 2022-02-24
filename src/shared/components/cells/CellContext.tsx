@@ -108,7 +108,7 @@ const CellContext: FC<Props> = ({
           />
           <FeatureFlag name="cloneToOtherBoards">
             <CellContextItem
-              label="Relocate"
+              label="Move"
               onClick={() =>
                 onShowOverlay(
                   'cell-copy-overlay',
@@ -181,7 +181,7 @@ const CellContext: FC<Props> = ({
         />
         <FeatureFlag name="cloneToOtherBoards">
           <CellContextItem
-            label="Relocate"
+            label="Move"
             onClick={() =>
               onShowOverlay(
                 'cell-copy-overlay',

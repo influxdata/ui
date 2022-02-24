@@ -13,20 +13,25 @@ import {
   transform,
 } from 'src/shared/components/CodeSnippet'
 // Utils
+import {getAll} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {AppState, ResourceType} from 'src/types'
+import {AppState, ResourceType, Bucket} from 'src/types'
 
 const DEFAULT_TOKEN = '<INFLUX TOKEN>'
 const DEFAULT_BUCKET = '<BUCKET>'
 
 interface WriteDataDetailsContextType {
+  bucket: Bucket
+  changeBucket: (bucket: Bucket) => void
   query: string
   changeQuery: (query: string) => void
 }
 
 export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
+  bucket: null,
+  changeBucket: () => {},
   query: null,
   changeQuery: () => {},
 }
@@ -35,9 +40,24 @@ export const WriteDataDetailsContext = createContext<
 >(DEFAULT_WRITE_DATA_DETAILS_CONTEXT)
 const WriteDataDetailsProvider: FC = ({children}) => {
   const {variables, update} = useContext(TemplateContext)
+  const buckets = useSelector((state: AppState) =>
+    getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
+  )
+  const bucketname = useSelector(
+    (state: AppState) => state.dataLoading?.steps?.bucket
+  )
   const org = useSelector(getOrg)
   const server = window.location.origin
+  const toLoadBucket = buckets?.find(b => b.name === bucketname)
+  const [bucket, setBucket] = useState(
+    toLoadBucket ?? buckets[0] ?? ({name: DEFAULT_BUCKET} as Bucket)
+  )
   const [query, setQuery] = useState(null)
+
+  const changeBucket = useCallback(
+    (toChangeBucket: Bucket) => setBucket(toChangeBucket),
+    [setBucket]
+  )
 
   const changeQuery = useCallback(
     (toChangeQuery: string) => setQuery(toChangeQuery),
@@ -73,14 +93,14 @@ const WriteDataDetailsProvider: FC = ({children}) => {
     })
   }, [variables, org?.name, update])
   useEffect(() => {
-    if (DEFAULT_BUCKET === variables.bucket) {
+    if (bucket?.name === variables.bucket) {
       return
     }
     update({
       ...variables,
-      bucket: DEFAULT_BUCKET,
+      bucket: bucket?.name,
     })
-  }, [variables, update])
+  }, [variables, update, bucket])
   useEffect(() => {
     if (DEFAULT_TOKEN === variables.token) {
       return
@@ -94,6 +114,8 @@ const WriteDataDetailsProvider: FC = ({children}) => {
   return (
     <WriteDataDetailsContext.Provider
       value={{
+        bucket,
+        changeBucket,
         query,
         changeQuery,
       }}

@@ -41,6 +41,7 @@ import {
   FileUploadsPage,
   ClientLibrariesPage,
   TelegrafPluginsPage,
+  VersionPage,
 } from 'src/shared/containers'
 
 // Types
@@ -156,6 +157,13 @@ const SetOrg: FC = () => {
           />
 
           {/* Flows  */}
+          {isFlagEnabled('flowPublishLifecycle') && (
+            <Route
+              path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:notebookID/versions/:id`}
+              component={VersionPage}
+            />
+          )}
+
           <Route
             path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
             component={FlowPage}

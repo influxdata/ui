@@ -22,7 +22,11 @@ export default register => {
       ['array', 'http', 'influxdata/influxdb/secrets']
         .map(i => `import "${i}"`)
         .join('\n'),
-    generateQuery: data => `task_data
+    generateQuery: data => {
+      const subject = encodeURIComponent('InfluxDB Alert')
+      const fromEmail = `mailgun@${data.domain}`
+
+      return `task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
 	|> monitor["check"](
@@ -33,37 +37,57 @@ export default register => {
 	|> monitor["notify"](
     data: notification,
     endpoint: ((r) => {
-        apiKey = secrets.get(key: "${data.apiKey}")
-        http.post(
-            url: "https://api.mailgun.net/v3/${data.domain}/messages",
-            headers: {
-              "Content-type": "application/json",
-              "Authorization": "Basic api:\${apiKey}"
-            },
-            data: bytes(v: "{
-              \\"from\\": \\"Username mailgun@${data.domain}\\",
-              \\"to\\": \\"${data.email}\\",
-              \\"subject\\": \\"InfluxDB Alert\\",
-              \\"text\\": \\"\${ r._message }\\"
-            }"))
-    })
-  )`,
-    generateTestQuery: data => `
-    apiKey = secrets.get(key: "{data.apiKey}")
-    http.post(
-        url: "https://api.mailgun.net/v3/${data.domain}/messages",
+      apiKey = secrets.get(key: "${data.apiKey}")
+      auth = http.basicAuth(u: "api", p: "\${apiKey}")
+      url = "https://api.mailgun.net/v3/${data.domain}/messages"
+      data = strings.joinStr(arr: [
+          "from=${fromEmail}",
+          "to=${data.email}",
+          "subject=${subject}",
+          "text=\${r._message}"
+        ], v: "&"
+      )
+      http.post(
+        url: url,
         headers: {
-          "Content-type": "application/json",
-          "Authorization": "Basic api:\${apiKey}"
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "\${auth}"
         },
-        data: bytes(v: "{
-          \"from\": \"Username mailgun@${data.domain}\",
-          \"to\": \"${data.email}\",
-          \"subject\": \"InfluxDB Alert\",
-          \"text\": \"${TEST_NOTIFICATION}\"
-        }"))
+        data: bytes(v: data)
+      )
+      array.from(rows: [{value: 0}])
+          |> yield(name: "ignore")
+      })
+    )`
+    },
+    generateTestQuery: data => {
+      const subject = encodeURIComponent('InfluxDB Alert')
+      const message = encodeURIComponent(TEST_NOTIFICATION)
+      const fromEmail = `mailgun@${data.domain}`
 
-    array.from(rows: [{value: 0}])
-        |> yield(name: "ignore")`,
+      return `apiKey = secrets.get(key: "${data.apiKey}")
+auth = http.basicAuth(u: "api", p: "\${apiKey}")
+url = "https://api.mailgun.net/v3/${data.domain}/messages"
+data = strings.joinStr(arr: [
+  "from=${fromEmail}",
+  "to=${data.email}",
+  "subject=${subject}",
+  "text=${message}"
+], v: "&"
+)
+
+http.post(
+  url: url,
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Authorization": "\${auth}"
+  },
+  data: bytes(v: data)
+)
+
+array.from(rows: [{value: 0}])
+  |> yield(name: "ignore")
+`
+    },
   })
 }

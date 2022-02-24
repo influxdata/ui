@@ -984,6 +984,11 @@ export const telegrafUpdateFailed = (telegrafName: string): Notification => ({
   message: `Failed to update telegraf: "${telegrafName}"`,
 })
 
+export const cloneTelegrafSuccess = (): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Telegraf configuration was cloned successfully`,
+})
+
 export const addTelegrafLabelFailed = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to add label to telegraf config`,
@@ -1468,9 +1473,25 @@ export const testNotificationFailure = (
   message: `Failed to send the test alert to ${source}. Please try again`,
 })
 
-export const getResourcesTokensFailure = (): Notification => ({
+export const exportAlertToTaskSuccess = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
+  ...defaultSuccessNotification,
+  message: `Successfully created task for ${source} alert.`,
+})
+
+export const exportAlertToTaskFailure = (
+  source: 'slack' | 'pagerduty' | 'https'
+): Notification => ({
   ...defaultErrorNotification,
-  message: 'Failed to fetch all resources for creating custom api token',
+  message: `Failed to create task for ${source} alert. Please check your configuration.`,
+})
+
+export const getResourcesTokensFailure = (
+  tokenType: string = 'that token'
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch all resources for creating ${tokenType}`,
 })
 
 export const publishNotebookSuccessful = (name: string): Notification => ({

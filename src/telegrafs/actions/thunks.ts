@@ -17,12 +17,14 @@ import {
 
 // Constants
 import {
-  telegrafGetFailed,
-  telegrafCreateFailed,
-  telegrafUpdateFailed,
-  telegrafDeleteFailed,
   addTelegrafLabelFailed,
+  cloneTelegrafSuccess,
+  getTelegrafConfigFailed,
   removeTelegrafLabelFailed,
+  telegrafCreateFailed,
+  telegrafDeleteFailed,
+  telegrafGetFailed,
+  telegrafUpdateFailed,
 } from 'src/shared/copy/notifications'
 
 // Utils
@@ -106,6 +108,60 @@ export const createTelegraf = (telegraf: Telegraf) => async (
     console.error(error)
     dispatch(notify(telegrafCreateFailed()))
   }
+}
+
+const cloneTelegrafLabels = (
+  sourceTelegraf: Telegraf,
+  destinationTelegraf: Telegraf
+) => async (dispatch: Dispatch<Action>) => {
+  try {
+    const pendingLabels = sourceTelegraf.labels.map(labelID =>
+      postTelegrafsLabel({
+        telegrafID: destinationTelegraf.id,
+        data: {labelID},
+      })
+    )
+
+    const mappedLabels = await Promise.all(pendingLabels)
+
+    if (
+      mappedLabels.length &&
+      mappedLabels.some(label => label.status !== 201)
+    ) {
+      throw new Error(
+        'An error occurred cloning the labels for this telegraf config'
+      )
+    }
+    dispatch(notify(cloneTelegrafSuccess()))
+  } catch {
+    dispatch(notify(addTelegrafLabelFailed()))
+  }
+}
+
+export const cloneTelegraf = (telegraf: Telegraf) => async (
+  dispatch: Dispatch<Action>
+) => {
+  let clonedTelegraf
+
+  // Step 1: create a new telegraf
+  try {
+    const response = await postTelegraf({data: telegraf})
+
+    if (response.status !== 201) {
+      throw new Error(response.data.message)
+    }
+
+    clonedTelegraf = response.data
+  } catch (error) {
+    console.error(error)
+    dispatch(notify(telegrafCreateFailed()))
+  }
+
+  // Step 2: clone the labels
+  cloneTelegrafLabels(telegraf, clonedTelegraf)(dispatch)
+
+  // Step 3: refresh the cloned telegraf in the UI to show the labels
+  refreshTelegraf(clonedTelegraf)(dispatch)
 }
 
 export const updateTelegraf = (telegraf: Telegraf) => async (
@@ -247,5 +303,31 @@ export const getTelegraf = (telegrafConfigID: string) => async () => {
   } catch (error) {
     console.error(error)
     throw error
+  }
+}
+
+// adds a telegraf with its latest properties to the state's resources
+export const refreshTelegraf = (telegraf: Telegraf) => async (
+  dispatch: Dispatch<Action>
+) => {
+  try {
+    const response = await apiGetTelegraf({
+      telegrafID: telegraf.id,
+      headers: {Accept: 'application/json'},
+    })
+
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const refreshedTelegraf = response.data
+    const normTelegraf = normalize<Telegraf, TelegrafEntities, string>(
+      refreshedTelegraf,
+      telegrafSchema
+    )
+    dispatch(addTelegraf(normTelegraf))
+  } catch (error) {
+    console.error(error)
+    dispatch(notify(getTelegrafConfigFailed()))
   }
 }

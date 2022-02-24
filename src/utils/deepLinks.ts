@@ -1,4 +1,5 @@
 import {Organization} from 'src/client'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 export const buildDeepLinkingMap = (org: Organization) => ({
   '/me/about': `/orgs/${org.id}/about`,
@@ -14,7 +15,9 @@ export const buildDeepLinkingMap = (org: Organization) => ({
   '/me/labels': `/orgs/${org.id}/settings/labels`,
   '/me/load-data': `/orgs/${org.id}/load-data/sources`,
   '/me/nodejsclient': `/orgs/${org.id}/load-data/client-libraries/javascript-node`,
-  '/me/notebooks': `/orgs/${org.id}/notebooks`,
+  [`/me/${PROJECT_NAME_PLURAL.toLowerCase()}`]: `/orgs/${
+    org.id
+  }/${PROJECT_NAME_PLURAL.toLowerCase()}`,
   '/me/pythonclient': `/orgs/${org.id}/load-data/client-libraries/python`,
   '/me/secrets': `/orgs/${org.id}/settings/secrets`,
   '/me/tasks': `/orgs/${org.id}/tasks`,

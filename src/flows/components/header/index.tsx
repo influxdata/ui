@@ -281,10 +281,6 @@ const FlowHeader: FC = () => {
       return
     }
 
-    if (isFlagEnabled('flowPublishLifecycle')) {
-      handlePublish()
-    }
-
     setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
       data: {
@@ -317,6 +313,7 @@ const FlowHeader: FC = () => {
   const handleClone = async () => {
     event('clone_notebook')
     const clonedId = await clone(flow.id)
+    setShare(null)
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
     )

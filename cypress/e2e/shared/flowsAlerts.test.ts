@@ -219,8 +219,9 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown-item--http').click()
     cy.getByTestID('option--bearer').click()
     cy.getByTestID('input--url').clear()
-    cy.getByTestID('input--url').type(fakeUrl)
-    cy.getByTestID('input--token').type('fake-token')
+    cy.getByTestID('input--url').click()
+    cy.getByTestID('dropdown--token').click()
+    cy.getByTestID('dropdown-item--mySecret').click()
 
     cy.getByTestID('task-form-save').click()
     /* NOTE: we used to be able to test that the generated flux contained the the

@@ -34,10 +34,10 @@ describe('Tasks', () => {
   it('can create a task', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `import "influxdata/influxdb/v1{rightarrow}
-v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
-from(bucket: "${name}"{rightarrow}
-   |> range(start: -2m{rightarrow}`
+      return `import "influxdata/influxdb/v1"
+v1.tagValues(bucket: "${name}", tag: "_field")
+from(bucket: "${name}")
+   |> range(start: -2m)`
     })
 
     cy.getByTestID('task-save-btn').click()
@@ -67,8 +67,8 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const taskName = 'Cron task test'
 
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `from(bucket: "${name}"){rightarrow}
-   |> range(start: -2m{rightarrow}`
+      return `from(bucket: "${name}")
+   |> range(start: -2m)`
     })
 
     cy.getByTestID('task-card-cron-btn').click()
@@ -211,26 +211,47 @@ from(bucket: "defbuck")
     })
 
     it('can clone a task and activate just the cloned one', () => {
-      createTask('task1', 'buckets()')
+      const firstLabel = 'very important task'
+      const secondLabel = 'mission critical'
 
-      cy.getByTestID('task-card')
-        .eq(1)
-        .then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(1)
-            .click()
-          cy.getByTestID('context-clone-task').click()
-        })
+      cy.get('button.cf-button[title="Add labels"]').click()
+      cy.getByTestID('inline-labels--popover--dialog').should('be.visible')
+      cy.getByTestID('inline-labels--popover-field').type(
+        `${firstLabel}{enter}`
+      )
+      cy.getByTestID('overlay--container').should('be.visible')
+      cy.getByTestID('create-label-form--submit').click()
 
+      cy.getByTestID('overlay--container').should('not.exist')
+      cy.get('button.cf-button[title="Add labels"]').click()
+      cy.getByTestID('inline-labels--popover--dialog').should('be.visible')
+      cy.getByTestID('inline-labels--popover-field').type(
+        `${secondLabel}{enter}`
+      )
+      cy.getByTestID('overlay--container').should('be.visible')
+      cy.getByTestID('create-label-form--submit').click()
+
+      // ensure the two labels are present before cloning
+      cy.getByTestID('overlay--container').should('not.exist')
+      cy.getByTestID(`label--pill ${firstLabel}`).should('be.visible')
+      cy.getByTestID(`label--pill ${secondLabel}`).should('be.visible')
+
+      // clone the task
+      cy.getByTestID('context-menu-task').click()
+      cy.getByTestID('context-clone-task').click()
+      cy.getByTestID('task-card--slide-toggle').should('have.length', 2)
+      cy.getByTestID(`label--pill ${firstLabel}`).should('have.length', 2)
+      cy.getByTestID(`label--pill ${secondLabel}`).should('have.length', 2)
+
+      // disable the first task
       cy.getByTestID('task-card--slide-toggle')
         .eq(0)
         .should('have.class', 'active')
       cy.getByTestID('task-card--slide-toggle')
         .eq(0)
         .click()
-      cy.getByTestID('task-card--slide-toggle')
-        .eq(0)
-        .should('not.have.class', 'active')
+
+      // only the clone should be active
       cy.getByTestID('task-card--slide-toggle')
         .eq(1)
         .should('have.class', 'active')
@@ -259,9 +280,6 @@ from(bucket: "defbuck")
 
       // focused() waits for monoco editor to get input focus
       cy.focused()
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .contains('option task = {')
 
       cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
       cy.getByTestID('task-form-name')
@@ -280,6 +298,10 @@ from(bucket: "defbuck")
         .clear()
         .type('10m')
       cy.getByTestID('task-form-offset-input').should('have.value', '10m')
+
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .contains('option task = {')
 
       cy.getByTestID('task-save-btn').click()
 
@@ -402,10 +424,10 @@ from(bucket: "defbuck")
       cy.createTaskFromEmpty(
         taskName,
         ({name}) => {
-          return `import "influxdata/influxdb/v1{rightarrow}
-  v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
-  from(bucket: "${name}"{rightarrow}
-    |> range(start: -2m{rightarrow}`
+          return `import "influxdata/influxdb/v1"
+  v1.tagValues(bucket: "${name}", tag: "_field")
+  from(bucket: "${name}")
+    |> range(start: -2m)`
         },
         interval,
         offset
@@ -687,22 +709,3 @@ from(bucket: "defbuck")
     })
   })
 })
-
-const createTask = (
-  name: string,
-  task: string,
-  every = '3h',
-  offset = '20m'
-) => {
-  cy.getByTestID('create-task--button')
-    .first()
-    .click()
-
-  cy.getByTestID('flux-editor').monacoType(task)
-
-  cy.getByTestIDAndSetInputValue('task-form-name', name)
-  cy.getByTestIDAndSetInputValue('task-form-offset-input', offset)
-  cy.getByTestIDAndSetInputValue('task-form-schedule-input', every)
-  cy.getByTestID('task-save-btn').click()
-  cy.getByTestID('notification-success--dismiss').click()
-}

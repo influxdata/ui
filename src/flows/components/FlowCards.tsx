@@ -43,7 +43,7 @@ const FlowCards: FC<Props> = ({flows, search}) => {
           console.error(err.message)
         })
     }
-  }, [])
+  }, [flows])
 
   return (
     <Grid>

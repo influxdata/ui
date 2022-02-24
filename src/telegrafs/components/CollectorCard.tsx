@@ -25,7 +25,7 @@ import {
   removeTelegrafLabelAsync,
 } from 'src/telegrafs/actions/thunks'
 
-import {createTelegraf} from 'src/telegrafs/actions/thunks'
+import {cloneTelegraf} from 'src/telegrafs/actions/thunks'
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
 
@@ -187,7 +187,7 @@ class CollectorRow extends PureComponent<
     const allTelegrafNames = Object.values(this.props.telegrafs).map(
       t => t.name
     )
-    this.props.onCloneTelegraf({
+    this.props.cloneTelegraf({
       ...this.props.collector,
       name: incrementCloneName(allTelegrafNames, this.props.collector.name),
     })
@@ -204,7 +204,7 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  onCloneTelegraf: createTelegraf,
+  cloneTelegraf,
   onAddLabel: addTelegrafLabelAsync,
   onRemoveLabel: removeTelegrafLabelAsync,
 }

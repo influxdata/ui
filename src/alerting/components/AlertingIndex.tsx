@@ -17,7 +17,6 @@ import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 import GetResources from 'src/resources/components/GetResources'
 import EditCheckEO from 'src/checks/components/EditCheckEO'
-import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import EditRuleOverlay from 'src/notifications/rules/components/EditRuleOverlay'
 import NewEndpointOverlay from 'src/notifications/endpoints/components/NewEndpointOverlay'
 import EditEndpointOverlay from 'src/notifications/endpoints/components/EditEndpointOverlay'
@@ -38,6 +37,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 const alertsPath = '/orgs/:orgID/alerting'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {PROJECT_NAME} from 'src/flows'
 
 type ActiveColumn = 'checks' | 'endpoints' | 'rules'
 
@@ -79,7 +79,10 @@ const AlertingIndex: FunctionComponent = () => {
                 <Icon glyph={IconFont.BookPencil} />
                 Now you can use Notebooks to explore your data while building an
                 alert
-                <Link to="/notebook/from/notification" onClick={recordClick}>
+                <Link
+                  to={`/${PROJECT_NAME.toLowerCase()}/from/notification`}
+                  onClick={recordClick}
+                >
                   Create an Alert
                 </Link>
                 <span className="header-cta--close-icon" onClick={hideFlowsCTA}>
@@ -168,7 +171,6 @@ const AlertingIndex: FunctionComponent = () => {
           path={`${alertsPath}/checks/:checkID/edit`}
           component={EditCheckEO}
         />
-        <Route path={`${alertsPath}/rules/new`} component={NewRuleOverlay} />
         <Route
           path={`${alertsPath}/rules/:ruleID/edit`}
           component={EditRuleOverlay}

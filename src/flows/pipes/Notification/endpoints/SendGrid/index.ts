@@ -16,11 +16,11 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () =>
-      ['http', 'influxdata/influxdb/secrets']
+      ['http', 'influxdata/influxdb/secrets', 'json']
         .map(i => `import "${i}"`)
         .join('\n'),
     generateTestImports: () =>
-      ['array', 'http', 'influxdata/influxdb/secrets']
+      ['array', 'http', 'influxdata/influxdb/secrets', 'json']
         .map(i => `import "${i}"`)
         .join('\n'),
     generateQuery: data => `task_data
@@ -31,69 +31,71 @@ export default register => {
 		messageFn: messageFn,
 		crit: trigger,
 	)
-	|> monitor["notify"](
+  |> monitor["notify"](
     data: notification,
-    endpoint: ((r) => {
+    endpoint: http.endpoint(url: "${data.url}")(
+      mapFn: (r) => {
         apiKey = secrets.get(key: "${data.apiKey}")
-        http.post(
-            url: "${data.url}",
-            headers: {
-              "Content-type": "application/json",
-              "Authorization": "Bearer \${apiKey}"
+        return {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \${apiKey}"
+          },
+          data: json.encode(v: {
+            "personalizations": [
+              {
+                "to": [
+                  {
+                    "email": "${data.email}"
+                  }
+                ],
+                "subject": "InfluxDB Alert",
+              }
+            ],
+            "from": {
+              "email": "${data.fromEmail}"
             },
-            data: bytes(v: "{
-              \\"personalizations\\": [
-                {
-                  \\"to\\": [
-                    {
-                      \\"email\\": \\"${data.email}\\"
-                    }
-                  ]
-                }
-              ],
-              \\"from\\": {
-                \\"email\\": \\"${data.fromEmail} \\"
-              },
-              \\"subject\\": \\"InfluxDB Alert\\",
-              \\"content\\": [
-                {
-                  \\"type\\": \\"text/plain\\",
-                  \\"value\\": \\"\${ r._message }\\"
-                }
-              ]
-            }"))
-    })
+            "content": [
+              {
+                "type": "text/plain",
+                "value": r._message
+              }
+            ]
+          })
+        }
+      }
+    )
   )`,
     generateTestQuery: data => `
     apiKey = secrets.get(key: "${data.apiKey}")
     http.post(
       url: "${data.url}",
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
         "Authorization": "Bearer \${apiKey}"
       },
-      data: bytes(v: "{
-        \\"personalizations\\": [
+      data: json.encode(v: {
+        "personalizations": [
           {
-            \\"to\\": [
+            "to": [
               {
-                \\"email\\": \\"${data.email}\\"
+                "email": "${data.email}"
               }
-            ]
+            ],
+            "subject": "InfluxDB Alert"
           }
         ],
-        \\"from\\": {
-          \\"email\\": \\"${data.fromEmail} \\"
+        "from": {
+          "email": "${data.fromEmail}"
         },
-        \\"subject\\": \\"InfluxDB Alert\\",
-        \\"content\\": [
+        "content": [
           {
-            \\"type\\": \\"text/plain\\",
-            \\"value\\": \\"${TEST_NOTIFICATION}\\"
+            "type": "text/plain",
+            "value": "${TEST_NOTIFICATION}"
           }
         ]
-      }"))
-
+      })
+    )
     array.from(rows: [{value: 0}])
         |> yield(name: "ignore")`,
   })

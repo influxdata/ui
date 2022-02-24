@@ -17,6 +17,7 @@ import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
 // Utils
 import {useAxisTicksGenerator} from 'src/visualization/utils/useAxisTicksGenerator'
 import {getFormatter} from 'src/visualization/utils/getFormatter'
+import {useMainColumn} from 'src/visualization/utils/useBandColumns'
 import {useLegendOpacity} from 'src/visualization/utils/useLegendOpacity'
 import {useStaticLegend} from 'src/visualization/utils/useStaticLegend'
 import {
@@ -58,28 +59,11 @@ const BandPlot: FC<Props> = ({
   cellID,
   timeRange,
 }) => {
-  const mainColumnName = properties.mainColumn
-  /*
-  const mainColumnName = useMemo(() => {
-    const editMode = get(properties.queries, `${activeQueryIndex}.editMode`, 'unknown')
-    if (editMode !== QUERY_BUILDER_MODE) {
-      return properties.mainColumn
-    }
+  const mainColumnName = useMainColumn(
+    properties.mainColumn,
+    result.resultColumnNames
+  )
 
-    const aggregateFunctions = get(
-      properties.queries,
-      `${activeQueryIndex}.builderConfig.functions`,
-      []
-    )
-    const selectedFunctions = aggregateFunctions.map(f => f.name)
-    return getMainColumnName(
-      selectedFunctions,
-      properties.upperColumn,
-      properties.mainColumn,
-      properties.lowerColumn
-    )
-  }, [activeQueryIndex, properties.queries, properties.upperColumn, properties.mainColumn, properties.lowerColumn])
-   */
   const staticLegend = useStaticLegend(properties)
   const {theme, timeZone} = useContext(AppSettingContext)
   const dispatch = useDispatch()

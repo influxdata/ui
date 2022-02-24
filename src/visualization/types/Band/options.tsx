@@ -1,16 +1,17 @@
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 
 import {
-  Input,
-  InputType,
-  Grid,
+  ButtonShape,
   Columns,
+  ComponentStatus,
+  Dropdown,
   Form,
+  Grid,
+  Icon,
+  IconFont,
+  Input,
   SelectDropdown,
   SelectGroup,
-  Dropdown,
-  ComponentStatus,
-  ButtonShape,
 } from '@influxdata/clockface'
 
 import AutoDomainInput from 'src/shared/components/AutoDomainInput'
@@ -33,15 +34,30 @@ import {BandViewProperties} from 'src/types'
 import {VisualizationOptionProps} from 'src/visualization'
 
 const {BASE_2, BASE_10} = AXES_SCALE_OPTIONS
-const UPPER_COLUMN_PLACEHOLDER = `Please enter upper column's function name`
-const MAIN_COLUMN_PLACEHOLDER = `Please enter main column's function name`
-const LOWER_COLUMN_PLACEHOLDER = `Please enter lower column's function name`
+const REMOVE_COLUMN = '(none)'
+
+const ColumnSelectionError: FC = () => (
+  <div className="view-options--band-column-dropdown-error">
+    <Icon glyph={IconFont.AlertTriangle_New} />
+    <span> Cannot be the same as Main Column</span>
+  </div>
+)
 
 interface Props extends VisualizationOptionProps {
   properties: BandViewProperties
 }
 
 const BandViewOptions: FC<Props> = ({properties, results, update}) => {
+  useEffect(() => {
+    const {mainColumn} = properties
+    if (!mainColumn) {
+      const defaultColumn = results.resultColumnNames?.length
+        ? results.resultColumnNames[0]
+        : ''
+      update({mainColumn: defaultColumn})
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const numericColumns = (results?.table?.columnKeys || []).filter(key => {
     if (key === 'result' || key === 'table') {
       return false
@@ -98,22 +114,56 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
     updateAxis('y', {bounds})
   }
 
-  const updateUpperColumn = evt => {
-    update({
-      upperColumn: evt.target.value,
-    })
+  const updateUpperColumn = (upperColumn: string) => {
+    if (upperColumn === REMOVE_COLUMN) {
+      update({upperColumn: ''})
+    } else {
+      update({upperColumn})
+    }
   }
 
-  const updateMainColumn = evt => {
-    update({
-      mainColumn: evt.target.value,
-    })
+  const updateMainColumn = (mainColumn: string) => {
+    update({mainColumn})
   }
 
-  const updateLowerColumn = evt => {
-    update({
-      lowerColumn: evt.target.value,
-    })
+  const updateLowerColumn = (lowerColumn: string) => {
+    if (lowerColumn === REMOVE_COLUMN) {
+      update({lowerColumn: ''})
+    } else {
+      update({lowerColumn})
+    }
+  }
+
+  const getColumnName = (columnName: string): string => {
+    if (!results?.resultColumnNames.length) {
+      return 'Build a query before selecting...'
+    }
+
+    return results.resultColumnNames?.includes(columnName)
+      ? columnName
+      : 'Select a column'
+  }
+
+  const getColumnChoices = (): Array<string> => {
+    const {resultColumnNames} = results
+    if (Array.isArray(resultColumnNames) && resultColumnNames.length) {
+      return [REMOVE_COLUMN, ...resultColumnNames]
+    }
+    return []
+  }
+
+  const getDropdownColumnStatus = (columnName: string): ComponentStatus => {
+    const {mainColumn} = properties
+
+    if (!mainColumn || mainColumn.length < 1) {
+      return ComponentStatus.Default
+    }
+
+    if (columnName === mainColumn) {
+      return ComponentStatus.Error
+    }
+
+    return ComponentStatus.Default
   }
 
   return (
@@ -171,37 +221,104 @@ const BandViewOptions: FC<Props> = ({properties, results, update}) => {
           widthLG={Columns.Four}
         >
           <h5 className="view-options--header">Aggregate Functions</h5>
-          <Form.Element label="Upper Column Name">
-            <Input
-              onChange={updateUpperColumn}
-              onFocus={updateUpperColumn}
-              placeholder={UPPER_COLUMN_PLACEHOLDER}
-              type={InputType.Text}
-              value={properties.upperColumn}
+          <Form.Element label="Upper Column">
+            <Dropdown
+              button={(active, onClick) => {
+                return (
+                  <Dropdown.Button
+                    active={active}
+                    onClick={onClick}
+                    status={getDropdownColumnStatus(properties.upperColumn)}
+                    testID="dropdown--button-upper-column"
+                  >
+                    {getColumnName(properties.upperColumn)}
+                  </Dropdown.Button>
+                )
+              }}
+              menu={onCollapse => (
+                <Dropdown.Menu onCollapse={onCollapse}>
+                  {getColumnChoices().map(columnName => (
+                    <Dropdown.Item
+                      key={`upperColumn-${columnName}`}
+                      value={columnName}
+                      onClick={(name: string) => {
+                        updateUpperColumn(name)
+                      }}
+                      selected={properties.upperColumn === columnName}
+                    >
+                      {columnName}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
+            />
+            {getDropdownColumnStatus(properties.upperColumn) ===
+              ComponentStatus.Error && <ColumnSelectionError />}
+          </Form.Element>
+          <Form.Element label="Main Column">
+            <Dropdown
+              button={(active, onClick) => {
+                return (
+                  <Dropdown.Button
+                    active={active}
+                    onClick={onClick}
+                    testID="dropdown--button-main-column"
+                  >
+                    {getColumnName(properties.mainColumn)}
+                  </Dropdown.Button>
+                )
+              }}
+              menu={onCollapse => (
+                <Dropdown.Menu onCollapse={onCollapse}>
+                  {results.resultColumnNames.map(columnName => (
+                    <Dropdown.Item
+                      key={`mainColumn-${columnName}`}
+                      value={columnName}
+                      onClick={(name: string) => {
+                        updateMainColumn(name)
+                      }}
+                      selected={properties.mainColumn === columnName}
+                    >
+                      {columnName}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
             />
           </Form.Element>
-          <Form.Element label="Main Column Name">
-            <Input
-              onChange={updateMainColumn}
-              onFocus={updateMainColumn}
-              placeholder={MAIN_COLUMN_PLACEHOLDER}
-              status={
-                properties.mainColumn.length
-                  ? ComponentStatus.Default
-                  : ComponentStatus.Error
-              }
-              type={InputType.Text}
-              value={properties.mainColumn}
+          <Form.Element label="Lower Column">
+            <Dropdown
+              button={(active, onClick) => {
+                return (
+                  <Dropdown.Button
+                    active={active}
+                    onClick={onClick}
+                    status={getDropdownColumnStatus(properties.lowerColumn)}
+                    testID="dropdown--button-lower-column"
+                  >
+                    {getColumnName(properties.lowerColumn)}
+                  </Dropdown.Button>
+                )
+              }}
+              menu={onCollapse => (
+                <Dropdown.Menu onCollapse={onCollapse}>
+                  {getColumnChoices().map(columnName => (
+                    <Dropdown.Item
+                      key={`lowerColumn-${columnName}`}
+                      value={columnName}
+                      onClick={(name: string) => {
+                        updateLowerColumn(name)
+                      }}
+                      selected={properties.lowerColumn === columnName}
+                    >
+                      {columnName}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
             />
-          </Form.Element>
-          <Form.Element label="Lower Column Name">
-            <Input
-              onChange={updateLowerColumn}
-              onFocus={updateLowerColumn}
-              placeholder={LOWER_COLUMN_PLACEHOLDER}
-              type={InputType.Text}
-              value={properties.lowerColumn}
-            />
+            {getDropdownColumnStatus(properties.lowerColumn) ===
+              ComponentStatus.Error && <ColumnSelectionError />}
           </Form.Element>
         </Grid.Column>
         <Grid.Column

@@ -25,6 +25,7 @@ import {ResourceType} from 'src/types'
 
 import 'src/shared/components/cta.scss'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {PROJECT_NAME} from 'src/flows'
 
 const DataExplorerPage: FC = () => {
   const {flowsCTA, setFlowsCTA} = useContext(AppSettingContext)
@@ -66,7 +67,10 @@ const DataExplorerPage: FC = () => {
                 <Icon glyph={IconFont.BookPencil} />
                 Now you can use Notebooks to explore and take action on your
                 data
-                <Link to="/notebook/from/default" onClick={recordClick}>
+                <Link
+                  to={`/${PROJECT_NAME.toLowerCase()}/from/default`}
+                  onClick={recordClick}
+                >
                   Create a Notebook
                 </Link>
                 <span className="header-cta--close-icon" onClick={hideFlowsCTA}>

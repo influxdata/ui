@@ -1353,7 +1353,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     it('moves a cell to another dashboard and removes it from the current one', () => {
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
-      cy.getByTestID('clone-cell-type-toggle').click()
+      cy.getByTestID('cell-clone-move-cell').click()
       cy.intercept('PATCH', '/api/v2/dashboards/*/cells/*/view').as('setView')
       cy.getByTestID('confirm-clone-cell-button').click()
       cy.wait('@setView')

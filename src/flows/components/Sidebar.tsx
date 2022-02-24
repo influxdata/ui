@@ -199,7 +199,7 @@ const Sidebar: FC = () => {
         },
         {
           title: 'Convert to |> Flux',
-          disable: () => {
+          hidden: () => {
             if (!flow.data.allIDs.includes(id)) {
               return true
             }
@@ -239,7 +239,7 @@ const Sidebar: FC = () => {
         {
           title: 'Export to Client Library',
           menu: <ClientList />,
-          disable: () => {
+          hidden: () => {
             if (!flow.data.allIDs.includes(id)) {
               return true
             }
@@ -255,7 +255,7 @@ const Sidebar: FC = () => {
         },
         {
           title: 'Link to Source',
-          disable: () => {
+          hidden: () => {
             if (!flow.data.allIDs.includes(id)) {
               return true
             }
@@ -283,7 +283,7 @@ const Sidebar: FC = () => {
         },
         {
           title: 'Link to Results',
-          disable: () => {
+          hidden: () => {
             if (!flow.data.allIDs.includes(id)) {
               return true
             }
@@ -317,17 +317,36 @@ const Sidebar: FC = () => {
     .map(section => {
       const links = section.actions
         .filter(action =>
-          typeof action.disable === 'function'
-            ? !action.disable()
-            : !action.disable
+          typeof action.hidden === 'function'
+            ? !action.hidden()
+            : !action.hidden
         )
         .map(action => {
           let title
+
+          const active =
+            typeof action.disable === 'function'
+              ? !action.disable()
+              : !action.disable
 
           if (typeof action.title === 'function') {
             title = action.title()
           } else {
             title = action.title
+          }
+
+          if (!active) {
+            return (
+              <Dropdown.Item
+                title={title}
+                id={title}
+                key={title}
+                testID={`${title}--list-item`}
+                disabled
+              >
+                {title}
+              </Dropdown.Item>
+            )
           }
 
           if (action.hasOwnProperty('menu')) {

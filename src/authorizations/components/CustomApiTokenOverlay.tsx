@@ -35,6 +35,7 @@ import {AppState, ResourceType, Authorization} from 'src/types'
 import {Bucket, Telegraf} from 'src/client'
 
 // Seletors
+import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {getAll} from 'src/resources/selectors'
 import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
@@ -59,6 +60,7 @@ interface StateProps {
   remoteDataState: RemoteDataState
   orgID: string
   orgName: string
+  meID: string
 }
 interface DispatchProps {
   getBuckets: () => void
@@ -231,8 +233,13 @@ const CustomApiTokenOverlay: FC<Props> = props => {
   }
 
   const generateToken = async () => {
-    const {orgID, showOverlay, orgName, createAuthorization} = props
-    const apiPermissions = formatApiPermissions(permissions, orgID, orgName)
+    const {meID, orgID, showOverlay, orgName, createAuthorization} = props
+    const apiPermissions = formatApiPermissions(
+      permissions,
+      meID,
+      orgID,
+      orgName
+    )
 
     const token: Authorization = {
       orgID: orgID,
@@ -384,6 +391,7 @@ const mstp = (state: AppState) => {
     remoteDataState,
     orgID: getOrg(state).id,
     orgName: getOrg(state).name,
+    meID: getMe(state).id,
   }
 }
 

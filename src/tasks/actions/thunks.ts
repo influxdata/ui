@@ -305,10 +305,60 @@ export const deleteTask = (taskID: string) => async (
   }
 }
 
+const cloneTaskLabels = (sourceTask: Task, destinationTask: Task) => async (
+  dispatch: Dispatch<Action>
+) => {
+  try {
+    const pendingLabels = sourceTask.labels.map(labelID =>
+      api.postTasksLabel({
+        taskID: destinationTask.id,
+        data: {labelID},
+      })
+    )
+
+    const mappedLabels = await Promise.all(pendingLabels)
+
+    if (
+      mappedLabels.length &&
+      mappedLabels.some(label => label.status !== 201)
+    ) {
+      throw new Error('An error occurred cloning the labels for this task')
+    }
+
+    dispatch(notify(copy.taskCloneSuccess(sourceTask.name)))
+  } catch {
+    dispatch(notify(copy.addTaskLabelFailed()))
+  }
+}
+
+const refreshTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
+  try {
+    const response = await api.getTask({
+      taskID: task.id,
+    })
+
+    if (response.status !== 200) {
+      throw new Error(response.data.message)
+    }
+
+    const refreshedTask = response.data
+
+    const normTask = normalize<Task, TaskEntities, string>(
+      refreshedTask,
+      taskSchema
+    )
+    dispatch(addTask(normTask))
+  } catch {
+    dispatch(notify(copy.taskNotFound(task.name)))
+  }
+}
+
 export const cloneTask = (task: Task) => async (
   dispatch: Dispatch<Action>,
   getState: GetState
 ) => {
+  let newTask: Task
+
   try {
     const state = getState()
     const resp = await api.getTask({taskID: task.id})
@@ -350,24 +400,19 @@ export const cloneTask = (task: Task) => async (
 
     const fluxWithNewName = format_from_js_file(ast)
 
-    const newTask = await api.postTask({
+    const newTaskResponse = await api.postTask({
       data: {
         ...resp.data,
         flux: fluxWithNewName,
       },
     })
 
-    if (newTask.status !== 201) {
-      throw new Error(newTask.data.message)
+    if (newTaskResponse.status !== 201) {
+      throw new Error(newTaskResponse.data.message)
     }
 
-    const normTask = normalize<Task, TaskEntities, string>(
-      newTask.data,
-      taskSchema
-    )
+    newTask = newTaskResponse.data as Task
 
-    dispatch(notify(copy.taskCloneSuccess(task.name)))
-    dispatch(addTask(normTask))
     dispatch(checkTaskLimits())
   } catch (error) {
     console.error(error)
@@ -378,6 +423,12 @@ export const cloneTask = (task: Task) => async (
       dispatch(notify(copy.taskCloneFailed(task.name, message)))
     }
   }
+
+  // clone the labels
+  cloneTaskLabels(task, newTask)(dispatch)
+
+  // get the updated task
+  refreshTask(newTask)(dispatch)
 }
 
 export const selectTaskByID = (id: string) => async (

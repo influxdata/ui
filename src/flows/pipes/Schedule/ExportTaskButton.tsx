@@ -30,21 +30,26 @@ import {event} from 'src/cloud/utils/reporting'
 import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {PROJECT_NAME_PLURAL} from 'src/flows'
 
 interface Props {
   text: string
   type: string
   generate?: () => string
+  validate?: (query: string) => Promise<boolean>
   onCreate?: (task: any) => void
   disabled?: boolean
+  loading?: boolean
 }
 
 const ExportTaskButton: FC<Props> = ({
   text,
   type,
   generate,
+  validate,
   onCreate,
   disabled,
+  loading,
 }) => {
   const {flow} = useContext(FlowContext)
   const {add} = useContext(FlowListContext)
@@ -53,8 +58,13 @@ const ExportTaskButton: FC<Props> = ({
   const history = useHistory()
   const org = useSelector(getOrg)
 
-  const onClick = () => {
+  const onClick = async () => {
     const query = generate ? generate() : data.query
+    const valid = validate ? await validate(query) : true
+
+    if (!valid) {
+      return
+    }
 
     event('Export Task Modal Skipped', {from: type})
     let taskid
@@ -97,58 +107,70 @@ const ExportTaskButton: FC<Props> = ({
       }
     }
 
-    postTask({data: {orgID: org.id, flux: query}})
-      .then(resp => {
-        if (resp.status !== 201) {
-          throw new Error(resp.data.message)
-        }
+    try {
+      const resp = await postTask({data: {orgID: org.id, flux: query}})
+      if (resp.status !== 201) {
+        throw new Error(resp.data.message)
+      }
 
-        if (isFlagEnabled('createWithFlows')) {
-          new Promise(resolve => {
-            if (flow.id) {
-              resolve(flow.id)
-              return
+      if (isFlagEnabled('createWithFlows')) {
+        new Promise(resolve => {
+          if (flow.id) {
+            resolve(flow.id)
+            return
+          }
+
+          add(flow).then(id => resolve(id))
+        })
+          .then(id => {
+            return fetch(`/api/v2private/notebooks/${id}/resources`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                panel: data.id,
+                resource: resp.data.id,
+                type: 'tasks',
+              }),
+            }).then(() => {
+              return id
+            })
+          })
+          .then(id => {
+            dispatch(notify(taskCreatedSuccess()))
+            dispatch(checkTaskLimits())
+
+            if (onCreate) {
+              onCreate(resp.data)
             }
 
-            add(flow).then(id => resolve(id))
+            if (id !== flow.id) {
+              history.replace(
+                `/orgs/${org.id}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
+              )
+            }
           })
-            .then(id => {
-              return fetch(`/api/v2private/notebooks/${id}/resources`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  panel: data.id,
-                  resource: resp.data.id,
-                  type: 'tasks',
-                }),
-              }).then(() => {
-                return id
-              })
-            })
-            .then(id => {
-              dispatch(notify(taskCreatedSuccess()))
-              dispatch(checkTaskLimits())
-
-              if (onCreate) {
-                onCreate(resp.data)
-              }
-
-              if (id !== flow.id) {
-                history.replace(`/orgs/${org.id}/notebooks/${id}`)
-              }
-            })
+      } else {
+        if (onCreate) {
+          onCreate(resp.data)
         }
-      })
-      .catch(error => {
-        if (error?.response?.status === ASSET_LIMIT_ERROR_STATUS) {
-          dispatch(notify(resourceLimitReached('tasks')))
-        } else {
-          const message = getErrorMessage(error)
-          dispatch(notify(taskNotCreated(message)))
-        }
-      })
+      }
+    } catch (error) {
+      if (error?.response?.status === ASSET_LIMIT_ERROR_STATUS) {
+        dispatch(notify(resourceLimitReached('tasks')))
+      } else {
+        const message = getErrorMessage(error)
+        dispatch(notify(taskNotCreated(message)))
+      }
+    }
+  }
+
+  let status = ComponentStatus.Default
+  if (disabled) {
+    status = ComponentStatus.Disabled
+  } else if (loading) {
+    status = ComponentStatus.Loading
   }
 
   return (
@@ -157,7 +179,7 @@ const ExportTaskButton: FC<Props> = ({
       color={ComponentColor.Success}
       type={ButtonType.Submit}
       onClick={onClick}
-      status={disabled ? ComponentStatus.Disabled : ComponentStatus.Default}
+      status={status}
       testID="task-form-save"
       icon={IconFont.Export_New}
       titleText={text}

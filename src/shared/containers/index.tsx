@@ -23,6 +23,9 @@ export const DashboardContainer = lazy(() =>
   import('src/dashboards/components/DashboardContainer')
 )
 export const FlowPage = lazy(() => import('src/flows/components/FlowPage'))
+export const VersionPage = lazy(() =>
+  import('src/flows/components/VersionPage')
+)
 export const BucketsIndex = lazy(() =>
   import('src/buckets/containers/BucketsIndex')
 )

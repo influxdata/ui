@@ -23,6 +23,11 @@ $dashboard-grid-gap: $cf-space-2xs;
   background: $cf-grey-25;
 }
 
+.pinneditems--link {
+  word-break: break-word;
+  max-width: fit-content;
+}
+
 @media screen and (max-width: $cf-grid--breakpoint-md) {
   .pinneditems--container {
     grid-template-columns: minmax(0px, 1fr);

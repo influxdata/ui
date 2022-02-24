@@ -93,7 +93,14 @@ jest.mock('src/client', () => ({
       status: 200,
     }
   }),
-  getTask: jest.fn(() => {
+  getTask: jest.fn(({taskID}) => {
+    if (taskID === replacementID) {
+      return {
+        data: {...InactiveTask, id: replacementID, name: replacementName},
+        headers: {},
+        status: 200,
+      }
+    }
     return {
       data: InactiveTask,
       headers: {},

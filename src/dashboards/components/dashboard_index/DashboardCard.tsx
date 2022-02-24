@@ -57,6 +57,7 @@ import {getMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {PROJECT_NAME} from 'src/flows'
 
 interface OwnProps {
   id: string
@@ -237,7 +238,7 @@ class DashboardCard extends PureComponent<Props> {
       },
     } = this.props
 
-    let dest = `/notebook/from/dashboard/${id}`
+    let dest = `/${PROJECT_NAME.toLowerCase()}/from/dashboard/${id}`
 
     if (!isFlagEnabled('boardWithFlows')) {
       dest = `/orgs/${orgID}/dashboards/${id}`

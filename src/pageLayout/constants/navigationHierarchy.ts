@@ -8,6 +8,7 @@ import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {AppState} from 'src/types'
+import {PROJECT_NAME} from 'src/flows'
 
 export interface NavSubItem {
   id: string
@@ -95,7 +96,7 @@ export const generateNavItems = (): NavItem[] => {
       icon: IconFont.GraphLine,
       label: 'Data Explorer',
       shortLabel: 'Explore',
-      link: `/notebook/from/default`,
+      link: `/${PROJECT_NAME.toLowerCase()}/from/default`,
       activeKeywords: ['data-explorer'],
       enabled: () => isFlagEnabled('leadWithFlows'),
     },

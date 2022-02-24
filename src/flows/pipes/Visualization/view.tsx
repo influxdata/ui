@@ -120,12 +120,14 @@ const Visualization: FC<PipeProp> = ({Context}) => {
           {
             title: 'Download as Image',
             action: () => downloadAsImage(id),
-            disable: !isFlagEnabled('pdfImageDownload'),
+            hidden: !isFlagEnabled('pdfImageDownload'),
+            disable: !dataExists,
           },
           {
             title: 'Download as PDF',
             action: () => downloadAsPDF(id),
-            disable: !isFlagEnabled('pdfImageDownload'),
+            hidden: !isFlagEnabled('pdfImageDownload'),
+            disable: !dataExists,
           },
         ],
       },
@@ -207,27 +209,26 @@ const Visualization: FC<PipeProp> = ({Context}) => {
       if (fieldIndices[`${field}`]) {
         // find the value based on the indices
         const value = realValues[i]
-        const thresholdValue = fieldIndices[`${field}`]?.value
+        let thresholdValue = fieldIndices[`${field}`]?.value
+        const fieldType = fieldIndices[`${field}`]?.fieldType
 
-        switch (fieldIndices[`${field}`].type) {
+        if (fieldType === 'number') {
+          thresholdValue = Number(thresholdValue)
+        }
+
+        const min = Number(fieldIndices[`${field}`].min)
+        const max = Number(fieldIndices[`${field}`].max)
+        const type = fieldIndices[`${field}`].type
+
+        switch (type) {
           case 'between':
-            if (
-              value > fieldIndices[`${field}`].min &&
-              value < fieldIndices[`${field}`].max
-            ) {
-              triggeredErrorThresholdMessage = `${field} is between ${
-                fieldIndices[`${field}`].min
-              } and ${fieldIndices[`${field}`].max}`
+            if (value > min && value < max) {
+              triggeredErrorThresholdMessage = `${field} is between ${min} and ${max}`
             }
             break
           case 'not-between':
-            if (
-              value < fieldIndices[`${field}`].min &&
-              value > fieldIndices[`${field}`].max
-            ) {
-              triggeredErrorThresholdMessage = `${field} is not between ${
-                fieldIndices[`${field}`].min
-              } and ${fieldIndices[`${field}`].max}`
+            if (!(value > min && value < max)) {
+              triggeredErrorThresholdMessage = `${field} is not between ${min} and ${max}`
             }
             break
           case 'not-equal':

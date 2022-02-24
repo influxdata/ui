@@ -1,47 +1,7 @@
 import {Permission, ResourceType} from 'src/types'
-import {CLOUD} from 'src/shared/constants'
 import {capitalize} from 'lodash'
 
-type PermissionTypes = Permission['resource']['type']
-
-const sharedPermissionTypes: PermissionTypes[] = [
-  'annotations',
-  'authorizations',
-  'buckets',
-  'checks',
-  'dashboards',
-  'dbrp',
-  'documents',
-  'labels',
-  'notificationRules',
-  'notificationEndpoints',
-  'orgs',
-  'secrets',
-  'tasks',
-  'telegrafs',
-  'users',
-  'variables',
-  'views',
-]
-
-const cloudPermissionTypes = ['flows', 'functions']
-
-const ossPermissionTypes = [
-  'notebooks',
-  'scrapers',
-  'sources',
-  'remotes',
-  'replications',
-]
-
-// TODO: replace this with some server side mechanism
-const allPermissionTypes: PermissionTypes[] = sharedPermissionTypes.concat(
-  (CLOUD ? cloudPermissionTypes : ossPermissionTypes) as PermissionTypes[]
-)
-
-allPermissionTypes.sort((a, b) =>
-  a.toLowerCase().localeCompare(b.toLowerCase())
-)
+export type PermissionTypes = Permission['resource']['type']
 
 const ensureT = (orgID: string, userID: string) => (
   t: PermissionTypes
@@ -70,10 +30,6 @@ const ensureT = (orgID: string, userID: string) => (
     ]
   }
 
-  if (!allPermissionTypes.includes(t)) {
-    throw new Error('Unexpected object: ' + t)
-  }
-
   return [
     {
       action: 'read' as 'read',
@@ -87,6 +43,7 @@ const ensureT = (orgID: string, userID: string) => (
 }
 
 export const allAccessPermissions = (
+  allPermissionTypes: PermissionTypes[],
   orgID: string,
   userID: string
 ): Permission[] => {
@@ -158,6 +115,7 @@ export const formatPermissionsObj = permissions => {
         accordionPermission = {
           read: action === 'read',
           write: action === 'write',
+          sublevelPermissions: {},
         }
       }
     }
@@ -165,31 +123,10 @@ export const formatPermissionsObj = permissions => {
     return {...acc, [type]: accordionPermission}
   }, {})
 
-  Object.keys(newPerms).forEach(resource => {
-    const accordionPermission = {...newPerms[resource]}
-    if (accordionPermission.sublevelPermissions) {
-      accordionPermission.read = Object.keys(
-        accordionPermission.sublevelPermissions
-      ).every(
-        key =>
-          accordionPermission.sublevelPermissions[key].permissions.read === true
-      )
-
-      accordionPermission.write = Object.keys(
-        accordionPermission.sublevelPermissions
-      ).every(
-        key =>
-          accordionPermission.sublevelPermissions[key].permissions.write ===
-          true
-      )
-
-      newPerms[resource] = accordionPermission
-    }
-  })
   return newPerms
 }
 
-export const formatApiPermissions = (permissions, orgID, orgName) => {
+export const formatApiPermissions = (permissions, meID, orgID, orgName) => {
   const apiPerms = []
   Object.keys(permissions).forEach(key => {
     if (key === 'otherResources') {
@@ -202,6 +139,14 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
           resource: {
             id: orgID,
             name: orgName,
+            type: key,
+          },
+        })
+      } else if (key === 'users') {
+        apiPerms.push({
+          action: 'read',
+          resource: {
+            id: meID,
             type: key,
           },
         })
@@ -222,6 +167,14 @@ export const formatApiPermissions = (permissions, orgID, orgName) => {
           resource: {
             id: orgID,
             name: orgName,
+            type: key,
+          },
+        })
+      } else if (key === 'users') {
+        apiPerms.push({
+          action: 'write',
+          resource: {
+            id: meID,
             type: key,
           },
         })

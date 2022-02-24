@@ -12,6 +12,7 @@ import {
 } from '@influxdata/clockface'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 import ExportTaskButton from 'src/flows/pipes/Schedule/ExportTaskButton'
+import {patchTask, TaskUpdateRequest} from 'src/client'
 
 // Types
 import {PipeProp} from 'src/types/flows'
@@ -159,6 +160,12 @@ const Schedule: FC<PipeProp> = ({Context}) => {
   ) {
     offsetError = 'Invalid Time'
   }
+  let latestTask
+  if (data.task?.id) {
+    latestTask = data.task
+  } else if (data.task?.length) {
+    latestTask = data.task[0]
+  }
 
   const queryText = getPanelQueries(id)?.source ?? ''
   const hasTaskOption = useMemo(
@@ -228,12 +235,6 @@ const Schedule: FC<PipeProp> = ({Context}) => {
 
     return format_from_js_file(ast)
   }, [queryText, data.interval, data.offset])
-  let latestTask
-  if (data.task?.id) {
-    latestTask = data.task
-  } else if (data.task?.length) {
-    latestTask = data.task[0]
-  }
   const hasChanges = taskText !== latestTask?.flux ?? ''
 
   const updateInterval = evt => {
@@ -300,18 +301,48 @@ const Schedule: FC<PipeProp> = ({Context}) => {
         actions: [
           {
             title: 'View Run History',
-            menu: <History tasks={data.task.id ? data.task : data.task} />,
+            menu: <History tasks={data.task.id ? [data.task] : data.task} />,
+          },
+          {
+            title: 'Overwrite Existing Task',
+            disable: () => !latestTask || !hasChanges,
+            action: () => {
+              const _data: TaskUpdateRequest = {
+                flux: generateTask(),
+              }
+              if (
+                data.interval?.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
+              ) {
+                _data.every = data.interval
+              } else {
+                _data.cron = data.interval
+              }
+
+              if (data.offset) {
+                _data.offset = data.offset
+              }
+
+              patchTask({
+                taskID: latestTask.id,
+                data: _data,
+              }).then(() => {
+                data.task.find(
+                  t => t.id === latestTask.id
+                ).flux = generateTask()
+                update({task: [...data.task]})
+              })
+            },
           },
         ],
       },
     ])
-  }, [id, data.task])
+  }, [id, data.task, hasChanges])
 
   const persist = (
     <ExportTaskButton
       generate={generateTask}
       onCreate={storeTask}
-      text="Export Task"
+      text="Save to Tasks"
       disabled={
         !hasChanges || !!intervalError || !!offsetError || !data?.interval
       }

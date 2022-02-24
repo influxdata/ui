@@ -13,3 +13,16 @@ export const sortEndpointsByName = (
   endpoints.sort((a, b) =>
     a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
   )
+
+export const getAllActiveEndpoints = (
+  state: AppState
+): NotificationEndpoint[] => {
+  const endpoints = state.resources.endpoints.allIDs.reduce(
+    (acc, id) =>
+      state.resources.endpoints.byID[id]?.activeStatus == 'active'
+        ? acc.concat([state.resources.endpoints.byID[id]])
+        : acc,
+    []
+  )
+  return !!endpoints.length ? sortEndpointsByName(endpoints) : []
+}

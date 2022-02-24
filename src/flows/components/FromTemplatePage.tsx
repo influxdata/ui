@@ -29,6 +29,7 @@ import {
   OverlayController,
 } from 'src/overlays/components/OverlayController'
 import EngagementLink from 'src/cloud/components/onboarding/EngagementLink'
+import {PROJECT_NAME, PROJECT_NAME_PLURAL} from '..'
 
 const Template: FC = () => {
   const {add} = useContext(FlowListContext)
@@ -62,7 +63,9 @@ const Template: FC = () => {
           populate(data)
         } else {
           add(data).then(id => {
-            history.replace(`/orgs/${org.id}/notebooks/${id}`)
+            history.replace(
+              `/orgs/${org.id}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
+            )
           })
         }
       })
@@ -99,7 +102,10 @@ const FromTemplatePage: FC = () => {
             <FlowListProvider>
               <FlowProvider>
                 <Switch>
-                  <Route path="/notebook/from/*" component={Template} />
+                  <Route
+                    path={`/${PROJECT_NAME.toLowerCase()}/from/*`}
+                    component={Template}
+                  />
                   <Route component={NotFound} />
                 </Switch>
               </FlowProvider>
@@ -113,7 +119,10 @@ const FromTemplatePage: FC = () => {
   return (
     <FlowListProvider>
       <Switch>
-        <Route path="/notebook/from/*" component={Template} />
+        <Route
+          path={`/${PROJECT_NAME.toLowerCase()}/from/*`}
+          component={Template}
+        />
         <Route component={NotFound} />
       </Switch>
     </FlowListProvider>

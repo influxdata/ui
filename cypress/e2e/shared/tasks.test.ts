@@ -34,10 +34,10 @@ describe('Tasks', () => {
   it('can create a task', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `import "influxdata/influxdb/v1{rightarrow}
-v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
-from(bucket: "${name}"{rightarrow}
-   |> range(start: -2m{rightarrow}`
+      return `import "influxdata/influxdb/v1"
+v1.tagValues(bucket: "${name}", tag: "_field")
+from(bucket: "${name}")
+   |> range(start: -2m)`
     })
 
     cy.getByTestID('task-save-btn').click()
@@ -67,8 +67,8 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
     const taskName = 'Cron task test'
 
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `from(bucket: "${name}"){rightarrow}
-   |> range(start: -2m{rightarrow}`
+      return `from(bucket: "${name}")
+   |> range(start: -2m)`
     })
 
     cy.getByTestID('task-card-cron-btn').click()
@@ -259,9 +259,6 @@ from(bucket: "defbuck")
 
       // focused() waits for monoco editor to get input focus
       cy.focused()
-      cy.getByTestID('flux-editor')
-        .should('be.visible')
-        .contains('option task = {')
 
       cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
       cy.getByTestID('task-form-name')
@@ -280,6 +277,10 @@ from(bucket: "defbuck")
         .clear()
         .type('10m')
       cy.getByTestID('task-form-offset-input').should('have.value', '10m')
+
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .contains('option task = {')
 
       cy.getByTestID('task-save-btn').click()
 
@@ -402,10 +403,10 @@ from(bucket: "defbuck")
       cy.createTaskFromEmpty(
         taskName,
         ({name}) => {
-          return `import "influxdata/influxdb/v1{rightarrow}
-  v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
-  from(bucket: "${name}"{rightarrow}
-    |> range(start: -2m{rightarrow}`
+          return `import "influxdata/influxdb/v1"
+  v1.tagValues(bucket: "${name}", tag: "_field")
+  from(bucket: "${name}")
+    |> range(start: -2m)`
         },
         interval,
         offset

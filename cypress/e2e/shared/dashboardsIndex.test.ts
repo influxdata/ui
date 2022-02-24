@@ -343,7 +343,7 @@ describe('Dashboards', () => {
       cy.contains('Dashboards').click()
 
       // assert dashboard order remains the same
-      cy.get('span[data-testid*="dashboard-card--name"]').each((val, index) => {
+      cy.get('a[data-testid*="dashboard-card--name"]').each((val, index) => {
         cy.wrap(val).contains(expectedDashboardOrder[index])
       })
     })

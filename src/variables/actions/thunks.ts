@@ -19,7 +19,7 @@ import {variableSchema, arrayOfVariables} from 'src/schemas/variables'
 // APIs
 import * as api from 'src/client'
 import {hydrateVars} from 'src/variables/utils/hydrateVars'
-import {createDashboardFromPkgerTemplate} from 'src/templates/api'
+import {createResourceFromPkgerTemplate} from 'src/templates/api'
 
 // Utils
 import {
@@ -277,7 +277,7 @@ export const createVariableFromTemplate = (template: api.Template) => async (
     // only one variable in the exported template so we can safely just index the 0th element
     const variableName = template[0].spec.name
 
-    await createDashboardFromPkgerTemplate(template, org.id)
+    await createResourceFromPkgerTemplate(template, org.id)
 
     await getVariablesAction()(dispatch, getState)
 

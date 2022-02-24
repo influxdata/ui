@@ -277,11 +277,12 @@ export const createVariableFromTemplate = (
   try {
     const state = getState()
     const org = getOrg(state)
-
+    // only one variable in the exported template so we can safely just index the 0th element
+    const variableName = template[0].spec.name
     await createDashboardFromPkgerTemplate(template, org.id)
 
     console.log(template)
-    dispatch(getVariablesAction())
+    getVariablesAction()
     // const resp = await api.getVariables({query: {orgID: org.id}})
     //
     // console.log({resp})
@@ -292,11 +293,10 @@ export const createVariableFromTemplate = (
     //
     // console.log({createdVar})
     event('variable.create.from_template.success', {
-      id: resp?.id,
-      name: resp?.name,
+      name: variableName,
     })
     // dispatch(setVariable(resp.id, RemoteDataState.Done, createdVar))
-    dispatch(notify(copy.createVariableSuccess(template[0].spec.name)))
+    dispatch(notify(copy.createVariableSuccess(variableName)))
   } catch (error) {
     event('variable.create.from_template.failure', {template: template?.id})
     console.error(error)

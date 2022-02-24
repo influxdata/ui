@@ -11,7 +11,7 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     button: 'Metric Selector',
-    disabled: true,
+    featureFlag: 'flow-panel--metric-selector',
     initial: {
       field: '',
       measurement: '',

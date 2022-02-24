@@ -240,8 +240,6 @@ export const FlowQueryProvider: FC = ({children}) => {
   }
 
   const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
-    event('runQuery', {context: 'flows'})
-
     const _override: QueryScope = {
       region: window.location.origin,
       org: org.id,

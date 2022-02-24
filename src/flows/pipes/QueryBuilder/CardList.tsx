@@ -32,6 +32,8 @@ import WaitingText from 'src/shared/components/WaitingText'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import SelectorList from 'src/timeMachine/components/SelectorList'
 
+import {event} from 'src/cloud/utils/reporting'
+
 const DEBOUNCE_TIMEOUT = 500
 const debounce_array = []
 type NOOP = () => void
@@ -69,6 +71,7 @@ const Card: FC<Props> = ({idx}) => {
   const _remove =
     idx !== 0 &&
     (() => {
+      event('Query Builder Card Removed')
       remove(idx)
     })
 
@@ -90,6 +93,10 @@ const Card: FC<Props> = ({idx}) => {
   )
 
   const keySelect = val => {
+    if (card.keys.selected[0] === val) {
+      return
+    }
+    event('Query Builder key selected')
     update(idx, {
       keys: {
         ...card.keys,
@@ -110,8 +117,10 @@ const Card: FC<Props> = ({idx}) => {
     const _vals = [...card.values.selected]
     const index = _vals.indexOf(val)
     if (index === -1) {
+      event('Query Builder Value Selected')
       _vals.push(val)
     } else {
+      event('Query Builder Value Unselected')
       _vals.splice(index, 1)
     }
     update(idx, {

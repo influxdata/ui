@@ -8,6 +8,8 @@ import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {BucketContext} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
 
+import {event} from 'src/cloud/utils/reporting'
+
 // this is used by notebooks
 const BucketSelector: FC = () => {
   const {data, update} = useContext(PipeContext)
@@ -42,6 +44,9 @@ const BucketSelector: FC = () => {
     } else if (item !== selected) {
       data.buckets = [buckets.find(b => b.name === item)]
       bucket = item
+      event('Query Builder Bucket Selected', {
+        usedSearch: !!search.length ? 'yus' : 'nah',
+      })
     } else {
       data.buckets = []
       bucket = null

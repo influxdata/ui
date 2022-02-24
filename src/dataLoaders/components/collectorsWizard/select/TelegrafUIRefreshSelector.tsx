@@ -171,7 +171,6 @@ class TelegrafUIRefreshSelector extends PureComponent<Props, State> {
                   name={item.name}
                   image={item.image}
                   style={item.style}
-                  url={`${item.id}`}
                   selected={this.isCardChecked(item.id)}
                   onClick={this.handleToggle}
                   testID={`telegraf-plugins--${item.name}`}

@@ -5,10 +5,13 @@ import {RemoteDataState} from 'src/types'
 
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
 
+import {event} from 'src/cloud/utils/reporting'
+
 const AddButton: FC = () => {
   const {cards, add} = useContext(QueryBuilderContext)
 
   const onClick = useCallback(() => {
+    event('Query Builder Card Added')
     add()
   }, [add])
 

@@ -17,7 +17,7 @@ interface Props {
   image?: string
   style?: CSSProperties
   selected?: boolean
-  onClick?: any
+  onClick: any
   testID?: string
 }
 

@@ -1187,10 +1187,10 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@influxdata/clockface@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.3.1.tgz#85a3db53ececa0532fd44b29882c43e23628ab81"
-  integrity sha512-+9KBcvS+IKldhCA8y9Xz6rtPzvDGwlcVLsz8taROO4ykJ5N3CfD4yqPiJoMWt8hZ7L/7V6xnwexkSbwOd4rIzw==
+"@influxdata/clockface@^3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.3.3.tgz#ed7ee06c84479a030a74981a2d9dcc8cd9cfcb9d"
+  integrity sha512-03PoZ9uOc6SxBRkR22Z60+w89k60MArJ7gCvNYDhVVo0i3pM0hLcvIzwhTlBxprsq7YGogn8uMwkvvFfh1St8A==
 
 "@influxdata/flux-lsp-browser@^0.8.5":
   version "0.8.5"

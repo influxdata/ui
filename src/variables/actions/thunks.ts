@@ -286,7 +286,9 @@ export const createVariableFromTemplate = (template: api.Template) => async (
     })
     dispatch(notify(copy.createVariableSuccess(variableName)))
   } catch (error) {
-    event('variable.create.from_template.failure', {template: template[0].meta.name})
+    event('variable.create.from_template.failure', {
+      template: template[0].meta.name,
+    })
     console.error(error)
     dispatch(notify(copy.createVariableFailed(error.message)))
   }

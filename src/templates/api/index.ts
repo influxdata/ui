@@ -124,7 +124,6 @@ export const createResourceFromPkgerTemplate = async (
     },
   })
 
-  console.log({response})
   if (response.status === 500) {
     throw new Error(response.data.message)
   }

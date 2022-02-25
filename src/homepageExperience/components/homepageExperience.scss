@@ -27,6 +27,22 @@
   justify-content: left;
 }
 
+.subway-navigation-step-icon-container {
+  border: #0098f0 solid 2px;
+  border-radius: 50%;
+  color: rgba(0, 0, 0, 0);
+  height: 24px;
+  width: 24px;
+}
+
+.subway-navigation-step-icon {
+  height: 16px;
+  left: 2px;
+  position: relative;
+  top: 2px;
+  width: 16px;
+}
+
 .homepage-container--main {
   display: flex;
   flex-direction: column;

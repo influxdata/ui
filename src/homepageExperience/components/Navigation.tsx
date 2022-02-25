@@ -1,5 +1,7 @@
 import React, {PureComponent} from 'react'
 
+import overviewLogo from 'assets/images/homepageExperience/overview.svg'
+
 export class Navigation extends PureComponent {
   render() {
     return (
@@ -8,8 +10,10 @@ export class Navigation extends PureComponent {
           <h2>Setting Up</h2>
           <h3>5 minutes</h3>
           <div className="subway-navigation-step">
-            <span>icon</span>
-            <p>Overview</p>
+            <span className="subway-navigation-step-icon-container">
+              <img className="subway-navigation-step-icon" src={overviewLogo} />
+            </span>
+            Overview
           </div>
           <div className="subway-navigation-step">
             <span>icon</span>

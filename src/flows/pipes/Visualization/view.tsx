@@ -35,6 +35,7 @@ import {downloadImage} from 'src/shared/utils/download'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
+// Enable map background
 const canvasOption = {
   useCORS: true,
 }

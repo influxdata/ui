@@ -1,6 +1,5 @@
 // Libraries
 import React, {useState, FunctionComponent} from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 
 // Components
 import {
@@ -11,6 +10,7 @@ import {
   IconFont,
   DapperScrollbars,
 } from '@influxdata/clockface'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 interface Props {
   message: string

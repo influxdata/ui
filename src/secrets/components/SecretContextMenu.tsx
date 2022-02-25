@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC} from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 import {useDispatch} from 'react-redux'
 
 // Components
@@ -13,6 +12,7 @@ import {
   IconFont,
   SquareButton,
 } from '@influxdata/clockface'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'

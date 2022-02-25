@@ -21,14 +21,15 @@ const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
   const [hasFocus, setHasFocus] = useState(false)
   const {hasWritePermissions} = useContext(OperatorContext)
   const value = get(limits, name, '')
-  const csv = isNaN(value)
-    ? value
-    : Intl.NumberFormat(navigator.language).format(value)
+  const formatted_value =
+    type === InputType.Number
+      ? Intl.NumberFormat(navigator.language).format(value)
+      : value
 
   if (!hasWritePermissions) {
     return (
       <p data-testid={`limits-${name}--p`} className="operator-limits-label">
-        {csv}
+        {formatted_value}
       </p>
     )
   }
@@ -40,7 +41,7 @@ const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
     onChangeLimits(newLimits)
   }
 
-  if (type == InputType.Number) {
+  if (type === InputType.Number) {
     return hasFocus ? (
       <Input
         type={type}
@@ -54,7 +55,7 @@ const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
       <Input
         type={InputType.Text}
         name={name}
-        value={csv}
+        value={formatted_value}
         onChange={onChange}
         onFocus={() => setHasFocus(true)}
         testID={`limits-${name}--input`}

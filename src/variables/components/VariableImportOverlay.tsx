@@ -55,7 +55,7 @@ class VariableImportOverlay extends PureComponent<Props> {
     this.setState(() => ({status}))
 
   private handleImportVariable = (uploadContent: string) => {
-    const {createVariableFromTemplate, getVariables, notify} = this.props
+    const {createVariableFromTemplate, notify} = this.props
 
     let template
     this.updateOverlayStatus(ComponentStatus.Default)
@@ -68,7 +68,6 @@ class VariableImportOverlay extends PureComponent<Props> {
     }
 
     createVariableFromTemplate(template)
-    getVariables()
 
     this.onDismiss()
   }

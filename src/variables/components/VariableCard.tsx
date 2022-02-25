@@ -21,6 +21,7 @@ import {
   removeVariableLabelAsync,
 } from 'src/variables/actions/thunks'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {downloadVariableTemplate} from '../apis'
 
 interface OwnProps {
   variable: Variable
@@ -104,11 +105,8 @@ class VariableCard extends PureComponent<
   }
 
   private handleExport = () => {
-    const {history, variable, match} = this.props
-
-    history.push(
-      `/orgs/${match.params.orgID}/settings/variables/${variable.id}/export`
-    )
+    const {variable} = this.props
+    downloadVariableTemplate(variable)
   }
 
   private handleRenameVariable = () => {

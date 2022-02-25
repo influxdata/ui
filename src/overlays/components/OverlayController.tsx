@@ -37,6 +37,7 @@ import CustomApiTokenOverlay from 'src/authorizations/components/CustomApiTokenO
 import DisplayTokenOverlay from 'src/authorizations/components/DisplayTokenOverlay'
 import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import CreateSecretOverlay from 'src/secrets/components/CreateSecret/CreateSecretOverlay'
+import VariableImportOverlay from 'src/variables/components/VariableImportOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -120,6 +121,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'create-variable':
         activeOverlay.current = <CreateVariableOverlay />
+        break
+      case 'import-variable':
+        activeOverlay.current = <VariableImportOverlay />
         break
       case 'rename-variable':
         activeOverlay.current = <RenameVariableOverlay />

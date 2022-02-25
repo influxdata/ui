@@ -125,9 +125,6 @@ describe('Flows', () => {
       cy.signin()
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs}) => {
-          cy.request('api/v2/authorizations').then(({body}) => {
-            cy.wrap(body.authorizations).as('tokens')
-          })
           cy.visit(`${orgs}/${id}`)
         })
       })
@@ -144,10 +141,8 @@ describe('Flows', () => {
       openCopyAs()
 
       cy.get('@org').then(({name}: Organization) => {
-        cy.get<Authorization[]>('@tokens').then(tokens => {
-          getClients(name, query).forEach(client => {
-            verifyClientCode(client)
-          })
+        getClients(name, query).forEach(client => {
+          verifyClientCode(client)
         })
       })
     })
@@ -161,10 +156,8 @@ describe('Flows', () => {
       openCopyAs()
 
       cy.get('@org').then(({name}: Organization) => {
-        cy.get<Authorization[]>('@tokens').then(tokens => {
-          getClients(name, tokens[0].token, query).forEach(client => {
-            verifyClientCode(client)
-          })
+        getClients(name, query).forEach(client => {
+          verifyClientCode(client)
         })
       })
     })

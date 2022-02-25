@@ -378,7 +378,7 @@ const FlowHeader: FC = () => {
           <Page.ControlBarLeft>
             <Submit />
             <AutoRefreshButton />
-            <SaveState />
+            {!isFlagEnabled('flowPublishLifecycle') && <SaveState />}
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <PresentationMode />

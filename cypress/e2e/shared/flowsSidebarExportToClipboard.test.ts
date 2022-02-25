@@ -1,4 +1,3 @@
-import {Authorization} from 'src/client'
 import {Organization} from 'src/types'
 
 const openCopyAs = () => {
@@ -48,10 +47,6 @@ const verifyClientCode = (client: any) => {
   cy.getByTestID('code-snippet')
     .children()
     .find('code')
-    .contains(client.token)
-  cy.getByTestID('code-snippet')
-    .children()
-    .find('code')
     .contains(client.org)
   cy.getByTestID('code-snippet')
     .children()
@@ -61,71 +56,60 @@ const verifyClientCode = (client: any) => {
   cy.get('.cf-overlay--dismiss').click()
 }
 
-const getClients = (org: string, token: string, query: string) => {
+const getClients = (org: string, query: string) => {
   return [
     {
       name: 'arduino',
-      token: `"<INFLUX_TOKEN>"`,
       org: `"${org}"`,
       query: query.replace(/"/g, '\\"'),
     },
     {
       name: 'csharp',
-      token: `const string token = "${token}";`,
       org: `const string org = "${org}";`,
       query: query.replace(/"/g, '""'),
     },
     {
       name: 'go',
-      token: `"${token}"`,
       org: `client.QueryAPI("${org}")`,
       query,
     },
     {
       name: 'java',
-      token: `String token = "${token}";`,
       org: `String org = "${org}";`,
       query: query.replace(/"/g, '\\"'),
     },
     {
       name: 'javascript-node',
-      token: `const token = '${token}'`,
       org: `const org = '${org}'`,
       query,
     },
     {
       name: 'kotlin',
-      token: `val token = "${token}"`,
       org: `val org = "${org}"`,
       query,
     },
     {
       name: 'php',
-      token: `$token = '${token}';`,
       org: `$org = '${org}';`,
       query: query.replace(/"/g, '\\"'),
     },
     {
       name: 'python',
-      token: `token = "${token}"`,
       org: `org = "${org}"`,
       query,
     },
     {
       name: 'ruby',
-      token: `token = '${token}'`,
       org: `org = '${org}'`,
       query,
     },
     {
       name: 'scala',
-      token: `val token = "${token}"`,
       org: `val org = "${org}"`,
       query,
     },
     {
       name: 'swift',
-      token: `let token = "${token}"`,
       org: `let org = "${org}"`,
       query,
     },
@@ -140,9 +124,6 @@ describe('Flows', () => {
       cy.signin()
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs}) => {
-          cy.request('api/v2/authorizations').then(({body}) => {
-            cy.wrap(body.authorizations).as('tokens')
-          })
           cy.visit(`${orgs}/${id}`)
         })
       })
@@ -159,10 +140,8 @@ describe('Flows', () => {
       openCopyAs()
 
       cy.get('@org').then(({name}: Organization) => {
-        cy.get<Authorization[]>('@tokens').then(tokens => {
-          getClients(name, tokens[0].token, query).forEach(client => {
-            verifyClientCode(client)
-          })
+        getClients(name, query).forEach(client => {
+          verifyClientCode(client)
         })
       })
     })
@@ -176,10 +155,8 @@ describe('Flows', () => {
       openCopyAs()
 
       cy.get('@org').then(({name}: Organization) => {
-        cy.get<Authorization[]>('@tokens').then(tokens => {
-          getClients(name, tokens[0].token, query).forEach(client => {
-            verifyClientCode(client)
-          })
+        getClients(name, query).forEach(client => {
+          verifyClientCode(client)
         })
       })
     })

@@ -35,10 +35,14 @@ import {downloadImage} from 'src/shared/utils/download'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
+const canvasOption = {
+  useCORS: true,
+}
+
 const downloadAsImage = (pipeID: string) => {
   const canvas = document.getElementById(pipeID)
   import('html2canvas').then((module: any) =>
-    module.default(canvas as HTMLDivElement).then(result => {
+    module.default(canvas as HTMLDivElement, canvasOption).then(result => {
       downloadImage(result.toDataURL(), 'visualization.png')
     })
   )
@@ -47,7 +51,7 @@ const downloadAsImage = (pipeID: string) => {
 const downloadAsPDF = (pipeID: string) => {
   const canvas = document.getElementById(pipeID)
   import('html2canvas').then((module: any) =>
-    module.default(canvas as HTMLDivElement).then(result => {
+    module.default(canvas as HTMLDivElement, canvasOption).then(result => {
       import('jspdf').then((jsPDF: any) => {
         const doc = new jsPDF.default({
           orientation: 'l',

@@ -2,9 +2,10 @@ import React, {PureComponent} from 'react'
 
 import {FlexBox, Page} from '@influxdata/clockface'
 
-import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
+import {Navigation} from 'src/homepageExperience/components/Navigation'
+
+import '../components/homepageExperience.scss'
 
 export default class HomepageContainer extends PureComponent {
   state = {
@@ -21,17 +22,17 @@ export default class HomepageContainer extends PureComponent {
 
   render() {
     return (
-      <div style={{display: 'flex', justifyContent: 'space-between', width: '100%', height: '100%'}}>
-        <nav style={{display: 'flex', flexDirection: 'column', width: '30%'}}>
+      <div className="homepage-container">
+        <aside className="homepage-container--subway">
           <div style={{width: '100%'}}>
-            <h3 style={{display: 'flex', justifyContent: 'center'}}>Nav</h3>
+            <Navigation />
           </div>
-        </nav>
-        <div style={{display: "flex", flexDirection: "column", justifyContent: 'center', width: '70%'}}>
-          <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
+        </aside>
+        <main className="homepage-container--main">
+          <div className="homepage-container--main-wrapper">
             <h3>Content</h3>
           </div>
-        </div>
+        </main>
       </div>
     )
     // return (

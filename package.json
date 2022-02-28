@@ -56,7 +56,7 @@
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
     "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn pinned && yarn mapsd-oss && yarn cloudPriv",
-    "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn annotations && yarn cloudPriv && yarn pinned && yarn mapsd",
+    "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn annotations && yarn cloudPriv && yarn pinned && yarn mapsd && yarn nifid",
     "oss": "oats ${REMOTE}contracts/oss-diff.yml > ./src/client/ossRoutes.ts",
     "cloud": "oats ${REMOTE}contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",
     "common": "oats ${REMOTE}contracts/common.yml > ./src/client/commonRoutes.ts",
@@ -69,6 +69,7 @@
     "annotations-oss": "oats ${REMOTE}contracts/priv/annotationd-oss.yml > ./src/client/annotationdRoutes.ts",
     "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
+    "nifid": "oats ${REMOTE}contracts/svc/nifid.yml > ./src/client/nifidRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
     "telegraf-plugins:update": "node src/writeData/utils/parsePluginsConfigurationText.mjs"
   },

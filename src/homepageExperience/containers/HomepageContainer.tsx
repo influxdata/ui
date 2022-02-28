@@ -2,10 +2,9 @@ import React, {PureComponent} from 'react'
 
 import {Button} from '@influxdata/clockface'
 
+import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Navigation} from 'src/homepageExperience/components/Navigation'
-
-import '../components/homepageExperience.scss'
 
 export default class HomepageContainer extends PureComponent {
   state = {
@@ -22,6 +21,9 @@ export default class HomepageContainer extends PureComponent {
       case 1: {
         return (<Overview />)
       }
+      case 2: {
+        return (<InstallDependencies />)
+      }
       default: {
         return (<Overview />)
       }
@@ -33,7 +35,7 @@ export default class HomepageContainer extends PureComponent {
       <div className="homepage-container">
         <aside className="homepage-container--subway">
           <div style={{width: '100%'}}>
-            <Navigation />
+            <Navigation currentStep={this.state.currentStep} />
           </div>
         </aside>
         <main className="homepage-container--main">

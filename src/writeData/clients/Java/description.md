@@ -8,7 +8,7 @@ Build with Maven
 <dependency>
   <groupId>com.influxdb</groupId>
   <artifactId>influxdb-client-java</artifactId>
-  <version>3.1.0</version>
+  <version>4.3.0</version>
 </dependency>
 ```
 
@@ -16,6 +16,6 @@ Build with Gradle
 
 ```
 dependencies {
-  implementation "com.influxdb:influxdb-client-java:3.1.0"
+  implementation "com.influxdb:influxdb-client-java:4.3.0"
 }
 ```

@@ -120,24 +120,40 @@ const TimeMachineFluxEditor: FC<Props> = ({
     const {name, fluxType} = func
     
     let signature 
-    let index = fluxType.indexOf('=')
-    // check the description after the arrow where A is something 
-    // if it is timeable then add time constant in the place of A 
 
-    /*
-      const firstIndex = fluxType.indexOf('(')
-      const secondIndex = fluxType.indexOf(')')
-
-      default:A, dict:[C:D], key:B
-
-      const parametersAsOneSentence = fluxType.substring(firstIndex + 1, secondIndex)
-      
-    */
-    
+    // get copy of fluxtype signature before arrow sign 
+    const index = fluxType.indexOf('=')
     const fluxsign = fluxType.slice(0, index)
 
-    signature = name + fluxsign
-    console.log('flux sign ', func)
+    // access parameters alone inside function signature
+    const firstIndex = fluxsign.indexOf('(')
+    const secondIndex = fluxsign.indexOf(')')
+    const parametersAsOneSentence = fluxsign.substring(firstIndex + 1, secondIndex).replace(/\s/g, '')
+    // parametersAsOneSentence = dict:[C:D], key:B
+    console.log('param', parametersAsOneSentence)
+    // sperate parameters using array so we can parse them  
+    const paramsArray = parametersAsOneSentence.split(",")
+    // paramsArray = [dict: [A:B], key:A]
+    paramsArray.map((element, index) => {
+      if(element.startsWith("pairs")) {
+        paramsArray[index] = 'pairs: [{key: 1, value: "foo"},{key: 2, value: "bar"}]'
+        return
+      }
+      if (element.startsWith("dict")) {
+        paramsArray[index] = 'dict: [1: "foo", 2: "bar"]'
+      }
+      if (element.startsWith("key")) {
+        paramsArray[index] = 'key: 1'
+      }
+      if(element.startsWith("default")) {
+        paramsArray[index] = 'default: ""'
+      }
+      
+    })
+    
+    signature = name + `(` + paramsArray.join(',') + `)`
+
+    // add example property to flux function object
     return {...func, example: signature}
   }
 

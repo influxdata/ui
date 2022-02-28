@@ -82,7 +82,7 @@ class TokensRow extends PureComponent<Props> {
           />
           <ResourceCard.Meta>
             <>Created at: {formatter.format(date)}</>
-            <>Created by: {auth.user}</>
+            <>Owner: {auth.user}</>
             <>Last Used: {relativeTimestampFormatter(auth.updatedAt)}</>
           </ResourceCard.Meta>
         </FlexBox>

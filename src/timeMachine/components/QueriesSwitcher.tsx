@@ -1,6 +1,6 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {FC, useCallback} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -23,78 +23,69 @@ import {
   confirmationState,
   ConfirmationState,
 } from 'src/timeMachine/utils/queryBuilder'
+import {event} from 'src/cloud/utils/reporting'
 
-// Types
-import {AppState} from 'src/types'
+const TimeMachineQueriesSwitcher: FC = () => {
+  const dispatch = useDispatch()
+  const activeQuery = useSelector(getActiveQuery)
+  const {editMode, text, builderConfig} = activeQuery
+  const scriptMode = editMode !== 'builder'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
+  const handleEditAsFlux = useCallback(() => {
+    event('Switched to Script Editor')
+    dispatch(editActiveQueryAsFlux())
+  }, [dispatch])
 
-class TimeMachineQueriesSwitcher extends PureComponent<Props> {
-  public render() {
-    const {
-      onEditAsFlux,
-      onEditWithBuilder,
-      onResetAndEditWithBuilder,
-    } = this.props
-    const {editMode, text, builderConfig} = this.props.activeQuery
-    const scriptMode = editMode !== 'builder'
+  let button = (
+    <Button
+      text="Script Editor"
+      titleText="Switch to Script Editor"
+      onClick={handleEditAsFlux}
+      testID="switch-to-script-editor"
+    />
+  )
 
-    let button = (
+  const handleEditWithBuilder = useCallback(() => {
+    event('Switch to Query Builder Clicked')
+    dispatch(editActiveQueryWithBuilder())
+  }, [dispatch])
+
+  if (scriptMode) {
+    button = (
       <Button
-        text="Script Editor"
-        titleText="Switch to Script Editor"
-        onClick={onEditAsFlux}
-        testID="switch-to-script-editor"
+        text="Query Builder"
+        titleText="Switch to Query Builder"
+        onClick={handleEditWithBuilder}
+        testID="switch-to-query-builder"
       />
     )
-
-    if (scriptMode) {
-      button = (
-        <Button
-          text="Query Builder"
-          titleText="Switch to Query Builder"
-          onClick={onEditWithBuilder}
-          testID="switch-to-query-builder"
-        />
-      )
-    }
-
-    if (
-      scriptMode &&
-      confirmationState(text, builderConfig) === ConfirmationState.Required
-    ) {
-      button = (
-        <ConfirmationButton
-          popoverColor={ComponentColor.Danger}
-          popoverAppearance={Appearance.Outline}
-          popoverStyle={{width: '400px'}}
-          confirmationLabel="Switching to Query Builder mode will discard any changes you
-                have made using Flux. This cannot be recovered."
-          confirmationButtonText="Switch to Builder"
-          text="Query Builder"
-          onConfirm={onResetAndEditWithBuilder}
-          testID="switch-query-builder-confirm"
-        />
-      )
-    }
-
-    return button
   }
+
+  const handleResetAndEditWithBuilder = useCallback(() => {
+    event('Confirmed switch to Query Builder Clicked')
+    dispatch(resetActiveQuerySwitchToBuilder())
+  }, [dispatch])
+
+  if (
+    scriptMode &&
+    confirmationState(text, builderConfig) === ConfirmationState.Required
+  ) {
+    button = (
+      <ConfirmationButton
+        popoverColor={ComponentColor.Danger}
+        popoverAppearance={Appearance.Outline}
+        popoverStyle={{width: '400px'}}
+        confirmationLabel="Switching to Query Builder mode will discard any changes you
+                have made using Flux. This cannot be recovered."
+        confirmationButtonText="Switch to Builder"
+        text="Query Builder"
+        onConfirm={handleResetAndEditWithBuilder}
+        testID="switch-query-builder-confirm"
+      />
+    )
+  }
+
+  return button
 }
 
-const mstp = (state: AppState) => {
-  const activeQuery = getActiveQuery(state)
-
-  return {activeQuery}
-}
-
-const mdtp = {
-  onEditWithBuilder: editActiveQueryWithBuilder,
-  onResetAndEditWithBuilder: resetActiveQuerySwitchToBuilder,
-  onEditAsFlux: editActiveQueryAsFlux,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(TimeMachineQueriesSwitcher)
+export default TimeMachineQueriesSwitcher

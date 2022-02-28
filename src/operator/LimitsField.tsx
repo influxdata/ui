@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useState} from 'react'
 import {Input, InputType} from '@influxdata/clockface'
 import {get} from 'lodash'
 import {set} from 'lodash/fp'
@@ -18,13 +18,18 @@ interface Props {
 }
 
 const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
+  const [hasFocus, setHasFocus] = useState(false)
   const {hasWritePermissions} = useContext(OperatorContext)
   const value = get(limits, name, '')
+  const formatted_value =
+    type === InputType.Number
+      ? Intl.NumberFormat(navigator.language).format(value)
+      : value
 
   if (!hasWritePermissions) {
     return (
       <p data-testid={`limits-${name}--p`} className="operator-limits-label">
-        {value}
+        {formatted_value}
       </p>
     )
   }
@@ -36,12 +41,35 @@ const LimitsField: FC<Props> = ({type, name, limits, onChangeLimits}) => {
     onChangeLimits(newLimits)
   }
 
+  if (type === InputType.Number) {
+    return hasFocus ? (
+      <Input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onBlur={() => setHasFocus(false)}
+        testID={`limits-${name}--input`}
+      />
+    ) : (
+      <Input
+        type={InputType.Text}
+        name={name}
+        value={formatted_value}
+        onChange={onChange}
+        onFocus={() => setHasFocus(true)}
+        testID={`limits-${name}--input`}
+      />
+    )
+  }
+
   return (
     <Input
       type={type}
       name={name}
       value={value}
       onChange={onChange}
+      onBlur={() => setHasFocus(false)}
       testID={`limits-${name}--input`}
     />
   )

@@ -22,6 +22,6 @@ Build with Gradle
 
 ```
 dependencies {
-  compile "com.influxdb:influxdb-client-scala:3.1.0"
+  implementation "com.influxdb:influxdb-client-scala:3.1.0"
 }
 ```

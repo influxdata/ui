@@ -9,14 +9,8 @@ import InstallPackageHelper from 'src/writeData/components/ClientCodeCopyPage/In
 // Constants
 import {CLIENT_DEFINITIONS} from 'src/writeData'
 
-// Types
-import {ResourceType} from 'src/types'
-
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
-
-// Utils
-import GetResources from 'src/resources/components/GetResources'
 
 const codeRenderer: any = (props: any): any => {
   return <CodeSnippet text={props.value} label={props.language} />
@@ -35,28 +29,24 @@ const ClientCodeCopyPage: FC<Props> = ({contentID, onCopy}) => {
     sampleCode = `${def.executeFull}`
   }
   return (
-    <GetResources
-      resources={[ResourceType.Authorizations, ResourceType.Buckets]}
-    >
-      <div className="write-data--details">
-        <div
-          className="write-data--details-content markdown-format"
-          data-testid="load-data-details-content"
-        >
-          {!!def.description && (
-            <InstallPackageHelper
-              text={def.description}
-              codeRenderer={codeRenderer}
-            />
-          )}
-          <CodeSampleBlock
-            name="Initialize and Execute Flux"
-            sample={sampleCode}
-            onCopy={onCopy}
+    <div className="write-data--details">
+      <div
+        className="write-data--details-content markdown-format"
+        data-testid="load-data-details-content"
+      >
+        {!!def.description && (
+          <InstallPackageHelper
+            text={def.description}
+            codeRenderer={codeRenderer}
           />
-        </div>
+        )}
+        <CodeSampleBlock
+          name="Initialize and Execute Flux"
+          sample={sampleCode}
+          onCopy={onCopy}
+        />
       </div>
-    </GetResources>
+    </div>
   )
 }
 

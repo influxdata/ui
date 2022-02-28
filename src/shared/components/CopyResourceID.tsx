@@ -1,6 +1,5 @@
 import React, {FC} from 'react'
 import {useDispatch} from 'react-redux'
-import CopyToClipboard from 'react-copy-to-clipboard'
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'
@@ -8,6 +7,9 @@ import {
   copyToClipboardSuccess,
   copyToClipboardFailed,
 } from 'src/shared/copy/notifications'
+
+// Components
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 interface ResourceWithID {
   id?: string

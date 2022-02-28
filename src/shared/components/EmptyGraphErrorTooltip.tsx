@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useRef, useState} from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
 
 // Components
 import {
@@ -13,6 +12,7 @@ import {
   PopoverInteraction,
   Appearance,
 } from '@influxdata/clockface'
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 
 interface Props {
   message: string

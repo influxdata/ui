@@ -204,6 +204,8 @@ const FlowHeader: FC = () => {
         .querySelectorAll('[data-download-hide]')
         .forEach(d => (d.style.display = 'block'))
     },
+    // Enable map background
+    useCORS: true,
   }
 
   const handleDownloadAsPNG = () => {
@@ -376,7 +378,7 @@ const FlowHeader: FC = () => {
           <Page.ControlBarLeft>
             <Submit />
             <AutoRefreshButton />
-            <SaveState />
+            {!isFlagEnabled('flowPublishLifecycle') && <SaveState />}
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <PresentationMode />

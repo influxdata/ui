@@ -17,13 +17,14 @@ import {getAll} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {AppState, ResourceType, Bucket, Authorization} from 'src/types'
+import {AppState, ResourceType, Bucket} from 'src/types'
+
+const DEFAULT_TOKEN = '<INFLUX_TOKEN>'
+const DEFAULT_BUCKET = '<BUCKET>'
 
 interface WriteDataDetailsContextType {
   bucket: Bucket
   changeBucket: (bucket: Bucket) => void
-  token: Authorization
-  changeToken: (token: Authorization) => void
   query: string
   changeQuery: (query: string) => void
 }
@@ -31,8 +32,6 @@ interface WriteDataDetailsContextType {
 export const DEFAULT_WRITE_DATA_DETAILS_CONTEXT: WriteDataDetailsContextType = {
   bucket: null,
   changeBucket: () => {},
-  token: null,
-  changeToken: () => {},
   query: null,
   changeQuery: () => {},
 }
@@ -44,32 +43,25 @@ const WriteDataDetailsProvider: FC = ({children}) => {
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
-  const tokens = useSelector((state: AppState) =>
-    getAll<Authorization>(state, ResourceType.Authorizations)
-  )
-  const org = useSelector(getOrg)
   const bucketname = useSelector(
     (state: AppState) => state.dataLoading?.steps?.bucket
   )
+  const org = useSelector(getOrg)
   const server = window.location.origin
   const toLoadBucket = buckets?.find(b => b.name === bucketname)
   const [bucket, setBucket] = useState(
-    toLoadBucket ?? buckets[0] ?? ({name: '<BUCKET>'} as Bucket)
+    toLoadBucket ?? buckets[0] ?? ({name: DEFAULT_BUCKET} as Bucket)
   )
-  const [token, setToken] = useState(tokens[0] ?? {token: '<INFLUX_TOKEN>'})
   const [query, setQuery] = useState(null)
 
   const changeBucket = useCallback(
     (toChangeBucket: Bucket) => setBucket(toChangeBucket),
     [setBucket]
   )
+
   const changeQuery = useCallback(
     (toChangeQuery: string) => setQuery(toChangeQuery),
     [setQuery]
-  )
-  const changeToken = useCallback(
-    (toChangeToken: Authorization) => setToken(toChangeToken),
-    [setToken]
   )
 
   useEffect(() => {
@@ -106,28 +98,24 @@ const WriteDataDetailsProvider: FC = ({children}) => {
     }
     update({
       ...variables,
-      bucket: bucket.name,
+      bucket: bucket?.name,
     })
-  }, [variables, bucket?.name, bucket, update])
-
+  }, [variables, update, bucket])
   useEffect(() => {
-    if (token?.token === variables.token) {
+    if (DEFAULT_TOKEN === variables.token) {
       return
     }
-
     update({
       ...variables,
-      token: token.token,
+      token: DEFAULT_TOKEN,
     })
-  }, [variables, token?.token, token, update])
+  }, [variables, update])
 
   return (
     <WriteDataDetailsContext.Provider
       value={{
         bucket,
         changeBucket,
-        token,
-        changeToken,
         query,
         changeQuery,
       }}

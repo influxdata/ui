@@ -5,7 +5,6 @@ import {sortBy} from 'lodash'
 import {asAssignment, getAllVariables} from 'src/variables/selectors'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {filterUnusedVarsBasedOnQuery} from 'src/shared/utils/filterUnusedVars'
-import {event} from 'src/cloud/utils/reporting'
 import {getWindowVarsFromVariables} from 'src/variables/utils/getWindowVars'
 
 // Types
@@ -106,7 +105,6 @@ class QueryCache {
       this.resetCacheByID(id)
       return null
     }
-    event('Query Cache successful Get', {context: 'queryCache', queryID: id})
     return this.cache[id].values
   }
 
@@ -144,7 +142,6 @@ class QueryCache {
     hashedVariables: string,
     values: RunQueryResult
   ): void => {
-    event('Query Cache was Set', {context: 'queryCache', queryID})
     const cacheResults = {
       ...this.initializeCacheByID(queryID, hashedVariables),
       dateSet: Date.now(),
@@ -183,7 +180,6 @@ export const resetQueryCacheByQuery = (
   allVars: Variable[]
 ): void => {
   const {queryID, hashedVariables} = calculateHashedVariables(allVars, query)
-  event('Starting Query Cache Process ', {context: 'queryCache', queryID})
 
   if (queryCache.getFromCache(queryID, hashedVariables)) {
     queryCache.resetCacheByID(queryID)
@@ -220,7 +216,6 @@ export const getCachedResultsOrRunQuery = (
     allVars,
     query
   )
-  event('Starting Query Cache Process ', {context: 'queryCache', queryID})
 
   const cacheResults: RunQueryResult | null = queryCache.getFromCache(
     queryID,

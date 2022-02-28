@@ -8,7 +8,7 @@ import {Navigation} from 'src/homepageExperience/components/Navigation'
 
 export default class HomepageContainer extends PureComponent {
   state = {
-    currentStep: 1
+    currentStep: 1,
   }
 
   handleNextClick = () => {
@@ -19,13 +19,13 @@ export default class HomepageContainer extends PureComponent {
     console.log('current step', this.state.currentStep)
     switch (this.state.currentStep) {
       case 1: {
-        return (<Overview />)
+        return <Overview />
       }
       case 2: {
-        return (<InstallDependencies />)
+        return <InstallDependencies />
       }
       default: {
-        return (<Overview />)
+        return <Overview />
       }
     }
   }

@@ -273,12 +273,11 @@ const SetOrg: FC = () => {
           />
 
           {/* Getting Started */}
-          {isFlagEnabled('firstMile') ?
-            (<Route exact path="/orgs/:orgID" component={HomepageContainer} />)
-           :
-            (<Route exact path="/orgs/:orgID" component={MePage} />)
-          }
-
+          {isFlagEnabled('firstMile') ? (
+            <Route exact path="/orgs/:orgID" component={HomepageContainer} />
+          ) : (
+            <Route exact path="/orgs/:orgID" component={MePage} />
+          )}
 
           <Route component={NotFound} />
         </Switch>

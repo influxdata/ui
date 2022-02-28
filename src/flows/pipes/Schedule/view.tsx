@@ -22,6 +22,7 @@ import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import History from 'src/flows/pipes/Schedule/History'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {remove} from 'src/shared/contexts/query'
 
@@ -306,6 +307,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
           {
             title: 'Overwrite Existing Task',
             disable: () => !latestTask || !hasChanges,
+            hidden: () => !isFlagEnabled('flowPublishLifecycle'),
             action: () => {
               const _data: TaskUpdateRequest = {
                 flux: generateTask(),
@@ -338,7 +340,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     ])
   }, [id, data.task, hasChanges])
 
-  const persist = (
+  const persist = isFlagEnabled('flowPublishLifecycle') ? null : (
     <ExportTaskButton
       generate={generateTask}
       onCreate={storeTask}
@@ -350,6 +352,14 @@ const Schedule: FC<PipeProp> = ({Context}) => {
     />
   )
 
+  let subtitle
+
+  if (!isFlagEnabled('flowPublishLifecycle')) {
+    subtitle = 'Must be exported as a task'
+  } else if (hasChanges) {
+    subtitle = 'Publish to commit changes'
+  }
+
   return (
     <Context persistentControls={persist}>
       <FlexBox margin={ComponentSize.Medium}>
@@ -360,7 +370,7 @@ const Schedule: FC<PipeProp> = ({Context}) => {
           className="flow-panel-schedule--header"
         >
           <h5>Run this on a schedule</h5>
-          <p>Must be exported as a task</p>
+          <p>{ subtitle  }</p>
         </FlexBox.Child>
         <FlexBox.Child grow={1} shrink={1} style={{alignSelf: 'start'}}>
           <Form.Element

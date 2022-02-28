@@ -55,8 +55,8 @@
     "generate": "export SHA=1db94907acd4f8cb1eea002980af72edb2822990 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
-    "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn pinned && yarn mapsd-oss && yarn cloudPriv",
-    "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn annotations && yarn cloudPriv && yarn pinned && yarn mapsd",
+    "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn pinned && yarn mapsd-oss && yarn cloudPriv && yarn fluxdocs",
+    "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn annotations && yarn cloudPriv && yarn pinned && yarn mapsd && yarn fluxdocs",
     "oss": "oats ${REMOTE}contracts/oss-diff.yml > ./src/client/ossRoutes.ts",
     "cloud": "oats ${REMOTE}contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",
     "common": "oats ${REMOTE}contracts/common.yml > ./src/client/commonRoutes.ts",
@@ -70,6 +70,7 @@
     "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
+    "fluxdocs": "oats ${REMOTE}contracts/priv/fluxdocsd.yml > ./src/client/fluxdocsdRoutes.ts",
     "telegraf-plugins:update": "node src/writeData/utils/parsePluginsConfigurationText.mjs"
   },
   "author": "",

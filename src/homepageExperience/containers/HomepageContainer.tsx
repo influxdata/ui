@@ -44,20 +44,5 @@ export default class HomepageContainer extends PureComponent {
         </main>
       </div>
     )
-    // return (
-    //   <Page titleTag={pageTitleSuffixer(['Home'])}>
-    //     <Page.Header fullWidth={false}>
-    //       <Page.Title title="Hello, Time-Series World" testID="home-page--header" />
-    //     </Page.Header>
-    //     <Page.ControlBar fullWidth={true}>
-    //       <Page.ControlBarLeft>
-    //         <h3>Nav</h3>
-    //       </Page.ControlBarLeft>
-    //       <Page.ControlBarRight>
-    //         <h3>Content</h3>
-    //       </Page.ControlBarRight>
-    //     </Page.ControlBar>
-    //   </Page>
-    // )
   }
 }

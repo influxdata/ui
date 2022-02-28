@@ -20,6 +20,7 @@ import {
   functionRequiresNewLine,
   generateImport,
 } from 'src/timeMachine/utils/insertFunction'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState, FluxToolbarFunction, EditorType} from 'src/types'
@@ -142,6 +143,17 @@ const TimeMachineFluxEditor: FC<Props> = ({
     onSetActiveQueryText(editorInstance.getValue())
   }
 
+  const handleActiveQuery = text => {
+    const currentText = activeQueryText.replace(
+      `\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: "mean")`,
+      ''
+    )
+    if (currentText.trim() === text.trim()) {
+      event('Aggregate window removed')
+    }
+    onSetActiveQueryText(text)
+  }
+
   return useMemo(() => {
     return (
       <div className="flux-editor">
@@ -156,7 +168,7 @@ const TimeMachineFluxEditor: FC<Props> = ({
           >
             <FluxEditor
               script={activeQueryText}
-              onChangeScript={onSetActiveQueryText}
+              onChangeScript={handleActiveQuery}
               onSubmitScript={onSubmitQueries}
               setEditorInstance={setEditorInstance}
               autofocus

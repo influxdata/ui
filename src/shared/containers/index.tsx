@@ -95,3 +95,6 @@ export const UserAccountPage = lazy(() => import('src/accounts/AccountPage'))
 export const OrgOverlay = lazy(() => import('src/operator/OrgOverlayWrapper'))
 
 export const CheckoutPage = lazy(() => import('src/checkout/CheckoutPage'))
+export const CloudCreate = lazy(() =>
+  import('src/writeData/subscriptions/components/CloudCreate')
+)

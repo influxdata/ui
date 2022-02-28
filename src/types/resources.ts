@@ -18,6 +18,7 @@ import {
   TemplatesState,
   VariablesState,
   View,
+  Subscription,
 } from 'src/types'
 
 export enum ResourceType {
@@ -38,6 +39,7 @@ export enum ResourceType {
   Tasks = 'tasks',
   Templates = 'templates',
   Telegrafs = 'telegrafs',
+  Subscriptions = 'subscriptions',
   Variables = 'variables',
   Views = 'views',
 }
@@ -56,6 +58,10 @@ export interface OrgsState extends NormalizedState<Organization> {
 
 export interface TelegrafsState extends NormalizedState<Telegraf> {
   currentConfig: {status: RemoteDataState; item: string}
+}
+
+export interface SubscriptionState extends NormalizedState<Subscription> {
+  subscription: Subscription
 }
 
 export interface AuthState extends NormalizedState<Authorization> {
@@ -88,6 +94,7 @@ export interface ResourceState {
   [ResourceType.Secrets]: NormalizedState<Secret>
   [ResourceType.Tasks]: TasksState
   [ResourceType.Telegrafs]: TelegrafsState
+  [ResourceType.Subscriptions]: SubscriptionState
   [ResourceType.Templates]: TemplatesState
   [ResourceType.Variables]: VariablesState
   [ResourceType.Views]: NormalizedState<View>

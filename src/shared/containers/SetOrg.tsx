@@ -42,6 +42,7 @@ import {
   ClientLibrariesPage,
   TelegrafPluginsPage,
   VersionPage,
+  CloudCreate,
 } from 'src/shared/containers'
 
 // Types
@@ -64,6 +65,7 @@ import {
   CLIENT_LIBS,
   TELEGRAF_PLUGINS,
   SECRETS,
+  SUBSCRIPTIONS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -221,6 +223,13 @@ const SetOrg: FC = () => {
               component={BucketsIndex}
             />
           )}
+
+          {/* {isFlagEnabled('subscriptionsResourceType') && ( */}
+          <Route
+            path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
+            component={CloudCreate}
+          />
+          {/* )} */}
 
           {/* Settings */}
           <Route

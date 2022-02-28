@@ -52,6 +52,12 @@ class LoadDataNavigation extends PureComponent<Props> {
         featureFlag: null,
       },
       {
+        text: 'Cloud Native Connections',
+        id: 'subscriptions',
+        cloudExclude: false,
+        featureFlag: null,
+      },
+      {
         text: 'API Tokens',
         id: 'tokens',
         cloudExclude: false,

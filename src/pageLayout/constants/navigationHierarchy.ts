@@ -73,6 +73,12 @@ export const generateNavItems = (): NavItem[] => {
           enabled: () => !CLOUD,
         },
         {
+          id: 'subscriptions',
+          testID: 'nav-subitem-subscriptions',
+          label: 'Cloud Native Connections',
+          link: `${orgPrefix}/load-data/subscriptions`,
+        },
+        {
           id: 'tokens',
           testID: 'nav-subitem-tokens',
           label: 'API Tokens',

@@ -28,6 +28,10 @@ const CloudNativeSection: FC = () => {
   const items = search(searchTerm)
   const history = useHistory()
   const org = useSelector(getOrg)
+
+  if (!items.length) {
+    return null
+  }
   return (
     <div
       className="write-data--section"

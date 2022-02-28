@@ -47,7 +47,7 @@ class AddResourceDropdown extends PureComponent<Props> {
     const {titleText, status} = this.props
     return (
       <Dropdown
-        style={{width: '232px'}}
+        style={{width: this.props.resourceName === 'Task' ? '180px' : '232px'}}
         testID="add-resource-dropdown"
         button={(active, onClick) => (
           <Dropdown.Button

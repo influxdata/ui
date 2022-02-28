@@ -137,6 +137,7 @@ class TasksPage extends PureComponent<Props, State> {
         <Page titleTag={pageTitleSuffixer(['Tasks'])}>
           <TasksHeader
             onCreateTask={this.handleCreateTask}
+            onImportTask={this.onHandleOpenImportOverlay}
             setShowInactive={setShowInactive}
             showInactive={showInactive}
             searchTerm={searchTerm}
@@ -240,6 +241,17 @@ class TasksPage extends PureComponent<Props, State> {
     } else {
       history.push(`/orgs/${orgID}/tasks/new`)
     }
+  }
+
+  private onHandleOpenImportOverlay = () => {
+    const {
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+
+    history.push(`/orgs/${orgID}/tasks/import`)
   }
 
   private get filteredTasks(): Task[] {

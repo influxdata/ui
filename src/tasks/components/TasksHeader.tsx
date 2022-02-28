@@ -4,8 +4,6 @@ import {Link} from 'react-router-dom'
 
 // Components
 import {
-  Button,
-  ComponentColor,
   InputLabel,
   SlideToggle,
   ComponentSize,
@@ -16,6 +14,7 @@ import {
   Icon,
   IconFont,
 } from '@influxdata/clockface'
+import AddResourceDropdown from 'src/shared/components/AddResourceDropdown'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/ResourceSortDropdown'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
@@ -36,6 +35,7 @@ import 'src/shared/components/cta.scss'
 
 interface Props {
   onCreateTask: () => void
+  onImportTask: () => void
   setShowInactive: () => void
   showInactive: boolean
   searchTerm: string
@@ -59,12 +59,17 @@ const TasksHeader: FC<Props> = ({
   sortKey,
   sortType,
   sortDirection,
+  onImportTask,
   onSort,
 }) => {
   const {flowsCTA, setFlowsCTA} = useContext(AppSettingContext)
   const creator = () => {
     event('Task Created From Dropdown', {source: 'header'})
     onCreateTask()
+  }
+
+  const handleOpenImportOverlay = () => {
+    onImportTask()
   }
 
   const recordClick = () => {
@@ -121,13 +126,10 @@ const TasksHeader: FC<Props> = ({
               onChange={setShowInactive}
             />
           </FlexBox>
-          <Button
-            icon={IconFont.Plus_New}
-            color={ComponentColor.Primary}
-            text="Create Task"
-            titleText="Click to create a Task"
-            onClick={creator}
-            testID="create-task--button"
+          <AddResourceDropdown
+            resourceName="Task"
+            onSelectNew={creator}
+            onSelectImport={handleOpenImportOverlay}
           />
         </Page.ControlBarRight>
       </Page.ControlBar>

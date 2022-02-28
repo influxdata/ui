@@ -31,6 +31,7 @@ import {
   ScrapersIndex,
   SecretsIndex,
   TaskEditPage,
+  TaskImportOverlay,
   TaskPage,
   TaskRunsPage,
   TasksPage,
@@ -129,6 +130,10 @@ const SetOrg: FC = () => {
           <Route path={`${orgPath}/tasks/:id/runs`} component={TaskRunsPage} />
           <Route path={`${orgPath}/tasks/:id/edit`} component={TaskEditPage} />
           <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
+          <Route
+            path={`${orgPath}/tasks/import`}
+            component={TaskImportOverlay}
+          />
           <Route path={`${orgPath}/tasks`} component={TasksPage} />
           {/* Data Explorer */}
           <Route

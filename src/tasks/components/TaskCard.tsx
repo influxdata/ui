@@ -51,6 +51,7 @@ import {
   pinnedItemSuccess,
 } from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
+import {downloadTaskTemplate} from 'src/tasks/apis'
 
 interface PassedProps {
   task: Task
@@ -293,12 +294,8 @@ export class TaskCard extends PureComponent<
   }
 
   private handleExport = () => {
-    const {
-      history,
-      task,
-      location: {pathname},
-    } = this.props
-    history.push(`${pathname}/${task.id}/export`)
+    const {task} = this.props
+    downloadTaskTemplate(task)
   }
 
   private get labels(): JSX.Element {

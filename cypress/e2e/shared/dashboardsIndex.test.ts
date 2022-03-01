@@ -588,7 +588,7 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').invoke('hover')
   })
 
-  it.only('changes time range', () => {
+  it('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()
@@ -628,7 +628,6 @@ describe('Dashboards', () => {
 
     cy.clock(newDate, ['Date'])
 
-    console.log(new Date().getMilliseconds())
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('save-cell--button').click()
 

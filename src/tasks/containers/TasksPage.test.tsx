@@ -223,8 +223,8 @@ describe('Tasks.Containers.TasksPage', () => {
       )
       fireEvent.click(dropdownCreateButton)
 
-      const newInstallButton = ui.getByTestId('add-resource-dropdown--new')
-      fireEvent.click(newInstallButton)
+      const newTaskButton = ui.getByTestId('add-resource-dropdown--new')
+      fireEvent.click(newTaskButton)
 
       expect(localHistory.entries).toEqual(
         expect.arrayContaining([

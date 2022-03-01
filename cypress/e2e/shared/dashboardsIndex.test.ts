@@ -745,7 +745,5 @@ describe('Dashboards', () => {
 
     const snapshot12 = makeGraphSnapshot()
     snapshot12.shouldBeSameAs(snapshot4, false)
-
-    console.log(cy.clock())
   })
 })

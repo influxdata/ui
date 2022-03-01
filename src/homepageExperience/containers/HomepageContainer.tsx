@@ -6,7 +6,11 @@ import {InstallDependencies} from 'src/homepageExperience/components/steps/Insta
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Navigation} from 'src/homepageExperience/components/Navigation'
 
-export default class HomepageContainer extends PureComponent {
+interface State {
+  currentStep: number
+}
+
+export default class HomepageContainer extends PureComponent<null, State> {
   state = {
     currentStep: 1,
   }
@@ -16,7 +20,6 @@ export default class HomepageContainer extends PureComponent {
   }
 
   renderStep = () => {
-    console.log('current step', this.state.currentStep)
     switch (this.state.currentStep) {
       case 1: {
         return <Overview />

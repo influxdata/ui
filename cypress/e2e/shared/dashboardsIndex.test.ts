@@ -187,7 +187,7 @@ describe('Dashboards', () => {
       )
     })
 
-    it.only('can clone a dashboard', () => {
+    it('can clone a dashboard', () => {
       // Stop the clock so all graphs can be verified visually
       cy.clock(new Date().getTime(), ['Date'])
 

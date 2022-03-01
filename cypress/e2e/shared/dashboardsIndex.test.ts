@@ -588,7 +588,7 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').invoke('hover')
   })
 
-  it('changes time range', () => {
+  it.only('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()
@@ -625,14 +625,10 @@ describe('Dashboards', () => {
     cy.getByTestID('page-header').should('be.visible')
     cy.getByTestID('selector-list curve').click()
     cy.getByTestID('selector-list p').click()
-
-    cy.clock(newDate, ['Date'])
-
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('save-cell--button').click()
 
-    // freeze the clock to a date so we can come back and check screenshots
-    // relative to the same timestamp.
+    cy.clock(newDate.getTime())
 
     cy.wait('@loadQuery')
     cy.getByTestID('giraffe-axes').should('be.visible')

@@ -52,6 +52,7 @@ describe('Account Page tests', () => {
 
       // active name is our input and "Switch" starts as disabled
       cy.getByTestID('user-account-switch-btn').click()
+      cy.getByTestID('switch-account--dialog').should('be.visible')
       cy.getByTestID('actually-switch-account--btn').should('be.disabled')
 
       // Only one "(default)", which cannot be set again, and not our renamed account
@@ -95,6 +96,7 @@ describe('Account Page tests', () => {
 
       // open the "Switch Account" modal again, our renamed account should be default
       cy.getByTestID('user-account-switch-btn').click()
+      cy.getByTestID('switch-account--dialog').should('be.visible')
       cy.get('.cf-toggle--visual-input').contains(`${name} ${defaultMarker}`)
 
       // close the modal
@@ -159,7 +161,6 @@ describe('Account Page tests', () => {
 
       // active name should be our new name
       cy.getByTestID('user-account-switch-btn').click()
-
       cy.getByTestID('switch-account--dialog').should('be.visible')
       cy.getByTestID(`${prefix}-0-ID`).should('be.visible')
       cy.getByTestID(`${prefix}-0-ID`).contains(newName)

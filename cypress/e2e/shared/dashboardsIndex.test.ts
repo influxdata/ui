@@ -627,6 +627,10 @@ describe('Dashboards', () => {
     cy.getByTestID('selector-list p').click()
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('save-cell--button').click()
+
+    // freeze the clock to a date so we can come back and check screenshots
+    // relative to the same timestamp.
+    cy.clock(newDate)
     cy.wait('@loadQuery')
     cy.getByTestID('giraffe-axes').should('be.visible')
 
@@ -741,5 +745,7 @@ describe('Dashboards', () => {
 
     const snapshot12 = makeGraphSnapshot()
     snapshot12.shouldBeSameAs(snapshot4, false)
+
+    console.log(cy.clock())
   })
 })

@@ -1,7 +1,6 @@
 import {Organization} from '../../../src/types'
 import {makeGraphSnapshot} from '../../support/commands'
 import {genCurve} from '../../support/Utils'
-import clock = jasmine.clock
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'

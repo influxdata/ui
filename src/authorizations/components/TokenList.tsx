@@ -36,7 +36,7 @@ interface State {
   authInView: Authorization
 }
 
-export default class TokenList extends PureComponent<Props, State> {
+class TokenList extends PureComponent<Props, State> {
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
     getSortedResources
   )
@@ -174,3 +174,5 @@ export default class TokenList extends PureComponent<Props, State> {
     this.setState({isTokenOverlayVisible: true, authInView})
   }
 }
+
+export default TokenList

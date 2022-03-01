@@ -639,6 +639,7 @@ describe('Dashboards', () => {
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('save-cell--button').click()
 
+    // Stop the clock so graphs can be verified visually
     cy.clock(newDate.getTime())
 
     cy.wait('@loadQuery')

@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, lazy, Suspense, useState, useMemo} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {
   RemoteDataState,
   SpinnerContainer,
@@ -20,24 +20,31 @@ import {
   functionRequiresNewLine,
   generateImport,
 } from 'src/timeMachine/utils/insertFunction'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
-import {AppState, FluxToolbarFunction, EditorType} from 'src/types'
+import {FluxToolbarFunction, EditorType} from 'src/types'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps
-
-const TimeMachineFluxEditor: FC<Props> = ({
-  activeQueryText,
-  onSubmitQueries,
-  onSetActiveQueryText,
-  activeTab,
-  activeQueryIndex,
-}) => {
+const TimeMachineFluxEditor: FC = () => {
+  const dispatch = useDispatch()
+  const activeQueryText = useSelector(getActiveQuery).text
+  const {activeTab, activeQueryIndex} = useSelector(getActiveTimeMachine)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
+
+  const handleSetActiveQueryText = React.useCallback(
+    (text: string) => {
+      dispatch(setActiveQueryText(text))
+    },
+    [dispatch]
+  )
+
+  const handleSubmitQueries = () => {
+    dispatch(saveAndExecuteQueries())
+  }
+
   const handleInsertVariable = (variableName: string): void => {
     if (!editorInstance) {
       return null
@@ -54,7 +61,7 @@ const TimeMachineFluxEditor: FC<Props> = ({
         text: `v.${variableName}`,
       },
     ])
-    onSetActiveQueryText(editorInstance.getValue())
+    handleSetActiveQueryText(editorInstance.getValue())
   }
 
   const getInsertLineNumber = (currentLineNumber: number): number => {
@@ -139,8 +146,28 @@ const TimeMachineFluxEditor: FC<Props> = ({
       })
     }
     editorInstance.executeEdits('', edits)
-    onSetActiveQueryText(editorInstance.getValue())
+    handleSetActiveQueryText(editorInstance.getValue())
   }
+
+  const handleActiveQuery = React.useCallback(
+    (text: string) => {
+      const aggregateWindowText =
+        '|> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)'
+      const [currentText] = activeQueryText.split(
+        `\n  ${aggregateWindowText}\n`
+      )
+
+      if (
+        activeQueryText.includes(aggregateWindowText) &&
+        !text.trim().includes(aggregateWindowText) &&
+        text.trim().includes(currentText.trim())
+      ) {
+        event('Aggregate window removed')
+      }
+      handleSetActiveQueryText(text)
+    },
+    [activeQueryText, handleSetActiveQueryText]
+  )
 
   return useMemo(() => {
     return (
@@ -156,8 +183,8 @@ const TimeMachineFluxEditor: FC<Props> = ({
           >
             <FluxEditor
               script={activeQueryText}
-              onChangeScript={onSetActiveQueryText}
-              onSubmitScript={onSubmitQueries}
+              onChangeScript={handleActiveQuery}
+              onSubmitScript={handleSubmitQueries}
               setEditorInstance={setEditorInstance}
               autofocus
             />
@@ -172,23 +199,9 @@ const TimeMachineFluxEditor: FC<Props> = ({
         </div>
       </div>
     )
-  }, [editorInstance, activeQueryIndex])
+  }, [activeQueryText, editorInstance, activeQueryIndex])
 }
 
 export {TimeMachineFluxEditor}
 
-const mstp = (state: AppState) => {
-  const activeQueryText = getActiveQuery(state).text
-  const {activeTab, activeQueryIndex} = getActiveTimeMachine(state)
-
-  return {activeQueryText, activeTab, activeQueryIndex}
-}
-
-const mdtp = {
-  onSetActiveQueryText: setActiveQueryText,
-  onSubmitQueries: saveAndExecuteQueries,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(TimeMachineFluxEditor)
+export default TimeMachineFluxEditor

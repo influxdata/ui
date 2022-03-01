@@ -218,7 +218,13 @@ describe('Tasks.Containers.TasksPage', () => {
 
   describe('create tasks', () => {
     it('triggers create a new task', () => {
-      fireEvent.click(screen.getByTestId('create-task--button'))
+      const dropdownCreateButton = ui.getByTestId(
+        'add-resource-dropdown--button'
+      )
+      fireEvent.click(dropdownCreateButton)
+
+      const newInstallButton = ui.getByTestId('add-resource-dropdown--new')
+      fireEvent.click(newInstallButton)
 
       expect(localHistory.entries).toEqual(
         expect.arrayContaining([

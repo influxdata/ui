@@ -743,7 +743,6 @@ describe('Dashboards', () => {
       .clear()
       .type(now)
 
-
     cy.getByTestID('daterange--apply-btn').click()
     cy.wait('@loadQuery')
 

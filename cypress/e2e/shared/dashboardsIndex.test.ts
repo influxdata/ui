@@ -1,6 +1,7 @@
 import {Organization} from '../../../src/types'
 import {makeGraphSnapshot} from '../../support/commands'
 import {genCurve} from '../../support/Utils'
+import clock = jasmine.clock
 
 const newLabelName = 'click-me'
 const dashboardName = 'Bee Happy'
@@ -186,7 +187,10 @@ describe('Dashboards', () => {
       )
     })
 
-    it('can clone a dashboard', () => {
+    it.only('can clone a dashboard', () => {
+      // Stop the clock so all graphs can be verified visually
+      cy.clock(new Date().getTime(), ['Date'])
+
       cy.getByTestID('dashboard-card').should('have.length', 1)
 
       // get graph in original view
@@ -244,12 +248,20 @@ describe('Dashboards', () => {
       const replaceText =
         '### William Blake\n#### Augeries of Innocense\n\n To see a World in a Grain of Sand\n\nAnd a Heaven in a Wild Flower\n\n...`'
       cy.getByTestID('cell-context--note').click()
+      // for the overlay controller, manually advance the clock
+      cy.tick(1000)
       cy.getByTestID('markdown-editor')
         .click()
         .type('{ctrl}a')
         .type(replaceText)
 
+      // for the overlay controller, manually advance the clock
+      cy.tick(1000)
+
       cy.getByTestID('save-note--button').click()
+
+      // for the overlay controller, manually advance the clock
+      cy.tick(1000)
 
       cy.getByTestID('nav-item-dashboards').click()
 
@@ -588,7 +600,7 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').invoke('hover')
   })
 
-  it.only('changes time range', () => {
+  it('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()

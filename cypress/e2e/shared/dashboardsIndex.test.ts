@@ -588,7 +588,7 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').invoke('hover')
   })
 
-  it('changes time range', () => {
+  it.only('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()
@@ -626,7 +626,9 @@ describe('Dashboards', () => {
     cy.getByTestID('selector-list curve').click()
     cy.getByTestID('selector-list p').click()
 
-    cy.clock(newDate)
+    cy.clock(newDate, ['Date'])
+
+    console.log(new Date().getMilliseconds())
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('save-cell--button').click()
 
@@ -641,7 +643,6 @@ describe('Dashboards', () => {
     // fixed time range values
     // past 1m
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past1m').click()
     cy.wait('@loadQuery')
 
@@ -650,7 +651,6 @@ describe('Dashboards', () => {
 
     // past 5m
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past5m').click()
     cy.wait('@loadQuery')
 
@@ -659,7 +659,6 @@ describe('Dashboards', () => {
 
     // past 1h is set as default value
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past1h').click()
     cy.wait('@loadQuery')
 
@@ -668,7 +667,6 @@ describe('Dashboards', () => {
 
     // past 3h
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past3h').click()
     cy.wait('@loadQuery')
 
@@ -677,7 +675,6 @@ describe('Dashboards', () => {
 
     // past 6h
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past6h').click()
     cy.wait('@loadQuery')
 
@@ -686,7 +683,6 @@ describe('Dashboards', () => {
 
     // past 12h
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past12h').click()
     cy.wait('@loadQuery')
 
@@ -695,7 +691,6 @@ describe('Dashboards', () => {
 
     // past 24h
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past24h').click()
     cy.wait('@loadQuery')
 
@@ -704,7 +699,6 @@ describe('Dashboards', () => {
 
     // past 2d
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past2d').click()
     cy.wait('@loadQuery')
 
@@ -713,7 +707,6 @@ describe('Dashboards', () => {
 
     // past 7d
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past7d').click()
     cy.wait('@loadQuery')
 
@@ -722,7 +715,6 @@ describe('Dashboards', () => {
 
     // past 30d
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past30d').click()
     cy.wait('@loadQuery')
 
@@ -731,7 +723,6 @@ describe('Dashboards', () => {
 
     // past 15m
     cy.getByTestID('timerange-dropdown').click()
-    cy.clock(newDate)
     cy.getByTestID('dropdown-item-past15m').click()
     cy.wait('@loadQuery')
 
@@ -753,7 +744,6 @@ describe('Dashboards', () => {
       .clear()
       .type(now)
 
-    cy.clock(newDate)
 
     cy.getByTestID('daterange--apply-btn').click()
     cy.wait('@loadQuery')

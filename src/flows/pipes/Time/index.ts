@@ -3,7 +3,7 @@ import View from './view'
 export default register => {
   register({
     type: 'time',
-    family: 'inputs',
+    family: 'context',
     featureFlag: 'flow-panel--time',
     button: 'Time Range',
     component: View,

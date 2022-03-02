@@ -26,6 +26,10 @@ interface Props {
 
 const SUPPORTED_FAMILIES = [
   {
+    name: 'Query Context',
+    family: 'context',
+  },
+  {
     name: 'Data Source',
     family: 'inputs',
   },

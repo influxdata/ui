@@ -36,7 +36,7 @@ interface Props {
   text: string
   type: string
   generate?: () => string
-  validate?: (query: string) => Promise<boolean>
+  validate?: (query: string) => boolean
   onCreate?: (task: any) => void
   disabled?: boolean
   loading?: boolean
@@ -60,7 +60,7 @@ const ExportTaskButton: FC<Props> = ({
 
   const onClick = async () => {
     const query = generate ? generate() : data.query
-    const valid = validate ? await validate(query) : true
+    const valid = validate ? validate(query) : true
 
     if (!valid) {
       return

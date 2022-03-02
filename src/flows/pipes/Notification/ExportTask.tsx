@@ -27,10 +27,19 @@ import {
   exportAlertToTaskFailure,
 } from 'src/shared/copy/notifications'
 
+function heuristicValidityCheck(query: string): boolean {
+  // no undefined fields. e.g. `trigger = (r) => r["undefined"] > 0`
+  // no empty strings. e.g. in `src/flows/pipes/Notification/endpoints`, we typically set the defaults as ''
+  if (/('')|("undefined")|((\\"undefined\\"))/g.test(query)) {
+    throw new Error(`Flux contains invalid values. Form fields may be empty.`)
+  }
+  return true
+}
+
 const ExportTask: FC = () => {
   const dispatch = useDispatch()
   const {id, data} = useContext(PipeContext)
-  const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
+  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
   const [status, setStatus] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -297,10 +306,13 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
     }
   }, [generateDeadmanTask, generateThresholdTask, data.thresholds])
 
-  const validateTask = async (queryText: string): Promise<boolean> => {
+  const validateTask = (queryText: string): boolean => {
     try {
       setStatus(RemoteDataState.Loading)
-      await query(queryText)
+      // TODO: use full sematic validation, once this is done:
+      // https://github.com/influxdata/ui/issues/3926
+      // temporary check:
+      heuristicValidityCheck(queryText)
 
       setStatus(RemoteDataState.Done)
       dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))

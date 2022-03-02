@@ -94,7 +94,6 @@ export interface ResourceState {
   [ResourceType.Secrets]: NormalizedState<Secret>
   [ResourceType.Tasks]: TasksState
   [ResourceType.Telegrafs]: TelegrafsState
-  [ResourceType.Subscriptions]: SubscriptionState
   [ResourceType.Templates]: TemplatesState
   [ResourceType.Variables]: VariablesState
   [ResourceType.Views]: NormalizedState<View>

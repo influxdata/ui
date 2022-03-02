@@ -1,0 +1,116 @@
+.create-subscription-form {
+  display: flex;
+  background: linear-gradient(
+    45deg,
+    rgba(33, 173, 246, 0.13) 0%,
+    rgba(147, 148, 255, 0.13) 100%
+  );
+  height: 100%;
+  width: 100%;
+  padding: 30px;
+
+  .cf-form--wrapper {
+    float: right;
+    width: 75%;
+  }
+
+  .cf-form--element {
+    margin-bottom: 32px;
+  }
+
+  .form-header {
+    font-size: 16.8px;
+    margin-top: 64px;
+    margin-bottom: 32px;
+    font-weight: 500;
+    line-height: 120%;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f1f1f3;
+  }
+
+  .form-text {
+    font-size: 16.8px;
+    line-height: 160%;
+    color: #f1f1f3;
+  }
+  .subscription-inline-form {
+    width: 100%;
+    .example-text {
+      font-style: italic;
+      font-size: 14px;
+      line-height: 120%;
+      color: #828294;
+    }
+
+    .grid-div {
+      display: flex;
+
+      .protocol {
+        width: 100%;
+      }
+    }
+
+    .cf-grid--column {
+      label {
+        margin-left: 20px;
+      }
+    }
+  }
+  .cf-select-group.cf-select-group__stretch {
+    margin-bottom: 32px;
+  }
+
+  .creds-div {
+    display: flex;
+
+    .cf-form--element {
+      &:nth-last-of-type(1) {
+        margin-left: 20px;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .logo-text--lg {
+    font-size: 24px;
+    line-height: 28px;
+    color: #ffffff;
+  }
+
+  .progress {
+    margin-right: 88px;
+  }
+
+  .logo {
+    display: flex;
+    padding-top: 35px;
+    img {
+      margin-right: 20px;
+    }
+  }
+  .logo-text--sm {
+    font-size: 12px;
+    line-height: 14px;
+    color: #ffffff;
+  }
+
+  .bar {
+    margin-top: 67px;
+    .wrap {
+      margin-top: 40px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .title {
+      font-size: 14px;
+      line-height: 17px;
+      margin-left: 21px;
+      color: #d5d5dd;
+      &:hover {
+        color: #0098f0;
+      }
+    }
+  }
+}

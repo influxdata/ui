@@ -530,9 +530,9 @@ describe('DataExplorer', () => {
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor').should('be.visible')
-          .monacoType(`from(bucket: "defbuck"{rightarrow}
-  |> range(start: -10s{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement == "no exist"{rightarrow}`)
+          .monacoType(`from(bucket: "defbuck")
+  |> range(start: -10s)
+  |> filter(fn: (r) => r._measurement == "no exist")`)
         cy.getByTestID('time-machine-submit-button').click()
       })
 

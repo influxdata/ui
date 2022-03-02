@@ -16,6 +16,9 @@ export const TaskRunsPage = lazy(() =>
 export const TaskEditPage = lazy(() =>
   import('src/tasks/containers/TaskEditPage')
 )
+export const TaskImportOverlay = lazy(() =>
+  import('src/tasks/components/TaskImportOverlay')
+)
 export const DashboardsIndex = lazy(() =>
   import('src/dashboards/components/dashboard_index/DashboardsIndex')
 )

@@ -41,7 +41,10 @@ describe('DataExplorer', () => {
     it('should persist and display last submitted script editor script ', () => {
       const fluxCode = 'from(bucket: "_monitoring")'
       cy.getByTestID('switch-to-script-editor').click()
-      cy.getByTestID('flux-editor').monacoType(fluxCode)
+      cy.get('.monaco-editor .view-line:last').should('be.visible')
+      cy.get('.monaco-editor .view-line:last')
+        .click()
+        .type(fluxCode)
       cy.contains('Submit').click()
       cy.getByTestID('nav-item-tasks').click()
       cy.getByTestID('nav-item-data-explorer').click()

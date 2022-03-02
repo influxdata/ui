@@ -32,7 +32,7 @@ describe('DataExplorer', () => {
       cy.createMapVariable(id)
       cy.fixture('routes').then(({orgs, explorer}) => {
         cy.visit(`${orgs}/${id}${explorer}`)
-        cy.getByTestID('tree-nav')
+        cy.getByTestID('tree-nav').should('be.visible')
       })
     })
   })
@@ -54,17 +54,16 @@ describe('DataExplorer', () => {
     it('can navigate to data explorer from buckets list and override state', () => {
       const fluxCode = 'from(bucket: "_monitoring")'
       cy.getByTestID('switch-to-script-editor').click()
-      cy.getByTestID('flux-editor').monacoType(fluxCode)
+      cy.get('.monaco-editor .view-line:last').should('be.visible')
+      cy.get('.monaco-editor .view-line:last')
+        .click()
+        .type(fluxCode)
       cy.contains('Submit').click()
       cy.get('.cf-tree-nav--toggle').click()
       cy.getByTestID('nav-item-load-data').click()
-      // Can't use the testID to select this nav item because Clockface is silly and uses the same testID twice
-      // Issue: https://github.com/influxdata/clockface/issues/539
-      cy.get('.cf-tree-nav--sub-item-label')
-        .contains('Buckets')
-        .click()
+      cy.getByTestID('nav-subitem-buckets').click()
       cy.getByTestID('bucket--card--name _tasks').click()
-      cy.getByTestID('query-builder').should('exist')
+      cy.getByTestID('query-builder').should('be.visible')
     })
   })
 

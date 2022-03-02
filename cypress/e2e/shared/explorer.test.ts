@@ -543,15 +543,15 @@ describe('DataExplorer', () => {
       const taskName = 'tax'
       // begin flux
       cy.getByTestID('flux-editor').should('be.visible')
-        .monacoType(`from(bucket: "defbuck"{rightarrow}
-  |> range(start: -15m, stop: now({rightarrow}{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement ==`)
+        .monacoType(`from(bucket: "defbuck")
+  |> range(start: -15m, stop: now())
+  |> filter(fn: (r) => r._measurement == `)
 
       cy.getByTestID('toolbar-tab').click()
       // checks to see if the default variables exist
-      cy.getByTestID('variable--timeRangeStart')
-      cy.getByTestID('variable--timeRangeStop')
-      cy.getByTestID('variable--windowPeriod')
+      cy.getByTestID('variable--timeRangeStart').should('exist')
+      cy.getByTestID('variable--timeRangeStop').should('exist')
+      cy.getByTestID('variable--windowPeriod').should('exist')
       // insert variable name by clicking on variable
       cy.get('.flux-toolbar--variable')
         .first()

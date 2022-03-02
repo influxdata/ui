@@ -3,7 +3,7 @@ import React, {FC, useContext} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
 import {ORGS, SUBSCRIPTIONS} from 'src/shared/constants/routes'
-import {search} from 'src/writeData/subscriptions/components/contentCloudNative'
+import {search} from 'src/writeData/subscriptions/components/CloudSubscriptionContent'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -17,7 +17,6 @@ import {
   SquareGrid,
   ComponentSize,
 } from '@influxdata/clockface'
-
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
 
 // Contexts
@@ -51,7 +50,6 @@ const CloudNativeSection: FC = () => {
       >
         Collect data directly from external cloud services and applications
       </Heading>
-
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
         {items.map(item => {
           const goto = () => {
@@ -60,7 +58,6 @@ const CloudNativeSection: FC = () => {
               `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/${item.id}`
             )
           }
-
           return (
             <WriteDataItem
               key={item.id}

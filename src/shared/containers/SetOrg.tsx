@@ -42,7 +42,8 @@ import {
   ClientLibrariesPage,
   TelegrafPluginsPage,
   VersionPage,
-  CloudCreate,
+  SubscriptionsLanding,
+  CreateSubscriptionForm,
 } from 'src/shared/containers'
 
 // Types
@@ -226,8 +227,15 @@ const SetOrg: FC = () => {
 
           {/* {isFlagEnabled('subscriptionsResourceType') && ( */}
           <Route
+            path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/create`}
+            component={CreateSubscriptionForm}
+          />
+          {/* )} */}
+
+          {/* {isFlagEnabled('subscriptionsResourceType') && ( */}
+          <Route
             path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
-            component={CloudCreate}
+            component={SubscriptionsLanding}
           />
           {/* )} */}
 

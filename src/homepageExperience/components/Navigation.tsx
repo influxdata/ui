@@ -1,16 +1,58 @@
 import React, {PureComponent} from 'react'
-import classnames from 'classnames'
-
-import {InfluxColors} from '@influxdata/clockface'
-
-import {OverviewIcon} from 'src/homepageExperience/components/HomepageIcons'
+import {
+  AlertIcon,
+  ExecuteQueryIcon,
+  FinishIcon,
+  InitializeClientIcon,
+  InstallDependenciesIcon,
+  OverviewIcon,
+  TokenIcon,
+  WriteDataIcon,
+} from 'src/homepageExperience/components/HomepageIcons'
+import Step from './steps/Step'
 
 interface OwnProps {
   currentStep: number
 }
 
-const defaultFillColor = InfluxColors.Grey95
-const activeFillColor = '#0098f0'
+const steps = [
+  {
+    name: 'Overview',
+    icon: OverviewIcon,
+  },
+  {
+    name: 'Install \n Dependencies',
+    icon: InstallDependenciesIcon,
+  },
+  {
+    name: 'Create a \n Token',
+    icon: TokenIcon,
+  },
+  {
+    name: 'Initialize \n Client',
+    icon: InitializeClientIcon,
+  },
+  {
+    name: 'Write \n Data',
+    icon: WriteDataIcon,
+  },
+  {
+    name: 'Execute a \n Simple Query',
+    icon: ExecuteQueryIcon,
+  },
+  {
+    name: 'Execute an \n Aggregate Query',
+    icon: ExecuteQueryIcon,
+  },
+  {
+    name: '(Optional) \n Set up Alerts',
+    icon: AlertIcon,
+  },
+  {
+    name: 'Finish',
+    icon: FinishIcon,
+  },
+]
 
 export class Navigation extends PureComponent<OwnProps> {
   render() {
@@ -19,30 +61,15 @@ export class Navigation extends PureComponent<OwnProps> {
         <div className="subway-navigation-flex-wrapper">
           <h2>Setting Up</h2>
           <h3>5 minutes</h3>
-          <div
-            className={classnames('subway-navigation-step', {
-              active: this.props.currentStep === 1,
-            })}
-          >
-            <span className="subway-navigation-step-icon-container">
-              <OverviewIcon
-                fill={
-                  this.props.currentStep === 1
-                    ? activeFillColor
-                    : defaultFillColor
-                }
-              />
-            </span>
-            Overview
-          </div>
-          <div
-            className={classnames('subway-navigation-step', {
-              active: this.props.currentStep === 2,
-            })}
-          >
-            <span>icon</span>
-            <p>Install Dependencies</p>
-          </div>
+          {steps.map((value, index) => (
+            <Step
+              stepIsActive={index === this.props.currentStep - 1}
+              stepIsComplete={index < this.props.currentStep - 1}
+              icon={value.icon}
+              text={value.name}
+              key={index}
+            />
+          ))}
         </div>
       </div>
     )

@@ -212,17 +212,18 @@ describe('DataExplorer', () => {
           cy.getByTestID(defaultBucketListSelector).click()
 
           cy.getByTestID('selector-list m').should('be.visible')
-          cy.getByTestID('selector-list m').clickAttached()
+          cy.getByTestID('selector-list m').click()
 
           cy.getByTestID('selector-list v').should('be.visible')
-          cy.getByTestID('selector-list v').clickAttached()
+          cy.getByTestID('selector-list v').click()
 
-          cy.getByTestID('selector-list tv1').clickAttached()
+          cy.getByTestID('selector-list tv1').should('be.visible')
+          cy.getByTestID('selector-list tv1').click()
 
           cy.getByTestID('selector-list mean')
             .scrollIntoView()
             .should('be.visible')
-            .click({force: true})
+            .click()
 
           cy.getByTestID('time-machine-submit-button').click()
           cy.get('canvas.giraffe-gauge').should('be.visible')
@@ -277,17 +278,18 @@ describe('DataExplorer', () => {
           cy.getByTestID(defaultBucketListSelector).click()
 
           cy.getByTestID('selector-list m').should('be.visible')
-          cy.getByTestID('selector-list m').clickAttached()
+          cy.getByTestID('selector-list m').click()
 
           cy.getByTestID('selector-list v').should('be.visible')
-          cy.getByTestID('selector-list v').clickAttached()
+          cy.getByTestID('selector-list v').click()
 
-          cy.getByTestID('selector-list tv1').clickAttached()
+          cy.getByTestID('selector-list tv1').should('be.visible')
+          cy.getByTestID('selector-list tv1').click()
 
           cy.getByTestID('selector-list mean')
             .scrollIntoView()
             .should('be.visible')
-            .click({force: true})
+            .click()
 
           cy.getByTestID('time-machine-submit-button').click()
           cy.get('.giraffe-gauge').should('be.visible')

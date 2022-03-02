@@ -45,6 +45,12 @@ export default register => {
         mapFn: (r) => ({
           message: "\${ r._message }",
           severity: "${data.severity}",
+          summary: "${data.severity} event for \${ r.host }",
+          device: "\${ r.deviceID }",
+          component: "\${ r.host }",
+          eventClass: "/App",
+          eventClassKey: "",
+          collector: "",
     }))
   )`,
     generateTestQuery: data => `

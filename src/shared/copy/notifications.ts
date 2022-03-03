@@ -1470,7 +1470,14 @@ export const testNotificationFailure = (
   source: 'slack' | 'pagerduty' | 'https'
 ): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to send the test alert to ${source}. Please try again`,
+  message: `Failed to send the test alert to ${source}. Please try again.`,
+})
+
+export const invalidFluxQuery = (
+  reason: string = 'error not recognized.'
+): Notification => ({
+  ...defaultErrorNotification,
+  message: `Flux query was invalid: ${JSON.stringify(reason)}`,
 })
 
 export const exportAlertToTaskSuccess = (

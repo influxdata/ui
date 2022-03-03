@@ -17,7 +17,6 @@ import {
 
 // Components
 import Handle from 'src/flows/components/panel/Handle'
-import InsertCellButton from 'src/flows/components/panel/InsertCellButton'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import {MenuButton} from 'src/flows/components/Sidebar'
 
@@ -155,61 +154,58 @@ const FlowPanel: FC<Props> = ({
   }
 
   return (
-    <>
-      <div className={panelClassName} id={id}>
-        <div className="flow-panel--header">
-          <div className="flow-panel--node-wrapper">
-            <div className="flow-panel--node" />
-          </div>
-          {title}
-          {!flow.readOnly && (
-            <>
-              <div className="flow-panel--hover-control">{controls}</div>
-              <div className="flow-panel--persistent-control">
-                {persistentControls}
-                <FeatureFlag name="flow-debug-queries">
-                  <SquareButton
-                    icon={IconFont.BookCode}
-                    onClick={() => printMap(id)}
-                    color={ComponentColor.Default}
-                    titleText="Debug Notebook Queries"
-                    className="flows-config-panel-button"
-                  />
-                </FeatureFlag>
-                {isVisible && showPreviewButton && (
-                  <Button
-                    onClick={() => queryDependents(id)}
-                    icon={IconFont.Play}
-                    text="Run"
-                  />
-                )}
-                <MenuButton id={id} />
-              </div>
-            </>
-          )}
+    <div className={panelClassName} id={id}>
+      <div className="flow-panel--header">
+        <div className="flow-panel--node-wrapper">
+          <div className="flow-panel--node" />
         </div>
-        {isVisible && (
-          <div
-            className="flow-panel--body"
-            ref={bodyRef}
-            style={resizes ? {height: `${size}px`} : {}}
-          >
-            {children}
-          </div>
+        {title}
+        {!flow.readOnly && (
+          <>
+            <div className="flow-panel--hover-control">{controls}</div>
+            <div className="flow-panel--persistent-control">
+              {persistentControls}
+              <FeatureFlag name="flow-debug-queries">
+                <SquareButton
+                  icon={IconFont.BookCode}
+                  onClick={() => printMap(id)}
+                  color={ComponentColor.Default}
+                  titleText="Debug Notebook Queries"
+                  className="flows-config-panel-button"
+                />
+              </FeatureFlag>
+              {isVisible && showPreviewButton && (
+                <Button
+                  onClick={() => queryDependents(id)}
+                  icon={IconFont.Play}
+                  text="Run"
+                />
+              )}
+              <MenuButton id={id} />
+            </div>
+          </>
         )}
-        <div className="flow-panel--footer">
-          <div></div>
-          {isVisible && resizes && (
-            <Handle
-              dragRef={handleRef}
-              onStartDrag={handleMouseDown}
-              dragging={isDragging === 2}
-            />
-          )}
-        </div>
       </div>
-      {!flow.readOnly && <InsertCellButton id={id} />}
-    </>
+      {isVisible && (
+        <div
+          className="flow-panel--body"
+          ref={bodyRef}
+          style={resizes ? {height: `${size}px`} : {}}
+        >
+          {children}
+        </div>
+      )}
+      <div className="flow-panel--footer">
+        <div></div>
+        {isVisible && resizes && (
+          <Handle
+            dragRef={handleRef}
+            onStartDrag={handleMouseDown}
+            dragging={isDragging === 2}
+          />
+        )}
+      </div>
+    </div>
   )
 }
 

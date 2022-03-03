@@ -1,6 +1,8 @@
 @import '@influxdata/clockface/dist/variables.scss';
 @import '~src/flows/FlowVariables.scss';
 
+$cf-radius-lg: $cf-radius + 4px;
+
 .flow-divider {
   position: relative;
   width: 100%;
@@ -110,6 +112,12 @@
   flex-direction: column;
   align-items: center;
   font-size: 14px;
+
+  &.always-on {
+    margin: 32px auto 60px;
+    border-radius: $cf-radius-lg;
+    background-color: $flow-panel--bg;
+  }
 }
 
 .insert-cell-menu--title {

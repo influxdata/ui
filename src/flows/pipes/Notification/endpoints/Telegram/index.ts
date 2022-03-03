@@ -36,23 +36,27 @@ export default register => {
     endpoint: telegram["endpoint"](
       url: "${data.url}",
       token: secrets.get(key: "${data.token}"),
-      parseMode: "${data.parseMode}"
+      parseMode: "${data.parseMode}",
+      disableWebPagePreview: false
       )(
         mapFn: (r) => ({
           channel: "${data.channel}",
-          text: "\${ r._message }"
+          text: "\${ r._message }",
+          silent: true
     }))
   )`,
     generateTestQuery: data => `
-    telegram.endpoint(
-      url: "${data.url}",
-      token: secrets.get(key: "${data.token}"),
-      parseMode: "${data.parseMode}",
-      channel: "${data.channel}",
-      text: "${TEST_NOTIFICATION}"
-    )
+      telegram.message(
+        url: "${data.url}",
+        token: secrets.get(key: "${data.token}"),
+        parseMode: "${data.parseMode}",
+        channel: "${data.channel}",
+        text: "${TEST_NOTIFICATION}",
+        disableWebPagePreview: false,
+        silent: true
+      )
 
-    array.from(rows: [{value: 0}])
-        |> yield(name: "ignore")`,
+      array.from(rows: [{value: 0}])
+          |> yield(name: "ignore")`,
   })
 }

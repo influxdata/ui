@@ -7,41 +7,43 @@ import {Route, Switch, useHistory, useParams} from 'react-router-dom'
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {
-  UserAccountPage,
-  MePage,
-  TasksPage,
-  TaskPage,
-  TaskRunsPage,
-  TaskEditPage,
+  AlertHistoryIndex,
+  AlertingIndex,
+  BillingPage,
+  BucketsIndex,
+  BucketsIndexPaginated,
+  CheckHistory,
+  ClientLibrariesPage,
+  DashboardContainer,
   DashboardsIndex,
   DashboardsIndexPaginated,
   DataExplorerPage,
-  DashboardContainer,
-  FlowPage,
-  BucketsIndex,
-  BucketsIndexPaginated,
-  TokensIndex,
-  TelegrafsPage,
-  ScrapersIndex,
-  WriteDataPage,
-  VariablesIndex,
-  LabelsIndex,
-  SecretsIndex,
-  OrgProfilePage,
-  AlertingIndex,
-  AlertHistoryIndex,
-  CheckHistory,
-  MembersIndex,
-  RouteToDashboardList,
-  FlowsIndex,
-  NotFound,
-  UsersPage,
-  UsagePage,
-  BillingPage,
   FileUploadsPage,
-  ClientLibrariesPage,
+  FlowPage,
+  FlowsIndex,
+  HomepageContainer,
+  LabelsIndex,
+  MembersIndex,
+  MePage,
+  NotFound,
+  OrgProfilePage,
+  RouteToDashboardList,
+  ScrapersIndex,
+  SecretsIndex,
+  TaskEditPage,
+  TaskImportOverlay,
+  TaskPage,
+  TaskRunsPage,
+  TasksPage,
   TelegrafPluginsPage,
+  TelegrafsPage,
+  TokensIndex,
+  UsagePage,
+  UserAccountPage,
+  UsersPage,
+  VariablesIndex,
   VersionPage,
+  WriteDataPage,
 } from 'src/shared/containers'
 
 // Types
@@ -128,6 +130,10 @@ const SetOrg: FC = () => {
           <Route path={`${orgPath}/tasks/:id/runs`} component={TaskRunsPage} />
           <Route path={`${orgPath}/tasks/:id/edit`} component={TaskEditPage} />
           <Route path={`${orgPath}/tasks/new`} component={TaskPage} />
+          <Route
+            path={`${orgPath}/tasks/import`}
+            component={TaskImportOverlay}
+          />
           <Route path={`${orgPath}/tasks`} component={TasksPage} />
           {/* Data Explorer */}
           <Route
@@ -272,7 +278,11 @@ const SetOrg: FC = () => {
           />
 
           {/* Getting Started */}
-          <Route exact path="/orgs/:orgID" component={MePage} />
+          {isFlagEnabled('firstMile') ? (
+            <Route exact path="/orgs/:orgID" component={HomepageContainer} />
+          ) : (
+            <Route exact path="/orgs/:orgID" component={MePage} />
+          )}
 
           <Route component={NotFound} />
         </Switch>

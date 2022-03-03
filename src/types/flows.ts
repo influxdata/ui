@@ -151,6 +151,7 @@ export interface QueryScope {
 export interface TypeRegistration {
   type: string // a unique string that identifies a pipe
   family:
+    | 'context'
     | 'inputs'
     | 'passThrough'
     | 'test'

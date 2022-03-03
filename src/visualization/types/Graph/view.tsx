@@ -197,13 +197,13 @@ const XYPlot: FC<Props> = ({
   let colorMapping = null
 
   if (isFlagEnabled('graphColorMapping')) {
-    const memoisedGetColorMappingObjects = memoizeOne(getColorMappingObjects)
+    const memoizedGetColorMappingObjects = memoizeOne(getColorMappingObjects)
     const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
     const {
       colorMappingForGiraffe,
       colorMappingForIDPE,
       needsToSaveToIDPE,
-    } = memoisedGetColorMappingObjects(fillColumnMap, properties)
+    } = memoizedGetColorMappingObjects(fillColumnMap, properties)
     colorMapping = colorMappingForGiraffe
 
     // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.

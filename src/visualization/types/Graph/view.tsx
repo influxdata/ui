@@ -57,6 +57,7 @@ import {isFlagEnabled} from '../../../shared/utils/featureFlag'
 // Selectors
 import {getByID} from 'src/resources/selectors'
 import {updateViewAndVariables} from 'src/views/actions/thunks'
+import {DashboardColor} from '../../../client'
 
 interface Props extends VisualizationProps {
   properties: XYViewProperties
@@ -201,7 +202,12 @@ const XYPlot: FC<Props> = ({
       colorMappingForGiraffe,
       colorMappingForIDPE,
       needsToSaveToIDPE,
-    } = getColorMappingObjects(fillColumnMap, properties)
+    } = getColorMappingObjects(fillColumnMap, {
+      ...properties,
+      colors: properties.colors
+        ? properties.colors
+        : (DEFAULT_LINE_COLORS as DashboardColor[]),
+    })
     colorMapping = colorMappingForGiraffe
 
     // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.

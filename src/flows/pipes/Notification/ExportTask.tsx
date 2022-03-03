@@ -17,6 +17,7 @@ import {
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Visualization/threshold'
 import {RemoteDataState} from 'src/types'
+import {ImportDeclaration} from 'src/types/ast'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -78,35 +79,49 @@ const ExportTask: FC = () => {
     }, {})
 
     const conditions = THRESHOLD_TYPES[deadmanType].condition(deadman)
+    const imports = parse(`
+import "strings"
+import "regexp"
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}`)
 
-    const newQuery = `import "strings"
-    import "regexp"
-    import "influxdata/influxdb/monitor"
-    import "influxdata/influxdb/schema"
-    import "influxdata/influxdb/secrets"
-    import "experimental"
-    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
-    
-    check = {
-        _check_id: "${id}",
-        _check_name: "Notebook Generated Deadman Check",
-        _type: "deadman",
-        tags: {},
-    }
-    
-    notification = {
-        _notification_rule_id: "${id}",
-        _notification_rule_name: "Notebook Generated Rule",
-        _notification_endpoint_id: "${id}",
-        _notification_endpoint_name: "Notebook Generated Endpoint",
-    }
-    
-    task_data = ${format_from_js_file(ast)}
-    trigger = ${conditions}
-    messageFn = (r) => ("${data.message}")
-    
-    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
-    |> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
+    imports.imports = Object.values(
+      imports.imports.concat(ast.imports || []).reduce((acc, curr) => {
+        acc[curr.path.value] = curr
+        return acc
+      }, {})
+    ).sort((a: ImportDeclaration, b: ImportDeclaration) =>
+      b.path.value.toLowerCase().localeCompare(a.path.value.toLowerCase())
+    )
+
+    ast.imports = []
+
+    const newQuery = `
+${format_from_js_file(imports)}
+
+check = {
+    _check_id: "${id}",
+    _check_name: "Notebook Generated Deadman Check",
+    _type: "deadman",
+    tags: {},
+}
+
+notification = {
+    _notification_rule_id: "${id}",
+    _notification_rule_name: "Notebook Generated Rule",
+    _notification_endpoint_id: "${id}",
+    _notification_endpoint_name: "Notebook Generated Endpoint",
+}
+
+task_data = ${format_from_js_file(ast)}
+trigger = ${conditions}
+messageFn = (r) => ("${data.message}")
+
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
+|> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
       deadman.deadmanCheckValue
     }))`
 
@@ -190,32 +205,47 @@ const ExportTask: FC = () => {
       .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
       .join(' and ')
 
-    const newQuery = `import "strings"
-    import "regexp"
-    import "influxdata/influxdb/monitor"
-    import "influxdata/influxdb/schema"
-    import "influxdata/influxdb/secrets"
-    import "experimental"
-    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
+    const imports = parse(`
+import "strings"
+import "regexp"
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}`)
 
-    check = {
-        _check_id: "${id}",
-        _check_name: "Notebook Generated Check",
-        _type: "custom",
-        tags: {},
-    }
-    notification = {
-        _notification_rule_id: "${id}",
-        _notification_rule_name: "Notebook Generated Rule",
-        _notification_endpoint_id: "${id}",
-        _notification_endpoint_name: "Notebook Generated Endpoint",
-    }
+    imports.imports = Object.values(
+      imports.imports.concat(ast.imports || []).reduce((acc, curr) => {
+        acc[curr.path.value] = curr
+        return acc
+      }, {})
+    ).sort((a: ImportDeclaration, b: ImportDeclaration) =>
+      b.path.value.toLowerCase().localeCompare(a.path.value.toLowerCase())
+    )
 
-    task_data = ${format_from_js_file(ast)}
-    trigger = ${conditions}
-    messageFn = (r) => ("${data.message}")
+    ast.imports = []
 
-    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
+    const newQuery = `
+${format_from_js_file(imports)}
+
+check = {
+    _check_id: "${id}",
+    _check_name: "Notebook Generated Check",
+    _type: "custom",
+    tags: {},
+}
+notification = {
+    _notification_rule_id: "${id}",
+    _notification_rule_name: "Notebook Generated Rule",
+    _notification_endpoint_id: "${id}",
+    _notification_endpoint_name: "Notebook Generated Endpoint",
+}
+
+task_data = ${format_from_js_file(ast)}
+trigger = ${conditions}
+messageFn = (r) => ("${data.message}")
+
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
 
     const newAST = parse(newQuery)
 

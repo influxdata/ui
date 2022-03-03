@@ -73,10 +73,9 @@ Cypress.Commands.add(
   {prevSubject: true},
   (subject, text: string) => {
     return cy.wrap(subject).within(() => {
-      cy.get('.monaco-editor .view-line:last')
-        .click({force: true})
-        .focused()
-        .type(text, {force: true, delay: 10})
+      cy.get('.monaco-editor .view-line:last').should('be.visible')
+      cy.get('.monaco-editor .view-line:last').click()
+      cy.get('.monaco-editor .view-line:last').type(text)
     })
   }
 )

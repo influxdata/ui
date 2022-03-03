@@ -365,8 +365,6 @@ describe('NotificationRules', () => {
   // TODO add click through to history page after #2592 is fixed
   //   - currently all history tests start with direct route to page
   describe('notification history', () => {
-
-
     interface MonitoringRec {
       check: GenCheck
       endp: NotificationEndpoint
@@ -424,16 +422,16 @@ describe('NotificationRules', () => {
           const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
           cy.createCheck({
             ...check,
-            orgID: org.id as string,
+            orgID: org.id,
             query: {
               ...check.query,
               text: queryText,
               builderConfig: {
                 ...check.query.builderConfig,
-                buckets: [bucket.id as string],
+                buckets: [bucket.id],
               },
             },
-          }).then(resp => {
+          }).then((resp: { body: any }) => {
             cy.wrap(resp.body).as('check')
           })
 
@@ -447,9 +445,9 @@ describe('NotificationRules', () => {
           cy.get<NotificationEndpoint>('@endp').then(endp => {
             cy.createRule({
               ...(rule as NotificationRule),
-              orgID: org.id as string,
-              endpointID: endp.id as string,
-            }).then((resp) => {
+              orgID: org.id,
+              endpointID: endp.id,
+            }).then((resp: { body: any }) => {
               cy.wrap(resp.body).as('rule')
             })
           })
@@ -759,201 +757,414 @@ describe('NotificationRules', () => {
       cy.getByTestID('event-row--field time').then(timestamps => {
         const CurrHours = timestamps
           .toArray()
-          .map((n: { innerText: string | number | Date }) => new Date(n.innerText).getHours())
+          .map((n: {innerText: string | number | Date}) =>
+            new Date(n.innerText).getHours()
+          )
         expect(CurrHours).to.deep.eq(hours)
       })
     })
   })
 
-  describe.only('Notification Rules List', () => {
+  describe('Notification Rules List', () => {
+    const rulesSort = (
+      a: {name: string; description: string},
+      b: {name: string; description: string}
+    ) => {
+      if (a.name > b.name){ return 1 }
+      if (a.name < b.name){ return -1 }
+      return 0
+    }
 
-       const rulesSort = (a: {name: string, description: string} ,
-                          b: {name: string, description: string} ) => {
-         if(a.name > b.name) return 1;
-         if(a.name < b.name) return -1;
-         return 0;
-       }
+    let Rules = [
+      {name: 'John Critical Rule', description: 'The owl and the cat'},
+      {name: 'Paul Warn Rule', description: 'The walrus and the whale'},
+      {name: 'George OK Rule', description: 'The dove and the squirrel'},
+      {name: 'Ringo Info Rule', description: 'The fox and the hound'},
+    ].sort(rulesSort)
 
-       let Rules = [{name: 'John Critical Rule', description: 'The owl and the cat'},
-         { name: 'Paul Warn Rule', description: 'The walrus and the whale'},
-         { name: 'George OK Rule', description: 'The dove and the squirrel'},
-         { name: 'Ringo Info Rule', description: 'The fox and the hound'}]
-         .sort(rulesSort)
+    const newRule = {
+      name: 'Sean Everything Rule',
+      description: 'The plough and the stars',
+    }
 
+    beforeEach(() => {
+      cy.writeLPDataFromFile({
+        filename: 'data/wumpus01.lp',
+        offset: '20m',
+        stagger: '1m',
+      })
+      cy.get<Organization>('@org').then((org: Organization) => {
+        cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+          // get default org and bucket
+          // 2. create check
+          const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
+          cy.createCheck({
+            ...check,
+            orgID: org.id,
+            query: {
+              ...check.query,
+              text: queryText,
+              builderConfig: {
+                ...check.query.builderConfig,
+                buckets: [bucket.id],
+              },
+            },
+          }).then((resp: { body: any }) => {
+            cy.wrap(resp.body).as('check')
+          })
 
-       const newRule = {name: 'Sean Everything Rule', description: 'The plough and the stars'}
+          cy.createEndpoint({
+            ...(endp as NotificationEndpoint),
+            orgID: org.id,
+          }).then(resp => {
+            cy.wrap(resp.body).as('endp')
+          })
 
-       beforeEach(() => {
+          cy.get<NotificationEndpoint>('@endp').then(endp => {
+            cy.createRule({
+              ...(rule as NotificationRule),
+              name: Rules[0].name,
+              description: Rules[0].description,
+              orgID: org.id,
+              endpointID: endp.id,
+            }).then(() => {
+              cy.createRule({
+                ...(rule as NotificationRule),
+                name: Rules[1].name,
+                description: Rules[1].description,
+                orgID: org.id,
+                endpointID: endp.id,
+                statusRules: [{currentLevel: 'WARN', period: '1h', count: 1}],
+              }).then(() => {
+                cy.createRule({
+                  ...(rule as NotificationRule),
+                  name: Rules[2].name,
+                  description: Rules[2].description,
+                  orgID: org.id,
+                  endpointID: endp.id,
+                  statusRules: [{currentLevel: 'INFO', period: '1h', count: 1}],
+                }).then(() => {
+                  cy.createRule({
+                    ...(rule as NotificationRule),
+                    name: Rules[3].name,
+                    description: Rules[3].description,
+                    orgID: org.id,
+                    endpointID: endp.id,
+                    statusRules: [{currentLevel: 'OK', period: '1h', count: 1}],
+                  }).then(() => {
+                    cy.reload() // Alerts load from upper beforeEach might not catch all these rules
+                    cy.getByTestID('alerting-tab--rules').click()
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
 
-         cy.writeLPDataFromFile({
-           filename: 'data/wumpus01.lp',
-           offset: '20m',
-           stagger: '1m',
-         })
-         cy.get<Organization>('@org').then((org: Organization) => {
-           cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-             // get default org and bucket
-             // 2. create check
-             const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
-             cy.createCheck({
-               ...check,
-               orgID: org.id as string,
-               query: {
-                 ...check.query,
-                 text: queryText,
-                 builderConfig: {
-                   ...check.query.builderConfig,
-                   buckets: [bucket.id as string],
-                 },
-               },
-             }).then(resp => {
-               cy.wrap(resp.body).as('check')
-             })
+    it('can filter the rule list', () => {
+      // baseline check
+      cy.getByTestID('rule-card--name')
+        .should('have.length', 4)
+        .then(names => {
+          names.toArray().forEach((name: HTMLElement, index: number) => {
+            expect(name.innerText).to.equal(Rules[index].name)
+          })
+        })
 
-             cy.createEndpoint({
-               ...(endp as NotificationEndpoint),
-               orgID: org.id,
-             }).then(resp => {
-               cy.wrap(resp.body).as('endp')
-             })
+      // filter name
+      cy.getByTestID('filter--input rules').type(Rules[1].name.substr(0, 5))
 
-             cy.get<NotificationEndpoint>('@endp').then(endp => {
-               cy.createRule({
-                 ...(rule as NotificationRule),
-                 name: Rules[0].name,
-                 description: Rules[0].description,
-                 orgID: org.id as string,
-                 endpointID: endp.id as string,
-               }).then(resp => {
-                 cy.createRule({
-                   ...(rule as NotificationRule),
-                   name: Rules[1].name,
-                   description: Rules[1].description,
-                   orgID: org.id as string,
-                   endpointID: endp.id as string,
-                   statusRules: [{currentLevel: 'WARN', period: '1h', count: 1}],
-                 }).then(resp => {
-                   cy.createRule({
-                     ...(rule as NotificationRule),
-                     name: Rules[2].name,
-                     description: Rules[2].description,
-                     orgID: org.id as string,
-                     endpointID: endp.id as string,
-                     statusRules: [{currentLevel: 'INFO', period: '1h', count: 1}],
-                   }).then(resp => {
-                     cy.createRule({
-                       ...(rule as NotificationRule),
-                       name: Rules[3].name,
-                       description: Rules[3].description,
-                       orgID: org.id as string,
-                       endpointID: endp.id as string,
-                       statusRules: [{currentLevel: 'OK', period: '1h', count: 1}],
-                     }).then(resp => {
-                       cy.reload() //Alerts load from upper for each might not catch all these rules
-                       cy.getByTestID('alerting-tab--rules').click()
-                     })
-                   })
-                 })
-               })
-             })
-           })
-         })
-       })
+      cy.getByTestID('rule-card--name')
+        .should('have.length', 1)
+        .should('have.text', Rules[1].name)
 
-       it('can filter the rule list', () => {
-         // baseline check
-         cy.getByTestID('rule-card--name')
-           .should('have.length', 4)
-           .then(names => {
+      cy.getByTestID('filter--input rules').clear()
+
+      cy.getByTestID('rule-card--name')
+        .should('have.length', 4)
+        .then(names => {
+          names.toArray().forEach((name: HTMLElement, index: number) => {
+            expect(name.innerText).to.equal(Rules[index].name)
+          })
+        })
+    })
+
+    it('can modify a notification rule entry', () => {
+      cy.log('modifying notification rule entry')
+      // baseline asserts
+      cy.getByTestID(`rule-card ${Rules[1].name}`)
+        .within(() => {
+          cy.getByTestID('rule-card--name').should('have.text', Rules[1].name)
+          cy.getByTestID('copy-resource-id').then(elem => {
+            cy.wrap(
+              elem
+                .text()
+                .replace('ID: ', '')
+                .replace('Copy to Clipboard', '')
+            ).as('TargetRuleID')
+          })
+
+          cy.getByTestID('copy-task-id').then(elem => {
+            cy.wrap(
+              elem
+                .text()
+                .replace('Task ID  : ', '')
+                .replace('Copy to Clipboard', '')
+            ).as('TargetTaskID')
+          })
+
+          cy.get<string>('@TargetRuleID').then(id => {
+            cy.intercept('PATCH', `/api/v2/notificationRules/${id}`).as(
+              'patchNotificationRule'
+            )
+          })
+
+          // modify description
+          cy.getByTestID('resource-list--editable-description').click()
+          cy.getByTestID('input-field')
+            .clear()
+            .type(`${newRule.description}{enter}`)
+          cy.wait('@patchNotificationRule')
+          cy.getByTestID('resource-list--editable-description').should(
+            'have.text',
+            newRule.description
+          )
+
+          // modify name
+          cy.getByTestID('rule-card--name-button').click()
+          cy.getByTestID('rule-card--input').type(`${newRule.name}{enter}`)
+        })
+        .then(() => {
+          // When name is modified sort order of cards should change
+          Rules[1] = newRule
+          Rules = Rules.sort(rulesSort)
+          cy.wait('@patchNotificationRule')
+          cy.getByTestID(`rule-card ${newRule.name}`).should('exist')
+          // Verify New Sort Order and card name change
+          cy.getByTestID('rule-card--name')
+            .should('have.length', 4)
+            .then(names => {
               names.toArray().forEach((name: HTMLElement, index: number) => {
-                 expect(name.innerText).to.equal(Rules[index].name)
+                expect(name.innerText).to.equal(Rules[index].name)
               })
-         })
+            })
 
-         // filter name
-         cy.getByTestID('filter--input rules').type(Rules[1].name.substr(0,5))
+          // Verify task ID is the same
+          cy.getByTestID(`rule-card ${newRule.name}`).within(() => {
+            cy.get('@TargetTaskID').then(id => {
+              cy.getByTestID('copy-task-id').should('contain.text', id)
+            })
 
-         cy.getByTestID('rule-card--name')
-           .should('have.length', 1)
-           .should('have.text', Rules[1].name)
+            // check sanity of update and run times
+            cy.getByTestID('resource-list--meta').within(() => {
+              const now = new Date()
+              cy.get('> div')
+                .eq(0)
+                .then(elem => {
+                  const cdate = new Date(elem.text().replace(/^\D+/g, ''))
+                  expect(now.getTime() - cdate.getTime())
+                    .to.be.at.least(0)
+                    .and.to.be.below(Cypress.config('pageLoadTimeout'))
+                })
+              cy.get('> div')
+                .eq(1)
+                .then(elem => {
+                  expect(parseInt(elem.text().replace(/\D+/g, '')))
+                    .to.be.at.least(0)
+                    .and.to.be.at.most(Cypress.config('requestTimeout') / 1000)
+                })
+            })
+          })
+        })
 
-         cy.getByTestID('filter--input rules').clear()
+      // disable / enable
+      cy.get('.cf-resource-card__disabled').should('not.exist')
+      cy.getByTestID('rule-card--slide-toggle')
+        .should('have.length', Rules.length)
+        .eq(2)
+        .click()
+      cy.getByTestID('notification-error').should('not.exist')
+      cy.get('.cf-resource-card__disabled').should('have.length', 1)
+      cy.getByTestID('rule-card--slide-toggle')
+        .eq(2)
+        .click()
+      cy.getByTestID('notification-error').should('not.exist')
+      cy.get('.cf-resource-card__disabled').should('not.exist')
 
-         cy.getByTestID('rule-card--name')
-           .should('have.length', 4)
-           .then(names => {
-             names.toArray().forEach((name: HTMLElement, index: number) => {
-               expect(name.innerText).to.equal(Rules[index].name)
-             })
-           })
-       })
+      // verify status
+      cy.getByTestID('last-run-status--icon')
+        .eq(1)
+        .trigger('mouseover')
+      cy.getByTestID('popover--contents')
+        .should('be.visible')
+        .should(dialog => {
+          expect(dialog.text()).to.match(/^Last Run Status:.*success.*/)
+        })
+    })
+  })
 
-       it.only('can modify a notification rule entry', () => {
-          cy.log('modifying notification rule entry')
-         // baseline asserts
-           cy.getByTestID(`rule-card ${Rules[1].name}`).within(card => {
-              cy.getByTestID('rule-card--name').should('have.text', Rules[1].name)
-              cy.getByTestID('copy-resource-id').then(elem => {
-                cy.log(`DEBUG elem.innertext ${elem.text()}`)
+  describe('Cloning', () => {
+    const rule2Clone = {
+      name: 'Despair',
+      description:
+        'Nabokov.  Hermann Karlovich, a Russian of German descent and owner of a chocolate factory, meets a homeless man in the city of Prague, who he believes is his doppelgänger.',
+      label: 'Chocolate',
+    }
 
-                cy.wrap(elem.text()
-                      .replace('ID: ', '')
-                      .replace('Copy to Clipboard', ''))
-                  .as("TargetRuleID")
-              })
+    const newName = 'The Gift'
+    const newEvery = '5m'
+    const newOffset = '1m'
+    const newLevel = 'WARN'
 
-             cy.getByTestID('copy-task-id').then(elem => {
-               cy.wrap(elem.text()
-                 .replace('Task ID  : ', '')
-                 .replace('Copy to Clipboard', ''))
-                 .as("TargetTaskID")
-             })
+    beforeEach(() => {
+      cy.writeLPDataFromFile({
+        filename: 'data/wumpus01.lp',
+        offset: '20m',
+        stagger: '1m',
+      })
+      cy.get<Organization>('@org').then((org: Organization) => {
+        cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+          // get default org and bucket
+          // 2. create check
+          const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
+          cy.createCheck({
+            ...check,
+            orgID: org.id,
+            query: {
+              ...check.query,
+              text: queryText,
+              builderConfig: {
+                ...check.query.builderConfig,
+                buckets: [bucket.id],
+              },
+            },
+          }).then((resp: { body: any }) => {
+            cy.wrap(resp.body).as('check')
+          })
 
+          cy.createEndpoint({
+            ...(endp as NotificationEndpoint),
+            orgID: org.id,
+          }).then(resp => {
+            cy.wrap(resp.body).as('endp')
+          })
 
-             cy.get<string>('@TargetRuleID').then(id => {
-               cy.log(`DEBUG id ${id}`)
-               cy.intercept('PATCH',`/api/v2/notificationRules/${id}`).as('patchNotificationRule')
-             })
+          cy.get<NotificationEndpoint>('@endp').then(endp => {
+            cy.createRule({
+              ...(rule as NotificationRule),
+              name: rule2Clone.name,
+              description: rule2Clone.description,
+              orgID: org.id,
+              endpointID: endp.id,
+            }).then(({body}) => {
+              cy.createAndAddLabel(
+                'notificationRules',
+                org.id,
+                body.id,
+                rule2Clone.label
+              )
+              cy.reload() // Alerts load from upper beforeEach might not catch new rule
+              cy.getByTestID('alerting-tab--rules').click()
+            })
+          })
+        })
+      })
+    })
 
-             // modify description
-            cy.getByTestID('resource-list--editable-description').click()
-             cy.getByTestID('input-field')
-               .clear()
-               .type(`${newRule.description}{enter}`)
-             cy.wait('@patchNotificationRule')
-             cy.getByTestID('resource-list--editable-description')
-               .should('have.text', newRule.description)
+    it('can clone, modify and delete a notification rule', () => {
+      cy.log('clone rule')
+      cy.getByTestID(`rule-card ${rule2Clone.name}`).within(() => {
+        cy.getByTestID('context-menu-task').click()
+      })
+      cy.getByTestID('context-clone-task').click()
 
-             // modify name
-             cy.getByTestID('rule-card--name-button').click()
-             cy.getByTestID('rule-card--input').type(`${newRule.name}{enter}`)
+      cy.getByTestID(`rule-card ${rule2Clone.name}`).within(() => {
+        cy.getByTestID('copy-task-id').then(elem => {
+          cy.wrap(
+            elem
+              .text()
+              .replace('Task ID: ', '')
+              .replace('Copy to Clipboard', '')
+          ).as('TargetTaskID')
+        })
+      })
 
-           }).then(() => {
-             cy.wait('@patchNotificationRule')
-             // When name is modified sort order of cards should change
-             Rules[1] = newRule;
-             Rules = Rules.sort(rulesSort)
-             cy.log(`DEBUG Rules ${JSON.stringify(Rules)}`)
+      // verify basic identifying parameters
+      cy.getByTestID(`rule-card ${rule2Clone.name} (clone 1)`).within(() => {
+        cy.getByTestID('copy-resource-id').then(elem => {
+          cy.wrap(
+            elem
+              .text()
+              .replace('ID: ', '')
+              .replace('Copy to Clipboard', '')
+          ).as('TargetRuleID')
+        })
 
-             // Verify New Sort Order and card name change
-             cy.getByTestID('rule-card--name')
-               .should('have.length', 4)
-               .then(names => {
-                 names.toArray().forEach((name: HTMLElement, index: number) => {
-                   expect(name.innerText).to.equal(Rules[index].name)
-                 })
-               })
+        cy.get<string>('@TargetRuleID').then(id => {
+          cy.intercept('PUT', `/api/v2/notificationRules/${id}`).as(
+            'putClonedRule'
+          )
+        })
+        cy.getByTestID(`label--pill ${rule2Clone.label}`).should('exist')
+        cy.getByTestID('resource-list--editable-description').should(
+          'have.text',
+          rule2Clone.description
+        )
+        cy.getByTestID('rule-card--name').click()
+      })
 
-             // Verify task ID is the same
-             cy.getByTestID(`rule-card ${newRule.name}`).within(() => {
-               cy.get('@TargetTaskID').then(id => {
-                 cy.getByTestID('copy-task-id').should('contain.text', id)
-               })
-             })
-           })
+      // verify then change cloned values
+      cy.getByTestID('rule-name--input').should(
+        'have.value',
+        `${rule2Clone.name} (clone 1)`
+      )
 
-       })
+      cy.getByTestID('rule-name--input')
+        .clear()
+        .type(newName)
 
+      cy.getByTestID('rule-schedule-every--input').should(
+        'have.value',
+        rule.every
+      )
 
+      cy.getByTestID('rule-schedule-every--input')
+        .clear()
+        .type(`${newEvery}{enter}`)
+
+      cy.getByTestID('rule-schedule-offset--input').should(
+        'have.value',
+        rule.offset
+      )
+      cy.getByTestID('rule-schedule-offset--input')
+        .clear()
+        .type(`${newOffset}{enter}`)
+
+      cy.getByTestID('levels--dropdown--button currentLevel')
+        .should('have.text', rule.statusRules[0].currentLevel as string)
+        .click()
+      cy.getByTestID(`levels--dropdown-item ${newLevel}`).click()
+
+      cy.getByTestID('endpoint--dropdown--button').contains(endp.name)
+
+      cy.getByTestID('rule-overlay-save--button').click()
+
+      cy.wait('@putClonedRule').then(({request: {body}}) => {
+        // verify internal values not displayed e.g. every, offset, level etc
+        expect(body.every).to.equal(newEvery)
+        expect(body.offset).to.equal(newOffset)
+        expect(body.statusRules[0].currentLevel).to.equal(newLevel)
+        cy.get('@TargetTaskID').then(taskId => {
+          expect(body.taskID).to.not.equal(taskId)
+        })
+
+        // then verify changed display value - name
+        cy.getByTestID(`rule-card ${newName}`).within(() => {
+          cy.getByTestID('rule-card--name').should('have.text', newName)
+        })
+      })
+    })
   })
 })

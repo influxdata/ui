@@ -177,7 +177,7 @@ export class TaskCard extends PureComponent<
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
           style={{minWidth: '112px'}}
-          contents={() => (
+          contents={onHide => (
             <List>
               <List.Item
                 onClick={this.handleExport}
@@ -215,7 +215,10 @@ export class TaskCard extends PureComponent<
               </List.Item>
               {isFlagEnabled('pinnedItems') && CLOUD && (
                 <List.Item
-                  onClick={this.handlePinTask}
+                  onClick={() => {
+                    this.handlePinTask()
+                    onHide()
+                  }}
                   disabled={isPinned}
                   size={ComponentSize.Small}
                   style={{fontWeight: 500}}

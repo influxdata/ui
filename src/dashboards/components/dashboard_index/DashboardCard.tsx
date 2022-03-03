@@ -185,7 +185,7 @@ class DashboardCard extends PureComponent<Props> {
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
           style={minWidth}
-          contents={() => (
+          contents={onHide => (
             <List>
               <List.Item
                 onClick={this.handleExport}
@@ -205,7 +205,10 @@ class DashboardCard extends PureComponent<Props> {
               </List.Item>
               {isFlagEnabled('pinnedItems') && CLOUD && (
                 <List.Item
-                  onClick={this.handlePinDashboard}
+                  onClick={() => {
+                    this.handlePinDashboard()
+                    onHide()
+                  }}
                   disabled={this.props.isPinned}
                   size={ComponentSize.Small}
                   style={fontWeight}

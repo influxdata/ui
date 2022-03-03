@@ -431,7 +431,7 @@ describe('NotificationRules', () => {
                 buckets: [bucket.id],
               },
             },
-          }).then((resp: { body: any }) => {
+          }).then((resp: {body: any}) => {
             cy.wrap(resp.body).as('check')
           })
 
@@ -447,7 +447,7 @@ describe('NotificationRules', () => {
               ...(rule as NotificationRule),
               orgID: org.id,
               endpointID: endp.id,
-            }).then((resp: { body: any }) => {
+            }).then((resp: {body: any}) => {
               cy.wrap(resp.body).as('rule')
             })
           })
@@ -770,8 +770,12 @@ describe('NotificationRules', () => {
       a: {name: string; description: string},
       b: {name: string; description: string}
     ) => {
-      if (a.name > b.name){ return 1 }
-      if (a.name < b.name){ return -1 }
+      if (a.name > b.name) {
+        return 1
+      }
+      if (a.name < b.name) {
+        return -1
+      }
       return 0
     }
 
@@ -809,7 +813,7 @@ describe('NotificationRules', () => {
                 buckets: [bucket.id],
               },
             },
-          }).then((resp: { body: any }) => {
+          }).then((resp: {body: any}) => {
             cy.wrap(resp.body).as('check')
           })
 
@@ -1040,7 +1044,7 @@ describe('NotificationRules', () => {
                 buckets: [bucket.id],
               },
             },
-          }).then((resp: { body: any }) => {
+          }).then((resp: {body: any}) => {
             cy.wrap(resp.body).as('check')
           })
 

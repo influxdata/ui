@@ -105,5 +105,5 @@ export const SubscriptionsLanding = lazy(() =>
   import('src/writeData/subscriptions/components/SubscriptionsLanding')
 )
 export const CreateSubscriptionForm = lazy(() =>
-  import('src/writeData/subscriptions/components/CreateSubscriptionForm')
+  import('src/writeData/subscriptions/components/CreateSubscriptionPage')
 )

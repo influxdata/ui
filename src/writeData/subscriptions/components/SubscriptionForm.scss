@@ -1,0 +1,52 @@
+.create-subscription-form {
+  .form-text {
+    font-size: 16.8px;
+    line-height: 160%;
+    color: #f1f1f3;
+    margin-bottom: 32px;
+  }
+
+  .form-title {
+    font-size: 16.8px;
+    line-height: 120%;
+    text-align: left;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 64px;
+    margin-bottom: 32px;
+    color: #f1f1f3;
+  }
+
+  .bucket-list {
+    height: 150px;
+
+    background: #07070e;
+
+    border: 2px solid #333346;
+    box-sizing: border-box;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+
+    // position: static;
+    height: 56px;
+
+    background: #333346;
+  }
+
+  .text {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 140%;
+    /* identical to box height, or 20px */
+
+    text-align: center;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+}

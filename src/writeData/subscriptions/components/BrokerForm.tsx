@@ -1,5 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -16,57 +18,26 @@ import {
   ComponentStatus,
   SelectGroup,
   ButtonShape,
-  IconFont,
 } from '@influxdata/clockface'
 
-// Graphics
-import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
+// Utils
+import {getOrg} from 'src/organizations/selectors'
+
+// Types
+import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 
 // Styles
-import 'src/writeData/subscriptions/components/CreateSubscriptionForm.scss'
+import 'src/writeData/subscriptions/components/BrokerForm.scss'
 
-const CreateSubscriptionForm: FC = () => {
+interface Props {
+  setForm: (string) => void
+}
+
+const BrokerForm: FC<Props> = ({setForm}) => {
+  const history = useHistory()
+  const org = useSelector(getOrg)
   return (
-    <div className="create-subscription-form">
-      <div className="progress">
-        <div className="logo">
-          <img src={FormLogo} />
-          <div>
-            <div className="logo-text--lg">Setting up</div>
-            <div className="logo-text--sm">MQTT Connector</div>
-          </div>
-        </div>
-        <div className="bar">
-          <div className="wrap">
-            <Button
-              text=""
-              icon={IconFont.Cloud}
-              onClick={() => {}}
-              testID="user-account-switch-btn"
-            />
-            <div className="title">Connect to Broker</div>
-          </div>
-          <div className="wrap">
-            <Button
-              text=""
-              icon={IconFont.AddCell}
-              onClick={() => {}}
-              testID="user-account-switch-btn"
-            />
-
-            <div className="title">Subscribe to Topic</div>
-          </div>
-          <div className="wrap">
-            <Button
-              text=""
-              icon={IconFont.Zap}
-              onClick={() => {}}
-              testID="user-account-switch-btn"
-            />
-            <div className="title">Define Data Parsing Rules</div>
-          </div>
-        </div>
-      </div>
+    <div className="create-broker-form">
       <Form onSubmit={() => {}} testID="label-overlay-form">
         <Overlay.Header title="Connect to Broker" />
         <Overlay.Body>
@@ -260,7 +231,9 @@ const CreateSubscriptionForm: FC = () => {
           <Button
             text="Cancel"
             color={ComponentColor.Tertiary}
-            onClick={() => {}}
+            onClick={() => {
+              history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+            }}
             titleText="Cancel creation of Label and return to list"
             type={ButtonType.Button}
             testID="create-label-form--cancel"
@@ -268,6 +241,9 @@ const CreateSubscriptionForm: FC = () => {
           <Button
             text={'Next'}
             color={ComponentColor.Success}
+            onClick={() => {
+              setForm('subscription')
+            }}
             type={ButtonType.Submit}
             testID="create-label-form--submit"
             status={ComponentStatus.Default}
@@ -277,4 +253,4 @@ const CreateSubscriptionForm: FC = () => {
     </div>
   )
 }
-export default CreateSubscriptionForm
+export default BrokerForm

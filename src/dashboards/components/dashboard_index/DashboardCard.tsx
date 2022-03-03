@@ -143,7 +143,7 @@ class DashboardCard extends PureComponent<Props> {
   private handlePinDashboard = () => {
     const {org, me, id, name, description, isPinned} = this.props
     if (isPinned) {
-      // delete from pinned item
+      // delete from pinned item list
       try {
         deletePinnedItemByParam(id)
         this.props.sendNotification(pinnedItemSuccess('dashboard', 'deleted'))
@@ -151,7 +151,7 @@ class DashboardCard extends PureComponent<Props> {
         this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
       }
     } else {
-      // add to pinned item
+      // add to pinned item list
       try {
         addPinnedItem({
           orgID: org.id,

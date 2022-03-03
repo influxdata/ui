@@ -131,7 +131,7 @@ export class TaskCard extends PureComponent<
     const {org, me, task, isPinned} = this.props
 
     if (isPinned) {
-      // delete from pinned item
+      // delete from pinned item list
       try {
         deletePinnedItemByParam(task.id)
         this.props.sendNotification(pinnedItemSuccess('task', 'deleted'))
@@ -139,7 +139,7 @@ export class TaskCard extends PureComponent<
         this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
       }
     } else {
-      // add to pinned item
+      // add to pinned item list
       try {
         addPinnedItem({
           orgID: org.id,

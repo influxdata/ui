@@ -55,7 +55,7 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
 
   const handlePinFlow = () => {
     if (isPinned) {
-      // delete from pinned item
+      // delete from pinned item list
       try {
         deletePinnedItemByParam(id)
         dispatch(notify(pinnedItemSuccess('notebook', 'deleted')))
@@ -63,7 +63,7 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
         dispatch(notify(pinnedItemFailure(err.message, 'delete')))
       }
     } else {
-      // add to pinned item
+      // add to pinned item list
       try {
         addPinnedItem({
           orgID: orgID,

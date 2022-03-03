@@ -30,7 +30,7 @@ describe('Tasks', () => {
       })
     })
   })
-  
+
   it('can create a task', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, ({name}) => {

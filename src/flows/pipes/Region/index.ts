@@ -4,7 +4,7 @@ import ReadOnly from './readOnly'
 export default register => {
   register({
     type: 'region',
-    family: 'inputs',
+    family: 'context',
     component: View,
     featureFlag: 'flow-panel--remote',
     button: 'Remote Database',

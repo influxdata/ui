@@ -5,6 +5,7 @@ import {normalize} from 'normalizr'
 
 // APIs
 import * as api from 'src/client'
+import {createResourceFromPkgerTemplate} from 'src/templates/api'
 
 // Schemas
 import {taskSchema, arrayOfTasks} from 'src/schemas/tasks'
@@ -52,6 +53,7 @@ import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {getOrg} from 'src/organizations/selectors'
 import {getAll, getStatus} from 'src/resources/selectors'
 import {incrementCloneName} from 'src/utils/naming'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {TASK_LIMIT} from 'src/resources/constants'
@@ -497,6 +499,33 @@ export const goToTaskRuns = () => (
 export const cancel = () => (dispatch: Dispatch<Action | RouterAction>) => {
   dispatch(clearCurrentTask())
   dispatch(goBack())
+}
+
+export const createTaskFromTemplate = (template: api.Template) => async (
+  dispatch: Dispatch<Action>,
+  getState: GetState
+) => {
+  try {
+    const state = getState()
+    const org = getOrg(state)
+
+    const variableName = template[0].spec.name
+
+    await createResourceFromPkgerTemplate(template, org.id)
+    await getTasks()(dispatch, getState)
+
+    event('task.create.from_template.success', {
+      name: variableName,
+    })
+
+    dispatch(notify(copy.taskImportSuccess()))
+  } catch (error) {
+    event('task.create.from_template.failure', {
+      template: template[0].meta.name,
+    })
+    console.error(error)
+    dispatch(notify(copy.taskImportFailed(error.message)))
+  }
 }
 
 export const updateScript = () => async (

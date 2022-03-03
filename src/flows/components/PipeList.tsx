@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, Fragment, useContext} from 'react'
 import {useSelector} from 'react-redux'
 import ReactGridLayout, {WidthProvider, Layout} from 'react-grid-layout'
 
@@ -133,9 +133,12 @@ const PipeList: FC = () => {
     )
   }
 
-  const _pipes = flow.data.allIDs.map(id => {
-    return <FlowPipe key={`pipe-${id}`} id={id} />
-  })
+  const _pipes = flow.data.allIDs.map(id => (
+    <Fragment key={`pipe-${id}`}>
+      <FlowPipe id={id} />
+      <InsertCellButton id={id} />
+    </Fragment>
+  ))
 
   return (
     <div className="flow" id={flow?.id}>

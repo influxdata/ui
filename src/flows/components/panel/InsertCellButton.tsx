@@ -19,6 +19,7 @@ import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Styles
 import 'src/flows/components/panel/InsertCellButton.scss'
@@ -51,6 +52,23 @@ const InsertCellButton: FC<Props> = ({id}) => {
       dividerRef.current.classList.remove('flow-divider__popped')
   }
 
+  if (
+    isFlagEnabled('showLastInsert') &&
+    index === flow.data.allIDs.length - 1
+  ) {
+    return (
+      <FlexBox
+        direction={FlexDirection.Column}
+        alignItems={AlignItems.Stretch}
+        margin={ComponentSize.Small}
+        className="insert-cell-menu always-on"
+      >
+        <p className="insert-cell-menu--title">Add Another Panel</p>
+        <AddButtons index={index} />
+      </FlexBox>
+    )
+  }
+
   return (
     <div className="flow-divider" ref={dividerRef}>
       <SquareButton
@@ -76,7 +94,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
             margin={ComponentSize.Small}
             className="insert-cell-menu"
           >
-            <p className="insert-cell-menu--title">Insert Cell Here</p>
+            <p className="insert-cell-menu--title">Insert Panel Here</p>
             <AddButtons index={index} onInsert={onHide} />
           </FlexBox>
         )}

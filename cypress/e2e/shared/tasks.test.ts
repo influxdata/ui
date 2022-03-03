@@ -34,7 +34,7 @@ describe('Tasks', () => {
   it('can create a task', () => {
     const taskName = 'Task'
     cy.createTaskFromEmpty(taskName, ({name}) => {
-      return `import "influxdata/influxdb/v1"
+      return `import "influxdata/influxdb/v1"{esc}
 v1.tagValues(bucket: "${name}", tag: "_field")
 from(bucket: "${name}")
    |> range(start: -2m)`
@@ -101,9 +101,8 @@ http.post(url: "https://foo.bar/baz", data: bytes(v: "body"))`
   })
 
   it('can create a task with an option parameter', () => {
-    cy.getByTestID('create-task--button')
-      .first()
-      .click()
+    cy.getByTestID('add-resource-dropdown--button').click()
+    cy.getByTestID('add-resource-dropdown--new').click()
 
     cy.focused()
 
@@ -633,9 +632,8 @@ from(bucket: "defbuck")
     ]
 
     tasks.forEach(task => {
-      cy.getByTestID('create-task--button')
-        .first()
-        .click()
+      cy.getByTestID('add-resource-dropdown--button').click()
+      cy.getByTestID('add-resource-dropdown--new').click()
 
       // Fill Task Form
       // focused() waits for monoco editor to get input focus

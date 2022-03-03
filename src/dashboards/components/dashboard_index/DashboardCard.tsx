@@ -129,7 +129,7 @@ class DashboardCard extends PureComponent<Props> {
         updatePinnedItemByParam(id, {name})
         this.props.sendNotification(pinnedItemSuccess('dashboard', 'updated'))
       } catch (err) {
-        this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
       }
     }
   }
@@ -141,21 +141,32 @@ class DashboardCard extends PureComponent<Props> {
   }
 
   private handlePinDashboard = () => {
-    try {
-      addPinnedItem({
-        orgID: this.props.org.id,
-        userID: this.props.me.id,
-        metadata: {
-          dashboardID: this.props.id,
-          name: this.props.name,
-          description: this.props.description,
-        },
-
-        type: PinnedItemTypes.Dashboard,
-      })
-      this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+    const {org, me, id, name, description, isPinned} = this.props
+    if (isPinned) {
+      // delete from pinned item
+      try {
+        deletePinnedItemByParam(id)
+        this.props.sendNotification(pinnedItemSuccess('dashboard', 'deleted'))
+      } catch (err) {
+        this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
+      }
+    } else {
+      // add to pinned item
+      try {
+        addPinnedItem({
+          orgID: org.id,
+          userID: me.id,
+          metadata: {
+            dashboardID: id,
+            name: name,
+            description: description,
+          },
+          type: PinnedItemTypes.Dashboard,
+        })
+        this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
+      } catch (err) {
+        this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
+      }
     }
   }
 
@@ -209,12 +220,11 @@ class DashboardCard extends PureComponent<Props> {
                     this.handlePinDashboard()
                     onHide()
                   }}
-                  disabled={this.props.isPinned}
                   size={ComponentSize.Small}
                   style={fontWeight}
                   testID="context-pin-dashboard"
                 >
-                  Pin
+                  {this.props.isPinned ? 'Unpin' : 'Pin'}
                 </List.Item>
               )}
             </List>
@@ -263,7 +273,7 @@ class DashboardCard extends PureComponent<Props> {
     try {
       updatePinnedItemByParam(id, {description})
     } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+      this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
     }
   }
 

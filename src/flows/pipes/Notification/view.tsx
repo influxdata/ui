@@ -97,14 +97,15 @@ const Notification: FC<PipeProp> = ({Context}) => {
     intervalError = 'Required'
   } else if (
     data.interval !==
-    data.interval.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
+    data.interval.match(/(?:(\d+(ns|us|µs|ms|s|m|h|d|w|mo|y){1}))/g)?.join('')
   ) {
     intervalError = 'Invalid Time'
   }
 
   if (
     data.offset &&
-    data.offset !== data.offset.match(/(?:(\d+(y|mo|s|m|w|h){1}))/g)?.join('')
+    data.offset !==
+      data.offset.match(/(?:(\d+(ns|us|µs|ms|s|m|h|d|w|mo|y){1}))/g)?.join('')
   ) {
     offsetError = 'Invalid Time'
   }

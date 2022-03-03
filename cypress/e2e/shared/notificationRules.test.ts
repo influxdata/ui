@@ -1165,9 +1165,17 @@ describe('NotificationRules', () => {
         })
 
         // then verify changed display value - name
-        cy.getByTestID(`rule-card ${newName}`).within(() => {
-          cy.getByTestID('rule-card--name').should('have.text', newName)
-        })
+        cy.getByTestID(`rule-card ${newName}`)
+          .within(() => {
+            cy.getByTestID('rule-card--name').should('have.text', newName)
+
+            // and delete the rule
+            cy.getByTestID('context-delete-task--button').click()
+          })
+          .then(() => {
+            cy.getByTestID('context-delete-task--confirm-button').click()
+            cy.getByTestID(`rule-card ${newName}`).should('not.exist')
+          })
       })
     })
   })

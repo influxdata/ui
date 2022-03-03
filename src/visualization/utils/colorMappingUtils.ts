@@ -1,7 +1,7 @@
 import {XYViewProperties} from 'src/types'
 import {addedDiff, deletedDiff} from 'deep-object-diff'
 import {getNominalColorScale} from '@influxdata/giraffe'
-import {DEFAULT_LINE_COLORS} from '../../shared/constants/graphColorPalettes'
+import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 
 /**
  * Evaluates whether mappings need to be updated

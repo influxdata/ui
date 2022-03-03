@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 
-import {Button} from '@influxdata/clockface'
+import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
@@ -17,6 +17,10 @@ export default class HomepageContainer extends PureComponent<null, State> {
 
   handleNextClick = () => {
     this.setState({currentStep: this.state.currentStep + 1})
+  }
+
+  handlePreviousClick = () => {
+    this.setState({currentStep: this.state.currentStep - 1})
   }
 
   renderStep = () => {
@@ -41,12 +45,26 @@ export default class HomepageContainer extends PureComponent<null, State> {
             <Navigation currentStep={this.state.currentStep} />
           </div>
         </aside>
-        <main className="homepage-container--main">
+        <div className="homepage-container--main">
           <div className="homepage-container--main-wrapper">
             {this.renderStep()}
           </div>
-          <Button onClick={this.handleNextClick} text="Next" />
-        </main>
+
+          <div className="homepage-container-footer">
+            <Button
+              onClick={this.handlePreviousClick}
+              text="Previous"
+              size={ComponentSize.Large}
+              color={ComponentColor.Tertiary}
+            />
+            <Button
+              onClick={this.handleNextClick}
+              text="Next"
+              size={ComponentSize.Large}
+              color={ComponentColor.Primary}
+            />
+          </div>
+        </div>
       </div>
     )
   }

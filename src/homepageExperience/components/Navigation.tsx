@@ -1,11 +1,13 @@
 import React, {PureComponent} from 'react'
 import {
   AlertIcon,
+  ClockIcon,
   ExecuteQueryIcon,
   FinishIcon,
   InitializeClientIcon,
   InstallDependenciesIcon,
   OverviewIcon,
+  PythonIcon,
   TokenIcon,
   WriteDataIcon,
 } from 'src/homepageExperience/components/HomepageIcons'
@@ -59,8 +61,17 @@ export class Navigation extends PureComponent<OwnProps> {
     return (
       <div className="subway-navigation-container">
         <div className="subway-navigation-flex-wrapper">
-          <h2>Setting Up</h2>
-          <h3>5 minutes</h3>
+          <div className="subway-navigation-title">
+            <span className="subway-navigation-title-icon">{PythonIcon}</span>
+            <div className="subway-navigation-title-text">
+              <h3>Setting Up</h3>
+              <h6>Python</h6>
+            </div>
+          </div>
+          <div className={'subway-navigation-time-to-complete'}>
+            {ClockIcon}
+            <h5> 5 minutes</h5>
+          </div>
           {steps.map((value, index) => (
             <Step
               stepIsActive={index === this.props.currentStep - 1}

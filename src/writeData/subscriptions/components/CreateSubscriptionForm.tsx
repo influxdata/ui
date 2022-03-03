@@ -1,10 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
 
-// Types
-
-// Utils
-
 // Components
 import {
   Input,
@@ -28,8 +24,6 @@ import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionForm.scss'
-
-// Contexts
 
 const CreateSubscriptionForm: FC = () => {
   return (
@@ -97,7 +91,7 @@ const CreateSubscriptionForm: FC = () => {
                       name="connection-name"
                       autoFocus={true}
                       value={''}
-                      onChange={e => {}}
+                      onChange={() => {}}
                       status={status}
                       maxLength={16}
                       testID="create-label-form--name"

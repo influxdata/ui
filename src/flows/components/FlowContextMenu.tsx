@@ -54,19 +54,30 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const dispatch = useDispatch()
 
   const handlePinFlow = () => {
-    try {
-      addPinnedItem({
-        orgID: orgID,
-        userID: me.id,
-        metadata: {
-          flowID: id,
-          name,
-        },
-        type: PinnedItemTypes.Notebook,
-      })
-      dispatch(notify(pinnedItemSuccess('notebook', 'added')))
-    } catch (err) {
-      dispatch(notify(pinnedItemFailure(err.message, 'create')))
+    if (isPinned) {
+      // delete from pinned item
+      try {
+        deletePinnedItemByParam(id)
+        dispatch(notify(pinnedItemSuccess('notebook', 'deleted')))
+      } catch (err) {
+        dispatch(notify(pinnedItemFailure(err.message, 'delete')))
+      }
+    } else {
+      // add to pinned item
+      try {
+        addPinnedItem({
+          orgID: orgID,
+          userID: me.id,
+          metadata: {
+            flowID: id,
+            name,
+          },
+          type: PinnedItemTypes.Notebook,
+        })
+        dispatch(notify(pinnedItemSuccess('notebook', 'added')))
+      } catch (err) {
+        dispatch(notify(pinnedItemFailure(err.message, 'create')))
+      }
     }
   }
 
@@ -128,9 +139,8 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
                 size={ComponentSize.Small}
                 style={{fontWeight: 500}}
                 testID="context-pin-flow"
-                disabled={isPinned}
               >
-                Pin
+                {isPinned ? 'Unpin' : 'Pin'}
               </List.Item>
             )}
           </List>

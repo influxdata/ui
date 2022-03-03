@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {points, makeGraphSnapshot} from '../../support/commands'
+import {points} from '../../support/commands'
 import {
   FROM,
   RANGE,
@@ -714,26 +714,33 @@ describe('DataExplorer', () => {
   })
 
   describe('refresh', () => {
-    beforeEach(() => {
+    it('can refresh the graph only after submitting the query', () => {
       cy.writeData(points(20))
 
+      // hitting refresh before a query is built gives nothing
+      cy.getByTestID(`selector-list m`).should('be.visible')
+      cy.getByTestID('time-machine-submit-button').should(
+        'have.class',
+        'cf-button--disabled'
+      )
+      cy.getByTestID('autorefresh-dropdown-refresh').click()
+      cy.getByTestID('empty-graph--no-results').should('be.visible')
+      cy.get('.giraffe-plot').should('not.exist')
+
+      // build the query and submit
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
+      cy.get('.giraffe-plot').should('be.visible')
+      cy.getByTestID('empty-graph--no-results').should('not.exist')
 
-      // select short time period to ensure graph changes after short time
-      cy.getByTestID('timerange-dropdown').click()
-      cy.getByTestID('dropdown-item-past5m').click()
-    })
+      // check that refresh works
+      cy.intercept('**/query**').as('refresh')
+      cy.getByTestID('autorefresh-dropdown-refresh').click()
 
-    it('manual refresh', () => {
-      const snapshot = makeGraphSnapshot()
-
-      // graph will slightly move
-      cy.wait(200)
-      cy.get('.autorefresh-dropdown--pause').click()
-
-      // not actually same as (see the false as the second arg)
-      makeGraphSnapshot().shouldBeSameAs(snapshot, false)
+      cy.wait('@refresh')
+      cy.get('.query-tab--timer__visible').should('be.visible')
+      cy.get('.giraffe-plot').should('be.visible')
+      cy.getByTestID('empty-graph--no-results').should('not.exist')
     })
   })
 

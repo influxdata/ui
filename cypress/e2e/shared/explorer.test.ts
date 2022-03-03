@@ -1,5 +1,5 @@
 import {Organization} from '../../../src/types'
-import {points, makeGraphSnapshot} from '../../support/commands'
+import {points} from '../../support/commands'
 import {
   FROM,
   RANGE,
@@ -32,7 +32,7 @@ describe('DataExplorer', () => {
       cy.createMapVariable(id)
       cy.fixture('routes').then(({orgs, explorer}) => {
         cy.visit(`${orgs}/${id}${explorer}`)
-        cy.getByTestID('tree-nav')
+        cy.getByTestID('tree-nav').should('be.visible')
       })
     })
   })
@@ -55,13 +55,9 @@ describe('DataExplorer', () => {
       cy.contains('Submit').click()
       cy.get('.cf-tree-nav--toggle').click()
       cy.getByTestID('nav-item-load-data').click()
-      // Can't use the testID to select this nav item because Clockface is silly and uses the same testID twice
-      // Issue: https://github.com/influxdata/clockface/issues/539
-      cy.get('.cf-tree-nav--sub-item-label')
-        .contains('Buckets')
-        .click()
+      cy.getByTestID('nav-subitem-buckets').click()
       cy.getByTestID('bucket--card--name _tasks').click()
-      cy.getByTestID('query-builder').should('exist')
+      cy.getByTestID('query-builder').should('be.visible')
     })
   })
 
@@ -210,17 +206,18 @@ describe('DataExplorer', () => {
           cy.getByTestID(defaultBucketListSelector).click()
 
           cy.getByTestID('selector-list m').should('be.visible')
-          cy.getByTestID('selector-list m').clickAttached()
+          cy.getByTestID('selector-list m').click()
 
           cy.getByTestID('selector-list v').should('be.visible')
-          cy.getByTestID('selector-list v').clickAttached()
+          cy.getByTestID('selector-list v').click()
 
-          cy.getByTestID('selector-list tv1').clickAttached()
+          cy.getByTestID('selector-list tv1').should('be.visible')
+          cy.getByTestID('selector-list tv1').click()
 
           cy.getByTestID('selector-list mean')
             .scrollIntoView()
             .should('be.visible')
-            .click({force: true})
+            .click()
 
           cy.getByTestID('time-machine-submit-button').click()
           cy.get('canvas.giraffe-gauge').should('be.visible')
@@ -275,17 +272,18 @@ describe('DataExplorer', () => {
           cy.getByTestID(defaultBucketListSelector).click()
 
           cy.getByTestID('selector-list m').should('be.visible')
-          cy.getByTestID('selector-list m').clickAttached()
+          cy.getByTestID('selector-list m').click()
 
           cy.getByTestID('selector-list v').should('be.visible')
-          cy.getByTestID('selector-list v').clickAttached()
+          cy.getByTestID('selector-list v').click()
 
-          cy.getByTestID('selector-list tv1').clickAttached()
+          cy.getByTestID('selector-list tv1').should('be.visible')
+          cy.getByTestID('selector-list tv1').click()
 
           cy.getByTestID('selector-list mean')
             .scrollIntoView()
             .should('be.visible')
-            .click({force: true})
+            .click()
 
           cy.getByTestID('time-machine-submit-button').click()
           cy.get('.giraffe-gauge').should('be.visible')
@@ -530,9 +528,9 @@ describe('DataExplorer', () => {
     it('shows the empty state when the query returns no results', () => {
       cy.getByTestID('time-machine--bottom').within(() => {
         cy.getByTestID('flux-editor').should('be.visible')
-          .monacoType(`from(bucket: "defbuck"{rightarrow}
-  |> range(start: -10s{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement == "no exist"{rightarrow}`)
+          .monacoType(`from(bucket: "defbuck")
+  |> range(start: -10s)
+  |> filter(fn: (r) => r._measurement == "no exist")`)
         cy.getByTestID('time-machine-submit-button').click()
       })
 
@@ -543,15 +541,15 @@ describe('DataExplorer', () => {
       const taskName = 'tax'
       // begin flux
       cy.getByTestID('flux-editor').should('be.visible')
-        .monacoType(`from(bucket: "defbuck"{rightarrow}
-  |> range(start: -15m, stop: now({rightarrow}{rightarrow}
-  |> filter(fn: (r{rightarrow} => r._measurement ==`)
+        .monacoType(`from(bucket: "defbuck")
+  |> range(start: -15m, stop: now())
+  |> filter(fn: (r) => r._measurement == `)
 
       cy.getByTestID('toolbar-tab').click()
       // checks to see if the default variables exist
-      cy.getByTestID('variable--timeRangeStart')
-      cy.getByTestID('variable--timeRangeStop')
-      cy.getByTestID('variable--windowPeriod')
+      cy.getByTestID('variable--timeRangeStart').should('exist')
+      cy.getByTestID('variable--timeRangeStop').should('exist')
+      cy.getByTestID('variable--windowPeriod').should('exist')
       // insert variable name by clicking on variable
       cy.get('.flux-toolbar--variable')
         .first()
@@ -710,26 +708,33 @@ describe('DataExplorer', () => {
   })
 
   describe('refresh', () => {
-    beforeEach(() => {
+    it('can refresh the graph only after submitting the query', () => {
       cy.writeData(points(20))
 
+      // hitting refresh before a query is built gives nothing
+      cy.getByTestID(`selector-list m`).should('be.visible')
+      cy.getByTestID('time-machine-submit-button').should(
+        'have.class',
+        'cf-button--disabled'
+      )
+      cy.getByTestID('autorefresh-dropdown-refresh').click()
+      cy.getByTestID('empty-graph--no-results').should('be.visible')
+      cy.get('.giraffe-plot').should('not.exist')
+
+      // build the query and submit
       cy.getByTestID(`selector-list m`).click()
       cy.getByTestID('time-machine-submit-button').click()
+      cy.get('.giraffe-plot').should('be.visible')
+      cy.getByTestID('empty-graph--no-results').should('not.exist')
 
-      // select short time period to ensure graph changes after short time
-      cy.getByTestID('timerange-dropdown').click()
-      cy.getByTestID('dropdown-item-past5m').click()
-    })
+      // check that refresh works
+      cy.intercept('**/query**').as('refresh')
+      cy.getByTestID('autorefresh-dropdown-refresh').click()
 
-    it('manual refresh', () => {
-      const snapshot = makeGraphSnapshot()
-
-      // graph will slightly move
-      cy.wait(200)
-      cy.get('.autorefresh-dropdown--pause').click()
-
-      // not actually same as (see the false as the second arg)
-      makeGraphSnapshot().shouldBeSameAs(snapshot, false)
+      cy.wait('@refresh')
+      cy.get('.query-tab--timer__visible').should('be.visible')
+      cy.get('.giraffe-plot').should('be.visible')
+      cy.getByTestID('empty-graph--no-results').should('not.exist')
     })
   })
 

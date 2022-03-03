@@ -277,11 +277,9 @@ from(bucket: "defbuck")
         cy.getByTestID('context-edit-task').click()
       })
 
-      // focused() waits for monoco editor to get input focus
-      cy.focused()
       cy.getByTestID('flux-editor')
         .should('be.visible')
-        .contains('import "csv"')
+        .contains('import "csv"', {timeout: 30000})
 
       cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
       cy.getByTestID('task-form-name')

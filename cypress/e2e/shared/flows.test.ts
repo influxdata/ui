@@ -548,7 +548,9 @@ describe('Flows', () => {
         .children()
         .should('have.length', item.menuItems.length)
       item.menuItems.forEach(menuItem => {
-        cy.getByTestID(menuItem + '--list-item').should('be.visible')
+        cy.getByTestID(menuItem + '--list-item')
+          .scrollIntoView()
+          .should('be.visible')
       })
     })
   })

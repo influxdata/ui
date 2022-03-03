@@ -49,10 +49,13 @@ describe('Operator Page', () => {
       .invoke('attr', 'placeholder')
       .should('contain', 'Filter accounts by email')
 
-    cy.getByTestID('operator-resource--searchbar').type('asalem', {
-      force: true,
-      delay: 50,
-    })
+    cy.focused()
+    cy.getByTestID('operator-resource--searchbar')
+      .scrollIntoView()
+      .type('asalem', {
+        force: true,
+        delay: 50,
+      })
 
     cy.getByTestID('table-body').within(() => {
       cy.getByTestID('table-row').should('have.length', 1)

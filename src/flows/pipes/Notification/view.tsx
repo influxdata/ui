@@ -55,7 +55,6 @@ import {notify} from 'src/shared/actions/notifications'
 import {
   testNotificationSuccess,
   testNotificationFailure,
-  invalidFluxQuery,
 } from 'src/shared/copy/notifications'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getSecrets} from 'src/secrets/actions/thunks'
@@ -280,8 +279,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
       dispatch(notify(testNotificationSuccess(data.endpoint)))
     } catch (e) {
       setStatus(RemoteDataState.Error)
-      dispatch(notify(invalidFluxQuery(e.message)))
-      dispatch(notify(testNotificationFailure(data.endpoint)))
+      dispatch(notify(testNotificationFailure(e.message)))
     }
   }
 

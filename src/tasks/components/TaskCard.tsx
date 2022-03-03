@@ -128,19 +128,32 @@ export class TaskCard extends PureComponent<
   }
 
   private handlePinTask = () => {
-    try {
-      addPinnedItem({
-        orgID: this.props.org.id,
-        userID: this.props.me.id,
-        metadata: {
-          taskID: this.props.task.id,
-          name: this.props.task.name,
-        },
-        type: PinnedItemTypes.Task,
-      })
-      this.props.sendNotification(pinnedItemSuccess('task', 'added'))
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+    const {org, me, task, isPinned} = this.props
+
+    if (isPinned) {
+      // delete from pinned item
+      try {
+        deletePinnedItemByParam(task.id)
+        this.props.sendNotification(pinnedItemSuccess('task', 'deleted'))
+      } catch (err) {
+        this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
+      }
+    } else {
+      // add to pinned item
+      try {
+        addPinnedItem({
+          orgID: org.id,
+          userID: me.id,
+          metadata: {
+            taskID: task.id,
+            name: task.name,
+          },
+          type: PinnedItemTypes.Task,
+        })
+        this.props.sendNotification(pinnedItemSuccess('task', 'added'))
+      } catch (err) {
+        this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
+      }
     }
   }
 
@@ -219,12 +232,11 @@ export class TaskCard extends PureComponent<
                     this.handlePinTask()
                     onHide()
                   }}
-                  disabled={isPinned}
                   size={ComponentSize.Small}
                   style={{fontWeight: 500}}
                   testID="context-pin-task"
                 >
-                  Pin
+                  {isPinned ? 'Unpin' : 'Pin'}
                 </List.Item>
               )}
             </List>
@@ -291,7 +303,7 @@ export class TaskCard extends PureComponent<
         updatePinnedItemByParam(id, {name})
         this.props.sendNotification(pinnedItemSuccess('task', 'updated'))
       } catch (err) {
-        this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
       }
     }
   }

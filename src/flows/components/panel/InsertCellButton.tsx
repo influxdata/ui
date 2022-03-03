@@ -63,7 +63,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
         margin={ComponentSize.Small}
         className="insert-cell-menu always-on"
       >
-        <p className="insert-cell-menu--title">Add Another Cell</p>
+        <p className="insert-cell-menu--title">Add Another Panel</p>
         <AddButtons index={index} />
       </FlexBox>
     )
@@ -94,7 +94,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
             margin={ComponentSize.Small}
             className="insert-cell-menu"
           >
-            <p className="insert-cell-menu--title">Insert Cell Here</p>
+            <p className="insert-cell-menu--title">Insert Panel Here</p>
             <AddButtons index={index} onInsert={onHide} />
           </FlexBox>
         )}

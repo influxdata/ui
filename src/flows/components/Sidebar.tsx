@@ -162,13 +162,13 @@ const Sidebar: FC = () => {
         {
           title: () => {
             if (!flow.meta.allIDs.includes(id)) {
-              return 'Hide panel'
+              return 'Hide Panel'
             }
 
             if (flow.meta.byID[id].visible) {
-              return 'Hide panel'
+              return 'Hide Panel'
             }
-            return 'Show panel'
+            return 'Show Panel'
           },
           action: () => {
             event('Panel Visibility Toggled', {
@@ -241,7 +241,7 @@ const Sidebar: FC = () => {
           },
         },
         {
-          title: 'Link to Cell',
+          title: 'Link to Panel',
           action: () => {
             const {type} = flow.data.byID[id]
             event('notebook_share_panel', {notebooksCellType: type})

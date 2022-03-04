@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useContext} from 'react'
 
 // Components
 import {Button, IconFont} from '@influxdata/clockface'
@@ -13,8 +13,18 @@ import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
+// Contexts
+import {
+  SubscriptionCreateContext,
+  SubscriptionCreateProvider,
+} from 'src/writeData/subscriptions/context/subscription.create'
+
 const CreateSubscriptionPage: FC = () => {
-  const [form, setForm] = useState('broker')
+  const [active, setFormActive] = useState('broker')
+  const {formContent, setFormComplete, updateForm} = useContext(
+    SubscriptionCreateContext
+  )
+  console.log('here', formContent)
   return (
     <div className="create-subscription-page">
       <div className="progress">
@@ -30,10 +40,10 @@ const CreateSubscriptionPage: FC = () => {
             <Button
               text=""
               icon={IconFont.Cloud}
-              onClick={() => setForm('broker')}
+              onClick={() => setFormActive('broker')}
               testID="user-account-switch-btn"
             />
-            <div className={form === 'broker' ? 'title--selected' : 'title'}>
+            <div className={active === 'broker' ? 'title--selected' : 'title'}>
               Connect to Broker
             </div>
           </div>
@@ -41,12 +51,14 @@ const CreateSubscriptionPage: FC = () => {
             <Button
               text=""
               icon={IconFont.AddCell}
-              onClick={() => setForm('subscription')}
+              onClick={() => setFormActive('subscription')}
               testID="user-account-switch-btn"
             />
 
             <div
-              className={form === 'subscription' ? 'title--selected' : 'title'}
+              className={
+                active === 'subscription' ? 'title--selected' : 'title'
+              }
             >
               Subscribe to Topic
             </div>
@@ -55,19 +67,43 @@ const CreateSubscriptionPage: FC = () => {
             <Button
               text=""
               icon={IconFont.Zap}
-              onClick={() => setForm('parsing')}
+              onClick={() => setFormActive('parsing')}
               testID="user-account-switch-btn"
             />
-            <div className={form === 'parsing' ? 'title--selected' : 'title'}>
+            <div className={active === 'parsing' ? 'title--selected' : 'title'}>
               Define Data Parsing Rules
             </div>
           </div>
         </div>
       </div>
-      {form === 'broker' && <BrokerForm setForm={setForm} />}
-      {form === 'subscription' && <SubscriptionForm setForm={setForm} />}
-      {form === 'parsing' && <ParsingForm setForm={setForm} />}
+      {active === 'broker' && (
+        <BrokerForm
+          setFormActive={setFormActive}
+          formContent={formContent}
+          updateForm={updateForm}
+        />
+      )}
+      {active === 'subscription' && (
+        <SubscriptionForm
+          setFormActive={setFormActive}
+          formContent={formContent}
+          updateForm={updateForm}
+        />
+      )}
+      {active === 'parsing' && (
+        <ParsingForm
+          setFormActive={setFormActive}
+          formContent={formContent}
+          updateForm={updateForm}
+          setFormComplete={setFormComplete}
+        />
+      )}
     </div>
   )
 }
-export default CreateSubscriptionPage
+
+export default () => (
+  <SubscriptionCreateProvider>
+    <CreateSubscriptionPage />
+  </SubscriptionCreateProvider>
+)

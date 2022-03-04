@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import EmptySubscriptionState from './EmptySubscriptionState'
@@ -9,12 +9,13 @@ import EmptySubscriptionState from './EmptySubscriptionState'
 
 // Contexts
 import {
-  SubscriptionListContext,
+  // SubscriptionListContext,
   SubscriptionListProvider,
 } from 'src/writeData/subscriptions/context/subscription.list'
 
 const SubscriptionsLanding: FC = () => {
-  const {subscriptions} = useContext(SubscriptionListContext)
+  // const {subscriptions} = useContext(SubscriptionListContext)
+  const subscriptions = null
   return subscriptions ? (
     <div>subscription page</div>
   ) : (

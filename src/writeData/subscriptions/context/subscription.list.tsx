@@ -22,7 +22,6 @@ export const SubscriptionListProvider: FC = ({children}) => {
   const getAll = useCallback(async (): Promise<void> => {
     const data = await getAllAPI({})
     if (Array.isArray(data)) {
-      console.log('yo', data)
       setSubscriptions(data)
     }
   }, [])

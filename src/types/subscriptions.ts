@@ -1,27 +1,39 @@
 export interface Subscription {
-  orgID: string
-  name: string
-  protocol: string
-  processGroupID: string
-  brokerHost: string
-  brokerPort: number
+  id?: string
+  name?: string
+  protocol?: string
+  orgID?: string
+  processGroupId?: string
+  brokerHost?: string
+  brokerPort?: number
   brokerUsername?: string
   brokerPassword?: string
-  brokerCert?: string
-  brokerKey?: string
-  topic: string
-  dataFormat: string
+  topic?: string
+  dataFormat?: string
   jsonMeasurementKey?: string
-  jsonFieldKeys?: Array<string>
-  jsonTagKeys?: Array<string>
+  jsonFieldKeys?: string
+  jsonTagKeys?: string
   jsonTimestamp?: string
-  stringMeasurement?: string
-  stringFields?: Array<string>
-  stringTags?: Array<string>
+  stringMeasurement: string
+  stringFields?: string
+  stringTags?: string
   stringTimestamp?: string
-  status: string
+  status?: string
+  bucket?: string
+  qos?: number
+  createdAt?: string
+  updatedAt?: string
+  tokenID?: string
   token?: string
-  tokenID: string
-  bucket: string
-  qos: number
+}
+
+export interface JsonSpec {
+  path?: string
+  name?: string
+  type?: string
+}
+
+export interface StringObjectParams {
+  pattern?: string
+  name?: string
 }

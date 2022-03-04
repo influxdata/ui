@@ -489,7 +489,6 @@ describe('Flows', () => {
 
     const defaultMenuItems = [
       'Delete',
-      'Link to Panel',
       'Duplicate',
       'Hide Panel',
     ]
@@ -502,8 +501,8 @@ describe('Flows', () => {
           'Export to Client Library',
           'Link to Source',
           'Link to Results',
+          'Link to Panel',
         ],
-        intercept: '@fetchAllBuckets',
       },
       {
         panel: 'rawFluxEditor',
@@ -512,28 +511,28 @@ describe('Flows', () => {
           'Export to Client Library',
           'Link to Source',
           'Link to Results',
+          'Link to Panel',
         ],
       },
       {
         panel: 'table',
-        menuItems: [...defaultMenuItems, 'Download as CSV'],
+        menuItems: [...defaultMenuItems, 'Download as CSV', 'Link to Panel'],
       },
       {
         panel: 'visualization',
-        menuItems: [...defaultMenuItems, 'Download as CSV'],
+        menuItems: [...defaultMenuItems, 'Download as CSV', 'Link to Panel'],
       },
       {
         panel: 'markdown',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Link to Panel'],
       },
       {
         panel: 'notification',
-        menuItems: [...defaultMenuItems],
-        intercept: '@fetchSecrets',
+        menuItems: [...defaultMenuItems, 'Link to Panel'],
       },
       {
         panel: 'schedule',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Link to Panel'],
       },
     ]
 
@@ -545,14 +544,11 @@ describe('Flows', () => {
       cy.getByTestID('panel-add-btn--1').click()
       // ugh.. cypress being cypress with ``
       const panelTestId = 'add-flow-btn--' + item.panel
+      cy.getByTestID(panelTestId).click()
       if (item.panel === 'queryBuilder') {
-        cy.getByTestID(panelTestId).click()
         cy.wait('@fetchAllBuckets')
       } else if (item.panel === 'notification') {
-        cy.getByTestID(panelTestId).click()
         cy.wait('@fetchSecrets')
-      } else {
-        cy.getByTestID(panelTestId).click()
       }
 
       cy.getByTestID('sidebar-button')
@@ -562,7 +558,7 @@ describe('Flows', () => {
       cy.getByTestID('dropdown-menu--contents')
         .find('.flow-sidebar--dropdownmenu-container')
         .children()
-        .should('have.length', item.menuItems.length)
+        .should('have.length.gte', item.menuItems.length)
       item.menuItems.forEach(menuItem => {
         cy.getByTestID(menuItem + '--list-item').should('be.visible')
       })

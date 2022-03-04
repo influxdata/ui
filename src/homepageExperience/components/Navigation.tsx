@@ -68,7 +68,7 @@ export class Navigation extends PureComponent<OwnProps> {
               <h6>Python</h6>
             </div>
           </div>
-          <div className={'subway-navigation-time-to-complete'}>
+          <div className="subway-navigation-time-to-complete">
             {ClockIcon}
             <h5> 5 minutes</h5>
           </div>

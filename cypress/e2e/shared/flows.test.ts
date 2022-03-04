@@ -487,11 +487,7 @@ describe('Flows', () => {
       .first()
       .click()
 
-    const defaultMenuItems = [
-      'Delete',
-      'Duplicate',
-      'Hide Panel',
-    ]
+    const defaultMenuItems = ['Delete', 'Duplicate', 'Hide Panel']
     const items = [
       {
         panel: 'queryBuilder',

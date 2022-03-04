@@ -1,6 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
-import {useSelector} from 'react-redux'
+import React, {FC, useContext} from 'react'
 
 // Components
 import EmptySubscriptionState from './EmptySubscriptionState'
@@ -8,18 +7,14 @@ import EmptySubscriptionState from './EmptySubscriptionState'
 // Styles
 // import 'src/writeData/subscriptions/components/SubscriptionsLanding.scss'
 
-// Utils
-import {getOrg} from 'src/organizations/selectors'
-
 // Contexts
-// import { getAllAPI } from '../context/api'
+import {
+  SubscriptionListContext,
+  SubscriptionListProvider,
+} from 'src/writeData/subscriptions/context/subscription.list'
 
 const SubscriptionsLanding: FC = () => {
-  const org = useSelector(getOrg)
-  console.log('id', org.id)
-  // const {subscriptions} = getAllAPI(org.id)
-  const subscriptions = null
-  console.log('subscriptions', subscriptions)
+  const {subscriptions} = useContext(SubscriptionListContext)
   return subscriptions ? (
     <div>subscription page</div>
   ) : (
@@ -27,4 +22,10 @@ const SubscriptionsLanding: FC = () => {
   )
 }
 
-export default SubscriptionsLanding
+SubscriptionsLanding
+
+export default () => (
+  <SubscriptionListProvider>
+    <SubscriptionsLanding />
+  </SubscriptionListProvider>
+)

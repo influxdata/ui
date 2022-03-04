@@ -36,20 +36,16 @@ interface Props {
   text: string
   type: string
   generate?: () => string
-  validate?: (query: string) => Promise<boolean>
   onCreate?: (task: any) => void
   disabled?: boolean
-  loading?: boolean
 }
 
 const ExportTaskButton: FC<Props> = ({
   text,
   type,
   generate,
-  validate,
   onCreate,
   disabled,
-  loading,
 }) => {
   const {flow} = useContext(FlowContext)
   const {add} = useContext(FlowListContext)
@@ -60,11 +56,6 @@ const ExportTaskButton: FC<Props> = ({
 
   const onClick = async () => {
     const query = generate ? generate() : data.query
-    const valid = validate ? await validate(query) : true
-
-    if (!valid) {
-      return
-    }
 
     event('Export Task Modal Skipped', {from: type})
     let taskid
@@ -169,8 +160,6 @@ const ExportTaskButton: FC<Props> = ({
   let status = ComponentStatus.Default
   if (disabled) {
     status = ComponentStatus.Disabled
-  } else if (loading) {
-    status = ComponentStatus.Loading
   }
 
   return (

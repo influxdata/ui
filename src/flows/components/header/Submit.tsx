@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useMemo} from 'react'
+import React, {FC, useContext} from 'react'
 import {IconFont} from '@influxdata/clockface'
 
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
@@ -19,7 +19,7 @@ export const Submit: FC = () => {
   const {cancel} = useContext(QueryContext)
   const {generateMap, queryAll, status} = useContext(FlowQueryContext)
 
-  const hasQueries = useMemo(() => generateMap().length > 0, [generateMap])
+  const hasQueries = generateMap().filter(s => !!s.source).length > 0
 
   const handleSubmit = () => {
     event('Notebook Submit Button Clicked')

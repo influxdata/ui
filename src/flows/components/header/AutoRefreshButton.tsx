@@ -1,6 +1,6 @@
 import React, {FC, useCallback, useContext, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {Button, ComponentColor} from '@influxdata/clockface'
+import {Button, ComponentColor, ComponentStatus} from '@influxdata/clockface'
 import {PROJECT_NAME} from 'src/flows'
 import {AppState, AutoRefreshStatus} from 'src/types'
 import {resetAutoRefresh} from 'src/shared/actions/autoRefresh'
@@ -15,7 +15,7 @@ import {FlowQueryContext} from 'src/flows/context/flow.query'
 
 const AutoRefreshButton: FC = () => {
   const {flow} = useContext(FlowContext)
-  const {queryAll} = useContext(FlowQueryContext)
+  const {queryAll, generateMap} = useContext(FlowQueryContext)
   const dispatch = useDispatch()
 
   const autoRefresh = useSelector(
@@ -85,11 +85,17 @@ const AutoRefreshButton: FC = () => {
   }, [queryAll])
 
   const isActive = autoRefresh?.status === AutoRefreshStatus.Active
+  const hasQueries = generateMap().filter(s => !!s.source).length > 0
 
   return (
     <Button
       text={
         isActive ? `Refreshing Every ${autoRefresh?.label}` : 'Set Auto Refresh'
+      }
+      status={
+        hasQueries === false
+          ? ComponentStatus.Disabled
+          : ComponentStatus.Default
       }
       color={isActive ? ComponentColor.Secondary : ComponentColor.Default}
       onClick={

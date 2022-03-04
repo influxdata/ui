@@ -244,8 +244,6 @@ describe('Dashboards', () => {
       const replaceText =
         '### William Blake\n#### Augeries of Innocense\n\n To see a World in a Grain of Sand\n\nAnd a Heaven in a Wild Flower\n\n...`'
       cy.getByTestID('cell-context--note').click()
-      // for the overlay controller, manually advance the clock
-      cy.tick(1000)
       cy.getByTestID('markdown-editor')
         .click()
         .type('{ctrl}a')

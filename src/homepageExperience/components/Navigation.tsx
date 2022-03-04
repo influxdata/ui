@@ -1,60 +1,15 @@
 import React, {PureComponent} from 'react'
 import {
-  AlertIcon,
   ClockIcon,
-  ExecuteQueryIcon,
-  FinishIcon,
-  InitializeClientIcon,
-  InstallDependenciesIcon,
-  OverviewIcon,
   PythonIcon,
-  TokenIcon,
-  WriteDataIcon,
 } from 'src/homepageExperience/components/HomepageIcons'
-import Step from './steps/Step'
+import Step from 'src/homepageExperience/components/steps/Step'
+
+import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
 interface OwnProps {
   currentStep: number
 }
-
-const steps = [
-  {
-    name: 'Overview',
-    icon: OverviewIcon,
-  },
-  {
-    name: 'Install \n Dependencies',
-    icon: InstallDependenciesIcon,
-  },
-  {
-    name: 'Create a \n Token',
-    icon: TokenIcon,
-  },
-  {
-    name: 'Initialize \n Client',
-    icon: InitializeClientIcon,
-  },
-  {
-    name: 'Write \n Data',
-    icon: WriteDataIcon,
-  },
-  {
-    name: 'Execute a \n Simple Query',
-    icon: ExecuteQueryIcon,
-  },
-  {
-    name: 'Execute an \n Aggregate Query',
-    icon: ExecuteQueryIcon,
-  },
-  {
-    name: '(Optional) \n Set up Alerts',
-    icon: AlertIcon,
-  },
-  {
-    name: 'Finish',
-    icon: FinishIcon,
-  },
-]
 
 export class Navigation extends PureComponent<OwnProps> {
   render() {
@@ -72,7 +27,7 @@ export class Navigation extends PureComponent<OwnProps> {
             {ClockIcon}
             <h5> 5 minutes</h5>
           </div>
-          {steps.map((value, index) => (
+          {HOMEPAGE_NAVIGATION_STEPS.map((value, index) => (
             <Step
               stepIsActive={index === this.props.currentStep - 1}
               stepIsComplete={index < this.props.currentStep - 1}

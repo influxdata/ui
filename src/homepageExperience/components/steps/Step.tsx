@@ -1,7 +1,9 @@
 import classnames from 'classnames'
 import React from 'react'
+
 import {InfluxColors} from '@influxdata/clockface'
-import {StepCompleteIcon} from '../HomepageIcons'
+
+import {StepCompleteIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 type StepProps = {
   stepIsActive: boolean

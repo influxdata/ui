@@ -186,7 +186,7 @@ describe('Dashboards', () => {
       )
     })
 
-    it('can clone a dashboard', () => {
+    it.skip('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 1)
 
       // get graph in original view
@@ -588,7 +588,7 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').invoke('hover')
   })
 
-  it('changes time range', () => {
+  it.skip('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()

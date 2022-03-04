@@ -255,61 +255,61 @@ from(bucket: "defbuck")
         .eq(1)
         .should('have.class', 'active')
     })
-    for (let i = 0; i < 10; i++)
-      it.only('can clone a task and edit it', () => {
-        // clone a task
-        cy.getByTestID('task-card').then(() => {
-          cy.getByTestID('context-menu-task').click()
-          cy.getByTestID('context-clone-task')
-            .click()
-            .type('{esc}')
-        })
 
-        cy.getByTestID('task-card').should('have.length', 2)
-
-        // assert the values of the task and change them
-        cy.getByTestID('task-card--name').contains('🦄ask (clone 1)')
-
-        cy.getByTestID('task-card').then(() => {
-          cy.getByTestID('context-menu-task')
-            .eq(1)
-            .click()
-          cy.intercept('GET', '/api/v2/tasks/*').as('clonedTask')
-          cy.getByTestID('context-edit-task').click()
-        })
-        cy.wait('@clonedTask').then(({response}) => {
-          expect(response.statusCode).to.eq(200)
-          expect(response.body.flux).to.include('import "csv"')
-        })
-
-        cy.getByTestID('flux-editor').should('be.visible')
-
-        cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
-        cy.getByTestID('task-form-name')
-          .focus()
-          .clear()
-          .type('Copy task test')
-        cy.getByTestID('task-form-name').should('have.value', 'Copy task test')
-
-        cy.getByTestID('task-form-schedule-input').should('have.value', '24h')
-        cy.getByTestID('task-form-schedule-input')
-          .focus()
-          .clear()
-          .type('12h')
-        cy.getByTestID('task-form-schedule-input').should('have.value', '12h')
-
-        cy.getByTestID('task-form-offset-input').should('have.value', '20m')
-        cy.getByTestID('task-form-offset-input')
-          .focus()
-          .clear()
-          .type('10m')
-        cy.getByTestID('task-form-offset-input').should('have.value', '10m')
-
-        cy.getByTestID('task-save-btn').click()
-
-        // assert changed task name
-        cy.getByTestID('task-card--name').contains('Copy task test')
+    it('can clone a task and edit it', () => {
+      // clone a task
+      cy.getByTestID('task-card').then(() => {
+        cy.getByTestID('context-menu-task').click()
+        cy.getByTestID('context-clone-task')
+          .click()
+          .type('{esc}')
       })
+
+      cy.getByTestID('task-card').should('have.length', 2)
+
+      // assert the values of the task and change them
+      cy.getByTestID('task-card--name').contains('🦄ask (clone 1)')
+
+      cy.getByTestID('task-card').then(() => {
+        cy.getByTestID('context-menu-task')
+          .eq(1)
+          .click()
+        cy.intercept('GET', '/api/v2/tasks/*').as('clonedTask')
+        cy.getByTestID('context-edit-task').click()
+      })
+      cy.wait('@clonedTask').then(({response}) => {
+        expect(response.statusCode).to.eq(200)
+        expect(response.body.flux).to.include('import "csv"')
+      })
+
+      cy.getByTestID('flux-editor').should('be.visible')
+
+      cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
+      cy.getByTestID('task-form-name')
+        .focus()
+        .clear()
+        .type('Copy task test')
+      cy.getByTestID('task-form-name').should('have.value', 'Copy task test')
+
+      cy.getByTestID('task-form-schedule-input').should('have.value', '24h')
+      cy.getByTestID('task-form-schedule-input')
+        .focus()
+        .clear()
+        .type('12h')
+      cy.getByTestID('task-form-schedule-input').should('have.value', '12h')
+
+      cy.getByTestID('task-form-offset-input').should('have.value', '20m')
+      cy.getByTestID('task-form-offset-input')
+        .focus()
+        .clear()
+        .type('10m')
+      cy.getByTestID('task-form-offset-input').should('have.value', '10m')
+
+      cy.getByTestID('task-save-btn').click()
+
+      // assert changed task name
+      cy.getByTestID('task-card--name').contains('Copy task test')
+    })
 
     // skip until this issue is resolved
     // IDPE: https://github.com/influxdata/idpe/issues/10368

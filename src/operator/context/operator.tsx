@@ -21,6 +21,8 @@ export type Props = {
 
 export interface OperatorContextType {
   accounts: OperatorAccount[]
+  accountTypes: string[]
+  setAccountTypes: (acountTypes: string[]) => void
   handleGetAccounts: () => void
   handleGetOrgs: () => void
   organizations: OperatorOrg[]
@@ -33,6 +35,8 @@ export interface OperatorContextType {
 
 export const DEFAULT_CONTEXT: OperatorContextType = {
   accounts: [],
+  accountTypes: [],
+  setAccountTypes: () => {},
   handleGetAccounts: () => {},
   handleGetOrgs: () => {},
   organizations: [],
@@ -52,6 +56,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
+  const [accountTypes, setAccountTypes] = useState([])
   const dispatch = useDispatch()
   const quartzMe = useSelector(getQuartzMe)
 
@@ -63,6 +68,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       const resp = await getOperatorAccounts({
         query: {
           query: searchTerm,
+          accountTypes: accountTypes,
         },
       })
 
@@ -77,7 +83,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       dispatch(notify(getAccountsError()))
       console.error({error})
     }
-  }, [searchTerm, dispatch])
+  }, [accountTypes, searchTerm, dispatch])
 
   const handleGetOrgs = useCallback(async () => {
     try {
@@ -134,6 +140,8 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     <OperatorContext.Provider
       value={{
         accounts,
+        accountTypes,
+        setAccountTypes,
         handleGetAccounts,
         handleGetOrgs,
         organizations,

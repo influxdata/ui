@@ -26,6 +26,7 @@ import {OperatorRoutes} from 'src/operator/constants'
 
 // Types
 import {OperatorOrg, OperatorAccount} from 'src/types'
+import ResourcesAccountType from './ResourcesAccountType'
 
 const ResourcesTable: FC = () => {
   const {pathname, accounts, organizations, status} = useContext(
@@ -47,6 +48,7 @@ const ResourcesTable: FC = () => {
       <OperatorTabs />
       <Tabs.TabContents>
         <ResourcesSearchbar />
+        <ResourcesAccountType />
         <PageSpinner loading={status}>
           {resources?.length ? (
             <Table>

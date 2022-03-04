@@ -487,12 +487,7 @@ describe('Flows', () => {
       .first()
       .click()
 
-    const defaultMenuItems = [
-      'Delete',
-      'Link to Panel',
-      'Duplicate',
-      'Hide Panel',
-    ]
+    const defaultMenuItems = ['Delete', 'Duplicate', 'Hide Panel']
     const items = [
       {
         panel: 'queryBuilder',
@@ -502,6 +497,7 @@ describe('Flows', () => {
           'Export to Client Library',
           'Link to Source',
           'Link to Results',
+          'Link to Panel',
         ],
       },
       {
@@ -511,34 +507,46 @@ describe('Flows', () => {
           'Export to Client Library',
           'Link to Source',
           'Link to Results',
+          'Link to Panel',
         ],
       },
       {
         panel: 'table',
-        menuItems: [...defaultMenuItems, 'Download as CSV'],
+        menuItems: [...defaultMenuItems, 'Download as CSV', 'Link to Panel'],
       },
       {
         panel: 'visualization',
-        menuItems: [...defaultMenuItems, 'Download as CSV'],
+        menuItems: [...defaultMenuItems, 'Download as CSV', 'Link to Panel'],
       },
       {
         panel: 'markdown',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Link to Panel'],
       },
       {
         panel: 'notification',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Link to Panel'],
       },
       {
         panel: 'schedule',
-        menuItems: [...defaultMenuItems],
+        menuItems: [...defaultMenuItems, 'Link to Panel'],
       },
     ]
+
+    // Intercepts
+    cy.intercept('/api/v2/buckets?*').as('fetchAllBuckets')
+    cy.intercept('/api/v2/orgs/*/secrets').as('fetchSecrets')
+
     items.forEach(item => {
       cy.getByTestID('panel-add-btn--1').click()
       // ugh.. cypress being cypress with ``
       const panelTestId = 'add-flow-btn--' + item.panel
       cy.getByTestID(panelTestId).click()
+      if (item.panel === 'queryBuilder') {
+        cy.wait('@fetchAllBuckets')
+      } else if (item.panel === 'notification') {
+        cy.wait('@fetchSecrets')
+      }
+
       cy.getByTestID('sidebar-button')
         .first()
         .click()
@@ -546,11 +554,9 @@ describe('Flows', () => {
       cy.getByTestID('dropdown-menu--contents')
         .find('.flow-sidebar--dropdownmenu-container')
         .children()
-        .should('have.length', item.menuItems.length)
+        .should('have.length.gte', item.menuItems.length)
       item.menuItems.forEach(menuItem => {
-        cy.getByTestID(menuItem + '--list-item')
-          .scrollIntoView()
-          .should('be.visible')
+        cy.getByTestID(menuItem + '--list-item').should('be.visible')
       })
     })
   })

@@ -1,12 +1,10 @@
 import {
   AlertIcon,
-  ClockIcon,
   ExecuteQueryIcon,
   FinishIcon,
   InitializeClientIcon,
   InstallDependenciesIcon,
   OverviewIcon,
-  PythonIcon,
   TokenIcon,
   WriteDataIcon,
 } from 'src/homepageExperience/components/HomepageIcons'

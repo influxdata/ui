@@ -1,3 +1,5 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
 $pool-fill: #00a3ff;
 
 .homepage-container {
@@ -29,6 +31,14 @@ $pool-fill: #00a3ff;
   h1 {
     margin-top: 0;
     font-weight: normal;
+  }
+
+  p {
+    font-size: $cf-text-base-1;
+  }
+
+  &.overviewSection {
+    margin-top: auto;
   }
 }
 

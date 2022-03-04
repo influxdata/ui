@@ -5,6 +5,7 @@ import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Navigation} from 'src/homepageExperience/components/Navigation'
+import classnames from 'classnames'
 
 interface State {
   currentStep: number
@@ -46,7 +47,11 @@ export default class HomepageContainer extends PureComponent<null, State> {
           </div>
         </aside>
         <div className="homepage-container--main">
-          <div className="homepage-container--main-wrapper">
+          <div
+            className={classnames('homepage-container--main-wrapper', {
+              overviewSection: this.state.currentStep === 1,
+            })}
+          >
             {this.renderStep()}
           </div>
 

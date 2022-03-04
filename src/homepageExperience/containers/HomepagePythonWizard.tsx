@@ -1,11 +1,13 @@
 import React, {PureComponent} from 'react'
+import classnames from 'classnames'
 
 import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Navigation} from 'src/homepageExperience/components/Navigation'
-import classnames from 'classnames'
+
+import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
 interface State {
   currentStep: number
@@ -17,11 +19,11 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
   }
 
   handleNextClick = () => {
-    this.setState({currentStep: this.state.currentStep + 1})
+    this.setState({currentStep: Math.min(this.state.currentStep + 1, HOMEPAGE_NAVIGATION_STEPS.length)})
   }
 
   handlePreviousClick = () => {
-    this.setState({currentStep: this.state.currentStep - 1})
+    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
   }
 
   renderStep = () => {

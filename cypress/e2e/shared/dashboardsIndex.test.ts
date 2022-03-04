@@ -186,10 +186,7 @@ describe('Dashboards', () => {
       )
     })
 
-    it('can clone a dashboard', () => {
-      // Stop the clock so all graphs can be verified visually
-      cy.clock(new Date().getTime(), ['Date'])
-
+    it.skip('can clone a dashboard', () => {
       cy.getByTestID('dashboard-card').should('have.length', 1)
 
       // get graph in original view
@@ -254,13 +251,7 @@ describe('Dashboards', () => {
         .type('{ctrl}a')
         .type(replaceText)
 
-      // for the overlay controller, manually advance the clock
-      cy.tick(1000)
-
       cy.getByTestID('save-note--button').click()
-
-      // for the overlay controller, manually advance the clock
-      cy.tick(1000)
 
       cy.getByTestID('nav-item-dashboards').click()
 
@@ -599,7 +590,7 @@ describe('Dashboards', () => {
     cy.getByTestID('dashboard-card').invoke('hover')
   })
 
-  it('changes time range', () => {
+  it.skip('changes time range', () => {
     const dashName = 'dashboard'
     const newDate = new Date()
     const now = newDate.toISOString()
@@ -638,10 +629,6 @@ describe('Dashboards', () => {
     cy.getByTestID('selector-list p').click()
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('save-cell--button').click()
-
-    // Stop the clock so graphs can be verified visually
-    cy.clock(newDate.getTime())
-
     cy.wait('@loadQuery')
     cy.getByTestID('giraffe-axes').should('be.visible')
 

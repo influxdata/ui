@@ -110,7 +110,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     }
   }
 
-  public handlePinTask = () => {
+  public handlePinDashboard = () => {
     getPinnedItems()
       .then(res => {
         this.setState({pinnedItems: res})
@@ -150,7 +150,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
                 updatedAt={meta.updatedAt}
                 description={description}
                 onFilterChange={onFilterChange}
-                onPinTask={this.handlePinTask}
+                onPinDashboard={this.handlePinDashboard}
                 isPinned={
                   !!pinnedItems.find(item => item?.metadata.dashboardID === id)
                 }

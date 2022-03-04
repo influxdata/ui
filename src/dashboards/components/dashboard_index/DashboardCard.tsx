@@ -66,7 +66,7 @@ interface OwnProps {
   updatedAt: string
   labels: string[]
   onFilterChange: (searchTerm: string) => void
-  onPinTask: () => void
+  onPinDashboard: () => void
   isPinned: boolean
 }
 
@@ -148,7 +148,7 @@ class DashboardCard extends PureComponent<Props> {
       try {
         await deletePinnedItemByParam(id)
         this.props.sendNotification(pinnedItemSuccess('dashboard', 'deleted'))
-        this.props.onPinTask()
+        this.props.onPinDashboard()
       } catch (err) {
         this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
       }
@@ -166,7 +166,7 @@ class DashboardCard extends PureComponent<Props> {
           type: PinnedItemTypes.Dashboard,
         })
         this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
-        this.props.onPinTask()
+        this.props.onPinDashboard()
       } catch (err) {
         this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
       }

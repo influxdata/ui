@@ -28,6 +28,7 @@ const setup = (override = {}) => {
     onCreateLabel: jest.fn(),
     setCurrentTasksPage: jest.fn(),
     labels: [], // all labels
+    onPinTask: jest.fn(),
     isPinned: false,
     org: {id: 'BUCKSINSIX', name: 'Milwaukee Bucks'},
     me: {

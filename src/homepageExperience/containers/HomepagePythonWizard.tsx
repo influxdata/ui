@@ -11,7 +11,7 @@ interface State {
   currentStep: number
 }
 
-export default class HomepagePythonWizard extends PureComponent<null, State> {
+export class HomepagePythonWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
   }
@@ -40,22 +40,22 @@ export default class HomepagePythonWizard extends PureComponent<null, State> {
 
   render() {
     return (
-      <div className="homepage-container">
-        <aside className="homepage-container--subway">
+      <div className="homepage-wizard-container">
+        <aside className="homepage-wizard-container--subway">
           <div style={{width: '100%'}}>
             <Navigation currentStep={this.state.currentStep} />
           </div>
         </aside>
-        <div className="homepage-container--main">
+        <div className="homepage-wizard-container--main">
           <div
-            className={classnames('homepage-container--main-wrapper', {
+            className={classnames('homepage-wizard-container--main-wrapper', {
               overviewSection: this.state.currentStep === 1,
             })}
           >
             {this.renderStep()}
           </div>
 
-          <div className="homepage-container-footer">
+          <div className="homepage-wizard-container-footer">
             <Button
               onClick={this.handlePreviousClick}
               text="Previous"

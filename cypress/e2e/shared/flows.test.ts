@@ -544,10 +544,13 @@ describe('Flows', () => {
       cy.getByTestID('panel-add-btn--1').click()
       // ugh.. cypress being cypress with ``
       const panelTestId = 'add-flow-btn--' + item.panel
-      cy.getByTestID(panelTestId).click()
       if (!!item?.intercept) {
+        cy.getByTestID(panelTestId).click()
         cy.wait(item.intercept)
+      } else {
+        cy.getByTestID(panelTestId).click()
       }
+
       cy.getByTestID('sidebar-button')
         .first()
         .click()

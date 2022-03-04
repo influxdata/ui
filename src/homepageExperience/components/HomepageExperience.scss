@@ -2,7 +2,7 @@
 
 $pool-fill: #00a3ff;
 
-.homepage-container {
+.homepage-wizard-container {
   color: $cf-grey-95;
   display: flex;
   height: 100%;
@@ -12,13 +12,13 @@ $pool-fill: #00a3ff;
   padding-right: 85px;
 }
 
-.homepage-container--subway {
+.homepage-wizard-container--subway {
   display: flex;
   flex-direction: column;
   width: 30%;
 }
 
-.homepage-container--main {
+.homepage-wizard-container--main {
   display: flex;
   flex-direction: column;
   width: 70%;
@@ -27,7 +27,7 @@ $pool-fill: #00a3ff;
   padding-bottom: 64px;
 }
 
-.homepage-container--main-wrapper {
+.homepage-wizard-container--main-wrapper {
   h1 {
     margin-top: 0;
     font-weight: normal;
@@ -42,7 +42,7 @@ $pool-fill: #00a3ff;
   }
 }
 
-.homepage-container-footer {
+.homepage-wizard-container-footer {
   display: flex;
   justify-content: flex-end;
   margin-top: auto;

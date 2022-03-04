@@ -135,6 +135,7 @@ export class TaskCard extends PureComponent<
       try {
         deletePinnedItemByParam(task.id)
         this.props.sendNotification(pinnedItemSuccess('task', 'deleted'))
+        window.location.reload()
       } catch (err) {
         this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
       }
@@ -151,6 +152,7 @@ export class TaskCard extends PureComponent<
           type: PinnedItemTypes.Task,
         })
         this.props.sendNotification(pinnedItemSuccess('task', 'added'))
+        window.location.reload()
       } catch (err) {
         this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
       }

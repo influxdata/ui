@@ -158,6 +158,15 @@ export default class TasksList extends PureComponent<Props, State>
     )
   }
 
+  public handlePinTask = () => {
+    // update pinned item list
+    getPinnedItems()
+      .then(res => {
+        this.setState({pinnedItems: res})
+      })
+      .catch(err => console.error(err))
+  }
+
   public paginate = page => {
     this.currentPage = page
     const url = new URL(location.href)
@@ -201,6 +210,7 @@ export default class TasksList extends PureComponent<Props, State>
             onUpdate={this.props.onUpdate}
             onRunTask={this.props.onRunTask}
             onFilterChange={this.props.onFilterChange}
+            onPinTask={this.handlePinTask}
             isPinned={
               this.state.pinnedItems?.length &&
               !!this.state.pinnedItems.find(

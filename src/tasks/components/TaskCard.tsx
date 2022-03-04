@@ -61,6 +61,7 @@ interface PassedProps {
   onRunTask: (taskID: string) => void
   onUpdate: (name: string, taskID: string) => void
   onFilterChange: (searchTerm: string) => void
+  onPinTask: () => void
   isPinned: boolean
 }
 
@@ -127,22 +128,22 @@ export class TaskCard extends PureComponent<
     )
   }
 
-  private handlePinTask = () => {
+  private handlePinTask = async () => {
     const {org, me, task, isPinned} = this.props
 
     if (isPinned) {
       // delete from pinned item list
       try {
-        deletePinnedItemByParam(task.id)
+        await deletePinnedItemByParam(task.id)
         this.props.sendNotification(pinnedItemSuccess('task', 'deleted'))
-        window.location.reload()
+        this.props.onPinTask()
       } catch (err) {
         this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
       }
     } else {
       // add to pinned item list
       try {
-        addPinnedItem({
+        await addPinnedItem({
           orgID: org.id,
           userID: me.id,
           metadata: {
@@ -152,7 +153,7 @@ export class TaskCard extends PureComponent<
           type: PinnedItemTypes.Task,
         })
         this.props.sendNotification(pinnedItemSuccess('task', 'added'))
-        window.location.reload()
+        this.props.onPinTask()
       } catch (err) {
         this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
       }

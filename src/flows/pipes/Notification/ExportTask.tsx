@@ -14,6 +14,7 @@ import {remove} from 'src/shared/contexts/query'
 // Types
 import {
   deadmanType,
+  Threshold,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Visualization/threshold'
 import {RemoteDataState} from 'src/types'
@@ -27,13 +28,10 @@ import {
   exportAlertToTaskFailure,
 } from 'src/shared/copy/notifications'
 
-function heuristicValidityCheck(query: string): boolean {
-  // no undefined fields. e.g. `trigger = (r) => r["undefined"] > 0`
-  // no empty strings. e.g. in `src/flows/pipes/Notification/endpoints`, we typically set the defaults as ''
-  if (/('')|("undefined")|((\\"undefined\\"))/g.test(query)) {
-    throw new Error(`Flux contains invalid values. Form fields may be empty.`)
-  }
-  return true
+const validThresholds = (thresholds: Threshold[]) => {
+  return thresholds.every(
+    t => !!t.type && !!t.field && (t.value == 0 || !!t.value)
+  )
 }
 
 const ExportTask: FC = () => {
@@ -210,6 +208,10 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
       return acc
     }, {})
 
+    if (!validThresholds(data.thresholds)) {
+      throw new Error(`Invalid threshold. Requires a field and value.`)
+    }
+
     const conditions = data.thresholds
       .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
       .join(' and ')
@@ -306,13 +308,11 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
     }
   }, [generateDeadmanTask, generateThresholdTask, data.thresholds])
 
-  const validateTask = (queryText: string): boolean => {
+  const validateTask = (_: string): boolean => {
     try {
       setStatus(RemoteDataState.Loading)
       // TODO: use full sematic validation, once this is done:
       // https://github.com/influxdata/ui/issues/3926
-      // temporary check:
-      heuristicValidityCheck(queryText)
 
       setStatus(RemoteDataState.Done)
       dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))

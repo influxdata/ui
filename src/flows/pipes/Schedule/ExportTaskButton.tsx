@@ -13,6 +13,7 @@ import {
   resourceLimitReached,
   taskCreatedSuccess,
   taskNotCreated,
+  testNotificationFailure,
 } from 'src/shared/copy/notifications'
 import {ASSET_LIMIT_ERROR_STATUS} from 'src/cloud/constants/index'
 import {postTask, patchTask} from 'src/client'
@@ -36,7 +37,7 @@ interface Props {
   text: string
   type: string
   generate?: () => string
-  validate?: (query: string) => boolean
+  validate?: (query: string) => boolean // throws or return false, versus return true
   onCreate?: (task: any) => void
   disabled?: boolean
   loading?: boolean
@@ -59,10 +60,16 @@ const ExportTaskButton: FC<Props> = ({
   const org = useSelector(getOrg)
 
   const onClick = async () => {
-    const query = generate ? generate() : data.query
-    const valid = validate ? validate(query) : true
-
-    if (!valid) {
+    let query
+    let validQuery
+    try {
+      query = generate ? generate() : data.query
+      validQuery = validate ? validate(query) : true
+      if (!validQuery) {
+        throw new Error('Invalid query.')
+      }
+    } catch (e) {
+      dispatch(notify(testNotificationFailure(e.message)))
       return
     }
 

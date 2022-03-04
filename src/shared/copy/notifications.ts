@@ -1470,7 +1470,7 @@ export const testNotificationFailure = (
   reason: string = 'flux was invalid.'
 ): Notification => ({
   ...defaultErrorNotification,
-  message: `Test failed: ${reason}`,
+  message: `Failure detected: ${reason}`,
 })
 
 export const exportAlertToTaskSuccess = (

@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback, useState} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
@@ -16,24 +16,17 @@ import {
   deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Visualization/threshold'
-import {RemoteDataState} from 'src/types'
 import {ImportDeclaration} from 'src/types/ast'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
-import {
-  exportAlertToTaskSuccess,
-  exportAlertToTaskFailure,
-} from 'src/shared/copy/notifications'
+import {exportAlertToTaskSuccess} from 'src/shared/copy/notifications'
 
 const ExportTask: FC = () => {
   const dispatch = useDispatch()
   const {id, data} = useContext(PipeContext)
-  const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
-  const [status, setStatus] = useState<RemoteDataState>(
-    RemoteDataState.NotStarted
-  )
+  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
 
   const queryText = getPanelQueries(id)?.source
 
@@ -297,30 +290,13 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
     }
   }, [generateDeadmanTask, generateThresholdTask, data.thresholds])
 
-  const validateTask = async (queryText: string): Promise<boolean> => {
-    try {
-      setStatus(RemoteDataState.Loading)
-      await query(queryText)
-
-      setStatus(RemoteDataState.Done)
-      dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))
-      return true
-    } catch {
-      setStatus(RemoteDataState.Error)
-      dispatch(notify(exportAlertToTaskFailure(data.endpoint)))
-      return false
-    }
-  }
-
   const handleTaskCreation = _ => {
     dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))
   }
 
   return (
     <ExportTaskButton
-      loading={status == RemoteDataState.Loading}
       generate={generateTask}
-      validate={validateTask}
       onCreate={handleTaskCreation}
       text="Export Alert Task"
       type="alert"

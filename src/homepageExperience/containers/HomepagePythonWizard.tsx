@@ -19,7 +19,12 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
   }
 
   handleNextClick = () => {
-    this.setState({currentStep: Math.min(this.state.currentStep + 1, HOMEPAGE_NAVIGATION_STEPS.length)})
+    this.setState({
+      currentStep: Math.min(
+        this.state.currentStep + 1,
+        HOMEPAGE_NAVIGATION_STEPS.length
+      ),
+    })
   }
 
   handlePreviousClick = () => {

@@ -108,4 +108,5 @@ export const HomepageContainer = lazy(() =>
 export const HomepagePythonWizard = lazy(() =>
   import(
     'src/homepageExperience/containers/HomepagePythonWizard'
-  ).then(module => ({default: module.HomepagePythonWizard})))
+  ).then(module => ({default: module.HomepagePythonWizard}))
+)

@@ -11,7 +11,7 @@ interface State {
   currentStep: number
 }
 
-export default class HomepageContainer extends PureComponent<null, State> {
+export default class HomepagePythonWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
   }

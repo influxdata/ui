@@ -544,9 +544,12 @@ describe('Flows', () => {
       cy.getByTestID('panel-add-btn--1').click()
       // ugh.. cypress being cypress with ``
       const panelTestId = 'add-flow-btn--' + item.panel
-      if (!!item?.intercept) {
+      if (item.panel === 'queryBuilder') {
         cy.getByTestID(panelTestId).click()
-        cy.wait(item.intercept)
+        cy.wait('@fetchAllBuckets')
+      } else if (item.panel === 'notification') {
+        cy.getByTestID(panelTestId).click()
+        cy.wait('@fetchSecrets')
       } else {
         cy.getByTestID(panelTestId).click()
       }

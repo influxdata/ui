@@ -487,7 +487,16 @@ describe('Flows', () => {
       .first()
       .click()
 
-    const defaultMenuItems = ['Delete', 'Duplicate', 'Hide Panel']
+    // Intercepts
+    cy.intercept('/api/v2/buckets?limit=-1*').as('fetchAllBuckets')
+    cy.intercept('/api/v2/orgs/*/secrets').as('fetchSecrets')
+
+    const defaultMenuItems = [
+      'Delete',
+      'Link to Panel',
+      'Duplicate',
+      'Hide Panel',
+    ]
     const items = [
       {
         panel: 'queryBuilder',
@@ -498,12 +507,12 @@ describe('Flows', () => {
           'Link to Source',
           'Link to Results',
         ],
+        intercept: '@fetchAllBuckets',
       },
       {
         panel: 'rawFluxEditor',
         menuItems: [
           ...defaultMenuItems,
-          'Link to Panel',
           'Export to Client Library',
           'Link to Source',
           'Link to Results',
@@ -511,23 +520,24 @@ describe('Flows', () => {
       },
       {
         panel: 'table',
-        menuItems: [...defaultMenuItems, 'Download as CSV', 'Link to Panel'],
+        menuItems: [...defaultMenuItems, 'Download as CSV'],
       },
       {
         panel: 'visualization',
-        menuItems: [...defaultMenuItems, 'Download as CSV', 'Link to Panel'],
+        menuItems: [...defaultMenuItems, 'Download as CSV'],
       },
       {
         panel: 'markdown',
-        menuItems: [...defaultMenuItems, 'Link to Panel'],
+        menuItems: [...defaultMenuItems],
       },
       {
         panel: 'notification',
-        menuItems: [...defaultMenuItems, 'Link to Panel'],
+        menuItems: [...defaultMenuItems],
+        intercept: '@fetchSecrets',
       },
       {
         panel: 'schedule',
-        menuItems: [...defaultMenuItems, 'Link to Panel'],
+        menuItems: [...defaultMenuItems],
       },
     ]
     items.forEach(item => {
@@ -535,6 +545,9 @@ describe('Flows', () => {
       // ugh.. cypress being cypress with ``
       const panelTestId = 'add-flow-btn--' + item.panel
       cy.getByTestID(panelTestId).click()
+      if (!!item?.intercept) {
+        cy.wait(item.intercept)
+      }
       cy.getByTestID('sidebar-button')
         .first()
         .click()

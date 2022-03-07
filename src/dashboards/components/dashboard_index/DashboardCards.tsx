@@ -55,18 +55,9 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
 
   public componentDidMount() {
     if (isFlagEnabled('pinnedItems') && CLOUD) {
-      getPinnedItems()
-        .then(res => {
-          if (this._isMounted) {
-            this.setState(prev => ({...prev, pinnedItems: res, windowSize: 15}))
-          }
-        })
-        .catch(err => {
-          console.error(err)
-        })
-    } else {
-      this.setState(prev => ({...prev, windowSize: 15}))
+      this.updatePinnedItems()
     }
+    this.setState(prev => ({...prev, windowSize: 15}))
   }
 
   public componentWillUnmount() {
@@ -110,12 +101,18 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     }
   }
 
-  public handlePinDashboard = () => {
+  public updatePinnedItems = () => {
     getPinnedItems()
       .then(res => {
-        this.setState({pinnedItems: res})
+        if (this._isMounted) {
+          this.setState(prev => ({...prev, pinnedItems: res}))
+        }
       })
       .catch(err => console.error(err))
+  }
+
+  public handlePinDashboard = () => {
+    this.updatePinnedItems()
   }
 
   public render() {

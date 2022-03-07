@@ -97,13 +97,7 @@ export default class TasksList extends PureComponent<Props, State>
 
     this.props.checkTaskLimits()
     if (CLOUD && isFlagEnabled('pinnedItems')) {
-      getPinnedItems()
-        .then(res => {
-          if (this.isComponentMounted) {
-            this.setState(prev => ({...prev, pinnedItems: res}))
-          }
-        })
-        .catch(err => console.error(err))
+      this.updatePinnedItems()
     }
   }
 
@@ -158,13 +152,18 @@ export default class TasksList extends PureComponent<Props, State>
     )
   }
 
-  public handlePinTask = () => {
-    // update pinned item list
+  public updatePinnedItems = () => {
     getPinnedItems()
       .then(res => {
-        this.setState({pinnedItems: res})
+        if (this.isComponentMounted) {
+          this.setState(prev => ({...prev, pinnedItems: res}))
+        }
       })
       .catch(err => console.error(err))
+  }
+
+  public handlePinTask = () => {
+    this.updatePinnedItems()
   }
 
   public paginate = page => {

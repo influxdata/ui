@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useState, useRef} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -73,6 +73,7 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                     validationFunc={() =>
                       handleValidation('Connection Name', form.name)
                     }
+                    prevalidate={false}
                   >
                     {status => (
                       <Input

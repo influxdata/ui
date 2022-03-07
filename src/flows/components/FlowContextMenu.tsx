@@ -53,31 +53,39 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const history = useHistory()
   const dispatch = useDispatch()
 
+  const handleDeletePinnedItem = async () => {
+    try {
+      await deletePinnedItemByParam(id)
+      dispatch(notify(pinnedItemSuccess('notebook', 'deleted')))
+    } catch (err) {
+      dispatch(notify(pinnedItemFailure(err.message, 'delete')))
+    }
+  }
+
+  const handleAddPinnedItem = async () => {
+    try {
+      await addPinnedItem({
+        orgID: orgID,
+        userID: me.id,
+        metadata: {
+          flowID: id,
+          name,
+        },
+        type: PinnedItemTypes.Notebook,
+      })
+      dispatch(notify(pinnedItemSuccess('notebook', 'added')))
+    } catch (err) {
+      dispatch(notify(pinnedItemFailure(err.message, 'create')))
+    }
+  }
+
   const handlePinFlow = () => {
     if (isPinned) {
       // delete from pinned item list
-      try {
-        deletePinnedItemByParam(id)
-        dispatch(notify(pinnedItemSuccess('notebook', 'deleted')))
-      } catch (err) {
-        dispatch(notify(pinnedItemFailure(err.message, 'delete')))
-      }
+      handleDeletePinnedItem()
     } else {
       // add to pinned item list
-      try {
-        addPinnedItem({
-          orgID: orgID,
-          userID: me.id,
-          metadata: {
-            flowID: id,
-            name,
-          },
-          type: PinnedItemTypes.Notebook,
-        })
-        dispatch(notify(pinnedItemSuccess('notebook', 'added')))
-      } catch (err) {
-        dispatch(notify(pinnedItemFailure(err.message, 'create')))
-      }
+      handleAddPinnedItem()
     }
   }
 

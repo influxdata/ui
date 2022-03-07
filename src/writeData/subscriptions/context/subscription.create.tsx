@@ -1,8 +1,9 @@
-import React, {FC, useState, useCallback} from 'react'
-// import {createAPI} from 'src/writeData/subscriptions/context/api'
+import React, {FC, useState, useCallback, useEffect} from 'react'
+import {createAPI} from 'src/writeData/subscriptions/context/api'
 // import {useDispatch} from 'react-redux'
 
 import {Subscription} from 'src/types/subscriptions'
+import {sanitizeForm} from '../utils/form'
 
 export interface SubscriptionCreateContextType {
   create: () => void
@@ -17,7 +18,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
   formComplete: false,
   formContent: {
     name: '',
-    description: '',
+    // description: '',
     protocol: 'MQTT',
     brokerHost: '',
     brokerPort: 0,
@@ -71,10 +72,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
       pattern: '',
       name: '',
     },
-    status: '',
-    token: '',
-    tokenID: '',
-    bucket: '',
+    bucket: 'nifi',
     qos: 0,
   },
   setFormComplete: () => {},
@@ -87,18 +85,20 @@ export const SubscriptionCreateContext = React.createContext<
 
 export const SubscriptionCreateProvider: FC = ({children}) => {
   const [formContent, setFormContent] = useState(DEFAULT_CONTEXT.formContent)
-  const [formComplete, setFormComplete] = useState(null)
+  const [formComplete, setFormComplete] = useState(false)
+  console.log('form complete', formComplete)
+  console.log('form content', formContent)
   // const dispatch = useDispatch()
 
-  const create = (): any => {
-    // const create = (formContent?: Subscription): any => {
-    // createAPI({data: formContent})
-    //   .then(() => {
-    //     console.log("success")
-    //   })
-    //   .catch(() => {
-    //     console.log("failure")
-    //   })
+  const create = (formContent?: Subscription): any => {
+    console.log('here', formContent)
+    createAPI({data: formContent})
+      .then(() => {
+        console.log('success')
+      })
+      .catch(() => {
+        console.log('failure')
+      })
   }
 
   const updateForm = useCallback(
@@ -111,9 +111,12 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
     [formContent] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
-  // useEffect(() => {
-  //   create()
-  // }, [formComplete])
+  useEffect(() => {
+    if (formComplete) {
+      sanitizeForm(formContent)
+      create(formContent)
+    }
+  }, [formComplete])
 
   return (
     <SubscriptionCreateContext.Provider

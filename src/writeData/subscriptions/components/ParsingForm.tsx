@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -46,6 +46,9 @@ const ParsingForm: FC<Props> = ({
   const history = useHistory()
   const org = useSelector(getOrg)
   const [parsing, setParsing] = useState('lineprotocol')
+  useEffect(() => {
+    updateForm({...formContent, dataFormat: parsing})
+  }, [parsing])
   return (
     formContent && (
       <div className="create-parsing-form">
@@ -151,7 +154,7 @@ const ParsingForm: FC<Props> = ({
               type={ButtonType.Button}
               onClick={() => {
                 setFormComplete(true)
-                history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+                // history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
               testID="create-label-form--submit"
               status={ComponentStatus.Default}

@@ -47,7 +47,7 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
   const [protocol, setProtocol] = useState(mqttProtocol)
   const [security, setSecurity] = useState('never')
   useEffect(() => {
-    setForm({...formContent, protocol: protocol})
+    setForm({...formContent, protocol: protocol.toLowerCase()})
   }, [protocol])
   useEffect(() => {
     updateForm(form)
@@ -98,10 +98,12 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                       type={InputType.Text}
                       placeholder="Describe this connection"
                       name="description"
-                      value={form.description}
-                      onChange={e =>
-                        setForm({...formContent, description: e.target.value})
-                      }
+                      // value={form.description}
+                      value={''}
+                      onChange={() => {}}
+                      // onChange={e =>
+                      // setForm({...formContent, description: e.target.value})
+                      // }
                       testID="create-label-form--description"
                     />
                   </Form.Element>

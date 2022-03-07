@@ -9,6 +9,7 @@ import {Navigation} from 'src/homepageExperience/components/Navigation'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 import CreateToken from '../components/steps/CreateToken'
+import InitalizeClient from '../components/steps/InitalizeClient'
 
 interface State {
   currentStep: number
@@ -42,6 +43,9 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
       }
       case 3: {
         return <CreateToken />
+      }
+      case 4: {
+        return <InitalizeClient/>
       }
       default: {
         return <Overview />

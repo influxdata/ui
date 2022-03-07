@@ -1,12 +1,14 @@
+// Libraries
 import React, {FC} from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
+import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 
+// Selectors
 import {notify} from 'src/shared/actions/notifications'
 import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 import {getAllResources} from 'src/authorizations/actions/thunks'
-import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 import {getOrg} from 'src/organizations/selectors'
 

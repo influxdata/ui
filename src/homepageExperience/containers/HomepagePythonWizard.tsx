@@ -8,8 +8,8 @@ import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Navigation} from 'src/homepageExperience/components/Navigation'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
-import CreateToken from '../components/steps/CreateToken'
-import InitalizeClient from '../components/steps/InitalizeClient'
+import CreateToken from 'src/homepageExperience/components/steps/CreateToken'
+import InitalizeClient from 'src/homepageExperience/components/steps/InitalizeClient'
 
 interface State {
   currentStep: number

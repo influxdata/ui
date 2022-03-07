@@ -17,7 +17,8 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
   formComplete: false,
   formContent: {
     name: '',
-    protocol: '',
+    description: '',
+    protocol: 'MQTT',
     brokerHost: '',
     brokerPort: 0,
     brokerUsername: '',
@@ -26,14 +27,50 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     brokerKey: '',
     topic: '',
     dataFormat: '',
-    jsonMeasurementKey: '',
-    jsonFieldKeys: null,
-    jsonTagKeys: null,
-    jsonTimestamp: '',
-    stringMeasurement: '',
-    stringFields: null,
-    stringTags: null,
-    stringTimestamp: '',
+    jsonMeasurementKey: {
+      name: '',
+      path: '',
+      type: '',
+    },
+    jsonFieldKeys: [
+      {
+        name: '',
+        path: '',
+        type: '',
+      },
+    ],
+    jsonTagKeys: [
+      {
+        name: '',
+        path: '',
+        type: '',
+      },
+    ],
+    jsonTimestamp: {
+      name: '',
+      path: '',
+      type: '',
+    },
+    stringMeasurement: {
+      pattern: '',
+      name: '',
+    },
+    stringFields: [
+      {
+        pattern: '',
+        name: '',
+      },
+    ],
+    stringTags: [
+      {
+        pattern: '',
+        name: '',
+      },
+    ],
+    stringTimestamp: {
+      pattern: '',
+      name: '',
+    },
     status: '',
     token: '',
     tokenID: '',
@@ -48,34 +85,8 @@ export const SubscriptionCreateContext = React.createContext<
   SubscriptionCreateContextType
 >(DEFAULT_CONTEXT)
 
-const defaultForm = {
-  name: '',
-  protocol: '',
-  brokerHost: '',
-  brokerPort: 0,
-  brokerUsername: '',
-  brokerPassword: '',
-  brokerCert: '',
-  brokerKey: '',
-  topic: '',
-  dataFormat: '',
-  jsonMeasurementKey: '',
-  jsonFieldKeys: null,
-  jsonTagKeys: null,
-  jsonTimestamp: '',
-  stringMeasurement: '',
-  stringFields: null,
-  stringTags: null,
-  stringTimestamp: '',
-  status: '',
-  token: '',
-  tokenID: '',
-  bucket: '',
-  qos: 0,
-}
-
 export const SubscriptionCreateProvider: FC = ({children}) => {
-  const [formContent, setFormContent] = useState(defaultForm)
+  const [formContent, setFormContent] = useState(DEFAULT_CONTEXT.formContent)
   const [formComplete, setFormComplete] = useState(null)
   // const dispatch = useDispatch()
 

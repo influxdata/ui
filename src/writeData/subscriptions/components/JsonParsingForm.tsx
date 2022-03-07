@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useEffect} from 'react'
 
 // Components
 import {
@@ -20,54 +20,53 @@ import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
 // Types
 import {Subscription} from 'src/types/subscriptions'
 
+// Utils
+import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+
 interface Props {
-  form: Subscription
   formContent: Subscription
-  setForm: (any) => void
+  updateForm: (any) => void
 }
 
-const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
-  const dt = {
-    key: '1',
-    value: 'string',
-    id: '1',
-  }
-  const dataTypeList = [dt]
-  const [dataType, setDataType] = useState(dt)
+const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
+  const [form, setForm] = useState(formContent)
+  const stringType = 'String'
+  const numberType = 'Number'
+  const dataTypeList = [stringType, numberType]
+  const [dataTypeM, setDataTypeM] = useState(stringType)
+  const [dataTypeF, setDataTypeF] = useState(stringType)
+  const [dataTypeT, setDataTypeT] = useState(stringType)
+  useEffect(() => {
+    updateForm(form)
+  }, [form])
   return (
     <div className="json-parsing-form">
       <Grid.Column>
-        <Form.ValidationElement
-          label="JSON Path to Timestamp*"
-          value={''}
-          required={true}
-          validationFunc={() => 'true'}
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. myJSON.myObject[0].timestampKey"
-              name="timestamp"
-              autoFocus={true}
-              value={form.jsonTimestamp}
-              onChange={e =>
-                setForm({...formContent, jsonTimestamp: e.target.value})
-              }
-              status={status}
-              maxLength={16}
-              testID="json-parsing--timestamp"
-            />
-          )}
-        </Form.ValidationElement>
+        <Form.Label label="JSON Path to Timestamp" />
+        <Input
+          type={InputType.Text}
+          placeholder="eg. myJSON.myObject[0].timestampKey"
+          name="timestamp"
+          autoFocus={true}
+          value={form.jsonTimestamp.path}
+          onChange={e => {
+            form.jsonTimestamp.path = e.target.value
+            setForm({...formContent})
+          }}
+          maxLength={16}
+          testID="json-parsing--timestamp"
+        />
       </Grid.Column>
       <Grid.Column>
         <div className="section">
           <h2 className="form-header">Measurement</h2>
           <Form.ValidationElement
             label="Name"
-            value={form.jsonMeasurementKey}
+            value={form.jsonMeasurementKey.name}
             required={true}
-            validationFunc={() => 'true'}
+            validationFunc={() =>
+              handleValidation('Measurement Name', form.jsonMeasurementKey.name)
+            }
           >
             {status => (
               <Input
@@ -75,10 +74,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 placeholder="nonDescriptName"
                 name="name"
                 autoFocus={true}
-                value={form.jsonMeasurementKey}
-                onChange={e =>
-                  setForm({...formContent, jsonMeasurementKey: e.target.value})
-                }
+                value={form.jsonMeasurementKey.name}
+                onChange={e => {
+                  form.jsonMeasurementKey.name = e.target.value
+                  setForm({...formContent})
+                }}
                 status={status}
                 maxLength={16}
                 testID="json-parsing--name"
@@ -93,21 +93,24 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 onClick={onClick}
                 testID="variable-type-dropdown--button"
               >
-                string
+                {dataTypeM}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {dataTypeList.map(d => (
+                {dataTypeList.map((d, key) => (
                   <Dropdown.Item
-                    key={d.key}
-                    id={d.id}
-                    value={d.value}
-                    onClick={() => setDataType(d)}
-                    selected={dataType.value === d.value}
+                    key={key}
+                    id={d}
+                    value={d}
+                    onClick={() => {
+                      setDataTypeM(d)
+                      form.jsonMeasurementKey.type = d
+                    }}
+                    selected={dataTypeM === d}
                     testID={`variable-type-dropdown-${1}`}
                   >
-                    {formContent.protocol}
+                    {d}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -118,9 +121,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
       <Grid.Column>
         <Form.ValidationElement
           label="JSON Path"
-          value={form.jsonMeasurementKey}
+          value={form.jsonMeasurementKey.path}
           required={true}
-          validationFunc={() => 'true'}
+          validationFunc={() =>
+            handleValidation('Measurement Path', form.jsonMeasurementKey.path)
+          }
         >
           {status => (
             <Input
@@ -128,10 +133,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
               placeholder="eg. myJSON.myObject[0].myKey"
               name="jsonpath"
               autoFocus={true}
-              value={form.jsonMeasurementKey}
-              onChange={e =>
-                setForm({...formContent, jsonMeasurementKey: e.target.value})
-              }
+              value={form.jsonMeasurementKey.path}
+              onChange={e => {
+                form.jsonMeasurementKey.path = e.target.value
+                setForm({...formContent})
+              }}
               status={status}
               maxLength={16}
               testID="json-parsing--jsonpath"
@@ -145,9 +151,10 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
           <h2 className="form-header">Tag</h2>
           <Form.ValidationElement
             label="Name"
-            value={form.jsonTagKeys}
-            required={true}
-            validationFunc={() => 'true'}
+            value={form.jsonTagKeys[0].name}
+            validationFunc={() =>
+              handleValidation('Measurement Path', form.jsonTagKeys[0].name)
+            }
           >
             {status => (
               <Input
@@ -155,10 +162,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 placeholder="nonDescriptName"
                 name="name"
                 autoFocus={true}
-                value={form.jsonTagKeys}
-                onChange={e =>
-                  setForm({...formContent, jsonTagKeys: e.target.value})
-                }
+                value={form.jsonTagKeys[0].name}
+                onChange={e => {
+                  form.jsonTagKeys[0].name = e.target.value
+                  setForm({...formContent})
+                }}
                 status={status}
                 maxLength={16}
                 testID="json-parsing--name"
@@ -173,21 +181,24 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 onClick={onClick}
                 testID="variable-type-dropdown--button"
               >
-                string
+                {dataTypeT}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {dataTypeList.map(d => (
+                {dataTypeList.map((d, key) => (
                   <Dropdown.Item
-                    key={d.key}
-                    id={d.id}
-                    value={d.value}
-                    onClick={() => setDataType(d)}
-                    selected={dataType.value === d.value}
+                    key={key}
+                    id={d}
+                    value={d}
+                    onClick={() => {
+                      setDataTypeT(d)
+                      form.jsonTagKeys[0].type = d
+                    }}
+                    selected={dataTypeT === d}
                     testID={`variable-type-dropdown-${1}`}
                   >
-                    {formContent.protocol}
+                    {d}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -198,9 +209,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
       <Grid.Column>
         <Form.ValidationElement
           label="JSON Path"
-          value={form.jsonFieldKeys}
+          value={form.jsonTagKeys[0].path}
           required={true}
-          validationFunc={() => 'true'}
+          validationFunc={() =>
+            handleValidation('Measurement Path', form.jsonTagKeys[0].path)
+          }
         >
           {status => (
             <Input
@@ -208,10 +221,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
               placeholder="eg. myJSON.myObject[0].myKey"
               name="jsonpath"
               autoFocus={true}
-              value={form.jsonFieldKeys}
-              onChange={e =>
-                setForm({...formContent, jsonFieldKeys: e.target.value})
-              }
+              value={form.jsonTagKeys[0].path}
+              onChange={e => {
+                form.jsonTagKeys[0].path = e.target.value
+                setForm({...formContent})
+              }}
               status={status}
               maxLength={16}
               testID="json-parsing--jsonpath"
@@ -225,9 +239,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
           <h2 className="form-header">Field</h2>
           <Form.ValidationElement
             label="Name"
-            value={form.jsonFieldKeys}
+            value={form.jsonFieldKeys[0].name}
             required={true}
-            validationFunc={() => 'true'}
+            validationFunc={() =>
+              handleValidation('Measurement Path', form.jsonFieldKeys[0].name)
+            }
           >
             {status => (
               <Input
@@ -235,10 +251,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 placeholder="nonDescriptName"
                 name="name"
                 autoFocus={true}
-                value={form.jsonFieldKeys}
-                onChange={e =>
-                  setForm({...formContent, jsonFieldKeys: e.target.value})
-                }
+                value={form.jsonFieldKeys[0].name}
+                onChange={e => {
+                  form.jsonFieldKeys[0].name = e.target.value
+                  setForm({...formContent})
+                }}
                 status={status}
                 maxLength={16}
                 testID="json-parsing--name"
@@ -253,21 +270,24 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 onClick={onClick}
                 testID="variable-type-dropdown--button"
               >
-                string
+                {dataTypeF}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {dataTypeList.map(d => (
+                {dataTypeList.map((d, key) => (
                   <Dropdown.Item
-                    key={d.key}
-                    id={d.id}
-                    value={d.value}
-                    onClick={() => setDataType(d)}
-                    selected={dataType.value === d.value}
+                    key={key}
+                    id={d}
+                    value={d}
+                    onClick={() => {
+                      setDataTypeF(d)
+                      form.jsonFieldKeys[0].type = d
+                    }}
+                    selected={dataTypeF === d}
                     testID={`variable-type-dropdown-${1}`}
                   >
-                    {formContent.protocol}
+                    {d}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -278,9 +298,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
       <Grid.Column>
         <Form.ValidationElement
           label="JSON Path"
-          value={form.jsonFieldKeys}
+          value={form.jsonFieldKeys[0].path}
           required={true}
-          validationFunc={() => 'true'}
+          validationFunc={() =>
+            handleValidation('Measurement Path', form.jsonFieldKeys[0].path)
+          }
         >
           {status => (
             <Input
@@ -288,10 +310,11 @@ const JsonParsingForm: FC<Props> = ({form, setForm, formContent}) => {
               placeholder="eg. myJSON.myObject[0].myKey"
               name="jsonpath"
               autoFocus={true}
-              value={form.jsonFieldKeys}
-              onChange={e =>
-                setForm({...formContent, jsonFieldKeys: e.target.value})
-              }
+              value={form.jsonFieldKeys[0].path}
+              onChange={e => {
+                form.jsonFieldKeys[0].path = e.target.value
+                setForm({...formContent})
+              }}
               status={status}
               maxLength={16}
               testID="json-parsing--jsonpath"

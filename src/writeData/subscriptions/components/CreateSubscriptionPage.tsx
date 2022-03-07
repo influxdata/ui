@@ -24,7 +24,6 @@ const CreateSubscriptionPage: FC = () => {
   const {formContent, setFormComplete, updateForm} = useContext(
     SubscriptionCreateContext
   )
-  console.log('here', formContent)
   return (
     <div className="create-subscription-page">
       <div className="progress">

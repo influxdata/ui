@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -45,25 +45,11 @@ const ParsingForm: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
-  const [form, setForm] = useState(formContent)
   const [parsing, setParsing] = useState('lineprotocol')
-  console.log(setFormComplete)
-  useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    })
-  }, [])
   return (
     formContent && (
       <div className="create-parsing-form">
-        <Form
-          onSubmit={() => {
-            updateForm(form)
-          }}
-          testID="label-overlay-form"
-        >
+        <Form onSubmit={() => {}} testID="label-overlay-form">
           <Overlay.Header title="Define Data Parsing Rules" />
           <Overlay.Body>
             <div className="form-text">
@@ -125,16 +111,14 @@ const ParsingForm: FC<Props> = ({
                 {parsing === 'lineprotocol' && <LineProtocolForm />}
                 {parsing === 'json' && (
                   <JsonParsingForm
-                    form={form}
-                    setForm={setForm}
                     formContent={formContent}
+                    updateForm={updateForm}
                   />
                 )}
                 {parsing === 'string' && (
                   <StringParsingForm
-                    form={form}
-                    setForm={setForm}
                     formContent={formContent}
+                    updateForm={updateForm}
                   />
                 )}
               </Grid.Row>
@@ -164,8 +148,9 @@ const ParsingForm: FC<Props> = ({
             <Button
               text={'Next'}
               color={ComponentColor.Success}
-              type={ButtonType.Submit}
+              type={ButtonType.Button}
               onClick={() => {
+                setFormComplete(true)
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
               testID="create-label-form--submit"

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useEffect} from 'react'
 
 // Components
 import {
@@ -20,54 +20,55 @@ import 'src/writeData/subscriptions/components/StringParsingForm.scss'
 // Types
 import {Subscription} from 'src/types/subscriptions'
 
+// Utils
+import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+
 interface Props {
-  form: Subscription
   formContent: Subscription
-  setForm: (any) => void
+  updateForm: (any) => void
 }
 
-const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
-  const dt = {
-    key: '1',
-    value: 'string',
-    id: '1',
-  }
-  const dataTypeList = [dt]
-  const [dataType, setDataType] = useState(dt)
+const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
+  const [form, setForm] = useState(formContent)
+  const stringType = 'String'
+  const numberType = 'Number'
+  const dataTypeList = [stringType, numberType]
+  const [dataTypeM, setDataTypeM] = useState(stringType)
+  const [dataTypeF, setDataTypeF] = useState(stringType)
+  const [dataTypeT, setDataTypeT] = useState(stringType)
+  useEffect(() => {
+    updateForm(form)
+  }, [form])
+  console.log('formcontent', formContent)
   return (
     <div className="string-parsing-form">
       <Grid.Column>
-        <Form.ValidationElement
-          label="Regex to find Timestamp*"
-          value={form.stringTimestamp}
-          required={true}
-          validationFunc={() => 'true'}
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. regexExample"
-              name="timestamp"
-              autoFocus={true}
-              value={form.stringTimestamp}
-              onChange={e =>
-                setForm({...formContent, stringTimestamp: e.target.value})
-              }
-              status={status}
-              maxLength={16}
-              testID="string-parsing--timestamp"
-            />
-          )}
-        </Form.ValidationElement>
+        <Form.Label label="Regex to find Timestamp" />
+        <Input
+          type={InputType.Text}
+          placeholder="eg. regexExample"
+          name="timestamp"
+          autoFocus={true}
+          value={form.stringTimestamp.pattern}
+          onChange={e => {
+            console.log('here', form.stringTimestamp.pattern)
+            form.stringTimestamp.pattern = e.target.value
+            setForm({...formContent})
+          }}
+          maxLength={56}
+          testID="string-parsing--timestamp"
+        />
       </Grid.Column>
       <Grid.Column>
         <div className="section">
           <h2 className="form-header">Measurement</h2>
           <Form.ValidationElement
             label="Name"
-            value={form.stringMeasurement}
+            value={form.stringMeasurement.name}
             required={true}
-            validationFunc={() => 'true'}
+            validationFunc={() =>
+              handleValidation('Measurement Name', form.stringMeasurement.name)
+            }
           >
             {status => (
               <Input
@@ -75,10 +76,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 placeholder="nonDescriptName"
                 name="name"
                 autoFocus={true}
-                value={form.stringMeasurement}
-                onChange={e =>
-                  setForm({...formContent, stringMeasurement: e.target.value})
-                }
+                value={form.stringMeasurement.name}
+                onChange={e => {
+                  form.stringMeasurement.name = e.target.value
+                  setForm({...formContent})
+                }}
                 status={status}
                 maxLength={16}
                 testID="string-parsing--name"
@@ -93,21 +95,24 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 onClick={onClick}
                 testID="variable-type-dropdown--button"
               >
-                string
+                {dataTypeM}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {dataTypeList.map(d => (
+                {dataTypeList.map((d, key) => (
                   <Dropdown.Item
-                    key={d.key}
-                    id={d.id}
-                    value={d.value}
-                    onClick={() => setDataType(d)}
-                    selected={dataType.value === d.value}
+                    key={key}
+                    id={d}
+                    value={d}
+                    onClick={() => {
+                      setDataTypeM(d)
+                      // form.stringMeasurement.type = d
+                    }}
+                    selected={dataTypeM === d}
                     testID={`variable-type-dropdown-${1}`}
                   >
-                    {formContent.protocol}
+                    {d}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -118,9 +123,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
       <Grid.Column>
         <Form.ValidationElement
           label="Regex Pattern"
-          value={form.stringTags}
+          value={form.stringMeasurement.pattern}
           required={true}
-          validationFunc={() => 'true'}
+          validationFunc={() =>
+            handleValidation('Pattern', form.stringMeasurement.pattern)
+          }
         >
           {status => (
             <Input
@@ -128,12 +135,13 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
               placeholder="eg. a=(\\d)"
               name="regex"
               autoFocus={true}
-              value={form.stringTags}
-              onChange={e =>
-                setForm({...formContent, stringTags: e.target.value})
-              }
+              value={form.stringMeasurement.pattern}
+              onChange={e => {
+                form.stringMeasurement.pattern = e.target.value
+                setForm({...formContent})
+              }}
               status={status}
-              maxLength={16}
+              maxLength={56}
               testID="string-parsing--regex"
             />
           )}
@@ -145,9 +153,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
           <h2 className="form-header">Tag</h2>
           <Form.ValidationElement
             label="Name"
-            value={form.stringTags}
+            value={form.stringTags[0].name}
             required={true}
-            validationFunc={() => 'true'}
+            validationFunc={() =>
+              handleValidation('Name', form.stringTags[0].name)
+            }
           >
             {status => (
               <Input
@@ -155,10 +165,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 placeholder="nonDescriptName"
                 name="name"
                 autoFocus={true}
-                value={form.stringTags}
-                onChange={e =>
-                  setForm({...formContent, stringTags: e.target.value})
-                }
+                value={form.stringTags[0].name}
+                onChange={e => {
+                  form.stringTags[0].name = e.target.value
+                  setForm({...formContent})
+                }}
                 status={status}
                 maxLength={16}
                 testID="json-parsing--name"
@@ -173,21 +184,24 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 onClick={onClick}
                 testID="variable-type-dropdown--button"
               >
-                string
+                {dataTypeT}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {dataTypeList.map(d => (
+                {dataTypeList.map((d, key) => (
                   <Dropdown.Item
-                    key={d.key}
-                    id={d.id}
-                    value={d.value}
-                    onClick={() => setDataType(d)}
-                    selected={dataType.value === d.value}
+                    key={key}
+                    id={d}
+                    value={d}
+                    onClick={() => {
+                      setDataTypeT(d)
+                      // form.stringMeasurement.type = d
+                    }}
+                    selected={dataTypeT === d}
                     testID={`variable-type-dropdown-${1}`}
                   >
-                    {formContent.protocol}
+                    {d}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -198,9 +212,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
       <Grid.Column>
         <Form.ValidationElement
           label="Regex pattern"
-          value={form.stringFields}
+          value={form.stringTags[0].pattern}
           required={true}
-          validationFunc={() => 'true'}
+          validationFunc={() =>
+            handleValidation('Pattern', form.stringTags[0].pattern)
+          }
         >
           {status => (
             <Input
@@ -208,12 +224,13 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
               placeholder="eg. a=(\\d)"
               name="regex"
               autoFocus={true}
-              value={form.stringFields}
-              onChange={e =>
-                setForm({...formContent, stringFields: e.target.value})
-              }
+              value={form.stringTags[0].pattern}
+              onChange={e => {
+                form.stringTags[0].pattern = e.target.value
+                setForm({...formContent})
+              }}
               status={status}
-              maxLength={16}
+              maxLength={56}
               testID="string-parsing--regex"
             />
           )}
@@ -225,9 +242,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
           <h2 className="form-header">Field</h2>
           <Form.ValidationElement
             label="Name"
-            value={form.stringFields}
+            value={form.stringFields[0].name}
             required={true}
-            validationFunc={() => 'true'}
+            validationFunc={() =>
+              handleValidation('Name', form.stringFields[0].name)
+            }
           >
             {status => (
               <Input
@@ -235,10 +254,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 placeholder="nonDescriptName"
                 name="name"
                 autoFocus={true}
-                value={form.stringFields}
-                onChange={e =>
-                  setForm({...formContent, stringFields: e.target.value})
-                }
+                value={form.stringFields[0].name}
+                onChange={e => {
+                  form.stringFields[0].name = e.target.value
+                  setForm({...formContent})
+                }}
                 status={status}
                 maxLength={16}
                 testID="json-parsing--name"
@@ -253,21 +273,24 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
                 onClick={onClick}
                 testID="variable-type-dropdown--button"
               >
-                string
+                {dataTypeF}
               </Dropdown.Button>
             )}
             menu={onCollapse => (
               <Dropdown.Menu onCollapse={onCollapse}>
-                {dataTypeList.map(d => (
+                {dataTypeList.map((d, key) => (
                   <Dropdown.Item
-                    key={d.key}
-                    id={d.id}
-                    value={d.value}
-                    onClick={() => setDataType(d)}
-                    selected={dataType.value === d.value}
+                    key={key}
+                    id={d}
+                    value={d}
+                    onClick={() => {
+                      setDataTypeF(d)
+                      // form.stringMeasurement.type = d
+                    }}
+                    selected={dataTypeF === d}
                     testID={`variable-type-dropdown-${1}`}
                   >
-                    {formContent.protocol}
+                    {d}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -278,9 +301,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
       <Grid.Column>
         <Form.ValidationElement
           label="Regex pattern"
-          value={form.stringFields}
+          value={form.stringFields[0].pattern}
           required={true}
-          validationFunc={() => 'true'}
+          validationFunc={() =>
+            handleValidation('Name', form.stringFields[0].pattern)
+          }
         >
           {status => (
             <Input
@@ -288,10 +313,11 @@ const StringParsingForm: FC<Props> = ({form, setForm, formContent}) => {
               placeholder="eg. a=(\\d)"
               name="regex"
               autoFocus={true}
-              value={form.stringFields}
-              onChange={e =>
-                setForm({...formContent, stringFields: e.target.value})
-              }
+              value={form.stringFields[0].pattern}
+              onChange={e => {
+                form.stringFields[0].pattern = e.target.value
+                setForm({...formContent})
+              }}
               status={status}
               maxLength={16}
               testID="string-parsing--regex"

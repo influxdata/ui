@@ -19,6 +19,7 @@ import {
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -42,17 +43,12 @@ const SubscriptionForm: FC<Props> = ({
   const org = useSelector(getOrg)
   const [form, setForm] = useState(formContent)
   useEffect(() => {
-    setForm(form)
+    updateForm(form)
   }, [form])
   return (
     formContent && (
       <div className="create-subscription-form">
-        <Form
-          onSubmit={() => {
-            updateForm(form)
-          }}
-          testID="label-overlay-form"
-        >
+        <Form onSubmit={() => {}} testID="label-overlay-form">
           <Overlay.Header title="Subscribe to a Topic" />
           <Overlay.Body>
             <div className="form-text">
@@ -67,7 +63,9 @@ const SubscriptionForm: FC<Props> = ({
                     value={form.topic}
                     helpText="Subscribe to a topic to start recieving messages."
                     required={true}
-                    validationFunc={() => 'true'}
+                    validationFunc={() =>
+                      handleValidation('Connection Name', form.topic)
+                    }
                   >
                     {status => (
                       <Input
@@ -134,7 +132,7 @@ const SubscriptionForm: FC<Props> = ({
               onClick={() => {
                 setFormActive('parsing')
               }}
-              type={ButtonType.Submit}
+              type={ButtonType.Button}
               testID="create-label-form--submit"
               status={ComponentStatus.Default}
             />

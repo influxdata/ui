@@ -1,6 +1,7 @@
 export interface Subscription {
   id?: string
   name?: string
+  description?: string
   protocol?: string
   orgID?: string
   processGroupId?: string
@@ -10,14 +11,14 @@ export interface Subscription {
   brokerPassword?: string
   topic?: string
   dataFormat?: string
-  jsonMeasurementKey?: string
-  jsonFieldKeys?: string
-  jsonTagKeys?: string
-  jsonTimestamp?: string
-  stringMeasurement: string
-  stringFields?: string
-  stringTags?: string
-  stringTimestamp?: string
+  jsonMeasurementKey?: JsonSpec
+  jsonFieldKeys?: JsonSpec[]
+  jsonTagKeys?: JsonSpec[]
+  jsonTimestamp?: JsonSpec
+  stringMeasurement: StringObjectParams
+  stringFields?: StringObjectParams[]
+  stringTags?: StringObjectParams[]
+  stringTimestamp?: StringObjectParams
   status?: string
   bucket?: string
   qos?: number

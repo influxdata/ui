@@ -23,6 +23,7 @@ import {
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
+import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -41,27 +42,20 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
   const [form, setForm] = useState(formContent)
-  const mqttProtocol = {
-    key: 'MQTT',
-    id: '1',
-    value: 'MQTT',
-  }
+  const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
   const [security, setSecurity] = useState('never')
   useEffect(() => {
-    setForm(form)
+    setForm({...formContent, protocol: protocol})
+  }, [protocol])
+  useEffect(() => {
+    updateForm(form)
   }, [form])
-
   return (
     formContent && (
       <div className="create-broker-form">
-        <Form
-          onSubmit={() => {
-            updateForm(form)
-          }}
-          testID="label-overlay-form"
-        >
+        <Form onSubmit={() => {}} testID="label-overlay-form">
           <Overlay.Header title="Connect to Broker" />
           <Overlay.Body>
             <div className="form-text">
@@ -76,9 +70,9 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                     label="Connection Name"
                     value={form.name}
                     required={true}
-                    validationFunc={() => {
-                      return 'true'
-                    }}
+                    validationFunc={() =>
+                      handleValidation('Connection Name', form.name)
+                    }
                   >
                     {status => (
                       <Input
@@ -91,7 +85,7 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                           setForm({...formContent, name: e.target.value})
                         }
                         status={status}
-                        onClear={() => setForm({...formContent})}
+                        onClear={() => setForm({...formContent, name: ''})}
                         maxLength={16}
                         testID="create-label-form--name"
                       />
@@ -104,8 +98,10 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                       type={InputType.Text}
                       placeholder="Describe this connection"
                       name="description"
-                      value={''}
-                      onChange={() => {}}
+                      value={form.description}
+                      onChange={e =>
+                        setForm({...formContent, description: e.target.value})
+                      }
                       testID="create-label-form--description"
                     />
                   </Form.Element>
@@ -121,22 +117,23 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                               active={active}
                               onClick={onClick}
                               testID="variable-type-dropdown--button"
+                              status={ComponentStatus.Default}
                             >
-                              {formContent.protocol}
+                              {protocol}
                             </Dropdown.Button>
                           )}
                           menu={onCollapse => (
                             <Dropdown.Menu onCollapse={onCollapse}>
-                              {protocolList.map(m => (
+                              {protocolList.map((p, key) => (
                                 <Dropdown.Item
-                                  key={m.key}
-                                  id={m.id}
-                                  value={m.value}
-                                  onClick={() => setProtocol(m)}
-                                  selected={protocol.value === m.value}
+                                  key={key}
+                                  id={p}
+                                  value={p}
+                                  onClick={() => setProtocol(p)}
+                                  selected={protocol === p}
                                   testID={`variable-type-dropdown-${1}`}
                                 >
-                                  {formContent.protocol}
+                                  {p}
                                 </Dropdown.Item>
                               ))}
                             </Dropdown.Menu>
@@ -147,7 +144,9 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                         label="Host"
                         value={formContent.brokerHost}
                         required={true}
-                        validationFunc={() => 'true'}
+                        validationFunc={() =>
+                          handleValidation('Broker Host', form.brokerHost)
+                        }
                       >
                         {status => (
                           <Input
@@ -168,35 +167,45 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                           />
                         )}
                       </Form.ValidationElement>
-                      {/* <Form.ValidationElement
-                      label="Port"
-                      value={Number(formContent.brokerPort)}
-                      required={true}
-                      validationFunc={() => 'true'}
-                    > */}
-                      <Form.Label label="Port" />
-                      {/* {status => ( */}
-                      <Input
-                        type={InputType.Number}
-                        placeholder="1883"
-                        name="port"
-                        autoFocus={true}
-                        value={formContent.brokerPort}
-                        onChange={e =>
-                          setForm({
-                            ...formContent,
-                            brokerPort: convertUserInputToNumOrNaN(e),
-                          })
+                      <Form.ValidationElement
+                        label="Port"
+                        value={String(formContent.brokerPort)}
+                        required={true}
+                        validationFunc={() =>
+                          handleValidation(
+                            'Broker Port',
+                            String(form.brokerPort)
+                          )
                         }
-                        // status={status}
-                        maxLength={16}
-                        testID="create-label-form--port"
-                      />
-                      {/* )} */}
-                      {/* </Form.ValidationElement> */}
+                      >
+                        {status => (
+                          <Input
+                            type={InputType.Number}
+                            placeholder="1883"
+                            name="port"
+                            autoFocus={true}
+                            value={formContent.brokerPort}
+                            onChange={e =>
+                              setForm({
+                                ...formContent,
+                                brokerPort: convertUserInputToNumOrNaN(e),
+                              })
+                            }
+                            status={status}
+                            maxLength={16}
+                            testID="create-label-form--port"
+                          />
+                        )}
+                      </Form.ValidationElement>
                     </div>
                     <div className="example-text">
-                      TCP://MQTT:000.00.0.0:1886
+                      TCP://
+                      {formContent.protocol ? formContent.protocol : 'MQTT'}:
+                      {formContent.brokerHost
+                        ? formContent.brokerHost
+                        : '0.0.0.0'}
+                      :
+                      {formContent.brokerPort ? formContent.brokerPort : '1883'}
                     </div>
                   </Grid.Column>
                 </div>
@@ -304,7 +313,7 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
               onClick={() => {
                 setFormActive('subscription')
               }}
-              type={ButtonType.Submit}
+              type={ButtonType.Button}
               testID="create-label-form--submit"
               status={ComponentStatus.Default}
             />

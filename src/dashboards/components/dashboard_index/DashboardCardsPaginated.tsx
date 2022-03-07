@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {connect} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import DashboardCard from 'src/dashboards/components/dashboard_index/DashboardCard'
@@ -10,10 +10,27 @@ import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 import {AppState, Dashboard} from 'src/types'
 import {LimitStatus} from 'src/cloud/actions/limits'
 
+// Selectors
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
+
+// Contexts
+import {
+  // addPinnedItem,
+  deletePinnedItemByParam,
+  // PinnedItemTypes,
+} from 'src/shared/contexts/pinneditems'
+
 // Utils
 import {extractDashboardLimits} from 'src/cloud/utils/limits'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {notify} from 'src/shared/actions/notifications'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
 
 let getPinnedItems
 if (CLOUD) {
@@ -29,7 +46,10 @@ interface OwnProps {
   onFilterChange: (searchTerm: string) => void
 }
 
-class DashboardCards extends PureComponent<OwnProps & StateProps> {
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = OwnProps & StateProps & ReduxProps
+
+class DashboardCards extends PureComponent<Props> {
   private _isMounted = true
 
   state = {
@@ -64,6 +84,7 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
               description={description}
               onFilterChange={onFilterChange}
               onPinDashboard={this.handlePinDashboard}
+              onUnpinDashboard={this.handleUnpinDashboard}
               isPinned={
                 !!pinnedItems.find(item => item?.metadata.dashboardID === id)
               }
@@ -92,12 +113,34 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
   public handlePinDashboard = () => {
     this.updatePinnedItems()
   }
-}
 
-const mstp = (state: AppState) => {
-  return {
-    limitStatus: extractDashboardLimits(state),
+  public handleUnpinDashboard = async (dashboardID: string) => {
+    // delete from pinned item list
+    try {
+      await deletePinnedItemByParam(dashboardID)
+      this.props.sendNotification(pinnedItemSuccess('dashboard', 'deleted'))
+      this.updatePinnedItems()
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
+    }
   }
 }
 
-export default connect(mstp)(DashboardCards)
+const mdtp = {
+  sendNotification: notify,
+}
+
+const mstp = (state: AppState) => {
+  const me = getMe(state)
+  const org = getOrg(state)
+
+  return {
+    limitStatus: extractDashboardLimits(state),
+    me,
+    org,
+  }
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(DashboardCards)

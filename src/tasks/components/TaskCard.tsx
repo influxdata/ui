@@ -125,7 +125,7 @@ export class TaskCard extends PureComponent<
     )
   }
 
-  private handlePinTask = async () => {
+  private handlePinTask = () => {
     const {task, isPinned} = this.props
 
     if (isPinned) {

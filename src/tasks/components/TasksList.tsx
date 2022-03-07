@@ -24,9 +24,9 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Contexts
 import {
-  // addPinnedItem,
+  addPinnedItem,
   deletePinnedItemByParam,
-  // PinnedItemTypes,
+  PinnedItemTypes,
 } from 'src/shared/contexts/pinneditems'
 
 // Utils
@@ -180,8 +180,25 @@ class TasksList extends PureComponent<Props, State> implements Pageable {
       .catch(err => console.error(err))
   }
 
-  public handlePinTask = () => {
-    this.updatePinnedItems()
+  public handlePinTask = async (taskID: string, name: string) => {
+    const {org, me} = this.props
+
+    // add to pinned item list
+    try {
+      await addPinnedItem({
+        orgID: org.id,
+        userID: me.id,
+        metadata: {
+          taskID,
+          name,
+        },
+        type: PinnedItemTypes.Task,
+      })
+      this.props.sendNotification(pinnedItemSuccess('task', 'added'))
+      this.updatePinnedItems()
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
+    }
   }
 
   public handleUnpinTask = async (taskID: string) => {

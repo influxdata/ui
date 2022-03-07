@@ -4,8 +4,6 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 import {
-  addPinnedItem,
-  PinnedItemTypes,
   deletePinnedItemByParam,
   updatePinnedItemByParam,
 } from 'src/shared/contexts/pinneditems'
@@ -37,12 +35,10 @@ import {setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor} from '@influxdata/clockface'
-import {Task, Label, AppState} from 'src/types'
+import {Task, Label} from 'src/types'
 
 // Constants
 import {DEFAULT_TASK_NAME} from 'src/dashboards/constants'
-import {getMe} from 'src/me/selectors'
-import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
@@ -61,7 +57,7 @@ interface PassedProps {
   onRunTask: (taskID: string) => void
   onUpdate: (name: string, taskID: string) => void
   onFilterChange: (searchTerm: string) => void
-  onPinTask: () => void
+  onPinTask: (taskID: string, name: string) => void
   onUnpinTask: (taskID: string) => void
   isPinned: boolean
 }
@@ -130,27 +126,12 @@ export class TaskCard extends PureComponent<
   }
 
   private handlePinTask = async () => {
-    const {org, me, task, isPinned} = this.props
+    const {task, isPinned} = this.props
 
     if (isPinned) {
       this.props.onUnpinTask(task.id)
     } else {
-      // add to pinned item list
-      try {
-        await addPinnedItem({
-          orgID: org.id,
-          userID: me.id,
-          metadata: {
-            taskID: task.id,
-            name: task.name,
-          },
-          type: PinnedItemTypes.Task,
-        })
-        this.props.sendNotification(pinnedItemSuccess('task', 'added'))
-        this.props.onPinTask()
-      } catch (err) {
-        this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
-      }
+      this.props.onPinTask(task.id, task.name)
     }
   }
 
@@ -372,15 +353,6 @@ const mdtp = {
   sendNotification: notify,
 }
 
-const mstp = (state: AppState) => {
-  const me = getMe(state)
-  const org = getOrg(state)
-
-  return {
-    org,
-    me,
-  }
-}
-const connector = connect(mstp, mdtp)
+const connector = connect(null, mdtp)
 
 export default connector(withRouter(TaskCard))

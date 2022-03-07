@@ -20,9 +20,9 @@ import {LimitStatus} from 'src/cloud/actions/limits'
 
 // Contexts
 import {
-  // addPinnedItem,
+  addPinnedItem,
   deletePinnedItemByParam,
-  // PinnedItemTypes,
+  PinnedItemTypes,
 } from 'src/shared/contexts/pinneditems'
 
 // Utils
@@ -129,8 +129,30 @@ class DashboardCards extends PureComponent<Props> {
       .catch(err => console.error(err))
   }
 
-  public handlePinDashboard = () => {
-    this.updatePinnedItems()
+  public handlePinDashboard = async (
+    dashboardID: string,
+    name: string,
+    description: string
+  ) => {
+    const {org, me} = this.props
+
+    // add to pinned item list
+    try {
+      await addPinnedItem({
+        orgID: org.id,
+        userID: me.id,
+        metadata: {
+          dashboardID,
+          name,
+          description,
+        },
+        type: PinnedItemTypes.Dashboard,
+      })
+      this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
+      this.updatePinnedItems()
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
+    }
   }
 
   public handleUnpinDashboard = async (dashboardID: string) => {

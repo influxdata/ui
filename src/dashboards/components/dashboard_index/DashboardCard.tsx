@@ -47,14 +47,10 @@ import {
 import {notify} from 'src/shared/actions/notifications'
 
 import {
-  addPinnedItem,
   deletePinnedItemByParam,
-  PinnedItemTypes,
   updatePinnedItemByParam,
 } from 'src/shared/contexts/pinneditems'
 
-import {getMe} from 'src/me/selectors'
-import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
@@ -66,7 +62,11 @@ interface OwnProps {
   updatedAt: string
   labels: string[]
   onFilterChange: (searchTerm: string) => void
-  onPinDashboard: () => void
+  onPinDashboard: (
+    dashboardID: string,
+    name: string,
+    description: string
+  ) => void
   onUnpinDashboard: (DashboardID: string) => void
   isPinned: boolean
 }
@@ -142,34 +142,12 @@ class DashboardCard extends PureComponent<Props> {
     onCloneDashboard(id, name)
   }
 
-  private onAddPinnedItem = async () => {
-    const {org, me, id, name, description} = this.props
-
-    // add to pinned item list
-    try {
-      await addPinnedItem({
-        orgID: org.id,
-        userID: me.id,
-        metadata: {
-          dashboardID: id,
-          name: name,
-          description: description,
-        },
-        type: PinnedItemTypes.Dashboard,
-      })
-      this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
-      this.props.onPinDashboard()
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
-    }
-  }
-
   private handlePinDashboard = () => {
-    const {isPinned, id} = this.props
+    const {id, name, description, isPinned} = this.props
     if (isPinned) {
       this.props.onUnpinDashboard(id)
     } else {
-      this.onAddPinnedItem()
+      this.props.onPinDashboard(id, name, description)
     }
   }
 
@@ -309,13 +287,9 @@ const mdtp = {
 
 const mstp = (state: AppState, props: OwnProps) => {
   const dashboard = state.resources.dashboards.byID[props.id]
-  const me = getMe(state)
-  const org = getOrg(state)
 
   return {
     dashboard,
-    me,
-    org,
   }
 }
 const connector = connect(mstp, mdtp)

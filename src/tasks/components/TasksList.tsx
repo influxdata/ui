@@ -1,5 +1,6 @@
 // Libraries
 import React, {PureComponent, RefObject, createRef} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 import memoizeOne from 'memoize-one'
 
 // Styles
@@ -11,27 +12,42 @@ import TaskCard from 'src/tasks/components/TaskCard'
 
 // Types
 import EmptyTasksList from 'src/tasks/components/EmptyTasksList'
-import {Pageable, Task} from 'src/types'
+import {AppState, Pageable, Task} from 'src/types'
 import {SortTypes} from 'src/shared/utils/sort'
 import {Sort} from '@influxdata/clockface'
 import {TaskSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 // Selectors
 import {getSortedResources} from 'src/shared/utils/sort'
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
+
+// Contexts
+import {
+  // addPinnedItem,
+  deletePinnedItemByParam,
+  // PinnedItemTypes,
+} from 'src/shared/contexts/pinneditems'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {notify} from 'src/shared/actions/notifications'
 
 import {PaginationNav} from '@influxdata/clockface'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
 
 let getPinnedItems
 if (CLOUD) {
   getPinnedItems = require('src/shared/contexts/pinneditems').getPinnedItems
 }
 
-interface Props {
+interface OwnProps {
   pageHeight: number
   pageWidth: number
   tasks: Task[]
@@ -58,10 +74,12 @@ interface State {
   pinnedItems: any[]
 }
 
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = OwnProps & ReduxProps
+
 const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
 
-export default class TasksList extends PureComponent<Props, State>
-  implements Pageable {
+class TasksList extends PureComponent<Props, State> implements Pageable {
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
     getSortedResources
   )
@@ -166,6 +184,17 @@ export default class TasksList extends PureComponent<Props, State>
     this.updatePinnedItems()
   }
 
+  public handleUnpinTask = async (taskID: string) => {
+    // delete from pinned item list
+    try {
+      await deletePinnedItemByParam(taskID)
+      this.props.sendNotification(pinnedItemSuccess('task', 'deleted'))
+      this.updatePinnedItems()
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
+    }
+  }
+
   public paginate = page => {
     this.currentPage = page
     const url = new URL(location.href)
@@ -210,6 +239,7 @@ export default class TasksList extends PureComponent<Props, State>
             onRunTask={this.props.onRunTask}
             onFilterChange={this.props.onFilterChange}
             onPinTask={this.handlePinTask}
+            onUnpinTask={this.handleUnpinTask}
             isPinned={
               this.state.pinnedItems?.length &&
               !!this.state.pinnedItems.find(
@@ -223,3 +253,21 @@ export default class TasksList extends PureComponent<Props, State>
     return rows
   }
 }
+
+const mdtp = {
+  sendNotification: notify,
+}
+
+const mstp = (state: AppState) => {
+  const me = getMe(state)
+  const org = getOrg(state)
+
+  return {
+    me,
+    org,
+  }
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(TasksList)

@@ -1,6 +1,7 @@
 // Libraries
 import React, {FC, ReactNode} from 'react'
 import ReactMarkdown from 'react-markdown'
+import rehypeExternalLinks from 'rehype-external-links'
 
 import {CLOUD, MARKDOWN_UNSUPPORTED_IMAGE} from 'src/shared/constants/index'
 
@@ -33,6 +34,9 @@ const allowedImageRenderer: FC<ImageProps> = ({src, alt}) => {
   )
 }
 
+// this type hint is needed until react-markdown is upgraded
+const rehypePlugins = [rehypeExternalLinks] as any
+
 export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
   // don't parse images in cloud environments to prevent arbitrary script execution via images
   if (CLOUD) {
@@ -41,6 +45,7 @@ export const MarkdownRenderer: FC<Props> = ({className = '', text}) => {
         className={className}
         components={{img: disallowedImageRenderer}}
         linkTarget="_blank"
+        rehypePlugins={rehypePlugins}
       >
         {text}
       </ReactMarkdown>

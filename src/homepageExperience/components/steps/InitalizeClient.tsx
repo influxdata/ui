@@ -2,7 +2,6 @@ import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 const InitalizeClient = () => {
-
   const pythonCode = `import os
 from datetime import datetime
 
@@ -23,7 +22,9 @@ write_api = client.write_api(write_options=SYNCHRONOUS)`
         Run this command in your terminal to open the interactive Python shell:
       </p>
       <CodeSnippet text="python3" />
-      <p style={{marginTop: '40px'}}>Paste the following code after the prompt (>>>) and press Enter.</p>
+      <p style={{marginTop: '40px'}}>
+        Paste the following code after the prompt (>>>) and press Enter.
+      </p>
       <CodeSnippet text={pythonCode} />
       <p style={{marginTop: '42px'}}>
         Here, we initialize the token, organization info, and server url that is

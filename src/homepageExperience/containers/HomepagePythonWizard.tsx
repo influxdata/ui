@@ -45,7 +45,7 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
         return <CreateToken />
       }
       case 4: {
-        return <InitalizeClient/>
+        return <InitalizeClient />
       }
       default: {
         return <Overview />

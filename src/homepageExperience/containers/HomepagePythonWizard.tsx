@@ -8,6 +8,7 @@ import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Navigation} from 'src/homepageExperience/components/Navigation'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
+import CreateToken from '../components/steps/CreateToken'
 
 interface State {
   currentStep: number
@@ -38,6 +39,9 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
       }
       case 2: {
         return <InstallDependencies />
+      }
+      case 3: {
+        return <CreateToken />
       }
       default: {
         return <Overview />

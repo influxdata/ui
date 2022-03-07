@@ -2,6 +2,8 @@ For more detailed and up to date information check out the [Annotated CSV Docume
 
 For ingesting custom CSV files into InfluxDB, we recommend you use the [`influx write` command](https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/write/) in the InfluxDB Command Line Interface (CLI).
 
+To install the InfluxDB Command Line Interface (CLI), check out how to [install and use the Influx CLI](https://docs.influxdata.com/influxdb/cloud/tools/influx-cli/).
+
 You can include [Extended annotated CSV](https://docs.influxdata.com/influxdb/cloud/reference/syntax/annotated-csv/extended/)
 annotations to specify how the data translates into [line protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/).
 

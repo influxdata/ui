@@ -45,7 +45,7 @@ const DEFAULT_CONTEXT: ContextType = {
 export const VersionPublishContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
 export const VersionPublishProvider: FC = ({children}) => {
-  const {flow, updateOther} = useContext(FlowContext)
+  const {flow} = useContext(FlowContext)
   const dispatch = useDispatch()
   const [versions, setVersions] = useState([])
   const [publishLoading, setPublishLoading] = useState<RemoteDataState>(
@@ -62,6 +62,7 @@ export const VersionPublishProvider: FC = ({children}) => {
 
       const versions: (VersionHistory | Flow)[] = response.data.reverse()
 
+      // TODO(ariel): resolve this by partitioning the current / list
       if (flow.isDirty) {
         versions.unshift(flow)
       }
@@ -87,14 +88,13 @@ export const VersionPublishProvider: FC = ({children}) => {
       }
 
       dispatch(notify(publishNotebookSuccessful(flow.name)))
-      updateOther({isDirty: false})
       setPublishLoading(RemoteDataState.Done)
       handleGetNotebookVersions()
     } catch (error) {
       dispatch(notify(publishNotebookFailed(flow.name)))
       setPublishLoading(RemoteDataState.Error)
     }
-  }, [dispatch, handleGetNotebookVersions, flow.id, flow.name, updateOther])
+  }, [dispatch, handleGetNotebookVersions, flow.id, flow.name])
 
   return (
     <VersionPublishContext.Provider

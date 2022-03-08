@@ -33,6 +33,10 @@ const SaveState: FC = () => {
     return null
   }
 
+  if (isFlagEnabled('flowPublishLifecycle')) {
+    return <div className="flow-header--saving">Autosaved</div>
+  }
+
   if (!flow.id) {
     return (
       <Button

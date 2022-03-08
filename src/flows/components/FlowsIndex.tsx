@@ -81,9 +81,9 @@ const FlowsIndex = () => {
   const {flows} = useContext(FlowListContext)
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
-    sortKey: 'name' as keyof Flow,
+    sortKey: 'createdAt' as keyof Flow,
     sortType: SortTypes.String,
-    sortDirection: Sort.Ascending,
+    sortDirection: Sort.Descending,
   })
 
   const filteredFlows = Object.keys(flows).filter(f =>

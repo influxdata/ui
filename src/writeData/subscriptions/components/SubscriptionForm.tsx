@@ -15,6 +15,8 @@ import {
   ButtonType,
   ComponentColor,
   ComponentStatus,
+  Icon,
+  IconFont,
 } from '@influxdata/clockface'
 
 // Utils
@@ -32,12 +34,14 @@ interface Props {
   formContent: Subscription
   setFormActive: (string) => void
   updateForm: (any) => void
+  showUpgradeButton: boolean
 }
 
 const SubscriptionForm: FC<Props> = ({
   formContent,
   setFormActive,
   updateForm,
+  showUpgradeButton,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -53,7 +57,14 @@ const SubscriptionForm: FC<Props> = ({
     formContent && (
       <div className="create-subscription-form">
         <Form onSubmit={() => {}} testID="label-overlay-form">
-          <Overlay.Header title="Subscribe to a Topic" />
+          <Overlay.Header title="Subscribe to a Topic">
+            {showUpgradeButton && (
+              <div className="premium-container">
+                <Icon glyph={IconFont.CrownSolid_New} />
+                <div className="premium-text">Premium</div>
+              </div>
+            )}
+          </Overlay.Header>
           <Overlay.Body>
             <div className="form-text">
               Subscribe to a topic and write message payloads to an InfluxDB

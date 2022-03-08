@@ -15,7 +15,10 @@ import {
   ComponentStatus,
   SelectGroup,
   ButtonShape,
+  Icon,
+  IconFont,
 } from '@influxdata/clockface'
+import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -35,6 +38,7 @@ interface Props {
   setFormActive: (string) => void
   updateForm: (any) => void
   setFormComplete: (any) => void
+  showUpgradeButton: boolean
 }
 
 const ParsingForm: FC<Props> = ({
@@ -42,6 +46,7 @@ const ParsingForm: FC<Props> = ({
   setFormActive,
   updateForm,
   setFormComplete,
+  showUpgradeButton,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -53,7 +58,14 @@ const ParsingForm: FC<Props> = ({
     formContent && (
       <div className="create-parsing-form">
         <Form onSubmit={() => {}} testID="label-overlay-form">
-          <Overlay.Header title="Define Data Parsing Rules" />
+          <Overlay.Header title="Define Data Parsing Rules">
+            {showUpgradeButton && (
+              <div className="premium-container">
+                <Icon glyph={IconFont.CrownSolid_New} />
+                <div className="premium-text">Premium</div>
+              </div>
+            )}
+          </Overlay.Header>
           <Overlay.Body>
             <div className="form-text">
               Specify the format of your messages and define rules to parse it
@@ -148,17 +160,21 @@ const ParsingForm: FC<Props> = ({
               type={ButtonType.Button}
               testID="create-label-form--cancel"
             />
-            <Button
-              text={'Next'}
-              color={ComponentColor.Success}
-              type={ButtonType.Button}
-              onClick={() => {
-                setFormComplete(true)
-                // history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-              }}
-              testID="create-label-form--submit"
-              status={ComponentStatus.Default}
-            />
+            {showUpgradeButton ? (
+              <CloudUpgradeButton className="upgrade-button" />
+            ) : (
+              <Button
+                text={'Next'}
+                color={ComponentColor.Success}
+                type={ButtonType.Button}
+                onClick={() => {
+                  setFormComplete(true)
+                  // history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+                }}
+                testID="create-label-form--submit"
+                status={ComponentStatus.Default}
+              />
+            )}
           </Overlay.Footer>
         </Form>
       </div>

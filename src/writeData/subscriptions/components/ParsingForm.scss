@@ -17,4 +17,54 @@
     text-transform: uppercase;
     color: #f1f1f3;
   }
+
+  .upgrade-button {
+    background: linear-gradient(45deg, #0098f0 0%, #513cc6 100%) !important;
+    color: #fff;
+    padding: 0 12px;
+    height: 40px;
+    font-weight: 500;
+    font-family: 'Rubik', Helvetica, Arial, Tahoma, Verdana, sans-serif;
+    border-style: solid;
+    border-width: 0;
+    text-decoration: none;
+    transition: background-color 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
+      box-shadow 200ms cubic-bezier(0.18, 0.16, 0.2, 1),
+      color 200ms cubic-bezier(0.18, 0.16, 0.2, 1);
+    outline: none;
+    border-radius: 2px;
+    white-space: nowrap;
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cf-overlay--header {
+    justify-content: unset;
+  }
+  .premium-container {
+    margin-left: 18px;
+    display: flex;
+  }
+  .premium-text {
+    margin-left: 14px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 120%;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .cf-icon {
+    background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }

@@ -18,6 +18,9 @@ import {
   ComponentStatus,
   SelectGroup,
   ButtonShape,
+  IconFont,
+  Icon,
+  Gradients,
 } from '@influxdata/clockface'
 
 // Utils
@@ -36,9 +39,15 @@ interface Props {
   formContent: Subscription
   setFormActive: (string) => void
   updateForm: (any) => void
+  showUpgradeButton: boolean
 }
 
-const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
+const BrokerForm: FC<Props> = ({
+  formContent,
+  setFormActive,
+  updateForm,
+  showUpgradeButton,
+}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
   const mqttProtocol = 'MQTT'
@@ -66,7 +75,15 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
     form && (
       <div className="create-broker-form">
         <Form onSubmit={() => {}} testID="label-overlay-form">
-          <Overlay.Header title="Connect to Broker" />
+          <Overlay.Header title="Connect to Broker">
+            {showUpgradeButton && (
+              <div className="premium-container">
+                <Icon glyph={IconFont.CrownSolid_New} />
+                <div className="premium-text">Premium</div>
+              </div>
+            )}
+          </Overlay.Header>
+
           <Overlay.Body>
             <div className="form-text">
               Create a new connection to collect data from an MQTT broker and

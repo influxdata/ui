@@ -1,11 +1,20 @@
 // Libraries
 import React, {FC, useState, useContext} from 'react'
+import {useSelector} from 'react-redux'
 
 // Components
-import {Button, IconFont, Page} from '@influxdata/clockface'
+import {
+  Button,
+  IconFont,
+  Page,
+  FlexBox,
+  JustifyContent,
+  AlignItems,
+} from '@influxdata/clockface'
 import BrokerForm from './BrokerForm'
 import ParsingForm from './ParsingForm'
 import SubscriptionForm from './SubscriptionForm'
+import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Graphics
 import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
@@ -19,11 +28,15 @@ import {
   SubscriptionCreateProvider,
 } from 'src/writeData/subscriptions/context/subscription.create'
 
+// Actions
+import {shouldShowUpgradeButton} from 'src/me/selectors'
+
 const CreateSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState('broker')
   const {formContent, setFormComplete, updateForm} = useContext(
     SubscriptionCreateContext
   )
+  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   return (
     <Page>
       <Page.Contents
@@ -31,6 +44,15 @@ const CreateSubscriptionPage: FC = () => {
         scrollable={true}
         className="create-subscription-page"
       >
+        {showUpgradeButton && (
+          <FlexBox
+            justifyContent={JustifyContent.FlexEnd}
+            alignItems={AlignItems.FlexEnd}
+            stretchToFitHeight={true}
+          >
+            <CloudUpgradeButton className="upgrade-payg--button__header" />
+          </FlexBox>
+        )}
         <div className="progress">
           <div className="logo">
             <img src={FormLogo} />
@@ -89,6 +111,7 @@ const CreateSubscriptionPage: FC = () => {
             setFormActive={setFormActive}
             formContent={formContent}
             updateForm={updateForm}
+            showUpgradeButton={showUpgradeButton}
           />
         )}
         {active === 'subscription' && (
@@ -96,6 +119,7 @@ const CreateSubscriptionPage: FC = () => {
             setFormActive={setFormActive}
             formContent={formContent}
             updateForm={updateForm}
+            showUpgradeButton={showUpgradeButton}
           />
         )}
         {active === 'parsing' && (
@@ -104,6 +128,7 @@ const CreateSubscriptionPage: FC = () => {
             formContent={formContent}
             updateForm={updateForm}
             setFormComplete={setFormComplete}
+            showUpgradeButton={showUpgradeButton}
           />
         )}
       </Page.Contents>
@@ -116,3 +141,12 @@ export default () => (
     <CreateSubscriptionPage />
   </SubscriptionCreateProvider>
 )
+
+// const mstp = (state: AppState) => {
+//   const showUpgrade = shouldShowUpgradeButton(state)
+//   return {
+//     showUpgrade,
+//   }
+// }
+
+// export default connect(mstp, {})(CreateSubscriptionPage)

@@ -66,3 +66,10 @@
 .flow-sidebar--secrets-list {
   margin-right: -16px;
 }
+
+.cf-overlay--dismiss {
+  &:before,
+  &:after {
+    background-color: $cf-grey-65;
+  }
+}

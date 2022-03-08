@@ -1,7 +1,7 @@
 import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 
-const InitalizeClient = () => {
+export const InitalizeClient = () => {
   const pythonCode = `import os
 from datetime import datetime
 
@@ -34,5 +34,3 @@ write_api = client.write_api(write_options=SYNCHRONOUS)`
     </>
   )
 }
-
-export default InitalizeClient

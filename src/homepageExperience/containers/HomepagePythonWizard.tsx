@@ -6,10 +6,10 @@ import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Navigation} from 'src/homepageExperience/components/Navigation'
+import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
+import {InitalizeClient} from 'src/homepageExperience/components/steps/InitalizeClient'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
-import CreateToken from 'src/homepageExperience/components/steps/CreateToken'
-import InitalizeClient from 'src/homepageExperience/components/steps/InitalizeClient'
 
 interface State {
   currentStep: number

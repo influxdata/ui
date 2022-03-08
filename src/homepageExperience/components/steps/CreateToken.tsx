@@ -12,9 +12,12 @@ import {getAllResources} from 'src/authorizations/actions/thunks'
 import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 import {getOrg} from 'src/organizations/selectors'
 
+// Helper Components
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+
 type ReduxProps = ConnectedProps<typeof connector>
 
-const CreateToken: FC<ReduxProps & RouteComponentProps> = ({
+const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
   showOverlay,
   dismissOverlay,
   getAllResources,
@@ -25,7 +28,7 @@ const CreateToken: FC<ReduxProps & RouteComponentProps> = ({
     try {
       await getAllResources()
       showOverlay('add-master-token', null, dismissOverlay)
-    } catch (e) {
+    } catch {
       dispatch(notify(getResourcesTokensFailure('all access token')))
     }
   }
@@ -49,13 +52,12 @@ const CreateToken: FC<ReduxProps & RouteComponentProps> = ({
       </p>
       <CodeSnippet
         text="export INFLUXDB_TOKEN=<your token here>"
-        onCopy={null}
       />
       <p style={{marginTop: '46px'}}>
         You can create tokens in the future in the{' '}
-        <a target="_blank" href={`orgs/${org.id}/load-data/tokens`}>
+        <SafeBlankLink href={`orgs/${org.id}/load-data/tokens`}>
           Token page
-        </a>
+        </SafeBlankLink>
         .
       </p>
     </>
@@ -69,5 +71,4 @@ const mdtp = {
 }
 
 const connector = connect(null, mdtp)
-
-export default connector(withRouter(CreateToken))
+export const CreateToken = connector(withRouter(CreateTokenComponent))

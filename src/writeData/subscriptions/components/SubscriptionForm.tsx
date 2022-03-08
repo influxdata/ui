@@ -18,6 +18,7 @@ import {
   Icon,
   IconFont,
 } from '@influxdata/clockface'
+import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -106,18 +107,7 @@ const SubscriptionForm: FC<Props> = ({
                   <div className="form-text">
                     Select a bucket to write your data to.
                   </div>
-                  <div className="header">
-                    <div className="text">Your Buckets</div>
-                    <Button
-                      text={'Create Bucket'}
-                      color={ComponentColor.Success}
-                      onClick={() => {}}
-                      type={ButtonType.Button}
-                      testID="create-label-form--submit"
-                      status={ComponentStatus.Default}
-                    />
-                  </div>
-                  <div className="bucket-list" />
+                  <WriteDataHelperBuckets />
                 </Grid.Column>
               </Grid.Row>
             </Grid>

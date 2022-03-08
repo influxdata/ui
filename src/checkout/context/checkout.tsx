@@ -32,6 +32,7 @@ import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
 import {CreditCardParams, RemoteDataState} from 'src/types'
 import {getErrorMessage} from 'src/utils/api'
 import {event} from 'src/cloud/utils/reporting'
+// import isEmail from 'validator/es/lib/isEmail'
 
 export type Props = {
   children: JSX.Element
@@ -219,9 +220,9 @@ export const CheckoutProvider: FC<Props> = React.memo(({children}) => {
     }
 
     return Object.entries(fields).filter(([key, value]) => {
-      if (shouldNotify && key === 'notifyEmail' && value === '') {
-        return true
-      }
+      // if (shouldNotify && key === 'notifyEmail' && !isEmail(value)) {
+      //   return true
+      // }
       if (shouldNotify && key === 'balanceThreshold' && value === '') {
         return true
       }

@@ -50,9 +50,7 @@ const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
         Save your token as an environment variable; you’ll use it soon. Run this
         command in your terminal:
       </p>
-      <CodeSnippet
-        text="export INFLUXDB_TOKEN=<your token here>"
-      />
+      <CodeSnippet text="export INFLUXDB_TOKEN=<your token here>" />
       <p style={{marginTop: '46px'}}>
         You can create tokens in the future in the{' '}
         <SafeBlankLink href={`orgs/${org.id}/load-data/tokens`}>

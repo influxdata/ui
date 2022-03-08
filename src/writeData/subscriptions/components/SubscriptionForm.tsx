@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useState, useContext} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -36,6 +36,9 @@ interface Props {
   setFormActive: (string) => void
   updateForm: (any) => void
   showUpgradeButton: boolean
+  buckets: any
+  bucket: any
+  // changeBucket: (any) => void
 }
 
 const SubscriptionForm: FC<Props> = ({
@@ -43,6 +46,9 @@ const SubscriptionForm: FC<Props> = ({
   setFormActive,
   updateForm,
   showUpgradeButton,
+  buckets,
+  bucket,
+  // changeBucket
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -54,8 +60,12 @@ const SubscriptionForm: FC<Props> = ({
   useEffect(() => {
     setRender(true)
   }, [])
+  useEffect(() => {
+    setForm({...formContent, bucket: bucket.name})
+  }, [bucket])
   return (
-    formContent && (
+    formContent &&
+    buckets && (
       <div className="create-subscription-form">
         <Form onSubmit={() => {}} testID="label-overlay-form">
           <Overlay.Header title="Subscribe to a Topic">
@@ -149,4 +159,5 @@ const SubscriptionForm: FC<Props> = ({
     )
   )
 }
+
 export default SubscriptionForm

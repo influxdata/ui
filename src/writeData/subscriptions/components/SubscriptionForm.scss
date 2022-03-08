@@ -46,6 +46,15 @@
     color: #f1f1f3;
   }
 
+  .bucket-list {
+    height: 150px;
+
+    background: #07070e;
+
+    border: 2px solid #333346;
+    box-sizing: border-box;
+  }
+
   .header {
     display: flex;
     flex-direction: row;
@@ -68,5 +77,12 @@
     text-align: center;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+  }
+  .write-data--details-widget-title {
+    margin-bottom: 8px;
+    padding-left: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }

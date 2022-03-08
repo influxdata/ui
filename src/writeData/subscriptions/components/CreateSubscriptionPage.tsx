@@ -15,6 +15,7 @@ import BrokerForm from './BrokerForm'
 import ParsingForm from './ParsingForm'
 import SubscriptionForm from './SubscriptionForm'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import GetResources from 'src/resources/components/GetResources'
 
 // Graphics
 import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
@@ -27,6 +28,14 @@ import {
   SubscriptionCreateContext,
   SubscriptionCreateProvider,
 } from 'src/writeData/subscriptions/context/subscription.create'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
+import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+
+// Types
+import {AppState, ResourceType, Bucket} from 'src/types'
+
+// Utils
+import {getAll} from 'src/resources/selectors'
 
 // Actions
 import {shouldShowUpgradeButton} from 'src/me/selectors'
@@ -37,116 +46,117 @@ const CreateSubscriptionPage: FC = () => {
     SubscriptionCreateContext
   )
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
+  const buckets = useSelector((state: AppState) =>
+    getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
+  )
+  const {bucket} = useContext(WriteDataDetailsContext)
   return (
-    <Page>
-      <Page.Contents
-        fullWidth={true}
-        scrollable={true}
-        className="create-subscription-page"
-      >
-        {showUpgradeButton && (
-          <FlexBox
-            justifyContent={JustifyContent.FlexEnd}
-            alignItems={AlignItems.FlexEnd}
-            stretchToFitHeight={true}
-          >
-            <CloudUpgradeButton className="upgrade-payg--button__header" />
-          </FlexBox>
-        )}
-        <div className="progress">
-          <div className="logo">
-            <img src={FormLogo} />
-            <div>
-              <div className="logo-text--lg">Setting up</div>
-              <div className="logo-text--sm">MQTT Connector</div>
-            </div>
-          </div>
-          <div className="bar">
-            <div className="wrap">
-              <Button
-                text=""
-                icon={IconFont.Cloud}
-                onClick={() => setFormActive('broker')}
-                testID="user-account-switch-btn"
-              />
-              <div
-                className={active === 'broker' ? 'title--selected' : 'title'}
-              >
-                Connect to Broker
+    <GetResources resources={[ResourceType.Buckets]}>
+      <Page>
+        <Page.Contents
+          fullWidth={true}
+          scrollable={true}
+          className="create-subscription-page"
+        >
+          {showUpgradeButton && (
+            <FlexBox
+              justifyContent={JustifyContent.FlexEnd}
+              alignItems={AlignItems.FlexEnd}
+              stretchToFitHeight={true}
+            >
+              <CloudUpgradeButton className="upgrade-payg--button__header" />
+            </FlexBox>
+          )}
+          <div className="progress">
+            <div className="logo">
+              <img src={FormLogo} />
+              <div>
+                <div className="logo-text--lg">Setting up</div>
+                <div className="logo-text--sm">MQTT Connector</div>
               </div>
             </div>
-            <div className="wrap">
-              <Button
-                text=""
-                icon={IconFont.AddCell}
-                onClick={() => setFormActive('subscription')}
-                testID="user-account-switch-btn"
-              />
+            <div className="bar">
+              <div className="wrap">
+                <Button
+                  text=""
+                  icon={IconFont.Cloud}
+                  onClick={() => setFormActive('broker')}
+                  testID="user-account-switch-btn"
+                />
+                <div
+                  className={active === 'broker' ? 'title--selected' : 'title'}
+                >
+                  Connect to Broker
+                </div>
+              </div>
+              <div className="wrap">
+                <Button
+                  text=""
+                  icon={IconFont.AddCell}
+                  onClick={() => setFormActive('subscription')}
+                  testID="user-account-switch-btn"
+                />
 
-              <div
-                className={
-                  active === 'subscription' ? 'title--selected' : 'title'
-                }
-              >
-                Subscribe to Topic
+                <div
+                  className={
+                    active === 'subscription' ? 'title--selected' : 'title'
+                  }
+                >
+                  Subscribe to Topic
+                </div>
               </div>
-            </div>
-            <div className="wrap">
-              <Button
-                text=""
-                icon={IconFont.Zap}
-                onClick={() => setFormActive('parsing')}
-                testID="user-account-switch-btn"
-              />
-              <div
-                className={active === 'parsing' ? 'title--selected' : 'title'}
-              >
-                Define Data Parsing Rules
+              <div className="wrap">
+                <Button
+                  text=""
+                  icon={IconFont.Zap}
+                  onClick={() => setFormActive('parsing')}
+                  testID="user-account-switch-btn"
+                />
+                <div
+                  className={active === 'parsing' ? 'title--selected' : 'title'}
+                >
+                  Define Data Parsing Rules
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {active === 'broker' && (
-          <BrokerForm
-            setFormActive={setFormActive}
-            formContent={formContent}
-            updateForm={updateForm}
-            showUpgradeButton={showUpgradeButton}
-          />
-        )}
-        {active === 'subscription' && (
-          <SubscriptionForm
-            setFormActive={setFormActive}
-            formContent={formContent}
-            updateForm={updateForm}
-            showUpgradeButton={showUpgradeButton}
-          />
-        )}
-        {active === 'parsing' && (
-          <ParsingForm
-            setFormActive={setFormActive}
-            formContent={formContent}
-            updateForm={updateForm}
-            setFormComplete={setFormComplete}
-            showUpgradeButton={showUpgradeButton}
-          />
-        )}
-      </Page.Contents>
-    </Page>
+          {active === 'broker' && (
+            <BrokerForm
+              setFormActive={setFormActive}
+              formContent={formContent}
+              updateForm={updateForm}
+              showUpgradeButton={showUpgradeButton}
+            />
+          )}
+          {active === 'subscription' && (
+            <SubscriptionForm
+              setFormActive={setFormActive}
+              formContent={formContent}
+              updateForm={updateForm}
+              showUpgradeButton={showUpgradeButton}
+              buckets={buckets}
+              bucket={bucket}
+            />
+          )}
+          {active === 'parsing' && (
+            <ParsingForm
+              setFormActive={setFormActive}
+              formContent={formContent}
+              updateForm={updateForm}
+              setFormComplete={setFormComplete}
+              showUpgradeButton={showUpgradeButton}
+            />
+          )}
+        </Page.Contents>
+      </Page>
+    </GetResources>
   )
 }
 
 export default () => (
   <SubscriptionCreateProvider>
-    <CreateSubscriptionPage />
+    <WriteDataDetailsProvider>
+      <CreateSubscriptionPage />
+    </WriteDataDetailsProvider>
   </SubscriptionCreateProvider>
 )
-
-// const mstp = (state: AppState) => {
-//   const showUpgrade = shouldShowUpgradeButton(state)
-//   return {
-//     showUpgrade,
-//   }
-// }
-
-// export default connect(mstp, {})(CreateSubscriptionPage)

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState, useContext} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -48,7 +48,6 @@ const SubscriptionForm: FC<Props> = ({
   showUpgradeButton,
   buckets,
   bucket,
-  // changeBucket
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -117,7 +116,7 @@ const SubscriptionForm: FC<Props> = ({
                   <div className="form-text">
                     Select a bucket to write your data to.
                   </div>
-                  <WriteDataHelperBuckets />
+                  <WriteDataHelperBuckets clientHelper={false} />
                 </Grid.Column>
               </Grid.Row>
             </Grid>

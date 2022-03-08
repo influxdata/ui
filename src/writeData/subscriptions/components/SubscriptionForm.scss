@@ -2,12 +2,22 @@
   float: right;
   width: 75%;
 
+  .cf-flex-box__margin-sm.cf-flex-box__row.cf-flex-box__justify-flex-end > * {
+    margin-left: 8px;
+  }
+
   .cf-overlay--header {
     justify-content: unset;
   }
   .premium-container {
     margin-left: 18px;
     display: flex;
+
+    .cf-icon {
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
   .premium-text {
     margin-left: 14px;
@@ -23,11 +33,6 @@
     -webkit-text-fill-color: transparent;
   }
 
-  .cf-icon {
-    background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
   .form-text {
     font-size: 16.8px;
     line-height: 160%;
@@ -44,15 +49,6 @@
     margin-top: 64px;
     margin-bottom: 32px;
     color: #f1f1f3;
-  }
-
-  .bucket-list {
-    height: 150px;
-
-    background: #07070e;
-
-    border: 2px solid #333346;
-    box-sizing: border-box;
   }
 
   .header {
@@ -78,11 +74,12 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
-  .write-data--details-widget-title {
-    margin-bottom: 8px;
-    padding-left: 12px;
+  .write-data--subscriptions-title {
+    padding: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: #333346;
+    height: 56px;
   }
 }

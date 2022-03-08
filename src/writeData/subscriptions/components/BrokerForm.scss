@@ -1,6 +1,11 @@
 .create-broker-form {
   float: right;
   width: 75%;
+
+  .cf-flex-box__margin-sm.cf-flex-box__row.cf-flex-box__justify-flex-end > * {
+    margin-left: 8px;
+  }
+
   .cf-form--element {
     margin-bottom: 32px;
   }
@@ -11,6 +16,12 @@
   .premium-container {
     margin-left: 18px;
     display: flex;
+
+    .cf-icon {
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
   .premium-text {
     margin-left: 14px;
@@ -21,12 +32,6 @@
 
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .cf-icon {
     background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

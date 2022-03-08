@@ -16,32 +16,43 @@ import {
   FontWeight,
   SquareGrid,
   ComponentSize,
+  Icon,
+  IconFont,
 } from '@influxdata/clockface'
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
 
 // Contexts
 import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
 
-const CloudNativeSection: FC = () => {
+// Actions
+import {shouldShowUpgradeButton} from 'src/me/selectors'
+
+// Styles
+import 'src/writeData/subscriptions/components/CloudNativeSources.scss'
+
+const CloudNativeSources: FC = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
   const items = search(searchTerm)
   const history = useHistory()
   const org = useSelector(getOrg)
-
+  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   if (!items.length) {
     return null
   }
   return (
-    <div
-      className="write-data--section"
-      data-testid="write-data--section cloud-connections"
-    >
+    <div className="cloud-native-sources" data-testid="cloud-native-sources">
       <Heading
         element={HeadingElement.H2}
         weight={FontWeight.Regular}
         style={{marginTop: '24px', marginBottom: '4px'}}
       >
         Cloud Native Connections
+        {showUpgradeButton && (
+          <div className="premium-container">
+            <Icon glyph={IconFont.CrownSolid_New} />
+            <div className="premium-text">Premium</div>
+          </div>
+        )}
       </Heading>
       <Heading
         element={HeadingElement.H5}
@@ -73,4 +84,4 @@ const CloudNativeSection: FC = () => {
   )
 }
 
-export default CloudNativeSection
+export default CloudNativeSources

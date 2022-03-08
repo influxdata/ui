@@ -26,7 +26,11 @@ import {
 // Types
 import {AppState, ResourceType, Bucket} from 'src/types'
 
-const WriteDataHelperBuckets: FC = () => {
+interface Props {
+  clientHelper?: boolean
+}
+
+const WriteDataHelperBuckets: FC<Props> = ({clientHelper = true}) => {
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
@@ -83,7 +87,11 @@ const WriteDataHelperBuckets: FC = () => {
     <>
       <Heading
         element={HeadingElement.H6}
-        className="write-data--details-widget-title"
+        className={
+          clientHelper
+            ? 'write-data--details-widget-title'
+            : 'write-data--subscriptions-title'
+        }
       >
         Bucket
         <CreateBucketButton />

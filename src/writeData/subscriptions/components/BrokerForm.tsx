@@ -20,7 +20,6 @@ import {
   ButtonShape,
   IconFont,
   Icon,
-  Gradients,
 } from '@influxdata/clockface'
 
 // Utils
@@ -83,11 +82,11 @@ const BrokerForm: FC<Props> = ({
               </div>
             )}
           </Overlay.Header>
-
           <Overlay.Body>
             <div className="form-text">
-              Create a new connection to collect data from an MQTT broker and
-              parse messages into metrics.
+              {showUpgradeButton
+                ? 'Upgrade Now to create a new connection to collect data from an MQTT broker and parse messages into metrics.'
+                : 'Create a new connection to collect data from an MQTT broker and parse messages into metrics.'}
             </div>
             <h2 className="form-header">Broker details</h2>
             <Grid>

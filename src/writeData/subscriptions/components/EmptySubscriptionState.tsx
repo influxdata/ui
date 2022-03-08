@@ -58,7 +58,7 @@ const EmptySubscriptionState: FC = () => {
             </div>
             <div className="right">
               <Button
-                text="Create Configuration"
+                text="Create Connection"
                 icon={IconFont.Plus_New}
                 color={ComponentColor.Primary}
                 onClick={() => {
@@ -78,7 +78,7 @@ const EmptySubscriptionState: FC = () => {
               <b>Cloud Native Connection</b>.
             </EmptyState.Text>
             <Button
-              text="Create Configuration"
+              text="Create Connection"
               icon={IconFont.Plus_New}
               color={ComponentColor.Primary}
               onClick={() => {

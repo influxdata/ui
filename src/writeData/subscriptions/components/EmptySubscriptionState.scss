@@ -3,6 +3,10 @@
   justify-content: space-between;
   width: 100%;
   padding-top: 40px;
+
+  .cf-empty-state--md {
+    padding-top: 246px;
+  }
 }
 .subscription-create {
   display: flex;

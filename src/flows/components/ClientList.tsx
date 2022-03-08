@@ -1,7 +1,12 @@
 import React, {FC, useContext} from 'react'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {CLIENT_DEFINITIONS} from 'src/writeData'
-import {FlexBox, SelectableCard, ComponentSize} from '@influxdata/clockface'
+import {
+  FlexBox,
+  SelectableCard,
+  ComponentSize,
+  JustifyContent,
+} from '@influxdata/clockface'
 import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 import PanelQueryOverlay from 'src/flows/components/panel/PanelQueryOverlay'
 import {PopupContext} from 'src/flows/context/popup'
@@ -16,7 +21,7 @@ const ClientList: FC = () => {
   return (
     <FlexBox
       style={{flexWrap: 'wrap', gap: '8px'}}
-      className="flow-sidebar--client-list"
+      justifyContent={JustifyContent.Center}
     >
       {Object.values(CLIENT_DEFINITIONS).map(item => {
         const click = (client: string) => {
@@ -31,7 +36,7 @@ const ClientList: FC = () => {
         const thumb = <img src={item.logo ? item.logo : placeholderLogo} />
 
         return (
-          <FlexBox.Child key={item.id}>
+          <FlexBox.Child key={item.id} grow={0}>
             <SelectableCard
               id={item.id}
               formName="load-data-cards"

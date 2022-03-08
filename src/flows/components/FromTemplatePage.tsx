@@ -59,10 +59,7 @@ const Template: FC = () => {
         return hydrate(data)
       })
       .then(data => {
-        if (
-          isFlagEnabled('ephemeralNotebook') &&
-          !isFlagEnabled('flowPublishLifecycle')
-        ) {
+        if (isFlagEnabled('ephemeralNotebook')) {
           populate(data)
         } else {
           add(data).then(id => {
@@ -89,10 +86,7 @@ const Template: FC = () => {
 }
 
 const FromTemplatePage: FC = () => {
-  if (
-    isFlagEnabled('ephemeralNotebook') &&
-    !isFlagEnabled('flowPublishLifecycle')
-  ) {
+  if (isFlagEnabled('ephemeralNotebook')) {
     return (
       <AppWrapper>
         <AppSettingProvider>

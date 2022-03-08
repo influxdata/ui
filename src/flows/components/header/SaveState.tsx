@@ -29,10 +29,7 @@ const SaveState: FC = () => {
     })
   }
 
-  if (
-    !isFlagEnabled('ephemeralNotebook') ||
-    isFlagEnabled('flowPublishLifecycle')
-  ) {
+  if (!isFlagEnabled('ephemeralNotebook')) {
     return null
   }
 

@@ -35,7 +35,6 @@ import {
   List,
 } from '@influxdata/clockface'
 
-import PublishedVersions from 'src/flows/components/header/PublishedVersions'
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
@@ -71,9 +70,11 @@ import {
 const backgroundColor = '#07070E'
 
 type MenuItemType = {
-  title: string
-  onClick: () => void
-  icon: IconFont
+  title?: string
+  onClick?: () => void
+  icon?: IconFont
+  divider?: boolean
+  disabled?: () => boolean
   testID?: string
 }
 interface ButtonProp {
@@ -92,23 +93,29 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
       <Popover
         triggerRef={triggerRef}
         enableDefaultStyles={false}
-        style={{minWidth: '176px'}}
+        style={{minWidth: 209}}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
         contents={onHide => (
           <List>
             {menuItems.map(item => (
-              <List.Item
-                key={item.title}
-                onClick={() => {
-                  item.onClick()
-                  onHide()
-                }}
-                testID={item.testID || ''}
-              >
-                <Icon glyph={item.icon} />
-                <span style={{paddingLeft: '10px'}}>{item.title}</span>
-              </List.Item>
+              <React.Fragment key={item.title}>
+                {item.divider ? (
+                  <List.Divider />
+                ) : (
+                  <List.Item
+                    disabled={item?.disabled ? item.disabled() : false}
+                    onClick={() => {
+                      item?.onClick()
+                      onHide()
+                    }}
+                    testID={item?.testID || ''}
+                  >
+                    <Icon glyph={item?.icon} />
+                    <span style={{paddingLeft: '10px'}}>{item?.title}</span>
+                  </List.Item>
+                )}
+              </React.Fragment>
             ))}
           </List>
         )}
@@ -125,7 +132,7 @@ interface Share {
 const FlowHeader: FC = () => {
   const {remove, clone} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
-  const {handlePublish, publishLoading} = useContext(VersionPublishContext)
+  const {handlePublish, versions} = useContext(VersionPublishContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
@@ -328,6 +335,21 @@ const FlowHeader: FC = () => {
     history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
   }
 
+  const handleViewPublish = () => {
+    event('viewing_publish_history')
+    const [first, second] = versions
+    // accounts for the draft state
+    let versionId = first.id
+    if (first.id === flow.id) {
+      versionId = second.id
+    }
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
+        flow.id
+      }/versions/${versionId}`
+    )
+  }
+
   const menuItems: MenuItemType[] = [
     {
       title: 'Clone',
@@ -359,6 +381,30 @@ const FlowHeader: FC = () => {
     )
   }
 
+  if (isFlagEnabled('flowPublishLifecycle')) {
+    menuItems.splice(
+      0,
+      0,
+      {
+        title: 'Save to version history',
+        onClick: handlePublish,
+        icon: IconFont.Disks,
+      },
+      {
+        title: 'Version history',
+        onClick: handleViewPublish,
+        icon: IconFont.Layers,
+        disabled: () => {
+          if (versions.length > 1) {
+            return false
+          }
+          return versions[0].id === flow.id
+        },
+      },
+      {divider: true}
+    )
+  }
+
   if (!flow) {
     return null
   }
@@ -378,7 +424,7 @@ const FlowHeader: FC = () => {
           <Page.ControlBarLeft>
             <Submit />
             <AutoRefreshButton />
-            {!isFlagEnabled('flowPublishLifecycle') && <SaveState />}
+            <SaveState />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <PresentationMode />
@@ -399,19 +445,6 @@ const FlowHeader: FC = () => {
                   }
                   titleText={`Share ${PROJECT_NAME}`}
                 />
-                {isFlagEnabled('flowPublishLifecycle') && (
-                  <SquareButton
-                    icon={IconFont.Checkmark}
-                    onClick={handlePublish}
-                    color={ComponentColor.Primary}
-                    status={
-                      publishLoading === RemoteDataState.Loading
-                        ? ComponentStatus.Loading
-                        : ComponentStatus.Default
-                    }
-                    titleText={`Publish ${PROJECT_NAME}`}
-                  />
-                )}
                 <MenuButton menuItems={menuItems} />
               </>
             )}
@@ -423,13 +456,6 @@ const FlowHeader: FC = () => {
                 titleText="Export Notebook"
               />
             </FeatureFlag>
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-      )}
-      {isFlagEnabled('flowPublishLifecycle') && (
-        <Page.ControlBar fullWidth>
-          <Page.ControlBarRight>
-            <PublishedVersions />
           </Page.ControlBarRight>
         </Page.ControlBar>
       )}

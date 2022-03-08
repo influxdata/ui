@@ -120,6 +120,7 @@ export interface Flow {
   createdAt?: Date
   updatedAt?: Date
   createdBy?: string
+  isDirty: boolean
 }
 
 export interface FlowListState {

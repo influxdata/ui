@@ -17,7 +17,9 @@ import {
   getNotebooksVersions,
   postNotebooksVersion,
   VersionHistories,
+  VersionHistory,
 } from 'src/client/notebooksRoutes'
+import {Flow} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -58,11 +60,17 @@ export const VersionPublishProvider: FC = ({children}) => {
         throw new Error(response.data.message)
       }
 
-      setVersions(response.data.reverse())
+      const versions: (VersionHistory | Flow)[] = response.data.reverse()
+      // TODO(ariel): follow up on this so that we get the fresh flow too
+      if (flow.isDirty) {
+        versions.unshift(flow)
+      }
+
+      setVersions(versions)
     } catch (error) {
       console.error({error})
     }
-  }, [flow.id])
+  }, [flow])
 
   useEffect(() => {
     if (isFlagEnabled('flowPublishLifecycle')) {

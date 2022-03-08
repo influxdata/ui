@@ -124,11 +124,7 @@ export const FlowProvider: FC = ({children}) => {
         }
         return
       }
-      if (
-        !isFlagEnabled('flowPublishLifecycle') &&
-        isFlagEnabled('ephemeralNotebook') &&
-        !currentFlow.id
-      ) {
+      if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         currentFlow.data.byID[id] = {
           ...(currentFlow.data.byID[id] || {}),
           ...data,
@@ -170,11 +166,7 @@ export const FlowProvider: FC = ({children}) => {
         }
         return
       }
-      if (
-        !isFlagEnabled('flowPublishLifecycle') &&
-        isFlagEnabled('ephemeralNotebook') &&
-        !currentFlow.id
-      ) {
+      if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         currentFlow.meta.byID[id] = {
           title: '',
           visible: true,
@@ -216,11 +208,7 @@ export const FlowProvider: FC = ({children}) => {
         }
         return
       }
-      if (
-        !isFlagEnabled('flowPublishLifecycle') &&
-        isFlagEnabled('ephemeralNotebook') &&
-        !currentFlow.id
-      ) {
+      if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
         for (const ni in flow) {
           currentFlow[ni] = flow[ni]
         }
@@ -269,11 +257,7 @@ export const FlowProvider: FC = ({children}) => {
         .set('flowUpdateData', serialize(flowCopy))
       return
     }
-    if (
-      !isFlagEnabled('flowPublishLifecycle') &&
-      isFlagEnabled('ephemeralNotebook') &&
-      !currentFlow.id
-    ) {
+    if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
       currentFlow.data.byID[id] = initial
       currentFlow.meta.byID[id] = {
         title,
@@ -329,11 +313,7 @@ export const FlowProvider: FC = ({children}) => {
         .set('flowUpdateData', serialize(flowCopy))
       return
     }
-    if (
-      !isFlagEnabled('flowPublishLifecycle') &&
-      isFlagEnabled('ephemeralNotebook') &&
-      !currentFlow.id
-    ) {
+    if (isFlagEnabled('ephemeralNotebook') && !currentFlow.id) {
       currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
         _id => _id !== id
       )

@@ -46,7 +46,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
 
   const handleRenameNotebook = (name: string) => {
     update(id, {...flow, name})
-    if (isFlagEnabled('pinnedItems') && CLOUD) {
+    if (isFlagEnabled('pinnedItems') && CLOUD && isPinned) {
       try {
         updatePinnedItemByParam(id, {name})
         dispatch(notify(pinnedItemSuccess('notebook', 'updated')))

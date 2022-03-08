@@ -42,9 +42,13 @@ const SubscriptionForm: FC<Props> = ({
   const history = useHistory()
   const org = useSelector(getOrg)
   const [form, setForm] = useState(formContent)
+  const [firstRender, setRender] = useState(false)
   useEffect(() => {
     updateForm(form)
   }, [form])
+  useEffect(() => {
+    setRender(true)
+  }, [])
   return (
     formContent && (
       <div className="create-subscription-form">
@@ -64,6 +68,7 @@ const SubscriptionForm: FC<Props> = ({
                     helpText="Subscribe to a topic to start recieving messages."
                     required={true}
                     validationFunc={() =>
+                      !firstRender &&
                       handleValidation('Connection Name', form.topic)
                     }
                   >
@@ -74,9 +79,10 @@ const SubscriptionForm: FC<Props> = ({
                         name="topic"
                         autoFocus={true}
                         value={form.topic}
-                        onChange={e =>
+                        onChange={e => {
+                          setRender(false)
                           setForm({...formContent, topic: e.target.value})
-                        }
+                        }}
                         status={status}
                         maxLength={16}
                         testID="create-label-form--topic"

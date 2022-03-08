@@ -36,9 +36,13 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
   const [dataTypeM, setDataTypeM] = useState(stringType)
   const [dataTypeF, setDataTypeF] = useState(stringType)
   const [dataTypeT, setDataTypeT] = useState(stringType)
+  const [firstRender, setRender] = useState(false)
   useEffect(() => {
     updateForm(form)
   }, [form])
+  useEffect(() => {
+    setRender(true)
+  }, [])
   console.log('formcontent', formContent)
   return (
     <div className="string-parsing-form">
@@ -51,7 +55,6 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           autoFocus={true}
           value={form.stringTimestamp.pattern}
           onChange={e => {
-            console.log('here', form.stringTimestamp.pattern)
             form.stringTimestamp.pattern = e.target.value
             setForm({...formContent})
           }}
@@ -67,6 +70,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
             value={form.stringMeasurement.name}
             required={true}
             validationFunc={() =>
+              !firstRender &&
               handleValidation('Measurement Name', form.stringMeasurement.name)
             }
           >
@@ -78,6 +82,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 autoFocus={true}
                 value={form.stringMeasurement.name}
                 onChange={e => {
+                  setRender(false)
                   form.stringMeasurement.name = e.target.value
                   setForm({...formContent})
                 }}
@@ -126,6 +131,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           value={form.stringMeasurement.pattern}
           required={true}
           validationFunc={() =>
+            !firstRender &&
             handleValidation('Pattern', form.stringMeasurement.pattern)
           }
         >
@@ -137,6 +143,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               autoFocus={true}
               value={form.stringMeasurement.pattern}
               onChange={e => {
+                setRender(false)
                 form.stringMeasurement.pattern = e.target.value
                 setForm({...formContent})
               }}
@@ -156,7 +163,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
             value={form.stringTags[0].name}
             required={true}
             validationFunc={() =>
-              handleValidation('Name', form.stringTags[0].name)
+              !firstRender && handleValidation('Name', form.stringTags[0].name)
             }
           >
             {status => (
@@ -167,6 +174,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 autoFocus={true}
                 value={form.stringTags[0].name}
                 onChange={e => {
+                  setRender(false)
                   form.stringTags[0].name = e.target.value
                   setForm({...formContent})
                 }}
@@ -215,6 +223,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           value={form.stringTags[0].pattern}
           required={true}
           validationFunc={() =>
+            !firstRender &&
             handleValidation('Pattern', form.stringTags[0].pattern)
           }
         >
@@ -226,6 +235,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               autoFocus={true}
               value={form.stringTags[0].pattern}
               onChange={e => {
+                setRender(false)
                 form.stringTags[0].pattern = e.target.value
                 setForm({...formContent})
               }}
@@ -245,6 +255,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
             value={form.stringFields[0].name}
             required={true}
             validationFunc={() =>
+              !firstRender &&
               handleValidation('Name', form.stringFields[0].name)
             }
           >
@@ -256,6 +267,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 autoFocus={true}
                 value={form.stringFields[0].name}
                 onChange={e => {
+                  setRender(false)
                   form.stringFields[0].name = e.target.value
                   setForm({...formContent})
                 }}
@@ -304,6 +316,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           value={form.stringFields[0].pattern}
           required={true}
           validationFunc={() =>
+            !firstRender &&
             handleValidation('Name', form.stringFields[0].pattern)
           }
         >
@@ -315,6 +328,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               autoFocus={true}
               value={form.stringFields[0].pattern}
               onChange={e => {
+                setRender(false)
                 form.stringFields[0].pattern = e.target.value
                 setForm({...formContent})
               }}

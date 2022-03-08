@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState, useRef} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -41,19 +41,29 @@ interface Props {
 const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
   const history = useHistory()
   const org = useSelector(getOrg)
-  const [form, setForm] = useState(formContent)
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
   const [security, setSecurity] = useState('never')
+  const [form, setForm] = useState(formContent)
+  const [firstRender, setRender] = useState(false)
   useEffect(() => {
     setForm({...formContent, protocol: protocol.toLowerCase()})
   }, [protocol])
   useEffect(() => {
     updateForm(form)
   }, [form])
+
+  // the form use effect above renders twice on mount
+  // which makes the validation component default to
+  // an error state due to shouldPerformValidation
+  // being true
+  useEffect(() => {
+    setRender(true)
+  }, [])
+
   return (
-    formContent && (
+    form && (
       <div className="create-broker-form">
         <Form onSubmit={() => {}} testID="label-overlay-form">
           <Overlay.Header title="Connect to Broker" />
@@ -71,6 +81,7 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                     value={form.name}
                     required={true}
                     validationFunc={() =>
+                      !firstRender &&
                       handleValidation('Connection Name', form.name)
                     }
                     prevalidate={false}
@@ -82,11 +93,12 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                         name="connection-name"
                         autoFocus={true}
                         value={form.name}
-                        onChange={e =>
-                          setForm({...formContent, name: e.target.value})
-                        }
+                        onChange={e => {
+                          setRender(false)
+                          setForm({...form, name: e.target.value})
+                        }}
                         status={status}
-                        onClear={() => setForm({...formContent, name: ''})}
+                        // onClear={() => setForm({...form, name: ''})}
                         maxLength={16}
                         testID="create-label-form--name"
                       />
@@ -103,7 +115,7 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                       value={''}
                       onChange={() => {}}
                       // onChange={e =>
-                      // setForm({...formContent, description: e.target.value})
+                      // setForm({...form, description: e.target.value})
                       // }
                       testID="create-label-form--description"
                     />
@@ -145,9 +157,10 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                       </div>
                       <Form.ValidationElement
                         label="Host"
-                        value={formContent.brokerHost}
+                        value={form.brokerHost}
                         required={true}
                         validationFunc={() =>
+                          !firstRender &&
                           handleValidation('Broker Host', form.brokerHost)
                         }
                       >
@@ -157,13 +170,14 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                             placeholder="0.0.0.0"
                             name="host"
                             autoFocus={true}
-                            value={formContent.brokerHost}
-                            onChange={e =>
+                            value={form.brokerHost}
+                            onChange={e => {
+                              setRender(false)
                               setForm({
-                                ...formContent,
+                                ...form,
                                 brokerHost: e.target.value,
                               })
-                            }
+                            }}
                             status={status}
                             maxLength={16}
                             testID="create-label-form--host"
@@ -172,9 +186,10 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                       </Form.ValidationElement>
                       <Form.ValidationElement
                         label="Port"
-                        value={String(formContent.brokerPort)}
+                        value={String(form.brokerPort)}
                         required={true}
                         validationFunc={() =>
+                          !firstRender &&
                           handleValidation(
                             'Broker Port',
                             String(form.brokerPort)
@@ -187,13 +202,14 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                             placeholder="1883"
                             name="port"
                             autoFocus={true}
-                            value={formContent.brokerPort}
-                            onChange={e =>
+                            value={form.brokerPort}
+                            onChange={e => {
+                              setRender(false)
                               setForm({
-                                ...formContent,
+                                ...form,
                                 brokerPort: convertUserInputToNumOrNaN(e),
                               })
-                            }
+                            }}
                             status={status}
                             maxLength={16}
                             testID="create-label-form--port"
@@ -203,12 +219,9 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                     </div>
                     <div className="example-text">
                       TCP://
-                      {formContent.protocol ? formContent.protocol : 'MQTT'}:
-                      {formContent.brokerHost
-                        ? formContent.brokerHost
-                        : '0.0.0.0'}
-                      :
-                      {formContent.brokerPort ? formContent.brokerPort : '1883'}
+                      {form.protocol ? form.protocol : 'MQTT'}:
+                      {form.brokerHost ? form.brokerHost : '0.0.0.0'}:
+                      {form.brokerPort ? form.brokerPort : '1883'}
                     </div>
                   </Grid.Column>
                 </div>
@@ -268,10 +281,10 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                           type={InputType.Text}
                           placeholder="userName"
                           name="username"
-                          value={formContent.brokerUsername}
+                          value={form.brokerUsername}
                           onChange={e =>
                             setForm({
-                              ...formContent,
+                              ...form,
                               brokerUsername: e.target.value,
                             })
                           }
@@ -283,10 +296,10 @@ const BrokerForm: FC<Props> = ({formContent, setFormActive, updateForm}) => {
                           type={InputType.Text}
                           placeholder="*********"
                           name="password"
-                          value={formContent.brokerPassword}
+                          value={form.brokerPassword}
                           onChange={e =>
                             setForm({
-                              ...formContent,
+                              ...form,
                               brokerPassword: e.target.value,
                             })
                           }

@@ -27,7 +27,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     brokerCert: '',
     brokerKey: '',
     topic: '',
-    dataFormat: '',
+    dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
       name: '',
       path: '',
@@ -86,12 +86,8 @@ export const SubscriptionCreateContext = React.createContext<
 export const SubscriptionCreateProvider: FC = ({children}) => {
   const [formContent, setFormContent] = useState(DEFAULT_CONTEXT.formContent)
   const [formComplete, setFormComplete] = useState(false)
-  console.log('form complete', formComplete)
-  console.log('form content', formContent)
   // const dispatch = useDispatch()
-
   const create = (formContent?: Subscription): any => {
-    console.log('here', formContent)
     createAPI({data: formContent})
       .then(() => {
         console.log('success')

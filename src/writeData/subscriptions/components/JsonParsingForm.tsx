@@ -36,9 +36,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
   const [dataTypeM, setDataTypeM] = useState(stringType)
   const [dataTypeF, setDataTypeF] = useState(stringType)
   const [dataTypeT, setDataTypeT] = useState(stringType)
+  const [firstRender, setRender] = useState(false)
   useEffect(() => {
     updateForm(form)
   }, [form])
+  useEffect(() => {
+    setRender(true)
+  }, [])
   return (
     <div className="json-parsing-form">
       <Grid.Column>
@@ -65,6 +69,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
             value={form.jsonMeasurementKey.name}
             required={true}
             validationFunc={() =>
+              !firstRender &&
               handleValidation('Measurement Name', form.jsonMeasurementKey.name)
             }
           >
@@ -76,6 +81,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 autoFocus={true}
                 value={form.jsonMeasurementKey.name}
                 onChange={e => {
+                  setRender(false)
                   form.jsonMeasurementKey.name = e.target.value
                   setForm({...formContent})
                 }}
@@ -124,6 +130,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           value={form.jsonMeasurementKey.path}
           required={true}
           validationFunc={() =>
+            !firstRender &&
             handleValidation('Measurement Path', form.jsonMeasurementKey.path)
           }
         >
@@ -135,6 +142,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
               autoFocus={true}
               value={form.jsonMeasurementKey.path}
               onChange={e => {
+                setRender(false)
                 form.jsonMeasurementKey.path = e.target.value
                 setForm({...formContent})
               }}
@@ -153,6 +161,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
             label="Name"
             value={form.jsonTagKeys[0].name}
             validationFunc={() =>
+              !firstRender &&
               handleValidation('Measurement Path', form.jsonTagKeys[0].name)
             }
           >
@@ -164,6 +173,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 autoFocus={true}
                 value={form.jsonTagKeys[0].name}
                 onChange={e => {
+                  setRender(false)
                   form.jsonTagKeys[0].name = e.target.value
                   setForm({...formContent})
                 }}
@@ -212,6 +222,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           value={form.jsonTagKeys[0].path}
           required={true}
           validationFunc={() =>
+            !firstRender &&
             handleValidation('Measurement Path', form.jsonTagKeys[0].path)
           }
         >
@@ -223,6 +234,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
               autoFocus={true}
               value={form.jsonTagKeys[0].path}
               onChange={e => {
+                setRender(false)
                 form.jsonTagKeys[0].path = e.target.value
                 setForm({...formContent})
               }}
@@ -242,6 +254,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
             value={form.jsonFieldKeys[0].name}
             required={true}
             validationFunc={() =>
+              !firstRender &&
               handleValidation('Measurement Path', form.jsonFieldKeys[0].name)
             }
           >
@@ -253,6 +266,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 autoFocus={true}
                 value={form.jsonFieldKeys[0].name}
                 onChange={e => {
+                  setRender(false)
                   form.jsonFieldKeys[0].name = e.target.value
                   setForm({...formContent})
                 }}
@@ -301,6 +315,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           value={form.jsonFieldKeys[0].path}
           required={true}
           validationFunc={() =>
+            !firstRender &&
             handleValidation('Measurement Path', form.jsonFieldKeys[0].path)
           }
         >
@@ -312,6 +327,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
               autoFocus={true}
               value={form.jsonFieldKeys[0].path}
               onChange={e => {
+                setRender(false)
                 form.jsonFieldKeys[0].path = e.target.value
                 setForm({...formContent})
               }}

@@ -70,7 +70,7 @@ import {
 const backgroundColor = '#07070E'
 
 type MenuItemType = {
-  title?: string
+  title: string
   onClick?: () => void
   icon?: IconFont
   divider?: boolean
@@ -401,7 +401,7 @@ const FlowHeader: FC = () => {
           return versions[0].id === flow.id
         },
       },
-      {divider: true}
+      {title: 'divider', divider: true}
     )
   }
 

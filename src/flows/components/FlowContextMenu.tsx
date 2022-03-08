@@ -53,9 +53,18 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  const handlePinFlow = () => {
+  const handleDeletePinnedItem = async () => {
     try {
-      addPinnedItem({
+      await deletePinnedItemByParam(id)
+      dispatch(notify(pinnedItemSuccess('notebook', 'deleted')))
+    } catch (err) {
+      dispatch(notify(pinnedItemFailure(err.message, 'delete')))
+    }
+  }
+
+  const handleAddPinnedItem = async () => {
+    try {
+      await addPinnedItem({
         orgID: orgID,
         userID: me.id,
         metadata: {
@@ -67,6 +76,16 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
       dispatch(notify(pinnedItemSuccess('notebook', 'added')))
     } catch (err) {
       dispatch(notify(pinnedItemFailure(err.message, 'create')))
+    }
+  }
+
+  const handlePinFlow = () => {
+    if (isPinned) {
+      // delete from pinned item list
+      handleDeletePinnedItem()
+    } else {
+      // add to pinned item list
+      handleAddPinnedItem()
     }
   }
 
@@ -128,9 +147,8 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
                 size={ComponentSize.Small}
                 style={{fontWeight: 500}}
                 testID="context-pin-flow"
-                disabled={isPinned}
               >
-                Pin
+                {isPinned ? 'Unpin' : 'Pin'}
               </List.Item>
             )}
           </List>

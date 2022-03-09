@@ -129,6 +129,7 @@ export function hydrate(data) {
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     createdBy: data.createdBy,
+    isDirty: data?.isDirty ?? true,
   }
   if (data.id) {
     flow.id = data.id

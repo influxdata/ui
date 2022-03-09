@@ -35,7 +35,6 @@ import {
   List,
 } from '@influxdata/clockface'
 
-import PublishedVersions from 'src/flows/components/header/PublishedVersions'
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
@@ -70,12 +69,20 @@ import {
 
 const backgroundColor = '#07070E'
 
-type MenuItemType = {
+interface MenuItem {
+  type: 'menuitem'
   title: string
   onClick: () => void
   icon: IconFont
+  disabled?: () => boolean
   testID?: string
 }
+interface Divider {
+  type: 'divider'
+  title: string
+}
+
+type MenuItemType = MenuItem | Divider
 interface ButtonProp {
   menuItems: MenuItemType[]
 }
@@ -92,24 +99,30 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
       <Popover
         triggerRef={triggerRef}
         enableDefaultStyles={false}
-        style={{minWidth: '176px'}}
+        style={{minWidth: 209}}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
         contents={onHide => (
           <List>
-            {menuItems.map(item => (
-              <List.Item
-                key={item.title}
-                onClick={() => {
-                  item.onClick()
-                  onHide()
-                }}
-                testID={item.testID || ''}
-              >
-                <Icon glyph={item.icon} />
-                <span style={{paddingLeft: '10px'}}>{item.title}</span>
-              </List.Item>
-            ))}
+            {menuItems.map(item => {
+              if (item.type === 'divider') {
+                return <List.Divider key={item.title} />
+              }
+              return (
+                <List.Item
+                  key={item.title}
+                  disabled={item?.disabled ? item.disabled() : false}
+                  onClick={() => {
+                    item?.onClick()
+                    onHide()
+                  }}
+                  testID={item?.testID || ''}
+                >
+                  <Icon glyph={item?.icon} />
+                  <span style={{paddingLeft: '10px'}}>{item.title}</span>
+                </List.Item>
+              )
+            })}
           </List>
         )}
       />
@@ -125,7 +138,7 @@ interface Share {
 const FlowHeader: FC = () => {
   const {remove, clone} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
-  const {handlePublish, publishLoading} = useContext(VersionPublishContext)
+  const {handlePublish, versions} = useContext(VersionPublishContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
   const [sharing, setSharing] = useState(false)
@@ -328,13 +341,30 @@ const FlowHeader: FC = () => {
     history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
   }
 
+  const handleViewPublish = () => {
+    event('viewing_publish_history')
+    const [first, second] = versions
+    // accounts for the draft state
+    let versionId = first.id
+    if (first.id === 'draft') {
+      versionId = second.id
+    }
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
+        flow.id
+      }/versions/${versionId}`
+    )
+  }
+
   const menuItems: MenuItemType[] = [
     {
+      type: 'menuitem',
       title: 'Clone',
       onClick: handleClone,
       icon: IconFont.Duplicate_New,
     },
     {
+      type: 'menuitem',
       title: 'Delete',
       onClick: handleDelete,
       icon: IconFont.Trash_New,
@@ -347,15 +377,43 @@ const FlowHeader: FC = () => {
       1,
       0,
       {
+        type: 'menuitem',
         title: 'Download as PNG',
         onClick: handleDownloadAsPNG,
         icon: IconFont.Download_New,
       },
       {
+        type: 'menuitem',
         title: 'Download as PDF',
         onClick: handleDownloadAsPDF,
         icon: IconFont.Download_New,
       }
+    )
+  }
+
+  if (isFlagEnabled('flowPublishLifecycle')) {
+    menuItems.splice(
+      0,
+      0,
+      {
+        type: 'menuitem',
+        title: 'Save to version history',
+        onClick: handlePublish,
+        icon: IconFont.Disks,
+      },
+      {
+        type: 'menuitem',
+        title: 'Version history',
+        onClick: handleViewPublish,
+        icon: IconFont.Layers,
+        disabled: () => {
+          if (versions.length > 1) {
+            return false
+          }
+          return versions[0]?.id === 'draft'
+        },
+      },
+      {title: 'divider', type: 'divider'}
     )
   }
 
@@ -378,7 +436,7 @@ const FlowHeader: FC = () => {
           <Page.ControlBarLeft>
             <Submit />
             <AutoRefreshButton />
-            {!isFlagEnabled('flowPublishLifecycle') && <SaveState />}
+            <SaveState />
           </Page.ControlBarLeft>
           <Page.ControlBarRight>
             <PresentationMode />
@@ -399,19 +457,6 @@ const FlowHeader: FC = () => {
                   }
                   titleText={`Share ${PROJECT_NAME}`}
                 />
-                {isFlagEnabled('flowPublishLifecycle') && (
-                  <SquareButton
-                    icon={IconFont.Checkmark}
-                    onClick={handlePublish}
-                    color={ComponentColor.Primary}
-                    status={
-                      publishLoading === RemoteDataState.Loading
-                        ? ComponentStatus.Loading
-                        : ComponentStatus.Default
-                    }
-                    titleText={`Publish ${PROJECT_NAME}`}
-                  />
-                )}
                 <MenuButton menuItems={menuItems} />
               </>
             )}
@@ -423,13 +468,6 @@ const FlowHeader: FC = () => {
                 titleText="Export Notebook"
               />
             </FeatureFlag>
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-      )}
-      {isFlagEnabled('flowPublishLifecycle') && (
-        <Page.ControlBar fullWidth>
-          <Page.ControlBarRight>
-            <PublishedVersions />
           </Page.ControlBarRight>
         </Page.ControlBar>
       )}

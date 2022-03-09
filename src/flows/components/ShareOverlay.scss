@@ -1,0 +1,21 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.share-section--alert {
+  padding-bottom: $cf-space-l;
+  border-bottom: 2px solid $cf-grey-15;
+}
+
+.share-section--link {
+  padding: $cf-space-l 0;
+  border-bottom: 2px solid $cf-grey-15;
+}
+
+.share-section--delete {
+  padding-top: $cf-space-l;
+  padding-bottom: $cf-space-2xs;
+}
+
+.share-text {
+  padding-left: $cf-space-xs;
+  color: $cf-grey-85;
+}

@@ -2,7 +2,6 @@
 import React, {FC} from 'react'
 import {Link} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Components
 import {TreeNav} from '@influxdata/clockface'
@@ -38,46 +37,9 @@ const UserWidget: FC<Props> = ({
 
   const orgPrefix = `/orgs/${org.id}`
 
-  let cloudEntries = (
-    <>
-      <TreeNav.UserItem
-        id="usage"
-        label="Usage"
-        testID="user-nav-item-usage"
-        linkElement={className => (
-          <Link className={className} to={`${orgPrefix}/usage`} />
-        )}
-      />
-      <TreeNav.UserItem
-        id="billing"
-        label="Billing"
-        testID="user-nav-item-billing"
-        linkElement={className => (
-          <Link className={className} to={`${orgPrefix}/billing`} />
-        )}
-      />
-      <TreeNav.UserItem
-        id="users"
-        label="Users"
-        testID="user-nav-item-users"
-        linkElement={className => (
-          <Link className={className} to={`${orgPrefix}/users`} />
-        )}
-      />
-      <TreeNav.UserItem
-        id="about"
-        label="About"
-        testID="user-nav-item-about"
-        linkElement={className => (
-          <Link className={className} to={`${orgPrefix}/about`} />
-        )}
-      />
-    </>
-  )
-
-  if (isFlagEnabled('multiAccount')) {
-    cloudEntries = (
-      <>
+  return (
+    <TreeNav.User username={me.name} team={org.name} testID="user-nav">
+      <CloudOnly>
         <TreeNav.SubHeading label="Account" />
         <TreeNav.UserItem
           id="billing"
@@ -120,13 +82,7 @@ const UserWidget: FC<Props> = ({
             <Link className={className} to={`${orgPrefix}/usage`} />
           )}
         />
-      </>
-    )
-  }
-
-  return (
-    <TreeNav.User username={me.name} team={org.name} testID="user-nav">
-      <CloudOnly>{cloudEntries}</CloudOnly>
+      </CloudOnly>
       <CloudExclude>
         <TreeNav.UserItem
           id="members"

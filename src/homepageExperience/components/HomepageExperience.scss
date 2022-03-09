@@ -145,3 +145,14 @@ $pool-fill: #00a3ff;
     font-weight: normal;
   }
 }
+
+// Write data helper CSS override for homepage experience
+
+.write-data--details-widget-title {
+  margin-bottom: $cf-space-2xs;
+  padding-left: $cf-space-2xs + $cf-space-3xs;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+}

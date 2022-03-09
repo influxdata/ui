@@ -273,7 +273,7 @@ describe('Flows', () => {
 
     cy.get('.cf-resource-card').should('have.length', 2)
     cy.getByTestID('resource-editable-name')
-      .last()
+      .first()
       .contains(`${clone}`)
 
     // Delete the cloned flow

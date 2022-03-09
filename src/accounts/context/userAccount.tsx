@@ -163,10 +163,7 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
         userAccounts[activeIndex].name = newName
         setUserAccounts(userAccounts)
 
-        if (
-          isFlagEnabled('multiAccount') &&
-          isFlagEnabled('avatarWidgetMultiAccountInfo')
-        ) {
+        if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
           const name = resp.data.name
           const id = resp.data.id.toString()
           // update the state

@@ -9,7 +9,7 @@ import React, {
   RefObject,
 } from 'react'
 import {useHistory} from 'react-router-dom'
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -29,12 +29,12 @@ import {
   IconFont,
   ComponentColor,
   ComponentStatus,
+  ErrorTooltip,
   Popover,
   PopoverInteraction,
   List,
 } from '@influxdata/clockface'
 
-import PublishedVersions from 'src/flows/components/header/PublishedVersions'
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
@@ -56,7 +56,6 @@ import {downloadImage} from 'src/shared/utils/download'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
-import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -70,12 +69,20 @@ import {
 
 const backgroundColor = '#07070E'
 
-type MenuItemType = {
+interface MenuItem {
+  type: 'menuitem'
   title: string
   onClick: () => void
   icon: IconFont
+  disabled?: () => boolean
   testID?: string
 }
+interface Divider {
+  type: 'divider'
+  title: string
+}
+
+type MenuItemType = MenuItem | Divider
 interface ButtonProp {
   menuItems: MenuItemType[]
 }
@@ -92,24 +99,30 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
       <Popover
         triggerRef={triggerRef}
         enableDefaultStyles={false}
-        style={{minWidth: '176px'}}
+        style={{minWidth: 209}}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
         contents={onHide => (
           <List>
-            {menuItems.map(item => (
-              <List.Item
-                key={item.title}
-                onClick={() => {
-                  item.onClick()
-                  onHide()
-                }}
-                testID={item.testID || ''}
-              >
-                <Icon glyph={item.icon} />
-                <span style={{paddingLeft: '10px'}}>{item.title}</span>
-              </List.Item>
-            ))}
+            {menuItems.map(item => {
+              if (item.type === 'divider') {
+                return <List.Divider key={item.title} />
+              }
+              return (
+                <List.Item
+                  key={item.title}
+                  disabled={item?.disabled ? item.disabled() : false}
+                  onClick={() => {
+                    item?.onClick()
+                    onHide()
+                  }}
+                  testID={item?.testID || ''}
+                >
+                  <Icon glyph={item?.icon} />
+                  <span style={{paddingLeft: '10px'}}>{item.title}</span>
+                </List.Item>
+              )
+            })}
           </List>
         )}
       />
@@ -125,12 +138,13 @@ interface Share {
 const FlowHeader: FC = () => {
   const {remove, clone} = useContext(FlowListContext)
   const {flow, updateOther} = useContext(FlowContext)
-  const {handlePublish, publishLoading} = useContext(VersionPublishContext)
+  const {handlePublish, versions} = useContext(VersionPublishContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
+  const [sharing, setSharing] = useState(false)
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
-  const dispatch = useDispatch()
+  const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
 
   useEffect(() => {
     getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
@@ -175,14 +189,21 @@ const FlowHeader: FC = () => {
     }
   }
 
-  const deleteShare = (shareID: string) => {
-    deleteNotebooksShare({id: shareID})
+  const hideShare = () => {
+    setSharing(false)
+  }
+
+  const deleteShare = () => {
+    setLinkDeleting(RemoteDataState.Loading)
+    deleteNotebooksShare({id: share.id})
       .then(() => {
+        setLinkDeleting(RemoteDataState.Done)
+        hideShare()
         setShare(null)
         event('Delete Share Link')
-        dispatch(dismissOverlay())
       })
       .catch(err => {
+        setLinkDeleting(RemoteDataState.Error)
         console.error('failed to delete share', err)
       })
   }
@@ -270,6 +291,11 @@ const FlowHeader: FC = () => {
   const generateLink = () => {
     event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
 
+    if (!!share) {
+      setSharing(true)
+      return
+    }
+
     setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
       data: {
@@ -280,31 +306,17 @@ const FlowHeader: FC = () => {
     })
       .then(res => {
         setLinkLoading(RemoteDataState.Done)
-        const shareObj = {
+        setSharing(true)
+        setShare({
           id: (res.data as Share).id,
           accessID: (res.data as Share).accessID,
-        }
-        setShare(shareObj)
-        openShareLinkOverlay(shareObj)
+        })
       })
       .catch(err => {
         console.error('failed to create share', err)
         setLinkLoading(RemoteDataState.Error)
       })
     event('Notebook Share Link Created')
-  }
-
-  const openShareLinkOverlay = (shareObj: Share) => {
-    dispatch(
-      showOverlay(
-        'share-overlay',
-        {
-          share: shareObj,
-          onDelete: deleteShare,
-        },
-        () => dispatch(dismissOverlay())
-      )
-    )
   }
 
   const printJSON = () => {
@@ -329,13 +341,30 @@ const FlowHeader: FC = () => {
     history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
   }
 
+  const handleViewPublish = () => {
+    event('viewing_publish_history')
+    const [first, second] = versions
+    // accounts for the draft state
+    let versionId = first.id
+    if (first.id === 'draft') {
+      versionId = second.id
+    }
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
+        flow.id
+      }/versions/${versionId}`
+    )
+  }
+
   const menuItems: MenuItemType[] = [
     {
+      type: 'menuitem',
       title: 'Clone',
       onClick: handleClone,
       icon: IconFont.Duplicate_New,
     },
     {
+      type: 'menuitem',
       title: 'Delete',
       onClick: handleDelete,
       icon: IconFont.Trash_New,
@@ -348,15 +377,43 @@ const FlowHeader: FC = () => {
       1,
       0,
       {
+        type: 'menuitem',
         title: 'Download as PNG',
         onClick: handleDownloadAsPNG,
         icon: IconFont.Download_New,
       },
       {
+        type: 'menuitem',
         title: 'Download as PDF',
         onClick: handleDownloadAsPDF,
         icon: IconFont.Download_New,
       }
+    )
+  }
+
+  if (isFlagEnabled('flowPublishLifecycle')) {
+    menuItems.splice(
+      0,
+      0,
+      {
+        type: 'menuitem',
+        title: 'Save to version history',
+        onClick: handlePublish,
+        icon: IconFont.Disks,
+      },
+      {
+        type: 'menuitem',
+        title: 'Version history',
+        onClick: handleViewPublish,
+        icon: IconFont.Layers,
+        disabled: () => {
+          if (versions.length > 1) {
+            return false
+          }
+          return versions[0]?.id === 'draft'
+        },
+      },
+      {title: 'divider', type: 'divider'}
     )
   }
 
@@ -374,65 +431,80 @@ const FlowHeader: FC = () => {
           maxLength={50}
         />
       </Page.Header>
-      <Page.ControlBar fullWidth>
-        <Page.ControlBarLeft>
-          <Submit />
-          <AutoRefreshButton />
-          {!isFlagEnabled('flowPublishLifecycle') && <SaveState />}
-        </Page.ControlBarLeft>
-        <Page.ControlBarRight>
-          <PresentationMode />
-          <TimeZoneDropdown />
-          <TimeRangeDropdown />
-          {flow?.id && (
-            <>
-              <SquareButton
-                icon={IconFont.Share}
-                onClick={
-                  !!share
-                    ? () => openShareLinkOverlay(share)
-                    : () => generateLink()
-                }
-                color={
-                  !!share ? ComponentColor.Primary : ComponentColor.Secondary
-                }
-                status={
-                  linkLoading === RemoteDataState.Loading
-                    ? ComponentStatus.Loading
-                    : ComponentStatus.Default
-                }
-                titleText={`Share ${PROJECT_NAME}`}
-              />
-              {isFlagEnabled('flowPublishLifecycle') && (
+      {!sharing && (
+        <Page.ControlBar fullWidth>
+          <Page.ControlBarLeft>
+            <Submit />
+            <AutoRefreshButton />
+            <SaveState />
+          </Page.ControlBarLeft>
+          <Page.ControlBarRight>
+            <PresentationMode />
+            <TimeZoneDropdown />
+            <TimeRangeDropdown />
+            {flow?.id && (
+              <>
                 <SquareButton
-                  icon={IconFont.Checkmark}
-                  onClick={handlePublish}
-                  color={ComponentColor.Primary}
+                  icon={IconFont.Share}
+                  onClick={generateLink}
+                  color={
+                    !!share ? ComponentColor.Primary : ComponentColor.Secondary
+                  }
                   status={
-                    publishLoading === RemoteDataState.Loading
+                    linkLoading === RemoteDataState.Loading
                       ? ComponentStatus.Loading
                       : ComponentStatus.Default
                   }
-                  titleText={`Publish ${PROJECT_NAME}`}
+                  titleText={`Share ${PROJECT_NAME}`}
                 />
-              )}
-              <MenuButton menuItems={menuItems} />
-            </>
-          )}
-          <FeatureFlag name="flow-snapshot">
-            <SquareButton
-              icon={IconFont.Export_New}
-              onClick={printJSON}
-              color={ComponentColor.Default}
-              titleText="Export Notebook"
-            />
-          </FeatureFlag>
-        </Page.ControlBarRight>
-      </Page.ControlBar>
-      {isFlagEnabled('flowPublishLifecycle') && (
+                <MenuButton menuItems={menuItems} />
+              </>
+            )}
+            <FeatureFlag name="flow-snapshot">
+              <SquareButton
+                icon={IconFont.Export_New}
+                onClick={printJSON}
+                color={ComponentColor.Default}
+                titleText="Export Notebook"
+              />
+            </FeatureFlag>
+          </Page.ControlBarRight>
+        </Page.ControlBar>
+      )}
+      {!!sharing && !!share && (
         <Page.ControlBar fullWidth>
           <Page.ControlBarRight>
-            <PublishedVersions />
+            <p className="share-token--link">
+              Share with{' '}
+              <a
+                href={`${window.location.origin}/share/${share.accessID}`}
+                target="_blank"
+              >
+                {`${window.location.origin}/share/${share.accessID}`}
+              </a>
+            </p>
+            <ErrorTooltip
+              className="warning-icon"
+              tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
+              tooltipStyle={{width: '250px'}}
+            />
+            <SquareButton
+              icon={IconFont.Trash_New}
+              onClick={deleteShare}
+              color={ComponentColor.Danger}
+              titleText="Delete"
+              status={
+                linkDeleting === RemoteDataState.Loading
+                  ? ComponentStatus.Loading
+                  : ComponentStatus.Default
+              }
+            />
+            <SquareButton
+              icon={IconFont.Remove_New}
+              onClick={hideShare}
+              color={ComponentColor.Default}
+              titleText="Cancel"
+            />
           </Page.ControlBarRight>
         </Page.ControlBar>
       )}

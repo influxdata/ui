@@ -93,7 +93,10 @@ const ShareOverlay: FC = () => {
               </FlexBox.Child>
               <FlexBox.Child grow={0} shrink={0} basis={40}>
                 <SafeBlankLink href={link}>
-                  <SquareButton icon={IconFont.Export_New} />
+                  <SquareButton
+                    icon={IconFont.Export_New}
+                    titleText="Open link in new tab"
+                  />
                 </SafeBlankLink>
               </FlexBox.Child>
             </FlexBox>

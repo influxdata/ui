@@ -1,9 +1,11 @@
 import React, {FC, useState, useCallback, useEffect} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
-// import {useDispatch} from 'react-redux'
 
 import {Subscription} from 'src/types/subscriptions'
 import {sanitizeForm} from '../utils/form'
+
+// Types
+import {RemoteDataState} from 'src/types'
 
 export interface SubscriptionCreateContextType {
   create: () => void
@@ -11,6 +13,7 @@ export interface SubscriptionCreateContextType {
   formComplete: boolean
   setFormComplete: (boolean) => void
   updateForm: (formContent) => void
+  loading: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
@@ -77,6 +80,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
   },
   setFormComplete: () => {},
   updateForm: () => {},
+  loading: RemoteDataState.NotStarted,
 } as SubscriptionCreateContextType
 
 export const SubscriptionCreateContext = React.createContext<
@@ -86,13 +90,16 @@ export const SubscriptionCreateContext = React.createContext<
 export const SubscriptionCreateProvider: FC = ({children}) => {
   const [formContent, setFormContent] = useState(DEFAULT_CONTEXT.formContent)
   const [formComplete, setFormComplete] = useState(false)
-  // const dispatch = useDispatch()
+  const [loading, setLoading] = useState(RemoteDataState.Done)
   const create = (formContent?: Subscription): any => {
+    setLoading(RemoteDataState.Loading)
     createAPI({data: formContent})
       .then(() => {
+        setLoading(RemoteDataState.Done)
         console.log('success')
       })
       .catch(() => {
+        setLoading(RemoteDataState.Error)
         console.log('failure')
       })
   }
@@ -122,6 +129,7 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         formComplete,
         updateForm,
         setFormComplete,
+        loading,
       }}
     >
       {children}

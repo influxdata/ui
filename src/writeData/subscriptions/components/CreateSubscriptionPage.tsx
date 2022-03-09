@@ -42,7 +42,7 @@ import {shouldShowUpgradeButton} from 'src/me/selectors'
 
 const CreateSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState('broker')
-  const {formContent, setFormComplete, updateForm} = useContext(
+  const {formContent, setFormComplete, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
@@ -143,6 +143,7 @@ const CreateSubscriptionPage: FC = () => {
               updateForm={updateForm}
               setFormComplete={setFormComplete}
               showUpgradeButton={showUpgradeButton}
+              loading={loading}
             />
           )}
         </Page.Contents>

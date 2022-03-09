@@ -33,12 +33,6 @@ interface Props {
 
 const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
   const [form, setForm] = useState(formContent)
-  const stringType = 'String'
-  const numberType = 'Number'
-  const dataTypeList = [stringType, numberType]
-  const [dataTypeM, setDataTypeM] = useState(stringType)
-  const [dataTypeF, setDataTypeF] = useState(stringType)
-  const [dataTypeT, setDataTypeT] = useState(stringType)
   const [firstRender, setRender] = useState(false)
   useEffect(() => {
     updateForm(form)

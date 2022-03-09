@@ -25,6 +25,9 @@ import {MINIMUM_BALANCE_THRESHOLD} from 'src/shared/constants'
 // Types
 import {BillingNotifySettings} from 'src/types/billing'
 
+// Email Validation
+import isEmail from 'validator/es/lib/isEmail'
+
 type Props = {
   onHideOverlay: () => void
 }
@@ -41,7 +44,15 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
   )
   const [hasThresholdError, setHasThresholdError] = useState<boolean>(false)
 
+  const [notifyEmail, setNotifyEmail] = useState(billingSettings.notifyEmail)
+  const [emailError, setEmailError] = useState('')
+
   const onSubmitThreshold = () => {
+    if (!isEmail(notifyEmail)) {
+      setEmailError('Please enter a valid email address')
+      return
+    }
+
     if (`${balanceThreshold}`.includes('.')) {
       setHasThresholdError(true)
       return
@@ -57,8 +68,6 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
     handleUpdateBillingSettings(settings)
     onHideOverlay()
   }
-
-  const [notifyEmail, setNotifyEmail] = useState(billingSettings.notifyEmail)
 
   const onToggleChange = () => {
     setIsNotifyActive(prevState => !prevState)
@@ -109,7 +118,11 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
             </Form.Element>
             {isNotifyActive ? (
               <>
-                <Form.Element label="Email Address">
+                <Form.Element
+                  label="Email Address"
+                  errorMessage={emailError}
+                  required
+                >
                   <Input
                     type={InputType.Text}
                     value={notifyEmail}

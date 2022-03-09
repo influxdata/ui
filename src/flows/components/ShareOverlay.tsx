@@ -1,25 +1,54 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
   AlignItems,
   Button,
   ComponentColor,
+  ComponentSize,
   FlexBox,
   FlexDirection,
   Overlay,
   Icon,
   IconFont,
+  Input,
+  SquareButton,
 } from '@influxdata/clockface'
-
+import CopyToClipboard from 'src/shared/components/CopyToClipboard'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
+// Actions
+import {notify} from 'src/shared/actions/notifications'
+
+// Notifications
+import {
+  copyToClipboardFailed,
+  copyToClipboardSuccess,
+} from 'src/shared/copy/notifications'
+
+// Styles
 import './ShareOverlay.scss'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 const ShareOverlay: FC = () => {
   const {onClose, params} = useContext(OverlayContext)
-  const {onDelete} = params
+  const {onDelete, share} = params
+  const dispatch = useDispatch()
+  const link = `${window.location.origin}/share/${share.accessID}`
+
+  const handleCopy = (copiedText: string, isSuccessful: boolean): void => {
+    event('Copy Notebook shared link to Clipboard Clicked')
+    if (isSuccessful) {
+      dispatch(notify(copyToClipboardSuccess(copiedText, 'Link')))
+    } else {
+      dispatch(notify(copyToClipboardFailed(copiedText, 'Link')))
+    }
+  }
 
   return (
     <Overlay.Container maxWidth={800}>
@@ -38,6 +67,34 @@ const ShareOverlay: FC = () => {
           </FlexBox.Child>
           <FlexBox.Child className="share-section--link">
             Share Link
+            <FlexBox>
+              <FlexBox.Child>
+                <Input
+                  value={link}
+                  onChange={() => {
+                    // Do nothing. Read only
+                  }}
+                />
+              </FlexBox.Child>
+              <FlexBox.Child>
+                <CopyToClipboard text={link} onCopy={handleCopy}>
+                  <Button
+                    icon={IconFont.Clipboard_New}
+                    text="Copy"
+                    titleText="Copy"
+                    color={ComponentColor.Primary}
+                  />
+                </CopyToClipboard>
+              </FlexBox.Child>
+              <FlexBox.Child>
+                <SafeBlankLink href={link}>
+                  <SquareButton
+                    icon={IconFont.Export_New}
+                    size={ComponentSize.Medium}
+                  />
+                </SafeBlankLink>
+              </FlexBox.Child>
+            </FlexBox>
             <Icon glyph={IconFont.Eye_New} />
             <span className="share-text">
               Anyone with this link can view this Notebook, but will not have

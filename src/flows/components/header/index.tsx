@@ -407,7 +407,7 @@ const FlowHeader: FC = () => {
                     dispatch(
                       showOverlay(
                         'share-overlay',
-                        {onDelete: deleteShare},
+                        {onDelete: deleteShare, share},
                         () => dispatch(dismissOverlay())
                       )
                     )

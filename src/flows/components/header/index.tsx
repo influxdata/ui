@@ -9,7 +9,7 @@ import React, {
   RefObject,
 } from 'react'
 import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -57,6 +57,7 @@ import {downloadImage} from 'src/shared/utils/download'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -132,6 +133,7 @@ const FlowHeader: FC = () => {
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
   const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
@@ -398,6 +400,16 @@ const FlowHeader: FC = () => {
                       : ComponentStatus.Default
                   }
                   titleText={`Share ${PROJECT_NAME}`}
+                />
+                <SquareButton
+                  icon={IconFont.Wood}
+                  onClick={() =>
+                    dispatch(
+                      showOverlay('share-overlay', {}, () =>
+                        dispatch(dismissOverlay())
+                      )
+                    )
+                  }
                 />
                 {isFlagEnabled('flowPublishLifecycle') && (
                   <SquareButton

@@ -405,8 +405,10 @@ const FlowHeader: FC = () => {
                   icon={IconFont.Wood}
                   onClick={() =>
                     dispatch(
-                      showOverlay('share-overlay', {}, () =>
-                        dispatch(dismissOverlay())
+                      showOverlay(
+                        'share-overlay',
+                        {onDelete: deleteShare},
+                        () => dispatch(dismissOverlay())
                       )
                     )
                   }

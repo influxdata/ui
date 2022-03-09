@@ -4,12 +4,13 @@ import React, {FC, useContext} from 'react'
 // Components
 import {
   AlignItems,
+  Button,
+  ComponentColor,
   FlexBox,
   FlexDirection,
   Overlay,
   Icon,
   IconFont,
-  Button,
 } from '@influxdata/clockface'
 
 import {OverlayContext} from 'src/overlays/components/OverlayController'
@@ -17,7 +18,9 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 import './ShareOverlay.scss'
 
 const ShareOverlay: FC = () => {
-  const {onClose} = useContext(OverlayContext)
+  const {onClose, params} = useContext(OverlayContext)
+  const {onDelete} = params
+
   return (
     <Overlay.Container maxWidth={800}>
       <Overlay.Header title="Share Notebook" onDismiss={onClose} />
@@ -42,14 +45,28 @@ const ShareOverlay: FC = () => {
             </span>
           </FlexBox.Child>
           <FlexBox.Child className="share-section--delete">
-            <Button text="Delete Link" icon={IconFont.Trash_New} />
+            <Button
+              text="Delete Link"
+              titleText="Delete Link"
+              className="share-delete--color-red"
+              icon={IconFont.Trash_New}
+              color={ComponentColor.Tertiary}
+              onClick={onDelete} // TODO: fix onDelete
+            />
             <span className="share-text">
               If deleted, viewers with this link will no longer have access.
             </span>
           </FlexBox.Child>
         </FlexBox>
       </Overlay.Body>
-      <Overlay.Footer>Done</Overlay.Footer>
+      <Overlay.Footer>
+        <Button
+          text="Done"
+          titleText="Done"
+          color={ComponentColor.Tertiary}
+          onClick={onClose}
+        />
+      </Overlay.Footer>
     </Overlay.Container>
   )
 }

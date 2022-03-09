@@ -346,7 +346,7 @@ const FlowHeader: FC = () => {
     const [first, second] = versions
     // accounts for the draft state
     let versionId = first.id
-    if (first.id === flow.id) {
+    if (first.id === 'draft') {
       versionId = second.id
     }
     history.push(
@@ -410,7 +410,7 @@ const FlowHeader: FC = () => {
           if (versions.length > 1) {
             return false
           }
-          return versions[0].id === flow.id
+          return versions[0]?.id === 'draft'
         },
       },
       {title: 'divider', type: 'divider'}

@@ -8,18 +8,19 @@ import React, {
   useState,
 } from 'react'
 import {useDispatch} from 'react-redux'
+import {useParams} from 'react-router-dom'
 
 // Context
 import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {
+  getNotebook,
   getNotebooksVersions,
   postNotebooksVersion,
   VersionHistories,
   VersionHistory,
 } from 'src/client/notebooksRoutes'
-import {Flow} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -45,12 +46,15 @@ const DEFAULT_CONTEXT: ContextType = {
 export const VersionPublishContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
 export const VersionPublishProvider: FC = ({children}) => {
+  // This flow is not the same as the draft notebook, it's the current versioned notebook
   const {flow} = useContext(FlowContext)
   const dispatch = useDispatch()
   const [versions, setVersions] = useState([])
   const [publishLoading, setPublishLoading] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
+
+  const {notebookID} = useParams<{notebookID: string}>()
 
   const handleGetNotebookVersions = useCallback(async () => {
     try {
@@ -60,18 +64,27 @@ export const VersionPublishProvider: FC = ({children}) => {
         throw new Error(response.data.message)
       }
 
-      const versions: (VersionHistory | Flow)[] = response.data.reverse()
+      const resp = await getNotebook({id: notebookID ?? flow.id})
 
-      // TODO(ariel): resolve this by partitioning the current / list
-      if (flow.isDirty) {
-        versions.unshift(flow)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const versions: VersionHistory[] = response.data.reverse()
+
+      if (resp.data.isDirty) {
+        versions.unshift({
+          id: 'draft',
+          publishedAt: resp.data.updatedAt,
+          publishedBy: null,
+        })
       }
 
       setVersions(versions)
     } catch (error) {
       console.error({error})
     }
-  }, [flow])
+  }, [flow.id, notebookID])
 
   useEffect(() => {
     if (isFlagEnabled('flowPublishLifecycle')) {

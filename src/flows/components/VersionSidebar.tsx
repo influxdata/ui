@@ -38,20 +38,19 @@ import {serialize} from 'src/flows/context/flow.list'
 // Constants
 import './Sidebar.scss'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
-import {Flow} from 'src/types'
 
 interface Props {
-  version: VersionHistory | Flow
+  version: VersionHistory
 }
 
 const VersionSidebarListItem: FC<Props> = ({version}) => {
   const triggerRef: RefObject<HTMLButtonElement> = createRef()
   const history = useHistory()
-  const {notebookID, id} = useParams<{notebookID: string; id: string}>()
+  const {id} = useParams<{id: string}>()
   const {flow} = useContext(FlowContext)
   const {id: orgID} = useSelector(getOrg)
 
-  const isDraft = notebookID === version.id
+  const isDraft = version.id === 'draft'
 
   const handleClick = () => {
     let route = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${flow.id}`
@@ -120,10 +119,6 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
     },
   ]
 
-  const publishedAt = isDraft
-    ? (version as Flow)?.updatedAt
-    : (version as VersionHistory)?.publishedAt
-
   return (
     <List.Item
       selected={!isDraft && id === version.id}
@@ -136,13 +131,11 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
         direction={FlexDirection.Column}
       >
         <h6 className="published-date--text">
-          {new Date(publishedAt).toLocaleString()}
+          {new Date(version.publishedAt).toLocaleString()}
         </h6>
         {isDraft && <h6 className="current-version--text">Current version</h6>}
         {!isDraft && (
-          <h6 className="published-by--text">
-            {(version as VersionHistory)?.publishedBy}
-          </h6>
+          <h6 className="published-by--text">{version.publishedBy}</h6>
         )}
       </FlexBox>
       {isDraft === false && (

@@ -82,7 +82,7 @@ const FlowsIndex = () => {
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
     sortKey: 'createdAt' as keyof Flow,
-    sortType: SortTypes.String,
+    sortType: SortTypes.Date,
     sortDirection: Sort.Descending,
   })
 

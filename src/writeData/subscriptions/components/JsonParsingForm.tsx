@@ -10,7 +10,7 @@ import {
   Dropdown,
   Icon,
   ButtonShape,
-  TextArea,
+  // TextArea,
   IconFont,
   ComponentColor,
   ComponentSize,
@@ -46,7 +46,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
   useEffect(() => {
     setRender(true)
   }, [])
-  const [json, setJson] = useState('')
+  // const [json, setJson] = useState('')
   const ruleList = ['field', 'measurment', 'tag']
   const [rule, setRule] = useState('')
   return (
@@ -427,7 +427,8 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           )}
         />
       </Grid.Column>
-      <Grid.Column>
+      {/* For a later iteration */}
+      {/* <Grid.Column>
         <h2 className="form-header">Validate your Parsing Rules</h2>
         <TextArea
           name="validate"
@@ -443,7 +444,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           maxLength={255}
           testID="json-validate"
         />
-      </Grid.Column>
+      </Grid.Column> */}
     </div>
   )
 }

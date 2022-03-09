@@ -76,12 +76,10 @@ const CreateSubscriptionPage: FC = () => {
               </div>
             </div>
             <div className="bar">
-              <div className="wrap">
+              <div className={active === 'broker' ? 'wrap--selected' : 'wrap'}>
                 <Button
-                  text=""
-                  icon={IconFont.Cloud}
+                  icon={IconFont.UploadOutline}
                   onClick={() => setFormActive('broker')}
-                  testID="user-account-switch-btn"
                 />
                 <div
                   className={active === 'broker' ? 'title--selected' : 'title'}
@@ -89,12 +87,14 @@ const CreateSubscriptionPage: FC = () => {
                   Connect to Broker
                 </div>
               </div>
-              <div className="wrap">
+              <div
+                className={
+                  active === 'subscription' ? 'wrap--selected' : 'wrap'
+                }
+              >
                 <Button
-                  text=""
-                  icon={IconFont.AddCell}
+                  icon={IconFont.Subscribe}
                   onClick={() => setFormActive('subscription')}
-                  testID="user-account-switch-btn"
                 />
 
                 <div
@@ -105,12 +105,10 @@ const CreateSubscriptionPage: FC = () => {
                   Subscribe to Topic
                 </div>
               </div>
-              <div className="wrap">
+              <div className={active === 'parsing' ? 'wrap--selected' : 'wrap'}>
                 <Button
-                  text=""
-                  icon={IconFont.Zap}
+                  icon={IconFont.Braces}
                   onClick={() => setFormActive('parsing')}
-                  testID="user-account-switch-btn"
                 />
                 <div
                   className={active === 'parsing' ? 'title--selected' : 'title'}

@@ -46,7 +46,7 @@ const CloudNativeSources: FC = () => {
         weight={FontWeight.Regular}
         style={{marginTop: '24px', marginBottom: '4px'}}
       >
-        Cloud Native Connections
+        Cloud Native Subscriptions
         {showUpgradeButton && (
           <div className="premium-container">
             <Icon glyph={IconFont.CrownSolid_New} />
@@ -64,7 +64,7 @@ const CloudNativeSources: FC = () => {
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
         {items.map(item => {
           const goto = () => {
-            event('Load cloud native connections clicked', {type: item.name})
+            event('Load cloud native subscriptions clicked', {type: item.name})
             history.push(
               `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/${item.id}`
             )

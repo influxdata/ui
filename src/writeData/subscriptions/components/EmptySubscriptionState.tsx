@@ -36,7 +36,7 @@ const EmptySubscriptionState: FC = () => {
   const history = useHistory()
   return (
     <Page
-      titleTag={pageTitleSuffixer(['Cloud Native Connections', 'Load Data'])}
+      titleTag={pageTitleSuffixer(['Cloud Native Subscriptions', 'Load Data'])}
     >
       <LoadDataHeader />
       <LoadDataTabbedPage activeTab="subscriptions">
@@ -44,7 +44,7 @@ const EmptySubscriptionState: FC = () => {
           <div className="subscription-create">
             <div className="left">
               <SearchWidget
-                placeholderText="Filter connections..."
+                placeholderText="Filter subscriptions..."
                 searchTerm={''}
                 onSearch={() => {}}
               />
@@ -58,7 +58,7 @@ const EmptySubscriptionState: FC = () => {
             </div>
             <div className="right">
               <Button
-                text="Create Connection"
+                text="Create Subscription"
                 icon={IconFont.Plus_New}
                 color={ComponentColor.Primary}
                 onClick={() => {
@@ -75,10 +75,10 @@ const EmptySubscriptionState: FC = () => {
           <EmptyState size={ComponentSize.Medium}>
             <EmptyState.Text>
               Collect data from an external cloud source with a{' '}
-              <b>Cloud Native Connection</b>.
+              <b>Cloud Native Subscription</b>.
             </EmptyState.Text>
             <Button
-              text="Create Connection"
+              text="Create Subscription"
               icon={IconFont.Plus_New}
               color={ComponentColor.Primary}
               onClick={() => {

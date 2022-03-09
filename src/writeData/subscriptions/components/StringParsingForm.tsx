@@ -8,7 +8,7 @@ import {
   Form,
   InputType,
   Dropdown,
-  TextArea,
+  // TextArea,
   IconFont,
   Icon,
   ComponentColor,
@@ -46,7 +46,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
   useEffect(() => {
     setRender(true)
   }, [])
-  const [string, setString] = useState('')
+  // const [string, setString] = useState('')
   const ruleList = ['field', 'measurment', 'tag']
   const [rule, setRule] = useState('')
   return (
@@ -82,101 +82,34 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               testID={`json-delete-label`}
             />
           </div>
-          <div className="container">
-            <Form.ValidationElement
-              label="Name"
-              value={form.stringMeasurement.name}
-              required={true}
-              validationFunc={() =>
-                !firstRender &&
-                handleValidation(
-                  'Measurement Name',
-                  form.stringMeasurement.name
-                )
-              }
-            >
-              {status => (
-                <Input
-                  type={InputType.Text}
-                  placeholder="nonDescriptName"
-                  name="name"
-                  autoFocus={true}
-                  value={form.stringMeasurement.name}
-                  onChange={e => {
-                    setRender(false)
-                    form.stringMeasurement.name = e.target.value
-                    setForm({...formContent})
-                  }}
-                  status={status}
-                  maxLength={16}
-                  testID="string-parsing--name"
-                />
-              )}
-            </Form.ValidationElement>
-            <div className="dropdown-container">
-              <Form.Label label="Data Type" />
-              <Dropdown
-                button={(active, onClick) => (
-                  <Dropdown.Button
-                    active={active}
-                    onClick={onClick}
-                    testID="variable-type-dropdown--button"
-                  >
-                    {dataTypeM}
-                  </Dropdown.Button>
-                )}
-                menu={onCollapse => (
-                  <Dropdown.Menu onCollapse={onCollapse}>
-                    {dataTypeList.map((d, key) => (
-                      <Dropdown.Item
-                        key={key}
-                        id={d}
-                        value={d}
-                        onClick={() => {
-                          setDataTypeM(d)
-                          // form.stringMeasurement.type = d
-                        }}
-                        selected={dataTypeM === d}
-                        testID={`variable-type-dropdown-${1}`}
-                      >
-                        {d}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                )}
+          <Form.ValidationElement
+            label="Regex Pattern to find Measurement"
+            value={form.stringMeasurement.pattern}
+            required={true}
+            validationFunc={() =>
+              !firstRender &&
+              handleValidation('Pattern', form.stringMeasurement.pattern)
+            }
+          >
+            {status => (
+              <Input
+                type={InputType.Text}
+                placeholder="eg. a=(\\d)"
+                name="regex"
+                autoFocus={true}
+                value={form.stringMeasurement.pattern}
+                onChange={e => {
+                  setRender(false)
+                  form.stringMeasurement.pattern = e.target.value
+                  setForm({...formContent})
+                }}
+                status={status}
+                maxLength={56}
+                testID="string-parsing--regex"
               />
-            </div>
-          </div>
+            )}
+          </Form.ValidationElement>
         </div>
-      </Grid.Column>
-      <Grid.Column>
-        <Form.ValidationElement
-          label="Regex Pattern"
-          value={form.stringMeasurement.pattern}
-          required={true}
-          validationFunc={() =>
-            !firstRender &&
-            handleValidation('Pattern', form.stringMeasurement.pattern)
-          }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. a=(\\d)"
-              name="regex"
-              autoFocus={true}
-              value={form.stringMeasurement.pattern}
-              onChange={e => {
-                setRender(false)
-                form.stringMeasurement.pattern = e.target.value
-                setForm({...formContent})
-              }}
-              status={status}
-              maxLength={56}
-              testID="string-parsing--regex"
-            />
-          )}
-        </Form.ValidationElement>
         <div className="line"></div>
       </Grid.Column>
       <Grid.Column>
@@ -194,68 +127,32 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               testID={`json-delete-label`}
             />
           </div>
-          <div className="container">
-            <Form.ValidationElement
-              label="Name"
-              value={form.stringTags[0].name}
-              required={true}
-              validationFunc={() =>
-                !firstRender &&
-                handleValidation('Name', form.stringTags[0].name)
-              }
-            >
-              {status => (
-                <Input
-                  type={InputType.Text}
-                  placeholder="nonDescriptName"
-                  name="name"
-                  autoFocus={true}
-                  value={form.stringTags[0].name}
-                  onChange={e => {
-                    setRender(false)
-                    form.stringTags[0].name = e.target.value
-                    setForm({...formContent})
-                  }}
-                  status={status}
-                  maxLength={16}
-                  testID="json-parsing--name"
-                />
-              )}
-            </Form.ValidationElement>
-            <div className="dropdown-container">
-              <Form.Label label="Data Type" />
-              <Dropdown
-                button={(active, onClick) => (
-                  <Dropdown.Button
-                    active={active}
-                    onClick={onClick}
-                    testID="variable-type-dropdown--button"
-                  >
-                    {dataTypeT}
-                  </Dropdown.Button>
-                )}
-                menu={onCollapse => (
-                  <Dropdown.Menu onCollapse={onCollapse}>
-                    {dataTypeList.map((d, key) => (
-                      <Dropdown.Item
-                        key={key}
-                        id={d}
-                        value={d}
-                        onClick={() => {
-                          setDataTypeT(d)
-                          // form.stringMeasurement.type = d
-                        }}
-                        selected={dataTypeT === d}
-                        testID={`variable-type-dropdown-${1}`}
-                      >
-                        {d}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                )}
+          <Form.ValidationElement
+            label="Name"
+            value={form.stringTags[0].name}
+            required={true}
+            validationFunc={() =>
+              !firstRender && handleValidation('Name', form.stringTags[0].name)
+            }
+          >
+            {status => (
+              <Input
+                type={InputType.Text}
+                placeholder="nonDescriptName"
+                name="name"
+                autoFocus={true}
+                value={form.stringTags[0].name}
+                onChange={e => {
+                  setRender(false)
+                  form.stringTags[0].name = e.target.value
+                  setForm({...formContent})
+                }}
+                status={status}
+                maxLength={16}
+                testID="json-parsing--name"
               />
-            </div>
-          </div>
+            )}
+          </Form.ValidationElement>
         </div>
       </Grid.Column>
       <Grid.Column>
@@ -303,68 +200,33 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               testID={`json-delete-label`}
             />
           </div>
-          <div className="container">
-            <Form.ValidationElement
-              label="Name"
-              value={form.stringFields[0].name}
-              required={true}
-              validationFunc={() =>
-                !firstRender &&
-                handleValidation('Name', form.stringFields[0].name)
-              }
-            >
-              {status => (
-                <Input
-                  type={InputType.Text}
-                  placeholder="nonDescriptName"
-                  name="name"
-                  autoFocus={true}
-                  value={form.stringFields[0].name}
-                  onChange={e => {
-                    setRender(false)
-                    form.stringFields[0].name = e.target.value
-                    setForm({...formContent})
-                  }}
-                  status={status}
-                  maxLength={16}
-                  testID="json-parsing--name"
-                />
-              )}
-            </Form.ValidationElement>
-            <div className="dropdown-container">
-              <Form.Label label="Data Type" />
-              <Dropdown
-                button={(active, onClick) => (
-                  <Dropdown.Button
-                    active={active}
-                    onClick={onClick}
-                    testID="variable-type-dropdown--button"
-                  >
-                    {dataTypeF}
-                  </Dropdown.Button>
-                )}
-                menu={onCollapse => (
-                  <Dropdown.Menu onCollapse={onCollapse}>
-                    {dataTypeList.map((d, key) => (
-                      <Dropdown.Item
-                        key={key}
-                        id={d}
-                        value={d}
-                        onClick={() => {
-                          setDataTypeF(d)
-                          // form.stringMeasurement.type = d
-                        }}
-                        selected={dataTypeF === d}
-                        testID={`variable-type-dropdown-${1}`}
-                      >
-                        {d}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                )}
+          <Form.ValidationElement
+            label="Name"
+            value={form.stringFields[0].name}
+            required={true}
+            validationFunc={() =>
+              !firstRender &&
+              handleValidation('Name', form.stringFields[0].name)
+            }
+          >
+            {status => (
+              <Input
+                type={InputType.Text}
+                placeholder="nonDescriptName"
+                name="name"
+                autoFocus={true}
+                value={form.stringFields[0].name}
+                onChange={e => {
+                  setRender(false)
+                  form.stringFields[0].name = e.target.value
+                  setForm({...formContent})
+                }}
+                status={status}
+                maxLength={16}
+                testID="json-parsing--name"
               />
-            </div>
-          </div>
+            )}
+          </Form.ValidationElement>
         </div>
       </Grid.Column>
       <Grid.Column>
@@ -428,7 +290,8 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           )}
         />
       </Grid.Column>
-      <Grid.Column>
+      {/* For a later iteration */}
+      {/* <Grid.Column>
         <h2 className="form-header">Validate your Parsing Rules</h2>
         <TextArea
           name="validate"
@@ -444,7 +307,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           maxLength={255}
           testID="json-validate"
         />
-      </Grid.Column>
+      </Grid.Column> */}
     </div>
   )
 }

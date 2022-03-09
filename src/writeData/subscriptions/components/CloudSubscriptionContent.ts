@@ -5,14 +5,14 @@ import CloudNativeMarkdown from 'src/writeData/subscriptions/components/CloudNat
 import MQTTLogo from 'src/writeData/subscriptions/graphics/mqtt.svg'
 
 // Types
-export interface Connections {
+export interface Subscriptions {
   id: string
   name: string
   image?: string
   markdown?: string
 }
 
-export const CLOUD_NAIVE_CONNECTIONS: Connections[] = [
+export const CLOUD_NAIVE_SUBSCRIPTIONS: Subscriptions[] = [
   {
     id: 'mqtt',
     name: 'MQTT Consumer',
@@ -21,7 +21,7 @@ export const CLOUD_NAIVE_CONNECTIONS: Connections[] = [
   },
 ]
 
-export const search = (term: string): Connections[] =>
-  CLOUD_NAIVE_CONNECTIONS.filter(item =>
+export const search = (term: string): Subscriptions[] =>
+  CLOUD_NAIVE_SUBSCRIPTIONS.filter(item =>
     item.name.toLowerCase().includes(term.toLowerCase())
   )

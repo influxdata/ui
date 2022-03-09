@@ -29,18 +29,6 @@
     }
   }
 
-  .container {
-    display: flex;
-    .cf-form--element {
-      margin-bottom: 32px;
-      width: 75%;
-    }
-    .dropdown-container {
-      width: 25%;
-      margin-left: 20px;
-    }
-  }
-
   .header-wrap {
     display: flex;
     align-items: center;
@@ -54,14 +42,14 @@
     }
   }
 
-  .cf-dropdown {
-    &:last-of-type {
+  .cf-grid--column:last-child {
+    .cf-dropdown {
       max-width: 173px;
       float: right;
       margin-top: 32px;
-    }
-    .cf-icon {
-      margin-right: 10px;
+      .cf-icon {
+        margin-right: 10px;
+      }
     }
   }
 }

@@ -52,7 +52,7 @@ const BrokerForm: FC<Props> = ({
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
-  const [security, setSecurity] = useState('never')
+  const [security, setSecurity] = useState('none')
   const [form, setForm] = useState(formContent)
   const [firstRender, setRender] = useState(false)
   useEffect(() => {
@@ -127,12 +127,10 @@ const BrokerForm: FC<Props> = ({
                       type={InputType.Text}
                       placeholder="Describe this connection"
                       name="description"
-                      // value={form.description}
-                      value={''}
-                      onChange={() => {}}
-                      // onChange={e =>
-                      // setForm({...form, description: e.target.value})
-                      // }
+                      value={form.description}
+                      onChange={e =>
+                        setForm({...form, description: e.target.value})
+                      }
                       testID="create-label-form--description"
                     />
                   </Form.Element>
@@ -249,17 +247,17 @@ const BrokerForm: FC<Props> = ({
                   >
                     <SelectGroup.Option
                       name="no-security"
-                      id="never"
+                      id="none"
                       testID="no-security--button"
-                      active={security === 'never'}
+                      active={security === 'none'}
                       onClick={() => {
-                        setSecurity('never')
+                        setSecurity('none')
                       }}
-                      value={'never'}
-                      titleText="Never"
+                      value={'none'}
+                      titleText="None"
                       disabled={false}
                     >
-                      Never
+                      None
                     </SelectGroup.Option>
                     <SelectGroup.Option
                       name="user"
@@ -275,7 +273,8 @@ const BrokerForm: FC<Props> = ({
                     >
                       User
                     </SelectGroup.Option>
-                    <SelectGroup.Option
+                    {/* For a later iteration */}
+                    {/* <SelectGroup.Option
                       name="user"
                       id="user"
                       testID="user--button"
@@ -288,7 +287,7 @@ const BrokerForm: FC<Props> = ({
                       disabled={false}
                     >
                       Certificate
-                    </SelectGroup.Option>
+                    </SelectGroup.Option> */}
                   </SelectGroup>
                   {security === 'user' && (
                     <div className="creds-div">

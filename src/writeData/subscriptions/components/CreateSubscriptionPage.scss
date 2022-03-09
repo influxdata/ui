@@ -41,6 +41,50 @@
       width: 100%;
       display: flex;
       align-items: center;
+
+      .cf-button {
+        background: transparent;
+        border: 1px solid white;
+        border-radius: 50%;
+
+        &:hover {
+          background: transparent;
+          border: 1px solid #0098f0;
+          border-radius: 50%;
+
+          .cf-icon {
+            background: #0098f0;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+        }
+      }
+      .cf-button:not([disabled]):hover:after {
+        opacity: 0;
+      }
+
+      &--selected {
+        margin-top: 40px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+
+        .cf-button {
+          background: transparent;
+          border: 1px solid #0098f0;
+          border-radius: 50%;
+        }
+
+        .cf-button:not([disabled]):hover:after {
+          opacity: 0;
+        }
+
+        .cf-icon {
+          background: #0098f0;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
     }
     .title {
       font-size: 14px;

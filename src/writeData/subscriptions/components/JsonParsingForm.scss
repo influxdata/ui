@@ -53,9 +53,8 @@
       margin-bottom: 0;
     }
   }
-
-  .cf-dropdown {
-    &:last-of-type {
+  .cf-grid--column:last-child {
+    .cf-dropdown {
       max-width: 173px;
       float: right;
       margin-top: 32px;

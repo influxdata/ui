@@ -28,7 +28,7 @@ class TooltipArguments extends PureComponent<Props> {
         return (
           <div className="flux-function-docs--arguments" key={argument.name}>
             <span>{argument.name}:</span>
-            <div>{description}</div> 
+            <div>{description}</div>
           </div>
         )
       })

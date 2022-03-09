@@ -8,8 +8,7 @@ import TooltipArguments from 'src/timeMachine/components/dynamicFluxFunctionsToo
 import TooltipLink from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipLink'
 
 // Types
-import { Fluxdocs } from 'src/client/fluxdocsdRoutes'
-
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
 interface Props {
   func: Fluxdocs

@@ -33,19 +33,19 @@ const defaultProps = {
 const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
   let argComponent = <div className="flux-function-docs--arguments">None</div>
 
-  // if (func.args.length > 0) {
-  //   argComponent = (
-  //     <>
-  //       {func.args.map(a => (
-  //         <div className="flux-function-docs--arguments" key={a.name}>
-  //           <span>{a.name}:</span>
-  //           <span>{a.type}</span>
-  //           <div>{a.desc}</div>
-  //         </div>
-  //       ))}
-  //     </>
-  //   )
-  // }
+  if (func.fluxParameters.length > 0) {
+    func.fluxParameters.map(argument => {
+      const description = argument.headline.slice(argument.name.length + 1)
+      return (argComponent = (
+        <>
+          <div className="flux-function-docs--arguments" key={argument.name}>
+            <span>{argument.name}:</span>
+            <div>{description}</div>
+          </div>
+        </>
+      ))
+    })
+  }
 
   return (
     <div className="flux-function-docs" data-testid={`flux-docs--${func.name}`}>
@@ -53,7 +53,7 @@ const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
         <div className="flux-toolbar--popover">
           <article className="flux-functions-toolbar--description">
             <div className="flux-function-docs--heading">Description</div>
-            <span>{func.description}</span>
+            <span>{func.headline}</span>
           </article>
           <article>
             <div className="flux-function-docs--heading">Arguments</div>
@@ -61,7 +61,7 @@ const FunctionTooltipContents: FC<TooltipProps> = ({func}) => {
           </article>
           <p className="tooltip--link">
             Still have questions? Check out the{' '}
-            <a target="_blank" rel="noreferrer" href={"n/a"}>
+            <a target="_blank" rel="noreferrer" href={'n/a'}>
               Flux Docs
             </a>
             .
@@ -96,7 +96,7 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
         data-testid={`flux--${testID}`}
         className="flux-toolbar--list-item flux-toolbar--function"
       >
-        <code>{func.name}</code>
+        <code>{`${func.package}.${func.name}`}</code>
         <Button
           testID={`flux--${testID}--inject`}
           text="Inject"

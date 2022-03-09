@@ -5,7 +5,7 @@ import React, {FC, ReactElement} from 'react'
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
 
 // Types
-import { Fluxdocs } from 'src/client/fluxdocsdRoutes'
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
 interface Props {
   funcs: any
@@ -15,8 +15,8 @@ interface Props {
 
 const TransformToolbarFunctions: FC<Props> = props => {
   const {searchTerm, funcs, children} = props
-  
-  //sort by package name and then sort by function name 
+
+  //sort by package name and then sort by function name
   const sortedFunctions = funcs.sort((a, b) => {
     if (a.package.toLowerCase() === b.package.toLowerCase) {
       return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1

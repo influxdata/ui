@@ -14,7 +14,7 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import { Fluxdocs } from 'src/client/fluxdocsdRoutes'
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
 interface Props {
   func: Fluxdocs

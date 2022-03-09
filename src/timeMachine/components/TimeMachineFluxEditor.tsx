@@ -20,6 +20,7 @@ import {
   functionRequiresNewLine,
   generateImport,
 } from 'src/timeMachine/utils/insertFunction'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {AppState, FluxToolbarFunction, EditorType} from 'src/types'
@@ -116,42 +117,44 @@ const TimeMachineFluxEditor: FC<Props> = ({
     return {text, range}
   }
 
-  const getFluxExample = (func) => {
+  const getFluxExample = func => {
     const {name, fluxType} = func
-    
-    let signature 
 
-    // get copy of fluxtype signature before arrow sign 
+    let signature
+
+    // get copy of fluxtype signature before arrow sign
     const index = fluxType.indexOf('=')
     const fluxsign = fluxType.slice(0, index)
 
     // access parameters alone inside function signature
     const firstIndex = fluxsign.indexOf('(')
     const secondIndex = fluxsign.indexOf(')')
-    const parametersAsOneSentence = fluxsign.substring(firstIndex + 1, secondIndex).replace(/\s/g, '')
+    const parametersAsOneSentence = fluxsign
+      .substring(firstIndex + 1, secondIndex)
+      .replace(/\s/g, '')
     // parametersAsOneSentence = dict:[C:D], key:B
     console.log('param', parametersAsOneSentence)
-    // sperate parameters using array so we can parse them  
-    const paramsArray = parametersAsOneSentence.split(",")
+    // sperate parameters using array so we can parse them
+    const paramsArray = parametersAsOneSentence.split(',')
     // paramsArray = [dict: [A:B], key:A]
     paramsArray.map((element, index) => {
-      if(element.startsWith("pairs")) {
-        paramsArray[index] = 'pairs: [{key: 1, value: "foo"},{key: 2, value: "bar"}]'
+      if (element.startsWith('pairs')) {
+        paramsArray[index] =
+          'pairs: [{key: 1, value: "foo"},{key: 2, value: "bar"}]'
         return
       }
-      if (element.startsWith("dict")) {
+      if (element.startsWith('dict')) {
         paramsArray[index] = 'dict: [1: "foo", 2: "bar"]'
       }
-      if (element.startsWith("key")) {
+      if (element.startsWith('key')) {
         paramsArray[index] = 'key: 1'
       }
-      if(element.startsWith("default")) {
+      if (element.startsWith('default')) {
         paramsArray[index] = 'default: ""'
       }
-      
     })
-    
-    signature = name + `(` + paramsArray.join(',') + `)`
+
+    signature = `${func.package}.${name}` + `(` + paramsArray.join(',') + `)`
 
     // add example property to flux function object
     return {...func, example: signature}
@@ -161,7 +164,10 @@ const TimeMachineFluxEditor: FC<Props> = ({
     if (!editorInstance) {
       return
     }
-    const {text, range} = getFluxTextAndRange(getFluxExample(func))
+
+    const {text, range} = getFluxTextAndRange(
+      isFlagEnabled('fluxDynamicDocs') ? getFluxExample(func) : func
+    )
 
     const edits = [
       {

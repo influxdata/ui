@@ -49,6 +49,13 @@ const OrgNavigation: FC<Props> = ({activeTab}) => {
     {
       text: 'Settings',
       id: Tab.About,
+      enabled: () => CLOUD,
+      link: `/orgs/${orgID}/about`,
+    },
+    {
+      text: 'About',
+      id: Tab.About,
+      enabled: () => !CLOUD,
       link: `/orgs/${orgID}/about`,
     },
     {

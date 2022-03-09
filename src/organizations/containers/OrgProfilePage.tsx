@@ -15,7 +15,6 @@ import DeleteOrgOverlay from 'src/organizations/components/DeleteOrgOverlay'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getQuartzMe} from 'src/me/selectors'
 import DeleteOrgProvider from 'src/organizations/components/DeleteOrgContext'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -23,11 +22,9 @@ import {CLOUD} from 'src/shared/constants'
 const OrgProfilePage: FC = () => {
   const quartzMe = useSelector(getQuartzMe)
 
-  const subTitle = isFlagEnabled('multiAccount') ? 'Settings' : 'About'
-
   return (
     <>
-      <Page titleTag={pageTitleSuffixer([subTitle, 'Organization'])}>
+      <Page titleTag={pageTitleSuffixer(['Settings', 'Organization'])}>
         <OrgHeader testID="about-page--header" />
         <OrgTabbedPage activeTab="about">
           <OrgProfileTab />

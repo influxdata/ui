@@ -8,6 +8,7 @@ import {VersionFlowProvider} from 'src/flows/context/version.read'
 import {FlowQueryProvider} from 'src/flows/context/flow.query'
 import QueryProvider from 'src/shared/contexts/query'
 import {ResultsProvider} from 'src/flows/context/results'
+import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {VersionPublishProvider} from 'src/flows/context/version.publish'
 
@@ -41,14 +42,17 @@ const ReadOnlyFlowPage: FC = () => {
     <Page titleTag={flow.name + ' (Shared) | InfluxDB Cloud'}>
       <VersionHeader />
       <Page.Contents fullWidth={true} scrollable={false} className="flow-page">
-        <DapperScrollbars
-          noScrollX
-          thumbStartColor="gray"
-          thumbStopColor="gray"
-        >
-          <ReadOnlyPipeList />
-        </DapperScrollbars>
-        <VersionSidebar />
+        <PopupProvider>
+          <DapperScrollbars
+            noScrollX
+            thumbStartColor="gray"
+            thumbStopColor="gray"
+          >
+            <ReadOnlyPipeList />
+          </DapperScrollbars>
+          <VersionSidebar />
+          <PopupDrawer />
+        </PopupProvider>
       </Page.Contents>
     </Page>
   )

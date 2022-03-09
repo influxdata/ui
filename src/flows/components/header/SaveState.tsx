@@ -29,12 +29,12 @@ const SaveState: FC = () => {
     })
   }
 
-  if (!isFlagEnabled('ephemeralNotebook')) {
-    return null
-  }
-
   if (isFlagEnabled('flowPublishLifecycle')) {
     return <div className="flow-header--saving">Autosaved</div>
+  }
+
+  if (!isFlagEnabled('ephemeralNotebook')) {
+    return null
   }
 
   if (!flow.id) {

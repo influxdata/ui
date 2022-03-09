@@ -69,14 +69,20 @@ import {
 
 const backgroundColor = '#07070E'
 
-type MenuItemType = {
+interface MenuItem {
+  type: 'menuitem'
   title: string
-  onClick?: () => void
-  icon?: IconFont
-  divider?: boolean
+  onClick: () => void
+  icon: IconFont
   disabled?: () => boolean
   testID?: string
 }
+interface Divider {
+  type: 'divider'
+  title: string
+}
+
+type MenuItemType = MenuItem | Divider
 interface ButtonProp {
   menuItems: MenuItemType[]
 }
@@ -98,25 +104,25 @@ const MenuButton: FC<ButtonProp> = ({menuItems}) => {
         hideEvent={PopoverInteraction.Click}
         contents={onHide => (
           <List>
-            {menuItems.map(item => (
-              <React.Fragment key={item.title}>
-                {item.divider ? (
-                  <List.Divider />
-                ) : (
-                  <List.Item
-                    disabled={item?.disabled ? item.disabled() : false}
-                    onClick={() => {
-                      item?.onClick()
-                      onHide()
-                    }}
-                    testID={item?.testID || ''}
-                  >
-                    <Icon glyph={item?.icon} />
-                    <span style={{paddingLeft: '10px'}}>{item?.title}</span>
-                  </List.Item>
-                )}
-              </React.Fragment>
-            ))}
+            {menuItems.map(item => {
+              if (item.type === 'divider') {
+                return <List.Divider key={item.title} />
+              }
+              return (
+                <List.Item
+                  key={item.title}
+                  disabled={item?.disabled ? item.disabled() : false}
+                  onClick={() => {
+                    item?.onClick()
+                    onHide()
+                  }}
+                  testID={item?.testID || ''}
+                >
+                  <Icon glyph={item?.icon} />
+                  <span style={{paddingLeft: '10px'}}>{item.title}</span>
+                </List.Item>
+              )
+            })}
           </List>
         )}
       />
@@ -352,11 +358,13 @@ const FlowHeader: FC = () => {
 
   const menuItems: MenuItemType[] = [
     {
+      type: 'menuitem',
       title: 'Clone',
       onClick: handleClone,
       icon: IconFont.Duplicate_New,
     },
     {
+      type: 'menuitem',
       title: 'Delete',
       onClick: handleDelete,
       icon: IconFont.Trash_New,
@@ -369,11 +377,13 @@ const FlowHeader: FC = () => {
       1,
       0,
       {
+        type: 'menuitem',
         title: 'Download as PNG',
         onClick: handleDownloadAsPNG,
         icon: IconFont.Download_New,
       },
       {
+        type: 'menuitem',
         title: 'Download as PDF',
         onClick: handleDownloadAsPDF,
         icon: IconFont.Download_New,
@@ -386,11 +396,13 @@ const FlowHeader: FC = () => {
       0,
       0,
       {
+        type: 'menuitem',
         title: 'Save to version history',
         onClick: handlePublish,
         icon: IconFont.Disks,
       },
       {
+        type: 'menuitem',
         title: 'Version history',
         onClick: handleViewPublish,
         icon: IconFont.Layers,
@@ -401,7 +413,7 @@ const FlowHeader: FC = () => {
           return versions[0].id === flow.id
         },
       },
-      {title: 'divider', divider: true}
+      {title: 'divider', type: 'divider'}
     )
   }
 

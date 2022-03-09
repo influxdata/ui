@@ -7,7 +7,6 @@ import {
   AlignItems,
   Button,
   ComponentColor,
-  ComponentSize,
   FlexBox,
   FlexDirection,
   Overlay,

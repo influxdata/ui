@@ -1,6 +1,5 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
 import TooltipArguments from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipArguments'

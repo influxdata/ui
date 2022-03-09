@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, createRef} from 'react'
-
 // Component
 import FunctionTooltipContents from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/FunctionTooltipContents'
 import {
@@ -25,7 +24,6 @@ interface Props {
 const defaultProps = {
   testID: 'flux-function',
 }
-
 const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
   const functionRef = createRef<HTMLDListElement>()
   const handleClickFunction = () => {

@@ -308,6 +308,14 @@ const FlowHeader: FC = () => {
     event('Notebook Share Link Created')
   }
 
+  const openShareLinkOverlay = () => {
+    dispatch(
+      showOverlay('share-overlay', {onDelete: deleteShare, share}, () =>
+        dispatch(dismissOverlay())
+      )
+    )
+  }
+
   const printJSON = () => {
     /* eslint-disable no-console */
     console.log(JSON.stringify(serialize(flow), null, 2))
@@ -403,15 +411,16 @@ const FlowHeader: FC = () => {
                 />
                 <SquareButton
                   icon={IconFont.Wood}
-                  onClick={() =>
-                    dispatch(
-                      showOverlay(
-                        'share-overlay',
-                        {onDelete: deleteShare, share},
-                        () => dispatch(dismissOverlay())
-                      )
-                    )
+                  onClick={!!share ? openShareLinkOverlay : generateLink}
+                  color={
+                    !!share ? ComponentColor.Primary : ComponentColor.Secondary
                   }
+                  status={
+                    linkLoading === RemoteDataState.Loading
+                      ? ComponentStatus.Loading
+                      : ComponentStatus.Default
+                  }
+                  titleText={`Share ${PROJECT_NAME}`}
                 />
                 {isFlagEnabled('flowPublishLifecycle') && (
                   <SquareButton

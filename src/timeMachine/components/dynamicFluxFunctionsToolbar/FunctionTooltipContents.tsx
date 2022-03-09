@@ -8,22 +8,23 @@ import TooltipArguments from 'src/timeMachine/components/dynamicFluxFunctionsToo
 import TooltipLink from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipLink'
 
 // Types
-// import {FluxToolbarFunction} from 'src/types/shared'
+import { Fluxdocs } from 'src/client/fluxdocsdRoutes'
+
 
 interface Props {
-  func: any
+  func: Fluxdocs
 }
 
 const FunctionTooltipContents: FunctionComponent<Props> = ({
-  func: {description, fluxParameters},
+  func: {headline, fluxParameters, name},
 }) => {
   return (
     <div className="flux-function-docs" data-testid={`flux-docs--${name}`}>
       <DapperScrollbars autoHide={false}>
         <div className="flux-toolbar--popover">
-          <TooltipDescription description={description} />
+          <TooltipDescription description={headline} />
           <TooltipArguments argsList={fluxParameters} />
-          <TooltipLink link={'blah'} />
+          <TooltipLink />
         </div>
       </DapperScrollbars>
     </div>

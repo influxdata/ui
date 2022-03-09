@@ -8,32 +8,62 @@ import {DapperScrollbars} from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import ToolbarFunction from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/ToolbarFunction'
 
-// Constants
-// import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
+
+import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+
+import { getFluxdocs, Fluxdocs } from 'src/client/fluxdocsdRoutes'
 
 // Types
-import {FluxToolbarFunction} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 interface OwnProps {
-  onInsertFluxFunction: (func: FluxToolbarFunction) => void
+  onInsertFluxFunction: (func) => void
 }
 
 const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [fluxFuncs, setFluxFuncs] = useState('')
+  const [fluxFuncs, setFluxFuncs] = useState([])
+  const [fluxServiceError, setFluxServiceError] = useState<RemoteDataState>(RemoteDataState.NotStarted)
 
   const handleSearch = (searchTerm: string): void => {
     setSearchTerm(searchTerm)
   }
 
   useEffect(() => {
-    const url = 'http://localhost:3000/fluxdocs'
-    fetch(url).then(resp => resp.json())
-    .then(resp => setFluxFuncs(resp))
-  }, [])
+    
+    let isMounted = true
+    const getFluxFuncs = async () => {
+      try {
+        setFluxServiceError(RemoteDataState.Loading)
+        
+        const resp = await getFluxdocs({})
 
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+        
+        if (isMounted) {
+          // filter only functions not value
+          const onlyFluxFuncs = resp.data.filter(value => value.kind === 'Function')
+          setFluxFuncs(onlyFluxFuncs)
+          setFluxServiceError(RemoteDataState.Done)
+
+        }
+        
+      } catch (err) {
+        console.error(err)
+        setFluxServiceError(RemoteDataState.Error)
+      }
+    }
+
+    getFluxFuncs()
+    return () => {
+      isMounted = false
+    }
+  }, [])
+  
   const handleClickFunction = useCallback(
-    (func: FluxToolbarFunction) => {
+    (func: Fluxdocs) => {
       props.onInsertFluxFunction(func)
     },
     [props.onInsertFluxFunction]
@@ -41,6 +71,10 @@ const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
 
   return useMemo(() => {
     return (
+      <SpinnerContainer
+        loading={fluxServiceError}
+        spinnerComponent={<TechnoSpinner />}
+        >
       <ErrorBoundary>
         <FluxToolbarSearch onSearch={handleSearch} resourceName="Functions" />
         <DapperScrollbars className="flux-toolbar--scroll-area">
@@ -50,21 +84,24 @@ const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
               searchTerm={searchTerm}
             >
               {sortedFunctions =>
-                sortedFunctions.map(func => (
+                sortedFunctions.map((func, index) => (
                   <ToolbarFunction
-                    onClickFunction={handleClickFunction}
-                    key={`${func.name}`}
-                    func={func}
-                    testID={func.name}
+                  onClickFunction={handleClickFunction}
+                  key={index}
+                  func={func}
+                  testID={func.name}
                   />
-                ))
-              }
+                  ))
+                }
             </TransformToolbarFunctions>
           </div>
         </DapperScrollbars>
       </ErrorBoundary>
+       </SpinnerContainer>
+       
+      
     )
-  }, [searchTerm, handleClickFunction])
+  }, [searchTerm, handleClickFunction, fluxServiceError])
 }
 
 export default DynamicFluxFunctionsToolbar

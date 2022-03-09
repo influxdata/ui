@@ -14,11 +14,11 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {FluxToolbarFunction} from 'src/types/shared'
+import { Fluxdocs } from 'src/client/fluxdocsdRoutes'
 
 interface Props {
-  func: FluxToolbarFunction
-  onClickFunction: (func: FluxToolbarFunction) => void
+  func: Fluxdocs
+  onClickFunction: (func: Fluxdocs) => void
   testID: string
 }
 
@@ -49,7 +49,7 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
         data-testid={`flux--${testID}`}
         className="flux-toolbar--list-item flux-toolbar--function"
       >
-        <code>{func.name}</code>
+        <code>{`${func.package}.${func.name}`}</code>
         <Button
           testID={`flux--${testID}--inject`}
           text="Inject"

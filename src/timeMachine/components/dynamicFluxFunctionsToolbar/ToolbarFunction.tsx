@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, createRef} from 'react'
-
 // Component
 import FunctionTooltipContents from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/FunctionTooltipContents'
 import {
@@ -14,18 +13,17 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {FluxToolbarFunction} from 'src/types/shared'
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
 interface Props {
-  func: FluxToolbarFunction
-  onClickFunction: (func: FluxToolbarFunction) => void
+  func: Fluxdocs
+  onClickFunction: (func: Fluxdocs) => void
   testID: string
 }
 
 const defaultProps = {
   testID: 'flux-function',
 }
-
 const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
   const functionRef = createRef<HTMLDListElement>()
   const handleClickFunction = () => {
@@ -49,7 +47,7 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
         data-testid={`flux--${testID}`}
         className="flux-toolbar--list-item flux-toolbar--function"
       >
-        <code>{func.name}</code>
+        <code>{`${func.package}.${func.name}`}</code>
         <Button
           testID={`flux--${testID}--inject`}
           text="Inject"
@@ -62,7 +60,5 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
     </>
   )
 }
-
 ToolbarFunction.defaultProps = defaultProps
-
 export default ToolbarFunction

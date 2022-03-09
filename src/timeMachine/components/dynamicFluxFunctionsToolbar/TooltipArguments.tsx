@@ -1,15 +1,13 @@
 import React, {PureComponent} from 'react'
 
 interface Args {
+  headline: string
   name: string
-  type: string
-  desc: string
 }
 
 interface Props {
   argsList?: Args[]
 }
-
 class TooltipArguments extends PureComponent<Props> {
   public render() {
     return (
@@ -19,24 +17,21 @@ class TooltipArguments extends PureComponent<Props> {
       </article>
     )
   }
-
   private get arguments(): JSX.Element | JSX.Element[] {
     const {argsList} = this.props
 
     if (argsList.length > 0) {
-      return argsList.map(a => {
+      return argsList.map(argument => {
+        const description = argument.headline.slice(argument.name.length + 1)
         return (
-          <div className="flux-function-docs--arguments" key={a.name}>
-            <span>{a.name}:</span>
-            <span>{a.type}</span>
-            <div>{a.desc}</div>
+          <div className="flux-function-docs--arguments" key={argument.name}>
+            <span>{argument.name}:</span>
+            <div>{description}</div>
           </div>
         )
       })
     }
-
     return <div className="flux-function-docs--arguments">None</div>
   }
 }
-
 export default TooltipArguments

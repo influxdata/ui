@@ -126,7 +126,7 @@ class DashboardCard extends PureComponent<Props> {
 
     onUpdateDashboard(id, {name})
 
-    if (isFlagEnabled('pinnedItems') && CLOUD) {
+    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
       try {
         updatePinnedItemByParam(id, {name})
         this.props.sendNotification(pinnedItemSuccess('dashboard', 'updated'))
@@ -251,10 +251,12 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {description})
-    try {
-      updatePinnedItemByParam(id, {description})
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
+    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
+      try {
+        updatePinnedItemByParam(id, {description})
+      } catch (err) {
+        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
+      }
     }
   }
 

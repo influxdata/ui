@@ -16,8 +16,8 @@ import WriteDataDetailsContextProvider, {
 } from 'src/writeData/components/WriteDataDetailsContext'
 
 import {getOrg} from 'src/organizations/selectors'
-import DataListening from '../DataListening'
-import {getBuckets} from '../../../buckets/actions/thunks'
+import DataListening from 'src/homepageExperience/components/DataListening'
+import {getBuckets} from 'src/buckets/actions/thunks'
 
 export const WriteDataComponent = () => {
   const org = useSelector(getOrg)

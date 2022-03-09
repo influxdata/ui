@@ -6,7 +6,7 @@ const TooltipLink = () => (
     <a
       target="_blank"
       rel="noreferrer"
-      href={`https://docs.influxdata.com/flux/v0.x/stdlib/`}
+      href="https://docs.influxdata.com/flux/v0.x/stdlib/"
     >
       Flux Docs
     </a>

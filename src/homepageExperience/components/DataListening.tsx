@@ -42,7 +42,7 @@ class DataListening extends PureComponent<Props, State> {
       loading: LoadingState.NotStarted,
       timePassedInSeconds: 0,
       secondsLeft: SECONDS,
-      previousBucket: null
+      previousBucket: null,
     }
   }
 

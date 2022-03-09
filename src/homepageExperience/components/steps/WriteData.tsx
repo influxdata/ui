@@ -44,51 +44,51 @@ export const WriteDataComponent = () => {
     setSelectedBucket(bucket)
   }, [bucket])
 
-
   return (
     <>
-        <h1>Write Data</h1>
-        <p>
-          To start writing data, we need a place to our time-series store data.
-          We call these{' '}
-          <SafeBlankLink href={`orgs/${org.id}/load-data/buckets`}>
-            buckets.
-          </SafeBlankLink>
-        </p>
+      <h1>Write Data</h1>
+      <p>
+        To start writing data, we need a place to our time-series store data. We
+        call these{' '}
+        <SafeBlankLink href={`orgs/${org.id}/load-data/buckets`}>
+          buckets.
+        </SafeBlankLink>
+      </p>
 
-        <Panel backgroundColor={InfluxColors.Grey15}>
-          <Panel.Body size={ComponentSize.ExtraSmall}>
-            <Grid>
-              <Grid.Row>
-                <Grid.Column widthSM={Columns.Twelve}>
-                  <WriteDataHelperBuckets />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Panel.Body>
-        </Panel>
-        <p>
-          You’re ready to write data! In this code, we define five data points
-          and write each one for InfluxDB. Paste the following code after the
-          prompt (>>>) and press Enter.
-        </p>
-        <CodeSnippet text={codeSnippet} />
-        <p style={{marginTop: '40px'}}>
-          Once you write this data, you’ll begin to see the confirmation below
-        </p>
+      <Panel backgroundColor={InfluxColors.Grey15}>
+        <Panel.Body size={ComponentSize.ExtraSmall}>
+          <Grid>
+            <Grid.Row>
+              <Grid.Column widthSM={Columns.Twelve}>
+                <WriteDataHelperBuckets />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Panel.Body>
+      </Panel>
+      <p>
+        You’re ready to write data! In this code, we define five data points and
+        write each one for InfluxDB. Paste the following code after the prompt
+        (>>>) and press Enter.
+      </p>
+      <CodeSnippet text={codeSnippet} />
+      <p style={{marginTop: '40px'}}>
+        Once you write this data, you’ll begin to see the confirmation below
+      </p>
 
-        <Panel backgroundColor={InfluxColors.Grey15}>
-          <Panel.Body>
-            <DataListening bucket={selectedBucket.name} />
-          </Panel.Body>
-        </Panel>
+      <Panel backgroundColor={InfluxColors.Grey15}>
+        <Panel.Body>
+          <DataListening bucket={selectedBucket.name} />
+        </Panel.Body>
+      </Panel>
     </>
   )
 }
 
 export const WriteData = () => {
-  return <WriteDataDetailsContextProvider>
-    <WriteDataComponent/>
-  </WriteDataDetailsContextProvider>
+  return (
+    <WriteDataDetailsContextProvider>
+      <WriteDataComponent />
+    </WriteDataDetailsContextProvider>
+  )
 }
-

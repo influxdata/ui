@@ -28,11 +28,11 @@ import {
   copyToClipboardSuccess,
 } from 'src/shared/copy/notifications'
 
-// Styles
-import './ShareOverlay.scss'
-
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+
+// Styles
+import './ShareOverlay.scss'
 
 const ShareOverlay: FC = () => {
   const {onClose, params} = useContext(OverlayContext)
@@ -112,10 +112,7 @@ const ShareOverlay: FC = () => {
               className="share-delete--color-red"
               icon={IconFont.Trash_New}
               color={ComponentColor.Tertiary}
-              onClick={() => {
-                onDelete()
-                onClose()
-              }}
+              onClick={() => onDelete(share.id)}
             />
             <span className="share-text">
               If deleted, viewers with this link will no longer have access.

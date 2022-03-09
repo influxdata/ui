@@ -6,18 +6,33 @@
 }
 
 .share-section--link {
-  padding: $cf-space-l 0;
+  padding-top: $cf-space-s;
+  padding-bottom: $cf-space-l;
   border-bottom: 2px solid $cf-grey-15;
 }
 
 .share-section--delete {
-  padding-top: $cf-space-l;
+  padding-top: $cf-space-s;
   padding-bottom: $cf-space-2xs;
 }
 
 .share-text {
   padding-left: $cf-space-xs;
   color: $cf-grey-85;
+}
+
+.share-section--link-label {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.share-section--link-bar {
+  padding-top: $cf-space-2xs;
+  padding-bottom: $cf-space-m;
+}
+
+.share-button--copy {
+  padding: 0 $cf-space-2xs;
 }
 
 .share-delete--color-red {

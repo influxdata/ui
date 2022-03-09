@@ -66,9 +66,9 @@ const ShareOverlay: FC = () => {
             </span>
           </FlexBox.Child>
           <FlexBox.Child className="share-section--link">
-            Share Link
-            <FlexBox>
-              <FlexBox.Child>
+            <span className="share-section--link-label">Share Link</span>
+            <FlexBox className="share-section--link-bar">
+              <FlexBox.Child grow={2} shrink={0}>
                 <Input
                   value={link}
                   onChange={() => {
@@ -76,7 +76,12 @@ const ShareOverlay: FC = () => {
                   }}
                 />
               </FlexBox.Child>
-              <FlexBox.Child>
+              <FlexBox.Child
+                grow={0}
+                shrink={0}
+                basis={90}
+                className="share-button--copy"
+              >
                 <CopyToClipboard text={link} onCopy={handleCopy}>
                   <Button
                     icon={IconFont.Clipboard_New}
@@ -86,12 +91,9 @@ const ShareOverlay: FC = () => {
                   />
                 </CopyToClipboard>
               </FlexBox.Child>
-              <FlexBox.Child>
+              <FlexBox.Child grow={0} shrink={0} basis={40}>
                 <SafeBlankLink href={link}>
-                  <SquareButton
-                    icon={IconFont.Export_New}
-                    size={ComponentSize.Medium}
-                  />
+                  <SquareButton icon={IconFont.Export_New} />
                 </SafeBlankLink>
               </FlexBox.Child>
             </FlexBox>
@@ -108,7 +110,10 @@ const ShareOverlay: FC = () => {
               className="share-delete--color-red"
               icon={IconFont.Trash_New}
               color={ComponentColor.Tertiary}
-              onClick={onDelete} // TODO: fix onDelete
+              onClick={() => {
+                onDelete()
+                onClose()
+              }}
             />
             <span className="share-text">
               If deleted, viewers with this link will no longer have access.

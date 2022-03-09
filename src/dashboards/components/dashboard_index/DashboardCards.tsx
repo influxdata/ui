@@ -1,6 +1,6 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {connect} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import memoizeOne from 'memoize-one'
 
 // Components
@@ -10,16 +10,31 @@ import AssetLimitAlert from 'src/cloud/components/AssetLimitAlert'
 
 // Selectors
 import {getSortedResources, SortTypes} from 'src/shared/utils/sort'
+import {getMe} from 'src/me/selectors'
+import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {AppState, Dashboard, RemoteDataState} from 'src/types'
 import {Sort} from 'src/clockface'
 import {LimitStatus} from 'src/cloud/actions/limits'
 
+// Contexts
+import {
+  addPinnedItem,
+  deletePinnedItemByParam,
+  PinnedItemTypes,
+} from 'src/shared/contexts/pinneditems'
+
 // Utils
 import {extractDashboardLimits} from 'src/cloud/utils/limits'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
+import {notify} from 'src/shared/actions/notifications'
+
+import {
+  pinnedItemFailure,
+  pinnedItemSuccess,
+} from 'src/shared/copy/notifications'
 
 let getPinnedItems
 if (CLOUD) {
@@ -38,7 +53,10 @@ interface OwnProps {
   onFilterChange: (searchTerm: string) => void
 }
 
-class DashboardCards extends PureComponent<OwnProps & StateProps> {
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = OwnProps & StateProps & ReduxProps
+
+class DashboardCards extends PureComponent<Props> {
   private _observer
   private _isMounted = true
   private _spinner
@@ -55,18 +73,9 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
 
   public componentDidMount() {
     if (isFlagEnabled('pinnedItems') && CLOUD) {
-      getPinnedItems()
-        .then(res => {
-          if (this._isMounted) {
-            this.setState(prev => ({...prev, pinnedItems: res, windowSize: 15}))
-          }
-        })
-        .catch(err => {
-          console.error(err)
-        })
-    } else {
-      this.setState(prev => ({...prev, windowSize: 15}))
+      this.updatePinnedItems()
     }
+    this.setState(prev => ({...prev, windowSize: 15}))
   }
 
   public componentWillUnmount() {
@@ -110,6 +119,53 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
     }
   }
 
+  public updatePinnedItems = () => {
+    getPinnedItems()
+      .then(res => {
+        if (this._isMounted) {
+          this.setState(prev => ({...prev, pinnedItems: res}))
+        }
+      })
+      .catch(err => console.error(err))
+  }
+
+  public handlePinDashboard = async (
+    dashboardID: string,
+    name: string,
+    description: string
+  ) => {
+    const {org, me} = this.props
+
+    // add to pinned item list
+    try {
+      await addPinnedItem({
+        orgID: org.id,
+        userID: me.id,
+        metadata: {
+          dashboardID,
+          name,
+          description,
+        },
+        type: PinnedItemTypes.Dashboard,
+      })
+      this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
+      this.updatePinnedItems()
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'add'))
+    }
+  }
+
+  public handleUnpinDashboard = async (dashboardID: string) => {
+    // delete from pinned item list
+    try {
+      await deletePinnedItemByParam(dashboardID)
+      this.props.sendNotification(pinnedItemSuccess('dashboard', 'deleted'))
+      this.updatePinnedItems()
+    } catch (err) {
+      this.props.sendNotification(pinnedItemFailure(err.message, 'delete'))
+    }
+  }
+
   public render() {
     const {
       dashboards,
@@ -142,6 +198,8 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
                 updatedAt={meta.updatedAt}
                 description={description}
                 onFilterChange={onFilterChange}
+                onPinDashboard={this.handlePinDashboard}
+                onUnpinDashboard={this.handleUnpinDashboard}
                 isPinned={
                   !!pinnedItems.find(item => item?.metadata.dashboardID === id)
                 }
@@ -166,10 +224,21 @@ class DashboardCards extends PureComponent<OwnProps & StateProps> {
   }
 }
 
+const mdtp = {
+  sendNotification: notify,
+}
+
 const mstp = (state: AppState) => {
+  const me = getMe(state)
+  const org = getOrg(state)
+
   return {
     limitStatus: extractDashboardLimits(state),
+    me,
+    org,
   }
 }
 
-export default connect(mstp)(DashboardCards)
+const connector = connect(mstp, mdtp)
+
+export default connector(DashboardCards)

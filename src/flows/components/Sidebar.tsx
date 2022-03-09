@@ -41,15 +41,14 @@ export const SubSideBar: FC = () => {
   return (
     <div className="flow-sidebar">
       <div className="flow-sidebar--buttons">
-        <Button
-          icon={IconFont.Remove_New}
+        <button
+          className="cf-overlay--dismiss"
+          type="button"
           onClick={() => {
             event('Closing Submenu')
             hideSub()
           }}
-        >
-          Back
-        </Button>
+        ></button>
       </div>
       <div className="flow-sidebar--submenu">
         <DapperScrollbars

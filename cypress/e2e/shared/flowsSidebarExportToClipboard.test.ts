@@ -62,7 +62,7 @@ const verifyClientCode = (client: any) => {
     .find('code')
     .contains(client.query)
 
-  cy.get('.cf-overlay--dismiss').click()
+  cy.get('.cf-overlay--header .cf-overlay--dismiss').click()
 }
 
 const getClients = (org: string, query: string) => {

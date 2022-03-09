@@ -47,14 +47,10 @@ import {
 import {notify} from 'src/shared/actions/notifications'
 
 import {
-  addPinnedItem,
   deletePinnedItemByParam,
-  PinnedItemTypes,
   updatePinnedItemByParam,
 } from 'src/shared/contexts/pinneditems'
 
-import {getMe} from 'src/me/selectors'
-import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 import {PROJECT_NAME} from 'src/flows'
@@ -66,6 +62,12 @@ interface OwnProps {
   updatedAt: string
   labels: string[]
   onFilterChange: (searchTerm: string) => void
+  onPinDashboard: (
+    dashboardID: string,
+    name: string,
+    description: string
+  ) => void
+  onUnpinDashboard: (DashboardID: string) => void
   isPinned: boolean
 }
 
@@ -124,12 +126,12 @@ class DashboardCard extends PureComponent<Props> {
 
     onUpdateDashboard(id, {name})
 
-    if (isFlagEnabled('pinnedItems') && CLOUD) {
+    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
       try {
         updatePinnedItemByParam(id, {name})
         this.props.sendNotification(pinnedItemSuccess('dashboard', 'updated'))
       } catch (err) {
-        this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
       }
     }
   }
@@ -141,21 +143,11 @@ class DashboardCard extends PureComponent<Props> {
   }
 
   private handlePinDashboard = () => {
-    try {
-      addPinnedItem({
-        orgID: this.props.org.id,
-        userID: this.props.me.id,
-        metadata: {
-          dashboardID: this.props.id,
-          name: this.props.name,
-          description: this.props.description,
-        },
-
-        type: PinnedItemTypes.Dashboard,
-      })
-      this.props.sendNotification(pinnedItemSuccess('dashboard', 'added'))
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+    const {id, name, description, isPinned} = this.props
+    if (isPinned) {
+      this.props.onUnpinDashboard(id)
+    } else {
+      this.props.onPinDashboard(id, name, description)
     }
   }
 
@@ -185,7 +177,7 @@ class DashboardCard extends PureComponent<Props> {
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
           style={minWidth}
-          contents={() => (
+          contents={onHide => (
             <List>
               <List.Item
                 onClick={this.handleExport}
@@ -205,13 +197,15 @@ class DashboardCard extends PureComponent<Props> {
               </List.Item>
               {isFlagEnabled('pinnedItems') && CLOUD && (
                 <List.Item
-                  onClick={this.handlePinDashboard}
-                  disabled={this.props.isPinned}
+                  onClick={() => {
+                    this.handlePinDashboard()
+                    onHide()
+                  }}
                   size={ComponentSize.Small}
                   style={fontWeight}
                   testID="context-pin-dashboard"
                 >
-                  Pin
+                  {this.props.isPinned ? 'Unpin' : 'Pin'}
                 </List.Item>
               )}
             </List>
@@ -257,10 +251,12 @@ class DashboardCard extends PureComponent<Props> {
     const {id, onUpdateDashboard} = this.props
 
     onUpdateDashboard(id, {description})
-    try {
-      updatePinnedItemByParam(id, {description})
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'dashboard'))
+    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
+      try {
+        updatePinnedItemByParam(id, {description})
+      } catch (err) {
+        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
+      }
     }
   }
 
@@ -293,13 +289,9 @@ const mdtp = {
 
 const mstp = (state: AppState, props: OwnProps) => {
   const dashboard = state.resources.dashboards.byID[props.id]
-  const me = getMe(state)
-  const org = getOrg(state)
 
   return {
     dashboard,
-    me,
-    org,
   }
 }
 const connector = connect(mstp, mdtp)

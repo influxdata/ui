@@ -6,6 +6,10 @@ import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Navigation} from 'src/homepageExperience/components/Navigation'
+import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
+import {InitalizeClient} from 'src/homepageExperience/components/steps/InitalizeClient'
+import {WriteData} from 'src/homepageExperience/components/steps/WriteData'
+import {ExecuteQuery} from 'src/homepageExperience/components/steps/ExecuteQuery'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
@@ -38,6 +42,18 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
       }
       case 2: {
         return <InstallDependencies />
+      }
+      case 3: {
+        return <CreateToken />
+      }
+      case 4: {
+        return <InitalizeClient />
+      }
+      case 5: {
+        return <WriteData />
+      }
+      case 6: {
+        return <ExecuteQuery />
       }
       default: {
         return <Overview />

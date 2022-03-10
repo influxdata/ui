@@ -47,9 +47,8 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
         if (props.fluxFunctions.length === 0) {
           await props.getFluxPackages()
           setFluxServiceError(RemoteDataState.Done)
-        } 
+        }
         setFluxServiceError(RemoteDataState.Done)
-
       } catch (err) {
         console.error(err)
         setFluxServiceError(RemoteDataState.Error)
@@ -57,7 +56,6 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
     }
     getFluxFuncs()
   }, [])
-  
 
   const handleClickFunction = useCallback(
     (func: Fluxdocs) => {
@@ -103,13 +101,12 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
 }
 
 const mstp = (state: AppState) => {
-  
   const fluxFunctions = state.fluxDocs.fluxDocs
   return {fluxFunctions}
 }
 
 const mdtp = {
-  getFluxPackages
+  getFluxPackages,
 }
 const connector = connect(mstp, mdtp)
 

@@ -12,36 +12,34 @@ import { getFluxPackagesFailed } from 'src/shared/copy/notifications/categories/
 // Types
 import {NotificationAction} from 'src/types'
 
-export type Action =
-  | SetGetFluxFunc
+export type Action = SetGetFluxFunc
 
 interface SetGetFluxFunc {
-    type: 'GET_FLUX_DOCS',
-    payload: {data: FluxdocsArray}
+  type: 'GET_FLUX_DOCS'
+  payload: {data: FluxdocsArray}
 }
 
 export const setFluxFunc = (data): SetGetFluxFunc => ({
-    type: 'GET_FLUX_DOCS',
-    payload: {
-        data
-    }
+  type: 'GET_FLUX_DOCS',
+  payload: {
+    data,
+  },
 })
 
 export const getFluxPackages = () => async (
-    dispatch: Dispatch<Action | NotificationAction>,
-  ) => {
-    try {
-      const resp = await getFluxdocs({})
-  
-      if (resp.status !== 200) {
-        throw new Error(resp.data.message)
-      }
-  
-      dispatch(setFluxFunc(resp.data))
+  dispatch: Dispatch<Action | NotificationAction>
+) => {
+  try {
+    const resp = await getFluxdocs({})
 
-    } catch (error) {
-      console.error(error)
-      const message = get(error, 'response.data.message', '')
-      dispatch(notify(getFluxPackagesFailed(message)))
+    if (resp.status !== 200) {
+      throw new Error(resp.data.message)
     }
+
+    dispatch(setFluxFunc(resp.data))
+  } catch (error) {
+    console.error(error)
+    const message = get(error, 'response.data.message', '')
+    dispatch(notify(getFluxPackagesFailed(message)))
   }
+}

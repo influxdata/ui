@@ -7,7 +7,7 @@ import {FluxdocsArray, getFluxdocs} from 'src/client/fluxdocsdRoutes'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
-import { getFluxPackagesFailed } from 'src/shared/copy/notifications/categories/alerts'
+import {getFluxPackagesFailed} from 'src/shared/copy/notifications/categories/alerts'
 
 // Types
 import {NotificationAction} from 'src/types'

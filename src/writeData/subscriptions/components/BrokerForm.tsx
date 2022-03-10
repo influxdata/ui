@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useState, useRef} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -24,8 +24,8 @@ import {
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {convertUserInputToNumOrNaN} from 'src/shared/utils/convertUserInput'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -53,25 +53,20 @@ const BrokerForm: FC<Props> = ({
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
   const [security, setSecurity] = useState('none')
-  const [form, setForm] = useState(formContent)
-  const [firstRender, setRender] = useState(false)
+  // form validation component is in an err
+  // state once the value changes
+  // this fixes it for initial render
+  // later forms are stuck in an inital validation
+  // state though
+  const didMount = useRef(false)
   useEffect(() => {
-    setForm({...formContent, protocol: protocol.toLowerCase()})
+    if (didMount.current) {
+      updateForm({...formContent, protocol: protocol.toLowerCase()})
+    }
+    didMount.current = true
   }, [protocol])
-  useEffect(() => {
-    updateForm(form)
-  }, [form])
-
-  // the form use effect above renders twice on mount
-  // which makes the validation component default to
-  // an error state due to shouldPerformValidation
-  // being true
-  useEffect(() => {
-    setRender(true)
-  }, [])
-
   return (
-    form && (
+    formContent && (
       <div className="create-broker-form">
         <Form onSubmit={() => {}} testID="label-overlay-form">
           <Overlay.Header title="Connect to Broker">
@@ -94,11 +89,10 @@ const BrokerForm: FC<Props> = ({
                 <Grid.Column widthSM={Columns.Twelve}>
                   <Form.ValidationElement
                     label="Connection Name"
-                    value={form.name}
+                    value={formContent.name}
                     required={true}
                     validationFunc={() =>
-                      !firstRender &&
-                      handleValidation('Connection Name', form.name)
+                      handleValidation('Connection Name', formContent.name)
                     }
                     prevalidate={false}
                   >
@@ -108,13 +102,14 @@ const BrokerForm: FC<Props> = ({
                         placeholder="Enter a name for your connection"
                         name="connection-name"
                         autoFocus={true}
-                        value={form.name}
+                        value={formContent.name}
                         onChange={e => {
-                          setRender(false)
-                          setForm({...form, name: e.target.value})
+                          updateForm({
+                            ...formContent,
+                            name: e.target.value,
+                          })
                         }}
                         status={status}
-                        // onClear={() => setForm({...form, name: ''})}
                         maxLength={16}
                         testID="create-label-form--name"
                       />
@@ -127,9 +122,12 @@ const BrokerForm: FC<Props> = ({
                       type={InputType.Text}
                       placeholder="Describe this connection"
                       name="description"
-                      value={form.description}
+                      value={formContent.description}
                       onChange={e =>
-                        setForm({...form, description: e.target.value})
+                        updateForm({
+                          ...formContent,
+                          description: e.target.value,
+                        })
                       }
                       testID="create-label-form--description"
                     />
@@ -171,11 +169,13 @@ const BrokerForm: FC<Props> = ({
                       </div>
                       <Form.ValidationElement
                         label="Host"
-                        value={form.brokerHost}
+                        value={formContent.brokerHost}
                         required={true}
                         validationFunc={() =>
-                          !firstRender &&
-                          handleValidation('Broker Host', form.brokerHost)
+                          handleValidation(
+                            'Broker Host',
+                            formContent.brokerHost
+                          )
                         }
                       >
                         {status => (
@@ -184,11 +184,10 @@ const BrokerForm: FC<Props> = ({
                             placeholder="0.0.0.0"
                             name="host"
                             autoFocus={true}
-                            value={form.brokerHost}
+                            value={formContent.brokerHost}
                             onChange={e => {
-                              setRender(false)
-                              setForm({
-                                ...form,
+                              updateForm({
+                                ...formContent,
                                 brokerHost: e.target.value,
                               })
                             }}
@@ -200,13 +199,12 @@ const BrokerForm: FC<Props> = ({
                       </Form.ValidationElement>
                       <Form.ValidationElement
                         label="Port"
-                        value={String(form.brokerPort)}
+                        value={String(formContent.brokerPort)}
                         required={true}
                         validationFunc={() =>
-                          !firstRender &&
                           handleValidation(
                             'Broker Port',
-                            String(form.brokerPort)
+                            String(formContent.brokerPort)
                           )
                         }
                       >
@@ -216,11 +214,10 @@ const BrokerForm: FC<Props> = ({
                             placeholder="1883"
                             name="port"
                             autoFocus={true}
-                            value={form.brokerPort}
+                            value={formContent.brokerPort}
                             onChange={e => {
-                              setRender(false)
-                              setForm({
-                                ...form,
+                              updateForm({
+                                ...formContent,
                                 brokerPort: convertUserInputToNumOrNaN(e),
                               })
                             }}
@@ -233,9 +230,12 @@ const BrokerForm: FC<Props> = ({
                     </div>
                     <div className="example-text">
                       TCP://
-                      {form.protocol ? form.protocol : 'MQTT'}:
-                      {form.brokerHost ? form.brokerHost : '0.0.0.0'}:
-                      {form.brokerPort ? form.brokerPort : '1883'}
+                      {formContent.protocol ? formContent.protocol : 'MQTT'}:
+                      {formContent.brokerHost
+                        ? formContent.brokerHost
+                        : '0.0.0.0'}
+                      :
+                      {formContent.brokerPort ? formContent.brokerPort : '1883'}
                     </div>
                   </Grid.Column>
                 </div>
@@ -296,10 +296,10 @@ const BrokerForm: FC<Props> = ({
                           type={InputType.Text}
                           placeholder="userName"
                           name="username"
-                          value={form.brokerUsername}
+                          value={formContent.brokerUsername}
                           onChange={e =>
-                            setForm({
-                              ...form,
+                            updateForm({
+                              ...formContent,
                               brokerUsername: e.target.value,
                             })
                           }
@@ -311,10 +311,10 @@ const BrokerForm: FC<Props> = ({
                           type={InputType.Text}
                           placeholder="*********"
                           name="password"
-                          value={form.brokerPassword}
+                          value={formContent.brokerPassword}
                           onChange={e =>
-                            setForm({
-                              ...form,
+                            updateForm({
+                              ...formContent,
                               brokerPassword: e.target.value,
                             })
                           }

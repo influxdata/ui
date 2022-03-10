@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useEffect, useRef} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -38,7 +38,6 @@ interface Props {
   showUpgradeButton: boolean
   buckets: any
   bucket: any
-  // changeBucket: (any) => void
 }
 
 const SubscriptionForm: FC<Props> = ({
@@ -51,16 +50,8 @@ const SubscriptionForm: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
-  const [form, setForm] = useState(formContent)
-  const [firstRender, setRender] = useState(false)
   useEffect(() => {
-    updateForm(form)
-  }, [form])
-  useEffect(() => {
-    setRender(true)
-  }, [])
-  useEffect(() => {
-    setForm({...formContent, bucket: bucket.name})
+    updateForm({...formContent, bucket: bucket.name})
   }, [bucket])
   return (
     formContent &&
@@ -85,12 +76,11 @@ const SubscriptionForm: FC<Props> = ({
                 <Grid.Column widthSM={Columns.Twelve}>
                   <Form.ValidationElement
                     label="Topic"
-                    value={form.topic}
+                    value={formContent.topic}
                     helpText="Subscribe to a topic to start recieving messages."
                     required={true}
                     validationFunc={() =>
-                      !firstRender &&
-                      handleValidation('Connection Name', form.topic)
+                      handleValidation('Topic', formContent.topic)
                     }
                   >
                     {status => (
@@ -99,10 +89,9 @@ const SubscriptionForm: FC<Props> = ({
                         placeholder="Enter a topic (wildcards accepted)"
                         name="topic"
                         autoFocus={true}
-                        value={form.topic}
+                        value={formContent.topic}
                         onChange={e => {
-                          setRender(false)
-                          setForm({...formContent, topic: e.target.value})
+                          updateForm({...formContent, topic: e.target.value})
                         }}
                         status={status}
                         maxLength={16}

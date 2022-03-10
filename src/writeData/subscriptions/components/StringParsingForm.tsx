@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useEffect} from 'react'
+import React, {FC, useState, useEffect, useRef} from 'react'
 
 // Components
 import {
@@ -29,20 +29,12 @@ interface Props {
 }
 
 const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
-  const [form, setForm] = useState(formContent)
-  const [firstRender, setRender] = useState(false)
-  useEffect(() => {
-    updateForm(form)
-  }, [form])
-  useEffect(() => {
-    setRender(true)
-  }, [])
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   useEffect(() => {
     if (rule === 'field') {
-      form.stringFields = [
-        ...form.stringFields,
+      formContent.stringFields = [
+        ...formContent.stringFields,
         {
           name: '',
           pattern: '',
@@ -50,39 +42,15 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
       ]
     }
     if (rule === 'tag') {
-      form.stringTags = [
-        ...form.stringTags,
+      formContent.stringTags = [
+        ...formContent.stringTags,
         {
           name: '',
           pattern: '',
         },
       ]
     }
-    setForm({...form})
-    setRule('')
-  }, [rule])
-  useEffect(() => {
-    if (rule === 'field') {
-      form.jsonFieldKeys = [
-        ...form.jsonFieldKeys,
-        {
-          name: '',
-          path: '',
-          type: 'string',
-        },
-      ]
-    }
-    if (rule === 'tag') {
-      form.jsonTagKeys = [
-        ...form.jsonTagKeys,
-        {
-          name: '',
-          path: '',
-          type: 'string',
-        },
-      ]
-    }
-    setForm({...form})
+    updateForm({...formContent})
     setRule('')
   }, [rule])
   return (
@@ -94,10 +62,10 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           placeholder="eg. regexExample"
           name="timestamp"
           autoFocus={true}
-          value={form.stringTimestamp.pattern}
+          value={formContent.stringTimestamp.pattern}
           onChange={e => {
-            form.stringTimestamp.pattern = e.target.value
-            setForm({...formContent})
+            formContent.stringTimestamp.pattern = e.target.value
+            updateForm({...formContent})
           }}
           maxLength={56}
           testID="string-parsing--timestamp"
@@ -110,11 +78,10 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           </div>
           <Form.ValidationElement
             label="Regex Pattern to find Measurement"
-            value={form.stringMeasurement.pattern}
+            value={formContent.stringMeasurement.pattern}
             required={true}
             validationFunc={() =>
-              !firstRender &&
-              handleValidation('Pattern', form.stringMeasurement.pattern)
+              handleValidation('Pattern', formContent.stringMeasurement.pattern)
             }
           >
             {status => (
@@ -123,11 +90,10 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 placeholder="eg. a=(\\d)"
                 name="regex"
                 autoFocus={true}
-                value={form.stringMeasurement.pattern}
+                value={formContent.stringMeasurement.pattern}
                 onChange={e => {
-                  setRender(false)
-                  form.stringMeasurement.pattern = e.target.value
-                  setForm({...formContent})
+                  formContent.stringMeasurement.pattern = e.target.value
+                  updateForm({...formContent})
                 }}
                 status={status}
                 maxLength={56}
@@ -138,25 +104,21 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
         </div>
         <div className="line"></div>
       </Grid.Column>
-      {form.stringTags.map((_, key) => (
+      {formContent.stringTags.map((_, key) => (
         <StringPatternInput
           key={key}
-          setForm={setForm}
-          form={form}
           name="Tag"
-          firstRender={firstRender}
-          setRender={setRender}
+          formContent={formContent}
+          updateForm={updateForm}
           itemNum={key}
         />
       ))}
-      {form.stringFields.map((_, key) => (
+      {formContent.stringFields.map((_, key) => (
         <StringPatternInput
           key={key}
-          setForm={setForm}
-          form={form}
+          formContent={formContent}
+          updateForm={updateForm}
           name="Field"
-          firstRender={firstRender}
-          setRender={setRender}
           itemNum={key}
         />
       ))}

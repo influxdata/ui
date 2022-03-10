@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useEffect} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import {
@@ -22,19 +22,15 @@ import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 interface Props {
   name: string
-  firstRender: boolean
-  setRender: (any) => void
-  setForm: (any) => void
-  form: Subscription
+  updateForm: (any) => void
+  formContent: Subscription
   itemNum: number
 }
 
 const StringPatternInput: FC<Props> = ({
   name,
-  form,
-  firstRender,
-  setRender,
-  setForm,
+  formContent,
+  updateForm,
   itemNum,
 }) => {
   const tagType = name === 'Tag'
@@ -45,8 +41,8 @@ const StringPatternInput: FC<Props> = ({
           <div className="header-wrap">
             <h2 className="form-header">{name}</h2>
             {(tagType
-              ? !(form.stringTags.length == 1)
-              : !(form.stringFields.length == 1)) && (
+              ? !(formContent.stringTags.length == 1)
+              : !(formContent.stringFields.length == 1)) && (
               <ConfirmationButton
                 color={ComponentColor.Colorless}
                 icon={IconFont.Trash_New}
@@ -55,11 +51,11 @@ const StringPatternInput: FC<Props> = ({
                 confirmationLabel={`Yes, delete this ${name}`}
                 onConfirm={() => {
                   if (tagType) {
-                    form.stringTags.splice(itemNum, 1)
+                    formContent.stringTags.splice(itemNum, 1)
                   } else {
-                    form.stringFields.splice(itemNum, 1)
+                    formContent.stringFields.splice(itemNum, 1)
                   }
-                  setForm({...form})
+                  updateForm({...formContent})
                 }}
                 confirmationButtonText="Confirm"
                 testID={`json-delete-label`}
@@ -70,17 +66,16 @@ const StringPatternInput: FC<Props> = ({
             label="Name"
             value={
               tagType
-                ? form.stringTags[itemNum].name
-                : form.stringFields[itemNum].name
+                ? formContent.stringTags[itemNum].name
+                : formContent.stringFields[itemNum].name
             }
             required={true}
             validationFunc={() =>
-              !firstRender &&
               handleValidation(
                 `${name}`,
                 tagType
-                  ? form.stringTags[itemNum].name
-                  : form.stringFields[itemNum].name
+                  ? formContent.stringTags[itemNum].name
+                  : formContent.stringFields[itemNum].name
               )
             }
           >
@@ -92,15 +87,14 @@ const StringPatternInput: FC<Props> = ({
                 autoFocus={true}
                 value={
                   tagType
-                    ? form.stringTags[itemNum].name
-                    : form.stringFields[itemNum].name
+                    ? formContent.stringTags[itemNum].name
+                    : formContent.stringFields[itemNum].name
                 }
                 onChange={e => {
-                  setRender(false)
                   tagType
-                    ? (form.stringTags[itemNum].name = e.target.value)
-                    : (form.stringFields[itemNum].name = e.target.value)
-                  setForm({...form})
+                    ? (formContent.stringTags[itemNum].name = e.target.value)
+                    : (formContent.stringFields[itemNum].name = e.target.value)
+                  updateForm({...formContent})
                 }}
                 status={status}
                 maxLength={16}
@@ -115,17 +109,16 @@ const StringPatternInput: FC<Props> = ({
           label="Regex pattern"
           value={
             tagType
-              ? form.stringTags[itemNum].pattern
-              : form.stringFields[itemNum].pattern
+              ? formContent.stringTags[itemNum].pattern
+              : formContent.stringFields[itemNum].pattern
           }
           required={true}
           validationFunc={() =>
-            !firstRender &&
             handleValidation(
               'Pattern',
               tagType
-                ? form.stringTags[itemNum].pattern
-                : form.stringFields[itemNum].pattern
+                ? formContent.stringTags[itemNum].pattern
+                : formContent.stringFields[itemNum].pattern
             )
           }
         >
@@ -137,15 +130,14 @@ const StringPatternInput: FC<Props> = ({
               autoFocus={true}
               value={
                 tagType
-                  ? form.stringTags[itemNum].pattern
-                  : form.stringFields[itemNum].pattern
+                  ? formContent.stringTags[itemNum].pattern
+                  : formContent.stringFields[itemNum].pattern
               }
               onChange={e => {
-                setRender(false)
                 tagType
-                  ? (form.stringTags[itemNum].pattern = e.target.value)
-                  : (form.stringFields[itemNum].pattern = e.target.value)
-                setForm({...form})
+                  ? (formContent.stringTags[itemNum].pattern = e.target.value)
+                  : (formContent.stringFields[itemNum].pattern = e.target.value)
+                updateForm({...formContent})
               }}
               status={status}
               maxLength={56}

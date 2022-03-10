@@ -28,24 +28,16 @@ interface Props {
 }
 
 const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
-  const [form, setForm] = useState(formContent)
   const stringType = 'String'
   const numberType = 'Number'
   const dataTypeList = [stringType, numberType]
   const [dataTypeM, setDataTypeM] = useState(stringType)
-  const [firstRender, setRender] = useState(false)
-  useEffect(() => {
-    updateForm(form)
-  }, [form])
-  useEffect(() => {
-    setRender(true)
-  }, [])
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   useEffect(() => {
     if (rule === 'field') {
-      form.jsonFieldKeys = [
-        ...form.jsonFieldKeys,
+      formContent.jsonFieldKeys = [
+        ...formContent.jsonFieldKeys,
         {
           name: '',
           path: '',
@@ -54,8 +46,8 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
       ]
     }
     if (rule === 'tag') {
-      form.jsonTagKeys = [
-        ...form.jsonTagKeys,
+      formContent.jsonTagKeys = [
+        ...formContent.jsonTagKeys,
         {
           name: '',
           path: '',
@@ -63,7 +55,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
         },
       ]
     }
-    setForm({...form})
+    updateForm({...formContent})
     setRule('')
   }, [rule])
   return (
@@ -75,12 +67,12 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           placeholder="eg. myJSON.myObject[0].timestampKey"
           name="timestamp"
           autoFocus={true}
-          value={form.jsonTimestamp.path}
+          value={formContent.jsonTimestamp.path}
           onChange={e => {
-            form.jsonTimestamp.path = e.target.value
-            setForm({...formContent})
+            formContent.jsonTimestamp.path = e.target.value
+            updateForm({...formContent})
           }}
-          maxLength={16}
+          maxLength={56}
           testID="json-parsing--timestamp"
         />
       </Grid.Column>
@@ -92,13 +84,12 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           <div className="container">
             <Form.ValidationElement
               label="Name"
-              value={form.jsonMeasurementKey.name}
+              value={formContent.jsonMeasurementKey.name}
               required={true}
               validationFunc={() =>
-                !firstRender &&
                 handleValidation(
                   'Measurement Name',
-                  form.jsonMeasurementKey.name
+                  formContent.jsonMeasurementKey.name
                 )
               }
             >
@@ -108,11 +99,10 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   placeholder="nonDescriptName"
                   name="name"
                   autoFocus={true}
-                  value={form.jsonMeasurementKey.name}
+                  value={formContent.jsonMeasurementKey.name}
                   onChange={e => {
-                    setRender(false)
-                    form.jsonMeasurementKey.name = e.target.value
-                    setForm({...formContent})
+                    formContent.jsonMeasurementKey.name = e.target.value
+                    updateForm({...formContent})
                   }}
                   status={status}
                   maxLength={16}
@@ -141,7 +131,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                         value={d}
                         onClick={() => {
                           setDataTypeM(d)
-                          form.jsonMeasurementKey.type = d
+                          formContent.jsonMeasurementKey.type = d
                         }}
                         selected={dataTypeM === d}
                         testID={`variable-type-dropdown-${1}`}
@@ -159,11 +149,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
       <Grid.Column>
         <Form.ValidationElement
           label="JSON Path"
-          value={form.jsonMeasurementKey.path}
+          value={formContent.jsonMeasurementKey.path}
           required={true}
           validationFunc={() =>
-            !firstRender &&
-            handleValidation('Measurement Path', form.jsonMeasurementKey.path)
+            handleValidation(
+              'Measurement Path',
+              formContent.jsonMeasurementKey.path
+            )
           }
         >
           {status => (
@@ -172,39 +164,34 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
               placeholder="eg. myJSON.myObject[0].myKey"
               name="jsonpath"
               autoFocus={true}
-              value={form.jsonMeasurementKey.path}
+              value={formContent.jsonMeasurementKey.path}
               onChange={e => {
-                setRender(false)
-                form.jsonMeasurementKey.path = e.target.value
-                setForm({...formContent})
+                formContent.jsonMeasurementKey.path = e.target.value
+                updateForm({...formContent})
               }}
               status={status}
-              maxLength={16}
+              maxLength={56}
               testID="json-parsing--jsonpath"
             />
           )}
         </Form.ValidationElement>
         <div className="line"></div>
       </Grid.Column>
-      {form.jsonTagKeys.map((_, key) => (
+      {formContent.jsonTagKeys.map((_, key) => (
         <JsonPathInput
           key={key}
-          setForm={setForm}
-          form={form}
+          updateForm={updateForm}
+          formContent={formContent}
           name="Tag"
-          firstRender={firstRender}
-          setRender={setRender}
           itemNum={key}
         />
       ))}
-      {form.jsonFieldKeys.map((_, key) => (
+      {formContent.jsonFieldKeys.map((_, key) => (
         <JsonPathInput
           key={key}
-          setForm={setForm}
-          form={form}
+          updateForm={updateForm}
+          formContent={formContent}
           name="Field"
-          firstRender={firstRender}
-          setRender={setRender}
           itemNum={key}
         />
       ))}

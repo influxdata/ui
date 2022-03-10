@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useEffect} from 'react'
+import React, {FC, useState, useEffect, useRef} from 'react'
 
 // Components
 import {
@@ -23,21 +23,12 @@ import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 interface Props {
   name: string
-  firstRender: boolean
-  setRender: (any) => void
-  setForm: (any) => void
-  form: Subscription
+  updateForm: (any) => void
+  formContent: Subscription
   itemNum: number
 }
 
-const JsonPathInput: FC<Props> = ({
-  name,
-  form,
-  firstRender,
-  setRender,
-  setForm,
-  itemNum,
-}) => {
+const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
   const dataTypeList = ['String', 'Number']
   const [dataType, setDataType] = useState(dataTypeList[0])
   const tagType = name === 'Tag'
@@ -48,8 +39,8 @@ const JsonPathInput: FC<Props> = ({
           <div className="header-wrap">
             <h2 className="form-header">{name}</h2>
             {(tagType
-              ? !(form.jsonTagKeys.length == 1)
-              : !(form.jsonFieldKeys.length == 1)) && (
+              ? !(formContent.jsonTagKeys.length == 1)
+              : !(formContent.jsonFieldKeys.length == 1)) && (
               <ConfirmationButton
                 color={ComponentColor.Colorless}
                 icon={IconFont.Trash_New}
@@ -58,11 +49,11 @@ const JsonPathInput: FC<Props> = ({
                 confirmationLabel={`Yes, delete this ${name}`}
                 onConfirm={() => {
                   if (tagType) {
-                    form.jsonTagKeys.splice(itemNum, 1)
+                    formContent.jsonTagKeys.splice(itemNum, 1)
                   } else {
-                    form.jsonFieldKeys.splice(itemNum, 1)
+                    formContent.jsonFieldKeys.splice(itemNum, 1)
                   }
-                  setForm({...form})
+                  updateForm({...formContent})
                 }}
                 confirmationButtonText="Confirm"
                 testID={`json-delete-label`}
@@ -74,17 +65,16 @@ const JsonPathInput: FC<Props> = ({
               label={'Name'}
               value={
                 tagType
-                  ? form.jsonTagKeys[itemNum].name
-                  : form.jsonFieldKeys[itemNum].name
+                  ? formContent.jsonTagKeys[itemNum].name
+                  : formContent.jsonFieldKeys[itemNum].name
               }
               required={true}
               validationFunc={() =>
-                !firstRender &&
                 handleValidation(
                   `${name}`,
                   tagType
-                    ? form.jsonTagKeys[itemNum].name
-                    : form.jsonFieldKeys[itemNum].name
+                    ? formContent.jsonTagKeys[itemNum].name
+                    : formContent.jsonFieldKeys[itemNum].name
                 )
               }
             >
@@ -96,15 +86,15 @@ const JsonPathInput: FC<Props> = ({
                   autoFocus={true}
                   value={
                     tagType
-                      ? form.jsonTagKeys[itemNum].name
-                      : form.jsonFieldKeys[itemNum].name
+                      ? formContent.jsonTagKeys[itemNum].name
+                      : formContent.jsonFieldKeys[itemNum].name
                   }
                   onChange={e => {
-                    setRender(false)
                     tagType
-                      ? (form.jsonTagKeys[itemNum].name = e.target.value)
-                      : (form.jsonFieldKeys[itemNum].name = e.target.value)
-                    setForm({...form})
+                      ? (formContent.jsonTagKeys[itemNum].name = e.target.value)
+                      : (formContent.jsonFieldKeys[itemNum].name =
+                          e.target.value)
+                    updateForm({...formContent})
                   }}
                   status={status}
                   maxLength={16}
@@ -134,8 +124,8 @@ const JsonPathInput: FC<Props> = ({
                         onClick={() => {
                           setDataType(d)
                           tagType
-                            ? (form.jsonTagKeys[itemNum].name = d)
-                            : (form.jsonFieldKeys[itemNum].name = d)
+                            ? (formContent.jsonTagKeys[itemNum].name = d)
+                            : (formContent.jsonFieldKeys[itemNum].name = d)
                         }}
                         selected={dataType === d}
                         testID={`variable-type-dropdown-${1}`}
@@ -155,17 +145,16 @@ const JsonPathInput: FC<Props> = ({
           label="JSON Path"
           value={
             tagType
-              ? form.jsonTagKeys[itemNum].path
-              : form.jsonFieldKeys[itemNum].path
+              ? formContent.jsonTagKeys[itemNum].path
+              : formContent.jsonFieldKeys[itemNum].path
           }
           required={true}
           validationFunc={() =>
-            !firstRender &&
             handleValidation(
               `${name} Path`,
               tagType
-                ? form.jsonTagKeys[itemNum].path
-                : form.jsonFieldKeys[itemNum].path
+                ? formContent.jsonTagKeys[itemNum].path
+                : formContent.jsonFieldKeys[itemNum].path
             )
           }
         >
@@ -177,15 +166,14 @@ const JsonPathInput: FC<Props> = ({
               autoFocus={true}
               value={
                 tagType
-                  ? form.jsonTagKeys[itemNum].path
-                  : form.jsonFieldKeys[itemNum].path
+                  ? formContent.jsonTagKeys[itemNum].path
+                  : formContent.jsonFieldKeys[itemNum].path
               }
               onChange={e => {
-                setRender(false)
                 tagType
-                  ? (form.jsonTagKeys[itemNum].path = e.target.value)
-                  : (form.jsonFieldKeys[itemNum].path = e.target.value)
-                setForm({...form})
+                  ? (formContent.jsonTagKeys[itemNum].path = e.target.value)
+                  : (formContent.jsonFieldKeys[itemNum].path = e.target.value)
+                updateForm({...formContent})
               }}
               status={status}
               maxLength={16}

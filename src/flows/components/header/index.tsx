@@ -51,7 +51,7 @@ import {downloadImage} from 'src/shared/utils/download'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
-import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
+import {showOverlay} from 'src/overlays/actions/overlays'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -299,7 +299,7 @@ const FlowHeader: FC = () => {
           share: shareObj,
           onSetShare: setShare,
         },
-        () => dispatch(dismissOverlay())
+        () => {}
       )
     )
   }

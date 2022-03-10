@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux'
 import {
   Button,
   IconFont,
+  Icon,
   Page,
   FlexBox,
   JustifyContent,
@@ -77,44 +78,70 @@ const CreateSubscriptionPage: FC = () => {
             </div>
             <div className="bar">
               <div className={active === 'broker' ? 'wrap--selected' : 'wrap'}>
-                <Button
-                  icon={IconFont.UploadOutline}
+                <button
+                  className="fancy-btn"
                   onClick={() => setFormActive('broker')}
-                />
-                <div
-                  className={active === 'broker' ? 'title--selected' : 'title'}
                 >
-                  Connect to Broker
-                </div>
+                  <Icon
+                    className={
+                      active === 'broker' ? 'cf-icon--selected' : 'cf-icon'
+                    }
+                    glyph="upload-outline"
+                  />
+                  <div
+                    className={
+                      active === 'broker' ? 'title--selected' : 'title'
+                    }
+                  >
+                    Connect to Broker
+                  </div>
+                </button>
               </div>
               <div
                 className={
                   active === 'subscription' ? 'wrap--selected' : 'wrap'
                 }
               >
-                <Button
-                  icon={IconFont.Subscribe}
+                <button
+                  className="fancy-btn"
                   onClick={() => setFormActive('subscription')}
-                />
-
-                <div
-                  className={
-                    active === 'subscription' ? 'title--selected' : 'title'
-                  }
                 >
-                  Subscribe to Topic
-                </div>
+                  <Icon
+                    className={
+                      active === 'subscription'
+                        ? 'cf-icon--selected'
+                        : 'cf-icon'
+                    }
+                    glyph="subscribe"
+                  />
+                  <div
+                    className={
+                      active === 'subscription' ? 'title--selected' : 'title'
+                    }
+                  >
+                    Subscribe to Topic
+                  </div>
+                </button>
               </div>
               <div className={active === 'parsing' ? 'wrap--selected' : 'wrap'}>
-                <Button
-                  icon={IconFont.Braces}
+                <button
+                  className="fancy-btn"
                   onClick={() => setFormActive('parsing')}
-                />
-                <div
-                  className={active === 'parsing' ? 'title--selected' : 'title'}
                 >
-                  Define Data Parsing Rules
-                </div>
+                  <Icon
+                    className={
+                      active === 'parsing' ? 'cf-icon--selected' : 'cf-icon'
+                    }
+                    glyph="braces"
+                  />
+                  <div
+                    className={
+                      active === 'parsing' ? 'title--selected' : 'title'
+                    }
+                  >
+                    Define Data Parsing Rules
+                  </div>
+                </button>
               </div>
             </div>
           </div>

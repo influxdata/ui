@@ -39,66 +39,83 @@
     .wrap {
       margin-top: 40px;
       width: 100%;
-      display: flex;
-      align-items: center;
 
-      .cf-button {
-        background: transparent;
-        border: 1px solid white;
-        border-radius: 50%;
+      .fancy-btn {
+        display: flex;
+        align-items: center;
+        .title {
+          font-size: 14px;
+          line-height: 17px;
+          margin-left: 21px;
+          color: #d5d5dd;
+          &--selected {
+            color: #0098f0;
+            font-size: 14px;
+            line-height: 17px;
+            margin-left: 21px;
+          }
+        }
 
         &:hover {
-          background: transparent;
-          border: 1px solid #0098f0;
-          border-radius: 50%;
-
+          .title {
+            color: #0098f0;
+          }
           .cf-icon {
+            border: 1px solid #0098f0;
             background: #0098f0;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
           }
         }
       }
-      .cf-button:not([disabled]):hover:after {
-        opacity: 0;
+
+      .cf-icon {
+        background: white;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border: 1px solid white;
+        border-radius: 50%;
+        padding: 10px;
+        font-size: 1.5em;
+
+        &--selected {
+          border: 1px solid #0098f0;
+        }
       }
 
       &--selected {
         margin-top: 40px;
         width: 100%;
-        display: flex;
-        align-items: center;
 
-        .cf-button {
-          background: transparent;
-          border: 1px solid #0098f0;
-          border-radius: 50%;
-        }
-
-        .cf-button:not([disabled]):hover:after {
-          opacity: 0;
+        .fancy-btn {
+          display: flex;
+          align-items: center;
+          .title {
+            font-size: 14px;
+            line-height: 17px;
+            margin-left: 21px;
+            color: #d5d5dd;
+            &--selected {
+              color: #0098f0;
+              font-size: 14px;
+              line-height: 17px;
+              margin-left: 21px;
+            }
+          }
         }
 
         .cf-icon {
           background: #0098f0;
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
+          border: 1px solid white;
+          border-radius: 50%;
+          padding: 10px;
+          font-size: 1.5em;
+          &--selected {
+            border: 1px solid #0098f0;
+          }
         }
-      }
-    }
-    .title {
-      font-size: 14px;
-      line-height: 17px;
-      margin-left: 21px;
-      color: #d5d5dd;
-      &:hover {
-        color: #0098f0;
-      }
-      &--selected {
-        color: #0098f0;
-        font-size: 14px;
-        line-height: 17px;
-        margin-left: 21px;
       }
     }
   }

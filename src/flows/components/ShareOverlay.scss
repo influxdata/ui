@@ -1,18 +1,18 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
 .share-section--alert {
-  padding-bottom: $cf-space-l;
+  padding-bottom: $cf-space-l + $cf-space-3xs;
   border-bottom: 2px solid $cf-grey-15;
 }
 
 .share-section--link {
-  padding-top: $cf-space-s;
-  padding-bottom: $cf-space-l;
+  padding: $cf-space-l + $cf-space-3xs 0;
+  // padding-bottom: $cf-space-l;
   border-bottom: 2px solid $cf-grey-15;
 }
 
 .share-section--delete {
-  padding-top: $cf-space-s;
+  padding-top: $cf-space-l + $cf-space-3xs;
   padding-bottom: $cf-space-2xs;
 }
 

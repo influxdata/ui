@@ -9,13 +9,9 @@ import {
   InputType,
   Dropdown,
   Icon,
-  ButtonShape,
-  // TextArea,
   IconFont,
-  ComponentColor,
-  ComponentSize,
-  ConfirmationButton,
 } from '@influxdata/clockface'
+import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
 // Styles
 import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
@@ -37,8 +33,6 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
   const numberType = 'Number'
   const dataTypeList = [stringType, numberType]
   const [dataTypeM, setDataTypeM] = useState(stringType)
-  const [dataTypeF, setDataTypeF] = useState(stringType)
-  const [dataTypeT, setDataTypeT] = useState(stringType)
   const [firstRender, setRender] = useState(false)
   useEffect(() => {
     updateForm(form)
@@ -46,9 +40,32 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
   useEffect(() => {
     setRender(true)
   }, [])
-  // const [json, setJson] = useState('')
-  const ruleList = ['field', 'measurment', 'tag']
+  const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
+  useEffect(() => {
+    if (rule === 'field') {
+      form.jsonFieldKeys = [
+        ...form.jsonFieldKeys,
+        {
+          name: '',
+          path: '',
+          type: 'string',
+        },
+      ]
+    }
+    if (rule === 'tag') {
+      form.jsonTagKeys = [
+        ...form.jsonTagKeys,
+        {
+          name: '',
+          path: '',
+          type: 'string',
+        },
+      ]
+    }
+    setForm({...form})
+    setRule('')
+  }, [rule])
   return (
     <div className="json-parsing-form">
       <Grid.Column>
@@ -71,16 +88,6 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
         <div className="section">
           <div className="header-wrap">
             <h2 className="form-header">Measurement</h2>
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel="Yes, delete this measurement"
-              onConfirm={() => {}}
-              confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
-            />
           </div>
           <div className="container">
             <Form.ValidationElement
@@ -179,223 +186,28 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
         </Form.ValidationElement>
         <div className="line"></div>
       </Grid.Column>
-      <Grid.Column>
-        <div className="section">
-          <div className="header-wrap">
-            <h2 className="form-header">Tag</h2>
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel="Yes, delete this tag"
-              onConfirm={() => {}}
-              confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
-            />
-          </div>
-          <div className="container">
-            <Form.ValidationElement
-              label="Name"
-              value={form.jsonTagKeys[0].name}
-              validationFunc={() =>
-                !firstRender &&
-                handleValidation('Measurement Path', form.jsonTagKeys[0].name)
-              }
-            >
-              {status => (
-                <Input
-                  type={InputType.Text}
-                  placeholder="nonDescriptName"
-                  name="name"
-                  autoFocus={true}
-                  value={form.jsonTagKeys[0].name}
-                  onChange={e => {
-                    setRender(false)
-                    form.jsonTagKeys[0].name = e.target.value
-                    setForm({...formContent})
-                  }}
-                  status={status}
-                  maxLength={16}
-                  testID="json-parsing--name"
-                />
-              )}
-            </Form.ValidationElement>
-            <div className="dropdown-container">
-              <Form.Label label="Data Type" />
-              <Dropdown
-                button={(active, onClick) => (
-                  <Dropdown.Button
-                    active={active}
-                    onClick={onClick}
-                    testID="variable-type-dropdown--button"
-                  >
-                    {dataTypeT}
-                  </Dropdown.Button>
-                )}
-                menu={onCollapse => (
-                  <Dropdown.Menu onCollapse={onCollapse}>
-                    {dataTypeList.map((d, key) => (
-                      <Dropdown.Item
-                        key={key}
-                        id={d}
-                        value={d}
-                        onClick={() => {
-                          setDataTypeT(d)
-                          form.jsonTagKeys[0].type = d
-                        }}
-                        selected={dataTypeT === d}
-                        testID={`variable-type-dropdown-${1}`}
-                      >
-                        {d}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                )}
-              />
-            </div>
-          </div>
-        </div>
-      </Grid.Column>
-      <Grid.Column>
-        <Form.ValidationElement
-          label="JSON Path"
-          value={form.jsonTagKeys[0].path}
-          required={true}
-          validationFunc={() =>
-            !firstRender &&
-            handleValidation('Measurement Path', form.jsonTagKeys[0].path)
-          }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. myJSON.myObject[0].myKey"
-              name="jsonpath"
-              autoFocus={true}
-              value={form.jsonTagKeys[0].path}
-              onChange={e => {
-                setRender(false)
-                form.jsonTagKeys[0].path = e.target.value
-                setForm({...formContent})
-              }}
-              status={status}
-              maxLength={16}
-              testID="json-parsing--jsonpath"
-            />
-          )}
-        </Form.ValidationElement>
-        <div className="line"></div>
-      </Grid.Column>
-      <Grid.Column>
-        <div className="section">
-          <div className="header-wrap">
-            <h2 className="form-header">Field</h2>
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel="Yes, delete this field"
-              onConfirm={() => {}}
-              confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
-            />
-          </div>
-          <div className="container">
-            <Form.ValidationElement
-              label="Name"
-              value={form.jsonFieldKeys[0].name}
-              required={true}
-              validationFunc={() =>
-                !firstRender &&
-                handleValidation('Measurement Path', form.jsonFieldKeys[0].name)
-              }
-            >
-              {status => (
-                <Input
-                  type={InputType.Text}
-                  placeholder="nonDescriptName"
-                  name="name"
-                  autoFocus={true}
-                  value={form.jsonFieldKeys[0].name}
-                  onChange={e => {
-                    setRender(false)
-                    form.jsonFieldKeys[0].name = e.target.value
-                    setForm({...formContent})
-                  }}
-                  status={status}
-                  maxLength={16}
-                  testID="json-parsing--name"
-                />
-              )}
-            </Form.ValidationElement>
-            <div className="dropdown-container">
-              <Form.Label label="Data Type" />
-              <Dropdown
-                button={(active, onClick) => (
-                  <Dropdown.Button
-                    active={active}
-                    onClick={onClick}
-                    testID="variable-type-dropdown--button"
-                  >
-                    {dataTypeF}
-                  </Dropdown.Button>
-                )}
-                menu={onCollapse => (
-                  <Dropdown.Menu onCollapse={onCollapse}>
-                    {dataTypeList.map((d, key) => (
-                      <Dropdown.Item
-                        key={key}
-                        id={d}
-                        value={d}
-                        onClick={() => {
-                          setDataTypeF(d)
-                          form.jsonFieldKeys[0].type = d
-                        }}
-                        selected={dataTypeF === d}
-                        testID={`variable-type-dropdown-${1}`}
-                      >
-                        {d}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                )}
-              />
-            </div>
-          </div>
-        </div>
-      </Grid.Column>
-      <Grid.Column>
-        <Form.ValidationElement
-          label="JSON Path"
-          value={form.jsonFieldKeys[0].path}
-          required={true}
-          validationFunc={() =>
-            !firstRender &&
-            handleValidation('Measurement Path', form.jsonFieldKeys[0].path)
-          }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. myJSON.myObject[0].myKey"
-              name="jsonpath"
-              autoFocus={true}
-              value={form.jsonFieldKeys[0].path}
-              onChange={e => {
-                setRender(false)
-                form.jsonFieldKeys[0].path = e.target.value
-                setForm({...formContent})
-              }}
-              status={status}
-              maxLength={16}
-              testID="json-parsing--jsonpath"
-            />
-          )}
-        </Form.ValidationElement>
-        <div className="line"></div>
-      </Grid.Column>
+      {form.jsonTagKeys.map((_, key) => (
+        <JsonPathInput
+          key={key}
+          setForm={setForm}
+          form={form}
+          name="Tag"
+          firstRender={firstRender}
+          setRender={setRender}
+          itemNum={key}
+        />
+      ))}
+      {form.jsonFieldKeys.map((_, key) => (
+        <JsonPathInput
+          key={key}
+          setForm={setForm}
+          form={form}
+          name="Field"
+          firstRender={firstRender}
+          setRender={setRender}
+          itemNum={key}
+        />
+      ))}
       <Grid.Column>
         <Dropdown
           button={(active, onClick) => (

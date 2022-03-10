@@ -21,7 +21,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
   formComplete: false,
   formContent: {
     name: '',
-    // description: '',
+    description: '',
     protocol: 'MQTT',
     brokerHost: '',
     brokerPort: 0,
@@ -34,26 +34,26 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     jsonMeasurementKey: {
       name: '',
       path: '',
-      type: '',
+      type: 'string',
     },
     jsonFieldKeys: [
       {
         name: '',
         path: '',
-        type: '',
+        type: 'string',
       },
     ],
     jsonTagKeys: [
       {
         name: '',
         path: '',
-        type: '',
+        type: 'string',
       },
     ],
     jsonTimestamp: {
       name: '',
       path: '',
-      type: '',
+      type: 'string',
     },
     stringMeasurement: {
       pattern: '',

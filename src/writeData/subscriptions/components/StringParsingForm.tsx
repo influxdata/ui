@@ -11,11 +11,8 @@ import {
   // TextArea,
   IconFont,
   Icon,
-  ComponentColor,
-  ComponentSize,
-  ConfirmationButton,
-  ButtonShape,
 } from '@influxdata/clockface'
+import StringPatternInput from 'src/writeData/subscriptions/components/StringPatternInput'
 
 // Styles
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
@@ -40,9 +37,54 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
   useEffect(() => {
     setRender(true)
   }, [])
-  // const [string, setString] = useState('')
-  const ruleList = ['field', 'measurment', 'tag']
+  const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
+  useEffect(() => {
+    if (rule === 'field') {
+      form.stringFields = [
+        ...form.stringFields,
+        {
+          name: '',
+          pattern: '',
+        },
+      ]
+    }
+    if (rule === 'tag') {
+      form.stringTags = [
+        ...form.stringTags,
+        {
+          name: '',
+          pattern: '',
+        },
+      ]
+    }
+    setForm({...form})
+    setRule('')
+  }, [rule])
+  useEffect(() => {
+    if (rule === 'field') {
+      form.jsonFieldKeys = [
+        ...form.jsonFieldKeys,
+        {
+          name: '',
+          path: '',
+          type: 'string',
+        },
+      ]
+    }
+    if (rule === 'tag') {
+      form.jsonTagKeys = [
+        ...form.jsonTagKeys,
+        {
+          name: '',
+          path: '',
+          type: 'string',
+        },
+      ]
+    }
+    setForm({...form})
+    setRule('')
+  }, [rule])
   return (
     <div className="string-parsing-form">
       <Grid.Column>
@@ -65,16 +107,6 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
         <div className="section">
           <div className="header-wrap">
             <h2 className="form-header">Measurement</h2>
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel="Yes, delete this measurement"
-              onConfirm={() => {}}
-              confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
-            />
           </div>
           <Form.ValidationElement
             label="Regex Pattern to find Measurement"
@@ -106,153 +138,28 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
         </div>
         <div className="line"></div>
       </Grid.Column>
-      <Grid.Column>
-        <div className="section">
-          <div className="header-wrap">
-            <h2 className="form-header">Tag</h2>
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel="Yes, delete this tag"
-              onConfirm={() => {}}
-              confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
-            />
-          </div>
-          <Form.ValidationElement
-            label="Name"
-            value={form.stringTags[0].name}
-            required={true}
-            validationFunc={() =>
-              !firstRender && handleValidation('Name', form.stringTags[0].name)
-            }
-          >
-            {status => (
-              <Input
-                type={InputType.Text}
-                placeholder="nonDescriptName"
-                name="name"
-                autoFocus={true}
-                value={form.stringTags[0].name}
-                onChange={e => {
-                  setRender(false)
-                  form.stringTags[0].name = e.target.value
-                  setForm({...formContent})
-                }}
-                status={status}
-                maxLength={16}
-                testID="json-parsing--name"
-              />
-            )}
-          </Form.ValidationElement>
-        </div>
-      </Grid.Column>
-      <Grid.Column>
-        <Form.ValidationElement
-          label="Regex pattern"
-          value={form.stringTags[0].pattern}
-          required={true}
-          validationFunc={() =>
-            !firstRender &&
-            handleValidation('Pattern', form.stringTags[0].pattern)
-          }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. a=(\\d)"
-              name="regex"
-              autoFocus={true}
-              value={form.stringTags[0].pattern}
-              onChange={e => {
-                setRender(false)
-                form.stringTags[0].pattern = e.target.value
-                setForm({...formContent})
-              }}
-              status={status}
-              maxLength={56}
-              testID="string-parsing--regex"
-            />
-          )}
-        </Form.ValidationElement>
-        <div className="line"></div>
-      </Grid.Column>
-      <Grid.Column>
-        <div className="section">
-          <div className="header-wrap">
-            <h2 className="form-header">Field</h2>
-            <ConfirmationButton
-              color={ComponentColor.Colorless}
-              icon={IconFont.Trash_New}
-              shape={ButtonShape.Square}
-              size={ComponentSize.ExtraSmall}
-              confirmationLabel="Yes, delete this field"
-              onConfirm={() => {}}
-              confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
-            />
-          </div>
-          <Form.ValidationElement
-            label="Name"
-            value={form.stringFields[0].name}
-            required={true}
-            validationFunc={() =>
-              !firstRender &&
-              handleValidation('Name', form.stringFields[0].name)
-            }
-          >
-            {status => (
-              <Input
-                type={InputType.Text}
-                placeholder="nonDescriptName"
-                name="name"
-                autoFocus={true}
-                value={form.stringFields[0].name}
-                onChange={e => {
-                  setRender(false)
-                  form.stringFields[0].name = e.target.value
-                  setForm({...formContent})
-                }}
-                status={status}
-                maxLength={16}
-                testID="json-parsing--name"
-              />
-            )}
-          </Form.ValidationElement>
-        </div>
-      </Grid.Column>
-      <Grid.Column>
-        <Form.ValidationElement
-          label="Regex pattern"
-          value={form.stringFields[0].pattern}
-          required={true}
-          validationFunc={() =>
-            !firstRender &&
-            handleValidation('Name', form.stringFields[0].pattern)
-          }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. a=(\\d)"
-              name="regex"
-              autoFocus={true}
-              value={form.stringFields[0].pattern}
-              onChange={e => {
-                setRender(false)
-                form.stringFields[0].pattern = e.target.value
-                setForm({...formContent})
-              }}
-              status={status}
-              maxLength={16}
-              testID="string-parsing--regex"
-            />
-          )}
-        </Form.ValidationElement>
-        <div className="line"></div>
-      </Grid.Column>
+      {form.stringTags.map((_, key) => (
+        <StringPatternInput
+          key={key}
+          setForm={setForm}
+          form={form}
+          name="Tag"
+          firstRender={firstRender}
+          setRender={setRender}
+          itemNum={key}
+        />
+      ))}
+      {form.stringFields.map((_, key) => (
+        <StringPatternInput
+          key={key}
+          setForm={setForm}
+          form={form}
+          name="Field"
+          firstRender={firstRender}
+          setRender={setRender}
+          itemNum={key}
+        />
+      ))}
       <Grid.Column>
         <Dropdown
           button={(active, onClick) => (

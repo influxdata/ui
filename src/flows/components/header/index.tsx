@@ -365,31 +365,24 @@ const FlowHeader: FC = () => {
     },
     {
       type: 'menuitem',
+      title: 'Download as PNG',
+      onClick: handleDownloadAsPNG,
+      icon: IconFont.Download_New,
+    },
+    {
+      type: 'menuitem',
+      title: 'Download as PDF',
+      onClick: handleDownloadAsPDF,
+      icon: IconFont.Download_New,
+    },
+    {
+      type: 'menuitem',
       title: 'Delete',
       onClick: handleDelete,
       icon: IconFont.Trash_New,
       testID: 'flow-menu-button-delete',
     },
   ]
-
-  if (isFlagEnabled('downloadNotebookPDF')) {
-    menuItems.splice(
-      1,
-      0,
-      {
-        type: 'menuitem',
-        title: 'Download as PNG',
-        onClick: handleDownloadAsPNG,
-        icon: IconFont.Download_New,
-      },
-      {
-        type: 'menuitem',
-        title: 'Download as PDF',
-        onClick: handleDownloadAsPDF,
-        icon: IconFont.Download_New,
-      }
-    )
-  }
 
   if (isFlagEnabled('flowPublishLifecycle')) {
     menuItems.splice(

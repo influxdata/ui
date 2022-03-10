@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Components
@@ -7,6 +7,7 @@ import {
   AlignItems,
   Button,
   ComponentColor,
+  ComponentStatus,
   FlexBox,
   FlexDirection,
   Overlay,
@@ -28,15 +29,20 @@ import {
   copyToClipboardSuccess,
 } from 'src/shared/copy/notifications'
 
+// Types
+import {RemoteDataState} from 'src/types'
+
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {deleteNotebooksShare} from 'src/client/notebooksRoutes'
 
 // Styles
 import './ShareOverlay.scss'
 
 const ShareOverlay: FC = () => {
   const {onClose, params} = useContext(OverlayContext)
-  const {onDelete, share} = params
+  const {share, onSetShare} = params
+  const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
   const dispatch = useDispatch()
   const link = `${window.location.origin}/share/${share.accessID}`
 
@@ -47,6 +53,21 @@ const ShareOverlay: FC = () => {
     } else {
       dispatch(notify(copyToClipboardFailed(copiedText, 'Link')))
     }
+  }
+
+  const deleteShare = () => {
+    setLinkDeleting(RemoteDataState.Loading)
+    deleteNotebooksShare({id: share.id})
+      .then(() => {
+        setLinkDeleting(RemoteDataState.Done)
+        onSetShare(null)
+        event('Delete Share Link')
+        onClose()
+      })
+      .catch(err => {
+        setLinkDeleting(RemoteDataState.Error)
+        console.error('failed to delete share', err)
+      })
   }
 
   return (
@@ -112,7 +133,12 @@ const ShareOverlay: FC = () => {
               className="share-delete--color-red"
               icon={IconFont.Trash_New}
               color={ComponentColor.Tertiary}
-              onClick={() => onDelete(share.id)}
+              onClick={deleteShare}
+              status={
+                linkDeleting === RemoteDataState.Loading
+                  ? ComponentStatus.Loading
+                  : ComponentStatus.Default
+              }
             />
             <span className="share-text">
               If deleted, viewers with this link will no longer have access.

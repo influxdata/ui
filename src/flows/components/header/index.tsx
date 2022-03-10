@@ -45,11 +45,7 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Utility
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  getNotebooksShare,
-  deleteNotebooksShare,
-  postNotebooksShare,
-} from 'src/client/notebooksRoutes'
+import {getNotebooksShare, postNotebooksShare} from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {downloadImage} from 'src/shared/utils/download'
 import {serialize} from 'src/flows/context/flow.list'
@@ -188,18 +184,6 @@ const FlowHeader: FC = () => {
     }
   }
 
-  const deleteShare = (shareID: string) => {
-    deleteNotebooksShare({id: shareID})
-      .then(() => {
-        setShare(null)
-        event('Delete Share Link')
-        dispatch(dismissOverlay())
-      })
-      .catch(err => {
-        console.error('failed to delete share', err)
-      })
-  }
-
   const canvasOptions = {
     backgroundColor,
     onclone: cloneDoc => {
@@ -313,7 +297,7 @@ const FlowHeader: FC = () => {
         'share-overlay',
         {
           share: shareObj,
-          onDelete: deleteShare,
+          onSetShare: setShare,
         },
         () => dispatch(dismissOverlay())
       )

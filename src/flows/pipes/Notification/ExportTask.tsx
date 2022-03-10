@@ -14,6 +14,7 @@ import {remove} from 'src/shared/contexts/query'
 // Types
 import {
   deadmanType,
+  lambdaPrefix,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Visualization/threshold'
 import {ImportDeclaration} from 'src/types/ast'
@@ -196,6 +197,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
 
     const conditions = data.thresholds
       .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
+      .map((cond, i) => (i > 0 ? cond.split(lambdaPrefix)[1] : cond))
       .join(' and ')
 
     const imports = parse(`

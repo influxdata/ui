@@ -59,18 +59,22 @@ export function validateThreshold(t: Threshold): boolean {
   return true
 }
 
+export const lambdaPrefix = '(r) =>'
+
 export const EQUALITY_THRESHOLD_TYPES = {
   [ThresholdType.Equal]: {
     name: 'equal to',
     format: ThresholdFormat.Value,
     condition: data =>
-      validateThreshold(data) && `(r) => (r["${data.field}"] == ${data.value})`,
+      validateThreshold(data) &&
+      `${lambdaPrefix} (r["${data.field}"] == ${data.value})`,
   },
   [ThresholdType.NotEqual]: {
     name: 'not equal to',
     format: ThresholdFormat.Value,
     condition: data =>
-      validateThreshold(data) && `(r) => (r["${data.field}"] != ${data.value})`,
+      validateThreshold(data) &&
+      `${lambdaPrefix} (r["${data.field}"] != ${data.value})`,
   },
 }
 
@@ -80,39 +84,43 @@ export const COMMON_THRESHOLD_TYPES = {
     name: 'greater than',
     format: ThresholdFormat.Value,
     condition: data =>
-      validateThreshold(data) && `(r) => (r["${data.field}"] > ${data.value})`,
+      validateThreshold(data) &&
+      `${lambdaPrefix} (r["${data.field}"] > ${data.value})`,
   },
   [ThresholdType.GreaterEqual]: {
     name: 'greater than or equal to',
     format: ThresholdFormat.Value,
     condition: data =>
-      validateThreshold(data) && `(r) => (r["${data.field}"] >= ${data.value})`,
+      validateThreshold(data) &&
+      `${lambdaPrefix} (r["${data.field}"] >= ${data.value})`,
   },
   [ThresholdType.Less]: {
     name: 'less than',
     format: ThresholdFormat.Value,
     condition: data =>
-      validateThreshold(data) && `(r) => (r["${data.field}"] < ${data.value})`,
+      validateThreshold(data) &&
+      `${lambdaPrefix} (r["${data.field}"] < ${data.value})`,
   },
   [ThresholdType.LessEqual]: {
     name: 'less than or equal to',
     format: ThresholdFormat.Value,
     condition: data =>
-      validateThreshold(data) && `(r) => (r["${data.field}"] <= ${data.value})`,
+      validateThreshold(data) &&
+      `${lambdaPrefix} (r["${data.field}"] <= ${data.value})`,
   },
   [ThresholdType.Between]: {
     name: 'between',
     format: ThresholdFormat.Range,
     condition: data =>
       validateThreshold(data) &&
-      `(r) => (r["${data.field}"] > ${data.min} and r["${data.field}"] < ${data.max})`,
+      `${lambdaPrefix} (r["${data.field}"] > ${data.min} and r["${data.field}"] < ${data.max})`,
   },
   [ThresholdType.NotBetween]: {
     name: 'not between',
     format: ThresholdFormat.Range,
     condition: data =>
       validateThreshold(data) &&
-      `(r) => (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
+      `${lambdaPrefix} (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
   },
 }
 
@@ -123,6 +131,6 @@ export const THRESHOLD_TYPES = {
   [deadmanType]: {
     name: 'missing for longer than',
     format: ThresholdFormat.Deadman,
-    condition: data => validateThreshold(data) && `(r) => (r["dead"])`,
+    condition: data => validateThreshold(data) && `${lambdaPrefix} (r["dead"])`,
   },
 }

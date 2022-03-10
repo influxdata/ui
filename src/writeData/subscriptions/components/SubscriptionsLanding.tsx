@@ -2,7 +2,8 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import EmptySubscriptionState from './EmptySubscriptionState'
+import EmptySubscriptionState from 'src/writeData/subscriptions/components/EmptySubscriptionState'
+import SubscriptionsList from 'src/writeData/subscriptions/components/SubscriptionsList'
 
 // Styles
 // import 'src/writeData/subscriptions/components/SubscriptionsLanding.scss'
@@ -15,11 +16,8 @@ import {
 
 const SubscriptionsLanding: FC = () => {
   const {subscriptions} = useContext(SubscriptionListContext)
-  // console.log('sub', subscriptions)
-  const sdfs = null
-  console.log('subscriptions', subscriptions)
-  return sdfs && sdfs.length ? (
-    <div>subscription page</div>
+  return subscriptions && subscriptions.length ? (
+    <SubscriptionsList subscriptions={subscriptions} />
   ) : (
     <EmptySubscriptionState />
   )

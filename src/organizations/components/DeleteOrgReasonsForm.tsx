@@ -46,7 +46,7 @@ function DeleteOrgReasonsForm() {
             <Dropdown.Button
               active={active}
               onClick={onClick}
-              testID="variable-type-dropdown--button"
+              testID="cancellation--primary-reason"
             >
               {VariableItems[reason]}
             </Dropdown.Button>

@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-const doSetup = (cy, numAccounts: number) => {
+const setup = (cy, numAccounts: number) => {
   cy.flush().then(() => {
     cy.signin().then(() => {
       cy.get('@org').then(({id}: Organization) => {
@@ -24,7 +24,7 @@ const prefix = 'accountSwitch-toggle-choice'
 
 describe('Account Page tests', () => {
   describe('User with 4 accounts', () => {
-    beforeEach(() => doSetup(cy, 4))
+    beforeEach(() => setup(cy, 4))
 
     it('can change the default account', () => {
       const defaultMarker = '(default)'
@@ -106,7 +106,7 @@ describe('Account Page tests', () => {
   })
 
   describe('User with one account', () => {
-    beforeEach(() => doSetup(cy, 1))
+    beforeEach(() => setup(cy, 1))
 
     it('can get to the page and get the accounts, and the switch button is NOT showing', () => {
       cy.getByTestID('account-settings--header').should('be.visible')
@@ -115,10 +115,40 @@ describe('Account Page tests', () => {
         .should('have.length.greaterThan', 0)
       cy.getByTestID('user-account-switch-btn').should('not.exist')
     })
+
+    it('can delete the account from the organization', () => {
+      cy.get('@org').then(({id}: Organization) => {
+        cy.visit(`/orgs/${id}/about`)
+        cy.getByTestID('delete-org--button')
+          .should('be.visible')
+          .click()
+
+        cy.getByTestID('overlay--container')
+          .should('be.visible')
+          .then($overlayContainer => {
+            cy.wrap($overlayContainer).contains('Delete Organization')
+
+            cy.wrap($overlayContainer)
+              .getByTestID('agree-terms--input')
+              .should('be.visible')
+              .click()
+
+            cy.wrap($overlayContainer)
+              .getByTestID('delete-organization--button')
+              .should('be.visible')
+              .click()
+          })
+
+        cy.location('href').should(
+          'eq',
+          'https://www.influxdata.com/free_cancel/'
+        )
+      })
+    })
   })
 
   describe('User with two accounts', () => {
-    beforeEach(() => doSetup(cy, 2))
+    beforeEach(() => setup(cy, 2))
 
     it('can get to the account page and rename the active account', () => {
       // first ensure that we get 2 accounts from Quartz

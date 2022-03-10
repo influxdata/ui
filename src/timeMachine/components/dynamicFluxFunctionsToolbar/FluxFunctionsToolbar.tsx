@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useMemo, useState, useCallback, useEffect} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 
 // Components
 import TransformToolbarFunctions from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TransformToolbarFunctions'
@@ -10,18 +11,26 @@ import ToolbarFunction from 'src/timeMachine/components/dynamicFluxFunctionsTool
 
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
-import {getFluxdocs, Fluxdocs} from 'src/client/fluxdocsdRoutes'
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
+import {getFluxPackages} from 'src/timeMachine/actions/scriptEditorThunks'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {AppState} from 'src/types'
 
 interface OwnProps {
   onInsertFluxFunction: (func) => void
 }
 
-const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
+interface DispatchProps {
+  getFluxPackages: () => void
+}
+
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = ReduxProps & OwnProps & DispatchProps
+
+const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [fluxFuncs, setFluxFuncs] = useState([])
   const [fluxServiceError, setFluxServiceError] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -31,36 +40,24 @@ const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
   }
 
   useEffect(() => {
-    let isMounted = true
     const getFluxFuncs = async () => {
       try {
         setFluxServiceError(RemoteDataState.Loading)
 
-        const resp = await getFluxdocs({})
-
-        if (resp.status !== 200) {
-          throw new Error(resp.data.message)
-        }
-
-        if (isMounted) {
-          // filter only functions not value
-          const onlyFluxFuncs = resp.data.filter(
-            value => value.kind === 'Function'
-          )
-          setFluxFuncs(onlyFluxFuncs)
+        if (props.fluxFunctions.length === 0) {
+          await props.getFluxPackages()
           setFluxServiceError(RemoteDataState.Done)
-        }
+        } 
+        setFluxServiceError(RemoteDataState.Done)
+
       } catch (err) {
         console.error(err)
         setFluxServiceError(RemoteDataState.Error)
       }
     }
-
     getFluxFuncs()
-    return () => {
-      isMounted = false
-    }
   }, [])
+  
 
   const handleClickFunction = useCallback(
     (func: Fluxdocs) => {
@@ -83,7 +80,7 @@ const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
               data-testid="flux-toolbar--list"
             >
               <TransformToolbarFunctions
-                funcs={fluxFuncs}
+                funcs={props.fluxFunctions}
                 searchTerm={searchTerm}
               >
                 {sortedFunctions =>
@@ -105,4 +102,15 @@ const DynamicFluxFunctionsToolbar: FC<OwnProps> = (props: OwnProps) => {
   }, [searchTerm, handleClickFunction, fluxServiceError])
 }
 
-export default DynamicFluxFunctionsToolbar
+const mstp = (state: AppState) => {
+  
+  const fluxFunctions = state.fluxDocs.fluxDocs
+  return {fluxFunctions}
+}
+
+const mdtp = {
+  getFluxPackages
+}
+const connector = connect(mstp, mdtp)
+
+export default connector(DynamicFluxFunctionsToolbar)

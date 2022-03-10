@@ -10,8 +10,10 @@ import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/ExecuteQuery'
+import {Finish} from 'src/homepageExperience/components/steps/Finish'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
+import {ExecuteAggregateQuery} from '../components/steps/ExecuteAggregateQuery'
 
 interface State {
   currentStep: number
@@ -54,6 +56,12 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
       }
       case 6: {
         return <ExecuteQuery />
+      }
+      case 7: {
+        return <ExecuteAggregateQuery/>
+      }
+      case 8: {
+        return <Finish />
       }
       default: {
         return <Overview />

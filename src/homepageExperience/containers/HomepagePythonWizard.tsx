@@ -58,7 +58,7 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
         return <ExecuteQuery />
       }
       case 7: {
-        return <ExecuteAggregateQuery/>
+        return <ExecuteAggregateQuery />
       }
       case 8: {
         return <Finish />

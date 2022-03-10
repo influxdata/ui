@@ -13,14 +13,14 @@ import {
 } from '@influxdata/clockface'
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
-// Styles
-import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
-
 // Types
 import {Subscription} from 'src/types/subscriptions'
 
 // Utils
 import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+
+// Styles
+import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
 
 interface Props {
   formContent: Subscription
@@ -77,11 +77,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
         />
       </Grid.Column>
       <Grid.Column>
-        <div className="section">
-          <div className="header-wrap">
-            <h2 className="form-header">Measurement</h2>
+        <div className="json-parsing-form__section">
+          <div className="json-parsing-form__section__header-wrap">
+            <h2 className="json-parsing-form__section__header-wrap__form-header">
+              Measurement
+            </h2>
           </div>
-          <div className="container">
+          <div className="json-parsing-form__section__container">
             <Form.ValidationElement
               label="Name"
               value={formContent.jsonMeasurementKey.name}
@@ -110,7 +112,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 />
               )}
             </Form.ValidationElement>
-            <div className="dropdown-container">
+            <div className="json-parsing-form__section__container__dropdown">
               <Form.Label label="Data Type" />
               <Dropdown
                 button={(active, onClick) => (

@@ -178,7 +178,6 @@ const ParsingForm: FC<Props> = ({
                   type={ButtonType.Button}
                   onClick={() => {
                     setFormComplete(true)
-                    // history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
                   }}
                   testID="create-label-form--submit"
                   status={ComponentStatus.Default}

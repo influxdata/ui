@@ -4,25 +4,20 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {
-  Button,
-  IconFont,
   Icon,
   Page,
   FlexBox,
   JustifyContent,
   AlignItems,
 } from '@influxdata/clockface'
-import BrokerForm from './BrokerForm'
-import ParsingForm from './ParsingForm'
-import SubscriptionForm from './SubscriptionForm'
+import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
+import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
+import SubscriptionForm from 'src/writeData/subscriptions/components/SubscriptionForm'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
 
 // Graphics
 import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
-
-// Styles
-import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
 // Contexts
 import {
@@ -40,6 +35,9 @@ import {getAll} from 'src/resources/selectors'
 
 // Actions
 import {shouldShowUpgradeButton} from 'src/me/selectors'
+
+// Styles
+import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
 const CreateSubscriptionPage: FC = () => {
   const [active, setFormActive] = useState('broker')
@@ -65,21 +63,31 @@ const CreateSubscriptionPage: FC = () => {
               alignItems={AlignItems.FlexEnd}
               stretchToFitHeight={true}
             >
-              <CloudUpgradeButton className="upgrade-payg--button__header" />
+              <CloudUpgradeButton />
             </FlexBox>
           )}
-          <div className="progress">
-            <div className="logo">
+          <div className="create-subscription-page__progress">
+            <div className="create-subscription-page__progress__logo">
               <img src={FormLogo} />
               <div>
-                <div className="logo-text--lg">Setting up</div>
-                <div className="logo-text--sm">MQTT Connector</div>
+                <div className="create-subscription-page__progress__logo--lg">
+                  Setting up
+                </div>
+                <div className="create-subscription-page__progress__logo--sm">
+                  MQTT Connector
+                </div>
               </div>
             </div>
-            <div className="bar">
-              <div className={active === 'broker' ? 'wrap--selected' : 'wrap'}>
+            <div className="create-subscription-page__progress__bar">
+              <div
+                className={
+                  active === 'broker'
+                    ? 'create-subscription-page__progress__bar__wrap--selected'
+                    : 'create-subscription-page__progress__bar__wrap'
+                }
+              >
                 <button
-                  className="fancy-btn"
+                  className="create-subscription-page__progress__bar__wrap__btn"
                   onClick={() => setFormActive('broker')}
                 >
                   <Icon
@@ -99,11 +107,13 @@ const CreateSubscriptionPage: FC = () => {
               </div>
               <div
                 className={
-                  active === 'subscription' ? 'wrap--selected' : 'wrap'
+                  active === 'subscription'
+                    ? 'create-subscription-page__progress__bar__wrap--selected'
+                    : 'create-subscription-page__progress__bar__wrap'
                 }
               >
                 <button
-                  className="fancy-btn"
+                  className="create-subscription-page__progress__bar__wrap__btn"
                   onClick={() => setFormActive('subscription')}
                 >
                   <Icon
@@ -123,9 +133,15 @@ const CreateSubscriptionPage: FC = () => {
                   </div>
                 </button>
               </div>
-              <div className={active === 'parsing' ? 'wrap--selected' : 'wrap'}>
+              <div
+                className={
+                  active === 'parsing'
+                    ? 'create-subscription-page__progress__bar__wrap--selected'
+                    : 'create-subscription-page__progress__bar__wrap'
+                }
+              >
                 <button
-                  className="fancy-btn"
+                  className="create-subscription-page__progress__bar__wrap__btn"
                   onClick={() => setFormActive('parsing')}
                 >
                   <Icon

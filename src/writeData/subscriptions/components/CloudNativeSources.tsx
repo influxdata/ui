@@ -48,9 +48,11 @@ const CloudNativeSources: FC = () => {
       >
         Cloud Native Subscriptions
         {showUpgradeButton && (
-          <div className="premium-container">
+          <div className="cloud-native-sources__premium-container">
             <Icon glyph={IconFont.CrownSolid_New} />
-            <div className="premium-text">Premium</div>
+            <div className="cloud-native-sources__premium-container__text">
+              Premium
+            </div>
           </div>
         )}
       </Heading>

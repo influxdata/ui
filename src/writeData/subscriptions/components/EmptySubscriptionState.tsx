@@ -40,9 +40,9 @@ const EmptySubscriptionState: FC = () => {
     >
       <LoadDataHeader />
       <LoadDataTabbedPage activeTab="subscriptions">
-        <div className="create-page">
-          <div className="subscription-create">
-            <div className="left">
+        <div className="empty-subscription-page">
+          <div className="empty-subscription-page__container">
+            <div className="empty-subscription-page__container__left">
               <SearchWidget
                 placeholderText="Filter subscriptions..."
                 searchTerm={''}
@@ -56,7 +56,7 @@ const EmptySubscriptionState: FC = () => {
                 onSelect={() => {}}
               />
             </div>
-            <div className="right">
+            <div className="empty-subscription-page__container__right">
               <Button
                 text="Create Subscription"
                 icon={IconFont.Plus_New}

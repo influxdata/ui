@@ -1,8 +1,12 @@
 import React, {FC, useState, useCallback, useEffect} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
+import {useSelector} from 'react-redux'
 
 import {Subscription} from 'src/types/subscriptions'
 import {sanitizeForm} from '../utils/form'
+import {useHistory} from 'react-router-dom'
+import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
+import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -91,11 +95,14 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
   const [formContent, setFormContent] = useState(DEFAULT_CONTEXT.formContent)
   const [formComplete, setFormComplete] = useState(false)
   const [loading, setLoading] = useState(RemoteDataState.Done)
+  const history = useHistory()
+  const org = useSelector(getOrg)
   const create = (formContent?: Subscription): any => {
     setLoading(RemoteDataState.Loading)
     createAPI({data: formContent})
       .then(() => {
         setLoading(RemoteDataState.Done)
+        history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
         console.log('success')
       })
       .catch(() => {

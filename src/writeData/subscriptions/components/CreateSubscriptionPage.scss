@@ -9,85 +9,48 @@
   .cf-flex-box.cf-flex-box__stretch-h {
     padding-top: 20px;
   }
-  .logo-text--lg {
-    font-size: 24px;
-    line-height: 28px;
-    color: #ffffff;
-  }
 
-  .progress {
-    // margin-right: 88px;
+  &__progress {
     float: left;
     width: 25%;
-  }
 
-  .logo {
-    display: flex;
-    padding-top: 35px;
-    img {
-      margin-right: 20px;
+    &__logo {
+      display: flex;
+      padding-top: 35px;
+      img {
+        margin-right: 20px;
+      }
+
+      &--lg {
+        font-size: 24px;
+        line-height: 28px;
+        color: #ffffff;
+      }
+
+      &--sm {
+        font-size: 12px;
+        line-height: 14px;
+        color: #ffffff;
+      }
     }
-  }
-  .logo-text--sm {
-    font-size: 12px;
-    line-height: 14px;
-    color: #ffffff;
-  }
-
-  .bar {
-    margin-top: 67px;
-    .wrap {
-      margin-top: 40px;
-      width: 100%;
-
-      .fancy-btn {
-        display: flex;
-        align-items: center;
-        .title {
-          font-size: 14px;
-          line-height: 17px;
-          margin-left: 21px;
-          color: #d5d5dd;
-          &--selected {
-            color: #0098f0;
-            font-size: 14px;
-            line-height: 17px;
-            margin-left: 21px;
-          }
-        }
-
-        &:hover {
-          .title {
-            color: #0098f0;
-          }
-          .cf-icon {
-            border: 1px solid #0098f0;
-            background: #0098f0;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-          }
-        }
-      }
-
-      .cf-icon {
-        background: white;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        border: 1px solid white;
-        border-radius: 50%;
-        padding: 10px;
-        font-size: 1.5em;
-
-        &--selected {
-          border: 1px solid #0098f0;
-        }
-      }
-
-      &--selected {
+    &__bar {
+      margin-top: 67px;
+      &__wrap {
         margin-top: 40px;
         width: 100%;
-
-        .fancy-btn {
+        .cf-icon {
+          background: white;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          border: 1px solid white;
+          border-radius: 50%;
+          padding: 10px;
+          font-size: 1.5em;
+          &--selected {
+            border: 1px solid #0098f0;
+          }
+        }
+        &__btn {
           display: flex;
           align-items: center;
           .title {
@@ -102,18 +65,48 @@
               margin-left: 21px;
             }
           }
+          &:hover {
+            .title {
+              color: #0098f0;
+            }
+            .cf-icon {
+              border: 1px solid #0098f0;
+              background: #0098f0;
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+            }
+          }
         }
-
-        .cf-icon {
-          background: #0098f0;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          border: 1px solid white;
-          border-radius: 50%;
-          padding: 10px;
-          font-size: 1.5em;
-          &--selected {
-            border: 1px solid #0098f0;
+        &--selected {
+          margin-top: 40px;
+          width: 100%;
+          .btn {
+            display: flex;
+            align-items: center;
+            .title {
+              font-size: 14px;
+              line-height: 17px;
+              margin-left: 21px;
+              color: #d5d5dd;
+              &--selected {
+                color: #0098f0;
+                font-size: 14px;
+                line-height: 17px;
+                margin-left: 21px;
+              }
+            }
+          }
+          .cf-icon {
+            background: #0098f0;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border: 1px solid white;
+            border-radius: 50%;
+            padding: 10px;
+            font-size: 1.5em;
+            &--selected {
+              border: 1px solid #0098f0;
+            }
           }
         }
       }

@@ -68,22 +68,24 @@ const BrokerForm: FC<Props> = ({
   return (
     formContent && (
       <div className="create-broker-form">
-        <Form onSubmit={() => {}} testID="label-overlay-form">
+        <Form onSubmit={() => {}} testID="create-broker-form-overlay">
           <Overlay.Header title="Connect to Broker">
             {showUpgradeButton && (
-              <div className="premium-container">
+              <div className="create-broker-form__premium-container">
                 <Icon glyph={IconFont.CrownSolid_New} />
-                <div className="premium-text">Premium</div>
+                <div className="create-broker-form__premium-container__text">
+                  Premium
+                </div>
               </div>
             )}
           </Overlay.Header>
           <Overlay.Body>
-            <div className="form-text">
+            <div className="create-broker-form__form-text">
               {showUpgradeButton
                 ? 'Upgrade Now to create a new connection to collect data from an MQTT broker and parse messages into metrics.'
                 : 'Create a new connection to collect data from an MQTT broker and parse messages into metrics.'}
             </div>
-            <h2 className="form-header">Broker details</h2>
+            <h2 className="create-broker-form__form-header">Broker details</h2>
             <Grid>
               <Grid.Row>
                 <Grid.Column widthSM={Columns.Twelve}>
@@ -133,10 +135,10 @@ const BrokerForm: FC<Props> = ({
                     />
                   </Form.Element>
                 </Grid.Column>
-                <div className="subscription-inline-form">
+                <div className="create-broker-form__inline-form">
                   <Grid.Column widthSM={Columns.Twelve}>
-                    <div className="grid-div">
-                      <div className="protocol">
+                    <div className="create-broker-form__inline-form__grid">
+                      <div className="create-broker-form__inline-form__grid__protocol">
                         <Form.Label label="Protocol" />
                         <Dropdown
                           button={(active, onClick) => (
@@ -228,7 +230,7 @@ const BrokerForm: FC<Props> = ({
                         )}
                       </Form.ValidationElement>
                     </div>
-                    <div className="example-text">
+                    <div className="create-broker-form__inline-form__example-text">
                       TCP://
                       {formContent.protocol ? formContent.protocol : 'MQTT'}:
                       {formContent.brokerHost
@@ -240,7 +242,9 @@ const BrokerForm: FC<Props> = ({
                   </Grid.Column>
                 </div>
                 <Grid.Column widthXS={Columns.Twelve}>
-                  <h2 className="form-header">Security details</h2>
+                  <h2 className="create-broker-form__form-header">
+                    Security details
+                  </h2>
                   <SelectGroup
                     shape={ButtonShape.StretchToFit}
                     className="retention--radio"
@@ -290,7 +294,7 @@ const BrokerForm: FC<Props> = ({
                     </SelectGroup.Option> */}
                   </SelectGroup>
                   {security === 'user' && (
-                    <div className="creds-div">
+                    <div className="create-broker-form__creds">
                       <Form.Element label="Username">
                         <Input
                           type={InputType.Text}

@@ -1,7 +1,12 @@
 import React, {PureComponent} from 'react'
 import classnames from 'classnames'
 
-import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
+import {
+  Button,
+  ComponentColor,
+  ComponentSize,
+  ComponentStatus,
+} from '@influxdata/clockface'
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
@@ -70,6 +75,8 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
   }
 
   render() {
+    const {currentStep} = this.state
+
     return (
       <div className="homepage-wizard-container">
         <aside className="homepage-wizard-container--subway">
@@ -92,12 +99,22 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
               text="Previous"
               size={ComponentSize.Large}
               color={ComponentColor.Tertiary}
+              status={
+                currentStep > 1
+                  ? ComponentStatus.Default
+                  : ComponentStatus.Disabled
+              }
             />
             <Button
               onClick={this.handleNextClick}
               text="Next"
               size={ComponentSize.Large}
               color={ComponentColor.Primary}
+              status={
+                currentStep < 8
+                  ? ComponentStatus.Default
+                  : ComponentStatus.Disabled
+              }
             />
           </div>
         </div>

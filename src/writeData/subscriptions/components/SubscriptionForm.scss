@@ -1,0 +1,39 @@
+.create-subscription-form {
+  float: right;
+  width: 75%;
+  .write-data--subscriptions-title {
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #333346;
+    height: 56px;
+  }
+  .cf-overlay--header {
+    justify-content: unset;
+  }
+  &__premium-container {
+    margin-left: 18px;
+    .cf-icon {
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &__text {
+      margin-left: 14px;
+      text-transform: uppercase;
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  &__text {
+    color: #f1f1f3;
+    margin-bottom: 32px;
+  }
+  &__header {
+    text-transform: uppercase;
+    margin-top: 64px;
+    margin-bottom: 32px;
+  }
+}

@@ -44,6 +44,8 @@ import {
   UsersPage,
   VariablesIndex,
   VersionPage,
+  SubscriptionsLanding,
+  CreateSubscriptionForm,
   WriteDataPage,
 } from 'src/shared/containers'
 
@@ -67,6 +69,7 @@ import {
   CLIENT_LIBS,
   TELEGRAF_PLUGINS,
   SECRETS,
+  SUBSCRIPTIONS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -226,6 +229,20 @@ const SetOrg: FC = () => {
             <Route
               path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
               component={BucketsIndex}
+            />
+          )}
+
+          {isFlagEnabled('subscriptionsResourceType') && (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/create`}
+              component={CreateSubscriptionForm}
+            />
+          )}
+
+          {isFlagEnabled('subscriptionsResourceType') && (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
+              component={SubscriptionsLanding}
             />
           )}
 

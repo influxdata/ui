@@ -1,0 +1,114 @@
+.create-subscription-page {
+  display: flex;
+  background: linear-gradient(
+    45deg,
+    rgba(33, 173, 246, 0.13) 0%,
+    rgba(147, 148, 255, 0.13) 100%
+  );
+
+  .cf-flex-box.cf-flex-box__stretch-h {
+    padding-top: 20px;
+  }
+
+  &__progress {
+    float: left;
+    width: 25%;
+
+    &__logo {
+      padding-top: 35px;
+      img {
+        margin-right: 20px;
+      }
+
+      &--lg {
+        font-size: 24px;
+        line-height: 28px;
+        color: #ffffff;
+      }
+
+      &--sm {
+        font-size: 12px;
+        line-height: 14px;
+        color: #ffffff;
+      }
+    }
+    &__bar {
+      margin-top: 67px;
+      &__wrap {
+        margin-top: 40px;
+        width: 100%;
+        .cf-icon {
+          background: white;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          border: 1px solid white;
+          border-radius: 50%;
+          padding: 10px;
+          font-size: 1.5em;
+          &--selected {
+            border: 1px solid #0098f0;
+          }
+        }
+        &__btn {
+          display: flex;
+          align-items: center;
+          .title {
+            font-size: 14px;
+            line-height: 17px;
+            margin-left: 21px;
+            color: #d5d5dd;
+            &--selected {
+              color: #0098f0;
+              font-size: 14px;
+              line-height: 17px;
+              margin-left: 21px;
+            }
+          }
+          &:hover {
+            .title {
+              color: #0098f0;
+            }
+            .cf-icon {
+              border: 1px solid #0098f0;
+              background: #0098f0;
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+            }
+          }
+        }
+        &--selected {
+          margin-top: 40px;
+          width: 100%;
+          .btn {
+            display: flex;
+            align-items: center;
+            .title {
+              font-size: 14px;
+              line-height: 17px;
+              margin-left: 21px;
+              color: #d5d5dd;
+              &--selected {
+                color: #0098f0;
+                font-size: 14px;
+                line-height: 17px;
+                margin-left: 21px;
+              }
+            }
+          }
+          .cf-icon {
+            background: #0098f0;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border: 1px solid white;
+            border-radius: 50%;
+            padding: 10px;
+            font-size: 1.5em;
+            &--selected {
+              border: 1px solid #0098f0;
+            }
+          }
+        }
+      }
+    }
+  }
+}

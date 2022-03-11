@@ -14,6 +14,10 @@ import {EmptyState, ComponentSize} from '@influxdata/clockface'
 import FileUploadSection from 'src/writeData/components/FileUploadSection'
 import ClientLibrarySection from 'src/writeData/components/ClientLibrarySection'
 import TelegrafPluginSection from 'src/writeData/components/TelegrafPluginSection'
+import CloudNativeSources from 'src/writeData/subscriptions/components/CloudNativeSources'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const WriteDataSections: FC = () => {
   const {searchTerm} = useContext(WriteDataSearchContext)
@@ -36,6 +40,7 @@ const WriteDataSections: FC = () => {
     <>
       <FileUploadSection />
       <ClientLibrarySection />
+      {isFlagEnabled('subscriptionsResourceType') && <CloudNativeSources />}
       <TelegrafPluginSection />
     </>
   )

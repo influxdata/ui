@@ -1,0 +1,68 @@
+.create-broker-form {
+  float: right;
+  width: 75%;
+  .cf-flex-box__margin-md.cf-flex-box__row.cf-flex-box__justify-flex-start > * {
+    margin-right: 0;
+  }
+  .cf-form--element {
+    margin-bottom: 32px;
+    &:first-child {
+      margin-right: 16px;
+    }
+  }
+  .cf-overlay--header {
+    justify-content: unset;
+  }
+  .cf-select-group.cf-select-group__stretch {
+    margin-bottom: 32px;
+  }
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  &__premium-container {
+    margin-left: 18px;
+    .cf-icon {
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &__text {
+      margin-left: 14px;
+      text-transform: uppercase;
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  &__header {
+    text-transform: uppercase;
+    margin-top: 64px;
+    margin-bottom: 32px;
+  }
+  &__text {
+    color: #f1f1f3;
+  }
+  &__container {
+    .cf-flex-box__margin-lg.cf-flex-box__row.cf-flex-box__justify-flex-start
+      > * {
+      margin-right: 16px;
+    }
+    &__protocol {
+      width: 100%;
+    }
+  }
+  &__example-text {
+    font-style: italic;
+    color: #828294;
+  }
+  &__creds {
+    .cf-form--element {
+      &:nth-last-of-type(1) {
+        margin-left: 20px;
+        margin-bottom: 0;
+      }
+    }
+  }
+}

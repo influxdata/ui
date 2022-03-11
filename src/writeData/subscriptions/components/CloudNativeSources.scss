@@ -1,0 +1,21 @@
+.cloud-native-sources {
+  .cf-heading {
+    display: flex;
+    align-content: center;
+  }
+  .cf-icon {
+    background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  &__premium-container {
+    margin-left: 18px;
+    &__text {
+      margin-left: 14px;
+      text-transform: uppercase;
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}

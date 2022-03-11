@@ -12,6 +12,7 @@ import {
   Scraper,
   Authorization,
   Flow,
+  Subscription,
 } from 'src/types'
 
 export type DashboardSortKey = keyof Dashboard | 'meta.updatedAt'
@@ -25,6 +26,7 @@ export type TelegrafSortKey = keyof Telegraf
 export type ScraperSortKey = keyof Scraper
 export type AuthorizationSortKey = keyof Authorization
 export type FlowSortKey = keyof Flow
+export type SubscriptionKey = keyof Subscription
 
 export type SortKey =
   | DashboardSortKey
@@ -38,6 +40,7 @@ export type SortKey =
   | ScraperSortKey
   | AuthorizationSortKey
   | FlowSortKey
+  | SubscriptionKey
 
 export interface SortDropdownItem {
   label: string
@@ -380,6 +383,33 @@ export const generateSortItems = (
           label: 'Created (Newest)',
           sortKey: 'createdAt',
           sortType: SortTypes.Date,
+          sortDirection: Sort.Descending,
+        },
+      ]
+    case ResourceType.Subscriptions:
+      return [
+        {
+          label: 'Name (A → Z)',
+          sortKey: 'name',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Ascending,
+        },
+        {
+          label: 'Name (Z → A)',
+          sortKey: 'name',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Descending,
+        },
+        {
+          label: 'Description (Ascending)',
+          sortKey: 'description',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Ascending,
+        },
+        {
+          label: 'Description (Descending)',
+          sortKey: 'description',
+          sortType: SortTypes.String,
           sortDirection: Sort.Descending,
         },
       ]

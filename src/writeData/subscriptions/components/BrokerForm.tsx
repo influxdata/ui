@@ -139,7 +139,7 @@ const BrokerForm: FC<Props> = ({
                         }}
                         status={status}
                         maxLength={16}
-                        testID="create-label-form--name"
+                        testID="create-broker-form--name"
                       />
                     )}
                   </Form.ValidationElement>
@@ -157,7 +157,7 @@ const BrokerForm: FC<Props> = ({
                           description: e.target.value,
                         })
                       }
-                      testID="create-label-form--description"
+                      testID="create-broker-form--description"
                     />
                   </Form.Element>
                 </Grid.Column>
@@ -175,7 +175,7 @@ const BrokerForm: FC<Props> = ({
                           <Dropdown.Button
                             active={active}
                             onClick={onClick}
-                            testID="variable-type-dropdown--button"
+                            testID="create-broker-form--dropdown-button"
                             status={ComponentStatus.Default}
                           >
                             {protocol}
@@ -190,7 +190,7 @@ const BrokerForm: FC<Props> = ({
                                 value={p}
                                 onClick={() => setProtocol(p)}
                                 selected={protocol === p}
-                                testID={`variable-type-dropdown-${1}`}
+                                testID={`create-broker-form-${1}`}
                               >
                                 {p}
                               </Dropdown.Item>
@@ -222,7 +222,7 @@ const BrokerForm: FC<Props> = ({
                           }}
                           status={status}
                           maxLength={16}
-                          testID="create-label-form--host"
+                          testID="create-broker-form--host"
                         />
                       )}
                     </Form.ValidationElement>
@@ -252,7 +252,7 @@ const BrokerForm: FC<Props> = ({
                           }}
                           status={status}
                           maxLength={16}
-                          testID="create-label-form--port"
+                          testID="create-broker-form--port"
                         />
                       )}
                     </Form.ValidationElement>
@@ -285,7 +285,7 @@ const BrokerForm: FC<Props> = ({
                     <SelectGroup.Option
                       name="no-security"
                       id="none"
-                      testID="no-security--button"
+                      testID="create-broker-form-no-security--button"
                       active={security === 'none'}
                       onClick={() => {
                         setSecurity('none')
@@ -299,7 +299,7 @@ const BrokerForm: FC<Props> = ({
                     <SelectGroup.Option
                       name="user"
                       id="user"
-                      testID="user--button"
+                      testID="create-broker-form--user--button"
                       active={security === 'user'}
                       onClick={() => {
                         setSecurity('user')
@@ -345,7 +345,7 @@ const BrokerForm: FC<Props> = ({
                               brokerUsername: e.target.value,
                             })
                           }
-                          testID="create-label-form--username"
+                          testID="create-broker-form--username"
                         />
                       </Form.Element>
                       <Form.Element label="Password">
@@ -360,7 +360,7 @@ const BrokerForm: FC<Props> = ({
                               brokerPassword: e.target.value,
                             })
                           }
-                          testID="create-label-form--password"
+                          testID="create-broker-form--password"
                         />
                       </Form.Element>
                     </FlexBox>
@@ -378,7 +378,7 @@ const BrokerForm: FC<Props> = ({
               }}
               titleText="Cancel creation of Label and return to list"
               type={ButtonType.Button}
-              testID="create-label-form--cancel"
+              testID="create-broker-form--cancel"
             />
             <Button
               text={'Next'}
@@ -387,7 +387,7 @@ const BrokerForm: FC<Props> = ({
                 setFormActive('subscription')
               }}
               type={ButtonType.Button}
-              testID="create-label-form--submit"
+              testID="create-broker-form--submit"
               status={ComponentStatus.Default}
             />
           </Overlay.Footer>

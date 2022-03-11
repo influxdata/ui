@@ -64,7 +64,7 @@ const ParsingForm: FC<Props> = ({
   return (
     formContent && (
       <div className="create-parsing-form">
-        <Form onSubmit={() => {}} testID="create-parsing-form-overlay-form">
+        <Form onSubmit={() => {}} testID="create-parsing-form-overlay">
           <Overlay.Header title="Define Data Parsing Rules">
             {showUpgradeButton && (
               <FlexBox
@@ -109,8 +109,8 @@ const ParsingForm: FC<Props> = ({
                   >
                     <SelectGroup.Option
                       name="line-protocol"
-                      id="never"
-                      testID="line-protocol--button"
+                      id="line-protocol"
+                      testID="create-parsing-form-line-protocol--button"
                       active={parsing === 'lineprotocol'}
                       onClick={() => {
                         setParsing('lineprotocol')
@@ -122,9 +122,9 @@ const ParsingForm: FC<Props> = ({
                       Line Protocol
                     </SelectGroup.Option>
                     <SelectGroup.Option
-                      name="user"
-                      id="user"
-                      testID="user--button"
+                      name="json"
+                      id="json"
+                      testID="create-parsing-form-json--button"
                       active={parsing === 'json'}
                       onClick={() => {
                         setParsing('json')
@@ -136,9 +136,9 @@ const ParsingForm: FC<Props> = ({
                       JSON
                     </SelectGroup.Option>
                     <SelectGroup.Option
-                      name="user"
-                      id="user"
-                      testID="user--button"
+                      name="string"
+                      id="string"
+                      testID="create-parsing-form-string--button"
                       active={parsing === 'string'}
                       onClick={() => {
                         setParsing('string')
@@ -176,7 +176,7 @@ const ParsingForm: FC<Props> = ({
               }}
               titleText="Back to broker form"
               type={ButtonType.Button}
-              testID="create-label-form--cancel"
+              testID="create-parsing-form--cancel"
             />
             <Button
               text="Back"
@@ -186,7 +186,7 @@ const ParsingForm: FC<Props> = ({
               }}
               titleText="Back"
               type={ButtonType.Button}
-              testID="create-parsing-form--cancel"
+              testID="create-parsing-form--back"
             />
             {showUpgradeButton ? (
               <CloudUpgradeButton className="create-parsing-form__upgrade-button" />

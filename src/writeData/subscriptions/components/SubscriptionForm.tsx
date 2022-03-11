@@ -66,7 +66,7 @@ const SubscriptionForm: FC<Props> = ({
       <div className="create-subscription-form">
         <Form
           onSubmit={() => {}}
-          testID="create-subscription-form-overlay-form"
+          testID="create-subscription-form--overlay-form"
         >
           <Overlay.Header title="Subscribe to a Topic">
             {showUpgradeButton && (
@@ -120,7 +120,7 @@ const SubscriptionForm: FC<Props> = ({
                         }}
                         status={status}
                         maxLength={16}
-                        testID="create-label-form--topic"
+                        testID="create-subscription-form--topic"
                       />
                     )}
                   </Form.ValidationElement>
@@ -154,7 +154,7 @@ const SubscriptionForm: FC<Props> = ({
               }}
               titleText="Cancel"
               type={ButtonType.Button}
-              testID="create-label-form--cancel"
+              testID="create-subscription-form--cancel"
             />
             <Button
               text="Back"
@@ -164,7 +164,7 @@ const SubscriptionForm: FC<Props> = ({
               }}
               titleText="Back to broker form"
               type={ButtonType.Button}
-              testID="create-label-form--cancel"
+              testID="create-subscription-form--back"
             />
             <Button
               text={'Next'}
@@ -173,7 +173,7 @@ const SubscriptionForm: FC<Props> = ({
                 setFormActive('parsing')
               }}
               type={ButtonType.Button}
-              testID="create-label-form--submit"
+              testID="create-subscription-form--submit"
               status={ComponentStatus.Default}
             />
           </Overlay.Footer>

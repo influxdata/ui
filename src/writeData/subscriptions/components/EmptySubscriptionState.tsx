@@ -23,7 +23,10 @@ const EmptySubscriptionState: FC = () => {
   const org = useSelector(getOrg)
   const history = useHistory()
   return (
-    <EmptyState size={ComponentSize.Medium}>
+    <EmptyState
+      size={ComponentSize.Medium}
+      testID={'subscriptions-empty-state'}
+    >
       <EmptyState.Text>
         Collect data from an external cloud source with a{' '}
         <b>Cloud Native Subscription</b>.

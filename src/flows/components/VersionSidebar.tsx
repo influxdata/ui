@@ -53,13 +53,15 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
   const isDraft = version.id === 'draft'
 
   const handleClick = () => {
-    let route = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${flow.id}`
-
-    if (!isDraft) {
-      route = `${route}/versions/${version.id}`
+    if (isDraft) {
+      return
     }
 
-    history.push(route)
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
+        flow.id
+      }/versions/${version.id}`
+    )
   }
 
   const handleRevert = async () => {
@@ -78,6 +80,12 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
     } catch (error) {
       console.error({error})
     }
+  }
+
+  const handleGoBack = () => {
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${flow.id}`
+    )
   }
 
   const handleClone = async () => {
@@ -130,12 +138,19 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
         alignItems={AlignItems.FlexStart}
         direction={FlexDirection.Column}
       >
-        <h6 className="published-date--text">
-          {new Date(version.publishedAt).toLocaleString()}
-        </h6>
-        {isDraft && <h6 className="current-version--text">Current version</h6>}
-        {!isDraft && (
-          <h6 className="published-by--text">{version.publishedBy}</h6>
+        {isDraft ? (
+          <Button
+            icon={IconFont.ArrowLeft_New}
+            text="Back to Current Version"
+            onClick={handleGoBack}
+          />
+        ) : (
+          <>
+            <h6 className="published-date--text">
+              {new Date(version.publishedAt).toLocaleString()}
+            </h6>
+            <h6 className="published-by--text">{version.publishedBy}</h6>
+          </>
         )}
       </FlexBox>
       {isDraft === false && (

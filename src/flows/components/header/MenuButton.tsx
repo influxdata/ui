@@ -6,6 +6,7 @@ import {
   Popover,
   PopoverInteraction,
   SquareButton,
+  InfluxColors,
 } from '@influxdata/clockface'
 import {useSelector} from 'react-redux'
 
@@ -222,7 +223,12 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
           <List>
             {menuItems.map(item => {
               if (item.type === 'divider') {
-                return <List.Divider key={item.title} />
+                return (
+                  <List.Divider
+                    key={item.title}
+                    style={{backgroundColor: InfluxColors.Grey35}}
+                  />
+                )
               }
               return (
                 <List.Item

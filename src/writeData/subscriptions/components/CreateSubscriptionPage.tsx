@@ -7,10 +7,12 @@ import {
   Page,
   FlexBox,
   JustifyContent,
-  AlignItems,
   Heading,
   HeadingElement,
   FontWeight,
+  AlignItems,
+  ComponentSize,
+  FlexDirection,
 } from '@influxdata/clockface'
 import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
 import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
@@ -71,7 +73,12 @@ const CreateSubscriptionPage: FC = () => {
           )}
           {/* TODO: swap out for clockface svg when available */}
           <div className="create-subscription-page__progress">
-            <div className="create-subscription-page__progress__logo">
+            <FlexBox
+              alignItems={AlignItems.Center}
+              direction={FlexDirection.Row}
+              margin={ComponentSize.Large}
+              className="create-subscription-page__progress__logo"
+            >
               <img src={FormLogo} />
               <div>
                 <Heading
@@ -89,7 +96,7 @@ const CreateSubscriptionPage: FC = () => {
                   MQTT Connector
                 </Heading>
               </div>
-            </div>
+            </FlexBox>
             {/* TODO: swap out for clockface component when available */}
             <div className="create-subscription-page__progress__bar">
               <ProgressMenuItem

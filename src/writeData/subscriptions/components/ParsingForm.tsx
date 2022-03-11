@@ -22,6 +22,10 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
+  AlignItems,
+  ComponentSize,
+  FlexDirection,
+  FlexBox,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
@@ -72,7 +76,12 @@ const ParsingForm: FC<Props> = ({
           <Form onSubmit={() => {}} testID="create-parsing-form-overlay-form">
             <Overlay.Header title="Define Data Parsing Rules">
               {showUpgradeButton && (
-                <div className="create-parsing-form__premium-container">
+                <FlexBox
+                  alignItems={AlignItems.Center}
+                  direction={FlexDirection.Row}
+                  margin={ComponentSize.Medium}
+                  className="create-parsing-form__premium-container"
+                >
                   <Icon glyph={IconFont.CrownSolid_New} />
                   <Heading
                     element={HeadingElement.H5}
@@ -81,7 +90,7 @@ const ParsingForm: FC<Props> = ({
                   >
                     Premium
                   </Heading>
-                </div>
+                </FlexBox>
               )}
             </Overlay.Header>
             <Overlay.Body>

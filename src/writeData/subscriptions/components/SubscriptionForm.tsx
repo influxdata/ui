@@ -20,6 +20,10 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
+  AlignItems,
+  ComponentSize,
+  FlexDirection,
+  FlexBox,
 } from '@influxdata/clockface'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 
@@ -66,7 +70,12 @@ const SubscriptionForm: FC<Props> = ({
         >
           <Overlay.Header title="Subscribe to a Topic">
             {showUpgradeButton && (
-              <div className="create-subscription-form__premium-container">
+              <FlexBox
+                alignItems={AlignItems.Center}
+                direction={FlexDirection.Row}
+                margin={ComponentSize.Medium}
+                className="create-subscription-form__premium-container"
+              >
                 <Icon glyph={IconFont.CrownSolid_New} />
                 <Heading
                   element={HeadingElement.H5}
@@ -75,7 +84,7 @@ const SubscriptionForm: FC<Props> = ({
                 >
                   Premium
                 </Heading>
-              </div>
+              </FlexBox>
             )}
           </Overlay.Header>
           <Overlay.Body>

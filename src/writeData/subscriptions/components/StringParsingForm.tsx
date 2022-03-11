@@ -13,6 +13,10 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
+  AlignItems,
+  ComponentSize,
+  FlexDirection,
+  FlexBox,
 } from '@influxdata/clockface'
 import StringPatternInput from 'src/writeData/subscriptions/components/StringPatternInput'
 
@@ -74,42 +78,45 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
         />
       </Grid.Column>
       <Grid.Column>
-        <div className="string-parsing-form__section">
-          <div className="string-parsing-form__section__header-wrap">
-            <Heading
-              element={HeadingElement.H3}
-              weight={FontWeight.Bold}
-              className="string-parsing-form__section__header-wrap__header"
-            >
-              Measurement
-            </Heading>
-          </div>
-          <Form.ValidationElement
-            label="Regex Pattern to find Measurement"
-            value={formContent.stringMeasurement.pattern}
-            required={true}
-            validationFunc={() =>
-              handleValidation('Pattern', formContent.stringMeasurement.pattern)
-            }
+        <FlexBox
+          alignItems={AlignItems.Center}
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Medium}
+          className="string-parsing-form__header-wrap"
+        >
+          <Heading
+            element={HeadingElement.H3}
+            weight={FontWeight.Bold}
+            className="string-parsing-form__section__header-wrap__header"
           >
-            {status => (
-              <Input
-                type={InputType.Text}
-                placeholder="eg. a=(\\d)"
-                name="regex"
-                autoFocus={true}
-                value={formContent.stringMeasurement.pattern}
-                onChange={e => {
-                  formContent.stringMeasurement.pattern = e.target.value
-                  updateForm({...formContent})
-                }}
-                status={status}
-                maxLength={56}
-                testID="string-parsing--regex"
-              />
-            )}
-          </Form.ValidationElement>
-        </div>
+            Measurement
+          </Heading>
+        </FlexBox>
+        <Form.ValidationElement
+          label="Regex Pattern to find Measurement"
+          value={formContent.stringMeasurement.pattern}
+          required={true}
+          validationFunc={() =>
+            handleValidation('Pattern', formContent.stringMeasurement.pattern)
+          }
+        >
+          {status => (
+            <Input
+              type={InputType.Text}
+              placeholder="eg. a=(\\d)"
+              name="regex"
+              autoFocus={true}
+              value={formContent.stringMeasurement.pattern}
+              onChange={e => {
+                formContent.stringMeasurement.pattern = e.target.value
+                updateForm({...formContent})
+              }}
+              status={status}
+              maxLength={56}
+              testID="string-parsing--regex"
+            />
+          )}
+        </Form.ValidationElement>
         <div className="line"></div>
       </Grid.Column>
       {formContent.stringTags.map((_, key) => (

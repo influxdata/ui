@@ -13,6 +13,10 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
+  AlignItems,
+  ComponentSize,
+  FlexDirection,
+  FlexBox,
 } from '@influxdata/clockface'
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
@@ -80,80 +84,88 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
         />
       </Grid.Column>
       <Grid.Column>
-        <div className="json-parsing-form__section">
-          <div className="json-parsing-form__section__header-wrap">
-            <Heading
-              element={HeadingElement.H3}
-              weight={FontWeight.Bold}
-              className="json-parsing-form__section__header-wrap__header"
-            >
-              Measurement
-            </Heading>
-          </div>
-          <div className="json-parsing-form__section__container">
-            <Form.ValidationElement
-              label="Name"
-              value={formContent.jsonMeasurementKey.name}
-              required={true}
-              validationFunc={() =>
-                handleValidation(
-                  'Measurement Name',
-                  formContent.jsonMeasurementKey.name
-                )
-              }
-            >
-              {status => (
-                <Input
-                  type={InputType.Text}
-                  placeholder="nonDescriptName"
-                  name="name"
-                  autoFocus={true}
-                  value={formContent.jsonMeasurementKey.name}
-                  onChange={e => {
-                    formContent.jsonMeasurementKey.name = e.target.value
-                    updateForm({...formContent})
-                  }}
-                  status={status}
-                  maxLength={16}
-                  testID="json-parsing--name"
-                />
-              )}
-            </Form.ValidationElement>
-            <div className="json-parsing-form__section__container__dropdown">
-              <Form.Label label="Data Type" />
-              <Dropdown
-                button={(active, onClick) => (
-                  <Dropdown.Button
-                    active={active}
-                    onClick={onClick}
-                    testID="variable-type-dropdown--button"
-                  >
-                    {dataTypeM}
-                  </Dropdown.Button>
-                )}
-                menu={onCollapse => (
-                  <Dropdown.Menu onCollapse={onCollapse}>
-                    {dataTypeList.map((d, key) => (
-                      <Dropdown.Item
-                        key={key}
-                        id={d}
-                        value={d}
-                        onClick={() => {
-                          setDataTypeM(d)
-                          formContent.jsonMeasurementKey.type = d
-                        }}
-                        selected={dataTypeM === d}
-                        testID={`variable-type-dropdown-${1}`}
-                      >
-                        {d}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                )}
+        <FlexBox
+          alignItems={AlignItems.Center}
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Large}
+          className="json-parsing-form__header-wrap"
+        >
+          <Heading
+            element={HeadingElement.H3}
+            weight={FontWeight.Bold}
+            className="json-parsing-form__header-wrap__header"
+          >
+            Measurement
+          </Heading>
+        </FlexBox>
+        <FlexBox
+          alignItems={AlignItems.FlexStart}
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Large}
+          className="json-parsing-form__container"
+        >
+          <Form.ValidationElement
+            label="Name"
+            value={formContent.jsonMeasurementKey.name}
+            required={true}
+            validationFunc={() =>
+              handleValidation(
+                'Measurement Name',
+                formContent.jsonMeasurementKey.name
+              )
+            }
+          >
+            {status => (
+              <Input
+                type={InputType.Text}
+                placeholder="nonDescriptName"
+                name="name"
+                autoFocus={true}
+                value={formContent.jsonMeasurementKey.name}
+                onChange={e => {
+                  formContent.jsonMeasurementKey.name = e.target.value
+                  updateForm({...formContent})
+                }}
+                status={status}
+                maxLength={16}
+                testID="json-parsing--name"
               />
-            </div>
+            )}
+          </Form.ValidationElement>
+          <div className="json-parsing-form__container__dropdown">
+            <Form.Label label="Data Type" />
+            <Dropdown
+              button={(active, onClick) => (
+                <Dropdown.Button
+                  active={active}
+                  onClick={onClick}
+                  testID="variable-type-dropdown--button"
+                >
+                  {dataTypeM}
+                </Dropdown.Button>
+              )}
+              menu={onCollapse => (
+                <Dropdown.Menu onCollapse={onCollapse}>
+                  {dataTypeList.map((d, key) => (
+                    <Dropdown.Item
+                      key={key}
+                      id={d}
+                      value={d}
+                      onClick={() => {
+                        setDataTypeM(d)
+                        formContent.jsonMeasurementKey.type = d
+                      }}
+                      selected={dataTypeM === d}
+                      testID={`variable-type-dropdown-${1}`}
+                    >
+                      {d}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              )}
+            />
           </div>
-        </div>
+        </FlexBox>
       </Grid.Column>
       <Grid.Column>
         <Form.ValidationElement

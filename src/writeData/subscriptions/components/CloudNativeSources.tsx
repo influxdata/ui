@@ -15,9 +15,12 @@ import {
   HeadingElement,
   FontWeight,
   SquareGrid,
-  ComponentSize,
   Icon,
   IconFont,
+  FlexBox,
+  ComponentSize,
+  AlignItems,
+  FlexDirection,
 } from '@influxdata/clockface'
 import WriteDataItem from 'src/writeData/components/WriteDataItem'
 
@@ -48,7 +51,12 @@ const CloudNativeSources: FC = () => {
       >
         Cloud Native Subscriptions
         {showUpgradeButton && (
-          <div className="cloud-native-sources__premium-container">
+          <FlexBox
+            alignItems={AlignItems.Center}
+            direction={FlexDirection.Row}
+            margin={ComponentSize.Large}
+            className="cloud-native-sources__premium-container"
+          >
             <Icon glyph={IconFont.CrownSolid_New} />
             <Heading
               element={HeadingElement.H5}
@@ -57,7 +65,7 @@ const CloudNativeSources: FC = () => {
             >
               Premium
             </Heading>
-          </div>
+          </FlexBox>
         )}
       </Heading>
       <Heading

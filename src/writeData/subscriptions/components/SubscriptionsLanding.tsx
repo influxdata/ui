@@ -43,48 +43,47 @@ const SubscriptionsLanding: FC = () => {
   const org = useSelector(getOrg)
   return (
     <Page
+      className="subscriptions-landing"
       titleTag={pageTitleSuffixer(['Cloud Native Subscriptions', 'Load Data'])}
     >
       <LoadDataHeader />
       <LoadDataTabbedPage activeTab="subscriptions">
-        <div className="subscriptions-landing">
-          <Page.ControlBar fullWidth={true}>
-            <Page.ControlBarLeft>
-              <SearchWidget
-                placeholderText="Filter subscriptions..."
-                searchTerm={''}
-                onSearch={() => {}}
-              />
-              <ResourceSortDropdown
-                resourceType={ResourceType.Subscriptions}
-                sortDirection={Sort.Ascending}
-                sortKey={'name'}
-                sortType={SortTypes.String}
-                onSelect={() => {}}
-              />
-            </Page.ControlBarLeft>
-            <Page.ControlBarRight>
-              <Button
-                text="Create Subscription"
-                icon={IconFont.Plus_New}
-                color={ComponentColor.Primary}
-                onClick={() => {
-                  history.push(
-                    `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/create`
-                  )
-                }}
-                status={ComponentStatus.Default}
-                titleText={''}
-                testID="create-subscription-button"
-              />
-            </Page.ControlBarRight>
-          </Page.ControlBar>
-          {subscriptions && subscriptions.length ? (
-            <SubscriptionsList subscriptions={subscriptions} />
-          ) : (
-            <EmptySubscriptionState />
-          )}
-        </div>
+        <Page.ControlBar fullWidth={true}>
+          <Page.ControlBarLeft>
+            <SearchWidget
+              placeholderText="Filter subscriptions..."
+              searchTerm={''}
+              onSearch={() => {}}
+            />
+            <ResourceSortDropdown
+              resourceType={ResourceType.Subscriptions}
+              sortDirection={Sort.Ascending}
+              sortKey={'name'}
+              sortType={SortTypes.String}
+              onSelect={() => {}}
+            />
+          </Page.ControlBarLeft>
+          <Page.ControlBarRight>
+            <Button
+              text="Create Subscription"
+              icon={IconFont.Plus_New}
+              color={ComponentColor.Primary}
+              onClick={() => {
+                history.push(
+                  `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/create`
+                )
+              }}
+              status={ComponentStatus.Default}
+              titleText={''}
+              testID="create-subscription-button"
+            />
+          </Page.ControlBarRight>
+        </Page.ControlBar>
+        {subscriptions && subscriptions.length ? (
+          <SubscriptionsList subscriptions={subscriptions} />
+        ) : (
+          <EmptySubscriptionState />
+        )}
       </LoadDataTabbedPage>
     </Page>
   )

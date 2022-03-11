@@ -24,18 +24,13 @@
       }
     }
   }
-  &__section {
-    &__header-wrap {
-      display: flex;
-      align-items: center;
+  &__header-wrap {
+    margin-bottom: 32px;
+    margin-top: 32px;
+    &__header {
+      text-transform: uppercase;
+      margin-top: 64px;
       margin-bottom: 32px;
-      margin-top: 32px;
-      justify-content: space-between;
-      &__header {
-        text-transform: uppercase;
-        margin-top: 64px;
-        margin-bottom: 32px;
-      }
     }
   }
 }

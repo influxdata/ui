@@ -24,29 +24,23 @@
     height: 3px;
     margin-top: 32px;
   }
-  &__section {
-    &__header-wrap {
-      display: flex;
-      align-items: center;
+  &__header-wrap {
+    margin-bottom: 32px;
+    margin-top: 32px;
+    &__form-header {
+      text-transform: uppercase;
+      margin-top: 64px;
       margin-bottom: 32px;
-      margin-top: 32px;
-      justify-content: space-between;
-      &__form-header {
-        text-transform: uppercase;
-        margin-top: 64px;
-        margin-bottom: 32px;
-      }
     }
-    &__container {
-      display: flex;
-      .cf-form--element {
-        margin-bottom: 32px;
-        width: 75%;
-      }
-      &__dropdown {
-        width: 25%;
-        margin-left: 20px;
-      }
+  }
+  &__container {
+    .cf-form--element {
+      margin-bottom: 32px;
+      width: 75%;
+    }
+    &__dropdown {
+      width: 25%;
+      margin-left: 20px;
     }
   }
 }

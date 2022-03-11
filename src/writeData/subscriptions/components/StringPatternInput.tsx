@@ -10,11 +10,14 @@ import {
   ButtonShape,
   IconFont,
   ComponentColor,
-  ComponentSize,
   ConfirmationButton,
   Heading,
   HeadingElement,
   FontWeight,
+  AlignItems,
+  ComponentSize,
+  FlexDirection,
+  FlexBox,
 } from '@influxdata/clockface'
 
 // Types
@@ -40,78 +43,81 @@ const StringPatternInput: FC<Props> = ({
   return (
     <div>
       <Grid.Column>
-        <div className="section">
-          <div className="section__header-wrap">
-            <Heading
-              element={HeadingElement.H3}
-              weight={FontWeight.Bold}
-              className="section__header-wrap__header"
-            >
-              {name}
-            </Heading>
-            {(tagType
-              ? !(formContent.stringTags.length == 1)
-              : !(formContent.stringFields.length == 1)) && (
-              <ConfirmationButton
-                color={ComponentColor.Colorless}
-                icon={IconFont.Trash_New}
-                shape={ButtonShape.Square}
-                size={ComponentSize.ExtraSmall}
-                confirmationLabel={`Yes, delete this ${name}`}
-                onConfirm={() => {
-                  if (tagType) {
-                    formContent.stringTags.splice(itemNum, 1)
-                  } else {
-                    formContent.stringFields.splice(itemNum, 1)
-                  }
-                  updateForm({...formContent})
-                }}
-                confirmationButtonText="Confirm"
-                testID={`json-delete-label`}
-              />
-            )}
-          </div>
-          <Form.ValidationElement
-            label="Name"
-            value={
+        <FlexBox
+          alignItems={AlignItems.Center}
+          direction={FlexDirection.Row}
+          margin={ComponentSize.Medium}
+          className="header-wrap"
+        >
+          <Heading
+            element={HeadingElement.H3}
+            weight={FontWeight.Bold}
+            className="header-wrap__header"
+          >
+            {name}
+          </Heading>
+          {(tagType
+            ? !(formContent.stringTags.length == 1)
+            : !(formContent.stringFields.length == 1)) && (
+            <ConfirmationButton
+              color={ComponentColor.Colorless}
+              icon={IconFont.Trash_New}
+              shape={ButtonShape.Square}
+              size={ComponentSize.ExtraSmall}
+              confirmationLabel={`Yes, delete this ${name}`}
+              onConfirm={() => {
+                if (tagType) {
+                  formContent.stringTags.splice(itemNum, 1)
+                } else {
+                  formContent.stringFields.splice(itemNum, 1)
+                }
+                updateForm({...formContent})
+              }}
+              confirmationButtonText="Confirm"
+              testID={`json-delete-label`}
+            />
+          )}
+        </FlexBox>
+        <Form.ValidationElement
+          label="Name"
+          value={
+            tagType
+              ? formContent.stringTags[itemNum].name
+              : formContent.stringFields[itemNum].name
+          }
+          required={true}
+          validationFunc={() =>
+            handleValidation(
+              `${name}`,
               tagType
                 ? formContent.stringTags[itemNum].name
                 : formContent.stringFields[itemNum].name
-            }
-            required={true}
-            validationFunc={() =>
-              handleValidation(
-                `${name}`,
+            )
+          }
+        >
+          {status => (
+            <Input
+              type={InputType.Text}
+              placeholder="nonDescriptName"
+              name="name"
+              autoFocus={true}
+              value={
                 tagType
                   ? formContent.stringTags[itemNum].name
                   : formContent.stringFields[itemNum].name
-              )
-            }
-          >
-            {status => (
-              <Input
-                type={InputType.Text}
-                placeholder="nonDescriptName"
-                name="name"
-                autoFocus={true}
-                value={
-                  tagType
-                    ? formContent.stringTags[itemNum].name
-                    : formContent.stringFields[itemNum].name
-                }
-                onChange={e => {
-                  tagType
-                    ? (formContent.stringTags[itemNum].name = e.target.value)
-                    : (formContent.stringFields[itemNum].name = e.target.value)
-                  updateForm({...formContent})
-                }}
-                status={status}
-                maxLength={16}
-                testID="json-parsing--name"
-              />
-            )}
-          </Form.ValidationElement>
-        </div>
+              }
+              onChange={e => {
+                tagType
+                  ? (formContent.stringTags[itemNum].name = e.target.value)
+                  : (formContent.stringFields[itemNum].name = e.target.value)
+                updateForm({...formContent})
+              }}
+              status={status}
+              maxLength={16}
+              testID="json-parsing--name"
+            />
+          )}
+        </Form.ValidationElement>
       </Grid.Column>
       <Grid.Column>
         <Form.ValidationElement

@@ -23,6 +23,10 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
+  FlexBox,
+  ComponentSize,
+  AlignItems,
+  FlexDirection,
 } from '@influxdata/clockface'
 
 // Utils
@@ -74,7 +78,12 @@ const BrokerForm: FC<Props> = ({
         <Form onSubmit={() => {}} testID="create-broker-form-overlay">
           <Overlay.Header title="Connect to Broker">
             {showUpgradeButton && (
-              <div className="create-broker-form__premium-container">
+              <FlexBox
+                alignItems={AlignItems.Center}
+                direction={FlexDirection.Row}
+                margin={ComponentSize.Medium}
+                className="create-broker-form__premium-container"
+              >
                 <Icon glyph={IconFont.CrownSolid_New} />
                 <Heading
                   element={HeadingElement.H5}
@@ -83,7 +92,7 @@ const BrokerForm: FC<Props> = ({
                 >
                   Premium
                 </Heading>
-              </div>
+              </FlexBox>
             )}
           </Overlay.Header>
           <Overlay.Body>
@@ -152,116 +161,115 @@ const BrokerForm: FC<Props> = ({
                     />
                   </Form.Element>
                 </Grid.Column>
-                <div className="create-broker-form__inline-form">
-                  <Grid.Column widthSM={Columns.Twelve}>
-                    <div className="create-broker-form__inline-form__grid">
-                      <div className="create-broker-form__inline-form__grid__protocol">
-                        <Form.Label label="Protocol" />
-                        <Dropdown
-                          button={(active, onClick) => (
-                            <Dropdown.Button
-                              active={active}
-                              onClick={onClick}
-                              testID="variable-type-dropdown--button"
-                              status={ComponentStatus.Default}
-                            >
-                              {protocol}
-                            </Dropdown.Button>
-                          )}
-                          menu={onCollapse => (
-                            <Dropdown.Menu onCollapse={onCollapse}>
-                              {protocolList.map((p, key) => (
-                                <Dropdown.Item
-                                  key={key}
-                                  id={p}
-                                  value={p}
-                                  onClick={() => setProtocol(p)}
-                                  selected={protocol === p}
-                                  testID={`variable-type-dropdown-${1}`}
-                                >
-                                  {p}
-                                </Dropdown.Item>
-                              ))}
-                            </Dropdown.Menu>
-                          )}
-                        />
-                      </div>
-                      <Form.ValidationElement
-                        label="Host"
-                        value={formContent.brokerHost}
-                        required={true}
-                        validationFunc={() =>
-                          handleValidation(
-                            'Broker Host',
-                            formContent.brokerHost
-                          )
-                        }
-                      >
-                        {status => (
-                          <Input
-                            type={InputType.Text}
-                            placeholder="0.0.0.0"
-                            name="host"
-                            autoFocus={true}
-                            value={formContent.brokerHost}
-                            onChange={e => {
-                              updateForm({
-                                ...formContent,
-                                brokerHost: e.target.value,
-                              })
-                            }}
-                            status={status}
-                            maxLength={16}
-                            testID="create-label-form--host"
-                          />
+                <Grid.Column widthSM={Columns.Twelve}>
+                  <FlexBox
+                    alignItems={AlignItems.FlexStart}
+                    direction={FlexDirection.Row}
+                    margin={ComponentSize.Large}
+                    className="create-broker-form__container"
+                  >
+                    <div className="create-broker-form__container__protocol">
+                      <Form.Label label="Protocol" />
+                      <Dropdown
+                        button={(active, onClick) => (
+                          <Dropdown.Button
+                            active={active}
+                            onClick={onClick}
+                            testID="variable-type-dropdown--button"
+                            status={ComponentStatus.Default}
+                          >
+                            {protocol}
+                          </Dropdown.Button>
                         )}
-                      </Form.ValidationElement>
-                      <Form.ValidationElement
-                        label="Port"
-                        value={String(formContent.brokerPort)}
-                        required={true}
-                        validationFunc={() =>
-                          handleValidation(
-                            'Broker Port',
-                            String(formContent.brokerPort)
-                          )
-                        }
-                      >
-                        {status => (
-                          <Input
-                            type={InputType.Number}
-                            placeholder="1883"
-                            name="port"
-                            autoFocus={true}
-                            value={formContent.brokerPort}
-                            onChange={e => {
-                              updateForm({
-                                ...formContent,
-                                brokerPort: convertUserInputToNumOrNaN(e),
-                              })
-                            }}
-                            status={status}
-                            maxLength={16}
-                            testID="create-label-form--port"
-                          />
+                        menu={onCollapse => (
+                          <Dropdown.Menu onCollapse={onCollapse}>
+                            {protocolList.map((p, key) => (
+                              <Dropdown.Item
+                                key={key}
+                                id={p}
+                                value={p}
+                                onClick={() => setProtocol(p)}
+                                selected={protocol === p}
+                                testID={`variable-type-dropdown-${1}`}
+                              >
+                                {p}
+                              </Dropdown.Item>
+                            ))}
+                          </Dropdown.Menu>
                         )}
-                      </Form.ValidationElement>
+                      />
                     </div>
-                    <Heading
-                      element={HeadingElement.H5}
-                      weight={FontWeight.Regular}
-                      className="create-broker-form__example-text"
+                    <Form.ValidationElement
+                      label="Host"
+                      value={formContent.brokerHost}
+                      required={true}
+                      validationFunc={() =>
+                        handleValidation('Broker Host', formContent.brokerHost)
+                      }
                     >
-                      TCP://
-                      {formContent.protocol ? formContent.protocol : 'MQTT'}:
-                      {formContent.brokerHost
-                        ? formContent.brokerHost
-                        : '0.0.0.0'}
-                      :
-                      {formContent.brokerPort ? formContent.brokerPort : '1883'}
-                    </Heading>
-                  </Grid.Column>
-                </div>
+                      {status => (
+                        <Input
+                          type={InputType.Text}
+                          placeholder="0.0.0.0"
+                          name="host"
+                          autoFocus={true}
+                          value={formContent.brokerHost}
+                          onChange={e => {
+                            updateForm({
+                              ...formContent,
+                              brokerHost: e.target.value,
+                            })
+                          }}
+                          status={status}
+                          maxLength={16}
+                          testID="create-label-form--host"
+                        />
+                      )}
+                    </Form.ValidationElement>
+                    <Form.ValidationElement
+                      label="Port"
+                      value={String(formContent.brokerPort)}
+                      required={true}
+                      validationFunc={() =>
+                        handleValidation(
+                          'Broker Port',
+                          String(formContent.brokerPort)
+                        )
+                      }
+                    >
+                      {status => (
+                        <Input
+                          type={InputType.Number}
+                          placeholder="1883"
+                          name="port"
+                          autoFocus={true}
+                          value={formContent.brokerPort}
+                          onChange={e => {
+                            updateForm({
+                              ...formContent,
+                              brokerPort: convertUserInputToNumOrNaN(e),
+                            })
+                          }}
+                          status={status}
+                          maxLength={16}
+                          testID="create-label-form--port"
+                        />
+                      )}
+                    </Form.ValidationElement>
+                  </FlexBox>
+                  <Heading
+                    element={HeadingElement.H5}
+                    weight={FontWeight.Regular}
+                    className="create-broker-form__example-text"
+                  >
+                    TCP://
+                    {formContent.protocol ? formContent.protocol : 'MQTT'}:
+                    {formContent.brokerHost
+                      ? formContent.brokerHost
+                      : '0.0.0.0'}
+                    :{formContent.brokerPort ? formContent.brokerPort : '1883'}
+                  </Heading>
+                </Grid.Column>
                 <Grid.Column widthXS={Columns.Twelve}>
                   <Heading
                     element={HeadingElement.H3}
@@ -319,7 +327,12 @@ const BrokerForm: FC<Props> = ({
                     </SelectGroup.Option> */}
                   </SelectGroup>
                   {security === 'user' && (
-                    <div className="create-broker-form__creds">
+                    <FlexBox
+                      alignItems={AlignItems.FlexStart}
+                      direction={FlexDirection.Row}
+                      margin={ComponentSize.Large}
+                      className="create-broker-form__creds"
+                    >
                       <Form.Element label="Username">
                         <Input
                           type={InputType.Text}
@@ -350,7 +363,7 @@ const BrokerForm: FC<Props> = ({
                           testID="create-label-form--password"
                         />
                       </Form.Element>
-                    </div>
+                    </FlexBox>
                   )}
                 </Grid.Column>
               </Grid.Row>

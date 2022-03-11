@@ -70,12 +70,11 @@ const InsertCellButton: FC<Props> = ({id}) => {
     let button
     if (index === -1) {
       button = (
-        <div className="insert-wrap">
+        <div className="insert-wrap" ref={buttonRef}>
           <span>Insert Panel Here</span>
           <SquareButton
             icon={IconFont.Plus_New}
             size={ComponentSize.ExtraSmall}
-            ref={buttonRef}
             color={ComponentColor.Secondary}
             testID={`panel-add-btn-${index}`}
             className="flow-divider--button"
@@ -85,12 +84,11 @@ const InsertCellButton: FC<Props> = ({id}) => {
       )
     } else {
       button = (
-        <div className="insert-wrap">
+        <div className="insert-wrap" ref={buttonRef}>
           <span>Insert Panel Below</span>
           <SquareButton
             icon={IconFont.ArrowDown_New}
             size={ComponentSize.ExtraSmall}
-            ref={buttonRef}
             color={ComponentColor.Secondary}
             testID={`panel-add-btn-${index}`}
             className="flow-divider--button"

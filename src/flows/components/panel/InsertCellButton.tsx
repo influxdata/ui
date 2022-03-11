@@ -31,7 +31,8 @@ interface Props {
 const InsertCellButton: FC<Props> = ({id}) => {
   const {flow} = useContext(FlowContext)
   const dividerRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement | HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const smallButtonRef = useRef<HTMLDivElement>(null)
   const popoverVisible = useRef<boolean>(false)
   const index = flow.data.allIDs.indexOf(id)
 
@@ -70,7 +71,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
     let button
     if (index === -1) {
       button = (
-        <div className="insert-wrap" ref={buttonRef}>
+        <div className="insert-wrap" ref={smallButtonRef}>
           <span>Insert Panel Here</span>
           <SquareButton
             icon={IconFont.Plus_New}
@@ -84,7 +85,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
       )
     } else {
       button = (
-        <div className="insert-wrap" ref={buttonRef}>
+        <div className="insert-wrap" ref={smallButtonRef}>
           <span>Insert Panel Below</span>
           <SquareButton
             icon={IconFont.ArrowDown_New}
@@ -105,7 +106,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
           enableDefaultStyles={false}
           appearance={Appearance.Outline}
           color={ComponentColor.Secondary}
-          triggerRef={buttonRef}
+          triggerRef={smallButtonRef}
           position={PopoverPosition.ToTheRight}
           onShow={handlePopoverShow}
           onHide={handlePopoverHide}

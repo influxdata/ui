@@ -15,11 +15,11 @@ const TimeZoneDropdown: FC = () => {
 
   const onSelect = (zone: TimeZone) => {
     let loc = 'other'
-    if (/notebooks/.test(window.location.pathname)) {
+    if (window.location.pathname.includes('notebook')) {
       loc = 'notebooks'
-    } else if (/data-explorer/.test(window.location.pathname)) {
+    } else if (window.location.pathname.includes('data-explorer')) {
       loc = 'data explorer'
-    } else if (/dashboard/.test(window.location.pathname)) {
+    } else if (window.location.pathname.includes('dashboard')) {
       loc = 'dashboard'
     }
 

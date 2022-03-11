@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useEffect, useRef} from 'react'
+import React, {FC, useState, useEffect} from 'react'
 
 // Components
 import {
@@ -8,20 +8,22 @@ import {
   Form,
   InputType,
   Dropdown,
-  // TextArea,
   IconFont,
   Icon,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 import StringPatternInput from 'src/writeData/subscriptions/components/StringPatternInput'
-
-// Styles
-import 'src/writeData/subscriptions/components/StringParsingForm.scss'
 
 // Types
 import {Subscription} from 'src/types/subscriptions'
 
 // Utils
 import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+
+// Styles
+import 'src/writeData/subscriptions/components/StringParsingForm.scss'
 
 interface Props {
   formContent: Subscription
@@ -72,9 +74,15 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
         />
       </Grid.Column>
       <Grid.Column>
-        <div className="section">
-          <div className="header-wrap">
-            <h2 className="form-header">Measurement</h2>
+        <div className="string-parsing-form__section">
+          <div className="string-parsing-form__section__header-wrap">
+            <Heading
+              element={HeadingElement.H3}
+              weight={FontWeight.Bold}
+              className="string-parsing-form__section__header-wrap__header"
+            >
+              Measurement
+            </Heading>
           </div>
           <Form.ValidationElement
             label="Regex Pattern to find Measurement"

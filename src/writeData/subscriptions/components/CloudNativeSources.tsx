@@ -50,9 +50,13 @@ const CloudNativeSources: FC = () => {
         {showUpgradeButton && (
           <div className="cloud-native-sources__premium-container">
             <Icon glyph={IconFont.CrownSolid_New} />
-            <div className="cloud-native-sources__premium-container__text">
+            <Heading
+              element={HeadingElement.H5}
+              weight={FontWeight.Bold}
+              className="create-broker-form__premium-container__text"
+            >
               Premium
-            </div>
+            </Heading>
           </div>
         )}
       </Heading>

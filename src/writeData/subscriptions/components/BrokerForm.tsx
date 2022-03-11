@@ -20,6 +20,9 @@ import {
   ButtonShape,
   IconFont,
   Icon,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 
 // Utils
@@ -73,19 +76,33 @@ const BrokerForm: FC<Props> = ({
             {showUpgradeButton && (
               <div className="create-broker-form__premium-container">
                 <Icon glyph={IconFont.CrownSolid_New} />
-                <div className="create-broker-form__premium-container__text">
+                <Heading
+                  element={HeadingElement.H5}
+                  weight={FontWeight.Bold}
+                  className="create-broker-form__premium-container__text"
+                >
                   Premium
-                </div>
+                </Heading>
               </div>
             )}
           </Overlay.Header>
           <Overlay.Body>
-            <div className="create-broker-form__form-text">
+            <Heading
+              element={HeadingElement.H5}
+              weight={FontWeight.Regular}
+              className="create-broker-form__text"
+            >
               {showUpgradeButton
                 ? 'Upgrade Now to create a new connection to collect data from an MQTT broker and parse messages into metrics.'
                 : 'Create a new connection to collect data from an MQTT broker and parse messages into metrics.'}
-            </div>
-            <h2 className="create-broker-form__form-header">Broker details</h2>
+            </Heading>
+            <Heading
+              element={HeadingElement.H3}
+              weight={FontWeight.Bold}
+              className="create-broker-form__header"
+            >
+              Broker details
+            </Heading>
             <Grid>
               <Grid.Row>
                 <Grid.Column widthSM={Columns.Twelve}>
@@ -230,7 +247,11 @@ const BrokerForm: FC<Props> = ({
                         )}
                       </Form.ValidationElement>
                     </div>
-                    <div className="create-broker-form__inline-form__example-text">
+                    <Heading
+                      element={HeadingElement.H5}
+                      weight={FontWeight.Regular}
+                      className="create-broker-form__example-text"
+                    >
                       TCP://
                       {formContent.protocol ? formContent.protocol : 'MQTT'}:
                       {formContent.brokerHost
@@ -238,13 +259,17 @@ const BrokerForm: FC<Props> = ({
                         : '0.0.0.0'}
                       :
                       {formContent.brokerPort ? formContent.brokerPort : '1883'}
-                    </div>
+                    </Heading>
                   </Grid.Column>
                 </div>
                 <Grid.Column widthXS={Columns.Twelve}>
-                  <h2 className="create-broker-form__form-header">
+                  <Heading
+                    element={HeadingElement.H3}
+                    weight={FontWeight.Bold}
+                    className="create-broker-form__header"
+                  >
                     Security details
-                  </h2>
+                  </Heading>
                   <SelectGroup
                     shape={ButtonShape.StretchToFit}
                     className="retention--radio"

@@ -1,28 +1,34 @@
 .create-parsing-form {
   float: right;
   width: 75%;
-
-  .cf-flex-box__margin-sm.cf-flex-box__row.cf-flex-box__justify-flex-end > * {
-    margin-left: 8px;
+  .cf-overlay--header {
+    justify-content: unset;
   }
-  .form-text {
-    font-size: 16.8px;
-    line-height: 160%;
+  &__text {
     color: #f1f1f3;
   }
-
-  .form-header {
-    font-size: 16.8px;
+  &__header {
+    text-transform: uppercase;
     margin-top: 64px;
     margin-bottom: 32px;
-    font-weight: 500;
-    line-height: 120%;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #f1f1f3;
   }
-
-  .upgrade-button {
+  &__premium-container {
+    margin-left: 18px;
+    display: flex;
+    .cf-icon {
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    &__text {
+      margin-left: 14px;
+      text-transform: uppercase;
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  &__upgrade-button {
     background: linear-gradient(45deg, #0098f0 0%, #513cc6 100%) !important;
     color: #fff;
     padding: 0 12px;
@@ -43,32 +49,5 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-  }
-
-  .cf-overlay--header {
-    justify-content: unset;
-  }
-  .premium-container {
-    margin-left: 18px;
-    display: flex;
-
-    .cf-icon {
-      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-  .premium-text {
-    margin-left: 14px;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 120%;
-
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
   }
 }

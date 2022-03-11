@@ -1,8 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 
-// Components
-import {Page} from '@influxdata/clockface'
+//Components
 import SubscriptionCard from 'src/writeData/subscriptions/components/SubscriptionCard'
 
 // Types
@@ -13,13 +12,11 @@ interface Props {
 }
 
 const SubscriptionsList: FC<Props> = ({subscriptions}) => (
-  <Page>
-    <Page.Contents>
-      {subscriptions.map((s, key) => (
-        <SubscriptionCard key={key} subscription={s} />
-      ))}
-    </Page.Contents>
-  </Page>
+  <div className="subscriptions-list">
+    {subscriptions.map((s, key) => (
+      <SubscriptionCard key={key} subscription={s} />
+    ))}
+  </div>
 )
 
 export default SubscriptionsList

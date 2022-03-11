@@ -12,16 +12,12 @@
     margin-left: 18px;
     display: flex;
     align-items: center;
-  }
-  &__text {
-    margin-left: 14px;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    &__text {
+      margin-left: 14px;
+      text-transform: uppercase;
+      background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
 }

@@ -1,15 +1,17 @@
+// Libraries
 import React, {FC, useState, useCallback, useEffect} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
 import {useSelector} from 'react-redux'
-
-import {Subscription} from 'src/types/subscriptions'
-import {sanitizeForm} from '../utils/form'
 import {useHistory} from 'react-router-dom'
+
+// Utils
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {getOrg} from 'src/organizations/selectors'
+import {sanitizeForm} from '../utils/form'
 
 // Types
 import {RemoteDataState} from 'src/types'
+import {Subscription} from 'src/types/subscriptions'
 
 export interface SubscriptionCreateContextType {
   create: () => void

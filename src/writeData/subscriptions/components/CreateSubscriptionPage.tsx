@@ -4,17 +4,20 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {
-  Icon,
   Page,
   FlexBox,
   JustifyContent,
   AlignItems,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
 import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
 import SubscriptionForm from 'src/writeData/subscriptions/components/SubscriptionForm'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
+import ProgressMenuItem from 'src/writeData/subscriptions/components/ProgressMenuItem'
 
 // Graphics
 import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
@@ -66,99 +69,50 @@ const CreateSubscriptionPage: FC = () => {
               <CloudUpgradeButton />
             </FlexBox>
           )}
+          {/* TODO: swap out for clockface svg when available */}
           <div className="create-subscription-page__progress">
             <div className="create-subscription-page__progress__logo">
               <img src={FormLogo} />
               <div>
-                <div className="create-subscription-page__progress__logo--lg">
+                <Heading
+                  element={HeadingElement.H5}
+                  weight={FontWeight.Regular}
+                  className="create-subscription-page__progress__logo--lg"
+                >
                   Setting up
-                </div>
-                <div className="create-subscription-page__progress__logo--sm">
+                </Heading>
+                <Heading
+                  element={HeadingElement.H5}
+                  weight={FontWeight.Regular}
+                  className="create-subscription-page__progress__logo--sm"
+                >
                   MQTT Connector
-                </div>
+                </Heading>
               </div>
             </div>
+            {/* TODO: swap out for clockface component when available */}
             <div className="create-subscription-page__progress__bar">
-              <div
-                className={
-                  active === 'broker'
-                    ? 'create-subscription-page__progress__bar__wrap--selected'
-                    : 'create-subscription-page__progress__bar__wrap'
-                }
-              >
-                <button
-                  className="create-subscription-page__progress__bar__wrap__btn"
-                  onClick={() => setFormActive('broker')}
-                >
-                  <Icon
-                    className={
-                      active === 'broker' ? 'cf-icon--selected' : 'cf-icon'
-                    }
-                    glyph="upload-outline"
-                  />
-                  <div
-                    className={
-                      active === 'broker' ? 'title--selected' : 'title'
-                    }
-                  >
-                    Connect to Broker
-                  </div>
-                </button>
-              </div>
-              <div
-                className={
-                  active === 'subscription'
-                    ? 'create-subscription-page__progress__bar__wrap--selected'
-                    : 'create-subscription-page__progress__bar__wrap'
-                }
-              >
-                <button
-                  className="create-subscription-page__progress__bar__wrap__btn"
-                  onClick={() => setFormActive('subscription')}
-                >
-                  <Icon
-                    className={
-                      active === 'subscription'
-                        ? 'cf-icon--selected'
-                        : 'cf-icon'
-                    }
-                    glyph="subscribe"
-                  />
-                  <div
-                    className={
-                      active === 'subscription' ? 'title--selected' : 'title'
-                    }
-                  >
-                    Subscribe to Topic
-                  </div>
-                </button>
-              </div>
-              <div
-                className={
-                  active === 'parsing'
-                    ? 'create-subscription-page__progress__bar__wrap--selected'
-                    : 'create-subscription-page__progress__bar__wrap'
-                }
-              >
-                <button
-                  className="create-subscription-page__progress__bar__wrap__btn"
-                  onClick={() => setFormActive('parsing')}
-                >
-                  <Icon
-                    className={
-                      active === 'parsing' ? 'cf-icon--selected' : 'cf-icon'
-                    }
-                    glyph="braces"
-                  />
-                  <div
-                    className={
-                      active === 'parsing' ? 'title--selected' : 'title'
-                    }
-                  >
-                    Define Data Parsing Rules
-                  </div>
-                </button>
-              </div>
+              <ProgressMenuItem
+                active={active}
+                type="broker"
+                text="Connect To Broker"
+                icon="upload-outline"
+                setFormActive={setFormActive}
+              />
+              <ProgressMenuItem
+                active={active}
+                type="subscription"
+                text="Subscribe to Topic"
+                icon="subscribe"
+                setFormActive={setFormActive}
+              />
+              <ProgressMenuItem
+                active={active}
+                type="parsing"
+                text=" Define Data Parsing Rules"
+                icon="braces"
+                setFormActive={setFormActive}
+              />
             </div>
           </div>
           {active === 'broker' && (

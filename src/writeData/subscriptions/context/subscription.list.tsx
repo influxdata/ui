@@ -1,6 +1,10 @@
+// Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
+
+// Utils
 import {getAllAPI} from 'src/writeData/subscriptions/context/api'
 
+// Types
 import {Subscription} from 'src/types/subscriptions'
 
 export interface SubscriptionListContextType {
@@ -25,7 +29,6 @@ export const SubscriptionListProvider: FC = ({children}) => {
       setSubscriptions(data)
     }
   }, [])
-
   useEffect(() => {
     getAll()
   }, [])

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useEffect, useRef} from 'react'
+import React, {FC, useState} from 'react'
 
 // Components
 import {
@@ -13,6 +13,9 @@ import {
   ComponentColor,
   ComponentSize,
   ConfirmationButton,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 
 // Types
@@ -36,8 +39,14 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
     <div>
       <Grid.Column>
         <div className="section">
-          <div className="header-wrap">
-            <h2 className="form-header">{name}</h2>
+          <div className="section__header-wrap">
+            <Heading
+              element={HeadingElement.H3}
+              weight={FontWeight.Bold}
+              className="section__header-wrap__header"
+            >
+              {name}
+            </Heading>
             {(tagType
               ? !(formContent.jsonTagKeys.length == 1)
               : !(formContent.jsonFieldKeys.length == 1)) && (

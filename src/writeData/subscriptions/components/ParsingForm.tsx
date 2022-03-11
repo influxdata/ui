@@ -19,6 +19,9 @@ import {
   IconFont,
   SpinnerContainer,
   TechnoSpinner,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
@@ -66,24 +69,40 @@ const ParsingForm: FC<Props> = ({
           spinnerComponent={<TechnoSpinner />}
           loading={loading}
         >
-          <Form onSubmit={() => {}} testID="label-overlay-form">
+          <Form onSubmit={() => {}} testID="create-parsing-form-overlay-form">
             <Overlay.Header title="Define Data Parsing Rules">
               {showUpgradeButton && (
-                <div className="premium-container">
+                <div className="create-parsing-form__premium-container">
                   <Icon glyph={IconFont.CrownSolid_New} />
-                  <div className="premium-text">Premium</div>
+                  <Heading
+                    element={HeadingElement.H5}
+                    weight={FontWeight.Bold}
+                    className="create-broker-form__premium-container__text"
+                  >
+                    Premium
+                  </Heading>
                 </div>
               )}
             </Overlay.Header>
             <Overlay.Body>
-              <div className="form-text">
+              <Heading
+                element={HeadingElement.H5}
+                weight={FontWeight.Regular}
+                className="create-parsing-form__text"
+              >
                 Specify the format of your messages and define rules to parse it
                 into line protocol.
-              </div>
+              </Heading>
               <Grid>
                 <Grid.Row>
                   <Grid.Column widthXS={Columns.Twelve}>
-                    <h2 className="form-header">Data Format</h2>
+                    <Heading
+                      element={HeadingElement.H3}
+                      weight={FontWeight.Bold}
+                      className="create-parsing-form__header"
+                    >
+                      Data Format
+                    </Heading>
                     <SelectGroup
                       shape={ButtonShape.StretchToFit}
                       className="retention--radio"
@@ -167,10 +186,10 @@ const ParsingForm: FC<Props> = ({
                 }}
                 titleText="Back"
                 type={ButtonType.Button}
-                testID="create-label-form--cancel"
+                testID="create-parsing-form--cancel"
               />
               {showUpgradeButton ? (
-                <CloudUpgradeButton className="upgrade-button" />
+                <CloudUpgradeButton className="create-parsing-form__upgrade-button" />
               ) : (
                 <Button
                   text={'Next'}
@@ -179,7 +198,7 @@ const ParsingForm: FC<Props> = ({
                   onClick={() => {
                     setFormComplete(true)
                   }}
-                  testID="create-label-form--submit"
+                  testID="create-parsing-form--submit"
                   status={ComponentStatus.Default}
                 />
               )}

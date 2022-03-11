@@ -10,6 +10,9 @@ import {
   Dropdown,
   Icon,
   IconFont,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
@@ -79,9 +82,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
       <Grid.Column>
         <div className="json-parsing-form__section">
           <div className="json-parsing-form__section__header-wrap">
-            <h2 className="json-parsing-form__section__header-wrap__form-header">
+            <Heading
+              element={HeadingElement.H3}
+              weight={FontWeight.Bold}
+              className="json-parsing-form__section__header-wrap__header"
+            >
               Measurement
-            </h2>
+            </Heading>
           </div>
           <div className="json-parsing-form__section__container">
             <Form.ValidationElement

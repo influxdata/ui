@@ -28,30 +28,18 @@
     }
     &__text {
       margin-left: 14px;
-      font-style: normal;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 120%;
-      letter-spacing: 0.07em;
       text-transform: uppercase;
       background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
   }
-  &__form-header {
-    font-size: 16.8px;
+  &__header {
+    text-transform: uppercase;
     margin-top: 64px;
     margin-bottom: 32px;
-    font-weight: 500;
-    line-height: 120%;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #f1f1f3;
   }
-  &__form-text {
-    font-size: 16.8px;
-    line-height: 160%;
+  &__text {
     color: #f1f1f3;
   }
   &__inline-form {
@@ -67,8 +55,6 @@
     }
     &__example-text {
       font-style: italic;
-      font-size: 14px;
-      line-height: 120%;
       color: #828294;
     }
   }

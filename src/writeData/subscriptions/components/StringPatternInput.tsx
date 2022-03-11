@@ -12,6 +12,9 @@ import {
   ComponentColor,
   ComponentSize,
   ConfirmationButton,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 
 // Types
@@ -38,8 +41,14 @@ const StringPatternInput: FC<Props> = ({
     <div>
       <Grid.Column>
         <div className="section">
-          <div className="header-wrap">
-            <h2 className="form-header">{name}</h2>
+          <div className="section__header-wrap">
+            <Heading
+              element={HeadingElement.H3}
+              weight={FontWeight.Bold}
+              className="section__header-wrap__header"
+            >
+              {name}
+            </Heading>
             {(tagType
               ? !(formContent.stringTags.length == 1)
               : !(formContent.stringFields.length == 1)) && (

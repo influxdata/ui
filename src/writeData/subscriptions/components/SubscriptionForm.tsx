@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useRef} from 'react'
+import React, {FC, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -17,6 +17,9 @@ import {
   ComponentStatus,
   Icon,
   IconFont,
+  Heading,
+  HeadingElement,
+  FontWeight,
 } from '@influxdata/clockface'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 
@@ -57,20 +60,33 @@ const SubscriptionForm: FC<Props> = ({
     formContent &&
     buckets && (
       <div className="create-subscription-form">
-        <Form onSubmit={() => {}} testID="label-overlay-form">
+        <Form
+          onSubmit={() => {}}
+          testID="create-subscription-form-overlay-form"
+        >
           <Overlay.Header title="Subscribe to a Topic">
             {showUpgradeButton && (
-              <div className="premium-container">
+              <div className="create-subscription-form__premium-container">
                 <Icon glyph={IconFont.CrownSolid_New} />
-                <div className="premium-text">Premium</div>
+                <Heading
+                  element={HeadingElement.H5}
+                  weight={FontWeight.Bold}
+                  className="create-subscription-form__premium-container__text"
+                >
+                  Premium
+                </Heading>
               </div>
             )}
           </Overlay.Header>
           <Overlay.Body>
-            <div className="form-text">
+            <Heading
+              element={HeadingElement.H5}
+              weight={FontWeight.Regular}
+              className="create-subscription-form__text"
+            >
               Subscribe to a topic and write message payloads to an InfluxDB
               data bucket.
-            </div>
+            </Heading>
             <Grid>
               <Grid.Row>
                 <Grid.Column widthSM={Columns.Twelve}>
@@ -101,10 +117,20 @@ const SubscriptionForm: FC<Props> = ({
                   </Form.ValidationElement>
                 </Grid.Column>
                 <Grid.Column widthXS={Columns.Twelve}>
-                  <h2 className="form-title">Write Bucket</h2>
-                  <div className="form-text">
+                  <Heading
+                    element={HeadingElement.H3}
+                    weight={FontWeight.Bold}
+                    className="create-subscription-form__header"
+                  >
+                    Write Bucket
+                  </Heading>
+                  <Heading
+                    element={HeadingElement.H5}
+                    weight={FontWeight.Regular}
+                    className="create-subscription-form__text"
+                  >
                     Select a bucket to write your data to.
-                  </div>
+                  </Heading>
                   <WriteDataHelperBuckets clientHelper={false} />
                 </Grid.Column>
               </Grid.Row>

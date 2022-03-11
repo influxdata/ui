@@ -1,4 +1,5 @@
 // Graphics
+// TODO: swap out when svg added to clockface
 import MQTTLogo from 'src/writeData/subscriptions/graphics/mqtt.svg'
 
 // Types

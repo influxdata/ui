@@ -1,5 +1,4 @@
 import {
-  AlertIcon,
   ExecuteQueryIcon,
   FinishIcon,
   InitializeClientIcon,
@@ -37,10 +36,6 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
   {
     name: 'Execute an \n Aggregate Query',
     icon: ExecuteQueryIcon,
-  },
-  {
-    name: '(Optional) \n Set up Alerts',
-    icon: AlertIcon,
   },
   {
     name: 'Finish',

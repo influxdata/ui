@@ -29,6 +29,7 @@ export type OverlayID =
   | 'bucket-schema-show'
   | 'create-rule'
   | 'create-secret'
+  | 'share-overlay'
 
 export interface OverlayState {
   id: OverlayID | null

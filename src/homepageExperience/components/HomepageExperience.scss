@@ -10,6 +10,9 @@ $pool-fill: #00a3ff;
 
   padding-top: 71px;
   padding-right: 85px;
+
+  overflow-y: scroll;
+  padding-bottom: 185px;
 }
 
 .homepage-wizard-container--subway {
@@ -155,4 +158,40 @@ $pool-fill: #00a3ff;
   justify-content: space-between;
   align-items: center;
   text-transform: uppercase;
+}
+
+.homepage-wizard-next-steps {
+  display: flex;
+  max-width: 300px;
+  margin-top: 0 !important;
+  h4 {
+    background: linear-gradient(45deg, #fad9ff 0%, #f0fcff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    display: flex;
+    align-items: center;
+
+    margin: 0;
+    svg {
+      margin-right: 10px;
+    }
+  }
+
+  p {
+    font-size: 14px;
+    margin: 0;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 17px;
+    text-align: left;
+  }
+
+  h5 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
 }

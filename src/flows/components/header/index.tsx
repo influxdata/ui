@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useCallback, useContext, useState, useEffect} from 'react'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -17,7 +17,6 @@ import {
   IconFont,
   ComponentColor,
   ComponentStatus,
-  ErrorTooltip,
 } from '@influxdata/clockface'
 
 import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
@@ -32,15 +31,12 @@ import MenuButton from 'src/flows/components/header/MenuButton'
 
 // Utility
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-import {
-  getNotebooksShare,
-  deleteNotebooksShare,
-  postNotebooksShare,
-} from 'src/client/notebooksRoutes'
+import {getNotebooksShare, postNotebooksShare} from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {serialize} from 'src/flows/context/flow.list'
 import {updatePinnedItemByParam} from 'src/shared/contexts/pinneditems'
 import {getOrg} from 'src/organizations/selectors'
+import {showOverlay} from 'src/overlays/actions/overlays'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -57,10 +53,9 @@ const FlowHeader: FC = () => {
   const {flow, updateOther} = useContext(FlowContext)
   const {handlePublish} = useContext(VersionPublishContext)
   const {id: orgID} = useSelector(getOrg)
-  const [sharing, setSharing] = useState(false)
   const [share, setShare] = useState<Share>()
   const [linkLoading, setLinkLoading] = useState(RemoteDataState.NotStarted)
-  const [linkDeleting, setLinkDeleting] = useState(RemoteDataState.NotStarted)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     getNotebooksShare({query: {orgID: '', notebookID: flow.id}})
@@ -105,32 +100,8 @@ const FlowHeader: FC = () => {
     }
   }
 
-  const hideShare = () => {
-    setSharing(false)
-  }
-
-  const deleteShare = () => {
-    setLinkDeleting(RemoteDataState.Loading)
-    deleteNotebooksShare({id: share.id})
-      .then(() => {
-        setLinkDeleting(RemoteDataState.Done)
-        hideShare()
-        setShare(null)
-        event('Delete Share Link')
-      })
-      .catch(err => {
-        setLinkDeleting(RemoteDataState.Error)
-        console.error('failed to delete share', err)
-      })
-  }
-
   const generateLink = () => {
     event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
-
-    if (!!share) {
-      setSharing(true)
-      return
-    }
 
     setLinkLoading(RemoteDataState.Loading)
     postNotebooksShare({
@@ -142,17 +113,31 @@ const FlowHeader: FC = () => {
     })
       .then(res => {
         setLinkLoading(RemoteDataState.Done)
-        setSharing(true)
-        setShare({
+        const shareObj = {
           id: (res.data as Share).id,
           accessID: (res.data as Share).accessID,
-        })
+        }
+        setShare(shareObj)
+        openShareLinkOverlay(shareObj)
       })
       .catch(err => {
         console.error('failed to create share', err)
         setLinkLoading(RemoteDataState.Error)
       })
     event('Notebook Share Link Created')
+  }
+
+  const openShareLinkOverlay = (shareObj: Share) => {
+    dispatch(
+      showOverlay(
+        'share-overlay',
+        {
+          share: shareObj,
+          onSetShare: setShare,
+        },
+        () => {}
+      )
+    )
   }
 
   const printJSON = () => {
@@ -175,83 +160,48 @@ const FlowHeader: FC = () => {
           maxLength={50}
         />
       </Page.Header>
-      {!sharing && (
-        <Page.ControlBar fullWidth>
-          <Page.ControlBarLeft>
-            <Submit />
-            <AutoRefreshButton />
-            <SaveState />
-          </Page.ControlBarLeft>
-          <Page.ControlBarRight>
-            <PresentationMode />
-            <TimeZoneDropdown />
-            <TimeRangeDropdown />
-            {flow?.id && (
-              <>
-                <SquareButton
-                  icon={IconFont.Share}
-                  onClick={generateLink}
-                  color={
-                    !!share ? ComponentColor.Primary : ComponentColor.Secondary
-                  }
-                  status={
-                    linkLoading === RemoteDataState.Loading
-                      ? ComponentStatus.Loading
-                      : ComponentStatus.Default
-                  }
-                  titleText={`Share ${PROJECT_NAME}`}
-                />
-                <MenuButton handleResetShare={() => setShare(null)} />
-              </>
-            )}
-            <FeatureFlag name="flow-snapshot">
+      <Page.ControlBar fullWidth>
+        <Page.ControlBarLeft>
+          <Submit />
+          <AutoRefreshButton />
+          <SaveState />
+        </Page.ControlBarLeft>
+        <Page.ControlBarRight>
+          <PresentationMode />
+          <TimeZoneDropdown />
+          <TimeRangeDropdown />
+          {flow?.id && (
+            <>
               <SquareButton
-                icon={IconFont.Export_New}
-                onClick={printJSON}
-                color={ComponentColor.Default}
-                titleText="Export Notebook"
+                icon={IconFont.Share}
+                onClick={
+                  !!share
+                    ? () => openShareLinkOverlay(share)
+                    : () => generateLink()
+                }
+                color={
+                  !!share ? ComponentColor.Primary : ComponentColor.Secondary
+                }
+                status={
+                  linkLoading === RemoteDataState.Loading
+                    ? ComponentStatus.Loading
+                    : ComponentStatus.Default
+                }
+                titleText={`Share ${PROJECT_NAME}`}
               />
-            </FeatureFlag>
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-      )}
-      {!!sharing && !!share && (
-        <Page.ControlBar fullWidth>
-          <Page.ControlBarRight>
-            <p className="share-token--link">
-              Share with{' '}
-              <a
-                href={`${window.location.origin}/share/${share.accessID}`}
-                target="_blank"
-              >
-                {`${window.location.origin}/share/${share.accessID}`}
-              </a>
-            </p>
-            <ErrorTooltip
-              className="warning-icon"
-              tooltipContents="By sharing this link, your org may incur charges when a user visits the page and the query is run."
-              tooltipStyle={{width: '250px'}}
-            />
+              <MenuButton handleResetShare={() => setShare(null)} />
+            </>
+          )}
+          <FeatureFlag name="flow-snapshot">
             <SquareButton
-              icon={IconFont.Trash_New}
-              onClick={deleteShare}
-              color={ComponentColor.Danger}
-              titleText="Delete"
-              status={
-                linkDeleting === RemoteDataState.Loading
-                  ? ComponentStatus.Loading
-                  : ComponentStatus.Default
-              }
-            />
-            <SquareButton
-              icon={IconFont.Remove_New}
-              onClick={hideShare}
+              icon={IconFont.Export_New}
+              onClick={printJSON}
               color={ComponentColor.Default}
-              titleText="Cancel"
+              titleText="Export Notebook"
             />
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-      )}
+          </FeatureFlag>
+        </Page.ControlBarRight>
+      </Page.ControlBar>
     </>
   )
 }

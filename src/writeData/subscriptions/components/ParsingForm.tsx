@@ -17,8 +17,6 @@ import {
   ButtonShape,
   Icon,
   IconFont,
-  SpinnerContainer,
-  TechnoSpinner,
   Heading,
   HeadingElement,
   FontWeight,
@@ -35,7 +33,6 @@ import {getOrg} from 'src/organizations/selectors'
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {Subscription} from 'src/types/subscriptions'
-import {RemoteDataState} from 'src/types'
 
 // Styles
 import 'src/writeData/subscriptions/components/ParsingForm.scss'
@@ -49,7 +46,6 @@ interface Props {
   updateForm: (any) => void
   setFormComplete: (any) => void
   showUpgradeButton: boolean
-  loading: RemoteDataState
 }
 
 const ParsingForm: FC<Props> = ({
@@ -58,7 +54,6 @@ const ParsingForm: FC<Props> = ({
   updateForm,
   setFormComplete,
   showUpgradeButton,
-  loading,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -69,151 +64,146 @@ const ParsingForm: FC<Props> = ({
   return (
     formContent && (
       <div className="create-parsing-form">
-        <SpinnerContainer
-          spinnerComponent={<TechnoSpinner />}
-          loading={loading}
-        >
-          <Form onSubmit={() => {}} testID="create-parsing-form-overlay-form">
-            <Overlay.Header title="Define Data Parsing Rules">
-              {showUpgradeButton && (
-                <FlexBox
-                  alignItems={AlignItems.Center}
-                  direction={FlexDirection.Row}
-                  margin={ComponentSize.Medium}
-                  className="create-parsing-form__premium-container"
-                >
-                  <Icon glyph={IconFont.CrownSolid_New} />
-                  <Heading
-                    element={HeadingElement.H5}
-                    weight={FontWeight.Bold}
-                    className="create-broker-form__premium-container__text"
-                  >
-                    Premium
-                  </Heading>
-                </FlexBox>
-              )}
-            </Overlay.Header>
-            <Overlay.Body>
-              <Heading
-                element={HeadingElement.H5}
-                weight={FontWeight.Regular}
-                className="create-parsing-form__text"
+        <Form onSubmit={() => {}} testID="create-parsing-form-overlay-form">
+          <Overlay.Header title="Define Data Parsing Rules">
+            {showUpgradeButton && (
+              <FlexBox
+                alignItems={AlignItems.Center}
+                direction={FlexDirection.Row}
+                margin={ComponentSize.Medium}
+                className="create-parsing-form__premium-container"
               >
-                Specify the format of your messages and define rules to parse it
-                into line protocol.
-              </Heading>
-              <Grid>
-                <Grid.Row>
-                  <Grid.Column widthXS={Columns.Twelve}>
-                    <Heading
-                      element={HeadingElement.H3}
-                      weight={FontWeight.Bold}
-                      className="create-parsing-form__header"
+                <Icon glyph={IconFont.CrownSolid_New} />
+                <Heading
+                  element={HeadingElement.H5}
+                  weight={FontWeight.Bold}
+                  className="create-broker-form__premium-container__text"
+                >
+                  Premium
+                </Heading>
+              </FlexBox>
+            )}
+          </Overlay.Header>
+          <Overlay.Body>
+            <Heading
+              element={HeadingElement.H5}
+              weight={FontWeight.Regular}
+              className="create-parsing-form__text"
+            >
+              Specify the format of your messages and define rules to parse it
+              into line protocol.
+            </Heading>
+            <Grid>
+              <Grid.Row>
+                <Grid.Column widthXS={Columns.Twelve}>
+                  <Heading
+                    element={HeadingElement.H3}
+                    weight={FontWeight.Bold}
+                    className="create-parsing-form__header"
+                  >
+                    Data Format
+                  </Heading>
+                  <SelectGroup
+                    shape={ButtonShape.StretchToFit}
+                    className="retention--radio"
+                  >
+                    <SelectGroup.Option
+                      name="line-protocol"
+                      id="never"
+                      testID="line-protocol--button"
+                      active={parsing === 'lineprotocol'}
+                      onClick={() => {
+                        setParsing('lineprotocol')
+                      }}
+                      value={null}
+                      titleText="None"
+                      disabled={false}
                     >
-                      Data Format
-                    </Heading>
-                    <SelectGroup
-                      shape={ButtonShape.StretchToFit}
-                      className="retention--radio"
+                      Line Protocol
+                    </SelectGroup.Option>
+                    <SelectGroup.Option
+                      name="user"
+                      id="user"
+                      testID="user--button"
+                      active={parsing === 'json'}
+                      onClick={() => {
+                        setParsing('json')
+                      }}
+                      value={null}
+                      titleText="None"
+                      disabled={false}
                     >
-                      <SelectGroup.Option
-                        name="line-protocol"
-                        id="never"
-                        testID="line-protocol--button"
-                        active={parsing === 'lineprotocol'}
-                        onClick={() => {
-                          setParsing('lineprotocol')
-                        }}
-                        value={null}
-                        titleText="None"
-                        disabled={false}
-                      >
-                        Line Protocol
-                      </SelectGroup.Option>
-                      <SelectGroup.Option
-                        name="user"
-                        id="user"
-                        testID="user--button"
-                        active={parsing === 'json'}
-                        onClick={() => {
-                          setParsing('json')
-                        }}
-                        value={null}
-                        titleText="None"
-                        disabled={false}
-                      >
-                        JSON
-                      </SelectGroup.Option>
-                      <SelectGroup.Option
-                        name="user"
-                        id="user"
-                        testID="user--button"
-                        active={parsing === 'string'}
-                        onClick={() => {
-                          setParsing('string')
-                        }}
-                        value={null}
-                        titleText="None"
-                        disabled={false}
-                      >
-                        STRING
-                      </SelectGroup.Option>
-                    </SelectGroup>
-                  </Grid.Column>
-                  {parsing === 'lineprotocol' && <LineProtocolForm />}
-                  {parsing === 'json' && (
-                    <JsonParsingForm
-                      formContent={formContent}
-                      updateForm={updateForm}
-                    />
-                  )}
-                  {parsing === 'string' && (
-                    <StringParsingForm
-                      formContent={formContent}
-                      updateForm={updateForm}
-                    />
-                  )}
-                </Grid.Row>
-              </Grid>
-            </Overlay.Body>
-            <Overlay.Footer>
+                      JSON
+                    </SelectGroup.Option>
+                    <SelectGroup.Option
+                      name="user"
+                      id="user"
+                      testID="user--button"
+                      active={parsing === 'string'}
+                      onClick={() => {
+                        setParsing('string')
+                      }}
+                      value={null}
+                      titleText="None"
+                      disabled={false}
+                    >
+                      STRING
+                    </SelectGroup.Option>
+                  </SelectGroup>
+                </Grid.Column>
+                {parsing === 'lineprotocol' && <LineProtocolForm />}
+                {parsing === 'json' && (
+                  <JsonParsingForm
+                    formContent={formContent}
+                    updateForm={updateForm}
+                  />
+                )}
+                {parsing === 'string' && (
+                  <StringParsingForm
+                    formContent={formContent}
+                    updateForm={updateForm}
+                  />
+                )}
+              </Grid.Row>
+            </Grid>
+          </Overlay.Body>
+          <Overlay.Footer>
+            <Button
+              text="Cancel"
+              color={ComponentColor.Tertiary}
+              onClick={() => {
+                history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+              }}
+              titleText="Back to broker form"
+              type={ButtonType.Button}
+              testID="create-label-form--cancel"
+            />
+            <Button
+              text="Back"
+              color={ComponentColor.Secondary}
+              onClick={() => {
+                setFormActive('subscription')
+              }}
+              titleText="Back"
+              type={ButtonType.Button}
+              testID="create-parsing-form--cancel"
+            />
+            {showUpgradeButton ? (
+              <CloudUpgradeButton className="create-parsing-form__upgrade-button" />
+            ) : (
               <Button
-                text="Cancel"
-                color={ComponentColor.Tertiary}
-                onClick={() => {
-                  history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-                }}
-                titleText="Back to broker form"
+                text={'Next'}
+                color={ComponentColor.Success}
                 type={ButtonType.Button}
-                testID="create-label-form--cancel"
-              />
-              <Button
-                text="Back"
-                color={ComponentColor.Secondary}
                 onClick={() => {
-                  setFormActive('subscription')
+                  setFormComplete(true)
                 }}
-                titleText="Back"
-                type={ButtonType.Button}
-                testID="create-parsing-form--cancel"
+                testID="create-parsing-form--submit"
+                status={ComponentStatus.Default}
               />
-              {showUpgradeButton ? (
-                <CloudUpgradeButton className="create-parsing-form__upgrade-button" />
-              ) : (
-                <Button
-                  text={'Next'}
-                  color={ComponentColor.Success}
-                  type={ButtonType.Button}
-                  onClick={() => {
-                    setFormComplete(true)
-                  }}
-                  testID="create-parsing-form--submit"
-                  status={ComponentStatus.Default}
-                />
-              )}
-            </Overlay.Footer>
-          </Form>
-        </SpinnerContainer>
+            )}
+          </Overlay.Footer>
+        </Form>
       </div>
     )
   )

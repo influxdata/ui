@@ -10,15 +10,6 @@
   line-height: 1.2;
 }
 
-.current-version--text {
-  font-style: italic;
-  font-weight: normal;
-  line-height: 1.6;
-  color: $c-pool;
-  flex: none;
-  margin: 0px 0px;
-}
-
 .published-date--text {
   font-weight: normal;
   font-size: 15.75px;
@@ -92,4 +83,8 @@
   font-size: 20px;
   line-height: 1.2;
   margin-right: $cf-marg-c;
+}
+
+.version-sidebar--back-btn {
+  margin: 0px 10px 12px;
 }

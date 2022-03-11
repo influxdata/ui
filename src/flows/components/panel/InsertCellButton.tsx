@@ -31,7 +31,7 @@ interface Props {
 const InsertCellButton: FC<Props> = ({id}) => {
   const {flow} = useContext(FlowContext)
   const dividerRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const buttonRef = useRef<HTMLButtonElement | HTMLDivElement>(null)
   const popoverVisible = useRef<boolean>(false)
   const index = flow.data.allIDs.indexOf(id)
 

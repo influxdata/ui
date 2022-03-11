@@ -100,30 +100,32 @@ const FlowHeader: FC = () => {
     }
   }
 
-  const generateLink = () => {
+  const generateLink = async () => {
     event('Show Share Menu', {share: !!share ? 'sharing' : 'not sharing'})
 
     setLinkLoading(RemoteDataState.Loading)
-    postNotebooksShare({
-      data: {
-        notebookID: flow.id,
-        orgID,
-        region: window.location.hostname,
-      },
-    })
-      .then(res => {
-        setLinkLoading(RemoteDataState.Done)
-        const shareObj = {
-          id: (res.data as Share).id,
-          accessID: (res.data as Share).accessID,
-        }
-        setShare(shareObj)
-        openShareLinkOverlay(shareObj)
+    try {
+      const response = await postNotebooksShare({
+        data: {
+          notebookID: flow.id,
+          orgID,
+          region: window.location.hostname,
+        },
       })
-      .catch(err => {
-        console.error('failed to create share', err)
-        setLinkLoading(RemoteDataState.Error)
-      })
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
+      }
+      setLinkLoading(RemoteDataState.Done)
+      const shareObj = {
+        id: response.data.id,
+        accessID: response.data.accessID,
+      }
+      setShare(shareObj)
+      openShareLinkOverlay(shareObj)
+    } catch (error) {
+      console.error('failed to create share', error)
+      setLinkLoading(RemoteDataState.Error)
+    }
     event('Notebook Share Link Created')
   }
 

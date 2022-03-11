@@ -83,6 +83,7 @@ export const getQuartzMe = () => async dispatch => {
       throw new Error(resp.data.message)
     }
     dispatch(setQuartzMe(resp.data, RemoteDataState.Done))
+    
   } catch (error) {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))

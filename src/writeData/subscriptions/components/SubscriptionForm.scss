@@ -1,26 +1,30 @@
+@import '@influxdata/clockface/dist/variables.scss';
 .create-subscription-form {
   float: right;
   width: 75%;
   .write-data--subscriptions-title {
-    padding: 8px;
+    padding: $cf-space-2xs;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #333346;
+    background: $cf-grey-25;
     height: 56px;
   }
   .cf-overlay--header {
     justify-content: unset;
   }
+  .cf-flex-box__margin-md.cf-flex-box__row.cf-flex-box__justify-flex-start > * {
+    margin-right: 0;
+  }
   &__premium-container {
-    margin-left: 18px;
+    margin-left: $cf-space-s;
     .cf-icon {
       background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
     &__text {
-      margin-left: 14px;
+      margin-left: $cf-space-s;
       text-transform: uppercase;
       background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
       -webkit-background-clip: text;
@@ -28,12 +32,12 @@
     }
   }
   &__text {
-    color: #f1f1f3;
-    margin-bottom: 32px;
+    color: $cf-grey-95;
+    margin-bottom: $cf-space-l;
   }
   &__header {
     text-transform: uppercase;
-    margin-top: 64px;
-    margin-bottom: 32px;
+    margin-top: $cf-space-2xl;
+    margin-bottom: $cf-space-l;
   }
 }

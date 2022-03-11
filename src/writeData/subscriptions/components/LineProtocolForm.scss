@@ -1,7 +1,8 @@
+@import '@influxdata/clockface/dist/variables.scss';
 .line-protocol-form {
   &__text {
-    margin-top: 32px;
+    margin-top: $cf-space-l;
     text-align: center;
-    color: #f1f1f3;
+    color: $cf-grey-95;
   }
 }

@@ -22,7 +22,6 @@ import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Styles
@@ -92,27 +91,13 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
               <Page.Title title={name} />
             </Page.Header>
             <Page.Contents fullWidth={false} scrollable={true}>
-              {isFlagEnabled('telegrafUiRefresh') ? (
-                <AddPluginToConfigurationCTA
-                  contentID={contentID}
-                  history={history}
-                  orgID={orgID}
-                  thumbnail={thumbnail}
-                  pageContent={pageContent}
-                />
-              ) : (
-                <div className="write-data--details">
-                  <div className="write-data--details-thumbnail">
-                    {thumbnail}
-                  </div>
-                  <div
-                    className="write-data--details-content markdown-format"
-                    data-testid="load-data-details-content"
-                  >
-                    {pageContent}
-                  </div>
-                </div>
-              )}
+              <AddPluginToConfigurationCTA
+                contentID={contentID}
+                history={history}
+                orgID={orgID}
+                thumbnail={thumbnail}
+                pageContent={pageContent}
+              />
             </Page.Contents>
           </Page>
         </WriteDataDetailsContextProvider>

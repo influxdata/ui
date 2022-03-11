@@ -17,18 +17,22 @@ export enum ThresholdType {
 }
 
 export type Threshold = {
+  // value, min, and max are strings
+  // can be string numbers (e.g. '123.2') or lexical strings (e.g. 'a' < 'b')
   value: number
   type: ThresholdType
   field: string
   max?: number
   min?: number
   deadmanCheckValue?: string
-  deadmanStopValue: string
+  deadmanStopValue: string // e.g. '5 minutes'
 }
 
 export interface ErrorThreshold extends Threshold {
   fieldType: string
 }
+
+const existenceCheck = unknown => unknown == 0 || !!unknown
 
 export function validateThreshold(t: Threshold): boolean {
   switch (t.type) {
@@ -36,26 +40,30 @@ export function validateThreshold(t: Threshold): boolean {
     case ThresholdType.GreaterEqual:
     case ThresholdType.Less:
     case ThresholdType.LessEqual:
+    case ThresholdType.Equal:
     case ThresholdType.NotEqual:
-      if (!t.field || !(t.value == 0 || !!t.value)) {
+      if (!t.field || !existenceCheck(t.value)) {
         throw new Error(
-          `A ${t.type} comparison, requires a selected field and selected value.`
+          `A ${t.type} comparison, requires a selected field and value.`
         )
       }
       break
     case ThresholdType.Between:
     case ThresholdType.NotBetween:
-      if (!t.field || !(t.max == 0 || !!t.max) || !(t.min == 0 || !!t.min)) {
+      if (!t.field || !existenceCheck(t.min) || !existenceCheck(t.max)) {
         throw new Error(
-          `A ${t.type} comparison, requires a selected field and selected min & max.`
+          `A ${t.type} comparison, requires a selected field and min & max.`
         )
       }
       break
     case ThresholdType.Deadman:
-      // FIXME: get input from Ari
-      return true
+      if (!t.field || !existenceCheck(t.deadmanStopValue)) {
+        throw new Error(
+          `A deadman check requires a designated timespan (e.g. dead for '5 minutes').`
+        )
+      }
+      break
   }
-
   return true
 }
 

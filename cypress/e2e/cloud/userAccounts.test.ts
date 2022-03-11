@@ -106,7 +106,11 @@ describe('Account Page tests', () => {
   })
 
   describe('User with one account', () => {
-    beforeEach(() => setup(cy, 1))
+    let assignStub
+    beforeEach(() => {
+      assignStub = cy.stub(window.location, 'assign')
+      setup(cy, 1)
+    })
 
     it('can get to the page and get the accounts, and the switch button is NOT showing', () => {
       cy.getByTestID('account-settings--header').should('be.visible')
@@ -119,6 +123,7 @@ describe('Account Page tests', () => {
     it('can delete the account from the organization', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/about`)
+
         cy.getByTestID('delete-org--button')
           .should('be.visible')
           .click()
@@ -139,8 +144,8 @@ describe('Account Page tests', () => {
               .click()
           })
 
-        cy.location('href').should(
-          'eq',
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(assignStub).to.be.calledWith(
           'https://www.influxdata.com/free_cancel/'
         )
       })

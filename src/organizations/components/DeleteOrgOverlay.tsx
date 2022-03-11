@@ -105,9 +105,9 @@ const DeleteOrgOverlay: FC = () => {
         throw new Error(resp.data.message)
       }
       if (isFlagEnabled('trackCancellations')) {
-        window.location.href = getRedirectLocation()
+        window.location.assign(getRedirectLocation())
       } else {
-        window.location.href = `https://www.influxdata.com/free_cancel/`
+        window.location.assign('https://www.influxdata.com/free_cancel/')
       }
     } catch {
       dispatch(notify(accountSelfDeletionFailed()))

@@ -3,6 +3,8 @@ import React, {PureComponent} from 'react'
 interface Args {
   headline: string
   name: string
+  required: boolean
+  description?: string
 }
 
 interface Props {
@@ -23,6 +25,7 @@ class TooltipArguments extends PureComponent<Props> {
     if (argsList.length > 0) {
       return argsList.map(argument => {
         const description = argument.headline.slice(argument.name.length + 1)
+
         return (
           <div className="flux-function-docs--arguments" key={argument.name}>
             <span>{argument.name}:</span>

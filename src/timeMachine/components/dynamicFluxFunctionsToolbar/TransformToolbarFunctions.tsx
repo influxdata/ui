@@ -16,7 +16,7 @@ const TransformToolbarFunctions: FC<Props> = props => {
   const {searchTerm, funcs, children} = props
 
   const sortedFunctions = funcs.sort((a, b) => {
-    if (a.package.toLowerCase() === b.package.toLowerCase) {
+    if (a.package.toLowerCase() === b.package.toLowerCase()) {
       return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
     } else {
       return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1

@@ -3,6 +3,41 @@
 
 $cf-radius-lg: $cf-radius + 4px;
 
+.small-flow-divider {
+  position: relative;
+  margin-bottom: 4px;
+  text-align: right;
+
+  .insert-wrap {
+    padding: 8px 0;
+    display: inline-block;
+    cursor: pointer;
+
+    &:active,
+    &:hover {
+      .cf-button.flow-divider--button {
+        background: linear-gradient(45deg, #5c10a0 0%, #8e1fc3 100%);
+        color: #fff;
+      }
+      span {
+        color: #fff;
+      }
+    }
+  }
+
+  .cf-button.flow-divider--button {
+    position: static;
+    transform: none;
+    margin: -4px 8px 0;
+    background: inherit;
+  }
+
+  span {
+    font-size: 12px;
+    color: #68687b;
+  }
+}
+
 .flow-divider {
   position: relative;
   width: 100%;

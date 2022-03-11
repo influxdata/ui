@@ -82,8 +82,8 @@ export const getQuartzMe = () => async dispatch => {
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-    dispatch(setQuartzMe(resp.data, RemoteDataState.Done))
     
+    dispatch(setQuartzMe(resp.data, RemoteDataState.Done))
   } catch (error) {
     console.error(error)
     dispatch(setQuartzMeStatus(RemoteDataState.Error))

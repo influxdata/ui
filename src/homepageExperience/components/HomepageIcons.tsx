@@ -184,3 +184,59 @@ export const ListeningDataHeartbeatIcon = (
     />
   </svg>
 )
+
+export const InfluxDBUniversityIcon = (
+  <svg
+    width="18"
+    height="20"
+    viewBox="0 0 18 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M18 16H3C2.73478 16 2.48043 16.1054 2.29289 16.2929C2.10536 16.4804 2 16.7348 2 17C2 17.2652 2.10536 17.5196 2.29289 17.7071C2.48043 17.8946 2.73478 18 3 18H18V20H3C2.20435 20 1.44129 19.6839 0.87868 19.1213C0.316071 18.5587 0 17.7956 0 17V2C0 1.46957 0.210714 0.960859 0.585786 0.585786C0.960859 0.210714 1.46957 0 2 0H18V16ZM2 14.05C2.162 14.017 2.329 14 2.5 14H16V2H2V14.05ZM13 7H5V5H13V7Z"
+      fill="url(#paint0_linear_430_2155)"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_430_2155"
+        x1="0"
+        y1="20"
+        x2="19.8895"
+        y2="2.09945"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#FAD9FF" />
+        <stop offset="1" stopColor="#F0FCFF" />
+      </linearGradient>
+    </defs>
+  </svg>
+)
+
+export const VSCodePluginIcon = (
+  <svg
+    width="21"
+    height="18"
+    viewBox="0 0 21 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M1.33334 0H19.3333C19.5986 0 19.8529 0.105357 20.0405 0.292893C20.228 0.48043 20.3333 0.734784 20.3333 1V17C20.3333 17.2652 20.228 17.5196 20.0405 17.7071C19.8529 17.8946 19.5986 18 19.3333 18H1.33334C1.06813 18 0.813773 17.8946 0.626237 17.7071C0.4387 17.5196 0.333344 17.2652 0.333344 17V1C0.333344 0.734784 0.4387 0.48043 0.626237 0.292893C0.813773 0.105357 1.06813 0 1.33334 0ZM2.33334 2V16H18.3333V2H2.33334ZM18.3333 9L14.7973 12.536L13.3833 11.121L15.5053 9L13.3833 6.879L14.7973 5.464L18.3333 9ZM5.16134 9L7.28334 11.121L5.86934 12.536L2.33334 9L5.86934 5.464L7.28334 6.88L5.16134 9ZM9.57734 14H7.44934L11.0893 4H13.2173L9.57734 14Z"
+      fill="url(#paint0_linear_430_2163)"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_430_2163"
+        x1="0.333344"
+        y1="18"
+        x2="18.2339"
+        y2="-1.8895"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#FAD9FF" />
+        <stop offset="1" stopColor="#F0FCFF" />
+      </linearGradient>
+    </defs>
+  </svg>
+)

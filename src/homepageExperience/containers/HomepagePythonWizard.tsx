@@ -1,7 +1,12 @@
 import React, {PureComponent} from 'react'
 import classnames from 'classnames'
 
-import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
+import {
+  Button,
+  ComponentColor,
+  ComponentSize,
+  ComponentStatus,
+} from '@influxdata/clockface'
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
@@ -10,8 +15,10 @@ import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/ExecuteQuery'
+import {Finish} from 'src/homepageExperience/components/steps/Finish'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
+import {ExecuteAggregateQuery} from '../components/steps/ExecuteAggregateQuery'
 
 interface State {
   currentStep: number
@@ -55,6 +62,12 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
       case 6: {
         return <ExecuteQuery />
       }
+      case 7: {
+        return <ExecuteAggregateQuery />
+      }
+      case 8: {
+        return <Finish />
+      }
       default: {
         return <Overview />
       }
@@ -62,6 +75,8 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
   }
 
   render() {
+    const {currentStep} = this.state
+
     return (
       <div className="homepage-wizard-container">
         <aside className="homepage-wizard-container--subway">
@@ -84,12 +99,22 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
               text="Previous"
               size={ComponentSize.Large}
               color={ComponentColor.Tertiary}
+              status={
+                currentStep > 1
+                  ? ComponentStatus.Default
+                  : ComponentStatus.Disabled
+              }
             />
             <Button
               onClick={this.handleNextClick}
               text="Next"
               size={ComponentSize.Large}
               color={ComponentColor.Primary}
+              status={
+                currentStep < 8
+                  ? ComponentStatus.Default
+                  : ComponentStatus.Disabled
+              }
             />
           </div>
         </div>

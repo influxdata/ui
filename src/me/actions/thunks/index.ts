@@ -30,10 +30,7 @@ export const getMe = () => async (
   try {
     let user
 
-    if (
-      isFlagEnabled('multiAccount') &&
-      isFlagEnabled('avatarWidgetMultiAccountInfo')
-    ) {
+    if (isFlagEnabled('avatarWidgetMultiAccountInfo')) {
       const resp = await getAccounts({})
 
       if (resp.status !== 200) {

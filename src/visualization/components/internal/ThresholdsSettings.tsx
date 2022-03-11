@@ -137,7 +137,7 @@ const ThresholdsSettings: FunctionComponent<Props> = ({
     if (state.isDirty && state.isValid) {
       onSetThresholds(state.thresholds)
     }
-  }, [state, onSetThresholds])
+  }, [state])
 
   return (
     <FlexBox

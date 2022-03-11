@@ -18,7 +18,7 @@ import {
 } from '@influxdata/clockface'
 
 import {getMe} from 'src/me/selectors'
-import {UsersContext} from 'src/users/context/users'
+import {UsersContext, UsersProvider} from 'src/users/context/users'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -210,9 +210,11 @@ const AccountPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <AccountHeader testID="account-page--header" />
-      <UserAccountProvider>
-        <AccountAboutPage />
-      </UserAccountProvider>
+      <UsersProvider>
+        <UserAccountProvider>
+          <AccountAboutPage />
+        </UserAccountProvider>
+      </UsersProvider>
     </Page>
   )
 }

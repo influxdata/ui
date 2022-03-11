@@ -22,6 +22,7 @@ import {
   FlowPage,
   FlowsIndex,
   HomepageContainer,
+  HomepagePythonWizard,
   LabelsIndex,
   MembersIndex,
   MePage,
@@ -299,6 +300,14 @@ const SetOrg: FC = () => {
             <Route exact path="/orgs/:orgID" component={HomepageContainer} />
           ) : (
             <Route exact path="/orgs/:orgID" component={MePage} />
+          )}
+
+          {isFlagEnabled('firstMile') && (
+            <Route
+              exact
+              path="/orgs/:orgID/new-user-wizard/python"
+              component={HomepagePythonWizard}
+            />
           )}
 
           <Route component={NotFound} />

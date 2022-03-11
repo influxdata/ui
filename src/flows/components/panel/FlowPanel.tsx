@@ -22,7 +22,7 @@ import {MenuButton} from 'src/flows/components/Sidebar'
 
 // Constants
 import {PIPE_DEFINITIONS} from 'src/flows'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
+import {FeatureFlag, isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {PipeContextProps} from 'src/types/flows'
@@ -59,6 +59,7 @@ const FlowPanel: FC<Props> = ({
   const panelClassName = classnames('flow-panel', {
     [`flow-panel__${isVisible ? 'visible' : 'hidden'}`]: true,
     'flow-panel__focus': focused === id,
+    'small-insert': isFlagEnabled('smallInsert'),
   })
 
   const [size, updateSize] = useState<number>(

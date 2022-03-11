@@ -38,6 +38,7 @@ import DisplayTokenOverlay from 'src/authorizations/components/DisplayTokenOverl
 import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import CreateSecretOverlay from 'src/secrets/components/CreateSecret/CreateSecretOverlay'
 import VariableImportOverlay from 'src/variables/components/VariableImportOverlay'
+import ShareOverlay from 'src/flows/components/ShareOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -142,6 +143,9 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'create-secret':
         activeOverlay.current = <CreateSecretOverlay />
+        break
+      case 'share-overlay':
+        activeOverlay.current = <ShareOverlay />
         break
       default:
         activeOverlay.current = null

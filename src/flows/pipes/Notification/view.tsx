@@ -278,9 +278,9 @@ const Notification: FC<PipeProp> = ({Context}) => {
 
       setStatus(RemoteDataState.Done)
       dispatch(notify(testNotificationSuccess(data.endpoint)))
-    } catch {
+    } catch (e) {
       setStatus(RemoteDataState.Error)
-      dispatch(notify(testNotificationFailure(data.endpoint)))
+      dispatch(notify(testNotificationFailure(e.message)))
     }
   }
 

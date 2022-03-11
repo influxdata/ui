@@ -1,53 +1,54 @@
-import React, {PureComponent} from 'react'
+import React, {FC} from 'react'
+import {useSelector} from 'react-redux'
+import {Link} from 'react-router-dom'
 
-import {Button} from '@influxdata/clockface'
+import {Columns, Grid, InfluxColors, Page, Panel} from '@influxdata/clockface'
 
-import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
-import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {Navigation} from 'src/homepageExperience/components/Navigation'
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {getOrg} from 'src/organizations/selectors'
 
-interface State {
-  currentStep: number
-}
+export const HomepageContainer: FC = () => {
+  const org = useSelector(getOrg)
+  const pythonWizardLink = `/orgs/${org.id}/new-user-wizard/python`
 
-export default class HomepageContainer extends PureComponent<null, State> {
-  state = {
-    currentStep: 1,
-  }
-
-  handleNextClick = () => {
-    this.setState({currentStep: this.state.currentStep + 1})
-  }
-
-  renderStep = () => {
-    switch (this.state.currentStep) {
-      case 1: {
-        return <Overview />
-      }
-      case 2: {
-        return <InstallDependencies />
-      }
-      default: {
-        return <Overview />
-      }
-    }
-  }
-
-  render() {
-    return (
-      <div className="homepage-container">
-        <aside className="homepage-container--subway">
-          <div style={{width: '100%'}}>
-            <Navigation currentStep={this.state.currentStep} />
-          </div>
-        </aside>
-        <main className="homepage-container--main">
-          <div className="homepage-container--main-wrapper">
-            {this.renderStep()}
-          </div>
-          <Button onClick={this.handleNextClick} text="Next" />
-        </main>
-      </div>
-    )
-  }
+  return (
+    <>
+      <Page titleTag={pageTitleSuffixer(['Get Started'])}>
+        <Page.Header fullWidth={true} testID="alerts-page--header">
+          <Page.Title title="Get Started" />
+        </Page.Header>
+        <Page.Contents>
+          <p>
+            Write and query data using the programming language of your choice
+          </p>
+          <Grid>
+            <Grid.Row>
+              <Grid.Column widthSM={Columns.Two}>
+                <Panel backgroundColor={InfluxColors.Pepper}>
+                  <Panel.Body>
+                    <Link to={pythonWizardLink}>Python</Link>
+                  </Panel.Body>
+                </Panel>
+              </Grid.Column>
+              <Grid.Column widthSM={Columns.Two}>
+                <Panel backgroundColor={InfluxColors.Pepper}>
+                  <Panel.Body>JavaScript/Node.js</Panel.Body>
+                </Panel>
+              </Grid.Column>
+              <Grid.Column widthSM={Columns.Two}>
+                <Panel backgroundColor={InfluxColors.Pepper}>
+                  <Panel.Body>Go</Panel.Body>
+                </Panel>
+              </Grid.Column>
+              <Grid.Column widthSM={Columns.Two}>
+                <Panel backgroundColor={InfluxColors.Pepper}>
+                  <Panel.Body>More</Panel.Body>
+                </Panel>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Page.Contents>
+      </Page>
+    </>
+  )
 }

@@ -1,4 +1,4 @@
-import React, {FC, useContext, useCallback, useState} from 'react'
+import React, {FC, useContext, useCallback} from 'react'
 import {useDispatch} from 'react-redux'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 
@@ -16,23 +16,17 @@ import {
   deadmanType,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Visualization/threshold'
-import {RemoteDataState} from 'src/types'
+import {ImportDeclaration} from 'src/types/ast'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 import {notify} from 'src/shared/actions/notifications'
-import {
-  exportAlertToTaskSuccess,
-  exportAlertToTaskFailure,
-} from 'src/shared/copy/notifications'
+import {exportAlertToTaskSuccess} from 'src/shared/copy/notifications'
 
 const ExportTask: FC = () => {
   const dispatch = useDispatch()
   const {id, data} = useContext(PipeContext)
-  const {query, simplify, getPanelQueries} = useContext(FlowQueryContext)
-  const [status, setStatus] = useState<RemoteDataState>(
-    RemoteDataState.NotStarted
-  )
+  const {simplify, getPanelQueries} = useContext(FlowQueryContext)
 
   const queryText = getPanelQueries(id)?.source
 
@@ -78,35 +72,49 @@ const ExportTask: FC = () => {
     }, {})
 
     const conditions = THRESHOLD_TYPES[deadmanType].condition(deadman)
+    const imports = parse(`
+import "strings"
+import "regexp"
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}`)
 
-    const newQuery = `import "strings"
-    import "regexp"
-    import "influxdata/influxdb/monitor"
-    import "influxdata/influxdb/schema"
-    import "influxdata/influxdb/secrets"
-    import "experimental"
-    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
-    
-    check = {
-        _check_id: "${id}",
-        _check_name: "Notebook Generated Deadman Check",
-        _type: "deadman",
-        tags: {},
-    }
-    
-    notification = {
-        _notification_rule_id: "${id}",
-        _notification_rule_name: "Notebook Generated Rule",
-        _notification_endpoint_id: "${id}",
-        _notification_endpoint_name: "Notebook Generated Endpoint",
-    }
-    
-    task_data = ${format_from_js_file(ast)}
-    trigger = ${conditions}
-    messageFn = (r) => ("${data.message}")
-    
-    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
-    |> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
+    imports.imports = Object.values(
+      imports.imports.concat(ast.imports || []).reduce((acc, curr) => {
+        acc[curr.path.value] = curr
+        return acc
+      }, {})
+    ).sort((a: ImportDeclaration, b: ImportDeclaration) =>
+      b.path.value.toLowerCase().localeCompare(a.path.value.toLowerCase())
+    )
+
+    ast.imports = []
+
+    const newQuery = `
+${format_from_js_file(imports)}
+
+check = {
+    _check_id: "${id}",
+    _check_name: "Notebook Generated Deadman Check",
+    _type: "deadman",
+    tags: {},
+}
+
+notification = {
+    _notification_rule_id: "${id}",
+    _notification_rule_name: "Notebook Generated Rule",
+    _notification_endpoint_id: "${id}",
+    _notification_endpoint_name: "Notebook Generated Endpoint",
+}
+
+task_data = ${format_from_js_file(ast)}
+trigger = ${conditions}
+messageFn = (r) => ("${data.message}")
+
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
+|> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
       deadman.deadmanCheckValue
     }))`
 
@@ -190,32 +198,47 @@ const ExportTask: FC = () => {
       .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
       .join(' and ')
 
-    const newQuery = `import "strings"
-    import "regexp"
-    import "influxdata/influxdb/monitor"
-    import "influxdata/influxdb/schema"
-    import "influxdata/influxdb/secrets"
-    import "experimental"
-    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}
+    const imports = parse(`
+import "strings"
+import "regexp"
+import "influxdata/influxdb/monitor"
+import "influxdata/influxdb/schema"
+import "influxdata/influxdb/secrets"
+import "experimental"
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateImports()}`)
 
-    check = {
-        _check_id: "${id}",
-        _check_name: "Notebook Generated Check",
-        _type: "custom",
-        tags: {},
-    }
-    notification = {
-        _notification_rule_id: "${id}",
-        _notification_rule_name: "Notebook Generated Rule",
-        _notification_endpoint_id: "${id}",
-        _notification_endpoint_name: "Notebook Generated Endpoint",
-    }
+    imports.imports = Object.values(
+      imports.imports.concat(ast.imports || []).reduce((acc, curr) => {
+        acc[curr.path.value] = curr
+        return acc
+      }, {})
+    ).sort((a: ImportDeclaration, b: ImportDeclaration) =>
+      b.path.value.toLowerCase().localeCompare(a.path.value.toLowerCase())
+    )
 
-    task_data = ${format_from_js_file(ast)}
-    trigger = ${conditions}
-    messageFn = (r) => ("${data.message}")
+    ast.imports = []
 
-    ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
+    const newQuery = `
+${format_from_js_file(imports)}
+
+check = {
+    _check_id: "${id}",
+    _check_name: "Notebook Generated Check",
+    _type: "custom",
+    tags: {},
+}
+notification = {
+    _notification_rule_id: "${id}",
+    _notification_rule_name: "Notebook Generated Rule",
+    _notification_endpoint_id: "${id}",
+    _notification_endpoint_name: "Notebook Generated Endpoint",
+}
+
+task_data = ${format_from_js_file(ast)}
+trigger = ${conditions}
+messageFn = (r) => ("${data.message}")
+
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
 
     const newAST = parse(newQuery)
 
@@ -267,30 +290,13 @@ const ExportTask: FC = () => {
     }
   }, [generateDeadmanTask, generateThresholdTask, data.thresholds])
 
-  const validateTask = async (queryText: string): Promise<boolean> => {
-    try {
-      setStatus(RemoteDataState.Loading)
-      await query(queryText)
-
-      setStatus(RemoteDataState.Done)
-      dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))
-      return true
-    } catch {
-      setStatus(RemoteDataState.Error)
-      dispatch(notify(exportAlertToTaskFailure(data.endpoint)))
-      return false
-    }
-  }
-
   const handleTaskCreation = _ => {
     dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))
   }
 
   return (
     <ExportTaskButton
-      loading={status == RemoteDataState.Loading}
       generate={generateTask}
-      validate={validateTask}
       onCreate={handleTaskCreation}
       text="Export Alert Task"
       type="alert"

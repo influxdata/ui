@@ -7,7 +7,7 @@ import {useSelector} from 'react-redux'
 import {FlowContext} from 'src/flows/context/flow.current'
 
 // Components
-import {ComponentColor, SquareButton, IconFont} from '@influxdata/clockface'
+import {Button, ComponentColor, IconFont} from '@influxdata/clockface'
 
 // Utility
 import {event} from 'src/cloud/utils/reporting'
@@ -42,11 +42,12 @@ const RevertVersionButton: FC = () => {
   }
 
   return (
-    <SquareButton
-      icon={IconFont.Undo}
+    <Button
+      icon={IconFont.Refresh_New}
       onClick={handleRevert}
       color={ComponentColor.Danger}
       titleText="Revert"
+      text="Restore this version"
     />
   )
 }

@@ -17,4 +17,27 @@ describe('Orgs', () => {
       cy.location('pathname').should('eq', '/signin')
     })
   })
+
+  describe('updating and switching orgs', () => {
+    beforeEach(() => {
+      cy.signin()
+      cy.visit('/')
+    })
+
+    it('should be able to rename the org', () => {
+      const extraText = '_my_renamed_org_in_e2e'
+      cy.getByTestID('user-nav').click()
+      cy.getByTestID('user-nav-item-about').click()
+      cy.get('span:contains("About")').click()
+      cy.getByTestID('rename-org--button').click()
+      cy.getByTestID('danger-confirmation--button').click()
+      cy.getByTestID('create-org-name-input')
+        .click()
+        .type(extraText)
+      cy.getByTestID('rename-org-submit--button').click()
+      cy.get('.cf-tree-nav--team')
+        .contains(extraText)
+        .should('have.length', 1)
+    })
+  })
 })

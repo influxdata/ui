@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, ReactElement} from 'react'
+import React, {FC, ReactElement, useMemo} from 'react'
 // Components
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
 
@@ -23,8 +23,16 @@ const TransformToolbarFunctions: FC<Props> = props => {
     }
   })
 
-  const filteredFunctions = sortedFunctions.filter(func =>
-    func.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredFunctions = useMemo(
+    () =>
+      sortedFunctions.filter(fn => {
+        return (
+          !searchTerm.length ||
+          fn.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          fn.package.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      }),
+    [searchTerm, sortedFunctions]
   )
 
   if (filteredFunctions.length === 0) {

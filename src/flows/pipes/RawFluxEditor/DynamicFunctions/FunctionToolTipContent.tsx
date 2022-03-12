@@ -5,11 +5,10 @@ import React, {FC} from 'react'
 import {DapperScrollbars} from '@influxdata/clockface'
 
 // Types
-// import {FluxToolbarFunction} from 'src/types/shared'
-import {FluxdocsArray} from 'src/client/fluxdocsdRoutes'
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
 interface TooltipProps {
-  item
+  item: Fluxdocs
 }
 
 const FunctionTooltipContent: FC<TooltipProps> = ({item: func}) => {

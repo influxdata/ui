@@ -1,30 +1,23 @@
+// Libraries
 import React, {FC, useState, useMemo, useCallback, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
-import {EmptyState, ComponentSize} from '@influxdata/clockface'
-// import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
-// import {FluxToolbarFunction} from 'src/types/shared'
+// Components
+import {EmptyState, ComponentSize, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import Fn from 'src/flows/pipes/RawFluxEditor/DynamicFunctions/FluxInjectionOption'
-import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/DynamicFunctions/FunctionToolTipContent'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
-import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
+// Actions
 import {getFluxPackages} from 'src/timeMachine/actions/scriptEditorThunks'
 
 // Types
 import {RemoteDataState} from 'src/types'
 import {AppState} from 'src/types'
-
-import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 interface OwnProps {
   onSelect: (fn) => void
 }
-
-// interface FilteredFn {
-//   [key: string]: FluxToolbarFunction[]
-// }
-
 interface DispatchProps {
   getFluxPackages: () => void
 }

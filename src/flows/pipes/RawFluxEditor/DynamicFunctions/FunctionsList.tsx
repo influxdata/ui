@@ -108,21 +108,20 @@ const FunctionsList: FC<Props> = (props: Props) => {
       <SpinnerContainer
         loading={fluxLoadingState}
         spinnerComponent={<TechnoSpinner />}
-        >
-
-      <div className="flux-toolbar">
-        <div className="flux-toolbar--search">
-          <SearchWidget
-            placeholderText="Filter Functions..."
-            onSearch={updateSearch}
-            searchTerm={search}
-            testID="flux-toolbar-search--input"
+      >
+        <div className="flux-toolbar">
+          <div className="flux-toolbar--search">
+            <SearchWidget
+              placeholderText="Filter Functions..."
+              onSearch={updateSearch}
+              searchTerm={search}
+              testID="flux-toolbar-search--input"
             />
+          </div>
+          <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
+            {fnComponent}
+          </div>
         </div>
-        <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-          {fnComponent}
-        </div>
-      </div>
       </SpinnerContainer>
     )
   }, [search, onselect, filteredFunctions, fluxLoadingState, updateSearch])

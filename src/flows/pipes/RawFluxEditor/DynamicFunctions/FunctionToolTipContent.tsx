@@ -13,20 +13,20 @@ interface TooltipProps {
 }
 
 const FunctionTooltipContent: FC<TooltipProps> = ({item: func}) => {
-
-  let argComponent = <div className="flux-function-docs--arguments">None</div>
-
-  if (func.fluxParameters.length > 0) {
-    argComponent = (
-      <>
-        {func.fluxParameters.map(a => (
-          <div className="flux-function-docs--arguments" key={a.name}>
-            <span>{a.name}:</span>
-            <div>{a.headline}</div>
+  const argComponent = () => {
+    if (func.fluxParameters.length > 0) {
+      return func.fluxParameters.map(arg => {
+        const description = arg.headline.slice(arg.name.length + 1)
+        return (
+          <div className="flux-function-docs--arguments" key={arg.name}>
+            <span>{arg.name}:</span>
+            <div>{description}</div>
           </div>
-        ))}
-      </>
-    )
+        )
+      })
+    }
+
+    return <div className="flux-function-docs--arguments">None</div>
   }
 
   return (

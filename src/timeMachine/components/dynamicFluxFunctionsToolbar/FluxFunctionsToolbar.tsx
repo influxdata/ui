@@ -1,22 +1,22 @@
 // Libraries
-import React, {FC, useMemo, useState, useCallback, useEffect} from 'react'
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import TransformToolbarFunctions from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TransformToolbarFunctions'
-import FluxToolbarSearch from 'src/timeMachine/components/FluxToolbarSearch'
 import {DapperScrollbars} from '@influxdata/clockface'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import FluxToolbarSearch from 'src/timeMachine/components/FluxToolbarSearch'
+import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import TransformToolbarFunctions from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TransformToolbarFunctions'
 import ToolbarFunction from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/ToolbarFunction'
 
-import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
-
-import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
+// Actions
 import {getFluxPackages} from 'src/timeMachine/actions/scriptEditorThunks'
 
 // Types
-import {RemoteDataState} from 'src/types'
 import {AppState} from 'src/types'
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
+import {RemoteDataState} from 'src/types'
 
 interface OwnProps {
   onInsertFluxFunction: (func) => void
@@ -31,43 +31,45 @@ type Props = ReduxProps & OwnProps & DispatchProps
 
 const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [fluxServiceError, setFluxServiceError] = useState<RemoteDataState>(
+  const [fluxLoadingState, setFluxLoadingState] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
-
-  const handleSearch = (searchTerm: string): void => {
-    setSearchTerm(searchTerm)
-  }
 
   useEffect(() => {
     const getFluxFuncs = async () => {
       try {
-        setFluxServiceError(RemoteDataState.Loading)
+        setFluxLoadingState(RemoteDataState.Loading)
 
-        if (props.fluxFunctions.length === 0) {
-          await props.getFluxPackages()
-          setFluxServiceError(RemoteDataState.Done)
+        if (fluxFunctions.length === 0) {
+          await getFluxPackages()
+          setFluxLoadingState(RemoteDataState.Done)
         }
-        setFluxServiceError(RemoteDataState.Done)
+        setFluxLoadingState(RemoteDataState.Done)
       } catch (err) {
         console.error(err)
-        setFluxServiceError(RemoteDataState.Error)
+        setFluxLoadingState(RemoteDataState.Error)
       }
     }
     getFluxFuncs()
   }, [])
 
+  const {onInsertFluxFunction, fluxFunctions, getFluxPackages } = props
+
+  const handleSearch = (searchTerm: string): void => {
+    setSearchTerm(searchTerm)
+  }
+
   const handleClickFunction = useCallback(
     (func: Fluxdocs) => {
-      props.onInsertFluxFunction(func)
+      onInsertFluxFunction(func)
     },
-    [props.onInsertFluxFunction]
+    [onInsertFluxFunction]
   )
 
   return useMemo(() => {
     return (
       <SpinnerContainer
-        loading={fluxServiceError}
+        loading={fluxLoadingState}
         spinnerComponent={<TechnoSpinner />}
       >
         <ErrorBoundary>
@@ -78,7 +80,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
               data-testid="flux-toolbar--list"
             >
               <TransformToolbarFunctions
-                funcs={props.fluxFunctions}
+                funcs={fluxFunctions}
                 searchTerm={searchTerm}
               >
                 {sortedFunctions =>
@@ -97,7 +99,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
         </ErrorBoundary>
       </SpinnerContainer>
     )
-  }, [searchTerm, handleClickFunction, fluxServiceError])
+  }, [fluxFunctions, fluxLoadingState, handleClickFunction, searchTerm])
 }
 
 const mstp = (state: AppState) => {

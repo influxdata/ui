@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, ReactElement, useMemo} from 'react'
+
 // Components
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
 

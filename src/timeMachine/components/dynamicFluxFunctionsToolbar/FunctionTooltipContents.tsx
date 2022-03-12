@@ -1,14 +1,14 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
+
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
-import TooltipDescription from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipDescription'
 import TooltipArguments from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipArguments'
+import TooltipDescription from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipDescription'
 import TooltipLink from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/TooltipLink'
 
 // Types
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
-
 interface Props {
   func: Fluxdocs
 }

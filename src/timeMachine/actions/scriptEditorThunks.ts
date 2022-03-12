@@ -6,20 +6,17 @@ import {get} from 'lodash'
 import {FluxdocsArray, getFluxdocs} from 'src/client/fluxdocsdRoutes'
 
 // Actions
-import {notify} from 'src/shared/actions/notifications'
 import {getFluxPackagesFailed} from 'src/shared/copy/notifications/categories/alerts'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {NotificationAction} from 'src/types'
 
-export type Action = SetGetFluxFunc
+export const GET_FLUX_DOCS = 'GET_FLUX_DOCS'
 
-interface SetGetFluxFunc {
-  type: 'GET_FLUX_DOCS'
-  payload: {data: FluxdocsArray}
-}
+export type Action = ReturnType<typeof setFluxFunc>
 
-export const setFluxFunc = (data): SetGetFluxFunc => ({
+export const setFluxFunc = (data: FluxdocsArray) => ({
   type: 'GET_FLUX_DOCS',
   payload: {
     data,

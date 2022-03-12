@@ -53,7 +53,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
     getFluxFuncs()
   }, [])
 
-  const {onInsertFluxFunction, fluxFunctions, getFluxPackages } = props
+  const {onInsertFluxFunction, fluxFunctions, getFluxPackages} = props
 
   const handleSearch = (searchTerm: string): void => {
     setSearchTerm(searchTerm)

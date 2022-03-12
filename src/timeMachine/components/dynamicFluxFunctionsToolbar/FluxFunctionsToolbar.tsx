@@ -51,7 +51,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
       }
     }
     getFluxFuncs()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const {onInsertFluxFunction, fluxFunctions, getFluxPackages} = props
 

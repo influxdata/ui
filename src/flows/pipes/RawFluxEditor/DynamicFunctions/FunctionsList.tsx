@@ -3,7 +3,12 @@ import React, {FC, useState, useMemo, useCallback, useEffect} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Components
-import {EmptyState, ComponentSize, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+import {
+  EmptyState,
+  ComponentSize,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 import Fn from 'src/flows/pipes/RawFluxEditor/DynamicFunctions/FluxInjectionOption'
 import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/DynamicFunctions/FunctionToolTipContent'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'

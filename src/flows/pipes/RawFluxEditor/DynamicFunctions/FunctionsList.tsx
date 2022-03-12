@@ -15,6 +15,8 @@ import {getFluxPackages} from 'src/timeMachine/actions/scriptEditorThunks'
 import {RemoteDataState} from 'src/types'
 import {AppState} from 'src/types'
 
+import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
+
 interface OwnProps {
   onSelect: (fn) => void
 }
@@ -38,23 +40,23 @@ const FunctionsList: FC<Props> = (props: Props) => {
     },
     [search, setSearch]
   )
-  const [fluxServiceError, setFluxServiceError] = useState<RemoteDataState>(
+  const [fluxLoadingState, setfluxLoadingState] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
 
   useEffect(() => {
     const getFluxFuncs = async () => {
       try {
-        setFluxServiceError(RemoteDataState.Loading)
+        setfluxLoadingState(RemoteDataState.Loading)
 
         if (props.fluxFunctions.length === 0) {
           await props.getFluxPackages()
-          setFluxServiceError(RemoteDataState.Done)
+          setfluxLoadingState(RemoteDataState.Done)
         }
-        setFluxServiceError(RemoteDataState.Done)
+        setfluxLoadingState(RemoteDataState.Done)
       } catch (err) {
         console.error(err)
-        setFluxServiceError(RemoteDataState.Error)
+        setfluxLoadingState(RemoteDataState.Error)
       }
     }
     getFluxFuncs()
@@ -103,6 +105,11 @@ const FunctionsList: FC<Props> = (props: Props) => {
     }
 
     return (
+      <SpinnerContainer
+        loading={fluxLoadingState}
+        spinnerComponent={<TechnoSpinner />}
+        >
+
       <div className="flux-toolbar">
         <div className="flux-toolbar--search">
           <SearchWidget
@@ -110,14 +117,15 @@ const FunctionsList: FC<Props> = (props: Props) => {
             onSearch={updateSearch}
             searchTerm={search}
             testID="flux-toolbar-search--input"
-          />
+            />
         </div>
         <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
           {fnComponent}
         </div>
       </div>
+      </SpinnerContainer>
     )
-  }, [search, onselect, filteredFunctions, updateSearch])
+  }, [search, onselect, filteredFunctions, fluxLoadingState, updateSearch])
 }
 
 const mstp = (state: AppState) => {

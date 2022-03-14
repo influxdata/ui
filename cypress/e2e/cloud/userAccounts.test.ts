@@ -144,12 +144,13 @@ describe('Account Page tests', () => {
               .getByTestID('delete-organization--button')
               .should('be.visible')
               .click()
+              .then(() => {
+                // eslint-disable-next-line @typescript-eslint/unbound-method
+                expect(redirectStub).to.be.calledWith(
+                  'https://www.influxdata.com/free_cancel/'
+                )
+              })
           })
-
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(redirectStub).to.be.calledWith(
-          'https://www.influxdata.com/free_cancel/'
-        )
       })
     })
   })

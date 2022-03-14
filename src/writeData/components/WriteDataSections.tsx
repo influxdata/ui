@@ -8,6 +8,7 @@ import {WriteDataSearchContext} from 'src/writeData/containers/WriteDataPage'
 import {search as searchUploads} from 'src/writeData/constants/contentFileUploads'
 import {search as searchPlugins} from 'src/writeData/constants/contentTelegrafPlugins'
 import {searchClients} from 'src/writeData'
+import {CLOUD} from 'src/shared/constants'
 
 // Components
 import {EmptyState, ComponentSize} from '@influxdata/clockface'
@@ -40,7 +41,9 @@ const WriteDataSections: FC = () => {
     <>
       <FileUploadSection />
       <ClientLibrarySection />
-      {isFlagEnabled('subscriptionsResourceType') && <CloudNativeSources />}
+      {CLOUD && isFlagEnabled('subscriptionsResourceType') && (
+        <CloudNativeSources />
+      )}
       <TelegrafPluginSection />
     </>
   )

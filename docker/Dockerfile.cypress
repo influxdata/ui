@@ -16,6 +16,7 @@ COPY ./src/timeMachine/constants ./src/timeMachine/constants
 COPY ./src/shared/constants/fluxFunctions.ts ./src/shared/constants/fluxFunctions.ts
 COPY ./src/shared/actions/flags.ts ./src/shared/actions/flags.ts
 COPY ./src/utils/datetime/constants.ts ./src/utils/datetime/constants.ts
+COPY ./src/utils/wrappers.ts ./src/utils/wrappers.ts
 
 ENTRYPOINT []
 CMD []

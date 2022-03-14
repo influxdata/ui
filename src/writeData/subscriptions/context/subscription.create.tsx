@@ -1,17 +1,19 @@
 // Libraries
 import React, {FC, useState, useCallback, useEffect} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
-import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {getOrg} from 'src/organizations/selectors'
 import {sanitizeForm} from '../utils/form'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
 import {Subscription} from 'src/types/subscriptions'
+import {subscriptionCreateFail} from 'src/shared/copy/notifications'
 
 export interface SubscriptionCreateContextType {
   create: () => void
@@ -99,6 +101,7 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
   const [loading, setLoading] = useState(RemoteDataState.Done)
   const history = useHistory()
   const org = useSelector(getOrg)
+  const dispatch = useDispatch()
   const create = (formContent?: Subscription): any => {
     setLoading(RemoteDataState.Loading)
     createAPI({data: formContent})
@@ -107,8 +110,7 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       })
       .catch(() => {
-        setLoading(RemoteDataState.Error)
-        // add err notification
+        dispatch(notify(subscriptionCreateFail()))
       })
   }
 

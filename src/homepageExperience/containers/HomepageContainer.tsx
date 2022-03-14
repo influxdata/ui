@@ -20,7 +20,7 @@ import {
   JavascriptNodeJsIcon,
   PythonIcon,
   TelegrafIcon,
-} from '../components/HomepageIcons'
+} from 'src/homepageExperience/components/HomepageIcons'
 
 import './HomepageContainer.scss'
 

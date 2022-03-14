@@ -122,7 +122,7 @@ describe('Account Page tests', () => {
       cy.getByTestID('user-account-switch-btn').should('not.exist')
     })
 
-    it.only('can delete the account from the organization', () => {
+    it('can delete the account from the organization', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/about`)
 

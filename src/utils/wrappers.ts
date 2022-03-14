@@ -9,5 +9,5 @@ export function getDeep<T = any>(
 }
 
 export const redirect = (location: string) => {
-   window.location.assign(location)
+  window.location.assign(location)
 }

@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, FC, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import memoizeOne from 'memoize-one'
 
@@ -28,7 +28,7 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-class CollectorList extends PureComponent<Props> {
+class CollectorList_F extends PureComponent<Props> {
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
     getSortedResources
   )
@@ -78,6 +78,48 @@ class CollectorList extends PureComponent<Props> {
     }
   }
 }
+
+const CollectorList: FC<Props> = React.memo(
+  ({
+    collectors,
+    emptyState,
+    sortKey,
+    sortDirection,
+    sortType,
+    onFilterChange,
+    onDeleteTelegraf,
+    onUpdateTelegraf,
+  }) => {
+    const collectorsList = (): JSX.Element[] => {
+      const sortedCollectors = useMemo(
+        () => getSortedResources(collectors, sortKey, sortDirection, sortType),
+        [collectors, sortKey, sortDirection, sortType]
+      )
+
+      if (collectors !== undefined) {
+        return sortedCollectors.map(collector => (
+          <CollectorRow
+            key={collector.id}
+            collector={collector}
+            onDelete={(telegraf: Telegraf) =>
+              onDeleteTelegraf(telegraf.id, telegraf.name)
+            }
+            onUpdate={onUpdateTelegraf}
+            onFilterChange={onFilterChange}
+          />
+        ))
+      }
+    }
+
+    return (
+      <ResourceList>
+        <ResourceList.Body emptyState={emptyState}>
+          {collectorsList()}
+        </ResourceList.Body>
+      </ResourceList>
+    )
+  }
+)
 
 const mstp = (state: AppState) => ({
   collectors: getAll<Telegraf>(state, ResourceType.Telegrafs),

@@ -7,3 +7,7 @@ export function getDeep<T = any>(
 ): T {
   return get<T>(obj, path, fallback)
 }
+
+export const redirect = (location: string) => {
+   window.location.assign(location)
+}

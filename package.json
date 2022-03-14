@@ -69,7 +69,7 @@
     "annotations-oss": "oats ${REMOTE}contracts/priv/annotationd-oss.yml > ./src/client/annotationdRoutes.ts",
     "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
-    "subscriptions": "oats ${REMOTE}contracts/priv/subscriptions.yml > ./src/client/subscriptionsRoutes.ts",
+    "subscriptions": "oats ${REMOTE}contracts/priv/nifid.yml > ./src/client/subscriptionsRoutes.ts",
     "subscriptions-oss": "touch ./src/client/subscriptionsRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
     "fluxdocs": "oats ${REMOTE}contracts/priv/fluxdocsd.yml > ./src/client/fluxdocsdRoutes.ts",

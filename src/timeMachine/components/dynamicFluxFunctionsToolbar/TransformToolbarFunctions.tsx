@@ -16,14 +16,17 @@ interface Props {
 const TransformToolbarFunctions: FC<Props> = props => {
   const {searchTerm, funcs, children} = props
 
-  const sortFunctions = funcs.sort((a, b) => {
-    if (a.package.toLowerCase() === b.package.toLowerCase()) {
-      return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
-    } else {
-      return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1
-    }
-  })
-  const sortedFunctions = useMemo(() => sortFunctions, [funcs])
+  const sortedFunctions = useMemo(
+    () =>
+      funcs.sort((a, b) => {
+        if (a.package.toLowerCase() === b.package.toLowerCase()) {
+          return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
+        } else {
+          return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1
+        }
+      }),
+    [funcs]
+  )
 
   const filteredFunctions = sortedFunctions.filter(fn => {
     return (

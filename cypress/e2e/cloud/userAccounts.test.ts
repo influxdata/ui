@@ -2,8 +2,6 @@ import {Organization} from '../../../src/types'
 
 import * as Wrapper from '../../../src/utils/wrappers'
 
-const redirectStub = cy.stub(Wrapper, 'redirect')
-
 const setup = (cy, numAccounts: number) => {
   cy.flush().then(() => {
     cy.signin().then(() => {
@@ -123,6 +121,7 @@ describe('Account Page tests', () => {
     })
 
     it('can delete the account from the organization', () => {
+      const redirectStub = cy.stub(Wrapper, 'redirect')
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/about`)
 

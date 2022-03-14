@@ -192,7 +192,7 @@ const ParsingForm: FC<Props> = ({
               <CloudUpgradeButton className="create-parsing-form__upgrade-button" />
             ) : (
               <Button
-                text={'Next'}
+                text="Next"
                 color={ComponentColor.Success}
                 type={ButtonType.Button}
                 onClick={() => {

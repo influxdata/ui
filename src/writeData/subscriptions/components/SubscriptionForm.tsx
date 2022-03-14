@@ -167,7 +167,7 @@ const SubscriptionForm: FC<Props> = ({
               testID="create-subscription-form--back"
             />
             <Button
-              text={'Next'}
+              text="Next"
               color={ComponentColor.Success}
               onClick={() => {
                 setFormActive('parsing')

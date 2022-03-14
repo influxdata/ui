@@ -74,7 +74,7 @@ const StringPatternInput: FC<Props> = ({
                 updateForm({...formContent})
               }}
               confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
+              testID="json-delete-label"
             />
           )}
         </FlexBox>

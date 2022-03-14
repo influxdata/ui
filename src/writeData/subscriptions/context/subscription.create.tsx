@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useCallback, useEffect} from 'react'
+import React, {FC, useState, useCallback} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
 import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'

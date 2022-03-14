@@ -67,7 +67,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                 updateForm({...formContent})
               }}
               confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
+              testID="json-delete-label"
             />
           )}
         </div>
@@ -78,7 +78,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
           className="json-parsing-form__container"
         >
           <Form.ValidationElement
-            label={'Name'}
+            label="Name"
             value={
               tagType
                 ? formContent.jsonTagKeys[itemNum].name

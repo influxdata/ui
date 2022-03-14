@@ -286,7 +286,7 @@ const BrokerForm: FC<Props> = ({
                       onClick={() => {
                         setSecurity('none')
                       }}
-                      value={'none'}
+                      value="none"
                       titleText="None"
                       disabled={false}
                     >
@@ -300,7 +300,7 @@ const BrokerForm: FC<Props> = ({
                       onClick={() => {
                         setSecurity('user')
                       }}
-                      value={'user'}
+                      value="user"
                       titleText="User"
                       disabled={false}
                     >
@@ -344,7 +344,7 @@ const BrokerForm: FC<Props> = ({
               testID="create-broker-form--cancel"
             />
             <Button
-              text={'Next'}
+              text="Next"
               color={ComponentColor.Success}
               onClick={() => {
                 setFormActive('subscription')

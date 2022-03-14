@@ -27,6 +27,7 @@ import {accountSelfDeletionFailed} from 'src/shared/copy/notifications'
 import DeleteOrgReasonsForm from 'src/organizations/components/DeleteOrgReasonsForm'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
+import {redirect} from 'src/utils/wrappers'
 
 // Selectors
 import {
@@ -105,9 +106,9 @@ const DeleteOrgOverlay: FC = () => {
         throw new Error(resp.data.message)
       }
       if (isFlagEnabled('trackCancellations')) {
-        window.location.assign(getRedirectLocation())
+        redirect(getRedirectLocation())
       } else {
-        window.location.assign('https://www.influxdata.com/free_cancel/')
+        redirect('https://www.influxdata.com/free_cancel/')
       }
     } catch {
       dispatch(notify(accountSelfDeletionFailed()))

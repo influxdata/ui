@@ -140,7 +140,7 @@ const SubscriptionForm: FC<Props> = ({
                   >
                     Select a bucket to write your data to.
                   </Heading>
-                  <WriteDataHelperBuckets clientHelper={false} />
+                  <WriteDataHelperBuckets className="write-data--subscriptions-title" />
                 </Grid.Column>
               </Grid.Row>
             </Grid>

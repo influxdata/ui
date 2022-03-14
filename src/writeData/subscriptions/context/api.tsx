@@ -11,7 +11,9 @@ import {
   DeleteBrokerSubParams,
   getBrokerSubsStatus,
   GetBrokerSubsStatusParams,
-} from 'src/client/nifidRoutes'
+  putBrokerSubsStatus,
+  PutBrokerSubsStatusParams,
+} from 'src/client/subscriptionsRoutes'
 
 export const createAPI = async (subscription: PostBrokerSubParams) => {
   const res = await postBrokerSub(subscription)
@@ -52,6 +54,14 @@ export const getByIDAPI = async (id: GetBrokerSubParams) => {
 
 export const getStatusAPI = async (id: GetBrokerSubsStatusParams) => {
   const res = await getBrokerSubsStatus(id)
+  if (res.status != 200) {
+    throw new Error(res.data.message)
+  }
+  return res.data
+}
+
+export const updateStatusAPI = async (status: PutBrokerSubsStatusParams) => {
+  const res = await putBrokerSubsStatus(status)
   if (res.status != 200) {
     throw new Error(res.data.message)
   }

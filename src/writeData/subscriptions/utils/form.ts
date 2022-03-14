@@ -11,6 +11,8 @@ export const handleValidation = (
 }
 
 export const sanitizeForm = (form: Subscription): Subscription => {
+  // add $. if not at start of input for json paths
+
   if (form.brokerPassword === '' || form.brokerUsername === '') {
     delete form.brokerUsername
     delete form.brokerPassword

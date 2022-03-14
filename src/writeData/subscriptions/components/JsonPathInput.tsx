@@ -50,8 +50,8 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
             {name}
           </Heading>
           {(tagType
-            ? !(formContent.jsonTagKeys.length == 1)
-            : !(formContent.jsonFieldKeys.length == 1)) && (
+            ? !(formContent.jsonTagKeys.length === 1)
+            : !(formContent.jsonFieldKeys.length === 1)) && (
             <ConfirmationButton
               color={ComponentColor.Colorless}
               icon={IconFont.Trash_New}
@@ -175,7 +175,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
           {status => (
             <Input
               type={InputType.Text}
-              placeholder="eg. myJSON.myObject[0].myKey"
+              placeholder="eg. $.myJSON.myObject[0].myKey"
               name="jsonpath"
               autoFocus={true}
               value={

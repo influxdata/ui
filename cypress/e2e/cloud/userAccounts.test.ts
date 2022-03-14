@@ -1,5 +1,7 @@
 import {Organization} from '../../../src/types'
 
+import * as Wrapper from '../../../src/utils/wrappers'
+
 const setup = (cy, numAccounts: number) => {
   cy.flush().then(() => {
     cy.signin().then(() => {
@@ -106,9 +108,9 @@ describe('Account Page tests', () => {
   })
 
   describe('User with one account', () => {
-    let assignStub
+    let redirectStub
     beforeEach(() => {
-      assignStub = cy.stub(window.location, 'assign')
+      redirectStub = cy.stub(Wrapper, 'redirect')
       setup(cy, 1)
     })
 
@@ -120,7 +122,7 @@ describe('Account Page tests', () => {
       cy.getByTestID('user-account-switch-btn').should('not.exist')
     })
 
-    it('can delete the account from the organization', () => {
+    it.only('can delete the account from the organization', () => {
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/about`)
 
@@ -145,7 +147,7 @@ describe('Account Page tests', () => {
           })
 
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(assignStub).to.be.calledWith(
+        expect(redirectStub).to.be.calledWith(
           'https://www.influxdata.com/free_cancel/'
         )
       })

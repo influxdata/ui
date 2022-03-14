@@ -194,7 +194,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
         type: 'menuitem',
         title: 'Version history',
         onClick: handleViewPublish,
-        icon: IconFont.UploadOutline, // TODO(ariel): update the icon when its available
+        icon: IconFont.History,
         disabled: () => {
           if (versions.length > 1) {
             return false

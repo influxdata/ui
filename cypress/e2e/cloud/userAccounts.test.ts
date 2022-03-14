@@ -2,6 +2,8 @@ import {Organization} from '../../../src/types'
 
 import * as Wrapper from '../../../src/utils/wrappers'
 
+const redirectStub = cy.stub(Wrapper, 'redirect')
+
 const setup = (cy, numAccounts: number) => {
   cy.flush().then(() => {
     cy.signin().then(() => {
@@ -108,9 +110,7 @@ describe('Account Page tests', () => {
   })
 
   describe('User with one account', () => {
-    let redirectStub
     beforeEach(() => {
-      redirectStub = cy.stub(Wrapper, 'redirect')
       setup(cy, 1)
     })
 

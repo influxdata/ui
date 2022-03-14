@@ -1,5 +1,6 @@
 import React, {FC} from 'react'
 import {useSelector} from 'react-redux'
+import {Link} from 'react-router-dom'
 
 import {
   AlignItems,
@@ -7,6 +8,7 @@ import {
   FlexBox,
   Icon,
   IconFont,
+  InfluxColors,
   JustifyContent,
   Page,
   ResourceCard,
@@ -30,19 +32,8 @@ export const HomepageContainer: FC = () => {
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
 
-  const handleOpenPythonWizard = () => {
-    window.location.href = pythonWizardLink
-  }
-
-  const handleOpenCLI = () => {
-    window.location.href = cliPageLink
-  }
-
-  const handleOpenTelegraf = () => {
-    window.location.href = telegrafPageLink
-  }
-
   const cardStyle = {maxWidth: '250px'}
+  const linkStyle = {color: InfluxColors.Grey75}
 
   return (
     <>
@@ -61,13 +52,12 @@ export const HomepageContainer: FC = () => {
                 justifyContent={JustifyContent.SpaceBetween}
               >
                 <ResourceCard style={cardStyle}>
-                  <div
-                    className="homepage-wizard-language-tile"
-                    onClick={handleOpenPythonWizard}
-                  >
-                    <h5>Python</h5>
-                    {PythonIcon}
-                  </div>
+                  <Link to={pythonWizardLink} style={linkStyle}>
+                    <div className="homepage-wizard-language-tile">
+                      <h5>Python</h5>
+                      {PythonIcon}
+                    </div>
+                  </Link>
                 </ResourceCard>
                 <ResourceCard style={cardStyle}>
                   <div className="homepage-wizard-language-tile">
@@ -95,42 +85,43 @@ export const HomepageContainer: FC = () => {
                 </ResourceCard>
               </FlexBox>
               <hr style={{marginTop: '32px'}} />
-              <div className="homepage-write-data-tile" onClick={handleOpenCLI}>
-                <div className="tile-icon-text-wrapper">
-                  <div className="icon">{CLIIcon}</div>
-                  <div>
-                    <h4>CLI</h4>
-                    <h6>
-                      Write and query data using the Command Line Interface
-                    </h6>
+              <Link to={cliPageLink} style={linkStyle}>
+                <div className="homepage-write-data-tile">
+                  <div className="tile-icon-text-wrapper">
+                    <div className="icon">{CLIIcon}</div>
+                    <div>
+                      <h4>CLI</h4>
+                      <h6>
+                        Write and query data using the Command Line Interface
+                      </h6>
+                    </div>
                   </div>
-                </div>
 
-                <Icon
-                  glyph={IconFont.ArrowRight_New}
-                  className="arrow-button"
-                />
-              </div>
-              <div
-                className="homepage-write-data-tile"
-                onClick={handleOpenTelegraf}
-              >
-                <div className="tile-icon-text-wrapper">
-                  <div className="icon">{TelegrafIcon}</div>
-                  <div>
-                    <h4>Server Agent (Telegraf)</h4>
-                    <h6>
-                      Easily collect and write data using custom stand-alone
-                      agent plugins
-                    </h6>
+                  <Icon
+                    glyph={IconFont.ArrowRight_New}
+                    className="arrow-button"
+                  />
+                </div>
+              </Link>
+              <Link to={telegrafPageLink} style={linkStyle}>
+                <div className="homepage-write-data-tile">
+                  <div className="tile-icon-text-wrapper">
+                    <div className="icon">{TelegrafIcon}</div>
+                    <div>
+                      <h4>Server Agent (Telegraf)</h4>
+                      <h6>
+                        Easily collect and write data using custom stand-alone
+                        agent plugins
+                      </h6>
+                    </div>
                   </div>
-                </div>
 
-                <Icon
-                  glyph={IconFont.ArrowRight_New}
-                  className="arrow-button"
-                />
-              </div>
+                  <Icon
+                    glyph={IconFont.ArrowRight_New}
+                    className="arrow-button"
+                  />
+                </div>
+              </Link>
             </div>
           </div>
         </Page.Contents>

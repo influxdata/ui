@@ -51,7 +51,7 @@ const CreateSubscriptionPage: FC = () => {
   const subscriptionForm = 'subscription'
   const parsingForm = 'parsing'
   const [active, setFormActive] = useState(brokerForm)
-  const {formContent, setFormComplete, updateForm, loading} = useContext(
+  const {formContent, saveForm, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
@@ -154,7 +154,7 @@ const CreateSubscriptionPage: FC = () => {
                 setFormActive={setFormActive}
                 formContent={formContent}
                 updateForm={updateForm}
-                setFormComplete={setFormComplete}
+                saveForm={saveForm}
                 showUpgradeButton={showUpgradeButton}
               />
             )}

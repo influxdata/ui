@@ -44,7 +44,7 @@ interface Props {
   formContent: Subscription
   setFormActive: (string) => void
   updateForm: (any) => void
-  setFormComplete: (any) => void
+  saveForm: (any) => void
   showUpgradeButton: boolean
 }
 
@@ -52,7 +52,7 @@ const ParsingForm: FC<Props> = ({
   formContent,
   setFormActive,
   updateForm,
-  setFormComplete,
+  saveForm,
   showUpgradeButton,
 }) => {
   const history = useHistory()
@@ -196,7 +196,7 @@ const ParsingForm: FC<Props> = ({
                 color={ComponentColor.Success}
                 type={ButtonType.Button}
                 onClick={() => {
-                  setFormComplete(true)
+                  saveForm(formContent)
                 }}
                 testID="create-parsing-form--submit"
                 status={ComponentStatus.Default}

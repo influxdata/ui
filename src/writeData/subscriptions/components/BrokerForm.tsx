@@ -61,11 +61,6 @@ const BrokerForm: FC<Props> = ({
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
   const [security, setSecurity] = useState('none')
-  // form validation component is in an err
-  // state once the value changes
-  // this fixes it for initial render
-  // later forms are stuck in an inital validation
-  // state though
   const didMount = useRef(false)
   useEffect(() => {
     if (didMount.current) {

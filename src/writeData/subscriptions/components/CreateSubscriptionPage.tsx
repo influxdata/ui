@@ -47,7 +47,10 @@ import {shouldShowUpgradeButton} from 'src/me/selectors'
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
 const CreateSubscriptionPage: FC = () => {
-  const [active, setFormActive] = useState('broker')
+  const brokerForm = 'broker'
+  const subscriptionForm = 'subscription'
+  const parsingForm = 'parsing'
+  const [active, setFormActive] = useState(brokerForm)
   const {formContent, setFormComplete, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
@@ -107,28 +110,28 @@ const CreateSubscriptionPage: FC = () => {
               <div className="create-subscription-page__progress__bar">
                 <ProgressMenuItem
                   active={active}
-                  type="broker"
+                  type={brokerForm}
                   text="Connect To Broker"
                   icon="upload-outline"
                   setFormActive={setFormActive}
                 />
                 <ProgressMenuItem
                   active={active}
-                  type="subscription"
+                  type={subscriptionForm}
                   text="Subscribe to Topic"
                   icon="subscribe"
                   setFormActive={setFormActive}
                 />
                 <ProgressMenuItem
                   active={active}
-                  type="parsing"
+                  type={parsingForm}
                   text=" Define Data Parsing Rules"
                   icon="braces"
                   setFormActive={setFormActive}
                 />
               </div>
             </div>
-            {active === 'broker' && (
+            {active === brokerForm && (
               <BrokerForm
                 setFormActive={setFormActive}
                 formContent={formContent}
@@ -136,7 +139,7 @@ const CreateSubscriptionPage: FC = () => {
                 showUpgradeButton={showUpgradeButton}
               />
             )}
-            {active === 'subscription' && (
+            {active === subscriptionForm && (
               <SubscriptionForm
                 setFormActive={setFormActive}
                 formContent={formContent}
@@ -146,7 +149,7 @@ const CreateSubscriptionPage: FC = () => {
                 bucket={bucket}
               />
             )}
-            {active === 'parsing' && (
+            {active === parsingForm && (
               <ParsingForm
                 setFormActive={setFormActive}
                 formContent={formContent}

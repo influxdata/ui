@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState, useContext, useRef} from 'react'
+import React, {useState, useContext, useRef, useEffect} from 'react'
 
 // Components
 import {
@@ -18,6 +18,7 @@ import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/R
 import {SortTypes} from 'src/shared/utils/sort'
 import PresetFlows from 'src/flows/components/PresetFlows'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import {event} from 'src/cloud/utils/reporting'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -106,12 +107,28 @@ const FlowsIndex = () => {
   }
 
   const setSort = (sortKey, sortDirection, sortType) => {
+    if (
+      sortKey === sortOptions.sortKey &&
+      sortDirection === sortOptions.sortDirection
+    ) {
+      return
+    }
+
+    event('Notebook List Sort Change', {
+      key: sortKey,
+      direction: sortDirection,
+    })
+
     setSortOptions({
       sortKey,
       sortType,
       sortDirection,
     })
   }
+
+  useEffect(() => {
+    event('Notebook List Page Visited')
+  }, [])
 
   return (
     <Page

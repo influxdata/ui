@@ -71,6 +71,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   }
 
   const handleDownloadAsPNG = () => {
+    event('full notebook png download')
     const canvas = document.getElementById(flow.id)
     import('html2canvas').then((module: any) =>
       module.default(canvas as HTMLDivElement, canvasOptions).then(result => {
@@ -80,6 +81,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   }
 
   const handleDownloadAsPDF = () => {
+    event('full notebook pdf download')
     const canvas = document.getElementById(flow.id)
     import('html2canvas').then((module: any) =>
       module.default(canvas as HTMLDivElement, canvasOptions).then(result => {
@@ -194,7 +196,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
         type: 'menuitem',
         title: 'Version history',
         onClick: handleViewPublish,
-        icon: IconFont.UploadOutline, // TODO(ariel): update the icon when its available
+        icon: IconFont.History,
         disabled: () => {
           if (versions.length > 1) {
             return false
@@ -217,6 +219,9 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
         triggerRef={triggerRef}
         enableDefaultStyles={false}
         style={{minWidth: 209}}
+        onShow={() => {
+          event('Notebook main menu opened')
+        }}
         showEvent={PopoverInteraction.Click}
         hideEvent={PopoverInteraction.Click}
         contents={onHide => (

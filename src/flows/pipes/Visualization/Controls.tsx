@@ -16,7 +16,6 @@ import {event} from 'src/cloud/utils/reporting'
 import ErrorThresholds from 'src/flows/pipes/Visualization/ErrorThresholds/ErrorThresholds'
 import {SidebarContext} from 'src/flows/context/sidebar'
 import {PipeContext, PipeProvider} from 'src/flows/context/pipe'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const WrappedViewOptions: FC = () => {
@@ -36,7 +35,7 @@ const WrappedViewOptions: FC = () => {
 
   return (
     <ErrorBoundary>
-      {isFlagEnabled('flowErrorThresholds') && <ErrorThresholds />}
+      <ErrorThresholds />
       <ViewOptions
         properties={data.properties}
         results={results.parsed}

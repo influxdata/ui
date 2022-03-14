@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState, useRef} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -61,12 +61,8 @@ const BrokerForm: FC<Props> = ({
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
   const [security, setSecurity] = useState('none')
-  const didMount = useRef(false)
   useEffect(() => {
-    if (didMount.current) {
-      updateForm({...formContent, protocol: protocol.toLowerCase()})
-    }
-    didMount.current = true
+    updateForm({...formContent, protocol: protocol.toLowerCase()})
   }, [protocol])
   return (
     formContent && (

@@ -27,6 +27,7 @@ import {
   publishNotebookFailed,
   publishNotebookSuccessful,
 } from 'src/shared/copy/notifications'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -94,6 +95,7 @@ export const VersionPublishProvider: FC = ({children}) => {
 
   const handlePublish = useCallback(async () => {
     try {
+      event('publish_notebook')
       const response = await postNotebooksVersion({id: flow.id})
 
       if (response.status !== 200) {

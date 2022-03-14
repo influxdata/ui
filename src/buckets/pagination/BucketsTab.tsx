@@ -158,9 +158,10 @@ class BucketsTab extends PureComponent<Props, State> {
                     <FilterBuckets
                       searchTerm={searchTerm}
                       searchKeys={[
+                        'id',
+                        'labels[].name',
                         'name',
                         'readableRetention',
-                        'labels[].name',
                       ]}
                       list={buckets}
                     >

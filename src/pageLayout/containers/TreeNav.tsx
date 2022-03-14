@@ -48,7 +48,7 @@ const TreeSidebar: FC = () => {
       >
         {generateNavItems().map((item: NavItem) => {
           const linkElement = (className: string): JSX.Element => (
-            <Link to={item.link} className={className} />
+            <Link to={item.link} className={className} title={item.label} />
           )
           return (
             <TreeNav.Item

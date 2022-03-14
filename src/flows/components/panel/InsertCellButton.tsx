@@ -32,6 +32,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
   const {flow} = useContext(FlowContext)
   const dividerRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const smallButtonRef = useRef<HTMLDivElement>(null)
   const popoverVisible = useRef<boolean>(false)
   const index = flow.data.allIDs.indexOf(id)
 
@@ -52,10 +53,7 @@ const InsertCellButton: FC<Props> = ({id}) => {
       dividerRef.current.classList.remove('flow-divider__popped')
   }
 
-  if (
-    isFlagEnabled('showLastInsert') &&
-    index === flow.data.allIDs.length - 1
-  ) {
+  if (index === flow.data.allIDs.length - 1) {
     return (
       <FlexBox
         direction={FlexDirection.Column}
@@ -66,6 +64,65 @@ const InsertCellButton: FC<Props> = ({id}) => {
         <p className="insert-cell-menu--title">Add Another Panel</p>
         <AddButtons index={index} />
       </FlexBox>
+    )
+  }
+
+  if (isFlagEnabled('smallInsert')) {
+    let button
+    if (index === -1) {
+      button = (
+        <div className="insert-wrap" ref={smallButtonRef}>
+          <span>Insert Panel Here</span>
+          <SquareButton
+            icon={IconFont.Plus_New}
+            size={ComponentSize.ExtraSmall}
+            color={ComponentColor.Secondary}
+            testID={`panel-add-btn-${index}`}
+            className="flow-divider--button"
+            active={popoverVisible.current}
+          />
+        </div>
+      )
+    } else {
+      button = (
+        <div className="insert-wrap" ref={smallButtonRef}>
+          <span>Insert Panel Below</span>
+          <SquareButton
+            icon={IconFont.ArrowDown_New}
+            size={ComponentSize.ExtraSmall}
+            color={ComponentColor.Secondary}
+            testID={`panel-add-btn-${index}`}
+            className="flow-divider--button"
+            active={popoverVisible.current}
+          />
+        </div>
+      )
+    }
+    return (
+      <div className="small-flow-divider" ref={dividerRef}>
+        {button}
+
+        <Popover
+          enableDefaultStyles={false}
+          appearance={Appearance.Outline}
+          color={ComponentColor.Secondary}
+          triggerRef={smallButtonRef}
+          position={PopoverPosition.ToTheRight}
+          onShow={handlePopoverShow}
+          onHide={handlePopoverHide}
+          contents={onHide => (
+            <FlexBox
+              direction={FlexDirection.Column}
+              alignItems={AlignItems.Stretch}
+              margin={ComponentSize.Small}
+              className="insert-cell-menu"
+            >
+              <p className="insert-cell-menu--title">Insert Panel Here</p>
+              <AddButtons index={index} onInsert={onHide} />
+            </FlexBox>
+          )}
+        />
+      </div>
     )
   }
 

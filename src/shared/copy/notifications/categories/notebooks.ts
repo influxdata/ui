@@ -55,10 +55,10 @@ export const csvUploadCancelled = (): Notification => ({
 
 export const publishNotebookSuccessful = (name: string): Notification => ({
   ...defaultSuccessNotification,
-  message: `Successfully published ${name}`,
+  message: `Successfully saved this version to ${name}'s version history.`,
 })
 
 export const publishNotebookFailed = (name: string): Notification => ({
   ...defaultErrorNotification,
-  message: `Failed to publish ${name}`,
+  message: `Failed to save this version to ${name}'s version history`,
 })

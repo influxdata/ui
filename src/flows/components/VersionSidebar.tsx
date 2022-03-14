@@ -50,16 +50,12 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
   const {flow} = useContext(FlowContext)
   const {id: orgID} = useSelector(getOrg)
 
-  const isDraft = version.id === 'draft'
-
   const handleClick = () => {
-    let route = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${flow.id}`
-
-    if (!isDraft) {
-      route = `${route}/versions/${version.id}`
-    }
-
-    history.push(route)
+    history.push(
+      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
+        flow.id
+      }/versions/${version.id}`
+    )
   }
 
   const handleRevert = async () => {
@@ -121,7 +117,7 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
 
   return (
     <List.Item
-      selected={!isDraft && id === version.id}
+      selected={id === version.id}
       onClick={handleClick}
       backgroundColor={InfluxColors.Grey15}
       className="version-sidebar--listitem"
@@ -133,43 +129,36 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
         <h6 className="published-date--text">
           {new Date(version.publishedAt).toLocaleString()}
         </h6>
-        {isDraft && <h6 className="current-version--text">Current version</h6>}
-        {!isDraft && (
-          <h6 className="published-by--text">{version.publishedBy}</h6>
-        )}
+        <h6 className="published-by--text">{version.publishedBy}</h6>
       </FlexBox>
-      {isDraft === false && (
-        <>
-          <Icon
-            glyph={IconFont.More}
-            ref={triggerRef}
-            style={{color: InfluxColors.White}}
-          />
-          <Popover
-            triggerRef={triggerRef}
-            enableDefaultStyles={false}
-            style={{minWidth: 209}}
-            showEvent={PopoverInteraction.Click}
-            hideEvent={PopoverInteraction.Click}
-            contents={onHide => (
-              <List>
-                {menuItems.map(item => (
-                  <List.Item
-                    key={item.title}
-                    onClick={() => {
-                      item?.onClick()
-                      onHide()
-                    }}
-                  >
-                    <Icon glyph={item?.icon} />
-                    <span style={{paddingLeft: '10px'}}>{item?.title}</span>
-                  </List.Item>
-                ))}
-              </List>
-            )}
-          />
-        </>
-      )}
+      <Icon
+        glyph={IconFont.More}
+        ref={triggerRef}
+        style={{color: InfluxColors.White}}
+      />
+      <Popover
+        triggerRef={triggerRef}
+        enableDefaultStyles={false}
+        style={{minWidth: 209}}
+        showEvent={PopoverInteraction.Click}
+        hideEvent={PopoverInteraction.Click}
+        contents={onHide => (
+          <List>
+            {menuItems.map(item => (
+              <List.Item
+                key={item.title}
+                onClick={() => {
+                  item?.onClick()
+                  onHide()
+                }}
+              >
+                <Icon glyph={item?.icon} />
+                <span style={{paddingLeft: '10px'}}>{item?.title}</span>
+              </List.Item>
+            ))}
+          </List>
+        )}
+      />
     </List.Item>
   )
 }
@@ -186,6 +175,14 @@ export const VersionSidebar: FC = () => {
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${flow.id}`
     )
+  }
+
+  const hasDraft = versions[0]?.id === 'draft'
+
+  const trimmedVersions = versions.slice()
+
+  if (hasDraft) {
+    trimmedVersions.splice(0, 1)
   }
 
   return (
@@ -206,8 +203,16 @@ export const VersionSidebar: FC = () => {
           thumbStartColor="gray"
         >
           <div className="version-sidebar--submenu-wrapper">
+            {hasDraft && (
+              <Button
+                icon={IconFont.ArrowLeft_New}
+                text="Back to Current Version"
+                onClick={handleClose}
+                className="version-sidebar--back-btn"
+              />
+            )}
             <List>
-              {versions.map(version => (
+              {trimmedVersions.map(version => (
                 <React.Fragment key={version.id}>
                   <VersionSidebarListItem version={version} />
                   <List.Divider style={{margin: 0}} />

@@ -28,7 +28,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
   formContent: {
     name: '',
     description: '',
-    protocol: 'MQTT',
+    protocol: 'mqtt',
     brokerHost: '',
     brokerPort: 0,
     brokerUsername: '',

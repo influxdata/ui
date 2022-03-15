@@ -67,7 +67,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                 updateForm({...formContent})
               }}
               confirmationButtonText="Confirm"
-              testID="json-delete-label"
+              testID={`${tagType}-json-delete-label`}
             />
           )}
         </div>
@@ -113,7 +113,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                 }}
                 status={status}
                 maxLength={16}
-                testID="json-parsing--name"
+                testID={`${tagType}-json-parsing-name`}
               />
             )}
           </Form.ValidationElement>
@@ -124,7 +124,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                 <Dropdown.Button
                   active={active}
                   onClick={onClick}
-                  testID="variable-type-dropdown--button"
+                  testID={`${tagType}-json-parsing-type`}
                 >
                   {dataType}
                 </Dropdown.Button>
@@ -143,7 +143,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                           : (formContent.jsonFieldKeys[itemNum].type = d)
                       }}
                       selected={dataType === d}
-                      testID={`variable-type-dropdown-${1}`}
+                      testID={`${tagType}-json-parsing-type-${1}`}
                     >
                       {d}
                     </Dropdown.Item>
@@ -191,7 +191,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
               }}
               status={status}
               maxLength={16}
-              testID="json-parsing--jsonpath"
+              testID={`${tagType}-json-parsing-path`}
             />
           )}
         </Form.ValidationElement>

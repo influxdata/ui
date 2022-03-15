@@ -1,7 +1,6 @@
 // Libraries
 import React, {PureComponent, FC, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import memoizeOne from 'memoize-one'
 
 // Components
 import {ResourceList} from '@influxdata/clockface'
@@ -27,57 +26,6 @@ interface OwnProps {
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
-
-class CollectorList_F extends PureComponent<Props> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
-
-  public render() {
-    const {emptyState} = this.props
-
-    return (
-      <ResourceList>
-        <ResourceList.Body emptyState={emptyState}>
-          {this.collectorsList}
-        </ResourceList.Body>
-      </ResourceList>
-    )
-  }
-
-  public get collectorsList(): JSX.Element[] {
-    const {
-      collectors,
-      sortKey,
-      sortDirection,
-      sortType,
-      onDeleteTelegraf,
-      onUpdateTelegraf,
-      onFilterChange,
-    } = this.props
-
-    const sortedCollectors = this.memGetSortedResources(
-      collectors,
-      sortKey,
-      sortDirection,
-      sortType
-    )
-
-    if (collectors !== undefined) {
-      return sortedCollectors.map(collector => (
-        <CollectorRow
-          key={collector.id}
-          collector={collector}
-          onDelete={(telegraf: Telegraf) =>
-            onDeleteTelegraf(telegraf.id, telegraf.name)
-          }
-          onUpdate={onUpdateTelegraf}
-          onFilterChange={onFilterChange}
-        />
-      ))
-    }
-  }
-}
 
 const CollectorList: FC<Props> = React.memo(
   ({

@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 
-//Components
+// Components
 import SubscriptionCard from 'src/writeData/subscriptions/components/SubscriptionCard'
 
 // Types

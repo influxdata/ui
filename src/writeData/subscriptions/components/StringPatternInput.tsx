@@ -57,8 +57,8 @@ const StringPatternInput: FC<Props> = ({
             {name}
           </Heading>
           {(tagType
-            ? !(formContent.stringTags.length == 1)
-            : !(formContent.stringFields.length == 1)) && (
+            ? !(formContent.stringTags.length === 1)
+            : !(formContent.stringFields.length === 1)) && (
             <ConfirmationButton
               color={ComponentColor.Colorless}
               icon={IconFont.Trash_New}
@@ -74,7 +74,7 @@ const StringPatternInput: FC<Props> = ({
                 updateForm({...formContent})
               }}
               confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
+              testID="json-delete-label"
             />
           )}
         </FlexBox>

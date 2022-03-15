@@ -52,13 +52,13 @@ const SubscriptionsLanding: FC = () => {
           <Page.ControlBarLeft>
             <SearchWidget
               placeholderText="Filter subscriptions..."
-              searchTerm={''}
+              searchTerm=""
               onSearch={() => {}}
             />
             <ResourceSortDropdown
               resourceType={ResourceType.Subscriptions}
               sortDirection={Sort.Ascending}
-              sortKey={'name'}
+              sortKey="name"
               sortType={SortTypes.String}
               onSelect={() => {}}
             />
@@ -74,7 +74,7 @@ const SubscriptionsLanding: FC = () => {
                 )
               }}
               status={ComponentStatus.Default}
-              titleText={''}
+              titleText=""
               testID="create-subscription-button"
             />
           </Page.ControlBarRight>

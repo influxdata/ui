@@ -1,3 +1,4 @@
+@import '@influxdata/clockface/dist/variables.scss';
 .subscriptions-landing {
   .cf-empty-state--md {
     padding-top: 246px;
@@ -6,7 +7,7 @@
     overflow: unset;
   }
   .subscriptions-list {
-    padding-top: 32px;
+    padding-top: $cf-space-l;
   }
   .cf-page__gutter-md .cf-page-control-bar--fluid {
     padding: 0;

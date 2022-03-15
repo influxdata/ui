@@ -23,10 +23,7 @@ const EmptySubscriptionState: FC = () => {
   const org = useSelector(getOrg)
   const history = useHistory()
   return (
-    <EmptyState
-      size={ComponentSize.Medium}
-      testID={'subscriptions-empty-state'}
-    >
+    <EmptyState size={ComponentSize.Medium} testID="subscriptions-empty-state">
       <EmptyState.Text>
         Collect data from an external cloud source with a{' '}
         <b>Cloud Native Subscription</b>.
@@ -39,7 +36,7 @@ const EmptySubscriptionState: FC = () => {
           history.push(`/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/create`)
         }}
         status={ComponentStatus.Default}
-        titleText={''}
+        titleText=""
         testID="create-subscription-button"
       />
     </EmptyState>

@@ -115,7 +115,12 @@ class BucketsTab extends PureComponent<Props, State> {
             >
               <FilterBuckets
                 searchTerm={searchTerm}
-                searchKeys={['name', 'readableRetention', 'labels[].name']}
+                searchKeys={[
+                  'id',
+                  'labels[].name',
+                  'name',
+                  'readableRetention',
+                ]}
                 list={buckets}
               >
                 {bs => (

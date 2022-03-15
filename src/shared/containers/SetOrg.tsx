@@ -232,14 +232,14 @@ const SetOrg: FC = () => {
             />
           )}
 
-          {isFlagEnabled('subscriptionsResourceType') && (
+          {CLOUD && isFlagEnabled('subscriptionsResourceType') && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/create`}
               component={CreateSubscriptionForm}
             />
           )}
 
-          {isFlagEnabled('subscriptionsResourceType') && (
+          {CLOUD && isFlagEnabled('subscriptionsResourceType') && (
             <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
               component={SubscriptionsLanding}

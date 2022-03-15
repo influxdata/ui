@@ -24,7 +24,7 @@ export const SubscriptionListContext = React.createContext<
 export const SubscriptionListProvider: FC = ({children}) => {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(null)
   const getAll = useCallback(async (): Promise<void> => {
-    const data = await getAllAPI({})
+    const data = await getAllAPI()
     if (Array.isArray(data)) {
       setSubscriptions(data)
     }

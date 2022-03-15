@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState, useRef} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -28,6 +28,7 @@ import {
   AlignItems,
   FlexDirection,
 } from '@influxdata/clockface'
+import UserInput from 'src/writeData/subscriptions/components/UserInput'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -60,17 +61,8 @@ const BrokerForm: FC<Props> = ({
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
   const [security, setSecurity] = useState('none')
-  // form validation component is in an err
-  // state once the value changes
-  // this fixes it for initial render
-  // later forms are stuck in an inital validation
-  // state though
-  const didMount = useRef(false)
   useEffect(() => {
-    if (didMount.current) {
-      updateForm({...formContent, protocol: protocol.toLowerCase()})
-    }
-    didMount.current = true
+    updateForm({...formContent, protocol: protocol.toLowerCase()})
   }, [protocol])
   return (
     formContent && (
@@ -290,7 +282,7 @@ const BrokerForm: FC<Props> = ({
                       onClick={() => {
                         setSecurity('none')
                       }}
-                      value={'none'}
+                      value="none"
                       titleText="None"
                       disabled={false}
                     >
@@ -304,7 +296,7 @@ const BrokerForm: FC<Props> = ({
                       onClick={() => {
                         setSecurity('user')
                       }}
-                      value={'user'}
+                      value="user"
                       titleText="User"
                       disabled={false}
                     >
@@ -327,43 +319,10 @@ const BrokerForm: FC<Props> = ({
                     </SelectGroup.Option> */}
                   </SelectGroup>
                   {security === 'user' && (
-                    <FlexBox
-                      alignItems={AlignItems.FlexStart}
-                      direction={FlexDirection.Row}
-                      margin={ComponentSize.Large}
-                      className="create-broker-form__creds"
-                    >
-                      <Form.Element label="Username">
-                        <Input
-                          type={InputType.Text}
-                          placeholder="userName"
-                          name="username"
-                          value={formContent.brokerUsername}
-                          onChange={e =>
-                            updateForm({
-                              ...formContent,
-                              brokerUsername: e.target.value,
-                            })
-                          }
-                          testID="create-broker-form--username"
-                        />
-                      </Form.Element>
-                      <Form.Element label="Password">
-                        <Input
-                          type={InputType.Text}
-                          placeholder="*********"
-                          name="password"
-                          value={formContent.brokerPassword}
-                          onChange={e =>
-                            updateForm({
-                              ...formContent,
-                              brokerPassword: e.target.value,
-                            })
-                          }
-                          testID="create-broker-form--password"
-                        />
-                      </Form.Element>
-                    </FlexBox>
+                    <UserInput
+                      formContent={formContent}
+                      updateForm={updateForm}
+                    />
                   )}
                 </Grid.Column>
               </Grid.Row>
@@ -381,7 +340,7 @@ const BrokerForm: FC<Props> = ({
               testID="create-broker-form--cancel"
             />
             <Button
-              text={'Next'}
+              text="Next"
               color={ComponentColor.Success}
               onClick={() => {
                 setFormActive('subscription')

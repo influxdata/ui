@@ -37,23 +37,21 @@ interface Props {
 const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
+  const defaultStringFieldTag = {
+    name: '',
+    pattern: '',
+  }
   useEffect(() => {
     if (rule === 'field') {
       formContent.stringFields = [
         ...formContent.stringFields,
-        {
-          name: '',
-          pattern: '',
-        },
+        defaultStringFieldTag,
       ]
     }
     if (rule === 'tag') {
       formContent.stringTags = [
         ...formContent.stringTags,
-        {
-          name: '',
-          pattern: '',
-        },
+        defaultStringFieldTag,
       ]
     }
     updateForm({...formContent})

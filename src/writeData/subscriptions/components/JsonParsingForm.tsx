@@ -41,25 +41,22 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
   const [dataTypeM, setDataTypeM] = useState(stringType)
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
+  const defaultJsonFieldTag = {
+    name: '',
+    path: '',
+    type: 'string',
+  }
   useEffect(() => {
     if (rule === 'field') {
       formContent.jsonFieldKeys = [
         ...formContent.jsonFieldKeys,
-        {
-          name: '',
-          path: '',
-          type: 'string',
-        },
+        defaultJsonFieldTag,
       ]
     }
     if (rule === 'tag') {
       formContent.jsonTagKeys = [
         ...formContent.jsonTagKeys,
-        {
-          name: '',
-          path: '',
-          type: 'string',
-        },
+        defaultJsonFieldTag,
       ]
     }
     updateForm({...formContent})
@@ -71,7 +68,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
         <Form.Label label="JSON Path to Timestamp" />
         <Input
           type={InputType.Text}
-          placeholder="eg. myJSON.myObject[0].timestampKey"
+          placeholder="eg. $.myJSON.myObject[0].timestampKey"
           name="timestamp"
           autoFocus={true}
           value={formContent.jsonTimestamp.path}
@@ -182,7 +179,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           {status => (
             <Input
               type={InputType.Text}
-              placeholder="eg. myJSON.myObject[0].myKey"
+              placeholder="eg. $.myJSON.myObject[0].myKey"
               name="jsonpath"
               autoFocus={true}
               value={formContent.jsonMeasurementKey.path}

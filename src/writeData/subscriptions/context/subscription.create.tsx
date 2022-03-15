@@ -1,34 +1,35 @@
 // Libraries
-import React, {FC, useState, useCallback, useEffect} from 'react'
+import React, {FC, useState, useCallback} from 'react'
 import {createAPI} from 'src/writeData/subscriptions/context/api'
-import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Utils
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {getOrg} from 'src/organizations/selectors'
 import {sanitizeForm} from '../utils/form'
+import {notify} from 'src/shared/actions/notifications'
 
 // Types
 import {RemoteDataState} from 'src/types'
 import {Subscription} from 'src/types/subscriptions'
+import {subscriptionCreateFail} from 'src/shared/copy/notifications'
 
 export interface SubscriptionCreateContextType {
   create: () => void
   formContent: Subscription
-  formComplete: boolean
-  setFormComplete: (boolean) => void
+  saveForm: (formContent) => void
   updateForm: (formContent) => void
   loading: RemoteDataState
 }
 
 export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
   create: () => {},
-  formComplete: false,
+  saveForm: () => {},
   formContent: {
     name: '',
     description: '',
-    protocol: 'MQTT',
+    protocol: 'mqtt',
     brokerHost: '',
     brokerPort: 0,
     brokerUsername: '',
@@ -84,7 +85,6 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     bucket: 'nifi',
     qos: 0,
   },
-  setFormComplete: () => {},
   updateForm: () => {},
   loading: RemoteDataState.NotStarted,
 } as SubscriptionCreateContextType
@@ -95,21 +95,19 @@ export const SubscriptionCreateContext = React.createContext<
 
 export const SubscriptionCreateProvider: FC = ({children}) => {
   const [formContent, setFormContent] = useState(DEFAULT_CONTEXT.formContent)
-  const [formComplete, setFormComplete] = useState(false)
   const [loading, setLoading] = useState(RemoteDataState.Done)
   const history = useHistory()
   const org = useSelector(getOrg)
+  const dispatch = useDispatch()
   const create = (formContent?: Subscription): any => {
     setLoading(RemoteDataState.Loading)
     createAPI({data: formContent})
       .then(() => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-        console.log('success')
       })
       .catch(() => {
-        setLoading(RemoteDataState.Error)
-        console.log('failure')
+        dispatch(notify(subscriptionCreateFail()))
       })
   }
 
@@ -122,22 +120,18 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
     },
     [formContent] // eslint-disable-line react-hooks/exhaustive-deps
   )
-
-  useEffect(() => {
-    if (formComplete) {
-      sanitizeForm(formContent)
-      create(formContent)
-    }
-  }, [formComplete])
+  const saveForm = (formContent?: Subscription): void => {
+    sanitizeForm(formContent)
+    create(formContent)
+  }
 
   return (
     <SubscriptionCreateContext.Provider
       value={{
         create,
         formContent,
-        formComplete,
         updateForm,
-        setFormComplete,
+        saveForm,
         loading,
       }}
     >

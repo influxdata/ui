@@ -50,8 +50,8 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
             {name}
           </Heading>
           {(tagType
-            ? !(formContent.jsonTagKeys.length == 1)
-            : !(formContent.jsonFieldKeys.length == 1)) && (
+            ? !(formContent.jsonTagKeys.length === 1)
+            : !(formContent.jsonFieldKeys.length === 1)) && (
             <ConfirmationButton
               color={ComponentColor.Colorless}
               icon={IconFont.Trash_New}
@@ -67,7 +67,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                 updateForm({...formContent})
               }}
               confirmationButtonText="Confirm"
-              testID={`json-delete-label`}
+              testID="json-delete-label"
             />
           )}
         </div>
@@ -78,7 +78,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
           className="json-parsing-form__container"
         >
           <Form.ValidationElement
-            label={'Name'}
+            label="Name"
             value={
               tagType
                 ? formContent.jsonTagKeys[itemNum].name
@@ -139,8 +139,8 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                       onClick={() => {
                         setDataType(d)
                         tagType
-                          ? (formContent.jsonTagKeys[itemNum].name = d)
-                          : (formContent.jsonFieldKeys[itemNum].name = d)
+                          ? (formContent.jsonTagKeys[itemNum].type = d)
+                          : (formContent.jsonFieldKeys[itemNum].type = d)
                       }}
                       selected={dataType === d}
                       testID={`variable-type-dropdown-${1}`}
@@ -175,7 +175,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
           {status => (
             <Input
               type={InputType.Text}
-              placeholder="eg. myJSON.myObject[0].myKey"
+              placeholder="eg. $.myJSON.myObject[0].myKey"
               name="jsonpath"
               autoFocus={true}
               value={

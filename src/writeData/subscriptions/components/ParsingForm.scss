@@ -1,26 +1,30 @@
+@import '@influxdata/clockface/dist/variables.scss';
 .create-parsing-form {
   float: right;
   width: 75%;
   .cf-overlay--header {
     justify-content: unset;
   }
+  .cf-form--wrapper {
+    padding-bottom: $cf-space-xl;
+  }
   &__text {
-    color: #f1f1f3;
+    color: $cf-grey-95;
   }
   &__header {
     text-transform: uppercase;
-    margin-top: 64px;
-    margin-bottom: 32px;
+    margin-top: $cf-space-2xl;
+    margin-bottom: $cf-space-l;
   }
   &__premium-container {
-    margin-left: 18px;
+    margin-left: $cf-space-s;
     .cf-icon {
       background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
     &__text {
-      margin-left: 14px;
+      margin-left: $cf-space-s;
       text-transform: uppercase;
       background: -webkit-linear-gradient(45deg, #00a3ff 0%, #34bb55 100%);
       -webkit-background-clip: text;
@@ -28,9 +32,9 @@
     }
   }
   &__upgrade-button {
-    background: linear-gradient(45deg, #0098f0 0%, #513cc6 100%) !important;
-    color: #fff;
-    padding: 0 12px;
+    background: linear-gradient(45deg, #0098f0 0%, $c-pulsar 100%) !important;
+    color: $cf-white;
+    padding: 0 $cf-space-xs;
     height: 40px;
     font-weight: 500;
     font-family: 'Rubik', Helvetica, Arial, Tahoma, Verdana, sans-serif;

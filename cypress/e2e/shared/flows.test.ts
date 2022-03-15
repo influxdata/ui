@@ -258,7 +258,7 @@ describe('Flows', () => {
       cy.getByTestID(`context-menu-flow`).click()
     })
     cy.getByTestID(`context-clone-flow`).click()
-    cy.getByTestID('time-machine-submit-button').should('exist')
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
 
     const clone = `${flowName} (clone 1)`
 
@@ -269,7 +269,7 @@ describe('Flows', () => {
     cy.clickNavBarItem('nav-item-flows')
 
     cy.get('.cf-resource-card').should('have.length', 2)
-    cy.getByTestID('resource-editable-name')
+    cy.get('.cf-resource-editable-name')
       .first()
       .contains(`${clone}`)
 
@@ -278,6 +278,8 @@ describe('Flows', () => {
       cy.getByTestID(`context-delete-menu--button`).click()
     })
     cy.getByTestID(`context-delete-menu--confirm-button`).click()
+    cy.getByTestID('notification-success').should('be.visible')
+    cy.getByTestID('notification-success--dismiss').click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
@@ -290,6 +292,7 @@ describe('Flows', () => {
 
     // Should redirect the user to the newly cloned flow
     // Test menu button works
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
     cy.getByTestID('flow-menu-button').click()
 
     // Make sure the delete button is visible
@@ -297,9 +300,11 @@ describe('Flows', () => {
 
     // Delete the cloned flow inside the notebook
     cy.getByTestID('flow-menu-button-delete').click()
+    cy.getByTestID('notification-success').should('be.visible')
 
     cy.get('.cf-resource-card').should('have.length', 1)
-    cy.getByTestID('resource-editable-name').contains(`${flowName}`)
+    cy.get('.cf-resource-editable-name').should('have.length', 1)
+    cy.get('.cf-resource-editable-name').contains(`${flowName}`)
   })
 
   it('should have the same number of flow panels and no presentation panel when presentation mode is off', () => {

@@ -132,3 +132,8 @@ export const getResourcesTokensFailure = (
   ...defaultErrorNotification,
   message: `Failed to fetch all resources for creating ${tokenType}`,
 })
+
+export const getFluxPackagesFailed = (message: string): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to fetch flux functions: ${message}`,
+})

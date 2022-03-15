@@ -173,10 +173,7 @@ const Visualization: FC<PipeProp> = ({Context}) => {
     )
   }
 
-  if (
-    isFlagEnabled('flowErrorThresholds') &&
-    data?.errorThresholds?.length > 0
-  ) {
+  if (data?.errorThresholds?.length > 0) {
     const fieldIndices = {}
 
     data?.errorThresholds.forEach(threshold => {

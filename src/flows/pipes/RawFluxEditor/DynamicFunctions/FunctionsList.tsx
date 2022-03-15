@@ -19,7 +19,6 @@ import {getFluxPackages} from 'src/timeMachine/actions/scriptEditorThunks'
 // Types
 import {RemoteDataState} from 'src/types'
 import {AppState} from 'src/types'
-import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 interface OwnProps {
   onSelect: (fn) => void
 }
@@ -42,13 +41,15 @@ const FunctionsList: FC<Props> = (props: Props) => {
     RemoteDataState.NotStarted
   )
 
+  const {fluxFunctions, getFluxPackages} = props
+
   useEffect(() => {
     const getFluxFuncs = async () => {
       try {
         setfluxLoadingState(RemoteDataState.Loading)
 
-        if (props.fluxFunctions.length === 0) {
-          await props.getFluxPackages()
+        if (fluxFunctions.length === 0) {
+          await getFluxPackages()
           setfluxLoadingState(RemoteDataState.Done)
         }
         setfluxLoadingState(RemoteDataState.Done)
@@ -60,23 +61,25 @@ const FunctionsList: FC<Props> = (props: Props) => {
     getFluxFuncs()
   }, [])
 
-  const sortedFunctions = props.fluxFunctions.sort((a, b) => {
-    if (a.package.toLowerCase() === b.package.toLowerCase()) {
-      return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
-    } else {
-      return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1
-    }
-  })
-
-  const filteredFunctions = useMemo(
+  const sortedFunctions = useMemo(
     () =>
-    sortedFunctions.filter(fn => {
-        return (
-          !search.length || fn.name.toLowerCase().includes(search.toLowerCase()) || fn.package.toLowerCase().includes(search.toLowerCase())
-        )
+      fluxFunctions.sort((a, b) => {
+        if (a.package.toLowerCase() === b.package.toLowerCase()) {
+          return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
+        } else {
+          return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1
+        }
       }),
-    [search, sortedFunctions]
+    [fluxFunctions]
   )
+
+  const filteredFunctions = sortedFunctions.filter(fn => {
+    return (
+      !search.length ||
+      fn.name.toLowerCase().includes(search.toLowerCase()) ||
+      fn.package.toLowerCase().includes(search.toLowerCase())
+    )
+  })
 
   return useMemo(() => {
     let fnComponent
@@ -122,7 +125,7 @@ const FunctionsList: FC<Props> = (props: Props) => {
         </div>
       </SpinnerContainer>
     )
-  }, [search, onselect, filteredFunctions, fluxLoadingState, updateSearch])
+  }, [filteredFunctions, fluxLoadingState, onselect, search, updateSearch])
 }
 
 const mstp = (state: AppState) => {

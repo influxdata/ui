@@ -38,12 +38,12 @@ const CollectorList: FC<Props> = React.memo(
     onDeleteTelegraf,
     onUpdateTelegraf,
   }) => {
-    const collectorsList = (): JSX.Element[] => {
-      const sortedCollectors = useMemo(
-        () => getSortedResources(collectors, sortKey, sortDirection, sortType),
-        [collectors, sortKey, sortDirection, sortType]
-      )
+    const sortedCollectors = useMemo(
+      () => getSortedResources(collectors, sortKey, sortDirection, sortType),
+      [collectors, sortKey, sortDirection, sortType]
+    )
 
+    const collectorsList = (): JSX.Element[] => {
       if (collectors !== undefined) {
         return sortedCollectors.map(collector => (
           <CollectorRow

@@ -36,13 +36,27 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
+    // "Add Another Panel" menu is present and there is a Query Builder button
+    cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 1)
+
     cy.getByTestID('sidebar-button')
       .first()
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
+
+    // Opening the menu adds another Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
+
+    // Click the newest Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder')
+      .last()
+      .click()
+
     cy.getByTestID('selector-list defbuck')
       .first()
       .click()
@@ -51,48 +65,11 @@ describe('Flows', () => {
       .click()
 
     cy.getByTestID('time-machine-submit-button').click()
-
-    cy.getByTestID('panel-add-btn-1').click()
-
-    cy.getByTestID('add-flow-btn--visualization').click()
-  })
-
-  // NOTE: we are hiding the metric selector from users for now
-  it.skip('can create a bucket from the metric selector and verify it is selected', () => {
-    const newBucketName = 'IDontGiveABuck'
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
-
-    cy.getByTestID('time-machine-submit-button').should('be.visible')
-    cy.getByTestID('page-title')
-      .first()
-      .click()
-    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
-
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
-    cy.getByTestID('Delete--list-item').click()
-
-    cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector')
-      .click()
-      .then(() => {
-        cy.getByTestID('flow-bucket-selector--create').click()
-      })
-
-    cy.getByTestID('overlay').should('exist')
-
-    cy.getByTestID('bucket-form-name').type(newBucketName)
-    cy.getByTestID('bucket-form-submit')
-      .click()
-      .then(() => {
-        cy.getByTestID('flow-bucket-selector').within(() => {
-          cy.contains(newBucketName).should('exist')
-        })
-      })
+    cy.get('.flow-visualization--view .visualization--simple-table').should(
+      'have.length',
+      1
+    )
+    cy.getByTestID('giraffe-layer-line').should('have.length', 1)
   })
 
   it('can execute preview, see results, change tags, execute preview, see different results', () => {
@@ -121,15 +98,29 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
 
-    // select our bucket
+    // "Add Another Panel" menu is present and there is a Query Builder button
+    cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 1)
+
+    // Delete the first panel
     cy.getByTestID('sidebar-button')
       .first()
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
 
-    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    // Opening the menu adds another Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
+
+    // Click the newest Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder')
+      .last()
+      .click()
+
+    // select our bucket
     cy.getByTestID('bucket-selector').within(() => {
       cy.getByTestID('selector-list lets goooo').click()
     })
@@ -198,22 +189,30 @@ describe('Flows', () => {
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
-    cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
 
     cy.getByTestID('page-title')
       .first()
       .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
-    // select our bucket
     cy.getByTestID('sidebar-button')
       .first()
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
 
-    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    // Opening the menu adds another Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
+
+    // Click the newest Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder')
+      .last()
+      .click()
+
+    // select our bucket
     cy.getByTestID('bucket-selector').within(() => {
       cy.getByTestID(`selector-list ${newBucketName}`).click()
     })
@@ -235,8 +234,6 @@ describe('Flows', () => {
       .within(() => {
         cy.getByTestID(`selector-list beans`).click()
       })
-
-    cy.wait('@updateNotebook')
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -261,7 +258,7 @@ describe('Flows', () => {
       cy.getByTestID(`context-menu-flow`).click()
     })
     cy.getByTestID(`context-clone-flow`).click()
-    cy.getByTestID('time-machine-submit-button').should('exist')
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
 
     const clone = `${flowName} (clone 1)`
 
@@ -272,7 +269,7 @@ describe('Flows', () => {
     cy.clickNavBarItem('nav-item-flows')
 
     cy.get('.cf-resource-card').should('have.length', 2)
-    cy.getByTestID('resource-editable-name')
+    cy.get('.cf-resource-editable-name')
       .first()
       .contains(`${clone}`)
 
@@ -281,6 +278,8 @@ describe('Flows', () => {
       cy.getByTestID(`context-delete-menu--button`).click()
     })
     cy.getByTestID(`context-delete-menu--confirm-button`).click()
+    cy.getByTestID('notification-success').should('be.visible')
+    cy.getByTestID('notification-success--dismiss').click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
@@ -293,6 +292,7 @@ describe('Flows', () => {
 
     // Should redirect the user to the newly cloned flow
     // Test menu button works
+    cy.getByTestID('time-machine-submit-button').should('be.visible')
     cy.getByTestID('flow-menu-button').click()
 
     // Make sure the delete button is visible
@@ -300,12 +300,14 @@ describe('Flows', () => {
 
     // Delete the cloned flow inside the notebook
     cy.getByTestID('flow-menu-button-delete').click()
+    cy.getByTestID('notification-success').should('be.visible')
 
     cy.get('.cf-resource-card').should('have.length', 1)
-    cy.getByTestID('resource-editable-name').contains(`${flowName}`)
+    cy.get('.cf-resource-editable-name').should('have.length', 1)
+    cy.get('.cf-resource-editable-name').contains(`${flowName}`)
   })
 
-  it('should not run Preview when presentation mode is off', () => {
+  it('should have the same number of flow panels and no presentation panel when presentation mode is off', () => {
     const newBucketName = 'shmucket'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -333,15 +335,28 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
-    // select our bucket
+    // "Add Another Panel" menu is present and there is a Query Builder button
+    cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 1)
+
     cy.getByTestID('sidebar-button')
       .first()
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
 
-    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    // Opening the menu adds another Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
+
+    // Click the newest Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder')
+      .last()
+      .click()
+
+    // select our bucket
     cy.getByTestID('bucket-selector').within(() => {
       cy.getByTestID(`selector-list ${newBucketName}`).click()
     })
@@ -373,19 +388,25 @@ describe('Flows', () => {
       .should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
+    // there are exactly 3 Flow panels
+    cy.get('.flow-panel__visible').should('have.length', 3)
+
     // exit the flow, reload, and come back in
     cy.clickNavBarItem('nav-item-flows')
-    cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
     cy.getByTestID('resource-editable-name').should('exist')
     cy.getByTestID('resource-editable-name').click()
 
-    // visualizations should not exist
-    cy.getByTestID('simple-table').should('not.exist')
-    cy.getByTestID('giraffe-inner-plot').should('not.exist')
+    // validation and visualization should exist
+    cy.getByTestID('simple-table').should('exist')
+    cy.getByTestID('giraffe-inner-plot').should('exist')
+
+    // there are still exactly 3 flow panels and no presentation panels
+    cy.get('.flow-panel__visible').should('have.length', 3)
+    cy.get('.presentation-panel').should('not.exist')
   })
 
-  it('should run Preview when presentation mode is on', () => {
+  it('should have a presentation panel and no flow panels when presentation mode is on', () => {
     const newBucketName = 'shmucket'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -413,14 +434,28 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
-    // select our bucket
+    // "Add Another Panel" menu is present and there is a Query Builder button
+    cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 1)
+
     cy.getByTestID('sidebar-button')
       .first()
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
+
+    // Opening the menu adds another Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
+
+    // Click the newest Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder')
+      .last()
+      .click()
+
+    // select our bucket
     cy.getByTestID('bucket-selector').within(() => {
       cy.getByTestID(`selector-list ${newBucketName}`).click()
     })
@@ -452,40 +487,33 @@ describe('Flows', () => {
       .should('be.visible')
     cy.getByTestID('table-cell cool').should('not.exist')
 
-    cy.intercept('PATCH', '**/notebooks/*', req => {
-      if (req.body.spec.readOnly === true) {
-        req.alias = 'notebooksSave'
-      }
-    })
+    // there are exactly 3 Flow panels before turning on presentation mode
+    cy.get('.flow-panel__visible').should('have.length', 3)
 
     // enable presentation mode
     cy.getByTestID('slide-toggle').click()
 
-    // wait for notebook to save
-    cy.wait('@notebooksSave')
-
     // exit the flow, reload, and come back in
     cy.clickNavBarItem('nav-item-flows')
-    cy.reload()
     cy.getByTestID('tree-nav').should('be.visible')
     cy.getByTestID('resource-editable-name').should('exist')
     cy.getByTestID('resource-editable-name').click()
 
-    // visualizations should exist
-    cy.getByTestID('giraffe-inner-plot')
-      .scrollIntoView()
-      .should('be.visible')
+    // visualization should exist but not validation
+    cy.getByTestID('simple-table').should('not.exist')
+    cy.getByTestID('giraffe-inner-plot').should('be.visible')
+
+    // there are no flow panels and exactly 1 presentation panel
+    cy.get('.flow-panel__visible').should('have.length', 0)
+    cy.get('.presentation-panel').should('have.length', 1)
+    cy.get('.presentation-panel').should('be.visible')
   })
 
-  it('should validate all dropdown menuitems', () => {
+  it('should have certain dropdown menu items', () => {
     cy.getByTestID('preset-new')
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
-
-    cy.getByTestID('page-title')
-      .first()
-      .click()
 
     const defaultMenuItems = ['Delete', 'Duplicate', 'Hide Panel']
     const items = [
@@ -537,10 +565,18 @@ describe('Flows', () => {
     cy.intercept('/api/v2/orgs/*/secrets').as('fetchSecrets')
 
     items.forEach(item => {
-      cy.getByTestID('panel-add-btn--1').click()
-      // ugh.. cypress being cypress with ``
-      const panelTestId = 'add-flow-btn--' + item.panel
-      cy.getByTestID(panelTestId).click()
+      cy.get('.flow-divider--button')
+        .first()
+        .click()
+
+      // "Add Another Panel" menu is present and there is a duplicate of each button
+      cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
+      cy.getByTestID(`add-flow-btn--${item.panel}`).should('have.length', 2)
+
+      // Click the newest button from opening the panel button
+      cy.getByTestID(`add-flow-btn--${item.panel}`)
+        .last()
+        .click()
       if (item.panel === 'queryBuilder') {
         cy.wait('@fetchAllBuckets')
       } else if (item.panel === 'notification') {
@@ -555,8 +591,9 @@ describe('Flows', () => {
         .find('.flow-sidebar--dropdownmenu-container')
         .children()
         .should('have.length.gte', item.menuItems.length)
+
       item.menuItems.forEach(menuItem => {
-        cy.getByTestID(menuItem + '--list-item').should('be.visible')
+        cy.getByTestID(`${menuItem}--list-item`).should('be.visible')
       })
     })
   })

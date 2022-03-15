@@ -1,6 +1,6 @@
 import {Organization} from '../../../src/types'
 
-import * as Wrapper from '../../../src/utils/wrappers'
+import {redirect} from '../../../src/utils/wrappers'
 
 const setup = (cy, numAccounts: number) => {
   cy.flush().then(() => {
@@ -14,6 +14,7 @@ const setup = (cy, numAccounts: number) => {
             accountType: 'free',
             numAccounts,
           }).then(() => {
+            redirect = cy.stub()
             cy.visit(`/orgs/${id}/accounts/settings`)
           })
         })
@@ -121,7 +122,6 @@ describe('Account Page tests', () => {
     })
 
     it('can delete the account from the organization', () => {
-      const redirectStub = cy.stub(Wrapper, 'redirect')
       cy.get('@org').then(({id}: Organization) => {
         cy.visit(`/orgs/${id}/about`)
 
@@ -145,7 +145,7 @@ describe('Account Page tests', () => {
               .click()
               .then(() => {
                 // eslint-disable-next-line @typescript-eslint/unbound-method
-                expect(redirectStub).to.be.calledWith(
+                expect(redirect).to.be.calledWith(
                   'https://www.influxdata.com/free_cancel/'
                 )
               })

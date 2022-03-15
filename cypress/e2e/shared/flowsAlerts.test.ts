@@ -22,6 +22,7 @@ describe('flows alert panel', () => {
       )
     )
   )
+
   it('should build expressions list and allow for injection', () => {
     const newBucketName = 'shmucket'
     const now = Date.now()
@@ -50,14 +51,24 @@ describe('flows alert panel', () => {
       .click()
     cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
 
-    // select our bucket, measurement, field and tag
     cy.getByTestID('sidebar-button')
       .first()
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
+
+    // opening the menu adds another Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
+
+    // click the newest Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder')
+      .last()
+      .click()
+
+    // select our bucket, measurement, field and tag
     cy.getByTestID('bucket-selector').within(() => {
       cy.getByTestID(`selector-list ${newBucketName}`).click()
     })
@@ -80,9 +91,16 @@ describe('flows alert panel', () => {
         cy.getByTestID(`selector-list beans`).click()
       })
 
-    // add an alert cell
-    cy.getByTestID('panel-add-btn-2').click()
-    cy.getByTestID('add-flow-btn--notification').click()
+    // add an alert cell using the last flow panel
+    cy.get('.flow-divider--button')
+      .last()
+      .click()
+
+    // there are 2 Alert buttons, click the newest from menu that opened
+    cy.getByTestID('add-flow-btn--notification').should('have.length', 2)
+    cy.getByTestID('add-flow-btn--notification')
+      .last()
+      .click()
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('notification-exp-button').scrollIntoView()
     cy.getByTestID('text-editor').should('be.visible')
@@ -154,8 +172,18 @@ describe('flows alert panel', () => {
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--queryBuilder').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
+
+    // opening the menu adds another Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
+
+    // click the newest Query Builder button
+    cy.getByTestID('add-flow-btn--queryBuilder')
+      .last()
+      .click()
+
     cy.getByTestID('bucket-selector').within(() => {
       cy.getByTestID(`selector-list ${newBucketName}`).click()
     })
@@ -178,9 +206,16 @@ describe('flows alert panel', () => {
         cy.getByTestID(`selector-list beans`).click()
       })
 
-    // add an alert cell
-    cy.getByTestID('panel-add-btn-2').click()
-    cy.getByTestID('add-flow-btn--notification').click()
+    // add an alert cell using the last flow panel
+    cy.get('.flow-divider--button')
+      .last()
+      .click()
+
+    // there are 2 Alert buttons, click the newest from menu that opened
+    cy.getByTestID('add-flow-btn--notification').should('have.length', 2)
+    cy.getByTestID('add-flow-btn--notification')
+      .last()
+      .click()
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('notification-exp-button').scrollIntoView()
     cy.getByTestID('text-editor').should('be.visible')

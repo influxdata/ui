@@ -72,7 +72,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
             updateForm({...formContent})
           }}
           maxLength={56}
-          testID="string-parsing--timestamp"
+          testID="timestamp-string-parsing"
         />
       </Grid.Column>
       <Grid.Column>
@@ -111,7 +111,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               }}
               status={status}
               maxLength={56}
-              testID="string-parsing--regex"
+              testID="measurment-string-parsing-pattern"
             />
           )}
         </Form.ValidationElement>
@@ -141,7 +141,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
             <Dropdown.Button
               active={active}
               onClick={onClick}
-              testID="variable-type-dropdown--button"
+              testID="string-parsing-add-rule"
             >
               <Icon glyph={IconFont.Plus} /> Add Rule
             </Dropdown.Button>
@@ -157,7 +157,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                     setRule(r)
                   }}
                   selected={rule === r}
-                  testID={`variable-type-dropdown-${1}`}
+                  testID={`string-parsing-add-rule-${1}`}
                 >
                   {r}
                 </Dropdown.Item>

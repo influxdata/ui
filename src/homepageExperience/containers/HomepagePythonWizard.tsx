@@ -56,7 +56,6 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
   }
 
   renderStep = () => {
-    event('firstMile.pythonWizard.currentStep')
     switch (this.state.currentStep) {
       case 1: {
         return <Overview />

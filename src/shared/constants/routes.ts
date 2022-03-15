@@ -40,3 +40,5 @@ export const DEVELOPER_TOOLS = 'developer-tools'
 export const INTEGRATIONS = 'integrations'
 
 export const DATA_EXPLORER = 'data-explorer'
+
+export const SUBSCRIPTIONS = 'subscriptions'

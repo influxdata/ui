@@ -35,3 +35,4 @@ src/client/mapsdRoutes.ts
 src/client/managedFunctionsRoutes.ts
 src/client/pinnedItemRoutes.ts
 src/client/fluxdocsdRoutes.ts
+src/client/subscriptionsRoutes.ts

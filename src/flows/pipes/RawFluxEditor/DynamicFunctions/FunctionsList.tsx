@@ -59,7 +59,7 @@ const FunctionsList: FC<Props> = (props: Props) => {
       }
     }
     getFluxFuncs()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const sortedFunctions = useMemo(
     () =>

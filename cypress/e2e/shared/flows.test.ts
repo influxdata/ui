@@ -72,44 +72,6 @@ describe('Flows', () => {
     cy.getByTestID('giraffe-layer-line').should('have.length', 1)
   })
 
-  // NOTE: we are hiding the metric selector from users for now
-  it.skip('can create a bucket from the metric selector and verify it is selected', () => {
-    const newBucketName = 'IDontGiveABuck'
-    cy.getByTestID('preset-new')
-      .first()
-      .click()
-
-    cy.getByTestID('time-machine-submit-button').should('be.visible')
-    cy.getByTestID('page-title')
-      .first()
-      .click()
-    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
-
-    cy.getByTestID('sidebar-button')
-      .first()
-      .click()
-    cy.getByTestID('Delete--list-item').click()
-
-    cy.getByTestID('panel-add-btn--1').click()
-    cy.getByTestID('add-flow-btn--metricSelector').click()
-    cy.getByTestID('flow-bucket-selector')
-      .click()
-      .then(() => {
-        cy.getByTestID('flow-bucket-selector--create').click()
-      })
-
-    cy.getByTestID('overlay').should('exist')
-
-    cy.getByTestID('bucket-form-name').type(newBucketName)
-    cy.getByTestID('bucket-form-submit')
-      .click()
-      .then(() => {
-        cy.getByTestID('flow-bucket-selector').within(() => {
-          cy.contains(newBucketName).should('exist')
-        })
-      })
-  })
-
   it('can execute preview, see results, change tags, execute preview, see different results', () => {
     const newBucketName = 'lets goooo'
     const now = Date.now()

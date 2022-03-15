@@ -45,7 +45,9 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
@@ -144,7 +146,9 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
@@ -223,7 +227,6 @@ describe('Flows', () => {
       .first()
       .click()
     cy.getByTestID('time-machine-submit-button').should('be.visible')
-    // cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
 
     cy.getByTestID('page-title')
       .first()
@@ -235,7 +238,9 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
@@ -267,8 +272,6 @@ describe('Flows', () => {
       .within(() => {
         cy.getByTestID(`selector-list beans`).click()
       })
-
-    // cy.wait('@updateNotebook')
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -374,7 +377,9 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
@@ -471,7 +476,9 @@ describe('Flows', () => {
       .click()
     cy.getByTestID('Delete--list-item').click()
 
-    cy.getByTestID('panel-add-btn--1').click()
+    cy.get('.flow-divider--button')
+      .first()
+      .click()
 
     // Opening the menu adds another Query Builder button
     cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
@@ -591,7 +598,9 @@ describe('Flows', () => {
     cy.intercept('/api/v2/orgs/*/secrets').as('fetchSecrets')
 
     items.forEach(item => {
-      cy.getByTestID('panel-add-btn--1').click()
+      cy.get('.flow-divider--button')
+        .first()
+        .click()
 
       // "Add Another Panel" menu is present and there is a duplicate of each button
       cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')

@@ -37,7 +37,7 @@ const EmptySubscriptionState: FC = () => {
         }}
         status={ComponentStatus.Default}
         titleText=""
-        testID="create-subscription-button"
+        testID="create-subscription-button--empty"
       />
     </EmptyState>
   )

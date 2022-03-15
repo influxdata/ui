@@ -77,7 +77,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
             updateForm({...formContent})
           }}
           maxLength={56}
-          testID="json-parsing--timestamp"
+          testID="timestamp-json-parsing"
         />
       </Grid.Column>
       <Grid.Column>
@@ -125,7 +125,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 }}
                 status={status}
                 maxLength={16}
-                testID="json-parsing--name"
+                testID="measurement-json-parsing-name"
               />
             )}
           </Form.ValidationElement>
@@ -136,7 +136,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 <Dropdown.Button
                   active={active}
                   onClick={onClick}
-                  testID="variable-type-dropdown--button"
+                  testID="measurement-json-parsing-type"
                 >
                   {dataTypeM}
                 </Dropdown.Button>
@@ -153,7 +153,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                         formContent.jsonMeasurementKey.type = d
                       }}
                       selected={dataTypeM === d}
-                      testID={`variable-type-dropdown-${1}`}
+                      testID={`measurement-json-parsing-type-${1}`}
                     >
                       {d}
                     </Dropdown.Item>
@@ -189,7 +189,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
               }}
               status={status}
               maxLength={56}
-              testID="json-parsing--jsonpath"
+              testID="measurement-json-parsing-path"
             />
           )}
         </Form.ValidationElement>
@@ -219,7 +219,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
             <Dropdown.Button
               active={active}
               onClick={onClick}
-              testID="variable-type-dropdown--button"
+              testID="json-parsing-add-rule"
             >
               <Icon glyph={IconFont.Plus} /> Add Rule
             </Dropdown.Button>
@@ -235,7 +235,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                     setRule(r)
                   }}
                   selected={rule === r}
-                  testID={`variable-type-dropdown-${1}`}
+                  testID={`json-parsing-add-rule-${1}`}
                 >
                   {r}
                 </Dropdown.Item>

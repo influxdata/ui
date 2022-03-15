@@ -75,7 +75,7 @@ const SubscriptionsLanding: FC = () => {
               }}
               status={ComponentStatus.Default}
               titleText=""
-              testID="create-subscription-button"
+              testID="create-subscription-button--control-bar"
             />
           </Page.ControlBarRight>
         </Page.ControlBar>

@@ -38,4 +38,12 @@ describe('Collectors page', () => {
     expect(createConfigButton[0]).toBeDisabled()
     expect(createConfigButton[1]).toBeDisabled()
   })
+
+  it('shows collectors list', async () => {
+    setup()
+
+    const resourcesListBody = await screen.getAllByTestId('resource-list--body')
+
+    expect(resourcesListBody[0]).toBeVisible()
+  })
 })

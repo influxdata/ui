@@ -1,7 +1,6 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {PureComponent, FC, useMemo} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import memoizeOne from 'memoize-one'
 
 // Components
 import {ResourceList} from '@influxdata/clockface'
@@ -28,56 +27,47 @@ interface OwnProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = OwnProps & ReduxProps
 
-class CollectorList extends PureComponent<Props> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
+const CollectorList: FC<Props> = React.memo(
+  ({
+    collectors,
+    emptyState,
+    sortKey,
+    sortDirection,
+    sortType,
+    onFilterChange,
+    onDeleteTelegraf,
+    onUpdateTelegraf,
+  }) => {
+    const sortedCollectors = useMemo(
+      () => getSortedResources(collectors, sortKey, sortDirection, sortType),
+      [collectors, sortKey, sortDirection, sortType]
+    )
 
-  public render() {
-    const {emptyState} = this.props
+    const collectorsList = (): JSX.Element[] => {
+      if (collectors !== undefined) {
+        return sortedCollectors.map(collector => (
+          <CollectorRow
+            key={collector.id}
+            collector={collector}
+            onDelete={(telegraf: Telegraf) =>
+              onDeleteTelegraf(telegraf.id, telegraf.name)
+            }
+            onUpdate={onUpdateTelegraf}
+            onFilterChange={onFilterChange}
+          />
+        ))
+      }
+    }
 
     return (
       <ResourceList>
         <ResourceList.Body emptyState={emptyState}>
-          {this.collectorsList}
+          {collectorsList()}
         </ResourceList.Body>
       </ResourceList>
     )
   }
-
-  public get collectorsList(): JSX.Element[] {
-    const {
-      collectors,
-      sortKey,
-      sortDirection,
-      sortType,
-      onDeleteTelegraf,
-      onUpdateTelegraf,
-      onFilterChange,
-    } = this.props
-
-    const sortedCollectors = this.memGetSortedResources(
-      collectors,
-      sortKey,
-      sortDirection,
-      sortType
-    )
-
-    if (collectors !== undefined) {
-      return sortedCollectors.map(collector => (
-        <CollectorRow
-          key={collector.id}
-          collector={collector}
-          onDelete={(telegraf: Telegraf) =>
-            onDeleteTelegraf(telegraf.id, telegraf.name)
-          }
-          onUpdate={onUpdateTelegraf}
-          onFilterChange={onFilterChange}
-        />
-      ))
-    }
-  }
-}
+)
 
 const mstp = (state: AppState) => ({
   collectors: getAll<Telegraf>(state, ResourceType.Telegrafs),

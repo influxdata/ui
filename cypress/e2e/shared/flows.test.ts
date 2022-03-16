@@ -257,7 +257,12 @@ describe('Flows', () => {
     cy.getByTestID(`flow-card--${flowName}`).within(() => {
       cy.getByTestID(`context-menu-flow`).click()
     })
+
+    cy.intercept('POST', '/api/v2private/notebooks').as('cloneNotebook')
+
     cy.getByTestID(`context-clone-flow`).click()
+    cy.wait('@cloneNotebook')
+
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
     const clone = `${flowName} (clone 1)`
@@ -289,6 +294,7 @@ describe('Flows', () => {
       cy.getByTestID(`context-menu-flow`).click()
     })
     cy.getByTestID(`context-clone-flow`).click()
+    cy.wait('@cloneNotebook')
 
     // Should redirect the user to the newly cloned flow
     // Test menu button works

@@ -198,10 +198,13 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
         onClick: handleViewPublish,
         icon: IconFont.History,
         disabled: () => {
-          if (versions.length > 1) {
-            return false
+          const [first, second] = versions
+          // accounts for the draft state
+          let versionId = first?.id
+          if (first?.id === 'draft' && second?.id) {
+            versionId = second?.id
           }
-          return versions[0]?.id === 'draft'
+          return !(versionId !== 'draft' && typeof versionId !== undefined)
         },
       },
       {title: 'divider', type: 'divider'}

@@ -64,7 +64,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     },
     stringMeasurement: {
       pattern: '',
-      name: '',
+      name: 'measurement',
     },
     stringFields: [
       {

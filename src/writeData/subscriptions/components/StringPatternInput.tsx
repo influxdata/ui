@@ -74,7 +74,7 @@ const StringPatternInput: FC<Props> = ({
                 updateForm({...formContent})
               }}
               confirmationButtonText="Confirm"
-              testID="json-delete-label"
+              testID={`${name}-string-delete-label`}
             />
           )}
         </FlexBox>
@@ -114,7 +114,7 @@ const StringPatternInput: FC<Props> = ({
               }}
               status={status}
               maxLength={16}
-              testID="json-parsing--name"
+              testID={`${name}-string-parsing-name`}
             />
           )}
         </Form.ValidationElement>
@@ -156,7 +156,7 @@ const StringPatternInput: FC<Props> = ({
               }}
               status={status}
               maxLength={56}
-              testID="string-parsing--regex"
+              testID={`${name}-string-parsing-pattern`}
             />
           )}
         </Form.ValidationElement>

@@ -32,9 +32,13 @@ export const HomepageContainer: FC = () => {
   const pythonWizardLink = `/orgs/${org.id}/new-user-wizard/python`
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
+  const javaScriptNodeLink = `/orgs/${org.id}/load-data/client-libraries/javascript-node`
+  const golangLink = `/orgs/${org.id}/load-data/client-libraries/go`
+  const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
 
   const cardStyle = {maxWidth: '250px'}
   const linkStyle = {color: InfluxColors.Grey75}
+  const moreStyle = {height: '100%'}
 
   // events handling
   const logPythonEvent = () => {
@@ -70,28 +74,31 @@ export const HomepageContainer: FC = () => {
                   </Link>
                 </ResourceCard>
                 <ResourceCard style={cardStyle}>
-                  <div className="homepage-wizard-language-tile">
-                    <h5>JavaScript/Node.js</h5>
-                    {JavascriptNodeJsIcon}
-                  </div>
+                  <Link to={javaScriptNodeLink}>
+                    <div className="homepage-wizard-language-tile">
+                      <h5>JavaScript/Node.js</h5>
+                      {JavascriptNodeJsIcon}
+                    </div>
+                  </Link>
                 </ResourceCard>
                 <ResourceCard style={cardStyle}>
-                  <div className="homepage-wizard-language-tile">
-                    <h5>Go</h5>
-                    {GoIcon}
-                  </div>
+                  <Link to={golangLink}>
+                    <div className="homepage-wizard-language-tile">
+                      <h5>Go</h5>
+                      {GoIcon}
+                    </div>
+                  </Link>
                 </ResourceCard>
                 <ResourceCard style={cardStyle}>
-                  <div
-                    className="homepage-wizard-language-tile"
-                    style={{justifyContent: 'center'}}
-                  >
-                    <span>
-                      <h5>
-                        MORE <Icon glyph={IconFont.ArrowRight_New} />
-                      </h5>
-                    </span>
-                  </div>
+                  <Link to={loadDataSourcesLink} style={moreStyle}>
+                    <div className="homepage-wizard-language-tile">
+                      <span>
+                        <h5>
+                          MORE <Icon glyph={IconFont.ArrowRight_New} />
+                        </h5>
+                      </span>
+                    </div>
+                  </Link>
                 </ResourceCard>
               </FlexBox>
               <hr style={{marginTop: '32px'}} />

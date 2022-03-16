@@ -135,9 +135,6 @@ describe('Buckets', () => {
     const TELEGRAF_SYSTEMS_PLUGINS_ORIGINAL_COUNT = 5
 
     it('configure telegraf agent', () => {
-      cy.setFeatureFlags({
-        telegrafUiRefresh: true,
-      })
       // click "add data" and choose Configure Telegraf Agent
       cy.getByTestID('add-data--button').click()
       cy.get('.bucket-add-data--option')

@@ -12,6 +12,9 @@ export class InstallDependencies extends PureComponent {
           the command below in your terminal.
         </p>
         <CodeSnippet text="pip3 install influxdb-client" onCopy={null} />
+        <p style={{fontStyle: 'italic'}}>
+          You’ll need to have Python 3 installed.
+        </p>
       </>
     )
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
-import {event} from '../../../cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 export const InitalizeClient = () => {
   const pythonCode = `import os

@@ -14,7 +14,7 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Helper Components
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {event} from '../../../cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 type ReduxProps = ConnectedProps<typeof connector>
 

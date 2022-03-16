@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
-import {event} from '../../../cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 export class InstallDependencies extends PureComponent {
   private logCopyCodeSnippet = () => {

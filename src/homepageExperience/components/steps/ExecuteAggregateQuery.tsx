@@ -2,7 +2,7 @@ import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-import {event} from '../../../cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 const fromBucketSnippet = `from(bucket: “my-bucket”)
   |> range(start: -10m) # find data points in last 10 minutes

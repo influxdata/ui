@@ -18,7 +18,7 @@ import WriteDataDetailsContextProvider, {
 import {getOrg} from 'src/organizations/selectors'
 import DataListening from 'src/homepageExperience/components/DataListening'
 import {getBuckets} from 'src/buckets/actions/thunks'
-import {event} from '../../../cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 const codeSnippet = `for value in range(5):
     point = (

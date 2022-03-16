@@ -8,7 +8,7 @@ import {
   ResourceCard,
 } from '@influxdata/clockface'
 import {InfluxDBUniversityIcon, VSCodePluginIcon} from '../HomepageIcons'
-import {event} from '../../../cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 export const Finish = () => {
   useEffect(() => {

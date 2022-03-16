@@ -12,7 +12,6 @@ describe('Flows', () => {
     cy.getByTestID('version-info')
     cy.getByTestID('nav-item-flows').should('be.visible')
     cy.getByTestID('nav-item-flows').click()
-    cy.intercept('/api/v2private/notebooks*').as('apiNotebooks')
   })
 
   it('CRUD a flow from the index page', () => {
@@ -169,10 +168,7 @@ describe('Flows', () => {
   })
 
   it('can create, clone a flow and persist selected data in the clone, and delete a flow from the list page', () => {
-    // a specific intercept for deleting because the route has an extra "/"
-    cy.intercept('DELETE', '/api/v2private/notebooks/*').as('deleteNotebook')
-
-    cy.wait('@apiNotebooks') // fetch
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
 
     const newBucketName = 'shmucket'
     const now = Date.now()
@@ -190,13 +186,11 @@ describe('Flows', () => {
     )
 
     const flowName = 'Flowbooks'
+    const clone = `${flowName} (clone 1)`
 
     cy.getByTestID('preset-new')
       .first()
       .click()
-
-    cy.wait('@apiNotebooks') // create
-    cy.wait('@apiNotebooks') // fetch
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
@@ -204,13 +198,16 @@ describe('Flows', () => {
       .first()
       .click()
 
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
-    cy.wait('@apiNotebooks') // update
+    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.wait('@updateNotebook')
+
+    cy.getByTestID('page-title').contains(flowName)
 
     cy.getByTestID('sidebar-button')
       .first()
       .click()
     cy.getByTestID('Delete--list-item').click()
+    cy.wait('@updateNotebook')
 
     cy.get('.flow-divider--button')
       .first()
@@ -223,11 +220,13 @@ describe('Flows', () => {
     cy.getByTestID('add-flow-btn--queryBuilder')
       .last()
       .click()
+    cy.wait('@updateNotebook')
 
     // select our bucket
     cy.getByTestID('bucket-selector').within(() => {
       cy.getByTestID(`selector-list ${newBucketName}`).click()
     })
+    cy.wait('@updateNotebook')
 
     // select measurement and field
     cy.getByTestID('builder-card')
@@ -235,17 +234,22 @@ describe('Flows', () => {
       .within(() => {
         cy.getByTestID(`selector-list test`).click()
       })
+    cy.wait('@updateNotebook')
+
     cy.getByTestID('builder-card')
       .eq(1)
       .within(() => {
         cy.getByTestID(`selector-list dopeness`).click()
       })
+    cy.wait('@updateNotebook')
+
     // select beans tag and click preview
     cy.getByTestID('builder-card')
       .eq(2)
       .within(() => {
         cy.getByTestID(`selector-list beans`).click()
       })
+    cy.wait('@updateNotebook')
 
     cy.getByTestID('time-machine-submit-button').click()
 
@@ -261,7 +265,6 @@ describe('Flows', () => {
     cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
 
     cy.clickNavBarItem('nav-item-flows')
-    cy.wait('@apiNotebooks') // fetch
 
     cy.get('.cf-resource-card').should('have.length', 1)
 
@@ -272,19 +275,14 @@ describe('Flows', () => {
     })
 
     cy.getByTestID(`context-clone-flow`).click()
-    cy.wait('@apiNotebooks') // create
-    cy.wait('@apiNotebooks') // fetch
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
-
-    const clone = `${flowName} (clone 1)`
 
     // Should redirect the user to the newly cloned flow
     // Validates that the selected clone is the clone
     cy.getByTestID('page-title').contains(`${clone}`)
 
     cy.clickNavBarItem('nav-item-flows')
-    cy.wait('@apiNotebooks') // fetch
 
     cy.get('.cf-resource-card').should('have.length', 2)
     cy.get('.cf-resource-editable-name')
@@ -296,7 +294,6 @@ describe('Flows', () => {
       cy.getByTestID(`context-delete-menu--button`).click()
     })
     cy.getByTestID(`context-delete-menu--confirm-button`).click()
-    cy.wait('@deleteNotebook')
 
     cy.getByTestID('notification-success').should('be.visible')
     cy.getByTestID('notification-success--dismiss').click()
@@ -309,27 +306,21 @@ describe('Flows', () => {
       cy.getByTestID(`context-menu-flow`).click()
     })
     cy.getByTestID(`context-clone-flow`).click()
-    cy.wait('@apiNotebooks') // create
-    cy.wait('@apiNotebooks') // fetch
 
     // Should redirect the user to the newly cloned flow
-    // Test menu button works
     cy.getByTestID('time-machine-submit-button').should('be.visible')
-    cy.getByTestID('flow-menu-button').click()
-
-    // Make sure the delete button is visible
-    cy.getByTestID('flow-menu-button-delete').should('be.visible')
+    cy.wait('@updateNotebook')
+    cy.getByTestID('page-title').contains(`${clone}`)
 
     // Delete the cloned flow inside the notebook
+    cy.getByTestID('flow-menu-button').click()
+    cy.getByTestID('flow-menu-button-delete').should('be.visible')
     cy.getByTestID('flow-menu-button-delete').click()
-    cy.wait('@deleteNotebook')
-    cy.wait('@apiNotebooks') // fetch
 
     cy.getByTestID('notification-success').should('be.visible')
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-editable-name').should('have.length', 1)
-    cy.get('.cf-resource-editable-name').contains(`${flowName}`)
   })
 
   it('should have the same number of flow panels and no presentation panel when presentation mode is off', () => {

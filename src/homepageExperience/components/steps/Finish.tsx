@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
   AlignItems,
   ComponentSize,
@@ -8,8 +8,12 @@ import {
   ResourceCard,
 } from '@influxdata/clockface'
 import {InfluxDBUniversityIcon, VSCodePluginIcon} from '../HomepageIcons'
+import {event} from '../../../cloud/utils/reporting'
 
 export const Finish = () => {
+  useEffect(() => {
+    event('firstMile.pythonWizard.finished')
+  }, [])
   return (
     <>
       <h1>Congrats!</h1>

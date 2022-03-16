@@ -1,5 +1,6 @@
 import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
+import {event} from '../../../cloud/utils/reporting'
 
 export const InitalizeClient = () => {
   const pythonCode = `import os
@@ -15,6 +16,9 @@ url = "https://us-west-2-1.aws.cloud2.influxdata.com/"
 client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 write_api = client.write_api(write_options=SYNCHRONOUS)`
 
+  const logCopyCodeSnippet = () => {
+    event('firstMile.pythonWizard.initializeClient.code.copied')
+  }
   return (
     <>
       <h1>Initalize Client</h1>
@@ -25,7 +29,7 @@ write_api = client.write_api(write_options=SYNCHRONOUS)`
       <p style={{marginTop: '40px'}}>
         Paste the following code after the prompt (>>>) and press Enter.
       </p>
-      <CodeSnippet text={pythonCode} />
+      <CodeSnippet text={pythonCode} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '42px'}}>
         Here, we initialize the token, organization info, and server url that is
         needed to set up the initial connection to InfluxDB. The client

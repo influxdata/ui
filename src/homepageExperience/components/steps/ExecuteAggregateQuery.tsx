@@ -2,6 +2,7 @@ import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {event} from '../../../cloud/utils/reporting'
 
 const fromBucketSnippet = `from(bucket: “my-bucket”)
   |> range(start: -10m) # find data points in last 10 minutes
@@ -17,18 +18,33 @@ for table in tables:
         print(record)`
 
 export const ExecuteAggregateQuery = () => {
+  const logCopyCodeSnippet = () => {
+    event('firstMile.pythonWizard.executeAggregateQuery.code.copied')
+  }
+
+  const logDocsOpened = () => {
+    event('firstMile.pythonWizard.executeAggregateQuery.docs.opened')
+  }
+
   return (
     <>
       <h1>Execute an Aggregate Query</h1>
       <p>
         An{' '}
-        <SafeBlankLink href="https://docs.influxdata.com/flux/v0.x/function-types/#aggregates">
+        <SafeBlankLink
+          href="https://docs.influxdata.com/flux/v0.x/function-types/#aggregates"
+          onClick={logDocsOpened}
+        >
           aggregate
         </SafeBlankLink>{' '}
         function is a powerful method for returning combined, summarized data
         about a set of time-series data.
       </p>
-      <CodeSnippet text={fromBucketSnippet} showCopyControl={false} />
+      <CodeSnippet
+        text={fromBucketSnippet}
+        showCopyControl={false}
+        onCopy={logCopyCodeSnippet}
+      />
       <p>
         In this example, we use the mean() function to calculate the average of
         data points in last 10 minutes.
@@ -36,7 +52,7 @@ export const ExecuteAggregateQuery = () => {
         <br />
         Run the following:
       </p>
-      <CodeSnippet text={codeSnippet} />
+      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>
         This will return the mean of the five values. ( (0+1+2+3+4) / 5 = 2 )
       </p>

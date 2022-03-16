@@ -17,7 +17,7 @@ const GlobalSearch: FC = () => {
   const toggleShowSearch = (e: KeyboardEvent) => {
     if (e.ctrlKey && e.key === 'm') {
       setShowState(true)
-      event(`Global search opened from url ${location.pathname}`)
+      event(`Global search opened`)
     } else if (e.key === 'Escape') {
       setShowState(false)
     }

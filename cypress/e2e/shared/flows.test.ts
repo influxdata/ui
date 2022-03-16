@@ -321,6 +321,7 @@ describe('Flows', () => {
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-editable-name').should('have.length', 1)
+    cy.get('.cf-resource-editable-name').contains(`${flowName}`)
   })
 
   it('should have the same number of flow panels and no presentation panel when presentation mode is off', () => {

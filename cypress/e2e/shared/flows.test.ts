@@ -259,9 +259,11 @@ describe('Flows', () => {
     })
 
     cy.intercept('POST', '/api/v2private/notebooks').as('cloneNotebook')
+    cy.intercept('GET', '/api/v2private/notebooks*').as('getNotebooks')
 
     cy.getByTestID(`context-clone-flow`).click()
     cy.wait('@cloneNotebook')
+    cy.wait('@getNotebooks')
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
@@ -273,6 +275,7 @@ describe('Flows', () => {
 
     cy.clickNavBarItem('nav-item-flows')
 
+    cy.wait('@getNotebooks')
     cy.get('.cf-resource-card').should('have.length', 2)
     cy.get('.cf-resource-editable-name')
       .first()
@@ -295,6 +298,7 @@ describe('Flows', () => {
     })
     cy.getByTestID(`context-clone-flow`).click()
     cy.wait('@cloneNotebook')
+    cy.wait('@getNotebooks')
 
     // Should redirect the user to the newly cloned flow
     // Test menu button works
@@ -306,6 +310,8 @@ describe('Flows', () => {
 
     // Delete the cloned flow inside the notebook
     cy.getByTestID('flow-menu-button-delete').click()
+    cy.wait('@getNotebooks')
+
     cy.getByTestID('notification-success').should('be.visible')
 
     cy.get('.cf-resource-card').should('have.length', 1)

@@ -1,5 +1,4 @@
 import React, {FC, useEffect, memo, useState} from 'react'
-import {useLocation} from 'react-router-dom'
 
 import {ClickOutside} from 'src/shared/components/ClickOutside'
 
@@ -13,11 +12,10 @@ import './GlobalSearch.scss'
 
 const GlobalSearch: FC = () => {
   const [showState, setShowState] = useState(false)
-  const location = useLocation()
   const toggleShowSearch = (e: KeyboardEvent) => {
     if (e.ctrlKey && e.key === 'm') {
       setShowState(true)
-      event(`Global search opened from url ${location.pathname}`)
+      event(`Global search opened`)
     } else if (e.key === 'Escape') {
       setShowState(false)
     }

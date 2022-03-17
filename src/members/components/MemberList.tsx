@@ -1,6 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import memoizeOne from 'memoize-one'
+import React, {FC, useMemo} from 'react'
 
 // Components
 import {ResourceList} from '@influxdata/clockface'
@@ -26,55 +25,51 @@ interface Props {
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
 }
 
-export default class MemberList extends PureComponent<Props> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
-  )
-
-  public render() {
-    const {sortKey, sortDirection, onClickColumn} = this.props
-
-    return (
-      <ResourceList>
-        <ResourceList.Header>
-          <ResourceList.Sorter
-            name="Username"
-            sortKey={this.headerKeys[0]}
-            sort={sortKey === this.headerKeys[0] ? sortDirection : Sort.None}
-            onClick={onClickColumn}
-          />
-          <ResourceList.Sorter
-            name="Role"
-            sortKey={this.headerKeys[1]}
-            sort={sortKey === this.headerKeys[1] ? sortDirection : Sort.None}
-            onClick={onClickColumn}
-          />
-        </ResourceList.Header>
-        <ResourceList.Body
-          emptyState={this.props.emptyState}
-          data-testid="members-list"
-        >
-          {this.rows}
-        </ResourceList.Body>
-      </ResourceList>
-    )
-  }
-
-  private get headerKeys(): SortKey[] {
+const MemberList: FC<Props> = ({
+  members,
+  emptyState,
+  onDelete,
+  sortKey,
+  sortDirection,
+  sortType,
+  onClickColumn,
+}) => {
+  const headerKeys = (): SortKey[] => {
     return ['name', 'role']
   }
 
-  private get rows(): JSX.Element[] {
-    const {members, sortKey, sortDirection, sortType, onDelete} = this.props
-    const sortedMembers = this.memGetSortedResources(
-      members,
-      sortKey,
-      sortDirection,
-      sortType
-    )
+  const sortedMembers = useMemo(
+    () => getSortedResources(members, sortKey, sortDirection, sortType),
+    [members, sortKey, sortDirection, sortType]
+  )
 
+  const rows = (): JSX.Element[] => {
     return sortedMembers.map(member => (
       <MemberCard key={member.id} member={member} onDelete={onDelete} />
     ))
   }
+
+  return (
+    <ResourceList>
+      <ResourceList.Header>
+        <ResourceList.Sorter
+          name="Username"
+          sortKey={headerKeys[0]}
+          sort={sortKey === headerKeys[0] ? sortDirection : Sort.None}
+          onClick={onClickColumn}
+        />
+        <ResourceList.Sorter
+          name="Role"
+          sortKey={headerKeys[1]}
+          sort={sortKey === headerKeys[1] ? sortDirection : Sort.None}
+          onClick={onClickColumn}
+        />
+      </ResourceList.Header>
+      <ResourceList.Body emptyState={emptyState} data-testid="members-list">
+        {rows()}
+      </ResourceList.Body>
+    </ResourceList>
+  )
 }
+
+export default React.memo(MemberList)

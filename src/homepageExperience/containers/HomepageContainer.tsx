@@ -38,7 +38,7 @@ export const HomepageContainer: FC = () => {
 
   const cardStyle = {maxWidth: '250px'}
   const linkStyle = {color: InfluxColors.Grey75}
-  const moreStyle = {height: '100%'}
+  const moreStyle = {height: '100%', ...linkStyle}
 
   // events handling
   const logPythonEvent = () => {
@@ -74,7 +74,7 @@ export const HomepageContainer: FC = () => {
                   </Link>
                 </ResourceCard>
                 <ResourceCard style={cardStyle}>
-                  <Link to={javaScriptNodeLink}>
+                  <Link to={javaScriptNodeLink} style={linkStyle}>
                     <div className="homepage-wizard-language-tile">
                       <h5>JavaScript/Node.js</h5>
                       {JavascriptNodeJsIcon}
@@ -82,7 +82,7 @@ export const HomepageContainer: FC = () => {
                   </Link>
                 </ResourceCard>
                 <ResourceCard style={cardStyle}>
-                  <Link to={golangLink}>
+                  <Link to={golangLink} style={linkStyle}>
                     <div className="homepage-wizard-language-tile">
                       <h5>Go</h5>
                       {GoIcon}

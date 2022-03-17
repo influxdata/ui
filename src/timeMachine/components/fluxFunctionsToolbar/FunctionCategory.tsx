@@ -2,8 +2,8 @@
 import React, {SFC} from 'react'
 
 // Components
-import ToolbarFunction from 'src/flows/pipes/RawFluxEditor/FluxInjectionOption'
-import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionToolTipContent'
+import ToolbarFunction from 'src/flows/shared/FilterList/InjectionOption'
+import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/per-function/FunctionToolTipContent'
 
 // Types
 import {FluxToolbarFunction} from 'src/types/shared'

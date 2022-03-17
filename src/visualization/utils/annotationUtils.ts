@@ -43,10 +43,16 @@ const makeCreateMethod = (
           },
         ])
       )
-      event(`${eventPrefix}.annotations.create_${type}_annotation.create`)
+      event(`annotations.create_annotation.create`, {
+        prefix: eventPrefix,
+        type,
+      })
     } catch (err) {
       dispatch(notify(createAnnotationFailed(getErrorMessage(err))))
-      event(`${eventPrefix}.annotations.create_${type}_annotation.failure`)
+      event(`annotations.create_annotation.failure`, {
+        prefix: eventPrefix,
+        type,
+      })
     }
   }
 
@@ -63,7 +69,7 @@ const makeAnnotationClickListener = (
   const createAnnotation = makeCreateMethod(dispatch, cellID, eventPrefix)
 
   const singleClickHandler = (plotInteraction: InteractionHandlerArguments) => {
-    event(`${eventPrefix}.annotations.create_annotation.show_overlay`)
+    event(`annotations.create_annotation.show_overlay`, {prefix: eventPrefix})
 
     dispatch(
       showOverlay(
@@ -92,7 +98,9 @@ const makeAnnotationRangeListener = (
   const createAnnotation = makeCreateMethod(dispatch, cellID, eventPrefix)
 
   const rangeHandler = (start: number | string, end: number | string) => {
-    event(`${eventPrefix}.annotations.create_range_annotation.show_overlay`)
+    event(`annotations.create_range_annotation.show_overlay`, {
+      prefix: eventPrefix,
+    })
     dispatch(
       showOverlay(
         'add-annotation',
@@ -136,7 +144,9 @@ const makeAnnotationClickHandler = (
       annotation => annotation.id === id
     )
     if (annotationToEdit) {
-      event(`${eventPrefix}.annotations.edit_annotation.show_overlay`)
+      event(`annotations.edit_annotation.show_overlay`, {
+        prefix: eventPrefix,
+      })
       dispatch(
         showOverlay(
           'edit-annotation',

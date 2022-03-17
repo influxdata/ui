@@ -2,6 +2,10 @@ import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 
+const logCopyCodeSnippet = () => {
+  event('firstMile.pythonWizard.initializeClient.code.copied')
+}
+
 export const InitalizeClient = () => {
   const pythonCode = `import os
 from datetime import datetime
@@ -16,9 +20,6 @@ url = "https://us-west-2-1.aws.cloud2.influxdata.com/"
 client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 write_api = client.write_api(write_options=SYNCHRONOUS)`
 
-  const logCopyCodeSnippet = () => {
-    event('firstMile.pythonWizard.initializeClient.code.copied')
-  }
   return (
     <>
       <h1>Initalize Client</h1>

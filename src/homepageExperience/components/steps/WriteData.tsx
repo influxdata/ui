@@ -29,6 +29,14 @@ const codeSnippet = `for value in range(5):
     write_api.write(bucket=bucket, org=org, record=point)
     time.sleep(1)`
 
+const logCopyCodeSnippet = () => {
+  event('firstMile.pythonWizard.writeData.code.copied')
+}
+
+const logDocsOpened = () => {
+  event('firstMile.pythonWizard.writeData.docs.opened')
+}
+
 export const WriteDataComponent = () => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
@@ -45,13 +53,6 @@ export const WriteDataComponent = () => {
     setSelectedBucket(bucket)
   }, [bucket])
 
-  const logCopyCodeSnippet = () => {
-    event('firstMile.pythonWizard.writeData.code.copied')
-  }
-
-  const logDocsOpened = () => {
-    event('firstMile.pythonWizard.writeData.docs.opened')
-  }
   return (
     <>
       <h1>Write Data</h1>

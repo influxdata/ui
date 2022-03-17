@@ -18,6 +18,15 @@ import {event} from 'src/cloud/utils/reporting'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
+// Events log handling
+const logCopyCodeSnippet = () => {
+  event('firstMile.pythonWizard.createToken.code.copied')
+}
+
+const logDocsOpened = () => {
+  event('firstMile.pythonWizard.createToken.docs.opened')
+}
+
 const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
   showOverlay,
   dismissOverlay,
@@ -34,13 +43,6 @@ const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
     }
   }
 
-  const logCopyCodeSnippet = () => {
-    event('firstMile.pythonWizard.createToken.code.copied')
-  }
-
-  const logDocsOpened = () => {
-    event('firstMile.pythonWizard.createToken.docs.opened')
-  }
   return (
     <>
       <h1>Create a Token</h1>

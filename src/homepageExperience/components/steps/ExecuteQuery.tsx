@@ -14,11 +14,11 @@ for table in tables:
     for record in table.records:
         print(record)`
 
-export const ExecuteQuery = () => {
-  const logCopyCodeSnippet = () => {
-    event('firstMile.pythonWizard.executeQuery.code.copied')
-  }
+const logCopyCodeSnippet = () => {
+  event('firstMile.pythonWizard.executeQuery.code.copied')
+}
 
+export const ExecuteQuery = () => {
   return (
     <>
       <h1>Execute a Flux Query</h1>

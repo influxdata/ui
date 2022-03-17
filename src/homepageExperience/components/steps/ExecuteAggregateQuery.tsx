@@ -17,15 +17,15 @@ for table in tables:
     for record in table.records:
         print(record)`
 
+const logCopyCodeSnippet = () => {
+  event('firstMile.pythonWizard.executeAggregateQuery.code.copied')
+}
+
+const logDocsOpened = () => {
+  event('firstMile.pythonWizard.executeAggregateQuery.docs.opened')
+}
+
 export const ExecuteAggregateQuery = () => {
-  const logCopyCodeSnippet = () => {
-    event('firstMile.pythonWizard.executeAggregateQuery.code.copied')
-  }
-
-  const logDocsOpened = () => {
-    event('firstMile.pythonWizard.executeAggregateQuery.docs.opened')
-  }
-
   return (
     <>
       <h1>Execute an Aggregate Query</h1>

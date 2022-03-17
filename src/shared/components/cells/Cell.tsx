@@ -55,11 +55,9 @@ class CellComponent extends Component<Props, State> {
   public componentDidMount() {
     const {view} = this.props
     if (view) {
-      event(
-        `dashboard.cell.view.${normalizeEventName(
-          chartTypeName(view?.properties?.type)
-        )}`
-      )
+      event(`dashboard.cell.view`, {
+        type: normalizeEventName(chartTypeName(view?.properties?.type)),
+      })
     }
   }
 

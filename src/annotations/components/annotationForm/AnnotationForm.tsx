@@ -141,20 +141,25 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
 
     try {
       dispatch(deleteAnnotations(editedAnnotation))
-      event(`${props.eventPrefix}.annotations.delete_annotation.success`)
+      event(`annotations.delete_annotation.success`, {
+        prefix: props.eventPrefix,
+      })
       dispatch(notify(deleteAnnotationSuccess(editedAnnotation.summary)))
       props.onClose()
     } catch (err) {
-      event(`${props.eventPrefix}.annotations.delete_annotation.failure`)
+      event(`annotations.delete_annotation.failure`, {
+        prefix: props.eventPrefix,
+      })
       dispatch(notify(deleteAnnotationFailed(err)))
     }
   }
 
   const handleCancel = () => {
     const annoMode = isEditing ? 'edit' : 'create'
-    event(
-      `${props.eventPrefix}.dashboards.annotations.${annoMode}_annotation.cancel`
-    )
+    event(`dashboards.annotations.cancel`, {
+      prefix: eventPrefix,
+      mode: annoMode,
+    })
     props.onClose()
   }
 

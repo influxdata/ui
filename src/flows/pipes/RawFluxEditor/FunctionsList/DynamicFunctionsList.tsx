@@ -4,7 +4,7 @@ import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
 import Fn from 'src/flows/shared/FilterList/InjectionOption'
 import FilterList from 'src/flows/shared/FilterList/FilterList'
-import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/per-function/FunctionToolTipContent'
+import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/perFunction/FunctionToolTipContent'
 
 interface Props {
   onSelect: (fn: FluxToolbarFunction) => void

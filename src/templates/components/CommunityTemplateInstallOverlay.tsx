@@ -159,7 +159,7 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
     } catch (err) {
       event(`community_template.install.failure`, {
         templateUrl,
-        name: normalizeEventName(templateDetails.name),
+        name: normalizeEventName(templateName),
       })
       this.props.notify(communityTemplateRenameFailed())
     } finally {

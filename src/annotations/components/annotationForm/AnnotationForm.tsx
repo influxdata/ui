@@ -157,7 +157,7 @@ export const AnnotationForm: FC<Props> = (props: Props) => {
   const handleCancel = () => {
     const annoMode = isEditing ? 'edit' : 'create'
     event(`dashboards.annotations.cancel`, {
-      prefix: eventPrefix,
+      prefix: props.eventPrefix,
       mode: annoMode,
     })
     props.onClose()

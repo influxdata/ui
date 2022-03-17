@@ -2,15 +2,15 @@ import React, {FC} from 'react'
 
 import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
 import {FluxToolbarFunction} from 'src/types/shared'
-import Fn from 'src/flows/pipes/RawFluxEditor/FluxInjectionOption'
-import FilterList from 'src/flows/shared/FilterList'
-import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionToolTipContent'
+import Fn from 'src/flows/shared/FilterList/InjectionOption'
+import FilterList from 'src/flows/shared/FilterList/FilterList'
+import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/perFunction/FunctionToolTipContent'
 
 interface Props {
   onSelect: (fn: FluxToolbarFunction) => void
 }
 
-const FunctionsList: FC<Props> = ({onSelect}) => {
+const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
   const render = fn => (
     <Fn
       onClick={onSelect}
@@ -33,4 +33,4 @@ const FunctionsList: FC<Props> = ({onSelect}) => {
   )
 }
 
-export default FunctionsList
+export default DynamicFunctionsList

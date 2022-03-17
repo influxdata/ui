@@ -152,19 +152,15 @@ class CommunityTemplateInstallOverlayUnconnected extends PureComponent<Props> {
 
       this.props.getBuckets()
       this.props.notify(communityTemplateInstallSucceeded(templateName))
-      event(
-        `community_template.${normalizeEventName(
-          templateDetails.name
-        )}.install.success`,
-        {templateUrl}
-      )
+      event(`community_template.install.success`, {
+        templateUrl,
+        name: normalizeEventName(templateDetails.name),
+      })
     } catch (err) {
-      event(
-        `community_template.${normalizeEventName(
-          templateName
-        )}.install.failure`,
-        {templateUrl}
-      )
+      event(`community_template.install.failure`, {
+        templateUrl,
+        name: normalizeEventName(templateDetails.name),
+      })
       this.props.notify(communityTemplateRenameFailed())
     } finally {
       this.props.fetchAndSetStacks(this.props.org.id)

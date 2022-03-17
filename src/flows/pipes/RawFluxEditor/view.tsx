@@ -33,7 +33,7 @@ import {
 // Components
 import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
 import Functions from 'src/flows/pipes/RawFluxEditor/FunctionsList/GroupedFunctionsList'
-import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/FunctionsList/FunctionsList'
+import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/FunctionsList/DynamicFunctionsList'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'

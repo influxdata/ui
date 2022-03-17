@@ -10,7 +10,7 @@ interface Props {
   onSelect: (fn: FluxToolbarFunction) => void
 }
 
-const FunctionsList: FC<Props> = ({onSelect}) => {
+const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
   const render = fn => (
     <Fn
       onClick={onSelect}
@@ -33,4 +33,4 @@ const FunctionsList: FC<Props> = ({onSelect}) => {
   )
 }
 
-export default FunctionsList
+export default DynamicFunctionsList

@@ -18,7 +18,7 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {FluxToolbarFunction} from 'src/types/shared'
+import {FluxToolbarFunction, FluxFunction} from 'src/types/shared'
 import {PipeProp} from 'src/types/flows'
 
 // Context
@@ -74,12 +74,15 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id, inject])
 
   const injectIntoEditor = useCallback(
-    (fn: FluxToolbarFunction): void => {
-      let text = ''
-      if (fn.name === 'from' || fn.name === 'union') {
-        text = `${fn.example}`
-      } else {
-        text = `  |> ${fn.example}`
+    (fn: FluxToolbarFunction | FluxFunction): void => {
+      // FIXME: now that we are using FluxDocs, not hardcoded FLUX_FUNCTIONS
+      // we are missing the example in the http request payload
+      let text = !!(fn as FluxToolbarFunction).example
+        ? (fn as FluxToolbarFunction).example
+        : `${fn.name}()`
+
+      if (!(fn.name === 'from' || fn.name === 'union')) {
+        text = `  |> ${text}`
       }
 
       const options = {

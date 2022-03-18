@@ -6,7 +6,7 @@ const fromBucketSnippet = `from(bucket: “my-bucket”)
 
 const query = `query_api = client.query_api()
 
-query = "from(bucket: \\"bucket1\\") |> range(start: -10m) |> mean()"
+query = "from(bucket: \\"bucket1\\") |> range(start: -10m)"
 tables = query_api.query(query, org=org)
 
 for table in tables:

@@ -16,6 +16,39 @@ h3 {
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 5%;
 }
+.preset--no-tutorial {
+  max-width: 1000px;
+  margin: 0 auto;
+
+  h3 {
+    display: none;
+  }
+
+  &.search {
+    margin-bottom: 12px;
+    display: flex;
+
+    .cf-input {
+      margin-right: 8px;
+    }
+  }
+
+  .flows-index--presetList {
+    grid-template-columns: repeat(4, 1fr);
+    &.buttonModeList {
+      width: auto;
+      display: block;
+      text-align: left;
+      .flows-index--presetButtons {
+        display: inline-block;
+      }
+    }
+  }
+
+  .flows-index--presetCard {
+    text-align: center;
+  }
+}
 
 .flows-index--presetCard {
   display: flex;
@@ -78,11 +111,49 @@ h3 {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .preset--no-tutorial .flows-index--presetList {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   .flows-index--presetcontainer {
     padding: 5px 40px 25px;
   }
 
   .flows-index--presetCard:nth-child(5) {
     padding-bottom: 16px;
+  }
+}
+
+@media screen and (max-width: $cf-grid--breakpoint-sm) {
+  .preset--no-tutorial .flows-index--presetContainer {
+    padding: 15px;
+  }
+
+  .preset--no-tutorial .flows-index--presetList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .preset--no-tutorial .flows-index--presetHeader {
+    margin: 4px;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .preset--no-tutorial .flows-index--presetList.buttonModeList {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .preset--no-tutorial .flows-index--presetList {
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 2.5%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .preset--no-tutorial .flows-index--presetHeader {
+    margin: 4px;
+    text-align: center;
   }
 }

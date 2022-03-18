@@ -23,6 +23,7 @@ import {event} from 'src/cloud/utils/reporting'
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {Flow} from 'src/types/flows'
@@ -138,23 +139,91 @@ const FlowsIndex = () => {
     >
       <PageHeader
         style={{flex: 0, margin: '16px 0px'}}
-        fullWidth={false}
+        fullWidth={true}
         className={`${showButtonMode && 'withButtonHeader'}`}
       >
-        <FlexBox
-          direction={FlexDirection.Row}
-          justifyContent={JustifyContent.SpaceBetween}
-          stretchToFitWidth
+        {!isFlagEnabled('noTutorial') && (
+          <FlexBox
+            direction={FlexDirection.Row}
+            justifyContent={JustifyContent.SpaceBetween}
+            stretchToFitWidth
+          >
+            <Page.Title title={PROJECT_NAME_PLURAL} />
+            <RateLimitAlert />
+          </FlexBox>
+        )}
+        {showButtonMode &&
+          (isFlagEnabled('noTutorial') ? (
+            <div style={{flex: 1, width: '100%'}}>
+              <PresetFlowsButtons />
+              <div className="preset--no-tutorial search">
+                <SearchWidget
+                  placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
+                  onSearch={setSearch}
+                  searchTerm={search}
+                />
+                <ResourceSortDropdown
+                  resourceType={ResourceType.Flows}
+                  sortDirection={sortOptions.sortDirection}
+                  sortKey={sortOptions.sortKey}
+                  sortType={sortOptions.sortType}
+                  onSelect={setSort}
+                />
+              </div>
+            </div>
+          ) : (
+            <>
+              <PresetFlowsButtons />
+              <Page.ControlBar
+                className="flows-index--control-bar buttonMode"
+                fullWidth={true}
+              >
+                <Page.ControlBarLeft>
+                  <SearchWidget
+                    placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
+                    onSearch={setSearch}
+                    searchTerm={search}
+                  />
+                  <ResourceSortDropdown
+                    resourceType={ResourceType.Flows}
+                    sortDirection={sortOptions.sortDirection}
+                    sortKey={sortOptions.sortKey}
+                    sortType={sortOptions.sortType}
+                    onSelect={setSort}
+                  />
+                </Page.ControlBarLeft>
+                <Page.ControlBarRight />
+              </Page.ControlBar>
+            </>
+          ))}
+      </PageHeader>
+      <DapperScrollbars onScroll={scrollHandler}>
+        <Page.Contents
+          fullWidth={true}
+          id="fadebox"
+          ref={fadingBoxRef}
+          className="flows-index--contents"
         >
-          <Page.Title title={PROJECT_NAME_PLURAL} />
-          <RateLimitAlert />
-        </FlexBox>
-        {showButtonMode && (
-          <>
-            <PresetFlowsButtons />
+          <PresetFlows />
+          {isFlagEnabled('noTutorial') ? (
+            <div className="preset--no-tutorial search">
+              <SearchWidget
+                placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
+                onSearch={setSearch}
+                searchTerm={search}
+              />
+              <ResourceSortDropdown
+                resourceType={ResourceType.Flows}
+                sortDirection={sortOptions.sortDirection}
+                sortKey={sortOptions.sortKey}
+                sortType={sortOptions.sortType}
+                onSelect={setSort}
+              />
+            </div>
+          ) : (
             <Page.ControlBar
-              className="flows-index--control-bar buttonMode"
-              fullWidth={false}
+              className="flows-index--control-bar"
+              fullWidth={true}
             >
               <Page.ControlBarLeft>
                 <SearchWidget
@@ -172,40 +241,10 @@ const FlowsIndex = () => {
               </Page.ControlBarLeft>
               <Page.ControlBarRight />
             </Page.ControlBar>
-          </>
-        )}
-      </PageHeader>
-      <DapperScrollbars onScroll={scrollHandler}>
-        <Page.Contents
-          fullWidth={false}
-          id="fadebox"
-          ref={fadingBoxRef}
-          className="flows-index--contents"
-        >
-          <PresetFlows />
-          <Page.ControlBar
-            className="flows-index--control-bar"
-            fullWidth={false}
-          >
-            <Page.ControlBarLeft>
-              <SearchWidget
-                placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
-                onSearch={setSearch}
-                searchTerm={search}
-              />
-              <ResourceSortDropdown
-                resourceType={ResourceType.Flows}
-                sortDirection={sortOptions.sortDirection}
-                sortKey={sortOptions.sortKey}
-                sortType={sortOptions.sortType}
-                onSelect={setSort}
-              />
-            </Page.ControlBarLeft>
-            <Page.ControlBarRight />
-          </Page.ControlBar>
+          )}
         </Page.Contents>
 
-        <Page.Contents fullWidth={false}>
+        <Page.Contents fullWidth={true}>
           <FlowCards flows={flowList} search={search} />
         </Page.Contents>
       </DapperScrollbars>

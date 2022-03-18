@@ -19,6 +19,7 @@ import {
 import CopyToClipboard from 'src/shared/components/CopyToClipboard'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {OverlayContext} from 'src/overlays/components/OverlayController'
+import {PROJECT_NAME} from 'src/flows'
 
 // Actions
 import {notify} from 'src/shared/actions/notifications'
@@ -72,7 +73,7 @@ const ShareOverlay: FC = () => {
 
   return (
     <Overlay.Container maxWidth={800}>
-      <Overlay.Header title="Share Notebook" onDismiss={onClose} />
+      <Overlay.Header title={`Share ${PROJECT_NAME}`} onDismiss={onClose} />
       <Overlay.Body>
         <FlexBox
           direction={FlexDirection.Column}
@@ -122,8 +123,8 @@ const ShareOverlay: FC = () => {
             </FlexBox>
             <Icon glyph={IconFont.Eye_New} />
             <span className="share-text">
-              Anyone with this link can view this Notebook, but will not have
-              access to autorefresh updates.
+              Anyone with this link can view this {PROJECT_NAME}, but will not
+              have access to autorefresh updates.
             </span>
           </FlexBox.Child>
           <FlexBox.Child className="share-section--delete">

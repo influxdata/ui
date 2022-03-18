@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
+import {SafeBlankLink} from '../../../utils/SafeBlankLink'
 
 export class InstallDependencies extends PureComponent {
   render() {
@@ -13,7 +14,11 @@ export class InstallDependencies extends PureComponent {
         </p>
         <CodeSnippet text="pip3 install influxdb-client" onCopy={null} />
         <p style={{fontStyle: 'italic'}}>
-          You’ll need to have Python 3 installed.
+          You’ll need to have{' '}
+          <SafeBlankLink href="https://www.python.org/download/releases/3.0/">
+            Python 3
+          </SafeBlankLink>{' '}
+          installed.
         </p>
       </>
     )

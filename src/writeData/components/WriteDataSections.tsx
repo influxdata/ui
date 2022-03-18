@@ -41,9 +41,7 @@ const WriteDataSections: FC = () => {
     <>
       <FileUploadSection />
       <ClientLibrarySection />
-      {CLOUD && isFlagEnabled('subscriptionsResourceType') && (
-        <CloudNativeSources />
-      )}
+      {CLOUD && isFlagEnabled('subscriptionsUI') && <CloudNativeSources />}
       <TelegrafPluginSection />
     </>
   )

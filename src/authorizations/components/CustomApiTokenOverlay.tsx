@@ -47,7 +47,7 @@ import {
   generateDescription,
 } from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
-
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 interface OwnProps {
@@ -88,15 +88,21 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       const perms = {
         otherResources: {read: false, write: false},
       }
-      props.allResources.forEach(resource => {
-        if (resource === ResourceType.Telegrafs) {
-          perms[resource] = props.telegrafPermissions
-        } else if (resource === ResourceType.Buckets) {
-          perms[resource] = props.bucketPermissions
-        } else {
-          perms[resource] = {read: false, write: false}
-        }
-      })
+      props.allResources
+        // filter out Subsriptions resource type if the UI is not enabled
+        .filter(
+          p =>
+            p !== ResourceType.Subscriptions || isFlagEnabled('subscriptionsUI')
+        )
+        .forEach(resource => {
+          if (resource === ResourceType.Telegrafs) {
+            perms[resource] = props.telegrafPermissions
+          } else if (resource === ResourceType.Buckets) {
+            perms[resource] = props.bucketPermissions
+          } else {
+            perms[resource] = {read: false, write: false}
+          }
+        })
       setPermissions(perms)
     }
     // Each time remoteDataState changes, the useEffect hook will be called.

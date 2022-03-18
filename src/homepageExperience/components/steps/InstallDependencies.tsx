@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
-import {SafeBlankLink} from '../../../utils/SafeBlankLink'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 export class InstallDependencies extends PureComponent {
   render() {

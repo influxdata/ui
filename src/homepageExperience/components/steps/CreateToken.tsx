@@ -14,8 +14,18 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Helper Components
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import {event} from 'src/cloud/utils/reporting'
 
 type ReduxProps = ConnectedProps<typeof connector>
+
+// Events log handling
+const logCopyCodeSnippet = () => {
+  event('firstMile.pythonWizard.createToken.code.copied')
+}
+
+const logDocsOpened = () => {
+  event('firstMile.pythonWizard.createToken.docs.opened')
+}
 
 const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
   showOverlay,
@@ -50,10 +60,16 @@ const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
         Save your token as an environment variable; you’ll use it soon. Run this
         command in your terminal:
       </p>
-      <CodeSnippet text="export INFLUXDB_TOKEN=<your token here>" />
+      <CodeSnippet
+        text="export INFLUXDB_TOKEN=<your token here>"
+        onCopy={logCopyCodeSnippet}
+      />
       <p style={{marginTop: '46px'}}>
         You can create tokens in the future in the{' '}
-        <SafeBlankLink href={`orgs/${org.id}/load-data/tokens`}>
+        <SafeBlankLink
+          href={`orgs/${org.id}/load-data/tokens`}
+          onClick={logDocsOpened}
+        >
           Token page
         </SafeBlankLink>
         .

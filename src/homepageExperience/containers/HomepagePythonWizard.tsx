@@ -20,6 +20,9 @@ import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 import {ExecuteAggregateQuery} from '../components/steps/ExecuteAggregateQuery'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface State {
   currentStep: number
 }
@@ -30,16 +33,26 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
   }
 
   handleNextClick = () => {
-    this.setState({
-      currentStep: Math.min(
-        this.state.currentStep + 1,
-        HOMEPAGE_NAVIGATION_STEPS.length
-      ),
-    })
+    this.setState(
+      {
+        currentStep: Math.min(
+          this.state.currentStep + 1,
+          HOMEPAGE_NAVIGATION_STEPS.length
+        ),
+      },
+      () => {
+        event('firstMile.pythonWizard.next.clicked')
+      }
+    )
   }
 
   handlePreviousClick = () => {
-    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
+    this.setState(
+      {currentStep: Math.max(this.state.currentStep - 1, 1)},
+      () => {
+        event('firstMile.pythonWizard.previous.clicked')
+      }
+    )
   }
 
   renderStep = () => {

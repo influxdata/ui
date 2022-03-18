@@ -25,6 +25,7 @@ import {
 } from 'src/homepageExperience/components/HomepageIcons'
 
 import './HomepageContainer.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 export const HomepageContainer: FC = () => {
   const org = useSelector(getOrg)
@@ -37,7 +38,12 @@ export const HomepageContainer: FC = () => {
 
   const cardStyle = {maxWidth: '250px'}
   const linkStyle = {color: InfluxColors.Grey75}
-  const moreStyle = {height: '100%'}
+  const moreStyle = {height: '100%', ...linkStyle}
+
+  // events handling
+  const logPythonEvent = () => {
+    event('firstMile.pythonWizard.clicked')
+  }
 
   return (
     <>
@@ -56,7 +62,11 @@ export const HomepageContainer: FC = () => {
                 justifyContent={JustifyContent.SpaceBetween}
               >
                 <ResourceCard style={cardStyle}>
-                  <Link to={pythonWizardLink} style={linkStyle}>
+                  <Link
+                    to={pythonWizardLink}
+                    style={linkStyle}
+                    onClick={logPythonEvent}
+                  >
                     <div className="homepage-wizard-language-tile">
                       <h5>Python</h5>
                       {PythonIcon}
@@ -64,7 +74,7 @@ export const HomepageContainer: FC = () => {
                   </Link>
                 </ResourceCard>
                 <ResourceCard style={cardStyle}>
-                  <Link to={javaScriptNodeLink}>
+                  <Link to={javaScriptNodeLink} style={linkStyle}>
                     <div className="homepage-wizard-language-tile">
                       <h5>JavaScript/Node.js</h5>
                       {JavascriptNodeJsIcon}
@@ -72,7 +82,7 @@ export const HomepageContainer: FC = () => {
                   </Link>
                 </ResourceCard>
                 <ResourceCard style={cardStyle}>
-                  <Link to={golangLink}>
+                  <Link to={golangLink} style={linkStyle}>
                     <div className="homepage-wizard-language-tile">
                       <h5>Go</h5>
                       {GoIcon}

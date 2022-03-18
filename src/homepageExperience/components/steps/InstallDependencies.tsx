@@ -1,5 +1,7 @@
 import React, {PureComponent} from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+
 import {event} from 'src/cloud/utils/reporting'
 
 export class InstallDependencies extends PureComponent {
@@ -20,7 +22,11 @@ export class InstallDependencies extends PureComponent {
           onCopy={this.logCopyCodeSnippet}
         />
         <p style={{fontStyle: 'italic'}}>
-          You’ll need to have Python 3 installed.
+          You’ll need to have{' '}
+          <SafeBlankLink href="https://www.python.org/download/releases/3.0/">
+            Python 3
+          </SafeBlankLink>{' '}
+          installed.
         </p>
       </>
     )

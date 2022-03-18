@@ -86,13 +86,15 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
   )
 
   let updateStaticLegendProperties
+  const notebookViewProperties = data?.properties || {}
+  const notebookStaticLegend = notebookViewProperties.staticLegend || {}
   if (id) {
-    updateStaticLegendProperties = (staticLegend: StaticLegendAPI) =>
+    updateStaticLegendProperties = (updatedProperties: StaticLegendAPI) =>
       update({
         ...data,
         properties: {
-          ...data.properties,
-          staticLegend: {...data.properties?.staticLegend, ...staticLegend},
+          ...notebookViewProperties,
+          staticLegend: {...notebookStaticLegend, ...updatedProperties},
         },
       })
   } else {

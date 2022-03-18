@@ -90,13 +90,17 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   }
 
   const handleDelete = () => {
-    event('delete_notebook')
+    event('delete_notebook', {
+      context: 'list',
+    })
     deletePinnedItemByParam(id)
     remove(id)
   }
 
   const handleClone = async () => {
-    event('clone_notebook')
+    event('clone_notebook', {
+      context: 'list',
+    })
     const clonedId = await clone(id)
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`

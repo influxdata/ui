@@ -23,7 +23,7 @@ import {
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
-import {FluxToolbarFunction, EditorType} from 'src/types'
+import {FluxToolbarFunction, EditorType, FluxFunction} from 'src/types'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
@@ -81,7 +81,7 @@ const TimeMachineFluxEditor: FC = () => {
   const defaultColumnPosition = 1 // beginning column of the row
 
   const getFluxTextAndRange = (
-    func: FluxToolbarFunction
+    func: FluxToolbarFunction | FluxFunction
   ): {text: string; range: monacoEditor.Range} => {
     if (!editorInstance) {
       return null
@@ -102,15 +102,18 @@ const TimeMachineFluxEditor: FC = () => {
       row = currentRange.endLineNumber + 1
     }
 
-    let text = ''
-    if (shouldInsertOnNextLine) {
-      text = `\n  |> ${func.example}`
-    } else {
-      text = `  |> ${func.example}\n`
-    }
+    // FIXME: now that we are using FluxDocs, not hardcoded FLUX_FUNCTIONS
+    // we are missing the example in the http request payload
+    let text = !!(func as FluxToolbarFunction).example
+      ? (func as FluxToolbarFunction).example
+      : `${func.name}()`
 
-    if (functionRequiresNewLine(func.name)) {
-      text = `\n${func.example}\n`
+    if (shouldInsertOnNextLine) {
+      text = `\n  |> ${text}`
+    } else if (functionRequiresNewLine(func.name)) {
+      text = `\n${text}\n`
+    } else {
+      text = `  |> ${text}\n`
     }
 
     const range = new window.monaco.Range(

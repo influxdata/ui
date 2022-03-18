@@ -17,6 +17,7 @@ import {getTasks} from 'src/tasks/actions/thunks'
 import {getTelegrafs} from 'src/telegrafs/actions/thunks'
 import {getVariables} from 'src/variables/actions/thunks'
 import {getSecrets} from 'src/secrets/actions/thunks'
+import {getFluxDocs} from 'src/shared/actions/fluxDocs'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -120,6 +121,10 @@ class GetResources extends PureComponent<Props> {
         return this.props.getSecrets()
       }
 
+      case ResourceType.FluxDocs: {
+        return this.props.getFluxDocs()
+      }
+
       default: {
         throw new Error('incorrect resource type provided')
       }
@@ -163,6 +168,7 @@ const mdtp = {
   getNotificationRules: getNotificationRules,
   getEndpoints: getEndpoints,
   getSecrets: getSecrets,
+  getFluxDocs: getFluxDocs,
 }
 
 const connector = connect(mstp, mdtp)

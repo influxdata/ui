@@ -5,6 +5,7 @@ import {
   Check,
   Dashboard,
   DashboardSortParams,
+  FluxDocs,
   Label,
   Member,
   NotificationEndpoint,
@@ -28,6 +29,7 @@ export enum ResourceType {
   Checks = 'checks',
   Dashboards = 'dashboards',
   Flows = 'flows',
+  FluxDocs = 'fluxDocs',
   Labels = 'labels',
   Orgs = 'orgs',
   Members = 'members',
@@ -87,6 +89,7 @@ export interface ResourceState {
   [ResourceType.Cells]: CellsState
   [ResourceType.Checks]: NormalizedState<Check>
   [ResourceType.Dashboards]: DashboardsState
+  [ResourceType.FluxDocs]: NormalizedState<FluxDocs>
   [ResourceType.Labels]: NormalizedState<Label>
   [ResourceType.Members]: NormalizedState<Member>
   [ResourceType.Orgs]: OrgsState

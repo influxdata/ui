@@ -5,6 +5,7 @@ import {
   Cell,
   Check,
   Dashboard,
+  FluxDocs,
   Label,
   Member,
   Organization,
@@ -67,6 +68,14 @@ export interface DashboardEntities {
 export interface EndpointEntities {
   endpoints: {
     [uuid: string]: NotificationEndpoint
+  }
+}
+
+// EndpointEntities defines the result of normalizr's normalization of
+// the "notification_endpoint" resource
+export interface FluxDocsEntities {
+  fluxDocs: {
+    [uuid: string]: FluxDocs
   }
 }
 

@@ -1,4 +1,5 @@
 import {ReactNode, ComponentType} from 'react'
+import {Fluxdocs as FluxdocsRouteT} from 'src/client/fluxdocsdRoutes'
 
 export interface DropdownItem {
   text: string
@@ -32,6 +33,11 @@ export interface FluxToolbarFunction {
   category: string
   link: string
 }
+
+// FIXME: confirm if this is really FluxFuntions?
+// or also contains other docs for additional flux language features.
+export type FluxDocs = FluxdocsRouteT
+export type FluxFunction = FluxDocs
 
 export type ErrorMessageComponent = ComponentType<{error: Error}>
 

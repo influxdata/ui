@@ -413,5 +413,32 @@ export const generateSortItems = (
           sortDirection: Sort.Descending,
         },
       ]
+    case ResourceType.FluxDocs:
+      return [
+        {
+          label: 'Name (A → Z)',
+          sortKey: 'name',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Ascending,
+        },
+        {
+          label: 'Name (Z → A)',
+          sortKey: 'name',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Descending,
+        },
+        {
+          label: 'ID (A → Z)',
+          sortKey: 'id',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Ascending,
+        },
+        {
+          label: 'ID (Z → A)',
+          sortKey: 'id',
+          sortType: SortTypes.String,
+          sortDirection: Sort.Descending,
+        },
+      ]
   }
 }

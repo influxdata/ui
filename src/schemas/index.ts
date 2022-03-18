@@ -10,6 +10,7 @@ export {
   arrayOfViews,
 } from './dashboards'
 export {endpointSchema, arrayOfEndpoints} from './endpoints'
+export {fluxDocSchema, arrayOfFluxDocs} from './fluxDocs'
 export {labelSchema, arrayOfLabels} from './labels'
 export {memberSchema, arrayOfMembers} from './members'
 export {orgSchema, arrayOfOrgs} from './orgs'

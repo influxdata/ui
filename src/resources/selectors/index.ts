@@ -5,6 +5,7 @@ import {get} from 'lodash'
 import {
   AppState,
   Bucket,
+  FluxFunction,
   Label,
   RemoteDataState,
   ResourceType,
@@ -44,6 +45,9 @@ export const hasNoTasks = (state: AppState): boolean =>
 
 export const getAllSecrets = (state: AppState): Secret[] =>
   getAll(state, ResourceType.Secrets) || []
+
+export const getAllFluxFunctions = (state: AppState): FluxFunction[] =>
+  getAll(state, ResourceType.FluxDocs) || []
 
 export const getToken = (state: AppState): string =>
   get(state, 'dataLoading.dataLoaders.token', '') || ''

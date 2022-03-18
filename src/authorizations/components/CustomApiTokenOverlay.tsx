@@ -90,7 +90,10 @@ const CustomApiTokenOverlay: FC<Props> = props => {
       }
       props.allResources
         // filter out Subsriptions resource type if the UI is not enabled
-        .filter(p => !isFlagEnabled('subscriptionsUI') && p !== 'subscriptions')
+        .filter(
+          p =>
+            p !== ResourceType.Subscriptions || isFlagEnabled('subscriptionsUI')
+        )
         .forEach(resource => {
           if (resource === ResourceType.Telegrafs) {
             perms[resource] = props.telegrafPermissions

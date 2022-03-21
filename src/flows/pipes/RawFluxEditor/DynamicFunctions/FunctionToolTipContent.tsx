@@ -38,7 +38,7 @@ const FunctionTooltipContent: FC<TooltipProps> = ({item: func}) => {
           </article>
           <article>
             <div className="flux-function-docs--heading">Arguments</div>
-            <div className="flux-function-docs--snippet">{argComponent}</div>
+            <div className="flux-function-docs--snippet">{argComponent()}</div>
           </article>
           <p className="tooltip--link">
             Still have questions? Check out the{' '}

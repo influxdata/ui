@@ -1,24 +1,57 @@
-import React, {FC} from 'react'
+import React, {FC, useCallback, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 
-import {FLUX_FUNCTIONS} from 'src/shared/constants/fluxFunctions'
-import {FluxToolbarFunction} from 'src/types/shared'
+// Components
+import {FluxFunction} from 'src/types/shared'
 import Fn from 'src/flows/shared/FilterList/InjectionOption'
 import FilterList from 'src/flows/shared/FilterList/FilterList'
-import FunctionTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/perFunction/FunctionToolTipContent'
+import FluxDocsTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/perFunction/FluxDocsTooltipContent'
 
+// Actions
+import {getFluxPackages} from 'src/shared/actions/fluxDocs'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
+import {AppState} from 'src/types'
 interface Props {
-  onSelect: (fn: FluxToolbarFunction) => void
+  onSelect: (fn: FluxFunction) => void
+}
+
+const sortFuncs = (a, b) => {
+  if (a.package.toLowerCase() === b.package.toLowerCase()) {
+    return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
+  } else {
+    return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1
+  }
 }
 
 const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
+  const dispatch = useDispatch()
+  const fluxFunctions = useSelector(
+    (state: AppState) => state.fluxDocs.fluxDocs
+  )
+  useEffect(() => {
+    if (fluxFunctions.length === 0) {
+      dispatch(getFluxPackages())
+    }
+  }, [])
+
+  const handleSelectItem = useCallback((func: FluxFunction) => {
+    onSelect(func)
+    event('Inject FluxDoc function into Flux Script')
+  }, [])
+
   const render = fn => (
     <Fn
-      onClick={onSelect}
-      extractor={fn => (fn as FluxToolbarFunction).name}
+      onClick={handleSelectItem}
+      extractor={fn =>
+        `${(fn as FluxFunction).package}.${(fn as FluxFunction).name}`
+      }
       key={`${fn.name}_${fn.desc}`}
       option={fn}
       testID={fn.name}
-      ToolTipContent={FunctionTooltipContent}
+      ToolTipContent={FluxDocsTooltipContent}
     />
   )
 
@@ -26,8 +59,10 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
     <FilterList
       placeholder="Filter Functions..."
       emptyMessage="No functions match your search"
-      extractor={fn => (fn as FluxToolbarFunction).name}
-      items={FLUX_FUNCTIONS}
+      extractor={fn =>
+        `${(fn as FluxFunction).name} ${(fn as FluxFunction).package}`
+      }
+      items={fluxFunctions.sort(sortFuncs)}
       renderItem={render}
     />
   )

@@ -291,9 +291,6 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
   }, [generateDeadmanTask, generateThresholdTask, data.thresholds])
 
   const handleTaskCreation = _ => {
-    event('Alert panel exported', {
-      type: data.endpoint,
-    })
     dispatch(notify(exportAlertToTaskSuccess(data.endpoint)))
   }
 

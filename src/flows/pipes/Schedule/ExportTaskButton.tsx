@@ -57,7 +57,7 @@ const ExportTaskButton: FC<Props> = ({
   const onClick = async () => {
     const query = generate ? generate() : data.query
 
-    event('Export Task Modal Skipped', {from: type})
+    event('Export Task Modal Skipped', {from: type, type: data.endpoint})
     let taskid
 
     // we can soft delete the previously connected task by marking the old one inactive

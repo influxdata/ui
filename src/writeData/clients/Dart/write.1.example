@@ -1,0 +1,11 @@
+var point = Point('h2o')
+    .addTag('location', 'Prague')
+    .addField('level', 1.12345)
+    .time(DateTime.now().toUtc());
+
+var writeService = client.getWriteService();
+await writeService.write(point).then((value) {
+  print('Write completed');
+}).catchError((exception) {
+  print(exception);
+});

@@ -28,7 +28,6 @@ import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {getLabels, getStatus} from 'src/resources/selectors'
 import {CLOUD} from 'src/shared/constants'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {
@@ -91,13 +90,7 @@ export const getBuckets = () => async (
     }
     const org = getOrg(state)
 
-    let bucketsResponse
-    if (isFlagEnabled('fetchAllBuckets')) {
-      // a limit of -1 means fetch all buckets for this org
-      bucketsResponse = await fetchAllBuckets(org.id, -1)
-    } else {
-      bucketsResponse = await fetchAllBuckets(org.id)
-    }
+    const bucketsResponse = await fetchAllBuckets(org.id, -1)
     dispatch(
       setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)
     )

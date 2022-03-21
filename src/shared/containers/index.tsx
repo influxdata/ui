@@ -32,9 +32,6 @@ export const VersionPage = lazy(() =>
 export const BucketsIndex = lazy(() =>
   import('src/buckets/containers/BucketsIndex')
 )
-export const BucketsIndexPaginated = lazy(() =>
-  import('src/buckets/pagination/BucketsIndex')
-)
 export const TokensIndex = lazy(() =>
   import('src/authorizations/containers/TokensIndex')
 )

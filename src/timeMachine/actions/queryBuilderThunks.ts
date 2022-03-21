@@ -5,7 +5,6 @@ import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // API
 import {fetchAllBuckets} from 'src/buckets/api'
@@ -228,12 +227,8 @@ export const loadBuckets = () => async (
 
   let bucketsResponse
   try {
-    if (isFlagEnabled('fetchAllBuckets')) {
-      // a limit of -1 means fetch all buckets for this org
-      bucketsResponse = await fetchAllBuckets(orgID, -1)
-    } else {
-      bucketsResponse = await fetchAllBuckets(orgID)
-    }
+    // a limit of -1 means fetch all buckets for this org
+    bucketsResponse = await fetchAllBuckets(orgID, -1)
 
     dispatch(
       setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)

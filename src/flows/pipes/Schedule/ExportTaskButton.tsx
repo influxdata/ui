@@ -31,7 +31,7 @@ import {getErrorMessage} from 'src/utils/api'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
-import {missingUserInput} from 'src/shared/copy/notifications'
+import {incorrectUserInput} from 'src/shared/copy/notifications'
 
 interface Props {
   text: string
@@ -61,7 +61,7 @@ const ExportTaskButton: FC<Props> = ({
     try {
       query = generate ? generate() : data.query
     } catch (e) {
-      dispatch(notify(missingUserInput(e.message)))
+      dispatch(notify(incorrectUserInput(e.message)))
       return
     }
 

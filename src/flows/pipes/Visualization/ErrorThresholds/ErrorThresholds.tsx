@@ -18,7 +18,7 @@ import ColumnDropdown from 'src/flows/pipes/Visualization/ErrorThresholds/FieldC
 import FunctionDropdown from 'src/flows/pipes/Visualization/ErrorThresholds/FunctionDropdown'
 import ThresholdEntryColumn from 'src/flows/pipes/Visualization/ErrorThresholds/ThresholdEntryColumn'
 import {event} from 'src/cloud/utils/reporting'
-import {ErrorThreshold} from 'src/flows/pipes/Visualization/threshold'
+import {Threshold} from 'src/flows/shared/threshold'
 import './ErrorThresholds.scss'
 
 const ErrorThresholds: FC = () => {
@@ -67,7 +67,7 @@ const ErrorThresholds: FC = () => {
           stretchToFitWidth
         >
           {data?.errorThresholds?.map(
-            (threshold: ErrorThreshold, index: number) => (
+            (threshold: Threshold, index: number) => (
               <FlexBox
                 direction={FlexDirection.Row}
                 margin={ComponentSize.Medium}

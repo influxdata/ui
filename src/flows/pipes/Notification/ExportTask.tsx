@@ -16,7 +16,7 @@ import {
   deadmanType,
   lambdaPrefix,
   THRESHOLD_TYPES,
-} from 'src/flows/pipes/Visualization/threshold'
+} from 'src/flows/shared/threshold'
 import {ImportDeclaration} from 'src/types/ast'
 
 // Utils

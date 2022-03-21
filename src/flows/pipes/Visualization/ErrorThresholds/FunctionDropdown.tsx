@@ -5,15 +5,15 @@ import React, {FC, useCallback, useContext, useMemo} from 'react'
 import {ComponentSize, ComponentStatus, Dropdown} from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
+import {Threshold} from 'src/flows/shared/threshold'
 import {
   COMMON_THRESHOLD_TYPES,
   EQUALITY_THRESHOLD_TYPES,
-  ErrorThreshold,
   ThresholdFormat,
-} from 'src/flows/pipes/Visualization/threshold'
+} from 'src/flows/shared/threshold'
 
 type Props = {
-  threshold: ErrorThreshold
+  threshold: Threshold
   index: number
 }
 const FunctionDropdown: FC<Props> = ({threshold, index}) => {

@@ -24,7 +24,7 @@ import {
   Threshold,
   ThresholdFormat,
   THRESHOLD_TYPES,
-} from 'src/flows/pipes/Visualization/threshold'
+} from 'src/flows/shared/threshold'
 
 interface Props {
   readOnly?: boolean
@@ -67,7 +67,8 @@ const Threshold: FC<Props> = ({readOnly}) => {
             type: deadmanType,
             deadmanCheckValue: '5s',
             deadmanStopValue: '90s',
-            field: threshold.field || 'Select a numeric field',
+            field: threshold.field || 'Select a field',
+            fieldType: '',
           },
         ]
       } else {
@@ -160,7 +161,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
             !!readOnly ? ComponentStatus.Disabled : ComponentStatus.Default
           }
         >
-          {threshold?.field || 'Select a numeric field'}
+          {threshold?.field || 'Select a field'}
         </Dropdown.Button>
       )
       return <Dropdown menu={menu} button={menuButton} />

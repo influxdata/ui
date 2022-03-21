@@ -12,15 +12,15 @@ import {
 } from '@influxdata/clockface'
 import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
+import {Threshold} from 'src/flows/shared/threshold'
 import {
   COMMON_THRESHOLD_TYPES,
-  ErrorThreshold,
   ThresholdFormat,
-} from 'src/flows/pipes/Visualization/threshold'
+} from 'src/flows/shared/threshold'
 import './ErrorThresholds.scss'
 
 type Props = {
-  threshold: ErrorThreshold
+  threshold: Threshold
   index: number
 }
 

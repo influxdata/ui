@@ -22,14 +22,11 @@ export type Threshold = {
   value: number
   type: ThresholdType
   field: string
+  fieldType: string
   max?: number
   min?: number
   deadmanCheckValue?: string
   deadmanStopValue: string // e.g. '5 minutes'
-}
-
-export interface ErrorThreshold extends Threshold {
-  fieldType: string
 }
 
 const existenceCheck = unknown => unknown == 0 || !!unknown
@@ -67,6 +64,10 @@ export function validateThreshold(t: Threshold): boolean {
   return true
 }
 
+// hypothetically, `val` could be an object etc
+const quoteStringValues = val =>
+  isNaN(Number(val)) ? JSON.stringify(val) : val
+
 export const lambdaPrefix = '(r) =>'
 
 export const EQUALITY_THRESHOLD_TYPES = {
@@ -75,14 +76,18 @@ export const EQUALITY_THRESHOLD_TYPES = {
     format: ThresholdFormat.Value,
     condition: data =>
       validateThreshold(data) &&
-      `${lambdaPrefix} (r["${data.field}"] == ${data.value})`,
+      `${lambdaPrefix} (r["${data.field}"] == ${quoteStringValues(
+        data.value
+      )})`,
   },
   [ThresholdType.NotEqual]: {
     name: 'not equal to',
     format: ThresholdFormat.Value,
     condition: data =>
       validateThreshold(data) &&
-      `${lambdaPrefix} (r["${data.field}"] != ${data.value})`,
+      `${lambdaPrefix} (r["${data.field}"] != ${quoteStringValues(
+        data.value
+      )})`,
   },
 }
 
@@ -93,42 +98,50 @@ export const COMMON_THRESHOLD_TYPES = {
     format: ThresholdFormat.Value,
     condition: data =>
       validateThreshold(data) &&
-      `${lambdaPrefix} (r["${data.field}"] > ${data.value})`,
+      `${lambdaPrefix} (r["${data.field}"] > ${quoteStringValues(data.value)})`,
   },
   [ThresholdType.GreaterEqual]: {
     name: 'greater than or equal to',
     format: ThresholdFormat.Value,
     condition: data =>
       validateThreshold(data) &&
-      `${lambdaPrefix} (r["${data.field}"] >= ${data.value})`,
+      `${lambdaPrefix} (r["${data.field}"] >= ${quoteStringValues(
+        data.value
+      )})`,
   },
   [ThresholdType.Less]: {
     name: 'less than',
     format: ThresholdFormat.Value,
     condition: data =>
       validateThreshold(data) &&
-      `${lambdaPrefix} (r["${data.field}"] < ${data.value})`,
+      `${lambdaPrefix} (r["${data.field}"] < ${quoteStringValues(data.value)})`,
   },
   [ThresholdType.LessEqual]: {
     name: 'less than or equal to',
     format: ThresholdFormat.Value,
     condition: data =>
       validateThreshold(data) &&
-      `${lambdaPrefix} (r["${data.field}"] <= ${data.value})`,
+      `${lambdaPrefix} (r["${data.field}"] <= ${quoteStringValues(
+        data.value
+      )})`,
   },
   [ThresholdType.Between]: {
     name: 'between',
     format: ThresholdFormat.Range,
     condition: data =>
       validateThreshold(data) &&
-      `${lambdaPrefix} (r["${data.field}"] > ${data.min} and r["${data.field}"] < ${data.max})`,
+      `${lambdaPrefix} (r["${data.field}"] > ${quoteStringValues(
+        data.min
+      )} and r["${data.field}"] < ${quoteStringValues(data.max)})`,
   },
   [ThresholdType.NotBetween]: {
     name: 'not between',
     format: ThresholdFormat.Range,
     condition: data =>
       validateThreshold(data) &&
-      `${lambdaPrefix} (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
+      `${lambdaPrefix} (r["${data.field}"] < ${quoteStringValues(
+        data.min
+      )} or r["${data.field}"] > ${quoteStringValues(data.max)})`,
   },
 }
 

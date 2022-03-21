@@ -135,11 +135,11 @@ export const invalidJSON = (message: string): Notification => {
   }
 }
 
-export const missingUserInput = (
+export const incorrectUserInput = (
   reason: string = 'flux was invalid.'
 ): Notification => ({
   ...defaultErrorNotification,
-  message: `Missing user input: ${reason}`,
+  message: `Incorrect user input: ${reason}`,
 })
 
 export const pinnedItemFailure = (

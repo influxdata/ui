@@ -37,6 +37,7 @@ import './AutoRefresh.scss'
 
 // Metrics
 import {event} from 'src/cloud/utils/reporting'
+import {PROJECT_NAME} from 'src/flows'
 
 enum TIMEOUT_CATEGORY {
   Minutes = 'Minutes',
@@ -206,8 +207,16 @@ const AutoRefreshOverlay: FC = () => {
     refreshMilliseconds,
   ])
 
+  let refreshContext = 'Dashboards'
+
+  if (params.id.toLowerCase().includes(PROJECT_NAME.toLowerCase())) {
+    refreshContext = PROJECT_NAME
+  }
+
   const handleCancel = () => {
-    event('dashboards.autorefresh.autorefreshoverlay.cancelcustom')
+    event(
+      `${refreshContext.toLowerCase()}.autorefresh.autorefreshoverlay.cancelcustom`
+    )
     onClose()
   }
 
@@ -231,7 +240,7 @@ const AutoRefreshOverlay: FC = () => {
       >
         <FlexBox.Child>
           <div className="refresh-form-container-title">
-            Refresh Dashboard Until
+            Refresh {refreshContext} Until
           </div>
           <SelectGroup shape={ButtonShape.StretchToFit}>
             {refreshOptions.map(option => (
@@ -270,7 +279,7 @@ const AutoRefreshOverlay: FC = () => {
         <FlexBox.Child className="refresh-form-container">
           <div className="refresh-form-container-title">Refresh Interval</div>
           <div className="refresh-form-container-description">
-            How often your dashboard will refresh
+            How often your {refreshContext.toLowerCase()} will refresh
           </div>
           <AutoRefreshInput
             handleRefreshMilliseconds={handleRefreshMilliseconds}
@@ -280,7 +289,7 @@ const AutoRefreshOverlay: FC = () => {
         <FlexBox.Child className="refresh-form-container">
           <div className="refresh-form-container-title">Inactivity Timeout</div>
           <div className="refresh-form-container-description">
-            When your dashboard refresh will timeout
+            When your {refreshContext.toLowerCase()} refresh will timeout
           </div>
           <div className="refresh-inactivity-timeout-container">
             <div className="refresh-inactivity-timeout-num">

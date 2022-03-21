@@ -1,0 +1,49 @@
+name: Track pushes to master in Influx
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  track-new-commit-on-master:
+    name: Write event to Influx Cloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download and Install Influx Client
+        env:
+          INFLUXDB_RELEASES_PATH: https://dl.influxdata.com/influxdb/releases
+          INFLUX_CLIENT_VERSION: 2.2.1
+          INFLUX_CLIENT_CHECKSUM: bb6e079d209e653a57b9e37371f2380ec8e7a56f579dc9778de44854d0feb5a7
+        run: |
+          INFLUX_CLIENT_DIR="influxdb2-client-${INFLUX_CLIENT_VERSION}-linux-amd64" && \
+          INFLUX_CLIENT_TAR="${INFLUX_CLIENT_DIR}.tar.gz" && \
+          wget "${INFLUXDB_RELEASES_PATH}/${INFLUX_CLIENT_TAR}" && \
+          sha256sum -c <(echo "${INFLUX_CLIENT_CHECKSUM} ${INFLUX_CLIENT_TAR}") && \
+          tar xvfz "${INFLUX_CLIENT_TAR}" && \
+          cp "${INFLUX_CLIENT_DIR}/influx" /usr/local/bin
+      - name: Validate Influx CLI is Available
+        run: which influx
+      - name: Parse Source PR Number
+        id: source-pr
+        env:
+          GITHUB_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          echo "${GITHUB_COMMIT_MESSAGE}" | \
+          sed "s/^.*(#\([0-9]*\)).*$/\1/g" | \
+          xargs -I{} echo "::set-output name=number::{}"
+      - name: Write Github Event to Influx Cloud
+        env:
+          INFLUX_HOST: ${{ secrets.INFLUXDB_DEPLOYMENTS_HOST }}
+          INFLUX_ORG: ${{ secrets.INFLUXDB_DEPLOYMENTS_ORG }}
+          INFLUX_BUCKET_NAME: ${{ secrets.INFLUXDB_DEPLOYMENTS_BUCKET }}
+          INFLUX_TOKEN: ${{ secrets.INFLUXDB_DEPLOYMENTS_BUCKET_WRITE_TOKEN }}
+          GITHUB_REPO_NAME: ${{ github.event.repository.full_name }}
+          GITHUB_REF: ${{ github.event.push.ref }}
+          GITHUB_SHA: ${{ github.event.push.head_commit }}
+          GITHUB_PR: ${{ steps.source-pr.outputs.number }}
+        run: |
+          TAGS="type=push,repo=${GITHUB_REPO_NAME},ref=${GITHUB_REF}" && \
+          FIELDS="sha=\"${GITHUB_SHA}\"" && \
+          if [ -n "${GITHUB_PR}" ]; then FIELDS="${FIELDS},pr=\"${GITHUB_PR}\""; fi && \
+          influx write "github_events,${TAGS} ${FIELDS} $(date +%s%N)"

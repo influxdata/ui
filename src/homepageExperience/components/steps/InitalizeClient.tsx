@@ -1,12 +1,16 @@
 import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
+import {useSelector} from 'react-redux'
+import {getOrg} from 'src/organizations/selectors'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.initializeClient.code.copied')
 }
 
 export const InitalizeClient = () => {
+  const org = useSelector(getOrg)
+
   const pythonCode = `import os
 from datetime import datetime
 
@@ -14,7 +18,7 @@ from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client import SYNCHRONOUS
 
 token = os.environ.get("INFLUXDB_TOKEN")
-org = "<user>@influxdata.com"
+org = "${org.name}"
 url = "https://us-west-2-1.aws.cloud2.influxdata.com/"
 
 client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)

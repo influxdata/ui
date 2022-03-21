@@ -20,15 +20,6 @@ import DataListening from 'src/homepageExperience/components/DataListening'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
 
-const codeSnippet = `for value in range(5):
-    point = (
-        Point("measurement1")
-        .tag("tagname1", "tagvalue1")
-        .field("field1", value)
-    )
-    write_api.write(bucket=bucket, org=org, record=point)
-    time.sleep(1)`
-
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.writeData.code.copied')
 }
@@ -52,6 +43,15 @@ export const WriteDataComponent = () => {
   useEffect(() => {
     setSelectedBucket(bucket)
   }, [bucket])
+
+  const codeSnippet = `for value in range(5):
+    point = (
+        Point("measurement1")
+        .tag("tagname1", "tagvalue1")
+        .field("field1", value)
+    )
+    write_api.write(bucket="${bucket.name}", org="${org.name}", record=point)
+    time.sleep(1)`
 
   return (
     <>

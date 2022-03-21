@@ -3,19 +3,12 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
+import {useSelector} from 'react-redux'
+import {getOrg} from 'src/organizations/selectors'
 
 const fromBucketSnippet = `from(bucket: “my-bucket”)
   |> range(start: -10m) # find data points in last 10 minutes
   |> mean()`
-
-const codeSnippet = `query_api = client.query_api()
-
-query = "from(bucket: \\"bucket1\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1") |> mean()"
-tables = query_api.query(query, org=org)
-
-for table in tables:
-    for record in table.records:
-        print(record)`
 
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeAggregateQuery.code.copied')
@@ -26,6 +19,17 @@ const logDocsOpened = () => {
 }
 
 export const ExecuteAggregateQuery = () => {
+  const org = useSelector(getOrg)
+
+  const codeSnippet = `query_api = client.query_api()
+
+query = "from(bucket: \\"bucket1\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1") |> mean()"
+tables = query_api.query(query, org="${org.name}")
+
+for table in tables:
+    for record in table.records:
+        print(record)`
+
   return (
     <>
       <h1>Execute an Aggregate Query</h1>

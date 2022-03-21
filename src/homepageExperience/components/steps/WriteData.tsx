@@ -29,13 +29,13 @@ const logDocsOpened = () => {
 }
 
 type WriteDataProps = {
-  handleSelectBucket: (bucketName: string) => void
+  onSelectBucket: (bucketName: string) => void
 }
 
 export const WriteDataComponent = (props: WriteDataProps) => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
-  const {handleSelectBucket} = props
+  const {onSelectBucket} = props
 
   useEffect(() => {
     dispatch(getBuckets())
@@ -47,7 +47,7 @@ export const WriteDataComponent = (props: WriteDataProps) => {
 
   useEffect(() => {
     setSelectedBucket(bucket)
-    handleSelectBucket(bucket.name)
+    onSelectBucket(bucket.name)
   }, [bucket])
 
   const codeSnippet = `for value in range(5):
@@ -123,7 +123,7 @@ export const WriteDataComponent = (props: WriteDataProps) => {
 export const WriteData = props => {
   return (
     <WriteDataDetailsContextProvider>
-      <WriteDataComponent {...props} />
+      <WriteDataComponent onSelectBucket={props.onSelectBucket} />
     </WriteDataDetailsContextProvider>
   )
 }

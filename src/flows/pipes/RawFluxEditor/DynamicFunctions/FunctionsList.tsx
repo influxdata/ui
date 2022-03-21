@@ -81,51 +81,46 @@ const FunctionsList: FC<Props> = (props: Props) => {
     )
   })
 
-  return useMemo(() => {
-    let fnComponent
+  let fnComponent
 
-    if (filteredFunctions.length === 0) {
-      fnComponent = (
-        <EmptyState size={ComponentSize.ExtraSmall}>
-          <EmptyState.Text>No functions match your search</EmptyState.Text>
-        </EmptyState>
-      )
-    } else {
-      fnComponent = filteredFunctions.map((fn, index) => (
-          
-            <Fn
-              onClick={onselect}
-              extractor={fn => `${fn.package}.${fn.name}`}
-              key={index}
-              option={fn}
-              testID={fn.name}
-              ToolTipContent={FunctionTooltipContent}
-            />
-          
-      ))
-    }
-
-    return (
-      <SpinnerContainer
-        loading={fluxLoadingState}
-        spinnerComponent={<TechnoSpinner />}
-      >
-        <div className="flux-toolbar">
-          <div className="flux-toolbar--search">
-            <SearchWidget
-              placeholderText="Filter Functions..."
-              onSearch={updateSearch}
-              searchTerm={search}
-              testID="flux-toolbar-search--input"
-            />
-          </div>
-          <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
-            {fnComponent}
-          </div>
-        </div>
-      </SpinnerContainer>
+  if (filteredFunctions.length === 0) {
+    fnComponent = (
+      <EmptyState size={ComponentSize.ExtraSmall}>
+        <EmptyState.Text>No functions match your search</EmptyState.Text>
+      </EmptyState>
     )
-  }, [filteredFunctions, fluxLoadingState, onselect, search, updateSearch])
+  } else {
+    fnComponent = filteredFunctions.map((fn, index) => (
+      <Fn
+        onClick={onselect}
+        extractor={fn => `${fn.package}.${fn.name}`}
+        key={index}
+        option={fn}
+        testID={fn.name}
+        ToolTipContent={FunctionTooltipContent}
+      />
+    ))
+  }
+  return (
+    <SpinnerContainer
+      loading={fluxLoadingState}
+      spinnerComponent={<TechnoSpinner />}
+    >
+      <div className="flux-toolbar">
+        <div className="flux-toolbar--search">
+          <SearchWidget
+            placeholderText="Filter Functions..."
+            onSearch={updateSearch}
+            searchTerm={search}
+            testID="flux-toolbar-search--input"
+          />
+        </div>
+        <div className="flux-toolbar--list" data-testid="flux-toolbar--list">
+          {fnComponent}
+        </div>
+      </div>
+    </SpinnerContainer>
+  )
 }
 
 const mstp = (state: AppState) => {

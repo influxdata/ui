@@ -208,17 +208,13 @@ class SaveAsCellForm extends PureComponent<Props, State> {
         )
       })
       this.props.setActiveTimeMachine('de', initialStateHelper())
-      event(
-        `data_explorer.${normalizeEventName(
-          chartTypeName(view?.properties?.type)
-        )}.save.as_dashboard_cell.success`
-      )
+      event(`data_explorer.save.as_dashboard_cell.success`, {
+        which: normalizeEventName(chartTypeName(view?.properties?.type)),
+      })
     } catch (error) {
-      event(
-        `data_explorer.${normalizeEventName(
-          chartTypeName(view?.properties?.type)
-        )}.save.as_dashboard_cell.failure`
-      )
+      event(`data_explorer.save.as_dashboard_cell.failure`, {
+        which: normalizeEventName(chartTypeName(view?.properties?.type)),
+      })
       console.error(error)
       dismiss()
     } finally {

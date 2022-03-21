@@ -52,7 +52,7 @@ class GetResources extends PureComponent<Props> {
     const gotResources = resources.join(', ')
     Promise.all(promises).then(() => {
       event(
-        `GetResources ${gotResources}`,
+        'GetResources',
         {
           time: startTime,
           resource: gotResources,

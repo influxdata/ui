@@ -1,0 +1,8 @@
+var record = 'mem,host=host1 used_percent=23.43234543';
+
+var writeService = client.getWriteService();
+await writeService.write(record).then((value) {
+  print('Write completed');
+}).catchError((exception) {
+  print(exception);
+});

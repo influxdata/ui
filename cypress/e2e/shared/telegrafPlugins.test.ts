@@ -12,23 +12,11 @@ describe('Sources > Telegraf Plugins', () => {
     )
   })
 
-  it('can select a plugin and see details without an option to add to a configuration when feature is off', () => {
-    const examplePlugin = 'aerospike'
-    cy.setFeatureFlags({
-      telegrafUiRefresh: false,
-    })
-    cy.getByTestID('sources-telegraf-plugins').should('exist')
-    cy.getByTestID(`load-data-item ${examplePlugin}`).click()
-    cy.getByTestID('add-plugin-to-configuration--dropdown').should('not.exist')
-  })
-
-  it('can create a new telegraf configuration and a new bucket from a plugin when feature is on', () => {
+  it('can create a new telegraf configuration and a new bucket from a plugin', () => {
     const examplePlugin = 'aerospike'
     const configurationName = 'test configuration name'
     const bucketName = 'test configuration create new bucket'
-    cy.setFeatureFlags({
-      telegrafUiRefresh: true,
-    })
+
     cy.getByTestID('sources-telegraf-plugins').should('exist')
     cy.getByTestID(`load-data-item ${examplePlugin}`).click()
     cy.getByTestID('add-plugin-to-configuration--dropdown')
@@ -85,9 +73,7 @@ describe('Sources > Telegraf Plugins', () => {
     const configurationName = `configuration with two ${examplePlugin}`
     const configurationDescription =
       'an example with the same plugin twice in one config'
-    cy.setFeatureFlags({
-      telegrafUiRefresh: true,
-    })
+
     // Create the config
     cy.getByTestID('sources-telegraf-plugins').should('exist')
     cy.getByTestID(`load-data-item ${examplePlugin}`).click()
@@ -182,9 +168,7 @@ describe('Sources > Telegraf Plugins', () => {
     const configurationName = `configuration with ${plugin1} and ${plugin2}`
     const configurationDescription =
       'an example with the two plugins in one config'
-    cy.setFeatureFlags({
-      telegrafUiRefresh: true,
-    })
+
     // Create the config with plugin1
     cy.getByTestID('sources-telegraf-plugins').should('exist')
     cy.getByTestID(`load-data-item ${plugin1}`).click()

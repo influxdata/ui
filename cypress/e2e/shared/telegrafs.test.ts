@@ -20,51 +20,10 @@ describe('Collectors', () => {
 
   describe('from the org view', () => {
     it('can create a telegraf config', () => {
-      const newConfig = 'New Config'
-      const configDescription = 'This is a new config testing'
-
-      cy.setFeatureFlags({
-        telegrafUiRefresh: false,
-      })
       cy.getByTestID('table-row').should('have.length', 0)
       cy.contains('Create Configuration').click()
       cy.getByTestID('overlay--container').within(() => {
-        cy.getByTestID('telegraf-plugins--System').click()
-        cy.getByTestID('next').click()
-        cy.getByInputName('name')
-          .clear()
-          .type(newConfig)
-        cy.getByInputName('description')
-          .clear()
-          .type(configDescription)
-        cy.get('.cf-button')
-          .contains('Create and Verify')
-          .click()
-        cy.getByTestID('streaming').within(() => {
-          cy.get('.cf-button')
-            .contains('Listen for Data')
-            .click()
-        })
-        cy.get('.cf-button')
-          .contains('Finish')
-          .click()
-      })
-
-      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
-        cy.getByTestID('resource-card')
-          .should('have.length', 1)
-          .and('contain', newConfig)
-          .and('contain', defaultBucket)
-      })
-    })
-
-    it('can create a telegraf config in new system', () => {
-      cy.setFeatureFlags({telegrafUiRefresh: true}).then(() => {
-        cy.getByTestID('table-row').should('have.length', 0)
-        cy.contains('Create Configuration').click()
-        cy.getByTestID('overlay--container').within(() => {
-          cy.getByTestID('telegraf-plugins--Aerospike').click()
-        })
+        cy.getByTestID('telegraf-plugins--Aerospike').click()
       })
     })
 
@@ -245,6 +204,7 @@ describe('Collectors', () => {
       const telegrafs = ['bad', 'apple', 'cookie']
       const bucketz = ['MO_buckets', 'EZ_buckets', 'Bucky']
       const [firstTelegraf, secondTelegraf, thirdTelegraf] = telegrafs
+
       beforeEach(() => {
         const description = 'Config Description'
         const [firstBucket, secondBucket, thirdBucket] = bucketz
@@ -256,7 +216,7 @@ describe('Collectors', () => {
         cy.reload()
         cy.get('[data-testid="resource-list--body"]', {timeout: PAGE_LOAD_SLA})
       })
-      // filter by name
+
       it('can filter telegraf configs and sort by name', () => {
         // fixes https://github.com/influxdata/influxdb/issues/15246
         cy.getByTestID('search-widget').type(firstTelegraf)
@@ -320,131 +280,6 @@ describe('Collectors', () => {
             })
           })
       })
-    })
-  })
-
-  describe('configuring plugins', () => {
-    // fix for https://github.com/influxdata/influxdb/issues/15500
-    describe('configuring nginx', () => {
-      beforeEach(() => {
-        cy.setFeatureFlags({
-          telegrafUiRefresh: false,
-        })
-        // These clicks launch move through configuration modals rather than navigate to new pages
-        cy.contains('Create Configuration').click()
-        cy.contains('NGINX').click()
-        cy.contains('Continue').click()
-        cy.contains('nginx').click()
-      })
-
-      it('can add and delete urls', () => {
-        cy.getByTestID('input-field').type('http://localhost:9999')
-        cy.contains('Add').click()
-
-        cy.contains('http://localhost:9999').should('exist', () => {
-          cy.getByTestID('input-field').type('http://example.com')
-          cy.contains('Add').click()
-
-          cy.contains('http://example.com')
-            .should('exist')
-            .then($example => {
-              $example.contains('Delete').click()
-              $example.contains('Confirm').click()
-
-              cy.contains('http://example').should('not.exist')
-
-              cy.contains('Done').click()
-              cy.get('.cf-icon.checkmark-new').should('exist')
-            })
-        })
-      })
-
-      it('handles busted input', () => {
-        // do nothing when clicking done with no urls
-        cy.contains('Done').click()
-        cy.contains('nginx').should('exist')
-        cy.get('.cf-icon.circle-thick').should('exist')
-
-        cy.contains('nginx').click()
-        cy.getByTestID('input-field').type('youre mom')
-        cy.contains('Add').click()
-        cy.contains('Done').click()
-        cy.get('.cf-icon.remove-new').should('exist')
-      })
-    })
-  })
-
-  // redis was affected by the change that was written to address https://github.com/influxdata/influxdb/issues/15500
-  describe('configuring redis', () => {
-    beforeEach(() => {
-      cy.setFeatureFlags({
-        telegrafUiRefresh: false,
-      })
-      // These clicks launch move through configuration modals rather than navigate to new pages
-      cy.contains('Create Configuration').click()
-      cy.contains('Redis').click()
-      cy.contains('Continue').click()
-      cy.contains('redis').click()
-    })
-
-    it('can add and delete urls', () => {
-      cy.get('input[title="servers"]').type('michael collins')
-      cy.contains('Add').click()
-
-      cy.contains('michael collins').should('exist', () => {
-        cy.get('input[title="servers"]').type('alan bean')
-        cy.contains('Add').click()
-
-        cy.contains('alan bean')
-          .should('exist')
-          .then($server => {
-            $server.contains('Delete').click()
-            $server.contains('Confirm').click()
-            cy.contains('alan bean').should('not.exist')
-
-            cy.contains('Done').click()
-            cy.get('.cf-icon.checkmark-new').should('exist')
-          })
-      })
-    })
-
-    it('does nothing when clicking done with no urls', () => {
-      cy.contains('Done').click()
-      cy.contains('redis').should('exist')
-    })
-  })
-
-  // fix for https://github.com/influxdata/influxdb/issues/15730
-  it('creates a configuration with a unique label and opens it', () => {
-    cy.setFeatureFlags({
-      telegrafUiRefresh: false,
-    })
-    cy.contains('Create Configuration').click()
-
-    cy.contains('Docker').click()
-
-    cy.contains('Continue').click()
-
-    cy.contains('docker').click()
-
-    cy.get('[name="endpoint"]').type('http://localhost')
-
-    cy.contains('Done').click()
-    cy.get('input[title="Telegraf Configuration Name"]').type(
-      '{selectall}Label 1'
-    )
-    cy.get('input[title="Telegraf Configuration Description"]').type(
-      'Description 1'
-    )
-
-    cy.contains('Create and Verify').click()
-    cy.contains('Finish').click()
-    cy.contains('Your configurations have been saved')
-
-    cy.contains('Label 1').click()
-
-    cy.getByTestID('telegraf-overlay').within(() => {
-      cy.contains('Label 1').should('exist')
     })
   })
 

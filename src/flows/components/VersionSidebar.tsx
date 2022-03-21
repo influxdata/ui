@@ -203,14 +203,12 @@ export const VersionSidebar: FC = () => {
           thumbStartColor="gray"
         >
           <div className="version-sidebar--submenu-wrapper">
-            {hasDraft && (
-              <Button
-                icon={IconFont.ArrowLeft_New}
-                text="Back to Current Version"
-                onClick={handleClose}
-                className="version-sidebar--back-btn"
-              />
-            )}
+            <Button
+              icon={IconFont.ArrowLeft_New}
+              text="Back to Current Version"
+              onClick={handleClose}
+              className="version-sidebar--back-btn"
+            />
             <List>
               {trimmedVersions.map(version => (
                 <React.Fragment key={version.id}>

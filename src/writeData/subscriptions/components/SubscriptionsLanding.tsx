@@ -11,6 +11,8 @@ import {
   ComponentColor,
   ComponentStatus,
   Page,
+  SpinnerContainer,
+  TechnoSpinner,
 } from '@influxdata/clockface'
 import EmptySubscriptionState from 'src/writeData/subscriptions/components/EmptySubscriptionState'
 import SubscriptionsList from 'src/writeData/subscriptions/components/SubscriptionsList'
@@ -38,7 +40,7 @@ import {ORGS, SUBSCRIPTIONS} from 'src/shared/constants/routes'
 import 'src/writeData/subscriptions/components/SubscriptionsLanding.scss'
 
 const SubscriptionsLanding: FC = () => {
-  const {subscriptions} = useContext(SubscriptionListContext)
+  const {subscriptions, loading} = useContext(SubscriptionListContext)
   const history = useHistory()
   const org = useSelector(getOrg)
   return (
@@ -46,45 +48,47 @@ const SubscriptionsLanding: FC = () => {
       className="subscriptions-landing"
       titleTag={pageTitleSuffixer(['Cloud Native Subscriptions', 'Load Data'])}
     >
-      <LoadDataHeader />
-      <LoadDataTabbedPage activeTab="subscriptions">
-        <Page.ControlBar fullWidth={true}>
-          <Page.ControlBarLeft>
-            <SearchWidget
-              placeholderText="Filter subscriptions..."
-              searchTerm=""
-              onSearch={() => {}}
-            />
-            <ResourceSortDropdown
-              resourceType={ResourceType.Subscriptions}
-              sortDirection={Sort.Ascending}
-              sortKey="name"
-              sortType={SortTypes.String}
-              onSelect={() => {}}
-            />
-          </Page.ControlBarLeft>
-          <Page.ControlBarRight>
-            <Button
-              text="Create Subscription"
-              icon={IconFont.Plus_New}
-              color={ComponentColor.Primary}
-              onClick={() => {
-                history.push(
-                  `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/create`
-                )
-              }}
-              status={ComponentStatus.Default}
-              titleText=""
-              testID="create-subscription-button--control-bar"
-            />
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-        {subscriptions && subscriptions.length ? (
-          <SubscriptionsList subscriptions={subscriptions} />
-        ) : (
-          <EmptySubscriptionState />
-        )}
-      </LoadDataTabbedPage>
+      <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
+        <LoadDataHeader />
+        <LoadDataTabbedPage activeTab="subscriptions">
+          <Page.ControlBar fullWidth={true}>
+            <Page.ControlBarLeft>
+              <SearchWidget
+                placeholderText="Filter subscriptions..."
+                searchTerm=""
+                onSearch={() => {}}
+              />
+              <ResourceSortDropdown
+                resourceType={ResourceType.Subscriptions}
+                sortDirection={Sort.Ascending}
+                sortKey="name"
+                sortType={SortTypes.String}
+                onSelect={() => {}}
+              />
+            </Page.ControlBarLeft>
+            <Page.ControlBarRight>
+              <Button
+                text="Create Subscription"
+                icon={IconFont.Plus_New}
+                color={ComponentColor.Primary}
+                onClick={() => {
+                  history.push(
+                    `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/create`
+                  )
+                }}
+                status={ComponentStatus.Default}
+                titleText=""
+                testID="create-subscription-button--control-bar"
+              />
+            </Page.ControlBarRight>
+          </Page.ControlBar>
+          {subscriptions && subscriptions.length ? (
+            <SubscriptionsList subscriptions={subscriptions} />
+          ) : (
+            <EmptySubscriptionState />
+          )}
+        </LoadDataTabbedPage>
+      </SpinnerContainer>
     </Page>
   )
 }

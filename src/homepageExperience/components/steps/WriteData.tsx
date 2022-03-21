@@ -18,11 +18,9 @@ import WriteDataDetailsContextProvider, {
 import {getOrg} from 'src/organizations/selectors'
 import DataListening from 'src/homepageExperience/components/DataListening'
 import {getBuckets} from 'src/buckets/actions/thunks'
+import {event} from 'src/cloud/utils/reporting'
 
-export const WriteDataComponent = () => {
-  const org = useSelector(getOrg)
-
-  const codeSnippet = `for value in range(5):
+const codeSnippet = `for value in range(5):
     point = (
         Point("measurement1")
         .tag("tagname1", "tagvalue1")
@@ -30,6 +28,17 @@ export const WriteDataComponent = () => {
     )
     write_api.write(bucket=bucket, org=org, record=point)
     time.sleep(1)`
+
+const logCopyCodeSnippet = () => {
+  event('firstMile.pythonWizard.writeData.code.copied')
+}
+
+const logDocsOpened = () => {
+  event('firstMile.pythonWizard.writeData.docs.opened')
+}
+
+export const WriteDataComponent = () => {
+  const org = useSelector(getOrg)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -50,7 +59,10 @@ export const WriteDataComponent = () => {
       <p>
         To start writing data, we need a place to our time-series store data. We
         call these{' '}
-        <SafeBlankLink href={`orgs/${org.id}/load-data/buckets`}>
+        <SafeBlankLink
+          href={`orgs/${org.id}/load-data/buckets`}
+          onClick={logDocsOpened}
+        >
           buckets.
         </SafeBlankLink>
       </p>
@@ -67,11 +79,28 @@ export const WriteDataComponent = () => {
         </Panel.Body>
       </Panel>
       <p>
-        You’re ready to write data! In this code, we define five data points and
-        write each one for InfluxDB. Paste the following code after the prompt
-        (>>>) and press Enter.
+        In this code, we define five data points and write each one for
+        InfluxDB. Run the following code in your Python shell:
       </p>
-      <CodeSnippet text={codeSnippet} />
+      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
+      <p style={{marginTop: '20px'}}>
+        In the above code snippet, we define five data points and write each on
+        the InfluxDB. Each of the 5 points we write has a{' '}
+        <SafeBlankLink
+          href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key"
+          onClick={logDocsOpened}
+        >
+          field
+        </SafeBlankLink>{' '}
+        and a{' '}
+        <SafeBlankLink
+          href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key"
+          onClick={logDocsOpened}
+        >
+          tag
+        </SafeBlankLink>
+        .
+      </p>
       <p style={{marginTop: '40px'}}>
         Once you write this data, you’ll begin to see the confirmation below
       </p>

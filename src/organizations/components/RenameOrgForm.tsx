@@ -1,28 +1,27 @@
 // Libraries
-import React, {PureComponent, ChangeEvent} from 'react'
+import React, {ChangeEvent, PureComponent} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 // Components
+// Types
 import {
+  AlignItems,
+  Button,
+  ButtonType,
+  ComponentColor,
+  ComponentSize,
+  ComponentStatus,
+  FlexBox,
+  FlexDirection,
   Form,
   Input,
-  Button,
-  ComponentSize,
-  IconFont,
-  FlexBox,
-  ComponentColor,
-  ButtonType,
-  AlignItems,
-  FlexDirection,
+  Overlay,
 } from '@influxdata/clockface'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Actions
 import {renameOrg} from 'src/organizations/actions/thunks'
-
-// Types
-import {ComponentStatus} from '@influxdata/clockface'
 import {AppState, Organization, ResourceType} from 'src/types'
 
 // Selectors
@@ -47,53 +46,54 @@ class RenameOrgForm extends PureComponent<Props, State> {
   public render() {
     const {org} = this.state
 
+    const footerStyle = {
+      display: 'flex',
+      alignSelf: 'flex-end',
+      marginTop: '10px',
+    }
     return (
       <Form onSubmit={this.handleRenameOrg}>
-        <Form.ValidationElement
-          label="Name"
-          validationFunc={this.handleValidation}
-          value={org.name}
-        >
-          {status => (
-            <>
-              <FlexBox
-                alignItems={AlignItems.Center}
-                direction={FlexDirection.Column}
-                margin={ComponentSize.Large}
-              >
-                <Input
-                  placeholder="Give your organization a name"
-                  name="name"
-                  autoFocus={true}
-                  onChange={this.handleInputChange}
-                  value={org.name}
-                  status={status}
-                  testID="create-org-name-input"
-                />
+        <Overlay.Body>
+          <Form.ValidationElement
+            label="Name"
+            validationFunc={this.handleValidation}
+            value={org.name}
+          >
+            {status => (
+              <>
                 <FlexBox
                   alignItems={AlignItems.Center}
-                  direction={FlexDirection.Row}
-                  margin={ComponentSize.Small}
+                  direction={FlexDirection.Column}
+                  margin={ComponentSize.Large}
                 >
-                  <Button
-                    text="Cancel"
-                    icon={IconFont.Remove_New}
-                    color={ComponentColor.Tertiary}
-                    onClick={this.handleGoBack}
+                  <Input
+                    placeholder="Give your organization a name"
+                    name="name"
+                    autoFocus={true}
+                    onChange={this.handleInputChange}
+                    value={org.name}
+                    status={status}
+                    testID="create-org-name-input"
                   />
-                  <Button
-                    text="Change Organization Name"
-                    icon={IconFont.Checkmark_New}
-                    status={this.saveButtonStatus(status)}
-                    color={ComponentColor.Success}
-                    type={ButtonType.Submit}
-                    testID="rename-org-submit--button"
-                  />
+                  <div style={footerStyle}>
+                    <Button
+                      text="Cancel"
+                      color={ComponentColor.Tertiary}
+                      onClick={this.handleGoBack}
+                    />
+                    <Button
+                      text="Save changes"
+                      status={this.saveButtonStatus(status)}
+                      color={ComponentColor.Success}
+                      type={ButtonType.Submit}
+                      testID="rename-org-submit--button"
+                    />
+                  </div>
                 </FlexBox>
-              </FlexBox>
-            </>
-          )}
-        </Form.ValidationElement>
+              </>
+            )}
+          </Form.ValidationElement>
+        </Overlay.Body>
       </Form>
     )
   }

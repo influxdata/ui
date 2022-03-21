@@ -56,7 +56,7 @@ export const updateAPI = async (subscription: typeof PutBrokerSubParams) => {
 }
 
 export const deleteAPI = async (id: typeof DeleteBrokerSubParams) => {
-  const res = await deleteBrokerSub(id)
+  const res = await deleteBrokerSub({id})
   if (res.status != 204) {
     throw new Error(res.data.message)
   }

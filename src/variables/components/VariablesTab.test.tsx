@@ -5,6 +5,10 @@ jest.mock('src/shared/components/FluxMonacoEditor', () => {
   return () => <></>
 })
 
+jest.mock('src/flows/components/ShareOverlay', () => {
+  return () => <></>
+})
+
 jest.mock('src/client/generatedRoutes.ts', () => ({
   ...jest.requireActual('src/client/generatedRoutes.ts'),
   postVariable: jest.fn(() => {

@@ -45,6 +45,26 @@ const FlowCards: FC<Props> = ({flows, search}) => {
     }
   }, [flows])
 
+  const body = (
+    <ResourceList>
+      <ResourceList.Body
+        emptyState={!!search ? <NoMatches /> : <FlowsIndexEmpty />}
+      >
+        {Object.keys(flows.flows).map(id => (
+          <FlowCard
+            key={id}
+            id={id}
+            isPinned={!!pinnedItems.find(item => item?.metadata.flowID === id)}
+          />
+        ))}
+      </ResourceList.Body>
+    </ResourceList>
+  )
+
+  if (isFlagEnabled('noTutorial')) {
+    return <div className="preset--no-tutorial">{body}</div>
+  }
+
   return (
     <Grid>
       <Grid.Row>
@@ -53,21 +73,7 @@ const FlowCards: FC<Props> = ({flows, search}) => {
           widthSM={Columns.Eight}
           widthMD={Columns.Ten}
         >
-          <ResourceList>
-            <ResourceList.Body
-              emptyState={!!search ? <NoMatches /> : <FlowsIndexEmpty />}
-            >
-              {Object.keys(flows.flows).map(id => (
-                <FlowCard
-                  key={id}
-                  id={id}
-                  isPinned={
-                    !!pinnedItems.find(item => item?.metadata.flowID === id)
-                  }
-                />
-              ))}
-            </ResourceList.Body>
-          </ResourceList>
+          {body}
         </Grid.Column>
       </Grid.Row>
     </Grid>

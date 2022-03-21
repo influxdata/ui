@@ -9,11 +9,10 @@ import FluxDocsTooltipContent from 'src/flows/pipes/RawFluxEditor/FunctionsList/
 
 // Actions
 import {getFluxPackages} from 'src/shared/actions/fluxDocs'
+import {getAllFluxFunctions} from 'src/shared/selectors/app'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-
-import {AppState} from 'src/types'
 interface Props {
   onSelect: (fn: FluxFunction) => void
 }
@@ -28,9 +27,7 @@ const sortFuncs = (a, b) => {
 
 const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
   const dispatch = useDispatch()
-  const fluxFunctions = useSelector(
-    (state: AppState) => state.fluxDocs.fluxDocs
-  )
+  const fluxFunctions = useSelector(getAllFluxFunctions)
   useEffect(() => {
     if (fluxFunctions.length === 0) {
       dispatch(getFluxPackages())

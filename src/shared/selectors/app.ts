@@ -5,6 +5,7 @@ import {
   NavBarState,
   VersionInfo,
   FlowsCTA,
+  FluxFunction,
 } from 'src/types'
 
 export const timeZone = (state: AppState): TimeZone =>
@@ -28,3 +29,6 @@ export const getPresentationMode = (state: AppState): boolean =>
 export const getFlowsCTA = (state: AppState): FlowsCTA =>
   state.app.persisted.flowsCTA ||
   ({explorer: true, tasks: true, alerts: true} as FlowsCTA)
+
+export const getAllFluxFunctions = (state: AppState): FluxFunction[] =>
+  state.fluxDocs.fluxDocs

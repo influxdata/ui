@@ -11,7 +11,6 @@ import {
   AlignItems,
 } from '@influxdata/clockface'
 import CancelServiceReasonsForm from './CancelServiceReasonsForm'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
   hasAgreedToTerms: boolean

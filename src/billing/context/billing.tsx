@@ -46,7 +46,6 @@ import {
 } from 'src/types'
 import {CreditCardParams} from 'src/types/billing'
 import {getErrorMessage} from 'src/utils/api'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export type Props = {
   children: JSX.Element

@@ -18,12 +18,17 @@ const logDocsOpened = () => {
   event('firstMile.pythonWizard.executeAggregateQuery.docs.opened')
 }
 
-export const ExecuteAggregateQuery = () => {
+type ExecuteAggregateQueryProps = {
+  bucket: string
+}
+
+export const ExecuteAggregateQuery = (props: ExecuteAggregateQueryProps) => {
   const org = useSelector(getOrg)
+  const {bucket} = props
 
   const codeSnippet = `query_api = client.query_api()
 
-query = "from(bucket: \\"bucket1\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1") |> mean()"
+query = "from(bucket: \\"${bucket}\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1") |> mean()"
 tables = query_api.query(query, org="${org.name}")
 
 for table in tables:

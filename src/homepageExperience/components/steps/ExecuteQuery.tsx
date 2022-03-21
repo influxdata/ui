@@ -11,12 +11,16 @@ const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeQuery.code.copied')
 }
 
-export const ExecuteQuery = () => {
-  const org = useSelector(getOrg)
+type ExecuteQueryProps = {
+  bucket: string
+}
 
+export const ExecuteQuery = (props: ExecuteQueryProps) => {
+  const org = useSelector(getOrg)
+  const {bucket} = props
   const query = `query_api = client.query_api()
 
-query = "from(bucket: \\"bucket1\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1")"
+query = "from(bucket: \\"${bucket}\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1")"
 tables = query_api.query(query, org="${org.name}")
 
 for table in tables:

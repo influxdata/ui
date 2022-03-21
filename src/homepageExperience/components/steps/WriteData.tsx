@@ -28,9 +28,14 @@ const logDocsOpened = () => {
   event('firstMile.pythonWizard.writeData.docs.opened')
 }
 
-export const WriteDataComponent = () => {
+type WriteDataProps = {
+  handleSelectBucket: (bucketName: string) => void
+}
+
+export const WriteDataComponent = (props: WriteDataProps) => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
+  const {handleSelectBucket} = props
 
   useEffect(() => {
     dispatch(getBuckets())
@@ -42,6 +47,7 @@ export const WriteDataComponent = () => {
 
   useEffect(() => {
     setSelectedBucket(bucket)
+    handleSelectBucket(bucket.name)
   }, [bucket])
 
   const codeSnippet = `for value in range(5):
@@ -114,10 +120,10 @@ export const WriteDataComponent = () => {
   )
 }
 
-export const WriteData = () => {
+export const WriteData = props => {
   return (
     <WriteDataDetailsContextProvider>
-      <WriteDataComponent />
+      <WriteDataComponent {...props} />
     </WriteDataDetailsContextProvider>
   )
 }

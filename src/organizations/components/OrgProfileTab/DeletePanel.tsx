@@ -39,10 +39,7 @@ const DeletePanel: FC = () => {
     }
     event('DeleteOrgInitiation Event', payload)
 
-    if (
-      isFlagEnabled('trackCancellations') &&
-      isFlagEnabled('rudderstackReporting')
-    ) {
+    if (isFlagEnabled('rudderstackReporting')) {
       track('DeleteOrgInitiation', payload)
     }
 

@@ -88,10 +88,6 @@ export const UserAccountProvider: FC<Props> = React.memo(({children}) => {
       if (resp.status !== 204) {
         throw new Error(resp.data.message)
       }
-
-      if (!isFlagEnabled('trackCancellations')) {
-        history.push(`/logout`)
-      }
     } catch (error) {
       const message = getErrorMessage(error)
       console.error({error})

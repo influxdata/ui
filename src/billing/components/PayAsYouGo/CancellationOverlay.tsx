@@ -58,21 +58,16 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     }
     event('CancelServiceExecuted Event', payload)
 
-    if (
-      isFlagEnabled('rudderstackReporting') &&
-      isFlagEnabled('trackCancellations')
-    ) {
+    if (isFlagEnabled('rudderstackReporting')) {
       // Send to Rudderstack
       track('CancelServiceExecuted', payload)
     }
 
     handleCancelAccount()
 
-    if (isFlagEnabled('trackCancellations')) {
-      postSignout({}).then(() => {
-        window.location.href = getRedirectLocation()
-      })
-    }
+    postSignout({}).then(() => {
+      window.location.href = getRedirectLocation()
+    })
 
     event('Cancel Service Executed', payload)
   }
@@ -85,10 +80,7 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
     }
     event('CancelServiceDismissed Event', payload)
 
-    if (
-      isFlagEnabled('rudderstackReporting') &&
-      isFlagEnabled('trackCancellations')
-    ) {
+    if (isFlagEnabled('rudderstackReporting')) {
       // Send to Rudderstack
       track('CancelServiceDismissed', payload)
     }
@@ -98,10 +90,6 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   }
 
   const isFormValid = useMemo(() => {
-    if (!isFlagEnabled('trackCancellations')) {
-      return hasAgreedToTerms
-    }
-
     // Has Agreed to Terms & Conditions
     // as well as
     // Selected an option from the Reasons Dropdown

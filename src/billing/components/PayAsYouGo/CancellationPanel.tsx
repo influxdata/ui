@@ -32,10 +32,7 @@ const CancellationPanel: FC = () => {
     }
     event('CancelServiceInitiation Event', payload)
 
-    if (
-      isFlagEnabled('trackCancellations') &&
-      isFlagEnabled('rudderstackReporting')
-    ) {
+    if (isFlagEnabled('rudderstackReporting')) {
       track('CancelServiceInitiation', payload)
     }
 

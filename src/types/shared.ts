@@ -1,4 +1,5 @@
 import {ReactNode, ComponentType} from 'react'
+import {Fluxdocs as FluxdocsRouteT} from 'src/client/fluxdocsdRoutes'
 
 export interface DropdownItem {
   text: string
@@ -41,3 +42,6 @@ export interface Pageable {
   totalPages: number
   paginate: (newPage: number) => void
 }
+
+export type FluxDocs = FluxdocsRouteT
+export type FluxFunction = FluxDocs

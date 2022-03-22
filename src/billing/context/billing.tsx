@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC, useCallback, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {useHistory} from 'react-router-dom'
 
 // Utils
 import {notify} from 'src/shared/actions/notifications'
@@ -11,14 +10,12 @@ import {
   getMarketplace,
   getPaymentForm,
   getSettingsNotifications,
-  postCancel,
   putBillingPaymentMethod,
   putSettingsNotifications,
   putBillingContact,
 } from 'src/client/unityRoutes'
 import {getQuartzMe} from 'src/me/selectors'
 import {
-  accountCancellationError,
   getBillingInfoError,
   getBillingSettingsError,
   getInvoicesError,
@@ -56,7 +53,6 @@ export interface BillingContextType {
   billingInfoStatus: RemoteDataState
   billingSettings: BillingNotifySettings
   billingSettingsStatus: RemoteDataState
-  handleCancelAccount: () => void
   handleGetBillingInfo: () => void
   handleGetBillingSettings: () => void
   handleGetInvoices: () => void
@@ -92,7 +88,6 @@ export const DEFAULT_CONTEXT: BillingContextType = {
   billingInfoStatus: RemoteDataState.NotStarted,
   billingSettings: null,
   billingSettingsStatus: RemoteDataState.NotStarted,
-  handleCancelAccount: () => {},
   handleGetBillingInfo: () => {},
   handleGetBillingSettings: () => {},
   handleGetInvoices: () => {},
@@ -190,22 +185,6 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
     },
     [dispatch]
   )
-
-  const history = useHistory()
-
-  const handleCancelAccount = useCallback(async () => {
-    try {
-      const resp = await postCancel({})
-
-      if (resp.status !== 204) {
-        throw new Error(resp.data.message)
-      }
-    } catch (error) {
-      const message = getErrorMessage(error)
-      console.error({error})
-      dispatch(notify(accountCancellationError(message)))
-    }
-  }, [dispatch, history])
 
   const handleGetInvoices = useCallback(async () => {
     try {
@@ -339,7 +318,6 @@ export const BillingProvider: FC<Props> = React.memo(({children}) => {
         billingInfoStatus,
         billingSettings,
         billingSettingsStatus,
-        handleCancelAccount,
         handleGetBillingInfo,
         handleGetBillingSettings,
         handleGetInvoices,

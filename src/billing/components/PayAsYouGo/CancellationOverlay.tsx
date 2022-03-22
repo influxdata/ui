@@ -13,22 +13,24 @@ import {
 // Components
 import TermsCancellationOverlay from 'src/billing/components/PayAsYouGo/TermsCancellationOverlay'
 import ConfirmCancellationOverlay from 'src/billing/components/PayAsYouGo/ConfirmCancellationOverlay'
-import {BillingContext} from 'src/billing/context/billing'
 import {CancelServiceContext, VariableItems} from './CancelServiceContext'
 import {track} from 'rudder-sdk-js'
 import {event} from 'src/cloud/utils/reporting'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {getQuartzMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {postSignout} from 'src/client'
+import {postCancel} from 'src/client/unityRoutes'
+import {getErrorMessage} from 'src/utils/api'
+import {accountCancellationError} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 interface Props {
   onHideOverlay: () => void
 }
 
 const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
-  const {handleCancelAccount} = useContext(BillingContext)
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const [hasClickedCancel, setHasClickedCancel] = useState(false)
   const {
@@ -40,8 +42,26 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   } = useContext(CancelServiceContext)
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
+  const dispatch = useDispatch()
 
-  const handleCancelService = () => {
+  const handleCancelAccount = async () => {
+    try {
+      event('Cancel account initiated')
+      const resp = await postCancel({})
+
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+      event('Cancel account success')
+    } catch (error) {
+      const message = getErrorMessage(error)
+      console.error({error})
+      event('Cancel account failed', {message})
+      dispatch(notify(accountCancellationError(message)))
+    }
+  }
+
+  const handleCancelService = async () => {
     if (!hasClickedCancel) {
       setHasClickedCancel(true)
       return
@@ -63,13 +83,15 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
       track('CancelServiceExecuted', payload)
     }
 
-    handleCancelAccount()
+    await handleCancelAccount()
 
-    postSignout({}).then(() => {
-      window.location.href = getRedirectLocation()
-    })
-
-    event('Cancel Service Executed', payload)
+    event('Canceled service. Signout initiated')
+    postSignout({})
+      .then(() => {
+        event('Signout success')
+        window.location.href = getRedirectLocation()
+      })
+      .catch(() => event('Cancel service failed', payload))
   }
 
   const handleDismiss = () => {

@@ -18,19 +18,21 @@ import {
 } from 'src/billing/components/PayAsYouGo/CancelServiceContext'
 import {track} from 'rudder-sdk-js'
 import {event} from 'src/cloud/utils/reporting'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {getQuartzMe} from 'src/me/selectors'
 import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {postSignout} from 'src/client'
-import {UserAccountContext} from './context/userAccount'
+import {postCancel} from 'src/client/unityRoutes'
+import {getErrorMessage} from 'src/utils/api'
+import {accountCancellationError} from 'src/shared/copy/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 interface Props {
   onHideOverlay: () => void
 }
 
 const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
-  const {handleCancelAccount} = useContext(UserAccountContext)
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false)
   const [hasClickedCancel, setHasClickedCancel] = useState(false)
   const {
@@ -42,8 +44,26 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
   } = useContext(CancelServiceContext)
   const quartzMe = useSelector(getQuartzMe)
   const org = useSelector(getOrg)
+  const dispatch = useDispatch()
 
-  const handleCancelService = () => {
+  const handleCancelAccount = async () => {
+    try {
+      event('Subscription cancellation initiated')
+      const resp = await postCancel({})
+
+      if (resp.status !== 204) {
+        throw new Error(resp.data.message)
+      }
+      event('Subscription cancellation success')
+    } catch (error) {
+      const message = getErrorMessage(error)
+      console.error({error})
+      event('Subscription cancellation failed', {message})
+      dispatch(notify(accountCancellationError(message)))
+    }
+  }
+
+  const handleCancelService = async () => {
     if (!hasClickedCancel) {
       setHasClickedCancel(true)
     }
@@ -64,13 +84,15 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
       track('CancelServiceExecuted', payload)
     }
 
-    handleCancelAccount()
+    await handleCancelAccount()
 
-    postSignout({}).then(() => {
-      window.location.href = getRedirectLocation()
-    })
-
-    event('Cancel Service Executed', payload)
+    event('Signout initiated')
+    postSignout({})
+      .then(() => {
+        event('Cancel Service Executed', payload)
+        window.location.href = getRedirectLocation()
+      })
+      .catch(() => event('Error signing out'))
   }
 
   const handleDismiss = () => {

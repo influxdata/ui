@@ -58,7 +58,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
       },
     ],
     jsonTimestamp: {
-      name: '',
+      name: 'timestamp',
       path: '',
       type: 'string',
     },

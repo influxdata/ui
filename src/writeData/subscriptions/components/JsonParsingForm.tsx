@@ -150,7 +150,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                       value={d}
                       onClick={() => {
                         setDataTypeM(d)
-                        formContent.jsonMeasurementKey.type = d
+                        formContent.jsonMeasurementKey.type = d.toLowerCase()
                       }}
                       selected={dataTypeM === d}
                       testID={`measurement-json-parsing-type-${1}`}

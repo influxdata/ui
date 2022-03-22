@@ -1,7 +1,7 @@
 // Libraries
 import React, {useEffect, useState, FC, Suspense} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import {Route, Switch, useHistory, useParams} from 'react-router-dom'
+import {Redirect, Route, Switch, useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {CommunityTemplatesIndex} from 'src/templates/containers/CommunityTemplatesIndex'
@@ -117,6 +117,8 @@ const SetOrg: FC = () => {
   }, [orgID, firstOrgID, foundOrg, dispatch, history, orgs.length])
 
   const orgPath = '/orgs/:orgID'
+  const isProjectNotNamedNotebooks =
+    PROJECT_NAME_PLURAL.toLowerCase() !== 'notebooks'
 
   return (
     <PageSpinner loading={loading}>
@@ -165,6 +167,29 @@ const SetOrg: FC = () => {
             path={`${orgPath}/dashboards`}
             component={RouteToDashboardList}
           />
+
+          {/* Notebooks  */}
+          {isProjectNotNamedNotebooks &&
+            isFlagEnabled('flowPublishLifecycle') && (
+              <Redirect
+                from={`${orgPath}/notebooks/:notebookID/versions/:id`}
+                to={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:notebookID/versions/:id`}
+              />
+            )}
+
+          {isProjectNotNamedNotebooks && (
+            <Redirect
+              from={`${orgPath}/notebooks/:id`}
+              to={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
+            />
+          )}
+
+          {isProjectNotNamedNotebooks && (
+            <Redirect
+              from={`${orgPath}/notebooks`}
+              to={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}`}
+            />
+          )}
 
           {/* Flows  */}
           {isFlagEnabled('flowPublishLifecycle') && (

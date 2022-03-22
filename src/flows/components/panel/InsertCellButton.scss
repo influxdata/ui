@@ -30,6 +30,12 @@ $cf-radius-lg: $cf-radius + 4px;
     transform: none;
     margin: -4px 8px 0;
     background: inherit;
+
+    &:hover {
+      &:after {
+        display: none;
+      }
+    }
   }
 
   span {

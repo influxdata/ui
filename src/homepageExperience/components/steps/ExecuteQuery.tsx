@@ -1,24 +1,32 @@
 import React from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
+import {useSelector} from 'react-redux'
+import {getOrg} from 'src/organizations/selectors'
 
 const fromBucketSnippet = `from(bucket: “my-bucket”)
   |> range(start: -10m)`
-
-const query = `query_api = client.query_api()
-
-query = "from(bucket: \\"bucket1\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1")"
-tables = query_api.query(query, org=org)
-
-for table in tables:
-    for record in table.records:
-        print(record)`
 
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeQuery.code.copied')
 }
 
-export const ExecuteQuery = () => {
+type ExecuteQueryProps = {
+  bucket: string
+}
+
+export const ExecuteQuery = (props: ExecuteQueryProps) => {
+  const org = useSelector(getOrg)
+  const {bucket} = props
+  const query = `query_api = client.query_api()
+
+query = "from(bucket: \\"${bucket}\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1")"
+tables = query_api.query(query, org="${org.name}")
+
+for table in tables:
+    for record in table.records:
+        print(record)`
+
   return (
     <>
       <h1>Execute a Flux Query</h1>

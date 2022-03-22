@@ -10,9 +10,10 @@ import {
 import {useHistory} from 'react-router-dom'
 import FlowsExplainer from 'src/flows/components/FlowsExplainer'
 import {PROJECT_NAME} from 'src/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 export const PRESET_MAP = [
   {
-    title: 'New Notebook',
+    title: `New ${PROJECT_NAME}`,
     href: `/${PROJECT_NAME.toLowerCase()}/from/default`,
     testID: 'new',
   },
@@ -35,6 +36,40 @@ export const PRESET_MAP = [
 
 const PresetFlows: FC = () => {
   const history = useHistory()
+  const body = (
+    <div className="flows-index--presetContainer">
+      <h3>Create a {PROJECT_NAME}</h3>
+      <div className="flows-index--presetList">
+        {PRESET_MAP.map((p, idx: number) => (
+          <div key={p.testID} className="flows-index--presetCard">
+            {idx === 0 ? (
+              <Button
+                titleText={p.title}
+                color={ComponentColor.Primary}
+                icon={IconFont.Plus_New}
+                className="flows-index--presetButton"
+                testID={`preset-${p.testID}`}
+                onClick={() => history.push(p.href)}
+              ></Button>
+            ) : (
+              <Button
+                titleText={p.title}
+                text=" "
+                className="flows-index--presetButton"
+                testID={`preset-${p.testID}`}
+                onClick={() => history.push(p.href)}
+              ></Button>
+            )}
+            <h5 className="flows-index--presetHeader">{p.title}</h5>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (isFlagEnabled('noTutorial')) {
+    return <div className="preset--no-tutorial">{body}</div>
+  }
 
   return (
     <Grid>
@@ -44,34 +79,7 @@ const PresetFlows: FC = () => {
           widthSM={Columns.Eight}
           widthMD={Columns.Ten}
         >
-          <div className="flows-index--presetContainer">
-            <h3>Create a Notebook</h3>
-            <div className="flows-index--presetList">
-              {PRESET_MAP.map((p, idx: number) => (
-                <div key={p.testID} className="flows-index--presetCard">
-                  {idx === 0 ? (
-                    <Button
-                      titleText={p.title}
-                      color={ComponentColor.Primary}
-                      icon={IconFont.Plus_New}
-                      className="flows-index--presetButton"
-                      testID={`preset-${p.testID}`}
-                      onClick={() => history.push(p.href)}
-                    ></Button>
-                  ) : (
-                    <Button
-                      titleText={p.title}
-                      text=" "
-                      className="flows-index--presetButton"
-                      testID={`preset-${p.testID}`}
-                      onClick={() => history.push(p.href)}
-                    ></Button>
-                  )}
-                  <h5 className="flows-index--presetHeader">{p.title}</h5>
-                </div>
-              ))}
-            </div>
-          </div>
+          {body}
         </Grid.Column>
         <Grid.Column
           widthXS={Columns.Twelve}

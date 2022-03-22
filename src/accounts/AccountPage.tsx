@@ -94,8 +94,7 @@ const AccountAboutPage: FC = () => {
     window.location.href = CLOUD_URL
   }
 
-  const allowSelfRemoval =
-    isFlagEnabled('selfRemovalFromAccount') && users.length > 1
+  const allowSelfRemoval = users.length > 1
 
   const leaveAcctBtn = (
     <ConfirmationButton

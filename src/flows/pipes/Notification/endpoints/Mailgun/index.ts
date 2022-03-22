@@ -21,7 +21,7 @@ export default register => {
       ['array', 'http', 'influxdata/influxdb/secrets']
         .map(i => `import "${i}"`)
         .join('\n'),
-    generateQuery: data => {
+    generateQuery: (data, measurement) => {
       const subject = encodeURIComponent('InfluxDB Alert')
       const fromEmail = `mailgun@${data.domain}`
 
@@ -31,11 +31,13 @@ auth = http.basicAuth(u: "api", p: "\${apiKey}")
 task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
+  |> filter(fn: ${measurement})
 	|> monitor["check"](
 		data: check,
 		messageFn: messageFn,
 		crit: trigger,
 	)
+  |> filter(fn: trigger)
 	|> monitor["notify"](
     data: notification,
     endpoint: http.endpoint(url: "https://api.mailgun.net/v3/${data.domain}/messages")(

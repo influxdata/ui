@@ -66,49 +66,47 @@ const ErrorThresholds: FC = () => {
           testID="component-spacer"
           stretchToFitWidth
         >
-          {data?.errorThresholds?.map(
-            (threshold: Threshold, index: number) => (
-              <FlexBox
-                direction={FlexDirection.Row}
-                margin={ComponentSize.Medium}
-                stretchToFitWidth
-                testID="component-spacer"
-                key={`${threshold.type}_${index}`}
-              >
-                <FlexBox.Child grow={3} testID="component-spacer--flex-child">
-                  <FlexBox
-                    stretchToFitWidth
-                    className="error-threshold-flex--margin"
-                  >
-                    <TextBlock
-                      testID="when-value-text-block"
-                      text={index === 0 ? 'When' : 'And'}
-                      className="error-threshold--text-block"
-                    />
-                    <ColumnDropdown threshold={threshold} index={index} />
-                  </FlexBox>
-                  <FlexBox
-                    stretchToFitWidth
-                    className="error-threshold-flex--margin"
-                  >
-                    <TextBlock
-                      testID="is-value-text-block"
-                      text="is"
-                      className="error-threshold--text-block"
-                    />
-                    <FunctionDropdown threshold={threshold} index={index} />
-                  </FlexBox>
-                  <ThresholdEntryColumn threshold={threshold} index={index} />
-                </FlexBox.Child>
-                <Button
-                  icon={IconFont.Trash_New}
-                  size={ComponentSize.Small}
-                  onClick={() => handleRemoveThreshold(index)}
-                  color={ComponentColor.Tertiary}
-                />
-              </FlexBox>
-            )
-          )}
+          {data?.errorThresholds?.map((threshold: Threshold, index: number) => (
+            <FlexBox
+              direction={FlexDirection.Row}
+              margin={ComponentSize.Medium}
+              stretchToFitWidth
+              testID="component-spacer"
+              key={`${threshold.type}_${index}`}
+            >
+              <FlexBox.Child grow={3} testID="component-spacer--flex-child">
+                <FlexBox
+                  stretchToFitWidth
+                  className="error-threshold-flex--margin"
+                >
+                  <TextBlock
+                    testID="when-value-text-block"
+                    text={index === 0 ? 'When' : 'And'}
+                    className="error-threshold--text-block"
+                  />
+                  <ColumnDropdown threshold={threshold} index={index} />
+                </FlexBox>
+                <FlexBox
+                  stretchToFitWidth
+                  className="error-threshold-flex--margin"
+                >
+                  <TextBlock
+                    testID="is-value-text-block"
+                    text="is"
+                    className="error-threshold--text-block"
+                  />
+                  <FunctionDropdown threshold={threshold} index={index} />
+                </FlexBox>
+                <ThresholdEntryColumn threshold={threshold} index={index} />
+              </FlexBox.Child>
+              <Button
+                icon={IconFont.Trash_New}
+                size={ComponentSize.Small}
+                onClick={() => handleRemoveThreshold(index)}
+                color={ComponentColor.Tertiary}
+              />
+            </FlexBox>
+          ))}
         </FlexBox>
         <FlexBox
           direction={FlexDirection.Row}

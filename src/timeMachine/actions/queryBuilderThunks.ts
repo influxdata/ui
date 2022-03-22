@@ -56,6 +56,7 @@ import {setBuckets} from 'src/buckets/actions/creators'
 
 // Constants
 import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
+import {CLOUD} from 'src/shared/constants'
 
 export const removeTagSelector = (index: number) => (
   dispatch: Dispatch<Action>
@@ -227,8 +228,12 @@ export const loadBuckets = () => async (
 
   let bucketsResponse
   try {
-    // a limit of -1 means fetch all buckets for this org
-    bucketsResponse = await fetchAllBuckets(orgID, -1)
+    if (CLOUD) {
+      // a limit of -1 means fetch all buckets for this org
+      bucketsResponse = await fetchAllBuckets(orgID, -1)
+    } else {
+      bucketsResponse = await fetchAllBuckets(orgID)
+    }
 
     dispatch(
       setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)

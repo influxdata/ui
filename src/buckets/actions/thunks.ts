@@ -90,7 +90,14 @@ export const getBuckets = () => async (
     }
     const org = getOrg(state)
 
-    const bucketsResponse = await fetchAllBuckets(org.id, -1)
+    let bucketsResponse
+    if (CLOUD) {
+      // a limit of -1 means fetch all buckets for this org
+      bucketsResponse = await fetchAllBuckets(org.id, -1)
+    } else {
+      bucketsResponse = await fetchAllBuckets(org.id)
+    }
+
     dispatch(
       setBuckets(RemoteDataState.Done, bucketsResponse.normalizedBuckets)
     )

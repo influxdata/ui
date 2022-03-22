@@ -102,7 +102,7 @@ const TimeMachineFluxEditor: FC = () => {
       row = currentRange.endLineNumber + 1
     }
 
-    let text = !!(func as FluxToolbarFunction).example
+    let text = (func as FluxToolbarFunction).example
       ? (func as FluxToolbarFunction).example
       : `${func.name}()`
 

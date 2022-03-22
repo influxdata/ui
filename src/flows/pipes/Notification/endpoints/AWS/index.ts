@@ -36,6 +36,8 @@ export default register => {
 		crit: trigger,
 	)
   |> filter(fn: trigger)
+  |> keep(columns: ["_value", "_time", "_measurement"])
+  |> limit(n: 1, offset: 0)
 	|> monitor["notify"](
     data: notification,
     endpoint: ((r) => {

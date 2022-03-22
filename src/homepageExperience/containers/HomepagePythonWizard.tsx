@@ -20,28 +20,46 @@ import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 import {ExecuteAggregateQuery} from '../components/steps/ExecuteAggregateQuery'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface State {
   currentStep: number
+  selectedBucket: string
 }
 
 export class HomepagePythonWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
+    selectedBucket: '',
   }
 
   handleNextClick = () => {
-    this.setState({
-      currentStep: Math.min(
-        this.state.currentStep + 1,
-        HOMEPAGE_NAVIGATION_STEPS.length
-      ),
-    })
+    this.setState(
+      {
+        currentStep: Math.min(
+          this.state.currentStep + 1,
+          HOMEPAGE_NAVIGATION_STEPS.length
+        ),
+      },
+      () => {
+        event('firstMile.pythonWizard.next.clicked')
+      }
+    )
   }
 
   handlePreviousClick = () => {
-    this.setState({currentStep: Math.max(this.state.currentStep - 1, 1)})
+    this.setState(
+      {currentStep: Math.max(this.state.currentStep - 1, 1)},
+      () => {
+        event('firstMile.pythonWizard.previous.clicked')
+      }
+    )
   }
 
+  private handleSelectBucket = (bucketName: string) => {
+    this.setState({selectedBucket: bucketName})
+  }
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
@@ -57,13 +75,13 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
         return <InitalizeClient />
       }
       case 5: {
-        return <WriteData />
+        return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        return <ExecuteQuery />
+        return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
       case 7: {
-        return <ExecuteAggregateQuery />
+        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 8: {
         return <Finish />

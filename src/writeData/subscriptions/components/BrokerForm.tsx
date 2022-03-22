@@ -130,7 +130,6 @@ const BrokerForm: FC<Props> = ({
                           })
                         }}
                         status={status}
-                        maxLength={16}
                         testID="create-broker-form--name"
                       />
                     )}
@@ -213,7 +212,6 @@ const BrokerForm: FC<Props> = ({
                             })
                           }}
                           status={status}
-                          maxLength={16}
                           testID="create-broker-form--host"
                         />
                       )}
@@ -243,7 +241,7 @@ const BrokerForm: FC<Props> = ({
                             })
                           }}
                           status={status}
-                          maxLength={16}
+                          maxLength={5}
                           testID="create-broker-form--port"
                         />
                       )}

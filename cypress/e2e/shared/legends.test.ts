@@ -22,7 +22,7 @@ describe('Legends', () => {
         cy.createMapVariable(id)
         cy.fixture('routes').then(({orgs, explorer}) => {
           cy.visit(`${orgs}/${id}${explorer}`)
-          cy.getByTestID('tree-nav')
+          cy.getByTestID('tree-nav').should('be.visible')
         })
       })
     })
@@ -416,7 +416,7 @@ describe('Legends', () => {
       cy.fixture('routes').then(({orgs}) => {
         cy.get('@org').then(({id}: Organization) => {
           cy.visit(`${orgs}/${id}/dashboards-list`)
-          cy.getByTestID('tree-nav')
+          cy.getByTestID('tree-nav').should('be.visible')
         })
       })
     })
@@ -553,6 +553,111 @@ describe('Legends', () => {
           cy.getByTestID('giraffe-legend-table').should('be.visible')
         }
       )
+    })
+  })
+
+  describe('in Notebooks', () => {
+    beforeEach(() => {
+      cy.flush()
+      cy.signin()
+      cy.get('@org').then(({id}: Organization) => {
+        cy.createMapVariable(id)
+        cy.fixture('routes').then(({orgs, notebooks}) => {
+          cy.visit(`${orgs}/${id}${notebooks}`)
+          cy.getByTestID('tree-nav').should('be.visible')
+        })
+      })
+    })
+
+    it('allows the user to toggle the hover legend and static legend', () => {
+      cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+      cy.writeData(points(100))
+      const bucketName = 'defbuck'
+
+      cy.getByTestID('preset-new')
+        .first()
+        .click()
+
+      cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+      // Delete 2 panels and leave "Visualize the Result"
+      cy.getByTestID('sidebar-button')
+        .first()
+        .click()
+      cy.getByTestID('Delete--list-item').click()
+      cy.wait('@updateNotebook')
+
+      cy.getByTestID('sidebar-button')
+        .first()
+        .click()
+      cy.getByTestID('Delete--list-item').click()
+      cy.wait('@updateNotebook')
+
+      cy.get('.flow-panel__visible').should('have.length', 1)
+
+      // Add the Query Builder
+      cy.get('.flow-divider--button')
+        .first()
+        .click()
+
+      // Opening the menu adds another Query Builder button
+      cy.getByTestID('add-flow-btn--queryBuilder').should('have.length', 2)
+
+      // Click the newest Query Builder button
+      cy.getByTestID('add-flow-btn--queryBuilder')
+        .last()
+        .click()
+      cy.wait('@updateNotebook')
+
+      cy.getByTestID('bucket-selector').within(() => {
+        cy.getByTestID(`selector-list ${bucketName}`).click()
+      })
+      cy.wait('@updateNotebook')
+
+      cy.getByTestID('builder-card')
+        .eq(0)
+        .within(() => {
+          cy.getByTestID(`selector-list m`).click()
+        })
+      cy.wait('@updateNotebook')
+
+      cy.getByTestID('builder-card')
+        .eq(1)
+        .within(() => {
+          cy.getByTestID(`selector-list v`).click()
+        })
+      cy.wait('@updateNotebook')
+
+      cy.getByTestID('builder-card')
+        .eq(2)
+        .within(() => {
+          cy.getByTestID(`selector-list tv1`).click()
+        })
+      cy.wait('@updateNotebook')
+
+      cy.getByTestID('time-machine-submit-button').click()
+      cy.get('button.flows-config-visualization-button').click()
+
+      cy.get('.flow-sidebar').should('be.visible')
+      cy.getByTestID('hover-legend-toggle').scrollIntoView()
+
+      // Toggling any legend triggers an api call to update the Notebook spec
+      // Hover Legend starts as Show and is toggleable
+      cy.get('label[for="radio_hover_legend_hide"').click()
+      cy.wait('@updateNotebook')
+
+      cy.get('label[for="radio_hover_legend_show"').click()
+      cy.wait('@updateNotebook')
+
+      // Static Legend starts as Hide and is toggleable
+      cy.get('label[for="radio_static_legend_show"').click()
+      cy.wait('@updateNotebook')
+      cy.get('.insert-cell-menu.always-on').scrollIntoView()
+      cy.getByTestID('giraffe-static-legend').should('be.visible')
+
+      cy.get('label[for="radio_static_legend_hide"').click()
+      cy.wait('@updateNotebook')
+      cy.getByTestID('giraffe-static-legend').should('not.exist')
     })
   })
 })

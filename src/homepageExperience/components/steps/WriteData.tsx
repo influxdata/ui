@@ -18,19 +18,24 @@ import WriteDataDetailsContextProvider, {
 import {getOrg} from 'src/organizations/selectors'
 import DataListening from 'src/homepageExperience/components/DataListening'
 import {getBuckets} from 'src/buckets/actions/thunks'
+import {event} from 'src/cloud/utils/reporting'
 
-const codeSnippet = `for value in range(5):
-    point = (
-        Point("measurement1")
-        .tag("tagname1", "tagvalue1")
-        .field("field1", value)
-    )
-    write_api.write(bucket=bucket, org=org, record=point)
-    time.sleep(1)`
+const logCopyCodeSnippet = () => {
+  event('firstMile.pythonWizard.writeData.code.copied')
+}
 
-export const WriteDataComponent = () => {
+const logDocsOpened = () => {
+  event('firstMile.pythonWizard.writeData.docs.opened')
+}
+
+type WriteDataProps = {
+  onSelectBucket: (bucketName: string) => void
+}
+
+export const WriteDataComponent = (props: WriteDataProps) => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
+  const {onSelectBucket} = props
 
   useEffect(() => {
     dispatch(getBuckets())
@@ -42,7 +47,17 @@ export const WriteDataComponent = () => {
 
   useEffect(() => {
     setSelectedBucket(bucket)
+    onSelectBucket(bucket.name)
   }, [bucket])
+
+  const codeSnippet = `for value in range(5):
+    point = (
+        Point("measurement1")
+        .tag("tagname1", "tagvalue1")
+        .field("field1", value)
+    )
+    write_api.write(bucket="${bucket.name}", org="${org.name}", record=point)
+    time.sleep(1)`
 
   return (
     <>
@@ -50,7 +65,10 @@ export const WriteDataComponent = () => {
       <p>
         To start writing data, we need a place to our time-series store data. We
         call these{' '}
-        <SafeBlankLink href={`orgs/${org.id}/load-data/buckets`}>
+        <SafeBlankLink
+          href={`orgs/${org.id}/load-data/buckets`}
+          onClick={logDocsOpened}
+        >
           buckets.
         </SafeBlankLink>
       </p>
@@ -70,15 +88,21 @@ export const WriteDataComponent = () => {
         In this code, we define five data points and write each one for
         InfluxDB. Run the following code in your Python shell:
       </p>
-      <CodeSnippet text={codeSnippet} />
+      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>
         In the above code snippet, we define five data points and write each on
         the InfluxDB. Each of the 5 points we write has a{' '}
-        <SafeBlankLink href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key">
+        <SafeBlankLink
+          href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key"
+          onClick={logDocsOpened}
+        >
           field
         </SafeBlankLink>{' '}
         and a{' '}
-        <SafeBlankLink href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key">
+        <SafeBlankLink
+          href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#tag-key"
+          onClick={logDocsOpened}
+        >
           tag
         </SafeBlankLink>
         .
@@ -96,10 +120,10 @@ export const WriteDataComponent = () => {
   )
 }
 
-export const WriteData = () => {
+export const WriteData = props => {
   return (
     <WriteDataDetailsContextProvider>
-      <WriteDataComponent />
+      <WriteDataComponent onSelectBucket={props.onSelectBucket} />
     </WriteDataDetailsContextProvider>
   )
 }

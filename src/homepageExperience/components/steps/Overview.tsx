@@ -1,6 +1,10 @@
 import React, {PureComponent} from 'react'
+import {event} from 'src/cloud/utils/reporting'
 
 export class Overview extends PureComponent {
+  private logDocsOpened = () => {
+    event('firstMile.pythonWizard.overview.docs.opened')
+  }
   render() {
     return (
       <div>
@@ -23,7 +27,14 @@ export class Overview extends PureComponent {
 
           <p style={{marginTop: '150px'}}>
             Want to just look at code? Check out the code snippets involved in
-            this guide on <a href="https://github.com/influxdata/ui">Github</a>.
+            this guide on{' '}
+            <a
+              href="https://github.com/influxdata/ui"
+              onClick={this.logDocsOpened}
+            >
+              Github
+            </a>
+            .
           </p>
         </article>
       </div>

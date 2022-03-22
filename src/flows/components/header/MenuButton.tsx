@@ -42,7 +42,9 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   const history = useHistory()
 
   const handleClone = async () => {
-    event('clone_notebook')
+    event('clone_notebook', {
+      context: 'notebook',
+    })
     const clonedId = await clone(flow.id)
     handleResetShare()
     history.push(
@@ -51,7 +53,9 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   }
 
   const handleDelete = () => {
-    event('delete_notebook')
+    event('delete_notebook', {
+      context: 'notebook',
+    })
     deletePinnedItemByParam(flow.id)
     remove(flow.id)
     history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)

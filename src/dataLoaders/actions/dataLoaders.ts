@@ -420,10 +420,10 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
 
     dispatch(editTelegraf(normTelegraf))
     dispatch(setTelegrafConfigID(telegrafConfigID))
-    event(
-      `telegraf.config.${normalizeEventName(telegrafConfigName)}.edit.success`,
-      {id: telegraf?.id}
-    )
+    event(`telegraf.config.edit.success`, {
+      id: telegraf?.id,
+      name: normalizeEventName(telegrafConfigName),
+    })
     return
   }
 
@@ -578,13 +578,15 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     dispatch(setTelegrafConfigID(tc.id))
     dispatch(addTelegraf(normTelegraf))
     dispatch(notify(TelegrafConfigCreationSuccess))
-    event(`telegraf.config.${normalizeEventName(configName)}.create.success`, {
+    event(`telegraf.config.create.success`, {
       id: tc.id,
       bucket: bucketName,
+      name: normalizeEventName(configName),
     })
   } catch (error) {
-    event(`telegraf.config.${normalizeEventName(configName)}.create.failure`, {
+    event(`telegraf.config.create.failure`, {
       bucket: bucketName,
+      name: normalizeEventName(configName),
     })
     console.error(error.message)
     dispatch(notify(TelegrafConfigCreationError))

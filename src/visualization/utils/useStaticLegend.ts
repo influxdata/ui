@@ -1,6 +1,9 @@
 // Libraries
-import {useMemo, useCallback} from 'react'
+import {useMemo, useContext, useCallback} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
+
+// Context
+import {PipeContext} from 'src/flows/context/pipe'
 
 // Actions
 import {setStaticLegend} from 'src/timeMachine/actions'
@@ -66,9 +69,11 @@ const convertShowToHide = (showState: boolean): boolean => !showState
 const eventPrefix = 'visualization.customize.staticlegend'
 
 export const useStaticLegend = (properties): StaticLegendConfig => {
+  const {id, data, update} = useContext(PipeContext)
+
   const {isViewingVisOptions} = useSelector(getActiveTimeMachine)
   const dispatch = useDispatch()
-  const update = useCallback(
+  const timeMachineUpdate = useCallback(
     (staticLegend: StaticLegendAPI) => {
       dispatch(
         setStaticLegend({
@@ -79,6 +84,22 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
     },
     [dispatch, properties.staticLegend]
   )
+
+  let updateStaticLegendProperties
+  const notebookViewProperties = data?.properties || {}
+  const notebookStaticLegend = notebookViewProperties.staticLegend || {}
+  if (id) {
+    updateStaticLegendProperties = (updatedProperties: StaticLegendAPI) =>
+      update({
+        properties: {
+          ...notebookViewProperties,
+          staticLegend: {...notebookStaticLegend, ...updatedProperties},
+        },
+      })
+  } else {
+    updateStaticLegendProperties = timeMachineUpdate
+  }
+
   return useMemo(() => {
     const {
       legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
@@ -132,7 +153,7 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
         validThreshold = LEGEND_ORIENTATION_THRESHOLD_VERTICAL
       }
 
-      update({
+      updateStaticLegendProperties({
         colorizeRows: legendColorizeRows,
         opacity: validOpacity,
         orientationThreshold: validThreshold,
@@ -199,11 +220,11 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
             updatedHeightRatio,
           })
 
-          update({
+          updateStaticLegendProperties({
             heightRatio: updatedHeightRatio,
           })
         }
       },
     }
-  }, [properties, isViewingVisOptions, update])
+  }, [properties, isViewingVisOptions, updateStaticLegendProperties])
 }

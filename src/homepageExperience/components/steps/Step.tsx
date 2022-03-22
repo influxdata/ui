@@ -42,9 +42,9 @@ const Step = (props: StepProps) => {
             color: iconAndTextColor,
           }}
         >
-          {text.split('\n').map(function(item, key) {
+          {text.split('\n').map(function(item, index) {
             return (
-              <span key={key}>
+              <span key={`${item}-${index}`}>
                 {item}
                 <br />
               </span>

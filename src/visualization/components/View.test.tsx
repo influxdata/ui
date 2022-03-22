@@ -67,6 +67,19 @@ jest.doMock('src/visualization/contextLoader', () => {
   }
 })
 
+jest.mock('src/flows/index', () => {
+  return {
+    PROJECT_NAME: 'NoteBook',
+    DEFAULT_PROJECT_NAME: 'Untitled Notebook',
+  }
+})
+
+jest.mock('src/flows/templates/index', () => {
+  return {
+    TEMPLATES: {},
+  }
+})
+
 import {View, SUPPORTED_VISUALIZATIONS} from 'src/visualization'
 
 const setup = properties => {

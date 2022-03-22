@@ -83,18 +83,13 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       return
     }
 
-    fetch(
-      `/api/v2private/${DEFAULT_PROJECT_NAME.toLowerCase()}/resources?type=tasks&resource=${
-        task.id
-      }`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept-Encoding': 'gzip',
-        },
-      }
-    )
+    fetch(`/api/v2private/notebooks/resources?type=tasks&resource=${task.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip',
+      },
+    })
       .then(resp => {
         return resp.json()
       })

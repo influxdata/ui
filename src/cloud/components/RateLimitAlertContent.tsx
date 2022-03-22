@@ -22,6 +22,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   className?: string
+  location?: string
 }
 
 interface UpgradeProps {
@@ -29,6 +30,7 @@ interface UpgradeProps {
   link: string
   className?: string
   limitText?: string
+  location?: string
 }
 
 export const UpgradeContent: FC<UpgradeProps> = ({
@@ -36,6 +38,7 @@ export const UpgradeContent: FC<UpgradeProps> = ({
   link,
   className,
   limitText,
+  location,
 }) => {
   return (
     <div className={`${className} rate-alert--content__free`}>
@@ -58,14 +61,14 @@ export const UpgradeContent: FC<UpgradeProps> = ({
       >
         <CloudUpgradeButton
           className="upgrade-payg--button__rate-alert"
-          metric={() => event(`user.limits.${type}.upgrade`)}
+          metric={() => event(`user.limits.${type}.upgrade`, {location})}
         />
       </FlexBox>
     </div>
   )
 }
 
-const RateLimitAlertContent: FC<Props> = ({className}) => {
+const RateLimitAlertContent: FC<Props> = ({className, location}) => {
   const dispatch = useDispatch()
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   const rateLimitAlertContentClass = classnames('rate-alert--content', {
@@ -82,6 +85,7 @@ const RateLimitAlertContent: FC<Props> = ({className}) => {
         type="series cardinality"
         link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/"
         className={rateLimitAlertContentClass}
+        location={location}
       />
     )
   }

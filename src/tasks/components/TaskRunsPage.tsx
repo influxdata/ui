@@ -67,7 +67,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
                 },
               ]}
             />
-            <RateLimitAlert />
+            <RateLimitAlert location="task runs" />
           </Page.Header>
           <Page.ControlBar fullWidth={false}>
             <TaskRunsCard task={currentTask} />

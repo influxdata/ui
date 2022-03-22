@@ -139,8 +139,12 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                       onClick={() => {
                         setDataType(d)
                         tagType
-                          ? (formContent.jsonTagKeys[itemNum].type = d)
-                          : (formContent.jsonFieldKeys[itemNum].type = d)
+                          ? (formContent.jsonTagKeys[
+                              itemNum
+                            ].type = d.toLowerCase())
+                          : (formContent.jsonFieldKeys[
+                              itemNum
+                            ].type = d.toLowerCase())
                       }}
                       selected={dataType === d}
                       testID={`${tagType}-json-parsing-type-${1}`}

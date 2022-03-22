@@ -72,6 +72,11 @@ const ExportTask: FC = () => {
       return acc
     }, {})
 
+    if (!data.measurement) {
+      throw new Error('please select a measurement.')
+    }
+    const measurement = `(r) => r["_measurement"] == "${data.measurement}"`
+
     const conditions = THRESHOLD_TYPES[deadmanType].condition(deadman)
     const imports = parse(`
 import "strings"
@@ -114,7 +119,10 @@ task_data = ${format_from_js_file(ast)}
 trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(
+  data.endpointData,
+  measurement
+)}
 |> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
       deadman.deadmanCheckValue
     }))`
@@ -155,6 +163,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
     data.offset,
     data.endpointData,
     data.endpoint,
+    data.measurement,
     data.thresholds,
     data.message,
   ])
@@ -195,12 +204,15 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
       return acc
     }, {})
 
+    if (!data.measurement) {
+      throw new Error('please select a measurement.')
+    }
+    const measurement = `(r) => r["_measurement"] == "${data.measurement}"`
+
     const conditions = data.thresholds
       .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
       .map((cond, i) => (i > 0 ? cond.split(lambdaPrefix)[1] : cond))
       .join(' and ')
-
-    const measurement = `(r) => r["_measurement"] == "${data.measurement}"`
 
     const imports = parse(`
 import "strings"
@@ -283,6 +295,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(
     data.offset,
     data.endpointData,
     data.endpoint,
+    data.measurement,
     data.thresholds,
     data.message,
   ])

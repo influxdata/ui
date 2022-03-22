@@ -10,6 +10,7 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import CloudExclude from 'src/shared/components/cloud/CloudExclude'
 import CloudOnly from 'src/shared/components/cloud/CloudOnly'
+import {event} from 'src/cloud/utils/reporting'
 
 interface OwnProps {
   activeTab: string
@@ -24,6 +25,7 @@ class LoadDataNavigation extends PureComponent<Props> {
     const {activeTab, orgID, history} = this.props
 
     const handleTabClick = (id: string): void => {
+      event('page-nav clicked', {which: `load-data--${id}`})
       history.push(`/orgs/${orgID}/load-data/${id}`)
     }
 

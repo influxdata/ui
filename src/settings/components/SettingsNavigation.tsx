@@ -12,6 +12,7 @@ import {TabbedPageTab} from 'src/shared/tabbedPage/TabbedPageTabs'
 
 //  Selectors
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   activeTab: string
@@ -22,6 +23,7 @@ const SettingsNavigation: FC<Props> = ({activeTab}) => {
   const org = useSelector(getOrg)
 
   const handleTabClick = (id: string): void => {
+    event('page-nav clicked', {which: `settings--${id}`})
     history.push(`/orgs/${org.id}/settings/${id}`)
   }
 

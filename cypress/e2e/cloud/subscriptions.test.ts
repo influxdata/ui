@@ -114,7 +114,6 @@ describe('Subscriptions', () => {
     // line protocol
     cy.getByTestID('create-parsing-form-line-protocol--button').click()
     cy.getByTestID('create-parsing-form--submit').click()
-    cy.getByTestID('spinner-container').should('be.visible')
     // wait for intercepts
     cy.wait('@CreateSubscription')
     cy.wait('@GetSubscriptions')
@@ -129,7 +128,6 @@ describe('Subscriptions', () => {
     cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
     cy.getByTestID('context-delete-menu--confirm-button').click()
     // empty list
-    cy.getByTestID('spinner-container').should('be.visible')
     cy.wait('@DeleteSubscription')
     cy.wait('@GetSubscriptions')
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
@@ -200,7 +198,6 @@ describe('Subscriptions', () => {
     // submit
     cy.getByTestID('create-parsing-form--submit').click()
     // wait for intercepts
-    cy.getByTestID('spinner-container').should('be.visible')
     cy.wait('@CreateSubscription')
     cy.wait('@GetSubscriptions')
     // subscriptions list
@@ -214,7 +211,6 @@ describe('Subscriptions', () => {
     cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
     cy.getByTestID('context-delete-menu--confirm-button').click()
     // empty list
-    cy.getByTestID('spinner-container').should('be.visible')
     cy.wait('@DeleteSubscription')
     cy.wait('@GetSubscriptions')
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
@@ -275,7 +271,6 @@ describe('Subscriptions', () => {
     // submit
     cy.getByTestID('create-parsing-form--submit').click()
     // wait for intercepts
-    cy.getByTestID('spinner-container').should('be.visible')
     cy.wait('@CreateSubscription')
     cy.wait('@GetSubscriptions')
     // list page
@@ -289,7 +284,6 @@ describe('Subscriptions', () => {
     cy.getByTestID('context-delete-menu--confirm-button').should('be.visible')
     cy.getByTestID('context-delete-menu--confirm-button').click()
     // empty list
-    cy.getByTestID('spinner-container').should('be.visible')
     cy.wait('@DeleteSubscription')
     cy.wait('@GetSubscriptions')
     cy.getByTestID('subscriptions-empty-state').should('be.visible')

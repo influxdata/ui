@@ -20,15 +20,6 @@ import DataListening from 'src/homepageExperience/components/DataListening'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
 
-const codeSnippet = `for value in range(5):
-    point = (
-        Point("measurement1")
-        .tag("tagname1", "tagvalue1")
-        .field("field1", value)
-    )
-    write_api.write(bucket=bucket, org=org, record=point)
-    time.sleep(1)`
-
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.writeData.code.copied')
 }
@@ -37,9 +28,14 @@ const logDocsOpened = () => {
   event('firstMile.pythonWizard.writeData.docs.opened')
 }
 
-export const WriteDataComponent = () => {
+type WriteDataProps = {
+  onSelectBucket: (bucketName: string) => void
+}
+
+export const WriteDataComponent = (props: WriteDataProps) => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
+  const {onSelectBucket} = props
 
   useEffect(() => {
     dispatch(getBuckets())
@@ -51,7 +47,17 @@ export const WriteDataComponent = () => {
 
   useEffect(() => {
     setSelectedBucket(bucket)
+    onSelectBucket(bucket.name)
   }, [bucket])
+
+  const codeSnippet = `for value in range(5):
+    point = (
+        Point("measurement1")
+        .tag("tagname1", "tagvalue1")
+        .field("field1", value)
+    )
+    write_api.write(bucket="${bucket.name}", org="${org.name}", record=point)
+    time.sleep(1)`
 
   return (
     <>
@@ -114,10 +120,10 @@ export const WriteDataComponent = () => {
   )
 }
 
-export const WriteData = () => {
+export const WriteData = props => {
   return (
     <WriteDataDetailsContextProvider>
-      <WriteDataComponent />
+      <WriteDataComponent onSelectBucket={props.onSelectBucket} />
     </WriteDataDetailsContextProvider>
   )
 }

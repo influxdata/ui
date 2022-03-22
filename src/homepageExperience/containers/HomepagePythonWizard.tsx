@@ -25,11 +25,13 @@ import {event} from 'src/cloud/utils/reporting'
 
 interface State {
   currentStep: number
+  selectedBucket: string
 }
 
 export class HomepagePythonWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
+    selectedBucket: '',
   }
 
   handleNextClick = () => {
@@ -55,6 +57,9 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
     )
   }
 
+  private handleSelectBucket = (bucketName: string) => {
+    this.setState({selectedBucket: bucketName})
+  }
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
@@ -70,13 +75,13 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
         return <InitalizeClient />
       }
       case 5: {
-        return <WriteData />
+        return <WriteData onSelectBucket={this.handleSelectBucket} />
       }
       case 6: {
-        return <ExecuteQuery />
+        return <ExecuteQuery bucket={this.state.selectedBucket} />
       }
       case 7: {
-        return <ExecuteAggregateQuery />
+        return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 8: {
         return <Finish />

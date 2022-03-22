@@ -16,6 +16,9 @@ import {
 // Types
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface Props {
   func: Fluxdocs
   onClickFunction: (func: Fluxdocs) => void
@@ -30,6 +33,7 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
   const functionRef = createRef<HTMLDListElement>()
   const handleClickFunction = () => {
     onClickFunction(func)
+    event('Inject FluxDoc function into Flux Script')
   }
   return (
     <>

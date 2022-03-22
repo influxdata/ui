@@ -7,11 +7,16 @@ import {DapperScrollbars} from '@influxdata/clockface'
 // Types
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface TooltipProps {
   item: Fluxdocs
 }
 
 const FluxDocsTooltipContent: FC<TooltipProps> = ({item: func}) => {
+  event('Flux function tooltip overlay opened')
+
   const argComponent = () => {
     if (func.fluxParameters.length > 0) {
       return func.fluxParameters.map(arg => {

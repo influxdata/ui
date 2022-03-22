@@ -9,6 +9,9 @@ import TooltipLink from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/
 
 // Types
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 interface Props {
   func: Fluxdocs
 }
@@ -16,6 +19,7 @@ interface Props {
 const FunctionTooltipContents: FunctionComponent<Props> = ({
   func: {headline, fluxParameters, name},
 }) => {
+  event('Flux function tooltip overlay opened')
   return (
     <div className="flux-function-docs" data-testid={`flux-docs--${name}`}>
       <DapperScrollbars autoHide={false}>

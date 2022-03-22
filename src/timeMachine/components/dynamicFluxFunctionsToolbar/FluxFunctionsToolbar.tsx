@@ -11,17 +11,15 @@ import TransformToolbarFunctions from 'src/timeMachine/components/dynamicFluxFun
 import ToolbarFunction from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/ToolbarFunction'
 
 // Actions
-import {getFluxPackages} from 'src/timeMachine/actions/scriptEditorThunks'
+import {getFluxPackages} from 'src/shared/actions/fluxDocs'
 
 // Types
 import {AppState} from 'src/types'
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 import {RemoteDataState} from 'src/types'
-
 interface OwnProps {
   onInsertFluxFunction: (func) => void
 }
-
 interface DispatchProps {
   getFluxPackages: () => void
 }

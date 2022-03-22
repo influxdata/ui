@@ -102,15 +102,16 @@ const TimeMachineFluxEditor: FC = () => {
       row = currentRange.endLineNumber + 1
     }
 
-    let text = ''
-    if (shouldInsertOnNextLine) {
-      text = `\n  |> ${func.example}`
-    } else {
-      text = `  |> ${func.example}\n`
-    }
+    let text = !!(func as FluxToolbarFunction).example
+      ? (func as FluxToolbarFunction).example
+      : `${func.name}()`
 
-    if (functionRequiresNewLine(func.name)) {
-      text = `\n${func.example}\n`
+    if (shouldInsertOnNextLine) {
+      text = `\n  |> ${text}`
+    } else if (functionRequiresNewLine(func.name)) {
+      text = `\n${text}\n`
+    } else {
+      text = ` |> ${text}\n`
     }
 
     const range = new window.monaco.Range(

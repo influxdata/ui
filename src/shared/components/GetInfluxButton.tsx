@@ -19,7 +19,7 @@ const handleSignUpClick = () => {
 const GetInfluxButton: FC<OwnProps> = ({hasIcon}) => {
   return (
     <Button
-      icon={hasIcon ? IconFont.CuboNav : null}
+      icon={hasIcon ? IconFont.CuboSolid : null}
       color={ComponentColor.Success}
       size={ComponentSize.Medium}
       shape={ButtonShape.Default}

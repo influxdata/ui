@@ -34,6 +34,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 import {remove} from 'src/shared/contexts/query'
 import Expressions from 'src/flows/pipes/Notification/Expressions'
+import Measurement from 'src/flows/pipes/Notification/Measurement'
 import Threshold from 'src/flows/pipes/Notification/Threshold'
 import {
   ENDPOINT_DEFINITIONS,
@@ -340,6 +341,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
             style={{width: 25, height: 25, position: 'absolute', right: 15}}
           />
         )}
+        <Measurement />
         <Threshold />
         <FlexBox margin={ComponentSize.Medium} style={{padding: '24px 0'}}>
           <FlexBox.Child grow={1} shrink={1}>

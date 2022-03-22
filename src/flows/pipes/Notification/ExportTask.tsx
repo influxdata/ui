@@ -200,6 +200,8 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
       .map((cond, i) => (i > 0 ? cond.split(lambdaPrefix)[1] : cond))
       .join(' and ')
 
+    const measurement = `(r) => r["_measurement"] == "${data.measurement}"`
+
     const imports = parse(`
 import "strings"
 import "regexp"
@@ -240,7 +242,10 @@ task_data = ${format_from_js_file(ast)}
 trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(
+  data.endpointData,
+  measurement
+)}`
 
     const newAST = parse(newQuery)
 

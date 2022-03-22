@@ -27,14 +27,16 @@ export default register => {
       ['array', 'http', 'influxdata/influxdb/secrets']
         .map(i => `import "${i}"`)
         .join('\n'),
-    generateQuery: data => `task_data
+    generateQuery: (data, measurement) => `task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
+  |> filter(fn: ${measurement})
 	|> monitor["check"](
 		data: check,
 		messageFn: messageFn,
 		crit: trigger,
 	)
+  |> filter(fn: trigger)
 	|> monitor["notify"](
     data: notification,
     endpoint: ((r) => {

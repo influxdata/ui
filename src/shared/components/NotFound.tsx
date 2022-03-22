@@ -98,7 +98,7 @@ const NotFoundNew: FC = () => (
           </FlexBoxChild>
           <FlexBox alignItems={AlignItems.Stretch} stretchToFitWidth={true}>
             <FlexBoxChild className="page-not-found-community-links">
-              <Icon glyph={IconFont.Cubouniform}></Icon>
+              <Icon glyph={IconFont.CuboSolid}></Icon>
               {/* Add rel options to avoid "tabnapping" */}
               <a
                 href="https://community.influxdata.com/"

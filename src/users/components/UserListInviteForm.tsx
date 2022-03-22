@@ -14,9 +14,9 @@ import {
   Heading,
   HeadingElement,
   Input,
+  InputType,
   Panel,
 } from '@influxdata/clockface'
-import isEmail from 'validator/es/lib/isEmail'
 import {gaEvent} from 'src/cloud/utils/reporting'
 
 // Constants
@@ -33,11 +33,6 @@ const UserListInviteForm: FC = () => {
   )
 
   const onInviteUser = () => {
-    if (!isEmail(draftInvite.email)) {
-      setErrors({email: 'Please enter a valid email address'})
-      return
-    }
-
     handleInviteUser()
     // Google Tag Manager event for sending an invitation
     gaEvent(GTM_INVITE_SENT)
@@ -74,6 +69,7 @@ const UserListInviteForm: FC = () => {
                     placeholder="email address"
                     onChange={onChangeInvitee}
                     value={draftInvite.email}
+                    type={InputType.Email}
                     required={true}
                   />
                 </Form.Element>

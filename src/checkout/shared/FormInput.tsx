@@ -1,18 +1,12 @@
 import React, {ChangeEvent, FC, useContext, useState} from 'react'
-import {
-  Form,
-  FormElementProps,
-  Input,
-  InputProps,
-  InputType,
-} from '@influxdata/clockface'
+import {Form, FormElementProps, Input, InputProps} from '@influxdata/clockface'
 
 // Context
 import {CheckoutContext} from 'src/checkout/context/checkout'
 
 type Props = FormElementProps & InputProps
 
-const FormInput: FC<Props> = ({label, required, id, type, ...args}) => {
+const FormInput: FC<Props> = ({label, required, id, ...args}) => {
   const {
     errors,
     handleSetInputs,
@@ -22,7 +16,9 @@ const FormInput: FC<Props> = ({label, required, id, type, ...args}) => {
     setIsDirty,
   } = useContext(CheckoutContext)
 
-  const [requiredMessage, setRequiredMessage] = useState(errorMessage(type))
+  const [requiredMessage, setRequiredMessage] = useState(
+    'This is a required field'
+  )
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const {value} = event.target
@@ -77,12 +73,3 @@ const FormInput: FC<Props> = ({label, required, id, type, ...args}) => {
 }
 
 export default FormInput
-
-const errorMessage = (type: InputType): string => {
-  switch (type) {
-    case InputType.Email:
-      return 'Please enter a valid email address'
-    default:
-      return 'This is a required field'
-  }
-}

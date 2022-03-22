@@ -1,6 +1,7 @@
 import React, {FC, useContext, useState} from 'react'
 
 import {
+  ButtonType,
   Overlay,
   SlideToggle,
   InputLabel,
@@ -25,9 +26,6 @@ import {MINIMUM_BALANCE_THRESHOLD} from 'src/shared/constants'
 // Types
 import {BillingNotifySettings} from 'src/types/billing'
 
-// Email Validation
-import isEmail from 'validator/es/lib/isEmail'
-
 type Props = {
   onHideOverlay: () => void
 }
@@ -45,13 +43,9 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
   const [hasThresholdError, setHasThresholdError] = useState<boolean>(false)
 
   const [notifyEmail, setNotifyEmail] = useState(billingSettings.notifyEmail)
-  const [emailError, setEmailError] = useState('')
 
-  const onSubmitThreshold = () => {
-    if (!isEmail(notifyEmail)) {
-      setEmailError('Please enter a valid email address')
-      return
-    }
+  const onSubmitThreshold = e => {
+    e.preventDefault()
 
     if (`${balanceThreshold}`.includes('.')) {
       setHasThresholdError(true)
@@ -96,8 +90,8 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
           title="Notification Settings"
           onDismiss={onHideOverlay}
         />
-        <Overlay.Body>
-          <Form>
+        <Form onSubmit={onSubmitThreshold}>
+          <Overlay.Body>
             <Form.Element label="">
               <FlexBox
                 direction={FlexDirection.Row}
@@ -118,13 +112,9 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
             </Form.Element>
             {isNotifyActive ? (
               <>
-                <Form.Element
-                  label="Email Address"
-                  errorMessage={emailError}
-                  required
-                >
+                <Form.Element label="Email Address">
                   <Input
-                    type={InputType.Text}
+                    type={InputType.Email}
                     value={notifyEmail}
                     onChange={onEmailChange}
                   />
@@ -144,18 +134,18 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
                 </Form.Element>
               </>
             ) : null}
-          </Form>
-        </Overlay.Body>
-        <Overlay.Footer>
-          <Button
-            color={ComponentColor.Primary}
-            onClick={onSubmitThreshold}
-            text="Save"
-            size={ComponentSize.Small}
-            status={saveStatus}
-            testID="save-settings--button"
-          />
-        </Overlay.Footer>
+          </Overlay.Body>
+          <Overlay.Footer>
+            <Button
+              type={ButtonType.Submit}
+              color={ComponentColor.Primary}
+              text="Save"
+              size={ComponentSize.Small}
+              status={saveStatus}
+              testID="save-settings--button"
+            />
+          </Overlay.Footer>
+        </Form>
       </Overlay.Container>
     </Overlay>
   )

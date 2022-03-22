@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext, useState} from 'react'
-import {useSelector} from 'react-redux'
 
 // Components
 import {Columns, Grid, IndexList} from '@influxdata/clockface'
@@ -8,19 +7,12 @@ import {UsersContext} from 'src/users/context/users'
 import UserListItem from 'src/users/components/UserListItem'
 import InviteListItem from 'src/users/components/InviteListItem'
 
-// Selectors
-import {getMe} from 'src/me/selectors'
-
 // Utils
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {filter} from 'src/users/utils/filter'
 
 const UserList: FC = () => {
   const {users, invites} = useContext(UsersContext)
-
-  const currentUserId = useSelector(getMe)?.id
-  const selfRemovalFromAccount = isFlagEnabled('selfRemovalFromAccount')
 
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -32,8 +24,7 @@ const UserList: FC = () => {
 
   const filteredInvites = filter(invites, ['email', 'role'], searchTerm)
 
-  const isDeletable = user =>
-    selfRemovalFromAccount ? users.length > 1 : user.id !== currentUserId
+  const isDeletable = users.length > 1
 
   return (
     <Grid>
@@ -63,7 +54,7 @@ const UserList: FC = () => {
             <UserListItem
               key={`user-${user.id}`}
               user={user}
-              isDeletable={isDeletable(user)}
+              isDeletable={isDeletable}
             />
           ))}
         </IndexList.Body>

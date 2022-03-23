@@ -401,15 +401,15 @@ export const generateSortItems = (
           sortDirection: Sort.Descending,
         },
         {
-          label: 'Description (Ascending)',
-          sortKey: 'description',
-          sortType: SortTypes.String,
+          label: 'Created (Oldest)',
+          sortKey: 'createdAt',
+          sortType: SortTypes.Date,
           sortDirection: Sort.Ascending,
         },
         {
-          label: 'Description (Descending)',
-          sortKey: 'description',
-          sortType: SortTypes.String,
+          label: 'Created (Newest)',
+          sortKey: 'createdAt',
+          sortType: SortTypes.Date,
           sortDirection: Sort.Descending,
         },
       ]

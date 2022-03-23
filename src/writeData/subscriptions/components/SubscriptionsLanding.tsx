@@ -50,16 +50,27 @@ const SubscriptionsLanding: FC = () => {
     sortType: SortTypes.String,
     sortDirection: Sort.Ascending,
   })
-  const filteredSubscriptions = subscriptions && search ? subscriptions.filter(
-    s => s.name.toLowerCase() === search.toLowerCase().trim()
-  ) : subscriptions
-  const handleSort = (subscriptions) => {
+  const filteredSubscriptions =
+    subscriptions && search
+      ? subscriptions.filter(
+          s => s.name.toLowerCase() === search.toLowerCase().trim()
+        )
+      : subscriptions
+  const handleSort = (subscriptions: Subscription[]): Subscription[] => {
     let sortedSubscriptions
     if (sortOptions.sortDirection === Sort.Ascending) {
-      sortedSubscriptions = subscriptions.sort((a, b) => (a[sortOptions.sortKey] as string).toLowerCase().localeCompare((b[sortOptions.sortKey] as string).toLowerCase()))
+      sortedSubscriptions = subscriptions.sort((a, b) =>
+        (a[sortOptions.sortKey] as string)
+          .toLowerCase()
+          .localeCompare((b[sortOptions.sortKey] as string).toLowerCase())
+      )
     } else if (sortOptions.sortDirection === Sort.Descending) {
-      sortedSubscriptions = subscriptions.sort((a, b) =>  (b[sortOptions.sortKey] as string).toLowerCase().localeCompare((a[sortOptions.sortKey] as string).toLowerCase()))
-    } 
+      sortedSubscriptions = subscriptions.sort((a, b) =>
+        (b[sortOptions.sortKey] as string)
+          .toLowerCase()
+          .localeCompare((a[sortOptions.sortKey] as string).toLowerCase())
+      )
+    }
     return sortedSubscriptions
   }
   const setSort = (sortKey, sortDirection, sortType) => {
@@ -115,7 +126,9 @@ const SubscriptionsLanding: FC = () => {
             </Page.ControlBarRight>
           </Page.ControlBar>
           {subscriptions && subscriptions.length ? (
-              <SubscriptionsList subscriptions={handleSort(filteredSubscriptions)} />
+            <SubscriptionsList
+              subscriptions={handleSort(filteredSubscriptions)}
+            />
           ) : (
             <EmptySubscriptionState />
           )}

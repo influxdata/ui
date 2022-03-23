@@ -44,10 +44,12 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
       }
     >
       <ResourceCard.Name name={subscription.name} />
-      <ResourceCard.Description description={`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`} />
+      <ResourceCard.Description
+        description={`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`}
+      />
       <ResourceCard.Meta>
-      <>{subscription.status}</>
-      <>Last Modified: {timeSince}</>
+        <>{subscription.status}</>
+        <>Last Modified: {timeSince}</>
       </ResourceCard.Meta>
     </ResourceCard>
   )

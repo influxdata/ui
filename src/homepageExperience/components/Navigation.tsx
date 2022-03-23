@@ -9,9 +9,14 @@ import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
 interface OwnProps {
   currentStep: number
+  onClick: (number) => void
 }
 
 export class Navigation extends PureComponent<OwnProps> {
+  handleClick = (step: number) => {
+    this.props.onClick(step)
+  }
+
   render() {
     return (
       <div className="subway-navigation-container">
@@ -29,11 +34,14 @@ export class Navigation extends PureComponent<OwnProps> {
           </div>
           {HOMEPAGE_NAVIGATION_STEPS.map((value, index) => (
             <Step
+              icon={value.icon}
+              key={value.name}
+              onClick={() => {
+                this.handleClick(index + 1)
+              }}
               stepIsActive={index === this.props.currentStep - 1}
               stepIsComplete={index < this.props.currentStep - 1}
-              icon={value.icon}
               text={value.name}
-              key={index}
             />
           ))}
         </div>

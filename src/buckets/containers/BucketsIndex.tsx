@@ -1,52 +1,62 @@
 // Libraries
 import React, {Component} from 'react'
+import {connect, ConnectedProps} from 'react-redux'
 import {Switch, Route} from 'react-router-dom'
+
+import {Page, SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import LoadDataTabbedPage from 'src/settings/components/LoadDataTabbedPage'
 import LoadDataHeader from 'src/settings/components/LoadDataHeader'
 import BucketsTab from 'src/buckets/components/BucketsTab'
-import GetResources from 'src/resources/components/GetResources'
 import GetAssetLimits from 'src/cloud/components/GetAssetLimits'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import CollectorsWizard from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
 import UpdateBucketOverlay from 'src/buckets/components/createBucketForm/UpdateBucketOverlay'
 import RenameBucketOverlay from 'src/buckets/components/RenameBucketOverlay'
 import CreateScraperOverlay from 'src/scrapers/components/CreateScraperOverlay'
-import {Page} from '@influxdata/clockface'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
-// Constants
-import {ORGS, ORG_ID, BUCKETS, BUCKET_ID} from 'src/shared/constants/routes'
-
 // Types
-import {ResourceType} from 'src/types'
+import {AppState, ResourceType} from 'src/types'
 
-const bucketsPath = `/${ORGS}/${ORG_ID}/load-data/${BUCKETS}/${BUCKET_ID}`
+// Actions
+import {getBuckets} from 'src/buckets/actions/thunks'
+import {getLabels} from 'src/labels/actions/thunks'
+import {getTelegrafs} from 'src/telegrafs/actions/thunks'
+
+// Selectors
+import {getResourcesStatus} from 'src/resources/selectors/getResourcesStatus'
+
+const bucketsPath = '/orgs/:orgID/load-data/buckets/:bucketID'
+
+type ReduxProps = ConnectedProps<typeof connector>
+type Props = ReduxProps
 
 @ErrorHandling
-class BucketsIndex extends Component {
+class BucketsIndex extends Component<Props> {
+  public componentDidMount() {
+    this.props.getBuckets()
+    this.props.getLabels()
+    this.props.getTelegrafs()
+  }
+
   public render() {
     return (
-      <>
+      <SpinnerContainer
+        loading={this.props.remoteDataState}
+        spinnerComponent={<TechnoSpinner />}
+      >
         <Page titleTag={pageTitleSuffixer(['Buckets', 'Load Data'])}>
           <LimitChecker>
             <LoadDataHeader />
             <LoadDataTabbedPage activeTab="buckets">
-              <GetResources
-                resources={[
-                  ResourceType.Buckets,
-                  ResourceType.Labels,
-                  ResourceType.Telegrafs,
-                ]}
-              >
-                <GetAssetLimits>
-                  <BucketsTab />
-                </GetAssetLimits>
-              </GetResources>
+              <GetAssetLimits>
+                <BucketsTab />
+              </GetAssetLimits>
             </LoadDataTabbedPage>
           </LimitChecker>
         </Page>
@@ -65,9 +75,26 @@ class BucketsIndex extends Component {
             component={RenameBucketOverlay}
           />
         </Switch>
-      </>
+      </SpinnerContainer>
     )
   }
 }
 
-export default BucketsIndex
+const mstp = (state: AppState) => {
+  const remoteDataState = getResourcesStatus(state, [
+    ResourceType.Buckets,
+    ResourceType.Labels,
+    ResourceType.Telegrafs,
+  ])
+  return {remoteDataState}
+}
+
+const mdtp = {
+  getBuckets,
+  getLabels,
+  getTelegrafs,
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(BucketsIndex)

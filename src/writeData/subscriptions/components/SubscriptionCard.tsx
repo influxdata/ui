@@ -1,5 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
+import moment from 'moment'
 
 // Components
 import {
@@ -22,6 +23,7 @@ interface Props {
 
 const SubscriptionCard: FC<Props> = ({subscription}) => {
   const {deleteSubscription} = useContext(SubscriptionListContext)
+  const timeSince = moment(subscription.updatedAt).fromNow()
   return (
     <ResourceCard
       key={`subscription-card-id--${subscription.id}`}
@@ -42,7 +44,11 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
       }
     >
       <ResourceCard.Name name={subscription.name} />
-      <ResourceCard.Description description={subscription.description} />
+      <ResourceCard.Description description={`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`} />
+      <ResourceCard.Meta>
+      <>{subscription.status}</>
+      <>Last Modified: {timeSince}</>
+      </ResourceCard.Meta>
     </ResourceCard>
   )
 }

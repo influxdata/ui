@@ -78,7 +78,7 @@ export const WriteDataComponent = (props: WriteDataProps) => {
           <Grid>
             <Grid.Row>
               <Grid.Column widthSM={Columns.Twelve}>
-                <WriteDataHelperBuckets />
+                <WriteDataHelperBuckets useSimplifiedBucketForm={true} />
               </Grid.Column>
             </Grid.Row>
           </Grid>

@@ -55,7 +55,6 @@ const CancellationOverlay: FC<Props> = ({onHideOverlay}) => {
       event('Cancel account success')
     } catch (error) {
       const message = getErrorMessage(error)
-      console.error({error})
       event('Cancel account failed', {message})
       dispatch(notify(accountCancellationError(message)))
     }

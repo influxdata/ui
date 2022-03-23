@@ -57,10 +57,7 @@ const DeleteOrgOverlay: FC = () => {
     }
     event('DeleteOrgDismissed Event', payload)
 
-    if (
-      isFlagEnabled('rudderstackReporting') &&
-      isFlagEnabled('trackCancellations')
-    ) {
+    if (isFlagEnabled('rudderstackReporting')) {
       // Send to Rudderstack
       track('DeleteOrgDismissed', payload)
     }
@@ -69,10 +66,6 @@ const DeleteOrgOverlay: FC = () => {
   }
 
   const isFormValid = useMemo(() => {
-    if (!isFlagEnabled('trackCancellations')) {
-      return hasAgreedToTerms
-    }
-
     // Has Agreed to Terms & Conditions
     // as well as
     // Selected an option from the Reasons Dropdown
@@ -90,10 +83,7 @@ const DeleteOrgOverlay: FC = () => {
     }
     event('DeleteOrgExecuted Event', payload)
 
-    if (
-      isFlagEnabled('rudderstackReporting') &&
-      isFlagEnabled('trackCancellations')
-    ) {
+    if (isFlagEnabled('rudderstackReporting')) {
       track('DeleteOrgExecuted', payload)
     }
 
@@ -104,11 +94,8 @@ const DeleteOrgOverlay: FC = () => {
       if (resp.status !== 204) {
         throw new Error(resp.data.message)
       }
-      if (isFlagEnabled('trackCancellations')) {
-        window.location.href = getRedirectLocation()
-      } else {
-        window.location.href = `https://www.influxdata.com/free_cancel/`
-      }
+
+      window.location.href = getRedirectLocation()
     } catch {
       dispatch(notify(accountSelfDeletionFailed()))
     }
@@ -122,16 +109,14 @@ const DeleteOrgOverlay: FC = () => {
           <Alert color={ComponentColor.Danger} icon={IconFont.AlertTriangle}>
             This action cannot be undone
           </Alert>
-          {isFlagEnabled('trackCancellations') && (
-            <FlexBox
-              alignItems={AlignItems.Center}
-              direction={FlexDirection.Row}
-              justifyContent={JustifyContent.FlexStart}
-              margin={ComponentSize.Medium}
-            >
-              <DeleteOrgReasonsForm />
-            </FlexBox>
-          )}
+          <FlexBox
+            alignItems={AlignItems.Center}
+            direction={FlexDirection.Row}
+            justifyContent={JustifyContent.FlexStart}
+            margin={ComponentSize.Medium}
+          >
+            <DeleteOrgReasonsForm />
+          </FlexBox>
           <ul style={{margin: '32px 0'}}>
             <li>
               The account for this Organization will be deleted immediately.

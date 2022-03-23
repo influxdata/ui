@@ -21,10 +21,17 @@ import {CLOUD} from 'src/shared/constants'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-const CreateBucketButton: FC<ReduxProps> = ({
+type CreateButtonProps = {
+  useSimplifiedBucketForm?: boolean
+}
+
+type Props = ReduxProps & CreateButtonProps
+
+const CreateBucketButton: FC<Props> = ({
   limitStatus,
   onShowOverlay,
   onDismissOverlay,
+  useSimplifiedBucketForm = false,
 }) => {
   const dispatch = useDispatch()
   useEffect(() => {
@@ -32,8 +39,11 @@ const CreateBucketButton: FC<ReduxProps> = ({
     dispatch(checkBucketLimits())
   }, [dispatch])
 
+  const overlayParams = useSimplifiedBucketForm
+    ? {useSimplifiedBucketForm: true}
+    : null
   const handleItemClick = (): void => {
-    onShowOverlay('create-bucket', null, onDismissOverlay)
+    onShowOverlay('create-bucket', overlayParams, onDismissOverlay)
   }
 
   if (CLOUD && limitStatus === 'exceeded') {

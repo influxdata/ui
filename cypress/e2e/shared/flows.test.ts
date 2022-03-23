@@ -591,17 +591,19 @@ describe('Flows', () => {
       cy.getByTestID(`add-flow-btn--${item.panel}`).should('have.length', 2)
 
       // Click the newest button from opening the panel button
-      cy.getByTestID(`add-flow-btn--${item.panel}`)
-        .last()
-        .click()
-      if (item.panel === 'queryBuilder') {
-        cy.wait('@fetchAllBuckets')
-      } else if (item.panel === 'notification') {
-        cy.wait('@fetchSecrets')
-      }
+      cy.get('.insert-cell-menu.always-on').within(() => {
+        cy.getByTestID(`add-flow-btn--${item.panel}`)
+          .last()
+          .click()
+        if (item.panel === 'queryBuilder') {
+          cy.wait('@fetchAllBuckets')
+        } else if (item.panel === 'notification') {
+          cy.wait('@fetchSecrets')
+        }
+      })
 
       cy.getByTestID('sidebar-button')
-        .first()
+        .last()
         .click()
       cy.getByTestID('dropdown-menu').should('be.visible')
       cy.getByTestID('dropdown-menu--contents')

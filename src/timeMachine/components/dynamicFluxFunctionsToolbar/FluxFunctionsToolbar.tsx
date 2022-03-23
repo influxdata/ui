@@ -88,6 +88,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
                       key={index}
                       func={func}
                       testID={func.name}
+                      searchTerm={searchTerm}
                     />
                   ))
                 }

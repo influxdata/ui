@@ -25,9 +25,9 @@ const FilterList: FC<Props> = ({
   setSearchTerm,
 }) => {
   const [search, setSearch] = useState('')
-  
-  const onSearch = (searchTerm) => {
-    if(setSearchTerm) {
+
+  const onSearch = searchTerm => {
+    if (setSearchTerm) {
       setSearchTerm(searchTerm)
     }
     setSearch(searchTerm)
@@ -38,8 +38,6 @@ const FilterList: FC<Props> = ({
         .toLowerCase()
         .includes(search.toLowerCase())
     )
-
-    
 
     if (!filtered.length) {
       return (
@@ -67,7 +65,6 @@ const FilterList: FC<Props> = ({
             onSearch={onSearch}
             searchTerm={search}
             testID="flux-toolbar-search--input"
-            // setSearchTerm={setSearchTerm}
           />
         </div>
         {!!listHeader && listHeader()}

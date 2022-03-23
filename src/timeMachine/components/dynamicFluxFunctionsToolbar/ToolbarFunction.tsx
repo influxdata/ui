@@ -23,17 +23,26 @@ interface Props {
   func: Fluxdocs
   onClickFunction: (func: Fluxdocs) => void
   testID: string
+  searchTerm: string
 }
 
 const defaultProps = {
   testID: 'flux-function',
 }
 
-const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
+const ToolbarFunction: FC<Props> = ({
+  func,
+  onClickFunction,
+  testID,
+  searchTerm,
+}) => {
   const functionRef = createRef<HTMLDListElement>()
   const handleClickFunction = () => {
     onClickFunction(func)
-    event('Inject FluxDoc function into Flux Script')
+    if (searchTerm) {
+      event('flux.function.searched', {searchTerm: searchTerm})
+    }
+    event('flux.function.injected', {name: `${func.package}.${func.name}`})
   }
   return (
     <>

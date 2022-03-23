@@ -36,13 +36,16 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
     }
   }, [])
 
-  const handleSelectItem = useCallback((func: FluxFunction) => {
-    onSelect(func)
-    event('flux.function.injected', {name: `${func.package}.${func.name}`})
-    if (searchTerm) {
-      event('flux.function.searched', {searchTerm: searchTerm})
-    }
-  }, [searchTerm])
+  const handleSelectItem = useCallback(
+    (func: FluxFunction) => {
+      onSelect(func)
+      event('flux.function.injected', {name: `${func.package}.${func.name}`})
+      if (searchTerm) {
+        event('flux.function.searched', {searchTerm: searchTerm})
+      }
+    },
+    [searchTerm]
+  )
 
   const render = fn => (
     <Fn
@@ -54,7 +57,6 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       option={fn}
       testID={fn.name}
       ToolTipContent={FluxDocsTooltipContent}
-      searchTerm={searchTerm}
     />
   )
 

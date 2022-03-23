@@ -12,6 +12,7 @@ interface Props {
   items: Item[]
   renderItem: (i: Item) => JSX.Element
   listHeader?: () => JSX.Element
+  setSearchTerm?: (searchTerm: string) => void
 }
 
 const FilterList: FC<Props> = ({
@@ -21,15 +22,24 @@ const FilterList: FC<Props> = ({
   emptyMessage,
   renderItem,
   listHeader,
+  setSearchTerm,
 }) => {
   const [search, setSearch] = useState('')
-
+  
+  const onSearch = (searchTerm) => {
+    if(setSearchTerm) {
+      setSearchTerm(searchTerm)
+    }
+    setSearch(searchTerm)
+  }
   const list = useMemo(() => {
     const filtered = items.filter(i =>
       extractor(i)
         .toLowerCase()
         .includes(search.toLowerCase())
     )
+
+    
 
     if (!filtered.length) {
       return (
@@ -54,9 +64,10 @@ const FilterList: FC<Props> = ({
         <div className="flux-toolbar--search">
           <SearchWidget
             placeholderText={placeholder}
-            onSearch={setSearch}
+            onSearch={onSearch}
             searchTerm={search}
             testID="flux-toolbar-search--input"
+            // setSearchTerm={setSearchTerm}
           />
         </div>
         {!!listHeader && listHeader()}

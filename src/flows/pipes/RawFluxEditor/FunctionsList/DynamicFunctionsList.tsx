@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -26,8 +26,10 @@ const sortFuncs = (a, b) => {
 }
 
 const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
+  const [searchTerm, setSearchTerm] = useState('')
   const dispatch = useDispatch()
   const fluxFunctions = useSelector(getAllFluxFunctions)
+
   useEffect(() => {
     if (fluxFunctions.length === 0) {
       dispatch(getFluxPackages())
@@ -36,8 +38,11 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
 
   const handleSelectItem = useCallback((func: FluxFunction) => {
     onSelect(func)
-    event('Inject FluxDoc function into Flux Script')
-  }, [])
+    event('flux.function.injected', {name: `${func.package}.${func.name}`})
+    if (searchTerm) {
+      event('flux.function.searched', {searchTerm: searchTerm})
+    }
+  }, [searchTerm])
 
   const render = fn => (
     <Fn
@@ -49,6 +54,7 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       option={fn}
       testID={fn.name}
       ToolTipContent={FluxDocsTooltipContent}
+      searchTerm={searchTerm}
     />
   )
 
@@ -61,6 +67,7 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       }
       items={fluxFunctions.sort(sortFuncs)}
       renderItem={render}
+      setSearchTerm={setSearchTerm}
     />
   )
 }

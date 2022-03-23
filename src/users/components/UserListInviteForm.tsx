@@ -14,9 +14,9 @@ import {
   Heading,
   HeadingElement,
   Input,
+  InputType,
   Panel,
 } from '@influxdata/clockface'
-
 import {gaEvent} from 'src/cloud/utils/reporting'
 
 // Constants
@@ -69,6 +69,7 @@ const UserListInviteForm: FC = () => {
                     placeholder="email address"
                     onChange={onChangeInvitee}
                     value={draftInvite.email}
+                    type={InputType.Email}
                     required={true}
                   />
                 </Form.Element>

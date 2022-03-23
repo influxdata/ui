@@ -1,6 +1,7 @@
 import React, {FC, useContext, useState} from 'react'
 
 import {
+  ButtonType,
   Overlay,
   SlideToggle,
   InputLabel,
@@ -41,7 +42,11 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
   )
   const [hasThresholdError, setHasThresholdError] = useState<boolean>(false)
 
-  const onSubmitThreshold = () => {
+  const [notifyEmail, setNotifyEmail] = useState(billingSettings.notifyEmail)
+
+  const onSubmitThreshold = e => {
+    e.preventDefault()
+
     if (`${balanceThreshold}`.includes('.')) {
       setHasThresholdError(true)
       return
@@ -57,8 +62,6 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
     handleUpdateBillingSettings(settings)
     onHideOverlay()
   }
-
-  const [notifyEmail, setNotifyEmail] = useState(billingSettings.notifyEmail)
 
   const onToggleChange = () => {
     setIsNotifyActive(prevState => !prevState)
@@ -87,8 +90,8 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
           title="Notification Settings"
           onDismiss={onHideOverlay}
         />
-        <Overlay.Body>
-          <Form>
+        <Form onSubmit={onSubmitThreshold}>
+          <Overlay.Body>
             <Form.Element label="">
               <FlexBox
                 direction={FlexDirection.Row}
@@ -111,7 +114,7 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
               <>
                 <Form.Element label="Email Address">
                   <Input
-                    type={InputType.Text}
+                    type={InputType.Email}
                     value={notifyEmail}
                     onChange={onEmailChange}
                   />
@@ -131,18 +134,18 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
                 </Form.Element>
               </>
             ) : null}
-          </Form>
-        </Overlay.Body>
-        <Overlay.Footer>
-          <Button
-            color={ComponentColor.Primary}
-            onClick={onSubmitThreshold}
-            text="Save"
-            size={ComponentSize.Small}
-            status={saveStatus}
-            testID="save-settings--button"
-          />
-        </Overlay.Footer>
+          </Overlay.Body>
+          <Overlay.Footer>
+            <Button
+              type={ButtonType.Submit}
+              color={ComponentColor.Primary}
+              text="Save"
+              size={ComponentSize.Small}
+              status={saveStatus}
+              testID="save-settings--button"
+            />
+          </Overlay.Footer>
+        </Form>
       </Overlay.Container>
     </Overlay>
   )

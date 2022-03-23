@@ -34,6 +34,10 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
     selectedBucket: '',
   }
 
+  private handleSelectBucket = (bucketName: string) => {
+    this.setState({selectedBucket: bucketName})
+  }
+
   handleNextClick = () => {
     this.setState(
       {
@@ -57,9 +61,10 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
     )
   }
 
-  private handleSelectBucket = (bucketName: string) => {
-    this.setState({selectedBucket: bucketName})
+  handleNavClick = (clickedStep: number) => {
+    this.setState({currentStep: clickedStep})
   }
+
   renderStep = () => {
     switch (this.state.currentStep) {
       case 1: {
@@ -99,7 +104,10 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
       <div className="homepage-wizard-container">
         <aside className="homepage-wizard-container--subway">
           <div style={{width: '100%'}}>
-            <Navigation currentStep={this.state.currentStep} />
+            <Navigation
+              currentStep={this.state.currentStep}
+              onClick={this.handleNavClick}
+            />
           </div>
         </aside>
         <div className="homepage-wizard-container--main">

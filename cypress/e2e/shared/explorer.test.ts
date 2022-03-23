@@ -443,7 +443,9 @@ describe('DataExplorer', () => {
           .monacoType('{selectall} {backspace}')
           .monacoType('from(')
           .within(() => {
-            cy.get('.signature').should('be.visible')
+            cy.get('[widgetid="editor.widget.suggestWidget"]', {
+              timeout: 30000,
+            }).should('be.visible')
           })
           .monacoType(`{selectall}{del}from(bucket: )`)
       })

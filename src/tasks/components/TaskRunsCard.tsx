@@ -15,22 +15,18 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 
-// Actions For Tasks
-import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
-
 // Actions
+import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {runTask, getRuns, updateTaskStatus} from 'src/tasks/actions/thunks'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Actions For Members
 import {getMembers} from 'src/members/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
-
 import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor, Button} from '@influxdata/clockface'
 import {Task, AppState} from 'src/types'
+import {DEFAULT_PROJECT_NAME} from 'src/flows'
 
 // DateTime
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
@@ -99,7 +95,11 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       })
       .then(resp => {
         if (resp.length) {
-          setRoute(`/orgs/${org.id}/notebooks/${resp[0].notebookID}`)
+          setRoute(
+            `/orgs/${org.id}/${DEFAULT_PROJECT_NAME.toLowerCase()}/${
+              resp[0].notebookID
+            }`
+          )
         } else {
           setRoute(`/notebook/from/task/${task.id}`)
         }
@@ -107,7 +107,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       .catch(() => {
         setRoute(`/notebook/from/task/${task.id}`)
       })
-  }, [isFlagEnabled('createWithFlows'), task])
+  }, [isFlagEnabled('createWithFlows'), org.id, task])
 
   if (!task) {
     return null

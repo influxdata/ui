@@ -84,9 +84,7 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
 
   const pipeIds = flow.data.allIDs
   const firstQueryIndex = pipeIds.findIndex(
-    id =>
-      flow.data.byID[id].type === 'queryBuilder' ||
-      flow.data.byID[id].type === 'rawFluxEditor'
+    id => PIPE_DEFINITIONS[flow.data.byID[id].type].family === 'inputs'
   )
 
   const cellFamilies = SUPPORTED_FAMILIES.filter(fam =>

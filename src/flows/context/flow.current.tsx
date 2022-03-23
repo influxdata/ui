@@ -14,6 +14,8 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
+import {useParams} from 'react-router-dom'
+import {getNotebook} from 'src/client/notebooksRoutes'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -44,7 +46,8 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 let GENERATOR_INDEX = 0
 
 export const FlowProvider: FC = ({children}) => {
-  const {flows, update, currentID} = useContext(FlowListContext)
+  const {update} = useContext(FlowListContext)
+  const {id} = useParams<{id: string}>()
   const [currentFlow, setCurrentFlow] = useState<Flow>()
   const provider = useRef<WebsocketProvider>()
   const yDoc = useRef(new Doc())
@@ -60,11 +63,28 @@ export const FlowProvider: FC = ({children}) => {
   // and references to the flows object directly to get around the async
   // update issues.
 
+  const handleGetNotebook = useCallback(
+    async notebookId => {
+      try {
+        const response = await getNotebook({id: notebookId})
+
+        if (response.status !== 200) {
+          throw new Error(response.data.message)
+        }
+
+        setCurrentFlow(hydrate(response.data))
+      } catch (error) {
+        console.error({error})
+      }
+    },
+    [getNotebook]
+  )
+
   useEffect(() => {
-    if (currentID) {
-      setCurrentFlow(flows[currentID])
+    if (id) {
+      handleGetNotebook(id)
     }
-  }, [flows, currentID])
+  }, [handleGetNotebook, id])
 
   const syncFunc = useCallback(
     (isSynced: boolean) => {

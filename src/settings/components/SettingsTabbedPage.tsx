@@ -10,13 +10,12 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 interface Props {
   activeTab: string
-  orgID: string
 }
 
 @ErrorHandling
 class SettingsTabbedPage extends PureComponent<Props> {
   public render() {
-    const {activeTab, orgID, children} = this.props
+    const {activeTab, children} = this.props
 
     return (
       <Page.Contents
@@ -26,7 +25,7 @@ class SettingsTabbedPage extends PureComponent<Props> {
         autoHideScrollbar={true}
       >
         <Tabs.Container orientation={Orientation.Horizontal}>
-          <SettingsNavigation activeTab={activeTab} orgID={orgID} />
+          <SettingsNavigation activeTab={activeTab} />
           <Tabs.TabContents>{children}</Tabs.TabContents>
         </Tabs.Container>
       </Page.Contents>

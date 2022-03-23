@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useContext} from 'react'
-import moment from 'moment'
+import {DateTime} from 'luxon'
 
 // Components
 import {
@@ -23,7 +23,7 @@ interface Props {
 
 const SubscriptionCard: FC<Props> = ({subscription}) => {
   const {deleteSubscription} = useContext(SubscriptionListContext)
-  const timeSince = moment(subscription.updatedAt).fromNow()
+  const timeSince = new DateTime.fromISO(subscription.updatedAt).toRelative()
   return (
     <ResourceCard
       key={`subscription-card-id--${subscription.id}`}

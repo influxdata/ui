@@ -21,7 +21,7 @@ export const AnnotationsIndex: FC = () => {
     <>
       <Page titleTag={pageTitleSuffixer(['Annotations', 'Settings'])}>
         <SettingsHeader />
-        <SettingsTabbedPage activeTab="annotations" orgID={org.id}>
+        <SettingsTabbedPage activeTab="annotations">
           {/*
               TODO: GetResources with ResourceType.AnnotationStreams
             */}

@@ -34,9 +34,7 @@ const MemberList: FC<Props> = ({
   sortType,
   onClickColumn,
 }) => {
-  const headerKeys = (): SortKey[] => {
-    return ['name', 'role']
-  }
+  const headerKeys: SortKey[] = ['name', 'role']
 
   const sortedMembers = useMemo(
     () => getSortedResources(members, sortKey, sortDirection, sortType),

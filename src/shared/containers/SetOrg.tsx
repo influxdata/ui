@@ -11,7 +11,6 @@ import {
   AlertingIndex,
   BillingPage,
   BucketsIndex,
-  BucketsIndexPaginated,
   CheckHistory,
   ClientLibrariesPage,
   DashboardContainer,
@@ -220,17 +219,10 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
             component={TokensIndex}
           />
-          {isFlagEnabled('fetchAllBuckets') ? (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
-              component={BucketsIndexPaginated}
-            />
-          ) : (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
-              component={BucketsIndex}
-            />
-          )}
+          <Route
+            path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
+            component={BucketsIndex}
+          />
 
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route

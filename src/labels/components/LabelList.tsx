@@ -37,7 +37,7 @@ interface State {
 }
 
 @ErrorHandling
-export default class LabelList extends PureComponent<Props, State> {
+class LabelList extends PureComponent<Props, State> {
   private memGetSortedResources = memoizeOne<typeof getSortedResources>(
     getSortedResources
   )
@@ -118,3 +118,5 @@ export default class LabelList extends PureComponent<Props, State> {
     return validateLabelUniqueness(names, name)
   }
 }
+
+export default LabelList

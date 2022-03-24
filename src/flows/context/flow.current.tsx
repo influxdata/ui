@@ -417,10 +417,6 @@ export const FlowProvider: FC = ({children}) => {
     update(flowCopy)
   }
 
-  if (!currentFlow) {
-    return null
-  }
-
   return (
     <FlowContext.Provider
       value={{

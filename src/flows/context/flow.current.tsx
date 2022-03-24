@@ -1,21 +1,31 @@
 import React, {FC, useCallback, useRef, useState, useEffect} from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
-import {FlowListProvider} from 'src/flows/context/flow.list'
 import {customAlphabet} from 'nanoid'
-import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
+import {PIPE_DEFINITIONS} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
 import {useParams} from 'react-router-dom'
 import {getNotebook} from 'src/client/notebooksRoutes'
+import {event} from 'src/cloud/utils/reporting'
+import {incrementCloneName} from 'src/utils/naming'
+import {deleteNotebook, postNotebook} from 'src/client/notebooksRoutes'
+import {getAllAPI, pooledUpdateAPI} from 'src/flows/context/api'
+import {useDispatch} from 'react-redux'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  notebookDeleteFail,
+  notebookDeleteSuccess,
+} from 'src/shared/copy/notifications'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
 export interface FlowContextType {
-  name: string
   flow: Flow | null
   add: (data: Partial<PipeData>, index?: number) => string
+  cloneNotebook: () => void
+  deleteNotebook: () => void
   updateData: (id: string, data: Partial<PipeMeta>) => void
   updateMeta: (id: string, meta: Partial<PipeMeta>) => void
   updateOther: (flow: Partial<Flow>) => void
@@ -24,9 +34,10 @@ export interface FlowContextType {
 }
 
 export const DEFAULT_CONTEXT: FlowContextType = {
-  name: DEFAULT_PROJECT_NAME,
   flow: null,
   add: _ => '',
+  cloneNotebook: () => {},
+  deleteNotebook: () => {},
   updateData: (_, __) => {},
   updateMeta: (_, __) => {},
   updateOther: _ => {},
@@ -39,7 +50,8 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 let GENERATOR_INDEX = 0
 
 export const FlowProvider: FC = ({children}) => {
-  const {id} = useParams<{id: string}>()
+  const dispatch = useDispatch()
+  const {id, orgID} = useParams<{id: string; orgID: string}>()
   const [currentFlow, setCurrentFlow] = useState<Flow>()
   const provider = useRef<WebsocketProvider>()
   const yDoc = useRef(new Doc())
@@ -48,6 +60,43 @@ export const FlowProvider: FC = ({children}) => {
       provider.current.disconnect()
     }
   }
+
+  const handleDeleteNotebook = useCallback(async () => {
+    event('delete_notebook')
+    try {
+      const response = await deleteNotebook({id})
+
+      if (response.status !== 204) {
+        throw new Error(response.data.message)
+      }
+      dispatch(notify(notebookDeleteSuccess()))
+    } catch (error) {
+      dispatch(notify(notebookDeleteFail()))
+    }
+  }, [dispatch, id])
+
+  const handleCloneNotebook = useCallback(async () => {
+    event('clone_notebook')
+    try {
+      const {flows} = await getAllAPI(orgID)
+
+      const allFlowNames = Object.values(flows).map(value => value.name)
+      const clonedName = incrementCloneName(allFlowNames, currentFlow.name)
+
+      const _flow = serialize({...currentFlow, name: clonedName})
+      delete _flow.data.id
+
+      const response = await postNotebook(_flow)
+
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
+      }
+
+      return response.data.id
+    } catch (error) {
+      console.error({error})
+    }
+  }, [currentFlow, orgID])
 
   const handleGetNotebook = useCallback(async notebookId => {
     try {
@@ -112,6 +161,19 @@ export const FlowProvider: FC = ({children}) => {
     }
   }, [id])
 
+  const update = useCallback(
+    (flow: Flow) => {
+      setCurrentFlow(flow)
+
+      const apiFlow = serialize({
+        ...flow,
+      })
+
+      pooledUpdateAPI({id, ...apiFlow})
+    },
+    [id]
+  )
+
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
       if (isFlagEnabled('sharedFlowEditing')) {
@@ -148,9 +210,9 @@ export const FlowProvider: FC = ({children}) => {
       }
 
       // this should update the useEffect on the next time around
-      setCurrentFlow(flowCopy)
+      update(flowCopy)
     },
-    [currentFlow]
+    [currentFlow, update]
   )
 
   const updateMeta = useCallback(
@@ -196,9 +258,9 @@ export const FlowProvider: FC = ({children}) => {
       }
 
       // this should update the useEffect on the next time around
-      setCurrentFlow(flowCopy)
+      update(flowCopy)
     },
-    [currentFlow]
+    [currentFlow, update]
   )
 
   const updateOther = useCallback(
@@ -233,9 +295,9 @@ export const FlowProvider: FC = ({children}) => {
         ...flow,
       }
 
-      setCurrentFlow(_flow)
+      update(_flow)
     },
-    [id, currentFlow]
+    [currentFlow, update]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
@@ -365,9 +427,10 @@ export const FlowProvider: FC = ({children}) => {
   return (
     <FlowContext.Provider
       value={{
-        name,
         flow: currentFlow,
         add: addPipe,
+        cloneNotebook: handleCloneNotebook,
+        deleteNotebook: handleDeleteNotebook,
         updateData,
         updateMeta,
         updateOther,
@@ -381,11 +444,7 @@ export const FlowProvider: FC = ({children}) => {
 }
 
 const CurrentFlow: FC = ({children}) => {
-  return (
-    <FlowListProvider>
-      <FlowProvider>{children}</FlowProvider>
-    </FlowListProvider>
-  )
+  return <FlowProvider>{children}</FlowProvider>
 }
 
 export default CurrentFlow

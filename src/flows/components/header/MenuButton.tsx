@@ -12,7 +12,6 @@ import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {FlowListContext} from 'src/flows/context/flow.list'
 import {VersionPublishContext} from 'src/flows/context/version.publish'
 import {useHistory} from 'react-router-dom'
 
@@ -33,8 +32,7 @@ type Props = {
 }
 
 const MenuButton: FC<Props> = ({handleResetShare}) => {
-  const {remove, clone} = useContext(FlowListContext)
-  const {flow} = useContext(FlowContext)
+  const {flow, cloneNotebook, deleteNotebook} = useContext(FlowContext)
   const {handlePublish, versions} = useContext(VersionPublishContext)
   const {id: orgID} = useSelector(getOrg)
 
@@ -45,7 +43,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     event('clone_notebook', {
       context: 'notebook',
     })
-    const clonedId = await clone(flow.id)
+    const clonedId = await cloneNotebook()
     handleResetShare()
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
@@ -57,7 +55,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
       context: 'notebook',
     })
     deletePinnedItemByParam(flow.id)
-    remove(flow.id)
+    deleteNotebook()
     history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
   }
 

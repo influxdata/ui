@@ -1,7 +1,7 @@
 import React, {FC, useCallback, useRef, useState, useEffect} from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
 import {customAlphabet} from 'nanoid'
-import {PIPE_DEFINITIONS} from 'src/flows'
+import {PIPE_DEFINITIONS, PROJECT_NAME_PLURAL} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
@@ -23,6 +23,7 @@ import {
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
+import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -118,6 +119,7 @@ export const FlowProvider: FC = ({children}) => {
 
   useEffect(() => {
     if (id) {
+      event('Notebook Accessed', {notebookID: id})
       handleGetNotebook(id)
     }
   }, [handleGetNotebook, id])
@@ -430,6 +432,8 @@ export const FlowProvider: FC = ({children}) => {
       />
     )
   }
+
+  document.title = pageTitleSuffixer([currentFlow?.name, PROJECT_NAME_PLURAL])
 
   return (
     <FlowContext.Provider

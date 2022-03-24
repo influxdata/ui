@@ -17,28 +17,7 @@ import {SubSideBar} from 'src/flows/components/Sidebar'
 import FlowHeader from 'src/flows/components/header'
 import FlowKeyboardPreview from 'src/flows/components/FlowKeyboardPreview'
 
-// Constants
-import {PROJECT_NAME_PLURAL} from 'src/flows'
-
 import 'src/flows/style.scss'
-
-// Utils
-import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {event} from 'src/cloud/utils/reporting'
-
-const FlowFromRoute = () => {
-  const {flow} = useContext(FlowContext)
-
-  useEffect(() => {
-    if (flow?.id != null) {
-      event('Notebook Accessed', {notebookID: flow.id})
-    }
-  }, [flow.id])
-
-  document.title = pageTitleSuffixer([flow?.name, PROJECT_NAME_PLURAL])
-
-  return null
-}
 
 const RunOnMount = () => {
   const {queryAll} = useContext(FlowQueryContext)
@@ -87,7 +66,6 @@ export const FlowPage: FC = () => (
 export default () => (
   <QueryProvider>
     <CurrentFlowProvider>
-      <FlowFromRoute />
       <FlowPage />
     </CurrentFlowProvider>
   </QueryProvider>

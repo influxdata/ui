@@ -67,8 +67,9 @@ export const HomepageContainer: FC = () => {
                   alignItems={AlignItems.Stretch}
                 >
                   <Heading
-                    testID="home-page--header"
+                    id="first-mile--header"
                     element={HeadingElement.H1}
+                    testID="home-page--header"
                   >
                     Get Started
                   </Heading>

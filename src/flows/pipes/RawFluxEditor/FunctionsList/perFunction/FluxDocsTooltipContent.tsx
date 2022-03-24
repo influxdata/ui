@@ -1,16 +1,28 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 
 // Component
 import {DapperScrollbars} from '@influxdata/clockface'
 
 // Types
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
+
 interface TooltipProps {
   item: Fluxdocs
+  searchTerm?: string
+  setToolTipPopup?: any
 }
 
-const FluxDocsTooltipContent: FC<TooltipProps> = ({item: func}) => {
+const FluxDocsTooltipContent: FC<TooltipProps> = ({
+  item: func,
+  searchTerm,
+  setToolTipPopup,
+}) => {
+  useEffect(() => {
+    if (searchTerm) {
+      setToolTipPopup(true)
+    }
+  }, [])
   const argComponent = () => {
     if (func.fluxParameters.length > 0) {
       return func.fluxParameters.map(arg => {

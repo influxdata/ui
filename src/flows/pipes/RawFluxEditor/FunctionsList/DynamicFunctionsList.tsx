@@ -26,7 +26,9 @@ const sortFuncs = (a, b) => {
 }
 
 const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [eventSearchTerm, setEventSearchTerm] = useState('')
+  const [termRecorded, setTermRecorded] = useState('')
+  const [tooltipPopup, setTooltipPopup] = useState(false)
   const dispatch = useDispatch()
   const fluxFunctions = useSelector(getAllFluxFunctions)
 
@@ -35,16 +37,24 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       dispatch(getFluxPackages())
     }
   }, [])
-
+  
+  useEffect(() => {
+    if(tooltipPopup && eventSearchTerm !== termRecorded) {
+      event('flux.function.searched', {searchTerm: eventSearchTerm})
+      setTermRecorded(eventSearchTerm);
+    }
+    setTooltipPopup(false)
+  }, [eventSearchTerm, tooltipPopup])
+  
   const handleSelectItem = useCallback(
     (func: FluxFunction) => {
       onSelect(func)
       event('flux.function.injected', {name: `${func.package}.${func.name}`})
-      if (searchTerm) {
-        event('flux.function.searched', {searchTerm: searchTerm})
+      if (eventSearchTerm) {
+        event('flux.function.searched', {searchTerm: eventSearchTerm})
       }
     },
-    [searchTerm]
+    [eventSearchTerm]
   )
 
   const render = fn => (
@@ -57,6 +67,8 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       option={fn}
       testID={fn.name}
       ToolTipContent={FluxDocsTooltipContent}
+      searchTerm={eventSearchTerm}
+      setToolTipPopup={setTooltipPopup}
     />
   )
 
@@ -69,7 +81,7 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       }
       items={fluxFunctions.sort(sortFuncs)}
       renderItem={render}
-      setSearchTerm={setSearchTerm}
+      setEventSearchTerm={setEventSearchTerm}
     />
   )
 }

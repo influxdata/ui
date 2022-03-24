@@ -12,7 +12,7 @@ interface Props {
   items: Item[]
   renderItem: (i: Item) => JSX.Element
   listHeader?: () => JSX.Element
-  setSearchTerm?: (searchTerm: string) => void
+  setEventSearchTerm?: (searchTerm: string) => void
 }
 
 const FilterList: FC<Props> = ({
@@ -22,13 +22,13 @@ const FilterList: FC<Props> = ({
   emptyMessage,
   renderItem,
   listHeader,
-  setSearchTerm,
+  setEventSearchTerm,
 }) => {
   const [search, setSearch] = useState('')
 
   const onSearch = searchTerm => {
-    if (setSearchTerm) {
-      setSearchTerm(searchTerm)
+    if (setEventSearchTerm) {
+      setEventSearchTerm(searchTerm)
     }
     setSearch(searchTerm)
   }

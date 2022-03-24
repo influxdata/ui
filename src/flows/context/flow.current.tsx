@@ -1,13 +1,6 @@
-import React, {
-  FC,
-  useContext,
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-} from 'react'
+import React, {FC, useCallback, useRef, useState, useEffect} from 'react'
 import {Flow, PipeData, PipeMeta} from 'src/types/flows'
-import {FlowListContext, FlowListProvider} from 'src/flows/context/flow.list'
+import {FlowListProvider} from 'src/flows/context/flow.list'
 import {customAlphabet} from 'nanoid'
 import {DEFAULT_PROJECT_NAME, PIPE_DEFINITIONS} from 'src/flows'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -46,7 +39,6 @@ export const FlowContext = React.createContext<FlowContextType>(DEFAULT_CONTEXT)
 let GENERATOR_INDEX = 0
 
 export const FlowProvider: FC = ({children}) => {
-  const {update} = useContext(FlowListContext)
   const {id} = useParams<{id: string}>()
   const [currentFlow, setCurrentFlow] = useState<Flow>()
   const provider = useRef<WebsocketProvider>()
@@ -57,28 +49,19 @@ export const FlowProvider: FC = ({children}) => {
     }
   }
 
-  // NOTE this is a pretty awful mechanism, as it duplicates the source of
-  // truth for the definition of the current flow, but i can't see a good
-  // way around it. We need to ensure that we're still updating the values
-  // and references to the flows object directly to get around the async
-  // update issues.
+  const handleGetNotebook = useCallback(async notebookId => {
+    try {
+      const response = await getNotebook({id: notebookId})
 
-  const handleGetNotebook = useCallback(
-    async notebookId => {
-      try {
-        const response = await getNotebook({id: notebookId})
-
-        if (response.status !== 200) {
-          throw new Error(response.data.message)
-        }
-
-        setCurrentFlow(hydrate(response.data))
-      } catch (error) {
-        console.error({error})
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
       }
-    },
-    [getNotebook]
-  )
+
+      setCurrentFlow(hydrate(response.data))
+    } catch (error) {
+      console.error({error})
+    }
+  }, [])
 
   useEffect(() => {
     if (id) {
@@ -103,10 +86,10 @@ export const FlowProvider: FC = ({children}) => {
 
   useEffect(() => {
     const doc = yDoc.current
-    if (isFlagEnabled('sharedFlowEditing') && currentID) {
+    if (isFlagEnabled('sharedFlowEditing') && id) {
       provider.current = new WebsocketProvider(
         `wss://${window.location.host}/api/workbench`,
-        currentID,
+        id,
         doc
       )
 
@@ -127,7 +110,7 @@ export const FlowProvider: FC = ({children}) => {
       }
       doc.off('update', onUpdate)
     }
-  }, [currentID])
+  }, [id])
 
   const updateData = useCallback(
     (id: string, data: Partial<PipeData>) => {
@@ -157,19 +140,17 @@ export const FlowProvider: FC = ({children}) => {
         return
       }
 
-      flows[currentID].data.byID[id] = {
-        ...(flows[currentID].data.byID[id] || {}),
+      const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+
+      flowCopy.data.byID[id] = {
+        ...(currentFlow.data.byID[id] || {}),
         ...data,
       }
 
       // this should update the useEffect on the next time around
-      update(currentID, {
-        data: {
-          ...flows[currentID].data,
-        },
-      })
+      setCurrentFlow(flowCopy)
     },
-    [update, flows, currentID, currentFlow]
+    [currentFlow]
   )
 
   const updateMeta = useCallback(
@@ -205,21 +186,19 @@ export const FlowProvider: FC = ({children}) => {
         return
       }
 
-      flows[currentID].meta.byID[id] = {
+      const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+
+      flowCopy.meta.byID[id] = {
         title: '',
         visible: true,
-        ...(flows[currentID].meta.byID[id] || {}),
+        ...(currentFlow.meta.byID[id] || {}),
         ...meta,
       }
 
       // this should update the useEffect on the next time around
-      update(currentID, {
-        meta: {
-          ...flows[currentID].meta,
-        },
-      })
+      setCurrentFlow(flowCopy)
     },
-    [update, flows, currentID, currentFlow]
+    [currentFlow]
   )
 
   const updateOther = useCallback(
@@ -249,16 +228,14 @@ export const FlowProvider: FC = ({children}) => {
         return
       }
 
-      flows[currentID] = {
-        ...flows[currentID],
+      const _flow = {
+        ...currentFlow,
         ...flow,
       }
 
-      update(currentID, {
-        ...flows[currentID],
-      })
+      setCurrentFlow(_flow)
     },
-    [update, flows, currentID, currentFlow]
+    [id, currentFlow]
   )
 
   const addPipe = (initial: PipeData, index?: number) => {
@@ -310,18 +287,20 @@ export const FlowProvider: FC = ({children}) => {
       return
     }
 
-    flows[currentID].data.byID[id] = initial
-    flows[currentID].meta.byID[id] = {
+    const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+
+    flowCopy.data.byID[id] = initial
+    flowCopy.meta.byID[id] = {
       title,
       visible: true,
     }
 
     if (typeof index !== 'undefined') {
-      flows[currentID].data.allIDs.splice(index + 1, 0, id)
-      flows[currentID].meta.allIDs.splice(index + 1, 0, id)
+      flowCopy.data.allIDs.splice(index + 1, 0, id)
+      flowCopy.meta.allIDs.splice(index + 1, 0, id)
     } else {
-      flows[currentID].data.allIDs.push(id)
-      flows[currentID].meta.allIDs.push(id)
+      flowCopy.data.allIDs.push(id)
+      flowCopy.meta.allIDs.push(id)
     }
 
     updateData(id, {})
@@ -367,18 +346,20 @@ export const FlowProvider: FC = ({children}) => {
       return
     }
 
-    flows[currentID].meta.allIDs = flows[currentID].meta.allIDs.filter(
-      _id => _id !== id
-    )
-    flows[currentID].data.allIDs = flows[currentID].data.allIDs.filter(
-      _id => _id !== id
-    )
+    const flowCopy = JSON.parse(JSON.stringify(currentFlow))
 
-    delete flows[currentID].data.byID[id]
-    delete flows[currentID].meta.byID[id]
+    flowCopy.meta.allIDs = flowCopy.meta.allIDs.filter(_id => _id !== id)
+    flowCopy.data.allIDs = flowCopy.data.allIDs.filter(_id => _id !== id)
+
+    delete flowCopy.data.byID[id]
+    delete flowCopy.meta.byID[id]
 
     updateData(id, {})
     updateMeta(id, {})
+  }
+
+  if (!currentFlow) {
+    return null
   }
 
   return (

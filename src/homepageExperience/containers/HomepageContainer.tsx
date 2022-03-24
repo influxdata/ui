@@ -63,6 +63,7 @@ export const HomepageContainer: FC = () => {
                 <FlexBox
                   direction={FlexDirection.Column}
                   alignItems={AlignItems.Stretch}
+                  testID="home-page--header"
                 >
                   <h1>Get Started</h1>
                   <h5>

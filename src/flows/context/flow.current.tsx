@@ -76,7 +76,6 @@ export const FlowProvider: FC = ({children}) => {
   }, [dispatch, id])
 
   const handleCloneNotebook = useCallback(async () => {
-    event('clone_notebook')
     try {
       const {flows} = await getAllAPI(orgID)
 
@@ -349,20 +348,18 @@ export const FlowProvider: FC = ({children}) => {
       return
     }
 
-    const flowCopy = JSON.parse(JSON.stringify(currentFlow))
-
-    flowCopy.data.byID[id] = initial
-    flowCopy.meta.byID[id] = {
+    currentFlow.data.byID[id] = initial
+    currentFlow.meta.byID[id] = {
       title,
       visible: true,
     }
 
     if (typeof index !== 'undefined') {
-      flowCopy.data.allIDs.splice(index + 1, 0, id)
-      flowCopy.meta.allIDs.splice(index + 1, 0, id)
+      currentFlow.data.allIDs.splice(index + 1, 0, id)
+      currentFlow.meta.allIDs.splice(index + 1, 0, id)
     } else {
-      flowCopy.data.allIDs.push(id)
-      flowCopy.meta.allIDs.push(id)
+      currentFlow.data.allIDs.push(id)
+      currentFlow.meta.allIDs.push(id)
     }
 
     updateData(id, {})
@@ -408,13 +405,11 @@ export const FlowProvider: FC = ({children}) => {
       return
     }
 
-    const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+    currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(_id => _id !== id)
+    currentFlow.data.allIDs = currentFlow.data.allIDs.filter(_id => _id !== id)
 
-    flowCopy.meta.allIDs = flowCopy.meta.allIDs.filter(_id => _id !== id)
-    flowCopy.data.allIDs = flowCopy.data.allIDs.filter(_id => _id !== id)
-
-    delete flowCopy.data.byID[id]
-    delete flowCopy.meta.byID[id]
+    delete currentFlow.data.byID[id]
+    delete currentFlow.meta.byID[id]
 
     updateData(id, {})
     updateMeta(id, {})

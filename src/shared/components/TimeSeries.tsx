@@ -26,6 +26,7 @@ import {getOrgIDFromBuckets} from 'src/timeMachine/actions/queries'
 import {hashCode} from 'src/shared/apis/queryCache'
 import {RunQueryPromiseMutex} from 'src/shared/apis/singleQuery'
 import {parseASTIM} from 'src/variables/utils/astim'
+import {event} from 'src/cloud/utils/reporting'
 
 // Constants
 import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
@@ -48,7 +49,6 @@ import {
   AppState,
   CancelBox,
 } from 'src/types'
-import {event} from 'src/cloud/utils/reporting'
 
 interface QueriesState {
   files: string[] | null
@@ -299,6 +299,7 @@ class TimeSeries extends Component<Props, State> {
       let giraffeResult
 
       if (isFlagEnabled('fluxParser')) {
+        event('fluxParserFlag')
         giraffeResult = fromFlux(files.join('\n\n'))
       } else {
         giraffeResult = fromFluxGiraffe(files.join('\n\n'))

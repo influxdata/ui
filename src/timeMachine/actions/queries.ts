@@ -340,6 +340,7 @@ export const executeQueries = (abortController?: AbortController) => async (
       }
 
       if (isFlagEnabled('fluxParser')) {
+        event('fluxParserFlag')
         // TODO: this is just here for validation. since we are already eating
         // the cost of parsing the results, we should store the output instead
         // of the raw input
@@ -424,6 +425,7 @@ export const executeCheckQuery = () => async (dispatch, getState: GetState) => {
     }
 
     if (isFlagEnabled('fluxParser')) {
+      event('fluxParserFlag')
       // TODO: this is just here for validation. since we are already eating
       // the cost of parsing the results, we should store the output instead
       // of the raw input

@@ -31,11 +31,15 @@ import {
 import {EmptyState, ComponentSize, RemoteDataState} from '@influxdata/clockface'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
 const CheckMatchingRulesCard: FC<Props> = ({orgID, tags, queryResults}) => {
+  React.useEffect(() => {
+    event('CheckMatchingRulesCard')
+  })
   const getMatchingRules = async (): Promise<NotificationRule[]> => {
     const checkTags = tags
       .filter(t => t.key && t.value)

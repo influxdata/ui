@@ -31,6 +31,10 @@ export type Threshold = {
 
 const existenceCheck = unknown => unknown == 0 || !!unknown
 
+const assertSwitchIsExhaustive = (_: never): never => {
+  throw new Error('Unreachable')
+}
+
 export function validateThreshold(t: Threshold): boolean {
   switch (t.type) {
     case ThresholdType.Greater:
@@ -44,7 +48,7 @@ export function validateThreshold(t: Threshold): boolean {
           `A ${t.type} comparison, requires a selected field and value.`
         )
       }
-      break
+      return true
     case ThresholdType.Between:
     case ThresholdType.NotBetween:
       if (!t.field || !existenceCheck(t.min) || !existenceCheck(t.max)) {
@@ -52,16 +56,17 @@ export function validateThreshold(t: Threshold): boolean {
           `A ${t.type} comparison, requires a selected field and min & max.`
         )
       }
-      break
+      return true
     case ThresholdType.Deadman:
       if (!t.field || !existenceCheck(t.deadmanStopValue)) {
         throw new Error(
           `A deadman check requires a designated timespan (e.g. dead for '5 minutes').`
         )
       }
-      break
+      return true
+    default:
+      return assertSwitchIsExhaustive(t.type)
   }
-  return true
 }
 
 // hypothetically, `val` could be an object etc

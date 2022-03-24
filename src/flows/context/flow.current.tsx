@@ -348,22 +348,23 @@ export const FlowProvider: FC = ({children}) => {
       return
     }
 
-    currentFlow.data.byID[id] = initial
-    currentFlow.meta.byID[id] = {
+    const flowCopy = JSON.parse(JSON.stringify(currentFlow))
+
+    flowCopy.data.byID[id] = initial
+    flowCopy.meta.byID[id] = {
       title,
       visible: true,
     }
 
     if (typeof index !== 'undefined') {
-      currentFlow.data.allIDs.splice(index + 1, 0, id)
-      currentFlow.meta.allIDs.splice(index + 1, 0, id)
+      flowCopy.data.allIDs.splice(index + 1, 0, id)
+      flowCopy.meta.allIDs.splice(index + 1, 0, id)
     } else {
-      currentFlow.data.allIDs.push(id)
-      currentFlow.meta.allIDs.push(id)
+      flowCopy.data.allIDs.push(id)
+      flowCopy.meta.allIDs.push(id)
     }
 
-    updateData(id, {})
-    updateMeta(id, {})
+    update(flowCopy)
 
     return id
   }
@@ -405,14 +406,15 @@ export const FlowProvider: FC = ({children}) => {
       return
     }
 
-    currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(_id => _id !== id)
-    currentFlow.data.allIDs = currentFlow.data.allIDs.filter(_id => _id !== id)
+    const flowCopy = JSON.parse(JSON.stringify(currentFlow))
 
-    delete currentFlow.data.byID[id]
-    delete currentFlow.meta.byID[id]
+    flowCopy.meta.allIDs = flowCopy.meta.allIDs.filter(_id => _id !== id)
+    flowCopy.data.allIDs = flowCopy.data.allIDs.filter(_id => _id !== id)
 
-    updateData(id, {})
-    updateMeta(id, {})
+    delete flowCopy.data.byID[id]
+    delete flowCopy.meta.byID[id]
+
+    update(flowCopy)
   }
 
   if (!currentFlow) {

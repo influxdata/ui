@@ -18,6 +18,11 @@ import {
   notebookDeleteFail,
   notebookDeleteSuccess,
 } from 'src/shared/copy/notifications'
+import {
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
+} from '@influxdata/clockface'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -415,6 +420,15 @@ export const FlowProvider: FC = ({children}) => {
     delete flowCopy.meta.byID[id]
 
     update(flowCopy)
+  }
+
+  if (!currentFlow) {
+    return (
+      <SpinnerContainer
+        loading={RemoteDataState.Loading}
+        spinnerComponent={<TechnoSpinner />}
+      />
+    )
   }
 
   return (

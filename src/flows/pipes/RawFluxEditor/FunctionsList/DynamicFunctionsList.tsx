@@ -37,15 +37,15 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       dispatch(getFluxPackages())
     }
   }, [])
-  
+
   useEffect(() => {
-    if(tooltipPopup && eventSearchTerm !== termRecorded) {
+    if (tooltipPopup && eventSearchTerm !== termRecorded) {
       event('flux.function.searched', {searchTerm: eventSearchTerm})
-      setTermRecorded(eventSearchTerm);
+      setTermRecorded(eventSearchTerm)
     }
     setTooltipPopup(false)
   }, [eventSearchTerm, tooltipPopup])
-  
+
   const handleSelectItem = useCallback(
     (func: FluxFunction) => {
       onSelect(func)

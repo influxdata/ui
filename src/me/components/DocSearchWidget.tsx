@@ -42,7 +42,7 @@ const DocSearchWidget: FC = () => {
       <DocSearch type={DocSearchType.Widget} />
       <p className="WidgetHelperText">Press CTRL + M on any page to search</p>
       <div className="useful-links">
-        <h4>USEFUL LINKS</h4>
+        <h4 style={{textTransform: 'uppercase'}}>Useful Links</h4>
         <ul className="docslinks-list">
           {supportLinks.map(({link, title}) => (
             <li key={title}>

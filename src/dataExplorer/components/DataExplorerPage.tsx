@@ -58,7 +58,7 @@ const DataExplorerPage: FC = () => {
       <GetResources resources={[ResourceType.Variables]}>
         <Page.Header fullWidth={true} testID="data-explorer--header">
           <Page.Title title="Data Explorer" />
-          <RateLimitAlert />
+          <RateLimitAlert location="data explorer" />
         </Page.Header>
         {flowsCTA.explorer && (
           <FeatureFlag name="flowsCTA">

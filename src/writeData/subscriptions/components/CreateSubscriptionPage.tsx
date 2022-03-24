@@ -39,6 +39,7 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Actions
 import {shouldShowUpgradeButton} from 'src/me/selectors'
@@ -77,7 +78,11 @@ const CreateSubscriptionPage: FC = () => {
                 alignItems={AlignItems.FlexEnd}
                 stretchToFitHeight={true}
               >
-                <CloudUpgradeButton />
+                <CloudUpgradeButton
+                  metric={() => {
+                    event('subscription upgrade')
+                  }}
+                />
               </FlexBox>
             )}
             {/* TODO: swap out for clockface svg when available */}

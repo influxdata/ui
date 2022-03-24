@@ -24,7 +24,7 @@ export default class TaskHeader extends PureComponent<Props> {
       <>
         <Page.Header fullWidth={true}>
           <Page.Title title={title} />
-          <RateLimitAlert />
+          <RateLimitAlert location="tasks" />
         </Page.Header>
         <Page.ControlBar fullWidth={true}>
           <Page.ControlBarRight>

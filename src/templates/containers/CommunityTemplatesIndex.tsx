@@ -109,7 +109,7 @@ class UnconnectedCommunityTemplatesIndex extends Component<Props, State> {
       <>
         <Page titleTag={pageTitleSuffixer(['Templates', 'Settings'])}>
           <SettingsHeader />
-          <SettingsTabbedPage activeTab="templates" orgID={org.id}>
+          <SettingsTabbedPage activeTab="templates">
             <FlexBox
               direction={FlexDirection.Column}
               margin={ComponentSize.Small}

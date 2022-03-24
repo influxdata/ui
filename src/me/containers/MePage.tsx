@@ -102,7 +102,7 @@ export class MePage extends PureComponent<Props> {
       <Page titleTag={pageTitleSuffixer(['Home'])}>
         <Page.Header fullWidth={false}>
           <Page.Title title="Getting Started" testID="home-page--header" />
-          <RateLimitAlert />
+          <RateLimitAlert location="me page" />
         </Page.Header>
         <Page.Contents fullWidth={false} scrollable={true}>
           <Grid>

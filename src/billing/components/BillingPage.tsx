@@ -19,7 +19,7 @@ const BillingPage: FC = () => {
         <Page.Header fullWidth={false} testID="billing-page--header">
           <Page.Title title="Account" />
           <LimitChecker>
-            <RateLimitAlert />
+            <RateLimitAlert location="billing" />
           </LimitChecker>
         </Page.Header>
         <AccountTabContainer activeTab="billing">

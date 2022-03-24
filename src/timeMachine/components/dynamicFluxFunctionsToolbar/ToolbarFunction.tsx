@@ -23,7 +23,8 @@ interface Props {
   func: Fluxdocs
   onClickFunction: (func: Fluxdocs) => void
   testID: string
-  searchTerm: string
+  searchTerm?: string
+  setToolTipPopup?: (boolean: boolean) => void
 }
 
 const defaultProps = {
@@ -35,13 +36,11 @@ const ToolbarFunction: FC<Props> = ({
   onClickFunction,
   testID,
   searchTerm,
+  setToolTipPopup,
 }) => {
   const functionRef = createRef<HTMLDListElement>()
   const handleClickFunction = () => {
     onClickFunction(func)
-    if (searchTerm) {
-      event('flux.function.searched', {searchTerm: searchTerm})
-    }
     event('flux.function.injected', {name: `${func.package}.${func.name}`})
   }
   return (
@@ -55,7 +54,13 @@ const ToolbarFunction: FC<Props> = ({
         hideEvent={PopoverInteraction.Hover}
         distanceFromTrigger={8}
         testID="toolbar-popover"
-        contents={() => <FunctionTooltipContents func={func} />}
+        contents={() => (
+          <FunctionTooltipContents
+            func={func}
+            searchTerm={searchTerm}
+            setToolTipPopup={setToolTipPopup}
+          />
+        )}
       />
       <dd
         ref={functionRef}

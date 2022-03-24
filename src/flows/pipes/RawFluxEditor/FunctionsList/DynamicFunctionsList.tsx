@@ -46,16 +46,10 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
     setTooltipPopup(false)
   }, [eventSearchTerm, tooltipPopup])
 
-  const handleSelectItem = useCallback(
-    (func: FluxFunction) => {
-      onSelect(func)
-      event('flux.function.injected', {name: `${func.package}.${func.name}`})
-      if (eventSearchTerm) {
-        event('flux.function.searched', {searchTerm: eventSearchTerm})
-      }
-    },
-    [eventSearchTerm]
-  )
+  const handleSelectItem = useCallback((func: FluxFunction) => {
+    onSelect(func)
+    event('flux.function.injected', {name: `${func.package}.${func.name}`})
+  }, [])
 
   const render = fn => (
     <Fn

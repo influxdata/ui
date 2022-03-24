@@ -10,7 +10,7 @@ import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 interface TooltipProps {
   item: Fluxdocs
   searchTerm?: string
-  setToolTipPopup?: any
+  setToolTipPopup?: (boolean: boolean) => void
 }
 
 const FluxDocsTooltipContent: FC<TooltipProps> = ({

@@ -17,6 +17,9 @@ import {getFluxPackages} from 'src/shared/actions/fluxDocs'
 import {AppState} from 'src/types'
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 import {RemoteDataState} from 'src/types'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   onInsertFluxFunction: (func) => void
 }
@@ -29,6 +32,8 @@ type Props = ReduxProps & OwnProps & DispatchProps
 
 const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
+  const [termRecorded, setTermRecorded] = useState('')
+  const [tooltipPopup, setTooltipPopup] = useState(false)
   const [fluxLoadingState, setFluxLoadingState] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -50,6 +55,14 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
     }
     getFluxFuncs()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (tooltipPopup && searchTerm !== termRecorded) {
+      event('flux.function.searched', {searchTerm: searchTerm})
+      setTermRecorded(searchTerm)
+    }
+    setTooltipPopup(false)
+  }, [searchTerm, tooltipPopup])
 
   const {onInsertFluxFunction, fluxFunctions, getFluxPackages} = props
 
@@ -89,6 +102,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
                       func={func}
                       testID={func.name}
                       searchTerm={searchTerm}
+                      setToolTipPopup={setTooltipPopup}
                     />
                   ))
                 }

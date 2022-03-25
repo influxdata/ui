@@ -283,7 +283,7 @@ import logparserLogo from 'src/writeData/graphics/logparser.svg'
 import logstashLogo from 'src/writeData/graphics/logstash.svg'
 import mailchimpLogo from 'src/writeData/graphics/mailchimp.svg'
 import marklogicLogo from 'src/writeData/graphics/marklogic.svg'
-import mcrouterLogo from 'src/writeData/graphics/mcrouter.svg'
+import facebookLogo from 'src/writeData/graphics/facebook.svg'
 import memLogo from 'src/writeData/graphics/mem.svg'
 import memcachedLogo from 'src/writeData/graphics/memcached.svg'
 import mesosLogo from 'src/writeData/graphics/mesos.svg'
@@ -1019,7 +1019,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'mcrouter',
     name: 'Mcrouter',
     markdown: mcrouterMarkdown,
-    image: mcrouterLogo,
+    image: facebookLogo,
   },
   {
     id: 'mdstat',

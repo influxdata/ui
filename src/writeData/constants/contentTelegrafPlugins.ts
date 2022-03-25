@@ -271,8 +271,7 @@ import intelLogo from 'src/writeData/graphics/intel.svg'
 import jenkinsLogo from 'src/writeData/graphics/jenkins.svg'
 import jolokiaLogo from 'src/writeData/graphics/jolokia.svg'
 import jti_openconfig_telemetryLogo from 'src/writeData/graphics/jti_openconfig_telemetry.svg'
-import kafka_consumerLogo from 'src/writeData/graphics/kafka_consumer.svg'
-import kafka_consumer_legacyLogo from 'src/writeData/graphics/kafka_consumer_legacy.svg'
+import kafkaLogo from 'src/writeData/graphics/kafka.svg'
 import kibanaLogo from 'src/writeData/graphics/kibana.svg'
 import kinesis_consumerLogo from 'src/writeData/graphics/kinesis_consumer.svg'
 import knx_listenerLogo from 'src/writeData/graphics/knx_listener.svg'
@@ -907,13 +906,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'kafka_consumer',
     name: 'Kafka Consumer',
     markdown: kafka_consumerMarkdown,
-    image: kafka_consumerLogo,
+    image: kafkaLogo,
   },
   {
     id: 'kafka_consumer_legacy',
     name: 'Kafka Consumer Legacy',
     markdown: kafka_consumer_legacyMarkdown,
-    image: kafka_consumer_legacyLogo,
+    image: kafkaLogo,
   },
   {
     id: 'kapacitor',

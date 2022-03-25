@@ -255,9 +255,7 @@ import eventhub_consumerLogo from 'src/writeData/graphics/eventhub_consumer.svg'
 import execLogo from 'src/writeData/graphics/exec.svg'
 import fail2banLogo from 'src/writeData/graphics/fail2ban.svg'
 import fibaroLogo from 'src/writeData/graphics/fibaro.svg'
-import filecountLogo from 'src/writeData/graphics/filecount.svg'
 import fileLogo from 'src/writeData/graphics/file.svg'
-import filestatLogo from 'src/writeData/graphics/filestat.svg'
 import fireboardLogo from 'src/writeData/graphics/fireboard.svg'
 import fluentdLogo from 'src/writeData/graphics/fluentd.svg'
 import folderLogo from 'src/writeData/graphics/folder.svg'
@@ -719,13 +717,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'filecount',
     name: 'Filecount',
     markdown: filecountMarkdown,
-    image: filecountLogo,
+    image: fileLogo,
   },
   {
     id: 'filestat',
     name: 'filestat',
     markdown: filestatMarkdown,
-    image: filestatLogo,
+    image: fileLogo,
   },
   {
     id: 'fireboard',

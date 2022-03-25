@@ -29,7 +29,6 @@ import {
   notebookDeleteSuccess,
 } from 'src/shared/copy/notifications'
 import {incrementCloneName} from 'src/utils/naming'
-import {getNotebook} from 'src/client/notebooksRoutes'
 
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string | void>
@@ -185,16 +184,8 @@ export const FlowListProvider: FC = ({children}) => {
     const allFlowNames = Object.values(flows).map(value => value.name)
     const clonedName = incrementCloneName(allFlowNames, flow.name)
 
-    const resp = await getNotebook({id})
-
-    if (resp.status !== 200) {
-      throw new Error(resp.data.message)
-    }
-
-    const _flow = hydrate(resp.data)
-
     const data = {
-      ..._flow,
+      ...flow,
       name: clonedName,
     }
 
@@ -285,13 +276,8 @@ export const FlowListProvider: FC = ({children}) => {
     const data = await getAllAPI(org.id)
     if (data && data.flows) {
       const _flows = {}
-      data.flows.forEach(flow => {
-        _flows[flow.id] = {
-          name: flow.name || EMPTY_NOTEBOOK.name,
-          createdAt: flow.createdAt,
-          updatedAt: flow.updatedAt,
-          createdBy: flow.createdBy,
-        }
+      data.flows.forEach(f => {
+        _flows[f.id] = hydrate(f)
       })
       setFlows(_flows)
     }

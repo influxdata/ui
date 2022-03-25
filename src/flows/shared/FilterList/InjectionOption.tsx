@@ -23,9 +23,11 @@ interface Props {
     item: any
     searchTerm?: string
     setToolTipPopup?: (boolean: boolean) => void
+    setHoverdFunction?: any
   }) => JSX.Element
   searchTerm?: string
   setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
 const defaultProps = {
@@ -40,6 +42,7 @@ const FluxInjectionOption: FC<Props> = ({
   ToolTipContent,
   searchTerm,
   setToolTipPopup,
+  setHoverdFunction,
 }) => {
   const itemRef = createRef<HTMLDListElement>()
   const handleClick = () => {
@@ -63,6 +66,7 @@ const FluxInjectionOption: FC<Props> = ({
               item={option}
               searchTerm={searchTerm}
               setToolTipPopup={setToolTipPopup}
+              setHoverdFunction={setHoverdFunction}
             />
           )}
         />

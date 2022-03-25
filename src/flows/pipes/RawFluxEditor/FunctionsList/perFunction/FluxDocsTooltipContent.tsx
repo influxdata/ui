@@ -9,19 +9,18 @@ import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
 interface TooltipProps {
   item: Fluxdocs
-  searchTerm?: string
   setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
 const FluxDocsTooltipContent: FC<TooltipProps> = ({
   item: func,
-  searchTerm,
   setToolTipPopup,
+  setHoverdFunction,
 }) => {
   useEffect(() => {
-    if (searchTerm) {
-      setToolTipPopup(true)
-    }
+    setToolTipPopup(true)
+    setHoverdFunction(`${func.package}.${func.name}`)
   }, [])
   const argComponent = () => {
     if (func.fluxParameters.length > 0) {

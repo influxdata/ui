@@ -23,8 +23,8 @@ interface Props {
   func: Fluxdocs
   onClickFunction: (func: Fluxdocs) => void
   testID: string
-  searchTerm?: string
   setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
 const defaultProps = {
@@ -35,8 +35,8 @@ const ToolbarFunction: FC<Props> = ({
   func,
   onClickFunction,
   testID,
-  searchTerm,
   setToolTipPopup,
+  setHoverdFunction,
 }) => {
   const functionRef = createRef<HTMLDListElement>()
   const handleClickFunction = () => {
@@ -57,8 +57,8 @@ const ToolbarFunction: FC<Props> = ({
         contents={() => (
           <FunctionTooltipContents
             func={func}
-            searchTerm={searchTerm}
             setToolTipPopup={setToolTipPopup}
+            setHoverdFunction={setHoverdFunction}
           />
         )}
       />

@@ -11,19 +11,18 @@ import TooltipLink from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 interface Props {
   func: Fluxdocs
-  searchTerm?: string
   setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
 const FunctionTooltipContents: FunctionComponent<Props> = ({
-  func: {headline, fluxParameters, name},
-  searchTerm,
+  func: {headline, fluxParameters, name, package: packageName},
   setToolTipPopup,
+  setHoverdFunction,
 }) => {
   useEffect(() => {
-    if (searchTerm) {
-      setToolTipPopup(true)
-    }
+    setToolTipPopup(true)
+    setHoverdFunction(`${packageName}.${name}`)
   }, [])
   return (
     <div className="flux-function-docs" data-testid={`flux-docs--${name}`}>

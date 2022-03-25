@@ -31,7 +31,6 @@ type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps & DispatchProps
 
 const hoveredFunctions = new Set<string>()
-let recordedFunctions = new Set<string>()
 
 const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -40,7 +39,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
   const [fluxLoadingState, setFluxLoadingState] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
-  const [hoverdFunction, setHoverdFunction] = useState('')
+  const [hoveredFunction, setHoverdFunction] = useState('')
 
   useEffect(() => {
     const getFluxFuncs = async () => {
@@ -68,14 +67,13 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
     }
     setTooltipPopup(false)
     if (tooltipPopup) {
-      hoveredFunctions.add(hoverdFunction)
-
-      if (recordedFunctions.size !== hoveredFunctions.size) {
-        event('hovered.flux.function', hoveredFunctions)
-        recordedFunctions = new Set([...hoveredFunctions])
+      const recordedFunction = hoveredFunctions.has(hoveredFunction)
+      if (!recordedFunction) {
+        event('hovered.flux.function', {function: hoveredFunction})
       }
+      hoveredFunctions.add(hoveredFunction)
     }
-  }, [hoverdFunction, searchTerm, tooltipPopup])
+  }, [hoveredFunction, searchTerm, tooltipPopup])
 
   const {onInsertFluxFunction, fluxFunctions, getFluxPackages} = props
 

@@ -25,13 +25,12 @@ const sortFuncs = (a, b) => {
   }
 }
 const hoveredFunctions = new Set<string>()
-let recordedFunctions = new Set<string>()
 
 const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
   const [eventSearchTerm, setEventSearchTerm] = useState('')
   const [termRecorded, setTermRecorded] = useState('')
   const [tooltipPopup, setTooltipPopup] = useState(false)
-  const [hoverdFunction, setHoverdFunction] = useState('')
+  const [hoveredFunction, setHoverdFunction] = useState('')
 
   const dispatch = useDispatch()
   const fluxFunctions = useSelector(getAllFluxFunctions)
@@ -50,14 +49,13 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
     }
     setTooltipPopup(false)
     if (tooltipPopup) {
-      hoveredFunctions.add(hoverdFunction)
-
-      if (recordedFunctions.size !== hoveredFunctions.size) {
-        event('hovered.flux.function', hoveredFunctions)
-        recordedFunctions = new Set([...hoveredFunctions])
+      const recordedFunction = hoveredFunctions.has(hoveredFunction)
+      if (!recordedFunction) {
+        event('hovered.flux.function', {function: hoveredFunction})
       }
+      hoveredFunctions.add(hoveredFunction)
     }
-  }, [hoverdFunction, tooltipPopup, eventSearchTerm])
+  }, [hoveredFunction, tooltipPopup, eventSearchTerm])
 
   const handleSelectItem = useCallback((func: FluxFunction) => {
     onSelect(func)

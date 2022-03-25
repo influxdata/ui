@@ -259,6 +259,7 @@ import fireboardLogo from 'src/writeData/graphics/fireboard.svg'
 import fluentdLogo from 'src/writeData/graphics/fluentd.svg'
 import folderLogo from 'src/writeData/graphics/folder.svg'
 import githubLogo from 'src/writeData/graphics/github.svg'
+import globe_with_monitorLogo from 'src/writeData/graphics/globe_with_monitor.svg'
 import google_cloudLogo from 'src/writeData/graphics/google_cloud.svg'
 import graylogLogo from 'src/writeData/graphics/graylog.svg'
 import haproxyLogo from 'src/writeData/graphics/haproxy.svg'
@@ -310,7 +311,6 @@ import passengerLogo from 'src/writeData/graphics/passenger.svg'
 import pfLogo from 'src/writeData/graphics/pf.svg'
 import pgbouncerLogo from 'src/writeData/graphics/pgbouncer.svg'
 import phpfpmLogo from 'src/writeData/graphics/phpfpm.svg'
-import pingLogo from 'src/writeData/graphics/ping.svg'
 import postfixLogo from 'src/writeData/graphics/postfix.svg'
 import postgresqlLogo from 'src/writeData/graphics/postgresql.svg'
 import postgresql_extensibleLogo from 'src/writeData/graphics/postgresql_extensible.svg'
@@ -1268,7 +1268,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'ping',
     name: 'Ping',
     markdown: pingMarkdown,
-    image: pingLogo,
+    image: globe_with_monitorLogo,
   },
   {
     id: 'postfix',

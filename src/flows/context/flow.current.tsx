@@ -75,7 +75,9 @@ export const FlowProvider: FC = ({children}) => {
       if (response.status !== 204) {
         throw new Error(response.data.message)
       }
+
       dispatch(notify(notebookDeleteSuccess()))
+      return id
     } catch (error) {
       dispatch(notify(notebookDeleteFail()))
     }

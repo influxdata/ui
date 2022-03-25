@@ -38,35 +38,41 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   const {flow, cloneNotebook, deleteNotebook} = useContext(FlowContext)
   const {handlePublish, versions} = useContext(VersionPublishContext)
   const {id: orgID} = useSelector(getOrg)
-  const [cloneLoading, setCloneLoading] = useState(RemoteDataState.Done)
+  const [loading, setLoading] = useState(RemoteDataState.Done)
 
   const triggerRef: RefObject<HTMLButtonElement> = createRef()
   const history = useHistory()
 
   const handleClone = async () => {
     try {
-      setCloneLoading(RemoteDataState.Loading)
+      setLoading(RemoteDataState.Loading)
       event('clone_notebook', {
         context: 'notebook',
       })
       const clonedId = await cloneNotebook()
       handleResetShare()
-      setCloneLoading(RemoteDataState.Done)
+      setLoading(RemoteDataState.Done)
       history.push(
         `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
       )
     } catch {
-      setCloneLoading(RemoteDataState.Done)
+      setLoading(RemoteDataState.Done)
     }
   }
 
-  const handleDelete = () => {
-    event('delete_notebook', {
-      context: 'notebook',
-    })
-    deletePinnedItemByParam(flow.id)
-    deleteNotebook()
-    history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
+  const handleDelete = async () => {
+    try {
+      setLoading(RemoteDataState.Loading)
+      event('delete_notebook', {
+        context: 'notebook',
+      })
+      deletePinnedItemByParam(flow.id)
+      await deleteNotebook()
+      setLoading(RemoteDataState.Done)
+      history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
+    } catch {
+      setLoading(RemoteDataState.Error)
+    }
   }
 
   const canvasOptions = {
@@ -225,7 +231,7 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
 
   return (
     <SpinnerContainer
-      loading={cloneLoading}
+      loading={loading}
       spinnerComponent={<TechnoSpinner style={{width: 20, height: 20}} />}
       style={{width: 20, height: 20}}
     >

@@ -235,7 +235,7 @@ from(bucket: "${name}"{rightarrow}
         .clear()
         .type('Flow')
         .type('{enter}')
-      // TODO(ariel): fix this part of the test so that the intercept can do its thing
+
       cy.wait('@updateNotebook')
       cy.getByTestID('time-machine-submit-button')
         .should('be.visible')

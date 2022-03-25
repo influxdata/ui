@@ -26,13 +26,13 @@ const supportLinks = [
   },
   {
     link: 'https://github.com/influxdata/ui/issues/new',
-    title: '🐛 Report a bug',
+    title: 'Report a bug',
   },
-  {link: 'https://community.influxdata.com', title: '💭 Community Forum'},
+  {link: 'https://community.influxdata.com', title: 'Community Forum'},
   {
     link:
       'https://github.com/influxdata/influxdb/issues/new?template=feature_request.md',
-    title: '✨ Feature Requests',
+    title: 'Feature Requests',
   },
 ]
 
@@ -42,7 +42,7 @@ const DocSearchWidget: FC = () => {
       <DocSearch type={DocSearchType.Widget} />
       <p className="WidgetHelperText">Press CTRL + M on any page to search</p>
       <div className="useful-links">
-        <h4>Useful Links</h4>
+        <h4 style={{textTransform: 'uppercase'}}>Useful Links</h4>
         <ul className="docslinks-list">
           {supportLinks.map(({link, title}) => (
             <li key={title}>

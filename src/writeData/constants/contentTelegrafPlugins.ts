@@ -283,6 +283,7 @@ import leofsLogo from 'src/writeData/graphics/leofs.svg'
 import linuxLogo from 'src/writeData/graphics/linux_penguin.svg'
 import logparserLogo from 'src/writeData/graphics/logparser.svg'
 import logstashLogo from 'src/writeData/graphics/logstash.svg'
+import magnifying_glass_linesLogo from 'src/writeData/graphics/magnifying_glass_lines.svg'
 import magnifying_glass_sinusLogo from 'src/writeData/graphics/magnifying_glass_sinus.svg'
 import mailchimpLogo from 'src/writeData/graphics/mailchimp.svg'
 import marklogicLogo from 'src/writeData/graphics/marklogic.svg'
@@ -335,8 +336,6 @@ import sqlserverLogo from 'src/writeData/graphics/sqlserver.svg'
 import stackdriverLogo from 'src/writeData/graphics/stackdriver.svg'
 import suricataLogo from 'src/writeData/graphics/suricata.svg'
 import synproxyLogo from 'src/writeData/graphics/synproxy.svg'
-import syslogLogo from 'src/writeData/graphics/syslog.svg'
-import tailLogo from 'src/writeData/graphics/tail.svg'
 import teamspeakLogo from 'src/writeData/graphics/teamspeak.svg'
 import tempLogo from 'src/writeData/graphics/temp.svg'
 import tengineLogo from 'src/writeData/graphics/tengine.svg'
@@ -1492,7 +1491,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'syslog',
     name: 'Syslog',
     markdown: syslogMarkdown,
-    image: syslogLogo,
+    image: magnifying_glass_linesLogo,
   },
   {
     id: 'sysstat',
@@ -1516,7 +1515,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'tail',
     name: 'Tail',
     markdown: tailMarkdown,
-    image: tailLogo,
+    image: magnifying_glass_linesLogo,
   },
   {
     id: 'tcp_listener',

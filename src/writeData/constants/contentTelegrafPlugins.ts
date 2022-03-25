@@ -295,7 +295,6 @@ import mqtt_consumerLogo from 'src/writeData/graphics/mqtt_consumer.svg'
 import multifileLogo from 'src/writeData/graphics/multifile.svg'
 import mysqlLogo from 'src/writeData/graphics/mysql.svg'
 import natsLogo from 'src/writeData/graphics/nats.svg'
-import nats_consumerLogo from 'src/writeData/graphics/nats_consumer.svg'
 import neptune_apexLogo from 'src/writeData/graphics/neptune_apex.svg'
 import net_responseLogo from 'src/writeData/graphics/net_response.svg'
 import nginxLogo from 'src/writeData/graphics/nginx.svg'
@@ -1092,7 +1091,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'nats_consumer',
     name: 'NATS Consumer',
     markdown: nats_consumerMarkdown,
-    image: nats_consumerLogo,
+    image: natsLogo,
   },
   {
     id: 'neptune_apex',

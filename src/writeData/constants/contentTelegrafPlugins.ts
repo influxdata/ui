@@ -266,8 +266,7 @@ import httpjsonLogo from 'src/writeData/graphics/httpjson.svg'
 import httpLogo from 'src/writeData/graphics/http.svg'
 import icinga2Logo from 'src/writeData/graphics/icinga2.svg'
 import infinibandLogo from 'src/writeData/graphics/infiniband.svg'
-import intel_powerstatLogo from 'src/writeData/graphics/intel_powerstat.svg'
-import intel_rdtLogo from 'src/writeData/graphics/intel_rdt.svg'
+import intelLogo from 'src/writeData/graphics/intel.svg'
 import influxdbLogo from 'src/writeData/graphics/influxdb.svg'
 import ipmi_sensorLogo from 'src/writeData/graphics/ipmi_sensor.svg'
 import jenkinsLogo from 'src/writeData/graphics/jenkins.svg'
@@ -826,19 +825,19 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'intel_pmu',
     name: 'Intel Performance Monitoring Unit',
     markdown: intel_pmuMarkdown,
-    image: intel_powerstatLogo,
+    image: intelLogo,
   },
   {
     id: 'intel_powerstat',
     name: 'Intel PowerStat',
     markdown: intel_powerstatMarkdown,
-    image: intel_powerstatLogo,
+    image: intelLogo,
   },
   {
     id: 'intel_rdt',
     name: 'Intel RDT',
     markdown: intel_rdtMarkdown,
-    image: intel_rdtLogo,
+    image: intelLogo,
   },
   {
     id: 'internal',

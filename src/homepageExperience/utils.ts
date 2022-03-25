@@ -1,44 +1,36 @@
-import {
-  ExecuteQueryIcon,
-  FinishIcon,
-  InitializeClientIcon,
-  InstallDependenciesIcon,
-  OverviewIcon,
-  TokenIcon,
-  WriteDataIcon,
-} from 'src/homepageExperience/components/HomepageIcons'
+import {IconFont} from '@influxdata/clockface'
 
 export const HOMEPAGE_NAVIGATION_STEPS = [
   {
     name: 'Overview',
-    icon: OverviewIcon,
+    glyph: IconFont.BookOutline,
   },
   {
     name: 'Install \n Dependencies',
-    icon: InstallDependenciesIcon,
+    glyph: IconFont.Install,
   },
   {
     name: 'Create a \n Token',
-    icon: TokenIcon,
+    glyph: IconFont.CopperCoin,
   },
   {
     name: 'Initialize \n Client',
-    icon: InitializeClientIcon,
+    glyph: IconFont.FileSettings,
   },
   {
     name: 'Write \n Data',
-    icon: WriteDataIcon,
+    glyph: IconFont.Pencil,
   },
   {
     name: 'Execute a \n Simple Query',
-    icon: ExecuteQueryIcon,
+    glyph: IconFont.PlayOutline,
   },
   {
     name: 'Execute an \n Aggregate Query',
-    icon: ExecuteQueryIcon,
+    glyph: IconFont.PlayOutline,
   },
   {
     name: 'Finish',
-    icon: FinishIcon,
+    glyph: IconFont.StarSmile,
   },
 ]

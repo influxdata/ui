@@ -300,11 +300,6 @@ import neptune_apexLogo from 'src/writeData/graphics/neptune_apex.svg'
 import net_responseLogo from 'src/writeData/graphics/net_response.svg'
 import nfsclientLogo from 'src/writeData/graphics/nfsclient.svg'
 import nginxLogo from 'src/writeData/graphics/nginx.svg'
-import nginx_plusLogo from 'src/writeData/graphics/nginx_plus.svg'
-import nginx_plus_apiLogo from 'src/writeData/graphics/nginx_plus_api.svg'
-import nginx_stsLogo from 'src/writeData/graphics/nginx_sts.svg'
-import nginx_upstream_checkLogo from 'src/writeData/graphics/nginx_upstream_check.svg'
-import nginx_vtsLogo from 'src/writeData/graphics/nginx_vts.svg'
 import nsdLogo from 'src/writeData/graphics/nsd.svg'
 import nsqLogo from 'src/writeData/graphics/nsq.svg'
 import nsq_consumerLogo from 'src/writeData/graphics/nsq_consumer.svg'
@@ -1145,31 +1140,31 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'nginx_plus',
     name: 'Nginx Plus',
     markdown: nginx_plusMarkdown,
-    image: nginx_plusLogo,
+    image: nginxLogo,
   },
   {
     id: 'nginx_plus_api',
     name: 'Nginx Plus API',
     markdown: nginx_plus_apiMarkdown,
-    image: nginx_plus_apiLogo,
+    image: nginxLogo,
   },
   {
     id: 'nginx_sts',
     name: 'Nginx Stream STS',
     markdown: nginx_stsMarkdown,
-    image: nginx_stsLogo,
+    image: nginxLogo,
   },
   {
     id: 'nginx_upstream_check',
     name: 'Nginx Upstream Check',
     markdown: nginx_upstream_checkMarkdown,
-    image: nginx_upstream_checkLogo,
+    image: nginxLogo,
   },
   {
     id: 'nginx_vts',
     name: 'Nginx Virtual Host Traffic (VTS)',
     markdown: nginx_vtsMarkdown,
-    image: nginx_vtsLogo,
+    image: nginxLogo,
   },
   {
     id: 'nomad',

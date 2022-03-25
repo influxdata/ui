@@ -233,8 +233,7 @@ import cassandraLogo from 'src/writeData/graphics/cassandra.svg'
 import cephLogo from 'src/writeData/graphics/ceph.svg'
 import ciscoLogo from 'src/writeData/graphics/cisco.svg'
 import clickhouseLogo from 'src/writeData/graphics/clickhouse.svg'
-import cloud_pubsub_pushLogo from 'src/writeData/graphics/cloud_pubsub_push.svg'
-import cloud_pubsubLogo from 'src/writeData/graphics/cloud_pubsub.svg'
+import google_cloudLogo from 'src/writeData/graphics/google_cloud.svg'
 import cloudwatchLogo from 'src/writeData/graphics/cloudwatch.svg'
 import conntrackLogo from 'src/writeData/graphics/conntrack.svg'
 import consulLogo from 'src/writeData/graphics/consul.svg'
@@ -528,13 +527,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'cloud_pubsub',
     name: 'Google Cloud PubSub',
     markdown: cloud_pubsubMarkdown,
-    image: cloud_pubsubLogo,
+    image: google_cloudLogo,
   },
   {
     id: 'cloud_pubsub_push',
     name: 'Google Cloud PubSub Push',
     markdown: cloud_pubsub_pushMarkdown,
-    image: cloud_pubsub_pushLogo,
+    image: google_cloudLogo,
   },
   {
     id: 'cloudwatch',

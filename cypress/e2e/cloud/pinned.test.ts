@@ -206,7 +206,7 @@ from(bucket: "${name}"{rightarrow}
     })
   })
 
-  describe.only('Pin flow tests', () => {
+  describe('Pin flow tests', () => {
     beforeEach(() => {
       cy.setFeatureFlags({
         pinnedItems: true,

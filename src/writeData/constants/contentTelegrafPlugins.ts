@@ -273,7 +273,6 @@ import infinibandLogo from 'src/writeData/graphics/infiniband.svg'
 import intel_powerstatLogo from 'src/writeData/graphics/intel_powerstat.svg'
 import intel_rdtLogo from 'src/writeData/graphics/intel_rdt.svg'
 import influxdbLogo from 'src/writeData/graphics/influxdb.svg'
-import internalLogo from 'src/writeData/graphics/internal.svg'
 import ipmi_sensorLogo from 'src/writeData/graphics/ipmi_sensor.svg'
 import jenkinsLogo from 'src/writeData/graphics/jenkins.svg'
 import jolokia2Logo from 'src/writeData/graphics/jolokia2.svg'
@@ -849,7 +848,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'internal',
     name: 'Telegraf Internal',
     markdown: internalMarkdown,
-    image: internalLogo,
+    image: influxdbLogo,
   },
   {
     id: 'internet_speed',

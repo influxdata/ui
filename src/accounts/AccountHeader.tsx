@@ -13,7 +13,7 @@ const AccountHeader: FC<Props> = ({testID = 'member-page--header'}) => (
   <Page.Header fullWidth={false} testID={testID}>
     <Page.Title title="Account" />
     <LimitChecker>
-      <RateLimitAlert />
+      <RateLimitAlert location="account" />
     </LimitChecker>
   </Page.Header>
 )

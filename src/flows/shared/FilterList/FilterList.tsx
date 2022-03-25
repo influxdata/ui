@@ -12,6 +12,7 @@ interface Props {
   items: Item[]
   renderItem: (i: Item) => JSX.Element
   listHeader?: () => JSX.Element
+  setEventSearchTerm?: (searchTerm: string) => void
 }
 
 const FilterList: FC<Props> = ({
@@ -21,9 +22,16 @@ const FilterList: FC<Props> = ({
   emptyMessage,
   renderItem,
   listHeader,
+  setEventSearchTerm,
 }) => {
   const [search, setSearch] = useState('')
 
+  const onSearch = searchTerm => {
+    if (setEventSearchTerm) {
+      setEventSearchTerm(searchTerm)
+    }
+    setSearch(searchTerm)
+  }
   const list = useMemo(() => {
     const filtered = items.filter(i =>
       extractor(i)
@@ -54,7 +62,7 @@ const FilterList: FC<Props> = ({
         <div className="flux-toolbar--search">
           <SearchWidget
             placeholderText={placeholder}
-            onSearch={setSearch}
+            onSearch={onSearch}
             searchTerm={search}
             testID="flux-toolbar-search--input"
           />

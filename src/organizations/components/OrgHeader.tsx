@@ -11,7 +11,7 @@ type Props = {
 const OrgHeader: FC<Props> = ({testID = 'member-page--header'}) => (
   <Page.Header fullWidth={false} testID={testID}>
     <Page.Title title="Organization" />
-    <RateLimitAlert />
+    <RateLimitAlert location="organization" />
   </Page.Header>
 )
 

@@ -202,6 +202,16 @@ export const generateNavItems = (): NavItem[] => {
       link: `/operator`,
       activeKeywords: ['operator'],
     },
+    {
+      id: 'support',
+      testID: 'nav-item-support',
+      icon: IconFont.QuestionMark_New,
+      label: 'Help & Support',
+      shortLabel: 'Support',
+      link: '',
+      activeKeywords: [''],
+      enabled: () => isFlagEnabled('helpBar'),
+    },
   ]
 
   navItems = navItems.filter(item => {

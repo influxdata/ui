@@ -25,6 +25,7 @@ import cloud_pubsubMarkdown from 'src/writeData/components/telegrafPlugins/cloud
 import cloudwatchMarkdown from 'src/writeData/components/telegrafPlugins/cloudwatch.md'
 import conntrackMarkdown from 'src/writeData/components/telegrafPlugins/conntrack.md'
 import consulMarkdown from 'src/writeData/components/telegrafPlugins/consul.md'
+import consul_agentMarkdown from 'src/writeData/components/telegrafPlugins/consul_agent.md'
 import couchbaseMarkdown from 'src/writeData/components/telegrafPlugins/couchbase.md'
 import couchdbMarkdown from 'src/writeData/components/telegrafPlugins/couchdb.md'
 import cpuMarkdown from 'src/writeData/components/telegrafPlugins/cpu.md'
@@ -63,6 +64,7 @@ import http_listener_v2Markdown from 'src/writeData/components/telegrafPlugins/h
 import http_responseMarkdown from 'src/writeData/components/telegrafPlugins/http_response.md'
 import httpjsonMarkdown from 'src/writeData/components/telegrafPlugins/httpjson.md'
 import httpMarkdown from 'src/writeData/components/telegrafPlugins/http.md'
+import hugepagesMarkdown from 'src/writeData/components/telegrafPlugins/hugepages.md'
 import icinga2Markdown from 'src/writeData/components/telegrafPlugins/icinga2.md'
 import infinibandMarkdown from 'src/writeData/components/telegrafPlugins/infiniband.md'
 import influxdb_listenerMarkdown from 'src/writeData/components/telegrafPlugins/influxdb_listener.md'
@@ -107,6 +109,7 @@ import memcachedMarkdown from 'src/writeData/components/telegrafPlugins/memcache
 import memMarkdown from 'src/writeData/components/telegrafPlugins/mem.md'
 import mesosMarkdown from 'src/writeData/components/telegrafPlugins/mesos.md'
 import minecraftMarkdown from 'src/writeData/components/telegrafPlugins/minecraft.md'
+import mockMarkdown from 'src/writeData/components/telegrafPlugins/mock.md'
 import modbusMarkdown from 'src/writeData/components/telegrafPlugins/modbus.md'
 import mongodbMarkdown from 'src/writeData/components/telegrafPlugins/mongodb.md'
 import monitMarkdown from 'src/writeData/components/telegrafPlugins/monit.md'
@@ -127,6 +130,7 @@ import nginx_upstream_checkMarkdown from 'src/writeData/components/telegrafPlugi
 import nginx_vtsMarkdown from 'src/writeData/components/telegrafPlugins/nginx_vts.md'
 import nsdMarkdown from 'src/writeData/components/telegrafPlugins/nsd.md'
 import nginxMarkdown from 'src/writeData/components/telegrafPlugins/nginx.md'
+import nomadMarkdown from 'src/writeData/components/telegrafPlugins/nomad.md'
 import nsq_consumerMarkdown from 'src/writeData/components/telegrafPlugins/nsq_consumer.md'
 import nsqMarkdown from 'src/writeData/components/telegrafPlugins/nsq.md'
 import nstatMarkdown from 'src/writeData/components/telegrafPlugins/nstat.md'
@@ -160,6 +164,7 @@ import rasMarkdown from 'src/writeData/components/telegrafPlugins/ras.md'
 import ravendbMarkdown from 'src/writeData/components/telegrafPlugins/ravendb.md'
 import redfishMarkdown from 'src/writeData/components/telegrafPlugins/redfish.md'
 import redisMarkdown from 'src/writeData/components/telegrafPlugins/redis.md'
+import redis_sentinelMarkdown from 'src/writeData/components/telegrafPlugins/redis_sentinel.md'
 import rethinkdbMarkdown from 'src/writeData/components/telegrafPlugins/rethinkdb.md'
 import riakMarkdown from 'src/writeData/components/telegrafPlugins/riak.md'
 import riemann_listenerMarkdown from 'src/writeData/components/telegrafPlugins/riemann_listener.md'
@@ -174,6 +179,7 @@ import socket_listenerMarkdown from 'src/writeData/components/telegrafPlugins/so
 import solrMarkdown from 'src/writeData/components/telegrafPlugins/solr.md'
 import sqlMarkdown from 'src/writeData/components/telegrafPlugins/sql.md'
 import sqlserverMarkdown from 'src/writeData/components/telegrafPlugins/sqlserver.md'
+import socketstatMarkdown from 'src/writeData/components/telegrafPlugins/socketstat.md'
 import stackdriverMarkdown from 'src/writeData/components/telegrafPlugins/stackdriver.md'
 import statsdMarkdown from 'src/writeData/components/telegrafPlugins/statsd.md'
 import suricataMarkdown from 'src/writeData/components/telegrafPlugins/suricata.md'
@@ -195,6 +201,7 @@ import udp_listenerMarkdown from 'src/writeData/components/telegrafPlugins/udp_l
 import unboundMarkdown from 'src/writeData/components/telegrafPlugins/unbound.md'
 import uwsgiMarkdown from 'src/writeData/components/telegrafPlugins/uwsgi.md'
 import varnishMarkdown from 'src/writeData/components/telegrafPlugins/varnish.md'
+import vaultMarkdown from 'src/writeData/components/telegrafPlugins/vault.md'
 import vsphereMarkdown from 'src/writeData/components/telegrafPlugins/vsphere.md'
 import webhooksMarkdown from 'src/writeData/components/telegrafPlugins/webhooks.md'
 import win_eventlogMarkdown from 'src/writeData/components/telegrafPlugins/win_eventlog.md'
@@ -203,6 +210,7 @@ import win_servicesMarkdown from 'src/writeData/components/telegrafPlugins/win_s
 import wireguardMarkdown from 'src/writeData/components/telegrafPlugins/wireguard.md'
 import wirelessMarkdown from 'src/writeData/components/telegrafPlugins/wireless.md'
 import x509_certMarkdown from 'src/writeData/components/telegrafPlugins/x509_cert.md'
+import xtremioMarkdown from 'src/writeData/components/telegrafPlugins/xtremio.md'
 import zfsMarkdown from 'src/writeData/components/telegrafPlugins/zfs.md'
 import zipkinMarkdown from 'src/writeData/components/telegrafPlugins/zipkin.md'
 import zookeeperMarkdown from 'src/writeData/components/telegrafPlugins/zookeeper.md'
@@ -239,6 +247,7 @@ import couchdbLogo from 'src/writeData/graphics/couchdb.svg'
 import cpuLogo from 'src/writeData/graphics/cpu.svg'
 import csgoLogo from 'src/writeData/graphics/csgo.svg'
 import dcosLogo from 'src/writeData/graphics/dcos.svg'
+import dellLogo from 'src/writeData/graphics/dell.svg'
 import directory_monitorLogo from 'src/writeData/graphics/directory_monitor.svg'
 import diskioLogo from 'src/writeData/graphics/diskio.svg'
 import diskLogo from 'src/writeData/graphics/disk.svg'
@@ -266,6 +275,7 @@ import githubLogo from 'src/writeData/graphics/github.svg'
 import gnmiLogo from 'src/writeData/graphics/gnmi.svg'
 import graylogLogo from 'src/writeData/graphics/graylog.svg'
 import haproxyLogo from 'src/writeData/graphics/haproxy.svg'
+import hashicorpLogo from 'src/writeData/graphics/hashicorp.svg'
 import hddtempLogo from 'src/writeData/graphics/hddtemp.svg'
 import http_listener_v2Logo from 'src/writeData/graphics/http_listener_v2.svg'
 import http_responseLogo from 'src/writeData/graphics/http_response.svg'
@@ -573,6 +583,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: consulLogo,
   },
   {
+    id: 'consul_agent',
+    name: 'Hashicorp Consul Agent',
+    markdown: consul_agentMarkdown,
+    image: hashicorpLogo,
+    style: {backgroundColor: 'white'},
+  },
+  {
     id: 'couchbase',
     name: 'Couchbase',
     markdown: couchbaseMarkdown,
@@ -799,6 +816,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'HTTP JSON',
     markdown: httpjsonMarkdown,
     image: httpjsonLogo,
+  },
+  {
+    id: 'hugepages',
+    name: 'Hugepages',
+    markdown: hugepagesMarkdown,
+    image: linux_sysctl_fsLogo,
   },
   {
     id: 'icinga2',
@@ -1065,6 +1088,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: minecraftLogo,
   },
   {
+    id: 'mock',
+    name: 'Mock',
+    markdown: mockMarkdown,
+    image: procstatLogo,
+  },
+  {
     id: 'modbus',
     name: 'Modbus',
     markdown: modbusMarkdown,
@@ -1177,6 +1206,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'Nginx Virtual Host Traffic (VTS)',
     markdown: nginx_vtsMarkdown,
     image: nginx_vtsLogo,
+  },
+  {
+    id: 'nomad',
+    name: 'Hashicorp Nomad',
+    markdown: nomadMarkdown,
+    image: hashicorpLogo,
+    style: {backgroundColor: 'white'},
   },
   {
     id: 'nsd',
@@ -1383,6 +1419,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: redisLogo,
   },
   {
+    id: 'redis_sentinel',
+    name: 'Redis Sentinel',
+    markdown: redis_sentinelMarkdown,
+    image: redisLogo,
+  },
+  {
     id: 'rethinkdb',
     name: 'RethinkDB',
     markdown: rethinkdbMarkdown,
@@ -1447,6 +1489,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'Socket Listener',
     markdown: socket_listenerMarkdown,
     image: socket_listenerLogo,
+  },
+  {
+    id: 'socketstat',
+    name: 'SocketStat',
+    markdown: socketstatMarkdown,
+    image: statsdLogo,
   },
   {
     id: 'solr',
@@ -1593,6 +1641,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     image: varnishLogo,
   },
   {
+    id: 'vault',
+    name: 'Hashicorp Vault',
+    markdown: vaultMarkdown,
+    image: hashicorpLogo,
+    style: {backgroundColor: 'white'},
+  },
+  {
     id: 'vsphere',
     name: 'VMware vSphere',
     markdown: vsphereMarkdown,
@@ -1639,6 +1694,12 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'x509 Certificate',
     markdown: x509_certMarkdown,
     image: x509_certLogo,
+  },
+  {
+    id: 'xtremio',
+    name: 'XtremIO',
+    markdown: xtremioMarkdown,
+    image: dellLogo,
   },
   {
     id: 'zfs',

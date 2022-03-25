@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {FC, useState, useMemo} from 'react'
 
 // Components
 import {Overlay, ResourceList} from '@influxdata/clockface'
@@ -8,18 +8,15 @@ import LabelCard from 'src/labels/components/LabelCard'
 
 // Utils
 import {validateLabelUniqueness} from 'src/labels/utils/'
-import memoizeOne from 'memoize-one'
 
 // Types
 import {OverlayState, Label} from 'src/types'
 import {Sort} from '@influxdata/clockface'
 import {SortTypes} from 'src/shared/utils/sort'
 
-// Decorators
-import {ErrorHandling} from 'src/shared/decorators/errors'
-
 // Selectors
 import {getSortedResources} from 'src/shared/utils/sort'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 interface Props {
   labels: Label[]
@@ -31,92 +28,77 @@ interface Props {
   sortType: SortTypes
 }
 
-interface State {
-  labelID: string
-  overlayState: OverlayState
-}
-
-@ErrorHandling
-class LabelList extends PureComponent<Props, State> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
+const LabelList: FC<Props> = ({
+  labels,
+  emptyState,
+  onUpdateLabel,
+  onDeleteLabel,
+  sortKey,
+  sortDirection,
+  sortType,
+}) => {
+  const [labelID, setLabelID] = useState<string>(null)
+  const [overlayState, setOverlayState] = useState<OverlayState>(
+    OverlayState.Closed
+  )
+  const sortedLabels = useMemo(
+    () => getSortedResources(labels, sortKey, sortDirection, sortType),
+    [labels, sortKey, sortDirection, sortType]
   )
 
-  public state: State = {
-    labelID: null,
-    overlayState: OverlayState.Closed,
-  }
-
-  public render() {
-    return (
-      <>
-        <ResourceList>
-          <ResourceList.Body emptyState={this.props.emptyState}>
-            {this.rows}
-          </ResourceList.Body>
-        </ResourceList>
-        <Overlay visible={this.isOverlayVisible}>
-          <UpdateLabelOverlay
-            label={this.label}
-            onDismiss={this.handleCloseModal}
-            onUpdateLabel={this.handleUpdateLabel}
-            onNameValidation={this.handleNameValidation}
-          />
-        </Overlay>
-      </>
-    )
-  }
-
-  private get rows(): JSX.Element[] {
-    const {labels, sortKey, sortDirection, sortType, onDeleteLabel} = this.props
-    const sortedLabels = this.memGetSortedResources(
-      labels,
-      sortKey,
-      sortDirection,
-      sortType
-    )
-
-    return sortedLabels.map((label, index) => (
+  const rows = (): JSX.Element[] => {
+    return sortedLabels.map((label: Label, index: number) => (
       <LabelCard
         key={label.id || `label-${index}`}
         onDelete={onDeleteLabel}
-        onClick={this.handleStartEdit}
+        onClick={handleStartEdit}
         label={label}
       />
     ))
   }
 
-  private get label(): Label | null {
-    if (this.state.labelID) {
-      return this.props.labels.find(l => l.id === this.state.labelID)
+  const getLabel = (): Label | null => {
+    if (labelID) {
+      return labels.find(l => l.id === labelID)
     }
   }
 
-  private handleCloseModal = () => {
-    this.setState({overlayState: OverlayState.Closed})
+  const handleCloseModal = () => {
+    setOverlayState(OverlayState.Closed)
   }
 
-  private handleStartEdit = (labelID: string): void => {
-    this.setState({labelID, overlayState: OverlayState.Open})
+  const handleStartEdit = (labelID: string): void => {
+    setLabelID(labelID)
+    setOverlayState(OverlayState.Open)
   }
 
-  private get isOverlayVisible(): boolean {
-    const {labelID, overlayState} = this.state
-    return !!labelID && overlayState === OverlayState.Open
+  const isOverlayVisible = !!labelID && overlayState === OverlayState.Open
+
+  const handleUpdateLabel = (updatedLabel: Label) => {
+    onUpdateLabel(updatedLabel)
+    setOverlayState(OverlayState.Closed)
   }
 
-  private handleUpdateLabel = (updatedLabel: Label) => {
-    this.props.onUpdateLabel(updatedLabel)
-    this.setState({overlayState: OverlayState.Closed})
-  }
-
-  private handleNameValidation = (name: string): string | null => {
-    const {labels} = this.props
-
+  const handleNameValidation = (name: string): string | null => {
     const names = labels.map(label => label.name).filter(l => l !== name)
-
     return validateLabelUniqueness(names, name)
   }
+
+  return (
+    <ErrorBoundary>
+      <ResourceList>
+        <ResourceList.Body emptyState={emptyState}>{rows()}</ResourceList.Body>
+      </ResourceList>
+      <Overlay visible={isOverlayVisible}>
+        <UpdateLabelOverlay
+          label={getLabel()}
+          onDismiss={handleCloseModal}
+          onUpdateLabel={handleUpdateLabel}
+          onNameValidation={handleNameValidation}
+        />
+      </Overlay>
+    </ErrorBoundary>
+  )
 }
 
-export default LabelList
+export default React.memo(LabelList)

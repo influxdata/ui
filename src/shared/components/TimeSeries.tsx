@@ -3,9 +3,7 @@ import React, {Component, RefObject, CSSProperties} from 'react'
 import {isEqual} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {default as fromFlux} from 'src/shared/utils/fromFlux.legacy'
-import {fromFlux as fromFluxGiraffe, FromFluxResult} from '@influxdata/giraffe'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
 
 // API
 import {RunQueryResult, RunQuerySuccessResult} from 'src/shared/apis/query'
@@ -296,13 +294,7 @@ class TimeSeries extends Component<Props, State> {
       }
 
       const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
-      let giraffeResult
-
-      if (isFlagEnabled('fluxParser')) {
-        giraffeResult = fromFlux(files.join('\n\n'))
-      } else {
-        giraffeResult = fromFluxGiraffe(files.join('\n\n'))
-      }
+      const giraffeResult = fromFlux(files.join('\n\n'))
 
       this.pendingReload = false
 

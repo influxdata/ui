@@ -8,7 +8,6 @@ import {
   reloadTagSelectors,
 } from 'src/timeMachine/actions/queryBuilderThunks'
 import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
-import {convertCheckToCustom} from 'src/alerting/actions/alertBuilder'
 import {setDashboardTimeRange} from 'src/dashboards/actions/ranges'
 
 // Selectors
@@ -16,19 +15,16 @@ import {getActiveQuery} from 'src/timeMachine/selectors'
 
 // Utils
 import {createView} from 'src/views/helpers'
-import {createCheckQueryFromAlertBuilder} from 'src/alerting/utils/customCheck'
 import {currentContext} from 'src/shared/selectors/currentContext'
 
 // Types
 import {TimeMachineState} from 'src/timeMachine/reducers'
 import {Action as QueryResultsAction} from 'src/timeMachine/actions/queries'
-import {Action as AlertBuilderAction} from 'src/alerting/actions/alertBuilder'
 import {
   AutoRefresh,
   Axes,
   DecimalPlaces,
   FieldOption,
-  GetState,
   StaticLegend,
   TableOptions,
   TimeMachineID,
@@ -816,27 +812,4 @@ export const loadNewVEO = () => (
       view: createView<XYViewProperties>('xy'),
     })
   )
-}
-
-export const loadCustomCheckQueryState = () => (
-  dispatch: Dispatch<Action | AlertBuilderAction>,
-  getState: GetState
-) => {
-  const state = getState()
-
-  const {alertBuilder} = state
-
-  const {builderConfig} = getActiveQuery(state)
-
-  dispatch(
-    setActiveQueryText(
-      createCheckQueryFromAlertBuilder(builderConfig, alertBuilder)
-    )
-  )
-
-  dispatch(setType('table'))
-
-  dispatch(convertCheckToCustom())
-
-  dispatch(setActiveTab('customCheckQuery'))
 }

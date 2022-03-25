@@ -113,8 +113,6 @@ export const getCheckForTimeMachine = (checkID: string) => async (
       throw new Error(resp.data.message)
     }
 
-    const check = resp.data
-
     const normCheck = normalize<Check, CheckEntities, string>(
       resp.data,
       checkSchema
@@ -128,7 +126,7 @@ export const getCheckForTimeMachine = (checkID: string) => async (
     dispatch(
       setActiveTimeMachine('alerting', {
         view,
-        activeTab: check.type === 'custom' ? 'customCheckQuery' : 'alerting',
+        activeTab: 'alerting',
       })
     )
 

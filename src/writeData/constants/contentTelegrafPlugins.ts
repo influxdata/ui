@@ -225,16 +225,12 @@ import apacheLogo from 'src/writeData/graphics/apache.svg'
 import apcupsdLogo from 'src/writeData/graphics/apcupsd.svg'
 import auroraLogo from 'src/writeData/graphics/aurora.svg'
 import azure_storage_queueLogo from 'src/writeData/graphics/azure_storage_queue.svg'
-import bcacheLogo from 'src/writeData/graphics/bcache.svg'
 import beanstalkdLogo from 'src/writeData/graphics/beanstalkd.svg'
 import beatLogo from 'src/writeData/graphics/beat.svg'
 import bindLogo from 'src/writeData/graphics/bind.svg'
-import bondLogo from 'src/writeData/graphics/bond.svg'
 import burrowLogo from 'src/writeData/graphics/burrow.svg'
 import cassandraLogo from 'src/writeData/graphics/cassandra.svg'
 import cephLogo from 'src/writeData/graphics/ceph.svg'
-import cgroupLogo from 'src/writeData/graphics/cgroup.svg'
-import chronyLogo from 'src/writeData/graphics/chrony.svg'
 import cisco_telemetry_mdtLogo from 'src/writeData/graphics/cisco_telemetry_mdt.svg'
 import clickhouseLogo from 'src/writeData/graphics/clickhouse.svg'
 import cloud_pubsub_pushLogo from 'src/writeData/graphics/cloud_pubsub_push.svg'
@@ -248,11 +244,7 @@ import cpuLogo from 'src/writeData/graphics/cpu.svg'
 import csgoLogo from 'src/writeData/graphics/csgo.svg'
 import dcosLogo from 'src/writeData/graphics/dcos.svg'
 import dellLogo from 'src/writeData/graphics/dell.svg'
-import directory_monitorLogo from 'src/writeData/graphics/directory_monitor.svg'
-import diskioLogo from 'src/writeData/graphics/diskio.svg'
-import diskLogo from 'src/writeData/graphics/disk.svg'
 import disqueLogo from 'src/writeData/graphics/disque.svg'
-import dmcacheLogo from 'src/writeData/graphics/dmcache.svg'
 import dns_queryLogo from 'src/writeData/graphics/dns_query.svg'
 import docker_logLogo from 'src/writeData/graphics/docker_log.svg'
 import dockerLogo from 'src/writeData/graphics/docker.svg'
@@ -260,7 +252,6 @@ import dovecotLogo from 'src/writeData/graphics/dovecot.svg'
 import dpdkLogo from 'src/writeData/graphics/dpdk.svg'
 import ecsLogo from 'src/writeData/graphics/ecs.svg'
 import elasticsearchLogo from 'src/writeData/graphics/elasticsearch.svg'
-import ethtoolLogo from 'src/writeData/graphics/ethtool.svg'
 import eventhub_consumerLogo from 'src/writeData/graphics/eventhub_consumer.svg'
 import execdLogo from 'src/writeData/graphics/execd.svg'
 import execLogo from 'src/writeData/graphics/exec.svg'
@@ -271,12 +262,12 @@ import fileLogo from 'src/writeData/graphics/file.svg'
 import filestatLogo from 'src/writeData/graphics/filestat.svg'
 import fireboardLogo from 'src/writeData/graphics/fireboard.svg'
 import fluentdLogo from 'src/writeData/graphics/fluentd.svg'
+import folderLogo from 'src/writeData/graphics/folder.svg'
 import githubLogo from 'src/writeData/graphics/github.svg'
 import gnmiLogo from 'src/writeData/graphics/gnmi.svg'
 import graylogLogo from 'src/writeData/graphics/graylog.svg'
 import haproxyLogo from 'src/writeData/graphics/haproxy.svg'
 import hashicorpLogo from 'src/writeData/graphics/hashicorp.svg'
-import hddtempLogo from 'src/writeData/graphics/hddtemp.svg'
 import http_listener_v2Logo from 'src/writeData/graphics/http_listener_v2.svg'
 import http_responseLogo from 'src/writeData/graphics/http_response.svg'
 import httpjsonLogo from 'src/writeData/graphics/httpjson.svg'
@@ -287,19 +278,13 @@ import intel_powerstatLogo from 'src/writeData/graphics/intel_powerstat.svg'
 import intel_rdtLogo from 'src/writeData/graphics/intel_rdt.svg'
 import influxdbLogo from 'src/writeData/graphics/influxdb.svg'
 import internalLogo from 'src/writeData/graphics/internal.svg'
-import interruptsLogo from 'src/writeData/graphics/interrupts.svg'
 import ipmi_sensorLogo from 'src/writeData/graphics/ipmi_sensor.svg'
-import ipsetLogo from 'src/writeData/graphics/ipset.svg'
-import iptablesLogo from 'src/writeData/graphics/iptables.svg'
-import ipvsLogo from 'src/writeData/graphics/ipvs.svg'
 import jenkinsLogo from 'src/writeData/graphics/jenkins.svg'
 import jolokia2Logo from 'src/writeData/graphics/jolokia2.svg'
 import jolokiaLogo from 'src/writeData/graphics/jolokia.svg'
 import jti_openconfig_telemetryLogo from 'src/writeData/graphics/jti_openconfig_telemetry.svg'
 import kafka_consumer_legacyLogo from 'src/writeData/graphics/kafka_consumer_legacy.svg'
 import kafka_consumerLogo from 'src/writeData/graphics/kafka_consumer.svg'
-import kernel_vmstatLogo from 'src/writeData/graphics/kernel_vmstat.svg'
-import kernelLogo from 'src/writeData/graphics/kernel.svg'
 import kibanaLogo from 'src/writeData/graphics/kibana.svg'
 import kinesis_consumerLogo from 'src/writeData/graphics/kinesis_consumer.svg'
 import knx_listenerLogo from 'src/writeData/graphics/knx_listener.svg'
@@ -307,10 +292,9 @@ import kube_inventoryLogo from 'src/writeData/graphics/kube_inventory.svg'
 import kubernetesLogo from 'src/writeData/graphics/kubernetes.svg'
 import lanzLogo from 'src/writeData/graphics/lanz.svg'
 import leofsLogo from 'src/writeData/graphics/leofs.svg'
-import linux_sysctl_fsLogo from 'src/writeData/graphics/linux_sysctl_fs.svg'
+import linuxLogo from 'src/writeData/graphics/linux_penguin.svg'
 import logparserLogo from 'src/writeData/graphics/logparser.svg'
 import logstashLogo from 'src/writeData/graphics/logstash.svg'
-import lustre2Logo from 'src/writeData/graphics/lustre2.svg'
 import mailchimpLogo from 'src/writeData/graphics/mailchimp.svg'
 import marklogicLogo from 'src/writeData/graphics/marklogic.svg'
 import mcrouterLogo from 'src/writeData/graphics/mcrouter.svg'
@@ -338,7 +322,6 @@ import nsdLogo from 'src/writeData/graphics/nsd.svg'
 import nginxLogo from 'src/writeData/graphics/nginx.svg'
 import nsq_consumerLogo from 'src/writeData/graphics/nsq_consumer.svg'
 import nsqLogo from 'src/writeData/graphics/nsq.svg'
-import nstatLogo from 'src/writeData/graphics/nstat.svg'
 import ntpqLogo from 'src/writeData/graphics/ntpq.svg'
 import nvidia_smiLogo from 'src/writeData/graphics/nvidia_smi.svg'
 import opcuaLogo from 'src/writeData/graphics/opcua.svg'
@@ -365,7 +348,6 @@ import proxmoxLogo from 'src/writeData/graphics/proxmox.svg'
 import puppetagentLogo from 'src/writeData/graphics/puppetagent.svg'
 import rabbitmqLogo from 'src/writeData/graphics/rabbitmq.svg'
 import raindropsLogo from 'src/writeData/graphics/raindrops.svg'
-import rasLogo from 'src/writeData/graphics/ras.svg'
 import ravendbLogo from 'src/writeData/graphics/ravendb.svg'
 import redfishLogo from 'src/writeData/graphics/redfish.svg'
 import redisLogo from 'src/writeData/graphics/redis.svg'
@@ -373,9 +355,8 @@ import rethinkdbLogo from 'src/writeData/graphics/rethinkdb.svg'
 import riakLogo from 'src/writeData/graphics/riak.svg'
 import riemann_listenerLogo from 'src/writeData/graphics/riemann_listener.svg'
 import salesforceLogo from 'src/writeData/graphics/salesforce.svg'
-import sensorsLogo from 'src/writeData/graphics/sensors.svg'
+import server_rack_threeLogo from 'src/writeData/graphics/server_rack_three.svg'
 import sflowLogo from 'src/writeData/graphics/sflow.svg'
-import smartLogo from 'src/writeData/graphics/smart.svg'
 import snmp_legacyLogo from 'src/writeData/graphics/snmp_legacy.svg'
 import snmp_trapLogo from 'src/writeData/graphics/snmp_trap.svg'
 import snmpLogo from 'src/writeData/graphics/snmp.svg'
@@ -386,11 +367,8 @@ import sqlserverLogo from 'src/writeData/graphics/sqlserver.svg'
 import stackdriverLogo from 'src/writeData/graphics/stackdriver.svg'
 import statsdLogo from 'src/writeData/graphics/statsd.svg'
 import suricataLogo from 'src/writeData/graphics/suricata.svg'
-import swapLogo from 'src/writeData/graphics/swap.svg'
 import synproxyLogo from 'src/writeData/graphics/synproxy.svg'
 import syslogLogo from 'src/writeData/graphics/syslog.svg'
-import sysstatLogo from 'src/writeData/graphics/sysstat.svg'
-import systemd_unitsLogo from 'src/writeData/graphics/systemd_units.svg'
 import systemLogo from 'src/writeData/graphics/system.svg'
 import tailLogo from 'src/writeData/graphics/tail.svg'
 import tcp_listenerLogo from 'src/writeData/graphics/tcp_listener.svg'
@@ -484,7 +462,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'bcache',
     name: 'bcache',
     markdown: bcacheMarkdown,
-    image: bcacheLogo,
+    image: linuxLogo,
   },
   {
     id: 'beanstalkd',
@@ -508,7 +486,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'bond',
     name: 'Bond',
     markdown: bondMarkdown,
-    image: bondLogo,
+    image: linuxLogo,
   },
   {
     id: 'burrow',
@@ -532,13 +510,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'cgroup',
     name: 'CGroup',
     markdown: cgroupMarkdown,
-    image: cgroupLogo,
+    image: linuxLogo,
   },
   {
     id: 'chrony',
     name: 'chrony',
     markdown: chronyMarkdown,
-    image: chronyLogo,
+    image: linuxLogo,
   },
   {
     id: 'cisco_telemetry_mdt',
@@ -623,19 +601,19 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'directory_monitor',
     name: 'Directory Monitor',
     markdown: directory_monitorMarkdown,
-    image: directory_monitorLogo,
+    image: folderLogo,
   },
   {
     id: 'disk',
     name: 'Disk',
     markdown: diskMarkdown,
-    image: diskLogo,
+    image: server_rack_threeLogo,
   },
   {
     id: 'diskio',
     name: 'DiskIO',
     markdown: diskioMarkdown,
-    image: diskioLogo,
+    image: server_rack_threeLogo,
   },
   {
     id: 'disque',
@@ -647,7 +625,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'dmcache',
     name: 'DMCache',
     markdown: dmcacheMarkdown,
-    image: dmcacheLogo,
+    image: linuxLogo,
   },
   {
     id: 'dns_query',
@@ -701,7 +679,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'ethtool',
     name: 'Ethtool',
     markdown: ethtoolMarkdown,
-    image: ethtoolLogo,
+    image: linuxLogo,
   },
   {
     id: 'eventhub_consumer',
@@ -791,7 +769,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'hddtemp',
     name: 'HDDtemp',
     markdown: hddtempMarkdown,
-    image: hddtempLogo,
+    image: server_rack_threeLogo,
   },
   {
     id: 'http',
@@ -821,7 +799,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'hugepages',
     name: 'Hugepages',
     markdown: hugepagesMarkdown,
-    image: linux_sysctl_fsLogo,
+    image: linuxLogo,
   },
   {
     id: 'icinga2',
@@ -887,7 +865,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'interrupts',
     name: 'Interrupts',
     markdown: interruptsMarkdown,
-    image: interruptsLogo,
+    image: linuxLogo,
   },
   {
     id: 'ipmi_sensor',
@@ -899,19 +877,19 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'ipset',
     name: 'Ipset',
     markdown: ipsetMarkdown,
-    image: ipsetLogo,
+    image: linuxLogo,
   },
   {
     id: 'iptables',
     name: 'Iptables',
     markdown: iptablesMarkdown,
-    image: iptablesLogo,
+    image: linuxLogo,
   },
   {
     id: 'ipvs',
     name: 'IPVS',
     markdown: ipvsMarkdown,
-    image: ipvsLogo,
+    image: linuxLogo,
   },
   {
     id: 'jenkins',
@@ -959,13 +937,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'kernel',
     name: 'Kernel',
     markdown: kernelMarkdown,
-    image: kernelLogo,
+    image: linuxLogo,
   },
   {
     id: 'kernel_vmstat',
     name: 'Kernel VMStat',
     markdown: kernel_vmstatMarkdown,
-    image: kernel_vmstatLogo,
+    image: linuxLogo,
   },
   {
     id: 'kibana',
@@ -1013,7 +991,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'linux_sysctl_fs',
     name: 'Linux Sysctl FS',
     markdown: linux_sysctl_fsMarkdown,
-    image: linux_sysctl_fsLogo,
+    image: linuxLogo,
   },
   {
     id: 'logparser',
@@ -1031,13 +1009,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'lustre2',
     name: 'Lustre',
     markdown: lustre2Markdown,
-    image: lustre2Logo,
+    image: folderLogo,
   },
   {
     id: 'lvm',
     name: 'Logical Volume Management',
     markdown: lvmMarkdown,
-    image: linux_sysctl_fsLogo,
+    image: linuxLogo,
   },
   {
     id: 'mailchimp',
@@ -1061,7 +1039,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'mdstat',
     name: 'Mdstat',
     markdown: mdstatMarkdown,
-    image: linux_sysctl_fsLogo,
+    image: linuxLogo,
   },
   {
     id: 'mem',
@@ -1236,7 +1214,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'nstat',
     name: 'Nstat',
     markdown: nstatMarkdown,
-    image: nstatLogo,
+    image: linuxLogo,
   },
   {
     id: 'ntpq',
@@ -1398,7 +1376,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'ras',
     name: 'RAS Daemon',
     markdown: rasMarkdown,
-    image: rasLogo,
+    image: linuxLogo,
   },
   {
     id: 'ravendb',
@@ -1452,7 +1430,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'sensors',
     name: 'LM Sensors',
     markdown: sensorsMarkdown,
-    image: sensorsLogo,
+    image: linuxLogo,
   },
   {
     id: 'sflow',
@@ -1464,7 +1442,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'smart',
     name: 'S.M.A.R.T.',
     markdown: smartMarkdown,
-    image: smartLogo,
+    image: server_rack_threeLogo,
   },
   {
     id: 'snmp',
@@ -1536,7 +1514,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'swap',
     name: 'Swap',
     markdown: swapMarkdown,
-    image: swapLogo,
+    image: server_rack_threeLogo,
   },
   {
     id: 'synproxy',
@@ -1554,7 +1532,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'sysstat',
     name: 'sysstat',
     markdown: sysstatMarkdown,
-    image: sysstatLogo,
+    image: linuxLogo,
   },
   {
     id: 'system',
@@ -1566,7 +1544,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'systemd_units',
     name: 'systemd Units',
     markdown: systemd_unitsMarkdown,
-    image: systemd_unitsLogo,
+    image: linuxLogo,
   },
   {
     id: 'tail',

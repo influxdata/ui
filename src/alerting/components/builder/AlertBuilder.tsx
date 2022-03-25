@@ -5,8 +5,6 @@ import React, {FC} from 'react'
 import CheckMetaCard from 'src/checks/components/CheckMetaCard'
 import CheckMessageCard from 'src/checks/components/CheckMessageCard'
 import CheckConditionsCard from 'src/checks/components/CheckConditionsCard'
-import CheckMatchingRulesCard from 'src/checks/components/CheckMatchingRulesCard'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const AlertBuilder: FC = () => {
   return (
@@ -14,7 +12,6 @@ const AlertBuilder: FC = () => {
       <CheckMetaCard />
       <CheckMessageCard />
       <CheckConditionsCard />
-      {isFlagEnabled('matchingNotificationRules') && <CheckMatchingRulesCard />}
     </div>
   )
 }

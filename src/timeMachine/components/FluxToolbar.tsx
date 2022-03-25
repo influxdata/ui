@@ -14,18 +14,13 @@ import {FluxToolbarFunction} from 'src/types'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
-  activeQueryBuilderTab: string
   onInsertFluxFunction: (func: FluxToolbarFunction) => void
   onInsertVariable: (variableName: string) => void
 }
 
 type FluxToolbarTabs = 'functions' | 'variables' | 'none'
 
-const FluxToolbar: FC<Props> = ({
-  activeQueryBuilderTab,
-  onInsertFluxFunction,
-  onInsertVariable,
-}) => {
+const FluxToolbar: FC<Props> = ({onInsertFluxFunction, onInsertVariable}) => {
   const [activeTab, setActiveTab] = useState<FluxToolbarTabs>('functions')
 
   const handleTabClick = (id: FluxToolbarTabs): void => {
@@ -72,14 +67,12 @@ const FluxToolbar: FC<Props> = ({
           active={activeTab === 'functions'}
           testID="functions-toolbar-tab"
         />
-        {activeQueryBuilderTab !== 'customCheckQuery' && (
-          <FluxToolbarTab
-            id="variables"
-            onClick={handleTabClick}
-            name="Variables"
-            active={activeTab === 'variables'}
-          />
-        )}
+        <FluxToolbarTab
+          id="variables"
+          onClick={handleTabClick}
+          name="Variables"
+          active={activeTab === 'variables'}
+        />
       </div>
     </div>
   )

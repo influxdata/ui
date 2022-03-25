@@ -262,8 +262,6 @@ import githubLogo from 'src/writeData/graphics/github.svg'
 import graylogLogo from 'src/writeData/graphics/graylog.svg'
 import haproxyLogo from 'src/writeData/graphics/haproxy.svg'
 import hashicorpLogo from 'src/writeData/graphics/hashicorp.svg'
-import http_listener_v2Logo from 'src/writeData/graphics/http_listener_v2.svg'
-import http_responseLogo from 'src/writeData/graphics/http_response.svg'
 import httpjsonLogo from 'src/writeData/graphics/httpjson.svg'
 import httpLogo from 'src/writeData/graphics/http.svg'
 import icinga2Logo from 'src/writeData/graphics/icinga2.svg'
@@ -774,13 +772,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'http_listener_v2',
     name: 'HTTP Listener v2',
     markdown: http_listener_v2Markdown,
-    image: http_listener_v2Logo,
+    image: httpLogo,
   },
   {
     id: 'http_response',
     name: 'HTTP Response',
     markdown: http_responseMarkdown,
-    image: http_responseLogo,
+    image: httpLogo,
   },
   {
     id: 'httpjson',

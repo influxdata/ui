@@ -269,7 +269,6 @@ import infinibandLogo from 'src/writeData/graphics/infiniband.svg'
 import influxdbLogo from 'src/writeData/graphics/influxdb.svg'
 import intelLogo from 'src/writeData/graphics/intel.svg'
 import jenkinsLogo from 'src/writeData/graphics/jenkins.svg'
-import jolokia2Logo from 'src/writeData/graphics/jolokia2.svg'
 import jolokiaLogo from 'src/writeData/graphics/jolokia.svg'
 import jti_openconfig_telemetryLogo from 'src/writeData/graphics/jti_openconfig_telemetry.svg'
 import kafka_consumerLogo from 'src/writeData/graphics/kafka_consumer.svg'
@@ -896,7 +895,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'jolokia2',
     name: 'Jolokia2',
     markdown: jolokia2Markdown,
-    image: jolokia2Logo,
+    image: jolokiaLogo,
   },
   {
     id: 'jti_openconfig_telemetry',

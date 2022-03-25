@@ -313,9 +313,7 @@ import pgbouncerLogo from 'src/writeData/graphics/pgbouncer.svg'
 import phpfpmLogo from 'src/writeData/graphics/phpfpm.svg'
 import postfixLogo from 'src/writeData/graphics/postfix.svg'
 import postgresqlLogo from 'src/writeData/graphics/postgresql.svg'
-import postgresql_extensibleLogo from 'src/writeData/graphics/postgresql_extensible.svg'
 import powerdnsLogo from 'src/writeData/graphics/powerdns.svg'
-import powerdns_recursorLogo from 'src/writeData/graphics/powerdns_recursor.svg'
 import prometheusLogo from 'src/writeData/graphics/prometheus.svg'
 import proxmoxLogo from 'src/writeData/graphics/proxmox.svg'
 import puppetagentLogo from 'src/writeData/graphics/puppetagent.svg'
@@ -1286,7 +1284,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'postgresql_extensible',
     name: 'PostgreSQL Extensible',
     markdown: postgresql_extensibleMarkdown,
-    image: postgresql_extensibleLogo,
+    image: postgresqlLogo,
   },
   {
     id: 'powerdns',
@@ -1298,7 +1296,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'powerdns_recursor',
     name: 'PowerDNS Recursor',
     markdown: powerdns_recursorMarkdown,
-    image: powerdns_recursorLogo,
+    image: powerdnsLogo,
   },
   {
     id: 'processes',

@@ -242,7 +242,6 @@ import cpuLogo from 'src/writeData/graphics/cpu.svg'
 import csgoLogo from 'src/writeData/graphics/csgo.svg'
 import dcosLogo from 'src/writeData/graphics/dcos.svg'
 import dellLogo from 'src/writeData/graphics/dell.svg'
-import disqueLogo from 'src/writeData/graphics/disque.svg'
 import dns_queryLogo from 'src/writeData/graphics/dns_query.svg'
 import dockerLogo from 'src/writeData/graphics/docker.svg'
 import dovecotLogo from 'src/writeData/graphics/dovecot.svg'
@@ -300,7 +299,6 @@ import neptune_apexLogo from 'src/writeData/graphics/neptune_apex.svg'
 import nginxLogo from 'src/writeData/graphics/nginx.svg'
 import nsdLogo from 'src/writeData/graphics/nsd.svg'
 import nsqLogo from 'src/writeData/graphics/nsq.svg'
-import nsq_consumerLogo from 'src/writeData/graphics/nsq_consumer.svg'
 import ntpqLogo from 'src/writeData/graphics/ntpq.svg'
 import nvidia_smiLogo from 'src/writeData/graphics/nvidia_smi.svg'
 import opcuaLogo from 'src/writeData/graphics/opcua.svg'
@@ -337,7 +335,6 @@ import sflowLogo from 'src/writeData/graphics/sflow.svg'
 import snmpLogo from 'src/writeData/graphics/snmp.svg'
 import snmp_legacyLogo from 'src/writeData/graphics/snmp_legacy.svg'
 import snmp_trapLogo from 'src/writeData/graphics/snmp_trap.svg'
-import socket_listenerLogo from 'src/writeData/graphics/socket_listener.svg'
 import solrLogo from 'src/writeData/graphics/solr.svg'
 import speedometerLogo from 'src/writeData/graphics/speedometer.svg'
 import sqlLogo from 'src/writeData/graphics/sql.svg'
@@ -347,13 +344,12 @@ import suricataLogo from 'src/writeData/graphics/suricata.svg'
 import synproxyLogo from 'src/writeData/graphics/synproxy.svg'
 import syslogLogo from 'src/writeData/graphics/syslog.svg'
 import tailLogo from 'src/writeData/graphics/tail.svg'
-import tcp_listenerLogo from 'src/writeData/graphics/tcp_listener.svg'
 import teamspeakLogo from 'src/writeData/graphics/teamspeak.svg'
 import tempLogo from 'src/writeData/graphics/temp.svg'
 import tengineLogo from 'src/writeData/graphics/tengine.svg'
+import three_nodes_to_oneLogo from 'src/writeData/graphics/three_nodes_to_one.svg'
 import tomcatLogo from 'src/writeData/graphics/tomcat.svg'
 import twemproxyLogo from 'src/writeData/graphics/twemproxy.svg'
-import udp_listenerLogo from 'src/writeData/graphics/udp_listener.svg'
 import unboundLogo from 'src/writeData/graphics/unbound.svg'
 import uwsgiLogo from 'src/writeData/graphics/uwsgi.svg'
 import varnishLogo from 'src/writeData/graphics/varnish.svg'
@@ -593,7 +589,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'disque',
     name: 'Disque',
     markdown: disqueMarkdown,
-    image: disqueLogo,
+    image: three_nodes_to_oneLogo,
   },
   {
     id: 'dmcache',
@@ -1183,7 +1179,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'nsq_consumer',
     name: 'NSQ Consumer',
     markdown: nsq_consumerMarkdown,
-    image: nsq_consumerLogo,
+    image: nsqLogo,
   },
   {
     id: 'nstat',
@@ -1441,7 +1437,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'socket_listener',
     name: 'Socket Listener',
     markdown: socket_listenerMarkdown,
-    image: socket_listenerLogo,
+    image: three_nodes_to_oneLogo,
   },
   {
     id: 'socketstat',
@@ -1531,7 +1527,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'tcp_listener',
     name: 'TCP Listener',
     markdown: tcp_listenerMarkdown,
-    image: tcp_listenerLogo,
+    image: three_nodes_to_oneLogo,
   },
   {
     id: 'teamspeak',
@@ -1573,7 +1569,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'udp_listener',
     name: 'UDP Listener',
     markdown: udp_listenerMarkdown,
-    image: udp_listenerLogo,
+    image: three_nodes_to_oneLogo,
   },
   {
     id: 'unbound',

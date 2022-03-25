@@ -18,12 +18,9 @@ import {
   notebookDeleteFail,
   notebookDeleteSuccess,
 } from 'src/shared/copy/notifications'
-import {
-  RemoteDataState,
-  SpinnerContainer,
-  TechnoSpinner,
-} from '@influxdata/clockface'
+import PageSpinner from 'src/perf/components/PageSpinner'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
+import {RemoteDataState} from '@influxdata/clockface'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -59,6 +56,9 @@ export const FlowProvider: FC = ({children}) => {
   const dispatch = useDispatch()
   const {id, orgID} = useParams<{id: string; orgID: string}>()
   const [currentFlow, setCurrentFlow] = useState<Flow>()
+  const [loading, setLoading] = useState<RemoteDataState>(
+    RemoteDataState.NotStarted
+  )
   const provider = useRef<WebsocketProvider>()
   const yDoc = useRef(new Doc())
   function disconnectProvider() {
@@ -105,6 +105,7 @@ export const FlowProvider: FC = ({children}) => {
 
   const handleGetNotebook = useCallback(async notebookId => {
     try {
+      setLoading(RemoteDataState.Loading)
       const response = await getNotebook({id: notebookId})
 
       if (response.status !== 200) {
@@ -112,8 +113,10 @@ export const FlowProvider: FC = ({children}) => {
       }
 
       setCurrentFlow(hydrate(response.data))
+      setLoading(RemoteDataState.Done)
     } catch (error) {
       console.error({error})
+      setLoading(RemoteDataState.Error)
     }
   }, [])
 
@@ -424,33 +427,26 @@ export const FlowProvider: FC = ({children}) => {
     update(flowCopy)
   }
 
-  if (!currentFlow) {
-    return (
-      <SpinnerContainer
-        loading={RemoteDataState.Loading}
-        spinnerComponent={<TechnoSpinner />}
-      />
-    )
-  }
-
   document.title = pageTitleSuffixer([currentFlow?.name, PROJECT_NAME_PLURAL])
 
   return (
-    <FlowContext.Provider
-      value={{
-        flow: currentFlow,
-        add: addPipe,
-        cloneNotebook: handleCloneNotebook,
-        deleteNotebook: handleDeleteNotebook,
-        updateData,
-        updateMeta,
-        updateOther,
-        remove: removePipe,
-        populate: setCurrentFlow,
-      }}
-    >
-      {children}
-    </FlowContext.Provider>
+    <PageSpinner loading={loading}>
+      <FlowContext.Provider
+        value={{
+          flow: currentFlow,
+          add: addPipe,
+          cloneNotebook: handleCloneNotebook,
+          deleteNotebook: handleDeleteNotebook,
+          updateData,
+          updateMeta,
+          updateOther,
+          remove: removePipe,
+          populate: setCurrentFlow,
+        }}
+      >
+        {children}
+      </FlowContext.Provider>
+    </PageSpinner>
   )
 }
 

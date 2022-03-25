@@ -34,6 +34,7 @@ const TimeZoneDropdown: FC = () => {
       onSelect={onSelect}
       buttonIcon={IconFont.Annotate_New}
       style={{width: '115px'}}
+      testID="timezone-dropdown"
     />
   )
 }

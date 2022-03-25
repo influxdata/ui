@@ -246,7 +246,6 @@ import dcosLogo from 'src/writeData/graphics/dcos.svg'
 import dellLogo from 'src/writeData/graphics/dell.svg'
 import disqueLogo from 'src/writeData/graphics/disque.svg'
 import dns_queryLogo from 'src/writeData/graphics/dns_query.svg'
-import docker_logLogo from 'src/writeData/graphics/docker_log.svg'
 import dockerLogo from 'src/writeData/graphics/docker.svg'
 import dovecotLogo from 'src/writeData/graphics/dovecot.svg'
 import dpdkLogo from 'src/writeData/graphics/dpdk.svg'
@@ -643,7 +642,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'docker_log',
     name: 'Docker Log',
     markdown: docker_logMarkdown,
-    image: docker_logLogo,
+    image: dockerLogo,
   },
   {
     id: 'dovecot',

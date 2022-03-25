@@ -292,6 +292,7 @@ import minecraftLogo from 'src/writeData/graphics/minecraft.svg'
 import modbusLogo from 'src/writeData/graphics/modbus.svg'
 import mongodbLogo from 'src/writeData/graphics/mongodb.svg'
 import monitLogo from 'src/writeData/graphics/monit.svg'
+import monitor_with_workerLogo from 'src/writeData/graphics/monitor_with_worker.svg'
 import mqtt_consumerLogo from 'src/writeData/graphics/mqtt_consumer.svg'
 import multifileLogo from 'src/writeData/graphics/multifile.svg'
 import mysqlLogo from 'src/writeData/graphics/mysql.svg'
@@ -324,13 +325,9 @@ import redfishLogo from 'src/writeData/graphics/redfish.svg'
 import redisLogo from 'src/writeData/graphics/redis.svg'
 import rethinkdbLogo from 'src/writeData/graphics/rethinkdb.svg'
 import riakLogo from 'src/writeData/graphics/riak.svg'
-import monitor_with_workerLogo from 'src/writeData/graphics/monitor_with_worker.svg'
 import salesforceLogo from 'src/writeData/graphics/salesforce.svg'
 import server_rack_threeLogo from 'src/writeData/graphics/server_rack_three.svg'
 import sflowLogo from 'src/writeData/graphics/sflow.svg'
-import snmpLogo from 'src/writeData/graphics/snmp.svg'
-import snmp_legacyLogo from 'src/writeData/graphics/snmp_legacy.svg'
-import snmp_trapLogo from 'src/writeData/graphics/snmp_trap.svg'
 import solrLogo from 'src/writeData/graphics/solr.svg'
 import speedometerLogo from 'src/writeData/graphics/speedometer.svg'
 import sqlLogo from 'src/writeData/graphics/sql.svg'
@@ -355,6 +352,7 @@ import webhooksLogo from 'src/writeData/graphics/webhooks.svg'
 import wifi_signalLogo from 'src/writeData/graphics/wifi_signal.svg'
 import windowsLogo from 'src/writeData/graphics/windows.svg'
 import wireguardLogo from 'src/writeData/graphics/wireguard.svg'
+import wireless_routerLogo from 'src/writeData/graphics/wireless_router.svg'
 import x509_certLogo from 'src/writeData/graphics/x509_cert.svg'
 import zfsLogo from 'src/writeData/graphics/zfs.svg'
 import zipkinLogo from 'src/writeData/graphics/zipkin.svg'
@@ -1416,19 +1414,19 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'snmp',
     name: 'SNMP',
     markdown: snmpMarkdown,
-    image: snmpLogo,
+    image: wireless_routerLogo,
   },
   {
     id: 'snmp_legacy',
     name: 'SNMP Legacy',
     markdown: snmp_legacyMarkdown,
-    image: snmp_legacyLogo,
+    image: wireless_routerLogo,
   },
   {
     id: 'snmp_trap',
     name: 'SNMP Trap',
     markdown: snmp_trapMarkdown,
-    image: snmp_trapLogo,
+    image: wireless_routerLogo,
   },
   {
     id: 'socket_listener',

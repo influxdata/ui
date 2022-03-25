@@ -255,6 +255,7 @@ import facebookLogo from 'src/writeData/graphics/facebook.svg'
 import fail2banLogo from 'src/writeData/graphics/fail2ban.svg'
 import fibaroLogo from 'src/writeData/graphics/fibaro.svg'
 import fileLogo from 'src/writeData/graphics/file.svg'
+import file_with_connectorsLogo from 'src/writeData/graphics/file_with_connectors.svg'
 import fireboardLogo from 'src/writeData/graphics/fireboard.svg'
 import fluentdLogo from 'src/writeData/graphics/fluentd.svg'
 import folderLogo from 'src/writeData/graphics/folder.svg'
@@ -296,7 +297,6 @@ import multifileLogo from 'src/writeData/graphics/multifile.svg'
 import mysqlLogo from 'src/writeData/graphics/mysql.svg'
 import natsLogo from 'src/writeData/graphics/nats.svg'
 import neptune_apexLogo from 'src/writeData/graphics/neptune_apex.svg'
-import net_responseLogo from 'src/writeData/graphics/net_response.svg'
 import nginxLogo from 'src/writeData/graphics/nginx.svg'
 import nsdLogo from 'src/writeData/graphics/nsd.svg'
 import nsqLogo from 'src/writeData/graphics/nsq.svg'
@@ -1098,24 +1098,25 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     name: 'Neptune Apex',
     markdown: neptune_apexMarkdown,
     image: neptune_apexLogo,
+    style: {maxWidth: '150%'},
   },
   {
     id: 'net_response',
     name: 'Network Response',
     markdown: net_responseMarkdown,
-    image: net_responseLogo,
+    image: file_with_connectorsLogo,
   },
   {
     id: 'netstat',
     name: 'Net Stat',
     markdown: netstatMarkdown,
-    image: net_responseLogo,
+    image: file_with_connectorsLogo,
   },
   {
     id: 'net',
     name: 'Net',
     markdown: netMarkdown,
-    image: net_responseLogo,
+    image: file_with_connectorsLogo,
   },
   {
     id: 'nfsclient',

@@ -17,7 +17,7 @@ const ResourcesAccountType: FC = () => {
 
   return (
     <MultiSelectDropdown
-      style={{width: '220px'}}
+      style={{width: '220px', marginRight: '20px'}}
       options={availableTypes}
       selectedOptions={accountTypes}
       onSelect={handleSelect}

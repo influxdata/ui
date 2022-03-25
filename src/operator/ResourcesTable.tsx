@@ -6,6 +6,8 @@ import {
   ComponentSize,
   Tabs,
   Orientation,
+  FlexBox,
+  FlexDirection,
 } from '@influxdata/clockface'
 
 // Components
@@ -47,8 +49,10 @@ const ResourcesTable: FC = () => {
     <Tabs.Container orientation={Orientation.Horizontal}>
       <OperatorTabs />
       <Tabs.TabContents>
-        <ResourcesSearchbar />
-        <ResourcesAccountType />
+        <FlexBox direction={FlexDirection.Row}>
+          <ResourcesAccountType />
+          <ResourcesSearchbar />
+        </FlexBox>
         <PageSpinner loading={status}>
           {resources?.length ? (
             <Table>

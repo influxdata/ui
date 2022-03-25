@@ -88,7 +88,9 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const handleGetOrgs = useCallback(async () => {
     try {
       setOrgsStatus(RemoteDataState.Loading)
-      const resp = await getOperatorOrgs({query: {query: searchTerm}})
+      const resp = await getOperatorOrgs({
+        query: {query: searchTerm, accountTypes: accountTypes},
+      })
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
@@ -101,7 +103,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       setOrgsStatus(RemoteDataState.Error)
       dispatch(notify(getOrgsError()))
     }
-  }, [searchTerm, dispatch])
+  }, [accountTypes, searchTerm, dispatch])
 
   const {pathname} = useLocation()
 

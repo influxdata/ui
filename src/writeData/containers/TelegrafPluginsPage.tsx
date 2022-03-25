@@ -22,7 +22,7 @@ import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {event, normalizeEventName} from 'src/cloud/utils/reporting'
+import {event} from 'src/cloud/utils/reporting'
 
 // Styles
 import 'src/writeData/components/WriteDataDetailsView.scss'
@@ -43,13 +43,12 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
   const {name = '', markdown = '', image = '', style = {}} =
     WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
 
-  const eventName = normalizeEventName(name)
   useEffect(() => {
-    event(`telegraf_tile.${eventName}.config_viewed`, {id: contentID, name})
-  }, [eventName, contentID, name])
+    event(`telegraf_tile.config_viewed`, {id: contentID, name})
+  }, [contentID, name])
 
   const onCopy = () => {
-    event(`telegraf_tile.${eventName}.config_copied`, {id: contentID, name})
+    event(`telegraf_tile.config_copied`, {id: contentID, name})
   }
   const codeRenderer: any = (props: any): any => (
     <CodeSnippet text={props.value} label={props.language} onCopy={onCopy} />

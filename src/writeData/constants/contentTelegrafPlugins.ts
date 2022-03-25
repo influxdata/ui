@@ -377,7 +377,7 @@ import win_eventlogLogo from 'src/writeData/graphics/win_eventlog.svg'
 import win_perf_countersLogo from 'src/writeData/graphics/win_perf_counters.svg'
 import win_servicesLogo from 'src/writeData/graphics/win_services.svg'
 import wireguardLogo from 'src/writeData/graphics/wireguard.svg'
-import wirelessLogo from 'src/writeData/graphics/wireless.svg'
+import wifi_signalLogo from 'src/writeData/graphics/wifi_signal.svg'
 import x509_certLogo from 'src/writeData/graphics/x509_cert.svg'
 import zfsLogo from 'src/writeData/graphics/zfs.svg'
 import zipkinLogo from 'src/writeData/graphics/zipkin.svg'
@@ -849,7 +849,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'internet_speed',
     name: 'Internet Speed',
     markdown: internet_speedMarkdown,
-    image: wirelessLogo,
+    image: wifi_signalLogo,
   },
   {
     id: 'interrupts',
@@ -1655,7 +1655,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'wireless',
     name: 'Wireless',
     markdown: wirelessMarkdown,
-    image: wirelessLogo,
+    image: wifi_signalLogo,
   },
   {
     id: 'x509_cert',

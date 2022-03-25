@@ -298,7 +298,6 @@ import natsLogo from 'src/writeData/graphics/nats.svg'
 import nats_consumerLogo from 'src/writeData/graphics/nats_consumer.svg'
 import neptune_apexLogo from 'src/writeData/graphics/neptune_apex.svg'
 import net_responseLogo from 'src/writeData/graphics/net_response.svg'
-import nfsclientLogo from 'src/writeData/graphics/nfsclient.svg'
 import nginxLogo from 'src/writeData/graphics/nginx.svg'
 import nsdLogo from 'src/writeData/graphics/nsd.svg'
 import nsqLogo from 'src/writeData/graphics/nsq.svg'
@@ -365,9 +364,7 @@ import varnishLogo from 'src/writeData/graphics/varnish.svg'
 import vsphereLogo from 'src/writeData/graphics/vsphere.svg'
 import webhooksLogo from 'src/writeData/graphics/webhooks.svg'
 import wifi_signalLogo from 'src/writeData/graphics/wifi_signal.svg'
-import win_eventlogLogo from 'src/writeData/graphics/win_eventlog.svg'
-import win_perf_countersLogo from 'src/writeData/graphics/win_perf_counters.svg'
-import win_servicesLogo from 'src/writeData/graphics/win_services.svg'
+import windowsLogo from 'src/writeData/graphics/windows.svg'
 import wireguardLogo from 'src/writeData/graphics/wireguard.svg'
 import x509_certLogo from 'src/writeData/graphics/x509_cert.svg'
 import zfsLogo from 'src/writeData/graphics/zfs.svg'
@@ -1128,7 +1125,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'nfsclient',
     name: 'NFS Client',
     markdown: nfsclientMarkdown,
-    image: nfsclientLogo,
+    image: windowsLogo,
   },
   {
     id: 'nginx',
@@ -1622,19 +1619,19 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'win_eventlog',
     name: 'Windows Eventlog',
     markdown: win_eventlogMarkdown,
-    image: win_eventlogLogo,
+    image: windowsLogo,
   },
   {
     id: 'win_perf_counters',
     name: 'Windows Performance Counters',
     markdown: win_perf_countersMarkdown,
-    image: win_perf_countersLogo,
+    image: windowsLogo,
   },
   {
     id: 'win_services',
     name: 'Windows Services',
     markdown: win_servicesMarkdown,
-    image: win_servicesLogo,
+    image: windowsLogo,
   },
   {
     id: 'wireguard',

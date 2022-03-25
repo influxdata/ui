@@ -56,7 +56,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
-  const [accountTypes, setAccountTypes] = useState([])
+  const [accountTypes, setAccountTypes] = useState<string[]>([])
   const dispatch = useDispatch()
   const quartzMe = useSelector(getQuartzMe)
 

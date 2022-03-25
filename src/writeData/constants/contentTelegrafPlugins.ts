@@ -252,7 +252,6 @@ import dpdkLogo from 'src/writeData/graphics/dpdk.svg'
 import ecsLogo from 'src/writeData/graphics/ecs.svg'
 import elasticsearchLogo from 'src/writeData/graphics/elasticsearch.svg'
 import eventhub_consumerLogo from 'src/writeData/graphics/eventhub_consumer.svg'
-import execdLogo from 'src/writeData/graphics/execd.svg'
 import execLogo from 'src/writeData/graphics/exec.svg'
 import fail2banLogo from 'src/writeData/graphics/fail2ban.svg'
 import fibaroLogo from 'src/writeData/graphics/fibaro.svg'
@@ -696,7 +695,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'execd',
     name: 'Execd',
     markdown: execdMarkdown,
-    image: execdLogo,
+    image: execLogo,
   },
   {
     id: 'fail2ban',

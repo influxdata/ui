@@ -114,3 +114,7 @@ export const HomepagePythonWizard = lazy(() =>
     'src/homepageExperience/containers/HomepagePythonWizard'
   ).then(module => ({default: module.HomepagePythonWizard}))
 )
+
+export const SubscriptionDetailsPage = lazy(() =>
+  import('src/writeData/subscriptions/components/SubscriptionDetailsPage')
+)

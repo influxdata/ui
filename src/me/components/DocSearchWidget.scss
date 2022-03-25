@@ -120,9 +120,13 @@ $article-text: #d4d7dd;
     }
 
     transition: $cf-input--transition;
+    :hover{
+      background-color: $cf-input-background--hover;
+    }
 
     :focus {
       background-image: none;
+      background-color: $cf-input-background--focused;
     }
   }
 

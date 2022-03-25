@@ -275,7 +275,6 @@ import kafkaLogo from 'src/writeData/graphics/kafka.svg'
 import kibanaLogo from 'src/writeData/graphics/kibana.svg'
 import kinesis_consumerLogo from 'src/writeData/graphics/kinesis_consumer.svg'
 import knx_listenerLogo from 'src/writeData/graphics/knx_listener.svg'
-import kube_inventoryLogo from 'src/writeData/graphics/kube_inventory.svg'
 import kubernetesLogo from 'src/writeData/graphics/kubernetes.svg'
 import lanzLogo from 'src/writeData/graphics/lanz.svg'
 import leofsLogo from 'src/writeData/graphics/leofs.svg'
@@ -954,7 +953,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'kube_inventory',
     name: 'Kubernetes Inventory',
     markdown: kube_inventoryMarkdown,
-    image: kube_inventoryLogo,
+    image: kubernetesLogo,
   },
   {
     id: 'kubernetes',

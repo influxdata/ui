@@ -51,7 +51,7 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
     if (tooltipPopup) {
       const recordedFunction = hoveredFunctions.has(hoveredFunction)
       if (!recordedFunction) {
-        event('hovered.flux.function', {function: hoveredFunction})
+        event('flux.function.hover', {function: hoveredFunction})
       }
       hoveredFunctions.add(hoveredFunction)
     }

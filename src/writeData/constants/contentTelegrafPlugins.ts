@@ -324,7 +324,7 @@ import redfishLogo from 'src/writeData/graphics/redfish.svg'
 import redisLogo from 'src/writeData/graphics/redis.svg'
 import rethinkdbLogo from 'src/writeData/graphics/rethinkdb.svg'
 import riakLogo from 'src/writeData/graphics/riak.svg'
-import riemann_listenerLogo from 'src/writeData/graphics/riemann_listener.svg'
+import monitor_with_workerLogo from 'src/writeData/graphics/monitor_with_worker.svg'
 import salesforceLogo from 'src/writeData/graphics/salesforce.svg'
 import server_rack_threeLogo from 'src/writeData/graphics/server_rack_three.svg'
 import sflowLogo from 'src/writeData/graphics/sflow.svg'
@@ -1386,7 +1386,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'riemann_listener',
     name: 'Riemann Listener',
     markdown: riemann_listenerMarkdown,
-    image: riemann_listenerLogo,
+    image: monitor_with_workerLogo,
   },
   {
     id: 'salesforce',

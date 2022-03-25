@@ -251,6 +251,7 @@ import ecsLogo from 'src/writeData/graphics/ecs.svg'
 import elasticsearchLogo from 'src/writeData/graphics/elasticsearch.svg'
 import eventhub_consumerLogo from 'src/writeData/graphics/eventhub_consumer.svg'
 import execLogo from 'src/writeData/graphics/exec.svg'
+import facebookLogo from 'src/writeData/graphics/facebook.svg'
 import fail2banLogo from 'src/writeData/graphics/fail2ban.svg'
 import fibaroLogo from 'src/writeData/graphics/fibaro.svg'
 import fileLogo from 'src/writeData/graphics/file.svg'
@@ -281,10 +282,9 @@ import leofsLogo from 'src/writeData/graphics/leofs.svg'
 import linuxLogo from 'src/writeData/graphics/linux_penguin.svg'
 import logparserLogo from 'src/writeData/graphics/logparser.svg'
 import logstashLogo from 'src/writeData/graphics/logstash.svg'
+import magnifying_glass_sinusLogo from 'src/writeData/graphics/magnifying_glass_sinus.svg'
 import mailchimpLogo from 'src/writeData/graphics/mailchimp.svg'
 import marklogicLogo from 'src/writeData/graphics/marklogic.svg'
-import facebookLogo from 'src/writeData/graphics/facebook.svg'
-import memLogo from 'src/writeData/graphics/mem.svg'
 import memcachedLogo from 'src/writeData/graphics/memcached.svg'
 import mesosLogo from 'src/writeData/graphics/mesos.svg'
 import minecraftLogo from 'src/writeData/graphics/minecraft.svg'
@@ -321,8 +321,6 @@ import postgresqlLogo from 'src/writeData/graphics/postgresql.svg'
 import postgresql_extensibleLogo from 'src/writeData/graphics/postgresql_extensible.svg'
 import powerdnsLogo from 'src/writeData/graphics/powerdns.svg'
 import powerdns_recursorLogo from 'src/writeData/graphics/powerdns_recursor.svg'
-import processesLogo from 'src/writeData/graphics/processes.svg'
-import procstatLogo from 'src/writeData/graphics/procstat.svg'
 import prometheusLogo from 'src/writeData/graphics/prometheus.svg'
 import proxmoxLogo from 'src/writeData/graphics/proxmox.svg'
 import puppetagentLogo from 'src/writeData/graphics/puppetagent.svg'
@@ -346,7 +344,6 @@ import speedometerLogo from 'src/writeData/graphics/speedometer.svg'
 import sqlLogo from 'src/writeData/graphics/sql.svg'
 import sqlserverLogo from 'src/writeData/graphics/sqlserver.svg'
 import stackdriverLogo from 'src/writeData/graphics/stackdriver.svg'
-import statsdLogo from 'src/writeData/graphics/statsd.svg'
 import suricataLogo from 'src/writeData/graphics/suricata.svg'
 import synproxyLogo from 'src/writeData/graphics/synproxy.svg'
 import syslogLogo from 'src/writeData/graphics/syslog.svg'
@@ -1023,7 +1020,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'mem',
     name: 'Memory',
     markdown: memMarkdown,
-    image: memLogo,
+    image: magnifying_glass_sinusLogo,
   },
   {
     id: 'memcached',
@@ -1047,7 +1044,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'mock',
     name: 'Mock',
     markdown: mockMarkdown,
-    image: procstatLogo,
+    image: magnifying_glass_sinusLogo,
   },
   {
     id: 'modbus',
@@ -1312,13 +1309,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'processes',
     name: 'Processes',
     markdown: processesMarkdown,
-    image: processesLogo,
+    image: magnifying_glass_sinusLogo,
   },
   {
     id: 'procstat',
     name: 'Procstat',
     markdown: procstatMarkdown,
-    image: procstatLogo,
+    image: magnifying_glass_sinusLogo,
   },
   {
     id: 'prometheus',
@@ -1450,7 +1447,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'socketstat',
     name: 'SocketStat',
     markdown: socketstatMarkdown,
-    image: statsdLogo,
+    image: magnifying_glass_sinusLogo,
   },
   {
     id: 'solr',
@@ -1480,7 +1477,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'statsd',
     name: 'StatsD',
     markdown: statsdMarkdown,
-    image: statsdLogo,
+    image: magnifying_glass_sinusLogo,
   },
   {
     id: 'suricata',
@@ -1564,7 +1561,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'trig',
     name: 'Trig',
     markdown: trigMarkdown,
-    image: memLogo,
+    image: magnifying_glass_sinusLogo,
   },
   {
     id: 'twemproxy',

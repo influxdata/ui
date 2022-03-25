@@ -65,7 +65,6 @@ export const loginViaDexUI = (username: string, password: string) => {
   cy.get('#login').type(username)
   cy.get('#password').type(password)
   cy.get('#submit-login').click()
-  cy.get('.theme-btn--success').click()
 }
 
 Cypress.Commands.add(

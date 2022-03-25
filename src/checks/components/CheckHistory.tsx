@@ -57,7 +57,7 @@ const CheckHistory: FC = () => {
                   title="Check Statuses"
                   testID="alert-history-title"
                 />
-                <RateLimitAlert />
+                <RateLimitAlert location="check history" />
               </Page.Header>
               <Page.ControlBar fullWidth={true}>
                 <Page.ControlBarLeft>

@@ -1,6 +1,5 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import memoizeOne from 'memoize-one'
+import React, {FC, useMemo} from 'react'
 
 // Components
 import {ResourceList} from '@influxdata/clockface'
@@ -24,39 +23,21 @@ interface Props {
   sortType: SortTypes
 }
 
-export default class ScraperList extends PureComponent<Props> {
-  private memGetSortedResources = memoizeOne<typeof getSortedResources>(
-    getSortedResources
+const ScraperList: FC<Props> = ({
+  scrapers,
+  emptyState,
+  onDeleteScraper,
+  onUpdateScraper,
+  sortKey,
+  sortDirection,
+  sortType,
+}) => {
+  const sortedScrapers = useMemo(
+    () => getSortedResources(scrapers, sortKey, sortDirection, sortType),
+    [scrapers, sortKey, sortDirection, sortType]
   )
 
-  public render() {
-    const {emptyState} = this.props
-
-    return (
-      <ResourceList>
-        <ResourceList.Body emptyState={emptyState}>
-          {this.scrapersList}
-        </ResourceList.Body>
-      </ResourceList>
-    )
-  }
-
-  public get scrapersList(): JSX.Element[] {
-    const {
-      scrapers,
-      sortKey,
-      sortDirection,
-      sortType,
-      onDeleteScraper,
-      onUpdateScraper,
-    } = this.props
-    const sortedScrapers = this.memGetSortedResources(
-      scrapers,
-      sortKey,
-      sortDirection,
-      sortType
-    )
-
+  const scrapersList = (): JSX.Element[] => {
     if (scrapers !== undefined) {
       return sortedScrapers.map(scraper => (
         <ScraperRow
@@ -69,4 +50,14 @@ export default class ScraperList extends PureComponent<Props> {
     }
     return
   }
+
+  return (
+    <ResourceList>
+      <ResourceList.Body emptyState={emptyState}>
+        {scrapersList()}
+      </ResourceList.Body>
+    </ResourceList>
+  )
 }
+
+export default React.memo(ScraperList)

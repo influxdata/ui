@@ -273,8 +273,6 @@ import httpjsonLogo from 'src/writeData/graphics/httpjson.svg'
 import httpLogo from 'src/writeData/graphics/http.svg'
 import icinga2Logo from 'src/writeData/graphics/icinga2.svg'
 import infinibandLogo from 'src/writeData/graphics/infiniband.svg'
-import influxdb_listenerLogo from 'src/writeData/graphics/influxdb_listener.svg'
-import influxdb_v2_listenerLogo from 'src/writeData/graphics/influxdb_v2_listener.svg'
 import intel_powerstatLogo from 'src/writeData/graphics/intel_powerstat.svg'
 import intel_rdtLogo from 'src/writeData/graphics/intel_rdt.svg'
 import influxdbLogo from 'src/writeData/graphics/influxdb.svg'
@@ -290,7 +288,6 @@ import jolokiaLogo from 'src/writeData/graphics/jolokia.svg'
 import jti_openconfig_telemetryLogo from 'src/writeData/graphics/jti_openconfig_telemetry.svg'
 import kafka_consumer_legacyLogo from 'src/writeData/graphics/kafka_consumer_legacy.svg'
 import kafka_consumerLogo from 'src/writeData/graphics/kafka_consumer.svg'
-import kapacitorLogo from 'src/writeData/graphics/kapacitor.svg'
 import kernel_vmstatLogo from 'src/writeData/graphics/kernel_vmstat.svg'
 import kernelLogo from 'src/writeData/graphics/kernel.svg'
 import kibanaLogo from 'src/writeData/graphics/kibana.svg'
@@ -825,13 +822,13 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'influxdb_listener',
     name: 'InfluxDB Listener',
     markdown: influxdb_listenerMarkdown,
-    image: influxdb_listenerLogo,
+    image: influxdbLogo,
   },
   {
     id: 'influxdb_v2_listener',
     name: 'InfluxDB V2 Listener',
     markdown: influxdb_v2_listenerMarkdown,
-    image: influxdb_v2_listenerLogo,
+    image: influxdbLogo,
   },
   {
     id: 'intel_pmu',
@@ -933,7 +930,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'kapacitor',
     name: 'Kapacitor',
     markdown: kapacitorMarkdown,
-    image: kapacitorLogo,
+    image: influxdbLogo,
   },
   {
     id: 'kernel',

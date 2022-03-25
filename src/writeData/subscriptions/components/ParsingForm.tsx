@@ -29,6 +29,7 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -189,7 +190,12 @@ const ParsingForm: FC<Props> = ({
               testID="create-parsing-form--back"
             />
             {showUpgradeButton ? (
-              <CloudUpgradeButton className="create-parsing-form__upgrade-button" />
+              <CloudUpgradeButton
+                className="create-parsing-form__upgrade-button"
+                metric={() => {
+                  event('parsing form upgrade')
+                }}
+              />
             ) : (
               <Button
                 text="Next"

@@ -22,8 +22,8 @@ export interface Subscription {
   status?: string
   bucket?: string
   qos?: number
-  createdAt?: string
-  updatedAt?: string
+  createdAt?: Date
+  updatedAt?: Date
   tokenID?: string
   token?: string
 }

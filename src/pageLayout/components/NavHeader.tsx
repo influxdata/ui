@@ -23,7 +23,7 @@ const NavHeader: FC<Props> = ({link}) => {
       <CloudExclude>
         <TreeNav.Header
           id="getting-started"
-          icon={<Icon glyph={IconFont.CuboNav} />}
+          icon={<Icon glyph={IconFont.CuboSolid} />}
           label={<InfluxDBCloudLogo cloud={false} />}
           color={ComponentColor.Secondary}
           linkElement={className => <Link className={className} to={link} />}
@@ -32,7 +32,7 @@ const NavHeader: FC<Props> = ({link}) => {
       <CloudOnly>
         <TreeNav.Header
           id="getting-started"
-          icon={<Icon glyph={IconFont.CuboNav} />}
+          icon={<Icon glyph={IconFont.CuboSolid} />}
           label={<InfluxDBCloudLogo cloud={true} />}
           color={ComponentColor.Primary}
           linkElement={className => <Link className={className} to={link} />}

@@ -16,6 +16,7 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Types
 import {AppState} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 interface OwnProps {
   onClose: () => void
@@ -57,6 +58,9 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
             <CloudUpgradeButton
               size={ComponentSize.Large}
               className="upgrade-payg--button__asset-create"
+              metric={() => {
+                event('asset limit upgrade', {asset: assetName})
+              }}
             />
           </Overlay.Footer>
         </div>

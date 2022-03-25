@@ -9,7 +9,7 @@ class SettingsHeader extends Component {
     return (
       <Page.Header fullWidth={false}>
         <Page.Title title="Settings" testID="settings-page--header" />
-        <RateLimitAlert />
+        <RateLimitAlert location="settings" />
       </Page.Header>
     )
   }

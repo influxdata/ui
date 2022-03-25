@@ -16,20 +16,32 @@ import {
 // Types
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 interface Props {
   func: Fluxdocs
   onClickFunction: (func: Fluxdocs) => void
   testID: string
+  setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
 const defaultProps = {
   testID: 'flux-function',
 }
 
-const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
+const ToolbarFunction: FC<Props> = ({
+  func,
+  onClickFunction,
+  testID,
+  setToolTipPopup,
+  setHoverdFunction,
+}) => {
   const functionRef = createRef<HTMLDListElement>()
   const handleClickFunction = () => {
     onClickFunction(func)
+    event('flux.function.injected', {name: `${func.package}.${func.name}`})
   }
   return (
     <>
@@ -42,7 +54,13 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
         hideEvent={PopoverInteraction.Hover}
         distanceFromTrigger={8}
         testID="toolbar-popover"
-        contents={() => <FunctionTooltipContents func={func} />}
+        contents={() => (
+          <FunctionTooltipContents
+            func={func}
+            setToolTipPopup={setToolTipPopup}
+            setHoverdFunction={setHoverdFunction}
+          />
+        )}
       />
       <dd
         ref={functionRef}

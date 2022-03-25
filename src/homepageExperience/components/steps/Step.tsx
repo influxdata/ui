@@ -6,14 +6,15 @@ import {InfluxColors} from '@influxdata/clockface'
 import {StepCompleteIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 type StepProps = {
+  icon: JSX.Element
+  onClick: () => void
   stepIsActive: boolean
   stepIsComplete: boolean
-  icon: JSX.Element
   text: string
 }
 
 const Step = (props: StepProps) => {
-  const {text, icon, stepIsActive, stepIsComplete} = props
+  const {icon, onClick, stepIsActive, stepIsComplete, text} = props
   const iconAndTextColor =
     stepIsActive || stepIsComplete ? InfluxColors.Pool : InfluxColors.Grey95
 
@@ -22,6 +23,7 @@ const Step = (props: StepProps) => {
       className={classnames('subway-navigation-step-flex-wrapper', {
         stepIsComplete: stepIsComplete,
       })}
+      onClick={onClick}
     >
       <div
         className={classnames('subway-navigation-step', {

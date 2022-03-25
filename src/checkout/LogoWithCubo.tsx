@@ -8,7 +8,7 @@ import React, {FC} from 'react'
 
 const LogoWithCubo: FC = () => (
   <div className="logo-with-cubo">
-    <Icon glyph={IconFont.Cubo} className="cubo-logo" />
+    <Icon glyph={IconFont.CuboSolid} className="cubo-logo" />
     <InfluxDBCloudLogo
       fill={InfluxColors.White}
       cloud={true}

@@ -12,7 +12,7 @@ describe('Buckets', () => {
     cy.getByTestID('tree-nav')
   })
 
-  describe('from the buckets index page', () => {
+  describe('the buckets index page', () => {
     it('can create a bucket', () => {
       const newBucket = '🅱️ucket'
       cy.getByTestID(`bucket--card--name ${newBucket}`).should('not.exist')
@@ -101,6 +101,67 @@ describe('Buckets', () => {
       cy.wait('@deleteBucket')
       cy.getByTestID(`bucket--card--name ${bucket1}`).should('not.exist')
     })
+
+    it('can sort by name and retention', () => {
+      const buckets = ['defbuck', '_tasks', '_monitoring']
+      const retentionDesc = ['defbuck', '_monitoring', '_tasks']
+      const retentionAsc = ['defbuck', '_tasks', '_monitoring']
+
+      cy.getByTestID('resource-sorter--button')
+        .click()
+        .then(() => {
+          cy.getByTestID('resource-sorter--name-desc').click()
+        })
+        .then(() => {
+          cy.get('[data-testid*="bucket-card"]').each((val, index) => {
+            const testID = val.attr('data-testid')
+            expect(testID).to.include(buckets[index])
+          })
+        })
+
+      cy.getByTestID('resource-sorter--button')
+        .click()
+        .then(() => {
+          cy.getByTestID(
+            'resource-sorter--retentionRules[0].everySeconds-desc'
+          ).click()
+        })
+        .then(() => {
+          cy.get('[data-testid*="bucket-card"]').each((val, index) => {
+            const testID = val.attr('data-testid')
+            expect(testID).to.include(retentionDesc[index])
+          })
+        })
+
+      cy.getByTestID('resource-sorter--button')
+        .click()
+        .then(() => {
+          cy.getByTestID(
+            'resource-sorter--retentionRules[0].everySeconds-asc'
+          ).click()
+        })
+        .then(() => {
+          cy.get('[data-testid*="bucket-card"]').each((val, index) => {
+            const testID = val.attr('data-testid')
+            expect(testID).to.include(retentionAsc[index])
+          })
+        })
+
+      // assert buckets amount
+      cy.get('.cf-resource-card').should('have.length', 3)
+
+      // filter a bucket
+      cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
+        cy.getByTestID('search-widget').type(defaultBucket.substr(0, 3))
+        cy.get('.cf-resource-card')
+          .should('have.length', 1)
+          .should('contain', defaultBucket)
+      })
+
+      // clear filter and assert all buckets are visible
+      cy.getByTestID('search-widget').clear()
+      cy.get('.cf-resource-card').should('have.length', 3)
+    })
   })
 
   describe('routing directly to the edit overlay', () => {
@@ -131,10 +192,10 @@ describe('Buckets', () => {
     })
   })
 
-  describe('add data', function() {
+  describe('adding data', () => {
     const TELEGRAF_SYSTEMS_PLUGINS_ORIGINAL_COUNT = 5
 
-    it('configure telegraf agent', () => {
+    it('configures a telegraf agent', () => {
       // click "add data" and choose Configure Telegraf Agent
       cy.getByTestID('add-data--button').click()
       cy.get('.bucket-add-data--option')
@@ -205,8 +266,8 @@ describe('Buckets', () => {
     })
   })
 
-  describe('upload csv', function() {
-    it('can write a properly annotated csv', () => {
+  describe('uploading a csv', function() {
+    it('writes a properly annotated csv', () => {
       // Navigate to csv uploader
       cy.getByTestID('add-data--button').click()
       cy.getByTestID('bucket-add-csv').click()
@@ -227,7 +288,7 @@ describe('Buckets', () => {
       cy.getByTestID('csv-uploader--success')
     })
 
-    it('fails to write improperly formatted csv', () => {
+    it('fails to write an improperly formatted csv', () => {
       // Navigate to csv uploader
       cy.getByTestID('add-data--button').click()
       cy.getByTestID('bucket-add-csv').click()

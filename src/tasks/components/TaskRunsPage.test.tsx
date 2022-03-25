@@ -18,6 +18,10 @@ import {RemoteDataState} from 'src/types'
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
+jest.mock('src/flows', () => {
+  return () => <></>
+})
+
 const runIDs = [
   '07a7f99e81cf2000',
   '07a7f99e81cf3000',

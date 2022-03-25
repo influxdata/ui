@@ -231,7 +231,7 @@ import bindLogo from 'src/writeData/graphics/bind.svg'
 import burrowLogo from 'src/writeData/graphics/burrow.svg'
 import cassandraLogo from 'src/writeData/graphics/cassandra.svg'
 import cephLogo from 'src/writeData/graphics/ceph.svg'
-import cisco_telemetry_mdtLogo from 'src/writeData/graphics/cisco_telemetry_mdt.svg'
+import ciscoLogo from 'src/writeData/graphics/cisco.svg'
 import clickhouseLogo from 'src/writeData/graphics/clickhouse.svg'
 import cloud_pubsub_pushLogo from 'src/writeData/graphics/cloud_pubsub_push.svg'
 import cloud_pubsubLogo from 'src/writeData/graphics/cloud_pubsub.svg'
@@ -260,7 +260,6 @@ import fireboardLogo from 'src/writeData/graphics/fireboard.svg'
 import fluentdLogo from 'src/writeData/graphics/fluentd.svg'
 import folderLogo from 'src/writeData/graphics/folder.svg'
 import githubLogo from 'src/writeData/graphics/github.svg'
-import gnmiLogo from 'src/writeData/graphics/gnmi.svg'
 import graylogLogo from 'src/writeData/graphics/graylog.svg'
 import haproxyLogo from 'src/writeData/graphics/haproxy.svg'
 import hashicorpLogo from 'src/writeData/graphics/hashicorp.svg'
@@ -517,7 +516,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'cisco_telemetry_mdt',
     name: 'Cisco Model-Driven Telemetry (MDT)',
     markdown: cisco_telemetry_mdtMarkdown,
-    image: cisco_telemetry_mdtLogo,
+    image: ciscoLogo,
   },
   {
     id: 'clickhouse',
@@ -746,7 +745,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'gnmi',
     name: 'gNMI (gRPC Network Management Interface)',
     markdown: gnmiMarkdown,
-    image: gnmiLogo,
+    image: ciscoLogo,
   },
   {
     id: 'graylog',

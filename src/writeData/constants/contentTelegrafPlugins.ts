@@ -299,11 +299,9 @@ import neptune_apexLogo from 'src/writeData/graphics/neptune_apex.svg'
 import nginxLogo from 'src/writeData/graphics/nginx.svg'
 import nsdLogo from 'src/writeData/graphics/nsd.svg'
 import nsqLogo from 'src/writeData/graphics/nsq.svg'
-import ntpqLogo from 'src/writeData/graphics/ntpq.svg'
 import nvidia_smiLogo from 'src/writeData/graphics/nvidia_smi.svg'
 import opcuaLogo from 'src/writeData/graphics/opcua.svg'
 import openldapLogo from 'src/writeData/graphics/openldap.svg'
-import openntpdLogo from 'src/writeData/graphics/openntpd.svg'
 import opensmtpdLogo from 'src/writeData/graphics/opensmtpd.svg'
 import openstackLogo from 'src/writeData/graphics/openstack.svg'
 import opentelemetryLogo from 'src/writeData/graphics/opentelemetry.svg'
@@ -354,6 +352,7 @@ import unboundLogo from 'src/writeData/graphics/unbound.svg'
 import uwsgiLogo from 'src/writeData/graphics/uwsgi.svg'
 import varnishLogo from 'src/writeData/graphics/varnish.svg'
 import vsphereLogo from 'src/writeData/graphics/vsphere.svg'
+import wall_clockLogo from 'src/writeData/graphics/wall_clock.svg'
 import webhooksLogo from 'src/writeData/graphics/webhooks.svg'
 import wifi_signalLogo from 'src/writeData/graphics/wifi_signal.svg'
 import windowsLogo from 'src/writeData/graphics/windows.svg'
@@ -1191,7 +1190,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'ntpq',
     name: 'ntpq',
     markdown: ntpqMarkdown,
-    image: ntpqLogo,
+    image: wall_clockLogo,
   },
   {
     id: 'nvidia_smi',
@@ -1215,7 +1214,7 @@ export const WRITE_DATA_TELEGRAF_PLUGINS: TelegrafPluginAssets[] = [
     id: 'openntpd',
     name: 'OpenNTPD',
     markdown: openntpdMarkdown,
-    image: openntpdLogo,
+    image: wall_clockLogo,
   },
   {
     id: 'opensmtpd',

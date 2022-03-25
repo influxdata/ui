@@ -22,7 +22,6 @@ describe('Member List', () => {
 
   it('can sort by name', () => {
     // in ascending order
-
     // in descending order
   })
 

@@ -369,6 +369,13 @@ const formatReadmeText = readmeText => {
     .join()
 }
 
+let newPluginsCount = 0
+
+console.warn(
+  '\x1b[36m%s\x1b[0m',
+  '................................................................................\n'
+)
+
 getVersion.then(version => {
   const telegrafConfigFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${version}/etc/telegraf.conf`
 
@@ -408,6 +415,7 @@ getVersion.then(version => {
               !inputPluginsList.includes(pluginName) &&
               !inputPluginsExceptions.includes(pluginName)
           )
+          newPluginsCount = noPluginEntry.length
 
           if (noPluginEntry.length) {
             console.warn(
@@ -535,6 +543,25 @@ getVersion.then(version => {
               'ERROR: Unexpected result: the fetched file was not parsed into an array'
             )
           }
+
+          console.warn(
+            logSymbols.success + ' \x1b[32m%s\x1b[0m',
+            `${inputPluginsList.length} existing plugins`
+          )
+          console.warn(
+            newPluginsCount === 0
+              ? logSymbols.info + ' \x1b[33m%s\x1b[0m'
+              : logSymbols.error + ' \x1b[31m%s\x1b[0m',
+            `${newPluginsCount} new plugins\n`
+          )
+          console.warn(
+            '\x1b[36m%s\x1b[0m',
+            '................................................................................\n'
+          )
+          console.warn(
+            logSymbols.warning + ' \x1b[36m%s\x1b[0m',
+            'Checking for updates on README markdown files...'
+          )
         },
         fetchError => {
           console.error(logSymbols.error, ' ERROR:', fetchError)
@@ -571,7 +598,6 @@ getVersion.then(version => {
   })
 
   Promise.all(telegrafPluginsReadmeUpdates).then(updateStatuses => {
-    console.log('Checking for updates on README markdown files...')
     const failedStatuses = updateStatuses.filter(updateStatus =>
       updateStatus.startsWith(failurePrefix)
     )
@@ -588,24 +614,23 @@ getVersion.then(version => {
     if (failedStatuses.length) {
       console.warn(
         logSymbols.error + ' \x1b[31m%s\x1b[0m',
-        '^^^ File paths for the above may be incorrect. You may want to check & update them manually by looking in Telegraf repository:'
+        '^^^ File paths for the above may be incorrect. You may want to check & update them manually by looking in github at:'
       )
       console.warn(
         logSymbols.warning + ' \x1b[36m%s\x1b[0m',
         'https://github.com/influxdata/telegraf/tree/master/plugins/inputs\n'
       )
-
-      if (updateStatuses.length !== failedStatuses.length) {
-        console.warn(
-          logSymbols.success + ' \x1b[32m%s\x1b[0m',
-          `${updateStatuses.length} files were successfully checked.`
-        )
-      }
-    } else {
-      console.warn(
-        logSymbols.success + ' \x1b[32m%s\x1b[0m',
-        'All README files successfully updated!'
-      )
     }
+    console.warn(
+      logSymbols.success + ' \x1b[32m%s\x1b[0m',
+      `${updateStatuses.length -
+        failedStatuses.length} README files were successfully checked`
+    )
+    console.warn(
+      failedStatuses.length
+        ? logSymbols.error + ' \x1b[31m%s\x1b[0m'
+        : logSymbols.success + ' \x1b[32m%s\x1b[0m',
+      `${failedStatuses.length} README files were unsuccessful\n`
+    )
   })
 })

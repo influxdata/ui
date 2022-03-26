@@ -7,7 +7,7 @@
   Follow the two steps to update. Then commit the updated files as a pull request.
 */
 import https from 'https'
-import fs from 'fs'
+import fs, {read} from 'fs'
 import logSymbols from 'log-symbols'
 
 /*
@@ -301,13 +301,19 @@ const getVersion = new Promise((resolve, reject) => {
   }
 })
 
-const parsedPluginsPath =
+const parsedPluginsConfigPath =
   'src/writeData/components/telegrafInputPluginsConfigurationText/'
 
-const fetch = path => {
+const parsedPluginsReadmePath = 'src/writeData/components/telegrafPlugins/'
+
+const fetch = (path, parsedPath) => {
   return new Promise((resolve, reject) => {
     https.get(path, response => {
       let contents = ''
+      if (response.statusCode !== 200) {
+        reject(`Error: status code: ${response.statusCode} for ${path}`)
+      }
+
       response.on('data', chunk => {
         contents += chunk.toString()
       })
@@ -315,8 +321,8 @@ const fetch = path => {
         reject(error)
       })
       response.on('end', () => {
-        if (!fs.existsSync(parsedPluginsPath)) {
-          fs.mkdirSync(parsedPluginsPath)
+        if (!fs.existsSync(parsedPath)) {
+          fs.mkdirSync(parsedPath)
         }
 
         resolve(contents.split('\n' + '\n' + '\n'))
@@ -350,6 +356,19 @@ const formatConfigurationText = configurationText => {
   return configurationText + '\n'
 }
 
+const formatReadmeText = readmeText => {
+  // Change all relative links to Github links
+  const relativeLink = /\(\/plugins\//gi
+  const replacement =
+    '(https://github.com/influxdata/telegraf/tree/master/plugins/'
+
+  return readmeText
+    .map(line => {
+      return line.replace(relativeLink, replacement)
+    })
+    .join()
+}
+
 getVersion.then(version => {
   const telegrafConfigFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${version}/etc/telegraf.conf`
 
@@ -363,7 +382,7 @@ getVersion.then(version => {
   const noConfigs = []
 
   const parseTelegrafConf = new Promise((resolve, reject) => {
-    fetch(telegrafConfigFilePath).then(
+    fetch(telegrafConfigFilePath, parsedPluginsConfigPath).then(
       parsedPluginsText => {
         if (Array.isArray(parsedPluginsText)) {
           const parsedPluginsNames = []
@@ -375,10 +394,10 @@ getVersion.then(version => {
                 .replace(/(.*)\[\[inputs./g, '')
                 .replace(/\]\](.*)/g, '')
               parsedPluginsNames.push(pluginName)
-              const destinationFilPath =
-                parsedPluginsPath + pluginName + '.conf'
+              const destinationFilePath =
+                parsedPluginsConfigPath + pluginName + '.conf'
               fs.writeFile(
-                destinationFilPath,
+                destinationFilePath,
                 formatConfigurationText(pluginText),
                 () => {}
               )
@@ -442,7 +461,7 @@ getVersion.then(version => {
         logSymbols.info + ' \x1b[36m%s\x1b[0m',
         ` Parsing Telegraf Windows Plugins at ${telegrafWindowsConfigFilePath}\n`
       )
-      fetch(telegrafWindowsConfigFilePath).then(
+      fetch(telegrafWindowsConfigFilePath, parsedPluginsConfigPath).then(
         parsedPluginsText => {
           if (Array.isArray(parsedPluginsText)) {
             const parsedWindowsPluginsNames = []
@@ -459,10 +478,10 @@ getVersion.then(version => {
                   nonWindowsPlugins.includes(pluginName)
                 ) {
                   parsedWindowsPluginsNames.push(pluginName)
-                  const destinationFilPath =
-                    parsedPluginsPath + pluginName + '.conf'
+                  const destinationFilePath =
+                    parsedPluginsConfigPath + pluginName + '.conf'
                   fs.writeFile(
-                    destinationFilPath,
+                    destinationFilePath,
                     formatConfigurationText(pluginText),
                     () => {}
                   )
@@ -526,4 +545,67 @@ getVersion.then(version => {
       console.error(logSymbols.error, ' ERROR:', fetchError)
     }
   )
+
+  const telegrafPluginsReadmeUpdates = []
+  const successPrefix = 'success:'
+  const failurePrefix = 'failed:'
+
+  inputPluginsList.forEach(pluginName => {
+    const telegrafReadmeFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${version}/plugins/inputs/${pluginName}/README.md`
+
+    telegrafPluginsReadmeUpdates.push(
+      fetch(telegrafReadmeFilePath, parsedPluginsReadmePath).then(
+        parsedReadme => {
+          const destinationFilePath =
+            parsedPluginsReadmePath + pluginName + '.md'
+          fs.writeFile(
+            destinationFilePath,
+            formatReadmeText(parsedReadme),
+            () => {}
+          )
+          return `${successPrefix}${pluginName}`
+        },
+        () => `${failurePrefix}${pluginName}`
+      )
+    )
+  })
+
+  Promise.all(telegrafPluginsReadmeUpdates).then(updateStatuses => {
+    console.log('Checking for updates on README markdown files...')
+    const failedStatuses = updateStatuses.filter(updateStatus =>
+      updateStatus.startsWith(failurePrefix)
+    )
+
+    failedStatuses.forEach(failureStatus => {
+      console.warn(
+        logSymbols.error + ' \x1b[31m%s\x1b[0m',
+        'Unable to find README for plugin:',
+        failureStatus.slice(failurePrefix.length),
+        '\n'
+      )
+    })
+
+    if (failedStatuses.length) {
+      console.warn(
+        logSymbols.error + ' \x1b[31m%s\x1b[0m',
+        '^^^ File paths for the above may be incorrect. You may want to check & update them manually by looking in Telegraf repository:'
+      )
+      console.warn(
+        logSymbols.warning + ' \x1b[36m%s\x1b[0m',
+        'https://github.com/influxdata/telegraf/tree/master/plugins/inputs\n'
+      )
+
+      if (updateStatuses.length !== failedStatuses.length) {
+        console.warn(
+          logSymbols.success + ' \x1b[32m%s\x1b[0m',
+          `${updateStatuses.length} files were successfully checked.`
+        )
+      }
+    } else {
+      console.warn(
+        logSymbols.success + ' \x1b[32m%s\x1b[0m',
+        'All README files successfully updated!'
+      )
+    }
+  })
 })

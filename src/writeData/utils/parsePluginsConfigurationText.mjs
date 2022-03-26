@@ -237,6 +237,17 @@ const inputPluginsList = [
 ]
 
 /*
+  Plugin names that should NOT display in the UI
+    - already included in another plugin, or
+    - deprecated
+*/
+const inputPluginsExceptions = [
+  'jolokia2_agent',
+  'jolokia2_proxy',
+  'http_listener',
+]
+
+/*
   STEP 2:
     on the command line, run
       yarn telegraf-plugins:update [TELEGRAF_RELEASE_VERSION]
@@ -374,7 +385,9 @@ getVersion.then(version => {
             }
           })
           const noPluginEntry = parsedPluginsNames.filter(
-            pluginName => !inputPluginsList.includes(pluginName)
+            pluginName =>
+              !inputPluginsList.includes(pluginName) &&
+              !inputPluginsExceptions.includes(pluginName)
           )
 
           if (noPluginEntry.length) {
@@ -387,7 +400,7 @@ getVersion.then(version => {
           } else {
             console.warn(
               logSymbols.success + ' \x1b[32m%s\x1b[0m',
-              'Congratulations! All Plugins accounted for and showing in Data > Sources'
+              'No new plugins detected.\n'
             )
           }
 
@@ -403,9 +416,10 @@ getVersion.then(version => {
 
           if (noConfigs.length) {
             console.warn(
-              logSymbols.warning + ' Could not find',
+              logSymbols.warning +
+                ' Could not find the following existing plugins in telegraf.conf:',
               noConfigs,
-              'in telegraf.conf\n'
+              '\n'
             )
           }
           resolve(noConfigs)
@@ -488,12 +502,12 @@ getVersion.then(version => {
               )
             } else {
               console.warn(
-                logSymbols.success +
-                  ` All Windows Plugins are listed${
-                    windowsPluginsNotUpdated.length
-                      ? ' but may not be updated '
-                      : ' '
-                  }in the Data > Sources page of the UI\n`
+                logSymbols.success + ' \x1b[32m%s\x1b[0m',
+                ` All plugins are accounted for${
+                  windowsPluginsNotUpdated.length
+                    ? ' but may not be updated '
+                    : ' '
+                }in the Load Data > Sources page of the UI\n`
               )
             }
           } else {

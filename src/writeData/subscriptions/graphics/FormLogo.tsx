@@ -2,8 +2,8 @@ import React from 'react'
 
 export const FormLogo = (
   <svg
-    width="39"
-    height="39"
+    width="65"
+    height="65"
     viewBox="0 0 39 39"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

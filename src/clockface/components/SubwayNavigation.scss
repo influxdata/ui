@@ -29,7 +29,7 @@ $pool-fill: #00a3ff;
   }
 
   &:last-child:after {
-    background: black;
+    display: none;
   }
 
   &.stepIsComplete {
@@ -37,7 +37,7 @@ $pool-fill: #00a3ff;
       background: $pool-fill;
     }
     &:last-child:after {
-      background: black;
+      display: none;
     }
   }
 }
@@ -67,8 +67,9 @@ $pool-fill: #00a3ff;
 }
 
 .subway-navigation-title {
-  display: flex;
   align-items: center;
+  display: flex;
+  margin-bottom: 25px;
 }
 
 .subway-navigation-title-icon {
@@ -89,7 +90,6 @@ $pool-fill: #00a3ff;
 .subway-navigation-time-to-complete {
   display: flex;
   align-items: center;
-  margin-top: 25px;
   margin-bottom: 34px;
 
   h5 {

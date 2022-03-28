@@ -53,7 +53,7 @@ interface SubscriptionNavigationModel extends SubwayNavigationModel {
 enum CurrentStep {
   BrokerForm = 'broker',
   SubscriptionForm = 'subscription',
-  ParsingForm = 'parsing'
+  ParsingForm = 'parsing',
 }
 
 const navigationSteps: SubscriptionNavigationModel[] = [

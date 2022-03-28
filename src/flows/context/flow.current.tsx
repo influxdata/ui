@@ -360,23 +360,22 @@ export const FlowProvider: FC = ({children}) => {
       return
     }
 
-    const flowCopy = JSON.parse(JSON.stringify(currentFlow))
-
-    flowCopy.data.byID[id] = initial
-    flowCopy.meta.byID[id] = {
+    currentFlow.data.byID[id] = initial
+    currentFlow.meta.byID[id] = {
       title,
       visible: true,
     }
 
     if (typeof index !== 'undefined') {
-      flowCopy.data.allIDs.splice(index + 1, 0, id)
-      flowCopy.meta.allIDs.splice(index + 1, 0, id)
+      currentFlow.data.allIDs.splice(index + 1, 0, id)
+      currentFlow.meta.allIDs.splice(index + 1, 0, id)
     } else {
-      flowCopy.data.allIDs.push(id)
-      flowCopy.meta.allIDs.push(id)
+      currentFlow.data.allIDs.push(id)
+      currentFlow.meta.allIDs.push(id)
     }
 
-    update(flowCopy)
+    updateData(id, {})
+    updateMeta(id, {})
 
     return id
   }

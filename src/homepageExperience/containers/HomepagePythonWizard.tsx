@@ -10,7 +10,6 @@ import {
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-// import {Navigation} from 'src/homepageExperience/components/Navigation'
 import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/WriteData'
@@ -116,10 +115,6 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
               settingUpText="Python"
               setupTime="5 minutes"
             />
-            {/*<Navigation
-              currentStep={this.state.currentStep}
-              onClick={this.handleNavClick}
-            />*/}
           </div>
         </aside>
         <div className="homepage-wizard-container--main">

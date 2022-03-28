@@ -23,31 +23,20 @@
   margin-bottom: $cf-space-2xs;
 }
 
-.tutorials-list,
 .docslinks-list,
 .useful-links {
   padding: 0;
   list-style: none;
-  margin-top: 5%;
-}
 
-.tutorials-list > li {
-  font-size: 1.25em;
-  background-color: $cf-grey-5;
-  border-radius: $radius;
-  padding: $ix-marg-c;
-  margin-bottom: $ix-marg-a;
+  h4 {
+    color: $cf-grey-95;
+  }
 }
 
 .docslinks-list > li {
   font-size: 1.25em;
   background-color: transparent;
   border-radius: $radius;
-  padding: 8px;
-  margin-bottom: $ix-marg-a;
-}
-
-.useful-links > li {
-  margin-bottom: $cf-space-2xs;
   padding: 0;
+  margin-bottom: $ix-marg-c;
 }

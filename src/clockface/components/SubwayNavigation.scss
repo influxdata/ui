@@ -1,0 +1,100 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+$pool-fill: #00a3ff;
+
+.subway-navigation-container {
+  display: flex;
+  justify-content: center;
+}
+
+.subway-navigation-flex-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.subway-navigation-step-flex-wrapper {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+
+  &:after {
+    content: '';
+    width: $cf-border;
+    pointer-events: none;
+    z-index: 2;
+
+    height: 30px;
+    transform: translate(16px);
+    background: white;
+  }
+
+  &:last-child:after {
+    display: none;
+  }
+
+  &.stepIsComplete {
+    &:after {
+      background: $pool-fill;
+    }
+    &:last-child:after {
+      display: none;
+    }
+  }
+}
+
+.subway-navigation-step {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.subway-navigation-step-icon-container {
+  border: $cf-grey-95 solid 2px;
+  border-radius: 50%;
+  color: rgba(0, 0, 0, 0);
+  height: 34px;
+  width: 34px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-right: 21px;
+}
+
+.showBorderColor .subway-navigation-step-icon-container {
+  border-color: $pool-fill;
+}
+
+.subway-navigation-title {
+  align-items: center;
+  display: flex;
+  margin-bottom: 25px;
+}
+
+.subway-navigation-title-icon {
+  margin-right: 14px;
+}
+
+.subway-navigation-title-text {
+  h3 {
+    margin: 0;
+    font-weight: normal;
+  }
+  h6 {
+    margin: 0;
+    font-weight: normal;
+  }
+}
+
+.subway-navigation-time-to-complete {
+  display: flex;
+  align-items: center;
+  margin-bottom: 34px;
+
+  h5 {
+    margin: 0;
+    margin-left: 8px;
+    font-weight: normal;
+  }
+}

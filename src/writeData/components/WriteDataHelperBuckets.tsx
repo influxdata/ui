@@ -28,10 +28,12 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 interface Props {
   className?: string
+  useSimplifiedBucketForm?: boolean
 }
 
 const WriteDataHelperBuckets: FC<Props> = ({
   className = 'write-data--details-widget-title',
+  useSimplifiedBucketForm = false,
 }) => {
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
@@ -89,7 +91,7 @@ const WriteDataHelperBuckets: FC<Props> = ({
     <>
       <Heading element={HeadingElement.H6} className={className}>
         Bucket
-        <CreateBucketButton />
+        <CreateBucketButton useSimplifiedBucketForm={useSimplifiedBucketForm} />
       </Heading>
       {body}
     </>

@@ -44,6 +44,25 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       }
     })
   }
+  if (form.stringMeasurement) {
+    form.stringMeasurement.pattern = form.stringMeasurement.pattern.replace(
+      /\\\\/g,
+      '\\'
+    )
+  }
+  if (form.stringFields) {
+    form.stringFields.map(f => {
+      f.pattern = f.pattern.replace(/\\\\/g, '\\')
+    })
+  }
+  if (form.stringTags) {
+    form.stringTags.map(t => {
+      t.pattern = t.pattern.replace(/\\\\/g, '\\')
+    })
+  }
+  if (form.stringTimestamp.pattern === '') {
+    delete form.stringTimestamp
+  }
   if (form.brokerPassword === '' || form.brokerUsername === '') {
     delete form.brokerUsername
     delete form.brokerPassword

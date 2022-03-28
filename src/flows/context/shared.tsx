@@ -1,7 +1,6 @@
 import React, {FC, useEffect, useState} from 'react'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {useParams} from 'react-router'
-import {DEFAULT_PROJECT_NAME} from 'src/flows'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
 import {hydrate} from 'src/flows/context/flow.list'
@@ -30,9 +29,10 @@ export const FlowProvider: FC = ({children}) => {
     <PageSpinner loading={loading}>
       <FlowContext.Provider
         value={{
-          name: DEFAULT_PROJECT_NAME,
           flow,
           add: (_, __) => '',
+          cloneNotebook: () => {},
+          deleteNotebook: () => {},
           remove: () => '',
           updateData: _ => {},
           updateMeta: _ => {},

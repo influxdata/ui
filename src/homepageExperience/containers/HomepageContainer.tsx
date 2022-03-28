@@ -10,6 +10,8 @@ import {
   FlexBox,
   FlexDirection,
   Grid,
+  Heading,
+  HeadingElement,
   Icon,
   IconFont,
   InfluxColors,
@@ -64,7 +66,13 @@ export const HomepageContainer: FC = () => {
                   direction={FlexDirection.Column}
                   alignItems={AlignItems.Stretch}
                 >
-                  <h1>Get Started</h1>
+                  <Heading
+                    id="first-mile--header"
+                    element={HeadingElement.H1}
+                    testID="home-page--header"
+                  >
+                    Get Started
+                  </Heading>
                   <h5>
                     Write and query data using the programming language of your
                     choice

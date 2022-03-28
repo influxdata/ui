@@ -12,8 +12,6 @@ export const InitalizeClient = () => {
   const org = useSelector(getOrg)
 
   const pythonCode = `import os
-from datetime import datetime
-
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client import SYNCHRONOUS
 
@@ -21,8 +19,7 @@ token = os.environ.get("INFLUXDB_TOKEN")
 org = "${org.name}"
 url = "https://us-west-2-1.aws.cloud2.influxdata.com/"
 
-client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
-write_api = client.write_api(write_options=SYNCHRONOUS)`
+client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)`
 
   return (
     <>

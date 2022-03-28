@@ -25,6 +25,7 @@ import {AppState, Organization} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
+import {event} from 'src/cloud/utils/reporting'
 
 // Components
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
@@ -161,6 +162,7 @@ class NotFound extends Component<Props> {
       const deepLinkingMap = buildDeepLinkingMap(org)
 
       if (deepLinkingMap.hasOwnProperty(this.props.location.pathname)) {
+        event('deeplink', {from: this.props.location.pathname})
         this.props.history.replace(deepLinkingMap[this.props.location.pathname])
         return
       }

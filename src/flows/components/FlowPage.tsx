@@ -1,6 +1,5 @@
 // Libraries
 import React, {FC, useContext, useEffect} from 'react'
-import {useParams} from 'react-router-dom'
 import {Page} from '@influxdata/clockface'
 import {DapperScrollbars} from '@influxdata/clockface'
 
@@ -8,7 +7,6 @@ import {DapperScrollbars} from '@influxdata/clockface'
 import CurrentFlowProvider, {FlowContext} from 'src/flows/context/flow.current'
 import QueryProvider from 'src/shared/contexts/query'
 import {FlowQueryProvider, FlowQueryContext} from 'src/flows/context/flow.query'
-import {FlowListContext} from 'src/flows/context/flow.list'
 import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
 import {SidebarProvider} from 'src/flows/context/sidebar'
@@ -19,36 +17,7 @@ import {SubSideBar} from 'src/flows/components/Sidebar'
 import FlowHeader from 'src/flows/components/header'
 import FlowKeyboardPreview from 'src/flows/components/FlowKeyboardPreview'
 
-// Constants
-import {PROJECT_NAME_PLURAL} from 'src/flows'
-
 import 'src/flows/style.scss'
-
-// Utils
-import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {event} from 'src/cloud/utils/reporting'
-
-const FlowFromRoute = () => {
-  const {id} = useParams<{id: string}>()
-  const {change, flows, currentID} = useContext(FlowListContext)
-
-  useEffect(() => {
-    change(id)
-  }, [id, change])
-
-  useEffect(() => {
-    if (currentID !== null) {
-      event('Notebook Accessed', {notebookID: currentID})
-    }
-  }, [currentID])
-
-  document.title = pageTitleSuffixer([
-    flows[currentID]?.name,
-    PROJECT_NAME_PLURAL,
-  ])
-
-  return null
-}
 
 const RunOnMount = () => {
   const {queryAll} = useContext(FlowQueryContext)
@@ -97,7 +66,6 @@ export const FlowPage: FC = () => (
 export default () => (
   <QueryProvider>
     <CurrentFlowProvider>
-      <FlowFromRoute />
       <FlowPage />
     </CurrentFlowProvider>
   </QueryProvider>

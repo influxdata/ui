@@ -1,22 +1,23 @@
-import classnames from 'classnames'
 import React from 'react'
+import classnames from 'classnames'
 
-import {InfluxColors} from '@influxdata/clockface'
+import {Icon, IconFont, InfluxColors} from '@influxdata/clockface'
 
-import {StepCompleteIcon} from 'src/homepageExperience/components/HomepageIcons'
-
-type StepProps = {
-  icon: JSX.Element
+type OwnProps = {
+  glyph: IconFont
   onClick: () => void
   stepIsActive: boolean
   stepIsComplete: boolean
   text: string
 }
 
-const Step = (props: StepProps) => {
-  const {icon, onClick, stepIsActive, stepIsComplete, text} = props
+export const SubwayNavigationStep = (props: OwnProps) => {
+  const {glyph, onClick, stepIsActive, stepIsComplete, text} = props
   const iconAndTextColor =
     stepIsActive || stepIsComplete ? InfluxColors.Pool : InfluxColors.Grey95
+
+  const glyphFontStyle = {fontSize: '19px'}
+  const completedStepStyle = {color: InfluxColors.Grey95, fontSize: '25px'}
 
   return (
     <span
@@ -33,11 +34,15 @@ const Step = (props: StepProps) => {
         <span
           className="subway-navigation-step-icon-container"
           style={{
-            fill: iconAndTextColor,
+            color: iconAndTextColor,
             background: stepIsComplete ? InfluxColors.Pool : '',
           }}
         >
-          {stepIsComplete ? StepCompleteIcon : icon}
+          {stepIsComplete ? (
+            <Icon glyph={IconFont.Checkmark_New} style={completedStepStyle} />
+          ) : (
+            <Icon glyph={glyph} style={glyphFontStyle} />
+          )}
         </span>
         <span
           style={{
@@ -57,5 +62,3 @@ const Step = (props: StepProps) => {
     </span>
   )
 }
-
-export default Step

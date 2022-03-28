@@ -42,13 +42,19 @@ interface OwnProps {
   type: 'expire'
   onChangeRetentionRule: (seconds: number) => void
   onChangeRuleType: (type: 'expire' | null) => void
+  useSimplifiedForm?: boolean
 }
 
 type Props = OwnProps & StateProps
 
 class Retention extends PureComponent<Props> {
   public render() {
-    const {retentionSeconds, maxRetentionSeconds, type} = this.props
+    const {
+      retentionSeconds,
+      maxRetentionSeconds,
+      type,
+      useSimplifiedForm = false,
+    } = this.props
 
     return (
       <>
@@ -66,7 +72,7 @@ class Retention extends PureComponent<Props> {
             titleText="Never delete data"
             disabled={!!maxRetentionSeconds}
           >
-            Never
+            Never {useSimplifiedForm && <> Delete</>}
           </SelectGroup.Option>
           <SelectGroup.Option
             name="bucket-retention"
@@ -77,7 +83,7 @@ class Retention extends PureComponent<Props> {
             testID="retention-intervals--button"
             titleText="Delete data older than a duration"
           >
-            Older Than
+            {useSimplifiedForm && <>Delete </>} Older Than
           </SelectGroup.Option>
         </SelectGroup>
         {type === 'expire' && (

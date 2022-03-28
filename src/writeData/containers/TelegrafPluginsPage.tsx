@@ -40,7 +40,7 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
     },
   } = props
   const {contentID} = useParams<ParamsType>()
-  const {name = '', markdown = '', image = ''} =
+  const {name = '', markdown = '', image = '', style = {}} =
     WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
 
   const eventName = normalizeEventName(name)
@@ -56,14 +56,15 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
   )
 
   let thumbnail = (
-    <img data-testid="load-data-details-thumb" src={image || placeholderLogo} />
+    <img data-testid="load-data-details-thumb" src={placeholderLogo} />
   )
-  let pageContent = <></>
-
   if (image) {
-    thumbnail = <img data-testid="load-data-details-thumb" src={image} />
+    thumbnail = (
+      <img data-testid="load-data-details-thumb" src={image} style={style} />
+    )
   }
 
+  let pageContent = <></>
   if (markdown) {
     pageContent = (
       <MarkdownRenderer

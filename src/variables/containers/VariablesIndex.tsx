@@ -1,6 +1,5 @@
 // Libraries
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
 import {Switch, Route} from 'react-router-dom'
 
 // Components
@@ -23,26 +22,20 @@ import {
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
-import {AppState, Organization, ResourceType} from 'src/types'
-
-interface StateProps {
-  org: Organization
-}
+import {ResourceType} from 'src/types'
 
 import {ORGS, ORG_ID, SETTINGS, VARIABLES} from 'src/shared/constants/routes'
 
 const varsPath = `/${ORGS}/${ORG_ID}/${SETTINGS}/${VARIABLES}`
 
 @ErrorHandling
-class VariablesIndex extends Component<StateProps> {
+class VariablesIndex extends Component {
   public render() {
-    const {org} = this.props
-
     return (
       <>
         <Page titleTag={pageTitleSuffixer(['Variables', 'Settings'])}>
           <SettingsHeader />
-          <SettingsTabbedPage activeTab="variables" orgID={org.id}>
+          <SettingsTabbedPage activeTab="variables">
             <GetResources resources={[ResourceType.Variables]}>
               <VariablesTab />
             </GetResources>
@@ -72,8 +65,4 @@ class VariablesIndex extends Component<StateProps> {
   }
 }
 
-const mstp = (state: AppState) => {
-  return {org: state.resources.orgs.org}
-}
-
-export default connect<StateProps>(mstp)(VariablesIndex)
+export default VariablesIndex

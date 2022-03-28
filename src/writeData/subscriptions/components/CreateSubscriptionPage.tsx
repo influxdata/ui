@@ -4,16 +4,11 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {
-  Page,
-  FlexBox,
-  JustifyContent,
-  Heading,
-  HeadingElement,
-  IconFont,
-  FontWeight,
   AlignItems,
-  ComponentSize,
-  FlexDirection,
+  FlexBox,
+  IconFont,
+  JustifyContent,
+  Page,
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
@@ -22,14 +17,13 @@ import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
 import SubscriptionForm from 'src/writeData/subscriptions/components/SubscriptionForm'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
-import ProgressMenuItem from 'src/writeData/subscriptions/components/ProgressMenuItem'
 import {
   SubwayNavigation,
   SubwayNavigationModel,
 } from 'src/clockface/components/SubwayNavigation'
 
 // Graphics
-import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
+import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
 
 // Contexts
 import {
@@ -52,34 +46,36 @@ import {shouldShowUpgradeButton} from 'src/me/selectors'
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
-
 interface SubscriptionNavigationModel extends SubwayNavigationModel {
   type: string
 }
 
-const navigationSteps: SubscriptionNavigationModel = [
+enum CurrentStep {
+  BrokerForm = 'broker',
+  SubscriptionForm = 'subscription',
+  ParsingForm = 'parsing'
+}
+
+const navigationSteps: SubscriptionNavigationModel[] = [
   {
     glyph: IconFont.UploadOutline,
     name: 'Connect to Broker',
-    type: 'broker',
+    type: CurrentStep.BrokerForm,
   },
   {
     glyph: IconFont.Subscribe,
     name: 'Subscribe to Topic',
-    type: 'subscription',
+    type: CurrentStep.SubscriptionForm,
   },
   {
     glyph: IconFont.Braces,
     name: 'Define Data Parsing Rules',
-    type: 'parsing',
+    type: CurrentStep.ParsingForm,
   },
 ]
 
 const CreateSubscriptionPage: FC = () => {
-  const brokerForm = 'broker'
-  const subscriptionForm = 'subscription'
-  const parsingForm = 'parsing'
-  const [active, setFormActive] = useState(brokerForm)
+  const [active, setFormActive] = useState(CurrentStep.BrokerForm)
   const {formContent, saveForm, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
@@ -90,12 +86,10 @@ const CreateSubscriptionPage: FC = () => {
   const {bucket} = useContext(WriteDataDetailsContext)
 
   const handleClick = (step: number) => {
-    console.log({step})
-    console.log({active})
     setFormActive(navigationSteps[step - 1].type)
   }
 
-  const getActiveStep = (activeForm) => {
+  const getActiveStep = activeForm => {
     let currentStep = 1
     navigationSteps.forEach((step, index) => {
       if (step.type === activeForm) {
@@ -130,42 +124,16 @@ const CreateSubscriptionPage: FC = () => {
                 />
               </FlexBox>
             )}
-            {/* TODO: swap out for clockface svg when available */}
             <div className="create-subscription-page__progress">
               <SubwayNavigation
-                  currentStep={getActiveStep(active)}
-                  onStepClick={handleClick}
-                  navigationSteps={navigationSteps}
-                  settingUpIcon={FormLogo}
-                  settingUpText="MQTT Connector"
-                />
-              {/* TODO: swap out for clockface component when available */}
-              <div className="create-subscription-page__progress__bar">
-
-                {/*<ProgressMenuItem
-                  active={active}
-                  type={brokerForm}
-                  text="Connect To Broker"
-                  icon="upload-outline"
-                  setFormActive={setFormActive}
-                />
-                <ProgressMenuItem
-                  active={active}
-                  type={subscriptionForm}
-                  text="Subscribe to Topic"
-                  icon="subscribe"
-                  setFormActive={setFormActive}
-                />
-                <ProgressMenuItem
-                  active={active}
-                  type={parsingForm}
-                  text=" Define Data Parsing Rules"
-                  icon="braces"
-                  setFormActive={setFormActive}
-                />*/}
-              </div>
+                currentStep={getActiveStep(active)}
+                onStepClick={handleClick}
+                navigationSteps={navigationSteps}
+                settingUpIcon={FormLogo}
+                settingUpText="MQTT Connector"
+              />
             </div>
-            {active === brokerForm && (
+            {active === CurrentStep.BrokerForm && (
               <BrokerForm
                 setFormActive={setFormActive}
                 formContent={formContent}
@@ -173,7 +141,7 @@ const CreateSubscriptionPage: FC = () => {
                 showUpgradeButton={showUpgradeButton}
               />
             )}
-            {active === subscriptionForm && (
+            {active === CurrentStep.SubscriptionForm && (
               <SubscriptionForm
                 setFormActive={setFormActive}
                 formContent={formContent}
@@ -183,7 +151,7 @@ const CreateSubscriptionPage: FC = () => {
                 bucket={bucket}
               />
             )}
-            {active === parsingForm && (
+            {active === CurrentStep.ParsingForm && (
               <ParsingForm
                 setFormActive={setFormActive}
                 formContent={formContent}

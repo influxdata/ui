@@ -50,7 +50,7 @@ interface SubscriptionNavigationModel extends SubwayNavigationModel {
   type: string
 }
 
-enum CurrentStep {
+enum Steps {
   BrokerForm = 'broker',
   SubscriptionForm = 'subscription',
   ParsingForm = 'parsing',
@@ -60,22 +60,22 @@ const navigationSteps: SubscriptionNavigationModel[] = [
   {
     glyph: IconFont.UploadOutline,
     name: 'Connect to Broker',
-    type: CurrentStep.BrokerForm,
+    type: Steps.BrokerForm,
   },
   {
     glyph: IconFont.Subscribe,
     name: 'Subscribe to Topic',
-    type: CurrentStep.SubscriptionForm,
+    type: Steps.SubscriptionForm,
   },
   {
     glyph: IconFont.Braces,
     name: 'Define Data Parsing Rules',
-    type: CurrentStep.ParsingForm,
+    type: Steps.ParsingForm,
   },
 ]
 
 const CreateSubscriptionPage: FC = () => {
-  const [active, setFormActive] = useState(CurrentStep.BrokerForm)
+  const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {formContent, saveForm, updateForm, loading} = useContext(
     SubscriptionCreateContext
   )
@@ -86,7 +86,7 @@ const CreateSubscriptionPage: FC = () => {
   const {bucket} = useContext(WriteDataDetailsContext)
 
   const handleClick = (step: number) => {
-    setFormActive(navigationSteps[step - 1].type)
+    setFormActive(navigationSteps[step - 1].type as Steps)
   }
 
   const getActiveStep = activeForm => {
@@ -133,7 +133,7 @@ const CreateSubscriptionPage: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-            {active === CurrentStep.BrokerForm && (
+            {active === Steps.BrokerForm && (
               <BrokerForm
                 setFormActive={setFormActive}
                 formContent={formContent}
@@ -141,7 +141,7 @@ const CreateSubscriptionPage: FC = () => {
                 showUpgradeButton={showUpgradeButton}
               />
             )}
-            {active === CurrentStep.SubscriptionForm && (
+            {active === Steps.SubscriptionForm && (
               <SubscriptionForm
                 setFormActive={setFormActive}
                 formContent={formContent}
@@ -151,7 +151,7 @@ const CreateSubscriptionPage: FC = () => {
                 bucket={bucket}
               />
             )}
-            {active === CurrentStep.ParsingForm && (
+            {active === Steps.ParsingForm && (
               <ParsingForm
                 setFormActive={setFormActive}
                 formContent={formContent}

@@ -73,7 +73,7 @@ class DashboardPage extends Component<Props> {
             <LimitChecker>
               <HoverTimeProvider>
                 <DashboardHeader onManualRefresh={onManualRefresh} />
-                <RateLimitAlert alertOnly={true} />
+                <RateLimitAlert alertOnly={true} location="dashboard page" />
                 <VariablesControlBar />
                 <ErrorBoundary>
                   <DashboardComponent manualRefresh={manualRefresh} />

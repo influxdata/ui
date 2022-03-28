@@ -35,8 +35,6 @@ export interface FlowListContextType extends FlowList {
   clone: (id: string) => Promise<string | void>
   update: (id: string, flow: Partial<Flow>) => void
   remove: (id: string) => void
-  currentID: string | null
-  change: (id: string) => void
   getAll: () => void
 }
 
@@ -61,9 +59,7 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   clone: (_id: string) => {},
   update: (_id: string, _flow: Partial<Flow>) => {},
   remove: (_id: string) => {},
-  change: (_id: string) => {},
   getAll: () => {},
-  currentID: null,
 } as FlowListContextType
 
 const useLocalStorageState = createLocalStorageStateHook(
@@ -169,7 +165,7 @@ export function hydrate(data) {
 
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useLocalStorageState()
-  const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
+  const [currentID, setCurrentID] = useState(null)
   const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
@@ -287,16 +283,6 @@ export const FlowListProvider: FC = ({children}) => {
     }
   }, [org.id, setFlows])
 
-  const change = useCallback(
-    (id: string) => {
-      if (!Object.keys(flows).length) {
-        getAll()
-      }
-      setCurrentID(id)
-    },
-    [setCurrentID, flows]
-  )
-
   const migrate = async () => {
     const localFlows = Object.keys(flows).filter(id => id.includes('local'))
     if (!localFlows.length) {
@@ -325,8 +311,6 @@ export const FlowListProvider: FC = ({children}) => {
         update,
         remove,
         getAll,
-        currentID,
-        change,
       }}
     >
       {children}

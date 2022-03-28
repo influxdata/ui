@@ -28,7 +28,6 @@ export const getFormatter = (
     timeZone,
     trimZeros = true,
     timeFormat = DEFAULT_TIME_FORMAT,
-    format,
   }: GetFormatterOptions = {}
 ): null | ((x: any) => string) => {
   if (columnType === 'number' && base === '2') {
@@ -36,7 +35,7 @@ export const getFormatter = (
       prefix,
       suffix,
       significantDigits: VIS_SIG_DIGITS,
-      format,
+      format: true,
     })
   }
 
@@ -46,7 +45,7 @@ export const getFormatter = (
       suffix,
       significantDigits: VIS_SIG_DIGITS,
       trimZeros,
-      format,
+      format: true,
     })
   }
 
@@ -56,7 +55,7 @@ export const getFormatter = (
       suffix,
       significantDigits: VIS_SIG_DIGITS,
       trimZeros,
-      format: true,
+      format: false,
     })
   }
 

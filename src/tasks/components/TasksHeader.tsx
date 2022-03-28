@@ -83,7 +83,7 @@ const TasksHeader: FC<Props> = ({
     <>
       <Page.Header fullWidth={false} testID="tasks-page--header">
         <Page.Title title="Tasks" />
-        <RateLimitAlert />
+        <RateLimitAlert location="task list" />
       </Page.Header>
       {flowsCTA.tasks && (
         <FeatureFlag name="flowsCTA">

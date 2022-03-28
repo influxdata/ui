@@ -1,5 +1,5 @@
 // Libraries
-import React, {FunctionComponent} from 'react'
+import React, {FunctionComponent, useEffect} from 'react'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
@@ -11,11 +11,19 @@ import TooltipLink from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 interface Props {
   func: Fluxdocs
+  setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
 const FunctionTooltipContents: FunctionComponent<Props> = ({
-  func: {headline, fluxParameters, name},
+  func: {headline, fluxParameters, name, package: packageName},
+  setToolTipPopup,
+  setHoverdFunction,
 }) => {
+  useEffect(() => {
+    setToolTipPopup(true)
+    setHoverdFunction(`${packageName}.${name}`)
+  }, [])
   return (
     <div className="flux-function-docs" data-testid={`flux-docs--${name}`}>
       <DapperScrollbars autoHide={false}>

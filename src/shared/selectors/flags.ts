@@ -3,9 +3,6 @@ import {FlagMap} from 'src/shared/actions/flags'
 import {CLOUD} from 'src/shared/constants'
 
 export const OSS_FLAGS = {
-  customCheckQuery: false,
-  fluxParser: false,
-  matchingNotificationRules: false,
   streamEvents: false,
   'flow-panel--spotify': false,
   'flow-panel--youtube': false,
@@ -32,9 +29,6 @@ export const OSS_FLAGS = {
 }
 
 export const CLOUD_FLAGS = {
-  customCheckQuery: false,
-  fluxParser: false,
-  matchingNotificationRules: false,
   streamEvents: false,
   'flow-panel--spotify': false,
   'flow-panel--youtube': false,

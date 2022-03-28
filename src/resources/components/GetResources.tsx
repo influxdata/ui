@@ -19,7 +19,6 @@ import {getVariables} from 'src/variables/actions/thunks'
 import {getSecrets} from 'src/secrets/actions/thunks'
 
 // Utils
-import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState, ResourceType} from 'src/types'
@@ -44,22 +43,12 @@ class GetResources extends PureComponent<Props> {
   public componentDidMount() {
     const {resources} = this.props
     const promises = []
-    const startTime = Date.now()
+
     resources.forEach(resource => {
       promises.push(this.getResourceDetails(resource))
     })
 
-    const gotResources = resources.join(', ')
-    Promise.all(promises).then(() => {
-      event(
-        'GetResources',
-        {
-          time: startTime,
-          resource: gotResources,
-        },
-        {duration: Date.now() - startTime}
-      )
-    })
+    Promise.all(promises)
   }
 
   private getResourceDetails(resource: ResourceType) {

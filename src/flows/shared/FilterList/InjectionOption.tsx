@@ -19,7 +19,15 @@ interface Props {
   extractor: (func: OptionType) => string
   onClick: (func: OptionType) => void
   testID: string
-  ToolTipContent?: (props: {item: any}) => JSX.Element
+  ToolTipContent?: (props: {
+    item: any
+    searchTerm?: string
+    setToolTipPopup?: (boolean: boolean) => void
+    setHoverdFunction?: any
+  }) => JSX.Element
+  searchTerm?: string
+  setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
 const defaultProps = {
@@ -32,6 +40,9 @@ const FluxInjectionOption: FC<Props> = ({
   onClick,
   testID,
   ToolTipContent,
+  searchTerm,
+  setToolTipPopup,
+  setHoverdFunction,
 }) => {
   const itemRef = createRef<HTMLDListElement>()
   const handleClick = () => {
@@ -50,7 +61,14 @@ const FluxInjectionOption: FC<Props> = ({
           hideEvent={PopoverInteraction.Hover}
           distanceFromTrigger={8}
           testID="toolbar-popover"
-          contents={() => <ToolTipContent item={option} />}
+          contents={() => (
+            <ToolTipContent
+              item={option}
+              searchTerm={searchTerm}
+              setToolTipPopup={setToolTipPopup}
+              setHoverdFunction={setHoverdFunction}
+            />
+          )}
         />
       )}
       <dd

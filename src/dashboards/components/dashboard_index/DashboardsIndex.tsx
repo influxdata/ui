@@ -64,7 +64,7 @@ class DashboardIndex extends PureComponent<Props, State> {
         >
           <Page.Header fullWidth={false}>
             <Page.Title title="Dashboards" />
-            <RateLimitAlert />
+            <RateLimitAlert location="dashboards" />
           </Page.Header>
           <Page.ControlBar fullWidth={false}>
             <ErrorBoundary>

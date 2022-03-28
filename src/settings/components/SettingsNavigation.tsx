@@ -1,59 +1,60 @@
 // Libraries
-import React, {PureComponent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import React, {FC} from 'react'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import TabbedPageTabs from 'src/shared/tabbedPage/TabbedPageTabs'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Types
 import {TabbedPageTab} from 'src/shared/tabbedPage/TabbedPageTabs'
 
-// Decorators
-import {ErrorHandling} from 'src/shared/decorators/errors'
+//  Selectors
+import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
-interface OwnProps {
+interface Props {
   activeTab: string
-  orgID: string
 }
 
-type Props = OwnProps & RouteComponentProps<{orgID: string}>
+const SettingsNavigation: FC<Props> = ({activeTab}) => {
+  const history = useHistory()
+  const org = useSelector(getOrg)
 
-@ErrorHandling
-class SettingsNavigation extends PureComponent<Props> {
-  public render() {
-    const {activeTab, orgID, history} = this.props
+  const handleTabClick = (id: string): void => {
+    event('page-nav clicked', {which: `settings--${id}`})
+    history.push(`/orgs/${org.id}/settings/${id}`)
+  }
 
-    const handleTabClick = (id: string): void => {
-      history.push(`/orgs/${orgID}/settings/${id}`)
-    }
+  const tabs: TabbedPageTab[] = [
+    {
+      text: 'Variables',
+      id: 'variables',
+    },
+    {
+      text: 'Templates',
+      id: 'templates',
+    },
+    {
+      text: 'Labels',
+      id: 'labels',
+    },
+    {
+      text: 'Secrets',
+      id: 'secrets',
+    },
+  ]
 
-    const tabs: TabbedPageTab[] = [
-      {
-        text: 'Variables',
-        id: 'variables',
-      },
-      {
-        text: 'Templates',
-        id: 'templates',
-      },
-      {
-        text: 'Labels',
-        id: 'labels',
-      },
-      {
-        text: 'Secrets',
-        id: 'secrets',
-      },
-    ]
-
-    return (
+  return (
+    <ErrorBoundary>
       <TabbedPageTabs
         tabs={tabs}
         activeTab={activeTab}
         onTabClick={handleTabClick}
       />
-    )
-  }
+    </ErrorBoundary>
+  )
 }
 
-export default withRouter(SettingsNavigation)
+export default SettingsNavigation

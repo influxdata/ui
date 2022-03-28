@@ -14,7 +14,6 @@ export class Overview extends PureComponent {
           </p>
 
           <p>Without further ado, let’s get started.</p>
-
         </article>
       </div>
     )

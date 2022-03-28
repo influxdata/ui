@@ -7,7 +7,7 @@ import {SubwayNavigationStep} from 'src/clockface/components/SubwayNavigationSte
 
 import './SubwayNavigation.scss'
 
-export type SubwayNavigationModel = {
+export interface SubwayNavigationModel {
   glyph: IconFont
   name: string
 }

@@ -97,7 +97,6 @@ const Query: FC<PipeProp> = ({Context}) => {
         header: !!fn.package ? `import "${fn.package}"` : null,
       }
       inject(options)
-      event('Inject function into Flux Script', {fn: fn.name})
     },
     [inject]
   )

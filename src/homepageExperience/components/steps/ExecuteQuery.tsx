@@ -20,12 +20,12 @@ export const ExecuteQuery = (props: ExecuteQueryProps) => {
   const {bucket} = props
   const query = `query_api = client.query_api()
 
-query = "from(bucket: \\"${bucket}\\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1")"
+query = 'from(bucket: "${bucket}") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1")'
 tables = query_api.query(query, org="${org.name}")
 
 for table in tables:
-    for record in table.records:
-        print(record)`
+  for record in table.records:
+    print(record)`
 
   return (
     <>

@@ -19,6 +19,7 @@ import {
 import Handle from 'src/flows/components/panel/Handle'
 import FlowPanelTitle from 'src/flows/components/panel/FlowPanelTitle'
 import {MenuButton} from 'src/flows/components/Sidebar'
+import {event} from 'src/cloud/utils/reporting'
 
 // Constants
 import {PIPE_DEFINITIONS} from 'src/flows'
@@ -146,6 +147,10 @@ const FlowPanel: FC<Props> = ({
     getPanelQueries,
     id,
   ])
+  const runFromHere = () => {
+    event('run from panel')
+    queryDependents(id)
+  }
 
   if (
     flow.readOnly &&
@@ -176,11 +181,7 @@ const FlowPanel: FC<Props> = ({
                 />
               </FeatureFlag>
               {isVisible && showPreviewButton && (
-                <Button
-                  onClick={() => queryDependents(id)}
-                  icon={IconFont.Play}
-                  text="Run"
-                />
+                <Button onClick={runFromHere} icon={IconFont.Play} text="Run" />
               )}
               <MenuButton id={id} />
             </div>

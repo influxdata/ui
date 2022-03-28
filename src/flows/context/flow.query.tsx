@@ -285,7 +285,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
 
     map = map.slice(map.findIndex(m => m.id === startID))
-    event('Running Notebook QueryDependents')
 
     setStatuses(
       map
@@ -311,17 +310,13 @@ export const FlowQueryProvider: FC = ({children}) => {
               setStatuses({[stage.id]: RemoteDataState.Error})
             })
         })
-    )
-      .then(() => {
-        event('run_notebook_success')
-      })
-      .catch(e => {
-        event('run_notebook_fail')
-        dispatch(notify(notebookRunFail(PROJECT_NAME)))
+    ).catch(e => {
+      event('run_notebook_fail')
+      dispatch(notify(notebookRunFail(PROJECT_NAME)))
 
-        // NOTE: this shouldn't fire, but lets wrap it for completeness
-        throw e
-      })
+      // NOTE: this shouldn't fire, but lets wrap it for completeness
+      throw e
+    })
   }
   // Use localstorage to communicate query execution to other tabs
   const queryAll = () => {
@@ -339,8 +334,6 @@ export const FlowQueryProvider: FC = ({children}) => {
     if (!map.length) {
       return
     }
-
-    event('Running Notebook QueryAll')
 
     setStatuses(
       map
@@ -367,17 +360,13 @@ export const FlowQueryProvider: FC = ({children}) => {
               setStatuses({[stage.id]: RemoteDataState.Error})
             })
         })
-    )
-      .then(() => {
-        event('run_notebook_success')
-      })
-      .catch(e => {
-        event('run_notebook_fail')
-        dispatch(notify(notebookRunFail(PROJECT_NAME)))
+    ).catch(e => {
+      event('run_notebook_fail')
+      dispatch(notify(notebookRunFail(PROJECT_NAME)))
 
-        // NOTE: this shouldn't fire, but lets wrap it for completeness
-        throw e
-      })
+      // NOTE: this shouldn't fire, but lets wrap it for completeness
+      throw e
+    })
   }
 
   const simple = (text: string) => {

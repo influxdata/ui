@@ -10,15 +10,18 @@ import {
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {Navigation} from 'src/homepageExperience/components/Navigation'
 import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
+import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/ExecuteAggregateQuery'
+
+import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
-import {ExecuteAggregateQuery} from '../components/steps/ExecuteAggregateQuery'
+
+import {SubwayNavigation} from 'src/clockface/components/SubwayNavigation'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -104,9 +107,13 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
       <div className="homepage-wizard-container">
         <aside className="homepage-wizard-container--subway">
           <div style={{width: '100%'}}>
-            <Navigation
+            <SubwayNavigation
               currentStep={this.state.currentStep}
-              onClick={this.handleNavClick}
+              onStepClick={this.handleNavClick}
+              navigationSteps={HOMEPAGE_NAVIGATION_STEPS}
+              settingUpIcon={PythonIcon}
+              settingUpText="Python"
+              setupTime="5 minutes"
             />
           </div>
         </aside>

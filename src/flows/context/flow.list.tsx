@@ -16,12 +16,12 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {DEFAULT_PROJECT_NAME, PROJECT_NAME} from 'src/flows'
 import {TEMPLATES} from 'src/flows/templates'
 import {
-  pooledUpdateAPI,
   createAPI,
   deleteAPI,
   getAllAPI,
   migrateLocalFlowsToAPI,
 } from 'src/flows/context/api'
+import {patchNotebook} from 'src/client/notebooksRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
   notebookCreateFail,
@@ -33,7 +33,7 @@ import {incrementCloneName} from 'src/utils/naming'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string | void>
   clone: (id: string) => Promise<string | void>
-  update: (id: string, flow: Partial<Flow>) => void
+  update: (id: string, name: string) => void
   remove: (id: string) => void
   getAll: () => void
 }
@@ -57,7 +57,7 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   flows: {},
   add: (_flow?: Flow) => {},
   clone: (_id: string) => {},
-  update: (_id: string, _flow: Partial<Flow>) => {},
+  update: (_id: string, _name: string) => {},
   remove: (_id: string) => {},
   getAll: () => {},
 } as FlowListContextType
@@ -230,25 +230,27 @@ export const FlowListProvider: FC = ({children}) => {
   }
 
   const update = useCallback(
-    (id: string, flow: Partial<Flow>) => {
-      if (!flows.hasOwnProperty(id)) {
-        throw new Error(`${PROJECT_NAME} not found`)
+    async (id: string, name: string) => {
+      try {
+        if (!flows.hasOwnProperty(id)) {
+          throw new Error(`${PROJECT_NAME} not found`)
+        }
+
+        const resp = await patchNotebook({
+          id,
+          data: {
+            name,
+          },
+        })
+
+        if (resp.status !== 200) {
+          throw new Error(resp.data.message)
+        }
+
+        return id
+      } catch (error) {
+        console.error({error})
       }
-
-      setFlows(prevFlows => ({
-        ...prevFlows,
-        [id]: {
-          ...prevFlows[id],
-          ...flow,
-        },
-      }))
-
-      const apiFlow = serialize({
-        ...flows[id],
-        ...flow,
-      })
-
-      pooledUpdateAPI({id, ...apiFlow})
     },
     [setFlows, org.id, flows] // eslint-disable-line react-hooks/exhaustive-deps
   )
@@ -276,8 +278,13 @@ export const FlowListProvider: FC = ({children}) => {
     const data = await getAllAPI(org.id)
     if (data && data.flows) {
       const _flows = {}
-      data.flows.forEach(f => {
-        _flows[f.id] = hydrate(f)
+      data.flows.forEach(flow => {
+        _flows[flow.id] = {
+          name: flow.name,
+          createdAt: flow.createdAt,
+          createdBy: flow.createdBy,
+          updatedAt: flow.updatedAt,
+        }
       })
       setFlows(_flows)
     }

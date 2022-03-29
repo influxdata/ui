@@ -117,6 +117,7 @@ class DataListening extends PureComponent<Props, State> {
         params: {orgID},
       },
     } = this.props
+    console.log(bucket)
     const {secondsLeft} = this.state
     const script = `from(bucket: "${bucket}")
       |> range(start: -1m)`

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, memo} from 'react'
+import React, {FC, memo, useEffect} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import classnames from 'classnames'
 import {createGroupIDColumn, fromFlux} from '@influxdata/giraffe'
@@ -95,26 +95,28 @@ const TimeMachineVis: FC<Props> = ({
       giraffeResult.table.getColumnType('_value') !== 'number' &&
       !!giraffeResult.table.length)
 
-  if (
-    isFlagEnabled('graphColorMapping') &&
-    viewProperties.hasOwnProperty('colors')
-  ) {
-    const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
-    const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
-    const {colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
-      fillColumnMap,
-      viewProperties as XYViewProperties
-    )
-
-    if (loading === RemoteDataState.Done && needsToSaveToIDPE) {
-      dispatch(
-        setViewProperties({
-          ...viewProperties,
-          colorMapping: colorMappingForIDPE,
-        } as XYViewProperties)
+  useEffect(() => {
+    if (
+      isFlagEnabled('graphColorMapping') &&
+      viewProperties.hasOwnProperty('colors')
+    ) {
+      const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
+      const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
+      const {colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
+        fillColumnMap,
+        viewProperties as XYViewProperties
       )
+
+      if (loading === RemoteDataState.Done && needsToSaveToIDPE) {
+        dispatch(
+          setViewProperties({
+            ...viewProperties,
+            colorMapping: colorMappingForIDPE,
+          } as XYViewProperties)
+        )
+      }
     }
-  }
+  })
 
   // Handles deadman check edge case to allow non-numeric values
   if (viewRawData && files && files?.length) {

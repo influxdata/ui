@@ -61,8 +61,8 @@ for value in range(5):
     .tag("tagname1", "tagvalue1")
     .field("field1", value)
   )
-write_api.write(bucket=bucket, org="${org.name}", record=point)
-time.sleep(1) # separate points by 1 second`
+  write_api.write(bucket=bucket, org="${org.name}", record=point)
+  time.sleep(1) # separate points by 1 second`
 
   return (
     <>

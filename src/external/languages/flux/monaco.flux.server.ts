@@ -1,4 +1,4 @@
-import Deferred from '../utils/Deferred'
+import Deferred from 'src/utils/Deferred'
 import {
   LSPResponse,
   parseResponse,
@@ -15,8 +15,8 @@ import {
   definition,
   symbols,
   formatting,
-} from 'src/external/monaco.flux.messages'
-import {registerCompletion} from 'src/external/monaco.flux.lsp'
+} from 'src/external/languages/flux/monaco.flux.messages'
+import {registerCompletion} from 'src/external/languages/flux/monaco.flux.lsp'
 
 import {AppState, LocalStorage} from 'src/types'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'

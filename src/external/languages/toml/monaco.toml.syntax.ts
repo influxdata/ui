@@ -1,11 +1,11 @@
 import register from 'src/external/monaco.onigasm'
 
-const LANGID = 'markdown'
+const LANGID = 'toml'
 
 register(LANGID, async () => ({
   format: 'json',
   content: await import(
-    /* webpackPrefetch: 0 */ 'src/external/markdown.tmLanguage.json'
+    /* webpackPrefetch: 0 */ 'src/external/languages/toml/toml.tmLanguage.json'
   ).then(data => {
     return JSON.stringify(data)
   }),

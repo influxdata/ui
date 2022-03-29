@@ -6,7 +6,7 @@ async function addSyntax() {
   await register(LANGID, async () => ({
     format: 'json',
     content: await import(
-      /* webpackPrefetch: 0 */ 'src/external/flux.tmLanguage.json'
+      /* webpackPrefetch: 0 */ 'src/external/languages/flux/flux.tmLanguage.json'
     ).then(data => {
       return JSON.stringify(data)
     }),

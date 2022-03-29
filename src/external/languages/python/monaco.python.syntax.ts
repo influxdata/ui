@@ -5,7 +5,7 @@ const LANGID = 'python'
 register(LANGID, async () => ({
   format: 'json',
   content: await import(
-    /* webpackPrefetch: 0 */ 'src/external/python.tmLanguage.json'
+    /* webpackPrefetch: 0 */ 'src/external/languages/python/python.tmLanguage.json'
   ).then(data => {
     return JSON.stringify(data)
   }),

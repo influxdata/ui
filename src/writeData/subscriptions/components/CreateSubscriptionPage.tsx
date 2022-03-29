@@ -59,17 +59,17 @@ enum Steps {
 const navigationSteps: SubscriptionNavigationModel[] = [
   {
     glyph: IconFont.UploadOutline,
-    name: 'Connect to Broker',
+    name: 'Connect \n to Broker',
     type: Steps.BrokerForm,
   },
   {
     glyph: IconFont.Subscribe,
-    name: 'Subscribe to Topic',
+    name: 'Subscribe \n to Topic',
     type: Steps.SubscriptionForm,
   },
   {
     glyph: IconFont.Braces,
-    name: 'Define Data Parsing Rules',
+    name: 'Define Data \n Parsing Rules',
     type: Steps.ParsingForm,
   },
 ]

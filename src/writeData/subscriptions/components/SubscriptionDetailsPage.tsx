@@ -8,24 +8,20 @@ import {
   Page,
   FlexBox,
   JustifyContent,
-  Heading,
-  HeadingElement,
-  FontWeight,
   AlignItems,
-  ComponentSize,
-  FlexDirection,
   SpinnerContainer,
   TechnoSpinner,
+  IconFont,
 } from '@influxdata/clockface'
+import {
+  SubwayNavigation,
+  SubwayNavigationModel,
+} from 'src/clockface/components/SubwayNavigation'
 import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
-import ProgressMenuItem from 'src/writeData/subscriptions/components/ProgressMenuItem'
-
-// // Graphics
-import FormLogo from 'src/writeData/subscriptions/graphics/form-logo.svg'
 
 // Contexts
 import {
@@ -41,8 +37,11 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 // Utils
 import {getAll} from 'src/resources/selectors'
 
-// // Actions
+// Actions
 import {shouldShowUpgradeButton} from 'src/me/selectors'
+
+// Graphics
+import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
@@ -52,11 +51,36 @@ import {
   SubscriptionListProvider,
 } from 'src/writeData/subscriptions/context/subscription.list'
 
+interface SubscriptionNavigationModel extends SubwayNavigationModel {
+  type: string
+}
+
+enum Steps {
+  BrokerForm = 'broker',
+  SubscriptionForm = 'subscription',
+  ParsingForm = 'parsing',
+}
+
+const navigationSteps: SubscriptionNavigationModel[] = [
+  {
+    glyph: IconFont.UploadOutline,
+    name: 'Connect \n to Broker',
+    type: Steps.BrokerForm,
+  },
+  {
+    glyph: IconFont.Subscribe,
+    name: 'Subscribe \n to Topic',
+    type: Steps.SubscriptionForm,
+  },
+  {
+    glyph: IconFont.Braces,
+    name: 'Define Data \n Parsing Rules',
+    type: Steps.ParsingForm,
+  },
+]
+
 const SubscriptionDetailsPage: FC = () => {
-  const brokerForm = 'broker'
-  const subscriptionForm = 'subscription'
-  const parsingForm = 'parsing'
-  const [active, setFormActive] = useState(brokerForm)
+  const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {currentSubscription, loading, saveForm, updateForm} = useContext(
     SubscriptionUpdateContext
   )
@@ -71,6 +95,20 @@ const SubscriptionDetailsPage: FC = () => {
     change(id)
   }, [id, change])
   const [edit, setEdit] = useState(false)
+
+  const handleClick = (step: number) => {
+    setFormActive(navigationSteps[step - 1].type as Steps)
+  }
+
+  const getActiveStep = activeForm => {
+    let currentStep = 1
+    navigationSteps.forEach((step, index) => {
+      if (step.type === activeForm) {
+        currentStep = index + 1
+      }
+    })
+    return currentStep
+  }
   return (
     currentSubscription && (
       <GetResources resources={[ResourceType.Buckets]}>
@@ -95,59 +133,20 @@ const SubscriptionDetailsPage: FC = () => {
               )}
               {/* TODO: swap out for clockface svg when available */}
               <div className="create-subscription-page__progress">
-                <FlexBox
-                  alignItems={AlignItems.Center}
-                  direction={FlexDirection.Row}
-                  margin={ComponentSize.Large}
-                  className="create-subscription-page__progress__logo"
-                >
-                  <img src={FormLogo} />
-                  <div>
-                    <Heading
-                      element={HeadingElement.H5}
-                      weight={FontWeight.Regular}
-                      className="create-subscription-page__progress__logo--lg"
-                    >
-                      Setting up
-                    </Heading>
-                    <Heading
-                      element={HeadingElement.H5}
-                      weight={FontWeight.Regular}
-                      className="create-subscription-page__progress__logo--sm"
-                    >
-                      MQTT Connector
-                    </Heading>
-                  </div>
-                </FlexBox>
-                {/* TODO: swap out for clockface component when available */}
-                <div className="create-subscription-page__progress__bar">
-                  <ProgressMenuItem
-                    active={active}
-                    type={brokerForm}
-                    text="Connect To Broker"
-                    icon="upload-outline"
-                    setFormActive={setFormActive}
-                  />
-                  <ProgressMenuItem
-                    active={active}
-                    type={subscriptionForm}
-                    text="Subscribe to Topic"
-                    icon="subscribe"
-                    setFormActive={setFormActive}
-                  />
-                  <ProgressMenuItem
-                    active={active}
-                    type={parsingForm}
-                    text=" Define Data Parsing Rules"
-                    icon="braces"
-                    setFormActive={setFormActive}
+                <div className="create-subscription-page__progress">
+                  <SubwayNavigation
+                    currentStep={getActiveStep(active)}
+                    onStepClick={handleClick}
+                    navigationSteps={navigationSteps}
+                    settingUpIcon={FormLogo}
+                    settingUpText="MQTT Connector"
                   />
                 </div>
               </div>
               <div>
                 Status: {currentSubscription && currentSubscription.status}
               </div>
-              {active === brokerForm && (
+              {active === Steps.BrokerForm && (
                 <BrokerDetails
                   setFormActive={setFormActive}
                   currentSubscription={currentSubscription}
@@ -156,7 +155,7 @@ const SubscriptionDetailsPage: FC = () => {
                   setEdit={setEdit}
                 />
               )}
-              {active === subscriptionForm && (
+              {active === Steps.SubscriptionForm && (
                 <SubscriptionDetails
                   setFormActive={setFormActive}
                   currentSubscription={currentSubscription}
@@ -167,7 +166,7 @@ const SubscriptionDetailsPage: FC = () => {
                   setEdit={setEdit}
                 />
               )}
-              {active === parsingForm && (
+              {active === Steps.ParsingForm && (
                 <ParsingDetails
                   currentSubscription={currentSubscription}
                   updateForm={updateForm}

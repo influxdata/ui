@@ -101,7 +101,10 @@ const TimeMachineVis: FC<Props> = ({
       viewProperties.hasOwnProperty('colors')
     ) {
       const groupKey = [...giraffeResult.fluxGroupKeyUnion, 'result']
-      const [, fillColumnMap] = createGroupIDColumn(giraffeResult.table, groupKey)
+      const [, fillColumnMap] = createGroupIDColumn(
+        giraffeResult.table,
+        groupKey
+      )
       const {colorMappingForIDPE, needsToSaveToIDPE} = getColorMappingObjects(
         fillColumnMap,
         viewProperties as XYViewProperties

@@ -6,6 +6,7 @@ import {
   ComponentColor,
   ComponentSize,
   ComponentStatus,
+  SubwayNav,
 } from '@influxdata/clockface'
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
@@ -20,8 +21,6 @@ import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/Exe
 import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
-
-import {SubwayNavigation} from 'src/clockface/components/SubwayNavigation'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
@@ -107,7 +106,7 @@ export class HomepagePythonWizard extends PureComponent<null, State> {
       <div className="homepage-wizard-container">
         <aside className="homepage-wizard-container--subway">
           <div style={{width: '100%'}}>
-            <SubwayNavigation
+            <SubwayNav
               currentStep={this.state.currentStep}
               onStepClick={this.handleNavClick}
               navigationSteps={HOMEPAGE_NAVIGATION_STEPS}

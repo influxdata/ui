@@ -127,29 +127,33 @@ const TimeMachineFluxEditor: FC = () => {
 
   // dynamic flux example parser function
   const getFluxExample = func => {
-    const {name, fluxType} = func // dict.get
+    const {name, fluxType} = func
 
     let signature
 
     // get copy of fluxtype signature before arrow sign
     // look into using string.split() instead
-    const index = fluxType.indexOf('=')
+    const index = fluxType.lastIndexOf('=')
     const fluxsign = fluxType.slice(0, index)
+
+    // param before arrow  (<-arr:[A], fn:(x:A) => bool) 
 
     // access parameters alone inside function signature
     const firstIndex = fluxsign.indexOf('(')
-    const secondIndex = fluxsign.indexOf(')')
+    const secondIndex = fluxsign.lastIndexOf(')')
     const parametersAsOneSentence = fluxsign
       .substring(firstIndex + 1, secondIndex)
       .replace(/\s/g, '')
     
     
     console.log('available params ', parametersAsOneSentence)
+    //available params  <-arr:[A],fn:(x:A)=>bool
+
     // sparate each parameter
 
     const individualParams = []
     const stack = [] // [ 
-      const brackets = {
+    const brackets = {
         '(': ')',
         '[': ']',
         '{': '}'
@@ -172,12 +176,13 @@ const TimeMachineFluxEditor: FC = () => {
       } 
       if (Object.values(brackets).includes(parametersAsOneSentence[i])) { // its closing bracket 
         const closing = stack.pop()
-        if (parametersAsOneSentence[i] === brackets[closing] && !stack.length) {
+        // if its a closing bracket and stack is empty and the next element is a comma, its a complete parameter. 
+        if (parametersAsOneSentence[i] === brackets[closing] && !stack.length && parametersAsOneSentence[i + 1] === ',') { 
           if (!param.startsWith('?') && !param.startsWith('<')) { // dont add to array if param is optional
             individualParams.push(param)
             param = ''
             i++
-          } else { // it's a optional or table param so empty string 
+          } else { // it's optional param. set params to empty
             param = ''
             i++
           }

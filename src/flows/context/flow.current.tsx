@@ -7,9 +7,7 @@ import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
 import {useParams} from 'react-router-dom'
-import {getNotebook, postNotebook,
-  // postNotebooksClone
-} from 'src/client/notebooksRoutes'
+import {getNotebook, postNotebook} from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {deleteNotebook} from 'src/client/notebooksRoutes'
 import {getAllAPI, pooledUpdateAPI} from 'src/flows/context/api'
@@ -96,9 +94,6 @@ export const FlowProvider: FC = ({children}) => {
       delete _flow.data.id
 
       const response = await postNotebook(_flow)
-      // const response = await postNotebooksClone({id: currentFlow.id, data: {
-      //   orgID
-      // }})
 
       if (response.status !== 200) {
         throw new Error(response.data.message)

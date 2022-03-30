@@ -16,6 +16,10 @@ export const continuouslyCheckForData = (orgID, bucket, updateResponse) => {
           clearInterval(intervalId)
           return
         }
+        if (value === LoadingState.Error) {
+          updateResponse(LoadingState.Error)
+          clearInterval(intervalId)
+        }
         const timePassed = Date.now() - startTime
 
         if (timePassed > TIMEOUT_MILLISECONDS) {
@@ -36,18 +40,22 @@ export const checkForData = async (orgID, bucket): Promise<LoadingState> => {
   const script = `from(bucket: "${bucket}")
       |> range(start: -1h)`
 
-  const result = await runQuery(orgID, script).promise
+  try {
+    const result = await runQuery(orgID, script).promise
 
-  if (result.type !== 'SUCCESS') {
-    throw new Error(result.message)
-  }
+    if (result.type !== 'SUCCESS') {
+      throw new Error(result.message)
+    }
 
-  // if the bucket is empty, the CSV returned is '\r\n' which has a length of 2
-  // so instead,  we check for the trimmed version.
-  const responseLength = result.csv.trim().length
+    // if the bucket is empty, the CSV returned is '\r\n' which has a length of 2
+    // so instead,  we check for the trimmed version.
+    const responseLength = result.csv.trim().length
 
-  if (responseLength > 1) {
-    return LoadingState.Done
+    if (responseLength > 1) {
+      return LoadingState.Done
+    }
+  } catch {
+    return LoadingState.Error
   }
 
   return LoadingState.NotFound

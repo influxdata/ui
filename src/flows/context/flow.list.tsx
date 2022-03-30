@@ -28,6 +28,8 @@ import {
   notebookDeleteFail,
   notebookDeleteSuccess,
 } from 'src/shared/copy/notifications'
+import {incrementCloneName} from 'src/utils/naming'
+import {CLOUD} from 'src/shared/constants'
 
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string | void>
@@ -240,24 +242,38 @@ export const FlowListProvider: FC = ({children}) => {
           throw new Error(`${PROJECT_NAME} not found`)
         }
 
-        const resp = await patchNotebook({
-          id,
-          data: {
-            name,
-          },
-        })
+        if (CLOUD) {
+          const resp = await patchNotebook({
+            id,
+            data: {
+              name,
+            },
+          })
 
-        if (resp.status !== 200) {
-          throw new Error(resp.data.message)
+          if (resp.status !== 200) {
+            throw new Error(resp.data.message)
+          }
+
+          setFlows(prevFlows => ({
+            ...prevFlows,
+            [id]: {
+              ...prevFlows[id],
+              name,
+            },
+          }))
+        } else {
+          const flow = flows[id]
+
+          const allFlowNames = Object.values(flows).map(value => value.name)
+          const clonedName = incrementCloneName(allFlowNames, flow.name)
+
+          const data = {
+            ...flow,
+            name: clonedName,
+          }
+
+          return await add(data)
         }
-
-        setFlows(prevFlows => ({
-          ...prevFlows,
-          [id]: {
-            ...prevFlows[id],
-            name,
-          },
-        }))
       } catch (error) {
         console.error({error})
       }

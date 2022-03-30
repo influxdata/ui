@@ -7,10 +7,15 @@ import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
 import {useParams} from 'react-router-dom'
-import {getNotebook, postNotebooksClone} from 'src/client/notebooksRoutes'
+import {
+  deleteNotebook,
+  getNotebook,
+  postNotebook,
+  postNotebooksClone,
+} from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
-import {deleteNotebook} from 'src/client/notebooksRoutes'
-import {pooledUpdateAPI} from 'src/flows/context/api'
+import {incrementCloneName} from 'src/utils/naming'
+import {getAllAPI, pooledUpdateAPI} from 'src/flows/context/api'
 import {useDispatch} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -20,6 +25,7 @@ import {
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {RemoteDataState} from '@influxdata/clockface'
+import {CLOUD} from 'src/shared/constants'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -84,18 +90,36 @@ export const FlowProvider: FC = ({children}) => {
 
   const handleCloneNotebook = useCallback(async () => {
     try {
-      const response = await postNotebooksClone({
-        id: currentFlow.id,
-        data: {
-          orgID,
-        },
-      })
+      if (CLOUD) {
+        const response = await postNotebooksClone({
+          id: currentFlow.id,
+          data: {
+            orgID,
+          },
+        })
 
-      if (response.status !== 200) {
-        throw new Error(response.data.message)
+        if (response.status !== 200) {
+          throw new Error(response.data.message)
+        }
+
+        return response.data.id
+      } else {
+        const {flows} = await getAllAPI(orgID)
+
+        const allFlowNames = Object.values(flows).map(value => value.name)
+        const clonedName = incrementCloneName(allFlowNames, currentFlow.name)
+
+        const _flow = serialize({...currentFlow, name: clonedName})
+        delete _flow.data.id
+
+        const response = await postNotebook(_flow)
+
+        if (response.status !== 200) {
+          throw new Error(response.data.message)
+        }
+
+        return response.data.id
       }
-
-      return response.data.id
     } catch (error) {
       console.error({error})
     }

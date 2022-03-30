@@ -217,5 +217,9 @@
     "worker-plugin": "^5.0.1",
     "y-websocket": "^1.3.16",
     "yjs": "^13.5.13"
+  },
+  "resolutions": {
+    "mocha/**/minimist": "^0.0.8",
+    "minimist": "^1.2.6"
   }
 }

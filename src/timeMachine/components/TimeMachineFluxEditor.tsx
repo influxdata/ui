@@ -135,19 +135,19 @@ const TimeMachineFluxEditor: FC = () => {
 
 
     // get copy of fluxtype signature before arrow sign
-    const index = fluxType.lastIndexOf('=') // using lastIndexOf because of edge cases like array.filter
-    const fluxsign = fluxType.slice(0, index)
+    const arrowSign = fluxType.lastIndexOf('=') // using lastIndexOf because of edge cases like array.filter
+    const fluxParam = fluxType.slice(0, arrowSign) // fluxParam = (<-tables:stream[A], every:duration, ?groupColumns:[string], ?unit:duration)
 
     // pull out all parameters found in between paranethesis 
-    const firstIndex = fluxsign.indexOf('(')
-    const secondIndex = fluxsign.lastIndexOf(')')
-    const parametersAsOneSentence = fluxsign
-      .substring(firstIndex + 1, secondIndex)
+    const openingParenthesis = fluxParam.indexOf('(')
+    const closingParenthesis = fluxParam.lastIndexOf(')')
+    const parametersAsOneSentence = fluxParam
+      .substring(openingParenthesis + 1, closingParenthesis)
       .replace(/\s/g, '')
     
     // parametersAsOneSentence = <-tables:stream[A],every:duration,?groupColumns:[string],?unit:duration
 
-    // sparate parameters into individual Parameters 
+    // sparate parametersAsOneSentence into individual Parameters 
     // some flux parameters cant be sperated by commas because some stand alone params contain commas. ex below 
     // (t:A, ?location:{zone:string, offset:duration}) => int where A: Timeable"
     // below code separates them by keeping track of opening and closing brackets 
@@ -175,10 +175,10 @@ const TimeMachineFluxEditor: FC = () => {
         stack.push(parametersAsOneSentence[i])
       } 
       if (Object.values(brackets).includes(parametersAsOneSentence[i])) { // if element is closing bracket 
-        const closing = stack.pop()
+        const closingBracket = stack.pop()
         // if element is the correct closing bracket AND stack is empty 
         // AND the next element is a comma, we have a complete parameter. 
-        if (parametersAsOneSentence[i] === brackets[closing] && !stack.length && parametersAsOneSentence[i + 1] === ',') { 
+        if (parametersAsOneSentence[i] === brackets[closingBracket] && !stack.length && parametersAsOneSentence[i + 1] === ',') { 
           if (!param.startsWith('?') && !param.startsWith('<')) { // checks if param is optional
             individualParams.push(param)
             param = ''

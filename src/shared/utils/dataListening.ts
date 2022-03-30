@@ -8,9 +8,8 @@ export const continuouslyCheckForData = (orgID, bucket, updateResponse) => {
   const startTime = Date.now()
 
   const intervalId = setInterval(() => {
-    try {
-      const status = checkForData(orgID, bucket)
-      status.then(value => {
+    checkForData(orgID, bucket)
+      .then(value => {
         if (value === LoadingState.Done) {
           updateResponse(LoadingState.Done)
           clearInterval(intervalId)
@@ -21,16 +20,15 @@ export const continuouslyCheckForData = (orgID, bucket, updateResponse) => {
           clearInterval(intervalId)
         }
         const timePassed = Date.now() - startTime
-
         if (timePassed > TIMEOUT_MILLISECONDS) {
           updateResponse(LoadingState.NotFound)
           clearInterval(intervalId)
         }
       })
-    } catch {
-      updateResponse(LoadingState.Error)
-      clearInterval(intervalId)
-    }
+      .catch(() => {
+        updateResponse(LoadingState.Error)
+        clearInterval(intervalId)
+      })
   }, TIMER_WAIT)
 
   return intervalId

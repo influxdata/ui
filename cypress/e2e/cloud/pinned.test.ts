@@ -30,6 +30,7 @@ describe('Pinned Items', () => {
       cy.getByTestID('nav-item-dashboards').should('be.visible')
       cy.getByTestID('nav-item-dashboards').click()
     })
+
     it('pins a dashboard to the homepage for easy access as a pinned item', () => {
       cy.getByTestID('dashboard-card')
         .first()

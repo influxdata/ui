@@ -6,7 +6,7 @@ import {
   variables,
 } from 'src/shared/utils/mocks/data'
 
-jest.mock('src/external/parser', () => {
+jest.mock('src/external/languages/flux/parser', () => {
   return {
     parse: jest.fn(getMockedParse()),
   }

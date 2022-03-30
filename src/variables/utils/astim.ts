@@ -1,5 +1,5 @@
 // Utils
-import {parse} from 'src/external/parser'
+import {parse} from 'src/external/languages/flux/parser'
 import {findNodes} from 'src/shared/utils/ast'
 
 // Types

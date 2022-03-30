@@ -1,5 +1,5 @@
 // APIs
-import {parse} from 'src/external/parser'
+import {parse} from 'src/external/languages/flux/parser'
 
 // Utils
 import {getMinDurationFromAST} from 'src/shared/utils/getMinDurationFromAST'

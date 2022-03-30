@@ -30,7 +30,7 @@ import {
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
-import {parse, format_from_js_file} from 'src/external/parser'
+import {parse, format_from_js_file} from 'src/external/languages/flux/parser'
 
 // Types
 import {

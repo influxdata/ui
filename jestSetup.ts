@@ -29,10 +29,10 @@ jest.mock('src/shared/utils/errors')
 
 /*
   N.B. when using react testing library render()
-  the mocked values in src/external/parser are ignored.
+  the mocked values in src/external/languages/flux/parser are ignored.
   So, need to mock here as well
 */
-jest.mock('src/external/parser', () => ({
+jest.mock('src/external/languages/flux/parser', () => ({
   parse: jest.fn(getMockedParse()),
   format_from_js_file: jest.fn(),
 }))

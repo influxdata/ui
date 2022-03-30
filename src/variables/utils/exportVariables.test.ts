@@ -2,7 +2,7 @@
 import {createVariable} from 'src/variables/mocks'
 import {getMockedParse} from 'src/shared/utils/mocks/mockedParse'
 
-jest.mock('src/external/parser', () => {
+jest.mock('src/external/languages/flux/parser', () => {
   return {
     parse: jest.fn(getMockedParse()),
   }

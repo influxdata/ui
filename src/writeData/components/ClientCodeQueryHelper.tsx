@@ -3,7 +3,7 @@ import {FC, useEffect, useContext} from 'react'
 import {format_from_js_file} from '@influxdata/flux-lsp-browser'
 
 // Utils
-import {parse} from 'src/external/parser'
+import {parse} from 'src/external/languages/flux/parser'
 import {find} from 'src/shared/contexts/query'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 

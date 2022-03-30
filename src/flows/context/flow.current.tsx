@@ -7,10 +7,10 @@ import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
 import {useParams} from 'react-router-dom'
-import {getNotebook, postNotebook} from 'src/client/notebooksRoutes'
+import {getNotebook, postNotebooksClone} from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {deleteNotebook} from 'src/client/notebooksRoutes'
-import {getAllAPI, pooledUpdateAPI} from 'src/flows/context/api'
+import {pooledUpdateAPI} from 'src/flows/context/api'
 import {useDispatch} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -20,7 +20,6 @@ import {
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {RemoteDataState} from '@influxdata/clockface'
-import {incrementCloneName} from 'src/utils/naming'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -85,15 +84,12 @@ export const FlowProvider: FC = ({children}) => {
 
   const handleCloneNotebook = useCallback(async () => {
     try {
-      const {flows} = await getAllAPI(orgID)
-
-      const allFlowNames = Object.values(flows).map(value => value.name)
-      const clonedName = incrementCloneName(allFlowNames, currentFlow.name)
-
-      const _flow = serialize({...currentFlow, name: clonedName})
-      delete _flow.data.id
-
-      const response = await postNotebook(_flow)
+      const response = await postNotebooksClone({
+        id: currentFlow.id,
+        data: {
+          orgID,
+        },
+      })
 
       if (response.status !== 200) {
         throw new Error(response.data.message)

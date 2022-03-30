@@ -1,5 +1,5 @@
-import {runQuery} from '../apis/query'
-import {LoadingState} from '../../homepageExperience/components/ConnectionInformation'
+import {runQuery} from 'src/shared/apis/query'
+import {LoadingState} from 'src/homepageExperience/components/ConnectionInformation'
 
 export const TIMEOUT_MILLISECONDS = 60000
 export const TIMER_WAIT = 1000

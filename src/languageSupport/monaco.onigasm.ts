@@ -10,7 +10,7 @@ const grammarDefs = {}
 const DEFAULT_DEF = async () => ({
   format: 'json',
   content: await import(
-    /* webpackPrefetch: 0 */ 'src/external/languages/plaintext.tmLanguage.json'
+    /* webpackPrefetch: 0 */ 'src/languageSupport/languages/plaintext.tmLanguage.json'
   ).then(data => {
     return JSON.stringify(data)
   }),

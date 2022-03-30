@@ -5,9 +5,9 @@ import React, {FC} from 'react'
 import MonacoEditor from 'react-monaco-editor'
 
 // Utils
-import LANGID from 'src/external/languages/markdown/monaco.markdown.syntax'
-import THEME_NAME from 'src/external/languages/flux/monaco.flux.theme'
-import {registerAutogrow} from 'src/external/monaco.autogrow'
+import LANGID from 'src/languageSupport/languages/markdown/monaco.markdown.syntax'
+import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
+import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
 
 // Types
 import {EditorType} from 'src/types'

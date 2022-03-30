@@ -7,13 +7,16 @@ import MonacoEditor from 'react-monaco-editor'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 // Utils
-import FLUXLANGID from 'src/external/languages/flux/monaco.flux.syntax'
-import THEME_NAME from 'src/external/languages/flux/monaco.flux.theme'
+import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
+import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
 import loadServer, {
   LSPServer,
-} from 'src/external/languages/flux/lsp/monaco.flux.server'
-import {comments, submit} from 'src/external/languages/flux/monaco.flux.hotkeys'
-import {registerAutogrow} from 'src/external/monaco.autogrow'
+} from 'src/languageSupport/languages/flux/lsp/monaco.flux.server'
+import {
+  comments,
+  submit,
+} from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
+import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'

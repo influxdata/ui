@@ -1,5 +1,5 @@
 // Libraries
-import {parse} from 'src/external/languages/flux/parser'
+import {parse} from 'src/languageSupport/languages/flux/parser'
 import {get, sortBy} from 'lodash'
 
 // API

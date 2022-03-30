@@ -12,7 +12,7 @@ import {createMemoryHistory} from 'history'
 // Items under test
 import TasksPage from './TasksPage'
 import {deleteTask, patchTask, postTask, getTask} from 'src/client'
-import {parse} from 'src/external/languages/flux/parser'
+import {parse} from 'src/languageSupport/languages/flux/parser'
 import {mocked} from 'ts-jest/utils'
 
 const sampleScript =
@@ -41,7 +41,7 @@ const localHistory = createMemoryHistory({initialEntries: ['/']})
 
 withRouterProps.match.params.orgID = orgs[0].id
 
-jest.mock('src/external/languages/flux/parser', () => ({
+jest.mock('src/languageSupport/languages/flux/parser', () => ({
   parse: jest.fn(() => {
     return {
       type: 'File',

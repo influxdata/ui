@@ -15,8 +15,8 @@ import {
   definition,
   symbols,
   formatting,
-} from 'src/external/languages/flux/lsp/monaco.flux.messages'
-import {registerCompletion} from 'src/external/languages/flux/lsp/monaco.flux.lsp'
+} from 'src/languageSupport/languages/flux/lsp/monaco.flux.messages'
+import {registerCompletion} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
 
 import {AppState, LocalStorage} from 'src/types'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'

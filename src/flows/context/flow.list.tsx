@@ -251,7 +251,13 @@ export const FlowListProvider: FC = ({children}) => {
           throw new Error(resp.data.message)
         }
 
-        return id
+        setFlows(prevFlows => ({
+          ...prevFlows,
+          [id]: {
+            ...prevFlows[id],
+            name,
+          },
+        }))
       } catch (error) {
         console.error({error})
       }

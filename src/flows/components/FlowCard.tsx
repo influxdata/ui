@@ -44,8 +44,8 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
     <FlowContextMenu id={id} name={flow.name} isPinned={isPinned} />
   )
 
-  const handleRenameNotebook = (name: string) => {
-    update(id, name)
+  const handleRenameNotebook = async (name: string) => {
+    await update(id, name)
     if (isFlagEnabled('pinnedItems') && CLOUD && isPinned) {
       try {
         updatePinnedItemByParam(id, {name})

@@ -20,7 +20,7 @@ import {
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {RemoteDataState} from '@influxdata/clockface'
-import { incrementCloneName } from 'src/utils/naming';
+import {incrementCloneName} from 'src/utils/naming'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 

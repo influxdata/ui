@@ -21,14 +21,13 @@ import {
   getAllAPI,
   migrateLocalFlowsToAPI,
 } from 'src/flows/context/api'
-import {patchNotebook} from 'src/client/notebooksRoutes'
+import {patchNotebook, postNotebooksClone} from 'src/client/notebooksRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
   notebookCreateFail,
   notebookDeleteFail,
   notebookDeleteSuccess,
 } from 'src/shared/copy/notifications'
-import {incrementCloneName} from 'src/utils/naming'
 
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string | void>
@@ -179,17 +178,22 @@ export const FlowListProvider: FC = ({children}) => {
       throw new Error(`${PROJECT_NAME} not found`)
     }
 
-    const flow = flows[id]
+    try {
+      const response = await postNotebooksClone({
+        id,
+        data: {
+          orgID: org.id,
+        },
+      })
 
-    const allFlowNames = Object.values(flows).map(value => value.name)
-    const clonedName = incrementCloneName(allFlowNames, flow.name)
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
+      }
 
-    const data = {
-      ...flow,
-      name: clonedName,
+      return response.data.id
+    } catch (error) {
+      console.error({error})
     }
-
-    return await add(data)
   }
 
   const add = (flow?: Flow): Promise<string | void> => {

@@ -304,14 +304,20 @@ export const FlowListProvider: FC = ({children}) => {
     const data = await getAllAPI(org.id)
     if (data && data.flows) {
       const _flows = {}
-      data.flows.forEach(flow => {
-        _flows[flow.id] = {
-          name: flow.name,
-          createdAt: flow.createdAt,
-          createdBy: flow.createdBy,
-          updatedAt: flow.updatedAt,
-        }
-      })
+      if (CLOUD) {
+        data.flows.forEach(flow => {
+          _flows[flow.id] = {
+            name: flow.name,
+            createdAt: flow.createdAt,
+            createdBy: flow.createdBy,
+            updatedAt: flow.updatedAt,
+          }
+        })
+      } else {
+        data.flows.forEach(f => {
+          _flows[f.id] = hydrate(f)
+        })
+      }
       setFlows(_flows)
     }
   }, [org.id, setFlows])

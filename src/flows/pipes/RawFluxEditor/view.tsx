@@ -76,19 +76,20 @@ const Query: FC<PipeProp> = ({Context}) => {
 
   const injectIntoEditor = useCallback(
     (fn: FluxToolbarFunction | FluxFunction): void => {
+      // HERE kill this
       let text = ''
       if (fn.name === 'from' || fn.name === 'union') {
         text = `${
           (fn as FluxToolbarFunction).example
             ? (fn as FluxToolbarFunction).example
-            : fn.name
-        }()` // inject functionality for dynamic flux panels is in progress
+            : fn.name + '()'
+        }` // inject functionality for dynamic flux panels is in progress
       } else {
         text = `  |> ${
           (fn as FluxToolbarFunction).example
             ? (fn as FluxToolbarFunction).example
-            : fn.name
-        }()`
+            : fn.name + '()'
+        }`
       }
 
       const options = {

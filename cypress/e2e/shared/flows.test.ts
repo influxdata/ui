@@ -14,7 +14,7 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
   })
 
-  it('CRUD a flow from the index page', () => {
+  it('CRUDs a flow from the index page', () => {
     const now = Date.now()
     cy.writeData(
       [

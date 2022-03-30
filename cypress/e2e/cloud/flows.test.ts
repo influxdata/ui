@@ -14,7 +14,7 @@ describe('Flows', () => {
     cy.getByTestID('nav-item-flows').click()
   })
 
-  it('can create, clone a flow and persist selected data in the clone, and delete a flow from the list page', () => {
+  it('can create and clone a flow, persist selected data in the clone, and delete a flow from the list page', () => {
     cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
 
     const newBucketName = 'shmucket'

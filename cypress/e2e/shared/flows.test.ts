@@ -167,7 +167,7 @@ describe('Flows', () => {
       .should('be.visible')
   })
 
-  it('can create, clone a flow and persist selected data in the clone, and delete a flow from the list page', () => {
+  it('can create and delete a flow from the list page', () => {
     cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
 
     const newBucketName = 'shmucket'
@@ -186,7 +186,6 @@ describe('Flows', () => {
     )
 
     const flowName = 'Flowbooks'
-    const clone = `${flowName} (clone 1)`
 
     cy.getByTestID('preset-new')
       .first()
@@ -269,59 +268,6 @@ describe('Flows', () => {
     cy.get('.cf-resource-card').should('have.length', 1)
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
-
-    cy.getByTestID(`flow-card--${flowName}`).within(() => {
-      cy.getByTestID(`context-menu-flow`).click()
-    })
-
-    cy.getByTestID(`context-clone-flow`).click()
-
-    cy.getByTestID('time-machine-submit-button').should('be.visible')
-
-    // Should redirect the user to the newly cloned flow
-    // Validates that the selected clone is the clone
-    cy.getByTestID('page-title').contains(`${clone}`)
-
-    cy.clickNavBarItem('nav-item-flows')
-
-    cy.get('.cf-resource-card').should('have.length', 2)
-    cy.get('.cf-resource-editable-name')
-      .first()
-      .contains(`${clone}`)
-
-    // Delete the cloned flow
-    cy.getByTestID(`flow-card--${clone}`).within(() => {
-      cy.getByTestID(`context-delete-menu--button`).click()
-    })
-    cy.getByTestID(`context-delete-menu--confirm-button`).click()
-
-    cy.getByTestID('notification-success').should('be.visible')
-    cy.getByTestID('notification-success--dismiss').click()
-
-    cy.get('.cf-resource-card').should('have.length', 1)
-    cy.getByTestID('resource-editable-name').contains(`${flowName}`)
-
-    // Clone a flow again
-    cy.getByTestID(`flow-card--${flowName}`).within(() => {
-      cy.getByTestID(`context-menu-flow`).click()
-    })
-    cy.getByTestID(`context-clone-flow`).click()
-
-    // Should redirect the user to the newly cloned flow
-    cy.getByTestID('time-machine-submit-button').should('be.visible')
-    cy.wait('@updateNotebook')
-    cy.getByTestID('page-title').contains(`${clone}`)
-
-    // Delete the cloned flow inside the notebook
-    cy.getByTestID('flow-menu-button').click()
-    cy.getByTestID('flow-menu-button-delete').should('be.visible')
-    cy.getByTestID('flow-menu-button-delete').click()
-
-    cy.getByTestID('notification-success').should('be.visible')
-
-    cy.get('.cf-resource-card').should('have.length', 1)
-    cy.get('.cf-resource-editable-name').should('have.length', 1)
-    cy.get('.cf-resource-editable-name').contains(`${flowName}`)
   })
 
   it('should have the same number of flow panels and no presentation panel when presentation mode is off', () => {

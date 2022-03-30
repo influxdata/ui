@@ -120,44 +120,48 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
         confirmationButtonText="Confirm"
         testID="context-delete-menu"
       />
-      <SquareButton
-        ref={settingsRef}
-        size={ComponentSize.ExtraSmall}
-        icon={IconFont.CogSolid_New}
-        color={ComponentColor.Colorless}
-        testID="context-menu-flow"
-      />
-      <Popover
-        appearance={Appearance.Outline}
-        enableDefaultStyles={false}
-        style={{minWidth: '112px'}}
-        triggerRef={settingsRef}
-        contents={onHide => (
-          <List>
-            <List.Item
-              onClick={handleClone}
-              size={ComponentSize.Small}
-              style={{fontWeight: 500}}
-              testID="context-clone-flow"
-            >
-              Clone
-            </List.Item>
-            {isFlagEnabled('pinnedItems') && CLOUD && (
-              <List.Item
-                onClick={() => {
-                  handlePinFlow()
-                  onHide()
-                }}
-                size={ComponentSize.Small}
-                style={{fontWeight: 500}}
-                testID="context-pin-flow"
-              >
-                {isPinned ? 'Unpin' : 'Pin'}
-              </List.Item>
+      {CLOUD && (
+        <>
+          <SquareButton
+            ref={settingsRef}
+            size={ComponentSize.ExtraSmall}
+            icon={IconFont.CogSolid_New}
+            color={ComponentColor.Colorless}
+            testID="context-menu-flow"
+          />
+          <Popover
+            appearance={Appearance.Outline}
+            enableDefaultStyles={false}
+            style={{minWidth: '112px'}}
+            triggerRef={settingsRef}
+            contents={onHide => (
+              <List>
+                <List.Item
+                  onClick={handleClone}
+                  size={ComponentSize.Small}
+                  style={{fontWeight: 500}}
+                  testID="context-clone-flow"
+                >
+                  Clone
+                </List.Item>
+                {isFlagEnabled('pinnedItems') && CLOUD && (
+                  <List.Item
+                    onClick={() => {
+                      handlePinFlow()
+                      onHide()
+                    }}
+                    size={ComponentSize.Small}
+                    style={{fontWeight: 500}}
+                    testID="context-pin-flow"
+                  >
+                    {isPinned ? 'Unpin' : 'Pin'}
+                  </List.Item>
+                )}
+              </List>
             )}
-          </List>
-        )}
-      />
+          />
+        </>
+      )}
     </FlexBox>
   )
 }

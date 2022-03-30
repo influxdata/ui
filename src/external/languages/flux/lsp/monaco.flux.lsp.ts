@@ -1,5 +1,5 @@
 // Libraries
-import {LSPServer} from 'src/external/languages/flux/monaco.flux.server'
+import {LSPServer} from 'src/external/languages/flux/lsp/monaco.flux.server'
 import FLUXLANGID from 'src/external/languages/flux/monaco.flux.syntax'
 import {
   MonacoToProtocolConverter,

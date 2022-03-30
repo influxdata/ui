@@ -11,7 +11,7 @@ import FLUXLANGID from 'src/external/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/external/languages/flux/monaco.flux.theme'
 import loadServer, {
   LSPServer,
-} from 'src/external/languages/flux/monaco.flux.server'
+} from 'src/external/languages/flux/lsp/monaco.flux.server'
 import {comments, submit} from 'src/external/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/external/monaco.autogrow'
 

@@ -127,43 +127,43 @@ const TimeMachineFluxEditor: FC = () => {
 
   // dynamic flux example parser function
   const getFluxExample = func => {
-    const {name, fluxType} = func
 
+    const {name, fluxType} = func
     let signature
+    // aggregate.rate
+    // "fluxType": "(<-tables:stream[A], every:duration, ?groupColumns:[string], ?unit:duration) => stream[B] where A: Record, B: Record"
+
 
     // get copy of fluxtype signature before arrow sign
-    // look into using string.split() instead
-    const index = fluxType.lastIndexOf('=')
+    const index = fluxType.lastIndexOf('=') // using lastIndexOf because of edge cases like array.filter
     const fluxsign = fluxType.slice(0, index)
 
-    // param before arrow  (<-arr:[A], fn:(x:A) => bool) 
-
-    // access parameters alone inside function signature
+    // pull out all parameters found in between paranethesis 
     const firstIndex = fluxsign.indexOf('(')
     const secondIndex = fluxsign.lastIndexOf(')')
     const parametersAsOneSentence = fluxsign
       .substring(firstIndex + 1, secondIndex)
       .replace(/\s/g, '')
     
-    
-    console.log('available params ', parametersAsOneSentence)
-    //available params  <-arr:[A],fn:(x:A)=>bool
+    // parametersAsOneSentence = <-tables:stream[A],every:duration,?groupColumns:[string],?unit:duration
 
-    // sparate each parameter
+    // sparate parameters into individual Parameters 
+    // some flux parameters cant be sperated by commas because some stand alone params contain commas. ex below 
+    // (t:A, ?location:{zone:string, offset:duration}) => int where A: Timeable"
+    // below code separates them by keeping track of opening and closing brackets 
 
     const individualParams = []
-    const stack = [] // [ 
+    const stack = [] 
     const brackets = {
         '(': ')',
         '[': ']',
         '{': '}'
       }
     let param = ''
-    //<-tables:stream[A],every:duration,?groupColumns:[string],?unit:duration
-    // default:A,dict:[B:A],key:B
+    
     for (let i = 0; i < parametersAsOneSentence.length; i++) {
       if (parametersAsOneSentence[i] === ',' && !stack.length) { // case: params with no brackets in them
-        if (!param.startsWith('?') && !param.startsWith('<')) { // dont add to array if param is optional
+        if (!param.startsWith('?') && !param.startsWith('<')) { // checks if param is optional. if not, push to individialParams array
           individualParams.push(param)
           param = ''
           i++
@@ -171,32 +171,41 @@ const TimeMachineFluxEditor: FC = () => {
       }
       param += parametersAsOneSentence[i] 
 
-      if (brackets.hasOwnProperty(parametersAsOneSentence[i]) ) { // its opening bracket 
+      if (brackets.hasOwnProperty(parametersAsOneSentence[i]) ) { // if element is opening bracket 
         stack.push(parametersAsOneSentence[i])
       } 
-      if (Object.values(brackets).includes(parametersAsOneSentence[i])) { // its closing bracket 
+      if (Object.values(brackets).includes(parametersAsOneSentence[i])) { // if element is closing bracket 
         const closing = stack.pop()
-        // if its a closing bracket and stack is empty and the next element is a comma, its a complete parameter. 
+        // if element is the correct closing bracket AND stack is empty 
+        // AND the next element is a comma, we have a complete parameter. 
         if (parametersAsOneSentence[i] === brackets[closing] && !stack.length && parametersAsOneSentence[i + 1] === ',') { 
-          if (!param.startsWith('?') && !param.startsWith('<')) { // dont add to array if param is optional
+          if (!param.startsWith('?') && !param.startsWith('<')) { // checks if param is optional
             individualParams.push(param)
             param = ''
             i++
-          } else { // it's optional param. set params to empty
+          } else { // we have an optional param. set param to empty
             param = ''
             i++
           }
         }
       }
       if (i === parametersAsOneSentence.length - 1) { // end of iteration
-        if (!param.startsWith('?') && !param.startsWith('<')) { // dont add to array if param is optional
+        if (!param.startsWith('?') && !param.startsWith('<')) { 
           individualParams.push(param)
         }
       }
     }
 
-  // remove optional parameters 
+    // at this point, individualParams array should have all required parameters to parse a signature 
+    // temp solution for missing parameter type info 
+    // manually updating the value of parameter's property 
 
+    /* individualParams = [
+      'default:A',
+      'dict:[B:A]',
+      'key:B'
+      ]
+    */ 
     individualParams.map((element, index) => {
      
       if (element.startsWith('pairs')) {
@@ -205,7 +214,7 @@ const TimeMachineFluxEditor: FC = () => {
         return
       }
       if (element.startsWith('dict')) {
-        individualParams[index] = 'dict: [1: "foo", 2: "bar"]' // default:A,dict:[B:A],key:B
+        individualParams[index] = 'dict: [1: "foo", 2: "bar"]' 
       }
       if (element.startsWith('key')) {
         individualParams[index] = 'key: 1'
@@ -216,8 +225,14 @@ const TimeMachineFluxEditor: FC = () => {
 
     })
 
-    console.log('params array after parse', individualParams)
+     /* individualParams = [
+      'default: ""',
+      'dict:[1: "foo", 2: "bar"]',
+      'key: 1'
+      ]
+    */ 
 
+    // join the individual params to create the signature
     signature = `${func.package}.${name}` + `(` + individualParams.join(', ') + `)`
 
     // add example property to flux function object

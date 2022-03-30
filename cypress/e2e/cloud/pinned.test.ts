@@ -211,6 +211,7 @@ from(bucket: "${name}"{rightarrow}
       cy.setFeatureFlags({
         pinnedItems: true,
       })
+      cy.intercept('GET', '**/notebooks').as('getNotebooks')
       cy.getByTestID('nav-item-flows').should('be.visible')
       cy.clickNavBarItem('nav-item-flows')
       const now = Date.now()
@@ -230,6 +231,7 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('page-title')
         .first()
         .click()
+      cy.intercept('GET', '**/notebooks').as('getNotebooks')
       cy.intercept('PATCH', '**/notebooks/*').as('updateNotebook')
       cy.getByTestID('renamable-page-title--input')
         .clear()
@@ -253,6 +255,7 @@ from(bucket: "${name}"{rightarrow}
         })
       cy.wait('@updateNotebook')
       cy.visit(`/orgs/${orgID}/notebooks`)
+      cy.wait('@getNotebooks')
     })
 
     it('pins a notebook to the homepage', () => {
@@ -290,8 +293,8 @@ from(bucket: "${name}"{rightarrow}
         .type('Bucks In Six')
         .type('{enter}')
       cy.getByTestID('notification-success--children').should('exist')
-      cy.wait('@updateNotebook')
       cy.wait('@updatePinned')
+      cy.wait('@updateNotebook')
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
@@ -311,16 +314,11 @@ from(bucket: "${name}"{rightarrow}
         .first()
         .click()
 
-      cy.get('.cf-input-field')
-        .last()
-        .focus()
-        .type('Bucks In Six')
-        .type('{enter}')
-      cy.getByTestID('flow-card--Bucks In Six').within(() => {
+      cy.getByTestID('flow-card--Flow').within(() => {
         cy.getByTestID('context-menu-flow').click()
       })
       cy.getByTestID('context-pin-flow').click()
-      cy.getByTestID('flow-card--Bucks In Six').within(() => {
+      cy.getByTestID('flow-card--Flow').within(() => {
         cy.getByTestID(`context-delete-menu--button`).click()
       })
       cy.getByTestID(`context-delete-menu--confirm-button`).click()

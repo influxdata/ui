@@ -7,10 +7,11 @@ import {Doc} from 'yjs'
 import {WebsocketProvider} from 'y-websocket'
 import {serialize, hydrate} from 'src/flows/context/flow.list'
 import {useParams} from 'react-router-dom'
-import {getNotebook} from 'src/client/notebooksRoutes'
+import {getNotebook, postNotebook,
+  // postNotebooksClone
+} from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
-import {incrementCloneName} from 'src/utils/naming'
-import {deleteNotebook, postNotebook} from 'src/client/notebooksRoutes'
+import {deleteNotebook} from 'src/client/notebooksRoutes'
 import {getAllAPI, pooledUpdateAPI} from 'src/flows/context/api'
 import {useDispatch} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
@@ -21,6 +22,7 @@ import {
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {RemoteDataState} from '@influxdata/clockface'
+import { incrementCloneName } from 'src/utils/naming';
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -94,6 +96,9 @@ export const FlowProvider: FC = ({children}) => {
       delete _flow.data.id
 
       const response = await postNotebook(_flow)
+      // const response = await postNotebooksClone({id: currentFlow.id, data: {
+      //   orgID
+      // }})
 
       if (response.status !== 200) {
         throw new Error(response.data.message)
@@ -174,7 +179,10 @@ export const FlowProvider: FC = ({children}) => {
 
   const update = useCallback(
     (flow: Flow) => {
-      setCurrentFlow(flow)
+      setCurrentFlow(prev => ({
+        ...prev,
+        ...flow,
+      }))
 
       const apiFlow = serialize({
         ...flow,
@@ -213,15 +221,13 @@ export const FlowProvider: FC = ({children}) => {
         return
       }
 
-      const flowCopy = JSON.parse(JSON.stringify(currentFlow))
-
-      flowCopy.data.byID[id] = {
+      currentFlow.data.byID[id] = {
         ...(currentFlow.data.byID[id] || {}),
         ...data,
       }
 
       // this should update the useEffect on the next time around
-      update(flowCopy)
+      update(currentFlow)
     },
     [currentFlow, update]
   )
@@ -259,9 +265,7 @@ export const FlowProvider: FC = ({children}) => {
         return
       }
 
-      const flowCopy = JSON.parse(JSON.stringify(currentFlow))
-
-      flowCopy.meta.byID[id] = {
+      currentFlow.meta.byID[id] = {
         title: '',
         visible: true,
         ...(currentFlow.meta.byID[id] || {}),
@@ -269,7 +273,7 @@ export const FlowProvider: FC = ({children}) => {
       }
 
       // this should update the useEffect on the next time around
-      update(flowCopy)
+      update(currentFlow)
     },
     [currentFlow, update]
   )

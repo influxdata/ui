@@ -68,6 +68,11 @@ const RenamablePageTitle: FC<Props> = ({
       setEditingState(false)
       setWorkingName(name)
     }
+
+    if (e.key === 'Tab') {
+      onRename(workingName)
+      setEditingState(false)
+    }
   }
 
   const handleInputFocus = (e: ChangeEvent<InputRef>): void => {

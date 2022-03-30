@@ -59,7 +59,7 @@ const RenamablePageTitle: FC<Props> = ({
   }
 
   const handleKeyDown = (e: KeyboardEvent<InputRef>): void => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || e.key === 'Tab') {
       onRename(workingName)
       setEditingState(false)
     }
@@ -67,11 +67,6 @@ const RenamablePageTitle: FC<Props> = ({
     if (e.key === 'Escape') {
       setEditingState(false)
       setWorkingName(name)
-    }
-
-    if (e.key === 'Tab') {
-      onRename(workingName)
-      setEditingState(false)
     }
   }
 

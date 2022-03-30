@@ -419,7 +419,6 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
     )
 
     dispatch(editTelegraf(normTelegraf))
-    dispatch(setTelegrafConfigID(telegrafConfigID))
     event(`telegraf.config.edit.success`, {
       id: telegraf?.id,
       name: normalizeEventName(telegrafConfigName),
@@ -575,7 +574,6 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
       telegrafSchema
     )
 
-    dispatch(setTelegrafConfigID(tc.id))
     dispatch(addTelegraf(normTelegraf))
     dispatch(notify(TelegrafConfigCreationSuccess))
     event(`telegraf.config.create.success`, {

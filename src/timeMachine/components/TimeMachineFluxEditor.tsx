@@ -21,10 +21,12 @@ import {
   generateImport,
 } from 'src/timeMachine/utils/insertFunction'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {FluxToolbarFunction, EditorType} from 'src/types'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
+
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
@@ -81,7 +83,7 @@ const TimeMachineFluxEditor: FC = () => {
   const defaultColumnPosition = 1 // beginning column of the row
 
   const getFluxTextAndRange = (
-    func: FluxToolbarFunction
+    func
   ): {text: string; range: monacoEditor.Range} => {
     if (!editorInstance) {
       return null
@@ -123,11 +125,106 @@ const TimeMachineFluxEditor: FC = () => {
     return {text, range}
   }
 
+  // dynamic flux example parser function
+  const getFluxExample = func => {
+    const {name, fluxType} = func // dict.get
+
+    let signature
+
+    // get copy of fluxtype signature before arrow sign
+    // look into using string.split() instead
+    const index = fluxType.indexOf('=')
+    const fluxsign = fluxType.slice(0, index)
+
+    // access parameters alone inside function signature
+    const firstIndex = fluxsign.indexOf('(')
+    const secondIndex = fluxsign.indexOf(')')
+    const parametersAsOneSentence = fluxsign
+      .substring(firstIndex + 1, secondIndex)
+      .replace(/\s/g, '')
+    
+    
+    console.log('available params ', parametersAsOneSentence)
+    // sparate each parameter
+
+    const individualParams = []
+    const stack = [] // [ 
+      const brackets = {
+        '(': ')',
+        '[': ']',
+        '{': '}'
+      }
+    let param = ''
+    //<-tables:stream[A],every:duration,?groupColumns:[string],?unit:duration
+    // default:A,dict:[B:A],key:B
+    for (let i = 0; i < parametersAsOneSentence.length; i++) {
+      if (parametersAsOneSentence[i] === ',' && !stack.length) { // case: params with no brackets in them
+        if (!param.startsWith('?') && !param.startsWith('<')) { // dont add to array if param is optional
+          individualParams.push(param)
+          param = ''
+          i++
+        }
+      }
+      param += parametersAsOneSentence[i] 
+
+      if (brackets.hasOwnProperty(parametersAsOneSentence[i]) ) { // its opening bracket 
+        stack.push(parametersAsOneSentence[i])
+      } 
+      if (Object.values(brackets).includes(parametersAsOneSentence[i])) { // its closing bracket 
+        const closing = stack.pop()
+        if (parametersAsOneSentence[i] === brackets[closing] && !stack.length) {
+          if (!param.startsWith('?') && !param.startsWith('<')) { // dont add to array if param is optional
+            individualParams.push(param)
+            param = ''
+            i++
+          } else { // it's a optional or table param so empty string 
+            param = ''
+            i++
+          }
+        }
+      }
+      if (i === parametersAsOneSentence.length - 1) { // end of iteration
+        if (!param.startsWith('?') && !param.startsWith('<')) { // dont add to array if param is optional
+          individualParams.push(param)
+        }
+      }
+    }
+
+  // remove optional parameters 
+
+    individualParams.map((element, index) => {
+     
+      if (element.startsWith('pairs')) {
+        individualParams[index] =
+          'pairs: [{key: 1, value: "foo"},{key: 2, value: "bar"}]'
+        return
+      }
+      if (element.startsWith('dict')) {
+        individualParams[index] = 'dict: [1: "foo", 2: "bar"]' // default:A,dict:[B:A],key:B
+      }
+      if (element.startsWith('key')) {
+        individualParams[index] = 'key: 1'
+      }
+      if (element.startsWith('default')) {
+        individualParams[index] = 'default: ""'
+      }
+
+    })
+
+    console.log('params array after parse', individualParams)
+
+    signature = `${func.package}.${name}` + `(` + individualParams.join(', ') + `)`
+
+    // add example property to flux function object
+    return {...func, example: signature}
+
+  }
+
   const handleInsertFluxFunction = (func: FluxToolbarFunction): void => {
     if (!editorInstance) {
       return
     }
-    const {text, range} = getFluxTextAndRange(func)
+    const {text, range} = getFluxTextAndRange( isFlagEnabled('fluxDynamicDocs') ? getFluxExample(func) : func)
 
     const edits = [
       {

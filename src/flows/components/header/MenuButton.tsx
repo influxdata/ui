@@ -27,6 +27,7 @@ import {downloadImage} from 'src/shared/utils/download'
 
 // Constants
 import {PROJECT_NAME_PLURAL} from 'src/flows'
+import {CLOUD} from 'src/shared/constants'
 
 const backgroundColor = '#07070E'
 
@@ -175,12 +176,6 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   const menuItems: any[] = [
     {
       type: 'menuitem',
-      title: 'Clone',
-      onClick: handleClone,
-      icon: IconFont.Duplicate_New,
-    },
-    {
-      type: 'menuitem',
       title: 'Download as PNG',
       onClick: handleDownloadAsPNG,
       icon: IconFont.Download_New,
@@ -199,6 +194,15 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
       testID: 'flow-menu-button-delete',
     },
   ]
+
+  if (CLOUD) {
+    menuItems.splice(0, 0, {
+      type: 'menuitem',
+      title: 'Clone',
+      onClick: handleClone,
+      icon: IconFont.Duplicate_New,
+    })
+  }
 
   if (isFlagEnabled('flowPublishLifecycle')) {
     menuItems.splice(

@@ -32,11 +32,6 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 // Types
 import {OverlayState, AppState, Bucket, ResourceType} from 'src/types'
-import {
-  setTelegrafConfigID,
-  setTelegrafConfigName,
-  clearDataLoaders,
-} from 'src/dataLoaders/actions/dataLoaders'
 import {SortTypes} from 'src/shared/utils/sort'
 import {TelegrafSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
@@ -273,9 +268,6 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  onSetTelegrafConfigID: setTelegrafConfigID,
-  onSetTelegrafConfigName: setTelegrafConfigName,
-  onClearDataLoaders: clearDataLoaders,
   onUpdateTelegraf: updateTelegraf,
   onDeleteTelegraf: deleteTelegraf,
 }

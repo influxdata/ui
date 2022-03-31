@@ -11,7 +11,7 @@ As new plugins are added and existing plugins are updated, these changes should 
 1. Run the script.  
   At the root of the repository, run `yarn telegraf-plugins:update`  
   This will update all Telegraf plugins according to the latest release of Telegraf  
-  Optionally, you may add a version number: `yarn telegraf-plugins:update <version number>`  
+  Optionally, you may add a version: `yarn telegraf-plugins:update <version>`  
   For example:  
   &nbsp;&nbsp;`yarn telegraf-plugins:update v1.22.0` will update according to version 1.22.0  
   &nbsp;&nbsp;`yarn telegraf-plugins:update master` will update according to master branch  

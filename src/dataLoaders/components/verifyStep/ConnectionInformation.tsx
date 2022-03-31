@@ -3,6 +3,7 @@ import React, {PureComponent} from 'react'
 
 // Decorator
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import {Countdown} from 'src/shared/components/countdown/Countdown'
 
 export enum LoadingState {
   NotStarted = 'NotStarted',
@@ -69,7 +70,11 @@ class ConnectionInformation extends PureComponent<Props> {
     )
     switch (this.props.loading) {
       case LoadingState.Loading:
-        return `Timeout in ${this.props.countDownSeconds} seconds`
+        return (
+          <>
+            Timeout in <Countdown from={this.props.countDownSeconds} key={this.props.bucket} /> seconds
+          </>
+        )
       case LoadingState.Done:
         return `${this.props.bucket} is receiving data loud and clear!`
       case LoadingState.NotFound:

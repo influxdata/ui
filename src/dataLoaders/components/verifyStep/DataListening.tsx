@@ -16,7 +16,6 @@ import ConnectionInformation, {
 import {
   continuouslyCheckForData,
   TIMEOUT_MILLISECONDS,
-  TIMER_WAIT,
 } from 'src/shared/utils/dataListening'
 
 interface OwnProps {
@@ -112,28 +111,8 @@ class DataListening extends PureComponent<Props, State> {
       },
     } = this.props
 
-    this.startTimer()
     this.setState({loading: LoadingState.Loading})
     continuouslyCheckForData(orgID, bucket, this.updateResponse)
-  }
-
-  private startTimer() {
-    this.setState({timePassedInSeconds: 0, secondsLeft: this.TIMEOUT_SECONDS})
-
-    this.timer = setInterval(this.countDown, TIMER_WAIT)
-  }
-
-  private countDown = () => {
-    const {secondsLeft} = this.state
-    const secs = secondsLeft - 1
-    this.setState({
-      timePassedInSeconds: this.TIMEOUT_SECONDS - secs,
-      secondsLeft: secs,
-    })
-
-    if (secs === 0) {
-      clearInterval(this.timer)
-    }
   }
 }
 

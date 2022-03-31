@@ -12,12 +12,11 @@ As new plugins are added and existing plugins are updated, these changes should 
   At the root of the repository, run `yarn telegraf-plugins:update`  
   This will update all Telegraf plugins according to the latest release of Telegraf  
   Optionally, you may add a version number: `yarn telegraf-plugins:update <version number>`  
-  For example: `yarn telegraf-plugins:update v1.22.0` will update according to version 1.22.0 
-
+  For example: `yarn telegraf-plugins:update v1.22.0` will update according to version 1.22.0  
 1. Accept the changes to existing files in a new branch in preparation for a pull request.  
 1. Accept the new files generated. New files, if any, should be only .conf files the first time you run this script during an update cycle.  
-1. For every new .conf file, add the id of the new plugin into the `inputPluginsList` array found in `src/writeData/utils/updateTelegrafPlugins.mjs`  
-a. Keep the array alphabetized  
+1. For every new .conf file, add the id of the new plugin (if not already present) into the `inputPluginsList` array found in `src/writeData/utils/updateTelegrafPlugins.mjs`  
+a. Keep the array alphabetized and the ids unique  
 b. The id is the second part after the dot of the string between the set of `[[ ]]` found in a .conf file.  
 For example `[[inputs.activemq]]` has id of `activemq`  
 1. Repeat the above steps from step 1. Accept the new .md files generated. The reason we need to repeat is because markdown files are generally found by using a file path that includes their id, with each plugin having a different path. There is no other list (except in the steps outlined here) of all plugins.  

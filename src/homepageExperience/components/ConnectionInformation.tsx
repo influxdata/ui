@@ -65,7 +65,7 @@ class ConnectionInformation extends PureComponent<Props> {
       case LoadingState.Loading:
         return (
           <>
-            Timeout in <Countdown from={this.props.countDownSeconds} /> seconds
+            Timeout in <Countdown from={this.props.countDownSeconds} key={this.props.bucket} /> seconds
           </>
         )
       case LoadingState.Done:

@@ -1,4 +1,4 @@
-import register from 'src/external/monaco.onigasm'
+import register from 'src/languageSupport/monaco.onigasm'
 
 const LANGID = 'flux'
 
@@ -6,7 +6,7 @@ async function addSyntax() {
   await register(LANGID, async () => ({
     format: 'json',
     content: await import(
-      /* webpackPrefetch: 0 */ 'src/external/flux.tmLanguage.json'
+      /* webpackPrefetch: 0 */ 'src/languageSupport/languages/flux/flux.tmLanguage.json'
     ).then(data => {
       return JSON.stringify(data)
     }),

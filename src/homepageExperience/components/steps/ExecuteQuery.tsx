@@ -4,9 +4,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 
-const fromBucketSnippet = `from(bucket: “my-bucket”)
-  |> range(start: -10m)`
-
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeQuery.code.copied')
 }
@@ -18,9 +15,15 @@ type ExecuteQueryProps = {
 export const ExecuteQuery = (props: ExecuteQueryProps) => {
   const org = useSelector(getOrg)
   const {bucket} = props
+
+  const fromBucketSnippet = `from(bucket: "${bucket}")
+  |> range(start: -10m)`
+
   const query = `query_api = client.query_api()
 
-query = 'from(bucket: "${bucket}") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1")'
+query = """from(bucket: "${bucket}")
+ |> range(start: -10m)
+ |> filter(fn: (r) => r._measurement == "measurement1")"""
 tables = query_api.query(query, org="${org.name}")
 
 for table in tables:

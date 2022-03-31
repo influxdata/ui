@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react'
 
 // Decorator
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import {Countdown} from 'src/shared/components/countdown/countdown'
+import {Countdown} from 'src/shared/components/countdown/Countdown'
 
 export enum LoadingState {
   NotStarted = 'NotStarted',

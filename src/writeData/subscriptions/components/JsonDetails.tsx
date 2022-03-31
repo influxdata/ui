@@ -27,7 +27,7 @@ import {Subscription} from 'src/types/subscriptions'
 import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 // Styles
-import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
+import 'src/writeData/subscriptions/components/JsonDetails.scss'
 
 interface Props {
   formContent: Subscription
@@ -63,7 +63,7 @@ const JsonDetails: FC<Props> = ({formContent, updateForm}) => {
     setRule('')
   }, [rule])
   return (
-    <div className="json-parsing-form">
+    <div className="update-json-form">
       <Grid.Column>
         <Form.Label label="JSON Path to Timestamp" />
         <Input
@@ -87,12 +87,12 @@ const JsonDetails: FC<Props> = ({formContent, updateForm}) => {
           alignItems={AlignItems.Center}
           direction={FlexDirection.Row}
           margin={ComponentSize.Large}
-          className="json-parsing-form__header-wrap"
+          className="update-json-form__header-wrap"
         >
           <Heading
             element={HeadingElement.H3}
             weight={FontWeight.Bold}
-            className="json-parsing-form__header-wrap__header"
+            className="update-json-form__header-wrap__header"
           >
             Measurement
           </Heading>
@@ -101,7 +101,7 @@ const JsonDetails: FC<Props> = ({formContent, updateForm}) => {
           alignItems={AlignItems.FlexStart}
           direction={FlexDirection.Row}
           margin={ComponentSize.Large}
-          className="json-parsing-form__container"
+          className="update-json-form__container"
         >
           <Form.ValidationElement
             label="Name"
@@ -127,18 +127,18 @@ const JsonDetails: FC<Props> = ({formContent, updateForm}) => {
                 }}
                 status={status}
                 maxLength={16}
-                testID="measurement-json-parsing-name"
+                testID="measurement-json-parsing-update-name"
               />
             )}
           </Form.ValidationElement>
-          <div className="json-parsing-form__container__dropdown">
+          <div className="update-json-form__container__dropdown">
             <Form.Label label="Data Type" />
             <Dropdown
               button={(active, onClick) => (
                 <Dropdown.Button
                   active={active}
                   onClick={onClick}
-                  testID="measurement-json-parsing-type"
+                  testID="measurement-json-parsing-update-type"
                 >
                   {dataTypeM}
                 </Dropdown.Button>
@@ -155,7 +155,7 @@ const JsonDetails: FC<Props> = ({formContent, updateForm}) => {
                         formContent.jsonMeasurementKey.type = d.toLowerCase()
                       }}
                       selected={dataTypeM === d}
-                      testID={`measurement-json-parsing-type-${1}`}
+                      testID={`measurement-json-parsing-update-type-${1}`}
                     >
                       {d}
                     </Dropdown.Item>
@@ -191,7 +191,7 @@ const JsonDetails: FC<Props> = ({formContent, updateForm}) => {
               }}
               status={status}
               maxLength={56}
-              testID="measurement-json-parsing-path"
+              testID="measurement-json-parsing-update-path"
             />
           )}
         </Form.ValidationElement>
@@ -221,7 +221,7 @@ const JsonDetails: FC<Props> = ({formContent, updateForm}) => {
             <Dropdown.Button
               active={active}
               onClick={onClick}
-              testID="json-parsing-add-rule"
+              testID="json-update-add-rule"
             >
               <Icon glyph={IconFont.Plus} /> Add Rule
             </Dropdown.Button>
@@ -237,7 +237,7 @@ const JsonDetails: FC<Props> = ({formContent, updateForm}) => {
                     setRule(r)
                   }}
                   selected={rule === r}
-                  testID={`json-parsing-add-rule-${1}`}
+                  testID={`json-update-add-rule-${1}`}
                 >
                   {r}
                 </Dropdown.Item>

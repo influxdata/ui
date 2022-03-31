@@ -46,7 +46,6 @@ export const createAPI = async (subscription: typeof PostBrokerSubParams) => {
 }
 
 export const updateAPI = async (subscription: typeof PutBrokerSubParams) => {
-  console.log('subscription', subscription)
   const res = await putBrokerSub(subscription)
   if (res.status != 200) {
     throw new Error(res.data.message)

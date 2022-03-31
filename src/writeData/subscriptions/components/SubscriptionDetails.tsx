@@ -30,7 +30,7 @@ import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {Subscription} from 'src/types/subscriptions'
 
 // Styles
-import 'src/writeData/subscriptions/components/SubscriptionForm.scss'
+import 'src/writeData/subscriptions/components/SubscriptionDetails.scss'
 
 interface Props {
   currentSubscription: Subscription
@@ -54,15 +54,16 @@ const SubscriptionDetails: FC<Props> = ({
   const history = useHistory()
   const org = useSelector(getOrg)
   useEffect(() => {
-    updateForm({...currentSubscription, bucket: bucket.name})
+    if (edit) {
+      updateForm({...currentSubscription, bucket: bucket.name})
+    }
   }, [bucket])
   return (
-    currentSubscription &&
     buckets && (
-      <div className="create-subscription-form">
+      <div className="update-subscription-form">
         <Form
           onSubmit={() => {}}
-          testID="create-subscription-form--overlay-form"
+          testID="update-subscription-form--overlay-form"
         >
           <Overlay.Header title="Topic Subscription"></Overlay.Header>
           <Overlay.Body>
@@ -93,7 +94,7 @@ const SubscriptionDetails: FC<Props> = ({
                         }}
                         status={status}
                         maxLength={16}
-                        testID="create-subscription-form--topic"
+                        testID="update-subscription-form--topic"
                       />
                     )}
                   </Form.ValidationElement>
@@ -102,7 +103,7 @@ const SubscriptionDetails: FC<Props> = ({
                   <Heading
                     element={HeadingElement.H3}
                     weight={FontWeight.Bold}
-                    className="create-subscription-form__header"
+                    className="update-subscription-form__header"
                   >
                     Write Destination
                   </Heading>
@@ -111,7 +112,7 @@ const SubscriptionDetails: FC<Props> = ({
                       <Heading
                         element={HeadingElement.H5}
                         weight={FontWeight.Regular}
-                        className="create-subscription-form__text"
+                        className="update-subscription-form__text"
                       >
                         Select a bucket to write your data to.
                       </Heading>
@@ -121,7 +122,7 @@ const SubscriptionDetails: FC<Props> = ({
                     <Heading
                       element={HeadingElement.H4}
                       weight={FontWeight.Regular}
-                      className="create-subscription-form__text"
+                      className="update-subscription-form__text"
                     >
                       Bucket:{' '}
                       {currentSubscription && currentSubscription.bucket}
@@ -138,32 +139,32 @@ const SubscriptionDetails: FC<Props> = ({
               onClick={() => {
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
-              titleText="Cancel"
+              titleText="Cancel update and return to Subscriptions list"
               type={ButtonType.Button}
-              testID="create-subscription-form--cancel"
+              testID="update-subscription-form--cancel"
             />
             <Button
-              text={'Edit'}
-              color={ComponentColor.Secondary}
-              onClick={() => setEdit(true)}
+              text="Edit"
+              color={edit ? ComponentColor.Success : ComponentColor.Secondary}
+              onClick={() => setEdit(!edit)}
               type={ButtonType.Button}
               titleText="Edit"
-              testID="create-broker-form--submit"
+              testID="update-broker-form--edit"
             />
             <Button
-              text={'Next'}
+              text="Next"
               color={ComponentColor.Secondary}
               onClick={() => setFormActive('parsing')}
               type={ButtonType.Button}
               titleText="Next"
-              testID="create-broker-form--submit"
+              testID="update-broker-form--submit"
             />
             <Button
               text="View Data"
               color={ComponentColor.Success}
               onClick={() => {}}
               type={ButtonType.Button}
-              testID="create-subscription-form--view-data"
+              testID="update-subscription-form--view-data"
               status={ComponentStatus.Default}
             />
           </Overlay.Footer>

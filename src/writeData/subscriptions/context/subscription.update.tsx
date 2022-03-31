@@ -145,7 +145,6 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
     },
     [currentSubscription] // eslint-disable-line react-hooks/exhaustive-deps
   )
-  console.log('current subscription', currentSubscription)
 
   const saveForm = (currentSubscription?: Subscription): void => {
     update(currentSubscription)

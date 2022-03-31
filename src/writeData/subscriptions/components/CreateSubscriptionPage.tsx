@@ -96,7 +96,6 @@ const CreateSubscriptionPage: FC = () => {
     })
     return currentStep
   }
-
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>

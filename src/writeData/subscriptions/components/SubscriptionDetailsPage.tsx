@@ -80,14 +80,6 @@ const navigationSteps: SubscriptionNavigationModel[] = [
   },
 ]
 
-enum Statuses {
-  Running = 'running', // connected
-  Stopped = 'stopped', // disconnected
-  Invalid = 'invalid', // invalid
-  Validating = 'validating', // validating
-  Disabled = 'disabled', // disabled
-}
-
 const SubscriptionDetailsPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {currentSubscription, loading, saveForm, updateForm} = useContext(
@@ -150,16 +142,14 @@ const SubscriptionDetailsPage: FC = () => {
             </div>
             <Heading
               element={HeadingElement.H3}
-              weight={FontWeight.Bold}
+              weight={FontWeight.Regular}
               className="subscription-details-page__status"
             >
               Status:
               <span
                 className={
                   currentSubscription &&
-                  !(currentSubscription.status === Statuses.Invalid)
-                    ? 'subscription-details-page__status--text'
-                    : 'subscription-details-page__status--err-text'
+                  `subscription-details-page__status--${currentSubscription.status}`
                 }
               >
                 {currentSubscription && currentSubscription.status}

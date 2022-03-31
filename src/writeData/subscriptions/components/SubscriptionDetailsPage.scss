@@ -38,12 +38,24 @@
     display: flex;
     text-transform: uppercase;
 
-    &--text {
+    &--RUNNING {
       color: #34bb55;
       margin-left: 10px;
     }
-    &--err-text {
-      color: #dc4e58;
+    &--INVALID {
+      color: #e85b1c;
+      margin-left: 10px;
+    }
+    &--VALIDATING {
+      color: #ffb94a;
+      margin-left: 10px;
+    }
+    &--STOPPED {
+      color: #4d4d60;
+      margin-left: 10px;
+    }
+    &--DISABLED {
+      color: #4d4d60;
       margin-left: 10px;
     }
   }

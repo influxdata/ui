@@ -40,7 +40,7 @@ import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {Subscription} from 'src/types/subscriptions'
 
 // Styles
-import 'src/writeData/subscriptions/components/BrokerForm.scss'
+import 'src/writeData/subscriptions/components/BrokerDetails.scss'
 
 interface Props {
   currentSubscription: Subscription
@@ -69,14 +69,14 @@ const BrokerDetails: FC<Props> = ({
     updateForm({...currentSubscription, protocol: protocol.toLowerCase()})
   }, [protocol])
   return (
-    <div className="create-broker-form">
+    <div className="update-broker-form">
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
-        <Form onSubmit={() => {}} testID="create-broker-form-overlay">
+        <Form onSubmit={() => {}} testID="update-broker-form-overlay">
           <Overlay.Body>
             <Heading
               element={HeadingElement.H3}
               weight={FontWeight.Bold}
-              className="create-broker-form__header"
+              className="update-broker-form__header"
             >
               Broker details
             </Heading>
@@ -109,7 +109,7 @@ const BrokerDetails: FC<Props> = ({
                           })
                         }}
                         status={status}
-                        testID="create-broker-form--name"
+                        testID="update-broker-form--name"
                       />
                     )}
                   </Form.ValidationElement>
@@ -131,7 +131,7 @@ const BrokerDetails: FC<Props> = ({
                           description: e.target.value,
                         })
                       }
-                      testID="create-broker-form--description"
+                      testID="update-broker-form--description"
                     />
                   </Form.Element>
                 </Grid.Column>
@@ -140,16 +140,16 @@ const BrokerDetails: FC<Props> = ({
                     alignItems={AlignItems.FlexStart}
                     direction={FlexDirection.Row}
                     margin={ComponentSize.Large}
-                    className="create-broker-form__container"
+                    className="update-broker-form__container"
                   >
-                    <div className="create-broker-form__container__protocol">
+                    <div className="update-broker-form__container__protocol">
                       <Form.Label label="Protocol" />
                       <Dropdown
                         button={(active, onClick) => (
                           <Dropdown.Button
                             active={active}
                             onClick={onClick}
-                            testID="create-broker-form--dropdown-button"
+                            testID="update-broker-form--dropdown-button"
                             status={ComponentStatus.Default}
                           >
                             {protocol}
@@ -164,7 +164,7 @@ const BrokerDetails: FC<Props> = ({
                                 value={p}
                                 onClick={() => setProtocol(p)}
                                 selected={protocol === p}
-                                testID={`create-broker-form-${1}`}
+                                testID={`update-broker-form-${1}`}
                               >
                                 {p}
                               </Dropdown.Item>
@@ -198,7 +198,7 @@ const BrokerDetails: FC<Props> = ({
                             })
                           }}
                           status={status}
-                          testID="create-broker-form--host"
+                          testID="update-broker-form--host"
                         />
                       )}
                     </Form.ValidationElement>
@@ -228,7 +228,7 @@ const BrokerDetails: FC<Props> = ({
                           }}
                           status={status}
                           maxLength={5}
-                          testID="create-broker-form--port"
+                          testID="update-broker-form--port"
                         />
                       )}
                     </Form.ValidationElement>
@@ -236,7 +236,7 @@ const BrokerDetails: FC<Props> = ({
                   <Heading
                     element={HeadingElement.H5}
                     weight={FontWeight.Regular}
-                    className="create-broker-form__example-text"
+                    className="update-broker-form__example-text"
                   >
                     TCP://
                     {currentSubscription.protocol
@@ -256,7 +256,7 @@ const BrokerDetails: FC<Props> = ({
                   <Heading
                     element={HeadingElement.H3}
                     weight={FontWeight.Bold}
-                    className="create-broker-form__header"
+                    className="update-broker-form__header"
                   >
                     Security details
                   </Heading>
@@ -267,7 +267,7 @@ const BrokerDetails: FC<Props> = ({
                     <SelectGroup.Option
                       name="no-security"
                       id="none"
-                      testID="create-broker-form-no-security--button"
+                      testID="update-broker-form-no-security--button"
                       active={security === 'none'}
                       onClick={() => {
                         setSecurity('none')
@@ -281,7 +281,7 @@ const BrokerDetails: FC<Props> = ({
                     <SelectGroup.Option
                       name="user"
                       id="user"
-                      testID="create-broker-form--user--button"
+                      testID="update-broker-form--user--button"
                       active={security === 'user'}
                       onClick={() => {
                         setSecurity('user')
@@ -325,25 +325,25 @@ const BrokerDetails: FC<Props> = ({
               onClick={() => {
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
-              titleText="Cancel creation of Label and return to list"
+              titleText="Cancel update of Subscription and return to list"
               type={ButtonType.Button}
-              testID="create-broker-form--cancel"
+              testID="update-broker-form--cancel"
             />
             <Button
-              text={'Edit'}
-              color={ComponentColor.Secondary}
-              onClick={() => setEdit(true)}
+              text="Edit"
+              color={edit ? ComponentColor.Success : ComponentColor.Secondary}
+              onClick={() => setEdit(!edit)}
               type={ButtonType.Button}
               titleText="Edit"
-              testID="create-broker-form--submit"
+              testID="update-broker-form--submit"
             />
             <Button
-              text={'Next'}
+              text="Next"
               color={ComponentColor.Secondary}
               onClick={() => setFormActive('subscription')}
               type={ButtonType.Button}
               titleText="Next"
-              testID="create-broker-form--submit"
+              testID="update-broker-form--submit"
             />
             <Button
               text="View Data"
@@ -352,7 +352,7 @@ const BrokerDetails: FC<Props> = ({
                 history.push(`/orgs/${org.id}/notebooks`)
               }}
               type={ButtonType.Button}
-              testID="create-broker-form--view-data"
+              testID="update-broker-form--view-data"
               status={ComponentStatus.Default}
             />
           </Overlay.Footer>

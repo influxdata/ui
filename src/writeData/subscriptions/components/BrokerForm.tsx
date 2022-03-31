@@ -333,7 +333,7 @@ const BrokerForm: FC<Props> = ({
               onClick={() => {
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
-              titleText="Cancel creation of Label and return to list"
+              titleText="Cancel creation of Subscription and return to list"
               type={ButtonType.Button}
               testID="create-broker-form--cancel"
             />

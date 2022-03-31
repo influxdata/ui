@@ -27,7 +27,7 @@ import {Subscription} from 'src/types/subscriptions'
 import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 // Styles
-import 'src/writeData/subscriptions/components/StringParsingForm.scss'
+import 'src/writeData/subscriptions/components/StringDetails.scss'
 
 interface Props {
   formContent: Subscription
@@ -58,7 +58,7 @@ const StringDetails: FC<Props> = ({formContent, updateForm}) => {
     setRule('')
   }, [rule])
   return (
-    <div className="string-parsing-form">
+    <div className="string-update-form">
       <Grid.Column>
         <Form.Label label="Regex to find Timestamp" />
         <Input
@@ -84,12 +84,12 @@ const StringDetails: FC<Props> = ({formContent, updateForm}) => {
           alignItems={AlignItems.Center}
           direction={FlexDirection.Row}
           margin={ComponentSize.Medium}
-          className="string-parsing-form__header-wrap"
+          className="string-update-form__header-wrap"
         >
           <Heading
             element={HeadingElement.H3}
             weight={FontWeight.Bold}
-            className="string-parsing-form__section__header-wrap__header"
+            className="string-update-form__section__header-wrap__header"
           >
             Measurement
           </Heading>
@@ -145,7 +145,7 @@ const StringDetails: FC<Props> = ({formContent, updateForm}) => {
             <Dropdown.Button
               active={active}
               onClick={onClick}
-              testID="string-parsing-add-rule"
+              testID="string-parsing-add-update-rule"
             >
               <Icon glyph={IconFont.Plus} /> Add Rule
             </Dropdown.Button>
@@ -161,7 +161,7 @@ const StringDetails: FC<Props> = ({formContent, updateForm}) => {
                     setRule(r)
                   }}
                   selected={rule === r}
-                  testID={`string-parsing-add-rule-${1}`}
+                  testID={`string-parsing-add-update-rule-${1}`}
                 >
                   {r}
                 </Dropdown.Item>

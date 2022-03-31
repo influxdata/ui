@@ -14,6 +14,8 @@ const {
   API_BASE_PATH,
 } = require('./src/utils/env')
 
+const MONACO_DIR = path.resolve(__dirname, './node_modules/monaco-editor')
+
 module.exports = {
   context: __dirname,
   output: {
@@ -46,6 +48,16 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.m?js$/,
+        include: MONACO_DIR,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
       {
         test: /^((?!flux-lsp-browser_bg).)*.wasm$/,
         loader: 'file-loader',

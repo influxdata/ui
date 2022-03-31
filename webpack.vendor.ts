@@ -51,6 +51,16 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
+        test: /\.m?js$/,
+        include: MONACO_DIR,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+      {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
           {

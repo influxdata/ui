@@ -10,6 +10,8 @@ import {
   JustifyContent,
   Page,
   SpinnerContainer,
+  SubwayNav,
+  SubwayNavModel,
   TechnoSpinner,
 } from '@influxdata/clockface'
 import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
@@ -17,10 +19,6 @@ import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
 import SubscriptionForm from 'src/writeData/subscriptions/components/SubscriptionForm'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
-import {
-  SubwayNavigation,
-  SubwayNavigationModel,
-} from 'src/clockface/components/SubwayNavigation'
 
 // Graphics
 import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
@@ -46,7 +44,7 @@ import {shouldShowUpgradeButton} from 'src/me/selectors'
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
 
-interface SubscriptionNavigationModel extends SubwayNavigationModel {
+interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
 }
 
@@ -59,17 +57,17 @@ enum Steps {
 const navigationSteps: SubscriptionNavigationModel[] = [
   {
     glyph: IconFont.UploadOutline,
-    name: 'Connect to Broker',
+    name: 'Connect \n to Broker',
     type: Steps.BrokerForm,
   },
   {
     glyph: IconFont.Subscribe,
-    name: 'Subscribe to Topic',
+    name: 'Subscribe \n to Topic',
     type: Steps.SubscriptionForm,
   },
   {
     glyph: IconFont.Braces,
-    name: 'Define Data Parsing Rules',
+    name: 'Define Data \n Parsing Rules',
     type: Steps.ParsingForm,
   },
 ]
@@ -125,7 +123,7 @@ const CreateSubscriptionPage: FC = () => {
               </FlexBox>
             )}
             <div className="create-subscription-page__progress">
-              <SubwayNavigation
+              <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
                 navigationSteps={navigationSteps}

@@ -21,8 +21,7 @@ export const VersionFlowProvider: FC = ({children}) => {
       if (response.status !== 200) {
         throw new Error(response.data.message)
       }
-      // TODO(ariel): update the definition to match the API
-      setFlow(hydrate((response.data as any).notebookVersion))
+      setFlow(hydrate(response.data.notebookVersion))
       setLoading(RemoteDataState.Done)
     } catch (error) {
       console.error({error})

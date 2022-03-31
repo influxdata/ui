@@ -72,7 +72,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
     _generateMap()
     queryAll()
-  }, [flow?.range])
+  }, [flow?.range?.lower, flow?.range?.upper])
 
   useEffect(() => {
     if (flow?.readOnly) {

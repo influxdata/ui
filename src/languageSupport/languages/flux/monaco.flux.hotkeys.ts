@@ -18,9 +18,7 @@ export function comments(editor: EditorType) {
     label: 'toggling comments',
 
     // An optional array of keybindings for the action.
-    keybindings: [
-      window.monaco.KeyMod.CtrlCmd | window.monaco.KeyCode.US_SLASH,
-    ],
+    keybindings: [window.monaco.KeyMod.CtrlCmd | window.monaco.KeyCode.Slash],
 
     run: function run(ed) {
       const values = ed.getValue().split('\n'),

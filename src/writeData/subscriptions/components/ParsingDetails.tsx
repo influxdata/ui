@@ -169,20 +169,24 @@ const ParsingDetails: FC<Props> = ({
             onClick={() => setEdit(!edit)}
             testID="update-parsing-form--edit"
           />
-          <Button
-            type={ButtonType.Button}
-            text="Save Changes"
-            color={ComponentColor.Secondary}
-            onClick={() => {
-              saveForm(currentSubscription)
-            }}
-            testID="update-parsing-form--submit"
-          />
+          {edit && (
+            <Button
+              type={ButtonType.Button}
+              text="Save Changes"
+              color={ComponentColor.Secondary}
+              onClick={() => {
+                saveForm(currentSubscription)
+              }}
+              testID="update-parsing-form--submit"
+            />
+          )}
           <Button
             text="View Data"
             color={ComponentColor.Success}
             type={ButtonType.Button}
-            onClick={() => {}}
+            onClick={() => {
+              history.push(`/orgs/${org.id}/notebooks`)
+            }}
             testID="update-parsing-form--view-data"
             status={ComponentStatus.Default}
           />

@@ -162,7 +162,9 @@ const SubscriptionDetails: FC<Props> = ({
             <Button
               text="View Data"
               color={ComponentColor.Success}
-              onClick={() => {}}
+              onClick={() => {
+                history.push(`/orgs/${org.id}/notebooks`)
+              }}
               type={ButtonType.Button}
               testID="update-subscription-form--view-data"
               status={ComponentStatus.Default}

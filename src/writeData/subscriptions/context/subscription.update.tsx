@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {getOrg} from 'src/organizations/selectors'
 import {notify} from 'src/shared/actions/notifications'
+import {sanitizeUpdateForm} from '../utils/form'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -117,14 +118,6 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
 
   const update = (subscription?: Subscription): any => {
     setLoading(RemoteDataState.Loading)
-    delete subscription.id
-    delete subscription.orgID
-    delete subscription.processGroupID
-    delete subscription.createdAt
-    delete subscription.updatedAt
-    delete subscription.tokenID
-    delete subscription.isActive
-    delete subscription.status
     const params = {id: currentID, data: subscription}
     updateAPI(params)
       .then(() => {
@@ -147,6 +140,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
   )
 
   const saveForm = (currentSubscription?: Subscription): void => {
+    sanitizeUpdateForm(currentSubscription)
     update(currentSubscription)
   }
 

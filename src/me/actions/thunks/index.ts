@@ -82,7 +82,7 @@ export const getQuartzMe = () => async dispatch => {
     if (resp.status !== 200) {
       throw new Error(resp.data.message)
     }
-    resp.data.accountType = 'pay_as_you_go'
+
     dispatch(setQuartzMe(resp.data, RemoteDataState.Done))
   } catch (error) {
     console.error(error)

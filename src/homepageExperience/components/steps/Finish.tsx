@@ -26,7 +26,7 @@ export const Finish = (props: OwnProps) => {
   }, [])
   return (
     <>
-      <h1>Congrats!</h1>
+      <h1 data-testID="finish-page-header">Congrats!</h1>
       <p>You completed setting up, writing, and querying data.</p>
       <p>Curious to learn more? Try these next steps!</p>
       <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>

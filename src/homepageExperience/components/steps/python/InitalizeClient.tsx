@@ -30,7 +30,7 @@ client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)`
 
   return (
     <>
-      <h1>Initalize Client</h1>
+      <h1 data-testID="initialize-client-page-header">Initalize Client</h1>
       <p>
         Run this command in your terminal to open the interactive Python shell:
       </p>

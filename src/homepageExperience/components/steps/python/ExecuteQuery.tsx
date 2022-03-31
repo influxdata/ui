@@ -32,7 +32,7 @@ for table in tables:
 
   return (
     <>
-      <h1>Execute a Flux Query</h1>
+      <h1 data-testID="execute-query-page-header">Execute a Flux Query</h1>
       <p>
         Now let’s query the numbers we wrote into the database. We use the Flux
         scripting language to query data. Flux is designed for querying,

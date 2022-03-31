@@ -95,13 +95,11 @@ class DataListening extends PureComponent<Props, State> {
     }
 
     return (
-      <React.Fragment key={new Date().toISOString()}>
-        <ConnectionInformation
-          loading={this.state.loading}
-          bucket={this.props.bucket}
-          countDownSeconds={this.state.secondsLeft}
-        />
-      </React.Fragment>
+      <ConnectionInformation
+        loading={this.state.loading}
+        bucket={this.props.bucket}
+        countDownSeconds={this.state.secondsLeft}
+      />
     )
   }
 

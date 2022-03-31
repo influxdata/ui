@@ -2,9 +2,6 @@
 import React, {PureComponent} from 'react'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
-// Apis
-import {runQuery} from 'src/shared/apis/query'
-
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {
@@ -16,6 +13,11 @@ import {
 import ConnectionInformation, {
   LoadingState,
 } from 'src/dataLoaders/components/verifyStep/ConnectionInformation'
+import {
+  continuouslyCheckForData,
+  TIMEOUT_MILLISECONDS,
+  TIMER_WAIT,
+} from 'src/shared/utils/dataListening'
 
 interface OwnProps {
   bucket: string
@@ -27,18 +29,13 @@ interface State {
   secondsLeft: number
 }
 
-const MINUTE = 60000
-const FETCH_WAIT = 5000
-const SECONDS = 60
-const TIMER_WAIT = 1000
-
 type Props = RouteComponentProps<{orgID: string}> & OwnProps
 
 @ErrorHandling
 class DataListening extends PureComponent<Props, State> {
   private intervalID: ReturnType<typeof setInterval>
-  private startTime: number
   private timer: ReturnType<typeof setInterval>
+  private TIMEOUT_SECONDS = TIMEOUT_MILLISECONDS / 1000
 
   constructor(props) {
     super(props)
@@ -46,7 +43,7 @@ class DataListening extends PureComponent<Props, State> {
     this.state = {
       loading: LoadingState.NotStarted,
       timePassedInSeconds: 0,
-      secondsLeft: SECONDS,
+      secondsLeft: this.TIMEOUT_SECONDS,
     }
   }
 
@@ -55,7 +52,7 @@ class DataListening extends PureComponent<Props, State> {
     clearInterval(this.timer)
     this.setState({
       timePassedInSeconds: 0,
-      secondsLeft: SECONDS,
+      secondsLeft: this.TIMEOUT_SECONDS,
     })
   }
 
@@ -103,60 +100,25 @@ class DataListening extends PureComponent<Props, State> {
     )
   }
 
-  private handleClick = (): void => {
-    this.startTimer()
-    this.setState({loading: LoadingState.Loading})
-    this.startTime = Number(new Date())
-    this.checkForData()
+  private updateResponse = (checkDataStatus: LoadingState) => {
+    this.setState({loading: checkDataStatus})
   }
 
-  private checkForData = async (): Promise<void> => {
+  private handleClick = (): void => {
     const {
       bucket,
       match: {
         params: {orgID},
       },
     } = this.props
-    const {secondsLeft} = this.state
-    const script = `from(bucket: "${bucket}")
-      |> range(start: -1m)`
 
-    let responseLength: number
-    let timePassed: number
-
-    try {
-      const result = await runQuery(orgID, script).promise
-
-      if (result.type !== 'SUCCESS') {
-        throw new Error(result.message)
-      }
-
-      // if the bucket is empty, the CSV returned is '\r\n' which has a length of 2
-      // so instead,  we check for the trimmed version.
-      responseLength = result.csv.trim().length
-      timePassed = Number(new Date()) - this.startTime
-    } catch (err) {
-      this.setState({loading: LoadingState.Error})
-      return
-    }
-
-    if (responseLength > 1) {
-      this.setState({loading: LoadingState.Done})
-      return
-    }
-
-    if (timePassed >= MINUTE || secondsLeft <= 0) {
-      this.setState({loading: LoadingState.NotFound})
-      return
-    }
-
-    this.intervalID = setTimeout(() => {
-      this.checkForData()
-    }, FETCH_WAIT)
+    this.startTimer()
+    this.setState({loading: LoadingState.Loading})
+    continuouslyCheckForData(orgID, bucket, this.updateResponse)
   }
 
   private startTimer() {
-    this.setState({timePassedInSeconds: 0, secondsLeft: SECONDS})
+    this.setState({timePassedInSeconds: 0, secondsLeft: this.TIMEOUT_SECONDS})
 
     this.timer = setInterval(this.countDown, TIMER_WAIT)
   }
@@ -165,7 +127,7 @@ class DataListening extends PureComponent<Props, State> {
     const {secondsLeft} = this.state
     const secs = secondsLeft - 1
     this.setState({
-      timePassedInSeconds: SECONDS - secs,
+      timePassedInSeconds: this.TIMEOUT_SECONDS - secs,
       secondsLeft: secs,
     })
 

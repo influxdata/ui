@@ -6,10 +6,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
 
-const fromBucketSnippet = `from(bucket: “my-bucket”)
-  |> range(start: -10m) # find data points in last 10 minutes
-  |> mean()`
-
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeAggregateQuery.code.copied')
 }
@@ -26,9 +22,16 @@ export const ExecuteAggregateQuery = (props: ExecuteAggregateQueryProps) => {
   const org = useSelector(getOrg)
   const {bucket} = props
 
+  const fromBucketSnippet = `from(bucket: "${bucket}")
+  |> range(start: -10m) # find data points in last 10 minutes
+  |> mean()`
+
   const codeSnippet = `query_api = client.query_api()
 
-query = 'from(bucket: "${bucket}") |> range(start: -10m) |> filter(fn: (r) => r._measurement == "measurement1") |> mean()'
+query = """from(bucket: "${bucket}")
+  |> range(start: -10m)
+  |> filter(fn: (r) => r._measurement == "measurement1")
+  |> mean()"""
 tables = query_api.query(query, org="${org.name}")
 
 for table in tables:

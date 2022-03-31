@@ -3,6 +3,7 @@ import React, {PureComponent} from 'react'
 
 // Decorator
 import {ErrorHandling} from 'src/shared/decorators/errors'
+import {Countdown} from 'src/shared/components/countdown/Countdown'
 
 export enum LoadingState {
   NotStarted = 'NotStarted',
@@ -57,17 +58,24 @@ class ConnectionInformation extends PureComponent<Props> {
   }
 
   private get additionalText(): any {
-    const docs = (
-      <span> Make sure the correct bucket is selected and then retry. </span>
-    )
+    const onErrorHelperText = this.props.children
     switch (this.props.loading) {
       case LoadingState.Loading:
-        return `Timeout in ${this.props.countDownSeconds} seconds`
+        return (
+          <>
+            Timeout in{' '}
+            <Countdown
+              from={this.props.countDownSeconds}
+              key={this.props.bucket}
+            />{' '}
+            seconds
+          </>
+        )
       case LoadingState.Done:
         return `${this.props.bucket} is receiving data loud and clear!`
       case LoadingState.NotFound:
       case LoadingState.Error:
-        return docs
+        return onErrorHelperText
     }
   }
 }

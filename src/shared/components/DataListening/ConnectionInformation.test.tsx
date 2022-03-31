@@ -6,7 +6,7 @@ import {renderWithReduxAndRouter} from 'src/mockState'
 // Components
 import ConnectionInformation, {
   LoadingState,
-} from 'src/dataLoaders/components/verifyStep/ConnectionInformation'
+} from 'src/shared/components/DataListening/ConnectionInformation'
 
 // Types
 

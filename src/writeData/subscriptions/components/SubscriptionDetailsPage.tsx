@@ -12,11 +12,12 @@ import {
   SpinnerContainer,
   TechnoSpinner,
   IconFont,
+  Heading,
+  HeadingElement,
+  FontWeight,
+  SubwayNav,
+  SubwayNavModel,
 } from '@influxdata/clockface'
-import {
-  SubwayNavigation,
-  SubwayNavigationModel,
-} from 'src/clockface/components/SubwayNavigation'
 import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
@@ -44,14 +45,14 @@ import {shouldShowUpgradeButton} from 'src/me/selectors'
 import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
 
 // Styles
-import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
+import 'src/writeData/subscriptions/components/SubscriptionDetailsPage.scss'
 
 import {
   SubscriptionListContext,
   SubscriptionListProvider,
 } from 'src/writeData/subscriptions/context/subscription.list'
 
-interface SubscriptionNavigationModel extends SubwayNavigationModel {
+interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
 }
 
@@ -78,6 +79,14 @@ const navigationSteps: SubscriptionNavigationModel[] = [
     type: Steps.ParsingForm,
   },
 ]
+
+enum Statuses {
+  Running = 'running', // connected
+  Stopped = 'stopped', // disconnected
+  Invalid = 'invalid', // invalid
+  Validating = 'validating', // validating
+  Disabled = 'disabled', // disabled
+}
 
 const SubscriptionDetailsPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
@@ -110,76 +119,86 @@ const SubscriptionDetailsPage: FC = () => {
     return currentStep
   }
   return (
-    currentSubscription && (
-      <GetResources resources={[ResourceType.Buckets]}>
-        <Page>
-          <SpinnerContainer
-            spinnerComponent={<TechnoSpinner />}
-            loading={loading}
+    <GetResources resources={[ResourceType.Buckets]}>
+      <Page>
+        <SpinnerContainer
+          spinnerComponent={<TechnoSpinner />}
+          loading={loading}
+        >
+          <Page.Contents
+            fullWidth={true}
+            scrollable={true}
+            className="subscription-details-page"
           >
-            <Page.Contents
-              fullWidth={true}
-              scrollable={true}
-              className="create-subscription-page"
+            {showUpgradeButton && (
+              <FlexBox
+                justifyContent={JustifyContent.FlexEnd}
+                alignItems={AlignItems.FlexEnd}
+                stretchToFitHeight={true}
+              >
+                <CloudUpgradeButton />
+              </FlexBox>
+            )}
+            <div className="subscription-details-page__progress">
+              <SubwayNav
+                currentStep={getActiveStep(active)}
+                onStepClick={handleClick}
+                navigationSteps={navigationSteps}
+                settingUpIcon={FormLogo}
+                settingUpText="MQTT Connector"
+              />
+            </div>
+            <Heading
+              element={HeadingElement.H3}
+              weight={FontWeight.Bold}
+              className="subscription-details-page__status"
             >
-              {showUpgradeButton && (
-                <FlexBox
-                  justifyContent={JustifyContent.FlexEnd}
-                  alignItems={AlignItems.FlexEnd}
-                  stretchToFitHeight={true}
-                >
-                  <CloudUpgradeButton />
-                </FlexBox>
-              )}
-              {/* TODO: swap out for clockface svg when available */}
-              <div className="create-subscription-page__progress">
-                <div className="create-subscription-page__progress">
-                  <SubwayNavigation
-                    currentStep={getActiveStep(active)}
-                    onStepClick={handleClick}
-                    navigationSteps={navigationSteps}
-                    settingUpIcon={FormLogo}
-                    settingUpText="MQTT Connector"
-                  />
-                </div>
-              </div>
-              <div>
-                Status: {currentSubscription && currentSubscription.status}
-              </div>
-              {active === Steps.BrokerForm && (
-                <BrokerDetails
-                  setFormActive={setFormActive}
-                  currentSubscription={currentSubscription}
-                  updateForm={updateForm}
-                  edit={edit}
-                  setEdit={setEdit}
-                />
-              )}
-              {active === Steps.SubscriptionForm && (
-                <SubscriptionDetails
-                  setFormActive={setFormActive}
-                  currentSubscription={currentSubscription}
-                  updateForm={updateForm}
-                  buckets={buckets}
-                  bucket={bucket}
-                  edit={edit}
-                  setEdit={setEdit}
-                />
-              )}
-              {active === Steps.ParsingForm && (
-                <ParsingDetails
-                  currentSubscription={currentSubscription}
-                  updateForm={updateForm}
-                  saveForm={saveForm}
-                  edit={edit}
-                  setEdit={setEdit}
-                />
-              )}
-            </Page.Contents>
-          </SpinnerContainer>
-        </Page>
-      </GetResources>
-    )
+              Status:
+              <span
+                className={
+                  currentSubscription &&
+                  !(currentSubscription.status === Statuses.Invalid)
+                    ? 'subscription-details-page__status--text'
+                    : 'subscription-details-page__status--err-text'
+                }
+              >
+                {currentSubscription && currentSubscription.status}
+              </span>
+            </Heading>
+            {active === Steps.BrokerForm && (
+              <BrokerDetails
+                setFormActive={setFormActive}
+                currentSubscription={currentSubscription}
+                updateForm={updateForm}
+                edit={edit}
+                setEdit={setEdit}
+                loading={loading}
+              />
+            )}
+            {active === Steps.SubscriptionForm && (
+              <SubscriptionDetails
+                setFormActive={setFormActive}
+                currentSubscription={currentSubscription}
+                updateForm={updateForm}
+                buckets={buckets}
+                bucket={bucket}
+                edit={edit}
+                setEdit={setEdit}
+              />
+            )}
+            {active === Steps.ParsingForm && (
+              <ParsingDetails
+                currentSubscription={currentSubscription}
+                updateForm={updateForm}
+                saveForm={saveForm}
+                edit={edit}
+                setEdit={setEdit}
+              />
+            )}
+          </Page.Contents>
+        </SpinnerContainer>
+      </Page>
+    </GetResources>
   )
 }
 

@@ -35,5 +35,16 @@
     float: right;
     padding-left: 24px;
     padding-top: 64px;
+    display: flex;
+    text-transform: uppercase;
+
+    &--text {
+      color: #34bb55;
+      margin-left: 10px;
+    }
+    &--err-text {
+      color: #dc4e58;
+      margin-left: 10px;
+    }
   }
 }

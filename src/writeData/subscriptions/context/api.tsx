@@ -3,7 +3,6 @@ import {CLOUD} from 'src/shared/constants'
 let getBrokerSub = null
 let GetBrokerSubParams = null
 let getBrokerSubs = null
-// let GetBrokerSubsParams = null
 let postBrokerSub = null
 let PostBrokerSubParams = null
 let putBrokerSub = null
@@ -20,7 +19,6 @@ if (CLOUD) {
   GetBrokerSubParams = require('src/client/subscriptionsRoutes')
     .GetBrokerSubParams
   getBrokerSubs = require('src/client/subscriptionsRoutes').getBrokerSubs
-  // GetBrokerSubsParams = require('src/client/subscriptionsRoutes').GetBrokerSubsParams
   postBrokerSub = require('src/client/subscriptionsRoutes').postBrokerSub
   PostBrokerSubParams = require('src/client/subscriptionsRoutes')
     .PostBrokerSubParams
@@ -48,6 +46,7 @@ export const createAPI = async (subscription: typeof PostBrokerSubParams) => {
 }
 
 export const updateAPI = async (subscription: typeof PutBrokerSubParams) => {
+  console.log('subscription', subscription)
   const res = await putBrokerSub(subscription)
   if (res.status != 200) {
     throw new Error(res.data.message)

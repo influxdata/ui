@@ -25,6 +25,8 @@ import {
   ComponentSize,
   AlignItems,
   FlexDirection,
+  SpinnerContainer,
+  TechnoSpinner,
 } from '@influxdata/clockface'
 import UserInput from 'src/writeData/subscriptions/components/UserInput'
 
@@ -46,6 +48,7 @@ interface Props {
   updateForm: (any) => void
   edit: boolean
   setEdit: (any) => void
+  loading: any
 }
 
 const BrokerDetails: FC<Props> = ({
@@ -54,6 +57,7 @@ const BrokerDetails: FC<Props> = ({
   updateForm,
   edit,
   setEdit,
+  loading,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -65,19 +69,10 @@ const BrokerDetails: FC<Props> = ({
     updateForm({...currentSubscription, protocol: protocol.toLowerCase()})
   }, [protocol])
   return (
-    currentSubscription && (
-      <div className="create-broker-form">
+    <div className="create-broker-form">
+      <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="create-broker-form-overlay">
-          <Overlay.Header title="Connect to Broker"></Overlay.Header>
           <Overlay.Body>
-            <Heading
-              element={HeadingElement.H5}
-              weight={FontWeight.Regular}
-              className="create-broker-form__text"
-            >
-              View and edit an existing connection to collect data from an MQTT
-              broker and parse messages into metrics.
-            </Heading>
             <Heading
               element={HeadingElement.H3}
               weight={FontWeight.Bold}
@@ -125,7 +120,11 @@ const BrokerDetails: FC<Props> = ({
                       type={InputType.Text}
                       placeholder="Describe this connection"
                       name="description"
-                      value={currentSubscription.description}
+                      value={
+                        currentSubscription.description
+                          ? currentSubscription.description
+                          : ''
+                      }
                       onChange={e =>
                         updateForm({
                           ...currentSubscription,
@@ -331,27 +330,35 @@ const BrokerDetails: FC<Props> = ({
               testID="create-broker-form--cancel"
             />
             <Button
-              text={edit ? 'Next' : 'Edit'}
+              text={'Edit'}
               color={ComponentColor.Secondary}
-              onClick={() => {
-                edit ? setFormActive('subscription') : setEdit(true)
-              }}
+              onClick={() => setEdit(true)}
               type={ButtonType.Button}
-              titleText="Back"
+              titleText="Edit"
+              testID="create-broker-form--submit"
+            />
+            <Button
+              text={'Next'}
+              color={ComponentColor.Secondary}
+              onClick={() => setFormActive('subscription')}
+              type={ButtonType.Button}
+              titleText="Next"
               testID="create-broker-form--submit"
             />
             <Button
               text="View Data"
               color={ComponentColor.Success}
-              onClick={() => {}}
+              onClick={() => {
+                history.push(`/orgs/${org.id}/notebooks`)
+              }}
               type={ButtonType.Button}
               testID="create-broker-form--view-data"
               status={ComponentStatus.Default}
             />
           </Overlay.Footer>
         </Form>
-      </div>
-    )
+      </SpinnerContainer>
+    </div>
   )
 }
 export default BrokerDetails

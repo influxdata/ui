@@ -29,7 +29,65 @@ export interface SubscriptionUpdateContextType {
 export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
   update: () => {},
   saveForm: () => {},
-  currentSubscription: null,
+  currentSubscription: {
+    name: '',
+    description: '',
+    protocol: 'mqtt',
+    brokerHost: '',
+    brokerPort: 0,
+    brokerUsername: '',
+    brokerPassword: '',
+    brokerCert: '',
+    brokerKey: '',
+    topic: '',
+    dataFormat: 'lineprotocol',
+    jsonMeasurementKey: {
+      name: '',
+      path: '',
+      type: 'string',
+    },
+    jsonFieldKeys: [
+      {
+        name: '',
+        path: '',
+        type: 'string',
+      },
+    ],
+    jsonTagKeys: [
+      {
+        name: '',
+        path: '',
+        type: 'string',
+      },
+    ],
+    jsonTimestamp: {
+      name: 'timestamp',
+      path: '',
+      type: 'string',
+    },
+    stringMeasurement: {
+      pattern: '',
+      name: 'measurement',
+    },
+    stringFields: [
+      {
+        pattern: '',
+        name: '',
+      },
+    ],
+    stringTags: [
+      {
+        pattern: '',
+        name: '',
+      },
+    ],
+    stringTimestamp: {
+      pattern: '',
+      name: '',
+    },
+    bucket: 'nifi',
+    qos: 0,
+  },
   updateForm: () => {},
   loading: RemoteDataState.NotStarted,
 } as SubscriptionUpdateContextType
@@ -40,7 +98,9 @@ export const SubscriptionUpdateContext = React.createContext<
 
 export const SubscriptionUpdateProvider: FC = ({children}) => {
   const {subscriptions, currentID} = useContext(SubscriptionListContext)
-  const [currentSubscription, setCurrentSubscription] = useState<Subscription>()
+  const [currentSubscription, setCurrentSubscription] = useState<Subscription>(
+    DEFAULT_CONTEXT.currentSubscription
+  )
   useEffect(() => {
     setLoading(RemoteDataState.Loading)
     if (currentID && subscriptions) {
@@ -48,7 +108,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
       setCurrentSubscription(current)
       setLoading(RemoteDataState.Done)
     }
-  }, [currentID, subscriptions])
+  }, [currentID])
 
   const [loading, setLoading] = useState(RemoteDataState.Done)
   const history = useHistory()
@@ -57,7 +117,16 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
 
   const update = (subscription?: Subscription): any => {
     setLoading(RemoteDataState.Loading)
-    updateAPI({data: subscription})
+    delete subscription.id
+    delete subscription.orgID
+    delete subscription.processGroupID
+    delete subscription.createdAt
+    delete subscription.updatedAt
+    delete subscription.tokenID
+    delete subscription.isActive
+    delete subscription.status
+    const params = {id: currentID, data: subscription}
+    updateAPI(params)
       .then(() => {
         setLoading(RemoteDataState.Done)
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
@@ -76,6 +145,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
     },
     [currentSubscription] // eslint-disable-line react-hooks/exhaustive-deps
   )
+  console.log('current subscription', currentSubscription)
 
   const saveForm = (currentSubscription?: Subscription): void => {
     update(currentSubscription)

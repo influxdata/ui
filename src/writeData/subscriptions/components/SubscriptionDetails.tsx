@@ -64,16 +64,8 @@ const SubscriptionDetails: FC<Props> = ({
           onSubmit={() => {}}
           testID="create-subscription-form--overlay-form"
         >
-          <Overlay.Header title="Subscribe to a Topic"></Overlay.Header>
+          <Overlay.Header title="Topic Subscription"></Overlay.Header>
           <Overlay.Body>
-            <Heading
-              element={HeadingElement.H5}
-              weight={FontWeight.Regular}
-              className="create-subscription-form__text"
-            >
-              Subscribe to a topic and write message payloads to an InfluxDB
-              data bucket.
-            </Heading>
             <Grid>
               <Grid.Row>
                 <Grid.Column widthSM={Columns.Twelve}>
@@ -112,16 +104,29 @@ const SubscriptionDetails: FC<Props> = ({
                     weight={FontWeight.Bold}
                     className="create-subscription-form__header"
                   >
-                    Write Bucket
+                    Write Destination
                   </Heading>
-                  <Heading
-                    element={HeadingElement.H5}
-                    weight={FontWeight.Regular}
-                    className="create-subscription-form__text"
-                  >
-                    Select a bucket to write your data to.
-                  </Heading>
-                  <WriteDataHelperBuckets className="write-data--subscriptions-title" />
+                  {edit ? (
+                    <div>
+                      <Heading
+                        element={HeadingElement.H5}
+                        weight={FontWeight.Regular}
+                        className="create-subscription-form__text"
+                      >
+                        Select a bucket to write your data to.
+                      </Heading>
+                      <WriteDataHelperBuckets className="write-data--subscriptions-title" />
+                    </div>
+                  ) : (
+                    <Heading
+                      element={HeadingElement.H4}
+                      weight={FontWeight.Regular}
+                      className="create-subscription-form__text"
+                    >
+                      Bucket:{' '}
+                      {currentSubscription && currentSubscription.bucket}
+                    </Heading>
+                  )}
                 </Grid.Column>
               </Grid.Row>
             </Grid>
@@ -138,14 +143,20 @@ const SubscriptionDetails: FC<Props> = ({
               testID="create-subscription-form--cancel"
             />
             <Button
-              text={edit ? 'Next' : 'Edit'}
+              text={'Edit'}
               color={ComponentColor.Secondary}
-              onClick={() => {
-                edit ? setFormActive('parsing') : setEdit(true)
-              }}
-              titleText="Edit subscription form"
+              onClick={() => setEdit(true)}
               type={ButtonType.Button}
-              testID="create-subscription-form--submit"
+              titleText="Edit"
+              testID="create-broker-form--submit"
+            />
+            <Button
+              text={'Next'}
+              color={ComponentColor.Secondary}
+              onClick={() => setFormActive('parsing')}
+              type={ButtonType.Button}
+              titleText="Next"
+              testID="create-broker-form--submit"
             />
             <Button
               text="View Data"

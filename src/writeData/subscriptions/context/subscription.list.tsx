@@ -51,10 +51,15 @@ export const SubscriptionListProvider: FC = ({children}) => {
     setLoading(RemoteDataState.Done)
   }
   const change = useCallback(
-    (id: string) => {
+    async (id: string): Promise<void> => {
+      setLoading(RemoteDataState.Loading)
+      if (!subscriptions) {
+        await getAll()
+      }
       setCurrentID(id)
+      setLoading(RemoteDataState.Done)
     },
-    [setCurrentID]
+    [setCurrentID, subscriptions]
   )
   useEffect(() => {
     getAll()

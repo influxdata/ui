@@ -4,7 +4,9 @@ import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import ConnectionInformation, {LoadingState} from './ConnectionInformation'
+import ConnectionInformation, {
+  LoadingState,
+} from '../../shared/components/DataListening/ConnectionInformation'
 import {Button} from '@influxdata/clockface'
 
 import {
@@ -99,7 +101,9 @@ class DataListening extends PureComponent<Props, State> {
         loading={this.state.loading}
         bucket={this.props.bucket}
         countDownSeconds={this.state.secondsLeft}
-      />
+      >
+        <span> Make sure the correct bucket is selected and then retry. </span>
+      </ConnectionInformation>
     )
   }
 

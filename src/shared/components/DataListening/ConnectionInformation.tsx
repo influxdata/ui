@@ -58,21 +58,24 @@ class ConnectionInformation extends PureComponent<Props> {
   }
 
   private get additionalText(): any {
-    const docs = (
-      <span> Make sure the correct bucket is selected and then retry. </span>
-    )
+    const onErrorHelperText = this.props.children
     switch (this.props.loading) {
       case LoadingState.Loading:
         return (
           <>
-            Timeout in <Countdown from={this.props.countDownSeconds} key={this.props.bucket} /> seconds
+            Timeout in{' '}
+            <Countdown
+              from={this.props.countDownSeconds}
+              key={this.props.bucket}
+            />{' '}
+            seconds
           </>
         )
       case LoadingState.Done:
         return `${this.props.bucket} is receiving data loud and clear!`
       case LoadingState.NotFound:
       case LoadingState.Error:
-        return docs
+        return onErrorHelperText
     }
   }
 }

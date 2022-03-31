@@ -12,11 +12,12 @@ import {
 } from '@influxdata/clockface'
 import ConnectionInformation, {
   LoadingState,
-} from 'src/dataLoaders/components/verifyStep/ConnectionInformation'
+} from 'src/shared/components/DataListening/ConnectionInformation'
 import {
   continuouslyCheckForData,
   TIMEOUT_MILLISECONDS,
 } from 'src/shared/utils/dataListening'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 interface OwnProps {
   bucket: string
@@ -76,7 +77,11 @@ class DataListening extends PureComponent<Props, State> {
         loading={this.state.loading}
         bucket={this.props.bucket}
         countDownSeconds={this.state.secondsLeft}
-      />
+      >
+        <SafeBlankLink href="https://docs.influxdata.com/telegraf/latest/administration/troubleshooting/">
+          Telegraf Troubleshooting
+        </SafeBlankLink>
+      </ConnectionInformation>
     )
   }
 

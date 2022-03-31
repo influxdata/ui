@@ -6,7 +6,7 @@ import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import ConnectionInformation, {
   LoadingState,
-} from '../../shared/components/DataListening/ConnectionInformation'
+} from 'src/shared/components/DataListening/ConnectionInformation'
 import {Button} from '@influxdata/clockface'
 
 import {

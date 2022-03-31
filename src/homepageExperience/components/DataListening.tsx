@@ -2,6 +2,9 @@
 import React, {PureComponent} from 'react'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
 
+// Apis
+import {runQuery} from 'src/shared/apis/query'
+
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import ConnectionInformation, {LoadingState} from './ConnectionInformation'
@@ -10,6 +13,7 @@ import {Button} from '@influxdata/clockface'
 import {
   continuouslyCheckForData,
   TIMEOUT_MILLISECONDS,
+  TIMER_WAIT,
 } from 'src/shared/utils/dataListening'
 
 interface OwnProps {
@@ -101,10 +105,6 @@ class DataListening extends PureComponent<Props, State> {
         countDownSeconds={this.state.secondsLeft}
       />
     )
-  }
-
-  private updateResponse = (checkDataStatus: LoadingState) => {
-    this.setState({loading: checkDataStatus})
   }
 
   private startListeningForData = (): void => {

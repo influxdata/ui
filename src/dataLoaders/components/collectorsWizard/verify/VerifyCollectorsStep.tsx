@@ -20,6 +20,7 @@ import {AppState} from 'src/types'
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {RouteComponentProps, withRouter} from 'react-router-dom'
+import {clearDataLoaders} from 'src/dataLoaders/actions/dataLoaders'
 
 type OwnProps = CollectorsStepProps
 
@@ -31,7 +32,14 @@ interface StateProps {
   token: string
 }
 
-export type Props = StateProps & OwnProps & RouteComponentProps<{orgID: string}>
+interface DispatchProps {
+  onClearDataLoaders: () => void
+}
+
+export type Props = StateProps &
+  DispatchProps &
+  OwnProps &
+  RouteComponentProps<{orgID: string}>
 
 @ErrorHandling
 export class VerifyCollectorStep extends PureComponent<Props> {
@@ -76,7 +84,9 @@ export class VerifyCollectorStep extends PureComponent<Props> {
       match: {
         params: {orgID},
       },
+      onClearDataLoaders,
     } = this.props
+    onClearDataLoaders()
     this.props.history.push(`/orgs/${orgID}/load-data/telegrafs`)
   }
 }
@@ -95,6 +105,10 @@ const mstp = ({
   token,
 })
 
-const connector = connect<StateProps>(mstp)
+const mdtp = {
+  onClearDataLoaders: clearDataLoaders,
+}
+
+const connector = connect<StateProps, DispatchProps>(mstp, mdtp)
 
 export default connector(withRouter(VerifyCollectorStep))

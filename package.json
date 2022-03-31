@@ -73,7 +73,7 @@
     "subscriptions-oss": "touch ./src/client/subscriptionsRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",
     "fluxdocs": "oats ${REMOTE}contracts/priv/fluxdocsd.yml > ./src/client/fluxdocsdRoutes.ts",
-    "telegraf-plugins:update": "node src/writeData/utils/parsePluginsConfigurationText.mjs"
+    "telegraf-plugins:update": "node src/writeData/utils/updateTelegrafPlugins.mjs"
   },
   "author": "",
   "devDependencies": {

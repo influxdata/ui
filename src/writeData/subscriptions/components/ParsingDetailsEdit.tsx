@@ -21,14 +21,19 @@ import 'src/writeData/subscriptions/components/ParsingDetails.scss'
 interface Props {
   currentSubscription: Subscription
   updateForm: (any) => void
+  className: string
 }
 
-const ParsingDetailsEdit: FC<Props> = ({currentSubscription, updateForm}) => (
+const ParsingDetailsEdit: FC<Props> = ({
+  currentSubscription,
+  updateForm,
+  className,
+}) => (
   <Grid.Column widthXS={Columns.Twelve}>
     <Heading
       element={HeadingElement.H3}
       weight={FontWeight.Bold}
-      className="update-parsing-form__header"
+      className={`${className}-parsing-form__header`}
     >
       Data Format
     </Heading>
@@ -36,7 +41,7 @@ const ParsingDetailsEdit: FC<Props> = ({currentSubscription, updateForm}) => (
       <SelectGroup.Option
         name="line-protocol"
         id="line-protocol"
-        testID="update-parsing-form-line-protocol--button"
+        testID={`${className}-parsing-form-line-protocol--button`}
         active={currentSubscription.dataFormat === 'lineprotocol'}
         onClick={() => {
           updateForm({
@@ -53,7 +58,7 @@ const ParsingDetailsEdit: FC<Props> = ({currentSubscription, updateForm}) => (
       <SelectGroup.Option
         name="json"
         id="json"
-        testID="update-parsing-form-json--button"
+        testID={`${className}-parsing-form-json--button`}
         active={currentSubscription.dataFormat === 'json'}
         onClick={() => {
           updateForm({
@@ -70,7 +75,7 @@ const ParsingDetailsEdit: FC<Props> = ({currentSubscription, updateForm}) => (
       <SelectGroup.Option
         name="string"
         id="string"
-        testID="update-parsing-form-string--button"
+        testID={`${className}-parsing-form-string--button`}
         active={currentSubscription.dataFormat === 'string'}
         onClick={() => {
           updateForm({

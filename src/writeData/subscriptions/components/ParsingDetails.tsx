@@ -57,6 +57,7 @@ const ParsingDetails: FC<Props> = ({
                 <ParsingDetailsEdit
                   currentSubscription={currentSubscription}
                   updateForm={updateForm}
+                  className="update"
                 />
               ) : (
                 <ParsingDetailsReadOnly

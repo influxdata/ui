@@ -93,6 +93,7 @@ const ParsingForm: FC<Props> = ({
                 <ParsingDetailsEdit
                   currentSubscription={formContent}
                   updateForm={updateForm}
+                  className="create"
                 />
                 {formContent.dataFormat === 'lineprotocol' && (
                   <LineProtocolForm />

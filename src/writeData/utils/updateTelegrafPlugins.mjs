@@ -348,13 +348,28 @@ const formatConfigurationText = configurationText => {
 
 const formatReadmeText = readmeText => {
   // Change all relative links to Github links
-  const relativeLink = /\(\/plugins\//gi
-  const replacement =
-    '(https://github.com/influxdata/telegraf/tree/master/plugins/'
+  const relativeLinkReplacements = new Map()
+  relativeLinkReplacements.set(
+    '(https://github.com/influxdata/telegraf/tree/master/plugins/',
+    /\(\/plugins\//gi
+  )
+  relativeLinkReplacements.set(
+    '(https://github.com/influxdata/telegraf/tree/master/plugins/parsers/',
+    /\(\.\.\/\.\.\/parsers\//gi
+  )
+  relativeLinkReplacements.set(
+    '(https://github.com/influxdata/telegraf/tree/master/docs/',
+    /\(\.\.\/\.\.\/\.\.\/docs\//gi
+  )
 
   return readmeText
     .map(line => {
-      return line.replace(relativeLink, replacement)
+      return [...relativeLinkReplacements.entries()].reduce(
+        (modifiedLine, replacementPair) => {
+          return modifiedLine.replace(replacementPair[1], replacementPair[0])
+        },
+        line
+      )
     })
     .join()
 }

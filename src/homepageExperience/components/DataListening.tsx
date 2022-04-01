@@ -4,13 +4,14 @@ import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
-import ConnectionInformation, {LoadingState} from './ConnectionInformation'
+import ConnectionInformation, {
+  LoadingState,
+} from 'src/shared/components/DataListening/ConnectionInformation'
 import {Button} from '@influxdata/clockface'
 
 import {
   continuouslyCheckForData,
   TIMEOUT_MILLISECONDS,
-  TIMER_WAIT,
 } from 'src/shared/utils/dataListening'
 
 interface OwnProps {
@@ -80,7 +81,8 @@ class DataListening extends PureComponent<Props, State> {
     return (
       <div className="wizard-step--body-streaming" data-testid="streaming">
         {this.connectionInfo}
-        {this.state.loading === LoadingState.NotFound && (
+        {(this.state.loading === LoadingState.NotFound ||
+          this.state.loading === LoadingState.Error) && (
           <Button onClick={this.handleRetry} text="Retry" />
         )}
       </div>
@@ -99,7 +101,9 @@ class DataListening extends PureComponent<Props, State> {
         loading={this.state.loading}
         bucket={this.props.bucket}
         countDownSeconds={this.state.secondsLeft}
-      />
+      >
+        <span> Make sure the correct bucket is selected and then retry. </span>
+      </ConnectionInformation>
     )
   }
 
@@ -116,27 +120,7 @@ class DataListening extends PureComponent<Props, State> {
     } = this.props
 
     this.setState({loading: LoadingState.Loading})
-    this.startTimer()
     continuouslyCheckForData(orgID, bucket, this.updateResponse)
-  }
-
-  private startTimer() {
-    this.setState({timePassedInSeconds: 0, secondsLeft: this.TIMEOUT_SECONDS})
-
-    this.timer = setInterval(this.countDown, TIMER_WAIT)
-  }
-
-  private countDown = () => {
-    const {secondsLeft} = this.state
-    const secs = secondsLeft - 1
-    this.setState({
-      timePassedInSeconds: this.TIMEOUT_SECONDS - secs,
-      secondsLeft: secs,
-    })
-
-    if (secs === 0) {
-      clearInterval(this.timer)
-    }
   }
 }
 

@@ -24,7 +24,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {
   CLIIcon,
   GoIcon,
-  JavascriptNodeJsIcon,
+  NodejsIcon,
   PythonIcon,
   TelegrafIcon,
 } from 'src/homepageExperience/components/HomepageIcons'
@@ -99,7 +99,7 @@ export const HomepageContainer: FC = () => {
                         <Link to={javaScriptNodeLink} style={linkStyle}>
                           <div className="homepage-wizard-language-tile">
                             <h5>JavaScript/Node.js</h5>
-                            {JavascriptNodeJsIcon}
+                            {NodejsIcon}
                           </div>
                         </Link>
                       </ResourceCard>

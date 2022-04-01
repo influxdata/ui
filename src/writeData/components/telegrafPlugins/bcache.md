@@ -2,7 +2,7 @@
 
 Get bcache stat from stats_total directory and dirty_data file.
 
-# Measurements
+## Measurements
 
 Meta:
 
@@ -20,18 +20,15 @@ Measurement names:
 - cache_misses
 - cache_readaheads
 
-### Description
+## Description
 
-```
+```text
 dirty_data
   Amount of dirty data for this backing device in the cache. Continuously
   updated unlike the cache set's version, but may be slightly off.
 
 bypassed
-  Amount of IO (both reads and writes) that has bypassed the cache
-
-
-cache_bypass_hits
+  Amount of IO (both reads and writes) that has bypassed the cache,cache_bypass_hits
 cache_bypass_misses
   Hits and misses for IO that is intended to skip the cache are still counted,
   but broken out here.
@@ -51,7 +48,7 @@ cache_readaheads
   Count of times readahead occurred.
 ```
 
-# Example output
+## Example
 
 Using this configuration:
 
@@ -69,13 +66,13 @@ Using this configuration:
 
 When run with:
 
-```
+```shell
 ./telegraf --config telegraf.conf --input-filter bcache --test
 ```
 
 It produces:
 
-```
+```shell
 * Plugin: bcache, Collection 1
 > [backing_dev="md10" bcache_dev="bcache0"] bcache_dirty_data value=11639194
 > [backing_dev="md10" bcache_dev="bcache0"] bcache_bypassed value=5167704440832

@@ -1,6 +1,8 @@
 // Libraries
 import React, {FC, useContext} from 'react'
 import {DateTime} from 'luxon'
+import {useHistory} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 
 // Components
 import {
@@ -16,14 +18,20 @@ import {
 // Types
 import {Subscription} from 'src/types/subscriptions'
 import {SubscriptionListContext} from '../context/subscription.list'
+import {LOAD_DATA, SUBSCRIPTIONS} from 'src/shared/constants/routes'
+
+// Utils
+import {getOrg} from 'src/organizations/selectors'
 
 interface Props {
   subscription: Subscription
 }
 
 const SubscriptionCard: FC<Props> = ({subscription}) => {
+  const history = useHistory()
   const {deleteSubscription} = useContext(SubscriptionListContext)
   const timeSince = new DateTime.fromISO(subscription.updatedAt).toRelative()
+  const org = useSelector(getOrg)
   return (
     <ResourceCard
       key={`subscription-card-id--${subscription.id}`}
@@ -43,7 +51,14 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
         </FlexBox>
       }
     >
-      <ResourceCard.Name name={subscription.name} />
+      <ResourceCard.Name
+        name={subscription.name}
+        onClick={() =>
+          history.push(
+            `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
+          )
+        }
+      />
       <ResourceCard.Description
         description={`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`}
       />

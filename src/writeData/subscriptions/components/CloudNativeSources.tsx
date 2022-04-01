@@ -79,9 +79,7 @@ const CloudNativeSources: FC = () => {
         {items.map(item => {
           const goto = () => {
             event('Load cloud native subscriptions clicked', {type: item.name})
-            history.push(
-              `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/${item.id}`
-            )
+            history.push(`/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}`)
           }
           return (
             <WriteDataItem

@@ -1,33 +1,34 @@
 // Libraries
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useState, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
+import {useParams} from 'react-router-dom'
 
 // Components
 import {
-  AlignItems,
-  FlexBox,
-  IconFont,
-  JustifyContent,
   Page,
+  FlexBox,
+  JustifyContent,
+  AlignItems,
   SpinnerContainer,
+  TechnoSpinner,
+  IconFont,
+  Heading,
+  HeadingElement,
+  FontWeight,
   SubwayNav,
   SubwayNavModel,
-  TechnoSpinner,
 } from '@influxdata/clockface'
-import BrokerForm from 'src/writeData/subscriptions/components/BrokerForm'
-import ParsingForm from 'src/writeData/subscriptions/components/ParsingForm'
-import SubscriptionForm from 'src/writeData/subscriptions/components/SubscriptionForm'
+import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
+import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
+import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
 
-// Graphics
-import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
-
 // Contexts
 import {
-  SubscriptionCreateContext,
-  SubscriptionCreateProvider,
-} from 'src/writeData/subscriptions/context/subscription.create'
+  SubscriptionUpdateProvider,
+  SubscriptionUpdateContext,
+} from 'src/writeData/subscriptions/context/subscription.update'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
 
@@ -36,13 +37,20 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
-import {event} from 'src/cloud/utils/reporting'
 
 // Actions
 import {shouldShowUpgradeButton} from 'src/me/selectors'
 
+// Graphics
+import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
+
 // Styles
-import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
+import 'src/writeData/subscriptions/components/SubscriptionDetailsPage.scss'
+
+import {
+  SubscriptionListContext,
+  SubscriptionListProvider,
+} from 'src/writeData/subscriptions/context/subscription.list'
 
 interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
@@ -72,16 +80,22 @@ const navigationSteps: SubscriptionNavigationModel[] = [
   },
 ]
 
-const CreateSubscriptionPage: FC = () => {
+const SubscriptionDetailsPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
-  const {formContent, saveForm, updateForm, loading} = useContext(
-    SubscriptionCreateContext
+  const {currentSubscription, loading, saveForm, updateForm} = useContext(
+    SubscriptionUpdateContext
   )
+  const {change} = useContext(SubscriptionListContext)
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
+  const {id} = useParams<{id: string}>()
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
   const {bucket} = useContext(WriteDataDetailsContext)
+  useEffect(() => {
+    change(id)
+  }, [id, change])
+  const [edit, setEdit] = useState(false)
 
   const handleClick = (step: number) => {
     setFormActive(navigationSteps[step - 1].type as Steps)
@@ -106,7 +120,7 @@ const CreateSubscriptionPage: FC = () => {
           <Page.Contents
             fullWidth={true}
             scrollable={true}
-            className="create-subscription-page"
+            className="subscription-details-page"
           >
             {showUpgradeButton && (
               <FlexBox
@@ -114,14 +128,10 @@ const CreateSubscriptionPage: FC = () => {
                 alignItems={AlignItems.FlexEnd}
                 stretchToFitHeight={true}
               >
-                <CloudUpgradeButton
-                  metric={() => {
-                    event('subscription upgrade')
-                  }}
-                />
+                <CloudUpgradeButton />
               </FlexBox>
             )}
-            <div className="create-subscription-page__progress">
+            <div className="subscription-details-page__progress">
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
@@ -130,31 +140,49 @@ const CreateSubscriptionPage: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
+            <Heading
+              element={HeadingElement.H3}
+              weight={FontWeight.Regular}
+              className="subscription-details-page__status"
+            >
+              Status:
+              <span
+                className={
+                  currentSubscription &&
+                  `subscription-details-page__status--${currentSubscription.status}`
+                }
+              >
+                {currentSubscription && currentSubscription.status}
+              </span>
+            </Heading>
             {active === Steps.BrokerForm && (
-              <BrokerForm
+              <BrokerDetails
                 setFormActive={setFormActive}
-                formContent={formContent}
+                currentSubscription={currentSubscription}
                 updateForm={updateForm}
-                showUpgradeButton={showUpgradeButton}
+                edit={edit}
+                setEdit={setEdit}
+                loading={loading}
               />
             )}
             {active === Steps.SubscriptionForm && (
-              <SubscriptionForm
+              <SubscriptionDetails
                 setFormActive={setFormActive}
-                formContent={formContent}
+                currentSubscription={currentSubscription}
                 updateForm={updateForm}
-                showUpgradeButton={showUpgradeButton}
                 buckets={buckets}
                 bucket={bucket}
+                edit={edit}
+                setEdit={setEdit}
               />
             )}
             {active === Steps.ParsingForm && (
-              <ParsingForm
-                setFormActive={setFormActive}
-                formContent={formContent}
+              <ParsingDetails
+                currentSubscription={currentSubscription}
                 updateForm={updateForm}
                 saveForm={saveForm}
-                showUpgradeButton={showUpgradeButton}
+                edit={edit}
+                setEdit={setEdit}
               />
             )}
           </Page.Contents>
@@ -165,9 +193,11 @@ const CreateSubscriptionPage: FC = () => {
 }
 
 export default () => (
-  <SubscriptionCreateProvider>
-    <WriteDataDetailsProvider>
-      <CreateSubscriptionPage />
-    </WriteDataDetailsProvider>
-  </SubscriptionCreateProvider>
+  <SubscriptionListProvider>
+    <SubscriptionUpdateProvider>
+      <WriteDataDetailsProvider>
+        <SubscriptionDetailsPage />
+      </WriteDataDetailsProvider>
+    </SubscriptionUpdateProvider>
+  </SubscriptionListProvider>
 )

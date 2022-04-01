@@ -4,7 +4,7 @@ export interface Subscription {
   description?: string
   protocol?: string
   orgID?: string
-  processGroupId?: string
+  processGroupID?: string
   brokerHost?: string
   brokerPort?: number
   brokerUsername?: string
@@ -26,6 +26,7 @@ export interface Subscription {
   updatedAt?: Date
   tokenID?: string
   token?: string
+  isActive?: string
 }
 
 export interface JsonSpec {

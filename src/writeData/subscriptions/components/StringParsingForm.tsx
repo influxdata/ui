@@ -66,7 +66,11 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           placeholder="eg. regexExample"
           name="timestamp"
           autoFocus={true}
-          value={formContent.stringTimestamp.pattern}
+          value={
+            formContent.stringTimestamp
+              ? formContent.stringTimestamp.pattern
+              : ''
+          }
           onChange={e => {
             formContent.stringTimestamp.pattern = e.target.value
             updateForm({...formContent})

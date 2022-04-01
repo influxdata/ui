@@ -9,19 +9,15 @@ import {
   Grid,
   Form,
   Overlay,
-  Columns,
   ButtonType,
   ComponentColor,
   ComponentStatus,
-  SelectGroup,
-  ButtonShape,
-  Heading,
-  HeadingElement,
-  FontWeight,
 } from '@influxdata/clockface'
-import LineProtocolForm from './LineProtocolForm'
-import JsonDetails from './JsonDetails'
-import StringDetails from './StringDetails'
+import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtocolForm'
+import StringParsingForm from 'src/writeData/subscriptions/components/StringParsingForm'
+import JsonParsingForm from 'src/writeData/subscriptions/components/JsonParsingForm'
+import ParsingDetailsEdit from 'src/writeData/subscriptions/components/ParsingDetailsEdit'
+import ParsingDetailsReadOnly from 'src/writeData/subscriptions/components/ParsingDetailsReadOnly'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -58,89 +54,23 @@ const ParsingDetails: FC<Props> = ({
           <Grid>
             <Grid.Row>
               {edit ? (
-                <Grid.Column widthXS={Columns.Twelve}>
-                  <Heading
-                    element={HeadingElement.H3}
-                    weight={FontWeight.Bold}
-                    className="update-parsing-form__header"
-                  >
-                    Data Format
-                  </Heading>
-                  <SelectGroup
-                    shape={ButtonShape.StretchToFit}
-                    className="retention--radio"
-                  >
-                    <SelectGroup.Option
-                      name="line-protocol"
-                      id="line-protocol"
-                      testID="update-parsing-form-line-protocol--button"
-                      active={currentSubscription.dataFormat === 'lineprotocol'}
-                      onClick={() => {
-                        updateForm({
-                          ...currentSubscription,
-                          dataFormat: 'lineprotocol',
-                        })
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      Line Protocol
-                    </SelectGroup.Option>
-                    <SelectGroup.Option
-                      name="json"
-                      id="json"
-                      testID="update-parsing-form-json--button"
-                      active={currentSubscription.dataFormat === 'json'}
-                      onClick={() => {
-                        updateForm({
-                          ...currentSubscription,
-                          dataFormat: 'json',
-                        })
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      JSON
-                    </SelectGroup.Option>
-                    <SelectGroup.Option
-                      name="string"
-                      id="string"
-                      testID="update-parsing-form-string--button"
-                      active={currentSubscription.dataFormat === 'string'}
-                      onClick={() => {
-                        updateForm({
-                          ...currentSubscription,
-                          dataFormat: 'string',
-                        })
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      STRING
-                    </SelectGroup.Option>
-                  </SelectGroup>
-                </Grid.Column>
+                <ParsingDetailsEdit
+                  currentSubscription={currentSubscription}
+                  updateForm={updateForm}
+                />
               ) : (
-                <Heading
-                  element={HeadingElement.H4}
-                  weight={FontWeight.Regular}
-                  className="update-parsing-form__text"
-                >
-                  Data format:{' '}
-                  {currentSubscription && currentSubscription.dataFormat}
-                </Heading>
+                <ParsingDetailsReadOnly
+                  currentSubscription={currentSubscription}
+                />
               )}
               {currentSubscription.dataFormat === 'string' && (
-                <StringDetails
+                <StringParsingForm
                   formContent={currentSubscription}
                   updateForm={updateForm}
                 />
               )}
               {currentSubscription.dataFormat === 'json' && (
-                <JsonDetails
+                <JsonParsingForm
                   formContent={currentSubscription}
                   updateForm={updateForm}
                 />

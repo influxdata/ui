@@ -21,6 +21,7 @@ import {PipeContext} from 'src/flows/context/pipe'
 
 // Utils
 import {toComponentStatus} from 'src/shared/utils/toComponentStatus'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {RemoteDataState, BuilderAggregateFunctionType} from 'src/types'
@@ -113,16 +114,35 @@ const Card: FC<Props> = ({idx}) => {
     })
   }
 
+  const isCompliant =
+    isFlagEnabled('newQueryBuilder') &&
+    idx === 0 &&
+    (card.keys.selected.length === 0 ||
+      (card.keys.selected.length === 1 &&
+        card.keys.selected[0] === '_measurement')) &&
+    card.aggregateFunctionType !== 'group' &&
+    card.values.selected.length <= 1
+
   const valueSelect = val => {
-    const _vals = [...card.values.selected]
+    let _vals = [...card.values.selected]
     const index = _vals.indexOf(val)
+
     if (index === -1) {
       event('Query Builder Value Selected')
-      _vals.push(val)
+      if (isCompliant) {
+        _vals = [val]
+      } else {
+        _vals.push(val)
+      }
     } else {
       event('Query Builder Value Unselected')
-      _vals.splice(index, 1)
+      if (isCompliant) {
+        _vals = []
+      } else {
+        _vals.splice(index, 1)
+      }
     }
+
     update(idx, {
       values: {
         ...card.values,
@@ -215,7 +235,7 @@ const Card: FC<Props> = ({idx}) => {
         items={allItems}
         selectedItems={card.values.selected}
         onSelectItem={valueSelect}
-        multiSelect
+        multiSelect={!isCompliant}
       />
     )
   }
@@ -247,35 +267,40 @@ const Card: FC<Props> = ({idx}) => {
 
   return (
     <BuilderCard>
-      <BuilderCard.DropdownHeader
-        options={['filter', 'group'].map(s => s.toUpperCase())}
-        selectedOption={card.aggregateFunctionType.toUpperCase()}
-        onDelete={_remove}
-        onSelect={_update}
-      />
+      {!isCompliant && (
+        <BuilderCard.DropdownHeader
+          options={['filter', 'group'].map(s => s.toUpperCase())}
+          selectedOption={card.aggregateFunctionType.toUpperCase()}
+          onDelete={_remove}
+          onSelect={_update}
+        />
+      )}
+      {isCompliant && <BuilderCard.Header title="Measurement" />}
       <BuilderCard.Menu>
-        <FlexBox
-          direction={FlexDirection.Row}
-          alignItems={AlignItems.Center}
-          margin={ComponentSize.Small}
-        >
-          <SearchableDropdown
-            searchTerm={keySearches[idx] || ''}
-            emptyText="No Tags Found"
-            searchPlaceholder="Search keys..."
-            selectedOption={card.keys.selected[0]}
-            onSelect={keySelect}
-            buttonStatus={toComponentStatus(card.keys.loading)}
-            onChangeSearchTerm={keySearch}
-            testID="tag-selector--dropdown"
-            buttonTestID="tag-selector--dropdown-button"
-            menuTestID="tag-selector--dropdown-menu"
-            options={card.keys.results}
-          />
-          {!!card?.values?.selected?.length && (
-            <TagSelectorCount count={card.values.selected.length} />
-          )}
-        </FlexBox>
+        {!isCompliant && (
+          <FlexBox
+            direction={FlexDirection.Row}
+            alignItems={AlignItems.Center}
+            margin={ComponentSize.Small}
+          >
+            <SearchableDropdown
+              searchTerm={keySearches[idx] || ''}
+              emptyText="No Tags Found"
+              searchPlaceholder="Search keys..."
+              selectedOption={card.keys.selected[0]}
+              onSelect={keySelect}
+              buttonStatus={toComponentStatus(card.keys.loading)}
+              onChangeSearchTerm={keySearch}
+              testID="tag-selector--dropdown"
+              buttonTestID="tag-selector--dropdown-button"
+              menuTestID="tag-selector--dropdown-menu"
+              options={card.keys.results}
+            />
+            {!!card?.values?.selected?.length && (
+              <TagSelectorCount count={card.values.selected.length} />
+            )}
+          </FlexBox>
+        )}
         <Input
           value={valueSearches[idx] || ''}
           placeholder={`Search ${card.keys.selected[0]} tag values`}

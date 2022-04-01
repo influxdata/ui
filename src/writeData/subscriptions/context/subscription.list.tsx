@@ -13,6 +13,8 @@ export interface SubscriptionListContextType {
   deleteSubscription: (id: string) => void
   subscriptions: Subscription[]
   loading: RemoteDataState
+  currentID: string | null
+  change: (id: string) => void
 }
 
 export const DEFAULT_CONTEXT: SubscriptionListContextType = {
@@ -20,6 +22,8 @@ export const DEFAULT_CONTEXT: SubscriptionListContextType = {
   deleteSubscription: (_: string) => {},
   subscriptions: [],
   loading: RemoteDataState.NotStarted,
+  change: (_id: string) => {},
+  currentID: null,
 } as SubscriptionListContextType
 
 export const SubscriptionListContext = React.createContext<
@@ -28,6 +32,7 @@ export const SubscriptionListContext = React.createContext<
 
 export const SubscriptionListProvider: FC = ({children}) => {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(null)
+  const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
   const [loading, setLoading] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -45,6 +50,17 @@ export const SubscriptionListProvider: FC = ({children}) => {
     setSubscriptions(subscriptions.filter(s => s.id !== id))
     setLoading(RemoteDataState.Done)
   }
+  const change = useCallback(
+    async (id: string): Promise<void> => {
+      setLoading(RemoteDataState.Loading)
+      if (!subscriptions) {
+        await getAll()
+      }
+      setCurrentID(id)
+      setLoading(RemoteDataState.Done)
+    },
+    [setCurrentID, subscriptions]
+  )
   useEffect(() => {
     getAll()
   }, [])
@@ -55,6 +71,8 @@ export const SubscriptionListProvider: FC = ({children}) => {
         subscriptions,
         deleteSubscription,
         loading,
+        currentID,
+        change,
       }}
     >
       {children}

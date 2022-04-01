@@ -1,0 +1,104 @@
+// Libraries
+import React, {FC} from 'react'
+
+// Components
+import {
+  Input,
+  Grid,
+  Form,
+  Columns,
+  InputType,
+  Heading,
+  HeadingElement,
+  FontWeight,
+} from '@influxdata/clockface'
+import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
+
+// Utils
+import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+
+// Types
+import {Subscription} from 'src/types/subscriptions'
+
+// Styles
+import 'src/writeData/subscriptions/components/SubscriptionDetails.scss'
+
+interface Props {
+  currentSubscription: Subscription
+  updateForm: (any) => void
+  className: string
+  edit: boolean
+}
+
+const SubscriptionFormContent: FC<Props> = ({
+  currentSubscription,
+  updateForm,
+  className,
+  edit,
+}) => (
+  <Grid>
+    <Grid.Row>
+      <Grid.Column widthSM={Columns.Twelve}>
+        <Form.ValidationElement
+          label="Topic"
+          value={currentSubscription.topic}
+          helpText="Subscribe to a topic to start recieving messages."
+          required={true}
+          validationFunc={() =>
+            handleValidation('Topic', currentSubscription.topic)
+          }
+        >
+          {status => (
+            <Input
+              type={InputType.Text}
+              placeholder="Enter a topic (wildcards accepted)"
+              name="topic"
+              autoFocus={false}
+              value={currentSubscription.topic}
+              onChange={e => {
+                updateForm({
+                  ...currentSubscription,
+                  topic: e.target.value,
+                })
+              }}
+              status={status}
+              maxLength={16}
+              testID={`${className}-subscription-form--topic`}
+            />
+          )}
+        </Form.ValidationElement>
+      </Grid.Column>
+      <Grid.Column widthXS={Columns.Twelve}>
+        <Heading
+          element={HeadingElement.H3}
+          weight={FontWeight.Bold}
+          className={`${className}-subscription-form__header`}
+        >
+          Write Destination
+        </Heading>
+        {className === 'create' || edit ? (
+          <div>
+            <Heading
+              element={HeadingElement.H5}
+              weight={FontWeight.Regular}
+              className={`${className}-subscription-form__text`}
+            >
+              Select a bucket to write your data to.
+            </Heading>
+            <WriteDataHelperBuckets className="write-data--subscriptions-title" />
+          </div>
+        ) : (
+          <Heading
+            element={HeadingElement.H4}
+            weight={FontWeight.Regular}
+            className={`${className}-subscription-form__text`}
+          >
+            Bucket: {currentSubscription && currentSubscription.bucket}
+          </Heading>
+        )}
+      </Grid.Column>
+    </Grid.Row>
+  </Grid>
+)
+
+export default SubscriptionFormContent

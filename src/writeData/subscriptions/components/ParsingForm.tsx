@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -9,12 +9,9 @@ import {
   Grid,
   Form,
   Overlay,
-  Columns,
   ButtonType,
   ComponentColor,
   ComponentStatus,
-  SelectGroup,
-  ButtonShape,
   Icon,
   IconFont,
   Heading,
@@ -26,6 +23,7 @@ import {
   FlexBox,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import ParsingDetailsEdit from 'src/writeData/subscriptions/components/ParsingDetailsEdit'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -58,10 +56,6 @@ const ParsingForm: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
-  const [parsing, setParsing] = useState('lineprotocol')
-  useEffect(() => {
-    updateForm({...formContent, dataFormat: parsing})
-  }, [parsing])
   return (
     formContent && (
       <div className="create-parsing-form">
@@ -96,70 +90,21 @@ const ParsingForm: FC<Props> = ({
             </Heading>
             <Grid>
               <Grid.Row>
-                <Grid.Column widthXS={Columns.Twelve}>
-                  <Heading
-                    element={HeadingElement.H3}
-                    weight={FontWeight.Bold}
-                    className="create-parsing-form__header"
-                  >
-                    Data Format
-                  </Heading>
-                  <SelectGroup
-                    shape={ButtonShape.StretchToFit}
-                    className="retention--radio"
-                  >
-                    <SelectGroup.Option
-                      name="line-protocol"
-                      id="line-protocol"
-                      testID="create-parsing-form-line-protocol--button"
-                      active={parsing === 'lineprotocol'}
-                      onClick={() => {
-                        setParsing('lineprotocol')
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      Line Protocol
-                    </SelectGroup.Option>
-                    <SelectGroup.Option
-                      name="json"
-                      id="json"
-                      testID="create-parsing-form-json--button"
-                      active={parsing === 'json'}
-                      onClick={() => {
-                        setParsing('json')
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      JSON
-                    </SelectGroup.Option>
-                    <SelectGroup.Option
-                      name="string"
-                      id="string"
-                      testID="create-parsing-form-string--button"
-                      active={parsing === 'string'}
-                      onClick={() => {
-                        setParsing('string')
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      STRING
-                    </SelectGroup.Option>
-                  </SelectGroup>
-                </Grid.Column>
-                {parsing === 'lineprotocol' && <LineProtocolForm />}
-                {parsing === 'json' && (
+                <ParsingDetailsEdit
+                  currentSubscription={formContent}
+                  updateForm={updateForm}
+                  className="create"
+                />
+                {formContent.dataFormat === 'lineprotocol' && (
+                  <LineProtocolForm />
+                )}
+                {formContent.dataFormat === 'json' && (
                   <JsonParsingForm
                     formContent={formContent}
                     updateForm={updateForm}
                   />
                 )}
-                {parsing === 'string' && (
+                {formContent.dataFormat === 'string' && (
                   <StringParsingForm
                     formContent={formContent}
                     updateForm={updateForm}
@@ -198,7 +143,7 @@ const ParsingForm: FC<Props> = ({
               />
             ) : (
               <Button
-                text="Next"
+                text="Save Subscription"
                 color={ComponentColor.Success}
                 type={ButtonType.Button}
                 onClick={() => {

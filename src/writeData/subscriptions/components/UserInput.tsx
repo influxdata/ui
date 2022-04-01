@@ -18,14 +18,15 @@ import {Subscription} from 'src/types/subscriptions'
 interface Props {
   formContent: Subscription
   updateForm: (any) => void
+  className: string
 }
 
-const UserInput: FC<Props> = ({formContent, updateForm}) => (
+const UserInput: FC<Props> = ({formContent, updateForm, className}) => (
   <FlexBox
     alignItems={AlignItems.FlexStart}
     direction={FlexDirection.Row}
     margin={ComponentSize.Large}
-    className="create-broker-form__creds"
+    className={`${className}-broker-form__creds`}
   >
     <Form.Element label="Username">
       <Input
@@ -39,7 +40,7 @@ const UserInput: FC<Props> = ({formContent, updateForm}) => (
             brokerUsername: e.target.value,
           })
         }
-        testID="create-broker-form--username"
+        testID={`${className}-broker-form--username`}
       />
     </Form.Element>
     <Form.Element label="Password">
@@ -54,7 +55,7 @@ const UserInput: FC<Props> = ({formContent, updateForm}) => (
             brokerPassword: e.target.value,
           })
         }
-        testID="create-broker-form--password"
+        testID={`${className}-broker-form--password`}
       />
     </Form.Element>
   </FlexBox>

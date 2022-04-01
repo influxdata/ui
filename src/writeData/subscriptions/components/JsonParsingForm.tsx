@@ -71,7 +71,9 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           placeholder="eg. $.myJSON.myObject[0].timestampKey"
           name="timestamp"
           autoFocus={true}
-          value={formContent.jsonTimestamp.path}
+          value={
+            formContent.jsonTimestamp.path ? formContent.jsonTimestamp.path : ''
+          }
           onChange={e => {
             formContent.jsonTimestamp.path = e.target.value
             updateForm({...formContent})

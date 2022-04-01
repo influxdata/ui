@@ -21,6 +21,7 @@ import {
   FlowPage,
   FlowsIndex,
   HomepageContainer,
+  HomepageNodejsWizard,
   HomepagePythonWizard,
   LabelsIndex,
   MembersIndex,
@@ -46,6 +47,7 @@ import {
   SubscriptionsLanding,
   CreateSubscriptionForm,
   WriteDataPage,
+  SubscriptionDetailsPage,
 } from 'src/shared/containers'
 
 // Types
@@ -233,6 +235,13 @@ const SetOrg: FC = () => {
 
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
+              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
+              component={SubscriptionDetailsPage}
+            />
+          )}
+
+          {CLOUD && isFlagEnabled('subscriptionsUI') && (
+            <Route
               path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
               component={SubscriptionsLanding}
             />
@@ -295,11 +304,18 @@ const SetOrg: FC = () => {
           )}
 
           {isFlagEnabled('firstMile') && (
-            <Route
-              exact
-              path="/orgs/:orgID/new-user-wizard/python"
-              component={HomepagePythonWizard}
-            />
+            <>
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/python"
+                component={HomepagePythonWizard}
+              />
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/nodejs"
+                component={HomepageNodejsWizard}
+              />
+            </>
           )}
 
           <Route component={NotFound} />

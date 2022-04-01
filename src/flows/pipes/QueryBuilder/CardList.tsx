@@ -34,6 +34,7 @@ import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import SelectorList from 'src/timeMachine/components/SelectorList'
 
 import {event} from 'src/cloud/utils/reporting'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const DEBOUNCE_TIMEOUT = 500
 const debounce_array = []
@@ -283,19 +284,21 @@ const Card: FC<Props> = ({idx}) => {
             alignItems={AlignItems.Center}
             margin={ComponentSize.Small}
           >
-            <SearchableDropdown
-              searchTerm={keySearches[idx] || ''}
-              emptyText="No Tags Found"
-              searchPlaceholder="Search keys..."
-              selectedOption={card.keys.selected[0]}
-              onSelect={keySelect}
-              buttonStatus={toComponentStatus(card.keys.loading)}
-              onChangeSearchTerm={keySearch}
-              testID="tag-selector--dropdown"
-              buttonTestID="tag-selector--dropdown-button"
-              menuTestID="tag-selector--dropdown-menu"
-              options={card.keys.results}
-            />
+            <ErrorBoundary>
+              <SearchableDropdown
+                searchTerm={keySearches[idx] || ''}
+                emptyText="No Tags Found"
+                searchPlaceholder="Search keys..."
+                selectedOption={card.keys.selected[0]}
+                onSelect={keySelect}
+                buttonStatus={toComponentStatus(card.keys.loading)}
+                onChangeSearchTerm={keySearch}
+                testID="tag-selector--dropdown"
+                buttonTestID="tag-selector--dropdown-button"
+                menuTestID="tag-selector--dropdown-menu"
+                options={card.keys.results}
+              />
+            </ErrorBoundary>
             {!!card?.values?.selected?.length && (
               <TagSelectorCount count={card.values.selected.length} />
             )}

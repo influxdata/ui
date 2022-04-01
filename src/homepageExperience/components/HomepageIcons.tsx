@@ -44,7 +44,7 @@ export const PythonIcon = (
   </svg>
 )
 
-export const JavascriptNodeJsIcon = (
+export const NodejsIcon = (
   <svg
     width="108"
     height="66"

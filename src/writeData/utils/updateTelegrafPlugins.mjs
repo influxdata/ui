@@ -1,23 +1,13 @@
 /*
-  This file is a node utility for local use only.
-  Its purpose is to update the configuration text of Telegraf Input Plugins
-  which live here: src/writeData/components/telegrafInputPluginsConfigurationText/
-  Updates are committed and submitted as a pull request periodically.
+  FOR LOCAL USE only. See ./README.md for detailed instructions.
 
-  Follow the two steps to update. Then commit the updated files as a pull request.
+  This is a node script whose purpose is to update the Telegraf Input Plugins
+  found at the Load Data > Sources page.
 */
 import https from 'https'
-import fs from 'fs'
+import fs, {read} from 'fs'
 import logSymbols from 'log-symbols'
 
-/*
-  STEP 1:
-  inputPluginsList is a map of the 'id' for WRITE_DATA_TELEGRAF_PLUGINS
-    from src/writeData/constants/contentTelegrafPlugins.ts
-    which has import statements (of .svg and .md files) not supported by Node.
-    Therefore, we need to re-create this array manually by copy/paste-ing,
-    deleting the unnecessary properties, and the destructuring the 'id'
-*/
 const inputPluginsList = [
   'activemq',
   'aerospike',
@@ -237,6 +227,17 @@ const inputPluginsList = [
 ]
 
 /*
+  Plugin names that should NOT display in the UI
+    - already included in another plugin, or
+    - deprecated
+*/
+const inputPluginsExceptions = [
+  'jolokia2_agent',
+  'jolokia2_proxy',
+  'http_listener',
+]
+
+/*
   STEP 2:
     on the command line, run
       yarn telegraf-plugins:update [TELEGRAF_RELEASE_VERSION]
@@ -251,7 +252,7 @@ const GITHUB_TELEGRAF_RELEASE_API_PATH =
 const getVersion = new Promise((resolve, reject) => {
   const version = process.argv.slice(2)
   if (String(version).length === 0) {
-    console.warn(
+    console.log(
       logSymbols.warning + ' \x1b[33m%s\x1b[0m',
       'No version number provided, using latest release... '
     )
@@ -277,7 +278,7 @@ const getVersion = new Promise((resolve, reject) => {
           const latestVersion = Array.isArray(versions)
             ? versions[0].name
             : 'master'
-          console.warn(
+          console.log(
             logSymbols.warning + ' \x1b[33m%s\x1b[0m',
             latestVersion + '\n'
           )
@@ -290,13 +291,19 @@ const getVersion = new Promise((resolve, reject) => {
   }
 })
 
-const parsedPluginsPath =
+const parsedPluginsConfigPath =
   'src/writeData/components/telegrafInputPluginsConfigurationText/'
 
-const fetch = path => {
+const parsedPluginsReadmePath = 'src/writeData/components/telegrafPlugins/'
+
+const fetch = (path, parsedPath) => {
   return new Promise((resolve, reject) => {
     https.get(path, response => {
       let contents = ''
+      if (response.statusCode !== 200) {
+        reject(`Error: status code: ${response.statusCode} for ${path}`)
+      }
+
       response.on('data', chunk => {
         contents += chunk.toString()
       })
@@ -304,8 +311,8 @@ const fetch = path => {
         reject(error)
       })
       response.on('end', () => {
-        if (!fs.existsSync(parsedPluginsPath)) {
-          fs.mkdirSync(parsedPluginsPath)
+        if (!fs.existsSync(parsedPath)) {
+          fs.mkdirSync(parsedPath)
         }
 
         resolve(contents.split('\n' + '\n' + '\n'))
@@ -339,12 +346,32 @@ const formatConfigurationText = configurationText => {
   return configurationText + '\n'
 }
 
+const formatReadmeText = readmeText => {
+  // Change all relative links to Github links
+  const relativeLink = /\(\/plugins\//gi
+  const replacement =
+    '(https://github.com/influxdata/telegraf/tree/master/plugins/'
+
+  return readmeText
+    .map(line => {
+      return line.replace(relativeLink, replacement)
+    })
+    .join()
+}
+
+let newPluginsCount = 0
+
+console.log(
+  '\x1b[36m%s\x1b[0m',
+  '................................................................................\n'
+)
+
 getVersion.then(version => {
   const telegrafConfigFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${version}/etc/telegraf.conf`
 
   const telegrafWindowsConfigFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${version}/etc/telegraf_windows.conf`
 
-  console.warn(
+  console.log(
     logSymbols.info + ' \x1b[36m%s\x1b[0m',
     `Parsing Telegraf Plugins at ${telegrafConfigFilePath}\n`
   )
@@ -352,7 +379,7 @@ getVersion.then(version => {
   const noConfigs = []
 
   const parseTelegrafConf = new Promise((resolve, reject) => {
-    fetch(telegrafConfigFilePath).then(
+    fetch(telegrafConfigFilePath, parsedPluginsConfigPath).then(
       parsedPluginsText => {
         if (Array.isArray(parsedPluginsText)) {
           const parsedPluginsNames = []
@@ -364,30 +391,33 @@ getVersion.then(version => {
                 .replace(/(.*)\[\[inputs./g, '')
                 .replace(/\]\](.*)/g, '')
               parsedPluginsNames.push(pluginName)
-              const destinationFilPath =
-                parsedPluginsPath + pluginName + '.conf'
+              const destinationFilePath =
+                parsedPluginsConfigPath + pluginName + '.conf'
               fs.writeFile(
-                destinationFilPath,
+                destinationFilePath,
                 formatConfigurationText(pluginText),
                 () => {}
               )
             }
           })
           const noPluginEntry = parsedPluginsNames.filter(
-            pluginName => !inputPluginsList.includes(pluginName)
+            pluginName =>
+              !inputPluginsList.includes(pluginName) &&
+              !inputPluginsExceptions.includes(pluginName)
           )
+          newPluginsCount = noPluginEntry.length
 
           if (noPluginEntry.length) {
-            console.warn(
+            console.log(
               logSymbols.warning +
                 ' Plugins not listed in the Data > Sources page of the UI:',
               noPluginEntry,
               '\n'
             )
           } else {
-            console.warn(
+            console.log(
               logSymbols.success + ' \x1b[32m%s\x1b[0m',
-              'Congratulations! All Plugins accounted for and showing in Data > Sources'
+              'No new plugins detected.\n'
             )
           }
 
@@ -402,15 +432,16 @@ getVersion.then(version => {
           })
 
           if (noConfigs.length) {
-            console.warn(
-              logSymbols.warning + ' Could not find',
+            console.log(
+              logSymbols.warning +
+                ' Could not find the following existing plugins in telegraf.conf:',
               noConfigs,
-              'in telegraf.conf\n'
+              '\n'
             )
           }
           resolve(noConfigs)
         } else {
-          console.warn(
+          console.log(
             logSymbols.error + ' \x1b[31m%s\x1b[0m',
             'ERROR: Unexpected result: the fetched file was not parsed into an array'
           )
@@ -423,12 +454,12 @@ getVersion.then(version => {
 
   parseTelegrafConf.then(
     nonWindowsPlugins => {
-      console.warn('Searching elsewhere...')
-      console.warn(
+      console.log('Searching elsewhere...')
+      console.log(
         logSymbols.info + ' \x1b[36m%s\x1b[0m',
         ` Parsing Telegraf Windows Plugins at ${telegrafWindowsConfigFilePath}\n`
       )
-      fetch(telegrafWindowsConfigFilePath).then(
+      fetch(telegrafWindowsConfigFilePath, parsedPluginsConfigPath).then(
         parsedPluginsText => {
           if (Array.isArray(parsedPluginsText)) {
             const parsedWindowsPluginsNames = []
@@ -445,10 +476,10 @@ getVersion.then(version => {
                   nonWindowsPlugins.includes(pluginName)
                 ) {
                   parsedWindowsPluginsNames.push(pluginName)
-                  const destinationFilPath =
-                    parsedPluginsPath + pluginName + '.conf'
+                  const destinationFilePath =
+                    parsedPluginsConfigPath + pluginName + '.conf'
                   fs.writeFile(
-                    destinationFilPath,
+                    destinationFilePath,
                     formatConfigurationText(pluginText),
                     () => {}
                   )
@@ -460,7 +491,7 @@ getVersion.then(version => {
               pluginName => !inputPluginsList.includes(pluginName)
             )
 
-            console.warn(
+            console.log(
               logSymbols.success + ' Found:',
               parsedWindowsPluginsNames,
               '\n'
@@ -471,7 +502,7 @@ getVersion.then(version => {
             )
 
             if (windowsPluginsNotUpdated.length) {
-              console.warn(
+              console.log(
                 logSymbols.error + ' \x1b[31m%s\x1b[0m',
                 'Unable to update',
                 windowsPluginsNotUpdated,
@@ -480,28 +511,47 @@ getVersion.then(version => {
             }
 
             if (noPluginEntry.length) {
-              console.warn(
+              console.log(
                 logSymbols.warning +
                   ' Windows plugins not in the Data > Sources page of the UI:',
                 noPluginEntry,
                 '\n'
               )
             } else {
-              console.warn(
-                logSymbols.success +
-                  ` All Windows Plugins are listed${
-                    windowsPluginsNotUpdated.length
-                      ? ' but may not be updated '
-                      : ' '
-                  }in the Data > Sources page of the UI\n`
+              console.log(
+                logSymbols.success + ' \x1b[32m%s\x1b[0m',
+                ` All plugins are accounted for${
+                  windowsPluginsNotUpdated.length
+                    ? ' but may not be updated '
+                    : ' '
+                }in the Load Data > Sources page of the UI\n`
               )
             }
           } else {
-            console.warn(
+            console.log(
               logSymbols.error + ' \x1b[31m%s\x1b[0m',
               'ERROR: Unexpected result: the fetched file was not parsed into an array'
             )
           }
+
+          console.log(
+            logSymbols.success + ' \x1b[32m%s\x1b[0m',
+            `${inputPluginsList.length} existing plugins`
+          )
+          console.log(
+            newPluginsCount === 0
+              ? logSymbols.info + ' \x1b[33m%s\x1b[0m'
+              : logSymbols.error + ' \x1b[31m%s\x1b[0m',
+            `${newPluginsCount} new plugins\n`
+          )
+          console.log(
+            '\x1b[36m%s\x1b[0m',
+            '................................................................................\n'
+          )
+          console.log(
+            logSymbols.warning + ' \x1b[36m%s\x1b[0m',
+            'Checking for updates on README markdown files...'
+          )
         },
         fetchError => {
           console.error(logSymbols.error, ' ERROR:', fetchError)
@@ -512,4 +562,65 @@ getVersion.then(version => {
       console.error(logSymbols.error, ' ERROR:', fetchError)
     }
   )
+
+  const telegrafPluginsReadmeUpdates = []
+  const successPrefix = 'success:'
+  const failurePrefix = 'failed:'
+
+  inputPluginsList.forEach(pluginName => {
+    const telegrafReadmeFilePath = `https://raw.githubusercontent.com/influxdata/telegraf/${version}/plugins/inputs/${pluginName}/README.md`
+
+    telegrafPluginsReadmeUpdates.push(
+      fetch(telegrafReadmeFilePath, parsedPluginsReadmePath).then(
+        parsedReadme => {
+          const destinationFilePath =
+            parsedPluginsReadmePath + pluginName + '.md'
+          fs.writeFile(
+            destinationFilePath,
+            formatReadmeText(parsedReadme),
+            () => {}
+          )
+          return `${successPrefix}${pluginName}`
+        },
+        () => `${failurePrefix}${pluginName}`
+      )
+    )
+  })
+
+  Promise.all(telegrafPluginsReadmeUpdates).then(updateStatuses => {
+    const failedStatuses = updateStatuses.filter(updateStatus =>
+      updateStatus.startsWith(failurePrefix)
+    )
+
+    failedStatuses.forEach(failureStatus => {
+      console.log(
+        logSymbols.error + ' \x1b[31m%s\x1b[0m',
+        'Unable to find README for plugin:',
+        failureStatus.slice(failurePrefix.length),
+        '\n'
+      )
+    })
+
+    if (failedStatuses.length) {
+      console.log(
+        logSymbols.error + ' \x1b[31m%s\x1b[0m',
+        '^^^ File paths for the above may be incorrect. You may want to check & update them manually by looking in github at:'
+      )
+      console.log(
+        logSymbols.warning + ' \x1b[36m%s\x1b[0m',
+        'https://github.com/influxdata/telegraf/tree/master/plugins/inputs\n'
+      )
+    }
+    console.log(
+      logSymbols.success + ' \x1b[32m%s\x1b[0m',
+      `${updateStatuses.length -
+        failedStatuses.length} README files were successfully checked`
+    )
+    console.log(
+      failedStatuses.length
+        ? logSymbols.error + ' \x1b[31m%s\x1b[0m'
+        : logSymbols.success + ' \x1b[32m%s\x1b[0m',
+      `${failedStatuses.length} README files were unsuccessful\n`
+    )
+  })
 })

@@ -52,7 +52,7 @@ export class LSPServer {
     this.server = server
     this.server.onMessage(this.onMessage)
     this.store = reduxStore
-    this.p2m = new ProtocolToMonacoConverter()
+    this.p2m = new ProtocolToMonacoConverter(window.monaco)
     this.server
       .run()
       .then(() => console.warn('lsp server has stopped'))

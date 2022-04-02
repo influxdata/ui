@@ -9,8 +9,8 @@ import {CompletionTriggerKind} from 'monaco-languageclient/lib/services'
 // Types
 import {MonacoType} from 'src/types'
 
-const m2p = new MonacoToProtocolConverter(),
-  p2m = new ProtocolToMonacoConverter()
+const m2p = new MonacoToProtocolConverter(window.monaco),
+  p2m = new ProtocolToMonacoConverter(window.monaco)
 
 export function registerCompletion(monaco: MonacoType, server: LSPServer) {
   monaco.languages.registerDocumentSymbolProvider(FLUXLANGID, {

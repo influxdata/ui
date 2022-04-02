@@ -32,6 +32,9 @@ module.exports = {
       src: path.resolve(__dirname, 'src'),
       assets: path.resolve(__dirname, 'assets'),
       react: path.resolve('./node_modules/react'),
+      vscode: path.resolve(
+        './node_modules/monaco-languageclient/lib/vscode-compatibility'
+      ),
     },
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
   },

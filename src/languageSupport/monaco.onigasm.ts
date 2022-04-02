@@ -1,3 +1,4 @@
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import {loadWASM} from 'onigasm' // peer dependency of 'monaco-textmate'
 import {Registry, StackElement, INITIAL} from 'monaco-textmate' // peer dependency
 
@@ -95,6 +96,9 @@ async function loader() {
 }
 
 export default async function register(scope, definition) {
+  if (!window.monaco) {
+    window.monaco = monaco
+  }
   window.monaco.languages.register({id: scope})
 
   grammars.set(scope, scope)

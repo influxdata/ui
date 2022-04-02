@@ -26,9 +26,12 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
 
 // Types
-import {FluxToolbarFunction, EditorType} from 'src/types'
-import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
-import {FluxFunction} from 'src/types/shared'
+import {
+  FluxToolbarFunction,
+  FluxFunction,
+  EditorType,
+  MonacoRange,
+} from 'src/types'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
@@ -84,9 +87,7 @@ const TimeMachineFluxEditor: FC = () => {
 
   const defaultColumnPosition = 1 // beginning column of the row
 
-  const getFluxTextAndRange = (
-    func
-  ): {text: string; range: monacoEditor.Range} => {
+  const getFluxTextAndRange = (func): {text: string; range: MonacoRange} => {
     if (!editorInstance) {
       return null
     }

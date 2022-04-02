@@ -1,4 +1,9 @@
 import register from 'src/languageSupport/monaco.onigasm'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+
+if (!window.monaco) {
+  window.monaco = monaco
+}
 
 const LANGID = 'flux'
 

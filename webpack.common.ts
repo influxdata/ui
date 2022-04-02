@@ -58,6 +58,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-transform-runtime'],
           },
         },
       },
@@ -163,7 +164,7 @@ module.exports = {
     }),
     new MonacoWebpackPlugin({
       languages: [],
-      // features: ['!gotoSymbol'],
+      // Features: https://github.com/microsoft/monaco-editor/blob/main/samples/browser-esm-webpack-small/index.js
       features: [
         '!accessibilityHelp',
         '!anchorSelect',

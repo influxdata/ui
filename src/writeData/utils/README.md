@@ -24,7 +24,7 @@ For example `[[inputs.activemq]]` has id of `activemq`
 1. Repeat the above steps from step 1. Accept the new .md files generated. The reason we need to repeat is because markdown files are generally found by using a file path that includes their id, with each plugin having a different path. There is no other list (except in the steps outlined here) of all plugins.  
 1. For any id that fails to find an .md file, the correct markdown file path has a slightly different name than its id in the [Telegraf repository](https://github.com/influxdata/telegraf). You may need to look for the correct markdown file path with your own eyes and manually copy-paste it. These exceptions should be limited to only a handful of files.  
 1. Add or change logos by adding to or editing the svg files at `src/writeData/graphics`  
-1. Add new plugins to the  `WRITE_DATA_TELEGRAF_PLUGINS` array found in `src/writeData/constants/contentTelegrafPlugins.ts`. Be sure that `markdown` and `image` have an imported file. This step allows the plugins to appear at the Sources page.  
+1. Add new plugins to the  `WRITE_DATA_TELEGRAF_PLUGINS` array found in `src/writeData/constants/contentTelegrafPlugins.ts`. Be sure that `markdown` and `image` have imported files. This step allows the plugins to appear at the Sources page.  
 1. _**Optional**_: add a style property for any plugin in the above step to adjust the logo image.  
 1. Commit and submit a pull request with all of the changes.  
 

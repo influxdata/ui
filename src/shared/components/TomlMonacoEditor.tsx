@@ -5,6 +5,7 @@ import React, {FC} from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import THEME_NAME from 'src/languageSupport/languages/toml/monaco.toml.theme'
 import TOMLLANGID from 'src/languageSupport/languages/toml/monaco.toml.syntax'
+import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 import {OnChangeScript, EditorType, CursorEvent, KeyboardEvent} from 'src/types'
 
 import './FluxMonacoEditor.scss'
@@ -78,7 +79,10 @@ const TomlEditorMonaco: FC<Props> = props => {
           automaticLayout: true,
           readOnly: readOnly || false,
         }}
-        editorDidMount={editorDidMount}
+        editorDidMount={ed => {
+          pointToCorrectWorkers()
+          editorDidMount(ed)
+        }}
       />
     </div>
   )

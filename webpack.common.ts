@@ -164,6 +164,7 @@ module.exports = {
     }),
     new MonacoWebpackPlugin({
       languages: [],
+      filename: '[name].worker.js',
       // Features: https://github.com/microsoft/monaco-editor/blob/main/samples/browser-esm-webpack-small/index.js
       features: [
         '!accessibilityHelp',

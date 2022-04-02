@@ -7,6 +7,7 @@ import MonacoEditor from 'react-monaco-editor'
 // Utils
 import LANGID from 'src/languageSupport/languages/markdown/monaco.markdown.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
+import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
 
 // Types
@@ -61,7 +62,10 @@ const MarkdownMonacoEditor: FC<EditorProps> = ({
           overviewRulerBorder: false,
           automaticLayout: true,
         }}
-        editorDidMount={editorDidMount}
+        editorDidMount={ed => {
+          pointToCorrectWorkers()
+          editorDidMount(ed)
+        }}
       />
     </div>
   )

@@ -1,4 +1,4 @@
-import {MonacoType, ZuoraClient} from 'src/types'
+import {MonacoType, ZuoraClient, MonacoEnvironmentType} from 'src/types'
 import {AdMinds} from 'src/types/adminds'
 
 //
@@ -6,12 +6,14 @@ import {AdMinds} from 'src/types/adminds'
 //
 
 declare let monaco: MonacoType
+declare let MonacoEnvironment: MonacoEnvironmentType
 
 declare global {
   let Z: ZuoraClient
   let _abcr: AdMinds
   interface Window {
     monaco: MonacoType
+    MonacoEnvironment: MonacoEnvironmentType
     Z: ZuoraClient
     _abcr: AdMinds
   }
@@ -38,3 +40,4 @@ declare global {
 }
 
 window.monaco = window.monaco || {}
+window.MonacoEnvironment = window.MonacoEnvironment || {}

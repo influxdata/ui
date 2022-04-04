@@ -24,31 +24,31 @@ describe('First mile experience', () => {
       cy.contains('Hello, Time-Series World!')
 
       // second page is install dependencies
-      cy.getByTestID('next-button').click()
+      cy.contains('Next').click()
       cy.contains('Install Dependencies')
 
       // third page is create token
-      cy.getByTestID('next-button').click()
+      cy.contains('Next').click()
       cy.contains('Create a Token')
 
       // fourth page is initalize client
-      cy.getByTestID('next-button').click()
+      cy.contains('Next').click()
       cy.contains('Initalize Client')
 
       // fifth page is write data
-      cy.getByTestID('next-button').click()
+      cy.contains('Next').click()
       cy.contains('Write Data')
 
       // sixth page is execute query
-      cy.getByTestID('next-button').click()
+      cy.contains('Next').click()
       cy.contains('Execute a Flux Query')
 
       // seventh page is execute aggregate query
-      cy.getByTestID('next-button').click()
+      cy.contains('Next').click()
       cy.contains('Execute an Aggregate Query')
 
       // eight page is finish
-      cy.getByTestID('next-button').click()
+      cy.contains('Next').click()
       cy.contains('Congrats!')
     })
   })

@@ -136,7 +136,6 @@ export class PythonWizard extends PureComponent<null, State> {
                   ? ComponentStatus.Default
                   : ComponentStatus.Disabled
               }
-              testID="prev-button"
             />
             <Button
               onClick={this.handleNextClick}
@@ -148,7 +147,6 @@ export class PythonWizard extends PureComponent<null, State> {
                   ? ComponentStatus.Default
                   : ComponentStatus.Disabled
               }
-              testID="next-button"
             />
           </div>
         </div>

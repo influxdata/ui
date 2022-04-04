@@ -30,7 +30,7 @@ interface State {
   selectedBucket: string
 }
 
-export class HomepageNodejsWizard extends PureComponent<null, State> {
+export class NodejsWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',

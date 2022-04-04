@@ -114,13 +114,13 @@ export const HomepageContainer = lazy(() =>
 )
 
 export const PythonWizard = lazy(() =>
-  import(
-    'src/homepageExperience/containers/PythonWizard'
-  ).then(module => ({default: module.PythonWizard}))
+  import('src/homepageExperience/containers/PythonWizard').then(module => ({
+    default: module.PythonWizard,
+  }))
 )
 
 export const NodejsWizard = lazy(() =>
-  import(
-    'src/homepageExperience/containers/NodejsWizard'
-  ).then(module => ({default: module.NodejsWizard}))
+  import('src/homepageExperience/containers/NodejsWizard').then(module => ({
+    default: module.NodejsWizard,
+  }))
 )

@@ -7,7 +7,10 @@ import {
   IconFont,
   ResourceCard,
 } from '@influxdata/clockface'
-import {InfluxDBUniversityIcon, VSCodePluginIcon} from 'src/homepageExperience/components/HomepageIcons'
+import {
+  InfluxDBUniversityIcon,
+  VSCodePluginIcon,
+} from 'src/homepageExperience/components/HomepageIcons'
 import {event} from 'src/cloud/utils/reporting'
 
 export const Finish = () => {

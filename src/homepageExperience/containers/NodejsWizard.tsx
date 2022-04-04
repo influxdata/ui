@@ -9,7 +9,7 @@ import {
   SubwayNav,
 } from '@influxdata/clockface'
 
-import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
+import {InstallDependencies} from 'src/homepageExperience/components/steps/nodejs/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {CreateToken} from 'src/homepageExperience/components/steps/python/CreateToken'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'

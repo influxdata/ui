@@ -51,5 +51,12 @@ describe('First mile experience', () => {
       cy.contains('Next').click()
       cy.contains('Congrats!')
     })
+    
+    describe('Subway Nav Bar', () => {
+      it('should navigate to `Create a token` when the respective navigation item is clicked', function() {
+        cy.contains('Create a Token').click()
+        cy.contains('Create a Token')
+      })
+    })
   })
 })

@@ -7,9 +7,6 @@ import {useSelector} from 'react-redux'
 import {
   Icon,
   IconFont,
-  NavMenu,
-  PopNav,
-  PopNavItem,
   TreeNav,
 } from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'

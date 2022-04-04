@@ -76,7 +76,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     (fn): void => {
       let text = ''
       if (fn.name === 'from' || fn.name === 'union') {
-        text = `${fn.example}` 
+        text = `${fn.example}`
       } else {
         text = `  |> ${fn.example}`
       }

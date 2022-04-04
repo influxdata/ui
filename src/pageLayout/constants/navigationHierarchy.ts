@@ -202,16 +202,54 @@ export const generateNavItems = (): NavItem[] => {
       link: `/operator`,
       activeKeywords: ['operator'],
     },
-    {
-      id: 'support',
-      testID: 'nav-item-support',
-      icon: IconFont.QuestionMark_New,
-      label: 'Help & Support',
-      shortLabel: 'Support',
-      link: '',
-      activeKeywords: [''],
-      enabled: () => isFlagEnabled('helpBar'),
-    },
+    // {
+    //   id: 'support',
+    //   testID: 'nav-item-support',
+    //   icon: IconFont.QuestionMark_New,
+    //   label: 'Help & Support',
+    //   shortLabel: 'Support',
+    //   link: `${orgPrefix}/`,
+    //   activeKeywords: ['support'],
+    //   enabled: () => isFlagEnabled('helpBar'),
+    //   menu: [
+    //     {
+    //       id: 'Documentation',
+    //       testID: 'nav-subitem-documentation',
+    //       label: 'Documentation',
+    //       link: ``,
+    //     },
+    //     {
+    //       id: 'FAQs',
+    //       testID: 'nav-subitem-faqs',
+    //       label: 'FAQs',
+    //       link: ``,
+    //     },
+    //     {
+    //       id: 'contactSupport',
+    //       testID: 'nav-subitem-contact-support',
+    //       label: 'Contact Support',
+    //       link: ``,
+    //     },
+    //     {
+    //       id: 'forum',
+    //       testID: 'nav-subitem-forum',
+    //       label: 'Official Forum',
+    //       link: ``,
+    //     },
+    //     {
+    //       id: 'influxdbSlack',
+    //       testID: 'nav-subitem-influxdb-slack',
+    //       label: 'InfluxDB Slack',
+    //       link: ``,
+    //     },
+    //     {
+    //       id: 'questions',
+    //       testID: 'nav-subitem-questions',
+    //       label: 'Feedback & Questions',
+    //       link: ``,
+    //     },
+    //   ],
+    // },
   ]
 
   navItems = navItems.filter(item => {

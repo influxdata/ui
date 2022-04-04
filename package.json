@@ -110,7 +110,7 @@
     "clipboardy": "^2.3.0",
     "cross-env": "^5.2.0",
     "css-loader": "^3.1.0",
-    "cypress": "^9.5.3",
+    "cypress": "^9.5.2",
     "cypress-file-upload": "^5.0.8",
     "cypress-log-to-output": "^1.1.2",
     "cypress-pipe": "^2.0.0",

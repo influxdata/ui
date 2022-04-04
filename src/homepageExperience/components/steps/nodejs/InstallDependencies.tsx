@@ -14,8 +14,8 @@ export class InstallDependencies extends PureComponent {
         <h1>Install Dependencies</h1>
         <p>
           First, you need to install the{' '}
-          <code style={{color: '#B7B8FF'}}>@influxdata/influxdb-client</code> module. Run
-          the command below in your terminal.
+          <code style={{color: '#B7B8FF'}}>@influxdata/influxdb-client</code>{' '}
+          module. Run the command below in your terminal.
         </p>
         <CodeSnippet
           text="npm install --save @influxdata/influxdb-client"

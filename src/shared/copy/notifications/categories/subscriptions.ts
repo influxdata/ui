@@ -6,3 +6,8 @@ export const subscriptionCreateFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to create Subscription, please try again.`,
 })
+
+export const subscriptionUpdateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to update Subscription, please try again.`,
+})

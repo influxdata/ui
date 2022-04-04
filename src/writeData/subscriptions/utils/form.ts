@@ -69,3 +69,15 @@ export const sanitizeForm = (form: Subscription): Subscription => {
   }
   return form
 }
+
+export const sanitizeUpdateForm = (form: Subscription): Subscription => {
+  delete form.id
+  delete form.orgID
+  delete form.processGroupID
+  delete form.createdAt
+  delete form.updatedAt
+  delete form.tokenID
+  delete form.isActive
+  delete form.status
+  return form
+}

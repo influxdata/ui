@@ -6,7 +6,7 @@ import {event} from 'src/cloud/utils/reporting'
 
 export class InstallDependencies extends PureComponent {
   private logCopyCodeSnippet = () => {
-    event('firstMile.nodeJSWizard.installDependencies.code.copied')
+    event('firstMile.nodejsWizard.installDependencies.code.copied')
   }
   render() {
     return (

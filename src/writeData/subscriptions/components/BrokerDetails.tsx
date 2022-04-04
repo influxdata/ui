@@ -83,7 +83,7 @@ const BrokerDetails: FC<Props> = ({
               onClick={() => setEdit(!edit)}
               type={ButtonType.Button}
               titleText="Edit"
-              testID="update-broker-form--submit"
+              testID="update-broker-form--edit"
             />
             <Button
               text="Next"

@@ -58,6 +58,7 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
             `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
           )
         }
+        testID="subscription-name"
       />
       <ResourceCard.Description
         description={`${subscription.brokerHost}:${subscription.brokerPort}/${subscription.topic}`}

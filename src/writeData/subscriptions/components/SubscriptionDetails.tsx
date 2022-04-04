@@ -83,7 +83,7 @@ const SubscriptionDetails: FC<Props> = ({
               onClick={() => setEdit(!edit)}
               type={ButtonType.Button}
               titleText="Edit"
-              testID="update-broker-form--edit"
+              testID="update-subscription-form--edit"
             />
             <Button
               text="Next"
@@ -91,7 +91,7 @@ const SubscriptionDetails: FC<Props> = ({
               onClick={() => setFormActive('parsing')}
               type={ButtonType.Button}
               titleText="Next"
-              testID="update-broker-form--submit"
+              testID="update-subscription-form--submit"
             />
             <Button
               text="View Data"

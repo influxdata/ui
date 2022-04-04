@@ -9,16 +9,16 @@ import {
   SubwayNav,
 } from '@influxdata/clockface'
 
-import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
+import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
-import {InitalizeClient} from 'src/homepageExperience/components/steps/InitalizeClient'
-import {WriteData} from 'src/homepageExperience/components/steps/WriteData'
-import {ExecuteQuery} from 'src/homepageExperience/components/steps/ExecuteQuery'
-import {Finish} from 'src/homepageExperience/components/steps/Finish'
-import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/ExecuteAggregateQuery'
+import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'
+import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
+import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
+import {Finish} from 'src/homepageExperience/components/steps/python/Finish'
+import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
 
-import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'
+import {PythonIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
@@ -30,7 +30,7 @@ interface State {
   selectedBucket: string
 }
 
-export class HomepageNodejsWizard extends PureComponent<null, State> {
+export class PythonWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
@@ -49,7 +49,7 @@ export class HomepageNodejsWizard extends PureComponent<null, State> {
         ),
       },
       () => {
-        event('firstMile.nodejsWizard.next.clicked')
+        event('firstMile.pythonWizard.next.clicked')
       }
     )
   }
@@ -58,7 +58,7 @@ export class HomepageNodejsWizard extends PureComponent<null, State> {
     this.setState(
       {currentStep: Math.max(this.state.currentStep - 1, 1)},
       () => {
-        event('firstMile.nodejsWizard.previous.clicked')
+        event('firstMile.pythonWizard.previous.clicked')
       }
     )
   }
@@ -100,6 +100,8 @@ export class HomepageNodejsWizard extends PureComponent<null, State> {
   }
 
   render() {
+    const {currentStep} = this.state
+
     return (
       <div className="homepage-wizard-container">
         <aside className="homepage-wizard-container--subway">
@@ -108,8 +110,8 @@ export class HomepageNodejsWizard extends PureComponent<null, State> {
               currentStep={this.state.currentStep}
               onStepClick={this.handleNavClick}
               navigationSteps={HOMEPAGE_NAVIGATION_STEPS}
-              settingUpIcon={NodejsIcon}
-              settingUpText="Nodejs"
+              settingUpIcon={PythonIcon}
+              settingUpText="Python"
               setupTime="5 minutes"
             />
           </div>
@@ -130,7 +132,7 @@ export class HomepageNodejsWizard extends PureComponent<null, State> {
               size={ComponentSize.Large}
               color={ComponentColor.Tertiary}
               status={
-                this.state.currentStep > 1
+                currentStep > 1
                   ? ComponentStatus.Default
                   : ComponentStatus.Disabled
               }
@@ -141,7 +143,7 @@ export class HomepageNodejsWizard extends PureComponent<null, State> {
               size={ComponentSize.Large}
               color={ComponentColor.Primary}
               status={
-                this.state.currentStep < 8
+                currentStep < 8
                   ? ComponentStatus.Default
                   : ComponentStatus.Disabled
               }

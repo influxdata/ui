@@ -9,14 +9,14 @@ import {
   SubwayNav,
 } from '@influxdata/clockface'
 
-import {InstallDependencies} from 'src/homepageExperience/components/steps/InstallDependencies'
+import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
-import {InitalizeClient} from 'src/homepageExperience/components/steps/InitalizeClient'
-import {WriteData} from 'src/homepageExperience/components/steps/WriteData'
-import {ExecuteQuery} from 'src/homepageExperience/components/steps/ExecuteQuery'
-import {Finish} from 'src/homepageExperience/components/steps/Finish'
-import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/ExecuteAggregateQuery'
+import {CreateToken} from 'src/homepageExperience/components/steps/python/CreateToken'
+import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'
+import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
+import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
+import {Finish} from 'src/homepageExperience/components/steps/python/Finish'
+import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
 
 import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'
 

@@ -116,6 +116,9 @@ const ReadOnlyPipeList: FC = () => {
         useCSSTransforms={false}
         containerPadding={[0, 0]}
         margin={[LAYOUT_MARGIN, LAYOUT_MARGIN]}
+        isDraggable={false}
+        isResizable={false}
+        draggableHandle=".cell--draggable"
       >
         {flow.data.allIDs
           .filter(

@@ -39,7 +39,7 @@ const ReadOnlyFlowPage: FC = () => {
   const {flow} = useContext(FlowContext)
 
   return (
-    <Page titleTag={flow.name + ' (Shared) | InfluxDB Cloud'}>
+    <Page titleTag={`${flow.name} | InfluxDB Cloud`}>
       <VersionHeader />
       <Page.Contents fullWidth={true} scrollable={false} className="flow-page">
         <PopupProvider>

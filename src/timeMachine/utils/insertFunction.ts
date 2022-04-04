@@ -28,7 +28,7 @@ export const generateImport = (
 export const getFluxExample = func => {
   const {name, fluxType} = func
   let signature
-  // aggregate.rate
+
   // "fluxType": "(<-tables:stream[A], every:duration, ?groupColumns:[string], ?unit:duration) => stream[B] where A: Record, B: Record"
 
   // get copy of fluxtype signature before arrow sign
@@ -41,8 +41,6 @@ export const getFluxExample = func => {
   const parametersAsOneSentence = fluxParam
     .substring(openingParenthesis + 1, closingParenthesis)
     .replace(/\s/g, '')
-
-  console.log('all parameters ', parametersAsOneSentence)
 
   // parametersAsOneSentence = <-tables:stream[A],every:duration,?groupColumns:[string],?unit:duration
 
@@ -107,8 +105,6 @@ export const getFluxExample = func => {
   }
 
   // at this point, individualParams array should have all required parameters to parse a signature
-  // temp solution for missing parameter type info
-  // manually updating the value of parameter's property
 
   /* individualParams = [
     'default:A',
@@ -122,7 +118,6 @@ export const getFluxExample = func => {
     const emptyPlaceholder = element.split(':')[0] + ': ' // dict:
     individualParams[index] = emptyPlaceholder
   })
-  console.log('required params ', individualParams)
   /* individualParams = [
     'default: ',
     'dict: ',

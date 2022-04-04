@@ -144,6 +144,8 @@ const TimeMachineFluxEditor: FC = () => {
     const parametersAsOneSentence = fluxParam
       .substring(openingParenthesis + 1, closingParenthesis)
       .replace(/\s/g, '')
+
+    console.log('all parameters ', parametersAsOneSentence)
     
     // parametersAsOneSentence = <-tables:stream[A],every:duration,?groupColumns:[string],?unit:duration
 
@@ -206,29 +208,18 @@ const TimeMachineFluxEditor: FC = () => {
       'key:B'
       ]
     */ 
-    individualParams.map((element, index) => {
+    individualParams.forEach((element, index) => {
      
-      if (element.startsWith('pairs')) {
-        individualParams[index] =
-          'pairs: [{key: 1, value: "foo"},{key: 2, value: "bar"}]'
-        return
-      }
-      if (element.startsWith('dict')) {
-        individualParams[index] = 'dict: [1: "foo", 2: "bar"]' 
-      }
-      if (element.startsWith('key')) {
-        individualParams[index] = 'key: 1'
-      }
-      if (element.startsWith('default')) {
-        individualParams[index] = 'default: ""'
-      }
+      // remove parameter placeholders 
+      const emptyPlaceholder = element.split(':')[0] + ': ' // dict: 
+      individualParams[index] = emptyPlaceholder
 
     })
-
+    console.log('required params ', individualParams)
      /* individualParams = [
-      'default: ""',
-      'dict:[1: "foo", 2: "bar"]',
-      'key: 1'
+      'default: ',
+      'dict: ',
+      'key: '
       ]
     */ 
 

@@ -103,24 +103,24 @@ export const CreateSubscriptionForm = lazy(() =>
   import('src/writeData/subscriptions/components/CreateSubscriptionPage')
 )
 
+export const SubscriptionDetailsPage = lazy(() =>
+  import('src/writeData/subscriptions/components/SubscriptionDetailsPage')
+)
+
 export const HomepageContainer = lazy(() =>
   import(
     'src/homepageExperience/containers/HomepageContainer'
   ).then(module => ({default: module.HomepageContainer}))
 )
 
-export const HomepagePythonWizard = lazy(() =>
+export const PythonWizard = lazy(() =>
   import(
-    'src/homepageExperience/containers/HomepagePythonWizard'
-  ).then(module => ({default: module.HomepagePythonWizard}))
+    'src/homepageExperience/containers/PythonWizard'
+  ).then(module => ({default: module.PythonWizard}))
 )
 
 export const NodejsWizard = lazy(() =>
   import(
     'src/homepageExperience/containers/NodejsWizard'
   ).then(module => ({default: module.NodejsWizard}))
-)
-
-export const SubscriptionDetailsPage = lazy(() =>
-  import('src/writeData/subscriptions/components/SubscriptionDetailsPage')
 )

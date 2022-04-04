@@ -30,7 +30,7 @@ interface State {
   selectedBucket: string
 }
 
-export class HomepagePythonWizard extends PureComponent<null, State> {
+export class PythonWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',

@@ -11,7 +11,7 @@ import {
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/nodejs/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {CreateToken} from 'src/homepageExperience/components/steps/python/CreateToken'
+import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'

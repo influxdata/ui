@@ -21,7 +21,7 @@ import {
   FlowPage,
   FlowsIndex,
   HomepageContainer,
-  HomepageNodejsWizard,
+  NodejsWizard,
   HomepagePythonWizard,
   LabelsIndex,
   MembersIndex,
@@ -313,7 +313,7 @@ const SetOrg: FC = () => {
               <Route
                 exact
                 path="/orgs/:orgID/new-user-wizard/nodejs"
-                component={HomepageNodejsWizard}
+                component={NodejsWizard}
               />
             </>
           )}

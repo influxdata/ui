@@ -115,12 +115,12 @@ export const HomepagePythonWizard = lazy(() =>
   ).then(module => ({default: module.HomepagePythonWizard}))
 )
 
-export const SubscriptionDetailsPage = lazy(() =>
-  import('src/writeData/subscriptions/components/SubscriptionDetailsPage')
+export const NodejsWizard = lazy(() =>
+  import(
+    'src/homepageExperience/containers/NodejsWizard'
+  ).then(module => ({default: module.NodejsWizard}))
 )
 
-export const HomepageNodejsWizard = lazy(() =>
-  import(
-    'src/homepageExperience/containers/HomepageNodejsWizard'
-  ).then(module => ({default: module.HomepageNodejsWizard}))
+export const SubscriptionDetailsPage = lazy(() =>
+  import('src/writeData/subscriptions/components/SubscriptionDetailsPage')
 )

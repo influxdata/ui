@@ -66,7 +66,7 @@ for value in range(5):
 
   return (
     <>
-      <h1 data-testID="write-data-page-header">Write Data</h1>
+      <h1>Write Data</h1>
       <p>
         To start writing data, we need a place to our time-series store data. We
         call these{' '}

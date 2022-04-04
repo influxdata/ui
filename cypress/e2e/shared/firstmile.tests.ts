@@ -21,35 +21,35 @@ describe('First mile experience', () => {
 
     it("should be able to run through the python's wizard pages", function() {
       // first page is overview
-      cy.getByTestID('overview-page-header').should('exist')
+      cy.contains('Hello, Time-Series World!')
 
       // second page is install dependencies
       cy.getByTestID('next-button').click()
-      cy.getByTestID('install-dependencies-page-header').should('exist')
+      cy.contains('Install Dependencies')
 
       // third page is create token
       cy.getByTestID('next-button').click()
-      cy.getByTestID('tokens-page-header').should('exist')
+      cy.contains('Create a Token')
 
       // fourth page is initalize client
       cy.getByTestID('next-button').click()
-      cy.getByTestID('initialize-client-page-header').should('exist')
+      cy.contains('Initalize Client')
 
       // fifth page is write data
       cy.getByTestID('next-button').click()
-      cy.getByTestID('write-data-page-header').should('exist')
+      cy.contains('Write Data')
 
       // sixth page is execute query
       cy.getByTestID('next-button').click()
-      cy.getByTestID('execute-query-page-header').should('exist')
+      cy.contains('Execute a Flux Query')
 
       // seventh page is execute aggregate query
       cy.getByTestID('next-button').click()
-      cy.getByTestID('execute-aggregate-query-page-header').should('exist')
+      cy.contains('Execute an Aggregate Query')
 
       // eight page is finish
       cy.getByTestID('next-button').click()
-      cy.getByTestID('finish-page-header').should('exist')
+      cy.contains('Congrats!')
     })
   })
 })

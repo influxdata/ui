@@ -40,9 +40,7 @@ for table in tables:
 
   return (
     <>
-      <h1 data-testID="execute-aggregate-query-page-header">
-        Execute an Aggregate Query
-      </h1>
+      <h1>Execute an Aggregate Query</h1>
       <p>
         An{' '}
         <SafeBlankLink

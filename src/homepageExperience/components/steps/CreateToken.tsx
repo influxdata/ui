@@ -83,7 +83,7 @@ export const CreateToken: FC<OwnProps> = ({wizardEventName}) => {
 
   return (
     <>
-      <h1 data-testID="tokens-page-header">Create a Token</h1>
+      <h1>Create a Token</h1>
       <p>
         InfluxDB Cloud uses Tokens to authenticate API access. We've generated
         an all-access token for you.

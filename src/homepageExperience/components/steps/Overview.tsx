@@ -4,7 +4,7 @@ export class Overview extends PureComponent {
   render() {
     return (
       <div>
-        <h1 data-testID="overview-page-header">Hello, Time-Series World!</h1>
+        <h1>Hello, Time-Series World!</h1>
         <article>
           <p>Welcome and thanks for checking out InfluxData!</p>
 

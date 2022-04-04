@@ -11,9 +11,7 @@ export class InstallDependencies extends PureComponent {
   render() {
     return (
       <>
-        <h1 data-testID="install-dependencies-page-header">
-          Install Dependencies
-        </h1>
+        <h1>Install Dependencies</h1>
         <p>
           First, you need to install the{' '}
           <code style={{color: '#B7B8FF'}}>influxdb-client</code> module. Run

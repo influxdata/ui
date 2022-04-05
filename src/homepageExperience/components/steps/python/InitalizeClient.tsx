@@ -3,6 +3,7 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 import {useSelector} from 'react-redux'
 import {getOrg} from 'src/organizations/selectors'
+import {getMe} from 'src/me/selectors'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.initializeClient.code.copied')
@@ -10,6 +11,10 @@ const logCopyCodeSnippet = () => {
 
 export const InitalizeClient = () => {
   const org = useSelector(getOrg)
+  const me = useSelector(getMe)
+
+  const url =
+    me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
 
   const pythonCode = `import os
 from influxdb_client import InfluxDBClient, Point, WritePrecision
@@ -17,7 +22,7 @@ from influxdb_client.client import SYNCHRONOUS
 
 token = os.environ.get("INFLUXDB_TOKEN")
 org = "${org.name}"
-url = "https://us-west-2-1.aws.cloud2.influxdata.com/"
+url = "${url}"
 
 client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)`
 

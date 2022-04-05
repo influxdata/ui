@@ -28,10 +28,6 @@ const TreeSidebar: FC = () => {
     AppSettingContext
   )
   useEffect(() => {
-    if (presentationMode || !org) {
-      return null
-    }
-
     if (isFlagEnabled('helpBar')) {
       const helpBarMenu = document.querySelectorAll<HTMLElement>(
         '.cf-tree-nav--sub-menu-trigger'
@@ -44,6 +40,10 @@ const TreeSidebar: FC = () => {
       }
     }
   }, [setNavbarMode, navbarMode])
+
+  if (presentationMode || !org) {
+    return null
+  }
 
   const handleToggleNavExpansion = (): void => {
     if (navbarMode === 'expanded') {
@@ -135,7 +135,7 @@ const TreeSidebar: FC = () => {
                 label="Documentation"
                 testID="nav-subitem-documentation"
                 linkElement={className => (
-                  <Link className={className} to={``} />
+                  <Link className={className} to='' />
                 )}
               />
               <TreeNav.SubItem
@@ -143,7 +143,7 @@ const TreeSidebar: FC = () => {
                 label="FAQs"
                 testID="nav-subitem-faqs"
                 linkElement={className => (
-                  <Link className={className} to={``} />
+                  <Link className={className} to='' />
                 )}
               />
               <TreeNav.SubItem
@@ -151,7 +151,7 @@ const TreeSidebar: FC = () => {
                 label="Contact Support"
                 testID="nav-subitem-contact-support"
                 linkElement={className => (
-                  <Link className={className} to={``} />
+                  <Link className={className} to='' />
                 )}
               />
               <TreeNav.SubHeading label="Community" />
@@ -160,7 +160,7 @@ const TreeSidebar: FC = () => {
                 label="Official Forum"
                 testID="nav-subitem-forum"
                 linkElement={className => (
-                  <Link className={className} to={``} />
+                  <Link className={className} to='' />
                 )}
               />
               <TreeNav.SubItem
@@ -168,7 +168,7 @@ const TreeSidebar: FC = () => {
                 label="InfluxDB Slack"
                 testID="nav-subitem-influxdb-slack"
                 linkElement={className => (
-                  <Link className={className} to={``} />
+                  <Link className={className} to='' />
                 )}
               />
               <TreeNav.SubHeading label="Feedback" />
@@ -177,7 +177,7 @@ const TreeSidebar: FC = () => {
                 label="Feedback & Questions"
                 testID="nav-subitem-feedback-questions"
                 linkElement={className => (
-                  <Link className={className} to={``} />
+                  <Link className={className} to='' />
                 )}
               />
             </TreeNav.SubMenu>

@@ -6,7 +6,7 @@ export const getFluxExample = func => {
   // get copy of fluxtype signature before arrow sign
   const arrowSign = fluxType.lastIndexOf('=') // using lastIndexOf because of edge cases like array.filter
   const fluxParam = fluxType.slice(0, arrowSign) // fluxParam = (<-tables:stream[A], every:duration, ?groupColumns:[string], ?unit:duration)
-  
+
   // pull out all parameters found in between paranethesis
   const openingParenthesis = fluxParam.indexOf('(')
   const closingParenthesis = fluxParam.lastIndexOf(')')

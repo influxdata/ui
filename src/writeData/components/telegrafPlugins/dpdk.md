@@ -179,7 +179,7 @@ to input plugin's measurements.
 ## Metrics
 
 The DPDK socket accepts `command,params` requests and returns metric data in JSON format. All metrics from DPDK socket
-become flattened using [Telegraf's JSON Flattener](../../parsers/json/README.md) and exposed as fields.
+become flattened using [Telegraf's JSON Flattener](https://github.com/influxdata/telegraf/tree/master/plugins/parsers/json/README.md) and exposed as fields.
 If DPDK response contains no information (is empty or is null) then such response will be discarded.
 
 > **NOTE:**  Since DPDK allows registering custom metrics in its telemetry framework the JSON response from DPDK

@@ -1,6 +1,6 @@
 # HTTP Input Plugin
 
-The HTTP input plugin collects metrics from one or more HTTP(S) endpoints.  The endpoint should have metrics formatted in one of the supported [input data formats](../../../docs/DATA_FORMATS_INPUT.md).  Each data format has its own unique set of configuration options which can be added to the input configuration.
+The HTTP input plugin collects metrics from one or more HTTP(S) endpoints.  The endpoint should have metrics formatted in one of the supported [input data formats](https://github.com/influxdata/telegraf/tree/master/docs/DATA_FORMATS_INPUT.md).  Each data format has its own unique set of configuration options which can be added to the input configuration.
 
 ## Configuration
 

@@ -237,7 +237,7 @@ const inputPluginsExceptions = [
   'http_listener',
 ]
 
-const formatConfigurationText = configurationText => {
+export const formatConfigurationText = configurationText => {
   const configurationLines = configurationText.split('\n')
   const isCommented = configurationLines.every(
     line => line[0] === '#' || line === ''
@@ -262,7 +262,7 @@ const formatConfigurationText = configurationText => {
   return configurationText + '\n'
 }
 
-const formatReadmeText = readmeText => {
+export const formatReadmeText = readmeText => {
   // Change all relative links to Github links
   const relativeLinkReplacements = new Map()
   relativeLinkReplacements.set(
@@ -630,8 +630,3 @@ getVersion.then(version => {
     )
   })
 })
-
-export default {
-  formatConfigurationText,
-  formatReadmeText,
-}

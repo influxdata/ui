@@ -24,6 +24,9 @@ junit.xml
 npm-error.log
 yarn-error.log
 
+# test files in /public used by dev frameworks
+/public/test.*
+
 # oats generated routes
 src/client/generatedRoutes.ts
 src/client/cloudPrivRoutes.ts
@@ -35,3 +38,4 @@ src/client/mapsdRoutes.ts
 src/client/managedFunctionsRoutes.ts
 src/client/pinnedItemRoutes.ts
 src/client/fluxdocsdRoutes.ts
+src/client/subscriptionsRoutes.ts

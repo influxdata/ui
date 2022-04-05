@@ -16,6 +16,7 @@ import {generateNavItems} from 'src/pageLayout/constants/navigationHierarchy'
 import {getNavItemActivation} from 'src/pageLayout/utils'
 import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
@@ -48,7 +49,14 @@ const TreeSidebar: FC = () => {
       >
         {generateNavItems().map((item: NavItem) => {
           const linkElement = (className: string): JSX.Element => (
-            <Link to={item.link} className={className} />
+            <Link
+              to={item.link}
+              className={className}
+              title={item.label}
+              onClick={() => {
+                event('nav clicked', {which: item.id})
+              }}
+            />
           )
           return (
             <TreeNav.Item
@@ -68,7 +76,15 @@ const TreeSidebar: FC = () => {
                 <TreeNav.SubMenu>
                   {item.menu.map((menuItem: NavSubItem) => {
                     const linkElement = (className: string): JSX.Element => (
-                      <Link to={menuItem.link} className={className} />
+                      <Link
+                        to={menuItem.link}
+                        className={className}
+                        onClick={() => {
+                          event('nav clicked', {
+                            which: `${item.id} - ${menuItem.id}`,
+                          })
+                        }}
+                      />
                     )
 
                     return (

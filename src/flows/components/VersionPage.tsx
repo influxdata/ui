@@ -7,14 +7,14 @@ import {useParams} from 'react-router'
 import {VersionFlowProvider} from 'src/flows/context/version.read'
 import {FlowQueryProvider} from 'src/flows/context/flow.query'
 import QueryProvider from 'src/shared/contexts/query'
-import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {ResultsProvider} from 'src/flows/context/results'
-import {SidebarProvider} from 'src/flows/context/sidebar'
+import {PopupDrawer, PopupProvider} from 'src/flows/context/popup'
 import {FlowContext} from 'src/flows/context/flow.current'
+import {VersionPublishProvider} from 'src/flows/context/version.publish'
 
 // Components
 import ReadOnlyPipeList from 'src/flows/components/ReadOnlyPipeList'
-import {SubSideBar} from 'src/flows/components/Sidebar'
+import {VersionSidebar} from 'src/flows/components/VersionSidebar'
 import VersionHeader from 'src/flows/components/header/VersionHeader'
 import NotFound from 'src/shared/components/NotFound'
 
@@ -39,7 +39,7 @@ const ReadOnlyFlowPage: FC = () => {
   const {flow} = useContext(FlowContext)
 
   return (
-    <Page titleTag={flow.name + ' (Shared) | InfluxDB Cloud'}>
+    <Page titleTag={`${flow.name} | InfluxDB Cloud`}>
       <VersionHeader />
       <Page.Contents fullWidth={true} scrollable={false} className="flow-page">
         <PopupProvider>
@@ -50,7 +50,7 @@ const ReadOnlyFlowPage: FC = () => {
           >
             <ReadOnlyPipeList />
           </DapperScrollbars>
-          <SubSideBar />
+          <VersionSidebar />
           <PopupDrawer />
         </PopupProvider>
       </Page.Contents>
@@ -64,9 +64,9 @@ const FlowContainer: FC = () => (
       <QueryProvider>
         <ResultsProvider>
           <FlowQueryProvider>
-            <SidebarProvider>
+            <VersionPublishProvider>
               <ReadOnlyFlowPage />
-            </SidebarProvider>
+            </VersionPublishProvider>
           </FlowQueryProvider>
         </ResultsProvider>
       </QueryProvider>

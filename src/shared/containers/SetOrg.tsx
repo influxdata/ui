@@ -11,7 +11,6 @@ import {
   AlertingIndex,
   BillingPage,
   BucketsIndex,
-  BucketsIndexPaginated,
   CheckHistory,
   ClientLibrariesPage,
   DashboardContainer,
@@ -22,6 +21,8 @@ import {
   FlowPage,
   FlowsIndex,
   HomepageContainer,
+  NodejsWizard,
+  PythonWizard,
   LabelsIndex,
   MembersIndex,
   MePage,
@@ -43,7 +44,10 @@ import {
   UsersPage,
   VariablesIndex,
   VersionPage,
+  SubscriptionsLanding,
+  CreateSubscriptionForm,
   WriteDataPage,
+  SubscriptionDetailsPage,
 } from 'src/shared/containers'
 
 // Types
@@ -66,6 +70,7 @@ import {
   CLIENT_LIBS,
   TELEGRAF_PLUGINS,
   SECRETS,
+  SUBSCRIPTIONS,
 } from 'src/shared/constants/routes'
 
 // Actions
@@ -216,15 +221,29 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
             component={TokensIndex}
           />
-          {isFlagEnabled('fetchAllBuckets') ? (
+          <Route
+            path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
+            component={BucketsIndex}
+          />
+
+          {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
-              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
-              component={BucketsIndexPaginated}
+              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/create`}
+              component={CreateSubscriptionForm}
             />
-          ) : (
+          )}
+
+          {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
-              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
-              component={BucketsIndex}
+              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
+              component={SubscriptionDetailsPage}
+            />
+          )}
+
+          {CLOUD && isFlagEnabled('subscriptionsUI') && (
+            <Route
+              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}`}
+              component={SubscriptionsLanding}
             />
           )}
 
@@ -282,6 +301,21 @@ const SetOrg: FC = () => {
             <Route exact path="/orgs/:orgID" component={HomepageContainer} />
           ) : (
             <Route exact path="/orgs/:orgID" component={MePage} />
+          )}
+
+          {isFlagEnabled('firstMile') && (
+            <>
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/python"
+                component={PythonWizard}
+              />
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/nodejs"
+                component={NodejsWizard}
+              />
+            </>
           )}
 
           <Route component={NotFound} />

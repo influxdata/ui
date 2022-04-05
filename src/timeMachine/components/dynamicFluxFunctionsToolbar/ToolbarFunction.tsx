@@ -4,32 +4,44 @@ import React, {FC, createRef} from 'react'
 // Component
 import FunctionTooltipContents from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/FunctionTooltipContents'
 import {
-  Popover,
-  PopoverPosition,
-  PopoverInteraction,
   Appearance,
   Button,
-  ComponentSize,
   ComponentColor,
+  ComponentSize,
+  Popover,
+  PopoverInteraction,
+  PopoverPosition,
 } from '@influxdata/clockface'
 
 // Types
-import {FluxToolbarFunction} from 'src/types/shared'
+import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
+
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
-  func: FluxToolbarFunction
-  onClickFunction: (func: FluxToolbarFunction) => void
+  func: Fluxdocs
+  onClickFunction: (func: Fluxdocs) => void
   testID: string
+  setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
 const defaultProps = {
   testID: 'flux-function',
 }
 
-const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
+const ToolbarFunction: FC<Props> = ({
+  func,
+  onClickFunction,
+  testID,
+  setToolTipPopup,
+  setHoverdFunction,
+}) => {
   const functionRef = createRef<HTMLDListElement>()
   const handleClickFunction = () => {
     onClickFunction(func)
+    event('flux.function.injected', {name: `${func.package}.${func.name}`})
   }
   return (
     <>
@@ -42,14 +54,20 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
         hideEvent={PopoverInteraction.Hover}
         distanceFromTrigger={8}
         testID="toolbar-popover"
-        contents={() => <FunctionTooltipContents func={func} />}
+        contents={() => (
+          <FunctionTooltipContents
+            func={func}
+            setToolTipPopup={setToolTipPopup}
+            setHoverdFunction={setHoverdFunction}
+          />
+        )}
       />
       <dd
         ref={functionRef}
         data-testid={`flux--${testID}`}
         className="flux-toolbar--list-item flux-toolbar--function"
       >
-        <code>{func.name}</code>
+        <code>{`${func.package}.${func.name}`}</code>
         <Button
           testID={`flux--${testID}--inject`}
           text="Inject"
@@ -62,7 +80,5 @@ const ToolbarFunction: FC<Props> = ({func, onClickFunction, testID}) => {
     </>
   )
 }
-
 ToolbarFunction.defaultProps = defaultProps
-
 export default ToolbarFunction

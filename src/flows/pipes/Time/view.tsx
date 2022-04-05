@@ -27,8 +27,8 @@ const Time: FC<PipeProp> = ({Context}) => {
   if (!data.start) {
     startError = 'Required'
   } else if (
-    !/^-(?:(\d+(y|mo|s|m|w|h){1}))+$/g.test(data.start) &&
-    !/^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$/g.test(
+    !/^-(?:(\d+(ns|us|µs|ms|s|m|h|d|w|mo|y){1}))+$/g.test(data.start) &&
+    !/^([0-9]{4})-([0-9]{2})-([0-9]{2})([Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]+)?)?(([Zz]|([+-])([0-9]{2}):([0-9]{2})))?/g.test(
       data.start
     )
   ) {
@@ -39,8 +39,8 @@ const Time: FC<PipeProp> = ({Context}) => {
     stopError = 'Required'
   } else if (
     !/^now\(\)$/g.test(data.stop) &&
-    !/^-(?:(\d+(y|mo|s|m|w|h){1}))+$/g.test(data.stop) &&
-    !/^((?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$/g.test(
+    !/^-(?:(\d+(ns|us|µs|ms|s|m|h|d|w|mo|y){1}))+$/g.test(data.stop) &&
+    !/^([0-9]{4})-([0-9]{2})-([0-9]{2})([Tt]([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]+)?)?(([Zz]|([+-])([0-9]{2}):([0-9]{2})))?/g.test(
       data.stop
     )
   ) {

@@ -72,7 +72,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
     _generateMap()
     queryAll()
-  }, [flow?.range])
+  }, [flow?.range?.lower, flow?.range?.upper])
 
   useEffect(() => {
     if (flow?.readOnly) {
@@ -146,16 +146,13 @@ export const FlowQueryProvider: FC = ({children}) => {
       }
 
       if (typeof PIPE_DEFINITIONS[panel.type].scope === 'function') {
-        meta.scope = PIPE_DEFINITIONS[panel.type].scope(
-          panel,
-          acc[acc.length - 1]?.scope || {}
-        )
+        meta.scope = PIPE_DEFINITIONS[panel.type].scope(panel, last.scope)
       }
 
       if (typeof PIPE_DEFINITIONS[panel.type].source === 'function') {
         meta.source = PIPE_DEFINITIONS[panel.type].source(
           panel,
-          '' + (acc[acc.length - 1]?.source || ''),
+          '' + last.source,
           meta.scope
         )
       }
@@ -163,7 +160,7 @@ export const FlowQueryProvider: FC = ({children}) => {
       if (typeof PIPE_DEFINITIONS[panel.type].visual === 'function') {
         meta.visual = PIPE_DEFINITIONS[panel.type].visual(
           panel,
-          '' + (acc[acc.length - 1]?.source || ''),
+          '' + last.source,
           meta.scope
         )
       }

@@ -1,6 +1,5 @@
 // Libraries
 import React, {PureComponent} from 'react'
-import {connect} from 'react-redux'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
@@ -12,25 +11,20 @@ import GetResources from 'src/resources/components/GetResources'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {AppState, Organization, ResourceType} from 'src/types'
-
-interface StateProps {
-  org: Organization
-}
+import {ResourceType} from 'src/types'
 
 @ErrorHandling
-class LabelsIndex extends PureComponent<StateProps> {
+class LabelsIndex extends PureComponent {
   public render() {
-    const {org, children} = this.props
+    const {children} = this.props
 
     return (
       <>
         <Page titleTag={pageTitleSuffixer(['Labels', 'Settings'])}>
           <SettingsHeader />
-          <SettingsTabbedPage activeTab="labels" orgID={org.id}>
+          <SettingsTabbedPage activeTab="labels">
             <GetResources resources={[ResourceType.Labels]}>
               <LabelsTab />
             </GetResources>
@@ -42,6 +36,4 @@ class LabelsIndex extends PureComponent<StateProps> {
   }
 }
 
-const mstp = (state: AppState) => ({org: getOrg(state)})
-
-export default connect<StateProps>(mstp)(LabelsIndex)
+export default LabelsIndex

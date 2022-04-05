@@ -41,15 +41,14 @@ export const SubSideBar: FC = () => {
   return (
     <div className="flow-sidebar">
       <div className="flow-sidebar--buttons">
-        <Button
-          icon={IconFont.Remove_New}
+        <button
+          className="cf-overlay--dismiss"
+          type="button"
           onClick={() => {
             event('Closing Submenu')
             hideSub()
           }}
-        >
-          Back
-        </Button>
+        ></button>
       </div>
       <div className="flow-sidebar--submenu">
         <DapperScrollbars
@@ -131,6 +130,7 @@ const Sidebar: FC = () => {
   const {getPanelQueries} = useContext(FlowQueryContext)
   const {id, hide, menu, showSub} = useContext(SidebarContext)
   const dispatch = useDispatch()
+  const {source, visual} = getPanelQueries(id)
 
   const sections = ([
     {
@@ -143,24 +143,6 @@ const Sidebar: FC = () => {
             event('notebook_delete_cell', {notebooksCellType: type})
 
             remove(id)
-          },
-        },
-        {
-          title: 'Share',
-          action: () => {
-            const {type} = flow.data.byID[id]
-            event('notebook_share_panel', {notebooksCellType: type})
-            const url = new URL(
-              `${window.location.origin}${window.location.pathname}?panel=${id}`
-            ).toString()
-            try {
-              navigator.clipboard.writeText(url)
-              event('panel_share_success', {notebooksCellType: type})
-              dispatch(notify(panelCopyLinkSuccess()))
-            } catch {
-              event('panel_share_failure', {notebooksCellType: type})
-              dispatch(notify(panelCopyLinkFail()))
-            }
           },
         },
         {
@@ -179,13 +161,13 @@ const Sidebar: FC = () => {
         {
           title: () => {
             if (!flow.meta.allIDs.includes(id)) {
-              return 'Hide panel'
+              return 'Hide Panel'
             }
 
             if (flow.meta.byID[id].visible) {
-              return 'Hide panel'
+              return 'Hide Panel'
             }
-            return 'Show panel'
+            return 'Show Panel'
           },
           action: () => {
             event('Panel Visibility Toggled', {
@@ -199,6 +181,9 @@ const Sidebar: FC = () => {
         },
         {
           title: 'Convert to |> Flux',
+          disable: () => {
+            return !source
+          },
           hidden: () => {
             if (!flow.data.allIDs.includes(id)) {
               return true
@@ -222,8 +207,6 @@ const Sidebar: FC = () => {
 
             event('Convert Cell To Flux', {from: type})
 
-            const {source, visual} = getPanelQueries(id)
-
             const init = JSON.parse(
               JSON.stringify(PIPE_DEFINITIONS['rawFluxEditor'].initial)
             )
@@ -239,6 +222,9 @@ const Sidebar: FC = () => {
         {
           title: 'Export to Client Library',
           menu: <ClientList />,
+          disable: () => {
+            return !source
+          },
           hidden: () => {
             if (!flow.data.allIDs.includes(id)) {
               return true
@@ -254,7 +240,28 @@ const Sidebar: FC = () => {
           },
         },
         {
+          title: 'Link to Panel',
+          action: () => {
+            const {type} = flow.data.byID[id]
+            event('notebook_share_panel', {notebooksCellType: type})
+            const url = new URL(
+              `${window.location.origin}${window.location.pathname}?panel=${id}`
+            ).toString()
+            try {
+              navigator.clipboard.writeText(url)
+              event('panel_share_success', {notebooksCellType: type})
+              dispatch(notify(panelCopyLinkSuccess()))
+            } catch {
+              event('panel_share_failure', {notebooksCellType: type})
+              dispatch(notify(panelCopyLinkFail()))
+            }
+          },
+        },
+        {
           title: 'Link to Source',
+          disable: () => {
+            return !source
+          },
           hidden: () => {
             if (!flow.data.allIDs.includes(id)) {
               return true
@@ -283,6 +290,9 @@ const Sidebar: FC = () => {
         },
         {
           title: 'Link to Results',
+          disable: () => {
+            return !source
+          },
           hidden: () => {
             if (!flow.data.allIDs.includes(id)) {
               return true

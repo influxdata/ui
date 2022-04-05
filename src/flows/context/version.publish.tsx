@@ -8,15 +8,18 @@ import React, {
   useState,
 } from 'react'
 import {useDispatch} from 'react-redux'
+import {useParams} from 'react-router-dom'
 
 // Context
 import {FlowContext} from 'src/flows/context/flow.current'
 
 // Utils
 import {
+  getNotebook,
   getNotebooksVersions,
   postNotebooksVersion,
   VersionHistories,
+  VersionHistory,
 } from 'src/client/notebooksRoutes'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {notify} from 'src/shared/actions/notifications'
@@ -24,6 +27,7 @@ import {
   publishNotebookFailed,
   publishNotebookSuccessful,
 } from 'src/shared/copy/notifications'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {RemoteDataState} from 'src/types'
@@ -43,12 +47,15 @@ const DEFAULT_CONTEXT: ContextType = {
 export const VersionPublishContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
 export const VersionPublishProvider: FC = ({children}) => {
+  // This flow is not the same as the draft notebook, it's the current versioned notebook
   const {flow} = useContext(FlowContext)
   const dispatch = useDispatch()
   const [versions, setVersions] = useState([])
   const [publishLoading, setPublishLoading] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
+
+  const {notebookID} = useParams<{notebookID: string}>()
 
   const handleGetNotebookVersions = useCallback(async () => {
     try {
@@ -58,11 +65,27 @@ export const VersionPublishProvider: FC = ({children}) => {
         throw new Error(response.data.message)
       }
 
-      setVersions(response.data.reverse())
+      const resp = await getNotebook({id: notebookID ?? flow.id})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const versions: VersionHistory[] = response.data.reverse()
+
+      if (resp.data.isDirty) {
+        versions.unshift({
+          id: 'draft',
+          publishedAt: resp.data.updatedAt,
+          publishedBy: null,
+        })
+      }
+
+      setVersions(versions)
     } catch (error) {
       console.error({error})
     }
-  }, [flow.id])
+  }, [flow.id, notebookID])
 
   useEffect(() => {
     if (isFlagEnabled('flowPublishLifecycle')) {
@@ -72,6 +95,7 @@ export const VersionPublishProvider: FC = ({children}) => {
 
   const handlePublish = useCallback(async () => {
     try {
+      event('publish_notebook')
       const response = await postNotebooksVersion({id: flow.id})
 
       if (response.status !== 200) {

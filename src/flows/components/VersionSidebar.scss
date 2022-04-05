@@ -1,0 +1,90 @@
+.version-sidebar--buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 $cf-marg-c;
+}
+
+.version-history--title {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.published-date--text {
+  font-weight: normal;
+  font-size: 15.75px;
+  line-height: 1.6;
+  margin: 0px 0px;
+  color: $cf-white;
+}
+
+.published-by--text {
+  font-weight: normal;
+  line-height: 160%;
+  color: $cf-grey-65;
+  margin: 0px 0px;
+}
+
+.cf-list--contents {
+  .cf-list-item__light.version-sidebar--listitem {
+    display: flex;
+    justify-content: space-between;
+    padding: $cf-marg-c;
+  }
+}
+
+.version-sidebar {
+  flex: 0 0 420px;
+  width: 420px;
+  padding: 0 $cf-space-2xs;
+
+  .sidebar--item {
+    width: 137px;
+    height: 137px;
+
+    .cf-selectable-card--body {
+      overflow: hidden;
+    }
+
+    .cf-selectable-card--children {
+      width: calc(100% - 48px);
+      height: calc(100% - 48px);
+    }
+  }
+  .sidebar--item-thumb {
+    width: 100%;
+    height: 100%;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .flux-toolbar--search {
+    padding: 0;
+  }
+}
+
+.version-sidebar--submenu {
+  padding-top: $cf-space-2xs;
+  height: calc(
+    100% - 30px
+  ); // this is due to a scrollbar issue where the height of the button above it makes the 100% height unreachable: https://github.com/influxdata/ui/issues/2474
+}
+
+.version-sidebar--submenu-wrapper {
+  padding-bottom: 20px;
+}
+
+.version-header--timerange {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.2;
+  margin-right: $cf-marg-c;
+}
+
+.version-sidebar--back-btn {
+  margin: 0px 10px 12px;
+}

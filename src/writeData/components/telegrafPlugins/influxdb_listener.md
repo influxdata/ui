@@ -1,13 +1,13 @@
 # InfluxDB Listener Input Plugin
 
 InfluxDB Listener is a service input plugin that listens for requests sent
-according to the [InfluxDB HTTP API](https://docs.influxdata.com/influxdb/v1.8/guides/write_data/).  The intent of the
+according to the [InfluxDB HTTP API][influxdb_http_api].  The intent of the
 plugin is to allow Telegraf to serve as a proxy/router for the `/write`
 endpoint of the InfluxDB HTTP API.
 
 **Note:** This plugin was previously known as `http_listener`.  If you wish to
 send general metrics via HTTP it is recommended to use the
-[`http_listener_v2`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/http_listener_v2) instead.
+[`http_listener_v2`][http_listener_v2] instead.
 
 The `/write` endpoint supports the `precision` query parameter and can be set
 to one of `ns`, `u`, `ms`, `s`, `m`, `h`.  All other parameters are ignored and
@@ -18,7 +18,7 @@ receive a 200 OK response with message body `{"results":[]}` but they are not
 relayed. The output configuration of the Telegraf instance which ultimately
 submits data to InfluxDB determines the destination database.
 
-### Configuration:
+## Configuration
 
 ```toml
 [[inputs.influxdb_listener]]
@@ -62,15 +62,24 @@ submits data to InfluxDB determines the destination database.
   ## You probably want to make sure you have TLS configured above for this.
   # basic_username = "foobar"
   # basic_password = "barfoo"
+
+  ## Influx line protocol parser
+  ## 'internal' is the default. 'upstream' is a newer parser that is faster
+  ## and more memory efficient.
+  # parser_type = "internal"
 ```
 
-### Metrics:
+## Metrics
 
 Metrics are created from InfluxDB Line Protocol in the request body.
 
-### Troubleshooting:
+## Troubleshooting
 
 **Example Query:**
-```
+
+```sh
 curl -i -XPOST 'http://localhost:8186/write' --data-binary 'cpu_load_short,host=server01,region=us-west value=0.64 1434055562000000000'
 ```
+
+[influxdb_http_api]: https://docs.influxdata.com/influxdb/v1.8/guides/write_data/
+[http_listener_v2]: /plugins/inputs/http_listener_v2/README.md

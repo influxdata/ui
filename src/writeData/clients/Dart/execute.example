@@ -1,0 +1,10 @@
+var query = '''
+  <%= query %>
+''';
+
+var queryService = client.getQueryService();
+
+var records = await queryService.query(query);
+await records.forEach((record) {
+  print('${record['_time']}: ${record['_field']} = ${record['_value']}');
+});

@@ -7,6 +7,7 @@ import {CurrentExplorerState} from 'src/shared/reducers/currentExplorer'
 import {NoteEditorState} from 'src/dashboards/reducers/notes'
 import {DataLoadingState} from 'src/dataLoaders/reducers'
 import {OnboardingState} from 'src/onboarding/reducers'
+import {FluxDocsState} from 'src/shared/reducers/fluxDocs'
 import {
   Notification,
   ResourceState,
@@ -43,6 +44,7 @@ export interface AppState {
   currentExplorer: CurrentExplorerState
   dataLoading: DataLoadingState
   flags: FlagState
+  fluxDocs: FluxDocsState
   me: MeState
   noteEditor: NoteEditorState
   notifications: Notification[]

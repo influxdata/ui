@@ -1,93 +1,102 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
 $pool-fill: #00a3ff;
 
-.homepage-container {
+h1#first-mile--header {
+  margin: 1em 0;
+}
+
+.homepage-wizard-container {
   color: $cf-grey-95;
   display: flex;
   height: 100%;
-  justify-content: space-between;
   width: 100%;
+
+  padding-top: 71px;
+  padding-right: 85px;
+
+  overflow-y: scroll;
 }
 
-.homepage-container--subway {
+.homepage-wizard-container--subway {
   display: flex;
   flex-direction: column;
   width: 30%;
 }
 
-.homepage-container--main {
+.homepage-wizard-container--main {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   width: 70%;
+  flex: 1;
+
+  padding-bottom: 64px;
 }
 
-.homepage-container--main-wrapper {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-// Subway CSS
-
-.subway-navigation-container {
-  display: flex;
-  justify-content: center;
-}
-
-.subway-navigation-flex-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.subway-navigation-step-flex-wrapper {
-  display: flex;
-  flex-direction: column;
-
-  &:after {
-    content: '';
-    width: $cf-border;
-    pointer-events: none;
-    z-index: 2;
-
-    height: 30px;
-    transform: translate(16px);
-    background: white;
+.homepage-wizard-container--main-wrapper {
+  h1 {
+    margin-top: 0;
+    font-weight: normal;
   }
 
-  &:last-child:after {
-    background: black;
+  p {
+    font-size: $cf-text-base-1;
   }
 
-  &.stepIsComplete {
-    &:after {
-      background: $pool-fill;
-    }
-    &:last-child:after {
-      background: black;
-    }
+  &.overviewSection {
+    margin-top: auto;
   }
 }
 
-.subway-navigation-step {
+.homepage-wizard-container-footer {
   display: flex;
-  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+// Write data helper CSS override for homepage experience
+
+.write-data--details-widget-title {
+  margin-bottom: $cf-space-2xs;
+  padding-left: $cf-space-2xs + $cf-space-3xs;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  text-transform: uppercase;
 }
 
-.subway-navigation-step-icon-container {
-  border: $cf-grey-95 solid 2px;
-  border-radius: 50%;
-  color: rgba(0, 0, 0, 0);
-  height: 34px;
-  width: 34px;
-
+.homepage-wizard-next-steps {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  max-width: 300px;
+  margin-top: 0 !important;
+  h4 {
+    background: linear-gradient(45deg, #fad9ff 0%, #f0fcff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 
-  margin-right: 21px;
-}
+    display: flex;
+    align-items: center;
 
-.showBorderColor .subway-navigation-step-icon-container {
-  border-color: $pool-fill;
+    margin: 0;
+    svg {
+      margin-right: 10px;
+    }
+  }
+
+  p {
+    font-size: 14px;
+    margin: 0;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 17px;
+    text-align: left;
+  }
+
+  h5 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
 }

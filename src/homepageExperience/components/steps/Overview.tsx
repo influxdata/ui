@@ -2,6 +2,20 @@ import React, {PureComponent} from 'react'
 
 export class Overview extends PureComponent {
   render() {
-    return <h1>Overview</h1>
+    return (
+      <div>
+        <h1>Hello, Time-Series World!</h1>
+        <article>
+          <p>Welcome and thanks for checking out InfluxData!</p>
+
+          <p>
+            In the next 5 minutes, you will set up InfluxData on your machine
+            and write and execute some basic queries.
+          </p>
+
+          <p>Without further ado, let’s get started.</p>
+        </article>
+      </div>
+    )
   }
 }

@@ -26,7 +26,12 @@ describe('About Page', () => {
 
     cy.getByTestID('danger-confirmation--button').click()
     cy.getByTestID('form--element-error').should('not.exist')
+
+    // clear the org name
     cy.getByTestID('create-org-name-input').clear()
+
+    // deliberately interact with space-backspace in the input field to trigger validation
+    cy.getByTestID('create-org-name-input').type(' {backspace}')
 
     // check the error state
     cy.getByTestID('form--element-error')

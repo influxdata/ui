@@ -4,20 +4,26 @@ const openCopyAs = () => {
   cy.getByTestID('sidebar-button')
     .first()
     .scrollIntoView()
-    .click({force: true})
+    .click()
   cy.getByTestID('Export to Client Library--list-item').click()
 }
 
 const addFluxQueryInNotebook = (query: string) => {
   cy.getByTestID('add-flow-btn--rawFluxEditor').click()
-  cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query}`)
+  cy.wait('@NotebooksPatchRequest')
+  cy.getByTestID('flux-editor').should('be.visible')
+
+  /* Due to the way the default text populates
+   *   - do not use .monacoType
+   *   - must select the first visible line
+   */
+  cy.get('.monaco-editor .view-line:first').should('be.visible')
+  cy.get('.monaco-editor .view-line:first').type(
+    `{downarrow}{downarrow}${query}`
+  )
 }
 
 const createEmptyNotebook = () => {
-  cy.intercept('PATCH', `/api/v2private/notebooks/*`, req => {
-    req.alias = 'NotebooksPatchRequest'
-  })
-
   cy.getByTestID('preset-new')
     .first()
     .click()
@@ -25,18 +31,21 @@ const createEmptyNotebook = () => {
   cy.getByTestID('sidebar-button')
     .first()
     .scrollIntoView()
-    .click({force: true})
+    .click()
   cy.getByTestID('Delete--list-item').click()
+  cy.wait('@NotebooksPatchRequest')
   cy.getByTestID('sidebar-button')
     .first()
     .scrollIntoView()
-    .click({force: true})
+    .click()
   cy.getByTestID('Delete--list-item').click()
+  cy.wait('@NotebooksPatchRequest')
   cy.getByTestID('sidebar-button')
     .first()
     .scrollIntoView()
-    .click({force: true})
+    .click()
   cy.getByTestID('Delete--list-item').click()
+  cy.wait('@NotebooksPatchRequest')
 }
 
 const verifyClientCode = (client: any) => {
@@ -53,7 +62,7 @@ const verifyClientCode = (client: any) => {
     .find('code')
     .contains(client.query)
 
-  cy.get('.cf-overlay--dismiss').click()
+  cy.get('.cf-overlay--header .cf-overlay--dismiss').click()
 }
 
 const getClients = (org: string, query: string) => {
@@ -116,11 +125,9 @@ const getClients = (org: string, query: string) => {
   ]
 }
 
-describe('Flows', () => {
-  beforeEach(() => cy.flush())
-
-  describe('Flows Copy To Clipboard', () => {
-    beforeEach(() => {
+describe('Flows Copy To Clipboard', () => {
+  beforeEach(() => {
+    cy.flush().then(() => {
       cy.signin()
       cy.get('@org').then(({id}: Organization) => {
         cy.fixture('routes').then(({orgs}) => {
@@ -130,34 +137,37 @@ describe('Flows', () => {
       cy.getByTestID('tree-nav')
 
       cy.clickNavBarItem('nav-item-flows')
+      cy.intercept('PATCH', `/api/v2private/notebooks/*`).as(
+        'NotebooksPatchRequest'
+      )
     })
+  })
 
-    it('Export to Clipboard as Code', () => {
-      const query = 'buckets()'
+  it('Export to Clipboard as Code', () => {
+    const query = 'buckets()'
 
-      createEmptyNotebook()
-      addFluxQueryInNotebook(query)
-      openCopyAs()
+    createEmptyNotebook()
+    addFluxQueryInNotebook(query)
+    openCopyAs()
 
-      cy.get('@org').then(({name}: Organization) => {
-        getClients(name, query).forEach(client => {
-          verifyClientCode(client)
-        })
+    cy.get('@org').then(({name}: Organization) => {
+      getClients(name, query).forEach(client => {
+        verifyClientCode(client)
       })
     })
+  })
 
-    it('Export to Clipboard as Code with Custom Bucket', () => {
-      const bucket = '_customBucket'
-      const query = `from(bucket: "${bucket}"`
+  it('Export to Clipboard as Code with Custom Bucket', () => {
+    const bucket = '_customBucket'
+    const query = `from(bucket: "${bucket}")`
 
-      createEmptyNotebook()
-      addFluxQueryInNotebook(query)
-      openCopyAs()
+    createEmptyNotebook()
+    addFluxQueryInNotebook(query)
+    openCopyAs()
 
-      cy.get('@org').then(({name}: Organization) => {
-        getClients(name, query).forEach(client => {
-          verifyClientCode(client)
-        })
+    cy.get('@org').then(({name}: Organization) => {
+      getClients(name, query).forEach(client => {
+        verifyClientCode(client)
       })
     })
   })

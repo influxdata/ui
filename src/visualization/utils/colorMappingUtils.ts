@@ -1,6 +1,7 @@
 import {XYViewProperties} from 'src/types'
 import {addedDiff, deletedDiff} from 'deep-object-diff'
 import {getNominalColorScale} from '@influxdata/giraffe'
+import {DEFAULT_LINE_COLORS} from 'src/shared/constants/graphColorPalettes'
 
 /**
  * Evaluates whether mappings need to be updated
@@ -158,8 +159,16 @@ export const generateSeriesToColorHex = (
   const cgMap = {...columnGroupMap}
   cgMap.mappings.forEach((graphLine, colorIndex) => {
     const id = getSeriesId(graphLine, columnGroupMap.columnKeys)
-    const colors = properties.colors.map(value => value.hex)
-    const fillScale = getNominalColorScale(columnGroupMap, colors)
+    let colors
+    if (Array.isArray(properties.colors) && properties.colors.length) {
+      // takes care of when properties.colors is NOT undefined, and NOT an empty array
+      colors = properties.colors
+    } else {
+      // when array is undefined or array IS empty.
+      colors = DEFAULT_LINE_COLORS
+    }
+    const colorsHexArray = colors.map(value => value.hex)
+    const fillScale = getNominalColorScale(columnGroupMap, colorsHexArray)
     seriesToColorHex[id] = fillScale(colorIndex)
   })
 

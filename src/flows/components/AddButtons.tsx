@@ -2,7 +2,7 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import {Button, ComponentColor} from '@influxdata/clockface'
+import {Button, ComponentColor, ComponentStatus} from '@influxdata/clockface'
 import CellFamily from 'src/flows/components/CellFamily'
 
 // Constants
@@ -26,6 +26,10 @@ interface Props {
 
 const SUPPORTED_FAMILIES = [
   {
+    name: 'Query Context',
+    family: 'context',
+  },
+  {
     name: 'Data Source',
     family: 'inputs',
   },
@@ -42,6 +46,8 @@ const SUPPORTED_FAMILIES = [
     family: 'output',
   },
 ]
+
+const NEED_QUERY_PANELS = ['table', 'visualization', 'notification', 'schedule']
 
 const AddButtons: FC<Props> = ({index, onInsert}) => {
   const {flow, add} = useContext(FlowContext)
@@ -76,15 +82,25 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
     return acc
   }, {})
 
+  const pipeIds = flow.data.allIDs
+  const firstQueryIndex = pipeIds.findIndex(
+    id => PIPE_DEFINITIONS[flow.data.byID[id].type].family === 'inputs'
+  )
+
   const cellFamilies = SUPPORTED_FAMILIES.filter(fam =>
     pipeFamilies.hasOwnProperty(fam.family)
   ).map(fam => {
     const pipes = pipeFamilies[fam.family].map(def => {
+      let status = ComponentStatus.Default
+      if (index < firstQueryIndex && NEED_QUERY_PANELS.includes(def.type)) {
+        status = ComponentStatus.Disabled
+      }
       return (
         <Button
           className={`flows-add-cell-${def.type}`}
           key={def.type}
           text={def.button}
+          disabledTitleText="This panel is only available after you have added a data source panel."
           testID={`add-flow-btn--${def.type}`}
           onClick={() => {
             let data = def.initial
@@ -115,6 +131,7 @@ const AddButtons: FC<Props> = ({index, onInsert}) => {
               )
             )
           }}
+          status={status}
           color={ComponentColor.Secondary}
         />
       )

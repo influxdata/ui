@@ -63,6 +63,7 @@ interface Props {
   schemaType?: typeof SchemaType
   measurementSchemaList?: typeof MeasurementSchemaList
   showSchemaValidation?: boolean
+  useSimplifiedBucketForm?: boolean
 }
 
 interface State {
@@ -114,6 +115,7 @@ export default class BucketOverlayForm extends PureComponent<Props> {
       schemaType: readOnlySchemaType,
       measurementSchemaList,
       showSchemaValidation,
+      useSimplifiedBucketForm = false,
     } = this.props
 
     const {showAdvanced, schemaType} = this.state
@@ -195,15 +197,22 @@ export default class BucketOverlayForm extends PureComponent<Props> {
               />
             )}
           </Form.ValidationElement>
-          <Form.Element label="Delete Data">
+          <Form.Element
+            label={
+              useSimplifiedBucketForm
+                ? 'Data Retention Preferences'
+                : 'Delete Data'
+            }
+          >
             <Retention
               type={ruleType}
               retentionSeconds={retentionSeconds}
               onChangeRuleType={onChangeRuleType}
               onChangeRetentionRule={onChangeRetentionRule}
+              useSimplifiedForm={useSimplifiedBucketForm}
             />
           </Form.Element>
-          {makeAdvancedSection()}
+          {useSimplifiedBucketForm ? null : makeAdvancedSection()}
         </Overlay.Body>
         <Overlay.Footer>
           <Button

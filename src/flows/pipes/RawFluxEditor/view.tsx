@@ -32,8 +32,9 @@ import {
 
 // Components
 import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
-import Functions from 'src/flows/pipes/RawFluxEditor/GroupedFunctionsList'
-import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/FunctionsList'
+import Functions from 'src/flows/pipes/RawFluxEditor/FunctionsList/GroupedFunctionsList'
+import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/FunctionsList/DynamicFunctionsList'
+import {FluxFunction} from 'src/types/shared'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
@@ -74,12 +75,21 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id, inject])
 
   const injectIntoEditor = useCallback(
-    (fn: FluxToolbarFunction): void => {
+    (fn: FluxToolbarFunction | FluxFunction): void => {
+      // HERE kill this
       let text = ''
       if (fn.name === 'from' || fn.name === 'union') {
-        text = `${fn.example}`
+        text = `${
+          (fn as FluxToolbarFunction).example
+            ? (fn as FluxToolbarFunction).example
+            : fn.name + '()'
+        }` // inject functionality for dynamic flux panels is in progress
       } else {
-        text = `  |> ${fn.example}`
+        text = `  |> ${
+          (fn as FluxToolbarFunction).example
+            ? (fn as FluxToolbarFunction).example
+            : fn.name + '()'
+        }`
       }
 
       const options = {

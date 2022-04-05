@@ -31,7 +31,7 @@ const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 const TimeMachineFluxEditor: FC = () => {
   const dispatch = useDispatch()
   const activeQueryText = useSelector(getActiveQuery).text
-  const {activeTab, activeQueryIndex} = useSelector(getActiveTimeMachine)
+  const {activeQueryIndex} = useSelector(getActiveTimeMachine)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
 
   const handleSetActiveQueryText = React.useCallback(
@@ -192,7 +192,6 @@ const TimeMachineFluxEditor: FC = () => {
         </div>
         <div className="flux-editor--right-panel">
           <FluxToolbar
-            activeQueryBuilderTab={activeTab}
             onInsertFluxFunction={handleInsertFluxFunction}
             onInsertVariable={handleInsertVariable}
           />

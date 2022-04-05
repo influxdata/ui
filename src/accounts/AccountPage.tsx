@@ -18,7 +18,7 @@ import {
 } from '@influxdata/clockface'
 
 import {getMe} from 'src/me/selectors'
-import {UsersContext} from 'src/users/context/users'
+import {UsersContext, UsersProvider} from 'src/users/context/users'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -94,8 +94,7 @@ const AccountAboutPage: FC = () => {
     window.location.href = CLOUD_URL
   }
 
-  const allowSelfRemoval =
-    isFlagEnabled('selfRemovalFromAccount') && users.length > 1
+  const allowSelfRemoval = users.length > 1
 
   const leaveAcctBtn = (
     <ConfirmationButton
@@ -210,9 +209,11 @@ const AccountPage: FC = () => {
   return (
     <Page titleTag={pageTitleSuffixer(['Account Settings Page'])}>
       <AccountHeader testID="account-page--header" />
-      <UserAccountProvider>
-        <AccountAboutPage />
-      </UserAccountProvider>
+      <UsersProvider>
+        <UserAccountProvider>
+          <AccountAboutPage />
+        </UserAccountProvider>
+      </UsersProvider>
     </Page>
   )
 }

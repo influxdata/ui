@@ -4,8 +4,6 @@ import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 import {
-  addPinnedItem,
-  PinnedItemTypes,
   deletePinnedItemByParam,
   updatePinnedItemByParam,
 } from 'src/shared/contexts/pinneditems'
@@ -37,12 +35,10 @@ import {setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor} from '@influxdata/clockface'
-import {Task, Label, AppState} from 'src/types'
+import {Task, Label} from 'src/types'
 
 // Constants
 import {DEFAULT_TASK_NAME} from 'src/dashboards/constants'
-import {getMe} from 'src/me/selectors'
-import {getOrg} from 'src/organizations/selectors'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {CLOUD} from 'src/shared/constants'
 
@@ -61,6 +57,8 @@ interface PassedProps {
   onRunTask: (taskID: string) => void
   onUpdate: (name: string, taskID: string) => void
   onFilterChange: (searchTerm: string) => void
+  onPinTask: (taskID: string, name: string) => void
+  onUnpinTask: (taskID: string) => void
   isPinned: boolean
 }
 
@@ -128,19 +126,12 @@ export class TaskCard extends PureComponent<
   }
 
   private handlePinTask = () => {
-    try {
-      addPinnedItem({
-        orgID: this.props.org.id,
-        userID: this.props.me.id,
-        metadata: {
-          taskID: this.props.task.id,
-          name: this.props.task.name,
-        },
-        type: PinnedItemTypes.Task,
-      })
-      this.props.sendNotification(pinnedItemSuccess('task', 'added'))
-    } catch (err) {
-      this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+    const {task, isPinned} = this.props
+
+    if (isPinned) {
+      this.props.onUnpinTask(task.id)
+    } else {
+      this.props.onPinTask(task.id, task.name)
     }
   }
 
@@ -177,7 +168,7 @@ export class TaskCard extends PureComponent<
           appearance={Appearance.Outline}
           enableDefaultStyles={false}
           style={{minWidth: '112px'}}
-          contents={() => (
+          contents={onHide => (
             <List>
               <List.Item
                 onClick={this.handleExport}
@@ -215,13 +206,15 @@ export class TaskCard extends PureComponent<
               </List.Item>
               {isFlagEnabled('pinnedItems') && CLOUD && (
                 <List.Item
-                  onClick={this.handlePinTask}
-                  disabled={isPinned}
+                  onClick={() => {
+                    this.handlePinTask()
+                    onHide()
+                  }}
                   size={ComponentSize.Small}
                   style={{fontWeight: 500}}
                   testID="context-pin-task"
                 >
-                  Pin
+                  {isPinned ? 'Unpin' : 'Pin'}
                 </List.Item>
               )}
             </List>
@@ -283,12 +276,12 @@ export class TaskCard extends PureComponent<
       task: {id},
     } = this.props
     onUpdate(name, id)
-    if (isFlagEnabled('pinnedItems') && CLOUD) {
+    if (isFlagEnabled('pinnedItems') && CLOUD && this.props.isPinned) {
       try {
         updatePinnedItemByParam(id, {name})
         this.props.sendNotification(pinnedItemSuccess('task', 'updated'))
       } catch (err) {
-        this.props.sendNotification(pinnedItemFailure(err.message, 'task'))
+        this.props.sendNotification(pinnedItemFailure(err.message, 'update'))
       }
     }
   }
@@ -360,15 +353,6 @@ const mdtp = {
   sendNotification: notify,
 }
 
-const mstp = (state: AppState) => {
-  const me = getMe(state)
-  const org = getOrg(state)
-
-  return {
-    org,
-    me,
-  }
-}
-const connector = connect(mstp, mdtp)
+const connector = connect(null, mdtp)
 
 export default connector(withRouter(TaskCard))

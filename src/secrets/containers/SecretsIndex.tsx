@@ -25,7 +25,7 @@ const SecretsIndex: FC = () => {
     <>
       <Page titleTag={pageTitleSuffixer(['Secrets', 'Settings'])}>
         <SettingsHeader />
-        <SettingsTabbedPage activeTab="secrets" orgID={org.id}>
+        <SettingsTabbedPage activeTab="secrets">
           <GetResources resources={[ResourceType.Secrets]}>
             <SecretsTab />
           </GetResources>

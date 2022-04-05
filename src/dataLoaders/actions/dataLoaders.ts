@@ -73,8 +73,7 @@ export type Action =
   | SetActiveTelegrafPlugin
   | UpdateTelegrafPlugin
   | AddPluginBundle
-  | AddTelegrafTelegrafUiRefresh
-  | AddTelegrafPluginsTelegrafUiRefresh
+  | ReplaceBundleWithPlugin
   | AddTelegrafPlugins
   | RemoveBundlePlugins
   | RemovePluginBundle
@@ -227,21 +226,9 @@ interface AddPluginBundle {
   payload: {bundle: BundleName}
 }
 
-interface AddTelegrafTelegrafUiRefresh {
-  type: 'ADD_TELEGRAF_telegrafUiRefresh'
-  payload: {plugin: TelegrafPlugin}
-}
-
 export const addPluginBundle = (bundle: BundleName): AddPluginBundle => ({
   type: 'ADD_PLUGIN_BUNDLE',
   payload: {bundle},
-})
-
-export const addTelegraf_telegrafUiRefresh = (
-  plugin: TelegrafPlugin
-): AddTelegrafTelegrafUiRefresh => ({
-  type: 'ADD_TELEGRAF_telegrafUiRefresh',
-  payload: {plugin},
 })
 
 interface RemovePluginBundle {
@@ -257,8 +244,8 @@ interface AddTelegrafPlugins {
   type: 'ADD_TELEGRAF_PLUGINS'
   payload: {telegrafPlugins: TelegrafPlugin[]}
 }
-interface AddTelegrafPluginsTelegrafUiRefresh {
-  type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh'
+interface ReplaceBundleWithPlugin {
+  type: 'REPLACE_BUNDLE_WITH_PLUGIN'
   payload: {telegrafPlugins: TelegrafPlugin}
 }
 
@@ -269,10 +256,10 @@ export const addTelegrafPlugins = (
   payload: {telegrafPlugins},
 })
 
-export const addTelegrafPlugins_telegrafUiRefresh = (
+export const replaceBundleWithPlugin = (
   telegrafPlugins: TelegrafPlugin
-): AddTelegrafPluginsTelegrafUiRefresh => ({
-  type: 'ADD_TELEGRAF_PLUGINS_telegrafUiRefresh',
+): ReplaceBundleWithPlugin => ({
+  type: 'REPLACE_BUNDLE_WITH_PLUGIN',
   payload: {telegrafPlugins},
 })
 
@@ -361,11 +348,10 @@ export const addPluginBundleWithPlugins = (bundle: BundleName) => dispatch => {
   )
 }
 
-export const addTelegrafPlugin_telegrafUiRefresh = (
+export const addTelegrafPluginAsBundle = (
   plugin: TelegrafPlugin
 ) => dispatch => {
-  dispatch(addTelegraf_telegrafUiRefresh(plugin))
-  dispatch(addTelegrafPlugins_telegrafUiRefresh(plugin))
+  dispatch(replaceBundleWithPlugin(plugin))
 }
 
 export const removePluginBundleWithPlugins = (
@@ -434,10 +420,10 @@ export const createOrUpdateTelegrafConfigAsync = () => async (
 
     dispatch(editTelegraf(normTelegraf))
     dispatch(setTelegrafConfigID(telegrafConfigID))
-    event(
-      `telegraf.config.${normalizeEventName(telegrafConfigName)}.edit.success`,
-      {id: telegraf?.id}
-    )
+    event(`telegraf.config.edit.success`, {
+      id: telegraf?.id,
+      name: normalizeEventName(telegrafConfigName),
+    })
     return
   }
 
@@ -592,13 +578,15 @@ const createTelegraf = async (dispatch, getState: GetState, plugins) => {
     dispatch(setTelegrafConfigID(tc.id))
     dispatch(addTelegraf(normTelegraf))
     dispatch(notify(TelegrafConfigCreationSuccess))
-    event(`telegraf.config.${normalizeEventName(configName)}.create.success`, {
+    event(`telegraf.config.create.success`, {
       id: tc.id,
       bucket: bucketName,
+      name: normalizeEventName(configName),
     })
   } catch (error) {
-    event(`telegraf.config.${normalizeEventName(configName)}.create.failure`, {
+    event(`telegraf.config.create.failure`, {
       bucket: bucketName,
+      name: normalizeEventName(configName),
     })
     console.error(error.message)
     dispatch(notify(TelegrafConfigCreationError))

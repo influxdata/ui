@@ -39,10 +39,15 @@ if (CLOUD) {
 interface CreateBucketFormProps {
   onClose: () => void
   testID?: string
+  useSimplifiedBucketForm?: boolean
 }
 
 export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
-  const {onClose, testID = 'create-bucket-form'} = props
+  const {
+    onClose,
+    testID = 'create-bucket-form',
+    useSimplifiedBucketForm = false,
+  } = props
   const org = useSelector(getOrg)
   const isRetentionLimitEnforced = useSelector((state: AppState): boolean => {
     if (CLOUD) {
@@ -177,6 +182,7 @@ export const CreateBucketForm: FC<CreateBucketFormProps> = props => {
       onChangeSchemaType={handleChangeSchemaType}
       onAddNewMeasurementSchemas={handleNewMeasurementSchemas}
       showSchemaValidation={showSchemaValidation}
+      useSimplifiedBucketForm={useSimplifiedBucketForm}
     />
   )
 }

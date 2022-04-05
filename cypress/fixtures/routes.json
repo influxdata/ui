@@ -6,6 +6,7 @@
   "endpoints": "/endpoints",
   "explorer": "/data-explorer",
   "flows": "/flows",
+  "notebooks": "/notebooks",
   "orgs": "/orgs",
   "rules": "/rules",
   "sources": "/load-data/sources",

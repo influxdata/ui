@@ -5,9 +5,6 @@ export const DataExplorerPage = lazy(() =>
 )
 
 export const MePage = lazy(() => import('src/me/containers/MePage'))
-export const HomepageContainer = lazy(() =>
-  import('src/homepageExperience/containers/HomepageContainer')
-)
 export const TasksPage = lazy(() => import('src/tasks/containers/TasksPage'))
 export const TaskPage = lazy(() => import('src/tasks/containers/TaskPage'))
 export const TaskRunsPage = lazy(() =>
@@ -34,9 +31,6 @@ export const VersionPage = lazy(() =>
 )
 export const BucketsIndex = lazy(() =>
   import('src/buckets/containers/BucketsIndex')
-)
-export const BucketsIndexPaginated = lazy(() =>
-  import('src/buckets/pagination/BucketsIndex')
 )
 export const TokensIndex = lazy(() =>
   import('src/authorizations/containers/TokensIndex')
@@ -101,3 +95,32 @@ export const UserAccountPage = lazy(() => import('src/accounts/AccountPage'))
 export const OrgOverlay = lazy(() => import('src/operator/OrgOverlayWrapper'))
 
 export const CheckoutPage = lazy(() => import('src/checkout/CheckoutPage'))
+
+export const SubscriptionsLanding = lazy(() =>
+  import('src/writeData/subscriptions/components/SubscriptionsLanding')
+)
+export const CreateSubscriptionForm = lazy(() =>
+  import('src/writeData/subscriptions/components/CreateSubscriptionPage')
+)
+
+export const SubscriptionDetailsPage = lazy(() =>
+  import('src/writeData/subscriptions/components/SubscriptionDetailsPage')
+)
+
+export const HomepageContainer = lazy(() =>
+  import(
+    'src/homepageExperience/containers/HomepageContainer'
+  ).then(module => ({default: module.HomepageContainer}))
+)
+
+export const PythonWizard = lazy(() =>
+  import('src/homepageExperience/containers/PythonWizard').then(module => ({
+    default: module.PythonWizard,
+  }))
+)
+
+export const NodejsWizard = lazy(() =>
+  import('src/homepageExperience/containers/NodejsWizard').then(module => ({
+    default: module.NodejsWizard,
+  }))
+)

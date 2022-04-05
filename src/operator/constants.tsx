@@ -92,6 +92,9 @@ export const organizationColumnInfo: CellInfo[] = [
     path: 'account.id',
     name: 'account-id',
     defaultValue: '',
+    renderValue: value => (
+      <Link to={`/operator/accounts/${value}`}>{value}</Link>
+    ),
   },
   {
     path: 'account.balance',

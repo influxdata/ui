@@ -1,5 +1,5 @@
 // Libraries
-import {parse} from 'src/external/parser'
+import {parse} from 'src/languageSupport/languages/flux/parser'
 import {get, sortBy} from 'lodash'
 
 // API
@@ -18,8 +18,6 @@ import {hydrateVariables} from 'src/variables/actions/thunks'
 import {rateLimitReached, resultTooLarge} from 'src/shared/copy/notifications'
 
 // Utils
-import fromFlux from 'src/shared/utils/fromFlux'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {findNodes} from 'src/shared/utils/ast'
 import {event} from 'src/cloud/utils/reporting'
@@ -338,13 +336,6 @@ export const executeQueries = (abortController?: AbortController) => async (
       if (result.didTruncate) {
         dispatch(notify(resultTooLarge(result.bytesRead)))
       }
-
-      if (isFlagEnabled('fluxParser')) {
-        // TODO: this is just here for validation. since we are already eating
-        // the cost of parsing the results, we should store the output instead
-        // of the raw input
-        fromFlux(result.csv)
-      }
     }
 
     const files = (results as RunQuerySuccessResult[]).map(r => r.csv)
@@ -421,13 +412,6 @@ export const executeCheckQuery = () => async (dispatch, getState: GetState) => {
 
     if (result.didTruncate) {
       dispatch(notify(resultTooLarge(result.bytesRead)))
-    }
-
-    if (isFlagEnabled('fluxParser')) {
-      // TODO: this is just here for validation. since we are already eating
-      // the cost of parsing the results, we should store the output instead
-      // of the raw input
-      fromFlux(result.csv)
     }
 
     const file = result.csv

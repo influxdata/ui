@@ -1,5 +1,5 @@
 // Libraries
-import React, {useState, useContext, useRef} from 'react'
+import React, {useState, useContext, useRef, useEffect} from 'react'
 
 // Components
 import {
@@ -18,10 +18,12 @@ import ResourceSortDropdown from 'src/shared/components/resource_sort_dropdown/R
 import {SortTypes} from 'src/shared/utils/sort'
 import PresetFlows from 'src/flows/components/PresetFlows'
 import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
+import {event} from 'src/cloud/utils/reporting'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {PROJECT_NAME_PLURAL} from 'src/flows'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {Flow} from 'src/types/flows'
@@ -81,9 +83,9 @@ const FlowsIndex = () => {
   const {flows} = useContext(FlowListContext)
   const [search, setSearch] = useState('')
   const [sortOptions, setSortOptions] = useState({
-    sortKey: 'name' as keyof Flow,
-    sortType: SortTypes.String,
-    sortDirection: Sort.Ascending,
+    sortKey: 'createdAt' as keyof Flow,
+    sortType: SortTypes.Date,
+    sortDirection: Sort.Descending,
   })
 
   const filteredFlows = Object.keys(flows).filter(f =>
@@ -106,12 +108,28 @@ const FlowsIndex = () => {
   }
 
   const setSort = (sortKey, sortDirection, sortType) => {
+    if (
+      sortKey === sortOptions.sortKey &&
+      sortDirection === sortOptions.sortDirection
+    ) {
+      return
+    }
+
+    event('Notebook List Sort Change', {
+      key: sortKey,
+      direction: sortDirection,
+    })
+
     setSortOptions({
       sortKey,
       sortType,
       sortDirection,
     })
   }
+
+  useEffect(() => {
+    event('Notebook List Page Visited')
+  }, [])
 
   return (
     <Page
@@ -124,19 +142,87 @@ const FlowsIndex = () => {
         fullWidth={false}
         className={`${showButtonMode && 'withButtonHeader'}`}
       >
-        <FlexBox
-          direction={FlexDirection.Row}
-          justifyContent={JustifyContent.SpaceBetween}
-          stretchToFitWidth
+        {!isFlagEnabled('noTutorial') && (
+          <FlexBox
+            direction={FlexDirection.Row}
+            justifyContent={JustifyContent.SpaceBetween}
+            stretchToFitWidth
+          >
+            <Page.Title title={PROJECT_NAME_PLURAL} />
+            <RateLimitAlert location="flows" />
+          </FlexBox>
+        )}
+        {showButtonMode &&
+          (isFlagEnabled('noTutorial') ? (
+            <div style={{flex: 1, width: '100%'}}>
+              <PresetFlowsButtons />
+              <div className="preset--no-tutorial search">
+                <SearchWidget
+                  placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
+                  onSearch={setSearch}
+                  searchTerm={search}
+                />
+                <ResourceSortDropdown
+                  resourceType={ResourceType.Flows}
+                  sortDirection={sortOptions.sortDirection}
+                  sortKey={sortOptions.sortKey}
+                  sortType={sortOptions.sortType}
+                  onSelect={setSort}
+                />
+              </div>
+            </div>
+          ) : (
+            <>
+              <PresetFlowsButtons />
+              <Page.ControlBar
+                className="flows-index--control-bar buttonMode"
+                fullWidth={false}
+              >
+                <Page.ControlBarLeft>
+                  <SearchWidget
+                    placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
+                    onSearch={setSearch}
+                    searchTerm={search}
+                  />
+                  <ResourceSortDropdown
+                    resourceType={ResourceType.Flows}
+                    sortDirection={sortOptions.sortDirection}
+                    sortKey={sortOptions.sortKey}
+                    sortType={sortOptions.sortType}
+                    onSelect={setSort}
+                  />
+                </Page.ControlBarLeft>
+                <Page.ControlBarRight />
+              </Page.ControlBar>
+            </>
+          ))}
+      </PageHeader>
+      <DapperScrollbars onScroll={scrollHandler}>
+        <Page.Contents
+          fullWidth={false}
+          id="fadebox"
+          ref={fadingBoxRef}
+          className="flows-index--contents"
         >
-          <Page.Title title={PROJECT_NAME_PLURAL} />
-          <RateLimitAlert />
-        </FlexBox>
-        {showButtonMode && (
-          <>
-            <PresetFlowsButtons />
+          <PresetFlows />
+          {isFlagEnabled('noTutorial') ? (
+            <div className="preset--no-tutorial search">
+              <SearchWidget
+                placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
+                onSearch={setSearch}
+                searchTerm={search}
+              />
+              <ResourceSortDropdown
+                resourceType={ResourceType.Flows}
+                sortDirection={sortOptions.sortDirection}
+                sortKey={sortOptions.sortKey}
+                sortType={sortOptions.sortType}
+                onSelect={setSort}
+              />
+            </div>
+          ) : (
             <Page.ControlBar
-              className="flows-index--control-bar buttonMode"
+              className="flows-index--control-bar"
               fullWidth={false}
             >
               <Page.ControlBarLeft>
@@ -155,37 +241,7 @@ const FlowsIndex = () => {
               </Page.ControlBarLeft>
               <Page.ControlBarRight />
             </Page.ControlBar>
-          </>
-        )}
-      </PageHeader>
-      <DapperScrollbars onScroll={scrollHandler}>
-        <Page.Contents
-          fullWidth={false}
-          id="fadebox"
-          ref={fadingBoxRef}
-          className="flows-index--contents"
-        >
-          <PresetFlows />
-          <Page.ControlBar
-            className="flows-index--control-bar"
-            fullWidth={false}
-          >
-            <Page.ControlBarLeft>
-              <SearchWidget
-                placeholderText={`Filter ${PROJECT_NAME_PLURAL}...`}
-                onSearch={setSearch}
-                searchTerm={search}
-              />
-              <ResourceSortDropdown
-                resourceType={ResourceType.Flows}
-                sortDirection={sortOptions.sortDirection}
-                sortKey={sortOptions.sortKey}
-                sortType={sortOptions.sortType}
-                onSelect={setSort}
-              />
-            </Page.ControlBarLeft>
-            <Page.ControlBarRight />
-          </Page.ControlBar>
+          )}
         </Page.Contents>
 
         <Page.Contents fullWidth={false}>

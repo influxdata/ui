@@ -11,7 +11,6 @@ describe('getFormatter', () => {
       prefix: 'prefix ',
       suffix: ' suffix',
       base: '10' as Base,
-      format: true,
     }
 
     const formatter = getFormatter('number', formatterOptions)
@@ -32,7 +31,7 @@ describe('getFormatter', () => {
 
     const formattedValue = formatter(100000)
 
-    expect(formattedValue).toBe('prefix 100k suffix')
+    expect(formattedValue).toBe('prefix 100000 suffix')
   })
 
   it("should format correctly for base 2 'number' columntype", function() {
@@ -40,14 +39,13 @@ describe('getFormatter', () => {
       prefix: 'prefix ',
       suffix: ' suffix',
       base: '2' as Base,
-      format: false,
     }
 
     const formatter = getFormatter('number', formatterOptions)
 
     const formattedValue = formatter(100000)
 
-    expect(formattedValue).toBe('prefix 100000 suffix')
+    expect(formattedValue).toBe('prefix 97.6563 K suffix')
   })
 
   // time column type

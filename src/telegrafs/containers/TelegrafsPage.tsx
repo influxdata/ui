@@ -10,7 +10,6 @@ import Collectors from 'src/telegrafs/components/Collectors'
 import GetResources from 'src/resources/components/GetResources'
 import LimitChecker from 'src/cloud/components/LimitChecker'
 import TelegrafInstructionsOverlay from 'src/telegrafs/components/TelegrafInstructionsOverlay'
-import CollectorsWizard from 'src/dataLoaders/components/collectorsWizard/CollectorsWizard'
 import TelegrafUIRefreshWizard from 'src/dataLoaders/components/collectorsWizard/TelegrafUIRefreshWizard'
 import {Page} from '@influxdata/clockface'
 import OverlayHandler, {
@@ -34,7 +33,6 @@ const TelegrafOutputOverlay = RouteOverlay(
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -76,11 +74,7 @@ class TelegrafsPage extends PureComponent {
           />
           <Route
             path={`${telegrafsPath}/new`}
-            component={
-              isFlagEnabled('telegrafUiRefresh')
-                ? TelegrafUIRefreshWizard
-                : CollectorsWizard
-            }
+            component={TelegrafUIRefreshWizard}
           />
         </Switch>
       </>

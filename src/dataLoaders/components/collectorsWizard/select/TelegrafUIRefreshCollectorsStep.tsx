@@ -9,7 +9,7 @@ import TelegrafUIRefreshSelector from 'src/dataLoaders/components/collectorsWiza
 
 // Actions
 import {
-  addTelegrafPlugin_telegrafUiRefresh,
+  addTelegrafPluginAsBundle,
   removePluginBundleWithPlugins,
 } from 'src/dataLoaders/actions/dataLoaders'
 import {setBucketInfo} from 'src/dataLoaders/actions/steps'
@@ -133,7 +133,7 @@ const mstp = (state: AppState) => {
 }
 
 const mdtp = {
-  onAddPluginBundle: addTelegrafPlugin_telegrafUiRefresh,
+  onAddPluginBundle: addTelegrafPluginAsBundle,
   onRemovePluginBundle: removePluginBundleWithPlugins,
   setBucketInfo,
 }

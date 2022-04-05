@@ -53,9 +53,18 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
   const history = useHistory()
   const dispatch = useDispatch()
 
-  const handlePinFlow = () => {
+  const handleDeletePinnedItem = async () => {
     try {
-      addPinnedItem({
+      await deletePinnedItemByParam(id)
+      dispatch(notify(pinnedItemSuccess('notebook', 'deleted')))
+    } catch (err) {
+      dispatch(notify(pinnedItemFailure(err.message, 'delete')))
+    }
+  }
+
+  const handleAddPinnedItem = async () => {
+    try {
+      await addPinnedItem({
         orgID: orgID,
         userID: me.id,
         metadata: {
@@ -70,14 +79,28 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
     }
   }
 
+  const handlePinFlow = () => {
+    if (isPinned) {
+      // delete from pinned item list
+      handleDeletePinnedItem()
+    } else {
+      // add to pinned item list
+      handleAddPinnedItem()
+    }
+  }
+
   const handleDelete = () => {
-    event('delete_notebook')
+    event('delete_notebook', {
+      context: 'list',
+    })
     deletePinnedItemByParam(id)
     remove(id)
   }
 
   const handleClone = async () => {
-    event('clone_notebook')
+    event('clone_notebook', {
+      context: 'list',
+    })
     const clonedId = await clone(id)
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
@@ -97,45 +120,48 @@ const FlowContextMenu: FC<Props> = ({id, name, isPinned}) => {
         confirmationButtonText="Confirm"
         testID="context-delete-menu"
       />
-      <SquareButton
-        ref={settingsRef}
-        size={ComponentSize.ExtraSmall}
-        icon={IconFont.CogSolid_New}
-        color={ComponentColor.Colorless}
-        testID="context-menu-flow"
-      />
-      <Popover
-        appearance={Appearance.Outline}
-        enableDefaultStyles={false}
-        style={{minWidth: '112px'}}
-        triggerRef={settingsRef}
-        contents={onHide => (
-          <List>
-            <List.Item
-              onClick={handleClone}
-              size={ComponentSize.Small}
-              style={{fontWeight: 500}}
-              testID="context-clone-flow"
-            >
-              Clone
-            </List.Item>
-            {isFlagEnabled('pinnedItems') && CLOUD && (
-              <List.Item
-                onClick={() => {
-                  handlePinFlow()
-                  onHide()
-                }}
-                size={ComponentSize.Small}
-                style={{fontWeight: 500}}
-                testID="context-pin-flow"
-                disabled={isPinned}
-              >
-                Pin
-              </List.Item>
+      {CLOUD && (
+        <>
+          <SquareButton
+            ref={settingsRef}
+            size={ComponentSize.ExtraSmall}
+            icon={IconFont.CogSolid_New}
+            color={ComponentColor.Colorless}
+            testID="context-menu-flow"
+          />
+          <Popover
+            appearance={Appearance.Outline}
+            enableDefaultStyles={false}
+            style={{minWidth: '112px'}}
+            triggerRef={settingsRef}
+            contents={onHide => (
+              <List>
+                <List.Item
+                  onClick={handleClone}
+                  size={ComponentSize.Small}
+                  style={{fontWeight: 500}}
+                  testID="context-clone-flow"
+                >
+                  Clone
+                </List.Item>
+                {isFlagEnabled('pinnedItems') && CLOUD && (
+                  <List.Item
+                    onClick={() => {
+                      handlePinFlow()
+                      onHide()
+                    }}
+                    size={ComponentSize.Small}
+                    style={{fontWeight: 500}}
+                    testID="context-pin-flow"
+                  >
+                    {isPinned ? 'Unpin' : 'Pin'}
+                  </List.Item>
+                )}
+              </List>
             )}
-          </List>
-        )}
-      />
+          />
+        </>
+      )}
     </FlexBox>
   )
 }

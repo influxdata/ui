@@ -22,6 +22,7 @@ import flagReducer from 'src/shared/reducers/flags'
 import currentDashboardReducer from 'src/shared/reducers/currentDashboard'
 import currentExplorerReducer from 'src/shared/reducers/currentExplorer'
 import currentPageReducer from 'src/shared/reducers/currentPage'
+import fluxDocsReducer from 'src/shared/reducers/fluxDocs'
 import tasksReducer from 'src/tasks/reducers'
 import rangesReducer from 'src/dashboards/reducers/ranges'
 import {dashboardsReducer} from 'src/dashboards/reducers/dashboards'
@@ -83,6 +84,7 @@ export const rootReducer = (history: History) => (state, action) => {
     currentPage: currentPageReducer,
     currentDashboard: currentDashboardReducer,
     currentExplorer: currentExplorerReducer,
+    fluxDocs: fluxDocsReducer,
     dataLoading: dataLoadingReducer,
     me: meReducer,
     flags: flagReducer,

@@ -1,5 +1,5 @@
 // Libraries
-import React, {Component, ChangeEvent, CSSProperties} from 'react'
+import React, {FC, ChangeEvent, CSSProperties, useState} from 'react'
 
 // Components
 import {
@@ -11,9 +11,6 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 
-// Decorators
-import {ErrorHandling} from 'src/shared/decorators/errors'
-
 interface Props {
   testID: string
   className?: string
@@ -22,104 +19,45 @@ interface Props {
   selectedOption: string
   onSelect: (option: string) => void
   onChangeSearchTerm?: (value: string) => void
-  buttonSize: ComponentSize
-  buttonColor: ComponentColor
   buttonStatus: ComponentStatus
   buttonTestID: string
-  menuTheme: DropdownMenuTheme
   menuTestID: string
   options: (string | number)[]
   emptyText: string
   style?: CSSProperties
 }
 
-@ErrorHandling
-export default class SearchableDropdown extends Component<Props> {
-  public static defaultProps = {
-    buttonSize: ComponentSize.Small,
-    buttonColor: ComponentColor.Default,
-    buttonStatus: ComponentStatus.Default,
-    menuTheme: DropdownMenuTheme.Onyx,
-    testID: 'searchable-dropdown',
-    buttonTestID: 'searchable-dropdown--button',
-    menuTestID: 'searchable-dropdown--menu',
+const SearchableDropdown: FC<Props> = ({
+  buttonStatus = ComponentStatus.Default,
+  testID = 'searchable-dropdown',
+  buttonTestID = 'searchable-dropdown--button',
+  menuTestID = 'searchable-dropdown--menu',
+  searchTerm = '',
+  searchPlaceholder,
+  selectedOption,
+  className,
+  style,
+  options,
+  onChangeSearchTerm,
+  emptyText,
+  onSelect,
+}) => {
+  const [isSearchActive, setIsSearchActive] = useState(false)
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    onChangeSearchTerm(e.target.value)
   }
 
-  public render() {
-    const {
-      searchTerm,
-      searchPlaceholder,
-      buttonSize,
-      buttonColor,
-      buttonStatus,
-      buttonTestID,
-      selectedOption,
-      testID,
-      className,
-      style,
-      menuTheme,
-      menuTestID,
-    } = this.props
+  const filteredOptions = options.filter(option =>
+    `${option}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+  )
 
-    return (
-      <Dropdown
-        testID={testID}
-        className={className}
-        style={style}
-        button={(active, onClick) => (
-          <Dropdown.Button
-            active={active}
-            onClick={onClick}
-            testID={buttonTestID}
-            color={buttonColor}
-            size={buttonSize}
-            status={buttonStatus}
-          >
-            {buttonStatus === ComponentStatus.Loading
-              ? 'Loading...'
-              : selectedOption}
-          </Dropdown.Button>
-        )}
-        menu={onCollapse => (
-          <Dropdown.Menu
-            onCollapse={onCollapse}
-            theme={menuTheme}
-            testID={menuTestID}
-          >
-            <div className="searchable-dropdown--input-container">
-              <Input
-                onChange={this.handleChange}
-                value={searchTerm}
-                placeholder={searchPlaceholder}
-                size={buttonSize}
-                autoFocus={true}
-              />
-            </div>
-            {this.filteredMenuOptions}
-          </Dropdown.Menu>
-        )}
-      />
-    )
-  }
+  let body: JSX.Element | JSX.Element[] = (
+    <div className="searchable-dropdown--empty">{emptyText}</div>
+  )
 
-  private get filteredMenuOptions(): JSX.Element[] | JSX.Element {
-    const {
-      searchTerm,
-      options,
-      emptyText,
-      selectedOption,
-      onSelect,
-    } = this.props
-
-    const filteredOptions = options.filter(option =>
-      `${option}`.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-    )
-
-    if (!filteredOptions.length) {
-      return <div className="searchable-dropdown--empty">{emptyText}</div>
-    }
-
-    return filteredOptions.map(option => (
+  if (filteredOptions.length) {
+    body = filteredOptions.map(option => (
       <Dropdown.Item
         key={option}
         value={option}
@@ -132,11 +70,51 @@ export default class SearchableDropdown extends Component<Props> {
     ))
   }
 
-  private handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const {onChangeSearchTerm} = this.props
-
-    if (onChangeSearchTerm) {
-      onChangeSearchTerm(e.target.value)
-    }
-  }
+  return (
+    <Dropdown
+      testID={testID}
+      className={className}
+      style={style}
+      button={(active, onClick) => (
+        <Dropdown.Button
+          active={active}
+          onClick={onClick}
+          testID={buttonTestID}
+          color={ComponentColor.Default}
+          size={ComponentSize.Small}
+          status={buttonStatus}
+        >
+          {buttonStatus === ComponentStatus.Loading
+            ? 'Loading...'
+            : selectedOption}
+        </Dropdown.Button>
+      )}
+      menu={onCollapse => (
+        <Dropdown.Menu
+          onCollapse={() => {
+            if (isSearchActive === false) {
+              onCollapse()
+            }
+          }}
+          theme={DropdownMenuTheme.Onyx}
+          testID={menuTestID}
+        >
+          <div className="searchable-dropdown--input-container">
+            <Input
+              onFocus={() => setIsSearchActive(true)}
+              onChange={handleChange}
+              onBlur={() => setIsSearchActive(false)}
+              value={searchTerm}
+              placeholder={searchPlaceholder}
+              size={ComponentSize.Small}
+              autoFocus={true}
+            />
+          </div>
+          {body}
+        </Dropdown.Menu>
+      )}
+    />
+  )
 }
+
+export default SearchableDropdown

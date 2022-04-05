@@ -9,7 +9,6 @@ import TimeMachineQueries from 'src/timeMachine/components/Queries'
 import TimeMachineAlerting from 'src/timeMachine/components/TimeMachineAlerting'
 import TimeMachineVis from 'src/timeMachine/components/Vis'
 import ViewOptions from 'src/timeMachine/components/ViewOptions'
-import TimeMachineCheckQuery from 'src/timeMachine/components/TimeMachineCheckQuery'
 
 // Utils
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
@@ -40,8 +39,6 @@ const TimeMachine: FunctionComponent<StateProps> = ({
     bottomContents = <TimeMachineAlerting />
   } else if (activeTab === 'queries') {
     bottomContents = <TimeMachineQueries />
-  } else if (activeTab === 'customCheckQuery') {
-    bottomContents = <TimeMachineCheckQuery />
   }
 
   return (

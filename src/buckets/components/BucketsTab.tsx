@@ -1,16 +1,17 @@
 // Libraries
-import React, {PureComponent} from 'react'
+import React, {createRef, PureComponent, RefObject} from 'react'
 import {isEmpty} from 'lodash'
 import {connect, ConnectedProps} from 'react-redux'
+import {AutoSizer} from 'react-virtualized'
 
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import {
-  Grid,
-  ComponentSize,
-  Sort,
-  EmptyState,
   Columns,
+  ComponentSize,
+  EmptyState,
+  Grid,
+  Sort,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TabbedPageHeader from 'src/shared/components/tabbed_page/TabbedPageHeader'
@@ -24,12 +25,12 @@ import CreateBucketButton from 'src/buckets/components/CreateBucketButton'
 // Actions
 import {
   createBucket,
-  updateBucket,
   deleteBucket,
   getBucketSchema,
+  updateBucket,
 } from 'src/buckets/actions/thunks'
 
-import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 
 import {checkBucketLimits as checkBucketLimitsAction} from 'src/cloud/actions/limits'
 
@@ -39,7 +40,7 @@ import {getAll} from 'src/resources/selectors'
 import {SortTypes} from 'src/shared/utils/sort'
 
 // Types
-import {AppState, Bucket, ResourceType, OwnBucket} from 'src/types'
+import {AppState, Bucket, OwnBucket, ResourceType} from 'src/types'
 import {BucketSortKey} from 'src/shared/components/resource_sort_dropdown/generateSortItems'
 
 interface State {
@@ -52,10 +53,15 @@ interface State {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
+const DEFAULT_PAGINATION_CONTROL_HEIGHT = 62
+const DEFAULT_TAB_NAVIGATION_HEIGHT = 62
+
 const FilterBuckets = FilterList<Bucket>()
 
 @ErrorHandling
 class BucketsTab extends PureComponent<Props, State> {
+  private paginationRef: RefObject<HTMLDivElement>
+
   constructor(props: Props) {
     super(props)
 
@@ -65,10 +71,35 @@ class BucketsTab extends PureComponent<Props, State> {
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
     }
+
+    this.paginationRef = createRef<HTMLDivElement>()
   }
 
   public componentDidMount() {
     this.props.checkBucketLimits()
+
+    const params = new URLSearchParams(window.location.search)
+
+    let sortType: SortTypes = this.state.sortType
+    let sortKey: BucketSortKey = 'name'
+    if (params.get('sortKey') === 'readableRetention') {
+      sortKey = 'readableRetention'
+      sortType = SortTypes.Date
+    }
+
+    let sortDirection: Sort = this.state.sortDirection
+    if (params.get('sortDirection') === Sort.Ascending) {
+      sortDirection = Sort.Ascending
+    } else if (params.get('sortDirection') === Sort.Descending) {
+      sortDirection = Sort.Descending
+    }
+
+    let searchTerm: string = ''
+    if (params.get('searchTerm') !== null) {
+      searchTerm = params.get('searchTerm')
+    }
+
+    this.setState({sortKey, sortDirection, sortType, searchTerm})
   }
 
   public render() {
@@ -100,55 +131,78 @@ class BucketsTab extends PureComponent<Props, State> {
     )
 
     return (
-      <>
-        <TabbedPageHeader
-          childrenLeft={leftHeaderItems}
-          childrenRight={rightHeaderItems}
-        />
-        <Grid>
-          <Grid.Row>
-            <Grid.Column
-              widthXS={Columns.Twelve}
-              widthSM={Columns.Eight}
-              widthMD={Columns.Nine}
-              widthLG={Columns.Ten}
-            >
-              <FilterBuckets
-                searchTerm={searchTerm}
-                searchKeys={['name', 'readableRetention', 'labels[].name']}
-                list={buckets}
-              >
-                {bs => (
-                  <BucketList
-                    buckets={bs}
-                    emptyState={this.emptyState}
-                    onUpdateBucket={this.props.updateBucket}
-                    onDeleteBucket={this.handleDeleteBucket}
-                    onFilterChange={this.handleFilterUpdate}
-                    onGetBucketSchema={this.handleShowBucketSchema}
-                    sortKey={sortKey}
-                    sortDirection={sortDirection}
-                    sortType={sortType}
-                  />
-                )}
-              </FilterBuckets>
-              <AssetLimitAlert
-                resourceName="buckets"
-                limitStatus={limitStatus}
-                className="load-data--asset-alert"
+      <AutoSizer>
+        {({width, height}) => {
+          const heightWithPagination =
+            this.paginationRef?.current?.clientHeight +
+              DEFAULT_TAB_NAVIGATION_HEIGHT ||
+            DEFAULT_PAGINATION_CONTROL_HEIGHT + DEFAULT_TAB_NAVIGATION_HEIGHT
+
+          const adjustedHeight = height - heightWithPagination
+          return (
+            <>
+              <TabbedPageHeader
+                childrenLeft={leftHeaderItems}
+                childrenRight={rightHeaderItems}
+                width={width}
               />
-            </Grid.Column>
-            <Grid.Column
-              widthXS={Columns.Twelve}
-              widthSM={Columns.Four}
-              widthMD={Columns.Three}
-              widthLG={Columns.Two}
-            >
-              <BucketExplainer />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </>
+
+              <Grid style={{height: adjustedHeight, width}}>
+                <Grid.Row>
+                  <Grid.Column
+                    widthXS={Columns.Twelve}
+                    widthSM={Columns.Eight}
+                    widthMD={Columns.Nine}
+                    widthLG={Columns.Ten}
+                  >
+                    <FilterBuckets
+                      searchTerm={searchTerm}
+                      searchKeys={[
+                        'id',
+                        'labels[].name',
+                        'name',
+                        'readableRetention',
+                      ]}
+                      list={buckets}
+                    >
+                      {bs => (
+                        <BucketList
+                          buckets={bs}
+                          bucketCount={buckets.length}
+                          emptyState={this.emptyState}
+                          onUpdateBucket={this.props.updateBucket}
+                          onDeleteBucket={this.handleDeleteBucket}
+                          onFilterChange={this.handleFilterUpdate}
+                          onGetBucketSchema={this.handleShowBucketSchema}
+                          pageHeight={adjustedHeight}
+                          pageWidth={width}
+                          sortKey={sortKey}
+                          sortDirection={sortDirection}
+                          sortType={sortType}
+                          paginationRef={this.paginationRef}
+                        />
+                      )}
+                    </FilterBuckets>
+                    <AssetLimitAlert
+                      resourceName="buckets"
+                      limitStatus={limitStatus}
+                      className="load-data--asset-alert"
+                    />
+                  </Grid.Column>
+                  <Grid.Column
+                    widthXS={Columns.Twelve}
+                    widthSM={Columns.Four}
+                    widthMD={Columns.Three}
+                    widthLG={Columns.Two}
+                  >
+                    <BucketExplainer />
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </>
+          )
+        }}
+      </AutoSizer>
     )
   }
 
@@ -157,6 +211,11 @@ class BucketsTab extends PureComponent<Props, State> {
     sortDirection: Sort,
     sortType: SortTypes
   ): void => {
+    const url = new URL(location.href)
+    url.searchParams.set('sortKey', sortKey)
+    url.searchParams.set('sortDirection', sortDirection)
+    history.replaceState(null, '', url.toString())
+
     this.setState({sortKey, sortDirection, sortType})
   }
 
@@ -176,6 +235,9 @@ class BucketsTab extends PureComponent<Props, State> {
   }
 
   private handleFilterUpdate = (searchTerm: string): void => {
+    const url = new URL(location.href)
+    url.searchParams.set('searchTerm', searchTerm)
+    history.replaceState(null, '', url.toString())
     this.setState({searchTerm})
   }
 

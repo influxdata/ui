@@ -12,6 +12,7 @@ import {
   lineTransform,
   LineLayerConfig,
 } from '@influxdata/giraffe'
+import memoizeOne from 'memoize-one'
 
 // Components
 import EmptyGraphMessage from 'src/shared/components/EmptyGraphMessage'
@@ -122,10 +123,9 @@ const XYPlot: FC<Props> = ({
     result,
   ])
 
-  const col = result.table.columns[xColumn]
   const [xDomain, onSetXDomain, onResetXDomain] = useVisXDomainSettings(
     storedXDomain,
-    col.type === 'number' ? col.data : null,
+    result.table.getColumn(xColumn, 'number'),
     timeRange
   )
 
@@ -142,8 +142,8 @@ const XYPlot: FC<Props> = ({
       const [fillColumn] = createGroupIDColumn(result.table, groupKey)
       return getDomainDataFromLines(lineData, [...fillColumn], DomainLabel.Y)
     }
-    const col = result.table.columns[yColumn]
-    return col.type === 'number' ? col.data : null
+
+    return result.table.getColumn(yColumn, 'number')
   }, [
     result.table,
     xColumn,
@@ -171,7 +171,7 @@ const XYPlot: FC<Props> = ({
     result.table
   )
 
-  const xFormatter = getFormatter(result.table.columns[xColumn].type, {
+  const xFormatter = getFormatter(result.table.getColumnType(xColumn), {
     prefix: properties.axes.x.prefix,
     suffix: properties.axes.x.suffix,
     base: properties.axes.x.base,
@@ -179,7 +179,7 @@ const XYPlot: FC<Props> = ({
     timeFormat: properties.timeFormat,
   })
 
-  const yFormatter = getFormatter(result.table.columns[yColumn].type, {
+  const yFormatter = getFormatter(result.table.getColumnType(yColumn), {
     prefix: properties.axes.y.prefix,
     suffix: properties.axes.y.suffix,
     base: properties.axes.y.base,
@@ -196,12 +196,13 @@ const XYPlot: FC<Props> = ({
   let colorMapping = null
 
   if (isFlagEnabled('graphColorMapping')) {
+    const memoizedGetColorMappingObjects = memoizeOne(getColorMappingObjects)
     const [, fillColumnMap] = createGroupIDColumn(result.table, groupKey)
     const {
       colorMappingForGiraffe,
       colorMappingForIDPE,
       needsToSaveToIDPE,
-    } = getColorMappingObjects(fillColumnMap, properties)
+    } = memoizedGetColorMappingObjects(fillColumnMap, properties)
     colorMapping = colorMappingForGiraffe
 
     // when the view is in a dashboard cell, and there is a need to save to IDPE, save it.

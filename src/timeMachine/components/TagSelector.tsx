@@ -49,6 +49,7 @@ import {
   RemoteDataState,
 } from 'src/types'
 import TagSelectorCount from 'src/shared/components/TagSelectorCount'
+import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const SEARCH_DEBOUNCE_MS = 500
 
@@ -139,19 +140,21 @@ class TagSelector extends PureComponent<Props> {
               alignItems={AlignItems.Center}
               margin={ComponentSize.Small}
             >
-              <SearchableDropdown
-                searchTerm={keysSearchTerm}
-                emptyText="No Tags Found"
-                searchPlaceholder="Search keys..."
-                selectedOption={selectedKey}
-                onSelect={this.handleSelectTag}
-                buttonStatus={toComponentStatus(keysStatus)}
-                onChangeSearchTerm={this.handleKeysSearch}
-                testID="tag-selector--dropdown"
-                buttonTestID="tag-selector--dropdown-button"
-                menuTestID="tag-selector--dropdown-menu"
-                options={keys}
-              />
+              <ErrorBoundary>
+                <SearchableDropdown
+                  searchTerm={keysSearchTerm}
+                  emptyText="No Tags Found"
+                  searchPlaceholder="Search keys..."
+                  buttonStatus={toComponentStatus(keysStatus)}
+                  selectedOption={selectedKey}
+                  onSelect={this.handleSelectTag}
+                  onChangeSearchTerm={this.handleKeysSearch}
+                  testID="tag-selector--dropdown"
+                  buttonTestID="tag-selector--dropdown-button"
+                  menuTestID="tag-selector--dropdown-menu"
+                  options={keys}
+                />
+              </ErrorBoundary>
               {this.selectedCounter}
             </FlexBox>
           )}

@@ -16,7 +16,6 @@ export default register => {
       calcSignature: '',
       email: '',
     },
-    featureFlag: 'notebooksNewEndpoints',
     component: View,
     readOnlyComponent: ReadOnly,
     generateImports: () =>

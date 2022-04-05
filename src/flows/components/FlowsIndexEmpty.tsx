@@ -9,7 +9,7 @@ const FlowsIndexEmpty = () => {
       <div className="flow-empty">
         <div className="flow-empty--graphic" />
         <EmptyState.Text className="margin-bottom-zero">
-          You haven't created any {PROJECT_NAME_PLURAL} yet
+          {PROJECT_NAME_PLURAL} will show up here as you create them
         </EmptyState.Text>
       </div>
     </EmptyState>

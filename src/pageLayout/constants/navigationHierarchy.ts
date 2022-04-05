@@ -73,6 +73,13 @@ export const generateNavItems = (): NavItem[] => {
           enabled: () => !CLOUD,
         },
         {
+          id: 'subscriptions',
+          testID: 'nav-subitem-subscriptions',
+          label: 'Cloud Native Subscriptions',
+          link: `${orgPrefix}/load-data/subscriptions`,
+          enabled: () => CLOUD && isFlagEnabled('subscriptionsUI'),
+        },
+        {
           id: 'tokens',
           testID: 'nav-subitem-tokens',
           label: 'API Tokens',
@@ -194,6 +201,16 @@ export const generateNavItems = (): NavItem[] => {
       shortLabel: 'Operator',
       link: `/operator`,
       activeKeywords: ['operator'],
+    },
+    {
+      id: 'support',
+      testID: 'nav-item-support',
+      icon: IconFont.QuestionMark_New,
+      label: 'Help & Support',
+      shortLabel: 'Support',
+      link: '',
+      activeKeywords: [''],
+      enabled: () => isFlagEnabled('helpBar'),
     },
   ]
 

@@ -120,6 +120,7 @@ export interface Flow {
   createdAt?: Date
   updatedAt?: Date
   createdBy?: string
+  isDirty: boolean
 }
 
 export interface FlowListState {
@@ -151,6 +152,7 @@ export interface QueryScope {
 export interface TypeRegistration {
   type: string // a unique string that identifies a pipe
   family:
+    | 'context'
     | 'inputs'
     | 'passThrough'
     | 'test'

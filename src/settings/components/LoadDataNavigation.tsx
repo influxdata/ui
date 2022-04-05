@@ -9,6 +9,8 @@ import {FeatureFlag} from 'src/shared/utils/featureFlag'
 // Decorators
 import {ErrorHandling} from 'src/shared/decorators/errors'
 import CloudExclude from 'src/shared/components/cloud/CloudExclude'
+import CloudOnly from 'src/shared/components/cloud/CloudOnly'
+import {event} from 'src/cloud/utils/reporting'
 
 interface OwnProps {
   activeTab: string
@@ -23,6 +25,7 @@ class LoadDataNavigation extends PureComponent<Props> {
     const {activeTab, orgID, history} = this.props
 
     const handleTabClick = (id: string): void => {
+      event('page-nav clicked', {which: `load-data--${id}`})
       history.push(`/orgs/${orgID}/load-data/${id}`)
     }
 
@@ -31,29 +34,41 @@ class LoadDataNavigation extends PureComponent<Props> {
         text: 'Sources',
         id: 'sources',
         cloudExclude: false,
+        cloudOnly: false,
         featureFlag: null,
       },
       {
         text: 'Buckets',
         id: 'buckets',
         cloudExclude: false,
+        cloudOnly: false,
         featureFlag: null,
       },
       {
         text: 'Telegraf',
         id: 'telegrafs',
         cloudExclude: false,
+        cloudOnly: false,
         featureFlag: null,
       },
       {
         text: 'Scrapers',
         id: 'scrapers',
         cloudExclude: true,
+        cloudOnly: false,
         featureFlag: null,
+      },
+      {
+        text: 'Cloud Native Subscriptions',
+        id: 'subscriptions',
+        cloudExclude: false,
+        cloudOnly: true,
+        featureFlag: 'subscriptionsUI',
       },
       {
         text: 'API Tokens',
         id: 'tokens',
+        cloudOnly: false,
         cloudExclude: false,
         featureFlag: null,
       },
@@ -82,6 +97,10 @@ class LoadDataNavigation extends PureComponent<Props> {
 
           if (t.cloudExclude) {
             tabElement = <CloudExclude key={t.id}>{tabElement}</CloudExclude>
+          }
+
+          if (t.cloudOnly) {
+            tabElement = <CloudOnly key={t.id}>{tabElement}</CloudOnly>
           }
 
           if (t.featureFlag) {

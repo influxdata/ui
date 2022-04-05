@@ -22,7 +22,6 @@ import placeholderLogo from 'src/writeData/graphics/placeholderLogo.svg'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event, normalizeEventName} from 'src/cloud/utils/reporting'
 
 // Styles
@@ -41,7 +40,7 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
     },
   } = props
   const {contentID} = useParams<ParamsType>()
-  const {name = '', markdown = '', image = ''} =
+  const {name = '', markdown = '', image = '', style = {}} =
     WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}
 
   const eventName = normalizeEventName(name)
@@ -57,14 +56,15 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
   )
 
   let thumbnail = (
-    <img data-testid="load-data-details-thumb" src={image || placeholderLogo} />
+    <img data-testid="load-data-details-thumb" src={placeholderLogo} />
   )
-  let pageContent = <></>
-
   if (image) {
-    thumbnail = <img data-testid="load-data-details-thumb" src={image} />
+    thumbnail = (
+      <img data-testid="load-data-details-thumb" src={image} style={style} />
+    )
   }
 
+  let pageContent = <></>
   if (markdown) {
     pageContent = (
       <MarkdownRenderer
@@ -92,27 +92,13 @@ const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
               <Page.Title title={name} />
             </Page.Header>
             <Page.Contents fullWidth={false} scrollable={true}>
-              {isFlagEnabled('telegrafUiRefresh') ? (
-                <AddPluginToConfigurationCTA
-                  contentID={contentID}
-                  history={history}
-                  orgID={orgID}
-                  thumbnail={thumbnail}
-                  pageContent={pageContent}
-                />
-              ) : (
-                <div className="write-data--details">
-                  <div className="write-data--details-thumbnail">
-                    {thumbnail}
-                  </div>
-                  <div
-                    className="write-data--details-content markdown-format"
-                    data-testid="load-data-details-content"
-                  >
-                    {pageContent}
-                  </div>
-                </div>
-              )}
+              <AddPluginToConfigurationCTA
+                contentID={contentID}
+                history={history}
+                orgID={orgID}
+                thumbnail={thumbnail}
+                pageContent={pageContent}
+              />
             </Page.Contents>
           </Page>
         </WriteDataDetailsContextProvider>

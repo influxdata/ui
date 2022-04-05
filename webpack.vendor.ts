@@ -57,6 +57,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-transform-runtime'],
           },
         },
       },
@@ -77,6 +78,7 @@ module.exports = {
     }),
     new MonacoWebpackPlugin({
       languages: ['json', 'markdown'],
+      filename: '[name].worker.bundle.js',
     }),
   ],
   stats: {

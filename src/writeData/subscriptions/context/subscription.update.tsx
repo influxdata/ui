@@ -134,6 +134,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       })
       .catch(() => {
+        setLoading(RemoteDataState.Done)
         dispatch(notify(subscriptionUpdateFail()))
       })
   }
@@ -161,6 +162,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
         getSubscription()
       })
       .catch(() => {
+        setLoading(RemoteDataState.Done)
         dispatch(notify(subscriptionStatusUpdateFail()))
       })
   }
@@ -172,6 +174,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
       setLoading(RemoteDataState.Done)
     } else {
       history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+      setLoading(RemoteDataState.Done)
     }
   }
   return (

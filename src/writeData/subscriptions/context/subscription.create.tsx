@@ -107,6 +107,7 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       })
       .catch(() => {
+        setLoading(RemoteDataState.Done)
         dispatch(notify(subscriptionCreateFail()))
       })
   }

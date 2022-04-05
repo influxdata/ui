@@ -38,17 +38,25 @@ const TreeSidebar: FC = () => {
       setNavbarMode('expanded')
     }
   }
-
+  
   useEffect(() => {
     const helpBarMenu = document.querySelectorAll<HTMLElement>(
       '.cf-tree-nav--sub-menu-trigger'
     )[3]
     if (navbarMode === 'expanded') {
+      
       helpBarMenu.style.display = 'block'
       helpBarMenu.style.width = '250px'
-      return
     }
-    helpBarMenu.style.width = '44px'
+  }, [setNavbarMode, navbarMode])
+
+  useEffect(() => {
+    const helpBarMenu = document.querySelectorAll<HTMLElement>(
+      '.cf-tree-nav--sub-menu-trigger'
+    )[3]
+    if (navbarMode === 'collapsed') {
+      helpBarMenu.style.width = '44px'
+    }
   }, [setNavbarMode, navbarMode])
 
   return (

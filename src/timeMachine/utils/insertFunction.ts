@@ -27,7 +27,6 @@ export const generateImport = (
 
 export const getFluxExample = func => {
   const {name, fluxType} = func
-  let signature
 
   // "fluxType": "(<-tables:stream[A], every:duration, ?groupColumns:[string], ?unit:duration) => stream[B] where A: Record, B: Record"
 
@@ -126,7 +125,7 @@ export const getFluxExample = func => {
   */
 
   // join the individual params to create the signature
-  signature =
+  const signature =
     `${func.package}.${name}` + `(` + individualParams.join(', ') + `)`
 
   // add example property to flux function object

@@ -21,7 +21,7 @@ export const InitalizeClient = () => {
 const token = process.env.INFLUXDB_TOKEN
 const url = '${url}'
 
-const influxDBClient = new InfluxDB({url, token})`
+const client = new InfluxDB({url, token})`
 
   return (
     <>

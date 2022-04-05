@@ -6,7 +6,6 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  useEffect,
 } from 'react'
 
 // Contexts
@@ -63,6 +62,9 @@ const getDefaultCard = (): QueryBuilderCard => ({
 interface QueryBuilderContextType {
   cards: QueryBuilderCard[]
 
+  selectBucket: (bucket?: string) => void
+  selectMeasurement: (measurement?: string) => void
+
   add: () => void
   remove: (idx: number) => void
   update: (idx: number, card: Partial<QueryBuilderCard>) => void
@@ -72,6 +74,10 @@ interface QueryBuilderContextType {
 
 export const DEFAULT_CONTEXT: QueryBuilderContextType = {
   cards: [getDefaultCard()],
+
+  selectBucket: _ => {},
+  selectMeasurement: _ => {},
+
   add: () => {},
   remove: (_idx: number) => {},
   update: (_idx: number, _card: QueryBuilderCard) => {},
@@ -120,33 +126,19 @@ export const QueryBuilderProvider: FC = ({children}) => {
     })
   )
 
-  useEffect(() => {
-    // Migrate old data
-    if (typeof data.buckets[0] === 'string') {
-      const buck = buckets.find(b => b.name === data.buckets[0])
-
-      if (!buck) {
-        update({
-          buckets: [{type: 'user', name: data.buckets[0]}],
-        })
-
-        return
-      }
-
-      update({
-        buckets: [buck],
-      })
-
-      return
-    }
-
-    if (data.tags.length) {
-      return
-    }
-
+  const selectBucket = (bucket?: string) => {
     const card = getDefaultCard()
-    card.keys.selected = ['_measurement']
-    update({tags: [card].map(toBuilderConfig)})
+
+    if (!bucket || bucket === data?.buckets[0]?.name) {
+      update({buckets: [], tags: [card].map(toBuilderConfig)})
+    } else {
+      card.keys.selected = ['_measurement']
+      update({
+        buckets: [buckets.find(b => b.name === bucket)],
+        tags: [card].map(toBuilderConfig),
+      })
+    }
+
     setCardMeta([
       {
         keys: [],
@@ -155,7 +147,42 @@ export const QueryBuilderProvider: FC = ({children}) => {
         loadingValues: RemoteDataState.NotStarted,
       },
     ])
-  }, [data.buckets])
+  }
+
+  const selectMeasurement = (measurement?: string) => {
+    if (measurement) {
+      update({
+        tags: [
+          {
+            ...data.tags[0],
+            values: [measurement],
+          },
+          toBuilderConfig(getDefaultCard()),
+        ],
+      })
+
+      setCardMeta([
+        cardMeta[0],
+        {
+          keys: [],
+          values: [],
+          loadingKeys: RemoteDataState.NotStarted,
+          loadingValues: RemoteDataState.NotStarted,
+        },
+      ])
+    } else {
+      update({
+        tags: [
+          {
+            ...data.tags[0],
+            values: [],
+          },
+        ],
+      })
+
+      setCardMeta([cardMeta[0]])
+    }
+  }
 
   const cards = useMemo(
     () => data.tags.map((tag, idx) => fromBuilderConfig(tag, cardMeta[idx])),
@@ -442,6 +469,10 @@ export const QueryBuilderProvider: FC = ({children}) => {
     <QueryBuilderContext.Provider
       value={{
         cards,
+
+        selectBucket,
+        selectMeasurement,
+
         add,
         remove,
         update: updater,

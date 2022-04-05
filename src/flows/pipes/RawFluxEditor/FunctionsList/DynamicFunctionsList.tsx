@@ -13,7 +13,7 @@ import {getAllFluxFunctions} from 'src/shared/selectors/app'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {getFluxExample} from 'src/timeMachine/utils/insertFunction'
+import {getFluxExample} from 'src/shared/utils/fluxExample'
 interface Props {
   onSelect: (fn: FluxFunction) => void
 }

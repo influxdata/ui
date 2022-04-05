@@ -19,10 +19,10 @@ import {getActiveQuery, getActiveTimeMachine} from 'src/timeMachine/selectors'
 import {
   functionRequiresNewLine,
   generateImport,
-  getFluxExample,
 } from 'src/timeMachine/utils/insertFunction'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getFluxExample} from 'src/shared/utils/fluxExample'
 
 // Types
 import {FluxToolbarFunction, EditorType} from 'src/types'

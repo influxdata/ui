@@ -17,11 +17,14 @@ import {
   FontWeight,
   SubwayNav,
   SubwayNavModel,
+  Button,
+  ComponentColor,
+  ComponentStatus,
+  ButtonType,
 } from '@influxdata/clockface'
 import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import GetResources from 'src/resources/components/GetResources'
 
 // Contexts
@@ -37,9 +40,6 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
-
-// Actions
-import {shouldShowUpgradeButton} from 'src/me/selectors'
 
 // Graphics
 import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
@@ -82,11 +82,14 @@ const navigationSteps: SubscriptionNavigationModel[] = [
 
 const SubscriptionDetailsPage: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
-  const {currentSubscription, loading, saveForm, updateForm} = useContext(
-    SubscriptionUpdateContext
-  )
+  const {
+    currentSubscription,
+    loading,
+    saveForm,
+    updateForm,
+    setStatus,
+  } = useContext(SubscriptionUpdateContext)
   const {change} = useContext(SubscriptionListContext)
-  const showUpgradeButton = useSelector(shouldShowUpgradeButton)
   const {id} = useParams<{id: string}>()
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
@@ -122,15 +125,6 @@ const SubscriptionDetailsPage: FC = () => {
             scrollable={true}
             className="subscription-details-page"
           >
-            {showUpgradeButton && (
-              <FlexBox
-                justifyContent={JustifyContent.FlexEnd}
-                alignItems={AlignItems.FlexEnd}
-                stretchToFitHeight={true}
-              >
-                <CloudUpgradeButton />
-              </FlexBox>
-            )}
             <div className="subscription-details-page__progress">
               <SubwayNav
                 currentStep={getActiveStep(active)}
@@ -140,21 +134,53 @@ const SubscriptionDetailsPage: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-            <Heading
-              element={HeadingElement.H3}
-              weight={FontWeight.Regular}
-              className="subscription-details-page__status"
+            <FlexBox
+              justifyContent={JustifyContent.SpaceBetween}
+              alignItems={AlignItems.FlexEnd}
+              stretchToFitHeight={true}
             >
-              Status:
-              <span
-                className={
-                  currentSubscription &&
-                  `subscription-details-page__status--${currentSubscription.status}`
-                }
+              <Heading
+                element={HeadingElement.H3}
+                weight={FontWeight.Regular}
+                className="subscription-details-page__status"
               >
-                {currentSubscription && currentSubscription.status}
-              </span>
-            </Heading>
+                Status:
+                <span
+                  className={
+                    currentSubscription &&
+                    `subscription-details-page__status--${currentSubscription.status}`
+                  }
+                >
+                  {currentSubscription && currentSubscription.status}
+                </span>
+              </Heading>
+              {!(
+                currentSubscription.status === 'VALIDATING' ||
+                currentSubscription.status === 'INVALID'
+              ) && (
+                <Button
+                  text={
+                    currentSubscription.status === 'RUNNING' ? 'stop' : 'start'
+                  }
+                  color={
+                    currentSubscription.status === 'RUNNING'
+                      ? ComponentColor.Danger
+                      : ComponentColor.Success
+                  }
+                  onClick={() => {
+                    if (currentSubscription.status === 'RUNNING') {
+                      setStatus(false)
+                    } else {
+                      setStatus(true)
+                    }
+                  }}
+                  type={ButtonType.Submit}
+                  testID="subscription-details-page--status-button"
+                  status={ComponentStatus.Default}
+                  className="subscription-details-page__status--button"
+                />
+              )}
+            </FlexBox>
             {active === Steps.BrokerForm && (
               <BrokerDetails
                 setFormActive={setFormActive}

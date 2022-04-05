@@ -11,3 +11,8 @@ export const subscriptionUpdateFail = (): Notification => ({
   ...defaultErrorNotification,
   message: `Failed to update Subscription, please try again.`,
 })
+
+export const subscriptionStatusUpdateFail = (): Notification => ({
+  ...defaultErrorNotification,
+  message: `Failed to update Subscription status, please try again.`,
+})

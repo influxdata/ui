@@ -131,7 +131,7 @@ const Card: FC<Props> = ({idx}) => {
     card.values.selected.length <= 1
 
   const valueSelect = val => {
-    let _vals = [...card.values.selected]
+    const _vals = [...card.values.selected]
     const index = _vals.indexOf(val)
 
     if (isCompliant) {

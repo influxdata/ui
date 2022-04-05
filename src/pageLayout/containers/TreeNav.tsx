@@ -31,22 +31,13 @@ const TreeSidebar: FC = () => {
     return null
   }
 
-  const handleToggleNavExpansion = (): void => {
-    if (navbarMode === 'expanded') {
-      setNavbarMode('collapsed')
-    } else {
-      setNavbarMode('expanded')
-    }
-  }
-  
   useEffect(() => {
     const helpBarMenu = document.querySelectorAll<HTMLElement>(
       '.cf-tree-nav--sub-menu-trigger'
     )[3]
     if (navbarMode === 'expanded') {
-      
       helpBarMenu.style.display = 'block'
-      helpBarMenu.style.width = '250px'
+      helpBarMenu.style.width = '243px'
     }
   }, [setNavbarMode, navbarMode])
 
@@ -58,6 +49,14 @@ const TreeSidebar: FC = () => {
       helpBarMenu.style.width = '44px'
     }
   }, [setNavbarMode, navbarMode])
+
+  const handleToggleNavExpansion = (): void => {
+    if (navbarMode === 'expanded') {
+      setNavbarMode('collapsed')
+    } else {
+      setNavbarMode('expanded')
+    }
+  }
 
   return (
     <OrgSettings>

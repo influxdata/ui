@@ -148,18 +148,10 @@ const Card: FC<Props> = ({idx}) => {
 
     if (index === -1) {
       event('Query Builder Value Selected')
-      if (isCompliant) {
-        _vals = [val]
-      } else {
-        _vals.push(val)
-      }
+      _vals.push(val)
     } else {
       event('Query Builder Value Unselected')
-      if (isCompliant) {
-        _vals = []
-      } else {
-        _vals.splice(index, 1)
-      }
+      _vals.splice(index, 1)
     }
 
     update(idx, {

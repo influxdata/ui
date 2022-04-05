@@ -46,9 +46,9 @@ const TreeSidebar: FC = () => {
     if (navbarMode === 'expanded') {
       helpBarMenu.style.display = 'block'
       helpBarMenu.style.width = '250px'
-    } else {
-      helpBarMenu.style.width = '44px'
+      return
     }
+    helpBarMenu.style.width = '44px'
   }, [setNavbarMode, navbarMode])
 
   return (

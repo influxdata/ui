@@ -1,6 +1,10 @@
 // Libraries
 import React, {FC, useState, useCallback, useContext, useEffect} from 'react'
-import {updateAPI} from 'src/writeData/subscriptions/context/api'
+import {
+  updateAPI,
+  updateStatusAPI,
+  getByIDAPI,
+} from 'src/writeData/subscriptions/context/api'
 import {useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -13,7 +17,10 @@ import {sanitizeUpdateForm} from '../utils/form'
 // Types
 import {RemoteDataState} from 'src/types'
 import {Subscription} from 'src/types/subscriptions'
-import {subscriptionUpdateFail} from 'src/shared/copy/notifications'
+import {
+  subscriptionUpdateFail,
+  subscriptionStatusUpdateFail,
+} from 'src/shared/copy/notifications'
 
 // Contexts
 
@@ -25,6 +32,7 @@ export interface SubscriptionUpdateContextType {
   saveForm: (subscription) => void
   updateForm: (subscription) => void
   loading: RemoteDataState
+  setStatus: (isActive) => void
 }
 
 export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
@@ -91,6 +99,7 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
   },
   updateForm: () => {},
   loading: RemoteDataState.NotStarted,
+  setStatus: () => {},
 } as SubscriptionUpdateContextType
 
 export const SubscriptionUpdateContext = React.createContext<
@@ -144,6 +153,27 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
     update(currentSubscription)
   }
 
+  const setStatus = (isActive: boolean): any => {
+    setLoading(RemoteDataState.Loading)
+    const params = {id: currentID, data: {isActive}}
+    updateStatusAPI(params)
+      .then(() => {
+        getSubscription()
+      })
+      .catch(() => {
+        dispatch(notify(subscriptionStatusUpdateFail()))
+      })
+  }
+
+  const getSubscription = async (): Promise<void> => {
+    const sub = await getByIDAPI({id: currentID})
+    if (sub) {
+      setCurrentSubscription(sub)
+      setLoading(RemoteDataState.Done)
+    } else {
+      history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+    }
+  }
   return (
     <SubscriptionUpdateContext.Provider
       value={{
@@ -152,6 +182,7 @@ export const SubscriptionUpdateProvider: FC = ({children}) => {
         updateForm,
         saveForm,
         loading,
+        setStatus,
       }}
     >
       {children}

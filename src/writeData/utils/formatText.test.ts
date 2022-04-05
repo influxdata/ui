@@ -1,4 +1,6 @@
-import {formatReadmeText} from 'src/writeData/utils/formatText'
+// use require because formatText is a .mjs file
+const utils = require('src/writeData/utils/formatText')
+const {formatReadmeText} = utils
 
 describe('formatReadMeText', () => {
   it('can format README text without links', () => {

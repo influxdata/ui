@@ -1,7 +1,9 @@
 import React from 'react'
+import {useSelector} from 'react-redux'
+
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
-import {useSelector} from 'react-redux'
+
 import {getOrg} from 'src/organizations/selectors'
 import {getMe} from 'src/me/selectors'
 

@@ -4,7 +4,6 @@ import React, {
   createContext,
   useContext,
   useState,
-  useCallback,
   useMemo,
   useEffect,
 } from 'react'
@@ -162,7 +161,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
     [data.tags, cardMeta]
   )
 
-  const add = useCallback(() => {
+  const add = () => {
     cards.push(getDefaultCard())
 
     setCardMeta([
@@ -176,77 +175,76 @@ export const QueryBuilderProvider: FC = ({children}) => {
     ])
 
     update({tags: cards.map(toBuilderConfig)})
-  }, [cards])
+  }
 
-  const loadKeys = useCallback(
-    (idx, search) => {
-      if (
-        !data.buckets[0] ||
-        typeof data.buckets[0] === 'string' ||
-        !cards[idx]
-      ) {
-        return
-      }
+  const loadKeys = (idx, search) => {
+    if (
+      !data.buckets[0] ||
+      typeof data.buckets[0] === 'string' ||
+      !cards[idx]
+    ) {
+      return
+    }
 
-      if (!cardMeta[idx]) {
-        return
-      }
+    if (!cardMeta[idx]) {
+      return
+    }
 
-      if (cardMeta[idx].loadingKeys === RemoteDataState.Loading) {
-        return
-      }
+    if (cardMeta[idx].loadingKeys === RemoteDataState.Loading) {
+      return
+    }
 
-      cardMeta.splice(idx, 1, {
-        ...cardMeta[idx],
-        loadingKeys: RemoteDataState.Loading,
+    cardMeta.splice(idx, 1, {
+      ...cardMeta[idx],
+      loadingKeys: RemoteDataState.Loading,
+    })
+    setCardMeta([...cardMeta])
+
+    const tagSelections = cards
+      .filter(card => card.keys.selected[0] && card.values.selected.length)
+      .map(card => {
+        const fluxTags = card.values.selected
+          .map(
+            value =>
+              `r["${card.keys.selected[0]}"] == "${value.replace(
+                /\\/g,
+                '\\\\'
+              )}"`
+          )
+          .join(' or ')
+
+        return `(${fluxTags})`
       })
-      setCardMeta([...cardMeta])
+    const tagString = tagSelections.length
+      ? tagSelections.join(' and ')
+      : 'true'
+    const searchString = search
+      ? `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${search}") + ")"))`
+      : ''
+    const previousTagSelections = cards
+      .slice(0, idx)
+      .map(card => `r._value != "${card.keys.selected[0]}"`)
+    const previousTagString = previousTagSelections.length
+      ? `\n  |> filter(fn: (r) => ${previousTagSelections.join(' and ')})`
+      : ''
 
-      const tagSelections = cards
-        .filter(card => card.keys.selected[0] && card.values.selected.length)
-        .map(card => {
-          const fluxTags = card.values.selected
-            .map(
-              value =>
-                `r["${card.keys.selected[0]}"] == "${value.replace(
-                  /\\/g,
-                  '\\\\'
-                )}"`
-            )
-            .join(' or ')
+    const {scope} = getPanelQueries(id)
 
-          return `(${fluxTags})`
-        })
-      const tagString = tagSelections.length
-        ? tagSelections.join(' and ')
-        : 'true'
-      const searchString = search
-        ? `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${search}") + ")"))`
-        : ''
-      const previousTagSelections = cards
-        .slice(0, idx)
-        .map(card => `r._value != "${card.keys.selected[0]}"`)
-      const previousTagString = previousTagSelections.length
-        ? `\n  |> filter(fn: (r) => ${previousTagSelections.join(' and ')})`
-        : ''
+    let _source = 'import "regexp"\n'
+    if (data.buckets[0].type === 'sample') {
+      _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
+    } else {
+      _source += `from(bucket: "${data.buckets[0].name}")`
+    }
 
-      const {scope} = getPanelQueries(id)
+    const limit = isFlagEnabled('increasedMeasurmentTagLimit')
+      ? EXTENDED_TAG_LIMIT
+      : DEFAULT_TAG_LIMIT
 
-      let _source = 'import "regexp"\n'
-      if (data.buckets[0].type === 'sample') {
-        _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
-      } else {
-        _source += `from(bucket: "${data.buckets[0].name}")`
-      }
-
-      const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-        ? EXTENDED_TAG_LIMIT
-        : DEFAULT_TAG_LIMIT
-
-      // TODO: Use the `v1.tagKeys` function from the Flux standard library once
-      // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-      query(
-        `${_source}
+    // TODO: Use the `v1.tagKeys` function from the Flux standard library once
+    // this issue is resolved: https://github.com/influxdata/flux/issues/1071
+    query(
+      `${_source}
               |> range(${formatTimeRangeArguments(range)})
               |> filter(fn: (r) => ${tagString})
               |> keys()
@@ -255,96 +253,93 @@ export const QueryBuilderProvider: FC = ({children}) => {
               |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
               |> sort()
               |> limit(n: ${limit})`,
-        scope
-      )
-        .then(resp => {
-          return (Object.values(resp.parsed.table.columns).filter(
-            c => c.name === '_value' && c.type === 'string'
-          )[0]?.data ?? []) as string[]
-        })
-        .then(keys => {
-          if (!cards[idx].keys.selected[0]) {
-            if (idx === 0 && keys.includes('_measurement')) {
-              cards[idx].keys.selected = ['_measurement']
-            } else {
-              cards[idx].keys.selected = [keys[0]]
-            }
-
-            update({tags: cards.map(toBuilderConfig)})
-          } else if (!keys.includes(cards[idx].keys.selected[0])) {
-            keys.unshift(cards[idx].keys.selected[0])
+      scope
+    )
+      .then(resp => {
+        return (Object.values(resp.parsed.table.columns).filter(
+          c => c.name === '_value' && c.type === 'string'
+        )[0]?.data ?? []) as string[]
+      })
+      .then(keys => {
+        if (!cards[idx].keys.selected[0]) {
+          if (idx === 0 && keys.includes('_measurement')) {
+            cards[idx].keys.selected = ['_measurement']
+          } else {
+            cards[idx].keys.selected = [keys[0]]
           }
 
-          cardMeta.splice(idx, 1, {
-            keys,
-            values: [],
-            loadingKeys: RemoteDataState.Done,
-            loadingValues: RemoteDataState.NotStarted,
-          })
-          setCardMeta([...cardMeta])
-        })
-        .catch(e => {
-          console.error(e)
-        })
-    },
-    [data.buckets, cards]
-  )
+          update({tags: cards.map(toBuilderConfig)})
+        } else if (!keys.includes(cards[idx].keys.selected[0])) {
+          keys.unshift(cards[idx].keys.selected[0])
+        }
 
-  const loadValues = useCallback(
-    (idx, search) => {
-      if (
-        cardMeta[idx].loadingValues === RemoteDataState.Loading ||
-        !data.buckets.length
-      ) {
-        return
-      }
-
-      cardMeta.splice(idx, 1, {
-        ...cardMeta[idx],
-        loadingValues: RemoteDataState.Loading,
+        cardMeta.splice(idx, 1, {
+          keys,
+          values: [],
+          loadingKeys: RemoteDataState.Done,
+          loadingValues: RemoteDataState.NotStarted,
+        })
+        setCardMeta([...cardMeta])
       })
+      .catch(e => {
+        console.error(e)
+      })
+  }
 
-      setCardMeta([...cardMeta])
+  const loadValues = (idx, search) => {
+    if (
+      cardMeta[idx].loadingValues === RemoteDataState.Loading ||
+      !data.buckets.length
+    ) {
+      return
+    }
 
-      const tagSelections = cards
-        .slice(0, idx)
-        .filter(card => card.keys.selected[0] && card.values.selected.length)
-        .map(card => {
-          const fluxTags = card.values.selected
-            .map(
-              value =>
-                `r["${card.keys.selected[0]}"] == "${value.replace(
-                  /\\/g,
-                  '\\\\'
-                )}"`
-            )
-            .join(' or ')
+    cardMeta.splice(idx, 1, {
+      ...cardMeta[idx],
+      loadingValues: RemoteDataState.Loading,
+    })
 
-          return `(${fluxTags})`
-        })
-      const tagString = tagSelections.length
-        ? tagSelections.join(' and ')
-        : 'true'
-      const searchString = search
-        ? `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${search}") + ")"))`
-        : ''
+    setCardMeta([...cardMeta])
 
-      const {scope} = getPanelQueries(id)
-      let _source = 'import "regexp"\n'
-      if (data.buckets[0].type === 'sample') {
-        _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
-      } else {
-        _source += `from(bucket: "${data.buckets[0].name}")`
-      }
+    const tagSelections = cards
+      .slice(0, idx)
+      .filter(card => card.keys.selected[0] && card.values.selected.length)
+      .map(card => {
+        const fluxTags = card.values.selected
+          .map(
+            value =>
+              `r["${card.keys.selected[0]}"] == "${value.replace(
+                /\\/g,
+                '\\\\'
+              )}"`
+          )
+          .join(' or ')
 
-      const limit = isFlagEnabled('increasedMeasurmentTagLimit')
-        ? EXTENDED_TAG_LIMIT
-        : DEFAULT_TAG_LIMIT
+        return `(${fluxTags})`
+      })
+    const tagString = tagSelections.length
+      ? tagSelections.join(' and ')
+      : 'true'
+    const searchString = search
+      ? `\n  |> filter(fn: (r) => r._value =~ regexp.compile(v: "(?i:" + regexp.quoteMeta(v: "${search}") + ")"))`
+      : ''
 
-      // TODO: Use the `v1.tagValues` function from the Flux standard library once
-      // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-      query(
-        `${_source}
+    const {scope} = getPanelQueries(id)
+    let _source = 'import "regexp"\n'
+    if (data.buckets[0].type === 'sample') {
+      _source += `import "influxdata/influxdb/sample"\nsample.data(set: "${data.buckets[0].id}")`
+    } else {
+      _source += `from(bucket: "${data.buckets[0].name}")`
+    }
+
+    const limit = isFlagEnabled('increasedMeasurmentTagLimit')
+      ? EXTENDED_TAG_LIMIT
+      : DEFAULT_TAG_LIMIT
+
+    // TODO: Use the `v1.tagValues` function from the Flux standard library once
+    // this issue is resolved: https://github.com/influxdata/flux/issues/1071
+    query(
+      `${_source}
               |> range(${formatTimeRangeArguments(range)})
               |> filter(fn: (r) => ${tagString})
               |> keep(columns: ["${cards[idx].keys.selected[0]}"])
@@ -354,27 +349,25 @@ export const QueryBuilderProvider: FC = ({children}) => {
               }")${searchString}
               |> limit(n: ${limit})
               |> sort()`,
-        scope
-      )
-        .then(resp => {
-          return (Object.values(resp.parsed.table.columns).filter(
-            c => c.name === '_value' && c.type === 'string'
-          )[0]?.data ?? []) as string[]
+      scope
+    )
+      .then(resp => {
+        return (Object.values(resp.parsed.table.columns).filter(
+          c => c.name === '_value' && c.type === 'string'
+        )[0]?.data ?? []) as string[]
+      })
+      .then(values => {
+        cardMeta.splice(idx, 1, {
+          ...cardMeta[idx],
+          values,
+          loadingValues: RemoteDataState.Done,
         })
-        .then(values => {
-          cardMeta.splice(idx, 1, {
-            ...cardMeta[idx],
-            values,
-            loadingValues: RemoteDataState.Done,
-          })
-          setCardMeta([...cardMeta])
-        })
-        .catch(e => {
-          console.error(e)
-        })
-    },
-    [data.buckets, cards]
-  )
+        setCardMeta([...cardMeta])
+      })
+      .catch(e => {
+        console.error(e)
+      })
+  }
 
   const remove = (idx: number): void => {
     if (idx === 0 || idx > cards.length) {

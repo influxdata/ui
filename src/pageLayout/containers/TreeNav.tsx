@@ -1,18 +1,13 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Components
-import {
-  Icon,
-  IconFont,
-  TreeNav,
-} from '@influxdata/clockface'
+import {Icon, IconFont, TreeNav} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 import OrgSettings from 'src/cloud/components/OrgSettings'
-import SupportList from 'src/pageLayout/components/Support'
 
 // Constants
 import {generateNavItems} from 'src/pageLayout/constants/navigationHierarchy'
@@ -37,7 +32,6 @@ const TreeSidebar: FC = () => {
   }
 
   const handleToggleNavExpansion = (): void => {
-    console.log('is expanded ', navbarMode)
     if (navbarMode === 'expanded') {
       setNavbarMode('collapsed')
     } else {
@@ -45,19 +39,26 @@ const TreeSidebar: FC = () => {
     }
   }
 
-  const navStyle = {
-    bottom: '0',
-  }
+  useEffect(() => {
+    const helpBarMenu = document.querySelectorAll<HTMLElement>(
+      '.cf-tree-nav--sub-menu-trigger'
+    )[3]
+    if (navbarMode === 'expanded') {
+      helpBarMenu.style.display = 'block'
+      helpBarMenu.style.width = '250px'
+    } else {
+      helpBarMenu.style.width = '44px'
+    }
+  }, [setNavbarMode, navbarMode])
 
   return (
     <OrgSettings>
       <>
         <TreeNav
           expanded={navbarMode === 'expanded'}
-          headerElement={<NavHeader link={`/orgs/${org.id}`} />} // influxdb cloud sign
+          headerElement={<NavHeader link={`/orgs/${org.id}`} />}
           userElement={<UserWidget />}
           onToggleClick={handleToggleNavExpansion}
-          // bannerElement={<SupportList />}
         >
           {generateNavItems().map((item: NavItem) => {
             const linkElement = (className: string): JSX.Element => (
@@ -118,16 +119,12 @@ const TreeSidebar: FC = () => {
               </TreeNav.Item>
             )
           })}
-
           <TreeNav.Item
             id={'support'}
             testID={'nav-item-support'}
             icon={<Icon glyph={IconFont.QuestionMark_New} />}
             label={'Help & Support'}
             shortLabel={'Support'}
-            style={navStyle}
-            // linkElement={linkElement}
-            // onClick={() => setNavbarMode('collapsed')}
           >
             <TreeNav.SubMenu>
               <TreeNav.SubHeading label="Support" />
@@ -140,7 +137,7 @@ const TreeSidebar: FC = () => {
                 )}
               />
               <TreeNav.SubItem
-                id="documentation"
+                id="faqs"
                 label="FAQs"
                 testID="nav-subitem-faqs"
                 linkElement={className => (
@@ -148,7 +145,7 @@ const TreeSidebar: FC = () => {
                 )}
               />
               <TreeNav.SubItem
-                id="documentation"
+                id="contactSupport"
                 label="Contact Support"
                 testID="nav-subitem-contact-support"
                 linkElement={className => (

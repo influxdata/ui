@@ -149,7 +149,40 @@ export const QueryBuilderProvider: FC = ({children}) => {
     ])
   }
 
-  const selectMeasurement = (_measurement?: string) => {}
+  const selectMeasurement = (measurement?: string) => {
+    if (measurement) {
+      update({
+        tags: [
+          {
+            ...data.tags[0],
+            values: [measurement],
+          },
+          toBuilderConfig(getDefaultCard()),
+        ],
+      })
+
+      setCardMeta([
+        cardMeta[0],
+        {
+          keys: [],
+          values: [],
+          loadingKeys: RemoteDataState.NotStarted,
+          loadingValues: RemoteDataState.NotStarted,
+        },
+      ])
+    } else {
+      update({
+        tags: [
+          {
+            ...data.tags[0],
+            values: [],
+          },
+        ],
+      })
+
+      setCardMeta([cardMeta[0]])
+    }
+  }
 
   const cards = useMemo(
     () => data.tags.map((tag, idx) => fromBuilderConfig(tag, cardMeta[idx])),

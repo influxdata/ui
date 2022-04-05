@@ -29,6 +29,8 @@ export default register => {
         return ''
       }
 
+      console.log('generating', data.tags)
+
       const tags = data.tags
         .map(tag => {
           if (!tag.key) {

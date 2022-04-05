@@ -17,6 +17,7 @@ import {getNavItemActivation} from 'src/pageLayout/utils'
 import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
@@ -26,31 +27,23 @@ const TreeSidebar: FC = () => {
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )
-
   useEffect(() => {
-    const helpBarMenu = document.querySelectorAll<HTMLElement>(
-      '.cf-tree-nav--sub-menu-trigger'
-    )[3]
-    if (navbarMode === 'collapsed') {
-      return
+    if (presentationMode || !org) {
+      return null
     }
-    helpBarMenu.style.display = 'block'
-    helpBarMenu.style.width = '243px'
-  }, [setNavbarMode, navbarMode])
 
-  useEffect(() => {
-    const helpBarMenu = document.querySelectorAll<HTMLElement>(
-      '.cf-tree-nav--sub-menu-trigger'
-    )[3]
-    if (navbarMode === 'expanded') {
-      return
+    if (isFlagEnabled('helpBar')) {
+      const helpBarMenu = document.querySelectorAll<HTMLElement>(
+        '.cf-tree-nav--sub-menu-trigger'
+      )[3]
+      if (navbarMode === 'expanded') {
+        helpBarMenu.style.display = 'block'
+        helpBarMenu.style.width = '243px'
+      } else {
+        helpBarMenu.style.width = '44px'
+      }
     }
-    helpBarMenu.style.width = '44px'
   }, [setNavbarMode, navbarMode])
-
-  if (presentationMode || !org) {
-    return null
-  }
 
   const handleToggleNavExpansion = (): void => {
     if (navbarMode === 'expanded') {
@@ -127,55 +120,69 @@ const TreeSidebar: FC = () => {
             </TreeNav.Item>
           )
         })}
-        <TreeNav.Item
-          id={'support'}
-          testID={'nav-item-support'}
-          icon={<Icon glyph={IconFont.QuestionMark_New} />}
-          label={'Help & Support'}
-          shortLabel={'Support'}
-        >
-          <TreeNav.SubMenu>
-            <TreeNav.SubHeading label="Support" />
-            <TreeNav.SubItem
-              id="documentation"
-              label="Documentation"
-              testID="nav-subitem-documentation"
-              linkElement={className => <Link className={className} to={``} />}
-            />
-            <TreeNav.SubItem
-              id="faqs"
-              label="FAQs"
-              testID="nav-subitem-faqs"
-              linkElement={className => <Link className={className} to={``} />}
-            />
-            <TreeNav.SubItem
-              id="contactSupport"
-              label="Contact Support"
-              testID="nav-subitem-contact-support"
-              linkElement={className => <Link className={className} to={``} />}
-            />
-            <TreeNav.SubHeading label="Community" />
-            <TreeNav.SubItem
-              id="offcialForum"
-              label="Official Forum"
-              testID="nav-subitem-forum"
-              linkElement={className => <Link className={className} to={``} />}
-            />
-            <TreeNav.SubItem
-              id="influxdbSlack"
-              label="InfluxDB Slack"
-              testID="nav-subitem-influxdb-slack"
-              linkElement={className => <Link className={className} to={``} />}
-            />
-            <TreeNav.SubHeading label="Feedback" />
-            <TreeNav.SubItem
-              id="feedback"
-              label="Feedback & Questions"
-              testID="nav-subitem-feedback-questions"
-              linkElement={className => <Link className={className} to={``} />}
-            />
-          </TreeNav.SubMenu>
-        </TreeNav.Item>
+        {isFlagEnabled('helpBar') ? (
+          <TreeNav.Item
+            id="support"
+            testID="nav-item-support"
+            icon={<Icon glyph={IconFont.QuestionMark_New} />}
+            label="Help & Support"
+            shortLabel="Support"
+          >
+            <TreeNav.SubMenu>
+              <TreeNav.SubHeading label="Support" />
+              <TreeNav.SubItem
+                id="documentation"
+                label="Documentation"
+                testID="nav-subitem-documentation"
+                linkElement={className => (
+                  <Link className={className} to={``} />
+                )}
+              />
+              <TreeNav.SubItem
+                id="faqs"
+                label="FAQs"
+                testID="nav-subitem-faqs"
+                linkElement={className => (
+                  <Link className={className} to={``} />
+                )}
+              />
+              <TreeNav.SubItem
+                id="contactSupport"
+                label="Contact Support"
+                testID="nav-subitem-contact-support"
+                linkElement={className => (
+                  <Link className={className} to={``} />
+                )}
+              />
+              <TreeNav.SubHeading label="Community" />
+              <TreeNav.SubItem
+                id="offcialForum"
+                label="Official Forum"
+                testID="nav-subitem-forum"
+                linkElement={className => (
+                  <Link className={className} to={``} />
+                )}
+              />
+              <TreeNav.SubItem
+                id="influxdbSlack"
+                label="InfluxDB Slack"
+                testID="nav-subitem-influxdb-slack"
+                linkElement={className => (
+                  <Link className={className} to={``} />
+                )}
+              />
+              <TreeNav.SubHeading label="Feedback" />
+              <TreeNav.SubItem
+                id="feedback"
+                label="Feedback & Questions"
+                testID="nav-subitem-feedback-questions"
+                linkElement={className => (
+                  <Link className={className} to={``} />
+                )}
+              />
+            </TreeNav.SubMenu>
+          </TreeNav.Item>
+        ) : null}
       </TreeNav>
     </OrgSettings>
   )

@@ -134,51 +134,39 @@ const TreeSidebar: FC = () => {
                 id="documentation"
                 label="Documentation"
                 testID="nav-subitem-documentation"
-                linkElement={className => (
-                  <Link className={className} to='' />
-                )}
+                linkElement={className => <Link className={className} to="" />}
               />
               <TreeNav.SubItem
                 id="faqs"
                 label="FAQs"
                 testID="nav-subitem-faqs"
-                linkElement={className => (
-                  <Link className={className} to='' />
-                )}
+                linkElement={className => <Link className={className} to="" />}
               />
               <TreeNav.SubItem
                 id="contactSupport"
                 label="Contact Support"
                 testID="nav-subitem-contact-support"
-                linkElement={className => (
-                  <Link className={className} to='' />
-                )}
+                linkElement={className => <Link className={className} to="" />}
               />
               <TreeNav.SubHeading label="Community" />
               <TreeNav.SubItem
                 id="offcialForum"
                 label="Official Forum"
                 testID="nav-subitem-forum"
-                linkElement={className => (
-                  <Link className={className} to='' />
-                )}
+                linkElement={className => <Link className={className} to="" />}
               />
               <TreeNav.SubItem
                 id="influxdbSlack"
                 label="InfluxDB Slack"
                 testID="nav-subitem-influxdb-slack"
-                linkElement={className => (
-                  <Link className={className} to='' />
-                )}
+                linkElement={className => <Link className={className} to="" />}
               />
               <TreeNav.SubHeading label="Feedback" />
               <TreeNav.SubItem
                 id="feedback"
                 label="Feedback & Questions"
                 testID="nav-subitem-feedback-questions"
-                linkElement={className => (
-                  <Link className={className} to='' />
-                )}
+                linkElement={className => <Link className={className} to="" />}
               />
             </TreeNav.SubMenu>
           </TreeNav.Item>

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useContext} from 'react'
+import React, {FC, useState, useContext, useEffect} from 'react'
 import {useSelector} from 'react-redux'
 
 // Components
@@ -39,7 +39,7 @@ import {getAll} from 'src/resources/selectors'
 import {event} from 'src/cloud/utils/reporting'
 
 // Actions
-import {shouldShowUpgradeButton} from 'src/me/selectors'
+import {shouldShowUpgradeButton, getQuartzMe} from 'src/me/selectors'
 
 // Styles
 import 'src/writeData/subscriptions/components/CreateSubscriptionPage.scss'
@@ -78,12 +78,58 @@ const CreateSubscriptionPage: FC = () => {
     SubscriptionCreateContext
   )
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
+  const {accountType} = useSelector(getQuartzMe)
   const buckets = useSelector((state: AppState) =>
     getAll<Bucket>(state, ResourceType.Buckets).filter(b => b.type === 'user')
   )
   const {bucket} = useContext(WriteDataDetailsContext)
 
+  useEffect(() => {
+    event(
+      'visited creation page',
+      {userAccountType: accountType},
+      {feature: 'subscriptions'}
+    )
+  }, [])
+
+  const isParsingFormCompleted = (): boolean => {
+    if (formContent.dataFormat === 'json') {
+      return (
+        formContent.jsonMeasurementKey.path &&
+        formContent.jsonFieldKeys.length &&
+        formContent.jsonFieldKeys[0].name &&
+        !!formContent.jsonFieldKeys[0].path
+      )
+    } else if (formContent.dataFormat === 'string') {
+      return (
+        formContent.stringMeasurement.pattern &&
+        formContent.stringFields.length &&
+        formContent.stringFields[0].name &&
+        !!formContent.stringFields[0].pattern
+      )
+    } else {
+      return true
+    }
+  }
+
   const handleClick = (step: number) => {
+    event(
+      'subway navigation clicked',
+      {
+        currentStep: active,
+        clickedStep: navigationSteps[step - 1].type,
+        brokerStepCompleted:
+          formContent.name && formContent.brokerHost && formContent.brokerPort
+            ? 'true'
+            : 'false',
+        subscriptionStepCompleted:
+          formContent.topic && formContent.bucket ? 'true' : 'false',
+        parsingStepCompleted:
+          formContent.dataFormat && isParsingFormCompleted() ? 'true' : 'false',
+        dataFormat: formContent.dataFormat ?? 'not chosen yet',
+      },
+      {feature: 'subscriptions'}
+    )
     setFormActive(navigationSteps[step - 1].type as Steps)
   }
 

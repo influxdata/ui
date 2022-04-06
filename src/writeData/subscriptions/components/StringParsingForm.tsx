@@ -28,6 +28,7 @@ import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 // Styles
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   formContent: Subscription
@@ -75,6 +76,15 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
             formContent.stringTimestamp.pattern = e.target.value
             updateForm({...formContent})
           }}
+          onBlur={() =>
+            event(
+              'completed form field',
+              {
+                formField: 'stringTimestamp.pattern',
+              },
+              {feature: 'subscriptions'}
+            )
+          }
           maxLength={56}
           testID="timestamp-string-parsing"
         />
@@ -113,6 +123,15 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 formContent.stringMeasurement.pattern = e.target.value
                 updateForm({...formContent})
               }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {
+                    formField: 'stringMeasurement.pattern',
+                  },
+                  {feature: 'subscriptions'}
+                )
+              }
               status={status}
               maxLength={56}
               testID="measurment-string-parsing-pattern"
@@ -158,6 +177,11 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   id={r}
                   value={r}
                   onClick={() => {
+                    event(
+                      'added string parsing rule',
+                      {ruleType: r},
+                      {feature: 'subscriptions'}
+                    )
                     setRule(r)
                   }}
                   selected={rule === r}

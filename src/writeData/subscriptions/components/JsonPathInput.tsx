@@ -26,6 +26,7 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Utils
 import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   name: string
@@ -59,6 +60,13 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
               size={ComponentSize.ExtraSmall}
               confirmationLabel={`Yes, delete this ${name}`}
               onConfirm={() => {
+                event(
+                  'removed json parsing rule',
+                  {
+                    ruleType: tagType ? 'tag' : 'field',
+                  },
+                  {feature: 'subscriptions'}
+                )
                 if (tagType) {
                   formContent.jsonTagKeys.splice(itemNum, 1)
                 } else {
@@ -111,6 +119,17 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                     : (formContent.jsonFieldKeys[itemNum].name = e.target.value)
                   updateForm({...formContent})
                 }}
+                onBlur={() =>
+                  event(
+                    'completed form field',
+                    {
+                      formField: `${
+                        tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
+                      }.name`,
+                    },
+                    {feature: 'subscriptions'}
+                  )
+                }
                 status={status}
                 maxLength={16}
                 testID={`${tagType}-json-parsing-name`}
@@ -137,6 +156,16 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                       id={d}
                       value={d}
                       onClick={() => {
+                        event(
+                          'completed form field',
+                          {
+                            formField: `${
+                              tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
+                            }.type`,
+                            selected: d,
+                          },
+                          {feature: 'subscriptions'}
+                        )
                         setDataType(d)
                         tagType
                           ? (formContent.jsonTagKeys[
@@ -193,6 +222,17 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                   : (formContent.jsonFieldKeys[itemNum].path = e.target.value)
                 updateForm({...formContent})
               }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {
+                    formField: `${
+                      tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
+                    }.path`,
+                  },
+                  {feature: 'subscriptions'}
+                )
+              }
               status={status}
               maxLength={16}
               testID={`${tagType}-json-parsing-path`}

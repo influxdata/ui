@@ -32,6 +32,7 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/SubscriptionForm.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   formContent: Subscription
@@ -103,6 +104,11 @@ const SubscriptionForm: FC<Props> = ({
               text="Cancel"
               color={ComponentColor.Tertiary}
               onClick={() => {
+                event(
+                  'creation canceled',
+                  {step: 'subscription'},
+                  {feature: 'subscriptions'}
+                )
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
               titleText="Cancel"
@@ -113,6 +119,11 @@ const SubscriptionForm: FC<Props> = ({
               text="Back"
               color={ComponentColor.Secondary}
               onClick={() => {
+                event(
+                  'back clicked',
+                  {step: 'subscription'},
+                  {feature: 'subscriptions'}
+                )
                 setFormActive('broker')
               }}
               titleText="Back to broker form"
@@ -123,6 +134,11 @@ const SubscriptionForm: FC<Props> = ({
               text="Next"
               color={ComponentColor.Success}
               onClick={() => {
+                event(
+                  'next clicked',
+                  {step: 'subscription'},
+                  {feature: 'subscriptions'}
+                )
                 setFormActive('parsing')
               }}
               type={ButtonType.Button}

@@ -28,6 +28,7 @@ import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 // Styles
 import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   formContent: Subscription
@@ -78,6 +79,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
             formContent.jsonTimestamp.path = e.target.value
             updateForm({...formContent})
           }}
+          onBlur={() =>
+            event(
+              'completed form field',
+              {formField: 'jsonTimestamp.path'},
+              {feature: 'subscriptions'}
+            )
+          }
           maxLength={56}
           testID="timestamp-json-parsing"
         />
@@ -125,6 +133,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   formContent.jsonMeasurementKey.name = e.target.value
                   updateForm({...formContent})
                 }}
+                onBlur={() =>
+                  event(
+                    'completed form field',
+                    {formField: 'jsonMeasurementKey.name'},
+                    {feature: 'subscriptions'}
+                  )
+                }
                 status={status}
                 maxLength={16}
                 testID="measurement-json-parsing-name"
@@ -151,6 +166,11 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                       id={d}
                       value={d}
                       onClick={() => {
+                        event(
+                          'completed form field',
+                          {formField: 'jsonMeasurementKey.type', selected: d},
+                          {feature: 'subscriptions'}
+                        )
                         setDataTypeM(d)
                         formContent.jsonMeasurementKey.type = d.toLowerCase()
                       }}
@@ -189,6 +209,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 formContent.jsonMeasurementKey.path = e.target.value
                 updateForm({...formContent})
               }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {formField: 'jsonMeasurementKey.path'},
+                  {feature: 'subscriptions'}
+                )
+              }
               status={status}
               maxLength={56}
               testID="measurement-json-parsing-path"
@@ -234,10 +261,15 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   id={r}
                   value={r}
                   onClick={() => {
+                    event(
+                      'added json parsing rule',
+                      {ruleType: r},
+                      {feature: 'subscriptions'}
+                    )
                     setRule(r)
                   }}
                   selected={rule === r}
-                  testID={`json-parsing-add-rule-${1}`}
+                  testID={`json-parsing-add-rule-${key}`}
                 >
                   {r}
                 </Dropdown.Item>

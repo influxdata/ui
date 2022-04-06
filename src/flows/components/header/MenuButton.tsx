@@ -19,7 +19,6 @@ import {VersionPublishContext} from 'src/flows/context/version.publish'
 import {useHistory} from 'react-router-dom'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 import {getOrg} from 'src/organizations/selectors'
 import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
@@ -176,6 +175,28 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   const menuItems: any[] = [
     {
       type: 'menuitem',
+      title: 'Save to version history',
+      onClick: handlePublish,
+      icon: IconFont.Save,
+    },
+    {
+      type: 'menuitem',
+      title: 'Version history',
+      onClick: handleViewPublish,
+      icon: IconFont.History,
+      disabled: () => {
+        const [first, second] = versions
+        // accounts for the draft state
+        let versionId = first?.id
+        if (first?.id === 'draft' && second?.id) {
+          versionId = second?.id
+        }
+        return !(versionId !== 'draft' && typeof versionId !== undefined)
+      },
+    },
+    {title: 'divider', type: 'divider'},
+    {
+      type: 'menuitem',
       title: 'Download as PNG',
       onClick: handleDownloadAsPNG,
       icon: IconFont.Download_New,
@@ -196,41 +217,12 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   ]
 
   if (CLOUD) {
-    menuItems.splice(0, 0, {
+    menuItems.splice(3, 0, {
       type: 'menuitem',
       title: 'Clone',
       onClick: handleClone,
       icon: IconFont.Duplicate_New,
     })
-  }
-
-  if (isFlagEnabled('flowPublishLifecycle')) {
-    menuItems.splice(
-      0,
-      0,
-      {
-        type: 'menuitem',
-        title: 'Save to version history',
-        onClick: handlePublish,
-        icon: IconFont.Save,
-      },
-      {
-        type: 'menuitem',
-        title: 'Version history',
-        onClick: handleViewPublish,
-        icon: IconFont.History,
-        disabled: () => {
-          const [first, second] = versions
-          // accounts for the draft state
-          let versionId = first?.id
-          if (first?.id === 'draft' && second?.id) {
-            versionId = second?.id
-          }
-          return !(versionId !== 'draft' && typeof versionId !== undefined)
-        },
-      },
-      {title: 'divider', type: 'divider'}
-    )
   }
 
   return (

@@ -916,7 +916,7 @@ export const createRule = (
 export const createAlertGroup = (
   checks: GenCheck[],
   endps: GenEndpoint[],
-  rules: GenRule[],
+  rules: GenRule[]
 ): Cypress.Chainable => {
   return cy.get<Organization>('@org').then((org: Organization) => {
     cy.get<Bucket>('@bucket').then((bucket: Bucket) => {

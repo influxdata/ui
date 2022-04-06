@@ -1,9 +1,4 @@
 import register from 'src/languageSupport/monaco.onigasm'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-
-if (!self.monaco) {
-  self.monaco = monaco
-}
 
 const LANGID = 'toml'
 

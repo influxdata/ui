@@ -140,6 +140,7 @@ describe('Pinned Items', () => {
       )
 
       taskName = 'Task'
+      cy.log('Using autocomplete for closing paran.')
       cy.createTaskFromEmpty(taskName, ({name}) => {
         return `import "influxdata/influxdb/v1{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}

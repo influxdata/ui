@@ -1,10 +1,6 @@
 import {MonacoType} from 'src/types'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
-if (!self.monaco) {
-  self.monaco = monaco
-}
-
 const THEME_NAME = 'tomlTheme'
 
 function addTheme(monaco: MonacoType) {
@@ -59,6 +55,9 @@ function addTheme(monaco: MonacoType) {
   })
 }
 
+if (!self.monaco) {
+  self.monaco = monaco
+}
 addTheme(self.monaco)
 
 export default THEME_NAME

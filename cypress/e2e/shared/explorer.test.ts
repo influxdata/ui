@@ -542,6 +542,7 @@ describe('DataExplorer', () => {
     it('can save query as task even when it has a variable', () => {
       const taskName = 'tax'
       // begin flux
+      cy.log('Using autocomplete for closing paran.')
       cy.getByTestID('flux-editor').should('be.visible')
         .monacoType(`from(bucket: "defbuck")
   |> range(start: -15m, stop: now())

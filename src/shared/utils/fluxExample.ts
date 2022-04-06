@@ -1,6 +1,6 @@
 export const getFluxExample = func => {
   const {name, fluxType} = func
-
+  let hasOptionalParams = false
   // "fluxType": "(<-tables:stream[A], every:duration, ?groupColumns:[string], ?unit:duration) => stream[B] where A: Record, B: Record"
 
   // get copy of fluxtype signature before arrow sign
@@ -20,6 +20,11 @@ export const getFluxExample = func => {
   // some flux parameters cant be sperated by commas because some stand alone params contain commas. ex below
   // (t:A, ?location:{zone:string, offset:duration}) => int where A: Timeable"
   // below code separates them by keeping track of opening and closing brackets
+
+  // check if paramAsOneSentence has optional parameters
+  if (parametersAsOneSentence.includes('?')) {
+    hasOptionalParams = true
+  }
 
   const individualParams = []
   const stack = []
@@ -75,7 +80,6 @@ export const getFluxExample = func => {
       }
     }
   }
-
   // at this point, individualParams array should have all required parameters to parse a signature
 
   /* individualParams = [
@@ -90,6 +94,7 @@ export const getFluxExample = func => {
     const emptyPlaceholder = element.split(':')[0] + ': ' // dict:
     individualParams[index] = emptyPlaceholder
   })
+
   /* individualParams = [
       'default: ',
       'dict: ',
@@ -97,9 +102,11 @@ export const getFluxExample = func => {
       ]
     */
 
+  const space = hasOptionalParams && !individualParams.length ? ' ' : '' // if function has optional param and no required params - add space
+
   // join the individual params to create the signature
   const signature =
-    `${func.package}.${name}` + `(` + individualParams.join(', ') + `)`
+    `${func.package}.${name}` + `(` + individualParams.join(', ') + space + `)`
 
   // add example property to flux function object
   return {...func, example: signature}

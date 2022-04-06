@@ -3,8 +3,6 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
-import {useSelector} from 'react-redux'
-import {getOrg} from 'src/organizations/selectors'
 
 const logCopyCodeSnippet = () => {
   event('firstMile.nodejsWizard.executeAggregateQuery.code.copied')
@@ -19,14 +17,13 @@ type ExecuteAggregateQueryProps = {
 }
 
 export const ExecuteAggregateQuery = (props: ExecuteAggregateQueryProps) => {
-  const org = useSelector(getOrg)
   const {bucket} = props
 
   const fromBucketSnippet = `from(bucket: "${bucket}")
   |> range(start: -10m) # find data points in last 10 minutes
   |> mean()`
 
-const query = `const queryClient = client.getQueryApi(org)
+  const query = `const queryClient = client.getQueryApi(org)
 const fluxQuery = \`from(bucket: "fooo")
  |> range(start: -10m)
  |> filter(fn: (r) => r._measurement == "measurement1")

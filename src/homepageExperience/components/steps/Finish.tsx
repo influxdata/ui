@@ -36,16 +36,19 @@ export const Finish = () => {
           </p>
         </ResourceCard>
         <ResourceCard className="homepage-wizard-next-steps">
-          <SafeBlankLink
-            href="https://docs.influxdata.com/influxdb/cloud/tools/flux-vscode"
-          >
+          <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/tools/flux-vscode">
             <h4>{VSCodePluginIcon}Install VSCode Plugin</h4>
           </SafeBlankLink>
           <p>Streamline your workflow even further with our VSCode plugin!</p>
         </ResourceCard>
         <ResourceCard className="homepage-wizard-next-steps">
           <div
-            style={{display: 'flex', justifyContent: 'center', height: '100%', textTransform: 'uppercase'}}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              height: '100%',
+              textTransform: 'uppercase',
+            }}
           >
             <h5>
               More Options{' '}

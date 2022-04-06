@@ -1,7 +1,9 @@
 import {
   AccountType,
   NotificationEndpoint,
+  GenEndpoint,
   GenCheck,
+  GenRule,
   NotificationRule,
   Secret,
 } from '../../src/types'
@@ -910,6 +912,57 @@ export const createRule = (
   return cy.request('POST', 'api/v2/notificationRules', rule)
 }
 
+// alertGroup
+export const createAlertGroup = (
+  checks: GenCheck[],
+  endps: GenEndpoint[],
+  rules: GenRule[],
+): Cypress.Chainable => {
+  return cy.get<Organization>('@org').then((org: Organization) => {
+    cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
+      cy.log('=== get default org and bucket')
+      checks.forEach((check, index) => {
+        cy.log(`=== create check ${check.name}`)
+        cy.createCheck({
+          ...check,
+          orgID: org.id,
+          query: {
+            ...check.query,
+            text: check.query.text.replace('%BUCKET_NAME%', bucket.name),
+            builderConfig: {
+              ...check.query.builderConfig,
+              buckets: [bucket.id],
+            },
+          },
+        }).then((resp: any) => {
+          cy.wrap(resp.body).as(`check${index}`)
+        })
+      })
+
+      endps.forEach((endp, index) => {
+        cy.log(`=== create endpoint ${endp.name}`)
+        cy.createEndpoint({
+          ...(endp as NotificationEndpoint),
+          orgID: org.id,
+        }).then(resp => {
+          cy.log(`DEBUG wrapping endp as "endp${index}"`)
+          cy.wrap(resp.body).as(`endp${index}`)
+        })
+      })
+      cy.get<NotificationEndpoint>('@endp0').then(endp => {
+        rules.forEach((rule, index) => {
+          cy.log(`=== create rule ${rule.name}`)
+          cy.createRule({...rule, orgID: org.id, endpointID: endp.id}).then(
+            resp => {
+              cy.wrap(resp.body).as(`rule${index}`)
+            }
+          )
+        })
+      })
+    })
+  })
+}
+
 // helpers
 // Re-query elements that are found 'detached' from the DOM
 // https://github.com/cypress-io/cypress/issues/7306
@@ -1023,6 +1076,8 @@ Cypress.Commands.add('createEndpoint', createEndpoint)
 Cypress.Commands.add('createRule', createRule)
 // checks
 Cypress.Commands.add('createCheck', createCheck)
+// alert group
+Cypress.Commands.add('createAlertGroup', createAlertGroup)
 
 // assertions
 Cypress.Commands.add('fluxEqual', fluxEqual)

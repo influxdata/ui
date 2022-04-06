@@ -10,7 +10,6 @@ import {
 import {Bucket} from '../../../src/client'
 import {calcNanoTimestamp} from '../../support/Utils'
 
-// skipping these tests until we have a local vault instance running
 describe('NotificationRules', () => {
   const name1 = 'Slack 1'
   const name2 = 'Slack 2'
@@ -797,78 +796,49 @@ describe('NotificationRules', () => {
         offset: '20m',
         stagger: '1m',
       })
-      cy.get<Organization>('@org').then((org: Organization) => {
-        cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-          // get default org and bucket
-          // 2. create check
-          const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
-          cy.createCheck({
+      const queryText = `from(bucket: \"%BUCKET_NAME%\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
+
+      cy.createAlertGroup(
+        [
+          {
             ...check,
-            orgID: org.id,
             query: {
               ...check.query,
               text: queryText,
-              builderConfig: {
-                ...check.query.builderConfig,
-                buckets: [bucket.id],
-              },
             },
-          }).then((resp: {body: any}) => {
-            cy.wrap(resp.body).as('check')
-          })
-
-          cy.createEndpoint({
-            ...(endp as NotificationEndpoint),
-            orgID: org.id,
-          }).then(resp => {
-            cy.wrap(resp.body).as('endp')
-          })
-
-          cy.get<NotificationEndpoint>('@endp').then(endp => {
-            cy.createRule({
-              ...(rule as NotificationRule),
-              name: Rules[0].name,
-              description: Rules[0].description,
-              orgID: org.id,
-              endpointID: endp.id,
-            }).then(() => {
-              cy.createRule({
-                ...(rule as NotificationRule),
-                name: Rules[1].name,
-                description: Rules[1].description,
-                orgID: org.id,
-                endpointID: endp.id,
-                statusRules: [{currentLevel: 'WARN', period: '1h', count: 1}],
-              }).then(() => {
-                cy.createRule({
-                  ...(rule as NotificationRule),
-                  name: Rules[2].name,
-                  description: Rules[2].description,
-                  orgID: org.id,
-                  endpointID: endp.id,
-                  statusRules: [{currentLevel: 'INFO', period: '1h', count: 1}],
-                }).then(() => {
-                  cy.createRule({
-                    ...(rule as NotificationRule),
-                    name: Rules[3].name,
-                    description: Rules[3].description,
-                    orgID: org.id,
-                    endpointID: endp.id,
-                    statusRules: [{currentLevel: 'OK', period: '1h', count: 1}],
-                  }).then(() => {
-                    cy.reload() // Alerts load from upper beforeEach might not catch all these rules
-                    cy.getByTestID('alerting-tab--rules').click()
-                  })
-                })
-              })
-            })
-          })
-        })
+          },
+        ],
+        [endp],
+        [
+          {
+            ...(rule as NotificationRule),
+            name: Rules[0].name,
+            description: Rules[0].description,
+          },
+          {
+            ...(rule as NotificationRule),
+            name: Rules[1].name,
+            description: Rules[1].description,
+          },
+          {
+            ...(rule as NotificationRule),
+            name: Rules[2].name,
+            description: Rules[2].description,
+          },
+          {
+            ...(rule as NotificationRule),
+            name: Rules[3].name,
+            description: Rules[3].description,
+          },
+        ]
+      ).then(() => {
+        cy.reload() // Alerts load from upper beforeEach might not catch all these rules
+        cy.getByTestID('alerting-tab--rules').click()
       })
     })
 
     it('can filter the rule list', () => {
-      // baseline check
+      cy.log('=== baseline check')
       cy.getByTestID('rule-card--name')
         .should('have.length', 4)
         .then(names => {
@@ -877,7 +847,7 @@ describe('NotificationRules', () => {
           })
         })
 
-      // filter name
+      cy.log('=== filter name')
       cy.getByTestID('filter--input rules').type(Rules[1].name.substr(0, 5))
 
       cy.getByTestID('rule-card--name')
@@ -886,6 +856,7 @@ describe('NotificationRules', () => {
 
       cy.getByTestID('filter--input rules').clear()
 
+      cy.log('=== confirm clear filter')
       cy.getByTestID('rule-card--name')
         .should('have.length', 4)
         .then(names => {
@@ -896,8 +867,7 @@ describe('NotificationRules', () => {
     })
 
     it('can modify a notification rule entry', () => {
-      cy.log('modifying notification rule entry')
-      // baseline asserts
+      cy.log('=== baseline asserts')
       cy.getByTestID(`rule-card ${Rules[1].name}`)
         .within(() => {
           cy.getByTestID('rule-card--name').should('have.text', Rules[1].name)
@@ -925,7 +895,7 @@ describe('NotificationRules', () => {
             )
           })
 
-          // modify description
+          cy.log('=== modify description')
           cy.getByTestID('resource-list--editable-description').click()
           cy.getByTestID('input-field')
             .clear()
@@ -936,7 +906,7 @@ describe('NotificationRules', () => {
             newRule.description
           )
 
-          // modify name
+          cy.log('=== modify name')
           cy.getByTestID('rule-card--name-button').click()
           cy.getByTestID('rule-card--input').type(`${newRule.name}{enter}`)
         })
@@ -946,7 +916,7 @@ describe('NotificationRules', () => {
           Rules = Rules.sort(rulesSort)
           cy.wait('@patchNotificationRule')
           cy.getByTestID(`rule-card ${newRule.name}`).should('exist')
-          // Verify New Sort Order and card name change
+          cy.log('=== Verify New Sort Order and card name change')
           cy.getByTestID('rule-card--name')
             .should('have.length', 4)
             .then(names => {
@@ -955,16 +925,17 @@ describe('NotificationRules', () => {
               })
             })
 
-          // Verify task ID is the same
+          cy.log('=== Verify task ID is the same')
           cy.getByTestID(`rule-card ${newRule.name}`).within(() => {
             cy.get('@TargetTaskID').then(id => {
               cy.getByTestID('copy-task-id').should('contain.text', id)
             })
 
-            // check sanity of update and run times
+            cy.log('=== check sanity of update and run times')
             cy.getByTestID('resource-list--meta').within(() => {
               const now = new Date()
-              cy.get('> div')
+              // TODO change css selector to use class
+              cy.get('.cf-resource-meta--item')
                 .eq(0)
                 .then(elem => {
                   const cdate = new Date(elem.text().replace(/^\D+/g, ''))
@@ -972,7 +943,7 @@ describe('NotificationRules', () => {
                     .to.be.at.least(0)
                     .and.to.be.below(Cypress.config('pageLoadTimeout'))
                 })
-              cy.get('> div')
+              cy.get('.cf-resource-meta--item')
                 .eq(1)
                 .then(elem => {
                   expect(parseInt(elem.text().replace(/\D+/g, '')))
@@ -983,7 +954,7 @@ describe('NotificationRules', () => {
           })
         })
 
-      // disable / enable
+      cy.log('=== disable / enable ')
       cy.get('.cf-resource-card__disabled').should('not.exist')
       cy.getByTestID('rule-card--slide-toggle')
         .should('have.length', Rules.length)
@@ -997,7 +968,7 @@ describe('NotificationRules', () => {
       cy.getByTestID('notification-error').should('not.exist')
       cy.get('.cf-resource-card__disabled').should('not.exist')
 
-      // verify status
+      cy.log('=== verify status')
       cy.getByTestID('last-run-status--icon')
         .eq(1)
         .trigger('mouseover')
@@ -1011,6 +982,7 @@ describe('NotificationRules', () => {
 
   describe('Cloning', () => {
     const rule2Clone = {
+      ...rule,
       name: 'Despair',
       description:
         'Nabokov.  Hermann Karlovich, a Russian of German descent and owner of a chocolate factory, meets a homeless man in the city of Prague, who he believes is his doppelgänger.',
@@ -1028,50 +1000,31 @@ describe('NotificationRules', () => {
         offset: '20m',
         stagger: '1m',
       })
-      cy.get<Organization>('@org').then((org: Organization) => {
-        cy.get<Bucket>('@bucket').then((bucket: Bucket) => {
-          // get default org and bucket
-          // 2. create check
-          const queryText = `from(bucket: \"${bucket.name}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
-          cy.createCheck({
+
+      const queryText = `from(bucket: \"%BUCKET_NAME%\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
+
+      cy.createAlertGroup(
+        [
+          {
             ...check,
-            orgID: org.id,
             query: {
               ...check.query,
               text: queryText,
-              builderConfig: {
-                ...check.query.builderConfig,
-                buckets: [bucket.id],
-              },
             },
-          }).then((resp: {body: any}) => {
-            cy.wrap(resp.body).as('check')
-          })
-
-          cy.createEndpoint({
-            ...(endp as NotificationEndpoint),
-            orgID: org.id,
-          }).then(resp => {
-            cy.wrap(resp.body).as('endp')
-          })
-
-          cy.get<NotificationEndpoint>('@endp').then(endp => {
-            cy.createRule({
-              ...(rule as NotificationRule),
-              name: rule2Clone.name,
-              description: rule2Clone.description,
-              orgID: org.id,
-              endpointID: endp.id,
-            }).then(({body}) => {
-              cy.createAndAddLabel(
-                'notificationRules',
-                org.id,
-                body.id,
-                rule2Clone.label
-              )
-              cy.reload() // Alerts load from upper beforeEach might not catch new rule
-              cy.getByTestID('alerting-tab--rules').click()
-            })
+          },
+        ],
+        [endp],
+        [rule2Clone]
+      ).then(() => {
+        cy.get<GenRule>('@rule0').then(rule => {
+          cy.createAndAddLabel(
+            'notificationRules',
+            rule.orgID,
+            rule.id,
+            rule2Clone.label
+          ).then(() => {
+            cy.reload() // Alerts load from upper beforeEach might not catch all these rules
+            cy.getByTestID('alerting-tab--rules').click()
           })
         })
       })
@@ -1095,7 +1048,7 @@ describe('NotificationRules', () => {
         })
       })
 
-      // verify basic identifying parameters
+      cy.log('=== verify basic identifying parameters')
       cy.getByTestID(`rule-card ${rule2Clone.name} (clone 1)`).within(() => {
         cy.getByTestID('copy-resource-id').then(elem => {
           cy.wrap(
@@ -1119,7 +1072,7 @@ describe('NotificationRules', () => {
         cy.getByTestID('rule-card--name').click()
       })
 
-      // verify then change cloned values
+      cy.log('=== verify then change cloned values')
       cy.getByTestID('rule-name--input').should(
         'have.value',
         `${rule2Clone.name} (clone 1)`
@@ -1156,7 +1109,9 @@ describe('NotificationRules', () => {
       cy.getByTestID('rule-overlay-save--button').click()
 
       cy.wait('@putClonedRule').then(({request: {body}}) => {
-        // verify internal values not displayed e.g. every, offset, level etc
+        cy.log(
+          '=== verify internal values not displayed e.g. every, offset, level etc'
+        )
         expect(body.every).to.equal(newEvery)
         expect(body.offset).to.equal(newOffset)
         expect(body.statusRules[0].currentLevel).to.equal(newLevel)
@@ -1164,12 +1119,12 @@ describe('NotificationRules', () => {
           expect(body.taskID).to.not.equal(taskId)
         })
 
-        // then verify changed display value - name
+        cy.log('=== then verify changed display value - name')
         cy.getByTestID(`rule-card ${newName}`)
           .within(() => {
             cy.getByTestID('rule-card--name').should('have.text', newName)
 
-            // and delete the rule
+            cy.log('=== and delete the rule')
             cy.getByTestID('context-delete-task--button').click()
           })
           .then(() => {

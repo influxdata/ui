@@ -48,6 +48,7 @@ import {
   setFeatureFlags,
   quartzProvision,
   createTaskFromEmpty,
+  createAlertGroup,
 } from './support/commands'
 
 declare global {
@@ -99,6 +100,7 @@ declare global {
       createEndpoint: typeof createEndpoint
       createRule: typeof createRule
       createCheck: typeof createCheck
+      createAlertGroup: typeof createAlertGroup
       setFeatureFlags: typeof setFeatureFlags
       upsertSecret: typeof upsertSecret
       quartzProvision: typeof quartzProvision

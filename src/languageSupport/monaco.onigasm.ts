@@ -73,7 +73,7 @@ async function loader() {
       Promise.all(
         Array.from(grammars.keys()).map(async lang => {
           const grammar = await registry.loadGrammar(grammars.get(lang))
-          window.monaco.languages.setTokensProvider(lang, {
+          self.monaco.languages.setTokensProvider(lang, {
             getInitialState: () => new TokenizerState(INITIAL),
             tokenize: (line: string, state: TokenizerState) => {
               const res = grammar.tokenizeLine(line, state.ruleStack)
@@ -96,10 +96,10 @@ async function loader() {
 }
 
 export default async function register(scope, definition) {
-  if (!window.monaco) {
-    window.monaco = monaco
+  if (!self.monaco) {
+    self.monaco = monaco
   }
-  window.monaco.languages.register({id: scope})
+  self.monaco.languages.register({id: scope})
 
   grammars.set(scope, scope)
   grammarDefs[scope] = definition

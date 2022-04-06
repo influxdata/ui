@@ -52,7 +52,7 @@ export class LSPServer {
     this.server = server
     this.server.onMessage(this.onMessage)
     this.store = reduxStore
-    this.p2m = new ProtocolToMonacoConverter(window.monaco)
+    this.p2m = new ProtocolToMonacoConverter(self.monaco)
     this.server
       .run()
       .then(() => console.warn('lsp server has stopped'))
@@ -76,8 +76,8 @@ export class LSPServer {
   updateDiagnostics = params => {
     try {
       const results = this.p2m.asDiagnostics(params?.diagnostics)
-      window.monaco.editor.setModelMarkers(
-        window.monaco.editor.getModel(params?.uri),
+      self.monaco.editor.setModelMarkers(
+        self.monaco.editor.getModel(params?.uri),
         'default',
         results
       )
@@ -259,7 +259,7 @@ class LSPLoader {
 
     const {Lsp} = await import('@influxdata/flux-lsp-browser')
     this.server = new LSPServer(new Lsp())
-    registerCompletion(window.monaco, this.server)
+    registerCompletion(self.monaco, this.server)
 
     await this.server.initialize()
 

@@ -19,8 +19,8 @@ import {MonacoType} from 'src/types'
         - instead, we are utilizing the typings and helper functions from monaco-languageclient -- but with our own version of a worker.
 */
 
-const m2p = new MonacoToProtocolConverter(window.monaco),
-  p2m = new ProtocolToMonacoConverter(window.monaco)
+const m2p = new MonacoToProtocolConverter(self.monaco),
+  p2m = new ProtocolToMonacoConverter(self.monaco)
 
 export function registerCompletion(monaco: MonacoType, server: LSPServer) {
   monaco.languages.registerDocumentSymbolProvider(FLUXLANGID, {

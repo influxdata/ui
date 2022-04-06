@@ -194,7 +194,7 @@ const Notification: FC<PipeProp> = ({Context}) => {
       const p = editorInstance.getPosition()
       const edits = [
         {
-          range: new window.monaco.Range(
+          range: new self.monaco.Range(
             p.lineNumber,
             p.column,
             p.lineNumber,

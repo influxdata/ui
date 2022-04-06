@@ -149,7 +149,7 @@ export const EditorProvider: FC = ({children}) => {
       }
 
       const column = type == InjectionType.OnOwnLine ? 1 : initC
-      const range = new window.monaco.Range(row, column, row, column)
+      const range = new self.monaco.Range(row, column, row, column)
       const edits = [
         {
           range,
@@ -165,7 +165,7 @@ export const EditorProvider: FC = ({children}) => {
           .includes(header)
       ) {
         edits.unshift({
-          range: new window.monaco.Range(1, 1, 1, 1),
+          range: new self.monaco.Range(1, 1, 1, 1),
           text: `${header}\n`,
         })
       }

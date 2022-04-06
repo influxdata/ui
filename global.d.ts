@@ -39,5 +39,5 @@ declare global {
   }
 }
 
-window.monaco = window.monaco || {}
-window.MonacoEnvironment = window.MonacoEnvironment || {}
+self.monaco = self.monaco || {}
+self.MonacoEnvironment = self.MonacoEnvironment || {}

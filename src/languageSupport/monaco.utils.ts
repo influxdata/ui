@@ -1,8 +1,5 @@
 export const pointToCorrectWorkers = () => {
-  window.MonacoEnvironment.getWorkerUrl = (
-    _moduleId: string,
-    label: string
-  ) => {
+  self.MonacoEnvironment.getWorkerUrl = (_moduleId: string, label: string) => {
     if (label === 'json') {
       return './json.worker.bundle.js'
     }

@@ -54,6 +54,6 @@ function addTheme(monaco: MonacoType) {
   })
 }
 
-addTheme(window.monaco)
+addTheme(self.monaco)
 
 export default THEME_NAME

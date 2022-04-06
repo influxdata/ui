@@ -1,8 +1,8 @@
 import register from 'src/languageSupport/monaco.onigasm'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
-if (!window.monaco) {
-  window.monaco = monaco
+if (!self.monaco) {
+  self.monaco = monaco
 }
 
 const LANGID = 'flux'
@@ -17,7 +17,7 @@ async function addSyntax() {
     }),
   }))
 
-  window.monaco.languages.setLanguageConfiguration(LANGID, {
+  self.monaco.languages.setLanguageConfiguration(LANGID, {
     autoClosingPairs: [
       {open: '"', close: '"'},
       {open: '[', close: ']'},

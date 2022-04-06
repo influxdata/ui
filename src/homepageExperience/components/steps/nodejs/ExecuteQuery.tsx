@@ -25,7 +25,7 @@ const fluxQuery = \`from(bucket: "fooo")
 queryClient.queryRows(fluxQuery, {
   next: (row, tableMeta) => {
     const tableObject = tableMeta.toObject(row)
-    console.log(tableObject)
+    console.log(row, tableObject)
   },
   error: (error) => {
     console.error('\\nError', error)

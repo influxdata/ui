@@ -16,7 +16,7 @@ import {InitalizeClient} from 'src/homepageExperience/components/steps/nodejs/In
 import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/python/Finish'
-import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
+import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteAggregateQuery'
 
 import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'
 

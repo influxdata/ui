@@ -140,13 +140,20 @@ describe('Pinned Items', () => {
       )
 
       taskName = 'Task'
-      cy.log('Using autocomplete for closing paran.')
-      cy.createTaskFromEmpty(taskName, ({name}) => {
-        return `import "influxdata/influxdb/v1{rightarrow}
+      cy.log('Using autocomplete for closing syntax.')
+      cy.createTaskFromEmpty(
+        taskName,
+        ({name}) => {
+          return `import "influxdata/influxdb/v1{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
 from(bucket: "${name}"{rightarrow}
    |> range(start: -2m{rightarrow}`
-      })
+        },
+        '24h',
+        '20m',
+        false,
+        30
+      )
 
       cy.getByTestID('task-save-btn').click()
 

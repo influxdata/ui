@@ -543,10 +543,15 @@ describe('DataExplorer', () => {
       const taskName = 'tax'
       // begin flux
       cy.log('Using autocomplete for closing paran.')
-      cy.getByTestID('flux-editor').should('be.visible')
-        .monacoType(`from(bucket: "defbuck")
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .monacoType(
+          `from(bucket: "defbuck")
   |> range(start: -15m, stop: now())
-  |> filter(fn: (r) => r._measurement == `)
+  |> filter(fn: (r) => r._measurement == `,
+          false,
+          30
+        )
 
       cy.getByTestID('toolbar-tab').click()
       // checks to see if the default variables exist

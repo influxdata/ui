@@ -139,8 +139,12 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                         value={p}
                         onClick={() => {
                           event(
-                            'protocol dropdown',
-                            {selected: p, step: 'broker'},
+                            'completed form field',
+                            {
+                              formField: 'protocol',
+                              selected: p,
+                              step: 'broker',
+                            },
                             {feature: 'subscriptions'}
                           )
                           setProtocol(p)

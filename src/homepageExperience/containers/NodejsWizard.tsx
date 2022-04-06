@@ -15,7 +15,7 @@ import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/nodejs/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'
-import {Finish} from 'src/homepageExperience/components/steps/python/Finish'
+import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteAggregateQuery'
 
 import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'

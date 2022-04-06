@@ -54,8 +54,7 @@ RUN apk \
 # these are all run together as docker's caching mechanism
 # makes big steps like yarn install expensive
 RUN yarn install --production=false && \
-    yarn generate && \
-    $(npm bin)/webpack --config ./webpack.${WEBPACK_FILE}.ts && \
+    yarn build:ci && \
     rm -rf ./node_modules
 
 RUN mkdir /includes

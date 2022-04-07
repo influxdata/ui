@@ -14,11 +14,11 @@ const logDocsOpened = () => {
   event('firstMile.pythonWizard.executeAggregateQuery.docs.opened')
 }
 
-type ExecuteAggregateQueryProps = {
+type OwnProps = {
   bucket: string
 }
 
-export const ExecuteAggregateQuery = (props: ExecuteAggregateQueryProps) => {
+export const ExecuteAggregateQuery = (props: OwnProps) => {
   const org = useSelector(getOrg)
   const {bucket} = props
 

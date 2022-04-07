@@ -12,11 +12,11 @@ const logDocsOpened = () => {
   event('firstMile.nodejsWizard.executeAggregateQuery.docs.opened')
 }
 
-type ExecuteAggregateQueryProps = {
+type OwnProps = {
   bucket: string
 }
 
-export const ExecuteAggregateQuery = (props: ExecuteAggregateQueryProps) => {
+export const ExecuteAggregateQuery = (props: OwnProps) => {
   const {bucket} = props
 
   const fromBucketSnippet = `from(bucket: "${bucket}")

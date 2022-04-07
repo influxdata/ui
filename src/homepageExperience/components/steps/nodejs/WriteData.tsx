@@ -28,11 +28,11 @@ const logDocsOpened = () => {
   event('firstMile.nodejsWizard.writeData.docs.opened')
 }
 
-type WriteDataProps = {
+type OwnProps = {
   onSelectBucket: (bucketName: string) => void
 }
 
-export const WriteDataComponent = (props: WriteDataProps) => {
+export const WriteDataComponent = (props: OwnProps) => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
   const {onSelectBucket} = props

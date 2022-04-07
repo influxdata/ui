@@ -44,4 +44,4 @@ export interface Pageable {
 }
 
 export type FluxDocs = FluxdocsRouteT
-export type FluxFunction = FluxDocs
+export type FluxFunction = FluxDocs & {example?: string}

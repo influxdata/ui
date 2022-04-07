@@ -21,10 +21,13 @@ import {
   generateImport,
 } from 'src/timeMachine/utils/insertFunction'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getFluxExample} from 'src/shared/utils/fluxExample'
 
 // Types
 import {FluxToolbarFunction, EditorType} from 'src/types'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
+import {FluxFunction} from 'src/types/shared'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
@@ -81,7 +84,7 @@ const TimeMachineFluxEditor: FC = () => {
   const defaultColumnPosition = 1 // beginning column of the row
 
   const getFluxTextAndRange = (
-    func: FluxToolbarFunction
+    func
   ): {text: string; range: monacoEditor.Range} => {
     if (!editorInstance) {
       return null
@@ -123,11 +126,17 @@ const TimeMachineFluxEditor: FC = () => {
     return {text, range}
   }
 
-  const handleInsertFluxFunction = (func: FluxToolbarFunction): void => {
+  const handleInsertFluxFunction = (
+    func: FluxToolbarFunction | FluxFunction
+  ): void => {
     if (!editorInstance) {
       return
     }
-    const {text, range} = getFluxTextAndRange(func)
+    const {text, range} = getFluxTextAndRange(
+      isFlagEnabled('fluxDynamicDocs')
+        ? getFluxExample(func as FluxFunction)
+        : func
+    )
 
     const edits = [
       {

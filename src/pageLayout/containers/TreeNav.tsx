@@ -18,6 +18,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
@@ -134,27 +135,16 @@ const TreeSidebar: FC = () => {
                 id="documentation"
                 label="Documentation"
                 testID="nav-subitem-documentation"
-                linkElement={className => (
-                  <Link
-                    className={className}
-                    to={{pathname: 'https://docs.influxdata.com/'}}
-                    target="_blank"
-                  />
+                linkElement={() => (
+                  <SafeBlankLink href="https://docs.influxdata.com/" />
                 )}
               />
               <TreeNav.SubItem
                 id="faqs"
                 label="FAQs"
                 testID="nav-subitem-faqs"
-                linkElement={className => (
-                  <Link
-                    className={className}
-                    to={{
-                      pathname:
-                        'https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/',
-                    }}
-                    target="_blank"
-                  />
+                linkElement={() => (
+                  <SafeBlankLink href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/" />
                 )}
               />
               <TreeNav.SubItem
@@ -168,27 +158,16 @@ const TreeSidebar: FC = () => {
                 id="offcialForum"
                 label="Official Forum"
                 testID="nav-subitem-forum"
-                linkElement={className => (
-                  <Link
-                    className={className}
-                    to={{pathname: 'https://community.influxdata.com'}}
-                    target="_blank"
-                  />
+                linkElement={() => (
+                  <SafeBlankLink href="https://community.influxdata.com" />
                 )}
               />
               <TreeNav.SubItem
                 id="influxdbSlack"
                 label="InfluxDB Slack"
                 testID="nav-subitem-influxdb-slack"
-                linkElement={className => (
-                  <Link
-                    className={className}
-                    to={{
-                      pathname:
-                        'https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email',
-                    }}
-                    target="_blank"
-                  />
+                linkElement={() => (
+                  <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
                 )}
               />
               <TreeNav.SubHeading label="Feedback" />

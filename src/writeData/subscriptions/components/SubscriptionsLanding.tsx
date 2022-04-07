@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext, useState} from 'react'
+import React, {FC, useContext, useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -31,6 +31,7 @@ import {
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {ResourceType} from 'src/types'
@@ -50,6 +51,9 @@ const SubscriptionsLanding: FC = () => {
     sortType: SortTypes.String,
     sortDirection: Sort.Ascending,
   })
+  useEffect(() => {
+    event('visited subscriptions page', {}, {feature: 'subscriptions'})
+  }, [])
   const filteredSubscriptions =
     subscriptions && search
       ? subscriptions.filter(
@@ -115,6 +119,11 @@ const SubscriptionsLanding: FC = () => {
                 icon={IconFont.Plus_New}
                 color={ComponentColor.Primary}
                 onClick={() => {
+                  event(
+                    'create subscription clicked',
+                    {},
+                    {feature: 'subscriptions'}
+                  )
                   history.push(
                     `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/create`
                   )

@@ -25,6 +25,7 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Utils
 import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   name: string
@@ -66,6 +67,11 @@ const StringPatternInput: FC<Props> = ({
               size={ComponentSize.ExtraSmall}
               confirmationLabel={`Yes, delete this ${name}`}
               onConfirm={() => {
+                event(
+                  'removed string parsing rule',
+                  {ruleType: tagType ? 'tag' : 'field'},
+                  {feature: 'subscriptions'}
+                )
                 if (tagType) {
                   formContent.stringTags.splice(itemNum, 1)
                 } else {
@@ -112,6 +118,17 @@ const StringPatternInput: FC<Props> = ({
                   : (formContent.stringFields[itemNum].name = e.target.value)
                 updateForm({...formContent})
               }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {
+                    formField: `${
+                      tagType ? 'stringTags' : 'stringFields'
+                    }.name`,
+                  },
+                  {feature: 'subscriptions'}
+                )
+              }
               status={status}
               maxLength={16}
               testID={`${name}-string-parsing-name`}
@@ -154,6 +171,17 @@ const StringPatternInput: FC<Props> = ({
                   : (formContent.stringFields[itemNum].pattern = e.target.value)
                 updateForm({...formContent})
               }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {
+                    formField: `${
+                      tagType ? 'stringTags' : 'stringFields'
+                    }.pattern`,
+                  },
+                  {feature: 'subscriptions'}
+                )
+              }
               status={status}
               maxLength={56}
               testID={`${name}-string-parsing-pattern`}

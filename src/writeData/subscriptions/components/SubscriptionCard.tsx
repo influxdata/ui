@@ -22,6 +22,7 @@ import {LOAD_DATA, SUBSCRIPTIONS} from 'src/shared/constants/routes'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   subscription: Subscription
@@ -44,7 +45,14 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
             shape={ButtonShape.Square}
             size={ComponentSize.ExtraSmall}
             confirmationLabel="Yes, delete this subscription"
-            onConfirm={() => deleteSubscription(subscription.id)}
+            onConfirm={() => {
+              event(
+                'delete subscription clicked',
+                {},
+                {feature: 'subscriptions'}
+              )
+              deleteSubscription(subscription.id)
+            }}
             confirmationButtonText="Confirm"
             testID="context-delete-menu"
           />
@@ -53,11 +61,12 @@ const SubscriptionCard: FC<Props> = ({subscription}) => {
     >
       <ResourceCard.Name
         name={subscription.name}
-        onClick={() =>
+        onClick={() => {
+          event('subscription card clicked', {}, {feature: 'subscriptions'})
           history.push(
             `/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}/${subscription.id}`
           )
-        }
+        }}
         testID="subscription-name"
       />
       <ResourceCard.Description

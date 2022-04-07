@@ -18,6 +18,7 @@ import {getOrg} from 'src/organizations/selectors'
 
 // Types
 import {AppState, ResourceType, Bucket} from 'src/types'
+import {event} from 'src/cloud/utils/reporting'
 
 const DEFAULT_TOKEN = '<INFLUX_TOKEN>'
 const DEFAULT_BUCKET = '<BUCKET>'
@@ -55,7 +56,10 @@ const WriteDataDetailsProvider: FC = ({children}) => {
   const [query, setQuery] = useState(null)
 
   const changeBucket = useCallback(
-    (toChangeBucket: Bucket) => setBucket(toChangeBucket),
+    (toChangeBucket: Bucket) => {
+      event('selected bucket')
+      setBucket(toChangeBucket)
+    },
     [setBucket]
   )
 

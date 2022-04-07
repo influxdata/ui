@@ -18,6 +18,7 @@ import {AppState} from 'src/types'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
+import {event} from 'src/cloud/utils/reporting'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
@@ -43,6 +44,7 @@ const CreateBucketButton: FC<Props> = ({
     ? {useSimplifiedBucketForm: true}
     : null
   const handleItemClick = (): void => {
+    event('create bucket clicked')
     onShowOverlay('create-bucket', overlayParams, onDismissOverlay)
   }
 

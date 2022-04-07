@@ -17,6 +17,7 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/ParsingDetails.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   currentSubscription: Subscription
@@ -44,6 +45,14 @@ const ParsingDetailsEdit: FC<Props> = ({
         testID={`${className}-parsing-form-line-protocol--button`}
         active={currentSubscription.dataFormat === 'lineprotocol'}
         onClick={() => {
+          event(
+            'data format toggled',
+            {
+              from: currentSubscription.dataFormat,
+              to: 'lineprotocol',
+            },
+            {feature: 'subscriptions'}
+          )
           updateForm({
             ...currentSubscription,
             dataFormat: 'lineprotocol',
@@ -61,6 +70,14 @@ const ParsingDetailsEdit: FC<Props> = ({
         testID={`${className}-parsing-form-json--button`}
         active={currentSubscription.dataFormat === 'json'}
         onClick={() => {
+          event(
+            'data format toggled',
+            {
+              from: currentSubscription.dataFormat,
+              to: 'json',
+            },
+            {feature: 'subscriptions'}
+          )
           updateForm({
             ...currentSubscription,
             dataFormat: 'json',
@@ -78,6 +95,14 @@ const ParsingDetailsEdit: FC<Props> = ({
         testID={`${className}-parsing-form-string--button`}
         active={currentSubscription.dataFormat === 'string'}
         onClick={() => {
+          event(
+            'data format toggled',
+            {
+              from: currentSubscription.dataFormat,
+              to: 'string',
+            },
+            {feature: 'subscriptions'}
+          )
           updateForm({
             ...currentSubscription,
             dataFormat: 'string',

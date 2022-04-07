@@ -23,13 +23,13 @@ class TooltipArguments extends PureComponent<Props> {
     const {argsList} = this.props
 
     if (argsList.length > 0) {
-      let param = 'optional'
+      let param = 'Optional'
       return argsList.map(argument => {
         const description = argument.headline.slice(argument.name.length + 1)
-        argument.required ? (param = 'required') : param
+        argument.required ? (param = 'Required') : param
 
         const paramClass = classnames('param', {
-          isRequired: param === 'required' ? true : false,
+          isRequired: param === 'Required' ? true : false,
         })
         return (
           <div className="flux-function-docs--arguments" key={argument.name}>

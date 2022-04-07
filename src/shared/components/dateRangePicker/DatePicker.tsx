@@ -77,7 +77,7 @@ class DatePicker extends PureComponent<Props, State> {
   private inCurrentMonth: boolean = false
   state = {
     inputValue: null,
-    inputFormat: 'YYYY-MM-DD HH:mm',
+    inputFormat: 'YYYY-MM-DD HH:mm:ss',
   }
 
   public componentDidUpdate() {

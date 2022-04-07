@@ -27,6 +27,7 @@ import {getFluxExample} from 'src/shared/utils/fluxExample'
 // Types
 import {FluxToolbarFunction, EditorType} from 'src/types'
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
+import {FluxFunction} from 'src/types/shared'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
@@ -125,12 +126,16 @@ const TimeMachineFluxEditor: FC = () => {
     return {text, range}
   }
 
-  const handleInsertFluxFunction = (func: FluxToolbarFunction): void => {
+  const handleInsertFluxFunction = (
+    func: FluxToolbarFunction | FluxFunction
+  ): void => {
     if (!editorInstance) {
       return
     }
     const {text, range} = getFluxTextAndRange(
-      isFlagEnabled('fluxDynamicDocs') ? getFluxExample(func) : func
+      isFlagEnabled('fluxDynamicDocs')
+        ? getFluxExample(func as FluxFunction)
+        : func
     )
 
     const edits = [

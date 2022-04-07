@@ -5,21 +5,19 @@ export const getFluxExample = (func: FluxFunction) => {
 
   let example = `${packageName}.${name}`
   if (kind.toLowerCase() === 'function') {
-    example =
-      `${packageName}.${name}(` +
-      fluxParameters.reduce((injectedParameters, parameter) => {
-        if (parameter.required) {
-          // add a comma if the current injected list is not all spaces
-          if (injectedParameters.trim().length !== 0) {
-            injectedParameters += ', '
-          }
-          injectedParameters += `${parameter.name}: `
-        } else {
-          injectedParameters += ' '
+    let injectedParameters = ''
+    for (const parameter of fluxParameters) {
+      if (parameter.required) {
+        // add a comma if the current injected list is not all spaces
+        if (injectedParameters.trim().length !== 0) {
+          injectedParameters = `${injectedParameters}, `
         }
-        return injectedParameters
-      }, '') +
-      ')'
+        injectedParameters = `${injectedParameters}${parameter.name}: `
+      } else {
+        injectedParameters = `${injectedParameters} `
+      }
+    }
+    example = `${packageName}.${name}(${injectedParameters})`
   }
   return {...func, example}
 }

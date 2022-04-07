@@ -550,7 +550,7 @@ describe('DataExplorer', () => {
   |> range(start: -15m, stop: now())
   |> filter(fn: (r) => r._measurement == `,
           false,
-          30
+          50
         )
 
       cy.getByTestID('toolbar-tab').click()

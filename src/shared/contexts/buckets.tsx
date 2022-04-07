@@ -10,12 +10,11 @@ import React, {
 } from 'react'
 
 // Contexts
-import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {PipeContext} from 'src/flows/context/pipe'
 import {CLOUD} from 'src/shared/constants'
 
 // Types
 import {Bucket, RemoteDataState} from 'src/types'
+import {QueryScope} from 'src/types/flows'
 
 interface BucketContextType {
   loading: RemoteDataState
@@ -31,12 +30,13 @@ const DEFAULT_CONTEXT: BucketContextType = {
 
 export const BucketContext = createContext<BucketContextType>(DEFAULT_CONTEXT)
 
-export const BucketProvider: FC = ({children}) => {
+interface Props {
+  scope?: QueryScope
+}
+
+export const BucketProvider: FC<Props> = ({children, scope}) => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [buckets, setBuckets] = useState<Bucket[]>([])
-  const {getPanelQueries} = useContext(FlowQueryContext)
-  const {id} = useContext(PipeContext)
-  const scope = getPanelQueries(id)?.scope ?? {}
   const controller = useRef(new AbortController())
 
   useEffect(() => {
@@ -51,11 +51,14 @@ export const BucketProvider: FC = ({children}) => {
   }, [controller])
 
   useEffect(() => {
-    if (!scope.region || !scope.org) {
+    if (!scope?.region || !scope?.org) {
       return
     }
 
-    // TODO: cancel any active queries
+    if (controller.current) {
+      controller.current.abort()
+      controller.current = null
+    }
 
     setLoading(RemoteDataState.Loading)
 
@@ -64,13 +67,13 @@ export const BucketProvider: FC = ({children}) => {
       'Accept-Encoding': 'gzip',
     }
 
-    if (scope.token) {
+    if (scope?.token) {
       headers['Authorization'] = `Token ${scope.token}`
     }
 
     fetch(
-      `${scope.region}/api/v2/buckets?limit=${CLOUD ? -1 : 100}&orgID=${
-        scope.org
+      `${scope?.region}/api/v2/buckets?limit=${CLOUD ? -1 : 100}&orgID=${
+        scope?.org
       }`,
       {
         method: 'GET',
@@ -82,6 +85,7 @@ export const BucketProvider: FC = ({children}) => {
         return response.json()
       })
       .then(response => {
+        controller.current = null
         const bucks = response.buckets
           .map(bucket => ({
             id: bucket.id,
@@ -138,8 +142,10 @@ export const BucketProvider: FC = ({children}) => {
         setLoading(RemoteDataState.Done)
         setBuckets([...bucks.user, ...bucks.system, ...bucks.sample])
       })
-      .catch(() => {})
-  }, [scope.region, scope.org, controller])
+      .catch(() => {
+        controller.current = null
+      })
+  }, [scope?.region, scope?.org, controller])
 
   const addBucket = (bucket: Bucket) => {
     setBuckets([...buckets, bucket])

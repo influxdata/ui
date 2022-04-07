@@ -6,7 +6,7 @@ import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
 import {Bucket, RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
-import {BucketContext} from 'src/flows/context/bucket.scoped'
+import {BucketContext} from 'src/shared/contexts/buckets'
 import {PipeContext} from 'src/flows/context/pipe'
 import {event} from 'src/cloud/utils/reporting'
 

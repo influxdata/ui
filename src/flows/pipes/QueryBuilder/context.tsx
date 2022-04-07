@@ -1,16 +1,10 @@
 // Libraries
-import React, {
-  FC,
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-} from 'react'
+import React, {FC, createContext, useContext, useState, useMemo} from 'react'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
-import {BucketContext} from 'src/flows/context/bucket.scoped'
+import {BucketContext} from 'src/shared/contexts/buckets'
 
 import {formatTimeRangeArguments} from 'src/timeMachine/apis/queryBuilder'
 

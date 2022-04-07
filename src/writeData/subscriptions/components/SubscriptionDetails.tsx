@@ -23,6 +23,7 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/SubscriptionDetails.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   currentSubscription: Subscription
@@ -45,6 +46,9 @@ const SubscriptionDetails: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
+  useEffect(() => {
+    event('visited subscription details page', {}, {feature: 'subscriptions'})
+  }, [])
   useEffect(() => {
     if (edit) {
       updateForm({...currentSubscription, bucket: bucket.name})
@@ -71,6 +75,7 @@ const SubscriptionDetails: FC<Props> = ({
               text="Close"
               color={ComponentColor.Tertiary}
               onClick={() => {
+                event('close button clicked', {}, {feature: 'subscriptions'})
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
               titleText="Cancel update and return to Subscriptions list"
@@ -80,7 +85,10 @@ const SubscriptionDetails: FC<Props> = ({
             <Button
               text="Edit"
               color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-              onClick={() => setEdit(!edit)}
+              onClick={() => {
+                event('edit button clicked', {}, {feature: 'subscriptions'})
+                setEdit(!edit)
+              }}
               type={ButtonType.Button}
               titleText="Edit"
               testID="update-subscription-form--edit"
@@ -88,7 +96,10 @@ const SubscriptionDetails: FC<Props> = ({
             <Button
               text="Next"
               color={ComponentColor.Secondary}
-              onClick={() => setFormActive('parsing')}
+              onClick={() => {
+                event('next button clicked', {}, {feature: 'subscriptions'})
+                setFormActive('parsing')
+              }}
               type={ButtonType.Button}
               titleText="Next"
               testID="update-subscription-form--submit"
@@ -97,6 +108,11 @@ const SubscriptionDetails: FC<Props> = ({
               text="View Data"
               color={ComponentColor.Success}
               onClick={() => {
+                event(
+                  'view data button clicked',
+                  {},
+                  {feature: 'subscriptions'}
+                )
                 history.push(`/orgs/${org.id}/notebooks`)
               }}
               type={ButtonType.Button}

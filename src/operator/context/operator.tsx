@@ -10,7 +10,12 @@ import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 import {getQuartzMe} from 'src/me/selectors'
 
 // Types
-import {OperatorAccount, OperatorOrg, RemoteDataState} from 'src/types'
+import {
+  AccountType,
+  OperatorAccount,
+  OperatorOrg,
+  RemoteDataState,
+} from 'src/types'
 
 // Constants
 import {OperatorRoutes} from 'src/operator/constants'
@@ -22,7 +27,7 @@ export type Props = {
 export interface OperatorContextType {
   accounts: OperatorAccount[]
   accountTypes: string[]
-  setAccountTypes: (acountTypes: string[]) => void
+  setAccountTypes: (accountTypes: AccountType[]) => void
   handleGetAccounts: () => void
   handleGetOrgs: () => void
   organizations: OperatorOrg[]
@@ -56,7 +61,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
-  const [accountTypes, setAccountTypes] = useState<string[]>([])
+  const [accountTypes, setAccountTypes] = useState<AccountType[]>([])
   const dispatch = useDispatch()
   const quartzMe = useSelector(getQuartzMe)
 

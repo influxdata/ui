@@ -5,15 +5,18 @@ import {
 } from '@influxdata/clockface'
 import React, {FC, useContext} from 'react'
 import {OperatorContext} from './context/operator'
+import {AccountType} from 'src/types'
 
 const ResourcesAccountType: FC = () => {
   const {accountTypes, setAccountTypes} = useContext(OperatorContext)
-  const availableTypes: string[] = allAccountTypes
+  const availableTypes: AccountType[] = allAccountTypes
 
   const handleSelect = (selectedOption: string): void =>
     accountTypes.includes(selectedOption)
-      ? setAccountTypes(accountTypes.filter(x => x !== selectedOption))
-      : setAccountTypes([selectedOption, ...accountTypes])
+      ? setAccountTypes(
+          accountTypes.filter(x => x !== (selectedOption as AccountType))
+        )
+      : setAccountTypes([selectedOption as AccountType, ...accountTypes])
 
   return (
     <MultiSelectDropdown
@@ -28,11 +31,11 @@ const ResourcesAccountType: FC = () => {
   )
 }
 
-const allAccountTypes: string[] = [
+export default ResourcesAccountType
+
+const allAccountTypes: AccountType[] = [
   'cancelled',
   'contract',
   'free',
   'pay_as_you_go',
 ]
-
-export default ResourcesAccountType

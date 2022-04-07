@@ -101,4 +101,41 @@ describe('Flux example functions and values', () => {
       `${exampleFunc.package}.${exampleFunc.name}(myMeasurement: , myField: , myClass: )`
     )
   })
+
+  it('can create an example Flux function call with required and optional parameters', () => {
+    const exampleFunc = {
+      path: 'test',
+      package: 'test',
+      name: 'myFuncRequiredAndOptionalArgs',
+      kind: 'Function',
+      headline:
+        'A function that takes two required and one optional parameters',
+      fluxType: '(myMeasurement:A, myField:B, ?myClass: string) => string',
+      description: null,
+      fluxParameters: [
+        {
+          name: 'myMeasurement',
+          headline: 'myMeasurement: Measurement to use as training data.',
+          description: null,
+          required: true,
+        },
+        {
+          name: 'myField',
+          headline: 'myField: Field to use as training data.',
+          description: null,
+          required: true,
+        },
+        {
+          name: 'myClass',
+          headline: 'myClass: Class to classify against.',
+          description: null,
+          required: false,
+        },
+      ],
+    }
+
+    expect(getFluxExample(exampleFunc).example).toEqual(
+      `${exampleFunc.package}.${exampleFunc.name}(myMeasurement: , myField:  )`
+    )
+  })
 })

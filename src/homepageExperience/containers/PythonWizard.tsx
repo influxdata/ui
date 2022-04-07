@@ -91,7 +91,7 @@ export class PythonWizard extends PureComponent<null, State> {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 8: {
-        return <Finish />
+        return <Finish wizardEventName="pythonWizard" />
       }
       default: {
         return <Overview />

@@ -16,9 +16,13 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 import {event} from 'src/cloud/utils/reporting'
 
-export const Finish = () => {
+type OwnProps = {
+  wizardEventName: string
+}
+
+export const Finish = (props: OwnProps) => {
   useEffect(() => {
-    event('firstMile.pythonWizard.finished')
+    event(`firstMile.${props.wizardEventName}.finished`)
   }, [])
   return (
     <>

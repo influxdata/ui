@@ -226,7 +226,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('true-json-parsing-path').type('$.t')
     // add field
     cy.getByTestID('json-parsing-add-rule').click()
-    cy.getByTestID('json-parsing-add-rule-1')
+    cy.getByTestID('json-parsing-add-rule-0')
       .first()
       .click()
     // delete field
@@ -293,7 +293,7 @@ describe('Subscriptions', () => {
       .type('$.t2')
     // add field
     cy.getByTestID('json-parsing-add-rule').click()
-    cy.getByTestID('json-parsing-add-rule-1')
+    cy.getByTestID('json-parsing-add-rule-0')
       .first()
       .click()
     // delete field
@@ -369,7 +369,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('Tag-string-parsing-pattern').type('t=//t')
     // add field
     cy.getByTestID('string-parsing-add-rule').click()
-    cy.getByTestID('string-parsing-add-rule-1')
+    cy.getByTestID('string-parsing-add-rule-0')
       .first()
       .click()
     // delete field
@@ -432,7 +432,7 @@ describe('Subscriptions', () => {
       .type('t2=//t')
     // add field
     cy.getByTestID('string-parsing-add-rule').click()
-    cy.getByTestID('string-parsing-add-rule-1')
+    cy.getByTestID('string-parsing-add-0')
       .first()
       .click()
     // delete field

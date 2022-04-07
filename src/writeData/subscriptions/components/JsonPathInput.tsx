@@ -176,7 +176,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                             ].type = d.toLowerCase())
                       }}
                       selected={dataType === d}
-                      testID={`${tagType}-json-parsing-type-${1}`}
+                      testID={`${tagType}-json-parsing-type-${key}`}
                     >
                       {d}
                     </Dropdown.Item>

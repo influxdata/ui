@@ -53,7 +53,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('subscriptions-empty-state').should('exist')
   })
 
-  it('should create, update and delete LP subscription', () => {
+  it('should create, update, stop, start and delete LP subscription', () => {
     cy.getByTestID('subscriptions--tab').click()
     cy.getByTestID('create-subscription-button--empty').should('be.visible')
     cy.getByTestID('create-subscription-button--empty')
@@ -172,6 +172,28 @@ describe('Subscriptions', () => {
       .click()
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-card').contains('My Edited Subscription')
+    // stop subscription
+    cy.getByTestID('subscription-name').should('be.visible')
+    cy.getByTestID('subscription-name').click()
+    cy.get('.subscription-details-page').should('be.visible')
+    cy.getByTestID('subscription-details-page--status-button')
+      .should('be.visible')
+      .click()
+    cy.get('.cf-spinner-container').should('be.visible')
+    cy.get('.subscription-details-page__status--STOPPED')
+      .should('be.visible')
+      .contains('STOPPED')
+    // start subscription
+    cy.getByTestID('subscription-details-page--status-button')
+      .should('be.visible')
+      .click()
+    cy.get('.cf-spinner-container').should('be.visible')
+    cy.get('.subscription-details-page__status--RUNNING')
+      .should('be.visible')
+      .contains('RUNNING')
+    cy.getByTestID('update-broker-form--cancel')
+      .should('be.visible')
+      .click()
     // delete
     cy.getByTestID('context-delete-menu--button').should('be.visible')
     cy.getByTestID('context-delete-menu--button').click()
@@ -182,7 +204,7 @@ describe('Subscriptions', () => {
     cy.wait('@GetSubscriptions')
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
-  it('should create, update and delete a JSON subscription', () => {
+  it('should create, update, stop, start and delete a JSON subscription', () => {
     cy.getByTestID('subscriptions--tab').click()
     cy.getByTestID('create-subscription-button--control-bar').should(
       'be.visible'
@@ -321,6 +343,28 @@ describe('Subscriptions', () => {
       .click()
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-card').contains('My Edited Subscription')
+    // stop subscription
+    cy.getByTestID('subscription-name').should('be.visible')
+    cy.getByTestID('subscription-name').click()
+    cy.get('.subscription-details-page').should('be.visible')
+    cy.getByTestID('subscription-details-page--status-button')
+      .should('be.visible')
+      .click()
+    cy.get('.cf-spinner-container').should('be.visible')
+    cy.get('.subscription-details-page__status--STOPPED')
+      .should('be.visible')
+      .contains('STOPPED')
+    // start subscription
+    cy.getByTestID('subscription-details-page--status-button')
+      .should('be.visible')
+      .click()
+    cy.get('.cf-spinner-container').should('be.visible')
+    cy.get('.subscription-details-page__status--RUNNING')
+      .should('be.visible')
+      .contains('RUNNING')
+    cy.getByTestID('update-broker-form--cancel')
+      .should('be.visible')
+      .click()
     // delete
     cy.getByTestID('context-delete-menu--button').should('be.visible')
     cy.getByTestID('context-delete-menu--button').click()
@@ -332,7 +376,7 @@ describe('Subscriptions', () => {
     cy.getByTestID('subscriptions-empty-state').should('be.visible')
   })
 
-  it('should create, update and delete a String subscription', () => {
+  it('should create, update, stop, start and delete a String subscription', () => {
     cy.getByTestID('subscriptions--tab').click()
     cy.getByTestID('create-subscription-button--control-bar').should(
       'be.visible'
@@ -456,6 +500,28 @@ describe('Subscriptions', () => {
       .click()
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-card').contains('My Edited Subscription')
+    // stop subscription
+    cy.getByTestID('subscription-name').should('be.visible')
+    cy.getByTestID('subscription-name').click()
+    cy.get('.subscription-details-page').should('be.visible')
+    cy.getByTestID('subscription-details-page--status-button')
+      .should('be.visible')
+      .click()
+    cy.get('.cf-spinner-container').should('be.visible')
+    cy.get('.subscription-details-page__status--STOPPED')
+      .should('be.visible')
+      .contains('STOPPED')
+    // start subscription
+    cy.getByTestID('subscription-details-page--status-button')
+      .should('be.visible')
+      .click()
+    cy.get('.cf-spinner-container').should('be.visible')
+    cy.get('.subscription-details-page__status--RUNNING')
+      .should('be.visible')
+      .contains('RUNNING')
+    cy.getByTestID('update-broker-form--cancel')
+      .should('be.visible')
+      .click()
     // delete
     cy.getByTestID('context-delete-menu--button').should('be.visible')
     cy.getByTestID('context-delete-menu--button').click()

@@ -11,7 +11,7 @@ import {fireEvent} from '@testing-library/react'
 jest.useFakeTimers().setSystemTime(new Date('2022-03-10 20:00:00').getTime())
 
 describe('Date Range Picker', function() {
-  test('should have input values in the correct format after user changes the date selection', () => {
+  it('should have input values in the correct format after user changes the date selection', () => {
     const {getAllByText} = renderWithReduxAndRouter(
       <DateRangePicker
         timeRange={convertTimeRangeToCustom(pastHourTimeRange)}
@@ -37,7 +37,7 @@ describe('Date Range Picker', function() {
     expect(screen.getByTitle('Stop')).toHaveValue('2022-03-10 21:00:00')
   })
 
-  test('should have the `Apply Time Range` Button disabled on invalid input', () => {
+  it('should have the `Apply Time Range` Button disabled on invalid input', () => {
     const {getAllByTestId, getByTestId} = renderWithReduxAndRouter(
       <DateRangePicker
         timeRange={convertTimeRangeToCustom(pastHourTimeRange)}

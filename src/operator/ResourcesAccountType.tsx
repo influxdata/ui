@@ -12,7 +12,7 @@ const ResourcesAccountType: FC = () => {
   const availableTypes: AccountType[] = allAccountTypes
 
   const handleSelect = (selectedOption: string): void =>
-    accountTypes.includes(selectedOption)
+    accountTypes.includes(JSON.parse(selectedOption))
       ? setAccountTypes(
           accountTypes.filter(x => x !== (selectedOption as AccountType))
         )

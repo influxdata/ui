@@ -26,7 +26,7 @@ export type Props = {
 
 export interface OperatorContextType {
   accounts: OperatorAccount[]
-  accountTypes: string[]
+  accountTypes: AccountType[]
   setAccountTypes: (accountTypes: AccountType[]) => void
   handleGetAccounts: () => void
   handleGetOrgs: () => void

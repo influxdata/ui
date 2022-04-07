@@ -8,11 +8,11 @@ const logCopyCodeSnippet = () => {
   event('firstMile.pythonWizard.executeQuery.code.copied')
 }
 
-type ExecuteQueryProps = {
+type OwnProps = {
   bucket: string
 }
 
-export const ExecuteQuery = (props: ExecuteQueryProps) => {
+export const ExecuteQuery = (props: OwnProps) => {
   const org = useSelector(getOrg)
   const {bucket} = props
 

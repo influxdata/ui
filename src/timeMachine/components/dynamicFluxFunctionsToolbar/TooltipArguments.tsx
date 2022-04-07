@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-
+import classnames from 'classnames'
 interface Args {
   headline: string
   name: string
@@ -23,11 +23,18 @@ class TooltipArguments extends PureComponent<Props> {
     const {argsList} = this.props
 
     if (argsList.length > 0) {
+      let param = 'Optional'
       return argsList.map(argument => {
         const description = argument.headline.slice(argument.name.length + 1)
+        argument.required ? (param = 'Required') : param
+
+        const paramClass = classnames('param', {
+          isRequired: param === 'Required' ? true : false,
+        })
         return (
           <div className="flux-function-docs--arguments" key={argument.name}>
             <span>{argument.name}:</span>
+            <span className={paramClass}>({param})</span>
             <div>{description}</div>
           </div>
         )

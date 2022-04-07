@@ -44,6 +44,18 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       }
     })
   }
+  if (form.jsonTimestamp.path) {
+    const startChar = form.jsonTimestamp.path.charAt(0)
+    const newVal = checkJSONPathStarts$(startChar, form.jsonTimestamp.path)
+
+    if (newVal) {
+      form.jsonTimestamp.path = newVal
+    }
+  }
+
+  if (form.jsonTimestamp.path === '') {
+    delete form.jsonTimestamp
+  }
   if (form.stringMeasurement) {
     form.stringMeasurement.pattern = form.stringMeasurement.pattern.replace(
       /\\\\/g,

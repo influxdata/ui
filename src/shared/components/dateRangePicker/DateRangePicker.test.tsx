@@ -36,4 +36,22 @@ describe('Date Range Picker', function() {
     expect(screen.getByTitle('Start')).toHaveValue('2022-03-10 18:00')
     expect(screen.getByTitle('Stop')).toHaveValue('2022-03-10 21:00')
   })
+
+  test.only('should have the `Apply Time Range` Button disabled on invalid input', () => {
+    const {getAllByTestId, getByTestId} = renderWithReduxAndRouter(
+      <DateRangePicker
+        timeRange={convertTimeRangeToCustom(pastHourTimeRange)}
+        onSetTimeRange={() => {}}
+        onClose={() => {}}
+        position={{position: 'relative'}}
+      />
+    )
+    const lowerInput = getAllByTestId('timerange--input')[0]
+
+    fireEvent.change(lowerInput, {target: {value: 'iampumpkinthecat;)'}})
+
+    const applyButton = getByTestId('daterange--apply-btn')
+
+    expect(applyButton).toBeDisabled()
+  })
 })

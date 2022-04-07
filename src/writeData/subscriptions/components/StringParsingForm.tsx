@@ -185,7 +185,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                     setRule(r)
                   }}
                   selected={rule === r}
-                  testID={`string-parsing-add-rule-${1}`}
+                  testID={`string-parsing-add-rule-${key}`}
                 >
                   {r}
                 </Dropdown.Item>

@@ -150,7 +150,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                           setProtocol(p)
                         }}
                         selected={protocol === p}
-                        testID={`${className}-broker-form-${1}`}
+                        testID={`${className}-broker-form-${key}`}
                       >
                         {p}
                       </Dropdown.Item>

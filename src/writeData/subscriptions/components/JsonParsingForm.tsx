@@ -175,7 +175,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                         formContent.jsonMeasurementKey.type = d.toLowerCase()
                       }}
                       selected={dataTypeM === d}
-                      testID={`measurement-json-parsing-type-${1}`}
+                      testID={`measurement-json-parsing-type-${key}`}
                     >
                       {d}
                     </Dropdown.Item>

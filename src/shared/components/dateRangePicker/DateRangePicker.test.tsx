@@ -37,7 +37,7 @@ describe('Date Range Picker', function() {
     expect(screen.getByTitle('Stop')).toHaveValue('2022-03-10 21:00:00')
   })
 
-  test.only('should have the `Apply Time Range` Button disabled on invalid input', () => {
+  test('should have the `Apply Time Range` Button disabled on invalid input', () => {
     const {getAllByTestId, getByTestId} = renderWithReduxAndRouter(
       <DateRangePicker
         timeRange={convertTimeRangeToCustom(pastHourTimeRange)}

@@ -432,7 +432,7 @@ describe('Subscriptions', () => {
       .type('t2=//t')
     // add field
     cy.getByTestID('string-parsing-add-rule').click()
-    cy.getByTestID('string-parsing-add-0')
+    cy.getByTestID('string-parsing-add-rule-0')
       .first()
       .click()
     // delete field

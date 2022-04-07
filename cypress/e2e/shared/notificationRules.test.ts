@@ -218,10 +218,9 @@ describe('NotificationRules', () => {
 
     cy.get<SlackNotificationEndpoint>('@selectedEndpoint').then(({id}) => {
       cy.getByTestID(`endpoint--dropdown-item ${id}`).click()
-      cy.getByTestID('endpoint--dropdown--button')
-        .within(() => {
-          cy.contains(name2)
-        })
+      cy.getByTestID('endpoint--dropdown--button').within(() => {
+        cy.contains(name2)
+      })
     })
 
     const message = `

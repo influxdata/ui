@@ -134,13 +134,28 @@ const TreeSidebar: FC = () => {
                 id="documentation"
                 label="Documentation"
                 testID="nav-subitem-documentation"
-                linkElement={className => <Link className={className} to="" />}
+                linkElement={className => (
+                  <Link
+                    className={className}
+                    to={{pathname: 'https://docs.influxdata.com/'}}
+                    target="_blank"
+                  />
+                )}
               />
               <TreeNav.SubItem
                 id="faqs"
                 label="FAQs"
                 testID="nav-subitem-faqs"
-                linkElement={className => <Link className={className} to="" />}
+                linkElement={className => (
+                  <Link
+                    className={className}
+                    to={{
+                      pathname:
+                        'https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/',
+                    }}
+                    target="_blank"
+                  />
+                )}
               />
               <TreeNav.SubItem
                 id="contactSupport"
@@ -153,13 +168,28 @@ const TreeSidebar: FC = () => {
                 id="offcialForum"
                 label="Official Forum"
                 testID="nav-subitem-forum"
-                linkElement={className => <Link className={className} to="" />}
+                linkElement={className => (
+                  <Link
+                    className={className}
+                    to={{pathname: 'https://community.influxdata.com'}}
+                    target="_blank"
+                  />
+                )}
               />
               <TreeNav.SubItem
                 id="influxdbSlack"
                 label="InfluxDB Slack"
                 testID="nav-subitem-influxdb-slack"
-                linkElement={className => <Link className={className} to="" />}
+                linkElement={className => (
+                  <Link
+                    className={className}
+                    to={{
+                      pathname:
+                        'https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email',
+                    }}
+                    target="_blank"
+                  />
+                )}
               />
               <TreeNav.SubHeading label="Feedback" />
               <TreeNav.SubItem

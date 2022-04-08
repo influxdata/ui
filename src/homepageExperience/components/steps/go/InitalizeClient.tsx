@@ -7,7 +7,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {getMe} from 'src/me/selectors'
 
 const logCopyCodeSnippet = () => {
-  event('firstMile.nodejsWizard.initializeClient.code.copied')
+  event('firstMile.goWizard.initializeClient.code.copied')
 }
 
 export const InitalizeClient = () => {
@@ -16,22 +16,26 @@ export const InitalizeClient = () => {
   const url =
     me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
 
-  const codeSnippet = `const {InfluxDB, Point} = require('@influxdata/influxdb-client')
+  const codeSnippet = `package main
 
-const token = process.env.INFLUXDB_TOKEN
-const url = '${url}'
+import (
+	"os"
 
-const client = new InfluxDB({url, token})`
+	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
+)
+
+func main() {
+	token := os.Getenv("INFLUXDB_TOKEN")
+	url := "${url}"
+	client := influxdb2.NewClient(url, token)
+}`
 
   return (
     <>
       <h1>Initalize Client</h1>
-      <p>
-        Run this command in your terminal to open the interactive Nodejs shell:
-      </p>
-      <CodeSnippet text="node" />
+
       <p style={{marginTop: '40px'}}>
-        Paste the following code after the prompt (>) and press Enter.
+        Paste following code in your <code>main.go</code> file:
       </p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '42px'}}>

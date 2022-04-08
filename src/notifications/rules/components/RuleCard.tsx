@@ -45,6 +45,7 @@ import {NotificationRuleDraft, Label, AlertHistoryType} from 'src/types'
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   rule: NotificationRuleDraft

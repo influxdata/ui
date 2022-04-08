@@ -75,14 +75,13 @@ const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
       for (let i = 0; i < draftQueries.length; i++) {
         const draftQuery = draftQueries[i]
         let pipe: any = {
-          family: 'inputs',
           id: `local_${nanoid()}`,
           visible: !draftQuery.hidden,
         }
         if (draftQuery.editMode === 'builder') {
           const bucket = completeBuckets.splice(0, 1)
 
-          pipe.name = 'Build a Query'
+          pipe.title = `Build a Query ${i + 1}`
           pipe.type = 'queryBuilder'
           pipe = {
             ...pipe,
@@ -91,7 +90,7 @@ const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
           }
         } else {
           pipe.title = 'Query to Run'
-          pipe.queries = properties.queries
+          pipe.queries = draftQuery.builderConfig
           pipe.activeQuery = 0
           pipe.type = 'rawFluxEditor'
         }
@@ -99,8 +98,11 @@ const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
         pipes.push(pipe)
         pipes.push({
           id: `local_${nanoid()}`,
-          properties,
-          title: `Visualize the Result ${i}`,
+          properties: {
+            ...properties,
+            builderConfig: draftQuery.builderConfig,
+          },
+          title: `Visualize the Result ${i + 1}`,
           type: 'visualization',
           visible: true,
         })

@@ -130,8 +130,6 @@ const mstp = (state: AppState) => {
 
   // this task is only editable if the /tasks API returns it.
   // tasks created by an Alert are uneditable and are not returned from /tasks API.
-  console.log({currentTask})
-  console.log({tasksFilteredByName})
   const isTaskEditable = currentTask
     ? !!tasksFilteredByName.find(t => t.id === currentTask.id)
     : false

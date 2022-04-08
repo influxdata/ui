@@ -10,7 +10,12 @@ import {getAccountsError, getOrgsError} from 'src/shared/copy/notifications'
 import {getQuartzMe} from 'src/me/selectors'
 
 // Types
-import {OperatorAccount, OperatorOrg, RemoteDataState} from 'src/types'
+import {
+  AccountType,
+  OperatorAccount,
+  OperatorOrg,
+  RemoteDataState,
+} from 'src/types'
 
 // Constants
 import {OperatorRoutes} from 'src/operator/constants'
@@ -21,6 +26,10 @@ export type Props = {
 
 export interface OperatorContextType {
   accounts: OperatorAccount[]
+  accountTypes: AccountType[]
+  setAccountTypes: (
+    accountTypes: AccountType[] | ((prevState: AccountType[]) => AccountType[])
+  ) => void
   handleGetAccounts: () => void
   handleGetOrgs: () => void
   organizations: OperatorOrg[]
@@ -33,6 +42,8 @@ export interface OperatorContextType {
 
 export const DEFAULT_CONTEXT: OperatorContextType = {
   accounts: [],
+  accountTypes: [],
+  setAccountTypes: () => {},
   handleGetAccounts: () => {},
   handleGetOrgs: () => {},
   organizations: [],
@@ -52,6 +63,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
   const [accountStatus, setAccountStatus] = useState(RemoteDataState.NotStarted)
   const [orgsStatus, setOrgsStatus] = useState(RemoteDataState.NotStarted)
   const [searchTerm, setSearchTerm] = useState('')
+  const [accountTypes, setAccountTypes] = useState<AccountType[]>([])
   const dispatch = useDispatch()
   const quartzMe = useSelector(getQuartzMe)
 
@@ -63,6 +75,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       const resp = await getOperatorAccounts({
         query: {
           query: searchTerm,
+          accountTypes,
         },
       })
 
@@ -77,12 +90,14 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       dispatch(notify(getAccountsError()))
       console.error({error})
     }
-  }, [searchTerm, dispatch])
+  }, [accountTypes, searchTerm, dispatch])
 
   const handleGetOrgs = useCallback(async () => {
     try {
       setOrgsStatus(RemoteDataState.Loading)
-      const resp = await getOperatorOrgs({query: {query: searchTerm}})
+      const resp = await getOperatorOrgs({
+        query: {query: searchTerm, accountTypes},
+      })
 
       if (resp.status !== 200) {
         throw new Error(resp.data.message)
@@ -95,7 +110,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       setOrgsStatus(RemoteDataState.Error)
       dispatch(notify(getOrgsError()))
     }
-  }, [searchTerm, dispatch])
+  }, [accountTypes, searchTerm, dispatch])
 
   const {pathname} = useLocation()
 
@@ -134,6 +149,8 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     <OperatorContext.Provider
       value={{
         accounts,
+        accountTypes,
+        setAccountTypes,
         handleGetAccounts,
         handleGetOrgs,
         organizations,

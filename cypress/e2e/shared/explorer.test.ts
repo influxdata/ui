@@ -757,6 +757,7 @@ describe('DataExplorer', () => {
       cy.get('[id="variable"]').click()
       cy.getByTestID('flux-editor').should('be.visible')
       cy.get('[id="dashboard"]').click()
+      cy.getByTestID('cell--radio-button').click()
       cy.getByTestID('save-as-dashboard-cell--dropdown').should('be.visible')
 
       // close save as
@@ -790,6 +791,7 @@ describe('DataExplorer', () => {
       it('can save as cell into multiple dashboards', () => {
         // input dashboards and cell name
         dashboardNames.forEach(name => {
+          cy.getByTestID('cell--radio-button').click()
           cy.getByTestID('save-as-dashboard-cell--dropdown').click()
           cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
             cy.contains(name).click()
@@ -816,6 +818,7 @@ describe('DataExplorer', () => {
 
       it('can create new dashboard as saving target', () => {
         // select and input new dashboard name and cell name
+        cy.getByTestID('cell--radio-button').click()
         cy.getByTestID('save-as-dashboard-cell--dropdown').click()
         cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
           cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()

@@ -85,7 +85,8 @@ const FlowHeader: FC = () => {
   }, [handleSave])
 
   const handleRename = (name: string) => {
-    updateOther({name})
+    flow.name = name
+    updateOther(flow)
     try {
       updatePinnedItemByParam(flow.id, {name})
     } catch (err) {

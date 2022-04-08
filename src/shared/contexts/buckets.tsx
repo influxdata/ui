@@ -1,13 +1,6 @@
 // Libraries
-import React, {
-  FC,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useMemo,
-  useRef,
-} from 'react'
+import React, {FC, createContext, useEffect, useMemo, useRef} from 'react'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Contexts
 import {CLOUD} from 'src/shared/constants'
@@ -20,47 +13,70 @@ interface BucketContextType {
   loading: RemoteDataState
   buckets: Bucket[]
   addBucket: (_: Bucket) => void
+  createBucket: (_: Bucket) => void
+  refresh: () => void
 }
 
 const DEFAULT_CONTEXT: BucketContextType = {
   loading: RemoteDataState.NotStarted,
   buckets: [],
   addBucket: (_: Bucket) => {},
+  createBucket: (_: Bucket) => {},
+  refresh: () => {},
 }
 
 export const BucketContext = createContext<BucketContextType>(DEFAULT_CONTEXT)
 
+const useLocalStorageState = createLocalStorageStateHook('buckets', {})
+
 interface Props {
-  scope?: QueryScope
+  scope: QueryScope
 }
 
 export const BucketProvider: FC<Props> = ({children, scope}) => {
-  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
-  const [buckets, setBuckets] = useState<Bucket[]>([])
-  const controller = useRef(new AbortController())
+  const cacheKey = `${scope.region};;<${scope.org}>`
+  const [bucketCache, setBucketCache] = useLocalStorageState()
+  const buckets = bucketCache[cacheKey]?.buckets ?? []
+  const loading = bucketCache[cacheKey]?.loading ?? RemoteDataState.NotStarted
+  const controller = useRef<AbortController>(null)
 
   useEffect(() => {
-    return () => {
-      try {
-        // Cancelling active query so that there's no memory leak in this component when unmounting
-        controller.current.abort()
-      } catch (e) {
-        // Do nothing
+    if (controller.current) {
+      return () => {
+        try {
+          // Cancelling active query so that there's no memory leak in this component when unmounting
+          controller.current.abort()
+        } catch (e) {
+          // Do nothing
+        }
       }
     }
   }, [controller])
 
-  useEffect(() => {
-    if (!scope?.region || !scope?.org) {
-      return
-    }
+  // TODO: load bucket creation limits on org change
+  // expose limits to frontend
 
+  const updateCache = (update: any): void => {
+    bucketCache[cacheKey] = {
+      ...bucketCache[cacheKey],
+      ...update,
+    }
+    setBucketCache({
+      ...bucketCache,
+    })
+  }
+
+  const fetchBuckets = () => {
     if (controller.current) {
       controller.current.abort()
       controller.current = null
+    } else {
+      controller.current = new AbortController()
     }
 
-    setLoading(RemoteDataState.Loading)
+    updateCache({
+      loading: RemoteDataState.Loading,
+    })
 
     const headers = {
       'Content-Type': 'application/json',
@@ -139,21 +155,65 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
         bucks.sample.sort((a, b) =>
           `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
         )
-        setLoading(RemoteDataState.Done)
-        setBuckets([...bucks.user, ...bucks.system, ...bucks.sample])
+        updateCache({
+          loading: RemoteDataState.Done,
+          buckets: [...bucks.user, ...bucks.system, ...bucks.sample],
+        })
       })
       .catch(() => {
         controller.current = null
+        updateCache({
+          loading: RemoteDataState.Error,
+        })
       })
-  }, [scope?.region, scope?.org, controller])
+  }
 
+  // make sure to fetch buckets on mount
+  useEffect(() => {
+    if (loading !== RemoteDataState.NotStarted) {
+      return
+    }
+
+    fetchBuckets()
+  }, [loading])
+
+  const createBucket = (bucket: Bucket) => {
+    bucket.orgID = scope.org
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'gzip',
+    }
+
+    if (scope?.token) {
+      headers['Authorization'] = `Token ${scope.token}`
+    }
+
+    fetch(`${scope?.region}/api/v2/buckets`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(bucket),
+    })
+      .then(response => {
+        return response.json()
+      })
+      .then(response => {
+        addBucket(response)
+      })
+  }
   const addBucket = (bucket: Bucket) => {
-    setBuckets([...buckets, bucket])
+    updateCache({buckets: [...buckets, bucket]})
+  }
+
+  const refresh = () => {
+    fetchBuckets()
   }
 
   return useMemo(
     () => (
-      <BucketContext.Provider value={{loading, buckets, addBucket}}>
+      <BucketContext.Provider
+        value={{loading, buckets, createBucket, addBucket, refresh}}
+      >
         {children}
       </BucketContext.Provider>
     ),

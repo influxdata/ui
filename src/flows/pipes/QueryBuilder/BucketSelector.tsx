@@ -3,6 +3,7 @@ import React, {FC, useState, useContext, useEffect} from 'react'
 
 // Components
 import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
+import CreateBucket from 'src//flows/pipes/QueryBuilder/CreateBucket'
 import {Bucket, RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
@@ -120,14 +121,13 @@ const BucketSelector: FC = () => {
         style={{flex: '1 0 0'}}
         scrollToSelected={true}
       >
-        {sections.user.length && (
-          <List.Divider
-            key="userHeader"
-            text="user"
-            size={ComponentSize.ExtraSmall}
-          />
-        )}
+        <List.Divider
+          key="userHeader"
+          text="user"
+          size={ComponentSize.ExtraSmall}
+        />
         {sections.user.map(renderListItem)}
+        <CreateBucket />
         {sections.system.length && (
           <List.Divider
             key="systemHeader"

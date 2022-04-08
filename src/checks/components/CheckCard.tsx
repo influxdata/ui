@@ -44,6 +44,8 @@ import {Check, Label} from 'src/types'
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   check: Check
@@ -161,6 +163,16 @@ const CheckCard: FC<Props> = ({
             key={2}
             lastRunError={check.lastRunError}
             lastRunStatus={check.lastRunStatus}
+            statusButtonClickHandler={() => {
+              event('check status button clicked', {
+                lastRunError: check.lastRunError,
+                lastRunStatus: check.lastRunStatus,
+                from: 'alert card',
+              })
+              if (isFlagEnabled('navToTaskRuns')) {
+                history.push(`/orgs/${orgID}/tasks/${check.taskID}/runs`)
+              }
+            }}
           />
         </FlexBox>
         <FlexBox

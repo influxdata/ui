@@ -27,7 +27,9 @@ export type Props = {
 export interface OperatorContextType {
   accounts: OperatorAccount[]
   accountTypes: AccountType[]
-  setAccountTypes: (accountTypes: AccountType[]) => void
+  setAccountTypes: (
+    accountTypes: AccountType[] | ((prevState: AccountType[]) => AccountType[])
+  ) => void
   handleGetAccounts: () => void
   handleGetOrgs: () => void
   organizations: OperatorOrg[]
@@ -73,7 +75,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
       const resp = await getOperatorAccounts({
         query: {
           query: searchTerm,
-          accountTypes: accountTypes,
+          accountTypes,
         },
       })
 
@@ -94,7 +96,7 @@ export const OperatorProvider: FC<Props> = React.memo(({children}) => {
     try {
       setOrgsStatus(RemoteDataState.Loading)
       const resp = await getOperatorOrgs({
-        query: {query: searchTerm, accountTypes: accountTypes},
+        query: {query: searchTerm, accountTypes},
       })
 
       if (resp.status !== 200) {

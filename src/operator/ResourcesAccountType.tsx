@@ -7,23 +7,27 @@ import React, {FC, useContext} from 'react'
 import {OperatorContext} from './context/operator'
 import {AccountType} from 'src/types'
 
+const allAccountTypes: AccountType[] = [
+  'cancelled',
+  'contract',
+  'free',
+  'pay_as_you_go',
+]
+
 const ResourcesAccountType: FC = () => {
   const {accountTypes, setAccountTypes} = useContext(OperatorContext)
-  const availableTypes: AccountType[] = allAccountTypes
 
-  const handleSelect = (selectedOption: string): void =>
-    accountTypes.includes(selectedOption as AccountType)
-      ? setAccountTypes(
-          accountTypes.filter(x => x !== (selectedOption as AccountType))
-        )
-      : setAccountTypes([selectedOption as AccountType, ...accountTypes])
+  const handleSelect = (selectedOption: AccountType): void =>
+    accountTypes.includes(selectedOption)
+      ? setAccountTypes(prev => prev.filter(x => x !== selectedOption))
+      : setAccountTypes(prev => [selectedOption, ...prev])
 
   return (
     <MultiSelectDropdown
       style={{width: '220px', marginRight: '20px'}}
-      options={availableTypes}
+      options={allAccountTypes}
       selectedOptions={accountTypes}
-      onSelect={handleSelect}
+      onSelect={(value: AccountType) => handleSelect(value)}
       menuTheme={DropdownMenuTheme.Onyx}
       emptyText="Account Types"
       buttonColor={ComponentColor.Primary}
@@ -32,10 +36,3 @@ const ResourcesAccountType: FC = () => {
 }
 
 export default ResourcesAccountType
-
-const allAccountTypes: AccountType[] = [
-  'cancelled',
-  'contract',
-  'free',
-  'pay_as_you_go',
-]

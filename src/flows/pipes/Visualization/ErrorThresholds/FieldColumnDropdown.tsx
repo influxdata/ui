@@ -37,8 +37,9 @@ const FieldColumnDropdown: FC<Props> = ({threshold, index}) => {
         return c.name === '_value'
       })
 
-      const fields = (results.parsed.table.columns['_field']
-        .data as any).reduce((acc, curr, index) => {
+      const fields = (
+        (results.parsed.table.columns['_field'].data as any) ?? []
+      ).reduce((acc, curr, index) => {
         const type = values.find(d => {
           return d.data[index] !== undefined
         })?.type

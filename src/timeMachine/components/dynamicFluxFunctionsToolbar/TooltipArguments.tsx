@@ -23,8 +23,8 @@ class TooltipArguments extends PureComponent<Props> {
     const {argsList} = this.props
 
     if (argsList.length > 0) {
-      let param = 'Optional'
       return argsList.map(argument => {
+        let param = 'Optional'
         const description = argument.headline.slice(argument.name.length + 1)
         argument.required ? (param = 'Required') : param
 

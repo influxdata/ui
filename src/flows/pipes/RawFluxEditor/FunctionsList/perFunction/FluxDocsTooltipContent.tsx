@@ -25,8 +25,8 @@ const FluxDocsTooltipContent: FC<TooltipProps> = ({
   }, [])
   const argComponent = () => {
     if (func.fluxParameters.length > 0) {
-      let param = 'Optional'
       return func.fluxParameters.map(arg => {
+        let param = 'Optional'
         const description = arg.headline.slice(arg.name.length + 1)
         arg.required ? (param = 'Required') : param
 

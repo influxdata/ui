@@ -60,7 +60,7 @@ const SaveAsOverlay: FC = () => {
               <Tabs.Tab
                 id={SaveAsOption.Notebook}
                 text={`${PROJECT_NAME}`}
-                testID="cell--radio-button"
+                testID={`${PROJECT_NAME.toLowerCase()}--radio-button`}
                 onClick={() => setSaveAsOption(SaveAsOption.Notebook)}
                 active={saveAsOption === SaveAsOption.Notebook}
               />

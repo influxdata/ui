@@ -45,6 +45,7 @@ describe('The Query Builder', () => {
       cy.getByTestID('save-query-as').click()
 
       // open the dashboard selector dropdown
+      cy.getByTestID('cell--radio-button').click()
       cy.getByTestID('save-as-dashboard-cell--dropdown').click()
       cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
       cy.getByTestID('save-as-overlay--header').click() // close the blast door i mean dropdown

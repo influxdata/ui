@@ -430,8 +430,6 @@ describe('DataExplorer', () => {
         .click()
     })
 
-    // test for Flux Dynamic Help Panels
-
     it('can use the dynamic flux function selector to build a query', () => {
       cy.setFeatureFlags({
         fluxDynamicDocs: true,
@@ -439,7 +437,7 @@ describe('DataExplorer', () => {
         cy.get('.view-line').should('be.visible')
 
         cy.getByTestID('flux-toolbar-search--input')
-          .clear()
+          .click()
           .type('microsecondd') // purposefully misspell "microsecond" so all functions are filtered out
 
         cy.getByTestID('flux-toolbar--list').within(() => {
@@ -458,13 +456,51 @@ describe('DataExplorer', () => {
         cy.getByTestID('flux--microsecond--inject').click()
 
         getTimeMachineText().then(text => {
-          const expected = 'import "date" |> undefined' // issue still in progress
-
+          const expected = 'import "date" |> date.microsecond(t: )'
           cy.fluxEqual(text, expected).should('be.true')
         })
       })
+    })
+
+    it('can use the dynamic flux function search bar to search by package or function name', () => {
       cy.setFeatureFlags({
-        fluxDynamicDocs: false,
+        fluxDynamicDocs: true,
+      }).then(() => {
+        cy.get('.view-line').should('be.visible')
+
+        cy.getByTestID('flux-toolbar-search--input')
+          .click()
+          .type('filter')
+
+        cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
+        cy.getByTestID('flux--filter').contains('filter')
+
+        cy.get('.flux-toolbar--search').within(() => {
+          cy.getByTestID('dismiss-button').click()
+        })
+
+        cy.getByTestID('flux-toolbar-search--input')
+          .invoke('val')
+          .then(value => {
+            expect(value).to.equal('')
+          })
+
+        cy.getByTestID('flux-toolbar-search--input')
+          .click()
+          .type('array')
+
+        cy.get('.flux-toolbar--list-item').should('have.length.greaterThan', 1)
+        cy.getByTestID('flux--filter').contains('filter')
+
+        cy.get('.flux-toolbar--search').within(() => {
+          cy.getByTestID('dismiss-button').click()
+        })
+
+        cy.getByTestID('flux-toolbar-search--input')
+          .invoke('val')
+          .then(value => {
+            expect(value).to.equal('')
+          })
       })
     })
 

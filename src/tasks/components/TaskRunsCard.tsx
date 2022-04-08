@@ -34,9 +34,10 @@ import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 interface Props {
   task: Task
+  isTaskEditable: boolean
 }
 
-const TaskRunsCard: FC<Props> = ({task}) => {
+const TaskRunsCard: FC<Props> = ({task, isTaskEditable}) => {
   const dispatch = useDispatch()
   const members = useSelector((state: AppState) => state.resources.members.byID)
   const org = useSelector(getOrg)
@@ -135,6 +136,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
               size={ComponentSize.ExtraSmall}
               onChange={changeToggle}
               testID="task-card--slide-toggle"
+              disabled={!isTaskEditable}
             />
             <InputLabel active={task.status === 'active'}>
               {task.status === 'active' ? 'Active' : 'Inactive'}
@@ -153,14 +155,16 @@ const TaskRunsCard: FC<Props> = ({task}) => {
         </ResourceCard.Meta>
       </FlexBox>
 
-      <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
-        <Button onClick={handleRunTask} text="Run Task" />
-        <Button
-          onClick={handleEditTask}
-          text="Edit Task"
-          color={ComponentColor.Primary}
-        />
-      </FlexBox>
+      {isTaskEditable && (
+        <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
+          <Button onClick={handleRunTask} text="Run Task" />
+          <Button
+            onClick={handleEditTask}
+            text="Edit Task"
+            color={ComponentColor.Primary}
+          />
+        </FlexBox>
+      )}
     </ResourceCard>
   )
 }

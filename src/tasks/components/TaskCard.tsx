@@ -48,6 +48,7 @@ import {
 } from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
 import {downloadTaskTemplate} from 'src/tasks/apis'
+import {event} from 'src/cloud/utils/reporting'
 
 interface PassedProps {
   task: Task
@@ -69,7 +70,7 @@ export class TaskCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {
   public render() {
-    const {task} = this.props
+    const {task, history} = this.props
 
     return (
       <ResourceCard
@@ -83,6 +84,16 @@ export class TaskCard extends PureComponent<
         <LastRunTaskStatus
           lastRunError={task.lastRunError}
           lastRunStatus={task.lastRunStatus}
+          statusButtonClickHandler={() => {
+            event('check status button clicked', {
+              lastRunError: task.lastRunError,
+              lastRunStatus: task.lastRunStatus,
+              from: 'task card',
+            })
+            if (isFlagEnabled('navToTaskRuns')) {
+              history.push(`/orgs/${task.orgID}/tasks/${task.id}/runs`)
+            }
+          }}
         />
         <FlexBox
           alignItems={AlignItems.FlexStart}

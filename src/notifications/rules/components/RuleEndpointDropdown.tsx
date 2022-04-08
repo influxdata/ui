@@ -61,12 +61,7 @@ const RuleEndpointDropdown: FC<Props> = ({
   )
 
   return (
-    <Dropdown
-      button={button}
-      menu={menu}
-      style={{width: '160px'}}
-      testID="endpoint-change--dropdown"
-    />
+    <Dropdown button={button} menu={menu} testID="endpoint-change--dropdown" />
   )
 }
 

@@ -2,6 +2,7 @@
 import React, {FC, ChangeEvent, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {useHistory} from 'react-router-dom'
+import {nanoid} from 'nanoid'
 
 // Selectors
 import {getActiveTimeMachine, getSaveableView} from 'src/timeMachine/selectors'
@@ -30,6 +31,8 @@ import {
   PROJECT_NAME_PLURAL,
 } from 'src/flows'
 import {hydrate, serialize} from 'src/flows/context/flow.list'
+import {getBucketByName} from 'src/buckets/selectors'
+import {AppState} from 'src/types'
 
 interface Props {
   dismiss: () => void
@@ -38,9 +41,22 @@ interface Props {
 const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
   const [notebookName, setNotebookName] = useState('')
   const orgID = useSelector(getOrg).id
-  const stuff = useSelector(getActiveTimeMachine)
-  const {draftQueries, autoRefresh, timeRange} = stuff
+  const {draftQueries, autoRefresh, timeRange} = useSelector(
+    getActiveTimeMachine
+  )
   const {properties} = useSelector(getSaveableView)
+  let allUsedBuckets: string[] = []
+
+  draftQueries.forEach(draftQuery => {
+    allUsedBuckets = allUsedBuckets.concat(draftQuery.builderConfig.buckets)
+  })
+
+  const completeBuckets = useSelector((state: AppState) => {
+    const {draftQueries: drafts} = getActiveTimeMachine(state)
+    const buckets = drafts.flatMap(draft => draft.builderConfig.buckets)
+    return buckets.map(name => getBucketByName(state, name))
+  })
+
   const history = useHistory()
 
   const handleChangeNotebookName = (event: ChangeEvent<HTMLInputElement>) => {
@@ -56,43 +72,38 @@ const SaveAsNotebookForm: FC<Props> = ({dismiss}) => {
       })
       const pipes: any = []
 
-      const visualization = {
-        title: 'Visualize the Result',
-        visible: true,
-        type: 'visualization',
-        properties,
-      }
       for (let i = 0; i < draftQueries.length; i++) {
         const draftQuery = draftQueries[i]
-
         let pipe: any = {
           family: 'inputs',
+          id: `local_${nanoid()}`,
           visible: !draftQuery.hidden,
         }
         if (draftQuery.editMode === 'builder') {
+          const bucket = completeBuckets.splice(0, 1)
+
           pipe.name = 'Build a Query'
           pipe.type = 'queryBuilder'
           pipe = {
             ...pipe,
             ...draftQuery.builderConfig,
-            buckets: [
-              {
-                // id: TODO(ariel): get the id
-                name: draftQuery.builderConfig.buckets[0],
-                orgID,
-                type: 'user',
-              },
-            ],
+            buckets: bucket,
           }
         } else {
           pipe.title = 'Query to Run'
           pipe.queries = properties.queries
-          pipe.activeQuery = i
+          pipe.activeQuery = 0
           pipe.type = 'rawFluxEditor'
         }
 
         pipes.push(pipe)
-        pipes.push(visualization)
+        pipes.push({
+          id: `local_${nanoid()}`,
+          properties,
+          title: `Visualize the Result ${i}`,
+          type: 'visualization',
+          visible: true,
+        })
       }
 
       const flow = hydrate({

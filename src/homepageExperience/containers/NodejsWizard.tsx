@@ -12,11 +12,11 @@ import {
 import {InstallDependencies} from 'src/homepageExperience/components/steps/nodejs/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
-import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'
-import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
-import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
-import {Finish} from 'src/homepageExperience/components/steps/python/Finish'
-import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/python/ExecuteAggregateQuery'
+import {InitalizeClient} from 'src/homepageExperience/components/steps/nodejs/InitalizeClient'
+import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteData'
+import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'
+import {Finish} from 'src/homepageExperience/components/steps/Finish'
+import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteAggregateQuery'
 
 import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'
 
@@ -91,7 +91,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 8: {
-        return <Finish />
+        return <Finish wizardEventName="nodejsWizard" />
       }
       default: {
         return <Overview />

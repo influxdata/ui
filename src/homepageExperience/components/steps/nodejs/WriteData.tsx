@@ -21,11 +21,11 @@ import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
 
 const logCopyCodeSnippet = () => {
-  event('firstMile.pythonWizard.writeData.code.copied')
+  event('firstMile.nodejsWizard.writeData.code.copied')
 }
 
 const logDocsOpened = () => {
-  event('firstMile.pythonWizard.writeData.docs.opened')
+  event('firstMile.nodejsWizard.writeData.docs.opened')
 }
 
 type OwnProps = {
@@ -51,18 +51,20 @@ export const WriteDataComponent = (props: OwnProps) => {
   }, [bucket])
 
   const codeSnippet = `
-bucket="${bucket.name}"
+const org = '${org.name}'
+const bucket = '${bucket.name}'
 
-write_api = client.write_api(write_options=SYNCHRONOUS)
-   
-for value in range(5):
-  point = (
-    Point("measurement1")
-    .tag("tagname1", "tagvalue1")
-    .field("field1", value)
-  )
-  write_api.write(bucket=bucket, org="${org.name}", record=point)
-  time.sleep(1) # separate points by 1 second`
+const writeClient = client.getWriteApi(org, bucket, 'ns')
+
+for (let i = 0; i < 5; i++) {
+  const point = new Point('measurement1')
+    .tag('tagname1', 'tagvalue1')
+    .floatField('field1', i)
+
+  setTimeout(() => {
+    writeClient.writePoint(point)
+  }, i * 1000) // separate points by 1 second
+}`
 
   return (
     <>
@@ -91,7 +93,7 @@ for value in range(5):
       </Panel>
       <p>
         In this code, we define five data points and write each one for
-        InfluxDB. Run the following code in your Python shell:
+        InfluxDB. Run the following code in your Nodejs shell:
       </p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>

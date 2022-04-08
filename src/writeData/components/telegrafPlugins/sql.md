@@ -2,7 +2,7 @@
 
 This plugin reads metrics from performing SQL queries against a SQL server. Different server
 types are supported and their settings might differ (especially the connection parameters).
-Please check the list of [supported SQL drivers](../../../docs/SQL_DRIVERS_INPUT.md) for the
+Please check the list of [supported SQL drivers](https://github.com/influxdata/telegraf/tree/master/docs/SQL_DRIVERS_INPUT.md) for the
 `driver` name and options for the data-source-name (`dsn`) options.
 
 ## Configuration
@@ -94,7 +94,7 @@ generate it using `telegraf --usage <plugin-name>`.
 ### Driver
 
 The `driver` and `dsn` options specify how to connect to the database. As especially the `dsn` format and
-values vary with the `driver` refer to the list of [supported SQL drivers](../../../docs/SQL_DRIVERS_INPUT.md) for possible values and more details.
+values vary with the `driver` refer to the list of [supported SQL drivers](https://github.com/influxdata/telegraf/tree/master/docs/SQL_DRIVERS_INPUT.md) for possible values and more details.
 
 ### Connection limits
 

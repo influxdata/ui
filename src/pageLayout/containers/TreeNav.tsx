@@ -1,10 +1,10 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Components
-import {Icon, TreeNav} from '@influxdata/clockface'
+import {Icon, IconFont, TreeNav} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 import OrgSettings from 'src/cloud/components/OrgSettings'
@@ -17,6 +17,8 @@ import {getNavItemActivation} from 'src/pageLayout/utils'
 import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
@@ -26,6 +28,19 @@ const TreeSidebar: FC = () => {
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )
+  useEffect(() => {
+    if (isFlagEnabled('helpBar')) {
+      const helpBarMenu = document.querySelectorAll<HTMLElement>(
+        '.cf-tree-nav--sub-menu-trigger'
+      )[3]
+      if (navbarMode === 'expanded') {
+        helpBarMenu.style.display = 'block'
+        helpBarMenu.style.width = '243px'
+      } else {
+        helpBarMenu.style.width = '44px'
+      }
+    }
+  }, [setNavbarMode, navbarMode])
 
   if (presentationMode || !org) {
     return null
@@ -106,6 +121,65 @@ const TreeSidebar: FC = () => {
             </TreeNav.Item>
           )
         })}
+        {isFlagEnabled('helpBar') ? (
+          <TreeNav.Item
+            id="support"
+            testID="nav-item-support"
+            icon={<Icon glyph={IconFont.QuestionMark_New} />}
+            label="Help & Support"
+            shortLabel="Support"
+          >
+            <TreeNav.SubMenu>
+              <TreeNav.SubHeading label="Support" />
+              <TreeNav.SubItem
+                id="documentation"
+                label="Documentation"
+                testID="nav-subitem-documentation"
+                linkElement={() => (
+                  <SafeBlankLink href="https://docs.influxdata.com/" />
+                )}
+              />
+              <TreeNav.SubItem
+                id="faqs"
+                label="FAQs"
+                testID="nav-subitem-faqs"
+                linkElement={() => (
+                  <SafeBlankLink href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/" />
+                )}
+              />
+              <TreeNav.SubItem
+                id="contactSupport"
+                label="Contact Support"
+                testID="nav-subitem-contact-support"
+                linkElement={className => <Link className={className} to="" />}
+              />
+              <TreeNav.SubHeading label="Community" />
+              <TreeNav.SubItem
+                id="offcialForum"
+                label="Official Forum"
+                testID="nav-subitem-forum"
+                linkElement={() => (
+                  <SafeBlankLink href="https://community.influxdata.com" />
+                )}
+              />
+              <TreeNav.SubItem
+                id="influxdbSlack"
+                label="InfluxDB Slack"
+                testID="nav-subitem-influxdb-slack"
+                linkElement={() => (
+                  <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
+                )}
+              />
+              <TreeNav.SubHeading label="Feedback" />
+              <TreeNav.SubItem
+                id="feedback"
+                label="Feedback & Questions"
+                testID="nav-subitem-feedback-questions"
+                linkElement={className => <Link className={className} to="" />}
+              />
+            </TreeNav.SubMenu>
+          </TreeNav.Item>
+        ) : null}
       </TreeNav>
     </OrgSettings>
   )

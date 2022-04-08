@@ -73,6 +73,7 @@ export const getByIDAPI = async (id: typeof GetBrokerSubParams) => {
   if (res.status != 200) {
     throw new Error(res.data.message)
   }
+  return res.data
 }
 
 export const getStatusAPI = async (id: typeof GetBrokerSubsStatusParams) => {

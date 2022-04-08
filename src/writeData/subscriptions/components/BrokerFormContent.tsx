@@ -31,6 +31,7 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerForm.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   formContent: Subscription
@@ -72,6 +73,13 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                     name: e.target.value,
                   })
                 }}
+                onBlur={() =>
+                  event(
+                    'completed form field',
+                    {formField: 'name', step: 'broker'},
+                    {feature: 'subscriptions'}
+                  )
+                }
                 status={status}
                 testID={`${className}-broker-form--name`}
               />
@@ -90,6 +98,13 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                   ...formContent,
                   description: e.target.value,
                 })
+              }
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {formField: 'description', step: 'broker'},
+                  {feature: 'subscriptions'}
+                )
               }
               testID={`${className}-broker-form--description`}
             />
@@ -122,9 +137,20 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                         key={key}
                         id={p}
                         value={p}
-                        onClick={() => setProtocol(p)}
+                        onClick={() => {
+                          event(
+                            'completed form field',
+                            {
+                              formField: 'protocol',
+                              selected: p,
+                              step: 'broker',
+                            },
+                            {feature: 'subscriptions'}
+                          )
+                          setProtocol(p)
+                        }}
                         selected={protocol === p}
-                        testID={`${className}-broker-form-${1}`}
+                        testID={`${className}-broker-form-${key}`}
                       >
                         {p}
                       </Dropdown.Item>
@@ -154,6 +180,13 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                       brokerHost: e.target.value,
                     })
                   }}
+                  onBlur={() =>
+                    event(
+                      'completed form field',
+                      {formField: 'host', step: 'broker'},
+                      {feature: 'subscriptions'}
+                    )
+                  }
                   status={status}
                   testID={`${className}-broker-form--host`}
                 />
@@ -180,6 +213,13 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                       brokerPort: convertUserInputToNumOrNaN(e),
                     })
                   }}
+                  onBlur={() =>
+                    event(
+                      'completed form field',
+                      {formField: 'port', step: 'broker'},
+                      {feature: 'subscriptions'}
+                    )
+                  }
                   status={status}
                   maxLength={5}
                   testID={`${className}-broker-form--port`}
@@ -216,6 +256,11 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
               testID={`${className}-broker-form-no-security--button`}
               active={security === 'none'}
               onClick={() => {
+                event(
+                  'broker security toggle',
+                  {method: 'none', step: 'broker'},
+                  {feature: 'subscriptions'}
+                )
                 setSecurity('none')
               }}
               value="none"
@@ -230,6 +275,11 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
               testID={`${className}-broker-form--user--button`}
               active={security === 'user'}
               onClick={() => {
+                event(
+                  'broker security toggle',
+                  {method: 'user', step: 'broker'},
+                  {feature: 'subscriptions'}
+                )
                 setSecurity('user')
               }}
               value="user"
@@ -245,6 +295,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
             testID="user--button"
             active={security === 'certificate'}
             onClick={() => {
+              event('broker security toggle', {method: 'certificate'}, {feature: 'subscriptions'})
               setSecurity('certificate')
             }}
             value={'certificate'}

@@ -5,25 +5,18 @@ import React, {FC, useState, useContext, useEffect} from 'react'
 import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
 import {Bucket, RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
+import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
 import {BucketContext} from 'src/flows/context/bucket.scoped'
 import {PipeContext} from 'src/flows/context/pipe'
-
 import {event} from 'src/cloud/utils/reporting'
 
 // this is used by notebooks
 const BucketSelector: FC = () => {
-  const {data, update} = useContext(PipeContext)
+  const {data} = useContext(PipeContext)
   const {loading, buckets, addBucket} = useContext(BucketContext)
+  const {selectBucket} = useContext(QueryBuilderContext)
 
   const [search, setSearch] = useState('')
-  const [selected, setSelected] = useState(null)
-
-  useEffect(() => {
-    const bucks = data.buckets.filter(b => !!b)
-    if (!selected && bucks.length) {
-      setSelected(bucks[0].name)
-    }
-  }, [selected, data.buckets])
 
   useEffect(() => {
     const allBuckets = new Set(buckets.map(b => b.name))
@@ -37,28 +30,6 @@ const BucketSelector: FC = () => {
       })
   }, [buckets, data.buckets])
 
-  const selectBucket = (item?: string): void => {
-    let bucket
-    if (!item) {
-      data.buckets = []
-    } else if (item !== selected) {
-      data.buckets = [buckets.find(b => b.name === item)]
-      bucket = item
-      event('Query Builder Bucket Selected', {
-        usedSearch: !!search.length ? 'yus' : 'nah',
-      })
-    } else {
-      data.buckets = []
-      bucket = null
-    }
-
-    data.tags = []
-    update(data)
-    if (item) {
-      setSelected(bucket)
-    }
-  }
-
   if (loading === RemoteDataState.Done && !buckets.length) {
     return (
       <BuilderCard testID="bucket-selector">
@@ -67,7 +38,14 @@ const BucketSelector: FC = () => {
       </BuilderCard>
     )
   }
-
+  const _selectBucket = (bucket?: string) => {
+    if (bucket) {
+      event('Query Builder Bucket Selected', {
+        usedSearch: !!search.length ? 'yus' : 'nah',
+      })
+    }
+    selectBucket(bucket)
+  }
   const filteredBuckets = buckets.filter(
     bucket =>
       !search.length ||
@@ -99,6 +77,7 @@ const BucketSelector: FC = () => {
     {user: [], system: [], sample: []}
   )
 
+  const selected = data?.buckets[0]?.name
   const renderListItem = item => {
     const isSelected = selected === item.name
     const title = isSelected
@@ -111,7 +90,7 @@ const BucketSelector: FC = () => {
         testID={`selector-list ${item.name}`}
         key={item.name}
         value={item.name}
-        onClick={selectBucket}
+        onClick={_selectBucket}
         title={title}
         selected={isSelected}
         size={ComponentSize.ExtraSmall}

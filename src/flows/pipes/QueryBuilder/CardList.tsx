@@ -55,9 +55,15 @@ interface Props {
 }
 
 const Card: FC<Props> = ({idx}) => {
-  const {cards, add, update, remove, loadKeys, loadValues} = useContext(
-    QueryBuilderContext
-  )
+  const {
+    cards,
+    selectMeasurement,
+    add,
+    update,
+    remove,
+    loadKeys,
+    loadValues,
+  } = useContext(QueryBuilderContext)
   const {data} = useContext(PipeContext)
   const card = cards[idx]
   const [keySearches, setKeySearches] = useState([])
@@ -125,23 +131,27 @@ const Card: FC<Props> = ({idx}) => {
     card.values.selected.length <= 1
 
   const valueSelect = val => {
-    let _vals = [...card.values.selected]
+    const _vals = [...card.values.selected]
     const index = _vals.indexOf(val)
+
+    if (isCompliant) {
+      if (index === -1) {
+        event('Query Builder Value Selected')
+        selectMeasurement(val)
+      } else {
+        event('Query Builder Value Unselected')
+        selectMeasurement(null)
+      }
+
+      return
+    }
 
     if (index === -1) {
       event('Query Builder Value Selected')
-      if (isCompliant) {
-        _vals = [val]
-      } else {
-        _vals.push(val)
-      }
+      _vals.push(val)
     } else {
       event('Query Builder Value Unselected')
-      if (isCompliant) {
-        _vals = []
-      } else {
-        _vals.splice(index, 1)
-      }
+      _vals.splice(index, 1)
     }
 
     update(idx, {

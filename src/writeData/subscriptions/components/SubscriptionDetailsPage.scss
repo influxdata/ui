@@ -31,11 +31,8 @@
     }
   }
   &__status {
-    width: 75%;
-    float: right;
     padding-left: 24px;
     padding-top: 64px;
-    display: flex;
     text-transform: uppercase;
 
     &--RUNNING {
@@ -57,6 +54,9 @@
     &--DISABLED {
       color: #4d4d60;
       margin-left: 10px;
+    }
+    &--button {
+      margin-right: 24px;
     }
   }
 }

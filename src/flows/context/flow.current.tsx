@@ -223,18 +223,6 @@ export const FlowProvider: FC = ({children}) => {
         }
         return
       }
-      if (
-        !isFlagEnabled('flowPublishLifecycle') &&
-        isFlagEnabled('ephemeralNotebook') &&
-        !currentFlow.id
-      ) {
-        currentFlow.data.byID[id] = {
-          ...(currentFlow.data.byID[id] || {}),
-          ...data,
-        }
-        setCurrentFlow({...currentFlow})
-        return
-      }
 
       currentFlow.data.byID[id] = {
         ...(currentFlow.data.byID[id] || {}),
@@ -265,20 +253,6 @@ export const FlowProvider: FC = ({children}) => {
         }
         return
       }
-      if (
-        !isFlagEnabled('flowPublishLifecycle') &&
-        isFlagEnabled('ephemeralNotebook') &&
-        !currentFlow.id
-      ) {
-        currentFlow.meta.byID[id] = {
-          title: '',
-          visible: true,
-          ...(currentFlow.meta.byID[id] || {}),
-          ...meta,
-        }
-        setCurrentFlow({...currentFlow})
-        return
-      }
 
       currentFlow.meta.byID[id] = {
         title: '',
@@ -305,18 +279,6 @@ export const FlowProvider: FC = ({children}) => {
             .getMap('flowUpdateData')
             .set('flowUpdateData', serialize(flowCopy))
         }
-        return
-      }
-      if (
-        !isFlagEnabled('flowPublishLifecycle') &&
-        isFlagEnabled('ephemeralNotebook') &&
-        !currentFlow.id
-      ) {
-        for (const ni in flow) {
-          currentFlow[ni] = flow[ni]
-        }
-
-        setCurrentFlow({...currentFlow})
         return
       }
 
@@ -358,26 +320,6 @@ export const FlowProvider: FC = ({children}) => {
         .set('flowUpdateData', serialize(flowCopy))
       return
     }
-    if (
-      !isFlagEnabled('flowPublishLifecycle') &&
-      isFlagEnabled('ephemeralNotebook') &&
-      !currentFlow.id
-    ) {
-      currentFlow.data.byID[id] = initial
-      currentFlow.meta.byID[id] = {
-        title,
-        visible: true,
-      }
-      if (typeof index !== 'undefined') {
-        currentFlow.data.allIDs.splice(index + 1, 0, id)
-        currentFlow.meta.allIDs.splice(index + 1, 0, id)
-      } else {
-        currentFlow.data.allIDs.push(id)
-        currentFlow.meta.allIDs.push(id)
-      }
-      setCurrentFlow({...currentFlow})
-      return
-    }
 
     currentFlow.data.byID[id] = initial
     currentFlow.meta.byID[id] = {
@@ -416,23 +358,6 @@ export const FlowProvider: FC = ({children}) => {
       yDoc.current
         .getMap('flowUpdateData')
         .set('flowUpdateData', serialize(flowCopy))
-      return
-    }
-    if (
-      !isFlagEnabled('flowPublishLifecycle') &&
-      isFlagEnabled('ephemeralNotebook') &&
-      !currentFlow.id
-    ) {
-      currentFlow.meta.allIDs = currentFlow.meta.allIDs.filter(
-        _id => _id !== id
-      )
-      currentFlow.data.allIDs = currentFlow.data.allIDs.filter(
-        _id => _id !== id
-      )
-
-      delete currentFlow.data.byID[id]
-      delete currentFlow.meta.byID[id]
-      setCurrentFlow({...currentFlow})
       return
     }
 

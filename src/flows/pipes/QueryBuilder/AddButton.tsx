@@ -4,6 +4,7 @@ import {SquareButton, IconFont} from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {event} from 'src/cloud/utils/reporting'
 
@@ -16,6 +17,14 @@ const AddButton: FC = () => {
   }, [add])
 
   if (!cards.length) {
+    return null
+  }
+
+  if (
+    isFlagEnabled('newQueryBuilder') &&
+    !cards[0]?.values?.selected?.length &&
+    cards.length < 2
+  ) {
     return null
   }
 

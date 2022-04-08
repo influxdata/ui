@@ -21,7 +21,6 @@ import {
   VersionHistories,
   VersionHistory,
 } from 'src/client/notebooksRoutes'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {notify} from 'src/shared/actions/notifications'
 import {
   publishNotebookFailed,
@@ -88,9 +87,7 @@ export const VersionPublishProvider: FC = ({children}) => {
   }, [flow.id, notebookID])
 
   useEffect(() => {
-    if (isFlagEnabled('flowPublishLifecycle')) {
-      handleGetNotebookVersions()
-    }
+    handleGetNotebookVersions()
   }, [handleGetNotebookVersions])
 
   const handlePublish = useCallback(async () => {

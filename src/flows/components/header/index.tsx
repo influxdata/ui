@@ -23,14 +23,12 @@ import AutoRefreshButton from 'src/flows/components/header/AutoRefreshButton'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 import TimeRangeDropdown from 'src/flows/components/header/TimeRangeDropdown'
 import Submit from 'src/flows/components/header/Submit'
-import SaveState from 'src/flows/components/header/SaveState'
 import PresentationMode from 'src/flows/components/header/PresentationMode'
 import RenamablePageTitle from 'src/pageLayout/components/RenamablePageTitle'
 import {FeatureFlag} from 'src/shared/utils/featureFlag'
 import MenuButton from 'src/flows/components/header/MenuButton'
 
 // Utility
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getNotebooksShare, postNotebooksShare} from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
 import {serialize} from 'src/flows/context/flow.list'
@@ -70,24 +68,19 @@ const FlowHeader: FC = () => {
 
   const handleSave = useCallback(
     event => {
-      if (isFlagEnabled('flowPublishLifecycle')) {
-        if ((event.ctrlKey || event.metaKey) && event.key === 's') {
-          event.preventDefault()
-          handlePublish()
-        }
+      if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+        event.preventDefault()
+        handlePublish()
       }
     },
     [handlePublish]
   )
 
   useEffect(() => {
-    if (isFlagEnabled('flowPublishLifecycle')) {
-      window.addEventListener('keydown', handleSave)
-    }
+    window.addEventListener('keydown', handleSave)
+
     return () => {
-      if (isFlagEnabled('flowPublishLifecycle')) {
-        window.removeEventListener('keydown', handleSave)
-      }
+      window.removeEventListener('keydown', handleSave)
     }
   }, [handleSave])
 
@@ -166,7 +159,7 @@ const FlowHeader: FC = () => {
         <Page.ControlBarLeft>
           <Submit />
           <AutoRefreshButton />
-          <SaveState />
+          <div className="flow-header--saving">Autosaved</div>
         </Page.ControlBarLeft>
         <Page.ControlBarRight>
           <PresentationMode />

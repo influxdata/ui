@@ -22,6 +22,7 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/SubscriptionDetails.scss'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   currentSubscription: Subscription
@@ -61,6 +62,13 @@ const SubscriptionFormContent: FC<Props> = ({
                   topic: e.target.value,
                 })
               }}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {formField: 'topic'},
+                  {feature: 'subscriptions'}
+                )
+              }
               status={status}
               maxLength={16}
               testID={`${className}-subscription-form--topic`}

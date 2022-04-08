@@ -118,6 +118,11 @@ const ParsingForm: FC<Props> = ({
               text="Cancel"
               color={ComponentColor.Tertiary}
               onClick={() => {
+                event(
+                  'creation canceled',
+                  {step: 'parsing', dataFormat: formContent.dataFormat},
+                  {feature: 'subscriptions'}
+                )
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
               titleText="Back to broker form"
@@ -128,6 +133,11 @@ const ParsingForm: FC<Props> = ({
               text="Back"
               color={ComponentColor.Secondary}
               onClick={() => {
+                event(
+                  'back clicked',
+                  {step: 'parsing', dataFormat: formContent.dataFormat},
+                  {feature: 'subscriptions'}
+                )
                 setFormActive('subscription')
               }}
               titleText="Back"
@@ -147,6 +157,11 @@ const ParsingForm: FC<Props> = ({
                 color={ComponentColor.Success}
                 type={ButtonType.Button}
                 onClick={() => {
+                  event(
+                    'save clicked',
+                    {step: 'parsing', dataFormat: formContent.dataFormat},
+                    {feature: 'subscriptions'}
+                  )
                   saveForm(formContent)
                 }}
                 testID="create-parsing-form--submit"

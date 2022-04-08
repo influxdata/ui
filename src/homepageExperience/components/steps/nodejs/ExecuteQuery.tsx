@@ -1,11 +1,10 @@
 import React from 'react'
+
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
-import {useSelector} from 'react-redux'
-import {getOrg} from 'src/organizations/selectors'
 
 const logCopyCodeSnippet = () => {
-  event('firstMile.pythonWizard.executeQuery.code.copied')
+  event('firstMile.nodejsWizard.executeQuery.code.copied')
 }
 
 type OwnProps = {
@@ -13,22 +12,28 @@ type OwnProps = {
 }
 
 export const ExecuteQuery = (props: OwnProps) => {
-  const org = useSelector(getOrg)
   const {bucket} = props
 
   const fromBucketSnippet = `from(bucket: "${bucket}")
   |> range(start: -10m)`
 
-  const query = `query_api = client.query_api()
-
-query = """from(bucket: "${bucket}")
+  const query = `const queryClient = client.getQueryApi(org)
+const fluxQuery = \`from(bucket: "fooo")
  |> range(start: -10m)
- |> filter(fn: (r) => r._measurement == "measurement1")"""
-tables = query_api.query(query, org="${org.name}")
+ |> filter(fn: (r) => r._measurement == "measurement1")\`
 
-for table in tables:
-  for record in table.records:
-    print(record)`
+queryClient.queryRows(fluxQuery, {
+  next: (row, tableMeta) => {
+    const tableObject = tableMeta.toObject(row)
+    console.log(row, tableObject)
+  },
+  error: (error) => {
+    console.error('\\nError', error)
+  },
+  complete: () => {
+    console.log('\\nSuccess')
+  },
+})`
 
   return (
     <>
@@ -51,7 +56,7 @@ for table in tables:
         with field key of "field1".
         <br />
         <br />
-        Let’s use that Flux query in our Python code!
+        Let’s use that Flux query in our Nodejs code!
         <br />
         <br />
         Run the following:

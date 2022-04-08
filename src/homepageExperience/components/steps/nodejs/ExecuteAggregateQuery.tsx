@@ -3,15 +3,13 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
-import {useSelector} from 'react-redux'
-import {getOrg} from 'src/organizations/selectors'
 
 const logCopyCodeSnippet = () => {
-  event('firstMile.pythonWizard.executeAggregateQuery.code.copied')
+  event('firstMile.nodejsWizard.executeAggregateQuery.code.copied')
 }
 
 const logDocsOpened = () => {
-  event('firstMile.pythonWizard.executeAggregateQuery.docs.opened')
+  event('firstMile.nodejsWizard.executeAggregateQuery.docs.opened')
 }
 
 type OwnProps = {
@@ -19,24 +17,30 @@ type OwnProps = {
 }
 
 export const ExecuteAggregateQuery = (props: OwnProps) => {
-  const org = useSelector(getOrg)
   const {bucket} = props
 
   const fromBucketSnippet = `from(bucket: "${bucket}")
   |> range(start: -10m) # find data points in last 10 minutes
   |> mean()`
 
-  const codeSnippet = `query_api = client.query_api()
+  const query = `const queryClient = client.getQueryApi(org)
+const fluxQuery = \`from(bucket: "fooo")
+ |> range(start: -10m)
+ |> filter(fn: (r) => r._measurement == "measurement1")
+ |> mean()\`
 
-query = """from(bucket: "${bucket}")
-  |> range(start: -10m)
-  |> filter(fn: (r) => r._measurement == "measurement1")
-  |> mean()"""
-tables = query_api.query(query, org="${org.name}")
-
-for table in tables:
-    for record in table.records:
-        print(record)`
+queryClient.queryRows(fluxQuery, {
+  next: (row, tableMeta) => {
+    const tableObject = tableMeta.toObject(row)
+    console.log(row, tableObject)
+  },
+  error: (error) => {
+    console.error('\\nError', error)
+  },
+  complete: () => {
+    console.log('\\nSuccess')
+  },
+})`
 
   return (
     <>
@@ -64,7 +68,7 @@ for table in tables:
         <br />
         Run the following:
       </p>
-      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet text={query} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>
         This will return the mean of the five values. ( (0+1+2+3+4) / 5 = 2 )
       </p>

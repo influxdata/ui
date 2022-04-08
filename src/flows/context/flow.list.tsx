@@ -34,7 +34,7 @@ import {CLOUD} from 'src/shared/constants'
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string | void>
   clone: (id: string) => Promise<string | void>
-  update: (id: string, name: string) => void
+  update: (id: string, flow?: Flow) => void
   remove: (id: string) => void
   getAll: () => void
 }
@@ -58,7 +58,7 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   flows: {},
   add: (_flow?: Flow) => {},
   clone: (_id: string) => {},
-  update: (_id: string, _name: string) => {},
+  update: (_id: string, _flow: Partial<Flow>) => {},
   remove: (_id: string) => {},
   getAll: () => {},
 } as FlowListContextType
@@ -236,7 +236,7 @@ export const FlowListProvider: FC = ({children}) => {
   }
 
   const update = useCallback(
-    async (id: string, name: string) => {
+    async (id: string, flow: Partial<Flow>) => {
       try {
         if (!flows.hasOwnProperty(id)) {
           throw new Error(`${PROJECT_NAME} not found`)
@@ -244,9 +244,10 @@ export const FlowListProvider: FC = ({children}) => {
 
         if (CLOUD) {
           const resp = await patchNotebook({
-            id,
+            id: id,
             data: {
-              name,
+              name: flow.name,
+              orgID: org.id,
             },
           })
 
@@ -258,17 +259,17 @@ export const FlowListProvider: FC = ({children}) => {
             ...prevFlows,
             [id]: {
               ...prevFlows[id],
-              name,
+              name: flow.name,
             },
           }))
         } else {
-          const flow = flows[id]
+          const _flow = flows[id]
 
           const allFlowNames = Object.values(flows).map(value => value.name)
-          const clonedName = incrementCloneName(allFlowNames, flow.name)
+          const clonedName = incrementCloneName(allFlowNames, _flow.name)
 
           const data = {
-            ...flow,
+            ..._flow,
             name: clonedName,
           }
 

@@ -51,19 +51,21 @@ export const WriteDataComponent = (props: OwnProps) => {
   }, [bucket])
 
   const codeSnippet = `
-const org = '${org.name}'
-const bucket = '${bucket.name}'
+org := "${org.name}"
+bucket := "${bucket.name}"
+writeAPI := client.WriteAPIBlocking(org, bucket)
+for value := 0; value < 5; value++ {
+    tags := map[string]string{
+        "tagname1": "tagvalue1",
+    }
+    fields := map[string]interface{}{
+        "field1": value,
+    }
+    point := write.NewPoint("measurement1", tags, fields, time.Now())
 
-const writeClient = client.getWriteApi(org, bucket, 'ns')
-
-for (let i = 0; i < 5; i++) {
-  const point = new Point('measurement1')
-    .tag('tagname1', 'tagvalue1')
-    .floatField('field1', i)
-
-  setTimeout(() => {
-    writeClient.writePoint(point)
-  }, i * 1000) // separate points by 1 second
+    if err := writeAPI.WritePoint(context.Background(), point); err != nil {
+        log.Fatal(err)
+    }
 }`
 
   return (
@@ -92,8 +94,7 @@ for (let i = 0; i < 5; i++) {
         </Panel.Body>
       </Panel>
       <p>
-        In this code, we define five data points and write each one for
-        InfluxDB. Run the following code in your Nodejs shell:
+        Add the following to your <code>main</code> function:
       </p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>

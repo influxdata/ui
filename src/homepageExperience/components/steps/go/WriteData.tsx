@@ -21,11 +21,11 @@ import {getBuckets} from 'src/buckets/actions/thunks'
 import {event} from 'src/cloud/utils/reporting'
 
 const logCopyCodeSnippet = () => {
-  event('firstMile.nodejsWizard.writeData.code.copied')
+  event('firstMile.goWizard.writeData.code.copied')
 }
 
 const logDocsOpened = () => {
-  event('firstMile.nodejsWizard.writeData.docs.opened')
+  event('firstMile.goWizard.writeData.docs.opened')
 }
 
 type OwnProps = {

@@ -76,7 +76,7 @@ export class GoWizard extends PureComponent<null, State> {
         return <InstallDependencies />
       }
       case 3: {
-        return <CreateToken />
+        return <CreateToken wizardEventName="goWizard" />
       }
       case 4: {
         return <InitalizeClient />

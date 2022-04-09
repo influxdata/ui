@@ -4,7 +4,7 @@ import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {event} from 'src/cloud/utils/reporting'
 
 const logCopyCodeSnippet = () => {
-  event('firstMile.nodejsWizard.executeQuery.code.copied')
+  event('firstMile.goWizard.executeQuery.code.copied')
 }
 
 type OwnProps = {

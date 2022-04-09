@@ -5,11 +5,11 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {event} from 'src/cloud/utils/reporting'
 
 const logCopyCodeSnippet = () => {
-  event('firstMile.nodejsWizard.executeAggregateQuery.code.copied')
+  event('firstMile.goWizard.executeAggregateQuery.code.copied')
 }
 
 const logDocsOpened = () => {
-  event('firstMile.nodejsWizard.executeAggregateQuery.docs.opened')
+  event('firstMile.goWizard.executeAggregateQuery.docs.opened')
 }
 
 type OwnProps = {

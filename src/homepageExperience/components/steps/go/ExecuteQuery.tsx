@@ -17,23 +17,20 @@ export const ExecuteQuery = (props: OwnProps) => {
   const fromBucketSnippet = `from(bucket: "${bucket}")
   |> range(start: -10m)`
 
-  const query = `const queryClient = client.getQueryApi(org)
-const fluxQuery = \`from(bucket: "fooo")
- |> range(start: -10m)
- |> filter(fn: (r) => r._measurement == "measurement1")\`
-
-queryClient.queryRows(fluxQuery, {
-  next: (row, tableMeta) => {
-    const tableObject = tableMeta.toObject(row)
-    console.log(row, tableObject)
-  },
-  error: (error) => {
-    console.error('\\nError', error)
-  },
-  complete: () => {
-    console.log('\\nSuccess')
-  },
-})`
+  const query = `queryAPI := client.QueryAPI(org)
+query := \`from(bucket: "externalwrites")
+            |> range(start: -10m)
+            |> filter(fn: (r) => r._measurement == "measurement1")\`
+results, err := queryAPI.Query(context.Background(), query)
+if err != nil {
+    log.Fatal(err)
+}
+for results.Next() {
+    fmt.Println(results.Record())
+}
+if err := results.Err(); err != nil {
+    log.Fatal(err)
+}`
 
   return (
     <>
@@ -56,10 +53,10 @@ queryClient.queryRows(fluxQuery, {
         with field key of "field1".
         <br />
         <br />
-        Let’s use that Flux query in our Nodejs code!
+        Let’s use that Flux query in our Go code!
         <br />
         <br />
-        Run the following:
+        Add the following to your <code>main</code> function:
       </p>
       <CodeSnippet text={query} onCopy={logCopyCodeSnippet} />
     </>

@@ -2,6 +2,8 @@
 import React, {FC, useContext, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
+import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {Icon, IconFont, TreeNav} from '@influxdata/clockface'
@@ -22,12 +24,31 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
+import {AppState} from 'src/types'
 
-const TreeSidebar: FC = () => {
+import {getStore} from 'src/store/configureStore'
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
+type ReduxProps = ConnectedProps<typeof connector>
+
+const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
+  showOverlay,
+  dismissOverlay,
+}) => {
   const org = useSelector(getOrg)
+  const orgID = org?.id
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )
+
+  // const state: AppState = getStore().getState()
+  // const orgID = state?.resources?.orgs?.org?.id ?? ''
+  // const orgPrefix = `/orgs/${orgID}`
+
+  const supportLink = {
+    link: `/orgs/${orgID}/support`,
+  }
+
   useEffect(() => {
     if (isFlagEnabled('helpBar')) {
       const helpBarMenu = document.querySelectorAll<HTMLElement>(
@@ -52,6 +73,27 @@ const TreeSidebar: FC = () => {
     } else {
       setNavbarMode('expanded')
     }
+  }
+
+  const isPayingCustomer = (state: AppState): boolean => {
+    const {quartzMe} = state.me
+    const accountType = quartzMe?.accountType ?? 'free'
+    return accountType !== 'free'
+  }
+  const ans = useSelector(isPayingCustomer)
+
+  const handleSelect = (): void => {
+    // check if cusomter is a free user
+    // open free support overlay
+    // console.log('is paying customer ', ans)
+    if (!ans) {
+      console.log('is paying customer ', ans)
+      showOverlay('payg-support', null, dismissOverlay)
+    } else {
+      showOverlay('free-account-support', null, dismissOverlay)
+    }
+    // if customer is paying user
+    // open pay support overlay
   }
 
   return (
@@ -151,7 +193,8 @@ const TreeSidebar: FC = () => {
                 id="contactSupport"
                 label="Contact Support"
                 testID="nav-subitem-contact-support"
-                linkElement={className => <Link className={className} to="" />}
+                // linkElement={className => <Link className={className} onClick={handleSelect} to=''/>}
+                onClick={handleSelect}
               />
               <TreeNav.SubHeading label="Community" />
               <TreeNav.SubItem
@@ -185,4 +228,11 @@ const TreeSidebar: FC = () => {
   )
 }
 
-export default TreeSidebar
+const mdtp = {
+  showOverlay,
+  dismissOverlay,
+}
+
+const connector = connect(null, mdtp)
+
+export default connector(withRouter(TreeSidebar))

@@ -139,3 +139,19 @@ export const ExportVariableOverlay = RouteOverlay(
     history.push(`/orgs/${params.orgID}/settings/variables`)
   }
 )
+
+export const PayGSupportOverlay = RouteOverlay(
+  OverlayHandler,
+  'payg-support',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/support`)
+  }
+)
+
+export const FreeAccountSupportOverlay = RouteOverlay(
+  OverlayHandler,
+  'free-account-support',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/support`)
+  }
+)

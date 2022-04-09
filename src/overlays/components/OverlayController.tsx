@@ -39,6 +39,8 @@ import NewRuleOverlay from 'src/notifications/rules/components/NewRuleOverlay'
 import CreateSecretOverlay from 'src/secrets/components/CreateSecret/CreateSecretOverlay'
 import VariableImportOverlay from 'src/variables/components/VariableImportOverlay'
 import ShareOverlay from 'src/flows/components/ShareOverlay'
+import PayGSupportOverlay from 'src/support/components/PayGSupportOverlay'
+import FreeAccountSupportOverlay from 'src/support/components/FreeAccountSupportOverlay'
 
 // Actions
 import {dismissOverlay} from 'src/overlays/actions/overlays'
@@ -146,6 +148,12 @@ export const OverlayController: FunctionComponent = () => {
         break
       case 'share-overlay':
         activeOverlay.current = <ShareOverlay />
+        break
+      case 'payg-support':
+        activeOverlay.current = <PayGSupportOverlay onClose={onClose} />
+        break
+      case 'free-account-support':
+        activeOverlay.current = <FreeAccountSupportOverlay onClose={onClose} />
         break
       default:
         activeOverlay.current = null

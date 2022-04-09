@@ -23,24 +23,21 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> range(start: -10m) # find data points in last 10 minutes
   |> mean()`
 
-  const query = `const queryClient = client.getQueryApi(org)
-const fluxQuery = \`from(bucket: "fooo")
- |> range(start: -10m)
- |> filter(fn: (r) => r._measurement == "measurement1")
- |> mean()\`
-
-queryClient.queryRows(fluxQuery, {
-  next: (row, tableMeta) => {
-    const tableObject = tableMeta.toObject(row)
-    console.log(row, tableObject)
-  },
-  error: (error) => {
-    console.error('\\nError', error)
-  },
-  complete: () => {
-    console.log('\\nSuccess')
-  },
-})`
+  const query = `
+query := \`from(bucket: "${bucket}")
+              |> range(start: -10m)
+              |> filter(fn: (r) => r._measurement == "measurement1")
+              |> mean()\`
+results, err := queryAPI.Query(context.Background(), query)
+if err != nil {
+    log.Fatal(err)
+}
+for results.Next() {
+    fmt.Println(results.Record())
+}
+if err := results.Err(); err != nil {
+    log.Fatal(err)
+}`
 
   return (
     <>
@@ -66,7 +63,7 @@ queryClient.queryRows(fluxQuery, {
         data points in last 10 minutes.
         <br />
         <br />
-        Run the following:
+        Add the following to your <code>main</code> function:
       </p>
       <CodeSnippet text={query} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>

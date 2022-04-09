@@ -18,7 +18,7 @@ export const ExecuteQuery = (props: OwnProps) => {
   |> range(start: -10m)`
 
   const query = `queryAPI := client.QueryAPI(org)
-query := \`from(bucket: "externalwrites")
+query := \`from(bucket: "${bucket}")
             |> range(start: -10m)
             |> filter(fn: (r) => r._measurement == "measurement1")\`
 results, err := queryAPI.Query(context.Background(), query)

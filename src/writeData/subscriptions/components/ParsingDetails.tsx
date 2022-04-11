@@ -35,6 +35,7 @@ interface Props {
   saveForm: (any) => void
   edit: boolean
   setEdit: (any) => void
+  singlePage: boolean
 }
 
 const ParsingDetails: FC<Props> = ({
@@ -43,6 +44,7 @@ const ParsingDetails: FC<Props> = ({
   saveForm,
   edit,
   setEdit,
+  singlePage
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -82,7 +84,9 @@ const ParsingDetails: FC<Props> = ({
             </Grid.Row>
           </Grid>
         </Overlay.Body>
-        <Overlay.Footer>
+        {
+          !singlePage ? (
+<Overlay.Footer>
           <Button
             text="Close"
             color={ComponentColor.Tertiary}
@@ -122,6 +126,8 @@ const ParsingDetails: FC<Props> = ({
             status={ComponentStatus.Default}
           />
         </Overlay.Footer>
+          ) :   (      <div className="update-parsing-form__line"></div> )
+        }
       </Form>
     </div>
   )

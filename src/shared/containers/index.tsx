@@ -124,3 +124,7 @@ export const NodejsWizard = lazy(() =>
     default: module.NodejsWizard,
   }))
 )
+
+export const SinglePageSubDetails = lazy(() =>
+  import('src/writeData/subscriptions/components/SinglePageSubDetails')
+)

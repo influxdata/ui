@@ -80,7 +80,7 @@ const navigationSteps: SubscriptionNavigationModel[] = [
   },
 ]
 
-const SubscriptionDetailsPage: FC = () => {
+const SinglePageSubDetails: FC = () => {
   const [active, setFormActive] = useState<Steps>(Steps.BrokerForm)
   const {
     currentSubscription,
@@ -134,65 +134,15 @@ const SubscriptionDetailsPage: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-            <FlexBox
-              justifyContent={JustifyContent.SpaceBetween}
-              alignItems={AlignItems.FlexEnd}
-              stretchToFitHeight={true}
-            >
-              <Heading
-                element={HeadingElement.H3}
-                weight={FontWeight.Regular}
-                className="subscription-details-page__status"
-              >
-                Status:
-                <span
-                  className={
-                    currentSubscription &&
-                    `subscription-details-page__status--${currentSubscription.status}`
-                  }
-                >
-                  {currentSubscription && currentSubscription.status}
-                </span>
-              </Heading>
-              {!(
-                currentSubscription.status === 'VALIDATING' ||
-                currentSubscription.status === 'INVALID'
-              ) && (
-                <Button
-                  text={
-                    currentSubscription.status === 'RUNNING' ? 'stop' : 'start'
-                  }
-                  color={
-                    currentSubscription.status === 'RUNNING'
-                      ? ComponentColor.Danger
-                      : ComponentColor.Success
-                  }
-                  onClick={() => {
-                    if (currentSubscription.status === 'RUNNING') {
-                      setStatus(false)
-                    } else {
-                      setStatus(true)
-                    }
-                  }}
-                  type={ButtonType.Submit}
-                  testID="subscription-details-page--status-button"
-                  status={ComponentStatus.Default}
-                  className="subscription-details-page__status--button"
-                />
-              )}
-            </FlexBox>
-            {active === Steps.BrokerForm && (
               <BrokerDetails
-                setFormActive={setFormActive}
                 currentSubscription={currentSubscription}
                 updateForm={updateForm}
                 edit={edit}
                 setEdit={setEdit}
                 loading={loading}
-                singlePage={false}
+                singlePage={true}
+                setStatus={setStatus}
               />
-            )}
-            {active === Steps.SubscriptionForm && (
               <SubscriptionDetails
                 setFormActive={setFormActive}
                 currentSubscription={currentSubscription}
@@ -201,19 +151,16 @@ const SubscriptionDetailsPage: FC = () => {
                 bucket={bucket}
                 edit={edit}
                 setEdit={setEdit}
-                singlePage={false}
+                singlePage={true}
               />
-            )}
-            {active === Steps.ParsingForm && (
               <ParsingDetails
                 currentSubscription={currentSubscription}
                 updateForm={updateForm}
                 saveForm={saveForm}
                 edit={edit}
                 setEdit={setEdit}
-                singlePage={false}
+                singlePage={true}
               />
-            )}
           </Page.Contents>
         </SpinnerContainer>
       </Page>
@@ -225,7 +172,7 @@ export default () => (
   <SubscriptionListProvider>
     <SubscriptionUpdateProvider>
       <WriteDataDetailsProvider>
-        <SubscriptionDetailsPage />
+        <SinglePageSubDetails />
       </WriteDataDetailsProvider>
     </SubscriptionUpdateProvider>
   </SubscriptionListProvider>

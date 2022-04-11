@@ -16,7 +16,12 @@ import {
   FontWeight,
   SpinnerContainer,
   TechnoSpinner,
+  FlexBox,
+  FlexDirection,
+  ComponentSize,
+  JustifyContent,
 } from '@influxdata/clockface'
+import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -31,47 +36,21 @@ import BrokerFormContent from './BrokerFormContent'
 
 interface Props {
   currentSubscription: Subscription
-  setFormActive: (string) => void
   updateForm: (any) => void
   edit: boolean
   setEdit: (any) => void
   loading: any
+  singlePage: boolean
+  setStatus:  (any) => void
 }
 
-const BrokerDetails: FC<Props> = ({
-  currentSubscription,
-  setFormActive,
-  updateForm,
-  edit,
-  setEdit,
-  loading,
-}) => {
-  const history = useHistory()
-  const org = useSelector(getOrg)
-  return (
-    <div className="update-broker-form">
-      <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
-        <Form onSubmit={() => {}} testID="update-broker-form-overlay">
-          <Overlay.Body>
-            <Heading
-              element={HeadingElement.H3}
-              weight={FontWeight.Bold}
-              className="update-broker-form__header"
-            >
-              Broker details
-            </Heading>
-            <BrokerFormContent
-              formContent={currentSubscription}
-              updateForm={updateForm}
-              className="update"
-            />
-          </Overlay.Body>
-          <Overlay.Footer>
-            <Button
+const BrokerButtons = (history, edit, setEdit, id) => (
+  <div>
+  <Button
               text="Close"
               color={ComponentColor.Tertiary}
               onClick={() => {
-                history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+                history.push(`/orgs/${id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
               titleText="Cancel update of Subscription and return to list"
               type={ButtonType.Button}
@@ -86,24 +65,62 @@ const BrokerDetails: FC<Props> = ({
               testID="update-broker-form--edit"
             />
             <Button
-              text="Next"
-              color={ComponentColor.Secondary}
-              onClick={() => setFormActive('subscription')}
-              type={ButtonType.Button}
-              titleText="Next"
-              testID="update-broker-form--submit"
-            />
-            <Button
               text="View Data"
               color={ComponentColor.Success}
               onClick={() => {
-                history.push(`/orgs/${org.id}/notebooks`)
+                history.push(`/orgs/${id}/notebooks`)
               }}
               type={ButtonType.Button}
               testID="update-broker-form--view-data"
               status={ComponentStatus.Default}
             />
+            </div>
+)
+
+const BrokerDetails: FC<Props> = ({
+  currentSubscription,
+  updateForm,
+  edit,
+  setEdit,
+  loading,
+  singlePage,
+  setStatus
+}) => {
+  const history = useHistory()
+  const org = useSelector(getOrg)
+  return (
+    <div className="update-broker-form">
+      <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
+        <Form onSubmit={() => {}} testID="update-broker-form-overlay">
+        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium} justifyContent={JustifyContent.FlexEnd}>
+          {BrokerButtons(history, edit, setEdit, org.id)}
+          </FlexBox>
+          <StatusHeader currentSubscription={currentSubscription} setStatus={setStatus} />
+          <Overlay.Body>
+            <Heading
+              element={HeadingElement.H3}
+              weight={FontWeight.Bold}
+              className="update-broker-form__header"
+            >
+              Broker details
+            </Heading>
+            <BrokerFormContent
+              formContent={currentSubscription}
+              updateForm={updateForm}
+              className="update"
+            />
+          </Overlay.Body>
+          {
+!singlePage ? (
+<Overlay.Footer>
+            
+{BrokerButtons(history, edit, setEdit, org.id)}
           </Overlay.Footer>
+) :   (      <div className="update-broker-form__line"></div> )
+
+          }
+          
+          
         </Form>
       </SpinnerContainer>
     </div>

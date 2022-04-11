@@ -33,6 +33,7 @@ interface Props {
   bucket: any
   edit: boolean
   setEdit: (any) => void
+  singlePage: boolean
 }
 
 const SubscriptionDetails: FC<Props> = ({
@@ -43,6 +44,7 @@ const SubscriptionDetails: FC<Props> = ({
   bucket,
   edit,
   setEdit,
+  singlePage,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -70,56 +72,61 @@ const SubscriptionDetails: FC<Props> = ({
               edit={edit}
             />
           </Overlay.Body>
-          <Overlay.Footer>
-            <Button
-              text="Close"
-              color={ComponentColor.Tertiary}
-              onClick={() => {
-                event('close button clicked', {}, {feature: 'subscriptions'})
-                history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-              }}
-              titleText="Cancel update and return to Subscriptions list"
-              type={ButtonType.Button}
-              testID="update-subscription-form--cancel"
-            />
-            <Button
-              text="Edit"
-              color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-              onClick={() => {
-                event('edit button clicked', {}, {feature: 'subscriptions'})
-                setEdit(!edit)
-              }}
-              type={ButtonType.Button}
-              titleText="Edit"
-              testID="update-subscription-form--edit"
-            />
-            <Button
-              text="Next"
-              color={ComponentColor.Secondary}
-              onClick={() => {
-                event('next button clicked', {}, {feature: 'subscriptions'})
-                setFormActive('parsing')
-              }}
-              type={ButtonType.Button}
-              titleText="Next"
-              testID="update-subscription-form--submit"
-            />
-            <Button
-              text="View Data"
-              color={ComponentColor.Success}
-              onClick={() => {
-                event(
-                  'view data button clicked',
-                  {},
-                  {feature: 'subscriptions'}
-                )
-                history.push(`/orgs/${org.id}/notebooks`)
-              }}
-              type={ButtonType.Button}
-              testID="update-subscription-form--view-data"
-              status={ComponentStatus.Default}
-            />
-          </Overlay.Footer>
+     
+          {
+!singlePage ? (
+  <Overlay.Footer>
+  <Button
+    text="Close"
+    color={ComponentColor.Tertiary}
+    onClick={() => {
+      event('close button clicked', {}, {feature: 'subscriptions'})
+      history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+    }}
+    titleText="Cancel update and return to Subscriptions list"
+    type={ButtonType.Button}
+    testID="update-subscription-form--cancel"
+  />
+  <Button
+    text="Edit"
+    color={edit ? ComponentColor.Success : ComponentColor.Secondary}
+    onClick={() => {
+      event('edit button clicked', {}, {feature: 'subscriptions'})
+      setEdit(!edit)
+    }}
+    type={ButtonType.Button}
+    titleText="Edit"
+    testID="update-subscription-form--edit"
+  />
+  <Button
+    text="Next"
+    color={ComponentColor.Secondary}
+    onClick={() => {
+      event('next button clicked', {}, {feature: 'subscriptions'})
+      setFormActive('parsing')
+    }}
+        type={ButtonType.Button}
+    titleText="Next"
+    testID="update-subscription-form--submit"
+  />
+  <Button
+    text="View Data"
+    color={ComponentColor.Success}
+    onClick={() => {
+      event(
+        'view data button clicked',
+        {},
+        {feature: 'subscriptions'}
+      )
+      history.push(`/orgs/${org.id}/notebooks`)
+    }}
+    type={ButtonType.Button}
+    testID="update-subscription-form--view-data"
+    status={ComponentStatus.Default}
+  />
+</Overlay.Footer>
+) :   (      <div className="update-subscription-form__line"></div> )
+          }
         </Form>
       </div>
     )

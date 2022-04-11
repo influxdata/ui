@@ -43,7 +43,7 @@ export const HomepageContainer: FC = () => {
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
   const javaScriptNodeLink = `/orgs/${org.id}/new-user-wizard/nodejs`
-  const golangLink = `/orgs/${org.id}/load-data/new-user-wizard/nodejs`
+  const golangLink = `/orgs/${org.id}/load-data/new-user-wizard/go`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
 
   const cardStyle = {minWidth: '200px'}

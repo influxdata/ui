@@ -12,7 +12,6 @@ import {
   Authorization,
 } from 'src/types'
 import {OnboardingStepProps} from 'src/onboarding/containers/OnboardingWizard'
-import {RouteComponentProps} from 'react-router-dom'
 import {NumericColumnData} from '@influxdata/giraffe'
 import {CLOUD} from 'src/shared/constants'
 
@@ -239,7 +238,7 @@ const match: match<{orgID: string}> = {
   },
 }
 
-export const withRouterProps: RouteComponentProps<{orgID: string}> = {
+export const withRouterProps = {
   match,
   location: null,
   history: null,

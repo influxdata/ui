@@ -41,40 +41,50 @@ interface Props {
   setEdit: (any) => void
   loading: any
   singlePage: boolean
-  setStatus:  (any) => void
+  setStatus: (any) => void
+  saveForm: (any) => void
 }
 
-const BrokerButtons = (history, edit, setEdit, id) => (
+const BrokerButtons = (
+  history,
+  edit,
+  setEdit,
+  id,
+  saveForm,
+  currentSubscription
+) => (
   <div>
-  <Button
-              text="Close"
-              color={ComponentColor.Tertiary}
-              onClick={() => {
-                history.push(`/orgs/${id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-              }}
-              titleText="Cancel update of Subscription and return to list"
-              type={ButtonType.Button}
-              testID="update-broker-form--cancel"
-            />
-            <Button
-              text="Edit"
-              color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-              onClick={() => setEdit(!edit)}
-              type={ButtonType.Button}
-              titleText="Edit"
-              testID="update-broker-form--edit"
-            />
-            <Button
-              text="View Data"
-              color={ComponentColor.Success}
-              onClick={() => {
-                history.push(`/orgs/${id}/notebooks`)
-              }}
-              type={ButtonType.Button}
-              testID="update-broker-form--view-data"
-              status={ComponentStatus.Default}
-            />
-            </div>
+    <Button
+      text="Close"
+      color={ComponentColor.Tertiary}
+      onClick={() => {
+        history.push(`/orgs/${id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+      }}
+      titleText="Cancel update of Subscription and return to list"
+      type={ButtonType.Button}
+      testID="update-broker-form--cancel"
+    />
+    <Button
+      text={!edit ? 'Edit' : 'Save Changes'}
+      color={edit ? ComponentColor.Success : ComponentColor.Secondary}
+      onClick={() => (edit ? saveForm(currentSubscription) : setEdit(!edit))}
+      type={ButtonType.Button}
+      titleText={edit ? 'Edit' : 'Save Changes'}
+      testID="update-broker-form--edit"
+    />
+    {!edit && (
+      <Button
+        text="View Data"
+        color={ComponentColor.Success}
+        onClick={() => {
+          history.push(`/orgs/${id}/notebooks`)
+        }}
+        type={ButtonType.Button}
+        testID="update-broker-form--view-data"
+        status={ComponentStatus.Default}
+      />
+    )}
+  </div>
 )
 
 const BrokerDetails: FC<Props> = ({
@@ -84,18 +94,38 @@ const BrokerDetails: FC<Props> = ({
   setEdit,
   loading,
   singlePage,
-  setStatus
+  setStatus,
+  saveForm,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
   return (
-    <div className="update-broker-form">
+    <div className="update-broker-form" id="broker">
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="update-broker-form-overlay">
-        <FlexBox direction={FlexDirection.Row} margin={ComponentSize.Medium} justifyContent={JustifyContent.FlexEnd}>
-          {BrokerButtons(history, edit, setEdit, org.id)}
-          </FlexBox>
-          <StatusHeader currentSubscription={currentSubscription} setStatus={setStatus} />
+          {singlePage && (
+            <div>
+              <FlexBox
+                className="update-broker-form__broker-buttons"
+                direction={FlexDirection.Row}
+                margin={ComponentSize.Medium}
+                justifyContent={JustifyContent.FlexEnd}
+              >
+                {BrokerButtons(
+                  history,
+                  edit,
+                  setEdit,
+                  org.id,
+                  saveForm,
+                  currentSubscription
+                )}
+              </FlexBox>
+              <StatusHeader
+                currentSubscription={currentSubscription}
+                setStatus={setStatus}
+              />
+            </div>
+          )}
           <Overlay.Body>
             <Heading
               element={HeadingElement.H3}
@@ -110,17 +140,20 @@ const BrokerDetails: FC<Props> = ({
               className="update"
             />
           </Overlay.Body>
-          {
-!singlePage ? (
-<Overlay.Footer>
-            
-{BrokerButtons(history, edit, setEdit, org.id)}
-          </Overlay.Footer>
-) :   (      <div className="update-broker-form__line"></div> )
-
-          }
-          
-          
+          {!singlePage ? (
+            <Overlay.Footer>
+              {BrokerButtons(
+                history,
+                edit,
+                setEdit,
+                org.id,
+                saveForm,
+                currentSubscription
+              )}
+            </Overlay.Footer>
+          ) : (
+            <div className="update-broker-form__line"></div>
+          )}
         </Form>
       </SpinnerContainer>
     </div>

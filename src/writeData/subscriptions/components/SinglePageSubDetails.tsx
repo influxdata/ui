@@ -6,21 +6,11 @@ import {useParams} from 'react-router-dom'
 // Components
 import {
   Page,
-  FlexBox,
-  JustifyContent,
-  AlignItems,
   SpinnerContainer,
   TechnoSpinner,
   IconFont,
-  Heading,
-  HeadingElement,
-  FontWeight,
   SubwayNav,
   SubwayNavModel,
-  Button,
-  ComponentColor,
-  ComponentStatus,
-  ButtonType,
 } from '@influxdata/clockface'
 import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
@@ -40,6 +30,7 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Graphics
 import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
@@ -101,6 +92,9 @@ const SinglePageSubDetails: FC = () => {
   const [edit, setEdit] = useState(false)
 
   const handleClick = (step: number) => {
+    document
+      .getElementById(navigationSteps[step - 1].type)
+      ?.scrollIntoView({behavior: 'smooth', block: 'start'})
     setFormActive(navigationSteps[step - 1].type as Steps)
   }
 
@@ -113,6 +107,8 @@ const SinglePageSubDetails: FC = () => {
     })
     return currentStep
   }
+  const singlePage = isFlagEnabled('subscriptionsSinglePage')
+
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -134,33 +130,34 @@ const SinglePageSubDetails: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-              <BrokerDetails
-                currentSubscription={currentSubscription}
-                updateForm={updateForm}
-                edit={edit}
-                setEdit={setEdit}
-                loading={loading}
-                singlePage={true}
-                setStatus={setStatus}
-              />
-              <SubscriptionDetails
-                setFormActive={setFormActive}
-                currentSubscription={currentSubscription}
-                updateForm={updateForm}
-                buckets={buckets}
-                bucket={bucket}
-                edit={edit}
-                setEdit={setEdit}
-                singlePage={true}
-              />
-              <ParsingDetails
-                currentSubscription={currentSubscription}
-                updateForm={updateForm}
-                saveForm={saveForm}
-                edit={edit}
-                setEdit={setEdit}
-                singlePage={true}
-              />
+            <BrokerDetails
+              currentSubscription={currentSubscription}
+              updateForm={updateForm}
+              edit={edit}
+              setEdit={setEdit}
+              loading={loading}
+              singlePage={singlePage}
+              setStatus={setStatus}
+              saveForm={saveForm}
+            />
+            <SubscriptionDetails
+              setFormActive={setFormActive}
+              currentSubscription={currentSubscription}
+              updateForm={updateForm}
+              buckets={buckets}
+              bucket={bucket}
+              edit={edit}
+              setEdit={setEdit}
+              singlePage={singlePage}
+            />
+            <ParsingDetails
+              currentSubscription={currentSubscription}
+              updateForm={updateForm}
+              saveForm={saveForm}
+              edit={edit}
+              setEdit={setEdit}
+              singlePage={singlePage}
+            />
           </Page.Contents>
         </SpinnerContainer>
       </Page>

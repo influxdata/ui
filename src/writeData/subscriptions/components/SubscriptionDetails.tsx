@@ -58,7 +58,7 @@ const SubscriptionDetails: FC<Props> = ({
   }, [bucket])
   return (
     buckets && (
-      <div className="update-subscription-form">
+      <div className="update-subscription-form" id="subscription">
         <Form
           onSubmit={() => {}}
           testID="update-subscription-form--overlay-form"
@@ -72,61 +72,61 @@ const SubscriptionDetails: FC<Props> = ({
               edit={edit}
             />
           </Overlay.Body>
-     
-          {
-!singlePage ? (
-  <Overlay.Footer>
-  <Button
-    text="Close"
-    color={ComponentColor.Tertiary}
-    onClick={() => {
-      event('close button clicked', {}, {feature: 'subscriptions'})
-      history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-    }}
-    titleText="Cancel update and return to Subscriptions list"
-    type={ButtonType.Button}
-    testID="update-subscription-form--cancel"
-  />
-  <Button
-    text="Edit"
-    color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-    onClick={() => {
-      event('edit button clicked', {}, {feature: 'subscriptions'})
-      setEdit(!edit)
-    }}
-    type={ButtonType.Button}
-    titleText="Edit"
-    testID="update-subscription-form--edit"
-  />
-  <Button
-    text="Next"
-    color={ComponentColor.Secondary}
-    onClick={() => {
-      event('next button clicked', {}, {feature: 'subscriptions'})
-      setFormActive('parsing')
-    }}
-        type={ButtonType.Button}
-    titleText="Next"
-    testID="update-subscription-form--submit"
-  />
-  <Button
-    text="View Data"
-    color={ComponentColor.Success}
-    onClick={() => {
-      event(
-        'view data button clicked',
-        {},
-        {feature: 'subscriptions'}
-      )
-      history.push(`/orgs/${org.id}/notebooks`)
-    }}
-    type={ButtonType.Button}
-    testID="update-subscription-form--view-data"
-    status={ComponentStatus.Default}
-  />
-</Overlay.Footer>
-) :   (      <div className="update-subscription-form__line"></div> )
-          }
+
+          {!singlePage ? (
+            <Overlay.Footer>
+              <Button
+                text="Close"
+                color={ComponentColor.Tertiary}
+                onClick={() => {
+                  event('close button clicked', {}, {feature: 'subscriptions'})
+                  history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+                }}
+                titleText="Cancel update and return to Subscriptions list"
+                type={ButtonType.Button}
+                testID="update-subscription-form--cancel"
+              />
+              <Button
+                text="Edit"
+                color={edit ? ComponentColor.Success : ComponentColor.Secondary}
+                onClick={() => {
+                  event('edit button clicked', {}, {feature: 'subscriptions'})
+                  setEdit(!edit)
+                }}
+                type={ButtonType.Button}
+                titleText="Edit"
+                testID="update-subscription-form--edit"
+              />
+              <Button
+                text="Next"
+                color={ComponentColor.Secondary}
+                onClick={() => {
+                  event('next button clicked', {}, {feature: 'subscriptions'})
+                  setFormActive('parsing')
+                }}
+                type={ButtonType.Button}
+                titleText="Next"
+                testID="update-subscription-form--submit"
+              />
+              <Button
+                text="View Data"
+                color={ComponentColor.Success}
+                onClick={() => {
+                  event(
+                    'view data button clicked',
+                    {},
+                    {feature: 'subscriptions'}
+                  )
+                  history.push(`/orgs/${org.id}/notebooks`)
+                }}
+                type={ButtonType.Button}
+                testID="update-subscription-form--view-data"
+                status={ComponentStatus.Default}
+              />
+            </Overlay.Footer>
+          ) : (
+            <div className="update-subscription-form__line"></div>
+          )}
         </Form>
       </div>
     )

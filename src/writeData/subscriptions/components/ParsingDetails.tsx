@@ -44,12 +44,12 @@ const ParsingDetails: FC<Props> = ({
   saveForm,
   edit,
   setEdit,
-  singlePage
+  singlePage,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
   return (
-    <div className="update-parsing-form">
+    <div className="update-parsing-form" id="parsing">
       <Form onSubmit={() => {}} testID="update-parsing-form-overlay">
         <Overlay.Header title="Define Data Parsing Rules"></Overlay.Header>
         <Overlay.Body>
@@ -84,50 +84,50 @@ const ParsingDetails: FC<Props> = ({
             </Grid.Row>
           </Grid>
         </Overlay.Body>
-        {
-          !singlePage ? (
-<Overlay.Footer>
-          <Button
-            text="Close"
-            color={ComponentColor.Tertiary}
-            onClick={() => {
-              history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-            }}
-            titleText="Back to subscriptions list"
-            type={ButtonType.Button}
-            testID="update-parsing-form--cancel"
-          />
-          <Button
-            type={ButtonType.Button}
-            text="Edit"
-            color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-            onClick={() => setEdit(!edit)}
-            testID="update-parsing-form--edit"
-          />
-          {edit && (
+        {!singlePage ? (
+          <Overlay.Footer>
+            <Button
+              text="Close"
+              color={ComponentColor.Tertiary}
+              onClick={() => {
+                history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
+              }}
+              titleText="Back to subscriptions list"
+              type={ButtonType.Button}
+              testID="update-parsing-form--cancel"
+            />
             <Button
               type={ButtonType.Button}
-              text="Save Changes"
-              color={ComponentColor.Secondary}
-              onClick={() => {
-                saveForm(currentSubscription)
-              }}
-              testID="update-parsing-form--submit"
+              text="Edit"
+              color={edit ? ComponentColor.Success : ComponentColor.Secondary}
+              onClick={() => setEdit(!edit)}
+              testID="update-parsing-form--edit"
             />
-          )}
-          <Button
-            text="View Data"
-            color={ComponentColor.Success}
-            type={ButtonType.Button}
-            onClick={() => {
-              history.push(`/orgs/${org.id}/notebooks`)
-            }}
-            testID="update-parsing-form--view-data"
-            status={ComponentStatus.Default}
-          />
-        </Overlay.Footer>
-          ) :   (      <div className="update-parsing-form__line"></div> )
-        }
+            {edit && (
+              <Button
+                type={ButtonType.Button}
+                text="Save Changes"
+                color={ComponentColor.Secondary}
+                onClick={() => {
+                  saveForm(currentSubscription)
+                }}
+                testID="update-parsing-form--submit"
+              />
+            )}
+            <Button
+              text="View Data"
+              color={ComponentColor.Success}
+              type={ButtonType.Button}
+              onClick={() => {
+                history.push(`/orgs/${org.id}/notebooks`)
+              }}
+              testID="update-parsing-form--view-data"
+              status={ComponentStatus.Default}
+            />
+          </Overlay.Footer>
+        ) : (
+          <div className="update-parsing-form__line"></div>
+        )}
       </Form>
     </div>
   )

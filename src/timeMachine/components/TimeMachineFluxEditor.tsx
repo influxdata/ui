@@ -24,7 +24,6 @@ import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
-import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 
 // Types
 import {
@@ -34,10 +33,7 @@ import {
   MonacoRange,
 } from 'src/types'
 
-const FluxEditor = lazy(() => {
-  pointToCorrectWorkers()
-  return import('src/shared/components/FluxMonacoEditor')
-})
+const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
 const TimeMachineFluxEditor: FC = () => {
   const dispatch = useDispatch()

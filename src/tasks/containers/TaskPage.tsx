@@ -27,7 +27,6 @@ import {
 } from 'src/utils/taskOptionsToFluxScript'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {event} from 'src/cloud/utils/reporting'
-import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
@@ -35,10 +34,9 @@ import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps
 
-const FluxMonacoEditor = lazy(() => {
-  pointToCorrectWorkers()
-  return import('src/shared/components/FluxMonacoEditor')
-})
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 class TaskPage extends PureComponent<Props> {
   constructor(props) {

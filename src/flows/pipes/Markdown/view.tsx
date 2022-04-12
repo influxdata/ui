@@ -10,17 +10,13 @@ import classnames from 'classnames'
 // Components
 import MarkdownModeToggle from './MarkdownModeToggle'
 import {MarkdownRenderer} from 'src/shared/components/views/MarkdownRenderer'
-
-// Utils and Context
 import {PipeContext} from 'src/flows/context/pipe'
 import {PipeProp} from 'src/types/flows'
 import {FlowContext} from 'src/flows/context/flow.current'
-import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 
-const MarkdownMonacoEditor = lazy(() => {
-  pointToCorrectWorkers()
-  return import('src/shared/components/MarkdownMonacoEditor')
-})
+const MarkdownMonacoEditor = lazy(() =>
+  import('src/shared/components/MarkdownMonacoEditor')
+)
 
 const MarkdownPanel: FC<PipeProp> = ({Context}) => {
   const {data, update} = useContext(PipeContext)

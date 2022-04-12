@@ -7,13 +7,11 @@ import {
 } from '@influxdata/clockface'
 
 // Utils
-import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 import {humanizeNote} from 'src/dashboards/utils/notes'
 
-const MarkdownMonacoEditor = lazy(() => {
-  pointToCorrectWorkers()
-  return import('src/shared/components/MarkdownMonacoEditor')
-})
+const MarkdownMonacoEditor = lazy(() =>
+  import('src/shared/components/MarkdownMonacoEditor')
+)
 
 interface Props {
   note: string

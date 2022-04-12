@@ -11,16 +11,14 @@ import {Form} from '@influxdata/clockface'
 
 // Utils
 import {formatQueryText} from 'src/flows/shared/utils'
-import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 
 // Contexts
 import {PopupContext} from 'src/flows/context/popup'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
 
-const FluxMonacoEditor = lazy(() => {
-  pointToCorrectWorkers()
-  return import('src/shared/components/FluxMonacoEditor')
-})
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 const QueryTextPreview: FC = () => {
   const {data} = useContext(PopupContext)

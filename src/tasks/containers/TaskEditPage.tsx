@@ -28,15 +28,13 @@ import {
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
-import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 
 // Types
 import {AppState, TaskOptionKeys, TaskSchedule} from 'src/types'
 
-const FluxMonacoEditor = lazy(() => {
-  pointToCorrectWorkers()
-  return import('src/shared/components/FluxMonacoEditor')
-})
+const FluxMonacoEditor = lazy(() =>
+  import('src/shared/components/FluxMonacoEditor')
+)
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string}>

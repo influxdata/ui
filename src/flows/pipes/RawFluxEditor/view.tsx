@@ -39,6 +39,7 @@ import 'src/flows/pipes/RawFluxEditor/style.scss'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxMonacoEditor = lazy(() =>
@@ -98,7 +99,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     } else {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
-      if (isFlagEnabled('fluxDynamicDocs')) {
+      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
         showSub(<DynamicFunctions onSelect={injectIntoEditor} />)
       } else {
         showSub(<Functions onSelect={injectIntoEditor} />)

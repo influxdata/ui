@@ -9,16 +9,16 @@ import {
   SubwayNav,
 } from '@influxdata/clockface'
 
-import {InstallDependencies} from 'src/homepageExperience/components/steps/nodejs/InstallDependencies'
+import {InstallDependencies} from 'src/homepageExperience/components/steps/go/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
-import {InitalizeClient} from 'src/homepageExperience/components/steps/nodejs/InitalizeClient'
-import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteData'
-import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'
+import {InitalizeClient} from 'src/homepageExperience/components/steps/go/InitalizeClient'
+import {WriteData} from 'src/homepageExperience/components/steps/go/WriteData'
+import {ExecuteQuery} from 'src/homepageExperience/components/steps/go/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
-import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteAggregateQuery'
+import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/go/ExecuteAggregateQuery'
 
-import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'
+import {GoIcon} from 'src/homepageExperience/components/HomepageIcons'
 
 import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
@@ -30,7 +30,7 @@ interface State {
   selectedBucket: string
 }
 
-export class NodejsWizard extends PureComponent<null, State> {
+export class GoWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
@@ -49,7 +49,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         ),
       },
       () => {
-        event('firstMile.nodejsWizard.next.clicked')
+        event('firstMile.goWizard.next.clicked')
       }
     )
   }
@@ -58,7 +58,7 @@ export class NodejsWizard extends PureComponent<null, State> {
     this.setState(
       {currentStep: Math.max(this.state.currentStep - 1, 1)},
       () => {
-        event('firstMile.nodejsWizard.previous.clicked')
+        event('firstMile.goWizard.previous.clicked')
       }
     )
   }
@@ -76,7 +76,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         return <InstallDependencies />
       }
       case 3: {
-        return <CreateToken wizardEventName="nodejsWizard" />
+        return <CreateToken wizardEventName="goWizard" />
       }
       case 4: {
         return <InitalizeClient />
@@ -91,7 +91,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 8: {
-        return <Finish wizardEventName="nodejsWizard" />
+        return <Finish wizardEventName="goWizard" />
       }
       default: {
         return <Overview />
@@ -108,8 +108,8 @@ export class NodejsWizard extends PureComponent<null, State> {
               currentStep={this.state.currentStep}
               onStepClick={this.handleNavClick}
               navigationSteps={HOMEPAGE_NAVIGATION_STEPS}
-              settingUpIcon={NodejsIcon}
-              settingUpText="Nodejs"
+              settingUpIcon={GoIcon}
+              settingUpText="Go"
               setupTime="5 minutes"
             />
           </div>

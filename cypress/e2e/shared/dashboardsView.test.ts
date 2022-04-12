@@ -1304,8 +1304,6 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.getByTestID('tree-nav')
           })
         })
-        // TODO: remove when feature flag is removed
-        cy.setFeatureFlags({cloneToOtherBoards: true})
         cy.createBucket(orgID, name, 'schmucket')
         const now = Date.now()
         cy.writeData(

@@ -125,6 +125,12 @@ export const NodejsWizard = lazy(() =>
   }))
 )
 
+export const GoWizard = lazy(() =>
+  import('src/homepageExperience/containers/GoWizard').then(module => ({
+    default: module.GoWizard,
+  }))
+)
+
 export const SinglePageSubDetails = lazy(() =>
   import('src/writeData/subscriptions/components/SinglePageSubDetails')
 )

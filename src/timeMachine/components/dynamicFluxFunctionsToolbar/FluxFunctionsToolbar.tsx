@@ -48,7 +48,6 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
 
         if (fluxFunctions.length === 0) {
           await getFluxPackages()
-          setFluxLoadingState(RemoteDataState.Done)
         }
         setFluxLoadingState(RemoteDataState.Done)
       } catch (err) {
@@ -57,6 +56,9 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
       }
     }
     getFluxFuncs()
+    return () => {
+      setFluxLoadingState(RemoteDataState.NotStarted)
+    }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

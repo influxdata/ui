@@ -48,6 +48,7 @@ import {
   CreateSubscriptionForm,
   WriteDataPage,
   SubscriptionDetailsPage,
+  GoWizard,
 } from 'src/shared/containers'
 
 // Types
@@ -312,6 +313,11 @@ const SetOrg: FC = () => {
                 exact
                 path="/orgs/:orgID/new-user-wizard/nodejs"
                 component={NodejsWizard}
+              />
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/go"
+                component={GoWizard}
               />
             </>
           )}

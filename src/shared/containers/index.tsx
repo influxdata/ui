@@ -124,3 +124,9 @@ export const NodejsWizard = lazy(() =>
     default: module.NodejsWizard,
   }))
 )
+
+export const GoWizard = lazy(() =>
+  import('src/homepageExperience/containers/GoWizard').then(module => ({
+    default: module.GoWizard,
+  }))
+)

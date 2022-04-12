@@ -18,19 +18,15 @@ import {event} from 'src/cloud/utils/reporting'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-// Events log handling
-const logCopyCodeSnippet = () => {
-  event('firstMile.pythonWizard.createToken.code.copied')
+type OwnProps = {
+  wizardEventName: string
 }
 
-const logDocsOpened = () => {
-  event('firstMile.pythonWizard.createToken.docs.opened')
-}
-
-const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
+const CreateTokenComponent: FC<ReduxProps & RouteComponentProps & OwnProps> = ({
   showOverlay,
   dismissOverlay,
   getAllResources,
+  wizardEventName,
 }) => {
   const org = useSelector(getOrg)
   const dispatch = useDispatch()
@@ -41,6 +37,15 @@ const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
     } catch {
       dispatch(notify(getResourcesTokensFailure('all access token')))
     }
+  }
+
+  // Events log handling
+  const logCopyCodeSnippet = () => {
+    event(`firstMile.${wizardEventName}.createToken.code.copied`)
+  }
+
+  const logDocsOpened = () => {
+    event(`firstMile.${wizardEventName}.createToken.docs.opened`)
   }
 
   return (

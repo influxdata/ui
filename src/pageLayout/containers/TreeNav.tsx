@@ -33,16 +33,11 @@ type ReduxProps = ConnectedProps<typeof connector>
 const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
   showOverlay,
   dismissOverlay,
+  quartzMe,
 }) => {
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )
-  const userAccount = (state: AppState): boolean => {
-    const {quartzMe} = state.me
-    const accountType = quartzMe?.accountType ?? 'free'
-    return accountType !== 'free'
-  }
-  const isPayGCustomer = useSelector(userAccount)
   const org = useSelector(getOrg)
 
   useEffect(() => {
@@ -72,6 +67,9 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
   }
 
   const handleSelect = (): void => {
+    const accountType = quartzMe?.accountType ?? 'free'
+    const isPayGCustomer = accountType !== 'free'
+
     if (isPayGCustomer) {
       showOverlay('payg-support', null, dismissOverlay)
     } else {
@@ -210,11 +208,15 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
   )
 }
 
+const mstp = (state: AppState) => {
+  return {quartzMe: state.me.quartzMe}
+}
+
 const mdtp = {
   showOverlay,
   dismissOverlay,
 }
 
-const connector = connect(null, mdtp)
+const connector = connect(mstp, mdtp)
 
 export default connector(withRouter(TreeSidebar))

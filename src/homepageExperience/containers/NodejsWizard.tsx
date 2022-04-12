@@ -76,7 +76,7 @@ export class NodejsWizard extends PureComponent<null, State> {
         return <InstallDependencies />
       }
       case 3: {
-        return <CreateToken wizardEventName="nodeJsWizard" />
+        return <CreateToken wizardEventName="nodejsWizard" />
       }
       case 4: {
         return <InitalizeClient />

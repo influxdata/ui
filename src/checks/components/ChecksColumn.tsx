@@ -127,4 +127,4 @@ const mstp = (state: AppState) => {
 
 const connector = connect(mstp)
 
-export default ChecksColumn
+export default connector(ChecksColumn)

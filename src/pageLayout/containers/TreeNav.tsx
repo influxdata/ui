@@ -2,7 +2,7 @@
 import React, {FC, useContext, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
@@ -26,7 +26,6 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
 import {AppState} from 'src/types'
 
-import {getStore} from 'src/store/configureStore'
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -35,19 +34,16 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
   showOverlay,
   dismissOverlay,
 }) => {
-  const org = useSelector(getOrg)
-  const orgID = org?.id
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )
-
-  // const state: AppState = getStore().getState()
-  // const orgID = state?.resources?.orgs?.org?.id ?? ''
-  // const orgPrefix = `/orgs/${orgID}`
-
-  const supportLink = {
-    link: `/orgs/${orgID}/support`,
+  const userAccount = (state: AppState): boolean => {
+    const {quartzMe} = state.me
+    const accountType = quartzMe?.accountType ?? 'free'
+    return accountType !== 'free'
   }
+  const isPayGCustomer = useSelector(userAccount)
+  const org = useSelector(getOrg)
 
   useEffect(() => {
     if (isFlagEnabled('helpBar')) {
@@ -75,25 +71,12 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
     }
   }
 
-  const isPayingCustomer = (state: AppState): boolean => {
-    const {quartzMe} = state.me
-    const accountType = quartzMe?.accountType ?? 'free'
-    return accountType !== 'free'
-  }
-  const ans = useSelector(isPayingCustomer)
-
   const handleSelect = (): void => {
-    // check if cusomter is a free user
-    // open free support overlay
-    // console.log('is paying customer ', ans)
-    if (!ans) {
-      console.log('is paying customer ', ans)
+    if (isPayGCustomer) {
       showOverlay('payg-support', null, dismissOverlay)
     } else {
       showOverlay('free-account-support', null, dismissOverlay)
     }
-    // if customer is paying user
-    // open pay support overlay
   }
 
   return (
@@ -193,7 +176,6 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
                 id="contactSupport"
                 label="Contact Support"
                 testID="nav-subitem-contact-support"
-                // linkElement={className => <Link className={className} onClick={handleSelect} to=''/>}
                 onClick={handleSelect}
               />
               <TreeNav.SubHeading label="Community" />

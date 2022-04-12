@@ -21,6 +21,7 @@ import {
   generateImport,
 } from 'src/timeMachine/utils/insertFunction'
 import {event} from 'src/cloud/utils/reporting'
+import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
 
@@ -133,7 +134,7 @@ const TimeMachineFluxEditor: FC = () => {
       return
     }
     const {text, range} = getFluxTextAndRange(
-      isFlagEnabled('fluxDynamicDocs')
+      CLOUD && isFlagEnabled('fluxDynamicDocs')
         ? getFluxExample(func as FluxFunction)
         : func
     )

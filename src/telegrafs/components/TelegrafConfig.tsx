@@ -9,7 +9,13 @@ import {
 // Components
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
-const Editor = lazy(() => import('src/shared/components/TomlMonacoEditor'))
+// Utils
+import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
+
+const Editor = lazy(() => {
+  pointToCorrectWorkers()
+  return import('src/shared/components/TomlMonacoEditor')
+})
 
 interface Props {
   config: string

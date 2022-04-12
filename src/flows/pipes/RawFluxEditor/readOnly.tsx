@@ -11,13 +11,15 @@ import {PipeProp} from 'src/types/flows'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
+import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
-)
+const FluxMonacoEditor = lazy(() => {
+  pointToCorrectWorkers()
+  return import('src/shared/components/FluxMonacoEditor')
+})
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {data} = useContext(PipeContext)

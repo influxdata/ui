@@ -41,10 +41,12 @@ import 'src/flows/pipes/RawFluxEditor/style.scss'
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 
-const FluxMonacoEditor = lazy(() =>
-  import('src/shared/components/FluxMonacoEditor')
-)
+const FluxMonacoEditor = lazy(() => {
+  pointToCorrectWorkers()
+  return import('src/shared/components/FluxMonacoEditor')
+})
 
 const Query: FC<PipeProp> = ({Context}) => {
   const {id, data} = useContext(PipeContext)

@@ -30,6 +30,8 @@ export type OverlayID =
   | 'create-rule'
   | 'create-secret'
   | 'share-overlay'
+  | 'payg-support'
+  | 'free-account-support'
 
 export interface OverlayState {
   id: OverlayID | null

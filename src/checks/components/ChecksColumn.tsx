@@ -1,6 +1,6 @@
 // Libraries
 import React, {FunctionComponent} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import {connect, ConnectedProps} from 'react-redux'
 
 // Selectors
@@ -34,19 +34,17 @@ interface OwnProps {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
+type Props = OwnProps & ReduxProps
 
 const ChecksColumn: FunctionComponent<Props> = ({
   checks,
-  history,
-  match: {
-    params: {orgID},
-  },
   rules,
   endpoints,
   limitStatus,
   tabIndex,
 }) => {
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
   const handleCreateThreshold = () => {
     history.push(`/orgs/${orgID}/alerting/checks/new-threshold`)
   }
@@ -129,4 +127,4 @@ const mstp = (state: AppState) => {
 
 const connector = connect(mstp)
 
-export default connector(withRouter(ChecksColumn))
+export default ChecksColumn

@@ -7,8 +7,8 @@ import React, {
   FormEvent,
   useCallback,
 } from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 import {get} from 'lodash'
 
 // Components
@@ -58,25 +58,9 @@ if (CLOUD) {
     .MeasurementSchemaCreateRequest
 }
 
-interface DispatchProps {
-  onUpdateBucket: typeof updateBucket
-  getSchema: typeof getBucketSchema
-  onAddMeasurementSchemaToBucket: typeof addSchemaToBucket
-  updateSchema: typeof updateMeasurementSchema
-}
-
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps & RouteComponentProps<{bucketID: string; orgID: string}>
-
-const UpdateBucketOverlay: FunctionComponent<Props> = ({
-  onUpdateBucket,
-  getSchema,
-  onAddMeasurementSchemaToBucket,
-  updateSchema,
-  match,
-  history,
-}) => {
-  const {orgID, bucketID} = match.params
+const UpdateBucketOverlay: FunctionComponent = () => {
+  const history = useHistory()
+  const {orgID, bucketID} = useParams<{bucketID: string; orgID: string}>()
   const dispatch = useDispatch()
   const [bucketDraft, setBucketDraft] = useState<OwnBucket>(null)
 
@@ -114,7 +98,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
       setSchemaType(resp.data.schemaType)
 
       if ('explicit' === resp.data.schemaType) {
-        const schema = await getSchema(bucketID)
+        const schema = await dispatch(getBucketSchema(bucketID))
         setMeasurementSchemaList(schema)
       }
 
@@ -192,7 +176,7 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
     e.preventDefault()
 
     if (isValid()) {
-      onUpdateBucket(bucketDraft)
+      dispatch(updateBucket(bucketDraft))
 
       if (newMeasurementSchemaRequests?.length) {
         newMeasurementSchemaRequests.forEach(item => {
@@ -202,11 +186,13 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
           }
 
           event('bucket.schema.explicit.editing.uploadSchema')
-          onAddMeasurementSchemaToBucket(
-            bucketDraft.id,
-            bucketDraft.orgID,
-            bucketDraft.name,
-            createRequest
+          dispatch(
+            addSchemaToBucket(
+              bucketDraft.id,
+              bucketDraft.orgID,
+              bucketDraft.name,
+              createRequest
+            )
           )
         })
       }
@@ -219,7 +205,9 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
             const {bucketID, id, name, orgID} = currentSchema
             const updateRequest = {columns}
             event('bucket.schema.explicit.editing.updateSchema')
-            updateSchema(bucketID, id, name, updateRequest, orgID)
+            dispatch(
+              updateMeasurementSchema(bucketID, id, name, updateRequest, orgID)
+            )
           })
       }
 
@@ -278,16 +266,4 @@ const UpdateBucketOverlay: FunctionComponent<Props> = ({
   )
 }
 
-const mdtp = {
-  onUpdateBucket: updateBucket,
-  getSchema: getBucketSchema,
-  onAddMeasurementSchemaToBucket: addSchemaToBucket,
-  updateSchema: updateMeasurementSchema,
-}
-
-const connector = connect(null, mdtp)
-
-export default connect<{}, DispatchProps>(
-  null,
-  mdtp
-)(withRouter(UpdateBucketOverlay))
+export default UpdateBucketOverlay

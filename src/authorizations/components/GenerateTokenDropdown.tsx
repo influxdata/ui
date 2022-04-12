@@ -1,7 +1,6 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {Dropdown} from '@influxdata/clockface'
@@ -17,14 +16,7 @@ import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
 // Utils
 import {event} from 'src/cloud/utils/reporting'
 
-type GenerateTokenProps = RouteComponentProps
-type ReduxProps = ConnectedProps<typeof connector>
-
-const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
-  showOverlay,
-  dismissOverlay,
-  getAllResources,
-}) => {
+const GenerateTokenDropdown: FC = () => {
   const dispatch = useDispatch()
   const allAccessOption = 'All Access API Token'
 
@@ -32,8 +24,8 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
 
   const handleAllAccess = async () => {
     try {
-      await getAllResources()
-      showOverlay('add-master-token', null, dismissOverlay)
+      await dispatch(getAllResources())
+      dispatch(showOverlay('add-master-token', null, dispatch(dismissOverlay)))
       event('generate_token_dropdown.all_access_overlay.opened')
     } catch (e) {
       dispatch(notify(getResourcesTokensFailure('all access token')))
@@ -43,8 +35,8 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
 
   const handleCustomApi = async () => {
     try {
-      await getAllResources()
-      showOverlay('add-custom-token', null, dismissOverlay)
+      await dispatch(getAllResources())
+      dispatch(showOverlay('add-custom-token', null, dispatch(dismissOverlay)))
       event('generate_token_dropdown.custom_API_token_overlay.opened')
     } catch (e) {
       dispatch(notify(getResourcesTokensFailure('custom api token')))
@@ -102,12 +94,4 @@ const GenerateTokenDropdown: FC<ReduxProps & GenerateTokenProps> = ({
   )
 }
 
-const mdtp = {
-  showOverlay,
-  dismissOverlay,
-  getAllResources,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(withRouter(GenerateTokenDropdown))
+export default GenerateTokenDropdown

@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 
 // Actions
 import {
@@ -38,29 +38,18 @@ import {NotificationEndpoint, Label, AlertHistoryType} from 'src/types'
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
-interface OwnProps {
+interface Props {
   endpoint: NotificationEndpoint
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & RouteComponentProps<{orgID: string}> & ReduxProps
-
-const EndpointCard: FC<Props> = ({
-  history,
-  match: {
-    params: {orgID},
-  },
-  endpoint,
-  onUpdateEndpointProperties,
-  onCloneEndpoint,
-  onDeleteEndpoint,
-  onAddEndpointLabel,
-  onRemoveEndpointLabel,
-}) => {
+const EndpointCard: FC<Props> = ({endpoint}) => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
   const {id, name, description, activeStatus} = endpoint
 
   const handleUpdateName = (name: string) => {
-    onUpdateEndpointProperties(id, {name})
+    dispatch(updateEndpointProperties(id, {name}))
   }
 
   const handleClick = () => {
@@ -69,7 +58,7 @@ const EndpointCard: FC<Props> = ({
 
   const handleToggle = () => {
     const toStatus = activeStatus === 'active' ? 'inactive' : 'active'
-    onUpdateEndpointProperties(id, {status: toStatus})
+    dispatch(updateEndpointProperties(id, {status: toStatus}))
   }
 
   const handleView = () => {
@@ -83,10 +72,10 @@ const EndpointCard: FC<Props> = ({
     history.push(`/orgs/${orgID}/alert-history?${queryParams}`)
   }
   const handleDelete = () => {
-    onDeleteEndpoint(id)
+    dispatch(deleteEndpoint(id))
   }
   const handleClone = () => {
-    onCloneEndpoint(endpoint)
+    dispatch(cloneEndpoint(endpoint))
   }
   const contextMenu = (
     <EndpointCardMenu
@@ -97,14 +86,14 @@ const EndpointCard: FC<Props> = ({
   )
 
   const handleAddEndpointLabel = (label: Label) => {
-    onAddEndpointLabel(id, label)
+    dispatch(addEndpointLabel(id, label))
   }
   const handleRemoveEndpointLabel = (label: Label) => {
-    onRemoveEndpointLabel(id, label.id)
+    dispatch(deleteEndpointLabel(id, label.id))
   }
 
   const handleUpdateDescription = (description: string) => {
-    onUpdateEndpointProperties(id, {description})
+    dispatch(updateEndpointProperties(id, {description}))
   }
 
   return (
@@ -161,14 +150,4 @@ const EndpointCard: FC<Props> = ({
   )
 }
 
-const mdtp = {
-  onDeleteEndpoint: deleteEndpoint,
-  onAddEndpointLabel: addEndpointLabel,
-  onRemoveEndpointLabel: deleteEndpointLabel,
-  onUpdateEndpointProperties: updateEndpointProperties,
-  onCloneEndpoint: cloneEndpoint,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(withRouter(EndpointCard))
+export default EndpointCard

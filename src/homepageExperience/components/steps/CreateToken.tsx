@@ -3,7 +3,6 @@ import React, {FC} from 'react'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
 import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
 import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
 
 // Selectors
 import {notify} from 'src/shared/actions/notifications'
@@ -22,7 +21,7 @@ type OwnProps = {
   wizardEventName: string
 }
 
-const CreateTokenComponent: FC<ReduxProps & RouteComponentProps & OwnProps> = ({
+const CreateTokenComponent: FC<ReduxProps & OwnProps> = ({
   showOverlay,
   dismissOverlay,
   getAllResources,
@@ -90,4 +89,4 @@ const mdtp = {
 }
 
 const connector = connect(null, mdtp)
-export const CreateToken = connector(withRouter(CreateTokenComponent))
+export const CreateToken = connector(CreateTokenComponent)

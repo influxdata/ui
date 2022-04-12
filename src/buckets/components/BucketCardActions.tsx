@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import {useHistory} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -28,7 +28,7 @@ import {DataLoaderType} from 'src/types/dataLoaders'
 
 import {CLOUD} from 'src/shared/constants'
 
-interface OwnProps {
+interface Props {
   bucket: OwnBucket
   bucketType: 'user' | 'system'
   orgID: string
@@ -36,33 +36,26 @@ interface OwnProps {
   onGetSchema: (b: OwnBucket) => void
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{orgID: string}>
-type Props = OwnProps & ReduxProps & RouterProps
-
 const BucketCardActions: FC<Props> = ({
   bucket,
   bucketType,
   orgID,
   onFilterChange,
   onGetSchema,
-  onAddBucketLabel,
-  onDeleteBucketLabel,
-  history,
-  onSetDataLoadersBucket,
-  onSetDataLoadersType,
-  setLocationOnDismiss,
 }) => {
+  const history = useHistory()
+  const dispatch = useDispatch()
+
   if (bucketType === 'system') {
     return null
   }
 
   const handleAddLabel = (label: Label) => {
-    onAddBucketLabel(bucket.id, label)
+    dispatch(addBucketLabel(bucket.id, label))
   }
 
   const handleRemoveLabel = (label: Label) => {
-    onDeleteBucketLabel(bucket.id, label)
+    dispatch(deleteBucketLabel(bucket.id, label))
   }
 
   const handleClickSettings = () => {
@@ -77,36 +70,36 @@ const BucketCardActions: FC<Props> = ({
   }
 
   const handleAddCollector = () => {
-    onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
+    dispatch(setBucketInfo(orgID, bucket.name, bucket.id))
 
-    onSetDataLoadersType(DataLoaderType.Streaming)
-    setLocationOnDismiss(`/orgs/${orgID}/load-data/buckets`)
+    dispatch(setDataLoadersType(DataLoaderType.Streaming))
+    dispatch(setLocationOnDismiss(`/orgs/${orgID}/load-data/buckets`))
     history.push(`/orgs/${orgID}/load-data/telegrafs/new`)
   }
 
   const handleAddLineProtocol = () => {
-    onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
+    dispatch(setBucketInfo(orgID, bucket.name, bucket.id))
 
     history.push(`/orgs/${orgID}/load-data/file-upload/lp`)
   }
 
   const handleCSVUploader = () => {
-    onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
+    dispatch(setBucketInfo(orgID, bucket.name, bucket.id))
 
     history.push(`/orgs/${orgID}/load-data/file-upload/annotated_csv`)
   }
 
   const handleAddClientLibrary = (): void => {
-    onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
-    onSetDataLoadersType(DataLoaderType.ClientLibrary)
+    dispatch(setBucketInfo(orgID, bucket.name, bucket.id))
+    dispatch(setDataLoadersType(DataLoaderType.ClientLibrary))
 
     history.push(`/orgs/${orgID}/load-data/`)
   }
 
   const handleAddScraper = () => {
-    onSetDataLoadersBucket(orgID, bucket.name, bucket.id)
+    dispatch(setBucketInfo(orgID, bucket.name, bucket.id))
 
-    onSetDataLoadersType(DataLoaderType.Scraping)
+    dispatch(setDataLoadersType(DataLoaderType.Scraping))
     history.push(`/orgs/${orgID}/load-data/buckets/${bucket.id}/scrapers/new`)
   }
 
@@ -153,14 +146,4 @@ const BucketCardActions: FC<Props> = ({
   )
 }
 
-const mdtp = {
-  onAddBucketLabel: addBucketLabel,
-  onDeleteBucketLabel: deleteBucketLabel,
-  onSetDataLoadersBucket: setBucketInfo,
-  onSetDataLoadersType: setDataLoadersType,
-  setLocationOnDismiss,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(withRouter(BucketCardActions))
+export default BucketCardActions

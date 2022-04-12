@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useParams, useHistory} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 
 // Components
 import {
@@ -47,59 +47,47 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
-interface OwnProps {
+interface Props {
   check: Check
 }
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & ReduxProps & RouteComponentProps<{orgID: string}>
-
-const CheckCard: FC<Props> = ({
-  onRemoveCheckLabel,
-  onAddCheckLabel,
-  onCloneCheck,
-  onNotify,
-  check,
-  onUpdateCheckDisplayProperties,
-  deleteCheck,
-  match: {
-    params: {orgID},
-  },
-  history,
-}) => {
+const CheckCard: FC<Props> = ({check}) => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
   const {activeStatus, description, id, name, taskID} = check
 
   const onUpdateName = (name: string) => {
     try {
-      onUpdateCheckDisplayProperties(check.id, {name})
+      dispatch(updateCheckDisplayProperties(check.id, {name}))
     } catch (error) {
-      onNotify(updateCheckFailed(error.message))
+      dispatch(notify(updateCheckFailed(error.message)))
     }
   }
 
   const onUpdateDescription = (description: string) => {
     try {
-      onUpdateCheckDisplayProperties(check.id, {description})
+      dispatch(updateCheckDisplayProperties(check.id, {description}))
     } catch (e) {
-      onNotify(updateCheckFailed(e.message))
+      dispatch(notify(updateCheckFailed(e.message)))
     }
   }
 
   const onDelete = () => {
-    deleteCheck(check.id)
+    dispatch(deleteCheck(check.id))
   }
 
   const onClone = () => {
-    onCloneCheck(check)
+    dispatch(cloneCheck(check))
   }
 
   const onToggle = () => {
     const status = activeStatus === 'active' ? 'inactive' : 'active'
 
     try {
-      onUpdateCheckDisplayProperties(id, {status})
+      dispatch(updateCheckDisplayProperties(id, {status}))
     } catch (error) {
-      onNotify(updateCheckFailed(error.message))
+      dispatch(notify(updateCheckFailed(error.message)))
     }
   }
 
@@ -116,16 +104,16 @@ const CheckCard: FC<Props> = ({
   }
 
   const handleAddCheckLabel = (label: Label) => {
-    onAddCheckLabel(id, label)
+    dispatch(addCheckLabel(id, label))
   }
 
   const handleRemoveCheckLabel = (label: Label) => {
-    onRemoveCheckLabel(id, label.id)
+    dispatch(deleteCheckLabel(id, label.id))
   }
 
   const onEditTask = () => {
     history.push(`/orgs/${orgID}/tasks/${check.taskID}/edit`)
-    onNotify(editCheckCodeWarning())
+    dispatch(notify(editCheckCodeWarning()))
   }
 
   return (
@@ -211,15 +199,4 @@ const CheckCard: FC<Props> = ({
   )
 }
 
-const mdtp = {
-  onUpdateCheckDisplayProperties: updateCheckDisplayProperties,
-  deleteCheck: deleteCheck,
-  onAddCheckLabel: addCheckLabel,
-  onRemoveCheckLabel: deleteCheckLabel,
-  onCloneCheck: cloneCheck,
-  onNotify: notify,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(withRouter(CheckCard))
+export default CheckCard

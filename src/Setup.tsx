@@ -107,20 +107,20 @@ export class Setup extends PureComponent<Props, State> {
           {allowed && (
             <Route
               path="/onboarding/:stepID"
-              element={<OnboardingWizardPage />>}
+              component={OnboardingWizardPage}
             />
           )}
           {!allowed && (
             <Switch>
               <Route
                 path="/onboarding/:stepID"
-                element={<OnboardingWizardPage />}
+                component={OnboardingWizardPage}
               />
-              <Route path="/share/:accessID" element={<ReadOnlyNotebook />} />
-              <Route path={LOGIN} element={<LoginPage />} />
-              <Route path={SIGNIN} element={<SigninPage />} />
-              <Route path={LOGOUT} element={<Logout />} />
-              <Route element={<Signin />} />
+              <Route path="/share/:accessID" component={ReadOnlyNotebook} />
+              <Route path={LOGIN} component={LoginPage} />
+              <Route path={SIGNIN} component={SigninPage} />
+              <Route path={LOGOUT} component={Logout} />
+              <Route component={Signin} />
             </Switch>
           )}
         </Suspense>

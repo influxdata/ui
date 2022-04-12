@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import {useParams, useHistory} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
 
 // Constants
 import {getNotificationRuleFailed} from 'src/shared/copy/notifications'
@@ -21,29 +21,29 @@ import {getByID} from 'src/resources/selectors'
 // Types
 import {NotificationRuleDraft, AppState, ResourceType} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type RouterProps = RouteComponentProps<{orgID: string; ruleID: string}>
-type Props = RouterProps & ReduxProps
-
-const EditRuleOverlay: FC<Props> = ({
-  match,
-  history,
-  stateRule,
-  onUpdateRule,
-  onNotify,
-}) => {
+const EditRuleOverlay: FC = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const {orgID, ruleID} = useParams<{orgID: string; ruleID: string}>()
+  const stateRule = useSelector((state: AppState) =>
+    getByID<NotificationRuleDraft>(
+      state,
+      ResourceType.NotificationRules,
+      ruleID
+    )
+  )
   const handleDismiss = () => {
-    history.push(`/orgs/${match.params.orgID}/alerting`)
+    history.push(`/orgs/${orgID}/alerting`)
   }
 
   if (!stateRule) {
-    onNotify(getNotificationRuleFailed(match.params.ruleID))
+    dispatch(notify(getNotificationRuleFailed(ruleID)))
     handleDismiss()
     return null
   }
 
   const handleUpdateRule = async (rule: NotificationRuleDraft) => {
-    await onUpdateRule(rule)
+    await dispatch(updateRule(rule))
 
     handleDismiss()
   }
@@ -69,25 +69,4 @@ const EditRuleOverlay: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState, {match}: RouterProps) => {
-  const {ruleID} = match.params
-
-  const stateRule = getByID<NotificationRuleDraft>(
-    state,
-    ResourceType.NotificationRules,
-    ruleID
-  )
-
-  return {
-    stateRule,
-  }
-}
-
-const mdtp = {
-  onNotify: notify,
-  onUpdateRule: updateRule,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(EditRuleOverlay))
+export default EditRuleOverlay

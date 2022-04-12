@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {
@@ -52,7 +52,7 @@ interface OwnProps {
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & RouteComponentProps<{orgID: string}> & ReduxProps
+type Props = OwnProps & ReduxProps
 
 const RuleCard: FC<Props> = ({
   rule,
@@ -62,11 +62,9 @@ const RuleCard: FC<Props> = ({
   onNotify,
   onAddRuleLabel,
   onRemoveRuleLabel,
-  match: {
-    params: {orgID},
-  },
-  history,
 }) => {
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
   const {
     activeStatus,
     description,
@@ -222,4 +220,4 @@ const mdtp = {
 
 const connector = connect(null, mdtp)
 
-export default connector(withRouter(RuleCard))
+export default connector(RuleCard)

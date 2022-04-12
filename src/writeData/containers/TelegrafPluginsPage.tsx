@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
-import {RouteComponentProps, useParams} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
 // Components
 import {Page} from '@influxdata/clockface'
@@ -32,13 +32,9 @@ type ParamsType = {
   [param: string]: string
 }
 
-const TelegrafPluginsPage: FC<RouteComponentProps<{orgID: string}>> = props => {
-  const {
-    history,
-    match: {
-      params: {orgID},
-    },
-  } = props
+const TelegrafPluginsPage: FC = () => {
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
   const {contentID} = useParams<ParamsType>()
   const {name = '', markdown = '', image = '', style = {}} =
     WRITE_DATA_TELEGRAF_PLUGINS.find(item => item.id === contentID) || {}

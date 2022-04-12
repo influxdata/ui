@@ -1,11 +1,10 @@
 import {FC} from 'react'
-import {RouteComponentProps} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 
-const RouteToDashboardList: FC<RouteComponentProps<{orgID: string}>> = ({
-  history,
-  match,
-}) => {
-  history.push(`/orgs/${match.params.orgID}/dashboards-list`)
+const RouteToDashboardList: FC = () => {
+  const history = useHistory()
+  const {orgID} = useParams<{orgID: string}>()
+  history.push(`/orgs/${orgID}/dashboards-list`)
   return null
 }
 

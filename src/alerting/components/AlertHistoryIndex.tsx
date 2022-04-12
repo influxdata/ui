@@ -1,7 +1,8 @@
 // Libraries
 import React, {useMemo, useState, FC, createContext} from 'react'
 import {Page} from '@influxdata/clockface'
-import {connect} from 'react-redux'
+import {useSelector} from 'react-redux'
+import {useParams} from 'react-router-dom'
 
 // Components
 import EventViewer from 'src/eventViewer/components/EventViewer'
@@ -31,24 +32,23 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 
 // Types
 import {ResourceIDs} from 'src/checks/reducers'
-import {ResourceType, AlertHistoryType, AppState} from 'src/types'
-import {RouteComponentProps} from 'react-router-dom'
+import {ResourceType, AlertHistoryType} from 'src/types'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
 
 export const ResourceIDsContext = createContext<ResourceIDs>(null)
 
-interface StateProps {
-  resourceIDs: ResourceIDs
-}
+const AlertHistoryIndex: FC = () => {
+  const checkIDs = useSelector(getCheckIDs)
+  const endpointIDs = useSelector(getEndpointIDs)
+  const ruleIDs = useSelector(getRuleIDs)
 
-type Props = RouteComponentProps<{orgID: string}> & StateProps
+  const resourceIDs = {
+    checkIDs,
+    endpointIDs,
+    ruleIDs,
+  }
 
-const AlertHistoryIndex: FC<Props> = ({
-  match: {
-    params: {orgID},
-  },
-  resourceIDs,
-}) => {
+  const {orgID} = useParams<{orgID: string}>()
   const [historyType, setHistoryType] = useState<AlertHistoryType>(
     getInitialHistoryType()
   )
@@ -115,18 +115,4 @@ const AlertHistoryIndex: FC<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const checkIDs = getCheckIDs(state)
-  const endpointIDs = getEndpointIDs(state)
-  const ruleIDs = getRuleIDs(state)
-
-  const resourceIDs = {
-    checkIDs,
-    endpointIDs,
-    ruleIDs,
-  }
-
-  return {resourceIDs}
-}
-
-export default connect<StateProps>(mstp)(AlertHistoryIndex)
+export default AlertHistoryIndex

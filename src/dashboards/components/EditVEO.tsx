@@ -1,7 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useEffect} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
 import {get} from 'lodash'
 
 // Components
@@ -21,20 +21,17 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 // Types
 import {AppState, RemoteDataState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps &
-  RouteComponentProps<{orgID: string; cellID: string; dashboardID: string}>
-
-const EditViewVEO: FunctionComponent<Props> = ({
-  activeTimeMachineID,
-  onSaveView,
-  onSetName,
-  match: {
-    params: {orgID, cellID, dashboardID},
-  },
-  history,
-  view,
-}) => {
+const EditViewVEO: FunctionComponent = () => {
+  const history = useHistory()
+  const {view} = useSelector(getActiveTimeMachine)
+  const {activeTimeMachineID} = useSelector(
+    (state: AppState) => state.timeMachines
+  )
+  const {dashboardID, cellID, orgID} = useParams<{
+    orgID: string
+    cellID: string
+    dashboardID: string
+  }>()
   const dispatch = useDispatch()
   useEffect(() => {
     // TODO split this up into "loadView" "setActiveTimeMachine"
@@ -50,7 +47,7 @@ const EditViewVEO: FunctionComponent<Props> = ({
 
   const handleSave = () => {
     try {
-      onSaveView(dashboardID)
+      dispatch(saveVEOView(dashboardID))
       handleClose()
     } catch (e) {}
   }
@@ -70,9 +67,9 @@ const EditViewVEO: FunctionComponent<Props> = ({
           loading={loadingState}
         >
           <VEOHeader
-            key={view && view.name}
-            name={view && view.name}
-            onSetName={onSetName}
+            key={view?.name}
+            name={view?.name}
+            onSetName={dispatch(setName)}
             onCancel={handleClose}
             onSave={handleSave}
           />
@@ -85,18 +82,4 @@ const EditViewVEO: FunctionComponent<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const {activeTimeMachineID} = state.timeMachines
-  const {view} = getActiveTimeMachine(state)
-
-  return {view, activeTimeMachineID}
-}
-
-const mdtp = {
-  onSetName: setName,
-  onSaveView: saveVEOView,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(EditViewVEO))
+export default EditViewVEO

@@ -1,7 +1,7 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
-import {connect} from 'react-redux'
-import {RouteComponentProps} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {useHistory} from 'react-router-dom'
 
 // Types
 import {AppState, Organization, ResourceType} from 'src/types'
@@ -10,14 +10,13 @@ import {AppState, Organization, ResourceType} from 'src/types'
 import {getAll} from 'src/resources/selectors'
 import {getOrg} from 'src/organizations/selectors'
 
-interface StateProps {
-  orgs: Organization[]
-  org: {id?: string}
-}
+const RouteToOrg: FC = () => {
+  const org = useSelector(getOrg)
+  const orgs = useSelector((state: AppState) =>
+    getAll<Organization>(state, ResourceType.Orgs)
+  )
 
-type Props = StateProps & RouteComponentProps
-
-const RouteToOrg: FC<Props> = ({orgs, history, org}) => {
+  const history = useHistory()
   useEffect(() => {
     if (!orgs || !orgs.length) {
       history.push(`/no-orgs`)
@@ -37,11 +36,4 @@ const RouteToOrg: FC<Props> = ({orgs, history, org}) => {
   return <></>
 }
 
-const mstp = (state: AppState) => {
-  const org = getOrg(state)
-  const orgs = getAll<Organization>(state, ResourceType.Orgs)
-
-  return {orgs, org}
-}
-
-export default connect<StateProps>(mstp)(RouteToOrg)
+export default RouteToOrg

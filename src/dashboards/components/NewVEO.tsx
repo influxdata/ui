@@ -1,7 +1,7 @@
 // Libraries
 import React, {FunctionComponent, useEffect} from 'react'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps, useDispatch} from 'react-redux'
+import {useHistory, useParams} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
 import {get} from 'lodash'
 
 // Components
@@ -20,20 +20,13 @@ import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 // Types
 import {AppState, RemoteDataState} from 'src/types'
 
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = ReduxProps &
-  RouteComponentProps<{orgID: string; dashboardID: string}>
-
-const NewViewVEO: FunctionComponent<Props> = ({
-  activeTimeMachineID,
-  onSaveView,
-  onSetName,
-  match: {
-    params: {orgID, dashboardID},
-  },
-  history,
-  view,
-}) => {
+const NewViewVEO: FunctionComponent = () => {
+  const {activeTimeMachineID} = useSelector(
+    (state: AppState) => state.timeMachines
+  )
+  const {view} = useSelector(getActiveTimeMachine)
+  const history = useHistory()
+  const {orgID, dashboardID} = useParams<{orgID: string; dashboardID: string}>()
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(loadNewVEO())
@@ -45,7 +38,7 @@ const NewViewVEO: FunctionComponent<Props> = ({
 
   const handleSave = () => {
     try {
-      onSaveView(dashboardID)
+      dispatch(saveVEOView(dashboardID))
       handleClose()
     } catch (error) {
       console.error(error)
@@ -68,7 +61,7 @@ const NewViewVEO: FunctionComponent<Props> = ({
           <VEOHeader
             key={view && view.name}
             name={view && view.name}
-            onSetName={onSetName}
+            onSetName={dispatch(setName)}
             onCancel={handleClose}
             onSave={handleSave}
           />
@@ -81,18 +74,4 @@ const NewViewVEO: FunctionComponent<Props> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const {activeTimeMachineID} = state.timeMachines
-  const {view} = getActiveTimeMachine(state)
-
-  return {view, activeTimeMachineID}
-}
-
-const mdtp = {
-  onSetName: setName,
-  onSaveView: saveVEOView,
-}
-
-const connector = connect(mstp, mdtp)
-
-export default connector(withRouter(NewViewVEO))
+export default NewViewVEO

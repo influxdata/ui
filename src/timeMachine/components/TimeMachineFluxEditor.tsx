@@ -59,12 +59,7 @@ const TimeMachineFluxEditor: FC = () => {
     const p = editorInstance.getPosition()
     editorInstance.executeEdits('', [
       {
-        range: new self.monaco.Range(
-          p.lineNumber,
-          p.column,
-          p.lineNumber,
-          p.column
-        ),
+        range: new monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
         text: `v.${variableName}`,
       },
     ])
@@ -118,7 +113,7 @@ const TimeMachineFluxEditor: FC = () => {
       text = `\n${func.example}\n`
     }
 
-    const range = new self.monaco.Range(
+    const range = new monaco.Range(
       row,
       defaultColumnPosition,
       row,
@@ -152,7 +147,7 @@ const TimeMachineFluxEditor: FC = () => {
     )
     if (importStatement) {
       edits.unshift({
-        range: new self.monaco.Range(1, 1, 1, 1),
+        range: new monaco.Range(1, 1, 1, 1),
         text: `${importStatement}\n`,
       })
     }

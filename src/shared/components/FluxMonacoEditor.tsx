@@ -9,7 +9,6 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 // Utils
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
-import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 import loadServer, {
   LSPServer,
 } from 'src/languageSupport/languages/flux/lsp/monaco.flux.server'
@@ -126,10 +125,7 @@ const FluxEditorMonaco: FC<Props> = ({
             wordWrap: wrapLines ?? 'off',
             scrollBeyondLastLine: false,
           }}
-          editorDidMount={ed => {
-            pointToCorrectWorkers()
-            editorDidMount(ed)
-          }}
+          editorDidMount={editorDidMount}
         />
       </div>
     </ErrorBoundary>

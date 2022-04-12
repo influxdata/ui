@@ -1,5 +1,4 @@
 import {MonacoType} from 'src/types'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
 const THEME_NAME = 'pythonTheme'
 
@@ -55,9 +54,6 @@ function addTheme(monaco: MonacoType) {
   })
 }
 
-if (!self.monaco) {
-  self.monaco = monaco
-}
-addTheme(self.monaco)
+addTheme(monaco)
 
 export default THEME_NAME

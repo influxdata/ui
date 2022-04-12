@@ -1,6 +1,5 @@
 import {MonacoType} from 'src/types'
 import {InfluxColors} from '@influxdata/clockface'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
 const THEME_NAME = 'baseTheme'
 
@@ -69,9 +68,6 @@ function addTheme(monaco: MonacoType) {
   })
 }
 
-if (!self.monaco) {
-  self.monaco = monaco
-}
-addTheme(self.monaco)
+addTheme(monaco)
 
 export default THEME_NAME

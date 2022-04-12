@@ -7,7 +7,6 @@ import MonacoEditor from 'react-monaco-editor'
 // Utils
 import LANGID from 'src/languageSupport/languages/markdown/monaco.markdown.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
-import {pointToCorrectWorkers} from 'src/languageSupport/monaco.utils'
 
 // Types
 import {EditorType} from 'src/types'
@@ -60,10 +59,7 @@ const NotificationMonacoEditor: FC<Props> = ({
           scrollBeyondLastLine: false,
           readOnly: !!readOnly,
         }}
-        editorDidMount={ed => {
-          pointToCorrectWorkers()
-          editorDidMount(ed)
-        }}
+        editorDidMount={editorDidMount}
       />
     </div>
   )

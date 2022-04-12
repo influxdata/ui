@@ -165,7 +165,7 @@ module.exports = {
     }),
     new MonacoWebpackPlugin({
       languages: ['json', 'markdown'],
-      filename: '[name].worker.bundle.js',
+      globalAPI: true,
     }),
   ],
   stats: {

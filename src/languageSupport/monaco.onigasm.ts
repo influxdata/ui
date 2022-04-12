@@ -1,4 +1,3 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import {loadWASM} from 'onigasm' // peer dependency of 'monaco-textmate'
 import {Registry, StackElement, INITIAL} from 'monaco-textmate' // peer dependency
 
@@ -73,7 +72,7 @@ async function loader() {
       Promise.all(
         Array.from(grammars.keys()).map(async lang => {
           const grammar = await registry.loadGrammar(grammars.get(lang))
-          self.monaco.languages.setTokensProvider(lang, {
+          monaco.languages.setTokensProvider(lang, {
             getInitialState: () => new TokenizerState(INITIAL),
             tokenize: (line: string, state: TokenizerState) => {
               const res = grammar.tokenizeLine(line, state.ruleStack)
@@ -96,10 +95,7 @@ async function loader() {
 }
 
 export default async function register(scope, definition) {
-  if (!self.monaco) {
-    self.monaco = monaco
-  }
-  self.monaco.languages.register({id: scope})
+  monaco.languages.register({id: scope})
 
   grammars.set(scope, scope)
   grammarDefs[scope] = definition

@@ -2,6 +2,9 @@
 .update-broker-form {
   float: right;
   width: 75%;
+  button {
+    margin-left: 4px;
+  }
   .cf-flex-box__margin-md.cf-flex-box__row.cf-flex-box__justify-flex-start > * {
     margin-right: 0;
   }

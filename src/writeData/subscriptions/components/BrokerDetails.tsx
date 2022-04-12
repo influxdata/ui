@@ -25,6 +25,7 @@ import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -41,8 +42,9 @@ interface Props {
   setEdit: (any) => void
   loading: any
   singlePage: boolean
-  setStatus: (any) => void
   saveForm: (any) => void
+  setFormActive: (any) => void
+  setStatus: (any) => void
 }
 
 const BrokerButtons = (
@@ -51,13 +53,16 @@ const BrokerButtons = (
   setEdit,
   id,
   saveForm,
-  currentSubscription
+  currentSubscription,
+  setFormActive,
+  singlePage
 ) => (
   <div>
     <Button
       text="Close"
       color={ComponentColor.Tertiary}
       onClick={() => {
+        event('close button clicked', {}, {feature: 'subscriptions'})
         history.push(`/orgs/${id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       }}
       titleText="Cancel update of Subscription and return to list"
@@ -65,18 +70,46 @@ const BrokerButtons = (
       testID="update-broker-form--cancel"
     />
     <Button
-      text={!edit ? 'Edit' : 'Save Changes'}
+      text="Edit"
       color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-      onClick={() => (edit ? saveForm(currentSubscription) : setEdit(!edit))}
+      onClick={() => {
+        event('edit button clicked', {}, {feature: 'subscriptions'})
+        setEdit(!edit)
+      }}
       type={ButtonType.Button}
       titleText={edit ? 'Edit' : 'Save Changes'}
       testID="update-broker-form--edit"
     />
+    {!singlePage && (
+      <Button
+        text="Next"
+        color={ComponentColor.Secondary}
+        onClick={() => {
+          event('next button clicked', {}, {feature: 'subscriptions'})
+          setFormActive('subscription')
+        }}
+        type={ButtonType.Button}
+        titleText="Next"
+        testID="update-subscription-form--submit"
+      />
+    )}
+    {edit && singlePage && (
+      <Button
+        type={ButtonType.Button}
+        text="Save Changes"
+        color={ComponentColor.Success}
+        onClick={() => {
+          saveForm(currentSubscription)
+        }}
+        testID="update-parsing-form--submit"
+      />
+    )}
     {!edit && (
       <Button
         text="View Data"
         color={ComponentColor.Success}
         onClick={() => {
+          event('view data button clicked', {}, {feature: 'subscriptions'})
           history.push(`/orgs/${id}/notebooks`)
         }}
         type={ButtonType.Button}
@@ -94,8 +127,9 @@ const BrokerDetails: FC<Props> = ({
   setEdit,
   loading,
   singlePage,
-  setStatus,
+  setFormActive,
   saveForm,
+  setStatus,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -117,7 +151,9 @@ const BrokerDetails: FC<Props> = ({
                   setEdit,
                   org.id,
                   saveForm,
-                  currentSubscription
+                  currentSubscription,
+                  setFormActive,
+                  singlePage
                 )}
               </FlexBox>
               <StatusHeader
@@ -148,7 +184,9 @@ const BrokerDetails: FC<Props> = ({
                 setEdit,
                 org.id,
                 saveForm,
-                currentSubscription
+                currentSubscription,
+                setFormActive,
+                singlePage
               )}
             </Overlay.Footer>
           ) : (

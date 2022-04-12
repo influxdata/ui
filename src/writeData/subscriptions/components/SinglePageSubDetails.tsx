@@ -139,6 +139,7 @@ const SinglePageSubDetails: FC = () => {
               singlePage={singlePage}
               setStatus={setStatus}
               saveForm={saveForm}
+              setFormActive={setFormActive}
             />
             <SubscriptionDetails
               setFormActive={setFormActive}

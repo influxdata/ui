@@ -141,6 +141,7 @@ const SubscriptionDetailsPage: FC = () => {
                 singlePage={singlePage}
                 setStatus={setStatus}
                 saveForm={saveForm}
+                setFormActive={setFormActive}
               />
             )}
             {active === Steps.SubscriptionForm && (

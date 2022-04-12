@@ -16,6 +16,7 @@ import SubscriptionFormContent from 'src/writeData/subscriptions/components/Subs
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -23,7 +24,6 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/SubscriptionDetails.scss'
-import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   currentSubscription: Subscription

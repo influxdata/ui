@@ -282,12 +282,11 @@ export const FlowProvider: FC = ({children}) => {
         return
       }
 
-      const _flow = {
-        ...currentFlow,
-        ...flow,
+      for (const prop in flow) {
+        currentFlow[prop] = flow[prop]
       }
 
-      update(_flow)
+      update(currentFlow)
     },
     [currentFlow, update]
   )

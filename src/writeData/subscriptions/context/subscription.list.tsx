@@ -1,8 +1,14 @@
 // Libraries
 import React, {FC, useCallback, useEffect, useState} from 'react'
+import {useDispatch} from 'react-redux'
 
 // Utils
 import {deleteAPI, getAllAPI} from 'src/writeData/subscriptions/context/api'
+import {notify} from 'src/shared/actions/notifications'
+import {
+  subscriptionsDeleteFail,
+  subscriptionsGetFail,
+} from 'src/shared/copy/notifications'
 
 // Types
 import {Subscription} from 'src/types/subscriptions'
@@ -36,19 +42,30 @@ export const SubscriptionListProvider: FC = ({children}) => {
   const [loading, setLoading] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
+  const dispatch = useDispatch()
   const getAll = useCallback(async (): Promise<void> => {
     setLoading(RemoteDataState.Loading)
-    const data = await getAllAPI()
-    if (Array.isArray(data)) {
-      setSubscriptions(data)
+    try {
+      const data = await getAllAPI()
+      if (Array.isArray(data)) {
+        setSubscriptions(data)
+      }
+    } catch (err) {
+      dispatch(notify(subscriptionsGetFail()))
+    } finally {
+      setLoading(RemoteDataState.Done)
     }
-    setLoading(RemoteDataState.Done)
   }, [])
   const deleteSubscription = async (id: string): Promise<void> => {
     setLoading(RemoteDataState.Loading)
-    await deleteAPI(id)
-    setSubscriptions(subscriptions.filter(s => s.id !== id))
-    setLoading(RemoteDataState.Done)
+    try {
+      await deleteAPI(id)
+      setSubscriptions(subscriptions.filter(s => s.id !== id))
+    } catch (err) {
+      dispatch(notify(subscriptionsDeleteFail()))
+    } finally {
+      setLoading(RemoteDataState.Done)
+    }
   }
   const change = useCallback(
     async (id: string): Promise<void> => {

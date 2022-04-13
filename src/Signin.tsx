@@ -1,10 +1,9 @@
 // Libraries
-import React, {ReactElement, PureComponent} from 'react'
-import {Switch, Route, RouteComponentProps} from 'react-router-dom'
-import {connect, ConnectedProps} from 'react-redux'
+import React, {memo, FC, useCallback, useEffect, useState, useRef} from 'react'
+import {Switch, Route, useLocation, useHistory} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 
 // Components
-import {ErrorHandling} from 'src/shared/decorators/errors'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 import GetMe from 'src/shared/containers/GetMe'
 
@@ -18,7 +17,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getPublicFlags} from 'src/shared/thunks/flags'
 
 // Actions
-import {notify as notifyAction} from 'src/shared/actions/notifications'
+import {notify} from 'src/shared/actions/notifications'
 
 // Constants
 import {sessionTimedOut} from 'src/shared/copy/notifications'
@@ -31,68 +30,21 @@ import {
 // Types
 import {RemoteDataState} from 'src/types'
 import {getMe} from 'src/client'
-
-interface State {
-  loading: RemoteDataState
-  auth: boolean
-}
-
-interface OwnProps {
-  children: ReactElement<any>
-}
-
-type ReduxProps = ConnectedProps<typeof connector>
-type Props = OwnProps & RouteComponentProps & ReduxProps
+import ErrorBoundary from './shared/components/ErrorBoundary'
 
 const FETCH_WAIT = 60000
 
-@ErrorHandling
-export class Signin extends PureComponent<Props, State> {
-  public state: State = {
-    loading: RemoteDataState.NotStarted,
-    auth: false,
-  }
+export const Signin: FC = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const {pathname} = useLocation()
+  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+  const [auth, setAuth] = useState(false)
+  const [hasMounted, setHasMounted] = useState(false)
 
-  private hasMounted = false
-  private intervalID: NodeJS.Timer
+  const intervalID = useRef(null)
 
-  public async componentDidMount() {
-    this.hasMounted = true
-    this.setState({loading: RemoteDataState.Loading})
-    if (CLOUD) {
-      await this.props.onGetPublicFlags()
-    }
-
-    await this.checkForLogin()
-
-    if (this.hasMounted) {
-      this.setState({loading: RemoteDataState.Done})
-      this.intervalID = setInterval(() => {
-        this.checkForLogin()
-      }, FETCH_WAIT)
-    }
-  }
-
-  public componentWillUnmount() {
-    clearInterval(this.intervalID)
-    this.hasMounted = false
-  }
-
-  public render() {
-    const {loading, auth} = this.state
-
-    return (
-      <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
-        {auth && (
-          <Switch>
-            <Route component={GetMe} />
-          </Switch>
-        )}
-      </SpinnerContainer>
-    )
-  }
-
-  private checkForLogin = async () => {
+  const checkForLogin = useCallback(async () => {
     try {
       const resp = await getMe({})
 
@@ -100,18 +52,15 @@ export class Signin extends PureComponent<Props, State> {
         throw new Error(resp.data.message)
       }
 
-      this.setState({auth: true})
+      setAuth(true)
       const redirectIsSet = !!getFromLocalStorage('redirectTo')
       if (redirectIsSet) {
         removeFromLocalStorage('redirectTo')
       }
     } catch (error) {
-      this.setState({auth: false})
-      const {
-        location: {pathname},
-      } = this.props
+      setAuth(false)
 
-      clearInterval(this.intervalID)
+      clearInterval(intervalID.current)
       /**
        * We'll need this authSessionCookieOn flag off for tools until
        * Quartz is integrated into that environment
@@ -142,19 +91,51 @@ export class Signin extends PureComponent<Props, State> {
 
       if (pathname !== '/') {
         returnTo = `?returnTo=${pathname}`
-        this.props.notify(sessionTimedOut())
+        dispatch(notify(sessionTimedOut()))
       }
 
-      this.props.history.replace(`/signin${returnTo}`)
+      history.replace(`/signin${returnTo}`)
     }
-  }
+  }, [dispatch, history, pathname])
+
+  const handleMountLogic = useCallback(async () => {
+    setHasMounted(true)
+    setLoading(RemoteDataState.Loading)
+
+    if (CLOUD) {
+      await dispatch(getPublicFlags())
+    }
+
+    await checkForLogin()
+
+    if (hasMounted) {
+      setLoading(RemoteDataState.Done)
+      intervalID.current = setInterval(() => {
+        checkForLogin()
+      }, FETCH_WAIT)
+    }
+  }, [hasMounted, dispatch, checkForLogin])
+
+  useEffect(() => {
+    handleMountLogic()
+
+    return () => {
+      clearInterval(intervalID.current)
+      setHasMounted(false)
+    }
+  }, [handleMountLogic])
+
+  return (
+    <ErrorBoundary>
+      <SpinnerContainer loading={loading} spinnerComponent={<TechnoSpinner />}>
+        {auth && (
+          <Switch>
+            <Route component={GetMe} />
+          </Switch>
+        )}
+      </SpinnerContainer>
+    </ErrorBoundary>
+  )
 }
 
-const mdtp = {
-  notify: notifyAction,
-  onGetPublicFlags: getPublicFlags,
-}
-
-const connector = connect(null, mdtp)
-
-export default connector(Signin)
+export default memo(Signin)

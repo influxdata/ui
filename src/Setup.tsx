@@ -1,6 +1,14 @@
 // Libraries
-import React, {ReactElement, PureComponent, Suspense, lazy} from 'react'
-import {Switch, Route, RouteComponentProps} from 'react-router-dom'
+import React, {
+  FC,
+  memo,
+  useEffect,
+  useCallback,
+  useState,
+  Suspense,
+  lazy,
+} from 'react'
+import {Switch, Route, useHistory, useLocation} from 'react-router-dom'
 
 // APIs
 import {getSetup} from 'src/client'
@@ -28,35 +36,15 @@ import {isOnboardingURL} from 'src/onboarding/utils'
 // Types
 import {RemoteDataState} from 'src/types'
 
-interface State {
-  loading: RemoteDataState
-  allowed: boolean
-}
+const Setup: FC = () => {
+  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+  const [allowed, setAllowed] = useState(false)
+  const history = useHistory()
+  const {pathname} = useLocation()
 
-interface OwnProps {
-  children: ReactElement<any>
-}
-
-type Props = RouteComponentProps & OwnProps
-
-@ErrorHandling
-export class Setup extends PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      loading: RemoteDataState.NotStarted,
-      allowed: false,
-    }
-  }
-
-  public async componentDidMount() {
-    const {history} = this.props
-
+  const handleGetSetup = useCallback(async () => {
     if (isOnboardingURL()) {
-      this.setState({
-        loading: RemoteDataState.Done,
-      })
+      setLoading(RemoteDataState.Done)
       return
     }
 
@@ -68,65 +56,42 @@ export class Setup extends PureComponent<Props, State> {
 
     const {allowed} = resp.data
 
-    this.setState({
-      loading: RemoteDataState.Done,
-      allowed,
-    })
+    setLoading(RemoteDataState.Done)
+    setAllowed(allowed)
 
     if (!allowed) {
       return
     }
 
     history.push('/onboarding/0')
-  }
+  }, [history])
 
-  async componentDidUpdate(prevProps: Props, prevState: State) {
-    if (!prevState.allowed) {
-      return
-    }
+  useEffect(() => {
+    handleGetSetup()
+  }, [handleGetSetup, pathname])
 
-    if (prevProps.location.pathname.includes('/onboarding/2')) {
-      this.setState({loading: RemoteDataState.Loading})
-      const resp = await getSetup({})
-
-      if (resp.status !== 200) {
-        throw new Error('There was an error onboarding')
-      }
-
-      const {allowed} = resp.data
-      this.setState({allowed, loading: RemoteDataState.Done})
-    }
-  }
-
-  public render() {
-    const {loading, allowed} = this.state
-
-    return (
-      <PageSpinner loading={loading}>
-        <Suspense fallback={<PageSpinner />}>
-          {allowed && (
+  return (
+    <PageSpinner loading={loading}>
+      <Suspense fallback={<PageSpinner />}>
+        {allowed && (
+          <Route path="/onboarding/:stepID" component={OnboardingWizardPage} />
+        )}
+        {!allowed && (
+          <Switch>
             <Route
               path="/onboarding/:stepID"
               component={OnboardingWizardPage}
             />
-          )}
-          {!allowed && (
-            <Switch>
-              <Route
-                path="/onboarding/:stepID"
-                component={OnboardingWizardPage}
-              />
-              <Route path="/share/:accessID" component={ReadOnlyNotebook} />
-              <Route path={LOGIN} component={LoginPage} />
-              <Route path={SIGNIN} component={SigninPage} />
-              <Route path={LOGOUT} component={Logout} />
-              <Route component={Signin} />
-            </Switch>
-          )}
-        </Suspense>
-      </PageSpinner>
-    )
-  }
+            <Route path="/share/:accessID" component={ReadOnlyNotebook} />
+            <Route path={LOGIN} component={LoginPage} />
+            <Route path={SIGNIN} component={SigninPage} />
+            <Route path={LOGOUT} component={Logout} />
+            <Route component={Signin} />
+          </Switch>
+        )}
+      </Suspense>
+    </PageSpinner>
+  )
 }
 
-export default Setup
+export default memo(Setup)

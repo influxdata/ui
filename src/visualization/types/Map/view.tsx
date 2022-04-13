@@ -14,7 +14,7 @@ import {CLOUD} from 'src/shared/constants'
 let getMapToken = null
 
 if (CLOUD) {
-  getMapToken = require('src/client/mapsdRoutes').getMapToken
+  getMapToken = require('src/client/uiproxydRoutes').getMapToken
 }
 
 interface Props extends VisualizationProps {

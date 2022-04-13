@@ -72,12 +72,12 @@ export const loginViaDexUI = (username: string, password: string) => {
 Cypress.Commands.add(
   'monacoType',
   {prevSubject: true},
-  (subject, text: string) => {
+  (subject, text: string, force = true, delay = 10) => {
     return cy.wrap(subject).within(() => {
       cy.get('.monaco-editor .view-line:last')
         .click({force: true})
         .focused()
-        .type(text, {force: true, delay: 10})
+        .type(text, {force, delay})
     })
   }
 )
@@ -1054,14 +1054,16 @@ export const createTaskFromEmpty = (
   name: string,
   flux: (bucket: Bucket) => string,
   interval: string = '24h',
-  offset: string = '20m'
+  offset: string = '20m',
+  force: boolean = true,
+  delay: number = 10
 ) => {
   cy.getByTestID('create-task--button')
     .first()
     .click()
 
   cy.get<Bucket>('@bucket').then(bucket => {
-    cy.getByTestID('flux-editor').monacoType(flux(bucket))
+    cy.getByTestID('flux-editor').monacoType(flux(bucket), force, delay)
   })
 
   cy.getByInputName('name').type(name)

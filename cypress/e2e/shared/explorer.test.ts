@@ -542,10 +542,13 @@ describe('DataExplorer', () => {
     it('can save query as task even when it has a variable', () => {
       const taskName = 'tax'
       // begin flux
-      cy.getByTestID('flux-editor').should('be.visible')
-        .monacoType(`from(bucket: "defbuck")
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .monacoType(
+          `from(bucket: "defbuck")
   |> range(start: -15m, stop: now())
-  |> filter(fn: (r) => r._measurement == `)
+  |> filter(fn: (r) => r._measurement == ){leftArrow}`
+        )
 
       cy.getByTestID('toolbar-tab').click()
       // checks to see if the default variables exist

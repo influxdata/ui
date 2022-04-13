@@ -167,7 +167,7 @@ describe('Dashboard', () => {
     const headerPrefix2 = '-'
 
     cy.getByTestID('note-editor--overlay').monacoType(
-      `${headerPrefix2} ${noteText2}`
+      `\n${headerPrefix2} ${noteText2}`
     )
 
     cy.getByTestID('note-editor--overlay').within(() => {

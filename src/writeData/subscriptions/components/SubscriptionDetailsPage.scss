@@ -11,8 +11,30 @@
   }
   &__progress {
     float: left;
-    width: 25%;
+    width: 20%;
     margin-top: $cf-space-l;
+    &--fixed {
+      float: left;
+      width: 20%;
+      margin-top: $cf-space-l;
+      position: fixed;
+
+      .subway-navigation-title {
+        margin-bottom: $cf-space-3xl;
+
+        .subway-navigation-title-text {
+          h3 {
+            font-size: $cf-space-m;
+            line-height: $cf-space-m;
+          }
+
+          h6 {
+            font-size: $cf-space-xs;
+            line-height: 20px;
+          }
+        }
+      }
+    }
 
     .subway-navigation-title {
       margin-bottom: $cf-space-3xl;

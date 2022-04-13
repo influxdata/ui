@@ -24,6 +24,9 @@ import {
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import ParsingDetailsEdit from 'src/writeData/subscriptions/components/ParsingDetailsEdit'
+import StringParsingForm from 'src/writeData/subscriptions/components/StringParsingForm'
+import JsonParsingForm from 'src/writeData/subscriptions/components/JsonParsingForm'
+import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtocolForm'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -35,9 +38,6 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/ParsingForm.scss'
-import StringParsingForm from './StringParsingForm'
-import JsonParsingForm from './JsonParsingForm'
-import LineProtocolForm from './LineProtocolForm'
 
 interface Props {
   formContent: Subscription

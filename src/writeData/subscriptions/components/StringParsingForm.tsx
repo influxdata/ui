@@ -85,7 +85,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               {feature: 'subscriptions'}
             )
           }
-          maxLength={56}
+          maxLength={255}
           testID="timestamp-string-parsing"
         />
       </Grid.Column>
@@ -133,7 +133,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 )
               }
               status={status}
-              maxLength={56}
+              maxLength={255}
               testID="measurment-string-parsing-pattern"
             />
           )}

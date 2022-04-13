@@ -1,29 +1,21 @@
 // Libraries
 import React, {FC} from 'react'
-import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Components
-import {
-  Button,
-  Grid,
-  Form,
-  Overlay,
-  ButtonType,
-  ComponentColor,
-  ComponentStatus,
-} from '@influxdata/clockface'
+import {Grid, Form, Overlay} from '@influxdata/clockface'
 import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtocolForm'
 import StringParsingForm from 'src/writeData/subscriptions/components/StringParsingForm'
 import JsonParsingForm from 'src/writeData/subscriptions/components/JsonParsingForm'
 import ParsingDetailsEdit from 'src/writeData/subscriptions/components/ParsingDetailsEdit'
 import ParsingDetailsReadOnly from 'src/writeData/subscriptions/components/ParsingDetailsReadOnly'
+import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
+import DetailsFormFooter from 'src/writeData/subscriptions/components/DetailsFormFooter'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {Subscription} from 'src/types/subscriptions'
 
 // Styles
@@ -35,6 +27,10 @@ interface Props {
   saveForm: (any) => void
   edit: boolean
   setEdit: (any) => void
+  singlePage: boolean
+  setStatus: (any) => void
+  setFormActive: (any) => void
+  active: string
 }
 
 const ParsingDetails: FC<Props> = ({
@@ -43,12 +39,21 @@ const ParsingDetails: FC<Props> = ({
   saveForm,
   edit,
   setEdit,
+  singlePage,
+  setStatus,
+  setFormActive,
+  active,
 }) => {
-  const history = useHistory()
   const org = useSelector(getOrg)
   return (
-    <div className="update-parsing-form">
+    <div className="update-parsing-form" id="parsing">
       <Form onSubmit={() => {}} testID="update-parsing-form-overlay">
+        {!singlePage && (
+          <StatusHeader
+            currentSubscription={currentSubscription}
+            setStatus={setStatus}
+          />
+        )}
         <Overlay.Header title="Define Data Parsing Rules"></Overlay.Header>
         <Overlay.Body>
           <Grid>
@@ -82,46 +87,20 @@ const ParsingDetails: FC<Props> = ({
             </Grid.Row>
           </Grid>
         </Overlay.Body>
-        <Overlay.Footer>
-          <Button
-            text="Close"
-            color={ComponentColor.Tertiary}
-            onClick={() => {
-              history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-            }}
-            titleText="Back to subscriptions list"
-            type={ButtonType.Button}
-            testID="update-parsing-form--cancel"
+        {!singlePage ? (
+          <DetailsFormFooter
+            nextForm=""
+            id={org.id}
+            edit={edit}
+            setEdit={setEdit}
+            setFormActive={setFormActive}
+            formActive={active}
+            currentSubscription={currentSubscription}
+            saveForm={saveForm}
           />
-          <Button
-            type={ButtonType.Button}
-            text="Edit"
-            color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-            onClick={() => setEdit(!edit)}
-            testID="update-parsing-form--edit"
-          />
-          {edit && (
-            <Button
-              type={ButtonType.Button}
-              text="Save Changes"
-              color={ComponentColor.Secondary}
-              onClick={() => {
-                saveForm(currentSubscription)
-              }}
-              testID="update-parsing-form--submit"
-            />
-          )}
-          <Button
-            text="View Data"
-            color={ComponentColor.Success}
-            type={ButtonType.Button}
-            onClick={() => {
-              history.push(`/orgs/${org.id}/notebooks`)
-            }}
-            testID="update-parsing-form--view-data"
-            status={ComponentStatus.Default}
-          />
-        </Overlay.Footer>
+        ) : (
+          <div className="update-parsing-form__line"></div>
+        )}
       </Form>
     </div>
   )

@@ -73,7 +73,9 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           name="timestamp"
           autoFocus={true}
           value={
-            formContent.jsonTimestamp.path ? formContent.jsonTimestamp.path : ''
+            formContent.jsonTimestamp && formContent.jsonTimestamp.path
+              ? formContent.jsonTimestamp.path
+              : ''
           }
           onChange={e => {
             formContent.jsonTimestamp.path = e.target.value
@@ -86,7 +88,6 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
               {feature: 'subscriptions'}
             )
           }
-          maxLength={56}
           testID="timestamp-json-parsing"
         />
       </Grid.Column>
@@ -141,7 +142,6 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   )
                 }
                 status={status}
-                maxLength={16}
                 testID="measurement-json-parsing-name"
               />
             )}
@@ -217,7 +217,6 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 )
               }
               status={status}
-              maxLength={56}
               testID="measurement-json-parsing-path"
             />
           )}
@@ -292,7 +291,6 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           }}
           style={{height: '146px', minHeight: '146px'}}
           ref={null}
-          maxLength={255}
           testID="json-validate"
         />
       </Grid.Column> */}

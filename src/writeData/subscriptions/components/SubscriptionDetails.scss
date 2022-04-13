@@ -40,4 +40,16 @@
     margin-top: $cf-space-2xl;
     margin-bottom: $cf-space-l;
   }
+  &__line {
+    background: linear-gradient(
+      256.11deg,
+      rgba(147, 148, 255, 0.2) 0%,
+      rgba(81, 60, 198, 0.2) 100%
+    );
+    height: 3px;
+    margin-top: 40px;
+    margin-bottom: 60px;
+    margin-left: 12px;
+    margin-right: 12px;
+  }
 }

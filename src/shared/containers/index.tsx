@@ -130,3 +130,7 @@ export const GoWizard = lazy(() =>
     default: module.GoWizard,
   }))
 )
+
+export const SinglePageSubDetails = lazy(() =>
+  import('src/writeData/subscriptions/components/SinglePageSubDetails')
+)

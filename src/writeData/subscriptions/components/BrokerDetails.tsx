@@ -1,57 +1,62 @@
 // Libraries
 import React, {FC} from 'react'
-import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
 // Components
 import {
-  Button,
   Form,
   Overlay,
-  ButtonType,
-  ComponentColor,
-  ComponentStatus,
   Heading,
   HeadingElement,
   FontWeight,
   SpinnerContainer,
   TechnoSpinner,
 } from '@influxdata/clockface'
+import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
+import BrokerFormContent from 'src/writeData/subscriptions/components/BrokerFormContent'
+import DetailsFormFooter from 'src/writeData/subscriptions/components/DetailsFormFooter'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 
 // Types
-import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
 import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/BrokerDetails.scss'
-import BrokerFormContent from './BrokerFormContent'
 
 interface Props {
   currentSubscription: Subscription
-  setFormActive: (string) => void
   updateForm: (any) => void
   edit: boolean
   setEdit: (any) => void
   loading: any
+  setFormActive: (any) => void
+  setStatus: (any) => void
+  saveForm: (any) => void
+  active: string
 }
 
 const BrokerDetails: FC<Props> = ({
   currentSubscription,
-  setFormActive,
   updateForm,
   edit,
   setEdit,
   loading,
+  setFormActive,
+  setStatus,
+  saveForm,
+  active,
 }) => {
-  const history = useHistory()
   const org = useSelector(getOrg)
   return (
-    <div className="update-broker-form">
+    <div className="update-broker-form" id="broker">
       <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
         <Form onSubmit={() => {}} testID="update-broker-form-overlay">
+          <StatusHeader
+            currentSubscription={currentSubscription}
+            setStatus={setStatus}
+          />
           <Overlay.Body>
             <Heading
               element={HeadingElement.H3}
@@ -66,44 +71,16 @@ const BrokerDetails: FC<Props> = ({
               className="update"
             />
           </Overlay.Body>
-          <Overlay.Footer>
-            <Button
-              text="Close"
-              color={ComponentColor.Tertiary}
-              onClick={() => {
-                history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
-              }}
-              titleText="Cancel update of Subscription and return to list"
-              type={ButtonType.Button}
-              testID="update-broker-form--cancel"
-            />
-            <Button
-              text="Edit"
-              color={edit ? ComponentColor.Success : ComponentColor.Secondary}
-              onClick={() => setEdit(!edit)}
-              type={ButtonType.Button}
-              titleText="Edit"
-              testID="update-broker-form--edit"
-            />
-            <Button
-              text="Next"
-              color={ComponentColor.Secondary}
-              onClick={() => setFormActive('subscription')}
-              type={ButtonType.Button}
-              titleText="Next"
-              testID="update-broker-form--submit"
-            />
-            <Button
-              text="View Data"
-              color={ComponentColor.Success}
-              onClick={() => {
-                history.push(`/orgs/${org.id}/notebooks`)
-              }}
-              type={ButtonType.Button}
-              testID="update-broker-form--view-data"
-              status={ComponentStatus.Default}
-            />
-          </Overlay.Footer>
+          <DetailsFormFooter
+            nextForm="subscription"
+            id={org.id}
+            edit={edit}
+            setEdit={setEdit}
+            setFormActive={setFormActive}
+            formActive={active}
+            currentSubscription={currentSubscription}
+            saveForm={saveForm}
+          />
         </Form>
       </SpinnerContainer>
     </div>

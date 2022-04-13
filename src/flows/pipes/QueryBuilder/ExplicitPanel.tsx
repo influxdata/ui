@@ -123,7 +123,7 @@ const ExplicitPanel: FC<ExplicitProps> = ({schema, onUpdate, onDelete}) => {
         direction={FlexDirection.Column}
         margin={ComponentSize.Large}
         alignItems={AlignItems.FlexStart}
-        testID={`measurement-schema-readOnly-panel`}
+        testID="measurement-schema-readOnly-panel"
         className="measurement-schema-panel"
       >
         <div className="value-text">name</div>

@@ -95,9 +95,12 @@ const SubscriptionsLanding: FC = () => {
       className="subscriptions-landing"
       titleTag={pageTitleSuffixer(['Cloud Native Subscriptions', 'Load Data'])}
     >
-      <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
-        <LoadDataHeader />
-        <LoadDataTabbedPage activeTab="subscriptions">
+      <LoadDataHeader />
+      <LoadDataTabbedPage activeTab="subscriptions">
+        <SpinnerContainer
+          spinnerComponent={<TechnoSpinner />}
+          loading={loading}
+        >
           <Page.ControlBar fullWidth={true}>
             <Page.ControlBarLeft>
               <SearchWidget
@@ -141,8 +144,8 @@ const SubscriptionsLanding: FC = () => {
           ) : (
             <EmptySubscriptionState />
           )}
-        </LoadDataTabbedPage>
-      </SpinnerContainer>
+        </SpinnerContainer>
+      </LoadDataTabbedPage>
     </Page>
   )
 }

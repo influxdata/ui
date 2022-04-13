@@ -18,7 +18,7 @@ import {
   AlignItems,
   ButtonType,
 } from '@influxdata/clockface'
-import {Bucket} from 'src/types'
+import {ExtendedBucket} from 'src/shared/contexts/buckets'
 import {CLOUD} from 'src/shared/constants'
 import DurationSelector, {
   DurationOption,
@@ -28,7 +28,7 @@ import {parseDuration, durationToMilliseconds} from 'src/shared/utils/duration'
 import ExplicitPanel from 'src/flows/pipes/QueryBuilder/ExplicitPanel'
 
 interface Props {
-  onCreate: (bucket: Bucket) => void
+  onCreate: (bucket: ExtendedBucket) => void
   onCancel: () => void
 }
 
@@ -90,7 +90,7 @@ const CreateBucketOverlay: FC<Props> = ({onCreate, onCancel}) => {
   }
 
   const onSubmit = () => {
-    const out: Bucket = {
+    const out: ExtendedBucket = {
       name: name,
       readableRetention: 'forever',
       retentionRules: retention,

@@ -1,12 +1,5 @@
 import React, {useState, FC, useRef} from 'react'
 
-import {
-  ComponentColor,
-  ComponentSize,
-  IconFont,
-  SquareButton,
-} from '@influxdata/clockface'
-
 interface Props {
   filename?: string
   error?: string

@@ -16,8 +16,18 @@ import {
 } from 'src/shared/copy/notifications'
 
 // Types
-import {Bucket, RemoteDataState} from 'src/types'
+import {Bucket, BucketEntities, RemoteDataState} from 'src/types'
 import {QueryScope} from 'src/types/flows'
+
+let MeasurementSchemaCreateRequest = null
+if (CLOUD) {
+  MeasurementSchemaCreateRequest = require('src/client/generatedRoutes')
+    .MeasurementSchemaCreateRequest
+}
+
+export interface ExtendedBucket extends Bucket {
+  schemas: typeof MeasurementSchemaCreateRequest[]
+}
 
 interface BucketContextType {
   loading: RemoteDataState
@@ -194,7 +204,7 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
     fetchBuckets()
   }, [loading])
 
-  const createBucket = (bucket: Bucket) => {
+  const createBucket = (bucket: ExtendedBucket) => {
     bucket.orgID = scope.org
     let schemas = []
     if (bucket.schemas && bucket.schemas.length) {

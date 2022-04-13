@@ -14,7 +14,7 @@ import {
 import CreateBucketOverlay from 'src/flows/pipes/QueryBuilder/CreateBucketOverlay'
 import {BucketContext} from 'src/shared/contexts/buckets'
 
-const CreateBucket: FC<Props> = () => {
+const CreateBucket: FC = () => {
   const {createBucket} = useContext(BucketContext)
   const triggerRef = useRef<ListItemRef>(null)
 

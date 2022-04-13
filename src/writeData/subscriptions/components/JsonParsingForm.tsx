@@ -143,7 +143,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   )
                 }
                 status={status}
-                maxLength={16}
+                maxLength={56}
                 testID="measurement-json-parsing-name"
               />
             )}

@@ -131,7 +131,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                   )
                 }
                 status={status}
-                maxLength={16}
+                maxLength={56}
                 testID={`${tagType}-json-parsing-name`}
               />
             )}
@@ -234,7 +234,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                 )
               }
               status={status}
-              maxLength={16}
+              maxLength={56}
               testID={`${tagType}-json-parsing-path`}
             />
           )}

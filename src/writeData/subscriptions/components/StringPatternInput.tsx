@@ -130,7 +130,7 @@ const StringPatternInput: FC<Props> = ({
                 )
               }
               status={status}
-              maxLength={16}
+              maxLength={56}
               testID={`${name}-string-parsing-name`}
             />
           )}

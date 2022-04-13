@@ -154,6 +154,8 @@ const SinglePageSubDetails: FC = () => {
               setEdit={setEdit}
               singlePage={singlePage}
               setStatus={setStatus}
+              saveForm={saveForm}
+              active={active}
             />
             <ParsingDetails
               currentSubscription={currentSubscription}
@@ -163,6 +165,8 @@ const SinglePageSubDetails: FC = () => {
               setEdit={setEdit}
               singlePage={singlePage}
               setStatus={setStatus}
+              active={active}
+              setFormActive={setFormActive}
             />
           </Page.Contents>
         </SpinnerContainer>

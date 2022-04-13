@@ -141,6 +141,8 @@ const SubscriptionDetailsPage: FC = () => {
                 loading={loading}
                 setStatus={setStatus}
                 setFormActive={setFormActive}
+                active={active}
+                saveForm={saveForm}
               />
             )}
             {active === Steps.SubscriptionForm && (
@@ -154,6 +156,8 @@ const SubscriptionDetailsPage: FC = () => {
                 setEdit={setEdit}
                 singlePage={singlePage}
                 setStatus={setStatus}
+                active={active}
+                saveForm={saveForm}
               />
             )}
             {active === Steps.ParsingForm && (
@@ -165,6 +169,8 @@ const SubscriptionDetailsPage: FC = () => {
                 setEdit={setEdit}
                 singlePage={singlePage}
                 setStatus={setStatus}
+                active={active}
+                setFormActive={setFormActive}
               />
             )}
           </Page.Contents>

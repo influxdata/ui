@@ -1,16 +1,15 @@
 import React, {FC, useContext} from 'react'
 
 // Components
-import {Overlay, List, Icon, IconFont} from '@influxdata/clockface'
+import {Icon, IconFont, List, Overlay} from '@influxdata/clockface'
+import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
-// Components
-import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
-import {SafeBlankLink} from 'src/utils/SafeBlankLink'
-
 import './ContactSupport.scss'
+
 interface OwnProps {
   onClose: () => void
 }

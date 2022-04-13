@@ -66,7 +66,6 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
 
   // keep the redux store in sync
   useEffect(() => {
-    console.log('updating', buckets)
     dispatch(
       setBuckets(
         RemoteDataState.Done,

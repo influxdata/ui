@@ -9,6 +9,7 @@ import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'
 import {BucketContext} from 'src/shared/contexts/buckets'
 import {PipeContext} from 'src/flows/context/pipe'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 
 // this is used by notebooks
@@ -127,7 +128,7 @@ const BucketSelector: FC = () => {
           size={ComponentSize.ExtraSmall}
         />
         {sections.user.map(renderListItem)}
-        <CreateBucket />
+        {isFlagEnabled('sharedBucketCreator') && <CreateBucket />}
         {sections.system.length && (
           <List.Divider
             key="systemHeader"

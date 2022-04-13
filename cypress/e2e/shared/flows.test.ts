@@ -524,7 +524,6 @@ describe('Flows', () => {
     ]
 
     // Intercepts
-    cy.intercept('/api/v2/buckets?*').as('fetchAllBuckets')
     cy.intercept('/api/v2/orgs/*/secrets').as('fetchSecrets')
 
     items.forEach(item => {
@@ -541,9 +540,7 @@ describe('Flows', () => {
         cy.getByTestID(`add-flow-btn--${item.panel}`)
           .last()
           .click()
-        if (item.panel === 'queryBuilder') {
-          cy.wait('@fetchAllBuckets')
-        } else if (item.panel === 'notification') {
+        if (item.panel === 'notification') {
           cy.wait('@fetchSecrets')
         }
       })

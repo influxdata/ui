@@ -16,7 +16,6 @@ import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
 import GetResources from 'src/resources/components/GetResources'
-import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
 
 // Contexts
 import {
@@ -118,7 +117,13 @@ const SubscriptionDetailsPage: FC = () => {
             scrollable={true}
             className="subscription-details-page"
           >
-            <div className="subscription-details-page__progress">
+            <div
+              className={
+                singlePage
+                  ? 'subscription-details-page__progress--fixed'
+                  : 'subscription-details-page__progress'
+              }
+            >
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
@@ -127,10 +132,6 @@ const SubscriptionDetailsPage: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-            <StatusHeader
-              currentSubscription={currentSubscription}
-              setStatus={setStatus}
-            />
             {active === Steps.BrokerForm && (
               <BrokerDetails
                 currentSubscription={currentSubscription}
@@ -154,6 +155,7 @@ const SubscriptionDetailsPage: FC = () => {
                 edit={edit}
                 setEdit={setEdit}
                 singlePage={singlePage}
+                setStatus={setStatus}
               />
             )}
             {active === Steps.ParsingForm && (
@@ -164,6 +166,7 @@ const SubscriptionDetailsPage: FC = () => {
                 edit={edit}
                 setEdit={setEdit}
                 singlePage={singlePage}
+                setStatus={setStatus}
               />
             )}
           </Page.Contents>

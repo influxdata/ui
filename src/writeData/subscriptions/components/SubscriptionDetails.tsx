@@ -13,6 +13,7 @@ import {
   ComponentStatus,
 } from '@influxdata/clockface'
 import SubscriptionFormContent from 'src/writeData/subscriptions/components/SubscriptionFormContent'
+import StatusHeader from 'src/writeData/subscriptions/components/StatusHeader'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
@@ -34,6 +35,7 @@ interface Props {
   edit: boolean
   setEdit: (any) => void
   singlePage: boolean
+  setStatus: (any) => void
 }
 
 const SubscriptionDetails: FC<Props> = ({
@@ -45,6 +47,7 @@ const SubscriptionDetails: FC<Props> = ({
   edit,
   setEdit,
   singlePage,
+  setStatus,
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
@@ -63,6 +66,12 @@ const SubscriptionDetails: FC<Props> = ({
           onSubmit={() => {}}
           testID="update-subscription-form--overlay-form"
         >
+          {!singlePage && (
+            <StatusHeader
+              currentSubscription={currentSubscription}
+              setStatus={setStatus}
+            />
+          )}
           <Overlay.Header title="Topic Subscription"></Overlay.Header>
           <Overlay.Body>
             <SubscriptionFormContent

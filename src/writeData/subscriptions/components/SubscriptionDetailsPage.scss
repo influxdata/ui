@@ -13,7 +13,12 @@
     float: left;
     width: 20%;
     margin-top: $cf-space-l;
-    position: fixed;
+    &--fixed {
+      float: left;
+      width: 20%;
+      margin-top: $cf-space-l;
+      position: fixed;
+    }
 
     .subway-navigation-title {
       margin-bottom: $cf-space-3xl;

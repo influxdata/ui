@@ -12,10 +12,10 @@ import {
   SubwayNav,
   SubwayNavModel,
 } from '@influxdata/clockface'
-import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
 import SubscriptionDetails from 'src/writeData/subscriptions/components/SubscriptionDetails'
 import GetResources from 'src/resources/components/GetResources'
+import SinglePageBrokerDetails from 'src/writeData/subscriptions/components/SinglePageBrokerDetails'
 
 // Contexts
 import {
@@ -24,6 +24,10 @@ import {
 } from 'src/writeData/subscriptions/context/subscription.update'
 import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 import WriteDataDetailsProvider from 'src/writeData/components/WriteDataDetailsContext'
+import {
+  SubscriptionListContext,
+  SubscriptionListProvider,
+} from 'src/writeData/subscriptions/context/subscription.list'
 
 // Types
 import {AppState, ResourceType, Bucket} from 'src/types'
@@ -37,11 +41,6 @@ import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
 
 // Styles
 import 'src/writeData/subscriptions/components/SubscriptionDetailsPage.scss'
-
-import {
-  SubscriptionListContext,
-  SubscriptionListProvider,
-} from 'src/writeData/subscriptions/context/subscription.list'
 
 interface SubscriptionNavigationModel extends SubwayNavModel {
   type: string
@@ -121,7 +120,13 @@ const SinglePageSubDetails: FC = () => {
             scrollable={true}
             className="subscription-details-page"
           >
-            <div className="subscription-details-page__progress">
+            <div
+              className={
+                singlePage
+                  ? 'subscription-details-page__progress--fixed'
+                  : 'subscription-details-page__progress'
+              }
+            >
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
@@ -130,16 +135,14 @@ const SinglePageSubDetails: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-            <BrokerDetails
+            <SinglePageBrokerDetails
               currentSubscription={currentSubscription}
               updateForm={updateForm}
               edit={edit}
               setEdit={setEdit}
               loading={loading}
-              singlePage={singlePage}
               setStatus={setStatus}
               saveForm={saveForm}
-              setFormActive={setFormActive}
             />
             <SubscriptionDetails
               setFormActive={setFormActive}

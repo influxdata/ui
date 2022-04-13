@@ -129,7 +129,7 @@ const ParsingDetails: FC<Props> = ({
                 history.push(`/orgs/${org.id}/notebooks`)
               }}
               type={ButtonType.Button}
-              testID="update-subscription-form--view-data"
+              testID="update-parsing-form--view-data"
               status={ComponentStatus.Default}
             />
             {edit && (

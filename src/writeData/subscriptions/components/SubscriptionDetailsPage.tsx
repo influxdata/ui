@@ -139,9 +139,7 @@ const SubscriptionDetailsPage: FC = () => {
                 edit={edit}
                 setEdit={setEdit}
                 loading={loading}
-                singlePage={singlePage}
                 setStatus={setStatus}
-                saveForm={saveForm}
                 setFormActive={setFormActive}
               />
             )}

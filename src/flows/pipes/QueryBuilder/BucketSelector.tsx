@@ -3,7 +3,7 @@ import React, {FC, useState, useContext, useEffect} from 'react'
 
 // Components
 import {Input, ComponentSize, List, Gradients} from '@influxdata/clockface'
-import CreateBucket from 'src//flows/pipes/QueryBuilder/CreateBucket'
+import CreateBucket from 'src/flows/pipes/QueryBuilder/CreateBucket'
 import {Bucket, RemoteDataState} from 'src/types'
 import BuilderCard from 'src/timeMachine/components/builderCard/BuilderCard'
 import {QueryBuilderContext} from 'src/flows/pipes/QueryBuilder/context'

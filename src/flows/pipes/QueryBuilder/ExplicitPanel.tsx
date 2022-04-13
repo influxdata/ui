@@ -1,4 +1,5 @@
 import React, {FC, useState} from 'react'
+import {parse} from 'papaparse'
 import {
   AlignItems,
   ComponentSize,
@@ -11,11 +12,7 @@ import {
   InputType,
   DismissButton,
 } from '@influxdata/clockface'
-import {
-  DownloadTypes,
-  MiniFileDnd,
-} from 'src/buckets/components/createBucketForm/MiniFileDnd'
-import {getColumnsFromFile} from 'src/buckets/components/createBucketForm/measurementSchemaUtils'
+import {MiniFileDnd} from 'src/flows/pipes/QueryBuilder/MiniFileDnd'
 
 interface ExplicitProps {
   schema: any
@@ -24,8 +21,8 @@ interface ExplicitProps {
 }
 
 const ALLOWED_TYPES = ['application/json', 'text/csv']
-
-const ALLOWED_EXTENSIONS = ['.json', '.csv'].join(',')
+const ALLOWED_EXTENSIONS = ['.json', '.csv']
+const DATA_TYPE_STRINGS = ['integer', 'float', 'boolean', 'string', 'unsigned']
 
 const validSchemaName = (name = '') => {
   const _name = name.trim()
@@ -42,7 +39,7 @@ const validSchemaName = (name = '') => {
 const ExplicitPanel: FC<ExplicitProps> = ({schema, onUpdate, onDelete}) => {
   const [fileErrorMessage, setFileErrorMessage] = useState('')
   const valid = _schema => {
-    return _schema.columns && _schema.name && !validSchemaName(_schema.name)
+    return !!_schema.columns && !!_schema.name && !validSchemaName(_schema.name)
   }
 
   const handleNameUpdate = evt => {
@@ -57,43 +54,68 @@ const ExplicitPanel: FC<ExplicitProps> = ({schema, onUpdate, onDelete}) => {
     })
   }
 
-  const handleFileUpload = (
-    contents: string,
-    type: DownloadTypes,
-    name: string
-  ) => {
-    let columns = []
-
+  const handleFileUpload = (file: File, contents: string) => {
     try {
-      columns = getColumnsFromFile(contents, type)
-    } catch (e) {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        throw new Error(`Unsupported file type: ${file.type}`)
+      }
+
+      let columns
+      if (file.type === 'text/csv') {
+        columns = parse(contents, {header: true}).data.map(c => {
+          if (!c.dataType) {
+            delete c.dataType
+          }
+          return c
+        })
+      } else if (file.type === 'application/json') {
+        columns = JSON.parse(contents)
+      }
+
+      if (!Array.isArray(columns)) {
+        throw new Error('Column file is not formatted correctly')
+      }
+
+      columns.forEach(col => {
+        if (typeof col.name !== 'string') {
+          throw new Error('All columns require a name field')
+        }
+        if (typeof col.type !== 'string') {
+          throw new Error('All columns require a type field')
+        }
+
+        if ('dataType' in col) {
+          if (!DATA_TYPE_STRINGS.includes(col.dataType)) {
+            throw new Error('All columns require a valid dataType')
+          }
+        } else if (col.type === 'field') {
+          throw new Error('Invalid column: type == field')
+        }
+      })
+
+      const update = {
+        ...schema,
+        columns: columns,
+        filename: file.name,
+      }
+
+      setFileErrorMessage(null)
       onUpdate({
-        schema,
+        ...update,
+        valid: valid(update),
+      })
+    } catch (e) {
+      setFileErrorMessage(e.message)
+      onUpdate({
+        ...schema,
         columns: [],
-        filename: name,
+        filename: file.name,
         valid: false,
       })
     }
-
-    const update = {
-      ...schema,
-      columns,
-      filename: name,
-    }
-
-    onUpdate({
-      ...update,
-      valid: valid(update),
-    })
   }
 
-  const setErrorState = (hasError, message) => {
-    if (!hasError) {
-      message = null
-    }
-
-    setFileErrorMessage(message)
-  }
+  const nameErrorMessage = validSchemaName(schema.name)
 
   return (
     <Panel className="measurement-schema-panel-container">
@@ -111,21 +133,23 @@ const ExplicitPanel: FC<ExplicitProps> = ({schema, onUpdate, onDelete}) => {
               type={InputType.Text}
               placeholder="Give your schema a name"
               onChange={handleNameUpdate}
-              value={name}
+              value={schema.name}
               className="schema-name-input"
               maxLength={48}
               size={ComponentSize.Small}
             />
+            {!!nameErrorMessage && (
+              <FormElementError message={nameErrorMessage} />
+            )}
           </span>
           <MiniFileDnd
+            filename={schema.filename}
+            error={fileErrorMessage}
             allowedExtensions={ALLOWED_EXTENSIONS}
-            allowedTypes={ALLOWED_TYPES}
             handleFileUpload={handleFileUpload}
-            setErrorState={setErrorState}
-            alreadySetFileName={schema.filename}
           />
         </FlexBox>
-        {fileErrorMessage && (
+        {!!fileErrorMessage && (
           <FormElementError
             style={{wordBreak: 'break-word'}}
             message={fileErrorMessage}

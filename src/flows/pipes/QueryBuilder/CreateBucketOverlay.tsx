@@ -69,7 +69,7 @@ const DEFAULT_RETENTION_RULE = {
 
 const CreateBucketOverlay: FC<Props> = ({onCreate, onCancel}) => {
   const [name, setName] = useState('')
-  const [retention, setRetention] = useState([{...DEFAULT_RETENTION_RULE}])
+  const [retention, setRetention] = useState([])
   const [newSchemas, setNewSchemas] = useState([])
 
   const [schemaType, setSchemaType] = useState('implicit')
@@ -94,7 +94,7 @@ const CreateBucketOverlay: FC<Props> = ({onCreate, onCancel}) => {
       name: name,
       readableRetention: 'forever',
       retentionRules: retention,
-      schemaType: newSchemas.length ? 'explicit' : 'implicit',
+      schemas: newSchemas,
     }
 
     if (onCreate) {
@@ -108,7 +108,7 @@ const CreateBucketOverlay: FC<Props> = ({onCreate, onCancel}) => {
 
   const schemaPanels = newSchemas.map((schema, index) => (
     <ExplicitPanel
-      key={`${schema.name}-${index}`}
+      key={`panel-${index}`}
       schema={schema}
       onUpdate={update => {
         newSchemas[index] = update

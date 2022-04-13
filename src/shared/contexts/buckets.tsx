@@ -1,9 +1,19 @@
 // Libraries
 import React, {FC, createContext, useEffect, useMemo, useRef} from 'react'
+import {useDispatch} from 'react-redux'
 import {createLocalStorageStateHook} from 'use-local-storage-state'
+import {normalize} from 'normalizr'
+
+import {arrayOfBuckets} from 'src/schemas'
+import {notify} from 'src/shared/actions/notifications'
+import {setBuckets} from 'src/buckets/actions/creators'
 
 // Contexts
 import {CLOUD} from 'src/shared/constants'
+import {
+  measurementSchemaAdditionSuccessful,
+  measurementSchemaAdditionFailed,
+} from 'src/shared/copy/notifications'
 
 // Types
 import {Bucket, RemoteDataState} from 'src/types'
@@ -36,6 +46,7 @@ interface Props {
 export const BucketProvider: FC<Props> = ({children, scope}) => {
   const cacheKey = `${scope.region};;<${scope.org}>`
   const [bucketCache, setBucketCache] = useLocalStorageState()
+  const dispatch = useDispatch()
   const buckets = bucketCache[cacheKey]?.buckets ?? []
   const loading = bucketCache[cacheKey]?.loading ?? RemoteDataState.NotStarted
   const controller = useRef<AbortController>(null)
@@ -52,6 +63,20 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
       }
     }
   }, [controller])
+
+  // keep the redux store in sync
+  useEffect(() => {
+    console.log('updating', buckets)
+    dispatch(
+      setBuckets(
+        RemoteDataState.Done,
+        normalize<Bucket, BucketEntities, string[]>(
+          buckets.filter(b => b.type !== 'sample'),
+          arrayOfBuckets
+        )
+      )
+    )
+  }, [buckets])
 
   // TODO: load bucket creation limits on org change
   // expose limits to frontend
@@ -102,49 +127,42 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
       })
       .then(response => {
         controller.current = null
-        const bucks = response.buckets
-          .map(bucket => ({
-            id: bucket.id,
-            orgID: bucket.orgID,
-            type: bucket.type,
-            name: bucket.name,
-          }))
-          .reduce(
-            (acc, curr) => {
-              if (curr.type === 'system') {
-                acc.system.push(curr)
-              } else {
-                acc.user.push(curr)
-              }
-              return acc
-            },
-            {
-              system: [],
-              user: [],
-              sample: [
-                {
-                  type: 'sample',
-                  name: 'Air Sensor Data',
-                  id: 'airSensor',
-                },
-                {
-                  type: 'sample',
-                  name: 'Coinbase bitcoin price',
-                  id: 'bitcoin',
-                },
-                {
-                  type: 'sample',
-                  name: 'NOAA National Buoy Data',
-                  id: 'noaa',
-                },
-                {
-                  type: 'sample',
-                  name: 'USGS Earthquakes',
-                  id: 'usgs',
-                },
-              ],
+        const bucks = response.buckets.reduce(
+          (acc, curr) => {
+            if (curr.type === 'system') {
+              acc.system.push(curr)
+            } else {
+              acc.user.push(curr)
             }
-          )
+            return acc
+          },
+          {
+            system: [],
+            user: [],
+            sample: [
+              {
+                type: 'sample',
+                name: 'Air Sensor Data',
+                id: 'airSensor',
+              },
+              {
+                type: 'sample',
+                name: 'Coinbase bitcoin price',
+                id: 'bitcoin',
+              },
+              {
+                type: 'sample',
+                name: 'NOAA National Buoy Data',
+                id: 'noaa',
+              },
+              {
+                type: 'sample',
+                name: 'USGS Earthquakes',
+                id: 'usgs',
+              },
+            ],
+          }
+        )
 
         bucks.system.sort((a, b) =>
           `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
@@ -179,6 +197,15 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
 
   const createBucket = (bucket: Bucket) => {
     bucket.orgID = scope.org
+    let schemas = []
+    if (bucket.schemas && bucket.schemas.length) {
+      bucket.schemaType = 'explicit'
+      schemas = bucket.schemas
+    } else {
+      bucket.schemaType = 'implicit'
+    }
+
+    delete bucket.schemas
 
     const headers = {
       'Content-Type': 'application/json',
@@ -199,10 +226,64 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
       })
       .then(response => {
         addBucket(response)
+
+        return Promise.all(
+          schemas.map(schema =>
+            fetch(
+              `${scope?.region}/api/v2/buckets/${response.id}/schema/measurements`,
+              {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(schema),
+              }
+            ).then(resp => {
+              if (resp.status !== 201) {
+                dispatch(
+                  notify(
+                    measurementSchemaAdditionFailed(response.name, schema.name)
+                  )
+                )
+              } else {
+                dispatch(
+                  notify(
+                    measurementSchemaAdditionSuccessful(
+                      response.name,
+                      schema.name
+                    )
+                  )
+                )
+              }
+            })
+          )
+        )
       })
   }
+
   const addBucket = (bucket: Bucket) => {
-    updateCache({buckets: [...buckets, bucket]})
+    const bucks = buckets.reduce(
+      (acc, curr) => {
+        if (!acc[curr.type]) {
+          acc[curr.type] = []
+        }
+        acc[curr.type].push(curr)
+        return acc
+      },
+      {[bucket.type]: [bucket]}
+    )
+
+    bucks.system.sort((a, b) =>
+      `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
+    )
+    bucks.user.sort((a, b) =>
+      `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
+    )
+    bucks.sample.sort((a, b) =>
+      `${a.name}`.toLowerCase().localeCompare(`${b.name}`.toLowerCase())
+    )
+
+    updateCache({
+      buckets: [...bucks.user, ...bucks.system, ...bucks.sample],
+    })
   }
 
   const refresh = () => {

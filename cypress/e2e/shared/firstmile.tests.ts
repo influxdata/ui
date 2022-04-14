@@ -14,12 +14,9 @@ describe('First mile experience', () => {
     beforeEach(() => {
       cy.getByTestID('homepage-wizard-language-tile--python').click()
     })
-    it('should load python wizard when python tile clicked', function() {
-      // subway should exist
+    it("runs through the python's wizard pages", function() {
       cy.getByTestID('subway-nav').should('exist')
-    })
 
-    it("should be able to run through the python's wizard pages", function() {
       // first page is overview
       cy.contains('Hello, Time-Series World!')
 
@@ -51,11 +48,37 @@ describe('First mile experience', () => {
       cy.contains('Next').click()
       cy.contains('Congrats!')
     })
-    
+
     describe('Subway Nav Bar', () => {
-      it('should navigate to `Create a token` when the respective navigation item is clicked', function() {
+      it('navigates to the correct page when the respective navigation button is clicked', function() {
+        cy.get('h1').contains('Hello, Time-Series World!')
+
+        cy.contains('Previous').should('be.disabled')
+
+        cy.contains('Install Dependencies').click()
+        cy.get('h1').contains('Install Dependencies')
+
+        cy.contains('Previous').should('not.be.disabled')
+
         cy.contains('Create a Token').click()
-        cy.contains('Create a Token')
+        cy.get('h1').contains('Create a Token')
+
+        cy.contains('Initialize Client').click()
+        cy.get('h1').contains('Initialize Client')
+
+        cy.contains('Write Data').click()
+        cy.get('h1').contains('Write Data')
+
+        cy.contains('Execute a Simple Query').click()
+        cy.contains('Execute a Flux Query')
+
+        cy.contains('Execute an Aggregate Query').click()
+        cy.get('h1').contains('Execute an Aggregate Query')
+
+        cy.contains('Finish').click()
+        cy.contains('Congrats!')
+
+        cy.contains('Next').should('be.disabled')
       })
     })
   })

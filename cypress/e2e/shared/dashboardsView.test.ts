@@ -148,7 +148,9 @@ describe('Dashboard', () => {
     cy.getByTestID('presentation-mode-toggle').click()
 
     // ensure a notification is sent when toggling to presentation mode
-    cy.getByTestID('notification-primary--children').should('exist')
+    cy.getByTestID('notification-primary').should('be.visible')
+    cy.get('.cf-notification--dismiss').click()
+
     // escape to toggle the presentation mode off
     cy.get('body').trigger('keyup', {
       keyCode: 27,
@@ -180,7 +182,7 @@ describe('Dashboard', () => {
       cy.getByTestID('save-note--button').click()
     })
 
-    cy.getByTestID('cell Name this Cell').should('not.contain', noteText)
+    cy.getByTestID('cell Name this Cell').should('contain', noteText)
     cy.getByTestID('cell Name this Cell').should('contain', noteText2)
 
     // Remove Note cell
@@ -189,7 +191,8 @@ describe('Dashboard', () => {
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
-    cy.wait(200)
+    cy.getByTestID('notification-primary').should('be.visible')
+    cy.get('.cf-notification--dismiss').click()
 
     // Clone View cell
     cy.getByTestID('cell-context--toggle')
@@ -199,17 +202,23 @@ describe('Dashboard', () => {
 
     // Ensure that the clone exists
     cy.getByTestID('cell Line Graph (Clone)').should('exist')
+
     // Remove View cells
     cy.getByTestID('cell-context--toggle')
       .first()
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
+    cy.getByTestID('notification-primary').should('be.visible')
+    cy.get('.cf-notification--dismiss').click()
+
     cy.getByTestID('cell-context--toggle')
       .last()
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
+    cy.getByTestID('notification-primary').should('be.visible')
+    cy.get('.cf-notification--dismiss').click()
 
     cy.getByTestID('empty-state').should('exist')
   })

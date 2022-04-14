@@ -102,9 +102,13 @@ describe('Dashboard', () => {
     const headerPrefix = '#'
 
     cy.getByTestID('add-note--button').click()
-    cy.getByTestID('note-editor--overlay').monacoType(
-      `${headerPrefix} ${noteText}`
-    )
+    cy.getByTestID('note-editor--overlay').within(() => {
+      cy.get('.monaco-editor .view-line:last').should('be.visible')
+      cy.get('.monaco-editor .view-line:last').click()
+      cy.get('.monaco-editor .view-line:last').type(
+        `${headerPrefix} ${noteText}`
+      )
+    })
 
     cy.getByTestID('note-editor--overlay').within(() => {
       cy.getByTestID('note-editor--preview').contains(noteText)
@@ -166,9 +170,13 @@ describe('Dashboard', () => {
     const noteText2 = 'changed text'
     const headerPrefix2 = '-'
 
-    cy.getByTestID('note-editor--overlay').monacoType(
-      `\n${headerPrefix2} ${noteText2}`
-    )
+    cy.getByTestID('note-editor--overlay').within(() => {
+      cy.get('.monaco-editor .view-line:last').should('be.visible')
+      cy.get('.monaco-editor .view-line:last').click()
+      cy.get('.monaco-editor .view-line:last').type(
+        `\n${headerPrefix2} ${noteText2}`
+      )
+    })
 
     cy.getByTestID('note-editor--overlay').within(() => {
       cy.getByTestID('note-editor--preview').contains(noteText2)
@@ -410,7 +418,11 @@ describe('Dashboard', () => {
               .within(() => {
                 cy.get('.cf-button').click()
               })
-            cy.getByTestID('flux-editor').monacoType(' ')
+            cy.getByTestID('flux-editor').within(() => {
+              cy.get('.monaco-editor .view-line:last').should('be.visible')
+              cy.get('.monaco-editor .view-line:last').click()
+              cy.get('.monaco-editor .view-line:last').type(' ')
+            })
             cy.getByTestID('save-cell--button').click()
 
             // Make sure typeAhead input box is rendered and is visible
@@ -655,14 +667,18 @@ describe('Dashboard', () => {
 
             // query for data
 
-            cy.getByTestID('flux-editor')
-              .monacoType(`{selectall}{del}from(bucket: v.bucketsCSV)
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-|> filter(fn: (r) => r["_measurement"] == "m")
-|> filter(fn: (r) => r["_field"] == "v")
-|> filter(fn: (r) => r["tk1"] == "tv1")
-|> aggregateWindow(every: v.windowPeriod, fn: max)
-|> yield(name: "max")`)
+            cy.getByTestID('flux-editor').within(() => {
+              cy.get('.monaco-editor .view-line:last').should('be.visible')
+              cy.get('.monaco-editor .view-line:last').click()
+              cy.get('.monaco-editor .view-line:last')
+                .type(`{selectall}{del}from(bucket: v.bucketsCSV)
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "m")
+  |> filter(fn: (r) => r["_field"] == "v")
+  |> filter(fn: (r) => r["tk1"] == "tv1")
+  |> aggregateWindow(every: v.windowPeriod, fn: max)
+  |> yield(name: "max")`)
+            })
 
             // `bucketOne` should not exist nor have data written to it
             cy.getByTestID('save-cell--button').click()
@@ -729,12 +745,16 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.getByTestID('switch-to-script-editor').should('be.visible')
             cy.getByTestID('switch-to-script-editor').click()
             cy.getByTestID('toolbar-tab').click()
-            cy.getByTestID('flux-editor')
-              .monacoType(`{selectall}{del}from(bucket: v.bucketsCSV)
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-|> filter(fn: (r) => r["_field"] == v.greeting)
-|> aggregateWindow(every: v.windowPeriod, fn: max)
-|> yield(name: "max")`)
+            cy.getByTestID('flux-editor').within(() => {
+              cy.get('.monaco-editor .view-line:last').should('be.visible')
+              cy.get('.monaco-editor .view-line:last').click()
+              cy.get('.monaco-editor .view-line:last')
+                .type(`{selectall}{del}from(bucket: v.bucketsCSV)
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_field"] == v.greeting)
+  |> aggregateWindow(every: v.windowPeriod, fn: max)
+  |> yield(name: "max")`)
+            })
             cy.get('.flux-toolbar--list-item')
               .eq(bucketVarIndex)
               .within(() => {
@@ -940,12 +960,16 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             cy.getByTestID('switch-to-script-editor').click()
             cy.getByTestID('toolbar-tab').click()
 
-            cy.getByTestID('flux-editor')
-              .monacoType(`{selectall}{del}from(bucket: v.static)
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-|> filter(fn: (r) => r["_measurement"] == "test")
-|> filter(fn: (r) => r["_field"] == "dopeness")
-|> filter(fn: (r) => r["container_name"] == v.build)`)
+            cy.getByTestID('flux-editor').within(() => {
+              cy.get('.monaco-editor .view-line:last').should('be.visible')
+              cy.get('.monaco-editor .view-line:last').click()
+              cy.get('.monaco-editor .view-line:last')
+                .type(`{selectall}{del}from(bucket: v.static)
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "test")
+  |> filter(fn: (r) => r["_field"] == "dopeness")
+  |> filter(fn: (r) => r["container_name"] == v.build)`)
+            })
 
             cy.getByTestID('save-cell--button').click()
 
@@ -1108,12 +1132,16 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         cy.getByTestID('switch-to-script-editor').click()
         cy.getByTestID('toolbar-tab').click()
 
-        cy.getByTestID('flux-editor')
-          .monacoType(`{selectall}{del}from(bucket: v.static)
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-|> filter(fn: (r) => r["_measurement"] == "test")
-|> filter(fn: (r) => r["_field"] == "dopeness")
-|> filter(fn: (r) => r["container_name"] == v.dependent)`)
+        cy.getByTestID('flux-editor').within(() => {
+          cy.get('.monaco-editor .view-line:last').should('be.visible')
+          cy.get('.monaco-editor .view-line:last').click()
+          cy.get('.monaco-editor .view-line:last')
+            .type(`{selectall}{del}from(bucket: v.static)
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "test")
+  |> filter(fn: (r) => r["_field"] == "dopeness")
+  |> filter(fn: (r) => r["container_name"] == v.dependent)`)
+        })
         cy.getByTestID('save-cell--button').click()
 
         // the default bucket selection should have no results
@@ -1323,7 +1351,13 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       const query1 = `from(bucket: "schmucket")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
   |> filter(fn: (r) => r["container_name"] == "cool")`
-      cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query1}`)
+      cy.getByTestID('flux-editor').within(() => {
+        cy.get('.monaco-editor .view-line:last').should('be.visible')
+        cy.get('.monaco-editor .view-line:last').click()
+        cy.get('.monaco-editor .view-line:last').type(
+          `{selectall}{del}${query1}`
+        )
+      })
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
         cy.getByTestID('renamable-page-title--input')

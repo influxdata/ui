@@ -1,10 +1,12 @@
 // Libraries
-import React, {useEffect, useMemo, useState, FC} from 'react'
+import React, {FC, useEffect, useMemo, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Actions
-import {getAllResources} from 'src/authorizations/actions/thunks'
-import {createAuthorization} from 'src/authorizations/actions/thunks'
+import {
+  createAuthorization,
+  getAllResources,
+} from 'src/authorizations/actions/thunks'
 
 // Selectors
 import {getOrg} from 'src/organizations/selectors'
@@ -21,6 +23,13 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {AppState, Authorization} from 'src/types'
+import {
+  AlignItems,
+  ComponentSize,
+  FlexBox,
+  Icon,
+  IconFont,
+} from '@influxdata/clockface'
 
 type OwnProps = {
   wizardEventName: string
@@ -85,24 +94,29 @@ export const CreateToken: FC<OwnProps> = ({wizardEventName}) => {
     <>
       <h1>Create a Token</h1>
       <p>
-        InfluxDB Cloud uses Tokens to authenticate API access. We've generated
-        an all-access token for you.
+        InfluxDB Cloud uses Tokens to authenticate API access. We've created an
+        all-access token for you for this set up process.
       </p>
       <p style={{marginTop: '51px'}}>
-        Save your token as an environment variable; you’ll use it soon. Run this
-        command in your terminal:
+        Run this command in your terminal to save your token as an environment
+        variable:
       </p>
       <CodeSnippet text={tokenTextboxText} onCopy={logCopyCodeSnippet} />
-      <p style={{marginTop: '46px'}}>
-        You can create tokens in the future in the{' '}
-        <SafeBlankLink
-          href={`orgs/${org.id}/load-data/tokens`}
-          onClick={logDocsOpened}
-        >
-          Token page
-        </SafeBlankLink>
-        .
-      </p>
+      <FlexBox margin={ComponentSize.Large} alignItems={AlignItems.Center}>
+        <Icon glyph={IconFont.Info_New} style={{fontSize: '30px'}} />
+        <p>
+          Creating an all-access tokens is not the best security practice! We
+          recommend you to delete this token in the{' '}
+          <SafeBlankLink
+            href={`orgs/${org.id}/load-data/tokens`}
+            onClick={logDocsOpened}
+          >
+            Token page
+          </SafeBlankLink>{' '}
+          after setting up, and creating your own token with specific set of
+          permissions later.
+        </p>
+      </FlexBox>
     </>
   )
 }

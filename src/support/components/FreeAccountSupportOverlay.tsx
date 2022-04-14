@@ -44,19 +44,19 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
         </p>
         <List className="support-links">
           <List.Item>
-            <div className="community-logo" />
+            <div className="help-logo forum" />
             <SafeBlankLink href="https://community.influxdata.com">
               InfluxDB Community Forums
             </SafeBlankLink>
           </List.Item>
           <List.Item>
-            <div className="slack-logo" />
+            <div className="help-logo slack" />
             <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email">
               InfluxDB Slack
             </SafeBlankLink>
           </List.Item>
           <List.Item>
-            <div className="feedback-logo" />
+            <div className="help-logo feedback" />
             <SafeBlankLink href="">Feedback & Questions Form</SafeBlankLink>
           </List.Item>
         </List>

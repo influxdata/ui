@@ -182,6 +182,7 @@ describe('Dashboard', () => {
       cy.getByTestID('save-note--button').click()
     })
 
+    cy.getByTestID('note-editor--overlay').should('not.exist')
     cy.getByTestID('cell Name this Cell').should('contain', noteText)
     cy.getByTestID('cell Name this Cell').should('contain', noteText2)
 

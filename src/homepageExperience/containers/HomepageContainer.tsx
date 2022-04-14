@@ -92,7 +92,7 @@ export const HomepageContainer: FC = () => {
                         >
                           <div
                             className="homepage-wizard-language-tile"
-                            data-testID="homepage-wizard-language-tile--python"
+                            data-testid="homepage-wizard-language-tile--python"
                           >
                             <h5>Python</h5>
                             {PythonIcon}

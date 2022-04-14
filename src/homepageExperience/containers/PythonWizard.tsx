@@ -105,7 +105,7 @@ export class PythonWizard extends PureComponent<null, State> {
     return (
       <div className="homepage-wizard-container">
         <aside className="homepage-wizard-container--subway">
-          <div style={{width: '100%'}} data-testID="subway-nav">
+          <div style={{width: '100%'}} data-testid="subway-nav">
             <SubwayNav
               currentStep={this.state.currentStep}
               onStepClick={this.handleNavClick}

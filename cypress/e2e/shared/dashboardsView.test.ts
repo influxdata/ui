@@ -199,6 +199,7 @@ describe('Dashboard', () => {
 
     // Ensure that the clone exists
     cy.getByTestID('cell Line Graph (Clone)').should('exist')
+
     // Remove View cells
     cy.getByTestID('cell-context--toggle')
       .first()

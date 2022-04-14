@@ -25,7 +25,7 @@ const client = new InfluxDB({url, token})`
 
   return (
     <>
-      <h1>Initalize Client</h1>
+      <h1>Initialize Client</h1>
       <p>
         Run this command in your terminal to open the interactive Nodejs shell:
       </p>

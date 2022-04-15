@@ -1,6 +1,40 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {points} from '../../support/commands'
 
+const getSelectedVariable = (contextID: string, index: number) => (
+  win: any
+) => {
+  const state = win.store.getState() as AppState
+  const defaultVarOrder = state.resources.variables.allIDs
+  const defaultVarDawg =
+    state.resources.variables.byID[defaultVarOrder[index]] || {}
+  const filledVarDawg =
+    (state.resources.variables.values[contextID] || {values: {}}).values[
+      defaultVarOrder[index]
+    ] || {}
+
+  const hydratedVarDawg = {
+    ...defaultVarDawg,
+    ...filledVarDawg,
+  }
+
+  if (hydratedVarDawg.arguments.type === 'map') {
+    if (!hydratedVarDawg.selected) {
+      hydratedVarDawg.selected = [
+        Object.keys(hydratedVarDawg.arguments.values)[0],
+      ]
+    }
+
+    return hydratedVarDawg.arguments.values[hydratedVarDawg.selected[0]]
+  }
+
+  if (!hydratedVarDawg.selected) {
+    hydratedVarDawg.selected = [hydratedVarDawg.arguments.values[0]]
+  }
+
+  return hydratedVarDawg.selected[0]
+}
+
 describe('Dashboard', () => {
   beforeEach(() => {
     cy.flush()
@@ -148,7 +182,9 @@ describe('Dashboard', () => {
     cy.getByTestID('presentation-mode-toggle').click()
 
     // ensure a notification is sent when toggling to presentation mode
-    cy.getByTestID('notification-primary--children').should('exist')
+    cy.getByTestID('notification-primary').should('be.visible')
+    cy.get('.cf-notification--dismiss').click()
+
     // escape to toggle the presentation mode off
     cy.get('body').trigger('keyup', {
       keyCode: 27,
@@ -180,7 +216,7 @@ describe('Dashboard', () => {
       cy.getByTestID('save-note--button').click()
     })
 
-    cy.getByTestID('cell Name this Cell').should('not.contain', noteText)
+    cy.getByTestID('note-editor--overlay').should('not.exist')
     cy.getByTestID('cell Name this Cell').should('contain', noteText2)
 
     // Remove Note cell
@@ -189,7 +225,8 @@ describe('Dashboard', () => {
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
-    cy.wait(200)
+    cy.getByTestID('notification-primary').should('be.visible')
+    cy.get('.cf-notification--dismiss').click()
 
     // Clone View cell
     cy.getByTestID('cell-context--toggle')
@@ -199,17 +236,23 @@ describe('Dashboard', () => {
 
     // Ensure that the clone exists
     cy.getByTestID('cell Line Graph (Clone)').should('exist')
+
     // Remove View cells
     cy.getByTestID('cell-context--toggle')
       .first()
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
+    cy.getByTestID('notification-primary').should('be.visible')
+    cy.get('.cf-notification--dismiss').click()
+
     cy.getByTestID('cell-context--toggle')
       .last()
       .click()
     cy.getByTestID('cell-context--delete').click()
     cy.getByTestID('cell-context--delete-confirm').click()
+    cy.getByTestID('notification-primary').should('be.visible')
+    cy.get('.cf-notification--dismiss').click()
 
     cy.getByTestID('empty-state').should('exist')
   })
@@ -248,38 +291,6 @@ describe('Dashboard', () => {
         cy.getByTestIDSubStr('cell--view-empty').contains(cellContent)
       })
   })
-
-  const getSelectedVariable = (contextID: string, index?: number) => win => {
-    const state = win.store.getState() as AppState
-    const defaultVarOrder = state.resources.variables.allIDs
-    const defaultVarDawg =
-      state.resources.variables.byID[defaultVarOrder[index]] || {}
-    const filledVarDawg =
-      (state.resources.variables.values[contextID] || {values: {}}).values[
-        defaultVarOrder[index]
-      ] || {}
-
-    const hydratedVarDawg = {
-      ...defaultVarDawg,
-      ...filledVarDawg,
-    }
-
-    if (hydratedVarDawg.arguments.type === 'map') {
-      if (!hydratedVarDawg.selected) {
-        hydratedVarDawg.selected = [
-          Object.keys(hydratedVarDawg.arguments.values)[0],
-        ]
-      }
-
-      return hydratedVarDawg.arguments.values[hydratedVarDawg.selected[0]]
-    }
-
-    if (!hydratedVarDawg.selected) {
-      hydratedVarDawg.selected = [hydratedVarDawg.arguments.values[0]]
-    }
-
-    return hydratedVarDawg.selected[0]
-  }
 
   describe('variable interactions', () => {
     beforeEach(() => {
@@ -1363,6 +1374,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('empty-state--text').should('be.visible')
     })
   })
+
   describe('light/dark Mode Toggle', () => {
     it('creates a dashboard to test light/dark mode toggle', () => {
       // dashboard creation
@@ -1374,29 +1386,29 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
       })
+
       cy.getByTestID('collapsible_menu').click()
 
-      cy.getByTestID('select-group--option')
-        .last()
-        .click() // light mode
-
+      cy.get('label[title="Light Mode"]').click() // light mode
       cy.getByTestID('app-wrapper')
         .invoke('css', 'background-color')
         .should('equal', 'rgb(241, 241, 243)')
       cy.getByTestID('app-wrapper')
         .invoke('css', 'color')
         .should('equal', 'rgb(104, 104, 123)')
-      cy.getByTestID('select-group--option')
-        .first()
-        .click() // dark mode
+
+      cy.get('label[title="Dark Mode"]').click() // dark mode
       cy.getByTestID('app-wrapper')
         .invoke('css', 'background-color')
         .should('equal', 'rgb(7, 7, 14)')
       cy.getByTestID('app-wrapper')
         .invoke('css', 'color')
         .should('equal', 'rgb(241, 241, 243)')
+      /*
+       */
     })
   })
+
   it('changes cell view type', () => {
     const dashName = 'dashboard'
     const dropdowns = [

@@ -1,6 +1,40 @@
 import {Organization, AppState, Dashboard} from '../../../src/types'
 import {points} from '../../support/commands'
 
+const getSelectedVariable = (contextID: string, index: number) => (
+  win: any
+) => {
+  const state = win.store.getState() as AppState
+  const defaultVarOrder = state.resources.variables.allIDs
+  const defaultVarDawg =
+    state.resources.variables.byID[defaultVarOrder[index]] || {}
+  const filledVarDawg =
+    (state.resources.variables.values[contextID] || {values: {}}).values[
+      defaultVarOrder[index]
+    ] || {}
+
+  const hydratedVarDawg = {
+    ...defaultVarDawg,
+    ...filledVarDawg,
+  }
+
+  if (hydratedVarDawg.arguments.type === 'map') {
+    if (!hydratedVarDawg.selected) {
+      hydratedVarDawg.selected = [
+        Object.keys(hydratedVarDawg.arguments.values)[0],
+      ]
+    }
+
+    return hydratedVarDawg.arguments.values[hydratedVarDawg.selected[0]]
+  }
+
+  if (!hydratedVarDawg.selected) {
+    hydratedVarDawg.selected = [hydratedVarDawg.arguments.values[0]]
+  }
+
+  return hydratedVarDawg.selected[0]
+}
+
 describe('Dashboard', () => {
   beforeEach(() => {
     cy.flush()
@@ -257,38 +291,6 @@ describe('Dashboard', () => {
         cy.getByTestIDSubStr('cell--view-empty').contains(cellContent)
       })
   })
-
-  const getSelectedVariable = (contextID: string, index?: number) => win => {
-    const state = win.store.getState() as AppState
-    const defaultVarOrder = state.resources.variables.allIDs
-    const defaultVarDawg =
-      state.resources.variables.byID[defaultVarOrder[index]] || {}
-    const filledVarDawg =
-      (state.resources.variables.values[contextID] || {values: {}}).values[
-        defaultVarOrder[index]
-      ] || {}
-
-    const hydratedVarDawg = {
-      ...defaultVarDawg,
-      ...filledVarDawg,
-    }
-
-    if (hydratedVarDawg.arguments.type === 'map') {
-      if (!hydratedVarDawg.selected) {
-        hydratedVarDawg.selected = [
-          Object.keys(hydratedVarDawg.arguments.values)[0],
-        ]
-      }
-
-      return hydratedVarDawg.arguments.values[hydratedVarDawg.selected[0]]
-    }
-
-    if (!hydratedVarDawg.selected) {
-      hydratedVarDawg.selected = [hydratedVarDawg.arguments.values[0]]
-    }
-
-    return hydratedVarDawg.selected[0]
-  }
 
   describe('variable interactions', () => {
     beforeEach(() => {
@@ -1372,6 +1374,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('empty-state--text').should('be.visible')
     })
   })
+
   describe('light/dark Mode Toggle', () => {
     it('creates a dashboard to test light/dark mode toggle', () => {
       // dashboard creation
@@ -1383,29 +1386,29 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           })
         })
       })
+
       cy.getByTestID('collapsible_menu').click()
 
-      cy.getByTestID('select-group--option')
-        .last()
-        .click() // light mode
-
+      cy.get('label[title="Light Mode"]').click() // light mode
       cy.getByTestID('app-wrapper')
         .invoke('css', 'background-color')
         .should('equal', 'rgb(241, 241, 243)')
       cy.getByTestID('app-wrapper')
         .invoke('css', 'color')
         .should('equal', 'rgb(104, 104, 123)')
-      cy.getByTestID('select-group--option')
-        .first()
-        .click() // dark mode
+
+      cy.get('label[title="Dark Mode"]').click() // dark mode
       cy.getByTestID('app-wrapper')
         .invoke('css', 'background-color')
         .should('equal', 'rgb(7, 7, 14)')
       cy.getByTestID('app-wrapper')
         .invoke('css', 'color')
         .should('equal', 'rgb(241, 241, 243)')
+      /*
+       */
     })
   })
+
   it('changes cell view type', () => {
     const dashName = 'dashboard'
     const dropdowns = [

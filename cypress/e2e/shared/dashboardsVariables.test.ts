@@ -138,7 +138,7 @@ describe('Dashboard - variable interactions', () => {
     const mapTypeVarIndex = 2
 
     cy.get('@org').then(({id: orgID}: Organization) => {
-      cy.get<Dashboard>('@dashboard').then(({dashboard}) => {
+      cy.get<Dashboard>('@dashboard').then(dashboard => {
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
           cy.createCSVVariable(orgID, bucketVarName, [
             bucketOne,
@@ -184,7 +184,7 @@ describe('Dashboard - variable interactions', () => {
           ).should('have.value', bucketOne)
 
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 0))
+            .pipe(getSelectedVariable(dashboard.id || '', 0))
             .should('equal', bucketOne)
 
           // testing variable controls
@@ -214,7 +214,7 @@ describe('Dashboard - variable interactions', () => {
           ).should('have.value', bucketThree)
 
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 0))
+            .pipe(getSelectedVariable(dashboard.id || '', 0))
             .should('equal', bucketThree)
 
           // and that it updates the variable in the URL
@@ -298,7 +298,7 @@ describe('Dashboard - variable interactions', () => {
 
           // selected value in cell context is 2nd value (making sure it reverts back!)
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 0))
+            .pipe(getSelectedVariable(dashboard.id || '', 0))
             .should('equal', bucket5)
 
           cy.getByTestID('toolbar-tab').click()
@@ -324,7 +324,7 @@ describe('Dashboard - variable interactions', () => {
 
           // selected value in cell context is 1st value
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 0))
+            .pipe(getSelectedVariable(dashboard.id || '', 0))
             .should('equal', bucketOne)
 
           // selected value in dashboard is 1st value
@@ -333,7 +333,7 @@ describe('Dashboard - variable interactions', () => {
           ).should('have.value', bucketOne)
 
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 0))
+            .pipe(getSelectedVariable(dashboard.id || '', 0))
             .should('equal', bucketOne)
 
           // TESTING MAP VARIABLE
@@ -342,7 +342,7 @@ describe('Dashboard - variable interactions', () => {
             `variable-dropdown-input-typeAhead--${mapTypeVarName}`
           ).should('have.value', 'k1')
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 2))
+            .pipe(getSelectedVariable(dashboard.id || '', 2))
             .should('equal', 'v1')
 
           // select 2nd value in dashboard
@@ -356,7 +356,7 @@ describe('Dashboard - variable interactions', () => {
             `variable-dropdown-input-typeAhead--${mapTypeVarName}`
           ).should('have.value', 'k2')
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 2))
+            .pipe(getSelectedVariable(dashboard.id || '', 2))
             .should('equal', 'v2')
 
           // open VEO
@@ -368,7 +368,7 @@ describe('Dashboard - variable interactions', () => {
 
           // selected value in cell context is 2nd value
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 2))
+            .pipe(getSelectedVariable(dashboard.id || '', 2))
             .should('equal', 'v2')
 
           cy.getByTestID('toolbar-tab').click()
@@ -388,7 +388,7 @@ describe('Dashboard - variable interactions', () => {
 
           // selected value in cell context is 1st value
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 2))
+            .pipe(getSelectedVariable(dashboard.id || '', 2))
             .should('equal', 'v1')
 
           // selected value in dashboard is 1st value
@@ -396,7 +396,7 @@ describe('Dashboard - variable interactions', () => {
             `variable-dropdown-input-typeAhead--${mapTypeVarName}`
           ).should('have.value', 'k1')
           cy.window()
-            .pipe(getSelectedVariable(dashboard.id, 2))
+            .pipe(getSelectedVariable(dashboard.id || '', 2))
             .should('equal', 'v1')
 
           cy.getByTestID('cell-context--toggle')

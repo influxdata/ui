@@ -40,7 +40,7 @@ describe('Dashboard - variable interactions', () => {
     cy.flush()
     cy.signin()
     cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
         cy.visit(`${orgs}/${orgID}/dashboards-list`)
         const numLines = 360
         cy.writeData(points(numLines))
@@ -52,7 +52,7 @@ describe('Dashboard - variable interactions', () => {
   })
 
   it('informs user if variables are enabled but not defined', () => {
-    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID = ''}: Organization) => {
       cy.createDashWithViewAndVar(orgID).then(() => {
         cy.get<string>('@defaultBucket').then(defaultBucket => {
           cy.createCSVVariable(orgID, 'CSVVar', [
@@ -86,7 +86,7 @@ describe('Dashboard - variable interactions', () => {
     // Toggle on
     cy.getByTestID('variables--button').click()
     cy.getByTestID('variables-control-bar')
-      .should('exist')
+      .should('be.visible')
       .and(
         'contain',
         "This dashboard doesn't have any cells with defined variables. Learn How"
@@ -104,7 +104,7 @@ describe('Dashboard - variable interactions', () => {
     cy.getByTestID('selector-list v').click()
     cy.getByTestID('selector-list tv1').click()
     cy.getByTestID('switch-to-script-editor').click()
-    cy.getByTestID('flux-editor').should('exist')
+    cy.getByTestID('flux-editor').should('be.visible')
     cy.get('[class="view-line"]')
       .last()
       .type('v.CSVVar')
@@ -118,12 +118,12 @@ describe('Dashboard - variable interactions', () => {
     // Toggle on
     cy.getByTestID('variables--button').click()
     cy.getByTestID('variables-control-bar')
-      .should('exist')
+      .should('be.visible')
       .and(
         'not.contain',
         "This dashboard doesn't have any cells with defined variables. Learn How"
       )
-    cy.getByTestID('variable-dropdown--CSVVar').should('exist')
+    cy.getByTestID('variable-dropdown--CSVVar').should('be.visible')
   })
 
   it('can manage variable state with a lot of pointing and clicking', () => {
@@ -137,8 +137,8 @@ describe('Dashboard - variable interactions', () => {
     const bucketVarIndex = 0
     const mapTypeVarIndex = 2
 
-    cy.get('@org').then(({id: orgID}: Organization) => {
-      cy.get<Dashboard>('@dashboard').then(dashboard => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+      cy.get('@dashboard').then(({dashboard}: any) => {
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
           cy.createCSVVariable(orgID, bucketVarName, [
             bucketOne,
@@ -148,7 +148,7 @@ describe('Dashboard - variable interactions', () => {
             bucket5,
           ])
 
-          cy.createQueryVariable(orgID)
+          cy.createCSVVariable(orgID)
           cy.createMapVariable(orgID)
           cy.fixture('routes').then(({orgs}) => {
             cy.visit(`${orgs}/${orgID}/dashboards/${dashboard.id}`)
@@ -158,8 +158,10 @@ describe('Dashboard - variable interactions', () => {
           cy.getByTestID('add-cell--button').click()
           cy.getByTestID('switch-to-script-editor').should('be.visible')
           cy.getByTestID('switch-to-script-editor').click()
-          cy.getByTestID('toolbar-tab').click()
           cy.getByTestID('flux-editor').should('be.visible')
+
+          cy.getByTestID('toolbar-tab').click()
+
           // check to see if the default timeRange variables are available
           cy.get('.flux-toolbar--list-item').contains('timeRangeStart')
           cy.get('.flux-toolbar--list-item').contains('timeRangeStop')
@@ -197,7 +199,9 @@ describe('Dashboard - variable interactions', () => {
             'not.exist'
           )
           cy.getByTestID('variables--button').click()
-          cy.getByTestID(`variable-dropdown--${bucketVarName}`).should('exist')
+          cy.getByTestID(`variable-dropdown--${bucketVarName}`).should(
+            'be.visible'
+          )
 
           // sanity check on the url before beginning
           cy.location('search').should('eq', '?lower=now%28%29+-+1h')
@@ -247,9 +251,15 @@ describe('Dashboard - variable interactions', () => {
           ).type('an')
 
           // dropdown should  be showing: anotherBucket', 'randomBucket'
+          cy.getByTestID('variable-dropdown--item').should('have.length', 2)
+          cy.getByTestID('variable-dropdown--item')
+            .first()
+            .contains('anotherBucket')
+          cy.getByTestID('variable-dropdown--item')
+            .last()
+            .contains('randomBucket')
 
           // hit down arrow once:
-
           cy.getByTestID(
             `variable-dropdown-input-typeAhead--${bucketVarName}`
           ).type('{downarrow}')
@@ -276,19 +286,16 @@ describe('Dashboard - variable interactions', () => {
             `variable-dropdown-input-typeAhead--${bucketVarName}`
           ).should('have.value', 'randomBucket')
 
-          // now:  clear the text area, write some text that doesn't match anything,
-          // then click outside; it should revert back to 'randomBucket'
-
-          // type in the input!
           cy.getByTestID(
             `variable-dropdown-input-typeAhead--${bucketVarName}`
           ).clear()
 
           cy.getByTestID(
             `variable-dropdown-input-typeAhead--${bucketVarName}`
-          ).type('nothingM')
-
-          // end typeAhead section; rest is normal behavior
+          ).type('nothingM{enter}')
+          cy.getByTestID(
+            `variable-dropdown-input-typeAhead--${bucketVarName}`
+          ).should('have.value', 'randomBucket')
 
           // open VEO
           cy.getByTestID('cell-context--toggle')
@@ -404,17 +411,18 @@ describe('Dashboard - variable interactions', () => {
             .click()
           cy.getByTestID('cell-context--delete').click()
           cy.getByTestID('cell-context--delete-confirm').click()
+          cy.getByTestID('notification-primary').should('be.visible')
+          cy.get('.cf-notification--dismiss').click()
 
           // create a new cell
           cy.getByTestID('add-cell--button').click()
           cy.getByTestID('switch-to-script-editor').should('be.visible')
           cy.getByTestID('switch-to-script-editor').click()
+          cy.getByTestID('flux-editor').should('be.visible')
 
           // query for data
-
-          cy.getByTestID('flux-editor')
-            .monacoType(`{selectall}{del}from(bucket: v.bucketsCSV)
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          cy.getByTestID('flux-editor').monacoType(`from(bucket: v.bucketsCSV)
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "m")
 |> filter(fn: (r) => r["_field"] == "v")
 |> filter(fn: (r) => r["tk1"] == "tv1")
@@ -432,7 +440,7 @@ describe('Dashboard - variable interactions', () => {
           cy.get(`#${defaultBucket}`).click()
 
           // assert visualization appears
-          cy.getByTestID('giraffe-layer-line').should('exist')
+          cy.getByTestID('giraffe-layer-line').should('be.visible')
         })
       })
     })
@@ -448,8 +456,8 @@ describe('Dashboard - variable interactions', () => {
     const dependentTypeVarName = 'greeting'
     const bucketVarIndex = 0
 
-    cy.get('@org').then(({id: orgID}: Organization) => {
-      cy.get<Dashboard>('@dashboard').then(dashboard => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
+      cy.get<Dashboard>('@dashboard').then(({dashboard}: any) => {
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
           cy.createCSVVariable(orgID, bucketVarName, [
             bucketOne,
@@ -486,9 +494,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('switch-to-script-editor').should('be.visible')
           cy.getByTestID('switch-to-script-editor').click()
           cy.getByTestID('toolbar-tab').click()
-          cy.getByTestID('flux-editor')
-            .monacoType(`{selectall}{del}from(bucket: v.bucketsCSV)
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          cy.getByTestID('flux-editor').monacoType(`from(bucket: v.bucketsCSV)
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_field"] == v.greeting)
 |> aggregateWindow(every: v.windowPeriod, fn: max)
 |> yield(name: "max")`)
@@ -648,7 +655,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
   })
 
   it('ensures that dependent variables load one another accordingly, even with reload and cleared local storage', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body: dashboard}) => {
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
           const now = Date.now()
@@ -681,11 +688,11 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           cy.getByTestID('add-cell--button').click()
           cy.getByTestID('switch-to-script-editor').should('be.visible')
           cy.getByTestID('switch-to-script-editor').click()
+          cy.getByTestID('flux-editor').should('be.visible')
           cy.getByTestID('toolbar-tab').click()
 
-          cy.getByTestID('flux-editor')
-            .monacoType(`{selectall}{del}from(bucket: v.static)
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          cy.getByTestID('flux-editor').monacoType(`from(bucket: v.static)
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
 |> filter(fn: (r) => r["container_name"] == v.build)`)
@@ -700,21 +707,29 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           )
 
           // and cause the rest to exist in loading states
+          cy.getByTestID('variable-dropdown--dependent').should(
+            'contain',
+            'Error'
+          )
           cy.getByTestID('variable-dropdown--build').should('contain', 'Error')
 
-          // An error notification should tell the user that this failed
-          cy.getByTestID('notification-error').contains(
-            'could not find bucket "beans"'
-          )
+          // Error notifications should tell the user that these failed
+          cy.getByTestID('notification-error').should('have.length', 2)
+          cy.getByTestID('notification-error')
+            .first()
+            .contains('could not find bucket "beans"')
+          cy.getByTestID('notification-error')
+            .last()
+            .contains('could not find bucket "beans"')
           cy.getByTestID('notification-error--dismiss').click({
             multiple: true,
           })
 
-          cy.getByTestIDSubStr('cell--view-empty')
+          cy.getByTestIDSubStr('cell--view-empty').should('be.visible')
 
           // But selecting a nonempty bucket should load some data
           cy.getByTestID('variable-dropdown--button')
-            .eq(0)
+            .first()
             .click()
           cy.get(`#${defaultBucket}`).click()
 
@@ -723,34 +738,23 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
             'have.value',
             'beans'
           )
-
-          // and also load the third result
           cy.getByTestID('variable-dropdown-input-typeAhead--dependent').should(
             'have.value',
             'beans'
           )
 
-          cy.getByTestID('variable-dropdown-input-typeAhead--dependent').should(
-            'have.value',
-            'beans'
-          )
-
-          // and also load the third result
+          // updating the third variable should update the second
           cy.getByTestID('variable-dropdown--button')
-            .eq(2)
+            .last()
             .click()
           cy.get(`#cool`).click()
-
-          // and also load the second result
-
           cy.getByTestID('variable-dropdown-input-typeAhead--dependent').should(
             'have.value',
             'cool'
           )
 
-          // updating the third variable should update the second
           cy.getByTestID('variable-dropdown--button')
-            .eq(2)
+            .last()
             .click()
           cy.get(`#beans`).click()
           cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
@@ -775,9 +779,7 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
           'beans'
         )
 
-        // and also load the second result
-
-        cy.getByTestID('variable-dropdown-input-typeAhead--build').should(
+        cy.getByTestID('variable-dropdown-input-typeAhead--dependent').should(
           'have.value',
           'beans'
         )
@@ -785,38 +787,8 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
     })
   })
 
-  /* \
-  built to approximate an instance with docker metrics,
-  operating with the variables:
-      depbuck:
-          from(bucket: v.buckets)
-              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-              |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
-              |> keep(columns: ["container_name"])
-              |> rename(columns: {"container_name": "_value"})
-              |> last()
-              |> group()
-      buckets:
-          buckets()
-              |> filter(fn: (r) => r.name !~ /^_/)
-              |> rename(columns: {name: "_value"})
-              |> keep(columns: ["_value"])
-  and a dashboard built of :
-      cell one:
-          from(bucket: v.buckets)
-              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-              |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
-              |> filter(fn: (r) => r["_field"] == "usage_percent")
-      cell two:
-          from(bucket: v.buckets)
-              |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-              |> filter(fn: (r) => r["_measurement"] == "docker_container_cpu")
-              |> filter(fn: (r) => r["_field"] == "usage_percent")
-              |> filter(fn: (r) => r["container_name"] == v.depbuck)
-  with only 4 api queries being sent to fulfill it all
-\*/
   it('can load dependent queries without much fuss', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body: dashboard}) => {
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
           const now = Date.now()
@@ -849,11 +821,11 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       cy.getByTestID('add-cell--button').click()
       cy.getByTestID('switch-to-script-editor').should('be.visible')
       cy.getByTestID('switch-to-script-editor').click()
+      cy.getByTestID('flux-editor').should('be.visible')
       cy.getByTestID('toolbar-tab').click()
 
-      cy.getByTestID('flux-editor')
-        .monacoType(`{selectall}{del}from(bucket: v.static)
-|> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+      cy.getByTestID('flux-editor').monacoType(`from(bucket: v.static)
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
 |> filter(fn: (r) => r["_measurement"] == "test")
 |> filter(fn: (r) => r["_field"] == "dopeness")
 |> filter(fn: (r) => r["container_name"] == v.dependent)`)
@@ -877,11 +849,12 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
       )
       cy.getByTestID('notification-error--dismiss').click()
 
-      cy.getByTestIDSubStr('cell--view-empty')
+      cy.getByTestIDSubStr('cell--view-empty').should('be.visible')
+      cy.getByTestID('giraffe-layer-line').should('not.exist')
 
       // But selecting a nonempty bucket should load some data
       cy.getByTestID('variable-dropdown--button')
-        .eq(0)
+        .first()
         .click()
       cy.get(`#${defaultBucket}`).click()
 
@@ -890,12 +863,14 @@ csv.from(csv: data) |> filter(fn: (r) => r.bucket == v.bucketsCSV)`
         'have.value',
         'beans'
       )
+      cy.getByTestID('giraffe-layer-line').should('be.visible')
 
       // and also load the second result
       cy.getByTestID('variable-dropdown--button')
-        .eq(1)
+        .last()
         .click()
       cy.get(`#cool`).click()
+      cy.getByTestID('giraffe-layer-line').should('be.visible')
     })
   })
 })

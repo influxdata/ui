@@ -6,7 +6,7 @@ describe('Dashboard', () => {
     cy.flush()
     cy.signin()
     cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
         cy.visit(`${orgs}/${orgID}/dashboards-list`)
         cy.getByTestID('tree-nav')
       })
@@ -14,7 +14,7 @@ describe('Dashboard', () => {
   })
 
   it("can edit a dashboard's name", () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -31,7 +31,7 @@ describe('Dashboard', () => {
       .type('{enter}')
 
     cy.fixture('routes').then(({orgs}) => {
-      cy.get('@org').then(({id: orgID}: Organization) => {
+      cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
         cy.visit(`${orgs}/${orgID}/dashboards-list`)
         cy.getByTestID('tree-nav')
       })
@@ -41,7 +41,7 @@ describe('Dashboard', () => {
   })
 
   it('can create, clone and destroy cells & toggle in and out of presentation mode', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -225,7 +225,7 @@ describe('Dashboard', () => {
 
   // fix for https://github.com/influxdata/influxdb/issues/15239
   it('retains the cell content after canceling an edit to the cell', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -259,7 +259,7 @@ describe('Dashboard', () => {
   })
 
   it('can create a view through the API', () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID = ''}: Organization) => {
       cy.createDashWithViewAndVar(orgID)
       cy.fixture('routes').then(({orgs}) => {
         cy.visit(`${orgs}/${orgID}/dashboards-list`)
@@ -271,7 +271,7 @@ describe('Dashboard', () => {
   })
 
   it("should return empty table parameters when query hasn't been submitted", () => {
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -304,7 +304,7 @@ describe('Dashboard', () => {
   it('should save a time format change and show in the dashboard cell card', () => {
     const numLines = 360
     cy.writeData(points(numLines))
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -351,7 +351,7 @@ describe('Dashboard', () => {
   it('can sort values in a dashboard cell', () => {
     const numLines = 360
     cy.writeData(points(numLines))
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -456,7 +456,7 @@ describe('Dashboard', () => {
 
   it('creates a dashboard to test light/dark mode toggle', () => {
     // dashboard creation
-    cy.get('@org').then(({id: orgID}: Organization) => {
+    cy.get<Organization>('@org').then(({id: orgID}: Organization) => {
       cy.createDashboard(orgID).then(({body}) => {
         cy.fixture('routes').then(({orgs}) => {
           cy.visit(`${orgs}/${orgID}/dashboards/${body.id}`)
@@ -486,10 +486,11 @@ describe('Dashboard', () => {
 
   describe('clone cell', () => {
     let otherBoardID: string
-    let orgId: string
+    let orgId: string | undefined
     let allOrgs: any
+
     beforeEach(() => {
-      cy.get('@org').then(({id: orgID, name}: Organization) => {
+      cy.get<Organization>('@org').then(({id: orgID, name}: Organization) => {
         orgId = orgID
         cy.createDashboard(orgID, 'other-dashboard').then(({body}) => {
           otherBoardID = body.id
@@ -533,6 +534,7 @@ describe('Dashboard', () => {
         .click()
       cy.getByTestID('cell-context--copy').click()
     })
+
     it('clones a cell to another dashboard and displays it there', () => {
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()

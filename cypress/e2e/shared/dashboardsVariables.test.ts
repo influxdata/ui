@@ -449,7 +449,7 @@ describe('Dashboard - variable interactions', () => {
     const bucketVarIndex = 0
 
     cy.get('@org').then(({id: orgID}: Organization) => {
-      cy.get<Dashboard>('@dashboard').then((dashboard) => {
+      cy.get<Dashboard>('@dashboard').then(dashboard => {
         cy.get<string>('@defaultBucket').then((defaultBucket: string) => {
           cy.createCSVVariable(orgID, bucketVarName, [
             bucketOne,

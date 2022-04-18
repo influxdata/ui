@@ -50,6 +50,8 @@ export const HomepageContainer: FC = () => {
   const linkStyle = {color: InfluxColors.Grey75}
   const moreStyle = {height: '100%', ...linkStyle}
 
+  const squareGridCardSize = '200px'
+
   // events handling
   const logPythonEvent = () => {
     event('firstMile.pythonWizard.clicked')
@@ -77,7 +79,7 @@ export const HomepageContainer: FC = () => {
                     Write and query data using the programming language of your
                     choice
                   </h5>
-                  <SquareGrid cardSize="200px" gutter={ComponentSize.Large}>
+                  <SquareGrid cardSize={squareGridCardSize} gutter={ComponentSize.Large}>
                     <ResourceCard style={cardStyle}>
                       <Link
                         to={pythonWizardLink}

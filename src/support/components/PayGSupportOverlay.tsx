@@ -5,6 +5,7 @@ import {
   Button,
   ButtonType,
   ComponentColor,
+  ComponentStatus,
   DropdownItemType,
   Form,
   Icon,
@@ -49,6 +50,24 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
 
   const handleChangeSeverity = (severity): void => {
     setSeverity(severity)
+  }
+
+  const handleValidation = (value: string): string | null => {
+    if (value.trim() === '') {
+      return 'This field cannot be empty'
+    }
+
+    if (value.length >= 2500) {
+      return 'Must be 2500 characters or less'
+    }
+    return null
+  }
+
+  const submitButtonStatus = (): ComponentStatus => {
+    if (!input.length || !severity) {
+      return ComponentStatus.Disabled
+    }
+    return ComponentStatus.Default
   }
 
   const severityTip = (): JSX.Element => {
@@ -109,16 +128,17 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
                 indicator={DropdownItemType.None}
               />
             </Form.Element>
-            <Form.Element label="Description" required={true}>
+            <Form.ValidationElement label="Description" required={true} value={input} validationFunc={handleValidation}>
+              {status => 
               <TextArea
+                status={status}
                 rows={10}
                 testID="support-description--textarea"
                 name="description"
-                maxLength={2500}
                 value={input}
                 onChange={handleInputChange}
-              />
-            </Form.Element>
+              />}
+            </Form.ValidationElement>
             <Overlay.Footer>
               <Button
                 text="Cancel"
@@ -132,6 +152,7 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
                 color={ComponentColor.Success}
                 type={ButtonType.Submit}
                 testID="payg-contact-support--submit"
+                status={submitButtonStatus()}
               />
             </Overlay.Footer>
           </Form>

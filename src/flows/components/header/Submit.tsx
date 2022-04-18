@@ -19,7 +19,7 @@ export const Submit: FC = () => {
   const {cancel} = useContext(QueryContext)
   const {generateMap, queryAll, status} = useContext(FlowQueryContext)
 
-  const hasQueries = generateMap().filter(s => !!s.source).length > 0
+  const hasQueries = generateMap(true).filter(s => !!s.source).length > 0
 
   const handleSubmit = () => {
     event('Notebook Submit Button Clicked')

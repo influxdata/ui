@@ -79,7 +79,10 @@ export const HomepageContainer: FC = () => {
                     Write and query data using the programming language of your
                     choice
                   </h5>
-                  <SquareGrid cardSize={squareGridCardSize} gutter={ComponentSize.Large}>
+                  <SquareGrid
+                    cardSize={squareGridCardSize}
+                    gutter={ComponentSize.Large}
+                  >
                     <ResourceCard style={cardStyle}>
                       <Link
                         to={pythonWizardLink}

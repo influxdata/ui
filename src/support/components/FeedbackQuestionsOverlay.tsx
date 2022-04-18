@@ -23,14 +23,14 @@ interface OwnProps {
 
 const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
   const {onClose} = useContext(OverlayContext)
-  const [input, setInput] = useState('')
+  const [feedbackText, setFeedbackText] = useState('')
 
   const handleSubmit = () => {
     // handle form submit
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(e.target.value)
+    setFeedbackText(e.target.value)
   }
 
   const handleValidation = (value: string): string | null => {
@@ -39,17 +39,14 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
     }
 
     if (value.length >= 2500) {
-      return 'Must be 2500 characters or less'
+      return 'Must be 2500 characters or fewer'
     }
     return null
   }
 
-  const submitButtonStatus = (): ComponentStatus => {
-    if (!input.length) {
-      return ComponentStatus.Disabled
-    }
-    return ComponentStatus.Default
-  }
+  const submitButtonStatus = feedbackText.length
+    ? ComponentStatus.Default
+    : ComponentStatus.Disabled
 
   return (
     <Overlay.Container maxWidth={600}>
@@ -59,12 +56,12 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
         onDismiss={onClose}
       />
       <ErrorBoundary>
-        <Overlay.Body>
-          <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleSubmit}>
+          <Overlay.Body>
             <Form.ValidationElement
               label="Description"
               required={true}
-              value={input}
+              value={feedbackText}
               validationFunc={handleValidation}
             >
               {status => (
@@ -73,30 +70,30 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
                   rows={10}
                   testID="support-description--textarea"
                   name="description"
-                  value={input}
+                  value={feedbackText}
                   onChange={handleInputChange}
-                  placeholder="Describe your feeback (like/dislikes with reasoning, bug you found, what could be improved, etc.) or question (i.e. product pricing) in detail."
+                  placeholder="Describe your feeback (like/dislikes with reasoning, bug you found, what could be improved, etc.) or question (e.g. product pricing) in detail."
                 />
               )}
             </Form.ValidationElement>
-            <Overlay.Footer>
-              <Button
-                text="Cancel"
-                color={ComponentColor.Tertiary}
-                onClick={onClose}
-                type={ButtonType.Button}
-                testID="payg-contact-support--cancel"
-              />
-              <Button
-                text="Submit"
-                color={ComponentColor.Success}
-                type={ButtonType.Submit}
-                testID="payg-contact-support--submit"
-                status={submitButtonStatus()}
-              />
-            </Overlay.Footer>
-          </Form>
-        </Overlay.Body>
+          </Overlay.Body>
+          <Overlay.Footer>
+            <Button
+              text="Cancel"
+              color={ComponentColor.Tertiary}
+              onClick={onClose}
+              type={ButtonType.Button}
+              testID="payg-contact-support--cancel"
+            />
+            <Button
+              text="Submit"
+              color={ComponentColor.Success}
+              type={ButtonType.Submit}
+              testID="payg-contact-support--submit"
+              status={submitButtonStatus}
+            />
+          </Overlay.Footer>
+        </Form>
       </ErrorBoundary>
     </Overlay.Container>
   )

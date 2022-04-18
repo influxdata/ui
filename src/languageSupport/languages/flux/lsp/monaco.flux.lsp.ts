@@ -9,8 +9,18 @@ import {CompletionTriggerKind} from 'monaco-languageclient/lib/services'
 // Types
 import {MonacoType} from 'src/types'
 
-const m2p = new MonacoToProtocolConverter(),
-  p2m = new ProtocolToMonacoConverter()
+/*  LSP client:
+    - example lib used:
+        https://github.com/TypeFox/monaco-languageclient/blob/master/examples/browser/src/client.ts
+    - full list of language features (compatible with monaco-editor/vscode):
+        https://code.visualstudio.com/api/language-extensions/programmatic-language-features#language-features-listing
+    - note:
+        - in lib example, they are using the monaco-editor worker through the monaco-languageclient bridge.
+        - instead, we are utilizing the typings and helper functions from monaco-languageclient -- but with our own version of a worker.
+*/
+
+const m2p = new MonacoToProtocolConverter(monaco),
+  p2m = new ProtocolToMonacoConverter(monaco)
 
 export function registerCompletion(monaco: MonacoType, server: LSPServer) {
   monaco.languages.registerDocumentSymbolProvider(FLUXLANGID, {

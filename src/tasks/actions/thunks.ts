@@ -104,7 +104,7 @@ export const getTasks = (limit: number = TASK_LIMIT) => async (
   }
 }
 
-export const getAllTasks = () => async (
+export const getAllTasks = (name?: string) => async (
   dispatch: Dispatch<TaskAction | NotifyAction>,
   getState: GetState
 ): Promise<void> => {
@@ -118,6 +118,10 @@ export const getAllTasks = () => async (
     // fetching 500 tasks at once strikes a balance between large requests and many requests
     const limit = 500
     const query: GetTasksParams['query'] = {orgID: org.id, limit}
+    // filter by tasks with a particular name, if provided
+    if (name) {
+      query.name = name
+    }
     const resp = await fetchTasks(query)
 
     let nonNormalizedTasks = resp.data.tasks

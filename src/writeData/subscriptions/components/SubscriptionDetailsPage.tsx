@@ -6,21 +6,11 @@ import {useParams} from 'react-router-dom'
 // Components
 import {
   Page,
-  FlexBox,
-  JustifyContent,
-  AlignItems,
   SpinnerContainer,
   TechnoSpinner,
   IconFont,
-  Heading,
-  HeadingElement,
-  FontWeight,
   SubwayNav,
   SubwayNavModel,
-  Button,
-  ComponentColor,
-  ComponentStatus,
-  ButtonType,
 } from '@influxdata/clockface'
 import BrokerDetails from 'src/writeData/subscriptions/components/BrokerDetails'
 import ParsingDetails from 'src/writeData/subscriptions/components/ParsingDetails'
@@ -40,6 +30,7 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 
 // Utils
 import {getAll} from 'src/resources/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Graphics
 import {FormLogo} from 'src/writeData/subscriptions/graphics/FormLogo'
@@ -113,6 +104,7 @@ const SubscriptionDetailsPage: FC = () => {
     })
     return currentStep
   }
+  const singlePage = isFlagEnabled('subscriptionsSinglePage')
   return (
     <GetResources resources={[ResourceType.Buckets]}>
       <Page>
@@ -125,7 +117,13 @@ const SubscriptionDetailsPage: FC = () => {
             scrollable={true}
             className="subscription-details-page"
           >
-            <div className="subscription-details-page__progress">
+            <div
+              className={
+                singlePage
+                  ? 'subscription-details-page__progress--fixed'
+                  : 'subscription-details-page__progress'
+              }
+            >
               <SubwayNav
                 currentStep={getActiveStep(active)}
                 onStepClick={handleClick}
@@ -134,61 +132,17 @@ const SubscriptionDetailsPage: FC = () => {
                 settingUpText="MQTT Connector"
               />
             </div>
-            <FlexBox
-              justifyContent={JustifyContent.SpaceBetween}
-              alignItems={AlignItems.FlexEnd}
-              stretchToFitHeight={true}
-            >
-              <Heading
-                element={HeadingElement.H3}
-                weight={FontWeight.Regular}
-                className="subscription-details-page__status"
-              >
-                Status:
-                <span
-                  className={
-                    currentSubscription &&
-                    `subscription-details-page__status--${currentSubscription.status}`
-                  }
-                >
-                  {currentSubscription && currentSubscription.status}
-                </span>
-              </Heading>
-              {!(
-                currentSubscription.status === 'VALIDATING' ||
-                currentSubscription.status === 'INVALID'
-              ) && (
-                <Button
-                  text={
-                    currentSubscription.status === 'RUNNING' ? 'stop' : 'start'
-                  }
-                  color={
-                    currentSubscription.status === 'RUNNING'
-                      ? ComponentColor.Danger
-                      : ComponentColor.Success
-                  }
-                  onClick={() => {
-                    if (currentSubscription.status === 'RUNNING') {
-                      setStatus(false)
-                    } else {
-                      setStatus(true)
-                    }
-                  }}
-                  type={ButtonType.Submit}
-                  testID="subscription-details-page--status-button"
-                  status={ComponentStatus.Default}
-                  className="subscription-details-page__status--button"
-                />
-              )}
-            </FlexBox>
             {active === Steps.BrokerForm && (
               <BrokerDetails
-                setFormActive={setFormActive}
                 currentSubscription={currentSubscription}
                 updateForm={updateForm}
                 edit={edit}
                 setEdit={setEdit}
                 loading={loading}
+                setStatus={setStatus}
+                setFormActive={setFormActive}
+                active={active}
+                saveForm={saveForm}
               />
             )}
             {active === Steps.SubscriptionForm && (
@@ -200,6 +154,10 @@ const SubscriptionDetailsPage: FC = () => {
                 bucket={bucket}
                 edit={edit}
                 setEdit={setEdit}
+                singlePage={singlePage}
+                setStatus={setStatus}
+                active={active}
+                saveForm={saveForm}
               />
             )}
             {active === Steps.ParsingForm && (
@@ -209,6 +167,10 @@ const SubscriptionDetailsPage: FC = () => {
                 saveForm={saveForm}
                 edit={edit}
                 setEdit={setEdit}
+                singlePage={singlePage}
+                setStatus={setStatus}
+                active={active}
+                setFormActive={setFormActive}
               />
             )}
           </Page.Contents>

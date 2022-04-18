@@ -33,9 +33,13 @@
   }
 
   span:nth-child(2) {
-    color: $c-rainforest;
+    color: $c-pool;
     font-style: italic;
     margin-right: $cf-border;
+
+    &.isRequired {
+      color: $c-fire;
+    }
   }
 
   div {

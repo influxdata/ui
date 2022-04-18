@@ -70,7 +70,7 @@ const SubscriptionFormContent: FC<Props> = ({
                 )
               }
               status={status}
-              maxLength={16}
+              maxLength={56}
               testID={`${className}-subscription-form--topic`}
             />
           )}

@@ -10,7 +10,6 @@ import {
 import {Bucket} from '../../../src/client'
 import {calcNanoTimestamp} from '../../support/Utils'
 
-// skipping these tests until we have a local vault instance running
 describe('NotificationRules', () => {
   const name1 = 'Slack 1'
   const name2 = 'Slack 2'
@@ -218,11 +217,9 @@ describe('NotificationRules', () => {
 
     cy.get<SlackNotificationEndpoint>('@selectedEndpoint').then(({id}) => {
       cy.getByTestID(`endpoint--dropdown-item ${id}`).click()
-      cy.getByTestID('endpoint--dropdown--button')
-        .within(() => {
-          cy.contains(name2)
-        })
-        .click()
+      cy.getByTestID('endpoint--dropdown--button').within(() => {
+        cy.contains(name2)
+      })
     })
 
     const message = `
@@ -299,72 +296,72 @@ describe('NotificationRules', () => {
     cy.getByTestID('rule-card--name').should('have.length', 0)
   })
 
+  const endp: GenEndpoint = {
+    orgID: '',
+    name: 'Test HTTP Endpoint',
+    userID: '',
+    description: 'A Dummy Endpoint in AWS Land',
+    status: 'active',
+    type: 'http',
+    url: 'http://endpoint.devnull.io:3000',
+    authMethod: 'none',
+    method: 'POST',
+  }
+
+  const rule: GenRule & {activeStatus: string} = {
+    type: 'http',
+    every: '1m',
+    offset: '0m',
+    url: '',
+    orgID: '',
+    name: 'Test Rule',
+    activeStatus: 'active',
+    status: 'active',
+    endpointID: '',
+    tagRules: [],
+    labels: [],
+    statusRules: [{currentLevel: 'CRIT', period: '1h', count: 1}],
+    description: '',
+  }
+
+  const check: GenCheck = {
+    type: 'deadman',
+    name: 'Ghost Check',
+    status: 'active',
+    orgID: '',
+    query: {
+      name: '',
+      text: '',
+      editMode: 'builder',
+      builderConfig: {
+        buckets: [],
+        tags: [
+          {
+            key: '_measurement',
+            values: ['wumpus'],
+            aggregateFunctionType: 'filter',
+          },
+          {key: '_field', values: ['mag'], aggregateFunctionType: 'filter'},
+          {key: 'foo', values: [], aggregateFunctionType: 'filter'},
+        ],
+        functions: [],
+      },
+      //        hidden: false
+    },
+    labels: [],
+    every: '1m',
+    level: 'CRIT',
+    offset: '0s',
+    reportZero: false,
+    staleTime: '10m',
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }',
+    tags: [],
+    timeSince: '90s',
+  }
+
   // TODO add click through to history page after #2592 is fixed
   //   - currently all history tests start with direct route to page
   describe('notification history', () => {
-    const endp: GenEndpoint = {
-      orgID: '',
-      name: 'Test HTTP Endpoint',
-      userID: '',
-      description: 'A Dummy Endpoint in AWS Land',
-      status: 'active',
-      type: 'http',
-      url: 'http://endpoint.devnull.io:3000',
-      authMethod: 'none',
-      method: 'POST',
-    }
-
-    const rule: GenRule & {activeStatus: string} = {
-      type: 'http',
-      every: '1m',
-      offset: '0m',
-      url: '',
-      orgID: '',
-      name: 'Test Rule',
-      activeStatus: 'active',
-      status: 'active',
-      endpointID: '',
-      tagRules: [],
-      labels: [],
-      statusRules: [{currentLevel: 'CRIT', period: '1h', count: 1}],
-      description: '',
-    }
-
-    const check: GenCheck = {
-      type: 'deadman',
-      name: 'Ghost Check',
-      status: 'active',
-      orgID: '',
-      query: {
-        name: '',
-        text: '',
-        editMode: 'builder',
-        builderConfig: {
-          buckets: [],
-          tags: [
-            {
-              key: '_measurement',
-              values: ['wumpus'],
-              aggregateFunctionType: 'filter',
-            },
-            {key: '_field', values: ['mag'], aggregateFunctionType: 'filter'},
-            {key: 'foo', values: [], aggregateFunctionType: 'filter'},
-          ],
-          functions: [],
-        },
-        //        hidden: false
-      },
-      labels: [],
-      every: '1m',
-      level: 'CRIT',
-      offset: '0s',
-      reportZero: false,
-      staleTime: '10m',
-      statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }',
-      tags: [],
-      timeSince: '90s',
-    }
-
     interface MonitoringRec {
       check: GenCheck
       endp: NotificationEndpoint
@@ -431,7 +428,7 @@ describe('NotificationRules', () => {
                 buckets: [bucket.id],
               },
             },
-          }).then(resp => {
+          }).then((resp: {body: any}) => {
             cy.wrap(resp.body).as('check')
           })
 
@@ -447,7 +444,7 @@ describe('NotificationRules', () => {
               ...(rule as NotificationRule),
               orgID: org.id,
               endpointID: endp.id,
-            }).then(resp => {
+            }).then((resp: {body: any}) => {
               cy.wrap(resp.body).as('rule')
             })
           })
@@ -757,8 +754,381 @@ describe('NotificationRules', () => {
       cy.getByTestID('event-row--field time').then(timestamps => {
         const CurrHours = timestamps
           .toArray()
-          .map(n => new Date(n.innerText).getHours())
+          .map((n: {innerText: string | number | Date}) =>
+            new Date(n.innerText).getHours()
+          )
         expect(CurrHours).to.deep.eq(hours)
+      })
+    })
+  })
+
+  describe('Notification Rules List', () => {
+    const rulesSort = (
+      a: {name: string; description: string},
+      b: {name: string; description: string}
+    ) => {
+      if (a.name > b.name) {
+        return 1
+      }
+      if (a.name < b.name) {
+        return -1
+      }
+      return 0
+    }
+
+    let Rules = [
+      {name: 'John Critical Rule', description: 'The owl and the cat'},
+      {name: 'Paul Warn Rule', description: 'The walrus and the whale'},
+      {name: 'George OK Rule', description: 'The dove and the squirrel'},
+      {name: 'Ringo Info Rule', description: 'The fox and the hound'},
+    ].sort(rulesSort)
+
+    const newRule = {
+      name: 'Sean Everything Rule',
+      description: 'The plough and the stars',
+    }
+
+    beforeEach(() => {
+      cy.writeLPDataFromFile({
+        filename: 'data/wumpus01.lp',
+        offset: '20m',
+        stagger: '1m',
+      })
+      const queryText = `from(bucket: \"%BUCKET_NAME%\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
+
+      cy.createAlertGroup(
+        [
+          {
+            ...check,
+            query: {
+              ...check.query,
+              text: queryText,
+            },
+          },
+        ],
+        [endp],
+        [
+          {
+            ...(rule as NotificationRule),
+            name: Rules[0].name,
+            description: Rules[0].description,
+          },
+          {
+            ...(rule as NotificationRule),
+            name: Rules[1].name,
+            description: Rules[1].description,
+          },
+          {
+            ...(rule as NotificationRule),
+            name: Rules[2].name,
+            description: Rules[2].description,
+          },
+          {
+            ...(rule as NotificationRule),
+            name: Rules[3].name,
+            description: Rules[3].description,
+          },
+        ]
+      ).then(() => {
+        cy.reload() // Alerts load from upper beforeEach might not catch all these rules
+        cy.getByTestID('alerting-tab--rules').click()
+      })
+    })
+
+    it('can filter the rule list', () => {
+      cy.log('=== baseline check')
+      cy.getByTestID('rule-card--name')
+        .should('have.length', 4)
+        .then(names => {
+          names.toArray().forEach((name: HTMLElement, index: number) => {
+            expect(name.innerText).to.equal(Rules[index].name)
+          })
+        })
+
+      cy.log('=== filter name')
+      cy.getByTestID('filter--input rules').type(Rules[1].name.substr(0, 5))
+
+      cy.getByTestID('rule-card--name')
+        .should('have.length', 1)
+        .should('have.text', Rules[1].name)
+
+      cy.getByTestID('filter--input rules').clear()
+
+      cy.log('=== confirm clear filter')
+      cy.getByTestID('rule-card--name')
+        .should('have.length', 4)
+        .then(names => {
+          names.toArray().forEach((name: HTMLElement, index: number) => {
+            expect(name.innerText).to.equal(Rules[index].name)
+          })
+        })
+    })
+
+    it('can modify a notification rule entry', () => {
+      cy.log('=== baseline asserts')
+      cy.getByTestID(`rule-card ${Rules[1].name}`)
+        .within(() => {
+          cy.getByTestID('rule-card--name').should('have.text', Rules[1].name)
+          cy.getByTestID('copy-resource-id').then(elem => {
+            cy.wrap(
+              elem
+                .text()
+                .replace('ID: ', '')
+                .replace('Copy to Clipboard', '')
+            ).as('TargetRuleID')
+          })
+
+          cy.getByTestID('copy-task-id').then(elem => {
+            cy.wrap(
+              elem
+                .text()
+                .replace('Task ID  : ', '')
+                .replace('Copy to Clipboard', '')
+            ).as('TargetTaskID')
+          })
+
+          cy.get<string>('@TargetRuleID').then(id => {
+            cy.intercept('PATCH', `/api/v2/notificationRules/${id}`).as(
+              'patchNotificationRule'
+            )
+          })
+
+          cy.log('=== modify description')
+          cy.getByTestID('resource-list--editable-description').click()
+          cy.getByTestID('input-field')
+            .clear()
+            .type(`${newRule.description}{enter}`)
+          cy.wait('@patchNotificationRule')
+          cy.getByTestID('resource-list--editable-description').should(
+            'have.text',
+            newRule.description
+          )
+
+          cy.log('=== modify name')
+          cy.getByTestID('rule-card--name-button').click()
+          cy.getByTestID('rule-card--input').type(`${newRule.name}{enter}`)
+        })
+        .then(() => {
+          // When name is modified sort order of cards should change
+          Rules[1] = newRule
+          Rules = Rules.sort(rulesSort)
+          cy.wait('@patchNotificationRule')
+          cy.getByTestID(`rule-card ${newRule.name}`).should('exist')
+          cy.log('=== Verify New Sort Order and card name change')
+          cy.getByTestID('rule-card--name')
+            .should('have.length', 4)
+            .then(names => {
+              names.toArray().forEach((name: HTMLElement, index: number) => {
+                expect(name.innerText).to.equal(Rules[index].name)
+              })
+            })
+
+          cy.log('=== Verify task ID is the same')
+          cy.getByTestID(`rule-card ${newRule.name}`).within(() => {
+            cy.get('@TargetTaskID').then(id => {
+              cy.getByTestID('copy-task-id').should('contain.text', id)
+            })
+
+            cy.log('=== check sanity of update and run times')
+            cy.getByTestID('resource-list--meta').within(() => {
+              const now = new Date()
+              // TODO change css selector to use class
+              cy.get('.cf-resource-meta--item')
+                .eq(0)
+                .then(elem => {
+                  const cdate = new Date(elem.text().replace(/^\D+/g, ''))
+                  expect(now.getTime() - cdate.getTime())
+                    .to.be.at.least(0)
+                    .and.to.be.below(Cypress.config('pageLoadTimeout'))
+                })
+              cy.get('.cf-resource-meta--item')
+                .eq(1)
+                .then(elem => {
+                  expect(parseInt(elem.text().replace(/\D+/g, '')))
+                    .to.be.at.least(0)
+                    .and.to.be.at.most(Cypress.config('requestTimeout') / 1000)
+                })
+            })
+          })
+        })
+
+      cy.log('=== disable / enable ')
+      cy.get('.cf-resource-card__disabled').should('not.exist')
+      cy.getByTestID('rule-card--slide-toggle')
+        .should('have.length', Rules.length)
+        .eq(2)
+        .click()
+      cy.getByTestID('notification-error').should('not.exist')
+      cy.get('.cf-resource-card__disabled').should('have.length', 1)
+      cy.getByTestID('rule-card--slide-toggle')
+        .eq(2)
+        .click()
+      cy.getByTestID('notification-error').should('not.exist')
+      cy.get('.cf-resource-card__disabled').should('not.exist')
+
+      cy.log('=== verify status')
+      cy.getByTestID('last-run-status--icon')
+        .eq(1)
+        .trigger('mouseover')
+      cy.getByTestID('popover--contents')
+        .should('be.visible')
+        .should(dialog => {
+          expect(dialog.text()).to.match(/^Last Run Status:.*success.*/)
+        })
+    })
+  })
+
+  describe('Cloning', () => {
+    const rule2Clone = {
+      ...rule,
+      name: 'Despair',
+      description:
+        'Nabokov.  Hermann Karlovich, a Russian of German descent and owner of a chocolate factory, meets a homeless man in the city of Prague, who he believes is his doppelgänger.',
+      label: 'Chocolate',
+    }
+
+    const newName = 'The Gift'
+    const newEvery = '5m'
+    const newOffset = '1m'
+    const newLevel = 'WARN'
+
+    beforeEach(() => {
+      cy.writeLPDataFromFile({
+        filename: 'data/wumpus01.lp',
+        offset: '20m',
+        stagger: '1m',
+      })
+
+      const queryText = `from(bucket: \"%BUCKET_NAME%\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"wumpus\")\n  |> filter(fn: (r) => r[\"_field\"] == \"mag\")`
+
+      cy.createAlertGroup(
+        [
+          {
+            ...check,
+            query: {
+              ...check.query,
+              text: queryText,
+            },
+          },
+        ],
+        [endp],
+        [rule2Clone]
+      ).then(() => {
+        cy.get<GenRule>('@rule0').then(rule => {
+          cy.createAndAddLabel(
+            'notificationRules',
+            rule.orgID,
+            rule.id,
+            rule2Clone.label
+          ).then(() => {
+            cy.reload() // Alerts load from upper beforeEach might not catch all these rules
+            cy.getByTestID('alerting-tab--rules').click()
+          })
+        })
+      })
+    })
+
+    it('can clone, modify and delete a notification rule', () => {
+      cy.log('clone rule')
+      cy.getByTestID(`rule-card ${rule2Clone.name}`).within(() => {
+        cy.getByTestID('context-menu-task').click()
+      })
+      cy.getByTestID('context-clone-task').click()
+
+      cy.getByTestID(`rule-card ${rule2Clone.name}`).within(() => {
+        cy.getByTestID('copy-task-id').then(elem => {
+          cy.wrap(
+            elem
+              .text()
+              .replace('Task ID: ', '')
+              .replace('Copy to Clipboard', '')
+          ).as('TargetTaskID')
+        })
+      })
+
+      cy.log('=== verify basic identifying parameters')
+      cy.getByTestID(`rule-card ${rule2Clone.name} (clone 1)`).within(() => {
+        cy.getByTestID('copy-resource-id').then(elem => {
+          cy.wrap(
+            elem
+              .text()
+              .replace('ID: ', '')
+              .replace('Copy to Clipboard', '')
+          ).as('TargetRuleID')
+        })
+
+        cy.get<string>('@TargetRuleID').then(id => {
+          cy.intercept('PUT', `/api/v2/notificationRules/${id}`).as(
+            'putClonedRule'
+          )
+        })
+        cy.getByTestID(`label--pill ${rule2Clone.label}`).should('exist')
+        cy.getByTestID('resource-list--editable-description').should(
+          'have.text',
+          rule2Clone.description
+        )
+        cy.getByTestID('rule-card--name').click()
+      })
+
+      cy.log('=== verify then change cloned values')
+      cy.getByTestID('rule-name--input').should(
+        'have.value',
+        `${rule2Clone.name} (clone 1)`
+      )
+
+      cy.getByTestID('rule-name--input')
+        .clear()
+        .type(newName)
+
+      cy.getByTestID('rule-schedule-every--input').should(
+        'have.value',
+        rule.every
+      )
+
+      cy.getByTestID('rule-schedule-every--input')
+        .clear()
+        .type(`${newEvery}{enter}`)
+
+      cy.getByTestID('rule-schedule-offset--input').should(
+        'have.value',
+        rule.offset
+      )
+      cy.getByTestID('rule-schedule-offset--input')
+        .clear()
+        .type(`${newOffset}{enter}`)
+
+      cy.getByTestID('levels--dropdown--button currentLevel')
+        .should('have.text', rule.statusRules[0].currentLevel as string)
+        .click()
+      cy.getByTestID(`levels--dropdown-item ${newLevel}`).click()
+
+      cy.getByTestID('endpoint--dropdown--button').contains(endp.name)
+
+      cy.getByTestID('rule-overlay-save--button').click()
+
+      cy.wait('@putClonedRule').then(({request: {body}}) => {
+        cy.log(
+          '=== verify internal values not displayed e.g. every, offset, level etc'
+        )
+        expect(body.every).to.equal(newEvery)
+        expect(body.offset).to.equal(newOffset)
+        expect(body.statusRules[0].currentLevel).to.equal(newLevel)
+        cy.get('@TargetTaskID').then(taskId => {
+          expect(body.taskID).to.not.equal(taskId)
+        })
+
+        cy.log('=== then verify changed display value - name')
+        cy.getByTestID(`rule-card ${newName}`)
+          .within(() => {
+            cy.getByTestID('rule-card--name').should('have.text', newName)
+
+            cy.log('=== and delete the rule')
+            cy.getByTestID('context-delete-task--button').click()
+          })
+          .then(() => {
+            cy.getByTestID('context-delete-task--confirm-button').click()
+            cy.getByTestID(`rule-card ${newName}`).should('not.exist')
+          })
       })
     })
   })

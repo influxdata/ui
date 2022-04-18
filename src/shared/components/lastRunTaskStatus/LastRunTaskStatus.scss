@@ -11,6 +11,7 @@
   background-color: rgba($cf-grey-25, 0.5);
   border-radius: 50%;
   transition: color 0.25s ease, text-shadow 0.25s ease;
+  cursor: pointer;
 
   &.last-run-task-status__danger {
     color: $c-curacao;

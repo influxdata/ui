@@ -43,7 +43,7 @@ export const HomepageContainer: FC = () => {
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
   const javaScriptNodeLink = `/orgs/${org.id}/new-user-wizard/nodejs`
-  const golangLink = `/orgs/${org.id}/load-data/client-libraries/go`
+  const golangLink = `/orgs/${org.id}/new-user-wizard/go`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
 
   const cardStyle = {minWidth: '200px'}
@@ -82,6 +82,7 @@ export const HomepageContainer: FC = () => {
                       margin={ComponentSize.Large}
                       alignItems={AlignItems.Stretch}
                       stretchToFitWidth={false}
+                      testID="language-tiles--scrollbox"
                     >
                       <ResourceCard style={cardStyle}>
                         <Link
@@ -89,7 +90,10 @@ export const HomepageContainer: FC = () => {
                           style={linkStyle}
                           onClick={logPythonEvent}
                         >
-                          <div className="homepage-wizard-language-tile">
+                          <div
+                            className="homepage-wizard-language-tile"
+                            data-testid="homepage-wizard-language-tile--python"
+                          >
                             <h5>Python</h5>
                             {PythonIcon}
                           </div>

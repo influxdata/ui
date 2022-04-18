@@ -18,7 +18,6 @@ import {
 } from '@influxdata/clockface'
 import CellContextItem from 'src/shared/components/cells/CellContextItem'
 import CellContextDangerItem from 'src/shared/components/cells/CellContextDangerItem'
-import {FeatureFlag} from 'src/shared/utils/featureFlag'
 
 // Actions
 import {deleteCellAndView, createCellWithView} from 'src/cells/actions/thunks'
@@ -106,24 +105,22 @@ const CellContext: FC<Props> = ({
             onHide={onHide}
             testID="cell-context--clone"
           />
-          <FeatureFlag name="cloneToOtherBoards">
-            <CellContextItem
-              label="Move"
-              onClick={() =>
-                onShowOverlay(
-                  'cell-copy-overlay',
-                  {
-                    view,
-                    cell,
-                  },
-                  onDismissOverlay
-                )
-              }
-              icon={IconFont.Export_New}
-              onHide={onHide}
-              testID="cell-context--copy"
-            />
-          </FeatureFlag>
+          <CellContextItem
+            label="Move"
+            onClick={() =>
+              onShowOverlay(
+                'cell-copy-overlay',
+                {
+                  view,
+                  cell,
+                },
+                onDismissOverlay
+              )
+            }
+            icon={IconFont.Export_New}
+            onHide={onHide}
+            testID="cell-context--copy"
+          />
           <CellContextDangerItem
             label="Delete"
             onClick={handleDeleteCell}
@@ -179,24 +176,22 @@ const CellContext: FC<Props> = ({
           onHide={onHide}
           testID="cell-context--pause"
         />
-        <FeatureFlag name="cloneToOtherBoards">
-          <CellContextItem
-            label="Move"
-            onClick={() =>
-              onShowOverlay(
-                'cell-copy-overlay',
-                {
-                  view,
-                  cell,
-                },
-                onDismissOverlay
-              )
-            }
-            icon={IconFont.Export_New}
-            onHide={onHide}
-            testID="cell-context--copy"
-          />
-        </FeatureFlag>
+        <CellContextItem
+          label="Move"
+          onClick={() =>
+            onShowOverlay(
+              'cell-copy-overlay',
+              {
+                view,
+                cell,
+              },
+              onDismissOverlay
+            )
+          }
+          icon={IconFont.Export_New}
+          onHide={onHide}
+          testID="cell-context--copy"
+        />
       </div>
     )
   }

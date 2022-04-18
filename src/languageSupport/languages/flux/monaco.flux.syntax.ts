@@ -12,7 +12,7 @@ async function addSyntax() {
     }),
   }))
 
-  window.monaco.languages.setLanguageConfiguration(LANGID, {
+  monaco.languages.setLanguageConfiguration(LANGID, {
     autoClosingPairs: [
       {open: '"', close: '"'},
       {open: '[', close: ']'},

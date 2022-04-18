@@ -11,6 +11,7 @@ import FluxToolbarTab from 'src/timeMachine/components/FluxToolbarTab'
 import {FluxToolbarFunction} from 'src/types'
 
 // Utils
+import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface Props {
@@ -30,7 +31,7 @@ const FluxToolbar: FC<Props> = ({onInsertFluxFunction, onInsertVariable}) => {
   let activeToolbar
 
   if (activeTab === 'functions') {
-    if (isFlagEnabled('fluxDynamicDocs')) {
+    if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
       activeToolbar = (
         <DynamicFluxFunctionsToolbar
           onInsertFluxFunction={onInsertFluxFunction}

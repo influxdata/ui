@@ -223,6 +223,13 @@ jest.mock('src/client', () => ({
       },
     })
   }),
+  getTasks: jest.fn(() => {
+    return Promise.resolve({
+      status: 200,
+      headers: {},
+      data: tasks,
+    })
+  }),
   getTask: jest.fn(() => {
     return {
       data: tasks[0],
@@ -257,6 +264,9 @@ jest.mock('src/resources/selectors', () => {
     }),
     getStatus: jest.fn(() => {
       return RemoteDataState.NotStarted
+    }),
+    getAll: jest.fn(() => {
+      return tasks
     }),
   }
 })

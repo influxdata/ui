@@ -14,6 +14,8 @@ const {
   API_BASE_PATH,
 } = require('./src/utils/env')
 
+const MONACO_DIR = path.resolve(__dirname, './node_modules/monaco-editor')
+
 module.exports = {
   context: __dirname,
   output: {
@@ -30,6 +32,10 @@ module.exports = {
       src: path.resolve(__dirname, 'src'),
       assets: path.resolve(__dirname, 'assets'),
       react: path.resolve('./node_modules/react'),
+      vscode: path.resolve(
+        __dirname,
+        'node_modules/monaco-languageclient/lib/vscode-compatibility'
+      ),
     },
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
   },
@@ -46,6 +52,17 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.m?js$/,
+        include: MONACO_DIR,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-transform-runtime'],
+          },
+        },
+      },
       {
         test: /^((?!flux-lsp-browser_bg).)*.wasm$/,
         loader: 'file-loader',
@@ -147,52 +164,10 @@ module.exports = {
       STATIC_PREFIX: BASE_PATH,
     }),
     new MonacoWebpackPlugin({
-      languages: [],
-      // features: ['!gotoSymbol'],
-      features: [
-        '!accessibilityHelp',
-        '!anchorSelect',
-        '!bracketMatching',
-        '!caretOperations',
-        '!clipboard',
-        '!codeAction',
-        '!codelens',
-        '!colorDetector',
-        '!contextmenu',
-        '!coreCommands',
-        '!dnd',
-        '!find',
-        '!folding',
-        '!fontZoom',
-        '!format',
-        '!gotoError',
-        '!gotoLine',
-        '!gotoSymbol',
-        '!hover',
-        '!iPadShowKeyboard',
-        '!inPlaceReplace',
-        '!inspectTokens',
-        '!linesOperations',
-        '!links',
-        '!multicursor',
-        '!onTypeRename',
-        '!parameterHints',
-        '!quickCommand',
-        '!quickHelp',
-        '!quickOutline',
-        '!referenceSearch',
-        '!rename',
-        '!smartSelect',
-        '!snippets',
-        '!toggleHighContrast',
-        '!toggleTabFocusMode',
-        '!transpose',
-        '!unusualLineTerminators',
-        '!viewportSemanticTokens',
-        '!wordHighlighter',
-        '!wordOperations',
-        '!wordPartOperations',
-      ],
+      languages: ['json', 'markdown'],
+      filename: '[name].worker.[contenthash].js',
+      publicPath: `${STATIC_DIRECTORY}`,
+      globalAPI: true,
     }),
   ],
   stats: {

@@ -48,6 +48,8 @@ import {
   CreateSubscriptionForm,
   WriteDataPage,
   SubscriptionDetailsPage,
+  SinglePageSubDetails,
+  GoWizard,
 } from 'src/shared/containers'
 
 // Types
@@ -231,12 +233,19 @@ const SetOrg: FC = () => {
             />
           )}
 
-          {CLOUD && isFlagEnabled('subscriptionsUI') && (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
-              component={SubscriptionDetailsPage}
-            />
-          )}
+          {CLOUD &&
+            isFlagEnabled('subscriptionsUI') &&
+            (isFlagEnabled('subscriptionsSinglePage') ? (
+              <Route
+                path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
+                component={SinglePageSubDetails}
+              />
+            ) : (
+              <Route
+                path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
+                component={SubscriptionDetailsPage}
+              />
+            ))}
 
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
@@ -312,6 +321,11 @@ const SetOrg: FC = () => {
                 exact
                 path="/orgs/:orgID/new-user-wizard/nodejs"
                 component={NodejsWizard}
+              />
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/go"
+                component={GoWizard}
               />
             </>
           )}

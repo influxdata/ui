@@ -11,11 +11,11 @@ import {TaskRunsCard} from 'src/tasks/components/TaskRunsCard'
 import {PageBreadcrumbs} from 'src/tasks/components/PageBreadcrumbs'
 
 // Types
-import {AppState, Run} from 'src/types'
+import {AppState, ResourceType, Run, Task} from 'src/types'
 import {SpinnerContainer, TechnoSpinner} from '@influxdata/clockface'
 
 // Actions
-import {getRuns, runTask} from 'src/tasks/actions/thunks'
+import {getRuns, runTask, getAllTasks} from 'src/tasks/actions/thunks'
 
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -23,6 +23,7 @@ import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 // Types
 import {SortTypes} from 'src/shared/utils/sort'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
+import {getAll} from 'src/resources/selectors'
 
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & RouteComponentProps<{id: string; orgID: string}>
@@ -46,7 +47,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
   }
 
   public render() {
-    const {match, runs, currentTask} = this.props
+    const {match, runs, currentTask, isTaskEditable} = this.props
     const {sortKey, sortDirection, sortType} = this.state
 
     return (
@@ -70,7 +71,7 @@ class TaskRunsPage extends PureComponent<Props, State> {
             <RateLimitAlert location="task runs" />
           </Page.Header>
           <Page.ControlBar fullWidth={false}>
-            <TaskRunsCard task={currentTask} />
+            <TaskRunsCard task={currentTask} isTaskEditable={isTaskEditable} />
           </Page.ControlBar>
           <Page.ControlBar fullWidth={false}>
             <Page.ControlBarRight>
@@ -96,6 +97,13 @@ class TaskRunsPage extends PureComponent<Props, State> {
     this.props.getRuns(this.props.match.params.id)
   }
 
+  public componentDidUpdate(prevProps: Readonly<Props>): void {
+    if (!prevProps.currentTask && !!this.props.currentTask) {
+      // once we have the currentTask, ask the /tasks API if this task is editable
+      this.props.getAllTasks(this.props.currentTask.name)
+    }
+  }
+
   private handleClickColumn = (nextSort: Sort, sortKey: SortKey) => {
     let sortType = SortTypes.String
 
@@ -117,17 +125,26 @@ class TaskRunsPage extends PureComponent<Props, State> {
 }
 
 const mstp = (state: AppState) => {
+  const tasksFilteredByName = getAll<Task>(state, ResourceType.Tasks)
   const {currentTask, runs, runStatus} = state.resources.tasks
+
+  // this task is only editable if the /tasks API returns it.
+  // tasks created by an Alert are uneditable and are not returned from /tasks API.
+  const isTaskEditable = currentTask
+    ? !!tasksFilteredByName.find(t => t.id === currentTask.id)
+    : false
 
   return {
     runs,
     runStatus,
     currentTask,
+    isTaskEditable,
   }
 }
 
 const mdtp = {
   getRuns,
+  getAllTasks,
   onRunTask: runTask,
 }
 

@@ -18,9 +18,9 @@ export const InitalizeClient = () => {
   const url =
     me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
 
-  const pythonCode = `import os
+  const pythonCode = `import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
-from influxdb_client.client import SYNCHRONOUS
+from influxdb_client.client.write_api import SYNCHRONOUS
 
 token = os.environ.get("INFLUXDB_TOKEN")
 org = "${org.name}"
@@ -30,7 +30,7 @@ client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)`
 
   return (
     <>
-      <h1>Initalize Client</h1>
+      <h1>Initialize Client</h1>
       <p>
         Run this command in your terminal to open the interactive Python shell:
       </p>

@@ -332,6 +332,7 @@ describe('Legends', () => {
             // Without submitting the query, save it to a dashboard
             cy.getByTestID('save-query-as').click()
             cy.getByTestID('overlay--container').should('exist')
+            cy.getByTestID('cell--radio-button').click()
             cy.getByTestID('save-as-dashboard-cell--dropdown').click()
             cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
             cy.getByTestID('save-as-dashboard-cell--dashboard-name')
@@ -392,6 +393,7 @@ describe('Legends', () => {
             // Save it to a dashboard
             cy.getByTestID('save-query-as').click()
             cy.getByTestID('overlay--container').should('exist')
+            cy.getByTestID('cell--radio-button').click()
             cy.getByTestID('save-as-dashboard-cell--dropdown').click()
             cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()
             cy.getByTestID('save-as-dashboard-cell--dashboard-name')

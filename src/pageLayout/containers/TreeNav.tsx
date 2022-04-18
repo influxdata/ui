@@ -2,6 +2,8 @@
 import React, {FC, useContext, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
 import {Icon, IconFont, TreeNav} from '@influxdata/clockface'
@@ -22,12 +24,22 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
+import {AppState} from 'src/types'
 
-const TreeSidebar: FC = () => {
-  const org = useSelector(getOrg)
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
+type ReduxProps = ConnectedProps<typeof connector>
+
+const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
+  showOverlay,
+  dismissOverlay,
+  quartzMe,
+}) => {
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )
+  const org = useSelector(getOrg)
+
   useEffect(() => {
     if (isFlagEnabled('helpBar')) {
       const helpBarMenu = document.querySelectorAll<HTMLElement>(
@@ -51,6 +63,17 @@ const TreeSidebar: FC = () => {
       setNavbarMode('collapsed')
     } else {
       setNavbarMode('expanded')
+    }
+  }
+
+  const handleSelect = (): void => {
+    const accountType = quartzMe?.accountType ?? 'free'
+    const isPayGCustomer = accountType !== 'free'
+
+    if (isPayGCustomer) {
+      showOverlay('payg-support', null, dismissOverlay)
+    } else {
+      showOverlay('free-account-support', null, dismissOverlay)
     }
   }
 
@@ -151,7 +174,7 @@ const TreeSidebar: FC = () => {
                 id="contactSupport"
                 label="Contact Support"
                 testID="nav-subitem-contact-support"
-                linkElement={className => <Link className={className} to="" />}
+                onClick={handleSelect}
               />
               <TreeNav.SubHeading label="Community" />
               <TreeNav.SubItem
@@ -185,4 +208,15 @@ const TreeSidebar: FC = () => {
   )
 }
 
-export default TreeSidebar
+const mstp = (state: AppState) => {
+  return {quartzMe: state.me.quartzMe}
+}
+
+const mdtp = {
+  showOverlay,
+  dismissOverlay,
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(withRouter(TreeSidebar))

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useRef, useState} from 'react'
+import React, {FC, useRef, useState, MouseEventHandler} from 'react'
 import classnames from 'classnames'
 
 // Components
@@ -18,9 +18,14 @@ import './LastRunTaskStatus.scss'
 interface PassedProps {
   lastRunError?: string
   lastRunStatus: string
+  statusButtonClickHandler: MouseEventHandler
 }
 
-const LastRunTaskStatus: FC<PassedProps> = ({lastRunError, lastRunStatus}) => {
+const LastRunTaskStatus: FC<PassedProps> = ({
+  lastRunError,
+  lastRunStatus,
+  statusButtonClickHandler,
+}) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const [highlight, setHighlight] = useState<boolean>(false)
 
@@ -58,6 +63,7 @@ const LastRunTaskStatus: FC<PassedProps> = ({lastRunError, lastRunStatus}) => {
         data-testid="last-run-status--icon"
         className={statusClassName}
         ref={triggerRef}
+        onClick={statusButtonClickHandler}
       >
         <Icon glyph={icon} />
       </div>

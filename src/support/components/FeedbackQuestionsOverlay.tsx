@@ -7,7 +7,6 @@ import {
   ComponentColor,
   ComponentStatus,
   Form,
-  Method,
   Overlay,
   TextArea,
 } from '@influxdata/clockface'
@@ -33,6 +32,7 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value)
   }
+
   const handleValidation = (value: string): string | null => {
     if (value.trim() === '') {
       return 'This field cannot be empty'
@@ -58,14 +58,9 @@ const FeedbackQuestionsOverlay: FC<OwnProps> = () => {
         title="Feedback & Questions"
         onDismiss={onClose}
       />
-
       <ErrorBoundary>
         <Overlay.Body>
-          <Form
-            onSubmit={handleSubmit}
-            action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
-            method={Method.Post}
-          >
+          <Form onSubmit={handleSubmit}>
             <Form.ValidationElement
               label="Description"
               required={true}

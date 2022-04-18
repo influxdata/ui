@@ -10,6 +10,18 @@ jest.mock(
   {virtual: true}
 )
 
+jest.mock(
+  'src/client/mapsdRoutes',
+  () => {
+    return {
+      getMapToken: () => ({
+        token: 'token',
+      }),
+    }
+  },
+  {virtual: true}
+)
+
 import React from 'react'
 import {render} from '@testing-library/react'
 import GeoPlot from './view'

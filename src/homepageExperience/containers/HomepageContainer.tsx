@@ -6,7 +6,6 @@ import {
   AlignItems,
   Columns,
   ComponentSize,
-  DapperScrollbars,
   FlexBox,
   FlexDirection,
   Grid,
@@ -47,7 +46,7 @@ export const HomepageContainer: FC = () => {
   const golangLink = `/orgs/${org.id}/new-user-wizard/go`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
 
-  const cardStyle = {}
+  const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
   const moreStyle = {height: '100%', ...linkStyle}
 

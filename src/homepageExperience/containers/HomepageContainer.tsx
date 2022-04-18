@@ -82,6 +82,7 @@ export const HomepageContainer: FC = () => {
                       margin={ComponentSize.Large}
                       alignItems={AlignItems.Stretch}
                       stretchToFitWidth={false}
+                      testID="language-tiles--scrollbox"
                     >
                       <ResourceCard style={cardStyle}>
                         <Link
@@ -89,7 +90,10 @@ export const HomepageContainer: FC = () => {
                           style={linkStyle}
                           onClick={logPythonEvent}
                         >
-                          <div className="homepage-wizard-language-tile">
+                          <div
+                            className="homepage-wizard-language-tile"
+                            data-testid="homepage-wizard-language-tile--python"
+                          >
                             <h5>Python</h5>
                             {PythonIcon}
                           </div>

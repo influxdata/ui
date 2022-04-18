@@ -32,7 +32,7 @@ func main() {
 
   return (
     <>
-      <h1>Initalize Client</h1>
+      <h1>Initialize Client</h1>
 
       <p style={{marginTop: '40px'}}>
         Paste following code in your <code>main.go</code> file:

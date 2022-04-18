@@ -128,16 +128,22 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
                 indicator={DropdownItemType.None}
               />
             </Form.Element>
-            <Form.ValidationElement label="Description" required={true} value={input} validationFunc={handleValidation}>
-              {status => 
-              <TextArea
-                status={status}
-                rows={10}
-                testID="support-description--textarea"
-                name="description"
-                value={input}
-                onChange={handleInputChange}
-              />}
+            <Form.ValidationElement
+              label="Description"
+              required={true}
+              value={input}
+              validationFunc={handleValidation}
+            >
+              {status => (
+                <TextArea
+                  status={status}
+                  rows={10}
+                  testID="support-description--textarea"
+                  name="description"
+                  value={input}
+                  onChange={handleInputChange}
+                />
+              )}
             </Form.ValidationElement>
             <Overlay.Footer>
               <Button

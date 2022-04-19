@@ -6,7 +6,6 @@ import {
   AlignItems,
   Columns,
   ComponentSize,
-  DapperScrollbars,
   FlexBox,
   FlexDirection,
   Grid,
@@ -17,6 +16,7 @@ import {
   InfluxColors,
   Page,
   ResourceCard,
+  SquareGrid,
 } from '@influxdata/clockface'
 
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -50,6 +50,8 @@ export const HomepageContainer: FC = () => {
   const linkStyle = {color: InfluxColors.Grey75}
   const moreStyle = {height: '100%', ...linkStyle}
 
+  const squareGridCardSize = '200px'
+
   // events handling
   const logPythonEvent = () => {
     event('firstMile.pythonWizard.clicked')
@@ -77,57 +79,53 @@ export const HomepageContainer: FC = () => {
                     Write and query data using the programming language of your
                     choice
                   </h5>
-                  <DapperScrollbars autoSizeHeight={true} autoHide={true}>
-                    <FlexBox
-                      margin={ComponentSize.Large}
-                      alignItems={AlignItems.Stretch}
-                      stretchToFitWidth={false}
-                      testID="language-tiles--scrollbox"
-                    >
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={pythonWizardLink}
-                          style={linkStyle}
-                          onClick={logPythonEvent}
+                  <SquareGrid
+                    cardSize={squareGridCardSize}
+                    gutter={ComponentSize.Large}
+                  >
+                    <ResourceCard style={cardStyle}>
+                      <Link
+                        to={pythonWizardLink}
+                        style={linkStyle}
+                        onClick={logPythonEvent}
+                      >
+                        <div
+                          className="homepage-wizard-language-tile"
+                          data-testid="homepage-wizard-language-tile--python"
                         >
-                          <div
-                            className="homepage-wizard-language-tile"
-                            data-testid="homepage-wizard-language-tile--python"
-                          >
-                            <h5>Python</h5>
-                            {PythonIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                      <ResourceCard style={cardStyle}>
-                        <Link to={javaScriptNodeLink} style={linkStyle}>
-                          <div className="homepage-wizard-language-tile">
-                            <h5>JavaScript/Node.js</h5>
-                            {NodejsIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                      <ResourceCard style={cardStyle}>
-                        <Link to={golangLink} style={linkStyle}>
-                          <div className="homepage-wizard-language-tile">
-                            <h5>Go</h5>
-                            {GoIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                      <ResourceCard style={cardStyle}>
-                        <Link to={loadDataSourcesLink} style={moreStyle}>
-                          <div className="homepage-wizard-language-tile">
-                            <span>
-                              <h5>
-                                MORE <Icon glyph={IconFont.ArrowRight_New} />
-                              </h5>
-                            </span>
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                    </FlexBox>
-                  </DapperScrollbars>
+                          <h5>Python</h5>
+                          {PythonIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                    <ResourceCard style={cardStyle}>
+                      <Link to={javaScriptNodeLink} style={linkStyle}>
+                        <div className="homepage-wizard-language-tile">
+                          <h5>JavaScript/Node.js</h5>
+                          {NodejsIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                    <ResourceCard style={cardStyle}>
+                      <Link to={golangLink} style={linkStyle}>
+                        <div className="homepage-wizard-language-tile">
+                          <h5>Go</h5>
+                          {GoIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                    <ResourceCard style={cardStyle}>
+                      <Link to={loadDataSourcesLink} style={moreStyle}>
+                        <div className="homepage-wizard-language-tile">
+                          <span>
+                            <h5>
+                              MORE <Icon glyph={IconFont.ArrowRight_New} />
+                            </h5>
+                          </span>
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                  </SquareGrid>
                   <hr style={{marginTop: '32px'}} />
                   <Link to={cliPageLink} style={linkStyle}>
                     <div className="homepage-write-data-tile">

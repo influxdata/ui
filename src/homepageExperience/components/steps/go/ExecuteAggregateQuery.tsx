@@ -24,7 +24,7 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> mean()`
 
   const query = `
-query := \`from(bucket: "${bucket}")
+query = \`from(bucket: "${bucket}")
               |> range(start: -10m)
               |> filter(fn: (r) => r._measurement == "measurement1")
               |> mean()\`

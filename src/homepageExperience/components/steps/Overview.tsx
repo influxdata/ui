@@ -18,7 +18,7 @@ export class Overview extends PureComponent {
             width="560"
             height="315"
             src="https://www.youtube.com/embed/KZwr1xBDbBQ"
-            title="YouTube video player"
+            title="InfluxData - What is Time Series"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

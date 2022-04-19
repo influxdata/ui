@@ -5,6 +5,7 @@ import {
   setTimeZone as setTimeZoneAction,
   setTheme as setThemeAction,
   setNavBarState as setNavbarModeAction,
+  setNewDataExplorer as setNewDataExplorerAction,
   enablePresentationMode,
   disablePresentationMode,
   setFlowsCTA as setFlowsCTAAction,
@@ -13,6 +14,7 @@ import {
   timeZone as timeZoneFromState,
   theme as themeFromState,
   getPresentationMode as presentationModeFromState,
+  newDataExplorer as newDataExplorerFromState,
   navbarMode as navbarModeFromState,
   getFlowsCTA,
 } from 'src/shared/selectors/app'
@@ -26,12 +28,14 @@ interface AppSettingContextType {
   timeZone: TimeZone
   theme: Theme
   presentationMode: boolean
+  newDataExplorer: boolean
   navbarMode: NavBarState
   flowsCTA: FlowsCTA
 
   setTimeZone: (zone: TimeZone) => void
   setTheme: (theme: Theme) => void
   setPresentationMode: (active: boolean) => void
+  setNewDataExplorer: (active: boolean) => void
   setNavbarMode: (mode: NavBarState) => void
   setFlowsCTA: (flowsCTA: FlowsCTA) => void
 }
@@ -40,12 +44,14 @@ const DEFAULT_CONTEXT: AppSettingContextType = {
   timeZone: 'Local' as TimeZone,
   theme: 'dark' as Theme,
   presentationMode: false,
+  newDataExplorer: false,
   navbarMode: 'collapsed' as NavBarState,
   flowsCTA: {alerts: true, explorer: true, tasks: true} as FlowsCTA,
 
   setTimeZone: (_zone: TimeZone) => {},
   setTheme: (_theme: Theme) => {},
   setPresentationMode: (_active: boolean) => {},
+  setNewDataExplorer: (_active: boolean) => {},
   setNavbarMode: (_mode: NavBarState) => {},
   setFlowsCTA: (_flowsCTA: FlowsCTA) => {},
 }
@@ -55,15 +61,21 @@ export const AppSettingContext = React.createContext<AppSettingContextType>(
 )
 
 export const AppSettingProvider: FC = ({children}) => {
-  const {timeZone, theme, presentationMode, navbarMode, flowsCTA} = useSelector(
-    (state: AppState) => ({
-      timeZone: timeZoneFromState(state),
-      theme: themeFromState(state),
-      presentationMode: presentationModeFromState(state),
-      navbarMode: navbarModeFromState(state),
-      flowsCTA: getFlowsCTA(state),
-    })
-  )
+  const {
+    timeZone,
+    theme,
+    presentationMode,
+    newDataExplorer,
+    navbarMode,
+    flowsCTA,
+  } = useSelector((state: AppState) => ({
+    timeZone: timeZoneFromState(state),
+    theme: themeFromState(state),
+    presentationMode: presentationModeFromState(state),
+    newDataExplorer: newDataExplorerFromState(state),
+    navbarMode: navbarModeFromState(state),
+    flowsCTA: getFlowsCTA(state),
+  }))
   const dispatch = useDispatch()
 
   const setTimeZone = useCallback(
@@ -91,6 +103,12 @@ export const AppSettingProvider: FC = ({children}) => {
     },
     [dispatch]
   )
+  const setNewDataExplorer = useCallback(
+    (_active: boolean) => {
+      dispatch(setNewDataExplorerAction(_active))
+    },
+    [dispatch]
+  )
   const setNavbarMode = useCallback(
     (_mode: NavBarState) => {
       dispatch(setNavbarModeAction(_mode))
@@ -110,12 +128,14 @@ export const AppSettingProvider: FC = ({children}) => {
         timeZone,
         theme,
         presentationMode,
+        newDataExplorer,
         navbarMode,
         flowsCTA,
 
         setTimeZone,
         setTheme,
         setPresentationMode,
+        setNewDataExplorer,
         setNavbarMode,
         setFlowsCTA,
       }}

@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import {SafeBlankLink} from '../../../utils/SafeBlankLink'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 export class Overview extends PureComponent {
   render() {

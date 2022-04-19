@@ -273,12 +273,12 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> keep(columns: ["_value"])
     |> distinct()${searchString}${previousTagString}
     |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-    |> sort()
-    |> limit(n: ${limit})`
+    |> limit(n: ${limit})
+    |> sort()`
 
     if (
       data.buckets[0].type !== 'sample' &&
-      isFlagEnabled('MeasurementFieldsNoTime')
+      isFlagEnabled('QueryBuilderUseMetadataCaching')
     ) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
@@ -288,9 +288,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
     predicate: (r) => ${tagString},
     start: ${CACHING_REQUIRED_START_DATE},
     stop: ${CACHING_REQUIRED_END_DATE},
-  )
-    |> distinct()${searchString}${previousTagString}
+  )${searchString}${previousTagString}
     |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+    |> limit(n: ${limit})
     |> sort()`
     }
 
@@ -387,7 +387,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
     if (
       data.buckets[0].type !== 'sample' &&
-      isFlagEnabled('MeasurementFieldsNoTime')
+      isFlagEnabled('QueryBuilderUseMetadataCaching')
     ) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
@@ -399,9 +399,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     start: ${CACHING_REQUIRED_START_DATE},
     stop: ${CACHING_REQUIRED_END_DATE},
   )${searchString}
-  |> group()
-  |> sort()
-    |> limit(n: ${limit})`
+  |> limit(n: ${limit})
+  |> sort()`
     }
 
     query(queryText, scope)

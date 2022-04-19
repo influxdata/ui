@@ -1,11 +1,5 @@
 // Libraries
-import React, {
-  FC,
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-} from 'react'
+import React, {FC, createContext, useContext, useState, useMemo} from 'react'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
@@ -21,6 +15,10 @@ import {
   BuilderTagsType,
   BuilderAggregateFunctionType,
 } from 'src/types'
+import {
+  CACHING_REQUIRED_END_DATE,
+  CACHING_REQUIRED_START_DATE,
+} from 'src/utils/datetime/constants'
 
 const DEFAULT_TAG_LIMIT = 200
 const EXTENDED_TAG_LIMIT = 500
@@ -268,20 +266,35 @@ export const QueryBuilderProvider: FC = ({children}) => {
       ? EXTENDED_TAG_LIMIT
       : DEFAULT_TAG_LIMIT
 
-    // TODO: Use the `v1.tagKeys` function from the Flux standard library once
-    // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-    query(
-      `${_source}
-              |> range(${formatTimeRangeArguments(range)})
-              |> filter(fn: (r) => ${tagString})
-              |> keys()
-              |> keep(columns: ["_value"])
-              |> distinct()${searchString}${previousTagString}
-              |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-              |> sort()
-              |> limit(n: ${limit})`,
-      scope
-    )
+    let queryText = `${_source}
+    |> range(${formatTimeRangeArguments(range)})
+    |> filter(fn: (r) => ${tagString})
+    |> keys()
+    |> keep(columns: ["_value"])
+    |> distinct()${searchString}${previousTagString}
+    |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+    |> sort()
+    |> limit(n: ${limit})`
+
+    if (
+      data.buckets[0].type !== 'sample' &&
+      isFlagEnabled('MeasurementFieldsNoTime')
+    ) {
+      _source = `import "regexp"
+      import "influxdata/influxdb/schema"`
+      queryText = `${_source}
+  schema.tagKeys(
+    bucket: "${data.buckets[0].name}",
+    predicate: (r) => ${tagString},
+    start: ${CACHING_REQUIRED_START_DATE},
+    stop: ${CACHING_REQUIRED_END_DATE},
+  )
+    |> distinct()${searchString}${previousTagString}
+    |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+    |> sort()`
+    }
+
+    query(queryText, scope)
       .then(resp => {
         return (Object.values(resp.parsed.table.columns).filter(
           c => c.name === '_value' && c.type === 'string'
@@ -363,21 +376,35 @@ export const QueryBuilderProvider: FC = ({children}) => {
       ? EXTENDED_TAG_LIMIT
       : DEFAULT_TAG_LIMIT
 
-    // TODO: Use the `v1.tagValues` function from the Flux standard library once
-    // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-    query(
-      `${_source}
-              |> range(${formatTimeRangeArguments(range)})
-              |> filter(fn: (r) => ${tagString})
-              |> keep(columns: ["${cards[idx].keys.selected[0]}"])
-              |> group()
-              |> distinct(column: "${
-                cards[idx].keys.selected[0]
-              }")${searchString}
-              |> limit(n: ${limit})
-              |> sort()`,
-      scope
-    )
+    let queryText = `${_source}
+    |> range(${formatTimeRangeArguments(range)})
+    |> filter(fn: (r) => ${tagString})
+    |> keep(columns: ["${cards[idx].keys.selected[0]}"])
+    |> group()
+    |> distinct(column: "${cards[idx].keys.selected[0]}")${searchString}
+    |> limit(n: ${limit})
+    |> sort()`
+
+    if (
+      data.buckets[0].type !== 'sample' &&
+      isFlagEnabled('MeasurementFieldsNoTime')
+    ) {
+      _source = `import "regexp"
+      import "influxdata/influxdb/schema"`
+      queryText = `${_source}
+  schema.tagValues(
+    bucket: "${data.buckets[0].name}",
+    tag: "${cards[idx].keys.selected[0]}",
+    predicate: (r) => ${tagString},
+    start: ${CACHING_REQUIRED_START_DATE},
+    stop: ${CACHING_REQUIRED_END_DATE},
+  )${searchString}
+  |> group()
+  |> sort()
+    |> limit(n: ${limit})`
+    }
+
+    query(queryText, scope)
       .then(resp => {
         return (Object.values(resp.parsed.table.columns).filter(
           c => c.name === '_value' && c.type === 'string'

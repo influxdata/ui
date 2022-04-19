@@ -130,6 +130,7 @@ const SubscriptionDetailsPage: FC = () => {
                 navigationSteps={navigationSteps}
                 settingUpIcon={FormLogo}
                 settingUpText="MQTT Connector"
+                settingUpHeader={currentSubscription.name}
               />
             </div>
             {active === Steps.BrokerForm && (

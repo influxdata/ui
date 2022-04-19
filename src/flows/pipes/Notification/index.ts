@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import ReadOnly from './readOnly'
 
@@ -10,6 +11,8 @@ export default register => {
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--notification',
     button: 'Alert',
+    description: 'Get notified on your data',
+    icon: IconFont.Bell,
     initial: {
       interval: '10m',
       offset: '0s',

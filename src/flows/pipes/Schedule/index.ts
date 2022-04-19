@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import ReadOnly from './readOnly'
 import {PipeData} from 'src/types'
@@ -23,6 +24,8 @@ export default register => {
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--schedule',
     button: 'Task',
+    description: 'Automate actions',
+    icon: IconFont.CalendarSmall,
     beforeRemove: (data: PipeData) => removeFlowTasks(data?.task),
   })
 }

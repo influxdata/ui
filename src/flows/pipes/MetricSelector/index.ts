@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import ReadOnly from './readOnly'
 import './style.scss'
@@ -11,6 +12,8 @@ export default register => {
     component: View,
     readOnlyComponent: ReadOnly,
     button: 'Metric Selector',
+    description: 'Navigate your fields and tags',
+    icon: IconFont.Plus_New,
     featureFlag: 'flow-panel--metric-selector',
     initial: {
       field: '',

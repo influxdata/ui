@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import ReadOnly from './readOnly'
 import './style.scss'
@@ -10,6 +11,8 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--query-builder',
     button: 'Query Builder',
+    description: 'Point and click to a query',
+    icon: IconFont.Organization,
     initial: {
       buckets: [],
       tags: [

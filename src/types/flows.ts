@@ -1,4 +1,5 @@
 import {FromFluxResult, FluxDataType, Table} from '@influxdata/giraffe'
+import {IconFont} from '@influxdata/clockface'
 import {FunctionComponent, ComponentClass, ReactNode} from 'react'
 import {AutoRefresh, TimeRange, Variable, Secret} from 'src/types'
 
@@ -160,11 +161,17 @@ export interface TypeRegistration {
     | 'output'
     | 'sideEffects' // dictates grouping of related pipes
   priority?: number // 0 is lowest priority, equal priorities revert to string comparison
+
   disabled?: boolean // if you should show it or not
   featureFlag?: string // designates a flag that should enable the panel type
+
   component: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface
   readOnlyComponent?: FunctionComponent<PipeProp> | ComponentClass<PipeProp> // the view component for rendering the interface in read only mode
+
   button: string // a human readable string for appending the type
+  description: string
+  icon: IconFont
+
   initial: any // the default state for an add
   scope?: (data: PipeData, prev: QueryScope) => QueryScope // if defined, the function is expected to take a query context and return a new one
   visual?: (data: PipeData, query: string, scope?: QueryScope) => string // generates the flux used for the pipe visualization (depreciate?)

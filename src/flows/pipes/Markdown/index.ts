@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import MarkdownPanel from './view'
 import ReadOnly from './readOnly'
 import './style.scss'
@@ -11,6 +12,8 @@ export default register => {
     component: MarkdownPanel,
     readOnlyComponent: ReadOnly,
     button: 'Note',
+    description: 'Add details and information',
+    icon: IconFont.Text_New,
     initial: () => ({
       text: '',
       mode: 'edit',

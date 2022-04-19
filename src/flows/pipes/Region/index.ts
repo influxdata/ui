@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import ReadOnly from './readOnly'
 
@@ -8,7 +9,8 @@ export default register => {
     component: View,
     featureFlag: 'flow-panel--remote',
     button: 'Remote Database',
-    description: 'Queries a remote region using a token',
+    description: 'Query against another server using a token',
+    icon: IconFont.Plus_New,
     initial: {
       type: 'static',
       region: '',

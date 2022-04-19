@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import ReadOnly from './readOnly'
 
@@ -15,7 +16,10 @@ export default register => {
     type: 'columnEditor',
     family: 'transform',
     component: View,
+    featureFlag: 'flow-panel--columns',
     button: 'Column Editor',
+    description: 'Toggle and rename columns',
+    icon: IconFont.Plus_New,
     initial: {
       mappings: {} as Hash<Mapping>,
     },

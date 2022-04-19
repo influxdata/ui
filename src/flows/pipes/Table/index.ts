@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import {parse} from '@influxdata/flux-lsp-browser'
 import {parseQuery} from 'src/shared/contexts/query'
@@ -12,6 +13,8 @@ export default register => {
     priority: 3,
     component: View,
     button: 'Table',
+    description: 'Display results in a table',
+    icon: IconFont.Table,
     initial: {
       properties: SUPPORTED_VISUALIZATIONS['simple-table'].initial,
     },

@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 import {find} from 'src/shared/contexts/query'
 import View from './view'
@@ -13,6 +14,8 @@ export default register => {
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--raw-flux',
     button: 'Flux Script',
+    description: 'Write a query',
+    icon: IconFont.Terminal,
     initial: {
       activeQuery: 0,
       queries: [

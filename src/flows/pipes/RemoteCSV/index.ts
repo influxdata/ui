@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import './styles.scss'
 export default register => {
@@ -6,8 +7,10 @@ export default register => {
     family: 'inputs',
     priority: 1,
     component: View,
-    featureFlag: 'flowPanelRemoteCsv',
+    featureFlag: 'flow-panel--remotecsv',
     button: 'Remote CSV',
+    description: 'Use a CSV to build your query',
+    icon: IconFont.Plus_New,
     initial: {
       csvType: '',
       url: '',

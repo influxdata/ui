@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import './style.scss'
 import {parse} from '@influxdata/flux-lsp-browser'
@@ -12,6 +13,8 @@ export default register => {
     family: 'passThrough',
     component: View,
     button: 'Graph',
+    description: 'Display results in a graph',
+    icon: IconFont.BarChart_New,
     initial: {
       properties: SUPPORTED_VISUALIZATIONS['xy'].initial,
     },

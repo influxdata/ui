@@ -1,3 +1,4 @@
+import {IconFont} from '@influxdata/clockface'
 import View from './view'
 import ReadOnly from './readOnly'
 import './style.scss'
@@ -12,6 +13,8 @@ export default register => {
     readOnlyComponent: ReadOnly,
     featureFlag: 'flow-panel--downsample',
     button: 'Downsample',
+    description: 'Bucket your data on a time window',
+    icon: IconFont.Plus_New,
     initial: {
       functions: [{name: 'mean'}],
       aggregateWindow: {

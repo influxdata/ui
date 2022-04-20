@@ -293,7 +293,7 @@ const BrokerFormContent: FC<Props> = ({
               }}
               value="user"
               titleText="User"
-              disabled={edit ? false : true}
+              disabled={!edit}
             >
               User
             </SelectGroup.Option>

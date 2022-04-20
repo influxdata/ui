@@ -236,7 +236,6 @@ describe('Subscriptions', () => {
     // json
     cy.getByTestID('create-parsing-form-json--button').click()
     cy.getByTestID('timestamp-json-parsing').type('$.t')
-    cy.getByTestID('measurement-json-parsing-name').type('m')
     cy.getByTestID('measurement-json-parsing-type')
       .contains('String')
       .click()
@@ -720,7 +719,6 @@ describe('Subscriptions', () => {
     // json
     cy.getByTestID('create-parsing-form-json--button').click()
     cy.getByTestID('timestamp-json-parsing').type('$.t')
-    cy.getByTestID('measurement-json-parsing-name').type('m')
     cy.getByTestID('measurement-json-parsing-type')
       .contains('String')
       .click()

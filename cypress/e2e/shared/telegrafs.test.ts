@@ -189,14 +189,18 @@ describe('Collectors', () => {
         cy.getByTestID(`label--pill ${secondLabel}`).should('be.visible')
 
         // clone the telegraf
+        const d = Date.UTC(2018, 10, 30)
+        cy.clock(d, ['Date'])
+        const cloneName = 'New Config (cloned at 11-30-2018:00:00:00)'
         cy.getByTestID('context-menu-telegraf').click()
         cy.getByTestID('context-clone-telegraf').click()
         cy.getByTestID(`label--pill ${firstLabel}`).should('have.length', 2)
         cy.getByTestID(`label--pill ${secondLabel}`).should('have.length', 2)
         cy.getByTestID('resource-card').should('have.length', 2)
         cy.getByTestID('collector-card--name').then(el => {
-          expect(el[1].innerText).to.equal('New Config (clone 1)')
+          expect(el[1].innerText).to.equal(cloneName)
         })
+        cy.clock().invoke('restore')
       })
     })
 

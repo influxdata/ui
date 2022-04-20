@@ -133,6 +133,8 @@ const SinglePageSubDetails: FC = () => {
                 navigationSteps={navigationSteps}
                 settingUpIcon={FormLogo}
                 settingUpText="MQTT Connector"
+                settingUpHeader={currentSubscription.name}
+                showCheckmark={false}
               />
             </div>
             <SinglePageBrokerDetails

@@ -1030,6 +1030,9 @@ describe('NotificationRules', () => {
 
     it('can clone, modify and delete a notification rule', () => {
       cy.log('clone rule')
+      const d = Date.UTC(2018, 10, 30)
+      cy.clock(d, ['Date'])
+      const cloneName = `${rule2Clone.name} (cloned at 11-30-2018:00:00:00)`
       cy.getByTestID(`rule-card ${rule2Clone.name}`).within(() => {
         cy.getByTestID('context-menu-task').click()
       })
@@ -1045,9 +1048,10 @@ describe('NotificationRules', () => {
           ).as('TargetTaskID')
         })
       })
+      cy.clock().invoke('restore')
 
       cy.log('=== verify basic identifying parameters')
-      cy.getByTestID(`rule-card ${rule2Clone.name} (clone 1)`).within(() => {
+      cy.getByTestID(`rule-card ${cloneName}`).within(() => {
         cy.getByTestID('copy-resource-id').then(elem => {
           cy.wrap(
             elem
@@ -1071,10 +1075,7 @@ describe('NotificationRules', () => {
       })
 
       cy.log('=== verify then change cloned values')
-      cy.getByTestID('rule-name--input').should(
-        'have.value',
-        `${rule2Clone.name} (clone 1)`
-      )
+      cy.getByTestID('rule-name--input').should('have.value', cloneName)
 
       cy.getByTestID('rule-name--input')
         .clear()

@@ -15,6 +15,7 @@ export interface AppState {
     showTemplateControlBar: boolean
     timeZone: TimeZone
     navBarState: NavBarState
+    newDataExplorer: boolean
     theme: Theme
     versionInfo: VersionInfo
     flowsCTA: FlowsCTA
@@ -32,6 +33,7 @@ const initialState: AppState = {
     showTemplateControlBar: false,
     timeZone: 'Local',
     navBarState: 'collapsed',
+    newDataExplorer: false,
     versionInfo: {version: '', commit: ''},
     flowsCTA: {explorer: true, tasks: true, alerts: true},
   },
@@ -109,7 +111,11 @@ const appPersistedReducer = (
       return {...state, timeZone}
     }
 
-    case 'SET_NAV_BAR_STATE': {
+    case ActionTypes.SetNewDataExplorer: {
+      return {...state, newDataExplorer: action.active}
+    }
+
+    case ActionTypes.SetNavBarState: {
       const navBarState = action.navBarState
       return {
         ...state,

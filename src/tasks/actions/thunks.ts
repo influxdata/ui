@@ -54,8 +54,8 @@ import {insertPreambleInScript} from 'src/shared/utils/insertPreambleInScript'
 import {isLimitError} from 'src/cloud/utils/limits'
 import {checkTaskLimits} from 'src/cloud/actions/limits'
 import {getOrg} from 'src/organizations/selectors'
-import {getAll, getStatus} from 'src/resources/selectors'
-import {incrementCloneName} from 'src/utils/naming'
+import {getStatus} from 'src/resources/selectors'
+import {setCloneName} from 'src/utils/naming'
 import {event} from 'src/cloud/utils/reporting'
 
 // Types
@@ -362,14 +362,10 @@ const refreshTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
   }
 }
 
-export const cloneTask = (task: Task) => async (
-  dispatch: Dispatch<Action>,
-  getState: GetState
-) => {
+export const cloneTask = (task: Task) => async (dispatch: Dispatch<Action>) => {
   let newTask: Task
 
   try {
-    const state = getState()
     const resp = await api.getTask({taskID: task.id})
 
     if (resp.status !== 200) {
@@ -377,9 +373,7 @@ export const cloneTask = (task: Task) => async (
     }
 
     const taskName = resp.data.name
-    const tasks = getAll<Task>(state, ResourceType.Tasks)
-    const allTaskNames = tasks.map(d => d.name)
-    const clonedName = incrementCloneName(allTaskNames, taskName)
+    const clonedName = setCloneName(taskName)
     const {flux} = resp.data
 
     const ast = parse(flux)

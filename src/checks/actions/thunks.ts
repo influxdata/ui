@@ -13,12 +13,12 @@ import * as api from 'src/client'
 import {checkSchema, arrayOfChecks} from 'src/schemas/checks'
 
 // Utils
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
 import {createView} from 'src/views/helpers'
 import {getOrg} from 'src/organizations/selectors'
 import {toPostCheck, builderToPostCheck} from 'src/checks/utils'
-import {getAll, getStatus} from 'src/resources/selectors'
+import {getStatus} from 'src/resources/selectors'
 import {getErrorMessage} from 'src/utils/api'
 
 // Actions
@@ -309,16 +309,13 @@ export const deleteCheckLabel = (checkID: string, labelID: string) => async (
 export const cloneCheck = (check: Check) => async (
   dispatch: Dispatch<
     Action | NotificationAction | ReturnType<typeof checkChecksLimits>
-  >,
-  getState: GetState
+  >
 ): Promise<void> => {
   try {
-    const state = getState()
-    const checks = getAll<Check>(state, ResourceType.Checks)
-    const allCheckNames = checks.map(c => c.name)
-    const clonedName = incrementCloneName(allCheckNames, check.name)
-
-    const data = toPostCheck({...check, name: clonedName})
+    const data = toPostCheck({
+      ...check,
+      name: setCloneName(check.name),
+    })
 
     const resp = await api.postCheck({data})
 

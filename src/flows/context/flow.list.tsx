@@ -21,14 +21,18 @@ import {
   getAllAPI,
   migrateLocalFlowsToAPI,
 } from 'src/flows/context/api'
-import {patchNotebook, postNotebooksClone} from 'src/client/notebooksRoutes'
+import {
+  getNotebook,
+  postNotebook,
+  patchNotebook,
+} from 'src/client/notebooksRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
   notebookCreateFail,
   notebookDeleteFail,
   notebookDeleteSuccess,
 } from 'src/shared/copy/notifications'
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
 import {CLOUD} from 'src/shared/constants'
 
 export interface FlowListContextType extends FlowList {
@@ -181,12 +185,17 @@ export const FlowListProvider: FC = ({children}) => {
     }
 
     try {
-      const response = await postNotebooksClone({
-        id,
-        data: {
-          orgID: org.id,
-        },
-      })
+      const resp = await getNotebook({id})
+
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
+
+      const _flow = hydrate(resp.data)
+      _flow.name = setCloneName(_flow.name)
+      delete _flow.id
+
+      const response = await postNotebook(serialize(_flow))
 
       if (response.status !== 200) {
         throw new Error(response.data.message)
@@ -265,12 +274,9 @@ export const FlowListProvider: FC = ({children}) => {
         } else {
           const _flow = flows[id]
 
-          const allFlowNames = Object.values(flows).map(value => value.name)
-          const clonedName = incrementCloneName(allFlowNames, _flow.name)
-
           const data = {
             ..._flow,
-            name: clonedName,
+            name: setCloneName(_flow.name),
           }
 
           return await add(data)

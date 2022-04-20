@@ -6,6 +6,7 @@ export enum ActionTypes {
   EnableUpdatedTimeRangeInVEO = 'ENABLE_UPDATED_TIMERANGE_IN_VEO',
   DisableUpdatedTimeRangeInVEO = 'DISABLE_UPDATED_TIMERANGE_IN_VEO',
   SetNavBarState = 'SET_NAV_BAR_STATE',
+  SetNewDataExplorer = 'SET_NEW_DATA_EXPLORER',
   SetAutoRefresh = 'SET_AUTOREFRESH',
   SetTimeZone = 'SET_APP_TIME_ZONE',
   SetVersionInfo = 'SET_VERSION_INFO',
@@ -19,6 +20,7 @@ export type Action =
   | ReturnType<typeof disablePresentationMode>
   | ReturnType<typeof enableUpdatedTimeRangeInVEO>
   | ReturnType<typeof disableUpdatedTimeRangeInVEO>
+  | ReturnType<typeof setNewDataExplorer>
   | ReturnType<typeof setNavBarState>
   | ReturnType<typeof setAutoRefresh>
   | ReturnType<typeof setTimeZone>
@@ -51,6 +53,12 @@ export const disableUpdatedTimeRangeInVEO = () =>
 // persistent state action creators
 
 export const setTheme = (theme: Theme) => ({type: 'SET_THEME', theme} as const)
+
+export const setNewDataExplorer = (active: boolean) =>
+  ({
+    type: ActionTypes.SetNewDataExplorer,
+    active,
+  } as const)
 
 export const setNavBarState = (navBarState: NavBarState) =>
   ({

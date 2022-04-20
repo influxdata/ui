@@ -4,7 +4,15 @@ import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
-import {Page, Icon, IconFont} from '@influxdata/clockface'
+import {
+  Page,
+  Icon,
+  IconFont,
+  FlexBox,
+  ComponentSize,
+  InputLabel,
+  SlideToggle,
+} from '@influxdata/clockface'
 import SaveAsButton from 'src/dataExplorer/components/SaveAsButton'
 import VisOptionsButton from 'src/timeMachine/components/VisOptionsButton'
 import GetResources from 'src/resources/components/GetResources'
@@ -28,7 +36,12 @@ import {AppSettingContext} from 'src/shared/contexts/app'
 import {PROJECT_NAME} from 'src/flows'
 
 const DataExplorerPage: FC = () => {
-  const {flowsCTA, setFlowsCTA} = useContext(AppSettingContext)
+  const {
+    flowsCTA,
+    newDataExplorer,
+    setFlowsCTA,
+    setNewDataExplorer,
+  } = useContext(AppSettingContext)
   useLoadTimeReporting('DataExplorerPage load start')
 
   const hideFlowsCTA = () => {
@@ -58,7 +71,20 @@ const DataExplorerPage: FC = () => {
       <GetResources resources={[ResourceType.Variables]}>
         <Page.Header fullWidth={true} testID="data-explorer--header">
           <Page.Title title="Data Explorer" />
-          <RateLimitAlert location="data explorer" />
+          <FlexBox margin={ComponentSize.Large}>
+            <FeatureFlag name="newQueryBuilder">
+              <FlexBox margin={ComponentSize.Medium}>
+                <InputLabel>&#10024; Try new Data Explorer</InputLabel>
+                <SlideToggle
+                  active={newDataExplorer}
+                  onChange={() => {
+                    setNewDataExplorer(!newDataExplorer)
+                  }}
+                />
+              </FlexBox>
+            </FeatureFlag>
+            <RateLimitAlert location="data explorer" />
+          </FlexBox>
         </Page.Header>
         {flowsCTA.explorer && (
           <FeatureFlag name="flowsCTA">
@@ -80,19 +106,23 @@ const DataExplorerPage: FC = () => {
             </div>
           </FeatureFlag>
         )}
-        <Page.ControlBar fullWidth={true}>
-          <Page.ControlBarLeft>
-            <ViewTypeDropdown />
-            <VisOptionsButton />
-          </Page.ControlBarLeft>
-          <Page.ControlBarRight>
-            <TimeZoneDropdown />
-            <SaveAsButton />
-          </Page.ControlBarRight>
-        </Page.ControlBar>
-        <Page.Contents fullWidth={true} scrollable={false}>
-          <DataExplorer />
-        </Page.Contents>
+        {!newDataExplorer && (
+          <Page.ControlBar fullWidth={true}>
+            <Page.ControlBarLeft>
+              <ViewTypeDropdown />
+              <VisOptionsButton />
+            </Page.ControlBarLeft>
+            <Page.ControlBarRight>
+              <TimeZoneDropdown />
+              <SaveAsButton />
+            </Page.ControlBarRight>
+          </Page.ControlBar>
+        )}
+        {!newDataExplorer && (
+          <Page.Contents fullWidth={true} scrollable={false}>
+            <DataExplorer />
+          </Page.Contents>
+        )}
       </GetResources>
     </Page>
   )

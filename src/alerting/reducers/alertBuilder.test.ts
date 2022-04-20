@@ -59,6 +59,7 @@ const mockState = (): AlertBuilderState => ({
   level: 'OK',
   thresholds: [],
   status: RemoteDataState.Done,
+  description: 'mock test',
 })
 
 describe('alertBuilderReducer', () => {

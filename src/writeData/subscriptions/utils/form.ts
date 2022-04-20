@@ -119,7 +119,7 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
   return form
 }
 
-export const sanitizeType = (type: String): String => {
+export const sanitizeType = (type: string): string => {
   if (type === 'double') {
     type = 'Number'
   }

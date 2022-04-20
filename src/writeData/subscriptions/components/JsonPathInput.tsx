@@ -160,7 +160,7 @@ const JsonPathInput: FC<Props> = ({
                 >
                   {tagType
                     ? sanitizeType(formContent.jsonTagKeys[itemNum].type) ??
-                    dataType
+                      dataType
                     : sanitizeType(formContent.jsonFieldKeys[itemNum].type) ??
                       dataType}
                 </Dropdown.Button>

@@ -278,7 +278,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
     if (
       data.buckets[0].type !== 'sample' &&
-      isFlagEnabled('QueryBuilderUseMetadataCaching')
+      isFlagEnabled('queryBuilderUseMetadataCaching')
     ) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
@@ -387,7 +387,7 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
     if (
       data.buckets[0].type !== 'sample' &&
-      isFlagEnabled('QueryBuilderUseMetadataCaching')
+      isFlagEnabled('queryBuilderUseMetadataCaching')
     ) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`

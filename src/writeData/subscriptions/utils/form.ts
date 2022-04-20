@@ -44,7 +44,7 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       }
     })
   }
-  if (form?.jsonTimestamp?.path) {
+  if (form.jsonTimestamp?.path) {
     const startChar = form.jsonTimestamp.path.charAt(0)
     const newVal = checkJSONPathStarts$(startChar, form.jsonTimestamp.path)
 
@@ -53,7 +53,7 @@ export const sanitizeForm = (form: Subscription): Subscription => {
     }
   }
 
-  if (form?.jsonTimestamp?.path === '') {
+  if (form.jsonTimestamp?.path === '') {
     delete form.jsonTimestamp
   }
   if (form.stringMeasurement) {
@@ -70,7 +70,7 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       t.pattern = t?.pattern.replace(/\\\\/g, '\\') ?? ''
     })
   }
-  if (form?.stringTimestamp?.pattern === '') {
+  if (form.stringTimestamp?.pattern === '') {
     delete form.stringTimestamp
   }
   if (form.brokerPassword === '' || form.brokerUsername === '') {

@@ -116,10 +116,16 @@ export class PythonWizard extends PureComponent<null, State> {
             />
           </div>
         </aside>
-        <div className="homepage-wizard-container--main">
+        <div
+          className={classnames('homepage-wizard-container--main', {
+            showConfetti: currentStep === HOMEPAGE_NAVIGATION_STEPS.length,
+          })}
+        >
           <div
             className={classnames('homepage-wizard-container--main-wrapper', {
-              overviewSection: this.state.currentStep === 1,
+              verticallyCentered:
+                this.state.currentStep === 1 ||
+                this.state.currentStep === HOMEPAGE_NAVIGATION_STEPS.length,
             })}
           >
             {this.renderStep()}

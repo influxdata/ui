@@ -31,6 +31,11 @@ h1#first-mile--header {
   flex: 1;
 
   padding-bottom: 64px;
+
+  &.showConfetti {
+    background-image: url('../../assets/images/firstmile_confetti.svg');
+    background-repeat: no-repeat;
+  }
 }
 
 .homepage-wizard-container--main-wrapper {
@@ -43,7 +48,7 @@ h1#first-mile--header {
     font-size: $cf-text-base-1;
   }
 
-  &.overviewSection {
+  &.verticallyCentered {
     margin-top: auto;
   }
 }

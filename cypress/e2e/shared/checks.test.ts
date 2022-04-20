@@ -1000,7 +1000,9 @@ describe('Checks', () => {
   describe('Clone checks', () => {
     it('can clone and delete a deadman check', () => {
       cy.intercept('POST', '/api/v2/checks*').as('createCheck')
-      const cloneName = `${deadmanCheck.name} (clone 1)`
+      const d = Date.UTC(2018, 10, 30)
+      cy.clock(d, ['Date'])
+      const cloneName = `${deadmanCheck.name} (cloned at 11-30-2018:00:00:00)`
       // 1. create deadman over API
       initCheck(deadmanCheck)
       cy.reload()
@@ -1015,6 +1017,7 @@ describe('Checks', () => {
       cy.getByTestID('context-menu-task').click()
       cy.getByTestID('context-clone-task').click()
       cy.wait('@createCheck')
+      cy.clock().invoke('restore')
       // 3. Asserts
       cy.get<GenCheck>('@check').then(check => {
         cy.getByTestID(`check-card ${cloneName}`).within(() => {

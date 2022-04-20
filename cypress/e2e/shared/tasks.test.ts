@@ -258,6 +258,9 @@ from(bucket: "defbuck")
 
     it('can clone a task and edit it', () => {
       // clone a task
+      const d = Date.UTC(2018, 10, 30)
+      cy.clock(d, ['Date'])
+      const cloneName = '🦄ask (cloned at 11-30-2018:00:00:00)'
       cy.getByTestID('task-card').then(() => {
         cy.getByTestID('context-menu-task').click()
         cy.getByTestID('context-clone-task')
@@ -266,9 +269,10 @@ from(bucket: "defbuck")
       })
 
       cy.getByTestID('task-card').should('have.length', 2)
+      cy.clock().invoke('restore')
 
       // assert the values of the task and change them
-      cy.getByTestID('task-card--name').contains('🦄ask (clone 1)')
+      cy.getByTestID('task-card--name').contains(cloneName)
 
       cy.getByTestID('task-card').then(() => {
         cy.getByTestID('context-menu-task')
@@ -284,7 +288,7 @@ from(bucket: "defbuck")
 
       cy.getByTestID('flux-editor').should('be.visible')
 
-      cy.getByTestID('task-form-name').should('have.value', '🦄ask (clone 1)')
+      cy.getByTestID('task-form-name').should('have.value', cloneName)
       cy.getByTestID('task-form-name')
         .focus()
         .clear()

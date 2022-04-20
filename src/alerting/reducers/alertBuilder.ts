@@ -17,7 +17,7 @@ import {
 } from 'src/alerting/constants'
 
 type FromBase = Required<
-  Pick<CheckBase, 'name' | 'id' | 'activeStatus' | 'status'>
+  Pick<CheckBase, 'name' | 'id' | 'activeStatus' | 'status' | 'description'>
 >
 
 type FromThreshold = Required<
@@ -53,6 +53,7 @@ export const initialState = (): AlertBuilderState => ({
   staleTime: '10m',
   level: DEFAULT_DEADMAN_LEVEL,
   thresholds: [],
+  description: '',
 })
 
 export default (
@@ -73,7 +74,7 @@ export default (
     }
 
     case 'SET_ALERT_BUILDER_CHECK': {
-      const {id, type, name, query} = action.payload.check
+      const {id, type, name, query, description} = action.payload.check
 
       const newState = {
         ...initialState(),
@@ -82,6 +83,7 @@ export default (
         name,
         query: {...query},
         type,
+        description,
       }
 
       if (action.payload.check.type === 'custom') {

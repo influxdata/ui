@@ -273,8 +273,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> keep(columns: ["_value"])
     |> distinct()${searchString}${previousTagString}
     |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-    |> limit(n: ${limit})
-    |> sort()`
+    |> sort()
+    |> limit(n: ${limit})`
 
     if (
       data.buckets[0].type !== 'sample' &&
@@ -290,8 +290,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     stop: ${CACHING_REQUIRED_END_DATE},
   )${searchString}${previousTagString}
     |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-    |> limit(n: ${limit})
-    |> sort()`
+    |> sort()
+    |> limit(n: ${limit})`
     }
 
     query(queryText, scope)
@@ -382,8 +382,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> keep(columns: ["${cards[idx].keys.selected[0]}"])
     |> group()
     |> distinct(column: "${cards[idx].keys.selected[0]}")${searchString}
-    |> limit(n: ${limit})
-    |> sort()`
+    |> sort()
+    |> limit(n: ${limit})`
 
     if (
       data.buckets[0].type !== 'sample' &&
@@ -399,8 +399,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     start: ${CACHING_REQUIRED_START_DATE},
     stop: ${CACHING_REQUIRED_END_DATE},
   )${searchString}
-  |> limit(n: ${limit})
-  |> sort()`
+  |> sort()
+  |> limit(n: ${limit})`
     }
 
     query(queryText, scope)

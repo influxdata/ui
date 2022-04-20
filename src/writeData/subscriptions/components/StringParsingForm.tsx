@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useEffect, Component} from 'react'
+import React, {FC, useState, useEffect} from 'react'
 
 // Components
 import {

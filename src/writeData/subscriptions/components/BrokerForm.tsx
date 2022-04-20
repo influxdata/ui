@@ -92,6 +92,7 @@ const BrokerForm: FC<Props> = ({
               updateForm={updateForm}
               formContent={formContent}
               className="create"
+              edit={true}
             />
           </Overlay.Body>
           <Overlay.Footer>

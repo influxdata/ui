@@ -18,6 +18,7 @@ import {
   ComponentSize,
   FlexDirection,
   FlexBox,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 // Types
@@ -32,6 +33,7 @@ interface Props {
   updateForm: (any) => void
   formContent: Subscription
   itemNum: number
+  edit: boolean
 }
 
 const StringPatternInput: FC<Props> = ({
@@ -39,6 +41,7 @@ const StringPatternInput: FC<Props> = ({
   formContent,
   updateForm,
   itemNum,
+  edit,
 }) => {
   const tagType = name === 'Tag'
   return (
@@ -129,7 +132,7 @@ const StringPatternInput: FC<Props> = ({
                   {feature: 'subscriptions'}
                 )
               }
-              status={status}
+              status={edit ? status : ComponentStatus.Disabled}
               maxLength={56}
               testID={`${name}-string-parsing-name`}
             />
@@ -182,7 +185,7 @@ const StringPatternInput: FC<Props> = ({
                   {feature: 'subscriptions'}
                 )
               }
-              status={status}
+              status={edit ? status : ComponentStatus.Disabled}
               maxLength={255}
               testID={`${name}-string-parsing-pattern`}
             />

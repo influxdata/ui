@@ -19,13 +19,17 @@ import {
   ComponentSize,
   FlexDirection,
   FlexBox,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 // Types
 import {Subscription} from 'src/types/subscriptions'
 
 // Utils
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {
+  handleValidation,
+  sanitizeType,
+} from 'src/writeData/subscriptions/utils/form'
 import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
@@ -33,9 +37,16 @@ interface Props {
   updateForm: (any) => void
   formContent: Subscription
   itemNum: number
+  edit: boolean
 }
 
-const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
+const JsonPathInput: FC<Props> = ({
+  name,
+  formContent,
+  updateForm,
+  itemNum,
+  edit,
+}) => {
   const dataTypeList = ['String', 'Number']
   const [dataType, setDataType] = useState(dataTypeList[0])
   const tagType = name === 'Tag'
@@ -130,7 +141,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                     {feature: 'subscriptions'}
                   )
                 }
-                status={status}
+                status={edit ? status : ComponentStatus.Disabled}
                 testID={`${tagType}-json-parsing-name`}
               />
             )}
@@ -143,8 +154,14 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                   active={active}
                   onClick={onClick}
                   testID={`${tagType}-json-parsing-type`}
+                  status={
+                    edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                  }
                 >
-                  {dataType}
+                  {tagType
+                    ? sanitizeType(formContent.jsonTagKeys[itemNum].type)
+                    : sanitizeType(formContent.jsonFieldKeys[itemNum].type) ??
+                      dataType}
                 </Dropdown.Button>
               )}
               menu={onCollapse => (
@@ -232,7 +249,7 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                   {feature: 'subscriptions'}
                 )
               }
-              status={status}
+              status={edit ? status : ComponentStatus.Disabled}
               testID={`${tagType}-json-parsing-path`}
             />
           )}

@@ -10,6 +10,7 @@ import {
   ComponentSize,
   FlexDirection,
   FlexBox,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 // Types
@@ -19,9 +20,10 @@ interface Props {
   formContent: Subscription
   updateForm: (any) => void
   className: string
+  edit: boolean
 }
 
-const UserInput: FC<Props> = ({formContent, updateForm, className}) => (
+const UserInput: FC<Props> = ({formContent, updateForm, className, edit}) => (
   <FlexBox
     alignItems={AlignItems.FlexStart}
     direction={FlexDirection.Row}
@@ -41,6 +43,11 @@ const UserInput: FC<Props> = ({formContent, updateForm, className}) => (
           })
         }
         testID={`${className}-broker-form--username`}
+        status={
+          edit || className === 'create'
+            ? ComponentStatus.Default
+            : ComponentStatus.Disabled
+        }
       />
     </Form.Element>
     <Form.Element label="Password">
@@ -56,6 +63,11 @@ const UserInput: FC<Props> = ({formContent, updateForm, className}) => (
           })
         }
         testID={`${className}-broker-form--password`}
+        status={
+          edit || className === 'create'
+            ? ComponentStatus.Default
+            : ComponentStatus.Disabled
+        }
       />
     </Form.Element>
   </FlexBox>

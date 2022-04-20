@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useState, useEffect} from 'react'
+import React, {FC, useState, useEffect, Component} from 'react'
 
 // Components
 import {
@@ -29,13 +29,15 @@ import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 // Styles
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
 import {event} from 'src/cloud/utils/reporting'
+import {ComponentStatus} from 'src/clockface'
 
 interface Props {
   formContent: Subscription
   updateForm: (any) => void
+  edit: boolean
 }
 
-const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
+const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   const defaultStringFieldTag = {
@@ -87,6 +89,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           }
           maxLength={255}
           testID="timestamp-string-parsing"
+          status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
         />
       </Grid.Column>
       <Grid.Column>
@@ -132,7 +135,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   {feature: 'subscriptions'}
                 )
               }
-              status={status}
+              status={edit ? status : ComponentStatus.Disabled}
               maxLength={255}
               testID="measurment-string-parsing-pattern"
             />
@@ -147,6 +150,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           formContent={formContent}
           updateForm={updateForm}
           itemNum={key}
+          edit={edit}
         />
       ))}
       {formContent.stringFields.map((_, key) => (
@@ -156,6 +160,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           updateForm={updateForm}
           name="Field"
           itemNum={key}
+          edit={edit}
         />
       ))}
       <Grid.Column>
@@ -165,6 +170,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               active={active}
               onClick={onClick}
               testID="string-parsing-add-rule"
+              status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             >
               <Icon glyph={IconFont.Plus} /> Add Rule
             </Dropdown.Button>

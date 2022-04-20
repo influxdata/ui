@@ -33,7 +33,6 @@ describe('Flows', () => {
     )
 
     const flowName = 'Flowbooks'
-    const clone = `${flowName} (clone 1)`
 
     cy.getByTestID('preset-new')
       .first()
@@ -117,6 +116,9 @@ describe('Flows', () => {
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
+    const d = Date.UTC(2018, 10, 30)
+    cy.clock(d, ['Date'])
+
     cy.getByTestID(`flow-card--${flowName}`).within(() => {
       cy.getByTestID(`context-menu-flow`).click()
     })
@@ -124,6 +126,8 @@ describe('Flows', () => {
     cy.getByTestID(`context-clone-flow`).click()
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
+
+    const clone = `${flowName} (cloned at 11-30-2018:00:00:00)`
 
     // Should redirect the user to the newly cloned flow
     // Validates that the selected clone is the clone
@@ -141,9 +145,6 @@ describe('Flows', () => {
       cy.getByTestID(`context-delete-menu--button`).click()
     })
     cy.getByTestID(`context-delete-menu--confirm-button`).click()
-
-    cy.getByTestID('notification-success').should('be.visible')
-    cy.getByTestID('notification-success--dismiss').click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
@@ -164,11 +165,10 @@ describe('Flows', () => {
     cy.getByTestID('flow-menu-button-delete').should('be.visible')
     cy.getByTestID('flow-menu-button-delete').click()
 
-    cy.getByTestID('notification-success').should('be.visible')
-
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-editable-name').should('have.length', 1)
     cy.get('.cf-resource-editable-name').contains(`${flowName}`)
+    cy.clock().invoke('restore')
   })
 
   it('can use the dynamic flux function selector to build a query', () => {

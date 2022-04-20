@@ -32,14 +32,14 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {Authorization, AppState} from 'src/types'
+import {Authorization} from 'src/types'
 import {
   UPDATED_AT_TIME_FORMAT,
   DEFAULT_TOKEN_DESCRIPTION,
 } from 'src/dashboards/constants'
 
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
 import {event} from 'src/cloud/utils/reporting'
 
 interface OwnProps {
@@ -146,14 +146,11 @@ class TokensRow extends PureComponent<Props> {
 
   private handleClone = async () => {
     const {description} = this.props.auth
-    const allTokenDescriptions = Object.values(this.props.authorizations).map(
-      auth => auth.description
-    )
 
     try {
       await this.props.createAuthorization({
         ...this.props.auth,
-        description: incrementCloneName(allTokenDescriptions, description),
+        description: setCloneName(description),
       })
       event('token.clone.success', {id: this.props.auth.id, name: description})
       this.props.showOverlay('access-cloned-token', null, () =>
@@ -180,11 +177,6 @@ class TokensRow extends PureComponent<Props> {
   }
 }
 
-const mstp = (state: AppState) => {
-  const authorizations = state.resources.tokens.byID
-  return {authorizations}
-}
-
 const mdtp = {
   deleteAuthorization,
   updateAuthorization,
@@ -193,6 +185,6 @@ const mdtp = {
   dismissOverlay,
 }
 
-const connector = connect(mstp, mdtp)
+const connector = connect(null, mdtp)
 
 export const TokenRow = connector(withRouter(TokensRow))

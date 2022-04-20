@@ -46,10 +46,10 @@ import {createView} from 'src/views/helpers'
 
 // Utils
 import {getSaveableView} from 'src/timeMachine/selectors'
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
 import {isLimitError} from 'src/cloud/utils/limits'
 import {getOrg} from 'src/organizations/selectors'
-import {getAll, getByID, getStatus} from 'src/resources/selectors'
+import {getByID, getStatus} from 'src/resources/selectors'
 
 // Constants
 import * as copy from 'src/shared/copy/notifications'
@@ -125,9 +125,6 @@ export const cloneDashboard = (
     const state = getState()
 
     const org = getOrg(state)
-    const dashboards = getAll<Dashboard>(state, ResourceType.Dashboards)
-    const allDashboardNames = dashboards.map(d => d.name)
-    const clonedName = incrementCloneName(allDashboardNames, dashboardName)
 
     const getResp = await api.getDashboard({
       dashboardID,
@@ -149,7 +146,7 @@ export const cloneDashboard = (
     const postResp = await api.postDashboard({
       data: {
         orgID: org.id,
-        name: clonedName,
+        name: setCloneName(dashboardName),
         description: dash.description || '',
       },
     })

@@ -208,14 +208,16 @@ describe('Dashboards', () => {
           cy.getByTestID('context-menu-dashboard').click()
         })
 
+      const d = Date.UTC(2018, 10, 30)
+      cy.clock(d, ['Date'])
+      const cloneName = `${localDashName} (cloned at 11-30-2018:00:00:00)`
+
       cy.getByTestID('context-clone-dashboard').click()
 
+      cy.clock().invoke('restore')
       // Verify cloned dashboard contents
 
-      cy.getByTestID('page-title').should(
-        'contain.text',
-        `${localDashName} (clone 1)`
-      )
+      cy.getByTestID('page-title').should('contain.text', cloneName)
       cy.getByTestID('variable-dropdown--Power').should('be.visible')
       cy.getByTestID('variable-dropdown-input-typeAhead--Power').should(
         'have.value',
@@ -258,10 +260,7 @@ describe('Dashboards', () => {
         .eq(1)
         .within(() => {
           cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
-          cy.getByTestID('dashboard-card--name').should(
-            'contain',
-            `${localDashName} (clone 1)`
-          )
+          cy.getByTestID('dashboard-card--name').should('contain', cloneName)
           cy.getByTestID('inline-labels--add').click()
         })
 

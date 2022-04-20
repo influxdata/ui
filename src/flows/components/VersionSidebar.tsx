@@ -31,8 +31,7 @@ import {
   postNotebook,
   VersionHistory,
 } from 'src/client/notebooksRoutes'
-import {getAllAPI} from 'src/flows/context/api'
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
 import {serialize} from 'src/flows/context/flow.list'
 
 // Constants
@@ -79,12 +78,10 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
   const handleClone = async () => {
     event('clone_notebook_version')
     try {
-      const {flows} = await getAllAPI(orgID)
-
-      const allFlowNames = Object.values(flows).map(value => value.name)
-      const clonedName = incrementCloneName(allFlowNames, flow.name)
-
-      const _flow = serialize({...flow, name: clonedName})
+      const _flow = serialize({
+        ...flow,
+        name: setCloneName(flow.name),
+      })
       delete _flow.data.id
 
       const response = await postNotebook(_flow)

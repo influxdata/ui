@@ -274,7 +274,7 @@ const BrokerFormContent: FC<Props> = ({
               }}
               value="none"
               titleText="None"
-              disabled={edit ? false : true}
+              disabled={!edit}
             >
               None
             </SelectGroup.Option>

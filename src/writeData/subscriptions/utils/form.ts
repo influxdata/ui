@@ -20,7 +20,7 @@ export const checkJSONPathStarts$ = (firstChar, formVal): string | null => {
 export const sanitizeForm = (form: Subscription): Subscription => {
   // add $. if not at start of input for json paths
   if (form.jsonMeasurementKey) {
-    const startChar = form.jsonMeasurementKey.path.charAt(0)
+    const startChar = form.jsonMeasurementKey?.path.charAt(0) ?? ''
     const newVal = checkJSONPathStarts$(startChar, form.jsonMeasurementKey.path)
     if (newVal) {
       form.jsonMeasurementKey.path = newVal
@@ -28,7 +28,7 @@ export const sanitizeForm = (form: Subscription): Subscription => {
   }
   if (form.jsonFieldKeys) {
     form.jsonFieldKeys.map(f => {
-      const startChar = f.path.charAt(0)
+      const startChar = f?.path.charAt(0) ?? ''
       const newVal = checkJSONPathStarts$(startChar, f.path)
       if (newVal) {
         f.path = newVal
@@ -37,14 +37,14 @@ export const sanitizeForm = (form: Subscription): Subscription => {
   }
   if (form.jsonTagKeys) {
     form.jsonTagKeys.map(t => {
-      const startChar = t.path.charAt(0)
+      const startChar = t?.path.charAt(0) ?? ''
       const newVal = checkJSONPathStarts$(startChar, t.path)
       if (newVal) {
         t.path = newVal
       }
     })
   }
-  if (form.jsonTimestamp.path) {
+  if (form?.jsonTimestamp?.path) {
     const startChar = form.jsonTimestamp.path.charAt(0)
     const newVal = checkJSONPathStarts$(startChar, form.jsonTimestamp.path)
 
@@ -53,26 +53,24 @@ export const sanitizeForm = (form: Subscription): Subscription => {
     }
   }
 
-  if (form.jsonTimestamp.path === '') {
+  if (form?.jsonTimestamp?.path === '') {
     delete form.jsonTimestamp
   }
   if (form.stringMeasurement) {
-    form.stringMeasurement.pattern = form.stringMeasurement.pattern.replace(
-      /\\\\/g,
-      '\\'
-    )
+    form.stringMeasurement.pattern =
+      form.stringMeasurement?.pattern.replace(/\\\\/g, '\\') ?? ''
   }
   if (form.stringFields) {
     form.stringFields.map(f => {
-      f.pattern = f.pattern.replace(/\\\\/g, '\\')
+      f.pattern = f?.pattern.replace(/\\\\/g, '\\') ?? ''
     })
   }
   if (form.stringTags) {
     form.stringTags.map(t => {
-      t.pattern = t.pattern.replace(/\\\\/g, '\\')
+      t.pattern = t?.pattern.replace(/\\\\/g, '\\') ?? ''
     })
   }
-  if (form.stringTimestamp.pattern === '') {
+  if (form?.stringTimestamp?.pattern === '') {
     delete form.stringTimestamp
   }
   if (form.brokerPassword === '' || form.brokerUsername === '') {

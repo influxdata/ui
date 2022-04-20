@@ -2,8 +2,8 @@ export {
   OperatorAccount,
   OperatorAccounts,
   OperatorOrgLimits,
-  Organization as OperatorOrg,
-  Organizations,
+  OperatorOrganization as OperatorOrg,
+  OperatorOrganizations as OperatorOrgs,
   OrgLimits,
   User as OperatorUser,
 } from 'src/client/unityRoutes'

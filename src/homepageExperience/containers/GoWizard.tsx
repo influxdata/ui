@@ -28,16 +28,22 @@ import {event} from 'src/cloud/utils/reporting'
 interface State {
   currentStep: number
   selectedBucket: string
+  finishStepCompleted: boolean
 }
 
 export class GoWizard extends PureComponent<null, State> {
   state = {
     currentStep: 1,
     selectedBucket: 'my-bucket',
+    finishStepCompleted: false,
   }
 
   private handleSelectBucket = (bucketName: string) => {
     this.setState({selectedBucket: bucketName})
+  }
+
+  private handleMarkStepAsCompleted = () => {
+    this.setState({finishStepCompleted: true})
   }
 
   handleNextClick = () => {
@@ -91,7 +97,13 @@ export class GoWizard extends PureComponent<null, State> {
         return <ExecuteAggregateQuery bucket={this.state.selectedBucket} />
       }
       case 8: {
-        return <Finish wizardEventName="goWizard" />
+        return (
+          <Finish
+            wizardEventName="goWizard"
+            markStepAsCompleted={this.handleMarkStepAsCompleted}
+            finishStepCompleted={this.state.finishStepCompleted}
+          />
+        )
       }
       default: {
         return <Overview />

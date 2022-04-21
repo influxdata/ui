@@ -15,9 +15,7 @@ export const setCloneName = (name: string, date?: Date): string => {
   const hour = d.getUTCHours()
   const minutes = d.getUTCMinutes()
   const seconds = d.getUTCSeconds()
-  return `${name.trim()} (cloned at ${prependZero(month)}-${prependZero(
+  return `${name.trim()} (cloned at ${year}-${prependZero(month)}-${prependZero(
     day
-  )}-${year}:${prependZero(hour)}:${prependZero(minutes)}:${prependZero(
-    seconds
-  )})`
+  )} ${prependZero(hour)}:${prependZero(minutes)}:${prependZero(seconds)})`
 }

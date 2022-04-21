@@ -1030,9 +1030,7 @@ describe('NotificationRules', () => {
 
     it('can clone, modify and delete a notification rule', () => {
       cy.log('clone rule')
-      const d = Date.UTC(2018, 10, 30)
-      cy.clock(d, ['Date'])
-      const cloneName = `${rule2Clone.name} (cloned at 11-30-2018:00:00:00)`
+      const cloneNamePrefix = `${rule2Clone.name} (cloned at `
       cy.getByTestID(`rule-card ${rule2Clone.name}`).within(() => {
         cy.getByTestID('context-menu-task').click()
       })
@@ -1048,10 +1046,9 @@ describe('NotificationRules', () => {
           ).as('TargetTaskID')
         })
       })
-      cy.clock().invoke('restore')
 
       cy.log('=== verify basic identifying parameters')
-      cy.getByTestID(`rule-card ${cloneName}`).within(() => {
+      cy.getByTestIDHead(`rule-card ${cloneNamePrefix}`).within(() => {
         cy.getByTestID('copy-resource-id').then(elem => {
           cy.wrap(
             elem
@@ -1075,7 +1072,17 @@ describe('NotificationRules', () => {
       })
 
       cy.log('=== verify then change cloned values')
-      cy.getByTestID('rule-name--input').should('have.value', cloneName)
+      cy.getByTestID('rule-name--input')
+        .invoke('val')
+        .then(cloneName => {
+          const cloneTime = cloneName.slice(
+            cloneNamePrefix.length,
+            cloneName.length - 1
+          )
+          const cloneTimeAsDate = new Date(cloneTime)
+          expect(cloneTimeAsDate.toTimeString()).not.to.equal('Invalid Date')
+          expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())
+        })
 
       cy.getByTestID('rule-name--input')
         .clear()

@@ -17,6 +17,8 @@ import {
   pinnedItemSuccess,
 } from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
+import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 interface Props {
   id: string
@@ -33,8 +35,8 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
 
   const handleClick = event => {
     const url = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
-    if (event.metaKey) {
-      window.open(url, '_blank', 'noopener')
+    if (shouldOpenLinkInNewTab(event)) {
+      safeBlankLinkOpen(url)
     } else {
       history.push(url)
     }

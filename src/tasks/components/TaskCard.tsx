@@ -1,5 +1,5 @@
 // Libraries
-import React, {PureComponent, MouseEvent, RefObject, createRef} from 'react'
+import React, {PureComponent, RefObject, createRef} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
@@ -49,6 +49,8 @@ import {
 import {notify} from 'src/shared/actions/notifications'
 import {downloadTaskTemplate} from 'src/tasks/apis'
 import {event} from 'src/cloud/utils/reporting'
+import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 interface PassedProps {
   task: Task
@@ -70,7 +72,15 @@ export class TaskCard extends PureComponent<
   Props & RouteComponentProps<{orgID: string}>
 > {
   public render() {
-    const {task, history} = this.props
+    const {
+      task,
+      history,
+      match: {
+        params: {orgID},
+      },
+    } = this.props
+
+    const taskUrl = `/orgs/${orgID}/tasks/${task.id}/runs`
 
     return (
       <ResourceCard
@@ -108,6 +118,7 @@ export class TaskCard extends PureComponent<
             testID="task-card--name"
             buttonTestID="task-card--name-button"
             inputTestID="task-card--input"
+            href={taskUrl}
           />
           <ResourceCard.Meta>
             {this.activeToggle}
@@ -236,7 +247,7 @@ export class TaskCard extends PureComponent<
     )
   }
 
-  private handleNameClick = (event: MouseEvent) => {
+  private handleNameClick = (event: React.MouseEvent) => {
     const {
       history,
       task,
@@ -244,12 +255,12 @@ export class TaskCard extends PureComponent<
         params: {orgID},
       },
     } = this.props
-    const url = `/orgs/${orgID}/tasks/${task.id}/runs`
+    const taskUrl = `/orgs/${orgID}/tasks/${task.id}/runs`
 
-    if (event.metaKey) {
-      window.open(url, '_blank', 'noopener')
+    if (shouldOpenLinkInNewTab(event as MouseEvent)) {
+      safeBlankLinkOpen(taskUrl)
     } else {
-      history.push(url)
+      history.push(taskUrl)
     }
   }
 

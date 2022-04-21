@@ -1,36 +1,79 @@
 import React from 'react'
-import {ComponentSize, FlexBox, JustifyContent} from '@influxdata/clockface'
-import {ThumbsDown, ThumbsUp} from './HomepageIcons'
+import {
+  ComponentSize,
+  FlexBox,
+  InfluxColors,
+  JustifyContent,
+} from '@influxdata/clockface'
+import {
+  ThumbsDown,
+  ThumbsUp,
+} from 'src/homepageExperience/components/HomepageIcons'
+import {event} from 'src/cloud/utils/reporting'
+
+import 'src/homepageExperience/HomepageExperience.scss'
 
 type OwnProps = {
   wizardEventName: string
 }
-export default class FeedbackBar extends React.Component<OwnProps> {
+type State = {
+  selectedFeedback: number
+}
+
+enum feedbackValue {
+  THUMBS_DOWN,
+  THUMBS_UP,
+}
+
+export default class FeedbackBar extends React.Component<OwnProps, State> {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selectedFeedback: null,
+    }
+  }
+
   private handleThumbsUpClick = () => {
-    // handle event here
+    event(`firstMile.${this.props.wizardEventName}.thumbsUp.clicked`)
+    this.setState({selectedFeedback: feedbackValue.THUMBS_UP})
   }
   private handleThumbsDownClick = () => {
-    // handle event here
+    event(`firstMile.${this.props.wizardEventName}.thumbsDown.clicked`)
+    this.setState({selectedFeedback: feedbackValue.THUMBS_DOWN})
   }
-  render() {
-    const feedbackBarStyle = {
-      background:
-        'linear-gradient(256.11deg, rgba(147, 148, 255, 0.2) 0%, rgba(81, 60, 198, 0.2) 100%)',
-      paddingLeft: '16px',
-      paddingRight: '16px',
-      maxWidth: '493px',
-    }
 
+  render() {
+    const {selectedFeedback} = this.state
     return (
       <FlexBox
-        style={feedbackBarStyle}
         margin={ComponentSize.Large}
         justifyContent={JustifyContent.SpaceBetween}
+        className="feedback-bar"
       >
         <p>What did you think about the set up process?</p>
         <FlexBox margin={ComponentSize.Large}>
-          <button onClick={this.handleThumbsUpClick}>{ThumbsUp}</button>
-          <button onClick={this.handleThumbsDownClick}>{ThumbsDown}</button>
+          <button
+            onClick={this.handleThumbsUpClick}
+            style={{
+              fill:
+                selectedFeedback === feedbackValue.THUMBS_UP
+                  ? InfluxColors.Rainforest
+                  : InfluxColors.White,
+            }}
+          >
+            {ThumbsUp}
+          </button>
+          <button
+            onClick={this.handleThumbsDownClick}
+            style={{
+              fill:
+                selectedFeedback === feedbackValue.THUMBS_DOWN
+                  ? InfluxColors.Fire
+                  : InfluxColors.White,
+            }}
+          >
+            {ThumbsDown}
+          </button>
         </FlexBox>
       </FlexBox>
     )

@@ -43,7 +43,7 @@ h1#first-mile--header {
     font-size: $cf-text-base-1;
   }
 
-  &.overviewSection {
+  &.verticallyCentered {
     margin-top: auto;
   }
 }
@@ -99,4 +99,15 @@ h1#first-mile--header {
     letter-spacing: 0.06em;
     margin: 0;
   }
+}
+
+.feedback-bar {
+  background: linear-gradient(
+    256.11deg,
+    rgba(147, 148, 255, 0.2) 0%,
+    rgba(81, 60, 198, 0.2) 100%
+  );
+  padding-left: 16px;
+  padding-right: 16px;
+  max-width: 493px;
 }

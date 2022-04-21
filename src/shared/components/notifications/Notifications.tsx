@@ -52,7 +52,9 @@ const Notifications: FC = () => {
               style={{maxWidth: '600px', alignItems: 'center'}}
             >
               <span style={styles}>
-                <span className="notification--message">{message}</span>
+                {message && (
+                  <span className="notification--message">{message}</span>
+                )}
                 {buttonElement && buttonElement(handleDismiss)}
               </span>
             </Notification>

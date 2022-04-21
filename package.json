@@ -52,7 +52,7 @@
     "cy": "CYPRESS_dexUrl=https://$INGRESS_HOST:$PORT_HTTPS CYPRESS_baseUrl=http://localhost:9999 cypress open",
     "cy:dev": "source ../monitor-ci/.env && CYPRESS_dexUrl=CLOUD CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{cloud,shared}/**/*.*'",
     "cy:dev-oss": "source ../monitor-ci/.env && CYPRESS_dexUrl=OSS CYPRESS_baseUrl=https://$INGRESS_HOST:$PORT_HTTPS cypress open --config testFiles='{oss,shared}/**/*.*'",
-    "generate": "export SHA=1a800fb92ad8ed86e28365c4fd5ac43ff193c303 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
+    "generate": "export SHA=4e27f5d5e552e962164d1455d5249ec2d6d0588b && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
     "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn pinned && yarn mapsd-oss && yarn cloudPriv && yarn fluxdocs && yarn subscriptions-oss",
@@ -161,7 +161,7 @@
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.37",
-    "@influxdata/clockface": "^3.6.0",
+    "@influxdata/clockface": "^3.11.0",
     "@influxdata/flux-lsp-browser": "0.8.8",
     "@influxdata/giraffe": "^2.25.0",
     "@influxdata/influxdb-templates": "0.9.0",

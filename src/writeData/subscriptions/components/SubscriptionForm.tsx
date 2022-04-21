@@ -96,7 +96,7 @@ const SubscriptionForm: FC<Props> = ({
               currentSubscription={formContent}
               updateForm={updateForm}
               className="create"
-              edit={false}
+              edit={true}
             />
           </Overlay.Body>
           <Overlay.Footer>

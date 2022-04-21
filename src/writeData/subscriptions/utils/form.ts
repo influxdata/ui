@@ -25,6 +25,9 @@ export const sanitizeForm = (form: Subscription): Subscription => {
     if (newVal) {
       form.jsonMeasurementKey.path = newVal
     }
+    if (form.jsonMeasurementKey.type === 'number') {
+      form.jsonMeasurementKey.type = 'double'
+    }
   }
   if (form.jsonFieldKeys) {
     form.jsonFieldKeys.map(f => {
@@ -32,6 +35,9 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       const newVal = checkJSONPathStarts$(startChar, f.path)
       if (newVal) {
         f.path = newVal
+      }
+      if (f.type === 'number') {
+        f.type = 'double'
       }
     })
   }
@@ -42,12 +48,14 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       if (newVal) {
         t.path = newVal
       }
+      if (t.type === 'number') {
+        t.type = 'double'
+      }
     })
   }
   if (form.jsonTimestamp?.path) {
     const startChar = form.jsonTimestamp.path.charAt(0)
     const newVal = checkJSONPathStarts$(startChar, form.jsonTimestamp.path)
-
     if (newVal) {
       form.jsonTimestamp.path = newVal
     }
@@ -81,6 +89,25 @@ export const sanitizeForm = (form: Subscription): Subscription => {
 }
 
 export const sanitizeUpdateForm = (form: Subscription): Subscription => {
+  if (form.jsonMeasurementKey) {
+    if (form.jsonMeasurementKey.type === 'number') {
+      form.jsonMeasurementKey.type = 'double'
+    }
+  }
+  if (form.jsonTagKeys) {
+    form.jsonTagKeys.map(t => {
+      if (t.type === 'number') {
+        t.type = 'double'
+      }
+    })
+  }
+  if (form.jsonFieldKeys) {
+    form.jsonFieldKeys.map(f => {
+      if (f.type === 'number') {
+        f.type = 'double'
+      }
+    })
+  }
   delete form.id
   delete form.orgID
   delete form.processGroupID
@@ -90,4 +117,27 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
   delete form.isActive
   delete form.status
   return form
+}
+
+export const sanitizeType = (type: string): string => {
+  if (type === 'double') {
+    type = 'Number'
+  }
+  return type.charAt(0).toUpperCase() + type.slice(1)
+}
+
+export const checkRequiredFields = (form: Subscription): boolean => {
+  if (
+    form.name &&
+    form.protocol &&
+    form.brokerHost &&
+    form.brokerPort &&
+    form.topic &&
+    form.dataFormat &&
+    form.bucket
+  ) {
+    return true
+  } else {
+    return false
+  }
 }

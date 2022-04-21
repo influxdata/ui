@@ -17,6 +17,7 @@ import {
   ComponentSize,
   FlexDirection,
   FlexBox,
+  ComponentStatus,
 } from '@influxdata/clockface'
 import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 
@@ -24,7 +25,10 @@ import JsonPathInput from 'src/writeData/subscriptions/components/JsonPathInput'
 import {Subscription} from 'src/types/subscriptions'
 
 // Utils
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {
+  sanitizeType,
+  handleValidation,
+} from 'src/writeData/subscriptions/utils/form'
 
 // Styles
 import 'src/writeData/subscriptions/components/JsonParsingForm.scss'
@@ -33,9 +37,10 @@ import {event} from 'src/cloud/utils/reporting'
 interface Props {
   formContent: Subscription
   updateForm: (any) => void
+  edit: boolean
 }
 
-const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
+const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const stringType = 'String'
   const numberType = 'Number'
   const dataTypeList = [stringType, numberType]
@@ -89,6 +94,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
             )
           }
           testID="timestamp-json-parsing"
+          status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
         />
       </Grid.Column>
       <Grid.Column>
@@ -113,36 +119,36 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           className="json-parsing-form__container"
         >
           <Form.ValidationElement
-            label="Name"
-            value={formContent.jsonMeasurementKey.name}
+            label="JSON Path"
+            value={formContent.jsonMeasurementKey.path}
             required={true}
             validationFunc={() =>
               handleValidation(
-                'Measurement Name',
-                formContent.jsonMeasurementKey.name
+                'Measurement Path',
+                formContent.jsonMeasurementKey.path
               )
             }
           >
             {status => (
               <Input
                 type={InputType.Text}
-                placeholder="nonDescriptName"
-                name="name"
+                placeholder="eg. $.myJSON.myObject[0].myKey"
+                name="jsonpath"
                 autoFocus={true}
-                value={formContent.jsonMeasurementKey.name}
+                value={formContent.jsonMeasurementKey.path}
                 onChange={e => {
-                  formContent.jsonMeasurementKey.name = e.target.value
+                  formContent.jsonMeasurementKey.path = e.target.value
                   updateForm({...formContent})
                 }}
                 onBlur={() =>
                   event(
                     'completed form field',
-                    {formField: 'jsonMeasurementKey.name'},
+                    {formField: 'jsonMeasurementKey.path'},
                     {feature: 'subscriptions'}
                   )
                 }
-                status={status}
-                testID="measurement-json-parsing-name"
+                status={edit ? status : ComponentStatus.Disabled}
+                testID="measurement-json-parsing-path"
               />
             )}
           </Form.ValidationElement>
@@ -154,8 +160,12 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   active={active}
                   onClick={onClick}
                   testID="measurement-json-parsing-type"
+                  status={
+                    edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                  }
                 >
-                  {dataTypeM}
+                  {sanitizeType(formContent.jsonMeasurementKey.type) ??
+                    dataTypeM}
                 </Dropdown.Button>
               )}
               menu={onCollapse => (
@@ -187,40 +197,6 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
         </FlexBox>
       </Grid.Column>
       <Grid.Column>
-        <Form.ValidationElement
-          label="JSON Path"
-          value={formContent.jsonMeasurementKey.path}
-          required={true}
-          validationFunc={() =>
-            handleValidation(
-              'Measurement Path',
-              formContent.jsonMeasurementKey.path
-            )
-          }
-        >
-          {status => (
-            <Input
-              type={InputType.Text}
-              placeholder="eg. $.myJSON.myObject[0].myKey"
-              name="jsonpath"
-              autoFocus={true}
-              value={formContent.jsonMeasurementKey.path}
-              onChange={e => {
-                formContent.jsonMeasurementKey.path = e.target.value
-                updateForm({...formContent})
-              }}
-              onBlur={() =>
-                event(
-                  'completed form field',
-                  {formField: 'jsonMeasurementKey.path'},
-                  {feature: 'subscriptions'}
-                )
-              }
-              status={status}
-              testID="measurement-json-parsing-path"
-            />
-          )}
-        </Form.ValidationElement>
         <div className="line"></div>
       </Grid.Column>
       {formContent.jsonTagKeys.map((_, key) => (
@@ -230,6 +206,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           formContent={formContent}
           name="Tag"
           itemNum={key}
+          edit={edit}
         />
       ))}
       {formContent.jsonFieldKeys.map((_, key) => (
@@ -239,6 +216,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
           formContent={formContent}
           name="Field"
           itemNum={key}
+          edit={edit}
         />
       ))}
       <Grid.Column>
@@ -248,6 +226,7 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm}) => {
               active={active}
               onClick={onClick}
               testID="json-parsing-add-rule"
+              status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             >
               <Icon glyph={IconFont.Plus} /> Add Rule
             </Dropdown.Button>

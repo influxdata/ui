@@ -31,6 +31,7 @@ import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtoco
 // Utils
 import {getOrg} from 'src/organizations/selectors'
 import {event} from 'src/cloud/utils/reporting'
+import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -56,6 +57,7 @@ const ParsingForm: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
+  const requiredFields = checkRequiredFields(formContent)
   return (
     formContent && (
       <div className="create-parsing-form">
@@ -102,12 +104,14 @@ const ParsingForm: FC<Props> = ({
                   <JsonParsingForm
                     formContent={formContent}
                     updateForm={updateForm}
+                    edit={true}
                   />
                 )}
                 {formContent.dataFormat === 'string' && (
                   <StringParsingForm
                     formContent={formContent}
                     updateForm={updateForm}
+                    edit={true}
                   />
                 )}
               </Grid.Row>
@@ -165,7 +169,11 @@ const ParsingForm: FC<Props> = ({
                   saveForm(formContent)
                 }}
                 testID="create-parsing-form--submit"
-                status={ComponentStatus.Default}
+                status={
+                  requiredFields
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Disabled
+                }
               />
             )}
           </Overlay.Footer>

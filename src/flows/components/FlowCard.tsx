@@ -33,12 +33,13 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const history = useHistory()
   const dispatch = useDispatch()
 
+  const flowUrl = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
+
   const handleClick = event => {
-    const url = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
     if (shouldOpenLinkInNewTab(event)) {
-      safeBlankLinkOpen(url)
+      safeBlankLinkOpen(flowUrl)
     } else {
-      history.push(url)
+      history.push(flowUrl)
     }
   }
 
@@ -96,6 +97,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
         onClick={handleClick}
         onUpdate={handleRenameNotebook}
         buttonTestID="flow-card--name-button"
+        href={flowUrl}
       />
       <ResourceCard.Meta>{meta}</ResourceCard.Meta>
     </ResourceCard>

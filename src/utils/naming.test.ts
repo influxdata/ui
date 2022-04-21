@@ -7,7 +7,7 @@ describe('The naming of a newly cloned resource', () => {
         'duplicate this',
         new Date(Date.UTC(2020, 11, 1, 12, 30, 45))
       )
-    ).toBe('duplicate this (cloned at 12-01-2020:12:30:45)')
+    ).toBe('duplicate this (cloned at 2020-12-01 12:30:45)')
   })
 
   it("clones a clone, but doesn't add any extra spaces", () => {
@@ -16,6 +16,6 @@ describe('The naming of a newly cloned resource', () => {
         'duplicate this  ',
         new Date(Date.UTC(2020, 11, 1, 12, 30, 45))
       )
-    ).toBe('duplicate this (cloned at 12-01-2020:12:30:45)')
+    ).toBe('duplicate this (cloned at 2020-12-01 12:30:45)')
   })
 })

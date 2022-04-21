@@ -266,9 +266,6 @@ export const QueryBuilderProvider: FC = ({children}) => {
       ? EXTENDED_TAG_LIMIT
       : DEFAULT_TAG_LIMIT
 
-    // NOTE: We have sort() |> limit(...) in this query.
-    // This might cause slowness as we are sorting the
-    // entire dataset and then fetching n items from that list.
     let queryText = `${_source}
     |> range(${formatTimeRangeArguments(range)})
     |> filter(fn: (r) => ${tagString})
@@ -285,9 +282,6 @@ export const QueryBuilderProvider: FC = ({children}) => {
     ) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
-      // NOTE: We have sort() |> limit(...) in this query.
-      // This might cause slowness as we are sorting the
-      // entire dataset and then fetching n items from that list.
       queryText = `${_source}
   schema.tagKeys(
     bucket: "${data.buckets[0].name}",
@@ -381,9 +375,6 @@ export const QueryBuilderProvider: FC = ({children}) => {
     const limit = isFlagEnabled('increasedMeasurmentTagLimit')
       ? EXTENDED_TAG_LIMIT
       : DEFAULT_TAG_LIMIT
-    // NOTE: We have sort() |> limit(...) in this query.
-    // This might cause slowness as we are sorting the
-    // entire dataset and then fetching n items from that list.
     let queryText = `${_source}
     |> range(${formatTimeRangeArguments(range)})
     |> filter(fn: (r) => ${tagString})
@@ -399,9 +390,6 @@ export const QueryBuilderProvider: FC = ({children}) => {
     ) {
       _source = `import "regexp"
       import "influxdata/influxdb/schema"`
-      // NOTE: We have sort() |> limit(...) in this query.
-      // This might cause slowness as we are sorting the
-      // entire dataset and then fetching n items from that list.
       queryText = `${_source}
   schema.tagValues(
     bucket: "${data.buckets[0].name}",

@@ -390,8 +390,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> keep(columns: ["${cards[idx].keys.selected[0]}"])
     |> group()
     |> distinct(column: "${cards[idx].keys.selected[0]}")${searchString}
-    |> sort()
-    |> limit(n: ${limit})`
+    |> limit(n: ${limit})
+    |> sort()`
 
     if (
       data.buckets[0].type !== 'sample' &&

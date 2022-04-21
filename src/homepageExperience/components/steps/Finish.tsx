@@ -33,11 +33,11 @@ export const Finish = (props: OwnProps) => {
     }
 
     const fire = (particleRatio, options) => {
-      confetti(
-        Object.assign({}, defaults, options, {
-          particleCount: Math.floor(count * particleRatio),
-        })
-      )
+      confetti({
+        ...defaults,
+        ...options,
+        particleCount: Math.floor(count * particleRatio),
+      })
     }
 
     fire(0.25, {

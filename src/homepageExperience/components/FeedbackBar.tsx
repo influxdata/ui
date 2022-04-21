@@ -11,7 +11,7 @@ import {
 } from 'src/homepageExperience/components/HomepageIcons'
 import {event} from 'src/cloud/utils/reporting'
 
-import 'src/homepageExperience/HomepageExperience.scss'
+import 'src/homepageExperience/components/HomepageExperience.scss'
 
 type OwnProps = {
   wizardEventName: string

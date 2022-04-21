@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 export class Overview extends PureComponent {
   render() {
@@ -13,7 +14,24 @@ export class Overview extends PureComponent {
             and write and execute some basic queries.
           </p>
 
-          <p>Without further ado, let’s get started.</p>
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/KZwr1xBDbBQ"
+            title="InfluxData - What is Time Series"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{marginBottom: '20px'}}
+          />
+
+          <p>
+            Join our{' '}
+            <SafeBlankLink href="https://www.influxdata.com/slack">
+              community slack{' '}
+            </SafeBlankLink>{' '}
+            to ask any questions you have along the way!
+          </p>
         </article>
       </div>
     )

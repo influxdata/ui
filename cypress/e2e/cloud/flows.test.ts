@@ -135,7 +135,9 @@ describe('Flows', () => {
           flowCloneNamePrefix.length,
           cloneName.length - 1
         )
-        cloneTime = `${cloneTime.slice(0, 10)} ${cloneTime.slice(11)}` // temporary until naming is fixed
+        cloneTime = `${cloneTime
+          .slice(0, 10)
+          .replace('-', '/')} ${cloneTime.slice(11)}` // temporary until naming is fixed
         const cloneTimeAsDate = new Date(cloneTime)
         expect(cloneTimeAsDate.toTimeString()).not.to.equal('Invalid Date')
         expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())
@@ -177,7 +179,9 @@ describe('Flows', () => {
           flowCloneNamePrefix.length,
           cloneName.length - 1
         )
-        cloneTime = `${cloneTime.slice(0, 10)} ${cloneTime.slice(11)}` // temporary until naming is fixed
+        cloneTime = `${cloneTime
+          .slice(0, 10)
+          .replace('-', '/')} ${cloneTime.slice(11)}` // temporary until naming is fixed
         const cloneTimeAsDate = new Date(cloneTime)
         expect(cloneTimeAsDate.toTimeString()).not.to.equal('Invalid Date')
         expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())

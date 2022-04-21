@@ -198,8 +198,7 @@ describe('Dashboards', () => {
           cy.getByTestID('dashboard-card--name').click()
         })
 
-      const viewGraphOrig = makeGraphSnapshot()
-
+      const cloneNamePrefix = `${localDashName} (cloned at `
       cy.getByTestID('nav-item-dashboards').click()
 
       cy.getByTestID('dashboard-card')
@@ -208,23 +207,16 @@ describe('Dashboards', () => {
           cy.getByTestID('context-menu-dashboard').click()
         })
 
-      const d = Date.UTC(2018, 10, 30)
-      cy.clock(d, ['Date'])
-      const cloneName = `${localDashName} (cloned at 11-30-2018:00:00:00)`
-
       cy.getByTestID('context-clone-dashboard').click()
 
-      cy.clock().invoke('restore')
       // Verify cloned dashboard contents
 
-      cy.getByTestID('page-title').should('contain.text', cloneName)
+      cy.getByTestID('page-title').should('contain.text', cloneNamePrefix)
       cy.getByTestID('variable-dropdown--Power').should('be.visible')
       cy.getByTestID('variable-dropdown-input-typeAhead--Power').should(
         'have.value',
         'base'
       )
-
-      makeGraphSnapshot().shouldBeSameAs(viewGraphOrig)
 
       cy.getByTestID('cell--view-empty markdown').should(
         'contain.text',
@@ -248,8 +240,7 @@ describe('Dashboards', () => {
       cy.getByTestID('cell-context--note').click()
       cy.getByTestID('markdown-editor')
         .click()
-        .type('{ctrl}a')
-        .type(replaceText)
+        .type(`{selectAll}{backspace}${replaceText}`)
 
       cy.getByTestID('save-note--button').click()
 
@@ -260,7 +251,10 @@ describe('Dashboards', () => {
         .eq(1)
         .within(() => {
           cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
-          cy.getByTestID('dashboard-card--name').should('contain', cloneName)
+          cy.getByTestID('dashboard-card--name').should(
+            'contain',
+            cloneNamePrefix
+          )
           cy.getByTestID('inline-labels--add').click()
         })
 
@@ -288,14 +282,6 @@ describe('Dashboards', () => {
           cy.getByTestID('dashboard-card--name').click()
         })
 
-      /*
-      // TODO verify graph and variable in original once #3287 is fixed
-      // https://github.com/influxdata/ui/issues/3287
-
-      cy.getByTestID('variable-dropdown-input-typeAhead--Power').should('have.value','base')
-      makeGraphSnapshot().shouldBeSameAs(viewGraphCopy, false)
-
-       */
       cy.getByTestID('cell--view-empty markdown').should(
         'contain',
         'The cat went here and there'

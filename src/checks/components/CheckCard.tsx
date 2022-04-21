@@ -46,6 +46,8 @@ import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampForm
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 interface OwnProps {
   check: Check
@@ -68,6 +70,8 @@ const CheckCard: FC<Props> = ({
   history,
 }) => {
   const {activeStatus, description, id, name, taskID} = check
+
+  const checkUrl = `/orgs/${orgID}/alerting/checks/${id}/edit`
 
   const onUpdateName = (name: string) => {
     try {
@@ -104,7 +108,11 @@ const CheckCard: FC<Props> = ({
   }
 
   const onCheckClick = () => {
-    history.push(`/orgs/${orgID}/alerting/checks/${id}/edit`)
+    if (shouldOpenLinkInNewTab(event as MouseEvent)) {
+      safeBlankLinkOpen(checkUrl)
+    } else {
+      history.push(checkUrl)
+    }
   }
 
   const onView = () => {
@@ -188,6 +196,7 @@ const CheckCard: FC<Props> = ({
             testID="check-card--name"
             buttonTestID="check-card--name-button"
             inputTestID="check-card--input"
+            href={checkUrl}
           />
           <ResourceCard.EditableDescription
             onUpdate={onUpdateDescription}

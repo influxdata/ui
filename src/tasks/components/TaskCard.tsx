@@ -257,7 +257,7 @@ export class TaskCard extends PureComponent<
     } = this.props
     const taskUrl = `/orgs/${orgID}/tasks/${task.id}/runs`
 
-    if (shouldOpenLinkInNewTab(event as MouseEvent)) {
+    if (shouldOpenLinkInNewTab(event)) {
       safeBlankLinkOpen(taskUrl)
     } else {
       history.push(taskUrl)

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {MouseEvent, FC} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
@@ -107,8 +107,8 @@ const CheckCard: FC<Props> = ({
     }
   }
 
-  const onCheckClick = () => {
-    if (shouldOpenLinkInNewTab(event as MouseEvent)) {
+  const onCheckClick = (event: MouseEvent) => {
+    if (shouldOpenLinkInNewTab(event)) {
       safeBlankLinkOpen(checkUrl)
     } else {
       history.push(checkUrl)

@@ -1,10 +1,14 @@
+import React from 'react'
+
 enum OperatingSystems {
   Mac = 'MacOS',
   Windows = 'Windows',
   Linux = 'Linux',
 }
 
-export const shouldOpenLinkInNewTab = (event: MouseEvent): boolean => {
+export const shouldOpenLinkInNewTab = (
+  event: MouseEvent | React.MouseEvent
+): boolean => {
   // default behavior at the time of writing this function only supports MacOS
   let OS = OperatingSystems.Mac
 

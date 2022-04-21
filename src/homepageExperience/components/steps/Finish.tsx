@@ -33,7 +33,7 @@ export const Finish = (props: OwnProps) => {
       </p>
       <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>
         <ResourceCard className="homepage-wizard-next-steps">
-          <SafeBlankLink href="">
+          <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
             <h4>{CodeTerminalIcon}Sample App</h4>
           </SafeBlankLink>
           <p>

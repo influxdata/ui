@@ -78,7 +78,7 @@ module.exports = {
     }),
     new MonacoWebpackPlugin({
       languages: ['json', 'markdown'],
-      filename: '[name].worker.[contenthash].js',
+      filename: `${STATIC_DIRECTORY}[name].worker.[contenthash].js`,
       globalAPI: true,
     }),
   ],

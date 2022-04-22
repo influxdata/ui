@@ -3,7 +3,7 @@ import React, {FC, createContext, useContext, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import {stackoverflowDark as syntaxTheme} from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import {stackoverflowDark as syntaxTheme} from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 
 // Components
 import {DapperScrollbars, InfluxColors} from '@influxdata/clockface'

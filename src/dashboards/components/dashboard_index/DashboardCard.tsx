@@ -39,6 +39,8 @@ import {DEFAULT_DASHBOARD_NAME} from 'src/dashboards/constants'
 
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
+import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 import {
   pinnedItemFailure,
@@ -86,7 +88,16 @@ class DashboardCard extends PureComponent<Props> {
       onFilterChange,
       labels,
       updatedAt,
+      match: {
+        params: {orgID},
+      },
     } = this.props
+
+    let dashboardUrl = `/orgs/${orgID}/dashboards/${id}`
+
+    if (isFlagEnabled('boardWithFlows')) {
+      dashboardUrl = `/${PROJECT_NAME.toLowerCase()}/from/dashboard/${id}`
+    }
 
     return (
       <ResourceCard
@@ -102,6 +113,7 @@ class DashboardCard extends PureComponent<Props> {
           testID="dashboard-card--name"
           buttonTestID="dashboard-card--name-button"
           inputTestID="dashboard-card--input"
+          href={dashboardUrl}
         />
         <ResourceCard.EditableDescription
           onUpdate={this.handleUpdateDescription}
@@ -222,7 +234,7 @@ class DashboardCard extends PureComponent<Props> {
     deletePinnedItemByParam(id)
   }
 
-  private handleClickDashboard = e => {
+  private handleClickDashboard = event => {
     const {
       onResetViews,
       history,
@@ -232,16 +244,16 @@ class DashboardCard extends PureComponent<Props> {
       },
     } = this.props
 
-    let dest = `/${PROJECT_NAME.toLowerCase()}/from/dashboard/${id}`
+    let dashboardUrl = `/orgs/${orgID}/dashboards/${id}`
 
-    if (!isFlagEnabled('boardWithFlows')) {
-      dest = `/orgs/${orgID}/dashboards/${id}`
+    if (isFlagEnabled('boardWithFlows')) {
+      dashboardUrl = `/${PROJECT_NAME.toLowerCase()}/from/dashboard/${id}`
     }
 
-    if (e.metaKey) {
-      window.open(dest, '_blank')
+    if (shouldOpenLinkInNewTab(event)) {
+      safeBlankLinkOpen(dashboardUrl)
     } else {
-      history.push(dest)
+      history.push(dashboardUrl)
     }
 
     onResetViews()

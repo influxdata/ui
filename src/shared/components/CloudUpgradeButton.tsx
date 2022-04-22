@@ -20,16 +20,16 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 interface OwnProps {
   buttonText?: string
   className?: string
-  hidePromoMessage?: boolean
   metric?: () => void
+  showPromoMessage?: boolean
   size?: ComponentSize
 }
 
 const CloudUpgradeButton: FC<OwnProps> = ({
   buttonText = 'Upgrade Now',
   className,
-  hidePromoMessage = false,
   metric,
+  showPromoMessage = true,
   size = ComponentSize.Small,
 }) => {
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
@@ -47,8 +47,8 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     history.push('/checkout')
   }
 
-  const credit250Message =
-    isFlagEnabled('credit250Experiment') && !hidePromoMessage ? (
+  const promoMessage =
+    isFlagEnabled('credit250Experiment') && showPromoMessage ? (
       <span className="credit-250-experiment-upgrade-button--text">
         Get $250 free credit
       </span>
@@ -58,7 +58,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     <CloudOnly>
       {showUpgradeButton && (
         <span>
-          {credit250Message}
+          {promoMessage}
           <Button
             icon={IconFont.CrownSolid_New}
             className={cloudUpgradeButtonClass}
@@ -66,10 +66,6 @@ const CloudUpgradeButton: FC<OwnProps> = ({
             shape={ButtonShape.Default}
             onClick={handleClick}
             text={buttonText}
-            style={{
-              background:
-                'linear-gradient(45deg, rgb(52, 187, 85) 0%, rgb(0, 163, 255) 100%)',
-            }}
             testID="cloud-upgrade--button"
           />
         </span>

@@ -91,6 +91,14 @@ a.upgrade-payg--button {
   background-image: url('~assets/images/dashboard-empty--dark.svg');
 }
 
+button.upgrade-payg--button {
+  background: linear-gradient(
+    45deg,
+    rgb(52, 187, 85) 0%,
+    rgb(0, 163, 255) 100%
+  );
+}
+
 .credit-250-experiment-upgrade-button--text {
   margin: $cf-marg-c;
 }

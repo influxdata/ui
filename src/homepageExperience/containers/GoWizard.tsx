@@ -6,8 +6,7 @@ import {
   ComponentColor,
   ComponentSize,
   ComponentStatus,
-  FlexBox,
-  JustifyContent,
+  Page,
   SubwayNav,
 } from '@influxdata/clockface'
 
@@ -116,59 +115,68 @@ export class GoWizard extends PureComponent<null, State> {
 
   render() {
     return (
-      <div className="homepage-wizard-container">
-        <aside className="homepage-wizard-container--subway">
-          <div style={{width: '100%'}}>
-            <SubwayNav
-              currentStep={this.state.currentStep}
-              onStepClick={this.handleNavClick}
-              navigationSteps={HOMEPAGE_NAVIGATION_STEPS}
-              settingUpIcon={GoIcon}
-              settingUpText="Go"
-              setupTime="5 minutes"
-            />
-          </div>
-        </aside>
-        <div className="homepage-wizard-container--main">
-          <FlexBox justifyContent={JustifyContent.FlexEnd}>
-            <RateLimitAlert location="goWizard" />
-          </FlexBox>
-          <div
-            className={classnames('homepage-wizard-container--main-wrapper', {
-              verticallyCentered:
-                this.state.currentStep === 1 ||
-                this.state.currentStep === HOMEPAGE_NAVIGATION_STEPS.length,
-            })}
-          >
-            {this.renderStep()}
-          </div>
+      <Page>
+        <Page.Header fullWidth={false}>
+          <h1 />
+          <RateLimitAlert location="firstMile.homepage" />
+        </Page.Header>
+        <Page.Contents>
+          <div className="homepage-wizard-container">
+            <aside className="homepage-wizard-container--subway">
+              <div style={{width: '100%'}}>
+                <SubwayNav
+                  currentStep={this.state.currentStep}
+                  onStepClick={this.handleNavClick}
+                  navigationSteps={HOMEPAGE_NAVIGATION_STEPS}
+                  settingUpIcon={GoIcon}
+                  settingUpText="Go"
+                  setupTime="5 minutes"
+                />
+              </div>
+            </aside>
+            <div className="homepage-wizard-container--main">
+              <div
+                className={classnames(
+                  'homepage-wizard-container--main-wrapper',
+                  {
+                    verticallyCentered:
+                      this.state.currentStep === 1 ||
+                      this.state.currentStep ===
+                        HOMEPAGE_NAVIGATION_STEPS.length,
+                  }
+                )}
+              >
+                {this.renderStep()}
+              </div>
 
-          <div className="homepage-wizard-container-footer">
-            <Button
-              onClick={this.handlePreviousClick}
-              text="Previous"
-              size={ComponentSize.Large}
-              color={ComponentColor.Tertiary}
-              status={
-                this.state.currentStep > 1
-                  ? ComponentStatus.Default
-                  : ComponentStatus.Disabled
-              }
-            />
-            <Button
-              onClick={this.handleNextClick}
-              text="Next"
-              size={ComponentSize.Large}
-              color={ComponentColor.Primary}
-              status={
-                this.state.currentStep < 8
-                  ? ComponentStatus.Default
-                  : ComponentStatus.Disabled
-              }
-            />
+              <div className="homepage-wizard-container-footer">
+                <Button
+                  onClick={this.handlePreviousClick}
+                  text="Previous"
+                  size={ComponentSize.Large}
+                  color={ComponentColor.Tertiary}
+                  status={
+                    this.state.currentStep > 1
+                      ? ComponentStatus.Default
+                      : ComponentStatus.Disabled
+                  }
+                />
+                <Button
+                  onClick={this.handleNextClick}
+                  text="Next"
+                  size={ComponentSize.Large}
+                  color={ComponentColor.Primary}
+                  status={
+                    this.state.currentStep < 8
+                      ? ComponentStatus.Default
+                      : ComponentStatus.Disabled
+                  }
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </Page.Contents>
+      </Page>
     )
   }
 }

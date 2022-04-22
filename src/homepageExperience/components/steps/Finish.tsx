@@ -92,7 +92,7 @@ export const Finish = (props: OwnProps) => {
           </p>
         </ResourceCard>
         <ResourceCard className="homepage-wizard-next-steps">
-          <SafeBlankLink href="https://docs.influxdata.com">
+          <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
             <h4>{BookIcon}Key Concepts</h4>
           </SafeBlankLink>
           <p>Learn about important concepts for writing time-series data.</p>

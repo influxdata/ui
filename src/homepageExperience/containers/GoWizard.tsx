@@ -26,7 +26,7 @@ import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import RateLimitAlert from '../../cloud/components/RateLimitAlert'
+import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 interface State {
   currentStep: number

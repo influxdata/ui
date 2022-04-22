@@ -398,8 +398,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     start: ${CACHING_REQUIRED_START_DATE},
     stop: ${CACHING_REQUIRED_END_DATE},
   )${searchString}
-  |> sort()
-  |> limit(n: ${limit})`
+  |> limit(n: ${limit})
+  |> sort()`
     }
 
     query(queryText, scope)

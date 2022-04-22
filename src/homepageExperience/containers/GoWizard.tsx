@@ -6,6 +6,8 @@ import {
   ComponentColor,
   ComponentSize,
   ComponentStatus,
+  FlexBox,
+  JustifyContent,
   SubwayNav,
 } from '@influxdata/clockface'
 
@@ -24,6 +26,7 @@ import {HOMEPAGE_NAVIGATION_STEPS} from 'src/homepageExperience/utils'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import RateLimitAlert from '../../cloud/components/RateLimitAlert'
 
 interface State {
   currentStep: number
@@ -127,6 +130,9 @@ export class GoWizard extends PureComponent<null, State> {
           </div>
         </aside>
         <div className="homepage-wizard-container--main">
+          <FlexBox justifyContent={JustifyContent.FlexEnd}>
+            <RateLimitAlert location="goWizard" />
+          </FlexBox>
           <div
             className={classnames('homepage-wizard-container--main-wrapper', {
               verticallyCentered:

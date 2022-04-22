@@ -411,7 +411,7 @@ describe('Flows with queryBuilderUseMetadataCaching flag on', () => {
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    const clone = `${flowName} (cloned at 11-30-2018:00:00:00)`
+    const clone = `${flowName} (cloned at 2018-11-30 00:00:00)`
 
     // Should redirect the user to the newly cloned flow
     // Validates that the selected clone is the clone

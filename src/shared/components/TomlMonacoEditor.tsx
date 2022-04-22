@@ -3,10 +3,9 @@ import React, {FC} from 'react'
 
 // Components
 import MonacoEditor from 'react-monaco-editor'
-import THEME_NAME from 'src/external/monaco.toml.theme'
-import TOMLLANGID from 'src/external/monaco.toml.syntax'
-import {OnChangeScript} from 'src/types/flux'
-import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
+import THEME_NAME from 'src/languageSupport/languages/toml/monaco.toml.theme'
+import TOMLLANGID from 'src/languageSupport/languages/toml/monaco.toml.syntax'
+import {OnChangeScript, EditorType, CursorEvent, KeyboardEvent} from 'src/types'
 
 import './FluxMonacoEditor.scss'
 
@@ -18,7 +17,7 @@ interface Position {
 interface Props {
   script: string
   className?: string
-  willMount?: (monaco: monacoEditor.editor.IStandaloneCodeEditor) => void
+  willMount?: (monaco: EditorType) => void
   readOnly?: boolean
   testID?: string
   onChangeScript?: OnChangeScript
@@ -27,25 +26,21 @@ interface Props {
 }
 
 const TomlEditorMonaco: FC<Props> = props => {
-  const editorDidMount = (
-    editor: monacoEditor.editor.IStandaloneCodeEditor
-  ) => {
-    editor.onDidChangeCursorPosition(
-      (evt: monacoEditor.editor.ICursorPositionChangedEvent) => {
-        const {position} = evt
-        const {onCursorChange} = props
-        const pos = {
-          line: position.lineNumber,
-          ch: position.column,
-        }
-
-        if (onCursorChange) {
-          onCursorChange(pos)
-        }
+  const editorDidMount = (editor: EditorType) => {
+    editor.onDidChangeCursorPosition((evt: CursorEvent) => {
+      const {position} = evt
+      const {onCursorChange} = props
+      const pos = {
+        line: position.lineNumber,
+        ch: position.column,
       }
-    )
 
-    editor.onKeyUp((evt: monacoEditor.IKeyboardEvent) => {
+      if (onCursorChange) {
+        onCursorChange(pos)
+      }
+    })
+
+    editor.onKeyUp((evt: KeyboardEvent) => {
       const {ctrlKey, code} = evt
       const {onSubmitScript} = props
       if (ctrlKey && code === 'Enter') {

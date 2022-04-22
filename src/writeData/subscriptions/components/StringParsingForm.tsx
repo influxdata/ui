@@ -28,13 +28,16 @@ import {handleValidation} from 'src/writeData/subscriptions/utils/form'
 
 // Styles
 import 'src/writeData/subscriptions/components/StringParsingForm.scss'
+import {event} from 'src/cloud/utils/reporting'
+import {ComponentStatus} from 'src/clockface'
 
 interface Props {
   formContent: Subscription
   updateForm: (any) => void
+  edit: boolean
 }
 
-const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
+const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
   const ruleList = ['field', 'tag']
   const [rule, setRule] = useState('')
   const defaultStringFieldTag = {
@@ -66,13 +69,27 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           placeholder="eg. regexExample"
           name="timestamp"
           autoFocus={true}
-          value={formContent.stringTimestamp.pattern}
+          value={
+            formContent.stringTimestamp
+              ? formContent.stringTimestamp.pattern
+              : ''
+          }
           onChange={e => {
             formContent.stringTimestamp.pattern = e.target.value
             updateForm({...formContent})
           }}
-          maxLength={56}
+          onBlur={() =>
+            event(
+              'completed form field',
+              {
+                formField: 'stringTimestamp.pattern',
+              },
+              {feature: 'subscriptions'}
+            )
+          }
+          maxLength={255}
           testID="timestamp-string-parsing"
+          status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
         />
       </Grid.Column>
       <Grid.Column>
@@ -109,8 +126,17 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                 formContent.stringMeasurement.pattern = e.target.value
                 updateForm({...formContent})
               }}
-              status={status}
-              maxLength={56}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {
+                    formField: 'stringMeasurement.pattern',
+                  },
+                  {feature: 'subscriptions'}
+                )
+              }
+              status={edit ? status : ComponentStatus.Disabled}
+              maxLength={255}
               testID="measurment-string-parsing-pattern"
             />
           )}
@@ -124,6 +150,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           formContent={formContent}
           updateForm={updateForm}
           itemNum={key}
+          edit={edit}
         />
       ))}
       {formContent.stringFields.map((_, key) => (
@@ -133,6 +160,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
           updateForm={updateForm}
           name="Field"
           itemNum={key}
+          edit={edit}
         />
       ))}
       <Grid.Column>
@@ -142,6 +170,7 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
               active={active}
               onClick={onClick}
               testID="string-parsing-add-rule"
+              status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             >
               <Icon glyph={IconFont.Plus} /> Add Rule
             </Dropdown.Button>
@@ -154,10 +183,15 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm}) => {
                   id={r}
                   value={r}
                   onClick={() => {
+                    event(
+                      'added string parsing rule',
+                      {ruleType: r},
+                      {feature: 'subscriptions'}
+                    )
                     setRule(r)
                   }}
                   selected={rule === r}
-                  testID={`string-parsing-add-rule-${1}`}
+                  testID={`string-parsing-add-rule-${key}`}
                 >
                   {r}
                 </Dropdown.Item>

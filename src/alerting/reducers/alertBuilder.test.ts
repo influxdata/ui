@@ -19,7 +19,6 @@ import {
   updateThresholds,
   updateName,
   initializeAlertBuilder,
-  convertCheckToCustom,
   Action,
 } from 'src/alerting/actions/alertBuilder'
 import {CHECK_FIXTURE_1, CHECK_FIXTURE_3} from 'src/checks/reducers/checks.test'
@@ -60,6 +59,7 @@ const mockState = (): AlertBuilderState => ({
   level: 'OK',
   thresholds: [],
   status: RemoteDataState.Done,
+  description: 'mock test',
 })
 
 describe('alertBuilderReducer', () => {
@@ -78,14 +78,6 @@ describe('alertBuilderReducer', () => {
 
       expect(actual).toEqual(expected)
     })
-  })
-
-  it('covertCheckToCustom', () => {
-    const actual = alertBuilderReducer(mockState(), convertCheckToCustom())
-
-    const expected = {...mockState(), type: 'custom'}
-
-    expect(actual).toEqual(expected)
   })
 
   describe('resetAlertBuilder', () => {

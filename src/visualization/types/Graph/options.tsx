@@ -67,6 +67,10 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
         return 'Smooth'
       case 'step':
         return 'Step'
+      case 'stepBefore':
+        return 'StepBefore'
+      case 'stepAfter':
+        return 'StepAfter'
       default:
       case 'line':
         return 'Linear'
@@ -196,6 +200,24 @@ const GraphViewOptions: FC<Props> = ({properties, results, update}) => {
                       selected={properties.geom === 'step'}
                     >
                       Step
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      value="stepBefore"
+                      onClick={(geom: string) => {
+                        update({geom})
+                      }}
+                      selected={properties.geom === 'stepBefore'}
+                    >
+                      StepBefore
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      value="stepAfter"
+                      onClick={(geom: string) => {
+                        update({geom})
+                      }}
+                      selected={properties.geom === 'stepAfter'}
+                    >
+                      StepAfter
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 )}

@@ -36,7 +36,7 @@ import {DEFAULT_COLLECTOR_NAME} from 'src/dashboards/constants'
 import {AppState, Label, Telegraf} from 'src/types'
 
 // Utils
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
 
 interface OwnProps {
   collector: Telegraf
@@ -184,12 +184,9 @@ class CollectorRow extends PureComponent<
   }
 
   private cloneTelegraf = (): void => {
-    const allTelegrafNames = Object.values(this.props.telegrafs).map(
-      t => t.name
-    )
     this.props.cloneTelegraf({
       ...this.props.collector,
-      name: incrementCloneName(allTelegrafNames, this.props.collector.name),
+      name: setCloneName(this.props.collector.name),
     })
   }
   private handleDeleteConfig = (): void => {
@@ -199,8 +196,7 @@ class CollectorRow extends PureComponent<
 
 const mstp = (state: AppState) => {
   const org = getOrg(state)
-  const telegrafs = state.resources.telegrafs.byID
-  return {org, telegrafs}
+  return {org}
 }
 
 const mdtp = {

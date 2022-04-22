@@ -5,13 +5,9 @@ import {useSelector} from 'react-redux'
 
 // Components
 import {
-  Input,
   Button,
-  Grid,
   Form,
   Overlay,
-  Columns,
-  InputType,
   ButtonType,
   ComponentColor,
   ComponentStatus,
@@ -25,11 +21,11 @@ import {
   FlexDirection,
   FlexBox,
 } from '@influxdata/clockface'
-import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
+import SubscriptionFormContent from 'src/writeData/subscriptions/components/SubscriptionFormContent'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -96,60 +92,23 @@ const SubscriptionForm: FC<Props> = ({
               Subscribe to a topic and write message payloads to an InfluxDB
               data bucket.
             </Heading>
-            <Grid>
-              <Grid.Row>
-                <Grid.Column widthSM={Columns.Twelve}>
-                  <Form.ValidationElement
-                    label="Topic"
-                    value={formContent.topic}
-                    helpText="Subscribe to a topic to start recieving messages."
-                    required={true}
-                    validationFunc={() =>
-                      handleValidation('Topic', formContent.topic)
-                    }
-                  >
-                    {status => (
-                      <Input
-                        type={InputType.Text}
-                        placeholder="Enter a topic (wildcards accepted)"
-                        name="topic"
-                        autoFocus={true}
-                        value={formContent.topic}
-                        onChange={e => {
-                          updateForm({...formContent, topic: e.target.value})
-                        }}
-                        status={status}
-                        maxLength={16}
-                        testID="create-subscription-form--topic"
-                      />
-                    )}
-                  </Form.ValidationElement>
-                </Grid.Column>
-                <Grid.Column widthXS={Columns.Twelve}>
-                  <Heading
-                    element={HeadingElement.H3}
-                    weight={FontWeight.Bold}
-                    className="create-subscription-form__header"
-                  >
-                    Write Bucket
-                  </Heading>
-                  <Heading
-                    element={HeadingElement.H5}
-                    weight={FontWeight.Regular}
-                    className="create-subscription-form__text"
-                  >
-                    Select a bucket to write your data to.
-                  </Heading>
-                  <WriteDataHelperBuckets className="write-data--subscriptions-title" />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+            <SubscriptionFormContent
+              currentSubscription={formContent}
+              updateForm={updateForm}
+              className="create"
+              edit={true}
+            />
           </Overlay.Body>
           <Overlay.Footer>
             <Button
               text="Cancel"
               color={ComponentColor.Tertiary}
               onClick={() => {
+                event(
+                  'creation canceled',
+                  {step: 'subscription'},
+                  {feature: 'subscriptions'}
+                )
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
               titleText="Cancel"
@@ -160,6 +119,11 @@ const SubscriptionForm: FC<Props> = ({
               text="Back"
               color={ComponentColor.Secondary}
               onClick={() => {
+                event(
+                  'back clicked',
+                  {step: 'subscription'},
+                  {feature: 'subscriptions'}
+                )
                 setFormActive('broker')
               }}
               titleText="Back to broker form"
@@ -170,6 +134,11 @@ const SubscriptionForm: FC<Props> = ({
               text="Next"
               color={ComponentColor.Success}
               onClick={() => {
+                event(
+                  'next clicked',
+                  {step: 'subscription'},
+                  {feature: 'subscriptions'}
+                )
                 setFormActive('parsing')
               }}
               type={ButtonType.Button}

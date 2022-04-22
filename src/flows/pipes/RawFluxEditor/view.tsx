@@ -18,7 +18,6 @@ import {
 } from '@influxdata/clockface'
 
 // Types
-import {FluxToolbarFunction} from 'src/types/shared'
 import {PipeProp} from 'src/types/flows'
 
 // Context
@@ -34,13 +33,13 @@ import {
 import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
 import Functions from 'src/flows/pipes/RawFluxEditor/FunctionsList/GroupedFunctionsList'
 import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/FunctionsList/DynamicFunctionsList'
-import {FluxFunction} from 'src/types/shared'
 
 // Styles
 import 'src/flows/pipes/RawFluxEditor/style.scss'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const FluxMonacoEditor = lazy(() =>
@@ -75,20 +74,12 @@ const Query: FC<PipeProp> = ({Context}) => {
   }, [id, inject])
 
   const injectIntoEditor = useCallback(
-    (fn: FluxToolbarFunction | FluxFunction): void => {
+    (fn): void => {
       let text = ''
       if (fn.name === 'from' || fn.name === 'union') {
-        text = `${
-          (fn as FluxToolbarFunction).example
-            ? (fn as FluxToolbarFunction).example
-            : fn.name
-        }()` // inject functionality for dynamic flux panels is in progress
+        text = `${fn.example}`
       } else {
-        text = `  |> ${
-          (fn as FluxToolbarFunction).example
-            ? (fn as FluxToolbarFunction).example
-            : fn.name
-        }()`
+        text = `  |> ${fn.example}`
       }
 
       const options = {
@@ -97,7 +88,6 @@ const Query: FC<PipeProp> = ({Context}) => {
         header: !!fn.package ? `import "${fn.package}"` : null,
       }
       inject(options)
-      event('Inject function into Flux Script', {fn: fn.name})
     },
     [inject]
   )
@@ -109,7 +99,7 @@ const Query: FC<PipeProp> = ({Context}) => {
     } else {
       event('Flux Panel (Notebooks) - Toggle Functions - On')
       show(id)
-      if (isFlagEnabled('fluxDynamicDocs')) {
+      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
         showSub(<DynamicFunctions onSelect={injectIntoEditor} />)
       } else {
         showSub(<Functions onSelect={injectIntoEditor} />)

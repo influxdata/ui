@@ -1,6 +1,6 @@
 // Libraries
 import React, {FC, useEffect} from 'react'
-import {connect} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import classnames from 'classnames'
 
 // Components
@@ -23,13 +23,13 @@ import {
   extractRateLimitResources,
   extractRateLimitStatus,
 } from 'src/cloud/utils/limits'
+import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
 // Types
-import {AppState} from 'src/types'
-import {LimitStatus} from 'src/cloud/actions/limits'
 import RateLimitAlertContent from 'src/cloud/components/RateLimitAlertContent'
 
 import {notify} from 'src/shared/actions/notifications'
@@ -42,67 +42,63 @@ import {UpgradeContent} from 'src/cloud/components/RateLimitAlertContent'
 
 import './RateLimitAlert.scss'
 
-interface StateProps {
-  resources: string[]
-  status: LimitStatus['status']
-  showUpgrade: boolean
-}
-
-interface OwnProps {
+interface Props {
   alertOnly?: boolean
   className?: string
-  sendNotify: (_: any) => void
-  handleShowOverlay: any
-  handleDismissOverlay: any
+  location?: string
 }
-type Props = StateProps & OwnProps
 
-const RateLimitAlert: FC<Props> = ({
-  status,
-  alertOnly,
-  className,
-  resources,
-  showUpgrade,
-  sendNotify,
-  handleShowOverlay,
-  handleDismissOverlay,
-}) => {
+const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
+  const resources = useSelector(extractRateLimitResources)
+  const status = useSelector(extractRateLimitStatus)
+  const showUpgrade = useSelector(shouldShowUpgradeButton)
+  const dispatch = useDispatch()
+
   const appearOverlay = () => {
-    handleShowOverlay('write-limit', null, handleDismissOverlay)
+    dispatch(showOverlay('write-limit', null, () => dispatch(dismissOverlay)))
   }
 
   useEffect(() => {
     if (CLOUD && status === 'exceeded' && resources.includes('write')) {
       if (showUpgrade) {
-        sendNotify(
-          writeLimitReached(
-            '',
-            <UpgradeContent
-              type="write"
-              link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/optimize-writes/"
-              className="flex-upgrade-content"
-            />
+        dispatch(
+          notify(
+            writeLimitReached(
+              '',
+              <UpgradeContent
+                type="write"
+                link="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/optimize-writes/"
+                className="flex-upgrade-content"
+              />
+            )
           )
         )
       } else {
-        sendNotify(
-          writeLimitReached(
-            "Data in has stopped because you've hit the query write limit. Let's get it flowing again: ",
-            <Button
-              className="rate-alert-overlay-button"
-              color={ComponentColor.Primary}
-              size={ComponentSize.Small}
-              onClick={appearOverlay}
-              text="Request Write Limit Increase"
-            />
+        dispatch(
+          notify(
+            writeLimitReached(
+              "Data in has stopped because you've hit the query write limit. Let's get it flowing again: ",
+              <Button
+                className="rate-alert-overlay-button"
+                color={ComponentColor.Primary}
+                size={ComponentSize.Small}
+                onClick={appearOverlay}
+                text="Request Write Limit Increase"
+              />
+            )
           )
         )
       }
     }
-  }, [showUpgrade, status])
+  }, [showUpgrade, status]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const rateLimitAlertClass = classnames('rate-alert', {
     [`${className}`]: className,
   })
+
+  const icon = isFlagEnabled('credit250Experiment')
+    ? IconFont.Stop
+    : IconFont.Cloud
 
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
     return (
@@ -115,7 +111,7 @@ const RateLimitAlert: FC<Props> = ({
         <BannerPanel
           size={ComponentSize.ExtraSmall}
           gradient={Gradients.PolarExpress}
-          icon={IconFont.Cloud}
+          icon={icon}
           hideMobileIcon={true}
           textColor={InfluxColors.Yeti}
         >
@@ -126,27 +122,17 @@ const RateLimitAlert: FC<Props> = ({
   }
 
   if (CLOUD && !alertOnly) {
-    return <CloudUpgradeButton className="upgrade-payg--button__header" />
+    return (
+      <CloudUpgradeButton
+        className="upgrade-payg--button__header"
+        metric={() => {
+          event('rate limit upgrade', {location})
+        }}
+      />
+    )
   }
 
   return null
 }
 
-const mstp = (state: AppState) => {
-  const resources = extractRateLimitResources(state)
-  const status = extractRateLimitStatus(state)
-  const showUpgrade = shouldShowUpgradeButton(state)
-  return {
-    status,
-    resources,
-    showUpgrade,
-  }
-}
-
-const mdtp = {
-  sendNotify: notify,
-  handleShowOverlay: showOverlay,
-  handleDismissOverlay: dismissOverlay,
-}
-
-export default connect(mstp, mdtp)(RateLimitAlert)
+export default RateLimitAlert

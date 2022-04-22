@@ -15,22 +15,18 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 
-// Actions For Tasks
-import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
-
 // Actions
+import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import {runTask, getRuns, updateTaskStatus} from 'src/tasks/actions/thunks'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
-
-// Actions For Members
 import {getMembers} from 'src/members/actions/thunks'
 import {getOrg} from 'src/organizations/selectors'
-
 import {TaskPage, setCurrentTasksPage} from 'src/tasks/actions/creators'
 
 // Types
 import {ComponentColor, Button} from '@influxdata/clockface'
 import {Task, AppState} from 'src/types'
+import {DEFAULT_PROJECT_NAME} from 'src/flows'
 
 // DateTime
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
@@ -38,9 +34,10 @@ import {FormattedDateTime} from 'src/utils/datetime/FormattedDateTime'
 
 interface Props {
   task: Task
+  isTaskEditable: boolean
 }
 
-const TaskRunsCard: FC<Props> = ({task}) => {
+const TaskRunsCard: FC<Props> = ({task, isTaskEditable}) => {
   const dispatch = useDispatch()
   const members = useSelector((state: AppState) => state.resources.members.byID)
   const org = useSelector(getOrg)
@@ -99,7 +96,11 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       })
       .then(resp => {
         if (resp.length) {
-          setRoute(`/orgs/${org.id}/notebooks/${resp[0].notebookID}`)
+          setRoute(
+            `/orgs/${org.id}/${DEFAULT_PROJECT_NAME.toLowerCase()}/${
+              resp[0].notebookID
+            }`
+          )
         } else {
           setRoute(`/notebook/from/task/${task.id}`)
         }
@@ -107,7 +108,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
       .catch(() => {
         setRoute(`/notebook/from/task/${task.id}`)
       })
-  }, [isFlagEnabled('createWithFlows'), task])
+  }, [isFlagEnabled('createWithFlows'), org.id, task])
 
   if (!task) {
     return null
@@ -135,6 +136,7 @@ const TaskRunsCard: FC<Props> = ({task}) => {
               size={ComponentSize.ExtraSmall}
               onChange={changeToggle}
               testID="task-card--slide-toggle"
+              disabled={!isTaskEditable}
             />
             <InputLabel active={task.status === 'active'}>
               {task.status === 'active' ? 'Active' : 'Inactive'}
@@ -153,14 +155,16 @@ const TaskRunsCard: FC<Props> = ({task}) => {
         </ResourceCard.Meta>
       </FlexBox>
 
-      <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
-        <Button onClick={handleRunTask} text="Run Task" />
-        <Button
-          onClick={handleEditTask}
-          text="Edit Task"
-          color={ComponentColor.Primary}
-        />
-      </FlexBox>
+      {isTaskEditable && (
+        <FlexBox margin={ComponentSize.Medium} direction={FlexDirection.Row}>
+          <Button onClick={handleRunTask} text="Run Task" />
+          <Button
+            onClick={handleEditTask}
+            text="Edit Task"
+            color={ComponentColor.Primary}
+          />
+        </FlexBox>
+      )}
     </ResourceCard>
   )
 }

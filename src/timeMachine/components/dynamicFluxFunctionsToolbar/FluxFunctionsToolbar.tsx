@@ -11,17 +11,18 @@ import TransformToolbarFunctions from 'src/timeMachine/components/dynamicFluxFun
 import ToolbarFunction from 'src/timeMachine/components/dynamicFluxFunctionsToolbar/ToolbarFunction'
 
 // Actions
-import {getFluxPackages} from 'src/timeMachine/actions/scriptEditorThunks'
+import {getFluxPackages} from 'src/shared/actions/fluxDocs'
 
 // Types
 import {AppState} from 'src/types'
 import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 import {RemoteDataState} from 'src/types'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   onInsertFluxFunction: (func) => void
 }
-
 interface DispatchProps {
   getFluxPackages: () => void
 }
@@ -29,11 +30,16 @@ interface DispatchProps {
 type ReduxProps = ConnectedProps<typeof connector>
 type Props = ReduxProps & OwnProps & DispatchProps
 
+const hoveredFunctions = new Set<string>()
+
 const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
+  const [termRecorded, setTermRecorded] = useState('')
+  const [tooltipPopup, setTooltipPopup] = useState(false)
   const [fluxLoadingState, setFluxLoadingState] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
+  const [hoveredFunction, setHoverdFunction] = useState('')
 
   useEffect(() => {
     const getFluxFuncs = async () => {
@@ -42,7 +48,6 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
 
         if (fluxFunctions.length === 0) {
           await getFluxPackages()
-          setFluxLoadingState(RemoteDataState.Done)
         }
         setFluxLoadingState(RemoteDataState.Done)
       } catch (err) {
@@ -51,7 +56,26 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
       }
     }
     getFluxFuncs()
+    return () => {
+      setFluxLoadingState(RemoteDataState.NotStarted)
+    }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (tooltipPopup && searchTerm !== termRecorded) {
+      hoveredFunctions.clear()
+      event('flux.function.searched', {searchTerm: searchTerm})
+      setTermRecorded(searchTerm)
+    }
+    setTooltipPopup(false)
+    if (tooltipPopup) {
+      const recordedFunction = hoveredFunctions.has(hoveredFunction)
+      if (!recordedFunction) {
+        event('flux.function.hover', {function: hoveredFunction})
+      }
+      hoveredFunctions.add(hoveredFunction)
+    }
+  }, [hoveredFunction, searchTerm, tooltipPopup])
 
   const {onInsertFluxFunction, fluxFunctions, getFluxPackages} = props
 
@@ -90,6 +114,8 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
                       key={index}
                       func={func}
                       testID={func.name}
+                      setToolTipPopup={setTooltipPopup}
+                      setHoverdFunction={setHoverdFunction}
                     />
                   ))
                 }

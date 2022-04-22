@@ -77,7 +77,7 @@ class DatePicker extends PureComponent<Props, State> {
   private inCurrentMonth: boolean = false
   state = {
     inputValue: null,
-    inputFormat: null,
+    inputFormat: DEFAULT_TIME_FORMAT,
   }
 
   public componentDidUpdate() {
@@ -198,19 +198,6 @@ class DatePicker extends PureComponent<Props, State> {
     return 'range-picker--day'
   }
 
-  private overrideInputState = (): void => {
-    const {dateTime, timeZone} = this.props
-    const {inputFormat} = this.state
-
-    let value = new Date(dateTime).toISOString()
-    if (inputFormat) {
-      const formatter = createDateTimeFormatter(inputFormat, timeZone)
-      value = formatter.format(dateTime)
-    }
-
-    this.setState({inputValue: value, inputFormat: getFormat(value)})
-  }
-
   private handleSelectDate = (date: Date): void => {
     const {onSelectDate, timeZone} = this.props
 
@@ -223,7 +210,6 @@ class DatePicker extends PureComponent<Props, State> {
     }
 
     onSelectDate(date.toISOString())
-    this.overrideInputState()
   }
 
   private handleChangeInput = (e: ChangeEvent<HTMLInputElement>): void => {

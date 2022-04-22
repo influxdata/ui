@@ -1,10 +1,12 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
+import {connect, ConnectedProps} from 'react-redux'
+import {withRouter, RouteComponentProps} from 'react-router-dom'
 
 // Components
-import {Icon, TreeNav} from '@influxdata/clockface'
+import {Icon, IconFont, TreeNav} from '@influxdata/clockface'
 import UserWidget from 'src/pageLayout/components/UserWidget'
 import NavHeader from 'src/pageLayout/components/NavHeader'
 import OrgSettings from 'src/cloud/components/OrgSettings'
@@ -16,15 +18,41 @@ import {generateNavItems} from 'src/pageLayout/constants/navigationHierarchy'
 import {getNavItemActivation} from 'src/pageLayout/utils'
 import {getOrg} from 'src/organizations/selectors'
 import {AppSettingContext} from 'src/shared/contexts/app'
+import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Types
 import {NavItem, NavSubItem} from 'src/pageLayout/constants/navigationHierarchy'
+import {AppState} from 'src/types'
 
-const TreeSidebar: FC = () => {
-  const org = useSelector(getOrg)
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
+type ReduxProps = ConnectedProps<typeof connector>
+
+const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
+  showOverlay,
+  dismissOverlay,
+  quartzMe,
+}) => {
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )
+  const org = useSelector(getOrg)
+
+  useEffect(() => {
+    if (isFlagEnabled('helpBar')) {
+      const helpBarMenu = document.querySelectorAll<HTMLElement>(
+        '.cf-tree-nav--sub-menu-trigger'
+      )[3]
+      if (navbarMode === 'expanded') {
+        helpBarMenu.style.display = 'block'
+        helpBarMenu.style.width = '243px'
+      } else {
+        helpBarMenu.style.width = '44px'
+      }
+    }
+  }, [setNavbarMode, navbarMode])
 
   if (presentationMode || !org) {
     return null
@@ -38,6 +66,21 @@ const TreeSidebar: FC = () => {
     }
   }
 
+  const handleSelect = (): void => {
+    const accountType = quartzMe?.accountType ?? 'free'
+    const isPayGCustomer = accountType !== 'free'
+
+    if (isPayGCustomer) {
+      showOverlay('payg-support', null, dismissOverlay)
+    } else {
+      showOverlay('free-account-support', null, dismissOverlay)
+    }
+  }
+
+  const openFeedbackOverlay = (): void => {
+    showOverlay('feedback-questions', null, dismissOverlay)
+  }
+
   return (
     <OrgSettings>
       <TreeNav
@@ -48,7 +91,14 @@ const TreeSidebar: FC = () => {
       >
         {generateNavItems().map((item: NavItem) => {
           const linkElement = (className: string): JSX.Element => (
-            <Link to={item.link} className={className} title={item.label} />
+            <Link
+              to={item.link}
+              className={className}
+              title={item.label}
+              onClick={() => {
+                event('nav clicked', {which: item.id})
+              }}
+            />
           )
           return (
             <TreeNav.Item
@@ -68,7 +118,15 @@ const TreeSidebar: FC = () => {
                 <TreeNav.SubMenu>
                   {item.menu.map((menuItem: NavSubItem) => {
                     const linkElement = (className: string): JSX.Element => (
-                      <Link to={menuItem.link} className={className} />
+                      <Link
+                        to={menuItem.link}
+                        className={className}
+                        onClick={() => {
+                          event('nav clicked', {
+                            which: `${item.id} - ${menuItem.id}`,
+                          })
+                        }}
+                      />
                     )
 
                     return (
@@ -90,9 +148,79 @@ const TreeSidebar: FC = () => {
             </TreeNav.Item>
           )
         })}
+        {isFlagEnabled('helpBar') ? (
+          <TreeNav.Item
+            id="support"
+            testID="nav-item-support"
+            icon={<Icon glyph={IconFont.QuestionMark_New} />}
+            label="Help & Support"
+            shortLabel="Support"
+          >
+            <TreeNav.SubMenu>
+              <TreeNav.SubHeading label="Support" />
+              <TreeNav.SubItem
+                id="documentation"
+                label="Documentation"
+                testID="nav-subitem-documentation"
+                linkElement={() => (
+                  <SafeBlankLink href="https://docs.influxdata.com/" />
+                )}
+              />
+              <TreeNav.SubItem
+                id="faqs"
+                label="FAQs"
+                testID="nav-subitem-faqs"
+                linkElement={() => (
+                  <SafeBlankLink href="https://docs.influxdata.com/influxdb/v1.8/troubleshooting/frequently-asked-questions/" />
+                )}
+              />
+              <TreeNav.SubItem
+                id="contactSupport"
+                label="Contact Support"
+                testID="nav-subitem-contact-support"
+                onClick={handleSelect}
+              />
+              <TreeNav.SubHeading label="Community" />
+              <TreeNav.SubItem
+                id="offcialForum"
+                label="Official Forum"
+                testID="nav-subitem-forum"
+                linkElement={() => (
+                  <SafeBlankLink href="https://community.influxdata.com" />
+                )}
+              />
+              <TreeNav.SubItem
+                id="influxdbSlack"
+                label="InfluxDB Slack"
+                testID="nav-subitem-influxdb-slack"
+                linkElement={() => (
+                  <SafeBlankLink href="https://influxcommunity.slack.com/join/shared_invite/zt-156zm7ult-LcIW2T4TwLYeS8rZbCP1mw#/shared-invite/email" />
+                )}
+              />
+              <TreeNav.SubHeading label="Feedback" />
+              <TreeNav.SubItem
+                id="feedback"
+                label="Feedback & Questions"
+                testID="nav-subitem-feedback-questions"
+                onClick={openFeedbackOverlay}
+              />
+            </TreeNav.SubMenu>
+          </TreeNav.Item>
+        ) : null}
       </TreeNav>
     </OrgSettings>
   )
 }
 
-export default TreeSidebar
+const mstp = (state: AppState) => {
+  return {quartzMe: state.me.quartzMe}
+}
+
+const mdtp = {
+  showOverlay,
+  dismissOverlay,
+}
+
+const connector = connect(mstp, mdtp)
+
+export default connector(withRouter(TreeSidebar))

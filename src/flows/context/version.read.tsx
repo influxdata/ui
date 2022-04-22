@@ -1,7 +1,6 @@
 import React, {FC, useCallback, useEffect, useState} from 'react'
 import {FlowContext} from 'src/flows/context/flow.current'
 import {useParams} from 'react-router'
-import {DEFAULT_PROJECT_NAME} from 'src/flows'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
 import {RemoteDataState} from 'src/types'
@@ -22,8 +21,7 @@ export const VersionFlowProvider: FC = ({children}) => {
       if (response.status !== 200) {
         throw new Error(response.data.message)
       }
-      // TODO(ariel): update the definition to match the API
-      setFlow(hydrate((response.data as any).notebookVersion))
+      setFlow(hydrate(response.data.notebookVersion))
       setLoading(RemoteDataState.Done)
     } catch (error) {
       console.error({error})
@@ -39,9 +37,10 @@ export const VersionFlowProvider: FC = ({children}) => {
     <PageSpinner loading={loading}>
       <FlowContext.Provider
         value={{
-          name: DEFAULT_PROJECT_NAME,
           flow,
           add: (_, __) => '',
+          cloneNotebook: () => {},
+          deleteNotebook: () => {},
           remove: () => '',
           updateData: _ => {},
           updateMeta: _ => {},

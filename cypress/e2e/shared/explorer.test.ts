@@ -441,9 +441,11 @@ describe('DataExplorer', () => {
             cy.get('.squiggly-error', {timeout: 30000}).should('be.visible')
           })
           .monacoType('{selectall} {backspace}')
-          .monacoType('from()')
+          .monacoType('from(')
           .within(() => {
-            cy.get('.signature').should('be.visible')
+            cy.get('[widgetid="editor.widget.suggestWidget"]', {
+              timeout: 30000,
+            }).should('be.visible')
           })
           .monacoType(`{selectall}{del}from(bucket: )`)
       })
@@ -540,10 +542,13 @@ describe('DataExplorer', () => {
     it('can save query as task even when it has a variable', () => {
       const taskName = 'tax'
       // begin flux
-      cy.getByTestID('flux-editor').should('be.visible')
-        .monacoType(`from(bucket: "defbuck")
+      cy.getByTestID('flux-editor')
+        .should('be.visible')
+        .monacoType(
+          `from(bucket: "defbuck")
   |> range(start: -15m, stop: now())
-  |> filter(fn: (r) => r._measurement == `)
+  |> filter(fn: (r) => r._measurement == ){leftArrow}`
+        )
 
       cy.getByTestID('toolbar-tab').click()
       // checks to see if the default variables exist
@@ -755,6 +760,7 @@ describe('DataExplorer', () => {
       cy.get('[id="variable"]').click()
       cy.getByTestID('flux-editor').should('be.visible')
       cy.get('[id="dashboard"]').click()
+      cy.getByTestID('cell--radio-button').click()
       cy.getByTestID('save-as-dashboard-cell--dropdown').should('be.visible')
 
       // close save as
@@ -788,6 +794,7 @@ describe('DataExplorer', () => {
       it('can save as cell into multiple dashboards', () => {
         // input dashboards and cell name
         dashboardNames.forEach(name => {
+          cy.getByTestID('cell--radio-button').click()
           cy.getByTestID('save-as-dashboard-cell--dropdown').click()
           cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
             cy.contains(name).click()
@@ -814,6 +821,7 @@ describe('DataExplorer', () => {
 
       it('can create new dashboard as saving target', () => {
         // select and input new dashboard name and cell name
+        cy.getByTestID('cell--radio-button').click()
         cy.getByTestID('save-as-dashboard-cell--dropdown').click()
         cy.getByTestID('save-as-dashboard-cell--dropdown-menu').within(() => {
           cy.getByTestID('save-as-dashboard-cell--create-new-dash').click()

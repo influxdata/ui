@@ -1,4 +1,4 @@
-import React, {FC, createRef, RefObject, useContext} from 'react'
+import React, {FC, createRef, RefObject, useContext, useState} from 'react'
 import {
   IconFont,
   Icon,
@@ -7,17 +7,18 @@ import {
   PopoverInteraction,
   SquareButton,
   InfluxColors,
+  RemoteDataState,
+  SpinnerContainer,
+  TechnoSpinner,
 } from '@influxdata/clockface'
 import {useSelector} from 'react-redux'
 
 // Contexts
 import {FlowContext} from 'src/flows/context/flow.current'
-import {FlowListContext} from 'src/flows/context/flow.list'
 import {VersionPublishContext} from 'src/flows/context/version.publish'
 import {useHistory} from 'react-router-dom'
 
 // Utils
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {event} from 'src/cloud/utils/reporting'
 import {getOrg} from 'src/organizations/selectors'
 import {deletePinnedItemByParam} from 'src/shared/contexts/pinneditems'
@@ -25,6 +26,7 @@ import {downloadImage} from 'src/shared/utils/download'
 
 // Constants
 import {PROJECT_NAME_PLURAL} from 'src/flows'
+import {CLOUD} from 'src/shared/constants'
 
 const backgroundColor = '#07070E'
 
@@ -33,32 +35,44 @@ type Props = {
 }
 
 const MenuButton: FC<Props> = ({handleResetShare}) => {
-  const {remove, clone} = useContext(FlowListContext)
-  const {flow} = useContext(FlowContext)
+  const {flow, cloneNotebook, deleteNotebook} = useContext(FlowContext)
   const {handlePublish, versions} = useContext(VersionPublishContext)
   const {id: orgID} = useSelector(getOrg)
+  const [loading, setLoading] = useState(RemoteDataState.Done)
 
   const triggerRef: RefObject<HTMLButtonElement> = createRef()
   const history = useHistory()
 
   const handleClone = async () => {
-    event('clone_notebook', {
-      context: 'notebook',
-    })
-    const clonedId = await clone(flow.id)
-    handleResetShare()
-    history.push(
-      `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
-    )
+    try {
+      setLoading(RemoteDataState.Loading)
+      event('clone_notebook', {
+        context: 'notebook',
+      })
+      const clonedId = await cloneNotebook()
+      handleResetShare()
+      setLoading(RemoteDataState.Done)
+      history.push(
+        `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${clonedId}`
+      )
+    } catch {
+      setLoading(RemoteDataState.Done)
+    }
   }
 
-  const handleDelete = () => {
-    event('delete_notebook', {
-      context: 'notebook',
-    })
-    deletePinnedItemByParam(flow.id)
-    remove(flow.id)
-    history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
+  const handleDelete = async () => {
+    try {
+      setLoading(RemoteDataState.Loading)
+      event('delete_notebook', {
+        context: 'notebook',
+      })
+      deletePinnedItemByParam(flow.id)
+      await deleteNotebook()
+      setLoading(RemoteDataState.Done)
+      history.push(`/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}`)
+    } catch {
+      setLoading(RemoteDataState.Error)
+    }
   }
 
   const canvasOptions = {
@@ -161,10 +175,26 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
   const menuItems: any[] = [
     {
       type: 'menuitem',
-      title: 'Clone',
-      onClick: handleClone,
-      icon: IconFont.Duplicate_New,
+      title: 'Save to version history',
+      onClick: handlePublish,
+      icon: IconFont.Save,
     },
+    {
+      type: 'menuitem',
+      title: 'Version history',
+      onClick: handleViewPublish,
+      icon: IconFont.History,
+      disabled: () => {
+        const [first, second] = versions
+        // accounts for the draft state
+        let versionId = first?.id
+        if (first?.id === 'draft' && second?.id) {
+          versionId = second?.id
+        }
+        return !(versionId !== 'draft' && typeof versionId !== undefined)
+      },
+    },
+    {title: 'divider', type: 'divider'},
     {
       type: 'menuitem',
       title: 'Download as PNG',
@@ -186,81 +216,67 @@ const MenuButton: FC<Props> = ({handleResetShare}) => {
     },
   ]
 
-  if (isFlagEnabled('flowPublishLifecycle')) {
-    menuItems.splice(
-      0,
-      0,
-      {
-        type: 'menuitem',
-        title: 'Save to version history',
-        onClick: handlePublish,
-        icon: IconFont.Save,
-      },
-      {
-        type: 'menuitem',
-        title: 'Version history',
-        onClick: handleViewPublish,
-        icon: IconFont.History,
-        disabled: () => {
-          const [first, second] = versions
-          // accounts for the draft state
-          let versionId = first?.id
-          if (first?.id === 'draft' && second?.id) {
-            versionId = second?.id
-          }
-          return !(versionId !== 'draft' && typeof versionId !== undefined)
-        },
-      },
-      {title: 'divider', type: 'divider'}
-    )
+  if (CLOUD) {
+    menuItems.splice(3, 0, {
+      type: 'menuitem',
+      title: 'Clone',
+      onClick: handleClone,
+      icon: IconFont.Duplicate_New,
+    })
   }
 
   return (
-    <>
-      <SquareButton
-        ref={triggerRef}
-        icon={IconFont.More}
-        testID="flow-menu-button"
-      />
-      <Popover
-        triggerRef={triggerRef}
-        enableDefaultStyles={false}
-        style={{minWidth: 209}}
-        onShow={() => {
-          event('Notebook main menu opened')
-        }}
-        showEvent={PopoverInteraction.Click}
-        hideEvent={PopoverInteraction.Click}
-        contents={onHide => (
-          <List>
-            {menuItems.map(item => {
-              if (item.type === 'divider') {
+    <SpinnerContainer
+      loading={loading}
+      spinnerComponent={<TechnoSpinner style={{width: 20, height: 20}} />}
+      style={{width: 20, height: 20}}
+    >
+      <>
+        <SquareButton
+          ref={triggerRef}
+          icon={IconFont.More}
+          testID="flow-menu-button"
+        />
+        <Popover
+          triggerRef={triggerRef}
+          enableDefaultStyles={false}
+          style={{minWidth: 209}}
+          onShow={() => {
+            event('Notebook main menu opened')
+          }}
+          showEvent={PopoverInteraction.Click}
+          hideEvent={PopoverInteraction.Click}
+          contents={onHide => (
+            <List>
+              {menuItems.map(item => {
+                if (item.type === 'divider') {
+                  return (
+                    <List.Divider
+                      key={item.title}
+                      style={{backgroundColor: InfluxColors.Grey35}}
+                    />
+                  )
+                }
                 return (
-                  <List.Divider
+                  <List.Item
                     key={item.title}
-                    style={{backgroundColor: InfluxColors.Grey35}}
-                  />
+                    disabled={item?.disabled ? item.disabled() : false}
+                    onClick={() => {
+                      item?.onClick()
+                      onHide()
+                    }}
+                    testID={item?.testID || ''}
+                  >
+                    <Icon glyph={item?.icon} />
+                    <span style={{paddingLeft: '10px'}}>{item.title}</span>
+                  </List.Item>
                 )
-              }
-              return (
-                <List.Item
-                  key={item.title}
-                  disabled={item?.disabled ? item.disabled() : false}
-                  onClick={() => {
-                    item?.onClick()
-                    onHide()
-                  }}
-                  testID={item?.testID || ''}
-                >
-                  <Icon glyph={item?.icon} />
-                  <span style={{paddingLeft: '10px'}}>{item.title}</span>
-                </List.Item>
-              )
-            })}
-          </List>
-        )}
-      />
-    </>
+              })}
+            </List>
+          )}
+        />
+      </>
+    </SpinnerContainer>
   )
 }
 

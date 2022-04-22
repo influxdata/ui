@@ -18,6 +18,10 @@ import {RemoteDataState} from 'src/types'
 import {DEFAULT_TIME_FORMAT} from 'src/utils/datetime/constants'
 import {createDateTimeFormatter} from 'src/utils/datetime/formatters'
 
+jest.mock('src/flows', () => {
+  return () => <></>
+})
+
 const runIDs = [
   '07a7f99e81cf2000',
   '07a7f99e81cf3000',
@@ -219,6 +223,13 @@ jest.mock('src/client', () => ({
       },
     })
   }),
+  getTasks: jest.fn(() => {
+    return Promise.resolve({
+      status: 200,
+      headers: {},
+      data: tasks,
+    })
+  }),
   getTask: jest.fn(() => {
     return {
       data: tasks[0],
@@ -253,6 +264,9 @@ jest.mock('src/resources/selectors', () => {
     }),
     getStatus: jest.fn(() => {
       return RemoteDataState.NotStarted
+    }),
+    getAll: jest.fn(() => {
+      return tasks
     }),
   }
 })

@@ -44,6 +44,8 @@ import {NotificationRuleDraft, Label, AlertHistoryType} from 'src/types'
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
   rule: NotificationRuleDraft
@@ -161,6 +163,16 @@ const RuleCard: FC<Props> = ({
             key={2}
             lastRunError={lastRunError}
             lastRunStatus={lastRunStatus}
+            statusButtonClickHandler={() => {
+              event('check status button clicked', {
+                lastRunError,
+                lastRunStatus,
+                from: 'rules card',
+              })
+              if (isFlagEnabled('navToTaskRuns')) {
+                history.push(`/orgs/${orgID}/tasks/${taskID}/runs`)
+              }
+            }}
           />
         </FlexBox>
         <FlexBox

@@ -2,8 +2,7 @@
 
 The `twemproxy` plugin gathers statistics from [Twemproxy](https://github.com/twitter/twemproxy) servers.
 
-
-### Configuration
+## Configuration
 
 ```toml
 # Read Twemproxy stats data

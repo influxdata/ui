@@ -25,9 +25,9 @@ import {labelSchema} from 'src/schemas/labels'
 import * as api from 'src/client'
 
 // Utils
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
 import {getOrg} from 'src/organizations/selectors'
-import {getAll, getStatus} from 'src/resources/selectors'
+import {getStatus} from 'src/resources/selectors'
 import {toPostNotificationEndpoint} from 'src/notifications/endpoints/utils'
 import * as copy from 'src/shared/copy/notifications'
 
@@ -232,24 +232,13 @@ export const deleteEndpointLabel = (
 export const cloneEndpoint = (endpoint: NotificationEndpoint) => async (
   dispatch: Dispatch<
     Action | NotificationAction | ReturnType<typeof checkEndpointsLimits>
-  >,
-  getState: GetState
+  >
 ): Promise<void> => {
   try {
-    const state = getState()
-    const endpoints = getAll<NotificationEndpoint>(
-      state,
-      ResourceType.NotificationEndpoints
-    )
-
-    const allEndpointNames = endpoints.map(r => r.name)
-
-    const clonedName = incrementCloneName(allEndpointNames, endpoint.name)
-
     const resp = await api.postNotificationEndpoint({
       data: {
         ...toPostNotificationEndpoint(endpoint),
-        name: clonedName,
+        name: setCloneName(endpoint.name),
       },
     })
 

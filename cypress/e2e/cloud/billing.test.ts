@@ -228,6 +228,11 @@ describe('Billing Page PAYG Users', () => {
 
     cy.getByTestID('agree-terms--input').click()
     cy.getByTestID('agree-terms--checkbox').should('be.checked')
+    cy.getByTestID('variable-type-dropdown--button')
+      .click()
+      .then(() => {
+        cy.getByTestID('variable-type-dropdown-USE_CASE_DIFFERENT').click()
+      })
     cy.getByTestID('cancel-service-confirmation--button')
       .should('not.be.disabled')
       .click()

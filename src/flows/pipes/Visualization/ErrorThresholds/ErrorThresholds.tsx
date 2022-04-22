@@ -7,6 +7,7 @@ import {
   Button,
   ComponentColor,
   ComponentSize,
+  ComponentStatus,
   IconFont,
   FlexBox,
   FlexDirection,
@@ -22,7 +23,11 @@ import {ErrorThreshold} from 'src/flows/pipes/Visualization/threshold'
 import './ErrorThresholds.scss'
 
 const ErrorThresholds: FC = () => {
-  const {data, update} = useContext(PipeContext)
+  const {data, results, update} = useContext(PipeContext)
+
+  const fields = Array.from(
+    new Set(results.parsed.table.columns['_field']?.data as string[])
+  )
 
   const errorThresholds = useMemo(() => data?.errorThresholds ?? [], [
     data?.errorThresholds,
@@ -120,6 +125,11 @@ const ErrorThresholds: FC = () => {
             text="Add Threshold"
             icon={IconFont.Plus_New}
             size={ComponentSize.Small}
+            status={
+              fields.length > 0
+                ? ComponentStatus.Default
+                : ComponentStatus.Disabled
+            }
             onClick={handleAddThreshold}
             color={ComponentColor.Primary}
             className="add-error-threshold--button"

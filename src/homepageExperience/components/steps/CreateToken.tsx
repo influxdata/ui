@@ -1,88 +1,122 @@
 // Libraries
-import React, {FC} from 'react'
-import CodeSnippet from 'src/shared/components/CodeSnippet'
-import {Button, ComponentColor, ComponentSize} from '@influxdata/clockface'
-import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux'
-import {RouteComponentProps, withRouter} from 'react-router-dom'
+import React, {FC, useEffect, useMemo, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+
+// Actions
+import {
+  createAuthorization,
+  getAllResources,
+} from 'src/authorizations/actions/thunks'
 
 // Selectors
-import {notify} from 'src/shared/actions/notifications'
-import {getResourcesTokensFailure} from 'src/shared/copy/notifications'
-import {getAllResources} from 'src/authorizations/actions/thunks'
-import {dismissOverlay, showOverlay} from 'src/overlays/actions/overlays'
 import {getOrg} from 'src/organizations/selectors'
+import {getMe} from 'src/me/selectors'
+import {getAllTokensResources} from 'src/resources/selectors'
 
 // Helper Components
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
+import CodeSnippet from 'src/shared/components/CodeSnippet'
+
+// Utils
+import {allAccessPermissions} from 'src/authorizations/utils/permissions'
 import {event} from 'src/cloud/utils/reporting'
 
-type ReduxProps = ConnectedProps<typeof connector>
+// Types
+import {AppState, Authorization} from 'src/types'
+import {
+  AlignItems,
+  ComponentSize,
+  FlexBox,
+  Icon,
+  IconFont,
+} from '@influxdata/clockface'
 
-// Events log handling
-const logCopyCodeSnippet = () => {
-  event('firstMile.pythonWizard.createToken.code.copied')
+type OwnProps = {
+  wizardEventName: string
 }
 
-const logDocsOpened = () => {
-  event('firstMile.pythonWizard.createToken.docs.opened')
-}
+const collator = new Intl.Collator(navigator.language || 'en-US')
 
-const CreateTokenComponent: FC<ReduxProps & RouteComponentProps> = ({
-  showOverlay,
-  dismissOverlay,
-  getAllResources,
-}) => {
+export const CreateToken: FC<OwnProps> = ({wizardEventName}) => {
   const org = useSelector(getOrg)
+  const me = useSelector(getMe)
+  const allPermissionTypes = useSelector(getAllTokensResources)
   const dispatch = useDispatch()
-  const handleAllAccess = async () => {
-    try {
-      await getAllResources()
-      showOverlay('add-master-token', null, dismissOverlay)
-    } catch {
-      dispatch(notify(getResourcesTokensFailure('all access token')))
+  const [tokenTextboxText, setTokenTextboxText] = useState(
+    'Generating your token'
+  )
+
+  const currentAuth = useSelector((state: AppState) => {
+    return state.resources.tokens.currentAuth.item
+  })
+
+  const sortedPermissionTypes = useMemo(
+    () => allPermissionTypes.sort((a, b) => collator.compare(a, b)),
+    [allPermissionTypes]
+  )
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      await dispatch(getAllResources())
     }
+    fetchResources()
+  }, [])
+
+  useEffect(() => {
+    if (sortedPermissionTypes.length) {
+      const authorization: Authorization = {
+        orgID: org.id,
+        description: `onboarding-${wizardEventName}-token-${Date.now()}`,
+        permissions: allAccessPermissions(sortedPermissionTypes, org.id, me.id),
+      }
+
+      dispatch(createAuthorization(authorization))
+      event(`firstMile.${wizardEventName}.createToken.tokenCreated`)
+    }
+  }, [sortedPermissionTypes.length])
+
+  useEffect(() => {
+    if (currentAuth.token) {
+      setTokenTextboxText(`export INFLUXDB_TOKEN=${currentAuth.token}`)
+    }
+  }, [currentAuth.token])
+
+  // Events log handling
+  const logCopyCodeSnippet = () => {
+    event(`firstMile.${wizardEventName}.createToken.code.copied`)
+  }
+
+  const logDocsOpened = () => {
+    event(`firstMile.${wizardEventName}.createToken.docs.opened`)
   }
 
   return (
     <>
       <h1>Create a Token</h1>
       <p>
-        InfluxDB Cloud uses Tokens to authenticate API access. Click below to
-        create an all-access token.
+        InfluxDB Cloud uses Tokens to authenticate API access. We've created an
+        all-access token for you for this set up process.
       </p>
-      <Button
-        text="Generate Token"
-        onClick={handleAllAccess}
-        color={ComponentColor.Primary}
-        size={ComponentSize.Medium}
-      />
       <p style={{marginTop: '51px'}}>
-        Save your token as an environment variable; you’ll use it soon. Run this
-        command in your terminal:
+        Run this command in your terminal to save your token as an environment
+        variable:
       </p>
-      <CodeSnippet
-        text="export INFLUXDB_TOKEN=<your token here>"
-        onCopy={logCopyCodeSnippet}
-      />
-      <p style={{marginTop: '46px'}}>
-        You can create tokens in the future in the{' '}
-        <SafeBlankLink
-          href={`orgs/${org.id}/load-data/tokens`}
-          onClick={logDocsOpened}
-        >
-          Token page
-        </SafeBlankLink>
-        .
-      </p>
+      <CodeSnippet text={tokenTextboxText} onCopy={logCopyCodeSnippet} />
+      <FlexBox margin={ComponentSize.Large} alignItems={AlignItems.Center}>
+        <Icon glyph={IconFont.Info_New} style={{fontSize: '30px'}} />
+        <p>
+          Creating an all-access tokens is not the best security practice! We
+          recommend you to delete this token in the{' '}
+          <SafeBlankLink
+            href={`orgs/${org.id}/load-data/tokens`}
+            onClick={logDocsOpened}
+          >
+            Token page
+          </SafeBlankLink>{' '}
+          after setting up, and creating your own token with specific set of
+          permissions later.
+        </p>
+      </FlexBox>
     </>
   )
 }
-
-const mdtp = {
-  showOverlay,
-  dismissOverlay,
-  getAllResources,
-}
-
-const connector = connect(null, mdtp)
-export const CreateToken = connector(withRouter(CreateTokenComponent))

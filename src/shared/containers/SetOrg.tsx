@@ -11,7 +11,6 @@ import {
   AlertingIndex,
   BillingPage,
   BucketsIndex,
-  BucketsIndexPaginated,
   CheckHistory,
   ClientLibrariesPage,
   DashboardContainer,
@@ -22,7 +21,8 @@ import {
   FlowPage,
   FlowsIndex,
   HomepageContainer,
-  HomepagePythonWizard,
+  NodejsWizard,
+  PythonWizard,
   LabelsIndex,
   MembersIndex,
   MePage,
@@ -47,6 +47,9 @@ import {
   SubscriptionsLanding,
   CreateSubscriptionForm,
   WriteDataPage,
+  SubscriptionDetailsPage,
+  SinglePageSubDetails,
+  GoWizard,
 } from 'src/shared/containers'
 
 // Types
@@ -167,12 +170,10 @@ const SetOrg: FC = () => {
           />
 
           {/* Flows  */}
-          {isFlagEnabled('flowPublishLifecycle') && (
-            <Route
-              path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:notebookID/versions/:id`}
-              component={VersionPage}
-            />
-          )}
+          <Route
+            path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:notebookID/versions/:id`}
+            component={VersionPage}
+          />
 
           <Route
             path={`${orgPath}/${PROJECT_NAME_PLURAL.toLowerCase()}/:id`}
@@ -220,17 +221,10 @@ const SetOrg: FC = () => {
             path={`${orgPath}/${LOAD_DATA}/${TOKENS}`}
             component={TokensIndex}
           />
-          {isFlagEnabled('fetchAllBuckets') ? (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
-              component={BucketsIndexPaginated}
-            />
-          ) : (
-            <Route
-              path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
-              component={BucketsIndex}
-            />
-          )}
+          <Route
+            path={`${orgPath}/${LOAD_DATA}/${BUCKETS}`}
+            component={BucketsIndex}
+          />
 
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
@@ -238,6 +232,20 @@ const SetOrg: FC = () => {
               component={CreateSubscriptionForm}
             />
           )}
+
+          {CLOUD &&
+            isFlagEnabled('subscriptionsUI') &&
+            (isFlagEnabled('subscriptionsSinglePage') ? (
+              <Route
+                path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
+                component={SinglePageSubDetails}
+              />
+            ) : (
+              <Route
+                path={`${orgPath}/${LOAD_DATA}/${SUBSCRIPTIONS}/:id`}
+                component={SubscriptionDetailsPage}
+              />
+            ))}
 
           {CLOUD && isFlagEnabled('subscriptionsUI') && (
             <Route
@@ -303,11 +311,23 @@ const SetOrg: FC = () => {
           )}
 
           {isFlagEnabled('firstMile') && (
-            <Route
-              exact
-              path="/orgs/:orgID/new-user-wizard/python"
-              component={HomepagePythonWizard}
-            />
+            <>
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/python"
+                component={PythonWizard}
+              />
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/nodejs"
+                component={NodejsWizard}
+              />
+              <Route
+                exact
+                path="/orgs/:orgID/new-user-wizard/go"
+                component={GoWizard}
+              />
+            </>
           )}
 
           <Route component={NotFound} />

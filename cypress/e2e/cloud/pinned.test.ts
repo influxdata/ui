@@ -140,12 +140,20 @@ describe('Pinned Items', () => {
       )
 
       taskName = 'Task'
-      cy.createTaskFromEmpty(taskName, ({name}) => {
-        return `import "influxdata/influxdb/v1{rightarrow}
+      cy.log('Using autocomplete for closing syntax.')
+      cy.createTaskFromEmpty(
+        taskName,
+        ({name}) => {
+          return `import "influxdata/influxdb/v1{rightarrow}
 v1.tagValues(bucket: "${name}", tag: "_field"{rightarrow}
 from(bucket: "${name}"{rightarrow}
    |> range(start: -2m{rightarrow}`
-      })
+        },
+        '24h',
+        '20m',
+        false,
+        30
+      )
 
       cy.getByTestID('task-save-btn').click()
 
@@ -211,8 +219,9 @@ from(bucket: "${name}"{rightarrow}
       cy.setFeatureFlags({
         pinnedItems: true,
       })
-      cy.getByTestID('nav-item-flows').should('be.visible')
-      cy.clickNavBarItem('nav-item-flows')
+      cy.intercept('GET', '/api/v2private/notebooks*').as('getNotebooks')
+      cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
       const now = Date.now()
       cy.writeData(
         [
@@ -223,19 +232,40 @@ from(bucket: "${name}"{rightarrow}
         ],
         'defbuck'
       )
+      cy.getByTestID('nav-item-flows').should('be.visible')
+      cy.clickNavBarItem('nav-item-flows')
+      cy.wait('@getNotebooks')
+
       cy.getByTestID('preset-new')
         .first()
         .click()
+      cy.wait('@getNotebooks')
+      cy.wait('@updateNotebook')
 
-      cy.getByTestID('time-machine-submit-button').should('be.visible')
       cy.getByTestID('page-title')
         .first()
         .click()
       cy.getByTestID('renamable-page-title--input')
         .clear()
-        .type('Flow')
-        .type('{enter}')
+        .type('Flow{enter}')
+      cy.wait('@updateNotebook')
+
+      cy.getByTestID('time-machine-submit-button')
+        .should('be.visible')
+        .and('be.disabled')
+      cy.getByTestID('enable-auto-refresh-button').should('be.disabled')
+      cy.getByTestID('dropdown-menu--contents').should('not.exist')
+      cy.getByTestID('timezone-dropdown').click()
+      cy.getByTestID('dropdown-menu--contents')
+        .should('be.visible')
+        .within(() => {
+          cy.getByTestID('dropdown-item').should('have.length.gte', 2)
+          cy.getByTestID('dropdown-item')
+            .last()
+            .click()
+        })
       cy.visit(`/orgs/${orgID}/notebooks`)
+      cy.wait('@getNotebooks')
     })
 
     it('pins a notebook to the homepage', () => {
@@ -243,6 +273,7 @@ from(bucket: "${name}"{rightarrow}
         cy.getByTestID('context-menu-flow').click()
       })
       cy.getByTestID('context-pin-flow').click()
+      cy.getByTestID('notification-success').should('be.visible')
 
       cy.visit('/')
       cy.getByTestID('tree-nav')
@@ -256,6 +287,11 @@ from(bucket: "${name}"{rightarrow}
         cy.getByTestID('context-menu-flow').click()
       })
       cy.getByTestID('context-pin-flow').click()
+      cy.getByTestID('notification-success').should('be.visible')
+      cy.getByTestID('notification-success--dismiss').click()
+
+      cy.intercept('PUT', '**/pinned/*').as('updatePinned')
+      const updatedName = 'Bucks in Six'
 
       cy.getByTestID('resource-editable-name')
         .first()
@@ -264,46 +300,35 @@ from(bucket: "${name}"{rightarrow}
       cy.getByTestID('flow-card--name-button')
         .first()
         .click()
-      cy.intercept('PUT', '**/pinned/*').as('updatePinned')
 
       cy.get('.cf-input-field')
         .last()
-        .focus()
-        .type('Bucks In Six')
-        .type('{enter}')
+        .type(`${updatedName}{enter}`)
+
+      cy.getByTestID('notification-success').should('be.visible')
       cy.wait('@updatePinned')
+      cy.wait('@updateNotebook')
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--container').within(() => {
-        cy.getByTestID('pinneditems--link').should(
-          'contain.text',
-          'Bucks In Six'
-        )
+        cy.getByTestID('pinneditems--link').should('contain.text', updatedName)
       })
     })
 
     it('unpins when the resource it is pointing to is deleted', () => {
-      cy.getByTestID('resource-editable-name')
-        .first()
-        .trigger('mouseover')
-
-      cy.getByTestID('flow-card--name-button')
-        .first()
-        .click()
-
-      cy.get('.cf-input-field')
-        .last()
-        .focus()
-        .type('Bucks In Six')
-        .type('{enter}')
-      cy.getByTestID('flow-card--Bucks In Six').within(() => {
+      cy.getByTestID('flow-card--Flow').within(() => {
         cy.getByTestID('context-menu-flow').click()
       })
       cy.getByTestID('context-pin-flow').click()
-      cy.getByTestID('flow-card--Bucks In Six').within(() => {
+      cy.getByTestID('notification-success').should('be.visible')
+      cy.getByTestID('notification-success--dismiss').click()
+
+      cy.getByTestID('flow-card--Flow').within(() => {
         cy.getByTestID(`context-delete-menu--button`).click()
       })
       cy.getByTestID(`context-delete-menu--confirm-button`).click()
+      cy.getByTestID('notification-success').should('be.visible')
+
       cy.visit('/')
       cy.getByTestID('tree-nav')
       cy.getByTestID('pinneditems--emptystate').should(

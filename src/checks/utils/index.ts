@@ -112,7 +112,7 @@ const validateBuilder = (alertBuilder: AlertBuilder) => {
 }
 
 const genCheckBase = (state: AppState): Check => {
-  const {type, id, status, activeStatus, name} = state.alertBuilder
+  const {type, id, status, activeStatus, name, description} = state.alertBuilder
   const {draftQueries} = getActiveTimeMachine(state)
   const {id: orgID} = getOrg(state)
 
@@ -125,5 +125,6 @@ const genCheckBase = (state: AppState): Check => {
     query: draftQueries[0],
     orgID,
     labels: [],
+    description,
   } as Check
 }

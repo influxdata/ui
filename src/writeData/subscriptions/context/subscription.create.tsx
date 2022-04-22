@@ -31,7 +31,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     description: '',
     protocol: 'mqtt',
     brokerHost: '',
-    brokerPort: 0,
+    brokerPort: undefined,
     brokerUsername: '',
     brokerPassword: '',
     brokerCert: '',
@@ -39,7 +39,6 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
-      name: '',
       path: '',
       type: 'string',
     },
@@ -58,7 +57,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
       },
     ],
     jsonTimestamp: {
-      name: '',
+      name: 'timestamp',
       path: '',
       type: 'string',
     },
@@ -107,6 +106,7 @@ export const SubscriptionCreateProvider: FC = ({children}) => {
         history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
       })
       .catch(() => {
+        setLoading(RemoteDataState.Done)
         dispatch(notify(subscriptionCreateFail()))
       })
   }

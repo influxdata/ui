@@ -32,9 +32,6 @@ export const VersionPage = lazy(() =>
 export const BucketsIndex = lazy(() =>
   import('src/buckets/containers/BucketsIndex')
 )
-export const BucketsIndexPaginated = lazy(() =>
-  import('src/buckets/pagination/BucketsIndex')
-)
 export const TokensIndex = lazy(() =>
   import('src/authorizations/containers/TokensIndex')
 )
@@ -106,14 +103,34 @@ export const CreateSubscriptionForm = lazy(() =>
   import('src/writeData/subscriptions/components/CreateSubscriptionPage')
 )
 
+export const SubscriptionDetailsPage = lazy(() =>
+  import('src/writeData/subscriptions/components/SubscriptionDetailsPage')
+)
+
 export const HomepageContainer = lazy(() =>
   import(
     'src/homepageExperience/containers/HomepageContainer'
   ).then(module => ({default: module.HomepageContainer}))
 )
 
-export const HomepagePythonWizard = lazy(() =>
-  import(
-    'src/homepageExperience/containers/HomepagePythonWizard'
-  ).then(module => ({default: module.HomepagePythonWizard}))
+export const PythonWizard = lazy(() =>
+  import('src/homepageExperience/containers/PythonWizard').then(module => ({
+    default: module.PythonWizard,
+  }))
+)
+
+export const NodejsWizard = lazy(() =>
+  import('src/homepageExperience/containers/NodejsWizard').then(module => ({
+    default: module.NodejsWizard,
+  }))
+)
+
+export const GoWizard = lazy(() =>
+  import('src/homepageExperience/containers/GoWizard').then(module => ({
+    default: module.GoWizard,
+  }))
+)
+
+export const SinglePageSubDetails = lazy(() =>
+  import('src/writeData/subscriptions/components/SinglePageSubDetails')
 )

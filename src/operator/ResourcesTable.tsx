@@ -6,6 +6,8 @@ import {
   ComponentSize,
   Tabs,
   Orientation,
+  FlexBox,
+  FlexDirection,
 } from '@influxdata/clockface'
 
 // Components
@@ -26,6 +28,7 @@ import {OperatorRoutes} from 'src/operator/constants'
 
 // Types
 import {OperatorOrg, OperatorAccount} from 'src/types'
+import ResourcesAccountType from './ResourcesAccountType'
 
 const ResourcesTable: FC = () => {
   const {pathname, accounts, organizations, status} = useContext(
@@ -46,7 +49,10 @@ const ResourcesTable: FC = () => {
     <Tabs.Container orientation={Orientation.Horizontal}>
       <OperatorTabs />
       <Tabs.TabContents>
-        <ResourcesSearchbar />
+        <FlexBox direction={FlexDirection.Row}>
+          <ResourcesAccountType />
+          <ResourcesSearchbar />
+        </FlexBox>
         <PageSpinner loading={status}>
           {resources?.length ? (
             <Table>

@@ -78,10 +78,12 @@ const CloudNativeSources: FC = () => {
       <SquareGrid cardSize="170px" gutter={ComponentSize.Small}>
         {items.map(item => {
           const goto = () => {
-            event('Load cloud native subscriptions clicked', {type: item.name})
-            history.push(
-              `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/${item.id}`
+            event(
+              'Load cloud native subscriptions tile clicked',
+              {type: item.name},
+              {feature: 'subscriptions'}
             )
+            history.push(`/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}`)
           }
           return (
             <WriteDataItem

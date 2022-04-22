@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -9,12 +9,9 @@ import {
   Grid,
   Form,
   Overlay,
-  Columns,
   ButtonType,
   ComponentColor,
   ComponentStatus,
-  SelectGroup,
-  ButtonShape,
   Icon,
   IconFont,
   Heading,
@@ -26,9 +23,15 @@ import {
   FlexBox,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import ParsingDetailsEdit from 'src/writeData/subscriptions/components/ParsingDetailsEdit'
+import StringParsingForm from 'src/writeData/subscriptions/components/StringParsingForm'
+import JsonParsingForm from 'src/writeData/subscriptions/components/JsonParsingForm'
+import LineProtocolForm from 'src/writeData/subscriptions/components/LineProtocolForm'
 
 // Utils
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
+import {checkRequiredFields} from 'src/writeData/subscriptions/utils/form'
 
 // Types
 import {SUBSCRIPTIONS, LOAD_DATA} from 'src/shared/constants/routes'
@@ -36,9 +39,6 @@ import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/ParsingForm.scss'
-import StringParsingForm from './StringParsingForm'
-import JsonParsingForm from './JsonParsingForm'
-import LineProtocolForm from './LineProtocolForm'
 
 interface Props {
   formContent: Subscription
@@ -57,10 +57,7 @@ const ParsingForm: FC<Props> = ({
 }) => {
   const history = useHistory()
   const org = useSelector(getOrg)
-  const [parsing, setParsing] = useState('lineprotocol')
-  useEffect(() => {
-    updateForm({...formContent, dataFormat: parsing})
-  }, [parsing])
+  const requiredFields = checkRequiredFields(formContent)
   return (
     formContent && (
       <div className="create-parsing-form">
@@ -95,73 +92,26 @@ const ParsingForm: FC<Props> = ({
             </Heading>
             <Grid>
               <Grid.Row>
-                <Grid.Column widthXS={Columns.Twelve}>
-                  <Heading
-                    element={HeadingElement.H3}
-                    weight={FontWeight.Bold}
-                    className="create-parsing-form__header"
-                  >
-                    Data Format
-                  </Heading>
-                  <SelectGroup
-                    shape={ButtonShape.StretchToFit}
-                    className="retention--radio"
-                  >
-                    <SelectGroup.Option
-                      name="line-protocol"
-                      id="line-protocol"
-                      testID="create-parsing-form-line-protocol--button"
-                      active={parsing === 'lineprotocol'}
-                      onClick={() => {
-                        setParsing('lineprotocol')
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      Line Protocol
-                    </SelectGroup.Option>
-                    <SelectGroup.Option
-                      name="json"
-                      id="json"
-                      testID="create-parsing-form-json--button"
-                      active={parsing === 'json'}
-                      onClick={() => {
-                        setParsing('json')
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      JSON
-                    </SelectGroup.Option>
-                    <SelectGroup.Option
-                      name="string"
-                      id="string"
-                      testID="create-parsing-form-string--button"
-                      active={parsing === 'string'}
-                      onClick={() => {
-                        setParsing('string')
-                      }}
-                      value={null}
-                      titleText="None"
-                      disabled={false}
-                    >
-                      STRING
-                    </SelectGroup.Option>
-                  </SelectGroup>
-                </Grid.Column>
-                {parsing === 'lineprotocol' && <LineProtocolForm />}
-                {parsing === 'json' && (
+                <ParsingDetailsEdit
+                  currentSubscription={formContent}
+                  updateForm={updateForm}
+                  className="create"
+                />
+                {formContent.dataFormat === 'lineprotocol' && (
+                  <LineProtocolForm />
+                )}
+                {formContent.dataFormat === 'json' && (
                   <JsonParsingForm
                     formContent={formContent}
                     updateForm={updateForm}
+                    edit={true}
                   />
                 )}
-                {parsing === 'string' && (
+                {formContent.dataFormat === 'string' && (
                   <StringParsingForm
                     formContent={formContent}
                     updateForm={updateForm}
+                    edit={true}
                   />
                 )}
               </Grid.Row>
@@ -172,6 +122,11 @@ const ParsingForm: FC<Props> = ({
               text="Cancel"
               color={ComponentColor.Tertiary}
               onClick={() => {
+                event(
+                  'creation canceled',
+                  {step: 'parsing', dataFormat: formContent.dataFormat},
+                  {feature: 'subscriptions'}
+                )
                 history.push(`/orgs/${org.id}/${LOAD_DATA}/${SUBSCRIPTIONS}`)
               }}
               titleText="Back to broker form"
@@ -182,6 +137,11 @@ const ParsingForm: FC<Props> = ({
               text="Back"
               color={ComponentColor.Secondary}
               onClick={() => {
+                event(
+                  'back clicked',
+                  {step: 'parsing', dataFormat: formContent.dataFormat},
+                  {feature: 'subscriptions'}
+                )
                 setFormActive('subscription')
               }}
               titleText="Back"
@@ -189,17 +149,31 @@ const ParsingForm: FC<Props> = ({
               testID="create-parsing-form--back"
             />
             {showUpgradeButton ? (
-              <CloudUpgradeButton className="create-parsing-form__upgrade-button" />
+              <CloudUpgradeButton
+                className="create-parsing-form__upgrade-button"
+                metric={() => {
+                  event('parsing form upgrade')
+                }}
+              />
             ) : (
               <Button
-                text="Next"
+                text="Save Subscription"
                 color={ComponentColor.Success}
                 type={ButtonType.Button}
                 onClick={() => {
+                  event(
+                    'save clicked',
+                    {step: 'parsing', dataFormat: formContent.dataFormat},
+                    {feature: 'subscriptions'}
+                  )
                   saveForm(formContent)
                 }}
                 testID="create-parsing-form--submit"
-                status={ComponentStatus.Default}
+                status={
+                  requiredFields
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Disabled
+                }
               />
             )}
           </Overlay.Footer>

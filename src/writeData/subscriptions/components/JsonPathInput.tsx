@@ -19,22 +19,34 @@ import {
   ComponentSize,
   FlexDirection,
   FlexBox,
+  ComponentStatus,
 } from '@influxdata/clockface'
 
 // Types
 import {Subscription} from 'src/types/subscriptions'
 
 // Utils
-import {handleValidation} from 'src/writeData/subscriptions/utils/form'
+import {
+  handleValidation,
+  sanitizeType,
+} from 'src/writeData/subscriptions/utils/form'
+import {event} from 'src/cloud/utils/reporting'
 
 interface Props {
   name: string
   updateForm: (any) => void
   formContent: Subscription
   itemNum: number
+  edit: boolean
 }
 
-const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
+const JsonPathInput: FC<Props> = ({
+  name,
+  formContent,
+  updateForm,
+  itemNum,
+  edit,
+}) => {
   const dataTypeList = ['String', 'Number']
   const [dataType, setDataType] = useState(dataTypeList[0])
   const tagType = name === 'Tag'
@@ -59,6 +71,13 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
               size={ComponentSize.ExtraSmall}
               confirmationLabel={`Yes, delete this ${name}`}
               onConfirm={() => {
+                event(
+                  'removed json parsing rule',
+                  {
+                    ruleType: tagType ? 'tag' : 'field',
+                  },
+                  {feature: 'subscriptions'}
+                )
                 if (tagType) {
                   formContent.jsonTagKeys.splice(itemNum, 1)
                 } else {
@@ -111,8 +130,18 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                     : (formContent.jsonFieldKeys[itemNum].name = e.target.value)
                   updateForm({...formContent})
                 }}
-                status={status}
-                maxLength={16}
+                onBlur={() =>
+                  event(
+                    'completed form field',
+                    {
+                      formField: `${
+                        tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
+                      }.name`,
+                    },
+                    {feature: 'subscriptions'}
+                  )
+                }
+                status={edit ? status : ComponentStatus.Disabled}
                 testID={`${tagType}-json-parsing-name`}
               />
             )}
@@ -125,8 +154,15 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                   active={active}
                   onClick={onClick}
                   testID={`${tagType}-json-parsing-type`}
+                  status={
+                    edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                  }
                 >
-                  {dataType}
+                  {tagType
+                    ? sanitizeType(formContent.jsonTagKeys[itemNum].type) ??
+                      dataType
+                    : sanitizeType(formContent.jsonFieldKeys[itemNum].type) ??
+                      dataType}
                 </Dropdown.Button>
               )}
               menu={onCollapse => (
@@ -137,13 +173,27 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                       id={d}
                       value={d}
                       onClick={() => {
+                        event(
+                          'completed form field',
+                          {
+                            formField: `${
+                              tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
+                            }.type`,
+                            selected: d,
+                          },
+                          {feature: 'subscriptions'}
+                        )
                         setDataType(d)
                         tagType
-                          ? (formContent.jsonTagKeys[itemNum].type = d)
-                          : (formContent.jsonFieldKeys[itemNum].type = d)
+                          ? (formContent.jsonTagKeys[
+                              itemNum
+                            ].type = d.toLowerCase())
+                          : (formContent.jsonFieldKeys[
+                              itemNum
+                            ].type = d.toLowerCase())
                       }}
                       selected={dataType === d}
-                      testID={`${tagType}-json-parsing-type-${1}`}
+                      testID={`${tagType}-json-parsing-type-${key}`}
                     >
                       {d}
                     </Dropdown.Item>
@@ -189,8 +239,18 @@ const JsonPathInput: FC<Props> = ({name, formContent, updateForm, itemNum}) => {
                   : (formContent.jsonFieldKeys[itemNum].path = e.target.value)
                 updateForm({...formContent})
               }}
-              status={status}
-              maxLength={16}
+              onBlur={() =>
+                event(
+                  'completed form field',
+                  {
+                    formField: `${
+                      tagType ? 'jsonTagKeys' : 'jsonFieldKeys'
+                    }.path`,
+                  },
+                  {feature: 'subscriptions'}
+                )
+              }
+              status={edit ? status : ComponentStatus.Disabled}
               testID={`${tagType}-json-parsing-path`}
             />
           )}

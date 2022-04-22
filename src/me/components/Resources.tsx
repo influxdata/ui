@@ -6,9 +6,6 @@ import {
   FlexDirection,
   ComponentSize,
   AlignItems,
-  Heading,
-  HeadingElement,
-  FontWeight,
 } from '@influxdata/clockface'
 
 // Utils
@@ -31,11 +28,6 @@ const ResourceLists: FC = () => {
       margin={ComponentSize.Small}
     >
       <Panel testID="documentation--panel">
-        <Panel.Header>
-          <Heading element={HeadingElement.H3} weight={FontWeight.Medium}>
-            <label htmlFor="documentation">Documentation</label>
-          </Heading>
-        </Panel.Header>
         <Panel.Body>
           <DocSearchWidget />
         </Panel.Body>

@@ -13,11 +13,16 @@ import {XYGeom, Axis} from 'src/types'
 export const HEX_DIGIT_PRECISION = 16
 
 /*
-  A geom may be stored as "line", "step", "monotoneX", "bar", or "stacked", but
-  we currently only support the "line", "step", and "monotoneX" geoms.
+  A geom may be stored as "line", "step", "monotoneX", "bar", "stacked", "stepBefore", or "stepAfter", but
+  we currently only support the "line", "step", "stepBefore", "stepAfter", and "monotoneX" geoms.
 */
 export const resolveGeom = (geom: XYGeom) => {
-  if (geom === 'step' || geom === 'monotoneX') {
+  if (
+    geom === 'step' ||
+    geom === 'monotoneX' ||
+    geom === 'stepBefore' ||
+    geom === 'stepAfter'
+  ) {
     return geom
   }
 
@@ -32,6 +37,10 @@ export const geomToInterpolation = (geom: XYGeom): LineInterpolation => {
       return 'step'
     case 'monotoneX':
       return 'monotoneX'
+    case 'stepBefore':
+      return 'stepBefore'
+    case 'stepAfter':
+      return 'stepAfter'
     default:
       return 'linear'
   }

@@ -1,5 +1,6 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
+import classnames from 'classnames'
 
 // Component
 import {DapperScrollbars} from '@influxdata/clockface'
@@ -9,16 +10,33 @@ import {Fluxdocs} from 'src/client/fluxdocsdRoutes'
 
 interface TooltipProps {
   item: Fluxdocs
+  setToolTipPopup?: (boolean: boolean) => void
+  setHoverdFunction?: (string: string) => void
 }
 
-const FluxDocsTooltipContent: FC<TooltipProps> = ({item: func}) => {
+const FluxDocsTooltipContent: FC<TooltipProps> = ({
+  item: func,
+  setToolTipPopup,
+  setHoverdFunction,
+}) => {
+  useEffect(() => {
+    setToolTipPopup(true)
+    setHoverdFunction(`${func.package}.${func.name}`)
+  }, [])
   const argComponent = () => {
     if (func.fluxParameters.length > 0) {
       return func.fluxParameters.map(arg => {
+        let param = 'Optional'
         const description = arg.headline.slice(arg.name.length + 1)
+        arg.required ? (param = 'Required') : param
+
+        const paramClass = classnames('param', {
+          isRequired: param === 'Required' ? true : false,
+        })
         return (
           <div className="flux-function-docs--arguments" key={arg.name}>
             <span>{arg.name}:</span>
+            <span className={paramClass}>({param})</span>
             <div>{description}</div>
           </div>
         )

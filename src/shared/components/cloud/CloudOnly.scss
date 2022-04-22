@@ -18,6 +18,14 @@
   }
 }
 
+.flex-upgrade-content.rate-alert--content__free {
+  margin: $cf-marg-a;
+}
+
+.upgrade-message {
+  padding: $cf-marg-b;
+}
+
 .cf-page--title {
   flex-shrink: 0;
 }

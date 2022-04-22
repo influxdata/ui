@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useContext} from 'react'
+import React, {FC, useContext, useState, useEffect} from 'react'
 import {useHistory} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
@@ -31,10 +31,12 @@ import {
 // Utils
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {getOrg} from 'src/organizations/selectors'
+import {event} from 'src/cloud/utils/reporting'
 
 // Types
 import {ResourceType} from 'src/types'
 import {ORGS, SUBSCRIPTIONS} from 'src/shared/constants/routes'
+import {Subscription} from 'src/types/subscriptions'
 
 // Styles
 import 'src/writeData/subscriptions/components/SubscriptionsLanding.scss'
@@ -43,27 +45,75 @@ const SubscriptionsLanding: FC = () => {
   const {subscriptions, loading} = useContext(SubscriptionListContext)
   const history = useHistory()
   const org = useSelector(getOrg)
+  const [search, setSearch] = useState('')
+  const [sortOptions, setSortOptions] = useState({
+    sortKey: 'name' as keyof Subscription,
+    sortType: SortTypes.String,
+    sortDirection: Sort.Ascending,
+  })
+  useEffect(() => {
+    event('visited subscriptions page', {}, {feature: 'subscriptions'})
+  }, [])
+  const filteredSubscriptions =
+    subscriptions && search
+      ? subscriptions.filter(
+          s => s.name.toLowerCase() === search.toLowerCase().trim()
+        )
+      : subscriptions
+  const handleSort = (subscriptions: Subscription[]): Subscription[] => {
+    let sortedSubscriptions
+    if (sortOptions.sortDirection === Sort.Ascending) {
+      sortedSubscriptions = subscriptions.sort((a, b) =>
+        (a[sortOptions.sortKey] as string)
+          .toLowerCase()
+          .localeCompare((b[sortOptions.sortKey] as string).toLowerCase())
+      )
+    } else if (sortOptions.sortDirection === Sort.Descending) {
+      sortedSubscriptions = subscriptions.sort((a, b) =>
+        (b[sortOptions.sortKey] as string)
+          .toLowerCase()
+          .localeCompare((a[sortOptions.sortKey] as string).toLowerCase())
+      )
+    }
+    return sortedSubscriptions
+  }
+  const setSort = (sortKey, sortDirection, sortType) => {
+    if (
+      sortKey === sortOptions.sortKey &&
+      sortDirection === sortOptions.sortDirection
+    ) {
+      return
+    }
+    setSortOptions({
+      sortKey,
+      sortType,
+      sortDirection,
+    })
+  }
   return (
     <Page
       className="subscriptions-landing"
       titleTag={pageTitleSuffixer(['Cloud Native Subscriptions', 'Load Data'])}
     >
-      <SpinnerContainer spinnerComponent={<TechnoSpinner />} loading={loading}>
-        <LoadDataHeader />
-        <LoadDataTabbedPage activeTab="subscriptions">
+      <LoadDataHeader />
+      <LoadDataTabbedPage activeTab="subscriptions">
+        <SpinnerContainer
+          spinnerComponent={<TechnoSpinner />}
+          loading={loading}
+        >
           <Page.ControlBar fullWidth={true}>
             <Page.ControlBarLeft>
               <SearchWidget
                 placeholderText="Filter subscriptions..."
-                searchTerm=""
-                onSearch={() => {}}
+                searchTerm={search}
+                onSearch={setSearch}
               />
               <ResourceSortDropdown
                 resourceType={ResourceType.Subscriptions}
-                sortDirection={Sort.Ascending}
-                sortKey="name"
-                sortType={SortTypes.String}
-                onSelect={() => {}}
+                sortDirection={sortOptions.sortDirection}
+                sortKey={sortOptions.sortKey}
+                sortType={sortOptions.sortType}
+                onSelect={setSort}
               />
             </Page.ControlBarLeft>
             <Page.ControlBarRight>
@@ -72,6 +122,11 @@ const SubscriptionsLanding: FC = () => {
                 icon={IconFont.Plus_New}
                 color={ComponentColor.Primary}
                 onClick={() => {
+                  event(
+                    'create subscription clicked',
+                    {},
+                    {feature: 'subscriptions'}
+                  )
                   history.push(
                     `/${ORGS}/${org.id}/load-data/${SUBSCRIPTIONS}/create`
                   )
@@ -83,12 +138,14 @@ const SubscriptionsLanding: FC = () => {
             </Page.ControlBarRight>
           </Page.ControlBar>
           {subscriptions && subscriptions.length ? (
-            <SubscriptionsList subscriptions={subscriptions} />
+            <SubscriptionsList
+              subscriptions={handleSort(filteredSubscriptions)}
+            />
           ) : (
             <EmptySubscriptionState />
           )}
-        </LoadDataTabbedPage>
-      </SpinnerContainer>
+        </SpinnerContainer>
+      </LoadDataTabbedPage>
     </Page>
   )
 }

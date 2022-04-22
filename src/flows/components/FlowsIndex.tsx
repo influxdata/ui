@@ -139,7 +139,7 @@ const FlowsIndex = () => {
     >
       <PageHeader
         style={{flex: 0, margin: '16px 0px'}}
-        fullWidth={true}
+        fullWidth={false}
         className={`${showButtonMode && 'withButtonHeader'}`}
       >
         {!isFlagEnabled('noTutorial') && (
@@ -149,7 +149,7 @@ const FlowsIndex = () => {
             stretchToFitWidth
           >
             <Page.Title title={PROJECT_NAME_PLURAL} />
-            <RateLimitAlert />
+            <RateLimitAlert location="flows" />
           </FlexBox>
         )}
         {showButtonMode &&
@@ -176,7 +176,7 @@ const FlowsIndex = () => {
               <PresetFlowsButtons />
               <Page.ControlBar
                 className="flows-index--control-bar buttonMode"
-                fullWidth={true}
+                fullWidth={false}
               >
                 <Page.ControlBarLeft>
                   <SearchWidget
@@ -199,7 +199,7 @@ const FlowsIndex = () => {
       </PageHeader>
       <DapperScrollbars onScroll={scrollHandler}>
         <Page.Contents
-          fullWidth={true}
+          fullWidth={false}
           id="fadebox"
           ref={fadingBoxRef}
           className="flows-index--contents"
@@ -223,7 +223,7 @@ const FlowsIndex = () => {
           ) : (
             <Page.ControlBar
               className="flows-index--control-bar"
-              fullWidth={true}
+              fullWidth={false}
             >
               <Page.ControlBarLeft>
                 <SearchWidget
@@ -244,7 +244,7 @@ const FlowsIndex = () => {
           )}
         </Page.Contents>
 
-        <Page.Contents fullWidth={true}>
+        <Page.Contents fullWidth={false}>
           <FlowCards flows={flowList} search={search} />
         </Page.Contents>
       </DapperScrollbars>

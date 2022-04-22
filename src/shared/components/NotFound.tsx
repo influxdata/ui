@@ -25,6 +25,7 @@ import {AppState, Organization} from 'src/types'
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {buildDeepLinkingMap} from 'src/utils/deepLinks'
+import {event} from 'src/cloud/utils/reporting'
 
 // Components
 import LogoWithCubo from 'src/checkout/LogoWithCubo'
@@ -98,7 +99,7 @@ const NotFoundNew: FC = () => (
           </FlexBoxChild>
           <FlexBox alignItems={AlignItems.Stretch} stretchToFitWidth={true}>
             <FlexBoxChild className="page-not-found-community-links">
-              <Icon glyph={IconFont.Cubouniform}></Icon>
+              <Icon glyph={IconFont.CuboSolid}></Icon>
               {/* Add rel options to avoid "tabnapping" */}
               <a
                 href="https://community.influxdata.com/"
@@ -161,6 +162,7 @@ class NotFound extends Component<Props> {
       const deepLinkingMap = buildDeepLinkingMap(org)
 
       if (deepLinkingMap.hasOwnProperty(this.props.location.pathname)) {
+        event('deeplink', {from: this.props.location.pathname})
         this.props.history.replace(deepLinkingMap[this.props.location.pathname])
         return
       }

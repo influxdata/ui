@@ -65,7 +65,7 @@ const CheckoutForm: FC = () => {
   }
 
   return (
-    <Form noValidate onSubmit={onSubmit}>
+    <Form onSubmit={onSubmit}>
       <AppWrapper type="funnel">
         <FunnelPage logo={<LogoWithCubo />} enableGraphic={true}>
           <h1

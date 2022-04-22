@@ -50,7 +50,7 @@ const DocSearch: FC<DocSearchProps> = ({type}) => {
       apiKey={GLOBALSEARCH_API_KEY}
       indexName="influxdata"
       appId={GLOBALSEARCH_APP_ID}
-      placeholder="Search our docs: "
+      placeholder="Search Documentation"
       initialScrollY={0}
       searchParameters={facetFilters}
       hitComponent={HitComponent}

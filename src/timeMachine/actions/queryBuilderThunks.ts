@@ -5,7 +5,6 @@ import {queryBuilderFetcher} from 'src/timeMachine/apis/QueryBuilderFetcher'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
-import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // API
 import {fetchAllBuckets} from 'src/buckets/api'
@@ -57,6 +56,7 @@ import {setBuckets} from 'src/buckets/actions/creators'
 
 // Constants
 import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
+import {CLOUD} from 'src/shared/constants'
 
 export const removeTagSelector = (index: number) => (
   dispatch: Dispatch<Action>
@@ -228,7 +228,7 @@ export const loadBuckets = () => async (
 
   let bucketsResponse
   try {
-    if (isFlagEnabled('fetchAllBuckets')) {
+    if (CLOUD) {
       // a limit of -1 means fetch all buckets for this org
       bucketsResponse = await fetchAllBuckets(orgID, -1)
     } else {

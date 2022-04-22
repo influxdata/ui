@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC} from 'react'
+import React, {MouseEvent, FC} from 'react'
 import {connect, ConnectedProps} from 'react-redux'
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
@@ -44,6 +44,10 @@ import {Check, Label} from 'src/types'
 // Utilities
 import {relativeTimestampFormatter} from 'src/shared/utils/relativeTimestampFormatter'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
+import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 interface OwnProps {
   check: Check
@@ -66,6 +70,8 @@ const CheckCard: FC<Props> = ({
   history,
 }) => {
   const {activeStatus, description, id, name, taskID} = check
+
+  const checkUrl = `/orgs/${orgID}/alerting/checks/${id}/edit`
 
   const onUpdateName = (name: string) => {
     try {
@@ -101,8 +107,12 @@ const CheckCard: FC<Props> = ({
     }
   }
 
-  const onCheckClick = () => {
-    history.push(`/orgs/${orgID}/alerting/checks/${id}/edit`)
+  const onCheckClick = (event: MouseEvent) => {
+    if (shouldOpenLinkInNewTab(event)) {
+      safeBlankLinkOpen(checkUrl)
+    } else {
+      history.push(checkUrl)
+    }
   }
 
   const onView = () => {
@@ -161,6 +171,16 @@ const CheckCard: FC<Props> = ({
             key={2}
             lastRunError={check.lastRunError}
             lastRunStatus={check.lastRunStatus}
+            statusButtonClickHandler={() => {
+              event('check status button clicked', {
+                lastRunError: check.lastRunError,
+                lastRunStatus: check.lastRunStatus,
+                from: 'alert card',
+              })
+              if (isFlagEnabled('navToTaskRuns')) {
+                history.push(`/orgs/${orgID}/tasks/${check.taskID}/runs`)
+              }
+            }}
           />
         </FlexBox>
         <FlexBox
@@ -176,6 +196,7 @@ const CheckCard: FC<Props> = ({
             testID="check-card--name"
             buttonTestID="check-card--name-button"
             inputTestID="check-card--input"
+            href={checkUrl}
           />
           <ResourceCard.EditableDescription
             onUpdate={onUpdateDescription}

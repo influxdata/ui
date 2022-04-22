@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect} from 'react'
+import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Components
@@ -13,6 +13,7 @@ import {getAllFluxFunctions} from 'src/shared/selectors/app'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {getFluxExample} from 'src/shared/utils/fluxExample'
 interface Props {
   onSelect: (fn: FluxFunction) => void
 }
@@ -24,19 +25,42 @@ const sortFuncs = (a, b) => {
     return a.package.toLowerCase() < b.package.toLowerCase() ? -1 : 1
   }
 }
+const hoveredFunctions = new Set<string>()
 
 const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
+  const [eventSearchTerm, setEventSearchTerm] = useState('')
+  const [termRecorded, setTermRecorded] = useState('')
+  const [tooltipPopup, setTooltipPopup] = useState(false)
+  const [hoveredFunction, setHoverdFunction] = useState('')
+
   const dispatch = useDispatch()
   const fluxFunctions = useSelector(getAllFluxFunctions)
+
   useEffect(() => {
     if (fluxFunctions.length === 0) {
       dispatch(getFluxPackages())
     }
   }, [])
 
+  useEffect(() => {
+    if (tooltipPopup && eventSearchTerm !== termRecorded) {
+      hoveredFunctions.clear()
+      event('flux.function.searched', {searchTerm: eventSearchTerm})
+      setTermRecorded(eventSearchTerm)
+    }
+    setTooltipPopup(false)
+    if (tooltipPopup) {
+      const recordedFunction = hoveredFunctions.has(hoveredFunction)
+      if (!recordedFunction) {
+        event('flux.function.hover', {function: hoveredFunction})
+      }
+      hoveredFunctions.add(hoveredFunction)
+    }
+  }, [hoveredFunction, tooltipPopup, eventSearchTerm])
+
   const handleSelectItem = useCallback((func: FluxFunction) => {
-    onSelect(func)
-    event('Inject FluxDoc function into Flux Script')
+    onSelect(getFluxExample(func))
+    event('flux.function.injected', {name: `${func.package}.${func.name}`})
   }, [])
 
   const render = fn => (
@@ -49,6 +73,8 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       option={fn}
       testID={fn.name}
       ToolTipContent={FluxDocsTooltipContent}
+      setToolTipPopup={setTooltipPopup}
+      setHoverdFunction={setHoverdFunction}
     />
   )
 
@@ -61,6 +87,7 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
       }
       items={fluxFunctions.sort(sortFuncs)}
       renderItem={render}
+      setEventSearchTerm={setEventSearchTerm}
     />
   )
 }

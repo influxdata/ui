@@ -25,7 +25,7 @@ export interface Stage {
 }
 
 export interface FlowQueryContextType {
-  generateMap: () => Stage[]
+  generateMap: (doubleForceUpdate?: boolean) => Stage[]
   printMap: (id?: string) => void
   query: (text: string, override?: QueryScope) => Promise<FluxResult>
   basic: (text: string, override?: QueryScope) => any
@@ -72,7 +72,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     }
     _generateMap()
     queryAll()
-  }, [flow?.range])
+  }, [flow?.range?.lower, flow?.range?.upper])
 
   useEffect(() => {
     if (flow?.readOnly) {
@@ -177,7 +177,7 @@ export const FlowQueryProvider: FC = ({children}) => {
     _generateMap()
   }, [flow])
 
-  const generateMap = (): Stage[] => {
+  const generateMap = (doubleForceUpdate?: boolean): Stage[] => {
     // this is to get around an issue where a panel is added, which triggers the useEffect that updates
     // _map.current and a rerender that updates the panel view components within the same render cycle
     // leading to a panel on the list without a corresponding map entry
@@ -185,7 +185,8 @@ export const FlowQueryProvider: FC = ({children}) => {
       (flow?.data?.allIDs ?? []).join(' ') !==
       (_map.current ?? []).map(m => m.id).join(' ')
 
-    if (forceUpdate) {
+    if (forceUpdate || doubleForceUpdate) {
+      // doubleForceUpdate is used to resolve react life cycle issue
       _generateMap()
     }
 

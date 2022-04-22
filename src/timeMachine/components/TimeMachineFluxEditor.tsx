@@ -21,17 +21,24 @@ import {
   generateImport,
 } from 'src/timeMachine/utils/insertFunction'
 import {event} from 'src/cloud/utils/reporting'
+import {CLOUD} from 'src/shared/constants'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getFluxExample} from 'src/shared/utils/fluxExample'
 
 // Types
-import {FluxToolbarFunction, EditorType} from 'src/types'
-import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api'
+import {
+  FluxToolbarFunction,
+  FluxFunction,
+  EditorType,
+  MonacoRange,
+} from 'src/types'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
 const TimeMachineFluxEditor: FC = () => {
   const dispatch = useDispatch()
   const activeQueryText = useSelector(getActiveQuery).text
-  const {activeTab, activeQueryIndex} = useSelector(getActiveTimeMachine)
+  const {activeQueryIndex} = useSelector(getActiveTimeMachine)
   const [editorInstance, setEditorInstance] = useState<EditorType>(null)
 
   const handleSetActiveQueryText = React.useCallback(
@@ -52,12 +59,7 @@ const TimeMachineFluxEditor: FC = () => {
     const p = editorInstance.getPosition()
     editorInstance.executeEdits('', [
       {
-        range: new window.monaco.Range(
-          p.lineNumber,
-          p.column,
-          p.lineNumber,
-          p.column
-        ),
+        range: new monaco.Range(p.lineNumber, p.column, p.lineNumber, p.column),
         text: `v.${variableName}`,
       },
     ])
@@ -80,9 +82,7 @@ const TimeMachineFluxEditor: FC = () => {
 
   const defaultColumnPosition = 1 // beginning column of the row
 
-  const getFluxTextAndRange = (
-    func: FluxToolbarFunction
-  ): {text: string; range: monacoEditor.Range} => {
+  const getFluxTextAndRange = (func): {text: string; range: MonacoRange} => {
     if (!editorInstance) {
       return null
     }
@@ -113,7 +113,7 @@ const TimeMachineFluxEditor: FC = () => {
       text = `\n${func.example}\n`
     }
 
-    const range = new window.monaco.Range(
+    const range = new monaco.Range(
       row,
       defaultColumnPosition,
       row,
@@ -123,11 +123,17 @@ const TimeMachineFluxEditor: FC = () => {
     return {text, range}
   }
 
-  const handleInsertFluxFunction = (func: FluxToolbarFunction): void => {
+  const handleInsertFluxFunction = (
+    func: FluxToolbarFunction | FluxFunction
+  ): void => {
     if (!editorInstance) {
       return
     }
-    const {text, range} = getFluxTextAndRange(func)
+    const {text, range} = getFluxTextAndRange(
+      CLOUD && isFlagEnabled('fluxDynamicDocs')
+        ? getFluxExample(func as FluxFunction)
+        : func
+    )
 
     const edits = [
       {
@@ -141,7 +147,7 @@ const TimeMachineFluxEditor: FC = () => {
     )
     if (importStatement) {
       edits.unshift({
-        range: new window.monaco.Range(1, 1, 1, 1),
+        range: new monaco.Range(1, 1, 1, 1),
         text: `${importStatement}\n`,
       })
     }
@@ -192,7 +198,6 @@ const TimeMachineFluxEditor: FC = () => {
         </div>
         <div className="flux-editor--right-panel">
           <FluxToolbar
-            activeQueryBuilderTab={activeTab}
             onInsertFluxFunction={handleInsertFluxFunction}
             onInsertVariable={handleInsertVariable}
           />

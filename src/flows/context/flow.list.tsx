@@ -16,27 +16,30 @@ import {AUTOREFRESH_DEFAULT} from 'src/shared/constants'
 import {DEFAULT_PROJECT_NAME, PROJECT_NAME} from 'src/flows'
 import {TEMPLATES} from 'src/flows/templates'
 import {
-  pooledUpdateAPI,
   createAPI,
   deleteAPI,
   getAllAPI,
   migrateLocalFlowsToAPI,
 } from 'src/flows/context/api'
+import {
+  getNotebook,
+  postNotebook,
+  patchNotebook,
+} from 'src/client/notebooksRoutes'
 import {notify} from 'src/shared/actions/notifications'
 import {
   notebookCreateFail,
   notebookDeleteFail,
   notebookDeleteSuccess,
 } from 'src/shared/copy/notifications'
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
+import {CLOUD} from 'src/shared/constants'
 
 export interface FlowListContextType extends FlowList {
   add: (flow?: Flow) => Promise<string | void>
   clone: (id: string) => Promise<string | void>
-  update: (id: string, flow: Partial<Flow>) => void
+  update: (id: string, flow?: Flow) => void
   remove: (id: string) => void
-  currentID: string | null
-  change: (id: string) => void
   getAll: () => void
 }
 
@@ -61,9 +64,7 @@ export const DEFAULT_CONTEXT: FlowListContextType = {
   clone: (_id: string) => {},
   update: (_id: string, _flow: Partial<Flow>) => {},
   remove: (_id: string) => {},
-  change: (_id: string) => {},
   getAll: () => {},
-  currentID: null,
 } as FlowListContextType
 
 const useLocalStorageState = createLocalStorageStateHook(
@@ -169,7 +170,7 @@ export function hydrate(data) {
 
 export const FlowListProvider: FC = ({children}) => {
   const [flows, setFlows] = useLocalStorageState()
-  const [currentID, setCurrentID] = useState(DEFAULT_CONTEXT.currentID)
+  const [currentID, setCurrentID] = useState(null)
   const org = useSelector(getOrg)
 
   const dispatch = useDispatch()
@@ -183,17 +184,27 @@ export const FlowListProvider: FC = ({children}) => {
       throw new Error(`${PROJECT_NAME} not found`)
     }
 
-    const flow = flows[id]
+    try {
+      const resp = await getNotebook({id})
 
-    const allFlowNames = Object.values(flows).map(value => value.name)
-    const clonedName = incrementCloneName(allFlowNames, flow.name)
+      if (resp.status !== 200) {
+        throw new Error(resp.data.message)
+      }
 
-    const data = {
-      ...flow,
-      name: clonedName,
+      const _flow = hydrate(resp.data)
+      _flow.name = setCloneName(_flow.name)
+      delete _flow.id
+
+      const response = await postNotebook(serialize(_flow))
+
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
+      }
+
+      return response.data.id
+    } catch (error) {
+      console.error({error})
     }
-
-    return await add(data)
   }
 
   const add = (flow?: Flow): Promise<string | void> => {
@@ -234,25 +245,45 @@ export const FlowListProvider: FC = ({children}) => {
   }
 
   const update = useCallback(
-    (id: string, flow: Partial<Flow>) => {
-      if (!flows.hasOwnProperty(id)) {
-        throw new Error(`${PROJECT_NAME} not found`)
+    async (id: string, flow: Partial<Flow>) => {
+      try {
+        if (!flows.hasOwnProperty(id)) {
+          throw new Error(`${PROJECT_NAME} not found`)
+        }
+
+        if (CLOUD) {
+          const resp = await patchNotebook({
+            id: id,
+            data: {
+              name: flow.name,
+              orgID: org.id,
+            },
+          })
+
+          if (resp.status !== 200) {
+            throw new Error(resp.data.message)
+          }
+
+          setFlows(prevFlows => ({
+            ...prevFlows,
+            [id]: {
+              ...prevFlows[id],
+              name: flow.name,
+            },
+          }))
+        } else {
+          const _flow = flows[id]
+
+          const data = {
+            ..._flow,
+            name: setCloneName(_flow.name),
+          }
+
+          return await add(data)
+        }
+      } catch (error) {
+        console.error({error})
       }
-
-      setFlows(prevFlows => ({
-        ...prevFlows,
-        [id]: {
-          ...prevFlows[id],
-          ...flow,
-        },
-      }))
-
-      const apiFlow = serialize({
-        ...flows[id],
-        ...flow,
-      })
-
-      pooledUpdateAPI({id, ...apiFlow})
     },
     [setFlows, org.id, flows] // eslint-disable-line react-hooks/exhaustive-deps
   )
@@ -280,22 +311,23 @@ export const FlowListProvider: FC = ({children}) => {
     const data = await getAllAPI(org.id)
     if (data && data.flows) {
       const _flows = {}
-      data.flows.forEach(f => {
-        _flows[f.id] = hydrate(f)
-      })
+      if (CLOUD) {
+        data.flows.forEach(flow => {
+          _flows[flow.id] = {
+            name: flow.name,
+            createdAt: flow.createdAt,
+            createdBy: flow.createdBy,
+            updatedAt: flow.updatedAt,
+          }
+        })
+      } else {
+        data.flows.forEach(f => {
+          _flows[f.id] = hydrate(f)
+        })
+      }
       setFlows(_flows)
     }
   }, [org.id, setFlows])
-
-  const change = useCallback(
-    (id: string) => {
-      if (!Object.keys(flows).length) {
-        getAll()
-      }
-      setCurrentID(id)
-    },
-    [setCurrentID, flows]
-  )
 
   const migrate = async () => {
     const localFlows = Object.keys(flows).filter(id => id.includes('local'))
@@ -325,8 +357,6 @@ export const FlowListProvider: FC = ({children}) => {
         update,
         remove,
         getAll,
-        currentID,
-        change,
       }}
     >
       {children}

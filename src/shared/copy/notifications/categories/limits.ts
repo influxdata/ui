@@ -4,6 +4,13 @@ import {
   defaultErrorNotification,
   defaultSuccessNotification,
 } from 'src/shared/copy/notifications'
+import {IconFont} from '@influxdata/clockface'
+
+// Constants
+import {CLOUD} from 'src/shared/constants'
+
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Limits
 export const readWriteCardinalityLimitReached = (
@@ -38,6 +45,10 @@ export const writeLimitReached = (
   duration?: number
 ) => ({
   ...defaultErrorNotification,
+  icon:
+    CLOUD && isFlagEnabled('credit250Experiment')
+      ? IconFont.Stop
+      : defaultErrorNotification.icon,
   message,
   duration: duration ?? TEN_SECONDS,
   type: 'writeLimitReached',

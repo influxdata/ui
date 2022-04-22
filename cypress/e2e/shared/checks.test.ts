@@ -1000,7 +1000,7 @@ describe('Checks', () => {
   describe('Clone checks', () => {
     it('can clone and delete a deadman check', () => {
       cy.intercept('POST', '/api/v2/checks*').as('createCheck')
-      const cloneName = `${deadmanCheck.name} (clone 1)`
+      const cloneNamePrefix = `${deadmanCheck.name} (cloned at `
       // 1. create deadman over API
       initCheck(deadmanCheck)
       cy.reload()
@@ -1017,7 +1017,7 @@ describe('Checks', () => {
       cy.wait('@createCheck')
       // 3. Asserts
       cy.get<GenCheck>('@check').then(check => {
-        cy.getByTestID(`check-card ${cloneName}`).within(() => {
+        cy.getByTestIDHead(`check-card ${cloneNamePrefix}`).within(() => {
           cy.getByTestID('copy-resource-id').should('not.have.text', check.id)
           cy.getByTestID('copy-task-id').should('not.have.text', check.taskID)
         })
@@ -1026,10 +1026,17 @@ describe('Checks', () => {
       cy.getByTestID('check-card--name').then(nameDivs => {
         const names = nameDivs.toArray().map((r: any) => r.innerText)
         expect(names.length).to.equal(2)
-        expect(names[1]).to.equal(cloneName)
+        const cloneName = names[1]
+        const cloneTime = cloneName.slice(
+          cloneNamePrefix.length,
+          cloneName.length - 1
+        )
+        const cloneTimeAsDate = new Date(cloneTime)
+        expect(cloneTimeAsDate.toTimeString()).not.to.equal('Invalid Date')
+        expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())
       })
       // 3.1 Assert configure same
-      cy.contains(cloneName).click()
+      cy.contains(cloneNamePrefix).click()
       cy.getByTestID('duration-input--for').should(
         'have.value',
         deadmanCheck.timeSince
@@ -1069,11 +1076,11 @@ describe('Checks', () => {
       cy.getByTestID('square-button')
         .eq(0)
         .click()
-      cy.getByTestID(`check-card ${cloneName}`).within(() => {
+      cy.getByTestIDHead(`check-card ${cloneNamePrefix}`).within(() => {
         cy.getByTestID('context-delete-task--button').click()
       })
       cy.getByTestID('context-delete-task--confirm-button').click()
-      cy.getByTestID(`check-card ${cloneName}`).should('not.exist')
+      cy.getByTestID(`check-card ${cloneNamePrefix}`).should('not.exist')
       cy.getByTestID(`check-card ${deadmanCheck.name}`).should('be.visible')
       cy.getByTestID('check-card--name').should('have.length', 1)
     })

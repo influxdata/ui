@@ -3,7 +3,7 @@ import React, {FC, useCallback, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 // Types
-import {Account as UserAccount} from 'src/client/unityRoutes'
+import {UserAccount} from 'src/client/unityRoutes'
 
 // Notifications
 import {notify} from 'src/shared/actions/notifications'

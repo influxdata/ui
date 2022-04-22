@@ -66,6 +66,7 @@ export const FlowProvider: FC = ({children}) => {
   const yDoc = useRef(new Doc())
   function disconnectProvider() {
     if (provider.current) {
+      console.log('calling this')
       provider.current.disconnect()
     }
   }
@@ -149,7 +150,8 @@ export const FlowProvider: FC = ({children}) => {
     const doc = yDoc.current
     if (isFlagEnabled('sharedFlowEditing') && id) {
       provider.current = new WebsocketProvider(
-        `wss://${window.location.host}/api/workbench`,
+        `ws://localhost:1223/api/workbench`,
+        // `wss://${window.location.host}/api/workbench`,
         id,
         doc
       )

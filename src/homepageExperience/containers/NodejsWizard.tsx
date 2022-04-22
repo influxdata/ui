@@ -117,7 +117,8 @@ export class NodejsWizard extends PureComponent<null, State> {
     return (
       <Page>
         <Page.Header fullWidth={false}>
-          <h1 />
+          {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-around to justifyContent)*/}
+          <div />
           <RateLimitAlert location="firstMile.homepage" />
         </Page.Header>
 

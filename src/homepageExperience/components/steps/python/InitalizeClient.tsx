@@ -34,11 +34,15 @@ client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)`
       <p>
         Run this command in your terminal to open the interactive Python shell:
       </p>
-      <CodeSnippet text="python3" />
+      <CodeSnippet text="python3" language="properties" />
       <p style={{marginTop: '40px'}}>
         Paste the following code after the prompt (>>>) and press Enter.
       </p>
-      <CodeSnippet text={pythonCode} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet
+        text={pythonCode}
+        onCopy={logCopyCodeSnippet}
+        language="python"
+      />
       <p style={{marginTop: '42px'}}>
         Here, we initialize the token, organization info, and server url that is
         needed to set up the initial connection to InfluxDB. The client

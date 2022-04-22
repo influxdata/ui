@@ -50,8 +50,7 @@ export const WriteDataComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket])
 
-  const codeSnippet = `
-bucket="${bucket.name}"
+  const codeSnippet = `bucket="${bucket.name}"
 
 write_api = client.write_api(write_options=SYNCHRONOUS)
    
@@ -93,7 +92,11 @@ for value in range(5):
         In this code, we define five data points and write each one for
         InfluxDB. Run the following code in your Python shell:
       </p>
-      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet
+        text={codeSnippet}
+        onCopy={logCopyCodeSnippet}
+        language="python"
+      />
       <p style={{marginTop: '20px'}}>
         In the above code snippet, we define five data points and write each on
         the InfluxDB. Each of the 5 points we write has a{' '}

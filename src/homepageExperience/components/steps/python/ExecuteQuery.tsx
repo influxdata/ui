@@ -45,6 +45,7 @@ for table in tables:
         text={fromBucketSnippet}
         showCopyControl={false}
         onCopy={logCopyCodeSnippet}
+        language="properties"
       />
       <p>
         In this query, we are looking for data points within last 10 minutes
@@ -56,7 +57,7 @@ for table in tables:
         <br />
         Run the following:
       </p>
-      <CodeSnippet text={query} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet text={query} onCopy={logCopyCodeSnippet} language="python" />
     </>
   )
 }

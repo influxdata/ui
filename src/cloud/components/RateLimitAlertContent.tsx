@@ -93,6 +93,7 @@ export const UpgradeContent: FC<UpgradeProps> = ({
         <UpgradeMessage {...{limitText, link, type}} />
         <CloudUpgradeButton
           className="upgrade-payg--button__rate-alert"
+          hidePromoMessage={true}
           metric={() => event(`user.limits.${type}.upgrade`, {location})}
         />
       </FlexBox>

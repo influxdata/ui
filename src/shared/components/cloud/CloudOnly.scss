@@ -91,6 +91,10 @@ a.upgrade-payg--button {
   background-image: url('~assets/images/dashboard-empty--dark.svg');
 }
 
+.credit-250-experiment-upgrade-button--text {
+  margin: $cf-marg-c;
+}
+
 @media screen and (min-width: $cf-nav-menu--breakpoint) {
   .rate-alert {
     margin-left: $cf-space-l;

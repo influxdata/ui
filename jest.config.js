@@ -19,7 +19,7 @@ module.exports = {
     'react-dnd$': 'react-dnd/dist/cjs',
     'react-dnd-html5-backend$': 'react-dnd-html5-backend/dist/cjs',
     'dnd-core$': 'dnd-core/dist/cjs',
-    'react-syntax-highlighter': 'react-syntax-highlighter/dist/esm'
+    'react-syntax-highlighter$': 'react-syntax-highlighter/dist/esm'
   },
   globals: {
     'ts-jest': {

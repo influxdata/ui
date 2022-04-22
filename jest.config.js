@@ -7,6 +7,7 @@ module.exports = {
     '<rootDir>/node_modules/(?!(jest-test))',
     'cypress',
   ],
+  transformIgnorePatterns: ['node_modules/react-syntax-highlighter'],
   modulePaths: ['<rootDir>', '<rootDir>/node_modules'],
   moduleDirectories: ['src'],
   transform: {

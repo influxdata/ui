@@ -16,10 +16,10 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 let getMapToken = null
 
 if (CLOUD) {
+  getMapToken = require('src/client/mapsdRoutes').getMapToken
   if (isFlagEnabled('uiproxyd')) {
     getMapToken = require('src/client/uiproxydRoutes').getMapToken
   }
-  getMapToken = require('src/client/mapsdRoutes').getMapToken
 }
 
 interface Props extends VisualizationProps {

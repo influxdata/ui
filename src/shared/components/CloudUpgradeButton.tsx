@@ -15,19 +15,22 @@ import CloudOnly from 'src/shared/components/cloud/CloudOnly'
 
 // Utils
 import {shouldShowUpgradeButton} from 'src/me/selectors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 interface OwnProps {
-  className?: string
   buttonText?: string
-  size?: ComponentSize
+  className?: string
   metric?: () => void
+  showPromoMessage?: boolean
+  size?: ComponentSize
 }
 
 const CloudUpgradeButton: FC<OwnProps> = ({
-  size = ComponentSize.Small,
-  className,
   buttonText = 'Upgrade Now',
+  className,
   metric,
+  showPromoMessage = true,
+  size = ComponentSize.Small,
 }) => {
   const showUpgradeButton = useSelector(shouldShowUpgradeButton)
 
@@ -44,22 +47,28 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     history.push('/checkout')
   }
 
+  const promoMessage =
+    isFlagEnabled('credit250Experiment') && showPromoMessage ? (
+      <span className="credit-250-experiment-upgrade-button--text">
+        Get $250 free credit
+      </span>
+    ) : null
+
   return (
     <CloudOnly>
       {showUpgradeButton && (
-        <Button
-          icon={IconFont.CrownSolid_New}
-          className={cloudUpgradeButtonClass}
-          size={size}
-          shape={ButtonShape.Default}
-          onClick={handleClick}
-          text={buttonText}
-          style={{
-            background:
-              'linear-gradient(45deg, rgb(52, 187, 85) 0%, rgb(0, 163, 255) 100%)',
-          }}
-          testID="cloud-upgrade--button"
-        />
+        <span>
+          {promoMessage}
+          <Button
+            icon={IconFont.CrownSolid_New}
+            className={cloudUpgradeButtonClass}
+            size={size}
+            shape={ButtonShape.Default}
+            onClick={handleClick}
+            text={buttonText}
+            testID="cloud-upgrade--button"
+          />
+        </span>
       )}
     </CloudOnly>
   )

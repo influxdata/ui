@@ -77,6 +77,7 @@ for value in range(5):
           buckets.
         </SafeBlankLink>
       </p>
+      <p>Please select or create a new bucket:</p>
 
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body size={ComponentSize.ExtraSmall}>

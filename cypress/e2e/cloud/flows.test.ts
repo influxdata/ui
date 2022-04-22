@@ -317,6 +317,7 @@ describe('Flows with queryBuilderUseMetadataCaching flag on', () => {
     )
 
     const flowName = 'Flowbooks'
+    const flowCloneNamePrefix = `${flowName} (cloned at `
 
     cy.getByTestID('preset-new')
       .first()
@@ -400,9 +401,6 @@ describe('Flows with queryBuilderUseMetadataCaching flag on', () => {
 
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
 
-    const d = Date.UTC(2018, 10, 30)
-    cy.clock(d, ['Date'])
-
     cy.getByTestID(`flow-card--${flowName}`).within(() => {
       cy.getByTestID(`context-menu-flow`).click()
     })
@@ -411,24 +409,36 @@ describe('Flows with queryBuilderUseMetadataCaching flag on', () => {
 
     cy.getByTestID('time-machine-submit-button').should('be.visible')
 
-    const clone = `${flowName} (cloned at 2018-11-30 00:00:00)`
-
     // Should redirect the user to the newly cloned flow
     // Validates that the selected clone is the clone
-    cy.getByTestID('page-title').contains(`${clone}`)
+    cy.getByTestID('page-title')
+      .first()
+      .then(cloneNameElement => {
+        const cloneName = cloneNameElement.text()
+        const cloneTime = cloneName.slice(
+          flowCloneNamePrefix.length,
+          cloneName.length - 1
+        )
+        const cloneTimeAsDate = new Date(cloneTime)
+        expect(cloneTimeAsDate.toTimeString()).not.to.equal('Invalid Date')
+        expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())
+      })
 
     cy.clickNavBarItem('nav-item-flows')
 
     cy.get('.cf-resource-card').should('have.length', 2)
     cy.get('.cf-resource-editable-name')
       .first()
-      .contains(`${clone}`)
+      .contains(flowCloneNamePrefix)
 
     // Delete the cloned flow
-    cy.getByTestID(`flow-card--${clone}`).within(() => {
+    cy.getByTestIDHead(`flow-card--${flowCloneNamePrefix}`).within(() => {
       cy.getByTestID(`context-delete-menu--button`).click()
     })
     cy.getByTestID(`context-delete-menu--confirm-button`).click()
+
+    cy.getByTestID('notification-success').should('be.visible')
+    cy.getByTestID('notification-success--dismiss').click()
 
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.getByTestID('resource-editable-name').contains(`${flowName}`)
@@ -442,16 +452,28 @@ describe('Flows with queryBuilderUseMetadataCaching flag on', () => {
     // Should redirect the user to the newly cloned flow
     cy.getByTestID('time-machine-submit-button').should('be.visible')
     cy.wait('@updateNotebook')
-    cy.getByTestID('page-title').contains(`${clone}`)
+    cy.getByTestID('page-title')
+      .first()
+      .then(cloneNameElement => {
+        const cloneName = cloneNameElement.text()
+        const cloneTime = cloneName.slice(
+          flowCloneNamePrefix.length,
+          cloneName.length - 1
+        )
+        const cloneTimeAsDate = new Date(cloneTime)
+        expect(cloneTimeAsDate.toTimeString()).not.to.equal('Invalid Date')
+        expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())
+      })
 
     // Delete the cloned flow inside the notebook
     cy.getByTestID('flow-menu-button').click()
     cy.getByTestID('flow-menu-button-delete').should('be.visible')
     cy.getByTestID('flow-menu-button-delete').click()
 
+    cy.getByTestID('notification-success').should('be.visible')
+
     cy.get('.cf-resource-card').should('have.length', 1)
     cy.get('.cf-resource-editable-name').should('have.length', 1)
     cy.get('.cf-resource-editable-name').contains(`${flowName}`)
-    cy.clock().invoke('restore')
   })
 })

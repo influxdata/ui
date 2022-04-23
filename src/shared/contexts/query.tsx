@@ -113,6 +113,8 @@ export const remove = (node: File, test, acc = []) => {
 }
 
 const _addWindowPeriod = (ast, optionAST): void => {
+  const NOW = Date.now()
+
   const queryRanges = find(
     ast,
     node =>
@@ -121,18 +123,18 @@ const _addWindowPeriod = (ast, optionAST): void => {
     (node.arguments[0]?.properties || []).reduce(
       (acc, curr) => {
         if (curr.key.name === 'start') {
-          acc.start = propertyTime(ast, curr.value, Date.now())
+          acc.start = propertyTime(ast, curr.value, NOW)
         }
 
         if (curr.key.name === 'stop') {
-          acc.stop = propertyTime(ast, curr.value, Date.now())
+          acc.stop = propertyTime(ast, curr.value, NOW)
         }
 
         return acc
       },
       {
         start: '',
-        stop: Date.now(),
+        stop: NOW,
       }
     )
   )

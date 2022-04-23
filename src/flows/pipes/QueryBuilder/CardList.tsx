@@ -59,6 +59,8 @@ const Card: FC<Props> = ({idx}) => {
     cards,
     selectMeasurement,
     add,
+    cancelKey,
+    cancelValue,
     update,
     remove,
     loadKeys,
@@ -171,17 +173,38 @@ const Card: FC<Props> = ({idx}) => {
   }
 
   useEffect(() => {
+    let promise
     if (data.buckets[0] && card.keys.loading === RemoteDataState.NotStarted) {
-      loadKeys(idx)
+      promise = loadKeys(idx)
+      if (promise instanceof Promise) {
+        promise.finally(() => {
+          promise = null
+        })
+      }
+    }
+
+    return () => {
+      cancelKey(idx)
     }
   }, [data.buckets, card.keys.loading])
 
   useEffect(() => {
+    let promise
     if (
       card.keys.loading === RemoteDataState.Done &&
       card.values.loading !== RemoteDataState.Done
     ) {
-      loadValues(idx)
+      promise = loadValues(idx)
+
+      if (promise instanceof Promise) {
+        promise.finally(() => {
+          promise = null
+        })
+      }
+    }
+
+    return () => {
+      cancelValue(idx)
     }
   }, [card.keys.loading, card.values.loading])
 

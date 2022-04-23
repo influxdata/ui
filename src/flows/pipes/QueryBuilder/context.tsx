@@ -63,10 +63,12 @@ interface QueryBuilderContextType {
   selectMeasurement: (measurement?: string) => void
 
   add: () => void
+  cancelKey: (idx: number) => void
+  cancelValue: (idx: number) => void
   remove: (idx: number) => void
   update: (idx: number, card: Partial<QueryBuilderCard>) => void
-  loadKeys: (idx: number, search?: string) => void
-  loadValues: (idx: number, search?: string) => void
+  loadKeys: (idx: number, search?: string) => void | Promise<any>
+  loadValues: (idx: number, search?: string) => void | Promise<any>
 }
 
 export const DEFAULT_CONTEXT: QueryBuilderContextType = {
@@ -76,6 +78,8 @@ export const DEFAULT_CONTEXT: QueryBuilderContextType = {
   selectMeasurement: _ => {},
 
   add: () => {},
+  cancelKey: (_idx: number) => {},
+  cancelValue: (_idx: number) => {},
   remove: (_idx: number) => {},
   update: (_idx: number, _card: QueryBuilderCard) => {},
   loadKeys: (_idx: number, _search?: string) => {},
@@ -113,6 +117,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
   const {id, data, range, update} = useContext(PipeContext)
   const {query, getPanelQueries} = useContext(FlowQueryContext)
   const {buckets} = useContext(BucketContext)
+  const [cancelKey, setCancelKey] = useState({})
+  const [cancelValue, setCancelValue] = useState({})
 
   const [cardMeta, setCardMeta] = useState<QueryBuilderMeta[]>(
     Array(data.tags.length).fill({
@@ -326,6 +332,18 @@ export const QueryBuilderProvider: FC = ({children}) => {
       })
   }
 
+  const handleCancelKey = idx => {
+    if (idx in cancelKey) {
+      cancelKey[idx]()
+    }
+  }
+
+  const handleCancelValue = idx => {
+    if (idx in cancelValue) {
+      cancelValue[idx]()
+    }
+  }
+
   const loadValues = (idx, search) => {
     if (
       cardMeta[idx].loadingValues === RemoteDataState.Loading ||
@@ -490,7 +508,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
         selectBucket,
         selectMeasurement,
-
+        cancelKey: handleCancelKey,
+        cancelValue: handleCancelValue,
         add,
         remove,
         update: updater,

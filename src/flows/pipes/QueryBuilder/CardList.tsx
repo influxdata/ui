@@ -167,7 +167,13 @@ const Card: FC<Props> = ({idx}) => {
       add()
     } else {
       for (let ni = idx + 1; ni < cards.length; ni++) {
-        loadKeys(ni)
+        if (_vals.length === 0) {
+          // A user selects and deselects a value - this should invoke the remove(ni) condition
+          remove(ni)
+        } else {
+          // A user selects two values - this should invoke the loadKeys(ni) condition
+          loadKeys(ni)
+        }
       }
     }
   }

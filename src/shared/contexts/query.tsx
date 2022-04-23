@@ -7,7 +7,7 @@ import {getOrg} from 'src/organizations/selectors'
 import {getBuckets} from 'src/buckets/actions/thunks'
 import {getSortedBuckets} from 'src/buckets/selectors'
 import {getStatus} from 'src/resources/selectors'
-import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {fromFlux} from '@influxdata/giraffe'
 import {
   FluxResult,
   QueryScope,

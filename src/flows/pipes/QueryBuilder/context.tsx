@@ -300,7 +300,14 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> limit(n: ${limit})`
     }
 
-    query(queryText, scope)
+    const result = query(queryText, scope)
+
+    setCancelKey(prev => ({
+      ...prev,
+      [idx]: (result as any).cancel,
+    }))
+
+    return result
       .then(resp => {
         return (Object.values(resp.parsed.table.columns).filter(
           c => c.name === '_value' && c.type === 'string'
@@ -420,7 +427,14 @@ export const QueryBuilderProvider: FC = ({children}) => {
   |> sort()`
     }
 
-    query(queryText, scope)
+    const result = query(queryText, scope)
+
+    setCancelValue(prev => ({
+      ...prev,
+      [idx]: (result as any).cancel,
+    }))
+
+    return result
       .then(resp => {
         return (Object.values(resp.parsed.table.columns).filter(
           c => c.name === '_value' && c.type === 'string'

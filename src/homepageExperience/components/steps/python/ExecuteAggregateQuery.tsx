@@ -36,7 +36,8 @@ tables = query_api.query(query, org="${org.name}")
 
 for table in tables:
     for record in table.records:
-        print(record)`
+        print(record)
+`
 
   return (
     <>

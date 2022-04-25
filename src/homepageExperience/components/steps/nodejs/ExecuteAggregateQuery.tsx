@@ -23,8 +23,8 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> range(start: -10m) # find data points in last 10 minutes
   |> mean()`
 
-  const query = `const queryClient = client.getQueryApi(org)
-const fluxQuery = \`from(bucket: "fooo")
+  const query = `queryClient = client.getQueryApi(org)
+fluxQuery = \`from(bucket: "${bucket}")
  |> range(start: -10m)
  |> filter(fn: (r) => r._measurement == "measurement1")
  |> mean()\`

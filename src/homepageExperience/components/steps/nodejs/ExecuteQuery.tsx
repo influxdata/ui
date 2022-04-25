@@ -17,8 +17,8 @@ export const ExecuteQuery = (props: OwnProps) => {
   const fromBucketSnippet = `from(bucket: "${bucket}")
   |> range(start: -10m)`
 
-  const query = `const queryClient = client.getQueryApi(org)
-const fluxQuery = \`from(bucket: "fooo")
+  const query = `let queryClient = client.getQueryApi(org)
+let fluxQuery = \`from(bucket: "${bucket}")
  |> range(start: -10m)
  |> filter(fn: (r) => r._measurement == "measurement1")\`
 

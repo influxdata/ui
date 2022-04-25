@@ -61,13 +61,13 @@ for (let i = 0; i < 5; i++) {
     .tag('tagname1', 'tagvalue1')
     .floatField('field1', i)
 
-  setTimeout(() => {
+  void setTimeout(() => {
     writeClient.writePoint(point)
   }, i * 1000) // separate points by 1 second
 
-  setTimeout(() => {
+  void setTimeout(() => {
     writeClient.flush()
-  }, 5500)
+  }, 5000)
 }`
 
   return (

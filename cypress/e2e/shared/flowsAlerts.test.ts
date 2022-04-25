@@ -234,8 +234,6 @@ describe('flows alert panel', () => {
     cy.getByTestID('notification-exp-button').scrollIntoView()
     cy.getByTestID('text-editor').should('be.visible')
 
-    selectAlertMeasurementAndField()
-
     const fakeEmail = 'super@fake.com'
     const fakeUrl = 'super-fake.com'
     const fakeChannel = 'fake-channel'
@@ -257,6 +255,12 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown--calcSignature').click()
     cy.getByTestID('dropdown-item--mySecret').click()
     cy.getByTestID('input--email').type(fakeEmail)
+
+    cy.log('Export attempt without selecting a measurement, will error')
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('notification-error').should('be.visible')
+    cy.getByTestID('notification-error--dismiss').click()
+    selectAlertMeasurementAndField()
 
     cy.getByTestID('task-form-save').click()
     /* NOTE: we used to be able to test that the generated flux contained the the

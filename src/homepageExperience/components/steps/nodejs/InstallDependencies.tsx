@@ -23,7 +23,7 @@ export class InstallDependencies extends PureComponent {
         />
         <p style={{fontStyle: 'italic'}}>
           You’ll need to have{' '}
-          <SafeBlankLink href="https://nodejs.org/download/release/latest-v14.x/">
+          <SafeBlankLink href="https://nodejs.org/en/">
             Node.js v14 LTS
           </SafeBlankLink>{' '}
           or higher installed.

@@ -51,8 +51,8 @@ export const WriteDataComponent = (props: OwnProps) => {
   }, [bucket])
 
   const codeSnippet = `
-const org = '${org.name}'
-const bucket = '${bucket.name}'
+const org = \`${org.name}\`
+const bucket = \`${bucket.name}\`
 
 const writeClient = client.getWriteApi(org, bucket, 'ns')
 
@@ -61,9 +61,13 @@ for (let i = 0; i < 5; i++) {
     .tag('tagname1', 'tagvalue1')
     .floatField('field1', i)
 
-  setTimeout(() => {
+  void setTimeout(() => {
     writeClient.writePoint(point)
   }, i * 1000) // separate points by 1 second
+
+  void setTimeout(() => {
+    writeClient.flush()
+  }, 5000)
 }`
 
   return (

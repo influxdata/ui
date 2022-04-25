@@ -1,5 +1,10 @@
 import View from './view'
 import ReadOnly from './readOnly'
+import {PipeData} from 'src/types'
+
+const removeNotificationThresholds = data => {
+  delete data.thresholds
+}
 
 export default register => {
   register({
@@ -26,6 +31,7 @@ export default register => {
         url: 'https://hooks.slack.com/services/X/X/X',
       },
     },
+    beforeRemove: (data: PipeData) => removeNotificationThresholds(data),
     visual: (_data, query) => {
       return query
     },

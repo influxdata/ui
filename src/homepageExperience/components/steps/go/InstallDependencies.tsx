@@ -23,7 +23,8 @@ export class InstallDependencies extends PureComponent {
       <>
         <h1>Install Dependencies</h1>
         <p>
-          First, you need to create a new go module. Run the commands below in your terminal.
+          First, you need to create a new go module. Run the commands below in
+          your terminal.
         </p>
         <CodeSnippet
           text={goModuleSnippet}
@@ -31,8 +32,10 @@ export class InstallDependencies extends PureComponent {
         />
         <p style={{marginTop: '40px'}}>
           Then, install the{' '}
-          <code style={{color: '#B7B8FF'}}>influxdb-client-go</code> module. Run
-          the command below in your terminal.
+          <code className="homepage-wizard--code-highlight">
+            influxdb-client-go
+          </code>{' '}
+          module. Run the command below in your terminal.
         </p>
         <CodeSnippet
           text="go get github.com/influxdata/influxdb-client-go/v2"
@@ -40,10 +43,11 @@ export class InstallDependencies extends PureComponent {
         />
         <p style={{fontStyle: 'italic'}}>
           You’ll need to have{' '}
-          <SafeBlankLink href="https://go.dev/dl/">
-            Go 1.17
-          </SafeBlankLink>{' '}
-          or higher installed. This sample code assumes you have go tools like <code>gofmt</code> and <code>goimports</code> installed.
+          <SafeBlankLink href="https://go.dev/dl/">Go 1.17</SafeBlankLink> or
+          higher installed. This sample code assumes you have go tools like{' '}
+          <code className="homepage-wizard--code-highlight">gofmt</code> and{' '}
+          <code className="homepage-wizard--code-highlight">goimports</code>{' '}
+          installed.
         </p>
       </>
     )

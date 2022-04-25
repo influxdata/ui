@@ -14,7 +14,7 @@ export class InstallDependencies extends PureComponent {
         <h1>Install Dependencies</h1>
         <p>
           First, you need to install the{' '}
-          <code style={{color: '#B7B8FF'}}>influxdb-client</code> module. Run
+          <code className="homepage-wizard--code-highlight">influxdb-client</code> module. Run
           the command below in your terminal.
         </p>
         <CodeSnippet

@@ -31,6 +31,7 @@ interface State {
   currentStep: number
   selectedBucket: string
   finishStepCompleted: boolean
+  tokenValue: string
 }
 
 export class PythonWizard extends PureComponent<null, State> {
@@ -38,6 +39,7 @@ export class PythonWizard extends PureComponent<null, State> {
     currentStep: 1,
     selectedBucket: 'my-bucket',
     finishStepCompleted: false,
+    tokenValue: null,
   }
 
   private handleSelectBucket = (bucketName: string) => {
@@ -46,6 +48,10 @@ export class PythonWizard extends PureComponent<null, State> {
 
   private handleMarkStepAsCompleted = () => {
     this.setState({finishStepCompleted: true})
+  }
+
+  private setTokenValue = (tokenValue: string) => {
+    this.setState({tokenValue})
   }
 
   handleNextClick = () => {
@@ -84,7 +90,13 @@ export class PythonWizard extends PureComponent<null, State> {
         return <InstallDependencies />
       }
       case 3: {
-        return <CreateToken wizardEventName="pythonWizard" />
+        return (
+          <CreateToken
+            wizardEventName="pythonWizard"
+            setTokenValue={this.setTokenValue}
+            tokenValue={this.state.tokenValue}
+          />
+        )
       }
       case 4: {
         return <InitalizeClient />

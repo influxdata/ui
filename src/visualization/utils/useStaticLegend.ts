@@ -136,8 +136,9 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       !show &&
       heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET
 
-    if (!shouldStaticLegendPropertiesBeUpdated) return
-
+    if (!shouldStaticLegendPropertiesBeUpdated) {
+      return
+    }
     const validOpacity =
       typeof legendOpacity === 'number' &&
       legendOpacity === legendOpacity &&

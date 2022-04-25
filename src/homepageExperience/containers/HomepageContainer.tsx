@@ -36,6 +36,7 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import UsageProvider from 'src/usage/context/usage'
 import Resources from 'src/me/components/Resources'
+import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 export const HomepageContainer: FC = () => {
   const org = useSelector(getOrg)
@@ -60,6 +61,11 @@ export const HomepageContainer: FC = () => {
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['Get Started'])}>
+        <Page.Header fullWidth={false}>
+          {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
+          <div />
+          <RateLimitAlert location="firstMile.homepage" />
+        </Page.Header>
         <Page.Contents scrollable={true} fullWidth={false}>
           <Grid>
             <Grid.Row>

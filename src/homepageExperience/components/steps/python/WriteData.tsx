@@ -68,7 +68,7 @@ for value in range(5):
     <>
       <h1>Write Data</h1>
       <p>
-        To start writing data, we need a place to our time-series store data. We
+        To start writing data, we need a place to store our time-series data. We
         call these{' '}
         <SafeBlankLink
           href={`orgs/${org.id}/load-data/buckets`}
@@ -77,6 +77,7 @@ for value in range(5):
           buckets.
         </SafeBlankLink>
       </p>
+      <p>Please select or create a new bucket:</p>
 
       <Panel backgroundColor={InfluxColors.Grey15}>
         <Panel.Body size={ComponentSize.ExtraSmall}>

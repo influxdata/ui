@@ -23,7 +23,7 @@ export class InstallDependencies extends PureComponent {
         />
         <p style={{fontStyle: 'italic'}}>
           You’ll need to have{' '}
-          <SafeBlankLink href="https://go.dev/doc/go1.17/">
+          <SafeBlankLink href="https://go.dev/dl/">
             Go 1.17
           </SafeBlankLink>{' '}
           or higher installed.

@@ -33,11 +33,17 @@ import {
 
 type OwnProps = {
   wizardEventName: string
+  setTokenValue: (tokenValue: string) => void
+  tokenValue: string
 }
 
 const collator = new Intl.Collator(navigator.language || 'en-US')
 
-export const CreateToken: FC<OwnProps> = ({wizardEventName}) => {
+export const CreateToken: FC<OwnProps> = ({
+  wizardEventName,
+  setTokenValue,
+  tokenValue,
+}) => {
   const org = useSelector(getOrg)
   const me = useSelector(getMe)
   const allPermissionTypes = useSelector(getAllTokensResources)
@@ -63,7 +69,7 @@ export const CreateToken: FC<OwnProps> = ({wizardEventName}) => {
   }, [])
 
   useEffect(() => {
-    if (sortedPermissionTypes.length) {
+    if (sortedPermissionTypes.length && tokenValue === null) {
       const authorization: Authorization = {
         orgID: org.id,
         description: `onboarding-${wizardEventName}-token-${Date.now()}`,
@@ -75,11 +81,19 @@ export const CreateToken: FC<OwnProps> = ({wizardEventName}) => {
     }
   }, [sortedPermissionTypes.length])
 
+  // when token generated, save it to the parent component
   useEffect(() => {
     if (currentAuth.token) {
-      setTokenTextboxText(`export INFLUXDB_TOKEN=${currentAuth.token}`)
+      setTokenValue(currentAuth.token)
     }
   }, [currentAuth.token])
+
+  // when tokenValue in the parent component is not null, set text box value to tokenValue
+  useEffect(() => {
+    if (tokenValue !== null) {
+      setTokenTextboxText(`export INFLUXDB_TOKEN=${tokenValue}`)
+    }
+  }, [tokenValue])
 
   // Events log handling
   const logCopyCodeSnippet = () => {

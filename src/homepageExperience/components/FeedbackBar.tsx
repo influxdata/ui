@@ -33,13 +33,18 @@ export default class FeedbackBar extends React.Component<OwnProps, State> {
     }
   }
 
+  // for now, we're only registering the first feedback user selects.
   private handleThumbsUpClick = () => {
-    event(`firstMile.${this.props.wizardEventName}.thumbsUp.clicked`)
-    this.setState({selectedFeedback: feedbackValue.THUMBS_UP})
+    if (this.state.selectedFeedback === null) {
+      event(`firstMile.${this.props.wizardEventName}.thumbsUp.clicked`)
+      this.setState({selectedFeedback: feedbackValue.THUMBS_UP})
+    }
   }
   private handleThumbsDownClick = () => {
-    event(`firstMile.${this.props.wizardEventName}.thumbsDown.clicked`)
-    this.setState({selectedFeedback: feedbackValue.THUMBS_DOWN})
+    if (this.state.selectedFeedback === null) {
+      event(`firstMile.${this.props.wizardEventName}.thumbsDown.clicked`)
+      this.setState({selectedFeedback: feedbackValue.THUMBS_DOWN})
+    }
   }
 
   render() {

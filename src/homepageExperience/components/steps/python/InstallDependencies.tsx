@@ -14,8 +14,10 @@ export class InstallDependencies extends PureComponent {
         <h1>Install Dependencies</h1>
         <p>
           First, you need to install the{' '}
-          <code className="homepage-wizard--code-highlight">influxdb-client</code> module. Run
-          the command below in your terminal.
+          <code className="homepage-wizard--code-highlight">
+            influxdb-client
+          </code>{' '}
+          module. Run the command below in your terminal.
         </p>
         <CodeSnippet
           text="pip3 install influxdb-client"

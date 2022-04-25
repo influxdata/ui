@@ -61,6 +61,10 @@ const fireConfetti = () => {
   })
 }
 
+const handleNextStepEvent = (wizardEventName: string, nextStepName: string) => {
+  event(`firstMile.${wizardEventName}.nextSteps.${nextStepName}.clicked`)
+}
+
 export const Finish = (props: OwnProps) => {
   useEffect(() => {
     // if the finish step was opened during the session,
@@ -73,6 +77,7 @@ export const Finish = (props: OwnProps) => {
     }
   }, [])
 
+  const showSampleApp = props.wizardEventName === 'pythonWizard'
   return (
     <>
       <h1>Congrats!</h1>
@@ -82,22 +87,39 @@ export const Finish = (props: OwnProps) => {
         Curious to learn more? Try these next steps!
       </p>
       <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>
-        <ResourceCard className="homepage-wizard-next-steps">
-          <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
-            <h4>{CodeTerminalIcon}Sample App</h4>
-          </SafeBlankLink>
-          <p>
-            Play around with our template code of sample app to streamline your
-            own data into InfluxData.
-          </p>
-        </ResourceCard>
-        <ResourceCard className="homepage-wizard-next-steps">
+        {showSampleApp && (
+          <ResourceCard
+            className="homepage-wizard-next-steps"
+            onClick={() =>
+              handleNextStepEvent(props.wizardEventName, 'sampleApp')
+            }
+          >
+            <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
+              <h4>{CodeTerminalIcon}Sample App</h4>
+            </SafeBlankLink>
+            <p>
+              Play around with our template code of sample app to streamline
+              your own data into InfluxData.
+            </p>
+          </ResourceCard>
+        )}
+        <ResourceCard
+          className="homepage-wizard-next-steps"
+          onClick={() =>
+            handleNextStepEvent(props.wizardEventName, 'keyConcepts')
+          }
+        >
           <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
             <h4>{BookIcon}Key Concepts</h4>
           </SafeBlankLink>
           <p>Learn about important concepts for writing time-series data.</p>
         </ResourceCard>
-        <ResourceCard className="homepage-wizard-next-steps">
+        <ResourceCard
+          className="homepage-wizard-next-steps"
+          onClick={() =>
+            handleNextStepEvent(props.wizardEventName, 'influxUniversity')
+          }
+        >
           <SafeBlankLink href="https://influxdbu.com/">
             <h4>{CodeTerminalIcon}InfluxDB University</h4>
           </SafeBlankLink>

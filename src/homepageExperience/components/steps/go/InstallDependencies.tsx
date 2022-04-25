@@ -43,7 +43,7 @@ export class InstallDependencies extends PureComponent {
           <SafeBlankLink href="https://go.dev/dl/">
             Go 1.17
           </SafeBlankLink>{' '}
-          or higher installed.
+          or higher installed. This sample code assumes you have go tools like <code>gofmt</code> and <code>goimports</code> installed.
         </p>
       </>
     )

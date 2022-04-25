@@ -83,17 +83,17 @@ export const Finish = (props: OwnProps) => {
         Curious to learn more? Try these next steps!
       </p>
       <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>
-        {showSampleApp &&
+        {showSampleApp && (
           <ResourceCard className="homepage-wizard-next-steps">
             <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
               <h4>{CodeTerminalIcon}Sample App</h4>
             </SafeBlankLink>
             <p>
-              Play around with our template code of sample app to streamline your
-              own data into InfluxData.
+              Play around with our template code of sample app to streamline
+              your own data into InfluxData.
             </p>
           </ResourceCard>
-        }
+        )}
         <ResourceCard className="homepage-wizard-next-steps">
           <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
             <h4>{BookIcon}Key Concepts</h4>

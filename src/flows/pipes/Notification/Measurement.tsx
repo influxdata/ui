@@ -38,6 +38,7 @@ const Measurement: FC<Props> = ({readOnly}) => {
 
   const menuItems = measurements.map(key => (
     <Dropdown.Item
+      testID="dropdown-item--measurement"
       key={key}
       value={key}
       onClick={() => onSelect(key)}
@@ -55,6 +56,7 @@ const Measurement: FC<Props> = ({readOnly}) => {
 
   const menuButton = (active, onClick) => (
     <Dropdown.Button
+      testID="dropdown--measurements"
       onClick={onClick}
       active={active}
       size={ComponentSize.Medium}

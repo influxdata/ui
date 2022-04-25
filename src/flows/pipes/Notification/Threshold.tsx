@@ -104,6 +104,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
         })
         .map(([key, value]) => (
           <Dropdown.Item
+            testID="dropdown-item--threshold-field"
             key={key}
             value={key}
             onClick={type => setThresholdType(type, index)}
@@ -119,6 +120,7 @@ const Threshold: FC<Props> = ({readOnly}) => {
       )
       const menuButton = (active, onClick) => (
         <Dropdown.Button
+          testID="dropdown--threshold-fields"
           onClick={onClick}
           active={active}
           size={ComponentSize.Medium}

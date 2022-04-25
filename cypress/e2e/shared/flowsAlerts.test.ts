@@ -1,6 +1,20 @@
 import {Organization} from '../../src/types'
 
 describe('flows alert panel', () => {
+  const selectAlertMeasurementAndField = () => {
+    cy.log('Select alert measurement')
+    cy.getByTestID('dropdown--measurements').click()
+    cy.getByTestID('dropdown-item--measurement')
+      .first()
+      .click()
+
+    cy.log('Select alert threshold field')
+    cy.getByTestID('dropdown--threshold-fields').click()
+    cy.getByTestID('dropdown-item--threshold-field')
+      .first()
+      .click()
+  }
+
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() =>
@@ -219,6 +233,8 @@ describe('flows alert panel', () => {
     cy.getByTestID('time-machine-submit-button').click()
     cy.getByTestID('notification-exp-button').scrollIntoView()
     cy.getByTestID('text-editor').should('be.visible')
+
+    selectAlertMeasurementAndField()
 
     const fakeEmail = 'super@fake.com'
     const fakeUrl = 'super-fake.com'

@@ -162,7 +162,7 @@ const CheckoutForm: FC = () => {
                   element={HeadingElement.H2}
                   appearance={HeadingElement.H5}
                 >
-                  Billing Address
+                  Billing Information
                 </Heading>
               }
             />

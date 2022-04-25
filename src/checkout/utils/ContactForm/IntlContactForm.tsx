@@ -8,6 +8,19 @@ const IntlContactForm: FC = () => (
   <Grid>
     <Grid.Row>
       <Grid.Column widthSM={Columns.Six}>
+        <FormInput id="email" label="Email Address" />
+      </Grid.Column>
+    </Grid.Row>
+    <Grid.Row>
+      <Grid.Column widthSM={Columns.Six}>
+        <FormInput id="firstName" label="First Name" />
+      </Grid.Column>
+      <Grid.Column widthSM={Columns.Six}>
+        <FormInput id="lastName" label="Last Name" />
+      </Grid.Column>
+    </Grid.Row>
+    <Grid.Row>
+      <Grid.Column widthSM={Columns.Six}>
         <FormSelectDropdown
           id="country"
           label="Country"

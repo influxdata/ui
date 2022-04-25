@@ -20,7 +20,21 @@ export interface ErrorThreshold extends Threshold {
 
 export const lambdaPrefix = '(r) =>'
 
+export const EQUALITY_THRESHOLD_TYPES = {
+  equal: {
+    name: 'equal to',
+    format: ThresholdFormat.Value,
+    condition: data => `${lambdaPrefix} (r["${data.field}"] == ${data.value})`,
+  },
+  'not-equal': {
+    name: 'not equal to',
+    format: ThresholdFormat.Value,
+    condition: data => `${lambdaPrefix} (r["${data.field}"] != ${data.value})`,
+  },
+}
+
 export const COMMON_THRESHOLD_TYPES = {
+  ...EQUALITY_THRESHOLD_TYPES,
   greater: {
     name: 'greater than',
     format: ThresholdFormat.Value,
@@ -41,11 +55,6 @@ export const COMMON_THRESHOLD_TYPES = {
     format: ThresholdFormat.Value,
     condition: data => `${lambdaPrefix} (r["${data.field}"] <= ${data.value})`,
   },
-  'not-equal': {
-    name: 'not equal to',
-    format: ThresholdFormat.Value,
-    condition: data => `(r) => (r["${data.field}"] != ${data.value})`,
-  },
   between: {
     name: 'between',
     format: ThresholdFormat.Range,
@@ -57,19 +66,6 @@ export const COMMON_THRESHOLD_TYPES = {
     format: ThresholdFormat.Range,
     condition: data =>
       `${lambdaPrefix} (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
-  },
-}
-
-export const EQUALITY_THRESHOLD_TYPES = {
-  equal: {
-    name: 'equal to',
-    format: ThresholdFormat.Value,
-    condition: data => `${lambdaPrefix} (r["${data.field}"] == ${data.value})`,
-  },
-  'not-equal': {
-    name: 'not equal to',
-    format: ThresholdFormat.Value,
-    condition: data => `${lambdaPrefix} (r["${data.field}"] != ${data.value})`,
   },
 }
 

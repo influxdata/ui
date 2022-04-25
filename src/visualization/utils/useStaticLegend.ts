@@ -1,5 +1,5 @@
 // Libraries
-import {useMemo, useContext, useCallback} from 'react'
+import {useMemo, useContext, useCallback, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 
 // Context
@@ -73,6 +73,7 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
 
   const {isViewingVisOptions} = useSelector(getActiveTimeMachine)
   const dispatch = useDispatch()
+
   const timeMachineUpdate = useCallback(
     (staticLegend: StaticLegendAPI) => {
       dispatch(
@@ -85,81 +86,81 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
     [dispatch, properties.staticLegend]
   )
 
-  let updateStaticLegendProperties
-  const notebookViewProperties = data?.properties || {}
-  const notebookStaticLegend = notebookViewProperties.staticLegend || {}
-  if (id) {
-    updateStaticLegendProperties = (updatedProperties: StaticLegendAPI) =>
-      update({
-        properties: {
-          ...notebookViewProperties,
-          staticLegend: {...notebookStaticLegend, ...updatedProperties},
-        },
-      })
-  } else {
-    updateStaticLegendProperties = timeMachineUpdate
+  const notebooksUpdate = (updatedProperties: StaticLegendAPI) => {
+    const notebookViewProperties = data?.properties || {}
+    const notebookStaticLegend = notebookViewProperties.staticLegend || {}
+
+    update({
+      properties: {
+        ...notebookViewProperties,
+        staticLegend: {...notebookStaticLegend, ...updatedProperties},
+      },
+    })
   }
 
-  return useMemo(() => {
-    const {
-      legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
-      legendOpacity = LEGEND_OPACITY_DEFAULT,
-      legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
-    } = properties
+  const updateStaticLegendProperties = useCallback(
+    (staticLegend: StaticLegendAPI) =>
+      !id ? timeMachineUpdate(staticLegend) : notebooksUpdate(staticLegend),
+    [id]
+  )
 
-    const {
-      staticLegend = {
-        colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
-        heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
-        opacity: LEGEND_OPACITY_DEFAULT,
-        orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
-        show: STATIC_LEGEND_SHOW_DEFAULT,
-        widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
-      } as StaticLegendAPI,
-    } = properties
+  const {
+    legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
+    legendOpacity = LEGEND_OPACITY_DEFAULT,
+    legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+  } = properties
 
-    const {
-      colorizeRows = false, // undefined is false because of omitempty
-      heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
-      opacity = LEGEND_OPACITY_DEFAULT,
-      orientationThreshold = legendOrientationThreshold,
-      show = STATIC_LEGEND_SHOW_DEFAULT,
-      ...config
-    } = staticLegend
+  const {
+    staticLegend = {
+      colorizeRows: LEGEND_COLORIZE_ROWS_DEFAULT,
+      heightRatio: STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+      opacity: LEGEND_OPACITY_DEFAULT,
+      orientationThreshold: LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
+      show: STATIC_LEGEND_SHOW_DEFAULT,
+      widthRatio: STATIC_LEGEND_WIDTH_RATIO_DEFAULT,
+    } as StaticLegendAPI,
+  } = properties
 
-    if (
+  const {
+    colorizeRows = false, // undefined is false because of omitempty
+    heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
+    opacity = LEGEND_OPACITY_DEFAULT,
+    orientationThreshold = legendOrientationThreshold,
+    show = STATIC_LEGEND_SHOW_DEFAULT,
+    ...config
+  } = staticLegend
+
+  useEffect(() => {
+    const shouldStaticLegendPropertiesBeUpdated: boolean =
       isViewingVisOptions &&
       !show &&
       heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET
-    ) {
-      let validOpacity = LEGEND_OPACITY_DEFAULT
-      if (
-        typeof legendOpacity === 'number' &&
-        legendOpacity === legendOpacity &&
-        legendOpacity >= LEGEND_OPACITY_MINIMUM &&
-        legendOpacity <= LEGEND_OPACITY_MAXIMUM
-      ) {
-        validOpacity = legendOpacity
-      }
 
-      let validThreshold: number
-      if (
-        typeof legendOrientationThreshold !== 'number' ||
-        legendOrientationThreshold !== legendOrientationThreshold ||
-        legendOrientationThreshold > 0
-      ) {
-        validThreshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
-      } else {
-        validThreshold = LEGEND_ORIENTATION_THRESHOLD_VERTICAL
-      }
+    if (!shouldStaticLegendPropertiesBeUpdated) return
 
-      updateStaticLegendProperties({
-        colorizeRows: legendColorizeRows,
-        opacity: validOpacity,
-        orientationThreshold: validThreshold,
-      })
-    }
+    const validOpacity =
+      typeof legendOpacity === 'number' &&
+      legendOpacity === legendOpacity &&
+      legendOpacity >= LEGEND_OPACITY_MINIMUM &&
+      legendOpacity <= LEGEND_OPACITY_MAXIMUM
+        ? legendOpacity
+        : LEGEND_OPACITY_DEFAULT
 
+    const validThreshold =
+      typeof legendOrientationThreshold !== 'number' ||
+      legendOrientationThreshold !== legendOrientationThreshold ||
+      legendOrientationThreshold > 0
+        ? LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
+        : LEGEND_ORIENTATION_THRESHOLD_VERTICAL
+
+    updateStaticLegendProperties({
+      colorizeRows: legendColorizeRows,
+      opacity: validOpacity,
+      orientationThreshold: validThreshold,
+    })
+  }, [isViewingVisOptions, show, heightRatio])
+
+  return useMemo(() => {
     return {
       ...config,
       colorizeRows,

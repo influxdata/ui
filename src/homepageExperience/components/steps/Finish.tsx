@@ -61,8 +61,8 @@ const fireConfetti = () => {
   })
 }
 
-const handleNextStepEvent = (nextStepName: string) => {
-  event(`firstMile.nextSteps.${nextStepName}.clicked`)
+const handleNextStepEvent = (wizardEventName: string, nextStepName: string) => {
+  event(`firstMile.${wizardEventName}.nextSteps.${nextStepName}.clicked`)
 }
 
 export const Finish = (props: OwnProps) => {
@@ -90,7 +90,9 @@ export const Finish = (props: OwnProps) => {
         {showSampleApp && (
           <ResourceCard
             className="homepage-wizard-next-steps"
-            onClick={() => handleNextStepEvent('sampleApp')}
+            onClick={() =>
+              handleNextStepEvent(props.wizardEventName, 'sampleApp')
+            }
           >
             <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
               <h4>{CodeTerminalIcon}Sample App</h4>
@@ -103,7 +105,9 @@ export const Finish = (props: OwnProps) => {
         )}
         <ResourceCard
           className="homepage-wizard-next-steps"
-          onClick={() => handleNextStepEvent('keyConcepts')}
+          onClick={() =>
+            handleNextStepEvent(props.wizardEventName, 'keyConcepts')
+          }
         >
           <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
             <h4>{BookIcon}Key Concepts</h4>
@@ -112,7 +116,9 @@ export const Finish = (props: OwnProps) => {
         </ResourceCard>
         <ResourceCard
           className="homepage-wizard-next-steps"
-          onClick={() => handleNextStepEvent('influxUniversity')}
+          onClick={() =>
+            handleNextStepEvent(props.wizardEventName, 'influxUniversity')
+          }
         >
           <SafeBlankLink href="https://influxdbu.com/">
             <h4>{CodeTerminalIcon}InfluxDB University</h4>

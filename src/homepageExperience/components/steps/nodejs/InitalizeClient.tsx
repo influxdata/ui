@@ -16,7 +16,9 @@ export const InitalizeClient = () => {
   const url =
     me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
 
-  const codeSnippet = `const {InfluxDB, Point} = require('@influxdata/influxdb-client')
+  const codeSnippet = `repl.repl.ignoreUndefined=true
+
+const {InfluxDB, Point} = require('@influxdata/influxdb-client')
 
 const token = process.env.INFLUXDB_TOKEN
 const url = '${url}'

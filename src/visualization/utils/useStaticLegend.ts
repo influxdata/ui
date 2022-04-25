@@ -74,36 +74,6 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
   const {isViewingVisOptions} = useSelector(getActiveTimeMachine)
   const dispatch = useDispatch()
 
-  const timeMachineUpdate = useCallback(
-    (staticLegend: StaticLegendAPI) => {
-      dispatch(
-        setStaticLegend({
-          ...properties.staticLegend,
-          ...staticLegend,
-        })
-      )
-    },
-    [dispatch, properties.staticLegend]
-  )
-
-  const notebooksUpdate = (updatedProperties: StaticLegendAPI) => {
-    const notebookViewProperties = data?.properties || {}
-    const notebookStaticLegend = notebookViewProperties.staticLegend || {}
-
-    update({
-      properties: {
-        ...notebookViewProperties,
-        staticLegend: {...notebookStaticLegend, ...updatedProperties},
-      },
-    })
-  }
-
-  const updateStaticLegendProperties = useCallback(
-    (staticLegend: StaticLegendAPI) =>
-      !id ? timeMachineUpdate(staticLegend) : notebooksUpdate(staticLegend),
-    [id]
-  )
-
   const {
     legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
     legendOpacity = LEGEND_OPACITY_DEFAULT,
@@ -160,6 +130,36 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
       orientationThreshold: validThreshold,
     })
   }, [isViewingVisOptions, show, heightRatio])
+
+  const timeMachineUpdate = useCallback(
+    (staticLegend: StaticLegendAPI) => {
+      dispatch(
+        setStaticLegend({
+          ...properties.staticLegend,
+          ...staticLegend,
+        })
+      )
+    },
+    [dispatch, properties.staticLegend]
+  )
+
+  const notebooksUpdate = (updatedProperties: StaticLegendAPI) => {
+    const notebookViewProperties = data?.properties || {}
+    const notebookStaticLegend = notebookViewProperties.staticLegend || {}
+
+    update({
+      properties: {
+        ...notebookViewProperties,
+        staticLegend: {...notebookStaticLegend, ...updatedProperties},
+      },
+    })
+  }
+
+  const updateStaticLegendProperties = useCallback(
+    (staticLegend: StaticLegendAPI) =>
+      !id ? timeMachineUpdate(staticLegend) : notebooksUpdate(staticLegend),
+    [id, show]
+  )
 
   return useMemo(() => {
     return {

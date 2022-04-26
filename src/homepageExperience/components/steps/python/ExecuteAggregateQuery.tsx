@@ -59,7 +59,7 @@ for table in tables:
       />
       <p>
         In this example, we use the mean() function to calculate the average of
-        data points in last 10 minutes.
+        data points in the last 10 minutes.
         <br />
         <br />
         Run the following:

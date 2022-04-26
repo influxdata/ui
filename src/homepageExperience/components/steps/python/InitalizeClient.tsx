@@ -26,7 +26,8 @@ token = os.environ.get("INFLUXDB_TOKEN")
 org = "${org.name}"
 url = "${url}"
 
-client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)`
+client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
+`
 
   return (
     <>

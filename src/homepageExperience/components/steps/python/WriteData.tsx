@@ -50,8 +50,7 @@ export const WriteDataComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket])
 
-  const codeSnippet = `
-bucket="${bucket.name}"
+  const codeSnippet = `bucket="${bucket.name}"
 
 write_api = client.write_api(write_options=SYNCHRONOUS)
    
@@ -62,7 +61,8 @@ for value in range(5):
     .field("field1", value)
   )
   write_api.write(bucket=bucket, org="${org.name}", record=point)
-  time.sleep(1) # separate points by 1 second`
+  time.sleep(1) # separate points by 1 second
+`
 
   return (
     <>

@@ -10,6 +10,8 @@ import {
   SubwayNav,
 } from '@influxdata/clockface'
 
+import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+
 import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
 import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
@@ -169,7 +171,9 @@ export class PythonWizard extends PureComponent<null, State> {
                   }
                 )}
               >
-                {this.renderStep()}
+                <WriteDataDetailsContextProvider>
+                  {this.renderStep()}
+                </WriteDataDetailsContextProvider>
               </div>
 
               <div className="homepage-wizard-container-footer">

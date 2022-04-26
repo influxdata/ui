@@ -18,6 +18,7 @@ import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteDat
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'
 import {Finish} from 'src/homepageExperience/components/steps/Finish'
 import {ExecuteAggregateQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteAggregateQuery'
+import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
 
 import {NodejsIcon} from 'src/homepageExperience/components/HomepageIcons'
 
@@ -168,7 +169,9 @@ export class NodejsWizard extends PureComponent<null, State> {
                   }
                 )}
               >
-                {this.renderStep()}
+                <WriteDataDetailsContextProvider>
+                  {this.renderStep()}
+                </WriteDataDetailsContextProvider>
               </div>
 
               <div className="homepage-wizard-container-footer">

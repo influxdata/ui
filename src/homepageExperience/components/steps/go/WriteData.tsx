@@ -11,9 +11,7 @@ import {
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
-import WriteDataDetailsContextProvider, {
-  WriteDataDetailsContext,
-} from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 import {getOrg} from 'src/organizations/selectors'
 import DataListening from 'src/homepageExperience/components/DataListening'
@@ -130,9 +128,5 @@ for value := 0; value < 5; value++ {
 }
 
 export const WriteData = props => {
-  return (
-    <WriteDataDetailsContextProvider>
-      <WriteDataComponent onSelectBucket={props.onSelectBucket} />
-    </WriteDataDetailsContextProvider>
-  )
+  return <WriteDataComponent onSelectBucket={props.onSelectBucket} />
 }

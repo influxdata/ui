@@ -1,4 +1,4 @@
-import React, {useState, FC, useCallback, useContext} from 'react'
+import React, {FC, useCallback, useContext} from 'react'
 import {
   ComponentSize,
   FlexBox,
@@ -21,7 +21,7 @@ interface Props {
 
 const Measurement: FC<Props> = ({readOnly}) => {
   const {data, update, results} = useContext(PipeContext)
-  const [measurement, setMeasurement] = useState(data.measurement || null)
+  const {measurement} = data
 
   const measurements = Array.from(
     new Set(results.parsed.table.columns['_measurement']?.data as string[])
@@ -30,7 +30,6 @@ const Measurement: FC<Props> = ({readOnly}) => {
   const onSelect = useCallback(
     (measurement: string) => {
       event('Changed Notification Measurement')
-      setMeasurement(measurement)
       update({measurement})
     },
     [measurements, update]

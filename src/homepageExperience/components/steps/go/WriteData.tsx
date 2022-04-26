@@ -72,7 +72,7 @@ for value := 0; value < 5; value++ {
     <>
       <h1>Write Data</h1>
       <p>
-        To start writing data, we need a place to our time-series store data. We
+        To start writing data, we need a place to store our time-series data. We
         call these{' '}
         <SafeBlankLink
           href={`orgs/${org.id}/load-data/buckets`}
@@ -98,8 +98,8 @@ for value := 0; value < 5; value++ {
       </p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>
-        In the above code snippet, we define five data points and write each on
-        the InfluxDB. Each of the 5 points we write has a{' '}
+        In the above code snippet, we define five data points and write each one
+        to InfluxDB. Each of the 5 points we write has a{' '}
         <SafeBlankLink
           href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key"
           onClick={logDocsOpened}

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, createElement} from 'react'
+import React, {FC, createElement, useState, useEffect} from 'react'
 
 import './View.scss'
 
@@ -69,10 +69,11 @@ const InnerView: FC<Props> = ({
 }
 
 const QueryStat: FC<Props> = ({result, loading}) => {
+  const [queryStart, setQueryStart] = useState(0)
+  const [processTime, setProcessTime] = useState(0)
   let tableNum = 0
 
   const tableColumn = result?.table?.getColumn('table')
-
   const lastTableValue = tableColumn[tableColumn.length - 1]
 
   if (typeof lastTableValue === 'string') {
@@ -84,10 +85,31 @@ const QueryStat: FC<Props> = ({result, loading}) => {
     tableNum = lastTableValue + 1
   }
 
+  useEffect(() => {
+    if (loading === RemoteDataState.Loading) {
+      // start to count
+      if (queryStart === 0) {
+        setQueryStart(Date.now())
+        setProcessTime(0)
+      }
+      return
+    }
+
+    if (loading === RemoteDataState.Done) {
+      const timePassed = Date.now() - queryStart // ms
+      setQueryStart(0)
+      setProcessTime(timePassed)
+      return
+    }
+
+    setQueryStart(0)
+    setProcessTime(0)
+  }, [loading])
+
   const queryStat = {
     tableNum,
     rowNum: result?.table?.length || 0,
-    processTime: 2, // ms TODO
+    processTime, // ms
   }
 
   if (loading !== RemoteDataState.Done) {

@@ -28,7 +28,7 @@ query = \`from(bucket: "${bucket}")
               |> range(start: -10m)
               |> filter(fn: (r) => r._measurement == "measurement1")
               |> mean()\`
-results, err := queryAPI.Query(context.Background(), query)
+results, err = queryAPI.Query(context.Background(), query)
 if err != nil {
     log.Fatal(err)
 }

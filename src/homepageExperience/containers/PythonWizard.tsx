@@ -12,7 +12,7 @@ import {
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
+import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
@@ -91,7 +91,7 @@ export class PythonWizard extends PureComponent<null, State> {
       }
       case 3: {
         return (
-          <CreateToken
+          <Tokens
             wizardEventName="pythonWizard"
             setTokenValue={this.setTokenValue}
             tokenValue={this.state.tokenValue}

@@ -39,7 +39,7 @@ type OwnProps = {
 
 const collator = new Intl.Collator(navigator.language || 'en-US')
 
-export const CreateToken: FC<OwnProps> = ({
+export const Tokens: FC<OwnProps> = ({
   wizardEventName,
   setTokenValue,
   tokenValue,
@@ -77,7 +77,7 @@ export const CreateToken: FC<OwnProps> = ({
       }
 
       dispatch(createAuthorization(authorization))
-      event(`firstMile.${wizardEventName}.createToken.tokenCreated`)
+      event(`firstMile.${wizardEventName}.tokens.tokenCreated`)
     }
   }, [sortedPermissionTypes.length])
 
@@ -97,16 +97,16 @@ export const CreateToken: FC<OwnProps> = ({
 
   // Events log handling
   const logCopyCodeSnippet = () => {
-    event(`firstMile.${wizardEventName}.createToken.code.copied`)
+    event(`firstMile.${wizardEventName}.tokens.code.copied`)
   }
 
   const logDocsOpened = () => {
-    event(`firstMile.${wizardEventName}.createToken.docs.opened`)
+    event(`firstMile.${wizardEventName}.tokens.docs.opened`)
   }
 
   return (
     <>
-      <h1>Create a Token</h1>
+      <h1>Tokens</h1>
       <p>
         InfluxDB Cloud uses Tokens to authenticate API access. We've created an
         all-access token for you for this set up process.

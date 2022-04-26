@@ -41,9 +41,9 @@ client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
       </p>
       <CodeSnippet text={pythonCode} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '42px'}}>
-        Here, we initialize the token, organization info, and server url that is
+        Here, we initialize the token, organization info, and server url that are
         needed to set up the initial connection to InfluxDB. The client
-        connection is then established with InfluxDBClient initialization.
+        connection is then established with the <code className="homepage-wizard--code-highlight">InfluxDBClient</code> initialization.
       </p>
     </>
   )

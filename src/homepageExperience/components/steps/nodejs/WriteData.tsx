@@ -51,13 +51,13 @@ export const WriteDataComponent = (props: OwnProps) => {
   }, [bucket])
 
   const codeSnippet = `
-const org = \`${org.name}\`
-const bucket = \`${bucket.name}\`
+let org = \`${org.name}\`
+let bucket = \`${bucket.name}\`
 
-const writeClient = client.getWriteApi(org, bucket, 'ns')
+let writeClient = client.getWriteApi(org, bucket, 'ns')
 
 for (let i = 0; i < 5; i++) {
-  const point = new Point('measurement1')
+  let point = new Point('measurement1')
     .tag('tagname1', 'tagvalue1')
     .floatField('field1', i)
 

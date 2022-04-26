@@ -72,7 +72,7 @@ for value := 0; value < 5; value++ {
     <>
       <h1>Write Data</h1>
       <p>
-        To start writing data, we need a place to our time-series store data. We
+        To start writing data, we need a place to store our time-series data. We
         call these{' '}
         <SafeBlankLink
           href={`orgs/${org.id}/load-data/buckets`}

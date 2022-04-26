@@ -62,6 +62,7 @@ for value := 0; value < 5; value++ {
 		"field1": value,
 	}
 	point := write.NewPoint("measurement1", tags, fields, time.Now())
+	time.Sleep(1 * time.Second) // separate points by 1 second
 
 	if err := writeAPI.WritePoint(context.Background(), point); err != nil {
 		log.Fatal(err)

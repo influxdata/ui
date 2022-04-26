@@ -16,6 +16,7 @@ import {
   TechnoSpinner,
   SpinnerContainer,
 } from '@influxdata/clockface'
+import Measurement from 'src/flows/pipes/Notification/Measurement'
 import Threshold from 'src/flows/pipes/Notification/Threshold'
 
 import {PipeContext} from 'src/flows/context/pipe'
@@ -99,6 +100,7 @@ const ReadOnly: FC<PipeProp> = ({Context}) => {
   return (
     <Context>
       <div className="notification">
+        <Measurement readOnly />
         <Threshold readOnly />
         <FlexBox margin={ComponentSize.Medium} style={{padding: '24px 0'}}>
           <FlexBox.Child grow={1} shrink={1}>

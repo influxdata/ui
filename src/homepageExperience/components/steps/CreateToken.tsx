@@ -119,15 +119,15 @@ export const CreateToken: FC<OwnProps> = ({
       <FlexBox margin={ComponentSize.Large} alignItems={AlignItems.Center}>
         <Icon glyph={IconFont.Info_New} style={{fontSize: '30px'}} />
         <p>
-          Creating an all-access tokens is not the best security practice! We
-          recommend you to delete this token in the{' '}
+          Creating an all-access token is not the best security practice! We
+          recommend you delete this token in the{' '}
           <SafeBlankLink
             href={`orgs/${org.id}/load-data/tokens`}
             onClick={logDocsOpened}
           >
-            Token page
+            Tokens page
           </SafeBlankLink>{' '}
-          after setting up, and creating your own token with specific set of
+          after setting up, and create your own token with a specific set of
           permissions later.
         </p>
       </FlexBox>

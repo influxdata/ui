@@ -1,6 +1,8 @@
 // Libraries
 import React, {FC, createElement} from 'react'
 
+import './View.scss'
+
 import EmptyQueryView, {ErrorFormat} from 'src/shared/components/EmptyQueryView'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 import {SUPPORTED_VISUALIZATIONS} from 'src/visualization'
@@ -88,15 +90,17 @@ const QueryStat: FC<Props> = ({result, loading}) => {
     processTime: 2, // ms TODO
   }
 
-  if (loading === RemoteDataState.Done) {
-    return (
-      <div className="flow-visualization--stat">
-        {`${queryStat.tableNum} tables ${queryStat.rowNum} rows ${queryStat.processTime} ms`}
-      </div>
-    )
-  } else {
+  if (loading !== RemoteDataState.Done) {
     return null
   }
+
+  return (
+    <div className="query-stat">
+      <span className="query-stat--bold">{`${queryStat.tableNum} tables`}</span>
+      <span className="query-stat--bold">{`${queryStat.rowNum} rows`}</span>
+      <span className="query-stat--normal">{`${queryStat.processTime} ms`}</span>
+    </div>
+  )
 }
 const View: FC<Props> = props => (
   <ErrorBoundary>

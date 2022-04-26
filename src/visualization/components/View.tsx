@@ -69,10 +69,9 @@ const InnerView: FC<Props> = ({
 const QueryStat: FC<Props> = ({result, loading}) => {
   let tableNum = 0
 
-  const lastTableValue =
-    result?.table?.columns?.table?.data[
-      result?.table?.columns?.table?.data.length - 1
-    ]
+  const tableColumn = result?.table?.getColumn('table')
+
+  const lastTableValue = tableColumn[tableColumn.length - 1]
 
   if (typeof lastTableValue === 'string') {
     tableNum = parseInt(lastTableValue) + 1

@@ -135,7 +135,7 @@ export class PythonWizard extends PureComponent<null, State> {
           <div />
           <RateLimitAlert location="firstMile.homepage" />
         </Page.Header>
-        <Page.Contents>
+        <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">
               <div style={{width: '100%'}} data-testid="subway-nav">

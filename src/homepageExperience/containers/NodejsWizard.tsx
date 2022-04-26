@@ -134,7 +134,7 @@ export class NodejsWizard extends PureComponent<null, State> {
           <RateLimitAlert location="firstMile.homepage" />
         </Page.Header>
 
-        <Page.Contents>
+        <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">
               <div style={{width: '100%'}}>

@@ -14,7 +14,6 @@ import {remove} from 'src/shared/contexts/query'
 // Types
 import {
   deadmanType,
-  LAMBDA_PREFIX,
   THRESHOLD_TYPES,
 } from 'src/flows/pipes/Visualization/threshold'
 import {ImportDeclaration} from 'src/types/ast'
@@ -77,7 +76,8 @@ const ExportTask: FC = () => {
     }
     const measurement = `(r) => r["_measurement"] == "${data.measurement}"`
 
-    const conditions = THRESHOLD_TYPES[deadmanType].condition(deadman)
+    const conditions =
+      `(r) => ` + THRESHOLD_TYPES[deadmanType].condition(deadman)
     const imports = parse(`
 import "strings"
 import "regexp"
@@ -209,10 +209,11 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(
     }
     const measurement = `(r) => r["_measurement"] == "${data.measurement}"`
 
-    const conditions = data.thresholds
-      .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
-      .map((cond, i) => (i > 0 ? cond.split(LAMBDA_PREFIX)[1] : cond))
-      .join(' and ')
+    const conditions =
+      `(r) => ` +
+      data.thresholds
+        .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
+        .join(' and ')
 
     const imports = parse(`
 import "strings"

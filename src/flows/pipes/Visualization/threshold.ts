@@ -18,18 +18,16 @@ export interface ErrorThreshold extends Threshold {
   fieldType: string
 }
 
-export const LAMBDA_PREFIX = '(r) =>'
-
 export const EQUALITY_THRESHOLD_TYPES = {
   equal: {
     name: 'equal to',
     format: ThresholdFormat.Value,
-    condition: data => `${LAMBDA_PREFIX} (r["${data.field}"] == ${data.value})`,
+    condition: data => ` r["${data.field}"] == ${data.value}`,
   },
   'not-equal': {
     name: 'not equal to',
     format: ThresholdFormat.Value,
-    condition: data => `${LAMBDA_PREFIX} (r["${data.field}"] != ${data.value})`,
+    condition: data => ` r["${data.field}"] != ${data.value}`,
   },
 }
 
@@ -38,34 +36,34 @@ export const COMMON_THRESHOLD_TYPES = {
   greater: {
     name: 'greater than',
     format: ThresholdFormat.Value,
-    condition: data => `${LAMBDA_PREFIX} (r["${data.field}"] > ${data.value})`,
+    condition: data => ` r["${data.field}"] > ${data.value}`,
   },
   'greater-equal': {
     name: 'greater than or equal to',
     format: ThresholdFormat.Value,
-    condition: data => `${LAMBDA_PREFIX} (r["${data.field}"] >= ${data.value})`,
+    condition: data => ` r["${data.field}"] >= ${data.value}`,
   },
   less: {
     name: 'less than',
     format: ThresholdFormat.Value,
-    condition: data => `${LAMBDA_PREFIX} (r["${data.field}"] < ${data.value})`,
+    condition: data => ` r["${data.field}"] < ${data.value}`,
   },
   'less-equal': {
     name: 'less than or equal to',
     format: ThresholdFormat.Value,
-    condition: data => `${LAMBDA_PREFIX} (r["${data.field}"] <= ${data.value})`,
+    condition: data => ` r["${data.field}"] <= ${data.value}`,
   },
   between: {
     name: 'between',
     format: ThresholdFormat.Range,
     condition: data =>
-      `${LAMBDA_PREFIX} (r["${data.field}"] > ${data.min} and r["${data.field}"] < ${data.max})`,
+      ` (r["${data.field}"] > ${data.min} and r["${data.field}"] < ${data.max})`,
   },
   'not-between': {
     name: 'not between',
     format: ThresholdFormat.Range,
     condition: data =>
-      `${LAMBDA_PREFIX} (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
+      ` (r["${data.field}"] < ${data.min} or r["${data.field}"] > ${data.max})`,
   },
 }
 
@@ -76,6 +74,6 @@ export const THRESHOLD_TYPES = {
   [deadmanType]: {
     name: 'missing for longer than',
     format: ThresholdFormat.Deadman,
-    condition: _ => `${LAMBDA_PREFIX} (r["dead"])`,
+    condition: _ => ` r["dead"]`,
   },
 }

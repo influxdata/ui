@@ -12,7 +12,7 @@ import {
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/nodejs/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
+import {Tokens} from 'src/homepageExperience/components/steps/CreateToken'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/nodejs/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'
@@ -91,7 +91,7 @@ export class NodejsWizard extends PureComponent<null, State> {
       }
       case 3: {
         return (
-          <CreateToken
+          <Tokens
             wizardEventName="nodejsWizard"
             setTokenValue={this.setTokenValue}
             tokenValue={this.state.tokenValue}

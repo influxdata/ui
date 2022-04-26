@@ -32,6 +32,7 @@ interface State {
   selectedBucket: string
   finishStepCompleted: boolean
   tokenValue: string
+  finalFeedback: number
 }
 
 export class GoWizard extends PureComponent<null, State> {
@@ -40,6 +41,7 @@ export class GoWizard extends PureComponent<null, State> {
     selectedBucket: 'my-bucket',
     finishStepCompleted: false,
     tokenValue: null,
+    finalFeedback: null,
   }
 
   private handleSelectBucket = (bucketName: string) => {
@@ -52,6 +54,10 @@ export class GoWizard extends PureComponent<null, State> {
 
   private setTokenValue = (tokenValue: string) => {
     this.setState({tokenValue})
+  }
+
+  private setFinalFeedback = (feedbackValue: number) => {
+    this.setState({finalFeedback: feedbackValue})
   }
 
   handleNextClick = () => {
@@ -116,6 +122,8 @@ export class GoWizard extends PureComponent<null, State> {
             wizardEventName="goWizard"
             markStepAsCompleted={this.handleMarkStepAsCompleted}
             finishStepCompleted={this.state.finishStepCompleted}
+            finalFeedback={this.state.finalFeedback}
+            setFinalFeedback={this.setFinalFeedback}
           />
         )
       }

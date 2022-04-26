@@ -22,7 +22,7 @@ type OwnProps = {
   markStepAsCompleted: () => void
   finishStepCompleted: boolean
   finalFeedback: number
-  setFinalFeedback: () => void
+  setFinalFeedback: (feedbackValue: number) => void
 }
 
 const fireConfetti = () => {

@@ -176,14 +176,14 @@ export const HomepageContainer: FC = () => {
               <Grid.Column
                 widthSM={Columns.Four}
                 widthMD={Columns.Three}
-                style={{marginTop: '40px'}}
+                style={{marginTop: '15px'}}
               >
                 {isFlagEnabled('uiUnificationFlag') ? (
                   <UsageProvider>
-                    <Resources />
+                    <Resources style={{backgroundColor: InfluxColors.Grey5}} />
                   </UsageProvider>
                 ) : (
-                  <Resources />
+                  <Resources style={{backgroundColor: InfluxColors.Grey5}} />
                 )}
               </Grid.Column>
             </Grid.Row>

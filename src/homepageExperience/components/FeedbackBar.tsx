@@ -15,9 +15,8 @@ import 'src/homepageExperience/components/HomepageExperience.scss'
 
 type OwnProps = {
   wizardEventName: string
-}
-type State = {
   selectedFeedback: number
+  onFeedbackSelection: () => void
 }
 
 enum feedbackValue {
@@ -28,27 +27,24 @@ enum feedbackValue {
 export default class FeedbackBar extends React.Component<OwnProps, State> {
   constructor(props) {
     super(props)
-    this.state = {
-      selectedFeedback: null,
-    }
   }
 
   // for now, we're only registering the first feedback user selects.
   private handleThumbsUpClick = () => {
-    if (this.state.selectedFeedback === null) {
+    if (this.props.selectedFeedback === null) {
       event(`firstMile.${this.props.wizardEventName}.thumbsUp.clicked`)
-      this.setState({selectedFeedback: feedbackValue.THUMBS_UP})
+      props.onFeedbackSelection(feedbackValue.THUMBS_UP)
     }
   }
   private handleThumbsDownClick = () => {
-    if (this.state.selectedFeedback === null) {
+    if (this.props.selectedFeedback === null) {
       event(`firstMile.${this.props.wizardEventName}.thumbsDown.clicked`)
-      this.setState({selectedFeedback: feedbackValue.THUMBS_DOWN})
+      props.onFeedbackSelection(feedbackValue.THUMBS_DOWN)
     }
   }
 
   render() {
-    const {selectedFeedback} = this.state
+    const {selectedFeedback} = this.props
     return (
       <FlexBox
         margin={ComponentSize.Large}

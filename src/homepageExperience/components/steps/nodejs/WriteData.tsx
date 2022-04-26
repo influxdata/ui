@@ -91,7 +91,7 @@ for (let i = 0; i < 5; i++) {
               </Grid.Column>
             </Grid.Row>
           </Grid>
-        </Panel.Body>fix
+        </Panel.Body>
       </Panel>
       <p>Run the following code in your Nodejs shell:</p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />

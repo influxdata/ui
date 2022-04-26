@@ -40,9 +40,11 @@ func main() {
       </p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '42px'}}>
-        Here, we initialize the token, organization info, and server url that are
-        needed to set up the initial connection to InfluxDB. The client
-        connection is then established with the <code className="homepage-wizard--code-highlight">influxdb2</code> initialization.
+        Here, we initialize the token, organization info, and server url that
+        are needed to set up the initial connection to InfluxDB. The client
+        connection is then established with the{' '}
+        <code className="homepage-wizard--code-highlight">influxdb2</code>{' '}
+        initialization.
       </p>
     </>
   )

@@ -111,35 +111,8 @@ const Table: FC<PipeProp> = ({Context}) => {
     </label>
   )
 
-  const lastTableValue =
-    results.parsed.table.columns.table.data[
-      results.parsed.table.columns.table.data.length - 1
-    ]
-
-  let tableNum = 0
-
-  if (typeof lastTableValue === 'string') {
-    tableNum = parseInt(lastTableValue) + 1
-  } else if (typeof lastTableValue === 'boolean') {
-    tableNum = lastTableValue ? 1 : 0
-  } else {
-    // number
-    tableNum = lastTableValue + 1
-  }
-
-  const queryStat = {
-    tableNum,
-    rowNum: results.parsed.table.length,
-    processTime: 2, // ms TODO
-  }
-
   return (
     <Context resizes controls={caveat}>
-      {loading === RemoteDataState.Done && (
-        <div className="flow-visualization--stat">
-          {`${queryStat.tableNum} tables ${queryStat.rowNum} rows ${queryStat.processTime} ms`}
-        </div>
-      )}
       <div className="flow-visualization" id={id}>
         <div className="flow-visualization--view">
           <View

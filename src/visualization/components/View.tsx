@@ -66,9 +66,47 @@ const InnerView: FC<Props> = ({
   )
 }
 
+const QueryStat: FC<Props> = ({result, loading}) => {
+  let tableNum = 0
+
+  const lastTableValue =
+    result?.table?.columns?.table?.data[
+      result?.table?.columns?.table?.data.length - 1
+    ]
+
+  if (typeof lastTableValue === 'string') {
+    tableNum = parseInt(lastTableValue) + 1
+  } else if (typeof lastTableValue === 'boolean') {
+    tableNum = lastTableValue ? 1 : 0
+  } else {
+    // number
+    tableNum = lastTableValue + 1
+  }
+
+  const queryStat = {
+    tableNum,
+    rowNum: result?.table?.length || 0,
+    processTime: 2, // ms TODO
+  }
+
+  if (loading === RemoteDataState.Done) {
+    return (
+      <div className="flow-visualization--stat">
+        {`${queryStat.tableNum} tables ${queryStat.rowNum} rows ${queryStat.processTime} ms`}
+      </div>
+    )
+  } else {
+    return null
+  }
+}
 const View: FC<Props> = props => (
   <ErrorBoundary>
     <ViewLoadingSpinner loading={props.loading || RemoteDataState.Done} />
+    <QueryStat
+      loading={props.loading || RemoteDataState.Done}
+      result={props.result}
+      {...props}
+    />
     <InnerView {...props} />
   </ErrorBoundary>
 )

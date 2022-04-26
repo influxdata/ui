@@ -12,7 +12,7 @@ import {
 
 import {InstallDependencies} from 'src/homepageExperience/components/steps/nodejs/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {Tokens} from 'src/homepageExperience/components/steps/CreateToken'
+import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/nodejs/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/nodejs/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/nodejs/ExecuteQuery'

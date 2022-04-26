@@ -16,7 +16,7 @@ import 'src/homepageExperience/components/HomepageExperience.scss'
 type OwnProps = {
   wizardEventName: string
   selectedFeedback: number
-  onFeedbackSelection: () => void
+  onFeedbackSelection: (feedbackValue: number) => void
 }
 
 enum feedbackValue {
@@ -24,7 +24,7 @@ enum feedbackValue {
   THUMBS_UP,
 }
 
-export default class FeedbackBar extends React.Component<OwnProps, State> {
+export default class FeedbackBar extends React.Component<OwnProps> {
   constructor(props) {
     super(props)
   }
@@ -33,13 +33,13 @@ export default class FeedbackBar extends React.Component<OwnProps, State> {
   private handleThumbsUpClick = () => {
     if (this.props.selectedFeedback === null) {
       event(`firstMile.${this.props.wizardEventName}.thumbsUp.clicked`)
-      props.onFeedbackSelection(feedbackValue.THUMBS_UP)
+      this.props.onFeedbackSelection(feedbackValue.THUMBS_UP)
     }
   }
   private handleThumbsDownClick = () => {
     if (this.props.selectedFeedback === null) {
       event(`firstMile.${this.props.wizardEventName}.thumbsDown.clicked`)
-      props.onFeedbackSelection(feedbackValue.THUMBS_DOWN)
+      this.props.onFeedbackSelection(feedbackValue.THUMBS_DOWN)
     }
   }
 

@@ -67,6 +67,7 @@ interface OwnProps {
   implicitSubmit?: boolean
   children: (r: QueriesState) => JSX.Element
   check?: Partial<Check>
+  updateStatuses?: (statuses: StatusRow[][]) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -114,9 +115,10 @@ class TimeSeries extends Component<Props, State> {
 
   private pendingResults: Array<CancelBox<RunQueryResult>> = []
   private pendingCheckStatuses: CancelBox<StatusRow[][]> = null
-
   public componentDidMount() {
     const {cellID, setCellMount} = this.props
+    
+
     this.observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         const {isIntersecting} = entry
@@ -138,7 +140,7 @@ class TimeSeries extends Component<Props, State> {
     this.observer.observe(this.ref.current)
   }
 
-  public componentDidUpdate(prevProps: Props) {
+  public componentDidUpdate(prevProps: Props, prevState: State) {
     const {setCellMount, cellID} = this.props
     const prevPropsIndicateReload = this.shouldReload(prevProps)
     const shouldReloadNow = prevPropsIndicateReload && this.isIntersecting
@@ -156,6 +158,15 @@ class TimeSeries extends Component<Props, State> {
     if (shouldReloadWhenVisible) {
       this.pendingReload = true
     }
+    
+  // when the statuses state has changed, I want to call updateStatuses prop to update the state in checkContext
+  // everytime the DOM updates (this.reload), the statuses state gets updated, so then we want to call setState to in turn 
+  // update it in check context
+  //https://stackoverflow.com/questions/38759703/when-to-use-componentdidupdate-method
+    if(this.state.statuses !== prevState.statuses) {
+      this.props.updateStatuses(this.state.statuses)
+    }
+
   }
 
   public componentWillUnmount() {
@@ -270,7 +281,9 @@ class TimeSeries extends Component<Props, State> {
           check.id,
           extern
         )
+        // console.log('statuses before promise ', statuses)
         statuses = await this.pendingCheckStatuses.promise // TODO handle errors
+        // console.log('statuses after promise ', statuses)
       }
 
       const duration = Date.now() - startTime
@@ -297,7 +310,6 @@ class TimeSeries extends Component<Props, State> {
       const giraffeResult = fromFlux(files.join('\n\n'))
 
       this.pendingReload = false
-
       // this check prevents a memory leak https://github.com/influxdata/ui/issues/2137
       if (!this.isUnmounting) {
         this.setState({

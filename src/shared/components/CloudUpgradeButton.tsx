@@ -50,7 +50,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     history.push('/checkout')
   }
 
-  const original = showUpgradeButton ? (
+  const original = showUpgradeButton && (
     <Button
       className={cloudUpgradeButtonClass}
       icon={IconFont.CrownSolid_New}
@@ -60,7 +60,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
       testID="cloud-upgrade--button"
       text={buttonText}
     />
-  ) : null
+  )
 
   return (
     <CloudOnly>

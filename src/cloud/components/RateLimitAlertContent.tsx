@@ -63,31 +63,32 @@ const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => {
     </span>
   )
 
-  return isFlagEnabled('credit250Experiment') ? (
-    <GoogleOptimizeExperiment
-      experimentID={CREDIT_250_EXPERIMENT_ID}
-      original={original}
-      variants={[
-        <span className="upgrade-message" key="1">
-          You hit the{' '}
-          <a
-            href={link}
-            className="rate-alert--docs-link"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {type === 'series cardinality'
-              ? 'series cardinality'
-              : 'query write'}
-          </a>{' '}
-          limit {limitText ?? ''} and your data stopped writing. Upgrade to get
-          a free $250 credit for the first 30 days.
-        </span>,
-      ]}
-    />
-  ) : (
-    original
-  )
+  if (isFlagEnabled('credit250Experiment')) {
+    return (
+      <GoogleOptimizeExperiment
+        experimentID={CREDIT_250_EXPERIMENT_ID}
+        original={original}
+        variants={[
+          <span className="upgrade-message" key="1">
+            You hit the{' '}
+            <a
+              href={link}
+              className="rate-alert--docs-link"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {type === 'series cardinality'
+                ? 'series cardinality'
+                : 'query write'}
+            </a>{' '}
+            limit {limitText ?? ''} and your data stopped writing. Upgrade to
+            get a free $250 credit for the first 30 days.
+          </span>,
+        ]}
+      />
+    )
+  }
+  return original
 }
 
 export const UpgradeContent: FC<UpgradeProps> = ({

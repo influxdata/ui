@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, createContext, useContext, useState, useMemo} from 'react'
+import React, {FC, createContext, useContext, useState} from 'react'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
@@ -187,9 +187,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     }
   }
 
-  const cards = useMemo(
-    () => data.tags.map((tag, idx) => fromBuilderConfig(tag, cardMeta[idx])),
-    [data.tags, cardMeta]
+  const cards = data.tags.map((tag, idx) =>
+    fromBuilderConfig(tag, cardMeta[idx])
   )
 
   const add = () => {
@@ -314,16 +313,17 @@ export const QueryBuilderProvider: FC = ({children}) => {
         )[0]?.data ?? []) as string[]
       })
       .then(keys => {
-        if (!cards[idx].keys.selected[0]) {
+        const currentCards = data.tags.map(fromBuilderConfig)
+        if (!currentCards[idx].keys.selected[0]) {
           if (idx === 0 && keys.includes('_measurement')) {
-            cards[idx].keys.selected = ['_measurement']
+            currentCards[idx].keys.selected = ['_measurement']
           } else {
-            cards[idx].keys.selected = [keys[0]]
+            currentCards[idx].keys.selected = [keys[0]]
           }
 
-          update({tags: cards.map(toBuilderConfig)})
-        } else if (!keys.includes(cards[idx].keys.selected[0])) {
-          keys.unshift(cards[idx].keys.selected[0])
+          update({tags: currentCards.map(toBuilderConfig)})
+        } else if (!keys.includes(currentCards[idx].keys.selected[0])) {
+          keys.unshift(currentCards[idx].keys.selected[0])
         }
 
         cardMeta.splice(idx, 1, {
@@ -512,7 +512,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
       ..._card,
     }
 
-    update({tags: cards.map(toBuilderConfig)})
+    data.tags = cards.map(toBuilderConfig)
+
+    update({tags: data.tags})
   }
 
   return (

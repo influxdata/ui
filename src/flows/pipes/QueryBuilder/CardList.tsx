@@ -133,8 +133,7 @@ const Card: FC<Props> = ({idx}) => {
     card.values.selected.length <= 1
 
   const valueSelect = val => {
-    const _vals = [...card.values.selected]
-    const index = _vals.indexOf(val)
+    const index = card.values.selected.indexOf(val)
 
     if (isCompliant) {
       if (index === -1) {
@@ -150,30 +149,23 @@ const Card: FC<Props> = ({idx}) => {
 
     if (index === -1) {
       event('Query Builder Value Selected')
-      _vals.push(val)
+      card.values.selected.push(val)
     } else {
       event('Query Builder Value Unselected')
-      _vals.splice(index, 1)
+      card.values.selected.splice(index, 1)
     }
 
-    update(idx, {
-      values: {
-        ...card.values,
-        selected: _vals,
-      },
-    })
+    update(idx, card)
 
-    if (index === -1 && _vals.length === 1 && idx === cards.length - 1) {
+    if (
+      index === -1 &&
+      card.values.selected.length === 1 &&
+      idx === cards.length - 1
+    ) {
       add()
     } else {
       for (let ni = idx + 1; ni < cards.length; ni++) {
-        if (_vals.length === 0) {
-          // A user selects and deselects a value - this should invoke the remove(ni) condition
-          remove(ni)
-        } else {
-          // A user selects two values - this should invoke the loadKeys(ni) condition
-          loadKeys(ni)
-        }
+        loadKeys(ni)
       }
     }
   }

@@ -28,47 +28,12 @@ interface Props {
   cellID?: string
 }
 
-const InnerView: FC<Props> = ({
-  properties,
-  result,
-  loading,
-  error,
-  isInitial,
-  timeRange,
-  annotations,
-  cellID,
-}) => {
-  if (!SUPPORTED_VISUALIZATIONS[properties.type]?.component) {
-    throw new Error('Unknown view type in <View /> ')
-  }
-
-  const fallbackNote =
-    properties.type !== 'check' && properties['showNoteWhenEmpty']
-      ? properties['note']
-      : null
-  const hasResults = !!(result?.table?.length || 0)
-
-  return (
-    <EmptyQueryView
-      loading={loading}
-      errorMessage={error}
-      errorFormat={ErrorFormat.Scroll}
-      hasResults={hasResults}
-      isInitialFetch={isInitial || false}
-      fallbackNote={fallbackNote}
-    >
-      {createElement(SUPPORTED_VISUALIZATIONS[properties.type].component, {
-        result: result,
-        properties: properties,
-        timeRange: timeRange || DEFAULT_TIME_RANGE,
-        annotations: annotations,
-        cellID: cellID,
-      })}
-    </EmptyQueryView>
-  )
+interface QueryStatProp {
+  result?: FromFluxResult
+  loading?: RemoteDataState
 }
 
-const QueryStat: FC<Props> = ({result, loading}) => {
+const QueryStat: FC<QueryStatProp> = ({result, loading}) => {
   const [queryStart, setQueryStart] = useState(0)
   const [processTime, setProcessTime] = useState(0)
   let tableNum = 0
@@ -95,8 +60,8 @@ const QueryStat: FC<Props> = ({result, loading}) => {
       return
     }
 
-    if (loading === RemoteDataState.Done) {
-      const timePassed = Date.now() - queryStart // ms
+    if (loading === RemoteDataState.Done && queryStart !== 0) {
+      const timePassed = Date.now() - queryStart // ms TODO, query run time
       setQueryStart(0)
       setProcessTime(timePassed)
       return
@@ -124,14 +89,59 @@ const QueryStat: FC<Props> = ({result, loading}) => {
     </div>
   )
 }
+
+const InnerView: FC<Props> = ({
+  properties,
+  result,
+  loading,
+  error,
+  isInitial,
+  timeRange,
+  annotations,
+  cellID,
+}) => {
+  if (!SUPPORTED_VISUALIZATIONS[properties.type]?.component) {
+    throw new Error('Unknown view type in <View /> ')
+  }
+
+  const fallbackNote =
+    properties.type !== 'check' && properties['showNoteWhenEmpty']
+      ? properties['note']
+      : null
+  const hasResults = !!(result?.table?.length || 0)
+
+  let queryStat = null
+
+  if (properties.type === 'table' || properties.type === 'simple-table') {
+    queryStat = (
+      <QueryStat loading={loading || RemoteDataState.Done} result={result} />
+    )
+  }
+
+  return (
+    <EmptyQueryView
+      loading={loading}
+      errorMessage={error}
+      errorFormat={ErrorFormat.Scroll}
+      hasResults={hasResults}
+      isInitialFetch={isInitial || false}
+      fallbackNote={fallbackNote}
+    >
+      {queryStat}
+      {createElement(SUPPORTED_VISUALIZATIONS[properties.type].component, {
+        result: result,
+        properties: properties,
+        timeRange: timeRange || DEFAULT_TIME_RANGE,
+        annotations: annotations,
+        cellID: cellID,
+      })}
+    </EmptyQueryView>
+  )
+}
+
 const View: FC<Props> = props => (
   <ErrorBoundary>
     <ViewLoadingSpinner loading={props.loading || RemoteDataState.Done} />
-    <QueryStat
-      loading={props.loading || RemoteDataState.Done}
-      result={props.result}
-      {...props}
-    />
     <InnerView {...props} />
   </ErrorBoundary>
 )

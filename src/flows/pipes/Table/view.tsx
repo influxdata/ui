@@ -1,5 +1,12 @@
 // Libraries
-import React, {FC, useContext, useEffect, useMemo, useState} from 'react'
+import React, {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from 'react'
 
 // Styles
 import './view.scss'
@@ -31,11 +38,11 @@ interface QueryStatProp {
 }
 
 const QueryStat: FC<QueryStatProp> = ({result, loading}) => {
-  const [queryStart, setQueryStart] = useState(0)
+  const queryStart = useRef(0)
   const [processTime, setProcessTime] = useState(0)
   let tableNum = 0
 
-  const tableColumn = result?.table?.getColumn('table')
+  const tableColumn = result?.table?.getColumn('table') || []
   const lastTableValue = tableColumn[tableColumn.length - 1]
 
   if (typeof lastTableValue === 'string') {
@@ -50,21 +57,21 @@ const QueryStat: FC<QueryStatProp> = ({result, loading}) => {
   useEffect(() => {
     if (loading === RemoteDataState.Loading) {
       // start to count
-      if (queryStart === 0) {
-        setQueryStart(Date.now())
+      if (queryStart.current === 0) {
+        queryStart.current = Date.now()
         setProcessTime(0)
       }
       return
     }
 
-    if (loading === RemoteDataState.Done && queryStart !== 0) {
-      const timePassed = Date.now() - queryStart // ms
-      setQueryStart(0)
+    if (loading === RemoteDataState.Done && queryStart.current !== 0) {
+      const timePassed = Date.now() - queryStart.current // ms
+      queryStart.current = 0
       setProcessTime(timePassed)
       return
     }
 
-    setQueryStart(0)
+    queryStart.current = 0
     setProcessTime(0)
   }, [loading])
 

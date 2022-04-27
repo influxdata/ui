@@ -12,6 +12,7 @@ import {
   ComponentColor,
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
+import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 // Actions
 import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
@@ -50,14 +51,9 @@ const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => {
   const original = (
     <span className="upgrade-message">
       Oh no! You hit the{' '}
-      <a
-        href={link}
-        className="rate-alert--docs-link"
-        target="_blank"
-        rel="noreferrer"
-      >
+      <SafeBlankLink href={link}>
         {type === 'series cardinality' ? 'series cardinality' : 'query write'}
-      </a>{' '}
+      </SafeBlankLink>{' '}
       limit {limitText ?? ''} and your data stopped writing. Don't lose
       important metrics.
     </span>
@@ -71,16 +67,11 @@ const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => {
         variants={[
           <span className="upgrade-message" key="1">
             You hit the{' '}
-            <a
-              href={link}
-              className="rate-alert--docs-link"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <SafeBlankLink href={link}>
               {type === 'series cardinality'
                 ? 'series cardinality'
                 : 'query write'}
-            </a>{' '}
+            </SafeBlankLink>{' '}
             limit {limitText ?? ''} and your data stopped writing. Upgrade to
             get a free $250 credit for the first 30 days.
           </span>,
@@ -141,14 +132,9 @@ const RateLimitAlertContent: FC<Props> = ({className, location}) => {
     <div className={`${rateLimitAlertContentClass} rate-alert--content__payg`}>
       <span>
         Data in has stopped because you've hit the{' '}
-        <a
-          href="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/"
-          className="rate-alert--docs-link"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.0/write-data/best-practices/resolve-high-cardinality/">
           series cardinality
-        </a>{' '}
+        </SafeBlankLink>{' '}
         limit. Let's get it flowing again.
       </span>
       <FlexBox

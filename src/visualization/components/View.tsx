@@ -61,7 +61,7 @@ const QueryStat: FC<QueryStatProp> = ({result, loading}) => {
     }
 
     if (loading === RemoteDataState.Done && queryStart !== 0) {
-      const timePassed = Date.now() - queryStart // ms TODO, query run time
+      const timePassed = Date.now() - queryStart // ms
       setQueryStart(0)
       setProcessTime(timePassed)
       return

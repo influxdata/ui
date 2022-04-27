@@ -22,6 +22,10 @@ import {event} from 'src/cloud/utils/reporting'
 
 // Utils
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
+
+// Constants
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 interface Props {
   className?: string
@@ -43,24 +47,7 @@ interface UpgradeMessageProps {
 }
 
 const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => {
-  if (isFlagEnabled('credit250Experiment')) {
-    return (
-      <span className="upgrade-message">
-        You hit the{' '}
-        <a
-          href={link}
-          className="rate-alert--docs-link"
-          target="_blank"
-          rel="noreferrer"
-        >
-          {type === 'series cardinality' ? 'series cardinality' : 'query write'}
-        </a>{' '}
-        limit {limitText ?? ''} and your data stopped writing. Upgrade to get a
-        free $250 credit for the first 30 days.
-      </span>
-    )
-  }
-  return (
+  const original = (
     <span className="upgrade-message">
       Oh no! You hit the{' '}
       <a
@@ -74,6 +61,32 @@ const UpgradeMessage: FC<UpgradeMessageProps> = ({limitText, link, type}) => {
       limit {limitText ?? ''} and your data stopped writing. Don't lose
       important metrics.
     </span>
+  )
+
+  return isFlagEnabled('credit250Experiment') ? (
+    <GoogleOptimizeExperiment
+      experimentID={CREDIT_250_EXPERIMENT_ID}
+      original={original}
+      variants={[
+        <span className="upgrade-message" key="1">
+          You hit the{' '}
+          <a
+            href={link}
+            className="rate-alert--docs-link"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {type === 'series cardinality'
+              ? 'series cardinality'
+              : 'query write'}
+          </a>{' '}
+          limit {limitText ?? ''} and your data stopped writing. Upgrade to get
+          a free $250 credit for the first 30 days.
+        </span>,
+      ]}
+    />
+  ) : (
+    original
   )
 }
 

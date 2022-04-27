@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, createContext, useContext, useState, useMemo} from 'react'
+import React, {FC, createContext, useContext, useState} from 'react'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
@@ -63,10 +63,12 @@ interface QueryBuilderContextType {
   selectMeasurement: (measurement?: string) => void
 
   add: () => void
+  cancelKey: (idx: number) => void
+  cancelValue: (idx: number) => void
   remove: (idx: number) => void
   update: (idx: number, card: Partial<QueryBuilderCard>) => void
-  loadKeys: (idx: number, search?: string) => void
-  loadValues: (idx: number, search?: string) => void
+  loadKeys: (idx: number, search?: string) => void | Promise<any>
+  loadValues: (idx: number, search?: string) => void | Promise<any>
 }
 
 export const DEFAULT_CONTEXT: QueryBuilderContextType = {
@@ -76,6 +78,8 @@ export const DEFAULT_CONTEXT: QueryBuilderContextType = {
   selectMeasurement: _ => {},
 
   add: () => {},
+  cancelKey: (_idx: number) => {},
+  cancelValue: (_idx: number) => {},
   remove: (_idx: number) => {},
   update: (_idx: number, _card: QueryBuilderCard) => {},
   loadKeys: (_idx: number, _search?: string) => {},
@@ -113,6 +117,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
   const {id, data, range, update} = useContext(PipeContext)
   const {query, getPanelQueries} = useContext(FlowQueryContext)
   const {buckets} = useContext(BucketContext)
+  const [cancelKey, setCancelKey] = useState({})
+  const [cancelValue, setCancelValue] = useState({})
 
   const [cardMeta, setCardMeta] = useState<QueryBuilderMeta[]>(
     Array(data.tags.length).fill({
@@ -181,9 +187,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     }
   }
 
-  const cards = useMemo(
-    () => data.tags.map((tag, idx) => fromBuilderConfig(tag, cardMeta[idx])),
-    [data.tags, cardMeta]
+  const cards = data.tags.map((tag, idx) =>
+    fromBuilderConfig(tag, cardMeta[idx])
   )
 
   const add = () => {
@@ -294,23 +299,31 @@ export const QueryBuilderProvider: FC = ({children}) => {
     |> limit(n: ${limit})`
     }
 
-    query(queryText, scope)
+    const result = query(queryText, scope)
+
+    setCancelKey(prev => ({
+      ...prev,
+      [idx]: (result as any).cancel,
+    }))
+
+    return result
       .then(resp => {
         return (Object.values(resp.parsed.table.columns).filter(
           c => c.name === '_value' && c.type === 'string'
         )[0]?.data ?? []) as string[]
       })
       .then(keys => {
-        if (!cards[idx].keys.selected[0]) {
+        const currentCards = data.tags.map(fromBuilderConfig)
+        if (!currentCards[idx].keys.selected[0]) {
           if (idx === 0 && keys.includes('_measurement')) {
-            cards[idx].keys.selected = ['_measurement']
+            currentCards[idx].keys.selected = ['_measurement']
           } else {
-            cards[idx].keys.selected = [keys[0]]
+            currentCards[idx].keys.selected = [keys[0]]
           }
 
-          update({tags: cards.map(toBuilderConfig)})
-        } else if (!keys.includes(cards[idx].keys.selected[0])) {
-          keys.unshift(cards[idx].keys.selected[0])
+          update({tags: currentCards.map(toBuilderConfig)})
+        } else if (!keys.includes(currentCards[idx].keys.selected[0])) {
+          keys.unshift(currentCards[idx].keys.selected[0])
         }
 
         cardMeta.splice(idx, 1, {
@@ -324,6 +337,18 @@ export const QueryBuilderProvider: FC = ({children}) => {
       .catch(e => {
         console.error(e)
       })
+  }
+
+  const handleCancelKey = idx => {
+    if (idx in cancelKey) {
+      cancelKey[idx]()
+    }
+  }
+
+  const handleCancelValue = idx => {
+    if (idx in cancelValue) {
+      cancelValue[idx]()
+    }
   }
 
   const loadValues = (idx, search) => {
@@ -402,7 +427,14 @@ export const QueryBuilderProvider: FC = ({children}) => {
   |> sort()`
     }
 
-    query(queryText, scope)
+    const result = query(queryText, scope)
+
+    setCancelValue(prev => ({
+      ...prev,
+      [idx]: (result as any).cancel,
+    }))
+
+    return result
       .then(resp => {
         return (Object.values(resp.parsed.table.columns).filter(
           c => c.name === '_value' && c.type === 'string'
@@ -480,7 +512,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
       ..._card,
     }
 
-    update({tags: cards.map(toBuilderConfig)})
+    data.tags = cards.map(toBuilderConfig)
+
+    update({tags: data.tags})
   }
 
   return (
@@ -490,7 +524,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
         selectBucket,
         selectMeasurement,
-
+        cancelKey: handleCancelKey,
+        cancelValue: handleCancelValue,
         add,
         remove,
         update: updater,

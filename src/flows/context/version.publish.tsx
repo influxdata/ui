@@ -9,6 +9,7 @@ import React, {
 } from 'react'
 import {useDispatch} from 'react-redux'
 import {useParams} from 'react-router-dom'
+import {createLocalStorageStateHook} from 'use-local-storage-state'
 
 // Context
 import {FlowContext} from 'src/flows/context/flow.current'
@@ -45,11 +46,32 @@ const DEFAULT_CONTEXT: ContextType = {
 
 export const VersionPublishContext = createContext<ContextType>(DEFAULT_CONTEXT)
 
+interface FlowVersionsCacheItem {
+  versions: VersionHistory[]
+  expiresAt: number
+}
+interface FlowVersionsCacheState {
+  [key: string]: FlowVersionsCacheItem
+}
+
+const useLocalStorageState = createLocalStorageStateHook(
+  'FlowVersionsCacheState',
+  {} as FlowVersionsCacheState
+)
+
+const BUCKETS_CACHING_MINUTES = 5
+// In Seconds
+const BUCKETS_CACHING_TIME = BUCKETS_CACHING_MINUTES * 60
+type UnixTimestamp = number
+const getCurrentTimestamp = (addTime = 0): UnixTimestamp => {
+  return Math.round(new Date().getTime() / 1000) + addTime
+}
+
 export const VersionPublishProvider: FC = ({children}) => {
   // This flow is not the same as the draft notebook, it's the current versioned notebook
   const {flow} = useContext(FlowContext)
   const dispatch = useDispatch()
-  const [versions, setVersions] = useState([])
+  const [cachedVersions, setCachedVersions] = useLocalStorageState()
   const [publishLoading, setPublishLoading] = useState<RemoteDataState>(
     RemoteDataState.NotStarted
   )
@@ -80,7 +102,12 @@ export const VersionPublishProvider: FC = ({children}) => {
         })
       }
 
-      setVersions(versions)
+      const flowVersions = {
+        expiresAt: getCurrentTimestamp(BUCKETS_CACHING_TIME),
+        versions,
+      } as FlowVersionsCacheItem
+      const versionsCache = {...cachedVersions, [flow.id]: flowVersions}
+      setCachedVersions(versionsCache)
     } catch (error) {
       console.error({error})
     }
@@ -89,6 +116,21 @@ export const VersionPublishProvider: FC = ({children}) => {
   useEffect(() => {
     handleGetNotebookVersions()
   }, [handleGetNotebookVersions])
+
+  const getFlowVersions = useCallback(() => {
+    const versionsCache = cachedVersions[flow.id]
+
+    if (!versionsCache) {
+      return []
+    }
+
+    // If the cache is expired
+    if (versionsCache.expiresAt <= getCurrentTimestamp()) {
+      return []
+    }
+
+    return versionsCache.versions
+  }, [cachedVersions, flow.id])
 
   const handlePublish = useCallback(async () => {
     try {
@@ -113,7 +155,7 @@ export const VersionPublishProvider: FC = ({children}) => {
       value={{
         handlePublish,
         publishLoading,
-        versions,
+        versions: getFlowVersions(),
       }}
     >
       {children}

@@ -53,6 +53,8 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
 
   const handleClick = () => {
     cancel()
+
+    event('click version history')
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
         flow.id
@@ -169,8 +171,11 @@ export const VersionSidebar: FC = () => {
   const {flow} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
+  const {cancel} = useContext(QueryContext)
 
   const handleClose = () => {
+    cancel()
+
     event('close version history')
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${flow.id}`

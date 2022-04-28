@@ -158,7 +158,7 @@ class TimeSeries extends Component<Props, State> {
       this.pendingReload = true
     }
 
-    if(this.props.updateStatuses) {
+    if (this.props.updateStatuses) {
       this.props.updateStatuses(this.state.statuses)
     }
   }

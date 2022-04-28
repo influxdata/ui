@@ -23,11 +23,14 @@ const CheckHistoryVisualization: FC = () => {
   }
 
   return (
-    <TimeSeries submitToken={0} queries={[query]} key={0} check={{id: id}} updateStatuses={updateStatuses}>
-      {({giraffeResult, loading, errorMessage, isInitialFetch, statuses}) => {
-        
-            // updateStatuses(statuses) // here is the problem
-      
+    <TimeSeries
+      submitToken={0}
+      queries={[query]}
+      key={0}
+      check={{id: id}}
+      updateStatuses={updateStatuses}
+    >
+      {({giraffeResult, loading, errorMessage, isInitialFetch}) => {
         // handle edge case where deadman check has non-numeric value
         if (
           giraffeResult &&

@@ -117,7 +117,6 @@ class TimeSeries extends Component<Props, State> {
   private pendingCheckStatuses: CancelBox<StatusRow[][]> = null
   public componentDidMount() {
     const {cellID, setCellMount} = this.props
-    
 
     this.observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -158,15 +157,10 @@ class TimeSeries extends Component<Props, State> {
     if (shouldReloadWhenVisible) {
       this.pendingReload = true
     }
-    
-  // when the statuses state has changed, I want to call updateStatuses prop to update the state in checkContext
-  // everytime the DOM updates (this.reload), the statuses state gets updated, so then we want to call setState to in turn 
-  // update it in check context
-  //https://stackoverflow.com/questions/38759703/when-to-use-componentdidupdate-method
-    if(this.state.statuses !== prevState.statuses) {
+
+    if (this.state.statuses !== prevState.statuses) {
       this.props.updateStatuses(this.state.statuses)
     }
-
   }
 
   public componentWillUnmount() {
@@ -281,9 +275,7 @@ class TimeSeries extends Component<Props, State> {
           check.id,
           extern
         )
-        // console.log('statuses before promise ', statuses)
         statuses = await this.pendingCheckStatuses.promise // TODO handle errors
-        // console.log('statuses after promise ', statuses)
       }
 
       const duration = Date.now() - startTime

@@ -50,7 +50,7 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     history.push('/checkout')
   }
 
-  const original = showUpgradeButton && (
+  const original = (
     <Button
       className={cloudUpgradeButtonClass}
       icon={IconFont.CrownSolid_New}
@@ -62,34 +62,28 @@ const CloudUpgradeButton: FC<OwnProps> = ({
     />
   )
 
-  return (
-    <CloudOnly>
-      {isFlagEnabled('credit250Experiment') && showPromoMessage ? (
-        <GoogleOptimizeExperiment
-          experimentID={CREDIT_250_EXPERIMENT_ID}
-          original={original}
-          variants={[
-            <span key="1">
-              <span className="credit-250-experiment-upgrade-button--text">
-                Get $250 free credit
-              </span>
-              <Button
-                className={cloudUpgradeButtonClass}
-                icon={IconFont.CrownSolid_New}
-                onClick={handleClick}
-                shape={ButtonShape.Default}
-                size={size}
-                testID="cloud-upgrade--button"
-                text={buttonText}
-              />
-            </span>,
-          ]}
-        />
-      ) : (
-        original
-      )}
-    </CloudOnly>
-  )
+  if (showUpgradeButton) {
+    if (isFlagEnabled('credit250Experiment') && showPromoMessage) {
+      return (
+        <CloudOnly>
+          <GoogleOptimizeExperiment
+            experimentID={CREDIT_250_EXPERIMENT_ID}
+            original={original}
+            variants={[
+              <span key="1">
+                <span className="credit-250-experiment-upgrade-button--text">
+                  Get $250 free credit
+                </span>
+                {original}
+              </span>,
+            ]}
+          />
+        </CloudOnly>
+      )
+    }
+    return <CloudOnly>{original}</CloudOnly>
+  }
+  return null
 }
 
 export default CloudUpgradeButton

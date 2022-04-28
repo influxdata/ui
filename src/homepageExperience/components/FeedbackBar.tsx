@@ -24,6 +24,8 @@ enum feedbackValue {
   THUMBS_UP,
 }
 
+const USERPILOT_FEEDBACK_ID = '1650913576rUrz8532'
+
 export default class FeedbackBar extends React.Component<OwnProps> {
   constructor(props) {
     super(props)
@@ -34,12 +36,20 @@ export default class FeedbackBar extends React.Component<OwnProps> {
     if (this.props.selectedFeedback === null) {
       event(`firstMile.${this.props.wizardEventName}.thumbsUp.clicked`)
       this.props.onFeedbackSelection(feedbackValue.THUMBS_UP)
+
+      if (window.userpilot) {
+        window.userpilot.trigger(USERPILOT_FEEDBACK_ID)
+      }
     }
   }
   private handleThumbsDownClick = () => {
     if (this.props.selectedFeedback === null) {
       event(`firstMile.${this.props.wizardEventName}.thumbsDown.clicked`)
       this.props.onFeedbackSelection(feedbackValue.THUMBS_DOWN)
+
+      if (window.userpilot) {
+        window.userpilot.trigger(USERPILOT_FEEDBACK_ID)
+      }
     }
   }
 

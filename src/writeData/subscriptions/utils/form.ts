@@ -60,10 +60,6 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       form.jsonTimestamp.path = newVal
     }
   }
-
-  if (form.jsonTimestamp?.path === '') {
-    delete form.jsonTimestamp
-  }
   if (form.stringMeasurement) {
     form.stringMeasurement.pattern =
       form.stringMeasurement?.pattern.replace(/\\\\/g, '\\') ?? ''
@@ -78,9 +74,6 @@ export const sanitizeForm = (form: Subscription): Subscription => {
       t.pattern = t.pattern?.replace(/\\\\/g, '\\') ?? ''
     })
   }
-  if (form.stringTimestamp?.pattern === '') {
-    delete form.stringTimestamp
-  }
   if (form.brokerPassword === '' || form.brokerUsername === '') {
     delete form.brokerUsername
     delete form.brokerPassword
@@ -89,24 +82,46 @@ export const sanitizeForm = (form: Subscription): Subscription => {
 }
 
 export const sanitizeUpdateForm = (form: Subscription): Subscription => {
-  if (form.jsonMeasurementKey) {
+  if (form.jsonMeasurementKey.path) {
+    const startChar = form.jsonMeasurementKey?.path.charAt(0) ?? ''
+    const newVal = checkJSONPathStarts$(startChar, form.jsonMeasurementKey.path)
+    if (newVal) {
+      form.jsonMeasurementKey.path = newVal
+    }
     if (form.jsonMeasurementKey.type === 'number') {
       form.jsonMeasurementKey.type = 'double'
     }
   }
+  if (form.jsonFieldKeys) {
+    form.jsonFieldKeys.map(f => {
+      const startChar = f.path?.charAt(0) ?? ''
+      const newVal = checkJSONPathStarts$(startChar, f.path)
+      if (newVal) {
+        f.path = newVal
+      }
+      if (f.type === 'number') {
+        f.type = 'double'
+      }
+    })
+  }
   if (form.jsonTagKeys) {
     form.jsonTagKeys.map(t => {
+      const startChar = t.path?.charAt(0) ?? ''
+      const newVal = checkJSONPathStarts$(startChar, t.path)
+      if (newVal) {
+        t.path = newVal
+      }
       if (t.type === 'number') {
         t.type = 'double'
       }
     })
   }
-  if (form.jsonFieldKeys) {
-    form.jsonFieldKeys.map(f => {
-      if (f.type === 'number') {
-        f.type = 'double'
-      }
-    })
+  if (form.jsonTimestamp?.path) {
+    const startChar = form.jsonTimestamp.path.charAt(0)
+    const newVal = checkJSONPathStarts$(startChar, form.jsonTimestamp.path)
+    if (newVal) {
+      form.jsonTimestamp.path = newVal
+    }
   }
   delete form.id
   delete form.orgID

@@ -20,7 +20,6 @@ import {View} from 'src/visualization'
 // Types
 import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
 import {PipeProp} from 'src/types/flows'
-import {FromFluxResult} from '@influxdata/giraffe'
 
 import {PipeContext} from 'src/flows/context/pipe'
 import {FlowQueryContext} from 'src/flows/context/flow.query'
@@ -32,17 +31,13 @@ import {downloadTextFile} from 'src/shared/utils/download'
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
 
-interface QueryStatProp {
-  result?: FromFluxResult
-  loading?: RemoteDataState
-}
-
-const QueryStat: FC<QueryStatProp> = ({result, loading}) => {
+const QueryStat: FC = () => {
+  const {loading, results} = useContext(PipeContext)
   const queryStart = useRef(0)
   const [processTime, setProcessTime] = useState(0)
   let tableNum = 0
 
-  const tableColumn = result?.table?.getColumn('table') || []
+  const tableColumn = results.parsed.table?.getColumn('table') || []
   const lastTableValue = tableColumn[tableColumn.length - 1]
 
   if (typeof lastTableValue === 'string') {
@@ -77,7 +72,7 @@ const QueryStat: FC<QueryStatProp> = ({result, loading}) => {
 
   const queryStat = {
     tableNum,
-    rowNum: result?.table?.length || 0,
+    rowNum: results.parsed.table?.length || 0,
     processTime, // ms
   }
 
@@ -188,10 +183,7 @@ const Table: FC<PipeProp> = ({Context}) => {
     <Context resizes controls={caveat}>
       <div className="flow-visualization" id={id}>
         <div className="flow-visualization--view">
-          <QueryStat
-            loading={loading || RemoteDataState.Done}
-            result={results.parsed}
-          />
+          <QueryStat />
           <View
             loading={loading}
             properties={

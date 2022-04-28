@@ -139,7 +139,7 @@ class TimeSeries extends Component<Props, State> {
     this.observer.observe(this.ref.current)
   }
 
-  public componentDidUpdate(prevProps: Props, prevState: State) {
+  public componentDidUpdate(prevProps: Props) {
     const {setCellMount, cellID} = this.props
     const prevPropsIndicateReload = this.shouldReload(prevProps)
     const shouldReloadNow = prevPropsIndicateReload && this.isIntersecting
@@ -158,7 +158,7 @@ class TimeSeries extends Component<Props, State> {
       this.pendingReload = true
     }
 
-    if (this.state.statuses !== prevState.statuses) {
+    if(this.props.updateStatuses) {
       this.props.updateStatuses(this.state.statuses)
     }
   }

@@ -120,7 +120,11 @@ class DataListening extends PureComponent<Props, State> {
     } = this.props
 
     this.setState({loading: LoadingState.Loading})
-    continuouslyCheckForData(orgID, bucket, this.updateResponse)
+    this.intervalID = continuouslyCheckForData(
+      orgID,
+      bucket,
+      this.updateResponse
+    )
   }
 }
 

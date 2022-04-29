@@ -1,5 +1,5 @@
 // Libraries
-import React, {SFC} from 'react'
+import React, {FC} from 'react'
 
 // Components
 import {List, ComponentSize} from '@influxdata/clockface'
@@ -14,7 +14,7 @@ interface Props {
   wrapText?: boolean
 }
 
-const SelectorList: SFC<Props> = props => {
+const SelectorList: FC<Props> = props => {
   const {
     items,
     selectedItems,

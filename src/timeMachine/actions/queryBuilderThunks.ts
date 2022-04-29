@@ -53,6 +53,7 @@ import {
   setFunctions,
 } from 'src/timeMachine/actions/queryBuilder'
 import {setBuckets} from 'src/buckets/actions/creators'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {AGG_WINDOW_AUTO} from 'src/timeMachine/constants/queryBuilder'
@@ -321,10 +322,15 @@ export const selectTagValue = (index: number, value: string) => (
     currentTag.key === '_field'
   ) {
     newValues = [value]
+  } else if (isFlagEnabled('newQueryBuilder') && index === 0) {
+    newValues = [value]
   } else {
     newValues = [...values, value]
   }
 
+  if (newValues.length === 0 && index === 0) {
+    dispatch(removeTagSelector(index + 1))
+  }
   dispatch(setBuilderTagValuesSelection(index, newValues))
 
   // don't add a new tag filter if we're grouping

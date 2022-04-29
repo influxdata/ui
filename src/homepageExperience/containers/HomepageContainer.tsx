@@ -45,11 +45,7 @@ export const HomepageContainer: FC = () => {
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
   const golangLink = `/orgs/${org.id}/new-user-wizard/go`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
-  let javaScriptNodeLink = `/orgs/${org.id}/new-user-wizard/nodejs`
-
-  // currently the nodejs library has an intermittent issue writing to buckets
-  // go to the current node library until we fix that bug
-  javaScriptNodeLink = `/orgs/${org.id}/load-data/client-libraries/javascript-node`
+  const javaScriptNodeLink = `/orgs/${org.id}/new-user-wizard/nodejs`
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}

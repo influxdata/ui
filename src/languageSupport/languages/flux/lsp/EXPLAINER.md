@@ -7,12 +7,13 @@ There are multiple approaches to custom language service utilization. There are 
 .
 
 1. use feature providers
-    - override monaco.languages.register`<Provider>`   => connect to language service
-        - https://code.visualstudio.com/api/language-extensions/programmatic-language-features 
+    - override monaco.languages.register`<Provider>`   => connect to language service, per feature provided
     - this utilizes monaco-languageclient
         - example for v0.18.1: https://github.com/TypeFox/monaco-languageclient/blob/v0.18.1/examples/browser/src/client.ts
+    - list features:
+        - https://code.visualstudio.com/api/language-extensions/programmatic-language-features 
     - our current approach:
-        - uses providers, but then communicates with a jsonRpc server.
+        - uses providers, but then communicate with a jsonRpc server.
             - so we use providers --> do work --> make jsonRpc --> Lsp
             - listen Lsp --> parse --> do work --> interface back to monaco
     - Pros:
@@ -34,9 +35,9 @@ There are multiple approaches to custom language service utilization. There are 
         - runs the custom worker in another thread
         - will perform auto-mapping of interface methods between monaco-editor and our customer worker
         - ability to do code modification (e.g. variable expansion)
-        - common pattern is to map the work API, to the Lsp API, per feature.
+        - common pattern is to map the worker API, to the Lsp API, per feature.
             - note: the API is not `<Provider>`. Similar, but not identical.
-            - These are common set of LSP internal methods, similar to the LSP protocol.
+            - These are common set of LSP internal methods, similar to the LSP protocol. (I didn't spend time digging further here.)
             - LSP services often have these methods exposed. Easy mapping, less custom code.
     - Cons:
         - we cannot directly access, or postMessage to, these workers. Only monaco-editor can.
@@ -55,6 +56,7 @@ There are multiple approaches to custom language service utilization. There are 
     - example: https://github.com/TypeFox/monaco-languageclient/tree/v0.18.1/example
         - note: this example does not utilize another worker thread. so I had to modify.
             - basically, instead of a web socket...we have channels with the worker.
+            - after PoC, will switch to connection via SharedArrayBuffer (very fast).
     - Pros:
         - the communication is based on jsonRpc to a listening service, without us manually re-inventing code
     - Cons:

@@ -150,7 +150,7 @@ const mstp = (state: AppState) => {
   const queryStatus = getActiveTimeMachine(state).queryResults.status
 
   const activeQueryText = getActiveQuery(state).text
-  const tags = getActiveQuery(state).builderConfig.tags
+  const tags = getActiveQuery(state).builderConfig?.tags ?? []
   const measurementTag = tags?.[0]
   const submitButtonDisabled =
     activeQueryText === '' ||

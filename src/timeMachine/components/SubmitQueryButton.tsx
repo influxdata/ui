@@ -151,10 +151,13 @@ const mstp = (state: AppState) => {
 
   const activeQueryText = getActiveQuery(state).text
   const tags = getActiveQuery(state).builderConfig?.tags ?? []
+  const activeQuery = getActiveQuery(state)
   const measurementTag = tags?.[0]
   const submitButtonDisabled =
     activeQueryText === '' ||
-    (measurementTag && measurementTag.values.length === 0)
+    (activeQuery.editMode === 'builder' &&
+      measurementTag &&
+      measurementTag.values.length === 0)
   const allVars = getAllVariables(state)
   const orgID = getOrg(state).id
 

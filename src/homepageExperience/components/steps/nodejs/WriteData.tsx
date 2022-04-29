@@ -57,7 +57,7 @@ let writeClient = client.getWriteApi(org, bucket, 'ns')
 for (let i = 0; i < 5; i++) {
   let point = new Point('measurement1')
     .tag('tagname1', 'tagvalue1')
-    .floatField('field1', i)
+    .intField('field1', i)
 
   void setTimeout(() => {
     writeClient.writePoint(point)

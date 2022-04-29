@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useRef, useState} from 'react'
+import React, {FC} from 'react'
 import classnames from 'classnames'
 
 // Components
@@ -9,9 +9,7 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 // Utils
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
-import loadServer, {
-  LSPServer,
-} from 'src/languageSupport/languages/flux/lsp/monaco.flux.server'
+import {setupForReactMonacoEditor} from 'src/languageSupport/languages/flux/lsp/jsonRpc/monaco.flux.lsp'
 import {
   comments,
   submit,
@@ -48,21 +46,15 @@ const FluxEditorMonaco: FC<Props> = ({
   autofocus,
   wrapLines,
 }) => {
-  const lspServer = useRef<LSPServer>(null)
-  const [docURI, setDocURI] = useState('')
-
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
   })
 
   const editorDidMount = async (editor: EditorType) => {
+    setupForReactMonacoEditor(editor.getModel())
     if (setEditorInstance) {
       setEditorInstance(editor)
     }
-
-    const uri = editor.getModel().uri.toString()
-
-    setDocURI(uri)
 
     comments(editor)
     submit(editor, () => {
@@ -75,31 +67,21 @@ const FluxEditorMonaco: FC<Props> = ({
       registerAutogrow(editor)
     }
 
-    try {
-      lspServer.current = await loadServer()
-      await lspServer.current.didOpen(uri, script)
-      monacoEditor.remeasureFonts()
+    monacoEditor.remeasureFonts()
 
-      if (autofocus && !readOnly && !editor.hasTextFocus()) {
-        const model = editor.getModel()
-        editor.setPosition({
-          lineNumber: model.getLineCount(),
-          column: model.getLineLength(model.getLineCount()) + 1,
-        })
-        editor.focus()
-      }
-    } catch (e) {
-      // TODO: notify user that lsp failed
+    if (autofocus && !readOnly && !editor.hasTextFocus()) {
+      const model = editor.getModel()
+      editor.setPosition({
+        lineNumber: model.getLineCount(),
+        column: model.getLineLength(model.getLineCount()) + 1,
+      })
+      editor.focus()
     }
   }
 
+  // @ts-ignore
   const onChange = async (text: string) => {
     onChangeScript(text)
-    try {
-      await lspServer.current.didChange(docURI, text)
-    } catch (e) {
-      // TODO: notify user that lsp failed
-    }
   }
 
   return (

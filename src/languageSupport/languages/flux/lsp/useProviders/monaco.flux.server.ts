@@ -15,8 +15,8 @@ import {
   definition,
   symbols,
   formatting,
-} from 'src/languageSupport/languages/flux/lsp/monaco.flux.messages'
-import {registerCompletion} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
+} from 'src/languageSupport/languages/flux/lsp/useProviders/monaco.flux.messages'
+// import {registerCompletion} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
 
 import {AppState, LocalStorage} from 'src/types'
 import {getAllVariables, asAssignment} from 'src/variables/selectors'
@@ -156,6 +156,7 @@ export class LSPServer {
     context: CompletionContext
   ): Promise<CompletionItem[]> {
     await this.sendPrelude(uri)
+    console.log('IN SAME THREAD')
 
     try {
       const response = (await this.send(
@@ -238,7 +239,7 @@ export class LSPServer {
   }
 }
 
-class LSPLoader {
+export class LSPLoader {
   private server: LSPServer
   private queue: Deferred<LSPServer>[] = []
   private loading: boolean = false
@@ -257,9 +258,10 @@ class LSPLoader {
 
     this.loading = true
 
-    const {Lsp} = await import('@influxdata/flux-lsp-browser')
+    const {Lsp, initLog} = await import('@influxdata/flux-lsp-browser')
+    initLog()
     this.server = new LSPServer(new Lsp())
-    registerCompletion(monaco, this.server)
+    // registerCompletion(monaco, this.server)
 
     await this.server.initialize()
 

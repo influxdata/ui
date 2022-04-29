@@ -9,7 +9,7 @@
     "url": "github:influxdata/ui"
   },
   "engines": {
-    "node": ">=12.13.0",
+    "node": ">=14.17.0",
     "yarn": ">=1.16.0"
   },
   "alias": {
@@ -55,8 +55,8 @@
     "generate": "export SHA=b983e6ecc75f9b9852401e5585f2706890b10bb3 && export REMOTE=https://raw.githubusercontent.com/influxdata/openapi/${SHA}/ && yarn generate-meta",
     "generate-local": "export REMOTE=../openapi/ && yarn generate-meta",
     "generate-meta": "if [ -z \"${CLOUD_URL}\" ]; then yarn generate-meta-oss; else yarn generate-meta-cloud; fi",
-    "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn pinned && yarn mapsd-oss && yarn cloudPriv && yarn fluxdocs && yarn subscriptions-oss",
-    "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn annotations && yarn cloudPriv && yarn pinned && yarn mapsd && yarn fluxdocs && yarn subscriptions",
+    "generate-meta-oss": "yarn oss-api && yarn notebooks && yarn unity && yarn annotations-oss && yarn pinned && yarn mapsd-oss && yarn uiproxyd-oss && yarn cloudPriv && yarn fluxdocs && yarn subscriptions-oss",
+    "generate-meta-cloud": "yarn cloud-api && yarn notebooks && yarn unity && yarn annotations && yarn cloudPriv && yarn pinned && yarn mapsd && yarn uiproxyd && yarn fluxdocs && yarn subscriptions",
     "oss": "oats ${REMOTE}contracts/oss-diff.yml > ./src/client/ossRoutes.ts",
     "cloud": "oats ${REMOTE}contracts/cloud-diff.yml > ./src/client/cloudRoutes.ts",
     "common": "oats ${REMOTE}contracts/common.yml > ./src/client/commonRoutes.ts",
@@ -69,6 +69,8 @@
     "annotations-oss": "oats ${REMOTE}contracts/priv/annotationd-oss.yml > ./src/client/annotationdRoutes.ts",
     "mapsd-oss": "touch ./src/client/mapsdRoutes.ts",
     "mapsd": "oats ${REMOTE}contracts/mapsd.yml > ./src/client/mapsdRoutes.ts",
+    "uiproxyd-oss": "touch ./src/client/uiproxydRoutes.ts",
+    "uiproxyd": "oats ${REMOTE}contracts/uiproxyd.yml > ./src/client/uiproxydRoutes.ts",
     "subscriptions": "oats ${REMOTE}contracts/priv/nifid.yml > ./src/client/subscriptionsRoutes.ts",
     "subscriptions-oss": "touch ./src/client/subscriptionsRoutes.ts",
     "pinned": "oats ${REMOTE}contracts/priv/pinneditemsd.yml > ./src/client/pinnedItemRoutes.ts",

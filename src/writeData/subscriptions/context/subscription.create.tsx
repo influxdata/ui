@@ -39,6 +39,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
+      name: 'measurement',
       path: '',
       type: 'string',
     },

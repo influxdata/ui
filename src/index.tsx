@@ -63,6 +63,7 @@ declare global {
   interface Window {
     basepath: string
     dataLayer: any[]
+    userpilot: any
   }
 }
 

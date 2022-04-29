@@ -27,6 +27,7 @@ ENV GLOBALSEARCH_API_KEY=
 ENV GLOBALSEARCH_APP_ID=
 # Google Experiments ENV vars
 ENV PAYG_CREDIT_EXPERIMENT_ID=
+ENV CREDIT_250_EXPERIMENT_ID=
 
 # This is the origin of the URL needed to access the running container (optional)
 # ENV PUBLIC=http://foobar

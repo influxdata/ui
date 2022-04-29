@@ -69,14 +69,15 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           placeholder="eg. regexExample"
           name="timestamp"
           autoFocus={true}
-          value={
-            formContent.stringTimestamp
-              ? formContent.stringTimestamp.pattern
-              : ''
-          }
+          value={formContent.stringTimestamp.pattern}
           onChange={e => {
-            formContent.stringTimestamp.pattern = e.target.value
-            updateForm({...formContent})
+            updateForm({
+              ...formContent,
+              stringTimestamp: {
+                ...formContent.stringTimestamp,
+                pattern: e.target.value,
+              },
+            })
           }}
           onBlur={() =>
             event(
@@ -123,8 +124,13 @@ const StringParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
               autoFocus={true}
               value={formContent.stringMeasurement.pattern}
               onChange={e => {
-                formContent.stringMeasurement.pattern = e.target.value
-                updateForm({...formContent})
+                updateForm({
+                  ...formContent,
+                  stringMeasurement: {
+                    ...formContent.stringMeasurement,
+                    pattern: e.target.value,
+                  },
+                })
               }}
               onBlur={() =>
                 event(

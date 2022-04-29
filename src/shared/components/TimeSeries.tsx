@@ -67,6 +67,7 @@ interface OwnProps {
   implicitSubmit?: boolean
   children: (r: QueriesState) => JSX.Element
   check?: Partial<Check>
+  updateStatuses?: (statuses: StatusRow[][]) => void
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -114,9 +115,9 @@ class TimeSeries extends Component<Props, State> {
 
   private pendingResults: Array<CancelBox<RunQueryResult>> = []
   private pendingCheckStatuses: CancelBox<StatusRow[][]> = null
-
   public componentDidMount() {
     const {cellID, setCellMount} = this.props
+
     this.observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         const {isIntersecting} = entry
@@ -155,6 +156,10 @@ class TimeSeries extends Component<Props, State> {
 
     if (shouldReloadWhenVisible) {
       this.pendingReload = true
+    }
+
+    if (this.props.updateStatuses) {
+      this.props.updateStatuses(this.state.statuses)
     }
   }
 
@@ -297,7 +302,6 @@ class TimeSeries extends Component<Props, State> {
       const giraffeResult = fromFlux(files.join('\n\n'))
 
       this.pendingReload = false
-
       // this check prevents a memory leak https://github.com/influxdata/ui/issues/2137
       if (!this.isUnmounting) {
         this.setState({

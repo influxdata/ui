@@ -1,0 +1,17 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.query-stat {
+  padding: $cf-space-2xs 0;
+}
+
+.query-stat--bold {
+  font-weight: $cf-font-weight--medium;
+  color: $cf-grey-75;
+  padding-left: $cf-space-2xs;
+  padding-right: $cf-space-s;
+}
+
+.query-stat--normal {
+  color: $cf-grey-55;
+  padding: 0 $cf-space-2xs;
+}

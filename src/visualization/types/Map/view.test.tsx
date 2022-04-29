@@ -1,4 +1,16 @@
 jest.mock(
+  'src/client/uiproxydRoutes',
+  () => {
+    return {
+      getMapToken: () => ({
+        token: 'token',
+      }),
+    }
+  },
+  {virtual: true}
+)
+
+jest.mock(
   'src/client/mapsdRoutes',
   () => {
     return {
@@ -48,7 +60,7 @@ jest.mock('src/shared/constants/index', () => ({
 describe('Map component renders', () => {
   it('returns with helpful error message when map service is down', () => {
     jest.mock(
-      'src/client/mapsdRoutes',
+      'src/client/uiproxydRoutes',
       () => {
         throw new Error('Service Unavailable')
       },

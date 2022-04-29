@@ -28,14 +28,15 @@ yarn-error.log
 /public/test.*
 
 # oats generated routes
-src/client/generatedRoutes.ts
-src/client/cloudPrivRoutes.ts
-src/client/unityRoutes.ts
-src/client/flowsRoutes.ts
-src/client/notebooksRoutes.ts
 src/client/annotationdRoutes.ts
-src/client/mapsdRoutes.ts
-src/client/managedFunctionsRoutes.ts
-src/client/pinnedItemRoutes.ts
+src/client/cloudPrivRoutes.ts
+src/client/flowsRoutes.ts
 src/client/fluxdocsdRoutes.ts
+src/client/generatedRoutes.ts
+src/client/managedFunctionsRoutes.ts
+src/client/mapsdRoutes.ts
+src/client/notebooksRoutes.ts
+src/client/pinnedItemRoutes.ts
 src/client/subscriptionsRoutes.ts
+src/client/uiproxydRoutes.ts
+src/client/unityRoutes.ts

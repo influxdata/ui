@@ -28,9 +28,9 @@ export const generateImport = (
 
   importStatement = `import "${funcPackage}"`
 
-  if(CLOUD && isFlagEnabled('fluxDynamicDocs')) {
+  if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
     // if package is nested, use func.path to import.
-    if(func.path.includes('/')) {
+    if (func.path.includes('/')) {
       importStatement = `import "${func.path}"`
     }
   }

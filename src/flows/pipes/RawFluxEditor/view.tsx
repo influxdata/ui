@@ -82,12 +82,12 @@ const Query: FC<PipeProp> = ({Context}) => {
         text = `  |> ${fn.example}`
       }
 
-      const getHeader = (fn) => {
-        let importStatement 
+      const getHeader = fn => {
+        let importStatement
 
         if (fn.package) {
           importStatement = `import "${fn.package}"`
-          if(isFlagEnabled('fluxDynamicDocs') && fn.path.includes('/')) {
+          if (isFlagEnabled('fluxDynamicDocs') && fn.path.includes('/')) {
             importStatement = `import "${fn.path}"`
           }
           return importStatement
@@ -98,7 +98,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       const options = {
         text,
         type: InjectionType.OnOwnLine,
-        header: getHeader(fn)
+        header: getHeader(fn),
       }
       inject(options)
     },

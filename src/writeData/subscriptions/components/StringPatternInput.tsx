@@ -116,10 +116,24 @@ const StringPatternInput: FC<Props> = ({
                   : formContent.stringFields[itemNum].name
               }
               onChange={e => {
-                tagType
-                  ? (formContent.stringTags[itemNum].name = e.target.value)
-                  : (formContent.stringFields[itemNum].name = e.target.value)
-                updateForm({...formContent})
+                let newArr
+                if (tagType) {
+                  newArr = Object.assign([...formContent.stringTags], {
+                    [itemNum]: {
+                      ...formContent.stringTags[itemNum],
+                      name: e.target.value,
+                    },
+                  })
+                  updateForm({...formContent, stringTags: newArr})
+                } else {
+                  newArr = Object.assign([...formContent.stringFields], {
+                    [itemNum]: {
+                      ...formContent.stringFields[itemNum],
+                      name: e.target.value,
+                    },
+                  })
+                  updateForm({...formContent, stringFields: newArr})
+                }
               }}
               onBlur={() =>
                 event(
@@ -169,10 +183,24 @@ const StringPatternInput: FC<Props> = ({
                   : formContent.stringFields[itemNum].pattern
               }
               onChange={e => {
-                tagType
-                  ? (formContent.stringTags[itemNum].pattern = e.target.value)
-                  : (formContent.stringFields[itemNum].pattern = e.target.value)
-                updateForm({...formContent})
+                let newArr
+                if (tagType) {
+                  newArr = Object.assign([...formContent.stringTags], {
+                    [itemNum]: {
+                      ...formContent.stringTags[itemNum],
+                      pattern: e.target.value,
+                    },
+                  })
+                  updateForm({...formContent, stringTags: newArr})
+                } else {
+                  newArr = Object.assign([...formContent.stringFields], {
+                    [itemNum]: {
+                      ...formContent.stringFields[itemNum],
+                      pattern: e.target.value,
+                    },
+                  })
+                  updateForm({...formContent, stringFields: newArr})
+                }
               }}
               onBlur={() =>
                 event(

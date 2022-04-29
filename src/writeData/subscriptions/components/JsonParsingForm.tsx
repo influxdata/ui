@@ -79,8 +79,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
           autoFocus={true}
           value={formContent.jsonTimestamp.path}
           onChange={e => {
-            formContent.jsonTimestamp.path = e.target.value
-            updateForm({...formContent})
+            updateForm({
+              ...formContent,
+              jsonTimestamp: {
+                ...formContent.jsonTimestamp,
+                path: e.target.value,
+              },
+            })
           }}
           onBlur={() =>
             event(
@@ -133,8 +138,13 @@ const JsonParsingForm: FC<Props> = ({formContent, updateForm, edit}) => {
                 autoFocus={true}
                 value={formContent.jsonMeasurementKey.path}
                 onChange={e => {
-                  formContent.jsonMeasurementKey.path = e.target.value
-                  updateForm({...formContent})
+                  updateForm({
+                    ...formContent,
+                    jsonMeasurementKey: {
+                      ...formContent.jsonMeasurementKey,
+                      path: e.target.value,
+                    },
+                  })
                 }}
                 onBlur={() =>
                   event(

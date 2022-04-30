@@ -9,7 +9,7 @@ import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 // Utils
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 import THEME_NAME from 'src/languageSupport/languages/flux/monaco.flux.theme'
-import {setupForReactMonacoEditor} from 'src/languageSupport/languages/flux/lsp/jsonRpc/monaco.flux.lsp'
+import {setupForReactMonacoEditor} from 'src/languageSupport/languages/flux/lsp/monaco.flux.lsp'
 import {
   comments,
   submit,
@@ -50,7 +50,7 @@ const FluxEditorMonaco: FC<Props> = ({
     'flux-editor--monaco__autogrow': autogrow,
   })
 
-  const editorDidMount = async (editor: EditorType) => {
+  const editorDidMount = (editor: EditorType) => {
     setupForReactMonacoEditor(editor.getModel())
     if (setEditorInstance) {
       setEditorInstance(editor)
@@ -80,7 +80,7 @@ const FluxEditorMonaco: FC<Props> = ({
   }
 
   // @ts-ignore
-  const onChange = async (text: string) => {
+  const onChange = (text: string) => {
     onChangeScript(text)
   }
 

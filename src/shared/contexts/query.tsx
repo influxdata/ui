@@ -395,8 +395,8 @@ const parseCSV = (() => {
       worker.postMessage([counter, csv])
     })
   */
- const res = {table: {}, fluxGroupKeyUnion:[], resultColumnNames:[] }
- return Promise.resolve(res as InternalFromFluxResult)
+  const res = {table: {}, fluxGroupKeyUnion: [], resultColumnNames: []}
+  return Promise.resolve(res as InternalFromFluxResult)
 })()
 
 export const parseQuery = (() => {

@@ -12,7 +12,7 @@ import {
   FluxResult,
   QueryScope,
   InternalFromFluxResult,
-  Column,
+  // Column,
 } from 'src/types/flows'
 import {propertyTime} from 'src/shared/utils/getMinDurationFromAST'
 
@@ -284,6 +284,7 @@ export const simplify = (text, vars = {}) => {
 }
 
 const parseCSV = (() => {
+  /*
   const worker = new Worker('./csv.worker', {type: 'module'})
   const queue = {}
   let counter = 0
@@ -393,6 +394,9 @@ const parseCSV = (() => {
       queue[++counter] = resolve
       worker.postMessage([counter, csv])
     })
+  */
+ const res = {table: {}, fluxGroupKeyUnion:[], resultColumnNames:[] }
+ return Promise.resolve(res as InternalFromFluxResult)
 })()
 
 export const parseQuery = (() => {
@@ -574,6 +578,7 @@ export const QueryProvider: FC = ({children}) => {
       })
       .then(raw => {
         if (isFlagEnabled('fastFlows')) {
+          // @ts-ignore
           return parseCSV(raw.csv)
         }
         if (isFlagEnabled('fastFromFlux')) {

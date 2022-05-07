@@ -7565,7 +7565,7 @@ export const FLUX_FUNCTIONS: FluxToolbarFunction[] = [
     desc:
       'Merges two input streams into a single output stream based on specified columns with equal values and appends a new measurement name.',
     example: `tickscript.join(
-    tables: {t1: example1, t2: example2}
+    tables: {t1: example1, t2: example2},
     on: ["_time"],
     measurement: "example-measurement"
 )`,

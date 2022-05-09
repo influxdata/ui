@@ -69,6 +69,7 @@ const BrokerDetails: FC<Props> = ({
               formContent={currentSubscription}
               updateForm={updateForm}
               className="update"
+              edit={edit}
             />
           </Overlay.Body>
           <DetailsFormFooter

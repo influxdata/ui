@@ -51,22 +51,18 @@ export const DEFAULT_CONTEXT: SubscriptionUpdateContextType = {
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
-      name: '',
       path: '',
-      type: 'string',
     },
     jsonFieldKeys: [
       {
         name: '',
         path: '',
-        type: 'string',
       },
     ],
     jsonTagKeys: [
       {
         name: '',
         path: '',
-        type: 'string',
       },
     ],
     jsonTimestamp: {

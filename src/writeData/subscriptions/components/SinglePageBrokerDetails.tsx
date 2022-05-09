@@ -134,6 +134,7 @@ const SinglePageBrokerDetails: FC<Props> = ({
               formContent={currentSubscription}
               updateForm={updateForm}
               className="update"
+              edit={edit}
             />
           </Overlay.Body>
           <div className="update-broker-form__line"></div>

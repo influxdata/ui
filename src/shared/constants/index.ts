@@ -166,3 +166,4 @@ export const GLOBALSEARCH_API_KEY = formatConstant(
 export const PAYG_CREDIT_DAYS = 30
 export const PAYG_MAX_CREDIT = 250
 export const PAYG_CREDIT_EXPERIMENT_ID = process.env.PAYG_CREDIT_EXPERIMENT_ID
+export const CREDIT_250_EXPERIMENT_ID = process.env.CREDIT_250_EXPERIMENT_ID

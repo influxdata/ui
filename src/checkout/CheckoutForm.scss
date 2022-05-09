@@ -21,6 +21,21 @@
   max-height: 140px;
 }
 
+.checkout-credit-250--banner {
+  font-size: 18px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.checkout-credit-250--banner-icon {
+  padding-top: 1px;
+}
+
+.checkout-credit-250--banner-message {
+  margin-left: $cf-marg-b;
+}
+
 .checkout-form--banner {
   background: linear-gradient(
     45deg,

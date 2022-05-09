@@ -28,7 +28,8 @@ tables = query_api.query(query, org="${org.name}")
 
 for table in tables:
   for record in table.records:
-    print(record)`
+    print(record)
+`
 
   return (
     <>
@@ -47,8 +48,8 @@ for table in tables:
         onCopy={logCopyCodeSnippet}
       />
       <p>
-        In this query, we are looking for data points within last 10 minutes
-        with field key of "field1".
+        In this query, we are looking for data points within the last 10 minutes
+        with a measurement of "measurement1".
         <br />
         <br />
         Let’s use that Flux query in our Python code!

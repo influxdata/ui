@@ -73,12 +73,14 @@ const ParsingDetails: FC<Props> = ({
                 <StringParsingForm
                   formContent={currentSubscription}
                   updateForm={updateForm}
+                  edit={edit}
                 />
               )}
               {currentSubscription.dataFormat === 'json' && (
                 <JsonParsingForm
                   formContent={currentSubscription}
                   updateForm={updateForm}
+                  edit={edit}
                 />
               )}
               {currentSubscription.dataFormat === 'lineprotocol' && (

@@ -198,8 +198,7 @@ describe('Dashboards', () => {
           cy.getByTestID('dashboard-card--name').click()
         })
 
-      const viewGraphOrig = makeGraphSnapshot()
-
+      const cloneNamePrefix = `${localDashName} (cloned at `
       cy.getByTestID('nav-item-dashboards').click()
 
       cy.getByTestID('dashboard-card')
@@ -212,17 +211,12 @@ describe('Dashboards', () => {
 
       // Verify cloned dashboard contents
 
-      cy.getByTestID('page-title').should(
-        'contain.text',
-        `${localDashName} (clone 1)`
-      )
+      cy.getByTestID('page-title').should('contain.text', cloneNamePrefix)
       cy.getByTestID('variable-dropdown--Power').should('be.visible')
       cy.getByTestID('variable-dropdown-input-typeAhead--Power').should(
         'have.value',
         'base'
       )
-
-      makeGraphSnapshot().shouldBeSameAs(viewGraphOrig)
 
       cy.getByTestID('cell--view-empty markdown').should(
         'contain.text',
@@ -246,8 +240,7 @@ describe('Dashboards', () => {
       cy.getByTestID('cell-context--note').click()
       cy.getByTestID('markdown-editor')
         .click()
-        .type('{ctrl}a')
-        .type(replaceText)
+        .type(`{selectAll}{backspace}${replaceText}`)
 
       cy.getByTestID('save-note--button').click()
 
@@ -260,7 +253,7 @@ describe('Dashboards', () => {
           cy.getByTestID(`label--pill ${labelName}`).should('be.visible')
           cy.getByTestID('dashboard-card--name').should(
             'contain',
-            `${localDashName} (clone 1)`
+            cloneNamePrefix
           )
           cy.getByTestID('inline-labels--add').click()
         })
@@ -289,14 +282,6 @@ describe('Dashboards', () => {
           cy.getByTestID('dashboard-card--name').click()
         })
 
-      /*
-      // TODO verify graph and variable in original once #3287 is fixed
-      // https://github.com/influxdata/ui/issues/3287
-
-      cy.getByTestID('variable-dropdown-input-typeAhead--Power').should('have.value','base')
-      makeGraphSnapshot().shouldBeSameAs(viewGraphCopy, false)
-
-       */
       cy.getByTestID('cell--view-empty markdown').should(
         'contain',
         'The cat went here and there'

@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, createContext, useContext, useState, useMemo} from 'react'
+import React, {FC, createContext, useContext, useState} from 'react'
 
 // Contexts
 import {PipeContext} from 'src/flows/context/pipe'
@@ -15,6 +15,10 @@ import {
   BuilderTagsType,
   BuilderAggregateFunctionType,
 } from 'src/types'
+import {
+  CACHING_REQUIRED_END_DATE,
+  CACHING_REQUIRED_START_DATE,
+} from 'src/utils/datetime/constants'
 
 const DEFAULT_TAG_LIMIT = 200
 const EXTENDED_TAG_LIMIT = 500
@@ -59,10 +63,12 @@ interface QueryBuilderContextType {
   selectMeasurement: (measurement?: string) => void
 
   add: () => void
+  cancelKey: (idx: number) => void
+  cancelValue: (idx: number) => void
   remove: (idx: number) => void
   update: (idx: number, card: Partial<QueryBuilderCard>) => void
-  loadKeys: (idx: number, search?: string) => void
-  loadValues: (idx: number, search?: string) => void
+  loadKeys: (idx: number, search?: string) => void | Promise<any>
+  loadValues: (idx: number, search?: string) => void | Promise<any>
 }
 
 export const DEFAULT_CONTEXT: QueryBuilderContextType = {
@@ -72,6 +78,8 @@ export const DEFAULT_CONTEXT: QueryBuilderContextType = {
   selectMeasurement: _ => {},
 
   add: () => {},
+  cancelKey: (_idx: number) => {},
+  cancelValue: (_idx: number) => {},
   remove: (_idx: number) => {},
   update: (_idx: number, _card: QueryBuilderCard) => {},
   loadKeys: (_idx: number, _search?: string) => {},
@@ -109,6 +117,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
   const {id, data, range, update} = useContext(PipeContext)
   const {query, getPanelQueries} = useContext(FlowQueryContext)
   const {buckets} = useContext(BucketContext)
+  const [cancelKey, setCancelKey] = useState({})
+  const [cancelValue, setCancelValue] = useState({})
 
   const [cardMeta, setCardMeta] = useState<QueryBuilderMeta[]>(
     Array(data.tags.length).fill({
@@ -177,9 +187,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
     }
   }
 
-  const cards = useMemo(
-    () => data.tags.map((tag, idx) => fromBuilderConfig(tag, cardMeta[idx])),
-    [data.tags, cardMeta]
+  const cards = data.tags.map((tag, idx) =>
+    fromBuilderConfig(tag, cardMeta[idx])
   )
 
   const add = () => {
@@ -262,36 +271,59 @@ export const QueryBuilderProvider: FC = ({children}) => {
       ? EXTENDED_TAG_LIMIT
       : DEFAULT_TAG_LIMIT
 
-    // TODO: Use the `v1.tagKeys` function from the Flux standard library once
-    // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-    query(
-      `${_source}
-              |> range(${formatTimeRangeArguments(range)})
-              |> filter(fn: (r) => ${tagString})
-              |> keys()
-              |> keep(columns: ["_value"])
-              |> distinct()${searchString}${previousTagString}
-              |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
-              |> sort()
-              |> limit(n: ${limit})`,
-      scope
-    )
+    let queryText = `${_source}
+    |> range(${formatTimeRangeArguments(range)})
+    |> filter(fn: (r) => ${tagString})
+    |> keys()
+    |> keep(columns: ["_value"])
+    |> distinct()${searchString}${previousTagString}
+    |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+    |> sort()
+    |> limit(n: ${limit})`
+
+    if (
+      data.buckets[0].type !== 'sample' &&
+      isFlagEnabled('queryBuilderUseMetadataCaching')
+    ) {
+      _source = `import "regexp"
+      import "influxdata/influxdb/schema"`
+      queryText = `${_source}
+  schema.tagKeys(
+    bucket: "${data.buckets[0].name}",
+    predicate: (r) => ${tagString},
+    start: ${CACHING_REQUIRED_START_DATE},
+    stop: ${CACHING_REQUIRED_END_DATE},
+  )${searchString}${previousTagString}
+    |> filter(fn: (r) => r._value != "_time" and r._value != "_start" and r._value !=  "_stop" and r._value != "_value")
+    |> sort()
+    |> limit(n: ${limit})`
+    }
+
+    const result = query(queryText, scope)
+
+    setCancelKey(prev => ({
+      ...prev,
+      [idx]: (result as any).cancel,
+    }))
+
+    return result
       .then(resp => {
         return (Object.values(resp.parsed.table.columns).filter(
           c => c.name === '_value' && c.type === 'string'
         )[0]?.data ?? []) as string[]
       })
       .then(keys => {
-        if (!cards[idx].keys.selected[0]) {
+        const currentCards = data.tags.map(fromBuilderConfig)
+        if (!currentCards[idx].keys.selected[0]) {
           if (idx === 0 && keys.includes('_measurement')) {
-            cards[idx].keys.selected = ['_measurement']
+            currentCards[idx].keys.selected = ['_measurement']
           } else {
-            cards[idx].keys.selected = [keys[0]]
+            currentCards[idx].keys.selected = [keys[0]]
           }
 
-          update({tags: cards.map(toBuilderConfig)})
-        } else if (!keys.includes(cards[idx].keys.selected[0])) {
-          keys.unshift(cards[idx].keys.selected[0])
+          update({tags: currentCards.map(toBuilderConfig)})
+        } else if (!keys.includes(currentCards[idx].keys.selected[0])) {
+          keys.unshift(currentCards[idx].keys.selected[0])
         }
 
         cardMeta.splice(idx, 1, {
@@ -305,6 +337,18 @@ export const QueryBuilderProvider: FC = ({children}) => {
       .catch(e => {
         console.error(e)
       })
+  }
+
+  const handleCancelKey = idx => {
+    if (idx in cancelKey) {
+      cancelKey[idx]()
+    }
+  }
+
+  const handleCancelValue = idx => {
+    if (idx in cancelValue) {
+      cancelValue[idx]()
+    }
   }
 
   const loadValues = (idx, search) => {
@@ -356,22 +400,41 @@ export const QueryBuilderProvider: FC = ({children}) => {
     const limit = isFlagEnabled('increasedMeasurmentTagLimit')
       ? EXTENDED_TAG_LIMIT
       : DEFAULT_TAG_LIMIT
+    let queryText = `${_source}
+    |> range(${formatTimeRangeArguments(range)})
+    |> filter(fn: (r) => ${tagString})
+    |> keep(columns: ["${cards[idx].keys.selected[0]}"])
+    |> group()
+    |> distinct(column: "${cards[idx].keys.selected[0]}")${searchString}
+    |> limit(n: ${limit})
+    |> sort()`
 
-    // TODO: Use the `v1.tagValues` function from the Flux standard library once
-    // this issue is resolved: https://github.com/influxdata/flux/issues/1071
-    query(
-      `${_source}
-              |> range(${formatTimeRangeArguments(range)})
-              |> filter(fn: (r) => ${tagString})
-              |> keep(columns: ["${cards[idx].keys.selected[0]}"])
-              |> group()
-              |> distinct(column: "${
-                cards[idx].keys.selected[0]
-              }")${searchString}
-              |> limit(n: ${limit})
-              |> sort()`,
-      scope
-    )
+    if (
+      data.buckets[0].type !== 'sample' &&
+      isFlagEnabled('queryBuilderUseMetadataCaching')
+    ) {
+      _source = `import "regexp"
+      import "influxdata/influxdb/schema"`
+      queryText = `${_source}
+  schema.tagValues(
+    bucket: "${data.buckets[0].name}",
+    tag: "${cards[idx].keys.selected[0]}",
+    predicate: (r) => ${tagString},
+    start: ${CACHING_REQUIRED_START_DATE},
+    stop: ${CACHING_REQUIRED_END_DATE},
+  )${searchString}
+  |> limit(n: ${limit})
+  |> sort()`
+    }
+
+    const result = query(queryText, scope)
+
+    setCancelValue(prev => ({
+      ...prev,
+      [idx]: (result as any).cancel,
+    }))
+
+    return result
       .then(resp => {
         return (Object.values(resp.parsed.table.columns).filter(
           c => c.name === '_value' && c.type === 'string'
@@ -449,7 +512,9 @@ export const QueryBuilderProvider: FC = ({children}) => {
       ..._card,
     }
 
-    update({tags: cards.map(toBuilderConfig)})
+    data.tags = cards.map(toBuilderConfig)
+
+    update({tags: data.tags})
   }
 
   return (
@@ -459,7 +524,8 @@ export const QueryBuilderProvider: FC = ({children}) => {
 
         selectBucket,
         selectMeasurement,
-
+        cancelKey: handleCancelKey,
+        cancelValue: handleCancelValue,
         add,
         remove,
         update: updater,

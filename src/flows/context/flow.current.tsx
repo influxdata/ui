@@ -11,11 +11,9 @@ import {
   deleteNotebook,
   getNotebook,
   postNotebook,
-  postNotebooksClone,
 } from 'src/client/notebooksRoutes'
 import {event} from 'src/cloud/utils/reporting'
-import {incrementCloneName} from 'src/utils/naming'
-import {getAllAPI, pooledUpdateAPI} from 'src/flows/context/api'
+import {pooledUpdateAPI} from 'src/flows/context/api'
 import {useDispatch} from 'react-redux'
 import {notify} from 'src/shared/actions/notifications'
 import {
@@ -25,7 +23,7 @@ import {
 import PageSpinner from 'src/perf/components/PageSpinner'
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
 import {RemoteDataState} from '@influxdata/clockface'
-import {CLOUD} from 'src/shared/constants'
+import {setCloneName} from 'src/utils/naming'
 
 const prettyid = customAlphabet('abcdefghijklmnop0123456789', 12)
 
@@ -90,36 +88,19 @@ export const FlowProvider: FC = ({children}) => {
 
   const handleCloneNotebook = useCallback(async () => {
     try {
-      if (CLOUD) {
-        const response = await postNotebooksClone({
-          id: currentFlow.id,
-          data: {
-            orgID,
-          },
-        })
+      const _flow = serialize({
+        ...currentFlow,
+        name: setCloneName(currentFlow.name),
+      })
+      delete _flow.data.id
 
-        if (response.status !== 200) {
-          throw new Error(response.data.message)
-        }
+      const response = await postNotebook(_flow)
 
-        return response.data.id
-      } else {
-        const {flows} = await getAllAPI(orgID)
-
-        const allFlowNames = Object.values(flows).map(value => value.name)
-        const clonedName = incrementCloneName(allFlowNames, currentFlow.name)
-
-        const _flow = serialize({...currentFlow, name: clonedName})
-        delete _flow.data.id
-
-        const response = await postNotebook(_flow)
-
-        if (response.status !== 200) {
-          throw new Error(response.data.message)
-        }
-
-        return response.data.id
+      if (response.status !== 200) {
+        throw new Error(response.data.message)
       }
+
+      return response.data.id
     } catch (error) {
       console.error({error})
     }
@@ -291,7 +272,8 @@ export const FlowProvider: FC = ({children}) => {
     [currentFlow, update]
   )
 
-  const addPipe = (initial: PipeData, index?: number) => {
+  const addPipe = (initialTemplate: PipeData, index?: number) => {
+    const initial = JSON.parse(JSON.stringify(initialTemplate))
     const id = prettyid()
     const title =
       initial.title ||

@@ -1,32 +1,21 @@
-export const incrementCloneName = (
-  namesList: string[],
-  cloneName: string
-): string => {
-  const root = cloneName.replace(/\s\(clone\s(\d)+\)/g, '').replace(/\)/, '')
-
-  const filteredNames = namesList.filter(n => n.includes(root))
-
-  const highestNumberedClone = filteredNames.reduce((acc, name) => {
-    if (name.match(/\(clone(\s|\d)+\)/)) {
-      const strippedName = name
-        .replace(root, '')
-        .replace(/\(clone/, '')
-        .replace(/\)/, '')
-
-      const cloneNumber = Number(strippedName)
-
-      return cloneNumber >= acc ? cloneNumber : acc
-    }
-
-    return acc
-  }, 0)
-
-  if (highestNumberedClone) {
-    const newCloneNumber = highestNumberedClone + 1
-    return `${cloneName
-      .replace(/\(clone\s(\d)+\)/, '')
-      .trim()} (clone ${newCloneNumber})`
+function prependZero(number) {
+  if (number < 10) {
+    return `0${number}`
   }
+  return number
+}
 
-  return `${cloneName.trim()} (clone 1)`
+// The date parameter here is to help with testing so that we can easily mock a date
+// without having to worry about the overhead of testing time
+export const setCloneName = (name: string, date?: Date): string => {
+  const d = date ? date : new Date()
+  const year = d.getUTCFullYear()
+  const month = d.getUTCMonth() + 1
+  const day = d.getUTCDate()
+  const hour = d.getUTCHours()
+  const minutes = d.getUTCMinutes()
+  const seconds = d.getUTCSeconds()
+  return `${name.trim()} (cloned at ${year}-${prependZero(month)}-${prependZero(
+    day
+  )} ${prependZero(hour)}:${prependZero(minutes)}:${prependZero(seconds)})`
 }

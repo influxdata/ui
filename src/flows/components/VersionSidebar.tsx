@@ -31,13 +31,13 @@ import {
   postNotebook,
   VersionHistory,
 } from 'src/client/notebooksRoutes'
-import {getAllAPI} from 'src/flows/context/api'
-import {incrementCloneName} from 'src/utils/naming'
+import {setCloneName} from 'src/utils/naming'
 import {serialize} from 'src/flows/context/flow.list'
 
 // Constants
 import './Sidebar.scss'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {QueryContext} from 'src/shared/contexts/query'
 
 interface Props {
   version: VersionHistory
@@ -49,8 +49,12 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
   const {id} = useParams<{id: string}>()
   const {flow} = useContext(FlowContext)
   const {id: orgID} = useSelector(getOrg)
+  const {cancel} = useContext(QueryContext)
 
   const handleClick = () => {
+    cancel()
+
+    event('click version history')
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
         flow.id
@@ -79,12 +83,10 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
   const handleClone = async () => {
     event('clone_notebook_version')
     try {
-      const {flows} = await getAllAPI(orgID)
-
-      const allFlowNames = Object.values(flows).map(value => value.name)
-      const clonedName = incrementCloneName(allFlowNames, flow.name)
-
-      const _flow = serialize({...flow, name: clonedName})
+      const _flow = serialize({
+        ...flow,
+        name: setCloneName(flow.name),
+      })
       delete _flow.data.id
 
       const response = await postNotebook(_flow)
@@ -169,8 +171,11 @@ export const VersionSidebar: FC = () => {
   const {flow} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
+  const {cancel} = useContext(QueryContext)
 
   const handleClose = () => {
+    cancel()
+
     event('close version history')
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${flow.id}`

@@ -24,6 +24,7 @@ import {
   extractRateLimitStatus,
 } from 'src/cloud/utils/limits'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -89,10 +90,15 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
         )
       }
     }
-  }, [showUpgrade, status])
+  }, [showUpgrade, status]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const rateLimitAlertClass = classnames('rate-alert', {
     [`${className}`]: className,
   })
+
+  const icon = isFlagEnabled('credit250Experiment')
+    ? IconFont.Stop
+    : IconFont.Cloud
 
   if (CLOUD && status === 'exceeded' && resources.includes('cardinality')) {
     return (
@@ -105,7 +111,7 @@ const RateLimitAlert: FC<Props> = ({alertOnly, className, location}) => {
         <BannerPanel
           size={ComponentSize.ExtraSmall}
           gradient={Gradients.PolarExpress}
-          icon={IconFont.Cloud}
+          icon={icon}
           hideMobileIcon={true}
           textColor={InfluxColors.Yeti}
         >

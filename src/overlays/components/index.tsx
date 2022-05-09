@@ -155,3 +155,11 @@ export const FreeAccountSupportOverlay = RouteOverlay(
     history.push(`/orgs/${params.orgID}/support`)
   }
 )
+
+export const FeedbackQuestionsOverlay = RouteOverlay(
+  OverlayHandler,
+  'feedback-questions',
+  (history, params) => {
+    history.push(`/orgs/${params.orgID}/support`)
+  }
+)

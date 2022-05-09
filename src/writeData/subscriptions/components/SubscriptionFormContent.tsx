@@ -11,6 +11,7 @@ import {
   Heading,
   HeadingElement,
   FontWeight,
+  ComponentStatus,
 } from '@influxdata/clockface'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 
@@ -43,7 +44,7 @@ const SubscriptionFormContent: FC<Props> = ({
         <Form.ValidationElement
           label="Topic"
           value={currentSubscription.topic}
-          helpText="Subscribe to a topic to start recieving messages."
+          helpText="Subscribe to a topic to start receiving messages."
           required={true}
           validationFunc={() =>
             handleValidation('Topic', currentSubscription.topic)
@@ -69,7 +70,7 @@ const SubscriptionFormContent: FC<Props> = ({
                   {feature: 'subscriptions'}
                 )
               }
-              status={status}
+              status={edit ? status : ComponentStatus.Disabled}
               maxLength={56}
               testID={`${className}-subscription-form--topic`}
             />

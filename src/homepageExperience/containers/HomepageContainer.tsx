@@ -6,7 +6,6 @@ import {
   AlignItems,
   Columns,
   ComponentSize,
-  DapperScrollbars,
   FlexBox,
   FlexDirection,
   Grid,
@@ -17,6 +16,7 @@ import {
   InfluxColors,
   Page,
   ResourceCard,
+  SquareGrid,
 } from '@influxdata/clockface'
 
 import {pageTitleSuffixer} from 'src/shared/utils/pageTitles'
@@ -36,19 +36,22 @@ import {event} from 'src/cloud/utils/reporting'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import UsageProvider from 'src/usage/context/usage'
 import Resources from 'src/me/components/Resources'
+import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 export const HomepageContainer: FC = () => {
   const org = useSelector(getOrg)
   const pythonWizardLink = `/orgs/${org.id}/new-user-wizard/python`
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
-  const javaScriptNodeLink = `/orgs/${org.id}/new-user-wizard/nodejs`
   const golangLink = `/orgs/${org.id}/new-user-wizard/go`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
+  const javaScriptNodeLink = `/orgs/${org.id}/new-user-wizard/nodejs`
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
   const moreStyle = {height: '100%', ...linkStyle}
+
+  const squareGridCardSize = '200px'
 
   // events handling
   const logPythonEvent = () => {
@@ -58,6 +61,16 @@ export const HomepageContainer: FC = () => {
   return (
     <>
       <Page titleTag={pageTitleSuffixer(['Get Started'])}>
+        <Page.Header fullWidth={false}>
+          <Heading
+            id="first-mile--header"
+            element={HeadingElement.H1}
+            testID="home-page--header"
+          >
+            Get Started
+          </Heading>
+          <RateLimitAlert location="firstMile.homepage" />
+        </Page.Header>
         <Page.Contents scrollable={true} fullWidth={false}>
           <Grid>
             <Grid.Row>
@@ -66,68 +79,57 @@ export const HomepageContainer: FC = () => {
                   direction={FlexDirection.Column}
                   alignItems={AlignItems.Stretch}
                 >
-                  <Heading
-                    id="first-mile--header"
-                    element={HeadingElement.H1}
-                    testID="home-page--header"
-                  >
-                    Get Started
-                  </Heading>
                   <h5>
                     Write and query data using the programming language of your
                     choice
                   </h5>
-                  <DapperScrollbars autoSizeHeight={true} autoHide={true}>
-                    <FlexBox
-                      margin={ComponentSize.Large}
-                      alignItems={AlignItems.Stretch}
-                      stretchToFitWidth={false}
-                      testID="language-tiles--scrollbox"
-                    >
-                      <ResourceCard style={cardStyle}>
-                        <Link
-                          to={pythonWizardLink}
-                          style={linkStyle}
-                          onClick={logPythonEvent}
+                  <SquareGrid
+                    cardSize={squareGridCardSize}
+                    gutter={ComponentSize.Large}
+                  >
+                    <ResourceCard style={cardStyle}>
+                      <Link
+                        to={pythonWizardLink}
+                        style={linkStyle}
+                        onClick={logPythonEvent}
+                      >
+                        <div
+                          className="homepage-wizard-language-tile"
+                          data-testid="homepage-wizard-language-tile--python"
                         >
-                          <div
-                            className="homepage-wizard-language-tile"
-                            data-testid="homepage-wizard-language-tile--python"
-                          >
-                            <h5>Python</h5>
-                            {PythonIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                      <ResourceCard style={cardStyle}>
-                        <Link to={javaScriptNodeLink} style={linkStyle}>
-                          <div className="homepage-wizard-language-tile">
-                            <h5>JavaScript/Node.js</h5>
-                            {NodejsIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                      <ResourceCard style={cardStyle}>
-                        <Link to={golangLink} style={linkStyle}>
-                          <div className="homepage-wizard-language-tile">
-                            <h5>Go</h5>
-                            {GoIcon}
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                      <ResourceCard style={cardStyle}>
-                        <Link to={loadDataSourcesLink} style={moreStyle}>
-                          <div className="homepage-wizard-language-tile">
-                            <span>
-                              <h5>
-                                MORE <Icon glyph={IconFont.ArrowRight_New} />
-                              </h5>
-                            </span>
-                          </div>
-                        </Link>
-                      </ResourceCard>
-                    </FlexBox>
-                  </DapperScrollbars>
+                          <h5>Python</h5>
+                          {PythonIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                    <ResourceCard style={cardStyle}>
+                      <Link to={javaScriptNodeLink} style={linkStyle}>
+                        <div className="homepage-wizard-language-tile">
+                          <h5>JavaScript/Node.js</h5>
+                          {NodejsIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                    <ResourceCard style={cardStyle}>
+                      <Link to={golangLink} style={linkStyle}>
+                        <div className="homepage-wizard-language-tile">
+                          <h5>Go</h5>
+                          {GoIcon}
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                    <ResourceCard style={cardStyle}>
+                      <Link to={loadDataSourcesLink} style={moreStyle}>
+                        <div className="homepage-wizard-language-tile">
+                          <span>
+                            <h5>
+                              MORE <Icon glyph={IconFont.ArrowRight_New} />
+                            </h5>
+                          </span>
+                        </div>
+                      </Link>
+                    </ResourceCard>
+                  </SquareGrid>
                   <hr style={{marginTop: '32px'}} />
                   <Link to={cliPageLink} style={linkStyle}>
                     <div className="homepage-write-data-tile">
@@ -172,14 +174,14 @@ export const HomepageContainer: FC = () => {
               <Grid.Column
                 widthSM={Columns.Four}
                 widthMD={Columns.Three}
-                style={{marginTop: '40px'}}
+                style={{marginTop: '-8px'}}
               >
                 {isFlagEnabled('uiUnificationFlag') ? (
                   <UsageProvider>
-                    <Resources />
+                    <Resources style={{backgroundColor: InfluxColors.Grey5}} />
                   </UsageProvider>
                 ) : (
-                  <Resources />
+                  <Resources style={{backgroundColor: InfluxColors.Grey5}} />
                 )}
               </Grid.Column>
             </Grid.Row>

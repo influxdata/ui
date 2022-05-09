@@ -1,5 +1,5 @@
 import View from './view'
-import {parse} from '@influxdata/flux-lsp-browser'
+import {parse, format_from_js_file} from '@influxdata/flux-lsp-browser'
 import {parseQuery} from 'src/shared/contexts/query'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
@@ -24,14 +24,34 @@ export default register => {
         const ast = isFlagEnabled('fastFlows')
           ? parseQuery(query)
           : parse(query)
-        if (!ast.body.length) {
+        const expressions = ast.body.filter(
+          p => p.type === 'ExpressionStatement'
+        )
+
+        if (!expressions.length) {
           return ''
         }
-      } catch {
+
+        expressions.forEach(e => {
+          let _ast
+          if (e.expression?.call?.callee?.name !== 'yield') {
+            _ast = parse(`${e.location.source} |> limit(n: 100)`)
+            e.expression = _ast.body[0].expression
+            e.location = _ast.body[0].location
+            return
+          }
+
+          _ast = parse(
+            `${e.expression.argument.location.source} |> limit(n: 100) |> ${e.expression.call.location.source}`
+          )
+          e.expression = _ast.body[0].expression
+          e.location = _ast.body[0].location
+        })
+        return format_from_js_file(ast)
+      } catch (e) {
+        console.error(e)
         return ''
       }
-
-      return `${query} |> limit(n: 100)`
     },
   })
 }

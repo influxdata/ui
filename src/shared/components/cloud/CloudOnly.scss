@@ -18,6 +18,14 @@
   }
 }
 
+.flex-upgrade-content.rate-alert--content__free {
+  margin: $cf-marg-a;
+}
+
+.upgrade-message {
+  padding: $cf-marg-b;
+}
+
 .cf-page--title {
   flex-shrink: 0;
 }
@@ -81,6 +89,18 @@ a.upgrade-payg--button {
   background-size: contain;
   background-repeat: no-repeat;
   background-image: url('~assets/images/dashboard-empty--dark.svg');
+}
+
+button.upgrade-payg--button {
+  background: linear-gradient(
+    45deg,
+    rgb(52, 187, 85) 0%,
+    rgb(0, 163, 255) 100%
+  );
+}
+
+.credit-250-experiment-upgrade-button--text {
+  margin: $cf-marg-c;
 }
 
 @media screen and (min-width: $cf-nav-menu--breakpoint) {

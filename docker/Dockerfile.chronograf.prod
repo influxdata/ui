@@ -1,5 +1,5 @@
-# from node lts alpine 3.12
-FROM node:lts-alpine3.12 AS repo
+# from node lts alpine
+FROM node:lts-alpine AS repo
 
 # env vars to configure the system
 
@@ -40,6 +40,8 @@ ARG GLOBALSEARCH_API_KEY
 ARG GLOBALSEARCH_APP_ID
 # Google Experiment ID for PAYG $250 Credit
 ARG PAYG_CREDIT_EXPERIMENT_ID
+# Google Experiment ID for Get $250 Credit
+ARG CREDIT_250_EXPERIMENT_ID
 
 COPY . /repo/ui
 WORKDIR /repo/ui

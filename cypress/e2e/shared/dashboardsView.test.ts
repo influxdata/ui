@@ -520,7 +520,7 @@ describe('Dashboard', () => {
       cy.getByTestID('toolbar-tab').click()
       const query1 = `from(bucket: "schmucket")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r["container_name"] == "cool")`
+|> filter(fn: (r) => r["container_name"] == "cool")`
       cy.getByTestID('flux-editor').monacoType(`{selectall}{del}${query1}`)
       cy.getByTestID('overlay').within(() => {
         cy.getByTestID('page-title').click()
@@ -536,6 +536,7 @@ describe('Dashboard', () => {
     })
 
     it('clones a cell to another dashboard and displays it there', () => {
+      const cloneNamePrefix = `cell blah (cloned at `
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
       cy.intercept('PATCH', '/api/v2/dashboards/*/cells/*/view').as('setView')
@@ -544,10 +545,11 @@ describe('Dashboard', () => {
       cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
       cy.getByTestID('tree-nav')
-      cy.getByTestID('cell blah (clone 1)').should('be.visible')
+      cy.getByTestIDHead(cloneNamePrefix).should('be.visible')
     })
 
     it('moves a cell to another dashboard and removes it from the current one', () => {
+      const cloneNamePrefix = `cell blah (cloned at `
       cy.getByTestID('clone-to-other-dashboard').click()
       cy.getByTestID(`other-dashboard-${otherBoardID}`).click()
       cy.getByTestID('cell-clone-move-cell').click()
@@ -556,7 +558,7 @@ describe('Dashboard', () => {
       cy.wait('@setView')
       cy.visit(`${allOrgs}/${orgId}/dashboards/${otherBoardID}`)
       cy.getByTestID('tree-nav')
-      cy.getByTestID('cell blah (clone 1)').should('be.visible')
+      cy.getByTestIDHead(cloneNamePrefix).should('be.visible')
       cy.go('back')
       cy.getByTestID('tree-nav')
       cy.getByTestID('empty-state--text').should('be.visible')

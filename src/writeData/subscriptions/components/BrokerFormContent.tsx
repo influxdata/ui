@@ -37,9 +37,15 @@ interface Props {
   formContent: Subscription
   updateForm: (any) => void
   className: string
+  edit: boolean
 }
 
-const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
+const BrokerFormContent: FC<Props> = ({
+  updateForm,
+  formContent,
+  className,
+  edit,
+}) => {
   const mqttProtocol = 'MQTT'
   const protocolList = [mqttProtocol]
   const [protocol, setProtocol] = useState(mqttProtocol)
@@ -52,11 +58,11 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
       <Grid.Row>
         <Grid.Column widthSM={Columns.Twelve}>
           <Form.ValidationElement
-            label="Connection Name"
+            label="Subscription Name"
             value={formContent.name}
             required={true}
             validationFunc={() =>
-              handleValidation('Connection Name', formContent.name)
+              handleValidation('Subscription Name', formContent.name)
             }
             prevalidate={false}
           >
@@ -80,7 +86,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                     {feature: 'subscriptions'}
                   )
                 }
-                status={status}
+                status={edit ? status : ComponentStatus.Disabled}
                 testID={`${className}-broker-form--name`}
               />
             )}
@@ -107,6 +113,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                 )
               }
               testID={`${className}-broker-form--description`}
+              status={edit ? ComponentStatus.Default : ComponentStatus.Disabled}
             />
           </Form.Element>
         </Grid.Column>
@@ -125,7 +132,9 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                     active={active}
                     onClick={onClick}
                     testID={`${className}-broker-form--dropdown-button`}
-                    status={ComponentStatus.Default}
+                    status={
+                      edit ? ComponentStatus.Default : ComponentStatus.Disabled
+                    }
                   >
                     {protocol}
                   </Dropdown.Button>
@@ -160,7 +169,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
               />
             </div>
             <Form.ValidationElement
-              label="Host"
+              label="Hostname or IP Address"
               value={formContent.brokerHost}
               required={true}
               validationFunc={() =>
@@ -187,7 +196,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                       {feature: 'subscriptions'}
                     )
                   }
-                  status={status}
+                  status={edit ? status : ComponentStatus.Disabled}
                   testID={`${className}-broker-form--host`}
                 />
               )}
@@ -220,7 +229,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
                       {feature: 'subscriptions'}
                     )
                   }
-                  status={status}
+                  status={edit ? status : ComponentStatus.Disabled}
                   maxLength={5}
                   testID={`${className}-broker-form--port`}
                 />
@@ -265,7 +274,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
               }}
               value="none"
               titleText="None"
-              disabled={false}
+              disabled={!edit}
             >
               None
             </SelectGroup.Option>
@@ -284,7 +293,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
               }}
               value="user"
               titleText="User"
-              disabled={false}
+              disabled={!edit}
             >
               User
             </SelectGroup.Option>
@@ -310,6 +319,7 @@ const BrokerFormContent: FC<Props> = ({updateForm, formContent, className}) => {
               formContent={formContent}
               updateForm={updateForm}
               className={className}
+              edit={edit}
             />
           )}
         </Grid.Column>

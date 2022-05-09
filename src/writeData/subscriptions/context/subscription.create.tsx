@@ -31,7 +31,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     description: '',
     protocol: 'mqtt',
     brokerHost: '',
-    brokerPort: 0,
+    brokerPort: undefined,
     brokerUsername: '',
     brokerPassword: '',
     brokerCert: '',
@@ -39,7 +39,7 @@ export const DEFAULT_CONTEXT: SubscriptionCreateContextType = {
     topic: '',
     dataFormat: 'lineprotocol',
     jsonMeasurementKey: {
-      name: '',
+      name: 'measurement',
       path: '',
       type: 'string',
     },

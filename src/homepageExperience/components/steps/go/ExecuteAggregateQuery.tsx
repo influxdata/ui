@@ -24,11 +24,11 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> mean()`
 
   const query = `
-query := \`from(bucket: "${bucket}")
+query = \`from(bucket: "${bucket}")
               |> range(start: -10m)
               |> filter(fn: (r) => r._measurement == "measurement1")
               |> mean()\`
-results, err := queryAPI.Query(context.Background(), query)
+results, err = queryAPI.Query(context.Background(), query)
 if err != nil {
     log.Fatal(err)
 }
@@ -59,8 +59,9 @@ if err := results.Err(); err != nil {
         onCopy={logCopyCodeSnippet}
       />
       <p>
-        In this example, we use the mean() function to calculate the average of
-        data points in last 10 minutes.
+        In this example, we use the{' '}
+        <code className="homepage-wizard--code-highlight">mean()</code> function
+        to calculate the average value of data points in the last 10 minutes.
         <br />
         <br />
         Add the following to your <code>main</code> function:

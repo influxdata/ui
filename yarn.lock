@@ -1437,10 +1437,10 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@influxdata/clockface@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.6.0.tgz#02c3683c578ad3878a85918ddd1c1dc3f46e9923"
-  integrity sha512-LrjsHB+VxsDWEq41+vfrhcbcMhNSilWIR1QvF0RoOS7hEoem7yl5yLytxgKKTeibV4EwRfI0B+qsQ6I3KhXBIA==
+"@influxdata/clockface@^3.12.0":
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.12.0.tgz#707715f935e81c65e18f59409af48602fe731a9f"
+  integrity sha512-p2n0QkHeDINhK2ryt2YRuBbmE7LU5I9swyV/VH4m9s20gG3gQ+JubrPhCNWdC007Lw//0UnYtCJlA5qPAOJ5dw==
 
 "@influxdata/flux-lsp-browser@0.8.8":
   version "0.8.8"
@@ -2857,10 +2857,10 @@ async-limiter@~1.0.0:
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
 
-async@^2.5.0, async@^2.6.2:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.6.3.tgz#d72625e2344a3656e3a3ad4fa749fa83299d82ff"
-  integrity sha512-zflvls11DCy+dQWzTW2dzuilv8Z5X/pjfmZOWba6TNIVDm+2UDaJmXSOXlasHKfNBs8oo3M0aT50fDEWfKZjXg==
+async@^2.5.0, async@^2.6.2, async@^2.6.4:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.6.4.tgz#706b7ff6084664cd7eae713f6f965433b5504221"
+  integrity sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==
   dependencies:
     lodash "^4.17.14"
 
@@ -3491,6 +3491,11 @@ caniuse-lite@^1.0.30001317:
   version "1.0.30001323"
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001323.tgz#a451ff80dec7033016843f532efda18f02eec011"
   integrity sha512-e4BF2RlCVELKx8+RmklSEIVub1TWrmdhvA5kEUueummz1XyySW0DVk+3x9HyhU9MuWTa2BhqLgEuEmUwASAdCA==
+
+canvas-confetti@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/canvas-confetti/-/canvas-confetti-1.5.1.tgz#bf5b8622ef3bcd347378a972fc4194a89cfe0c9b"
+  integrity sha512-Ncz+oZJP6OvY7ti4E1slxVlyAV/3g7H7oQtcCDXgwGgARxPnwYY9PW5Oe+I8uvspYNtuHviAdgA0LfcKFWJfpg==
 
 canvg@^3.0.6:
   version "3.0.9"

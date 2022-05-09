@@ -17,6 +17,8 @@ import {
   pinnedItemSuccess,
 } from 'src/shared/copy/notifications'
 import {notify} from 'src/shared/actions/notifications'
+import {shouldOpenLinkInNewTab} from 'src/utils/crossPlatform'
+import {safeBlankLinkOpen} from 'src/utils/safeBlankLinkOpen'
 
 interface Props {
   id: string
@@ -31,12 +33,13 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
   const history = useHistory()
   const dispatch = useDispatch()
 
+  const flowUrl = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
+
   const handleClick = event => {
-    const url = `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${id}`
-    if (event.metaKey) {
-      window.open(url, '_blank', 'noopener')
+    if (shouldOpenLinkInNewTab(event)) {
+      safeBlankLinkOpen(flowUrl)
     } else {
-      history.push(url)
+      history.push(flowUrl)
     }
   }
 
@@ -94,6 +97,7 @@ const FlowCard: FC<Props> = ({id, isPinned}) => {
         onClick={handleClick}
         onUpdate={handleRenameNotebook}
         buttonTestID="flow-card--name-button"
+        href={flowUrl}
       />
       <ResourceCard.Meta>{meta}</ResourceCard.Meta>
     </ResourceCard>

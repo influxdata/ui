@@ -22,6 +22,7 @@ import (
 	"os"
 
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
+	"github.com/influxdata/influxdb-client-go/v2/api/write"
 )
 
 func main() {
@@ -39,9 +40,11 @@ func main() {
       </p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '42px'}}>
-        Here, we initialize the token, organization info, and server url that is
-        needed to set up the initial connection to InfluxDB. The client
-        connection is then established with InfluxDBClient initialization.
+        Here, we initialize the token, organization info, and server url that
+        are needed to set up the initial connection to InfluxDB. The client
+        connection is then established with the{' '}
+        <code className="homepage-wizard--code-highlight">influxdb2</code>{' '}
+        initialization.
       </p>
     </>
   )

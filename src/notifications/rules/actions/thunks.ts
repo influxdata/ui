@@ -31,8 +31,8 @@ import {setLabelOnResource} from 'src/labels/actions/creators'
 // Utils
 import {draftRuleToPostRule} from 'src/notifications/rules/utils'
 import {getOrg} from 'src/organizations/selectors'
-import {getAll, getStatus} from 'src/resources/selectors'
-import {incrementCloneName} from 'src/utils/naming'
+import {getStatus} from 'src/resources/selectors'
+import {setCloneName} from 'src/utils/naming'
 
 // Types
 import {
@@ -263,24 +263,16 @@ export const deleteRuleLabel = (ruleID: string, labelID: string) => async (
 export const cloneRule = (draftRule: NotificationRuleDraft) => async (
   dispatch: Dispatch<
     Action | NotificationAction | ReturnType<typeof checkRulesLimits>
-  >,
-  getState: GetState
+  >
 ): Promise<void> => {
   try {
-    const state = getState()
-    const rules = getAll<NotificationRule>(
-      state,
-      ResourceType.NotificationRules
-    )
-
     const rule = draftRuleToPostRule(draftRule)
 
-    const allRuleNames = rules.map(r => r.name)
-
-    const clonedName = incrementCloneName(allRuleNames, rule.name)
-
     const resp = await api.postNotificationRule({
-      data: {...rule, name: clonedName},
+      data: {
+        ...rule,
+        name: setCloneName(rule.name),
+      },
     })
 
     if (resp.status !== 201) {

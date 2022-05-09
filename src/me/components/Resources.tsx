@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, memo, useContext} from 'react'
+import React, {CSSProperties, FC, memo, useContext} from 'react'
 import {
   Panel,
   FlexBox,
@@ -17,7 +17,11 @@ import UsagePanel from 'src/me/components/UsagePanel'
 import DocSearchWidget from 'src/me/components/DocSearchWidget'
 import VersionInfo from 'src/shared/components/VersionInfo'
 
-const ResourceLists: FC = () => {
+type OwnProps = {
+  style?: CSSProperties
+}
+
+const ResourceLists: FC<OwnProps> = (props: OwnProps) => {
   const {paygCreditEnabled} = useContext(UsageContext)
 
   return (
@@ -28,7 +32,7 @@ const ResourceLists: FC = () => {
       margin={ComponentSize.Small}
     >
       <Panel testID="documentation--panel">
-        <Panel.Body>
+        <Panel.Body style={props.style}>
           <DocSearchWidget />
         </Panel.Body>
       </Panel>
@@ -36,7 +40,7 @@ const ResourceLists: FC = () => {
         <UsagePanel />
       )}
       <Panel>
-        <Panel.Footer>
+        <Panel.Footer style={props.style}>
           <VersionInfo />
         </Panel.Footer>
       </Panel>

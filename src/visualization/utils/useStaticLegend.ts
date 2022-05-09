@@ -1,6 +1,6 @@
 // Libraries
 import {useMemo, useContext, useCallback} from 'react'
-import {useDispatch, useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 
 // Context
 import {PipeContext} from 'src/flows/context/pipe'
@@ -12,15 +12,10 @@ import {setStaticLegend} from 'src/timeMachine/actions'
 import {StaticLegend as StaticLegendConfig} from '@influxdata/giraffe'
 import {StaticLegend as StaticLegendAPI} from 'src/types'
 
-// Utils
-import {getActiveTimeMachine} from 'src/timeMachine/selectors'
-
 // Constants
 import {
   LEGEND_COLORIZE_ROWS_DEFAULT,
   LEGEND_OPACITY_DEFAULT,
-  LEGEND_OPACITY_MINIMUM,
-  LEGEND_OPACITY_MAXIMUM,
   LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
   LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL,
   LEGEND_ORIENTATION_THRESHOLD_VERTICAL,
@@ -71,7 +66,6 @@ const eventPrefix = 'visualization.customize.staticlegend'
 export const useStaticLegend = (properties): StaticLegendConfig => {
   const {id, data, update} = useContext(PipeContext)
 
-  const {isViewingVisOptions} = useSelector(getActiveTimeMachine)
   const dispatch = useDispatch()
   const timeMachineUpdate = useCallback(
     (staticLegend: StaticLegendAPI) => {
@@ -102,8 +96,6 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
 
   return useMemo(() => {
     const {
-      legendColorizeRows = LEGEND_COLORIZE_ROWS_DEFAULT,
-      legendOpacity = LEGEND_OPACITY_DEFAULT,
       legendOrientationThreshold = LEGEND_ORIENTATION_THRESHOLD_DEFAULT,
     } = properties
 
@@ -119,46 +111,13 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
     } = properties
 
     const {
-      colorizeRows = false, // undefined is false because of omitempty
+      colorizeRows = false,
       heightRatio = STATIC_LEGEND_HEIGHT_RATIO_NOT_SET,
       opacity = LEGEND_OPACITY_DEFAULT,
       orientationThreshold = legendOrientationThreshold,
       show = STATIC_LEGEND_SHOW_DEFAULT,
       ...config
     } = staticLegend
-
-    if (
-      isViewingVisOptions &&
-      !show &&
-      heightRatio === STATIC_LEGEND_HEIGHT_RATIO_NOT_SET
-    ) {
-      let validOpacity = LEGEND_OPACITY_DEFAULT
-      if (
-        typeof legendOpacity === 'number' &&
-        legendOpacity === legendOpacity &&
-        legendOpacity >= LEGEND_OPACITY_MINIMUM &&
-        legendOpacity <= LEGEND_OPACITY_MAXIMUM
-      ) {
-        validOpacity = legendOpacity
-      }
-
-      let validThreshold: number
-      if (
-        typeof legendOrientationThreshold !== 'number' ||
-        legendOrientationThreshold !== legendOrientationThreshold ||
-        legendOrientationThreshold > 0
-      ) {
-        validThreshold = LEGEND_ORIENTATION_THRESHOLD_HORIZONTAL
-      } else {
-        validThreshold = LEGEND_ORIENTATION_THRESHOLD_VERTICAL
-      }
-
-      updateStaticLegendProperties({
-        colorizeRows: legendColorizeRows,
-        opacity: validOpacity,
-        orientationThreshold: validThreshold,
-      })
-    }
 
     return {
       ...config,
@@ -226,5 +185,5 @@ export const useStaticLegend = (properties): StaticLegendConfig => {
         }
       },
     }
-  }, [properties, isViewingVisOptions, updateStaticLegendProperties])
+  }, [properties, updateStaticLegendProperties])
 }

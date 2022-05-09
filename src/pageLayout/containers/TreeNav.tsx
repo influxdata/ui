@@ -77,6 +77,10 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
     }
   }
 
+  const openFeedbackOverlay = (): void => {
+    showOverlay('feedback-questions', null, dismissOverlay)
+  }
+
   return (
     <OrgSettings>
       <TreeNav
@@ -198,7 +202,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
                 id="feedback"
                 label="Feedback & Questions"
                 testID="nav-subitem-feedback-questions"
-                linkElement={className => <Link className={className} to="" />}
+                onClick={openFeedbackOverlay}
               />
             </TreeNav.SubMenu>
           </TreeNav.Item>

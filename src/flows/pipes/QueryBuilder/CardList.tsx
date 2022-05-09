@@ -59,6 +59,8 @@ const Card: FC<Props> = ({idx}) => {
     cards,
     selectMeasurement,
     add,
+    cancelKey,
+    cancelValue,
     update,
     remove,
     loadKeys,
@@ -131,8 +133,7 @@ const Card: FC<Props> = ({idx}) => {
     card.values.selected.length <= 1
 
   const valueSelect = val => {
-    const _vals = [...card.values.selected]
-    const index = _vals.indexOf(val)
+    const index = card.values.selected.indexOf(val)
 
     if (isCompliant) {
       if (index === -1) {
@@ -148,20 +149,19 @@ const Card: FC<Props> = ({idx}) => {
 
     if (index === -1) {
       event('Query Builder Value Selected')
-      _vals.push(val)
+      card.values.selected.push(val)
     } else {
       event('Query Builder Value Unselected')
-      _vals.splice(index, 1)
+      card.values.selected.splice(index, 1)
     }
 
-    update(idx, {
-      values: {
-        ...card.values,
-        selected: _vals,
-      },
-    })
+    update(idx, card)
 
-    if (index === -1 && _vals.length === 1 && idx === cards.length - 1) {
+    if (
+      index === -1 &&
+      card.values.selected.length === 1 &&
+      idx === cards.length - 1
+    ) {
       add()
     } else {
       for (let ni = idx + 1; ni < cards.length; ni++) {
@@ -171,17 +171,38 @@ const Card: FC<Props> = ({idx}) => {
   }
 
   useEffect(() => {
+    let promise
     if (data.buckets[0] && card.keys.loading === RemoteDataState.NotStarted) {
-      loadKeys(idx)
+      promise = loadKeys(idx)
+      if (promise instanceof Promise) {
+        promise.finally(() => {
+          promise = null
+        })
+      }
+    }
+
+    return () => {
+      cancelKey(idx)
     }
   }, [data.buckets, card.keys.loading])
 
   useEffect(() => {
+    let promise
     if (
       card.keys.loading === RemoteDataState.Done &&
       card.values.loading !== RemoteDataState.Done
     ) {
-      loadValues(idx)
+      promise = loadValues(idx)
+
+      if (promise instanceof Promise) {
+        promise.finally(() => {
+          promise = null
+        })
+      }
+    }
+
+    return () => {
+      cancelValue(idx)
     }
   }, [card.keys.loading, card.values.loading])
 

@@ -1,19 +1,23 @@
 import React, {FC, useContext} from 'react'
 import {
-  AppWrapper,
   AlignItems,
+  AppWrapper,
+  BannerPanel,
   Bullet,
   ButtonType,
+  CTAButton,
   ComponentColor,
   ComponentSize,
   ComponentStatus,
-  CTAButton,
   FlexBox,
   Form,
   FunnelPage,
   Gradients,
   Heading,
   HeadingElement,
+  Icon,
+  IconFont,
+  InfluxColors,
   JustifyContent,
   Panel,
 } from '@influxdata/clockface'
@@ -35,9 +39,13 @@ import {CheckoutContext} from 'src/checkout/context/checkout'
 import {event} from 'src/cloud/utils/reporting'
 
 // Constants
-import {PAYG_CREDIT_EXPERIMENT_ID} from 'src/shared/constants'
+import {
+  CREDIT_250_EXPERIMENT_ID,
+  PAYG_CREDIT_EXPERIMENT_ID,
+} from 'src/shared/constants'
 
 // Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 const CheckoutForm: FC = () => {
   const {
@@ -74,6 +82,30 @@ const CheckoutForm: FC = () => {
           >
             Upgrade to Usage-Based Account
           </h1>
+          {isFlagEnabled('credit250Experiment') && (
+            <GoogleOptimizeExperiment
+              experimentID={CREDIT_250_EXPERIMENT_ID}
+              variants={[
+                <BannerPanel
+                  key="credit-250-banner"
+                  gradient={Gradients.Info}
+                  size={ComponentSize.Small}
+                  textColor={InfluxColors.White}
+                >
+                  <span className="checkout-credit-250--banner">
+                    <Icon
+                      className="checkout-credit-250--banner-icon"
+                      glyph={IconFont.Star}
+                    />
+                    <span className="checkout-credit-250--banner-message">
+                      Get free $250 credit for the first 30 days once you
+                      upgrade
+                    </span>
+                  </span>
+                </BannerPanel>,
+              ]}
+            />
+          )}
           <Panel
             gradient={Gradients.BeijingEclipse}
             className="checkout--panel"

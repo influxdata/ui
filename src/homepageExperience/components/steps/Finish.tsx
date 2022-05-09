@@ -3,71 +3,138 @@ import {
   AlignItems,
   ComponentSize,
   FlexBox,
-  Icon,
-  IconFont,
   ResourceCard,
 } from '@influxdata/clockface'
 
+import confetti from 'canvas-confetti'
+
 import {
-  InfluxDBUniversityIcon,
-  VSCodePluginIcon,
+  BookIcon,
+  CodeTerminalIcon,
 } from 'src/homepageExperience/components/HomepageIcons'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
 import {event} from 'src/cloud/utils/reporting'
+import FeedbackBar from 'src/homepageExperience/components/FeedbackBar'
 
 type OwnProps = {
   wizardEventName: string
+  markStepAsCompleted: () => void
+  finishStepCompleted: boolean
+  finalFeedback: number
+  setFinalFeedback: (feedbackValue: number) => void
+}
+
+const fireConfetti = () => {
+  const count = 200
+  const defaults = {
+    origin: {y: 0.7},
+  }
+
+  const fire = (particleRatio, options) => {
+    confetti({
+      ...defaults,
+      ...options,
+      particleCount: Math.floor(count * particleRatio),
+    })
+  }
+
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+  })
+  fire(0.2, {
+    spread: 60,
+  })
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+  })
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2,
+  })
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+  })
+}
+
+const handleNextStepEvent = (wizardEventName: string, nextStepName: string) => {
+  event(`firstMile.${wizardEventName}.nextSteps.${nextStepName}.clicked`)
 }
 
 export const Finish = (props: OwnProps) => {
   useEffect(() => {
-    event(`firstMile.${props.wizardEventName}.finished`)
+    // if the finish step was opened during the session,
+    // this check prevents from multiple logging of finish events
+    // in case user navigates back and forth
+    if (!props.finishStepCompleted) {
+      event(`firstMile.${props.wizardEventName}.finished`)
+      props.markStepAsCompleted()
+      fireConfetti()
+    }
   }, [])
+
+  const showSampleApp = props.wizardEventName === 'pythonWizard'
   return (
     <>
       <h1>Congrats!</h1>
       <p>You completed setting up, writing, and querying data.</p>
-      <p>Curious to learn more? Try these next steps!</p>
+      <FeedbackBar
+        wizardEventName={props.wizardEventName}
+        selectedFeedback={props.finalFeedback}
+        onFeedbackSelection={props.setFinalFeedback}
+      />
+      <p style={{marginTop: '80px'}}>
+        Curious to learn more? Try these next steps!
+      </p>
       <FlexBox margin={ComponentSize.Medium} alignItems={AlignItems.Stretch}>
-        <ResourceCard className="homepage-wizard-next-steps">
+        {showSampleApp && (
+          <ResourceCard
+            className="homepage-wizard-next-steps"
+            onClick={() =>
+              handleNextStepEvent(props.wizardEventName, 'sampleApp')
+            }
+          >
+            <SafeBlankLink href="https://github.com/InfluxCommunity/sample-flask/blob/main/app.py">
+              <h4>{CodeTerminalIcon}Sample App</h4>
+            </SafeBlankLink>
+            <p>
+              Play around with our template code of sample app to streamline
+              your own data into InfluxData.
+            </p>
+          </ResourceCard>
+        )}
+        <ResourceCard
+          className="homepage-wizard-next-steps"
+          onClick={() =>
+            handleNextStepEvent(props.wizardEventName, 'keyConcepts')
+          }
+        >
+          <SafeBlankLink href="https://docs.influxdata.com/influxdb/v2.2/reference/key-concepts/">
+            <h4>{BookIcon}Key Concepts</h4>
+          </SafeBlankLink>
+          <p>Learn about important concepts for writing time-series data.</p>
+        </ResourceCard>
+        <ResourceCard
+          className="homepage-wizard-next-steps"
+          onClick={() =>
+            handleNextStepEvent(props.wizardEventName, 'influxUniversity')
+          }
+        >
           <SafeBlankLink href="https://influxdbu.com/">
-            <h4>{InfluxDBUniversityIcon}InfluxDB University</h4>
+            <h4>{CodeTerminalIcon}InfluxDB University</h4>
           </SafeBlankLink>
           <p>
             Our free hands-on courses teach you the technical skills and best
-            practices to get the most out of your real-time data with InfluxDB."
+            practices to get the most out of your real-time data with InfluxDB.
           </p>
         </ResourceCard>
-        <ResourceCard className="homepage-wizard-next-steps">
-          <SafeBlankLink href="https://docs.influxdata.com/influxdb/cloud/tools/flux-vscode">
-            <h4>{VSCodePluginIcon}Install VSCode Plugin</h4>
-          </SafeBlankLink>
-          <p>Streamline your workflow even further with our VSCode plugin!</p>
-        </ResourceCard>
-        <ResourceCard className="homepage-wizard-next-steps">
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              height: '100%',
-              textTransform: 'uppercase',
-            }}
-          >
-            <h5>
-              More Options{' '}
-              <Icon
-                glyph={IconFont.ArrowRight_New}
-                style={{marginLeft: '9px'}}
-              />
-            </h5>
-          </div>
-        </ResourceCard>
       </FlexBox>
-
-      <p style={{marginTop: '150px'}}>
-        What did you think about the set up process? Give us feedback to improve
-      </p>
     </>
   )
 }

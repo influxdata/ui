@@ -1030,6 +1030,7 @@ describe('NotificationRules', () => {
 
     it('can clone, modify and delete a notification rule', () => {
       cy.log('clone rule')
+      const cloneNamePrefix = `${rule2Clone.name} (cloned at `
       cy.getByTestID(`rule-card ${rule2Clone.name}`).within(() => {
         cy.getByTestID('context-menu-task').click()
       })
@@ -1047,7 +1048,7 @@ describe('NotificationRules', () => {
       })
 
       cy.log('=== verify basic identifying parameters')
-      cy.getByTestID(`rule-card ${rule2Clone.name} (clone 1)`).within(() => {
+      cy.getByTestIDHead(`rule-card ${cloneNamePrefix}`).within(() => {
         cy.getByTestID('copy-resource-id').then(elem => {
           cy.wrap(
             elem
@@ -1071,10 +1072,17 @@ describe('NotificationRules', () => {
       })
 
       cy.log('=== verify then change cloned values')
-      cy.getByTestID('rule-name--input').should(
-        'have.value',
-        `${rule2Clone.name} (clone 1)`
-      )
+      cy.getByTestID('rule-name--input')
+        .invoke('val')
+        .then(cloneName => {
+          const cloneTime = cloneName.slice(
+            cloneNamePrefix.length,
+            cloneName.length - 1
+          )
+          const cloneTimeAsDate = new Date(cloneTime)
+          expect(cloneTimeAsDate.toTimeString()).not.to.equal('Invalid Date')
+          expect(cloneTimeAsDate.valueOf()).to.equal(cloneTimeAsDate.valueOf())
+        })
 
       cy.getByTestID('rule-name--input')
         .clear()

@@ -314,17 +314,17 @@ const SetOrg: FC = () => {
             <>
               <Route
                 exact
-                path="/orgs/:orgID/new-user-wizard/python"
+                path="/orgs/:orgID/new-user-setup/python"
                 component={PythonWizard}
               />
               <Route
                 exact
-                path="/orgs/:orgID/new-user-wizard/nodejs"
+                path="/orgs/:orgID/new-user-setup/nodejs"
                 component={NodejsWizard}
               />
               <Route
                 exact
-                path="/orgs/:orgID/new-user-wizard/go"
+                path="/orgs/:orgID/new-user-setup/go"
                 component={GoWizard}
               />
             </>

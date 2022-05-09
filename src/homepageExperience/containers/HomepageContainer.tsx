@@ -43,7 +43,7 @@ export const HomepageContainer: FC = () => {
   const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
-  const golangLink = `/orgs/${org.id}/new-user-setup/go`
+  const golangLink = `/orgs/${org.id}/new-user-setup/golang`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
   const javaScriptNodeLink = `/orgs/${org.id}/new-user-setup/nodejs`
 

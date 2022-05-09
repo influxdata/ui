@@ -324,7 +324,7 @@ const SetOrg: FC = () => {
               />
               <Route
                 exact
-                path="/orgs/:orgID/new-user-setup/go"
+                path="/orgs/:orgID/new-user-setup/golang"
                 component={GoWizard}
               />
             </>

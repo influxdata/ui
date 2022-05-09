@@ -6,11 +6,11 @@ import {
   FunnelPage,
   Heading,
   HeadingElement,
-  InfluxDBCloudLogo,
   Typeface,
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
+import LogoWithCubo from 'src/onboarding/components/LogoWithCubo'
 
 // Types
 import {getMe} from 'src/client'
@@ -58,10 +58,7 @@ export const LoginPage: FC = () => {
     <ErrorBoundary>
       <AppWrapper>
         <Notifications />
-        <FunnelPage
-          enableGraphic={true}
-          logo={<InfluxDBCloudLogo cloud={true} className="login-page--logo" />}
-        >
+        <FunnelPage enableGraphic={true} logo={<LogoWithCubo />}>
           <Heading
             element={HeadingElement.H1}
             type={Typeface.Rubik}

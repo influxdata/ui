@@ -38,13 +38,22 @@ jest.mock('src/languageSupport/languages/flux/parser', () => ({
 }))
 
 class Worker {
+  public url = ''
+
   constructor(stringUrl) {
     this.url = stringUrl
-    this.onmessage = () => {}
   }
 
-  postMessage(msg) {
-    this.onmessage(msg)
+  onmessage(_) {}
+  onerror(_) {}
+
+  postMessage(_) {}
+
+  terminate() {}
+  addEventListener(_, __, ___) {}
+  removeEventListener(_, __, ___) {}
+  dispatchEvent(_): boolean {
+    return false
   }
 }
 

@@ -37,6 +37,19 @@ jest.mock('src/languageSupport/languages/flux/parser', () => ({
   format_from_js_file: jest.fn(),
 }))
 
+class Worker {
+  constructor(stringUrl) {
+    this.url = stringUrl;
+    this.onmessage = () => {};
+  }
+
+  postMessage(msg) {
+    this.onmessage(msg);
+  }
+}
+
+window.Worker = Worker
+
 // cleans up state between @testing-library/react tests
 afterEach(() => {
   window.localStorage.clear()

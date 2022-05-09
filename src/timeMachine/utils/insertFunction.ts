@@ -35,7 +35,11 @@ export const generateImport = (
     }
   }
 
-  if (!funcPackage || script.includes(importStatement)) {
+  if (
+    !funcPackage ||
+    funcPackage === 'universe' ||
+    script.includes(importStatement)
+  ) {
     return false
   }
 

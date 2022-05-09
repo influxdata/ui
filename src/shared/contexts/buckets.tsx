@@ -58,6 +58,7 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
   const [bucketCache, setBucketCache] = useLocalStorageState()
   const dispatch = useDispatch()
   const buckets = bucketCache[cacheKey]?.buckets ?? []
+  const lastFetch = bucketCache[cacheKey]?.lastFetch ?? 0
   const loading = bucketCache[cacheKey]?.loading ?? RemoteDataState.NotStarted
   const controller = useRef<AbortController>(null)
 
@@ -184,6 +185,7 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
         )
         updateCache({
           loading: RemoteDataState.Done,
+          lastFetch: Date.now(),
           buckets: [...bucks.user, ...bucks.system, ...bucks.sample],
         })
       })
@@ -197,12 +199,12 @@ export const BucketProvider: FC<Props> = ({children, scope}) => {
 
   // make sure to fetch buckets on mount
   useEffect(() => {
-    if (loading !== RemoteDataState.NotStarted) {
-      return
+    if (Date.now() - lastFetch > 12 * 60 * 60 * 1000) {
+      fetchBuckets()
+    } else if (loading === RemoteDataState.NotStarted) {
+      fetchBuckets()
     }
-
-    fetchBuckets()
-  }, [loading])
+  }, [])
 
   const createBucket = (bucket: ExtendedBucket) => {
     bucket.orgID = scope.org

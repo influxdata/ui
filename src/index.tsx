@@ -14,6 +14,7 @@ import {history} from 'src/store/history'
 
 // Components
 import Setup from 'src/Setup'
+import {LoginPage} from './onboarding/containers/LoginPage'
 import PageSpinner from 'src/perf/components/PageSpinner'
 
 // Utilities
@@ -81,7 +82,7 @@ class Root extends PureComponent {
       <Provider store={getStore()}>
         <ConnectedRouter history={history}>
           <Suspense fallback={<PageSpinner />}>
-            <Route component={Setup} />
+            <Route component={LoginPage} />
           </Suspense>
         </ConnectedRouter>
       </Provider>

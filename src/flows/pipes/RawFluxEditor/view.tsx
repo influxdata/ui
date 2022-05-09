@@ -83,16 +83,15 @@ const Query: FC<PipeProp> = ({Context}) => {
       }
 
       const getHeader = fn => {
-        let importStatement
+        let importStatement = null
 
         if (fn.package) {
           importStatement = `import "${fn.package}"`
           if (isFlagEnabled('fluxDynamicDocs') && fn.path.includes('/')) {
             importStatement = `import "${fn.path}"`
           }
-          return importStatement
         }
-        return null
+        return importStatement
       }
 
       const options = {

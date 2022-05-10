@@ -271,6 +271,8 @@ describe('Flows', () => {
   })
 
   it('should have the same number of flow panels and no presentation panel when presentation mode is off', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const newBucketName = 'shmucket'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -371,6 +373,8 @@ describe('Flows', () => {
   })
 
   it('should have a presentation panel and no flow panels when presentation mode is on', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const newBucketName = 'shmucket'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {

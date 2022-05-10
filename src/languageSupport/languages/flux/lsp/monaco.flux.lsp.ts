@@ -65,7 +65,10 @@ export function initLspWorker() {
     const connection = createMessageConnection(messageReader, messageWriter)
     const languageClient = createLanguageClient(connection)
     const disposable = languageClient.start()
-    connection.onClose(() => disposable.dispose())
+    connection.onClose(() => {
+      disposable.dispose()
+      prelude.dispose()
+    })
     console.log(Events.MonacoClientStarted)
 
     console.log(Events.MainThreadUp)
@@ -74,7 +77,7 @@ export function initLspWorker() {
 }
 initLspWorker()
 
-export function setupForReactMonacoEditor(editor: EditorType) {
-  prelude.subscribeToModel(editor, worker)
+export function setupForReactMonacoEditor(editor: EditorType, context: any) {
+  prelude.subscribeToModel(editor, worker, context)
   return prelude
 }

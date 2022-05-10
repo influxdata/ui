@@ -1,4 +1,4 @@
-import React, {FC, lazy, Suspense, useState} from 'react'
+import React, {FC, lazy, Suspense, useState, useContext} from 'react'
 import {
   DraggableResizer,
   Orientation,
@@ -7,7 +7,6 @@ import {
   TechnoSpinner,
   Button,
   IconFont,
-  ComponentColor,
   ComponentStatus,
   ComponentSize,
   FlexBox,
@@ -15,7 +14,12 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
-import SubmitQueryButton from 'src/timeMachine/components/SubmitQueryButton'
+import {TimeRange}  from 'src/types'
+import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
+import {downloadTextFile} from 'src/shared/utils/download'
+import {event} from 'src/cloud/utils/reporting'
+import {QueryContext} from 'src/shared/contexts/query'
+import {notify} from 'src/shared/actions/notifications'
 
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 import './NewDataExplorer.scss'
@@ -26,14 +30,15 @@ const FluxMonacoEditor = lazy(() =>
 
 const INITIAL_VERT_RESIZER_HANDLE = 0.2
 const INITIAL_HORIZ_RESIZER_HANDLE = 0.2
+const fakeNotify = notify
 
 const NewDataExplorer: FC = () => {
   const [vertDragPosition, setVertDragPosition] = useState([INITIAL_VERT_RESIZER_HANDLE])
   const [horizDragPosition, setHorizDragPosition] = useState([INITIAL_HORIZ_RESIZER_HANDLE])
+  const {basic} = useContext(QueryContext)
 
   const [text, setText] = useState('')
-  const [editorInstance, setEditorInstance] = useState<EditorType>(null)
-  const [timeRange, setTimeRange] = useState(DEFAULT_TIME_RANGE)
+  const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
 
   const download = () => {
     event('CSV Download Initiated')
@@ -86,7 +91,6 @@ const NewDataExplorer: FC = () => {
                 <FluxMonacoEditor
                   script={text}
                   onChangeScript={setText}
-                  setEditorInstance={setEditorInstance}
                 />
               </Suspense>
               </div>
@@ -105,17 +109,18 @@ const NewDataExplorer: FC = () => {
                   />
                   <TimeRangeDropdown
                     timeRange={timeRange}
-                    onSetTimeRange={setTimeRange}
+                    onSetTimeRange={ (range: TimeRange) => setTimeRange(range)}
                   />
                   <SubmitQueryButton
                     className="submit-btn"
                     text="Run"
                     icon={IconFont.Play}
                     submitButtonDisabled={!text}
-                    queryStatus={status}
+                    queryStatus={RemoteDataState.NotStarted}
                     onSubmit={submit}
-                    onNotify={() => {}}
+                    onNotify={fakeNotify}
                     queryID=""
+                    cancelAllRunningQueries={()=>{}}
                   />
                 </FlexBox>
               </div>

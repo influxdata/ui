@@ -84,7 +84,7 @@ const Query: FC<PipeProp> = ({Context}) => {
 
       const getHeader = fn => {
         let importStatement = null
-        
+
         // universe packages are loaded by deafult. Don't need import statement
         if (fn.package && fn.package !== 'universe') {
           importStatement = `import "${fn.package}"`

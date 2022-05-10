@@ -143,7 +143,8 @@ const TimeMachineFluxEditor: FC = () => {
     ]
     const importStatement = generateImport(
       func.package,
-      editorInstance.getValue()
+      editorInstance.getValue(),
+      func as FluxFunction
     )
     if (importStatement) {
       edits.unshift({

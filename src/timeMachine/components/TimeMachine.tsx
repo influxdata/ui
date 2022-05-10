@@ -1,6 +1,6 @@
 // Libraries
 import React, {useState, FunctionComponent} from 'react'
-import {connect} from 'react-redux'
+import {useSelector} from 'react-redux'
 import classnames from 'classnames'
 
 // Components
@@ -14,20 +14,12 @@ import ViewOptions from 'src/timeMachine/components/ViewOptions'
 import {getActiveTimeMachine} from 'src/timeMachine/selectors'
 
 // Types
-import {AppState, TimeMachineTab} from 'src/types'
 import ErrorBoundary from 'src/shared/components/ErrorBoundary'
 
 const INITIAL_RESIZER_HANDLE = 0.4
 
-interface StateProps {
-  activeTab: TimeMachineTab
-  isViewingVisOptions: boolean
-}
-
-const TimeMachine: FunctionComponent<StateProps> = ({
-  activeTab,
-  isViewingVisOptions,
-}) => {
+const TimeMachine: FunctionComponent = () => {
+  const {activeTab, isViewingVisOptions} = useSelector(getActiveTimeMachine)
   const [dragPosition, setDragPosition] = useState([INITIAL_RESIZER_HANDLE])
 
   const containerClassName = classnames('time-machine', {
@@ -73,10 +65,4 @@ const TimeMachine: FunctionComponent<StateProps> = ({
   )
 }
 
-const mstp = (state: AppState) => {
-  const {activeTab, isViewingVisOptions} = getActiveTimeMachine(state)
-
-  return {activeTab, isViewingVisOptions}
-}
-
-export default connect<StateProps>(mstp)(TimeMachine)
+export default TimeMachine

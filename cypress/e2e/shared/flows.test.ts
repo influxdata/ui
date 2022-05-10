@@ -296,7 +296,8 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
+    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
@@ -395,7 +396,8 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}`)
+    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')

@@ -40,12 +40,12 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 export const HomepageContainer: FC = () => {
   const org = useSelector(getOrg)
-  const pythonWizardLink = `/orgs/${org.id}/new-user-wizard/python`
+  const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
-  const javaScriptNodeLink = `/orgs/${org.id}/new-user-wizard/nodejs`
-  const golangLink = `/orgs/${org.id}/new-user-wizard/go`
+  const golangLink = `/orgs/${org.id}/new-user-setup/golang`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
+  const javaScriptNodeLink = `/orgs/${org.id}/new-user-setup/nodejs`
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}
@@ -62,8 +62,13 @@ export const HomepageContainer: FC = () => {
     <>
       <Page titleTag={pageTitleSuffixer(['Get Started'])}>
         <Page.Header fullWidth={false}>
-          {/* Need an empty div so the upgrade button aligns to the right. (Because clockface uses space-between to justifyContent)*/}
-          <div />
+          <Heading
+            id="first-mile--header"
+            element={HeadingElement.H1}
+            testID="home-page--header"
+          >
+            Get Started
+          </Heading>
           <RateLimitAlert location="firstMile.homepage" />
         </Page.Header>
         <Page.Contents scrollable={true} fullWidth={false}>
@@ -74,13 +79,6 @@ export const HomepageContainer: FC = () => {
                   direction={FlexDirection.Column}
                   alignItems={AlignItems.Stretch}
                 >
-                  <Heading
-                    id="first-mile--header"
-                    element={HeadingElement.H1}
-                    testID="home-page--header"
-                  >
-                    Get Started
-                  </Heading>
                   <h5>
                     Write and query data using the programming language of your
                     choice
@@ -176,14 +174,14 @@ export const HomepageContainer: FC = () => {
               <Grid.Column
                 widthSM={Columns.Four}
                 widthMD={Columns.Three}
-                style={{marginTop: '40px'}}
+                style={{marginTop: '-8px'}}
               >
                 {isFlagEnabled('uiUnificationFlag') ? (
                   <UsageProvider>
-                    <Resources />
+                    <Resources style={{backgroundColor: InfluxColors.Grey5}} />
                   </UsageProvider>
                 ) : (
-                  <Resources />
+                  <Resources style={{backgroundColor: InfluxColors.Grey5}} />
                 )}
               </Grid.Column>
             </Grid.Row>

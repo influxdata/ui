@@ -11,9 +11,7 @@ import {
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
-import WriteDataDetailsContextProvider, {
-  WriteDataDetailsContext,
-} from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 import {getOrg} from 'src/organizations/selectors'
 import DataListening from 'src/homepageExperience/components/DataListening'
@@ -90,14 +88,11 @@ for value in range(5):
           </Grid>
         </Panel.Body>
       </Panel>
-      <p>
-        In this code, we define five data points and write each one for
-        InfluxDB. Run the following code in your Python shell:
-      </p>
+      <p>Run the following code in your Python shell:</p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>
-        In the above code snippet, we define five data points and write each on
-        the InfluxDB. Each of the 5 points we write has a{' '}
+        In the above code snippet, we define five data points and write each one
+        to InfluxDB. Each of the 5 points we write has a{' '}
         <SafeBlankLink
           href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key"
           onClick={logDocsOpened}
@@ -127,9 +122,5 @@ for value in range(5):
 }
 
 export const WriteData = props => {
-  return (
-    <WriteDataDetailsContextProvider>
-      <WriteDataComponent onSelectBucket={props.onSelectBucket} />
-    </WriteDataDetailsContextProvider>
-  )
+  return <WriteDataComponent onSelectBucket={props.onSelectBucket} />
 }

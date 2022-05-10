@@ -272,7 +272,8 @@ export const FlowProvider: FC = ({children}) => {
     [currentFlow, update]
   )
 
-  const addPipe = (initial: PipeData, index?: number) => {
+  const addPipe = (initialTemplate: PipeData, index?: number) => {
+    const initial = JSON.parse(JSON.stringify(initialTemplate))
     const id = prettyid()
     const title =
       initial.title ||

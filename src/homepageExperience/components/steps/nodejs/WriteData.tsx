@@ -11,9 +11,7 @@ import {
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
-import WriteDataDetailsContextProvider, {
-  WriteDataDetailsContext,
-} from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 import {getOrg} from 'src/organizations/selectors'
 import DataListening from 'src/homepageExperience/components/DataListening'
@@ -51,15 +49,15 @@ export const WriteDataComponent = (props: OwnProps) => {
   }, [bucket])
 
   const codeSnippet = `
-const org = \`${org.name}\`
-const bucket = \`${bucket.name}\`
+let org = \`${org.name}\`
+let bucket = \`${bucket.name}\`
 
-const writeClient = client.getWriteApi(org, bucket, 'ns')
+let writeClient = client.getWriteApi(org, bucket, 'ns')
 
 for (let i = 0; i < 5; i++) {
-  const point = new Point('measurement1')
+  let point = new Point('measurement1')
     .tag('tagname1', 'tagvalue1')
-    .floatField('field1', i)
+    .intField('field1', i)
 
   void setTimeout(() => {
     writeClient.writePoint(point)
@@ -74,7 +72,7 @@ for (let i = 0; i < 5; i++) {
     <>
       <h1>Write Data</h1>
       <p>
-        To start writing data, we need a place to our time-series store data. We
+        To start writing data, we need a place to store our time-series data. We
         call these{' '}
         <SafeBlankLink
           href={`orgs/${org.id}/load-data/buckets`}
@@ -95,14 +93,11 @@ for (let i = 0; i < 5; i++) {
           </Grid>
         </Panel.Body>
       </Panel>
-      <p>
-        In this code, we define five data points and write each one for
-        InfluxDB. Run the following code in your Nodejs shell:
-      </p>
+      <p>Run the following code in your Nodejs shell:</p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>
-        In the above code snippet, we define five data points and write each on
-        the InfluxDB. Each of the 5 points we write has a{' '}
+        In the above code snippet, we define five data points and write each one
+        to InfluxDB. Each of the 5 points we write has a{' '}
         <SafeBlankLink
           href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key"
           onClick={logDocsOpened}
@@ -132,9 +127,5 @@ for (let i = 0; i < 5; i++) {
 }
 
 export const WriteData = props => {
-  return (
-    <WriteDataDetailsContextProvider>
-      <WriteDataComponent onSelectBucket={props.onSelectBucket} />
-    </WriteDataDetailsContextProvider>
-  )
+  return <WriteDataComponent onSelectBucket={props.onSelectBucket} />
 }

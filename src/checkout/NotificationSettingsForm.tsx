@@ -43,8 +43,9 @@ const NotificationSettingsForm: FC = () => {
             </Grid.Column>
             <Grid.Column widthSM={Columns.Three}>
               <FormInput
+                icon={IconFont.CurrencyUSD}
                 id="balanceThreshold"
-                label={`Amount (${MINIMUM_BALANCE_THRESHOLD} minimum)`}
+                label={`Limit ($${MINIMUM_BALANCE_THRESHOLD} minimum)`}
                 min={MINIMUM_BALANCE_THRESHOLD}
                 required
                 step={1}

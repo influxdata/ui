@@ -16,14 +16,18 @@ export default register => {
     generateImports: () => ['slack'].map(i => `import "${i}"`).join('\n'),
     generateTestImports: () =>
       ['array', 'slack'].map(i => `import "${i}"`).join('\n'),
-    generateQuery: data => `task_data
+    generateQuery: (data, measurement) => `task_data
 	|> schema["fieldsAsCols"]()
       |> set(key: "_notebook_link", value: "${window.location.href}")
+  |> filter(fn: ${measurement})
 	|> monitor["check"](
 		data: check,
 		messageFn: messageFn,
 		crit: trigger,
 	)
+  |> filter(fn: trigger)
+  |> keep(columns: ["_value", "_time", "_measurement"])
+  |> limit(n: 1, offset: 0)
 	|> monitor["notify"](
     data: notification,
     endpoint: slack["endpoint"](url: "${data.url}")(mapFn: (r) => ({

@@ -23,7 +23,7 @@ export default register => {
       ['array', 'http', 'influxdata/influxdb/secrets', 'json']
         .map(i => `import "${i}"`)
         .join('\n'),
-    generateQuery: data => {
+    generateQuery: (data, measurement) => {
       const headers = [['"Content-Type"', '"application/json"']]
       let prefixSecrets = ''
 
@@ -55,11 +55,15 @@ export default register => {
         task_data
           |> schema["fieldsAsCols"]()
               |> set(key: "_notebook_link", value: "${window.location.href}")
+          |> filter(fn: ${measurement})
           |> monitor["check"](
             data: check,
             messageFn: messageFn,
             crit: trigger,
           )
+          |> filter(fn: trigger)
+          |> keep(columns: ["_value", "_time", "_measurement"])
+          |> limit(n: 1, offset: 0)
           |> monitor["notify"](data: notification, endpoint: http.endpoint(url: "${data.url}")(
             mapFn: (r) => {
                 body = {r with _version: 1}

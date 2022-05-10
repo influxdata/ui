@@ -37,6 +37,7 @@ import {serialize} from 'src/flows/context/flow.list'
 // Constants
 import './Sidebar.scss'
 import {PROJECT_NAME, PROJECT_NAME_PLURAL} from 'src/flows'
+import {QueryContext} from 'src/shared/contexts/query'
 
 interface Props {
   version: VersionHistory
@@ -48,8 +49,12 @@ const VersionSidebarListItem: FC<Props> = ({version}) => {
   const {id} = useParams<{id: string}>()
   const {flow} = useContext(FlowContext)
   const {id: orgID} = useSelector(getOrg)
+  const {cancel} = useContext(QueryContext)
 
   const handleClick = () => {
+    cancel()
+
+    event('click version history')
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${
         flow.id
@@ -166,8 +171,11 @@ export const VersionSidebar: FC = () => {
   const {flow} = useContext(FlowContext)
   const history = useHistory()
   const {id: orgID} = useSelector(getOrg)
+  const {cancel} = useContext(QueryContext)
 
   const handleClose = () => {
+    cancel()
+
     event('close version history')
     history.push(
       `/orgs/${orgID}/${PROJECT_NAME_PLURAL.toLowerCase()}/${flow.id}`

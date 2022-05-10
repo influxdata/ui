@@ -17,7 +17,10 @@ export const getFluxExample = (func: FluxFunction) => {
         injectedParameters = `${injectedParameters} `
       }
     }
-    example = `${packageName}.${name}(${injectedParameters})`
+    example =
+      packageName === 'universe'
+        ? `${name}(${injectedParameters})`
+        : `${packageName}.${name}(${injectedParameters})`
   }
   return {...func, example}
 }

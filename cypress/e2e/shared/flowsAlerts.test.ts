@@ -1,6 +1,20 @@
 import {Organization} from '../../src/types'
 
 describe('flows alert panel', () => {
+  const selectAlertMeasurementAndField = () => {
+    cy.log('Select alert measurement')
+    cy.getByTestID('dropdown--measurements').click()
+    cy.getByTestID('dropdown-item--measurement')
+      .first()
+      .click()
+
+    cy.log('Select alert threshold field')
+    cy.getByTestID('dropdown--threshold-fields').click()
+    cy.getByTestID('dropdown-item--threshold-field')
+      .first()
+      .click()
+  }
+
   beforeEach(() =>
     cy.flush().then(() =>
       cy.signin().then(() =>
@@ -241,6 +255,12 @@ describe('flows alert panel', () => {
     cy.getByTestID('dropdown--calcSignature').click()
     cy.getByTestID('dropdown-item--mySecret').click()
     cy.getByTestID('input--email').type(fakeEmail)
+
+    cy.log('Export attempt without selecting a measurement, will error')
+    cy.getByTestID('task-form-save').click()
+    cy.getByTestID('notification-error').should('be.visible')
+    cy.getByTestID('notification-error--dismiss').click()
+    selectAlertMeasurementAndField()
 
     cy.getByTestID('task-form-save').click()
     /* NOTE: we used to be able to test that the generated flux contained the the

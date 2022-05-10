@@ -10,9 +10,11 @@ import {
   SubwayNav,
 } from '@influxdata/clockface'
 
+import WriteDataDetailsContextProvider from 'src/writeData/components/WriteDataDetailsContext'
+
 import {InstallDependencies} from 'src/homepageExperience/components/steps/python/InstallDependencies'
 import {Overview} from 'src/homepageExperience/components/steps/Overview'
-import {CreateToken} from 'src/homepageExperience/components/steps/CreateToken'
+import {Tokens} from 'src/homepageExperience/components/steps/Tokens'
 import {InitalizeClient} from 'src/homepageExperience/components/steps/python/InitalizeClient'
 import {WriteData} from 'src/homepageExperience/components/steps/python/WriteData'
 import {ExecuteQuery} from 'src/homepageExperience/components/steps/python/ExecuteQuery'
@@ -32,6 +34,7 @@ interface State {
   selectedBucket: string
   finishStepCompleted: boolean
   tokenValue: string
+  finalFeedback: number
 }
 
 export class PythonWizard extends PureComponent<null, State> {
@@ -40,6 +43,7 @@ export class PythonWizard extends PureComponent<null, State> {
     selectedBucket: 'my-bucket',
     finishStepCompleted: false,
     tokenValue: null,
+    finalFeedback: null,
   }
 
   private handleSelectBucket = (bucketName: string) => {
@@ -52,6 +56,10 @@ export class PythonWizard extends PureComponent<null, State> {
 
   private setTokenValue = (tokenValue: string) => {
     this.setState({tokenValue})
+  }
+
+  private setFinalFeedback = (feedbackValue: number) => {
+    this.setState({finalFeedback: feedbackValue})
   }
 
   handleNextClick = () => {
@@ -91,7 +99,7 @@ export class PythonWizard extends PureComponent<null, State> {
       }
       case 3: {
         return (
-          <CreateToken
+          <Tokens
             wizardEventName="pythonWizard"
             setTokenValue={this.setTokenValue}
             tokenValue={this.state.tokenValue}
@@ -116,6 +124,8 @@ export class PythonWizard extends PureComponent<null, State> {
             wizardEventName="pythonWizard"
             markStepAsCompleted={this.handleMarkStepAsCompleted}
             finishStepCompleted={this.state.finishStepCompleted}
+            finalFeedback={this.state.finalFeedback}
+            setFinalFeedback={this.setFinalFeedback}
           />
         )
       }
@@ -135,7 +145,7 @@ export class PythonWizard extends PureComponent<null, State> {
           <div />
           <RateLimitAlert location="firstMile.homepage" />
         </Page.Header>
-        <Page.Contents>
+        <Page.Contents scrollable={true}>
           <div className="homepage-wizard-container">
             <aside className="homepage-wizard-container--subway">
               <div style={{width: '100%'}} data-testid="subway-nav">
@@ -161,7 +171,9 @@ export class PythonWizard extends PureComponent<null, State> {
                   }
                 )}
               >
-                {this.renderStep()}
+                <WriteDataDetailsContextProvider>
+                  {this.renderStep()}
+                </WriteDataDetailsContextProvider>
               </div>
 
               <div className="homepage-wizard-container-footer">

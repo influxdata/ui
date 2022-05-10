@@ -10,7 +10,7 @@ export const HOMEPAGE_NAVIGATION_STEPS = [
     glyph: IconFont.Install,
   },
   {
-    name: 'Create a \n Token',
+    name: 'Tokens',
     glyph: IconFont.CopperCoin,
   },
   {

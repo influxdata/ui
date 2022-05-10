@@ -564,7 +564,7 @@ export const QueryProvider: FC = ({children}) => {
   const query = (text: string, override?: QueryScope): Promise<FluxResult> => {
     const result = basic(text, override)
 
-    return result.promise
+    const promise: any = result.promise
       .then(raw => {
         if (raw.type !== 'SUCCESS') {
           throw new Error(raw.message)
@@ -586,6 +586,9 @@ export const QueryProvider: FC = ({children}) => {
             error: null,
           } as FluxResult)
       )
+
+    promise.cancel = result.cancel
+    return promise
   }
 
   if (bucketsLoadingState !== RemoteDataState.Done) {

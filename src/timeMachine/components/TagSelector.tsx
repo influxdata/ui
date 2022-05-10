@@ -26,6 +26,7 @@ import {
   selectTagKey,
   selectTagValue,
 } from 'src/timeMachine/actions/queryBuilderThunks'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 import {
   setBuilderAggregateFunctionType,
@@ -85,9 +86,29 @@ class TagSelector extends PureComponent<Props> {
     )
   }
 
+  private get isCompliant() {
+    const {
+      index,
+      selectedKey,
+      selectedValues,
+      aggregateFunctionType,
+    } = this.props
+
+    return (
+      isFlagEnabled('newQueryBuilder') &&
+      index === 0 &&
+      selectedKey === '_measurement' &&
+      aggregateFunctionType !== 'group' &&
+      selectedValues.length <= 1
+    )
+  }
+
   private get header() {
     const {aggregateFunctionType, index, isInCheckOverlay} = this.props
 
+    if (this.isCompliant) {
+      return null
+    }
     return (
       <BuilderCard.DropdownHeader
         options={['filter', 'group']}
@@ -133,6 +154,7 @@ class TagSelector extends PureComponent<Props> {
         : `Search ${selectedKey} tag values`
     return (
       <>
+        {this.isCompliant && <BuilderCard.Header title="Measurement" />}
         <BuilderCard.Menu testID={`tag-selector--container ${index}`}>
           {aggregateFunctionType !== 'group' && (
             <FlexBox
@@ -141,19 +163,21 @@ class TagSelector extends PureComponent<Props> {
               margin={ComponentSize.Small}
             >
               <ErrorBoundary>
-                <SearchableDropdown
-                  searchTerm={keysSearchTerm}
-                  emptyText="No Tags Found"
-                  searchPlaceholder="Search keys..."
-                  buttonStatus={toComponentStatus(keysStatus)}
-                  selectedOption={selectedKey}
-                  onSelect={this.handleSelectTag}
-                  onChangeSearchTerm={this.handleKeysSearch}
-                  testID="tag-selector--dropdown"
-                  buttonTestID="tag-selector--dropdown-button"
-                  menuTestID="tag-selector--dropdown-menu"
-                  options={keys}
-                />
+                {!this.isCompliant && (
+                  <SearchableDropdown
+                    searchTerm={keysSearchTerm}
+                    emptyText="No Tags Found"
+                    searchPlaceholder="Search keys..."
+                    buttonStatus={toComponentStatus(keysStatus)}
+                    selectedOption={selectedKey}
+                    onSelect={this.handleSelectTag}
+                    onChangeSearchTerm={this.handleKeysSearch}
+                    testID="tag-selector--dropdown"
+                    buttonTestID="tag-selector--dropdown-button"
+                    menuTestID="tag-selector--dropdown-menu"
+                    options={keys}
+                  />
+                )}
               </ErrorBoundary>
               {this.selectedCounter}
             </FlexBox>
@@ -206,7 +230,7 @@ class TagSelector extends PureComponent<Props> {
         items={values}
         selectedItems={selectedValues}
         onSelectItem={this.handleSelectValue}
-        multiSelect={!this.props.isInCheckOverlay}
+        multiSelect={!this.props.isInCheckOverlay || this.isCompliant}
       />
     )
   }

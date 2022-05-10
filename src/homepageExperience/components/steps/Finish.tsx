@@ -21,6 +21,8 @@ type OwnProps = {
   wizardEventName: string
   markStepAsCompleted: () => void
   finishStepCompleted: boolean
+  finalFeedback: number
+  setFinalFeedback: (feedbackValue: number) => void
 }
 
 const fireConfetti = () => {
@@ -82,7 +84,11 @@ export const Finish = (props: OwnProps) => {
     <>
       <h1>Congrats!</h1>
       <p>You completed setting up, writing, and querying data.</p>
-      <FeedbackBar wizardEventName={props.wizardEventName} />
+      <FeedbackBar
+        wizardEventName={props.wizardEventName}
+        selectedFeedback={props.finalFeedback}
+        onFeedbackSelection={props.setFinalFeedback}
+      />
       <p style={{marginTop: '80px'}}>
         Curious to learn more? Try these next steps!
       </p>

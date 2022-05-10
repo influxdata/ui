@@ -49,7 +49,7 @@ for table in tables:
       />
       <p>
         In this query, we are looking for data points within the last 10 minutes
-        with field key of "field1".
+        with a measurement of "measurement1".
         <br />
         <br />
         Let’s use that Flux query in our Python code!

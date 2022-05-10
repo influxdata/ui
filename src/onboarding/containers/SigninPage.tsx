@@ -17,9 +17,14 @@ import {
   TechnoSpinner,
   Panel,
   AlignItems,
-  InfluxDBCloudLogo,
+  InfluxLogo,
   FunnelPage,
   AppWrapper,
+  LogoMarks,
+  LogoBaseText,
+  LogoAuxiliaryText,
+  LogoSymbols,
+  InfluxColors,
 } from '@influxdata/clockface'
 import {RemoteDataState} from 'src/types'
 import VersionInfo from 'src/shared/components/VersionInfo'
@@ -78,9 +83,13 @@ class SigninPage extends PureComponent<Props, State> {
             <Panel className="signin-page--panel">
               <Panel.Body alignItems={AlignItems.Center}>
                 <div className="signin-page--cubo" />
-                <InfluxDBCloudLogo
-                  cloud={false}
-                  className="signin-page--logo"
+                <InfluxLogo
+                  logoMark={LogoMarks.Kubo}
+                  baseText={LogoBaseText.InfluxDb}
+                  auxiliaryText={LogoAuxiliaryText.Cloud}
+                  symbol={LogoSymbols.Trademark}
+                  fill={InfluxColors.White}
+                  centeredLogo={false}
                 />
                 <SigninForm />
               </Panel.Body>

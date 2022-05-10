@@ -1,0 +1,17 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.logo-with-cubo {
+  display: flex;
+
+  > .cubo-logo {
+    font-size: $cf-text-base-4;
+    padding-right: $cf-space-2xs;
+    color: #fff;
+    line-height: 1.5;
+  }
+  > .influx-cloud-logo {
+    width: 150px;
+    height: 50px;
+    display: flex;
+  }
+}

@@ -36,6 +36,7 @@ const respond = msg => {
 }
 
 onmessage = function(e) {
+  // Handle race condition, because LSP is lazy loaded while init messages are received.
   switch (`${e.data.method}|${serverStartSignaled}|${initialized}`) {
     case `${Methods.Initialize}|false|false`:
       serverStartSignaled = true

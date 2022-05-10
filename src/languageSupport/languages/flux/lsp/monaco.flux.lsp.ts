@@ -9,16 +9,18 @@ import {
   createConnection,
 } from 'monaco-languageclient'
 import {
-  createMessageConnection,
   BrowserMessageReader,
   BrowserMessageWriter,
+  createMessageConnection,
 } from 'vscode-jsonrpc/browser'
+import Prelude from 'src/languageSupport/languages/flux/lsp/prelude'
 
 // flux language support
 import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 // @ts-ignore
 import fluxWorkerUrl from 'worker-plugin/loader!./worker/flux.worker'
-import {Events, didOpen} from 'src/languageSupport/languages/flux/lsp/utils'
+import {Events} from 'src/languageSupport/languages/flux/lsp/utils'
+import {EditorType} from 'src/types'
 
 // install Monaco language client services
 MonacoServices.install(monaco)
@@ -47,13 +49,16 @@ function createLanguageClient(
   })
 }
 
-let worker: Worker, messageReader, messageWriter
+let worker: Worker, messageReader, messageWriter, prelude
 
 export function initLspWorker() {
-  if (worker) {return}
+  if (worker) {
+    return
+  }
   if (window.Worker) {
     console.log(Events.LaunchWorker)
     worker = new Worker(fluxWorkerUrl)
+    prelude = new Prelude()
 
     messageReader = new BrowserMessageReader(worker)
     messageWriter = new BrowserMessageWriter(worker)
@@ -69,11 +74,7 @@ export function initLspWorker() {
 }
 initLspWorker()
 
-export function subscribeToModel(model: monaco.editor.IModel) {
-  const uri = model.uri.toString()
-  worker.postMessage(didOpen(uri, model.getValue(), model.getVersionId()))
-}
-
-export function setupForReactMonacoEditor(model: monaco.editor.IModel) {
-  subscribeToModel(model)
+export function setupForReactMonacoEditor(editor: EditorType) {
+  prelude.subscribeToModel(editor, worker)
+  return prelude
 }

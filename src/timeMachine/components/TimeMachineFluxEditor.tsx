@@ -104,9 +104,18 @@ const TimeMachineFluxEditor: FC = () => {
 
     let text = ''
     if (shouldInsertOnNextLine) {
-      text = `\n  |> ${func.example}`
+      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
+        // only fluxTypes with <- sign require a pipe forward sign
+        text = func.fluxType[1] === '<' ? `\n  |> ${func.example}` : `\n   ${func.example}`
+      } else {
+        text = `\n  |> ${func.example}`
+      }
     } else {
-      text = `  |> ${func.example}\n`
+      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
+        text = func.fluxType[1] === '<' ? `  |> ${func.example}\n` : `   ${func.example}\n`
+      } else {
+        text = `  |> ${func.example}\n`
+      }
     }
 
     if (functionRequiresNewLine(func.name)) {

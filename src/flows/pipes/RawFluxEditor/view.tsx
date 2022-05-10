@@ -76,10 +76,15 @@ const Query: FC<PipeProp> = ({Context}) => {
   const injectIntoEditor = useCallback(
     (fn): void => {
       let text = ''
-      if (fn.name === 'from' || fn.name === 'union') {
-        text = `${fn.example}`
+      if (isFlagEnabled('fluxDynamicDocs')) {
+        // only fluxTypes with <- sign require a pipe forward sign
+        text = fn.fluxType[1] === '<' ? `  |> ${fn.example}` : `${fn.example}`
       } else {
-        text = `  |> ${fn.example}`
+        if (fn.name === 'from' || fn.name === 'union') {
+          text = `${fn.example}`
+        } else {
+          text = `  |> ${fn.example}`
+        }
       }
 
       const getHeader = fn => {

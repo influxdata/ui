@@ -6,9 +6,9 @@ import {
 } from '@influxdata/clockface'
 import React, {FC} from 'react'
 
-import 'src/onboarding/containers/LoginPage.scss'
+import './CloudLogoWithCubo.scss'
 
-const LogoWithCubo: FC = () => (
+const CloudLogoWithCubo: FC = () => (
   <div className="logo-with-cubo">
     <Icon glyph={IconFont.CuboSolid} className="cubo-logo" />
     <InfluxDBCloudLogo
@@ -19,4 +19,4 @@ const LogoWithCubo: FC = () => (
   </div>
 )
 
-export default LogoWithCubo
+export {CloudLogoWithCubo}

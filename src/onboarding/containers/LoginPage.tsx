@@ -10,7 +10,7 @@ import {
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
-import LogoWithCubo from 'src/onboarding/components/LogoWithCubo'
+import {CloudLogoWithCubo} from 'src/onboarding/components/CloudLogoWithCubo'
 
 // Types
 import {getMe} from 'src/client'
@@ -58,7 +58,7 @@ export const LoginPage: FC = () => {
     <ErrorBoundary>
       <AppWrapper>
         <Notifications />
-        <FunnelPage enableGraphic={true} logo={<LogoWithCubo />}>
+        <FunnelPage enableGraphic={true} logo={<CloudLogoWithCubo />}>
           <Heading
             element={HeadingElement.H1}
             type={Typeface.Rubik}

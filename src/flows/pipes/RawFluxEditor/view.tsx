@@ -78,7 +78,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       let text = ''
       if (isFlagEnabled('fluxDynamicDocs')) {
         // only fluxTypes with <- sign require a pipe forward sign
-        text = fn.fluxType[1] === '<' ? `  |> ${fn.example}` : `${fn.example}`
+        text = fn.fluxType.startsWith('<-', 1) ? `  |> ${fn.example}` : `${fn.example}`
       } else {
         if (fn.name === 'from' || fn.name === 'union') {
           text = `${fn.example}`

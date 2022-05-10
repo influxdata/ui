@@ -107,7 +107,7 @@ const TimeMachineFluxEditor: FC = () => {
       if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
         // only fluxTypes with <- sign require a pipe forward sign
         text =
-          func.fluxType[1] === '<'
+          func.fluxType.startsWith('<-', 1)
             ? `\n  |> ${func.example}`
             : `\n   ${func.example}`
       } else {
@@ -116,7 +116,7 @@ const TimeMachineFluxEditor: FC = () => {
     } else {
       if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
         text =
-          func.fluxType[1] === '<'
+          func.fluxType.startsWith('<-', 1)
             ? `  |> ${func.example}\n`
             : `   ${func.example}\n`
       } else {

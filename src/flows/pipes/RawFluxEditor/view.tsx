@@ -76,10 +76,17 @@ const Query: FC<PipeProp> = ({Context}) => {
   const injectIntoEditor = useCallback(
     (fn): void => {
       let text = ''
-      if (fn.name === 'from' || fn.name === 'union') {
-        text = `${fn.example}`
+      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
+        // only fluxTypes with <- sign require a pipe forward sign
+        text = fn.fluxType.startsWith('<-', 1)
+          ? `  |> ${fn.example}`
+          : `${fn.example}`
       } else {
-        text = `  |> ${fn.example}`
+        if (fn.name === 'from' || fn.name === 'union') {
+          text = `${fn.example}`
+        } else {
+          text = `  |> ${fn.example}`
+        }
       }
 
       const getHeader = fn => {
@@ -88,7 +95,11 @@ const Query: FC<PipeProp> = ({Context}) => {
         // universe packages are loaded by deafult. Don't need import statement
         if (fn.package && fn.package !== 'universe') {
           importStatement = `import "${fn.package}"`
-          if (isFlagEnabled('fluxDynamicDocs') && fn.path.includes('/')) {
+          if (
+            CLOUD &&
+            isFlagEnabled('fluxDynamicDocs') &&
+            fn.path.includes('/')
+          ) {
             importStatement = `import "${fn.path}"`
           }
         }

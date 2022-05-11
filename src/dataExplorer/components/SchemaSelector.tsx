@@ -15,25 +15,28 @@ const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   measurement: null,
   query: '',
   loading: RemoteDataState.NotStarted,
-  results: null
+  results: null,
 
-  updateQuery: (_q) => {}
+  updateQuery: _q => {},
 }
 
-export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(DEFAULT_CONTEXT)
+export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
+  DEFAULT_CONTEXT
+)
 
 export const NewDataExplorerProvider: FC = ({children}) => {
   const [loading, setLoading] = useState(RemoteDataState.NotStarted)
   const [query, setQuery] = useState('')
 
   return (
-    <NewDataExplorerContext.Provider value={{
-      loading,
-      query,
-      updateQuery: setQuery
-      }}>
+    <NewDataExplorerContext.Provider
+      value={{
+        loading,
+        query,
+        updateQuery: setQuery,
+      }}
+    >
       {children}
     </NewDataExplorerContext.Provider>
   )
 }
-

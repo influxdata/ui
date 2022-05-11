@@ -119,14 +119,10 @@ const DataExplorerPage: FC = () => {
             </Page.ControlBarRight>
           </Page.ControlBar>
         )}
-          <Page.Contents fullWidth={true} scrollable={false}>
-        {!newDataExplorer && (
-            <DataExplorer />
-        )}
-        {newDataExplorer && (
-            <NewDataExplorer />
-        )}
-          </Page.Contents>
+        <Page.Contents fullWidth={true} scrollable={false}>
+          {!newDataExplorer && <DataExplorer />}
+          {newDataExplorer && <NewDataExplorer />}
+        </Page.Contents>
       </GetResources>
     </Page>
   )

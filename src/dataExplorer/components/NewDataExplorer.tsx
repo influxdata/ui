@@ -14,7 +14,8 @@ import {
   JustifyContent,
 } from '@influxdata/clockface'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
-import {TimeRange}  from 'src/types'
+import Results from 'src/dataExplorer/components/Results'
+import {TimeRange} from 'src/types'
 import {SubmitQueryButton} from 'src/timeMachine/components/SubmitQueryButton'
 import {downloadTextFile} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
@@ -33,8 +34,12 @@ const INITIAL_HORIZ_RESIZER_HANDLE = 0.2
 const fakeNotify = notify
 
 const NewDataExplorer: FC = () => {
-  const [vertDragPosition, setVertDragPosition] = useState([INITIAL_VERT_RESIZER_HANDLE])
-  const [horizDragPosition, setHorizDragPosition] = useState([INITIAL_HORIZ_RESIZER_HANDLE])
+  const [vertDragPosition, setVertDragPosition] = useState([
+    INITIAL_VERT_RESIZER_HANDLE,
+  ])
+  const [horizDragPosition, setHorizDragPosition] = useState([
+    INITIAL_HORIZ_RESIZER_HANDLE,
+  ])
   const {basic} = useContext(QueryContext)
 
   const [text, setText] = useState('')
@@ -62,9 +67,7 @@ const NewDataExplorer: FC = () => {
       <DraggableResizer.Panel>
         <h1>[ schema ]</h1>
       </DraggableResizer.Panel>
-      <DraggableResizer.Panel
-          className="new-data-explorer-rightside"
-      >
+      <DraggableResizer.Panel className="new-data-explorer-rightside">
         <DraggableResizer
           handleOrientation={Orientation.Horizontal}
           handlePositions={horizDragPosition}
@@ -75,24 +78,21 @@ const NewDataExplorer: FC = () => {
               direction={FlexDirection.Column}
               justifyContent={JustifyContent.FlexEnd}
               margin={ComponentSize.Small}
-              style={{ height: '100%' }}
+              style={{height: '100%'}}
             >
               <div
-                style={{ height: '100%', width: '100%', position: 'relative' }}
+                style={{height: '100%', width: '100%', position: 'relative'}}
               >
-              <Suspense
-                fallback={
-                  <SpinnerContainer
-                    loading={RemoteDataState.Loading}
-                    spinnerComponent={<TechnoSpinner />}
-                  />
-                }
-              >
-                <FluxMonacoEditor
-                  script={text}
-                  onChangeScript={setText}
-                />
-              </Suspense>
+                <Suspense
+                  fallback={
+                    <SpinnerContainer
+                      loading={RemoteDataState.Loading}
+                      spinnerComponent={<TechnoSpinner />}
+                    />
+                  }
+                >
+                  <FluxMonacoEditor script={text} onChangeScript={setText} />
+                </Suspense>
               </div>
               <div style={{width: '100%'}}>
                 <FlexBox
@@ -105,11 +105,13 @@ const NewDataExplorer: FC = () => {
                     text="CSV"
                     icon={IconFont.Download_New}
                     onClick={download}
-                    status={text ? ComponentStatus.Default : ComponentStatus.Disabled}
+                    status={
+                      text ? ComponentStatus.Default : ComponentStatus.Disabled
+                    }
                   />
                   <TimeRangeDropdown
                     timeRange={timeRange}
-                    onSetTimeRange={ (range: TimeRange) => setTimeRange(range)}
+                    onSetTimeRange={(range: TimeRange) => setTimeRange(range)}
                   />
                   <SubmitQueryButton
                     className="submit-btn"
@@ -120,14 +122,14 @@ const NewDataExplorer: FC = () => {
                     onSubmit={submit}
                     onNotify={fakeNotify}
                     queryID=""
-                    cancelAllRunningQueries={()=>{}}
+                    cancelAllRunningQueries={() => {}}
                   />
                 </FlexBox>
               </div>
             </FlexBox>
           </DraggableResizer.Panel>
           <DraggableResizer.Panel>
-            <h1>[ results ]</h1>
+            <Results />
           </DraggableResizer.Panel>
         </DraggableResizer>
       </DraggableResizer.Panel>

@@ -30,11 +30,13 @@ import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
 
 type ReduxProps = ConnectedProps<typeof connector>
 
-const TreeSidebar: FC<ReduxProps & RouteComponentProps> = ({
-  // showOverlay,
-  // dismissOverlay,
-  // quartzMe,
-}) => {
+const TreeSidebar: FC<ReduxProps & RouteComponentProps> = (
+  {
+    // showOverlay,
+    // dismissOverlay,
+    // quartzMe,
+  }
+) => {
   const {presentationMode, navbarMode, setNavbarMode} = useContext(
     AppSettingContext
   )

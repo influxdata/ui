@@ -13,6 +13,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '@influxdata/clockface'
+import Schema from 'src/dataExplorer/components/Schema'
 import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import Results from 'src/dataExplorer/components/Results'
 import {TimeRange} from 'src/types'
@@ -65,7 +66,7 @@ const NewDataExplorer: FC = () => {
       onChangePositions={setVertDragPosition}
     >
       <DraggableResizer.Panel>
-        <h1>[ schema ]</h1>
+        <Schema />
       </DraggableResizer.Panel>
       <DraggableResizer.Panel className="new-data-explorer-rightside">
         <DraggableResizer

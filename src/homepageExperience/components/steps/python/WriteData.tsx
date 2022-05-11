@@ -89,7 +89,11 @@ for value in range(5):
         </Panel.Body>
       </Panel>
       <p>Run the following code in your Python shell:</p>
-      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} language="python"/>
+      <CodeSnippet
+        text={codeSnippet}
+        onCopy={logCopyCodeSnippet}
+        language="python"
+      />
       <p style={{marginTop: '20px'}}>
         In the above code snippet, we define five data points and write each one
         to InfluxDB. Each of the 5 points we write has a{' '}

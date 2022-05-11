@@ -36,7 +36,9 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').clear().type('My Flow {enter}')
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type('My Flow {enter}')
     cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
@@ -101,7 +103,9 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').clear().type('My Flow {enter}')
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type('My Flow {enter}')
     cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
@@ -203,7 +207,9 @@ describe('Flows', () => {
       .first()
       .click()
 
-    cy.getByTestID('renamable-page-title--input').clear().type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type(`${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     cy.getByTestID('page-title').contains(flowName)
@@ -307,7 +313,9 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').clear().type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type(`${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
@@ -409,7 +417,9 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').clear().type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input')
+      .clear()
+      .type(`${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button

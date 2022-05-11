@@ -4,8 +4,6 @@ import React, {FC, createContext, useState} from 'react'
 import {Bucket, RemoteDataState} from 'src/types'
 
 interface NewDataExplorerContextType {
-  bucket: Bucket
-  measurement: string
   query: string
   loading: RemoteDataState
   results: any
@@ -14,8 +12,6 @@ interface NewDataExplorerContextType {
 }
 
 const DEFAULT_CONTEXT: NewDataExplorerContextType = {
-  bucket: null,
-  measurement: null,
   query: '',
   loading: RemoteDataState.NotStarted,
   results: null,
@@ -28,7 +24,7 @@ export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
 )
 
 export const NewDataExplorerProvider: FC = ({children}) => {
-  const [loading, setLoading] = useState(RemoteDataState.NotStarted)
+  const [loading] = useState(RemoteDataState.NotStarted)
   const [query, setQuery] = useState('')
 
   return (

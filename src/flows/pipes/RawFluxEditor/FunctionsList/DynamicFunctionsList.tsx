@@ -80,7 +80,7 @@ const DynamicFunctionsList: FC<Props> = ({onSelect}) => {
 
   return (
     <FilterList
-      placeholder="Filter Functions..."
+      placeholder="Filter by Package or Function"
       emptyMessage="No functions match your search"
       extractor={fn =>
         `${(fn as FluxFunction).name} ${(fn as FluxFunction).package}`

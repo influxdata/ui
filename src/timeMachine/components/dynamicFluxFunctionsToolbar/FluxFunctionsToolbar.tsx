@@ -97,7 +97,7 @@ const DynamicFluxFunctionsToolbar: FC<Props> = (props: Props) => {
         spinnerComponent={<TechnoSpinner />}
       >
         <ErrorBoundary>
-          <FluxToolbarSearch onSearch={handleSearch} resourceName="Functions" />
+          <FluxToolbarSearch onSearch={handleSearch} resourceName="by Package or Function" />
           <DapperScrollbars className="flux-toolbar--scroll-area">
             <div
               className="flux-toolbar--list"

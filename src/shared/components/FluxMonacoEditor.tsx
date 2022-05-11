@@ -85,7 +85,6 @@ const FluxEditorMonaco: FC<Props> = ({
     }
   }
 
-  // @ts-ignore
   const onChange = (text: string) => {
     onChangeScript(text)
   }

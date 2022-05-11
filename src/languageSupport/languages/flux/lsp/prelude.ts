@@ -1,5 +1,5 @@
 import {Store} from 'redux'
-import {monaco} from 'react-monaco-editor'
+import * as MonacoTypes from 'monaco-editor/esm/vs/editor/editor.api'
 import {format_from_js_file} from '@influxdata/flux-lsp-browser'
 import {AppState, LocalStorage, EditorType} from 'src/types'
 
@@ -19,8 +19,8 @@ import {buildUsedVarsOption} from 'src/variables/utils/buildVarsOption'
 import {didOpen} from 'src/languageSupport/languages/flux/lsp/utils'
 
 class Prelude extends EventTarget {
-  private _model: monaco.editor.IModel
-  private _preludeModel: monaco.editor.IModel
+  private _model: MonacoTypes.editor.IModel
+  private _preludeModel: MonacoTypes.editor.IModel
   private _store: Store<AppState & LocalStorage>
   private _context: FlowContextType
   private _unsubscribe
@@ -68,7 +68,6 @@ class Prelude extends EventTarget {
       const query = format_from_js_file(file)
 
       if (query != previousValue) {
-        // console.log('sending prelude...')
         this._preludeModel.setValue(query)
       }
     } catch (e) {
@@ -77,7 +76,9 @@ class Prelude extends EventTarget {
   }
 
   private _subscribeToStore() {
-    this._unsubscribe = this._store.subscribe(this._updatePreludeModel.bind(this))
+    this._unsubscribe = this._store.subscribe(
+      this._updatePreludeModel.bind(this)
+    )
   }
 
   private _subscribeToFlowContext(context: FlowContextType) {
@@ -101,7 +102,7 @@ class Prelude extends EventTarget {
   }
 
   dispose() {
-      this._unsubscribe()
+    this._unsubscribe()
   }
 }
 

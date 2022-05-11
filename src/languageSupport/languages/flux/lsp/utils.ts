@@ -3,14 +3,6 @@ import {
   ProtocolNotificationType,
 } from 'vscode-languageserver-protocol'
 
-export enum Events {
-  LaunchWorker = 'Launch dedicated worker',
-  MonacoClientStarted = 'LanguageClient started',
-  MainThreadUp = 'MainThread is ready',
-  LspServerUp = 'LSP server is online',
-  WorkerThreadUp = 'WorkerThread is ready',
-}
-
 export const isJsonRpc = (msg: string): boolean => {
   return JSON.stringify(msg).includes('jsonrpc')
 }

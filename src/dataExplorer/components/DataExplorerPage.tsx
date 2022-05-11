@@ -4,6 +4,7 @@ import {Switch, Route, Link} from 'react-router-dom'
 
 // Components
 import DataExplorer from 'src/dataExplorer/components/DataExplorer'
+import NewDataExplorer from 'src/dataExplorer/components/NewDataExplorer'
 import {
   Page,
   Icon,
@@ -118,11 +119,10 @@ const DataExplorerPage: FC = () => {
             </Page.ControlBarRight>
           </Page.ControlBar>
         )}
-        {!newDataExplorer && (
-          <Page.Contents fullWidth={true} scrollable={false}>
-            <DataExplorer />
-          </Page.Contents>
-        )}
+        <Page.Contents fullWidth={true} scrollable={false}>
+          {!newDataExplorer && <DataExplorer />}
+          {newDataExplorer && <NewDataExplorer />}
+        </Page.Contents>
       </GetResources>
     </Page>
   )

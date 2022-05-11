@@ -28,6 +28,7 @@ import {
   EditorProvider,
   InjectionType,
 } from 'src/flows/context/editor'
+import {VariablesProvider, VariablesContext} from 'src/flows/context/variables'
 
 // Components
 import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
@@ -59,6 +60,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   const {setEditor, inject, updateText} = editorContext
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
+  const {variables} = useContext(VariablesContext)
 
   useEffect(() => {
     if (isFlagEnabled('fluxInjectSecrets')) {
@@ -155,6 +157,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         >
           <FluxMonacoEditor
             script={query.text}
+            variables={variables}
             onChangeScript={updateText}
             setEditorInstance={setEditor}
             wrapLines="on"
@@ -163,12 +166,20 @@ const Query: FC<PipeProp> = ({Context}) => {
         </Suspense>
       </Context>
     ),
-    [RemoteDataState.Loading, query.text, updateText, editorContext.editor]
+    [
+      RemoteDataState.Loading,
+      query.text,
+      updateText,
+      editorContext.editor,
+      variables,
+    ]
   )
 }
 
 export default ({Context}) => (
-  <EditorProvider>
-    <Query Context={Context} />
-  </EditorProvider>
+  <VariablesProvider>
+    <EditorProvider>
+      <Query Context={Context} />
+    </EditorProvider>
+  </VariablesProvider>
 )

@@ -26,6 +26,16 @@ const createNotification = (method: string, params: object = {}) => {
   }
 }
 
+export const didChange = (uri: string, text: string, version: number) => {
+  return createNotification(Methods.didChange, {
+    contentChanges: [{text}],
+    textDocument: {
+      uri,
+      version,
+    },
+  })
+}
+
 export const didOpen = (uri: string, text: string, version: number) => {
   return createNotification(Methods.didOpen, {
     textDocument: {

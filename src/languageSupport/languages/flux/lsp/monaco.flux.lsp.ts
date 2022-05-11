@@ -57,7 +57,7 @@ export function initLspWorker() {
   }
   if (window.Worker) {
     worker = new Worker(fluxWorkerUrl)
-    prelude = new Prelude()
+    prelude = new Prelude(worker)
 
     messageReader = new BrowserMessageReader(worker)
     messageWriter = new BrowserMessageWriter(worker)
@@ -73,7 +73,7 @@ export function initLspWorker() {
 }
 initLspWorker()
 
-export function setupForReactMonacoEditor(editor: EditorType, context: any) {
-  prelude.subscribeToModel(editor, worker, context)
+export function setupForReactMonacoEditor(editor: EditorType) {
+  prelude.subscribeToModel(editor)
   return prelude
 }

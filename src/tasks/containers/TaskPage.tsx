@@ -12,13 +12,14 @@ import TaskForm from 'src/tasks/components/TaskForm'
 import TaskHeader from 'src/tasks/components/TaskHeader'
 import {Page} from '@influxdata/clockface'
 
-// Actions
+// Actions and Selectors
 import {
   setNewScript,
   setTaskOption,
   clearTask,
 } from 'src/tasks/actions/creators'
 import {saveNewScript, goToTasks, cancel} from 'src/tasks/actions/thunks'
+import {getAllVariables} from 'src/variables/selectors'
 
 // Utils
 import {
@@ -86,6 +87,7 @@ class TaskPage extends PureComponent<Props> {
               >
                 <FluxMonacoEditor
                   script={newScript}
+                  variables={this.props.variables}
                   onChangeScript={this.handleChangeScript}
                   autofocus
                 />
@@ -152,6 +154,7 @@ const mstp = (state: AppState) => {
   return {
     taskOptions,
     newScript,
+    variables: getAllVariables(state),
   }
 }
 

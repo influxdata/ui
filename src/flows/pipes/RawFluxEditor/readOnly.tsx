@@ -6,8 +6,9 @@ import {
   TechnoSpinner,
 } from '@influxdata/clockface'
 
-// Types
+// Types and Context
 import {PipeProp} from 'src/types/flows'
+import {VariablesProvider, VariablesContext} from 'src/flows/context/variables'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
@@ -23,6 +24,7 @@ const Query: FC<PipeProp> = ({Context}) => {
   const {data} = useContext(PipeContext)
   const {queries, activeQuery} = data
   const query = queries[activeQuery]
+  const {variables} = useContext(VariablesContext)
 
   return (
     <Context>
@@ -36,6 +38,7 @@ const Query: FC<PipeProp> = ({Context}) => {
       >
         <FluxMonacoEditor
           script={query.text}
+          variables={variables}
           onChangeScript={() => {}}
           onSubmitScript={() => {}}
           autogrow
@@ -47,4 +50,8 @@ const Query: FC<PipeProp> = ({Context}) => {
   )
 }
 
-export default Query
+export default Props => (
+  <VariablesProvider>
+    <Query {...Props} />
+  </VariablesProvider>
+)

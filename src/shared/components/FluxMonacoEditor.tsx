@@ -1,5 +1,5 @@
 // Libraries
-import React, {FC, useRef, useContext} from 'react'
+import React, {FC, useEffect, useRef} from 'react'
 import classnames from 'classnames'
 
 // Components
@@ -15,12 +15,11 @@ import {
   submit,
 } from 'src/languageSupport/languages/flux/monaco.flux.hotkeys'
 import {registerAutogrow} from 'src/languageSupport/monaco.autogrow'
-import {FlowContext} from 'src/flows/context/flow.current'
 import Prelude from 'src/languageSupport/languages/flux/lsp/prelude'
 
 // Types
 import {OnChangeScript} from 'src/types/flux'
-import {EditorType} from 'src/types'
+import {EditorType, Variable} from 'src/types'
 import {editor as monacoEditor} from 'monaco-editor'
 
 import './FluxMonacoEditor.scss'
@@ -37,6 +36,7 @@ export interface EditorProps {
 
 interface Props extends EditorProps {
   setEditorInstance?: (editor: EditorType) => void
+  variables: Variable[]
 }
 
 const FluxEditorMonaco: FC<Props> = ({
@@ -48,16 +48,21 @@ const FluxEditorMonaco: FC<Props> = ({
   readOnly,
   autofocus,
   wrapLines,
+  variables,
 }) => {
   const prelude = useRef<Prelude>(null)
-  const flowContext = useContext(FlowContext) // undefined if outside flow
 
   const wrapperClassName = classnames('flux-editor--monaco', {
     'flux-editor--monaco__autogrow': autogrow,
   })
 
+  useEffect(() => {
+    prelude.current.updatePreludeModel(variables)
+  }, [variables])
+
   const editorDidMount = (editor: EditorType) => {
-    prelude.current = setupForReactMonacoEditor(editor, flowContext)
+    prelude.current = setupForReactMonacoEditor(editor)
+    prelude.current.updatePreludeModel(variables)
     if (setEditorInstance) {
       setEditorInstance(editor)
     }

@@ -276,9 +276,11 @@ describe('Flows', () => {
     cy.getByTestID('autorefresh-dropdown--button').should('not.exist')
 
     cy.clickNavBarItem('nav-item-flows')
-    cy.fixture('routes').then(({orgs}) => {
-      cy.location(`${orgs}/${id}/notebooks`)
-    })
+    cy.get('@org').then(({id}: Organization) =>
+      cy.fixture('routes').then(({orgs}) => {
+        cy.location(`${orgs}/${id}/notebooks`)
+      })
+    )
 
     cy.get('.cf-resource-card').should('have.length', 1)
 

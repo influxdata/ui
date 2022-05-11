@@ -1,12 +1,15 @@
 import React, {FC} from 'react'
 
+// Components
+import BucketSelector from 'src/dataExplorer/components/BucketSelector'
+
 const Schema: FC = () => {
   return (
     <div>
       <div>Data Selection</div>
       <div>
         <div>Bucket</div>
-        <div>[Bucket dropdown]</div>
+        <BucketSelector />
       </div>
       <div>
         <div>Measurement</div>

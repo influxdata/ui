@@ -1,12 +1,11 @@
 import React, {FC, createContext, useState} from 'react'
 
 // types
-import {Bucket, RemoteDataState} from 'src/types'
+import {RemoteDataState} from 'src/types'
 
 interface NewDataExplorerContextType {
   query: string
   loading: RemoteDataState
-  results: any
 
   updateQuery: (q: string) => void
 }
@@ -14,7 +13,6 @@ interface NewDataExplorerContextType {
 const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   query: '',
   loading: RemoteDataState.NotStarted,
-  results: null,
 
   updateQuery: _q => {},
 }

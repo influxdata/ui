@@ -15,6 +15,8 @@ describe('Flows', () => {
   })
 
   it('CRUD a flow from the index page', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const now = Date.now()
     cy.writeData(
       [
@@ -34,7 +36,8 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
+    cy.getByTestID('renamable-page-title--input').clear().type('My Flow {enter}')
+    cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
@@ -73,6 +76,8 @@ describe('Flows', () => {
   })
 
   it('can execute preview, see results, change tags, execute preview, see different results', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const newBucketName = 'lets goooo'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -96,7 +101,8 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type('My Flow {enter}')
+    cy.getByTestID('renamable-page-title--input').clear().type('My Flow {enter}')
+    cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
     cy.get('.insert-cell-menu.always-on').contains('Add Another Panel')
@@ -197,7 +203,7 @@ describe('Flows', () => {
       .first()
       .click()
 
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input').clear().type(`${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     cy.getByTestID('page-title').contains(flowName)
@@ -301,7 +307,7 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input').clear().type(`${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
@@ -403,7 +409,7 @@ describe('Flows', () => {
     cy.getByTestID('page-title')
       .first()
       .click()
-    cy.getByTestID('renamable-page-title--input').type(`${flowName}{enter}`)
+    cy.getByTestID('renamable-page-title--input').clear().type(`${flowName}{enter}`)
     cy.wait('@updateNotebook')
 
     // "Add Another Panel" menu is present and there is a Query Builder button
@@ -570,6 +576,8 @@ describe('Flows', () => {
   })
 
   it('can create a Band plot without crashing', () => {
+    cy.intercept('PATCH', '/api/v2private/notebooks/*').as('updateNotebook')
+
     const newBucketName = 'lets goooo'
     const now = Date.now()
     cy.get<Organization>('@org').then(({id, name}: Organization) => {
@@ -596,6 +604,7 @@ describe('Flows', () => {
     cy.getByTestID('renamable-page-title--input').type(
       'I am not afraid of Band Plot {enter}'
     )
+    cy.wait('@updateNotebook')
 
     // select our bucket
     cy.getByTestID('bucket-selector').within(() => {

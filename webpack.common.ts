@@ -155,7 +155,9 @@ module.exports = {
       filename: `${STATIC_DIRECTORY}[contenthash:10].css`,
       chunkFilename: `${STATIC_DIRECTORY}[id].[contenthash:10].css`,
     }),
-    new WorkerPlugin(),
+    new WorkerPlugin({
+      filename: `${STATIC_DIRECTORY}[name].worker.[contenthash].js`,
+    }),
     new webpack.ProgressPlugin(),
     new webpack.EnvironmentPlugin({
       ...process.env,

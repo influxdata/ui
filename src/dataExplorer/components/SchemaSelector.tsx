@@ -1,4 +1,7 @@
-import React, {FC, createContext} from 'react'
+import React, {FC, createContext, useState} from 'react'
+
+// types
+import {Bucket, RemoteDataState} from 'src/types'
 
 interface NewDataExplorerContextType {
   bucket: Bucket

@@ -14,7 +14,9 @@ export class InstallDependencies extends PureComponent {
         <h1>Install Dependencies</h1>
         <p>
           First, you need to install the{' '}
-          <code style={{color: '#B7B8FF'}}>@influxdata/influxdb-client</code>{' '}
+          <code className="homepage-wizard--code-highlight">
+            @influxdata/influxdb-client
+          </code>{' '}
           module. Run the command below in your terminal.
         </p>
         <CodeSnippet
@@ -23,7 +25,7 @@ export class InstallDependencies extends PureComponent {
         />
         <p style={{fontStyle: 'italic'}}>
           You’ll need to have{' '}
-          <SafeBlankLink href="https://nodejs.org/download/release/latest-v14.x/">
+          <SafeBlankLink href="https://nodejs.org/en/">
             Node.js v14 LTS
           </SafeBlankLink>{' '}
           or higher installed.

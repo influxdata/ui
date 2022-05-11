@@ -58,11 +58,11 @@ const BrokerFormContent: FC<Props> = ({
       <Grid.Row>
         <Grid.Column widthSM={Columns.Twelve}>
           <Form.ValidationElement
-            label="Connection Name"
+            label="Subscription Name"
             value={formContent.name}
             required={true}
             validationFunc={() =>
-              handleValidation('Connection Name', formContent.name)
+              handleValidation('Subscription Name', formContent.name)
             }
             prevalidate={false}
           >

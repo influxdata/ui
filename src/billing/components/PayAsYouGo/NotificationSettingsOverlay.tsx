@@ -15,6 +15,7 @@ import {
   ComponentColor,
   ComponentStatus,
   InputType,
+  IconFont,
 } from '@influxdata/clockface'
 
 // Utils
@@ -126,6 +127,7 @@ const NotificationSettingsOverlay: FC<Props> = ({onHideOverlay}) => {
                   }
                 >
                   <Input
+                    icon={IconFont.CurrencyUSD}
                     type={InputType.Number}
                     min={10}
                     value={balanceThreshold}

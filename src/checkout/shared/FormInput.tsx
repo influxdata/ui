@@ -66,6 +66,7 @@ const FormInput: FC<Props> = ({label, required, id, ...args}) => {
         // 1. type
         // 2. min
         // 3. step
+        // 4. icon
         {...args}
       />
     </Form.Element>

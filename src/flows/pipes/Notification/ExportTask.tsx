@@ -71,7 +71,13 @@ const ExportTask: FC = () => {
       return acc
     }, {})
 
-    const conditions = THRESHOLD_TYPES[deadmanType].condition(deadman)
+    if (!data.measurement) {
+      throw new Error('please select a measurement.')
+    }
+    const measurement = `(r) => r["_measurement"] == "${data.measurement}"`
+
+    const conditions =
+      `(r) => ` + THRESHOLD_TYPES[deadmanType].condition(deadman)
     const imports = parse(`
 import "strings"
 import "regexp"
@@ -113,7 +119,10 @@ task_data = ${format_from_js_file(ast)}
 trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(
+  data.endpointData,
+  measurement
+)}
 |> monitor["deadman"](t: experimental["subDuration"](from: now(), d: ${
       deadman.deadmanCheckValue
     }))`
@@ -154,6 +163,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
     data.offset,
     data.endpointData,
     data.endpoint,
+    data.measurement,
     data.thresholds,
     data.message,
   ])
@@ -194,9 +204,16 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}
       return acc
     }, {})
 
-    const conditions = data.thresholds
-      .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
-      .join(' and ')
+    if (!data.measurement) {
+      throw new Error('please select a measurement.')
+    }
+    const measurement = `(r) => r["_measurement"] == "${data.measurement}"`
+
+    const conditions =
+      `(r) => ` +
+      data.thresholds
+        .map(threshold => THRESHOLD_TYPES[threshold.type].condition(threshold))
+        .join(' and ')
 
     const imports = parse(`
 import "strings"
@@ -238,7 +255,10 @@ task_data = ${format_from_js_file(ast)}
 trigger = ${conditions}
 messageFn = (r) => ("${data.message}")
 
-${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
+${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(
+  data.endpointData,
+  measurement
+)}`
 
     const newAST = parse(newQuery)
 
@@ -276,6 +296,7 @@ ${ENDPOINT_DEFINITIONS[data.endpoint]?.generateQuery(data.endpointData)}`
     data.offset,
     data.endpointData,
     data.endpoint,
+    data.measurement,
     data.thresholds,
     data.message,
   ])

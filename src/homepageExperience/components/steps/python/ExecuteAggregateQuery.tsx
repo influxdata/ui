@@ -36,7 +36,8 @@ tables = query_api.query(query, org="${org.name}")
 
 for table in tables:
     for record in table.records:
-        print(record)`
+        print(record)
+`
 
   return (
     <>
@@ -59,8 +60,9 @@ for table in tables:
         language="properties"
       />
       <p>
-        In this example, we use the mean() function to calculate the average of
-        data points in last 10 minutes.
+        In this example, we use the{' '}
+        <code className="homepage-wizard--code-highlight">mean()</code> function
+        to calculate the average value of data points in the last 10 minutes.
         <br />
         <br />
         Run the following:

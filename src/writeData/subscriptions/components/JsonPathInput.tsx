@@ -125,10 +125,24 @@ const JsonPathInput: FC<Props> = ({
                     : formContent.jsonFieldKeys[itemNum].name
                 }
                 onChange={e => {
-                  tagType
-                    ? (formContent.jsonTagKeys[itemNum].name = e.target.value)
-                    : (formContent.jsonFieldKeys[itemNum].name = e.target.value)
-                  updateForm({...formContent})
+                  let newArr
+                  if (tagType) {
+                    newArr = Object.assign([...formContent.jsonTagKeys], {
+                      [itemNum]: {
+                        ...formContent.jsonTagKeys[itemNum],
+                        name: e.target.value,
+                      },
+                    })
+                    updateForm({...formContent, jsonTagKeys: newArr})
+                  } else {
+                    newArr = Object.assign([...formContent.jsonFieldKeys], {
+                      [itemNum]: {
+                        ...formContent.jsonFieldKeys[itemNum],
+                        name: e.target.value,
+                      },
+                    })
+                    updateForm({...formContent, jsonFieldKeys: newArr})
+                  }
                 }}
                 onBlur={() =>
                   event(
@@ -234,10 +248,24 @@ const JsonPathInput: FC<Props> = ({
                   : formContent.jsonFieldKeys[itemNum].path
               }
               onChange={e => {
-                tagType
-                  ? (formContent.jsonTagKeys[itemNum].path = e.target.value)
-                  : (formContent.jsonFieldKeys[itemNum].path = e.target.value)
-                updateForm({...formContent})
+                let newArr
+                if (tagType) {
+                  newArr = Object.assign([...formContent.jsonTagKeys], {
+                    [itemNum]: {
+                      ...formContent.jsonTagKeys[itemNum],
+                      path: e.target.value,
+                    },
+                  })
+                  updateForm({...formContent, jsonTagKeys: newArr})
+                } else {
+                  newArr = Object.assign([...formContent.jsonFieldKeys], {
+                    [itemNum]: {
+                      ...formContent.jsonFieldKeys[itemNum],
+                      path: e.target.value,
+                    },
+                  })
+                  updateForm({...formContent, jsonFieldKeys: newArr})
+                }
               }}
               onBlur={() =>
                 event(

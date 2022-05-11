@@ -1,5 +1,15 @@
 // Libraries
-import React, {FC, useContext, useEffect, useMemo} from 'react'
+import React, {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from 'react'
+
+// Styles
+import './view.scss'
 
 // Components
 import {Icon, IconFont} from '@influxdata/clockface'
@@ -20,6 +30,64 @@ import {downloadTextFile} from 'src/shared/utils/download'
 
 // Constants
 import {UNPROCESSED_PANEL_TEXT} from 'src/flows'
+
+const QueryStat: FC = () => {
+  const {loading, results} = useContext(PipeContext)
+  const queryStart = useRef(0)
+  const [processTime, setProcessTime] = useState(0)
+  let tableNum = 0
+
+  const tableColumn = results.parsed.table?.getColumn('table') || []
+  const lastTableValue = tableColumn[tableColumn.length - 1]
+
+  if (typeof lastTableValue === 'string') {
+    tableNum = parseInt(lastTableValue) + 1
+  } else if (typeof lastTableValue === 'boolean') {
+    tableNum = lastTableValue ? 1 : 0
+  } else {
+    // number
+    tableNum = lastTableValue + 1
+  }
+
+  useEffect(() => {
+    if (loading === RemoteDataState.Loading) {
+      // start to count
+      if (queryStart.current === 0) {
+        queryStart.current = Date.now()
+        setProcessTime(0)
+      }
+      return
+    }
+
+    if (loading === RemoteDataState.Done && queryStart.current !== 0) {
+      const timePassed = Date.now() - queryStart.current // ms
+      queryStart.current = 0
+      setProcessTime(timePassed)
+      return
+    }
+
+    queryStart.current = 0
+    setProcessTime(0)
+  }, [loading])
+
+  const queryStat = {
+    tableNum,
+    rowNum: results.parsed.table?.length || 0,
+    processTime, // ms
+  }
+
+  if (loading !== RemoteDataState.Done) {
+    return null
+  }
+
+  return (
+    <div className="query-stat">
+      <span className="query-stat--bold">{`${queryStat.tableNum} tables`}</span>
+      <span className="query-stat--bold">{`${queryStat.rowNum} rows`}</span>
+      <span className="query-stat--normal">{`${queryStat.processTime} ms`}</span>
+    </div>
+  )
+}
 
 const Table: FC<PipeProp> = ({Context}) => {
   const {id, data, range, loading, results} = useContext(PipeContext)
@@ -115,6 +183,7 @@ const Table: FC<PipeProp> = ({Context}) => {
     <Context resizes controls={caveat}>
       <div className="flow-visualization" id={id}>
         <div className="flow-visualization--view">
+          <QueryStat />
           <View
             loading={loading}
             properties={

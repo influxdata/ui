@@ -11,9 +11,7 @@ import {
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 import WriteDataHelperBuckets from 'src/writeData/components/WriteDataHelperBuckets'
 import CodeSnippet from 'src/shared/components/CodeSnippet'
-import WriteDataDetailsContextProvider, {
-  WriteDataDetailsContext,
-} from 'src/writeData/components/WriteDataDetailsContext'
+import {WriteDataDetailsContext} from 'src/writeData/components/WriteDataDetailsContext'
 
 import {getOrg} from 'src/organizations/selectors'
 import DataListening from 'src/homepageExperience/components/DataListening'
@@ -55,24 +53,25 @@ org := "${org.name}"
 bucket := "${bucket.name}"
 writeAPI := client.WriteAPIBlocking(org, bucket)
 for value := 0; value < 5; value++ {
-    tags := map[string]string{
-        "tagname1": "tagvalue1",
-    }
-    fields := map[string]interface{}{
-        "field1": value,
-    }
-    point := write.NewPoint("measurement1", tags, fields, time.Now())
+	tags := map[string]string{
+		"tagname1": "tagvalue1",
+	}
+	fields := map[string]interface{}{
+		"field1": value,
+	}
+	point := write.NewPoint("measurement1", tags, fields, time.Now())
+	time.Sleep(1 * time.Second) // separate points by 1 second
 
-    if err := writeAPI.WritePoint(context.Background(), point); err != nil {
-        log.Fatal(err)
-    }
+	if err := writeAPI.WritePoint(context.Background(), point); err != nil {
+		log.Fatal(err)
+	}
 }`
 
   return (
     <>
       <h1>Write Data</h1>
       <p>
-        To start writing data, we need a place to our time-series store data. We
+        To start writing data, we need a place to store our time-series data. We
         call these{' '}
         <SafeBlankLink
           href={`orgs/${org.id}/load-data/buckets`}
@@ -98,8 +97,8 @@ for value := 0; value < 5; value++ {
       </p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '20px'}}>
-        In the above code snippet, we define five data points and write each on
-        the InfluxDB. Each of the 5 points we write has a{' '}
+        In the above code snippet, we define five data points and write each one
+        to InfluxDB. Each of the 5 points we write has a{' '}
         <SafeBlankLink
           href="https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#field-key"
           onClick={logDocsOpened}
@@ -129,9 +128,5 @@ for value := 0; value < 5; value++ {
 }
 
 export const WriteData = props => {
-  return (
-    <WriteDataDetailsContextProvider>
-      <WriteDataComponent onSelectBucket={props.onSelectBucket} />
-    </WriteDataDetailsContextProvider>
-  )
+  return <WriteDataComponent onSelectBucket={props.onSelectBucket} />
 }

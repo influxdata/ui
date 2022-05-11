@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const path = require('path')
 const {dependencies} = require('./package.json')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+const {STATIC_DIRECTORY} = require('./src/utils/env')
 
 // only dll infrequently updated dependencies
 const vendor = Object.keys(dependencies).filter(
@@ -78,7 +79,7 @@ module.exports = {
     }),
     new MonacoWebpackPlugin({
       languages: ['json', 'markdown'],
-      filename: '[name].worker.[contenthash].js',
+      filename: `${STATIC_DIRECTORY}[name].worker.[contenthash].js`,
       globalAPI: true,
     }),
   ],

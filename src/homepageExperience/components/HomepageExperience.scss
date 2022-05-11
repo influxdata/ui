@@ -11,11 +11,6 @@ h1#first-mile--header {
   display: flex;
   height: 100%;
   width: 100%;
-
-  padding-top: 71px;
-  padding-right: 85px;
-
-  overflow-y: scroll;
 }
 
 .homepage-wizard-container--subway {
@@ -110,4 +105,8 @@ h1#first-mile--header {
   padding-left: 16px;
   padding-right: 16px;
   max-width: 493px;
+}
+
+.homepage-wizard--code-highlight {
+  color: #b7b8ff;
 }

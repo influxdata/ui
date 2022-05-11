@@ -16,7 +16,9 @@ export const InitalizeClient = () => {
   const url =
     me.quartzMe?.clusterHost || 'https://us-west-2-1.aws.cloud2.influxdata.com/'
 
-  const codeSnippet = `const {InfluxDB, Point} = require('@influxdata/influxdb-client')
+  const codeSnippet = `repl.repl.ignoreUndefined=true
+
+const {InfluxDB, Point} = require('@influxdata/influxdb-client')
 
 const token = process.env.INFLUXDB_TOKEN
 const url = '${url}'
@@ -35,9 +37,11 @@ const client = new InfluxDB({url, token})`
       </p>
       <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
       <p style={{marginTop: '42px'}}>
-        Here, we initialize the token, organization info, and server url that is
-        needed to set up the initial connection to InfluxDB. The client
-        connection is then established with InfluxDBClient initialization.
+        Here, we initialize the token, organization info, and server url that
+        are needed to set up the initial connection to InfluxDB. The client
+        connection is then established with the{' '}
+        <code className="homepage-wizard--code-highlight">InfluxDB</code>{' '}
+        initialization.
       </p>
     </>
   )

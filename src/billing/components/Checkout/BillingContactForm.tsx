@@ -13,6 +13,8 @@ import {
   ComponentSize,
   FlexBox,
   JustifyContent,
+  InputType,
+  ButtonType,
 } from '@influxdata/clockface'
 import {useDispatch} from 'react-redux'
 
@@ -43,6 +45,7 @@ const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
   const dispatch = useDispatch()
 
   const [inputs, setInputs] = useState({
+    email: contact.email,
     firstName: contact.firstName,
     lastName: contact.lastName,
     companyName: contact.companyName,
@@ -65,6 +68,7 @@ const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
   const requiredErrorText = 'This is a required field'
 
   const requiredFields = [
+    'email',
     'firstName',
     'lastName',
     'city',
@@ -116,6 +120,7 @@ const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
 
   const handleConfirmContactInfo = async () => {
     const contact = {
+      email: inputs.email,
       firstName: inputs.firstName,
       lastName: inputs.lastName,
       companyName: inputs.companyName,
@@ -140,144 +145,158 @@ const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
   }
 
   return (
-    <>
+    <Form onSubmit={handleConfirmContactInfo}>
       <Panel.Body size={ComponentSize.Large}>
-        <Form>
-          <Grid>
-            <Grid.Row>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element
-                  label="First Name"
-                  required={true}
-                  errorMessage={errorType === 'firstName' && requiredErrorText}
-                >
-                  <Input
-                    autoFocus={true}
-                    onChange={handleInputChange}
-                    name="firstName"
-                    titleText="First Name"
-                    value={inputs.firstName}
-                    testID="form-input--firstname"
-                  />
-                </Form.Element>
-              </Grid.Column>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element
-                  label="Last Name"
-                  required={true}
-                  errorMessage={errorType === 'lastName' && requiredErrorText}
-                >
-                  <Input
-                    onChange={handleInputChange}
-                    name="lastName"
-                    titleText="Last Name"
-                    value={inputs.lastName}
-                    testID="form-input--lastname"
-                  />
-                </Form.Element>
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element
-                  label="Company Name"
-                  required={true}
-                  errorMessage={
-                    errorType === 'companyName' && requiredErrorText
-                  }
-                >
-                  <Input
-                    onChange={handleInputChange}
-                    name="companyName"
-                    titleText="Company Name"
-                    value={inputs.companyName}
-                  />
-                </Form.Element>
-              </Grid.Column>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element
-                  label="Country"
-                  required={true}
-                  errorMessage={countryError && requiredErrorText}
-                >
-                  <SelectDropdown
-                    options={countries}
-                    selectedOption={country}
-                    onSelect={handleChangeCountry}
-                    buttonColor={ComponentColor.Default}
-                  />
-                </Form.Element>
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element label="Address Street 1">
-                  <Input
-                    onChange={handleInputChange}
-                    name="street1"
-                    titleText="Address Street 1"
-                    value={inputs.street1}
-                  />
-                </Form.Element>
-              </Grid.Column>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element label="Address Street 2">
-                  <Input
-                    onChange={handleInputChange}
-                    name="street2"
-                    titleText="Address Street 2"
-                    value={inputs.street2}
-                  />
-                </Form.Element>
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element
-                  label="City"
-                  required={true}
-                  errorMessage={errorType === 'city' && requiredErrorText}
-                >
-                  <Input
-                    onChange={handleInputChange}
-                    name="city"
-                    titleText="City"
-                    value={inputs.city}
-                  />
-                </Form.Element>
-              </Grid.Column>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <BillingContactSubdivision
-                  states={states}
-                  country={country}
-                  subdivision={subdivision}
-                  errorMessage={subdivisionError && requiredErrorText}
-                  onChange={handleChangeSubdivision}
+        <Grid>
+          <Grid.Row>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Eight}>
+              <Form.Element
+                label="Email Address"
+                required={true}
+                errorMessage={errorType === 'email' && requiredErrorText}
+              >
+                <Input
+                  autoFocus={true}
+                  onChange={handleInputChange}
+                  name="email"
+                  titleText="Email Address"
+                  value={inputs.email}
+                  type={InputType.Email}
+                  testID="form-input--email"
                 />
-              </Grid.Column>
-              <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
-                <Form.Element
-                  label="Postal Code"
-                  required={true}
-                  errorMessage={errorType === 'postalCode' && requiredErrorText}
-                >
-                  <Input
-                    onChange={handleInputChange}
-                    name="postalCode"
-                    titleText="Postal Code"
-                    value={inputs.postalCode}
-                  />
-                </Form.Element>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Form>
+              </Form.Element>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <Form.Element
+                label="First Name"
+                required={true}
+                errorMessage={errorType === 'firstName' && requiredErrorText}
+              >
+                <Input
+                  onChange={handleInputChange}
+                  name="firstName"
+                  titleText="First Name"
+                  value={inputs.firstName}
+                  testID="form-input--firstname"
+                />
+              </Form.Element>
+            </Grid.Column>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <Form.Element
+                label="Last Name"
+                required={true}
+                errorMessage={errorType === 'lastName' && requiredErrorText}
+              >
+                <Input
+                  onChange={handleInputChange}
+                  name="lastName"
+                  titleText="Last Name"
+                  value={inputs.lastName}
+                  testID="form-input--lastname"
+                />
+              </Form.Element>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <Form.Element
+                label="Company Name"
+                required={true}
+                errorMessage={errorType === 'companyName' && requiredErrorText}
+              >
+                <Input
+                  onChange={handleInputChange}
+                  name="companyName"
+                  titleText="Company Name"
+                  value={inputs.companyName}
+                />
+              </Form.Element>
+            </Grid.Column>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <Form.Element
+                label="Country"
+                required={true}
+                errorMessage={countryError && requiredErrorText}
+              >
+                <SelectDropdown
+                  options={countries}
+                  selectedOption={country}
+                  onSelect={handleChangeCountry}
+                  buttonColor={ComponentColor.Default}
+                />
+              </Form.Element>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <Form.Element label="Address Street 1">
+                <Input
+                  onChange={handleInputChange}
+                  name="street1"
+                  titleText="Address Street 1"
+                  value={inputs.street1}
+                />
+              </Form.Element>
+            </Grid.Column>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <Form.Element label="Address Street 2">
+                <Input
+                  onChange={handleInputChange}
+                  name="street2"
+                  titleText="Address Street 2"
+                  value={inputs.street2}
+                />
+              </Form.Element>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <Form.Element
+                label="City"
+                required={true}
+                errorMessage={errorType === 'city' && requiredErrorText}
+              >
+                <Input
+                  onChange={handleInputChange}
+                  name="city"
+                  titleText="City"
+                  value={inputs.city}
+                />
+              </Form.Element>
+            </Grid.Column>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <BillingContactSubdivision
+                states={states}
+                country={country}
+                subdivision={subdivision}
+                errorMessage={subdivisionError && requiredErrorText}
+                onChange={handleChangeSubdivision}
+              />
+            </Grid.Column>
+            <Grid.Column widthXS={Columns.Twelve} widthSM={Columns.Four}>
+              <Form.Element
+                label="Postal Code"
+                required={true}
+                errorMessage={errorType === 'postalCode' && requiredErrorText}
+              >
+                <Input
+                  onChange={handleInputChange}
+                  name="postalCode"
+                  titleText="Postal Code"
+                  value={inputs.postalCode}
+                />
+              </Form.Element>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </Panel.Body>
       <Panel.Footer>
         <FlexBox justifyContent={JustifyContent.Center}>
           <Button
             text="Save Contact Info"
-            onClick={handleConfirmContactInfo}
+            type={ButtonType.Submit}
             color={ComponentColor.Primary}
             size={ComponentSize.Large}
             status={
@@ -289,7 +308,7 @@ const BillingContactForm: FC<Props> = ({toggleEditingOff}) => {
           />
         </FlexBox>
       </Panel.Footer>
-    </>
+    </Form>
   )
 }
 

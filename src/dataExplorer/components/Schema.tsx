@@ -1,9 +1,10 @@
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 
 // Components
 import {IconFont, Icon, FlexBox} from '@influxdata/clockface'
 import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
+import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 
 // Style
 import './Schema.scss'
@@ -27,6 +28,13 @@ const SelectorTitle: FC<TitleProps> = ({title, info = ''}) => {
 }
 
 const Schema: FC = () => {
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const handleSearchFieldsTags = (searchTerm: string): void => {
+    console.log('Search: ', searchTerm)
+    setSearchTerm(searchTerm)
+  }
+
   return (
     <div>
       <div>Data Selection</div>
@@ -39,7 +47,13 @@ const Schema: FC = () => {
         <MeasurementSelector />
       </div>
       <div>
-        <div>[Search bar for fields and tags]</div>
+        <div style={{padding: '8px 0'}}>
+          <SearchWidget
+            placeholderText="Search fields and tags"
+            onSearch={handleSearchFieldsTags}
+            searchTerm={searchTerm}
+          />
+        </div>
         <div>
           <SelectorTitle title="Fields" />
           <div>[Fields list]</div>

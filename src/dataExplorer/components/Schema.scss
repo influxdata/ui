@@ -12,3 +12,20 @@
 .fields-tags-search-bar {
   padding: $cf-space-2xs 0;
 }
+
+.fields-selector .cf-accordion--icon,
+.tag-keys-selector .cf-accordion--icon {
+  color: gray;
+}
+
+.fields-selector--header,
+.tag-keys-selector--header {
+  background-color: transparent;
+  min-height: 0;
+  padding: 0;
+}
+
+.fields-selector--list-item,
+.tag-keys-selector--list-item {
+  padding: $cf-space-3xs 0 $cf-space-3xs $cf-space-2xs;
+}

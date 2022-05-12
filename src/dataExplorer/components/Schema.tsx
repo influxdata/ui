@@ -3,6 +3,7 @@ import React, {FC} from 'react'
 // Components
 import {IconFont, Icon, FlexBox} from '@influxdata/clockface'
 import BucketSelector from 'src/dataExplorer/components/BucketSelector'
+import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 
 // Style
 import './Schema.scss'
@@ -35,7 +36,7 @@ const Schema: FC = () => {
       </div>
       <div>
         <SelectorTitle title="Measurement" />
-        <div>[Measurement dropdown]</div>
+        <MeasurementSelector />
       </div>
       <div>
         <div>[Search bar for fields and tags]</div>

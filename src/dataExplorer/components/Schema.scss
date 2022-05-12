@@ -1,7 +1,26 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
+.scroll--container {
+  position:absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin-top: $cf-space-l;
+}
+
+.data-schema {
+  padding-right: $cf-space-xs;
+}
+
+.container-side-bar {
+  border-left: 1px solid $cf-grey-25;
+  margin-top: $cf-space-2xs;
+  padding-left: $cf-space-2xs;
+}
+
 .selector-title {
-  padding: $cf-space-2xs 0;
+  padding-bottom: $cf-space-2xs;
 }
 
 .selector-title--icon {

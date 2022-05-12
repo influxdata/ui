@@ -1,6 +1,7 @@
 import React, {FC, useState} from 'react'
 
 // Components
+import {DapperScrollbars} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import BucketSelector from './BucketSelector'
 import MeasurementSelector from './MeasurementSelector'
@@ -21,26 +22,26 @@ const Schema: FC = () => {
   return (
     <div>
       <div>Data Selection</div>
-      <div>
-        <BucketSelector />
-      </div>
-      <div>
-        <MeasurementSelector />
-      </div>
-      <div>
-        <div className="fields-tags-search-bar">
-          <SearchWidget
-            placeholderText="Search fields and tags"
-            onSearch={handleSearchFieldsTags}
-            searchTerm={searchTerm}
-          />
-        </div>
-        <div>
-          <FieldsSelector />
-        </div>
-        <div>
-          <TagKeysSelector />
-        </div>
+      <div className="scroll--container">
+        <DapperScrollbars>
+          <div className="data-schema">
+            <BucketSelector />
+            <div className="container-side-bar">
+              <MeasurementSelector />
+              <div>
+                <div className="fields-tags-search-bar">
+                  <SearchWidget
+                    placeholderText="Search fields and tags"
+                    onSearch={handleSearchFieldsTags}
+                    searchTerm={searchTerm}
+                  />
+                </div>
+                <FieldsSelector />
+                <TagKeysSelector />
+              </div>
+            </div>
+          </div>
+        </DapperScrollbars>
       </div>
     </div>
   )

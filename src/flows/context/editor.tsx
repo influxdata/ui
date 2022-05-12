@@ -81,16 +81,13 @@ export const EditorProvider: FC = ({children}) => {
         shouldStartWithNewLine,
         shouldEndInNewLine,
       } = calcInjectiontPosition(type)
-      let text = ''
 
+      let text = initT.trimRight()
       if (shouldStartWithNewLine) {
-        text = `\n${initT}`
-      } else {
-        text = initT
+        text = `\n${text}`
       }
-
       if (shouldEndInNewLine) {
-        text = `${text.trim()}\n`
+        text = `${text}\n`
       }
 
       const column = type == InjectionType.OnOwnLine ? 1 : initC
@@ -102,13 +99,13 @@ export const EditorProvider: FC = ({children}) => {
         },
       ]
 
-      if (
+      const addHeader =
         header &&
         !editor
           .getModel()
           .getValue()
           .includes(header)
-      ) {
+      if (addHeader) {
         edits.unshift({
           range: new monaco.Range(1, 1, 1, 1),
           text: `${header}\n`,
@@ -119,11 +116,18 @@ export const EditorProvider: FC = ({children}) => {
       updateText(editor.getValue())
 
       if (isFlagEnabled('fluxDynamicDocs') && triggerSuggest) {
+        let columnOffset = 1
+        if (shouldStartWithNewLine) {
+          columnOffset++
+        }
+        if (shouldEndInNewLine) {
+          columnOffset++
+        }
         setTimeout(() => {
           editor.focus()
           editor.setPosition({
-            lineNumber: row,
-            column: column + text.length - 1,
+            lineNumber: addHeader ? row + 1 : row,
+            column: column + text.length - columnOffset,
           })
           editor.trigger('', 'editor.action.triggerSuggest', {})
         }, 0)

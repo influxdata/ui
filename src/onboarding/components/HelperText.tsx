@@ -1,9 +1,5 @@
 import React, {FC} from 'react'
-import {
-  FontWeight,
-  Heading,
-  HeadingElement,
-} from '@influxdata/clockface'
+import {FontWeight, Heading, HeadingElement} from '@influxdata/clockface'
 
 const HelperText: FC = ({children}) => (
   <Heading

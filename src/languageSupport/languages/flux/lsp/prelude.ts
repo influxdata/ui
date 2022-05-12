@@ -12,7 +12,6 @@ class Prelude {
   private _worker: Worker
   private _model: MonacoTypes.editor.IModel
   private _preludeModel: MonacoTypes.editor.IModel
-  private _unsubscribe
   private _variables: Variable[] = []
 
   constructor(worker: Worker) {
@@ -56,7 +55,7 @@ class Prelude {
   }
 
   dispose() {
-    this._unsubscribe()
+    this._model.onDidChangeContent(null)
   }
 }
 

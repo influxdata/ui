@@ -20,6 +20,7 @@ import FLUXLANGID from 'src/languageSupport/languages/flux/monaco.flux.syntax'
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import fluxWorkerUrl from 'worker-plugin/loader!./worker/flux.worker'
+import Fallback from 'src/languageSupport/languages/flux/lsp/worker/flux.fallback'
 import {EditorType} from 'src/types'
 
 // install Monaco language client services
@@ -57,19 +58,20 @@ export function initLspWorker() {
   }
   if (window.Worker) {
     worker = new Worker(fluxWorkerUrl)
-    prelude = new Prelude(worker)
-
-    messageReader = new BrowserMessageReader(worker)
-    messageWriter = new BrowserMessageWriter(worker)
-    const connection = createMessageConnection(messageReader, messageWriter)
-    const languageClient = createLanguageClient(connection)
-    const disposable = languageClient.start()
-    connection.onClose(() => {
-      disposable.dispose()
-      prelude.dispose()
-    })
+  } else {
+    worker = new Fallback()
   }
-  // FIXME TODO: backup => on same thread
+  prelude = new Prelude(worker)
+
+  messageReader = new BrowserMessageReader(worker)
+  messageWriter = new BrowserMessageWriter(worker)
+  const connection = createMessageConnection(messageReader, messageWriter)
+  const languageClient = createLanguageClient(connection)
+  const disposable = languageClient.start()
+  connection.onClose(() => {
+    disposable.dispose()
+    prelude.dispose()
+  })
 }
 initLspWorker()
 

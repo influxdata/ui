@@ -38,7 +38,7 @@ const ResultsPane: FC = () => {
     INITIAL_HORIZ_RESIZER_HANDLE,
   ])
   const {basic, query} = useContext(QueryContext)
-  const {status, setStatus, setResult} = useContext(ResultsContext)
+  const {status, setStatus, setResult, setTime} = useContext(ResultsContext)
 
   const [text, setText] = useState('')
   const [timeRange, setTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
@@ -55,19 +55,46 @@ const ResultsPane: FC = () => {
   }
 
   const submit = () => {
+    let timeRangeStart, timeRangeStop
+
+    if (!timeRange) {
+      timeRangeStart = timeRangeStop = null
+    } else {
+      if (timeRange.type === 'selectable-duration') {
+        timeRangeStart = '-' + timeRange.duration
+      } else if (timeRange.type === 'duration') {
+        timeRangeStart = '-' + timeRange.lower
+      } else if (isNaN(Date.parse(timeRange.lower))) {
+        timeRangeStart = null
+      } else {
+        timeRangeStart = new Date(timeRange.lower).toISOString()
+      }
+
+      if (!timeRange.upper) {
+        timeRangeStop = 'now()'
+      } else if (isNaN(Date.parse(timeRange.upper))) {
+        timeRangeStop = null
+      } else {
+        timeRangeStop = new Date(timeRange.upper).toISOString()
+      }
+    }
+
     setStatus(RemoteDataState.Loading)
+    const time = Date.now()
     query(text, {
       vars: {
-        timeRangeStart: '-1h',
-        timeRangeStop: 'now()',
+        timeRangeStart,
+        timeRangeStop,
       },
     })
       .then(r => {
         setResult(r)
         setStatus(RemoteDataState.Done)
+        setTime(Date.now() - time)
       })
       .catch(() => {
         setStatus(RemoteDataState.Error)
+        setTime(0)
       })
   }
 

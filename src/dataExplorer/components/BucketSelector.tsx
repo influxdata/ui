@@ -1,10 +1,13 @@
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 const BucketSelector: FC = () => {
+  // TODO: change to context later
+  const [selectedBucket, setSelectedBucket] = useState(null)
+
   const buckets = [
     {type: 'sample', name: 'Air Sensor Data', id: 'airSensor'},
     {type: 'sample', name: 'Coinbase bitcoin price', id: 'bitcoin'},
@@ -12,14 +15,23 @@ const BucketSelector: FC = () => {
     {type: 'sample', name: 'USGS Earthquakes', id: 'usgs'},
   ]
 
+  const handleSelectBucket = (option: string) => {
+    const selected = buckets.find(b => b.name === option)
+    setSelectedBucket(selected)
+  }
+
+  const handleChangeSearchTerm = (value: string) => {
+    console.log(value)
+  }
+
   return (
     <SearchableDropdown
       searchTerm="" // TODO: variable
       searchPlaceholder="Search buckets"
-      selectedOption="Select bucket..." // TODO
-      onSelect={option => console.log(option)}
-      onChangeSearchTerm={value => console.log(value)}
-      options={[1, 2, 3]}
+      selectedOption={selectedBucket?.name || 'Select bucket...'}
+      onSelect={handleSelectBucket}
+      onChangeSearchTerm={handleChangeSearchTerm}
+      options={buckets.map(b => b.name)}
       buttonStatus={ComponentStatus.Default}
       testID="bucket-selector--dropdown"
       buttonTestID="bucket-selector--dropdown-button"

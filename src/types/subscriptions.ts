@@ -27,6 +27,7 @@ export interface Subscription {
   tokenID?: string
   token?: string
   isActive?: string
+  flowVersion?: number
 }
 
 export interface JsonSpec {

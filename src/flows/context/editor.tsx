@@ -13,12 +13,13 @@ import {
   calcInjectionPosition,
 } from 'src/shared/utils/fluxFunctions'
 export {InjectionType, InjectionPosition} from 'src/shared/utils/fluxFunctions'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export interface InjectionOptions {
   header?: string | null
   text: string
   type: InjectionType
-  typeParansAfter?: boolean
+  triggerSuggest?: boolean
 }
 
 export interface EditorContextType {
@@ -73,7 +74,7 @@ export const EditorProvider: FC = ({children}) => {
         return {}
       }
 
-      const {header, text: initT, type, typeParansAfter} = options
+      const {header, text: initT, type, triggerSuggest} = options
       const {
         row,
         column: initC,
@@ -116,7 +117,8 @@ export const EditorProvider: FC = ({children}) => {
 
       editor.executeEdits('', edits)
       updateText(editor.getValue())
-      if (typeParansAfter) {
+
+      if (isFlagEnabled('fluxDynamicDocs') && triggerSuggest) {
         setTimeout(() => {
           editor.focus()
           editor.setPosition({

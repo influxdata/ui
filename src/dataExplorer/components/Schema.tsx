@@ -2,9 +2,11 @@ import React, {FC, useState} from 'react'
 
 // Components
 import {IconFont, Icon, FlexBox} from '@influxdata/clockface'
-import BucketSelector from 'src/dataExplorer/components/BucketSelector'
-import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
+import BucketSelector from './BucketSelector'
+import MeasurementSelector from './MeasurementSelector'
+import FieldsSelector from './FieldsSelector'
+import TagKeysSelector from './TagKeysSelector'
 
 // Style
 import './Schema.scss'
@@ -47,7 +49,7 @@ const Schema: FC = () => {
         <MeasurementSelector />
       </div>
       <div>
-        <div style={{padding: '8px 0'}}>
+        <div className="fields-tags-search-bar">
           <SearchWidget
             placeholderText="Search fields and tags"
             onSearch={handleSearchFieldsTags}
@@ -56,13 +58,11 @@ const Schema: FC = () => {
         </div>
         <div>
           <SelectorTitle title="Fields" />
-          <div>[Fields list]</div>
-          <div>Load More</div>
+          <FieldsSelector />
         </div>
         <div>
           <SelectorTitle title="Tag Keys" />
-          <div>[Tag List]</div>
-          <div>Lode More</div>
+          <TagKeysSelector />
         </div>
       </div>
     </div>

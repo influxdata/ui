@@ -19,7 +19,11 @@ export interface InjectionOptions {
   header?: string | null
   text: string
   type: InjectionType
+<<<<<<< HEAD
   triggerSuggest?: boolean
+=======
+  typeParansAfter?: boolean
+>>>>>>> 9d4ebb32a (fix(4720): enable LSP suggestions when inserting functions)
 }
 
 export interface EditorContextType {
@@ -62,8 +66,12 @@ export const EditorProvider: FC = ({children}) => {
         return {}
       }
 
+<<<<<<< HEAD
       const {header, text: initT, type, triggerSuggest} = options
       const injectionPosition = calcInjectionPosition(editor, type)
+=======
+      const {header, text: initT, type, typeParansAfter} = options
+>>>>>>> 9d4ebb32a (fix(4720): enable LSP suggestions when inserting functions)
       const {
         row,
         column: initC,
@@ -76,7 +84,7 @@ export const EditorProvider: FC = ({children}) => {
         text = `\n${text}`
       }
       if (shouldEndInNewLine) {
-        text = `${text}\n`
+        text = `${text.trim()}\n`
       }
 
       const column = type == InjectionType.OnOwnLine ? 1 : initC

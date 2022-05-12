@@ -2,8 +2,8 @@
 import React, {FC, createContext, useContext, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
-import SyntaxHighlighter from 'react-syntax-highlighter'
-import {stackoverflowDark as syntaxTheme} from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
+import {okaidia as syntaxTheme} from 'react-syntax-highlighter/dist/cjs/styles/prism'
 
 // Components
 import {DapperScrollbars, InfluxColors} from '@influxdata/clockface'

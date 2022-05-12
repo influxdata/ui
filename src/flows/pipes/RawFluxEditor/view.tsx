@@ -109,6 +109,7 @@ const Query: FC<PipeProp> = ({Context}) => {
         text,
         type,
         header: getHeader(fn),
+        typeParansAfter: true,
       }
       inject(options)
     },

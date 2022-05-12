@@ -56,8 +56,8 @@ export const getFluxExample = (func: FluxFunction) => {
     }
     example =
       packageName === 'universe'
-        ? `${name}(${injectedParameters})`
-        : `${packageName}.${name}(${injectedParameters})`
+        ? `${name}(${injectedParameters.trim()})`
+        : `${packageName}.${name}(${injectedParameters.trim()})`
   }
   return {...func, example}
 }

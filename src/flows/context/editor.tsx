@@ -18,6 +18,7 @@ export interface InjectionOptions {
   header?: string | null
   text: string
   type: InjectionType
+  typeParansAfter?: boolean
 }
 
 export interface EditorContextType {
@@ -72,7 +73,7 @@ export const EditorProvider: FC = ({children}) => {
         return {}
       }
 
-      const {header, text: initT, type} = options
+      const {header, text: initT, type, typeParansAfter} = options
       const {
         row,
         column: initC,
@@ -88,7 +89,7 @@ export const EditorProvider: FC = ({children}) => {
       }
 
       if (shouldEndInNewLine) {
-        text = `${text}\n`
+        text = `${text.trim()}\n`
       }
 
       const column = type == InjectionType.OnOwnLine ? 1 : initC
@@ -115,6 +116,16 @@ export const EditorProvider: FC = ({children}) => {
 
       editor.executeEdits('', edits)
       updateText(editor.getValue())
+      if (typeParansAfter) {
+        setTimeout(() => {
+          editor.focus()
+          editor.setPosition({
+            lineNumber: row,
+            column: column + text.length - 1,
+          })
+          editor.trigger('', 'editor.action.triggerSuggest', {})
+        }, 0)
+      }
     },
     [editor, calcInjectiontPosition, updateText]
   )

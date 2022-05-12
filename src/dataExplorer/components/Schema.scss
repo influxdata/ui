@@ -1,0 +1,10 @@
+@import '@influxdata/clockface/dist/variables.scss';
+
+.selector-title {
+  padding: $cf-space-2xs 0;
+}
+
+.selector-title--icon {
+  padding-left: $cf-space-2xs;
+  color: $cf-grey-35;
+}

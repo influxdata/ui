@@ -1,8 +1,12 @@
-import React, {FC, useState} from 'react'
+import React, {FC, useState, useContext} from 'react'
 import {FlexBox, FlexDirection, ComponentStatus} from '@influxdata/clockface'
+
+import {RemoteDataState, SimpleTableViewProperties} from 'src/types'
+import {ResultsContext} from 'src/dataExplorer/components/ResultsContext'
 
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TimeZoneDropdown from 'src/shared/components/TimeZoneDropdown'
+import {View} from 'src/visualization'
 
 import './Results.scss'
 
@@ -48,6 +52,26 @@ const EmptyResults: FC = () => {
 
 const Results: FC = () => {
   const [search, setSearch] = useState('')
+  const {result, status} = useContext(ResultsContext)
+
+  let resultView
+
+  if (status === RemoteDataState.NotStarted) {
+    resultView = <EmptyResults />
+  } else {
+    resultView = (
+      <View
+        loading={status}
+        properties={
+          {
+            type: 'simple-table',
+            showAll: false,
+          } as SimpleTableViewProperties
+        }
+        result={result.parsed}
+      />
+    )
+  }
 
   return (
     <div className="data-explorer-results">
@@ -59,7 +83,11 @@ const Results: FC = () => {
                 placeholderText="Search results..."
                 onSearch={setSearch}
                 searchTerm={search}
-                status={ComponentStatus.Disabled}
+                status={
+                  status === RemoteDataState.Done
+                    ? ComponentStatus.Default
+                    : ComponentStatus.Disabled
+                }
               />
             </div>
             <QueryStat />
@@ -68,7 +96,7 @@ const Results: FC = () => {
             </div>
           </FlexBox>
         </div>
-        <EmptyResults />
+        {resultView}
       </FlexBox>
     </div>
   )

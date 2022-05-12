@@ -12,7 +12,7 @@ There are multiple approaches to custom language service utilization. There are 
         - example for v0.18.1: https://github.com/TypeFox/monaco-languageclient/blob/v0.18.1/examples/browser/src/client.ts
     - list features:
         - https://code.visualstudio.com/api/language-extensions/programmatic-language-features 
-    - our current approach:
+    - our current/old approach:
         - uses providers, but then communicate with a jsonRpc server.
             - so we use providers --> do work --> make jsonRpc --> Lsp
             - listen Lsp --> parse --> do work --> interface back to monaco
@@ -26,6 +26,7 @@ There are multiple approaches to custom language service utilization. There are 
 .
 
 2. use a dedicted, custom language worker
+    - **We did not use this approach.** This is here is case you are reading the various example docs in the repos.
     - write a custom worker, and load as a dedicated worker of the monaco-editor
     - examples: 
         - https://github.com/microsoft/monaco-editor/tree/main/src/language
@@ -44,7 +45,7 @@ There are multiple approaches to custom language service utilization. There are 
             - https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers#dedicated_workers
         - our LspServer does not already expose these API methods.
             - It follows a different model, with JSON-RPC websocket communication.
-            - Therefore, we would have to again re-write alot of this same logic.
+            - Therefore, we would have to again re-write alot of this same logic (from the old code).
 
 .
 
@@ -56,11 +57,8 @@ There are multiple approaches to custom language service utilization. There are 
     - example: https://github.com/TypeFox/monaco-languageclient/tree/v0.18.1/example
         - note: this example does not utilize another worker thread. so I had to modify.
             - basically, instead of a web socket...we have channels with the worker.
-            - after PoC, will switch to connection via SharedArrayBuffer (very fast).
+            - if needed, later we can switch to connection via SharedArrayBuffer (very fast).
     - Pros:
         - the communication is based on jsonRpc to a listening service, without us manually re-inventing code
-    - Cons:
-        - still need to decide how to manually do variable expansion
-
-
+        - our only customization is in defining the variables, which are transmitted as a separate prelude document (LSP reads both). Line counts are retained.
 

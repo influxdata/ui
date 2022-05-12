@@ -31,11 +31,15 @@ const client = new InfluxDB({url, token})`
       <p>
         Run this command in your terminal to open the interactive Nodejs shell:
       </p>
-      <CodeSnippet text="node" />
+      <CodeSnippet text="node" language="properties" />
       <p style={{marginTop: '40px'}}>
         Paste the following code after the prompt (>) and press Enter.
       </p>
-      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet
+        text={codeSnippet}
+        onCopy={logCopyCodeSnippet}
+        language="javascript"
+      />
       <p style={{marginTop: '42px'}}>
         Here, we initialize the token, organization info, and server url that
         are needed to set up the initial connection to InfluxDB. The client

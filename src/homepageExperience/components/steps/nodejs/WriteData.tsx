@@ -48,8 +48,7 @@ export const WriteDataComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket])
 
-  const codeSnippet = `
-let org = \`${org.name}\`
+  const codeSnippet = `let org = \`${org.name}\`
 let bucket = \`${bucket.name}\`
 
 let writeClient = client.getWriteApi(org, bucket, 'ns')
@@ -94,7 +93,11 @@ for (let i = 0; i < 5; i++) {
         </Panel.Body>
       </Panel>
       <p>Run the following code in your Nodejs shell:</p>
-      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet
+        text={codeSnippet}
+        onCopy={logCopyCodeSnippet}
+        language="javascript"
+      />
       <p style={{marginTop: '20px'}}>
         In the above code snippet, we define five data points and write each one
         to InfluxDB. Each of the 5 points we write has a{' '}

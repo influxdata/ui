@@ -120,7 +120,11 @@ const ResultsPane: FC = () => {
                 />
               }
             >
-              <FluxMonacoEditor script={text} onChangeScript={setText} />
+              <FluxMonacoEditor
+                variables={[]}
+                script={text}
+                onChangeScript={setText}
+              />
             </Suspense>
           </div>
           <div style={{width: '100%'}}>

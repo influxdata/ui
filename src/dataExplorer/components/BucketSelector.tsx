@@ -2,6 +2,7 @@ import React, {FC, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
+import SelectorTitle from './SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 const BucketSelector: FC = () => {
@@ -25,20 +26,23 @@ const BucketSelector: FC = () => {
   }
 
   return (
-    <SearchableDropdown
-      searchTerm="" // TODO: variable
-      searchPlaceholder="Search buckets"
-      selectedOption={selectedBucket?.name || 'Select bucket...'}
-      onSelect={handleSelectBucket}
-      onChangeSearchTerm={handleChangeSearchTerm}
-      options={buckets.map(b => b.name)}
-      buttonStatus={ComponentStatus.Default}
-      testID="bucket-selector--dropdown"
-      buttonTestID="bucket-selector--dropdown-button"
-      menuTestID="bucket-selector--dropdown-menu"
-      emptyText="No Buckets Found"
-      iconOn={true}
-    />
+    <div>
+      <SelectorTitle title="Bucket" />
+      <SearchableDropdown
+        searchTerm="" // TODO: variable
+        searchPlaceholder="Search buckets"
+        selectedOption={selectedBucket?.name || 'Select bucket...'}
+        onSelect={handleSelectBucket}
+        onChangeSearchTerm={handleChangeSearchTerm}
+        options={buckets.map(b => b.name)}
+        buttonStatus={ComponentStatus.Default}
+        testID="bucket-selector--dropdown"
+        buttonTestID="bucket-selector--dropdown-button"
+        menuTestID="bucket-selector--dropdown-menu"
+        emptyText="No Buckets Found"
+        iconOn={true}
+      />
+    </div>
   )
 }
 

@@ -2,6 +2,7 @@ import React, {FC, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
+import SelectorTitle from './SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 const MeasurementSelector: FC = () => {
@@ -20,20 +21,23 @@ const MeasurementSelector: FC = () => {
   }
 
   return (
-    <SearchableDropdown
-      searchTerm="" // TODO: variable
-      searchPlaceholder="Search measurements"
-      selectedOption={selectedMeasurement || 'Select measurement...'}
-      onSelect={handleSelect}
-      onChangeSearchTerm={handleChangeSearchTerm}
-      options={measurements}
-      buttonStatus={ComponentStatus.Default}
-      testID="measurement-selector--dropdown"
-      buttonTestID="measurement-selector--dropdown-button"
-      menuTestID="measurement-selector--dropdown--menu"
-      emptyText="No Measurement Found"
-      iconOn={true}
-    />
+    <div>
+      <SelectorTitle title="Measurement" />
+      <SearchableDropdown
+        searchTerm="" // TODO: variable
+        searchPlaceholder="Search measurements"
+        selectedOption={selectedMeasurement || 'Select measurement...'}
+        onSelect={handleSelect}
+        onChangeSearchTerm={handleChangeSearchTerm}
+        options={measurements}
+        buttonStatus={ComponentStatus.Default}
+        testID="measurement-selector--dropdown"
+        buttonTestID="measurement-selector--dropdown-button"
+        menuTestID="measurement-selector--dropdown--menu"
+        emptyText="No Measurement Found"
+        iconOn={true}
+      />
+    </div>
   )
 }
 

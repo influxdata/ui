@@ -1,6 +1,7 @@
 import {Lsp} from '@influxdata/flux-lsp-browser'
 import {Methods} from 'src/languageSupport/languages/flux/lsp/utils'
 import {start} from 'src/languageSupport/languages/flux/lsp/worker/lspConnector'
+import {respond} from 'src/languageSupport/languages/flux/lsp/worker/utils'
 
 export default class Buffer {
   private _i = 0
@@ -19,18 +20,11 @@ export default class Buffer {
     let msg = this._initBuffer[this._o % 100]
     do {
       const res = await this._server.send(JSON.stringify(msg))
-      this._respond(res, cb)
+      respond(res, cb)
       this._o++
       msg = this._initBuffer[this._o % 100]
     } while (!!msg)
     return
-  }
-
-  private _respond = (msg, cb) => {
-    try {
-      const d = JSON.parse(msg)
-      cb(d)
-    } catch (_) {}
   }
 
   send(data, cb) {
@@ -41,12 +35,11 @@ export default class Buffer {
       case `${Methods.Initialize}|false|false`:
         this._serverStartSignaled = true
         const initMsg = data
-        start().then(s => {
+        start(cb).then(s => {
           this._server = s
-          this._server.onMessage(d => this._respond(d, cb))
           this._server
             .send(JSON.stringify(initMsg))
-            .then(res => this._respond(res, cb))
+            .then(res => respond(res, cb))
         })
         break
       case `${Methods.Initialize}|true|false`: // initialize already received
@@ -62,9 +55,7 @@ export default class Buffer {
         if (!this._initialized) {
           this._insertBuffer(data)
         } else {
-          this._server
-            .send(JSON.stringify(data))
-            .then(res => this._respond(res, cb))
+          this._server.send(JSON.stringify(data)).then(res => respond(res, cb))
         }
         break
     }

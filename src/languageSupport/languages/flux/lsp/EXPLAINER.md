@@ -6,16 +6,15 @@ There are multiple approaches to custom language service utilization. There are 
 
 .
 
-1. use feature providers
+1. use feature providers (our previous approach):
     - override monaco.languages.register`<Provider>`   => connect to language service, per feature provided
     - this utilizes monaco-languageclient
         - example for v0.18.1: https://github.com/TypeFox/monaco-languageclient/blob/v0.18.1/examples/browser/src/client.ts
     - list features:
         - https://code.visualstudio.com/api/language-extensions/programmatic-language-features 
-    - our current/old approach:
-        - uses providers, but then communicate with a jsonRpc server.
-            - so we use providers --> do work --> make jsonRpc --> Lsp
-            - listen Lsp --> parse --> do work --> interface back to monaco
+    - uses providers, but then communicate with a jsonRpc server.
+        - so we use providers --> do work --> make jsonRpc --> Lsp
+        - listen Lsp --> parse --> do work --> interface back to monaco
     - Pros:
         - useful when LspServer is not yet mature enough to offer needed functionality
         - ability to do variable/code expansion
@@ -34,7 +33,7 @@ There are multiple approaches to custom language service utilization. There are 
         - https://github.com/microsoft/monaco-editor/issues/1317
     - Pros:
         - runs the custom worker in another thread
-        - will perform auto-mapping of interface methods between monaco-editor and our customer worker
+        - will perform mapping of interface methods between monaco-editor and our customer worker
         - ability to do code modification (e.g. variable expansion)
         - common pattern is to map the worker API, to the Lsp API, per feature.
             - note: the API is not `<Provider>`. Similar, but not identical.
@@ -45,7 +44,7 @@ There are multiple approaches to custom language service utilization. There are 
             - https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers#dedicated_workers
         - our LspServer does not already expose these API methods.
             - It follows a different model, with JSON-RPC websocket communication.
-            - Therefore, we would have to again re-write alot of this same logic (from the old code).
+            - Therefore, we would have to again re-write alot of the same logic (from the old code).
 
 .
 
@@ -60,5 +59,6 @@ There are multiple approaches to custom language service utilization. There are 
             - if needed, later we can switch to connection via SharedArrayBuffer (very fast).
     - Pros:
         - the communication is based on jsonRpc to a listening service, without us manually re-inventing code
+            - streamlined, less code.
         - our only customization is in defining the variables, which are transmitted as a separate prelude document (LSP reads both). Line counts are retained.
 

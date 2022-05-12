@@ -76,7 +76,7 @@ export const EditorProvider: FC = ({children}) => {
         text = `\n${text}`
       }
       if (shouldEndInNewLine) {
-        text = `${text.trim()}\n`
+        text = `${text}\n`
       }
 
       const column = type == InjectionType.OnOwnLine ? 1 : initC

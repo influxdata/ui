@@ -1,38 +1,33 @@
 import React, {FC} from 'react'
 
-import {Dropdown} from '@influxdata/clockface'
+// Components
+import {ComponentStatus} from '@influxdata/clockface'
+import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 const BucketSelector: FC = () => {
   const buckets = [
-    {name: 'Air Sensor Data'},
-    {name: 'Coinbase Bitcoin Price'},
-    {name: 'NOAA National Buoy Data'},
-    {name: 'USGS Earthquakes'},
+    {type: 'sample', name: 'Air Sensor Data', id: 'airSensor'},
+    {type: 'sample', name: 'Coinbase bitcoin price', id: 'bitcoin'},
+    {type: 'sample', name: 'NOAA National Buoy Data', id: 'noaa'},
+    {type: 'sample', name: 'USGS Earthquakes', id: 'usgs'},
   ]
-  let menuItems = <Dropdown.ItemEmpty>empty</Dropdown.ItemEmpty>
 
-  if (buckets.length) {
-    menuItems = (
-      <>
-        <Dropdown.Item>[ Search Bar ]</Dropdown.Item>
-        {buckets.map(bucket => (
-          <Dropdown.Item key={bucket.name} value={bucket}>
-            {bucket.name}
-          </Dropdown.Item>
-        ))}
-      </>
-    )
-  }
-  const button = (active, onClick) => (
-    <Dropdown.Button active={active} onClick={onClick}>
-      Select bucket...
-    </Dropdown.Button>
+  return (
+    <SearchableDropdown
+      searchTerm="" // TODO: variable
+      searchPlaceholder="Search buckets"
+      selectedOption="Select bucket..." // TODO
+      onSelect={option => console.log(option)}
+      onChangeSearchTerm={value => console.log(value)}
+      options={[1, 2, 3]}
+      buttonStatus={ComponentStatus.Default}
+      testID="bucket-selector--dropdown"
+      buttonTestID="bucket-selector--dropdown-button"
+      menuTestID="bucket-selector--dropdown-menu"
+      emptyText="No Buckets Found"
+      iconOn={true}
+    />
   )
-
-  const menu = onCollapse => (
-    <Dropdown.Menu onCollapse={onCollapse}>{menuItems}</Dropdown.Menu>
-  )
-  return <Dropdown button={button} menu={menu} />
 }
 
 export default BucketSelector

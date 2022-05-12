@@ -109,7 +109,10 @@ export const PAYGConversion: FC = () => {
                       <li>Unlimited tasks</li>
                       <li>Unlimited alert checks and notification rules</li>
                       <li>HTTP and PagerDuty notifications</li>
-                      <li>Up to 1,000,000 series cardinality</li>
+                      <li>
+                        Up to {Intl.NumberFormat().format(ONE_MILLION)} series
+                        cardinality
+                      </li>
                     </ul>
                   </div>
                 </div>

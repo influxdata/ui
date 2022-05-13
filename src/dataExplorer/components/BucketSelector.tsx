@@ -8,6 +8,7 @@ import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 const BucketSelector: FC = () => {
   // TODO: change to context later
   const [selectedBucket, setSelectedBucket] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const buckets = [
     {type: 'sample', name: 'Air Sensor Data', id: 'airSensor'},
@@ -22,17 +23,14 @@ const BucketSelector: FC = () => {
   }
 
   const handleChangeSearchTerm = (value: string) => {
-    // TODO
-    /* eslint-disable no-console */
-    console.log(value)
-    /* eslint-disable no-console */
+    setSearchTerm(value)
   }
 
   return (
     <div>
       <SelectorTitle title="Bucket" />
       <SearchableDropdown
-        searchTerm="" // TODO: variable
+        searchTerm={searchTerm}
         searchPlaceholder="Search buckets"
         selectedOption={selectedBucket?.name || 'Select bucket...'}
         onSelect={handleSelectBucket}

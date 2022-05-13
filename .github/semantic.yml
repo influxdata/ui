@@ -1,4 +1,0 @@
-# docs: https://github.com/probot/semantic-pull-requests#configuration
-allowMergeCommits: true
-allowRevertCommits: true
-titleOnly: true

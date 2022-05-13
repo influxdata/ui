@@ -18,8 +18,11 @@ import {RemoteDataState, AppState} from 'src/types'
 
 // Actions
 import {getOrganizations} from 'src/organizations/actions/thunks'
-import {getQuartzMe} from 'src/me/actions/thunks'
+import {getQuartzMe as apiGetQuartzMe} from 'src/me/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
+
+// Selectors
+import {getQuartzMe} from 'src/me/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -43,7 +46,7 @@ const GetOrganizations: FunctionComponent = () => {
   const quartzMeStatus = useSelector(
     (state: AppState) => state.me.quartzMeStatus
   )
-  const me = useSelector((state: AppState) => state.me.quartzMe)
+  const me = useSelector(getQuartzMe)
   const dispatch = useDispatch()
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
@@ -56,9 +59,18 @@ const GetOrganizations: FunctionComponent = () => {
       isFlagEnabled('uiUnificationFlag') &&
       quartzMeStatus === RemoteDataState.NotStarted
     ) {
-      dispatch(getQuartzMe())
+      dispatch(apiGetQuartzMe())
     }
-  }, [dispatch, quartzMeStatus])
+
+    if (
+      isFlagEnabled('credit250Experiment') &&
+      quartzMeStatus === RemoteDataState.Done
+    ) {
+      const {accountCreatedAt = ''} = me
+      window.dataLayer = window.dataLayer ?? []
+      window.dataLayer.push({accountCreatedAt})
+    }
+  }, [dispatch, me, quartzMeStatus])
 
   return (
     <PageSpinner loading={status}>

@@ -131,6 +131,7 @@ export const sanitizeUpdateForm = (form: Subscription): Subscription => {
   delete form.tokenID
   delete form.isActive
   delete form.status
+  delete form.flowVersion
   return form
 }
 

@@ -2,7 +2,7 @@ import React, {FC} from 'react'
 
 // Components
 import {Accordion} from '@influxdata/clockface'
-import SelectorTitle from './SelectorTitle'
+import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
 // Syles
 import './Schema.scss'

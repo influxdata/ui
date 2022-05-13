@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
-import SelectorTitle from './SelectorTitle'
+import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 const MeasurementSelector: FC = () => {
@@ -17,7 +17,10 @@ const MeasurementSelector: FC = () => {
   }
 
   const handleChangeSearchTerm = (value: string) => {
+    // TODO
+    /* eslint-disable no-console */
     console.log(value)
+    /* eslint-disable no-console */
   }
 
   return (

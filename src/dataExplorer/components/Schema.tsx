@@ -3,10 +3,10 @@ import React, {FC, useState} from 'react'
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
-import BucketSelector from './BucketSelector'
-import MeasurementSelector from './MeasurementSelector'
-import FieldsSelector from './FieldsSelector'
-import TagKeysSelector from './TagKeysSelector'
+import BucketSelector from 'src/dataExplorer/components/BucketSelector'
+import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
+import FieldsSelector from 'src/dataExplorer/components/FieldsSelector'
+import TagKeysSelector from 'src/dataExplorer/components/TagKeysSelector'
 
 // Style
 import './Schema.scss'
@@ -15,7 +15,10 @@ const Schema: FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSearchFieldsTags = (searchTerm: string): void => {
+    // TODO
+    /* eslint-disable no-console */
     console.log('Search: ', searchTerm)
+    /* eslint-disable no-console */
     setSearchTerm(searchTerm)
   }
 

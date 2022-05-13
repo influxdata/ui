@@ -60,7 +60,7 @@ describe('DataExplorer', () => {
         cy.getByTestID('flux--microsecond--inject').click()
 
         getTimeMachineText().then(text => {
-          const expected = 'import "date" |> date.microsecond(t: )'
+          const expected = 'import "date"  date.microsecond(t: )'
           cy.fluxEqual(text, expected).should('be.true')
         })
       })

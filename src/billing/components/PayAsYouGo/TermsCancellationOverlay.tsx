@@ -41,10 +41,6 @@ const TermsCancellationOverlay: FC<Props> = ({
         You will be responsible for exporting all your content including
         dashboards, tasks, variables from the user interface.
       </li>
-      <li>
-        You can request support@influxdata.com for an archive of your Time
-        series data.
-      </li>
     </ul>
     <span onClick={onAgreedToTerms} data-testid="agree-terms--input">
       <FlexBox

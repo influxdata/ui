@@ -6,7 +6,6 @@ import {
   FunnelPage,
   Heading,
   HeadingElement,
-  Typeface,
 } from '@influxdata/clockface'
 import {useHistory} from 'react-router-dom'
 import Notifications from 'src/shared/components/notifications/Notifications'
@@ -61,7 +60,6 @@ export const LoginPage: FC = () => {
         <FunnelPage enableGraphic={true} logo={<CloudLogoWithCubo />}>
           <Heading
             element={HeadingElement.H1}
-            type={Typeface.Rubik}
             weight={FontWeight.Regular}
             className="cf-funnel-page--title"
           >

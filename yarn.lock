@@ -1444,10 +1444,10 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@influxdata/clockface@^3.12.0":
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-3.12.0.tgz#707715f935e81c65e18f59409af48602fe731a9f"
-  integrity sha512-p2n0QkHeDINhK2ryt2YRuBbmE7LU5I9swyV/VH4m9s20gG3gQ+JubrPhCNWdC007Lw//0UnYtCJlA5qPAOJ5dw==
+"@influxdata/clockface@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@influxdata/clockface/-/clockface-4.0.1.tgz#fe9175301b3c7914bf2165e15f0a904572aadeff"
+  integrity sha512-c4tFxs1/9zR3kc7/Y77mZdo6NsThznfYz+q6O64PqOykqDClgpfCzbpVmG+Tfm06Je4jF4Om3Ssek3cC6lYodw==
 
 "@influxdata/flux-lsp-browser@0.8.8":
   version "0.8.8"

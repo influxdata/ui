@@ -17,7 +17,7 @@ import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
-const ONE_MILLION = 1_000_000
+const CARDINALITY_LIMIT = 1_000_000
 
 export const Credit250PAYGConversion: FC = () => {
   if (isFlagEnabled('credit250Experiment')) {
@@ -60,7 +60,7 @@ export const Credit250PAYGConversion: FC = () => {
                   <li>Unlimited alert checks and notification rules</li>
                   <li>HTTP and PagerDuty notifications</li>
                   <li>
-                    Up to {Intl.NumberFormat().format(ONE_MILLION)} series
+                    Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)} series
                     cardinality
                   </li>
                 </ul>
@@ -109,7 +109,10 @@ export const PAYGConversion: FC = () => {
                       <li>Unlimited tasks</li>
                       <li>Unlimited alert checks and notification rules</li>
                       <li>HTTP and PagerDuty notifications</li>
-                      <li>Up to 1,000,000 series cardinality</li>
+                      <li>
+                        Up to {Intl.NumberFormat().format(CARDINALITY_LIMIT)}{' '}
+                        series cardinality
+                      </li>
                     </ul>
                   </div>
                 </div>

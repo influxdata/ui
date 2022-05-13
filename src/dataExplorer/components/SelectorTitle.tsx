@@ -1,7 +1,12 @@
 import React, {FC} from 'react'
 
 // Componnents
-import {IconFont, Icon, FlexBox} from '@influxdata/clockface'
+import {
+  IconFont,
+  Icon,
+  FlexBox,
+  QuestionMarkTooltip,
+} from '@influxdata/clockface'
 
 // Styles
 import './Schema.scss'
@@ -17,8 +22,7 @@ const SelectorTitle: FC<TitleProps> = ({title, info = ''}) => {
       <div>{title}</div>
       {info && (
         <div className="selector-title--icon">
-          <Icon glyph={IconFont.Info_New} />
-          {info}
+          <QuestionMarkTooltip tooltipContents={info} diameter={14} />
         </div>
       )}
     </FlexBox>

@@ -20,16 +20,17 @@ const TagKeysSelector: FC = () => {
         {tag.key}
       </div>
     ))
-    list.push(
-      <div key="load-more" className="tag-keys-selector--list-item">
-        Load More
-      </div>
-    )
+    // TODO: check length of tags to load more
+    // list.push(
+    //   <div key="load-more" className="tag-keys-selector--list-item">
+    //     Load More
+    //   </div>
+    // )
   }
   return (
     <Accordion className="tag-keys-selector">
       <Accordion.AccordionHeader className="tag-keys-selector--header">
-        <SelectorTitle title="Tag Keys" />
+        <SelectorTitle title="Tag Keys" info="Test info" />
       </Accordion.AccordionHeader>
       {list}
     </Accordion>

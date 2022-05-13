@@ -16,13 +16,6 @@ const MeasurementSelector: FC = () => {
     'coindesk',
     'earthquake',
     'explosion',
-    'h2o_feet',
-    'h2o_pH',
-    'h2o_quality',
-    'h2o_temperature',
-    'ice quake',
-    'ndbc',
-    'quarry blast',
   ]
 
   const handleSelect = (option: string) => {
@@ -36,7 +29,7 @@ const MeasurementSelector: FC = () => {
 
   return (
     <div>
-      <SelectorTitle title="Measurement" />
+      <SelectorTitle title="Measurement" info="Test info" />
       <SearchableDropdown
         searchTerm={searchTerm}
         searchPlaceholder="Search measurements"

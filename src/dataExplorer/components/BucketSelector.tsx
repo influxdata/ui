@@ -28,7 +28,7 @@ const BucketSelector: FC = () => {
 
   return (
     <div>
-      <SelectorTitle title="Bucket" />
+      <SelectorTitle title="Bucket" info="Test info" />
       <SearchableDropdown
         searchTerm={searchTerm}
         searchPlaceholder="Search buckets"

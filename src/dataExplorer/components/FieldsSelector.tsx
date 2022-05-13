@@ -20,17 +20,18 @@ const FieldsSelector: FC = () => {
         {field}
       </div>
     ))
-    list.push(
-      <div key="load-more" className="fields-selector--list-item">
-        Load More
-      </div>
-    )
+    // TODO: check length of fields to load more
+    // list.push(
+    //   <div key="load-more" className="fields-selector--list-item">
+    //     Load More
+    //   </div>
+    // )
   }
 
   return (
     <Accordion className="fields-selector">
       <Accordion.AccordionHeader className="fields-selector--header">
-        <SelectorTitle title="Fields" />
+        <SelectorTitle title="Fields" info="Test info" />
       </Accordion.AccordionHeader>
       {list}
     </Accordion>

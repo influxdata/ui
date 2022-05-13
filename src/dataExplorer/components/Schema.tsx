@@ -24,7 +24,7 @@ const Schema: FC = () => {
 
   return (
     <div>
-      <div>Data Selection</div>
+      <div className="data-selection--title">Data Selection</div>
       <div className="scroll--container">
         <DapperScrollbars>
           <div className="data-schema">

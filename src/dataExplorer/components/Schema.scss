@@ -1,5 +1,10 @@
 @import '@influxdata/clockface/dist/variables.scss';
 
+.data-selection--title {
+  font-size: large;
+  font-weight: bold;
+}
+
 .scroll--container {
   position: absolute;
   top: 0;
@@ -15,7 +20,7 @@
 
 .container-side-bar {
   border-left: 1px solid $cf-grey-25;
-  margin-top: $cf-space-2xs;
+  margin-top: $cf-space-xs;
   padding-left: $cf-space-2xs;
 }
 
@@ -25,7 +30,10 @@
 
 .selector-title--icon {
   padding-left: $cf-space-2xs;
-  color: $cf-grey-35;
+}
+
+.selector-title--icon .cf-question-mark-tooltip {
+  background-color: $cf-grey-35;
 }
 
 .fields-tags-search-bar {
@@ -46,5 +54,5 @@
 
 .fields-selector--list-item,
 .tag-keys-selector--list-item {
-  padding: $cf-space-3xs 0 $cf-space-3xs $cf-space-2xs;
+  padding: $cf-space-3xs 0 $cf-space-3xs $cf-space-xs;
 }

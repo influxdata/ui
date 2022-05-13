@@ -1,5 +1,5 @@
 import React, {FC, ChangeEvent, useContext, useState} from 'react'
-import {useSelector} from 'react-redux'
+import {connect, useSelector} from 'react-redux'
 
 // Components
 import {
@@ -20,6 +20,9 @@ import {
 } from '@influxdata/clockface'
 import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 
+// Actions
+import {showOverlay, dismissOverlay} from 'src/overlays/actions/overlays'
+
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
@@ -37,8 +40,13 @@ import './ContactSupport.scss'
 interface OwnProps {
   onClose: () => void
 }
-
-const PayGSupportOverlay: FC<OwnProps> = () => {
+  interface DispatchProps {
+    showOverlay: (arg1: string, arg2: any, any) => {}
+  }
+  
+  type Props = OwnProps & DispatchProps
+  
+  const PayGSupportOverlay: FC<Props> = props => {
   const {id: orgID} = useSelector(getOrg)
   const {id: meID} = useSelector(getMe)
   const [subject, setSubject] = useState('')
@@ -54,16 +62,21 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
   ]
 
   const submitButtonStatus =
-    textInput.length && severity.length && subject.length
+    textInput.length && severity.length
       ? ComponentStatus.Default
       : ComponentStatus.Disabled
 
   const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setTextInput(event.target.value)
   }
-  const handleSubmit = (): void => {
     // submit support form
-    event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
+    const handleSubmit = (e): void => {
+      const {showOverlay} = props
+      e.preventDefault()
+      event('helpBar.supportRequest.submitted', {}, {userID: meID, orgID: orgID})
+  
+    showOverlay('help-bar-confirmation', 'payg', dismissOverlay)
+   
   }
 
   const handleSubjectChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -114,9 +127,9 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
       />
       <ErrorBoundary>
         <Form
-          onSubmit={handleSubmit}
-          action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
-          method={Method.Post}
+          // onSubmit={handleSubmit}
+          // action="https://influxdata--full.my.salesforce.com/servlet/servlet.WebToCase?encoding=UTF-8"
+          // method={Method.Post}
         >
           <Overlay.Body>
             <p className="status-page-text">
@@ -168,6 +181,8 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
               )}
             </Form.ValidationElement>
           </Overlay.Body>
+            </Form>
+            </ErrorBoundary>
           <Overlay.Footer>
             <Button
               text="Cancel"
@@ -180,14 +195,21 @@ const PayGSupportOverlay: FC<OwnProps> = () => {
               text="Submit"
               color={ComponentColor.Success}
               type={ButtonType.Submit}
+              onClick={handleSubmit}
               testID="payg-contact-support--submit"
               status={submitButtonStatus}
             />
           </Overlay.Footer>
-        </Form>
-      </ErrorBoundary>
+        
     </Overlay.Container>
   )
 }
 
-export default PayGSupportOverlay
+const mdtp = {
+  showOverlay,
+  dismissOverlay
+}
+
+const connector = connect(null, mdtp)
+
+export default connector(PayGSupportOverlay)

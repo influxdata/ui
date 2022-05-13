@@ -3,10 +3,6 @@ import {
   ProtocolNotificationType,
 } from 'vscode-languageserver-protocol'
 
-export const isJsonRpc = (msg: string): boolean => {
-  return JSON.stringify(msg).includes('jsonrpc')
-}
-
 export const makeRequestType = (method: string) => {
   return new ProtocolRequestType<any, any, any, any, any>(method)
 }

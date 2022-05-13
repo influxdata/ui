@@ -3,7 +3,7 @@ import React, {FC, createContext, useContext, useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
 
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
-import {darcula as syntaxTheme} from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import {darcula} from 'react-syntax-highlighter/dist/cjs/styles/prism'
 
 // Components
 import {DapperScrollbars, InfluxColors} from '@influxdata/clockface'
@@ -121,7 +121,7 @@ const CodeSnippet: FC<Props> = ({
           ) : (
             <SyntaxHighlighter
               language={language}
-              style={syntaxTheme}
+              style={darcula}
               customStyle={{backgroundColor: InfluxColors.Grey5}}
               codeTagProps={{style: {fontFamily: '"IBMPlexMono", monospace'}}}
             >

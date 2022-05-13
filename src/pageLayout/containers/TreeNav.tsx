@@ -57,7 +57,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
           helpBarMenu.style.width = '44px'
         }
       }
-    }, [setNavbarMode, navbarMode])
+    }, [navbarMode])
 
     if (presentationMode || !org) {
       return null

@@ -28,7 +28,7 @@ const TagKeysSelector: FC = () => {
     // )
   }
   return (
-    <Accordion className="tag-keys-selector">
+    <Accordion className="tag-keys-selector" expanded={true}>
       <Accordion.AccordionHeader className="tag-keys-selector--header">
         <SelectorTitle title="Tag Keys" info="Test info" />
       </Accordion.AccordionHeader>

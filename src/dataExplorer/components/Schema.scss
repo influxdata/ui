@@ -37,7 +37,12 @@
 }
 
 .fields-tags-search-bar {
-  padding: $cf-space-2xs 0;
+  padding-top: $cf-space-s;
+}
+
+.fields-selector,
+.tag-keys-selector {
+  padding-top: $cf-space-2xs;
 }
 
 .fields-selector .cf-accordion--icon,

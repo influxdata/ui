@@ -1,12 +1,7 @@
 import React, {FC} from 'react'
 
 // Componnents
-import {
-  IconFont,
-  Icon,
-  FlexBox,
-  QuestionMarkTooltip,
-} from '@influxdata/clockface'
+import {FlexBox, QuestionMarkTooltip} from '@influxdata/clockface'
 
 // Styles
 import './Schema.scss'

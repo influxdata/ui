@@ -29,7 +29,7 @@ const FieldsSelector: FC = () => {
   }
 
   return (
-    <Accordion className="fields-selector">
+    <Accordion className="fields-selector" expanded={true}>
       <Accordion.AccordionHeader className="fields-selector--header">
         <SelectorTitle title="Fields" info="Test info" />
       </Accordion.AccordionHeader>

@@ -29,6 +29,8 @@ interface Props {
   sortType: SortTypes
   tokenCount: number
   onClickColumn: (nextSort: Sort, sortKey: SortKey) => void
+  selectedTokens: string[]
+  handleChangeSelectedTokens: (tokenId: string) => void
 }
 
 interface State {
@@ -157,6 +159,8 @@ export default class TokenList extends PureComponent<Props, State> {
             key={auth.id}
             auth={auth}
             onClickDescription={this.handleClickDescription}
+            handleChangeSelectedTokens={this.props.handleChangeSelectedTokens}
+            cardSelected={this.props.selectedTokens.includes(auth.id)}
           />
         )
       }

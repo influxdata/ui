@@ -8,7 +8,9 @@ import {AutoSizer} from 'react-virtualized'
 // Components
 import {
   BannerPanel,
+  ComponentColor,
   ComponentSize,
+  ConfirmationButton,
   EmptyState,
   Gradients,
   IconFont,
@@ -30,6 +32,7 @@ import {AuthorizationSortKey} from 'src/shared/components/resource_sort_dropdown
 
 // Selectors
 import {getAll} from 'src/resources/selectors'
+import {Input, InputType} from '../../../../clockface/src'
 
 enum AuthSearchKeys {
   Description = 'description',
@@ -69,7 +72,7 @@ class TokensTab extends PureComponent<Props, State> {
       sortKey: 'description',
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
-      selectedTokens: []
+      selectedTokens: [],
     }
     this.paginationRef = createRef<HTMLDivElement>()
   }
@@ -143,6 +146,7 @@ class TokensTab extends PureComponent<Props, State> {
       )
     }
 
+    console.log(this.state.selectedTokens)
     return (
       <>
         {tokensBanner()}
@@ -164,6 +168,22 @@ class TokensTab extends PureComponent<Props, State> {
                     childrenRight={rightHeaderItems}
                     width={width}
                   />
+                  <Input
+                    type={InputType.Checkbox}
+                    checked={false}
+                    size={ComponentSize.ExtraSmall}
+                    style={{width: 'fit-content'}}
+                  />
+                  {this.state.selectedTokens.length > 0 && (
+                    <ConfirmationButton
+                      confirmationButtonText="Delete"
+                      confirmationLabel="Deletes"
+                      onConfirm={() => {}}
+                      text="Delete selected"
+                      icon={IconFont.Trash_New}
+                      color={ComponentColor.Secondary}
+                    />
+                  )}
                   <FilterAuthorizations
                     list={tokens}
                     searchTerm={searchTerm}
@@ -181,6 +201,10 @@ class TokensTab extends PureComponent<Props, State> {
                         sortDirection={sortDirection}
                         sortType={sortType}
                         onClickColumn={this.handleClickColumn}
+                        selectedTokens={this.state.selectedTokens}
+                        handleChangeSelectedTokens={
+                          this.handleChangeSelectedTokens
+                        }
                       />
                     )}
                   </FilterAuthorizations>
@@ -191,6 +215,21 @@ class TokensTab extends PureComponent<Props, State> {
         </AutoSizer>
       </>
     )
+  }
+
+  private handleChangeSelectedTokens = (tokenId: string) => {
+    const tokenAlreadySelected = this.state.selectedTokens.includes(tokenId)
+
+    if (tokenAlreadySelected) {
+      const updatedTokensList = this.state.selectedTokens.filter(
+        token => token !== tokenId
+      )
+      this.setState({
+        selectedTokens: updatedTokensList,
+      })
+    } else {
+      this.setState({selectedTokens: [...this.state.selectedTokens, tokenId]})
+    }
   }
 
   private handleSort = (

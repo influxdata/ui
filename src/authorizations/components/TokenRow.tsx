@@ -44,6 +44,8 @@ import {event} from 'src/cloud/utils/reporting'
 interface OwnProps {
   auth: Authorization
   onClickDescription: (authID: string) => void
+  handleChangeSelectedTokens: (tokenId: string) => void
+  cardSelected: boolean
 }
 
 type ReduxProps = ConnectedProps<typeof connector>
@@ -65,8 +67,9 @@ class TokensRow extends PureComponent<Props> {
         direction={FlexDirection.Row}
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
-        cardSelected={true}
+        cardSelected={this.props.cardSelected}
         cardSelectable={true}
+        handleCardSelection={() => this.handleCardSelection(auth.id)}
       >
         <FlexBox
           alignItems={AlignItems.FlexStart}
@@ -142,6 +145,10 @@ class TokensRow extends PureComponent<Props> {
   private handleDelete = () => {
     const {id, description} = this.props.auth
     this.props.deleteAuthorization(id, description)
+  }
+
+  private handleCardSelection = e => {
+    this.props.handleChangeSelectedTokens(e)
   }
 
   private handleClone = async () => {

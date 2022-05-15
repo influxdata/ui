@@ -19,7 +19,6 @@ import {
   FlexBox,
   AlignItems,
   FlexDirection,
-  JustifyContent,
   ComponentColor,
   ResourceCard,
   IconFont,
@@ -64,9 +63,10 @@ class TokensRow extends PureComponent<Props> {
         disabled={!this.isTokenActive}
         testID={`token-card ${auth.description}`}
         direction={FlexDirection.Row}
-        justifyContent={JustifyContent.SpaceBetween}
         alignItems={AlignItems.Center}
         margin={ComponentSize.Large}
+        cardSelected={true}
+        cardSelectable={true}
       >
         <FlexBox
           alignItems={AlignItems.FlexStart}

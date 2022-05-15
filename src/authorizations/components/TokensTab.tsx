@@ -1,19 +1,19 @@
 // Libraries
 import React, {createRef, PureComponent, RefObject} from 'react'
 import {connect} from 'react-redux'
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {RouteComponentProps, withRouter} from 'react-router-dom'
 import {isEmpty} from 'lodash'
 import {AutoSizer} from 'react-virtualized'
 
 // Components
 import {
-  Sort,
+  BannerPanel,
   ComponentSize,
   EmptyState,
-  BannerPanel,
   Gradients,
   IconFont,
   InfluxColors,
+  Sort,
 } from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import TokenList from 'src/authorizations/components/TokenList'
@@ -42,6 +42,7 @@ interface State {
   sortKey: SortKey
   sortDirection: Sort
   sortType: SortTypes
+  selectedTokens?: string[] // array of ID of tokens selected
 }
 
 interface StateProps {
@@ -68,6 +69,7 @@ class TokensTab extends PureComponent<Props, State> {
       sortKey: 'description',
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
+      selectedTokens: []
     }
     this.paginationRef = createRef<HTMLDivElement>()
   }

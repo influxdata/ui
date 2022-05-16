@@ -79,5 +79,5 @@ export const getAllOrgs = (state: AppState): OrgsState => {
     status: RemoteDataState.Error,
     org: {id: ''},
   }
-  return get(state, 'resources.orgs', errorOrgsState) || errorOrgsState
+  return get(state, 'resources.orgs', errorOrgsState)
 }

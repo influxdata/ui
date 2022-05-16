@@ -22,6 +22,7 @@ export class InstallDependencies extends PureComponent {
         <CodeSnippet
           text="npm install --save @influxdata/influxdb-client"
           onCopy={this.logCopyCodeSnippet}
+          language="properties"
         />
         <p style={{fontStyle: 'italic'}}>
           You’ll need to have{' '}

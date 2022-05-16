@@ -40,12 +40,12 @@ import RateLimitAlert from 'src/cloud/components/RateLimitAlert'
 
 export const HomepageContainer: FC = () => {
   const org = useSelector(getOrg)
-  const pythonWizardLink = `/orgs/${org.id}/new-user-wizard/python`
+  const pythonWizardLink = `/orgs/${org.id}/new-user-setup/python`
   const cliPageLink = `/orgs/${org.id}/load-data/file-upload/csv`
   const telegrafPageLink = `/orgs/${org.id}/load-data/telegrafs`
-  const golangLink = `/orgs/${org.id}/new-user-wizard/go`
+  const golangLink = `/orgs/${org.id}/new-user-setup/golang`
   const loadDataSourcesLink = `/orgs/${org.id}/load-data/sources`
-  const javaScriptNodeLink = `/orgs/${org.id}/new-user-wizard/nodejs`
+  const javaScriptNodeLink = `/orgs/${org.id}/new-user-setup/nodejs`
 
   const cardStyle = {minWidth: '200px'}
   const linkStyle = {color: InfluxColors.Grey75}

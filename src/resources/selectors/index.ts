@@ -74,5 +74,10 @@ export const getLabels = (state: AppState, labelIDs: string[]): Label[] => {
 export const getAllTokensResources = (state: AppState): PermissionTypes[] =>
   get(state, 'resources.tokens.allResources', []) || []
 
-export const getAllOrgs = (state: AppState): OrgsState =>
-  get(state, 'resources.orgs', {}) || {}
+export const getAllOrgs = (state: AppState): OrgsState => {
+  const errorOrgsState = {
+    status: RemoteDataState.Error,
+    org: {id: ''},
+  }
+  return get(state, 'resources.orgs', errorOrgsState) || errorOrgsState
+}

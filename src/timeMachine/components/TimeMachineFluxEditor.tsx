@@ -16,14 +16,15 @@ import {saveAndExecuteQueries} from 'src/timeMachine/actions/queries'
 
 // Utils
 import {getActiveQuery, getActiveTimeMachine} from 'src/timeMachine/selectors'
-import {
-  functionRequiresNewLine,
-  generateImport,
-} from 'src/timeMachine/utils/insertFunction'
+import {generateImport} from 'src/timeMachine/utils/insertFunction'
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 import {getFluxExample} from 'src/shared/utils/fluxExample'
+import {
+  isPipeTransformation,
+  functionRequiresNewLine,
+} from 'src/shared/utils/fluxFunctions'
 
 // Types
 import {
@@ -102,28 +103,15 @@ const TimeMachineFluxEditor: FC = () => {
       row = currentRange.endLineNumber + 1
     }
 
-    let text = ''
-    if (shouldInsertOnNextLine) {
-      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
-        // only fluxTypes with <- sign require a pipe forward sign
-        text = func.fluxType.startsWith('<-', 1)
-          ? `\n  |> ${func.example}`
-          : `\n   ${func.example}`
-      } else {
-        text = `\n  |> ${func.example}`
-      }
-    } else {
-      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
-        text = func.fluxType.startsWith('<-', 1)
-          ? `  |> ${func.example}\n`
-          : `   ${func.example}\n`
-      } else {
-        text = `  |> ${func.example}\n`
-      }
-    }
+    let text = isPipeTransformation(func)
+      ? `  |> ${func.example}`
+      : `${func.example}`
 
+    if (shouldInsertOnNextLine || functionRequiresNewLine(func.name)) {
+      text = `\n${text}`
+    }
     if (functionRequiresNewLine(func.name)) {
-      text = `\n${func.example}\n`
+      text = `${text}\n`
     }
 
     const range = new monaco.Range(

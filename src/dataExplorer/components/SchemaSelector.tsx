@@ -1,20 +1,25 @@
-import React, {FC, createContext, useState} from 'react'
+import React, {FC, createContext, useState, useMemo} from 'react'
 
-// types
+// Types
 import {RemoteDataState} from 'src/types'
+import {NewDataExplorerData} from 'src/types/dataExplorer'
 
 interface NewDataExplorerContextType {
   query: string
   loading: RemoteDataState
+  data: NewDataExplorerData
 
   updateQuery: (q: string) => void
+  updateData: (data: NewDataExplorerData) => void
 }
 
 const DEFAULT_CONTEXT: NewDataExplorerContextType = {
   query: '',
   loading: RemoteDataState.NotStarted,
+  data: {},
 
   updateQuery: _q => {},
+  updateData: () => {},
 }
 
 export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
@@ -24,16 +29,22 @@ export const NewDataExplorerContext = createContext<NewDataExplorerContextType>(
 export const NewDataExplorerProvider: FC = ({children}) => {
   const [loading] = useState(RemoteDataState.NotStarted)
   const [query, setQuery] = useState('')
+  const [data, setData] = useState({})
 
-  return (
-    <NewDataExplorerContext.Provider
-      value={{
-        loading,
-        query,
-        updateQuery: setQuery,
-      }}
-    >
-      {children}
-    </NewDataExplorerContext.Provider>
+  return useMemo(
+    () => (
+      <NewDataExplorerContext.Provider
+        value={{
+          loading,
+          query,
+          data,
+          updateQuery: setQuery,
+          updateData: setData,
+        }}
+      >
+        {children}
+      </NewDataExplorerContext.Provider>
+    ),
+    [loading, query, data, children]
   )
 }

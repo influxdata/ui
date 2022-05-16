@@ -7,6 +7,7 @@ import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldsSelector from 'src/dataExplorer/components/FieldsSelector'
 import TagKeysSelector from 'src/dataExplorer/components/TagKeysSelector'
+import {NewDataExplorerProvider} from 'src/dataExplorer/components/SchemaSelector'
 
 // Style
 import './Schema.scss'
@@ -23,30 +24,32 @@ const Schema: FC = () => {
   }
 
   return (
-    <div>
-      <div className="data-selection--title">Data Selection</div>
-      <div className="scroll--container">
-        <DapperScrollbars>
-          <div className="data-schema">
-            <BucketSelector />
-            <div className="container-side-bar">
-              <MeasurementSelector />
-              <div>
-                <div className="fields-tags-search-bar">
-                  <SearchWidget
-                    placeholderText="Search fields and tags"
-                    onSearch={handleSearchFieldsTags}
-                    searchTerm={searchTerm}
-                  />
+    <NewDataExplorerProvider>
+      <div>
+        <div className="data-selection--title">Data Selection</div>
+        <div className="scroll--container">
+          <DapperScrollbars>
+            <div className="data-schema">
+              <BucketSelector />
+              <div className="container-side-bar">
+                <MeasurementSelector />
+                <div>
+                  <div className="fields-tags-search-bar">
+                    <SearchWidget
+                      placeholderText="Search fields and tags"
+                      onSearch={handleSearchFieldsTags}
+                      searchTerm={searchTerm}
+                    />
+                  </div>
+                  <FieldsSelector />
+                  <TagKeysSelector />
                 </div>
-                <FieldsSelector />
-                <TagKeysSelector />
               </div>
             </div>
-          </div>
-        </DapperScrollbars>
+          </DapperScrollbars>
+        </div>
       </div>
-    </div>
+    </NewDataExplorerProvider>
   )
 }
 

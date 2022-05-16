@@ -1,14 +1,15 @@
-import React, {FC, useState} from 'react'
+import React, {FC, useCallback, useContext, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
+import {NewDataExplorerContext} from 'src/dataExplorer/components/SchemaSelector'
 
 const MeasurementSelector: FC = () => {
-  // TODO: change to context later
-  const [selectedMeasurement, setSelectedMeasurement] = useState(null)
+  const {data, updateData} = useContext(NewDataExplorerContext)
   const [searchTerm, setSearchTerm] = useState('')
+  const selectedMeasurement = data?.measurement
 
   const measurements = [
     'airSensors',
@@ -18,10 +19,12 @@ const MeasurementSelector: FC = () => {
     'explosion',
   ]
 
-  const handleSelect = (option: string) => {
-    const selected = measurements.find(m => m === option)
-    setSelectedMeasurement(selected)
-  }
+  const handleSelect = useCallback(
+    (option: string): void => {
+      updateData({measurement: option})
+    },
+    [updateData, selectedMeasurement]
+  )
 
   const handleChangeSearchTerm = (value: string) => {
     setSearchTerm(value)

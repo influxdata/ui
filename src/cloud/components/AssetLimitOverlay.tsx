@@ -59,7 +59,7 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
               size={ComponentSize.Large}
               className="upgrade-payg--button__asset-create"
               metric={() => {
-                event('asset limit upgrade', {asset: assetName})
+                event('asset limit overlay upgrade', {asset: assetName})
               }}
             />
           </Overlay.Footer>

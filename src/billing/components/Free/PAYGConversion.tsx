@@ -14,6 +14,7 @@ import {
 import {useHistory} from 'react-router-dom'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {event} from 'src/cloud/utils/reporting'
 import {GoogleOptimizeExperiment} from 'src/cloud/components/experiments/GoogleOptimizeExperiment'
 import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
@@ -46,6 +47,9 @@ export const Credit250PAYGConversion: FC = () => {
               </Heading>
               <CloudUpgradeButton
                 className="credit-250-conversion-upgrade--button"
+                metric={() => {
+                  event('pay-as-you conversion upgrade', {location: 'billing'})
+                }}
                 showPromoMessage={false}
                 size={ComponentSize.Large}
               />

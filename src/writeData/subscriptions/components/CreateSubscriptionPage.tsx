@@ -162,7 +162,7 @@ const CreateSubscriptionPage: FC = () => {
               >
                 <CloudUpgradeButton
                   metric={() => {
-                    event('subscription upgrade')
+                    event('create subscription upgrade')
                   }}
                 />
               </FlexBox>

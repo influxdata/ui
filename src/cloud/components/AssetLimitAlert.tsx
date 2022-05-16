@@ -15,6 +15,9 @@ import {
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 // Constants
 import {CLOUD} from 'src/shared/constants'
 
@@ -50,6 +53,9 @@ const AssetLimitAlert: FC<Props> = ({limitStatus, resourceName, className}) => {
               <CloudUpgradeButton
                 buttonText={`Get more ${resourceName}`}
                 className="upgrade-payg--button__asset-alert"
+                metric={() => {
+                  event('asset limit alert upgrade', {asset: resourceName})
+                }}
               />
             </FlexBox>
           </Panel.Body>

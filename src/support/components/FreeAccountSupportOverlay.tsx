@@ -8,6 +8,9 @@ import {SafeBlankLink} from 'src/utils/SafeBlankLink'
 // Contexts
 import {OverlayContext} from 'src/overlays/components/OverlayController'
 
+// Utils
+import {event} from 'src/cloud/utils/reporting'
+
 import './ContactSupport.scss'
 
 interface OwnProps {
@@ -62,7 +65,11 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
         </List>
       </Overlay.Body>
       <Overlay.Footer>
-        <CloudUpgradeButton />
+        <CloudUpgradeButton
+          metric={() => {
+            event('free account support upgrade')
+          }}
+        />
       </Overlay.Footer>
     </Overlay.Container>
   )

@@ -4,6 +4,8 @@ import React, {FC, useCallback, useContext, useState} from 'react'
 import {ComponentStatus} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
+
+// Context
 import {NewDataExplorerContext} from 'src/dataExplorer/components/SchemaSelector'
 
 const MeasurementSelector: FC = () => {
@@ -21,6 +23,7 @@ const MeasurementSelector: FC = () => {
 
   const handleSelect = useCallback(
     (option: string): void => {
+      // TODO: reset tags and fields to null
       updateData({measurement: option})
     },
     [updateData, selectedMeasurement]

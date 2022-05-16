@@ -38,7 +38,11 @@ func main() {
       <p style={{marginTop: '40px'}}>
         Paste following code in your <code>main.go</code> file:
       </p>
-      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet
+        text={codeSnippet}
+        onCopy={logCopyCodeSnippet}
+        language="go"
+      />
       <p style={{marginTop: '42px'}}>
         Here, we initialize the token, organization info, and server url that
         are needed to set up the initial connection to InfluxDB. The client

@@ -23,8 +23,7 @@ export const ExecuteAggregateQuery = (props: OwnProps) => {
   |> range(start: -10m) # find data points in last 10 minutes
   |> mean()`
 
-  const query = `
-query = \`from(bucket: "${bucket}")
+  const query = `query = \`from(bucket: "${bucket}")
               |> range(start: -10m)
               |> filter(fn: (r) => r._measurement == "measurement1")
               |> mean()\`
@@ -57,6 +56,7 @@ if err := results.Err(); err != nil {
         text={fromBucketSnippet}
         showCopyControl={false}
         onCopy={logCopyCodeSnippet}
+        language="properties"
       />
       <p>
         In this example, we use the{' '}
@@ -66,7 +66,7 @@ if err := results.Err(); err != nil {
         <br />
         Add the following to your <code>main</code> function:
       </p>
-      <CodeSnippet text={query} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet text={query} onCopy={logCopyCodeSnippet} language="go" />
       <p style={{marginTop: '20px'}}>
         This will return the mean of the five values. ( (0+1+2+3+4) / 5 = 2 )
       </p>

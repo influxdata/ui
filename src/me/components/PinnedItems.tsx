@@ -104,7 +104,7 @@ const PinnedItems: FC = () => {
             >
               <ResourceCard.Meta>
                 <Heading
-                  type={Typeface.IBMPlexMono}
+                  type={Typeface.RobotoMono}
                   element={HeadingElement.H5}
                   testID="pinneditems--type"
                 >

@@ -3,8 +3,9 @@ import {get, groupBy, isEmpty} from 'lodash'
 import {nanoid} from 'nanoid'
 
 import {FluxTable} from 'src/types'
-import {fromFlux, FromFluxResult} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux, FromFluxResult} from '@influxdata/giraffe'
 import {reportErrorThroughHoneyBadger} from 'src/shared/utils/errors'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 /*
   A Flux CSV response can contain multiple CSV files each joined by a newline.
@@ -323,7 +324,8 @@ export const tableFromFluxResult = (flux: FromFluxResult): FluxTable[] => {
 }
 
 export const parseResponseWithFromFlux = (response: string): FluxTable[] => {
-  const parsed = fromFlux(response)
+  const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
+  const parsed = parser(response)
 
   if (parsed.error) {
     reportErrorThroughHoneyBadger(parsed.error, {

@@ -1,5 +1,5 @@
 // Libraries
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 
 // APIs
 import {runQuery, RunQueryResult} from 'src/shared/apis/query'
@@ -107,7 +107,7 @@ export function findValues({
   // TODO: Use the `v1.tagValues` function from the Flux standard library once
   // this issue is resolved: https://github.com/influxdata/flux/issues/1071
   const query = `import "regexp"
-  
+
   from(bucket: "${bucket}")
   |> range(${timeRangeArguments})
   |> filter(fn: ${tagFilters})
@@ -140,7 +140,8 @@ export function extractBoxedCol(
 }
 
 export function extractCol(csv: string, colName: string): string[] {
-  const {table} = fromFlux(csv)
+  const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
+  const {table} = parser(csv)
   return table.getColumn(colName, 'string') || []
 }
 

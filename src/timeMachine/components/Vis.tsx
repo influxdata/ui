@@ -2,7 +2,7 @@
 import React, {FC, memo, useEffect} from 'react'
 import {connect, ConnectedProps, useDispatch} from 'react-redux'
 import classnames from 'classnames'
-import {createGroupIDColumn, fromFlux} from '@influxdata/giraffe'
+import {createGroupIDColumn, fromFlux, fastFromFlux} from '@influxdata/giraffe'
 import {isEqual} from 'lodash'
 
 // Components
@@ -123,7 +123,8 @@ const TimeMachineVis: FC<Props> = ({
 
   // Handles deadman check edge case to allow non-numeric values
   if (viewRawData && files && files?.length) {
-    const [parsedResults] = files.flatMap(fromFlux)
+    const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
+    const [parsedResults] = files.flatMap(parser)
     return (
       <div className={timeMachineViewClassName}>
         <ErrorBoundary>

@@ -1,6 +1,6 @@
 // Utils
 import {runQuery} from 'src/shared/apis/query'
-import {fromFlux} from '@influxdata/giraffe'
+import {fromFlux, fastFromFlux} from '@influxdata/giraffe'
 import {event} from 'src/cloud/utils/reporting'
 
 // Constants
@@ -10,6 +10,7 @@ import {MONITORING_BUCKET} from 'src/alerting/constants'
 import {CancelBox, StatusRow, File} from 'src/types'
 import {RunQueryResult} from 'src/shared/apis/query'
 import {Row} from 'src/types'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
 
 export const runStatusesQuery = (
   orgID: string,
@@ -50,7 +51,8 @@ export const processStatusesResponse = ({
       return Promise.reject(new Error(resp.message))
     }
 
-    const {table} = fromFlux(resp.csv)
+    const parser = isFlagEnabled('fastFromFlux') ? fastFromFlux : fromFlux
+    const {table} = parser(resp.csv)
     const rows: Row[][] = [[]]
 
     for (let i = 0; i < table.length; i++) {

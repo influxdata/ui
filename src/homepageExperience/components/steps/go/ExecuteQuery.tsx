@@ -47,6 +47,7 @@ if err := results.Err(); err != nil {
         text={fromBucketSnippet}
         showCopyControl={false}
         onCopy={logCopyCodeSnippet}
+        language="properties"
       />
       <p>
         In this query, we are looking for data points within the last 10 minutes
@@ -58,7 +59,7 @@ if err := results.Err(); err != nil {
         <br />
         Add the following to your <code>main</code> function:
       </p>
-      <CodeSnippet text={query} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet text={query} onCopy={logCopyCodeSnippet} language="go" />
     </>
   )
 }

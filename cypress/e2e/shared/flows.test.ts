@@ -278,7 +278,7 @@ describe('Flows', () => {
     cy.clickNavBarItem('nav-item-flows')
     cy.get('@org').then(({id}: Organization) =>
       cy.fixture('routes').then(({orgs}) => {
-        cy.location(`${orgs}/${id}/notebooks`)
+        cy.location('pathname').should('eq', `${orgs}/${id}/notebooks`)
       })
     )
 

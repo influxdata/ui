@@ -48,8 +48,7 @@ export const WriteDataComponent = (props: OwnProps) => {
     onSelectBucket(bucket.name)
   }, [bucket])
 
-  const codeSnippet = `
-org := "${org.name}"
+  const codeSnippet = `org := "${org.name}"
 bucket := "${bucket.name}"
 writeAPI := client.WriteAPIBlocking(org, bucket)
 for value := 0; value < 5; value++ {
@@ -95,7 +94,11 @@ for value := 0; value < 5; value++ {
       <p>
         Add the following to your <code>main</code> function:
       </p>
-      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet
+        text={codeSnippet}
+        onCopy={logCopyCodeSnippet}
+        language="go"
+      />
       <p style={{marginTop: '20px'}}>
         In the above code snippet, we define five data points and write each one
         to InfluxDB. Each of the 5 points we write has a{' '}

@@ -73,7 +73,7 @@ const DataExplorerPage: FC = () => {
         <Page.Header fullWidth={true} testID="data-explorer--header">
           <Page.Title title="Data Explorer" />
           <FlexBox margin={ComponentSize.Large}>
-            <FeatureFlag name="newQueryBuilder">
+            <FeatureFlag name="newDataExplorer">
               <FlexBox margin={ComponentSize.Medium}>
                 <InputLabel>&#10024; Try new Data Explorer</InputLabel>
                 <SlideToggle

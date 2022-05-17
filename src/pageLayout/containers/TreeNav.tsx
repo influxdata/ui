@@ -47,6 +47,9 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
         const helpBarMenu = document.querySelectorAll<HTMLElement>(
           '.cf-tree-nav--sub-menu-trigger'
         )[3]
+        if (!helpBarMenu) {
+          return
+        }
         if (navbarMode === 'expanded') {
           helpBarMenu.style.display = 'block'
           helpBarMenu.style.width = '243px'
@@ -54,7 +57,7 @@ const TreeSidebar: FC<ReduxProps & RouteComponentProps> = () =>
           helpBarMenu.style.width = '44px'
         }
       }
-    }, [setNavbarMode, navbarMode])
+    }, [navbarMode])
 
     if (presentationMode || !org) {
       return null

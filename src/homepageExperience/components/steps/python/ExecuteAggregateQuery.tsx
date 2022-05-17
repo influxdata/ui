@@ -57,6 +57,7 @@ for table in tables:
         text={fromBucketSnippet}
         showCopyControl={false}
         onCopy={logCopyCodeSnippet}
+        language="properties"
       />
       <p>
         In this example, we use the{' '}
@@ -66,7 +67,11 @@ for table in tables:
         <br />
         Run the following:
       </p>
-      <CodeSnippet text={codeSnippet} onCopy={logCopyCodeSnippet} />
+      <CodeSnippet
+        text={codeSnippet}
+        onCopy={logCopyCodeSnippet}
+        language="python"
+      />
       <p style={{marginTop: '20px'}}>
         This will return the mean of the five values. ( (0+1+2+3+4) / 5 = 2 )
       </p>

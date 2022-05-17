@@ -62,7 +62,7 @@ describe('Flux example functions and values', () => {
     }
 
     expect(getFluxExample(exampleFunc).example).toEqual(
-      `${exampleFunc.package}.${exampleFunc.name}(  )`
+      `${exampleFunc.package}.${exampleFunc.name}()`
     )
   })
 

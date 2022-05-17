@@ -22,7 +22,8 @@ import {getQuartzMe as apiGetQuartzMe} from 'src/me/actions/thunks'
 import RouteToOrg from 'src/shared/containers/RouteToOrg'
 
 // Selectors
-import {getQuartzMe} from 'src/me/selectors'
+import {getAllOrgs} from 'src/resources/selectors'
+import {getMe, getQuartzMe} from 'src/me/selectors'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
@@ -42,12 +43,14 @@ const canAccessCheckout = (me: Me): boolean => {
 }
 
 const GetOrganizations: FunctionComponent = () => {
-  const status = useSelector((state: AppState) => state.resources.orgs.status)
+  const {status, org} = useSelector(getAllOrgs)
   const quartzMeStatus = useSelector(
     (state: AppState) => state.me.quartzMeStatus
   )
-  const me = useSelector(getQuartzMe)
+  const quartzMe = useSelector(getQuartzMe)
+  const {id: meId = '', name: email = ''} = useSelector(getMe)
   const dispatch = useDispatch()
+
   useEffect(() => {
     if (status === RemoteDataState.NotStarted) {
       dispatch(getOrganizations())
@@ -61,16 +64,31 @@ const GetOrganizations: FunctionComponent = () => {
     ) {
       dispatch(apiGetQuartzMe())
     }
+  }, [dispatch, quartzMeStatus])
 
+  useEffect(() => {
     if (
       isFlagEnabled('credit250Experiment') &&
-      quartzMeStatus === RemoteDataState.Done
+      quartzMeStatus === RemoteDataState.Done &&
+      status === RemoteDataState.Done
     ) {
-      const {accountCreatedAt = ''} = me
+      const {
+        accountType: account_type,
+        accountCreatedAt: account_created_at = '',
+      } = quartzMe
+      const orgId = org?.id ?? ''
       window.dataLayer = window.dataLayer ?? []
-      window.dataLayer.push({accountCreatedAt})
+      window.dataLayer.push({
+        identity: {
+          account_type,
+          account_created_at,
+          id: meId,
+          email,
+          organization_id: orgId,
+        },
+      })
     }
-  }, [dispatch, me, quartzMeStatus])
+  }, [quartzMeStatus, status]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <PageSpinner loading={status}>
@@ -89,10 +107,10 @@ const GetOrganizations: FunctionComponent = () => {
               />
               <Route path="/orgs" component={App} />
               <Route exact path="/" component={RouteToOrg} />
-              {CLOUD && canAccessCheckout(me) && (
+              {CLOUD && canAccessCheckout(quartzMe) && (
                 <Route path="/checkout" component={CheckoutPage} />
               )}
-              {CLOUD && me?.isOperator && (
+              {CLOUD && quartzMe?.isOperator && (
                 <Route path="/operator" component={OperatorPage} />
               )}
               <Route component={NotFound} />

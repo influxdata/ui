@@ -38,6 +38,10 @@ import DynamicFunctions from 'src/flows/pipes/RawFluxEditor/FunctionsList/Dynami
 import 'src/flows/pipes/RawFluxEditor/style.scss'
 
 // Utils
+import {
+  isPipeTransformation,
+  functionRequiresNewLine,
+} from 'src/shared/utils/fluxFunctions'
 import {event} from 'src/cloud/utils/reporting'
 import {CLOUD} from 'src/shared/constants'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -75,19 +79,9 @@ const Query: FC<PipeProp> = ({Context}) => {
 
   const injectIntoEditor = useCallback(
     (fn): void => {
-      let text = ''
-      if (CLOUD && isFlagEnabled('fluxDynamicDocs')) {
-        // only fluxTypes with <- sign require a pipe forward sign
-        text = fn.fluxType.startsWith('<-', 1)
-          ? `  |> ${fn.example}`
-          : `${fn.example}`
-      } else {
-        if (fn.name === 'from' || fn.name === 'union') {
-          text = `${fn.example}`
-        } else {
-          text = `  |> ${fn.example}`
-        }
-      }
+      const text = isPipeTransformation(fn)
+        ? `  |> ${fn.example}`
+        : `${fn.example}`
 
       const getHeader = fn => {
         let importStatement = null
@@ -106,10 +100,16 @@ const Query: FC<PipeProp> = ({Context}) => {
         return importStatement
       }
 
+      const type =
+        isPipeTransformation(fn) || functionRequiresNewLine(fn)
+          ? InjectionType.OnOwnLine
+          : InjectionType.SameLine
+
       const options = {
         text,
-        type: InjectionType.OnOwnLine,
+        type,
         header: getHeader(fn),
+        triggerSuggest: true,
       }
       inject(options)
     },

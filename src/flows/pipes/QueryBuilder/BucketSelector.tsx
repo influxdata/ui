@@ -21,6 +21,9 @@ const BucketSelector: FC = () => {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
+    if (loading !== RemoteDataState.Done) {
+      return
+    }
     const allBuckets = new Set(buckets.map(b => b.name))
     data.buckets
       .filter(b => !allBuckets.has(b.name))
@@ -30,7 +33,7 @@ const BucketSelector: FC = () => {
           type: b.type,
         } as Bucket)
       })
-  }, [buckets, data.buckets])
+  }, [loading, buckets, data.buckets])
 
   if (loading === RemoteDataState.Done && !buckets.length) {
     return (

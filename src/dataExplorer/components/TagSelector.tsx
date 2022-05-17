@@ -4,11 +4,44 @@ import React, {FC} from 'react'
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
+interface Tag {
+  key: string
+  values: string[]
+}
+interface Prop {
+  tag: Tag
+  onSelect: (value: string) => void
+}
+
+const TagValues: FC<Prop> = ({tag, onSelect}) => {
+  return (
+    <Accordion className="tag-value-selector">
+      <Accordion.AccordionHeader className="tag-value-selector--header">
+        <SelectorTitle title={tag.key} />
+      </Accordion.AccordionHeader>
+      <div>
+        {tag.values.map(value => (
+          <div key={value} onClick={() => onSelect(value)}>
+            {value}
+          </div>
+        ))}
+      </div>
+    </Accordion>
+  )
+}
+
 const TagSelector: FC = () => {
   const tags = [
-    {key: 'station_id', value: []},
-    {key: 'station_owner', value: ['COMPS']},
+    {key: 'station_id', values: ['Everglades National Park']},
+    {key: 'station_owner', values: ['COMPS', 'Chicago Park District']},
   ]
+
+  const handleSelect = (value: string) => {
+    // TODO
+    /* eslint-disable no-console */
+    console.log(value)
+    /* eslint-disable no-console */
+  }
 
   let list: JSX.Element | JSX.Element[] = (
     <div className="tag-keys-selector--list-item">No Tags Found</div>
@@ -17,7 +50,7 @@ const TagSelector: FC = () => {
   if (tags.length) {
     list = tags.map(tag => (
       <div key={tag.key} className="tag-keys-selector--list-item">
-        {tag.key}
+        <TagValues tag={tag} onSelect={handleSelect} />
       </div>
     ))
     // TODO: check length of tags to load more

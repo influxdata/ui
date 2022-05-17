@@ -46,15 +46,21 @@
 }
 
 .fields-selector .cf-accordion--icon,
-.tag-keys-selector .cf-accordion--icon {
+.tag-keys-selector .cf-accordion--icon,
+.tag-value-selector .cf-accordion--icon {
   color: gray;
 }
 
 .fields-selector--header,
-.tag-keys-selector--header {
+.tag-keys-selector--header,
+.tag-value-selector--header {
   background-color: transparent;
   min-height: 0;
   padding: 0;
+}
+
+.tag-value-selector .selector-title {
+  padding-bottom: 0;
 }
 
 .fields-selector--list-item,

@@ -33,7 +33,10 @@ export interface InjectionPosition {
   shouldEndInNewLine: boolean
 }
 
-export function calcInjectionPosition(editor, type: InjectionType) {
+export function calcInjectionPosition(
+  editor,
+  type: InjectionType
+): InjectionPosition {
   const {lineNumber, column: col} = editor.getPosition()
   let row = lineNumber
   let column = col
@@ -77,8 +80,10 @@ export function calcInjectionPosition(editor, type: InjectionType) {
   const cursorInMiddleOfText = textAheadOfCursor && textBehindCursor
   if (type == InjectionType.OnOwnLine && cursorInMiddleOfText) {
     row++
-    column = 1
     shouldEndInNewLine = true
+  }
+  if (type == InjectionType.OnOwnLine) {
+    column = 1
   }
 
   // if we asked to insert on a row out-of-range
@@ -86,4 +91,27 @@ export function calcInjectionPosition(editor, type: InjectionType) {
   const shouldStartWithNewLine = row > currentRange.endLineNumber
 
   return {row, column, shouldStartWithNewLine, shouldEndInNewLine}
+}
+
+export const moveCursorAndTriggerSuggest = (
+  editor,
+  {row, column, shouldStartWithNewLine, shouldEndInNewLine},
+  hasHeader,
+  textLength
+) => {
+  let columnOffset = 1
+  if (shouldStartWithNewLine) {
+    columnOffset++
+  }
+  if (shouldEndInNewLine) {
+    columnOffset++
+  }
+  setTimeout(() => {
+    editor.focus()
+    editor.setPosition({
+      lineNumber: hasHeader ? row + 1 : row,
+      column: column + textLength - columnOffset,
+    })
+    editor.trigger('', 'editor.action.triggerSuggest', {})
+  }, 0)
 }

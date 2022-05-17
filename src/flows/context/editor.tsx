@@ -9,8 +9,8 @@ import {EditorType} from 'src/types'
 import {PipeContext} from 'src/flows/context/pipe'
 import {
   InjectionType,
-  InjectionPosition,
   calcInjectionPosition,
+  moveCursorAndTriggerSuggest,
 } from 'src/shared/utils/fluxFunctions'
 export {InjectionType, InjectionPosition} from 'src/shared/utils/fluxFunctions'
 import {isFlagEnabled} from 'src/shared/utils/featureFlag'
@@ -26,7 +26,6 @@ export interface EditorContextType {
   editor: EditorType | null
   setEditor: (editor: EditorType) => void
   inject: (options: InjectionOptions) => void
-  calcInjectiontPosition: (type: InjectionType) => Partial<InjectionPosition>
   updateText: (t: string) => void
 }
 
@@ -34,7 +33,6 @@ const DEFAULT_CONTEXT: EditorContextType = {
   editor: null,
   setEditor: _ => {},
   inject: _ => {},
-  calcInjectiontPosition: _ => ({}),
   updateText: _ => {},
 }
 
@@ -58,16 +56,6 @@ export const EditorProvider: FC = ({children}) => {
     [queries, activeQuery]
   )
 
-  const calcInjectiontPosition = useCallback(
-    (type: InjectionType): Partial<InjectionPosition> => {
-      if (!editor) {
-        return {}
-      }
-      return calcInjectionPosition(editor, type)
-    },
-    [editor]
-  )
-
   const inject = useCallback(
     (options: InjectionOptions) => {
       if (!editor) {
@@ -75,12 +63,13 @@ export const EditorProvider: FC = ({children}) => {
       }
 
       const {header, text: initT, type, triggerSuggest} = options
+      const injectionPosition = calcInjectionPosition(editor, type)
       const {
         row,
         column: initC,
         shouldStartWithNewLine,
         shouldEndInNewLine,
-      } = calcInjectiontPosition(type)
+      } = injectionPosition
 
       let text = initT.trimRight()
       if (shouldStartWithNewLine) {
@@ -116,24 +105,15 @@ export const EditorProvider: FC = ({children}) => {
       updateText(editor.getValue())
 
       if (isFlagEnabled('fluxDynamicDocs') && triggerSuggest) {
-        let columnOffset = 1
-        if (shouldStartWithNewLine) {
-          columnOffset++
-        }
-        if (shouldEndInNewLine) {
-          columnOffset++
-        }
-        setTimeout(() => {
-          editor.focus()
-          editor.setPosition({
-            lineNumber: addHeader ? row + 1 : row,
-            column: column + text.length - columnOffset,
-          })
-          editor.trigger('', 'editor.action.triggerSuggest', {})
-        }, 0)
+        moveCursorAndTriggerSuggest(
+          editor,
+          injectionPosition,
+          addHeader,
+          text.length
+        )
       }
     },
-    [editor, calcInjectiontPosition, updateText]
+    [editor, updateText]
   )
 
   return (
@@ -142,7 +122,6 @@ export const EditorProvider: FC = ({children}) => {
         editor,
         setEditor,
         inject,
-        calcInjectiontPosition,
         updateText,
       }}
     >

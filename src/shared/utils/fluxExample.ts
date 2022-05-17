@@ -55,7 +55,7 @@ export const getFluxExample = (func: FluxFunction) => {
       }
     }
     injectedParameters = injectedParameters.trim().length
-      ? injectedParameters
+      ? injectedParameters.trimLeft()
       : injectedParameters.trim()
     example =
       packageName === 'universe'

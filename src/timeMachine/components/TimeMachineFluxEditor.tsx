@@ -26,15 +26,11 @@ import {
   functionRequiresNewLine,
   InjectionType,
   calcInjectionPosition,
+  moveCursorAndTriggerSuggest,
 } from 'src/shared/utils/fluxFunctions'
 
 // Types
-import {
-  FluxToolbarFunction,
-  FluxFunction,
-  EditorType,
-  MonacoRange,
-} from 'src/types'
+import {FluxToolbarFunction, FluxFunction, EditorType} from 'src/types'
 
 const FluxEditor = lazy(() => import('src/shared/components/FluxMonacoEditor'))
 
@@ -69,7 +65,7 @@ const TimeMachineFluxEditor: FC = () => {
     handleSetActiveQueryText(editorInstance.getValue())
   }
 
-  const getFluxTextAndRange = (func): {text: string; range: MonacoRange} => {
+  const getFluxTextAndRange = func => {
     if (!editorInstance) {
       return null
     }
@@ -87,8 +83,8 @@ const TimeMachineFluxEditor: FC = () => {
     } = calcInjectionPosition(editorInstance, type)
 
     let text = isPipeTransformation(func)
-      ? `  |> ${func.example}`
-      : `${func.example}`
+      ? `  |> ${func.example.trimRight()}`
+      : `${func.example.trimRight()}`
 
     if (shouldStartWithNewLine) {
       text = `\n${text}`
@@ -99,7 +95,16 @@ const TimeMachineFluxEditor: FC = () => {
 
     const range = new monaco.Range(row, column, row, column)
 
-    return {text, range}
+    return {
+      text,
+      range,
+      injectionPosition: {
+        shouldStartWithNewLine,
+        shouldEndInNewLine,
+        row,
+        column,
+      },
+    }
   }
 
   const handleInsertFluxFunction = (
@@ -108,11 +113,13 @@ const TimeMachineFluxEditor: FC = () => {
     if (!editorInstance) {
       return
     }
-    const {text, range} = getFluxTextAndRange(
+
+    const funcDefn =
       CLOUD && isFlagEnabled('fluxDynamicDocs')
         ? getFluxExample(func as FluxFunction)
         : func
-    )
+
+    const {text, range, injectionPosition} = getFluxTextAndRange(funcDefn)
 
     const edits = [
       {
@@ -133,6 +140,15 @@ const TimeMachineFluxEditor: FC = () => {
     }
     editorInstance.executeEdits('', edits)
     handleSetActiveQueryText(editorInstance.getValue())
+
+    if (isFlagEnabled('fluxDynamicDocs')) {
+      moveCursorAndTriggerSuggest(
+        editorInstance,
+        injectionPosition,
+        !!importStatement,
+        text.length
+      )
+    }
   }
 
   const handleActiveQuery = React.useCallback(

@@ -6,7 +6,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
 // Context
-import {NewDataExplorerContext} from 'src/dataExplorer/components/SchemaSelector'
+import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 
 const MeasurementSelector: FC = () => {
   const {data, updateData} = useContext(NewDataExplorerContext)

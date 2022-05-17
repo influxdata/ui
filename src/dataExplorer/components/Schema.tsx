@@ -1,4 +1,4 @@
-import React, {FC, useState, useContext, useMemo, useEffect} from 'react'
+import React, {FC, useState, useContext, useMemo} from 'react'
 
 // Components
 import {DapperScrollbars} from '@influxdata/clockface'
@@ -7,11 +7,11 @@ import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
 import FieldsSelector from 'src/dataExplorer/components/FieldsSelector'
 import TagKeysSelector from 'src/dataExplorer/components/TagKeysSelector'
-import {NewDataExplorerProvider} from 'src/dataExplorer/components/SchemaSelector'
+import {NewDataExplorerProvider} from 'src/dataExplorer/context/newDataExplorer'
 import WaitingText from 'src/shared/components/WaitingText'
 
 // Context
-import {NewDataExplorerContext} from 'src/dataExplorer/components/SchemaSelector'
+import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
 
 // Types
 import {RemoteDataState} from 'src/types'

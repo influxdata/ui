@@ -29,7 +29,7 @@ export const VariablesProvider: FC = ({children}) => {
   const [variables, setVariables] = useState(EMPTY_STATE)
 
   useEffect(() => {
-    if (!pipeRange && !flow?.range) {
+    if ((!pipeRange && !flow?.range) || !source) {
       return
     }
     const range = pipeRange || flow?.range

@@ -8,7 +8,7 @@ import {
 
 // Types and Context
 import {PipeProp} from 'src/types/flows'
-import {VariablesProvider, VariablesContext} from 'src/flows/context/variables'
+import {VariablesContext} from 'src/flows/context/variables'
 
 // Components
 import {PipeContext} from 'src/flows/context/pipe'
@@ -50,8 +50,4 @@ const Query: FC<PipeProp> = ({Context}) => {
   )
 }
 
-export default Props => (
-  <VariablesProvider>
-    <Query {...Props} />
-  </VariablesProvider>
-)
+export default Query

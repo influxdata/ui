@@ -24,6 +24,8 @@ import {getFluxExample} from 'src/shared/utils/fluxExample'
 import {
   isPipeTransformation,
   functionRequiresNewLine,
+  InjectionType,
+  calcInjectionPosition,
 } from 'src/shared/utils/fluxFunctions'
 
 // Types
@@ -67,59 +69,35 @@ const TimeMachineFluxEditor: FC = () => {
     handleSetActiveQueryText(editorInstance.getValue())
   }
 
-  const getInsertLineNumber = (currentLineNumber: number): number => {
-    const scriptLines = activeQueryText.split('\n')
-
-    const currentLine =
-      scriptLines[currentLineNumber] || scriptLines[scriptLines.length - 1]
-
-    // Insert on the current line if its an empty line
-    if (!currentLine.trim()) {
-      return currentLineNumber
-    }
-
-    return currentLineNumber + 1
-  }
-
-  const defaultColumnPosition = 1 // beginning column of the row
-
   const getFluxTextAndRange = (func): {text: string; range: MonacoRange} => {
     if (!editorInstance) {
       return null
     }
-    const p = editorInstance.getPosition()
-    const insertLineNumber = getInsertLineNumber(p.lineNumber)
 
-    let row = insertLineNumber
+    const type =
+      isPipeTransformation(func) || functionRequiresNewLine(func)
+        ? InjectionType.OnOwnLine
+        : InjectionType.SameLine
 
-    const [currentRange] = editorInstance.getVisibleRanges()
-    // Determines whether the new insert line is beyond the current range
-    let shouldInsertOnNextLine = insertLineNumber > currentRange.endLineNumber
-    // edge case for when user toggles to the script editor
-    // this defaults the cursor to the initial position (top-left, 1:1 position)
-    if (p.lineNumber === 1 && p.column === defaultColumnPosition) {
-      // adds the function to the end of the query
-      shouldInsertOnNextLine = true
-      row = currentRange.endLineNumber + 1
-    }
+    const {
+      row,
+      column,
+      shouldStartWithNewLine,
+      shouldEndInNewLine,
+    } = calcInjectionPosition(editorInstance, type)
 
     let text = isPipeTransformation(func)
       ? `  |> ${func.example}`
       : `${func.example}`
 
-    if (shouldInsertOnNextLine || functionRequiresNewLine(func.name)) {
+    if (shouldStartWithNewLine) {
       text = `\n${text}`
     }
-    if (functionRequiresNewLine(func.name)) {
+    if (shouldEndInNewLine) {
       text = `${text}\n`
     }
 
-    const range = new monaco.Range(
-      row,
-      defaultColumnPosition,
-      row,
-      defaultColumnPosition
-    )
+    const range = new monaco.Range(row, column, row, column)
 
     return {text, range}
   }

@@ -33,7 +33,7 @@ const FieldsTags: FC = () => {
   }
 
   return useMemo(() => {
-    if (!data?.measurement) {
+    if (!data?.bucket || !data?.measurement) {
       return null
     }
 
@@ -54,7 +54,7 @@ const FieldsTags: FC = () => {
         <TagKeysSelector />
       </div>
     )
-  }, [loading, data?.measurement])
+  }, [loading, data])
 }
 
 const Schema: FC = () => {

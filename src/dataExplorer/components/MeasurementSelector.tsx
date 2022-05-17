@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useContext, useState} from 'react'
+import React, {FC, useCallback, useContext, useMemo, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
@@ -24,34 +24,40 @@ const MeasurementSelector: FC = () => {
   const handleSelect = useCallback(
     (option: string): void => {
       // TODO: reset tags and fields to null
-      updateData({measurement: option})
+      updateData({...data, measurement: option})
     },
-    [updateData, selectedMeasurement]
+    [data, updateData]
   )
 
   const handleChangeSearchTerm = (value: string) => {
     setSearchTerm(value)
   }
 
-  return (
-    <div>
-      <SelectorTitle title="Measurement" info="Test info" />
-      <SearchableDropdown
-        searchTerm={searchTerm}
-        searchPlaceholder="Search measurements"
-        selectedOption={selectedMeasurement || 'Select measurement...'}
-        onSelect={handleSelect}
-        onChangeSearchTerm={handleChangeSearchTerm}
-        options={measurements}
-        buttonStatus={ComponentStatus.Default}
-        testID="measurement-selector--dropdown"
-        buttonTestID="measurement-selector--dropdown-button"
-        menuTestID="measurement-selector--dropdown--menu"
-        emptyText="No Measurements Found"
-        iconOn={true}
-      />
-    </div>
-  )
+  return useMemo(() => {
+    if (!data?.bucket) {
+      return null
+    }
+
+    return (
+      <div>
+        <SelectorTitle title="Measurement" info="Test info" />
+        <SearchableDropdown
+          searchTerm={searchTerm}
+          searchPlaceholder="Search measurements"
+          selectedOption={selectedMeasurement || 'Select measurement...'}
+          onSelect={handleSelect}
+          onChangeSearchTerm={handleChangeSearchTerm}
+          options={measurements}
+          buttonStatus={ComponentStatus.Default}
+          testID="measurement-selector--dropdown"
+          buttonTestID="measurement-selector--dropdown-button"
+          menuTestID="measurement-selector--dropdown--menu"
+          emptyText="No Measurements Found"
+          iconOn={true}
+        />
+      </div>
+    )
+  }, [data])
 }
 
 export default MeasurementSelector

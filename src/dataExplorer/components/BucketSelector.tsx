@@ -1,14 +1,17 @@
-import React, {FC, useState} from 'react'
+import React, {FC, useCallback, useContext, useState} from 'react'
 
 // Components
 import {ComponentStatus} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 import SearchableDropdown from 'src/shared/components/SearchableDropdown'
 
+// Context
+import {NewDataExplorerContext} from 'src/dataExplorer/context/newDataExplorer'
+
 const BucketSelector: FC = () => {
-  // TODO: change to context later
-  const [selectedBucket, setSelectedBucket] = useState(null)
+  const {data, updateData} = useContext(NewDataExplorerContext)
   const [searchTerm, setSearchTerm] = useState('')
+  const selectedBucket = data?.bucket
 
   const buckets = [
     {type: 'sample', name: 'Air Sensor Data', id: 'airSensor'},
@@ -17,10 +20,13 @@ const BucketSelector: FC = () => {
     {type: 'sample', name: 'USGS Earthquakes', id: 'usgs'},
   ]
 
-  const handleSelectBucket = (option: string) => {
-    const selected = buckets.find(b => b.name === option)
-    setSelectedBucket(selected)
-  }
+  const handleSelectBucket = useCallback(
+    (option: string) => {
+      // TODO: reset measurement, tags and fields to null
+      updateData({bucket: option})
+    },
+    [updateData, selectedBucket]
+  )
 
   const handleChangeSearchTerm = (value: string) => {
     setSearchTerm(value)
@@ -32,7 +38,7 @@ const BucketSelector: FC = () => {
       <SearchableDropdown
         searchTerm={searchTerm}
         searchPlaceholder="Search buckets"
-        selectedOption={selectedBucket?.name || 'Select bucket...'}
+        selectedOption={selectedBucket || 'Select bucket...'}
         onSelect={handleSelectBucket}
         onChangeSearchTerm={handleChangeSearchTerm}
         options={buckets.map(b => b.name)}

@@ -8,15 +8,19 @@ import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector
 import FieldsSelector from 'src/dataExplorer/components/FieldsSelector'
 import TagKeysSelector from 'src/dataExplorer/components/TagKeysSelector'
 import {NewDataExplorerProvider} from 'src/dataExplorer/components/SchemaSelector'
+import WaitingText from 'src/shared/components/WaitingText'
 
 // Context
 import {NewDataExplorerContext} from 'src/dataExplorer/components/SchemaSelector'
+
+// Types
+import {RemoteDataState} from 'src/types'
 
 // Style
 import './Schema.scss'
 
 const FieldsTags: FC = () => {
-  const {data} = useContext(NewDataExplorerContext)
+  const {loading, data} = useContext(NewDataExplorerContext)
 
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -33,6 +37,10 @@ const FieldsTags: FC = () => {
       return null
     }
 
+    if (loading === RemoteDataState.Loading) {
+      return <WaitingText text="Loading" />
+    }
+
     return (
       <div>
         <div className="fields-tags-search-bar">
@@ -46,7 +54,7 @@ const FieldsTags: FC = () => {
         <TagKeysSelector />
       </div>
     )
-  }, [data])
+  }, [loading, data?.measurement])
 }
 
 const Schema: FC = () => {

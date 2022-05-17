@@ -224,8 +224,8 @@ class TokensTab extends PureComponent<Props, State> {
                         sortType={sortType}
                         onClickColumn={this.handleClickColumn}
                         selectedTokens={this.state.selectedTokens}
-                        handleChangeSelectedTokens={
-                          this.handleChangeSelectedTokens
+                        handleTokenCardCheckboxClick={
+                          this.handleTokenCardCheckboxClick
                         }
                       />
                     )}
@@ -278,7 +278,7 @@ class TokensTab extends PureComponent<Props, State> {
     }
   }
 
-  private handleChangeSelectedTokens = (tokenId: Authorization) => {
+  private handleTokenCardCheckboxClick = (tokenId: Authorization) => {
     const tokenAlreadySelected = this.state.selectedTokens.includes(tokenId)
 
     if (tokenAlreadySelected) {

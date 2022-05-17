@@ -20,7 +20,7 @@ const CancelButton: FC = () => {
   )
 
   const handleCancelCredit250Click = () => {
-    event('Credit $250 upgrade canceled')
+    event('credit-250 upgrade canceled')
     handleCancelClick()
   }
 

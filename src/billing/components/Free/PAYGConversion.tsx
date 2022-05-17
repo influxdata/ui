@@ -48,7 +48,9 @@ export const Credit250PAYGConversion: FC = () => {
               <CloudUpgradeButton
                 className="credit-250-conversion-upgrade--button"
                 metric={() => {
-                  event('pay-as-you conversion upgrade', {location: 'billing'})
+                  event('credit-250 pay-as-you conversion upgrade', {
+                    location: 'billing',
+                  })
                 }}
                 showPromoMessage={false}
                 size={ComponentSize.Large}

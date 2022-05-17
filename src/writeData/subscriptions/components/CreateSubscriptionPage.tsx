@@ -37,6 +37,11 @@ import {AppState, ResourceType, Bucket} from 'src/types'
 // Utils
 import {getAll} from 'src/resources/selectors'
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+
+// Constants
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Actions
 import {shouldShowUpgradeButton, getQuartzMe} from 'src/me/selectors'
@@ -162,7 +167,12 @@ const CreateSubscriptionPage: FC = () => {
               >
                 <CloudUpgradeButton
                   metric={() => {
-                    event('create subscription upgrade')
+                    event(
+                      isFlagEnabled('credit250Experiment') &&
+                        getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
+                        ? 'credit-250 create subscription upgrade'
+                        : 'create subscription upgrade'
+                    )
                   }}
                 />
               </FlexBox>

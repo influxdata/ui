@@ -17,9 +17,12 @@ import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getExperimentVariantId} from 'src/cloud/utils/experiments'
 
 // Constants
 import {CLOUD} from 'src/shared/constants'
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 // Types
 import {LimitStatus} from 'src/cloud/actions/limits'
@@ -54,7 +57,13 @@ const AssetLimitAlert: FC<Props> = ({limitStatus, resourceName, className}) => {
                 buttonText={`Get more ${resourceName}`}
                 className="upgrade-payg--button__asset-alert"
                 metric={() => {
-                  event('asset limit alert upgrade', {asset: resourceName})
+                  event(
+                    isFlagEnabled('credit250Experiment') &&
+                      getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
+                      ? 'credit-250 asset limit alert upgrade'
+                      : 'asset limit alert upgrade',
+                    {asset: resourceName}
+                  )
                 }}
               />
             </FlexBox>

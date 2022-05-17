@@ -14,6 +14,13 @@ import {
 } from '@influxdata/clockface'
 import CloudUpgradeButton from 'src/shared/components/CloudUpgradeButton'
 
+// Utils
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+
+// Constants
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
+
 // Types
 import {AppState} from 'src/types'
 import {event} from 'src/cloud/utils/reporting'
@@ -59,7 +66,13 @@ const AssetLimitOverlay: FC<OwnProps & StateProps> = ({assetName, onClose}) => {
               size={ComponentSize.Large}
               className="upgrade-payg--button__asset-create"
               metric={() => {
-                event('asset limit overlay upgrade', {asset: assetName})
+                event(
+                  isFlagEnabled('credit250Experiment') &&
+                    getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
+                    ? 'credit-250 asset limit overlay upgrade'
+                    : 'asset limit overlay upgrade',
+                  {asset: assetName}
+                )
               }}
             />
           </Overlay.Footer>

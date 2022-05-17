@@ -10,6 +10,11 @@ import {OverlayContext} from 'src/overlays/components/OverlayController'
 
 // Utils
 import {event} from 'src/cloud/utils/reporting'
+import {isFlagEnabled} from 'src/shared/utils/featureFlag'
+import {getExperimentVariantId} from 'src/cloud/utils/experiments'
+
+// Constants
+import {CREDIT_250_EXPERIMENT_ID} from 'src/shared/constants'
 
 import './ContactSupport.scss'
 
@@ -67,7 +72,12 @@ const FreeAccountSupportOverlay: FC<OwnProps> = () => {
       <Overlay.Footer>
         <CloudUpgradeButton
           metric={() => {
-            event('free account support upgrade')
+            event(
+              isFlagEnabled('credit250Experiment') &&
+                getExperimentVariantId(CREDIT_250_EXPERIMENT_ID) === '1'
+                ? 'credit-250 free account support upgrade'
+                : 'free account support upgrade'
+            )
           }}
         />
       </Overlay.Footer>

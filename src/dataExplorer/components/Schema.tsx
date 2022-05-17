@@ -5,8 +5,8 @@ import {DapperScrollbars} from '@influxdata/clockface'
 import SearchWidget from 'src/shared/components/search_widget/SearchWidget'
 import BucketSelector from 'src/dataExplorer/components/BucketSelector'
 import MeasurementSelector from 'src/dataExplorer/components/MeasurementSelector'
-import FieldsSelector from 'src/dataExplorer/components/FieldsSelector'
-import TagKeysSelector from 'src/dataExplorer/components/TagKeysSelector'
+import FieldSelector from 'src/dataExplorer/components/FieldSelector'
+import TagSelector from 'src/dataExplorer/components/TagSelector'
 import {NewDataExplorerProvider} from 'src/dataExplorer/context/newDataExplorer'
 import WaitingText from 'src/shared/components/WaitingText'
 
@@ -50,8 +50,8 @@ const FieldsTags: FC = () => {
             searchTerm={searchTerm}
           />
         </div>
-        <FieldsSelector />
-        <TagKeysSelector />
+        <FieldSelector />
+        <TagSelector />
       </div>
     )
   }, [loading, data])

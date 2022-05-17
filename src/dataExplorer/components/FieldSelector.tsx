@@ -7,7 +7,7 @@ import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 // Syles
 import './Schema.scss'
 
-const FieldsSelector: FC = () => {
+const FieldSelector: FC = () => {
   const fields = ['air_temp_degc', 'avg_wave_period_sec', 'dewpoint_temp_degc']
 
   let list: JSX.Element | JSX.Element[] = (
@@ -38,4 +38,4 @@ const FieldsSelector: FC = () => {
   )
 }
 
-export default FieldsSelector
+export default FieldSelector

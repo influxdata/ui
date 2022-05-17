@@ -4,7 +4,7 @@ import React, {FC} from 'react'
 import {Accordion} from '@influxdata/clockface'
 import SelectorTitle from 'src/dataExplorer/components/SelectorTitle'
 
-const TagKeysSelector: FC = () => {
+const TagSelector: FC = () => {
   const tags = [
     {key: 'station_id', value: []},
     {key: 'station_owner', value: ['COMPS']},
@@ -37,4 +37,4 @@ const TagKeysSelector: FC = () => {
   )
 }
 
-export default TagKeysSelector
+export default TagSelector

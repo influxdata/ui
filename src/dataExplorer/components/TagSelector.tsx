@@ -36,6 +36,9 @@ const TagSelector: FC = () => {
   const tags = [
     {key: 'station_id', values: ['Everglades National Park']},
     {key: 'station_owner', values: ['COMPS', 'Chicago Park District']},
+    {key: 'station_name', values: ['Everglades National Park']},
+    {key: 'station_pgm', values: ['COMPS', 'Chicago Park District']},
+    {key: 'station_type', values: ['Everglades National Park']},
   ]
 
   const handleSelect = (value: string) => {

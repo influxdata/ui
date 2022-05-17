@@ -64,6 +64,14 @@
 }
 
 .field-selector--list-item,
-.tag-selector--list-item {
+.tag-selector--list-item,
+.tag-value-selector--list-item {
   padding: $cf-space-3xs 0 $cf-space-3xs $cf-space-xs;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-value-selector--list-item {
+  padding: $cf-space-2xs 0 0 $cf-space-xs;
 }

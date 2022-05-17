@@ -19,13 +19,15 @@ const TagValues: FC<Prop> = ({tag, onSelect}) => {
       <Accordion.AccordionHeader className="tag-value-selector--header">
         <SelectorTitle title={tag.key} />
       </Accordion.AccordionHeader>
-      <div>
-        {tag.values.map(value => (
-          <div key={value} onClick={() => onSelect(value)}>
-            {value}
-          </div>
-        ))}
-      </div>
+      {tag.values.map(value => (
+        <div
+          className="tag-value-selector--list-item"
+          key={value}
+          onClick={() => onSelect(value)}
+        >
+          {value}
+        </div>
+      ))}
     </Accordion>
   )
 }
@@ -60,6 +62,7 @@ const TagSelector: FC = () => {
     //   </div>
     // )
   }
+
   return (
     <Accordion className="tag-selector" expanded={true}>
       <Accordion.AccordionHeader className="tag-selector--header">

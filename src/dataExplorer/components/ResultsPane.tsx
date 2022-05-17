@@ -23,6 +23,9 @@ import {downloadTextFile} from 'src/shared/utils/download'
 import {event} from 'src/cloud/utils/reporting'
 import {QueryContext} from 'src/shared/contexts/query'
 import {notify} from 'src/shared/actions/notifications'
+import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
+import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
+import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
 import {DEFAULT_TIME_RANGE} from 'src/shared/constants/timeRanges'
 
@@ -98,6 +101,15 @@ const ResultsPane: FC = () => {
       })
   }
 
+  const timeVars = [
+    getRangeVariable(TIME_RANGE_START, timeRange),
+    getRangeVariable(TIME_RANGE_STOP, timeRange),
+  ]
+
+  const variables = timeVars.concat(
+    getWindowPeriodVariableFromVariables(text, timeVars) || []
+  )
+
   return (
     <DraggableResizer
       handleOrientation={Orientation.Horizontal}
@@ -121,7 +133,7 @@ const ResultsPane: FC = () => {
               }
             >
               <FluxMonacoEditor
-                variables={[]}
+                variables={variables}
                 script={text}
                 onChangeScript={setText}
               />

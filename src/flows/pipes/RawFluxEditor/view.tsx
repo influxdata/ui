@@ -28,7 +28,7 @@ import {
   EditorProvider,
   InjectionType,
 } from 'src/flows/context/editor'
-import {VariablesProvider, VariablesContext} from 'src/flows/context/variables'
+import {VariablesContext} from 'src/flows/context/variables'
 
 // Components
 import SecretsList from 'src/flows/pipes/RawFluxEditor/SecretsList'
@@ -177,9 +177,7 @@ const Query: FC<PipeProp> = ({Context}) => {
 }
 
 export default ({Context}) => (
-  <VariablesProvider>
-    <EditorProvider>
-      <Query Context={Context} />
-    </EditorProvider>
-  </VariablesProvider>
+  <EditorProvider>
+    <Query Context={Context} />
+  </EditorProvider>
 )

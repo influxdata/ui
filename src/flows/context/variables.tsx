@@ -1,8 +1,10 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
 import {Variable} from 'src/types'
-import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
+import {FlowQueryContext} from 'src/flows/context/flow.query'
+import {FlowContext} from 'src/flows/context/flow.current'
 import {PipeContext} from 'src/flows/context/pipe'
 import {getRangeVariable} from 'src/variables/utils/getTimeRangeVars'
+import {TIME_RANGE_START, TIME_RANGE_STOP} from 'src/variables/constants'
 import {getWindowPeriodVariableFromVariables} from 'src/variables/utils/getWindowVars'
 
 const EMPTY_STATE = [] as Variable[]
@@ -20,21 +22,24 @@ export const VariablesContext = React.createContext<VariablesContextType>(
 )
 
 export const VariablesProvider: FC = ({children}) => {
-  const pipe = useContext(PipeContext)
+  const {id, range: pipeRange} = useContext(PipeContext)
+  const {flow} = useContext(FlowContext)
+  const {getPanelQueries} = useContext(FlowQueryContext)
+  const {source} = getPanelQueries(id)
   const [variables, setVariables] = useState(EMPTY_STATE)
 
   useEffect(() => {
+    if (!pipeRange && !flow?.range) {
+      return
+    }
+    const range = pipeRange || flow?.range
     const timeVars = [
-      getRangeVariable(TIME_RANGE_START, pipe.range),
-      getRangeVariable(TIME_RANGE_STOP, pipe.range),
+      getRangeVariable(TIME_RANGE_START, range),
+      getRangeVariable(TIME_RANGE_STOP, range),
     ]
-
-    const {queries, activeQuery} = pipe.data
-    const query = queries[activeQuery]
-    const windowVar = getWindowPeriodVariableFromVariables(query.text, timeVars)
-
+    const windowVar = getWindowPeriodVariableFromVariables(source, timeVars)
     setVariables(!!windowVar ? timeVars.concat(windowVar) : timeVars)
-  }, [pipe?.id, pipe?.range, pipe?.data.activeQuery])
+  }, [id, source, pipeRange, flow?.range])
 
   return (
     <VariablesContext.Provider value={{variables}}>

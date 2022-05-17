@@ -40,19 +40,19 @@
   padding-top: $cf-space-s;
 }
 
-.fields-selector,
-.tag-keys-selector {
+.field-selector,
+.tag-selector {
   padding-top: $cf-space-2xs;
 }
 
-.fields-selector .cf-accordion--icon,
-.tag-keys-selector .cf-accordion--icon,
+.field-selector .cf-accordion--icon,
+.tag-selector .cf-accordion--icon,
 .tag-value-selector .cf-accordion--icon {
   color: gray;
 }
 
-.fields-selector--header,
-.tag-keys-selector--header,
+.field-selector--header,
+.tag-selector--header,
 .tag-value-selector--header {
   background-color: transparent;
   min-height: 0;
@@ -63,7 +63,7 @@
   padding-bottom: 0;
 }
 
-.fields-selector--list-item,
-.tag-keys-selector--list-item {
+.field-selector--list-item,
+.tag-selector--list-item {
   padding: $cf-space-3xs 0 $cf-space-3xs $cf-space-xs;
 }

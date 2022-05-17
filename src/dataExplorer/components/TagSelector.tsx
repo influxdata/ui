@@ -44,25 +44,25 @@ const TagSelector: FC = () => {
   }
 
   let list: JSX.Element | JSX.Element[] = (
-    <div className="tag-keys-selector--list-item">No Tags Found</div>
+    <div className="tag-selector--list-item">No Tags Found</div>
   )
 
   if (tags.length) {
     list = tags.map(tag => (
-      <div key={tag.key} className="tag-keys-selector--list-item">
+      <div key={tag.key} className="tag-selector--list-item">
         <TagValues tag={tag} onSelect={handleSelect} />
       </div>
     ))
     // TODO: check length of tags to load more
     // list.push(
-    //   <div key="load-more" className="tag-keys-selector--list-item">
+    //   <div key="load-more" className="tag-selector--list-item">
     //     Load More
     //   </div>
     // )
   }
   return (
-    <Accordion className="tag-keys-selector" expanded={true}>
-      <Accordion.AccordionHeader className="tag-keys-selector--header">
+    <Accordion className="tag-selector" expanded={true}>
+      <Accordion.AccordionHeader className="tag-selector--header">
         <SelectorTitle title="Tag Keys" info="Test info" />
       </Accordion.AccordionHeader>
       {list}

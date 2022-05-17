@@ -52,7 +52,7 @@ interface State {
   sortDirection: Sort
   sortType: SortTypes
   selectedTokens?: Authorization[] // array of ID of tokens selected
-  selectionState?: SelectionState
+  batchSelectionState?: SelectionState
 }
 
 interface StateProps {
@@ -80,7 +80,7 @@ class TokensTab extends PureComponent<Props, State> {
       sortDirection: Sort.Ascending,
       sortType: SortTypes.String,
       selectedTokens: [],
-      selectionState: SelectionState.NoneSelected,
+      batchSelectionState: SelectionState.NoneSelected,
     }
     this.paginationRef = createRef<HTMLDivElement>()
   }
@@ -122,10 +122,10 @@ class TokensTab extends PureComponent<Props, State> {
         <Input
           type={InputType.Checkbox}
           checked={
-            this.state.selectionState === SelectionState.SomeSelected ||
-            this.state.selectionState === SelectionState.AllSelected
+            this.state.batchSelectionState === SelectionState.SomeSelected ||
+            this.state.batchSelectionState === SelectionState.AllSelected
           }
-          onCheckboxClick={this.changeSelectionState}
+          onCheckboxClick={this.changeBatchSelectionState}
           size={ComponentSize.ExtraSmall}
           style={{
             width: 'fit-content',
@@ -239,8 +239,8 @@ class TokensTab extends PureComponent<Props, State> {
     )
   }
 
-  private changeTokenSelection = () => {
-    const currentSelectionState = this.state.selectionState
+  private updateSelectedTokens = () => {
+    const currentSelectionState = this.state.batchSelectionState
 
     switch (currentSelectionState) {
       case SelectionState.NoneSelected:
@@ -253,26 +253,26 @@ class TokensTab extends PureComponent<Props, State> {
     }
   }
 
-  private changeSelectionState = () => {
-    const currentSelectionState = this.state.selectionState
+  private changeBatchSelectionState = () => {
+    const currentSelectionState = this.state.batchSelectionState
 
     switch (currentSelectionState) {
       case SelectionState.NoneSelected:
         this.setState(
-          {selectionState: SelectionState.SomeSelected},
-          this.changeTokenSelection
+          {batchSelectionState: SelectionState.SomeSelected},
+          this.updateSelectedTokens
         )
         break
       case SelectionState.SomeSelected:
         this.setState(
-          {selectionState: SelectionState.AllSelected},
-          this.changeTokenSelection
+          {batchSelectionState: SelectionState.AllSelected},
+          this.updateSelectedTokens
         )
         break
       case SelectionState.AllSelected:
         this.setState(
-          {selectionState: SelectionState.NoneSelected},
-          this.changeTokenSelection
+          {batchSelectionState: SelectionState.NoneSelected},
+          this.updateSelectedTokens
         )
         break
     }
